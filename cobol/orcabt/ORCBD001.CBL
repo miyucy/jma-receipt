@@ -42,14 +42,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       * 
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -699,6 +699,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -719,6 +725,12 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.

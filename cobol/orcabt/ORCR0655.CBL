@@ -29,7 +29,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    03.03.12  剤点数をキーに追加対応
       *  01.00.02    NACL-門脇    04.02.05  診療コード＊数量の累計編集
-      *  01.00.03    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -570,6 +569,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -590,6 +595,12 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.

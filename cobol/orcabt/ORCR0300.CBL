@@ -94,12 +94,16 @@
       *                                     加算点数でも告示区分１により
       *                                     剤回数を編集する
       *  01.01.07    NACL-小豆沢  04/05/19  ＤＢ書き込み時のコミット追加
-      *  01.01.08    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
-      *  01.01.09    NACL-藤原    03/05/21  指導料・在宅料のとき
+      *  01.01.08    NACL-藤原    04/05/21  指導料・在宅料のとき
       *                                     加算点数で告示区分１が７の
       *                                     ときの点数・回数の編集
-      *  01.01.10    NACL-太田    03/05/21  処理高速化対応（保険組合せ）
-      *  01.01.11    NACL-太田    03/05/25  処理高速化対応（点数マスタ）
+      *  01.01.09    NACL-太田    04/05/21  処理高速化対応（保険組合せ）
+      *  01.01.10    NACL-太田    04/05/25  処理高速化対応（点数マスタ）
+      *
+      *  01.02.01    NACL-藤原    04/05/26  RECE05レイアウト変更
+      *                                     告示等識別区分１
+      *                                     きざみ値計算識別
+      *                                     注加算コードの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -439,57 +443,132 @@
       *
       *    医薬品・特定器材用テーブル
        01  TBL-ZAIW-AREA.
-         02  TBL-ZAIW-TABLE        OCCURS  2.
-           03  TBL-ZAIW-REC        OCCURS 100.
-               05  TBL-ZAIW-SRYACTINF.
-      *            診療コード/数量/回数
-                   07  TBL-ZAIW-SRYCD           PIC  X(09).
-                   07  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(03).
-      *            単位コード
-                   07  TBL-ZAIW-TANICD          PIC  9(03).
-      *            点数識別区分/点数
-                   07  TBL-ZAIW-TENSIKIBETU     PIC  9(01).
-                   07  TBL-ZAIW-TEN             PIC  9(09)V9(02).
-      *            データ区分情報
-                   07  TBL-ZAIW-DATAKBN         PIC  9(01).
-      *            漢字有効桁数/漢字名称
+           03  TBL-ZAIW-TABLE          OCCURS  2.
+               05  TBL-ZAIW-REC        OCCURS 100.
+                   07  TBL-ZAIW-SRYACTINF.
+      *                診療コード
+                       09  TBL-ZAIW-SRYCD           PIC  X(09).
+      *                診療種別区分
+                       09  TBL-ZAIW-SRYSYUKBN       PIC  X(03).
+      *                数量
+                       09  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(03).
+      *                回数
+                       09  TBL-ZAIW-SRYKAISU        PIC  9(03).
+      *                単位コード
+                       09  TBL-ZAIW-TANICD          PIC  9(03).
+      *                単位名称有効桁数
+                       09  TBL-ZAIW-TANIMOJISU      PIC  9(01).
+      *                単位名称
+                       09  TBL-ZAIW-TANINAME        PIC  X(24).
+      *                点数識別区分
+                       09  TBL-ZAIW-TENSIKIBETU     PIC  9(01).
+      *                点数
+                       09  TBL-ZAIW-TEN             PIC  9(09)V9(02).
+      *                明細請求フラグ
+                       09  TBL-ZAIW-MEISKYFLG       PIC  X(01).
+      *                自動算定区分
+                       09  TBL-ZAIW-AUTOKBN         PIC  X(01).
+      *                名称入力番号
+                       09  TBL-ZAIW-INPUTNUM        PIC  9(03).
+      *                点数欄集計先識別
+                       09  TBL-ZAIW-TENTTLKBN       PIC  9(03).
+      *                データ区分
+                       09  TBL-ZAIW-DATAKBN         PIC  9(01).
+      *                包括対象検査
+                       09  TBL-ZAIW-HOUKNSKBN       PIC  9(02).
+      *                検査等実施判断
+                       09  TBL-ZAIW-KNSJISKBN       PIC  9(01).
+      *                各種番号等
+                       09  TBL-ZAIW-CDKBNINF.
+                           11  TBL-ZAIW-CDKBN-KBN   PIC  X(01).
+                           11  TBL-ZAIW-CDKBN-SYO   PIC  9(01).
+                           11  TBL-ZAIW-CDKBN-BU    PIC  9(02).
+                           11  TBL-ZAIW-CDKBN-KBNNUM     PIC  9(03).
+                           11  TBL-ZAIW-CDKBN-KBNNUM-EDA PIC  9(02).
+                           11  TBL-ZAIW-CDKBN-KOUBAN     PIC  9(02).
+                           11  TBL-ZAIW-KOUHYOJYUNNUM    PIC  9(09).
+      *                告示等識別区分１
+                       09  TBL-ZAIW-KOKUJISKBKBN1   PIC  9(01).
+      *                きざみ値計算識別
+                       09  TBL-ZAIW-KZMCOMPSIKIBETU PIC  9(01).
+      *                注加算コード
+                       09  TBL-ZAIW-CHUKSNINF.
+      *                    コード
+                           11  TBL-ZAIW-CHUKSNCD    PIC  X(04).
+      *                    通番
+                           11  TBL-ZAIW-CHUKSNTUBAN PIC  X(01).
+      *                入力コメント
+                       09  TBL-ZAIW-INPUTCOMENT     PIC  X(80).
+      *            名称情報
                    07  TBL-ZAIW-NAMEINF.
-                       09  TBL-ZAIW-YUKOKETA    PIC  9(02).
-                       09  TBL-ZAIW-NAME        PIC  X(200).
+      *                漢字有効桁数
+                       09  TBL-ZAIW-YUKOKETA        PIC  9(02).
+      *                漢字名称
+                       09  TBL-ZAIW-NAME            PIC  X(200).
       *
       *    診療行為・コメント用テーブル
        01  TBL-KOUI-AREA.
            03  TBL-KOUI-REC                     OCCURS  100.
-               05  TBL-KOUI-SRYCD1              PIC X(01).
-      *        並び替え用ｋｅｙ      
-               05  TBL-KOUI-KEY.
-      *            告示等識別区分
-                   07  TBL-KOUI-KOKUJISKBKBN1   PIC  9(01).
-      *             表用番号
-                   07  TBL-KOUI-CDKBN-SYO       PIC  9(01).
-                   07  TBL-KOUI-CDKBN-BU        PIC  9(02).
-                   07  TBL-KOUI-CDKBN-KBN       PIC  X(01).
-                   07  TBL-KOUI-CDKBN-KBNNUM    PIC  9(03).
-                   07  TBL-KOUI-CDKBN-KBNNUM-EDA
-                                                PIC  9(02).
-                   07  TBL-KOUI-CDKBN-KOUBAN    PIC  9(02).
-                   07  TBL-KOUI-KOUHYOJUNNUM    PIC  9(09).
                05  TBL-KOUI-SRYACTINF.
       *            診療コード
                    07  TBL-KOUI-SRYCD           PIC  X(09).
+      *            診療種別区分
+                   07  TBL-KOUI-SRYSYUKBN       PIC  X(03).
       *            数量
                    07  TBL-KOUI-SRYSURYO        PIC  9(05)V9(03).
-      *            告示等識別区分
-                   07  TBL-KOUI-KOKUJISKBKBN2   PIC  9(01).
-      *----(01.00.04) LINE ADD START ----------------------------------
-      *            点数識別区分/点数
+      *            回数
+                   07  TBL-KOUI-SRYKAISU        PIC  9(03).
+      *            単位コード
+                   07  TBL-KOUI-TANICD          PIC  9(03).
+      *            単位名称有効桁数
+                   07  TBL-KOUI-TANIMOJISU      PIC  9(01).
+      *            単位名称
+                   07  TBL-KOUI-TANINAME        PIC  X(24).
+      *            点数識別区分
                    07  TBL-KOUI-TENSIKIBETU     PIC  9(01).
+      *            点数
                    07  TBL-KOUI-TEN             PIC  9(09)V9(02).
-      *----(01.00.04) LINE ADD END ------------------------------------
-               05  TBL-KOUI-KZMCOMPSIKIBETU     PIC  9(01).
-               05  TBL-KOUI-NAME                PIC  X(200).
-      *        データ区分情報
-               05  TBL-KOUI-DATAKBN             PIC  9(01).
+      *            明細請求フラグ
+                   07  TBL-KOUI-MEISKYFLG       PIC  X(01).
+      *            自動算定区分
+                   07  TBL-KOUI-AUTOKBN         PIC  X(01).
+      *            名称入力番号
+                   07  TBL-KOUI-INPUTNUM        PIC  9(03).
+      *            点数欄集計先識別
+                   07  TBL-KOUI-TENTTLKBN       PIC  9(03).
+      *            データ区分
+                   07  TBL-KOUI-DATAKBN         PIC  9(01).
+      *            包括対象検査
+                   07  TBL-KOUI-HOUKNSKBN       PIC  9(02).
+      *            検査等実施判断
+                   07  TBL-KOUI-KNSJISKBN       PIC  9(01).
+      *            各種番号等
+                   07  TBL-KOUI-CDKBNINF.
+                       09  TBL-KOUI-CDKBN-KBN   PIC  X(01).
+                       09  TBL-KOUI-CDKBN-SYO   PIC  9(01).
+                       09  TBL-KOUI-CDKBN-BU    PIC  9(02).
+                       09  TBL-KOUI-CDKBN-KBNNUM     PIC  9(03).
+                       09  TBL-KOUI-CDKBN-KBNNUM-EDA PIC  9(02).
+                       09  TBL-KOUI-CDKBN-KOUBAN     PIC  9(02).
+                       09  TBL-KOUI-KOUHYOJYUNNUM    PIC  9(09).
+      *            告示等識別区分１
+                   07  TBL-KOUI-KOKUJISKBKBN1   PIC  9(01).
+      *            きざみ値計算識別
+                   07  TBL-KOUI-KZMCOMPSIKIBETU PIC  9(01).
+      *            注加算コード
+                   07  TBL-KOUI-CHUKSNINF.
+      *                コード
+                       09  TBL-KOUI-CHUKSNCD    PIC  X(04).
+      *                通番
+                       09  TBL-KOUI-CHUKSNTUBAN PIC  X(01).
+      *            入力コメント
+                   07  TBL-KOUI-INPUTCOMENT     PIC  X(80). 
+      *        名称情報
+               05  TBL-KOUI-NAMEINF.
+      *            漢字有効桁数
+                   07  TBL-KOUI-YUKOKETA        PIC  9(02).
+      *            漢字名称
+                   07  TBL-KOUI-NAME            PIC  X(200).
       *
       *    コメントデータ用テーブル
        01  TBL-COMMENT-AREA.
@@ -1844,8 +1923,8 @@
                END-IF
            END-IF    
       *???
-           DISPLAY "HKNNUM=" COMB-HKNNUM  "KOH1=" COMB-KOH1HKNNUM "##"
-                   "KOH2="   COMB-KOH2HKNNUM "##" WRK-FTNKBN        
+      **     DISPLAY "HKNNUM=" COMB-HKNNUM  "KOH1=" COMB-KOH1HKNNUM "##"
+      **             "KOH2="   COMB-KOH2HKNNUM "##" WRK-FTNKBN        
       *???              
       *
            IF      WRK-FTNKBN     NOT =   SPACE
@@ -1871,11 +1950,11 @@
                END-IF    
            END-PERFORM
       *???
-           DISPLAY "RECE02(1)=" RECE02-KOHNUM (1) "(2)="
-                                RECE02-KOHNUM (2)
-                   "(3)=" RECE02-KOHNUM (3) "##"
-           DISPLAY "(1)=" WRK-KOHNUM (1) "(2)=" WRK-KOHNUM (2)
-                   "(3)=" WRK-KOHNUM (3) "##"
+      **     DISPLAY "RECE02(1)=" RECE02-KOHNUM (1) "(2)="
+      **                          RECE02-KOHNUM (2)
+      **             "(3)=" RECE02-KOHNUM (3) "##"
+      **     DISPLAY "(1)=" WRK-KOHNUM (1) "(2)=" WRK-KOHNUM (2)
+      **             "(3)=" WRK-KOHNUM (3) "##"
       *???                  
       *                                                      
       *    主保険があるとき      
@@ -2113,76 +2192,26 @@
                MOVE    RECE05-NAME  (IDX)  TO
                                            TBL-KOUI-NAME  (WRK-TBLMAX1)
       *
-               IF    ( RECE05-SRYCD (IDX) (1:1)     =   "0"   )
-               AND   ( RECE05-SRYCD (IDX) (1:3) NOT =   "008" )
-      *            部位／薬剤
-                   MOVE    "810000001"     TO  
-                                       TBL-KOUI-SRYCD (WRK-TBLMAX1)
+               IF      RECE05-SRYCD (IDX)   =   "810000001"
+                   CONTINUE
                ELSE
-                   IF      RECE05-SRYCD (IDX)   =   "810000001"
-                       CONTINUE
-                   ELSE
-                     IF      RECE05-INPUTNUM(IDX) =   ZERO
-                           MOVE    "810000001"     TO  
+      *            部位／薬剤／ユーザーコメント
+                   IF      RECE05-SRYCD (IDX) (1:1)     =   "0"
+                       MOVE    "810000001"     TO  
                                            TBL-KOUI-SRYCD (WRK-TBLMAX1)
-                     ELSE
-                       IF      RECE05-SRYCD (IDX) (1:3)    =   "008"
-                           MOVE    "810000001"     TO  
-                                           TBL-KOUI-SRYCD (WRK-TBLMAX1)
-                       END-IF
-                       MOVE    RECE02-HOSPID           TO  PTCOM-HOSPID
-                       MOVE    RECE02-PTID             TO  PTCOM-PTID
-                       MOVE    RECE05-ZAINUM           TO  PTCOM-ZAINUM
-                       MOVE    RECE05-SRYCD   (IDX)    TO  PTCOM-SRYCD
-                       MOVE    RECE05-INPUTNUM(IDX)    TO  PTCOM-RENNUM
-                       PERFORM 950-PTCOM-READ-SEC
-                       IF      RECE05-SRYCD (IDX) (1:3)    =   "008"
-                           MOVE    PTCOM-INPUTCOMENT
-                                                   TO
-                                           TBL-KOUI-NAME (WRK-TBLMAX1)
-                       ELSE
-                         IF      PTCOM-INPUTCHI1     =   SPACE
-                           INITIALIZE                  TNS-TENSU-REC
-                           MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
-                           PERFORM 900-TENSU-READ-SEC
-                           INITIALIZE              ORCSKANACHKAREA
-                           MOVE    "2"             TO  KANACHK-SYORI 
-                           MOVE    TNS-NAME        TO  KANACHK-MAE-INPUT
-                           CALL    "ORCSKANACHK"   USING
-                                                       ORCSKANACHKAREA
-                           IF    ( KANACHK-RC      =   ZERO )
-                           AND   ( KANACHK-MAX     >   ZERO )
-                               COMPUTE IDW =   KANACHK-MAX +   1
-                               MOVE    PTCOM-INPUTCOMENT (IDW:)
-                                                   TO
-                                           TBL-KOUI-NAME (WRK-TBLMAX1)
-                           ELSE
-                               MOVE    PTCOM-INPUTCOMENT
-                                                   TO
-                                           TBL-KOUI-NAME (WRK-TBLMAX1)
-                           END-IF
-                         ELSE
-                           MOVE    SPACE           TO
-                                           TBL-KOUI-NAME (WRK-TBLMAX1)  
-                           INITIALIZE              ORCSKANACHKAREA
-                           MOVE    "2"             TO  KANACHK-SYORI 
-                           STRING  PTCOM-INPUTCHI1 DELIMITED  BY  SPACE
-                                   PTCOM-INPUTCHI2 DELIMITED  BY  SPACE
-                                   PTCOM-INPUTCHI3 DELIMITED  BY  SPACE
-                                   PTCOM-INPUTCHI4 DELIMITED  BY  SPACE
-                                   INTO   KANACHK-MAE-INPUT
-                           END-STRING
-                           CALL    "ORCSKANACHK"   USING
-                                                       ORCSKANACHKAREA
-                           IF      KANACHK-RC      =   ZERO
-                               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                                   TO
-                                           TBL-KOUI-NAME (WRK-TBLMAX1)
-                           END-IF
-                         END-IF
-                       END-IF
-                     END-IF
-                   END-IF    
+                   END-IF
+      *            コメント
+                   IF    ( RECE05-SRYCD (IDX) (1:1)     =   "8"   )
+                   OR    ( RECE05-SRYCD (IDX) (1:3)     =   "008" )
+                       MOVE    RECE05-INPUTCOMENT (IDX)     TO
+                                           TBL-KOUI-NAME  (WRK-TBLMAX1)
+                   END-IF
+               END-IF
+      *        コメントパターン２０のコメントコード
+               IF      RECE05-SRYCD (IDX)(1:2)
+                                           =   "82"
+                   MOVE    SPACE              TO
+                                           TBL-KOUI-NAME  (WRK-TBLMAX1)
                END-IF
            END-IF
            .
@@ -2219,80 +2248,29 @@
                                    TBL-COMMENT-SRYCD (WRK-TBLMAX8)
                MOVE    RECE05-NAME  (IDX)  TO
                                    TBL-COMMENT-NAME  (WRK-TBLMAX8)
-      *                             
-               IF    ( RECE05-SRYCD (IDX) (1:1)     =   "0"   )
-               AND   ( RECE05-SRYCD (IDX) (1:3) NOT =   "008" )
-      *            部位／薬剤
-                   MOVE    "810000001"     TO  
-                                   TBL-COMMENT-SRYCD (WRK-TBLMAX8)
+      *
+               IF      RECE05-SRYCD (IDX)   =   "810000001"
+                   CONTINUE
                ELSE
-                   IF      RECE05-SRYCD (IDX)   =   "810000001"
-                       CONTINUE
-                   ELSE
-                     IF      RECE05-INPUTNUM(IDX) =   ZERO
-                           MOVE    "810000001"     TO  
+      *            部位／薬剤／ユーザーコメント
+                   IF      RECE05-SRYCD (IDX) (1:1)     =   "0"
+                       MOVE    "810000001"     TO  
                                        TBL-COMMENT-SRYCD (WRK-TBLMAX8)
-                     ELSE
-                       IF      RECE05-SRYCD (IDX) (1:3)    =   "008"
-                           MOVE    "810000001"     TO  
-                                       TBL-COMMENT-SRYCD (WRK-TBLMAX8)
-                       END-IF
-                       MOVE    RECE02-HOSPID           TO  PTCOM-HOSPID
-                       MOVE    RECE02-PTID             TO  PTCOM-PTID
-                       MOVE    RECE05-ZAINUM           TO  PTCOM-ZAINUM
-                       MOVE    RECE05-SRYCD   (IDX)    TO  PTCOM-SRYCD
-                       MOVE    RECE05-INPUTNUM(IDX)    TO  PTCOM-RENNUM
-                       PERFORM 950-PTCOM-READ-SEC
-                       IF      RECE05-SRYCD (IDX) (1:3)    =   "008"
-                           MOVE    PTCOM-INPUTCOMENT
-                                                   TO
-                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
-                       ELSE
-                         IF      PTCOM-INPUTCHI1     =   SPACE
-                           INITIALIZE                  TNS-TENSU-REC
-                           MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
-                           PERFORM 900-TENSU-READ-SEC
-                           INITIALIZE              ORCSKANACHKAREA
-                           MOVE    "2"             TO  KANACHK-SYORI 
-                           MOVE    TNS-NAME        TO  KANACHK-MAE-INPUT
-                           CALL    "ORCSKANACHK"   USING
-                                                       ORCSKANACHKAREA
-                           IF    ( KANACHK-RC      =   ZERO )
-                           AND   ( KANACHK-MAX     >   ZERO )
-                               COMPUTE IDW =   KANACHK-MAX +   1
-                               MOVE    PTCOM-INPUTCOMENT (IDW:)
-                                                   TO
-                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
-                           ELSE
-                               MOVE    PTCOM-INPUTCOMENT
-                                                   TO
-                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
-                           END-IF
-                         ELSE
-                           MOVE    SPACE               TO
-                                       TBL-COMMENT-NAME (WRK-TBLMAX8)  
-                           INITIALIZE              ORCSKANACHKAREA
-                           MOVE    "2"             TO  KANACHK-SYORI 
-                           STRING  PTCOM-INPUTCHI1 DELIMITED  BY  SPACE
-                                   PTCOM-INPUTCHI2 DELIMITED  BY  SPACE
-                                   PTCOM-INPUTCHI3 DELIMITED  BY  SPACE
-                                   PTCOM-INPUTCHI4 DELIMITED  BY  SPACE
-                                   INTO   KANACHK-MAE-INPUT
-                           END-STRING
-                           CALL    "ORCSKANACHK"   USING
-                                                       ORCSKANACHKAREA
-                           IF      KANACHK-RC      =   ZERO
-                               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                                   TO
-                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
-                           END-IF
-                         END-IF
-                       END-IF
-                     END-IF
-                   END-IF    
+                   END-IF
+      *            コメント
+                   IF    ( RECE05-SRYCD (IDX) (1:1)     =   "8"   )
+                   OR    ( RECE05-SRYCD (IDX) (1:3)     =   "008" )
+                       MOVE    RECE05-INPUTCOMENT (IDX)     TO
+                                       TBL-COMMENT-NAME  (WRK-TBLMAX8)
+                   END-IF
                END-IF
+      *        コメントパターン２０のコメントコード
+               IF      RECE05-SRYCD (IDX)(1:2)
+                                           =   "82"
+                   MOVE    SPACE              TO
+                                       TBL-COMMENT-NAME  (WRK-TBLMAX8)
            END-IF
-           .
+          .
        200711-SRYKBN13-COMMENT-TAIHI-EXT.
            EXIT.
       *
@@ -2313,11 +2291,13 @@
            END-IF
       *
       *    画像診断・生体検査のとき順番を変える
-           INITIALIZE                      TNS-TENSU-REC
-           MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
-           PERFORM 900-TENSU-READ-SEC
+      *****INITIALIZE                      TNS-TENSU-REC
+      *****MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
+      *****PERFORM 900-TENSU-READ-SEC
       *
-           IF      TNS-SRYSYUKBN       =   "721"
+      *****IF      TNS-SRYSYUKBN       =   "721"
+           IF      RECE05-SRYSYUKBN-X (IDX)
+                                       =   "721"
                MOVE    RECE05-REC          TO  WRK-RECE05-REC
                MOVE    IDX                 TO  IDW1 
       *
@@ -2358,14 +2338,19 @@
                MOVE    IDX                 TO  FLG-SRYSYUKBN721
                MOVE    RECE05-REC          TO WRK-721-RECE05-REC
            ELSE
-               IF    ( TNS-SRYCD           =  WRK-CONS-SRYKBN70-TEIGEN )
+      *********IF    ( TNS-SRYCD           =  WRK-CONS-SRYKBN70-TEIGEN )
+               IF    ( RECE05-SRYCD (IDX)  =  WRK-CONS-SRYKBN70-TEIGEN )
                AND   ( FLG-SRYSYUKBN721    >  ZERO                     )
                    MOVE    IDX         TO  FLG-SRYKBN70-TEIGEN
                    MOVE    RECE05-REC  TO  WRK-SRYKBN70-RECE05-REC
                    PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
                ELSE
-                   IF    ( TNS-SRYSYUKBN       =   "700" )
-                   AND   ( TNS-DATAKBN         =   "2"   )
+      *********    IF    ( TNS-SRYSYUKBN       =   "700" )
+      *********    AND   ( TNS-DATAKBN         =   "2"   )
+                   IF    ( RECE05-SRYSYUKBN-X (IDX)
+                                               =   "700" )
+                   AND   ( RECE05-DATAKBN   (IDX)
+                                               =   "2"   )
                    AND   ( FLG-SRYSYUKBN721    >   ZERO  )
                        ADD     1               TO  WRK-SRYSYUKBN700-MAX
                        MOVE    IDX             TO  FLG-SRYSYUKBN700
@@ -2409,45 +2394,33 @@
       *
                MOVE    WRK-TBLMAX1         TO  WRK-SRYCD1-MAX
       *
-               MOVE    RECE05-SRYCD    (IDX)   TO
-                                       TBL-KOUI-SRYCD   (WRK-TBLMAX1)
-               MOVE    RECE05-SRYSURYO (IDX)   TO
-                                       TBL-KOUI-SRYSURYO(WRK-TBLMAX1)
-               MOVE    RECE05-DATAKBN  (IDX)   TO
-                                       TBL-KOUI-DATAKBN (WRK-TBLMAX1)
-               INITIALIZE                  TNS-TENSU-REC
-               MOVE    RECE05-SRYCD (IDX)      TO  TNS-SRYCD
-               PERFORM 900-TENSU-READ-SEC
-               IF      FLG-TENSU           =   ZERO
-                   MOVE    TNS-KOKUJISKBKBN1   TO
-                                   TBL-KOUI-KOKUJISKBKBN1(WRK-TBLMAX1)
-                   MOVE    TNS-KOKUJISKBKBN2   TO
-                                   TBL-KOUI-KOKUJISKBKBN2(WRK-TBLMAX1)
-                   MOVE    TNS-CDKBN-SYO       TO
-                                   TBL-KOUI-CDKBN-SYO    (WRK-TBLMAX1)
-                   MOVE    TNS-CDKBN-BU        TO
-                                   TBL-KOUI-CDKBN-BU     (WRK-TBLMAX1)
-                   MOVE    TNS-CDKBN-KBN       TO
-                                   TBL-KOUI-CDKBN-KBN    (WRK-TBLMAX1)
-                   MOVE    TNS-CDKBN-KBNNUM    TO
-                                   TBL-KOUI-CDKBN-KBNNUM (WRK-TBLMAX1)
-                   MOVE    TNS-CDKBN-KBNNUM-EDA TO
-                               TBL-KOUI-CDKBN-KBNNUM-EDA (WRK-TBLMAX1)
-                   MOVE    TNS-CDKBN-KOUBAN    TO
-                                   TBL-KOUI-CDKBN-KOUBAN (WRK-TBLMAX1)
-                   MOVE    TNS-KOUHYOJYUNNUM   TO
-                                   TBL-KOUI-KOUHYOJUNNUM (WRK-TBLMAX1)
+               MOVE    RECE05-SRYACTINF (IDX)  TO
+                                     TBL-KOUI-SRYACTINF (WRK-TBLMAX1)
+               MOVE    RECE05-NAMEiNF (IDX)    TO
+                                     TBL-KOUI-NAMEINF   (WRK-TBLMAX1)
+      *********MOVE    RECE05-SRYCD    (IDX)   TO
+      *********                        TBL-KOUI-SRYCD   (WRK-TBLMAX1)
+      *********MOVE    RECE05-SRYSURYO (IDX)   TO
+      *********                        TBL-KOUI-SRYSURYO(WRK-TBLMAX1)
+      *********MOVE    RECE05-DATAKBN  (IDX)   TO
+      *********                        TBL-KOUI-DATAKBN (WRK-TBLMAX1)
+      *********INITIALIZE                  TNS-TENSU-REC
+      *********MOVE    RECE05-SRYCD (IDX)      TO  TNS-SRYCD
+      *********PERFORM 900-TENSU-READ-SEC
+      *********IF      FLG-TENSU           =   ZERO
+      ************ MOVE    TNS-KOKUJISKBKBN1   TO
+      ************                 TBL-KOUI-KOKUJISKBKBN1(WRK-TBLMAX1)
       *----(01.00.04) LINE ADD START ----------------------------------
-                   MOVE    TNS-TENSIKIBETU     TO
-                                   TBL-KOUI-TENSIKIBETU  (WRK-TBLMAX1)
-                   MOVE    TNS-TEN             TO
-                                   TBL-KOUI-TEN          (WRK-TBLMAX1)
+      ************ MOVE    TNS-TENSIKIBETU     TO
+      ************                 TBL-KOUI-TENSIKIBETU  (WRK-TBLMAX1)
+      ************ MOVE    TNS-TEN             TO
+      ************                 TBL-KOUI-TEN          (WRK-TBLMAX1)
       *----(01.00.04) LINE ADD END ------------------------------------
-                   IF      TNS-SRYCD (1:1)     =   "1"
-                       MOVE    TNS-KZMCOMPSIKIBETU TO
-                                   TBL-KOUI-KZMCOMPSIKIBETU(WRK-TBLMAX1)
-                   END-IF
-               END-IF 
+      ************ IF      TNS-SRYCD (1:1)     =   "1"
+      ************     MOVE    TNS-KZMCOMPSIKIBETU TO
+      ************                 TBL-KOUI-KZMCOMPSIKIBETU(WRK-TBLMAX1)
+      ************ END-IF
+      *********END-IF 
       *
       *        
                IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
@@ -2508,8 +2481,10 @@
                                    TBL-ZAIW-TEN        (1 WRK-TBLMAX6)
                MOVE    RECE05-DATAKBN    (IDX) TO
                                    TBL-ZAIW-DATAKBN    (1 WRK-TBLMAX6)
-               MOVE    RECE05-NAMEINF   (IDX)  TO
-                                   TBL-ZAIW-NAMEINF    (1 WRK-TBLMAX6)
+               MOVE    RECE05-NAME       (IDX)  TO
+                                   TBL-ZAIW-NAME       (1 WRK-TBLMAX6)
+               MOVE    RECE05-YUKOKETA   (IDX)  TO
+                                   TBL-ZAIW-YUKOKETA   (1 WRK-TBLMAX6)
            END-IF
            .
        200711-YKZ-TAIHI-EXT.
@@ -2558,10 +2533,10 @@
                END-IF
                PERFORM 900-TENSU-READ-SEC
                IF      FLG-TENSU           =   ZERO
-                   MOVE    TNS-TENSIKIBETU     TO
-                                   TBL-ZAIW-TENSIKIBETU  (2 WRK-TBLMAX7)
-                   MOVE    TNS-TEN             TO
-                                   TBL-ZAIW-TEN          (2 WRK-TBLMAX7)
+      *************MOVE    TNS-TENSIKIBETU     TO
+      *************                TBL-ZAIW-TENSIKIBETU  (2 WRK-TBLMAX7)
+      *************MOVE    TNS-TEN             TO
+      *************                TBL-ZAIW-TEN          (2 WRK-TBLMAX7)
                    IF      RECE05-SRYCD (IDX)  =   "777770000"
                        MOVE    TNS-TANICD          TO
                                    TBL-ZAIW-TANICD       (2 WRK-TBLMAX7)
@@ -2588,14 +2563,14 @@
                COMPUTE IDZ     =   IDX     +   1
                PERFORM VARYING IDW FROM    IDZ   BY  1
                        UNTIL   IDW >       WRK-TBLMAX1     
-                   IF      TBL-KOUI-KEY (IDX)    >   TBL-KOUI-KEY (IDW)
+      ********     IF      TBL-KOUI-KEY (IDX)    >   TBL-KOUI-KEY (IDW)
                        MOVE    TBL-KOUI-REC (IDX)    TO
                                              TBL-KOUI-SORT
                        MOVE    TBL-KOUI-REC (IDW)    TO
                                              TBL-KOUI-REC (IDX)
                        MOVE    TBL-KOUI-SORT         TO
                                              TBL-KOUI-REC (IDW)
-                   END-IF
+      ********     END-IF
                END-PERFORM                              
            END-PERFORM
            .
@@ -4610,6 +4585,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -4630,8 +4611,14 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
       *
       *****************************************************************

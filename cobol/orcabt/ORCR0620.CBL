@@ -48,8 +48,7 @@
       *  01.00.14    NACL-藤原    04/03/08  シス管による生保受給者番号の編集
       *  01.00.15    NACL-門脇    04/04/06  公費単独７０歳未満で老人保険入力
       *                                     のある方の高齢者フラグ編集修正
-      *  01.00.16    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
-      *  01.00.17    NACL-門脇    04/06/02  月途中に老保の変更があった場合
+      *  01.00.16    NACL-門脇    04/06/02  月途中に老保の変更があった場合
       *                                     のＫＥＹの編集の修正
       *****************************************************************
       *
@@ -98,7 +97,7 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE67-KEY
                                    FILE    STATUS  IS  STS-RECE67.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -3052,6 +3051,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -3072,7 +3077,12 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
        900-DBDISCONNECT-EXT.
            EXIT.
-      

@@ -77,7 +77,6 @@
       *                                     HCRCP060V02.red 
       *                                     HCRCP400V02.red
       *                                     カスタマイズ項目の追加
-      *  01.04.02    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1059,6 +1058,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -1079,6 +1084,12 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.

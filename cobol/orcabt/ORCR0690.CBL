@@ -19,9 +19,9 @@
        PROGRAM-ID.             ORCR0690.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : レセプト（入院）
-000700*  コンポーネント名  : 摘要欄編集
-000800*  管理者            : 
+      *  サブシステム名    : レセプト（入院）
+      *  コンポーネント名  : 摘要欄編集
+      *  管理者            : 
       *  作成日付    作業者        記述
       *  02/12/10    NACL−藤原　  新規作成
       *****************************************************************
@@ -51,7 +51,6 @@
       *  01.01.01    NACL-門脇    04.04.01  初診（乳幼児）（夜間・休日・
       *                                     深夜）加算の摘要欄記載
       *  01.01.02    NACL-門脇    04.04.26  ユーザーコメント追加対応
-      *  01.01.03    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -89,7 +88,7 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE66X-KEY
                                    FILE    STATUS  IS  STS-RECE66.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -121,7 +120,7 @@
        01  RECE66X-REC. 
            COPY    "CPRCF066.INC"  REPLACING  //RECE66//
                                    BY         //RECE66X//.
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -2700,6 +2699,12 @@
       *****************************************************************
        120-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2720,6 +2725,12 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.

@@ -15,13 +15,13 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-000200 IDENTIFICATION          DIVISION.
-000300 PROGRAM-ID.             ORCR0055.
-000400*****************************************************************
-000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : レセプト
-000700*  コンポーネント名  : 
-000800*  管理者            : 
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCR0055.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : 
+      *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
@@ -35,39 +35,38 @@
       *                                     病名・転帰区分・転帰日のとき
       *                                     ひとつだけ出力する
       *  01.00.04    NACL-藤原    03.03.12  補助区分の追加
-      *  01.00.05    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
-001200*
-001300 ENVIRONMENT             DIVISION.
-001400 CONFIGURATION           SECTION.
-001500 INPUT-OUTPUT            SECTION.
-001600 FILE-CONTROL.
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION           SECTION.
+       INPUT-OUTPUT            SECTION.
+       FILE-CONTROL.
       *
       *    レセプト明細書  
-006900*
+      *
            SELECT  RECE03-FILE     ASSIGN  RECE03PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE03-KEY
                                    FILE    STATUS  IS  STS-RECE03.
-006900*
+      *
            SELECT  RECE031-FILE    ASSIGN  RECE031PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE031-KEY
                                    FILE    STATUS  IS  STS-RECE031.
-006900*
+      *
            SELECT  RECE03W-FILE     ASSIGN  RECE031PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE03W-KEY
                                    FILE    STATUS  IS  STS-RECE031.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
-006900*
-007000 DATA                    DIVISION.
-007100 FILE                    SECTION.
+      *
+       DATA                    DIVISION.
+       FILE                    SECTION.
       *
       *    レセプト明細書  
        FD  RECE03-FILE.
@@ -82,11 +81,11 @@
        01  RECE03W-REC. 
            COPY    "CPRCF0031.INC"  REPLACING  //RECE031//
                                    BY          //RECE03W//.
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
-010200 WORKING-STORAGE             SECTION.
+       WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
       *
@@ -104,23 +103,23 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-018000*    フラグ領域
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE031                             PIC X(02).
            03  STS-RECE03                              PIC X(02).
            03  STS-RECEERR                             PIC X(02).
       *
-018100 01  FLG-AREA.
+       01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-SYSKANRI                            PIC 9(01).
-020700*
-020800*    カウント領域
-020900 01  CNT-AREA.
-021000     03  CNT-IN                                  PIC 9(06).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-IN                                  PIC 9(06).
            03  CNT-OUT                                 PIC 9(06).
-024000*
-024100*    一時領域
-024200 01  WRK-AREA.
+      *
+      *    一時領域
+       01  WRK-AREA.
       *****03  WRK-IN          PIC X(01).
            03  WRK-PARA.
                05  WRK-PARA-SRYYM                      PIC  X(06).
@@ -472,6 +471,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -492,6 +497,12 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.

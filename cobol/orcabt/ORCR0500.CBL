@@ -60,7 +60,6 @@
       *                                     HCN21V02.red
       *                                     HCN22V02.red
       *                                     HCN23V02.red
-      *  01.02.02    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -89,7 +88,7 @@
            03  PRT-SITEKBN         PIC X(01).
            03  PRT-PRTDATA         PIC X(10000).
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -938,6 +937,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -958,6 +963,12 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.

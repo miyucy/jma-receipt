@@ -19,9 +19,9 @@
        PROGRAM-ID.             ORCR0700.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : レセプト（入院）
-000700*  コンポーネント名  : 摘要欄並び替え
-000800*  管理者            : 
+      *  サブシステム名    : レセプト（入院）
+      *  コンポーネント名  : 摘要欄並び替え
+      *  管理者            : 
       *  作成日付    作業者        記述
       *  02/12/10    NACL−藤原　  新規作成
       *****************************************************************
@@ -30,7 +30,6 @@
       *  01.00.01    NACL-門脇    03.03.06  初再診のコメント編集対応
       *  01.00.02    NACL-門脇    03.11.26  自費レセプトの自費分
       *                                     摘要欄記載対応
-      *  01.00.03    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -401,11 +400,16 @@
        RECE66-READ-EXT.
            EXIT.
       *
-      *      
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
+      *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
       *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
@@ -427,7 +431,12 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
-      

@@ -15,16 +15,16 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-000200 IDENTIFICATION          DIVISION.
-000300 PROGRAM-ID.             ORCR0610.
-000400*****************************************************************
-000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : レセプト
-000700*  コンポーネント名  : 月次業務　明細書・請求書用ファイル作成
-000800*  管理者            : 
-000900*  作成日付    作業者        記述
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCR0610.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : 月次業務　明細書・請求書用ファイル作成
+      *  管理者            : 
+      *  作成日付    作業者        記述
       *  02/12/101   NACL−藤原　  新規作成
-001100*****************************************************************
+      *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03.03.03  診療科数１０から２０へ変更
@@ -41,7 +41,6 @@
       *                                     SRYACCT8→29
       *                                     SRYACCT9→30
       *  01.01.09    NACL-藤原    04/04/15  ＤＢ更新エラー時の処理
-      *  01.01.10    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2648,6 +2647,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2668,6 +2673,12 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.

@@ -97,8 +97,7 @@
       *  01.00.37    NACL-藤原    04/03/08  シス管による生保受給者番号の編集
       *  01.00.38    NACL-門脇    04/04/06  公費単独７０歳未満で老人保険入力
       *                                     のある方の在総診フラグ編集修正
-      *  01.00.39    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
-      *  01.00.40    NACL-藤原    04/05/27  同一開始日の複数自費レセプトが
+      *  01.00.39    NACL-藤原    04/05/27  同一開始日の複数自費レセプトが
       *                                     別々に作成されるように修正
       *****************************************************************
       *
@@ -2828,6 +2827,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2848,8 +2853,14 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
       *
       *****************************************************************

@@ -15,17 +15,17 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-000200 IDENTIFICATION          DIVISION.
-000300 PROGRAM-ID.             ORCR0400.
-000400*****************************************************************
-000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : レセプト（労災・自賠責）
-000700*  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCR0400.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト（労災・自賠責）
+      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
       *                              （対象患者抽出）
-000800*  管理者            : 
-000900*  作成日付    作業者        記述
+      *  管理者            : 
+      *  作成日付    作業者        記述
       *  00/12/01    MCC−藤原　   新規作成
-001100*****************************************************************
+      *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    02.09.09  自賠責対応
@@ -34,13 +34,12 @@
       *  01.00.04    NACL-門脇    04.01.14  診療行為の包括分は除く
       *                                     SRYACCT8→29
       *                                     SRYACCT9→30
-      *  01.00.05    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
-001200*
-001300 ENVIRONMENT             DIVISION.
-001400 CONFIGURATION           SECTION.
-001500 INPUT-OUTPUT            SECTION.
-001600 FILE-CONTROL.
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION           SECTION.
+       INPUT-OUTPUT            SECTION.
+       FILE-CONTROL.
       *
       *    レセプト明細書  
            SELECT  RECE40-FILE     ASSIGN  RECE40PARA
@@ -48,18 +47,18 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE40-KEY
                                    FILE    STATUS  IS  STS-RECE40.
-006900*
+      *
            SELECT  RECE401-FILE    ASSIGN  RECE40PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE401-KEY
                                    FILE    STATUS  IS  STS-RECE401.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
-006900*
-007000 DATA                    DIVISION.
-007100 FILE                    SECTION.
+      *
+       DATA                    DIVISION.
+       FILE                    SECTION.
       *
       *    レセプト明細書  
        FD  RECE40-FILE.
@@ -70,11 +69,11 @@
        01  RECE401-REC. 
            COPY    "CPRCF040.INC"  REPLACING  //RECE40//
                                    BY         //RECE401//.
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
-010200 WORKING-STORAGE             SECTION.
+       WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -87,7 +86,7 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-018000*    フラグ領域
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE40                              PIC X(02).
            03  STS-RECE401                             PIC X(02).
@@ -1301,6 +1300,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -1321,6 +1326,12 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
