@@ -193,6 +193,19 @@
                05  WRK-HKNCOMBI-X          PIC X(01).
                05  WRK-HKNCOMBI-9          PIC 9(03).
       *
+      *    システム管理食事退避領域
+           03  WRK-SYS5000-SKJ             OCCURS  5.
+               05  WRK-SYS5000-SHOKUCD     PIC X(09) OCCURS 31.
+      *    食事ワーク
+           03  WRK-SKJ-TABLE.
+               05  WRK-SKJ-TBL           OCCURS  31.
+                   07  WRK-SKJ-RYOYO       PIC X(09).
+                   07  WRK-SKJ-TOKU-KANRI  PIC X(09).
+                   07  WRK-SKJ-SHOKUDOU    PIC X(09).
+                   07  WRK-SKJ-SRYCDTOTAL  PIC 9(14).
+                   07  WRK-SKJ-TOKU-SHOKU  PIC X(09).
+                   07  WRK-SKJ-FUKUSU      PIC X(09).
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -561,6 +574,26 @@
                         END-EVALUATE
                     END-IF
                END-PERFORM
+      *        食事情報の退避
+               PERFORM    VARYING   IDX  FROM  1  BY  1
+                          UNTIL     IDX   >    31
+                   IF     SYS-5000-SHOKUJIRYOYOCD  NOT =  SPACE
+                       MOVE  SYS-5000-SHOKUJIRYOYOCD
+                                          TO WRK-SYS5000-SHOKUCD(1 IDX)
+                   END-IF
+                   IF     SYS-5000-SHOKUCD(1)  NOT =  SPACE
+                       IF  SYS-5000-SHOKUKBN(1) =     "2"
+                           MOVE  SYS-5000-SHOKUCD(1)
+                                          TO WRK-SYS5000-SHOKUCD(2 IDX)
+                       END-IF
+                   END-IF
+                   IF     SYS-5000-SHOKUCD(2)  NOT =  SPACE
+                       IF  SYS-5000-SHOKUKBN(2) =     "2"
+                           MOVE  SYS-5000-SHOKUCD(3)
+                                          TO WRK-SYS5000-SHOKUCD(3 IDX)
+                       END-IF
+                   END-IF
+               END-PERFORM
            END-IF
       *    システム管理クローズ
            MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
@@ -576,9 +609,9 @@
       *入院時の入院料加算取得（入院会計より）
            MOVE    ZERO                    TO  KSN-IDX
            INITIALIZE                          NYUINACCT-REC
-           MOVE    LNK-NYURECEDEN-HOSPID    TO  NACCT-HOSPID
-           MOVE    LNK-NYURECEDEN-PTID      TO  NACCT-PTID
-           MOVE    LNK-NYURECEDEN-SANTEIYM  TO  NACCT-SRYYM
+           MOVE    LNK-NYURECEDEN-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
+           MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
            MOVE    "6"                     TO  NACCT-ZAISKBKBN
            MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
            PERFORM 910-NYUINACCT-SELECT-SEC
@@ -874,22 +907,22 @@
                END-PERFORM
            END-PERFORM
       *
-           PERFORM    VARYING   IDX1   FROM  1  BY  1
-                      UNTIL     (IDX1   >     31)
-                DISPLAY  "IDX1 = " IDX1
-                DISPLAY  "WRK-SO-HKNCOMBI-DAY = " WRK-SO-HKNCOMBI-DAY
-                                                               (IDX1)
-                DISPLAY  "WRK-SO-SRYKBN   = " WRK-SO-SRYKBN(IDX1)
-                DISPLAY  "WRK-SO-MEISAISU = " WRK-SO-MEISAISU(IDX1)
-                DISPLAY  "WRK-SO-SRYCD(1) = " WRK-SO-SRYCD(IDX1 1)
-                DISPLAY  "WRK-SO-SRYCD(2) = " WRK-SO-SRYCD(IDX1 2)
-                DISPLAY  "WRK-SO-SRYCD(3) = " WRK-SO-SRYCD(IDX1 3)
-                DISPLAY  "WRK-SO-SRYCD(4) = " WRK-SO-SRYCD(IDX1 4)
-                DISPLAY  "WRK-SO-SRYCD(5) = " WRK-SO-SRYCD(IDX1 5)
-                DISPLAY  "WRK-SO-SRYCDTOTAL = " WRK-SO-SRYCDTOTAL(IDX1)
-                DISPLAY  "WRK-SO-TEN      = " WRK-SO-TEN(IDX1)
-                DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
-           END-PERFORM
+      **     PERFORM    VARYING   IDX1   FROM  1  BY  1
+      **                UNTIL     (IDX1   >     31)
+      **          DISPLAY  "IDX1 = " IDX1
+      **          DISPLAY  "WRK-SO-HKNCOMBI-DAY = " WRK-SO-HKNCOMBI-DAY
+      **                                                         (IDX1)
+      **          DISPLAY  "WRK-SO-SRYKBN   = " WRK-SO-SRYKBN(IDX1)
+      **          DISPLAY  "WRK-SO-MEISAISU = " WRK-SO-MEISAISU(IDX1)
+      **          DISPLAY  "WRK-SO-SRYCD(1) = " WRK-SO-SRYCD(IDX1 1)
+      **          DISPLAY  "WRK-SO-SRYCD(2) = " WRK-SO-SRYCD(IDX1 2)
+      **          DISPLAY  "WRK-SO-SRYCD(3) = " WRK-SO-SRYCD(IDX1 3)
+      **          DISPLAY  "WRK-SO-SRYCD(4) = " WRK-SO-SRYCD(IDX1 4)
+      **          DISPLAY  "WRK-SO-SRYCD(5) = " WRK-SO-SRYCD(IDX1 5)
+      **          DISPLAY  "WRK-SO-SRYCDTOTAL = " WRK-SO-SRYCDTOTAL(IDX1)
+      **          DISPLAY  "WRK-SO-TEN      = " WRK-SO-TEN(IDX1)
+      **          DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
+      **     END-PERFORM
       *
       *    再構築した入院会計情報から同一剤のまとめ処理
            PERFORM      VARYING    IDX1   FROM   1  BY  1
@@ -916,22 +949,22 @@
                END-IF
            END-PERFORM
       *   結果表示
-           PERFORM    VARYING   IDX1   FROM  1  BY  1
-                      UNTIL     (IDX1   >     31)
-                DISPLAY  "IDX1 = " IDX1
-                DISPLAY  "WRK-SO-HKNCOMBI-DAY = " WRK-SO-HKNCOMBI-DAY
-                                                               (IDX1)
-                DISPLAY  "WRK-SO-SRYKBN   = " WRK-SO-SRYKBN(IDX1)
-                DISPLAY  "WRK-SO-MEISAISU = " WRK-SO-MEISAISU(IDX1)
-                DISPLAY  "WRK-SO-SRYCD(1) = " WRK-SO-SRYCD(IDX1 1)
-                DISPLAY  "WRK-SO-SRYCD(2) = " WRK-SO-SRYCD(IDX1 2)
-                DISPLAY  "WRK-SO-SRYCD(3) = " WRK-SO-SRYCD(IDX1 3)
-                DISPLAY  "WRK-SO-SRYCD(4) = " WRK-SO-SRYCD(IDX1 4)
-                DISPLAY  "WRK-SO-SRYCD(5) = " WRK-SO-SRYCD(IDX1 5)
-                DISPLAY  "WRK-SO-SRYCDTOTAL = " WRK-SO-SRYCDTOTAL(IDX1)
-                DISPLAY  "WRK-SO-TEN      = " WRK-SO-TEN(IDX1)
-                DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
-           END-PERFORM
+      **     PERFORM    VARYING   IDX1   FROM  1  BY  1
+      **                UNTIL     (IDX1   >     31)
+      **          DISPLAY  "IDX1 = " IDX1
+      **          DISPLAY  "WRK-SO-HKNCOMBI-DAY = " WRK-SO-HKNCOMBI-DAY
+      **                                                         (IDX1)
+      **          DISPLAY  "WRK-SO-SRYKBN   = " WRK-SO-SRYKBN(IDX1)
+      **          DISPLAY  "WRK-SO-MEISAISU = " WRK-SO-MEISAISU(IDX1)
+      **          DISPLAY  "WRK-SO-SRYCD(1) = " WRK-SO-SRYCD(IDX1 1)
+      **          DISPLAY  "WRK-SO-SRYCD(2) = " WRK-SO-SRYCD(IDX1 2)
+      **          DISPLAY  "WRK-SO-SRYCD(3) = " WRK-SO-SRYCD(IDX1 3)
+      **          DISPLAY  "WRK-SO-SRYCD(4) = " WRK-SO-SRYCD(IDX1 4)
+      **          DISPLAY  "WRK-SO-SRYCD(5) = " WRK-SO-SRYCD(IDX1 5)
+      **          DISPLAY  "WRK-SO-SRYCDTOTAL = " WRK-SO-SRYCDTOTAL(IDX1)
+      **          DISPLAY  "WRK-SO-TEN      = " WRK-SO-TEN(IDX1)
+      **          DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
+      **     END-PERFORM
       *
       *    レセ電サブ返却エリアへのセット
            MOVE       ZERO      TO     IDX2
@@ -968,6 +1001,71 @@
                          END-IF
                      END-PERFORM
                 END-IF
+           END-PERFORM
+      *
+      *食事情報の取得（入院会計）
+           INITIALIZE                          NYUINACCT-REC
+           MOVE    LNK-NYURECEDEN-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
+           MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
+           MOVE    "4"                     TO  NACCT-ZAISKBKBN
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           PERFORM 910-NYUINACCT-SELECT-SEC
+           IF      FLG-NYUINACCT           =   ZERO
+               MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+               PERFORM   910-NYUINACCT-READ-SEC
+               PERFORM   VARYING   IDX1   FROM  1   BY  1
+                         UNTIL     IDX1   >    31
+                   IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)  AND
+                         (NACCT-DAY(IDX1)    NOT =  ZERO)     AND
+                         (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
+                       EVALUATE   NACCT-DAY(IDX1)
+                           WHEN   1
+                               MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
+                                               TO  WRK-SKJ-RYOYO(IDX1)
+                           WHEN   2
+                               MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
+                                               TO  WRK-SKJ-RYOYO(IDX1)
+                               MOVE   "197000470"
+                                          TO  WRK-SKJ-TOKU-SHOKU(IDX1)
+                           WHEN   3
+                               MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
+                                               TO  WRK-SKJ-RYOYO(IDX1)
+                               MOVE   "197000670"
+                                          TO  WRK-SKJ-FUKUSU(IDX1)
+                           WHEN   4
+                               MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
+                                               TO  WRK-SKJ-RYOYO(IDX1)
+                               MOVE   "197000470"
+                                          TO  WRK-SKJ-TOKU-SHOKU(IDX1)
+                               MOVE   "197000670"
+                                          TO  WRK-SKJ-FUKUSU(IDX1)
+                       END-EVALUATE
+      *                特別管理加算
+                       MOVE  WRK-SYS5000-SHOKUCD(2 IDX1)
+                                          TO  WRK-SKJ-TOKU-KANRI(IDX1)
+      *                食堂加算
+                       MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
+                                          TO  WRK-SKJ-SHOKUDOU(IDX1)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    入院会計クローズ
+           MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+           PERFORM   VARYING   IDX1   FROM  1  BY   1
+                     UNTIL     IDX1   >    31
+               DISPLAY  "IDX1 = " IDX1
+               DISPLAY  "WRK-SKJ-RYOYO = " WRK-SKJ-RYOYO(IDX1)
+               DISPLAY  "WRK-SKJ-TOKU-KANRI = "
+                                      WRK-SKJ-TOKU-KANRI(IDX1)
+               DISPLAY  "WRK-SKJ-SHOKUDOU = "
+                                      WRK-SKJ-SHOKUDOU(IDX1)
+               DISPLAY  "WRK-SKJ-TOKU-SHOKU = "
+                                      WRK-SKJ-TOKU-SHOKU(IDX1)
+               DISPLAY  "WRK-SKJ-FUKUSU = " WRK-SKJ-FUKUSU(IDX1)
            END-PERFORM
            .
        200-MAIN-EXT.
@@ -1090,8 +1188,14 @@
            INITIALIZE                       HKNCOMBI-REC
            MOVE    LNK-NYURECEDEN-HOSPID TO  COMB-HOSPID
            MOVE    LNK-NYURECEDEN-PTID  TO   COMB-PTID
-           MOVE    LNK-NYURECEDEN-HKNCOMBI
+           PERFORM   VARYING   IDX   FROM  1  BY  1
+                     UNTIL     (WRK-HKNCOMBI-DAY(IDX)  NOT =  ZERO) OR
+                               (IDX     >   31)
+               IF   WRK-HKNCOMBI-DAY(IDX)   NOT =   ZERO
+                  MOVE    WRK-HKNCOMBI-DAY(IDX)
                                        TO   COMB-HKNCOMBINUM
+               END-IF
+           END-PERFORM
            MOVE    "HKNCOMBI-KEY"      TO   ORC-DBPATH
            PERFORM 910-HKNCOMBI-SELECT-SEC
            IF      FLG-HKNCOMBI        =    ZERO
@@ -1413,36 +1517,33 @@
                     IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"
                         EVALUATE  GENSAN-IDX
                             WHEN  2
-                              MOVE  "190080570"  TO  WRK-GENSAN2
-      **                        IF   FLG-RJN    =    ZERO
-      **                            MOVE  "190080570"  TO  WRK-GENSAN2
-      **                        ELSE
-      **                            MOVE  "190799770"  TO  WRK-GENSAN2
-      **                        END-IF
+                              IF   FLG-RJN    =    ZERO
+                                  MOVE  "190080570"  TO  WRK-GENSAN2
+                              ELSE
+                                  MOVE  "190799770"  TO  WRK-GENSAN2
+                              END-IF
                               PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
                                   UNTIL     GENSAN-IDX2   >   31
                                 MOVE   "1"  TO
                                         WRK-GENSAN-INNAI(GENSAN-IDX2)
                               END-PERFORM
                             WHEN  3
-                              MOVE  "190111690"  TO  WRK-GENSAN3
-      **                        IF   FLG-RJN    =    ZERO
-      **                            MOVE  "190111690"  TO  WRK-GENSAN3
-      **                        ELSE
-      **                            MOVE  "190809090"  TO  WRK-GENSAN3
-      **                        END-IF
+                              IF   FLG-RJN    =    ZERO
+                                  MOVE  "190111690"  TO  WRK-GENSAN3
+                              ELSE
+                                  MOVE  "190809090"  TO  WRK-GENSAN3
+                              END-IF
                               PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
                                   UNTIL     GENSAN-IDX2   >   31
                                 MOVE   "1"  TO
                                         WRK-GENSAN-IRYO(GENSAN-IDX2)
                               END-PERFORM
                             WHEN  4
-                              MOVE  "190111790"  TO  WRK-GENSAN4
-      **                        IF   FLG-RJN    =    ZERO
-      **                            MOVE  "190111790"  TO  WRK-GENSAN4
-      **                        ELSE
-      **                            MOVE  "190809190"  TO  WRK-GENSAN4
-      **                        END-IF
+                              IF   FLG-RJN    =    ZERO
+                                  MOVE  "190111790"  TO  WRK-GENSAN4
+                              ELSE
+                                  MOVE  "190809190"  TO  WRK-GENSAN4
+                              END-IF
                               PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
                                   UNTIL     GENSAN-IDX2   >   31
                                 MOVE   "1"  TO
