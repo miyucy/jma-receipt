@@ -81,6 +81,8 @@ bind	"ORHCML06"	"OpenCOBOL";
 bind	"ORHCML07"	"OpenCOBOL";
 bind	"ORHCML08"	"OpenCOBOL";
 bind	"ORHCML09"	"OpenCOBOL";
+bind	"ORHCML10"	"OpenCOBOL";
+bind	"ORHCML11"	"OpenCOBOL";
 bind	"ORCBPRT"	"OpenCOBOL";
 bind	"ORCBQ01"	"OpenCOBOL";
 bind	"ORCHC30"	"OpenCOBOL";
