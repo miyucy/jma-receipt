@@ -54,6 +54,8 @@
       *    点滴の有無（訂正時使用）
            03   LNK-SC95-TENTEKI       PIC 9(01).
            03   LNK-SC95-CHUSYA        PIC 9(08).
+      *    ワーク診療行為作成有無
+           03   LNK-SC95-WKSRYACT      PIC 9(01).
       *
            03  LNK-SC95-ERRCD          PIC X(04).
       *

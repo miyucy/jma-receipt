@@ -58,7 +58,7 @@
                    07  SPA-GMN-HKNCOMBI-G.
                        09  SPA-GMN-HKNCOMBINUM     PIC X(04).
                        09  SPA-GMN-HKNCOMBY1       PIC X(01).
-                       09  SPA-GMN-HKNCOMBIMEI     PIC X(45).
+                       09  SPA-GMN-HKNCOMBIMEI     PIC X(50).
       *
       *            ±¡Æâ±¡³°¶èÊ¬
                    07  SPA-GMN-INGAI             PIC X(01).
@@ -74,9 +74,11 @@
                    07  SPA-GMN-ZAITENTOTAL       PIC 9(11).
       *        £Ä£ÏÆâÍÆ¡Ê£Ë£°£¹¤È¶¦ÄÌ¡Ë
                05  SPA-GMN-RRKTBL.
-                   07  SPA-GMN-RRKTBLREC         OCCURS  100.
+                   07  SPA-GMN-RRKTBLREC         OCCURS  150.
                        09  SPA-GMN-NO            PIC 9(03).
-                       09  SPA-GMN-RRKYMD        PIC X(16).
+                       09  SPA-GMN-RRKYMD        PIC X(13).
+                       09  SPA-GMN-RRKHKNCOMBI   PIC X(04).
+                       09  SPA-GMN-RRKSRYKA      PIC X(02).
                    07  SPA-GMN-DOSELNUM          PIC X(03).
                    07  SPA-GMN-MAX1              PIC 9(04).
       *
@@ -94,12 +96,14 @@
                    07  SPA-NAI-SYORI             PIC 9(01).
       *            £Ä£ÏÆâÍÆ¡Ê£Ë£°£¹¤È¶¦ÄÌ¡Ë
                    07  SPA-NAI-RRKTBL.
-                       09  SPA-NAI-RRKTBLREC         OCCURS   100.
+                       09  SPA-NAI-RRKTBLREC         OCCURS   150.
                            11  SPA-NAI-RRKYMD        PIC  X(08).
                            11  SPA-NAI-RENNUM        PIC  9(01).
                            11  SPA-NAI-DOUJI-RENNUM  PIC  9(01).
                            11  SPA-NAI-RRK-HKNKBN    PIC  X(01).
                            11  SPA-NAI-RRK-HKNCOMBI  PIC  X(04).
+                           11  SPA-NAI-RRK-SRYKA     PIC  X(02).
+                           11  SPA-NAI-RRK-FUKU-KBN  PIC  X(01).
                    07  SPA-NAI-DOSELNUM              PIC  9(03).
       *
                    07  SPA-NAI-TESELNUM              PIC  9(03).
@@ -115,7 +119,7 @@
                    07  SPA-MAE-HKNCOMBI-G.
                        09  SPA-MAE-HKNCOMBINUM     PIC X(04).
                        09  SPA-MAE-HKNCOMBY1       PIC X(01).
-                       09  SPA-MAE-HKNCOMBIMEI     PIC X(45).
+                       09  SPA-MAE-HKNCOMBIMEI     PIC X(50).
                    07  SPA-MAE-HKNKBN              PIC 9(01).
       *            ÊÝÂ¸¿ÇÎÅ²Ê
                    07  SPA-MAE-SRYKA-G.
@@ -192,7 +196,7 @@
                        09  SPA-GMN-HKN-LIST    OCCURS  15.
                            11  SPA-GMN-THKNCOMBINUM    PIC X(04).
                            11  SPA-GMN-THKNCOMBY1      PIC X(01).
-                           11  SPA-GMN-THKNCOMBIMEI    PIC X(45).
+                           11  SPA-GMN-THKNCOMBIMEI    PIC X(50).
       *
                        09  SPA-NAI-HKNCOMBI    OCCURS  15.
                            11  SPA-GMN-TFTNRATEMEI  PIC  X(05).

@@ -141,6 +141,9 @@
       *診療年月日末日
                05  SPA-SRYLST-DD           PIC 9(02).
       *
+      *訂正前診療科
+               05  SPA-OLD-SRYKA           PIC X(02).
+      *
       *入院用（Ｋ０２Ｎ）
       *        入院日
                05  SPA-K02N-NYUINYMD           PIC X(08).
@@ -224,7 +227,7 @@
                05  SPA-JIKANTOKU           PIC  9(01).
       *他保険受診有無
                05  SPA-TAHOKEN-FLG         PIC  9(01).
-      *診察料変更あり
+      *訂正初期表示
                05  SPA-SINSATU-SAI         PIC  9(01).
       *
            03  SPA-SONOTA-AREA.

@@ -86,7 +86,9 @@
               03  K02-SCROLLEDWINDOW1.
                 04  K02-RRKLIST.
                   05  K02-COUNT   PIC S9(9)   BINARY.
-                  05  K02-ITEM        OCCURS  100 TIMES.
+                  05  K02-ITEM        OCCURS  150 TIMES.
                     06  K02-NO      PIC X(3).
-                    06  K02-RRKYMD  PIC X(16).
-                  05  K02-SELECT  PIC X       OCCURS  100 TIMES.
+                    06  K02-RRKYMD  PIC X(13).
+                    06  K02-RRKSRYKA  PIC X(2).
+                    06  K02-RRKHKNCOMBI  PIC X(04).
+                  05  K02-SELECT  PIC X       OCCURS  150 TIMES.

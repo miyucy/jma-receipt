@@ -116,6 +116,7 @@
                        09  SPA-COM-KEIFLG        PIC X(01).
       *                自費入力
                        09  SPA-COM-JIHIFLG       PIC X(01).
+      *
       *                履歴算定用診療行為コード
                        09  SPA-COM-CHK-SRYCD     PIC X(09).
       *                画面表示用入力コード
