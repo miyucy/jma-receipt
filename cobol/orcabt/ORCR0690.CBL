@@ -33,6 +33,7 @@
       *  01.00.02    NACL-藤原    03.01.28  検査のとき加算は検査数の対象と
       *                                     しない
       *  01.00.03    NACL-藤原    03.01.30  乳幼児加算の時手技に表示
+      *  01.00.04    NACL-藤原    03.02.04  検査に加算があるときまとめない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -930,7 +931,9 @@
                          OR      ( SPA-STS           =   2     ) 
       *
                    IF      RECE65-SRYCD (IDX) (1:1)  =   "1"
-                       CONTINUE
+                       IF      TBL-DATAKBN (IDX)         =   "2"
+                           MOVE    1                     TO  FLG-SRYCD1
+                       END-IF
                    ELSE
                        MOVE    1                     TO  FLG-SRYCD1
                    END-IF
@@ -1488,10 +1491,10 @@
                                        TBL-YUKOKETA (IDX)  *   2
                        END-IF
       *                 
-                       ADD     1           TO  IDX
                        IF      TBL-DATAKBN (IDX)   NOT =   "2"
                            ADD     1           TO  WRK-KOUMOKUSU 
                        END-IF
+                       ADD     1           TO  IDX
                    END-PERFORM                            
                    ADD     1               TO  WRK-ZAIWMAX (3)
                    MOVE    WRK-ZAIWMAX (3) TO  IDZ
