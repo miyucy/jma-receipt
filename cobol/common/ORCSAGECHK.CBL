@@ -308,7 +308,12 @@
       *            Á¥°÷¤ÇÊä½õ¶èÊ¬¤Î¤¢¤ë»þ£Ï£Ë¤È¤¹¤ë
                    IF     (COMB-HKNNUM         =   "002" ) AND
                           (PTHKN-HOJOKBN   NOT =   SPACE )
-                       MOVE    1               TO  FLG-OK
+                       IF      PTHKN-HOJOKBN       >=  "A" AND
+                                                   <=  "F"
+                           MOVE    2               TO  FLG-OK
+                       ELSE
+                           MOVE    1               TO  FLG-OK
+                       END-IF
                    END-IF
       *            ¶¦ºÑ¤ÇÏ·¿Í¶èÊ¬¤Î¤¢¤ë»þ£Ï£Ë¤È¤¹¤ë
                    IF     (COMB-HKNNUM         =   "031"  OR
@@ -316,7 +321,7 @@
                                                    "033"  OR
                                                    "034" ) AND
                           (PTHKN-HOJOKBN       =   "B"  OR  "E")
-                       MOVE    1               TO  FLG-OK
+                       MOVE    2               TO  FLG-OK
                    END-IF
                END-IF
                MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -403,6 +408,7 @@
            END-IF
       *    £·£µºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¸øÈñ¤¬¤¢¤ë¤³¤È
            IF     (AGECHK-NENREI       >=  75 )  AND
+                  (FLG-OK          NOT =   2   ) AND
                   (FLG-OK2             =   ZERO)
                MOVE    2               TO  AGECHK-RJNCHK
            END-IF
