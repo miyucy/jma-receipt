@@ -36,6 +36,7 @@
       *  00.00.05    NACL-ÂÀÅÄ    03/04/02  ÆþÎÏ°ú¿ô½¤Àµ
       *  00.00.06    NACL-ÌçÏÆ    03/04/16  Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²
       *                                     ¡Ü½é¿Ç»þ¡¡ÂÐ±þ
+      *  00.00.07    NACL-ÌçÏÆ    03/07/28  Ï«ºÒ¡¦¼«ÇåÀÕÆþ±¡ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -52,6 +53,17 @@
            03  WRK-EDYMD                   PIC X(08).
            03  WRK-ZAIKAISU                PIC 9(04).
            03  WRK-TAX1001-KBN             PIC X(01).
+      *
+       01  WRK-ROSAI-AREA.
+           03  WRK-SYUTEN                  PIC 9(09).
+           03  WRK-TEN                     PIC 9(09).
+           03  WRK-RSISHOSHIN              PIC 9(09).
+           03  WRK-RSISDO                  PIC 9(09).
+           03  WRK-RSIETC                  PIC 9(09).
+           03  WRK-SINDAN                  PIC 9(09).
+           03  WRK-MEISAI                  PIC 9(09).
+           03  WRK-YOUBUKASAN              PIC 9(09).
+           03  WRK-RYOYOTEATE              PIC 9(09).
       *
        01  WRK-SKYYM-TABLE.
            02  WRK-SKYYM-TBL     OCCURS    2.
@@ -2012,6 +2024,9 @@
            INITIALIZE                      HKNTEKGAI-TABLE
            MOVE    SPACE               TO  JIHI-TABLE
            INITIALIZE                      JIHI-TABLE
+      *
+           INITIALIZE                      WRK-ROSAI-AREA
+      *
       *¿ÇÎÅ²ñ·×¾ðÊó¤Î¼èÆÀ
            MOVE    ZERO                TO  FLG-SRYACCT
            INITIALIZE                      SRYACCT-REC
@@ -2039,6 +2054,11 @@
       *
            MOVE   "SRYACCT-KEY9"       TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
+      *
+      *    Ï«ºÒ¡¦¼«ÇåÀÕÅ¾Á÷½èÍý
+           IF   SYU-SYUHKNNUM    =    "971"  OR  "973"
+               PERFORM   ROSAI-JIBAI-TENSO-SEC
+           END-IF
       *
       *    ÅÀÅ©ÌôºÞ¡Ê´ïºà¡ËÅÀ¿ô¤Þ¤È¤á½èÍý
            PERFORM   TENTEK-MATOME-SEC
@@ -2077,6 +2097,12 @@
            END-PERFORM          
       *
            IF  SINRYO-COUNT     NOT =     ZERO
+      *
+      *        Ï«ºÒ¡¦¼«ÇåÀÕÍÑ¤ÎÊÔ½¸½èÍý
+               IF   SYU-SYUHKNNUM  =  "971"  OR  "973"
+                   PERFORM   ROSAI-JIBAI-HENSYU-SEC
+               END-IF
+      *
                EVALUATE    ACCT-SRYKBN
       *            ¿ÇÎÅ
                    WHEN    "11"
@@ -2202,6 +2228,179 @@
            EXIT.
       *
       **************************************************************
+      *    Ï«ºÒ¡¦¼«ÇåÀÕÍÑ¤ÎÊÔ½¸½èÍý
+      **************************************************************
+       ROSAI-JIBAI-HENSYU-SEC          SECTION.
+      *
+           IF   ACCT-SRYKBN    =   "95"  OR  "96"
+             CONTINUE
+           ELSE
+      *
+             IF     SYU-SYUHKNNUM   =   "973"
+                ADD    ACCT-SYUTEN1   TO   WRK-SYUTEN
+                IF     ACCT-SRYKBN     =   "70"
+                   COMPUTE  WRK-SYUTEN  =  WRK-SYUTEN  -  ACCT-SYUTEN2
+                END-IF
+             END-IF
+      *
+             INITIALIZE                      SRYACT-REC
+             MOVE    ACCT-HOSPID        TO   SRY-HOSPID
+             MOVE    ACCT-NYUGAIKBN     TO   SRY-NYUGAIKBN
+             MOVE    ACCT-PTID          TO   SRY-PTID
+             MOVE    ACCT-SRYKA         TO   SRY-SRYKA
+             MOVE    ACCT-SRYYM         TO   SRY-SRYYM
+             MOVE    ACCT-ZAINUM        TO   SRY-ZAINUM
+             MOVE    SRYACT-REC         TO   MCPDATA-REC
+             MOVE    "DBSELECT"         TO   MCP-FUNC
+             MOVE    "SRYACT-KEY2"      TO   ORC-DBPATH
+             CALL    "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+             IF      MCP-RC             =    ZERO
+                MOVE    "SRYACT-KEY2"    TO   ORC-DBPATH
+                PERFORM  SRYACT-READ-SEC
+                PERFORM  UNTIL  FLG-SRYACT    =    1
+      *
+                  PERFORM   VARYING   IDZ   FROM   1   BY   1
+                       UNTIL    (IDZ            >       5)  OR
+                                (SRY-SRYCD(IDZ) =   SPACE)
+      *
+                    MOVE    SPACE             TO   TNS-TENSU-REC
+                    INITIALIZE                     TNS-TENSU-REC
+                    MOVE    SRY-SRYCD(IDZ)    TO   TNS-SRYCD
+                    MOVE    SYU-SKYSTYMD(1:6) TO   ORC-DBYMD(1:6)
+                    MOVE    "01"              TO   ORC-DBYMD(7:2)
+                    PERFORM    TENSU-READ-SEC
+      *
+                    IF       FLG-TENSU      =    ZERO
+      *
+                      COMPUTE  WRK-TEN     =   TNS-TEN  /  10
+      *
+                      IF   SRY-SRYCD(IDZ) =  "101110010"  OR
+                                             "101110020"
+                           COMPUTE WRK-RSISHOSHIN = WRK-RSISHOSHIN +
+                                  (WRK-TEN  *   SINRYO-COUNT)
+                      END-IF
+                      IF   SRY-SRYCD(IDZ) =  "101130010"  OR
+                                             "101130020"  OR
+                                             "101130030"  OR
+                                             "101130040"  OR
+                                             "101130050"  OR
+                                             "101130060"  OR
+                                             "101130070"  OR
+                                             "101130080"  OR
+                                             "101130090"  OR
+                                             "101130100"
+                           COMPUTE WRK-RSISDO = WRK-RSISDO +
+                                  (WRK-TEN  *   SINRYO-COUNT)
+                      END-IF
+                      IF   SRY-SRYCD(IDZ) =  "101910010"  OR
+                                             "101910020"  OR
+                                             "101910030"  OR
+                                             "101910040"  OR
+                                             "101910070"  OR
+                                             "101910080"  OR
+                                             "101910090"  OR
+                                             "101910100"
+                           COMPUTE WRK-RSIETC = WRK-RSIETC +
+                                  (WRK-TEN  *   SINRYO-COUNT)
+                      END-IF
+      *
+                      IF     SYU-SYUHKNNUM   =   "973"
+      *
+                         IF    SRY-SRYCD (IDZ)(1:5)   =   "09591"
+                                                    OR    "09592"
+                                                    OR    "09593"
+                           COMPUTE WRK-RSIETC = WRK-RSIETC +
+                                  (WRK-TEN  *   SINRYO-COUNT)
+                         END-IF
+                         IF    SRY-SRYCD (IDZ)(1:5)   =   "09591"
+                           COMPUTE WRK-SINDAN = WRK-SINDAN +
+                                  (TNS-TEN  *   SINRYO-COUNT)
+                         END-IF
+                         IF    SRY-SRYCD (IDZ)(1:5)   =   "09592"
+                           COMPUTE WRK-MEISAI = WRK-MEISAI +
+                                  (TNS-TEN  *   SINRYO-COUNT)
+                         END-IF
+      *
+                         IF    SRY-SRYCD (IDZ)  =   "140037490"
+                           COMPUTE WRK-YOUBUKASAN = WRK-YOUBUKASAN +
+                                  (TNS-TEN  *   SINRYO-COUNT)
+                         END-IF
+      *
+                         IF    SRY-SRYCD (IDZ)  =   "199000510"
+                           COMPUTE WRK-RYOYOTEATE = WRK-RYOYOTEATE +
+                                  (TNS-TEN  *   SINRYO-COUNT)
+                         END-IF
+      *
+                      END-IF
+      *
+                    END-IF
+      *
+                  END-PERFORM
+      *
+                  MOVE    "SRYACT-KEY2"    TO   ORC-DBPATH
+                  PERFORM  SRYACT-READ-SEC
+                END-PERFORM
+             END-IF
+      *
+             MOVE     "SRYACT-KEY2"      TO  WK-PATH
+             PERFORM   CSR-CLOSE-SEC
+      *
+           END-IF
+      *
+           .
+       ROSAI-JIBAI-HENSYU-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    Ï«ºÒ¡¦¼«ÇåÀÕÍÑ¤ÎÅ¾Á÷½èÍý
+      **************************************************************
+       ROSAI-JIBAI-TENSO-SEC          SECTION.
+      *
+           IF      WRK-RSISHOSHIN     NOT =    ZERO
+                   COMPUTE SYU-HKNTEN (01)  =  SYU-HKNTEN (01)
+                                            -  WRK-RSISHOSHIN
+                   COMPUTE SYU-RSISHOSHIN-MONEY  =  WRK-RSISHOSHIN
+                                                 *  10
+           END-IF
+           IF      WRK-RSISDO         NOT =    ZERO
+                   COMPUTE SYU-HKNTEN (02)  =  SYU-HKNTEN (02)
+                                            -  WRK-RSISDO
+                   COMPUTE SYU-RSISDO-MONEY      =  WRK-RSISDO
+                                                 *  10
+           END-IF
+           IF      WRK-RSIETC         NOT =    ZERO
+                   COMPUTE SYU-HKNTEN (10)  =  SYU-HKNTEN (10)
+                                            -  WRK-RSIETC
+                   COMPUTE SYU-RSIETC-MONEY      =  WRK-RSIETC
+                                                 *  10
+           END-IF
+      *
+           IF  SYU-SYUHKNNUM       =   "973"
+      *
+             COMPUTE   LNK-S02-SYUTEN   =    WRK-SYUTEN
+                                        -    WRK-RSISHOSHIN
+                                        -    WRK-RSISDO
+                                        -    WRK-RSIETC
+                                        -    WRK-YOUBUKASAN
+                                        -    WRK-RYOYOTEATE
+      *
+             ADD    SYU-HKNTEN(11)     TO    LNK-S02-SYUTEN
+      *
+             MOVE      WRK-SINDAN      TO    LNK-S02-SINDAN
+             MOVE      WRK-MEISAI      TO    LNK-S02-MEISAI
+      *
+             MOVE      WRK-RYOYOTEATE  TO    LNK-S02-RYOYO
+      *
+           END-IF
+      *
+           .
+       ROSAI-JIBAI-TENSO-EXT.
+           EXIT.
+      *
+      **************************************************************
       *    ÊÝ¸±Å¬ÍÑ³°¤Î¥Æ¡¼¥Ö¥ëÎÎ°è¥»¥Ã¥È
       **************************************************************
        HKNTEKGAI-TBL-SEC          SECTION.
@@ -2216,6 +2415,7 @@
                            IF    SRY-SRYCD (IDZ) (4:2)    =   "00"
                                                      OR       "91"     
                                                      OR       "92"     
+                                                     OR       "93"     
                                MOVE    SPACE         TO   TNS-TENSU-REC
                                INITIALIZE                 TNS-TENSU-REC
                                MOVE    SRY-SRYCD(IDZ) TO   TNS-SRYCD
@@ -2407,6 +2607,7 @@
                            IF    SRY-SRYCD (IDZ) (4:2)    =   "00"
                                                      OR       "91"      
                                                      OR       "92"      
+                                                     OR       "93"      
                                MOVE    SPACE         TO   TNS-TENSU-REC
                                INITIALIZE                 TNS-TENSU-REC
                                MOVE    SRY-SRYCD(IDZ) TO   TNS-SRYCD

@@ -40,6 +40,11 @@
       *  01.00.07    NACL-ÃÁœ∆    03/05/21  ∏∫Ã»§Œ√ºøÙ¿ﬂƒÍ¬–±˛
       *  01.00.08    NACL-ÃÁœ∆    03/06/06  æ√»Ò¿«√ºøÙ¬–±˛
       *  01.00.09    NACL-ÃÁœ∆    03/07/01  •Ï•ªµ≠∫‹Õ—∞Ï…Ù…È√¥∂‚ ‘Ω∏Ω§¿µ
+      *  01.00.10    NACL-ÃÁœ∆    03/07/24  œ´∫“»ÛªÿƒÍ∞ÂŒ≈µ°¥ÿ¬–±˛
+      *                                     º´«Â¿’¥µº‘¿¡µ·£∞°Û¬–±˛
+      *                                     º´«Â¿’ ∏ΩÒŒ¡æ√»Ò¿«¬–±˛
+      *                                     º´«Â¿’§ŒŒ≈Õ‹√¥≈ˆºÍ≈ˆ¬–±˛
+      *                                     œ´∫“º´«Â¿’ø©ªˆŒ≈Õ‹»Ò∑◊ªª¬–±˛
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -54,6 +59,8 @@
       *
        01  WK-KSNRATE9                 PIC 9(03).
        01  WK-KSNRATE                  PIC 9V99.
+       01  WK-TAXKBN                   PIC X(01).
+       01  WK-KEISAN                   PIC 9(09).
       *01  WK-NISSU1                   PIC 9(05).
       *01  WK-NISSU2                   PIC 9(05).
        01  KEISAN-AREA.
@@ -612,31 +619,113 @@
            END-IF.
       *
       *    ¿¡µ·∂‚≥€§Œ∑◊ªª° œ´∫“ ›∏±≈¨Õ—ª˛§Œ±ﬂ∑˙§∆π‡Ã‹≤√ªª°À
-           IF   (WK-HKNKBN               =    "1")   AND
-                (LNK-SYU-SYUHKNNUM       =    "971")  
+      *    °„œ´∫“ªÿƒÍ° £∞°Û°À°‰
+           IF   (WK-HKNKBN               =    "1"  ) AND
+                (LNK-SYU-SYUHKNNUM       =    "971") AND
+                (LNK-SYU-PTFTNRATE       =    ZERO )
                  MOVE    ZERO      TO       LNK-SYU-SKYMONEY
-           COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
-                                            LNK-SYU-TGMONEY(12) +
-                                            LNK-SYU-TGMONEY-TAX(12) +
-                                            LNK-SYU-JIHI-TOTAL  +
-                                            LNK-SYU-JIHI-TOTAL-TAX  +
-                                            LNK-SYU-JIHI-TAX
+                 COMPUTE    LNK-SYU-SKYMONEY  =   
+                            LNK-SYU-SKYMONEY              +
+                            LNK-SYU-RMSAGAKU              +
+                            LNK-SYU-SKYMONEY-SKJ-JIHI-KEI +
+                            LNK-SYU-TGMONEY(12)           +
+                            LNK-SYU-TGMONEY-TAX(12)       +
+                            LNK-SYU-JIHI-TOTAL            +
+                            LNK-SYU-JIHI-TOTAL-TAX        +
+                            LNK-SYU-JIHI-TAX
+           END-IF.
+      *    °„»Ûœ´∫“ªÿƒÍ° £±£∞£∞°Û°À°‰
+           IF   (WK-HKNKBN               =    "1"  ) AND
+                (LNK-SYU-SYUHKNNUM       =    "971") AND
+                (LNK-SYU-PTFTNRATE       =     100 )
+                 COMPUTE    LNK-SYU-SKYMONEY  =
+                            LNK-SYU-SKYMONEY              +
+                            LNK-SYU-RSISHOSHIN-MONEY      +
+                            LNK-SYU-RSISAISHIN-MONEY      +
+                            LNK-SYU-RSISDO-MONEY          +
+                            LNK-SYU-RSIETC-MONEY
            END-IF.
       *
       *    º´«Â¿’ ›∏±§ŒæÏπÁ°¢œ´∫“±ﬂ∑˙§∆π‡Ã‹§ÿ§Œ≤√ªªŒ®∑◊ªªƒ…≤√
+      *    °„¥µº‘¿¡µ·§π§Î° £±£∞£∞°Û°À§ŒæÏπÁ°‰
            IF   (WK-HKNKBN               =    "1")   AND
-                (LNK-SYU-SYUHKNNUM       =    "973")
+                (LNK-SYU-SYUHKNNUM       =    "973") AND
+                (LNK-SYU-PTFTNRATE       =     100 )
                  COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
-                          LNK-SYU-RSISHOSHIN-MONEY  *  WK-KSNRATE      
+                         (LNK-SYU-RSISHOSHIN-MONEY  *  WK-KSNRATE)
+                                                    +  0.5
                  COMPUTE  LNK-SYU-RSISAISHIN-MONEY  =
-                          LNK-SYU-RSISAISHIN-MONEY  *  WK-KSNRATE
+                         (LNK-SYU-RSISAISHIN-MONEY  *  WK-KSNRATE)
+                                                    +  0.5
       *          COMPUTE  LNK-SYU-RSISDO-MONEY      =
       *                   LNK-SYU-RSISDO-MONEY      *  WK-KSNRATE
-                 COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY  +
-                                            LNK-SYU-RSISHOSHIN-MONEY +
-                                            LNK-SYU-RSISAISHIN-MONEY +
-                                            LNK-SYU-RSISDO-MONEY     +
-                                            LNK-SYU-RSIETC-MONEY
+      *
+                 IF   WK-TAXKBN   =   "2"
+                   IF    WK-TAX1001-KBN  =  "1"
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =
+                              LNK-SYU-RSIETC-MONEY      +
+                            ((LNK-S02-SINDAN  *  0.05)  +  0.5)
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =
+                              LNK-SYU-RSIETC-MONEY      +
+                            ((LNK-S02-MEISAI  *  0.05)  +  0.5)
+                   ELSE
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =
+                              LNK-SYU-RSIETC-MONEY      +
+                             (LNK-S02-SINDAN  *  0.05)
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =
+                              LNK-SYU-RSIETC-MONEY      +
+                             (LNK-S02-MEISAI  *  0.05)
+                   END-IF
+                 END-IF
+      *
+                 COMPUTE    LNK-SYU-SKYMONEY  =   
+                            LNK-SYU-SKYMONEY         +
+                            LNK-SYU-RSISHOSHIN-MONEY +
+                            LNK-SYU-RSISAISHIN-MONEY +
+                            LNK-SYU-RSISDO-MONEY     +
+                            LNK-SYU-RSIETC-MONEY
+           END-IF.
+      *    °„¥µº‘¿¡µ·§∑§ §§° £∞°Û°À§ŒæÏπÁ°‰
+           IF   (WK-HKNKBN               =    "1")   AND
+                (LNK-SYU-SYUHKNNUM       =    "973") AND
+                (LNK-SYU-PTFTNRATE       =    ZERO )
+                 COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
+                         (LNK-SYU-RSISHOSHIN-MONEY  *  WK-KSNRATE)
+                                                    +  0.5
+                 COMPUTE  LNK-SYU-RSISAISHIN-MONEY  =
+                         (LNK-SYU-RSISAISHIN-MONEY  *  WK-KSNRATE)
+                                                    +  0.5
+      *          COMPUTE  LNK-SYU-RSISDO-MONEY      =
+      *                   LNK-SYU-RSISDO-MONEY      *  WK-KSNRATE
+      *
+                 IF   WK-TAXKBN   =   "2"
+                   IF    WK-TAX1001-KBN  =  "1"
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =
+                              LNK-SYU-RSIETC-MONEY      +
+                            ((LNK-S02-SINDAN  *  0.05)  +  0.5)
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =
+                              LNK-SYU-RSIETC-MONEY      +
+                            ((LNK-S02-MEISAI  *  0.05)  +  0.5)
+                   ELSE
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =
+                              LNK-SYU-RSIETC-MONEY      +
+                             (LNK-S02-SINDAN  *  0.05)
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =
+                              LNK-SYU-RSIETC-MONEY      +
+                             (LNK-S02-MEISAI  *  0.05)
+                   END-IF
+                 END-IF
+      *
+                 MOVE    ZERO      TO       LNK-SYU-SKYMONEY
+                 COMPUTE    LNK-SYU-SKYMONEY  =
+                            LNK-SYU-SKYMONEY              +
+                            LNK-SYU-RMSAGAKU              +
+                            LNK-SYU-SKYMONEY-SKJ-JIHI-KEI +
+                            LNK-SYU-TGMONEY(12)           +
+                            LNK-SYU-TGMONEY-TAX(12)       +
+                            LNK-SYU-JIHI-TOTAL            +
+                            LNK-SYU-JIHI-TOTAL-TAX        +
+                            LNK-SYU-JIHI-TAX
            END-IF.
       *
       *    ¿¡µ·∂‚≥€§Œ∑◊ªª° ƒ¥¿∞∂‚§Œ≤√∏∫ªª°À
@@ -898,6 +987,20 @@
                                                HOKEN-ZAN-AREA2.         
            MOVE    ALL"9"                TO    WK-KOH-COMPFTN-AREA.     
       *
+      *    º´«Â¿’°¶Œ≈Õ‹√¥≈ˆºÍ≈ˆÕ—∆√Œ„ΩËÕ˝
+      *    ° º´«Â¿’§ŒæÏπÁ°¢£±£∞≈¿§Ú£±£≤£∞±ﬂ§À∆…§ﬂ¬ÿ§®§Î°À
+      *    ° Œ≈Õ‹√¥≈ˆºÍ≈ˆ°ß£±∑Ó£±≤Û§ŒªªƒÍ°À
+           IF    LNK-SYU-SYUHKNNUM       =    "973"
+           AND   LNK-S02-RYOYO       NOT =    ZERO
+               COMPUTE  LNK-SYU-HKNTEN (10)  =  LNK-SYU-HKNTEN (10)
+                                             -  LNK-S02-RYOYO
+               COMPUTE  LNK-SYU-HKNTEN (12)  =  LNK-SYU-HKNTEN (12)
+                                             -  LNK-S02-RYOYO
+      *
+               COMPUTE  LNK-SYU-RSIETC-MONEY =  LNK-SYU-RSIETC-MONEY
+                                             +  120
+           END-IF.
+      *
       *    ¥µº‘…È√¥∂‚ªªΩ–¡∞§Œ£±£∞£∞°Û…È√¥≥€ªªΩ–
            MOVE      ZERO         TO      WK-ZENGAKU.
            PERFORM   VARYING   IDX     FROM    1   BY  1
@@ -962,6 +1065,52 @@
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
            END-IF.                                               
+      *
+      *    œ´∫“°¶º´«Â¿’§Œ…È√¥≥‰πÁ§Úµ·§·§Î
+      *
+           IF   WK-HKNKBN              =   "1"
+      *
+               INITIALIZE                           PTINF-REC
+               MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
+               MOVE    LNK-SYU-PTID         TO      PTINF-PTID
+               MOVE    PTINF-REC            TO      MCPDATA-REC
+               MOVE    "DBSELECT"           TO      MCP-FUNC
+               MOVE    "PTINF-KEY"          TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING   MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+               IF      MCP-RC               =       ZERO
+                   MOVE    "PTINF-KEY"      TO      ORC-DBPATH
+                   PERFORM  PTINF-READ-SEC
+               ELSE
+                   DISPLAY   "PTINF SELECT ERR"
+      *
+                   INITIALIZE                   PTINF-REC
+               END-IF
+      *
+               MOVE    "DBCLOSE"            TO  MCP-FUNC
+               MOVE    "PTINF-KEY"          TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+      *
+               INITIALIZE                  ORCSAGECHKAREA
+               MOVE    LNK-SYU-HOSPID  TO  AGECHK-HOSPID
+               MOVE    LNK-SYU-PTID    TO  AGECHK-PTID
+               MOVE    LNK-SYU-SRYYMD  TO  AGECHK-SRYYMD
+               MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
+               MOVE    LNK-SYU-HKNCOMBINUM 
+                                       TO  AGECHK-HKNCOMBINUM
+               CALL    "ORCSAGECHK"        USING
+                                           ORCSAGECHKAREA
+               IF      AGECHK-RC       =   ZERO
+                   MOVE   AGECHK-FTNRATE  TO  LNK-SYU-PTFTNRATE
+               ELSE
+                   DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
+               END-IF
+      *
+           END-IF.
       *
       *     ›∏±»÷πÊ•∆°º•÷•Î§´§È∏¯»Ò§Œ…È√¥æÂ∏¬∂‚≥€§ŒºË∆¿
            PERFORM         210-HOKEN-KAISU-SEC.
@@ -1193,7 +1342,8 @@
                END-IF
            END-IF.
       *
-           IF  FLG-SANSHOU3      =   SPACE              
+           IF  ( FLG-SANSHOU3        =   SPACE          )
+           OR  ( LNK-SYU-SYUHKNNUM   =   "971" OR "973" )
                  CONTINUE
            ELSE
                  IF  FLG-SANSHOU3     =   "1"
@@ -2415,18 +2565,18 @@
                           MOVE  "197000110"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI1
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI1
                           END-IF
       *                   ∆√ Ã¥…Õ˝≤√ªª
                           IF    WK-TOKUKANRIKASAN  =  1
                             MOVE  "197000270"    TO   WK-SRYCD
                             PERFORM    TENSU-TBL-SEC
                             IF       FLG-TENSU      =    ZERO
-                               ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                               ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                       WK-SHOKUJI-JIHI
-                               ADD     TNS-TEN   TO   LNK-SYU-SHOKUJI1
+                               ADD     WK-KEISAN TO   LNK-SYU-SHOKUJI1
                             END-IF
                           END-IF
                         WHEN  2
@@ -2437,9 +2587,9 @@
                           MOVE  "197000710"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI1
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI1
                           END-IF
                       END-EVALUATE
                   WHEN  2
@@ -2451,27 +2601,27 @@
                           MOVE  "197000110"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI1
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI1
                           END-IF
       *                   ∆√ Ã¥…Õ˝≤√ªª
                           IF    WK-TOKUKANRIKASAN  =  1
                             MOVE  "197000270"    TO   WK-SRYCD
                             PERFORM    TENSU-TBL-SEC
                             IF       FLG-TENSU      =    ZERO
-                               ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                               ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                       WK-SHOKUJI-JIHI
-                               ADD     TNS-TEN   TO   LNK-SYU-SHOKUJI1
+                               ADD     WK-KEISAN TO   LNK-SYU-SHOKUJI1
                             END-IF
                           END-IF
       *                   ∆√ Ãø©≤√ªª
                           MOVE  "197000470"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI3
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI3
                           END-IF
                   WHEN  3
       *
@@ -2482,27 +2632,27 @@
                           MOVE  "197000110"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI1
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI1
                           END-IF
       *                   ∆√ Ã¥…Õ˝≤√ªª
                           IF    WK-TOKUKANRIKASAN  =  1
                             MOVE  "197000270"    TO   WK-SRYCD
                             PERFORM    TENSU-TBL-SEC
                             IF       FLG-TENSU      =    ZERO
-                               ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                               ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                       WK-SHOKUJI-JIHI
-                               ADD     TNS-TEN   TO   LNK-SYU-SHOKUJI1
+                               ADD     WK-KEISAN TO   LNK-SYU-SHOKUJI1
                             END-IF
                           END-IF
       *                    £øÙ∏•Œ©≤√ªª
                           MOVE  "197000670"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI4
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI4
                           END-IF
                   WHEN  4
       *
@@ -2514,35 +2664,35 @@
                           MOVE  "197000110"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI1
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI1
                           END-IF
       *                   ∆√ Ã¥…Õ˝≤√ªª
                           IF    WK-TOKUKANRIKASAN  =  1
                             MOVE  "197000270"    TO   WK-SRYCD
                             PERFORM    TENSU-TBL-SEC
                             IF       FLG-TENSU      =    ZERO
-                               ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                               ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                       WK-SHOKUJI-JIHI
-                               ADD     TNS-TEN   TO   LNK-SYU-SHOKUJI1
+                               ADD     WK-KEISAN TO   LNK-SYU-SHOKUJI1
                             END-IF
                           END-IF
       *                   ∆√ Ãø©≤√ªª
                           MOVE  "197000470"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI3
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI3
                           END-IF
       *                    £øÙ∏•Œ©≤√ªª
                           MOVE  "197000670"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI4
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI4
                           END-IF
                 END-EVALUATE
       *
@@ -2559,27 +2709,27 @@
                           MOVE  "197000110"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI2
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI2
                           END-IF
       *                   ∆√ Ã¥…Õ˝≤√ªª
                           IF    WK-TOKUKANRIKASAN  =  1
                             MOVE  "197000270"    TO   WK-SRYCD
                             PERFORM    TENSU-TBL-SEC
                             IF       FLG-TENSU      =    ZERO
-                               ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                               ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                       WK-SHOKUJI-JIHI
-                               ADD     TNS-TEN   TO   LNK-SYU-SHOKUJI2
+                               ADD     WK-KEISAN TO   LNK-SYU-SHOKUJI2
                             END-IF
                           END-IF
       *                   ø©∆≤≤√ªª
                           MOVE  "197000570"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             ADD     TNS-TEN   TO   LNK-SYU-SHOKUJI2
+                             ADD     WK-KEISAN TO   LNK-SYU-SHOKUJI2
                           END-IF
                         WHEN  2
       *
@@ -2589,9 +2739,9 @@
                           MOVE  "197000710"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI1
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI1
                           END-IF
                       END-EVALUATE
                   WHEN  2
@@ -2603,35 +2753,35 @@
                           MOVE  "197000110"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI2
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI2
                           END-IF
       *                   ∆√ Ã¥…Õ˝≤√ªª
                           IF    WK-TOKUKANRIKASAN  =  1
                             MOVE  "197000270"    TO   WK-SRYCD
                             PERFORM    TENSU-TBL-SEC
                             IF       FLG-TENSU      =    ZERO
-                               ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                               ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                       WK-SHOKUJI-JIHI
-                               ADD     TNS-TEN   TO   LNK-SYU-SHOKUJI2
+                               ADD     WK-KEISAN TO   LNK-SYU-SHOKUJI2
                             END-IF
                           END-IF
       *                   ø©∆≤≤√ªª
                           MOVE  "197000570"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             ADD     TNS-TEN   TO   LNK-SYU-SHOKUJI2
+                             ADD     WK-KEISAN TO   LNK-SYU-SHOKUJI2
                           END-IF
       *                   ∆√ Ãø©≤√ªª
                           MOVE  "197000470"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI3
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI3
                           END-IF
                   WHEN  3
       *
@@ -2642,35 +2792,35 @@
                           MOVE  "197000110"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI2
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI2
                           END-IF
       *                   ∆√ Ã¥…Õ˝≤√ªª
                           IF    WK-TOKUKANRIKASAN  =  1
                             MOVE  "197000270"    TO   WK-SRYCD
                             PERFORM    TENSU-TBL-SEC
                             IF       FLG-TENSU      =    ZERO
-                               ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                               ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                       WK-SHOKUJI-JIHI
-                               ADD     TNS-TEN   TO   LNK-SYU-SHOKUJI2
+                               ADD     WK-KEISAN TO   LNK-SYU-SHOKUJI2
                             END-IF
                           END-IF
       *                   ø©∆≤≤√ªª
                           MOVE  "197000570"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             ADD     TNS-TEN   TO   LNK-SYU-SHOKUJI2
+                             ADD     WK-KEISAN TO   LNK-SYU-SHOKUJI2
                           END-IF
       *                    £øÙ∏•Œ©≤√ªª
                           MOVE  "197000670"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI4
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI4
                           END-IF
                   WHEN  4
       *
@@ -2682,43 +2832,43 @@
                           MOVE  "197000110"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI2
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI2
                           END-IF
       *                   ∆√ Ã¥…Õ˝≤√ªª
                           IF    WK-TOKUKANRIKASAN  =  1
                             MOVE  "197000270"    TO   WK-SRYCD
                             PERFORM    TENSU-TBL-SEC
                             IF       FLG-TENSU      =    ZERO
-                               ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                               ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                       WK-SHOKUJI-JIHI
-                               ADD     TNS-TEN   TO   LNK-SYU-SHOKUJI2
+                               ADD     WK-KEISAN TO   LNK-SYU-SHOKUJI2
                             END-IF
                           END-IF
       *                   ø©∆≤≤√ªª
                           MOVE  "197000570"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             ADD     TNS-TEN   TO   LNK-SYU-SHOKUJI2
+                             ADD     WK-KEISAN TO   LNK-SYU-SHOKUJI2
                           END-IF
       *                   ∆√ Ãø©≤√ªª
                           MOVE  "197000470"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI3
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI3
                           END-IF
       *                    £øÙ∏•Œ©≤√ªª
                           MOVE  "197000670"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
                           IF       FLG-TENSU      =    ZERO
-                             ADD     TNS-TEN   TO   WK-SHOKUJI-RYOYOHI
+                             ADD     WK-KEISAN TO   WK-SHOKUJI-RYOYOHI
                                                     WK-SHOKUJI-JIHI
-                             MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI4
+                             MOVE    WK-KEISAN TO   LNK-SYU-SHOKUJI4
                           END-IF
                 END-EVALUATE
       *
@@ -3237,14 +3387,36 @@
                                                   +  100 
                             COMPUTE  WK-KSNRATE   =  WK-KSNRATE9  /  100
                      END-IF  
+                     MOVE   SYS-4001-TAXKBN     TO   WK-TAXKBN
+                     IF     LNK-SYU-SYUHKNNUM       =  "971" OR "973"
+                       IF   LNK-SYU-PTFTNRATE       =   100
+                         MOVE     100      TO   HKN-HON-NYUKFTNRATE
+                                                HKN-KZK-NYUKFTNRATE
+                                                HKN-TSY-NYUKFTNRATE
+                                                HKN-TNK-NYUKFTNRATE
+                         MOVE     "1"      TO   HKN-HON-NYUSKJRYYKBN
+                                                HKN-KZK-NYUSKJRYYKBN
+                                                HKN-TSY-NYUSKJRYYKBN
+                                                HKN-TNK-NYUSKJRYYKBN
+                       ELSE
+                         MOVE     ZERO     TO   HKN-HON-NYUKFTNRATE
+                                                HKN-KZK-NYUKFTNRATE
+                                                HKN-TSY-NYUKFTNRATE
+                                                HKN-TNK-NYUKFTNRATE
+                         MOVE     "0"      TO   HKN-HON-NYUSKJRYYKBN
+                                                HKN-KZK-NYUSKJRYYKBN
+                                                HKN-TSY-NYUSKJRYYKBN
+                                                HKN-TNK-NYUSKJRYYKBN
+                       END-IF
+                     END-IF
                      IF     LNK-SYU-SYUHKNNUM       =  "971"
                        EVALUATE  SYS-4001-TENKBN
                            WHEN  "1"
                                COMPUTE  WK-ZENGAKU  =  
-                                        WK-ZENGAKU  / 10 * 11.5
+                                       (WK-ZENGAKU  / 10 * 11.5)
                            WHEN  "2"
                                COMPUTE  WK-ZENGAKU  =  
-                                        WK-ZENGAKU  / 10 * 12.0
+                                       (WK-ZENGAKU  / 10 * 12.0)
                        END-EVALUATE
                      ELSE
                        EVALUATE  SYS-4001-TENKBN
@@ -3253,12 +3425,12 @@
                               MOVE  LNK-S02-SYUTEN  TO  WK-ZENGAKU-SYU
                               COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU 
                                                       - LNK-S02-SYUTEN
-                              COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU
-                                                      * 11.5
-                              COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU
-                                                      * WK-KSNRATE
-                              COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU-YAK
-                                                      * 11.5
+                              COMPUTE  WK-ZENGAKU-SYU =
+                                (WK-ZENGAKU-SYU * 11.5 * WK-KSNRATE)
+                                                       + 0.5
+                              COMPUTE  WK-ZENGAKU-YAK =
+                                (WK-ZENGAKU-YAK * 11.5)
+                                                       + 0.5
                               COMPUTE  WK-ZENGAKU     = WK-ZENGAKU-SYU
                                                       + WK-ZENGAKU-YAK
                            WHEN  "2"
@@ -3266,12 +3438,12 @@
                               MOVE  LNK-S02-SYUTEN  TO  WK-ZENGAKU-SYU
                               COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU 
                                                       - LNK-S02-SYUTEN
-                              COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU
-                                                      * 12.0
-                              COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU
-                                                      * WK-KSNRATE
-                              COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU-YAK
-                                                      * 12.0
+                              COMPUTE  WK-ZENGAKU-SYU =
+                                (WK-ZENGAKU-SYU * 12.0 * WK-KSNRATE)
+                                                       + 0.5
+                              COMPUTE  WK-ZENGAKU-YAK =
+                                (WK-ZENGAKU-YAK * 12.0)
+                                                       + 0.5
                               COMPUTE  WK-ZENGAKU     = WK-ZENGAKU-SYU
                                                       + WK-ZENGAKU-YAK
                        END-EVALUATE
@@ -4698,6 +4870,19 @@
                PERFORM  TENSU-READ-SEC
            ELSE
                MOVE     1               TO      FLG-TENSU
+           END-IF
+      *
+           IF     FLG-TENSU    =    ZERO
+              IF    LNK-SYU-SYUHKNNUM   =   "971" OR "973"
+                 COMPUTE   WK-KEISAN    =   TNS-TEN    *  1.2
+                 COMPUTE   WK-KEISAN    =   WK-KEISAN  +   5
+                 COMPUTE   WK-KEISAN    =   WK-KEISAN  /  10
+                 COMPUTE   WK-KEISAN    =   WK-KEISAN  *  10
+              ELSE
+                 MOVE      TNS-TEN     TO     WK-KEISAN
+              END-IF
+           ELSE
+                 MOVE      ZERO        TO     WK-KEISAN
            END-IF
       *
            MOVE    "DBCLOSE"            TO      MCP-FUNC

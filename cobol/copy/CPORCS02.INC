@@ -60,6 +60,12 @@
                 07  LNK-S02-IKUSEI-NISUU   PIC  9(02).
       *隶镑瘦副∈蕊瘦副荚∷≤奶缎阂巢≤介壳箕
            03  LNK-S02-SENINFLG            PIC  X(01).
+      *极清勒壳们今瘟垛驰
+           03  LNK-S02-SINDAN              PIC  9(07).
+      *极清勒汤嘿今瘟垛驰
+           03  LNK-S02-MEISAI              PIC  9(07).
+      *极清勒闻蛙么碰缄碰爬眶
+           03  LNK-S02-RYOYO               PIC  9(07).
       *牲耽コ〖ド
            03  LNK-S02-RC                  PIC S9(9)   BINARY.
       *

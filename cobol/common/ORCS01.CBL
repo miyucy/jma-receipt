@@ -934,6 +934,31 @@
            IF   (WK-HKNKBN               =    "1")   AND
                 (LNK-SYU-SYUHKNNUM       =    "973") AND
                 (LNK-SYU-PTFTNRATE       =    ZERO )
+                 COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
+                         (LNK-SYU-RSISHOSHIN-MONEY  *  WK-KSNRATE) 
+                                                    +  0.5      
+                 COMPUTE  LNK-SYU-RSISAISHIN-MONEY  =
+                         (LNK-SYU-RSISAISHIN-MONEY  *  WK-KSNRATE)
+                                                    +  0.5
+      *          COMPUTE  LNK-SYU-RSISDO-MONEY      =
+      *                   LNK-SYU-RSISDO-MONEY      *  WK-KSNRATE
+                 IF   WK-TAXKBN   =   "2"                               
+                   IF    WK-TAX1001-KBN  =  "1"
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =               
+                              LNK-SYU-RSIETC-MONEY      +               
+                            ((LNK-S01-SINDAN  *  0.05)  +  0.5)         
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =               
+                              LNK-SYU-RSIETC-MONEY      +               
+                            ((LNK-S01-MEISAI  *  0.05)  +  0.5)         
+                   ELSE
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =               
+                              LNK-SYU-RSIETC-MONEY      +               
+                             (LNK-S01-SINDAN  *  0.05)                  
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =               
+                              LNK-SYU-RSIETC-MONEY      +               
+                             (LNK-S01-MEISAI  *  0.05)                  
+                   END-IF
+                 END-IF                                                 
                  MOVE    ZERO      TO       LNK-SYU-SKYMONEY
            COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
                                             LNK-SYU-TGMONEY(12) +
