@@ -277,10 +277,20 @@
       *                Á´ÂÎ
                        MOVE    1               TO  FLG-HKNCOMBICHK
                    ELSE
+      *                ¿ÇÎÅÇ¯·î
+                       IF      SPA-SRYYMD(7:2) =   ZERO
+                           IF      (SPA-SRYYMD(1:6)
+                                               >=  COMB-TEKSTYMD(1:6))
+                               AND (SPA-SRYYMD(1:6)
+                                               <=  COMB-TEKEDYMD(1:6))
+                               MOVE    1           TO  FLG-HKNCOMBICHK
+                           END-IF
+                       ELSE
       *                ¿ÇÎÅÆüÂÐ¾Ý¤Î¤ß
-                       IF      (SPA-SRYYMD     >=  COMB-TEKSTYMD )  AND
-                               (SPA-SRYYMD     <=  COMB-TEKEDYMD )
-                           MOVE    1               TO  FLG-HKNCOMBICHK
+                           IF      (SPA-SRYYMD     >=  COMB-TEKSTYMD )
+                             AND   (SPA-SRYYMD     <=  COMB-TEKEDYMD )
+                               MOVE    1           TO  FLG-HKNCOMBICHK
+                           END-IF
                        END-IF
                    END-IF
                END-IF
