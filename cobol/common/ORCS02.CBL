@@ -2874,7 +2874,8 @@
       *
               END-IF
       *
-              IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
+              IF   ( COMB-SYU-HKNKOHSBTKBN   =   "8"            )
+              OR   ( COMB-HKNNUM             =  "971"  OR  "973")
                 ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
               ELSE
                 EVALUATE   FLG-SKJ

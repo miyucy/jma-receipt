@@ -54,14 +54,18 @@
            03  FLG-RJN             PIC 9(01).
            03  FLG-ROUSAI          PIC 9(01).
            03  FLG-ARI             PIC 9(01).
-      *
+           03  FLG-RYAKU           PIC 9(01).
+           03  FLG-NYURYAKUSHO     PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-KSN             PIC 9(01).
       *    Åº»úÎÎ°è
        01  IDX-AREA.
-           03  IDX                 PIC 9(04).
+           03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  ID1                 PIC 9(04).
            03  KSN-IDX             PIC 9(04).
            03  GENSAN-IDX          PIC 9(04).
+           03  SRYACT-IDX          PIC 9(04).
       *
       *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
        01  CONSTANT-AREA.
@@ -75,11 +79,27 @@
            03  CONS-CHIHOU-KSN1            PIC X(09) VALUE "190109270".
            03  CONS-CHIHOU-KSN2            PIC X(09) VALUE "190808670".
       *
+      *    Ï«ºÒ¼£ÎÅ·×²è²Ã»»
+           03  CONS-ROSAICHIRYO            PIC X(09) VALUE "101910050".
+      *    ÉÂ°áÂßÍ¿ÎÁ
+           03  CONS-BYOUI                  PIC X(09) VALUE "101910060".
+      *    ÆÃÊÌ´Æ»ëÎÁ
+           03  CONS-TOKUKANSI              PIC X(09) VALUE "101920010".
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
       *
            03  WRK-GAIHAKU-SRYCD           PIC X(09).
            03  WRK-MEISAISU                PIC 9(03).
+           03  WRK-RYAKU-SRYCD             PIC X(09).
+           03  WRK-RYAKUSHO                PIC X(14).
+           03  WRK-SRYKBN                  PIC X(02).
+           03  WRK-KSNKBN                  PIC 9(03).
+           03  WRK-ZAISKBKBN               PIC X(01).
+      *
+           03  WRK-GENSAN2-MIJISI          PIC 9(01).
+           03  WRK-GENSAN3-MIJISI          PIC 9(01).
+           03  WRK-GENSAN4-MIJISI          PIC 9(01).
       *
       *    Ï«ºÒÆþ±¡²ñ·×¥ï¡¼¥¯
            03  WRK-ROUSAI-TABLE.
@@ -90,9 +110,11 @@
                    07  WRK-NYUKHNKSNKBN    PIC 9(03).
       *
       *    Æþ±¡ÎÁ²Ã»»ÂàÈòÎÎ°è
-           03  WRK-NYUKSN-AREA             OCCURS 20.
-               05  WRK-NYUKSN              PIC X(09).
-               05  WRK-NYUKSN-DAY          PIC 9(01)  OCCURS 31.
+           03  WRK-NYUKSN-TABLE.
+               05  WRK-NYUKSN-TBL          OCCURS  20.
+                   07  WRK-NYUKSN          PIC X(09).
+                   07  WRK-NYUKSN-ZAITEN   PIC 9(08).
+                   07  WRK-NYUKSN-DAY      PIC 9(03)  OCCURS 31.
       *
       *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
            03  WRK-GENSAN2                 PIC X(09).
@@ -102,16 +124,16 @@
            03  WRK-GENSAN4                 PIC X(09).
       *
       *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
-           03  WRK-KEIKAKU-GENSAN1         PIC 9(01) OCCURS 31.
-           03  WRK-KEIKAKU-GENSAN2         PIC 9(01) OCCURS 31.
+           03  WRK-KEIKAKU-GENSAN1         PIC 9(03) OCCURS 31.
+           03  WRK-KEIKAKU-GENSAN2         PIC 9(03) OCCURS 31.
       *
       *    Æü¾ïÀ¸³è¾ã³²²Ã»»ÂàÈò
-           03  WRK-NICHIJOU-KSN1           PIC 9(01) OCCURS 31.
-           03  WRK-NICHIJOU-KSN2           PIC 9(01) OCCURS 31.
+           03  WRK-NICHIJOU-KSN1           PIC 9(03) OCCURS 31.
+           03  WRK-NICHIJOU-KSN2           PIC 9(03) OCCURS 31.
       *
       *    ÃÔÊò²Ã»»ÂàÈò
-           03  WRK-CHIHOU-KSN1             PIC 9(01) OCCURS 31.
-           03  WRK-CHIHOU-KSN2             PIC 9(09) OCCURS 31.
+           03  WRK-CHIHOU-KSN1             PIC 9(03) OCCURS 31.
+           03  WRK-CHIHOU-KSN2             PIC 9(03) OCCURS 31.
       *
       *    ¿ÇÎÅ¥³¡¼¥É·×½¸·×ÍÑ
            03  WRK-SRYCD-X                 PIC X(09).
@@ -139,6 +161,10 @@
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
+      *    ¿ÇÎÅ¹Ô°Ù
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
+      *
       *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
            COPY    "CPTENSU.INC".
       *
@@ -150,12 +176,15 @@
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
+      *    Æþ±¡Î¬¾Î
+       01  NYURYAKUSHO-REC.
+           COPY    "CPNYUINRYAKUSHO.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
-      *
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -168,16 +197,15 @@
       *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
            COPY    "CPORCSAGECHK.INC".
       *
-      *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    Ï«ºÒÆþ±¡²ñ·×ºîÀ®ÍÑ¥Ñ¥é¥á¥¿
-           COPY    "CPORCSROUNYUIN.INC".
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
+      *    Ï«ºÒÆþ±¡²ñ·×ºîÀ®ÍÑ¥Ñ¥é¥á¥¿
+           COPY    "CPORCSROUNYUIN.INC".
       *
        PROCEDURE                   DIVISION    USING
            SPA-AREA
@@ -211,7 +239,7 @@
       *
            EXIT    PROGRAM
            .
-     *
+      *
       *****************************************************************
       *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
       *****************************************************************
@@ -252,13 +280,13 @@
                ELSE
       *            Ï«ºÒÊÝ¸±¤ÎÈ½Äê
                    MOVE      ZERO              TO  FLG-ROUSAI
-                   PERFORM   VARYING   IDX   FROM  1   BY  1
-                             UNTIL    IDX   >   31
+                   PERFORM   VARYING   IDX1   FROM  1   BY  1
+                             UNTIL    IDX1   >   31
                         IF   LNK-SROUNYUIN-HKNCOMBI  =
-                                               NACCT-DAY(IDX)
+                                               NACCT-DAY(IDX1)
                              MOVE    1         TO  FLG-ROUSAI
                              MOVE   "1"        TO  
-                                          LNK-SROUNYUIN-NYUIN-FLG(IDX)
+                                          LNK-SROUNYUIN-NYUIN-FLG(IDX1)
                         END-IF
                    END-PERFORM
                    IF   FLG-ROUSAI             =   ZERO
@@ -280,7 +308,7 @@
        200-MAIN-SEC            SECTION.
       *
       *Ï«ºÒÆþ±¡ÎÁ¤Î¼èÆÀ
-           MOVE    ZERO                    TO  FLG-ARI
+           MOVE    ZERO                    TO  FLG-OK
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-SROUNYUIN-HOSPID    TO  NACCT-HOSPID
            MOVE    LNK-SROUNYUIN-PTID      TO  NACCT-PTID
@@ -292,34 +320,63 @@
                MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+                   MOVE      ZERO     TO      FLG-RYAKU
+                                              WRK-KSNKBN
+                   MOVE      SPACE    TO      WRK-RYAKUSHO
+                                              WRK-SRYKBN
                    IF    NACCT-SRYCDTOTAL     =    99999916
                        CONTINUE
                    ELSE
       *                ³ºÅöÆþ±¡¹Ô°Ù¥Æ¡¼¥Ö¥ë¤ÎÆÉ¤ß¹þ¤ß
                        PERFORM    210-NYUINACT-GET-SEC
       *                Æþ±¡´ðËÜÎÁ¤È½é´ü²Ã»»¡ÊÄ¹´ü¸º»»¡Ë¤ÎÂàÈò
-                       PERFORM    VARYING   IDX   FROM   1   BY   1
-                                  UNTIL     IDX   >   31
-                           IF    (LNK-SROUNYUIN-NYUIN-FLG(IDX) = "1")
-                           AND   (NACCT-DAY(IDX)    NOT =  ZERO) 
+                       PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                  UNTIL     IDX1   >   31
+                           IF    (LNK-SROUNYUIN-NYUIN-FLG(IDX1) = "1")
+                           AND   (NACCT-DAY(IDX1)    NOT =  ZERO) 
                                MOVE    NSRY-SRYCD(1)   TO  
-                                                   WRK-NYUINKHN(IDX)
-                               MOVE    1    TO   FLG-ARI
-      *                        ³°Çñ¥³¡¼¥ÉÊÔ½¸ÍÑ¤ËÆþ±¡´ðËÜÎÁ²Ã»»¶èÊ¬¤È
-      *                        ¿ÇÎÅ¶èÊ¬¤ÎÂàÈò
-                               PERFORM   210-GAIHAKU-MAE-SEC
+                                                   WRK-NYUINKHN(IDX1)
       *
                                IF   NSRY-SRYCD(2)  NOT =   SPACE
                                    MOVE   NSRY-SRYCD(2)  TO
-                                                   WRK-SHOKIKSN(IDX)
+                                                   WRK-SHOKIKSN(IDX1)
                                END-IF
+      *
+                               IF   FLG-RYAKU   =   ZERO
+      *
+                                  MOVE    NACCT-SRYKBN
+                                                TO  WRK-SRYKBN
+      *                           ³°Çñ¥³¡¼¥ÉÊÔ½¸ÍÑ¤ËÆþ±¡´ðËÜÎÁ²Ã»»¶èÊ¬
+      *                           ¤ÎÂàÈò
+                                  PERFORM   210-GAIHAKU-MAE-SEC
+      *
+                                  MOVE   NSRY-SRYCD(1)
+                                                TO  WRK-RYAKU-SRYCD
+                                  MOVE   NACCT-ZAISKBKBN
+                                                TO  WRK-ZAISKBKBN
+                                  PERFORM   210-RYAKUSYO-HENSYU-SEC
+      *
+                                  MOVE    1     TO    FLG-RYAKU
+                               END-IF
+      *
+                               MOVE  WRK-SRYKBN
+                                         TO  LNK-SROUNYUIN-SRYKBN(IDX1)
+                               MOVE  WRK-KSNKBN
+                                         TO  WRK-NYUKHNKSNKBN(IDX1)
+      *
+                               IF    WRK-RYAKUSHO   NOT =  SPACE
+                                  MOVE  WRK-RYAKUSHO
+                                      TO  LNK-SROUNYUIN-RYAKUSYO(IDX1)
+                               END-IF
+      *
+                               MOVE    1    TO   FLG-OK
                            END-IF
                        END-PERFORM
                    END-IF
                    MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
-               IF   FLG-ARI     =   ZERO
+               IF   FLG-OK     =   ZERO
                    MOVE     3      TO      LNK-SROUNYUIN-RC
                    GO   TO    200-MAIN-EXT
                END-IF
@@ -344,10 +401,10 @@
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
       *            ³°Çñ¶èÊ¬¤ÎÂàÈò
-                   PERFORM    VARYING   IDX   FROM   1   BY   1
-                              UNTIL     IDX   >   31
-                       IF    (WRK-NYUINKHN(IDX) NOT = SPACE) 
-                       AND   (NACCT-DAY(IDX)    NOT =  ZERO) 
+                   PERFORM    VARYING   IDX1   FROM   1   BY   1
+                              UNTIL     IDX1   >   31
+                       IF    (WRK-NYUINKHN(IDX1) NOT = SPACE) 
+                       AND   (NACCT-DAY(IDX1)    NOT =  ZERO) 
                               PERFORM     210-GAIHAKU-SET-SEC
                        END-IF
                    END-PERFORM
@@ -379,7 +436,7 @@
                                            MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-               PERFORM  SYSKANRI-READ-SEC
+               PERFORM  910-SYSKANRI-READ-SEC
                PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
                         UNTIL     GENSAN-IDX   >   4
                     IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"
@@ -411,39 +468,57 @@
            END-IF
       *
       *Ï«ºÒÆþ±¡»þ¤ÎÆþ±¡ÎÁ²Ã»»¼èÆÀ¡ÊÆþ±¡²ñ·×¤è¤ê¡Ë
-      *     MOVE    ZERO                    TO  KSN-IDX
-      *     INITIALIZE                          NYUINACCT-REC
-      *     MOVE    LNK-SROUNYUIN-HOSPID    TO  NACCT-HOSPID
-      *     MOVE    LNK-SROUNYUIN-PTID      TO  NACCT-PTID
-      *     MOVE    LNK-SROUNYUIN-SANTEIYM  TO  NACCT-SRYYM
-      *     MOVE    "6"                     TO  NACCT-ZAISKBKBN
-      *     MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
-      *     PERFORM 910-NYUINACCT-SELECT-SEC
-      *     IF      FLG-NYUINACCT           =   ZERO
-      *         MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
-      *         PERFORM   910-NYUINACCT-READ-SEC
-      *         PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+           MOVE    ZERO                    TO  KSN-IDX
+           INITIALIZE                          NYUINACCT-REC
+           MOVE    LNK-SROUNYUIN-HOSPID    TO  NACCT-HOSPID
+           MOVE    LNK-SROUNYUIN-PTID      TO  NACCT-PTID
+           MOVE    LNK-SROUNYUIN-SANTEIYM  TO  NACCT-SRYYM
+           MOVE    "6"                     TO  NACCT-ZAISKBKBN
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           PERFORM 910-NYUINACCT-SELECT-SEC
+           IF      FLG-NYUINACCT           =   ZERO
+               MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+               PERFORM   910-NYUINACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+                   MOVE      ZERO     TO      FLG-RYAKU
+                   MOVE      ZERO     TO      FLG-KSN
       *            Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
-      *             PERFORM    VARYING   IDX   FROM   1   BY   1
-      *                        UNTIL     IDX   >   31
-      *                 IF    (WRK-NYUINKHN(IDX) NOT = SPACE)
-      *                 AND   (LNK-SROUNYUIN-GAIHAKU(IDX)  
-      *                                       =  ZERO  OR  4)
-      *                 AND   (NACCT-DAY(IDX)    NOT =  ZERO)
-      *                     ADD        1         TO   KSN-IDX
-      *                     MOVE   NACCT-SRYCDTOTAL(6:9)
-      *                                          TO   WRK-NYUKSN(KSN-IDX)
-      *                     MOVE   NACCT-DAY(IDX)
-      *                                  TO  WRK-NYUKSN-DAY(KSN-IDX IDX)
-      *                 END-IF
-      *             END-PERFORM
-      *             MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
-      *             PERFORM 910-NYUINACCT-READ-SEC
-      *         END-PERFORM
-      *     END-IF
+                   PERFORM    VARYING   IDX1   FROM   1   BY   1
+                              UNTIL     IDX1   >   31
+                       IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                       AND   (LNK-SROUNYUIN-GAIHAKU(IDX1)  
+                                             =  ZERO  OR  4)
+                       AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
+                           IF   FLG-KSN   =  ZERO
+                               ADD     1    TO    KSN-IDX
+                               MOVE    1    TO    FLG-KSN
+                           END-IF
+                           MOVE   NACCT-SRYCDTOTAL(6:9)
+                                        TO  WRK-NYUKSN(KSN-IDX)
+                           MOVE   NACCT-ZAITEN  
+                                        TO  WRK-NYUKSN-ZAITEN(KSN-IDX)
+                           MOVE   NACCT-DAY(IDX1)
+                                        TO  WRK-NYUKSN-DAY(KSN-IDX IDX1)
+      *
+                           IF   FLG-RYAKU   =   ZERO
+                              MOVE   NACCT-SRYCDTOTAL(6:9)
+                                            TO  WRK-RYAKU-SRYCD
+                              MOVE   NACCT-ZAISKBKBN
+                                            TO  WRK-ZAISKBKBN
+                              PERFORM   210-RYAKUSYO-HENSYU-SEC
+      *
+                              MOVE    1     TO    FLG-RYAKU
+                           END-IF
+      *
+                       END-IF
+                   END-PERFORM
+                   MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+                   PERFORM 910-NYUINACCT-READ-SEC
+               END-PERFORM
+           END-IF
       *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
-      *     MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
-      *     PERFORM   910-DB-CLOSE-SEC
+           MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
       *
       *
       *Ï«ºÒÆþ±¡»þ¤ÎÆþ±¡ÎÁ²Ã»»¼èÆÀ¡Ê¿ÇÎÅ²ñ·×¤è¤ê¡Ë
@@ -459,44 +534,106 @@
                MOVE     "SRYACCT-KEY22"    TO   ORC-DBPATH
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
-                 IF   ACCT-SRYCDTOTAL(6:9)  =   CONS-KEIKAKU-GENSAN1
-                                            OR  CONS-KEIKAKU-GENSAN2
-                                            OR  CONS-NICHIJOU-KSN1
-                                            OR  CONS-NICHIJOU-KSN2
-                                            OR  CONS-CHIHOU-KSN1
-                                            OR  CONS-CHIHOU-KSN2
-      *            Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
-                   PERFORM    VARYING   IDX   FROM   1   BY   1
-                              UNTIL     IDX   >   31
-                       IF    (WRK-NYUINKHN(IDX) NOT = SPACE)
-                       AND   (LNK-SROUNYUIN-GAIHAKU(IDX)  
-                                                    =  ZERO)
-                       AND   (ACCT-DAY(1 IDX)   NOT =  ZERO)
-                          EVALUATE   ACCT-SRYCDTOTAL(6:9)
-      *                     Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
-                            WHEN  CONS-KEIKAKU-GENSAN1
-                              MOVE   ACCT-DAY(1 IDX)
-                                        TO  WRK-KEIKAKU-GENSAN1(IDX)
-                            WHEN  CONS-KEIKAKU-GENSAN2
-                              MOVE   ACCT-DAY(1 IDX)
-                                        TO  WRK-KEIKAKU-GENSAN2(IDX)
-      *                     Æü¾ïÀ¸³è¾ã³²²Ã»»
-                            WHEN  CONS-NICHIJOU-KSN1
-                              MOVE   ACCT-DAY(1 IDX)
-                                        TO  WRK-NICHIJOU-KSN1(IDX)
-                            WHEN  CONS-NICHIJOU-KSN2
-                              MOVE   ACCT-DAY(1 IDX)
-                                        TO  WRK-NICHIJOU-KSN2(IDX)
-      *                     ÃÔÊò²Ã»»
-                            WHEN  CONS-CHIHOU-KSN1
-                              MOVE   ACCT-DAY(1 IDX)
-                                        TO  WRK-CHIHOU-KSN1(IDX)
-                            WHEN  CONS-CHIHOU-KSN2
-                              MOVE   ACCT-DAY(1 IDX)
-                                        TO  WRK-CHIHOU-KSN2(IDX)
-                          END-EVALUATE
+                 MOVE      ZERO     TO      FLG-RYAKU
+                 IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                      (ACCT-ZAIKAISU  NOT =    ZERO)
+                   IF   ACCT-SRYKBN  =  "90" OR "92"   
+                     IF   ACCT-SRYCDTOTAL(6:9)  =   
+                                            CONS-KEIKAKU-GENSAN1
+                                        OR  CONS-KEIKAKU-GENSAN2
+                                        OR  CONS-NICHIJOU-KSN1
+                                        OR  CONS-NICHIJOU-KSN2
+                                        OR  CONS-CHIHOU-KSN1
+                                        OR  CONS-CHIHOU-KSN2
+      *                Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
+                       PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                  UNTIL     IDX1   >   31
+                           IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                           AND   (LNK-SROUNYUIN-GAIHAKU(IDX1)  
+                                                        =  ZERO)
+                           AND   (ACCT-DAY(1 IDX1)   NOT =  ZERO)
+                              EVALUATE   ACCT-SRYCDTOTAL(6:9)
+      *                         Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
+                                WHEN  CONS-KEIKAKU-GENSAN1
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-KEIKAKU-GENSAN1(IDX1)
+                                WHEN  CONS-KEIKAKU-GENSAN2
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-KEIKAKU-GENSAN2(IDX1)
+      *                         Æü¾ïÀ¸³è¾ã³²²Ã»»
+                                WHEN  CONS-NICHIJOU-KSN1
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-NICHIJOU-KSN1(IDX1)
+                                WHEN  CONS-NICHIJOU-KSN2
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-NICHIJOU-KSN2(IDX1)
+      *                         ÃÔÊò²Ã»»
+                                WHEN  CONS-CHIHOU-KSN1
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-CHIHOU-KSN1(IDX1)
+                                WHEN  CONS-CHIHOU-KSN2
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-CHIHOU-KSN2(IDX1)
+                              END-EVALUATE
+      *
+                              IF   FLG-RYAKU   =   ZERO
+                                 MOVE   ACCT-SRYCDTOTAL(6:9)
+                                               TO  WRK-RYAKU-SRYCD
+                                 MOVE   "6"    TO  WRK-ZAISKBKBN
+                                 PERFORM   210-RYAKUSYO-HENSYU-SEC
+      *
+                                 MOVE    1     TO    FLG-RYAKU
+                              END-IF
+      *
+                           END-IF
+                       END-PERFORM
+                     ELSE
+                       IF   ACCT-SRYCDTOTAL(6:9)  =  CONS-ROSAICHIRYO
+                                                 OR  CONS-BYOUI
+                                                 OR  CONS-TOKUKANSI
+      *                  Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
+                         PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                    UNTIL     IDX1   >   31
+                             IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                             AND   (ACCT-DAY(1 IDX1)   NOT =  ZERO)
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCTETC
+                                                             (IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCTETC
+                                                             (IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(1 IDX1))
+      *
+                               IF   FLG-RYAKU   =   ZERO
+                                  MOVE   ACCT-SRYCDTOTAL(6:9)
+                                                TO  WRK-RYAKU-SRYCD
+                                  MOVE   "6"    TO  WRK-ZAISKBKBN
+                                  PERFORM   210-RYAKUSYO-HENSYU-SEC
+      *
+                                  MOVE    1     TO    FLG-RYAKU
+                               END-IF
+      *
+                             END-IF
+                         END-PERFORM
+                       ELSE
+      *                  Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
+                         PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                    UNTIL     IDX1   >   31
+                             IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                             AND   (ACCT-DAY(1 IDX1)   NOT =  ZERO)
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(1 IDX1))
+      *
+                               IF   FLG-RYAKU   =   ZERO
+                                  PERFORM   210-SRYACT-HENSYU-SEC
+      *
+                                  MOVE    1     TO    FLG-RYAKU
+                               END-IF
+      *
+                             END-IF
+                         END-PERFORM
                        END-IF
-                   END-PERFORM
+                     END-IF
+                   END-IF
                  END-IF
                  MOVE     "SRYACCT-KEY22"    TO   ORC-DBPATH
                  PERFORM   910-SRYACCT-READ-SEC
@@ -508,126 +645,159 @@
       *
       *
       *    ¼èÆÀ¤·¤¿Ï«ºÒÆþ±¡¾ðÊó¤«¤éÆüÃ±°Ì¤ÎÆþ±¡²ñ·×¾ðÊó¤òºÆ¹½ÃÛ
-           PERFORM      VARYING    IDX   FROM   1  BY  1
-                        UNTIL      IDX   >   31
+           PERFORM      VARYING    IDX1   FROM   1  BY  1
+                        UNTIL      IDX1   >   31
                MOVE     ZERO                TO  WRK-MEISAISU
       *        Æþ±¡´ðËÜÎÁ
-               IF         WRK-NYUINKHN(IDX)  NOT =        SPACE
+               IF         WRK-NYUINKHN(IDX1)  NOT =        SPACE
                    ADD      1               TO  WRK-MEISAISU
-                   MOVE   WRK-NYUINKHN(IDX) TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
+                   MOVE   WRK-NYUINKHN(IDX1) TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
                END-IF
       *        ³°Çñ
-               IF         WRK-GAIHAKU(IDX)   NOT =        SPACE
+               IF         WRK-GAIHAKU(IDX1)   NOT =        SPACE
                    ADD      1               TO  WRK-MEISAISU
-                   MOVE   WRK-GAIHAKU(IDX)  TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
+                   MOVE   WRK-GAIHAKU(IDX1)  TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
                END-IF
       *        Æü¾ïÀ¸³è¾ã³²²Ã»»
-               IF         WRK-NICHIJOU-KSN1(IDX)   NOT =   ZERO
+               IF         WRK-NICHIJOU-KSN1(IDX1)   NOT =   ZERO
                    ADD      1                 TO  WRK-MEISAISU
                    MOVE   CONS-NICHIJOU-KSN1  TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
+                                           (IDX1 WRK-MEISAISU)
                END-IF
-               IF         WRK-NICHIJOU-KSN2(IDX)   NOT =   ZERO
+               IF         WRK-NICHIJOU-KSN2(IDX1)   NOT =   ZERO
                    ADD      1                 TO  WRK-MEISAISU
                    MOVE   CONS-NICHIJOU-KSN2  TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
+                                           (IDX1 WRK-MEISAISU)
                END-IF
       *        ÃÔÊò²Ã»»
-               IF         WRK-CHIHOU-KSN1(IDX)     NOT =   ZERO
+               IF         WRK-CHIHOU-KSN1(IDX1)     NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-CHIHOU-KSN1     TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
+                                           (IDX1 WRK-MEISAISU)
                END-IF
-               IF         WRK-CHIHOU-KSN2(IDX)     NOT =   ZERO
+               IF         WRK-CHIHOU-KSN2(IDX1)     NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-CHIHOU-KSN2     TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
+                                           (IDX1 WRK-MEISAISU)
                END-IF
       *        Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
-               IF         WRK-KEIKAKU-GENSAN1(IDX) NOT =   ZERO
+               IF         WRK-KEIKAKU-GENSAN1(IDX1) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-KEIKAKU-GENSAN1 TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
+                                           (IDX1 WRK-MEISAISU)
                END-IF
-               IF         WRK-KEIKAKU-GENSAN2(IDX) NOT =   ZERO
+               IF         WRK-KEIKAKU-GENSAN2(IDX1) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-KEIKAKU-GENSAN2 TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
+                                           (IDX1 WRK-MEISAISU)
                END-IF
       *        ¸º»»¾ðÊó¡Ê¥·¥¹¥Æ¥à´ÉÍý¡Ë
-               IF      (WRK-NYUINKHN(IDX)   NOT =         SPACE)  AND
-                       (WRK-GAIHAKU(IDX)        =         SPACE)  AND
+               IF      (WRK-NYUINKHN(IDX1)   NOT =         SPACE)  AND
+                       (WRK-GAIHAKU(IDX1)        =         SPACE)  AND
                        (WRK-GENSAN2         NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN2       TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE     1               TO  WRK-GENSAN2-MIJISI
                END-IF
-               IF      (WRK-NYUINKHN(IDX)   NOT =         SPACE)  AND
-                       (WRK-GAIHAKU(IDX)        =         SPACE)  AND
+               IF      (WRK-NYUINKHN(IDX1)   NOT =         SPACE)  AND
+                       (WRK-GAIHAKU(IDX1)        =         SPACE)  AND
                        (WRK-GENSAN3         NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN3       TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE     1               TO  WRK-GENSAN3-MIJISI
                END-IF
-               IF      (WRK-NYUINKHN(IDX)   NOT =         SPACE)  AND
-                       (WRK-GAIHAKU(IDX)        =         SPACE)  AND
+               IF      (WRK-NYUINKHN(IDX1)   NOT =         SPACE)  AND
+                       (WRK-GAIHAKU(IDX1)        =         SPACE)  AND
                        (WRK-GENSAN4         NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN4       TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE     1               TO  WRK-GENSAN4-MIJISI
                END-IF
       *        Ï«ºÒ¾è¿ô¡ÊÆÃÄêÆþ±¡ÎÁ¤Î¾ì¹ç¤ÏÏ«ºÒ¾è¿ô¤Ê¤·¡Ë
-               IF       LNK-SROUNYUIN-SRYKBN(IDX)    =    "90"
-                   EVALUATE  LNK-SROUNYUIN-JOUSU-KBN(IDX)
+               IF       LNK-SROUNYUIN-SRYKBN(IDX1)    =    "90"
+                   EVALUATE  LNK-SROUNYUIN-JOUSU-KBN(IDX1)
                        WHEN  "1"
                            ADD      1           TO  WRK-MEISAISU
                            MOVE   "101900010"   TO  LNK-SROUNYUIN-SRYCD
-                                               (IDX WRK-MEISAISU)
+                                               (IDX1 WRK-MEISAISU)
                        WHEN  "2"
                            ADD      1           TO  WRK-MEISAISU
                            MOVE   "101900020"   TO  LNK-SROUNYUIN-SRYCD
-                                               (IDX WRK-MEISAISU)
+                                               (IDX1 WRK-MEISAISU)
                    END-EVALUATE
                END-IF
       *        ½é´ü²Ã»»¡ÊÄ¹´ü¸º»»¡Ë
-               IF      (WRK-GAIHAKU(IDX)        =         SPACE)  AND
-                       (WRK-SHOKIKSN(IDX)   NOT =         SPACE)
+               IF      (WRK-GAIHAKU(IDX1)        =         SPACE)  AND
+                       (WRK-SHOKIKSN(IDX1)   NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
-                   MOVE   WRK-SHOKIKSN(IDX) TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
+                   MOVE   WRK-SHOKIKSN(IDX1) TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
                END-IF
       *        Æþ±¡ÎÁ²Ã»»¡ÊÆþ±¡²ñ·×¡Ë
       *         PERFORM   VARYING   KSN-IDX   FROM  1  BY  1
       *                   UNTIL    (WRK-NYUKSN(KSN-IDX)  =  SPACE)  OR
       *                            (KSN-IDX             >  20)
-      *            IF    WRK-NYUKSN-DAY(KSN-IDX IDX)  =  ZERO
+      *            IF    WRK-NYUKSN-DAY(KSN-IDX IDX1)  =  ZERO
       *                CONTINUE
       *            ELSE
       *                ADD     1           TO  WRK-MEISAISU
       *                MOVE WRK-NYUKSN(KSN-IDX)
       *                                    TO  LNK-SROUNYUIN-SRYCD
-      *                                   (IDX WRK-MEISAISU)
+      *                                   (IDX1 WRK-MEISAISU)
       *            END-IF
       *         END-PERFORM
            END-PERFORM
       *
       *    ºÆ¹½ÃÛ¤·¤¿Ï«ºÒÆþ±¡²ñ·×¾ðÊó¤«¤éÅÀ¿ô¤Î»»Äê
-           PERFORM      VARYING    IDX   FROM   1  BY  1
-                        UNTIL      IDX   >   31
+           PERFORM      VARYING    IDX1   FROM   1  BY  1
+                        UNTIL      IDX1   >   31
       *        ÅÀ¿ô¥Þ¥¹¥¿¤ÎÆÉ¤ß¹þ¤ß
                PERFORM   VARYING   IDX2    FROM   1  BY   1
-                         UNTIL (LNK-SROUNYUIN-SRYCD(IDX IDX2) = SPACE)
+                         UNTIL (LNK-SROUNYUIN-SRYCD(IDX1 IDX2) = SPACE)
                             OR (IDX2    >      20)
                    PERFORM    210-TENSU-KEISAN-SEC
                END-PERFORM
       *
-               IF    LNK-SROUNYUIN-NYUIN-FLG(IDX)  =   "1"
-               AND   LNK-SROUNYUIN-ZAITEN(IDX)     =   ZERO
-                  MOVE     SPACE   TO   LNK-SROUNYUIN-NYUIN-FLG(IDX)
+               PERFORM   VARYING   KSN-IDX   FROM   1  BY   1
+                         UNTIL (WRK-NYUKSN(KSN-IDX)  =  SPACE)  OR
+                               (KSN-IDX    >      20)
+                  IF    WRK-NYUKSN-DAY(KSN-IDX IDX1)  =  ZERO
+                      CONTINUE
+                  ELSE
+                      ADD  WRK-NYUKSN-ZAITEN(KSN-IDX)
+                                 TO  LNK-SROUNYUIN-ZAITEN-NACCT(IDX1)
+                  END-IF
+               END-PERFORM
+      *
+               IF    LNK-SROUNYUIN-NYUIN-FLG(IDX1)      =   "1"
+               AND   LNK-SROUNYUIN-ZAITEN(IDX1)         =  ZERO
+                  MOVE     SPACE   TO   LNK-SROUNYUIN-NYUIN-FLG(IDX1)
                END-IF
            END-PERFORM
+      *
+      *
+           IF  WRK-GENSAN2-MIJISI  =  1
+                 MOVE    WRK-GENSAN2       TO  WRK-RYAKU-SRYCD
+                 MOVE    "6"               TO  WRK-ZAISKBKBN
+                 PERFORM   210-RYAKUSYO-HENSYU-SEC
+           END-IF
+      *
+           IF  WRK-GENSAN3-MIJISI  =  1
+                 MOVE    WRK-GENSAN3       TO  WRK-RYAKU-SRYCD
+                 MOVE    "6"               TO  WRK-ZAISKBKBN
+                 PERFORM   210-RYAKUSYO-HENSYU-SEC
+           END-IF
+      *
+           IF  WRK-GENSAN4-MIJISI  =  1
+                 MOVE    WRK-GENSAN4       TO  WRK-RYAKU-SRYCD
+                 MOVE    "6"               TO  WRK-ZAISKBKBN
+                 PERFORM   210-RYAKUSYO-HENSYU-SEC
+           END-IF
       *
            .
        200-MAIN-EXT.
@@ -670,9 +840,8 @@
            MOVE    LNK-SROUNYUIN-SANTEIYM
                                        TO  ORC-DBYMD(1:6)
            MOVE    "01"                TO  ORC-DBYMD(7:2)
-           PERFORM TENSU-READ-SEC
-           MOVE    TNS-SRYKBN          TO  LNK-SROUNYUIN-SRYKBN(IDX)
-           MOVE    TNS-NYUKHNKSNKBN    TO  WRK-NYUKHNKSNKBN(IDX)
+           PERFORM 910-TENSU-READ-SEC
+           MOVE    TNS-NYUKHNKSNKBN    TO  WRK-KSNKBN
       *
            .
        210-GAIHAKU-MAE-EXT.
@@ -683,24 +852,24 @@
       *****************************************************************
        210-GAIHAKU-SET-SEC            SECTION.
       *
-           MOVE   NACCT-DAY(IDX)     TO    LNK-SROUNYUIN-GAIHAKU(IDX)
+           MOVE   NACCT-DAY(IDX1)     TO    LNK-SROUNYUIN-GAIHAKU(IDX1)
       *
-           EVALUATE   LNK-SROUNYUIN-SRYKBN(IDX)
+           EVALUATE   LNK-SROUNYUIN-SRYKBN(IDX1)
               WHEN     "90"
-                 EVALUATE   NACCT-DAY(IDX)
+                 EVALUATE   NACCT-DAY(IDX1)
                     WHEN     1
-                      MOVE   "190107290"   TO  WRK-GAIHAKU(IDX)
+                      MOVE   "190107290"   TO  WRK-GAIHAKU(IDX1)
                     WHEN     2
-                      MOVE   "190107390"   TO  WRK-GAIHAKU(IDX)
+                      MOVE   "190107390"   TO  WRK-GAIHAKU(IDX1)
                     WHEN     4
                       PERFORM   2101-GAIHAKU-TAKIKAN-SEC
                  END-EVALUATE
               WHEN     "92"
-                 EVALUATE   NACCT-DAY(IDX)
+                 EVALUATE   NACCT-DAY(IDX1)
                     WHEN     1
-                      MOVE   "190107490"   TO  WRK-GAIHAKU(IDX)
+                      MOVE   "190107490"   TO  WRK-GAIHAKU(IDX1)
                     WHEN     2
-                      MOVE   "190107590"   TO  WRK-GAIHAKU(IDX)
+                      MOVE   "190107590"   TO  WRK-GAIHAKU(IDX1)
                     WHEN     4
                       PERFORM   2101-GAIHAKU-TAKIKAN-SEC
                  END-EVALUATE
@@ -715,22 +884,22 @@
       *****************************************************************
        2101-GAIHAKU-TAKIKAN-SEC           SECTION.
       *
-           EVALUATE   WRK-NYUKHNKSNKBN(IDX)
+           EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
       *
                WHEN   099  THRU  100 
                WHEN   201  THRU  219
                WHEN   221  THRU  222
                WHEN   224
                WHEN   227  THRU  228
-                  MOVE   "190108790"    TO   WRK-GAIHAKU(IDX)
+                  MOVE   "190108790"    TO   WRK-GAIHAKU(IDX1)
                WHEN   013  THRU  021
                WHEN   101  THRU  109
-                  MOVE   "190108890"    TO   WRK-GAIHAKU(IDX)
+                  MOVE   "190108890"    TO   WRK-GAIHAKU(IDX1)
                WHEN   075  THRU  080
-                  MOVE   "190108990"    TO   WRK-GAIHAKU(IDX)
+                  MOVE   "190108990"    TO   WRK-GAIHAKU(IDX1)
                WHEN   085  THRU  086
                WHEN   132  THRU  133
-                  MOVE   "190109090"    TO   WRK-GAIHAKU(IDX)
+                  MOVE   "190109090"    TO   WRK-GAIHAKU(IDX1)
       *
            END-EVALUATE
       *
@@ -800,52 +969,52 @@
       *
            INITIALIZE                      TNS-TENSU-REC
            IF     (IDX2                   =     1  )
-           AND    (WRK-GAIHAKU(IDX)   NOT =   SPACE)
-               PERFORM    GAIHAKU-NYUINKHN-SET-SEC
+           AND    (WRK-GAIHAKU(IDX1)   NOT =   SPACE)
+               PERFORM    2101-GAIHAKU-NYUINKHN-SET-SEC
                IF    WRK-GAIHAKU-SRYCD    NOT =   SPACE
                   MOVE    WRK-GAIHAKU-SRYCD   TO  TNS-SRYCD
                ELSE
-                  MOVE    LNK-SROUNYUIN-SRYCD(IDX IDX2)
+                  MOVE    LNK-SROUNYUIN-SRYCD(IDX1 IDX2)
                                               TO  TNS-SRYCD
                END-IF
            ELSE
-                  MOVE    LNK-SROUNYUIN-SRYCD(IDX IDX2)
+                  MOVE    LNK-SROUNYUIN-SRYCD(IDX1 IDX2)
                                               TO  TNS-SRYCD
            END-IF
            MOVE    LNK-SROUNYUIN-SANTEIYM  TO  ORC-DBYMD(1:6)
            MOVE    "01"                    TO  ORC-DBYMD(7:2)
-           PERFORM TENSU-READ-SEC
+           PERFORM 910-TENSU-READ-SEC
       *
       *    ÅÀ¿ô»»Äê
            EVALUATE    TNS-TENSIKIBETU
       *        ÅÀ¿ô¡Ê¥×¥é¥¹¡Ë
                WHEN    3
-                   ADD   TNS-TEN     TO  LNK-SROUNYUIN-ZAITEN(IDX)
+                   ADD   TNS-TEN     TO  LNK-SROUNYUIN-ZAITEN(IDX1)
       *        ¡ó²Ã»»
                WHEN    5
-                   COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX)  =
-                              LNK-SROUNYUIN-ZAITEN(IDX)  +
-                            ((LNK-SROUNYUIN-ZAITEN(IDX)  *
+                   COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX1)  =
+                              LNK-SROUNYUIN-ZAITEN(IDX1)  +
+                            ((LNK-SROUNYUIN-ZAITEN(IDX1)  *
                               (TNS-TEN   /  100))  + 0.5)
       *        ¡ó¸º»»
                WHEN    6
-                   COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX)  =
-                            ( LNK-SROUNYUIN-ZAITEN(IDX)  -
-                             (LNK-SROUNYUIN-ZAITEN(IDX)  *
+                   COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX1)  =
+                            ( LNK-SROUNYUIN-ZAITEN(IDX1)  -
+                             (LNK-SROUNYUIN-ZAITEN(IDX1)  *
                              (TNS-TEN   /  100)))        +  0.5
       *        ÅÀ¿ô¡Ê¥Þ¥¤¥Ê¥¹¡Ë
                WHEN    8
-                   COMPUTE  LNK-SROUNYUIN-ZAITEN(IDX)  =
-                            LNK-SROUNYUIN-ZAITEN(IDX)  -  TNS-TEN
+                   COMPUTE  LNK-SROUNYUIN-ZAITEN(IDX1)  =
+                            LNK-SROUNYUIN-ZAITEN(IDX1)  -  TNS-TEN
       *        WHEN  OTHER
-      *            ADD   TNS-TEN     TO  LNK-SROUNYUIN-ZAITEN(IDX)
+      *            ADD   TNS-TEN     TO  LNK-SROUNYUIN-ZAITEN(IDX1)
            END-EVALUATE
       *
       *    ¿ÇÎÅ¥³¡¼¥É·×
            MOVE    TNS-SRYCD          TO  WRK-SRYCD-X
-           COMPUTE LNK-SROUNYUIN-SRYCDTOTAL(IDX)  =
-                   LNK-SROUNYUIN-SRYCDTOTAL(IDX)  +   WRK-SRYCD-9
-           ADD      1          TO  LNK-SROUNYUIN-MEISAISU(IDX)
+           COMPUTE LNK-SROUNYUIN-SRYCDTOTAL(IDX1)  =
+                   LNK-SROUNYUIN-SRYCDTOTAL(IDX1)  +   WRK-SRYCD-9
+           ADD      1          TO  LNK-SROUNYUIN-MEISAISU(IDX1)
       *
            .
        210-TENSU-KEISAN-EXT.
@@ -854,11 +1023,11 @@
       **************************************************************
       *    ³°Çñ»þ¤ÎÆþ±¡´ðËÜÎÁ¼èÆÀ
       **************************************************************
-       GAIHAKU-NYUINKHN-SET-SEC           SECTION.
+       2101-GAIHAKU-NYUINKHN-SET-SEC           SECTION.
       *
            MOVE    SPACE    TO   WRK-GAIHAKU-SRYCD
       *
-           EVALUATE  LNK-SROUNYUIN-SRYCD(IDX IDX2)
+           EVALUATE  LNK-SROUNYUIN-SRYCD(IDX1 IDX2)
                WHEN  "190078210"
                      MOVE  "190077410"      TO   WRK-GAIHAKU-SRYCD
                WHEN  "190078310"
@@ -992,13 +1161,151 @@
            END-EVALUATE
       *
            .
-       GAIHAKU-NYUINKHN-SET-EXT.
+       2101-GAIHAKU-NYUINKHN-SET-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    Î¬¾Î¤ÎÊÔ½¸
+      **************************************************************
+       210-RYAKUSYO-HENSYU-SEC           SECTION.
+      *
+           IF   LNK-SROUNYUIN-RYAKUKBN   =   "1"
+      *
+              MOVE    SPACE         TO   NYURYAKUSHO-REC
+              INITIALIZE                 NYURYAKUSHO-REC
+      *
+              MOVE    WRK-RYAKU-SRYCD          TO   NYURYAKUSHO-SRYCD
+              MOVE    LNK-SROUNYUIN-SANTEIYM   TO   ORC-DBYMD(1:6)
+              MOVE    "01"                     TO   ORC-DBYMD(7:2)
+              PERFORM  910-NYURYAKUSHO-READ-SEC
+      *
+              IF       FLG-NYURYAKUSHO    =    ZERO
+      *
+                EVALUATE   WRK-ZAISKBKBN
+      *
+                 WHEN     1
+      *
+                  IF   WRK-SRYKBN  =  "90"
+      *
+                    MOVE     ZERO     TO    FLG-ARI
+                    PERFORM  VARYING  ID1    FROM    1   BY  1
+                          UNTIL   ID1                          > 20
+                            OR    LNK-SROUNYUIN-RYAKUSYO2(ID1) = SPACE
+                            OR    FLG-ARI                      = 1 
+                       IF  LNK-SROUNYUIN-RYAKUSYO2(ID1)
+                                           =  NYURYAKUSHO-RYAKUSHO
+                           MOVE  1   TO   FLG-ARI
+                       END-IF
+                    END-PERFORM  
+                    IF  FLG-ARI  =  ZERO  
+                           MOVE   NYURYAKUSHO-RYAKUSHO
+                                     TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)
+                    END-IF
+      *
+                    IF  WRK-RYAKU-SRYCD  =  "190109670" OR "190808870"
+      *
+                       MOVE     ZERO     TO    FLG-ARI
+                       PERFORM  VARYING  ID1    FROM    1   BY  1
+                           UNTIL   ID1                          > 20
+                             OR    LNK-SROUNYUIN-RYAKUSYO2(ID1) = SPACE
+                             OR    FLG-ARI                      = 1 
+                         IF LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:4) = "Í­´Ç"
+                              MOVE  1   TO   FLG-ARI
+                         END-IF
+                       END-PERFORM  
+                       IF  FLG-ARI  =  ZERO  
+                            MOVE  "Í­´Ç"
+                                TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:4)
+                       END-IF
+      *
+                    END-IF
+      *
+                  ELSE
+      *
+                    MOVE    NYURYAKUSHO-RYAKUSHO   TO  WRK-RYAKUSHO
+      *
+                  END-IF
+      *
+                 WHEN   6
+      *
+                    MOVE     ZERO     TO    FLG-ARI
+                    PERFORM  VARYING  ID1    FROM    1   BY  1
+                          UNTIL   ID1                          > 20
+                            OR    LNK-SROUNYUIN-RYAKUSYO2(ID1) = SPACE
+                            OR    FLG-ARI                      = 1 
+                       IF  LNK-SROUNYUIN-RYAKUSYO2(ID1)
+                                           =  NYURYAKUSHO-RYAKUSHO
+                           MOVE  1   TO   FLG-ARI
+                       END-IF
+                    END-PERFORM  
+                    IF  FLG-ARI  =  ZERO  
+                           MOVE   NYURYAKUSHO-RYAKUSHO
+                                     TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)
+                    END-IF
+      *
+                END-EVALUATE
+      *
+              END-IF
+      *
+           END-IF
+      *
+           .
+       210-RYAKUSYO-HENSYU-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    ¿ÇÎÅ¹Ô°Ù¤ÎÆÉ¤ß¹þ¤ß½èÍý
+      **************************************************************
+       210-SRYACT-HENSYU-SEC           SECTION.
+      *
+           IF   LNK-SROUNYUIN-RYAKUKBN   =   "1"
+      *
+              INITIALIZE                           SRYACT-REC
+              MOVE    ACCT-HOSPID          TO      SRY-HOSPID
+              MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
+              MOVE    ACCT-PTID            TO      SRY-PTID
+              MOVE    ACCT-SRYYM           TO      SRY-SRYYM
+              MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+              MOVE    SRYACT-REC           TO      MCPDATA-REC
+              MOVE    "DBSELECT"           TO      MCP-FUNC
+              MOVE    "SRYACT-KEY9"        TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+              IF      MCP-RC               =       ZERO
+                  MOVE    "SRYACT-KEY9"    TO      ORC-DBPATH
+                  PERFORM  910-SRYACT-READ-SEC
+                  PERFORM  UNTIL  FLG-SRYACT    =    1
+                      PERFORM   VARYING   SRYACT-IDX  FROM  1   BY   1
+                                UNTIL    (SRYACT-IDX    >   5)  OR
+                                         (SRY-SRYCD(SRYACT-IDX)
+                                                            =   SPACE)
+      *
+                          MOVE    SRY-SRYCD(SRYACT-IDX)
+                                                  TO  WRK-RYAKU-SRYCD
+                          MOVE    "6"             TO  WRK-ZAISKBKBN
+      *
+                          PERFORM   210-RYAKUSYO-HENSYU-SEC
+      *
+                      END-PERFORM
+                      MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
+                      PERFORM   910-SRYACT-READ-SEC
+                  END-PERFORM
+              END-IF
+      *
+              MOVE     "SRYACT-KEY9"       TO  ORC-DBPATH
+              PERFORM   910-DB-CLOSE-SEC
+      *
+           END-IF
+      *
+           .
+       210-SRYACT-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡¼ÆÉ¹þ
       *****************************************************************
-       SYSKANRI-READ-SEC         SECTION.
+       910-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -1014,7 +1321,7 @@
            END-IF
       *
            .
-       SUSKANRI-READ-EXT.
+       910-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1185,6 +1492,28 @@
            EXIT.
       *
       *****************************************************************
+      *    ¿ÇÎÅ¹Ô°ÙÆÉ¹þ
+      *****************************************************************
+       910-SRYACT-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    ZERO            TO  FLG-SRYACT
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+      *
+           .
+       910-SRYACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼¸¡º÷
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
@@ -1229,7 +1558,7 @@
       *****************************************************************
       *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
       *****************************************************************
-       TENSU-READ-SEC         SECTION.
+       910-TENSU-READ-SEC         SECTION.
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1261,7 +1590,45 @@
            PERFORM   910-DB-CLOSE-SEC
       *
            .
-       TENSU-READ-EXT.
+       910-TENSU-READ-EXT.
+           EXIT.
+      *     
+      *****************************************************************
+      *    Æþ±¡Î¬¾Î¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
+      *****************************************************************
+       910-NYURYAKUSHO-READ-SEC        SECTION.
+      *
+           MOVE    NYURYAKUSHO-REC     TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "NYUINRYAKUSHO-KEY" TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "NYUINRYAKUSHO-KEY" TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  NYURYAKUSHO-REC
+                   MOVE    ZERO                TO  FLG-NYURYAKUSHO
+               ELSE
+                   MOVE    1                   TO  FLG-NYURYAKUSHO
+                   INITIALIZE                  NYURYAKUSHO-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-NYURYAKUSHO
+               INITIALIZE                  NYURYAKUSHO-REC
+           END-IF
+      *
+           MOVE    "NYUINRYAKUSHO-KEY"     TO   ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+           .
+       910-NYURYAKUSHO-READ-EXT.
            EXIT.
       *
       *****************************************************************

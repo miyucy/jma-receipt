@@ -990,7 +990,8 @@
                             UNTIL   IDX1    >       10
                             OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
-                         IF  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
+                         IF  WRK-DAY1(IDY) NOT =  ZERO 
+                         AND WRK-DAY5(IDY)   =  RECE62-HKNCOMBI (IDX1)
                               IF   (NACCT-ZAITEN    NOT =    ZERO)  
                               AND  (NACCT-DAY(IDY)  NOT =    ZERO)  
                               AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
@@ -1835,7 +1836,8 @@
                  MOVE    1          TO        KH-IDX
                  PERFORM    VARYING   ACCT-IDX   FROM   1    BY   1
                             UNTIL    ACCT-IDX   >      31
-                        IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
+                        IF  WRK-DAY1(ACCT-IDX)     NOT =    ZERO 
+                        AND ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
                             PERFORM      SRYACCT-GET-SEC
                         END-IF
                  END-PERFORM
@@ -1873,7 +1875,8 @@
                  IF   KH-IDX             NOT =    ZERO
                      PERFORM    VARYING  ACCT-IDX   FROM   1   BY   1
                                 UNTIL    ACCT-IDX   >      31
-                          IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
+                          IF  WRK-DAY1(ACCT-IDX)     NOT =    ZERO 
+                          AND ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
                               PERFORM      SRYACCT-GET-SEC
                           END-IF
                      END-PERFORM
@@ -2017,7 +2020,8 @@
                              UNTIL   IDX1    >       10
                              OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
-                         IF  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
+                         IF   WRK-DAY1(IDY) NOT =  ZERO 
+                         AND  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
                               IF   (NACCT-ZAITEN    NOT =    ZERO)  
                               AND  (NACCT-DAY(IDY)  NOT =    ZERO)  
                               AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
@@ -2075,7 +2079,8 @@
                              IF   ACCT-SRYKBN  =  "90" OR "92"  
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1
                                   UNTIL    ACCT-IDX   >   31
-                                  IF  ACCT-DAY(1 ACCT-IDX) NOT = ZERO
+                                  IF  WRK-DAY1(ACCT-IDX)   NOT = ZERO 
+                                  AND ACCT-DAY(1 ACCT-IDX) NOT = ZERO
                                         PERFORM   ACCTKHN-GET3-SEC
                                         MOVE  31  TO  ACCT-IDX
                                   END-IF

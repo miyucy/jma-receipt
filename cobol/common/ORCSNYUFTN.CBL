@@ -1238,38 +1238,6 @@
       *
            MOVE    LNK-SYUNOU-REC(IDX) TO  SYUNOU-REC
       *
-      *³°Çñ¾ðÊó¤Î¼èÆÀ
-      *
-           MOVE    ZERO                TO  FLG-NYUINACCT
-           INITIALIZE                      NYUINACCT-REC
-           MOVE    SYU-HOSPID          TO  NACCT-HOSPID
-           MOVE    "1"                 TO  NACCT-NYUGAIKBN
-           MOVE    SYU-PTID            TO  NACCT-PTID
-           MOVE    SYU-SKYSTYMD (1:6)  TO  NACCT-SRYYM
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY9"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY9"  TO  ORC-DBPATH
-               PERFORM  NYUINACCT-READ-SEC
-           ELSE
-               MOVE    1               TO      FLG-NYUINACCT
-           END-IF
-      *
-           MOVE     ZERO               TO      FLG-GAIHAKU-SET
-           INITIALIZE                          TABLE-GAIHAKU
-      *
-           PERFORM      GAIHAKU-SET-SEC
-               UNTIL   (FLG-NYUINACCT   =       1      )   OR
-                       (FLG-GAIHAKU-SET =       1      )
-      *
-           MOVE     "NYUINACT-KEY9"    TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
-      *
       *Æþ±¡ÎÁ´Ø·¸¤Î¼èÆÀ
       *
            MOVE    SPACE               TO  HKNTEKGAI-NYUIN
@@ -1487,6 +1455,18 @@
                    END-PERFORM
                END-IF
       *
+      *        Æþ±¡ÎÁ²Ã»»¤Î½¸·×
+               IF   NACCT-ZAISKBKBN      =   "6"
+                   PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
+                             UNTIL    SYU-IDX  >   31
+                       IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
+                           (NACCT-DAY(SYU-IDX) NOT =  ZERO)    AND
+                           (TBL-GAIHAKU(SYU-IDX)   =  ZERO  OR  4)
+                           ADD   NACCT-ZAITEN   TO    SYU-HKNTEN(11)
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
            END-IF
       *
            PERFORM   NYUINACCT-GET-ETC-SEC
@@ -1503,23 +1483,6 @@
       **************************************************************
        NYUINACCT-GET-ETC-SEC           SECTION.
       *
-           IF    (NACCT-ZAITEN            NOT = ZERO  )           AND
-                 (NACCT-SRYYM(1:6)    =   SYU-SKYSTYMD(1:6))         
-      *
-      *        Æþ±¡ÎÁ²Ã»»¤Î½¸·×
-               IF   NACCT-ZAISKBKBN      =   "6"
-                   PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
-                             UNTIL    SYU-IDX  >   31
-                       IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
-                           (NACCT-DAY(SYU-IDX) NOT =  ZERO)    AND
-                           (TBL-GAIHAKU(SYU-IDX)   =  ZERO  OR  4)
-                           ADD   NACCT-ZAITEN   TO    SYU-HKNTEN(11)
-                       END-IF
-                   END-PERFORM
-               END-IF
-      *
-           END-IF
-      * 
            IF     NACCT-SRYYM         =   SYU-SKYSTYMD(1:6)
       *        ¼¼ÎÁº¹³Û¤Î½¸·×
                IF   NACCT-ZAISKBKBN       =   "3"
@@ -1607,6 +1570,7 @@
            MOVE    SYU-PTID            TO  LNK-SROUNYUIN-PTID
            MOVE    SYU-SRYYMD(1:6)     TO  LNK-SROUNYUIN-SANTEIYM
            MOVE    SYU-HKNCOMBINUM     TO  LNK-SROUNYUIN-HKNCOMBI
+           MOVE    SPACE               TO  LNK-SROUNYUIN-RYAKUKBN
       *    Ï«ºÒ¾è¿ô¶èÊ¬¥»¥Ã¥È
            PERFORM    VARYING   SYU-IDX   FROM   1   BY   1
                        UNTIL    SYU-IDX    >    31
@@ -1629,8 +1593,15 @@
                           UNTIL    SYU-IDX    >    31
       *
                 IF   LNK-SROUNYUIN-NYUIN-FLG(SYU-IDX)    =  "1"
+                AND  SYU-DAY(SYU-IDX)                    =  "1"
       *
                      ADD   LNK-SROUNYUIN-ZAITEN(SYU-IDX)
+                                                 TO  SYU-HKNTEN(11)
+                     ADD   LNK-SROUNYUIN-ZAITEN-NACCT(SYU-IDX)
+                                                 TO  SYU-HKNTEN(11)
+                     ADD   LNK-SROUNYUIN-ZAITEN-ACCT(SYU-IDX)
+                                                 TO  SYU-HKNTEN(11)
+                     ADD   LNK-SROUNYUIN-ZAITEN-ACCTETC(SYU-IDX)
                                                  TO  SYU-HKNTEN(11)
       *
                 END-IF
@@ -2384,14 +2355,25 @@
       *    Æþ±¡Æü¤È¿ÇÎÅÆü¡Ê¿ÇÎÅ²ñ·×¥Æ¡¼¥Ö¥ë¤Î¥«¥ì¥ó¥À¡¼¡Ë¤òÈæ³Ó¤·¤Æ
       *    »»ÄêÂÐ¾ÝÆü¿ô¤òµá¤á¤ë
            MOVE      ZERO          TO     SINRYO-COUNT
-           PERFORM   VARYING   SYU-IDX   FROM   1   BY   1
+           IF   ACCT-SRYKBN  =  "90"  OR  "92"
+             PERFORM   VARYING   SYU-IDX   FROM   1   BY   1
+                     UNTIL      SYU-IDX   >   31
+                 IF  (SYU-DAY(SYU-IDX)       =     "1"         )   AND
+                     (ACCT-DAY(1 SYU-IDX)    NOT =  ZERO)          AND
+                     (SYU-HKNCOMBINUM        =    ACCT-HKNCOMBI)
+                     ADD   ACCT-DAY(1 SYU-IDX)    TO     SINRYO-COUNT
+                 END-IF
+             END-PERFORM
+           ELSE
+             PERFORM   VARYING   SYU-IDX   FROM   1   BY   1
                      UNTIL      SYU-IDX   >   31
                  IF  (SYU-DAY(SYU-IDX)       =     "1"  OR  "2")   AND
                      (ACCT-DAY(1 SYU-IDX)    NOT =  ZERO)          AND
                      (SYU-HKNCOMBINUM        =    ACCT-HKNCOMBI)
                      ADD   ACCT-DAY(1 SYU-IDX)    TO     SINRYO-COUNT
                  END-IF
-           END-PERFORM          
+             END-PERFORM
+           END-IF
       *
            IF  SINRYO-COUNT     NOT =     ZERO
       *
@@ -2469,18 +2451,7 @@
                    WHEN    "90"
                    WHEN    "92"
                     IF   SYU-SYUHKNNUM  =  "971"  OR  "973"
-      *               Ì¤¼Â»Ü¸º»»¡¦Æü¾ïÀ¸³è¾ã³²²Ã»»¡¦ÃÔÊò²Ã»»
-                      IF     ACCT-SRYCDTOTAL    =   190080470  OR
-                                                    190799670  OR
-                                                    190109170  OR
-                                                    190807570  OR
-                                                    190109270  OR
-                                                    190808670
-                        CONTINUE
-                      ELSE
-                        COMPUTE SYU-HKNTEN (11)   =  SYU-HKNTEN (11) +
-                               (ACCT-ZAITEN  *   SINRYO-COUNT)
-                      END-IF
+                      CONTINUE
                     ELSE
                       IF     ACCT-SRYCDTOTAL    =   190080470  OR
                                                     190799670

@@ -38,6 +38,8 @@
            03  LNK-SROUNYUIN-SANTEIYM                PIC  X(06).
       *保険組合せ
            03  LNK-SROUNYUIN-HKNCOMBI                PIC  9(04).
+      *略称編集区分（空白：しない　１：する）
+           03  LNK-SROUNYUIN-RYAKUKBN                PIC  X(01).
       *労災乗数区分（１：２週間以内　２：２週間越え）
            03  LNK-SROUNYUIN-JOUSU-KBN               PIC  X(01)
                                                      OCCURS 31.
@@ -61,6 +63,19 @@
                    07  LNK-SROUNYUIN-ROUSAI.
                        09  LNK-SROUNYUIN-SRYCD       PIC  X(09)
                                                      OCCURS 20.
+      *略称（特定入院料）
+                   07  LNK-SROUNYUIN-RYAKUSYO        PIC  X(14).
+      *入院会計剤識別区分６の剤点数
+                   07  LNK-SROUNYUIN-ZAITEN-NACCT    PIC  9(08).
+      *診療会計９０・９２の剤点数
+                   07  LNK-SROUNYUIN-ZAITEN-ACCT     PIC  9(08).
+      *診療会計９０・９２の剤点数（その他）
+                   07  LNK-SROUNYUIN-ZAITEN-ACCTETC  PIC  9(08).
+      *
+      *略称（一般入院料・加算）
+               05  LNK-SROUNYUIN-RYAKUSYO2           PIC  X(14)
+                                                     OCCURS 20.
+      *
       *復帰コード（１：算定年月エラー　２：患者検索エラー　３：労災入院なし）
            03  LNK-SROUNYUIN-RC                      PIC S9(9) BINARY.
       *

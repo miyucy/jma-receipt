@@ -1161,6 +1161,7 @@
            MOVE    RECE82-PTID         TO  LNK-SROUNYUIN-PTID
            MOVE    RECE82-SRYYM        TO  LNK-SROUNYUIN-SANTEIYM
            MOVE    RECE82-HKNCOMBI     TO  LNK-SROUNYUIN-HKNCOMBI
+           MOVE    SPACE               TO  LNK-SROUNYUIN-RYAKUKBN
       *    Ï«ºÒ¾è¿ô¶èÊ¬¥»¥Ã¥È
            PERFORM    VARYING   IDY   FROM   1   BY   1
                        UNTIL    IDY    >    31
