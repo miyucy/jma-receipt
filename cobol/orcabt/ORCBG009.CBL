@@ -30,6 +30,7 @@
       * 01.01.01     NACL-¿¹ÏÆ     03/08/21  Ê¬Îà¶èÊ¬È½Äê
       * 01.01.02     NACL-¿¹ÏÆ     03/08/26  »ÈÍÑÎÌ¥«¥¦¥ó¥È¹½À®ÊÑ¹¹
       * 01.01.03     NACL-¿¹ÏÆ     03/08/27  ´µ¼Ô»ØÄê»þ½¤Àµ
+      * 01.02.01     NACL-¿¹ÏÆ     04/01/23  Êñ³çÊ¬ÆÉ¤ßÈô¤Ð¤·
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1176,6 +1177,11 @@
            IF          MCP-RC          =   ZERO
                MOVE    ZERO                TO  FLG-SRYACCT
                MOVE    MCPDATA-REC         TO  SRYACCT-REC
+      *----(01.02.01)--ADD-START---
+               IF          ACCT-HKNCOMBI   =   9999
+                   GO  TO  900-ACCT-DBFETCH-SEC
+               END-IF
+      *----(01.02.01)--ADD-END-----
            ELSE
                MOVE    1                   TO  FLG-SRYACCT
            END-IF

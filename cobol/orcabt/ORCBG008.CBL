@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       * 01.01.01     NACL-森脇     03/08/27  患者指定時修正
+      * 01.02.01     NACL-森脇     04/01/23  包括分読み飛ばし
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1079,6 +1080,11 @@
            IF          MCP-RC          =   ZERO
                MOVE    ZERO                TO  FLG-SRYACCT
                MOVE    MCPDATA-REC         TO  SRYACCT-REC
+      *----(01.02.01)--ADD-START---
+               IF          ACCT-HKNCOMBI   =   9999
+                   GO  TO  900-ACCT-DBFETCH-SEC
+               END-IF
+      *----(01.02.01)--ADD-END-----
            ELSE
                MOVE    1                   TO  FLG-SRYACCT
            END-IF
