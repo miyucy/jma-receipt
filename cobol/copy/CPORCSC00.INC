@@ -26,9 +26,6 @@
       * 01.00.02     多々納       02/04/19  生活習慣病指導算定時の追加
       * 01.00.03     NACL-多々納  02/10/25  入院対応
       * 01.00.04     NACL-多々納  04/03/08  時間外加算特例乳幼児加算追加
-      * 01.00.05     NACL-多々納  05/12/26  急性発生日追加（入院）
-      * 03.05.01     NACL-多々納  07/07/18  皮下筋肉注射料変換選択
-      * 04.08.01     NACL-多々納  16/03/XX  終了区分等追加
       ************************************************************
       *
        01  ORCSC00AREA.
@@ -39,10 +36,8 @@
       *    ２：全体のチェック
       *    ３：終了時の自動加算算定
            03  LNK-ORCSC-KBN           PIC X(01).
-      *    1：終了時
-           03  LNK-ORCSC-KBN2          PIC X(01).
       *    メインＰＧ
-           03  LNK-ORCSC-PG            PIC X(04).
+           03  LNK-ORCSC-PG            PIC X(03).
       *    剤ごとの回数
            03  LNK-ORCSC-KAISU         PIC 9(03).
       *    訂正フラグ
@@ -51,8 +46,6 @@
            03  LNK-ORCSC-SYOSIN        PIC 9(01).
       *    初診フラグ２（今回初診料かどうかの判定）
            03  LNK-ORCSC-SYOSIN2       PIC 9(01).
-      *    同日初診フラグ２（今回初診料かどうかの判定）
-           03  LNK-ORCSC-DOUSIN       PIC 9(01).
       *    訂正前診療科
            03  LNK-ORCSC-OLD-SRYKA     PIC X(02).
       *    訂正前保険組合せ
@@ -99,12 +92,6 @@
            03  LNK-ORCSC-TOROKU            PIC  X(01).
       *同日再診有無
            03  LNK-ORCSC-RRK-LSTYMD        PIC  X(08).
-      *皮下筋肉注射料変換選択
-           03  LNK-ORCSC-CHG310FLG         PIC  X(01).
-      *腫瘍マーカー一覧展開選択
-           03  LNK-ORCSC-AKUSEIHYOFLG      PIC  X(01).
-      *残量廃棄区分
-           03  LNK-ORCSC-HAIKIKBN-FLG      PIC  X(01).
       *
       *更新前自動算定のみに使用（Ｋ０２のみ）
       *調剤技術基本料有無
@@ -168,8 +155,6 @@
       *急性発生１８０日以内
            03  LNK-ORCSC-KYUSEI-180          PIC  X(08).
            03  LNK-ORCSC-KYUSEI-90           PIC  X(08).
-           03  LNK-ORCSC-KYUSEI-YMD          PIC  X(08).
-           03  LNK-ORCSC-KYUSEI-END          PIC  X(08).
            03  LNK-ORCSC-KYUSEI-FLG          PIC  9(01).
       *当月外来管理加算の取れない患者
            03  LNK-ORCSC-GAIRAI-NASI       PIC  9(01).
@@ -182,11 +167,6 @@
       *
       *    リハビリ逓減確認
            03  LNK-ORCSC-FLG-RIHTEI            PIC 9(01).
-      *
-      *ver.4.8
-      *    労災レセ電対応
-           03  LNK-ORCSC-ROURECEKBN        PIC 9(01).
-      *
       *投薬の継続分チェック
            03  LNK-ORCSC-KBN20.
       *継続区分
@@ -198,7 +178,7 @@
       *
       *    診療行為月別チェック用（検査用）
            03  LNK-NAIACCT-AREA.
-               05  LNK-ACCT-TBL             OCCURS   100.
+               05  LNK-ACCT-TBL             OCCURS   200.
                    07  LNK-ACCT-SRYKBN          PIC  X(02).
                    07  LNK-ACCT-SRYCD           PIC  X(09).
                    07  LNK-ACCT-CDKBN.
@@ -211,14 +191,11 @@
       *        当日チェック用（点滴）
                05  LNK-ACCT2-SRYCD           PIC X(09).
                05  LNK-ACCT2-ZAINUM          PIC 9(08).
-               05  LNK-ACCT2-CSYYOURYO       PIC 9(08)V9(5).
-      *        静脈注射
-               05  LNK-ACCT2-SRYCD-JYO1      PIC X(09).
-               05  LNK-ACCT2-SRYCD-JYO2      PIC X(09).
+               05  LNK-ACCT2-CSYYOURYO       PIC 9(08).
       *
       *    訂正時の診療コード
            03  LNK-ORCSC-TEISEI-AREA.
-               05  LNK-ORCSC-TEISEI-OCC      OCCURS   400.
+               05  LNK-ORCSC-TEISEI-OCC      OCCURS   100.
                    07  LNK-ORCSC-TEI-SRYCD   PIC X(09).
                    07  LNK-ORCSC-TEI-KAISU   PIC 9(03).
       *
@@ -230,44 +207,23 @@
       *    入院期間
            03  LNK-ORCSC-NYUINYMD           PIC X(08).
            03  LNK-ORCSC-TAIINYMD           PIC X(08).
-      *    入院検査包括
-           03  LNK-ORCSC-KENSAFLG           PIC 9(01).
-      *
-      *    同日初診算定科（外来のみ）
-      *D   03  LNK-ORCSC-DOUSYOSIN-AREA.
-      *        05  LNK-ORCSC-DOUSYOSIN-OCC       OCCURS   10.
-      *            07  LNK-ORCSC-DOU-SRYKA       PIC X(02).
-      *D           07  LNK-ORCSC-DOU-SRYYMD      PIC X(08).
       *
       *    加算追加領域（更新時の自動加算（単独剤））
            03  LNK-ORCSC-KASAN.
                05  LNK-ORCSC-KASAN-TBL  OCCURS  10.
                    07  LNK-ORCSC-KASN-TBL2     OCCURS   30.
-                       09  LNK-ORCSC-SRYKA         PIC X(02).
-                       09  LNK-ORCSC-HKNCOMBI      PIC X(04).
-                       09  LNK-ORCSC-CHIKENKBN     PIC X(01).
                        09  LNK-ORCSC-SRYSYUKBN     PIC X(03).
                        09  LNK-ORCSC-SRYKBN        PIC X(02).
                        09  LNK-ORCSC-SRYCD         PIC X(09).
-                       09  LNK-ORCSC-TENSU         PIC 9(05)V9(05).
-                       09  LNK-ORCSC-SURYO         PIC 9(05)V9(05).
+                       09  LNK-ORCSC-TENSU         PIC 9(05)V9(03).
                        09  LNK-ORCSC-SRYCD-KS      PIC X(09).
-                       09  LNK-ORCSC-TENSU-KS      PIC 9(05)V9(05).
-      *H28.4 追加
-                       09  LNK-ORCSC-SRYCD-KS2     PIC X(09).
-                       09  LNK-ORCSC-TENSU-KS2     PIC 9(05)V9(05).
+                       09  LNK-ORCSC-TENSU-KS      PIC 9(05)V9(03).
                        09  LNK-ORCSC-ATAI-G.
-                           11  LNK-ORCSC-ATAI   PIC X(08) OCCURS  5.
+                           11  LNK-ORCSC-ATAI   PIC X(08) OCCURS  4.
       *                入院時の回数
                        09  LNK-ORCSC-INPUTCD-G.
                            11  LNK-ORCSC-INPUTCD       PIC X(22)
                                                    OCCURS  5.
-      *                自動発生分としない
-                       09  LNK-ORCSC-AUTOKBN       PIC X(01).
-      *                包括剤
-                       09  LNK-ORCSC-HKTKBN        PIC 9(01).
-      *                算定履歴区分
-                       09  LNK-ORCSC-SANTEIRRKKBN  PIC X(01).
       *    確認メッセージ
            03  LNK-ORCSC-KIDCD              PIC  X(04).
       *
@@ -279,14 +235,28 @@
       *    全体件数
          02  LNK-ORCSALL-AREA.
       *
-           03  LNK-ORCSC-CHUSYA-AREA.
-      *        点滴・静脈注射
-               05  LNK-ORCSC-TEN             PIC X(01).
-               05  LNK-ORCSC-JYO1            PIC X(01).
-               05  LNK-ORCSC-JYO2            PIC X(01).
-      *
       *リハビリ当月内回数集計
-           03  LNK-RIGAKU-NCNT-AREA          PIC X(1301).
+           03  LNK-ORCSC-RIGAKU-TBL.
+      *        １:理学、２：作業、３：言語
+               05  LNK-ORCSC-DCNT-TBL        OCCURS  3.
+      *        集団
+                   07  LNK-ORCSC-DCNT-SN-G.
+                       09  LNK-ORCSC-DCNT-SN     PIC 9(03)   OCCURS  31.
+      *            当日
+                   07  LNK-ORCSC-TCNT-S          PIC 9(03).
+      *            月計
+                   07  LNK-ORCSC-TCNT-SN         PIC 9(03).
+      *        個別
+                   07  LNK-ORCSC-DCNT-KN-G.
+                       09  LNK-ORCSC-DCNT-KN     PIC 9(03)   OCCURS  31.
+                   07  LNK-ORCSC-TCNT-K          PIC 9(03).
+                   07  LNK-ORCSC-TCNT-KN         PIC 9(03).
+      *        早期リハ等加算（逓減対象外）
+               05  LNK-ORCSC-GAICNT-G.
+                   07  LNK-ORCSC-GCNT            PIC 9(01)   OCCURS  31.
+      *    早期リハ等加算（今回入力分）
+           03  LNK-ORCSC-GAI-FLG-G.
+               05  LNK-ORCSC-GAI-FLG           PIC 9(01)   OCCURS  31.
       *
       *    検査逓減領域
            03  LNK-ORCSC-TEIGEN-AREA.
@@ -295,13 +265,4 @@
                    07  LNK-ORCSC-TEIGEN-HOU       PIC X(02).
                    07  LNK-ORCSC-TEIGEN-CNT       PIC 9(03).
                    07  LNK-ORCSC-TEIGEN-SANTEI    PIC 9(03).
-      *
-      *外来まとめ算定履歴領域
-           03  LNK-ORCSC-KT01-AREA.
-               05  LNK-ORCSC-KT01FLG         PIC X(01).
-               05  LNK-ORCSC-KT01-OCC        OCCURS   100.
-                   07  LNK-ORCSC-KT01-SRYCD  PIC X(09).
-                   07  LNK-ORCSC-KT01-DAY-G.
-                       09  LNK-ORCSC-KT01-DAY     PIC 9(03)
-                                                  OCCURS   31.
       *

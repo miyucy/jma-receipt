@@ -133,7 +133,8 @@
            03  WRK-SRYKAISUKEI     PIC 9(03).
            03  WRK-SRYSURYOKEI     PIC 9(07)V9(03).
            03  WRK-MEISAISU        PIC 9(07).
-           03  WRK-SRYCD           PIC 9(09).
+           03  WRK-SRYCD           PIC X(09).
+           03  WRK-SRYCD9          PIC 9(09).
            03  WRK-SRYCDKEI        PIC 9(14).
            03  WRK-SRYYMD.
                05  WRK-SRYYY           PIC 9(04).
@@ -532,7 +533,6 @@
       *    受診履歴作成終了処理
            PERFORM 45001-JYURRK-SYORI3-SEC
       *
-      *
            .
        1001-DBKOUSIN-SYORI-EXT.
            EXIT.
@@ -548,7 +548,6 @@
                IF      SPA-ERRCD       NOT =   SPACE
                    GO      TO      1002-SYUNOU-OUT-EXT
                END-IF
-      *
            ELSE
                MOVE    SPA-DENPNUM     TO  WRK-DENPNUM
       *        診療科変更時
@@ -566,13 +565,11 @@
                GO      TO      1002-SYUNOU-OUT-EXT
            END-IF
       *
-      *
            MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
       *    伝票番号発行日
            MOVE    SPA-SYSYMD          TO  SYU-DENPPRTYMD
       *    ドクター
            MOVE    SPA-DRCD(2:4)       TO  SYU-DRCD
-      *
       *    調整金
            MOVE    ORCSCGAIRAI-CHOSEI  TO  SYU-CHOSEI
       *    請求書作成区分
@@ -736,7 +733,8 @@
                    END-IF
                END-IF
                IF      FLG-SYUNOU          =   ZERO
-      *
+      *            会計変更区分
+                   MOVE    SPACE               TO  SYU-ACCT-UPDKBN
                    MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                    MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
@@ -747,7 +745,11 @@
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
-      *
+                   IF      MCP-RC          NOT =   ZERO
+                       MOVE    "0005"          TO  SPA-ERRCD
+                       DISPLAY "K03 SYUNOU UPD MCP-RC:" MCP-RC
+                               ",KEY:" SYU-KEY
+                   END-IF
       *            収納明細マスター作成
                    PERFORM 45001-SINMEI-SYORI2-SEC
                ELSE
@@ -758,16 +760,19 @@
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"          USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-      *
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+                   IF      MCP-RC          NOT =   ZERO
+                       MOVE    "0005"          TO  SPA-ERRCD
+                       DISPLAY "K03 SYUNOU INS MCP-RC:" MCP-RC
+                               ",KEY:" SYU-KEY
+                   END-IF
       *            収納明細マスター作成
                    PERFORM 45001-SINMEI-SYORI-SEC
                END-IF
            END-IF
-      *
       *
            MOVE    WRK-SYUNOU-REC      TO  SYUNOU-REC
       *
@@ -802,7 +807,6 @@
       *        収納明細更新
                PERFORM 45012-SYUMEI-UPD-SEC
       *
-      *
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
@@ -815,6 +819,7 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SYUNOU UPD ERR:"  MCP-RC
+                   MOVE    "0005"          TO  SPA-ERRCD
                END-IF
       *
                MOVE    "SYUNOU-KEY3"       TO  ORC-DBPATH
@@ -874,6 +879,7 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SYUMEI UPD ERR:"  MCP-RC
+                   MOVE    "0005"          TO  SPA-ERRCD
                END-IF
       *
                MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
@@ -1106,6 +1112,7 @@
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "K03 SYUMEI UPD ERR:"  MCP-RC
                                ",KEY:" SMEI-KEY
+                       MOVE    "0005"          TO  SPA-ERRCD
                    END-IF
                END-IF
       *
@@ -1363,10 +1370,8 @@
                    MOVE    JYURRK-RENNUM       TO  WRK-DEL-RENNUM
                    MOVE    JYURRK-DOUJI-RENNUM TO
                                                WRK-JYURRK-DOUJI-RENNUM
-      *
       *            診療会計マスタの診療回数をクリアする
                    PERFORM 4500112-TEISEI-SRYACCT-SEC
-      *
       *            最終フラグクリア
                    MOVE    ZERO                TO  JYURRK-LASTKBN
       *            会計連番
@@ -1463,7 +1468,6 @@
                    ADD     1               TO  JYURRK-KAIKEI-RENNUM
                END-IF
       *
-      *
                MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
@@ -1475,11 +1479,10 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
-      *!       IF      MCP-RC          NOT =   ZERO
+               IF      MCP-RC          NOT =   ZERO
                     DISPLAY "K03 JYURRK UPD1 ERR:" MCP-RC
-                    DISPLAY "K03  KEY:" JYURRK-KEY
-                    DISPLAY "K03 UKEY:" JYURRK-UPKEY
-      *!       END-IF
+                    MOVE    "0005"              TO  SPA-ERRCD
+               END-IF
       *
                MOVE    "JYURRK-KEY4"            TO  ORC-DBPATH
                PERFORM 970-JYURRK-NEXT-SEC
@@ -1603,6 +1606,7 @@
                                                     MCPDATA-REC
                        IF      MCP-RC          NOT =   ZERO
                             DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
+                            MOVE    "0005"              TO  SPA-ERRCD
                        END-IF
                    END-IF
       *
@@ -1821,7 +1825,8 @@
                        WHEN    "820000004"
                        WHEN    "820000005"
                        WHEN    "820000006"
-                           IF      WRK-KARRK-SYOSINYMD2    =   SPACE
+                           IF     (LNK-WKSRY-SRYKBN (IDX)  =   "11") AND
+                                  (WRK-KARRK-SYOSINYMD2    =   SPACE)
                                MOVE    SYU-SRYYMD  TO
                                                    WRK-KARRK-SYOSINYMD2
                                MOVE    1           TO  FLG-SYOSIN-DUMMY
@@ -1944,6 +1949,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SRYKARRK UPD ERR:"  MCP-RC
                            ",KEY:" KARRK-KEY  ";"
+                   MOVE    "0005"              TO  SPA-ERRCD
                END-IF
            ELSE
       *        新規
@@ -1961,6 +1967,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SRYKARRK INS ERR:"  MCP-RC
                            ",KEY:" KARRK-KEY  ";"
+                   MOVE    "0005"              TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -2032,8 +2039,8 @@
                                   (LNK-WKSRY-SRYCD (IDX IDY) =   SPACE)
                    IF      LNK-WKSRY-SRYCD (IDX IDY)     NUMERIC
                        MOVE    LNK-WKSRY-SRYCD (IDX IDY)
-                                               TO  WRK-SRYCD
-                       ADD     WRK-SRYCD       TO  WRK-SRYCDKEI
+                                               TO  WRK-SRYCD9
+                       ADD     WRK-SRYCD9      TO  WRK-SRYCDKEI
                        ADD     LNK-WKSRY-SRYSURYO (IDX IDY)
                                                TO  WRK-SRYSURYOKEI
                        ADD     1               TO  WRK-MEISAISU
@@ -2155,7 +2162,7 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "SYRACCT INS ERR:" MCP-RC
+                   DISPLAY "K03 SRYACCT INS ERR:" MCP-RC
                    MOVE    "0005"              TO  SPA-ERRCD
                END-IF
       *        新規のときのみ、診療行為マスターを追加する
@@ -2330,7 +2337,8 @@
                                                TO  SRY-JIHIMONEY
                                                             (IDX-SIN)
       *            患者コメント作成
-                   IF      LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:1)  =   "8"
+                   IF     (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:1)  =  "8")
+                      OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "008")
                        PERFORM 45011-PTCOM-SYROI-SEC
                    END-IF
                END-PERFORM
@@ -2508,12 +2516,12 @@
       *    初診料算定日
       *    訂正の時
            IF      SPA-SYORIFLG        =   1
-               MOVE    SPACE               TO  SSANTEI-SYOYMD
+               MOVE    SPA-SYOYMD-OLD      TO  SSANTEI-SYOYMD
            ELSE
-               IF      KARRK-SYOSINYMD2    =   SPACE
-                   MOVE    KARRK-SYOSINYMD1    TO  SSANTEI-SYOYMD
+               IF      WRK-KARRK-SYOSINYMD2    =   SPACE
+                   MOVE    SPA-SYOYMD              TO  SSANTEI-SYOYMD
                ELSE
-                   MOVE    KARRK-SYOSINYMD2    TO  SSANTEI-SYOYMD
+                   MOVE    WRK-KARRK-SYOSINYMD2    TO  SSANTEI-SYOYMD
                END-IF
            END-IF
            CALL    "ORCSSANTEI"        USING
@@ -2761,6 +2769,10 @@
                                                MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
+                   IF      MCP-RC          NOT =   ZERO
+                       DISPLAY "K03 JYURRK INS ERR:" JYURRK-KEY
+                       MOVE    "0005"          TO  SPA-ERRCD
+                   END-IF
       *            診療会計修正
                    IF      JYURRK-LASTKBN      =   1
                        PERFORM 4500115-TEISEI-SRYACTUPD-SEC
@@ -2957,6 +2969,7 @@
       *
                        IF      MCP-RC          NOT =   ZERO
                             DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
+                            MOVE    "0005"          TO  SPA-ERRCD
                        END-IF
       *
                    MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
