@@ -1876,16 +1876,31 @@
                        CONTINUE
                    ELSE 
       *                レセプト特記事項編集情報
-      ***              IF      FLG-SYS-2006            =   1
-      ***                  MOVE    2                   TO  FLG-CHK-SYOKBN
-      ***                  PERFORM 800-SYS2006-CHECK-SEC
-      ***                  IF      FLG-2006-CHK        =   1
-      ***                      CONTINUE
-      ***                  ELSE 
+                       IF      FLG-SYS-2006            =   1
+                           MOVE    ZERO        TO  FLG-2006-CHK
+                           INITIALIZE              SYS-2006-REC 
+                           PERFORM VARYING IDW2    FROM    1  BY  1
+                                   UNTIL   IDW2            >  SYSKAN-IDY
+                                   OR      TBL-SYS2006 (IDW2)
+                                                           =   SPACE
+                               MOVE    ZERO            TO  FLG-2006-ERR
+                               MOVE    TBL-SYS2006 (IDW2)
+                                                       TO  WRK-2006-REC
+      *
+                               IF      RECE02-KOHNUM (IDY)
+                                                   =   WRK-2006-HKNNUM
+                                   PERFORM 8001-SYS2006-CHECK-SEC
+                               END-IF    
+                           END-PERFORM
+      *
+                           IF     SYS-2006-RECEDEN-KORECKBN    =   "1"
+                               CONTINUE
+                           ELSE 
                                PERFORM 20051-KOH-HENSYU-SEC
-      ***                  END-IF
-      ***              END-IF
-                   END-IF
+                           END-IF
+                       ELSE 
+                           PERFORM 20051-KOH-HENSYU-SEC
+                       END-IF
                END-PERFORM                      
       *****END-IF                            
            .
@@ -4777,6 +4792,7 @@
        800-SYS2006-CHECK-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-2006-CHK
+           INITIALIZE                      SYS-2006-REC
       *
            PERFORM VARYING IDW1    FROM    1   BY  1
                    UNTIL ( IDW1    >       4             )
@@ -4800,7 +4816,8 @@
                                                        =   "1"
                                    PERFORM 8001-SYS2006-CHECK-SEC
                                END-IF
-                       END-EVALUATE    
+                       END-EVALUATE
+                   END-IF    
                END-PERFORM
       *
                IF     FLG-2006-CHK     =   1
@@ -4900,6 +4917,7 @@
        801-SYS2006-CHECK-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-2006-CHK
+           INITIALIZE                      SYS-2006-REC
       *
       *    保険番号設定時の対象の保険チェック
            MOVE    ZERO                TO  FLG-HKNNUM-OK
