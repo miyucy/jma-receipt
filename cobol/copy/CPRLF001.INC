@@ -146,29 +146,43 @@
       * 性別
            03  LF01-SEX                 PIC X(07).
       * 住所(自宅)
-           03  LF01-HOME-ADRS           PIC X(400).    
+           03  LF01-HOME-ADRS           PIC X(400).
       * 住所(自宅) 種類コード
            03  LF01-HOME-KREPCODE       PIC X(09).
       * 住所(自宅) 郵便番号
            03  LF01-HOME-POST           PIC X(08).
       * 住所(連絡先)
-           03  LF01-RENRAKU-ADRS        PIC X(400).    
+           03  LF01-RENRAKU-ADRS        PIC X(400).
       * 住所(連絡先) 種類コード
            03  LF01-RENRAKU-KREPCODE    PIC X(09).
       * 住所(連絡先) 郵便番号
            03  LF01-RENRAKU-POST        PIC X(08).
       * 住所(勤務先)
-           03  LF01-OFFICE-ADRS         PIC X(400).    
+           03  LF01-OFFICE-ADRS         PIC X(400).
       * 住所(勤務先) 種類コード
            03  LF01-OFFICE-KREPCODE     PIC X(09).
       * 住所(勤務先) 郵便番号
            03  LF01-OFFICE-POST         PIC X(08).
       * 住所(帰省先)
-           03  LF01-KISEI-ADRS          PIC X(400).    
+           03  LF01-KISEI-ADRS          PIC X(400).
       * 住所(帰省先) 種類コード
            03  LF01-KISEI-KREPCODE      PIC X(09).
       * 住所(帰省先) 郵便番号
            03  LF01-KISEI-POST          PIC X(08).
+      * 市外局番
+           03  LF01-PHONE-AREA          PIC X(10).
+      * 局番
+           03  LF01-PHONE-CITY          PIC X(10).
+      * 加入番号
+           03  LF01-PHONE-NUM           PIC X(10).
+      * 内線番号
+           03  LF01-PHONE-EXT           PIC X(10).
+      * 国番号
+           03  LF01-PHONE-COUNTRY       PIC X(10).
+      * 使用時間帯などを記載
+           03  LF01-PHONE-MEMO          PIC X(100).
+      * 装置の種類コード [省略可能・属性] (PH)
+           03  LF01-PHONE-EQUIP         PIC X(10).
       * 死亡フラグ
            03  LF01-DEATHKBN            PIC X(05).
       * [健康保険情報]
@@ -251,10 +265,16 @@
                05  LF01-TEKSTYMD       PIC  X(10).
       *適用終了年月日
                05  LF01-TEKEDYMD       PIC  X(10).
+      * 入院時の負担率
+               05  LF01-INRATIO        PIC X(5).
+      * 外来時の負担率
+               05  LF01-OUTRATIO       PIC X(5).
       *公費情報
                05  LF01-KOHINF       OCCURS  6.
-      *負担者番号
+      *優先順位
                    07  LF01-PRIORITY   PIC  X(01).
+      *公費名称
+                   07  LF01-KOHINAME   PIC  X(50).
       *負担者番号
                    07  LF01-FTNJANUM   PIC  X(08).
       *受給者番号
@@ -263,6 +283,9 @@
                    07  LF01-TTEKSTYMD  PIC  X(10).
       *適用終了年月日
                    07  LF01-TTEKEDYMD  PIC  X(10).
+      * 負担金または負担率
+                   07  LF01-RATIO-CODE PIC X(10).
+                   07  LF01-RATIO      PIC X(10).
       *[CLAIM]
       * 文書ユニークID
            03  LF01-UID3                PIC X(36).

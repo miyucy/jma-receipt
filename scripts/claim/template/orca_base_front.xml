@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="EUC-JP" ?>
 <!-- 
 受付情報、テンプレートXMLファイル
+
+バージョン2.0形式
 -->
 
 <!--
@@ -342,6 +344,28 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 						</mmlAd:Address>
 					</mmlPi:addresses>
 					<!-- 電話番号 -->
+					<mmlPi:phones>
+						<mmlPh:Phone%D_PH1_EQUIP%>
+							<mmlPh:area>
+								%D_PH1_AREA%
+							</mmlPh:area>
+							<mmlPh:city>
+								%D_PH1_CITY%
+							</mmlPh:city>
+							<mmlPh:number>
+								%D_PH1_NUM%
+							</mmlPh:number>
+							<mmlPh:extension>
+								%D_PH1_EXT%
+							</mmlPh:extension>
+							<mmlPh:country>
+								%D_PH1_COUNTRY%
+							</mmlPh:country>
+							<mmlPh:memo>
+								%D_PH1_MEMO%
+							</mmlPh:memo>
+						</mmlPh:Phone>
+					</mmlPi:phones>
 					<!-- 会計番号 -->
 					<!-- 社会番号 -->
 					<!-- 死亡フラグ -->
@@ -351,7 +375,10 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 		</MmlModuleItem>
 		<!-- ============================================================ -->
 		<!-- 健康保険情報 -->
-		<!-- 健康保険情報(1) -->
+
+<!-- 健康保険情報[01-20] (繰り返しの際に、@@HIMOD@@に01〜20の数字が入って置換される) -->
+
+		<!-- 健康保険情報(01) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
 				<!-- アクセス権種別 -->
@@ -496,59 +523,91 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_01_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_01_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_01_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_01_F11%">
-							<mmlHi:provider>%I_01_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_01_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_01_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_01_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_01_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_01_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_01_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_01_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_01_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_01_F17%>%I_01_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_01_F21%">
-							<mmlHi:provider>%I_01_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_01_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_01_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_01_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_01_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_01_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_01_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_01_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_01_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_01_F27%>%I_01_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_01_F31%">
-							<mmlHi:provider>%I_01_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_01_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_01_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_01_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_01_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_01_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_01_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_01_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_01_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_01_F37%>%I_01_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_01_F41%">
-							<mmlHi:provider>%I_01_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_01_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_01_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_01_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_01_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_01_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_01_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_01_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_01_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_01_F47%>%I_01_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_01_F51%">
-							<mmlHi:provider>%I_01_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_01_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_01_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_01_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_01_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_01_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_01_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_01_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_01_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_01_F57%>%I_01_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_01_F61%">
-							<mmlHi:provider>%I_01_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_01_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_01_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_01_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_01_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_01_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_01_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_01_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_01_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_01_F67%>%I_01_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
-		<!-- 健康保険情報(2) -->
+
+		<!-- 健康保険情報(02) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
 				<!-- アクセス権種別 -->
@@ -670,7 +729,6 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 			<content>
 				<mmlHi:HealthInsuranceModule mmlHi:countryType="JPN">
 					<!-- 健康保険種別 -->
-					<!-- 健康保険種別 -->
 					<mmlHi:insuranceClass%I_02_A2%%I_02_A3%>
 						%I_02_A1%
 					</mmlHi:insuranceClass>
@@ -694,59 +752,91 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_02_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_02_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_02_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_02_F11%">
-							<mmlHi:provider>%I_02_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_02_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_02_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_02_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_02_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_02_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_02_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_02_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_02_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_02_F17%>%I_02_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_02_F21%">
-							<mmlHi:provider>%I_02_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_02_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_02_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_02_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_02_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_02_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_02_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_02_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_02_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_02_F27%>%I_02_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_02_F31%">
-							<mmlHi:provider>%I_02_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_02_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_02_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_02_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_02_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_02_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_02_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_02_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_02_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_02_F37%>%I_02_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_02_F41%">
-							<mmlHi:provider>%I_02_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_02_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_02_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_02_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_02_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_02_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_02_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_02_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_02_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_02_F47%>%I_02_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_02_F51%">
-							<mmlHi:provider>%I_02_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_02_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_02_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_02_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_02_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_02_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_02_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_02_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_02_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_02_F57%>%I_02_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_02_F61%">
-							<mmlHi:provider>%I_02_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_02_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_02_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_02_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_02_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_02_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_02_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_02_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_02_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_02_F67%>%I_02_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
-		<!-- 健康保険情報(3) -->
+
+		<!-- 健康保険情報(03) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
 				<!-- アクセス権種別 -->
@@ -891,59 +981,91 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_03_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_03_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_03_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_03_F11%">
-							<mmlHi:provider>%I_03_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_03_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_03_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_03_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_03_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_03_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_03_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_03_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_03_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_03_F17%>%I_03_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_03_F21%">
-							<mmlHi:provider>%I_03_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_03_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_03_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_03_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_03_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_03_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_03_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_03_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_03_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_03_F27%>%I_03_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_03_F31%">
-							<mmlHi:provider>%I_03_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_03_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_03_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_03_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_03_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_03_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_03_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_03_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_03_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_03_F37%>%I_03_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_03_F41%">
-							<mmlHi:provider>%I_03_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_03_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_03_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_03_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_03_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_03_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_03_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_03_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_03_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_03_F47%>%I_03_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_03_F51%">
-							<mmlHi:provider>%I_03_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_03_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_03_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_03_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_03_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_03_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_03_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_03_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_03_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_03_F57%>%I_03_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_03_F61%">
-							<mmlHi:provider>%I_03_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_03_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_03_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_03_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_03_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_03_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_03_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_03_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_03_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_03_F67%>%I_03_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
-		<!-- 健康保険情報(4) -->
+
+		<!-- 健康保険情報(04) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
 				<!-- アクセス権種別 -->
@@ -1088,59 +1210,91 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_04_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_04_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_04_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_04_F11%">
-							<mmlHi:provider>%I_04_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_04_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_04_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_04_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_04_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_04_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_04_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_04_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_04_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_04_F17%>%I_04_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_04_F21%">
-							<mmlHi:provider>%I_04_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_04_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_04_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_04_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_04_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_04_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_04_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_04_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_04_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_04_F27%>%I_04_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_04_F31%">
-							<mmlHi:provider>%I_04_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_04_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_04_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_04_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_04_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_04_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_04_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_04_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_04_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_04_F37%>%I_04_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_04_F41%">
-							<mmlHi:provider>%I_04_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_04_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_04_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_04_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_04_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_04_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_04_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_04_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_04_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_04_F47%>%I_04_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_04_F51%">
-							<mmlHi:provider>%I_04_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_04_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_04_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_04_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_04_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_04_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_04_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_04_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_04_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_04_F57%>%I_04_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_04_F61%">
-							<mmlHi:provider>%I_04_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_04_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_04_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_04_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_04_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_04_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_04_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_04_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_04_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_04_F67%>%I_04_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
-		<!-- 健康保険情報(5) -->
+
+		<!-- 健康保険情報(05) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
 				<!-- アクセス権種別 -->
@@ -1285,59 +1439,91 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_05_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_05_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_05_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_05_F11%">
-							<mmlHi:provider>%I_05_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_05_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_05_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_05_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_05_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_05_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_05_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_05_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_05_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_05_F17%>%I_05_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_05_F21%">
-							<mmlHi:provider>%I_05_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_05_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_05_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_05_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_05_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_05_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_05_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_05_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_05_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_05_F27%>%I_05_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_05_F31%">
-							<mmlHi:provider>%I_05_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_05_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_05_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_05_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_05_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_05_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_05_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_05_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_05_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_05_F37%>%I_05_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_05_F41%">
-							<mmlHi:provider>%I_05_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_05_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_05_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_05_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_05_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_05_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_05_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_05_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_05_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_05_F47%>%I_05_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_05_F51%">
-							<mmlHi:provider>%I_05_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_05_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_05_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_05_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_05_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_05_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_05_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_05_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_05_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_05_F57%>%I_05_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_05_F61%">
-							<mmlHi:provider>%I_05_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_05_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_05_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_05_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_05_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_05_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_05_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_05_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_05_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_05_F67%>%I_05_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
-		<!-- 健康保険情報(6) -->
+
+		<!-- 健康保険情報(06) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
 				<!-- アクセス権種別 -->
@@ -1482,59 +1668,91 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_06_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_06_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_06_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_06_F11%">
-							<mmlHi:provider>%I_06_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_06_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_06_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_06_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_06_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_06_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_06_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_06_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_06_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_06_F17%>%I_06_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_06_F21%">
-							<mmlHi:provider>%I_06_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_06_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_06_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_06_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_06_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_06_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_06_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_06_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_06_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_06_F27%>%I_06_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_06_F31%">
-							<mmlHi:provider>%I_06_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_06_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_06_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_06_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_06_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_06_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_06_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_06_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_06_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_06_F37%>%I_06_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_06_F41%">
-							<mmlHi:provider>%I_06_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_06_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_06_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_06_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_06_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_06_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_06_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_06_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_06_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_06_F47%>%I_06_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_06_F51%">
-							<mmlHi:provider>%I_06_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_06_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_06_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_06_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_06_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_06_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_06_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_06_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_06_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_06_F57%>%I_06_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_06_F61%">
-							<mmlHi:provider>%I_06_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_06_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_06_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_06_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_06_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_06_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_06_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_06_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_06_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_06_F67%>%I_06_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
-		<!-- 健康保険情報(7) -->
+
+		<!-- 健康保険情報(07) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
 				<!-- アクセス権種別 -->
@@ -1679,59 +1897,91 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_07_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_07_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_07_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_07_F11%">
-							<mmlHi:provider>%I_07_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_07_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_07_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_07_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_07_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_07_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_07_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_07_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_07_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_07_F17%>%I_07_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_07_F21%">
-							<mmlHi:provider>%I_07_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_07_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_07_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_07_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_07_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_07_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_07_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_07_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_07_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_07_F27%>%I_07_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_07_F31%">
-							<mmlHi:provider>%I_07_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_07_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_07_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_07_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_07_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_07_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_07_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_07_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_07_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_07_F37%>%I_07_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_07_F41%">
-							<mmlHi:provider>%I_07_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_07_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_07_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_07_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_07_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_07_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_07_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_07_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_07_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_07_F47%>%I_07_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_07_F51%">
-							<mmlHi:provider>%I_07_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_07_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_07_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_07_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_07_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_07_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_07_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_07_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_07_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_07_F57%>%I_07_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_07_F61%">
-							<mmlHi:provider>%I_07_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_07_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_07_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_07_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_07_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_07_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_07_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_07_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_07_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_07_F67%>%I_07_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
-		<!-- 健康保険情報(8) -->
+
+		<!-- 健康保険情報(08) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
 				<!-- アクセス権種別 -->
@@ -1876,59 +2126,91 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_08_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_08_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_08_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_08_F11%">
-							<mmlHi:provider>%I_08_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_08_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_08_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_08_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_08_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_08_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_08_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_08_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_08_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_08_F17%>%I_08_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_08_F21%">
-							<mmlHi:provider>%I_08_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_08_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_08_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_08_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_08_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_08_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_08_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_08_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_08_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_08_F27%>%I_08_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_08_F31%">
-							<mmlHi:provider>%I_08_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_08_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_08_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_08_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_08_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_08_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_08_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_08_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_08_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_08_F37%>%I_08_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_08_F41%">
-							<mmlHi:provider>%I_08_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_08_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_08_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_08_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_08_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_08_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_08_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_08_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_08_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_08_F47%>%I_08_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_08_F51%">
-							<mmlHi:provider>%I_08_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_08_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_08_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_08_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_08_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_08_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_08_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_08_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_08_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_08_F57%>%I_08_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_08_F61%">
-							<mmlHi:provider>%I_08_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_08_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_08_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_08_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_08_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_08_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_08_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_08_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_08_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_08_F67%>%I_08_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
-		<!-- 健康保険情報(9) -->
+
+		<!-- 健康保険情報(09) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
 				<!-- アクセス権種別 -->
@@ -2073,58 +2355,90 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_09_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_09_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_09_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_09_F11%">
-							<mmlHi:provider>%I_09_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_09_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_09_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_09_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_09_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_09_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_09_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_09_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_09_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_09_F17%>%I_09_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_09_F21%">
-							<mmlHi:provider>%I_09_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_09_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_09_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_09_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_09_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_09_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_09_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_09_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_09_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_09_F27%>%I_09_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_09_F31%">
-							<mmlHi:provider>%I_09_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_09_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_09_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_09_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_09_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_09_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_09_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_09_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_09_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_09_F37%>%I_09_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_09_F41%">
-							<mmlHi:provider>%I_09_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_09_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_09_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_09_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_09_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_09_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_09_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_09_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_09_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_09_F47%>%I_09_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_09_F51%">
-							<mmlHi:provider>%I_09_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_09_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_09_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_09_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_09_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_09_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_09_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_09_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_09_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_09_F57%>%I_09_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_09_F61%">
-							<mmlHi:provider>%I_09_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_09_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_09_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_09_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_09_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_09_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_09_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_09_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_09_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_09_F67%>%I_09_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
+
 		<!-- 健康保険情報(10) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
@@ -2270,58 +2584,90 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_10_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_10_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_10_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_10_F11%">
-							<mmlHi:provider>%I_10_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_10_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_10_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_10_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_10_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_10_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_10_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_10_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_10_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_10_F17%>%I_10_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_10_F21%">
-							<mmlHi:provider>%I_10_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_10_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_10_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_10_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_10_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_10_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_10_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_10_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_10_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_10_F27%>%I_10_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_10_F31%">
-							<mmlHi:provider>%I_10_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_10_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_10_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_10_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_10_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_10_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_10_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_10_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_10_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_10_F37%>%I_10_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_10_F41%">
-							<mmlHi:provider>%I_10_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_10_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_10_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_10_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_10_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_10_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_10_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_10_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_10_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_10_F47%>%I_10_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_10_F51%">
-							<mmlHi:provider>%I_10_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_10_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_10_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_10_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_10_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_10_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_10_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_10_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_10_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_10_F57%>%I_10_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_10_F61%">
-							<mmlHi:provider>%I_10_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_10_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_10_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_10_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_10_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_10_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_10_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_10_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_10_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_10_F67%>%I_10_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
+
 		<!-- 健康保険情報(11) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
@@ -2467,58 +2813,90 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_11_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_11_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_11_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_11_F11%">
-							<mmlHi:provider>%I_11_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_11_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_11_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_11_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_11_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_11_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_11_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_11_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_11_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_11_F17%>%I_11_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_11_F21%">
-							<mmlHi:provider>%I_11_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_11_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_11_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_11_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_11_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_11_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_11_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_11_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_11_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_11_F27%>%I_11_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_11_F31%">
-							<mmlHi:provider>%I_11_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_11_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_11_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_11_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_11_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_11_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_11_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_11_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_11_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_11_F37%>%I_11_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_11_F41%">
-							<mmlHi:provider>%I_11_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_11_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_11_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_11_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_11_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_11_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_11_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_11_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_11_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_11_F47%>%I_11_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_11_F51%">
-							<mmlHi:provider>%I_11_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_11_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_11_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_11_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_11_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_11_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_11_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_11_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_11_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_11_F57%>%I_11_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_11_F61%">
-							<mmlHi:provider>%I_11_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_11_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_11_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_11_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_11_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_11_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_11_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_11_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_11_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_11_F67%>%I_11_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
+
 		<!-- 健康保険情報(12) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
@@ -2664,58 +3042,90 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_12_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_12_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_12_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_12_F11%">
-							<mmlHi:provider>%I_12_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_12_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_12_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_12_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_12_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_12_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_12_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_12_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_12_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_12_F17%>%I_12_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_12_F21%">
-							<mmlHi:provider>%I_12_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_12_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_12_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_12_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_12_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_12_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_12_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_12_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_12_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_12_F27%>%I_12_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_12_F31%">
-							<mmlHi:provider>%I_12_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_12_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_12_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_12_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_12_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_12_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_12_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_12_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_12_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_12_F37%>%I_12_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_12_F41%">
-							<mmlHi:provider>%I_12_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_12_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_12_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_12_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_12_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_12_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_12_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_12_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_12_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_12_F47%>%I_12_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_12_F51%">
-							<mmlHi:provider>%I_12_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_12_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_12_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_12_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_12_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_12_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_12_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_12_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_12_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_12_F57%>%I_12_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_12_F61%">
-							<mmlHi:provider>%I_12_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_12_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_12_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_12_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_12_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_12_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_12_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_12_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_12_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_12_F67%>%I_12_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
+
 		<!-- 健康保険情報(13) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
@@ -2861,58 +3271,90 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_13_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_13_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_13_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_13_F11%">
-							<mmlHi:provider>%I_13_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_13_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_13_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_13_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_13_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_13_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_13_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_13_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_13_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_13_F17%>%I_13_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_13_F21%">
-							<mmlHi:provider>%I_13_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_13_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_13_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_13_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_13_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_13_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_13_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_13_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_13_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_13_F27%>%I_13_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_13_F31%">
-							<mmlHi:provider>%I_13_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_13_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_13_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_13_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_13_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_13_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_13_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_13_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_13_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_13_F37%>%I_13_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_13_F41%">
-							<mmlHi:provider>%I_13_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_13_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_13_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_13_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_13_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_13_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_13_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_13_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_13_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_13_F47%>%I_13_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_13_F51%">
-							<mmlHi:provider>%I_13_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_13_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_13_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_13_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_13_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_13_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_13_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_13_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_13_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_13_F57%>%I_13_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_13_F61%">
-							<mmlHi:provider>%I_13_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_13_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_13_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_13_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_13_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_13_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_13_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_13_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_13_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_13_F67%>%I_13_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
+
 		<!-- 健康保険情報(14) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
@@ -3058,58 +3500,90 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_14_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_14_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_14_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_14_F11%">
-							<mmlHi:provider>%I_14_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_14_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_14_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_14_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_14_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_14_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_14_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_14_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_14_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_14_F17%>%I_14_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_14_F21%">
-							<mmlHi:provider>%I_14_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_14_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_14_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_14_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_14_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_14_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_14_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_14_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_14_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_14_F27%>%I_14_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_14_F31%">
-							<mmlHi:provider>%I_14_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_14_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_14_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_14_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_14_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_14_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_14_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_14_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_14_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_14_F37%>%I_14_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_14_F41%">
-							<mmlHi:provider>%I_14_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_14_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_14_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_14_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_14_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_14_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_14_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_14_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_14_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_14_F47%>%I_14_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_14_F51%">
-							<mmlHi:provider>%I_14_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_14_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_14_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_14_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_14_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_14_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_14_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_14_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_14_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_14_F57%>%I_14_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_14_F61%">
-							<mmlHi:provider>%I_14_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_14_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_14_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_14_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_14_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_14_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_14_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_14_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_14_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_14_F67%>%I_14_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
+
 		<!-- 健康保険情報(15) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
@@ -3255,58 +3729,90 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_15_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_15_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_15_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_15_F11%">
-							<mmlHi:provider>%I_15_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_15_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_15_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_15_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_15_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_15_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_15_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_15_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_15_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_15_F17%>%I_15_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_15_F21%">
-							<mmlHi:provider>%I_15_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_15_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_15_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_15_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_15_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_15_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_15_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_15_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_15_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_15_F27%>%I_15_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_15_F31%">
-							<mmlHi:provider>%I_15_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_15_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_15_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_15_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_15_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_15_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_15_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_15_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_15_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_15_F37%>%I_15_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_15_F41%">
-							<mmlHi:provider>%I_15_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_15_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_15_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_15_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_15_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_15_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_15_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_15_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_15_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_15_F47%>%I_15_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_15_F51%">
-							<mmlHi:provider>%I_15_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_15_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_15_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_15_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_15_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_15_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_15_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_15_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_15_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_15_F57%>%I_15_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_15_F61%">
-							<mmlHi:provider>%I_15_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_15_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_15_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_15_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_15_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_15_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_15_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_15_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_15_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_15_F67%>%I_15_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
+
 		<!-- 健康保険情報(16) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
@@ -3452,58 +3958,90 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_16_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_16_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_16_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_16_F11%">
-							<mmlHi:provider>%I_16_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_16_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_16_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_16_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_16_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_16_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_16_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_16_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_16_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_16_F17%>%I_16_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_16_F21%">
-							<mmlHi:provider>%I_16_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_16_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_16_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_16_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_16_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_16_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_16_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_16_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_16_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_16_F27%>%I_16_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_16_F31%">
-							<mmlHi:provider>%I_16_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_16_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_16_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_16_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_16_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_16_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_16_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_16_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_16_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_16_F37%>%I_16_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_16_F41%">
-							<mmlHi:provider>%I_16_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_16_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_16_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_16_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_16_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_16_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_16_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_16_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_16_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_16_F47%>%I_16_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_16_F51%">
-							<mmlHi:provider>%I_16_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_16_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_16_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_16_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_16_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_16_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_16_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_16_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_16_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_16_F57%>%I_16_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_16_F61%">
-							<mmlHi:provider>%I_16_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_16_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_16_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_16_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_16_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_16_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_16_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_16_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_16_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_16_F67%>%I_16_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
+
 		<!-- 健康保険情報(17) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
@@ -3649,58 +4187,90 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_17_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_17_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_17_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_17_F11%">
-							<mmlHi:provider>%I_17_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_17_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_17_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_17_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_17_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_17_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_17_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_17_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_17_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_17_F17%>%I_17_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_17_F21%">
-							<mmlHi:provider>%I_17_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_17_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_17_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_17_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_17_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_17_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_17_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_17_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_17_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_17_F27%>%I_17_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_17_F31%">
-							<mmlHi:provider>%I_17_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_17_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_17_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_17_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_17_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_17_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_17_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_17_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_17_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_17_F37%>%I_17_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_17_F41%">
-							<mmlHi:provider>%I_17_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_17_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_17_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_17_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_17_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_17_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_17_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_17_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_17_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_17_F47%>%I_17_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_17_F51%">
-							<mmlHi:provider>%I_17_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_17_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_17_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_17_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_17_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_17_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_17_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_17_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_17_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_17_F57%>%I_17_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_17_F61%">
-							<mmlHi:provider>%I_17_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_17_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_17_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_17_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_17_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_17_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_17_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_17_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_17_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_17_F67%>%I_17_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
+
 		<!-- 健康保険情報(18) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
@@ -3846,58 +4416,90 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_18_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_18_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_18_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_18_F11%">
-							<mmlHi:provider>%I_18_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_18_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_18_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_18_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_18_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_18_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_18_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_18_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_18_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_18_F17%>%I_18_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_18_F21%">
-							<mmlHi:provider>%I_18_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_18_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_18_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_18_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_18_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_18_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_18_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_18_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_18_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_18_F27%>%I_18_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_18_F31%">
-							<mmlHi:provider>%I_18_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_18_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_18_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_18_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_18_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_18_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_18_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_18_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_18_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_18_F37%>%I_18_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_18_F41%">
-							<mmlHi:provider>%I_18_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_18_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_18_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_18_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_18_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_18_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_18_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_18_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_18_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_18_F47%>%I_18_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_18_F51%">
-							<mmlHi:provider>%I_18_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_18_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_18_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_18_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_18_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_18_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_18_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_18_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_18_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_18_F57%>%I_18_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_18_F61%">
-							<mmlHi:provider>%I_18_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_18_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_18_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_18_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_18_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_18_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_18_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_18_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_18_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_18_F67%>%I_18_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
+
 		<!-- 健康保険情報(19) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
@@ -4043,58 +4645,90 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_19_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_19_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_19_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_19_F11%">
-							<mmlHi:provider>%I_19_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_19_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_19_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_19_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_19_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_19_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_19_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_19_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_19_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_19_F17%>%I_19_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_19_F21%">
-							<mmlHi:provider>%I_19_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_19_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_19_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_19_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_19_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_19_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_19_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_19_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_19_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_19_F27%>%I_19_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_19_F31%">
-							<mmlHi:provider>%I_19_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_19_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_19_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_19_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_19_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_19_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_19_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_19_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_19_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_19_F37%>%I_19_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_19_F41%">
-							<mmlHi:provider>%I_19_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_19_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_19_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_19_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_19_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_19_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_19_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_19_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_19_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_19_F47%>%I_19_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_19_F51%">
-							<mmlHi:provider>%I_19_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_19_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_19_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_19_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_19_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_19_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_19_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_19_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_19_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_19_F57%>%I_19_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_19_F61%">
-							<mmlHi:provider>%I_19_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_19_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_19_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_19_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_19_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_19_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_19_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_19_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_19_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_19_F67%>%I_19_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ............................................................ -->
+
 		<!-- 健康保険情報(20) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
@@ -4240,57 +4874,93 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 					<!-- 有効期限 -->
 					<mmlHi:expiredDate>%I_20_E2%</mmlHi:expiredDate>
 					<!-- 入院時の負担率 -->
+					<mmlHi:paymentInRatio>%I_20_INRATIO%</mmlHi:paymentInRatio>
 					<!-- 外来時の負担率 -->
+					<mmlHi:paymentOutRatio>%I_20_OUTRATIO%</mmlHi:paymentOutRatio>
 					<!-- 保険者情報 -->
 					<!-- 被保険者の所属する事業所情報 -->
 					<!-- 公費負担医療情報 -->
 					<mmlHi:publicInsurance>
+
+<!-- 公費負担医療情報[1-6] (繰り返しの際に、@@PIITEM@@に1〜6の数字が入って置換される) -->
+
 						<!-- 公費負担医療情報(1) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_20_F11%">
-							<mmlHi:provider>%I_20_F12%</mmlHi:provider>
-							<mmlHi:recipient>%I_20_F13%</mmlHi:recipient>
-							<mmlHi:startDate>%I_20_F14%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_20_F15%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_20_F12%</mmlHi:providerName>
+							<mmlHi:provider>%I_20_F13%</mmlHi:provider>
+							<mmlHi:recipient>%I_20_F14%</mmlHi:recipient>
+							<mmlHi:startDate>%I_20_F15%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_20_F16%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_20_F17%>%I_20_F18%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(2) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_20_F21%">
-							<mmlHi:provider>%I_20_F22%</mmlHi:provider>
-							<mmlHi:recipient>%I_20_F23%</mmlHi:recipient>
-							<mmlHi:startDate>%I_20_F24%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_20_F25%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_20_F22%</mmlHi:providerName>
+							<mmlHi:provider>%I_20_F23%</mmlHi:provider>
+							<mmlHi:recipient>%I_20_F24%</mmlHi:recipient>
+							<mmlHi:startDate>%I_20_F25%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_20_F26%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_20_F27%>%I_20_F28%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(3) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_20_F31%">
-							<mmlHi:provider>%I_20_F32%</mmlHi:provider>
-							<mmlHi:recipient>%I_20_F33%</mmlHi:recipient>
-							<mmlHi:startDate>%I_20_F34%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_20_F35%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_20_F32%</mmlHi:providerName>
+							<mmlHi:provider>%I_20_F33%</mmlHi:provider>
+							<mmlHi:recipient>%I_20_F34%</mmlHi:recipient>
+							<mmlHi:startDate>%I_20_F35%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_20_F36%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_20_F37%>%I_20_F38%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(4) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_20_F41%">
-							<mmlHi:provider>%I_20_F42%</mmlHi:provider>
-							<mmlHi:recipient>%I_20_F43%</mmlHi:recipient>
-							<mmlHi:startDate>%I_20_F44%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_20_F45%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_20_F42%</mmlHi:providerName>
+							<mmlHi:provider>%I_20_F43%</mmlHi:provider>
+							<mmlHi:recipient>%I_20_F44%</mmlHi:recipient>
+							<mmlHi:startDate>%I_20_F45%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_20_F46%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_20_F47%>%I_20_F48%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(5) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_20_F51%">
-							<mmlHi:provider>%I_20_F52%</mmlHi:provider>
-							<mmlHi:recipient>%I_20_F53%</mmlHi:recipient>
-							<mmlHi:startDate>%I_20_F54%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_20_F55%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_20_F52%</mmlHi:providerName>
+							<mmlHi:provider>%I_20_F53%</mmlHi:provider>
+							<mmlHi:recipient>%I_20_F54%</mmlHi:recipient>
+							<mmlHi:startDate>%I_20_F55%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_20_F56%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_20_F57%>%I_20_F58%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
 						<!-- 公費負担医療情報(6) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_20_F61%">
-							<mmlHi:provider>%I_20_F62%</mmlHi:provider>
-							<mmlHi:recipient>%I_20_F63%</mmlHi:recipient>
-							<mmlHi:startDate>%I_20_F64%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_20_F65%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_20_F62%</mmlHi:providerName>
+							<mmlHi:provider>%I_20_F63%</mmlHi:provider>
+							<mmlHi:recipient>%I_20_F64%</mmlHi:recipient>
+							<mmlHi:startDate>%I_20_F65%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_20_F66%</mmlHi:expiredDate>
+							<!-- 負担金または負担率 -->
+							<mmlHi:paymentRatio%I_20_F67%>%I_20_F68%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
+
+<!-- 公費負担医療情報 End -->
+
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
 			</content>
 		</MmlModuleItem>
+		<!-- ............................................................ -->
+
+<!-- 健康保険情報 End -->
+
+
 		<!-- ============================================================ -->
 		<!-- Claim情報 -->
 		<MmlModuleItem>

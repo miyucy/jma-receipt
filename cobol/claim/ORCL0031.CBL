@@ -35,6 +35,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-多々納   02/04/30  改正に伴う修正
       *  01.00.02    NACL-多々納  03/05/07  投薬を院内へ
+      *  01.00.03    NACL-藤原    03/09/30  病名コードの取り込み
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -86,11 +87,14 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTBYOMEI        PIC 9(01).
+           03  FLG-BYOMEI          PIC 9(01).
            03  FLG-PTBYOMEI-UMU    PIC 9(01).
       *
            03  FLG-ZAIEND          PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-OK              PIC 9(01).
+      *    0:正常 1:エラー 2:単独病名エラー
+           03  FLG-BYOMEI-CHK      PIC 9(01). 
       *
       *    添字領域
        01  IDX-AREA.
@@ -99,6 +103,7 @@
            03  IDX3                PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDZ                 PIC 9(04).
            03  IDX-S               PIC 9(04).
            03  IDX-T               PIC 9(04).
            03  IDX-Y               PIC 9(04).
@@ -143,6 +148,22 @@
            03  WRK-TENKI               PIC X(01).
            03  WRK-PTBYO-RENNUM        PIC 9(02).
       *
+           03  WRK-BYOMEI-TBL. 
+               05  WRK-BYOMEI-G    OCCURS  7.
+                   07  WRK-TBYOMEICD   PIC X(10).
+                   07  WRK-TBYOMEI     PIC X(100).
+                   07  WRK-TTANDOKUKBN PIC 9(02).
+                   07  WRK-TUTAGAIFLG  PIC X(01).
+           03  WRK-BYOMEICD        PIC X(07).
+           03  WRK-BYOMEI.
+               05  WRK-BYOMEI1     PIC X(80).
+               05  WRK-BYOMEI2     PIC X(20). 
+           03  WRK-LENGTH          PIC 9(02).
+           03  WRK-TANDOKUKBN      PIC 9(02).
+           03  WRK-TOKSKNCD        PIC 9(02).
+           03  WRK-RECECD-TBL.
+               05  WRK-RECECD      PIC X(01)   OCCURS  3.
+      *
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
@@ -155,16 +176,16 @@
            03  WRK-TEN             PIC 9(13)V9(05).
       *
            03  WRK-SYSYMD.
-               05  WRK-SYSYY         PIC 9(04).
-               05  WRK-SYSMM         PIC 9(02).
-               05  WRK-SYSDD         PIC 9(02).
+               05  WRK-SYSYY       PIC 9(04).
+               05  WRK-SYSMM       PIC 9(02).
+               05  WRK-SYSDD       PIC 9(02).
       *
            03  SYS-YMD.
-               05  SYS-SYSYY1        PIC 9(02) VALUE  20.
+               05  SYS-SYSYY1      PIC 9(02) VALUE  20.
                05  SYS-SYSYMD. 
-                 07  SYS-SYSYY2        PIC 9(02).
-                 07  SYS-SYSMM         PIC 9(02).
-                 07  SYS-SYSDD         PIC 9(02).
+                 07  SYS-SYSYY2    PIC 9(02).
+                 07  SYS-SYSMM     PIC 9(02).
+                 07  SYS-SYSDD     PIC 9(02).
       *
        01  WRK-HENYMD.
            03  WRK-HENYY           PIC X(04).
@@ -201,6 +222,9 @@
       *
       *    用法レセ電コード
            COPY    "CPCLAIM006.INC".
+      *
+      *    未コード化傷病名コード
+       01  WRK-CONS-BYOMEICD       PIC X(07)   VALUE   "0000999".                                     
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -252,6 +276,9 @@
       *
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *
+      *    半角チェックサブ
+           COPY    "CPORCSKANACHK.INC".
       * 
       *****************************************************************
       *    連絡　領域
@@ -1008,20 +1035,272 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   20
-      *        疾患名
-               IF      LF04-SND-SPINAME1(IDX)  NOT =   SPACE
-      *            患者病名マスタ作成
-                   PERFORM 20061-BYOMEI-HEN-SEC
+      *
+               INITIALIZE                  WRK-BYOMEI-TBL
+                                           FLG-BYOMEI-CHK
+                                           WRK-TOKSKNCD
+      *
+               IF    ( LF04-SNDSPITBL-SPICOD2 (IDX 1)  =   SPACE )
+               AND   ( LF04-SNDSPITBL-SPINAME2(IDX 1)  =   SPACE )
+               AND   ( LF04-SNDSPITBL-SPICOD2 (IDX 2)  =   SPACE )
+               AND   ( LF04-SNDSPITBL-SPINAME2(IDX 2)  =   SPACE )
+               AND   ( LF04-SNDSPITBL-SPICOD2 (IDX 3)  =   SPACE )
+               AND   ( LF04-SNDSPITBL-SPINAME2(IDX 3)  =   SPACE )
+               AND   ( LF04-SNDSPITBL-SPICOD2 (IDX 4)  =   SPACE )
+               AND   ( LF04-SNDSPITBL-SPINAME2(IDX 4)  =   SPACE )
+               AND   ( LF04-SNDSPITBL-SPICOD2 (IDX 5)  =   SPACE )
+               AND   ( LF04-SNDSPITBL-SPINAME2(IDX 5)  =   SPACE )
+               AND   ( LF04-SNDSPITBL-SPICOD2 (IDX 6)  =   SPACE )
+               AND   ( LF04-SNDSPITBL-SPINAME2(IDX 6)  =   SPACE )
+                   IF    ( LF04-SND-SPICOD1 (IDX)  =   SPACE )
+                   AND   ( LF04-SND-SPINAME1(IDX)  =   SPACE )
+                       CONTINUE
+                   ELSE  
+      *                連結式病名編集
+                       PERFORM 20061-SPICOD1-HENSYU-SEC
+                   END-IF
+               ELSE
+      *            単独式病名編集
+                   PERFORM 20061-SPICOD2-HENSYU-SEC
                END-IF
-           END-PERFORM
+           END-PERFORM    
            .
        2006-BYOMEI-SET-EXT.
            EXIT.
       *
       *****************************************************************
+      *    連結式病名編集処理
+      *****************************************************************
+       20061-SPICOD1-HENSYU-SEC                 SECTION.
+      *
+           IF         LF04-SND-SPICOD1 (IDX)  =   SPACE
+               MOVE    1                      TO  FLG-BYOMEI-CHK
+           ELSE  
+      *        疾患コードを分割する
+               UNSTRING   LF04-SND-SPICOD1 (IDX)  DELIMITED  BY  "."
+                                           INTO   WRK-TBYOMEICD (1)
+                                                  WRK-TBYOMEICD (2)
+                                                  WRK-TBYOMEICD (3)
+                                                  WRK-TBYOMEICD (4) 
+                                                  WRK-TBYOMEICD (5)
+                                                  WRK-TBYOMEICD (6)
+                                                  WRK-TBYOMEICD (7)
+               END-UNSTRING
+           END-IF
+      *
+      *    ７個以上のコードが設定されているとき
+           IF      WRK-TBYOMEICD (7)   NOT =   SPACE
+               MOVE    1                   TO  FLG-BYOMEI-CHK
+           END-IF
+      *
+      *    病名コードチェック
+           PERFORM 200611-BYOMEICD-CHK-SEC
+      *
+           IF      FLG-BYOMEI-CHK      =   1
+               MOVE    LF04-SND-SPINAME1 (IDX) TO  WRK-BYOMEI
+           END-IF 
+      *
+      *    患者病名マスタ作成
+           PERFORM 200612-BYOMEI-HEN-SEC
+           .
+       20061-SPICOD1-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    単独式病名編集処理
+      *****************************************************************
+       20061-SPICOD2-HENSYU-SEC                 SECTION.
+      *
+      *    病名のみ設定のときコードチェック
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       6
+                   OR      LF04-SNDSPITBL-SPINAME2(IDX IDY) 
+                                               =   SPACE
+                   OR      FLG-BYOMEI-CHK      =   1 
+               IF      LF04-SNDSPITBL-SPICOD2 (IDX IDY)
+                                           =   SPACE
+                   MOVE    1                   TO  FLG-BYOMEI-CHK 
+               ELSE
+                   MOVE    LF04-SNDSPITBL-SPICOD2 (IDX IDY)
+                                               TO  WRK-TBYOMEICD (IDY)
+               END-IF
+           END-PERFORM
+      *     
+      *    病名コードチェック
+           PERFORM 200611-BYOMEICD-CHK-SEC
+      *
+      *    病名コードがエラーのときは疾患名を編集
+           IF      FLG-BYOMEI-CHK      =   1
+               STRING  LF04-SNDSPITBL-SPINAME2(IDX 1) DELIMITED BY SPACE
+                       LF04-SNDSPITBL-SPINAME2(IDX 2) DELIMITED BY SPACE  
+                       LF04-SNDSPITBL-SPINAME2(IDX 3) DELIMITED BY SPACE  
+                       LF04-SNDSPITBL-SPINAME2(IDX 4) DELIMITED BY SPACE  
+                       LF04-SNDSPITBL-SPINAME2(IDX 5) DELIMITED BY SPACE  
+                       LF04-SNDSPITBL-SPINAME2(IDX 6) DELIMITED BY SPACE  
+                                               INTO    WRK-BYOMEI
+               END-STRING
+           END-IF
+      *
+      *    患者病名マスタ作成
+           PERFORM 200612-BYOMEI-HEN-SEC
+           .
+       20061-SPICOD2-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病名コードチェック処理
+      *****************************************************************
+       200611-BYOMEICD-CHK-SEC             SECTION.
+      *
+           IF      FLG-BYOMEI-CHK      =   1
+               GO  TO  200611-BYOMEICD-CHK-EXT
+           END-IF 
+      *
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       6
+                   OR      WRK-TBYOMEICD (IDY) =   SPACE
+                   OR      FLG-BYOMEI-CHK      =   1
+      *
+      *        病名コードの長さチェック
+               MOVE    ZERO                TO  WRK-LENGTH                    
+               PERFORM VARYING IDZ FROM    10  BY  -1
+                       UNTIL   IDZ <       1
+                   IF      WRK-TBYOMEICD (IDY)(IDZ:1)
+                                           NOT =   SPACE
+                       MOVE    IDZ             TO  WRK-LENGTH
+                       MOVE    1               TO  IDZ
+                   END-IF
+               END-PERFORM
+               EVALUATE    WRK-LENGTH
+                   WHEN    4
+                       MOVE    SPACE       TO  WRK-BYOMEICD
+                       MOVE    "ZZZ"       TO  WRK-BYOMEICD (1:3)
+                       MOVE    WRK-TBYOMEICD (IDY)(1:4)
+                                           TO  WRK-BYOMEICD (4:4)
+                       MOVE    WRK-BYOMEICD
+                                           TO  WRK-TBYOMEICD (IDY)
+                   WHEN    7
+                       CONTINUE
+                   WHEN    OTHER            
+                       MOVE    1                   TO  FLG-BYOMEI-CHK
+               END-EVALUATE
+      *
+      *        病名マスタ存在チェック
+               IF      FLG-BYOMEI-CHK          =   ZERO
+                   INITIALIZE                      BYOMEI-REC
+                   MOVE    WRK-TBYOMEICD (IDY) TO  BYO-BYOMEICD
+                   PERFORM 900-BYOMEI-READ-SEC
+                   IF      FLG-BYOMEI          =   1  
+                       MOVE    1               TO  FLG-BYOMEI-CHK
+                   ELSE
+                       MOVE    BYO-BYOMEI      TO  WRK-TBYOMEI    (IDY)
+                       MOVE    BYO-TANDOKUKBN  TO  WRK-TTANDOKUKBN(IDY)
+                       MOVE    BYO-UTAGAIFLG   TO  WRK-TUTAGAIFLG (IDY)
+                       IF      WRK-TBYOMEICD (IDY) (1:1)
+                                           NOT =   "Z"
+                           MOVE    BYO-TOKSKNCD    TO  WRK-TOKSKNCD
+                       END-IF      
+                   END-IF
+               END-IF
+           END-PERFORM     
+      *
+      * 
+      *    接尾語・接頭語チェック
+           MOVE    SPACE                   TO  WRK-RECECD-TBL
+      * 
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       6
+                   OR      WRK-TBYOMEICD (IDY) =   SPACE
+                   OR      FLG-BYOMEI-CHK      =   1
+               EVALUATE    WRK-TBYOMEICD (IDY)(1:3)
+                               ALSO    WRK-TBYOMEICD (IDY)(4:1)
+                   WHEN    "ZZZ"         ALSO    "1"  THRU    "7"
+                       IF      WRK-RECECD (2)    NOT =   SPACE   OR
+                               WRK-RECECD (3)    NOT =   SPACE 
+                           MOVE    1             TO  FLG-BYOMEI-CHK
+                       ELSE
+                           MOVE    "1"           TO  WRK-RECECD (1)
+                       END-IF            
+                   WHEN    "ZZZ"       ALSO    "8"  
+                       IF      WRK-RECECD (2)    =   SPACE 
+                           MOVE    1             TO  FLG-BYOMEI-CHK
+                       ELSE
+                           MOVE    "1"           TO  WRK-RECECD (3)
+                       END-IF
+                   WHEN    OTHER                 
+                       IF    ( WRK-RECECD (3)    NOT =   SPACE ) 
+                       OR    ( WRK-RECECD (2)    NOT =   SPACE )
+                           MOVE    1             TO  FLG-BYOMEI-CHK
+                       ELSE
+                           MOVE    "1"           TO  WRK-RECECD (2)
+                       END-IF    
+               END-EVALUATE
+           END-PERFORM
+           IF    ( FLG-BYOMEI-CHK      =   ZERO  )
+           IF    ( WRK-RECECD (2)      =   SPACE ) 
+               MOVE    1                   TO  FLG-BYOMEI-CHK
+           END-IF
+      *
+      *    単独使用禁止の病名チェック
+           IF      FLG-BYOMEI-CHK      =   ZERO
+               MOVE    SPACE               TO  WRK-TANDOKUKBN
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       6
+                       OR      WRK-TBYOMEICD (IDY) =   SPACE
+                   IF      WRK-TTANDOKUKBN (IDY)   =   ZERO
+                       MOVE    "1"                 TO  WRK-TANDOKUKBN
+                   END-IF
+               END-PERFORM
+      *        マスタから病名を組み立てる
+               IF      FLG-BYOMEI-CHK       =   ZERO
+               MOVE    SPACE                   TO  WRK-BYOMEI
+               IF      WRK-TANDOKUKBN          =   1
+                   STRING  WRK-TBYOMEI (1)     DELIMITED   BY  SPACE
+                           WRK-TBYOMEI (2)     DELIMITED   BY  SPACE   
+                           WRK-TBYOMEI (3)     DELIMITED   BY  SPACE   
+                           WRK-TBYOMEI (4)     DELIMITED   BY  SPACE   
+                           WRK-TBYOMEI (5)     DELIMITED   BY  SPACE   
+                           WRK-TBYOMEI (6)     DELIMITED   BY  SPACE
+                                               INTO    WRK-BYOMEI
+                   END-STRING
+               ELSE
+                   STRING  "＊"                DELIMITED   BY  SIZE
+                           WRK-TBYOMEI (1)     DELIMITED   BY  SPACE   
+                           WRK-TBYOMEI (2)     DELIMITED   BY  SPACE   
+                           WRK-TBYOMEI (3)     DELIMITED   BY  SPACE   
+                           WRK-TBYOMEI (4)     DELIMITED   BY  SPACE   
+                           WRK-TBYOMEI (5)     DELIMITED   BY  SPACE   
+                           WRK-TBYOMEI (6)     DELIMITED   BY  SPACE
+                                               INTO    WRK-BYOMEI
+                   END-STRING
+               END-IF
+      *
+               IF      WRK-TANDOKUKBN      =   SPACE
+                   MOVE    2                   TO  FLG-BYOMEI-CHK
+               END-IF
+           END-IF           
+           .
+       200611-BYOMEICD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    患者病名マスタ作成処理
       *****************************************************************
-       20061-BYOMEI-HEN-SEC                 SECTION.
+       200612-BYOMEI-HEN-SEC                 SECTION.
+      *
+      *    病名全角チェック
+           IF      WRK-BYOMEI      NOT =   SPACE    
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI 
+               MOVE    WRK-BYOMEI          TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF      KANACHK-RC          =   ZERO
+                   MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
+                                               TO  WRK-BYOMEI
+               ELSE
+                   MOVE    "？？？？？"        TO  WRK-BYOMEI
+               END-IF
+           END-IF
       *
       *    疾患開始日
            MOVE    LF04-SND-SKNSTARTDATE(IDX)(1:4)
@@ -1043,7 +1322,7 @@
                IF      LF04-SND-TENKI  (IDX)       =   SPACE 
                    MOVE    "1"              TO  WRK-TENKI
                ELSE
-                   PERFORM 200611-TENKSET-SEC
+                   PERFORM 2006121-TENKSET-SEC
                END-IF
            END-IF
       *
@@ -1074,8 +1353,9 @@
                              ( FLG-PTBYOMEI-UMU   =   1)
                IF      PTBYO-SRYYMD        =   WRK-BYOYMD
       *            同一病名チェック
-                   IF      LF04-SND-SPINAME1 (IDX)
-                                               =   PTBYO-BYOMEI
+      *************IF      LF04-SND-SPINAME1 (IDX)
+      *************                        =   PTBYO-BYOMEI
+                   IF      WRK-BYOMEI1     =   PTBYO-BYOMEI
                                                    (1:PTBYO-BYOMEIMOJI)
                        MOVE    1           TO  FLG-PTBYOMEI-UMU
                    END-IF
@@ -1104,7 +1384,7 @@
                MOVE    WRK-BYOYMD          TO  PTBYO-SRYYMD
                ADD     1                   TO  WRK-PTBYO-RENNUM
                MOVE    WRK-PTBYO-RENNUM    TO  PTBYO-RENNUM
-               PERFORM 4501-PTBYOMEI-HENSYU-SEC
+               PERFORM 2006122-PTBYOMEI-HENSYU-SEC
                IF      WRK-TENKIYMD    NOT =   SPACE
       *            転帰日
                    MOVE    WRK-TENKIYMD        TO  PTBYO-TENKIYMD
@@ -1144,13 +1424,13 @@
                END-IF
            END-IF
            .
-       20061-BYOMEI-HEN-EXT.
+       200612-BYOMEI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    転帰編集処理
       *****************************************************************
-       200611-TENKSET-SEC                 SECTION.
+       2006121-TENKSET-SEC                 SECTION.
       *
            PERFORM VARYING     IDX-T   FROM    1   BY  1
                    UNTIL       IDX-T   >   14
@@ -1163,18 +1443,74 @@
            END-PERFORM
       *
            .
-       200611-TENKSET-EXT.
+       2006121-TENKSET-EXT.
            EXIT.
       *
       *****************************************************************
       *    病名編集処理
       *****************************************************************
-       4501-PTBYOMEI-HENSYU-SEC                 SECTION.
+       2006122-PTBYOMEI-HENSYU-SEC                 SECTION.
+      *
+      *    疑いフラグ・主病名フラグ
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       4
+               IF    ( LF04-SNDBNRTBL-BNRTBL1 (IDX IDY)
+                                       =   "MML0012"       )
+               AND   ( LF04-SNDBNRTBL-BNRNAME1 (IDX IDY)
+                                       =   "mainDiagnosis" )
+                   MOVE    "1"             TO  PTBYO-SYUBYOFLG
+               END-IF
+               IF    ( LF04-SNDBNRTBL-BNRTBL1 (IDX IDY)
+                                       =   "MML0015"            )
+               AND   ( LF04-SNDBNRTBL-BNRNAME1 (IDX IDY)
+                                       =   "suspectedDiagnosis" )
+                   MOVE    "1"             TO  PTBYO-UTAGAIFLG
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-BYOMEI-CHK          =   ZERO    OR  2
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       6
+                       OR      WRK-TBYOMEICD (IDY) =   SPACE
+      *           病名コード
+                   MOVE    WRK-TBYOMEICD (IDY) 
+                                           TO  PTBYO-BYOMEICD (IDY)
+      *            疑いフラグ（病名コードより）
+                   IF      PTBYO-UTAGAIFLG     =   "3"
+                       CONTINUE
+                   ELSE
+                       EVALUATE    PTBYO-UTAGAIFLG ALSO
+                                               WRK-TUTAGAIFLG (IDY)
+                           WHEN    SPACE           ALSO    "1"
+                           WHEN    SPACE           ALSO    "2"
+                               MOVE    WRK-TUTAGAIFLG (IDY)
+                                                   TO  PTBYO-UTAGAIFLG
+                           WHEN    "2"             ALSO    "1"
+                           WHEN    "1"             ALSO    "2"
+                               MOVE    "3"         TO  PTBYO-UTAGAIFLG
+                       END-EVALUATE
+                   END-IF      
+      *
+                   IF      FLG-BYOMEI-CHK      =   ZERO
+      *                病名コード数
+                       ADD     1                   TO  PTBYO-BYOMEICDSU
+      *                基本病名コード
+                       IF      PTBYO-BYOMEICD (IDY)(1:1)
+                                               NOT =   "Z" 
+                           MOVE    PTBYO-BYOMEICD (IDY)
+                                               TO  PTBYO-KHNBYOMEICD
+                       END-IF
+                   END-IF  
+               END-PERFORM
+           ELSE
+               MOVE    WRK-CONS-BYOMEICD   TO  PTBYO-BYOMEICD (1)
+           END-IF
       *
       *    病名
-           MOVE    LF04-SND-SPINAME1 (IDX)    TO  PTBYO-BYOMEI
+      *****MOVE    LF04-SND-SPINAME1 (IDX)    TO  PTBYO-BYOMEI
+           MOVE    WRK-BYOMEI1                TO  PTBYO-BYOMEI
       *    病名文字数
-           PERFORM VARYING     IDY     FROM    256 BY  -1
+           PERFORM VARYING     IDY     FROM    160 BY  -1
                    UNTIL       IDY     <   1
                IF      PTBYO-BYOMEI(IDY:1)     NOT =   SPACE
                    MOVE    IDY                 TO  PTBYO-BYOMEIMOJI
@@ -1182,8 +1518,17 @@
                END-IF
            END-PERFORM
       *
+      *    病名編集フラグ（コードがエラーのとき、病名が長いとき）
+           IF    ( FLG-BYOMEI-CHK  NOT =   ZERO  )
+           OR    ( WRK-BYOMEI2     NOT =   SPACE )    
+               MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
+           END-IF
+      *
+      *    慢性区分
+           MOVE    WRK-TOKSKNCD        TO  PTBYO-MANSEIKBN
+      *
            .
-       4501-PTBYOMEI-HENSYU-EXT.
+       2006122-PTBYOMEI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1193,6 +1538,48 @@
       *
            .
        300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病名マスター読込
+      *****************************************************************
+       900-BYOMEI-READ-SEC         SECTION.
+      *
+           MOVE    BYOMEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "BYOMEI-KEY"           TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  BYOMEI-REC
+                   MOVE    ZERO                TO  FLG-BYOMEI
+               ELSE
+                   MOVE    1                   TO  FLG-BYOMEI
+                   INITIALIZE                  BYOMEI-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-BYOMEI
+               INITIALIZE                  BYOMEI-REC
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "BYOMEI-KEY"           TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-BYOMEI-READ-EXT.
            EXIT.
       *
       *****************************************************************
