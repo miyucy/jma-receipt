@@ -66,56 +66,59 @@
            03  RECE65-SRYSYUKBN           PIC  X(03).
       *自費金額
            03  RECE65-JIHIMONEY           PIC  9(07).
+      *
+           03  RECE65-SRYACT-TBL          OCCURS  5.
       *診療行為情報
-           03  RECE65-SRYACTINF           OCCURS  5.
+             05  RECE65-SRYACTINF.
       *診療コード
-               05  RECE65-SRYCD           PIC  X(09).
+                 07  RECE65-SRYCD         PIC  X(09).
       *数量
-               05  RECE65-SRYSURYO        PIC  9(05)V9(03).
+                 07  RECE65-SRYSURYO      PIC  9(05)V9(03).
       *回数
-               05  RECE65-SRYKAISU        PIC  9(03).
+                 07  RECE65-SRYKAISU      PIC  9(03).
       *単位コード
-               05  RECE65-TANICD          PIC  9(03).
+                 07  RECE65-TANICD        PIC  9(03).
       *単位名称有効桁数
-               05  RECE65-TANIMOJISU      PIC  9(01).
+                 07  RECE65-TANIMOJISU    PIC  9(01).
       *単位名称
-               05  RECE65-TANINAME        PIC  X(24).
+                 07  RECE65-TANINAME      PIC  X(24).
       *点数識別区分
-               05  RECE65-TENSIKIBETU     PIC  9(01).
+                 07  RECE65-TENSIKIBETU   PIC  9(01).
       *点数
-               05  RECE65-TEN             PIC  9(09)V9(02).
+                 07  RECE65-TEN           PIC  9(09)V9(02).
       *明細請求フラグ
-               05  RECE65-MEISKYFLG       PIC  X(01).
+                 07  RECE65-MEISKYFLG     PIC  X(01).
       *自動算定区分
-               05  RECE65-AUTOKBN         PIC  X(01).
+                 07  RECE65-AUTOKBN       PIC  X(01).
       *名称入力番号
-               05  RECE65-INPUTNUM        PIC  9(03).
+                 07  RECE65-INPUTNUM      PIC  9(03).
       *点数欄集計先識別
-               05  RECE65-TENTTLKBN       PIC  9(03).
+                 07  RECE65-TENTTLKBN     PIC  9(03).
       *名称情報
-           03  RECE65-NAMEINF             OCCURS  5.
+             05  RECE65-NAMEINF.
       *漢字有効桁数
-               05  RECE65-YUKOKETA        PIC  9(02).
+                 07  RECE65-YUKOKETA      PIC  9(02).
       *漢字名称
-               05  RECE65-NAME            PIC  X(200).
+                 07  RECE65-NAME          PIC  X(200).
       *データ区分情報
-          03  RECE65-DATAKBNINF           OCCURS  5.
-              05  RECE65-DATAKBN          PIC  9(01).
+             05  RECE65-DATAKBNINF.
+      *データ区分
+                 07  RECE65-DATAKBN       PIC  9(01).
       *包括対象検査情報
-          03  RECE65-HOUKNSKBNINF         OCCURS  5.
+             05  RECE65-HOUKNSKBNINF.
       *包括対象検査
-              05  RECE65-HOUKNSKBN        PIC  9(02).
+                 07  RECE65-HOUKNSKBN     PIC  9(02).
       *検査等実施判断情報
-          03  RECE65-KNSJISKBNINF         OCCURS  5.
+             05  RECE65-KNSJISKBNINF.
       *検査等実施判断
-              05  RECE65-KNSJISKBN        PIC  9(01).
+                 07  RECE65-KNSJISKBN     PIC  9(01).
       *各種番号等情報
-          03  RECE65-CDKBNINF             OCCURS  5.
+             05  RECE65-CDKBNINF.
       *各種番号等
-              05  RECE65-CDKBN-KBN        PIC  X(01).
-              05  RECE65-CDKBN-SYO        PIC  9(01).
-              05  RECE65-CDKBN-BU         PIC  9(02).
-              05  RECE65-CDKBN-KBNNUM     PIC  9(03).
-              05  RECE65-CDKBN-KBNNUM-EDA PIC  9(02).
-              05  RECE65-CDKBN-KOUBAN     PIC  9(02).
-              05  RECE65-KOUHYOJYUNNUM    PIC  9(09).
+                 07  RECE65-CDKBN-KBN        PIC  X(01).
+                 07  RECE65-CDKBN-SYO        PIC  9(01).
+                 07  RECE65-CDKBN-BU         PIC  9(02).
+                 07  RECE65-CDKBN-KBNNUM     PIC  9(03).
+                 07  RECE65-CDKBN-KBNNUM-EDA PIC  9(02).
+                 07  RECE65-CDKBN-KOUBAN     PIC  9(02).
+                 07  RECE65-KOUHYOJYUNNUM    PIC  9(09).
