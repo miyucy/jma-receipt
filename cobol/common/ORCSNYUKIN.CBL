@@ -144,6 +144,21 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
+           IF    LNK-SCNYUKIN-KOUSHINKBN  =   "1"   OR   "2"
+               CONTINUE
+           ELSE
+               MOVE    11              TO  LNK-SCNYUKIN-RC
+               GO  TO  100-PRM-CHK-EXT
+           END-IF
+      *
+           IF    LNK-SCNYUKIN-NYKNKNRKBN   = "1" OR "2" OR "3" OR
+                                             "4" OR "5"
+               CONTINUE
+           ELSE
+               MOVE    11              TO  LNK-SCNYUKIN-RC
+               GO  TO  100-PRM-CHK-EXT
+           END-IF
+      *
       *    患者マスター検索
            INITIALIZE                      PTINF-REC
            MOVE    LNK-SCNYUKIN-HOSPID     TO  PTINF-HOSPID
@@ -158,6 +173,7 @@
            INITIALIZE                      SYUNOU-REC
            MOVE    LNK-SCNYUKIN-HOSPID     TO  SYU-HOSPID
            MOVE    LNK-SCNYUKIN-PTID       TO  SYU-PTID
+           MOVE    LNK-SCNYUKIN-NYUGAIKBN  TO  SYU-NYUGAIKBN
            MOVE    "SYUNOU-KEY22"          TO  ORC-DBPATH
            PERFORM 910-SYUNOU-SELECT-SEC
            IF      FLG-SYUNOU              NOT =   ZERO
@@ -204,48 +220,24 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    システム管理から未収振り分け条件の取得
-      **     MOVE    ZERO                TO  FLG-SYSKANRI
-      **     INITIALIZE                      SYSKANRI-REC
-      **     MOVE    "****"              TO  SYS-KANRICD
-      **     MOVE    "*"                 TO  SYS-KBNCD
-      **     MOVE    SMCNDATE-YMD        TO  ORC-DBYMD
-      **     MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-      **     MOVE    "DBSELECT"          TO  MCP-FUNC
-      **     MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      **     CALL    "ORCMCPSUB"             USING
-      **                                     MCPAREA
-      **                                     ORCMCPAREA
-      **                                     MCPDATA-REC
-      **     IF      MCP-RC              =   ZERO
-      **         MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-      **         PERFORM  910-SYSKANRI-READ-SEC
-      **         IF       FLG-SYSKANRI   =   ZERO
-      **              CONTINUE
-      **         ELSE
-      **              ********
-      **         END-IF
-      **     END-IF
-      *    システム管理クローズ
-      **     MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
-      **     PERFORM   910-DB-CLOSE-SEC
       *
       *    収納読み込み用ＫＥＹの指定
-      **     MOVE    SPACE                   TO  
-      **     EVALUATE    CPSK****-KANRIKBN
-      **         WHEN    "1"
-      **             MOVE   "SYUNOU-KEY22"   TO  WRK-SYUNOU-DBPATH
-      **         WHEN    "2"
-      **             MOVE   "SYUNOU-KEY23"   TO  WRK-SYUNOU-DBPATH
-      **     END-EVALUATE
+           MOVE    SPACE                   TO  WRK-SYUNOU-DBPATH
+           EVALUATE    LNK-SCNYUKIN-NYKNKNRKBN
+               WHEN    "1"
+               WHEN    "4"
+                   MOVE   "SYUNOU-KEY22"   TO  WRK-SYUNOU-DBPATH
+               WHEN    "2"
+               WHEN    "5"
+                   MOVE   "SYUNOU-KEY23"   TO  WRK-SYUNOU-DBPATH
+           END-EVALUATE
       *
-      *    テスト用
-           MOVE   "SYUNOU-KEY22"   TO  WRK-SYUNOU-DBPATH
       *
       *    収納マスターから未収金情報の取得
            INITIALIZE                          SYUNOU-REC
            MOVE    LNK-SCNYUKIN-HOSPID     TO  SYU-HOSPID
            MOVE    LNK-SCNYUKIN-PTID       TO  SYU-PTID
+           MOVE    LNK-SCNYUKIN-NYUGAIKBN  TO  SYU-NYUGAIKBN
            MOVE    WRK-SYUNOU-DBPATH       TO  ORC-DBPATH
            PERFORM 910-SYUNOU-SELECT-SEC
            IF      FLG-SYUNOU              NOT =   ZERO
@@ -278,7 +270,7 @@
                                        LNK-SCNYUKIN-FURIWAKEMONEY(IDX)
                        MOVE   ZERO            TO   WRK-NYUKIN-ZAN
                    END-IF
-                   IF    LNK-SCNYUKIN-SYORIKBN   =   "2"
+                   IF    LNK-SCNYUKIN-KOUSHINKBN   =   "2"
                        PERFORM   300-SYUNOU-UPD-SEC
                        PERFORM   310-SYUMEI-INS-SEC
                    END-IF
@@ -290,6 +282,10 @@
            MOVE    WRK-SYUNOU-DBPATH   TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
+      *    入金振り分け残額の設定
+           IF      WRK-NYUKIN-ZAN      NOT =   ZERO
+               MOVE  WRK-NYUKIN-ZAN    TO  LNK-SCNYUKIN-FURIWAKEZAN
+           END-IF
            .
        200-MAIN-EXT.
            EXIT.
