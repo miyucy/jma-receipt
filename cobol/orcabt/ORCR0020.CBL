@@ -58,6 +58,8 @@
       *                                     低所得フラグのセットを行う
       *  01.00.16   NACL-小豆沢   02.10.16  （平成１４年１０月改正対応）
       *                                     国保退職者の給付割合セット
+      *  01.00.17   NACL-門脇     02.10.21  （平成１４年１０月改正対応）
+      *                                     低所得フラグのセット修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -919,12 +921,12 @@
              PERFORM   CSR-CLOSE-SEC
       *
              EVALUATE    FLG-TSYRRK    ALSO     FLG-TNKRRK
+                 WHEN    1             ALSO     0
                  WHEN    1             ALSO     1
                        MOVE     SPACE   TO       RECE02-TEISYOTOKU
                  WHEN    0             ALSO     1
                        MOVE     "2"     TO       RECE02-TEISYOTOKU
                  WHEN    0             ALSO     0
-                 WHEN    1             ALSO     0
                        MOVE     "1"     TO       RECE02-TEISYOTOKU
              END-EVALUATE
       *
