@@ -7435,6 +7435,7 @@
            MOVE    SPA-NAI-ROUJIN      TO  LNK-ORCSC-ROUJIN 
            MOVE    SPA-NENREI          TO  LNK-ORCSC-NENREI 
            MOVE    SPA-SYOYMD          TO  LNK-ORCSC-SYOYMD 
+           MOVE    SPA-SYOYMD-OLD      TO  LNK-ORCSC-SYOYMD-OLD
            MOVE    SPA-LSTYMD          TO  LNK-ORCSC-LSTYMD 
            MOVE    SPA-LSTSRYKA        TO  LNK-ORCSC-LSTSRYKA 
            MOVE    SPA-LSTSRYKAMEI     TO  LNK-ORCSC-LSTSRYKAMEI 
@@ -8548,6 +8549,7 @@
            MOVE    SPA-NAIACCT-AREA    TO  LNK-NAIACCT-AREA
            MOVE    SPA-NAIACCT2-AREA   TO  LNK-NAIACCT2-AREA
            MOVE    SPA-SYOYMD          TO  LNK-ORCSC-SYOYMD 
+           MOVE    SPA-SYOYMD-OLD      TO  LNK-ORCSC-SYOYMD-OLD
            MOVE    SPA-LSTYMD          TO  LNK-ORCSC-LSTYMD 
            MOVE    SPA-LSTSRYKA        TO  LNK-ORCSC-LSTSRYKA 
            MOVE    SPA-LSTSRYKAMEI     TO  LNK-ORCSC-LSTSRYKAMEI 
@@ -9031,6 +9033,8 @@
       *    パラメタファイルより表示
            MOVE    3               TO  FLG-PARASET
            PERFORM 3002-PARA-SET-SEC
+      *
+           PERFORM 3109-NYUIN-CHK-SEC
       *
       *    訂正処理
       *****MOVE    1                   TO  SPA-SYORIFLG
