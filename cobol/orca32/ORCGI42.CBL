@@ -496,6 +496,7 @@
                    UNTIL       IDX4            >   50
                IF      WRK-SRY-NYUGAIKBN (IDX4) NOT = SPACE
                    PERFORM 3101-SACCT-SYORI-SEC
+               END-IF
            END-PERFORM.
       *
       *    ¿ÇÎÅÇ¯·î¡¦¿ÇÎÅ¥³¡¼¥É½ç¤Ë£Ó£Ï£Ò£Ô
@@ -1344,6 +1345,7 @@
                            MOVE    SPACE  TO  WRK-GMN-TBLREC1 (IDX2)
                            MOVE    SPACE  TO  WRK-NAI-TBLREC1 (IDX2)
                    END-EVALUATE
+               END-IF
                END-PERFORM
       *
                IF      IDX3                >   ZERO
