@@ -231,6 +231,18 @@
            03  WRK-MCP-WIDGET      PIC X(64).
            03  WRK-IDOYMD                  PIC X(08).
       *
+      *    ´µ¼ÔÇ¯Îð»»½ÐÍÑ¥¨¥ê¥¢
+       01  WRK-NENREI-AREA.
+           03  WRK-NENREI                  PIC 9(03).
+           03  WRK-YMDS1.
+               05  WRK-YYS1                PIC 9(04).
+               05  WRK-MMS1                PIC 9(02).
+               05  WRK-DDS1                PIC 9(02).
+           03  WRK-YMDS2.
+               05  WRK-YYS2                PIC 9(04).
+               05  WRK-MMS2                PIC 9(02).
+               05  WRK-DDS2                PIC 9(02).
+      *
       *    ¥¹¥ÑÎÎ°è ¥ï¡¼¥¯
            COPY    "COMMON-SPA"      REPLACING
                                //SPA-// BY //WRK-SPA-//.
@@ -6096,10 +6108,22 @@
                PERFORM   VARYING   IDX7   FROM   1  BY  1
                  UNTIL  (SYS-5001-KSNCD(IDX7)    =   SPACE)  OR
                         (IDX7                    >   12)
-                    IF   SYS-5001-KSNKBN(IDX7)   =   "2"
-                         ADD    1                TO  IDX8
-                         MOVE   SYS-5001-KSNCD(IDX7)  TO
-                                LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                    IF   IDX7          =       6
+      *                 »ùÆ¸»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»¡Ê£²£°ºÍÌ¤Ëþ¡Ë
+                        IF   SYS-5001-KSNKBN         =   "2"
+                             PERFORM   4801-PT-AGE-SEC
+                             IF     WRK-NENREI    <      20
+                                 ADD    1                TO  IDX8
+                                 MOVE   SYS-5001-KSNCD(IDX7)  TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                             END-IF
+                        END-IF
+                    ELSE
+                        IF   SYS-5001-KSNKBN(IDX7)   =   "2"
+                             ADD    1                TO  IDX8
+                             MOVE   SYS-5001-KSNCD(IDX7)  TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                        END-IF
                     END-IF
                END-PERFORM
            END-IF
@@ -6164,6 +6188,42 @@
            .
       *
        4801-NYUKSN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡´µ¼Ô¤ÎÇ¯Îð»»½Ð
+      *****************************************************************
+       4801-PT-AGE-SEC         SECTION.
+      *
+           INITIALIZE                      PTINF-REC
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  PTINF-PTID
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO  )
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+      *
+           IF      FLG-PTINF           =   1
+               MOVE    ZERO            TO  WRK-NENREI
+           ELSE
+               MOVE   PTINF-BIRTHDAY   TO  WRK-YMDS1
+               MOVE   SYOKIKSN-IN-SANTEISTYMD
+                                       TO  WRK-YMDS2
+               MOVE   ZERO             TO  WRK-NENREI
+               COMPUTE  WRK-NENREI     =   WRK-YYS2
+                                       -   WRK-YYS1
+               IF   WRK-YMDS1(5:4)     >   WRK-YMDS2(5:4)
+                    ADD   -1           TO  WRK-NENREI
+               END-IF
+           END-IF
+      *
+           .
+      *
+       4801-PT-AGE-EXT.
            EXIT.
       *
       *****************************************************************
