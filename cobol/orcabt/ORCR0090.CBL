@@ -89,6 +89,7 @@
       *                                     検診コードを印刷するよう追加
       *  01.02.14    NACL-小豆沢  02.11.28  初診加算のとき編集する
       *  01.02.15    NACL-藤原    02.12.02  酸素の時単価を表示するように追加
+      *  01.02.16    NACL-藤原    03.01.10  検査の回数の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -314,6 +315,9 @@
            03  WRK-SRYCD                       PIC X(01).
       *     
            03  WRK-R05IDX                      PIC 9(02).
+      *
+      *    検査の回数
+           03  WRK-KENSA-KAISU                 PIC 9(05). 
       *     
            03  WRK-WLINETEK                    PIC 9(03).
            03  WRK-SRYSURYOW                   PIC X(20).
@@ -376,6 +380,7 @@
                05  WRK-KAISU               PIC 9(03).  
            03  WRK-KAISU1                  PIC 9(02).
        01  WRK-HOUKNSKBN                   PIC 9(01).
+       01  WRK-KNSJISKBN                   PIC 9(01).
        01  WRK-KOHBUNRI                    PIC 9(01).
       *
        01  WRK-RECE04-ZAITEN               PIC 9(08). 
@@ -649,6 +654,13 @@
       *    小児科外来診療料（紹介患者加算６）
            03  WRK-CONS-SYOSIN-KASAN9  PIC X(09)   VALUE 
                                                    "111011170".
+      *    検査の回数に集計しない診療行為
+      *    採血（Ｂ−Ａ）
+           03  WRK-CONS-SAIKETSU1      PIC X(09)   VALUE "160101210".
+      *    採血（Ｂ−Ｖ）
+           03 WRK-CONS-SAIKETSU2       PIC X(09)   VALUE "160095710".
+      *    採血（Ｂ−Ｃ）
+           03 WRK-CONS-SAIKETSU3       PIC X(09)   VALUE "160095810".
       *
       *    パス名領域
        01  WRK-PATH                        PIC X(64).
@@ -761,7 +773,7 @@
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
-           OPEN    INPUT               RECE02-FILE
+           OPEN    I-O                 RECE02-FILE
       *
            OPEN    INPUT               RECE04-FILE
       *
@@ -781,8 +793,10 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *        行カウンタ初期化
+      *    行カウンタ初期化
            MOVE    ZERO                TO  WRK-LINENUM
+      *    検査回数初期化
+           MOVE    ZERO                TO   WRK-KENSA-KAISU
       *
            MOVE    ZERO                TO  CNT-SRYKBN60   
            INITIALIZE                      WRK-RECE04-TABLE
@@ -871,9 +885,13 @@
       *    検査があるときまとめる
            IF      WRK-RECE04-MAX          >   ZERO
                PERFORM 2007-SRYKBN60-HENSYU-SEC
-                  CONTINUE
            END-IF         
       *
+      *    検査のとき回数を編集する
+           IF      WRK-KENSA-KAISU        >   ZERO
+               MOVE    WRK-KENSA-KAISU        TO  RECE02-KAISU  (29)
+               REWRITE RECE02-REC
+           END-IF
       *
            PERFORM 990-RECE02-READ-SEC
       *
@@ -1670,6 +1688,28 @@
                    END-IF
                END-IF        
            END-PERFORM
+      *             
+      *    検査のとき回数を集計
+           IF      WRK-ZAIWMAX(3)     >   ZERO
+           AND     RECE04-SRYKBN      =   "60"
+               IF      TBL-ZAIW-SRYCD (3 1)   =   WRK-CONS-SAIKETSU1
+                                              OR  WRK-CONS-SAIKETSU2
+                                              OR  WRK-CONS-SAIKETSU3 
+                   CONTINUE
+               ELSE
+                   MOVE    TBL-ZAIW-SRYCD (3 1)
+                                             TO  TNS-SRYCD
+                   MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
+                   MOVE    RECE05-SRYYM      TO  ORC-DBYMD(1:6)
+                   MOVE    "01"              TO  ORC-DBYMD(7:2)
+                   PERFORM 900-TENSU-INV-SEC
+                   IF      TNS-KNSJISKBN     =   "2"
+                       CONTINUE
+                   ELSE 
+                       ADD     RECE04-ZAIKAISU   TO  WRK-KENSA-KAISU
+                   END-IF
+               END-IF
+           END-IF     
       *
            .
        20052-SRYKBNELSE-CHECK-EXT.
