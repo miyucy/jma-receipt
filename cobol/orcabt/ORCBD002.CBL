@@ -35,8 +35,9 @@
       *  01.00.04    MCC-藤原     02.03/22  パラメタにシステム日付を追加
       *  01.00.05    MCC-藤原     02/05/13  印刷管理・印刷ＤＢの追加
       *  01.00.06    NACL-藤原    02/07/24  労災・自賠責・自費の項目追加
-      *  01.00.07    NAC-L藤原    02/08/27  行数を３０桁に変更
+      *  01.00.07    NACL-藤原    02/08/27  行数を３０桁に変更
       *                                    （帳票ＩＤをＨＣ１７Ｖ０１へ変更）
+      *  01.01.01    NACL-藤原    02/10/10  サイト区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -549,6 +550,7 @@
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
+           MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
            IF      SPRT-RETURN         =   ZERO

@@ -34,6 +34,7 @@
       *                                     X(16)からX(32)に変更
       *  01.00.04    MCC-藤原     02.03/22  パラメタにシステム日付を追加
       *  01.00.05    MCC-藤原     02/05/13  印刷管理・印刷ＤＢの追加
+      *  01.01.01    NACL-藤原    02/10/10  サイト区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -54,7 +55,7 @@
       *
        WORKING-STORAGE             SECTION.
       *    シェル用領域
-           COPY    "CPCOMMONSHELL.INC".
+      *     COPY    "CPCOMMONSHELL.INC".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -498,6 +499,7 @@
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
+           MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
            IF      SPRT-RETURN         =   ZERO

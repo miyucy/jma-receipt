@@ -48,6 +48,7 @@
       *  01.00.11    NACL-藤原    02/08/25  住所を１５から２５に変更
       *
       *  01.01.01    NACL-藤原    02/09/18  保険者番号の追加
+      *  01.01.02    NACL-藤原    02/10/10  サイト区分追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -913,6 +914,7 @@
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
+           MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
            IF      SPRT-RETURN         =   ZERO

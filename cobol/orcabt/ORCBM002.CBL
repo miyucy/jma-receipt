@@ -37,6 +37,7 @@
       *  01.00.06    MCC-Æ£¸¶     02/04/15  °õºþ´ÉÍý¡¦°õºþ£Ä£Â¤ÎÄÉ²Ã
       *  01.00.07    MCC-Æ£¸¶     02/05/09  ÊÇ¿ô¤Î¥¸¥ç¥Ö´ÉÍý£Ä£Â¤Ø¤Î¹¹¿·
       *  01.00.08    NACL-Æ£¸¶    02/08/25  ½»½ê¤ò£±£µ¤«¤é£²£µ¤ËÊÑ¹¹
+      *  01.01.01    NACL-Æ£¸¶    02/10/10  ¥µ¥¤¥È¶èÊ¬ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -620,6 +621,7 @@
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
+           MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
            IF      SPRT-RETURN         =   ZERO
