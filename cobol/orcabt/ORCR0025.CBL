@@ -324,6 +324,7 @@
                                                RECE02-HKNCOMBI (IDX1)
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
+                               MOVE    ZERO     TO    FLG-SHOSAISIN
                                IF   ACCT-SRYKBN  =  "11"  OR  "12"  OR
                                                     "13"  OR  "14"
                                    PERFORM   SHOSAISIN-HANTEI-SEC
@@ -332,6 +333,7 @@
                            END-IF
                            IF   (ACCT-ZAITEN    =        ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
+                               MOVE    ZERO     TO    FLG-SHOSAISIN
                                IF   ACCT-SRYKBN  =  "99"
                                    PERFORM   SHOSAISIN-HANTEI-SEC
                                END-IF
@@ -384,7 +386,7 @@
                              UNTIL    (SRYACT-IDX    >   5)  OR
                                       (SRY-SRYCD(SRYACT-IDX)
                                                           =   SPACE)  OR
-                                      (FLG-SHOSAISIN      =    "1")
+                                      (FLG-SHOSAISIN      =    1)
                        PERFORM   TENSU-TBL-SEC
                        IF ( (TNS-JITUDAY    =     2)    AND
                             (TNS-DAYCNT     =     1   OR   2) )  OR
@@ -392,7 +394,7 @@
                                                        "112003350"    OR
                                                        "099409901"    OR
                                                        "099999902")
-                             MOVE    "1"      TO    FLG-SHOSAISIN
+                             MOVE    1      TO    FLG-SHOSAISIN
                        END-IF
                    END-PERFORM
                    MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
@@ -452,7 +454,7 @@
       *
            IF    (RECE02-HKNNUM          NOT =   SPACE)   OR
                  (RECE02-RJNHKNNUM       NOT =   SPACE)
-               IF   FLG-SHOSAISIN        =       "1"
+               IF   FLG-SHOSAISIN        =       1
                     PERFORM    VARYING   ACCT-IDX   FROM   1    BY   1
                                UNTIL    ACCT-IDX   >      31
                            IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
@@ -516,7 +518,7 @@
       *
       *           DISPLAY   "KH-IDX   "  KH-IDX
       *
-                 IF   FLG-SHOSAISIN      =    "1"
+                 IF   FLG-SHOSAISIN      =    1
                       PERFORM    VARYING  ACCT-IDX   FROM   1    BY   1
                                  UNTIL    ACCT-IDX   >      31
                              IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
