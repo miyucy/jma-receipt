@@ -1137,6 +1137,11 @@
                    END-IF
                END-IF
       *
+      *        診療科退避ワーク診療科編集処理
+               MOVE    ZERO                TO  IDX-TSRYKA
+               MOVE    ZERO                TO  FLG-TSRYKA-OVER
+               PERFORM 200111-TSRYKA-SRYKA-HEN-SEC
+      *
       *        診療行為情報退避処理
       *        以下のチェックの際に退避する
       *        ・診療開始日
@@ -1383,9 +1388,7 @@
       *****************************************************************
        200111-SRYACT-TAIHI-SEC         SECTION.
       *
-           MOVE    ZERO                TO  FLG-TSRYKA-OVER
            MOVE    ZERO                TO  FLG-SHOSAISIN
-           MOVE    ZERO                TO  IDX-TSRYKA
       *
       *    点数マスタ検索時の基準日を求める
            MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
@@ -1398,9 +1401,6 @@
                END-IF
            END-PERFORM
       *
-      *
-      *    診療科退避ワーク診療科編集処理
-           PERFORM 200111-TSRYKA-SRYKA-HEN-SEC
       *
            MOVE    ZERO                TO  FLG-SRYACT
       *
