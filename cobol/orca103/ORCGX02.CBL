@@ -95,6 +95,7 @@
            03  FLG-BYOMEI                         PIC 9(01).
       *
            03  FLG-OK                             PIC 9(01).
+           03  FLG-ZENKAKU                        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -145,7 +146,6 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
-                    
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -171,6 +171,9 @@
            COPY    "CPORCSLNK.INC".
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    一覧印刷変換領域
            COPY    "CPORCHXLST.INC".
@@ -562,13 +565,39 @@
                    UNTIL       IDX     >   20
                COMPUTE IDZ             =   IDX
                                        +  (SPA-GMN-PAGE - 1 ) * 20
+      *        全角入力の時、４文字まで
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                     TO  KANACHK-SYORI
+               MOVE    X02-TEKCD (IDX)(1:8)    TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF     (KANACHK-RC          =   ZERO )  AND
+                      (KANACHK-SYUBETU     =   2    )
+                   MOVE    1                   TO  FLG-ZENKAKU
+               ELSE
+                   MOVE    ZERO                TO  FLG-ZENKAKU
+               END-IF
                EVALUATE    SPA-GMN-CHKKBN
                    WHEN    "1"
                    WHEN    "2" 
-                       MOVE  X02-TEKCD (IDX)(1:7)
-                                              TO  SPA-GMN-TTEKCD (IDZ)
+                       IF      FLG-ZENKAKU     =   ZERO
+                           MOVE    X02-TEKCD (IDX)(1:7)
+                                                   TO  SPA-GMN-TTEKCD
+                                                                 (IDZ)
+                       ELSE
+                           MOVE    X02-TEKCD (IDX)(1:6)
+                                                   TO  SPA-GMN-TTEKCD
+                                                                 (IDZ)
+                       END-IF
                    WHEN    OTHER
-                       MOVE  X02-TEKCD (IDX)  TO  SPA-GMN-TTEKCD (IDZ)
+                       IF      FLG-ZENKAKU     =   ZERO
+                           MOVE    X02-TEKCD (IDX) TO  SPA-GMN-TTEKCD
+                                                                 (IDZ)
+                       ELSE
+                           MOVE    X02-TEKCD (IDX)(1:8)
+                                                   TO  SPA-GMN-TTEKCD
+                                                                 (IDZ)
+                       END-IF
                END-EVALUATE
            END-PERFORM
       *
