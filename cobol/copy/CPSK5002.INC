@@ -80,13 +80,25 @@
                    07  SYS-5002-BTU-RYOYO          OCCURS  3.
                        09  SYS-5002-BTU-RYOYO-CD   PIC X(09).
                        09  SYS-5002-BTU-RYOYO-KBN  PIC X(01).
+      *½Å¾É¼ÔÅùÎÅÍÜ´Ä¶­ÆÃÊÌ²Ã»»¡Ê¸Ä¼¼¡Ë
+                   07  SYS-5002-JYUTOK1.
+                       09  SYS-5002-JYUTOK1-CD     PIC X(09).
+                       09  SYS-5002-JYUTOK1-KBN    PIC X(01).
+      *½Å¾É¼ÔÅùÎÅÍÜ´Ä¶­ÆÃÊÌ²Ã»»¡Ê£²¿ÍÉô²°¡Ë
+                   07  SYS-5002-JYUTOK2.
+                       09  SYS-5002-JYUTOK2-CD     PIC X(09).
+                       09  SYS-5002-JYUTOK2-KBN    PIC X(01).
+      *Ìµ¶Ý¼£ÎÅ¼¼´ÉÍý²Ã»»
+                   07  SYS-5002-MUKIN.
+                       09  SYS-5002-MUKIN-CD       PIC X(09).
+                       09  SYS-5002-MUKIN-KBN      PIC X(01).
       *Æþ±¡ÎÁ²Ã»»ºÆÄêµÁ
                05  SYS-5002-KSNTBLR  REDEFINES  SYS-5002-KSNAREA.
-                 07  SYS-5002-KSN              OCCURS  8.
+                 07  SYS-5002-KSN              OCCURS  11.
                    09  SYS-5002-KSNCD              PIC X(09).
                    09  SYS-5002-KSNKBN             PIC X(01).
       *Í½È÷
-           03                           PIC  X(396).
+           03                           PIC  X(366).
       *Ã¼Ëö£É£Ä
            03  SYS-5002-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

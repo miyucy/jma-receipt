@@ -7658,6 +7658,24 @@
                     MOVE   "190106270"  TO
                                    WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
+      *        Ω≈æ…º‘≈˘Œ≈Õ‹¥ƒ∂≠∆√ Ã≤√ªª° ∏ƒºº°À
+               IF   SYS-5002-JYUTOK1-KBN          =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-JYUTOK1-CD  TO
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        Ω≈æ…º‘≈˘Œ≈Õ‹¥ƒ∂≠∆√ Ã≤√ªª° £≤øÕ…Ù≤∞°À
+               IF   SYS-5002-JYUTOK2-KBN          =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-JYUTOK2-CD  TO
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        Ãµ∂›º£Œ≈ºº¥…Õ˝≤√ªª
+               IF   SYS-5002-MUKIN-KBN            =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-MUKIN-CD  TO
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
            END-IF
       *
       *    ∆˛±°Œ¡§»∆˛±°Œ¡≤√ªª§Œ ªªªƒÍ•¡•ß•√•Ø
