@@ -122,6 +122,9 @@
       *    ºÞÈÖ¹æ¤ÎÂàÈò
        01  WK-ZAINUM                                   PIC 9(05).
       *
+      *    ºÞÏ¢ÈÖ¤ÎÂàÈò
+       01  WK-ZAIREN                                   PIC 9(02).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-IN                                  PIC X(01).
@@ -298,6 +301,7 @@
                     (RECE62-TEKSTYMD  NOT = RECE64-TEKSTYMD)  OR
                     (FLG-RECE64       =    1)
                      MOVE   RECE64-ZAINUM    TO   WK-ZAINUM
+                     MOVE   RECE64-ZAIREN    TO   WK-ZAIREN
                      PERFORM      KOHBUNRI-SET-SEC
                      PERFORM      RECE64-REWRITE-SEC
                      PERFORM      RECE65-HENSYU-SEC
@@ -356,6 +360,7 @@
            MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    WK-ZAINUM            TO      RECE65-ZAINUM
+           MOVE    WK-ZAIREN            TO      RECE65-ZAIREN
            START   RECE65-FILE   KEY  IS  >=    RECE65-KEY
                    INVALID
                        MOVE    1        TO      FLG-RECE65
@@ -374,6 +379,7 @@
                   (RECE62-HOJOKBN-KEY   NOT =  RECE65-HOJOKBN )  OR
                   (RECE62-TEKSTYMD      NOT =  RECE65-TEKSTYMD)  OR
                   (WK-ZAINUM            NOT =  RECE65-ZAINUM)    OR
+                  (WK-ZAIREN            NOT =  RECE65-ZAIREN)    OR
                   (FLG-RECE65           =      1)
                    MOVE   KH-IDX        TO     RECE65-KOHBUNRI
                    PERFORM      RECE65-REWRITE-SEC
