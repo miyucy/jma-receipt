@@ -54,8 +54,9 @@
       *                                     修正
       *　入院機能追加　
       *  01.05.01    NACL-藤原    02/12/11  入外区分追加 
-      *  01.05.01    NACL-藤原    03/02/27  入院用県単用項目編集プログラ
+      *  01.05.02    NACL-藤原    03/02/27  入院用県単用項目編集プログラ
       *                                     ム名の追加
+      *  01.05.03    NACL-藤原     03/03/03  再印刷ボタン追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -213,6 +214,10 @@
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "RECEPT1".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
+      *
+      *    印刷管理ＤＢのキー値  
+           03  WRK-CONS-PRTKANRI-TBL-KEY
+                                   PIC X(08)   VALUE   "RECEPT2".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -372,7 +377,7 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
       *
       *        元の画面へ戻す
-               IF      SPA-MOTOPG      =   "XB01"
+               IF      SPA-MOTOPG      =   "XA01"  OR  "XB01"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-R03
                    INITIALIZE              SPA-R01KYOUTU
@@ -666,6 +671,9 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    "CHANGE"            TO  MCP-PUTTYPE
                    PERFORM 210-BACK
+      *     再印刷
+               WHEN    "CLICKED"       ALSO    "B05"
+                   PERFORM 450-REPRINT-SEC
       *     情報削除
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-JYOUHOU-DEL-SEC
@@ -1580,6 +1588,35 @@
            EXIT.
       *
       *****************************************************************
+      *    再印刷画面へ
+      *****************************************************************
+       450-REPRINT-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-R03             TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "R03"               TO  SPA-MOTOPG
+           MOVE    "XA01"              TO  SPA-SAKIPG
+      *
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                       TO  SPA-PRTKANRI-TBL-KEY
+      *          
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "XA01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       450-REPRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
@@ -1662,7 +1699,7 @@
                    MOVE    "該当する処理はありません"
                                                 TO  R99-MSG
                END-IF                                 
-           ELSE                                        
+           ELSE
                MOVE    "B11"                TO  MCP-WIDGET
            END-IF
       *

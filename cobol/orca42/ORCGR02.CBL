@@ -59,6 +59,7 @@
       *  01.04.02    NACL-藤原    03/01/08  通し番号のためのパラメタ追加 
       *  01.04.03    NACL-藤原    03/01/15  確定のとき自動的に情報確認画面を表示
       *  01.04.04    NACL-藤原    03/02/25  プリンタ名をオンラインより渡す
+      *  01.04.05    NACL-藤原    03/03/03  再印刷ボタン追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -232,7 +233,17 @@
              05  WRK-SHELL-TERMID  PIC  X(16).
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
       *
-           03  WRK-RECE08-PRTJYUN  PIC 9(02).      
+           03  WRK-RECE08-PRTJYUN  PIC 9(02).
+      *      
+           03  WRK-SYSYMD.
+               05  WRK-SYSYY       PIC 9(04).
+               05  WRK-SYSMM       PIC 9(02).
+               05  WRK-SYSDD       PIC 9(02).
+           03  SYS-YMD.
+               05  SYS-YY          PIC 9(02).
+               05  SYS-MM          PIC 9(02).
+               05  SYS-DD          PIC 9(02).
+           03  SYS-TIME            PIC X(06).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG1        PIC X(09).
@@ -256,6 +267,9 @@
                                              "scripts/monthly/".
            05  WRK-SHELL-SHELL    PIC X(20).         
       *
+       01  WRK-LNK-AREA.
+           COPY    "CPORCSPRTLNK.INC".             
+      *
        01  WRK-CONS-AREA.
       *    １頁の最大行数
            03  WRK-CONS-LINE-MAX   PIC 9(02)   VALUE   36.   
@@ -263,6 +277,12 @@
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "RECEPT2".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
+      *
+      *    印刷管理ＤＢのキー値  
+           03  WRK-CONS-PRTKANRI-TBL-KEY
+                                   PIC X(08)   VALUE   "RECEPT2".
+           03  WRK-CONS-PRTKANRI-TBL-GROUP
+                                   PIC X(14)   VALUE   SPACE.
       *
            COPY    "CPSHELLTBL.INC".
       *     
@@ -1647,21 +1667,23 @@
                END-IF
            END-IF
       *
+      *    印刷ＤＢのＫＥＹ用     
+           ACCEPT  SYS-YMD         FROM    DATE
+           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
+           MOVE    SYS-MM              TO  WRK-SYSMM
+           MOVE    SYS-DD              TO  WRK-SYSDD
+           ACCEPT  SYS-TIME            FROM    TIME
+           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
+           MOVE    WRK-SYSYMD          TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
+           MOVE    SYS-TIME            TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (9:)
+      *
       *    印刷処理開始（ＯＲＣＲ０１０２）
       *
-      *****MOVE    "recept2.sh"        TO  SHELL-SHELL
-      *    MOVE    SHELL-NAME          TO  SHELL-NAME
-      *     
-      *    MOVE    SPA-TERMID          TO  SHELL-TERMID
-      *    MOVE    SPA-R01-RECE07-SRYYM
-      *                                 TO  SHELL-SRYYM    
-      *    MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
-      *    MOVE    "1"                 TO  SHELL-SYOKBN
-      *****MOVE    "0"                 TO  SHELL-RECEKBN 
       *     
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
-      *****MOVE    RECEERR             TO  SHELL-ERRFILE
       *
            MOVE    SPACE           TO  SHELLTBL
            MOVE    "recept2.sh"    TO  WRK-SHELL-SHELL
@@ -1692,6 +1714,45 @@
                                    TO  SHELLTBL-ARG11
            MOVE    SPA-NAI-2005-KKHPRTNM
                                    TO  SHELLTBL-ARG12
+      *                                 
+           MOVE    SPACE           TO  LNK-PRTKANRI-AREA
+           INITIALIZE                  LNK-PRTKANRI-AREA
+           MOVE    1               TO  LNK-PRTKANRI-RENNUM 
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                   TO  LNK-PRTKANRI-TBL-KEY 
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                   TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    SPA-R01-RECE07-SRYYM
+                                   TO  LNK-PRTKANRI-SRYYM 
+           MOVE    SPA-SYSYMD      TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "recept2.sh"    TO  LNK-PRTKANRI-SHELLID
+           MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
+           MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
+      *****MOVE    SYS-1031-PRTNM (5)
+      *****                        TO  LNK-PRTKANRI-PRTNM
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  SHELLTBL-ARG13       
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  SHELLTBL-ARG14     
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  SHELLTBL-ARG15       
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  SHELLTBL-ARG16       
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SHELLTBL-ARG17       
+           MOVE    LNK-PRTKANRI-SKYYMD
+                                   TO  SHELLTBL-ARG18       
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  SHELLTBL-ARG19       
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                   TO  SHELLTBL-ARG20      
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  SHELLTBL-ARG21       
+           MOVE    LNK-PRTKANRI-OPID
+                                   TO  SHELLTBL-ARG22      
+           MOVE    LNK-PRTKANRI-PRTNM
+                                   TO  SHELLTBL-ARG23
       *     
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
