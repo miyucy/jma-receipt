@@ -99,6 +99,8 @@
       *  01.02.12   NACL-藤原     02.12.02  酸素の時単価を表示するように追加
       *  01.02.13   NACL-門脇     02.12.05  生保、長期に関わる１０月改正に
       *                                     おける一部負担金額欄の対応
+      *  01.02.14    NACL-藤原    03.01.17  データ区分の追加
+      *                                     診療行為による特記事項の編集の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -824,15 +826,18 @@
                    MOVE    "12"      TO      WRK-TOKKI
            END-EVALUATE
       *
+      *    既に同じ特記事項コードが編集済みのときはセットしない
            PERFORM VARYING TOKKI-IDX  FROM    1   BY  1
                    UNTIL ( TOKKI-IDX       >   5     )
-                   OR    ( RECE02-TOKKI(IDX)   =   SPACE )
-                   CONTINUE
+               IF      RECE02-TOKKI(IDX)   =   SPACE
+                   MOVE    WRK-TOKKI       TO  RECE02-TOKKI (TOKKI-IDX)
+                   MOVE    5               TO  TOKKI-IDX
+               ELSE
+                   IF      WRK-TOKKI     =   RECE02-TOKKI(IDX)
+                       MOVE    5                 TO  TOKKI-IDX
+                   END-IF 
+               END-IF
            END-PERFORM
-      *
-           MOVE    WRK-TOKKI         TO      RECE02-TOKKI(TOKKI-IDX)
-      *
-      *
            .
        TOKKI-HENSYU-EXT.
            EXIT.
@@ -1028,6 +1033,7 @@
                    MOVE  TNS-GAITENTTLKBN TO    RECE05-TENTTLKBN(IDX4)
                END-IF
                MOVE    TNS-YUKOKETA       TO    RECE05-YUKOKETA(IDX4)
+               MOVE    TNS-DATAKBN        TO    RECE05-DATAKBN (IDX4)
       *******  IF      SRY-SRYCD(IDX2)    =     CONS-COMMENT
                IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     SRY-INPUTNUM (IDX2)      NOT =   ZERO
