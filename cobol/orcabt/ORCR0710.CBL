@@ -4507,7 +4507,7 @@
        381-HC101-OPECOM-HEN-SEC      SECTION.
       *
            MOVE    ZERO                TO  WRK-OPECOM
-                                           WRK-OPECOM-HEN
+           MOVE    SPACE               TO  WRK-OPECOM-HEN
       *
       *    ºÍΩ—ŒÚ ‘Ω∏
            INITIALIZE                      OPECOM-REC

@@ -423,7 +423,6 @@
            03  WRK-RECEHEN         PIC 9(01).
       *
       *    ¼ê½ÑÎòÊÔ½¸
-           03  WRK-OPECOM          PIC 9(01).
            03  WRK-OPECOM-HEN      PIC X(50).
       *
       *    °åÌôÉÊ¡¦ÆÃÄê´ïºàÍÑ¥Æ¡¼¥Ö¥ë
@@ -3171,6 +3170,9 @@
       *
            MOVE    ZERO                TO  WRK-RENNUM
       *
+      *    ¼ê½ÑÎòÊÔ½¸
+           PERFORM 20091-OPECOM-HEN-SEC
+      *
       *    ÊÝ¸±ÍúÎò¾ðÊó
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       WRK-RIREKI-MAX  
@@ -3252,7 +3254,7 @@
                        UNTIL   IDY >       10
                        OR      RECE02-HKNCOMBI (IDY) =   ZERO
                    IF      RECECOM-HKNCOMBI    =   RECE02-HKNCOMBI(IDY)
-                       PERFORM 20091-COMMENT-HENSYU-SEC                 
+                       PERFORM 20092-COMMENT-HENSYU-SEC                 
                        MOVE    10                  TO  IDY
                    END-IF
                END-PERFORM
@@ -3265,9 +3267,196 @@
            EXIT.
       *
       *****************************************************************
+      *    ¼ê½ÑÎòÊÔ½¸½èÍý
+      *****************************************************************
+       20091-OPECOM-HEN-SEC      SECTION.
+      *
+           MOVE    SPACE               TO  WRK-OPECOM-HEN
+      *
+      *    ¼ê½ÑÎòÊÔ½¸
+           INITIALIZE                      OPECOM-REC
+           MOVE    RECE02-HOSPID       TO  OPECOM-HOSPID
+           MOVE    RECE02-PTID         TO  OPECOM-PTID
+           MOVE    RECE02-SRYYM        TO  OPECOM-TEKSTYM
+                                           OPECOM-TEKEDYM
+           MOVE    RECE02-NYUGAIKBN    TO  OPECOM-NYUGAIKBN
+           MOVE    "OPECOM-KEY4"       TO  WRK-OPECOM-PATH
+           PERFORM 900-OPECOM-READ-SEC
+      *
+           PERFORM             UNTIL   FLG-OPECOM   =   1
+               MOVE    ZERO                TO  FLG-OPECOM-CHK
+               IF      OPECOM-HKNNUM   NOT =   SPACE
+                   IF    ( OPECOM-HKNNUM       =   RECE02-HKNNUM )
+                   AND   ( OPECOM-HKNID        =   RECE02-HKNID  )
+                       MOVE    1                   TO  FLG-OPECOM-CHK
+                   ELSE
+                       IF    ( OPECOM-HKNNUM   =   RECE02-RJNHKNNUM )
+                       AND   ( OPECOM-HKNID    =   RECE02-RJNHKNID  )
+                           MOVE    1               TO  FLG-OPECOM-CHK
+                       ELSE
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       4
+                                   OR      RECE02-KOHNUM (IDY) =   SPACE
+                               IF    ( OPECOM-HKNNUM   
+                                               =   RECE02-KOHNUM (IDY) )
+                               AND   ( OPECOM-HKNID   
+                                               =   RECE02-KOHID  (IDY) )
+                                   MOVE    1       TO  FLG-OPECOM-CHK
+                                   MOVE    4       TO  IDY
+                               END-IF
+                           END-PERFORM
+                       END-IF
+                   END-IF    
+               ELSE
+                   MOVE    1                   TO  FLG-OPECOM-CHK
+               END-IF
+               IF      FLG-OPECOM-CHK          =   1
+                   MOVE    OPECOM-SRYYMD       TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3    TO  WRK-OPECOM-HEN
+                   PERFORM 200911-OPECOM-HENSYU-SEC                 
+                   MOVE    OPECOM-OPENAME      TO  WRK-OPECOM-HEN
+                   PERFORM 200911-OPECOM-HENSYU-SEC
+                   IF      OPECOM-OPECOMMENT   NOT =   SPACE                
+                       MOVE    OPECOM-OPECOMMENT   TO  WRK-OPECOM-HEN
+                       PERFORM 200911-OPECOM-HENSYU-SEC
+                   END-IF                 
+               END-IF               
+      *                 
+               MOVE    WRK-OPECOM-PATH TO  ORC-DBPATH
+               PERFORM 900-OPECOM-READ-N-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-OPECOM-PATH     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+      *    ¥³¥á¥ó¥ÈÊÔ½¸
+           INITIALIZE                      OPECOM-REC
+           MOVE    RECE02-HOSPID       TO  OPECOM-HOSPID
+           MOVE    RECE02-PTID         TO  OPECOM-PTID
+           MOVE    RECE02-SRYYM        TO  OPECOM-TEKSTYM
+                                           OPECOM-TEKEDYM
+           MOVE    RECE02-NYUGAIKBN    TO  OPECOM-NYUGAIKBN
+           MOVE    "OPECOM-KEY5"       TO  WRK-OPECOM-PATH
+           PERFORM 900-OPECOM-READ-SEC
+      *
+           PERFORM             UNTIL   FLG-OPECOM   =   1
+               MOVE    ZERO                TO  FLG-OPECOM-CHK
+               IF      OPECOM-HKNNUM   NOT =   SPACE
+                   IF    ( OPECOM-HKNNUM       =   RECE02-HKNNUM )
+                   AND   ( OPECOM-HKNID        =   RECE02-HKNID  )
+                       MOVE    1                   TO  FLG-OPECOM-CHK
+                   ELSE
+                       IF    ( OPECOM-HKNNUM   =   RECE02-RJNHKNNUM )
+                       AND   ( OPECOM-HKNID    =   RECE02-RJNHKNID  )
+                           MOVE    1               TO  FLG-OPECOM-CHK
+                       ELSE
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       4
+                                   OR      RECE02-KOHNUM (IDY) =   SPACE
+                               IF    ( OPECOM-HKNNUM   
+                                               =   RECE02-KOHNUM (IDY) )
+                               AND   ( OPECOM-HKNID   
+                                               =   RECE02-KOHID  (IDY) )
+                                   MOVE    1       TO  FLG-OPECOM-CHK
+                                   MOVE    4       TO  IDY
+                               END-IF
+                           END-PERFORM
+                       END-IF
+                   END-IF    
+               ELSE
+                   MOVE    1                   TO  FLG-OPECOM-CHK
+               END-IF
+               IF      FLG-OPECOM-CHK          =   1
+                   MOVE    OPECOM-OPENAME      TO  WRK-OPECOM-HEN
+                   PERFORM 200911-OPECOM-HENSYU-SEC
+                   IF      OPECOM-OPECOMMENT   NOT =   SPACE                
+                       MOVE    OPECOM-OPECOMMENT   TO  WRK-OPECOM-HEN
+                       PERFORM 200911-OPECOM-HENSYU-SEC
+                   END-IF                 
+               END-IF               
+      *                 
+               MOVE    WRK-OPECOM-PATH TO  ORC-DBPATH
+               PERFORM 900-OPECOM-READ-N-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-OPECOM-PATH     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       20091-OPECOM-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ¥³¥á¥ó¥È¤Î²þ¹Ô¥³¡¼¥Éºï½ü½èÍý
       *****************************************************************
-       20091-COMMENT-HENSYU-SEC    SECTION.
+       200911-OPECOM-HENSYU-SEC    SECTION.
+      *
+           ADD     1                   TO  WRK-RENNUM
+      *          
+           INITIALIZE                  RECEDEN-REC
+           MOVE    RECE02-HOSPID       TO  RECEDEN-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECEDEN-PTID
+           IF      RECE02-RECEKA       =   SPACE
+               MOVE    ZERO            TO  RECEDEN-RECEKA
+           ELSE
+              MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+           END-IF
+           MOVE    RECE02-TEISYUTUSAKI TO
+                                               RECEDEN-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO
+                                               RECEDEN-RECESYUBETU
+           IF      RECE02-HKNJANUM-KEY =   SPACE
+               MOVE    ZERO                TO  RECEDEN-HKNJANUM
+           ELSE
+               MOVE    RECE02-HKNJANUM-KEY TO  RECEDEN-HKNJANUM
+           END-IF
+           IF      RECE02-HOJOKBN-KEY  =   SPACE
+               MOVE    ZERO                TO  RECEDEN-HOJOKBN-KEY
+           ELSE
+               MOVE    RECE02-HOJOKBN-KEY  TO  RECEDEN-HOJOKBN-KEY
+           END-IF   
+           IF      RECE02-TEKSTYMD     =   SPACE
+               MOVE    ZERO            TO  RECEDEN-TEKSTYMD
+           ELSE
+               MOVE    RECE02-TEKSTYMD TO  RECEDEN-TEKSTYMD
+           END-IF
+           MOVE    "2"                 TO  RECEDEN-RECKBN
+           MOVE    WRK-RENNUM          TO  RECEDEN-RENNUM
+           MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
+           INSPECT WRK-OPECOM-HEN      REPLACING   ALL "  "
+                                                   BY  "¡¡"
+           MOVE    WRK-OPECOM-HEN      TO  RECEDEN-RECEDATA
+      *
+           MOVE    RECEDEN-REC         TO  MCPDATA-REC
+           MOVE    "RECEDEN-KEY"       TO  ORC-DBPATH
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC      
+      *
+           ADD     1                   TO  CNT-OUT
+      *
+           MOVE    SPACE               TO  WRK-OPECOM-HEN
+           .
+       200911-OPECOM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥³¥á¥ó¥È¤Î²þ¹Ô¥³¡¼¥Éºï½ü½èÍý
+      *****************************************************************
+       20092-COMMENT-HENSYU-SEC    SECTION.
       *                                          
            MOVE    RECECOM-COMMENT TO  WRK-COMM
            MOVE    ZERO            TO  WRK-RECEHEN                      
@@ -3362,7 +3551,7 @@
            END-PERFORM   
       *
            .
-       20091-COMMENT-HENSYU-EXT.
+       20092-COMMENT-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
