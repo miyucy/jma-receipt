@@ -48,6 +48,7 @@
       *  ２００２年１０月改正対応
       *  01.02.01    NACL-藤原    02/09/27  パラメタに入外区分の追加
       *  01.02.02    NACL-藤原    03/08/28  出力内容指定の処理の追加
+      *  01.02.03    NACL-藤原    04/06/20  印刷順の追加（個別作成時のみ）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -364,9 +365,13 @@
       *
            MOVE    RECE08-REC          TO  MCPDATA-REC
       *
-      *    レセプト種別別と医保・国保別でＫＥＹを変える
-           EVALUATE    WRK-PARA-PRTKBN
-               WHEN    "1"
+      *    個別作成時の入力順印刷
+           IF      WRK-PARA-RECE09-PRTJYUN      =   "05"
+               MOVE    "RECEPRT-KEY30"         TO  WRK-PATH
+           ELSE
+      *        レセプト種別別と医保・国保別でＫＥＹを変える
+               EVALUATE    WRK-PARA-PRTKBN
+                 WHEN    "1"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
                        IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
       *********            MOVE    "RECEPRT-KEY7"          TO  WRK-PATH
@@ -396,7 +401,7 @@
                            END-IF
                        END-IF
                    END-IF
-               WHEN    "2"
+                 WHEN    "2"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
                        IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
                            MOVE    "RECEPRT-KEY22"         TO  WRK-PATH
@@ -420,7 +425,7 @@
                            END-IF
                        END-IF
                    END-IF
-               WHEN    "3"
+                 WHEN    "3"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
                        IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
                            MOVE    "RECEPRT-KEY28"         TO  WRK-PATH
@@ -444,7 +449,8 @@
                            END-IF
                        END-IF
                    END-IF
-           END-EVALUATE            
+               END-EVALUATE
+           END-IF            
       *
            MOVE    WRK-PATH            TO  ORC-DBPATH
            MOVE    "DBSELECT"          TO  MCP-FUNC

@@ -85,6 +85,7 @@
       *                                     グループ化に変更
       *                                     SRYACCT-KEY29 -> SRYACCT-KEY36
       *                                     SRYACCT-KEY30 -> SRYACCT-KEY37
+      *  01.02.11    NACL-藤原    04/06/15  印刷順の追加（個別作成時のみ）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -240,6 +241,8 @@
            03  WRK-HKNNUM              PIC 9(03). 
       *
            03  WRK-PATH                PIC X(64).
+      *
+           03  WRK-PRTSEQ              PIC 9(03).
       *
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC 9(06).
@@ -1602,6 +1605,12 @@
            END-IF
       *    県番号
            MOVE    SYS-1001-PREFNUM    TO  WRK-RECE01-PREFNUM
+      *    印刷順
+           IF    ( WRK-PARA-SYOKBN     =   "2" )
+           AND   ( WRK-SYOKBN          =   "1" )
+               ADD     1                       TO  WRK-PRTSEQ
+               MOVE    WRK-PRTSEQ              TO  WRK-RECE01-PRTSEQ
+           END-IF 
       *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"

@@ -58,7 +58,8 @@
       *  01.01.04    NACL-門脇    04/05/13  初診時に時間外・深夜・休日が
       *                                     ２つ以上あった場合の記載対応
       *  01.01.05    NACL-小豆沢  04/05/19  ＤＢ書き込み時のコミット追加
-      *  01.01.06    NACL-藤原    04/07/12  給付割合の編集条件を変更
+      *  01.01.06    NACL-藤原    04/06/22  印刷順の追加（個別作成時のみ）
+      *  01.01.07    NACL-藤原    04/07/12  給付割合の編集条件を変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -311,6 +312,7 @@
                05  WRK-PARA-SRYYM   PIC  X(06).
                05  WRK-PARA-TERMID  PIC  X(16).
                05  WRK-PARA-SYSYMD  PIC  X(08).
+               05  WRK-PARA-SYOKBN  PIC  X(01).
                05  WRK-PARA-RECEKBN PIC  X(01).
                05  WRK-PARA-RECEYM  PIC  X(06).
                05  WRK-PARA-JOBID   PIC  9(07).
@@ -2668,33 +2670,23 @@
       *
            MOVE   SPACE              TO  HC06-KYURATE
       *          
-      *    国保OR退職者のみ印字
-      *****IF  ((RECE02-TEISYUTUSAKI =   "2"  )       AND
-      ********* (RECE02-RJNHKNNUM    =   SPACE)           )  OR
-           IF  ( RECE02-TEISYUTUSAKI =   "2"              )  OR
-               ( RECE02-HKNNUM       =   WRK-RETIRE1  OR
-                                         WRK-RETIRE2  OR
-                                         WRK-RETIRE3  OR
-                                         WRK-RETIRE4  OR
-                                         WRK-RETIRE5  OR
-                                         WRK-RETIRE6      )
-      *********IF      RECE02-AGE        <   70                          
-                   COMPUTE WRK-KYURATE-9   =   (100 -   RECE02-KYURATE)
-                                               / 10 
-                   IF      WRK-KYURATE-9       >   ZERO
-                       MOVE   "給割"               TO  HC06-KYURATE
-                       MOVE    WRK-KYURATE-9       TO  WRK-KYURATE
-                       INITIALIZE              ORCSKANACHKAREA
-                       MOVE    "2"             TO  KANACHK-SYORI 
-                       MOVE    WRK-KYURATE     TO  KANACHK-MAE-INPUT
-                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                       IF      KANACHK-RC      =   ZERO
-                       AND     KANACHK-MAX     >   ZERO
-                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+      *    国保のみ印字
+           IF      RECE02-TEISYUTUSAKI =   "2"
+               COMPUTE WRK-KYURATE-9   =   (100 -   RECE02-KYURATE)
+                                           / 10 
+               IF      WRK-KYURATE-9       >   ZERO
+                   MOVE   "給割"               TO  HC06-KYURATE
+                   MOVE    WRK-KYURATE-9       TO  WRK-KYURATE
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI 
+                   MOVE    WRK-KYURATE     TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF    ( KANACHK-RC      =   ZERO )
+                   AND   ( KANACHK-MAX     >   ZERO )
+                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                                TO  HC06-KYURATE(5:)
-                       END-IF    
-                   END-IF
-      *********END-IF    
+                   END-IF    
+               END-IF
            END-IF
       *
       *    県単用項目
@@ -4671,7 +4663,12 @@
            END-PERFORM 
            MOVE    RECE02-SRYYM        TO  RECE08-SRYYM
            MOVE    CNT-PAGE            TO  RECE08-RENNUM
-           MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+           IF      WRK-PARA-SYOKBN     =   "1"
+               MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+           ELSE
+               COMPUTE RECE08-RECENUM  =
+                       RECE02-PRTSEQ   *   100 +   CNT-PAGE
+           END-IF
            MOVE    RECE08-REC          TO  MCPDATA-REC
            PERFORM 900-RECE08-READ-SEC
            IF      FLG-RECE08          =   ZERO

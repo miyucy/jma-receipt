@@ -75,7 +75,10 @@
       *  01.01.05    NACL-藤原    04/05/06  不明分を必ず出力するように修正
       *  01.01.06    NACL-門脇    04/05/13  初診時に時間外・深夜・休日が
       *                                     ２つ以上あった場合の記載対応
-      *  01.01.07    NACL-藤原    04/07/12  給付割合の編集条件を変更
+      *  01.01.07    NACL-藤原    04/07/08  印刷順の追加（個別作成時のみ）
+      *  01.01.08    NACL-藤原    04/07/12  給付割合の編集条件を変更
+      *  01.01.09    NACL-藤原    04/08/02  会計を残して入院取消を行った
+      *                                     ままの入院会計のエラー対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -369,6 +372,7 @@
                05  WRK-PARA-SRYYM   PIC  X(06).
                05  WRK-PARA-TERMID  PIC  X(16).
                05  WRK-PARA-SYSYMD  PIC  X(08).
+               05  WRK-PARA-SYOKBN  PIC  X(01).
                05  WRK-PARA-RECEKBN PIC  X(01).
                05  WRK-PARA-RECEYM  PIC  X(06). 
                05  WRK-PARA-JOBID   PIC  9(07).
@@ -719,6 +723,9 @@
       *
            03  WRK-ERR-MSG-5           PIC X(48)  VALUE
                "地方公費のみ選択されています。主保険がありません".
+      *
+           03  WRK-ERR-MSG-6           PIC X(48)  VALUE
+               "入院基本情報データがありません".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -2001,6 +2008,8 @@
                    MOVE    WRK-ERR-MSG-4   TO   HC06-HEAD1-G
                WHEN    7
                    MOVE    WRK-ERR-MSG-5   TO   HC06-HEAD1-G
+               WHEN    8
+                   MOVE    WRK-ERR-MSG-6   TO   HC06-HEAD1-G
            END-EVALUATE        
            INSPECT HC06-HEAD1-G  REPLACING ALL "  "    BY  "　"
       *
@@ -2639,35 +2648,25 @@
        3110-KYURATE-SET-SEC        SECTION.
       *
            MOVE   SPACE              TO  HC06-KYURATE
-      *    国保OR退職者のみ印字
-      *****IF  ((RECE62-TEISYUTUSAKI =   "2"  )       AND
-      ********* (RECE62-RJNHKNNUM    =   SPACE)           )  OR
-           IF  ( RECE62-TEISYUTUSAKI =   "2"              )  OR
-               ( RECE62-HKNNUM       =   WRK-RETIRE1  OR
-                                         WRK-RETIRE2  OR
-                                         WRK-RETIRE3  OR
-                                         WRK-RETIRE4  OR
-                                         WRK-RETIRE5  OR
-                                         WRK-RETIRE6      )
-      *********IF      RECE62-AGE        <   70                          
-                   COMPUTE WRK-KYURATE-9   = 
-                                      (100 -   RECE62-KYURATE)
-                                               / 10 
-                   IF      WRK-KYURATE-9       >   ZERO
-                       MOVE   "給割"               TO  HC06-KYURATE
-                       MOVE    WRK-KYURATE-9       TO  WRK-KYURATE
-                       INITIALIZE              ORCSKANACHKAREA
-                       MOVE    "2"             TO  KANACHK-SYORI 
-                       MOVE    WRK-KYURATE     TO  KANACHK-MAE-INPUT
-                       CALL    "ORCSKANACHK"   USING
-                                               ORCSKANACHKAREA
-                       IF      KANACHK-RC      =   ZERO
-                       AND     KANACHK-MAX     >   ZERO 
-                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                                   TO  HC06-KYURATE(5:)
-                       END-IF    
-                   END-IF
-      *********END-IF    
+      *    国保のみ印字
+           IF      RECE62-TEISYUTUSAKI =   "2"
+               COMPUTE WRK-KYURATE-9   = 
+                                  (100 -   RECE62-KYURATE)
+                                           / 10 
+               IF      WRK-KYURATE-9       >   ZERO
+                   MOVE   "給割"               TO  HC06-KYURATE
+                   MOVE    WRK-KYURATE-9       TO  WRK-KYURATE
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI 
+                   MOVE    WRK-KYURATE     TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING
+                                           ORCSKANACHKAREA
+                  IF    ( KANACHK-RC       =   ZERO )
+                   AND   ( KANACHK-MAX     >   ZERO )
+                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  HC06-KYURATE(5:)
+                   END-IF    
+               END-IF
            END-IF
       *
       *    県単用項目
@@ -4799,7 +4798,12 @@
            END-PERFORM 
            MOVE    RECE62-SRYYM        TO  RECE08-SRYYM
            MOVE    CNT-PAGE            TO  RECE08-RENNUM
-           MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+           IF      WRK-PARA-SYOKBN     =   "1"
+               MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+           ELSE
+               COMPUTE RECE08-RECENUM  =
+                       RECE62-PRTSEQ   *   100 +   CNT-PAGE
+           END-IF
            MOVE    RECE08-REC          TO  MCPDATA-REC
            PERFORM 900-RECE08-READ-SEC
            IF      FLG-RECE08          =   ZERO

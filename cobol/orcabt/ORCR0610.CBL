@@ -41,6 +41,9 @@
       *                                     SRYACCT8→29
       *                                     SRYACCT9→30
       *  01.00.09    NACL-藤原    04/04/15  ＤＢ更新エラー時の処理
+      *  01.00.10    NACL-藤原    04/06/15  印刷順の追加（個別作成時のみ）
+      *  01.00.11    NACL-藤原    04/08/02  会計を残して入院取消を行った
+      *                                     ままの入院会計のエラー対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -149,6 +152,7 @@
            03  FLG-CONTKBN                             PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-LASTHKNID                           PIC 9(01). 
+           03  FLG-ZAISKBKBN                           PIC 9(01). 
       *
       *    カウント領域
        01  CNT-AREA.
@@ -204,6 +208,8 @@
            03  WRK-HKNNUM              PIC 9(03).     
       *
            03  WRK-PATH                PIC X(64).
+      *
+           03  WRK-PRTSEQ              PIC 9(03).
       *
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC 9(06).
@@ -739,6 +745,7 @@
       *    診療会計読み込み（患者ＩＤ、保険組合せ、診療科順）
       *
            MOVE    "1"                 TO  WRK-DBKBN 
+           MOVE    ZERO                TO  FLG-ZAISKBKBN
       *      
            INITIALIZE                  SRYACCT-REC
            MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
@@ -773,6 +780,7 @@
       *    入院会計読み込み（患者ＩＤ、診療科、剤識別区分順）
       *
            MOVE    "2"                 TO  WRK-DBKBN 
+           MOVE    ZERO                TO  FLG-ZAISKBKBN
       *
            MOVE    LOW-VALUE           TO  KEY-AREA
       *     
@@ -822,8 +830,8 @@
            DISPLAY "SRYACCT PTID=" KEY-N-PTID 
                    " TSTPTNUMKBN=" PTINF-TSTPTNUMKBN
       *
-           IF      FLG-PTINF           =   ZERO
-           AND     PTINF-TSTPTNUMKBN   =   "1"
+           IF    ( FLG-PTINF           =   ZERO )
+           AND   ( PTINF-TSTPTNUMKBN   =   "1"  )
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
@@ -1128,9 +1136,13 @@
                MOVE    KEY-NEW             TO  KEY-OLD
                INITIALIZE                      WRK-DAY-AREA
                                                WRK-HKNCOMBI-TABLE
+                                               FLG-ZAISKBKBN
       *
                PERFORM         UNTIL   FLG-NYUINACCT   =   1 
                                OR      KEY-NEW     NOT =   KEY-OLD
+                   IF      NACCT-ZAISKBKBN     =   "1"
+                       MOVE    1                   TO  FLG-ZAISKBKBN
+                   END-IF
       *            剤識別区分別テーブル編集
                    EVALUATE    NACCT-ZAISKBKBN
                        WHEN    "1"
@@ -1404,7 +1416,7 @@
                PERFORM 20011-FILE-HENSYU-SEC
            END-IF   
            .
-       20011-FILE-SYORI-EXT.
+       200122-NYUINACCT-HENSYU-EXT.
            EXIT. 
            .
       *****************************************************************
@@ -1471,8 +1483,8 @@
        20011-FILE-HENSYU-SEC              SECTION.
       *
       *    公費で不明分は出力しない
-           IF      WRK-SYOKBN         =   "2"
-           AND     WRK-TEISEIKBN      =   1
+           IF    ( WRK-SYOKBN         =   "2" )
+           AND   ( WRK-TEISEIKBN      =   1   )
                GO  TO  20011-FILE-HENSYU-EXT
            END-IF
       *     
@@ -1512,11 +1524,17 @@
       *
       *    レセのとき地方公費のみの場合は出力しない
            IF      WRK-SYOKBN             =   "1"        
-               IF      WRK-RECE61-HKNNUM      =   SPACE
-               AND     WRK-RECE61-KOHID       =   ZERO
-               AND     WRK-SEIKYU-KOHID (1 1) =   ZERO
+               IF    ( WRK-RECE61-HKNNUM      =   SPACE )
+               AND   ( WRK-RECE61-KOHID       =   ZERO  )
+               AND   ( WRK-SEIKYU-KOHID (1 1) =   ZERO  )
                    GO  TO  20011-FILE-HENSYU-EXT
                END-IF
+           END-IF 
+      *    印刷順
+           IF    ( WRK-PARA-SYOKBN     =   "2" )
+           AND   ( WRK-SYOKBN          =   "1" )
+               ADD     1                       TO  WRK-PRTSEQ
+               MOVE    WRK-PRTSEQ              TO  WRK-RECE61-PRTSEQ
            END-IF 
       *   
            EVALUATE    WRK-SYOKBN
@@ -1577,7 +1595,11 @@
                                           TO  WRK-RECE61-ERR-HKNCOMBINUM
                MOVE    WRK-ERR-TEKSTYMD   TO  WRK-RECE61-ERR-TEKSTYMD
                MOVE    WRK-ERR-TEKEDYMD   TO  WRK-RECE61-ERR-TEKEDYMD
-           END-IF 
+           END-IF
+      *
+           IF      FLG-ZAISKBKBN      =   1
+               MOVE    1                  TO  WRK-RECE61-ZAISKBKBN
+           END-IF
       *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
@@ -1594,10 +1616,10 @@
        20011-RECE61-WRITE-EXT.
            EXIT.
       *            
-070100*****************************************************************
-070200*    出力処理
-070300*****************************************************************
-070400 20011-RECE61-REWRITE-SEC            SECTION.
+      *****************************************************************
+      *    出力処理
+      *****************************************************************
+       20011-RECE61-REWRITE-SEC            SECTION.
       *
            PERFORM 20012-KOHID-HENSYU-SEC
            PERFORM VARYING IDX FROM    1   BY  1
@@ -1671,7 +1693,11 @@
                                            TO  WRK-RECE61-ERR-TEKEDYMD
                END-IF            
                MOVE    "1"                 TO  WRK-RECE61-TEISEIKBN     
-           END-IF          
+           END-IF    
+      *      
+           IF      FLG-ZAISKBKBN      =   1
+               MOVE    1                  TO  WRK-RECE61-ZAISKBKBN
+           END-IF
       *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
@@ -2061,11 +2087,13 @@
            EXIT.
       *
       *****************************************************************
-      *    データ出力処理
+      *    診療会計個別編集処理
       *****************************************************************
        20011-HENSYU-SEC                SECTION.
       *
            MOVE    KEY-NEW             TO  KEY-OLD
+           MOVE    ZERO                TO  FLG-ZAISKBKBN
+      *
            PERFORM             UNTIL   FLG-SRYACCT     =   1 
                MOVE    ACCT-HKNCOMBI       TO  KEY-N-HKNCOMBI
                MOVE    ACCT-PTID           TO  KEY-N-PTID 
@@ -2145,9 +2173,13 @@
            MOVE    KEY-NEW             TO  KEY-OLD
            INITIALIZE                      WRK-DAY-AREA
                                            WRK-HKNCOMBI-TABLE
+                                           FLG-ZAISKBKBN
       *
            PERFORM         UNTIL   FLG-NYUINACCT   =   1 
                            OR      KEY-NEW     NOT =   KEY-OLD
+               IF      NACCT-ZAISKBKBN     =   "1"
+                   MOVE    1                   TO  FLG-ZAISKBKBN
+               END-IF
       *        剤識別区分別テーブル編集
                EVALUATE    NACCT-ZAISKBKBN
                    WHEN    "1"
