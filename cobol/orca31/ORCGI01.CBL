@@ -50,6 +50,7 @@
       *  01.00.16    NACL-太田    03.05.08  入院歴表示の自院歴退院日の
       *                                     編集を修正（入院中対応）
       *  01.00.17    NACL-太田    03.05.16  入院カルテに保険を編集する
+      *  01.00.18    NACL-太田    03.05.19  退院時診療行為チェック追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -9237,7 +9238,8 @@
       *
                MOVE    MCPDATA-REC     TO  SRYACCT-REC
       *
-               IF    ( ACCT-SRYCDTOTAL =   120001110 )
+               IF    ( ACCT-SRYCDTOTAL =   120001110
+                  OR                       120000410 )
                    CONTINUE
                ELSE
                    IF    ( WRK-TAIINYM     =   ACCT-SRYYM )
