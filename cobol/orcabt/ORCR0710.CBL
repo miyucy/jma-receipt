@@ -3119,7 +3119,7 @@
       *    ¸øÈñ£±¿ÇÎÅ¼ÂÆü¿ô
            IF      RECE67-JNISSU (IDX2) >   ZERO
                IF      RECE67-JNISSU   (IDX2)  =   99
-                   MOVE    ZERO                    TO  OCR1-JNISSU
+                   MOVE    ZERO                    TO  OCR2-JNISSU
                ELSE
                    MOVE    RECE67-JNISSU  (IDX2)   TO  OCR2-JNISSU
                END-IF
@@ -3127,7 +3127,7 @@
       *    ¸øÈñ£²¿ÇÎÅ¼ÂÆü¿ô
            IF      RECE67-JNISSU (IDX3) >   ZERO
                IF      RECE67-JNISSU   (IDX3)  =   99
-                   MOVE    ZERO                    TO  OCR1-JNISSU
+                   MOVE    ZERO                    TO  OCR3-JNISSU
                ELSE
                    MOVE    RECE67-JNISSU  (IDX3)   TO  OCR3-JNISSU
                END-IF
@@ -3165,7 +3165,7 @@
       *    ¸øÈñ¡¦ÀÁµáÅÀ¿ô£²
            IF      RECE67-TOTALTEN (IDX3)  >   ZERO                      
                IF      RECE67-TOTALTEN (IDX3)  =   99999999
-                   MOVE    ZERO                    TO  OCR2-TENSU
+                   MOVE    ZERO                    TO  OCR3-TENSU
                ELSE
                    MOVE    RECE67-TOTALTEN(IDX3)   TO  OCR3-TENSU
                END-IF
