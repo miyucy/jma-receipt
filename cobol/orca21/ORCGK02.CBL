@@ -2777,6 +2777,12 @@
                                                                "3" )
                            PERFORM 31011-SPA-HEN-SEC
                        END-IF
+      *                自動追加で画像診断の時対象
+                       IF     (LNK-WKSRY-AUTOKBN (IDX IDY)  =  "2" )
+                          AND (LNK-WKSRY-SRYCD(IDX IDY) =  "170012070"
+                                                       OR  "170020470")
+                           PERFORM 31011-SPA-HEN-SEC
+                      END-IF
                    ELSE
                        PERFORM 31011-SPA-HEN-SEC
                    END-IF
@@ -6758,8 +6764,8 @@
                         MOVE    ZERO            TO  FLG-TAISYO
                    END-IF
       *            自動追加で画像診断の時対象外
-                   IF      (SPA-COM-SRYKBN  (IDX)  =  "70"  ) AND
-                           (SPA-COM-DATAKBN (IDX)  =  "2"   ) AND
+                   IF      (SPA-COM-SRYKBN(IDX) NOT =  "95" AND
+                                                       "96" ) AND
                            (SPA-COM-INPUTCD  (IDX) =  "170012070"
                                                    OR  "170020470")
                         MOVE    ZERO            TO  FLG-TAISYO
