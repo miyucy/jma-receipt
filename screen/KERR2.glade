@@ -13,7 +13,7 @@
 <widget>
   <class>GtkWindow</class>
   <name>KERR2</name>
-  <width>560</width>
+  <width>574</width>
   <height>130</height>
   <signal>
     <name>map_event</name>
@@ -63,7 +63,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>240</x>
-      <y>96</y>
+      <y>94</y>
       <width>64</width>
       <height>32</height>
       <can_focus>True</can_focus>
@@ -85,9 +85,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>ERRMSG</name>
-      <x>8</x>
+      <x>4</x>
       <y>40</y>
-      <width>548</width>
+      <width>565</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <editable>False</editable>
@@ -101,9 +101,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>ERRMSG2</name>
-      <x>8</x>
+      <x>4</x>
       <y>64</y>
-      <width>548</width>
+      <width>565</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <editable>False</editable>
