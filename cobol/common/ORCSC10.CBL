@@ -94,7 +94,7 @@
       *
                WHEN   (SPA-SRYYMD          >=  "20030601" )  AND
                       (SPA-SRYYMD          <   "99999999" )
-                   CALL    "ORCSC10200206"     USING
+                   CALL    "ORCSC10200306"     USING
                                                MCPAREA
                                                ORCSC00AREA
                                                WRK-SCR-REC
