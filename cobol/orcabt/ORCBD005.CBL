@@ -900,7 +900,11 @@
                MOVE    WRK-BTUNAME (IDZ)   TO  HCM08-BTUNAME (CNT-LINE)
                MOVE    WRK-BRMNUM  (IDZ)   TO  HCM08-BRMNUM  (CNT-LINE)
                MOVE    WRK-SRYKA(IDZ)      TO  HCM08-SRYKA(CNT-LINE)
-               MOVE    WRK-PTNUM(IDZ)      TO  HCM08-PTNUM(CNT-LINE)
+               IF    ( WRK-PTNUM(IDZ) ( 11 : ) =   SPACE )
+                   MOVE    WRK-PTNUM(IDZ)  TO  HCM08-PTNUM (CNT-LINE)
+               ELSE
+                   MOVE    WRK-PTNUM(IDZ)  TO  HCM08-PTNUM2(CNT-LINE)
+               END-IF
                MOVE    WRK-NAME(IDZ)       TO  HCM08-NAME(CNT-LINE)
                MOVE    WRK-SEX(IDZ)        TO  HCM08-SEX(CNT-LINE)
                MOVE    WRK-BIRTHDAY(IDZ)   TO  HCM08-BIRTHDAY(CNT-LINE)
