@@ -74,7 +74,7 @@
            03  WRK-RUIKEI-GAI2             PIC 9(07).
            03  WRK-RUIKEI-NYU2             PIC 9(07).
       *
-           03  WRK-KOSEIKBN                PIC X(01).
+           03  WRK-HIWARIKBN               PIC X(01).
       *
            03  WRK-HKNCOMBINUM-TABLE.
               05 WRK-HKNCOMBINUM           PIC 9(04)   OCCURS   50.
@@ -173,9 +173,9 @@
                MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
                PERFORM   900-SYSKANRI-READ-SEC
                IF    FLG-SYSKANRI   =   ZERO
-                  MOVE  SYS-1001-KOSEIKBN   TO    WRK-KOSEIKBN
-                  IF    WRK-KOSEIKBN  =   SPACE
-                      MOVE    "1"           TO    WRK-KOSEIKBN
+                  MOVE  SYS-1001-HIWARIKBN  TO    WRK-HIWARIKBN
+                  IF    WRK-HIWARIKBN  =   SPACE
+                      MOVE    "1"           TO    WRK-HIWARIKBN
                   END-IF
                ELSE
                   MOVE     11           TO    LNK-ORCSJGNGET-RC
@@ -195,7 +195,7 @@
                EVALUATE   LNK-ORCSJGNGET-KOHHKNNUM
                   WHEN     "015"
                   WHEN     "016"
-                     EVALUATE   WRK-KOSEIKBN
+                     EVALUATE   WRK-HIWARIKBN
                         WHEN     "1"
                           PERFORM    100-KEISAN1-SEC
                         WHEN     "2"

@@ -88,8 +88,8 @@
       *請求額端数設定（減免無）
                05  SYS-1001-DISCOUNT-HASU-KBN2
                                         PIC  X(01).
-      *更正・育成計算区分
-               05  SYS-1001-KOSEIKBN    PIC  X(01).
+      *更正・育成限度額日割計算区分
+               05  SYS-1001-HIWARIKBN   PIC  X(01).
       *予備
       ***  03                           PIC  X(94).
            03                           PIC  X(86).
