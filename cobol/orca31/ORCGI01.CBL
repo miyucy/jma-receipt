@@ -6549,7 +6549,9 @@
       *    ÄÌ»»»»ÄêºÑÆü¿ô
            MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
       *    Æþ±¡ÎÁ²Ã»»¿ÇÎÅ¥³¡¼¥É
-           PERFORM    4801-NYUKSN-GET-SEC
+           IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
+               PERFORM    4801-NYUKSN-GET-SEC
+           END-IF
       *    ³°Çñ
            MOVE   "099999911"   TO  LNK-SCNYUACCT-GAIHAKU-SRYCD
       *    ¼¼ÎÁº¹³Û
@@ -7043,8 +7045,9 @@
                MOVE   SYOKIKSN-OT-YUKOEDYMD(IDX6)
                          TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD(IDX6)
            END-PERFORM
-      *    Æþ±¡ÎÁ²Ã»»¿ÇÎÅ¥³¡¼¥É
-           PERFORM    4801-NYUKSN-GET-SEC
+           IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
+               PERFORM    4801-NYUKSN-GET-SEC
+           END-IF
       *    ³°Çñ
            MOVE   "099999911"   TO  LNK-SCNYUACCT-GAIHAKU-SRYCD
       *    ¼¼ÎÁº¹³Û
@@ -7150,8 +7153,9 @@
            END-PERFORM
       *    ÄÌ»»»»ÄêºÑÆü¿ô
            MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
-      *    Æþ±¡ÎÁ²Ã»»¿ÇÎÅ¥³¡¼¥É
-           PERFORM    4801-NYUKSN-GET-SEC
+           IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
+               PERFORM    4801-NYUKSN-GET-SEC
+           END-IF
       *    ³°Çñ
            MOVE   "099999911"   TO  LNK-SCNYUACCT-GAIHAKU-SRYCD
       *    ¼¼ÎÁº¹³Û
