@@ -350,6 +350,7 @@
            03  WRK-SENTEI-SRYCD2                       PIC 9(09).       
            03  WRK-SENTEI-SRYCD-W                      PIC 9(09).       
            03  WRK-SENTEI-SRYCD2-W                     PIC 9(09).       
+           03  WRK-SENTEI-KEISU                        PIC 9V99.
            03  WRK-NYUKHNKSNKBN                        PIC 9(03).
            03  WRK-SHOKUJIRYOYO                        PIC 9(01).
            03  WRK-TOKUKANRIKASAN                      PIC 9(01).
@@ -892,6 +893,9 @@
            PERFORM   CSR-CLOSE-SEC
       *
       *
+           PERFORM      SENTEI-KEISU-GET-SEC
+      *
+      *
            INITIALIZE                            NYUINACCT-REC
            MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
            MOVE    RECE62-NYUGAIKBN      TO      NACCT-NYUGAIKBN
@@ -1347,6 +1351,31 @@
            EXIT.
       *
       **************************************************************
+      *    選定外泊時の係数取得
+      **************************************************************
+       SENTEI-KEISU-GET-SEC           SECTION.
+      *
+           MOVE      ZERO           TO     WRK-SENTEI-KEISU
+      *
+           IF   RECE62-SRYYM    <=    "200303"
+               MOVE   0.1           TO     WRK-SENTEI-KEISU
+           END-IF
+      *
+           IF ( RECE62-SRYYM    >=    "200304" )   AND
+              ( RECE62-SRYYM    <=    "200403" )
+               MOVE   0.05           TO    WRK-SENTEI-KEISU
+           END-IF
+      *
+           IF   RECE62-SRYYM    >=    "200404"
+               MOVE   ZERO          TO     WRK-SENTEI-KEISU
+           END-IF
+      *
+           .
+      *
+       SENTEI-KEISU-GET-EXT.
+           EXIT.
+      *
+      **************************************************************
       *    入院基本料の取得
       **************************************************************
        NYUINKHN-GET-SEC           SECTION.
@@ -1469,13 +1498,15 @@
                     EVALUATE   WRK-DAY22(IDY)
                      WHEN   1
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-KHNTEN(IDY)  *  0.1)
+                                 (WRK-DAY1-KHNTEN(IDY)
+                                              *  WRK-SENTEI-KEISU)
                                                         +  0.5
                          MOVE    1     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC
                      WHEN   3
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-KHNTEN(IDY)  *  0.1)
+                                 (WRK-DAY1-KHNTEN(IDY)  
+                                              *  WRK-SENTEI-KEISU)
                                                         +  0.5
                          MOVE    3     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC

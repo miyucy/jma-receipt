@@ -185,7 +185,8 @@
            03  WRK-SRYCD                               PIC 9(09).
            03  WRK-RYAKUSHO                            PIC X(14).
            03  WRK-SRYYMD                              PIC X(08).       
-           03  WRK-SRYYMD-TAIHI                        PIC X(08).       
+           03  WRK-SRYYMD-TAIHI                        PIC X(08).   
+           03  WRK-SENTEI-KEISU                        PIC 9V99.    
       *
            COPY    "MCPAREA".
       *
@@ -853,6 +854,8 @@
       *
            PERFORM      MIJISI-GET-SEC
       *
+           PERFORM      SENTEI-KEISU-GET-SEC
+      *
            INITIALIZE                            NYUINACCT-REC
            MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
            MOVE    RECE62-NYUGAIKBN      TO      NACCT-NYUGAIKBN
@@ -1066,6 +1069,31 @@
        MIJISI-GET-EXT.
            EXIT.
       *
+      **************************************************************
+      *    選定外泊時の係数取得
+      **************************************************************
+       SENTEI-KEISU-GET-SEC           SECTION.
+      *
+           MOVE      ZERO           TO     WRK-SENTEI-KEISU
+      *
+           IF   RECE62-SRYYM    <=    "200303"
+               MOVE   0.1           TO     WRK-SENTEI-KEISU
+           END-IF
+      *
+           IF ( RECE62-SRYYM    >=    "200304" )   AND
+              ( RECE62-SRYYM    <=    "200403" )
+               MOVE   0.05           TO    WRK-SENTEI-KEISU
+           END-IF
+      *
+           IF   RECE62-SRYYM    >=    "200404"
+               MOVE   ZERO          TO     WRK-SENTEI-KEISU
+           END-IF
+      *
+           .
+      *
+       SENTEI-KEISU-GET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００２）
       *****************************************************************
@@ -1179,11 +1207,11 @@
                                        WRK-NYUKHNRYO
                        WHEN   1
                          COMPUTE  WRK-NYUKHNRYO =
-                                 (WRK-KHNTEN         *  0.1)
+                                 (WRK-KHNTEN  *  WRK-SENTEI-KEISU)
                                                      +  0.5
                        WHEN   3
                          COMPUTE  WRK-NYUKHNRYO =
-                                 (WRK-KHNTEN         *  0.1)
+                                 (WRK-KHNTEN  *  WRK-SENTEI-KEISU)
                                                      +  0.5
                        WHEN   4
                          COMPUTE  WRK-NYUKHNRYO =
