@@ -30,6 +30,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.01.01    NACL-¿¹ÏÆ    04/10/07  ÌôºÞÉéÃ´¶âÍó¤òºï½ü
       *                           04/10/12  ¸©ÊÌ¤Ë½¸·×
+      *                           04/10/13  ¸©Æâ¡¢¸©³°ÊÌ¤Ë½ÐÎÏ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -73,6 +74,9 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-PRTKBN          PIC 9(01).
+      *----(01.01.01)--ADD-START---
+           03  FLG-KBN             PIC 9(01).
+      *----(01.01.01)--ADD-START---
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -233,8 +237,14 @@
       *
            PERFORM 100-INIT-SEC
       *
-           PERFORM 200-MAIN-SEC
-                   UNTIL   FLG-END     =   1
+      *----(01.01.01)--UPD-START---
+           PERFORM VARYING FLG-KBN FROM    1   BY  1
+                   UNTIL ( FLG-END     =   1 ) OR
+                         ( FLG-KBN     >   2 )
+               PERFORM 200-MAIN-SEC
+      *                 UNTIL   FLG-END     =   1
+           END-PERFORM
+      *----(01.01.01)--UPD-START---
       *
            PERFORM 300-END-SEC
       *
@@ -360,7 +370,17 @@
       *    Æþ±¡³°¡Ê¤½¤ÎÂ¾¤Î¥ì¥»¡Ë¡¦Æþ±¡½¸·×
            MOVE    LOW-VALUE       TO  KEY-AREA
       *
-           MOVE    "SEIKYU-KEY4"   TO  WRK-PATH
+      *----(01.01.01)--UPD-START---
+           EVALUATE    FLG-KBN
+      *      ¸©ÆâÊ¬
+             WHEN      1
+               MOVE    "SEIKYU-KEY20"  TO  WRK-PATH
+      *      ¸©³°Ê¬
+             WHEN      2
+               MOVE    "SEIKYU-KEY7"   TO  WRK-PATH
+           END-EVALUATE
+      *----(01.01.01)--UPD-END-----
+      *
            PERFORM 900-SEIKYU-SELECT-SEC
       *
            PERFORM 200-HENSYU-SEC
@@ -374,7 +394,7 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
       *
-           MOVE    1               TO  FLG-END
+      *     MOVE    1               TO  FLG-END
            .
        200-MAIN-EXT.
            EXIT.
@@ -591,9 +611,11 @@
                END-IF
                PERFORM 20023-GOKEI-HEN-SEC
                PERFORM 20024-PRINT-OUT-SEC
+               MOVE    ZERO                TO  GSUM-AREA
+               MOVE    ZERO                TO  CNT-LINE
       *----(01.01.01)--ADD-START---
            ELSE
-               IF   (( FLG-RECE10          =   ZERO) AND
+               IF   (( FLG-KBN         =   2)  AND
                      ( KEY-O-HKNJANUM(1:2) NOT =   KEY-N-HKNJANUM(1:2)))
                    IF          CNT-LINE   =   ZERO
                        PERFORM 20021-HEAD-HEN-SEC
@@ -1053,9 +1075,12 @@
            MOVE    WRK-PARA-HOSPID TO  RECE10-HOSPID
            MOVE    LNK-PRTKANRI-SRYYM
                                    TO  RECE10-SKYYM
-           MOVE    WRK-CONS-SRYYM  TO  RECE10-SRYYM
-           MOVE    WRK-CONS-SRYYM-200304
-                                   TO  RECE10-XXSRYYM
+      *     MOVE    WRK-CONS-SRYYM  TO  RECE10-SRYYM
+      *     MOVE    WRK-CONS-SRYYM-200304
+      *                             TO  RECE10-XXSRYYM
+      *----(01.01.01)--ADD-START---
+           MOVE    "00"            TO  RECE10-XXPREFNUM
+      *----(01.01.01)--ADD-END-----
            MOVE    RECE10-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    WRK-PATH        TO  ORC-DBPATH

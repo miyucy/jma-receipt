@@ -28,7 +28,7 @@
     </element>
     <element name="KAISETUNAME" occurs="1">
       <appinfo>
-        <embed object="string" length="30"/>
+        <embed object="string" length="60"/>
       </appinfo>
     </element>
     <element name="MEI-TBL" occurs="23">
@@ -149,14 +149,14 @@
     </object>
     <object type="Standard - Line" version="0" id="O1">
       <attribute name="obj_pos">
-        <point val="22.2,3"/>
+        <point val="16.8,3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.195,2.995;28.005,3.005"/>
+        <rectangle val="16.795,2.995;22.605,3.005"/>
       </attribute>
       <attribute name="conn_endpoints">
-        <point val="22.2,3"/>
-        <point val="28,3"/>
+        <point val="16.8,3"/>
+        <point val="22.6,3"/>
       </attribute>
       <attribute name="numcp">
         <int val="1"/>
@@ -1309,10 +1309,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O60">
       <attribute name="obj_pos">
-        <point val="22.2,2.9"/>
+        <point val="16.8,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="22.2,2.68109;24.1796,2.96109"/>
+        <rectangle val="16.8,2.68109;18.7796,2.96109"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1326,7 +1326,7 @@
             <real val="0.28"/>
           </attribute>
           <attribute name="pos">
-            <point val="22.2,2.9"/>
+            <point val="16.8,2.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -1345,10 +1345,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O61">
       <attribute name="obj_pos">
-        <point val="18.3,3.4"/>
+        <point val="16.8,3.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.3,3.18109;20.2796,3.46109"/>
+        <rectangle val="16.8,3.18109;18.7796,3.46109"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1362,7 +1362,7 @@
             <real val="0.28"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.3,3.4"/>
+            <point val="16.8,3.4"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -1381,10 +1381,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O62">
       <attribute name="obj_pos">
-        <point val="18.3,3.8"/>
+        <point val="16.8,3.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.3,3.58109;20.2796,3.86109"/>
+        <rectangle val="16.8,3.58109;18.7796,3.86109"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1398,7 +1398,7 @@
             <real val="0.28"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.3,3.8"/>
+            <point val="16.8,3.8"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -1417,10 +1417,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O63">
       <attribute name="obj_pos">
-        <point val="18.3,4.5"/>
+        <point val="16.8,4.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.3,4.28109;19.714,4.56109"/>
+        <rectangle val="16.8,4.28109;18.214,4.56109"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1434,7 +1434,7 @@
             <real val="0.28"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.3,4.5"/>
+            <point val="16.8,4.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -1454,13 +1454,13 @@
     <group>
       <object type="Standard - Ellipse" version="0" id="O64">
         <attribute name="obj_pos">
-          <point val="25.4,4.2"/>
+          <point val="27.5,4.2"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="25.4,4.2;25.75,4.55"/>
+          <rectangle val="27.5,4.2;27.85,4.55"/>
         </attribute>
         <attribute name="elem_corner">
-          <point val="25.4,4.2"/>
+          <point val="27.5,4.2"/>
         </attribute>
         <attribute name="elem_width">
           <real val="0.35"/>
@@ -1477,10 +1477,10 @@
       </object>
       <object type="Standard - Text" version="0" id="O65">
         <attribute name="obj_pos">
-          <point val="25.4513,4.49874"/>
+          <point val="27.5513,4.49874"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="25.4513,4.26419;25.7543,4.56419"/>
+          <rectangle val="27.5513,4.2642;27.8543,4.5642"/>
         </attribute>
         <attribute name="text">
           <composite type="text">
@@ -1494,7 +1494,7 @@
               <real val="0.3"/>
             </attribute>
             <attribute name="pos">
-              <point val="25.4513,4.49874"/>
+              <point val="27.5513,4.49874"/>
             </attribute>
             <attribute name="color">
               <color val="#000000"/>
@@ -3187,10 +3187,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O112">
       <attribute name="obj_pos">
-        <point val="24.3,2.9"/>
+        <point val="18.9,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="24.3,2.66545;25.3908,2.96545"/>
+        <rectangle val="18.9,2.66545;22.536,2.96545"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOSPCD#</string>
@@ -3201,7 +3201,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#HOSPCD#</string>
+            <string>#99999999999999999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -3210,7 +3210,7 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="24.3,2.9"/>
+            <point val="18.9,2.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3229,10 +3229,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O113">
       <attribute name="obj_pos">
-        <point val="20.4,3.4"/>
+        <point val="18.9,3.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.4,3.18109;21.0787,3.46109"/>
+        <rectangle val="18.9,3.18109;25.97,3.46109"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#ADRS#</string>
@@ -3243,7 +3243,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#ADRS#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -3252,7 +3252,7 @@
             <real val="0.28"/>
           </attribute>
           <attribute name="pos">
-            <point val="20.4,3.4"/>
+            <point val="18.9,3.4"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3271,10 +3271,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O114">
       <attribute name="obj_pos">
-        <point val="20.4,3.8"/>
+        <point val="18.9,3.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.4,3.58109;22.0402,4.14109"/>
+        <rectangle val="18.9,3.58109;25.97,4.14109"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOSPNAME#</string>
@@ -3288,8 +3288,8 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;HOSPNAME
-&#164;&#162;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;
+&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -3298,7 +3298,7 @@
             <real val="0.28"/>
           </attribute>
           <attribute name="pos">
-            <point val="20.4,3.8"/>
+            <point val="18.9,3.8"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3317,10 +3317,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O115">
       <attribute name="obj_pos">
-        <point val="20.4,4.5"/>
+        <point val="18.9,4.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="20.4,4.28109;22.5493,4.56109"/>
+        <rectangle val="18.9,4.28109;27.384,4.56109"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#KAISETUNAME#</string>
@@ -3331,7 +3331,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;KAISETUNAME#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;&#164;&#210;&#164;&#213;&#164;&#216;&#164;&#219;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -3340,7 +3340,7 @@
             <real val="0.28"/>
           </attribute>
           <attribute name="pos">
-            <point val="20.4,4.5"/>
+            <point val="18.9,4.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
