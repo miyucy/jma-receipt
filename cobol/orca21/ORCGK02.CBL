@@ -3636,8 +3636,30 @@
            MOVE    LNK-WKSRY-ZAIKAIKEI(IDX) TO  SPA-COM-KAISU2(IDX2)
            MOVE    IDX2                TO  IDXS
       *    分画数を編集
-           MOVE    LNK-WKSRY-SRYKAISU (IDX IDY)
+           IF      LNK-WKSRY-SRYKBN (IDX)  =   "70"
+               MOVE    LNK-WKSRY-SRYKAISU (IDX IDY)
                                        TO  SPA-COM-BUNGSU (IDX2)
+           END-IF
+      *!!
+      *    外用の回数を編集
+           IF      LNK-WKSRY-SRYKBN (IDX)  =   "23"
+               MOVE    LNK-WKSRY-SRYKAISU (IDX IDY)
+                                       TO  SPA-COM-KAISU2(IDX2)
+               IF      SPA-COM-KAISU2(IDX2)    =   ZERO
+                   MOVE    1               TO  SPA-COM-KAISU2(IDX2)
+               END-IF
+      *        数量の再計算
+               IF     (SPA-COM-SURYO2  (IDX2)  >   ZERO )
+                 AND  (LNK-WKSRY-SRYCD (IDX IDY)(1:1) NOT =  "S")
+                   COMPUTE SPA-COM-SURYO2  (IDX2)
+                                       =   SPA-COM-SURYO2  (IDX2)
+                                       /   SPA-COM-KAISU2(IDX2)
+               END-IF
+               MOVE    SPA-COM-KAISU2  (IDX2)
+                                       TO  SPA-COM-KAISU (IDX2)
+               MOVE    SPA-COM-SURYO2  (IDX2)
+                                       TO  SPA-COM-SURYO (IDX2)
+      *!!
       *
            IF      LNK-WKSRY-INPUTCD (IDX IDY) =   SPACE
                MOVE    SPA-COM-INPUTCD (IDX2)
@@ -7699,6 +7721,11 @@
                    MOVE    LNK-ORCSC-KAISU     TO  WRK-COM-KAISU(IDX-Z)
                END-IF
       *
+      *        外用の回数
+               IF      WRK-COM-SRYKBN(IDX-Z)   =   "23"
+                   MOVE    WRK-KAISU           TO  WRK-COM-KAISU2(IDX-Z)
+               END-IF
+      *
       *        最終行に回数入力（＊）が有った時、最終行を回数入力
                IF      FLG-KAISU           NOT =   ZERO
                    IF      WRK-COM-ZAIEND (IDX-Z)  =   SPACE
@@ -10843,6 +10870,13 @@
                                                   TO  WKSRY-SRYKAISU
                                                                  (IDY)
                    END-IF
+      *!!
+      *            外用の個別回数を設定
+                   IF      SPA-COM-SRYKBN  (IDX)   =   "23"
+                       MOVE    SPA-COM-KAISU2(IDX) TO  WKSRY-SRYKAISU
+                                                                 (IDY)
+                   END-IF
+      *!!
       *            自動算定区分
                    MOVE    SPA-COM-AUTOKBN (IDX)    TO  WKSRY-AUTOKBN
                                                                  (IDY)
@@ -11354,6 +11388,13 @@
                        MOVE    SPA-COM-BUNGSU(IDX) TO  WKSRY-SRYKAISU
                                                                  (IDY)
                    END-IF
+      *!!
+      *            外用の個別回数を設定
+                   IF      SPA-COM-SRYKBN  (IDX)   =   "23"
+                       MOVE    SPA-COM-KAISU2 (IDX) TO  WKSRY-SRYKAISU
+                                                                 (IDY)
+                   END-IF
+      *!!
       *            自動算定区分
                    MOVE    SPA-COM-AUTOKBN (IDX)    TO  WKSRY-AUTOKBN
                                                                  (IDY)
@@ -12779,7 +12820,7 @@
                    MOVE    "red"           TO  K02-CONTKBN-STYLE
                    MOVE    "［確］"        TO  K02-CONTKBN-VALUE
            END-EVALUATE
-      *
+      *    急性発症日
            IF      SPA-GMN-KYUSEI     NOT =   SPACE
                MOVE    SPA-GMN-KYUSEI     TO  K02-TABOO
                MOVE    SPA-GMN-KYUSEI     TO  K02-TABOO-ITEM(1)
