@@ -3541,6 +3541,7 @@
                                END-IF  
                            END-IF    
                        END-PERFORM
+                       MOVE    SPACE           TO  SPA-GMN-C02-BYOMEI
                        PERFORM 41021-BYOMEI-HENSYU-SEC
       *                入力病名コード数カウント
                        PERFORM 410111-BYOMEICDSU-HENSYU-SEC
