@@ -108,6 +108,7 @@
            03  FLG-MONTHLYNUM      PIC 9(01).
            03  FLG-PTKOHFTN        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
+           03  FLG-PTBYOMEI        PIC 9(01).
       *
            03  FLG-SYORI           PIC X(01).
            03  FLG-SYORI2          PIC X(01).
@@ -251,6 +252,11 @@
        01  HZN-HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC"  REPLACING
                                      //COMB-// BY //HZN-COMB-//.
+      *
+      *    患者病名
+       01  PTBYOMEI-REC.
+           COPY    "CPPTBYOMEI.INC".
+      *
       *
       *
       *****************************************************************
@@ -911,13 +917,13 @@
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "JYURRK-KEY21"      TO  ORC-DBPATH
+           MOVE    "JYURRK-KEY23"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "JYURRK-KEY21"      TO  ORC-DBPATH
+               MOVE    "JYURRK-KEY23"      TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            ELSE
                MOVE    SPACE               TO  JYURRK-REC
@@ -936,6 +942,51 @@
                    MOVE    "9100"          TO  SPA-KEI-ERRCD
                END-IF
            END-IF
+      *
+      *    病名チェック
+           MOVE    SPACE               TO  PTBYOMEI-REC
+           INITIALIZE                  PTBYOMEI-REC
+           MOVE    HZN-COMB-HOSPID     TO  PTBYO-HOSPID
+           MOVE    HZN-COMB-PTID       TO  PTBYO-PTID
+           MOVE    HZN-COMB-HKNCOMBINUM
+                                       TO  PTBYO-HKNCOMBI
+      *
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTBYOMEI-KEY8"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTBYOMEI-KEY8"     TO  ORC-DBPATH
+               PERFORM 980-PTBYOMEI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  PTBYOMEI-REC
+               INITIALIZE                  PTBYOMEI-REC
+               MOVE    1                   TO  FLG-PTBYOMEI
+           END-IF
+      *
+           IF      FLG-PTBYOMEI        =   ZERO
+               IF      COMB-DELKBN         =   SPACE
+                   IF     (PTBYO-SRYYMD        <   COMB-TEKSTYMD)  OR
+                          (PTBYO-SRYYMD        >   COMB-TEKEDYMD)
+                       IF      SPA-KEI-ERRCD       =   SPACE
+                           MOVE    "9101"          TO  SPA-KEI-ERRCD
+                       ELSE
+                           MOVE    "9102"          TO  SPA-KEI-ERRCD
+                       END-IF
+                   END-IF
+               ELSE
+      *            削除の時
+                   IF      SPA-KEI-ERRCD       =   SPACE
+                       MOVE    "9101"          TO  SPA-KEI-ERRCD
+                   ELSE
+                       MOVE    "9102"          TO  SPA-KEI-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+      *
            .
        2501-HKNCOMBI-CHK-EXT.
            EXIT.
@@ -1825,7 +1876,27 @@
            .
        970-JYURRK-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    病名マスター読込
+      *****************************************************************
+       980-PTBYOMEI-READ-SEC         SECTION.
       *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
+               MOVE    ZERO            TO  FLG-PTBYOMEI
+           ELSE
+               INITIALIZE                  PTBYOMEI-REC
+               MOVE    1               TO  FLG-PTBYOMEI
+           END-IF
+      *
+           .
+       980-PTBYOMEI-READ-EXT.
+           EXIT.
       *
       *****************************************************************
       *    システム管理マスタ読込

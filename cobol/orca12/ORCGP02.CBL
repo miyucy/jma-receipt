@@ -672,6 +672,8 @@
                    END-IF
       *        保険変更確認
                WHEN    "9100"
+               WHEN    "9101"
+               WHEN    "9102"
                    IF      SPA-PID1-FLG        =   "OK"
                        PERFORM  4902-KOUSIN-SYORI-SEC
                    ELSE
@@ -3529,8 +3531,18 @@
                WHEN    "9100"
                    MOVE    "保険組合の変更で保険期間外の診療が"
                                                TO  WRK-PIDMSG
-                   MOVE    "存在します。診療を保険変更して下さい"
+                   MOVE    "存在します。診療を保険変更して下さい。"
                                                TO  WRK-PIDMSG(35:)
+               WHEN    "9101"
+                   MOVE    "保険組合の変更で保険期間外の病名が"
+                                               TO  WRK-PIDMSG
+                   MOVE    "存在します。病名を保険変更して下さい。"
+                                               TO  WRK-PIDMSG(35:)
+               WHEN    "9102"
+                   MOVE    "保険組合の変更で保険期間外の診療と病名が"
+                                               TO  WRK-PIDMSG
+                   MOVE    "存在します。診療と病名を保険変更。"
+                                               TO  WRK-PIDMSG(41:)
                WHEN    OTHER
                    MOVE    SPA-PIDCD
                                        TO  WRK-PIDMSG
