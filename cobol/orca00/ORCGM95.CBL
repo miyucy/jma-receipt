@@ -149,6 +149,9 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-M00KYOUTU
       **** MOVE    SPA-FREE        TO  SPA-M00
@@ -247,7 +250,7 @@
       *
       *
            .
-       3OO-SCREEN-EXT.
+       300-SCREEN-EXT.
            EXIT.
       *
       *
@@ -376,6 +379,16 @@
            ELSE
                MOVE    "0001"              TO  SPA-ERRCD
                GO      TO      400-TOROKU-EXT
+           END-IF
+      *    ÍËÆü»ØÄê
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY3-AREA
+           MOVE    "31"                TO  LNK-DAY3-IRAI
+           MOVE    SPA-NAI-SYSYMD      TO  LNK-DAY3-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY3-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY3-YOBI       TO  SPA-SYSYMD-YOBI
            END-IF
       *
            MOVE    SPA-GMN-SYSYMD      TO  SPA-SYSYMDWH

@@ -342,6 +342,16 @@
                MOVE    "1003"              TO  SPA-ERRCD
                GO  TO  310-SPASET-EXT
            END-IF
+      *    ÍËÆü»ØÄê
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY3-AREA
+           MOVE    "31"                TO  LNK-DAY3-IRAI
+           MOVE    WRK-SYSYMD          TO  LNK-DAY3-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY3-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY3-YOBI       TO  SPA-SYSYMD-YOBI
+           END-IF
       *
       *---- (01.00.04) LINE ADD START --------------------------------
            END-IF
