@@ -891,12 +891,19 @@
       *
       *    ¥µº‘»÷πÊ»Øπ‘° £–£∞£±£¥°À
            03  SPA-P014-AREA.
+               05  SPA-GMN014-SYORI                 PIC 9(01).
                05  SPA-GMN014-CUR                   PIC 9(02).
       *
                05  SPA-GMN014-PTNUM                 PIC X(20).
                05  SPA-GMN014-PTNUM1                PIC X(20). 
                05  SPA-GMN014-PTNUM2                PIC X(20). 
                05  SPA-GMN014-PTNUM3                PIC X(20). 
+      *
+      *    ¥µº‘»÷πÊ∫∆ ‘Ω∏° £–£∞£±£µ°À
+           03  SPA-P015-AREA.
+               05  SPA-GMN015-CUR                   PIC 9(02).
+      *
+               05  SPA-GMN015-PTNUM                 PIC X(20). 
       *
       *    ΩªΩÍ∞ÏÕ˜° £–£π£∏£≤°À
            03  SPA-P982-AREA.
