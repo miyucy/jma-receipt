@@ -143,6 +143,7 @@
            03  FLG-GAIYAK          PIC X(01).
            03  FLG-SP              PIC 9(01).
       *
+           03  FLG-CHK             PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
@@ -1494,7 +1495,8 @@
       *
            MOVE    1                   TO  IDH
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL       IDX     >   ORCSHKN-HKN-MAX
+                   UNTIL      (IDX     >   ORCSHKN-HKN-MAX )  OR
+                              (IDH     >=  20              )
                ADD     1                   TO  IDH
                MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
                                        TO  SPA-GMN-THKNCOMBINUM (IDH)
@@ -3206,8 +3208,24 @@
            MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
            MOVE    J02-SRYKA           TO  SPA-GMN-SRYKA-G
       *    診療科選択なし
-           IF      SPA-GMN-SRYKA       =   SPACE   OR
-                   SPA-GMN-PTID        =   ZERO
+           IF     (SPA-GMN-SRYKA       =   SPACE ) AND
+                  (SPA-GMN-PTID        =   ZERO  )
+               GO      TO      41013-SRYKAI-SYORI-EXT
+           END-IF
+      *    診療科
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
+               IF      SPA-GMN-SRYKA   =   SPA-GMN-SRYKAL (IDX)
+                   MOVE    SPA-GMN-SRYKA-LIST (IDX)
+                                           TO  SPA-GMN-SRYKA-G
+                   MOVE    SPA-SRYKA-MAX   TO  IDX
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+      *    科が無い時、前の科に戻す
+           IF      FLG-CHK             =   ZERO
+               MOVE    SPA-MAE-SRYKA-G TO  SPA-GMN-SRYKA-G
                GO      TO      41013-SRYKAI-SYORI-EXT
            END-IF
       *    診療科選択
@@ -3369,6 +3387,9 @@
            INITIALIZE                  SPA-NAI-TBL
            INITIALIZE                  SPA-GMN-INPUT
            INITIALIZE                  SPA-GMN-NYUIN-AREA
+      *
+      *    診療科一覧編集
+           PERFORM 3005-SRYKA-HEN-SEC
       *
       *    保険一覧編集
            PERFORM 3008-HKNCOMBI-HEN-SEC
@@ -5646,6 +5667,9 @@
            INITIALIZE                  SPA-GMN-INPUT
            INITIALIZE                  SPA-GMN-NYUIN-AREA
       *
+      *    診療科一覧編集
+           PERFORM 3005-SRYKA-HEN-SEC
+      *
       *    保険一覧編集
            PERFORM 3008-HKNCOMBI-HEN-SEC
       *
@@ -5860,6 +5884,9 @@
            INITIALIZE                  SPA-NAI-TBL
            INITIALIZE                  SPA-GMN-INPUT
            INITIALIZE                  SPA-GMN-NYUIN-AREA
+      *
+      *    診療科一覧編集
+           PERFORM 3005-SRYKA-HEN-SEC
       *
       *    保険一覧編集
            PERFORM 3008-HKNCOMBI-HEN-SEC
@@ -7995,7 +8022,7 @@
                    MOVE    "保険組合せがありません。"
                                        TO  WRK-ERRMSG
                WHEN    "0033"
-                   MOVE    "診療科がありません。"
+                   MOVE    "診療種別がありません。"
                                        TO  WRK-ERRMSG
                WHEN    "0040"
                    MOVE    "算定できる点滴手技料がありません。"
