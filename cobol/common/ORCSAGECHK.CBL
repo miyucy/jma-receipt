@@ -37,6 +37,7 @@
       * 01.00.06     NACL-Â¿¡¹Ç¼  03/04/14  Ï«ºÒ¤Î³ä¹çÊÑ¹¹ÄÉ²Ã
       * 01.00.07     NACL-Â¿¡¹Ç¼  03/05/12  ¼«ÇåÀÕ³ä¹çÊÑ¹¹ÄÉ²Ã
       * 01.00.08     NACL-Â¿¡¹Ç¼  03/09/03  ¸øÈñ´ü¸Â¥Á¥§¥Ã¥¯ÄÉ²Ã
+      * 01.00.09     NACL-Â¿¡¹Ç¼  03/11/13  Ï·¿Í¶èÊ¬ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -61,6 +62,7 @@
            03  FLG-HKNNUM-OK       PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-PTKOHINF        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-OK2             PIC 9(01).
@@ -90,6 +92,9 @@
            03  WRK-ZZ9                 PIC ZZZ.
       *
            03  WRK-SEIDONAME           PIC X(20).
+      *
+           03  WRK-BIRTHDAY            PIC X(08).
+           03  WRK-ROU-NEN             PIC 9(03).
       *
       *
       *****************************************************************
@@ -190,8 +195,10 @@
                    GO      TO      100-NENREI-EXT
                END-IF
                MOVE    PTINF-BIRTHDAY      TO  WRK-BYMD
+               MOVE    PTINF-BIRTHDAY      TO  WRK-BIRTHDAY
            ELSE
                MOVE    AGECHK-BIRTHDAY     TO  WRK-BYMD
+               MOVE    AGECHK-BIRTHDAY     TO  WRK-BIRTHDAY
            END-IF
       *
       *    £±Æü°Ê³°¤ÎÃÂÀ¸Æü¤Î»þ¤Ï¡¢Íâ·î£±Æü¤ò´ð½à¤È¤¹¤ë
@@ -218,6 +225,21 @@
                                            -   WRK-SMM
            END-IF
            MOVE    WRK-NENREI-YY       TO  AGECHK-NENREI
+      *
+      *    Ç¯Îð¤Ç¤ÎÏ·¿ÍÈ½Äê
+      *    £È£±£´¡¥£±£°°Ê¹ß£·£°ºÐ¤ò£·£µºÐ¤È¤¹¤ë
+      *    £È£±£´¡¥£±£°»þÅÀ¤Ç£·£°ºÐÌ¤Ëþ¤Î»þ
+           IF     (AGECHK-SRYYMD       >=   "20021001" )  AND
+                  (WRK-BIRTHDAY        >=   "19321001" )
+               MOVE    75                   TO  WRK-ROU-NEN
+           ELSE
+               MOVE    70                   TO  WRK-ROU-NEN
+           END-IF
+      *    £·£°ºÐ°Ê¾å¤ÏÏ·¿Í¤È¤¹¤ë¡Ê³ºÅö·î£±Æü¤Ë£·£°ºÐ¡Ë
+      *    ÊÝ¸±Ç¯Îð·×»»È½Äê
+           IF      AGECHK-NENREI       >=  WRK-ROU-NEN
+               MOVE    1               TO  AGECHK-ROUJIN
+           END-IF
       *
            .
        100-NENREI-EXT.
@@ -294,6 +316,9 @@
                END-IF
            END-IF
       *
+      *    Ï·¿ÍÈ½Äê
+           PERFORM 2009-ROUJIN-HANTEI-SEC
+      *
       *    £È£±£´¡¥£±£°²þÀµ¸å°Ê²¼¤Î¥Á¥§¥Ã¥¯¤ò¹Ô¤¦
            IF      AGECHK-SRYYMD       >=  "20021001"
                CONTINUE
@@ -313,6 +338,7 @@
                    GO      TO      200-FTNRATE-EXT
                END-IF
            END-IF
+      *
       *
       *    £·£°ºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¤Ç¤¢¤ë¤³¤È
            IF      AGECHK-NENREI       <   70
@@ -579,6 +605,83 @@
       *
        2002-JIBAI-FTNRATE-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    Ï·¿Í¡¦°ìÈÌÄê½èÍý
+      *****************************************************************
+       2009-ROUJIN-HANTEI-SEC         SECTION.
+      *
+      *    À¸³èÊÝ¸î¤Ç¡¢£¶£µºÐ°Ê¾å¤ÇÏ·¿Í¸øÈñ¤ò»ý¤Ã¤Æ¤¤¤ë¾ì¹ç¡¢Ï·¿Í
+           IF     (COMB-HKNNUM         =   SPACE )  AND
+                 ((COMB-KOH1HKNNUM     =   "012" )  OR
+                  (COMB-KOH2HKNNUM     =   "012" )  OR
+                  (COMB-KOH3HKNNUM     =   "012" )  OR
+                  (COMB-KOH4HKNNUM     =   "012" ))
+               IF     (AGECHK-NENREI       >=  65  )  AND
+                      (AGECHK-ROUJIN       =   ZERO)
+                   PERFORM 2009-ROUJIN-CHK-SEC
+               END-IF
+           ELSE
+      *        Ï·¿Í¸øÈñ¤òÁªÂò¤·¤Æ¤¤¤ë¾ì¹ç¡¢Ï·¿Í
+               IF     (COMB-KOH1HKNNUM     =   "027" )  OR
+                      (COMB-KOH2HKNNUM     =   "027" )  OR
+                      (COMB-KOH3HKNNUM     =   "027" )  OR
+                      (COMB-KOH4HKNNUM     =   "027" )
+                   MOVE    1               TO  AGECHK-ROUJIN
+               END-IF
+           END-IF
+      *
+      *    Ï«ºÒ¡¦¼«ÇåÀÕ¤Î»þ¡¢¤¹¤Ù¤Æ°ìÈÌ¤Ø
+           IF      COMB-HKNNUM         =   "971"
+                                       OR  "973"
+               MOVE    ZERO            TO  AGECHK-ROUJIN
+           END-IF
+      *
+       2009-ROUJIN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ï·¿Í¸øÈñÈ½Äê½èÍý
+      *****************************************************************
+       2009-ROUJIN-CHK-SEC         SECTION.
+      *
+      *    ¸øÈñÊÔ½¸
+           INITIALIZE                  PTKOHINF-REC
+           MOVE    AGECHK-HOSPID       TO  PTKOH-HOSPID
+           MOVE    AGECHK-PTID         TO  PTKOH-PTID
+           MOVE    "027"               TO  PTKOH-KOHNUM
+           MOVE    AGECHK-SRYYMD       TO  PTKOH-TEKSTYMD
+           MOVE    AGECHK-SRYYMD       TO  PTKOH-TEKEDYMD
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY6"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTKOHINF-KEY6"     TO  ORC-DBPATH
+               PERFORM 920-PTKOHINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY6"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF      FLG-PTKOHINF        =   ZERO
+               MOVE    1                   TO  AGECHK-ROUJIN
+           END-IF
+      *
+           .
+      *
+       2009-ROUJIN-CHK-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ÊÝ¸±¾ðÊó½èÍý
@@ -880,6 +983,28 @@
       *
            .
        993-PTRSIINF-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼Ô¸øÈñ¾ðÊóÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       920-PTKOHINF-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+               MOVE    ZERO            TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       920-PTKOHINF-READ-EXT.
            EXIT.
       *
       *
