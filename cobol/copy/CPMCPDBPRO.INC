@@ -239,6 +239,7 @@
       *  01.01.68    NACL-多々納　03/05/06  PTBYOMEI-KEY8追加
       *                                     JYURRK-KEY23追加
       *  01.01.69    NACL-太田    03/05/06  SYUNOU-KEY18追加
+      *  01.01.70    NACL-太田    03/05/09  I001-KEY2追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2500,6 +2501,9 @@
       *---- (NYUIN.10) LINE ADD START    -----------------------------
                WHEN    ANY             ALSO   "I001-KEY"
                    MOVE    PATH-VIEW-I001-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "I001-KEY2"
+                   MOVE    PATH-VIEW-I001-KEY2
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "I001-ALL"
                    MOVE    PATH-VIEW-I001-ALL
