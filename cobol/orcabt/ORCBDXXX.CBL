@@ -20,25 +20,13 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 日次帳票
-      *  コンポーネント名  : 日計表（ＨＣ１７）
+      *  コンポーネント名  : 薬剤一部負担もれ一覧表
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC-藤原      新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    MCC-藤原     01.10.03  出力先プリンタ名編集
-      *  01.00.02    MCC-藤原     01.10.24  出力先プリンタ名が取得
-      *                                     できないときエラーにしない
-      *  01.00.03    MCC-藤原     02.03.18  端末ＩＤ
-      *                                     X(16)からX(32)に変更
-      *  01.00.04    MCC-藤原     02.03/22  パラメタにシステム日付を追加
-      *  01.00.05    MCC-藤原     02/05/13  印刷管理・印刷ＤＢの追加
-      *  01.00.06    NACL-藤原    02/07/24  労災・自賠責・自費の項目追加
-      *  01.00.07    NACL-藤原    02/08/27  行数を３０桁に変更
-      *                                    （帳票ＩＤをＨＣ１７Ｖ０１へ変更）
-      *  01.01.01    NACL-藤原    02/10/10  サイト区分追加
-      *  01.01.02    NACL-藤原    02/10/17  自費の集計方法修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,11 +63,10 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-           03  FLG-SYSKANRI        PIC 9(01).
-           03  FLG-INPUT           PIC 9(01).
-           03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
-           03  FLG-PTHKNINF        PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
+      *
+           03  FLG-ROJIN           PIC 9(01).     
       *
       *    カウント領域
        01  CNT-AREA.
@@ -104,20 +91,16 @@
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
-           03  WRK-PARA-HOSPID     PIC X(24).
-           03  WRK-PARA-DENPPRTYMD PIC X(08).
       *
       *    一時領域
        01  WRK-AREA.
            03  WRK-PATH                PIC X(64).
-           03  WRK-DENPNUM             PIC Z(06)9.
+           03  WRK-DENPNUM             PIC ZZZZZZ9.
       *
            03  WRK-RECEERR             PIC X(200).
       *
-           03  WRK-PARA-DENPPRTYMDWH PIC X(22).
            03  WRK-SYSYMDWH          PIC X(22).
            03  WRK-RENNUM            PIC 9(03).
-           03  WRK-PTNUM             PIC X(20).
       *  
            03  WRK-SYSYMD.
                05  WRK-SYSYY         PIC 9(04).
@@ -129,21 +112,9 @@
                05  WRK-SDD           PIC 9(02).
            03  WRK-HENYMDG           PIC X(22).
       *
-      *****03  WRK-IN                PIC X(01).
-      *
-           03  WRK-MONEY             PIC 9(08).
-           03  WRK-JIHI              PIC 9(08).
-      *
            03  WRK-RENNUM-X          PIC ZZ9.
            03  WRK-PAGE              PIC ZZ9.
-           03  WRK-Z9                PIC ZZZZZZZ9.
-           03  WRK-ZZ                PIC ZZZZZZZZ.
-      *
-       01  SUM-AREA                             VALUE   ZERO.
-           03  SUM-OCC               OCCURS  10.
-               05  SUM-KENSU         PIC 9(05).
-               05  SUM-HKNTEN        PIC 9(08).
-               05  SUM-MONEY         PIC 9(08).
+           03  WRK-AGE               PIC 9(03).
       *
        01  WRK-CONS-AREA.
       *    自費保険番号 
@@ -167,30 +138,13 @@
       *    医療機関情報情報
            COPY    "CPSK1001.INC".
       *
-      *    診療科目情報情報
-           COPY    "CPSK1005.INC".
-      *
-      *    患者番号構成管理情報
-           COPY  "CPSK1009.INC".
-      *
-      *    出力先プリンタ名割り当て情報
-           COPY  "CPSK1031.INC".
-      *
       *    収納マスタ
        01  BD002-REC.
            COPY    "CPBD002.INC".
       *
-      *    患者保険マスタ
-       01  PTHKNINF-REC.
-           COPY    "CPPTHKNINF.INC".
-      *
       *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
-      *
-      *    保険組み合わせ
-       01  HKNCOMBI-REC.
-           COPY    "CPHKNCOMBI.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -217,6 +171,9 @@
            COPY    "CPORCSLNK.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *     
+      *   保険算定用年齢・割合計算サブ
+           COPY    "CPORCSAGECHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -259,7 +216,6 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
-           INITIALIZE                  SUM-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -277,8 +233,6 @@
                                                LNK-PRTKANRI-PRTNM    
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
-                                               WRK-PARA-HOSPID
-                                               WRK-PARA-DENPPRTYMD
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -286,8 +240,8 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORCBD002"      TO  JOB-PGID
-           MOVE    "日計表（伝票発行日）"
+           MOVE    "ORCBDXXX"      TO  JOB-PGID
+           MOVE    "薬剤一部負担もれ一覧表"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -298,26 +252,11 @@
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  RECEERR-TERMID
       *
-      *    パラメタ編集処理
-           PERFORM 110-PARA-HENSYU-SEC
-           .
-       100-INIT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    パラメタ編集処理
-      *****************************************************************
-       110-PARA-HENSYU-SEC                   SECTION.
-      *
       *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
+                                           WRK-SYSYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-SYSYMDWH 
-      *
-      *    対象年月日編集
-           MOVE    WRK-PARA-DENPPRTYMD TO    WRK-SYMD
-           PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  WRK-PARA-DENPPRTYMDWH 
       *
       *    医療機関ＩＤ編集
            MOVE    SPACE               TO  SYS-1001-REC
@@ -328,14 +267,13 @@
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
-               MOVE    SYS-1001-HOSPID     TO  WRK-PARA-HOSPID
            ELSE    
                MOVE    "医療機関ＩＤが取得できませんでした。"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF                                     
            .
-       110-PARA-HENSYU-EXT.
+       100-INIT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -350,10 +288,10 @@
                PERFORM 310-HEAD-HEN-SEC
       *        帳票編集<明細>処理
                PERFORM 320-BODY-HEN-SEC
-      *        帳票編集<合計>処理
-               IF     FLG-END       =   1
-                   PERFORM 330-TERM-HEN-SEC
-               END-IF
+      ***        帳票編集<合計>処理
+      ***         IF     FLG-END       =   1
+      ***             PERFORM 330-TERM-HEN-SEC
+      ***         END-IF
       *        帳票印刷処理
                PERFORM 390-PRINT-OUT-SEC
            END-PERFORM
@@ -372,10 +310,6 @@
            ADD     1                   TO  CNT-PAGE
       *
            INITIALIZE                      HC17      
-      *
-           MOVE    "伝票発行日"        TO  HC17-MIDASI
-           MOVE    WRK-PARA-DENPPRTYMDWH
-                                       TO  HC17-SRYYMD
            MOVE    WRK-SYSYMDWH        TO  HC17-SYSYMD
       *
            MOVE    CNT-PAGE            TO  WRK-PAGE
@@ -393,13 +327,7 @@
            MOVE    ZERO                TO  CNT-LINE
       *
            PERFORM             UNTIL   FLG-END     =   1
-      *****                    OR      CNT-LINE    =   20
                                OR      CNT-LINE    =   30
-      *    患者情報読み込み       
-               INITIALIZE                  PTINF-REC
-               MOVE    BD002-HOSPID          TO  PTINF-HOSPID
-               MOVE    BD002-PTID            TO  PTINF-PTID
-               PERFORM 900-PTINF-READ-SEC
       *    
                ADD     1                   TO  CNT-LINE
       *    連番
@@ -407,153 +335,20 @@
                MOVE    WRK-RENNUM          TO  WRK-RENNUM-X
                MOVE    WRK-RENNUM-X        TO  HC17-RENNUM (CNT-LINE)     
       *    患者番号
-      *        MOVE    BD002-PTNUM         TO  HC17-PTNUM (CNT-LINE)
-               MOVE    BD002-DENPNUM       TO  WRK-DENPNUM
-               MOVE    WRK-DENPNUM         TO  HC17-PTNUM (CNT-LINE)
+               MOVE    BD002-PTNUM         TO  HC17-PTNUM  (CNT-LINE)
       *    氏名
-               MOVE    PTINF-NAME          TO  HC17-NAME  (CNT-LINE)
-      *    保険点数
-               MOVE    ZERO                TO  BD002-TOTAL-HKNTEN
-               EVALUATE    BD002-SYUHKNNUM
-                   WHEN    WRK-CONS-JIBAI-HKNNUM
-                   WHEN    WRK-CONS-ROUSAI-HKNNUM
-                       CONTINUE
-                   WHEN    OTHER    
-                       PERFORM VARYING IDZ FROM    1   BY  1
-                               UNTIL   IDZ >       11
-                           ADD     BD002-HKNTEN (IDZ)
-                                               TO  BD002-TOTAL-HKNTEN
-                       END-PERFORM
-                       MOVE    BD002-TOTAL-HKNTEN
-                                           TO  WRK-Z9
-                       MOVE    WRK-Z9      TO  HC17-HKNTEN (CNT-LINE)
-               END-EVALUATE        
-      *    保険別金額（社保本人〜自賠責）
-               MOVE    ZERO                TO  IDX 
-               EVALUATE    BD002-SYUHKNNUM
-                   WHEN    SPACE
-                       MOVE    6                   TO  IDX
-                   WHEN    WRK-CONS-JIBAI-HKNNUM
-                       MOVE    9                   TO  IDX
-                   WHEN    WRK-CONS-ROUSAI-HKNNUM    
-                       MOVE    8                   TO  IDX
-                   WHEN    WRK-CONS-JIHI-HKNNUM    
-                       MOVE    7                   TO  IDX
-                   WHEN    "060"    
-                   WHEN    "067"
-                       IF      BD002-KOH1HKNNUM      =   "027" 
-                           MOVE    5                   TO  IDX
-                       ELSE
-                           MOVE    4                   TO  IDX
-                       END-IF
-                   WHEN    OTHER
-                       IF      BD002-KOH1HKNNUM      =   "027" 
-                           MOVE    3                   TO  IDX
-                       ELSE
-                           PERFORM 3201-PTHKNINF-HENSYU-SEC
-                           EVALUATE    PTHKN-HONKZKKBN
-                               WHEN    "1"
-                                   MOVE    1                   TO  IDX
-                               WHEN    "2"     
-                                   MOVE    2                   TO  IDX
-                           END-EVALUATE
-                       END-IF
-               END-EVALUATE
+               MOVE    PTINF-NAME          TO  HC17-NAME   (CNT-LINE)
+      *    伝票番号
+               MOVE    BD002-DENPNUM         TO  WRK-DENPNUM
+               MOVE    WRK-DENPNUM         TO  HC17-HKNTEN (CNT-LINE)
       *
-               IF      IDX                 >   ZERO     
-      *
-      *            自費以外のとき自費分だけ集計
-                   IF      IDX             =   7
-                       MOVE    ZERO            TO  WRK-JIHI
-                   ELSE
-                       COMPUTE WRK-JIHI    =   BD002-TOTAL-TGMONEY  
-                                           +   BD002-TOTAL-TGMONEY-TAX  
-                                           +   BD002-JIHI-TOTAL
-                                           +   BD002-JIHI-TOTAL-TAX  
-                                           +   BD002-JIHI-TAX
-                   END-IF
-                   COMPUTE WRK-MONEY       =   BD002-SKYMONEY
-                                           -   WRK-JIHI                  
-      *              
-                   MOVE    WRK-MONEY       TO  WRK-Z9
-                   MOVE    WRK-Z9          TO  HC17-MONEY (IDX CNT-LINE)
-                   IF      IDX             =   7
-                       CONTINUE
-                   ELSE
-                       IF      WRK-JIHI    >   ZERO      
-                           MOVE    WRK-JIHI
-                                           TO  WRK-ZZ
-                           MOVE    "*"     TO  WRK-ZZ (1:1)
-                           MOVE    WRK-ZZ  TO  HC17-MONEY (7   CNT-LINE)
-                       END-IF
-                   END-IF        
-               END-IF
-      *
-               ADD     BD002-TOTAL-HKNTEN  TO  SUM-HKNTEN (1)
-               ADD     BD002-SKYMONEY      TO  SUM-MONEY  (1)
-               ADD     1                   TO  SUM-KENSU  (1)
-               IF      IDX                 >   ZERO
-                   COMPUTE IDY     =       IDX     +   1          
-                   IF      IDX                 <   8 
-                       ADD     BD002-TOTAL-HKNTEN  TO  SUM-HKNTEN (IDY)
-                   END-IF    
-                   ADD     WRK-MONEY               TO  SUM-MONEY  (IDY)
-                   ADD     1                       TO  SUM-KENSU  (IDY)
-                   ADD     WRK-JIHI                TO  SUM-MONEY  (8)
-               END-IF
-                                                  
+               MOVE    ZERO                TO  FLG-ROJIN                                            
       *
                PERFORM 900-DBFETCH-SEC
            END-PERFORM     
       *
            .
        320-BODY-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せ表示処理
-      *****************************************************************
-       3201-PTHKNINF-HENSYU-SEC          SECTION.
-      *
-      *   保険組合せ読み出し
-           INITIALIZE                  HKNCOMBI-REC
-           MOVE    BD002-HOSPID        TO  COMB-HOSPID
-           MOVE    BD002-PTID          TO  COMB-PTID
-           MOVE    BD002-HKNCOMBINUM   TO  COMB-HKNCOMBINUM
-           PERFORM 900-HKNCOMBI-READ-SEC
-           IF      FLG-HKNCOMBI        =   ZERO
-      *    患者保険情報読み込み       
-               INITIALIZE                  PTHKNINF-REC
-               MOVE    BD002-HOSPID        TO  PTHKN-HOSPID
-               MOVE    BD002-PTID          TO  PTHKN-PTID
-               MOVE    COMB-HKNID          TO  PTHKN-HKNID
-               PERFORM 900-PTHKNINF-READ-SEC
-           END-IF    
-           .
-       3201-PTHKNINF-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *          *    帳票編集<合計>処理
-      *****************************************************************
-      *    
-       330-TERM-HEN-SEC         SECTION.
-      *
-      *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       10
-               IF      IDX                <   9    
-                   MOVE    SUM-HKNTEN (IDX)   TO  WRK-Z9
-                   MOVE    WRK-Z9             TO  HC17-GHKNTEN (IDX)
-               END-IF    
-               MOVE    SUM-MONEY (IDX)    TO  WRK-Z9 
-               MOVE    WRK-Z9             TO  HC17-GMONEY  (IDX) 
-               MOVE    SUM-KENSU (IDX)    TO  WRK-Z9
-               MOVE    WRK-Z9             TO  HC17-GKENSU  (IDX)
-           END-PERFORM
-      *
-           .
-       331-TOTAL-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -576,9 +371,8 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-      *****MOVE   "HC17"               TO  SPRT-PRTID
            MOVE   "HC17V01"            TO  SPRT-PRTID
-           MOVE    "日計表（伝票発行日）"
+           MOVE    "薬剤一部負担もれ一覧表"
                                        TO  SPRT-TITLE
            MOVE    HC17                TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -673,13 +467,14 @@
            EXIT.
       *
       *****************************************************************
-      *    収納マスタ　伝票発行日で検索
+      *    収納マスタ
       *****************************************************************
        900-DBSELECT-SEC                 SECTION.
       *
            INITIALIZE                  BD002-REC
-           MOVE    WRK-PARA-HOSPID     TO  BD002-HOSPID  
-           MOVE    WRK-PARA-DENPPRTYMD TO  BD002-DENPPRTYMD
+           MOVE    SYS-1001-HOSPID     TO  BD002-HOSPID
+           MOVE    "2"                 TO  BD002-NYUGAIKBN
+           MOVE    "20021210"          TO  BD002-DENPPRTYMD
       *
            MOVE    BD002-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -711,8 +506,53 @@
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-END
                MOVE    MCPDATA-REC         TO  BD002-REC
+               EVALUATE    BD002-SYUHKNNUM
+                   WHEN    WRK-CONS-JIBAI-HKNNUM
+                   WHEN    WRK-CONS-ROUSAI-HKNNUM
+                   WHEN    WRK-CONS-JIHI-HKNNUM
+                       GO  TO  900-DBFETCH-SEC
+               END-EVALUATE          
+      *        患者情報読み込み       
+               INITIALIZE                  PTINF-REC
+               MOVE    BD002-HOSPID    TO  PTINF-HOSPID
+               MOVE    BD002-PTID      TO  PTINF-PTID
+               PERFORM 900-PTINF-READ-SEC
+      *        患者年齢計算
+               MOVE    ZERO            TO  WRK-AGE
+               INITIALIZE                  ORCSAGECHKAREA
+               MOVE    BD002-HOSPID    TO  AGECHK-HOSPID
+               MOVE    BD002-PTID      TO  AGECHK-PTID
+               MOVE    BD002-DENPPRTYMD
+                                       TO  AGECHK-SRYYMD
+               MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
+               CALL    "ORCSAGECHK"        USING
+                                           ORCSAGECHKAREA
+               IF      AGECHK-RC       =   ZERO
+                    MOVE  AGECHK-NENREI    TO  WRK-AGE
+               END-IF
+      *
+      *        老人のときフラグのみ編集して読みとばす
+               IF  (   WRK-AGE          >=  70                      ) OR
+                   ( ( WRK-AGE          >=  65  AND <=  69 )    AND 
+                     ( BD002-KOH1HKNNUM =   "027"          )        )
+                   MOVE    1                TO  FLG-ROJIN
+                   GO  TO  900-DBFETCH-SEC
+               END-IF
+      *        
+      *        前の患者が老人でないとき読みとばす
+               IF      FLG-ROJIN        =   ZERO
+                   GO  TO  900-DBFETCH-SEC
+               END-IF                                
+      *        
+      *        六歳未満・投薬点＝０・生保のとき読みとばす
+               IF      WRK-AGE          <   6
+               OR      BD002-KOH1HKNNUM =   "012"
+               OR      BD002-TYK-HKNTEN =   ZERO
+                   MOVE    ZERO             TO  FLG-ROJIN
+                   GO  TO  900-DBFETCH-SEC
+               END-IF                                
            ELSE
-               MOVE    1                       TO  FLG-END
+               MOVE    1                    TO  FLG-END
            END-IF  
            .
        900-DBFETCH-EXT.
@@ -810,97 +650,10 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
-      *
            .
        900-PTINF-READ-EXT.
            EXIT.
       *
-      *
-      *****************************************************************
-      *    患者保険マスター読込処理
-      *****************************************************************
-       900-PTHKNINF-READ-SEC         SECTION.
-      *
-           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  PTHKNINF-REC
-                   MOVE    ZERO                TO  FLG-PTHKNINF
-               ELSE
-                   MOVE    1                   TO  FLG-PTHKNINF
-                   INITIALIZE                  PTHKNINF-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-PTHKNINF
-               INITIALIZE                  PTHKNINF-REC
-           END-IF
-      *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-      *
-           .
-       900-PTHKNINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せマスター読込処理
-      *****************************************************************
-       900-HKNCOMBI-READ-SEC         SECTION.
-      *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
-                   MOVE    ZERO                TO  FLG-HKNCOMBI
-               ELSE
-                   MOVE    1                   TO  FLG-HKNCOMBI
-                   INITIALIZE                  HKNCOMBI-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-HKNCOMBI
-               INITIALIZE                  HKNCOMBI-REC
-           END-IF
-      *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-      *
-           .
-       900-HKNCOMBI-READ-EXT.
-           EXIT.
       *      
       *****************************************************************
       *    ＤＢ　オープン処理
