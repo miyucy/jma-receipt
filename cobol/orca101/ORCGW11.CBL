@@ -46,6 +46,7 @@
       *                                     に追加
       * 02.00.06     NACL-太田    04/01/29  標準提供請求書をコンボで選択
       *                                     可能とする
+      * 02.00.07     NACL-多々納  04/08/11  処方せんの標準プログラム名を変更する
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -732,7 +733,7 @@
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(1)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(1)
       *    処方せん
-           MOVE    "ORCHC19"       TO  SPA-GMN-TORGPGNM (2)
+           MOVE    "ORCHCM19"      TO  SPA-GMN-TORGPGNM (2)
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(2)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(2)
       *    請求書兼領収書
@@ -813,8 +814,15 @@
                MOVE    MCPDATA-REC     TO  SYS-1032-REC
                MOVE    IDZ2            TO  WRK-KBNCD2
                IF      SYS-1032-KBNCD      =   WRK-KBNCD-G
-                   MOVE    SYS-1032-ORCAORGNM
+      *            処方せんの標準を変更する
+                   IF      (IDZ2           =   2   )  AND
+                           (SYS-1032-ORCAORGNM
+                                       NOT =  SPA-GMN-TORGPGNM  (IDZ2))
+                       MOVE    "ORCHCM19"      TO  SPA-GMN-TORGPGNM (2)
+                   ELSE
+                       MOVE    SYS-1032-ORCAORGNM
                                        TO  SPA-GMN-TORGPGNM  (IDZ2)
+                   END-IF
                    MOVE    SYS-1032-ORCAORGCHK
                                        TO  SPA-GMN-TORGPGCHK (IDZ2)
                    MOVE    SYS-1032-ORCACSTNM

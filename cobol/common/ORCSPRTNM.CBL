@@ -213,7 +213,7 @@
                        MOVE    "ORCHC01"       TO  ORCSPRTNM-PRTPG
       *            処方せん
                    WHEN    "00000002"
-                       MOVE    "ORCHC19"       TO  ORCSPRTNM-PRTPG
+                       MOVE    "ORCHCM19"      TO  ORCSPRTNM-PRTPG
       *            請求書
                    WHEN    "00000003"
                        MOVE    "ORCHC03"       TO  ORCSPRTNM-PRTPG
