@@ -70,6 +70,7 @@
            03  GENSAN-IDX                  PIC 9(04).
            03  GENSAN-IDX2                 PIC 9(04).
            03  IDV                         PIC 9(02).
+           03  TSY90-IDX                   PIC 9(02).
       *
       *    コンスタント値
        01  CONSTANT-AREA.
@@ -1251,7 +1252,7 @@
                  (( TSYRRK-NINSTYMD(1:6) <= LNK-NYURECEDEN-SANTEIYM AND
                     LNK-NYURECEDEN-SANTEIYM <= TSYRRK-NINEDYMD(1:6) ))
       *
-                   MOVE    "TSYRRK-KEY3"      TO  ORC-DBPATH
+                   MOVE    "TSYRRK-KEY3"    TO  ORC-DBPATH
                    PERFORM 910-TSYRRK-READ-SEC
       *
                END-PERFORM
@@ -1269,6 +1270,21 @@
            MOVE     "TSYRRK-KEY3"       TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
+      *９０日越え（低所得情報）
+           IF   TSYRRK-SKJGNSTYMD(1:6)  <=  LNK-NYURECEDEN-SANTEIYM
+               IF  TSYRRK-SKJGNSTYMD(1:6)  <  LNK-NYURECEDEN-SANTEIYM
+                   MOVE   1             TO   TSY90-IDX
+               ELSE
+                   MOVE   TSYRRK-SKJGNSTYMD(7:2)   TO  TSY90-IDX
+               END-IF
+               PERFORM   VARYING   IDX1   FROM   TSY90-IDX  BY  1
+                          UNTIL     IDX1   >    31
+                    IF    WRK-SKJ-RYOYO(IDX1)  NOT =  SPACE
+                        MOVE   "197001010"
+                                        TO  WRK-SKJFTN-SRYCD(IDX1)
+                    END-IF
+               END-PERFORM
+           END-IF
       *低年金情報の取得
            INITIALIZE                          TNKRRK-REC
            MOVE    LNK-NYURECEDEN-HOSPID   TO  TNKRRK-HOSPID
