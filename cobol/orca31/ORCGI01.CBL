@@ -377,6 +377,7 @@
            03  IDX-SHOKUJIX                PIC X(02).
            03  IDX-SHOKUJI9   REDEFINES    IDX-SHOKUJIX
                                            PIC 9(02).
+           03  IDX-SKJ                     PIC 9(02).
            03  WRK-NYUINCHU-TAIINYMD       PIC X(08).
            03  WRK-ORCHCN01-HKNCOMBINUM    PIC 9(04).
            03  WRK-STIDX                   PIC 9(02).
@@ -403,6 +404,12 @@
            03  WRK-FTN-TAIINYMD            PIC X(08).
            03  WRK-FTN-RRKNUM              PIC 9(03).
            03  WRK-NYUREKILST-SEL          PIC 9(05).
+      *    転科／転棟／転室時に食事会計を退避する項目（最大２カ月分）
+           03  WRK-TENROOM-SKJ-TABLE.
+               05  WRK-TENROOM-SKJ-TBL     OCCURS  2.
+                   07  WRK-TENROOM-SKJ-SRYYM
+                                           PIC X(06).
+                   07  WRK-TENROOM-SKJ     PIC 9(03)  OCCURS  31.
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -9655,41 +9662,30 @@
            END-IF
       *
       *    入院会計作成前に会計データの食事区分を退避
+      *    （異動月分）
            INITIALIZE                      NYUINACCT-REC
            MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
-           MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
-           MOVE    "00"                TO  NACCT-SRYKA
            MOVE    SPA-NAI-I01-IDOYMD(1:6)
                                        TO  NACCT-SRYYM
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "NYUINACCT-KEY16"   TO  WRK-DBPATH
+           MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
            PERFORM   900-TBL-SELECT-SEC
            IF      FLG-DBRC            =   ZERO
-               MOVE    ZERO        TO      WRK-TAIHI-SHOKUJI
-               PERFORM UNTIL       FLG-DBRC     NOT =   ZERO
-      *
-                   MOVE     MCPDATA-REC   TO   NYUINACCT-REC
-      *
-      *            食事を退避
-                   IF      NACCT-ZAISKBKBN     =   "4"
-                       MOVE    SPA-NAI-I01-IDOYMD(7:2)
-                                         TO    IDX-SHOKUJIX
-                       IF      NACCT-DAY(IDX-SHOKUJI9)  NOT =   ZERO
-                            MOVE   NACCT-DAY(IDX-SHOKUJI9) TO
-                                                  WRK-TAIHI-SHOKUJI
-                       END-IF
-                   END-IF
-      *
-                   MOVE    "NYUINACCT-KEY16"   TO  WRK-DBPATH
-                   PERFORM 900-TBL-READ-SEC
+               MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *        食事を退避
+               MOVE    NACCT-SRYYM     TO  WRK-TENROOM-SKJ-SRYYM(1)
+               MOVE    SPA-NAI-I01-IDOYMD(7:2)
+                                       TO  IDX-SHOKUJIX
+               PERFORM   VARYING   IDX-SKJ FROM  IDX-SHOKUJI9  BY  1
+                         UNTIL     IDX-SKJ   >   31
+                    MOVE   NACCT-DAY(IDX-SKJ)
+                                       TO  WRK-TENROOM-SKJ(1 IDX-SKJ)
                END-PERFORM
-           ELSE
-               INITIALIZE                  NYUINACCT-REC
            END-IF
       *    入院会計マスタクローズ
-           MOVE    "NYUINACCT-KEY16"      TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    入院会計作成サブの呼出し
@@ -10188,6 +10184,38 @@
                MOVE    IPN-SANTEISTYMD   TO   SPA-NAI-I01-IDOYMD
                MOVE    IPN-SANTEISTYMD   TO   PTNYUINRRK-TENNYUYMD
            END-IF
+      *
+      *    入院会計作成後に退避データの食事区分を復元
+      *    （異動月分）
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    WRK-TENROOM-SKJ-SRYYM(1)
+                                       TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+           PERFORM   900-TBL-SELECT-SEC
+           IF      FLG-DBRC            =   ZERO
+               MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *        食事を復元
+               MOVE    SPA-NAI-I01-IDOYMD(7:2)
+                                       TO  IDX-SHOKUJIX
+               PERFORM   VARYING   IDX-SKJ FROM  IDX-SHOKUJI9  BY  1
+                         UNTIL     IDX-SKJ   >   31
+                    MOVE   WRK-TENROOM-SKJ(1 IDX-SKJ)
+                                       TO  NACCT-DAY(IDX-SKJ)
+               END-PERFORM
+           END-IF
+           MOVE     NYUINACCT-REC      TO  MCPDATA-REC
+           MOVE     "DBUPDATE"         TO  MCP-FUNC
+           MOVE     "NYUINACCT-KEY"    TO  MCP-PATH
+           CALL     "ORCMCPSUB"        USING  MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC 
+      *    入院会計マスタクローズ
+           MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
       *
            .
        4801-TENROOM-EDIT-EXT.
