@@ -30,6 +30,8 @@
       * 00.01.01     NACL-森脇     20020828  検索開始文字数の変更
       *                                      検索結果表示の変更
       * 00.01.02     NACL-森脇     20020829  初期表示追加
+      * 00.01.03     NACL-森脇     20021011  ーボタン追加
+      * 00.01.04     NACL-森脇     20021011  登録時のクリア処理変更
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -125,6 +127,7 @@
            03  WRK-PKANA       PIC X(02).
            03  WRK-PMAX        PIC 9(02).
       *
+      *----(00.01.03)--ADD-START----
       *    カナ検索用テーブル
        01  PIN-TBL-AREA.
            03  KANA-TBL.
@@ -138,9 +141,10 @@
              05  FILLER        PIC X(06)   VALUE "ヤユヨ".
              05  FILLER        PIC X(10)   VALUE "ラリルレロ".
              05  FILLER        PIC X(10)   VALUE "ワヲン゜゛".
-             05  FILLER        PIC X(06)   VALUE "ＳＢＣ".
+             05  FILLER        PIC X(08)   VALUE "ーＳＢＣ".
            03  KANA-TBL-R      REDEFINES   KANA-TBL.
-             05  PKANA         PIC X(02)   OCCURS  51.
+             05  PKANA         PIC X(02)   OCCURS  52.
+      *----(00.01.03)--ADD-END------
       *
       *----(00.01.02)--ADD-START----
        01  MSG-AREA.
@@ -966,8 +970,15 @@
                GO  TO  471-DEL-EXT
            END-IF
       *
-      *    画面初期化
-           PERFORM 310-SPASET-SEC
+      *----(00.01.04)--UPD-START----
+           IF          SPA-GMN-SELNUM  =   ZERO
+      *        画面初期化
+               PERFORM 310-SPASET-SEC
+           ELSE
+               INITIALIZE          SPA-GMN-ENTRY
+               MOVE    3       TO  SPA-GMN-CUR
+           END-IF
+      *----(00.01.04)--UPD-END------
            .
       *
        471-DEL-EXT.
@@ -1054,8 +1065,15 @@
                GO  TO  481-KOUSHIN-EXT
            END-IF
       *
-      *    画面初期化
-           PERFORM 310-SPASET-SEC
+      *----(00.01.04)--UPD-START----
+           IF          SPA-GMN-SELNUM  =   ZERO
+      *        画面初期化
+               PERFORM 310-SPASET-SEC
+           ELSE
+               INITIALIZE          SPA-GMN-ENTRY
+               MOVE    3       TO  SPA-GMN-CUR
+           END-IF
+      *----(00.01.04)--UPD-END------
            .
       *
        481-KOUSHIN-EXT.
