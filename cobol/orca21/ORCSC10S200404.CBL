@@ -856,7 +856,8 @@
                            UNTIL   (IDY        >   5   )  OR
                                    (FLG-SINSATU          =   1     )  OR
                                    (SRY-SRYCD (IDY)      =   SPACE )
-                       IF      SPA-HKNKBN          =   ZERO
+      **************** IF      SPA-HKNKBN          =   ZERO
+                       IF      JYURRK-HKNKBN       =   ZERO
       *                    一般
                            PERFORM 100011-IPN-DOUJI-CHK-SEC
                        ELSE
@@ -3038,13 +3039,13 @@
        300-DOUSAISIN-SET-SEC         SECTION.
       *
       *    電話再診かのチェック
-           IF      SPA-GMN-IDX         >   ZERO
-               AND SPA-GMN-IDX         <=  200
+      *****IF      SPA-GMN-IDX         >   ZERO
+      ******** AND SPA-GMN-IDX         <=  200
                PERFORM 3001-TELSAISIN-CHK-SEC
                IF      FLG-TEL-ARI         =   1
                    GO      TO      300-DOUSAISIN-SET-EXT
                END-IF
-           END-IF
+      *****END-IF
       *
            MOVE    SPA-SCR-REC         TO  HZN-SCR-REC
       *
@@ -3080,11 +3081,17 @@
       *****************************************************************
        3001-TELSAISIN-CHK-SEC         SECTION.
       *
-      *    電話再診かのチェック
-           MOVE    SPA-COM-INPUTCD (SPA-GMN-IDX)   TO  WRK-SRYCD
-           SET     TBL-IDX             TO  1
-           SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
-                   AT   END
+           MOVE    ZERO                TO  FLG-TEL-ARI
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   200  )  OR
+                             ((SPA-GMN-INPUTCD(IDX)    =   SPACE) AND
+                              (SPA-COM-INPUTCD(IDX)    =   SPACE)) OR
+                              (FLG-TEL-ARI     =   1   )
+      *        電話再診かのチェック
+               MOVE    SPA-COM-INPUTCD (IDX)   TO  WRK-SRYCD
+               SET     TBL-IDX             TO  1
+               SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
+                  AT   END
                        MOVE    SPACE           TO  WRK-KBN
                        MOVE    SPACE           TO  WRK-KBN2
                        MOVE    ZERO            TO  WRK-KAISU
@@ -3092,21 +3099,21 @@
                        MOVE    TBL-KBN   (TBL-IDX)     TO  WRK-KBN
                        MOVE    TBL-KBN2  (TBL-IDX)     TO  WRK-KBN2
                        MOVE    ZERO            TO  WRK-KAISU
-           END-SEARCH
+               END-SEARCH
       *
-      *    同日再診料へ置換え
-           IF      WRK-KBN             =   "T"
-               MOVE    "12"                TO  WRK-SRYKBN
-               MOVE    "S"                 TO  WRK-KBN
-      *        診察コードをテーブルより決定
-               PERFORM 2001-SRYCD-TBL-SEC
-      *        電話再診の時、同日電話再診へ振り替え
-               MOVE    SPA-GMN-IDX         TO  WRK-IDX-IN
-               PERFORM 33041-SRYCD-ADD-SEC
-               MOVE    1                   TO  FLG-TEL-ARI
-           ELSE
-               MOVE    ZERO                TO  FLG-TEL-ARI
-           END-IF
+      *        同日再診料へ置換え
+               IF      WRK-KBN             =   "T"
+                   MOVE    "12"                TO  WRK-SRYKBN
+                   MOVE    "S"                 TO  WRK-KBN
+      *            診察コードをテーブルより決定
+                   PERFORM 2001-SRYCD-TBL-SEC
+      *            電話再診の時、同日電話再診へ振り替え
+                   MOVE    IDX                 TO  SPA-GMN-IDX
+                   MOVE    SPA-GMN-IDX         TO  WRK-IDX-IN
+                   PERFORM 33041-SRYCD-ADD-SEC
+                   MOVE    1                   TO  FLG-TEL-ARI
+               END-IF
+           END-PERFORM
            .
        3001-TELSAISIN-CHK-EXT.
            EXIT.
