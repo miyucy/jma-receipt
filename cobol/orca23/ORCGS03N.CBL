@@ -1103,6 +1103,8 @@
                  MOVE  "NYUKINYMD"      TO  MCP-WIDGET   
                WHEN   04
                  MOVE  "NYUKINHOUHOU"   TO  MCP-WIDGET   
+               WHEN   05
+                 MOVE  "B12"            TO  MCP-WIDGET   
            END-EVALUATE
        END-IF
       *  Ä´À°¶â¹àÌÜ(LNK-SYORINAIYO="07")
@@ -1123,6 +1125,8 @@
                  MOVE  "NYUKINYMD"      TO  MCP-WIDGET   
                WHEN   04
                  MOVE  "NYUKINHOUHOU"   TO  MCP-WIDGET   
+               WHEN   05
+                 MOVE  "B12"            TO  MCP-WIDGET   
            END-EVALUATE
        END-IF
       *
@@ -1525,7 +1529,7 @@
                GO  TO  41013-HOU-EXT
            END-IF
       *
-           MOVE       02               TO  SPA-GMN-CUR 
+           MOVE       5                TO  SPA-GMN-CUR 
            .
       *
        41013-HOU-EXT.
