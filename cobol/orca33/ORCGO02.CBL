@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    NACL-太田    03.11.12  更新日付編集対応
+      *  01.01.02    NACL-太田    04.02.16  月末一括請求の指定方法を元に戻す
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -936,13 +937,11 @@
                    IF    ( FLG-SYUARI  =   1 )
                        MOVE    1   TO  FLG-KIKAN
                    END-IF
-      *            IF    ( PTNYUINRRK-TEIKI-SEIKYUKBN  =   "2" )
-      *             AND  ( PTNYUINRRK-TAIINYMD >   WRK-KIKAN-SKYEDYMD
-      *                                              (WRK-KIKAN-MAX))
-                   IF    ( PTNYUINRRK-TAIINYMD >   WRK-KIKAN-SKYEDYMD
+                   IF    ( PTNYUINRRK-TEIKI-SEIKYUKBN  =   "2" )
+                    AND  ( PTNYUINRRK-TAIINYMD >   WRK-KIKAN-SKYEDYMD
                                                      (WRK-KIKAN-MAX))
                     AND  ( FLG-SYUARI  =   ZERO )
-      *                MOVE    1       TO  FLG-KIKAN
+                       MOVE    1       TO  FLG-KIKAN
                        MOVE    1       TO  FLG-GETUMATU
                        IF    ( PTNYUINRRK-NYUINYMD
                                        <   WRK-KIKAN-SKYSTYMD(1) )
