@@ -113,9 +113,8 @@
                            11  SPA-NAI-TPTID       PIC 9(10).
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
-           03  FLG-END             PIC X(03).
-           03  FLG-YYK             PIC X(01).
-           03  FLG-KNJHEN          PIC X(01).
+           03  FLG-END             PIC 9(01).
+           03  FLG-YYK             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
