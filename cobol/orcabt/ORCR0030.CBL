@@ -99,6 +99,8 @@
       *  01.02.12   NACL-藤原     02.12.02  酸素の時単価を表示するように追加
       *  01.02.13   NACL-門脇     02.12.05  生保、長期に関わる１０月改正に
       *                                     おける一部負担金額欄の対応
+      *  01.02.14    NACL-藤原    03.01.17  データ区分の追加
+      *                                     診療行為による特記事項の編集の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -824,15 +826,18 @@
                    MOVE    "12"      TO      WRK-TOKKI
            END-EVALUATE
       *
+      *    既に同じ特記事項コードが編集済みのときはセットしない
            PERFORM VARYING TOKKI-IDX  FROM    1   BY  1
                    UNTIL ( TOKKI-IDX       >   5     )
-                   OR    ( RECE02-TOKKI(IDX)   =   SPACE )
-                   CONTINUE
+               IF      RECE02-TOKKI (TOKKI-IDX)   =   SPACE
+                   MOVE    WRK-TOKKI       TO  RECE02-TOKKI (TOKKI-IDX)
+                   MOVE    5               TO  TOKKI-IDX
+               ELSE
+                   IF      WRK-TOKKI       =   RECE02-TOKKI (TOKKI-IDX)
+                       MOVE    5               TO  TOKKI-IDX
+                   END-IF 
+               END-IF
            END-PERFORM
-      *
-           MOVE    WRK-TOKKI         TO      RECE02-TOKKI(TOKKI-IDX)
-      *
-      *
            .
        TOKKI-HENSYU-EXT.
            EXIT.
@@ -2457,12 +2462,12 @@
                            COMPUTE   WK-SYUTEN  =  WK-SYUTEN  -  TNS-TEN
                        ELSE
                          IF    TNS-GAITENTTLKBN   =    130
-                           COMPUTE   RECE02-TENSU(7 BUN-IDX)  =
-                                     RECE02-TENSU(7 BUN-IDX)  +
+                           COMPUTE   RECE02-TENSU(7 BUN-IDX2)  =
+                                     RECE02-TENSU(7 BUN-IDX2)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
                          ELSE  
-                           COMPUTE   RECE02-TENSU(34 BUN-IDX)  =
-                                     RECE02-TENSU(34 BUN-IDX)  +
+                           COMPUTE   RECE02-TENSU(34 BUN-IDX2)  =
+                                     RECE02-TENSU(34 BUN-IDX2)  +
                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
                          END-IF
                        END-IF
@@ -2480,12 +2485,12 @@
                            COMPUTE   WK-SYUTEN  =  WK-SYUTEN  -  TNS-TEN
                        ELSE
                          IF    TNS-GAITENTTLKBN   =    130
-                           COMPUTE   RECE02-TENSU(7 BUN-IDX)  =
-                                     RECE02-TENSU(7 BUN-IDX)  +
+                           COMPUTE   RECE02-TENSU(7 BUN-IDX3)  =
+                                     RECE02-TENSU(7 BUN-IDX3)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
                          ELSE  
-                           COMPUTE   RECE02-TENSU(34 BUN-IDX)  =
-                                     RECE02-TENSU(34 BUN-IDX)  +
+                           COMPUTE   RECE02-TENSU(34 BUN-IDX3)  =
+                                     RECE02-TENSU(34 BUN-IDX3)  +
                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
                          END-IF
                        END-IF
@@ -2503,12 +2508,12 @@
                            COMPUTE   WK-SYUTEN  =  WK-SYUTEN  -  TNS-TEN
                        ELSE
                          IF    TNS-GAITENTTLKBN   =    130
-                           COMPUTE   RECE02-TENSU(7 BUN-IDX)  =
-                                     RECE02-TENSU(7 BUN-IDX)  +
+                           COMPUTE   RECE02-TENSU(7 BUN-IDX4)  =
+                                     RECE02-TENSU(7 BUN-IDX4)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
                          ELSE
-                           COMPUTE   RECE02-TENSU(34 BUN-IDX)  =
-                                     RECE02-TENSU(34 BUN-IDX)  +
+                           COMPUTE   RECE02-TENSU(34 BUN-IDX4)  =
+                                     RECE02-TENSU(34 BUN-IDX4)  +
                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
                          END-IF
                        END-IF

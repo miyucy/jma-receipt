@@ -32,6 +32,7 @@
       * 01.00.01     NACL-Â¿¡¹Ç¼  02/10/07  ºßÂðÌôºÞ¡¦´ïºà¤Î±¡³°ÍÑÄÉ²Ã
       * 01.00.02     NACL-Â¿¡¹Ç¼  02/10/25  Æþ±¡ÂÐ±þ
       * 01.00.03     NACL-Â¿¡¹Ç¼  02/11/01  ¼õµë¼ÔÈÖ¹æ¤ÎÁ´³Ñ£¸Ê¸»ú°Ê¾åÂÐ±þ
+      * 01.00.04     NACL-Â¿¡¹Ç¼  02/12/29  ¹â£¸¡¢¹â£¹ÊÔ½¸½¤Àµ
       *****************************************************************
       *
       *
@@ -95,6 +96,8 @@
            03  FLG-MAYAKU          PIC 9(01).
       *
            03  FLG-OK2              PIC 9(01).
+      *    Ï·¿Í¥Õ¥é¥°
+           03  FLG-RJNHKN              PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -823,15 +826,93 @@
            IF      AGECHK-NENREI       <   03
                MOVE    "¡Ê£³ºÐ¡Ë"          TO  WRK-BIKOU
            END-IF
+      *---(01.00.04) LINE UPDATE START ---------------------------------
       *    £·£°ºÐ°Ê¾å
+      *****IF      AGECHK-NENREI       >=  70
+      *        EVALUATE    AGECHK-FTNRATE
+      *            WHEN    10
+      *                MOVE    "¡Ê¹â£¹¡Ë"          TO  WRK-BIKOU
+      *            WHEN    20
+      *                MOVE    "¡Ê¹â£¸¡Ë"          TO  WRK-BIKOU
+      *        END-EVALUATE
+      **** END-IF
+      *    £·£°ºÐ°Ê¾å
+           MOVE    ZERO                TO  FLG-RJNHKN
            IF      AGECHK-NENREI       >=  70
-               EVALUATE    AGECHK-FTNRATE
-                   WHEN    10
-                       MOVE    "¡Ê¹â£¹¡Ë"          TO  WRK-BIKOU
-                   WHEN    20
-                       MOVE    "¡Ê¹â£¸¡Ë"          TO  WRK-BIKOU
+      *        Ï·¿ÍÊÝ¸±
+               EVALUATE    COMB-HKNNUM
+                   WHEN    "060"
+      *                ¹ñÊÝ
+                       EVALUATE    COMB-HOJOKBN
+                           WHEN    "1"
+                               MOVE    1           TO  FLG-RJNHKN
+                           WHEN    "2"
+                               MOVE    2           TO  FLG-RJNHKN
+                       END-EVALUATE
+      *                °Ê³°
+                   WHEN    OTHER
+      *                ¼«Èñ°Ê³°
+                       IF      COMB-HKNNUM (1:2)   =   "98"
+                           CONTINUE
+                       ELSE
+                           EVALUATE    COMB-HOJOKBN
+                               WHEN    "9"
+                               WHEN    "A"
+                               WHEN    "B"
+                               WHEN    "C"
+      *                        £±³ä
+                                   MOVE    1           TO  FLG-RJNHKN
+                               WHEN    "8"
+                               WHEN    "D"
+                               WHEN    "E"
+                               WHEN    "F"
+      *                        £²³ä
+                                   MOVE    2           TO  FLG-RJNHKN
+                           END-EVALUATE
+                       END-IF
                END-EVALUATE
            END-IF
+      *    Ï·¿Í¸øÈñ¡ÊÊÝ¸±¤è¤ê¸øÈñ¤Î³ä¹ç¤òÍ¥Àè¤¹¤ë¡Ë
+           EVALUATE    TRUE
+               WHEN    COMB-KOH1HKNNUM     =  "027"
+                   EVALUATE    COMB-KOH1PAYKBN
+                       WHEN    "01"
+      *                        £±³ä
+                           MOVE    1           TO  FLG-RJNHKN
+                       WHEN    "02"
+      *                        £²³ä
+                           MOVE    2           TO  FLG-RJNHKN
+                   END-EVALUATE
+               WHEN    COMB-KOH2HKNNUM     =  "027"
+                   EVALUATE    COMB-KOH2PAYKBN
+                       WHEN    "01"
+                           MOVE    1           TO  FLG-RJNHKN
+                       WHEN    "02"
+                           MOVE    2           TO  FLG-RJNHKN
+                   END-EVALUATE
+               WHEN    COMB-KOH3HKNNUM     =  "027"
+                   EVALUATE    COMB-KOH3PAYKBN
+                       WHEN    "01"
+                           MOVE    1           TO  FLG-RJNHKN
+                       WHEN    "02"
+                           MOVE    2           TO  FLG-RJNHKN
+                   END-EVALUATE
+               WHEN    COMB-KOH4HKNNUM     =  "027"
+                   EVALUATE    COMB-KOH4PAYKBN
+                       WHEN    "01"
+                           MOVE    1           TO  FLG-RJNHKN
+                       WHEN    "02"
+                           MOVE    2           TO  FLG-RJNHKN
+                   END-EVALUATE
+           END-EVALUATE
+      *
+           EVALUATE    FLG-RJNHKN
+               WHEN    1
+                   MOVE    "¡Ê¹â£¹¡Ë"          TO  WRK-BIKOU
+               WHEN    2
+                   MOVE    "¡Ê¹â£¸¡Ë"          TO  WRK-BIKOU
+           END-EVALUATE
+      *---(01.00.04) LINE UPDATE END   ---------------------------------
       *
            .
        100-SYORI-EXT.

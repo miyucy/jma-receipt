@@ -203,7 +203,7 @@ P02	{
 						value	varchar(20);
 					};
 					count	int;
-					item	varchar(20)[50];
+					item	varchar(20)[100];
 				};
 				P02_JKYSNUM1	{
 					value	varchar(20);
@@ -229,7 +229,7 @@ P02	{
 						value	varchar(20);
 					};
 					count	int;
-					item	varchar(20)[50];
+					item	varchar(20)[100];
 				};
 				P02_JKYSNUM2	{
 					value	varchar(20);
@@ -255,7 +255,7 @@ P02	{
 						value	varchar(20);
 					};
 					count	int;
-					item	varchar(20)[50];
+					item	varchar(20)[100];
 				};
 				P02_JKYSNUM3	{
 					value	varchar(20);

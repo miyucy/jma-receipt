@@ -66,6 +66,9 @@
       *                                     ときのレセプト種別の編集を修正 
       *  01.00.19   NACL-小豆沢   02.12.04  退職者国保の３才未満の給付割合表示
       *                                     を修正
+      *  01.00.20   NACL-藤原     03.01.17  特記事項０４老保の判定に年齢判定
+      *                                     を追加する
+      *                                     レセプト種別の編集を修正 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -845,32 +848,39 @@
            AND     RECE02-KOHHBTNUM (2) =   SPACE
            AND     RECE02-KOHHBTNUM (3) =   SPACE
            AND     RECE02-KOHHBTNUM (4) =   SPACE
-               INITIALIZE                       PTKOHINF-REC
-               MOVE    RECE01-HOSPID        TO  PTKOH-HOSPID
-               MOVE    RECE01-PTID          TO  PTKOH-PTID
-               MOVE    "027"                TO  PTKOH-KOHNUM
-               MOVE    PTKOHINF-REC         TO  MCPDATA-REC
-               MOVE    "DBSELECT"           TO  MCP-FUNC
-               MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-               IF      MCP-RC               =       ZERO
-                   MOVE    "PTKOHINF-KEY4"  TO      ORC-DBPATH
-                   PERFORM  PTKOHINF-READ-SEC
-                   PERFORM  UNTIL   FLG-PTKOHINF    =   1
-                       IF      PTKOH-TEKSTYMD(1:6)  <=  RECE01-SRYYM
-                       AND     RECE01-SRYYM         <=
+               IF      RECE01-SRYYM         >=  "200210"
+               AND     RECE02-AGE           >=  75 
+                   ADD      1           TO  TOKKI-IDX
+                   MOVE    "04"         TO  RECE02-TOKKI (TOKKI-IDX)
+               ELSE
+                   INITIALIZE                       PTKOHINF-REC
+                   MOVE    RECE01-HOSPID        TO  PTKOH-HOSPID
+                   MOVE    RECE01-PTID          TO  PTKOH-PTID
+                   MOVE    "027"                TO  PTKOH-KOHNUM
+                   MOVE    PTKOHINF-REC         TO  MCPDATA-REC
+                   MOVE    "DBSELECT"           TO  MCP-FUNC
+                   MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                         ORCMCPAREA
+                                                         MCPDATA-REC
+                   IF      MCP-RC               =       ZERO
+                       MOVE    "PTKOHINF-KEY4"  TO      ORC-DBPATH
+                       PERFORM  PTKOHINF-READ-SEC
+                       PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                           IF      PTKOH-TEKSTYMD(1:6)  <=
+                                                    RECE01-SRYYM
+                           AND     RECE01-SRYYM         <=
                                                     PTKOH-TEKEDYMD(1:6)
-                           ADD      1           TO  TOKKI-IDX
-                           MOVE    "04"         TO  RECE02-TOKKI
+                               ADD      1           TO  TOKKI-IDX
+                               MOVE    "04"         TO  RECE02-TOKKI
                                                             (TOKKI-IDX)
-                           MOVE    1            TO  FLG-PTKOHINF     
-                       ELSE
-                          MOVE    "PTKOHINF-KEY4"  TO  ORC-DBPATH
-                          PERFORM  PTKOHINF-READ-SEC
-                       END-IF   
-                   END-PERFORM
+                               MOVE    1            TO  FLG-PTKOHINF     
+                           ELSE
+                              MOVE    "PTKOHINF-KEY4"  TO  ORC-DBPATH
+                              PERFORM  PTKOHINF-READ-SEC
+                           END-IF   
+                       END-PERFORM
+                   END-IF
                END-IF
            END-IF              
       *

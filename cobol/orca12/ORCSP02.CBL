@@ -33,6 +33,7 @@
       * 02.00.01     NACL-Â¿¡¹Ç¼  02/07/31  ¥Ñ¥é¥á¥¿¥Õ¥¡¥¤¥ë¤ò£Ä£Â¤Ø
       * 02.00.02     NACL-Â¿¡¹Ç¼  02/09/09  Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
       * 02.00.03     NACL-Â¿¡¹Ç¼  02/11/26  ¿ÇÎÅ²Ê¡¦¥É¥¯¥¿¡¼·ï¿ô½¤Àµ
+      * 02.00.04     NACL-Â¿¡¹Ç¼  03/01/08  ¸øÈñ¤ÎºÇÂç·ï¿ô£±£°£°·ï¤Ø
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -919,6 +920,11 @@
        10041-HKNHEN-SEC          SECTION.
       *
            ADD     1                   TO  SPA-GMN-HKNMAX
+      *
+           IF      SPA-GMN-HKNMAX      >   50
+               GO      TO      10041-HKNHEN-EXT
+           END-IF
+      *
            MOVE    HKN-HKNNUM          TO  SPA-GMN-HKNNUML
                                                     (SPA-GMN-HKNMAX)
            MOVE    HKN-TANSEIDONAME    TO  SPA-GMN-HKNNUMMEIL
@@ -942,6 +948,10 @@
        10042-KOHHEN-SEC          SECTION.
       *
            ADD     1                   TO  SPA-GMN-KOHMAX
+           IF      SPA-GMN-KOHMAX      >   100
+               GO      TO      10042-KOHHEN-EXT
+           END-IF
+      *
            MOVE    HKN-HKNNUM          TO  SPA-GMN-KOHNUML
                                                     (SPA-GMN-KOHMAX)
            IF    ( HKN-HKNNUM          =   "027"  )  AND
@@ -1113,6 +1123,10 @@
       *    Í½Ìó¡¤¼õÉÕÊÔ½¸½èÍý
       *****************************************************************
        3101-UKETU-HEN-SEC              SECTION.
+      *
+           IF      IDX                 >   10
+               GO      TO      3101-UKETU-HEN-EXT
+           END-IF
       *
            MOVE    IDX                 TO  SPA-GMN20-YBANGOU (IDX)
            MOVE    UKE-UKEID           TO  SPA-NAI20-UKEID (IDX)
