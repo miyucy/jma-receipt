@@ -85,6 +85,7 @@
            03  FLG-KOUHATU          PIC 9(01).
       *    内服
            03  FLG-NAIFUKU          PIC 9(01).
+           03  FLG-OK3              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -170,6 +171,8 @@
            03  IDN3                    PIC 9(04).
            03  IDN4                    PIC 9(04).
            03  FLG-DAY                 PIC 9(01).
+           03  WRK-H-DAY               PIC 9(02).
+           03  WRK-H-SEL               PIC X(01).
       *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
@@ -1573,33 +1576,53 @@
        300212-NISUU-SET-SEC         SECTION.
       *
            MOVE    ZERO                TO  IDN1
-           MOVE    1                   TO  IDN2
+           MOVE    ZERO                TO  IDN2
       *
            INITIALIZE                      WRK-NISUU-AREA
+           MOVE    ZERO                TO  WRK-H-DAY
+           MOVE    SPACE               TO  WRK-H-SEL
            PERFORM VARYING     IDN1    FROM    1   BY  1
-                   UNTIL       IDN1    >   31
-               IF    ((FLG-DAY                 =   ZERO OR  3 )  AND
-                      (TBL-NYUINDAY (IDN1) NOT =   ZERO   ))  OR
-                     ((FLG-DAY                 =   1    )  AND
-                      (TBL-NYUINDAY (IDN1)     =   2    ) )
-                   IF     (IDN2            =   1   OR 2 )   OR
-                          (WRK-DAY (IDN2 - 1)  NOT =   (IDN1  -  1 ) )
-                       MOVE    IDN1            TO  WRK-DAY (IDN2)
-                       IF      (IDN2               =   2     )  AND
-                               (WRK-DAY (IDN2 - 1) =   (IDN1  -  1))
-                           MOVE    "-"         TO  WRK-SEL (IDN2 - 1)
+                   UNTIL       IDN1    >   32
+               IF     (IDN1                =   32  )  OR
+                      (TBL-NYUINDAY(IDN1)  =   ZERO)
+                   IF      WRK-H-DAY       NOT =   ZERO
+                       IF      WRK-H-SEL   NOT =   SPACE
+                           ADD     1               TO  IDN2
+                           MOVE    WRK-H-DAY       TO  WRK-DAY(IDN2)
+                           MOVE    WRK-H-SEL       TO  WRK-SEL(IDN2 - 1)
                        END-IF
-                       ADD     1               TO  IDN2
+                       MOVE    ZERO            TO  WRK-H-DAY
+                       MOVE    SPACE           TO  WRK-H-SEL
+                   END-IF
+               ELSE
+                   IF    ((FLG-DAY                 =   ZERO
+                                                   OR  3   )  AND
+                          (TBL-NYUINDAY (IDN1) NOT =   ZERO ))  OR
+                         ((FLG-DAY                 =   1    )  AND
+                          (TBL-NYUINDAY (IDN1)     =   2    ))
+                       MOVE    1               TO  FLG-OK3
                    ELSE
-                       MOVE    IDN1            TO  WRK-DAY (IDN2 - 1)
-                       MOVE    "."             TO  WRK-SEL (IDN2 - 1)
+                       MOVE    ZERO            TO  FLG-OK3
                    END-IF
-      *            調基は最初の日とする
-                   IF      FLG-DAY         =   3
-                       MOVE    31              TO  IDN1
+                 IF      FLG-OK3             =   1
+                   IF      WRK-H-DAY           =   ZERO
+                       MOVE    IDN1            TO  WRK-H-DAY
+                       ADD     1               TO  IDN2
+                       MOVE    WRK-H-DAY       TO  WRK-DAY(IDN2)
+      *                調基は最初の日とする
+                       IF      FLG-DAY         =   3
+                           MOVE    32              TO  IDN1
+                       END-IF
+                   ELSE
+                       IF      WRK-H-DAY       =  (IDN1  -  1 )
+                           MOVE    "-"             TO  WRK-H-SEL
+                       END-IF
+                       MOVE    IDN1            TO  WRK-H-DAY
                    END-IF
+                 END-IF
                END-IF
            END-PERFORM
+      *
            PERFORM VARYING     IDN1    FROM    1   BY  1
                    UNTIL       IDN1    >   31
                IF     (WRK-SEL (IDN1)      =   SPACE )  AND
@@ -1643,6 +1666,7 @@
                               (WRK-DAY (IDN1)  =   ZERO )
                IF      IDN3                >   19
                    ADD     1               TO  IDN2
+                   MOVE    1               TO  IDN3
                END-IF
                IF      LNK-ORCSC-INPUTCD(02 IDXS IDN2)   =   SPACE
                    STRING  "*"             DELIMITED  BY  SIZE

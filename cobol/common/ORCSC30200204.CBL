@@ -163,6 +163,8 @@
            03  IDN3                    PIC 9(04).
            03  IDN4                    PIC 9(04).
            03  FLG-DAY                 PIC 9(01).
+           03  WRK-H-DAY               PIC 9(02).
+           03  WRK-H-SEL               PIC X(01).
       *
       *    ºÇÂç±ÕÎÌ
            03  WRK-MAX-RYOU            PIC 9(04).
@@ -2010,23 +2012,34 @@
        30022-NISUU-SET-SEC         SECTION.
       *
            MOVE    ZERO                TO  IDN1
-           MOVE    1                   TO  IDN2
+           MOVE    ZERO                TO  IDN2
       *
            INITIALIZE                      WRK-NISUU-AREA
+           MOVE    ZERO                TO  WRK-H-DAY
+           MOVE    SPACE               TO  WRK-H-SEL
            PERFORM VARYING     IDN1    FROM    1   BY  1
-                   UNTIL       IDN1    >   31
-               IF      WRK-NIDAY (IDN1)    NOT =   ZERO
-                   IF     (IDN2            =   1   OR 2 )   OR
-                          (WRK-DAY (IDN2 - 1)  NOT =   (IDN1  -  1 ) )
-                       MOVE    IDN1            TO  WRK-DAY (IDN2)
-                       IF      (IDN2               =   2     )  AND
-                               (WRK-DAY (IDN2 - 1) =   (IDN1  -  1))
-                           MOVE    "-"         TO  WRK-SEL (IDN2 - 1)
+                   UNTIL       IDN1    >   32
+               IF     (IDN1                =   32  )  OR
+                      (WRK-NIDAY (IDN1)    =   ZERO)
+                   IF      WRK-H-DAY       NOT =   ZERO
+                       IF      WRK-H-SEL   NOT =   SPACE
+                           ADD     1               TO  IDN2
+                           MOVE    WRK-H-DAY       TO  WRK-DAY(IDN2)
+                           MOVE    WRK-H-SEL       TO  WRK-SEL(IDN2 - 1)
                        END-IF
+                       MOVE    ZERO            TO  WRK-H-DAY
+                       MOVE    SPACE           TO  WRK-H-SEL
+                   END-IF
+               ELSE
+                   IF      WRK-H-DAY           =   ZERO
+                       MOVE    IDN1            TO  WRK-H-DAY
                        ADD     1               TO  IDN2
+                       MOVE    WRK-H-DAY       TO  WRK-DAY(IDN2)
                    ELSE
-                       MOVE    IDN1            TO  WRK-DAY (IDN2 - 1)
-                       MOVE    "."             TO  WRK-SEL (IDN2 - 1)
+                       IF      WRK-H-DAY       =  (IDN1  -  1 )
+                           MOVE    "-"             TO  WRK-H-SEL
+                       END-IF
+                       MOVE    IDN1            TO  WRK-H-DAY
                    END-IF
                END-IF
            END-PERFORM
@@ -2044,7 +2057,7 @@
                    END-IF
                END-IF
            END-PERFORM
-           INITIALIZE                      LNK-ORCSC-INPUTCD-G (02 IDXS)
+           INITIALIZE                      LNK-ORCSC-INPUTCD-G (03 IDXS)
            MOVE    1                   TO  IDN2
            MOVE    1                   TO  IDN3
            PERFORM VARYING     IDN1    FROM    1   BY  1
@@ -2053,8 +2066,9 @@
                               (WRK-DAY (IDN1)  =   ZERO )
                IF      IDN3                >   19
                    ADD     1               TO  IDN2
+                   MOVE    1               TO  IDN3
                END-IF
-               IF      LNK-ORCSC-INPUTCD(02 IDXS IDN2)   =   SPACE
+               IF      LNK-ORCSC-INPUTCD(03 IDXS IDN2)   =   SPACE
                    MOVE    "*/"            TO  LNK-ORCSC-INPUTCD
                                                    (03 IDXS IDN2) (1:2)
                    ADD     2               TO  IDN3
