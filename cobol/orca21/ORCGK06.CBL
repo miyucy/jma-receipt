@@ -305,6 +305,7 @@
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "KERR.INC".
+           COPY    "KERR2.INC".
            COPY    "KID1.INC".
            COPY    "KID2.INC".
       *
@@ -577,8 +578,21 @@
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBIMEI
            END-STRING
+      *    主保険がない時
+           IF      COMB-SYU-TANSEIDONAME   =   SPACE
+               MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                         INTO              WRK-HKNCOMBIMEI
+               END-STRING
+           END-IF
       *    労災の時、コメントの追加
-           IF      COMB-HKNNUM         =   "971"
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
                MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
@@ -1021,6 +1035,7 @@
            IF      FLG-HKNCOMBI        =   ZERO
       *         労災の時、コメントの追加
                IF      COMB-HKNNUM         =   "971"
+                                           OR  "973"
                    MOVE    WRK-HKNCOMBIMEI     TO  SPA-GMN-HKNCOMBIMEI
                ELSE
                    MOVE    "0023"              TO  SPA-ERRCD

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  02/09/20  入力インターフェースの変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -141,6 +142,8 @@
       *
            03  WRK-DSPSEQ          PIC 9(04).
       *
+           03  WRK-SP-FLG          PIC 9(01).
+      *
        01  WRK-INPUTCD-TBL.
            03  WRK-INPUTCD-OCC     OCCURS   20.
                05  WRK-K023-INPUTCD    PIC X(20).
@@ -206,6 +209,7 @@
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "KERR.INC".
+           COPY    "KERR2.INC".
            COPY    "KID1.INC".
            COPY    "KID2.INC".
       *
@@ -470,6 +474,11 @@
       *****************************************************************
        1002-K02SPA-SET-SEC             SECTION.
       *
+           MOVE    SPACE               TO  SPA-SCR-REC
+           INITIALIZE          SPA-SCR-REC
+           MOVE    SPACE               TO  WRK-DATA-REC
+           INITIALIZE          WRK-DATA-REC
+      *
            MOVE    SPA-TERMID          TO  FILE-TERMID1
       *
            OPEN    INPUT               SPASCR-FILE
@@ -477,10 +486,6 @@
                GO      TO      1002-K02SPA-SET-EXT
            END-IF
       *
-           MOVE    SPACE               TO  SPA-SCR-REC
-           INITIALIZE          SPA-SCR-REC
-           MOVE    SPACE               TO  WRK-DATA-REC
-           INITIALIZE          WRK-DATA-REC
            MOVE    ZERO                TO  FLG-SPASCR
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL       FLG-SPASCR  =   1
@@ -548,6 +553,13 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           IF      SPA-K023-CUR        =   ZERO
+               PERFORM 50011-INPUT-CURSET-SEC
+           END-IF
+           IF      SPA-K023-MAP        =   ZERO
+               MOVE    1               TO  SPA-K023-MAP
+           END-IF
+      *
            IF      SPA-K023-MAP        >   20
                MOVE    5               TO  SPA-K023-CUR
            ELSE
@@ -575,6 +587,35 @@
       *
            .
        5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力位置より画面カーソルセット処理
+      *****************************************************************
+       50011-INPUT-CURSET-SEC             SECTION.
+      *
+      *    入力が空白の時、下の段へ
+           IF      WRK-SP-FLG          =   1
+               ADD     1                   TO  WRK-IDX2
+               MOVE    1                   TO  SPA-K023-CUR
+               MOVE    WRK-IDX2            TO  SPA-K023-MAP
+           ELSE
+               EVALUATE    WRK-WIDGET
+                   WHEN    "INPUTCD1"
+                       MOVE    2               TO  SPA-K023-CUR
+                       MOVE    WRK-IDX2        TO  SPA-K023-MAP
+                   WHEN    "INPUTCD2"
+                       MOVE    3               TO  SPA-K023-CUR
+                       MOVE    WRK-IDX2        TO  SPA-K023-MAP
+                   WHEN    "INPUTCD3"
+                       MOVE    1               TO  SPA-K023-CUR
+                       ADD     1               TO  WRK-IDX2
+                       MOVE    WRK-IDX2        TO  SPA-K023-MAP
+               END-EVALUATE
+           END-IF
+      *
+           .
+       50011-INPUT-CURSET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -608,88 +649,150 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-      *    入力項目の決定
-           IF      MCP-WIDGET(1:7)     =   "INPUTCD"
-      *        入力行NOの設定
-               MOVE    ZERO                TO  WRK-IDX2
-               MOVE    SPACE               TO  WRK-WIDGET
-               MOVE    MCP-WIDGET(1:8)     TO  WRK-WIDGET
-               MOVE    MCP-WIDGET(9:2)     TO  WRK-IDX2
-               IF      WRK-IDX2        =   ZERO
-                   GO      TO      200-ENTRY-EXT
-               END-IF
-               COMPUTE SPA-K023-IDX        =   WRK-IDX2
-                                           + ((SPA-K023-PAGE   -   1)
-                                           *   20 )
-           ELSE
-               MOVE    MCP-WIDGET          TO  WRK-WIDGET
-           END-IF
+      *    入力個所のセット
+           PERFORM 210-GMN-INPUT-SEC
       *
-           EVALUATE    MCP-EVENT       ALSO    WRK-WIDGET
-      *        入力コード１
-               WHEN    "ACTIVATE"      ALSO    "INPUTCD1"
-                   PERFORM 41010-INPUTCD1-SYORI-SEC
-      *        入力コード２
-               WHEN    "ACTIVATE"      ALSO    "INPUTCD2"
-                   PERFORM 41011-INPUTCD2-SYORI-SEC
-      *        入力コード３
-               WHEN    "ACTIVATE"      ALSO    "INPUTCD3"
-                   PERFORM 41011-INPUTCD3-SYORI-SEC
-           END-EVALUATE
+      *    入力チェック処理
+           PERFORM 220-INPUT-CHK-SEC
+      *
            .
        200-ENTRY-EXT.
            EXIT.
       *
       *****************************************************************
-      *    キー入力１処理
+      *    入力個所のセット処理
       *****************************************************************
-       41010-INPUTCD1-SYORI-SEC        SECTION.
+       210-GMN-INPUT-SEC               SECTION.
       *
-           MOVE    1                   TO  SPA-K023-CUR
-      *
-           MOVE    K023-INPUTCD1 (WRK-IDX2)    TO  SPA-K023-INPUTCD
-                                                      (SPA-K023-IDX 1)
-      *    空白入力の時、２を編集後、次ぎの段へ
-           IF      SPA-K023-INPUTCD (SPA-K023-IDX 1)
-                                       =   SPACE
-               MOVE    SPA-K023-INPUTCD-G (SPA-K023-IDX 2)
-                                           TO   SPA-K023-INPUTCD-G
-                                                      (SPA-K023-IDX 1)
-               MOVE    SPA-K023-INPUTCD-G (SPA-K023-IDX 3)
-                                           TO   SPA-K023-INPUTCD-G
-                                                      (SPA-K023-IDX 2)
-               MOVE    SPACE               TO   SPA-K023-INPUTCD-G
-                                                      (SPA-K023-IDX 3)
-               IF      SPA-K023-INPUTCD (SPA-K023-IDX 2)
-                                           =   SPACE
-                   MOVE    1                   TO  SPA-K023-CUR
-                   MOVE    WRK-IDX2            TO  SPA-K023-MAP
-                   ADD     1                   TO  SPA-K023-MAP
-               ELSE
-                   MOVE    2                   TO  SPA-K023-CUR
-                   MOVE    WRK-IDX2            TO  SPA-K023-MAP
-               END-IF
-               GO      TO     41010-INPUTCD1-SYORI-EXT
-           END-IF
-      *
-      *    登録済チェック
-           MOVE    SPA-K023-INPUTCD (SPA-K023-IDX 1)
-                                       TO  WRK-INPUTCD
-           MOVE    SPA-K023-IDX        TO  IDX-1
-           MOVE    1                   TO  IDX-2
-           PERFORM 41020-INPUTCD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO     41010-INPUTCD1-SYORI-EXT
-           END-IF
-           MOVE    WRK-CDSYU           TO  SPA-K023-CDSYU
-                                                       (SPA-K023-IDX 1)
-      *
-           MOVE    2                   TO  SPA-K023-CUR
-           MOVE    WRK-IDX2            TO  SPA-K023-MAP
+           MOVE    ZERO                TO  SPA-K023-CUR
+           MOVE    ZERO                TO  SPA-K023-MAP
+      *    入力項目の決定
+           PERFORM 2001-INPUT-SET-SEC
+      *    画面をＳＰＡへ編集
+           PERFORM 2002-GMNSPA-SET-SEC
       *
            .
-       41010-INPUTCD1-SYORI-EXT.
+       210-GMN-INPUT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    入力項目の決定
+      *****************************************************************
+       2001-INPUT-SET-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  WRK-IDX2
+           MOVE    SPACE               TO  WRK-WIDGET
+      *    入力項目の決定
+           IF      MCP-WIDGET(1:7)     =   "INPUTCD"
+      *        入力行NOの設定
+               MOVE    MCP-WIDGET(1:8)     TO  WRK-WIDGET
+               MOVE    MCP-WIDGET(9:2)     TO  WRK-IDX2
+               COMPUTE SPA-K023-IDX        =   WRK-IDX2
+                                           + ((SPA-K023-PAGE   -   1)
+                                           *   20 )
+           END-IF
+      *
+      *    入力が空白かの判定
+           MOVE    ZERO                TO  WRK-SP-FLG
+           EVALUATE    WRK-WIDGET
+      *        入力コード１
+               WHEN    "INPUTCD1"
+                   IF      K023-INPUTCD1 (WRK-IDX2)    =   SPACE
+                       MOVE    1               TO  WRK-SP-FLG
+                   END-IF
+      *        入力コード２
+               WHEN    "INPUTCD2"
+                   IF      K023-INPUTCD2 (WRK-IDX2)    =   SPACE
+                       MOVE    1               TO  WRK-SP-FLG
+                   END-IF
+      *        入力コード３
+               WHEN    "INPUTCD3"
+                   IF      K023-INPUTCD3 (WRK-IDX2)    =   SPACE
+                       MOVE    1               TO  WRK-SP-FLG
+                   END-IF
+           END-EVALUATE
+           .
+       2001-INPUT-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面項目→ＳＰＡ編集処理
+      *****************************************************************
+       2002-GMNSPA-SET-SEC               SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   20
+               COMPUTE IDX-T               =   IDX
+                                           + ((SPA-K023-PAGE   -   1)
+                                           *   20 )
+               MOVE    K023-INPUTCD1 (IDX) TO  SPA-K023-INPUTCD
+                                                             (IDX-T 1)
+               MOVE    K023-INPUTCD2 (IDX) TO  SPA-K023-INPUTCD
+                                                             (IDX-T 2)
+               MOVE    K023-INPUTCD3 (IDX) TO  SPA-K023-INPUTCD
+                                                             (IDX-T 3)
+           END-PERFORM
+           .
+       2002-GMNSPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       220-INPUT-CHK-SEC               SECTION.
+      *
+      *    空白削除
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX             >   100
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL       IDY             >   3
+                   IF     (SPA-K023-INPUTCD (IDX IDY)  =   SPACE) AND
+                          (IDY                         <   3    )
+                       COMPUTE IDX-2           =   IDY     +   1
+                       MOVE    SPA-K023-INPUTCD (IDX IDX-2)
+                                               TO  SPA-K023-INPUTCD
+                                                             (IDX IDY)
+                       MOVE    SPA-K023-CDSYU (IDX IDX-2)
+                                               TO  SPA-K023-CDSYU
+                                                             (IDX IDY)
+                       MOVE    SPACE           TO  SPA-K023-INPUTCD
+                                                             (IDX IDX-2)
+                       MOVE    SPACE           TO  SPA-K023-CDSYU
+                                                             (IDX IDX-2)
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+      *    入力コードチェック
+           PERFORM VARYING     IDX-1   FROM    1   BY  1
+                   UNTIL      (IDX-1             >   100 )   OR
+                              (SPA-ERRCD     NOT =   SPACE )
+               PERFORM VARYING     IDX-2     FROM    1   BY  1
+                       UNTIL      (IDX-2             >   3   )   OR
+                                  (SPA-ERRCD   NOT =   SPACE )
+                   IF      SPA-K023-INPUTCD (IDX-1 IDX-2) NOT =   SPACE
+                       MOVE    SPA-K023-INPUTCD (IDX-1 IDX-2)
+                                                   TO  WRK-INPUTCD
+                       PERFORM 41020-INPUTCD-CHK-SEC
+                       IF      SPA-ERRCD           =   SPACE
+                           MOVE    WRK-CDSYU       TO  SPA-K023-CDSYU
+                                                       (IDX-1 IDX-2)
+                       ELSE
+                           COMPUTE SPA-K023-MAP    =   IDX-1
+                                                   +  ((SPA-K023-PAGE
+                                                   -   1)
+                                                   *   20 )
+                           MOVE    IDX-2           TO  SPA-K023-CUR
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+      *
+       220-INPUT-CHK-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    入力コード登録チェック処理
@@ -1048,6 +1151,13 @@
       *****************************************************************
        450-MAEGMN-SEC             SECTION.
       *
+      *    更新前の基本チェック
+           PERFORM 41001-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      450-MAEGMN-EXT
+           END-IF
+      *
+      *
            IF      SPA-K023-PAGE       =   1
                MOVE    1                   TO  SPA-K023-PAGE
            ELSE
@@ -1064,6 +1174,13 @@
       *    次頁　処理
       *****************************************************************
        460-ATOGMN-SEC             SECTION.
+      *
+      *    更新前の基本チェック
+           PERFORM 41001-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      450-MAEGMN-EXT
+           END-IF
+      *
       *
            COMPUTE IDX                 =   SPA-K023-PAGE   *   20 
                                        +   1
@@ -1090,7 +1207,7 @@
                GO      TO      4100-TOROKU-EXT
            END-IF
       *
-      *     更新確認メッセージ表示へ
+      *    更新確認メッセージ表示へ
            MOVE    "1001"              TO  SPA-KIDCD
       *
            .
@@ -1102,34 +1219,15 @@
       *****************************************************************
        41001-KIHON-CHK-SEC         SECTION.
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   SPA-K023-MAX )  OR
-                              (SPA-ERRCD   NOT =   SPACE )
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL      (IDX2        >   3   )  OR
-                                  (SPA-ERRCD   NOT =   SPACE )
-      *
-      *          登録済チェック
-                 IF      SPA-K023-INPUTCD (IDX IDX2)
-                                           NOT =   SPACE
-                   MOVE    SPA-K023-INPUTCD (IDX IDX2)
-                                               TO  WRK-INPUTCD
-                   MOVE    IDX                 TO  IDX-1
-                   MOVE    IDX2                TO  IDX-2
-                   PERFORM 41020-INPUTCD-CHK-SEC
-                   IF      SPA-ERRCD           =   SPACE
-                       MOVE    WRK-CDSYU       TO  SPA-K023-CDSYU
-                                                      (IDX IDX2)
-                   ELSE
-                       COMPUTE SPA-K023-MAP    =   IDX
-                                               -   (SPA-K023-PAGE
-                                               -  1)
-                                               *   20
-                       MOVE    IDX2            TO  SPA-K023-CUR
-                   END-IF
-                 END-IF
-               END-PERFORM
-           END-PERFORM
+           MOVE    ZERO                TO  WRK-IDX2
+           MOVE    SPACE               TO  WRK-WIDGET
+           MOVE    ZERO                TO  WRK-SP-FLG
+           MOVE    ZERO                TO  SPA-K023-CUR
+           MOVE    ZERO                TO  SPA-K023-MAP
+      *    画面をＳＰＡへ編集
+           PERFORM 2002-GMNSPA-SET-SEC
+      *    入力チェック処理
+           PERFORM 220-INPUT-CHK-SEC
            .
        41001-KIHON-CHK-EXT.
            EXIT.

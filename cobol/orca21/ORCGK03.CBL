@@ -498,6 +498,7 @@
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "KERR.INC".
+           COPY    "KERR2.INC".
            COPY    "KID1.INC".
            COPY    "KID2.INC".
       *
@@ -2485,6 +2486,18 @@
       *
       *    Ï«ºÒÍÑ¤ËÊÝ¸±¶èÊ¬¤ò¥»¥Ã¥È¤¹¤ë
            MOVE    SPA-HKNKBN          TO  JYURRK-HKNKBN
+           IF      SPA-HKNKBN          =   "1"
+               EVALUATE    SPA-RSI-HKNKBN
+                   WHEN    "1"
+                   WHEN    "2"
+                   WHEN    "3"
+      *                 Ï«ºÒ
+                       MOVE    "1"                 TO  JYURRK-HKNKBN
+                   WHEN    "4"
+      *                 ¼«ÇåÀÕ
+                       MOVE    "2"                 TO  JYURRK-HKNKBN
+               END-EVALUATE
+           END-IF
       *
            MOVE    ZERO                TO  IDX-YAKUZAI
            .

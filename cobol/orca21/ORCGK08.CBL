@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-多々納   02/04/12  自費の修正
       *  01.00.02    NACL-多々納  02/07/19  判断料の削除
+      *  01.00.03    NACL-多々納  02/09/13  自賠責の追加
+      *  01.00.04    NACL-多々納  02/09/18  内服薬粉砕の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -294,6 +296,9 @@
            03  WRK-ACCT-KAISU          PIC 9(03).
       *    院内、院外判定用
            03  WRK-CHK-SRYSYUKBN       PIC X(03).
+      *     一部負担金計算用
+           03  WRK-SYUTEN1             PIC 9(08).
+           03  WRK-TEN                 PIC 9(08).
       *
       *    診療行為ＳＯＲＴ
            03  WRK-SORT-KEY.
@@ -301,6 +306,11 @@
                05  WRK-RENNUM          PIC  X(02).
                05  WRK-SRYKBN          PIC  X(02).
            03  WRK-MAX                 PIC  9(04).
+      *
+      *    粉砕判定用
+           03  WRK-FUNSA-AREA.
+               05  FLG-FUNSAI          PIC 9(01).
+               05  WRK-FUNSAI-CNT      PIC 9(04).
       *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
@@ -401,6 +411,9 @@
       *    負担金額計算用パラメタ
            COPY    "CPORCS01.INC".
       *
+      *    全角変換サブ
+           COPY    "CPORCSKANACHK.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -435,6 +448,7 @@
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "KERR.INC".
+           COPY    "KERR2.INC".
            COPY    "KID1.INC".
            COPY    "KID2.INC".
       *
@@ -740,11 +754,11 @@
       *        回数計
                MOVE    LNK-WKSRY-ZAIKAIKEI(IDX)    TO  WRK-SRYKAISUKEI
       *        自費
-               IF      LNK-WKSRY-JIHIMONEYTOTAL (IDX)
-                                               NOT =   ZERO
+      *        IF      LNK-WKSRY-JIHIMONEYTOTAL (IDX)
+      ***                                      NOT =   ZERO
                    MOVE    LNK-WKSRY-JIHIMONEYTOTAL (IDX)
                                                   TO  WRK-JIHIMONEY
-               END-IF
+      ***      END-IF
       *
       *        剤内１行目
                IF      IDX                 =   1
@@ -760,7 +774,7 @@
                                   (LNK-WKSRY-SRYCD (IDX IDZ) =   SPACE )
                    ADD     1                   TO  WRK-MEISAISU
       *            自費の時、金額を表示
-                   IF      LNK-WKSRY-SRYKBN (IDX)  =   "95"  OR  "96"
+                   IF      LNK-WKSRY-SRYKBN (IDX)  =   "95" OR "96"
                        PERFORM 31013-JIHIMEI-HEN-SEC
                    ELSE
                        PERFORM 31012-ZAIMEI-HEN-SEC
@@ -791,6 +805,11 @@
                END-IF
            END-IF
       *
+      *TEST
+            DISPLAY "K08 WRK-MEISAISU:" WRK-MEISAISU
+                    ",WRK-JIHIMONEY:" WRK-JIHIMONEY
+                    ",IDG:" IDG
+      *TEST
       *
       *    剤点数がゼロの時、自費を点数へ
       *    IF      WRK-ZAITEN          =   ZERO
@@ -943,7 +962,15 @@
       *    労災の金額算定分の時、点数をゼロとする
            IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:3)  =   "101" ) AND
                   (TNS-TENSIKIBETU     =   1    )
-               MOVE    1                       TO  FLG-RSIFLG
+               MOVE    1                   TO  FLG-RSIFLG
+           END-IF
+      *    自賠責で証明料等の時、点数をゼロとする
+           IF     (SPA-HKNKBN          =   1    )  AND
+                  (SPA-RSI-HKNKBN      =   "4"  )  AND
+                  (LNK-WKSRY-SRYKBN(IDX)   =   "80" )  AND
+                  (LNK-WKSRY-SRYCD (IDX IDZ)(1:5)  =   "09591" OR
+                                                       "09592" )
+               MOVE    1                   TO  FLG-RSIFLG
            END-IF
       *
       *    行為名称
@@ -1294,7 +1321,7 @@
                END-EVALUATE
            END-PERFORM
            .
-       310122-BUNSU-HEN-EXT.
+       310122-BUNGSU-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1928,8 +1955,18 @@
            MOVE    ZERO                TO  IDY
            ADD     1                   TO  IDX-Y
       *
+           MOVE    ZERO                TO  FLG-FUNSAI
+           MOVE    ZERO                TO  WRK-FUNSAI-CNT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX
+      *        剤毎にクリアする
+               IF     (IDX                 >   1    )  AND
+                      (LNK-WKSRY-ZAINUM (IDX) NOT =
+                                           LNK-WKSRY-ZAINUM (IDX - 1))
+                   MOVE    ZERO            TO  FLG-FUNSAI
+                   MOVE    ZERO            TO  WRK-FUNSAI-CNT
+               END-IF
+      *
                IF      LNK-WKSRY-SRYYMD (IDX)      =   SPACE
                    CONTINUE
                ELSE
@@ -1940,6 +1977,13 @@
                                                    =   SPACE )
                        PERFORM 45051-ORCS01-SET-SEC
                    END-PERFORM
+      *
+      *            自賠責の時、技術点を集計する
+                   IF      (SPA-HKNKBN         =   1   )  AND
+                           (SPA-RSI-HKNKBN     =   "4" )  AND
+                           (LNK-WKSRY-SYUTEN1 (IDX)    >   ZERO )
+                       PERFORM 45052-JIBAI-SYORI-SEC
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -1956,8 +2000,15 @@
                    END-IF
                    MOVE    WRK-S01-TENSU       TO  LNK-S01-TENSUU
                                                        (IDX-Y IDY)
+      *TEST
+      **** DISPLAY "K08  LNK-S01-SRYCD:"    LNK-S01-SRYCD (IDX-Y IDY)
+      *TEST
+      *
                END-IF
            END-PERFORM
+      *TEST
+      **** DISPLAY "K08 LNK-S01-SYUTEN:"   LNK-S01-SYUTEN
+      *TEST
       *
       *    薬剤一部負担金計算処理
            IF      SPA-SYORIFLG        =   1
@@ -1978,6 +2029,19 @@
       *****************************************************************
        45051-ORCS01-SET-SEC            SECTION.
       *
+      *    粉砕の時最初の１剤のみとする
+           IF      LNK-WKSRY-SRYCD(IDX IDS)    =   "099209901"
+               ADD     1                   TO  WRK-FUNSAI-CNT
+               MOVE    1                   TO  FLG-FUNSAI
+               GO      TO      45051-ORCS01-SET-EXT
+           END-IF
+           IF     (FLG-FUNSAI          =   1   )  AND
+                  (WRK-FUNSAI-CNT      >   1   )
+               MOVE    ZERO                TO  FLG-FUNSAI
+               GO      TO      45051-ORCS01-SET-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-FUNSAI
            IF     (LNK-WKSRY-SRYCD(IDX IDS)(1:1) =   "6"  ) OR
                   (LNK-WKSRY-SRYCD(IDX IDS)(1:3) =   "001")
       *        院内薬剤のみとする
@@ -2026,6 +2090,51 @@
       *
            .
        45051-ORCS01-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自賠責の時、技術点を集計処理
+      *****************************************************************
+       45052-JIBAI-SYORI-SEC          SECTION.
+      *
+      *    診察料と診断料等の時、診療コードを判定する
+           MOVE    ZERO                TO  WRK-SYUTEN1
+           IF      LNK-WKSRY-SRYKBN (IDX)  =   "11"  OR  "12"  OR
+                                               "13"  OR  "80"
+               PERFORM VARYING     IDS     FROM    1   BY  1
+                       UNTIL      (IDS         >   5   )  OR
+                                  (LNK-WKSRY-SRYCD(IDX IDS)
+                                              =   SPACE )
+      *
+                   MOVE    ZERO                TO  FLG-RSIFLG
+                   MOVE    LNK-WKSRY-SRYCD (IDX IDS)   TO  TNS-SRYCD
+                   PERFORM 910-TENSU-READ-SEC
+      *            労災の金額算定分の時、点数をゼロとする
+                   IF     (LNK-WKSRY-SRYCD (IDX IDS)(1:3)
+                                               =   "101" ) AND
+                          (TNS-TENSIKIBETU     =   1    )
+                       MOVE    1                   TO  FLG-RSIFLG
+                   END-IF
+      *            自賠責で証明料等の時、点数をゼロとする
+                   IF     (LNK-WKSRY-SRYKBN(IDX)       =   "80")  AND
+                          (LNK-WKSRY-SRYCD (IDX IDS)(1:5)
+                                                       =   "09591" OR
+                                                           "09592" )
+                       MOVE    1                   TO  FLG-RSIFLG
+                   END-IF
+                   IF      FLG-RSIFLG          =   1
+                       COMPUTE WRK-TEN         =   TNS-TEN   /   10
+                       ADD     WRK-TEN         TO  WRK-SYUTEN1
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    自賠責手技点合計
+           COMPUTE LNK-S01-SYUTEN      =   LNK-S01-SYUTEN
+                                       +  (LNK-WKSRY-SYUTEN1 (IDX)
+                                       -   WRK-SYUTEN1    )
+      *
+           .
+       450511-JIBAI-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

@@ -194,6 +194,7 @@
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "KERR.INC".
+           COPY    "KERR2.INC".
            COPY    "KID1.INC".
            COPY    "KID2.INC".
       *
@@ -454,6 +455,19 @@
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBI
            END-STRING
+      *    主保険がない時
+           IF      COMB-SYU-TANSEIDONAME   =   SPACE
+               MOVE    SPACE               TO  WRK-HKNCOMBI
+               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                         INTO              WRK-HKNCOMBI
+               END-STRING
+           END-IF
       *
            .
        31011-HKNCOMBI-HEN-EXT.

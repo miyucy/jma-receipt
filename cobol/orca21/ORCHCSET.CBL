@@ -51,11 +51,11 @@
       *     °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
       *    ¥·¥§¥ëÍÑÎÎ°è
-           COPY    "CPCOMMONSHELL.INC".
+      **** COPY    "CPCOMMONSHELL.INC".
       *
       *    ¥·¥§¥ëÍÑÎÎ°è
-           COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "CPSHELLTBL.INC".
+      *****COPY    "ORCA-DBPATH".
       *
       *
       *    ¥Õ¥é¥°ÎÎ°è
@@ -238,6 +238,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    °õºþ¥Ñ¥é¥á¥¿
+           COPY    "CPORCSMKPRT.INC".
+      *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -333,27 +336,36 @@
       *¡¡¡¡°õºþÍÑ¥Ç¡¼¥¿½ÐÎÏ
             WRITE  HCPO
       *
-            MOVE   "HC01.sh"           TO  SHELL-ID
-            MOVE   "HCPO.dia"          TO  SHELL-DIA
-            MOVE   "HCPO.def"          TO  SHELL-DEF
-            MOVE   HC01PARA            TO  SHELL-DAT
-            MOVE   SYS-1031-PRTNM(6)   TO  SHELL-PRTNM
+      ****  MOVE   "HC01.sh"           TO  SHELL-ID
+      *     MOVE   "HCPO.dia"          TO  SHELL-DIA
+      *     MOVE   "HCPO.def"          TO  SHELL-DEF
+      *     MOVE   HC01PARA            TO  SHELL-DAT
+      ***** MOVE   SYS-1031-PRTNM(6)   TO  SHELL-PRTNM
             CLOSE                       PRT-FILE
+      *
+            INITIALIZE                 ORCSMKPRTAREA
+            MOVE   "HC01.sh"           TO  MKPRT-ID
+            MOVE   "HCPO.dia"          TO  MKPRT-DIA
+            MOVE   "HCPO.def"          TO  MKPRT-DEF
+            MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
+            CALL   "ORCSMKPRT"         USING
+                                       ORCSMKPRTAREA
       *
       *   °õºþÍÑ¥¹¥¯¥ê¥×¥È½èÍý
       *¡ú   ETC-EXEC SHELL   SHELL-AREA 10
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
-           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
-           MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                   MCPAREA
-                   MCPDATA-REC
+      *    MOVE    SHELL-NAME          TO  SHELLTBL-NAME
+      *    MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
+      *    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
+      *    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
+      *    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
+      *    MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
+      *    MOVE    SHELLTBL            TO  MCPDATA-REC
+      *    MOVE    "SHELL"             TO  MCP-FUNC
+      *    MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+      *    CALL    "MCPSUB"            USING
+      *            MCPAREA
+      ************ MCPDATA-REC
       *
            .
        400-PRINT-EXT.

@@ -297,6 +297,8 @@
                05  WRK-CAL-MONTH       PIC 9(02).
                05  WRK-CAL-DAY         PIC 9(02).
       *
+           03  WRK-MOTOPG          PIC X(08).
+      *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -311,6 +313,10 @@
                05  WRK-THH         PIC 99.
                05  FILLER          PIC X(01)   VALUE  ":".
                05  WRK-TMM         PIC 99.
+      *
+      *    スパ領域 ワーク
+           COPY    "COMMON-SPA"      REPLACING
+                                     //SPA-// BY //WRK-SPA-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -432,6 +438,7 @@
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "KERR.INC".
+           COPY    "KERR2.INC".
            COPY    "KID1.INC".
            COPY    "KID2.INC".
       *
@@ -529,14 +536,15 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
       *
       *        元の画面へ戻す
-               IF      SPA-MOTOPG(1:3)     =   "Y01"  OR  "U01"  OR
+               MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
+               IF      WRK-MOTOPG(1:3)     =   "Y01"  OR  "U01"  OR
                                                "P97"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-K01
                    MOVE    SPA-WORK        TO  SPA-K01KYOUTU
                END-IF
       *        予約の時、そのまま画面表示へ
-               IF      SPA-MOTOPG(1:3)     =   "Y01"
+               IF      WRK-MOTOPG(1:3)     =   "Y01"
                    GO      TO      300-SCREEN-EXT
                END-IF
       *----(01.00.03) LINE ADD START ----------------------------------
@@ -547,7 +555,7 @@
       *        END-IF
       *----(01.00.03) LINE ADD END   ----------------------------------
       *        外部より選択がある時
-               IF      SPA-MOTOPG(1:3)     =   "U01"  OR
+               IF      WRK-MOTOPG(1:3)     =   "U01"  OR
                                                "P97"
                    PERFORM 3101-U01SPASET-SEC
                    GO      TO      300-SCREEN-EXT
@@ -593,20 +601,21 @@
       *****************************************************************
        3101-U01SPASET-SEC              SECTION.
       *
-           MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
-           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           MOVE    LNK-KYOUTU          TO  WRK-SPA-KYOUTU
       *    受付、患者検索より
-           IF      SPA-PTNUM           =   SPACE
-               MOVE    LNK-COMMON      TO  SPA-KYOTUKEY
-               MOVE    SPA-WORK        TO  SPA-K01KYOUTU
+           IF      WRK-SPA-PTNUM       =   SPA-PTNUM
+               CONTINUE
            ELSE
-               MOVE    SPA-PTNUM       TO  K01-PTNUM
-               PERFORM 4101-PTNUM-CHK-SEC
-               MOVE    2               TO  SPA-GMN-CUR
-               IF      SPA-SRYKA       NOT =   SPACE
-                    MOVE    SPA-SRYKA        TO  SPA-GMN-SRYKA
-                    MOVE    SPA-SRYKAMEI     TO  SPA-GMN-SRYKAMEI
-                    MOVE    3                TO  SPA-GMN-CUR
+               IF      WRK-SPA-PTNUM       NOT =   SPACE
+      *            初期表示へ
+                   MOVE    WRK-SPA-PTNUM   TO  K01-PTNUM
+                   PERFORM 4101-PTNUM-CHK-SEC
+                   MOVE    2               TO  SPA-GMN-CUR
+                   IF      SPA-SRYKA       NOT =   SPACE
+                        MOVE    SPA-SRYKA        TO  SPA-GMN-SRYKA
+                        MOVE    SPA-SRYKAMEI     TO  SPA-GMN-SRYKAMEI
+                        MOVE    3                TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
            .
@@ -1443,9 +1452,22 @@
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBI
            END-STRING
+      *    主保険がない時
+           IF      COMB-SYU-TANSEIDONAME   =   SPACE
+               MOVE    SPACE               TO  WRK-HKNCOMBI
+               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                         INTO              WRK-HKNCOMBI
+               END-STRING
+           END-IF
       *
       *    労災の時、コメントの追加
-           IF      COMB-HKNNUM         =   "971"
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
                MOVE    SPA-HOSPID          TO  PTRSI-HOSPID

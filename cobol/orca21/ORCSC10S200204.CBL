@@ -107,6 +107,8 @@
       *    £±£µºÐÌ¤ËþºÆ¿ÇÎÁ¤¢¤ê
            03  FLG-15MIMAN         PIC 9(01).
       *    ¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù¿Ç»¡ÎÁ¤¢¤ê
+           03  FLG-SINSATU-ARI     PIC 9(01).
+      *    ¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù¿Ç»¡ÎÁ¤¢¤ê
            03  FLG-SINSATU-OK      PIC 9(01).
       *    »þ´Ö³°¥Õ¥é¥°
            03  FLG-JIKAN           PIC 9(01).
@@ -786,9 +788,10 @@
                IF      JYURRK-RENNUM       =   1
                    MOVE    ZERO            TO  FLG-SYONIKA
                END-IF
-      *        ÊÝ¸±¤Ë¤è¤êÂÐ¾Ý¤ò·èÄê¤¹¤ë
-      *********PERFORM 10000-HKNKBN-CHK-SEC
                MOVE    ZERO                TO  FLG-CHK
+      *        ÊÝ¸±¤Ë¤è¤êÂÐ¾Ý¤ò·èÄê¤¹¤ë
+               PERFORM 10000-HKNKBN-CHK-SEC
+      *********MOVE    ZERO                TO  FLG-CHK
                IF      FLG-CHK             =   ZERO
       *            ¼õ¿ÇÍúÎò¤ËÆ±ÆüÂ¾²Ê»»Äê¤¬¤Ê¤¤¤³¤È
                    PERFORM 10001-DOUJI-CHK-SEC
@@ -1355,15 +1358,15 @@
            PERFORM 10001-RSI-JYURRK-CHK-SEC
            IF      WRK-HASSYOYMD       =   SPACE
                MOVE    SPA-RSI-SHOBYOYMD   TO  SPA-RSI-HASSYOYMD
-               MOVE    ZERO                TO  SPA-RSI-KYUKASN
+      *********MOVE    ZERO                TO  SPA-RSI-KYUKASN
            ELSE
                MOVE    WRK-HASSYOYMD       TO  SPA-RSI-HASSYOYMD
-               MOVE    1                   TO  SPA-RSI-KYUKASN
-               IF      SPA-SYORIFLG        =   1
-                   IF      WRK-HASSYOYMD       =   SPA-SRYYMD
-                       MOVE    ZERO                TO  SPA-RSI-KYUKASN
-                   END-IF
-               END-IF
+      ******** MOVE    1                   TO  SPA-RSI-KYUKASN
+      *        IF      SPA-SYORIFLG        =   1
+      *            IF      WRK-HASSYOYMD       =   SPA-SRYYMD
+      *                MOVE    ZERO                TO  SPA-RSI-KYUKASN
+      *            END-IF
+      *********END-IF
            END-IF
       *
       *    È¯À¸Æü¤«¤é£³¥ö·î¤Î·×»»
@@ -1387,34 +1390,34 @@
            MOVE    WRK-HASSYOYMD       TO  SPA-RSI-SHOBYOYMD3
       *
       *    ÎÅÍÜ¤ÎµëÉÕÀÁµá½ñ¼è°·ÎÁ¤Î¥Á¥§¥Ã¥¯
-           MOVE    SPACE               TO  WRK-HASSYOYMD
-           MOVE    "101130020"         TO  WRK-SRYCD
-           PERFORM 10001-RSI-JYURRK-CHK-SEC
-           IF      WRK-HASSYOYMD       =   SPACE
-               MOVE    ZERO                TO  SPA-RSI-KYUFU
-           ELSE
-               MOVE    1                   TO  SPA-RSI-KYUFU
-               IF      SPA-SYORIFLG        =   1
-                   IF      WRK-HASSYOYMD       =   SPA-SRYYMD
-                       MOVE    ZERO                TO  SPA-RSI-KYUFU
-                   END-IF
-               END-IF
-           END-IF
+      *****MOVE    SPACE               TO  WRK-HASSYOYMD
+      *    MOVE    "101130020"         TO  WRK-SRYCD
+      *    PERFORM 10001-RSI-JYURRK-CHK-SEC
+      *    IF      WRK-HASSYOYMD       =   SPACE
+      *        MOVE    ZERO                TO  SPA-RSI-KYUFU
+      *    ELSE
+      *        MOVE    1                   TO  SPA-RSI-KYUFU
+      *        IF      SPA-SYORIFLG        =   1
+      *            IF      WRK-HASSYOYMD       =   SPA-SRYYMD
+      *                MOVE    ZERO                TO  SPA-RSI-KYUFU
+      *            END-IF
+      *        END-IF
+      *    END-IF
       *
       *    ¼ê»Ø¤ÎÁÏ½ý¤Ë·¸¤ëµ¡Ç½²óÉü»ÏÆ°²Ã»»
-           MOVE    SPACE               TO  WRK-HASSYOYMD
-           MOVE    "101500080"         TO  WRK-SRYCD
-           PERFORM 10001-RSI-JYURRK-CHK-SEC
-           IF      WRK-HASSYOYMD       =   SPACE
-               MOVE    ZERO                TO  SPA-RSI-KAIFUKU
-           ELSE
-               MOVE    1                   TO  SPA-RSI-KAIFUKU
-               IF      SPA-SYORIFLG        =   1
-                   IF      WRK-HASSYOYMD       =   SPA-SRYYMD
-                       MOVE    ZERO                TO  SPA-RSI-KAIFUKU
-                   END-IF
-               END-IF
-           END-IF
+      *    MOVE    SPACE               TO  WRK-HASSYOYMD
+      *    MOVE    "101500080"         TO  WRK-SRYCD
+      *    PERFORM 10001-RSI-JYURRK-CHK-SEC
+      *    IF      WRK-HASSYOYMD       =   SPACE
+      *        MOVE    ZERO                TO  SPA-RSI-KAIFUKU
+      *    ELSE
+      *        MOVE    1                   TO  SPA-RSI-KAIFUKU
+      *        IF      SPA-SYORIFLG        =   1
+      *            IF      WRK-HASSYOYMD       =   SPA-SRYYMD
+      *                MOVE    ZERO                TO  SPA-RSI-KAIFUKU
+      *            END-IF
+      *        END-IF
+      *****END-IF
       *
       *    ¼õ¿ÇÍúÎò¤è¤ê¿Ç»¡²ó¿ô¤òµá¤á¤ë
            PERFORM 1000-SINSATU-KAISU-SEC
@@ -3598,7 +3601,29 @@
                            MOVE    IDX             TO  IDX-GAI
                    END-SEARCH
                END-IF
+      *        Ï«ºÒ¤Î»þ¡¢Ï«ºÒ¤Î¥³¡¼¥É¤ò¿¶¤êÂØ¤¨¤ë
+               IF     (SPA-HKNKBN          =   1   )  AND
+                      (IDX-SIN             =   ZERO)
+                   SET     TBL-RSI             TO  1
+                   SEARCH  TBL-RSI-SINSATU-OCC     VARYING   TBL-RSI
+                       AT  END
+                           MOVE    ZERO            TO  IDX-SIN
+                       WHEN   SPA-COM-INPUTCD (IDX)
+                                                =  TBLR-SRYCD (TBL-RSI)
+                           MOVE    IDX             TO  IDX-SIN
+                   END-SEARCH
+                END-IF
            END-PERFORM
+      *
+      *    Ï«ºÒ¤Î»þ¡¢Ï«ºÒ¤Î¥³¡¼¥É¤ò¿¶¤êÂØ¤¨¤ë
+           IF     (SPA-HKNKBN          =   1   )  AND
+                  (IDX-SIN             >   ZERO)
+               MOVE    TBLR-SRYCD (3)      TO  WRK-SRYCD
+               MOVE    IDX-SIN             TO  WRK-IDX-IN
+      *        ÄÉ²Ã¶¦ÄÌ½èÍý
+               PERFORM 33041-SRYCD-ADD-SEC
+               GO      TO      800-SAISIN-HEN-EXT
+            END-IF
       *
            IF      IDX-SIN             >   ZERO
       *        ºÆ¿ÇÎÁÊÑ¹¹
@@ -3858,8 +3883,14 @@
            IF      FLG-SINSATU-OK      =   1
                IF     (WKSRY-SRYKBN    NOT =   "11" )  OR
                       (FLG-CHK             =   1    )
-                   ADD     1               TO  IDX-WK
-                   MOVE    WKSRY-ZAINUM    TO  LNK-SC10S-ZAINUM(IDX-WK)
+                   IF       (WKSRY-SRYKBN        =   "14" OR "13")  AND
+                            (FLG-ARI             =   ZERO )
+                       CONTINUE
+                   ELSE
+                       ADD     1               TO  IDX-WK
+                       MOVE    WKSRY-ZAINUM    TO  LNK-SC10S-ZAINUM
+                                                          (IDX-WK)
+                   END-IF
                END-IF
            END-IF
            .
@@ -3929,6 +3960,7 @@
                    UNTIL      (IDX     >   200  )  OR
                               (HZN-COM-INPUTCD (IDX)   =   SPACE   AND
                                HZN-GMN-INPUTCD (IDX)   =   SPACE )
+               MOVE    ZERO                    TO  FLG-ARI
                IF     (HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
                                                OR  "13"  OR  "14" ) AND
                       (HZN-COM-INPUTCD(IDX)(1:1)   =   "1"   )
@@ -3937,14 +3969,17 @@
                    IF      FLG-ARI             =   1
                        IF     (HZN-GMN-INPUTCD(IDX)(1:1) NUMERIC  )  AND
                               (HZN-GMN-INPUTCD(IDX)(2:1) =   SPACE)
-                           MOVE    HZN-COM-INPUTCD(IDX)(1:1)
+                           MOVE    HZN-GMN-INPUTCD(IDX)(1:1)
                                                   TO  FLG-JIKAN
                        END-IF
                        MOVE    1               TO  FLG-CHK
                    END-IF
                END-IF
       *
-               IF      FLG-CHK         =   ZERO
+               IF     (FLG-CHK         =   ZERO  )  OR
+                      (FLG-CHK         =   1        AND
+                       FLG-ARI         =   ZERO     AND
+                       HZN-COM-AUTOKBN (IDX)   =   SPACE )
                    ADD     1                   TO  IDX2
                    ADD     1                   TO  SPA-GMN-IDX
                    MOVE    HZN-GMN-TBL(IDX)    TO  SPA-GMN-TBL (IDX2)
@@ -3960,7 +3995,8 @@
                MOVE    FLG-JIKAN           TO  SPA-GMN-INPUTCD(01)
                                                                 (1:1)
                MOVE    WRK-INPUTCD         TO  SPA-GMN-INPUTCD(01)
-                                                                (3:1)
+                                                                (3:)
+               MOVE    FLG-JIKAN           TO  SPA-COM-TIMEFLG(01)
            END-IF
            .
        1010-SINSATU-HEN-EXT.

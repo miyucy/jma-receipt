@@ -334,6 +334,7 @@
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "KERR.INC".
+           COPY    "KERR2.INC".
            COPY    "KID1.INC".
            COPY    "KID2.INC".
       *
@@ -549,7 +550,7 @@
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
+            PERFORM VARYING     IDX     FROM    1   BY  1
                UNTIL      (IDX         >   200 )   OR
                           (FLG-INPUTCD     =   1   )
       *
