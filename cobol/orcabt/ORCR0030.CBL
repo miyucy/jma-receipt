@@ -158,6 +158,7 @@
       *  01.03.05   NACL-門脇     04/04/10  在宅患者訪問点滴注射管理指導料
       *                                     算定時の点滴注射のコメント対応
       *  01.03.06   NACL-門脇     04/04/26  ユーザーコメント追加対応
+      *  01.03.07   NACL-太田     04/05/06  点数マスタ検索ロジック修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -710,6 +711,9 @@
       *
            COPY    "COMMON-SPA".
       *
+      *    点数マスタ退避ワーク
+           COPY    "CPTTNS.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -802,6 +806,7 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
                                        WRK-AREA
+                                       TTNS-AREA
       *
            MOVE    ZERO                TO  FLG-END
       *
@@ -3657,34 +3662,49 @@
       *****************************************************************
        TENSU-TBL-SEC               SECTION.
       *
-           INITIALIZE                           TNS-TENSU-REC
-           MOVE    SRY-SRYCD(IDX2)      TO      TNS-SRYCD
-           MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
+           MOVE    SRY-SRYCD(IDX2)      TO      TTNS-CHK-SRYCD
            MOVE    RECE05-SRYYM         TO      WK-TAIHI-SRYYM
            MOVE    WK-TAIHI-DAY         TO      WK-TAIHI-SRYD
-           MOVE    WK-TAIHI-SRYYMD      TO      ORC-DBYMD
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "TENSU-KEY"          TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC               =       ZERO
-               MOVE    "TENSU-KEY"      TO      ORC-DBPATH
-               PERFORM  TENSU-READ-SEC
-               IF       FLG-TENSU       =       1
-                   DISPLAY   "TENSU FETCH ERR"  
-      *             ACCEPT     WRK-IN FROM CONSOLE
-               END-IF
-           ELSE
-               DISPLAY   "TENSU SELECT ERR" 
-      *         ACCEPT     WRK-IN FROM CONSOLE
-               INITIALIZE                  TNS-TENSU-REC
-               MOVE    1               TO  FLG-TENSU
-           END-IF
+           MOVE    WK-TAIHI-SRYYMD      TO      TTNS-CHK-YMD
       *
-           MOVE   "TENSU-KEY"      TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
+      *    点数マスタ退避ワークチェック
+           PERFORM 9001-TTNS-CHK-SEC
+      *
+      *
+      *    退避ワークに存在しない場合はＤＢを検索
+           IF    ( TTNS-FLG            =   ZERO )
+               INITIALIZE                           TNS-TENSU-REC
+               MOVE    SRY-SRYCD(IDX2)      TO      TNS-SRYCD
+               MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
+               MOVE    RECE05-SRYYM         TO      WK-TAIHI-SRYYM
+               MOVE    WK-TAIHI-DAY         TO      WK-TAIHI-SRYD
+               MOVE    WK-TAIHI-SRYYMD      TO      ORC-DBYMD
+               MOVE    "DBSELECT"           TO      MCP-FUNC
+               MOVE    "TENSU-KEY"          TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC               =       ZERO
+                   MOVE    "TENSU-KEY"      TO      ORC-DBPATH
+                   PERFORM  TENSU-READ-SEC
+                   IF       FLG-TENSU       =       1
+                       DISPLAY   "TENSU FETCH ERR"  
+      *                ACCEPT     WRK-IN FROM CONSOLE
+                   ELSE
+      *                点数マスタ退避ワークに編集する
+                       PERFORM 9001-TTNS-HEN-SEC
+                   END-IF
+               ELSE
+                   DISPLAY   "TENSU SELECT ERR" 
+      *            ACCEPT     WRK-IN FROM CONSOLE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1               TO  FLG-TENSU
+               END-IF
+      *
+               MOVE   "TENSU-KEY"      TO  WK-PATH
+               PERFORM   CSR-CLOSE-SEC
+           END-IF
       *
            .
        TENSU-TBL-EXT.
@@ -5463,6 +5483,52 @@
        RECE02-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    点数マスタ退避ワークチェック処理
+      *****************************************************************
+       9001-TTNS-CHK-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  TTNS-FLG
+           INITIALIZE                      TNS-TENSU-REC
+      *
+           PERFORM VARYING TTNS-IDX    FROM    1   BY  1
+                   UNTIL ( TTNS-IDX    >   TTNS-MAX )
+                    OR   ( TTNS-FLG    =   1 )
+               IF    ( TTNS-KEY-SRYCD (TTNS-IDX)
+                                       =   TTNS-CHK-SRYCD )
+                 AND ( TTNS-KEY-YUKOSTYMD (TTNS-IDX)
+                                      <=   TTNS-CHK-YMD )
+                 AND ( TTNS-KEY-YUKOEDYMD (TTNS-IDX)
+                                      >=   TTNS-CHK-YMD )
+                   MOVE    1           TO  TTNS-FLG
+                   MOVE    TTNS-DAT (TTNS-IDX)
+                                       TO  TNS-TENSU-REC
+               END-IF
+           END-PERFORM
+      *
+           .
+       9001-TTNS-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ退避ワーク編集処理
+      *****************************************************************
+       9001-TTNS-HEN-SEC               SECTION.
+      *
+           IF    ( TTNS-CONST-MAX  >   TTNS-MAX )
+               COMPUTE TTNS-MAX    =   TTNS-MAX    +   1
+               MOVE    TNS-SRYCD       TO  TTNS-KEY-SRYCD
+                                                   (TTNS-MAX)
+               MOVE    TNS-YUKOSTYMD   TO  TTNS-KEY-YUKOSTYMD
+                                                   (TTNS-MAX)
+               MOVE    TNS-YUKOEDYMD   TO  TTNS-KEY-YUKOEDYMD
+                                                   (TTNS-MAX)
+               MOVE    TNS-TENSU-REC   TO  TTNS-DAT
+                                                   (TTNS-MAX)
+           END-IF
+      *
+           .
+       9001-TTNS-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
