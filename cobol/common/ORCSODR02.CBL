@@ -1167,7 +1167,7 @@
       *
            MOVE    ITEM-TAIINCD    TO  PTNYUINRRK-TAIINCD
       *
-           MOVE    "CLAIM"         TO  PTNYUINRRK-TERMID
+           MOVE    SODR-OPID       TO  PTNYUINRRK-OPID
            MOVE    SODR-UKEYMD     TO  PTNYUINRRK-UPYMD
            MOVE    SODR-UKEHMS     TO  PTNYUINRRK-UPHMS
       *
@@ -1261,7 +1261,7 @@
                        MOVE    ZERO            TO  SYU-SKYMONEY
                        MOVE    "3"             TO  SYU-DENPJTIKBN
       *
-                       MOVE    "CLAIM"         TO  SYU-TERMID
+                       MOVE    SODR-OPID       TO  SYU-OPID
                        MOVE    SODR-UKEYMD     TO  SYU-UPYMD
                        MOVE    SODR-UKEHMS     TO  SYU-UPHMS
       *
@@ -1381,7 +1381,7 @@
            MOVE    PATH-TBL-SYUMEI-KEY TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
-           MOVE    "CLAIM"             TO  SMEI-TERMID
+           MOVE    SODR-OPID           TO  SMEI-OPID
            MOVE    SODR-UKEYMD         TO  SMEI-CREYMD
                                            SMEI-UPYMD
            MOVE    SODR-UKEHMS         TO  SMEI-UPHMS
@@ -1560,7 +1560,7 @@
                        =   TEIKIRRK-SKYMONEY
                        +   SUMTEIKIRRK-SKYMONEY (IDX1)
       *
-                   MOVE    "CLAIM"         TO  TEIKIRRK-TERMID
+                   MOVE    SODR-OPID       TO  TEIKIRRK-OPID
                    MOVE    SODR-UKEYMD     TO  TEIKIRRK-UPYMD
                    MOVE    SODR-UKEHMS     TO  TEIKIRRK-UPHMS
       *
@@ -1577,7 +1577,7 @@
                    END-IF
                ELSE
       *
-                   MOVE    "CLAIM"         TO  TEIKIRRK-TERMID
+                   MOVE    SODR-OPID       TO  TEIKIRRK-OPID
                    MOVE    SODR-UKEYMD     TO  TEIKIRRK-CREYMD
                                                TEIKIRRK-UPYMD
                    MOVE    SODR-UKEHMS     TO  TEIKIRRK-UPHMS
@@ -1676,7 +1676,7 @@
                MOVE    "1"             TO  ORDER-MODIFY
            END-IF
       *
-           MOVE    "CLAIM"             TO  ORDER-OPID
+           MOVE    SODR-OPID           TO  ORDER-OPID
            MOVE    SODR-UKEYMD         TO  ORDER-CREYMD
                                            ORDER-UPYMD
            MOVE    SODR-UKEHMS         TO  ORDER-UPHMS
@@ -1762,7 +1762,7 @@
                GO  TO  2102-SYUNOU-UPD-EXT
            END-IF
       *
-           MOVE    "CLAIM"         TO  SYU-TERMID
+           MOVE    SODR-OPID       TO  SYU-OPID
            MOVE    SODR-UKEYMD     TO  SYU-CREYMD
                                        SYU-UPYMD
            MOVE    SODR-UKEHMS     TO  SYU-UPHMS
@@ -1828,7 +1828,7 @@
                    GO  TO  2102-SYUDAY-UPD-EXT
                END-IF
       *
-               MOVE    "CLAIM"         TO  SDAY-TERMID
+               MOVE    SODR-OPID       TO  SDAY-OPID
                MOVE    SODR-UKEYMD     TO  SDAY-CREYMD
                                            SDAY-UPYMD
                MOVE    SODR-UKEHMS     TO  SDAY-UPHMS
@@ -1929,7 +1929,7 @@
            END-IF
       *
       *
-           MOVE    "CLAIM"         TO  SMEI-TERMID
+           MOVE    SODR-OPID       TO  SMEI-OPID
            MOVE    SODR-UKEYMD     TO  SMEI-CREYMD
                                        SMEI-UPYMD
            MOVE    SODR-UKEHMS     TO  SMEI-UPHMS
@@ -1994,7 +1994,7 @@
                MOVE    SYS-0042-DENPNUMMAX-NYU
                                            TO  WRK-DENPNUM
       *
-               MOVE    "CLAIM"             TO  SYS-0042-TERMID
+               MOVE    SODR-OPID           TO  SYS-0042-OPID
                MOVE    SODR-UKEYMD         TO  SYS-0042-UPYMD
                MOVE    SODR-UKEHMS         TO  SYS-0042-UPHMS
       *
@@ -2073,7 +2073,7 @@
            MOVE   PTNYUINRRK-RRKEDANUM
                                        TO  PTINF-RRKEDANUM
       *
-           MOVE    "CLAIM"             TO  PTINF-TERMID
+           MOVE    SODR-OPID           TO  PTINF-OPID
            MOVE    SODR-UKEYMD         TO  PTINF-UPYMD
            MOVE    SODR-UKEHMS         TO  PTINF-UPHMS
       *

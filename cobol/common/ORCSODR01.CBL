@@ -1193,7 +1193,7 @@
            MOVE    ITEM-DOUJITSUKBN
                                    TO  PTNYUINRRK-DOUJITSUKBN
       *
-           MOVE    "CLAIM"         TO  PTNYUINRRK-TERMID
+           MOVE    SODR-OPID       TO  PTNYUINRRK-OPID
            MOVE    SODR-UKEYMD     TO  PTNYUINRRK-CREYMD
                                        PTNYUINRRK-UPYMD
            MOVE    SODR-UKEHMS     TO  PTNYUINRRK-UPHMS
@@ -1366,7 +1366,7 @@
                MOVE    "1"             TO  ORDER-MODIFY
            END-IF
       *
-           MOVE    "CLAIM"             TO  ORDER-OPID
+           MOVE    SODR-OPID           TO  ORDER-OPID
            MOVE    SODR-UKEYMD         TO  ORDER-CREYMD
                                            ORDER-UPYMD
            MOVE    SODR-UKEHMS         TO  ORDER-UPHMS
@@ -1469,7 +1469,7 @@
            MOVE   PTNYUINRRK-RRKEDANUM
                                        TO  PTINF-RRKEDANUM
       *
-           MOVE    "CLAIM"             TO  PTINF-TERMID
+           MOVE    SODR-OPID           TO  PTINF-OPID
            MOVE    SODR-UKEYMD         TO  PTINF-UPYMD
            MOVE    SODR-UKEHMS         TO  PTINF-UPHMS
       *
