@@ -22,6 +22,9 @@
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 公費個別発行機能対応
+      *  01.00.01    NACL-藤原    04/10/25  公費個別発行機能の追加
+      *  01.00.02    NACL-藤原    05/02/10  レセ電総括表対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -62,6 +65,9 @@
                    07  SPA-GMN-PRTKBN2.
                        09  SPA-GMN-PRTKBN2-STYLE   PIC X(20).
                        09  SPA-GMN-PRTKBN2-VALUE   PIC X(04).
+                   07  SPA-GMN-PRTKBN3.
+                       09  SPA-GMN-PRTKBN3-STYLE   PIC X(20).
+                       09  SPA-GMN-PRTKBN3-VALUE   PIC X(04).
                    07  SPA-GMN-HKNJANUM            PIC X(08).
                    07  SPA-GMN-HKNJAMEI            PIC X(40). 
       *
@@ -72,6 +78,7 @@
                    07  SPA-NAI-SKYYMD              PIC 9(08).
                    07  SPA-NAI-PRTKBN1             PIC X(01).
                    07  SPA-NAI-PRTKBN2             PIC X(01).
+                   07  SPA-NAI-PRTKBN3             PIC X(01).
                    07  SPA-NAI-HKNJANUM            PIC X(08). 
       *
                05  SPA-STATE.             
@@ -81,18 +88,22 @@
                    07  SPA-DATA-STATE              PIC S9(09)  BINARY.
                    07  SPA-NYUGAIKBN-STATE         PIC S9(09)  BINARY.
                    07  SPA-SRYYM-STATE             PIC S9(09)  BINARY.
-                   07  SPA-DATAKBN1-STATE          PIC S9(09)  BINARY.
-                   07  SPA-DATAKBN2-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN3-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN4-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN5-STATE          PIC S9(09)  BINARY.
+                   07  SPA-DATAKBN6-STATE          PIC S9(09)  BINARY.
       *
                05  SPA-DATAKBN.         
-                   07  SPA-DATAKBN1-VALUE          PIC X(01).
-                   07  SPA-DATAKBN2-VALUE          PIC X(01).
                    07  SPA-DATAKBN3-VALUE          PIC X(01).
                    07  SPA-DATAKBN4-VALUE          PIC X(01).
                    07  SPA-DATAKBN5-VALUE          PIC X(01).
+                   07  SPA-DATAKBN6-VALUE          PIC X(01).
+      *
+               05  SPA-CHK.
+                   07  SPA-CHK11-VALUE             PIC X(01).
+                   07  SPA-CHK12-VALUE             PIC X(01).
+                   07  SPA-CHK21-VALUE             PIC X(01).
+                   07  SPA-CHK22-VALUE             PIC X(01).
       *
                05  SPA-3004-AREA.
                    07  SPA-3004-MAX                PIC 9(02).

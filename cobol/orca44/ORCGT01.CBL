@@ -69,6 +69,8 @@
       *                                     処理対象を限定する
       * 公費個別発行機能対応
       *  01.06.01    NACL-藤原    04/10/25  公費個別発行機能の追加
+      *  01.06.02    NACL-藤原    05/02/10  レセ電総括表対応
+      *                                     一括入力 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -118,6 +120,7 @@
            03  FLG-HKNJAINF        PIC 9(01).
       *
            03  FLG-3004-PARAKBN    PIC 9(01).
+           03  FLG-TOUROKU         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -155,6 +158,9 @@
       *  
            03  WRK-STPAGE          PIC 9(05).
            03  WRK-EDPAGE          PIC 9(05).
+      *
+           03  WRK-GMN-CUR         PIC 9(02).
+           03  WRK-MCP-WIDGET      PIC X(64).
       *      
       *    システム領域
        01  SYS-AREA.
@@ -269,6 +275,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -466,6 +475,25 @@
            MOVE    SPA-GMN-NYUGAIKBNLST (1)
                                    TO  SPA-GMN-NYUGAIKBN-G
       *
+      *    請求年月
+           IF      SPA-SYSYMD(7:2)     >   "10"
+               MOVE    SPA-SYSYMD  (1:6)   TO  SPA-NAI-SKYYM
+               MOVE    SPA-SYSYMDWH(1:6)   TO  SPA-GMN-SKYYM
+           ELSE
+               INITIALIZE                     STS-AREA-DAY
+               INITIALIZE                     LNK-DAY6-AREA
+               MOVE  "61"                     TO  LNK-DAY6-IRAI
+               MOVE  SPA-SYSYMD               TO  LNK-DAY6-KIJUN
+               MOVE  "2"                      TO  LNK-DAY6-ZOGENPTN
+               MOVE  -1                       TO  LNK-DAY6-ZOGEN
+               CALL  "ORCSDAY"                USING   STS-AREA-DAY
+                                                      LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN(1:6)   TO  SPA-NAI-SKYYM
+               MOVE    LNK-DAY6-KEISAN        TO  WRK-SYMD  
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG    (1:6)   TO  SPA-GMN-SKYYM
+           END-IF
+      *             
       *    レセプト指示コード
            INITIALIZE                  SYS-2001-REC
            MOVE    "2001"              TO  SYS-2001-KANRICD
@@ -521,30 +549,33 @@
            END-IF
       *
            MOVE    WIDGET-INSENSITIVE TO  SPA-SRYYM-STATE
-           MOVE    WIDGET-NORMAL      TO  SPA-DATAKBN1-STATE
-                                          SPA-DATAKBN2-STATE
-                                          SPA-DATAKBN4-STATE
+           MOVE    WIDGET-NORMAL      TO  SPA-DATAKBN4-STATE
                                           SPA-DATAKBN5-STATE
                                           SPA-DATAKBN3-STATE       
+                                          SPA-DATAKBN6-STATE       
                                           SPA-B21-STATE
+      *
+           MOVE    "T"                TO  SPA-DATAKBN4-VALUE  
+           MOVE    "T"                TO  SPA-DATAKBN5-VALUE  
+           MOVE    "T"                TO  SPA-DATAKBN3-VALUE  
+           MOVE    "T"                TO  SPA-DATAKBN6-VALUE  
+      *
            IF      SPA-NAI-SRYYM      =   ZERO
-               MOVE    WIDGET-INSENSITIVE  TO  SPA-DATAKBN1-STATE
-                                               SPA-DATAKBN3-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  SPA-DATAKBN3-STATE
                                                SPA-B21-STATE
+               MOVE    "F"                 TO  SPA-DATAKBN3-VALUE  
            END-IF
-           IF      SPA-NAI-SRYYM      =   ZERO
-               MOVE    "F"                TO  SPA-DATAKBN1-VALUE
-               MOVE    "T"                TO  SPA-DATAKBN2-VALUE  
-               MOVE    "F"                TO  SPA-DATAKBN4-VALUE  
-               MOVE    "F"                TO  SPA-DATAKBN5-VALUE  
-               MOVE    "F"                TO  SPA-DATAKBN3-VALUE  
+           IF      SYS-2005-KKHRECEKBN =   "1" OR  "2" OR  "3"
+               CONTINUE
            ELSE
-               MOVE    "T"                TO  SPA-DATAKBN1-VALUE
-               MOVE    "F"                TO  SPA-DATAKBN2-VALUE  
-               MOVE    "F"                TO  SPA-DATAKBN4-VALUE  
-               MOVE    "F"                TO  SPA-DATAKBN5-VALUE  
-               MOVE    "F"                TO  SPA-DATAKBN3-VALUE  
+               MOVE    WIDGET-INSENSITIVE TO  SPA-DATAKBN6-STATE
+               MOVE    "F"                TO  SPA-DATAKBN6-VALUE  
            END-IF
+      *
+           MOVE    "T"                 TO  SPA-CHK11-VALUE
+                                           SPA-CHK12-VALUE
+                                           SPA-CHK21-VALUE
+                                           SPA-CHK22-VALUE
       *
       *    標準総括表印刷指示
            MOVE    SPACE               TO  SYS-3003-REC 
@@ -562,34 +593,30 @@
            END-IF
            MOVE    SYS-3003-PRTKBN1    TO  SPA-NAI-PRTKBN1        
            IF      SYS-3003-PRTKBN1    =   SPACE
-               MOVE    "有"                 TO  SPA-GMN-PRTKBN1-VALUE
-               MOVE   "blue"                TO  SPA-GMN-PRTKBN1-STYLE
+               MOVE    "有"                TO  SPA-GMN-PRTKBN1-VALUE
+               MOVE   "blue"               TO  SPA-GMN-PRTKBN1-STYLE
            ELSE
-               MOVE    "無"                 TO  SPA-GMN-PRTKBN1-VALUE
-               MOVE   "red"                 TO  SPA-GMN-PRTKBN1-STYLE
+               MOVE    "無"                TO  SPA-GMN-PRTKBN1-VALUE
+               MOVE   "red"                TO  SPA-GMN-PRTKBN1-STYLE
            END-IF      
            MOVE    SYS-3003-PRTKBN2    TO  SPA-NAI-PRTKBN2        
            IF      SYS-3003-PRTKBN2    =   SPACE
-               MOVE    "有"                 TO  SPA-GMN-PRTKBN2-VALUE
-               MOVE   "blue"                TO  SPA-GMN-PRTKBN2-STYLE
+               MOVE    "有"                TO  SPA-GMN-PRTKBN2-VALUE
+               MOVE   "blue"               TO  SPA-GMN-PRTKBN2-STYLE
            ELSE
-               MOVE    "無"                 TO  SPA-GMN-PRTKBN2-VALUE
-               MOVE   "red"                 TO  SPA-GMN-PRTKBN2-STYLE
+               MOVE    "無"                TO  SPA-GMN-PRTKBN2-VALUE
+               MOVE   "red"                TO  SPA-GMN-PRTKBN2-STYLE
            END-IF
-      *      
-      *****地方公費ＤＢ対応済フラグ
-      *****IF      SYS-3003-KOHSKY-FLG =   "1"
-      *****    MOVE    WIDGET-NORMAL      TO  SPA-DATAKBN1-STATE
-      *****                                   SPA-DATAKBN2-STATE
-      *****                                   SPA-DATAKBN4-STATE
-      *****                                   SPA-DATAKBN5-STATE
-      *****                                   SPA-DATAKBN3-STATE       
-      *****    MOVE    "T"                TO  SPA-DATAKBN1-VALUE
-      *****    MOVE    "F"                TO  SPA-DATAKBN2-VALUE  
-      *****    MOVE    "F"                TO  SPA-DATAKBN4-VALUE  
-      *****    MOVE    "F"                TO  SPA-DATAKBN5-VALUE  
-      *****    MOVE    "F"                TO  SPA-DATAKBN3-VALUE  
-      *****END-IF
+           MOVE    SYS-3003-PRTKBN3    TO  SPA-NAI-PRTKBN3        
+           IF      SYS-3003-PRTKBN3    =   SPACE
+               MOVE    "無"                TO  SPA-GMN-PRTKBN3-VALUE
+               MOVE   "red"                TO  SPA-GMN-PRTKBN3-STYLE
+               MOVE    WIDGET-INSENSITIVE  TO  SPA-DATAKBN6-STATE
+               MOVE    "F"                 TO  SPA-DATAKBN6-VALUE  
+           ELSE
+               MOVE    "有"                TO  SPA-GMN-PRTKBN3-VALUE
+               MOVE   "blue"               TO  SPA-GMN-PRTKBN3-STYLE
+           END-IF
       *
       *    県単独事業
            MOVE    ZERO                TO  FLG-3004-PARAKBN
@@ -686,8 +713,8 @@
                                            >   ZERO
                    MOVE    WIDGET-NORMAL       TO  SPA-B21-STATE
                    IF      FLG-3004-PARAKBN    =   ZERO
-                       MOVE    WIDGET-NORMAL   TO  SPA-DATAKBN1-STATE
-                                                   SPA-DATAKBN3-STATE
+                       MOVE    WIDGET-NORMAL   TO  SPA-DATAKBN3-STATE
+                       MOVE    "T"             TO  SPA-DATAKBN3-VALUE  
                    END-IF
                END-IF
            END-IF
@@ -838,11 +865,12 @@
                GO  TO  3501-KOBETU-PRINT-EXT
            END-IF             
       *
-           ACCEPT  SYS-YMD         FROM    DATE
-           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
-           MOVE    SYS-MM              TO  WRK-SYSMM
-           MOVE    SYS-DD              TO  WRK-SYSDD
-           ACCEPT  SYS-TIME            FROM    TIME
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+           MOVE    SMCNDATE-YMD        TO  WRK-SYSYMD
+           MOVE    SMCNDATE-HMS        TO  SYS-TIME 
       *
            MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
                                            WRK-PRTKANRI-RENNUM
@@ -1057,21 +1085,18 @@
       *    処理確認
                WHEN    "CLICKED"       ALSO    "B24"
                    PERFORM 490-KAKUNIN-SEC
-      *    帳票区分１
-               WHEN    "CLICKED"       ALSO    "DATAKBN1"
-                   PERFORM 400-DATAKBN1-SEC
-      *    帳票区分２
-               WHEN    "CLICKED"       ALSO    "DATAKBN2"
-                   PERFORM 400-DATAKBN2-SEC
-      *    帳票区分３
+      *    総括表・公費請求書
                WHEN    "CLICKED"       ALSO    "DATAKBN3"
-                   PERFORM 400-DATAKBN3-SEC
-      *    帳票区分４
                WHEN    "CLICKED"       ALSO    "DATAKBN4"
-                   PERFORM 400-DATAKBN4-SEC
-      *    帳票区分５
                WHEN    "CLICKED"       ALSO    "DATAKBN5"
-                   PERFORM 400-DATAKBN5-SEC
+               WHEN    "CLICKED"       ALSO    "DATAKBN6"
+                   PERFORM 400-DATAKBN-SEC
+      *    当月分・月遅れ分、返戻分
+               WHEN    "CLICKED"       ALSO    "CHK11"
+               WHEN    "CLICKED"       ALSO    "CHK12"
+               WHEN    "CLICKED"       ALSO    "CHK21"
+               WHEN    "CLICKED"       ALSO    "CHK22"
+                   PERFORM 400-CHK-SEC
            END-EVALUATE
       *
            .
@@ -1083,91 +1108,152 @@
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *
-               WHEN    "ACTIVATE"      ALSO    "SKYYM"
-                   PERFORM 4101-SKYYM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SKYYMD"
-                   PERFORM 4102-SKYYMD-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HKNJANUM"
-                   PERFORM 4103-HKNJANUM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "DATA"
-                   PERFORM 4104-DATAKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
-                   PERFORM 4105-NYUGAIKBN-CHK-SEC
+      *        一括分
+               WHEN    "ACTIVATE"       ALSO    ANY
+                   PERFORM 400-ENTRY-SYORI-SEC
            END-EVALUATE
-      *
            .
+      *
        200-ENTRY-EXT.
            EXIT.
       *
       *****************************************************************
-      *    帳票区分１選択処理
+      *    一括分入力処理
       *****************************************************************
-       400-DATAKBN1-SEC          SECTION.
+       400-ENTRY-SYORI-SEC             SECTION.
       *
-           MOVE    T01-DATAKBN1-VALUE  TO  SPA-DATAKBN1-VALUE
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
       *
+      *    入力チェック処理
+           MOVE    ZERO                TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
            .
-       400-DATAKBN1-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    帳票区分２選択処理
-      *****************************************************************
-       400-DATAKBN2-SEC          SECTION.
-      *
-           MOVE    T01-DATAKBN2-VALUE  TO  SPA-DATAKBN2-VALUE
-      *
-           .
-       400-DATAKBN2-EXT.
+       400-ENTRY-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    帳票区分３選択処理
+      *    入力チェック処理
       *****************************************************************
-       400-DATAKBN3-SEC          SECTION.
+       410-INPUT-CHK-SEC       SECTION.
       *
-           MOVE    T01-DATAKBN3-VALUE  TO  SPA-DATAKBN3-VALUE
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           IF      FLG-TOUROKU         =   1
+      *        更新前
+               PERFORM 4101-KAKUTEI-CHK-SEC
+           END-IF
       *
            .
-       400-DATAKBN3-EXT.
+       410-INPUT-CHK-EXT.
            EXIT.
       *
-      *
       *****************************************************************
-      *    帳票区分４選択処理
+      *    画面をＳＰＡセット処理
       *****************************************************************
-       400-DATAKBN4-SEC          SECTION.
+       4101-GMN-SPA-SET-SEC       SECTION.
       *
-           MOVE    T01-DATAKBN4-VALUE  TO  SPA-DATAKBN4-VALUE
+           MOVE    T01-SKYYM           TO  SPA-GMN-SKYYM
+           MOVE    T01-SKYYMD          TO  SPA-GMN-SKYYMD
+           MOVE    T01-HKNJANUM        TO  SPA-GMN-HKNJANUM
+           MOVE    T01-DATA            TO  SPA-GMN-DATAKBN-G
+           MOVE    T01-NYUGAIKBN       TO  SPA-GMN-NYUGAIKBN-G
       *
            .
-       400-DATAKBN4-EXT.
+       4101-GMN-SPA-SET-EXT.
            EXIT.
       *
-      *
       *****************************************************************
-      *    帳票区分５選択処理
+      *    基本チェック処理
       *****************************************************************
-       400-DATAKBN5-SEC          SECTION.
+       4102-KIHON-CHK-SEC       SECTION.
       *
-           MOVE    T01-DATAKBN5-VALUE  TO  SPA-DATAKBN5-VALUE
+           PERFORM 4101-SKYYM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4102-SKYYMD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4103-HKNJANUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4104-DATAKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4105-NYUGAIKBN-CHK-SEC
       *
            .
-       400-DATAKBN5-EXT.
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    帳票区分選択処理
+      *****************************************************************
+       400-DATAKBN-SEC           SECTION.
+      *
+           EVALUATE    MCP-WIDGET
+               WHEN    "DATAKBN3"
+                   MOVE    T01-DATAKBN3-VALUE  TO  SPA-DATAKBN3-VALUE
+               WHEN    "DATAKBN4"
+                   MOVE    T01-DATAKBN4-VALUE  TO  SPA-DATAKBN4-VALUE
+                   IF      SPA-DATAKBN4-VALUE  =   "T"
+                       MOVE    "T"             TO  SPA-CHK11-VALUE
+                                                   SPA-CHK12-VALUE
+                   END-IF
+               WHEN    "DATAKBN5"
+                   MOVE    T01-DATAKBN5-VALUE  TO  SPA-DATAKBN5-VALUE
+                   IF      SPA-DATAKBN5-VALUE  =   "T"
+                       MOVE    "T"             TO  SPA-CHK21-VALUE
+                                                   SPA-CHK22-VALUE
+                   END-IF
+               WHEN    "DATAKBN6"
+                   MOVE    T01-DATAKBN6-VALUE  TO  SPA-DATAKBN6-VALUE
+           END-EVALUATE
+      *
+           .
+       400-DATAKBN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    当月分・月遅れ分、返戻分選択処理
+      *****************************************************************
+       400-CHK-SEC               SECTION.
+      *
+           EVALUATE    MCP-WIDGET
+               WHEN    "CHK11"
+                   MOVE    T01-CHK11-VALUE     TO  SPA-CHK11-VALUE
+               WHEN    "CHK12"
+                   MOVE    T01-CHK12-VALUE     TO  SPA-CHK12-VALUE
+               WHEN    "CHK21"
+                   MOVE    T01-CHK21-VALUE     TO  SPA-CHK21-VALUE
+               WHEN    "CHK22"
+                   MOVE    T01-CHK22-VALUE     TO  SPA-CHK22-VALUE
+           END-EVALUATE    
+      *
+           .
+       400-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    請求年月チェック処理
       *****************************************************************
        4101-SKYYM-CHK-SEC           SECTION.
       *
-           MOVE    1                TO  SPA-GMN-CUR
-      *
            MOVE    ZERO             TO  SPA-NAI-SKYYM
-           MOVE    T01-SKYYM        TO  SPA-GMN-SKYYM
       *
            IF      SPA-GMN-SKYYM    =   SPACE
                MOVE    "0001"          TO  SPA-ERRCD
@@ -1181,10 +1267,13 @@
                IF      SGDAY-RC            =   ZERO
                    MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SKYYM
                    MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-SKYYM
-                   MOVE    2                   TO  SPA-GMN-CUR
                ELSE
                    MOVE    "0003"          TO  SPA-ERRCD
                END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    1               TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -1196,11 +1285,9 @@
       *****************************************************************
        4102-SKYYMD-CHK-SEC           SECTION.
       *
-           MOVE    2                TO  SPA-GMN-CUR
+           MOVE    ZERO            TO  SPA-NAI-SKYYMD
       *
-           MOVE    T01-SKYYMD       TO  SPA-GMN-SKYYMD
-      *
-           IF      SPA-GMN-SKYYMD   =   SPACE
+           IF      SPA-GMN-SKYYMD  =   SPACE
                MOVE    "0002"          TO  SPA-ERRCD
            ELSE 
       *        日付画面チェックサブ
@@ -1211,10 +1298,13 @@
                IF      SGDAY-RC            =   ZERO
                    MOVE    SGDAY-OTDAY         TO  SPA-GMN-SKYYMD
                    MOVE    SGDAY-SDAY          TO  SPA-NAI-SKYYMD
-                   MOVE    7                   TO  SPA-GMN-CUR
                ELSE
                    MOVE    "0004"          TO  SPA-ERRCD
                END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    2               TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -1225,10 +1315,6 @@
       *    保険者番号チェック処理
       *****************************************************************
        4103-HKNJANUM-CHK-SEC           SECTION.
-      *
-           MOVE    3                TO  SPA-GMN-CUR
-      *
-           MOVE    T01-HKNJANUM     TO  SPA-GMN-HKNJANUM
       *
            MOVE    SPACE            TO  SPA-GMN-HKNJAMEI
            MOVE    ZERO             TO  SPA-NAI-HKNJANUM 
@@ -1243,13 +1329,16 @@
                                        TO  HKNJA-HKNJANUM
                MOVE    HKNJAINF-REC    TO  MCPDATA-REC
                PERFORM 900-HKNJAINF-INV-SEC
-               IF      FLG-HKNJAINF        =   ZERO
+               IF      FLG-HKNJAINF    =   ZERO
                    MOVE    HKNJA-HKNJANAME     TO SPA-GMN-HKNJAMEI
                    MOVE    SPA-GMN-HKNJANUM    TO  SPA-NAI-HKNJANUM
-                   MOVE    7                   TO  SPA-GMN-CUR
                ELSE
                    MOVE    "0005"          TO  SPA-ERRCD
                END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    3               TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -1260,10 +1349,6 @@
       *    ファイル出力先入力処理
       *****************************************************************
        4104-DATAKBN-CHK-SEC            SECTION.
-      *
-           MOVE    4                   TO  SPA-GMN-CUR
-      *
-           MOVE    T01-DATA            TO  SPA-GMN-DATAKBN-G
       *
            IF      SPA-GMN-DATAKBN     =   SPACE
                MOVE    SPA-GMN-DATAKBNLST (1)
@@ -1284,21 +1369,14 @@
                                                TO  SPA-GMN-DATAKBN-G
                END-IF
            END-IF
-      *
-           MOVE    5                   TO  SPA-GMN-CUR
            .
        4104-DATAKBN-CHK-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    入外区分入力処理
       *****************************************************************
        4105-NYUGAIKBN-CHK-SEC          SECTION.
-      *
-           MOVE    5                   TO  SPA-GMN-CUR
-      *
-           MOVE    T01-NYUGAIKBN       TO  SPA-GMN-NYUGAIKBN-G
       *
            IF      SPA-GMN-NYUGAIKBN   =   SPACE
                MOVE    SPA-GMN-NYUGAIKBNLST (1)
@@ -1319,10 +1397,42 @@
                                                TO  SPA-GMN-NYUGAIKBN-G
                END-IF
            END-IF
-      *
-           MOVE    7                   TO  SPA-GMN-CUR
            .
        4105-NYUGAIKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確定ボタン押下時チェック処理
+      *****************************************************************
+       4101-KAKUTEI-CHK-SEC        SECTION.
+      *
+      *    対象帳票が未選択
+           IF      SPA-DATAKBN     =   "FFFF" 
+               MOVE    "0006"          TO  SPA-ERRCD
+           END-IF
+      *
+      *    総括表（社保）の対象データが未選択
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-DATAKBN4-VALUE  =   "T"
+                   IF    ( SPA-CHK11-VALUE     =   "F" )
+                   AND   ( SPA-CHK12-VALUE     =   "F" )  
+                       MOVE    "0007"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF    
+      *
+      *    総括表（国保）の対象データが未選択
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-DATAKBN5-VALUE  =   "T"
+                   IF    ( SPA-CHK21-VALUE     =   "F" )
+                   AND   ( SPA-CHK22-VALUE     =   "F" )  
+                       MOVE    "0008"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF    
+      *
+           .
+       4101-KAKUTEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1398,41 +1508,33 @@
       *****************************************************************
        450-PRINT-GID-SEC                SECTION.
       *
-           IF      SPA-NAI-SKYYM       =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
-           END-IF    
+      *    入力チェック
+           MOVE    1               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  450-PRINT-GID-EXT
+           END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-NAI-SKYYMD      =   ZERO
-                   MOVE    "0002"              TO  SPA-ERRCD
-               END-IF    
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-GMN-HKNJANUM    =   SPACE
-                   MOVE    ZERO                TO  SPA-NAI-HKNJANUM
-               ELSE
-                   IF      SPA-GMN-HKNJAMEI        =   SPACE    
-                       MOVE    "0005"          TO  SPA-ERRCD
-                   END-IF
-               END-IF    
-           END-IF    
-      *        ジョブ管理チェック処理
+      *    ジョブ管理チェック処理
            IF      SPA-ERRCD       =   SPACE
                PERFORM 4501-JOBKANRI-CHK-SEC
                IF      SPA-ERRCD       =   SPACE
       *            ガイドメッセージセット
                    EVALUATE    TRUE
-                       WHEN    T01-DATAKBN1-VALUE    =   "T" 
-                           MOVE    "1001"              TO  SPA-TIDCD
-                       WHEN    T01-DATAKBN2-VALUE    =   "T" 
-                           MOVE    "1002"              TO  SPA-TIDCD
-                       WHEN    T01-DATAKBN3-VALUE    =   "T" 
+                       WHEN    SPA-DATAKBN     =   "TFFF" 
                            MOVE    "1003"              TO  SPA-TIDCD
-                       WHEN    T01-DATAKBN4-VALUE    =   "T" 
+                       WHEN    SPA-DATAKBN     =   "FTFF"
                            MOVE    "1004"              TO  SPA-TIDCD
-                       WHEN    T01-DATAKBN5-VALUE    =   "T" 
+                       WHEN    SPA-DATAKBN     =   "FFTF"
                            MOVE    "1005"              TO  SPA-TIDCD
+                       WHEN    SPA-DATAKBN     =   "FFFT"
+                           MOVE    "1006"              TO  SPA-TIDCD
+                       WHEN    SPA-DATAKBN3-VALUE
+                                               =   "T" 
+                           MOVE    "1001"              TO  SPA-TIDCD
+                       WHEN    SPA-DATAKBN3-VALUE
+                                               =   "F" 
+                           MOVE    "1002"              TO  SPA-TIDCD
                    END-EVALUATE
                END-IF
            END-IF
@@ -1518,32 +1620,6 @@
       *****************************************************************
        450-PRINT-SEC                   SECTION.
       * 
-      *    ＪＯＢＩＤ（３００３）削除処理
-      **** MOVE    SPACE               TO  SYS-3003-REC 
-      *     INITIALIZE                      SYS-3003-REC
-      *     MOVE    "3003"              TO  SYS-3003-KANRICD
-      *     MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-      *     MOVE    SPA-NAI-*SKYYM       TO  ORC-DBYMD (1:6)
-      *     MOVE    "01"                TO  ORC-DBYMD (7:2)
-      *     MOVE    SYS-3003-REC        TO  MCPDATA-REC
-      *     PERFORM 900-SYSKANRI-INV-SEC
-      *     IF      FLG-SYSKANRI        =   ZERO
-      *         MOVE    MCPDATA-REC         TO  SYS-3003-REC
-      *         MOVE    SYS-3003-REC        TO  MCPDATA-REC
-      *         MOVE    "DBDELETE"          TO  MCP-FUNC
-      *         MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *         CALL    "ORCMCPSUB"         USING
-      *                                     MCPAREA
-      *                                     ORCMCPAREA
-      *                                     MCPDATA-REC
-      *         IF      MCP-RC              =   ZERO
-      *             CONTINUE
-      *         ELSE                                 
-      *             MOVE    "1005"              TO  SPA-ERRCD
-      *             GO  TO  450-PRINT-EXT
-      *         END-IF
-      **** END-IF                 
-      * 
       *    ジョブ管理削除処理
            MOVE    "ALL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -1558,11 +1634,12 @@
                GO  TO  450-PRINT-EXT
            END-IF             
       *
-           ACCEPT  SYS-YMD         FROM    DATE
-           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
-           MOVE    SYS-MM              TO  WRK-SYSMM
-           MOVE    SYS-DD              TO  WRK-SYSDD
-           ACCEPT  SYS-TIME            FROM    TIME
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+           MOVE    SMCNDATE-YMD        TO  WRK-SYSYMD
+           MOVE    SMCNDATE-HMS        TO   SYS-TIME 
       *
            MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
                                            WRK-PRTKANRI-RENNUM
@@ -1595,8 +1672,6 @@
       *     
       *    総括表印刷（社保）
            EVALUATE    TRUE
-               WHEN    T01-DATAKBN1-VALUE    =   "T" 
-               WHEN    T01-DATAKBN2-VALUE    =   "T" 
                WHEN    T01-DATAKBN4-VALUE    =   "T"
                    IF      SPA-NAI-PRTKBN1       =   SPACE  
                        MOVE    "1"                 TO  WRK-SHELL-RECEKBN
@@ -1606,8 +1681,6 @@
       *     
       *    総括表印刷（国保）
            EVALUATE    TRUE
-               WHEN    T01-DATAKBN1-VALUE    =   "T" 
-               WHEN    T01-DATAKBN2-VALUE    =   "T" 
                WHEN    T01-DATAKBN5-VALUE    =   "T" 
                    IF      SPA-NAI-PRTKBN2       =   SPACE
                        MOVE    "2"                 TO  WRK-SHELL-RECEKBN
@@ -1615,36 +1688,33 @@
                    END-IF    
            END-EVALUATE                                               
       *     
+      *    レセ電総括表印刷（国保）
+           EVALUATE    TRUE
+               WHEN    T01-DATAKBN6-VALUE    =   "T" 
+                   IF      SPA-NAI-PRTKBN3   NOT =   SPACE
+                       PERFORM 45014-RECEDEN-SOKATU-SYORI-SEC
+                   END-IF    
+           END-EVALUATE                                               
+      *     
       *    県単独事業（総括）
            EVALUATE    TRUE
-               WHEN    T01-DATAKBN1-VALUE    =   "T" 
-               WHEN    T01-DATAKBN2-VALUE    =   "T" 
                WHEN    T01-DATAKBN4-VALUE    =   "T" 
                WHEN    T01-DATAKBN5-VALUE    =   "T" 
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       SPA-3004-MAX
-                       EVALUATE    TRUE
-                           WHEN    T01-DATAKBN1-VALUE    =   "T" 
-                           WHEN    T01-DATAKBN2-VALUE    =   "T" 
-                              IF      SPA-3004-CHKFLG (IDX 1) =   "T"   
-                              OR      SPA-3004-CHKFLG (IDX 2) =   "T"
-                                  PERFORM 45010-KENTAN-SOKATU-SYORI-SEC
-                              END-IF             
-                           WHEN    T01-DATAKBN4-VALUE    =   "T" 
-                             IF      SPA-3004-CHKFLG (IDX 1) =   "T"
-                                  PERFORM 45010-KENTAN-SOKATU-SYORI-SEC
-                             END-IF 
-                           WHEN    T01-DATAKBN5-VALUE    =   "T" 
-                             IF      SPA-3004-CHKFLG (IDX 2) =   "T"
-                                  PERFORM 45010-KENTAN-SOKATU-SYORI-SEC
-                             END-IF
-                     END-EVALUATE                    
+                       IF    ( T01-DATAKBN4-VALUE      =   "T" ) 
+                       AND   ( SPA-3004-CHKFLG (IDX 1) =   "T" )
+                           PERFORM 45010-KENTAN-SOKATU-SYORI-SEC
+                       END-IF 
+                       IF    ( T01-DATAKBN5-VALUE      =   "T" ) 
+                       AND   ( SPA-3004-CHKFLG (IDX 2) =   "T" )
+                           PERFORM 45010-KENTAN-SOKATU-SYORI-SEC
+                       END-IF
                   END-PERFORM  
            END-EVALUATE
       *          
       *    県単独事業（請求書）        
            EVALUATE    TRUE
-             WHEN    T01-DATAKBN1-VALUE    =   "T" 
              WHEN    T01-DATAKBN3-VALUE    =   "T" 
       *
                PERFORM VARYING IDX FROM    1   BY  1
@@ -1810,18 +1880,6 @@
       *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *                                 
-      *****MOVE    "recept3.sh"        TO  SHELL-SHELL
-      *    MOVE    SPA-NAI-SKYYM       TO  SHELL-SRYYM 
-      *****MOVE    SPA-TERMID          TO  SHELL-TERMID
-      *    MOVE    WRK-CONS-TERMID     TO  SHELL-TERMID
-      *    MOVE    SPA-NAI-SKYYMD      TO  SHELL-SYSYMD    
-      *****MOVE    "0"                 TO  SHELL-RECEKBN
-      *****IF      T01-DATAKBN4-VALUE  =   "T"
-      *****    MOVE    "1"                 TO  SHELL-RECEKBN
-      *****END-IF    
-      *****IF      T01-DATAKBN5-VALUE  =   "T"
-      *****    MOVE    "2"                 TO  SHELL-RECEKBN
-      *****END-IF    
       *    MOVE    RECEERR             TO  SHELL-ERRFILE
       *             
            MOVE    SPACE           TO  SHELLTBL
@@ -1903,6 +1961,23 @@
            ELSE
                MOVE    "00000000"  TO  SHELLTBL-ARG21
            END-IF
+           EVALUATE    SPA-CHK11-VALUE ALSO    SPA-CHK12-VALUE
+               WHEN    "T"             ALSO    "T"
+                   MOVE    "0"             TO  SHELLTBL-ARG22
+               WHEN    "T"             ALSO    "F"
+                   MOVE    "1"             TO  SHELLTBL-ARG22
+               WHEN    "F"             ALSO    "T"
+                   MOVE    "2"             TO  SHELLTBL-ARG22
+           END-EVALUATE
+           EVALUATE    SPA-CHK21-VALUE ALSO    SPA-CHK22-VALUE
+               WHEN    "T"             ALSO    "T"
+                   MOVE    "0"             TO  SHELLTBL-ARG23
+               WHEN    "T"             ALSO    "F"
+                   MOVE    "1"             TO  SHELLTBL-ARG23
+               WHEN    "F"             ALSO    "T"
+                   MOVE    "2"             TO  SHELLTBL-ARG23
+           END-EVALUATE
+      *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -2009,6 +2084,29 @@
                    MOVE    "00000000"  TO  SHELLTBL-ARG18
                END-IF
            END-IF
+           IF      SPA-3004-CHKFLG (IDX 1)
+                                       =   "T"
+               EVALUATE    SPA-CHK11-VALUE ALSO    SPA-CHK12-VALUE
+                   WHEN    "T"             ALSO    "T"
+                       MOVE    "0"             TO  SHELLTBL-ARG19
+                   WHEN    "T"             ALSO    "F"
+                       MOVE    "1"             TO  SHELLTBL-ARG19
+                   WHEN    "F"             ALSO    "T"
+                       MOVE    "2"             TO  SHELLTBL-ARG19
+               END-EVALUATE
+           END-IF
+           IF      SPA-3004-CHKFLG (IDX 2)
+                                       =   "T"
+               EVALUATE    SPA-CHK21-VALUE ALSO    SPA-CHK22-VALUE
+                   WHEN    "T"             ALSO    "T"
+                       MOVE    "0"             TO  SHELLTBL-ARG19
+                   WHEN    "T"             ALSO    "F"
+                       MOVE    "1"             TO  SHELLTBL-ARG19
+                   WHEN    "F"             ALSO    "T"
+                       MOVE    "2"             TO  SHELLTBL-ARG19
+               END-EVALUATE
+           END-IF    
+      *
            MOVE    SHELLTBL    TO  MCPDATA-REC
            MOVE    "SHELL"     TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -2152,6 +2250,85 @@
            EXIT.
       *
       *****************************************************************
+      *    レセ電総括（国保）処理        
+      *****************************************************************
+       45014-RECEDEN-SOKATU-SYORI-SEC       SECTION.
+      *
+           PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *             
+           MOVE    SPACE           TO  SHELLTBL
+           MOVE    "scripts/monthly/receden_sokatu.sh"
+                                       TO  WRK-SHELL-NAME
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *                                 
+           MOVE    SPACE           TO  LNK-PRTKANRI-AREA
+           INITIALIZE                  LNK-PRTKANRI-AREA
+           ADD     1               TO  WRK-PRTKANRI-RENNUM
+           MOVE    WRK-PRTKANRI-RENNUM
+                                   TO  LNK-PRTKANRI-RENNUM 
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                   TO  LNK-PRTKANRI-TBL-KEY 
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                   TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    SPA-NAI-SKYYM   TO  LNK-PRTKANRI-SRYYM 
+           MOVE    SPA-NAI-SKYYMD  TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "receden_sokatu.sh"
+                                   TO  LNK-PRTKANRI-SHELLID
+           MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
+      *****MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
+           MOVE    WRK-CONS-TERMID TO  LNK-PRTKANRI-TERMID 
+           MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
+           MOVE    SPA-NAI-1031-PRTNM
+                                   TO  LNK-PRTKANRI-PRTNM
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  SHELLTBL-ARG1       
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  SHELLTBL-ARG2     
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  SHELLTBL-ARG3       
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  SHELLTBL-ARG4       
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SHELLTBL-ARG5       
+           MOVE    LNK-PRTKANRI-SKYYMD
+                                   TO  SHELLTBL-ARG6       
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  SHELLTBL-ARG7       
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                   TO  SHELLTBL-ARG8      
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  SHELLTBL-ARG9       
+           MOVE    LNK-PRTKANRI-OPID
+                                   TO  SHELLTBL-ARG10      
+           MOVE    LNK-PRTKANRI-PRTNM
+                                   TO  SHELLTBL-ARG11      
+      *                 
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG12
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG13
+           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG14
+           MOVE    RECEERR         TO  SHELLTBL-ARG15
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    PATH-SHELL-SHELL
+                                   TO  MCP-PATH
+           CALL    "MCPSUB"        USING
+                                   MCPAREA
+                                   MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ERROR MCP-RC=" MCP-RC 
+           END-IF
+      *
+           .
+       45014-RECEDEN-SOKATU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    レセ電前処理
       *****************************************************************
        460-RECEDEN-GID-SEC                SECTION.
@@ -2212,11 +2389,12 @@
                GO  TO  460-RECEDEN-EXT
            END-IF             
       *
-           ACCEPT  SYS-YMD         FROM    DATE
-           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
-           MOVE    SYS-MM              TO  WRK-SYSMM
-           MOVE    SYS-DD              TO  WRK-SYSDD
-           ACCEPT  SYS-TIME            FROM    TIME
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+           MOVE    SMCNDATE-YMD        TO  WRK-SYSYMD
+           MOVE    SMCNDATE-HMS        TO   SYS-TIME 
       *
            MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
                                            WRK-PRTKANRI-RENNUM
@@ -2429,11 +2607,13 @@
                    END-IF             
       *
       *            印刷ＤＢのＫＥＹ用     
-                   ACCEPT  SYS-YMD             FROM    DATE
-                   COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
-                   MOVE    SYS-MM              TO  WRK-SYSMM
-                   MOVE    SYS-DD              TO  WRK-SYSDD
-                   ACCEPT  SYS-TIME            FROM    TIME
+      *
+      *            更新日取得
+                   INITIALIZE                  ORCSMCNDATEAREA
+                    CALL    "ORCSMCNDATE"      USING
+                                               ORCSMCNDATEAREA
+                   MOVE    SMCNDATE-YMD        TO  WRK-SYSYMD
+                   MOVE    SMCNDATE-HMS        TO   SYS-TIME 
                    MOVE    SPACE               TO
                                            WRK-CONS-PRTKANRI-TBL-GROUP                                
                    MOVE    WRK-SYSYMD          TO
@@ -2853,6 +3033,7 @@
                    WHEN    "1003"  
                    WHEN    "1004"
                    WHEN    "1005"
+                   WHEN    "1006"
                    WHEN    "1010"
                    WHEN    "1011"
                    WHEN    "1014"  
@@ -2897,16 +3078,36 @@
            MOVE    SPA-DATA-STATE      TO  T01-DATA-STATE
            MOVE    SPA-NYUGAIKBN-STATE TO  T01-NYUGAIKBN-STATE
            MOVE    SPA-SRYYM-STATE     TO  T01-SRYYM-STATE
-           MOVE    SPA-DATAKBN1-STATE  TO  T01-DATAKBN1-STATE
-           MOVE    SPA-DATAKBN2-STATE  TO  T01-DATAKBN2-STATE
+      *
            MOVE    SPA-DATAKBN3-STATE  TO  T01-DATAKBN3-STATE
            MOVE    SPA-DATAKBN4-STATE  TO  T01-DATAKBN4-STATE
            MOVE    SPA-DATAKBN5-STATE  TO  T01-DATAKBN5-STATE
-           MOVE    SPA-DATAKBN1-VALUE  TO  T01-DATAKBN1-VALUE
-           MOVE    SPA-DATAKBN2-VALUE  TO  T01-DATAKBN2-VALUE
+           MOVE    SPA-DATAKBN6-STATE  TO  T01-DATAKBN6-STATE
            MOVE    SPA-DATAKBN3-VALUE  TO  T01-DATAKBN3-VALUE
            MOVE    SPA-DATAKBN4-VALUE  TO  T01-DATAKBN4-VALUE
            MOVE    SPA-DATAKBN5-VALUE  TO  T01-DATAKBN5-VALUE
+           MOVE    SPA-DATAKBN6-VALUE  TO  T01-DATAKBN6-VALUE
+      *
+           EVALUATE    SPA-DATAKBN4-VALUE
+               WHEN    "T"
+                   MOVE    WIDGET-NORMAL       TO  T01-CHK11-STATE
+                                                   T01-CHK12-STATE
+               WHEN    "F"
+                   MOVE    WIDGET-INSENSITIVE  TO  T01-CHK11-STATE
+                                                   T01-CHK12-STATE
+           END-EVALUATE
+           EVALUATE    SPA-DATAKBN5-VALUE
+               WHEN    "T"
+                   MOVE    WIDGET-NORMAL       TO  T01-CHK21-STATE
+                                                   T01-CHK22-STATE
+               WHEN    "F"
+                   MOVE    WIDGET-INSENSITIVE  TO  T01-CHK21-STATE
+                                                   T01-CHK22-STATE
+           END-EVALUATE
+           MOVE    SPA-CHK11-VALUE     TO  T01-CHK11-VALUE
+           MOVE    SPA-CHK12-VALUE     TO  T01-CHK12-VALUE
+           MOVE    SPA-CHK21-VALUE     TO  T01-CHK21-VALUE
+           MOVE    SPA-CHK22-VALUE     TO  T01-CHK22-VALUE
       *
            MOVE    SPA-GMN-DATAKBN-G   TO  T01-DATA
            PERFORM VARYING IDX FROM    1   BY  1
@@ -2933,6 +3134,10 @@
                                        TO  T01-PRTKBN2-VALUE
            MOVE    SPA-GMN-PRTKBN2-STYLE
                                        TO  T01-PRTKBN2-STYLE                                 
+           MOVE    SPA-GMN-PRTKBN3-VALUE
+                                       TO  T01-PRTKBN3-VALUE
+           MOVE    SPA-GMN-PRTKBN3-STYLE
+                                       TO  T01-PRTKBN3-STYLE                                 
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -2945,6 +3150,12 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+      *
+           IF    ( SPA-ERRCD           =   SPACE)
+           AND   ( SPA-GMN-CUR         =   ZERO )
+               PERFORM 50011-INPUT-CUR-SEC
+           END-IF
+      *
          EVALUATE    SPA-GMN-CUR
              WHEN    1
                     MOVE  "SKYYM"      TO  MCP-WIDGET   
@@ -2954,12 +3165,36 @@
                     MOVE  "HKNJANUM"   TO  MCP-WIDGET   
              WHEN    4
                     MOVE  "DATA"       TO  MCP-WIDGET   
+             WHEN    5
+                    MOVE  "NYUGAIKBN"  TO  MCP-WIDGET   
              WHEN    7
                     MOVE  "B12"        TO  MCP-WIDGET   
          END-EVALUATE
       *
            .
        5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       50011-INPUT-CUR-SEC             SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "SKYYM"
+                   MOVE    2               TO  SPA-GMN-CUR
+               WHEN    "SKYYMD"
+                   MOVE    7               TO  SPA-GMN-CUR
+               WHEN    "HKNJANUM"
+                   MOVE    7               TO  SPA-GMN-CUR
+               WHEN    "DATA"
+                   MOVE    5               TO  SPA-GMN-CUR
+               WHEN    "NYUGAIKBN"
+                   MOVE    7               TO  SPA-GMN-CUR
+           END-EVALUATE
+           .
+      *
+       50011-INPUT-CUR-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2983,6 +3218,17 @@
                                                TO  SPA-ERRMSG
                WHEN    "0005"
                    MOVE    "保険者番号入力エラー" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "処理対象の帳票が選択してありません" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0007"
+                   MOVE
+                      "総括表・社保の処理対象データが選択してありません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0008"
+                   MOVE
+                      "総括表・国保の処理対象データが選択してありません"
                                                TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "レセプトが作成されていません"
@@ -3091,6 +3337,9 @@
                                        TO  WRK-TIDMSG
                WHEN    "1005"
                    MOVE    "総括表（国保）の印刷処理を行います" 
+                                       TO  WRK-TIDMSG
+               WHEN    "1006"
+                   MOVE    "レセ電総括表（国保）の印刷処理を行います" 
                                        TO  WRK-TIDMSG
                WHEN    "1010"
                    MOVE    "社保分のレセプト電算データを作成します"

@@ -47,3 +47,5 @@
                 04  W14-PRTKBN12     PIC X.
                 04  W14-PRTKBN21     PIC X.
                 04  W14-PRTKBN22     PIC X.
+                04  W14-PRTKBN31     PIC X.
+                04  W14-PRTKBN32     PIC X.

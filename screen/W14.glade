@@ -5,13 +5,9 @@
   <name>W14</name>
   <program_name>W14</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -6883,65 +6879,6 @@
     </widget>
 
     <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator1</name>
-      <x>856</x>
-      <y>552</y>
-      <width>16</width>
-      <height>136</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator2</name>
-      <x>1000</x>
-      <y>552</y>
-      <width>16</width>
-      <height>136</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>864</x>
-      <y>544</y>
-      <width>145</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label175</name>
-      <x>865</x>
-      <y>570</y>
-      <width>140</width>
-      <height>20</height>
-      <label>標準総括表印刷指示</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label176</name>
-      <x>864</x>
-      <y>640</y>
-      <width>50</width>
-      <height>20</height>
-      <label>国保</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label162</name>
       <x>592</x>
@@ -6974,10 +6911,35 @@
     </widget>
 
     <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>864</x>
+      <y>520</y>
+      <width>145</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label175</name>
+      <x>865</x>
+      <y>540</y>
+      <width>140</width>
+      <height>20</height>
+      <label>標準総括表印刷指示</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
       <name>label177</name>
       <x>865</x>
-      <y>603</y>
+      <y>570</y>
       <width>50</width>
       <height>20</height>
       <label>社保</label>
@@ -6993,7 +6955,7 @@
       <class>GtkRadioButton</class>
       <name>PRTKBN11</name>
       <x>912</x>
-      <y>600</y>
+      <y>570</y>
       <width>50</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -7018,7 +6980,7 @@
       <class>GtkRadioButton</class>
       <name>PRTKBN12</name>
       <x>960</x>
-      <y>600</y>
+      <y>570</y>
       <width>50</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -7041,9 +7003,75 @@
 
     <widget>
       <class>GtkRadioButton</class>
+      <name>PRTKBN31</name>
+      <x>912</x>
+      <y>655</y>
+      <width>50</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
+      </signal>
+      <label>有</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>RECEDEN</group>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label180</name>
+      <x>871</x>
+      <y>635</y>
+      <width>80</width>
+      <height>20</height>
+      <label>レセ電国保</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>PRTKBN32</name>
+      <x>960</x>
+      <y>655</y>
+      <width>50</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
+      </signal>
+      <label>無</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>RECEDEN</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
       <name>PRTKBN21</name>
       <x>912</x>
-      <y>640</y>
+      <y>600</y>
       <width>50</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -7068,7 +7096,7 @@
       <class>GtkRadioButton</class>
       <name>PRTKBN22</name>
       <x>960</x>
-      <y>640</y>
+      <y>600</y>
       <width>50</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -7087,6 +7115,40 @@
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>KOKUHO</group>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label176</name>
+      <x>864</x>
+      <y>600</y>
+      <width>50</width>
+      <height>20</height>
+      <label>国保</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator1</name>
+      <x>856</x>
+      <y>527</y>
+      <width>16</width>
+      <height>161</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator2</name>
+      <x>1000</x>
+      <y>527</y>
+      <width>16</width>
+      <height>161</height>
     </widget>
   </widget>
 </widget>

@@ -28,8 +28,10 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/08/30  印刷指示項目の追加
-      *  02.00.01    NACL-多々納  02/11/14  一括入力 
-      *  01.00.01    NACL-藤原    04/08/31  パラメタ種別、プリンタ名
+      *  01.00.02    NACL-多々納  02/11/14  一括入力 
+      *  01.00.03    NACL-藤原    04/08/31  パラメタ種別、プリンタ名
+      *                                     の追加
+      *  01.00.04    NACL-藤原    05/02/16  標準国保レセ電総括表印刷指示
       *                                     の追加
       *****************************************************************
       *
@@ -84,6 +86,8 @@
                    07  SPA-GMN-PRTKBN12    PIC X(01).
                    07  SPA-GMN-PRTKBN21    PIC X(01).
                    07  SPA-GMN-PRTKBN22    PIC X(01).
+                   07  SPA-GMN-PRTKBN31    PIC X(01).
+                   07  SPA-GMN-PRTKBN32    PIC X(01).
       *                                                             
       *    フラグ領域
        01  FLG-AREA.
@@ -338,6 +342,8 @@
            MOVE    "F"                 TO  SPA-GMN-PRTKBN12             
            MOVE    "T"                 TO  SPA-GMN-PRTKBN21
            MOVE    "F"                 TO  SPA-GMN-PRTKBN22             
+           MOVE    "T"                 TO  SPA-GMN-PRTKBN31
+           MOVE    "F"                 TO  SPA-GMN-PRTKBN32             
       *
       *    標準総括表印刷指示
            MOVE    SPACE               TO  SYS-3003-REC 
@@ -365,6 +371,13 @@
            ELSE
                MOVE    "F"                 TO  SPA-GMN-PRTKBN21  
                MOVE    "T"                 TO  SPA-GMN-PRTKBN22
+           END-IF      
+           IF      SYS-3003-PRTKBN3    =   SPACE
+               MOVE    "F"                 TO  SPA-GMN-PRTKBN31  
+               MOVE    "T"                 TO  SPA-GMN-PRTKBN32  
+           ELSE
+               MOVE    "T"                 TO  SPA-GMN-PRTKBN31  
+               MOVE    "F"                 TO  SPA-GMN-PRTKBN32
            END-IF      
       * 
       *    県単独情報
@@ -471,6 +484,11 @@
                    PERFORM 450-PRTKBN21-SEC
                WHEN    "CLICKED"       ALSO    "PRTKBN22"
                    PERFORM 450-PRTKBN22-SEC
+      *        レセ電国保印刷指示
+               WHEN    "CLICKED"       ALSO    "PRTKBN31"
+                   PERFORM 450-PRTKBN31-SEC
+               WHEN    "CLICKED"       ALSO    "PRTKBN32"
+                   PERFORM 450-PRTKBN32-SEC
       *        処理対象
                WHEN    OTHER
                    EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET(1:6)
@@ -910,6 +928,34 @@
            EXIT.
       *
       *****************************************************************
+      *    標準レセ電国保総括表印刷指示処理
+      *****************************************************************
+       450-PRTKBN31-SEC          SECTION.
+      *
+           MOVE    W14-PRTKBN31    TO  SPA-GMN-PRTKBN31
+      *
+      *    入力チェック処理
+           MOVE    ZERO            TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           .
+       450-PRTKBN31-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    標準レセ電国保総括表印刷指示処理
+      *****************************************************************
+       450-PRTKBN32-SEC          SECTION.
+      *
+           MOVE    W14-PRTKBN32    TO  SPA-GMN-PRTKBN32
+      *
+      *    入力チェック処理
+           MOVE    ZERO            TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           .
+       450-PRTKBN32-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    確定
       *****************************************************************
        410-KAKUTEI-SEC           SECTION.
@@ -955,6 +1001,11 @@
                MOVE    SPACE               TO  SYS-3003-PRTKBN2
            ELSE
                MOVE    "1"                 TO  SYS-3003-PRTKBN2
+           END-IF        
+           IF      SPA-GMN-PRTKBN32    =   "T"
+               MOVE    SPACE               TO  SYS-3003-PRTKBN3
+           ELSE
+               MOVE    "1"                 TO  SYS-3003-PRTKBN3
            END-IF        
       *
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
@@ -1165,6 +1216,8 @@
            MOVE    SPA-GMN-PRTKBN12     TO  W14-PRTKBN12
            MOVE    SPA-GMN-PRTKBN21     TO  W14-PRTKBN21
            MOVE    SPA-GMN-PRTKBN22     TO  W14-PRTKBN22
+           MOVE    SPA-GMN-PRTKBN31     TO  W14-PRTKBN31
+           MOVE    SPA-GMN-PRTKBN32     TO  W14-PRTKBN32
       *
            PERFORM 5001-MAPCUR-SEC
       *

@@ -4,54 +4,23 @@ T01	{
 			value	varchar(7);
 		};
 		B06	{
-			 state   int;
+			state	int;
 		};
 		B07	{
-			 state   int;
+			state	int;
 		};
 		B21	{
-			 state   int;
+			state	int;
 		};
 		SRYYM	{
-			 state   int;
+			state	int;
 			value	varchar(20);
 		};
 		SKYYMD	{
 			value	varchar(10);
 		};
-		DATAKBN1	{
-			 state   int;
-			value	bool;
-		};
-		DATAKBN2	{
-			 state   int;
-			value	bool;
-		};
-		DATAKBN4	{
-			 state   int;
-			value	bool;
-		};
-		DATAKBN5	{
-			 state   int;
-			value	bool;
-		};
-		DATAKBN3	{
-			 state   int;
-			value	bool;
-		};
-		PRTKBN1	{
-			 style   varchar(20);
-			value	varchar(4);
-		};
-		PRTKBN2	{
-			style   varchar(20);
-			value	varchar(4);
-		};
 		HKNJANUM	{
 			value	varchar(8);
-		};
-		HKNJAMEI	{
-			value	varchar(40);
 		};
 		DATA_COMBO	{
 			state   int;
@@ -68,6 +37,53 @@ T01	{
 			};
 			count	int;
 			item	varchar(14)[3];
+		};
+		DATAKBN4	{
+			state	int;
+			value	bool;
+		};
+		DATAKBN3	{
+			state	int;
+			value	bool;
+		};
+		DATAKBN6	{
+			state	int;
+			value	bool;
+		};
+		HKNJAMEI	{
+			value	varchar(40);
+		};
+		CHK11	{
+			state	int;
+			value	bool;
+		};
+		CHK12	{
+			state	int;
+			value	bool;
+		};
+		CHK21	{
+			state	int;
+			value	bool;
+		};
+		CHK22	{
+			state	int;
+			value	bool;
+		};
+		DATAKBN5	{
+			state	int;
+			value	bool;
+		};
+		PRTKBN1	{
+			style	varchar(20);
+			value	varchar(4);
+		};
+		PRTKBN2	{
+			style	varchar(20);
+			value	varchar(4);
+		};
+		PRTKBN3	{
+			style	varchar(20);
+			value	varchar(4);
 		};
 	};
 };
