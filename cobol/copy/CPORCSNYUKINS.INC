@@ -31,6 +31,8 @@
            03  LNK-SCNYUKINS-PTID            PIC 9(10).
       *    入金日
            03  LNK-SCNYUKINS-NYUKIN-YMD      PIC X(08).
+      *    入金方法
+           03  LNK-SCNYUKINS-NYUKIN-HOHO     PIC X(02).
       *    入金額設定情報
            03  LNK-SCNYUKINS-AREA.
                05  LNK-SCNYUKINS-MAX         PIC 9(05).

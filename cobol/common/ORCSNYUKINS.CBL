@@ -292,7 +292,8 @@
                                        TO  SMEI-NYUHEN-YMD
       *入金方法
            IF  LNK-SCNYUKINS-NYUKIN-MONEY(IDX)  >  ZERO
-               MOVE    "01"            TO  SMEI-NYUKIN-HOHO
+               MOVE    LNK-SCNYUKINS-NYUKIN-HOHO
+                                       TO  SMEI-NYUKIN-HOHO
            ELSE
                MOVE    SPACE           TO  SMEI-NYUHEN-KBN
            END-IF
