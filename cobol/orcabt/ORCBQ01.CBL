@@ -182,8 +182,6 @@
            03  CSV-POST                PIC X(07).
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-JYUSYO              PIC X(400).
-           03  FILLER                  PIC X(01)   VALUE ",".
-           03  CSV-TEL                 PIC X(16).
       * 
        01  CONST-AREA.
            03  CONST-LINE              PIC 9(05)   VALUE   30.
@@ -488,9 +486,6 @@
       *
            MOVE    WRK-ADRS        TO  CSV-JYUSYO
       *
-           MOVE    QUERY-PTINF-HOME-TEL1
-                                   TO  CSV-TEL
-      *
            MOVE    CSV-EDIT-AREA   TO  CSV-REC
       *
            WRITE   CSV-REC
@@ -565,14 +560,11 @@
       *
            PERFORM 900-ADRS-EDIT-SEC
       *
-           IF    ( WRK-ADRS (51:)  NOT =   SPACE )
+           IF    ( WRK-ADRS (69:)  NOT =   SPACE )
                MOVE    WRK-ADRS        TO  HC28-JYUSYO2 (CNT-LINE)
            ELSE
                MOVE    WRK-ADRS        TO  HC28-JYUSYO (CNT-LINE)
            END-IF
-      *
-           MOVE    QUERY-PTINF-HOME-TEL1
-                                       TO  HC28-TEL (CNT-LINE)
       *
            IF  ( CNT-LINE         >=   CONST-LINE )
       *

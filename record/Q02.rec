@@ -45,7 +45,6 @@ Q02	{
 					value6	varchar(6);
 					value7	varchar(8);
 					value8	varchar(200);
-					value9	varchar(16);
 				}	[200];
 				select	bool[200];
 			};

@@ -29,8 +29,6 @@
             02  HCM28-POST
                     PIC X(8)    OCCURS  30 TIMES.
             02  HCM28-JYUSYO
-                    PIC X(50)   OCCURS  30 TIMES.
+                    PIC X(68)   OCCURS  30 TIMES.
             02  HCM28-JYUSYO2
-                    PIC X(120)  OCCURS  30 TIMES.
-            02  HCM28-TEL
-                    PIC X(16)   OCCURS  30 TIMES.
+                    PIC X(100)  OCCURS  30 TIMES.
