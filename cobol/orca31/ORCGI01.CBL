@@ -7917,8 +7917,18 @@
            MOVE     "1"                TO  SPA-NYUGAIKBN
            MOVE     PTNYUINRRK-PTID    TO  SPA-PTID
            MOVE     PTNYUINRRK-NYUINKA TO  SPA-SRYKA
-           MOVE     SPA-NAI-I01-MAEIDOYMD
-                                       TO   LNK-SCNYUACCT-EDSRYYMD
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-NAI-I01-MAEIDOYMD
+                                       TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    -1                  TO  LNK-DAY6-ZOGEN
+           CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  LNK-SCNYUACCT-EDSRYYMD
+      **     MOVE     SPA-NAI-I01-MAEIDOYMD
+      **                                 TO   LNK-SCNYUACCT-EDSRYYMD
            DISPLAY "PTNYUINRRK-PTID = " PTNYUINRRK-PTID
            DISPLAY "PTNYUINRRK-NYUINKA = " PTNYUINRRK-NYUINKA
            DISPLAY "SPA-NAI-I01-IDOYMD-MAE = " SPA-NAI-I01-IDOYMD-MAE
@@ -7953,6 +7963,9 @@
                                    TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
+           DISPLAY "4801-IDOKAIKEI-CANCEL-SEC KAIKEI SAKUSEI"
+           DISPLAY "PTNYUINRRK-RRKNUM = " PTNYUINRRK-RRKNUM
+           DISPLAY "PTNYUINRRK-RRKEDANUM = " PTNYUINRRK-RRKEDANUM
       *
            INITIALIZE      ORCSSYOKIKSNAREA
       *
@@ -7971,8 +7984,22 @@
       *-         PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
       *-     END-IF
       *
+           INITIALIZE              SYSKANRI-REC
+           MOVE    "5001"          TO  SYS-KANRICD
+           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    PTNYUINRRK-BTUNUM
+                                   TO  SYS-KBNCD
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
-           IF      SPA-GMN-I01-TOKNYUIN-CD    NOT =   SPACE
+      *    システム管理マスタの医療機関情報より取得
+           MOVE    "SYSKANRI-KEY2" TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+      *
+           IF   FLG-DBRC           =    ZERO
+               MOVE    MCPDATA-REC TO   SYS-5001-REC
+           END-IF
+      *
+           IF      PTNYUINRRK-TOKUTEI-NYUIN    NOT =   SPACE
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
            ELSE
                IF  SYS-5001-BTU-KHNSRYCD      NOT =   SPACE
@@ -8060,7 +8087,6 @@
                DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
                          LNK-SCNYUACCT-RC
            END-IF
-
            .
        4801-IDOKAIKEI-CANCEL-EXT.
            EXIT.
