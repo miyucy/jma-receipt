@@ -3920,10 +3920,26 @@
                                               "7" OR "8"          )  AND
                 ( SYU-KOH-HKNNUM(3)       =   SPACE               )  AND
                 ( SYU-KOH-HKNNUM(4)       =   SPACE               ))
+           OR  (( SYU-KOH-HKNNUM(1)       =   "027"               )  AND
+                ( SYU-KOH-HKNNUM(2)(1:1)  =   "1" OR "2" OR "3" OR
+                                              "4" OR "5" OR "6" OR
+                                              "7" OR "8"          )  AND
+                ( SYU-KOH-HKNNUM(3)(1:1)  =   "1" OR "2" OR "3" OR
+                                              "4" OR "5" OR "6" OR
+                                              "7" OR "8"          )  AND
+                ( SYU-KOH-HKNNUM(4)       =   SPACE               ))
            OR  (( SYU-KOH-HKNNUM(1)(1:1)  =   "1" OR "2" OR "3" OR
                                               "4" OR "5" OR "6" OR
                                               "7" OR "8"          )  AND
                 ( SYU-KOH-HKNNUM(2)       =   SPACE               )  AND
+                ( SYU-KOH-HKNNUM(3)       =   SPACE               )  AND
+                ( SYU-KOH-HKNNUM(4)       =   SPACE               ))
+           OR  (( SYU-KOH-HKNNUM(1)(1:1)  =   "1" OR "2" OR "3" OR
+                                              "4" OR "5" OR "6" OR
+                                              "7" OR "8"          )  AND
+                ( SYU-KOH-HKNNUM(2)(1:1)  =   "1" OR "2" OR "3" OR
+                                              "4" OR "5" OR "6" OR
+                                              "7" OR "8"          )  AND
                 ( SYU-KOH-HKNNUM(3)       =   SPACE               )  AND
                 ( SYU-KOH-HKNNUM(4)       =   SPACE               ))
       *

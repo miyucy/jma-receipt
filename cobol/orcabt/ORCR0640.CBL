@@ -268,7 +268,6 @@
            03  WRK-FTNKEI3                             PIC 9(09).
            03  WRK-KINGAKU                             PIC 9(09).
            03  WRK-KINGAKU2                            PIC 9(09).
-           03  WRK-KINGAKU3                            PIC 9(09).
       *
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
@@ -397,7 +396,7 @@
       *
            03  WRK-PREFNUM                             PIC X(02).
       *
-           03  WRK-CHIHOU-NUM                          PIC X(03).
+           03  WRK-CHIHOU-KIN                          PIC 9(09).
       *
            03  WRK-RECEERR                             PIC X(200).
       *
@@ -5291,6 +5290,8 @@
       *
            MOVE    ZERO                 TO      FLG-NYUINRYO
       *
+           MOVE    ZERO                 TO      WRK-CHIHOU-KIN
+      *
            INITIALIZE                           WRK-SKJ-FTN-T
       *
            INITIALIZE                           SYUNOU-REC
@@ -5353,7 +5354,6 @@
       *
       *
            MOVE     ZERO     TO    FLG-CHIHOU
-           MOVE     SPACE    TO    WRK-CHIHOU-NUM
       *
            PERFORM  VARYING  ID1    FROM    1   BY  1
                          UNTIL   ID1   >   2
@@ -5741,28 +5741,15 @@
                       ELSE
                         IF   (  RECE62-KYURATE         =  20     )
                         AND  (  FLG-CHIHOU             =  1      )
-                           EVALUATE  TRUE
-                             WHEN  RECE62-KOHNUM(1)  =  WRK-CHIHOU-NUM
-                                COMPUTE  WRK-KINGAKU2  =
-                                      RECE62-TOTALTEN(2) *  10
-                             WHEN  RECE62-KOHNUM(2)  =  WRK-CHIHOU-NUM
-                                COMPUTE  WRK-KINGAKU2  =
-                                      RECE62-TOTALTEN(3) *  10
-                             WHEN  RECE62-KOHNUM(3)  =  WRK-CHIHOU-NUM
-                                COMPUTE  WRK-KINGAKU2  =
-                                      RECE62-TOTALTEN(4) *  10
-                             WHEN  RECE62-KOHNUM(4)  =  WRK-CHIHOU-NUM
-                                COMPUTE  WRK-KINGAKU2  =
-                                      RECE62-TOTALTEN(5) *  10
-                           END-EVALUATE
-      ***                  IF   WRK-KINGAKU2  >  361500
-      ***                     COMPUTE  WRK-KINGAKU3 =
-      ***                     (( WRK-KINGAKU2 -  361500 ) * 0.01 ) + 0.5
-      ***                     COMPUTE  WRK-KINGAKU  =   72300
-      ***                                           +   WRK-KINGAKU3
-      ***                  ELSE
+                           IF   WRK-CHIHOU-KIN  >  361500
+                              COMPUTE  WRK-KINGAKU2 =
+                             (( WRK-CHIHOU-KIN -  361500 ) * 0.01 )
+                                                           + 0.5
+                              COMPUTE  WRK-KINGAKU  =   72300
+                                                    +   WRK-KINGAKU2
+                           ELSE
                               MOVE    72300  TO   WRK-KINGAKU
-      ***                  END-IF                     
+                           END-IF                     
                            PERFORM   ICHIBUFTN-KOH-SET-SEC
                         ELSE
                            MOVE    40200     TO   WRK-KINGAKU
@@ -5998,20 +5985,33 @@
                                               "7" OR "8"          )  AND
                 ( SYU-KOH-HKNNUM(3)       =   SPACE               )  AND
                 ( SYU-KOH-HKNNUM(4)       =   SPACE               ))
+           OR  (( SYU-KOH-HKNNUM(1)       =   "027"               )  AND
+                ( SYU-KOH-HKNNUM(2)(1:1)  =   "1" OR "2" OR "3" OR
+                                              "4" OR "5" OR "6" OR
+                                              "7" OR "8"          )  AND
+                ( SYU-KOH-HKNNUM(3)(1:1)  =   "1" OR "2" OR "3" OR
+                                              "4" OR "5" OR "6" OR
+                                              "7" OR "8"          )  AND
+                ( SYU-KOH-HKNNUM(4)       =   SPACE               ))
            OR  (( SYU-KOH-HKNNUM(1)(1:1)  =   "1" OR "2" OR "3" OR
                                               "4" OR "5" OR "6" OR
                                               "7" OR "8"          )  AND
                 ( SYU-KOH-HKNNUM(2)       =   SPACE               )  AND
                 ( SYU-KOH-HKNNUM(3)       =   SPACE               )  AND
                 ( SYU-KOH-HKNNUM(4)       =   SPACE               ))
+           OR  (( SYU-KOH-HKNNUM(1)(1:1)  =   "1" OR "2" OR "3" OR
+                                              "4" OR "5" OR "6" OR
+                                              "7" OR "8"          )  AND
+                ( SYU-KOH-HKNNUM(2)(1:1)  =   "1" OR "2" OR "3" OR
+                                              "4" OR "5" OR "6" OR
+                                              "7" OR "8"          )  AND
+                ( SYU-KOH-HKNNUM(3)       =   SPACE               )  AND
+                ( SYU-KOH-HKNNUM(4)       =   SPACE               ))
       *
                 MOVE     1       TO      FLG-CHIHOU
       *
-                IF    SYU-KOH-HKNNUM(1)   =   "027"
-                    MOVE     SYU-KOH-HKNNUM(2)   TO   WRK-CHIHOU-NUM
-                ELSE
-                    MOVE     SYU-KOH-HKNNUM(1)   TO   WRK-CHIHOU-NUM
-                END-IF
+                COMPUTE   WRK-CHIHOU-KIN  =   WRK-CHIHOU-KIN
+                                          +  (SYU-TOTAL-HKNTEN * 10)
       *
            END-IF
       *
