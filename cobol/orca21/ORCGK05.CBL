@@ -34,6 +34,7 @@
       *  02.00.02    MCC−多々納  02/07/16  インターフェースの変更
       *  02.00.03    NACL−多々納 02/09/24  検索修正
       *  02.00.04    NACL−多々納 03/08/01  画像診断の撮影回数変更
+      *  02.00.05    NACL−多々納 03/12/09  入外区分、老人区分追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -167,6 +168,9 @@
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-INS             PIC 9(01).
+      *
+           03  FLG-CHK             PIC 9(01).
+           03  FLG-SYOKI           PIC 9(01).
       *
            03  FLG-CHK2            PIC 9(01).
            03  FLG-ARI2            PIC 9(01).
@@ -981,8 +985,23 @@
                GO      TO      300-SCREEN-EXT
            END-IF
       *
+      *    初期設定
+           PERFORM 310-SPA-INITSET-SEC
+      *
+           .
+       300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初期設定処理
+      *****************************************************************
+       310-SPA-INITSET-SEC          SECTION.
+      *
            INITIALIZE              SPA-K05-AREA
            INITIALIZE              SPA-SCR-REC
+      *
+      *    入外区分、老人区分初期表示
+           PERFORM 3101-NYUGAI-SET-SEC
       *
       *    パラメタファイルより見出し表示
            MOVE    ZERO                TO  LNK-WKSRYACT-MAX
@@ -1024,7 +1043,37 @@
            MOVE    1               TO  SPA-MAP-IDX
       *
            .
-       300-SCREEN-EXT.
+       310-SPA-INITSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面よりＯＫ処理
+      *****************************************************************
+       3101-NYUGAI-SET-SEC          SECTION.
+      *
+      *    入外区分、老人区分を保存する
+           MOVE    SPA-NAI-ROUJIN      TO  SPA-K05-MAE-ROUJIN
+           MOVE    SPA-NYUGAIKBN       TO  SPA-K05-MAE-NYUGAIKBN
+      *
+           MOVE    "0 一般"            TO  SPA-K05-ROUJINLST(1)
+           MOVE    "1 老人"            TO  SPA-K05-ROUJINLST(2)
+           IF      SPA-NAI-ROUJIN      =   "1"
+               MOVE    SPA-K05-ROUJINLST(2)    TO  SPA-K05-ROUJIN-G
+           ELSE
+               MOVE    SPA-K05-ROUJINLST(1)    TO  SPA-K05-ROUJIN-G
+           END-IF
+      *
+           MOVE    SPA-NYUGAIKBN       TO  SPA-K05-NYUGAIKBN
+           MOVE    "1 入院"            TO  SPA-K05-NYUGAIKBNLST(1)
+           MOVE    "2 入院外"          TO  SPA-K05-NYUGAIKBNLST(2)
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    SPA-K05-NYUGAIKBNLST(1) TO  SPA-K05-NYUGAIKBN-G
+           ELSE
+               MOVE    SPA-K05-NYUGAIKBNLST(2) TO  SPA-K05-NYUGAIKBN-G
+           END-IF
+      *
+           .
+       3101-NYUGAI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1653,6 +1702,18 @@
        200-ENTRY                   SECTION.
       *
            MOVE    "1"                 TO  SPA-UPDFLG
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        入外区分
+               WHEN    ANY             ALSO    "NYUGAIKBN"
+                   PERFORM 410-NYUGAIKBN-SEC
+                   GO      TO      200-ENTRY-EXT
+      *        老人区分
+               WHEN    ANY             ALSO    "ROUJIN"
+                   PERFORM 420-ROUJIN-SEC
+                   GO      TO      200-ENTRY-EXT
+           END-EVALUATE
+      *
       *    入力個所のセット
            PERFORM 210-GMN-INPUT-SEC
       *
@@ -1662,6 +1723,96 @@
       *
            .
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入外区分入力処理
+      *****************************************************************
+       410-NYUGAIKBN-SEC               SECTION.
+      *
+           MOVE    K05-NYUGAIKBN       TO  SPA-K05-NYUGAIKBN-G
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+              IF      SPA-K05-NYUGAIKBN    =   SPA-K05-NYUGAIKBNLST
+                                                     (IDX)(1:1)
+                   MOVE    1               TO  FLG-CHK
+                   MOVE    SPA-K05-NYUGAIKBNLST(IDX)
+                                           TO  SPA-K05-NYUGAIKBN-G
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO 
+               MOVE    "5020"              TO  SPA-ERRCD
+               MOVE    7                   TO  SPA-GMN5-CUR
+               GO      TO      410-NYUGAIKBN-EXT
+           END-IF
+      *
+           MOVE    SPA-K05-NYUGAIKBN   TO  SPA-NYUGAIKBN
+           IF      SPA-GMN-MAX         >   ZERO
+               MOVE    3                   TO  SPA-GMN5-CUR
+      *        区分変更時内容チェック
+               PERFORM 4101-CHENGE-CHK-SEC
+           ELSE
+               MOVE    1                   TO  SPA-GMN5-CUR
+           END-IF
+      *
+           .
+       410-NYUGAIKBN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    区分変更時内容チェック処理
+      *****************************************************************
+       4101-CHENGE-CHK-SEC               SECTION.
+      *
+           PERFORM VARYING IDX         FROM    WRK-STR  BY  1
+                   UNTIL   IDX         >   200
+               MOVE    SPACE           TO  SPA-MAE-INPUTCD (SPA-GMN-IDX)
+           END-PERFORM
+      *
+           MOVE    ZERO                   TO  WRK-STR
+      *    画面ＳＰＡチェック処理
+           PERFORM 410112-KOUI-SPACHK-SEC
+      *
+           .
+       4101-CHENGE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入外区分入力処理
+      *****************************************************************
+       420-ROUJIN-SEC               SECTION.
+      *
+           MOVE    K05-ROUJIN       TO  SPA-K05-ROUJIN-G
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+              IF      SPA-K05-ROUJIN       =   SPA-K05-ROUJINLST
+                                                     (IDX)(1:1)
+                   MOVE    1               TO  FLG-CHK
+                   MOVE    SPA-K05-ROUJINLST(IDX)
+                                           TO  SPA-K05-ROUJIN-G
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO 
+               MOVE    "5021"              TO  SPA-ERRCD
+               MOVE    8                   TO  SPA-GMN5-CUR
+               GO      TO      420-ROUJIN-EXT
+           END-IF
+      *
+           MOVE    SPA-K05-ROUJIN      TO  SPA-NAI-ROUJIN
+           IF      SPA-GMN-MAX         >   ZERO
+               MOVE    3                   TO  SPA-GMN5-CUR
+      *        区分変更時内容チェック
+               PERFORM 4101-CHENGE-CHK-SEC
+           ELSE
+               MOVE    1                   TO  SPA-GMN5-CUR
+           END-IF
+      *
+           .
+       420-ROUJIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1991,6 +2142,7 @@
            INITIALIZE                  SPA-SCR-REC
            MOVE    1                   TO  SPA-GMN-IDX
            MOVE    SPA-GMN-SETCODE     TO  WRK-SETCD
+           MOVE    1                   TO  FLG-SYOKI
            PERFORM 4101191-INPSET-HEN-SEC
            PERFORM 510-TBLHEN-SEC
       *
@@ -3090,6 +3242,7 @@
            MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:6)
                                        TO  WRK-SETCD
       *
+           MOVE    ZERO                TO  FLG-SYOKI
            PERFORM 4101191-INPSET-HEN-SEC
            .
        410119-INPSET-EXT.
@@ -3322,13 +3475,24 @@
       *           エラー時、追加しない（点数マスタなしは表示）
                   IF     (SPA-ERRCD           NOT =   SPACE )  OR
                          (LNK-SC92-ERRAREA    NOT =   SPACE )
+      *                訂正の展開時はすべて
+                      IF      FLG-SYOKI           =   1
+                           CONTINUE
+                      ELSE
+      *
                       MOVE    SPACE           TO  SPA-ERRCD
                       INITIALIZE              SPA-GMN-TBLREC
                                                         (SPA-GMN-IDX)
                       INITIALIZE              SPA-COM-TBLREC
                                                         (SPA-GMN-IDX)
-                      COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX
-                                              -   1
+                       IF      WRK-GMN-IDX     =   SPA-GMN-IDX
+                           CONTINUE
+                       ELSE
+                           COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX
+                                                   -   1
+                       END-IF
+      *
+                       END-IF
                    ELSE
                        MOVE    SPACE           TO  SPA-ERRCD
       *                保険外金額判定
@@ -3346,8 +3510,13 @@
                    MOVE    SPACE               TO  WRK-SRYKBN
                END-IF
       *
-               MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)
+              IF     (SPA-ERRCD        NOT =   SPACE )  OR
+                     (LNK-SC92-ERRAREA NOT =   SPACE )
+                   MOVE    SPACE               TO  SPA-ERRCD
+               ELSE
+                   MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)
                                        TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
+               END-IF
       *
       *
                MOVE    "INPUTSET-KEY2"     TO  ORC-DBPATH
@@ -3559,8 +3728,12 @@
                                                           (SPA-GMN-IDX)
                       INITIALIZE              SPA-COM-TBLREC
                                                          (SPA-GMN-IDX)
-                      COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX
-                                              -   1
+                       IF      WRK-GMN-IDX     =   SPA-GMN-IDX
+                           CONTINUE
+                       ELSE
+                           COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX
+                                                   -   1
+                       END-IF
                    ELSE
                        MOVE    SPACE           TO  SPA-ERRCD
       *                保険外金額判定
@@ -4709,6 +4882,10 @@
                MOVE    ZERO                TO  SPA-NENREI-YY
            END-IF
       *
+      *    入外区分、老人区分を戻す
+           MOVE    SPA-K05-MAE-NYUGAIKBN   TO  SPA-NYUGAIKBN
+           MOVE    SPA-K05-MAE-ROUJIN      TO  SPA-NAI-ROUJIN
+      *
       *    中間ファイルのクリア
            MOVE    SPA-TERMID          TO  FILE-TERMID1
            MOVE    ZERO                TO  IF-RESULT
@@ -4739,6 +4916,15 @@
       *    戻る　処理
       *****************************************************************
        210-BACK-OK-SEC               SECTION.
+      *
+      *    入外区分、老人区分を戻す
+           MOVE    SPA-K05-MAE-NYUGAIKBN   TO  SPA-NYUGAIKBN
+           MOVE    SPA-K05-MAE-ROUJIN      TO  SPA-NAI-ROUJIN
+      *
+      *    患者が選択されてない時、年齢を戻す
+           IF      SPA-GMN-PTNUM       =   SPACE
+               MOVE    ZERO                TO  SPA-NENREI-YY
+           END-IF
       *
       *    中間ファイルのクリア
            MOVE    SPA-TERMID          TO  FILE-TERMID1
@@ -4771,8 +4957,15 @@
       *****************************************************************
        420-CLERA-SEC                  SECTION.
       *
+      *    入外区分、老人区分を戻す
+           MOVE    SPA-K05-MAE-NYUGAIKBN   TO  SPA-NYUGAIKBN
+           MOVE    SPA-K05-MAE-ROUJIN      TO  SPA-NAI-ROUJIN
+      *
            INITIALIZE              SPA-SCR-REC
            INITIALIZE              SPA-K05-AREA
+      *
+      *    入外区分、老人区分初期表示
+           PERFORM 3101-NYUGAI-SET-SEC
       *
            MOVE    SPACE               TO  SPA-K05-SYORI
            MOVE    1                   TO  SPA-GMN5-CUR
@@ -5017,9 +5210,15 @@
                GO      TO      41002-KOUSIN-SYORI-EXT
            END-IF
       *
+      *    入外区分、老人区分を戻す
+           MOVE    SPA-K05-MAE-NYUGAIKBN   TO  SPA-NYUGAIKBN
+           MOVE    SPA-K05-MAE-ROUJIN      TO  SPA-NAI-ROUJIN
+      *
       *    患者が選択されてない時、年齢を戻す
            IF      SPA-GMN-PTNUM       =   SPACE
-               MOVE    ZERO                TO  SPA-NENREI-YY
+      *        初期設定
+               PERFORM 310-SPA-INITSET-SEC
+               GO      TO      41002-KOUSIN-SYORI-EXT
            END-IF
       *
       *    中間ファイルのクリア
@@ -5705,6 +5904,22 @@
                    MOVE    "［  削除  ］"  TO  K05-SYORINAME-VALUE
            END-EVALUATE
       *
+           MOVE    SPA-K05-NYUGAIKBN-G     TO  K05-NYUGAIKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+                MOVE    SPA-K05-NYUGAIKBNLST (IDX)
+                                           TO  K05-NYUGAIKBN-ITEM (IDX)
+                MOVE    IDX                TO  K05-NYUGAIKBN-COUNT
+           END-PERFORM
+      *
+           MOVE    SPA-K05-ROUJIN-G    TO  K05-ROUJIN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+                MOVE    SPA-K05-ROUJINLST (IDX)
+                                           TO  K05-ROUJIN-ITEM (IDX)
+                MOVE    IDX                TO  K05-ROUJIN-COUNT
+           END-PERFORM
+      *
            IF      FLG-END             =   ZERO
                 PERFORM 5001-MAPCUR-SEC
             END-IF
@@ -5938,6 +6153,10 @@
                    MOVE    "B12"           TO  MCP-WIDGET
                WHEN    06
                    MOVE    "B07"           TO  MCP-WIDGET
+               WHEN    07
+                   MOVE    "NYUGAIKBN"     TO  MCP-WIDGET
+               WHEN    08
+                   MOVE    "ROUJINKBN"     TO  MCP-WIDGET
            END-EVALUATE
       *
            .

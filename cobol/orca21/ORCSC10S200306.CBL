@@ -235,6 +235,9 @@
       *    ÅöÆü¼õ¿Ç²ó¿ô
            03  WRK-DAY-SINSATUCNT      PIC 9(04).
       *
+      *    £²£´»þ´ÖÏ¢ÂÓ²Ã»»
+           03  WRK-24KSAN-SRYCD        PIC X(09).
+      *
       *    ¿Ç»¡ÎÁ¥Æ¡¼¥Ö¥ë
        01  TBL-SINSATU-AREA.
       *    ½é¿ÇÎÁ¡Ê°ìÈÌ ÉÂ±¡¡Ë
@@ -1099,7 +1102,6 @@
                END-IF
            END-IF
       *
-      *
       *    ¾å¸Â£±Æü
            MOVE    ZERO                TO  WRK-DAYCNT
       *****IF     (TNS-JGNCNT1D        >   ZERO  )  AND
@@ -1279,6 +1281,65 @@
       *    Åö·î»»Äê²ó¿ô
            MOVE    WRK-SANTEI-CNT      TO  WRK-NETAKIRI-CNT
       *
+      *    £²£´»þ´ÖÏ¢ÂÓ²Ã»»
+           MOVE    SPACE               TO  WRK-24KSAN-SRYCD
+           IF      WRK-SANTEI-NASI     NOT =   SPACE
+               PERFORM 10021-24KASAN-SET-SEC
+           END-IF
+      *TEST
+           DISPLAY "C10S WRK-24KSAN-SRYCD:" WRK-24KSAN-SRYCD
+      *TEST
+      *
+           .
+       1002-NETAKIRI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ï·¿ÍËýÀ­¼À´µ³°ÍèÁí¹ç¿ÇÎÅ²Ê»»Äê²ó¿ô½èÍý
+      *****************************************************************
+       10021-24KASAN-SET-SEC          SECTION.
+      *
+      *    »»ÄêÍúÎò¸¡º÷
+           MOVE    SPACE               TO  SANTEI-REC
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE     WRK-SANTEI-NASI    TO  SANTEI-SRYYM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           PERFORM
+               UNTIL       FLG-SANTEI      =   1
+      *
+               IF      SANTEI-MSANTEICNT   >   ZERO
+      *            Åö·î»»ÄêÊ¬
+                   EVALUATE    SANTEI-SRYCD
+                       WHEN    "114701870"
+                       WHEN    "114703970"
+                       WHEN    "114703770"
+                       WHEN    "114701870"
+                           MOVE     SANTEI-SRYCD   TO  WRK-24KSAN-SRYCD
+                           MOVE    1               TO  FLG-SANTEI
+                   END-EVALUATE
+               END-IF
+      *
+               IF      FLG-SANTEI          =   ZERO
+                   MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+               
            .
        1002-NETAKIRI-CHK-EXT.
            EXIT.
@@ -2632,6 +2693,17 @@
       *    ÄÉ²Ã¤Ê¤·
            IF      FLG-ADD             =   ZERO
                GO      TO      3305-NETAKIRI-SET-EXT
+           END-IF
+      *
+           MOVE    1                   TO  SPA-NETAKIRI-ARI3
+      *TEST
+           DISPLAY "C10S ADD WRK-24KSAN-SRYCD:" WRK-24KSAN-SRYCD
+      *TEST
+      *    £²£´»þ´ÖÏ¢ÂÓ²Ã»»
+           IF      WRK-24KSAN-SRYCD    NOT =   SPACE
+               MOVE    WRK-24KSAN-SRYCD    TO  WRK-SRYCD
+      *        ÄÉ²Ã¶¦ÄÌ½èÍý
+               PERFORM 33041-SRYCD-ADD-SEC
            END-IF
       *
            .
