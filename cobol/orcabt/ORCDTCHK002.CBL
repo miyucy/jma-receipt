@@ -4079,7 +4079,7 @@
            MOVE    ZERO                TO  FLG-INTERACT
       *
            INITIALIZE                      INTERACT-REC
-           MOVE    SRY-SRYCD (IDX3)    TO  INTERACT-DRUGCD
+           MOVE    TSRYCD-SRYCD (IDX6) TO  INTERACT-DRUGCD
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "INTERACT-KEY"      TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
