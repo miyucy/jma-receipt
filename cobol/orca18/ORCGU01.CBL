@@ -62,8 +62,8 @@
                            13  SPA-GMN-SRYKA       PIC X(02).
                            13  SPA-GMN-SRYNAIYOMEI PIC X(08).
                            13  SPA-GMN-SRYNAIYO    PIC X(02).
-                           13  SPA-GMN-DRCD        PIC X(12).
-                           13  SPA-GMN-DRCDMEI     PIC X(05).
+                           13  SPA-GMN-DRCD        PIC X(05).
+                           13  SPA-GMN-DRCDMEI     PIC X(20).
                            13  SPA-GMN-UKETIMEH    PIC X(08).
                            13  SPA-GMN-YYKTIMEH    PIC X(08).
                            13  SPA-GMN-UKETIME     PIC X(06).
@@ -170,8 +170,8 @@
                    07  SPA-WRK-SRYKA       PIC X(02).
                    07  SPA-WRK-SRYNAIYOMEI PIC X(08).
                    07  SPA-WRK-SRYNAIYO    PIC X(02).
-                   07  SPA-WRK-DRCD        PIC X(12).
-                   07  SPA-WRK-DRCDMEI     PIC X(05).
+                   07  SPA-WRK-DRCD        PIC X(05).
+                   07  SPA-WRK-DRCDMEI     PIC X(20).
                    07  SPA-WRK-UKETIMEH    PIC X(08).
                    07  SPA-WRK-YYKTIMEH    PIC X(08).
                    07  SPA-WRK-UKETIME     PIC X(06).
