@@ -115,6 +115,8 @@
            03  FLG-TENTEKI         PIC 9(01). 
            03  FLG-CHUSIN          PIC 9(01). 
       *
+           03  FLG-HKN-CHK         PIC 9(01). 
+      *
       *    藕机挝拌
        01  IDX-AREA.
            03  IDX1                PIC 9(04).
@@ -142,6 +144,8 @@
            03  IDX-I1              PIC 9(04).
            03  IDX-I2              PIC 9(04).
       *
+           03  IDK1                PIC 9(04).
+      *
       *    办箕挝拌
        01  WRK-AREA.
       *
@@ -156,6 +160,7 @@
       *
            03  WRK-KOH-AREA.
                05  WRK-KOHID           PIC 9(10)   OCCURS  3.
+               05  WRK-TANSEIDONAME    PIC X(20)   OCCURS  3.
       *
            03  WRK-RENNUM          PIC 9(01).
            03  WRK-ZAINUM          PIC 9(08).
@@ -1070,6 +1075,12 @@
                    MOVE    LF04-HKNKOH-FTNJANUM(1 IDX) TO  WRK-FTNJANUM
                    MOVE    LF04-HKNKOH-JKYSNUM (1 IDX) TO  WRK-JKSNUM
                    PERFORM 2001112-KOH-SET-SEC
+               ELSE
+      *            没教叹疚のみ
+                   IF      LF04-HKNKOH-PROVIDER(1 IDX) NOT =   SPACE
+                       MOVE    LF04-HKNKOH-PROVIDER(1 IDX)
+                                           TO  WRK-TANSEIDONAME(IDX)
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -1106,9 +1117,35 @@
       *        给锐滦据
                MOVE    TBL-COMB-HKNCOMBINUM(IDH)
                                            TO  WRK-HKNCOMBI
+           ELSE
+               MOVE    ZERO                TO  FLG-HKN-CHK
+               PERFORM VARYING     IDK1    FROM    1   BY  1
+                       UNTIL       IDK1    >   3
+                   IF      (WRK-KOHID (IDK1)   =   ZERO )  AND
+                           (WRK-TANSEIDONAME(IDK1) =   SPACE )
+                       CONTINUE
+                   ELSE
+      *                ＩＤか没教叹疚が票じ箕滦据とする
+                       IF     ((WRK-KOHID (IDK1)   NOT =   ZERO  )  AND
+                               (WRK-KOHID (IDK1)   =   TBL-COMB-KOHID
+                                                      (IDH IDK1))) OR
+                              ((WRK-TANSEIDONAME(IDK1)
+                                               NOT =   SPACE  )  AND
+                               (WRK-TANSEIDONAME(IDK1)
+                                       =   TBL-COMB-KOH-TANSEIDONAME
+                                                       (IDH IDK1)))
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  FLG-HKN-CHK
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF      FLG-HKN-CHK         =   ZERO
+      *            给锐滦据
+                   MOVE    TBL-COMB-HKNCOMBINUM(IDH)
+                                           TO  WRK-HKNCOMBI
+               END-IF
            END-IF
-      *
-      *
            .
        200112-KOH-CHK-EXT.
            EXIT.
