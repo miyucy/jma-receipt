@@ -80,7 +80,7 @@
                05  SPA-GMN-PAGE                  PIC 9(02).
                05  SPA-MAX-PAGE                  PIC 9(02).
                05  SPA-GMN-LINE                  PIC 9(02).
-               05  SPA-GMN-MAX                   PIC 9(04).
+               05  SPA-K08-MAX                   PIC 9(04).
                05  SPA-GMN-CUR                   PIC 9(02).
       *
                05  SPA-GMN-TBL.
@@ -655,7 +655,7 @@
            END-IF
       *
       *    最大件数
-           MOVE    IDG                 TO  SPA-GMN-MAX
+           MOVE    IDG                 TO  SPA-K08-MAX
       *    各点数
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   10
@@ -1942,7 +1942,7 @@
            MOVE    ZERO                TO  FLG-DEL-ARI
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-MAX
+                   UNTIL       IDX     >   SPA-K08-MAX
                MOVE    ZERO                TO  SPA-GMN-TDELFLG (IDX)
                MOVE    ZERO                TO  SPA-NAI-DELFLG  (IDX)
                IF      SPA-GMN-NAIIDX  (IDX)   >   ZERO
@@ -1986,7 +1986,7 @@
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (09)
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (10)
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-MAX
+                   UNTIL       IDX     >   SPA-K08-MAX
              IF      SPA-GMN-NAIIDX  (IDX)   >   ZERO
                MOVE    SPA-GMN-NAIIDX  (IDX)   TO  IDX-NAI
                IF      SPA-GMN-TDELFLG (IDX)   =   2
@@ -2847,7 +2847,7 @@
       *
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
-                     UNTIL     IDX         >   SPA-GMN-MAX
+                     UNTIL     IDX         >   SPA-K08-MAX
       *********MOVE    SPA-GMN-TMEISYO (IDX)   TO  K08-ITEM(IDX)
                MOVE    SPA-GMN-TMEISYO (IDX)   TO  K08-MEISAI (IDX)
       *        番号
@@ -2870,7 +2870,7 @@
                    MOVE    ALL "-"                 TO  K08-DELFLG(IDX)
                END-IF
            END-PERFORM
-           MOVE    SPA-GMN-MAX         TO  K08-COUNT
+           MOVE    SPA-K08-MAX         TO  K08-COUNT
            MOVE    "user-font"         TO  K08-MEI-STYLE
       *
       *    各点数
