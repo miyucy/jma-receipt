@@ -76,6 +76,8 @@
       *                                     エラーを追加
       *  01.04.06    NACL-藤原    04/05/07  処理開始前にジョブ管理の
       *                                     チェックを再度行なう
+      *  01.04.07    NACL-藤原    04/07/26  会計を残して入院取消を行った
+      *                                     ままの入院会計のエラー対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -174,6 +176,7 @@
            03  FLG-CHK             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-ROW             PIC 9(01).
+           03  FLG-ZAISKBKBN       PIC 9(01). 
       *
       *    フラグ領域
        01  STS-AREA.
@@ -882,6 +885,7 @@
       *    診療会計チェック
            MOVE    ZERO                TO  FLG-CHK
                                            FLG-ERR
+                                           FLG-ZAISKBKBN
       *     
            INITIALIZE                  SRYACCT-REC
            MOVE    SPA-HOSPID          TO  ACCT-HOSPID
@@ -930,7 +934,12 @@
                IF      FLG-CHK             =   ZERO
                    MOVE    "0006"              TO  SPA-ERRCD
                ELSE 
-                   MOVE    4                   TO  SPA-GMN-CUR
+                   IF    ( SPA-R01-NYUGAIKBN   =   "1"  )
+                   AND   ( FLG-ZAISKBKBN       =   ZERO )
+                       MOVE    "0014"              TO  SPA-ERRCD
+                   ELSE 
+                       MOVE    4                   TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF    
            .
@@ -1012,7 +1021,10 @@
            PERFORM             UNTIL    FLG-NYUINACCT  =   1
                                OR       FLG-CHK        =   1     
                                OR       FLG-ERR        =   1      
-      *    保険組合せ読込み
+      *        保険組合せ読込み
+               IF      NACCT-ZAISKBKBN     =   "1"
+                   MOVE    1                   TO  FLG-ZAISKBKBN
+               END-IF
                IF      NACCT-ZAISKBKBN     =   "5"
                  PERFORM VARYING IDXX    FROM    1   BY  1
                          UNTIL   IDXX    >       31
@@ -2366,6 +2378,9 @@
                                                        TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "前回とは入外区分が違います"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "入院会計の基本情報がありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0015"
                    MOVE    "対象のレセプトが作成されいてません"
