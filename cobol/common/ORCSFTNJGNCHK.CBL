@@ -43,11 +43,13 @@
            03  FLG-PTINF           PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
            03  FLG-PTKOHFTN        PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDX1                PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -55,6 +57,8 @@
            03  WRK-KOHFTN         PIC 9(10).
            03  WRK-PREFNUM        PIC 9(02).
       *
+           03  WRK-HKNCOMBINUM-TBL.
+               05  WRK-HKNCOMBINUM   PIC 9(4) OCCURS 10.
       *    ¶¦ÄÌÎÎ°è
            COPY    "MCPAREA".
       *
@@ -65,6 +69,10 @@
       *    ÊÝ¸±ÈÖ¹æ
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
+      *
+      *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *    ´µ¼Ô¸øÈñÉéÃ´
        01  PTKOHFTN-REC.
@@ -355,6 +363,31 @@
       *****************************************************************
        210-HANTEI-SEC            SECTION.
       *
+      *¼ýÇ¼¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ßÂÐ¾Ý¤ÎÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ¼èÆÀ
+           MOVE    LNK-FTNJGNCHK-HOSPID    TO  COMB-HOSPID
+           MOVE    LNK-FTNJGNCHK-PTID      TO  COMB-PTID
+           MOVE    LNK-FTNJGNCHK-KOHID     TO  COMB-KOHID(1)
+           MOVE    LNK-FTNJGNCHK-KOHID     TO  COMB-KOHID(2)
+           MOVE    LNK-FTNJGNCHK-KOHID     TO  COMB-KOHID(3)
+           MOVE    LNK-FTNJGNCHK-KOHID     TO  COMB-KOHID(4)
+           MOVE    "HKNCOMBI-KEY4"         TO  ORC-DBPATH
+           PERFORM 910-HKNCOMBI-SELECT-SEC
+           IF      FLG-HKNCOMBI            NOT =   ZERO
+               MOVE    01                  TO  LNK-FTNJGNCHK-RC
+               GO  TO  210-HANTEI-EXT
+           ELSE
+               MOVE    "HKNCOMBI-KEY4"      TO  ORC-DBPATH
+               PERFORM 910-HKNCOMBI-READ-SEC
+               PERFORM   VARYING   IDX1   FROM  1  BY  1
+                 UNTIL   (IDX1          >    10)   OR
+                         (FLG-HKNCOMBI  NOT =   ZERO)
+                   MOVE    COMB-HKNCOMBINUM  TO
+                                        WRK-HKNCOMBINUM(IDX1)
+                   MOVE    "HKNCOMBI-KEY4"      TO  ORC-DBPATH
+                   PERFORM 910-HKNCOMBI-READ-SEC
+               END-PERFORM
+           END-IF
+      *
       *¼ýÇ¼¥Þ¥¹¥¿¤«¤é³ºÅö¸øÈñ¤Î´µ¼ÔÉéÃ´³Û¥Á¥§¥Ã¥¯
            MOVE    LNK-FTNJGNCHK-HOSPID    TO  SYU-HOSPID
            MOVE    LNK-FTNJGNCHK-PTID      TO  SYU-PTID
@@ -377,20 +410,31 @@
       *            ´µ¼ÔÉéÃ´¶â¤Î½¸·×
                    MOVE      ZERO          TO      WRK-KOHFTN
                    PERFORM   UNTIL    FLG-SYUNOU  =   1
-                       EVALUATE   LNK-FTNJGNCHK-KOHNUM
-                           WHEN   SYU-KOH-HKNNUM(1)
-                               ADD    SYU-KOH-HKNFTNMONEY(1)
-                                                   TO   WRK-KOHFTN
-                           WHEN   SYU-KOH-HKNNUM(2)
-                               ADD    SYU-KOH-HKNFTNMONEY(2)
-                                                   TO   WRK-KOHFTN
-                           WHEN   SYU-KOH-HKNNUM(3)
-                               ADD    SYU-KOH-HKNFTNMONEY(3)
-                                                   TO   WRK-KOHFTN
-                           WHEN   SYU-KOH-HKNNUM(4)
-                               ADD    SYU-KOH-HKNFTNMONEY(4)
-                                                   TO   WRK-KOHFTN
-                       END-EVALUATE
+                       IF (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(1)) OR
+                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(2)) OR
+                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(3)) OR
+                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(4)) OR
+                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(5)) OR
+                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(6)) OR
+                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(7)) OR
+                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(8)) OR
+                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(9)) OR
+                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(10))
+                           EVALUATE   LNK-FTNJGNCHK-KOHNUM
+                               WHEN   SYU-KOH-HKNNUM(1)
+                                   ADD    SYU-KOH-HKNFTNMONEY(1)
+                                                       TO   WRK-KOHFTN
+                               WHEN   SYU-KOH-HKNNUM(2)
+                                   ADD    SYU-KOH-HKNFTNMONEY(2)
+                                                       TO   WRK-KOHFTN
+                               WHEN   SYU-KOH-HKNNUM(3)
+                                   ADD    SYU-KOH-HKNFTNMONEY(3)
+                                                       TO   WRK-KOHFTN
+                               WHEN   SYU-KOH-HKNNUM(4)
+                                   ADD    SYU-KOH-HKNFTNMONEY(4)
+                                                       TO   WRK-KOHFTN
+                         END-EVALUATE
+                       END-IF
                        MOVE    "SYUNOU-KEY25"   TO  ORC-DBPATH
                        PERFORM  910-SYUNOU-READ-SEC
                    END-PERFORM
@@ -467,6 +511,50 @@
            .
        900-PTINF-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼¸¡º÷
+      *****************************************************************
+       910-HKNCOMBI-SELECT-SEC        SECTION.
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-HKNCOMBI
+           ELSE
+               MOVE    1                  TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       910-HKNCOMBI-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       910-HKNCOMBI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ¼ýÇ¼¥Þ¥¹¥¿¡¼¸¡º÷

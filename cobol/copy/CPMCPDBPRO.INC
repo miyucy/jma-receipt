@@ -331,6 +331,7 @@
       *  01.01.144   NACL-藤原    04/07/07  PTKOHINF-KEY7追加
       *  01.01.145   NACL-小豆沢  04/07/23  NYUINACCT-KEY22追加
       *  01.01.146   NACL-小豆沢  04/07/26  NYUINACCT-KEY23追加
+      *  01.01.147   NACL-小豆沢  04/08/05  HKNCOMBI-KEY4追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -447,9 +448,11 @@
                WHEN    "DBUPDATE"      ALSO   "HKNCOMBI-KEY"
                WHEN    "DBUPDATE"      ALSO   "HKNCOMBI-KEY2"
                WHEN    "DBUPDATE"      ALSO   "HKNCOMBI-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "HKNCOMBI-KEY4"
                WHEN    "DBDELETE"      ALSO   "HKNCOMBI-KEY"
                WHEN    "DBDELETE"      ALSO   "HKNCOMBI-KEY2"
                WHEN    "DBDELETE"      ALSO   "HKNCOMBI-KEY3"
+               WHEN    "DBDELETE"      ALSO   "HKNCOMBI-KEY4"
                    MOVE    PATH-TBL-HKNCOMBI-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "HKNCOMBI-DEL1"
@@ -1308,6 +1311,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "HKNCOMBI-KEY3"
                    MOVE    PATH-TBL-HKNCOMBI-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HKNCOMBI-KEY4"
+                   MOVE    PATH-TBL-HKNCOMBI-KEY4
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "HKNCOMBI-ALL"
