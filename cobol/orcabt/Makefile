@@ -30,7 +30,10 @@ SRCS = \
        ORCXRMST2.CBL \
        ORCR0200.CBL \
        ORCR0210.CBL \
+       ORCR0250.CBL \
+       ORCR0260.CBL \
        ORCR0300.CBL \
+       ORCR0350.CBL \
        ORCBM005.CBL \
        ORCBM020.CBL \
        ORCBM021.CBL \

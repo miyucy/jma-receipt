@@ -42,6 +42,9 @@
       *                                     SRYACCT9→30
       *  01.00.09    NACL-藤原    04/04/15  ＤＢ更新エラー時の処理
       *  01.00.10    NACL-藤原    04/06/15  印刷順の追加（個別作成時のみ）
+      *
+      *  レセ電機能追加
+      *  01.02.01    NACL-藤原    04/07/30  入院レセ電処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -371,6 +374,9 @@
       *    レセプト
            COPY    "CPRCF008.INC".
       *
+      *    レセプト電算
+           COPY    "CPRECEDEN.INC".
+      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -681,6 +687,54 @@
                    DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
                    MOVE
                      "公費請求書削除処理（国保分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  2001-IKKATU-SYORI-EXT
+               END-IF
+           END-IF      
+      *
+      *    診療年月のレセ電削除処理（社保分）
+           IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          
+               INITIALIZE                  RECEDEN-REC
+               MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
+               MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
+               MOVE    "1"                 TO  RECEDEN-TEISYUTUSAKI
+               MOVE    "1"                 TO  RECEDEN-NYUGAIKBN
+               MOVE    RECEDEN-REC         TO  MCPDATA-REC
+               MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC      
+               IF      MCP-RC           NOT =   ZERO
+                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                   MOVE
+                     "レセ電削除処理（社保分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  2001-IKKATU-SYORI-EXT
+               END-IF
+           END-IF      
+      *
+      *    診療年月のレセ電削除処理（国保分）
+           IF      WRK-PARA-RECEKBN    =   "0" OR  "2"          
+               INITIALIZE                  RECEDEN-REC
+               MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
+               MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
+               MOVE    "2"                 TO  RECEDEN-TEISYUTUSAKI
+               MOVE    "1"                 TO  RECEDEN-NYUGAIKBN
+               MOVE    RECEDEN-REC         TO  MCPDATA-REC
+               MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC      
+               IF      MCP-RC           NOT =   ZERO
+                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                   MOVE
+                     "レセ電削除処理（国保分）でエラーとなりました"
                                            TO    WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  2001-IKKATU-SYORI-EXT
@@ -1988,6 +2042,28 @@
                DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
                MOVE
                    "公費請求書削除処理（個別分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  20021-KOBETU-HENSYU-EXT
+           END-IF
+      *
+      *    診療年月のレセ電削除処理
+           INITIALIZE                  RECEDEN-REC
+           MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
+           MOVE    SYS-2002-PTID       TO  RECEDEN-PTID
+           MOVE    SYS-2002-SRYYM      TO  RECEDEN-SRYYM
+           MOVE    SYS-2002-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
+           MOVE    RECEDEN-REC         TO  MCPDATA-REC
+           MOVE    "RECEDEN-DEL2"      TO  ORC-DBPATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC           NOT =   ZERO
+               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+               MOVE
+                   "レセ電削除処理（個別分）でエラーとなりました"
                                            TO    WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20021-KOBETU-HENSYU-EXT

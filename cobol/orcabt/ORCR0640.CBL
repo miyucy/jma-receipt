@@ -92,8 +92,12 @@
       *                                     Å¦Í×Íóµ­ºÜ½ç½¤Àµ
       *  01.01.10    NACL-ÌçÏÆ    04/06/21  À¸³èÊÝ¸î¤ÎÉéÃ´¶â³Ûµ­ºÜ½¤Àµ
       *  01.01.11    NACL-ÌçÏÆ    04/07/27  ¸¶Çú¿©»öÎÅÍÜµ­ºÜ½¤Àµ
-      *  01.01.12    NACL-ÌçÏÆ    04/07/28  ÅêÌôÎÁ¤Î´ïºàÅÀ¤Î½¸·×½¤Àµ
-      *  01.01.13    NACL-ÌçÏÆ    04/08/04  Æ±°ìÊÝ¸±ÈÖ¹æÂÐ±þ
+      *  01.01.12    NACL-Æ£¸¶    04/07/28  RECE65¥ì¥¤¥¢¥¦¥ÈÊÑ¹¹
+      *                                     ¹ð¼¨Åù¼±ÊÌ¶èÊ¬£±
+      *                                     ¤­¤¶¤ßÃÍ·×»»¼±ÊÌ
+      *                                     Ãí²Ã»»¥³¡¼¥É¤ÎÄÉ²Ã
+      *  01.01.13    NACL-ÌçÏÆ    04/07/28  ÅêÌôÎÁ¤Î´ïºàÅÀ¤Î½¸·×½¤Àµ
+      *  01.01.14    NACL-ÌçÏÆ    04/08/04  Æ±°ìÊÝ¸±ÈÖ¹æÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -248,6 +252,7 @@
            03  IDX5                                    PIC 9(03).
            03  IDX6                                    PIC 9(03).
            03  IDX7                                    PIC 9(02).
+           03  IDXX                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
            03  IDY3                                    PIC 9(03).
            03  IDZ                                     PIC 9(03).
@@ -682,7 +687,7 @@
       *****************************************************************
       *
       *    È¾³Ñ¥Á¥§¥Ã¥¯¥µ¥Ö
-      **** COPY    "CPORCSKANACHK.INC".
+           COPY    "CPORCSKANACHK.INC".
       *
       *   ÆüÉÕÊÑ´¹¥µ¥Ö
            COPY    "CPORCSDAY.INC".
@@ -3782,6 +3787,14 @@
                                       TO RECE65-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE65-KOUHYOJYUNNUM(IDX4)
+               MOVE    TNS-SRYSYUKBN  TO RECE65-SRYSYUKBN-X  (IDX4)
+               MOVE    TNS-KOKUJISKBKBN1  
+                                      TO RECE65-KOKUJISKBKBN1(IDX4)
+               MOVE    TNS-KZMCOMPSIKIBETU
+                                      TO RECE65-KZMCOMPSIKIBETU(IDX4)
+               MOVE    TNS-CHUKSNCD   TO RECE65-CHUKSNCD       (IDX4)
+               MOVE    TNS-CHUKSNTUBAN
+                                      TO RECE65-CHUKSNTUBAN    (IDX4)
       *
                IF     TNS-SRYCD       =  "170022290"  OR
                                          "170022390"  OR
@@ -3799,11 +3812,54 @@
                    MOVE    SRY-SRYCD (IDX2)     TO  PTCOM-SRYCD
                    MOVE    SRY-INPUTNUM(IDX2)   TO  PTCOM-RENNUM
                    PERFORM 950-PTCOM-READ-SEC
-                   MOVE    PTCOM-INPUTCOMENT   TO    RECE65-NAME(IDX4)
+                   MOVE    PTCOM-INPUTCOMENT   TO   RECE65-NAME(IDX4)
+                                                    RECE65-INPUTCOMENT
+                                                                (IDX4)
+      *            
+                   IF      SRY-SRYCD (IDX2)(1:1)
+                                                =   "8"
+                       IF      PTCOM-INPUTCHI1     =   SPACE
+                           INITIALIZE                  ORCSKANACHKAREA
+                           MOVE    "2"             TO  KANACHK-SYORI 
+                           MOVE    TNS-NAME        TO  KANACHK-MAE-INPUT
+                           CALL    "ORCSKANACHK"   USING
+                                                       ORCSKANACHKAREA
+                           IF    ( KANACHK-RC      =   ZERO )
+                           AND   ( KANACHK-MAX     >   ZERO )
+                               COMPUTE IDXX    =   KANACHK-MAX +   1
+                               MOVE    PTCOM-INPUTCOMENT (IDXX:)
+                                                       TO
+                                           RECE65-INPUTCOMENT   (IDX4)
+                           ELSE
+                               MOVE    PTCOM-INPUTCOMENT
+                                                       TO
+                                           RECE65-INPUTCOMENT   (IDX4)
+                           END-IF
+                       ELSE
+                           INITIALIZE              ORCSKANACHKAREA
+                           MOVE    "2"             TO  KANACHK-SYORI 
+                           STRING  PTCOM-INPUTCHI1 DELIMITED  BY  SPACE
+                                   PTCOM-INPUTCHI2 DELIMITED  BY  SPACE
+                                   PTCOM-INPUTCHI3 DELIMITED  BY  SPACE
+                                   PTCOM-INPUTCHI4 DELIMITED  BY  SPACE
+                                   INTO   KANACHK-MAE-INPUT
+                           END-STRING
+                           CALL    "ORCSKANACHK"   USING
+                                                       ORCSKANACHKAREA
+                           IF      KANACHK-RC      =   ZERO
+                               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                                   TO
+                                           RECE65-INPUTCOMENT   (IDX4)
+                           END-IF
+                       END-IF
+                   END-IF
       *
                    MOVE   "1"                  TO    RECE64-COMCDFLG
                ELSE
                    MOVE    TNS-NAME            TO    RECE65-NAME(IDX4)
+                                                     RECE65-INPUTCOMENT
+                                                                (IDX4)
+                   MOVE    TNS-YUKOKETA    TO    RECE65-YUKOKETA(IDX4)
                END-IF
       *
                IF  RECE65-YUKOKETA(IDX4)  =  ZERO
