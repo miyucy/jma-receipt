@@ -1975,13 +1975,15 @@
                                                  CONS-NYUYOJI-JIKAN  OR
                                                  CONS-GNYUYOJI       OR
                                                  CONS-GNYUYOJI-JIKAN 
-                            ADD      1       TO    CNT-NYUYOJI
+                            COMPUTE  CNT-NYUYOJI =   CNT-NYUYOJI
+                                                 +   WK-ZAIKAISU
                        END-IF
                        IF  SRY-SRYCD(IDX3)  =    CONS-YOJI           OR
                                                  CONS-YOJI-JIKAN     OR
                                                  CONS-GYOJI          OR
                                                  CONS-GYOJI-JIKAN    
-                            ADD      1       TO    CNT-YOJI
+                            COMPUTE  CNT-YOJI    =   CNT-YOJI
+                                                 +   WK-ZAIKAISU
                        END-IF
       **
                        IF ( SRY-SRYCD(IDX3)      =   CONS-KEIZOKU1  OR
