@@ -42,3 +42,4 @@
             02  HCN063-RENNUM   PIC X(7).
             02  HCN063-KANANAME PIC X(30).
             02  HCN063-NAME PIC X(44).
+            02  HCN063-TYTLE    PIC X(14).

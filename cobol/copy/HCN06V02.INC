@@ -86,6 +86,9 @@
             02  HCN06V02-HEAD3-G.
               03  HCN06V02-HEAD3
                       PIC X(50)   OCCURS  2 TIMES.
+            02  HCN06V02-HEAD4-G.
+              03  HCN06V02-HEAD4
+                      PIC X(62)   OCCURS  2 TIMES.
             02  HCN06V02-BODY   PIC X(52).
             02  HCN06V02-SHOSHINTIME    PIC X(10).
             02  HCN06V02-SIDOTIME   PIC X(10).
