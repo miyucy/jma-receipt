@@ -40,5 +40,7 @@
            03  I001-TAIINYMD               PIC  X(08).
       *テスト患者番号区分
            03  I001-TSTPTNUMKBN            PIC  X(01).
+      *取得件数
+           03  I001-COUNT                  PIC  9(10).
       *フリーＳＱＬ文（WHERE句）
            03  I001-SQL                    PIC  X(15000).

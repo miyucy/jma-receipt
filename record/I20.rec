@@ -59,6 +59,9 @@ I20	{
 		CHKTESTPT	{
 			value	bool;
 		};
+		TOTAL	{
+			value	varchar(22);
+		};
 		scrolledwindow28	{
 			KANJYALST	{
 				count	int;

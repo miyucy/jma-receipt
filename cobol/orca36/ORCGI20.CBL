@@ -91,6 +91,7 @@
                    07  SPA-GMN-STNYUINYMD  PIC X(09).
                    07  SPA-GMN-EDNYUINYMD  PIC X(09).
                    07  SPA-GMN-SELNUM      PIC 9(03).
+                   07  SPA-GMN-TOTAL       PIC X(22).
       *                                             
                    07  SPA-GMN-SRYKA-G.
                        09  SPA-GMN-SRYKA       PIC X(02).
@@ -136,6 +137,7 @@
                    07  SPA-NAI-EDAGE           PIC 9(03).
                    07  SPA-NAI-PTID            PIC 9(05).
                    07  SPA-NAI-SELNUM          PIC 9(03).
+                   07  SPA-NAI-TOTAL           PIC 9(05).
       *
                05  SPA-NAI-TBL.
                    07  SPA-NAI-TBLO            OCCURS   200.
@@ -169,12 +171,13 @@
            03  IDW                 PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
-      *     
            03  IDZ                 PIC 9(04).
+      *
            03  IDX1                PIC 9(04). 
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDX4                PIC 9(04).
+           03  IDXA                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -204,6 +207,7 @@
            03  WRK-PKANA           PIC X(02).
            03  WRK-SQL-PNT         PIC 9(05).
            03  WRK-SQL             PIC X(20000).
+           03  WRK-SQL-COUNT       PIC X(20000).
            03  WRK-SYSYMD          PIC 9(08).
            03  WRK-AGE             PIC 9(03).
       *
@@ -237,6 +241,11 @@
                05  WRK-HDD         PIC 9(02).
       *         
            03  WRK-I2IDMSG         PIC X(80).
+           03  WRK-STR-LEFT                        PIC X(500).
+           03  WRK-STR-LEFT-Z      REDEFINES       WRK-STR-LEFT.
+               05  WRK-STR-LEFT-ZX99               PIC Z(9)9.
+               05                                  PIC X(490).
+           03  WRK-STR-LEFT-TMP                    PIC X(500).
       *
        01  WRK-CONS-AREA.
            03  WRK-CONS-AGE-TABLE.
@@ -1649,9 +1658,17 @@
       *
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-NAI-TBL
+                                       SPA-GMN-TOTAL
+                                       SPA-NAI-TOTAL
+      *
            MOVE    ZERO                TO  SPA-GMN-MAX
-      *                                 
-           PERFORM 4501-SQL-EDIT-SEC 
+      *
+           PERFORM 4501-SQL-EDIT-SEC
+           MOVE    WRK-SQL             TO  WRK-SQL-COUNT
+      *
+           PERFORM 4503-SQL-ORDER-SEC
+      *
+           PERFORM 4504-COUNT-GET-SEC
       *
            INITIALIZE                  I001-REC
            MOVE    WRK-SQL             TO  I001-SQL
@@ -1690,8 +1707,8 @@
                                            TO  SPA-GMN-TNAME (1)
                MOVE    1                   TO  SPA-GMN-CUR
            ELSE
-               MOVE    12                  TO  SPA-GMN-CUR                                
-           END-IF                                                                     
+               MOVE    12                  TO  SPA-GMN-CUR
+           END-IF
       *       
            .
        450-KENSAKU-EXT.
@@ -1703,7 +1720,7 @@
        4501-SQL-EDIT-SEC               SECTION.
       *
            INITIALIZE                  WRK-JYOKEN-AREA
-      *     
+      *
       *    患者氏名 
            IF      SPA-GMN-NAME        NOT =   SPACE
                MOVE    ZERO                TO  WRK-MOJISU1
@@ -1925,6 +1942,66 @@
            EXIT.
       *
       *****************************************************************
+      *    ＳＱＬ文編集処理（並べ替え条件）
+      *****************************************************************
+       4503-SQL-ORDER-SEC                 SECTION.
+      *
+           STRING  " ORDER BY BRMNUM,PTNUM"
+                   DELIMITED  BY  SIZE
+           INTO    WRK-SQL
+           WITH    POINTER WRK-SQL-PNT
+           END-STRING
+      *
+           .
+       4503-SQL-ORDER-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    件数取得処理
+      *****************************************************************
+       4504-COUNT-GET-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-I001
+      *
+           INITIALIZE                  I001-REC
+           MOVE    WRK-SQL-COUNT       TO  I001-SQL
+           MOVE    I001-REC            TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "I001-KEY4"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "I001-KEY4"     TO  ORC-DBPATH
+               PERFORM 900-I001-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-I001
+           END-IF
+      *
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "I001-KEY4"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           IF    ( FLG-I001            =   ZERO )
+               MOVE    I001-COUNT      TO  SPA-NAI-TOTAL
+               MOVE    SPACE           TO  SPA-GMN-TOTAL
+               MOVE    I001-COUNT      TO  WRK-STR-LEFT-ZX99
+               PERFORM 800-STR-HIDARIZUME-HEN-SEC
+               STRING  "件数："            DELIMITED BY SIZE
+                       WRK-STR-LEFT        DELIMITED BY SPACE
+               INTO    SPA-GMN-TOTAL
+               END-STRING
+           END-IF
+      *
+           .
+       4504-COUNT-GET-EXT.
+           EXIT.
+      *****************************************************************
       *    患者病名画面編集処理
       *****************************************************************
        4502-LIST-HENSYU-SEC        SECTION.
@@ -2133,6 +2210,7 @@
            MOVE    SPA-GMN-CHKTESTPT   TO  I20-CHKTESTPT
            DISPLAY "I20-CHKTESTPT = " I20-CHKTESTPT
            MOVE    SPA-GMN-SELNUM      TO  I20-SELNUM
+           MOVE    SPA-GMN-TOTAL       TO  I20-TOTAL
       *     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL       IDX         >   SPA-GMN-STAGE-MAX
@@ -2365,6 +2443,29 @@
        520-I2IDSET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    文字列左詰処理
+      *****************************************************************
+       800-STR-HIDARIZUME-HEN-SEC      SECTION.
+      *
+           MOVE    WRK-STR-LEFT    TO  IDXA
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >       500 )
+      *
+               IF    ( WRK-STR-LEFT (IDXA:1)
+                                       NOT =   SPACE )
+                   MOVE    WRK-STR-LEFT (IDXA:)
+                                           TO  WRK-STR-LEFT-TMP
+                   MOVE    WRK-STR-LEFT-TMP
+                                           TO  WRK-STR-LEFT
+                   MOVE    500             TO  IDXA
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       800-STR-HIDARIZUME-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    システム管理読込（主キー）
       *****************************************************************
