@@ -28,6 +28,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Æ£¸¶    02/11/07  Á¥°÷ÊÝ¸±¤Î½¸·×¤ÎÄÉ²Ã 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -343,14 +344,9 @@
       *    °åÎÅÊÝ¸±Íó
            IF      RECE10-RJNHKNNUM        =   SPACE
            AND     RECE10-HKNNUM       NOT =   SPACE
-               IF      RECE10-AGE          >=  70
-                   EVALUATE    RECE10-KYURATE
-                       WHEN    9
-                           MOVE    1                   TO  IDY1
-                       WHEN    8
-                           MOVE    2                   TO  IDY1
-                   END-EVALUATE        
-               ELSE
+               IF      RECE10-HKNNUM           =   "002"
+               AND     RECE10-HOJOKBN          =   "1" OR  "2" OR  "3"
+                                                       OR  SPACE 
                    IF      RECE10-AGE              <   3
                        MOVE    5                       TO  IDY1
                    ELSE                    
@@ -360,6 +356,40 @@
                            MOVE    4                       TO  IDY1
                        END-IF
                    END-IF
+               ELSE    
+                   IF      RECE10-AGE          >=  70
+                       IF      RECE10-HKNNUM           =   "002"
+                           EVALUATE    RECE10-HOJOKBN
+                               WHEN    "9"
+                               WHEN    "A"
+                               WHEN    "B"
+                               WHEN    "C"
+                                   MOVE    1                   TO  IDY1
+                               WHEN    "8"    
+                               WHEN    "D"
+                               WHEN    "E"
+                               WHEN    "F"
+                                   MOVE    2                   TO  IDY1
+                           END-EVALUATE
+                       ELSE            
+                           EVALUATE    RECE10-KYURATE
+                               WHEN    9
+                                   MOVE    1                   TO  IDY1
+                               WHEN    8
+                                   MOVE    2                   TO  IDY1
+                           END-EVALUATE
+                       END-IF            
+                   ELSE
+                       IF      RECE10-AGE              <   3
+                           MOVE    5                       TO  IDY1
+                       ELSE                    
+                           IF      RECE10-HONKZKKBN        =   "1"
+                               MOVE    3                       TO  IDY1
+                           ELSE     
+                               MOVE    4                       TO  IDY1
+                           END-IF
+                       END-IF
+                   END-IF    
                END-IF
       *                      
                IF      RECE10-KOHNUM (1)   NOT =   SPACE
@@ -371,7 +401,14 @@
                                WHEN    "001"
                                    MOVE    2               TO  IDY2
                                WHEN    "002"
-                                   MOVE    3               TO  IDY2
+                                   EVALUATE    RECE10-HOJOKBN
+                                       WHEN    "A"
+                                       WHEN    "B"
+                                       WHEN    "C"
+                                           MOVE    3       TO  IDY2
+                                       WHEN    "9"
+                                           MOVE    4       TO  IDY2
+                                   END-EVALUATE        
                                WHEN    "003"
                                    MOVE    5               TO  IDY2
                                WHEN    "004"
@@ -389,7 +426,14 @@
                                WHEN    "001"
                                    MOVE    2               TO  IDY2
                                WHEN    "002"    
-                                   MOVE    3               TO  IDY2
+                                   EVALUATE    RECE10-HOJOKBN
+                                       WHEN    "D"
+                                       WHEN    "E"
+                                       WHEN    "F"
+                                           MOVE    3       TO  IDY2
+                                       WHEN    "8"
+                                           MOVE    4       TO  IDY2
+                                   END-EVALUATE        
                                WHEN    "031"  THRU  "034"
                                    MOVE    6               TO  IDY2
                                WHEN    "006"
