@@ -1338,12 +1338,10 @@
       *    Æþ±¡ÊÝ¸±¤È¤ÎÈ½Äê
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDH     FROM    1   BY  1
-                   UNTIL       IDH     >    SPA-I43-HKNMAX
+                   UNTIL       IDH     >    30
                IF      SPA-I43-HKNCOMBINUM
                                        =   SPA-I43-HKNCOMBI-NYU (IDH)
-                   MOVE    SPA-I43-HKN-LIST (IDH)
-                                               TO  SPA-I43-HKNCOMBI-G
-                   MOVE    SPA-I43-HKNMAX      TO  IDH
+                   MOVE    30                  TO  IDH
                    MOVE    1                   TO  FLG-OK
                END-IF
            END-PERFORM
