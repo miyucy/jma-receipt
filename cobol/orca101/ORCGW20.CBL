@@ -79,6 +79,10 @@
            03  IDX4                                PIC 9(05).
            03  IDX-BTULST                          PIC 9(05).
       *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-STR                             PIC 9(05).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-WIDMSG                          PIC X(70). 
@@ -269,6 +273,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  CNT-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
@@ -2697,23 +2702,34 @@
       *    点数マスタ検索処理
            PERFORM 4100-TENSU-SEL-SEC
       *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( FLG-TENSU       NOT =   ZERO )
+           MOVE    ZERO            TO      IDX1
+           PERFORM UNTIL ( FLG-TENSU   NOT =   ZERO )
                 OR       ( IDX1    >       50 )
       *
-               MOVE    IDX1        TO  SPA-GMN-W20-BTU-KHNRYO-CNT
+      *        選定入院料は読み飛ばす
+               MOVE    ZERO        TO  CNT-STR
+               INSPECT TNS-NAME    TALLYING   CNT-STR
+                       FOR     ALL "（選）"
       *
-               MOVE    TNS-SRYCD   TO  SPA-NAI-W20-BTU-KHNSRYCD-ITM
+               IF    ( CNT-STR     >   ZERO )
+                   CONTINUE
+               ELSE
+                   COMPUTE IDX1    =   IDX1    +   1
+      *
+                   MOVE    IDX1        TO  SPA-GMN-W20-BTU-KHNRYO-CNT
+      *
+                   MOVE    TNS-SRYCD   TO  SPA-NAI-W20-BTU-KHNSRYCD-ITM
                                                        (IDX1)
       *
-               MOVE    IDX1        TO  WRK-99
-               MOVE    WRK-99      TO  SPA-GMN-W20-BTU-KHNRYO-ITM
+                   MOVE    IDX1        TO  WRK-99
+                   MOVE    WRK-99      TO  SPA-GMN-W20-BTU-KHNRYO-ITM
                                                        (IDX1) (1 : 2)
-               MOVE    TNS-NAME    TO  SPA-GMN-W20-BTU-KHNRYO-ITM
+                   MOVE    TNS-NAME    TO  SPA-GMN-W20-BTU-KHNRYO-ITM
                                                        (IDX1) (4 : )
       *
-               MOVE    TNS-TEN     TO  SPA-NAI-W20-BTU-KHNTEN-ITM
+                   MOVE    TNS-TEN     TO  SPA-NAI-W20-BTU-KHNTEN-ITM
                                                        (IDX1)
+               END-IF
       *
       *        点数マスタ読込処理
                PERFORM 4100-TENSU-READ-SEC
