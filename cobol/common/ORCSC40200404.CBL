@@ -379,6 +379,8 @@
                    PERFORM 100112-SYOEN-CHK-SEC
       *            Ï«ºÒ¤Î»þ¡¢Ï«ºÒ²Ã»»¤Î»»Äê
                    IF      SPA-HKNKBN          =   1
+      *                ¼êµ»¤¬¤¢¤ë¾ì¹ç
+                     AND  (IDX-ZS              >   ZERO )
                        PERFORM 100113-RSIHKN-SYORI-SEC
                    END-IF
       *        ÌôºÞ
