@@ -313,8 +313,12 @@
       *
            03  WRK-ZZZZ-X.
                05  WRK-ZZZZ            PIC ZZZ.
+      *
            03  WRK-ZZ-X.
                05  WRK-ZZ              PIC ZZ.
+           03  WRK-ZZZ-X.
+               05  WRK-ZZZ             PIC ZZZ.
+      *
            03  WRK-HENNYMD             PIC X(22).
       *
            03  WRK-IDX                 PIC 9(04).
@@ -1946,8 +1950,14 @@
       *²ó¿ô
            PERFORM VARYING    IDK      FROM    1   BY  1
                    UNTIL      IDK      >   31
-               MOVE    ACCT-DAY  (1 IDK)   TO  WRK-ZZ
-               MOVE    WRK-ZZ-X            TO  SPA-GMN-TDAY (IDG IDK)
+      *        £³·åÈ½Äê
+               IF      ACCT-DAY  (1 IDK)   >=  100
+                   MOVE    ACCT-DAY  (1 IDK)   TO  WRK-ZZZ
+                   MOVE    WRK-ZZZ-X           TO  SPA-GMN-TDAY(IDG IDK)
+               ELSE
+                   MOVE    ACCT-DAY  (1 IDK)   TO  WRK-ZZ
+                   MOVE    WRK-ZZ-X            TO  SPA-GMN-TDAY(IDG IDK)
+               END-IF
            END-PERFORM
       *
       *    ¿ÇÎÅ²Ê¤¬Á´²Ê¤Î»þ¡¢¼¡¤Î¹Ô¤Ø²ÊÌ¾¾Î¤òÊÔ½¸
@@ -2538,8 +2548,12 @@
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   31
-               MOVE    SPA-GMN-DAY (IDX)    TO  WRK-ZZ
-               MOVE    WRK-ZZ-X             TO  J02-DAY(IDX)
+               IF      SPA-GMN-DAY (IDX)    <   100
+                   MOVE    SPA-GMN-DAY (IDX)    TO  WRK-ZZ
+                   MOVE    WRK-ZZ-X             TO  J02-DAY(IDX)
+               ELSE
+                   MOVE    SPA-GMN-DAY (IDX)    TO  J02-DAY(IDX)
+               END-IF
            END-PERFORM
       *
       *
@@ -3733,12 +3747,12 @@
       *
       *    ²èÌÌÊÔ½¸
            MOVE    SPA-HENNYMD(11:)    TO  J022-SRYYMD
-           MOVE    SPA-J022-DAY1       TO  WRK-ZZ
-           MOVE    WRK-ZZ-X            TO  J022-DAY1
-           MOVE    SPA-J022-DAY2       TO  WRK-ZZ
-           MOVE    WRK-ZZ-X            TO  J022-DAY2
-           MOVE    SPA-J022-DAY3       TO  WRK-ZZ
-           MOVE    WRK-ZZ-X            TO  J022-DAY3
+           MOVE    SPA-J022-DAY1       TO  WRK-ZZZ
+           MOVE    WRK-ZZZ-X            TO  J022-DAY1
+           MOVE    SPA-J022-DAY2       TO  WRK-ZZZ
+           MOVE    WRK-ZZZ-X            TO  J022-DAY2
+           MOVE    SPA-J022-DAY3       TO  WRK-ZZZ
+           MOVE    WRK-ZZZ-X            TO  J022-DAY3
       *
            MOVE    1                   TO  SPA-J022-CUR
       *
@@ -4475,6 +4489,10 @@
                    MOVE    SPA-NAI-DAY  (IDX 1 IDK)
                                            TO  WRK-ZZ
                    MOVE    WRK-ZZ-X        TO  SPA-GMN-TDAY (IDG IDK)
+                   IF      SPA-NAI-DAY  (IDX 1 IDK)    >=  100
+                       MOVE    SPA-NAI-DAY  (IDX 1 IDK)
+                                               TO  SPA-GMN-TDAY(IDG IDK)
+                   END-IF
                END-PERFORM
                MOVE    WRK-ZAIKAISU        TO  SPA-NAI-ZAIKAISU (IDX)
            END-PERFORM
@@ -5020,8 +5038,8 @@
       *    »ÞÈÖ
            MOVE    SPA-NAI-RENNUM(IDX) TO  SPA-RENNUM
       *    Ï·¿Í¶èÊ¬
-           MOVE    SPA-NAI-ROUJIN(IDX)
-                                       TO  SPA-ROUJIN
+      **** MOVE    SPA-NAI-ROUJIN(IDX)
+      ****************                 TO  SPA-ROUJIN
       *    ºÞÅÀ¿ô
            MOVE    SPA-NAI-ZAITEN(IDX)
                                        TO  SPA-ZAITEN
@@ -5045,6 +5063,9 @@
                                        ORCSAGECHKAREA
       *    ÉéÃ´Î¨
            MOVE    AGECHK-FTNRATEMEI   TO  SPA-J02-FTNRATEMEI
+      *    Ï·¿Í¶èÊ¬
+           MOVE    AGECHK-ROUJIN       TO  SPA-ROUJIN
+      *
       **** PERFORM VARYING     IDH     FROM    1   BY  1
       *            UNTIL       IDH     >   SPA-J021-MAX
       *        IF      SPA-NAI-HKNCOMBI(IDX)
@@ -5926,6 +5947,10 @@
                MOVE    SPA-NAI-DAY  (IDX 1 IDK)
                                        TO  WRK-ZZ
                MOVE    WRK-ZZ-X        TO  SPA-GMN-TDAY    (IDG IDK)
+               IF      SPA-NAI-DAY  (IDX 1 IDK)    >=  100
+                   MOVE    SPA-NAI-DAY  (IDX 1 IDK)
+                                           TO  SPA-GMN-TDAY (IDG IDK)
+               END-IF
            END-PERFORM
            MOVE    WRK-ZAIKAISU        TO  SPA-NAI-ZAIKAISU (IDX)
       *
