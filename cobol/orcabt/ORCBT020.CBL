@@ -47,11 +47,25 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI02-KEY
                                    FILE    STATUS  IS  STS-TOUKEI02.
-      *    月次統計データ（ＣＳＶ）  
-           SELECT  TOUKEI03-FILE   ASSIGN  "/var/tmp/toukei01.dat"
+      *
+      *    月次統計データ（病名情報）
+           SELECT  TOUKEI03-FILE   ASSIGN  TOUKEI03
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  TOUKEI03-KEY
+                                   FILE    STATUS  IS  STS-TOUKEI03.
+      *
+      *    ＣＳＶデータ（診療情報） 
+           SELECT  TOUKEI04-FILE   ASSIGN  "/var/tmp/toukei01.dat"
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
-                                   FILE    STATUS  IS  STS-TOUKEI03.
+                                   FILE    STATUS  IS  STS-TOUKEI04.
+      *
+      *    ＣＳＶデータ（病名情報）
+           SELECT  TOUKEI05-FILE   ASSIGN  "/var/tmp/toukei02.dat"
+                                   ORGANIZATION    IS  LINE
+                                                       SEQUENTIAL
+                                   FILE    STATUS  IS  STS-TOUKEI05.
       *    エラーファイル
            SELECT  TOUKEIERR-FILE  ASSIGN  WRK-PARA-ERRFILENM
                                    FILE    STATUS  IS  STS-TOUKEIERR.
@@ -69,9 +83,18 @@
        01  TOUKEI02-REC. 
            COPY    "CPTCF002.INC".
       *
-      *    月次統計データ（ＣＳＶ）  
+      *    月次統計データ（病名情報）
        FD  TOUKEI03-FILE.
-       01  TOUKEI03-REC            PIC X(3000). 
+       01  TOUKEI03-REC. 
+           COPY    "CPTCF003.INC".
+      *
+      *    ＣＳＶデータ（診療情報）
+       FD  TOUKEI04-FILE.
+       01  TOUKEI04-REC            PIC X(3000). 
+      *
+      *    ＣＳＶデータ（病名情報）
+       FD  TOUKEI05-FILE.
+       01  TOUKEI05-REC            PIC X(3000). 
       *
       *    エラーファイル
        FD  TOUKEIERR-FILE.
@@ -89,21 +112,30 @@
                                    REPLACING  //TEIKI01PARA//
                                    BY         //TOUKEI02//.
       *
+      *    月次統計データ（病名情報）
+           COPY    "CPCOMMONDAT5.INC"
+                                   REPLACING  //TEIKI01PARA//
+                                   BY         //TOUKEI03//.
+      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-TOUKEI01                    PIC X(02).
            03  STS-TOUKEI02                    PIC X(02).
            03  STS-TOUKEI03                    PIC X(02).
+           03  STS-TOUKEI04                    PIC X(02).
+           03  STS-TOUKEI05                    PIC X(02).
            03  STS-TOUKEIERR                   PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                         PIC 9(01).
            03  FLG-TOUKEI02                    PIC 9(01).
+           03  FLG-TOUKEI03                    PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-TOUKEI01                    PIC 9(06).
-           03  CNT-TOUKEI03                    PIC 9(06).
+           03  CNT-TOUKEI04                    PIC 9(06).
+           03  CNT-TOUKEI05                    PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDX                             PIC 9(03). 
@@ -121,6 +153,7 @@
                05  WRK-PARA-HOSPCD             PIC X(07).
                05  WRK-PARA-SRYYM              PIC X(06).
                05  WRK-PARA-TERMID             PIC X(16).
+               05  WRK-PARA-DATAKBN            PIC X(01).
                05  WRK-PARA-KOJINKBN           PIC X(01).
                05  WRK-PARA-JOBID              PIC 9(07).
                05  WRK-PARA-SHELLID            PIC X(08).
@@ -137,6 +170,8 @@
                05  WRK-SYY             PIC 9(04).
                05  WRK-SMM             PIC 9(02).
                05  WRK-SDD             PIC 9(02).
+      *
+           03  WRK-SYOKBN              PIC X(01).
       *
       *     右ずめ編集用     
            03  WRK-HENKAN              PIC X(20).
@@ -269,6 +304,7 @@
                                        INTO    WRK-PARA-HOSPCD
                                                WRK-PARA-SRYYM
                                                WRK-PARA-TERMID
+                                               WRK-PARA-DATAKBN
                                                WRK-PARA-KOJINKBN
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
@@ -296,9 +332,14 @@
            MOVE    "TOKEI020"          TO  TOUKEI02-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  TOUKEI02-TERMID
       *
+           MOVE    "TOKEI030"          TO  TOUKEI03-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI03-TERMID
+      *
            OPEN    I-O                 TOUKEI01-FILE
                                        TOUKEI02-FILE
-                   OUTPUT              TOUKEI03-FILE
+                                       TOUKEI03-FILE
+                   OUTPUT              TOUKEI04-FILE
+                                       TOUKEI05-FILE
       *
            PERFORM 900-TOUKEI01-READ-SEC   
            .
@@ -309,24 +350,55 @@
       *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
-      *     
-      *    月次統計データ（診療情報）読み込み
-           INITIALIZE                      TOUKEI02-REC
-           MOVE    TOUKEI01-KEY        TO  TOUKEI02-KEY1
+      *    
+      *    月次統計データ（診療情報）
+           IF      WRK-PARA-DATAKBN    =   ZERO    OR  "1"
+               MOVE    "1"                 TO  WRK-SYOKBN
       *
-           START   TOUKEI02-FILE
-                   KEY IS    >=   TOUKEI02-KEY
-               INVALID
-                   MOVE    1           TO  FLG-TOUKEI02
-               NOT INVALID
-                   PERFORM 900-TOUKEI02-READ-SEC
-           END-START
+               INITIALIZE                      TOUKEI02-REC
+               MOVE    TOUKEI01-KEY        TO  TOUKEI02-KEY1
+      *
+               START   TOUKEI02-FILE
+                       KEY IS    >=   TOUKEI02-KEY
+                   INVALID
+                       MOVE    1           TO  FLG-TOUKEI02
+                   NOT INVALID
+                       PERFORM 900-TOUKEI02-READ-SEC
+               END-START
       *     
-           PERFORM UNTIL   FLG-TOUKEI02        =   1
-                   OR      TOUKEI01-KEY    NOT =   TOUKEI02-KEY1
-               PERFORM 2001-FILE-HENSYU-SEC
-               PERFORM 900-TOUKEI02-READ-SEC
-           END-PERFORM       
+               PERFORM UNTIL   FLG-TOUKEI02        =   1
+                       OR      TOUKEI01-KEY    NOT =   TOUKEI02-KEY1
+                   PERFORM 2001-FILE-HENSYU-SEC
+                   PERFORM 900-TOUKEI02-READ-SEC
+               END-PERFORM
+           END-IF       
+      *    
+      *    月次統計データ（病名情報）
+           IF      WRK-PARA-DATAKBN    =   ZERO    OR  "2"
+               MOVE    "2"                 TO  WRK-SYOKBN
+      *
+               INITIALIZE                      TOUKEI03-REC
+               MOVE    TOUKEI01-HOSPID     TO  TOUKEI03-HOSPID
+               MOVE    TOUKEI01-SRYYM      TO  TOUKEI03-SRYYM
+               MOVE    TOUKEI01-NYUGAIKBN  TO  TOUKEI03-NYUGAIKBN
+               MOVE    TOUKEI01-PTID       TO  TOUKEI03-PTID
+               MOVE    TOUKEI01-RECEKA     TO  TOUKEI03-RECEKA
+      *
+               START   TOUKEI03-FILE
+                       KEY IS    >=   TOUKEI03-KEY
+                   INVALID
+                       MOVE    1           TO  FLG-TOUKEI03
+                   NOT INVALID
+                       PERFORM 900-TOUKEI03-READ-SEC
+               END-START
+      *     
+               PERFORM UNTIL   FLG-TOUKEI03    =   1
+                       OR      TOUKEI01-KEY (1:43)
+                                           NOT =   TOUKEI03-KEY (1:43)
+                   PERFORM 2002-FILE-HENSYU-SEC
+                   PERFORM 900-TOUKEI03-READ-SEC
+               END-PERFORM
+           END-IF       
       *
            PERFORM 900-TOUKEI01-READ-SEC   
            .
@@ -334,12 +406,12 @@
            EXIT. 
       *
       *****************************************************************
-      *    ＣＳＶファイル処理
+      *    ＣＳＶファイル（診療データ）処理
       *****************************************************************
        2001-FILE-HENSYU-SEC         SECTION.
       *
-      *    保険情報取得
-          
+      *    基本情報取得
+      *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
       *    医療機関ＩＤ      
@@ -368,7 +440,10 @@
       *    入外区分
            MOVE    TOUKEI01-NYUGAIKBN  TO  WRK-NUM
            MOVE    1                   TO  WRK-NAGASA
-           PERFORM 5005-NUM-HENSYU-SEC  
+           PERFORM 5005-NUM-HENSYU-SEC
+      *
+      *    患者情報
+      *  
       *    患者番号
            MOVE    TOUKEI01-PTNUM      TO  WRK-DATA
            MOVE    20                  TO  WRK-NAGASA
@@ -397,6 +472,9 @@
            MOVE    TOUKEI01-BIRTHDAY   TO  WRK-DATA
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
+      *
+      *    診療情報
+      *
       *    診療科
            MOVE    TOUKEI02-SRYKA      TO  WRK-DATA
            MOVE    2                   TO  WRK-NAGASA
@@ -520,6 +598,9 @@
            MOVE    TOUKEI02-DRCD       TO  WRK-DATA
            MOVE    5                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
+      *
+      *カレンダー情報
+      *
       *    カレンダー
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       31
@@ -603,7 +684,8 @@
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    
-      *    公費情報取得  
+      *公費情報
+      *  
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       4
                INITIALIZE                  WRK-KOHI-AREA
@@ -651,7 +733,7 @@
                PERFORM 5005-NUM-HENSYU-SEC
            END-PERFORM
       *
-      *    労災情報
+      *労災情報
       *    
       *    保険区分
            MOVE    TOUKEI01-HKNKBN         TO  WRK-DATA
@@ -750,6 +832,205 @@
       *            
       *
       *****************************************************************
+      *    ＣＳＶファイル（病名データ）処理
+      *****************************************************************
+       2002-FILE-HENSYU-SEC         SECTION.
+      *
+      *    労災・自賠責のときは保険組合せでチェック
+           EVALUATE    TOUKEI01-HKNNUM
+               WHEN    WRK-CONS-ROUSAI-HKNNUM
+               WHEN    WRK-CONS-JIBAI-HKNNUM
+                   IF      TOUKEI03-HKNCOMBI   =   ZERO
+                       GO  TO  2002-FILE-HENSYU-EXT
+                   END-IF
+      *
+                   MOVE    ZERO            TO  IDZ  
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL   IDX     >       10
+                           OR      TOUKEI01-HKNCOMBI (IDX)   =   ZERO 
+                       IF      TOUKEI03-HKNCOMBI   =
+                                            TOUKEI01-HKNCOMBI (IDX)
+                           MOVE    IDX             TO  IDZ
+                           MOVE    10              TO  IDX
+                       END-IF
+                   END-PERFORM
+                   IF      IDZ            =   ZERO          
+                       GO  TO  2002-FILE-HENSYU-EXT
+                   END-IF
+           END-EVALUATE 
+                   
+      *基本情報
+      *
+           MOVE    SPACE               TO  WRK-REC
+           MOVE    ZERO                TO  WRK-REC-LENGTH
+      *    医療機関ＩＤ      
+           MOVE    TOUKEI01-HOSPID     TO  WRK-DATA
+           MOVE    24                  TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    医療機関コード
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    WRK-PARA-HOSPCD     TO  WRK-DATA
+               MOVE    7                   TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    診療年月
+           MOVE    WRK-PARA-SRYYM      TO  WRK-DATA
+           MOVE    6                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    レコード識別
+      *****MOVE    ?                   TO  WRK-NUM
+      *****MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC  
+      *    レセプト種別
+           MOVE    TOUKEI01-RECESYUBETU
+                                       TO  WRK-DATA
+           MOVE    4                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    入外区分
+           MOVE    TOUKEI01-NYUGAIKBN  TO  WRK-NUM
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *
+      *患者情報
+      *  
+      *    患者番号
+           MOVE    TOUKEI01-PTNUM      TO  WRK-DATA
+           MOVE    20                  TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    患者ＩＤ
+           MOVE    TOUKEI01-PTID       TO  WRK-NUM
+           MOVE    10                  TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC  
+      *    カナ氏名
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    TOUKEI01-KANANAME   TO  WRK-DATA
+               MOVE    50                  TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    氏名
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    TOUKEI01-NAME       TO  WRK-DATA
+               MOVE    50                  TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    性別
+           MOVE    TOUKEI01-SEX        TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    生年月日
+           MOVE    TOUKEI01-BIRTHDAY   TO  WRK-DATA
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *
+      *病名情報
+      *
+      *    診療科
+           MOVE    TOUKEI03-SRYKA      TO  WRK-DATA
+           MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    レセ電診療科
+           MOVE    TOUKEI03-RECESRYKA  TO  WRK-DATA
+           MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    診療開始日
+           MOVE    TOUKEI03-SRYYMD     TO  WRK-NUM
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    連番
+           MOVE    TOUKEI03-RENNUM     TO  WRK-NUM
+           MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    病名
+           MOVE    TOUKEI03-BYOMEI     TO  WRK-DATA
+           MOVE    200                 TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    病名文字数
+           MOVE    TOUKEI03-BYOMEIMOJI TO  WRK-NUM
+           MOVE    3                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    疑いフラグ
+           MOVE    TOUKEI03-UTAGAIFLG  TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    主病名フラグ
+           MOVE    TOUKEI03-SYUBYOFLG  TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    慢性疾患区分
+           MOVE    TOUKEI03-MANSEIKBN  TO  WRK-NUM
+           MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    保険組合せ
+           MOVE    TOUKEI03-HKNCOMBI   TO  WRK-NUM
+           MOVE    4                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    レセプト表示区分
+           MOVE    TOUKEI03-REZEFLG    TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    転帰区分
+           MOVE    TOUKEI03-TENKIKBN   TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    転帰日付
+           MOVE    TOUKEI03-TENKIYMD   TO  WRK-DATA
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    病名編集フラグ
+           MOVE    TOUKEI03-BYOMEIHENFLG
+                                       TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    保険病名フラグ
+           MOVE    TOUKEI03-HKNBYOMEIFLG
+                                       TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    病名コード数
+           MOVE    TOUKEI03-BYOMEICDSU TO  WRK-NUM
+           MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    病名コード
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       21
+               IF      IDX1                <   7
+                   MOVE    TOUKEI03-BYOMEICD  (IDX1)   TO  WRK-DATA
+                   MOVE    7                           TO  WRK-NAGASA
+               END-IF
+               PERFORM 5004-MOJI-HENSYU-SEC
+           END-PERFORM
+      *
+      *患者属性情報
+      *
+      *    郵便番号
+           MOVE    TOUKEI01-HOME-POST      TO  WRK-DATA
+           MOVE    7                       TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    地方公共団体コード
+           MOVE    TOUKEI01-LPUBCD         TO  WRK-DATA
+           MOVE    5                       TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    住所
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    TOUKEI01-HOME-ADRS      TO  WRK-DATA
+               MOVE    200                     TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    電話番号
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    TOUKEI01-HOME-TEL1      TO  WRK-DATA
+               MOVE    15                      TO  WRK-NAGASA
+           END-IF
+           MOVE    1                       TO  WRK-END 
+           PERFORM 5004-MOJI-HENSYU-SEC
+      * 
+           PERFORM 5001-FILE-WRITE-SEC
+           .
+       2002-FILE-HENSYU-EXT.
+           EXIT. 
+      *            
+      *
+      *****************************************************************
       *    ファイル出力処理
       *****************************************************************
        5001-FILE-WRITE-SEC        SECTION.
@@ -760,9 +1041,16 @@
                    INTO        WRK-REC
            END-STRING        
       *
-           MOVE    WRK-REC             TO  TOUKEI03-REC  
-           WRITE   TOUKEI03-REC 
-           ADD     1                   TO  CNT-TOUKEI03
+           EVALUATE    WRK-SYOKBN
+               WHEN    "1"
+                   MOVE    WRK-REC             TO  TOUKEI04-REC  
+                   WRITE   TOUKEI04-REC 
+                   ADD     1                   TO  CNT-TOUKEI04
+               WHEN    "2"
+                   MOVE    WRK-REC             TO  TOUKEI05-REC  
+                   WRITE   TOUKEI05-REC 
+                   ADD     1                   TO  CNT-TOUKEI05
+           END-EVALUATE
            .
        5001-FILE-WRITE-EXT.
            EXIT.
@@ -923,7 +1211,7 @@
       *
            CLOSE   TOUKEI01-FILE
                    TOUKEI02-FILE
-                   TOUKEI03-FILE
+                   TOUKEI04-FILE
       *
            IF      CNT-TOUKEI01           =   ZERO  
                MOVE    "処理対象のデータがありませんでした"
@@ -943,8 +1231,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *     
-           DISPLAY "TOUKEI01  CNT-TOUKEI01:" CNT-TOUKEI01
-           DISPLAY "TOUKEI03  CNT-TOUKEI03:" CNT-TOUKEI03
+           DISPLAY "TOUKEI01  CNT-IN :" CNT-TOUKEI01
+           DISPLAY "TOUKEI04  CNT-OUT:" CNT-TOUKEI04
+           DISPLAY "TOUKEI05  CNT-OUT:" CNT-TOUKEI05
            DISPLAY "*** ORCBT020 END ***"
            .
        300-TERM-EXT.
@@ -964,7 +1253,6 @@
            .
        900-TOUKEI01-READ-EXT.
            EXIT.
-      *      
       *
       *****************************************************************
       *    月次統計データ（診療情報）読込
@@ -979,6 +1267,21 @@
            END-READ
            .
        900-TOUKEI02-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    月次統計データ（病名情報）読込
+      *****************************************************************
+       900-TOUKEI03-READ-SEC             SECTION.
+      *
+           READ    TOUKEI03-FILE   NEXT
+               AT  END
+                   MOVE    1           TO  FLG-TOUKEI03
+               NOT AT  END
+                   MOVE    ZERO        TO  FLG-TOUKEI03
+           END-READ
+           .
+       900-TOUKEI03-READ-EXT.
            EXIT.
       *      
       *****************************************************************
