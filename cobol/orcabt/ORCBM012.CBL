@@ -39,6 +39,8 @@
       *  01.01.03    NACL-藤原    02/10/10  サイト区分追加
       *  01.01.04    NACL-藤原    02/10/11  ２００２年１０月改正対応
       *  01.01.05    NACL-藤原    03/05/19  対象保険者番号の追加
+      *  01.01.06    NACL-藤原    03/07/10  特定疾患有り・無しの集計を
+      *                                     同じ欄に編集する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -642,6 +644,12 @@
            PERFORM VARYING IDZ     FROM    1   BY  1
                    UNTIL   IDZ     >       4
                    OR  RECE10-KOHNUM (IDZ) =   SPACE
+      *
+      *        特定疾患無しのとき 
+               IF      RECE10-KOHNUM (IDZ) =   "091"
+                   MOVE    "051"               TO  RECE10-KOHNUM (IDZ)
+               END-IF
+      *
                INITIALIZE                      MF01-REC
                MOVE    WRK-KBN             TO  MF01-KBN
                MOVE    RECE10-KOHNUM (IDZ) TO  MF01-KOHNUM (1)

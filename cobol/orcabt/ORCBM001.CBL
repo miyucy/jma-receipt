@@ -39,6 +39,8 @@
       *  ２００２年１０月改正対応
       *  01.01.01    NACL-藤原    02/10/09  ２００２年９月以前のみ集計
       *                                     船員保険の集計方法の修正 
+      *  01.01.02    NACL-藤原    03/07/10  特定疾患有り・無しの集計を
+      *                                     同じ欄に編集する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -523,6 +525,12 @@
            PERFORM VARYING IDZ     FROM    1   BY  1
                    UNTIL   IDZ     >       4
                    OR  RECE10-KOHNUM (IDZ) =   SPACE
+      *
+      *        特定疾患無しのとき 
+               IF      RECE10-KOHNUM (IDZ) =   "091"
+                   MOVE    "051"               TO  RECE10-KOHNUM (IDZ)
+               END-IF
+      *
                INITIALIZE                          MF01-REC
                MOVE    WRK-KBN                 TO  MF01-KBN
                MOVE    RECE10-KOHNUM (IDZ)     TO  MF01-KOHNUM (1)

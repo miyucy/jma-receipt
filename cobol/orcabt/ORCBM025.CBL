@@ -36,6 +36,8 @@
       *  £²£°£°£³¡¥£´²þÀµÂÐ±þ
       *  01.01.01    NACL-Æ£¸¶    03/04/10  £²£°£°£³¡¥£³°ÊÁ°¤Î¤ßÂÐ¾Ý¤È¤¹¤ë
       *  01.01.02    NACL-Æ£¸¶    03/05/19  ÂÐ¾ÝÊÝ¸±¼ÔÈÖ¹æ¤ÎÄÉ²Ã
+      *  01.01.03    NACL-Æ£¸¶    03/07/10  ÆÃÄê¼À´µÍ­¤ê¡¦Ìµ¤·¤Î½¸·×¤ò
+      *                                     Æ±¤¸Íó¤ËÊÔ½¸¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -640,6 +642,12 @@
            PERFORM VARYING IDZ     FROM    1   BY  1
                    UNTIL   IDZ     >       4
                    OR  RECE10-KOHNUM (IDZ) =   SPACE
+      *
+      *        ÆÃÄê¼À´µÌµ¤·¤Î¤È¤­ 
+               IF      RECE10-KOHNUM (IDZ) =   "091"
+                   MOVE    "051"               TO  RECE10-KOHNUM (IDZ)
+               END-IF
+      *
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2 >          100
                    IF      SUM-KOH-KOHNUM (IDX2) =   SPACE

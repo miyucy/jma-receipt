@@ -37,6 +37,8 @@
       *
       *  ２００３．４改正対応
       *  01.01.01    NACL-藤原    03/04/10  ２００３．３以前のみ対象とする
+      *  01.01.02    NACL-藤原    03/07/10  特定疾患有り・無しの集計を
+      *                                     同じ欄に編集する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -872,6 +874,12 @@
            PERFORM VARYING IDZ     FROM    1   BY  1
                    UNTIL   IDZ     >       4
                    OR  RECE10-KOHNUM (IDZ) =   SPACE
+      *
+      *        特定疾患無しのとき 
+               IF      RECE10-KOHNUM (IDZ) =   "091"
+                   MOVE    "051"               TO  RECE10-KOHNUM (IDZ)
+               END-IF
+      *
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2 >          100
                    IF      SUM-KOH-KOHNUM (IDY3 IDX1 IDX2) =   SPACE
@@ -1116,6 +1124,7 @@
                                    NOT =   WRK-NYUGAIKBN
                    GO  TO  900-SEIKYU-READ-SEC
                END-IF
+      *
       *        テスト患者のときは読み飛ばす
                MOVE    SPACE               TO  PTINF-REC
                INITIALIZE                      PTINF-REC

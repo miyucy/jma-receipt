@@ -33,6 +33,8 @@
       *  01.00.02    NACL-藤原    03/03/20  点数・負担額などの桁数を変更 
       *                                     頁・二枚目に保険者番号の表示
       *  01.00.03    NACL-藤原    03/05/19  対象保険者番号の追加
+      *  01.00.04    NACL-藤原    03/07/10  特定疾患有り・無しの集計を
+      *                                     同じ欄に編集する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -645,6 +647,12 @@
            PERFORM VARYING IDZ     FROM    1   BY  1
                    UNTIL   IDZ     >       4
                    OR  RECE10-KOHNUM (IDZ) =   SPACE
+      *
+      *        特定疾患無しのとき 
+               IF      RECE10-KOHNUM (IDZ) =   "091"
+                   MOVE    "051"               TO  RECE10-KOHNUM (IDZ)
+               END-IF
+      *
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2 >          100
                    IF      SUM-KOH-KOHNUM (IDX2) =   SPACE
