@@ -485,7 +485,6 @@
       <y>655</y>
       <width>100</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -498,7 +497,7 @@
 	<data>CHANGED</data>
 	<last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>---,---,---</format>
     </widget>
 
@@ -509,7 +508,6 @@
       <y>655</y>
       <width>100</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -522,7 +520,7 @@
 	<data>CHANGED</data>
 	<last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>---,---,---</format>
     </widget>
 
