@@ -58,6 +58,8 @@
       *                                     のセット
       *  01.00.19    NACL-門脇    04/10/01  自賠責特定器材等消費税対応
       *  01.00.20    NACL-門脇    04/11/25  福島県乳幼児特殊計算対応
+      *  01.00.21    NACL-小豆沢  04/12/10  外泊と選定入院の会計読み込み
+      *                                     キー変更
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1417,18 +1419,17 @@
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                      NYUINACCT-REC
            MOVE    SYU-HOSPID          TO  NACCT-HOSPID
-           MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    SYU-PTID            TO  NACCT-PTID
-           MOVE    SYU-SRYYMD (1:6)  TO  NACCT-SRYYM
+           MOVE    SYU-SRYYMD (1:6)    TO  NACCT-SRYYM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY9"    TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY26"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY9"  TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY26"  TO  ORC-DBPATH
                PERFORM  NYUINACCT-READ-SEC
            ELSE
                MOVE    1               TO      FLG-NYUINACCT
@@ -1442,25 +1443,24 @@
                        (FLG-GAIHAKU-SET =       1      )
       *
       *
-           MOVE     "NYUINACT-KEY9"    TO  WK-PATH
+           MOVE     "NYUINACT-KEY26"   TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
       *選定療養情報の取得
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                      NYUINACCT-REC
            MOVE    SYU-HOSPID          TO  NACCT-HOSPID
-           MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    SYU-PTID            TO  NACCT-PTID
-           MOVE    SYU-SRYYMD (1:6)  TO  NACCT-SRYYM
+           MOVE    SYU-SRYYMD (1:6)    TO  NACCT-SRYYM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY9"    TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY22"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY9"  TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY22"   TO  ORC-DBPATH
                PERFORM  NYUINACCT-READ-SEC
            ELSE
                MOVE    1               TO      FLG-NYUINACCT
@@ -1474,7 +1474,7 @@
                        (FLG-SENTEI-SET =       1      )
       *
       *
-           MOVE     "NYUINACT-KEY9"    TO  WK-PATH
+           MOVE     "NYUINACT-KEY22"    TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
       *選定外泊の係数セット
@@ -1701,20 +1701,18 @@
            IF  NACCT-SRYYM      =   SYU-SRYYMD(1:6)
                MOVE     ZERO        TO  WRK-GAIHAKU-COUNT
       *    外泊情報のテーブルセット
-               IF   NACCT-ZAISKBKBN   =   "2"
-                   PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
-                             UNTIL    SYU-IDX  >   31
-                       IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
-                           (NACCT-DAY(SYU-IDX) NOT =  ZERO)
-                           MOVE   NACCT-DAY(SYU-IDX)
-                                      TO  TBL-GAIHAKU (SYU-IDX)
-                           ADD    1   TO  WRK-GAIHAKU-COUNT
-                       END-IF
-                   END-PERFORM
-                   MOVE     1         TO  FLG-GAIHAKU-SET 
-               END-IF
+               PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
+                         UNTIL    SYU-IDX  >   31
+                   IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
+                       (NACCT-DAY(SYU-IDX) NOT =  ZERO)
+                       MOVE   NACCT-DAY(SYU-IDX)
+                                  TO  TBL-GAIHAKU (SYU-IDX)
+                       ADD    1   TO  WRK-GAIHAKU-COUNT
+                   END-IF
+               END-PERFORM
+               MOVE     1         TO  FLG-GAIHAKU-SET 
            END-IF
-           MOVE    "NYUINACCT-KEY9"   TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY26"  TO  ORC-DBPATH
            PERFORM  NYUINACCT-READ-SEC
            .
       *
@@ -1728,20 +1726,17 @@
       *
            IF  NACCT-SRYYM      =   SYU-SRYYMD(1:6)
       *    選定療養情報のテーブルセット
-               IF  (NACCT-ZAISKBKBN   =   "1")    AND
-                   (NACCT-SRYCDTOTAL  =   099999916)
-                   PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
-                             UNTIL    SYU-IDX  >   31
-                       IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
-                           (NACCT-DAY(SYU-IDX) NOT =  ZERO)
-                           MOVE   NACCT-DAY(SYU-IDX)
-                                      TO  TBL-SENTEI (SYU-IDX)
-                       END-IF
-                   END-PERFORM
-                   MOVE     1         TO  FLG-SENTEI-SET 
-               END-IF
+               PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
+                         UNTIL    SYU-IDX  >   31
+                   IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
+                       (NACCT-DAY(SYU-IDX) NOT =  ZERO)
+                       MOVE   NACCT-DAY(SYU-IDX)
+                                  TO  TBL-SENTEI (SYU-IDX)
+                   END-IF
+               END-PERFORM
+               MOVE     1         TO  FLG-SENTEI-SET 
            END-IF
-           MOVE    "NYUINACCT-KEY9"   TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY22"   TO  ORC-DBPATH
            PERFORM  NYUINACCT-READ-SEC
            .
       *
