@@ -37,7 +37,7 @@ I20	{
 				value	varchar(23);
 			};
 			count	int;
-			item	varchar(23)[40];
+			item	varchar(23)[99];
 		};
 		BTUNUMCOMBO	{
 			BTUNUM	{

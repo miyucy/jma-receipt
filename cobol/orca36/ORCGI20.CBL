@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-ÂÀÅÄ    02/12/05  ¿ÇÎÅ²Ê£¹£¹·ïÂÐ±þÅù
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -64,7 +65,7 @@
                    07  SPA-GMN-F2L         PIC X(01).
                    07  SPA-GMN-EDAGEMEIL   PIC X(10).
                05  SPA-GMN-EDAGE-MAX       PIC 9(02).    
-               05  SPA-GMN-SRYKALST        OCCURS  40.
+               05  SPA-GMN-SRYKALST        OCCURS  99.
                    07  SPA-GMN-SRYKAL      PIC X(02).
                    07  SPA-GMN-F2L         PIC X(01).
                    07  SPA-GMN-SRYKAMEIL   PIC X(20).
@@ -198,7 +199,8 @@
       *     
            03  WRK-DBPATH          PIC X(64).
       *
-           03  WRK-BRMNUM          PIC ZZZZZZZ9.     
+           03  WRK-BRMNUM-9        PIC 9(08).
+           03  WRK-BRMNUM-Z        PIC ZZZZZZZ9.     
       *
            03  WRK-JYOKEN-AREA.
                05  WRK-NAME        PIC X(100).
@@ -514,7 +516,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   40   )  OR
+                   UNTIL       (IDX            >   99   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD (1:2)  TO
@@ -836,7 +838,8 @@
            MOVE    1                   TO  SPA-GMN-CUR
       *
            IF      SPA-GMN-PTNUM       =   SPACE
-               CONTINUE
+      *        CONTINUE
+               MOVE    ZERO            TO  SPA-NAI-PTID
            ELSE     
                INITIALIZE                  ORCSPTNUMAREA
                MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM
@@ -1715,10 +1718,11 @@
                    MOVE    "½÷"        TO  SPA-GMN-TSEX    (IDX)
            END-EVALUATE
            IF      I001-BRMNUM (3:)    NUMERIC
-               MOVE    I001-BRMNUM (3:)    TO  WRK-BRMNUM 
-               MOVE    WRK-BRMNUM          TO  SPA-GMN-TBRMNUM (IDX)
+               MOVE    I001-BRMNUM (3:)    TO  WRK-BRMNUM-9
+               MOVE    WRK-BRMNUM-9        TO  WRK-BRMNUM-Z
+               MOVE    WRK-BRMNUM-Z        TO  SPA-GMN-TBRMNUM (IDX)
            ELSE            
-               MOVE    I001-BRMNUM     TO  SPA-GMN-TBRMNUM (IDX)
+               MOVE    I001-BRMNUM (3:)    TO  SPA-GMN-TBRMNUM (IDX)
            END-IF
            MOVE    I001-BTUNUM     TO  SPA-NAI-TBTUNUM     (IDX)    
            MOVE    I001-NYUINYMD   TO  WRK-SYMD
