@@ -425,6 +425,42 @@ W11	{
 						ORCACSTCHK04N	{
 							value	bool;
 						};
+						ORCAORGNM05N	{
+							value	varchar(20);
+						};
+						ORCAORGNM06N	{
+							value	varchar(20);
+						};
+						ORCAORGNM07N	{
+							value	varchar(20);
+						};
+						ORCACSTNM05N	{
+							value	varchar(20);
+						};
+						ORCACSTNM06N	{
+							value	varchar(20);
+						};
+						ORCACSTNM07N	{
+							value	varchar(20);
+						};
+						ORCAORGCHK05N	{
+							value	bool;
+						};
+						ORCAORGCHK06N	{
+							value	bool;
+						};
+						ORCAORGCHK07N	{
+							value	bool;
+						};
+						ORCACSTCHK05N	{
+							value	bool;
+						};
+						ORCACSTCHK06N	{
+							value	bool;
+						};
+						ORCACSTCHK07N	{
+							value	bool;
+						};
 					};
 			        	N0102	{
 						state	int;

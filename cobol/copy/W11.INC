@@ -91,6 +91,30 @@
                         08  W11-ORCACSTNM-N    PIC X(20).
                       07  W11-ORCACSTCHK-N-G   OCCURS   4.
                         08  W11-ORCACSTCHK-N   PIC X.
+                      07  W11-ORCAORGNM05N.
+                        08  W11-VALUE   PIC X(20).
+                      07  W11-ORCAORGNM06N.
+                        08  W11-VALUE   PIC X(20).
+                      07  W11-ORCAORGNM07N.
+                        08  W11-VALUE   PIC X(20).
+                      07  W11-ORCACSTNM05N.
+                        08  W11-VALUE   PIC X(20).
+                      07  W11-ORCACSTNM06N.
+                        08  W11-VALUE   PIC X(20).
+                      07  W11-ORCACSTNM07N.
+                        08  W11-VALUE   PIC X(20).
+                      07  W11-ORCAORGCHK05N.
+                        08  W11-VALUE   PIC X.
+                      07  W11-ORCAORGCHK06N.
+                        08  W11-VALUE   PIC X.
+                      07  W11-ORCAORGCHK07N.
+                        08  W11-VALUE   PIC X.
+                      07  W11-ORCACSTCHK05N.
+                        08  W11-VALUE   PIC X.
+                      07  W11-ORCACSTCHK06N.
+                        08  W11-VALUE   PIC X.
+                      07  W11-ORCACSTCHK07N.
+                        08  W11-VALUE   PIC X.
                     06  W11-N0102-STATE        PIC S9(9)   BINARY.
                 04  W11-N01-STATE              PIC S9(9)   BINARY.
                 04  W11-FI28.
