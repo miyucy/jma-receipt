@@ -138,7 +138,7 @@
       *    ½ÐÎÏ¥Õ¥¡¥¤¥ëÎÎ°è
        01  MES-AREA.
            03  MES-TITLE1.
-               05  FILLER              PIC X(23) VALUE
+               05  FILLER              PIC X(26) VALUE
                                        "¡ÚPGID:ORCMUP0021.CBL¡Û".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
@@ -147,7 +147,7 @@
                05  MES-TITLE1-DD       PIC X(02) VALUE SPACE.
       *
        01  WRK-MSG-AREA.
-               03  WRK-MSG-01          PIC X(14).
+               03  WRK-MSG-01          PIC X(30).
                03  FILLER              PIC X(01)   VALUE   SPACE.
                03  WRK-SYORIKBN        PIC X(01).
                03  FILLER              PIC X(01)   VALUE   ",".
