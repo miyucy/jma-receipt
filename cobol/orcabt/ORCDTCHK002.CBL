@@ -161,6 +161,7 @@
            03  FLG-CHKMST-SRY                          PIC 9(01).
            03  FLG-HIT                                 PIC 9(01).
            03  FLG-INTERACT                            PIC 9(01).
+           03  FLG-ERRSET                              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -230,7 +231,7 @@
            03  WRK-TKAISU-SRYCD-MAX                    PIC 9(05).
            03  WRK-SRYCD                               PIC X(09).
            03  WRK-TNS-YMD.
-               05  WRK-TNS-YY                          PIC 9(02).
+               05  WRK-TNS-YY                          PIC 9(04).
                05  WRK-TNS-MM                          PIC 9(02).
                05  WRK-TNS-DD                          PIC 9(02).
            03  WRK-DAY-Z                               PIC ZZ.
@@ -275,6 +276,7 @@
            03  WRK-N.
                05  WRK-KNS-N                           PIC X(10).
                05  WRK-TIME-N                          PIC X(16).
+           03  WRK-PTBYO-SRYYMD                        PIC X(08).
       *    
       *    TEST
            03  WRK-DATE                                PIC X(08).
@@ -361,10 +363,15 @@
       *
       *    病名コード退避ワーク
        01  TBYOMEICD-AREA.
+           03  TBYOMEICD-IDX1                          PIC 9(05).
+           03  TBYOMEICD-IDX2                          PIC 9(05).
+           03  TBYOMEICD-STIDX                         PIC 9(05).
            03  TBYOMEICD-MAX                           PIC 9(05).
-           03  TBYOMEICD-OCC                           OCCURS 100.
+           03  TBYOMEICD-OCC                           OCCURS 101.
                05  TBYOMEICD-BYOMEICD                  PIC X(07).
-               05  TBYOMEICD-ERRFLG                    PIC 9(01).
+               05  TBYOMEICD-KEY.
+                   07  TBYOMEICD-ERRFLG                PIC 9(01).
+                   07  TBYOMEICD-SRYYMD                PIC X(08).
       *
       *    入院調剤料算定日退避ワーク
        01  TNYUIN-CHOZAI-AREA.
@@ -1298,7 +1305,7 @@
                    MOVE    COMB-KOHID (IDX3)
                                        TO  TKOHID-KOHID (TKOHID-MAX)
       *
-                   EVALUATE    COMB-KOHID (IDX3)
+                   EVALUATE    COMB-KOHHKNNUM (IDX3)
                    WHEN    "027"
                        MOVE    1       TO  TKOHID-RJNFLG
                    WHEN    "012"
@@ -2422,7 +2429,9 @@
       *
       *    保険適応年齢
            IF    ( FLG-CHKEND (4)          =   ZERO )
-               PERFORM 200111-KOHAGE-CHK-SEC
+               IF    ( TKOHID-MAX  >   ZERO )
+                   PERFORM 200111-KOHAGE-CHK-SEC
+               END-IF
            END-IF
       *
            .
@@ -2514,8 +2523,8 @@
            END-IF
       *
            IF    ( TKOHID-RJNFLG       =   ZERO )
+            AND  ( TKOHID-SEIHOFLG     =   ZERO )
                IF    ( AGECHK-ROUJIN   =   1 )
-                 AND ( TKOHID-SEIHOFLG =   ZERO )
                    MOVE    "040003"        TO  WRK-ERRCD
                    PERFORM 210-ERRMES-HEN-SEC
       *
@@ -2695,6 +2704,8 @@
       *
       *    患者病名登録チェック
            IF    ( FLG-CHKEND (5)      =   ZERO )
+               MOVE    TSRYKA-SRYKA (IDX4)
+                                       TO  WRK-SRYKA
                PERFORM 2001121-PTBYO-TOUROKU-CHK-SEC
            END-IF
       *
@@ -3054,7 +3065,7 @@
        2001121-PTBYO-TOUROKU-CHK-SEC    SECTION.
       *
            IF    ( CNT-PTBYOMEI1   =   ZERO )
-               MOVE    PTBYO-SRYKA TO  SRH-SRYKA
+               MOVE    WRK-SRYKA   TO  SRH-SRYKA
                MOVE    "050001"    TO  WRK-ERRCD
                PERFORM 214-ERRMES-HEN-SEC
       *
@@ -3064,7 +3075,7 @@
                END-IF
            ELSE
                IF    ( CNT-PTBYOMEI2   =   ZERO )
-                   MOVE    PTBYO-SRYKA TO  SRH-SRYKA
+                   MOVE    WRK-SRYKA       TO  SRH-SRYKA
                    IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
                        MOVE    "050002"    TO  WRK-ERRCD
                    ELSE
@@ -3232,6 +3243,10 @@
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-CHKMST-BYOMEI   =   ZERO )
+      *
+      *        病名コード退避ワーク並べ替え処理
+               PERFORM 200112-TBYOMEICD-SORT-SEC
+      *
                MOVE    TSRYKA-SRYKA (IDX6)
                                        TO  WRK-SRYKA
                PERFORM 200112-YKZ-BYO-ERRMES-HEN-SEC
@@ -3246,6 +3261,7 @@
        200112-CHKMST-BYO-CHK-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-BYOMEI-ERR
+           MOVE    "00000000"          TO  WRK-PTBYO-SRYYMD
       *
            MOVE    ZERO                TO  FLG-PTBYOMEI
            INITIALIZE                      PTBYOMEI-REC
@@ -3271,20 +3287,46 @@
            PERFORM UNTIL ( FLG-PTBYOMEI            NOT =   ZERO )
                     OR   ( FLG-CHKMST-BYOMEI           =   1 )
       *
+               MOVE    ZERO            TO  FLG-ERRSET
+      *
                PERFORM 2001121-PTBYO-TAISYO-CHK-SEC
                IF    ( FLG-PTBYO-TAISYO    =   1 )
                    MOVE    1           TO  FLG-CHKMST-BYOMEI
                ELSE
       *
-      *            入外区分が誤っている場合は"1"を、
-      *            入外区分が正しい場合、適用期間誤りとして
-      *            2"を設定
-                   IF    ( PTBYO-NYUGAIKBN NOT =   SPACE )
-                    AND  ( PTBYO-NYUGAIKBN NOT =   ORCBSD01-NYUGAIKBN )
-                       MOVE    1       TO  FLG-BYOMEI-ERR
+      *            適用期間が正しい場合、入外区分の誤りとして
+      *            "2"を、適用期間が誤っている場合は適用期間の誤りとして
+      *            "1"を設定
+                   IF    ( PTBYO-TENKIKBN      =   SPACE )
+                       IF    ( PTBYO-SRYYMD (1:6) <=   ORCBSD01-SRYYM )
+                           MOVE    2   TO  FLG-BYOMEI-ERR
+                           MOVE    1   TO  FLG-ERRSET
+                       ELSE
+                           IF    ( FLG-BYOMEI-ERR <=   1 )
+                               MOVE    1   TO  FLG-BYOMEI-ERR
+                               MOVE    1   TO  FLG-ERRSET
+                           END-IF
+                       END-IF
                    ELSE
+                       IF    ( PTBYO-SRYYMD   (1:6)
+                                                   <=  ORCBSD01-SRYYM )
+                        AND  ( PTBYO-TENKIYMD (1:6)
+                                                   >=  ORCBSD01-SRYYM )
+                           MOVE    2   TO  FLG-BYOMEI-ERR
+                           MOVE    1   TO  FLG-ERRSET
+                       ELSE
+                           IF    ( FLG-BYOMEI-ERR <=   1 )
+                               MOVE    1   TO  FLG-BYOMEI-ERR
+                               MOVE    1   TO  FLG-ERRSET
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
       *
-                       MOVE    2       TO  FLG-BYOMEI-ERR
+               IF    ( FLG-ERRSET      =   1 )
+                   IF    ( WRK-PTBYO-SRYYMD  < PTBYO-SRYYMD )
+                       MOVE    PTBYO-SRYYMD
+                                           TO  WRK-PTBYO-SRYYMD
                    END-IF
                END-IF
       *
@@ -3312,20 +3354,45 @@
                        MOVE    WRK-CHK-CD
                                        TO  TBYOMEICD-BYOMEICD
                                                    (TBYOMEICD-MAX)
-                       IF    ( FLG-BYOMEI-ERR  =   1 )
-                           MOVE    1   TO  TBYOMEICD-ERRFLG
+                       MOVE    FLG-BYOMEI-ERR
+                                       TO  TBYOMEICD-ERRFLG
                                                    (TBYOMEICD-MAX)
-                       ELSE
-      *
-                           MOVE    2   TO  TBYOMEICD-ERRFLG
+                       MOVE    WRK-PTBYO-SRYYMD
+                                       TO  TBYOMEICD-SRYYMD
                                                    (TBYOMEICD-MAX)
-                       END-IF
                    END-IF
                END-IF
            END-IF
       *
            .
        200112-CHKMST-BYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＳＯＲＴ作業領域ＳＯＲＴ処理
+      *****************************************************************
+       200112-TBYOMEICD-SORT-SEC       SECTION.
+      *
+      *    ソート用ワークについて並び替えを行う
+           PERFORM VARYING TBYOMEICD-IDX1  FROM    2   BY  1
+                   UNTIL ( TBYOMEICD-IDX1  >   TBYOMEICD-MAX )
+               COMPUTE TBYOMEICD-STIDX     =   TBYOMEICD-IDX1    -   1
+               MOVE    TBYOMEICD-OCC (TBYOMEICD-IDX1)
+                                   TO  TBYOMEICD-OCC
+                                            (CONST-TBYOMEICD-MAX + 1)
+               PERFORM VARYING TBYOMEICD-IDX2
+                       FROM    TBYOMEICD-STIDX   BY  -1
+                       UNTIL ( TBYOMEICD-IDX2    <   1 )
+                          OR ( TBYOMEICD-KEY (CONST-TBYOMEICD-MAX + 1)
+                                   <=  TBYOMEICD-KEY (TBYOMEICD-IDX2) )
+                       MOVE    TBYOMEICD-OCC (TBYOMEICD-IDX2)
+                           TO  TBYOMEICD-OCC (TBYOMEICD-IDX2 + 1)
+               END-PERFORM
+               MOVE    TBYOMEICD-OCC (CONST-TBYOMEICD-MAX + 1)
+                           TO  TBYOMEICD-OCC (TBYOMEICD-IDX2 + 1)
+           END-PERFORM
+      *
+           .
+       200112-TBYOMEICD-SORT-EXT.
            EXIT.
       *****************************************************************
       *    薬剤と病名エラーメッセージ編集処理
@@ -3337,6 +3404,11 @@
            MOVE    CHK-SRYCD           TO  WRK-SRYCD
            MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
            PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU       NOT =   ZERO )
+               MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+           END-IF
       *
            IF    ( TBYOMEICD-MAX       =   ZERO )
                MOVE    TNS-NAME        TO  WRK-ERRMES-PLUS
@@ -3353,7 +3425,6 @@
       *
                    MOVE    TBYOMEICD-BYOMEICD (IDX0)
                                                TO  WRK-BYOMEICD
-                   DISPLAY "WRK-BYOMEICD =" WRK-BYOMEICD
                    PERFORM 900-BYOMEI-KEY-SEL-SEC
       *
                    MOVE   SPACE                TO  WRK-ERRMES-PLUS
@@ -3363,7 +3434,7 @@
                    INTO   WRK-ERRMES-PLUS
                    END-STRING
       *
-                   IF   ( TBYOMEICD-ERRFLG (IDX0) =   1 )
+                   IF   ( TBYOMEICD-ERRFLG (IDX0) =   2 )
                        IF    ( ORCBSD01-NYUGAIKBN = "1" )
                            MOVE    "080002"   TO  WRK-ERRCD
                        ELSE
@@ -3496,6 +3567,10 @@
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-CHKMST-BYOMEI   =   ZERO )
+      *
+      *        病名コード退避ワーク並べ替え処理
+               PERFORM 200112-TBYOMEICD-SORT-SEC
+      *
                MOVE    TSRYKA-SRYKA (IDX6)
                                        TO  WRK-SRYKA
                PERFORM 200112-SRY-BYO-ERRMES-HEN-SEC
@@ -3514,6 +3589,11 @@
            MOVE    CHK-SRYCD           TO  WRK-SRYCD
            MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
            PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU       NOT =   ZERO )
+               MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+           END-IF
       *
            IF    ( TBYOMEICD-MAX       =   ZERO )
                MOVE    "090001"        TO  WRK-ERRCD
@@ -3539,7 +3619,7 @@
                    INTO   WRK-ERRMES-PLUS
                    END-STRING
       *
-                   IF   ( TBYOMEICD-ERRFLG (IDX0) =   1 )
+                   IF   ( TBYOMEICD-ERRFLG (IDX0) =   2 )
                        IF    ( ORCBSD01-NYUGAIKBN = "1" )
                            MOVE    "090002"   TO  WRK-ERRCD
                        ELSE
@@ -3926,6 +4006,11 @@
                                    TO  WRK-SRYCD
                MOVE    WRK-KJNYMD  TO  WRK-TNS-YMD
                PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       NOT =   ZERO )
+                   MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+               END-IF
       *
                STRING TNS-NAME         DELIMITED   BY  SPACE
                       "、"             DELIMITED   BY  SIZE
@@ -3946,6 +4031,11 @@
                                    TO  WRK-SRYCD
                MOVE    WRK-KJNYMD  TO  WRK-TNS-YMD
                PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       NOT =   ZERO )
+                   MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+               END-IF
       *
                STRING TNS-NAME         DELIMITED   BY  SPACE
                       "、"             DELIMITED   BY  SIZE
@@ -4113,6 +4203,11 @@
                                    TO  WRK-SRYCD
                MOVE    WRK-KJNYMD  TO  WRK-TNS-YMD
                PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       NOT =   ZERO )
+                   MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+               END-IF
       *
                STRING TNS-NAME         DELIMITED   BY  SPACE
                       "、"             DELIMITED   BY  SIZE
@@ -4133,6 +4228,11 @@
                                    TO  WRK-SRYCD
                MOVE    WRK-KJNYMD  TO  WRK-TNS-YMD
                PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       NOT =   ZERO )
+                   MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+               END-IF
       *
                STRING TNS-NAME         DELIMITED   BY  SPACE
                       "、"             DELIMITED   BY  SIZE
@@ -4248,6 +4348,12 @@
                                        TO  WRK-SRYCD
                    MOVE    WRK-KJNYMD  TO  WRK-TNS-YMD
                    PERFORM 900-TENSU-KEY-SEL-SEC
+                   IF    ( FLG-TENSU       NOT =   ZERO )
+                       MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+                       PERFORM 800-ZENKAKU-HEN-SEC
+                       MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+                   END-IF
+      *
                    MOVE    TNS-NAME    TO  WRK-ERRMES-PLUS
                    MOVE    "120001"    TO  WRK-ERRCD
                    PERFORM 216-ERRMES-HEN-SEC
@@ -4704,6 +4810,8 @@
       *    エラーメッセージ編集処理（４）
       *****************************************************************
        214-ERRMES-HEN-SEC              SECTION.
+      *
+           PERFORM 2111-SRYKA-GET-SEC
       *
            PERFORM 2111-ERRMES-GET-SEC
       *
