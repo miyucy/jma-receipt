@@ -65,6 +65,7 @@
            03  FLG-SYOHOU-CHK      PIC 9(01).
            03  FLG-CHUSYA-CHK      PIC 9(01).
            03  FLG-SIJISEN-CHK     PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -432,6 +433,7 @@
       *    Æþ±¡ÍúÎòÈ½Äê
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
+           INITIALIZE                  HZN-PTNYUINRRK-REC
            MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
       *
@@ -451,8 +453,8 @@
                IF      PTNYUINRRK-TENNYUYMD    <=  SPA-SRYYMD
       *            Å¾½ÐÆü
                    IF     (PTNYUINRRK-TENSTUYMD    =   SPACE )  OR
-                          (PTNYUINRRK-TENSTUYMD    NOT =   SPACE AND
-                           PTNYUINRRK-TENSTUYMD    >=  SPA-SRYYMD)
+                         ((PTNYUINRRK-TENSTUYMD    NOT =   SPACE ) AND
+                          (PTNYUINRRK-TENSTUYMD    >=  SPA-SRYYMD))
                        MOVE    PTNYUINRRK-REC  TO  HZN-PTNYUINRRK-REC
                        MOVE    1               TO  FLG-OK
                    END-IF
@@ -469,16 +471,16 @@
            MOVE    ZERO                TO  SPA-K081-DRCD-MAX
            INITIALIZE                  SPA-K081GMN-DRCDLST-G
            IF      FLG-OK              =   1
-               IF      PTNYUINRRK-DRCD1    NOT =   SPACE
-                   MOVE    PTNYUINRRK-DRCD1(2:4)   TO  WRK-DRCD
+               IF      HZN-PTNYUINRRK-DRCD1    NOT =   SPACE
+                   MOVE    HZN-PTNYUINRRK-DRCD1(2:4)   TO  WRK-DRCD
                    PERFORM 3105-DRCD-ADD-SEC
                END-IF
-               IF      PTNYUINRRK-DRCD2    NOT =   SPACE
-                   MOVE    PTNYUINRRK-DRCD2(2:4)   TO  WRK-DRCD
+               IF      HZN-PTNYUINRRK-DRCD2    NOT =   SPACE
+                   MOVE    HZN-PTNYUINRRK-DRCD2(2:4)   TO  WRK-DRCD
                    PERFORM 3105-DRCD-ADD-SEC
                END-IF
-               IF      PTNYUINRRK-DRCD3    NOT =   SPACE
-                   MOVE    PTNYUINRRK-DRCD3(2:4)   TO  WRK-DRCD
+               IF      HZN-PTNYUINRRK-DRCD3    NOT =   SPACE
+                   MOVE    HZN-PTNYUINRRK-DRCD3(2:4)   TO  WRK-DRCD
                    PERFORM 3105-DRCD-ADD-SEC
                END-IF
            END-IF
@@ -492,10 +494,21 @@
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL      (IDX     >   ORCSDR-DRCD-MAX )  OR
                               (SPA-K081-DRCD-MAX  >=   20  )
-               ADD     1               TO  SPA-K081-DRCD-MAX
-               MOVE    ORCSDR-DRCD-TBL(IDX)
-                                       TO  SPA-K081GMN-DRCDLST
+               MOVE    ZERO                TO  FLG-CHK
+               PERFORM VARYING     IDZ     FROM   1   BY  1
+                       UNTIL      (IDZ     >   SPA-K081-DRCD-MAX )  OR
+                                  (FLG-CHK =   1    )
+                   IF      ORCSDR-DRCD(IDX)
+                                           =   SPA-K081GMN-DRCDL(IDZ)
+                       MOVE    1           TO  FLG-CHK
+                   END-IF
+               END-PERFORM
+               IF      FLG-CHK             =   ZERO
+                   ADD     1               TO  SPA-K081-DRCD-MAX
+                   MOVE    ORCSDR-DRCD-TBL(IDX)
+                                           TO  SPA-K081GMN-DRCDLST
                                                    (SPA-K081-DRCD-MAX)
+               END-IF
            END-PERFORM
            MOVE    SPA-K081GMN-DRCDLST(1)  TO  SPA-K081GMN-DRCD-G
            .
