@@ -1606,11 +1606,12 @@
                WHEN   "70"
                    MOVE    "01"        TO  JYURRK-SRYKBN10
                WHEN   "80"
-               WHEN   "93"
-               WHEN   "95"
-               WHEN   "96"
-               WHEN   "99"
                    MOVE    "01"        TO  JYURRK-SRYKBN11
+      *****    WHEN   "93"
+      *        WHEN   "95"
+      *        WHEN   "96"
+      *        WHEN   "99"
+      *****        MOVE    "01"        TO  JYURRK-SRYKBN11
            END-EVALUATE
            .
        200121-JYURRK-SRYKBN-EXT.
