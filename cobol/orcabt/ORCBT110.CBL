@@ -793,6 +793,7 @@
                    UNTIL      (IDY     >    5  )  OR
                               (SRY-SRYCD (IDY) =   SPACE )
                IF       SRY-SRYCD(IDY)(1:1)    =   "1"
+                   MOVE    SRY-SRYCD(IDY)      TO  TNS-SRYCD
                    PERFORM 900-TENSU-READ-SEC
                    IF      TNS-DATAKBN         =   "1"
                        MOVE    1                   TO  WRK-KIHONKBN
@@ -963,6 +964,7 @@
       *
                    WHEN    OTHER
                        IF       SRY-SRYCD(IDY)(1:1)    =   "1"
+                           MOVE    SRY-SRYCD(IDY)      TO  TNS-SRYCD
                            PERFORM 900-TENSU-READ-SEC
                            IF     (TNS-DATAKBN         =   "2" ) AND
                                   (TNS-TIMEKSNKBN  NOT =   ZERO)
