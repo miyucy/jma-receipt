@@ -373,7 +373,6 @@
                    IF      SYS-1001-PREFNUM    =   SPA-GMN-PREFCDL(IDXC)
                        MOVE    SPA-GMN-PREFCD-LIST(IDXC)
                                                    TO  SPA-GMN-PREFCD-G
-      *                 MOVE    SPA-GMN-PREFCD      TO  SPA-NAI-PREFCD
                        MOVE    WRK-ADRSKANA(IDXC)  TO  SPA-GMN-PREFKANA
                        MOVE    WRK-ADRSNAME(IDXC)  TO  SPA-GMN-PREFNAME
                        MOVE    SPA-GMN-PREFCD-MAX  TO  IDXC
@@ -469,18 +468,14 @@
                GO  TO  4100-POST-CHK-EXT
            END-IF
       *
-           IF    ( SPA-GMN-POST    =   SPA-NAI-POST )
-               MOVE    3               TO  SPA-GMN-CUR
-               GO  TO  4100-POST-CHK-EXT
-           END-IF
-      *
-           MOVE    ZERO            TO  SPA-NAI-SELNUM
+           MOVE    ZERO            TO  SPA-NAI-NEXT
+                                       SPA-NAI-BACK
                                        SPA-GMN-SELNUM
-           MOVE    SPACE           TO  SPA-NAI-PREFCD
-                                       SPA-GMN-CITYKANA
+           MOVE    SPACE           TO  SPA-GMN-CITYKANA
                                        SPA-GMN-TOWNKANA
                                        SPA-GMN-CITYNAME
                                        SPA-GMN-TOWNNAME
+      *
       *    都道府県番号初期値セット
            PERFORM 320-SPASET-PREFCD-SEC
       *
@@ -495,11 +490,6 @@
       *    町域リストセット
       *****************************************************************
        4100-CYOIKILST-SET-SEC      SECTION.
-      *
-           IF    ( SPA-GMN-POST    NOT =   SPA-NAI-POST )
-               MOVE    ZERO            TO  SPA-NAI-NEXT
-               MOVE    ZERO            TO  SPA-NAI-BACK
-           END-IF
       *
            INITIALIZE                  SPA-GMN-CYOIKI-G
            MOVE    ZERO            TO  IDX
@@ -587,11 +577,6 @@
                GO  TO  4100-SELNUM-CHK-EXT
            END-IF
       *
-           IF    ( SPA-GMN-SELNUM      =   SPA-NAI-SELNUM )
-               MOVE    3               TO  SPA-GMN-CUR
-               GO  TO  4100-SELNUM-CHK-EXT
-           END-IF
-      *
            IF    ( SPA-GMN-SELNUM      >   SPA-GMN-CYOIKI-MAX )
                MOVE    "0002"          TO  SPA-ERRCD
                MOVE    2               TO  SPA-GMN-CUR
@@ -610,7 +595,6 @@
            PERFORM 900-ADRS-SELECT-SEC
       *
            IF      FLG-ADRS        =   ZERO
-      *         MOVE    ADRS-POST       TO  SPA-NAI-POST
                MOVE    ADRS-POST       TO  SPA-GMN-POST
                MOVE    ADRS-CITYKANA   TO  SPA-GMN-CITYKANA
                MOVE    ADRS-TOWNKANA   TO  SPA-GMN-TOWNKANA
@@ -622,7 +606,6 @@
                    IF      ADRS-PREFNAME   =   SPA-GMN-PREFMEIL(IDXC)
                        MOVE    SPA-GMN-PREFCD-LIST(IDXC)
                                                    TO  SPA-GMN-PREFCD-G
-                       MOVE    SPA-GMN-PREFCD      TO  SPA-NAI-PREFCD
                        MOVE    WRK-ADRSKANA(IDXC)  TO  SPA-GMN-PREFKANA
                        MOVE    WRK-ADRSNAME(IDXC)  TO  SPA-GMN-PREFNAME
                        MOVE    SPA-GMN-PREFCD-MAX  TO  IDXC
@@ -644,8 +627,7 @@
                MOVE    "ユ"        TO  SPA-GMN-CYO-HEN(1)
            END-IF
       *
-           MOVE    1               TO  SPA-NAI-SELNUM
-                                       SPA-GMN-SELNUM
+           MOVE    1               TO  SPA-GMN-SELNUM
            MOVE    ZERO            TO  SPA-NAI-BACK
                                        SPA-NAI-NEXT
            MOVE    4               TO  SPA-GMN-CUR
@@ -662,11 +644,6 @@
            IF    ( SPA-GMN-PREFCD      =   SPACE )
                MOVE    "0003"          TO  SPA-ERRCD
                MOVE    3               TO  SPA-GMN-CUR
-               GO  TO  4100-PREFCD-CHK-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-PREFCD      =   SPA-NAI-PREFCD )
-               MOVE    4               TO  SPA-GMN-CUR
                GO  TO  4100-PREFCD-CHK-EXT
            END-IF
       *
@@ -690,7 +667,6 @@
                GO  TO  4100-PREFCD-CHK-EXT
            END-IF
       *
-           MOVE    SPA-GMN-PREFCD  TO  SPA-NAI-PREFCD
            MOVE    4               TO  SPA-GMN-CUR
            .
       *
