@@ -90,6 +90,7 @@
       *  01.02.14    NACL-小豆沢  02.11.28  初診加算のとき編集する
       *  01.02.15    NACL-藤原    02.12.02  酸素の時単価を表示するように追加
       *  01.02.16    NACL-藤原    03.01.10  検査の回数の編集
+      *  01.02.16    NACL-藤原    03.01.10  画像診断のフィルムを手技に表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -989,7 +990,13 @@
                            WHEN    "6"
                                MOVE    5             TO  IDY
                            WHEN    "7"
-                               MOVE    4             TO  IDY
+                               IF    ( RECE04-SRYKBN     =   "70" )
+                               AND   ( RECE05-DATAKBN (IDX)
+                                                         =   "3"  )
+                                   MOVE    3                 TO  IDY
+                               ELSE
+                                   MOVE    4                 TO  IDY
+                               END-IF
                            WHEN    OTHER
                                DISPLAY "ORCR0090 SRYCD="
                                                  RECE05-SRYCD (IDX) 
