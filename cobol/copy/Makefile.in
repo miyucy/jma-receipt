@@ -869,11 +869,13 @@ all: ORCA-DBPATH MCPAREA $(COPYS_inc)
 	  $< > $@
 
 ORCA-DBPATH: $(top_builddir)/lddef/directory $(top_builddir)/lddef/orcadb.inc $(top_builddir)/record/*.db
-	$(COPYGEN) -dbpath -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -lddir $(top_builddir)/lddef -bddir $(top_builddir)/lddef -ld orca00 > $@ || (rm -f $@; false)
+	$(COPYGEN) -dbpath -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -ld orca00 > $@ || (rm -f $@; false)
+#	$(COPYGEN) -dbpath -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -lddir $(top_builddir)/lddef -bddir $(top_builddir)/lddef -ld orca00 > $@ || (rm -f $@; false)
 	test -s $@ || (rm -f $@; false)
 
 MCPAREA: $(top_builddir)/lddef/directory
-	$(COPYGEN) -mcp  -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -lddir $(top_builddir)/lddef -bddir $(top_builddir)/lddef > $@ || (rm -f $@; false)
+	$(COPYGEN) -mcp  -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record > $@ || (rm -f $@; false)
+#	$(COPYGEN) -mcp  -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -lddir $(top_builddir)/lddef -bddir $(top_builddir)/lddef > $@ || (rm -f $@; false)
 	test -s $@ || (rm -f $@; false)
 
 clean: 

@@ -14,6 +14,6 @@ db_group "log" {
  file "/var/lib/jma-receipt/dbredirector/orca.log";
 };
 db_group "shell" {
- type "shell";
+ type "Shell";
  priority 1000;
 };
