@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  02/09/18  バージョン判定変更
+      *  01.00.02    NACL-伊藤    05/04/05  マスタ単位に変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -53,6 +54,8 @@
       *    入力ファイル
        FD  IN-FILE.
        01  IN-REC.
+           03  IN-MASTER-KBN           PIC X(02).
+           03  IN-MASTER-DELI          PIC X(01).
            03  IN-DBRVERVION           PIC X(21).
            03  IN-DBRNAME              PIC X(60).
            03  IN-UPFILE               PIC X(100).
@@ -61,6 +64,8 @@
       *    更新ファイル
        FD  OUT-FILE.
        01  OUT-REC.
+           03  OUT-MASTER-KBN          PIC X(02).
+           03  OUT-MASTER-DELI         PIC X(01).
            03  OUT-DBRVERVION          PIC X(21).
            03  OUT-UPPG                PIC X(10).
            03  OUT-UPFILE              PIC X(100).
@@ -96,7 +101,7 @@
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
-      *
+           03  IDZ                     PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -109,14 +114,16 @@
                05  WRK-SMM2            PIC 9(02).
                05  WRK-SDD2            PIC 9(02).
       *
-           03  WRK-DBRVERVION          PIC X(64).
+           03  WRK-DBRVERSION          PIC X(64).
       *
            03  WRK-DBKANRI-VERSION     PIC X(64).
       *
-           03  WRK-MAX                 PIC 9(04). 
-      *
            03  WRK-IN                  PIC X(01). 
       *
+           03  WRK-TBL-DBRVERSION   OCCURS 100   INDEXED DBR-IDX.
+               05  WRK-TBL-MASTER-KBN  PIC X(02).
+               05  WRK-TBL-DBRVERSION  PIC X(64).
+               05  WRK-TBL-UPDATE-FLG  PIC X(01).
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -127,10 +134,9 @@
       *
       *
       *    共通パラメタ
+           COPY    "ORCA-DBPATH".
            COPY    "MCPAREA".
-      *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -192,6 +198,9 @@
                                        STS-OUT "]"
            END-IF
       *
+      *    DBKANRI レコードバージョンのテーブル溜め込み
+           PERFORM 101-DBR-TBL-SET-SEC
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -206,7 +215,8 @@
            STRING  "/home/orca/"       DELIMITED  BY  SIZE
                    PARA-DBFILE         DELIMITED  BY  SPACE
       ************ "/ORCADBR.DAT"      DELIMITED  BY  SIZE
-                   "/ORCADBR-1.DAT"    DELIMITED  BY  SIZE
+      * 2.5.0del * "/ORCADBR-1.DAT"    DELIMITED  BY  SIZE
+                   "/ORCADBR-2.DAT"    DELIMITED  BY  SIZE
                                        INTO    ASS-IN
            END-STRING
       *
@@ -222,85 +232,133 @@
        101-ASSIN-GET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    DBKANRI レコードバージョンのテーブル溜め込み処理
+      *****************************************************************
+       101-DBR-TBL-SET-SEC              SECTION.
+      *
+      *    ＤＢ管理マスタ検索
+           INITIALIZE                  DBKANRI-REC
+           MOVE    DBKANRI-REC         TO  MCPDATA-REC
+           MOVE    PATH-TBL-DBKANRI-ALL
+                                       TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 910-DBKANRI-READ-SEC
+           ELSE
+               INITIALIZE                      DBKANRI-REC
+               MOVE    1                   TO  FLG-DBKANRI
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-DBKANRI-VERSION
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDY
+           MOVE    ZERO                TO  IDZ
+           PERFORM UNTIL   FLG-DBKANRI     =   1
+               IF      DBKANRI-KANRICD(7:2)    NUMERIC
+                   ADD   1             TO  IDX
+                   MOVE DBKANRI-KANRICD(7:2)
+                                       TO  WRK-TBL-MASTER-KBN (IDX)
+                   MOVE DBKANRI-DBRVERSION1
+                                       TO  WRK-TBL-DBRVERSION (IDX)
+                   MOVE SPACE          TO  WRK-TBL-UPDATE-FLG (IDX)
+               END-IF
+               IF      DBKANRI-KANRICD(1:8) =  "ORCADB00"
+                   PERFORM VARYING     IDZ     FROM    1   BY  1
+                       UNTIL       IDZ     >   64
+                     IF    (DBKANRI-VERSION(IDZ:1)   NOT =   SPACE)
+                         ADD   1       TO  IDY
+                         MOVE  DBKANRI-VERSION(IDZ:1)
+                                       TO  WRK-DBKANRI-VERSION(IDY:1)
+                     END-IF
+                   END-PERFORM
+               END-IF
+               MOVE    PATH-TBL-DBKANRI-ALL    TO  MCP-PATH
+               PERFORM 910-DBKANRI-READ-SEC
+           END-PERFORM
+      *
+           .
+       101-DBR-TBL-SET-EXT.
+           EXIT.
       *
       *****************************************************************
       *    メイン処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-      *    ＤＢ管理マスタ検索
-           INITIALIZE                  DBKANRI-REC
-           MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
-           MOVE    DBKANRI-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "DBKANRI-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBKANRI-KEY"       TO  ORC-DBPATH
-               PERFORM                     910-DBKANRI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-DBKANRI
-           END-IF
-      *
-           MOVE    SPACE               TO  WRK-DBKANRI-VERSION
-           MOVE    ZERO                TO  IDY
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   64
-               IF      (DBKANRI-VERSION(IDX:1)   NOT =   SPACE)
-                   ADD     1               TO  IDY
-                   MOVE    DBKANRI-VERSION(IDX:1)
-                                       TO  WRK-DBKANRI-VERSION(IDY:1)
-               END-IF
-          END-PERFORM
-      *
-           MOVE    ZERO                TO  FLG-SYORI
-      *
-           MOVE    SPACE               TO WRK-DBRVERVION
       *    レコード管理ファイル読込み
            PERFORM 900-IN-READ-SEC
            PERFORM
                UNTIL    FLG-IN         =   1
+               MOVE     SPACE          TO  WRK-DBRVERSION
+      *        該当マスタのレコードバージョン取得
+               SET      DBR-IDX        TO  1
+               SEARCH   WRK-TBL-DBRVERSION   VARYING   DBR-IDX
+                     AT END
+                        MOVE  SPACE    TO  WRK-DBRVERSION
+                     WHEN     IN-MASTER-KBN
+                                       =   WRK-TBL-MASTER-KBN(DBR-IDX)
+                        MOVE  WRK-TBL-DBRVERSION(DBR-IDX)
+                                       TO  WRK-DBRVERSION
+               END-SEARCH
+               IF      WRK-DBRVERSION  NOT =   SPACE
       *        ＤＢレコードバージョンまで出力する
-               IF     (FLG-SYORI           =   1   )  OR
-                      (IN-DBRVERVION       >   DBKANRI-DBRVERSION1)
+                 IF    IN-DBRVERVION       >   WRK-DBRVERSION
                    MOVE    1               TO  FLG-SYORI
                    IF      IN-DBRVERVION(3:IDY)
                                            >   WRK-DBKANRI-VERSION
                                                        (1:IDY)
-                       MOVE    1               TO  FLG-IN
+                       CONTINUE
                    ELSE
                        PERFORM 210-OUTFILE-SEC
-                       MOVE    IN-DBRVERVION       TO WRK-DBRVERVION
+                       MOVE    IN-DBRVERVION
+                                       TO  WRK-TBL-DBRVERSION(DBR-IDX)
+                       MOVE    "1"     TO  WRK-TBL-UPDATE-FLG(DBR-IDX)
                    END-IF
-               ELSE
-                   IF      IN-DBRVERVION       =   DBKANRI-DBRVERSION1
-                       MOVE    1               TO  FLG-SYORI
-                   END-IF
+                 END-IF
                END-IF
       *
-               IF      FLG-IN              =   ZERO
-      *            レコード管理ファイル読込み
-                   PERFORM 900-IN-READ-SEC
-               END-IF
+      *        レコード管理ファイル読込み
+               PERFORM 900-IN-READ-SEC
            END-PERFORM
       *
       *    ＤＢ管理マスタ更新
-           IF      WRK-DBRVERVION      NOT =   SPACE
-               MOVE    WRK-DBRVERVION      TO  DBKANRI-DBRVERSION2
-               MOVE    DBKANRI-REC         TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "DBKANRI-KEY"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              NOT =   ZERO
-                   DISPLAY "ORCXRMST1 DBKANRI UPD ERR:" MCP-RC
+           PERFORM     VARYING  IDX
+                       FROM     1     BY   1
+                       UNTIL    IDX   =    100   OR
+                                WRK-TBL-MASTER-KBN(IDX) = SPACE
+             IF      WRK-TBL-UPDATE-FLG(IDX)  =  "1"
+               INITIALIZE              DBKANRI-REC
+               MOVE    "ORCADB"        TO  DBKANRI-KANRICD
+               MOVE    WRK-TBL-MASTER-KBN(IDX)
+                                       TO  DBKANRI-KANRICD(7:2)
+               MOVE    DBKANRI-REC     TO  MCPDATA-REC
+               MOVE    PATH-TBL-DBKANRI-KEY
+                                       TO  MCP-PATH
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC           =  ZERO
+                   PERFORM 910-DBKANRI-READ-SEC
+               ELSE
+                   INITIALIZE              DBKANRI-REC
+                   MOVE    1           TO  FLG-DBKANRI
                END-IF
-           END-IF
+      *
+               IF      FLG-DBKANRI      =  ZERO
+                   MOVE    WRK-TBL-DBRVERSION(IDX)
+                                       TO  DBKANRI-DBRVERSION2
+                   MOVE    DBKANRI-REC TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"  TO  MCP-FUNC
+                   MOVE    PATH-TBL-DBKANRI-KEY
+                                       TO  MCP-PATH
+                   CALL    "MCPSUB"        USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                   IF      MCP-RC   NOT =  ZERO
+                     DISPLAY "ORCXRMST1 DBKANRI UPD ERR:" MCP-RC
+                   END-IF
+               END-IF
+             END-IF
+           END-PERFORM
            .
        200-MAIN-EXT.
            EXIT.
@@ -311,6 +369,8 @@
        210-OUTFILE-SEC               SECTION.
       *
            INITIALIZE                  OUT-REC
+           MOVE    IN-MASTER-KBN       TO  OUT-MASTER-KBN
+           MOVE    ":"                 TO  OUT-MASTER-DELI
            MOVE    IN-DBRVERVION       TO  OUT-DBRVERVION
       *
            MOVE    IN-UPFILE           TO  OUT-UPFILE
@@ -364,9 +424,8 @@
        910-DBKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MCPSUB"             USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  DBKANRI-REC
@@ -381,20 +440,34 @@
            EXIT.
       *
       *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    ZERO            TO  MCP-RC
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MCPSUB"             USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC.
       *
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MCPSUB"             USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC.
            .
        100-DBOPEN-EXT.
@@ -406,15 +479,13 @@
        900-DBDISCONNECT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MCPSUB"             USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC.
       *
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MCPSUB"             USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
