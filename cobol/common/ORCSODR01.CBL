@@ -209,13 +209,6 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           DISPLAY "SODR-NYUKBN-FLG = " SODR-NYUKBN-FLG
-           DISPLAY "SODR-SYOKAI-FLG = " SODR-SYOKAI-FLG
-           DISPLAY "SODR-BTUNUM-FLG = " SODR-BTUNUM-FLG
-           DISPLAY "SODR-BRMNUM-FLG = " SODR-BRMNUM-FLG
-           DISPLAY "SODR-SAGAKU-FLG = " SODR-SAGAKU-FLG
-           DISPLAY "SODR-DR-FLG     = " SODR-DR-FLG
-      *
            PERFORM 2001-INPUT-CHK-SEC
       *
            IF    ( ERRCD-ZAI    =   SPACE )
@@ -614,15 +607,25 @@
       *****************************************************************
        20021-NYUINRRK-CHK-SEC          SECTION.
       *
+           MOVE    ZERO            TO  FLG-PTNYUINRRK
+      *
            INITIALIZE                  PTNYUINRRK-REC
            MOVE    SODR-HOSPID     TO  PTNYUINRRK-HOSPID
            MOVE    SODR-PTID       TO  PTNYUINRRK-PTID
       *
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNYUINRRK-KEY2
+           MOVE    PATH-TBL-PTNYUINRRK-KEY3
                                    TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    1           TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    PATH-TBL-PTNYUINRRK-KEY3
+                                   TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           IF    ( FLG-PTNYUINRRK  =   1 )
                GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
@@ -846,6 +849,8 @@
            MOVE    LNK-ORDER-OCC (IDXA)    TO  ORDER-REC
       *
            IF    ( ERRCD-ZAI           =   SPACE )
+               MOVE    TRRK-RRKNUM     TO  ORDER-SRYKAISU
+               MOVE    TRRK-RRKEDANUM  TO  ORDER-ZAIKAISU
                MOVE    "0"             TO  ORDER-STATUS
            ELSE
                MOVE    "1"             TO  ORDER-STATUS
