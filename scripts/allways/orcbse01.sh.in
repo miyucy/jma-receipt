@@ -18,8 +18,8 @@ fi
 #-------------------------------------------#
 ##
 
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCGE03 -parameter $1$2$3
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCGE03 -parameter $1$2$3
 	
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001ORCBSE1
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001ORCBSE1
 	
         exit

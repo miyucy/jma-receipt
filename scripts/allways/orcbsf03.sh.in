@@ -22,6 +22,6 @@ fi
             rm   /tmp/$3.out
         fi
 
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001ORCBSF1
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001ORCBSF1
 
         exit

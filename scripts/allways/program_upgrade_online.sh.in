@@ -54,30 +54,30 @@ if	orcawget $PRGCFILE ;	then
 	echo "センタからのプログラム更新情報のダウンロードが終了しました"
 else
 	echo "センタからのプログラム更新情報のダウンロードに失敗しました"
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
         exit 99
 fi
 
 #プログラム管理テーブル更新
-	$DBSTUB  -noredirect -dir "$LDDEFDIR"/directory -bd orcabt ORCXPMNT1 -parameter $HOME/$PRGDIR/$PRGCFILE
+	$DBSTUB  -noredirect -dir $LDDIRECTORY -bd orcabt ORCXPMNT1 -parameter $HOME/$PRGDIR/$PRGCFILE
 	if [ $? -ne 0 ]	;	then 
 		echo "プログラム管理テーブルの更新に失敗しました"
-		$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+		$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
 		exit 99
 	fi
 
 #情報取得のみの場合終了
 if [ $1 = "1" ];	then
 	rm -r $HOME/$PRGDIR
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00
 	exit
 fi
 
 #ダウンロードファイル生成
-	$DBSTUB  -dir "$LDDEFDIR"/directory -bd orcabt ORCXPMNT2 -parameter $UPDFILE
+	$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCXPMNT2 -parameter $UPDFILE
 	if [ $? -ne 0 ]	;	then 
 		echo "ダウロードファイル生成に失敗しました"
-		$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+		$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
 		exit 99
 	fi
 
@@ -88,7 +88,7 @@ fi
 		echo "ダウンロードファイルの作成が終了しました"
 	else
 		echo "ダウンロードファイルの作成に失敗しました"
-		$DBSTUB  -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
+		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
 		exit 99
 	fi
 
@@ -101,15 +101,15 @@ do
 		echo $UPD "ダウンロードが終了しました"
 	else
 		echo $UPD "ダウンロードに失敗しました"
-		$DBSTUB  -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
 	        exit 99
 	fi
 done
 
 #プログラム更新処理
-	$DBSTUB  -noredirect -dir "$LDDEFDIR"/directory -bd orcabt ORCXPMNT3 -parameter $RSTFILE,$HOME/$PRGDIR
+	$DBSTUB  -noredirect -dir $LDDIRECTORY -bd orcabt ORCXPMNT3 -parameter $RSTFILE,$HOME/$PRGDIR
 	if [ $? -ne 0 ]	;	then 
-		$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+		$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
 		exit 99
 	fi
 
@@ -123,4 +123,4 @@ sleep 3
 echo  "全ての処理が完了しました"
 
 #rm -r $HOME/$PRGDIR
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00

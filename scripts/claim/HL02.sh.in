@@ -20,7 +20,7 @@ ORCASCRIPT=$ORCA_DIR/scripts/claim/rb
 #        $7 IP-ADDRESS X(05)
 #        $8 PORT       X(05)
 #-------------------------------------------#
-        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCL0020 -parameter $1,$2,$3,$4,$5,$6,END > /tmp/L0020.log 
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCL0020 -parameter $1,$2,$3,$4,$5,$6,END > /tmp/L0020.log 
 
 #-------------------------------------------#
 # Add Start (2001/08/27)

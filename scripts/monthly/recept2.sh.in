@@ -44,19 +44,19 @@ fi
 
         
         if [ $4 =  0 ]; then
-	       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0101 -parameter ${24},$1,$2,$3,$7,$8,$9,${10},
+	       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0101 -parameter ${24},$1,$2,$3,$7,$8,$9,${10},
         else 
            rennum=$(expr $rennum + 1) 
-	       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0102 -parameter $1,$2,$3,$7,$5,${11},${12},${13},${14},${15},$rennum,${17},${18},${19},${20},${21},${22},${23},${25},${26},${27}
+	       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0102 -parameter $1,$2,$3,$7,$5,${11},${12},${13},${14},${15},$rennum,${17},${18},${19},${20},${21},${22},${23},${25},${26},${27}
            if  [ -e $6 ]; then
                exit 
            fi
 
-           $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBPREV1 -parameter ${13},${14},${15},$rennum,${17},${18},${19},${20},${21},${22},${23},$1,$2,$8,$9,${27}
+           $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV1 -parameter ${13},${14},${15},$rennum,${17},${18},${19},${20},${21},${22},${23},$1,$2,$8,$9,${27}
            if  [ -e $6 ]; then
                exit
            else
-	          $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$1$2
+	          $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$1$2
            fi
         fi
 

@@ -26,11 +26,11 @@ fi
             rm  ${12}
         fi
         
-        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBPRT1 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${13},${14},${15},${16},${17}
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPRT1 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${13},${14},${15},${16},${17}
         if  [ -e ${12} ]; then
             exit
         else
-	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${13}${14}
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}
 	fi
 
         exit 

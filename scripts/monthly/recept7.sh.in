@@ -38,14 +38,14 @@ fi
         rennum=0
         
         if [ $4 =  0 ]; then
-	   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0490 -parameter $1,$2,$3,$7,$8,$9,${10},
+	   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0490 -parameter $1,$2,$3,$7,$8,$9,${10},
         else 
            rennum=$(expr $rennum + 1) 
-	   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0500 -parameter $1,$2,$3,$7,$8,$5,${11},${12},${13},${14},$rennum,${16},${17},${18},${19},${20},${21},${22}
+	   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0500 -parameter $1,$2,$3,$7,$8,$5,${11},${12},${13},${14},$rennum,${16},${17},${18},${19},${20},${21},${22}
            if  [ -e $6 ]; then
                exit 
            else
-	       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$1$2
+	       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$1$2
            fi
         fi
 

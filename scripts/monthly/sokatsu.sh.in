@@ -27,10 +27,10 @@ fi
         
 ##      決定通知書（社保）
         if  [ $2 = '1' ]; then
-       	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM020 -parameter $1$5
+       	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM020 -parameter $1$5
        	fi    
 
 ##      決定通知書（国保）
         if  [ $2 = '2' ]; then
-       	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM021 -parameter $1$5
+       	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM021 -parameter $1$5
        	fi    

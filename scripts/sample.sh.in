@@ -31,9 +31,9 @@ echo DBSTUB = $DBSTUB
 echo DataBaseName = $DBNAME
 
 # example
-echo $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBQ01 -parameter
+echo $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBQ01 -parameter
 
 # CHIHOUKOUHI example
-echo $DBSTUB -dir "$LDDEFDIR"/directory -bd shimane ORCBS321 -parameter $1
+echo $DBSTUB -dir $LDDIRECTORY -bd shimane ORCBS321 -parameter $1
 
 exit 0

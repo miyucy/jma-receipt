@@ -23,7 +23,7 @@ fi
 #        $10 ¥·¥§¥ë£É£Ä
 #
 #-------------------------------------------#
-        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBQ01 -parameter $3,$4,$5,$6,$7,$8
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBQ01 -parameter $3,$4,$5,$6,$7,$8
 
 ##      £Ã£Ó£Ö¥Õ¥¡¥¤¥ëºîÀ®
         if  [ $1 -eq "0" ]; then
@@ -49,6 +49,6 @@ fi
             rm  $3
         fi
 
-       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$9${10}
+       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$9${10}
 
         exit

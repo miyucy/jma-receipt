@@ -38,12 +38,12 @@ fi
         
         rm  /var/tmp/TOKEI*
         
-	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBT010 -parameter $1,$2,$4,$5,$6,$9,${10},${13},${14},${15}
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT010 -parameter $1,$2,$4,$5,$6,$9,${10},${13},${14},${15}
         
         if  [ -e ${15} ]; then
             exit 
         else
-	        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBT020 -parameter $3,$5,$1,$9,${11},${13},${14},${15}
+	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT020 -parameter $3,$5,$1,$9,${11},${13},${14},${15}
 	fi
 
         if  [ -e ${15} ]; then
@@ -88,7 +88,7 @@ fi
              esac
 	     if  [ $RC -ne '0' ]; then
 		ERRCD='0000'$RC
-        	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4}
+        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4}
 		exit
 	     fi
         fi         
@@ -112,11 +112,11 @@ fi
              esac
 	     if  [ $RC -ne '0' ]; then
 		ERRCD='0000'$RC
-        	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4}
+        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4}
 		exit
 	     fi
         fi         
 
-        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${13}${14}
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}
 
         exit 

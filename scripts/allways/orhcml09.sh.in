@@ -14,4 +14,4 @@ fi
 #        $2 SYSYMD     X(8)
 #        $3 HOSPID     X(24)
 #-------------------------------------------#
-    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORHCML09 -parameter $1,$2,$3
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORHCML09 -parameter $1,$2,$3

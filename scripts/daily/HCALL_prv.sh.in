@@ -20,6 +20,6 @@ export HOME=/home/orca
 
 	ruby "$SCRIPTSDIR"/daily/print_parent_prv.rb "/var/tmp/temp.tmp" "ruby ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 "ruby ${SCRIPTSDIR}/daily/print-data_prv.rb " "ruby ${SCRIPTSDIR}/daily/orcred2ps.rb "
 
-        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBPREV -parameter $1
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter $1
 	rm -f $1
 	echo	`date`
