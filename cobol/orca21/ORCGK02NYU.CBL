@@ -6489,7 +6489,8 @@
                                                =   "201"
                                                OR  "202"
                                                OR  "203"  )  AND
-                   (SPA-COM-KAISU (IDX)        =   1      )
+                   (SPA-COM-KAISU (IDX)        =   1      )  AND
+                   (SPA-COM-NYU-KAI (IDX)      <=  1      )
                GO      TO      51019-NYUIN-SANCHK-EXT
            END-IF
       *
