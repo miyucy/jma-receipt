@@ -246,6 +246,10 @@
                (LNK-FTNJGNCHK-KOHNUM         = "151" OR "451" )  AND
                (LNK-FTNJGNCHK-SRYYM         >= "200310")           )
       *
+           OR ((WRK-PREFNUM                  =  28     )  AND
+               (LNK-FTNJGNCHK-KOHNUM         = "186"   )  AND
+               (LNK-FTNJGNCHK-SRYYM         >= "200310"))
+      *
                 INITIALIZE                           PTKOHFTN-REC
                 MOVE    LNK-FTNJGNCHK-HOSPID TO      PTKOHFTN-HOSPID
                 MOVE    LNK-FTNJGNCHK-PTID   TO      PTKOHFTN-PTID
