@@ -78,6 +78,7 @@ EXTRA_DIST = \
              LID1.glade \
              M00.glade \
              M01.glade \
+             M01N.glade \
              M02.glade \
              M95.glade \
              M96.glade \
