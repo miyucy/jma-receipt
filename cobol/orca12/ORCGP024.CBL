@@ -1532,10 +1532,6 @@
                    MOVE    WRK-PARA-EDANUM     TO  PARA-EDANUM
                    MOVE    HZN-PTKOHFTN-REC(IDX IDY)
                                                TO  PARA-DATA-REC
-      *TEST
-              DISPLAY "P024 PARA-EDANUM: " PARA-EDANUM
-                     ",IDX:" IDX ",IDY:" IDY
-      *TEST
                    PERFORM 400-PARA-INSERT-SEC
                END-PERFORM
            END-PERFORM
@@ -2135,7 +2131,7 @@
                GO      TO      41031-FTNEDYMD-EXT
            END-IF
       *
-           IF      SPA-GMN24-FTNSTYMD  <  SPA-GMN24-FTNEDYMD
+           IF      SPA-GMN24-FTNSTYMD  <=  SPA-GMN24-FTNEDYMD
                CONTINUE
            ELSE
                MOVE    "2438"              TO  SPA-ERRCD
