@@ -33,6 +33,7 @@
       *                                     £·£µºÐ°Ê¾å¤ÎÏ·¿Í¸øÈñÍ­ÌµÄÉ²Ã
       * 01.00.03     NACL-Â¿¡¹Ç¼  02/11/21  ¶¦ºÑ²¼Á¥£³·îÄÉ²Ã
       * 01.00.04     NACL-Â¿¡¹Ç¼  03/02/05  ¸¶ÇúÃ±ÆÈÏ·¿ÍÈ½Äê¤ò¤·¤Ê¤¤
+      * 01.00.05     NACL-Â¿¡¹Ç¼  03/03/06  £³ºÐÌ¤ËþÈ½Äê¤Ë¼«Èñ¡¦ÃÏ¸³¤ò¤Ï¤º¤¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -254,9 +255,18 @@
       *    £³ºÐÌ¤Ëþ¤Î»þ¡¢£²³ä¤ò¾å¸Â¤È¤¹¤ë
            IF     (AGECHK-SRYYMD       >=  "20021001") AND
                   (AGECHK-NENREI       <   03        )
-               IF      COMB-GAI-KFTNRATE   >   20
-                   MOVE    20                  TO  AGECHK-FTNRATE
-                   MOVE    " 20%"              TO  AGECHK-FTNRATEMEI
+      *        ¼çÊÝ¸±¤¬¼«Èñ°Ê³°¤Î»þ
+               MOVE    COMB-HKNNUM         TO  WRK-HKNNUM
+               MOVE    ZERO                TO  WRK-PAYKBN
+               PERFORM 3001-HKNNUM-CHK-SEC
+      *        ¼«Èñ¡¦¼£¸³
+               IF      HKN-HKNKOHSBTKBN    =   "8"  OR  "9"
+                   CONTINUE
+               ELSE
+                   IF      COMB-GAI-KFTNRATE   >   20
+                       MOVE    20                  TO  AGECHK-FTNRATE
+                       MOVE    " 20%"              TO  AGECHK-FTNRATEMEI
+                   END-IF
                END-IF
            END-IF
       *
