@@ -80,6 +80,9 @@
       *
            03  FLG-MANSEI-ARI      PIC 9(01).
       *
+           03  FLG-SANTEI-OK       PIC 9(01).
+           03  FLG-SANTEI-OK2      PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -225,6 +228,11 @@
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
+      *    »»ÄêÍúÎò
+       01  HZN-SANTEI-REC.
+           COPY    "CPSANTEI.INC"    REPLACING
+                                     //SANTEI-// BY //HZN-SANTEI-//.
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -279,6 +287,7 @@
       *    ¼ç¡¡¡¡½èÍý
       *****************************************************************
        000-PROC-SEC                    SECTION.
+      *
       *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
@@ -398,6 +407,7 @@
       *
            .
        000-PROC-EXT.
+      *
            EXIT    PROGRAM
            .
       *
@@ -999,36 +1009,23 @@
        20051-CHK-SANTEI-SEC            SECTION.
       *
       *    ÅÀ¿ô¥Þ¥¹¥¿ÆÉ¹þ
-           MOVE    CHK-CD (IDX-C)      TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU           =   1
-               GO      TO      20051-CHK-SANTEI-EXT
-           END-IF
+      *D   MOVE    CHK-CD (IDX-C)      TO  TNS-SRYCD
+      *D   PERFORM 910-TENSU-READ-SEC
+      *D   IF      FLG-TENSU           =   1
+      *D       GO      TO      20051-CHK-SANTEI-EXT
+      *D   END-IF
       *
       *    ÊÝ¸±Ëè¤Î¥³¡¼¥É¤ÎÈ½Äê
            PERFORM 1000-SANTEI-CHK-SEC
       *
+           INITIALIZE                  HZN-SANTEI-REC
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
            MOVE    CHK-CD (IDX-C)      TO  SANTEI-SRYCD
-           EVALUATE    TNS-SANTEIRRKKBN
-               WHEN    1
-                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                   MOVE    ZERO                TO  SANTEI-SRYKA
-               WHEN    2
-                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                   MOVE    ZERO                TO  SANTEI-SRYKA
-               WHEN    3
-                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-               WHEN    4
-                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-           END-EVALUATE
-      *
+      *    ÊÝ¸±Ëè¤Î»þ¡¢ÊÝ¸±ÁÈ¹ç¤»¤¬Æ±¤¸¤³¤È
            IF     (FLG-HKNSAN          =   1   )  AND
                   (SPA-HKNKBN      NOT =   ZERO)
                MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
@@ -1036,30 +1033,88 @@
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
-           IF      WRK-RSI-KBN         =   SPACE
-      *        ¼ç¥­¡¼
-               MOVE    "SANTEI-KEY"        TO  WRK-PATH
-           ELSE
-      *        Ï«ºÒËè¤Î»»Äê
-               MOVE    "SANTEI-KEY3"       TO  WRK-PATH
-           END-IF
-      *
-      *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-      *****MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-           MOVE    WRK-PATH            TO  ORC-DBPATH
+           MOVE    "SANTEI-KEY7"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-      *********MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    "SANTEI-KEY7"       TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
            END-IF
+           PERFORM UNTIL       FLG-SANTEI      =   1
+      *
+      *        ÂÐ¾Ý¤Î»»ÄêÍúÎòÈ½Äê
+               PERFORM 200511-SANTEI-CHK-SEC
+      *
+               IF      FLG-SANTEI-OK       =   1
+                   MOVE    SANTEI-REC              TO  HZN-SANTEI-REC
+               END-IF
+      *
+               MOVE    "SANTEI-KEY7"       TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+      *
+           MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
+      *
+      *
+      *
+      *    »»ÄêÍúÎò¸¡º÷
+      *    INITIALIZE                  SANTEI-REC
+      *    MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+      *    MOVE    SPA-PTID            TO  SANTEI-PTID
+      *    MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
+      *    MOVE    CHK-CD (IDX-C)      TO  SANTEI-SRYCD
+      *    EVALUATE    TNS-SANTEIRRKKBN
+      *        WHEN    1
+      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+      *            MOVE    ZERO                TO  SANTEI-SRYKA
+      *        WHEN    2
+      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+      *            MOVE    ZERO                TO  SANTEI-SRYKA
+      *        WHEN    3
+      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+      *            MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+      *        WHEN    4
+      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+      *            MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+      *    END-EVALUATE
+      *
+      *    IF     (FLG-HKNSAN          =   1   )  AND
+      *           (SPA-HKNKBN      NOT =   ZERO)
+      *        MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+      *    ELSE
+      *        MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+      *    END-IF
+      *
+      *    IF      WRK-RSI-KBN         =   SPACE
+      *        ¼ç¥­¡¼
+      *        MOVE    "SANTEI-KEY"        TO  WRK-PATH
+      *    ELSE
+      *        Ï«ºÒËè¤Î»»Äê
+      *        MOVE    "SANTEI-KEY3"       TO  WRK-PATH
+      *    END-IF
+      *
+      *
+      *    MOVE    SANTEI-REC          TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *****MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+      *    MOVE    WRK-PATH            TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *********MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+      *        MOVE    WRK-PATH            TO  ORC-DBPATH
+      *        PERFORM 920-SANTEI-READ-SEC
+      *    ELSE
+      *        MOVE    1                   TO  FLG-SANTEI
+      *    END-IF
       *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
       *    MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
@@ -1067,9 +1122,9 @@
       *                                MCPAREA
       *                                MCPDATA-REC
       *
-           IF      FLG-SANTEI          =   1
-               INITIALIZE              SANTEI-REC
-           END-IF
+      *    IF      FLG-SANTEI          =   1
+      *        INITIALIZE              SANTEI-REC
+      *****END-IF
       *
       *    »»ÄêÎò¤Î²ó¿ô¤ò¥Á¥§¥Ã¥¯¤¹¤ë
            MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNT
@@ -1095,6 +1150,9 @@
       *    »»ÄêÎò¤Î²ó¿ô¤ò¥Á¥§¥Ã¥¯¤¹¤ë
            IF      WRK-SANTEI-CNT      >   ZERO
                MOVE    "0033"              TO  LNK-SC92-ERRCD6
+      *
+               MOVE    CHK-CD (IDX-C)      TO  TNS-SRYCD
+               PERFORM 911-TENSU-READ22-SEC
       *
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY2-AREA
@@ -1135,6 +1193,39 @@
            EXIT.
       *
       *****************************************************************
+      *    ÂÐ¾Ý¤Î»»ÄêÍúÎòÈ½Äê½èÍý
+      *****************************************************************
+       200511-SANTEI-CHK-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SANTEI-OK
+      *
+           EVALUATE    TRUE
+      *         »»ÄêÍúÎò¶èÊ¬¡á£±
+               WHEN   (SANTEI-NYUGAIKBN       =   ZERO )  AND
+                      (SANTEI-SRYKA           =   ZERO )
+                   MOVE    1                  TO  FLG-SANTEI-OK
+      *         »»ÄêÍúÎò¶èÊ¬¡á£²
+               WHEN   (SANTEI-NYUGAIKBN       =   SPA-NYUGAIKBN) AND
+                      (SANTEI-SRYKA           =   ZERO )
+                   MOVE    1                  TO  FLG-SANTEI-OK
+      *
+      *         »»ÄêÍúÎò¶èÊ¬¡á£³
+               WHEN   (SANTEI-NYUGAIKBN       =   ZERO )  AND
+                      (SANTEI-SRYKA           =   SPA-SRYKA )
+                   MOVE    1                  TO  FLG-SANTEI-OK
+      *
+      *         »»ÄêÍúÎò¶èÊ¬¡á£´
+               WHEN   (SANTEI-NYUGAIKBN       =   SPA-NYUGAIKBN) AND
+                      (SANTEI-SRYKA           =   SPA-SRYKA )
+                   MOVE    1                  TO  FLG-SANTEI-OK
+               END-EVALUATE
+      *
+      *
+           .
+       200511-SANTEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ÆþÎÏÃÍ¤È¤Î¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        20052-CHK-INPUT-SEC                SECTION.
@@ -1148,6 +1239,9 @@
                    IF      SPA-COM-INPUTCD(IDX)
                                                =   CHK-CD (IDX-C)
                        MOVE    "0033"          TO  LNK-SC92-ERRCD6
+      *
+                       MOVE    CHK-CD (IDX-C)      TO  TNS-SRYCD
+                       PERFORM 911-TENSU-READ22-SEC
       *
                        STRING  "º£²ó¡¡"            DELIMITED  BY  SIZE
                                TNS-NAME            DELIMITED  BY  SPACE
@@ -1425,78 +1519,145 @@
       *
            MOVE    SPACE               TO  WRK-YMD
       *
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
+      *D   MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *D   PERFORM 910-TENSU-READ-SEC
       *
+           INITIALIZE                  HZN-SANTEI-REC
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-           EVALUATE    TNS-SANTEIRRKKBN
-               WHEN    1
-                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                   MOVE    ZERO                TO  SANTEI-SRYKA
-               WHEN    2
-                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                   MOVE    ZERO                TO  SANTEI-SRYKA
-               WHEN    3
-                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-               WHEN    4
-                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-           END-EVALUATE
+           MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+               MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
            END-IF
       *
            PERFORM UNTIL       FLG-SANTEI          =   1
-      *
-               IF      SANTEI-MSANTEICNT   >   ZERO
-                   IF      SANTEI-SRYYM    <=  SPA-SRYYMD(1:6)
-                       PERFORM VARYING     IDX-Y2  FROM    1  BY  1
-                               UNTIL       IDX-Y2      >   31
-                           IF      SANTEI-DAY (IDX-Y2) >   ZERO
-                               MOVE    IDX-Y2          TO  WRK-DD
-                           END-IF
-                       END-PERFORM
-                       MOVE    SANTEI-SRYYM        TO  WRK-YYMM
-                       MOVE    1                   TO  FLG-SANTEI
-      *                ½é²óËýÀ­áÖÄË¤Î»þ¡¢¿ÇÎÅÆü¤è¤ê¸å¤Î»þ¤Ê¤·¤È¤¹¤ë
-                       IF     (WRK-SRYCD       =   "113006510" ) AND
-                              (SANTEI-FSANTEIYMD(1:6)
-                                               =   SANTEI-SRYYM ) AND
-                              (SPA-SRYYMD(1:6) =   SANTEI-SRYYM ) AND
-                              (SPA-SRYYMD(7:2) <   SANTEI-MSANTEID)
-                           MOVE    SPACE               TO  WRK-YMD
-                       END-IF
+      *        ½ªÎ»È½Äê
+               IF     (SANTEI-MSANTEICNT   >   ZERO )   AND
+                      (SANTEI-SRYYM        <   HZN-SANTEI-SRYYM)
+                   MOVE    1                   TO  FLG-SANTEI
+               ELSE
+      *            ÂÐ¾Ý¤Î»»ÄêÍúÎòÈ½Äê
+                   PERFORM 200511-SANTEI-CHK-SEC
+                   IF      FLG-SANTEI-OK       =   1
+                       MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
                    END-IF
                END-IF
       *
                IF      FLG-SANTEI          =   ZERO
-                   MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                   MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
                    PERFORM 920-SANTEI-READ-SEC
                END-IF
            END-PERFORM
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *
+           MOVE    HZN-SANTEI-REC          TO  SANTEI-REC
+           IF      SANTEI-MSANTEICNT   >   ZERO
+               PERFORM VARYING     IDX-Y2  FROM    1  BY  1
+                       UNTIL       IDX-Y2      >   31
+                   IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                       MOVE    IDX-Y2          TO  WRK-DD
+                   END-IF
+               END-PERFORM
+               MOVE    SANTEI-SRYYM        TO  WRK-YYMM
+      *        ½é²óËýÀ­áÖÄË¤Î»þ¡¢¿ÇÎÅÆü¤è¤ê¸å¤Î»þ¤Ê¤·¤È¤¹¤ë
+               IF     (WRK-SRYCD       =   "113006510" ) AND
+                      (SANTEI-FSANTEIYMD(1:6)
+                                           =   SANTEI-SRYYM ) AND
+                          (SPA-SRYYMD(1:6) =   SANTEI-SRYYM ) AND
+                          (SPA-SRYYMD(7:2) <   SANTEI-MSANTEID)
+                   MOVE    SPACE               TO  WRK-YMD
+               END-IF
+           END-IF
+      *
+      *    »»ÄêÍúÎò¸¡º÷
+      *    INITIALIZE                  SANTEI-REC
+      *    MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+      *    MOVE    SPA-PTID            TO  SANTEI-PTID
+      *    MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+      *    EVALUATE    TNS-SANTEIRRKKBN
+      *        WHEN    1
+      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+      *            MOVE    ZERO                TO  SANTEI-SRYKA
+      *        WHEN    2
+      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+      *            MOVE    ZERO                TO  SANTEI-SRYKA
+      *        WHEN    3
+      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+      *            MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+      *        WHEN    4
+      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+      *            MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+      *    END-EVALUATE
+      *
+      *    MOVE    SANTEI-REC          TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+      *        PERFORM 920-SANTEI-READ-SEC
+      *    ELSE
+      *        MOVE    1                   TO  FLG-SANTEI
+      *    END-IF
+      *
+      *    PERFORM UNTIL       FLG-SANTEI          =   1
+      *
+      *        IF      SANTEI-MSANTEICNT   >   ZERO
+      *            IF      SANTEI-SRYYM    <=  SPA-SRYYMD(1:6)
+      *                PERFORM VARYING     IDX-Y2  FROM    1  BY  1
+      *                        UNTIL       IDX-Y2      >   31
+      *                    IF      SANTEI-DAY (IDX-Y2) >   ZERO
+      *                        MOVE    IDX-Y2          TO  WRK-DD
+      *                    END-IF
+      *                END-PERFORM
+      *                MOVE    SANTEI-SRYYM        TO  WRK-YYMM
+      *                MOVE    1                   TO  FLG-SANTEI
+      *                ½é²óËýÀ­áÖÄË¤Î»þ¡¢¿ÇÎÅÆü¤è¤ê¸å¤Î»þ¤Ê¤·¤È¤¹¤ë
+      *                IF     (WRK-SRYCD       =   "113006510" ) AND
+      *                       (SANTEI-FSANTEIYMD(1:6)
+      *                                        =   SANTEI-SRYYM ) AND
+      *                       (SPA-SRYYMD(1:6) =   SANTEI-SRYYM ) AND
+      *                       (SPA-SRYYMD(7:2) <   SANTEI-MSANTEID)
+      *                    MOVE    SPACE               TO  WRK-YMD
+      *                END-IF
+      *            END-IF
+      *        END-IF
+      *
+      *        IF      FLG-SANTEI          =   ZERO
+      *            MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+      *            PERFORM 920-SANTEI-READ-SEC
+      *        END-IF
+      *    END-PERFORM
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
       *
            .
       *
@@ -2273,7 +2434,8 @@
                MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
                IF      FLG-TENSU           =   ZERO
-                   PERFORM 3005-SYOCHI-SYUGI-SEC
+      *            £Ó£Ð£ÁÊÔ½¸
+                   PERFORM 300-TENSU-HENSYU-SEC
                ELSE
                    MOVE    "0001"              TO  SPA-ERRCD
                END-IF
@@ -2347,6 +2509,51 @@
       *
            .
        910-TENSU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê»»ÄêÍúÎò¸¡º÷ÍÑ¡Ë
+      *****************************************************************
+       911-TENSU-READ22-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  TNS-YUKOSTYMD
+           MOVE    ALL "9"             TO  TNS-YUKOEDYMD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+                   MOVE    ZERO                TO  FLG-TENSU
+               ELSE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1                   TO  FLG-TENSU
+               END-IF
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *
+           .
+       911-TENSU-READ22-EXT.
            EXIT.
       *
       *****************************************************************

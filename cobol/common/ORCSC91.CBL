@@ -1186,12 +1186,13 @@
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
+      *    算定履歴に関する項目のみ
            MOVE    ZERO                TO  TNS-YUKOSTYMD
            MOVE    ALL "9"             TO  TNS-YUKOEDYMD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    "TENSU-KEY22"         TO  ORC-DBPATH
            MOVE    SPA-SRYYMD          TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -1199,7 +1200,7 @@
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               MOVE    "TENSU-KEY22"         TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -1217,7 +1218,7 @@
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    "TENSU-KEY22"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
