@@ -342,6 +342,7 @@
       *  01.01.152   NACL-門脇    04/09/08  SYUNOU-KEY29,KEY30追加
       *  01.01.153   NACL-藤原    04/09/10  SYSKANRI-KEY12追加
       *  01.01.154   NACL-多々納  04/10/12  WKSRYACT-KEY6,KEY7追加
+      *  01.01.155   NACL-藤原    04/11/10  KOHSKY-KEY7追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -3209,6 +3210,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "KOHSKY-KEY6"
                    MOVE    PATH-TBL-KOHSKY-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KOHSKY-KEY7"
+                   MOVE    PATH-TBL-KOHSKY-KEY7
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "KOHSKY-ALL"
                    MOVE    PATH-TBL-KOHSKY-ALL
