@@ -343,7 +343,8 @@
            MOVE    1               TO  SPA-GMN-CUR
       *
       *    Â¾¤Î£Ì£Ä¤è¤ê
-           IF      LINKAREA        NOT =   SPACE
+      *****IF      LINKAREA        NOT =   SPACE
+           IF      LNK-KYOUTU      NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG
            END-IF
@@ -1227,7 +1228,8 @@
            END-IF
       *
       *----(01.00.01) LINE DEL START ----------------------------------
-      *    MOVE    SPACE               TO  LINKAREA
+      *****MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  LNK-KYOUTU
       *----(01.00.01) LINE DEL END ------------------------------------
       *
            MOVE    "CURRENT"       TO  MCP-PUTTYPE.
