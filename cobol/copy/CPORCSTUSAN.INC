@@ -40,10 +40,13 @@
       *            日数３：初回入院から基準日までの通算日数（他院分含めず）
                    07  STUSAN-NISSU03      PIC 9(08).
       *            日数４：初回入院から基準日までの通算日数
-      *            （一般入院料で入院していた日数（他院分含めず））
+      *            （一般入院料で入院していた日数（他院分含む））
                    07  STUSAN-NISSU04      PIC 9(08).
+      *            日数５：初回入院から基準日までの通算日数
+      *            （一般入院料で入院していた日数（他院分含めず））
+                   07  STUSAN-NISSU05      PIC 9(08).
                05  STUSAN-TUSAN-R  REDEFINES   STUSAN-NISSU-VAL.
-                   07  STUSAN-TUSAN-OCC    OCCURS  4.
+                   07  STUSAN-TUSAN-OCC    OCCURS  5.
                        09  STUSAN-NISSU    PIC 9(08).
       *  リターンコード
            03  STUSAN-RC               PIC 9(02).

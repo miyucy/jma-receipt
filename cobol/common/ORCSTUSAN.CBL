@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.03.12  日付４の計算方法修正
       *  01.00.02    NACL-太田    03.03.24  特定入院料の考慮を削除
+      *  01.00.01    NACL-太田    03.03.12  日付５を追加
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -156,6 +157,12 @@
            IF    ( STUSAN-RC       NOT =   ZERO )
                GO  TO  000-PROC-EXT
            END-IF
+      *
+           DISPLAY "STUSAN-NISSU01 = " STUSAN-NISSU01
+           DISPLAY "STUSAN-NISSU02 = " STUSAN-NISSU02
+           DISPLAY "STUSAN-NISSU03 = " STUSAN-NISSU03
+           DISPLAY "STUSAN-NISSU04 = " STUSAN-NISSU04
+           DISPLAY "STUSAN-NISSU05 = " STUSAN-NISSU05
       *
            .
        000-PROC-EXT.
@@ -302,6 +309,8 @@
                    =   STUSAN-NISSU03  +   PTNYUINRRK-TAISYONISSU
                COMPUTE STUSAN-NISSU04
                    =   STUSAN-NISSU04  +   PTNYUINRRK-TAISYONISSU
+               COMPUTE STUSAN-NISSU05
+                   =   STUSAN-NISSU05  +   PTNYUINRRK-TAISYONISSU
            WHEN    OTHER
                MOVE    PTNYUINRRK-NYUINYMD TO  WRK-STYMD
                MOVE    PTNYUINRRK-TAIINYMD TO  WRK-EDYMD
@@ -481,6 +490,8 @@
                IF    ( NACCT-DAY (IDX1)    >   ZERO )
                    COMPUTE STUSAN-NISSU04
                        =   STUSAN-NISSU04 +    1
+                   COMPUTE STUSAN-NISSU05
+                       =   STUSAN-NISSU05 +    1
                END-IF
            END-PERFORM
       *
