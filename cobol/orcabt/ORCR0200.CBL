@@ -130,6 +130,9 @@
                                        PIC X(01).
       *
            03  WRK-RECEERR             PIC X(200). 
+           03  WRK-KOHBUNRI            PIC 9(01).
+           03  WRK-HKNCOMBI            PIC 9(04).
+           03  OLD-KEY                 PIC X(65).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -222,6 +225,9 @@
       *
       *        レセプト明細０３読み込み
            PERFORM 900-RECE04-READ-SEC
+           MOVE    RECE04-KEY(1:65)    TO  OLD-KEY
+           MOVE  9                     TO  WRK-KOHBUNRI
+           MOVE  ZERO                  TO  WRK-HKNCOMBI
            .
        100-INIT-EXT.
            EXIT.
@@ -230,7 +236,7 @@
       *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
-      *    
+      *
            INITIALIZE                      RECE041-REC
            MOVE    RECE04-HOSPID       TO  RECE041-HOSPID
            MOVE    RECE04-SRYYM        TO  RECE041-SRYYM
@@ -244,8 +250,21 @@
            MOVE    RECE04-TEKSTYMD     TO  RECE041-TEKSTYMD
            MOVE    RECE04-ZAINUM       TO  RECE041-ZAINUM
            MOVE    RECE04-KOHBUNRI     TO  RECE041-KOHBUNRI
+           IF      RECE04-KEY(1:65)    NOT =   OLD-KEY
+                MOVE  9                TO  WRK-KOHBUNRI
+                MOVE  ZERO             TO  WRK-HKNCOMBI
+                MOVE  RECE04-KEY(1:65) TO  OLD-KEY
+           ELSE
+               IF      RECE04-KOHBUNRI     <   WRK-KOHBUNRI
+                    MOVE   RECE04-KOHBUNRI TO  WRK-KOHBUNRI
+                    MOVE   RECE04-HKNCOMBI TO  WRK-HKNCOMBI
+               END-IF
+           END-IF
            IF      RECE04-SRYKBN   =   "99"
-               MOVE    "11"                TO  RECE041-SRYKBN
+               MOVE    "11"            TO  RECE041-SRYKBN
+               IF  RECE04-HKNCOMBI     =   ZERO
+                   MOVE    WRK-HKNCOMBI    TO  RECE04-HKNCOMBI
+               END-IF
            ELSE
                MOVE    RECE04-SRYKBN       TO  RECE041-SRYKBN
            END-IF
