@@ -6,20 +6,6 @@ N41	{
 		B12	{
 			state	int;
 		};
-		HELPKBN_COMB	{
-			HELPKBN	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[5];
-		};
-		LDNAME_COMB	{
-			LDNAME	{
-				value	varchar(40);
-			};
-			count	int;
-			item	varchar(40)[50];
-		};
 		HEADMENU	{
 			value	varchar(30);
 		};
@@ -31,34 +17,6 @@ N41	{
 		};
 		HELP	{
 			value	varchar(2000);
-		};
-		scrolledwindow1	{
-			HEADLIST	{
-				count	int;
-				row 	int;
-				rowattr	int;
-				item	{
-					value0	varchar(4);
-					value1	varchar(30);
-				}	[300];
-				select	bool[300];
-			};
-		};
-		HELPKBN_CP_COMB	{
-			HELPKBN_CP	{
-				value	varchar(20);
-			};
-                        state   int;
-			count	int;
-			item	varchar(20)[5];
-		};
-		LDNAME_CP_COMB	{
-			LDNAME_CP	{
-				value	varchar(40);
-			};
-                        state   int;
-			count	int;
-			item	varchar(40)[50];
 		};
 		MENUNUM1_CP	{
                         state   int;
@@ -76,9 +34,65 @@ N41	{
                         state   int;
 			value	varchar(30);
 		};
-		SYORIMEI	{
-		    style   varchar(20);
-			value	varchar(40);
+		HELPKBN_COMB	{
+			HELPKBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		LDNAME_COMB	{
+			LDNAME	{
+				value	varchar(40);
+			};
+			count	int;
+			item	varchar(40)[50];
+		};
+		SELNUM2	{
+			value	number(4);
+		};
+		MENU2	{
+			value	varchar(30);
+		};
+		LDNAME_CP_COMB	{
+			LDNAME_CP	{
+				value	varchar(40);
+			};
+                        state   int;
+			count	int;
+			item	varchar(40)[50];
+		};
+		HELPKBN_CP_COMB	{
+			HELPKBN_CP	{
+				value	varchar(20);
+			};
+                        state   int;
+			count	int;
+			item	varchar(20)[5];
+		};
+		scrolledwindow2	{
+			MENU2LIST	{
+				count	int;
+				row 	int;
+				rowattr	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(30);
+				}	[300];
+				select	bool[300];
+			};
+		};
+		scrolledwindow1	{
+			HEADLIST	{
+				count	int;
+				row 	int;
+				rowattr	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(30);
+				}	[300];
+				select	bool[300];
+			};
 		};
 	};
 };

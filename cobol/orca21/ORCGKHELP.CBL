@@ -53,7 +53,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-OK              PIC 9(01).
-           03  FLG-GMN-INIT            PIC  9(01).
+           03  FLG-GMN-INIT        PIC  9(01).
       *
            03  FLG-HELP            PIC 9(01).
       *
@@ -63,6 +63,9 @@
            03  IDY                 PIC 9(04).
            03  IDX-ST              PIC 9(04).
            03  IDX-H               PIC 9(04).
+           03  IDX-H1              PIC 9(04).
+           03  IDX-H2              PIC 9(04).
+           03  IDX-H3              PIC 9(04).
            03  IDX-TBL             PIC 9(04).
       *
            03  IDX-K               PIC 9(04).
@@ -73,6 +76,9 @@
            03  WRK-WIDGET              PIC X(64).
            03  WRK-ORC-DBPATH          PIC X(64).
       *
+           03  WRK-KEY-MENUNUM1        PIC 9(04).
+           03  WRK-KEY-LDNAME          PIC X(20).
+      *
            03  TBL-HELP-AREA.
                05  TBL-HELP-OCC        OCCURS   100.
                    07  TBL-GMN-TMENUNUM-G.
@@ -82,6 +88,8 @@
       *
            03  WRK-HELP-AREA.
                05  WRK-HELP            PIC X(50)  OCCURS  40.
+           03  WRK-HELP-AREA2.
+               05  WRK-HELP2           PIC X(50)  OCCURS  40.
            03  WRK-SELNUM              PIC 9(04).
       *
            03  WRK-INPUT-MENU          PIC X(30).
@@ -107,6 +115,11 @@
       *    ヘルプマスタ−
        01  HELP-REC.
            COPY    "CPHELP.INC".
+      *
+      *    ヘルプマスタ−ワーク
+       01  WRK-HELP-REC.
+           COPY    "CPHELP.INC"        REPLACING
+                                       //HELP-// BY //WRK-HELP-//.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -301,14 +314,17 @@
            MOVE    SPA-KHELP-LDNAME    TO  HELP-LDNAME
       *
            IF      SPA-KHELP-MENUNUM1  =   ZERO
-               MOVE    PATH-TBL-HELP-KEY1  TO  WRK-MCP-PATH
+               CONTINUE
            ELSE
                MOVE    SPA-KHELP-MENUNUM1  TO  HELP-MENUNUM1
-               MOVE    PATH-TBL-HELP-KEY2  TO  WRK-MCP-PATH
            END-IF
       *
            MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           IF      SPA-KHELP-MENUNUM1  =   ZERO
+               MOVE    PATH-TBL-HELP-KEY1  TO  MCP-PATH
+           ELSE
+               MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+           END-IF
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 900-HELP-READ-SEC
@@ -330,26 +346,51 @@
            PERFORM
                UNTIL   (FLG-HELP           =   1  )  OR
                        (IDX                >=  WRK-TBLMAX)
-               ADD     1                   TO  IDY
-               IF      IDX-ST              <=  IDY
-                   ADD     1               TO  IDX
-                   IF      SPA-KHELP-MENUNUM1  =   ZERO
-                       MOVE    "+"             TO  TBL-GMN-TMENUBUN
+                   ADD     1                   TO  IDY
+                   IF      IDX-ST              <=  IDY
+                       ADD     1               TO  IDX
+                       IF     (SPA-KHELP-MENUNUM1  =   ZERO )  AND
+                              (HELP-MENU2FLG       =   1    )
+                           MOVE    "+"             TO  TBL-GMN-TMENUBUN
                                                                  (IDX)
-                   END-IF
-                   MOVE    IDY                 TO  SPA-KHELP-TRENNUM
+                       END-IF
+                       IF     (SPA-KHELP-MENUNUM1  NOT =   ZERO )  AND
+                              (HELP-MENUNUM2       =   ZERO )
+                           MOVE    ">"             TO  TBL-GMN-TMENUBUN
+                                                                 (IDX)
+                       END-IF
+                       MOVE    IDY             TO  SPA-KHELP-TRENNUM
                                                                   (IDX)
-                   MOVE    HELP-MENU           TO  TBL-GMN-TMENU(IDX)
+                       MOVE    HELP-MENU       TO  TBL-GMN-TMENU(IDX)
       *
-                   MOVE    HELP-HELPKBN    TO  SPA-KHELP-THELPKBN (IDX)
-                   MOVE    HELP-MENUNUM1   TO  SPA-KHELP-TMENUNUM1(IDX)
-                   MOVE    HELP-MENUNUM2   TO  SPA-KHELP-TMENUNUM2(IDX)
+                       MOVE    HELP-HELPKBN    TO  SPA-KHELP-THELPKBN
+                                                                  (IDX)
+                       MOVE    HELP-MENUNUM1   TO  SPA-KHELP-TMENUNUM1
+                                                                  (IDX)
+                       MOVE    HELP-MENUNUM2   TO  SPA-KHELP-TMENUNUM2
+                                                                  (IDX)
+                       IF     (HELP-MENU2FLG       =   1    )  AND
+                              (HELP-MENUNUM2       =   ZERO )
+                           MOVE    1               TO  SPA-KHELP-TEDANUM
+                                                                (IDX)
+                       ELSE
+                           MOVE    ZERO            TO  SPA-KHELP-TEDANUM
+                                                                (IDX)
+                       END-IF
+                   END-IF
+      *
+               IF      SPA-KHELP-MENUNUM1  =   ZERO
+                   MOVE    PATH-TBL-HELP-KEY1  TO  MCP-PATH
+               ELSE
+                   MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
                END-IF
-      *
-               MOVE    WRK-MCP-PATH        TO  MCP-PATH
                PERFORM 900-HELP-READ-SEC
            END-PERFORM
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           IF      SPA-KHELP-MENUNUM1  =   ZERO
+               MOVE    PATH-TBL-HELP-KEY1  TO  MCP-PATH
+           ELSE
+               MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+           END-IF
            PERFORM 990-DBCLOSE-SEC
       *
       *    次頁判定
@@ -565,7 +606,8 @@
                                            TO  SPA-KHELP-MENUNUM2
                MOVE    SPA-KHELP-THELPKBN  (IDX-TBL)
                                            TO  SPA-KHELP-HELPKBN
-               IF      SPA-KHELP-MENUNUM2  =   ZERO
+               IF     (SPA-KHELP-MENUNUM2  =   ZERO  )  AND
+                      (SPA-KHELP-TEDANUM (IDX-TBL) =   1    )
       *            見出１
                    MOVE    2                   TO  SPA-KHELP-SYORIFLG
                    MOVE    1                   TO  SPA-KHELP-PAGE
@@ -583,10 +625,8 @@
                                                TO  SPA-KHELP-HELPKBN
                    END-IF
                END-IF
-               IF      SPA-KHELP-MENUNUM2  NOT =   ZERO
-      *            見出２
-                   PERFORM 4021-MENUNUM2-SYORI-SEC
-               END-IF
+      *        見出２
+               PERFORM 4021-MENUNUM2-SYORI-SEC
                MOVE    1                   TO  SPA-KHELP-CUR
            END-IF
            .
@@ -630,6 +670,27 @@
            MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
            PERFORM 990-DBCLOSE-SEC
       *
+      *    改行コードでテーブル編集
+           MOVE    SPACE               TO  WRK-HELP-AREA2
+           MOVE    ZERO                TO  IDX-H2
+           PERFORM VARYING     IDX-H   FROM   1   BY  1
+                    UNTIL      IDX-H       >  40
+               PERFORM VARYING     IDX-H1  FROM   1   BY  1
+                        UNTIL      IDX-H1      >  50
+                   ADD     1                   TO  IDX-H2
+                   MOVE    WRK-HELP(IDX-H)(IDX-H1:1)
+                                           TO  WRK-HELP-AREA2(IDX-H2:1)
+                   IF      (WRK-HELP(IDX-H)(IDX-H1:1)  =   X"0A")
+                       AND (IDX-H1             <   50   )
+                       COMPUTE IDX-H3      =   IDX-H1  +  1
+                       IF    WRK-HELP(IDX-H)(IDX-H3:)  =  SPACE
+                            MOVE   50               TO  IDX-H1
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+           MOVE    WRK-HELP-AREA2      TO  WRK-HELP-AREA
+      *
            .
        4021-MENUNUM2-SYORI-EXT.
            EXIT.
@@ -667,6 +728,7 @@
                END-IF
       *
                IF      SPA-ERRCD           =   SPACE
+                   MOVE    1                   TO  SPA-KHELP-PAGE
                    PERFORM 4011-HELP-KENSAKU-SEC
                END-IF
            END-IF
@@ -679,6 +741,7 @@
       *****************************************************************
        4011-HELP-KENSAKU-SEC               SECTION.
       *
+           MOVE    3                   TO  SPA-KHELP-SYORIFLG
       *    部分参照とする
            MOVE    ZERO                TO  IDX-K
            PERFORM VARYING     IDX     FROM    30  BY  -1
@@ -748,8 +811,9 @@
                    ADD     1                   TO  IDX
                    MOVE    IDY                 TO  SPA-KHELP-TRENNUM
                                                                  (IDX)
-                   IF      HELP-EDANUM         =   ZERO
-                       MOVE    "+"             TO  TBL-GMN-TMENUBUN
+                   IF     (HELP-MENUNUM2       =   ZERO )  AND
+                          (HELP-MENU2FLG       =   1    )
+                      MOVE    "+"             TO  TBL-GMN-TMENUBUN
                                                                  (IDX)
                    END-IF
                    MOVE    HELP-MENU           TO  TBL-GMN-TMENU (IDX)
@@ -757,6 +821,19 @@
                    MOVE    HELP-HELPKBN    TO  SPA-KHELP-THELPKBN (IDX)
                    MOVE    HELP-MENUNUM1   TO  SPA-KHELP-TMENUNUM1(IDX)
                    MOVE    HELP-MENUNUM2   TO  SPA-KHELP-TMENUNUM2(IDX)
+                   IF     (HELP-MENUNUM2       =   ZERO )  AND
+                          (HELP-MENU2FLG       =   1    )
+                       MOVE    1               TO  SPA-KHELP-TEDANUM
+                                                                (IDX)
+                   ELSE
+                       MOVE    ZERO            TO  SPA-KHELP-TEDANUM
+                                                                (IDX)
+                   END-IF
+                   IF     (HELP-MENUNUM2       =   ZERO )  AND
+                          (HELP-EDANUM         >   ZERO )
+      *                目次１の時、目次２の有無判定
+                       PERFORM 40111-MENUNUM2-CHK-SEC
+                   END-IF
                END-IF
       *
                MOVE    PATH-TBL-HELP-KEY4  TO  MCP-PATH
@@ -795,6 +872,45 @@
       *
            .
        4011-HELP-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    目次２判定処理
+      *****************************************************************
+       40111-MENUNUM2-CHK-SEC            SECTION.
+      *
+           MOVE    HELP-REC            TO  WRK-HELP-REC
+           MOVE    ZERO                TO  FLG-CHK
+      *
+           MOVE    HELP-REC            TO  MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+               PERFORM 900-HELP-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HELP
+           END-IF
+           PERFORM UNTIL   (FLG-HELP   =   1   )  OR
+                           (FLG-CHK    =   1   )
+               IF      HELP-MENUNUM2   NOT =   ZERO
+                   MOVE    1               TO  FLG-CHK
+               ELSE
+                   MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+                   PERFORM 900-HELP-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-CHK             =   1
+               MOVE    "+"             TO  TBL-GMN-TMENUBUN(IDX)
+               MOVE    ZERO            TO  SPA-KHELP-TEDANUM(IDX)
+           END-IF
+           MOVE    WRK-HELP-REC        TO  HELP-REC
+      *
+           .
+       40111-MENUNUM2-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -872,7 +988,8 @@
                MOVE    "0004"          TO  SPA-ERRCD
            ELSE
                COMPUTE SPA-KHELP-PAGE  =   SPA-KHELP-PAGE   -   1
-               IF      SPA-KHELP-GMN-INPUT =   SPACE
+               IF     (SPA-KHELP-GMN-INPUT =   SPACE )  OR
+                      (SPA-KHELP-SYORIFLG  NOT =   3 )
                    PERFORM 320-MENU-HENSYU-SEC
                ELSE
                    PERFORM 4011-HELP-KENSAKU-SEC
@@ -893,7 +1010,8 @@
                MOVE    "0005"          TO  SPA-ERRCD
            ELSE
                ADD     1               TO  SPA-KHELP-PAGE
-               IF      SPA-KHELP-GMN-INPUT =   SPACE
+               IF     (SPA-KHELP-GMN-INPUT =   SPACE )  OR
+                      (SPA-KHELP-SYORIFLG  NOT =   3 )
                    PERFORM 320-MENU-HENSYU-SEC
                ELSE
                    PERFORM 4011-HELP-KENSAKU-SEC

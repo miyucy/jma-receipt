@@ -51,6 +51,8 @@
            03  SPA-N41GMN-AREA.
                05  SPA-GMN-PAGE                  PIC 9(04).
                05  SPA-GMN-NEXT                  PIC 9(04).
+               05  SPA-GMN-PAGE2                 PIC 9(04).
+               05  SPA-GMN-NEXT2                 PIC 9(04).
                05  SPA-GMN-CUR                   PIC 9(02).
       *
                05  SPA-GMN-HELPKBN-G.
@@ -89,26 +91,40 @@
                    07  SPA-GMN-TBLREC              OCCURS  300.
                        09  SPA-GMN-TMENUNUM        PIC 9(04).
                        09  SPA-GMN-TMENU           PIC X(30).
+                       09  SPA-GMN-TMENU2FLG       PIC 9(01).
                    07  SPA-GMN-TBLMAX              PIC 9(04).
-      *
                05  SPA-GMN-SELNUM            PIC 9(04).
                05  SPA-GMN-MENU              PIC X(30).
+      *
+               05  SPA-GMN-MENU2TBL.
+                   07  SPA-GMN-TBLREC2              OCCURS  300.
+                       09  SPA-GMN-TMENUNUM2        PIC 9(04).
+                       09  SPA-GMN-TMENU2           PIC X(30).
+                   07  SPA-GMN-TBLMAX2              PIC 9(04).
+               05  SPA-GMN-SELNUM2           PIC 9(04).
+               05  SPA-GMN-MENU2             PIC X(30).
+      *
                05  SPA-GMN-HELP              PIC X(2000).
       *
            03  SPA-NAI-AREA.
-               05  SPA-MENUFLG         PIC 9(01).
-               05  SPA-SYORIFLG        PIC 9(01).
-               05  SPA-SYORIFLG2       PIC 9(01).
-               05  SPA-COPYFLG         PIC 9(01).
+               05  SPA-SYORIFLG            PIC 9(01).
+               05  SPA-SYORIFLG2           PIC 9(01).
+               05  SPA-COPYFLG             PIC 9(01).
       *
-               05  SPA-NAI-MENUNUM1           PIC 9(04).
-               05  SPA-NAI-MENUNUM2           PIC 9(04).
+               05  SPA-NAI-MENU1FLG        PIC 9(01).
+               05  SPA-NAI-MENU2FLG        PIC 9(01).
+      *
+               05  SPA-NAI-MENUNUM1        PIC 9(04).
+               05  SPA-NAI-MENUNUM2        PIC 9(04).
       *
                05  SPA-NAI-COPY-AREA.
                    07  SPA-NAI-MENUNUM1-CP        PIC 9(04).
                    07  SPA-NAI-MENUNUM2-CP        PIC 9(04).
                    07  SPA-NAI-MENU1-CP           PIC X(30).
       *
+               05  SPA-NAI-HELP-G.
+                   07  SPA-NAI-HELP              PIC X(50)
+                                                 OCCURS   40.
       *    ヘルプ共通パラメタ
            COPY    "N41COMMON-SPA".
       *
@@ -130,9 +146,13 @@
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDX-H               PIC 9(04).
+           03  IDX-H1              PIC 9(04).
            03  IDX-H2              PIC 9(04).
+           03  IDX-H3              PIC 9(04).
            03  IDX-TBL             PIC 9(04).
            03  IDX-ST              PIC 9(04).
+           03  IDX-K               PIC 9(04).
+           03  IDX-K2              PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -147,6 +167,8 @@
                05  WRK-MENUNUM1            PIC 9(04).
                05  WRK-MENUNUM2            PIC 9(04).
                05  WRK-EDANUM              PIC 9(04).
+           03  WRK-MENU                    PIC X(30).
+           03  WRK-INPUT-MENU              PIC X(30).
       *
            03  WRK-HELP-AREA.
                05  WRK-HELP            PIC X(50)   OCCURS   40.
@@ -156,7 +178,10 @@
       *    コラムリスト位置
            03  WRK-N41-ROW             PIC S9(09).
            03  WRK-N41-ROWATTR         PIC S9(09).
+           03  WRK-N41-ROW2            PIC S9(09).
+           03  WRK-N41-ROWATTR2        PIC S9(09).
            03  FLG-GMN-INIT            PIC  9(01).
+           03  FLG-GMN-INIT2           PIC  9(01).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -196,6 +221,7 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -230,7 +256,7 @@
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-N41KYOUTU
            MOVE    SPA-FREE        TO  SPA-N41
-     *
+      *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
@@ -363,8 +389,36 @@
       *****************************************************************
        3001-MENU-HENSYU-SEC          SECTION.
       *
-           INITIALIZE                  SPA-GMN-MENUTBL
+           IF      SPA-SYORIFLG        =   1
+               PERFORM 30011-MENU1-HENSYU-SEC
+      *        クリア
+               INITIALIZE                  SPA-GMN-MENU2TBL
+               MOVE    ZERO                TO  SPA-GMN-NEXT2
+               MOVE    ZERO                TO  SPA-GMN-PAGE2
+               MOVE    ZERO                TO  SPA-NAI-MENU1FLG
+               MOVE    ZERO                TO  SPA-NAI-MENU2FLG
+               MOVE    ZERO                TO  SPA-GMN-SELNUM
+               MOVE    SPACE               TO  SPA-GMN-MENU
+           ELSE
+               PERFORM 30012-MENU2-HENSYU-SEC
+           END-IF
+           MOVE    SPACE               TO  SPA-GMN-HELP
+           INITIALIZE                  SPA-GMN-COPY-AREA
+           INITIALIZE                  SPA-NAI-COPY-AREA
+           MOVE    ZERO                TO  SPA-COPYFLG
+           MOVE    ZERO                TO  SPA-SYORIFLG2
+           MOVE    ZERO                TO  SPA-NAI-MENUNUM2
       *
+           .
+       3001-MENU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    メニュウ１内容編集処理
+      *****************************************************************
+       30011-MENU1-HENSYU-SEC          SECTION.
+      *
+           INITIALIZE                  SPA-GMN-MENUTBL
            MOVE    1                   TO  FLG-GMN-INIT
       *
            MOVE    SPACE               TO  HELP-REC
@@ -373,22 +427,10 @@
            MOVE    SPACE               TO  HELP-KEY-OPID
            MOVE    SPA-GMN-LDNAME-LD   TO  HELP-LDNAME
       *
-           IF      SPA-SYORIFLG        =   1
-               MOVE    "HELP-KEY1"         TO  WRK-ORC-DBPATH
-           ELSE
-               MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
-               MOVE    "HELP-KEY2"         TO  WRK-ORC-DBPATH
-           END-IF
-      *
+           MOVE    PATH-TBL-HELP-KEY1  TO  MCP-PATH
            MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 900-HELP-READ-SEC
            ELSE
                INITIALIZE                  HELP-REC
@@ -411,23 +453,16 @@
                ADD     1                   TO  IDY
                IF      IDX-ST              <=  IDY
                    ADD     1                   TO  IDX
-                   IF      SPA-SYORIFLG        =   1
-                       MOVE    HELP-MENUNUM1   TO  SPA-GMN-TMENUNUM(IDX)
-                   ELSE
-                       MOVE    HELP-MENUNUM2   TO  SPA-GMN-TMENUNUM(IDX)
-                   END-IF
-                   MOVE    HELP-MENU           TO  SPA-GMN-TMENU (IDX)
+                   MOVE    HELP-MENUNUM1   TO  SPA-GMN-TMENUNUM (IDX)
+                   MOVE    HELP-MENU2FLG   TO  SPA-GMN-TMENU2FLG(IDX)
+                   MOVE    HELP-MENU       TO  SPA-GMN-TMENU    (IDX)
                END-IF
       *
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+               MOVE    PATH-TBL-HELP-KEY1  TO  MCP-PATH
                PERFORM 900-HELP-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY1  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
       *    次頁判定
            IF     (IDX                 >=  300 )  AND
                   (FLG-HELP            =   ZERO)
@@ -436,23 +471,80 @@
                MOVE    ZERO            TO  SPA-GMN-NEXT
            END-IF
            MOVE    IDX                 TO  SPA-GMN-TBLMAX
-      *    クリア
-           MOVE    ZERO                TO  SPA-GMN-SELNUM
-           MOVE    SPACE               TO  SPA-GMN-MENU
-           MOVE    SPACE               TO  SPA-GMN-HELP
-           INITIALIZE                  SPA-GMN-COPY-AREA
-           INITIALIZE                  SPA-NAI-COPY-AREA
-           MOVE    ZERO                TO  SPA-COPYFLG
-           MOVE    ZERO                TO  SPA-MENUFLG
-           MOVE    ZERO                TO  SPA-SYORIFLG2
-           MOVE    ZERO                TO  SPA-NAI-MENUNUM2
-           IF      SPA-SYORIFLG    =   1
-               MOVE    ZERO            TO  SPA-NAI-MENUNUM1
-               MOVE    SPACE           TO  SPA-GMN-HEADMENU
+           .
+       30011-MENU1-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    メニュウ２内容編集処理
+      *****************************************************************
+       30012-MENU2-HENSYU-SEC          SECTION.
+      *
+           INITIALIZE                  SPA-GMN-MENU2TBL
+           MOVE    ZERO                TO  SPA-GMN-NEXT2
+           MOVE    1                   TO  FLG-GMN-INIT2
+      *
+           MOVE    SPACE               TO  HELP-REC
+           INITIALIZE                  HELP-REC
+           MOVE    SPA-GMN-HELPKBN     TO  HELP-HELPKBN
+           MOVE    SPACE               TO  HELP-KEY-OPID
+           MOVE    SPA-GMN-LDNAME-LD   TO  HELP-LDNAME
+           MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
+      *
+           MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+           MOVE    HELP-REC            TO  MCPDATA-REC
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 900-HELP-READ-SEC
+           ELSE
+               INITIALIZE                  HELP-REC
+               MOVE    1               TO  FLG-HELP
            END-IF
       *
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDY
+           MOVE    ZERO                TO  IDX-ST
+           IF      SPA-GMN-PAGE2       =   ZERO
+               MOVE    1                   TO  IDX-ST
+           ELSE
+               COMPUTE IDX-ST          =   (SPA-GMN-PAGE2  -   1)
+                                       *   300
+                                       +   1
+           END-IF
+           PERFORM
+               UNTIL   (FLG-HELP           =   1  )  OR
+                       (IDX                >=  300)
+               IF      HELP-MENUNUM2       =   ZERO
+                   CONTINUE
+               ELSE
+                   ADD     1                   TO  IDY
+                   IF      IDX-ST              <=  IDY
+                       ADD     1                   TO  IDX
+                       MOVE    HELP-MENUNUM2   TO  SPA-GMN-TMENUNUM2
+                                                                  (IDX)
+                       MOVE    HELP-MENU       TO  SPA-GMN-TMENU2 (IDX)
+                   END-IF
+                END-IF
+      *
+               MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+               PERFORM 900-HELP-READ-SEC
+           END-PERFORM
+           MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *    次頁判定
+           IF     (IDX                 >=  300 )  AND
+                  (FLG-HELP            =   ZERO)
+               MOVE    1               TO  SPA-GMN-NEXT2
+           ELSE
+               MOVE    ZERO            TO  SPA-GMN-NEXT2
+           END-IF
+           MOVE    IDX                 TO  SPA-GMN-TBLMAX2
+      *    クリア
+           MOVE    ZERO                TO  SPA-GMN-SELNUM2
+           MOVE    SPACE               TO  SPA-GMN-MENU2
+           MOVE    ZERO                TO  SPA-NAI-MENU2FLG
            .
-       3001-MENU-HENSYU-EXT.
+       30012-MENU2-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -504,18 +596,18 @@
       *        削除
                WHEN    "CLICKED"       ALSO    "B03"
                     PERFORM 403-DELETE-SEC
-      *        目次切替え
-               WHEN    "CLICKED"       ALSO    "B05"
-                    PERFORM 405-KIRIKAE-SEC
+      *        目次１検索
+               WHEN    "CLICKED"       ALSO    "B04"
+                    PERFORM 404-KENSAKU-SEC
       *        前頁
                WHEN    "CLICKED"       ALSO    "B06"
                     PERFORM 406-PAGE-BACK-SEC
       *        次頁
                WHEN    "CLICKED"       ALSO    "B07"
                     PERFORM 407-PAGE-NEXT-SEC
-      *        目次名変更
-               WHEN    "CLICKED"       ALSO    "B08"
-                    PERFORM 408-MENUHEN-SEC
+      ****     移動
+      *        WHEN    "CLICKED"       ALSO    "B08"
+      ****          PERFORM 408-MOVE-SEC
       *        複写
                WHEN    "CLICKED"       ALSO    "B09"
                     PERFORM 409-COPY-SEC
@@ -545,9 +637,15 @@
       *        業務入力
                WHEN    "ACTIVATE"      ALSO    "LDNAME"
                    PERFORM 4002-LDNAME-CHK-SEC
-      *        目次選択
+      *        目次１選択
                WHEN    ANY             ALSO    "HEADLIST"
                    PERFORM 4003-MENULIST-SEL-SEC
+      *        目次２選択
+               WHEN    ANY             ALSO    "MENU2LIST"
+                   PERFORM 4004-MENU2LIST-SEL-SEC
+      *        目次１文字検索入力
+               WHEN    "ACTIVATE"      ALSO    "HEADMENU"
+                   PERFORM 4005-HEADMENU-CHK-SEC
       *
                WHEN    OTHER
                    MOVE    ZERO            TO  FLG-KOUSIN
@@ -625,7 +723,7 @@
            EXIT.
       *
       *****************************************************************
-      *    目次選択処理
+      *    目次１選択処理
       *****************************************************************
        4003-MENULIST-SEL-SEC          SECTION.
       *
@@ -655,6 +753,35 @@
            EXIT.
       *
       *****************************************************************
+      *    目次２選択処理
+      *****************************************************************
+       4004-MENU2LIST-SEL-SEC          SECTION.
+      *
+      *    行選択
+           MOVE    ZERO                TO  WRK-SELNUM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-TBLMAX2
+               IF      N41-MENU2LIST-SELECT (IDX)  =   "T"
+                   MOVE    SPA-GMN-TMENUNUM2 (IDX) TO  WRK-SELNUM
+               END-IF
+           END-PERFORM
+      *
+           IF     (WRK-SELNUM          >   ZERO ) AND
+                  (WRK-SELNUM      NOT =   SPA-GMN-SELNUM2)
+               MOVE    WRK-SELNUM      TO  SPA-GMN-SELNUM2
+               PERFORM 4101-SELNUM2-CHK-SEC
+               IF      SPA-GMN-SELNUM2     =   ZERO
+                   MOVE    5               TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    6               TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4004-MENU2LIST-SEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC          SECTION.
@@ -670,12 +797,148 @@
            EXIT.
       *
       *****************************************************************
+      *    目次１文字検索入力処理
+      *****************************************************************
+       4005-HEADMENU-CHK-SEC          SECTION.
+      *
+           MOVE    N41-HEADMENU        TO  SPA-GMN-HEADMENU
+      *
+           IF      SPA-GMN-HEADMENU    =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM 4005-HEADMENU-KENSAKU-SEC
+           END-IF
+           .
+      *
+       4005-HEADMENU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    目次１文字検索入力処理
+      *****************************************************************
+       4005-HEADMENU-KENSAKU-SEC          SECTION.
+      *
+      *    部分参照とする
+           MOVE    ZERO                TO  IDX-K
+           PERFORM VARYING     IDX     FROM    30  BY  -1
+                   UNTIL       IDX     <       1
+               IF      SPA-GMN-HEADMENU(IDX:1) NOT =   SPACE
+                   MOVE    IDX                 TO  IDX-K
+                   MOVE    1                   TO  IDX
+               END-IF
+           END-PERFORM
+           MOVE    SPACE               TO  WRK-INPUT-MENU
+           IF      IDX-K               =   30
+               MOVE    SPA-GMN-HEADMENU        TO  WRK-INPUT-MENU
+           ELSE
+               IF      IDX-K           =   29
+                   MOVE    SPA-GMN-HEADMENU    TO  WRK-INPUT-MENU
+                   MOVE    "%"                 TO  WRK-INPUT-MENU
+                                                             (30:1)
+               ELSE
+                   COMPUTE IDX-K2              =   IDX-K   +  2
+                   MOVE    "%"                 TO  WRK-INPUT-MENU
+                                                             (1:1)
+                   MOVE    SPA-GMN-HEADMENU    TO  WRK-INPUT-MENU
+                                                             (2:)
+                   MOVE    "%"                 TO  WRK-INPUT-MENU
+                                                             (IDX-K2:)
+               END-IF
+           END-IF
+      *
+           MOVE    SPACE               TO  HELP-REC
+           INITIALIZE                  HELP-REC
+           MOVE    SPA-GMN-HELPKBN     TO  HELP-HELPKBN
+           MOVE    SPACE               TO  HELP-KEY-OPID
+           MOVE    SPA-GMN-LDNAME-LD   TO  HELP-LDNAME
+           MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
+           MOVE    WRK-INPUT-MENU      TO  HELP-MENU
+      *
+           MOVE    HELP-REC            TO  MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY6  TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    PATH-TBL-HELP-KEY6  TO  MCP-PATH
+               PERFORM 900-HELP-READ-SEC
+           ELSE
+               INITIALIZE                  HELP-REC
+               MOVE    1               TO  FLG-HELP
+           END-IF
+      *
+           INITIALIZE                  SPA-GMN-MENUTBL
+           MOVE    1                   TO  FLG-GMN-INIT
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDY
+           MOVE    ZERO                TO  IDX-ST
+           IF      SPA-GMN-PAGE        =   ZERO
+               MOVE    1                   TO  IDX-ST
+           ELSE
+               COMPUTE IDX-ST          =   (SPA-GMN-PAGE   -   1)
+                                       *   300
+                                       +   1
+           END-IF
+           PERFORM
+               UNTIL   (FLG-HELP           =   1  )  OR
+                       (IDX                >=  300)
+               ADD     1                   TO  IDY
+               IF      IDX-ST              <=  IDY
+                   ADD     1                   TO  IDX
+                   MOVE    HELP-MENUNUM1   TO  SPA-GMN-TMENUNUM (IDX)
+                   MOVE    HELP-MENU2FLG   TO  SPA-GMN-TMENU2FLG(IDX)
+                   MOVE    HELP-MENU       TO  SPA-GMN-TMENU    (IDX)
+               END-IF
+      *
+               MOVE    PATH-TBL-HELP-KEY6  TO  MCP-PATH
+               PERFORM 900-HELP-READ-SEC
+           END-PERFORM
+           MOVE    PATH-TBL-HELP-KEY6  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *    次頁判定
+           IF     (IDX                 >=  300 )  AND
+                  (FLG-HELP            =   ZERO)
+               MOVE    1               TO  SPA-GMN-NEXT
+           ELSE
+               MOVE    ZERO            TO  SPA-GMN-NEXT
+           END-IF
+           MOVE    IDX                 TO  SPA-GMN-TBLMAX
+      *    クリア
+           INITIALIZE                  SPA-GMN-MENU2TBL
+           MOVE    ZERO                TO  SPA-GMN-NEXT2
+           MOVE    ZERO                TO  SPA-GMN-PAGE2
+           MOVE    ZERO                TO  SPA-NAI-MENU1FLG
+           MOVE    ZERO                TO  SPA-NAI-MENU2FLG
+           MOVE    ZERO                TO  SPA-GMN-SELNUM
+           MOVE    ZERO                TO  SPA-GMN-SELNUM2
+           MOVE    SPACE               TO  SPA-GMN-MENU
+           MOVE    SPACE               TO  SPA-GMN-MENU2
+           MOVE    SPACE               TO  SPA-GMN-HELP
+           INITIALIZE                  SPA-GMN-COPY-AREA
+           INITIALIZE                  SPA-NAI-COPY-AREA
+           MOVE    ZERO                TO  SPA-COPYFLG
+           MOVE    ZERO                TO  SPA-SYORIFLG2
+           MOVE    ZERO                TO  SPA-NAI-MENUNUM2
+      *
+           IF      SPA-GMN-TBLMAX      >   ZERO
+               MOVE    3                   TO  SPA-GMN-CUR
+           ELSE
+               MOVE    "0026"              TO  SPA-ERRCD
+               MOVE    8                   TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+      *
+       4005-HEADMENU-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    画面ＳＰＡ編集処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC          SECTION.
       *
            MOVE    N41-SELNUM          TO  SPA-GMN-SELNUM
            MOVE    N41-MENU            TO  SPA-GMN-MENU
+           MOVE    N41-SELNUM2         TO  SPA-GMN-SELNUM2
+           MOVE    N41-MENU2           TO  SPA-GMN-MENU2
            MOVE    N41-HELP            TO  SPA-GMN-HELP
       *
            MOVE    N41-HELPKBN-CP      TO  SPA-GMN-HELPKBN-CP-G
@@ -697,9 +960,17 @@
       *
       *    選択番号
            PERFORM 4101-SELNUM-CHK-SEC
-      *    目次
+      *    目次１
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4102-MENU-CHK-SEC
+           END-IF
+      *    選択番号２
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SELNUM2-CHK-SEC
+           END-IF
+      *    目次２
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4102-MENU2-CHK-SEC
            END-IF
       *    内容
            IF      SPA-ERRCD           =   SPACE
@@ -748,39 +1019,38 @@
                END-IF
            END-PERFORM
       *
-           IF      SPA-SYORIFLG        =   1
-      *        見出１
-               IF      SPA-GMN-SELNUM      =   SPA-NAI-MENUNUM1
-                   CONTINUE
-               ELSE
-                   IF      SPA-MENUFLG         =   ZERO
-                       MOVE    SPA-GMN-SELNUM      TO  SPA-NAI-MENUNUM1
-                       PERFORM 41011-MENUNUM1-SYORI-SEC
-                   ELSE
-      *                目次名称変更は存在すること
-                       IF      FLG-OK              =   ZERO
-                           MOVE    "0020"          TO  SPA-ERRCD
-                           MOVE    3               TO  SPA-GMN-CUR
-                       ELSE
-                           MOVE    SPA-GMN-SELNUM  TO  SPA-NAI-MENUNUM1
-                           MOVE    SPA-GMN-TMENU(IDX-TBL)
-                                                   TO  SPA-GMN-MENU
-                       END-IF
-                   END-IF
-               END-IF
+           IF      SPA-GMN-SELNUM      =   SPA-NAI-MENUNUM1
+               CONTINUE
            ELSE
-      *        見出２
-               IF      SPA-GMN-SELNUM      =   SPA-NAI-MENUNUM2
-                   CONTINUE
-               ELSE
-      *            複写中はエラー
-                   IF      SPA-COPYFLG         =   1
-                       MOVE    "0018"          TO  SPA-ERRCD
-                       MOVE    SPA-NAI-MENUNUM2    TO  SPA-GMN-SELNUM
+               IF      FLG-OK              =   ZERO
+                   MOVE    SPA-GMN-SELNUM      TO  WRK-MENUNUM1
+                   MOVE    ZERO                TO  WRK-MENUNUM2
+      *            登録済みかの判定
+                   PERFORM 41011-HELP-HENSYU-SEC
+                   IF      FLG-HELP            =   ZERO
+                       MOVE    "0020"          TO  SPA-ERRCD
+                       MOVE    3               TO  SPA-GMN-CUR
                    ELSE
-                       MOVE    SPA-GMN-SELNUM      TO  SPA-NAI-MENUNUM2
-                       PERFORM 41012-MENUNUM2-SYORI-SEC
+      *                新規
+                       MOVE    SPA-GMN-SELNUM  TO  SPA-NAI-MENUNUM1
+                       MOVE    1               TO  SPA-NAI-MENU1FLG
                    END-IF
+               ELSE
+      *        対象あり
+                   MOVE    ZERO                TO  SPA-NAI-MENU1FLG
+                   MOVE    SPA-GMN-SELNUM      TO  SPA-NAI-MENUNUM1
+                   MOVE    SPA-GMN-TMENU(IDX-TBL)
+                                               TO  SPA-GMN-MENU
+                   MOVE    ZERO                TO  SPA-NAI-MENUNUM2
+                   MOVE    SPA-GMN-SELNUM      TO  WRK-MENUNUM1
+                   MOVE    ZERO                TO  WRK-MENUNUM2
+      *            ヘルプ内容編集
+                   PERFORM 41011-HELP-HENSYU-SEC
+                   MOVE    1                   TO  SPA-GMN-PAGE2
+                   MOVE    2                   TO  SPA-SYORIFLG
+      *            目次２編集
+                   PERFORM 3001-MENU-HENSYU-SEC
+                   MOVE    WRK-HELP-AREA       TO  SPA-GMN-HELP
                END-IF
            END-IF
            .
@@ -788,37 +1058,117 @@
            EXIT.
       *
       *****************************************************************
-      *    見出し１編集処理
+      *    ヘルプ内容編集処理
       *****************************************************************
-       41011-MENUNUM1-SYORI-SEC      SECTION.
+       41011-HELP-HENSYU-SEC      SECTION.
       *
-          IF      FLG-OK              =   1
-              MOVE    SPA-GMN-TMENU(IDX-TBL)   TO  SPA-GMN-HEADMENU
-          ELSE
-              MOVE    SPACE                TO  SPA-GMN-HEADMENU
-      *       新規かどうかの判定
-              INITIALIZE                   WRK-KEY-AREA
-              MOVE    SPA-GMN-HELPKBN      TO  WRK-HELPKBN
-              MOVE    SPA-GMN-LDNAME-LD    TO  WRK-LDNAME-LD
-              MOVE    SPA-NAI-MENUNUM1     TO  WRK-MENUNUM1
-              PERFORM 410112-HELP-KENSAKU-SEC
-              IF      FLG-ARI              =   1
-                  MOVE    HELP-MENU            TO  SPA-GMN-HEADMENU
-                  MOVE    1                    TO  FLG-OK
-              END-IF
-           END-IF
-           IF      FLG-OK              =   ZERO
-      *         新規の時、目次名へ
-               MOVE    1               TO  SPA-SYORIFLG2
-               MOVE    SPACE           TO  SPA-GMN-MENU
-               MOVE    4               TO  SPA-GMN-CUR
+           MOVE    SPACE               TO  WRK-HELP-AREA
+           MOVE    SPACE               TO  SPA-NAI-HELP-G
+           MOVE    ZERO                TO  IDX-H
+      *
+           MOVE    SPACE               TO  HELP-REC
+           INITIALIZE                  HELP-REC
+           MOVE    SPA-GMN-HELPKBN     TO  HELP-HELPKBN
+           MOVE    SPACE               TO  HELP-KEY-OPID
+           MOVE    SPA-GMN-LDNAME-LD   TO  HELP-LDNAME
+           MOVE    WRK-MENUNUM1        TO  HELP-MENUNUM1
+           MOVE    WRK-MENUNUM2        TO  HELP-MENUNUM2
+      *
+           MOVE    HELP-REC            TO  MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 900-HELP-READ-SEC
            ELSE
-               MOVE    ZERO            TO  SPA-SYORIFLG2
-      *         目次２へ
-               PERFORM 410113-MENU2-HENSYU-SEC
+               INITIALIZE                  HELP-REC
+               MOVE    1               TO  FLG-HELP
+           END-IF
+           PERFORM UNTIL       (FLG-HELP   =   1  )  OR
+                               (IDX-H      >=  40 )
+               IF      HELP-EDANUM         >   ZERO
+                   ADD     1                   TO  IDX-H
+                   MOVE    HELP-HELP           TO  WRK-HELP (IDX-H)
+                   MOVE    HELP-HELP           TO  SPA-NAI-HELP (IDX-H)
+               END-IF
+      *
+               MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
+               PERFORM 900-HELP-READ-SEC
+           END-PERFORM
+      *
+           MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    改行コードでテーブル編集
+           MOVE    SPACE               TO  WRK-HELP-AREA
+           MOVE    ZERO                TO  FLG-CHK
+           MOVE    ZERO                TO  IDX-H2
+           PERFORM VARYING     IDX-H   FROM   1   BY  1
+                    UNTIL      IDX-H       >  40
+               PERFORM VARYING     IDX-H1  FROM   1   BY  1
+                        UNTIL      IDX-H1      >  50
+                   ADD     1                   TO  IDX-H2
+                   MOVE    SPA-NAI-HELP(IDX-H)(IDX-H1:1)
+                                            TO  WRK-HELP-AREA(IDX-H2:1)
+                   IF      (SPA-NAI-HELP(IDX-H)(IDX-H1:1)  =   X"0A")
+                       AND (IDX-H1             <   50   )
+                        COMPUTE IDX-H3         =   IDX-H1  +  1
+                        IF    SPA-NAI-HELP(IDX-H)(IDX-H3:) =  SPACE
+                            MOVE   50                TO  IDX-H1
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+           MOVE    WRK-HELP-AREA       TO  SPA-GMN-HELP
+      *
+           .
+       41011-HELP-HENSYU-EXT.
+      *
+      *****************************************************************
+      *    選択番号２チェック処理
+      *****************************************************************
+       4101-SELNUM2-CHK-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  IDX-TBL
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX             >   SPA-GMN-TBLMAX2) OR
+                              (FLG-OK          =   1     )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-GMN-SELNUM2     =   SPA-GMN-TMENUNUM2(IDX)
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    IDX                 TO  IDX-TBL
+               END-IF
+           END-PERFORM
+      *
+      *    見出２
+           IF      SPA-GMN-SELNUM2     =   SPA-NAI-MENUNUM2
+               CONTINUE
+           ELSE
+      *        複写中はエラー
+               IF      SPA-COPYFLG         NOT =   ZERO
+                   MOVE    "0018"              TO  SPA-ERRCD
+                   MOVE    11                  TO  SPA-GMN-CUR
+                   MOVE    SPA-NAI-MENUNUM2    TO  SPA-GMN-SELNUM2
+               ELSE
+      *            ヘルプ内容編集
+                   MOVE    SPA-NAI-MENUNUM1    TO  WRK-MENUNUM1
+                   MOVE    SPA-GMN-SELNUM2     TO  WRK-MENUNUM2
+                   PERFORM 41011-HELP-HENSYU-SEC
+                   IF      FLG-OK              =   1
+                       MOVE    SPA-GMN-TMENU2(IDX-TBL)
+                                                   TO  SPA-GMN-MENU2
+                       MOVE    WRK-HELP-AREA       TO  SPA-GMN-HELP
+                       MOVE    ZERO                TO  SPA-NAI-MENU2FLG
+                   ELSE
+                       MOVE    SPACE               TO  SPA-GMN-HELP
+                       MOVE    1                   TO  SPA-NAI-MENU2FLG
+                   END-IF
+                   MOVE    6                   TO  SPA-GMN-CUR
+                   MOVE    SPA-GMN-SELNUM2     TO  SPA-NAI-MENUNUM2
+               END-IF
            END-IF
            .
-       41011-MENUNUM1-SYORI-EXT.
+       4101-SELNUM2-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -835,17 +1185,10 @@
            MOVE    WRK-MENUNUM2        TO  HELP-MENUNUM2
            MOVE    WRK-EDANUM          TO  HELP-EDANUM
       *
-           MOVE    "HELP-KEY"          TO  WRK-ORC-DBPATH
-      *
            MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY7  TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 900-HELP-READ-SEC
            ELSE
                INITIALIZE                  HELP-REC
@@ -857,103 +1200,10 @@
                MOVE    ZERO            TO  FLG-ARI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY7  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
            .
        410112-HELP-KENSAKU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    目次２編集処理
-      *****************************************************************
-       410113-MENU2-HENSYU-SEC      SECTION.
-      *
-           MOVE    1                   TO  SPA-GMN-PAGE
-           MOVE    2                   TO  SPA-SYORIFLG
-           PERFORM 3001-MENU-HENSYU-SEC
-      *
-           MOVE    SPACE               TO  SPA-GMN-MENU
-           MOVE    3                   TO  SPA-GMN-CUR
-           .
-       410113-MENU2-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    目次２編集処理
-      *****************************************************************
-       41012-MENUNUM2-SYORI-SEC      SECTION.
-      *
-           MOVE    SPACE               TO  WRK-HELP-AREA
-           MOVE    ZERO                TO  IDX-H
-      *    新規かどうかの判定
-           MOVE    SPACE               TO  HELP-REC
-           INITIALIZE                  HELP-REC
-           MOVE    SPA-GMN-HELPKBN     TO  HELP-HELPKBN
-           MOVE    SPACE               TO  HELP-KEY-OPID
-           MOVE    SPA-GMN-LDNAME-LD   TO  HELP-LDNAME
-           MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
-           MOVE    SPA-NAI-MENUNUM2    TO  HELP-MENUNUM2
-      *
-           MOVE    "HELP-KEY3"         TO  WRK-ORC-DBPATH
-      *
-           MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-               PERFORM 900-HELP-READ-SEC
-           ELSE
-               INITIALIZE                  HELP-REC
-               MOVE    1               TO  FLG-HELP
-           END-IF
-           PERFORM UNTIL       (FLG-HELP   =   1  )  OR
-                               (IDX-H      >=  40 )
-               ADD     1                   TO  IDX-H
-               MOVE    HELP-HELP           TO  WRK-HELP (IDX-H)
-      *        画面にない時、最後に追加する
-               IF     (FLG-OK              =   ZERO )  AND
-                      (HELP-EDANUM         =   1    )
-                   IF      SPA-GMN-TBLMAX      <   300
-                       ADD     1               TO  SPA-GMN-TBLMAX
-                   END-IF
-                   MOVE    HELP-MENUNUM2       TO  SPA-GMN-TMENUNUM
-                                                      (SPA-GMN-TBLMAX)
-                   MOVE    HELP-MENU           TO  SPA-GMN-TMENU
-                                                      (SPA-GMN-TBLMAX)
-               END-IF
-               IF      HELP-EDANUM         =   1
-                   MOVE    HELP-MENU           TO  SPA-GMN-MENU
-               END-IF
-      *
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-               PERFORM 900-HELP-READ-SEC
-           END-PERFORM
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           IF      IDX-H               =   ZERO
-      *        新規
-               MOVE    SPACE               TO  SPA-GMN-HELP
-               MOVE    1                   TO  SPA-SYORIFLG2
-           ELSE
-               MOVE    WRK-HELP-AREA       TO  SPA-GMN-HELP
-               MOVE    ZERO                TO  SPA-SYORIFLG2
-           END-IF
-           .
-       41012-MENUNUM2-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    目次チェック処理
@@ -982,6 +1232,35 @@
       *
            .
        4102-MENU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    目次２チェック処理
+      *****************************************************************
+       4102-MENU2-CHK-SEC              SECTION.
+      *
+           IF      SPA-GMN-MENU2       =   SPACE
+               CONTINUE
+           ELSE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-MENU2       TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                      (KANACHK-SYUBETU     =   1     )
+                   IF      KANACHK-RC2         =   7
+                       MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MENU2
+                   END-IF
+                   MOVE    "0019"          TO  SPA-ERRCD
+                   MOVE    6               TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MENU2
+               END-IF
+           END-IF
+      *
+           .
+       4102-MENU2-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1022,7 +1301,65 @@
                        MOVE    1               TO  FLG-CHK
                    END-IF
                END-PERFORM
-               MOVE    WRK-HELP-AREA       TO  SPA-GMN-HELP
+      *        改行コードでテーブル編集
+               MOVE    SPACE               TO  WRK-HELP-AREA
+               MOVE    ZERO                TO  FLG-CHK
+               MOVE    ZERO                TO  IDX-H
+               MOVE    1                   TO  IDX-H1
+               MOVE    1                   TO  IDX-H2
+               MOVE    ZERO                TO  IDX-H3
+               PERFORM UNTIL  (FLG-CHK     =   1   )  OR
+                              (IDX-H       >=  40  )
+                   ADD     1                   TO  IDX-H3
+                   IF     (IDX-H3              =   50  )  OR
+                          (SPA-GMN-HELP(IDX-H1:1)  =   X"0A")
+                       ADD     1                   TO  IDX-H
+                       MOVE    SPA-GMN-HELP(IDX-H2:IDX-H3)
+                                               TO  WRK-HELP (IDX-H)
+                       IF      SPA-GMN-HELP(IDX-H1:1)  =   X"0A"
+                           CONTINUE
+                       ELSE
+                           PERFORM 41031-HALF-MOJI-SEC
+                           IF      KANACHK-RC2         =   7
+                               COMPUTE IDX-H3          =   IDX-H3  -  1
+                           END-IF
+                       END-IF
+                       COMPUTE IDX-H2              =   IDX-H2
+                                                   +   IDX-H3
+                       MOVE    IDX-H2              TO  IDX-H1
+                       COMPUTE IDX-H1              =   IDX-H1  -  1
+                       MOVE    ZERO                TO  IDX-H3
+                   END-IF
+                   ADD     1                   TO  IDX-H1
+      *
+                   IF     (IDX-H1              >   2000)  OR
+                          (SPA-GMN-HELP(IDX-H1:)   =   SPACE)
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+               END-PERFORM
+               IF      IDX-H3                  >   ZERO
+                   ADD     1                   TO  IDX-H
+                   MOVE    SPA-GMN-HELP(IDX-H2:IDX-H3)
+                                               TO  WRK-HELP (IDX-H)
+               END-IF
+               MOVE    WRK-HELP-AREA       TO  SPA-NAI-HELP-G
+      *        改行コードでテーブル編集
+               MOVE    SPACE               TO  WRK-HELP-AREA
+               MOVE    ZERO                TO  FLG-CHK
+               MOVE    ZERO                TO  IDX-H2
+               PERFORM VARYING     IDX-H   FROM   1   BY  1
+                        UNTIL      IDX-H       >  40
+                   PERFORM VARYING     IDX-H1  FROM   1   BY  1
+                            UNTIL      IDX-H1      >  50
+                       ADD     1                   TO  IDX-H2
+                       MOVE    SPA-NAI-HELP(IDX-H)(IDX-H1:1)
+                                           TO  WRK-HELP-AREA(IDX-H2:1)
+                       IF   SPA-NAI-HELP(IDX-H)(IDX-H1:1)   =   X"0A"
+                            MOVE   50               TO  IDX-H1
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+               MOVE    WRK-HELP-AREA   TO  SPA-GMN-HELP
            END-IF
       *
            .
@@ -1067,7 +1404,7 @@
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0006"              TO  SPA-ERRCD
-               MOVE    6                   TO  SPA-GMN-CUR
+               MOVE    10                  TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -1094,7 +1431,7 @@
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0007"              TO  SPA-ERRCD
-               MOVE    7                   TO  SPA-GMN-CUR
+               MOVE    11                  TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -1123,11 +1460,11 @@
               IF      FLG-ARI              =   1
                   MOVE    HELP-MENU            TO  SPA-GMN-MENU1-CP
                   MOVE    HELP-MENU            TO  SPA-NAI-MENU1-CP
-                  MOVE    10                   TO  SPA-GMN-CUR
+                  MOVE    13                   TO  SPA-GMN-CUR
               ELSE
                   MOVE    SPACE                TO  SPA-GMN-MENU1-CP
                   MOVE    SPACE                TO  SPA-NAI-MENU1-CP
-                  MOVE    9                    TO  SPA-GMN-CUR
+                  MOVE    12                   TO  SPA-GMN-CUR
               END-IF
            END-IF
       *
@@ -1158,7 +1495,7 @@
                        MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MENU1-CP
                    END-IF
                    MOVE    "0008"          TO  SPA-ERRCD
-                   MOVE    9               TO  SPA-GMN-CUR
+                   MOVE    13              TO  SPA-GMN-CUR
                ELSE
                    MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MENU1-CP
                END-IF
@@ -1188,9 +1525,9 @@
               PERFORM 410112-HELP-KENSAKU-SEC
               IF      FLG-ARI              =   1
                   MOVE    "0009"               TO  SPA-ERRCD
-                  MOVE    10                   TO  SPA-GMN-CUR
+                  MOVE    14                   TO  SPA-GMN-CUR
               ELSE
-                  MOVE    11                   TO  SPA-GMN-CUR
+                  MOVE    15                   TO  SPA-GMN-CUR
               END-IF
           END-IF
       *
@@ -1216,7 +1553,7 @@
                        MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MENU2-CP
                    END-IF
                    MOVE    "0008"          TO  SPA-ERRCD
-                   MOVE    11              TO  SPA-GMN-CUR
+                   MOVE    15              TO  SPA-GMN-CUR
                ELSE
                    MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MENU2-CP
                END-IF
@@ -1253,22 +1590,30 @@
       *****************************************************************
        402-CLREA-SEC       SECTION.
       *
-           IF      SPA-COPYFLG         =   1
+           IF      SPA-COPYFLG     NOT =   ZERO
                INITIALIZE                  SPA-GMN-COPY-AREA
                INITIALIZE                  SPA-NAI-COPY-AREA
                MOVE    ZERO                TO  SPA-COPYFLG
            END-IF
       *
-           MOVE    ZERO            TO  SPA-SYORIFLG2
-           MOVE    ZERO            TO  SPA-GMN-SELNUM
-           MOVE    SPACE           TO  SPA-GMN-MENU
-           MOVE    SPACE           TO  SPA-GMN-HELP
-           IF      SPA-SYORIFLG    =   1
-               MOVE    ZERO            TO  SPA-NAI-MENUNUM1
+           MOVE    ZERO                TO  SPA-SYORIFLG2
+           MOVE    ZERO                TO  SPA-GMN-SELNUM
+           MOVE    ZERO                TO  SPA-GMN-SELNUM2
+           MOVE    SPACE               TO  SPA-GMN-MENU
+           MOVE    SPACE               TO  SPA-GMN-MENU2
+           MOVE    SPACE               TO  SPA-GMN-HELP
+           MOVE    ZERO                TO  SPA-NAI-MENUNUM1
+           MOVE    ZERO                TO  SPA-NAI-MENUNUM2
+           INITIALIZE                  SPA-GMN-MENU2TBL
+           MOVE    ZERO                TO  SPA-GMN-NEXT2
+           MOVE    ZERO                TO  SPA-GMN-PAGE2
+      *
+           IF      SPA-GMN-HEADMENU    NOT =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-HEADMENU
+               MOVE    1               TO  SPA-SYORIFLG
+               PERFORM 3001-MENU-HENSYU-SEC
            END-IF
-           IF      SPA-SYORIFLG    =   2
-               MOVE    ZERO            TO  SPA-NAI-MENUNUM2
-           END-IF
+      *
            MOVE    3               TO  SPA-GMN-CUR
       *
            .
@@ -1279,7 +1624,8 @@
       *****************************************************************
        403-DELETE-SEC       SECTION.
       *
-           IF      SPA-SYORIFLG2       =   1
+           IF     (SPA-NAI-MENU1FLG    =   1  )  OR
+                  (SPA-NAI-MENU2FLG    =   1  )
                MOVE    "0030"          TO  SPA-ERRCD
            END-IF
            IF      SPA-COPYFLG         =   1
@@ -1315,15 +1661,14 @@
            MOVE    SPA-NAI-MENUNUM2    TO  HELP-MENUNUM2
       *
            MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
            IF      SPA-NAI-MENUNUM2    =   ZERO
-               MOVE    "HELP-DEL2"         TO  ORC-DBPATH
+               MOVE    PATH-TBL-HELP-DEL2  TO  MCP-PATH
            ELSE
-               MOVE    "HELP-DEL1"         TO  ORC-DBPATH
+               MOVE    PATH-TBL-HELP-DEL1  TO  MCP-PATH
            END-IF
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1001"          TO  SPA-ERRCD
@@ -1337,35 +1682,27 @@
       *
            MOVE    1                   TO  SPA-GMN-PAGE
            PERFORM 3001-MENU-HENSYU-SEC
-           MOVE    3                  TO  SPA-GMN-CUR
-      *  
+           MOVE    3                   TO  SPA-GMN-CUR
+      *
+           IF      SPA-SYORIFLG        =   2
+      *        目次１変更
+               IF      SPA-GMN-TBLMAX2     =   ZERO
+                   PERFORM 450111-HELP-MENU1-SEC
+               END-IF
+           END-IF
            .
        4031-DELETE-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    目次切替え処理
+      *    目次１検索処理
       *****************************************************************
-       405-KIRIKAE-SEC       SECTION.
+       404-KENSAKU-SEC       SECTION.
       *
-           IF      SPA-COPYFLG         =   1
-               MOVE    "0017"          TO  SPA-ERRCD
-           END-IF
-      *
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-SYORIFLG        =   2     )
-               IF      SPA-SYORIFLG2       =   1
-                   MOVE    "0103"          TO  SPA-N41IDCD
-               ELSE
-                   MOVE    1               TO  SPA-SYORIFLG
-                   MOVE    1               TO  SPA-GMN-PAGE
-                   PERFORM 3001-MENU-HENSYU-SEC
-                   MOVE    3               TO  SPA-GMN-CUR
-               END-IF
-           END-IF
+           MOVE    8                   TO  SPA-GMN-CUR
       *
            .
-       405-KIRIKAE-EXT.
+       404-KENSAKU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1373,11 +1710,20 @@
       *****************************************************************
        406-PAGE-BACK-SEC       SECTION.
       *
-           IF      SPA-GMN-PAGE        =   1
-               MOVE    "0023"          TO  SPA-ERRCD
+           IF      SPA-SYORIFLG        =   1
+               IF      SPA-GMN-PAGE        =   1
+                   MOVE    "0023"          TO  SPA-ERRCD
+               ELSE
+                   COMPUTE SPA-GMN-PAGE    =   SPA-GMN-PAGE   -   1
+                   PERFORM 3001-MENU-HENSYU-SEC
+               END-IF
            ELSE
-               COMPUTE SPA-GMN-PAGE    =   SPA-GMN-PAGE   -   1
-               PERFORM 3001-MENU-HENSYU-SEC
+               IF      SPA-GMN-PAGE2       =   1
+                   MOVE    "0023"          TO  SPA-ERRCD
+               ELSE
+                   COMPUTE SPA-GMN-PAGE2   =   SPA-GMN-PAGE2  -   1
+                   PERFORM 3001-MENU-HENSYU-SEC
+               END-IF
            END-IF
       *
            .
@@ -1389,11 +1735,20 @@
       *****************************************************************
        407-PAGE-NEXT-SEC       SECTION.
       *
-           IF      SPA-GMN-NEXT        =   ZERO
-               MOVE    "0024"          TO  SPA-ERRCD
+           IF      SPA-SYORIFLG        =   1
+               IF      SPA-GMN-NEXT        =   ZERO
+                   MOVE    "0024"          TO  SPA-ERRCD
+               ELSE
+                   ADD     1               TO  SPA-GMN-PAGE
+                   PERFORM 3001-MENU-HENSYU-SEC
+               END-IF
            ELSE
-               ADD     1               TO  SPA-GMN-PAGE
-               PERFORM 3001-MENU-HENSYU-SEC
+               IF      SPA-GMN-NEXT2       =   ZERO
+                   MOVE    "0024"          TO  SPA-ERRCD
+               ELSE
+                   ADD     1               TO  SPA-GMN-PAGE2
+                   PERFORM 3001-MENU-HENSYU-SEC
+               END-IF
            END-IF
       *
            .
@@ -1401,23 +1756,13 @@
            EXIT.
       *
       *****************************************************************
-      *    目次名変更処理
+      *    目次移動処理
       *****************************************************************
-       408-MENUHEN-SEC       SECTION.
+       408-MOVE-SEC       SECTION.
       *
-           IF      SPA-COPYFLG         =   1
-               MOVE    "0021"          TO  SPA-ERRCD
-           ELSE
-               IF      SPA-SYORIFLG    =   1
-                   MOVE    1               TO  SPA-MENUFLG
-                   MOVE    3               TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    "0026"          TO  SPA-ERRCD
-               END-IF
-           END-IF
       *
            .
-       408-MENUHEN-EXT.
+       408-MOVE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1425,7 +1770,15 @@
       *****************************************************************
        409-COPY-SEC       SECTION.
       *
-           IF      SPA-SYORIFLG2       =   1
+           IF      SPA-COPYFLG         =   1
+               MOVE    ZERO                TO  SPA-COPYFLG
+               INITIALIZE                  SPA-GMN-COPY-AREA
+               INITIALIZE                  SPA-NAI-COPY-AREA
+               MOVE    7                   TO  SPA-GMN-CUR
+           ELSE
+      *
+           IF     (SPA-NAI-MENU1FLG    =   1  )  OR
+                  (SPA-NAI-MENU2FLG    =   1  )
                MOVE    "0025"          TO  SPA-ERRCD
            ELSE
                IF     (SPA-NAI-MENUNUM1    =   ZERO ) OR
@@ -1444,10 +1797,12 @@
                MOVE    SPA-GMN-LDNAME      TO  SPA-GMN-LDNAME-CP
                MOVE    SPA-GMN-LDNAME-LD   TO  SPA-GMN-LDNAME-LD-CP
       *        目次名２
-               MOVE    SPA-GMN-MENU        TO  SPA-GMN-MENU2-CP
+               MOVE    SPA-GMN-MENU2       TO  SPA-GMN-MENU2-CP
       *
-               MOVE    1               TO  SPA-COPYFLG
-               MOVE    6               TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-COPYFLG
+               MOVE    10                  TO  SPA-GMN-CUR
+           END-IF
+      *
            END-IF
       *
            .
@@ -1460,6 +1815,10 @@
        420-HELP-IN-SEC             SECTION.
       *    入力
            PERFORM 410-INPUT-CHK-SEC
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-GMN-HELP    NOT =   SPACE )
+               MOVE    99                  TO  SPA-GMN-CUR
+           END-IF
       *
            .
        420-HELP-IN-EXT.
@@ -1508,43 +1867,42 @@
                    MOVE    3                   TO  SPA-GMN-CUR
                END-IF
            END-IF
-           IF     (SPA-NAI-MENUNUM2    =   ZERO ) AND
-                  (SPA-SYORIFLG        =   2    )
-               IF      SPA-ERRCD           =   SPACE
-                   MOVE    "0012"              TO  SPA-ERRCD
-                   MOVE    3                   TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
       *    目次１の追加
            IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-SYORIFLG        =   1     )  AND
-                  (SPA-COPYFLG         =   ZERO  )  AND
-                  (SPA-SYORIFLG2       =   1     )
+                  (SPA-NAI-MENUNUM1    NOT =   ZERO) AND
+                  (SPA-COPYFLG         =   ZERO  )
                IF      SPA-GMN-MENU        =   SPACE
                    MOVE    "0013"              TO  SPA-ERRCD
                    MOVE    4                   TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF     (SPA-NAI-MENUNUM1    =   ZERO )  AND
+                  (SPA-NAI-MENUNUM2    NOT =   ZERO)
+              IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0112"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN-CUR
                END-IF
            END-IF
       *    目次２の追加
            IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-SYORIFLG        =   2     )  AND
-                  (SPA-COPYFLG         =   ZERO  )  AND
-                  (SPA-SYORIFLG2       =   1     )
-               IF      SPA-GMN-MENU        =   SPACE
-                   MOVE    "0013"              TO  SPA-ERRCD
-                   MOVE    4                   TO  SPA-GMN-CUR
+                  (SPA-NAI-MENUNUM1    NOT =   ZERO) AND
+                  (SPA-NAI-MENUNUM2    NOT =   ZERO) AND
+                  (SPA-COPYFLG         =   ZERO  )
+               IF      SPA-GMN-MENU2       =   SPACE
+                   MOVE    "0113"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN-CUR
                END-IF
                IF      SPA-GMN-HELP        =   SPACE
                    IF      SPA-ERRCD           =   SPACE
                        MOVE    "0014"              TO  SPA-ERRCD
-                       MOVE    5                   TO  SPA-GMN-CUR
+                       MOVE    6                   TO  SPA-GMN-CUR
                    END-IF
                END-IF
            END-IF
       *    複写
            IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-COPYFLG         =   1     )
+                  (SPA-COPYFLG     NOT =   ZERO  )
                IF     (SPA-GMN-HELPKBN-CP  =   SPACE )  OR
                       (SPA-GMN-LDNAME-CP   =   SPACE )  OR
                       (SPA-GMN-MENUNUM1-CP =   ZERO  )  OR
@@ -1575,26 +1933,42 @@
       *    更新日取得
            CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
       *
-           IF      SPA-COPYFLG         =   ZERO
-               IF      SPA-SYORIFLG        =   1
+           EVALUATE    SPA-COPYFLG
+               WHEN    ZERO
+      *            目次１登録
                    PERFORM 45011-MENU1-KOUSIN-SEC
-               ELSE
-                   PERFORM 45012-MENU2-KOUSIN-SEC
-               END-IF
-           ELSE
-               PERFORM 45013-COPY-SYORI-SEC
-           END-IF
+      *            目次２登録
+                   IF      SPA-NAI-MENUNUM2    >   ZERO
+                       PERFORM 45012-MENU2-KOUSIN-SEC
+                   END-IF
+               WHEN    1
+      *            複写
+                   PERFORM 45013-COPY-SYORI-SEC
+               WHEN    2
+      *            移動
+                   PERFORM 45014-MOVE-SYORI-SEC
+           END-EVALUATE
       *
            IF      SPA-ERRCD           =   SPACE
-               IF     (SPA-SYORIFLG        =   1  )  AND
-                      (FLG-ARI             =   ZERO)
-      *            目次１の追加の時、目次２の明細登録へ
-                   MOVE    2               TO  SPA-SYORIFLG
-                   MOVE    1               TO  SPA-SYORIFLG2
-                   MOVE    SPA-GMN-MENU    TO  SPA-GMN-HEADMENU
+               MOVE    ZERO                TO  SPA-COPYFLG
+               MOVE    SPACE               TO  SPA-GMN-HELP
+               INITIALIZE                  SPA-GMN-COPY-AREA
+               INITIALIZE                  SPA-NAI-COPY-AREA
+      *        目次１
+               MOVE    SPA-NAI-MENUNUM1    TO  WRK-MENUNUM1
+               MOVE    SPA-GMN-MENU        TO  WRK-MENU
+               MOVE    1                   TO  SPA-SYORIFLG
+               PERFORM 30011-MENU1-HENSYU-SEC
+               MOVE    WRK-MENUNUM1        TO  SPA-NAI-MENUNUM1
+               MOVE    WRK-MENUNUM1        TO  SPA-GMN-SELNUM
+               MOVE    WRK-MENU            TO  SPA-GMN-MENU
+      *        目次２
+               IF      SPA-NAI-MENUNUM2    NOT =   ZERO
+                   MOVE    2                   TO  SPA-SYORIFLG
+                   PERFORM 3001-MENU-HENSYU-SEC
                END-IF
-               PERFORM 3001-MENU-HENSYU-SEC
-               MOVE    3                   TO  SPA-GMN-CUR
+               MOVE    ZERO                TO  SPA-NAI-MENUNUM2
+               MOVE    5                   TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -1606,29 +1980,127 @@
       *****************************************************************
        45011-MENU1-KOUSIN-SEC       SECTION.
       *
-      *    存在チェック
-           INITIALIZE                   WRK-KEY-AREA
-           MOVE    SPA-GMN-HELPKBN      TO  WRK-HELPKBN
-           MOVE    SPA-GMN-LDNAME-LD    TO  WRK-LDNAME-LD
-           MOVE    SPA-NAI-MENUNUM1     TO  WRK-MENUNUM1
-           MOVE    ZERO                 TO  WRK-MENUNUM2
-           MOVE    ZERO                 TO  WRK-EDANUM
-           PERFORM 410112-HELP-KENSAKU-SEC
-           IF      FLG-ARI             =   1
-      *        更新処理
-               MOVE    SPA-GMN-MENU        TO  HELP-MENU
-               PERFORM 4902-HELP-UPD-SEC
+           MOVE    SPA-NAI-MENUNUM1    TO  WRK-MENUNUM1
+           MOVE    ZERO                TO  WRK-MENUNUM2
+           MOVE    ZERO                TO  WRK-EDANUM
+           IF      SPA-NAI-MENUNUM2    =   ZERO
+               MOVE    SPA-NAI-HELP-G      TO  WRK-HELP-AREA
+      *        内容登録
+               PERFORM 450112-HELP-KOUSIN-SEC
            ELSE
-      *        新規
+               MOVE    SPACE               TO  WRK-HELP-AREA
+      *        内容変更なし登録
+               PERFORM 450111-HELP-MENU1-SEC
+           END-IF
+           .
+       45011-MENU1-KOUSIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    マスタ新規処理
+      *****************************************************************
+       450111-HELP-MENU1-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  HELP-REC
+           INITIALIZE                  HELP-REC
+           MOVE    SPA-GMN-HELPKBN     TO  HELP-HELPKBN
+           MOVE    SPACE               TO  HELP-KEY-OPID
+           MOVE    SPA-GMN-LDNAME-LD   TO  HELP-LDNAME
+           MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
+           MOVE    ZERO                TO  HELP-MENUNUM2
+      *
+           MOVE    HELP-REC            TO  MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 900-HELP-READ-SEC
+           ELSE
+               INITIALIZE                  HELP-REC
+               MOVE    1               TO  FLG-HELP
+           END-IF
+           IF      FLG-HELP            =   1
                PERFORM 4900-HELP-INI-SEC
                MOVE    ZERO                TO  HELP-MENUNUM2
                MOVE    ZERO                TO  HELP-EDANUM
                MOVE    SPA-GMN-MENU        TO  HELP-MENU
+      *        目次２フラグ
+               PERFORM 4903-HELP-MENU2FLG-SEC
+               PERFORM 4901-HELP-ADD-SEC
+           ELSE
+      *        メニュウ名称
+               MOVE    SPA-GMN-MENU        TO  HELP-MENU
+      *        目次２フラグ
+               PERFORM 4903-HELP-MENU2FLG-SEC
+               PERFORM 4902-HELP-UPD-SEC
+           END-IF
       *
+           MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+     *
+           .
+       450111-HELP-MENU1-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    マスタ新規処理
+      *****************************************************************
+       450112-HELP-KOUSIN-SEC       SECTION.
+      *
+      *    削除後追加する
+           MOVE    SPACE               TO  HELP-REC
+           INITIALIZE                  HELP-REC
+           MOVE    SPA-GMN-HELPKBN     TO  HELP-HELPKBN
+           MOVE    SPACE               TO  HELP-KEY-OPID
+           MOVE    SPA-GMN-LDNAME-LD   TO  HELP-LDNAME
+           MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
+           MOVE    WRK-MENUNUM2        TO  HELP-MENUNUM2
+      *
+           MOVE    HELP-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    PATH-TBL-HELP-DEL1  TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+      *    追加処理
+           MOVE    ZERO                TO  WRK-EDANUM
+           PERFORM VARYING     IDX-H   FROM    1   BY  1
+                   UNTIL      (IDX-H   >   40  )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      WRK-HELP (IDX-H)    NOT =   SPACE
+                   PERFORM 4900-HELP-INI-SEC
+                   ADD     1                   TO  WRK-EDANUM
+                   MOVE    WRK-MENUNUM2        TO  HELP-MENUNUM2
+                   MOVE    WRK-EDANUM          TO  HELP-EDANUM
+                   IF      WRK-EDANUM          =   1
+                       IF      WRK-MENUNUM2        =   ZERO
+                           MOVE    SPA-GMN-MENU        TO  HELP-MENU
+      *                    目次２フラグ
+                           PERFORM 4903-HELP-MENU2FLG-SEC
+                       ELSE
+                           MOVE    SPA-GMN-MENU2       TO  HELP-MENU
+                       END-IF
+                   END-IF
+                   MOVE    WRK-HELP (IDX-H)    TO  HELP-HELP
+      *
+                   PERFORM 4901-HELP-ADD-SEC
+               END-IF
+           END-PERFORM
+      *
+           IF    (WRK-MENUNUM2         =   ZERO )  AND
+                 (WRK-EDANUM           =   ZERO )
+      *        目次１で内容が無い時の追加
+               PERFORM 4900-HELP-INI-SEC
+               MOVE    ZERO                TO  HELP-MENUNUM2
+               MOVE    ZERO                TO  HELP-EDANUM
+               MOVE    SPA-GMN-MENU        TO  HELP-MENU
+      *        目次２フラグ
+               PERFORM 4903-HELP-MENU2FLG-SEC
                PERFORM 4901-HELP-ADD-SEC
            END-IF
+      *
            .
-       45011-MENU1-KOUSIN-EXT.
+       450112-HELP-KOUSIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1648,6 +2120,22 @@
            EXIT.
       *
       *****************************************************************
+      *    マスタ目次２フラグ編集処理
+      *****************************************************************
+       4903-HELP-MENU2FLG-SEC       SECTION.
+      *
+           IF     (SPA-GMN-TBLMAX2     >   ZERO )  OR
+                  (SPA-NAI-MENUNUM2    >   ZERO )
+               MOVE    1               TO  HELP-MENU2FLG
+           ELSE
+               MOVE    ZERO            TO  HELP-MENU2FLG
+           END-IF
+      *
+           .
+       4903-HELP-MENU2FLG-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ヘルプマスタ新規登録処理
       *****************************************************************
        4901-HELP-ADD-SEC       SECTION.
@@ -1658,10 +2146,9 @@
       *
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "HELP-KEY"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    PATH-TBL-HELP-KEY   TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1000"          TO  SPA-ERRCD
@@ -1683,15 +2170,13 @@
       *
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "HELP-KEY"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    PATH-TBL-HELP-KEY   TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1000"          TO  SPA-ERRCD
                DISPLAY "N41 HELP UPD ERR:" MCP-RC
-                       ",KEY:" HELP-KEY
            END-IF
       *
            .
@@ -1703,42 +2188,13 @@
       *****************************************************************
        45012-MENU2-KOUSIN-SEC       SECTION.
       *
-      *    削除後追加する
-           MOVE    SPACE               TO  HELP-REC
-           INITIALIZE                  HELP-REC
-           MOVE    SPA-GMN-HELPKBN     TO  HELP-HELPKBN
-           MOVE    SPACE               TO  HELP-KEY-OPID
-           MOVE    SPA-GMN-LDNAME-LD   TO  HELP-LDNAME
-           MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
-           MOVE    SPA-NAI-MENUNUM2    TO  HELP-MENUNUM2
-      *
-           MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "HELP-DEL1"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-      *    追加処理
+           MOVE    SPA-NAI-MENUNUM1    TO  WRK-MENUNUM1
+           MOVE    SPA-NAI-MENUNUM2    TO  WRK-MENUNUM2
            MOVE    ZERO                TO  WRK-EDANUM
            MOVE    SPA-GMN-HELP        TO  WRK-HELP-AREA
-           PERFORM VARYING     IDX-H   FROM    1   BY  1
-                   UNTIL      (IDX-H   >   40  )   OR
-                              (SPA-ERRCD   NOT =   SPACE )
-               IF      WRK-HELP (IDX-H)    NOT =   SPACE
-                   PERFORM 4900-HELP-INI-SEC
-                   ADD     1                   TO  WRK-EDANUM
-                   MOVE    SPA-NAI-MENUNUM2    TO  HELP-MENUNUM2
-                   MOVE    WRK-EDANUM          TO  HELP-EDANUM
-                   IF      WRK-EDANUM          =   1
-                       MOVE    SPA-GMN-MENU        TO  HELP-MENU
-                   END-IF
-                   MOVE    WRK-HELP (IDX-H)    TO  HELP-HELP
-      *
-                   PERFORM 4901-HELP-ADD-SEC
-               END-IF
-           END-PERFORM
+           MOVE    SPA-NAI-HELP-G      TO  WRK-HELP-AREA
+      *    内容登録
+           PERFORM 450112-HELP-KOUSIN-SEC
            .
        45012-MENU2-KOUSIN-EXT.
            EXIT.
@@ -1762,24 +2218,50 @@
            END-IF
       *
       *    目次１の登録
-           IF     (SPA-NAI-MENU1-CP    =   SPACE )  AND
-                  (SPA-ERRCD           =   SPACE )
-               MOVE    SPACE               TO  HELP-REC
-               INITIALIZE                  HELP-REC
-               PERFORM 450131-COPY-INI-HEN-SEC
-               MOVE    ZERO                TO  HELP-MENUNUM2
-               MOVE    ZERO                TO  HELP-EDANUM
-               MOVE    SPA-GMN-MENU1-CP    TO  HELP-MENU
-               PERFORM 4901-HELP-ADD-SEC
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-MENU1-CP    =   SPACE
+                   MOVE    SPACE               TO  HELP-REC
+                   INITIALIZE                  HELP-REC
+                   PERFORM 450131-COPY-INI-HEN-SEC
+                   MOVE    ZERO                TO  WRK-MENUNUM2
+                   PERFORM 450132-COPY-MENU2-SEC
+               ELSE
+      *            目次１のフラグ
+                   PERFORM 450133-COPY-MENU1-SEC
+               END-IF
            END-IF
       *
       *    目次２の登録
            IF      SPA-ERRCD           =   SPACE
+               MOVE    SPA-NAI-MENUNUM2    TO  WRK-MENUNUM2
                PERFORM 450132-COPY-MENU2-SEC
            END-IF
       *
            .
        45013-COPY-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    目次１の更新処理
+      *****************************************************************
+       450133-COPY-MENU1-SEC       SECTION.
+      *
+           INITIALIZE                   WRK-KEY-AREA
+           MOVE    SPA-GMN-HELPKBN-CP   TO  WRK-HELPKBN
+           MOVE    SPA-GMN-LDNAME-LD-CP TO  WRK-LDNAME-LD
+           MOVE    SPA-GMN-MENUNUM1-CP  TO  WRK-MENUNUM1
+           MOVE    ZERO                 TO  WRK-MENUNUM2
+           MOVE    1                    TO  WRK-EDANUM
+           PERFORM 410112-HELP-KENSAKU-SEC
+           IF      FLG-ARI              =   1
+               IF      HELP-MENU2FLG    =   ZERO
+                   MOVE    1                TO  HELP-MENU2FLG
+                   PERFORM 4902-HELP-UPD-SEC
+               END-IF
+           END-IF
+      *
+           .
+       450133-COPY-MENU1-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1794,19 +2276,12 @@
            MOVE    SPACE               TO  HELP-KEY-OPID
            MOVE    SPA-GMN-LDNAME-LD   TO  HELP-LDNAME
            MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
-           MOVE    SPA-NAI-MENUNUM2    TO  HELP-MENUNUM2
-      *
-           MOVE    "HELP-KEY3"         TO  WRK-ORC-DBPATH
+           MOVE    WRK-MENUNUM2        TO  HELP-MENUNUM2
       *
            MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 900-HELP-READ-SEC
            ELSE
                INITIALIZE                  HELP-REC
@@ -1816,21 +2291,22 @@
                                (SPA-ERRCD  NOT =   SPACE )
       *
                PERFORM 450131-COPY-INI-HEN-SEC
-               MOVE    SPA-GMN-MENUNUM2-CP TO  HELP-MENUNUM2
-               MOVE    SPA-GMN-MENU2-CP    TO  HELP-MENU
+               IF      WRK-MENUNUM2        =   ZERO
+                   MOVE    ZERO                TO  HELP-MENUNUM2
+                   MOVE    SPA-GMN-MENU1-CP    TO  HELP-MENU
+               ELSE
+                   MOVE    SPA-GMN-MENUNUM2-CP TO  HELP-MENUNUM2
+                   MOVE    SPA-GMN-MENU2-CP    TO  HELP-MENU
+               END-IF
       *
                PERFORM 4901-HELP-ADD-SEC
       *
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+               MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
                PERFORM 900-HELP-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        450132-COPY-MENU2-EXT.
@@ -1849,6 +2325,23 @@
       *
            .
        450131-COPY-INI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    移動処理
+      *****************************************************************
+       45014-MOVE-SYORI-SEC       SECTION.
+      *
+      *    複写処理
+           PERFORM 45013-COPY-SYORI-SEC
+      *
+           IF      SPA-ERRCD           =   SPACE
+      *        削除処理
+               PERFORM 4031-DELETE-SYORI-SEC
+           END-IF
+      *
+           .
+       45014-MOVE-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1888,6 +2381,12 @@
            ELSE
                MOVE    N41-HEADLIST-ROW    TO  WRK-N41-ROW
            END-IF
+           IF     (FLG-GMN-INIT2       =   1   )  OR
+                  (SPA-GMN-TBLMAX2     =   ZERO )
+               MOVE    ZERO                TO  WRK-N41-ROW2
+           ELSE
+               MOVE    N41-MENU2LIST-ROW   TO  WRK-N41-ROW2
+           END-IF
       *
            MOVE    SPACE               TO  N41
       *
@@ -1896,6 +2395,11 @@
            MOVE    ZERO                TO  N41-HEADLIST-ROWATTR
            IF      WRK-N41-ROW     NOT =   ZERO
                MOVE    WRK-N41-ROW         TO  N41-HEADLIST-ROW
+           END-IF
+           MOVE    ZERO                TO  N41-MENU2LIST-ROW
+           MOVE    ZERO                TO  N41-MENU2LIST-ROWATTR
+           IF      WRK-N41-ROW2    NOT =   ZERO
+               MOVE    WRK-N41-ROW2        TO  N41-MENU2LIST-ROW
            END-IF
       *
            MOVE    SPA-GMN-HELPKBN-G   TO  N41-HELPKBN
@@ -1928,24 +2432,28 @@
            END-PERFORM
            MOVE    SPA-GMN-TBLMAX      TO  N41-HEADLIST-COUNT
       *
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX     >   SPA-GMN-TBLMAX2
+               MOVE    SPA-GMN-TMENUNUM2(IDX)  TO  N41-TMENUNUM2(IDX)
+               MOVE    SPA-GMN-TMENU2   (IDX)  TO  N41-TMENU2   (IDX)
+               IF      SPA-GMN-TMENUNUM2 (IDX) =   SPA-GMN-SELNUM2
+                   MOVE    "T"             TO  N41-MENU2LIST-SELECT(IDX)
+                   MOVE    IDX             TO  N41-MENU2LIST-ROW
+                   MOVE    2               TO  N41-MENU2LIST-ROWATTR
+               ELSE
+                   MOVE    "F"             TO  N41-MENU2LIST-SELECT(IDX)
+               END-IF
+           END-PERFORM
+           MOVE    SPA-GMN-TBLMAX2     TO  N41-MENU2LIST-COUNT
+      *
            MOVE    SPA-GMN-HEADMENU    TO  N41-HEADMENU
            MOVE    SPA-GMN-SELNUM      TO  N41-SELNUM
            MOVE    SPA-GMN-MENU        TO  N41-MENU
+           MOVE    SPA-GMN-SELNUM2     TO  N41-SELNUM2
+           MOVE    SPA-GMN-MENU2       TO  N41-MENU2
+      *
            MOVE    SPA-GMN-HELP        TO  N41-HELP
       *
-      *    複写処理
-           EVALUATE    SPA-COPYFLG
-               WHEN    0
-                   IF      SPA-SYORIFLG    =   1
-                       MOVE    "【目次１】"    TO  N41-SYORIMEI-VALUE
-                   ELSE
-                       MOVE    "【目次２】"    TO  N41-SYORIMEI-VALUE
-                   END-IF
-                   MOVE    "blue"           TO  N41-SYORIMEI-STYLE
-               WHEN    1
-                   MOVE    "red"           TO  N41-SYORIMEI-STYLE
-                   MOVE    "［複写］"      TO  N41-SYORIMEI-VALUE
-           END-EVALUATE
            IF      SPA-COPYFLG         =   1
                MOVE    SPA-GMN-HELPKBN-CP-G    TO  N41-HELPKBN-CP
       *        標準は対象外（開始を２）
@@ -2040,18 +2548,24 @@
                WHEN    04
                    MOVE    "MENU"            TO  MCP-WIDGET
                WHEN    05
-                   MOVE    "HELP"            TO  MCP-WIDGET
+                   MOVE    "SELNUM2"         TO  MCP-WIDGET
                WHEN    06
-                   MOVE    "HELPKBN_CP"      TO  MCP-WIDGET
+                   MOVE    "MENU2"           TO  MCP-WIDGET
                WHEN    07
-                   MOVE    "LDNAME_CP"       TO  MCP-WIDGET
+                   MOVE    "HELP"            TO  MCP-WIDGET
                WHEN    08
-                   MOVE    "MENUNUM1_CP"     TO  MCP-WIDGET
-               WHEN    09
-                   MOVE    "MENU1_CP"        TO  MCP-WIDGET
+                   MOVE    "HEADMENU"        TO  MCP-WIDGET
                WHEN    10
-                   MOVE    "MENUNUM2_CP"     TO  MCP-WIDGET
+                   MOVE    "HELPKBN_CP"      TO  MCP-WIDGET
                WHEN    11
+                   MOVE    "LDNAME_CP"       TO  MCP-WIDGET
+               WHEN    12
+                   MOVE    "MENUNUM1_CP"     TO  MCP-WIDGET
+               WHEN    13
+                   MOVE    "MENU1_CP"        TO  MCP-WIDGET
+               WHEN    14
+                   MOVE    "MENUNUM2_CP"     TO  MCP-WIDGET
+               WHEN    15
                    MOVE    "MENU2_CP"        TO  MCP-WIDGET
                WHEN    99
                    MOVE    "B12"             TO  MCP-WIDGET
@@ -2076,27 +2590,30 @@
                WHEN    "SELNUM"
                    MOVE    4               TO  SPA-GMN-CUR
                WHEN    "MENU"
-                   IF     (SPA-MENUFLG     =   1   )  OR
-                          (SPA-SYORIFLG    =   1   )
-                       MOVE    99              TO  SPA-GMN-CUR
+                   IF      SPA-NAI-MENU1FLG    =   1
+                       MOVE    7               TO  SPA-GMN-CUR
                    ELSE
                        MOVE    5               TO  SPA-GMN-CUR
                    END-IF
+               WHEN    "SELNUM2"
+                   MOVE    6               TO  SPA-GMN-CUR
+               WHEN    "MENU2"
+                   MOVE    7               TO  SPA-GMN-CUR
                WHEN    "HELP"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "HELPKBN_CP"
-                   MOVE    7               TO  SPA-GMN-CUR
-      * 業務が選択可能になるまで
-                   MOVE    8               TO  SPA-GMN-CUR
-               WHEN    "LDNAME_CP"
-                   MOVE    8               TO  SPA-GMN-CUR
-               WHEN    "MENUNUM1_CP"
-                   MOVE    9               TO  SPA-GMN-CUR
-               WHEN    "MENU1_CP"
-                   MOVE    10              TO  SPA-GMN-CUR
-               WHEN    "MENUNUM2_CP"
                    MOVE    11              TO  SPA-GMN-CUR
+      * 業務が選択可能になるまで
+                   MOVE    12              TO  SPA-GMN-CUR
+               WHEN    "LDNAME_CP"
+                   MOVE    12              TO  SPA-GMN-CUR
+               WHEN    "MENUNUM1_CP"
+                   MOVE    13              TO  SPA-GMN-CUR
+               WHEN    "MENU1_CP"
+                   MOVE    14              TO  SPA-GMN-CUR
+               WHEN    "MENUNUM2_CP"
+                   MOVE    15              TO  SPA-GMN-CUR
                WHEN    "MENU2_CP"
                    MOVE    99              TO  SPA-GMN-CUR
            END-EVALUATE
@@ -2120,10 +2637,16 @@
                    MOVE    "業務選択入力エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "番号入力エラー"
+                   MOVE    "番号１入力エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "目次は全角で入力して下さい。"
+                   MOVE    "目次１は全角で入力して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE    "番号２入力エラー"
+                                       TO  SPA-ERRMSG
+               WHEN    "0019"
+                   MOVE    "目次２は全角で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0006"
                    MOVE    "複写先区分がエラーです。"
@@ -2144,10 +2667,18 @@
                    MOVE    "業務ＬＤが未入力です。入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0012"
-                   MOVE    "目次番号が未入力です。入力して下さい。"
+                   MOVE    "目次１番号が未入力です。入力して下さい。"
                                        TO  SPA-ERRMSG
+               WHEN    "0112"
+                   MOVE    "目次１番号が未入力です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "目次２番号だけでは登録できません。"
+                                       TO  SPA-ERRMSG(25:)
                WHEN    "0013"
-                   MOVE    "目次名称が未入力です。入力して下さい。"
+                   MOVE    "目次１名称が未入力です。入力して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0113"
+                   MOVE    "目次２名称が未入力です。入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0014"
                    MOVE    "ヘルプ内容が未入力です。入力して下さい。"
@@ -2187,10 +2718,8 @@
                    MOVE    "次頁はありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0026"
-                   MOVE    "目次名変更は目次１の時に有効です。"
+                   MOVE    "目次１に該当がありません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "目次２は直接変更して下さい。"
-                                       TO  SPA-ERRMSG(33:)
                WHEN    "0030"
                    MOVE    "新規分です。削除できません。"
                                        TO  SPA-ERRMSG
@@ -2279,11 +2808,7 @@
       *****************************************************************
        900-HELP-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HELP-REC
                MOVE    ZERO            TO  FLG-HELP
@@ -2294,6 +2819,47 @@
       *
            .
        900-HELP-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************

@@ -5,6 +5,7 @@ tbl_help {
 	MENUNUM1			number(4);
 	MENUNUM2			number(4);
 	EDANUM				number(4);
+	MENU2FLG			number(1);
 	MENU				varchar(60);
 	HELP				varchar(100);
 	TERMID   			varchar(64);
@@ -41,8 +42,9 @@ path	key1 	{
 			WHERE   HELPKBN    =   :HELPKBN
 			AND   KEY_OPID     =   :KEY_OPID
 			AND   LDNAME       =   :LDNAME
-			AND   MENUNUM2     =   '0000'
-			AND   EDANUM       =   '0000'
+			AND   MENUNUM2     =   0
+			AND  (EDANUM       =   0
+			 OR   EDANUM       =   1 )
 			ORDER   BY         MENUNUM1,
                                            MENUNUM2,
                                            EDANUM
@@ -117,6 +119,43 @@ path	key5 	{
 		;
 	};
 };
+
+path	key6 	{
+	DBSELECT	{
+		DECLARE tbl_help_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_help
+			WHERE HELPKBN      =   :HELPKBN
+			AND   LDNAME       =   :LDNAME
+			AND   KEY_OPID     =   :KEY_OPID
+			AND   MENU       LIKE  :MENU
+			AND   MENUNUM2     =   0
+			AND  (EDANUM       =   0   OR
+			      EDANUM       =   1 )
+			ORDER   BY         MENUNUM1,
+                                           MENUNUM2,
+                                           EDANUM
+		;
+	};
+};
+
+path	key7 	{
+	DBSELECT	{
+		DECLARE tbl_help_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_help
+			WHERE   HELPKBN    =   :HELPKBN
+			AND   KEY_OPID     =   :KEY_OPID
+			AND   LDNAME       =   :LDNAME
+			AND   MENUNUM1     =   :MENUNUM1
+			AND   MENUNUM2     =   :MENUNUM2
+			AND  (EDANUM       =   0
+			 OR   EDANUM       =   1 )
+			ORDER   BY         EDANUM
+		;
+	};
+};
+
 path	del1  	{
 	DBDELETE	{
 		DELETE

@@ -36,6 +36,8 @@
                05  HELP-MENUNUM2          PIC  9(04).
       *枝番
                05  HELP-EDANUM            PIC  9(04).
+      *目次２フラグ（１＝目次２あり）
+           03  HELP-MENU2FLG              PIC  9(01).
       *目次名称
            03  HELP-MENU                  PIC  X(60).
       *ヘルプ内容
