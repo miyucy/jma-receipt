@@ -11,6 +11,7 @@ EXTRA_DIST = \
               HC03.dia \
               HC04.dia \
               HC04V01.dia \
+              HC04V02.dia \
               HC05.dia \
               HC06.dia \
               HC07.dia \
@@ -46,6 +47,7 @@ EXTRA_DIST = \
               HC306.dia \
               HC041.dia \
               HC041V01.dia \
+              HC041V02.dia \
               HC401.dia \
               HCML01.dia \
               HCML02.dia \
@@ -55,7 +57,8 @@ EXTRA_DIST = \
               HCML06.dia \
               HCML09.dia \
               HCP7LA.dia \
-              HCPO.dia
+              HCPO.dia \
+              HCM19.red
 
 all:   
 	touch build-stamp
