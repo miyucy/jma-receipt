@@ -452,10 +452,18 @@
                                MOVE    "051"      TO  WRK-MAE-KOHNUM
                            WHEN    "701"
                                MOVE    "091"      TO  WRK-MAE-KOHNUM
+                           WHEN    "301"
+      *                        Í×ÌÖÅù
+                               MOVE    "091"      TO  WRK-MAE-KOHNUM
                            WHEN    OTHER
-                               MOVE    "0083"     TO  SPA-ERRCD
-                               MOVE    20         TO  SPA-GMN-CUR
-                               GO      TO      1001-FTNJANUM-CHK-EXT
+      *                        ÉéÃ´¼ÔÈÖ¹æ·Ù¹ð
+                               IF      SPA-NAI-FTNCHK (IDX-K)  =   ZERO
+                                   MOVE    "K083"     TO  SPA-ERRCD
+                                   MOVE    20         TO  SPA-GMN-CUR
+                                   MOVE    1          TO  SPA-NAI-FTNCHK
+                                                                (IDX-K)
+                                   GO      TO      1001-FTNJANUM-CHK-EXT
+                               END-IF
                        END-EVALUATE
       *            ¤½¤ÎÂ¾
                    WHEN    OTHER

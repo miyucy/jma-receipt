@@ -3292,6 +3292,11 @@
                WHEN    "0083"
                    MOVE    "負担者番号検証番号エラーです。"
                                                TO  SPA-ERRMSG
+               WHEN    "K083"
+                   MOVE    "警告！特定疾患の負担者番号検証番号エラー"
+                                               TO  SPA-ERRMSG
+                   MOVE    "です。"
+                                               TO  SPA-ERRMSG(41:)
                WHEN    "0084"
                    MOVE    "受給者番号検証番号エラーです。"
                                                TO  SPA-ERRMSG
