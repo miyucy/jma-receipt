@@ -62,6 +62,8 @@
       *                                     しないようにする 
       *  01.00.18   NACL-藤原     02.11.25  前期高齢者の船員保険のときの
       *                                     レセプト種別の編集を修正 
+      *                                     前期高齢者の共済組合の下船３ヶ月の
+      *                                     ときのレセプト種別の編集を修正 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1153,7 +1155,15 @@
                                      WHEN   "F"
                                      WHEN   "8"
                                        MOVE   "8"   TO   WK-HONKZKKBN
-                               END-EVALUATE
+                                 END-EVALUATE
+                             WHEN    "031"  THRU    "034"  
+                                 EVALUATE   COMB-HOJOKBN
+                                     WHEN   "B"
+                                       MOVE   "9"   TO   WK-HONKZKKBN
+                                     WHEN   "E"
+                                     WHEN   "8"
+                                       MOVE   "8"   TO   WK-HONKZKKBN
+                                 END-EVALUATE
                              WHEN    "060" 
                                IF  (WRK-NENREI  >=   70)  AND
                                    (WRK-NENREI  <=   74)
