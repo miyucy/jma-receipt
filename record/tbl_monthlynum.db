@@ -3,6 +3,7 @@ tbl_monthlynum {
 	PTID 				number(10);
 	KOHNUM				char(3);
 	SRYYM  				char(6);
+	NYUGAIKBN			char(1);
 	JKYSNUM 			char(20);
 	TERMID   			varchar(32);
 	OPID     			varchar(16);
@@ -12,7 +13,7 @@ tbl_monthlynum {
 };
 
 primary	{
-	HOSPID,PTID,KOHNUM,SRYYM;
+	HOSPID,PTID,KOHNUM,SRYYM,NYUGAIKBN;
 };
 
 path	key 	{
@@ -24,6 +25,8 @@ path	key 	{
 			AND   PTID        =   :PTID
 			AND   KOHNUM      =   :KOHNUM
 			AND   SRYYM       =   :SRYYM
+			AND  NYUGAIKBN    =   :NYUGAIKBN
+                        
 		;
 	};
 };
