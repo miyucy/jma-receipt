@@ -40,6 +40,11 @@
             04  I41-VALUE       PIC X(3).
           03  I41-MEISYO.
             04  I41-VALUE       PIC X(50).
+          03  I41-KEIKOKU-G.
+            04  I41-KEIKOKU-STYLE.
+              05  I41-VALUE       PIC X(20).
+            04  I41-KEIKOKU.
+              05  I41-VALUE       PIC X(60).
           03  I41-KOMENTO.
             04  I41-VALUE       PIC X(50).
           03  I41-DAY           OCCURS 31.

@@ -36,6 +36,10 @@ I41	{
 		MEISYO	{
 			value	varchar(50);
 		};
+		KEIKOKU	{
+			style   varchar(20);
+			value	varchar(60);
+		};
 		KOMENTO	{
 			value	varchar(50);
 		};

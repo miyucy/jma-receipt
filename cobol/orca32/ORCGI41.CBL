@@ -73,6 +73,7 @@
            03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-PTHKNINF        PIC 9(01).
       *
            03  FLG-NAIYAK          PIC X(01).
            03  FLG-TONPUK          PIC X(01).
@@ -125,6 +126,7 @@
            03  IDX-H               PIC 9(04).
            03  IDX-D               PIC 9(02).
            03  IDXS1               PIC 9(04).
+           03  IDW                 PIC 9(04).
            03  IDW3                PIC 9(04).
            03  IDW4                PIC 9(04).
            03  IDW5                PIC 9(04).
@@ -154,6 +156,8 @@
            03  WRK-BTU             PIC X(02).
            03  WRK-BTU-NAME        PIC X(20).
            03  WRK-KUMI-NAME       PIC X(32).
+           03  WRK-TEKSTYMD        PIC X(08).
+           03  WRK-TEKEDYMD        PIC X(08).
       *    パス名領域
            03  WRK-DBPATH          PIC X(20).
       *    数量表示用
@@ -226,10 +230,10 @@
            03  WRK-SANTEISTYMD     PIC X(08).
            03  WRK-TOKUTEI-NYUIN   PIC X(02).
            03  WRK-SAGAKU-KBN      PIC X(02).
-           03  WRK-SAGAKU-KBN9  REDEFINES  WRK-SAGAKU-KBN
+           03  WRK-SAGAKU-KBN9     REDEFINES  WRK-SAGAKU-KBN
                                    PIC 9(02).
            03  WRK-HKNCOMBINUM     PIC X(04).
-           03  WRK-HKNCOMBINUM9   REDEFINES  WRK-HKNCOMBINUM
+           03  WRK-HKNCOMBINUM9    REDEFINES  WRK-HKNCOMBINUM
                                    PIC 9(04).
            03  WRK-TAIHI-SRYKA     PIC X(02).
            03  WRK-ZOGENPTN        PIC X(01).
@@ -254,15 +258,15 @@
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
-           03  WRK-NENREI                  PIC 9(03).
+           03  WRK-NENREI          PIC 9(03).
            03  WRK-YMDS1.
-               05  WRK-YYS1                PIC 9(04).
-               05  WRK-MMS1                PIC 9(02).
-               05  WRK-DDS1                PIC 9(02).
+               05  WRK-YYS1        PIC 9(04).
+               05  WRK-MMS1        PIC 9(02).
+               05  WRK-DDS1        PIC 9(02).
            03  WRK-YMDS2.
-               05  WRK-YYS2                PIC 9(04).
-               05  WRK-MMS2                PIC 9(02).
-               05  WRK-DDS2                PIC 9(02).
+               05  WRK-YYS2        PIC 9(04).
+               05  WRK-MMS2        PIC 9(02).
+               05  WRK-DDS2        PIC 9(02).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -280,6 +284,7 @@
            03  WRK-CHK-TBL.
                05  WRK-CHK-DAY     PIC 9(03)  OCCURS  31.
            03  WRK-CHK-ZAISKBKBN   PIC X(01).
+           03  WRK-CHK-SYMD        PIC 9(08).
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
@@ -376,6 +381,10 @@
       *    選定療養費
        01  SENTEICDCHG-REC.
            COPY    "CPSENTEICDCHG.INC".
+      *
+      *    患者保険情報
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1859,6 +1868,8 @@
                ADD     1                   TO  SPA-I41-MAX-41
                MOVE    COMB-HKNCOMBINUM    TO  SPA-I41-THKNCOMBI-41
                                                     (SPA-I41-MAX-41)
+               MOVE    COMB-HKNID          TO  SPA-I41-THKNID-41
+                                                    (SPA-I41-MAX-41)
                IF      COMB-GAI-KFTNRATE   =   ZERO
                    MOVE     SPACE          TO  SPA-I41-TFTNWARI-41
                                                      (SPA-I41-MAX-41)
@@ -1919,9 +1930,20 @@
            END-PERFORM.
            MOVE    SPA-GMN-SRYKA-MAX-41   TO  I41-NYUINKA-COUNT.
       *    保険組合せ
+           MOVE    ZERO                TO  IDW.
+           PERFORM   VARYING   IDX    FROM    1   BY  1
+                     UNTIL     IDX        >   SPA-GMN-MAX-41
+               IF     SPA-GMN-TZAISKBKBN-41 (IDX)  = "5"
+                   MOVE    IDX        TO  IDW
+               END-IF
+           END-PERFORM.
            MOVE    ZERO                TO  I41-KUMILIST-COUNT.
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-I41-MAX-41
+               MOVE    SPA-NAI-SRYYM-41    TO  WRK-TEKSTYMD(1:6)
+               MOVE    "99"                TO  WRK-TEKSTYMD(7:2)
+               MOVE    SPA-NAI-SRYYM-41    TO  WRK-TEKEDYMD(1:6)
+               MOVE    "00"                TO  WRK-TEKEDYMD(7:2)
                IF     (SPA-I41-TTEKSTYMD-41 (IDX)(1:6)
                                                 <= SPA-NAI-SRYYM-41) AND
                       (SPA-I41-TTEKEDYMD-41 (IDX)(1:6)
@@ -1931,6 +1953,9 @@
                                      TO  I41-KUMINO (I41-KUMILIST-COUNT)
                    MOVE    SPA-I41-TKUMI-41 (IDX)(1:32)
                                      TO  I41-KUMI (I41-KUMILIST-COUNT)
+                   IF     IDW  NOT = ZERO
+                       PERFORM 410181-PTHKNINF-CHK-SEC
+                   END-IF
                END-IF
            END-PERFORM.
       *    室料差額
@@ -4247,6 +4272,88 @@
            EXIT.
       *
       *****************************************************************
+      *    患者保険情報チェック　処理
+      *****************************************************************
+       410181-PTHKNINF-CHK-SEC            SECTION.
+      *
+           PERFORM   VARYING   IDY     FROM    1   BY  1
+                     UNTIL     IDY         >  31
+               MOVE    SPA-I41-THKNCOMBI-41 (IDX)    TO  WRK-SURYO-Z1
+               IF     WRK-SURYO-Z1(4:2)   =   SPA-GMN-TDAY-41 (IDW IDY)
+                   IF     WRK-TEKSTYMD(7:2)   >   IDY(3:2)
+                       MOVE    IDY(3:2)            TO  WRK-TEKSTYMD(7:2)
+                   END-IF
+                   IF     WRK-TEKEDYMD(7:2)   <   IDY(3:2)
+                       MOVE    IDY(3:2)            TO  WRK-TEKEDYMD(7:2)
+                   END-IF
+               END-IF
+           END-PERFORM.
+      *    患者保険情報チェック
+           INITIALIZE                       PTHKNINF-REC.
+           MOVE    SPA-HOSPID               TO  PTHKN-HOSPID.
+           MOVE    SPA-GMN-PTID             TO  PTHKN-PTID.
+           MOVE    SPA-I41-THKNID-41 (IDX)  TO  PTHKN-HKNID.
+      *
+           MOVE    PTHKNINF-REC             TO  MCPDATA-REC.
+           MOVE    "DBSELECT"               TO  MCP-FUNC.
+           MOVE    "PTHKNINF-KEY"           TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+               PERFORM 930-PTHKNINF-READ-SEC
+           ELSE
+               INITIALIZE                  PTHKNINF-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF.
+      *
+           IF      FLG-PTHKNINF             =   1
+               MOVE    ALL SPACE         TO  I41-KEIKOKU-G
+           ELSE
+               IF     (PTHKN-TEKSTYMD(1:6)  <  WRK-TEKSTYMD(1:6))  AND
+                      (PTHKN-TEKEDYMD(1:6)  >  WRK-TEKEDYMD(1:6))
+                   MOVE    "99"                TO  WRK-TEKSTYMD(7:2)
+                   MOVE    "00"                TO  WRK-TEKEDYMD(7:2)
+               END-IF
+               IF     PTHKN-TEKEDYMD(1:6)  =  WRK-TEKSTYMD(1:6)
+                   IF     PTHKN-TEKEDYMD(7:2)  =  "31"
+                       MOVE    "00"                TO  WRK-TEKEDYMD(7:2)
+                   ELSE
+                       IF     PTHKN-TEKEDYMD  >  WRK-TEKSTYMD
+                           MOVE    PTHKN-TEKEDYMD      TO  WRK-CHK-SYMD
+                           COMPUTE WRK-CHK-SYMD  =  WRK-CHK-SYMD  +  1
+                           MOVE    WRK-CHK-SYMD        TO  WRK-TEKSTYMD
+                       END-IF
+                   END-IF
+               END-IF
+               IF     PTHKN-TEKSTYMD(1:6)  =  WRK-TEKEDYMD(1:6)
+                   IF     PTHKN-TEKSTYMD(7:2)  =  "01"
+                       MOVE    "99"                TO  WRK-TEKSTYMD(7:2)
+                   ELSE
+                       IF     PTHKN-TEKSTYMD  <  WRK-TEKEDYMD
+                           MOVE    PTHKN-TEKSTYMD      TO  WRK-CHK-SYMD
+                           COMPUTE WRK-CHK-SYMD  =  WRK-CHK-SYMD  -  1
+                           MOVE    WRK-CHK-SYMD        TO  WRK-TEKEDYMD
+                       END-IF
+                   END-IF
+               END-IF
+               IF     (WRK-TEKSTYMD(7:2)  NOT = "99")  AND
+                      (WRK-TEKEDYMD(7:2)  NOT = "00")
+                   MOVE    "red"               TO  I41-KEIKOKU-STYLE
+                   MOVE    "保険の適用が切れている期間があります。"
+                                               TO  I41-KEIKOKU(1:38)
+                   MOVE    WRK-TEKSTYMD(7:2)   TO  I41-KEIKOKU(42:2)
+                   MOVE    " - "               TO  I41-KEIKOKU(44:3)
+                   MOVE    WRK-TEKEDYMD(7:2)   TO  I41-KEIKOKU(47:2)
+               END-IF
+           END-IF.
+      *
+       410181-PTHKNINF-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    次月選択　処理
       *****************************************************************
        41019-JIGETU-HEN-SEC             SECTION.
@@ -6180,7 +6287,7 @@
                    MOVE    "診療年月入力エラー"
                                        TO  WRK-ERRMSG
                WHEN    "0019"
-                   MOVE    "患者番号を入力して下さい"
+                   MOVE    "患者番号を入力して下さい。"
                                        TO  WRK-ERRMSG
                WHEN    "0020"
                    MOVE    "対象の入院年月はありません。"
@@ -6218,13 +6325,13 @@
                        "剤識別区分が入院基本料以外の指定はできません。"
                                        TO  WRK-ERRMSG
                WHEN    "0030"
-                   MOVE    "施設基準ではありません。算定できません"
+                   MOVE    "施設基準ではありません。算定できません。"
                                        TO  WRK-ERRMSG
                WHEN    "0031"
                    MOVE    "指定された科のデータはありません。"
                                        TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "受診履歴番号が存在しません"
+                   MOVE    "受診履歴番号が存在しません。"
                                        TO  WRK-ERRMSG
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
@@ -6259,7 +6366,7 @@
                WHEN    "0102"
                    MOVE    "剤が修正されています。ＯＫで修正分は反映"
                                        TO  WRK-JIDMSG1
-                   MOVE    "されずに終了します"
+                   MOVE    "されずに終了します。"
                                        TO  WRK-JIDMSG2
                WHEN    "0103"
                    MOVE    "剤選択されました。現在選択中の内容はクリ"
@@ -6269,7 +6376,7 @@
                WHEN    "0104"
                    MOVE    "現在までの修正分を登録後、受診履歴の選択"
                                        TO  WRK-JIDMSG1
-                   MOVE    "で当日の剤内容を追加修正します"
+                   MOVE    "で当日の剤内容を追加修正します。"
                                        TO  WRK-JIDMSG2
                WHEN    "0106"
                    MOVE    "診療年月が変更されました。現在までの修正"
@@ -6670,7 +6777,28 @@
                MOVE    1                   TO  FLG-INPUTCD
            END-IF.
       *
-       930-INPUTCD-NEXT-EXT.
+       930-INPUTCD-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者保険情報読込
+      *****************************************************************
+       930-PTHKNINF-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PTHKNINF-REC
+               MOVE    ZERO                TO  FLG-PTHKNINF
+           ELSE
+               INITIALIZE                      PTHKNINF-REC
+               MOVE    1                   TO  FLG-PTHKNINF
+           END-IF.
+      *
+       930-PTHKNINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
