@@ -2679,6 +2679,11 @@
                IF     (WRK-COM-SRYKBN(IDX-Z)(1:1)  =   "1"   )  AND
                       (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "1"  )   AND
                       (WRK-COM-DATAKBN(IDX-Z)      =   "1"  )
+      *            ∆√ƒÍÃÙ∫ﬁº£Œ≈¥…Õ˝Œ¡
+                 IF    WRK-COM-INPUTCD(IDX-Z)      =   "113000410" OR
+                                                       "113000510"
+                     CONTINUE
+                 ELSE
       *
                    COMPUTE IDX-Z3          =   IDX-Z   +   1
                    PERFORM VARYING     IDX-Z2  FROM    IDX-Z3 BY  1
@@ -2695,6 +2700,7 @@
                                                               (IDX-Z2)
                        END-IF
                    END-PERFORM
+                 END-IF
                END-IF
            END-PERFORM
       *
