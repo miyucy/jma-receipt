@@ -151,9 +151,9 @@
                        09  SPA-ACCT-SRYKBN          PIC  X(02).
                        09  SPA-ACCT-SRYCD           PIC  X(09).
                        09  SPA-ACCT-CDKBN.
-                           11  SPA-ACCT-CDKBN-KBN   PIC  X(01).
-                           11  SPA-ACCT-CDKBN-SYO   PIC  X(01).
-                           11  SPA-ACCT-CDKBN-BU    PIC  X(02).
+                           11  SPA-ACCT-CDKBN-KBN      PIC  X(01).
+                           11  SPA-ACCT-CDKBN-KBNNUM   PIC  X(03).
+      ******************** 11  SPA-ACCT-CDKBN-BU    PIC  X(02).
       *
                05  SPA-NAIACCT2-AREA.
       *            当日チェック用（点滴）

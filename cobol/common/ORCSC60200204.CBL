@@ -1734,8 +1734,11 @@
                    UNTIL  (IDX-ACT     >   200  )  OR
                           (WRK-COM-INPUTCD (IDX-ACT)  =   SPACE )
                IF     (IDX-ACT         NOT =   IDX-Z  )  AND
-                      (WRK-COM-CDKBN (IDX-ACT) =   "D100" OR
-                                                   "D101"  )
+                      (WRK-COM-CDKBN-KBN   (IDX-ACT)
+                                           =   "D"   )  AND
+                      (WRK-COM-CDKBN-KBNNUM (IDX-ACT)
+                                           =   "100"
+                                           OR  "101"  )
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM

@@ -2958,10 +2958,12 @@
            PERFORM 910-TENSU-READ-SEC
            MOVE    TNS-CDKBN-KBN       TO  SPA-ACCT-CDKBN-KBN
                                                           (IDX-SIN)
-           MOVE    TNS-CDKBN-SYO       TO  SPA-ACCT-CDKBN-SYO
+           MOVE    TNS-CDKBN-KBNNUM    TO  SPA-ACCT-CDKBN-KBNNUM
                                                           (IDX-SIN)
-           MOVE    TNS-CDKBN-BU        TO  SPA-ACCT-CDKBN-BU
-                                                          (IDX-SIN)
+      **** MOVE    TNS-CDKBN-SYO       TO  SPA-ACCT-CDKBN-SYO
+      *                                                   (IDX-SIN)
+      *    MOVE    TNS-CDKBN-BU        TO  SPA-ACCT-CDKBN-BU
+      *****                                               (IDX-SIN)
            .
        32011-SRYACT-HEN1-EXT.
            EXIT.
