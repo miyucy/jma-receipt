@@ -26,6 +26,7 @@
       *  01.00.02    NACL-藤原    02.09.02  日数のテーブルを変更
       *  01.00.03    NACL-藤原    03/03/12  補助区分の追加
       *  01.00.04    NACL-門脇    03.03.03  剤番号桁修正
+      *  01.00.05    NACL-門脇    03.09.24  コメント編集フラグ追加
       ************************************************************
       *01  RECE04-REC.
            03  RECE04-KEY.
@@ -89,6 +90,16 @@
            03  RECE04-TEIGENRATE          PIC  X(01).
       *コメントコードフラグ
            03  RECE04-COMCDFLG            PIC  X(01).
+      *慢性疼痛疾患管理料
+           03  RECE04-FLG-SHIDOU-COMMENT  PIC  X(01).
+      *傷病手当金意見書交付料
+           03  RECE04-FLG-SYOBYO-COMMENT  PIC  X(01).
+      *療養費同意書交付料
+           03  RECE04-FLG-RYOYO-COMMENT   PIC  X(01).
+      *手術（輸血は除く）
+           03  RECE04-FLG-SHUJUTU-COMMENT PIC  X(01).
+      *ＣＴ・ＭＲＩ
+           03  RECE04-FLG-CTMRI-COMMENT   PIC  X(01).
       *日数回数テーブル
            03  RECE04-DAY-AREA.
       *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）

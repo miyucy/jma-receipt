@@ -279,6 +279,8 @@
       *  01.01.100   NACL-太田    03/08/29  KOHPLUS-UPD1の追加
       *  01.01.101   NACL-太田    03/09/02  PTNYUINRRK-KEY26追加
       *  01.01.102   NACL-太田    03/09/08  PTCOM-KEY2追加
+      *  01.01.103   NACL-門脇    03/09/24  SRYACCT-KEY24追加
+      *                                     SRYACCT-KEY25追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1614,6 +1616,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-KEY23"
                    MOVE    PATH-TBL-SRYACCT-KEY23
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY24"
+                   MOVE    PATH-TBL-SRYACCT-KEY24
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY25"
+                   MOVE    PATH-TBL-SRYACCT-KEY25
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL

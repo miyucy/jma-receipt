@@ -49,6 +49,7 @@
       *  01.00.16    NACL-ÃÁœ∆    03.05.22  ªƒŒÃ«—¥˛§ŒøÙŒÃ•ª•√•»
       *  01.00.17    NACL-ÃÁœ∆    03.06.03  ≥∞ÕËø«Œ≈Œ¡¬–±˛
       *                                     °  ø¿Æ£±£µ«Ø£∂∑Ó∞ πﬂ°À
+      *  01.00.18    NACL-ÃÁœ∆    03.09.24  •≥•·•Û•» ‘Ω∏•’•È•∞§Œ•ª•√•»
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -426,6 +427,51 @@
       *    ªƒŒÃ«—¥˛
            03  CONS-ZANHAIKI   PIC X(09)   VALUE   "099309901".
       *
+      *
+      *    À˝¿≠§»§¶ƒÀº¿¥µ
+           03  CONS-MANSEI           PIC X(09) VALUE   "113006510".
+      *    Ω˝…¬ºÍ≈ˆ∂‚∞’∏´ΩÒ∏Ú…’Œ¡
+           03  CONS-SYOBYO-COMMENT   PIC X(09) VALUE   "180000710".
+      *    Œ≈Õ‹»Ò∆±∞’ΩÒ∏Ú…’Œ¡
+           03  CONS-RYOYO-COMMENT    PIC X(09) VALUE   "113004310".
+      *    ºÍΩ—∆¸•≥•·•Û•»
+           03  CONS-SHUJUTU-COMMENT  PIC X(09) VALUE   "840000042".
+      *    ∆¨…Ù√±Ω„£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT1   PIC X(09)  VALUE  "170011710".
+      *    ∂Ì¥¥√±Ω„£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT2   PIC X(09)  VALUE  "170011810".
+      *    ªÕªË√±Ω„£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT3   PIC X(09)  VALUE  "170011910".
+      *    «æ¡Â£√£‘¬§±∆
+           03  CONS-CTMRI-COMMENT4   PIC X(09)  VALUE  "170012110".
+      *    Ù…Ù√±Ω„£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT5   PIC X(09)  VALUE  "170015550".
+      *    ∆¨…Ù√±Ω„£Õ£“£…ª£±∆
+           03  CONS-CTMRI-COMMENT6   PIC X(09)  VALUE  "170015210".
+      *    ∂Ì¥¥√±Ω„£Õ£“£…ª£±∆
+           03  CONS-CTMRI-COMMENT7   PIC X(09)  VALUE  "170020110".
+      *    ªÕªË√±Ω„£Õ£“£…ª£±∆
+           03  CONS-CTMRI-COMMENT8   PIC X(09)  VALUE  "170022110".
+      *    £√£‘°¢£Õ£“£…° ∆¨…Ù°À° £≤≤ÛÃ‹∞ πﬂ°À
+           03  CONS-CTMRI-COMMENT9   PIC X(09)  VALUE  "170022290".
+      *    £√£‘°¢£Õ£“£…° ∂Ì¥¥°À° £≤≤ÛÃ‹∞ πﬂ°À
+           03  CONS-CTMRI-COMMENT10  PIC X(09)  VALUE  "170022390".
+      *    £√£‘°¢£Õ£“£…° ªÕªË°À° £≤≤ÛÃ‹∞ πﬂ°À
+           03  CONS-CTMRI-COMMENT11  PIC X(09)  VALUE  "170022490".
+      *    ∆¨…Ù∆√ºÏ£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT12  PIC X(09)  VALUE  "170023010".
+      *    ∂Ì¥¥∆√ºÏ£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT13  PIC X(09)  VALUE  "170023110".
+      *    ªÕªË∆√ºÏ£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT14  PIC X(09)  VALUE  "170023210".
+      *    ∆¨…Ù∆√ºÏ£Õ£“£…ª£±∆
+           03  CONS-CTMRI-COMMENT15  PIC X(09)  VALUE  "170023310".
+      *    ∂Ì¥¥∆√ºÏ£Õ£“£…ª£±∆
+           03  CONS-CTMRI-COMMENT16  PIC X(09)  VALUE  "170023410".
+      *    ªÕªË∆√ºÏ£Õ£“£…ª£±∆
+           03  CONS-CTMRI-COMMENT17  PIC X(09)  VALUE  "170023510".
+      *
+      *
       *****ª¿¡« 
       *****COPY    "CMSANSOTBL.INC".
       *
@@ -676,21 +722,21 @@
            MOVE    RECE41-PTID          TO      ACCT-PTID
            MOVE    RECE41-SRYKA(IDX)    TO      ACCT-SRYKA
            MOVE    RECE41-SRYYM         TO      ACCT-SRYYM
+           MOVE    RECE41-HKNCOMBI      TO      ACCT-HKNCOMBI
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY2"       TO      ORC-DBPATH
+           MOVE    "SRYACCT-KEY24"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SRYACCT-KEY2"   TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY24"  TO      ORC-DBPATH
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL     FLG-SRYACCT   =   1 
-                   IF      ACCT-HKNCOMBI   =   RECE41-HKNCOMBI
       *
-                        IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                             (ACCT-ZAIKAISU  NOT =    ZERO)
+                   IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      WRK-TEN
                                                        WRK-MEISAI-CNT
                                                        WRK-SRYCDTOTAL
@@ -708,7 +754,7 @@
                                PERFORM   RECE44-TENSOU-SEC
                                PERFORM   RECE45-HENSYU-SEC
                                PERFORM   RECE44-WRITE-SEC
-                        ELSE
+                   ELSE
                              IF   ACCT-ZAIKAISU  NOT =    ZERO
                                IF   ACCT-SRYKBN  =  "11"  OR  "12" 
                                                           OR  "99" 
@@ -745,15 +791,14 @@
                                  END-IF
                                END-IF
                              END-IF
-                        END-IF
-      *
                    END-IF
-                   MOVE     "SRYACCT-KEY2"   TO   ORC-DBPATH
+      *
+                   MOVE     "SRYACCT-KEY24"  TO   ORC-DBPATH
                    PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE   "SRYACCT-KEY2"      TO  WK-PATH
+           MOVE   "SRYACCT-KEY24"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
            .
@@ -771,15 +816,16 @@
            MOVE    RECE41-PTID          TO      ACCT-PTID
            MOVE    RECE41-SRYKA(IDX)    TO      ACCT-SRYKA
            MOVE    RECE41-SRYYM         TO      ACCT-SRYYM
+           MOVE    RECE41-HKNCOMBI      TO      ACCT-HKNCOMBI
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY2"       TO      ORC-DBPATH
+           MOVE    "SRYACCT-KEY24"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SRYACCT-KEY2"   TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY24"  TO      ORC-DBPATH
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL     FLG-SRYACCT   =   1 
       *
@@ -790,8 +836,7 @@
                         MOVE    ZERO    TO   FLG-DAY  
                    END-IF
       *
-                   IF      ACCT-HKNCOMBI   =   RECE41-HKNCOMBI
-                   AND     FLG-DAY         =   1
+                   IF      FLG-DAY         =   1
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE  ACCT-DAY(1 WRK-DAY)  
@@ -854,12 +899,12 @@
                              END-IF
                            END-IF
                    END-IF
-                   MOVE     "SRYACCT-KEY2"   TO   ORC-DBPATH
+                   MOVE     "SRYACCT-KEY24"  TO   ORC-DBPATH
                    PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE   "SRYACCT-KEY2"      TO  WK-PATH
+           MOVE   "SRYACCT-KEY24"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
            .
@@ -1474,6 +1519,53 @@
                                             "180025110"   OR
                                             "180025010"   
                         MOVE   "1"        TO    RECE41-COMCNTFLG
+              END-IF
+           END-IF
+      *
+      *
+           IF      RECE44-SRYKBN      =     "13"
+              IF   SRY-SRYCD(IDX2)    =     CONS-MANSEI
+                   MOVE   "1"   TO    RECE44-FLG-SHIDOU-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-SYOBYO-COMMENT
+                   MOVE   "1"   TO    RECE44-FLG-SYOBYO-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-RYOYO-COMMENT
+                   MOVE   "1"   TO    RECE44-FLG-RYOYO-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE44-SRYKBN      =     "50"
+              IF   RECE44-SYUTEN1     =     ZERO
+                   MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
+              END-IF
+              IF   SRY-SRYSYUKBN      =     "510"
+                   MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-SHUJUTU-COMMENT
+                   MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE44-SRYKBN      =     "70"
+              IF   SRY-SRYCD(IDX2)    =     CONS-CTMRI-COMMENT1  OR
+                                            CONS-CTMRI-COMMENT2  OR
+                                            CONS-CTMRI-COMMENT3  OR
+                                            CONS-CTMRI-COMMENT4  OR
+                                            CONS-CTMRI-COMMENT5  OR
+                                            CONS-CTMRI-COMMENT6  OR
+                                            CONS-CTMRI-COMMENT7  OR
+                                            CONS-CTMRI-COMMENT8  OR
+                                            CONS-CTMRI-COMMENT9  OR
+                                            CONS-CTMRI-COMMENT10 OR
+                                            CONS-CTMRI-COMMENT11 OR
+                                            CONS-CTMRI-COMMENT12 OR
+                                            CONS-CTMRI-COMMENT13 OR
+                                            CONS-CTMRI-COMMENT14 OR
+                                            CONS-CTMRI-COMMENT15 OR
+                                            CONS-CTMRI-COMMENT16 OR
+                                            CONS-CTMRI-COMMENT17
+                   MOVE   "1"   TO    RECE44-FLG-CTMRI-COMMENT
               END-IF
            END-IF
       *

@@ -715,21 +715,21 @@
            MOVE    RECE40-PTID          TO      ACCT-PTID
            MOVE    RECE40-SRYKA(IDX)    TO      ACCT-SRYKA
            MOVE    RECE40-SRYYM         TO      ACCT-SRYYM
+           MOVE    RECE40-HKNCOMBI      TO      ACCT-HKNCOMBI
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY2"       TO      ORC-DBPATH
+           MOVE    "SRYACCT-KEY24"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SRYACCT-KEY2"   TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY24"  TO      ORC-DBPATH
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL
                               FLG-SRYACCT        =    1
       *
-                   IF      ACCT-HKNCOMBI   =   RECE40-HKNCOMBI
-                           IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                                (ACCT-ZAIKAISU  NOT =    ZERO)
+                   IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      FLG-SHOSAISIN
                                                        FLG-SHOSAISIN2   
                                                        FLG-KYUKYU
@@ -773,10 +773,10 @@
       *
                                PERFORM   TENSOU-SEC
                                PERFORM   TENSOU2-SEC
-                           END-IF
+                   END-IF
       *
-                           IF   (ACCT-ZAITEN        =    ZERO)    AND
-                                (ACCT-ZAIKAISU  NOT =    ZERO)
+                   IF   (ACCT-ZAITEN        =    ZERO)    AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      FLG-SHOSAISIN 
                                                        FLG-SHOSAISIN2   
                                IF   ACCT-SRYKBN  =  "11"  OR  "12" 
@@ -784,15 +784,14 @@
                                    PERFORM   SHOSAISIN-HANTEI-SEC
                                END-IF
                                PERFORM   TENSOU-SEC
-                           END-IF
                    END-IF
       *                 
-                   MOVE     "SRYACCT-KEY2"   TO   ORC-DBPATH
+                   MOVE     "SRYACCT-KEY24"  TO   ORC-DBPATH
                    PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE   "SRYACCT-KEY2"      TO  WK-PATH
+           MOVE   "SRYACCT-KEY24"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
            .
@@ -810,14 +809,15 @@
            MOVE    RECE40-PTID          TO      ACCT-PTID
            MOVE    RECE40-SRYKA(IDX)    TO      ACCT-SRYKA
            MOVE    RECE40-SRYYM         TO      ACCT-SRYYM
+           MOVE    RECE40-HKNCOMBI      TO      ACCT-HKNCOMBI
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY2"       TO      ORC-DBPATH
+           MOVE    "SRYACCT-KEY24"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SRYACCT-KEY2"   TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY24"  TO      ORC-DBPATH
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL
                               FLG-SRYACCT        =    1
@@ -829,8 +829,7 @@
                         MOVE    ZERO    TO   FLG-DAY  
                    END-IF
       *
-                   IF      ACCT-HKNCOMBI   =   RECE40-HKNCOMBI
-                   AND     FLG-DAY         =   1
+                   IF      FLG-DAY         =   1
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE  ACCT-DAY(1 WRK-DAY)  
@@ -846,12 +845,12 @@
                            END-IF
                    END-IF
       *                 
-                   MOVE     "SRYACCT-KEY2"   TO   ORC-DBPATH
+                   MOVE     "SRYACCT-KEY24"  TO   ORC-DBPATH
                    PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE   "SRYACCT-KEY2"      TO  WK-PATH
+           MOVE   "SRYACCT-KEY24"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
            .
@@ -868,35 +867,34 @@
            MOVE    RECE40-NYUGAIKBN     TO      ACCT-NYUGAIKBN
            MOVE    RECE40-PTID          TO      ACCT-PTID
            MOVE    RECE40-SRYKA(IDX)    TO      ACCT-SRYKA
+           MOVE    RECE40-HKNCOMBI      TO      ACCT-HKNCOMBI
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY4"       TO      ORC-DBPATH
+           MOVE    "SRYACCT-KEY25"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SRYACCT-KEY4"   TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY25"  TO      ORC-DBPATH
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL
                               FLG-SRYACCT        =    1
       *
-                   IF      ACCT-HKNCOMBI   =   RECE40-HKNCOMBI
-                        IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                             (ACCT-ZAIKAISU  NOT =    ZERO)
+                   IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      FLG-KENSA
                                IF   ACCT-SRYKBN  =  "60"  
                                    MOVE     1      TO     FLG-KENSA
                                END-IF
                                PERFORM   TENSOU4-SEC
-                        END-IF
                    END-IF
       *                 
-                   MOVE     "SRYACCT-KEY4"   TO   ORC-DBPATH
+                   MOVE     "SRYACCT-KEY25"  TO   ORC-DBPATH
                    PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE   "SRYACCT-KEY4"      TO  WK-PATH
+           MOVE   "SRYACCT-KEY25"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
            .
@@ -913,35 +911,34 @@
            MOVE    RECE40-NYUGAIKBN     TO      ACCT-NYUGAIKBN
            MOVE    RECE40-PTID          TO      ACCT-PTID
            MOVE    RECE40-SRYKA(IDX)    TO      ACCT-SRYKA
+           MOVE    RECE40-HKNCOMBI      TO      ACCT-HKNCOMBI
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY4"       TO      ORC-DBPATH
+           MOVE    "SRYACCT-KEY25"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SRYACCT-KEY4"   TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY25"  TO      ORC-DBPATH
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL
                               FLG-SRYACCT        =    1
       *
-                   IF      ACCT-HKNCOMBI   =   RECE40-HKNCOMBI
-                           IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                                (ACCT-ZAIKAISU  NOT =    ZERO)
+                   IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      FLG-SHOSIN
                                IF   ACCT-SRYKBN  =  "11"   
                                    PERFORM   SHOSIN-HANTEI-SEC
                                END-IF
                                PERFORM   TENSOU5-SEC
-                           END-IF
                    END-IF
       *                 
-                   MOVE     "SRYACCT-KEY4"   TO   ORC-DBPATH
+                   MOVE     "SRYACCT-KEY25"  TO   ORC-DBPATH
                    PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE   "SRYACCT-KEY4"      TO  WK-PATH
+           MOVE   "SRYACCT-KEY25"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
            .

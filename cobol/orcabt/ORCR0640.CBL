@@ -49,6 +49,7 @@
       *  01.00.15    NACL-ÃÁœ∆    03/08/20  ∏¯»Òº¬∆¸øÙ•∆°º•÷•Îæ Û§Œ•ª•√•»
       *  01.00.16    NACL-ÃÁœ∆    03/08/27  ∆√ƒÍº¿¥µ≤˛¿µ¬–±˛
       *  01.00.17    NACL-ÃÁœ∆    03/09/18  ∞Ï…Ù…È√¥∂‚≥€ ‘Ω∏Ω§¿µ
+      *  01.00.18    NACL-ÃÁœ∆    03/09/24  •≥•·•Û•» ‘Ω∏Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -460,6 +461,61 @@
            03  CONS-SANSO2         PIC X(09) VALUE "770030070".
       *    ªƒŒÃ«—¥˛
            03  CONS-ZANHAIKI       PIC X(09) VALUE "099309901".
+      *
+      *    ÃÙ∫ﬁ¥…Õ˝ªÿ∆≥Œ¡
+           03  CONS-YAKUKAN-COMMENT  PIC X(09)  VALUE  "120001610".
+      *    ∆˛±°±…Õ‹ø©ªˆªÿ∆≥Œ¡
+           03  CONS-NYUEIYO-COMMENT  PIC X(09)  VALUE  "113003310".
+      *    ¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡
+           03  CONS-HOUMON-COMMENT1  PIC X(09)  VALUE  "190030310".
+      *    ° œ∑°À¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡
+           03  CONS-HOUMON-COMMENT2  PIC X(09)  VALUE  "190723610".
+      *    Ω˝…¬ºÍ≈ˆ∂‚∞’∏´ΩÒ∏Ú…’Œ¡
+           03  CONS-SYOBYO-COMMENT   PIC X(09)  VALUE  "180000710".
+      *    Œ≈Õ‹»Ò∆±∞’ΩÒ∏Ú…’Œ¡
+           03  CONS-RYOYO-COMMENT    PIC X(09)  VALUE  "113004310".
+      *    ¬‡±°ª˛…˛ÃÙªÿ∆≥≤√ªª
+           03  CONS-TAIIN-COMMENT    PIC X(09)  VALUE  "113006270".
+      *    ºÍΩ—∆¸•≥•·•Û•»
+           03  CONS-SHUJUTU-COMMENT  PIC X(09)  VALUE  "840000042".
+      *    ∆¨…Ù√±Ω„£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT1   PIC X(09)  VALUE  "170011710".
+      *    ∂Ì¥¥√±Ω„£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT2   PIC X(09)  VALUE  "170011810".
+      *    ªÕªË√±Ω„£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT3   PIC X(09)  VALUE  "170011910".
+      *    «æ¡Â£√£‘¬§±∆
+           03  CONS-CTMRI-COMMENT4   PIC X(09)  VALUE  "170012110".
+      *    Ù…Ù√±Ω„£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT5   PIC X(09)  VALUE  "170015550".
+      *    ∆¨…Ù√±Ω„£Õ£“£…ª£±∆
+           03  CONS-CTMRI-COMMENT6   PIC X(09)  VALUE  "170015210".
+      *    ∂Ì¥¥√±Ω„£Õ£“£…ª£±∆
+           03  CONS-CTMRI-COMMENT7   PIC X(09)  VALUE  "170020110".
+      *    ªÕªË√±Ω„£Õ£“£…ª£±∆
+           03  CONS-CTMRI-COMMENT8   PIC X(09)  VALUE  "170022110".
+      *    £√£‘°¢£Õ£“£…° ∆¨…Ù°À° £≤≤ÛÃ‹∞ πﬂ°À
+           03  CONS-CTMRI-COMMENT9   PIC X(09)  VALUE  "170022290".
+      *    £√£‘°¢£Õ£“£…° ∂Ì¥¥°À° £≤≤ÛÃ‹∞ πﬂ°À
+           03  CONS-CTMRI-COMMENT10  PIC X(09)  VALUE  "170022390".
+      *    £√£‘°¢£Õ£“£…° ªÕªË°À° £≤≤ÛÃ‹∞ πﬂ°À
+           03  CONS-CTMRI-COMMENT11  PIC X(09)  VALUE  "170022490".
+      *    ∆¨…Ù∆√ºÏ£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT12  PIC X(09)  VALUE  "170023010".
+      *    ∂Ì¥¥∆√ºÏ£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT13  PIC X(09)  VALUE  "170023110".
+      *    ªÕªË∆√ºÏ£√£‘ª£±∆
+           03  CONS-CTMRI-COMMENT14  PIC X(09)  VALUE  "170023210".
+      *    ∆¨…Ù∆√ºÏ£Õ£“£…ª£±∆
+           03  CONS-CTMRI-COMMENT15  PIC X(09)  VALUE  "170023310".
+      *    ∂Ì¥¥∆√ºÏ£Õ£“£…ª£±∆
+           03  CONS-CTMRI-COMMENT16  PIC X(09)  VALUE  "170023410".
+      *    ªÕªË∆√ºÏ£Õ£“£…ª£±∆
+           03  CONS-CTMRI-COMMENT17  PIC X(09)  VALUE  "170023510".
+      *    ¿∫ø¿≤ ¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡
+           03  CONS-HOUSEI-COMMENT   PIC X(09)  VALUE  "180018310".
+      *    ¿∫ø¿≤ ≥÷Œ•…¬ºº¥…Õ˝≤√ªª
+           03  CONS-KAKURI-COMMENT   PIC X(09)  VALUE  "190107070".
       *
       *****ª¿¡« 
       *****COPY    "CMSANSOTBL.INC".
@@ -3516,6 +3572,75 @@
                                             "180025110"   OR
                                             "180025010"   
                         MOVE   "1"        TO    RECE62-COMCNTFLG
+              END-IF
+           END-IF
+      *
+      *
+           IF      RECE64-SRYKBN      =     "13"
+              IF   SRY-SRYCD(IDX2)    =     CONS-YAKUKAN-COMMENT
+                   MOVE   "1"   TO    RECE64-FLG-YAKUKAN-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-NYUEIYO-COMMENT
+                   MOVE   "1"   TO    RECE64-FLG-NYUEIYO-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-HOUMON-COMMENT1  OR
+                                            CONS-HOUMON-COMMENT2
+                   MOVE   "1"   TO    RECE64-FLG-HOUMON-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-SYOBYO-COMMENT
+                   MOVE   "1"   TO    RECE64-FLG-SYOBYO-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-RYOYO-COMMENT
+                   MOVE   "1"   TO    RECE64-FLG-RYOYO-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-TAIIN-COMMENT
+                   MOVE   "1"   TO    RECE64-FLG-TAIIN-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE64-SRYKBN      =     "50"
+              IF   RECE64-SYUTEN1     =     ZERO
+                   MOVE   "1"   TO    RECE64-FLG-SHUJUTU-COMMENT
+              END-IF
+              IF   SRY-SRYSYUKBN      =     "510"
+                   MOVE   "1"   TO    RECE64-FLG-SHUJUTU-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-SHUJUTU-COMMENT
+                   MOVE   "1"   TO    RECE64-FLG-SHUJUTU-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE64-SRYKBN      =     "70"
+              IF   SRY-SRYCD(IDX2)    =     CONS-CTMRI-COMMENT1  OR
+                                            CONS-CTMRI-COMMENT2  OR
+                                            CONS-CTMRI-COMMENT3  OR
+                                            CONS-CTMRI-COMMENT4  OR
+                                            CONS-CTMRI-COMMENT5  OR
+                                            CONS-CTMRI-COMMENT6  OR
+                                            CONS-CTMRI-COMMENT7  OR
+                                            CONS-CTMRI-COMMENT8  OR
+                                            CONS-CTMRI-COMMENT9  OR
+                                            CONS-CTMRI-COMMENT10 OR
+                                            CONS-CTMRI-COMMENT11 OR
+                                            CONS-CTMRI-COMMENT12 OR
+                                            CONS-CTMRI-COMMENT13 OR
+                                            CONS-CTMRI-COMMENT14 OR
+                                            CONS-CTMRI-COMMENT15 OR
+                                            CONS-CTMRI-COMMENT16 OR
+                                            CONS-CTMRI-COMMENT17
+                   MOVE   "1"   TO    RECE64-FLG-CTMRI-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE64-SRYKBN      =     "80"
+              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT
+                   MOVE   "1"   TO    RECE64-FLG-HOUSEI-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE64-SRYKBN      =     "90"  OR  "92"
+              IF   SRY-SRYCD(IDX2)    =     CONS-KAKURI-COMMENT
+                   MOVE   "1"   TO    RECE64-FLG-KAKURI-COMMENT
               END-IF
            END-IF
       *

@@ -564,3 +564,37 @@ path	all2	{
 		;
 	};
 };
+
+path	key24 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key24_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYM       =   :SRYYM
+                        AND   HKNCOMBI    =   :HKNCOMBI
+			ORDER   BY      SRYKBN,
+                                        ZAINUM
+		;
+	};
+};
+
+path	key25 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key25_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+                        AND   HKNCOMBI    =   :HKNCOMBI
+			ORDER   BY      SRYYM,
+                                        SRYKBN,
+                                        ZAINUM
+		;
+	};
+};

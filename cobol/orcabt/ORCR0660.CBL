@@ -39,6 +39,7 @@
       *  01.00.05    NACL-ÌçÏÆ    03.05.28  ¼õ¿ÇÍúÎò¥­¡¼¤ÎÊÑ¹¹
       *  01.00.06    NACL-ÌçÏÆ    03.06.19  Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤ÎÊÔ½¸½¤Àµ
       *  01.00.07    NACL-ÌçÏÆ    03.08.20  ¸øÈñ¼õ¿ÇÆü¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *  01.00.08    NACL-ÌçÏÆ    03.09.24  ¥³¥á¥ó¥ÈÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -181,15 +182,6 @@
            03  FLG-RECE64          PIC 9(01).
            03  FLG-RECE65          PIC 9(01).
            03  FLG-YAKUKAN-COMMENT PIC 9(01).
-           03  FLG-NYUEIYO-COMMENT PIC 9(01).
-           03  FLG-HOUMON-COMMENT  PIC 9(01).
-           03  FLG-HOUSEI-COMMENT  PIC 9(01).
-           03  FLG-SYOBYO-COMMENT  PIC 9(01).
-           03  FLG-RYOYO-COMMENT   PIC 9(01).
-           03  FLG-TAIIN-COMMENT   PIC 9(01).
-           03  FLG-SHUJUTU-COMMENT PIC 9(01).
-           03  FLG-CTMRI-COMMENT   PIC 9(01).
-           03  FLG-KAKURI-COMMENT  PIC 9(01).
            03  FLG-COMMENT         PIC 9(02).
            03  FLG-WRKRECE65       PIC 9(01).
            03  FLG-FIRST           PIC 9(01).
@@ -379,22 +371,7 @@
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
       *    ÌôºÞ´ÉÍý»ØÆ³ÎÁ
-           03  CONS-YAKUKAN-COMMENT PIC X(09) VALUE "120001610".
-      *    Æþ±¡±ÉÍÜ¿©»ö»ØÆ³ÎÁ
-           03  CONS-NYUEIYO-COMMENT PIC X(09) VALUE "113003310".
-      *    ½ýÉÂ¼êÅö¶â°Õ¸«½ñ¸òÉÕÎÁ
-           03  CONS-SYOBYO-COMMENT  PIC X(09) VALUE "180000710".
-      *    ÎÅÍÜÈñÆ±°Õ½ñ¸òÉÕÎÁ
-           03  CONS-RYOYO-COMMENT   PIC X(09) VALUE "113004310".
-      *    Âà±¡»þÉþÌô»ØÆ³²Ã»»
-           03  CONS-TAIIN-COMMENT   PIC X(09) VALUE "113006270".
-      *    Àº¿À²ÊÂà±¡Á°Ë¬Ìä»ØÆ³ÎÁ
-           03  CONS-HOUSEI-COMMENT  PIC X(09) VALUE "180018310".
-      *    ¼ê½ÑÆü¥³¥á¥ó¥È
-           03  CONS-SHUJUTU-COMMENT PIC X(09) VALUE "840000042".
-      *    Àº¿À²Ê³ÖÎ¥ÉÂ¼¼´ÉÍý²Ã»»
-           03  CONS-KAKURI-COMMENT  PIC X(09) VALUE "190107070".
-      *
+           03  CONS-YAKUKAN-COMMENT PIC X(09)  VALUE "120001610".
       *    »»ÄêÆü¥³¥á¥ó¥È
            03  CONS-SANTEI-COMMENT1  PIC X(09) VALUE "840000058".
            03  CONS-SANTEI-COMMENT2  PIC X(09) VALUE "840000065".
@@ -435,62 +412,6 @@
             03  TBL-RIHA       PIC X(09)   OCCURS   28.       
       *
        01  TBL-RIHA-MAX        PIC 9(02)   VALUE    28.  
-      *
-      *
-      *   Âà±¡Á°Ë¬Ìä»ØÆ³ÎÁÂÐ¾Ý¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë
-       01  TBL-HOUMON-AREA.
-      *    Âà±¡Á°Ë¬Ìä»ØÆ³ÎÁ
-           03  FILLER          PIC X(09)   VALUE   "190030310".
-      *    ¡ÊÏ·¡ËÂà±¡Á°Ë¬Ìä»ØÆ³ÎÁ
-           03  FILLER          PIC X(09)   VALUE   "190723610".
-      *
-       01  TBL-HOUMON-R        REDEFINES   TBL-HOUMON-AREA.
-            03  TBL-HOUMON     PIC X(09)   OCCURS   2.       
-      *
-       01  TBL-HOUMON-MAX      PIC 9(02)   VALUE    2.  
-      *
-      *
-      *   £Ã£Ô¡¦£Í£Ò£ÉÂÐ¾Ý¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë
-       01  TBL-CTMRI-AREA.
-      *    Æ¬ÉôÃ±½ã£Ã£Ô»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170011710".
-      *    ¶í´´Ã±½ã£Ã£Ô»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170011810".
-      *    »Í»èÃ±½ã£Ã£Ô»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170011910".
-      *    Ç¾Áå£Ã£ÔÂ¤±Æ
-           03  FILLER          PIC X(09)   VALUE   "170012110".
-      *    ðôÉôÃ±½ã£Ã£Ô»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170015550".
-      *    Æ¬ÉôÃ±½ã£Í£Ò£É»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170015210".
-      *    ¶í´´Ã±½ã£Í£Ò£É»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170020110".
-      *    »Í»èÃ±½ã£Í£Ò£É»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170022110".
-      *    £Ã£Ô¡¢£Í£Ò£É¡ÊÆ¬Éô¡Ë¡Ê£²²óÌÜ°Ê¹ß¡Ë
-           03  FILLER          PIC X(09)   VALUE   "170022290".
-      *    £Ã£Ô¡¢£Í£Ò£É¡Ê¶í´´¡Ë¡Ê£²²óÌÜ°Ê¹ß¡Ë
-           03  FILLER          PIC X(09)   VALUE   "170022390".
-      *    £Ã£Ô¡¢£Í£Ò£É¡Ê»Í»è¡Ë¡Ê£²²óÌÜ°Ê¹ß¡Ë
-           03  FILLER          PIC X(09)   VALUE   "170022490".
-      *    Æ¬ÉôÆÃ¼ì£Ã£Ô»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170023010".
-      *    ¶í´´ÆÃ¼ì£Ã£Ô»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170023110".
-      *    »Í»èÆÃ¼ì£Ã£Ô»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170023210".
-      *    Æ¬ÉôÆÃ¼ì£Í£Ò£É»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170023310".
-      *    ¶í´´ÆÃ¼ì£Í£Ò£É»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170023410".
-      *    »Í»èÆÃ¼ì£Í£Ò£É»£±Æ
-           03  FILLER          PIC X(09)   VALUE   "170023510".
-      *
-       01  TBL-CTMRI-R         REDEFINES   TBL-CTMRI-AREA.
-            03  TBL-CTMRI      PIC X(09)   OCCURS   17.       
-      *
-       01  TBL-CTMRI-MAX       PIC 9(02)   VALUE    17.  
       *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
        01  WRK-PATH                        PIC X(64).
@@ -781,7 +702,7 @@
                         MOVE       RECE64-REC    TO   RECE641-REC
                         WRITE      RECE641-REC
                         ADD     1          TO      CNT-RECE64
-                        PERFORM    2002-RECE65-TENSOU-SEC
+                        PERFORM    2001-RECE65-TENSOU-SEC
                       END-IF
                    WHEN      "50"
       *            ¡Ê¼ê½ÑÆü¤Î¥»¥Ã¥È¡Ë
@@ -817,7 +738,7 @@
                              MOVE    RECE64-REC    TO   RECE641-REC
                              WRITE   RECE641-REC
                              ADD     1       TO      CNT-RECE64
-                             PERFORM    2002-RECE65-TENSOU-SEC
+                             PERFORM    2001-RECE65-TENSOU-SEC
                       END-IF
                    WHEN      "90"                                       
                    WHEN      "92"
@@ -830,13 +751,13 @@
                           MOVE       RECE64-REC    TO   RECE641-REC     
                           WRITE      RECE641-REC                        
                           ADD     1          TO      CNT-RECE64         
-                          PERFORM    2002-RECE65-TENSOU-SEC
+                          PERFORM    2001-RECE65-TENSOU-SEC
                       END-EVALUATE
                    WHEN   OTHER
                       MOVE       RECE64-REC    TO   RECE641-REC
                       WRITE      RECE641-REC
                       ADD     1          TO      CNT-RECE64
-                      PERFORM    2002-RECE65-TENSOU-SEC
+                      PERFORM    2001-RECE65-TENSOU-SEC
                END-EVALUATE
       *
                PERFORM 990-RECE64-NEXT-SEC
@@ -1067,7 +988,7 @@
       *
            MOVE       5          TO   FLG-COMMENT
       *
-           PERFORM  2002-FREE-COMMENT3-SEC
+           PERFORM  2001-FREE-COMMENT3-SEC
       *
       *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
            MOVE    ZERO                TO  IDX-RECE65
@@ -1158,51 +1079,7 @@
       *****************************************************************
        2001-YAKUKANSIDO-HANTEI-SEC          SECTION.
       *
-           MOVE      ZERO            TO      FLG-YAKUKAN-COMMENT
-      *
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE64-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE64-PTID       TO      SRY-PTID
-           MOVE    RECE64-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (1)
-           MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (2)
-           MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (3)
-           MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (4)
-           MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                NOT  =  ZERO
-               CONTINUE
-           ELSE
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    1         TO      FLG-YAKUKAN-COMMENT
-               END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF      FLG-YAKUKAN-COMMENT   =      1
+           IF      RECE64-FLG-YAKUKAN-COMMENT   =    "1"
                 MOVE       3       TO     FLG-COMMENT
                 PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
@@ -1216,51 +1093,7 @@
       *****************************************************************
        2001-NYUEIYOSIDO-HANTEI-SEC          SECTION.
       *
-           MOVE      ZERO            TO      FLG-NYUEIYO-COMMENT
-      *
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE64-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE64-PTID       TO      SRY-PTID
-           MOVE    RECE64-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-NYUEIYO-COMMENT  TO  SRY-SRYCD (1)
-           MOVE    CONS-NYUEIYO-COMMENT  TO  SRY-SRYCD (2)
-           MOVE    CONS-NYUEIYO-COMMENT  TO  SRY-SRYCD (3)
-           MOVE    CONS-NYUEIYO-COMMENT  TO  SRY-SRYCD (4)
-           MOVE    CONS-NYUEIYO-COMMENT  TO  SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                NOT  =  ZERO
-               CONTINUE
-           ELSE
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    1         TO      FLG-NYUEIYO-COMMENT
-               END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF      FLG-NYUEIYO-COMMENT   =      1
+           IF      RECE64-FLG-NYUEIYO-COMMENT   =    "1"
                 MOVE       3       TO     FLG-COMMENT
                 PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
@@ -1274,57 +1107,7 @@
       *****************************************************************
        2001-HOUMONSIDO-HANTEI-SEC          SECTION.
       *
-           MOVE      ZERO              TO      FLG-HOUMON-COMMENT
-      *
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX           >   TBL-HOUMON-MAX )
-                      OR     ( FLG-HOUMON-COMMENT  =   1       )
-      *
-             INITIALIZE                        SRYACT-REC
-             MOVE    RECE64-HOSPID     TO      SRY-HOSPID
-             MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
-             MOVE    RECE64-PTID       TO      SRY-PTID
-             MOVE    RECE64-SRYYM      TO      SRY-SRYYM
-             MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
-             MOVE    TBL-HOUMON(IDX)   TO      SRY-SRYCD (1)
-             MOVE    TBL-HOUMON(IDX)   TO      SRY-SRYCD (2)
-             MOVE    TBL-HOUMON(IDX)   TO      SRY-SRYCD (3)
-             MOVE    TBL-HOUMON(IDX)   TO      SRY-SRYCD (4)
-             MOVE    TBL-HOUMON(IDX)   TO      SRY-SRYCD (5)
-      *
-             MOVE    SRYACT-REC        TO      MCPDATA-REC
-             MOVE    "DBSELECT"        TO      MCP-FUNC
-             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-             CALL    "ORCMCPSUB"       USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-             IF  MCP-RC                NOT  =  ZERO
-                 CONTINUE
-             ELSE
-                 MOVE    "DBFETCH"     TO      MCP-FUNC
-                 MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-                 CALL    "ORCMCPSUB"           USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
-                 IF      MCP-RC        =       ZERO
-                     MOVE    1         TO      FLG-HOUMON-COMMENT
-                 END-IF
-             END-IF
-      *
-             INITIALIZE                        MCPAREA
-             MOVE    "DBCLOSE"         TO      MCP-FUNC
-             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-             CALL    "ORCMCPSUB"       USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           END-PERFORM
-      *
-           IF      FLG-HOUMON-COMMENT   =      1
+           IF      RECE64-FLG-HOUMON-COMMENT   =    "1"
                 MOVE       3       TO     FLG-COMMENT
                 PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
@@ -1338,51 +1121,7 @@
       *****************************************************************
        2001-SYOBYO-HANTEI-SEC          SECTION.
       *
-           MOVE      ZERO            TO      FLG-SYOBYO-COMMENT
-      *
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE64-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE64-PTID       TO      SRY-PTID
-           MOVE    RECE64-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (1)
-           MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (2)
-           MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (3)
-           MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (4)
-           MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                NOT  =  ZERO
-               CONTINUE
-           ELSE
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    1         TO      FLG-SYOBYO-COMMENT
-               END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF      FLG-SYOBYO-COMMENT   =      1
+           IF      RECE64-FLG-SYOBYO-COMMENT   =    "1"
                 MOVE       4       TO     FLG-COMMENT
                 PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
@@ -1396,51 +1135,7 @@
       *****************************************************************
        2001-RYOYO-HANTEI-SEC          SECTION.
       *
-           MOVE      ZERO            TO      FLG-RYOYO-COMMENT
-      *
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE64-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE64-PTID       TO      SRY-PTID
-           MOVE    RECE64-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (1)
-           MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (2)
-           MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (3)
-           MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (4)
-           MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                NOT  =  ZERO
-               CONTINUE
-           ELSE
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    1         TO      FLG-RYOYO-COMMENT
-               END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF      FLG-RYOYO-COMMENT   =      1
+           IF      RECE64-FLG-RYOYO-COMMENT    =    "1"
                 MOVE       4       TO     FLG-COMMENT
                 PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
@@ -1458,51 +1153,7 @@
            MOVE      ZERO            TO      WRK-TUKI-YAKUKAN
            MOVE      ZERO            TO      WRK-DAY-YAKUKAN
       *
-           MOVE      ZERO            TO      FLG-TAIIN-COMMENT
-      *
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE64-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE64-PTID       TO      SRY-PTID
-           MOVE    RECE64-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-TAIIN-COMMENT    TO  SRY-SRYCD (1)
-           MOVE    CONS-TAIIN-COMMENT    TO  SRY-SRYCD (2)
-           MOVE    CONS-TAIIN-COMMENT    TO  SRY-SRYCD (3)
-           MOVE    CONS-TAIIN-COMMENT    TO  SRY-SRYCD (4)
-           MOVE    CONS-TAIIN-COMMENT    TO  SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                NOT  =  ZERO
-               CONTINUE
-           ELSE
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    1         TO      FLG-TAIIN-COMMENT
-               END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF      FLG-TAIIN-COMMENT   =      1
+           IF      RECE64-FLG-TAIIN-COMMENT   =    "1"
       *
              MOVE      ZERO            TO      FLG-YAKUKAN-COMMENT
       *
@@ -1528,14 +1179,9 @@
              IF      MCP-RC               =       ZERO
                  MOVE    "SRYACT-KEY7"   TO      ORC-DBPATH
                  PERFORM  SRYACT-READ-SEC
-                 PERFORM  UNTIL   FLG-SRYACT           =  1
-                            OR    FLG-YAKUKAN-COMMENT  =  1
-      *
+                 IF      FLG-SRYACT  =  ZERO
                      MOVE    1         TO      FLG-YAKUKAN-COMMENT
-      *
-                     MOVE     "SRYACT-KEY7"   TO   ORC-DBPATH
-                     PERFORM   SRYACT-READ-SEC
-                 END-PERFORM
+                 END-IF
              END-IF
       *
              INITIALIZE                        MCPAREA
@@ -1668,85 +1314,14 @@
       *****************************************************************
        2001-SHUJUTSU-HANTEI-SEC          SECTION.
       *
-           MOVE    ZERO              TO      FLG-SHUJUTU-COMMENT
-      *
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE64-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE64-PTID       TO      SRY-PTID
-           MOVE    RECE64-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (1)
-           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (2)
-           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (3)
-           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (4)
-           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                NOT  =  ZERO
-               MOVE      1           TO      FLG-SHUJUTU-COMMENT
-           ELSE
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   CONTINUE
-               ELSE
-                   MOVE    1         TO      FLG-SHUJUTU-COMMENT
-               END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *    Í¢·ì¤Ï½ü¤¯
-           INITIALIZE                      RECE65-REC
-           MOVE    RECE64-HOSPID       TO  RECE65-HOSPID
-           MOVE    RECE64-SRYYM        TO  RECE65-SRYYM
-           MOVE    RECE64-NYUGAIKBN    TO  RECE65-NYUGAIKBN
-           MOVE    RECE64-PTID         TO  RECE65-PTID
-           MOVE    RECE64-RECEKA       TO  RECE65-RECEKA
-           MOVE    RECE64-TEISYUTUSAKI TO  RECE65-TEISYUTUSAKI
-           MOVE    RECE64-RECESYUBETU  TO  RECE65-RECESYUBETU
-           MOVE    RECE64-HKNJANUM     TO  RECE65-HKNJANUM
-           MOVE    RECE64-HOJOKBN      TO  RECE65-HOJOKBN
-           MOVE    RECE64-TEKSTYMD     TO  RECE65-TEKSTYMD
-           MOVE    RECE64-ZAINUM       TO  RECE65-ZAINUM
-           MOVE    RECE64-ZAIREN       TO  RECE65-ZAIREN
-           START   RECE65-FILE
-                 KEY IS    >=   RECE65-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE65
-                 NOT INVALID
-                     PERFORM 990-RECE65-NEXT-SEC
-           END-START
-           IF     RECE65-SRYSYUKBN  =  "510"
-                    MOVE     ZERO      TO  FLG-SHUJUTU-COMMENT
-           END-IF
-      *
-           IF     (FLG-SHUJUTU-COMMENT   =      1)  AND
-                  (RECE64-SYUTEN1    NOT =   ZERO)
+           IF     RECE64-FLG-SHUJUTU-COMMENT   =    SPACE
                 MOVE       1       TO     FLG-COMMENT
                 PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
            ELSE
                 MOVE       RECE64-REC    TO   RECE641-REC
                 WRITE      RECE641-REC
                 ADD     1          TO      CNT-RECE64
-                PERFORM    2002-RECE65-TENSOU-SEC
+                PERFORM    2001-RECE65-TENSOU-SEC
            END-IF
       *
            .
@@ -1758,64 +1333,14 @@
       *****************************************************************
        2001-CTMRI-HANTEI-SEC          SECTION.
       *
-           MOVE      ZERO              TO      FLG-CTMRI-COMMENT
-      *
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX           >   TBL-CTMRI-MAX )
-                      OR     ( FLG-CTMRI-COMMENT  =   1        )
-      *
-             INITIALIZE                        SRYACT-REC
-             MOVE    RECE64-HOSPID     TO      SRY-HOSPID
-             MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
-             MOVE    RECE64-PTID       TO      SRY-PTID
-             MOVE    RECE64-SRYYM      TO      SRY-SRYYM
-             MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
-             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (1)
-             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (2)
-             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (3)
-             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (4)
-             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (5)
-      *
-             MOVE    SRYACT-REC        TO      MCPDATA-REC
-             MOVE    "DBSELECT"        TO      MCP-FUNC
-             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-             CALL    "ORCMCPSUB"       USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-             IF  MCP-RC                NOT  =  ZERO
-                 CONTINUE
-             ELSE
-                 MOVE    "DBFETCH"     TO      MCP-FUNC
-                 MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-                 CALL    "ORCMCPSUB"           USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
-                 IF      MCP-RC        =       ZERO
-                     MOVE    1         TO      FLG-CTMRI-COMMENT
-                 END-IF
-             END-IF
-      *
-             INITIALIZE                        MCPAREA
-             MOVE    "DBCLOSE"         TO      MCP-FUNC
-             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-             CALL    "ORCMCPSUB"       USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           END-PERFORM
-      *
-           IF      FLG-CTMRI-COMMENT   =      1
+           IF      RECE64-FLG-CTMRI-COMMENT   =    "1"
                 MOVE       2       TO     FLG-COMMENT
                 PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
            ELSE
                 MOVE       RECE64-REC    TO   RECE641-REC
                 WRITE      RECE641-REC
                 ADD     1          TO      CNT-RECE64
-                PERFORM    2002-RECE65-TENSOU-SEC
+                PERFORM    2001-RECE65-TENSOU-SEC
            END-IF
       *
            .
@@ -1827,51 +1352,7 @@
       *****************************************************************
        2001-HOUMONSIDO-SEISIN-HANTEI-SEC          SECTION.
       *
-           MOVE      ZERO            TO      FLG-HOUSEI-COMMENT
-      *
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE64-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE64-PTID       TO      SRY-PTID
-           MOVE    RECE64-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-HOUSEI-COMMENT  TO   SRY-SRYCD (1)
-           MOVE    CONS-HOUSEI-COMMENT  TO   SRY-SRYCD (2)
-           MOVE    CONS-HOUSEI-COMMENT  TO   SRY-SRYCD (3)
-           MOVE    CONS-HOUSEI-COMMENT  TO   SRY-SRYCD (4)
-           MOVE    CONS-HOUSEI-COMMENT  TO   SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                NOT  =  ZERO
-               CONTINUE
-           ELSE
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    1         TO      FLG-HOUSEI-COMMENT
-               END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF      FLG-HOUSEI-COMMENT   =      1
+           IF      RECE64-FLG-HOUSEI-COMMENT   =    "1"
                 MOVE       3       TO     FLG-COMMENT
                 PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
@@ -1944,7 +1425,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ê½ÑÆüÅù¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *    ¼ê½ÑÆüÅù¤Î¥³¥á¥ó¥ÈÊÔ½¸¡Êº¹¹þ¡§¾å¡Ë
       *****************************************************************
        2001-SHUJUTSU-ETC-COMMENT-SEC          SECTION.
       *
@@ -1953,7 +1434,7 @@
            MOVE       ZERO       TO   IDZ                               
            INITIALIZE            WRK-FREE-AREA2                         
       *
-           PERFORM  2002-FREE-COMMENT2-SEC                              
+           PERFORM  2001-FREE-COMMENT2-SEC                              
       *
       *    ¢¨ÌÀºÙ¤¬£µ°Ê¾å¤Î¾ì¹ç
            INITIALIZE                      RECE65-REC
@@ -1986,38 +1467,6 @@
            INITIALIZE                       WRK-NAMEINF-AREA
            MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
            INITIALIZE                       WRK-DATAKBNINF-AREA
-      *    ¼ê½ÑÆü¥³¥á¥ó¥È¤ÎÁÞÆþ
-      **** PERFORM  VARYING      IDX    FROM  1   BY   1
-      ****          UNTIL       (IDX    >     31)      OR
-      ****                      (TB-SANTEI-DAY(IDX)  =  ZERO)
-      ****     ADD     1                    TO  IDX-RECE65
-      ****     MOVE    SPACE                TO  COM-RECE65-REC
-      ****     INITIALIZE                       COM-RECE65-REC
-      ****     EVALUATE   FLG-COMMENT
-      ****        WHEN    1
-      ****          MOVE    CONS-SHUJUTU-COMMENT TO  COM-SRYCD(1)
-      ****          MOVE    ZERO                 TO  COM-SRYSURYO(1)
-      ****          MOVE    6                    TO  COM-YUKOKETA(1)
-      ****          MOVE    "¼ê½Ñ¡¡¡¡¡¡Æü"       TO  COM-NAME(1)
-      ****          MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
-      ****          MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
-      ****          MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-      ****                                           (IDX-RECE65)
-      ****          MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-      ****                                           (IDX-RECE65)
-      ****        WHEN    2
-      ****          MOVE    "810000001"          TO  COM-SRYCD(1)
-      ****          MOVE    ZERO                 TO  COM-SRYSURYO(1)
-      ****          MOVE    6                    TO  COM-YUKOKETA(1)
-      ****          MOVE    "¼Â»Ü¡¡¡¡¡¡Æü"       TO  COM-NAME(1)
-      ****          MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
-      ****          MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
-      ****          MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-      ****                                           (IDX-RECE65)
-      ****          MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-      ****                                           (IDX-RECE65)
-      ****    END-EVALUATE
-      **** END-PERFORM
       *
            MOVE    SPACE               TO  COM-RECE65-REC
            INITIALIZE                      COM-RECE65-REC
@@ -2112,7 +1561,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ê½ÑÆüÅù¤Î¥³¥á¥ó¥ÈÊÔ½¸£²
+      *    ¼ê½ÑÆüÅù¤Î¥³¥á¥ó¥ÈÊÔ½¸£²¡Êº¹¹þ¡§²¼¡Ë
       *****************************************************************
        2001-SHUJUTSU-ETC2-COMMENT-SEC          SECTION.
       *
@@ -2121,7 +1570,7 @@
            MOVE       ZERO       TO   IDZ                               
            INITIALIZE            WRK-FREE-AREA2                         
       *
-           PERFORM  2002-FREE-COMMENT2-SEC                              
+           PERFORM  2001-FREE-COMMENT2-SEC                              
       *
       *    ¢¨ÌÀºÙ¤¬£µ°Ê¾å¤Î¾ì¹ç
            INITIALIZE                      RECE65-REC
@@ -2156,39 +1605,6 @@
            INITIALIZE                       WRK-DATAKBNINF-AREA
       *
            MOVE    RECE64-MEISAISU      TO  MAX-MEISAISU
-      *
-      *    ¼ê½ÑÆü¥³¥á¥ó¥È¤ÎÁÞÆþ
-      **** PERFORM  VARYING      IDX    FROM  1   BY   1
-      ****          UNTIL       (IDX    >     31)      OR
-      ****                      (TB-SANTEI-DAY(IDX)  =  ZERO)
-      ****     ADD     1                    TO  IDX-RECE65
-      ****     MOVE    SPACE                TO  COM-RECE65-REC
-      ****     INITIALIZE                       COM-RECE65-REC
-      ****     EVALUATE   FLG-COMMENT
-      ****        WHEN    1
-      ****          MOVE    CONS-SHUJUTU-COMMENT TO  COM-SRYCD(1)
-      ****          MOVE    ZERO                 TO  COM-SRYSURYO(1)
-      ****          MOVE    6                    TO  COM-YUKOKETA(1)
-      ****          MOVE    "¼ê½Ñ¡¡¡¡¡¡Æü"       TO  COM-NAME(1)
-      ****          MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
-      ****          MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
-      ****          MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-      ****                                           (IDX-RECE65)
-      ****          MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-      ****                                           (IDX-RECE65)
-      ****        WHEN    2
-      ****          MOVE    "810000001"          TO  COM-SRYCD(1)
-      ****          MOVE    ZERO                 TO  COM-SRYSURYO(1)
-      ****          MOVE    6                    TO  COM-YUKOKETA(1)
-      ****          MOVE    "¼Â»Ü¡¡¡¡¡¡Æü"       TO  COM-NAME(1)
-      ****          MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
-      ****          MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
-      ****          MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-      ****                                           (IDX-RECE65)
-      ****          MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-      ****                                           (IDX-RECE65)
-      ****    END-EVALUATE
-      **** END-PERFORM
       *
            MOVE    SPACE               TO  COM-RECE65-REC
            INITIALIZE                      COM-RECE65-REC
@@ -2307,7 +1723,7 @@
       *****************************************************************
       *    ¼ê½ÑÆüÅù¤ÎÆüÉÕ¤ÎÊÔ½¸
       *****************************************************************
-       2002-FREE-COMMENT2-SEC          SECTION.                         
+       2001-FREE-COMMENT2-SEC          SECTION.                         
       *
            ADD      1          TO    IDZ
       *
@@ -2389,7 +1805,7 @@
                        MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  25
-                          PERFORM  2002-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  2001-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "¡¢"
@@ -2403,7 +1819,7 @@
                        END-IF
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  24 OR 25
-                          PERFORM  2002-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  2001-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)(3:2)     
@@ -2429,7 +1845,7 @@
                        MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  25
-                          PERFORM  2002-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  2001-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "¡¢"
@@ -2442,7 +1858,7 @@
                        END-IF
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  23 OR 24 OR 25
-                          PERFORM  2002-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  2001-FREE-COMMENT2-KAIGYO-SEC
                           ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)     
@@ -2468,13 +1884,13 @@
       *
            END-PERFORM
            .
-       2002-FREE-COMMENT2-EXT.
+       2001-FREE-COMMENT2-EXT.
            EXIT.
       *
       *****************************************************************
       *    ¼ê½ÑÆüÅù¤ÎÆüÉÕ¤ÎÊÔ½¸¡Ê²þ¹Ô¡Ë
       *****************************************************************
-       2002-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  
+       2001-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  
       *
            ADD      1              TO  IDZ
       *
@@ -2483,13 +1899,13 @@
            MOVE    ALL "¡¡"        TO  WK-FREE-NAME2(IDZ)(1:WRK-KETA)
       *
            .
-       2002-FREE-COMMENT2-KAIGYO-EXT.
+       2001-FREE-COMMENT2-KAIGYO-EXT.
            EXIT.
       *
       *****************************************************************
       *    ¸øÈñ¼õ¿ÇÆü¤ÎÆüÉÕ¤ÎÊÔ½¸
       *****************************************************************
-       2002-FREE-COMMENT3-SEC          SECTION.                         
+       2001-FREE-COMMENT3-SEC          SECTION.                         
       *
            ADD      1          TO    IDZ
       *
@@ -2520,7 +1936,7 @@
                          MOVE  1  TO  FLG-FIRST 
                        ELSE
                          IF    WK-FREE-YUKOKETA2(IDZ)  =  25
-                           PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                           PERFORM  2001-FREE-COMMENT3-KAIGYO-SEC
                          ELSE
                            ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                            COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -2532,7 +1948,7 @@
                        IF  TBL-NYU-DAY-ST(IDX)     <  10 
                           IF    WK-FREE-YUKOKETA2(IDZ)  =
                                                        24 OR 25
-                            PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                            PERFORM  2001-FREE-COMMENT3-KAIGYO-SEC
                           END-IF
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -2546,7 +1962,7 @@
                        ELSE
                           IF    WK-FREE-YUKOKETA2(IDZ)  =
                                                  23 OR 24 OR 25
-                            PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                            PERFORM  2001-FREE-COMMENT3-KAIGYO-SEC
                           END-IF
                           ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -2572,7 +1988,7 @@
                          MOVE  1  TO  FLG-FIRST 
                        ELSE
                          IF    WK-FREE-YUKOKETA2(IDZ)  =  25
-                           PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                           PERFORM  2001-FREE-COMMENT3-KAIGYO-SEC
                          ELSE
                            ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                            COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -2585,7 +2001,7 @@
                           IF  TBL-NYU-DAY-ED(IDX)  <  10
                             IF    WK-FREE-YUKOKETA2(IDZ)  =  
                                        21 OR 22 OR 23 OR 24 OR 25
-                              PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                              PERFORM  2001-FREE-COMMENT3-KAIGYO-SEC
                             END-IF
                             ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                             COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -2609,7 +2025,7 @@
                           ELSE
                             IF    WK-FREE-YUKOKETA2(IDZ)  =  
                                  20 OR 21 OR 22 OR 23 OR 24 OR 25
-                              PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                              PERFORM  2001-FREE-COMMENT3-KAIGYO-SEC
                             END-IF
                             ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                             COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -2634,7 +2050,7 @@
                        ELSE
                           IF    WK-FREE-YUKOKETA2(IDZ)  =  
                                19 OR 20 OR 21 OR 22 OR 23 OR 24 OR 25
-                              PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                              PERFORM  2001-FREE-COMMENT3-KAIGYO-SEC
                           END-IF
                           ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -2661,13 +2077,13 @@
       *
            END-PERFORM
            .
-       2002-FREE-COMMENT3-EXT.
+       2001-FREE-COMMENT3-EXT.
            EXIT.
       *
       *****************************************************************
       *    ¸øÈñ¼õ¿ÇÆü¤ÎÆüÉÕ¤ÎÊÔ½¸¡Ê²þ¹Ô¡Ë
       *****************************************************************
-       2002-FREE-COMMENT3-KAIGYO-SEC          SECTION.                  
+       2001-FREE-COMMENT3-KAIGYO-SEC          SECTION.                  
       *
            ADD      1              TO  IDZ
       *
@@ -2676,7 +2092,7 @@
            MOVE    ALL "¡¡"        TO  WK-FREE-NAME2(IDZ)(1:4)
       *
            .
-       2002-FREE-COMMENT3-KAIGYO-EXT.
+       2001-FREE-COMMENT3-KAIGYO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3144,57 +2560,13 @@
       *****************************************************************
        2001-KAKURI-HANTEI-SEC          SECTION.
       *
-           MOVE    ZERO              TO      FLG-KAKURI-COMMENT
-      *
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE64-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE64-PTID       TO      SRY-PTID
-           MOVE    RECE64-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-KAKURI-COMMENT  TO   SRY-SRYCD (1)
-           MOVE    CONS-KAKURI-COMMENT  TO   SRY-SRYCD (2)
-           MOVE    CONS-KAKURI-COMMENT  TO   SRY-SRYCD (3)
-           MOVE    CONS-KAKURI-COMMENT  TO   SRY-SRYCD (4)
-           MOVE    CONS-KAKURI-COMMENT  TO   SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                NOT  =  ZERO
-               CONTINUE
-           ELSE
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    1         TO      FLG-KAKURI-COMMENT
-               END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF      FLG-KAKURI-COMMENT    =      1
+           IF      RECE64-FLG-KAKURI-COMMENT    =    "1"
                PERFORM   2001-NYU-COMMENT-SEC
            ELSE
                MOVE       RECE64-REC    TO   RECE641-REC
                WRITE      RECE641-REC
                ADD     1          TO      CNT-RECE64
-               PERFORM    2002-RECE65-TENSOU-SEC
+               PERFORM    2001-RECE65-TENSOU-SEC
            END-IF         
       *
            .
@@ -3204,7 +2576,7 @@
       *****************************************************************
       *    ¥ì¥»¥×¥È£°£µÅ¾Á÷½èÍý
       *****************************************************************
-       2002-RECE65-TENSOU-SEC     SECTION.
+       2001-RECE65-TENSOU-SEC     SECTION.
       *
            INITIALIZE                      RECE65-REC
            MOVE    RECE64-HOSPID       TO  RECE65-HOSPID
@@ -3253,7 +2625,7 @@
            END-PERFORM
       *
            .
-       2002-RECE65-TENSOU-EXT.
+       2001-RECE65-TENSOU-EXT.
            EXIT.
       *
       *****************************************************************

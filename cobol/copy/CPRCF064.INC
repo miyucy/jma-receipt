@@ -21,6 +21,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    03.09.24  コメント編集フラグ追加
       ************************************************************
       *01  RECE64-REC.
            03  RECE64-KEY.
@@ -88,6 +89,26 @@
            03  RECE64-TEIGENRATE          PIC  X(01).
       *コメントコードフラグ
            03  RECE64-COMCDFLG            PIC  X(01).
+      *薬剤管理指導料
+           03  RECE64-FLG-YAKUKAN-COMMENT PIC  X(01).
+      *入院栄養食事指導料
+           03  RECE64-FLG-NYUEIYO-COMMENT PIC  X(01).
+      *退院前訪問指導料
+           03  RECE64-FLG-HOUMON-COMMENT  PIC  X(01).
+      *傷病手当金意見書交付料
+           03  RECE64-FLG-SYOBYO-COMMENT  PIC  X(01).
+      *療養費同意書交付料
+           03  RECE64-FLG-RYOYO-COMMENT   PIC  X(01).
+      *退院時服薬指導加算を算定時の薬剤管理指導料
+           03  RECE64-FLG-TAIIN-COMMENT   PIC  X(01).
+      *手術（輸血は除く）
+           03  RECE64-FLG-SHUJUTU-COMMENT PIC  X(01).
+      *ＣＴ・ＭＲＩ
+           03  RECE64-FLG-CTMRI-COMMENT   PIC  X(01).
+      *精神科退院前訪問指導料
+           03  RECE64-FLG-HOUSEI-COMMENT  PIC  X(01).
+      *精神科隔離病室管理加算（入院料加算）
+           03  RECE64-FLG-KAKURI-COMMENT  PIC  X(01).
       *日数回数テーブル
            03  RECE64-DAY-AREA.
       *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
