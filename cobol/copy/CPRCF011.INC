@@ -26,6 +26,9 @@
       *  01.00.02    NACL-藤原    03/03/26  給付割合〜公費情報の追加
       *  01.00.03    NACL-藤原    04/02/05  特記事項（レセ電用）の追加
       *  01.00.04    NACL-藤原    04/04/07  診療科・コメント欄（上部）追加
+      *  ver.2.5.0
+      *  01.00.05    NACL-藤原    05/03/03  負担者番号・受給者番号
+      *                                    （レセ電用）の追加
       ************************************************************
       *01  RECE11-REC.
            03  RECE11-KEY.
@@ -65,7 +68,7 @@
                05  RECE11-KOHFTNJANUM     PIC  X(08).
       *公費−受給者番号
                05  RECE11-KOHJKYSNUM      PIC  X(20).
-      *特記事項情報
+      *特記事項情報（レセ電用）
            03  RECE11-TOKKIINF            OCCURS  5.
                05  RECE11-TOKKI           PIC  X(02).
       *診療科
@@ -73,5 +76,13 @@
       *コメント欄（上部）
            03  RECE11-HEAD4-G.
                05  RECE11-HEAD4           PIC  X(62)   OCCURS  2.
+      *公費情報（レセ電用）
+           03  RECE11-KOHINF-RECEDEN      OCCURS  4.
+      *公費−負担者番号
+               05  RECE11-KOHFTNJANUM-RECEDEN
+                                          PIC  X(08).
+      *公費−受給者番号
+               05  RECE11-KOHJKYSNUM-RECEDEN
+                                          PIC  X(07).
       *帳票データ
            03  RECE11-PRTDATA             PIC  X(4500).

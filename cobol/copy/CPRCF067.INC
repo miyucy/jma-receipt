@@ -23,6 +23,9 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-藤原    04/04/07  コメント欄（上部）追加
       *  01.00.02    NACL-藤原    04/08/23  特記事項（レセ電用）の追加
+      *  ver.2.5.0
+      *  01.00.03    NACL-藤原    05/03/03  負担者番号・受給者番号
+      *                                    （レセ電用）の追加
       ************************************************************
       *01  RECE67-REC.
            03  RECE67-KEY.
@@ -76,5 +79,13 @@
       *コメント欄（上部）
            03  RECE67-HEAD4-G.
                05  RECE67-HEAD4           PIC  X(62)   OCCURS  2.
+      *公費情報（レセ電用）
+           03  RECE67-KOHINF-RECEDEN      OCCURS  4.
+      *公費−負担者番号
+               05  RECE67-KOHFTNJANUM-RECEDEN
+                                          PIC  X(08).
+      *公費−受給者番号
+               05  RECE67-KOHJKYSNUM-RECEDEN
+                                          PIC  X(07).
       *帳票データ
            03  RECE67-PRTDATA             PIC  X(4500).
