@@ -805,9 +805,13 @@
            IF    WRK-KAGRPFLG     =   "0"
              PERFORM   900-SYUTOTAL-READ-SEC
              IF    FLG-SYUTOTAL   =   ZERO
+                IF  SYUTTL-HKNCOMBINUM  =  WRK-TAIHI-HKNCOMBINUM
                   ADD     1           TO  IDY
                   PERFORM    44001-SYUTOTAL-SET-SEC
       ***         MOVE    ZERO        TO  WRK-MAE-SEIKYUGK(IDY)
+                ELSE
+                  MOVE    1           TO  FLG-NG
+                END-IF
              ELSE
                   MOVE    1           TO  FLG-NG
              END-IF
