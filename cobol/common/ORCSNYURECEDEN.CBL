@@ -752,7 +752,7 @@
                        IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)
                        AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
-                           MOVE  SYS-5000-SHOKUCD(2)
+                           MOVE  "197000570"
                                        TO WRK-SYS5000-SHOKUCD(3 IDX1)
       
                        END-IF
