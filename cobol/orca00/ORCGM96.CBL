@@ -243,7 +243,7 @@
       *
                MOVE    1                   TO  FLG-END
            END-IF
-      *
+           .
        100-INIT-EXT.
            EXIT.
       *
