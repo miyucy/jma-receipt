@@ -74,13 +74,13 @@
                 04  W12-RENNUMHENKBN-COUNT PIC S9(9)   BINARY.
                 04  W12-RENNUMHENKBNLST    PIC X(22)   OCCURS  3 TIMES.
               03  W12-NEXTPRTKBN-COMBO.
-                04  W12-NEXTPRTKBN         PIC X(10).
+                04  W12-NEXTPRTKBN         PIC X(16).
                 04  W12-NEXTPRTKBN-COUNT   PIC S9(9)   BINARY.
-                04  W12-NEXTPRTKBNLST      PIC X(10)   OCCURS  2 TIMES.
+                04  W12-NEXTPRTKBNLST      PIC X(16)   OCCURS  3 TIMES.
               03  W12-NEXTPRTKBN1-COMBO.
-                04  W12-NEXTPRTKBN1        PIC X(10).
+                04  W12-NEXTPRTKBN1        PIC X(16).
                 04  W12-NEXTPRTKBN1-COUNT  PIC S9(9)   BINARY.
-                04  W12-NEXTPRTKBN1LST     PIC X(10)   OCCURS  3 TIMES.
+                04  W12-NEXTPRTKBN1LST     PIC X(16)   OCCURS  4 TIMES.
               03  W12-RJNGNBKKBN-COMBO.
                 04  W12-RJNGNBKKBN         PIC X(24).
                 04  W12-RJNGNBKKBN-COUNT   PIC S9(9)   BINARY.

@@ -93,17 +93,17 @@ W12	{
 		};
 		NEXTPRTKBN_COMBO	{
 			NEXTPRTKBN	{
-				value	varchar(10);
+				value	varchar(16);
 			};
 			count	int;
-			item	varchar(10)[2];
+			item	varchar(16)[3];
 		};
 		NEXTPRTKBN1_COMBO	{
 			NEXTPRTKBN_1	{
-				value	varchar(10);
+				value	varchar(16);
 			};
 			count	int;
-			item	varchar(10)[3];
+			item	varchar(16)[4];
 		};
 		RJNGNBKKBN_COMBO	{
 			RJNGNBKKBN	{
