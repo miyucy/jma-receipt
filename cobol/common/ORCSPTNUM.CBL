@@ -116,10 +116,14 @@
            MOVE    SPTNUM-PTNUM        TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           IF      KANACHK-RC2         =   7
+               MOVE    KANACHK-OUT-INPUT   TO  SPTNUM-PTNUM
+           END-IF
            IF      KANACHK-RC      NOT =   ZERO
       *        混在エラー
                MOVE    99              TO  SPTNUM-RC
-               GO      TO      000-PROC-EXT
+               MOVE    ZERO            TO  KANACHK-MAX
+               MOVE    9               TO  KANACHK-SYUBETU
            END-IF
       *    最大桁数が２０以上の時、２０とする
            IF      KANACHK-MAX         >   20
@@ -231,6 +235,12 @@
                MOVE    "PTINF-KEY5"        TO  ORC-DBPATH
                PERFORM 910-PTINF-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTINF-KEY5"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    患者決定
            IF      IDX                 =   1
