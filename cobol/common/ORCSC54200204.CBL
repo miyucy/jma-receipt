@@ -124,6 +124,11 @@
            03  WRK-SYOKEIS         PIC 9(08)V9999.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
            03  WRK-SYOKEI          PIC 9(08).
+      *    フィルム点数計
+           03  WRK-FIRTEN          PIC 9(08).
+           03  WRK-FIRTEN-KEI      PIC 9(08).
+           03  WRK-FIRTEN-ADD      PIC 9(08).
+           03  WRK-TENSUKEIS       PIC 9(08)V99.
       *
            03  WRK-ERRCD           PIC X(04).
       *
@@ -290,9 +295,12 @@
            END-PERFORM
       *
       *    酸素の補正率を自動発生する
-           IF     (WRK-ERRCD           =   SPACE)   AND
+           IF     (SPA-ERRCD           =   SPACE)   AND
                   (IDX-SANSO           >   ZERO )
+               MOVE    SPA-ERRCD          TO  WRK-ERRCD
+               MOVE    SPACE              TO  SPA-ERRCD
                PERFORM 10011-SANSO-ADD-SEC
+               MOVE    WRK-ERRCD          TO  SPA-ERRCD
            END-IF
       *
            IF      IDX-ZS              >   ZERO
@@ -339,11 +347,11 @@
                    END-IF
       *        器材
                WHEN    "7"
-                   IF      WRK-COM-DATAKBN (IDX-Z) =   "3"
+      ***          IF      WRK-COM-DATAKBN (IDX-Z) =   "3"
       *                フィルムの時エラー
-                       MOVE    "0047"          TO  SPA-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
-                   END-IF
+      *                MOVE    "0047"          TO  SPA-ERRCD
+      *                MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
+      ***          END-IF
       *
       *            酸素区分判定
                    IF      WRK-COM-SANSOKBN (IDX-Z)    =   1
@@ -373,7 +381,6 @@
       *****************************************************************
        100115-SANSO-CHK-SEC           SECTION.
       *
-      *
            SET     TBL-SANSO           TO  1
            SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
                    AT  END
@@ -391,7 +398,6 @@
       *    酸素補正率自動加算処理
       *****************************************************************
        10011-SANSO-ADD-SEC                  SECTION.
-      *
       *
            MOVE    "770020070"         TO  WRK-SRYCD
            MOVE    ZERO                TO  FLG-ARI
@@ -1008,6 +1014,14 @@
                PERFORM 100211-SANSO-KEI-SEC
            END-IF
       *
+           EVALUATE    WRK-MOJI
+               WHEN    "7"
+                   IF      WRK-COM-DATAKBN (IDX-Z) =   "3"
+      *                フィルム計算
+                       PERFORM 100212-FIRTEN-KEI-SEC
+                   END-IF
+           END-EVALUATE
+      *
            .
        10021-KEISAN-EXT.
            EXIT.
@@ -1050,6 +1064,29 @@
       *
            .
        100211-SANSO-KEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    フィルム計算計算処理
+      *****************************************************************
+       100212-FIRTEN-KEI-SEC             SECTION.
+      *
+      *    上限点数判定
+           IF      WRK-COM-JGNTEN (IDX-Z)  =   ZERO
+               ADD     LNK-SC90-FIRTEN     TO  WRK-FIRTEN-ADD
+           ELSE
+               COMPUTE WRK-TENSUKEIS       =   LNK-SC90-FIRTEN
+                                           /   10
+                                           +   0.5
+               MOVE    WRK-TENSUKEIS       TO  WRK-FIRTEN
+               IF      WRK-FIRTEN          >   WRK-COM-JGNTEN (IDX-Z)
+                   MOVE    WRK-COM-JGNTEN(IDX-Z)   TO  WRK-FIRTEN
+               END-IF
+               ADD     WRK-FIRTEN          TO  WRK-FIRTEN-KEI
+           END-IF
+      *
+           .
+       100212-FIRTEN-KEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1210,6 +1247,16 @@
            IF      WRK-SANSOKIN-SUM    NOT =   ZERO
                PERFORM 10071-SANSO-KEISAN-SEC
            END-IF
+      *
+      *    フィルム料合計計算
+           IF      WRK-FIRTEN-ADD      >   ZERO
+               COMPUTE WRK-TENSUKEIS   =   WRK-FIRTEN-ADD
+                                           /   10
+                                           +   0.5
+               MOVE    WRK-TENSUKEIS       TO  WRK-FIRTEN
+               ADD     WRK-FIRTEN          TO  WRK-FIRTEN-KEI
+           END-IF
+           ADD     WRK-FIRTEN-KEI      TO  LNK-SC90-KIZTEN
       *
            .
        1007-KIZAI-TEN-EXT.

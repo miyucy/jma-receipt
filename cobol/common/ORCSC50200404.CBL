@@ -316,9 +316,12 @@
            END-PERFORM
       *
       *    酸素の補正率を自動発生する
-           IF     (WRK-ERRCD           =   SPACE)   AND
+           IF     (SPA-ERRCD           =   SPACE)   AND
                   (IDX-SANSO           >   ZERO )
+               MOVE    SPA-ERRCD          TO  WRK-ERRCD
+               MOVE    SPACE              TO  SPA-ERRCD
                PERFORM 10011-SANSO-ADD-SEC
+               MOVE    WRK-ERRCD          TO  SPA-ERRCD
            END-IF
       *
            IF      IDX-ZS              >   ZERO
