@@ -53,7 +53,6 @@ echo -n "Copying data files..."
 for d in data doc form init record screen ; do
   if test -d "${SITESRCDIR}/${d}"; then
     mkdir -p "${SITEDIR}/${d}"
-    chown orca.orca "${SITEDIR}/${d}"
     for f in `ls ${SITESRCDIR}/${d}`; do 
       if test -f "${SITESRCDIR}/${d}/${f}"; then
         cp "${SITESRCDIR}/${d}/${f}" "${SITEDIR}/${d}"
