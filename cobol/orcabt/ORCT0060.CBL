@@ -449,8 +449,9 @@
       *
            MOVE    TEIKI01-KEY         TO  TEIKI06-KEY
       *
-           MOVE    TEIKI01-SYU-DAT
-                                       TO  TEIKI06-SYU-DAT
+           MOVE    TEIKI01-SAKKBN      TO  TEIKI06-SAKKBN
+      *
+           MOVE    TEIKI01-SYU-DAT     TO  TEIKI06-SYU-DAT
            MOVE    TEIKI01-SYUDAY-EXIST-FLG
                                        TO  TEIKI06-SYUDAY-EXIST-FLG
            MOVE    TEIKI01-SYUDAY-DAT
@@ -501,6 +502,9 @@
                                        TO  ZOUSYU-NYUKIN-TOTAL
       *
            MOVE    GENSYU-CREYMD       TO  ZOUSYU-CREYMD
+      *
+           MOVE    TEIKI01-KEY         TO  TEIKI09-KEY
+           MOVE    TEIKI01-SAKKBN      TO  TEIKI09-SAKKBN
       *
            MOVE    ZOUSYUNOU-REC       TO  TEIKI09-SYU-DAT
            MOVE    TEIKI01-SYUDAY-EXIST-FLG

@@ -1275,6 +1275,25 @@
                PERFORM 800-ERRMSG-EDIT-SEC
            END-IF
       *
+      *    ´µ¼ÔÄê´üÀÁµáÍúÎòºï½ü½èÍý
+           MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTTEIKIRRK-KEY"    TO  ORC-DBPATH
+           PERFORM 910-DBDELETE-SEC
+           IF    ( FLG-PTTEIKIRRK  NOT =   ZERO )
+               MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
+               MOVE    ERR-MES12       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+           END-IF
+      *
+           INITIALIZE                      PTTEIKIRRK-REC
+           MOVE    SYU-HOSPID          TO  PTTEIKIRRK-HOSPID
+           MOVE    SYU-PTID            TO  PTTEIKIRRK-PTID
+           MOVE    SYU-SRYYMD (1:6)    TO  PTTEIKIRRK-SRYYM
+           MOVE    TEIKI09-SAKKBN      TO  PTTEIKIRRK-SAKKBN
+           MOVE    SYU-HKNCOMBINUM     TO  PTTEIKIRRK-HKNCOMBINUM
+           MOVE    TEIKI09-SKYSTYMD    TO  PTTEIKIRRK-SKYSTYMD
+           MOVE    TEIKI09-SKYEDYMD    TO  PTTEIKIRRK-SKYEDYMD
+      *
            MOVE    TEIKI09-TSI-SKYTEN
                                        TO  PTTEIKIRRK-SKYTEN
       *
@@ -1285,16 +1304,19 @@
                                        TO  PTTEIKIRRK-SKYMONEY
       *
            MOVE    SYU-NYUIN-RRKNUM    TO  PTTEIKIRRK-RRKNUM
+           MOVE    SYU-DENPNUM         TO  PTTEIKIRRK-DENPNUM
       *
            MOVE    1                   TO  PTTEIKIRRK-SKYUPDFLG
       *
            PERFORM 800-MCNDATE-SEC
-           MOVE    SMCNDATE-YMD        TO  PTTEIKIRRK-UPYMD
+           MOVE    SMCNDATE-YMD        TO  PTTEIKIRRK-CREYMD
+                                           PTTEIKIRRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTTEIKIRRK-UPHMS
       *
+      *    ´µ¼ÔÄê´üÀÁµá¥Ç¡¼¥¿ºîÀ®
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "PTTEIKIRRK-KEY"    TO  ORC-DBPATH
-           PERFORM 910-DBUPDATE-SEC
+           PERFORM 910-DBINSERT-SEC
            IF  (   MCP-RC          NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
                MOVE    ERR-MES12       TO  ERR-ERRMSG

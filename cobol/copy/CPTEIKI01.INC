@@ -29,8 +29,8 @@
                05  TEIKI01-PTID            PIC 9(10).
                05  TEIKI01-SKYSTYMD        PIC X(08).
                05  TEIKI01-SKYEDYMD        PIC X(08).
-               05  TEIKI01-SAKKBN          PIC X(01).
                05  TEIKI01-HKNCOMBINUM     PIC 9(04).
+           03  TEIKI01-SAKKBN              PIC X(01).
            03  TEIKI01-SYU-DAT             PIC X(5000).
            03  TEIKI01-TSI-SKYTEN          PIC S9(09).
            03  TEIKI01-TSI-SKYMONEY-TAX-SAI
