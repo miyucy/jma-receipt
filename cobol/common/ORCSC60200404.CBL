@@ -2018,8 +2018,6 @@
                IF     (WRK-COM-SRYKBN    (IDX-Z)   =   "60"  )  AND
                       (WRK-COM-DATAKBN   (IDX-Z)   =   "1"   )  AND
                       (WRK-COM-TEIGEN-FLG(IDX-Z)   =   ZERO )
-      *        Êñ³çÂÐ¾Ý°Ê³°
-               AND    (WRK-COM-SRYSYUKBN (IDX-Z)   NOT =   "610")
                    PERFORM 20011-JYUFUKU-CHK-SEC
                END-IF
            END-PERFORM
@@ -2267,7 +2265,8 @@
                GO      TO      20011-JYUFUKU-CHK-EXT
            END-IF
       *    Êñ³çÂÐ¾Ý°Ê³°
-           IF      WRK-COM-SRYSYUKBN(IDX-Z)    =   "610"
+           IF     (WRK-COM-SRYSYUKBN(IDX-Z)    =   "610" )  OR
+                  (SPA-NYUGAIKBN           =   "1"       )
                MOVE    1               TO  FLG-HOUKATU
                MOVE    IDX-Z           TO  IDX-STR
            ELSE
@@ -2295,12 +2294,12 @@
                                                NOT =   WRK-COM-INPUTCD
                                                              (IDX2)) AND
                               (WRK-COM-INPUTCD (IDX2)  =   WRK-SRYCD)
-      *                   Êñ³çÂÐ¾Ý°Ê³°
-                         AND  (WRK-COM-SRYSYUKBN(IDX2) NOT =   "610")
+                          AND (WRK-COM-SRYSYUKBN(IDX2) =
+                                               WRK-COM-SRYSYUKBN(IDX-Z))
                            ADD     1               TO  WRK-JYU-CNT
                            MOVE    IDX2            TO  WRK-JYU-IDX
                        END-IF
-      *                Êñ³ç¤Î»þ¤ÏºÞÆâ
+      *                Êñ³ç¡¦Æþ±¡¤Î»þ¤ÏºÞÆâ
                        IF     (FLG-HOUKATU             =   1  )  AND
                               (WRK-COM-ZAIEND(IDX2)    =   "1" )
                            MOVE    200                 TO  IDX2
@@ -2570,6 +2569,13 @@
       *               (WRK-COM-DATAKBN   (IDX-Z)   =  "1"   )
       *            PERFORM 20018-TEIGEN-INSYORI-SEC
       *****    END-IF
+      *
+      *        ½ÅÊ£»»ÄêÉÔ²Ä¥Á¥§¥Ã¥¯
+               IF     (WRK-COM-SRYKBN    (IDX-Z)   =   "60"  )  AND
+                      (WRK-COM-DATAKBN   (IDX-Z)   =   "1"   )  AND
+                      (WRK-COM-TEIGEN-FLG(IDX-Z)   =   ZERO )
+                   PERFORM 20011-JYUFUKU-CHK-SEC
+               END-IF
            END-PERFORM
       *
       *    »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»Í­¤ê
