@@ -842,6 +842,9 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -8751,40 +8754,54 @@
       *    帳票プログラム取得
       *
       *    処方せん
-           MOVE    SPACE               TO  WRK-SYOHOU-PG
-           MOVE    SPACE               TO  SYS-1032-REC
-           INITIALIZE                      SYS-1032-REC
-           MOVE    "1032"              TO  SYS-1032-KANRICD
-           MOVE    "00000002"          TO  SYS-1032-KBNCD
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000002"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SRYYMD          TO  ORCSPRTNM-SRYYMD
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1032-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
+               MOVE    "1030"              TO  SPA-ERRCD
+               GO      TO      4124-SYOHOU-SYORI-EXT
+           END-IF
+           MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
       *
-           MOVE    SYS-1032-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               PERFORM 960-KANRIMST-READ-SEC
-           ELSE
-               INITIALIZE                  SYS-1032-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1032-REC
+      *****MOVE    SPACE               TO  WRK-SYOHOU-PG
+      *    MOVE    SPACE               TO  SYS-1032-REC
+      *    INITIALIZE                      SYS-1032-REC
+      *    MOVE    "1032"              TO  SYS-1032-KANRICD
+      *    MOVE    "00000002"          TO  SYS-1032-KBNCD
+      *
+      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *        PERFORM 960-KANRIMST-READ-SEC
+      *    ELSE
+      *        INITIALIZE                  SYS-1032-REC
+      *        MOVE    1               TO  FLG-SYSKANRI
+      *    END-IF
+      *    IF      FLG-SYSKANRI        =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
       *        独自開発分
-               IF      SYS-1032-ORCACSTCHK     =   "T"
-                   MOVE    SYS-1032-ORCACSTNM  TO  WRK-SYOHOU-PG
-               ELSE
+      *        IF      SYS-1032-ORCACSTCHK     =   "T"
+      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-SYOHOU-PG
+      *        ELSE
       *        ＯＲＣＡ標準分
-                   MOVE    SYS-1032-ORCAORGNM  TO  WRK-SYOHOU-PG
-               END-IF
-           END-IF
-           IF      WRK-SYOHOU-PG       =   SPACE
-               MOVE    "ORCHC19"           TO  WRK-SYOHOU-PG
-           END-IF
+      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-SYOHOU-PG
+      *        END-IF
+      *    END-IF
+      *    IF      WRK-SYOHOU-PG       =   SPACE
+      *        MOVE    "ORCHC19"           TO  WRK-SYOHOU-PG
+      *****END-IF
       *
       *    処方箋印刷（Ａ５）
            INITIALIZE                  ORCHC19AREA
@@ -10742,7 +10759,6 @@
       *****************************************************************
        4125-YAKJYO-SYORI-SEC             SECTION.
       *
-      *    薬情報出力
            INITIALIZE                      ORCSCH30AREA
            IF      FLG-SYOHOU-ARI      =   1
       *        院外分
@@ -11256,7 +11272,12 @@
       *
       *    薬剤の時、投薬へ
            IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "6"
-               MOVE    "21"                        TO  WRK-SRYKBN
+      *        注射薬の時、注射へ
+               IF      SPA-COM-YKZKBN (IDX)    =   "4"
+                   MOVE    "31"                        TO  WRK-SRYKBN
+               ELSE
+                   MOVE    "21"                        TO  WRK-SRYKBN
+               END-IF
            END-IF
       *    器材の時、その他へ
            IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "7"
