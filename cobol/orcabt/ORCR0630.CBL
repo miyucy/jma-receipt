@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-ÌçÏÆ    03.03.07  Ì¤¼Â»Ü¸º»»¤ÎÎ¬¾ÎÄÉ²Ã
       *****************************************************************
       *
       *
@@ -86,6 +87,10 @@
            03  FLG-SYSKANRI                            PIC 9(01).
            03  FLG-NYURYAKUSHO                         PIC 9(01).
            03  FLG-GAIHAKU                             PIC 9(01).
+           03  FLG-MIJISI-GENSAN                       PIC 9(01).       
+           03  FLG-MIJISI-INNAI                        PIC 9(01).       
+           03  FLG-MIJISI-IRYO                         PIC 9(01).       
+           03  FLG-MIJISI-JYOKU                        PIC 9(01).       
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -160,6 +165,8 @@
            03  WRK-TOKUKANRIKASAN                      PIC 9(01).
            03  WRK-SRYCD                               PIC 9(09).
            03  WRK-RYAKUSHO                            PIC X(14).
+           03  WRK-SRYYMD                              PIC X(08).       
+           03  WRK-SRYYMD-TAIHI                        PIC X(08).       
       *
            COPY    "MCPAREA".
       *
@@ -276,6 +283,10 @@
                                            WRK-SHOKUJIRYOYO
                                            WRK-TOKUKANRIKASAN
       *
+           MOVE     ZERO               TO  FLG-MIJISI-INNAI             
+                                           FLG-MIJISI-IRYO              
+                                           FLG-MIJISI-JYOKU             
+      *
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
@@ -298,12 +309,15 @@
                             WHEN  2
                                 COMPUTE WRK-MIJISI = WRK-MIJISI
                                                    + 5
+                                MOVE    1     TO    FLG-MIJISI-INNAI    
                             WHEN  3
                                 COMPUTE WRK-MIJISI = WRK-MIJISI
                                                    + 10
+                                MOVE    1     TO    FLG-MIJISI-IRYO     
                             WHEN  4
                                 COMPUTE WRK-MIJISI = WRK-MIJISI
                                                    + 5
+                                MOVE    1     TO    FLG-MIJISI-JYOKU    
                         END-EVALUATE
                     END-IF
                END-PERFORM
@@ -394,6 +408,8 @@
       *
            MOVE       SPACE             TO     WRK-DAY-TABLE
            INITIALIZE                          WRK-DAY-TABLE
+      *
+           MOVE       ZERO              TO     FLG-MIJISI-GENSAN        
       *
       ***  PERFORM    VARYING    IDX    FROM   1   BY   1
       ***             UNTIL     (IDX      >   10)  OR
@@ -1063,6 +1079,7 @@
                          COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
                                   RECE62-NYUTOKKEI2(KH-IDX)  -
                                   WRK-MIJISI
+                         MOVE     1      TO    FLG-MIJISI-GENSAN        
                   END-EVALUATE
                   MOVE     ZERO     TO    FLG-ARI
                   PERFORM  VARYING  ID1    FROM    1   BY  1
@@ -1112,6 +1129,7 @@
                          COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
                                   RECE62-NYUTOKKEI2(KH-IDX)  -
                                   WRK-MIJISI
+                         MOVE     1      TO    FLG-MIJISI-GENSAN        
                   END-EVALUATE
                   IF  WRK-DAY6(IDY)          NOT =  ZERO
                   AND WRK-DAY6-ZAITEN(IDY)   NOT =  ZERO
@@ -1563,6 +1581,45 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
       *
+      *    Ì¤¼Â»Ü¸º»»¡Ê¥·¥¹¥Æ¥à´ÉÍýÀßÄêÊ¬¡Ë
+      *
+           IF   FLG-MIJISI-GENSAN   =   1
+      *
+               IF   FLG-MIJISI-INNAI   =   1
+                 IF    RECE62-RJNHKNNUM    =    SPACE
+                    MOVE    190080570      TO   WRK-SRYCD
+                 ELSE
+                    MOVE    190799770      TO   WRK-SRYCD
+                 END-IF
+                 MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
+      *
+                 PERFORM   RYAKUSYO-HENSYU-SEC
+               END-IF
+      *
+               IF   FLG-MIJISI-IRYO    =   1
+                 IF    RECE62-RJNHKNNUM    =    SPACE
+                    MOVE    190111690      TO   WRK-SRYCD
+                 ELSE
+                    MOVE    190809090      TO   WRK-SRYCD
+                 END-IF
+                 MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
+      *
+                 PERFORM   RYAKUSYO-HENSYU-SEC
+               END-IF
+      *
+               IF   FLG-MIJISI-JYOKU   =   1
+                 IF    RECE62-RJNHKNNUM    =    SPACE
+                    MOVE    190111790      TO   WRK-SRYCD
+                 ELSE
+                    MOVE    190809190      TO   WRK-SRYCD
+                 END-IF
+                 MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
+      *
+                 PERFORM   RYAKUSYO-HENSYU-SEC
+               END-IF
+      *
+           END-IF
+      *
            .
        RECE62-HENSYU3-EXT.
            EXIT.
@@ -1595,29 +1652,16 @@
                  PERFORM   VARYING  NYUINACT-IDX  FROM 1  BY  1
                       UNTIL  (NYUINACT-IDX       >   5)    OR
                              (NSRY-SRYCD(NYUINACT-IDX)  =  SPACE)
-                       MOVE    SPACE         TO   NYURYAKUSHO-REC
-                       INITIALIZE                 NYURYAKUSHO-REC
+      *
                        MOVE    NSRY-SRYCD(NYUINACT-IDX) 
-                                           TO   NYURYAKUSHO-SRYCD
-                       MOVE    NACCT-SRYYM        TO  ORC-DBYMD(1:6)
-                       MOVE    "01"               TO  ORC-DBYMD(7:2)
-                       PERFORM  NYURYAKUSHO-READ-SEC
-                       IF       FLG-NYURYAKUSHO    =    ZERO
-                         MOVE     ZERO     TO    FLG-ARI
-                         PERFORM  VARYING  ID1    FROM    1   BY  1
-                                UNTIL   ID1                   > 20
-                                  OR    RECE62-NYUSYUBETU(ID1) = SPACE
-                                  OR    FLG-ARI                = 1 
-                             IF  RECE62-NYUSYUBETU(ID1)  
-                                        =  NYURYAKUSHO-RYAKUSHO
-                                 MOVE  1   TO   FLG-ARI
-                             END-IF
-                         END-PERFORM  
-                         IF  FLG-ARI  =  ZERO  
-                             MOVE   NYURYAKUSHO-RYAKUSHO
-                                      TO   RECE62-NYUSYUBETU(ID1)
-                         END-IF
-                       END-IF                  
+                                              TO  WRK-SRYCD
+                       MOVE    NACCT-SRYYM    TO  WRK-SRYYMD-TAIHI(1:6)
+                       MOVE    "01"           TO  WRK-SRYYMD-TAIHI(7:2)
+                       MOVE    NACCT-SRYYM    TO  WRK-SRYYMD(1:6)
+                       MOVE    "01"           TO  WRK-SRYYMD(7:2)
+      *
+                       PERFORM   RYAKUSYO-HENSYU-SEC
+      *
                        MOVE    "DBCLOSE"               TO  MCP-FUNC
                        MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
                        CALL    "ORCMCPSUB"             USING
@@ -1669,29 +1713,14 @@
                              UNTIL    (SRYACT-IDX    >   5)  OR
                                       (SRY-SRYCD(SRYACT-IDX)
                                                          =   SPACE)
-                       MOVE    SPACE         TO   NYURYAKUSHO-REC
-                       INITIALIZE                 NYURYAKUSHO-REC
+      *
                        MOVE    SRY-SRYCD(SRYACT-IDX)
-                                           TO   NYURYAKUSHO-SRYCD
-                       MOVE    ACCT-SRYYM         TO  ORC-DBYMD(1:6)
-                       MOVE    "01"               TO  ORC-DBYMD(7:2)
-                       PERFORM  NYURYAKUSHO-READ-SEC
-                       IF       FLG-NYURYAKUSHO    =    ZERO
-                         MOVE     ZERO     TO    FLG-ARI
-                         PERFORM  VARYING  ID1    FROM    1   BY  1
-                                UNTIL   ID1                   > 20
-                                  OR    RECE62-NYUSYUBETU(ID1) = SPACE
-                                  OR    FLG-ARI                = 1 
-                             IF  RECE62-NYUSYUBETU(ID1)  
-                                        =  NYURYAKUSHO-RYAKUSHO
-                                 MOVE  1   TO   FLG-ARI
-                             END-IF
-                         END-PERFORM  
-                         IF  FLG-ARI  =  ZERO  
-                             MOVE   NYURYAKUSHO-RYAKUSHO
-                                      TO   RECE62-NYUSYUBETU(ID1)
-                         END-IF
-                       END-IF                  
+                                                  TO  WRK-SRYCD
+                       MOVE    ACCT-SRYYM         TO  WRK-SRYYMD(1:6)
+                       MOVE    "01"               TO  WRK-SRYYMD(7:2)
+      *
+                       PERFORM   RYAKUSYO-HENSYU-SEC
+      *
                        MOVE    "DBCLOSE"               TO  MCP-FUNC
                        MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
                        CALL    "ORCMCPSUB"             USING
@@ -1713,6 +1742,38 @@
       *
            .
        ACCTKHN-GET3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡Î¬¾Î¤ÎÊÔ½¸
+      *****************************************************************
+       RYAKUSYO-HENSYU-SEC                SECTION.
+      *
+           MOVE    SPACE         TO   NYURYAKUSHO-REC
+           INITIALIZE                 NYURYAKUSHO-REC
+      *
+           MOVE    WRK-SRYCD     TO   NYURYAKUSHO-SRYCD
+           MOVE    WRK-SRYYMD    TO   ORC-DBYMD
+           PERFORM  NYURYAKUSHO-READ-SEC
+           IF       FLG-NYURYAKUSHO    =    ZERO
+              MOVE     ZERO     TO    FLG-ARI
+              PERFORM  VARYING  ID1    FROM    1   BY  1
+                    UNTIL   ID1                   > 20
+                      OR    RECE62-NYUSYUBETU(ID1) = SPACE
+                      OR    FLG-ARI                = 1 
+                 IF  RECE62-NYUSYUBETU(ID1)  
+                            =  NYURYAKUSHO-RYAKUSHO
+                     MOVE  1   TO   FLG-ARI
+                 END-IF
+              END-PERFORM  
+              IF  FLG-ARI  =  ZERO  
+                     MOVE   NYURYAKUSHO-RYAKUSHO
+                               TO   RECE62-NYUSYUBETU(ID1)
+              END-IF
+           END-IF                  
+      *
+           .
+       RYAKUSYO-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
