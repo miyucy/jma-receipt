@@ -221,13 +221,10 @@
                    "患者番号".
                05  FILLER              PIC X(01) VALUE SPACE.
                05  FILLER              PIC X(10) VALUE
-                   "患者ＩＤ".
-               05  FILLER              PIC X(01) VALUE SPACE.
+                   "最終受診日".
+               05  FILLER              PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(10) VALUE
-                   "保険番号".
-               05  FILLER              PIC X(03) VALUE SPACE.
-               05  FILLER              PIC X(12) VALUE
-                   "保険ＩＤ".
+                   "患者ＩＤ".
       *
       *    出力エラーファイル
        01  ERR-REC.
@@ -237,54 +234,54 @@
                05  FILLER              PIC X(01).
                05  ERR-PTNUM           PIC X(20).
                05  FILLER              PIC X(01).
+               05  ERR-LSTYMD          PIC X(10).
+               05  FILLER              PIC X(03).
                05  ERR-PTID            PIC X(10).
                05  FILLER              PIC X(03).
-               05  ERR-HKNNUM          PIC X(03).
-               05  FILLER              PIC X(05).
-               05  ERR-HKNID           PIC X(12).
-               05  ERR-ERRMSG          PIC X(30).
+               05  ERR-ERRMSG          PIC X(50).
       *
       *    変換明細
        01  MEISAI-HEAD.
            03  FILLER                  PIC X(02)   VALUE   SPACE.
            03  FILLER                  PIC X(60)   VALUE
-               "＜＜　平成１５年４月改正保険一括変更　任継分一覧　＞＞".
-           03  MEISAI-HEAD-YY         PIC X(04).
-           03  FILLER                 PIC X(01) VALUE ".".
-           03  MEISAI-HEAD-MM         PIC X(02).
-           03  FILLER                 PIC X(01) VALUE ".".
-           03  MEISAI-HEAD-DD         PIC X(02).
+               "＜＜　平成１５年４月改正保険一括変更　確認一覧　＞＞".
+           03  FILLER                  PIC X(10)   VALUE   SPACE.
+           03  MEISAI-HEAD-YY          PIC X(04).
+           03  FILLER                  PIC X(01) VALUE ".".
+           03  MEISAI-HEAD-MM          PIC X(02).
+           03  FILLER                  PIC X(01) VALUE ".".
+           03  MEISAI-HEAD-DD          PIC X(02).
       *
        01  MEISAI-HEAD2.
            03  FILLER                  PIC X(20)   VALUE
                "患者番号".
-           03  FILLER                  PIC X(02)   VALUE   SPACE.
-           03  FILLER                  PIC X(10)   VALUE
-               "患者ＩＤ".
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(08)   VALUE
                "保険種類".
            03  FILLER                  PIC X(02)   VALUE   SPACE.
-           03  FILLER                  PIC X(08)   VALUE
+           03  FILLER                  PIC X(06)   VALUE
                "継続".
            03  FILLER                  PIC X(02)   VALUE   SPACE.
            03  FILLER                  PIC X(16)   VALUE
                "有効期限".
+           03  FILLER                  PIC X(04)   VALUE   SPACE.
+           03  FILLER                  PIC X(10)   VALUE
+               "最終受診日".
       *
        01  MEISAI-BODY1.
            03  MEISAI-PTNUM            PIC X(20).
            03  FILLER                  PIC X(01)   VALUE   SPACE.
-           03  MEISAI-PTID             PIC X(10).
-           03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  MEISAI-HKNNUM           PIC X(03).
            03  FILLER                  PIC X(05)   VALUE   SPACE.
            03  MEISAI-CONTKBN          PIC X(01).
-           03  FILLER                  PIC X(06)   VALUE   SPACE.
+           03  FILLER                  PIC X(04)   VALUE   SPACE.
            03  MEISAI-TEKSTYMD         PIC X(08).
            03  MEISAI-H1               PIC X(03).
            03  MEISAI-TEKEDYMD         PIC X(08).
-           03  FILLER                  PIC X(01).
-           03  MEISAI-MSG              PIC X(20).
+           03  FILLER                  PIC X(01)   VALUE   SPACE.
+           03  MEISAI-LSTYMD           PIC X(10).
+           03  FILLER                  PIC X(01)   VALUE   SPACE.
+           03  MEISAI-MSG              PIC X(40).
       *
        01  TBL-HKNNUM-AREA.
            03  TBL-HKNNUM-OCC          OCCURS   20
@@ -848,9 +845,23 @@
       *
       *    継続は、Ｈ１５．３．３１までとする
            IF      PTHKN-CONTKBN       =   "1"
-      *        患者情報出力
-               PERFORM 230-OUT-SYORI-SEC
-               GO      TO      2101-PTHKNINF-KOUSIN-EXT
+      *        船員で補助区分がある時、対象としない
+               IF     (PTHKN-HKNNUM        =   "002" )   AND
+                      (PTHKN-HOJOKBN       =   "1"  OR
+                                               "2"  OR
+                                               "3"  OR
+                                               "A"  OR
+                                               "B"  OR
+                                               "C"  OR
+                                               "D"  OR
+                                               "E"  OR
+                                               "F"    )
+                   CONTINUE
+               ELSE
+      *            患者情報出力
+                   PERFORM 230-OUT-SYORI-SEC
+                   GO      TO      2101-PTHKNINF-KOUSIN-EXT
+               END-IF
            END-IF
       *
       *   公費ＩＤ設定
@@ -887,6 +898,13 @@
                        ",KEY:"  PTHKN-KEY
                MOVE    1               TO  FLG-ERR
                GO      TO      2101-PTHKNINF-KOUSIN-EXT
+           END-IF
+      *
+      *    船員で継続の時、リストへ
+           IF     (PTHKN-CONTKBN       =   "1"  ) AND
+                  (PTHKN-HKNNUM        =   "002")
+               MOVE    ZERO            TO  FLG-HOJOKBN
+               PERFORM 2101-CONTI2-SYORI-SEC
            END-IF
       *
       *    患者情報出力
@@ -1136,15 +1154,24 @@
                ADD     1                   TO  CNT-LCNT1
            END-IF
            MOVE    SPACE               TO  MEISAI-BODY1
-           MOVE    PTHKN-PTID          TO  MEISAI-PTID
            MOVE    PTNUM-PTNUM         TO  MEISAI-PTNUM
            MOVE    PTHKN-TEKSTYMD      TO  MEISAI-TEKSTYMD
            MOVE    PTHKN-TEKEDYMD      TO  MEISAI-TEKEDYMD
            MOVE    PTHKN-HKNNUM        TO  MEISAI-HKNNUM
            MOVE    PTHKN-CONTKBN       TO  MEISAI-CONTKBN
            MOVE    " - "               TO  MEISAI-H1
+           MOVE    WRK-LSTYMD(1:4)     TO  MEISAI-LSTYMD(1:4)
+           MOVE    "."                 TO  MEISAI-LSTYMD(5:1)
+           MOVE    WRK-LSTYMD(5:2)     TO  MEISAI-LSTYMD(6:2)
+           MOVE    "."                 TO  MEISAI-LSTYMD(8:1)
+           MOVE    WRK-LSTYMD(7:2)     TO  MEISAI-LSTYMD(9:2)
+           IF      FLG-HOJOKBN         =   ZERO
+               MOVE    "船員継続（終了日再確認）"
+                                               TO  MEISAI-MSG
+           END-IF
            IF      FLG-HOJOKBN         =   1
-               MOVE    "老人割合設定"      TO  MEISAI-MSG
+               MOVE    "老人割合自動設定"
+                                               TO  MEISAI-MSG
            END-IF
       *
            MOVE    MEISAI-BODY1        TO  HCMSL80-MOJI (CNT-LCNT1)
@@ -1220,16 +1247,18 @@
            IF      FLG-ERR3            =   ZERO
                MOVE    SPA-ERRMSG          TO  ERR-MES
            ELSE
-               MOVE    "患者番号変換ＤＢエラー　　　　　　　　　　　"
+               MOVE    "患者番号変換ＤＢエラー　　　　　　　　"
                                            TO  ERR-MES
            END-IF
            MOVE    PTNUM-PTNUM         TO  ERR-PTNUM
-           MOVE    PTHKN-HKNNUM        TO  ERR-HKNNUM
+           MOVE    WRK-LSTYMD(1:4)     TO  ERR-LSTYMD(1:4)
+           MOVE    "."                 TO  ERR-LSTYMD(5:1)
+           MOVE    WRK-LSTYMD(5:2)     TO  ERR-LSTYMD(6:2)
+           MOVE    "."                 TO  ERR-LSTYMD(8:1)
+           MOVE    WRK-LSTYMD(7:2)     TO  ERR-LSTYMD(9:2)
            MOVE    PTHKN-PTID          TO  ERR-PTID
            IF      FLG-ERR3            =   ZERO
                MOVE    "保険組合せ未設定"  TO  ERR-ERRMSG
-           ELSE
-               MOVE    PTNUM-HKNID         TO  ERR-HKNID
            END-IF
       *
            MOVE    ERR-REC             TO  HCMSL55-MOJI (CNT-LCNT2)

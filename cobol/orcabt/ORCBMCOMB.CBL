@@ -96,18 +96,18 @@
       *
       *    メッセージ領域
        01  CONS-AREA.
-           03  CONS-MES1               PIC X(50) VALUE
-               "保険番号マスタ該当なし　　　　　　　　　　　".
-           03  CONS-MES2               PIC X(50) VALUE
-               "患者保険マスタに公費が入っている　　　　　　".
-           03  CONS-MES3               PIC X(50) VALUE
-               "患者公費マスタに保険が入っている　　　　　　".
-           03  CONS-MES4               PIC X(50) VALUE
-               "保険・公費テーブルオーバー（組合せ出力止め）".
-           03  CONS-MES5               PIC X(50) VALUE
-               "保険番号マスタ該当なし（組合せ出力止め）　　".
-           03  CONS-MES6               PIC X(50) VALUE
-               "患者番号変換マスタ読込エラー　　　　　　　　".
+           03  CONS-MES1               PIC X(40) VALUE
+               "保険番号マスタ該当なし　　　　　　　　　".
+           03  CONS-MES2               PIC X(40) VALUE
+               "患者保険マスタに公費が入っている　　　　".
+           03  CONS-MES3               PIC X(40) VALUE
+               "患者公費マスタに保険が入っている　　　　".
+           03  CONS-MES4               PIC X(40) VALUE
+               "保険・公費テーブルオーバー　　　　　　　".
+           03  CONS-MES5               PIC X(40) VALUE
+               "保険番号マスタ該当なし　　　　　　　　　".
+           03  CONS-MES6               PIC X(40) VALUE
+               "患者番号変換マスタ読込エラー　　　　　　".
       *
       *****************************************************************
       *    ファイル定義
