@@ -4850,6 +4850,40 @@
       *         DISPLAY  "WRK-TSUSAN = " WRK-TSUSAN
       *    入院料加算診療コード取り込み
            PERFORM    410191-NYUKSN-GET-SEC
+      *    特定入院で入院料が変更になるコードの対応
+           IF    SYOKIKSN-IN-KHNSRYCD   =   "190774110"
+                 MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
+                 MOVE   "190774210" TO   LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                 MOVE   "190774110"  TO  LNK-SCNYUACCT-KAGEN-SRYCD(1)
+                 MOVE   PTNYUINRRK-TENNYUYMD
+                                  TO  LNK-SCNYUACCT-KAGEN-STYUKYMD(1)
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY6-AREA
+                 MOVE    "61"              TO  LNK-DAY6-IRAI
+                 MOVE   PTNYUINRRK-TENNYUYMD
+                                           TO  LNK-DAY6-KIJUN
+                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                 MOVE    13                TO  LNK-DAY6-ZOGEN
+                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                 MOVE    LNK-DAY6-KEISAN
+                                  TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+      *
+                 MOVE   "190774210"  TO  LNK-SCNYUACCT-KAGEN-SRYCD(2)
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY6-AREA
+                 MOVE    "61"              TO  LNK-DAY6-IRAI
+                 MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+                                           TO  LNK-DAY6-KIJUN
+                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                 MOVE     1                TO  LNK-DAY6-ZOGEN
+                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                 MOVE    LNK-DAY6-KEISAN
+                                  TO LNK-SCNYUACCT-KAGEN-STYUKYMD(2)
+                 MOVE    "99999999"
+                                  TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
+           END-IF
       *    特定入院料区分のセット
            IF      WRK-TOKUTEI-NYUIN    =   SPACE
                MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
@@ -4903,6 +4937,14 @@
       *                                LNK-SCNYUACCT-KAGEN-STYUKYMD(1)
       *     DISPLAY  "LNK-SCNYUACCT-KAGEN-EDYUKYMD(1) = "
       *                                LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+      *     DISPLAY  "LNK-SCNYUACCT-NYUKHN-SRYCD(2) = " 
+      *                                   LNK-SCNYUACCT-NYUKHN-SRYCD(2)
+      *     DISPLAY  "LNK-SCNYUACCT-KAGEN-SRYCD(2) = "
+      *                                   LNK-SCNYUACCT-KAGEN-SRYCD(2)
+      *     DISPLAY  "LNK-SCNYUACCT-KAGEN-STYUKYMD(2) = "
+      *                                LNK-SCNYUACCT-KAGEN-STYUKYMD(2)
+      *     DISPLAY  "LNK-SCNYUACCT-KAGEN-EDYUKYMD(2) = "
+      *                                LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
       *     DISPLAY  "LNK-SCNYUACCT-NYUKHN-NISUU = "
       *                                   LNK-SCNYUACCT-NYUKHN-NISUU
       *     DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(1) = "
