@@ -715,23 +715,7 @@
            COPY    "COMMON-SPA".
       *
       *    点数マスタ退避ワーク
-      **     COPY    "CPTTNS.INC".
-      *    点数マスタ退避ワーク
-       01  TTNS-AREA.
-           03  TTNS-FLG                        PIC 9(01).
-           03  TTNS-IDX                        PIC 9(05).
-           03  TTNS-CHK-SRYCD                  PIC X(09).
-           03  TTNS-CHK-YMD                    PIC X(08).
-           03  TTNS-G.
-               05 TTNS-MAX                     PIC 9(05).
-               05 TTNS-KEY-OCC                 OCCURS 2000.
-                  07   TTNS-KEY-SRYCD          PIC X(09).
-                  07   TTNS-KEY-YUKOSTYMD      PIC X(08).
-                  07   TTNS-KEY-YUKOEDYMD      PIC X(08).
-               05 TTNS-DAT                     PIC X(2000)
-                                               OCCURS 2000.
-       01  TTNS-CONST-MAX                      PIC 9(05)
-                                               VALUE   2000.
+           COPY    "CPTTNS.INC".
       *
       *
       *****************************************************************
