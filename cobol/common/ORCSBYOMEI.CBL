@@ -27,6 +27,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-藤原    04/03/17  開始日と廃止日のよるチェック
+      *  00.00.02    NACL-藤原    04/04/13  複数の病名コードが存在する
+      *                                     病名のコード編集
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -48,6 +50,7 @@
            03  FLG-HENSYU          PIC 9(01).
            03  FLG-TBLERR          PIC 9(01).
            03  FLG-HENKAN-ERR      PIC 9(01).
+           03  FLG-BYOMEICD        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -58,6 +61,7 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
+           03  IDX4                PIC 9(04).
       *
        01  WRK-AREA.
       *
@@ -726,33 +730,28 @@
                                  ( WRK-BYOMEI-BYOMEICD (IDX 2)
                                                    NOT =   SPACE )
                                IF      IDX             =   40
-                                 MOVE    2               TO  IDX2
-                                 PERFORM 2003-LNK-HENSYU-SEC
-                               ELSE
-                                 COMPUTE IDX1    =   IDX     +   1
-                                 IF    ( WRK-BYOMEI-BYOMEICD (IDX 1)
-                                                         =   SPACE AND
-                                         WRK-BYOMEI-BYOMEICD (IDX 2)
-                                                         =   SPACE     )
                                    MOVE    2               TO  IDX2
                                    PERFORM 2003-LNK-HENSYU-SEC
-                                 ELSE
-                                   IF      WRK-BYOMEI-BYOMEICD (IDX1 2)
-                                                   NOT =   SPACE
-                                       MOVE    1               TO  IDX2
+                               ELSE
+                                   COMPUTE IDX4    =   IDX     +   1
+                                   MOVE    ZERO        TO  FLG-BYOMEICD 
+                                   PERFORM VARYING IDX1    FROM    IDX4
+                                                           BY      1
+                                           UNTIL   IDX1    >       40
+                                       IF      WRK-BYOMEI-BYOMEICD
+                                                               (IDX1 2)
+                                                       NOT =   SPACE
+                                           MOVE    1   TO  FLG-BYOMEICD
+                                           MOVE    40  TO  IDX1
+                                       END-IF 
+                                   END-PERFORM     
+                                   IF      FLG-BYOMEICD      =   1
+                                       MOVE    1           TO  IDX2
                                        PERFORM 2003-LNK-HENSYU-SEC
                                    ELSE
-                                       IF      WRK-BYOMEI-BYOMEICD
-                                                           (IDX1 1)(4:1)
-                                                       =   "8"
-                                           MOVE    2           TO  IDX2
-                                           PERFORM 2003-LNK-HENSYU-SEC
-                                       ELSE
-                                           MOVE    1           TO  IDX2
-                                           PERFORM 2003-LNK-HENSYU-SEC
-                                       END-IF
+                                       MOVE    2           TO  IDX2
+                                       PERFORM 2003-LNK-HENSYU-SEC
                                    END-IF
-                                 END-IF 
                                END-IF
                        END-EVALUATE
                    END-IF     
