@@ -463,9 +463,14 @@
                END-IF
       *
       *        改行、最大文字で改行
-               IF      (IDX-KET                >=  KOU-MAX  )
+               IF       (IDX-KET       >=  KOU-MAX  )
+                   OR  ((IDX-STR      <=  600  )
+                   AND (WRK-NAIYOU(IDX-STR:)  =   SPACE))
                    ADD     1                   TO  IDX
                    MOVE    1                   TO  IDX-KET
+                   IF          WRK-NAIYOU(IDX-STR:1)    =   X"0A"
+                       COMPUTE IDX-STR     =   IDX-STR     +   1
+                   END-IF
                END-IF
       *
            END-PERFORM
@@ -528,12 +533,12 @@
       *****************************************************************
        230-KEIJYO-SET-SEC              SECTION.
       *
+           INITIALIZE                  WRK-HENSYU-AREA
            MOVE    1                   TO  IDX
-      *----(00.01.07)--ADD-START----
-           MOVE    2                   TO  IDY
-           MOVE    16                  TO  IDZ
-      *----(00.01.07)--ADD-END------
-           MOVE    1                   TO  IDX2-MAX
+      *    行
+           MOVE    10                  TO  GYO-MAX
+      *    文字数
+           MOVE    16                  TO  KOU-MAX
       *
       *    色編集
            MOVE    YAKUJYO-COLOR       TO  WRK-HENKEIJYO
@@ -544,10 +549,10 @@
            PERFORM 231-HENKEIJYO-SET-SEC
       *
       *    記号編集
-      *----(00.01.07)--ADD-START----
            IF          YAKUJYO-MARK    =   SPACE
                GO  TO  230-KEIJYO-SET-EXT
            END-IF
+      *
       *    記号チェック
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    1                   TO  KANACHK-SYORI
@@ -555,10 +560,9 @@
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
       *
            IF          KANACHK-SYUBETU     =   1
-               MOVE    1                   TO  IDY
-               MOVE    14                  TO  IDZ
+      *        文字数
+               MOVE    14                  TO  KOU-MAX
            END-IF
-      *----(00.01.07)--ADD-END-----
       *
            MOVE    YAKUJYO-MARK        TO  WRK-HENKEIJYO
            PERFORM 231-HENKEIJYO-SET-SEC
@@ -576,19 +580,19 @@
            MOVE    1                   TO  IDX-KET
       *
            PERFORM UNTIL       (IDX-STR       >   180 )  OR
-                               (IDX           >   10  )  OR
+                               (IDX           >   GYO-MAX )  OR
                                (WRK-HENKEIJYO(IDX-STR:)  =   SPACE)
       *        改行は対象外
                IF      (WRK-HENKEIJYO(IDX-STR:1)  =   X"0A")
-                   MOVE    16                  TO  IDX-KET
+                   MOVE    KOU-MAX             TO  IDX-KET
                    ADD     1                   TO  IDX-STR
                ELSE
                    IF      WRK-HENKEIJYO(IDX-STR:1)
                                                >=  X"A1"
                        MOVE    WRK-HENKEIJYO(IDX-STR:2)
                                                TO  WRK-YKJ-KEIJYO
-                                                         (CNT-LINE IDX)
-                                                         (IDX-KET:2)
+                                                       (CNT-LINE IDX)
+                                                       (IDX-KET:2)
                        ADD     2                   TO  IDX-STR
                        ADD     2                   TO  IDX-KET
                    ELSE
@@ -597,15 +601,62 @@
                END-IF
       *
       *        改行、最大文字で改行
-               IF      (IDX-KET                >=  16  )
+               IF       (IDX-KET       >=  KOU-MAX  )
+                   OR  ((IDX-STR       <=  180  )
+                   AND (WRK-HENKEIJYO(IDX-STR:)  =   SPACE))
                    ADD     1                   TO  IDX
                    MOVE    1                   TO  IDX-KET
+                   IF          WRK-HENKEIJYO(IDX-STR:1)    =   X"0A"
+                       COMPUTE IDX-STR     =   IDX-STR     +   1
+                   END-IF
                END-IF
       *
            END-PERFORM
       *
            .
        231-HENKEIJYO-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   帳票形状データ編集処理
+      *****************************************************************
+       231-HENKEIJYO-SET1-SEC           SECTION.
+      *
+           MOVE    1                   TO  STR-KET
+           MOVE    1                   TO  END-KET
+           MOVE    ZERO                TO  NUM-KET
+      *
+           PERFORM UNTIL   (END-KET    >   600 )
+                   OR      (IDX    >   GYO-MAX)
+                   OR      (WRK-HENKEIJYO(END-KET:)    =   SPACE)
+      *
+               PERFORM UNTIL   (END-KET    >   180 )
+                       OR      (NUM-KET    =   KOU-MAX)
+                       OR      (WRK-HENKEIJYO(END-KET:)    =   SPACE)
+                       OR      (WRK-HENKEIJYO(END-KET:1)   =   X"0A")
+                   IF      WRK-NAIYOU(END-KET:1)    >=  X"A1"
+                       COMPUTE END-KET     =   END-KET     +   1
+                       COMPUTE NUM-KET     =   NUM-KET     +   1
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    WRK-NAIYOU(STR-KET:NUM-KET)
+                                       TO  WRK-YKJ-KEIJYO(CNT-LINE IDX)
+      *
+               IF          (END-KET    <=   600 )
+                   AND     (WRK-NAIYOU(END-KET:1)   =   X"0A")
+                   COMPUTE END-KET     =   END-KET    +   1
+               END-IF
+      *
+               MOVE    ZERO                TO  NUM-KET
+               MOVE    END-KET             TO  STR-KET
+      *
+               COMPUTE IDX     =   IDX     +   1
+      *
+           END-PERFORM
+      *
+           .
+       231-HENKEIJYO-SET1-EXT.
            EXIT.
       *
       *****************************************************************
