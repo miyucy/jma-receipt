@@ -105,6 +105,7 @@
       *  01.01.17    NACL-ÌçÏÆ    04/08/20  Ê¼¸Ë¸©ÃÏÊý¸øÈñÂÐ±þ
       *  01.01.18    NACL-Æ£¸¶    04/09/17  £Ï£Ã£Òµ­ºÜÂÐ±þ
       *  01.01.19    NACL-ÌçÏÆ    04/10/04  ÅÀÅ©¤Î¿ÇÎÅ¥³¡¼¥É¡ö¿ôÎÌ¤ÎÎß·×ÊÔ½¸
+      *  01.01.20    NACL-ÌçÏÆ    04/11/15  ¸øÈñ·î¾å¸Â³Û¼èÆÀ½¤Àµ
       *  Ãæ»ß½èÍýÄÉ²Ã
       *  01.02.01    NACL-Æ£¸¶    04/10/07  Ãæ»ß½èÍý¤ÎÄÉ²Ã
       *****************************************************************
@@ -224,7 +225,6 @@
            03  FLG-WRITE65                             PIC 9(01).
            03  FLG-SIKIBETU                            PIC 9(01).
            03  FLG-SENTEICDCHG                         PIC 9(01).
-           03  FLG-PTKOHFTN                            PIC 9(01).
            03  FLG-ZANHAIKI                            PIC 9(01).
            03  FLG-RECE65-ZAN                          PIC 9(01).
            03  FLG-REWRITE                             PIC 9(01).
@@ -760,10 +760,6 @@
        01  SENTEICDCHG-REC.
            COPY    "CPSENTEICDCHG.INC".
       *
-      *    ´µ¼Ô¸øÈñÉéÃ´
-       01  PTKOHFTN-REC.
-           COPY    "CPPTKOHFTN.INC".
-      *
       *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
@@ -788,6 +784,8 @@
            COPY    "CPORCSJOBKANRI.INC".
       *    Æþ±¡ÅÀÅ©°ì³ç¹¹¿·¥µ¥Ö
            COPY    "CPORCSTENTEK.INC".
+      *    ¸øÈñ·î¾å¸Â³Û¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSJGNGET.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -6687,35 +6685,26 @@
       *****************************************************************
        KOHFTN-KINGAKU-SEC               SECTION.
       *
-           MOVE      ZERO                  TO      WRK-NYUJGNGAK
+           MOVE      ZERO             TO  WRK-NYUJGNGAK
       *
-           INITIALIZE                              PTKOHFTN-REC
-           MOVE    RECE62-HOSPID           TO      PTKOHFTN-HOSPID
-           MOVE    RECE62-PTID             TO      PTKOHFTN-PTID
-           MOVE    RECE62-KOHID(KOHFTN-IDX)   TO   PTKOHFTN-KOHID
-           MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
-           MOVE    "DBSELECT"              TO      MCP-FUNC
-           MOVE    "PTKOHFTN-KEY4"         TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
-           IF      MCP-RC               =       ZERO
-             MOVE    "PTKOHFTN-KEY4"     TO      ORC-DBPATH
-             PERFORM  PTKOHFTN-READ-SEC
-             PERFORM  UNTIL
-                 (FLG-PTKOHFTN       =   1)    OR
-                ((PTKOHFTN-TEKSTYMD(1:6) <=   RECE62-SRYYM   )  AND
-                 (RECE62-SRYYM           <=   PTKOHFTN-TEKEDYMD(1:6)))
-               MOVE     "PTKOHFTN-KEY4"  TO      ORC-DBPATH
-               PERFORM   PTKOHFTN-READ-SEC
-             END-PERFORM
-           ELSE
-             MOVE    1                   TO      FLG-PTKOHFTN
-           END-IF
+      *    ¸øÈñ·î¾å¸Â³Û¼èÆÀ
+           INITIALIZE                     LNK-ORCSJGNGET-REC
+           MOVE   RECE62-HOSPID       TO  LNK-ORCSJGNGET-HOSPID
+           MOVE   RECE62-NYUGAIKBN    TO  LNK-ORCSJGNGET-NYUGAIKBN
+           MOVE   RECE62-PTID         TO  LNK-ORCSJGNGET-PTID
+           MOVE   RECE62-KOHNUM(KOHFTN-IDX)
+                                      TO  LNK-ORCSJGNGET-KOHHKNNUM
+           MOVE   RECE62-KOHID(KOHFTN-IDX)
+                                      TO  LNK-ORCSJGNGET-KOHID
+           MOVE   RECE62-SRYYM        TO  LNK-ORCSJGNGET-SRYYM
       *
-           IF   FLG-PTKOHFTN  =  ZERO
+           CALL    "ORCSJGNGET"       USING
+                                      LNK-ORCSJGNGET-REC
       *
-             MOVE   PTKOHFTN-NYUJGNGAK   TO      WRK-NYUJGNGAK
+           IF     LNK-ORCSJGNGET-RC   =   ZERO
+             MOVE    LNK-ORCSJGNGET-NYUJGNGAK
+                                      TO  WRK-NYUJGNGAK
+      *
              IF    RECE62-KOUREI  NOT =    SPACE
                IF     RECE62-KOHNUM(KOHFTN-IDX) =  "012"
       ******       IF    WRK-NYUJGNGAK    >  15000
@@ -6730,13 +6719,6 @@
              END-IF
       *
            END-IF
-      *
-           MOVE    "DBCLOSE"             TO  MCP-FUNC
-           MOVE    "PTKOHFTN-KEY4"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC
       *
            .
        KOHFTN-KINGAKU-EXT.
@@ -7806,28 +7788,6 @@
       *
            .
        SENTEICDCHG-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼Ô¸øÈñÉéÃ´¥Þ¥¹¥¿¡¼ÆÉ¹þ
-      *****************************************************************
-       PTKOHFTN-READ-SEC          SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTKOHFTN-REC
-               MOVE    ZERO            TO  FLG-PTKOHFTN
-           ELSE
-               INITIALIZE                  PTKOHFTN-REC
-               MOVE    1               TO  FLG-PTKOHFTN
-           END-IF
-      *
-           .
-       PTKOHFTN-READ-EXT.
            EXIT.
       *
       *****************************************************************

@@ -142,6 +142,7 @@
       *  01.01.09    NACL-ÌçÏÆ    04/09/24  ÀÁµá³ÛÃ¼¿ô½èÍýÂÐ±þ
       *  01.01.10    NACL-ÌçÏÆ    04/10/01  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ±þ
       *  01.01.11    NACL-ÌçÏÆ    04/10/21  ¸øÈñ»Í¼Î¸ÞÆþ¤·¤Ê¤¤¾ì¹ç¤Î½¤Àµ
+      *  01.01.12    NACL-ÌçÏÆ    04/11/15  ¸øÈñ·î¾å¸Â³Û¼èÆÀ½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -191,7 +192,6 @@
            03  FLG-SYUTOTAL            PIC 9(01).
            03  FLG-TNKRRK              PIC 9(01).
            03  FLG-TSYRRK              PIC 9(01).
-           03  FLG-PTKOHFTN            PIC 9(01).
            03  FLG-HKNNUM              PIC 9(01).
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
@@ -239,6 +239,8 @@
            03  WK-1001-HOSPID          PIC X(24).
            03  WK-1001-HOSPSBT         PIC 9(01).
            03  WK-1001-ROUPAYKBN       PIC X(01).
+      *
+           03  WK-GAIJGNGAK            PIC 9(07).
       *
       *    ÊÝ¸±¶èÊ¬¡Ê¶õÇò¡§°åÊÝ¡¡£±¡§Ï«ºÒ¡¡£²¡§¼«ÇåÀÕ¡Ë
            03  WK-HKNKBN               PIC X(01).
@@ -709,10 +711,6 @@
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ´µ¼Ô¸øÈñÉéÃ´
-       01  PTKOHFTN-REC.
-           COPY    "CPPTKOHFTN.INC".
-      *
       *    ´µ¼Ô¸øÈñ¾ðÊó
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
@@ -726,6 +724,9 @@
       *
       *    ¸øÈñÉÕ²Ã¾ðÊó¼èÆÀ¥µ¥Ö
            COPY    "CPORCSKOHPLUS.INC".
+      *
+      *    ¸øÈñ·î¾å¸Â³Û¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSJGNGET.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -3198,36 +3199,27 @@
       ***                                        "4" OR "5" OR "6" OR
       ***                                        "7" OR "8"          )
       *
-                INITIALIZE                           PTKOHFTN-REC
-                MOVE    LNK-SYU-HOSPID       TO      PTKOHFTN-HOSPID
-                MOVE    LNK-SYU-PTID         TO      PTKOHFTN-PTID
-                MOVE    COMB-KOHID(KOH-IDX)  TO      PTKOHFTN-KOHID
-                MOVE    PTKOHFTN-REC         TO      MCPDATA-REC
-                MOVE    "DBSELECT"           TO      MCP-FUNC
-                MOVE    "PTKOHFTN-KEY4"      TO      ORC-DBPATH
-                CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                      ORCMCPAREA
-                                                      MCPDATA-REC
-                IF      MCP-RC               =       ZERO
-                    MOVE    "PTKOHFTN-KEY4"  TO      ORC-DBPATH
-                    PERFORM  PTKOHFTN-READ-SEC
-                    PERFORM  UNTIL
-                       ( FLG-PTKOHFTN                 =   1   )   OR
-                       ((PTKOHFTN-TEKSTYMD(1:6)
-                                  <=   LNK-SYU-SRYYMD   (1:6)) AND
-                        (LNK-SYU-SRYYMD(1:6)
-                                  <=   PTKOHFTN-TEKEDYMD(1:6)))
-                      MOVE     "PTKOHFTN-KEY4"  TO   ORC-DBPATH
-                      PERFORM   PTKOHFTN-READ-SEC
-                    END-PERFORM
-                ELSE
-                    MOVE    1                TO      FLG-PTKOHFTN
-                END-IF
+                MOVE       ZERO           TO  WK-GAIJGNGAK
       *
-                IF   FLG-PTKOHFTN  =  ZERO
+      *         ¸øÈñ·î¾å¸Â³Û¼èÆÀ
+                INITIALIZE                    LNK-ORCSJGNGET-REC
+                MOVE  LNK-SYU-HOSPID      TO  LNK-ORCSJGNGET-HOSPID
+                MOVE  LNK-SYU-NYUGAIKBN   TO  LNK-ORCSJGNGET-NYUGAIKBN
+                MOVE  LNK-SYU-PTID        TO  LNK-ORCSJGNGET-PTID
+                MOVE  COMB-KOHHKNNUM(KOH-IDX)
+                                          TO  LNK-ORCSJGNGET-KOHHKNNUM
+                MOVE  COMB-KOHID(KOH-IDX) TO  LNK-ORCSJGNGET-KOHID
+                MOVE  LNK-SYU-SRYYMD(1:6) TO  LNK-ORCSJGNGET-SRYYM
+      *
+                CALL    "ORCSJGNGET"      USING
+                                          LNK-ORCSJGNGET-REC
+      *
+                IF    LNK-ORCSJGNGET-RC   =   ZERO
+                   MOVE    LNK-ORCSJGNGET-GAIJGNGAK
+                                          TO  WK-GAIJGNGAK
                    EVALUATE   KOH-IDX
                       WHEN  1
-                        MOVE   PTKOHFTN-GAIJGNGAK  TO   MAX-KIN-KOHI1-M
+                        MOVE   WK-GAIJGNGAK        TO   MAX-KIN-KOHI1-M
                         MOVE     "1"   TO    COMB-KOH1-GAIJGNKBN
                         IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
                             (FLG-KOUREI-KBN               =   "1" )
@@ -3252,7 +3244,7 @@
                           END-IF
                         END-IF
                       WHEN  2
-                        MOVE   PTKOHFTN-GAIJGNGAK  TO   MAX-KIN-KOHI2-M
+                        MOVE   WK-GAIJGNGAK        TO   MAX-KIN-KOHI2-M
                         MOVE     "1"   TO    COMB-KOH2-GAIJGNKBN
                         IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
                             (FLG-KOUREI-KBN               =   "1" )
@@ -3277,7 +3269,7 @@
                           END-IF
                         END-IF
                       WHEN  3
-                        MOVE   PTKOHFTN-GAIJGNGAK  TO   MAX-KIN-KOHI3-M
+                        MOVE   WK-GAIJGNGAK        TO   MAX-KIN-KOHI3-M
                         MOVE     "1"   TO    COMB-KOH3-GAIJGNKBN
                         IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
                             (FLG-KOUREI-KBN               =   "1" )
@@ -3302,7 +3294,7 @@
                           END-IF
                         END-IF
                       WHEN  4
-                        MOVE   PTKOHFTN-GAIJGNGAK  TO   MAX-KIN-KOHI4-M
+                        MOVE   WK-GAIJGNGAK        TO   MAX-KIN-KOHI4-M
                         MOVE     "1"   TO    COMB-KOH4-GAIJGNKBN
                         IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
                             (FLG-KOUREI-KBN               =   "1" )
@@ -3328,13 +3320,6 @@
                         END-IF
                    END-EVALUATE
                 END-IF
-      *
-                MOVE    "DBCLOSE"            TO  MCP-FUNC
-                MOVE    "PTKOHFTN-KEY4"      TO  ORC-DBPATH
-                CALL    "ORCMCPSUB"           USING
-                                              MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
       *
              END-IF
       *
@@ -9633,28 +9618,6 @@
       *
            .
        TSYRRK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼Ô¸øÈñÉéÃ´¥Þ¥¹¥¿¡¼ÆÉ¹þ
-      *****************************************************************
-       PTKOHFTN-READ-SEC          SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTKOHFTN-REC
-               MOVE    ZERO            TO  FLG-PTKOHFTN
-           ELSE
-               INITIALIZE                  PTKOHFTN-REC
-               MOVE    1               TO  FLG-PTKOHFTN
-           END-IF
-      *
-           .
-       PTKOHFTN-READ-EXT.
            EXIT.
       *
       *****************************************************************

@@ -24,6 +24,10 @@
       *  ´ÉÍý¼Ô            : 
       *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
       *****************************************************************
+      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
+      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-ÌçÏÆ    04/11/15  ¸øÈñ·î¾å¸Â³Û¼èÆÀ½¤Àµ
+      *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -42,9 +46,9 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
-           03  FLG-PTKOHFTN        PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-ARI             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -58,7 +62,7 @@
            03  WRK-PREFNUM        PIC 9(02).
       *
            03  WRK-HKNCOMBINUM-TBL.
-               05  WRK-HKNCOMBINUM   PIC 9(4) OCCURS 10.
+               05  WRK-HKNCOMBINUM   PIC 9(04)  OCCURS 50.
       *    ¶¦ÄÌÎÎ°è
            COPY    "MCPAREA".
       *
@@ -74,16 +78,19 @@
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ´µ¼Ô¸øÈñÉéÃ´
-       01  PTKOHFTN-REC.
-           COPY    "CPPTKOHFTN.INC".
-      *
       *    ¼ýÇ¼
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý
            COPY    "CPSK1001.INC".
+      *
+      *****************************************************************
+      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *****************************************************************
+      *
+      *    ¸øÈñ·î¾å¸Â³Û¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSJGNGET.INC".
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -236,13 +243,7 @@
       *****************************************************************
        210-PTKOHFTN-GET-SEC       SECTION.
       *
-           IF ( LNK-FTNJGNCHK-KOHNUM         = "015" OR "016" 
-                                                     OR "012"      )
-      *
-           OR ((LNK-FTNJGNCHK-KOHNUM         = "051"   )  AND
-               (LNK-FTNJGNCHK-SRYYM         >= "200310")           )
-      *
-           OR ((WRK-PREFNUM                  =  13            )  AND
+           IF ((WRK-PREFNUM                  =  13            )  AND
                (LNK-FTNJGNCHK-KOHNUM         = "151" OR "451" )  AND
                (LNK-FTNJGNCHK-SRYYM         >= "200310")           )
       *
@@ -250,112 +251,25 @@
                (LNK-FTNJGNCHK-KOHNUM         = "186"   )  AND
                (LNK-FTNJGNCHK-SRYYM         >= "200310"))
       *
-                INITIALIZE                           PTKOHFTN-REC
-                MOVE    LNK-FTNJGNCHK-HOSPID TO      PTKOHFTN-HOSPID
-                MOVE    LNK-FTNJGNCHK-PTID   TO      PTKOHFTN-PTID
-                MOVE    LNK-FTNJGNCHK-KOHID  TO      PTKOHFTN-KOHID
-                MOVE    "PTKOHFTN-KEY4"      TO      ORC-DBPATH
-                PERFORM  910-PTKOHFTN-SELECT-SEC
-                IF      FLG-PTKOHFTN         =       ZERO
-                    MOVE    "PTKOHFTN-KEY4"  TO      ORC-DBPATH
-                    PERFORM  910-PTKOHFTN-READ-SEC
-                    PERFORM  UNTIL
-                       ( FLG-PTKOHFTN                 =   1   )   OR
-                       ((PTKOHFTN-TEKSTYMD(1:6)
-                                  <=   LNK-FTNJGNCHK-SRYYM    ) AND
-                        (LNK-FTNJGNCHK-SRYYM
-                                  <=   PTKOHFTN-TEKEDYMD(1:6)))
-                      PERFORM   910-PTKOHFTN-READ-SEC
-                    END-PERFORM
-                ELSE
-                    MOVE    1                TO      FLG-PTKOHFTN
+      *         ¸øÈñ·î¾å¸Â³Û¼èÆÀ
+                INITIALIZE                    LNK-ORCSJGNGET-REC
+                MOVE  LNK-FTNJGNCHK-HOSPID
+                                          TO  LNK-ORCSJGNGET-HOSPID
+                MOVE  LNK-FTNJGNCHK-NYUGAIKBN
+                                          TO  LNK-ORCSJGNGET-NYUGAIKBN
+                MOVE  LNK-FTNJGNCHK-PTID  TO  LNK-ORCSJGNGET-PTID
+                MOVE  LNK-FTNJGNCHK-KOHNUM
+                                          TO  LNK-ORCSJGNGET-KOHHKNNUM
+                MOVE  LNK-FTNJGNCHK-KOHID TO  LNK-ORCSJGNGET-KOHID
+                MOVE  LNK-FTNJGNCHK-SRYYM TO  LNK-ORCSJGNGET-SRYYM
+      *
+                CALL    "ORCSJGNGET"      USING
+                                          LNK-ORCSJGNGET-REC
+      *
+                IF    LNK-ORCSJGNGET-RC   =   ZERO
+                   MOVE    LNK-ORCSJGNGET-GAIJGNGAK
+                                          TO  WRK-HKNMST-JGNGAK
                 END-IF
-      *
-      *         ¸øÈñ¾å¸Â³Û¥»¥Ã¥È¡Ê»ÃÄê¡Ë
-                IF   FLG-PTKOHFTN  =  ZERO
-                    MOVE  PTKOHFTN-GAIJGNGAK  TO  WRK-HKNMST-JGNGAK
-                END-IF
-      *
-      **          IF   FLG-PTKOHFTN  =  ZERO
-      **             EVALUATE   KOH-IDX
-      **                WHEN  1
-      **                  MOVE   PTKOHFTN-GAIJGNGAK  TO   MAX-KIN-KOHI1-M
-      **                  MOVE     "1"   TO    COMB-KOH1-GAIJGNKBN
-      **                  IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
-      **                      (FLG-KOUREI-KBN               =   "1" )
-      **                    IF  ( WK-1001-PREFNUM        =     20)
-      **                    AND ( COMB-KOH1HKNNUM(1:1)   >=   "1")
-      **                    AND ( COMB-KOH1HKNNUM(1:1)   <=   "8")
-      **                      CONTINUE
-      **                    ELSE
-      **                      IF    MAX-KIN-KOHI1-M    >  12000
-      **                        MOVE    12000    TO   MAX-KIN-KOHI1-M
-      **                      END-IF
-      **                      IF    FLG-CHIHOU(1)      =  "1"
-      **                         MOVE   SPACE    TO   FLG-CHIHOU(1)
-      **                      END-IF
-      **                    END-IF
-      **                  END-IF
-      **                WHEN  2
-      **                  MOVE   PTKOHFTN-GAIJGNGAK  TO   MAX-KIN-KOHI2-M
-      **                  MOVE     "1"   TO    COMB-KOH2-GAIJGNKBN
-      **                  IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
-      **                      (FLG-KOUREI-KBN               =   "1" )
-      **                    IF  ( WK-1001-PREFNUM        =     20)
-      **                    AND ( COMB-KOH2HKNNUM(1:1)   >=   "1")
-      **                    AND ( COMB-KOH2HKNNUM(1:1)   <=   "8")
-      **                      CONTINUE
-      **                    ELSE
-      **                      IF    MAX-KIN-KOHI2-M    >  12000
-      **                        MOVE    12000    TO   MAX-KIN-KOHI2-M
-      **                      END-IF
-      **                      IF    FLG-CHIHOU(2)      =  "1"
-      **                         MOVE   SPACE    TO   FLG-CHIHOU(2)
-      **                      END-IF
-      **                    END-IF
-      **                  END-IF
-      **                WHEN  3
-      **                  MOVE   PTKOHFTN-GAIJGNGAK  TO   MAX-KIN-KOHI3-M
-      **                  MOVE     "1"   TO    COMB-KOH3-GAIJGNKBN
-      **                  IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
-      **                      (FLG-KOUREI-KBN               =   "1" )
-      **                    IF  ( WK-1001-PREFNUM        =     20)
-      **                    AND ( COMB-KOH3HKNNUM(1:1)   >=   "1")
-      **                    AND ( COMB-KOH3HKNNUM(1:1)   <=   "8")
-      **                      CONTINUE
-      **                    ELSE
-      **                      IF    MAX-KIN-KOHI3-M    >  12000
-      **                        MOVE    12000    TO   MAX-KIN-KOHI3-M
-      **                      END-IF
-      **                      IF    FLG-CHIHOU(3)      =  "1"
-      **                         MOVE   SPACE    TO   FLG-CHIHOU(3)
-      **                      END-IF
-      **                    END-IF
-      **                  END-IF
-      **                WHEN  4
-      **                  MOVE   PTKOHFTN-GAIJGNGAK  TO   MAX-KIN-KOHI4-M
-      **                  MOVE     "1"   TO    COMB-KOH4-GAIJGNKBN
-      **                  IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
-      **                      (FLG-KOUREI-KBN               =   "1" )
-      **                    IF  ( WK-1001-PREFNUM        =     20)
-      **                    AND ( COMB-KOH4HKNNUM(1:1)   >=   "1")
-      **                    AND ( COMB-KOH4HKNNUM(1:1)   <=   "8")
-      **                      CONTINUE
-      **                    ELSE
-      **                      IF    MAX-KIN-KOHI4-M    >  12000
-      **                        MOVE    12000    TO   MAX-KIN-KOHI4-M
-      **                      END-IF
-      **                      IF    FLG-CHIHOU(4)      =  "1"
-      **                         MOVE   SPACE    TO   FLG-CHIHOU(4)
-      **                      END-IF
-      **                    END-IF
-      **                  END-IF
-      **             END-EVALUATE
-      **          END-IF
-      *
-      *        ´µ¼Ô¸øÈñÉéÃ´¥¯¥í¡¼¥º
-               MOVE    "PTKOHFTN-KEY4"             TO  ORC-DBPATH
-               PERFORM   910-DB-CLOSE-SEC
       *
            END-IF
            .
@@ -367,7 +281,7 @@
       *****************************************************************
        210-HANTEI-SEC            SECTION.
       *
-      *¼ýÇ¼¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ßÂÐ¾Ý¤ÎÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ¼èÆÀ
+      *    ¼ýÇ¼¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ßÂÐ¾Ý¤ÎÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ¼èÆÀ
            INITIALIZE                          HKNCOMBI-REC
            MOVE    LNK-FTNJGNCHK-HOSPID    TO  COMB-HOSPID
            MOVE    LNK-FTNJGNCHK-PTID      TO  COMB-PTID
@@ -384,7 +298,7 @@
                MOVE    "HKNCOMBI-KEY4"      TO  ORC-DBPATH
                PERFORM 910-HKNCOMBI-READ-SEC
                PERFORM   VARYING   IDX1   FROM  1  BY  1
-                 UNTIL   (IDX1          >    10)   OR
+                 UNTIL   (IDX1              >    50 )   OR
                          (FLG-HKNCOMBI  NOT =   ZERO)
                    MOVE    COMB-HKNCOMBINUM  TO
                                         WRK-HKNCOMBINUM(IDX1)
@@ -430,17 +344,14 @@
       *            ´µ¼ÔÉéÃ´¶â¤Î½¸·×
                    MOVE      ZERO          TO      WRK-KOHFTN
                    PERFORM   UNTIL    FLG-SYUNOU  =   1
-                       IF (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(1)) OR
-                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(2)) OR
-                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(3)) OR
-                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(4)) OR
-                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(5)) OR
-                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(6)) OR
-                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(7)) OR
-                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(8)) OR
-                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(9)) OR
-                          (SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(10))
-                           EVALUATE   LNK-FTNJGNCHK-KOHNUM
+                       MOVE     ZERO       TO      FLG-ARI
+                       PERFORM   VARYING   IDX1   FROM  1  BY  1
+                             UNTIL  (IDX1                  >  50 ) OR
+                                    (WRK-HKNCOMBINUM(IDX1) = ZERO) OR
+                                    (FLG-ARI               =   1 )
+                          IF   SYU-HKNCOMBINUM  =  WRK-HKNCOMBINUM(IDX1)
+                             MOVE    1    TO    FLG-ARI
+                             EVALUATE   LNK-FTNJGNCHK-KOHNUM
                                WHEN   SYU-KOH-HKNNUM(1)
                                    ADD    SYU-KOH-HKNFTNMONEY(1)
                                                        TO   WRK-KOHFTN
@@ -453,8 +364,9 @@
                                WHEN   SYU-KOH-HKNNUM(4)
                                    ADD    SYU-KOH-HKNFTNMONEY(4)
                                                        TO   WRK-KOHFTN
-                         END-EVALUATE
-                       END-IF
+                             END-EVALUATE
+                          END-IF
+                       END-PERFORM
                        MOVE    "SYUNOU-KEY25"   TO  ORC-DBPATH
                        PERFORM  910-SYUNOU-READ-SEC
                    END-PERFORM
@@ -659,49 +571,6 @@
       *
            .
        910-HKNNUM-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼Ô¸øÈñÉéÃ´¥Þ¥¹¥¿¡¼¸¡º÷
-      *****************************************************************
-       910-PTKOHFTN-SELECT-SEC        SECTION.
-      *
-           MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-PTKOHFTN
-           ELSE
-               MOVE    1               TO  FLG-PTKOHFTN
-           END-IF
-      *
-           .
-       910-PTKOHFTN-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼Ô¸øÈñÉéÃ´¥Þ¥¹¥¿¡¼ÆÉ¹þ
-      *****************************************************************
-       910-PTKOHFTN-READ-SEC          SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTKOHFTN-REC
-               MOVE    ZERO            TO  FLG-PTKOHFTN
-           ELSE
-               INITIALIZE                  PTKOHFTN-REC
-               MOVE    1               TO  FLG-PTKOHFTN
-           END-IF
-      *
-           .
-       910-PTKOHFTN-READ-EXT.
            EXIT.
       *
       *****************************************************************

@@ -1,0 +1,858 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this licence along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION      DIVISION.
+       PROGRAM-ID.         ORCSJGNGET.
+      ****************************************************************
+      *    OS           LINUX                                         
+      *                                                               
+      *    PROGRAM      ORCSJGNGET  /  公費月上限額取得サブ           
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  04/10/28    NACL−門脇    新規作成
+      ****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+       ENVIRONMENT         DIVISION.
+       CONFIGURATION       SECTION.
+       INPUT-OUTPUT                SECTION.
+       FILE-CONTROL.
+      *
+      *
+       DATA                DIVISION.
+       FILE                        SECTION.
+      *
+       WORKING-STORAGE SECTION.
+      *
+      *    添え字領域
+       01  IDX-AREA.
+           03  IDX1                        PIC 9(03).
+           03  IDX2                        PIC 9(03).
+      *
+      *    フラグ領域
+       01  FLG-AREA.
+           03  FLG-SYSKANRI                PIC 9(01).
+           03  FLG-PTKOHFTN                PIC 9(01).
+           03  FLG-HKNCOMBI                PIC 9(01).
+           03  FLG-NYUINACCT               PIC 9(01).
+           03  FLG-SRYACCT                 PIC 9(01).
+           03  FLG-ARI                     PIC 9(01).
+      *
+      *    ワーク領域
+       01  WRK-AREA.
+      *
+           03  WRK-ED-S.
+              05  WRK-ED                   PIC 9(02).
+      *
+           03  WRK-SKYEDD-S.
+              05  WRK-SKYEDD               PIC 9(02).
+      *
+           03  WRK-GAIRAI-DAY              PIC 9(02).
+      *
+           03  WRK-RUIKEI-DAY              PIC 9(02).
+      *
+           03  WRK-KEISAN                  PIC S9(02).
+           03  WRK-KEISAN2                 PIC 9(07)V9(05).
+      *
+           03  WRK-RUIKEI-GAI              PIC 9(07)V9(05).
+           03  WRK-RUIKEI-NYU              PIC 9(07)V9(05).
+           03  WRK-RUIKEI-GAI2             PIC 9(07).
+           03  WRK-RUIKEI-NYU2             PIC 9(07).
+      *
+           03  WRK-KOSEIKBN                PIC X(01).
+      *
+           03  WRK-HKNCOMBINUM-TABLE.
+              05 WRK-HKNCOMBINUM           PIC 9(04)   OCCURS   50.
+      *
+           03  WRK-NYUIN-TABLE.
+              05 WRK-NYUIN-NISUU           PIC 9(02).
+              05 WRK-NYUIN-DAY             PIC 9(01)   OCCURS   31.
+      *
+           03  WRK-KOHFTN-TABLE.
+              05 WRK-KOHFTN-OCC            OCCURS     31.
+                07 WRK-KOHFTN-NISUU        PIC 9(02).
+                07 WRK-KOHFTN-TEKSTYMD     PIC X(08).
+                07 WRK-KOHFTN-TEKEDYMD     PIC X(08).
+                07 WRK-KOHFTN-GAIJGNGAK    PIC 9(07).
+                07 WRK-KOHFTN-NYUJGNGAK    PIC 9(07).
+      *
+      *    システム領域
+       01  SYS-AREA.
+           03  SYS-YMD.
+               05  SYS-YY                  PIC 9(02).
+               05  SYS-MM                  PIC 9(02).
+               05  SYS-DD                  PIC 9(02).
+           03  WRK-SYSYMD.
+               05  WRK-SYSYY               PIC 9(04).
+               05  WRK-SYSMM               PIC 9(02).
+               05  WRK-SYSDD               PIC 9(02).
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    患者公費負担
+       01  PTKOHFTN-REC.
+           COPY    "CPPTKOHFTN.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *
+      *    入院会計
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
+      *
+      *    診療会計
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
+      *
+      *    システム管理
+           COPY    "CPSK1001.INC".
+      *
+      *****************************************************************
+      *    サブプロ用　領域
+      *****************************************************************
+      *
+      *    日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *    ＤＢ検索
+           COPY    "MCPAREA".
+           COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
+      *
+      /
+      ***
+       LINKAGE             SECTION.
+           COPY  "CPORCSJGNGET.INC".
+      /
+       PROCEDURE           DIVISION  USING
+                                     LNK-ORCSJGNGET-REC.
+      ******************************************************************
+      *        依頼制御処理
+      ******************************************************************
+       MAIN-RTN            SECTION.
+       MAIN-000.
+      *
+           INITIALIZE             LNK-ORCSJGNGET-OUT-AREA
+           MOVE     ZERO    TO    LNK-ORCSJGNGET-RC
+      *
+           INITIALIZE                  IDX-AREA
+                                       FLG-AREA
+                                       WRK-AREA
+      *
+      *    更正・育成計算区分の取得
+           INITIALIZE                         SYS-1001-REC
+           MOVE    "1001"               TO    SYS-1001-KANRICD
+           MOVE    "*"                  TO    SYS-1001-KBNCD
+           MOVE    LNK-ORCSJGNGET-SRYYM TO    ORC-DBYMD(1:6)
+           MOVE    "01"                 TO    ORC-DBYMD(7:2)
+           MOVE    SYS-1001-REC         TO    MCPDATA-REC
+           MOVE    "DBSELECT"           TO    MCP-FUNC
+           MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
+           CALL    "ORCMCPSUB"    USING       MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+           IF      MCP-RC               =     ZERO
+               MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
+               PERFORM   900-SYSKANRI-READ-SEC
+               IF    FLG-SYSKANRI   =   ZERO
+                  MOVE  SYS-1001-KOSEIKBN   TO    WRK-KOSEIKBN
+                  IF    WRK-KOSEIKBN  =   SPACE
+                      MOVE    "1"           TO    WRK-KOSEIKBN
+                  END-IF
+               ELSE
+                  MOVE     11           TO    LNK-ORCSJGNGET-RC
+               END-IF
+           ELSE
+                  MOVE     11           TO    LNK-ORCSJGNGET-RC
+           END-IF
+      *
+           MOVE    "DBCLOSE"            TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF    LNK-ORCSJGNGET-RC   =   ZERO
+               EVALUATE   LNK-ORCSJGNGET-KOHHKNNUM
+                  WHEN     "015"
+                  WHEN     "016"
+                     EVALUATE   WRK-KOSEIKBN
+                        WHEN     "1"
+                          PERFORM    100-KEISAN1-SEC
+                        WHEN     "2"
+                          PERFORM    200-KEISAN2-SEC
+                     END-EVALUATE
+                  WHEN     OTHER
+                          PERFORM    100-KEISAN1-SEC
+               END-EVALUATE
+           END-IF
+      *
+           .
+      *
+       MAIN-EXT.
+           EXIT PROGRAM
+           STOP RUN.
+      *
+      *****************************************************************
+      *    日割り計算しない場合の公費月上限額取得
+      *****************************************************************
+       100-KEISAN1-SEC         SECTION.
+      *
+      ***     INITIALIZE                              PTKOHFTN-REC
+      ***     MOVE    LNK-ORCSJGNGET-HOSPID   TO      PTKOHFTN-HOSPID
+      ***     MOVE    LNK-ORCSJGNGET-PTID     TO      PTKOHFTN-PTID
+      ***     MOVE    LNK-ORCSJGNGET-KOHID    TO      PTKOHFTN-KOHID
+      ***     MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
+      ***     MOVE    "DBSELECT"              TO      MCP-FUNC
+      ***     MOVE    "PTKOHFTN-KEY5"         TO      ORC-DBPATH
+      ***     CALL    "ORCMCPSUB"             USING   MCPAREA
+      ***                                             ORCMCPAREA
+      ***                                             MCPDATA-REC
+      ***     IF      MCP-RC               =       ZERO
+      ***       MOVE    "PTKOHFTN-KEY5"       TO      ORC-DBPATH
+      ***       PERFORM  900-PTKOHFTN-READ-SEC
+      ***       PERFORM  UNTIL
+      ***           (FLG-PTKOHFTN       =   1)    OR
+      ***          ((PTKOHFTN-TEKSTYMD(1:6) <=  LNK-ORCSJGNGET-SRYYM  ) AND
+      ***           (LNK-ORCSJGNGET-SRYYM   <=  PTKOHFTN-TEKEDYMD(1:6)))
+      ***         MOVE     "PTKOHFTN-KEY5"    TO      ORC-DBPATH
+      ***         PERFORM   900-PTKOHFTN-READ-SEC
+      ***       END-PERFORM
+      ***     ELSE
+      ***       MOVE      1                   TO      FLG-PTKOHFTN
+      ***     END-IF
+      *
+      ***     IF   FLG-PTKOHFTN  =  ZERO
+      *
+      ***       MOVE   PTKOHFTN-GAIJGNGAK     TO   LNK-ORCSJGNGET-GAIJGNGAK
+      ***       MOVE   PTKOHFTN-NYUJGNGAK     TO   LNK-ORCSJGNGET-NYUJGNGAK
+      *
+      ***     END-IF
+      *
+      ***     MOVE    "DBCLOSE"             TO  MCP-FUNC
+      ***     MOVE    "PTKOHFTN-KEY5"       TO  ORC-DBPATH
+      ***     CALL    "ORCMCPSUB"           USING
+      ***                                   MCPAREA
+      ***                                   ORCMCPAREA
+      ***                                   MCPDATA-REC
+      *
+           INITIALIZE                              PTKOHFTN-REC
+           MOVE    LNK-ORCSJGNGET-HOSPID   TO      PTKOHFTN-HOSPID
+           MOVE    LNK-ORCSJGNGET-PTID     TO      PTKOHFTN-PTID
+           MOVE    LNK-ORCSJGNGET-KOHID    TO      PTKOHFTN-KOHID
+           MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
+           MOVE    "DBSELECT"              TO      MCP-FUNC
+           MOVE    "PTKOHFTN-KEY5"         TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+             MOVE    "PTKOHFTN-KEY5"       TO      ORC-DBPATH
+             PERFORM  900-PTKOHFTN-READ-SEC
+             PERFORM  UNTIL     FLG-PTKOHFTN      =     1
+               IF   (PTKOHFTN-TEKSTYMD(1:6) <=  LNK-ORCSJGNGET-SRYYM  )
+               AND  (LNK-ORCSJGNGET-SRYYM   <=  PTKOHFTN-TEKEDYMD(1:6))
+      *
+                 ADD   PTKOHFTN-GAIJGNGAK  TO  LNK-ORCSJGNGET-GAIJGNGAK
+                 ADD   PTKOHFTN-NYUJGNGAK  TO  LNK-ORCSJGNGET-NYUJGNGAK
+      *
+               END-IF
+               MOVE     "PTKOHFTN-KEY5"    TO      ORC-DBPATH
+               PERFORM   900-PTKOHFTN-READ-SEC
+             END-PERFORM
+           END-IF
+      *
+           MOVE    "DBCLOSE"             TO  MCP-FUNC
+           MOVE    "PTKOHFTN-KEY5"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+      *
+           .
+      *
+       100-KEISAN1-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日割り計算する場合の公費月上限額取得（更正・育成）
+      *****************************************************************
+       200-KEISAN2-SEC         SECTION.
+      *
+      *    対象の保険組合せ番号取得
+           PERFORM      2001-HKNCOMBINUM-GET-SEC
+      *
+           IF    LNK-ORCSJGNGET-RC   =   ZERO
+      *      入院日数取得
+             PERFORM    2002-NYUIN-NISUU-GET-SEC
+           END-IF
+      *
+           IF    LNK-ORCSJGNGET-RC   =   ZERO
+      *      月末日の取得
+             PERFORM    2003-GETUMATU-GET-SEC
+           END-IF
+      *
+           IF    LNK-ORCSJGNGET-RC   =   ZERO
+      *      患者公費負担情報期間毎の日数算出
+             PERFORM    2004-KOHFTN-GET-SEC
+           END-IF
+      *
+           IF    LNK-ORCSJGNGET-RC   =   ZERO
+      *      月上限額算出
+             PERFORM    2005-GENDOGAKU-GET-SEC
+           END-IF
+      *
+           .
+      *
+       200-KEISAN2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    対象の保険組合せ番号取得
+      *****************************************************************
+       2001-HKNCOMBINUM-GET-SEC.
+      *
+           INITIALIZE                          HKNCOMBI-REC
+           MOVE    LNK-ORCSJGNGET-HOSPID   TO  COMB-HOSPID
+           MOVE    LNK-ORCSJGNGET-PTID     TO  COMB-PTID
+           MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(1)
+           MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(2)
+           MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(3)
+           MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(4)
+           MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
+           MOVE    "DBSELECT"              TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY4"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+              MOVE    "HKNCOMBI-KEY4"      TO  ORC-DBPATH
+              PERFORM  900-HKNCOMBI-READ-SEC
+              PERFORM   VARYING   IDX1   FROM  1  BY  1
+                UNTIL   (IDX1              >    50 )   OR
+                        (FLG-HKNCOMBI      =     1 )
+                  MOVE     COMB-HKNCOMBINUM  TO
+                                       WRK-HKNCOMBINUM(IDX1)
+                  MOVE    "HKNCOMBI-KEY4"      TO  ORC-DBPATH
+                  PERFORM  900-HKNCOMBI-READ-SEC
+              END-PERFORM
+           END-IF
+      *
+           MOVE    "DBCLOSE"             TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY4"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+      *
+           IF   WRK-HKNCOMBINUM(1)  =  ZERO
+                  MOVE     12            TO  LNK-ORCSJGNGET-RC
+           END-IF
+      *
+           .
+      *
+       2001-HKNCOMBINUM-GET-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    入院日数取得
+      ******************************************************************
+       2002-NYUIN-NISUU-GET-SEC         SECTION.
+      *
+      *    診療会計処理
+           INITIALIZE                            SRYACCT-REC
+           MOVE    LNK-ORCSJGNGET-HOSPID    TO   ACCT-HOSPID
+           MOVE    "1"                      TO   ACCT-NYUGAIKBN
+           MOVE    LNK-ORCSJGNGET-PTID      TO   ACCT-PTID
+           MOVE    LNK-ORCSJGNGET-SRYYM     TO   ACCT-SRYYM
+           MOVE    SRYACCT-REC              TO   MCPDATA-REC
+           MOVE    "DBSELECT"               TO   MCP-FUNC
+           MOVE    "SRYACCT-KEY33"          TO   ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING   MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+           IF      MCP-RC             =       ZERO
+               MOVE    "SRYACCT-KEY33"      TO   ORC-DBPATH
+               PERFORM  900-SRYACCT-READ-SEC
+               PERFORM  UNTIL   FLG-SRYACCT  =    1
+      *
+                  PERFORM    20021-SRYACCT-NISUU-GET-SEC
+      *
+                  MOVE      "SRYACCT-KEY33"  TO   ORC-DBPATH
+                  PERFORM    900-SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+      *    入院会計処理
+           INITIALIZE                            NYUINACCT-REC
+           MOVE    LNK-ORCSJGNGET-HOSPID    TO   NACCT-HOSPID
+           MOVE    LNK-ORCSJGNGET-PTID      TO   NACCT-PTID
+           MOVE    LNK-ORCSJGNGET-SRYYM     TO   NACCT-SRYYM
+           MOVE    "5"                      TO   NACCT-ZAISKBKBN
+           MOVE    NYUINACCT-REC            TO   MCPDATA-REC
+           MOVE    "DBSELECT"               TO   MCP-FUNC
+           MOVE    "NYUINACCT-KEY17"        TO   ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING   MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+           IF      MCP-RC             =       ZERO
+               MOVE    "NYUINACCT-KEY17"    TO   ORC-DBPATH
+               PERFORM  900-NYUINACCT-READ-SEC
+               PERFORM  UNTIL  FLG-NYUINACCT  =    1
+      *
+                 PERFORM   20022-NYUINACCT-NISUU-GET-SEC
+      *
+                 MOVE     "NYUINACCT-KEY17" TO   ORC-DBPATH
+                 PERFORM   900-NYUINACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+           .
+      *
+       2002-NYUIN-NISUU-GET-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    診療会計より
+      ******************************************************************
+       20021-SRYACCT-NISUU-GET-SEC         SECTION.
+      *
+           IF   LNK-ORCSJGNGET-NYUGAIKBN   =  "1"
+                MOVE     LNK-ORCSJGNGET-SKYEDYMD(7:2)  TO  WRK-SKYEDD-S
+                MOVE     ZERO       TO      FLG-ARI
+                PERFORM   VARYING   IDX1   FROM  1  BY  1
+                      UNTIL  (IDX1                  >  50 ) OR
+                             (WRK-HKNCOMBINUM(IDX1) = ZERO) OR
+                             (FLG-ARI               =   1 )
+                    IF   ACCT-HKNCOMBI  =  WRK-HKNCOMBINUM(IDX1)
+                       MOVE    1    TO      FLG-ARI
+                       PERFORM    VARYING   IDX2   FROM   1   BY   1
+                                   UNTIL    IDX2    >    WRK-SKYEDD
+                         IF     ACCT-DAY(1 IDX2)   NOT =  ZERO
+                            IF  WRK-NYUIN-DAY(IDX2) =  ZERO
+                               MOVE    1    TO    WRK-NYUIN-DAY(IDX2)
+                               ADD     1    TO    WRK-NYUIN-NISUU
+                            END-IF
+                         END-IF
+                       END-PERFORM
+                    END-IF
+                END-PERFORM
+           ELSE
+                MOVE     ZERO       TO      FLG-ARI
+                PERFORM   VARYING   IDX1   FROM  1  BY  1
+                      UNTIL  (IDX1                  >  50 ) OR
+                             (WRK-HKNCOMBINUM(IDX1) = ZERO) OR
+                             (FLG-ARI               =   1 )
+                    IF   ACCT-HKNCOMBI  =  WRK-HKNCOMBINUM(IDX1)
+                       MOVE    1    TO      FLG-ARI
+                       PERFORM    VARYING   IDX2   FROM   1   BY   1
+                                   UNTIL    IDX2    >    31
+                         IF     ACCT-DAY(1 IDX2)   NOT =  ZERO
+                            IF  WRK-NYUIN-DAY(IDX2) =  ZERO
+                               MOVE    1    TO    WRK-NYUIN-DAY(IDX2)
+                               ADD     1    TO    WRK-NYUIN-NISUU
+                            END-IF
+                         END-IF
+                       END-PERFORM
+                    END-IF
+                END-PERFORM
+           END-IF
+      *
+           .
+      *
+       20021-SRYACCT-NISUU-GET-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    入院会計より
+      ******************************************************************
+       20022-NYUINACCT-NISUU-GET-SEC         SECTION.
+      *
+           IF   LNK-ORCSJGNGET-NYUGAIKBN   =  "1"
+                MOVE     LNK-ORCSJGNGET-SKYEDYMD(7:2)  TO  WRK-SKYEDD-S
+                PERFORM    VARYING   IDX1   FROM   1   BY   1
+                            UNTIL    IDX1    >    WRK-SKYEDD
+                  IF   NACCT-DAY(IDX1)   NOT =  ZERO
+                    MOVE     ZERO       TO      FLG-ARI
+                    PERFORM   VARYING   IDX2   FROM  1  BY  1
+                        UNTIL  (IDX2                  >  50 ) OR
+                               (WRK-HKNCOMBINUM(IDX2) = ZERO) OR
+                               (FLG-ARI               =   1 )
+                       IF   NACCT-DAY(IDX1)  =  WRK-HKNCOMBINUM(IDX2)
+                          MOVE    1     TO      FLG-ARI
+                          IF  WRK-NYUIN-DAY(IDX1) =  ZERO
+                                 MOVE    1    TO    WRK-NYUIN-DAY(IDX1)
+                                 ADD     1    TO    WRK-NYUIN-NISUU
+                          END-IF
+                       END-IF
+                    END-PERFORM
+                  END-IF
+                END-PERFORM
+           ELSE
+                PERFORM    VARYING   IDX1   FROM   1   BY   1
+                            UNTIL    IDX1    >    31
+                  IF   NACCT-DAY(IDX1)   NOT =  ZERO
+                    MOVE     ZERO       TO      FLG-ARI
+                    PERFORM   VARYING   IDX2   FROM  1  BY  1
+                        UNTIL  (IDX2                  >  50 ) OR
+                               (WRK-HKNCOMBINUM(IDX2) = ZERO) OR
+                               (FLG-ARI               =   1 )
+                       IF   NACCT-DAY(IDX1)  =  WRK-HKNCOMBINUM(IDX2)
+                          MOVE    1     TO      FLG-ARI
+                          IF  WRK-NYUIN-DAY(IDX1) =  ZERO
+                                 MOVE    1    TO    WRK-NYUIN-DAY(IDX1)
+                                 ADD     1    TO    WRK-NYUIN-NISUU
+                          END-IF
+                       END-IF
+                    END-PERFORM
+                  END-IF
+                END-PERFORM
+           END-IF
+      *
+           .
+      *
+       20022-NYUINACCT-NISUU-GET-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    月末日の取得
+      ******************************************************************
+       2003-GETUMATU-GET-SEC         SECTION.
+      *
+           INITIALIZE                               STS-AREA-DAY
+           INITIALIZE                               LNK-DAY7-AREA
+           MOVE          "71"                   TO  LNK-DAY7-IRAI
+           MOVE          LNK-ORCSJGNGET-SRYYM   TO  LNK-DAY7-YM
+           CALL          "ORCSDAY"          USING   STS-AREA-DAY
+                                                    LNK-DAY7-AREA
+           IF      STS-DAY-RC1    =   ZERO
+              MOVE       LNK-DAY7-KOYOMI(7:2)   TO  WRK-ED-S
+           ELSE
+              MOVE          13            TO  LNK-ORCSJGNGET-RC
+           END-IF
+      *
+           .
+      *
+       2003-GETUMATU-GET-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    患者公費負担情報期間毎の日数算出
+      ******************************************************************
+       2004-KOHFTN-GET-SEC         SECTION.
+      *
+      *    患者公費負担情報退避
+           MOVE         ZERO               TO      IDX1
+      *
+           INITIALIZE                              PTKOHFTN-REC
+           MOVE    LNK-ORCSJGNGET-HOSPID   TO      PTKOHFTN-HOSPID
+           MOVE    LNK-ORCSJGNGET-PTID     TO      PTKOHFTN-PTID
+           MOVE    LNK-ORCSJGNGET-KOHID    TO      PTKOHFTN-KOHID
+           MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
+           MOVE    "DBSELECT"              TO      MCP-FUNC
+           MOVE    "PTKOHFTN-KEY5"         TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+             MOVE    "PTKOHFTN-KEY5"       TO      ORC-DBPATH
+             PERFORM  900-PTKOHFTN-READ-SEC
+             PERFORM  UNTIL   (IDX1             >=    31)  OR
+                              (FLG-PTKOHFTN      =     1)
+               IF   (PTKOHFTN-TEKSTYMD(1:6) <=  LNK-ORCSJGNGET-SRYYM  )
+               AND  (LNK-ORCSJGNGET-SRYYM   <=  PTKOHFTN-TEKEDYMD(1:6))
+                 ADD    1         TO  IDX1
+                 IF    PTKOHFTN-TEKSTYMD(1:6)  <  LNK-ORCSJGNGET-SRYYM
+                   MOVE  LNK-ORCSJGNGET-SRYYM
+                                  TO   WRK-KOHFTN-TEKSTYMD(IDX1)(1:6)
+                   MOVE  "01"     TO   WRK-KOHFTN-TEKSTYMD(IDX1)(7:2)
+                 ELSE
+                   MOVE  PTKOHFTN-TEKSTYMD
+                                  TO   WRK-KOHFTN-TEKSTYMD(IDX1)
+                 END-IF
+                 IF    LNK-ORCSJGNGET-SRYYM  <  PTKOHFTN-TEKEDYMD(1:6)
+                   MOVE  LNK-ORCSJGNGET-SRYYM
+                                  TO   WRK-KOHFTN-TEKEDYMD(IDX1)(1:6)
+                   MOVE  WRK-ED-S TO   WRK-KOHFTN-TEKEDYMD(IDX1)(7:2)
+                 ELSE
+                   MOVE  PTKOHFTN-TEKEDYMD
+                                  TO   WRK-KOHFTN-TEKEDYMD(IDX1)
+                 END-IF
+                 MOVE  PTKOHFTN-GAIJGNGAK TO  WRK-KOHFTN-GAIJGNGAK(IDX1)
+                 MOVE  PTKOHFTN-NYUJGNGAK TO  WRK-KOHFTN-NYUJGNGAK(IDX1)
+               END-IF
+               MOVE     "PTKOHFTN-KEY5"    TO      ORC-DBPATH
+               PERFORM   900-PTKOHFTN-READ-SEC
+             END-PERFORM
+           END-IF
+      *
+           MOVE    "DBCLOSE"             TO  MCP-FUNC
+           MOVE    "PTKOHFTN-KEY5"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+      *
+      *    期間毎の日数算出
+           PERFORM   VARYING   IDX1   FROM  1  BY  1
+                      UNTIL   (IDX1                      >   31 ) OR
+                              (WRK-KOHFTN-TEKSTYMD(IDX1) = SPACE)
+      *
+             INITIALIZE                   STS-AREA-DAY
+             INITIALIZE                   LNK-DAY5-AREA
+             MOVE    "51"                 TO  LNK-DAY5-IRAI
+             MOVE    WRK-KOHFTN-TEKSTYMD(IDX1)
+                                          TO  LNK-DAY5-START
+             MOVE    WRK-KOHFTN-TEKEDYMD(IDX1)
+                                          TO  LNK-DAY5-END
+             CALL    "ORCSDAY"            USING   STS-AREA-DAY
+                                                  LNK-DAY5-AREA
+             IF      STS-DAY-RC1    =   ZERO
+                 MOVE    LNK-DAY5-NISSU2  TO  WRK-KOHFTN-NISUU(IDX1)
+      *
+                 COMPUTE WRK-RUIKEI-DAY   =   WRK-RUIKEI-DAY
+                                          +   WRK-KOHFTN-NISUU(IDX1)
+             ELSE
+                 MOVE       14            TO  LNK-ORCSJGNGET-RC
+             END-IF
+      *
+           END-PERFORM
+      *
+           .
+      *
+       2004-KOHFTN-GET-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    月上限額算出
+      ******************************************************************
+       2005-GENDOGAKU-GET-SEC         SECTION.
+      *
+      *    該当月に入院がある場合
+           IF    WRK-NYUIN-NISUU    NOT  =   ZERO
+      *
+      *       外来分の日数
+              COMPUTE   WRK-KEISAN   =   WRK-RUIKEI-DAY
+                                     -   WRK-NYUIN-NISUU
+              IF        WRK-KEISAN   <   ZERO
+                 MOVE      ZERO           TO  WRK-GAIRAI-DAY
+              ELSE
+                 MOVE      WRK-KEISAN     TO  WRK-GAIRAI-DAY
+              END-IF
+      *
+              PERFORM   VARYING   IDX1   FROM  1  BY  1
+                         UNTIL   (IDX1                      >   31 ) OR
+                                 (WRK-KOHFTN-TEKSTYMD(IDX1) = SPACE)
+      *
+                COMPUTE  WRK-KEISAN2     =
+                 (WRK-KOHFTN-GAIJGNGAK(IDX1)  *  WRK-KOHFTN-NISUU(IDX1)
+                                              *  WRK-GAIRAI-DAY       )
+                                              /
+                 (WRK-ED                      *  WRK-RUIKEI-DAY       )
+                COMPUTE  WRK-RUIKEI-GAI  =  WRK-RUIKEI-GAI
+                                         +  WRK-KEISAN2
+      *
+                COMPUTE  WRK-KEISAN2     =
+                 (WRK-KOHFTN-NYUJGNGAK(IDX1)  *  WRK-KOHFTN-NISUU(IDX1)
+                                              *  WRK-NYUIN-NISUU      )
+                                              /
+                 (WRK-ED                      *  WRK-RUIKEI-DAY       )
+                COMPUTE  WRK-RUIKEI-NYU  =  WRK-RUIKEI-NYU
+                                         +  WRK-KEISAN2
+      *
+              END-PERFORM
+      *
+              COMPUTE     WRK-RUIKEI-GAI2   =   WRK-RUIKEI-GAI   /  10
+              COMPUTE     WRK-RUIKEI-GAI2   =   WRK-RUIKEI-GAI2  *  10
+      *
+              COMPUTE     WRK-RUIKEI-NYU2   =   WRK-RUIKEI-NYU   /  10
+              COMPUTE     WRK-RUIKEI-NYU2   =   WRK-RUIKEI-NYU2  *  10
+      *
+              MOVE   WRK-RUIKEI-GAI2     TO   LNK-ORCSJGNGET-GAIJGNGAK
+              MOVE   WRK-RUIKEI-NYU2     TO   LNK-ORCSJGNGET-NYUJGNGAK
+      *
+           ELSE
+      *
+              PERFORM   VARYING   IDX1   FROM  1  BY  1
+                         UNTIL   (IDX1                      >   31 ) OR
+                                 (WRK-KOHFTN-TEKSTYMD(IDX1) = SPACE)
+      *
+                COMPUTE  WRK-KEISAN2     =
+                 (WRK-KOHFTN-GAIJGNGAK(IDX1)  *  WRK-KOHFTN-NISUU(IDX1))
+                                              /  WRK-ED
+                COMPUTE  WRK-RUIKEI-GAI  =  WRK-RUIKEI-GAI
+                                         +  WRK-KEISAN2
+      *
+                COMPUTE  WRK-KEISAN2     =
+                 (WRK-KOHFTN-NYUJGNGAK(IDX1)  *  WRK-KOHFTN-NISUU(IDX1))
+                                              /  WRK-ED
+                COMPUTE  WRK-RUIKEI-NYU  =  WRK-RUIKEI-NYU
+                                         +  WRK-KEISAN2
+      *
+              END-PERFORM
+      *
+              COMPUTE     WRK-RUIKEI-GAI2   =   WRK-RUIKEI-GAI   /  10
+              COMPUTE     WRK-RUIKEI-GAI2   =   WRK-RUIKEI-GAI2  *  10
+      *
+              COMPUTE     WRK-RUIKEI-NYU2   =   WRK-RUIKEI-NYU   /  10
+              COMPUTE     WRK-RUIKEI-NYU2   =   WRK-RUIKEI-NYU2  *  10
+      *
+              MOVE   WRK-RUIKEI-GAI2     TO   LNK-ORCSJGNGET-GAIJGNGAK
+      ****    MOVE   WRK-RUIKEI-NYU2     TO   LNK-ORCSJGNGET-NYUJGNGAK
+              MOVE   ZERO                TO   LNK-ORCSJGNGET-NYUJGNGAK
+      *
+           END-IF
+      *
+           .
+      *
+       2005-GENDOGAKU-GET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理読込
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"            TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1001-REC
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               INITIALIZE                  SYS-1001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+      *
+       900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者公費負担マスター読込
+      *****************************************************************
+       900-PTKOHFTN-READ-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHFTN-REC
+               MOVE    ZERO            TO  FLG-PTKOHFTN
+           ELSE
+               INITIALIZE                  PTKOHFTN-REC
+               MOVE    1               TO  FLG-PTKOHFTN
+           END-IF
+      *
+           .
+      *
+       900-PTKOHFTN-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスター読込
+      *****************************************************************
+       900-HKNCOMBI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+      *
+       900-HKNCOMBI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院会計マスター読込
+      *****************************************************************
+       900-NYUINACCT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+               MOVE    ZERO            TO  FLG-NYUINACCT
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+      *
+           .
+      *
+       900-NYUINACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計マスター読込
+      *****************************************************************
+       900-SRYACCT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+               MOVE    ZERO            TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+      *
+       900-SRYACCT-READ-EXT.
+           EXIT.
+      *
