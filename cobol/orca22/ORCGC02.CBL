@@ -1890,7 +1890,9 @@
                                        SPA-C02-IKOFLG
       *                                
            MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
-           MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
+           IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
+               MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
+           END-IF
       *
            IF      C02-BANGO       =   SPACE
                MOVE    ZERO            TO  SPA-GMN-C02-BANGO
@@ -3571,7 +3573,7 @@
            END-IF    
       *         
            IF      SPA-ERRCD           =   SPACE
-               MOVE    29                  TO  SPA-GMN-C02-CUR 
+               MOVE    18                  TO  SPA-GMN-C02-CUR 
            END-IF     
            .
        41012-TENKIYMD-CHK-EXT.
@@ -3895,7 +3897,11 @@
            MOVE    C02-BSRYKA          TO  SPA-GMN-C02-BSRYKA-G
       *
            IF      SPA-GMN-C02-BSRYKA  =   SPACE
-               MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
+               IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
+                   MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
+               ELSE
+                   MOVE    "0030"              TO  SPA-ERRCD
+               END-IF
            ELSE    
                MOVE    SPA-GMN-C02-BSRYKA  TO  WRK-KBN
                PERFORM 5001-BSRYKA-HENSYU-SEC
@@ -3921,10 +3927,10 @@
       *
            MOVE    C02-SYOKBN          TO  SPA-GMN-C02-SYOKBN-G
       *
-           IF      SPA-GMN-C02-BSRYKA  =   SPACE
-               MOVE    SPA-GMN-C02-SYOKBNLST (1)
-                                           TO  SPA-GMN-C02-SYOKBN-G
-           ELSE    
+      *****IF      SPA-GMN-C02-SRYKA  =   SPACE
+      *****    MOVE    SPA-GMN-C02-SYOKBNLST (1)
+      *****                                TO  SPA-GMN-C02-SYOKBN-G
+      *****ELSE    
                MOVE    SPA-GMN-C02-SYOKBN  TO  WRK-KBN
                PERFORM 5001-SYOKBN-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-SYOKBNMEI
@@ -3932,7 +3938,7 @@
                    MOVE    SPA-GMN-C02-SYOKBNLST (1)
                                                TO  SPA-GMN-C02-SYOKBN-G
                END-IF
-           END-IF
+      *****END-IF
       *
       *    病名一覧
            MOVE    1                   TO  SPA-GMN-C02-PAGE
@@ -3945,7 +3951,7 @@
            PERFORM 310-SPASET-PTBYO-HENSYU-SEC 
            MOVE    1                   TO  SPA-GMN-C02-CUR
            .
-       41019-BSRYKA-CHK-EXT.
+       41022-SYOKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4393,29 +4399,6 @@
                    END-IF
                END-PERFORM
            END-IF           
-      *
-      *    主病名の存在チェック
-           IF      SPA-GMN-C02-SYUBYOFLG       =   SPACE
-               IF      SPA-C02-2005-SYUBYOHENFLG   =   ZERO
-                   CONTINUE
-               ELSE
-                   INITIALIZE                  PTBYOMEI-REC
-                   MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
-                   MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
-                   MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
-                   MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-                   IF      SPA-C02-1001-HOSPSBT1   =   "1"
-                       MOVE    "PTBYOMEI-KEY14"    TO  WRK-DBPATH
-                   ELSE
-                       MOVE    "PTBYOMEI-KEY15"    TO  WRK-DBPATH
-                   END-IF
-                   PERFORM 900-PTBYO-INV-SEC
-                   IF      FLG-PTBYOMEI        =   1
-                       MOVE    "0102"            TO  SPA-CIDCD
-                       GO  TO  450-TOUROKU-EXT
-                   END-IF
-               END-IF
-           END-IF
       *  
            IF      SPA-NAI-C02-SRYYMD   =   SPACE
                MOVE    SPA-NAI-C02-SYSYMD   TO  SPA-NAI-C02-SRYYMD
@@ -4460,6 +4443,29 @@
            END-PERFORM
            IF      SPA-ERRCD        NOT =   SPACE
               GO  TO  450-TOUROKU-EXT
+           END-IF
+      *
+      *    主病名の存在チェック
+           IF      SPA-GMN-C02-SYUBYOFLG       =   SPACE
+               IF      SPA-C02-2005-SYUBYOHENFLG   =   ZERO
+                   CONTINUE
+               ELSE
+                   INITIALIZE                  PTBYOMEI-REC
+                   MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+                   MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+                   MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
+                   MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+                   IF      SPA-C02-1001-HOSPSBT1   =   "1"
+                       MOVE    "PTBYOMEI-KEY14"    TO  WRK-DBPATH
+                   ELSE
+                       MOVE    "PTBYOMEI-KEY15"    TO  WRK-DBPATH
+                   END-IF
+                   PERFORM 900-PTBYO-INV-SEC
+                   IF      FLG-PTBYOMEI        =   1
+                       MOVE    "0102"            TO  SPA-CIDCD
+                       GO  TO  450-TOUROKU-EXT
+                   END-IF
+               END-IF
            END-IF
       *
       *    登録処理
@@ -6040,8 +6046,6 @@
                     MOVE  "PTNUM"    TO  MCP-WIDGET
              WHEN   27
                     MOVE  "SRYKA"    TO  MCP-WIDGET
-             WHEN   29
-                    MOVE  "BYOMEIINPUTCD"    TO  MCP-WIDGET
              WHEN   30
                     MOVE  "PTNUM"    TO  MCP-WIDGET
              WHEN   31
@@ -6152,7 +6156,7 @@
                WHEN    "0038"
                    STRING
                        WRK-ERR-BYOMEI          DELIMITED   BY  SPACE
-                       "はマスタに存在します。転帰日等を確認して下さい"
+                   "は既に登録してあります。転帰日等を確認して下さい"
                                                DELIMITED   BY  SIZE 
                                                INTO    SPA-ERRMSG
                    END-STRING
