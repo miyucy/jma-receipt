@@ -1169,7 +1169,7 @@
       *    自費のときのレセプト種別を編集
            IF     (RECE02-HKNNUM        NOT =   SPACE)   AND
                   (WRK-JIHI-FLG         =   "1"      ) 
-               MOVE    "8888"               TO  RECE02-RECESYUBETU    
+               MOVE    8888             TO  RECE02-RECESYUBETU    
                GO  TO  RECESYUBETU-SET-EXT
            END-IF
       *         
@@ -2251,7 +2251,7 @@
                            IF      FLG-SRYACCT  =       ZERO
                                IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
                                    (ACCT-ZAIKAISU NOT =  ZERO)
-                                   MOVE    1   TO   WRK-ZAITAKU
+                                   MOVE    "1" TO   WRK-ZAITAKU
                                END-IF
                            END-IF
                        END-IF

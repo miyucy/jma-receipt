@@ -65,6 +65,10 @@
       *                                     続紙のタイトル表示
       *  01.01.03    NACL-藤原    04/04/07  カスタマイズ項目にコメント欄
       *                                     ・診療科名を追加
+      *  01.01.04    NACL-藤原    04/05/06  不明分を必ず出力するように修正
+      *  01.01.05    NACL-門脇    04/05/13  初診時に時間外・深夜・休日が
+      *                                     ２つ以上あった場合の記載対応
+      *  01.01.06    NACL-小豆沢  04/05/19  ＤＢ書き込み時のコミット追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -250,6 +254,7 @@
            03  CNT-ZAIMEISAISU     PIC 9(03).
            03  CNT-PAGE            PIC 9(03).
            03  CNT-KENSU           PIC 9(03). 
+           03  CNT-COMMIT          PIC 9(03). 
       *
       *    添字領域
        01  IDX-AREA.
@@ -1148,6 +1153,13 @@
       *                                      
                        PERFORM 2001-SYORI-SEC
       *
+                       ADD     1                 TO  CNT-COMMIT
+                       IF  CNT-COMMIT      =    300
+                           MOVE  ZERO      TO      CNT-COMMIT
+                           PERFORM 900-DBCOMMIT-SEC
+                           PERFORM 900-DBSTART-SEC
+                       END-IF
+      *
                        PERFORM 990-RECE02-READ-SEC
                    END-PERFORM
                END-PERFORM    
@@ -1704,7 +1716,7 @@
       *
       *    診療年月（診療年月日として退避）
            MOVE    RECE02-SRYYM        TO  WRK-SYMD
-           MOVE    "01"                TO  WRK-SDD
+           MOVE    1                   TO  WRK-SDD
            MOVE    WRK-SYMD            TO  WRK-SRYYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    LNK-DAY2-EDTYMD1-Y  TO  HC06-SRYY 
@@ -3214,6 +3226,14 @@
                      MOVE  "（深夜）"     TO  HC06-SHOSHINTIME
                WHEN  "3"
                      MOVE  "（休日）"     TO  HC06-SHOSHINTIME
+               WHEN  "4"
+                     MOVE  "時外・深夜"   TO  HC06-SHOSHINTIME
+               WHEN  "5"
+                     MOVE  "時外・休日"   TO  HC06-SHOSHINTIME
+               WHEN  "6"
+                     MOVE  "休日・深夜"   TO  HC06-SHOSHINTIME
+               WHEN  "7"
+                     MOVE  "外・休・深"   TO  HC06-SHOSHINTIME
            END-EVALUATE
       *     
            IF      RECE02-HKNNUM      =   SPACE
@@ -4498,6 +4518,7 @@
            IF      FLG-ERR              =   1
                MOVE    2                    TO  SPA-STS
            END-IF
+      *
            .
        390-PRINT-OUT-EXT.
            EXIT.
@@ -5013,21 +5034,21 @@
                    MOVE    HIGH-VALUE          TO  KEY-NEW
                NOT AT  END
                    MOVE    ZERO                TO  FLG-RECE02
-                   IF      RECE02-TOTALTEN (1) =   ZERO
-                   AND     RECE02-TOTALTEN (2) =   ZERO 
-                   AND     RECE02-TOTALTEN (3) =   ZERO 
-                   AND     RECE02-TOTALTEN (4) =   ZERO
-                   AND     RECE02-TOTALTEN (5) =   ZERO
-                   AND     RECE02-RECESYUBETU  NOT =  8888
+                   IF    ( RECE02-TOTALTEN (1) =   ZERO                )
+                   AND   ( RECE02-TOTALTEN (2) =   ZERO                )
+                   AND   ( RECE02-TOTALTEN (3) =   ZERO                )
+                   AND   ( RECE02-TOTALTEN (4) =   ZERO                )
+                   AND   ( RECE02-TOTALTEN (5) =   ZERO                )
+                   AND   ( RECE02-RECESYUBETU  NOT =  8888    AND ZERO )
                        GO  TO  990-RECE02-READ-SEC
                    ELSE
-                     IF      RECE02-TOTALTEN (1) =   ZERO
-                     AND     RECE02-TOTALTEN (2) =   ZERO 
-                     AND     RECE02-TOTALTEN (3) =   ZERO 
-                     AND     RECE02-TOTALTEN (4) =   ZERO
-                     AND     RECE02-TOTALTEN (5) =   ZERO
-                     AND     RECE02-RECESYUBETU  =   8888
-                     AND     RECE02-JIHTEKFLG    =   SPACE
+                     IF    ( RECE02-TOTALTEN (1) =   ZERO  ) 
+                     AND   ( RECE02-TOTALTEN (2) =   ZERO  )
+                     AND   ( RECE02-TOTALTEN (3) =   ZERO  )
+                     AND   ( RECE02-TOTALTEN (4) =   ZERO  )
+                     AND   ( RECE02-TOTALTEN (5) =   ZERO  )
+                     AND   ( RECE02-RECESYUBETU  =   8888  )
+                     AND   ( RECE02-JIHTEKFLG    =   SPACE )
                        GO  TO  990-RECE02-READ-SEC
                      ELSE
                        IF      RECE02-SRYYM        <   WRK-CONS-SRYYM
@@ -5630,4 +5651,32 @@
                                         MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ　ＣＯＭＭＩＴ処理
+      *****************************************************************
+       900-DBCOMMIT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "MCPSUB"          USING
+                                        MCPAREA
+                                        MCPDATA-REC.
+      *
+           .
+       900-DBCOMMIT-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    ＤＢ　ＳＴＡＲＴ処理
+      *****************************************************************
+       900-DBSTART-SEC                SECTION.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       900-DBSTART-EXT.
            EXIT.
