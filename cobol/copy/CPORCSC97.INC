@@ -28,6 +28,9 @@
        01  ORCSC97AREA.
       *    ＰＧ名
            03  LNK-SC97-PG             PIC X(06).
+      *    処理区分（空白：全部、
+      *              １：半角変換のみ）
+           03  LNK-SC97-KBN            PIC X(01).
       *    入力出力領域
            03  LNK-SC97-INPUTCD        PIC X(22).
       *    ＳＰＡライン

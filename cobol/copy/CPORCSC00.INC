@@ -41,7 +41,7 @@
            03  LNK-ORCSC-SYORIFLG      PIC 9(01).
       *    初診フラグ（新患かどうかの判定）
            03  LNK-ORCSC-SYOSIN        PIC 9(01).
-      *    初診フラグ２
+      *    初診フラグ２（今回初診料かどうかの判定）
            03  LNK-ORCSC-SYOSIN2       PIC 9(01).
       *    訂正前診療科
            03  LNK-ORCSC-OLD-SRYKA     PIC X(02).
@@ -175,9 +175,10 @@
                    07  LNK-ACCT-SRYKBN          PIC  X(02).
                    07  LNK-ACCT-SRYCD           PIC  X(09).
                    07  LNK-ACCT-CDKBN.
-                       09  LNK-ACCT-CDKBN-KBN   PIC  X(01).
-                       09  LNK-ACCT-CDKBN-SYO   PIC  X(01).
-                       09  LNK-ACCT-CDKBN-BU    PIC  X(02).
+                       09  LNK-ACCT-CDKBN-KBN      PIC  X(01).
+                       09  LNK-ACCT-CDKBN-KBNNUM   PIC  X(03).
+      *****************09  LNK-ACCT-CDKBN-SYO   PIC  X(01).
+      *****************09  LNK-ACCT-CDKBN-BU    PIC  X(02).
       *
            03  LNK-NAIACCT2-AREA.
       *        当日チェック用（点滴）
