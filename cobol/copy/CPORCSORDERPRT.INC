@@ -25,7 +25,7 @@
       *
        01  ORCSORDERPRTAREA.
       *    処理ＰＧ
-           03  LNK-ORDERPRT-PG         PIC X(03).
+           03  LNK-ORDERPRT-PG         PIC X(04).
       *    対象ファイル処理
            03  LNK-ORDERPRT-KBN        PIC X(01).
       *    入院処方箋発行
