@@ -32,6 +32,8 @@
       *  01.00.01    NACL-藤原    02/10/03  入外区分・処理区分の追加
       *  01.00.02    NACL-藤原    03/01/09  通し番号の追加のため
       *                                     ＭＯＮＰＥに変更
+      *  01.00.03    NACL-門脇    03/01/31  事業所名の長さ変更のため
+      *                                     帳票ＩＤ変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -140,7 +142,9 @@
       *
       *    短期（３４７０７）     
       *****COPY    "HC22.INC".
-           COPY    "HCM22.INC"     REPLACING  //HCM22//
+      *****COPY    "HCM22.INC"     REPLACING  //HCM22//
+      *****                        BY         //HC22//.
+           COPY    "HCM22V01.INC"  REPLACING  //HCM22V01//
                                    BY         //HC22//.
       *
       *    長期・短期（続紙）     
@@ -1633,7 +1637,8 @@
                IF      CNT-PAGE            =   1                                 
                    MOVE    HC22                TO  RECE08-PRTDATA
       *************MOVE    "HC22"              TO  RECE08-FORMID
-                   MOVE    "HCM22.red"         TO  RECE08-FORMID
+      *************MOVE    "HCM22.red"         TO  RECE08-FORMID
+                   MOVE    "HCM22V01.red"      TO  RECE08-FORMID
                ELSE
                    MOVE    HC24                TO  RECE08-PRTDATA
       *************MOVE    "HC24"              TO  RECE08-FORMID
