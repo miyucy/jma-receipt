@@ -2767,6 +2767,7 @@
                    PERFORM 4101121-MOJI-SET-SEC
       *
                    PERFORM 4101191-INPUTSET-SYORI-SEC
+                   MOVE    SPACE               TO  SPA-MAE-INPUTCD (IDX)
                END-IF
            END-PERFORM
       *
@@ -2785,10 +2786,11 @@
            IF     (IDXS                    =   ZERO)  AND
                   (LNK-WKSRY-RENNUM (IDX)  =   1   )
                IF     (LNK-WKSRY-SRYSYUKBN (IDX)   NOT =   SPACE )  AND
-                      (LNK-WKSRY-SRYCD (IDX 01)(1:1)   NOT =   "1"  OR
-                       LNK-WKSRY-SRYSYUKBN (IDX)(1:1)  =   "9"  OR
+                     ((LNK-WKSRY-SRYCD (IDX 01)(1:1)   NOT =   "1") OR
+                      (LNK-WKSRY-SRYSYUKBN (IDX)(1:1)  =   "9"  OR
                                                            "3"  OR
-                                                           "2"   )
+                                                           "2"   )  OR
+                      (LNK-WKSRY-SRYSYUKBN (IDX)(3:1)  NOT =   "0"))
                    ADD     1                   TO  IDX2
                    IF      IDX2            >   WRK-GYO-MAX
                        MOVE    "9100"          TO  WRK-ERRCD1
