@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  02/12/19  食堂加算追加
       *****************************************************************
       *
       *
@@ -545,6 +546,19 @@
                MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
                MOVE    "4"                 TO  WRK-ACT-ZAISKBKBN
                MOVE    LNK-SCNYUACCT-SHOKUJIKBN
+                                           TO  WRK-ACT-DAY
+               PERFORM 400-NYUACT-SYORI-SEC
+           END-IF
+      *
+      *    食堂加算
+           IF      LNK-SCNYUACCT-SHOKUDO   NOT =   SPACE
+               INITIALIZE                  TBL-NYUIN-AREA
+               MOVE    LNK-SCNYUACCT-SHOKUDO
+                                           TO  TBL-SRYCD (1)
+               MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
+               MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
+               MOVE    "4"                 TO  WRK-ACT-ZAISKBKBN
+               MOVE    LNK-SCNYUACCT-SHOKUDO-KBN
                                            TO  WRK-ACT-DAY
                PERFORM 400-NYUACT-SYORI-SEC
            END-IF
