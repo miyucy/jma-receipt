@@ -221,8 +221,6 @@
       *    ¼ç½èÍý
       *****************************************************************
        200-MAIN-SEC                SECTION.
-      *???
-           DISPLAY "RECE04=" RECE04-KEY "#"
       *    
            INITIALIZE                      RECE041-REC
            MOVE    RECE04-HOSPID       TO  RECE041-HOSPID
@@ -337,8 +335,6 @@
                    ADD     1           TO  CNT-IN
                    MOVE    ZERO        TO  FLG-END
            END-READ
-      *???
-           DISPLAY "FLG=" FLG-END "#" CNT-IN "#"
            .
        900-RECE04-READ-EXT.
            EXIT.
