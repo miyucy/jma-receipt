@@ -2939,9 +2939,9 @@
                INITIALIZE                    SPA-NAI-C02-BYOMEI-TBL
                PERFORM VARYING IDZ FROM    1   BY  1
                        UNTIL   IDZ >       6
-                   IF      IDZ             =   WRK-WIDGET2
-                       CONTINUE
-                   ELSE
+      *************IF      IDZ             =   WRK-WIDGET2
+      *************    CONTINUE
+      *************ELSE
                        MOVE    SPA-GMN-C02-BYOMEICD (IDZ)
                                        TO  SPA-NAI-C02-BYOMEICD (IDZ)
                        MOVE    ZERO                TO  WRK-LENGTH                    
@@ -2968,7 +2968,7 @@
                                                TO  USBYO-BYOMEIINPUTCD
                                PERFORM 410112-USERBYOMEI-HENSYU-SEC
                        END-EVALUATE 
-                   END-IF
+      *************END-IF
                END-PERFORM
                MOVE    WRK-WIDGET2     TO  IDZ
            END-IF 
@@ -5725,6 +5725,8 @@
        490-C09-SYORI-SEC           SECTION.
       *
            IF    ( SPA-GMN-C02-BYOMEI  =   SPACE )
+           OR    ( SPA-NAI-C02-BYOMEIMOJI
+                                       =   SPACE )
            OR    ( SPA-NAI-C02-BYOMEICD-MAX
                                        >   1     )
                GO  TO  490-C09-SYORI-EXT
@@ -5735,22 +5737,24 @@
            MOVE    ZERO                TO  IDZ
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       21
-                   OR      SPA-NAI-C02-BYOMEICD (IDX)  =   SPACE
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       21
-                       OR      SPA-NAI-C02-BYOMEICD-O (IDX IDY)
-                                           =   SPACE
-                   ADD     1                   TO  IDZ
-                   IF      IDZ                 <=   21
-                       MOVE    SPA-NAI-C02-BYOMEICD-O (IDX IDY)
+               IF      SPA-NAI-C02-BYOMEICD (IDX)  NOT =   SPACE
+                   PERFORM VARYING IDY FROM    1   BY  1
+                           UNTIL   IDY >       21
+                           OR      SPA-NAI-C02-BYOMEICD-O (IDX IDY)
+                                               =   SPACE
+                       ADD     1                   TO  IDZ
+                       IF      IDZ                 <=   21
+                           MOVE    SPA-NAI-C02-BYOMEICD-O (IDX IDY)
                                                TO  C09-TBYOMEICD (IDZ)
-                       MOVE    SPA-NAI-C02-BYOMEI-O   (IDX IDY)
-                                           TO  C09-TBYOMEI   (IDZ)
-                       MOVE    IDZ             TO  C09-COUNT
-                   ELSE
-                       MOVE    21               TO  IDX
-                                                    IDY 
-               END-PERFORM
+                           MOVE    SPA-NAI-C02-BYOMEI-O   (IDX IDY)
+                                               TO  C09-TBYOMEI   (IDZ)
+                           MOVE    IDZ             TO  C09-COUNT
+                       ELSE
+                           MOVE    21               TO  IDX
+                                                        IDY
+                       END-IF 
+                   END-PERFORM
+               END-IF
            END-PERFORM
       *
            MOVE    "B01"                TO  MCP-WIDGET
