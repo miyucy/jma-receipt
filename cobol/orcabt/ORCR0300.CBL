@@ -73,6 +73,7 @@
       *  01.00.27    NACL-藤原    04/02/05  特記事項のカスタマイズ項目
       *                                     の編集
       *  01.00.28    NACL-藤原    04/03/02  出力対象のコメントを追加
+      *  01.00.29    NACL-藤原    04/03/18  画像診断の出力順の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2218,13 +2219,15 @@
                MOVE    IDX                 TO  FLG-SRYSYUKBN721
                MOVE    RECE05-REC          TO WRK-721-RECE05-REC
            ELSE
-               IF      TNS-SRYCD       =   WRK-CONS-SRYKBN70-TEIGEN
+               IF    ( TNS-SRYCD           =  WRK-CONS-SRYKBN70-TEIGEN )
+               AND   ( FLG-SRYSYUKBN721    >  ZERO                     )
                    MOVE    IDX         TO  FLG-SRYKBN70-TEIGEN
                    MOVE    RECE05-REC  TO  WRK-SRYKBN70-RECE05-REC
                    PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
                ELSE
                    IF    ( TNS-SRYSYUKBN       =   "700" )
                    AND   ( TNS-DATAKBN         =   "2"   )
+                   AND   ( FLG-SRYSYUKBN721    >  ZERO   )
                        MOVE    IDX             TO  FLG-SRYSYUKBN700
                        MOVE    RECE05-REC      TO WRK-700-RECE05-REC
                    ELSE
