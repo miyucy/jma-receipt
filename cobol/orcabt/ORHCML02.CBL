@@ -34,6 +34,7 @@
       *
       *  01.01.01    NACL-藤原    02/10/10  サイト区分追加
       *  01.01.02    NACL-森脇    03/03/10  TERMIDの領域指定なし
+      *  02.00.01    NACL-森脇    03/12/25  その他材料追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -177,10 +178,9 @@
            PERFORM 100-INIT-SEC
       *
            PERFORM 200-MAIN-SEC
-                   UNTIL       FLG-END     =   1
+                   UNTIL   FLG-END         =   1
       *
            PERFORM 300-END-SEC
-      *
       *
            STOP    RUN
            .
@@ -218,9 +218,17 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORHCML01"      TO  JOB-PGID
-           MOVE    "点数マスタ一覧表・特定器材" 
+           MOVE    "ORHCML02"      TO  JOB-PGID
+      *----(02.00.01)--UPD-START---
+           EVALUATE    WRK-PARA-KBN
+               WHEN    1
+                   MOVE    "点数マスタ一覧表・特定器材" 
                                    TO  JOB-SHELLMSG
+               WHEN    2
+                   MOVE    "点数マスタ一覧表・その他材料" 
+                                   TO  JOB-SHELLMSG
+           END-EVALUATE
+      *----(02.00.01)--UPD-END-----
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
@@ -241,6 +249,7 @@
       *    帳票印刷開始処理
                PERFORM 900-DBSELECT-SEC
            END-IF
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -307,6 +316,15 @@
            MOVE    WRK-MSTYMDH         TO  HCML02-MSTYMD
            MOVE    CNT-PAGE            TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HCML02-PAGE
+      *
+      *----(02.00.01)--ADD-START---
+           EVALUATE    WRK-PARA-KBN
+               WHEN    1
+                   MOVE    "（特定器材）"      TO  HCML02-TITLE
+               WHEN    2
+                   MOVE    "（その他材料）"    TO  HCML02-TITLE
+           END-EVALUATE
+      *----(02.00.01)--ADD-END-----
       *
            .
        310-HEAD-HEN-EXT.
@@ -439,8 +457,16 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCML02"            TO  SPRT-PRTID
-           MOVE    "点数マスタ一覧表・特定器材"
+      *----(02.00.01)--UPD-START---
+           EVALUATE    WRK-PARA-KBN
+               WHEN    1
+                   MOVE    "点数マスタ一覧表・特定器材"
                                        TO  SPRT-TITLE
+               WHEN    2
+                   MOVE    "点数マスタ一覧表・その他材料"
+                                       TO  SPRT-TITLE
+           END-EVALUATE
+      *----(02.00.01)--UPD-END-----
            MOVE    HCML02              TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
@@ -541,23 +567,33 @@
        900-DBSELECT-SEC                 SECTION.
       *
            INITIALIZE                  TNS-TENSU-REC
-           MOVE    "700000000"         TO  TNS-SRYCD
-           MOVE    "799999999"         TO  TNSUP-SRYCD 
+      *----(02.00.01)--UPD-START---
+           EVALUATE    WRK-PARA-KBN
+      *        特定器材
+               WHEN    1
+                   MOVE    "700000000"         TO  TNS-SRYCD
+                   MOVE    "799999999"         TO  TNSUP-SRYCD
+      *        その他材料
+               WHEN    2
+                   MOVE    "059000001"         TO  TNS-SRYCD
+                   MOVE    "059999999"         TO  TNSUP-SRYCD
+           END-EVALUATE
+      *----(02.00.01)--UPD-END-----
       *
-           EVALUATE    WRK-PARA-CYUKBN ALSO    WRK-PARA-SYUKBN        
+           EVALUATE    WRK-PARA-CYUKBN ALSO    WRK-PARA-SYUKBN
                WHEN    1               ALSO    1
-                   MOVE    "TENSU-KEY12S"      TO  WRK-PATH 
+                   MOVE    "TENSU-KEY12S"      TO  WRK-PATH
                WHEN    1               ALSO    2
-                   MOVE    "TENSU-KEY12M"      TO  WRK-PATH 
+                   MOVE    "TENSU-KEY12M"      TO  WRK-PATH
                WHEN    1               ALSO    3
                    MOVE    "TENSU-KEY12K"      TO  WRK-PATH
                WHEN    2               ALSO    1
-                   MOVE    "TENSU-KEY12S1"     TO  WRK-PATH 
+                   MOVE    "TENSU-KEY12S1"     TO  WRK-PATH
                WHEN    2               ALSO    2
-                   MOVE    "TENSU-KEY12M1"     TO  WRK-PATH 
+                   MOVE    "TENSU-KEY12M1"     TO  WRK-PATH
                WHEN    2               ALSO    3
                    MOVE    "TENSU-KEY12K1"     TO  WRK-PATH
-           END-EVALUATE        
+           END-EVALUATE
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
