@@ -2668,12 +2668,34 @@
       *****************************************************************
        410-J98-SYORI-SEC          SECTION.
       *
-      *
       *    内服を編集する
            INITIALIZE                  SPA-J98GMN-AREA
-           IF      SPA-J98-INPUTCD         =   SPACE
-               MOVE    SPACE               TO  J98
-               INITIALIZE                      J98
+      *!!  IF      SPA-J98-INPUTCD         =   SPACE
+           IF      SPA-J98-INPUTCD(1:2)    =   "//"
+               EVALUATE    SPA-J98-INPUTCD(3:1)
+      *        コメント一覧
+                   WHEN    "C"
+                   WHEN    "c"
+                       MOVE    "U"             TO  SPA-J98-GMN-SYORI
+                       MOVE    "U4"            TO  SPA-J98-GMN-SYORI3
+                       MOVE    SPACE               TO  SPA-J98-INPUTCD
+      *        用法
+                   WHEN    "Y"
+                   WHEN    "y"
+                       MOVE    "U"             TO  SPA-J98-GMN-SYORI
+                       MOVE    "U1"            TO  SPA-J98-GMN-SYORI3
+                       MOVE    SPACE               TO  SPA-J98-INPUTCD
+      *        診療種別一覧
+                   WHEN    "."
+                       MOVE    "."             TO  SPA-J98-INPUTCD
+      *            区分番号別
+                   WHEN    "*"
+                       MOVE    SPA-J98-INPUTCD(3:) TO  SPA-J98-INPUTCD
+                   WHEN    "/"
+                       MOVE    SPA-J98-INPUTCD(3:) TO  SPA-J98-INPUTCD
+                   WHEN    OTHER
+                       MOVE    SPACE               TO  SPA-J98-INPUTCD
+               END-EVALUATE
       *        画面編集
                PERFORM 4101-J98-SET-SEC
            ELSE
