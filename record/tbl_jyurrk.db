@@ -563,3 +563,16 @@ path	key22	{
 		;
 	};
 };
+path	key23	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key23_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   HKNCOMBINUM =   :HKNCOMBINUM
+			AND   LASTKBN     =   '1'
+			ORDER   BY        SRYYMD
+		;
+	};
+};

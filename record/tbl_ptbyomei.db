@@ -133,6 +133,20 @@ path	key7		{
 	};
 };
 
+path	key8		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   HKNCOMBI    =   :HKNCOMBI
+			ORDER  BY  SRYKA,
+                                   SRYYMD
+		;
+	};
+};
+
 path	del11	{ 	
 	DBDELETE	{
 		DELETE
