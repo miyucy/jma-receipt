@@ -494,7 +494,7 @@
            MOVE    SPACE               TO  SYS-1005-REC
            INITIALIZE                      SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    SYS-1033-REC        TO  MCPDATA-REC
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    WRK-PARA-SRYYMD     TO  ORC-DBYMD
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -640,6 +640,10 @@
            MOVE    JYURRK-HOSPID       TO  HZN-TOUKEI04-HOSPID
       *    医療機関コード
            MOVE    SYS-1001-HOSPCD     TO  HZN-TOUKEI04-HOSPCD
+      *    診療年月日
+           MOVE    WRK-PARA-SRYYMD     TO  HZN-TOUKEI04-SRYYMD
+      *    入外区分
+           MOVE    "2"                 TO  HZN-TOUKEI04-NYUGAIKBN
       *    患者番号
            INITIALIZE                  ORCSPTIDAREA
            MOVE    JYURRK-HOSPID   TO  SPTID-HOSPID
@@ -696,6 +700,8 @@
            PERFORM 20024-HKNCOMBI-HENSYU-SEC
       *    ドクター
            MOVE    JYURRK-DRCD         TO  TOUKEI04-DRCD
+      *    伝票番号
+           MOVE    JYURRK-DENPNUM      TO  TOUKEI04-DENPNUM
       *    収納情報
            PERFORM 20026-SYUNOU-HENSYU-SEC
       *    受診履歴の内容判定
@@ -950,7 +956,10 @@
       *
       *            他科受診
                    WHEN    "830000021"
-                       MOVE    2                   TO  WRK-KIHONKBN
+                       IF      JYURRK-GRP-RENNUM   =   1  OR
+                                                       ZERO
+                           MOVE    2               TO  WRK-KIHONKBN
+                       END-IF
       *
                    WHEN    OTHER
                        IF       SRY-SRYCD(IDY)(1:1)    =   "1"
