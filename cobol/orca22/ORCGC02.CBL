@@ -113,6 +113,8 @@
       *                                     をしないように修正
       *  02.07.19    NACL-藤原    03/07/15  更新時の入力コードのチェック
       *                                     チェックを追加
+      *  02.07.20    NACL-藤原    03/07/20  接頭語＋入力コードの入力時の
+      *                                     表示の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2164,7 +2166,13 @@
                MOVE    SPACE       TO  SPA-NAI-C02-BYOMEITOP(IDX3)
                GO  TO  4101111-BYOMEITOP-HENSYU-EXT
            END-IF
-      *     
+      *
+      *    自院コードのとき
+           IF      SPA-NAI-C02-USERBYOMEIFLG (IDX3)
+                                     =   "1"
+               GO  TO  4101111-BYOMEITOP-HENSYU-EXT
+           END-IF
+      * 
            IF      SPA-GMN-C02-BYOMEICD (IDX3) (1:1)
                                      =   "Z"
       *        修飾語コードのとき
@@ -2729,11 +2737,20 @@
                    UNTIL   IDX >       6
       *
                IF      SPA-NAI-C02-BYOMEITOP(IDX)    =   "1"
-                   MOVE    SPACE               TO  WRK-RECECD-TBL
-               END-IF
-      *                      
-               IF      SPA-GMN-C02-BYOMEICD(IDX)     NOT =   SPACE                
-                   EVALUATE    SPA-GMN-C02-BYOMEICD(IDX)(1:3)
+      *            接頭語のみのとき     
+                   IF      WRK-RECECD (1)    NOT =   SPACE   AND
+                           WRK-RECECD (2)        =   SPACE   AND
+                           WRK-RECECD (3)        =   SPACE 
+                       MOVE    "0006"        TO  SPA-ERRCD
+                       MOVE    6             TO  IDX
+                   ELSE
+                     MOVE    SPACE               TO  WRK-RECECD-TBL
+                   END-IF
+               END-IF  
+      *
+               IF      SPA-ERRCD             =   SPACE                      
+                   IF      SPA-GMN-C02-BYOMEICD(IDX)     NOT =   SPACE
+                     EVALUATE    SPA-GMN-C02-BYOMEICD(IDX)(1:3)
                                ALSO    SPA-GMN-C02-BYOMEICD(IDX)(4:1)
                        WHEN    "ZZZ"         ALSO    "1"  THRU    "7"
                            IF      WRK-RECECD (2)    NOT =   SPACE   OR
@@ -2757,9 +2774,11 @@
                            ELSE
                                MOVE    "1"           TO  WRK-RECECD (2)
                            END-IF    
-                   END-EVALUATE
+                     END-EVALUATE
+                   END-IF  
                END-IF
            END-PERFORM
+      *
            IF      SPA-ERRCD             NOT =   SPACE
                GO  TO  41021-BYOMEI-HENSYU-EXT
            END-IF
