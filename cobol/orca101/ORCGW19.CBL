@@ -73,10 +73,14 @@
       *    ÆþÎÏ¹àÌÜÌ¾
            03  WRK-MCP-WIDGET              PIC X(64).
            03  WRK-PGSRH-G.
-              05  WRK-PGSRH-CHK-PGNAME     PIC X(20).
-              05  WRK-PGSRH-MAX            PIC 9(05).
-              05  WRK-PGSRH-OCC            OCCURS  200.
-                  07  WRK-PGSRH-PGNAME     PIC X(20).
+               05  WRK-PGSRH-CHK-PGNAME    PIC X(20).
+               05  WRK-PGSRH-MAX           PIC 9(05).
+               05  WRK-PGSRH-OCC           OCCURS  200.
+                   07  WRK-PGSRH-PGNAME    PIC X(20).
+           03  WRK-MCP-PATH.
+               04  WRK-MCP-BLOCKS          PIC S9(9)   BINARY.
+               04  WRK-MCP-RNAME           PIC S9(9)   BINARY.
+               04  WRK-MCP-PNAME           PIC S9(9)   BINARY.
       *
        01  WRK-ROW.
            05  WRK-TYOHYOLST-ROW           PIC S9(9)   BINARY.
@@ -278,12 +282,20 @@
       *
            INITIALIZE                  SPA-GMN-W19-TYOHYOKBNLST-G
       *
-           MOVE    "1"                 TO  SPA-GMN-W19-TYOHYOKBNL (1)
-           MOVE    "É¸½àÄ¢É¼"          TO  SPA-GMN-W19-TYOHYOKBNMEIL (1)
-           MOVE    "2"                 TO  SPA-GMN-W19-TYOHYOKBNL (2)
-           MOVE    "ÅÐÏ¿ºÑÄ¢É¼"        TO  SPA-GMN-W19-TYOHYOKBNMEIL (2)
+           IF    ( SPA-NAI-W10-W19-SENI-FLG
+                                       =   ZERO )
+               MOVE    "1"             TO  SPA-GMN-W19-TYOHYOKBNL (1)
+               MOVE    "É¸½àÄ¢É¼"      TO  SPA-GMN-W19-TYOHYOKBNMEIL (1)
+               MOVE    "2"             TO  SPA-GMN-W19-TYOHYOKBNL (2)
+               MOVE    "ÅÐÏ¿ºÑÄ¢É¼"    TO  SPA-GMN-W19-TYOHYOKBNMEIL (2)
       *
-           MOVE    2                   TO  SPA-GMN-W19-TYOHYOKBN-MAX
+               MOVE    2               TO  SPA-GMN-W19-TYOHYOKBN-MAX
+           ELSE
+               MOVE    "1"             TO  SPA-GMN-W19-TYOHYOKBNL (1)
+               MOVE    "É¸½àÄ¢É¼"      TO  SPA-GMN-W19-TYOHYOKBNMEIL (1)
+      *
+               MOVE    1               TO  SPA-GMN-W19-TYOHYOKBN-MAX
+           END-IF
       *
            .
        3101-TYOHYOKBNLST-HEN-EXT.
@@ -321,14 +333,30 @@
            MOVE    ZERO                TO FLG-SYSKANRI
       *
            INITIALIZE                  SYSKANRI-REC
-           MOVE    WRK-KANRICD         TO  SYS-KANRICD
-           MOVE    SPA-W01-SEL-STYUKYMD
-                                       TO  SYS-STYUKYMD
-                                           SYS-EDYUKYMD
+      *
+           IF    ( SPA-NAI-W10-W19-SENI-FLG    =   ZERO )
+      *
+               MOVE    WRK-KANRICD         TO  SYS-KANRICD
+               MOVE    SPA-W01-SEL-STYUKYMD
+                                           TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+      *
+               MOVE    PATH-TBL-SYSKANRI-KEY2
+                                           TO  WRK-MCP-PATH
+           ELSE
+               MOVE    WRK-KANRICD         TO  SYS-KANRICD
+               MOVE    SPA-W10-KBNCD(1:1)  TO  SYS-KBNCD (1:1)
+               MOVE    "%"                 TO  SYS-KBNCD (2:1)
+               MOVE    SPA-W01-SEL-STYUKYMD
+                                           TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+      *
+               MOVE    PATH-TBL-SYSKANRI-KEY
+                                           TO  WRK-MCP-PATH
+           END-IF
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                       TO  MCP-PATH
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -390,8 +418,7 @@
                    MOVE    1             TO  SPA-GMN-W19-TSTATUS (IDX1)
                END-EVALUATE
       *
-               MOVE    PATH-TBL-SYSKANRI-KEY2
-                                       TO  MCP-PATH
+               MOVE    WRK-MCP-PATH      TO  MCP-PATH
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC TO  SYSKANRI-REC
@@ -404,8 +431,7 @@
       *
            MOVE    IDX1                TO  SPA-GMN-W19-TYOHYOLST-MAX
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                       TO  MCP-PATH
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
            .

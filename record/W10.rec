@@ -1,8 +1,18 @@
 W10	{
 	fixed12	{
-                B03	{
-	           	state	int;
+		B03	{
+			state	int;
 	        };
+		B06	{
+			label   varchar(08);
+	        };
+		LBLKANRICD	{
+			style   varchar(20);
+			value   varchar(08);
+		};
+		LBLKIKAN	{
+			style   varchar(20);
+		};
 		STYUKYMD	{
 			value	varchar(9);
 		};

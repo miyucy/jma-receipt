@@ -23,10 +23,25 @@
        01  SPA-W10FREE.
          02  SPA-W10.
            03  SPA-W10-AREA.
+      *
                05  SPA-GMN-W10-PAGE                PIC 9(02).
                05  SPA-GMN-W10-LINE                PIC 9(02).
                05  SPA-GMN-W10-MAX                 PIC 9(03).
                05  SPA-GMN-W10-CUR                 PIC 9(03).
+      *
+               05  SPA-W10-STYUKYMD                PIC 9(08).
+               05  SPA-W10-EDYUKYMD                PIC 9(08).
+               05  SPA-W10-STYUKYMDH               PIC X(09).
+               05  SPA-W10-EDYUKYMDH               PIC X(09).
+      *
+               05  SPA-W10-SELNUM                  PIC 9(03).
+               05  SPA-W10-PRGNAME                 PIC X(24).
+               05  SPA-W10-SEL-STYUKYMD            PIC 9(08).
+               05  SPA-W10-SEL-EDYUKYMD            PIC 9(08).
+      *
+               05  SPA-W10-KANRICD                 PIC X(04).
+               05  SPA-W10-KBNCD                   PIC X(08).
+               05  SPA-W10-MODE                    PIC 9(01).
       *
                05  SPA-GMN-W10-AREA.
                    07  SPA-GMN-W10-STYUKYMD        PIC X(09).
@@ -66,6 +81,9 @@
                05  SPA-NAI-W10-AREA.
                    07  SPA-NAI-W10-STYUKYMD        PIC 9(08).
                    07  SPA-NAI-W10-EDYUKYMD        PIC 9(08).
+                   07  SPA-NAI-W10-B08-CNT         PIC 9(02).
+                   07  SPA-NAI-W10-B11-CNT         PIC 9(02).
+                   07  SPA-NAI-W10-W19-SENI-FLG    PIC 9(01).
          02  SPA-W19.
            03  SPA-W19-AREA.
                05  SPA-GMN-W19-CUR                 PIC 9(03).

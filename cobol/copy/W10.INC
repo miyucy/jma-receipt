@@ -18,6 +18,13 @@
           02  W10.
               03  W10-B03.
                 04  W10-B03-STATE       PIC S9(9)   BINARY.
+              03  W10-B06               PIC X(08).
+              03  W10-LBLKANRICD-G.
+                04  W10-LBLKANRICD-STYLE
+                                        PIC X(20).
+                04  W10-LBLKANRICD      PIC X(08).
+              03  W10-LBLKIKAN-G.
+                04  W10-LBLKIKAN-STYLE  PIC X(20).
               03  W10-STYUKYMD.
                 04  W10-VALUE           PIC X(9).
               03  W10-EDYUKYMD.
