@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ﾆ�ｰ衙ｸｽ爭�･ｻ･ﾗ･ﾈ･ｽ･ﾕ･ﾈ｡ﾊJMA standard receipt software｡ﾋ
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,7 +18,7 @@
           03  Z91.
                 04  Z91-FIXED2.
                     05  Z91-SRYCHK             PIC X.
-                    05  Z91-SRY                PIC X       OCCURS  2.
+                    05  Z91-SRY                PIC X        OCCURS  2.
                     05  Z91-SRYSTRCOMBO.
                         06  Z91-SRYSTR         PIC X(17).
                         06  Z91-SRYSTR-STATE   PIC S9(9)   BINARY.
@@ -32,9 +32,10 @@
                     05  Z91-IYKCHKALL          PIC X.
                     05  Z91-IYKCHK             PIC X       OCCURS  7.
                     05  Z91-TOKCHK             PIC X.
-                    05  Z91-JIHCHK             PIC X.
+                    05  Z91-HOKACHK            PIC X.
                     05  Z91-COMCHKALL          PIC X.
                     05  Z91-COMCHK             PIC X       OCCURS  3.
+                    05  Z91-JIHCHK             PIC X.
                     05  Z91-MSTYMD             PIC X(10).
                     05  Z91-KEI                PIC X       OCCURS  2.
                     05  Z91-CYU-G                          OCCURS  2.

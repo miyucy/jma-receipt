@@ -1,9 +1,9 @@
 Z91	{
 	fixed2	{
-                SRYCHK	{
+		SRYCHK	{
 			value	bool;
 		};
-                SRY1	{
+		SRY1	{
 			value	bool;
 		};
 		SRY2	{
@@ -25,7 +25,7 @@ Z91	{
 			count	int;
 			item	varchar(17)[13];
 		};
-                IYKCHKALL	{
+		IYKCHKALL	{
 			value	bool;
 		};
 		IYKCHK1	{
@@ -52,37 +52,40 @@ Z91	{
 		TOKCHK	{
 			value	bool;
 		};
+		HOKACHK	{
+			value	bool;
+		};
+		COMCHKALL	{
+			value	bool;
+		};
+		COMCHK1	{
+			value	bool;
+		};
+		COMCHK2	{
+			value	bool;
+		};
+		COMCHK3	{
+			value	bool;
+		};
 		JIHCHK	{
 			value	bool;
 		};
-                COMCHKALL	{
-			value	bool;
-		};
-                COMCHK1	{
-			value	bool;
-		};
-                COMCHK2	{
-			value	bool;
-		};
-                COMCHK3	{
-			value	bool;
-		};
-                MSTYMD	{
+		MSTYMD	{
 			value	varchar(10);
 		};
-                KEI1	{
+		KEI1	{
 			value	bool;
 		};
 		KEI2	{
 			value	bool;
 		};
-	        CYU1   {
-		        value	bool;
-		        state  int;
+		CYU1	{
+			value	bool;
+			state   int;
 		};
-                CYU2	{
-		        value	bool;
-		        state  int;
+		CYU2	{
+			value	bool;
+			state   int;
 		};
 		SYU1	{
 			value	bool;

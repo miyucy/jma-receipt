@@ -37,3 +37,4 @@
               03  HCML02-PAGE                  PIC  X(6).
               03  HCML02-HOSPNAME              PIC  X(60).
               03  HCML02-MSTYMD                PIC  X(22).
+              03  HCML02-TITLE                 PIC  X(14).
