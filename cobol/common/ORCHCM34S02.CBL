@@ -73,6 +73,7 @@
            03  FLG-SYOKUDODAY-G.
                05  FLG-SYOKUDODAY              PIC 9(01)
                                                OCCURS  31.
+           03  FLG-SANTEI                      PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -1172,11 +1173,22 @@
       *
            PERFORM VARYING IDXD    FROM    1   BY  1
                    UNTIL ( IDXD    >   31 )
+      *
+               MOVE    ZERO                TO  FLG-SANTEI
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
-      * 040202 ST
-                AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
-      * 040202 ED
+      *
+                    IF    (  SYS-5000-NACCT-BRMSGKKBN  =   "2" )
+                            MOVE   1       TO  FLG-SANTEI
+                    ELSE
+                        IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
+                            MOVE   1       TO  FLG-SANTEI
+                        END-IF
+                    END-IF
+                END-IF
+      *
+               IF    ( FLG-SANTEI          =   1 )
+      *
       *            ¼¼ÎÁº¹³Û´ðËÜ¾ðÊóÀßÄê½èÍý
                    PERFORM 20011-BRMSAGAKU-KHNINF-SET-SEC
                    IF    ( IDXB        >   ZERO )
@@ -1457,12 +1469,21 @@
       *
            PERFORM VARYING IDXD    FROM    1   BY  1
                    UNTIL ( IDXD    >   31 )
+      *
+               MOVE    ZERO                TO  FLG-SANTEI
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
-      * 040202 ST
-                AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
-      * 040202 ED
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
+                    IF    (  SYS-5000-NACCT-SKJKBN =   "2" )
+                            MOVE   1       TO  FLG-SANTEI
+                    ELSE
+                        IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
+                            MOVE   1       TO  FLG-SANTEI
+                        END-IF
+                    END-IF
+               END-IF
+      *
+               IF    ( FLG-SANTEI          =   1 )
       *
       *            ¿©»ö¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý
                    PERFORM 200111-SYOKUJI-SRYCD-GET-SEC
