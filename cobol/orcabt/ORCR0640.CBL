@@ -2608,7 +2608,7 @@
            COMPUTE RECE64-SRYCDTOTAL  =  NACCT-SRYCDTOTAL
                                       -  WRK-SENTEI-SRYCD-W
                                       +  WRK-SENTEI-SRYCD2-W
-           MOVE    1                    TO      RECE64-SURYOUTOTAL
+           MOVE    NACCT-SURYOUTOTAL    TO      RECE64-SURYOUTOTAL
            MOVE    ZERO                 TO      RECE64-SYUTEN2
            MOVE    ZERO                 TO      RECE64-YKZTEN
            MOVE    ZERO                 TO      RECE64-KIZAITEN
@@ -2736,7 +2736,8 @@
                                         TO      RECE64-SYUTEN1
            MOVE    WRK-SKJ2-SRYCDTOTAL(SYUKEI-IDX3)
                                         TO      RECE64-SRYCDTOTAL
-           MOVE    1                    TO      RECE64-SURYOUTOTAL
+           MOVE    WRK-SKJ2-MEISAISU(SYUKEI-IDX3)
+                                        TO      RECE64-SURYOUTOTAL
            MOVE    ZERO                 TO      RECE64-SYUTEN2
            MOVE    ZERO                 TO      RECE64-YKZTEN
            MOVE    ZERO                 TO      RECE64-KIZAITEN
