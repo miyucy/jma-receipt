@@ -484,7 +484,7 @@
            MOVE    RECE61-PTID          TO  RECE62-PTID
            MOVE    RECE61-RECEKA        TO  RECE62-RECEKA
            MOVE    RECE61-HKNJANUM      TO  RECE62-HKNJANUM-KEY
-           MOVE    RECE61-HOJOKBN       TO  RECE62-HOJOKBN
+           MOVE    RECE61-HOJOKBN       TO  RECE62-HOJOKBN-KEY
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
                    OR      RECE61-TEKSTYMDX (IDX)  =   SPACE

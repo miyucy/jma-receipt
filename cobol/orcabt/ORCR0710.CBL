@@ -1080,7 +1080,7 @@
            MOVE    RECE62-TEISYUTUSAKI TO  RECE67-TEISYUTUSAKI
            MOVE    RECE62-RECESYUBETU  TO  RECE67-RECESYUBETU
            MOVE    RECE62-HKNJANUM-KEY TO  RECE67-HKNJANUM
-           MOVE    RECE62-HOJOKBN      TO  RECE67-HOJOKBN
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE67-HOJOKBN
            MOVE    RECE62-TEKSTYMD     TO  RECE67-TEKSTYMD
            PERFORM 990-RECE67-READ-SEC
            IF      FLG-RECE67          =   ZERO
@@ -1757,8 +1757,8 @@
            MOVE    RECE62-RECEKA       TO  RECE631-RECEKA
            MOVE    RECE62-TEISYUTUSAKI TO  RECE631-TEISYUTUSAKI
            MOVE    RECE62-RECESYUBETU  TO  RECE631-RECESYUBETU
-           MOVE    RECE62-HKNJANUM     TO  RECE631-HKNJANUM
-           MOVE    RECE62-HOJOKBN      TO  RECE631-HOJOKBN
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE631-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE631-HOJOKBN
            MOVE    RECE62-TEKSTYMD     TO  RECE631-TEKSTYMD
       *
            START   RECE631-FILE
@@ -1780,8 +1780,10 @@
                                          NOT =   RECE631-TEISYUTUSAKI )
                OR     ( RECE62-RECESYUBETU
                                          NOT =   RECE631-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM  NOT =   RECE631-HKNJANUM     )
-               OR     ( RECE62-HOJOKBN   NOT =   RECE631-HOJOKBN      )
+               OR     ( RECE62-HKNJANUM-KEY
+                                         NOT =   RECE631-HKNJANUM     )
+               OR     ( RECE62-HOJOKBN-KEY
+                                         NOT =   RECE631-HOJOKBN      )
                OR     ( RECE62-TEKSTYMD  NOT =   RECE631-TEKSTYMD     )
       *    
       *        ÉÂÌ¾ÊÔ½¸½èÍý
@@ -2231,24 +2233,24 @@
            END-PERFORM
       *
       *    £¹£°Æþ±¡            
-           PERFORM   VARYING   IDX   FROM    23   BY  1
-                     UNTIL     IDX       >   32
+      **     PERFORM   VARYING   IDX   FROM    23   BY  1
+      **               UNTIL     IDX       >   32
       *        <Ã±²Á>
-               MOVE    RECE62-KHNTEN (IDX)   TO  WRK-KHNTENZ
-               MOVE    WRK-KHNTEN            TO  HC06-KHNTEN  (IDX)
+      **         MOVE    RECE62-KHNTEN (IDX)   TO  WRK-KHNTENZ
+      **         MOVE    WRK-KHNTEN            TO  HC06-KHNTEN  (IDX)
       *        <²ó¿ô>
-               MOVE    RECE62-KAISU(IDX)     TO  WRK-KAISUZ
-               MOVE    WRK-KAISU             TO  HC06-KAISU   (IDX)
+      *         MOVE    RECE62-KAISU(IDX)     TO  WRK-KAISUZ
+      **         MOVE    WRK-KAISU             TO  HC06-KAISU   (IDX)
       *        <ÅÀ¿ô¡¦¸øÈñÅÀ¿ô>
-               MOVE    RECE62-TENSU(IDX IDX1)
-                                             TO  WRK-TENSUZ
-               MOVE    WRK-TENSU             TO  HC06-TENSU   (IDX)
-               IF      IDX2                  >   ZERO
-                   MOVE    RECE62-TENSU(IDX IDX2)
-                                             TO  WRK-KOUTENZ
-                   MOVE    WRK-KOUTEN        TO  HC06-KOUTEN  (IDX)
-               END-IF
-           END-PERFORM
+      **         MOVE    RECE62-TENSU(IDX IDX1)
+      **                                       TO  WRK-TENSUZ
+      **         MOVE    WRK-TENSU             TO  HC06-TENSU   (IDX)
+      **         IF      IDX2                  >   ZERO
+      **             MOVE    RECE62-TENSU(IDX IDX2)
+      **                                       TO  WRK-KOUTENZ
+      **             MOVE    WRK-KOUTEN        TO  HC06-KOUTEN  (IDX)
+      **         END-IF
+      **     END-PERFORM
       *
       *        <ÀÁµáÅÀ¡¦ÌôºÞ°ìÉôÉéÃ´¶â¡¦°ìÉôÉéÃ´¶â>
       *
@@ -2378,8 +2380,8 @@
            MOVE    RECE62-RECEKA       TO  RECE661-RECEKA
            MOVE    RECE62-TEISYUTUSAKI TO  RECE661-TEISYUTUSAKI
            MOVE    RECE62-RECESYUBETU  TO  RECE661-RECESYUBETU
-           MOVE    RECE62-HKNJANUM     TO  RECE661-HKNJANUM
-           MOVE    RECE62-HOJOKBN      TO  RECE661-HOJOKBN
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE661-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE661-HOJOKBN
            MOVE    RECE62-TEKSTYMD     TO  RECE661-TEKSTYMD
       *
            START   RECE661-FILE
@@ -2400,8 +2402,10 @@
                                          NOT =   RECE661-TEISYUTUSAKI)
                OR     ( RECE62-RECESYUBETU
                                          NOT =   RECE661-RECESYUBETU )
-               OR     ( RECE62-HKNJANUM  NOT =   RECE661-HKNJANUM    )
-               OR     ( RECE62-HOJOKBN   NOT =   RECE661-HOJOKBN     )
+               OR     ( RECE62-HKNJANUM-KEY
+                                         NOT =   RECE661-HKNJANUM    )
+               OR     ( RECE62-HOJOKBN-KEY
+                                         NOT =   RECE661-HOJOKBN     )
                OR     ( RECE62-TEKSTYMD  NOT =   RECE661-TEKSTYMD    )
       *
                MOVE    ZERO                  TO  FLG-KUGIRI
@@ -3063,7 +3067,7 @@
                                        RECE10-SHOKUJIINF (IDX)
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       45
+                   UNTIL   IDX >       30
                MOVE    RECE62-SRYKBNINF (IDX)  TO
                                        RECE10-SRYKBNINF (IDX)
            END-PERFORM

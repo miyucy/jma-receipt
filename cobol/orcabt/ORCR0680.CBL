@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
 000200 IDENTIFICATION          DIVISION.
-000300 PROGRAM-ID.             ORR0680.
+000300 PROGRAM-ID.             ORCR0680.
 000400*****************************************************************
 000500*  システム名        : ＯＲＣＡ
 000600*  サブシステム名    : レセプト（入院）
-000700*  コンポーネント名  : 病名編集
+000700*  コンポーネント名  : 病名編集 
 000800*  管理者            : 
       *  作成日付    作業者        記述
       *  02/12/10    NACL−藤原　  新規作成
@@ -225,7 +225,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORR0680"      TO  JOB-PGID
+           MOVE    "ORCR0680"      TO  JOB-PGID
            MOVE    "傷病名編集"    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -369,9 +369,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-      ***     DISPLAY "RECE63   IN  " CNT-IN  UPON CONSOLE 
-      ***     DISPLAY "RECE631  CNT " CNT-OUT UPON CONSOLE 
-      ***     DISPLAY "*** ORR0680 END ***"
+           DISPLAY "RECE63   IN  " CNT-IN  
+           DISPLAY "RECE631  CNT " CNT-OUT 
+           DISPLAY "*** ORCR0680 END ***"
            .
        300-TERM-EXT.
            EXIT.
