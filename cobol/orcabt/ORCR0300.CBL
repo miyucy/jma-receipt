@@ -974,10 +974,6 @@
            MOVE    10                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    иб╬╡©Т
-           IF      SYS-1001-BEDSUIPN   >=  200
-               MOVE    SYS-1001-BEDSUIPN   TO  WRK-NUM
-               MOVE    3                   TO  WRK-NAGASA
-           END-IF
            IF    ( SYS-1001-BEDSU      >   ZERO )
            AND   ( SYS-1001-HOSPSBT    =   "1"  ) 
                IF      RECE02-BEDSUFLG     =   "1" 
