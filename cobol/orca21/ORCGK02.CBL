@@ -2416,6 +2416,11 @@
            MOVE    ZERO                TO  SPA-GMN-MAX
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  SPA-GMN-IDX
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      310-SPA-GMNSET-EXT
+           END-IF
+      *
       *    診察料編集なし
            MOVE    ZERO                TO  FLG-SINSATU
       *
@@ -3630,9 +3635,9 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
-           IF      SPA-ERRCD       NOT =   SPACE
-                GO      TO      41010-PTNUM-SYORI-EXT
-           END-IF
+      ***  IF      SPA-ERRCD       NOT =   SPACE
+      *         GO      TO      41010-PTNUM-SYORI-EXT
+      **** END-IF
       *
       *
       *    スパ共通編集処理
