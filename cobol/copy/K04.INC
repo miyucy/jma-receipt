@@ -33,6 +33,8 @@
                 04  K04-VALUE   PIC X(10).
               03  K04-SANTEILIST.
                 04  K04-SANTEILIST-COUNT   PIC S9(9)   BINARY.
+                04  K04-SANTEILIST-ROW     PIC S9(9)   BINARY.
+                04  K04-SANTEILIST-ROWATTR PIC S9(9)   BINARY.
                 04  K04-SANTEILIST-ITEM        OCCURS  30 TIMES.
                   06  K04-SANTEINAME  PIC X(50).
                   06  K04-SRYKAMEI    PIC X(8).

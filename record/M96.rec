@@ -2,6 +2,8 @@ M96	{
 	fixed3	{
 		LIST1	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(64);
 					value2	varchar(64);
@@ -14,6 +16,8 @@ M96	{
 		};
 		LIST2	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(09);
 					value2	varchar(08);

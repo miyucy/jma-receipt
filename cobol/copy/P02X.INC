@@ -22,6 +22,8 @@
               03  P02X-SCROLLEDWINDOW26.
                 04  P02X-LIST.
                   05  P02X-LIST-COUNT  PIC S9(9)   BINARY.
+                  05  P02X-LIST-ROW    PIC S9(9)   BINARY.
+                  05  P02X-LIST-ROWATTR PIC S9(9)   BINARY.
                   05  P02X-ITEM       OCCURS  10 TIMES.
                     06  P02X-NO     PIC X(3).
                     06  P02X-ADR    PIC X(22).

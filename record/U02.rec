@@ -58,6 +58,8 @@ U02	{
 		scrolledwindow3	{
 			HKNCOMBI_LIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(4);
 					value1	varchar(10);
@@ -92,6 +94,8 @@ U02	{
 		scrolledwindow4	{
 			UKETUKE_LIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(4);
 					value1	varchar(6);
@@ -108,6 +112,8 @@ U02	{
 		};
 		MIKAKUNINN_LIST	{
 			count	int;
+			row	int;
+			rowattr	int;
 			item	{
 				value0	varchar(22);
 				value1	varchar(40);

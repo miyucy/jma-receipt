@@ -18,6 +18,8 @@ J03	{
 		scrolledwindow2	{
 			SRYACTCNT	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(7);
 					value1	varchar(40);
@@ -29,6 +31,8 @@ J03	{
 		scrolledwindow1	{
 			SRYACTYMD	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(10);
 					value1	varchar(40);

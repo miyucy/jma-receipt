@@ -21,6 +21,8 @@ J021	{
 		scrolledwindow1	{
 			HKNLIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(4);
 					value2	varchar(40);

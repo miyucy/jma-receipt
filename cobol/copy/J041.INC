@@ -20,6 +20,8 @@
               04  J041-SCROLLEDWINDOW1.
                 05  J041-MED-LIST.
                   06  J041-COUNT  PIC S9(9)   BINARY.
+                  06  J041-ROW    PIC S9(9)   BINARY.
+                  06  J041-ROWATTR  PIC S9(9)   BINARY.
                   06  J041-ITEM       OCCURS  50 TIMES.
                     07  J041-TOUMEI PIC X(40).
                     07  J041-KNKMEI PIC X(40).

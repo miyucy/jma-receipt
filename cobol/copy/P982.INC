@@ -26,6 +26,8 @@
               03  P982-SCROLLEDWINDOW26.
                 04  P982-LIST.
                   05  P982-COUNT  PIC S9(9)   BINARY.
+                  05  P982-ROW    PIC S9(9)   BINARY.
+                  05  P982-ROWATTR PIC S9(9)   BINARY.
                   05  P982-ITEM       OCCURS  100 TIMES.
                     06  P982-SEQNO    PIC X(3).
                     06  P982-POST     PIC X(7).

@@ -65,6 +65,8 @@ K01	{
 		scrolledwindow3	{
 			HKNKUMILST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(5);
 					value2	varchar(50);

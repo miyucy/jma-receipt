@@ -23,6 +23,8 @@
                   06  P100-SCR-KANJILST.
                     07  P100-KANJILST.
                       08  P100-KANJILST-COUNT  PIC S9(9)   BINARY.
+                      08  P100-KANJILST-ROW    PIC S9(9)   BINARY.
+                      08  P100-KANJILST-ROWATTR   PIC S9(9)   BINARY.
                       08  P100-KANJILST-ITEM   OCCURS  50.
                         09  P100-KANJILST-NO   PIC X(02).
                         09  P100-KANJILST-KANJI

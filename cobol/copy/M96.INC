@@ -18,6 +18,8 @@
         02  M96.
             03  M96-LIST1.
               04  M96-COUNT1   PIC S9(9)   BINARY.
+              04  M96-ROW1     PIC S9(9)   BINARY.
+              04  M96-ROWATTR1 PIC S9(9)   BINARY.
               04  M96-ITEM1        OCCURS  2 TIMES.
                 05  M96-VALUE11  PIC X(64).
                 05  M96-VALUE12  PIC X(64).
@@ -28,6 +30,8 @@
               04  M96-SELECT1  PIC X       OCCURS  2 TIMES.
             03  M96-LIST2.
               04  M96-COUNT2   PIC S9(9)   BINARY.
+              04  M96-ROW2     PIC S9(9)   BINARY.
+              04  M96-ROWATTR2 PIC S9(9)   BINARY.
               04  M96-ITEM2        OCCURS  2 TIMES.
                 05  M96-VALUE21  PIC X(09).
                 05  M96-VALUE22  PIC X(08).

@@ -59,6 +59,8 @@
               03  U02-SCROLLEDWINDOW3.
                 04  U02-HKNCOMBI-LIST.
                   05  U02-HKNCOMBI-COUNT   PIC S9(9)   BINARY.
+                  05  U02-HKNCOMBI-ROW     PIC S9(9)   BINARY.
+                  05  U02-HKNCOMBI-ROWATTR  PIC S9(9)   BINARY.
                   05  U02-ITEM        OCCURS  15 TIMES.
                     07  U02-HCNUM   PIC X(4).
                     07  U02-HCHKN   PIC X(10).
@@ -85,6 +87,8 @@
               03  U02-SCROLLEDWINDOW4.
                 04  U02-UKETUKE-LIST.
                   05  U02-UKETUKE-COUNT   PIC S9(9)   BINARY.
+                  05  U02-UKETUKE-ROW     PIC S9(9)   BINARY.
+                  05  U02-UKETUKE-ROWATTR  PIC S9(9)   BINARY.
                   05  U02-ITEM        OCCURS  200 TIMES.
                     07  U02-ULNUM         PIC X(4).
                     07  U02-ULYYKTIME     PIC X(6).
@@ -98,6 +102,8 @@
                   05  U02-UKETUKE-SELECT  PIC X       OCCURS  200 TIMES.
               03  U02-MIKAKUNINN-LIST.
                 04  U02-MIKAKUNINN-COUNT   PIC S9(9)   BINARY.
+                04  U02-MIKAKUNINN-ROW     PIC S9(9)   BINARY.
+                04  U02-MIKAKUNINN-ROWATTR  PIC S9(9)   BINARY.
                 04  U02-ITEM        OCCURS  5 TIMES.
                   05  U02-MLSEIDONAME       PIC X(22).
                   05  U02-MLKIGONUM         PIC X(40).

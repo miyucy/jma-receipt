@@ -36,6 +36,8 @@
               03  P97-SCROLLEDWINDOW1.
                 04  P97-LIST.
                   05  P97-COUNT   PIC S9(9)   BINARY.
+                  05  P97-ROW     PIC S9(9)   BINARY.
+                  05  P97-ROWATTR  PIC S9(9)   BINARY.
                   05  P97-ITEM        OCCURS  100 TIMES.
                     06  P97-NO      PIC X(4).
                     06  P97-PTNUM   PIC X(20).

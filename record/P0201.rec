@@ -6,6 +6,8 @@ P0201	{
 		scrolledwindow1	{
 			YYKLIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(5);
 					value2	varchar(6);

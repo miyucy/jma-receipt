@@ -132,6 +132,8 @@ J02	{
 		scrolledwindow1	{
 			DATALIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(3);
 					value1	varchar(80);
@@ -180,6 +182,8 @@ J02	{
 		scrolledwindow2	{
 			RRKLIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(3);
 					value1	varchar(20);

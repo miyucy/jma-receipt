@@ -64,6 +64,8 @@
               03  K01-SCROLLEDWINDOW3.
                 04  K01-HKNKUMILST.
                   05  K01-HKNKUM-COUNT   PIC S9(9)   BINARY.
+                  05  K01-HKNKUM-ROW    PIC S9(9)   BINARY.
+                  05  K01-HKNKUM-ROWATTR PIC S9(9)   BINARY.
                   05  K01-ITEM        OCCURS  100 TIMES.
                     06  K01-THKNCOMBINUM  PIC X(5).
                     06  K01-THKNCOMBIMEI  PIC X(50).

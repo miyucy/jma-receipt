@@ -22,6 +22,8 @@
               03  K10-SCROLLEDWINDOW1.
                 04  K10-LIST.
                   05  K10-COUNT   PIC S9(9)   BINARY.
+                  05  K10-ROW     PIC S9(9)   BINARY.
+                  05  K10-ROWATTR PIC S9(9)   BINARY.
                   05  K10-ITEM        OCCURS  50 TIMES.
                     06  K10-NO      PIC X(4).
                     06  K10-NAME    PIC X(50).

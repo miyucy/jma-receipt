@@ -26,6 +26,8 @@
               03  P02A-SCROLLEDWINDOW1.
                 04  P02A-DUALLIST.
                   05  P02A-DUALLIST-COUNT  PIC S9(9)   BINARY.
+                  05  P02A-DUALLIST-ROW   PIC S9(9)   BINARY.
+                  05  P02A-DUALLIST-ROWATTR   PIC S9(9)   BINARY.
                   05  P02A-DUALLIST-ITEM       OCCURS  20 TIMES.
                     07  P02A-NUM   PIC X(4).
                     07  P02A-PTNUM PIC X(20).

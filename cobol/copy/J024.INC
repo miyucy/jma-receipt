@@ -22,6 +22,8 @@
               03  J024-SCROLLEDWINDOW1.
                 04  J024-BUNREILIST.
                   05  J024-BUNREI-COUNT  PIC S9(9)   BINARY.
+                  05  J024-BUNREI-ROW    PIC S9(9)   BINARY.
+                  05  J024-BUNREI-ROWATTR     PIC S9(9)   BINARY.
                   05  J024-ITEM       OCCURS  200 TIMES.
                     06  J024-TRENNUM        PIC X(3).
                     06  J024-TCOMMENT       PIC X(100).

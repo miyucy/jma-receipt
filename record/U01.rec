@@ -12,6 +12,8 @@ U01	{
 		scrolledwindow1	{
 			LIST1	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(4);
 					value2	varchar(20);
@@ -30,6 +32,8 @@ U01	{
 		scrolledwindow2	{
 			LIST2	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(4);
 					value2	varchar(20);

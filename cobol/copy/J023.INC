@@ -41,6 +41,8 @@
               03  J023-SCROLLEDWINDOW1.
                 04  J023-RECELIST.
                   05  J023-RECE-COUNT  PIC S9(9)   BINARY.
+                  05  J023-RECE-ROW  PIC S9(9)   BINARY.
+                  05  J023-RECE-ROWATTR  PIC S9(9)   BINARY.
                   05  J023-ITEM       OCCURS  100 TIMES.
                     06  J023-TRENNUM   PIC X(3).
                     06  J023-TSRYYM    PIC X(6).
@@ -51,6 +53,8 @@
                   05  J023-RECE-SELECT PIC X       OCCURS  100 TIMES.
               03  J023-PANDACLIST1.
                 04  J023-JYURRK-COUNT  PIC S9(9)   BINARY.
+                04  J023-JYURRK-ROW  PIC S9(9)   BINARY.
+                04  J023-JYURRK-ROWATTR  PIC S9(9)   BINARY.
                 04  J023-ITEM       OCCURS  5 TIMES.
                   05  J023-TJYURRKNUM     PIC X(2).
                   05  J023-TJYURRKYMD     PIC X(10).

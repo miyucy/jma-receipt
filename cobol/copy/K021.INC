@@ -32,6 +32,8 @@
               03  K021-SCROLLEDWINDOW1.
                 04  K021-MEDLIST.
                   05  K021-COUNT  PIC S9(9)   BINARY.
+                  05  K021-ROW     PIC S9(9)   BINARY.
+                  05  K021-ROWATTR PIC S9(9)   BINARY.
                   05  K021-ITEM       OCCURS  30 TIMES.
                     06  K021-TSEQNO  PIC X(3).
                     06  K021-TTOUMEI PIC X(40).

@@ -53,6 +53,8 @@
               03  K06-SCROLLEDWINDOW1.
                 04  K06-SANTEILST.
                   05  K06-COUNT   PIC S9(9)   BINARY.
+                  05  K06-ROW     PIC S9(9)   BINARY.
+                  05  K06-ROWATTR PIC S9(9)   BINARY.
                   05  K06-ITEM        OCCURS  100 TIMES.
                     06  K06-TRENNUM     PIC X(4).
                     06  K06-TSRYCD      PIC X(09).

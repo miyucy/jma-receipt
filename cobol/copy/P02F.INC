@@ -28,6 +28,8 @@
               03  P02F-SCROLLEDWINDOW1.
                 04  P02F-KNJLIST.
                   05  P02F-COUNT  PIC S9(9)   BINARY.
+                  05  P02F-ROW    PIC S9(9)   BINARY.
+                  05  P02F-ROWATTR  PIC S9(9)   BINARY.
                   05  P02F-ITEM       OCCURS  100 TIMES.
                     06  P02F-SEQNUM   PIC X(3).
                     06  P02F-PTNUM    PIC X(22).

@@ -25,6 +25,8 @@
               04  P0201-SCROLLEDWINDOW1.
                 05  P0201-YYKLIST.
                   06  P0201-COUNT PIC S9(9)   BINARY.
+                  06  P0201-ROW   PIC S9(9)   BINARY.
+                  06  P0201-ROWATTR   PIC S9(9)   BINARY.
                   06  P0201-ITEM      OCCURS  20 TIMES.
                     07  P0201-NUM       PIC X(5).
                     07  P0201-YYKTIME   PIC X(6).

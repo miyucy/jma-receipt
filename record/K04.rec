@@ -23,6 +23,8 @@ K04	{
 		};
 		SANTEILIST	{
 			count	int;
+			row	int;
+			rowattr	int;
 			item	{
 				value0	varchar(50);
 				value1	varchar(8);

@@ -6,6 +6,8 @@ P99	{
 		scrolledwindow1	{
 			ADRSLIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(4);
 					value2	varchar(9);

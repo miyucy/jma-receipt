@@ -5,6 +5,8 @@
               03  U02X-SCROLLEDWINDOW26.
                 04  U02X-LIST.
                   05  U02X-LIST-COUNT  PIC S9(9)   BINARY.
+                  05  U02X-LIST-ROW    PIC S9(9)   BINARY.
+                  05  U02X-LIST-ROWATTR  PIC S9(9)   BINARY.
                   05  U02X-ITEM       OCCURS  10 TIMES.
                     06  U02X-NO     PIC X(3).
                     06  U02X-ADR    PIC X(22).

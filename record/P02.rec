@@ -30,6 +30,8 @@ P02	{
 				sc61	{
 					P020_UKETUKE_LIST	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value1	varchar(5);
 							value2	varchar(9);
@@ -88,6 +90,8 @@ P02	{
 				scrolledwindow9	{
 					P020_HKNKUMI_LIST	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value1	varchar(4);
 							value2	varchar(60);
@@ -366,6 +370,8 @@ P02	{
 				scrolledwindow6	{
 					HKNLIST	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value0	varchar(4);
 							value1	varchar(40);
@@ -543,6 +549,8 @@ P02	{
 				};
 				P027_KOHLIST	{
 					count	int;
+					row	int;
+					rowattr	int;
 					item	{
 						value1	varchar(10);
 						value2	varchar(10);
@@ -591,6 +599,8 @@ P02	{
 				};
 				P027_HKNLIST	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value1	varchar(10);
 							value2	varchar(8);
@@ -609,6 +619,8 @@ P02	{
 				scrolledwindow10	{
 					P027_HKNKUMI_LIST	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value1	varchar(6);
 							value2	varchar(10);
@@ -717,6 +729,8 @@ P02	{
 				sc103	{
 					P023_SYKRRKLIST	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value1	varchar(3);
 							value2	varchar(3);
@@ -762,6 +776,8 @@ P02	{
 				sc104	{
 					P024_TSYLIST	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value1	varchar(3);
 							value2	varchar(10);
@@ -774,6 +790,8 @@ P02	{
 				sc105	{
 					P024_TNKLIST	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value1	varchar(3);
 							value2	varchar(10);
@@ -797,6 +815,8 @@ P02	{
 				P024_PTKOHFTNLST	{
 					P024_PTKOHFTN	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value0	varchar(3);
 							value1	varchar(20);
@@ -809,6 +829,8 @@ P02	{
 				P024_PTKOHFTNLST2	{
 					P024_PTKOHFTN2	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value0	varchar(3);
 							value1	varchar(9);
@@ -848,6 +870,8 @@ P02	{
 				sc108	{
 					P025_KYUSEILIST	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value1	varchar(4);
 							value2	varchar(10);
@@ -861,6 +885,8 @@ P02	{
 				sc107	{
 					P025_JYUSINLIST1	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value1	varchar(5);
 							value2	varchar(10);
@@ -873,6 +899,8 @@ P02	{
 				sc106	{
 					P025_JYUSINLIST2	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value1	varchar(10);
 							value2	varchar(10);

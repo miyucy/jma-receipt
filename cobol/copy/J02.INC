@@ -46,6 +46,8 @@
               03  J02-SCROLLEDWINDOW1.
                 04  J02-DATALIST.
                   05  J02-DATALIST-COUNT   PIC S9(9)   BINARY.
+                  05  J02-DATALIST-ROW   PIC S9(9)   BINARY.
+                  05  J02-DATALIST-ROWATTR   PIC S9(9)   BINARY.
                   05  J02-DATALIST-ITEM        OCCURS  400 TIMES.
                     06  J02-TNO          PIC X(3).
                     06  J02-TMEISYO      PIC X(80).
@@ -61,6 +63,8 @@
               03  J02-SCROLLEDWINDOW2.
                 04  J02-RRKLIST.
                   05  J02-RRKLIST-COUNT   PIC S9(9)   BINARY.
+                  05  J02-RRKLIST-ROW   PIC S9(9)   BINARY.
+                  05  J02-RRKLIST-ROWATTR   PIC S9(9)   BINARY.
                   05  J02-ITEM        OCCURS  60 TIMES.
                     06  J02-RRKNO     PIC X(3).
                     06  J02-RRKYMD    PIC X(20).

@@ -22,6 +22,8 @@
               03  K07-SCROLLEDWINDOW26.
                 04  K07-LIST.
                   05  K07-COUNT   PIC S9(9)   BINARY.
+                  05  K07-ROW     PIC S9(9)   BINARY.
+                  05  K07-ROWATTR PIC S9(9)   BINARY.
                   05  K07-ITEM        OCCURS  150 TIMES.
                     06  K07-NO      PIC X(3).
                     06  K07-SRYYMD  PIC X(14).

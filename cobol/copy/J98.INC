@@ -25,6 +25,8 @@
               03  J98-SCROLLEDWINDOW26.
                 04  J98-LIST.
                   05  J98-COUNT   PIC S9(9)   BINARY.
+                  05  J98-ROW       PIC S9(9)   BINARY.
+                  05  J98-ROWATTR   PIC S9(9)   BINARY.
                   05  J98-ITEM        OCCURS  200 TIMES.
                     06  J98-NO      PIC X(3).
                     06  J98-NAME    PIC X(70).

@@ -32,6 +32,8 @@
               03  J021-SCROLLEDWINDOW1.
                 04  J021-HKNLIST.
                   05  J021-HKNLIST-COUNT  PIC S9(9)   BINARY.
+                  05  J021-HKNLIST-ROW   PIC S9(9)   BINARY.
+                  05  J021-HKNLIST-ROWATTR   PIC S9(9)   BINARY.
                   05  J021-ITEM       OCCURS  40 TIMES.
                     06  J021-NUM PIC X(4).
                     06  J021-HKNKUMI PIC X(40).

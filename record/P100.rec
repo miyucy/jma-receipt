@@ -8,6 +8,8 @@ P100	{
 				SCR_KANJILST1	{
 					KANJILST1	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value1	varchar(2);
 							value2	varchar(50);
@@ -32,6 +34,8 @@ P100	{
 				SCR_KANJILST2	{
 					KANJILST2	{
 						count	int;
+						row	int;
+						rowattr	int;
 						item	{
 							value1	varchar(2);
 							value2	varchar(50);

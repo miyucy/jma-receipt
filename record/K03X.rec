@@ -6,6 +6,8 @@ K03X	{
 		scrolledwindow26	{
 			LIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(3);
 					value1	varchar(22);

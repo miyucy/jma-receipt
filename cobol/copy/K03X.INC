@@ -22,6 +22,8 @@
               03  K03X-SCROLLEDWINDOW26.
                 04  K03X-LIST.
                   05  K03X-LIST-COUNT   PIC S9(9)   BINARY.
+                  05  K03X-ROW     PIC S9(9)   BINARY.
+                  05  K03X-ROWATTR PIC S9(9)   BINARY.
                   05  K03X-ITEM        OCCURS  10 TIMES.
                     06  K03X-NO     PIC X(3).
                     06  K03X-ADR    PIC X(22).

@@ -33,6 +33,8 @@ J023	{
 		scrolledwindow1	{
 			RECELIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(3);
 					value2	varchar(6);
@@ -46,6 +48,8 @@ J023	{
 		};
 		JYURRKLIST	{
 			count	int;
+			row	int;
+			rowattr	int;
 			item	{
 				value1	varchar(2);
 				value2	varchar(10);

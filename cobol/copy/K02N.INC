@@ -69,6 +69,8 @@
               03  K02N-SCROLLEDWINDOW1.
                 04  K02N-RRKLIST.
                   05  K02N-COUNT  PIC S9(9)   BINARY.
+                  05  K02N-ROW     PIC S9(9)   BINARY.
+                  05  K02N-ROWATTR PIC S9(9)   BINARY.
                   05  K02N-ITEM       OCCURS  150 TIMES.
                     06  K02N-NO      PIC X(3).
                     06  K02N-RRKYMD  PIC X(13).

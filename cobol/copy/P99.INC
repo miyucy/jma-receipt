@@ -25,6 +25,8 @@
               04  P99-SCROLLEDWINDOW1.
                 05  P99-ADRSLIST.
                   06  P99-ADRSLIST-COUNT PIC S9(9) BINARY.
+                  06  P99-ADRSLIST-ROW   PIC S9(9) BINARY.
+                  06  P99-ADRSLIST-ROWATTR PIC S9(9) BINARY.
                   06  P99-ADRSLIST-ITEM  OCCURS 50 TIMES.
                     07  P99-NUM  PIC X(4).
                     07  P99-POST PIC X(9).

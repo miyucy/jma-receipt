@@ -24,6 +24,8 @@
               03  K09-SCROLLEDWINDOW2.
                 04  K09-RRKLIST.
                   05  K09-RRKLIST-COUNT   PIC S9(9)   BINARY.
+                  05  K09-RRKLIST-ROW     PIC S9(9)   BINARY.
+                  05  K09-RRKLIST-ROWATTR PIC S9(9)   BINARY.
                   05  K09-ITEM        OCCURS  150 TIMES.
                     06  K09-NO      PIC X(3).
                     06  K09-RRKYMD  PIC X(16).
@@ -33,6 +35,8 @@
               03  K09-SCROLLEDWINDOW3.
                 04  K09-MEILIST.
                   05  K09-MEILIST-COUNT   PIC S9(9)   BINARY.
+                  05  K09-MEILIST-ROW     PIC S9(9)   BINARY.
+                  05  K09-MEILIST-ROWATTR PIC S9(9)   BINARY.
                   05  K09-ITEM        OCCURS  400 TIMES.
                     06  K09-MNO     PIC X(3).
                     06  K09-MEISAI  PIC X(90).

@@ -3,6 +3,8 @@ J041	{
 		scrolledwindow1	{
 			MED_LIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(40);
 					value2	varchar(40);
