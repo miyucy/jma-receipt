@@ -2157,11 +2157,11 @@
            ELSE
       *        £È£±£´¡¥£±£°°Ê¹ß£·£°ºÐ¤ò£·£µºÐ¤È¤¹¤ë
       *        £È£±£´¡¥£±£°»þÅÀ¤Ç£·£°ºÐÌ¤Ëþ¤Î»þ
-               IF     (SPA-SRYYMD       >=   "20021001" )  AND
-                      (SPA-BIRTHDAY     >=   "19321001" )
-                   MOVE    75                TO  WRK-ROU-NEN
+               IF     (SPA-SRYYMD          >=   "20021001" )  AND
+                      (SPA-BIRTHDAY        >=   "19321001" )
+                   MOVE    75                   TO  WRK-ROU-NEN
                ELSE
-                   MOVE    70                TO  WRK-ROU-NEN
+                   MOVE    70                   TO  WRK-ROU-NEN
                END-IF
       *        £·£°ºÐ°Ê¾å¤ÏÏ·¿Í¤È¤¹¤ë¡Ê³ºÅö·î£±Æü¤Ë£·£°ºÐ¡Ë
       *        Ç¯Îð·×»»¡Ê¿ÇÎÅ·î¤Î£±Æü¤ÎÇ¯Îð¡Ë
@@ -2602,8 +2602,13 @@
                               (LNK-WKSRY-AUTOKBN (IDX IDY) =   "1"   )
                            PERFORM 31011-SPA-HEN-SEC
                        END-IF
-      *
-                       CONTINUE
+      *                ¼«Æ°ºîÀ®¤Î¥³¥á¥ó¥È¤ÏÂÐ¾Ý¤È¤¹¤ë
+                       IF     (LNK-WKSRY-SRYCD(IDX IDY)(1:1)
+                                                           =   "8")  AND
+                              (LNK-WKSRY-AUTOKBN (IDX IDY) =   "2" OR
+                                                               "3" )
+                           PERFORM 31011-SPA-HEN-SEC
+                       END-IF
                    ELSE
                        PERFORM 31011-SPA-HEN-SEC
                    END-IF
