@@ -38,6 +38,7 @@
       *  01.00.09    NACL-多々納  03/01/16  自費回数表示修正
       *  01.00.10    NACL-多々納  03/03/05  排他制御処理追加
       *  01.00.11    NACL-多々納  03/04/30  自費編集修正
+      *  01.00.12    NACL-多々納  03/05/13  自賠責の腰部固定帯加算修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2572,6 +2573,20 @@
       *    画像診断の時、フィルム点数を対象外とする
            IF      LNK-WKSRY-SRYKBN (IDX)  =   "70"
                MOVE    LNK-WKSRY-SYUTEN2 (IDX)     TO  WRK-SYUTEN1
+           END-IF
+      *
+      *    腰部固定帯加算を器材点数として対象外とする
+           IF      LNK-WKSRY-SRYKBN(IDX)(1:1)  NOT =   "9"
+               PERFORM VARYING     IDS     FROM    1   BY  1
+                       UNTIL      (IDS         >   5   )  OR
+                                  (LNK-WKSRY-SRYCD(IDX IDS)
+                                              =   SPACE )
+                   IF     LNK-WKSRY-SRYCD(IDX IDS)     =   "140037490"
+                       MOVE    LNK-WKSRY-SRYCD (IDX IDS)   TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
+                       ADD     TNS-TEN         TO  WRK-SYUTEN1
+                   END-IF
+               END-PERFORM
            END-IF
       *
       *    自賠責手技点合計
