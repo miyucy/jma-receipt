@@ -551,6 +551,12 @@
                    END-IF
       *        標準構成
                WHEN    "2"
+      *            数字チェック（すべて数値となる）
+                   IF      ORCSP01-PTNUM(1:WRK-KETA)   NOT NUMERIC
+                       MOVE    "1006"          TO  SPA-ERRCD
+                       GO      TO      200-CHECK-EXT
+                   END-IF
+      *            連番号とのチェック
                    MOVE    SPACE               TO  WRK-RENNUM-X
                    MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  WRK-KETA
                    COMPUTE WRK-KETAN       =   WRK-KETA2   +   1

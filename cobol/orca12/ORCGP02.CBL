@@ -656,6 +656,12 @@
       *            各画面を初期編集する
                    MOVE    1                   TO  SPA-P02-SYORI
                    PERFORM 310-SPA-SET-SEC
+               ELSE
+      *            選択なし
+                   IF     (WRK-SPA-PTNUM       =   SPACE  )  AND
+                          (SPA-GMN-PTID        =   ZERO   )
+                       PERFORM 30011-PTNUM-CHK-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -664,6 +670,37 @@
            END-IF
            .
        3001-P97SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    未選択時、患者番号チェック処理
+      *****************************************************************
+       30011-PTNUM-CHK-SEC              SECTION.
+      *
+           INITIALIZE                      ORCSPTNUMAREA
+           MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM
+           CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
+                                               SPA-AREA
+           EVALUATE    SPTNUM-RC
+               WHEN    00
+      *            患者あり
+                   CONTINUE
+               WHEN    20
+      *            患者検索へ
+                   MOVE    ZERO                TO  SPA-P02-SYORI
+               WHEN    10
+      *            新規患者検索へ
+                   IF      SPTNUM-SYUBETU       =   1
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO                TO  SPA-P02-SYORI
+                   END-IF
+               WHEN    OTHER
+      *            エラー
+                   MOVE    ZERO                TO  SPA-P02-SYORI
+           END-EVALUATE
+           .
+       30011-PTNUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1166,6 +1203,7 @@
            END-IF
       *
            MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  SPA-P02-SYORI
            MOVE    P02-PTNUM           TO  SPA-GMN-PTNUM
            IF      SPA-GMN-PTNUM(1:1)      =   "*"
       *        新規自動採番
