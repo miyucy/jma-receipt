@@ -4070,6 +4070,14 @@
                MOVE    SPA-GMN-HKNCOMBI-G  TO  SPA-MAE-HKNCOMBI-G
                MOVE    SPA-HKNKBN          TO  SPA-MAE-HKNKBN
                MOVE    K02N-HKNCOMBI       TO  SPA-GMN-HKNCOMBI-G
+      *        包括まとめの変更不可
+               IF      (SPA-GMN-HKNCOMBINUM     =   "9999" )  OR
+                       (SPA-MAE-HKNCOMBINUM     =   "9999" )
+                   MOVE    "1033"              TO  SPA-ERRCD
+                   MOVE    SPA-MAE-HKNCOMBI-G  TO  SPA-GMN-HKNCOMBI-G
+                   MOVE    SPA-MAE-HKNKBN      TO  SPA-HKNKBN
+                   GO      TO      41012-HKNCOMBI-SYORI-EXT
+               END-IF
                MOVE    1                   TO  FLG-CHK2
                PERFORM 41012-HKNCOMBI-CHANGE-SEC
                IF     (SPA-ERRCD           =   SPACE )  AND
