@@ -52,6 +52,7 @@
       *
       *  01.03.01    NACL-Æ£¸¶    02/09/12  ¥Ç¥£¥ì¥¯¥È¥ê¤ò¥µ¥Ö¥×¥í¤Ø
       *  01.03.02    NACL-Æ£¸¶    02/09/24  £²£°£°£²¡¥£±£°²þÀµÂÐ±þ
+      *  01.03.03    NACL-Æ£¸¶    02/10/28  °õºþ½ç¤¬£°£³¡¢£°£´¤Î¤È¤­¤Î°õºþ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1518,7 +1519,11 @@
       *    ¹ñÊÝ¡Ê¸©ÆâÊ¬¡Ë½ÐÎÏ
            IF      SPA-ERRCD        =   SPACE
                IF      SPA-GMN-PREFKBN  =   "1" OR  "2"
-                   MOVE    2                TO  IDW 
+                   IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
+                       MOVE    2                TO  IDW
+                   ELSE
+                       MOVE    1                TO  IDW
+                   END-IF        
                    MOVE    "2"              TO  WRK-TEISYUTUSAKI
                    MOVE    "1"              TO  WRK-PREFKBN
                    PERFORM 4501-PRTJYUN-PRINT-SEC
@@ -1528,7 +1533,11 @@
       *    ¹ñÊÝ¡Ê¸©³°Ê¬¡Ë½ÐÎÏ
            IF      SPA-ERRCD        =   SPACE
                IF      SPA-GMN-PREFKBN  =   "1" OR  "3"
-                   MOVE    2                TO  IDW
+                   IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
+                       MOVE    2                TO  IDW
+                   ELSE
+                       MOVE    1                TO  IDW
+                   END-IF        
                    MOVE    "2"              TO  WRK-TEISYUTUSAKI
                    MOVE    "2"              TO  WRK-PREFKBN
                    PERFORM 4501-PRTJYUN-PRINT-SEC
