@@ -94,6 +94,7 @@ dnl Checks for library functions.
 AC_OUTPUT([
 cobol/Makefile
 cobol/Makefile.global
+cobol/copy/Makefile
 lddef/Makefile
 record/Makefile
 screen/Makefile
