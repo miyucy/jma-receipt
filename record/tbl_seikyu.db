@@ -507,7 +507,7 @@ path	key5	{
                 AND   (     ( SKYKBN        <>  '2'       )
                          OR (      SKYYM     =   :SKYYM  
                               AND  SRYYM     <>  :SKYYM   ) )
-                ORDER   BY  TEISYUTUSAKI,SRYYM,SKYYM,HKNJANUM,PTNUM,SKYYM     
+                ORDER   BY  NYUGAIKBN,TEISYUTUSAKI,SRYYM,SKYYM,HKNJANUM,PTNUM     
 		;
 	};
 };
