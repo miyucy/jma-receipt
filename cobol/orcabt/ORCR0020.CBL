@@ -93,6 +93,7 @@
       *                                     SRYACCT5¢ª31
       *  01.00.35    NACL-Æ£¸¶    04/02/04  ·îÅÓÃæ¤ËÏ·ÊÝ¤ÎÊÑ¹¹¤¬¤¢¤Ã¤¿¾ì¹ç
       *                                     ¤Î£Ë£Å£Ù¤ÎÊÔ½¸¤Î½¤Àµ
+      *  01.00.36    NACL-ÌçÏÆ    04/02/12  Ç¯ÎðÈ½ÄêÊ¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -393,8 +394,6 @@
            COPY    "CPORCSPTID.INC".
       *   ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
            COPY    "CPORCSJOBKANRI.INC".
-      *   ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
-           COPY    "CPORCSAGECHK.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -2184,7 +2183,7 @@
       *
              IF    WRK-ZAITAKU   =   "1"
                IF  ( RECE02-AGE          >=  70      )   OR
-                   ( AGECHK-NENREI       >=  65  AND                  
+                   ( RECE02-AGE          >=  65  AND                    
                      RECE01-KOHID    NOT  =   ZERO   )                  
                  MOVE    "1"           TO  RECE02-ZAITAKU
       *

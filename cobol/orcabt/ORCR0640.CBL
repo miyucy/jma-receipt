@@ -66,6 +66,7 @@
       *  01.00.26    NACL-門脇    04/01/28  診療区分９０、９２のコメント
       *                                     のみの剤もレセ記載の対象にする
       *  01.00.27    NACL-門脇    04/02/05  診療コード＊数量の累計編集
+      *  01.00.28    NACL-門脇    04/02/10  生保の一部負担金額記載修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5887,15 +5888,20 @@
       *
                 PERFORM  KOHFTN-KINGAKU-SEC
       *
-                IF  WRK-NYUJGNGAK  NOT =  ZERO
-                  IF  WRK-FTNKEI3  =  WRK-NYUJGNGAK
-                    MOVE  WRK-FTNKEI3  
+                IF  RECE62-KOHNUM(KOHFTN-IDX) =  "012"
+                      MOVE  WRK-NYUJGNGAK
                                    TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
-                  END-IF
-                  IF  WRK-FTNKEI3  <  WRK-NYUJGNGAK
-                  AND WRK-FTNKEI2  =  WRK-NYUJGNGAK
-                    MOVE  WRK-FTNKEI2  
+                ELSE
+                  IF  WRK-NYUJGNGAK  NOT =  ZERO
+                    IF  WRK-FTNKEI3  =  WRK-NYUJGNGAK
+                      MOVE  WRK-FTNKEI3  
                                    TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                    END-IF
+                    IF  WRK-FTNKEI3  <  WRK-NYUJGNGAK
+                    AND WRK-FTNKEI2  =  WRK-NYUJGNGAK
+                      MOVE  WRK-FTNKEI2  
+                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                    END-IF
                   END-IF
                 END-IF
       *
@@ -5931,6 +5937,7 @@
                  (FLG-PTKOHFTN       =   1)    OR
                 ((PTKOHFTN-TEKSTYMD(1:6) <=   RECE62-SRYYM   )  AND
                  (RECE62-SRYYM           <=   PTKOHFTN-TEKEDYMD(1:6)))
+               MOVE     "PTKOHFTN-KEY4"  TO      ORC-DBPATH
                PERFORM   PTKOHFTN-READ-SEC
              END-PERFORM
            ELSE
@@ -5940,6 +5947,18 @@
            IF   FLG-PTKOHFTN  =  ZERO
       *
              MOVE   PTKOHFTN-NYUJGNGAK   TO      WRK-NYUJGNGAK
+             IF    RECE62-KOUREI  NOT =    SPACE
+               IF     RECE62-KOHNUM(KOHFTN-IDX) =  "012"
+      ******       IF    WRK-NYUJGNGAK    >  15000
+      ******               MOVE    15000    TO   WRK-NYUJGNGAK
+      ******       END-IF
+                   CONTINUE
+               ELSE
+                   IF    WRK-NYUJGNGAK    >  40200
+                           MOVE    40200    TO   WRK-NYUJGNGAK
+                   END-IF
+               END-IF
+             END-IF
       *
            END-IF
       *
