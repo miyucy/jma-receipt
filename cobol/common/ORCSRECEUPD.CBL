@@ -236,7 +236,7 @@
                END-IF
            END-PERFORM      
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-DBPATH          TO  MCP-PATH
            CALL    "MCPSUB"            USING
                                            MCPAREA
