@@ -185,6 +185,8 @@
            03  WRK-KINGAK          PIC 9(08).
            03  FLG-JIHI            PIC 9(01).
       *
+           03  WRK-NYU-KAI         PIC 9(03).
+      *
       *    リハビリ回数集計
         01  WRK-RIGAKU-NCNT-AREA.
       *        １:理学、２：作業、３：言語
@@ -1294,7 +1296,7 @@
                    MOVE    ZERO                TO  WRK-TUKI-CNT
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   IDD
-                       IF     (WRK-GCNT (IDY)      =   ZERO) AND
+                       IF     (WRK-GCNT (IDY)      =   ZERO    )  AND
                               (LNK-ORCSC-GAI-FLG (IDY) =   ZERO)
                            COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                    +   WRK-DCNT-KN
@@ -1564,14 +1566,17 @@
       *    厚生労働大臣が定める患者のチェック
            PERFORM 200221-SOUKIKSN-CHK-SEC
            MOVE    FLG-SOUKI-ARI       TO  FLG-SOUKI-ARI1
+           MOVE    ZERO                TO  WRK-NYU-KAI
+      *
       *    入力日分のチェック
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   31  )   OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      WRK-COM-NYUINDAY (IDX-Z IDX2)   >   ZERO
-                   MOVE    IDX2            TO  IDD
-                   MOVE    SPA-SRYYMD      TO  WRK-SRYYMD
-                   MOVE    IDD             TO  WRK-SRYYMD (7:2)
+                   ADD     1                   TO  WRK-NYU-KAI
+                   MOVE    IDX2                TO  IDD
+                   MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+                   MOVE    IDD                 TO  WRK-SRYYMD (7:2)
       *
       *            当日上限チェック
                    MOVE    WRK-COM-KAISU(IDX-Z)   TO  WRK-KAISU
@@ -1639,6 +1644,10 @@
                    END-IF
       *        個別
                WHEN    "K"
+      *test
+                   DISPLAY "FLG-SOUKI-ARI:" FLG-SOUKI-ARI
+                          ",IDD:" IDD
+      *TEST
       *            早期リハ加算等がある場合
                    IF      FLG-SOUKI-ARI       =   1
       *                今回分集計
@@ -1668,27 +1677,14 @@
                        END-IF
                    ELSE
                        IF    ((WRK-TUKI-CNT    +   WRK-KAISU)
-                                               >   10  )  AND
+                                               >=  10  )  AND
                              (WRK-COM-KZMFLG (IDX-Z)   =   SPACE) AND
                              (LNK-ORCSC-KEI-IDX        =   ZERO )
-                           MOVE    IDX             TO  LNK-ORCSC-KEI-IDX
-                           MOVE    "1"             TO  WRK-COM-KZMFLG
-                                                               (IDX-Z)
-                           MOVE    "K081"          TO  SPA-ERRCD
-                           MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
-                           STRING  "既に"          DELIMITED  BY  SIZE
-                                   IDD             DELIMITED  BY  SIZE
-                                   "日までに"
-                                                   DELIMITED  BY  SIZE
-                                   WRK-TUKI-CNT
-                                                   DELIMITED  BY  SIZE
-                                   "単位算定済です。"
-                                                   DELIMITED  BY  SIZE
-                                           INTO    LNK-ORCSC-ERRMSG
-                           END-STRING
-                           MOVE    "1"             TO  WRK-COM-CUR
-                                                           (IDX-Z)
-                           GO      TO      20012-NTUKIMAX-CHK-EXT
+      *                    月上限単位警告編集処理
+                           PERFORM 200121-NYUTUKI-HEN-SEC
+                           IF      LNK-ORCSC-KEI-IDX   NOT =   ZERO
+                               GO      TO      20012-NTUKIMAX-CHK-EXT
+                           END-IF
                        END-IF
                    END-IF
            END-EVALUATE
@@ -1697,6 +1693,34 @@
       *
            .
        20012-NTUKIMAX-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    月上限単位警告編集処理
+      *****************************************************************
+       200121-NYUTUKI-HEN-SEC      SECTION.
+      *
+      *    診療日が１つで今回の回数で１０単位になる時、警告しない
+           IF   ((WRK-TUKI-CNT     +   WRK-KAISU)
+                                   =  10          ) AND
+                 (WRK-COM-NYU-KAI (IDX-Z)  =   WRK-NYU-KAI)
+               GO      TO      200121-NYUTUKI-HEN-EXT
+           END-IF
+      *
+           MOVE    IDX                 TO  LNK-ORCSC-KEI-IDX
+           MOVE    "1"                 TO  WRK-COM-KZMFLG (IDX-Z)
+           MOVE    "K081"              TO  SPA-ERRCD
+           MOVE    SPACE               TO  LNK-ORCSC-ERRMSG
+           STRING  "既に"              DELIMITED  BY  SIZE
+                   IDD                 DELIMITED  BY  SIZE
+                   "日までに"          DELIMITED  BY  SIZE
+                   WRK-TUKI-CNT        DELIMITED  BY  SIZE
+                   "単位算定済です。"  DELIMITED  BY  SIZE
+                                       INTO    LNK-ORCSC-ERRMSG
+           END-STRING
+           MOVE    "1"                 TO  WRK-COM-CUR  (IDX-Z)
+           .
+       200121-NYUTUKI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
