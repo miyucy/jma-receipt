@@ -1138,6 +1138,7 @@
            OPEN    INPUT                   EIE01-FILE.
       *
            MOVE    ZERO                    TO  SPA-GMN-MAX-B.
+           MOVE    SPACE                   TO  WK-SRYYM.
       *
            IF      STS-EIE01         =   ZERO
               READ    EIE01-FILE
