@@ -182,7 +182,8 @@ path	key3 	{
 		SELECT *
 		FROM view_bd002
 			WHERE   HOSPID      =   :HOSPID
-                    AND     DENPPRTYMD  =   :DENPPRTYMD
+                    AND     NYUGAIKBN   =   :NYUGAIKBN 
+                    AND     DENPPRTYMD  >=  :DENPPRTYMD 
                     ORDER BY  DENPNUM
 		;
 	};
