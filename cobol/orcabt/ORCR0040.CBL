@@ -39,6 +39,7 @@
       *  01.00.07    NACL-ÌçÏÆ    03.03.12  £Ã£Ô¡¦£Í£Ò£É¤Î¼Â»ÜÆüÄÉ²Ã
       *  01.00.08    NACL-ÌçÏÆ    03.04.04  ½ýÉÂ¼êÅö¶â°Õ¸«½ñ¸òÉÕÎÁ¤Î¸òÉÕÆüÊÔ½¸
       *                                     ÎÅÍÜÈñÆ±°Õ½ñ¸òÉÕÎÁ¤Î¸òÉÕÆüÊÔ½¸
+      *  01.00.09    NACL-ÌçÏÆ    03.04.24  Í¢·ì¤Ï¥³¥á¥ó¥ÈÊÔ½¸ÂÐ¾Ý³°¤È¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2374,7 +2375,29 @@
                                      MCPAREA
                                      ORCMCPAREA
                                      MCPDATA-REC
-      *
+      *    Í¢·ì¤Ï½ü¤¯
+           INITIALIZE                      RECE05-REC
+           MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
+           MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
+           MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
+           MOVE    RECE04-PTID         TO  RECE05-PTID
+           MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
+           MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
+           MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
+           MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
+           MOVE    RECE04-HOJOKBN      TO  RECE05-HOJOKBN
+           MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
+           MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
+           START   RECE05-FILE
+                 KEY IS    >=   RECE05-KEY
+                 INVALID
+                     MOVE    1         TO  FLG-RECE05
+                 NOT INVALID
+                     PERFORM 990-RECE05-NEXT-SEC
+           END-START
+           IF     RECE05-SRYSYUKBN  =  "510"
+                    MOVE     ZERO      TO  FLG-SHUJUTU-COMMENT
+           END-IF
       *
            IF     (FLG-SHUJUTU-COMMENT   =      1)  AND
                   (RECE04-SYUTEN1    NOT =   ZERO)
