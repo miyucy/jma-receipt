@@ -766,6 +766,7 @@ COPYS = \
         W16.INC \
         CPSK1036.INC \
         HCM37.INC \
+        HCMC001.INC \
 
 DBPATH = \
 	ORCA-DBPATH

@@ -152,6 +152,7 @@ FORM_files = \
               HCN22.red \
               HCN23.red \
               HCM37.red \
+              HCMC001.red \
 
 all:   
 
