@@ -3460,8 +3460,16 @@
                COMPUTE WRK-KIKAN           =   WRK-KIKAN
                                            -   12
            END-PERFORM
-           COMPUTE WRK-SRYMM           =   WRK-SRYMM
-                                       -   WRK-KIKAN
+           IF      WRK-SRYMM           >   WRK-KIKAN
+               COMPUTE WRK-SRYMM           =   WRK-SRYMM
+                                           -   WRK-KIKAN
+           ELSE
+               COMPUTE WRK-SRYMM           =  (WRK-SRYMM
+                                           +   12   )
+                                           -   WRK-KIKAN
+               COMPUTE WRK-SRYYY           =   WRK-SRYYY
+                                           -   1
+           END-IF
       *
            PERFORM
                    UNTIL   SPA-SRYYMD(1:6)     <   WRK-SRYYM
