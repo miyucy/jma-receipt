@@ -55,6 +55,7 @@
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/09/28  中止処理の追加
       *  01.01.02    NACL-門脇    05/01/06  自費レセプトの出力条件修正
+      *  01.01.03    NACL-門脇    05/02/28  （サ）記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -364,7 +365,8 @@
               IF     RECE06-ZAITEN  NOT =  ZERO
                   PERFORM     2101-RECE061-WRITE-SEC
               ELSE
-                IF   RECE06-SRYKBN  =  "11" OR "12" OR "99"
+                IF  ( RECE06-SRYKBN  =  "11" OR "12" OR "99" )
+                OR  ( RECE06-SAFLG   =  "1"                  )
                      PERFORM  2101-RECE061-WRITE-SEC
                 END-IF
               END-IF

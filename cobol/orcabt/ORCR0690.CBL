@@ -62,6 +62,9 @@
       *  01.01.05    NACL-ÌçÏÆ    04.09.22  ÌôºÞ¡¦´ïºà¤Îµ­ºÜ½ç½¤Àµ
       *  Ãæ»ß½èÍýÄÉ²Ã
       *  01.02.01    NACL-Æ£¸¶    04/10/07  Ãæ»ß½èÍý¤ÎÄÉ²Ã
+      *  01.02.02    NACL-ÌçÏÆ    05/02/28  ¡Ê¥µ¡Ëµ­ºÜÂÐ±þ
+      *  01.02.03    NACL-ÌçÏÆ    05/03/02  ÌôºÞ¤ÇÃ±°Ì¤Î¤Ê¤¤¥Ç¡¼¥¿¤Î¿ôÎÌÊÔ½¸
+      *                                     ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -535,6 +538,8 @@
       *
       *Èé²¼¶ÚÆùÃí¼Í
            03  CONS-HIKAKIN    PIC X(09)   VALUE   "130000510".
+      *    ¡Ê¥µ¡Ë
+           03  CONS-RINYAK     PIC X(09)   VALUE   "820000046".
       *
       *½é¿Ç²Ã»»     
       *    ½é¿Ç¡Ê¿ÇÎÅ½ê¡Ë¾Ò²ð´µ¼Ô²Ã»»
@@ -997,7 +1002,8 @@
                                END-IF
                              END-IF
                            WHEN    "8"
-                               IF      IDY           =   ZERO
+                               IF (    IDY             =   ZERO      )
+                               OR ( RECE65-SRYCD (IDX) = CONS-RINYAK )
                                    MOVE    2             TO  IDY
                                END-IF    
                            WHEN    "1"
@@ -1105,6 +1111,18 @@
                                   MOVE    "¡ö"  TO 
                                          TBL-ZAIW-TANINAME  (IDY IDZ) 
                                END-IF
+                            END-IF
+                          END-IF
+                       END-IF
+      *
+                       IF      RECE65-SRYCD (IDX) (1:1)  =  "6"
+                          IF   RECE65-SRYCD (IDX) (1:2)  =  "63"
+                               CONTINUE
+                          ELSE
+                            IF  TBL-ZAIW-TANINAME  (IDY IDZ)  
+                                                    =   SPACE
+                                  MOVE    "¡ö"  TO 
+                                         TBL-ZAIW-TANINAME  (IDY IDZ) 
                             END-IF
                           END-IF
                        END-IF
@@ -2257,6 +2275,9 @@
                   (RECE64-ZAITEN      =   ZERO                )      
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF     
+           IF      RECE64-SAFLG       =   "1"
+               GO  TO  440-TNSKAI-SET-EXT                              
+           END-IF  
       *---- (01.00.05) LINE ADD END   --------------------------------
       *
            IF      IDY               >   ZERO         
@@ -2456,6 +2477,8 @@
                ELSE
                        MOVE   ZERO           TO  RECE66-KNSJISKBN
                END-IF
+      *
+               MOVE    RECE64-SAFLG          TO  RECE66-SAFLG
       *
                WRITE   RECE66-REC
       *         

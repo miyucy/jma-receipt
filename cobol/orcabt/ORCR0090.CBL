@@ -128,6 +128,9 @@
       *  Ãæ»ß½èÍýÄÉ²Ã
       *  01.06.01    NACL-Æ£¸¶    04/09/28  Ãæ»ß½èÍý¤ÎÄÉ²Ã
       *  01.06.02    NACL-Æ£¸¶    04/12/16  Êñ³çÂÐ¾Ý¸¡ºº¤Î¤Þ¤È¤á¤Î½¤Àµ
+      *  01.06.03    NACL-ÌçÏÆ    05/02/28  ¡Ê¥µ¡Ëµ­ºÜÂÐ±þ
+      *  01.06.04    NACL-ÌçÏÆ    05/03/02  ÌôºÞ¤ÇÃ±°Ì¤Î¤Ê¤¤¥Ç¡¼¥¿¤Î¿ôÎÌÊÔ½¸
+      *                                     ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -729,6 +732,8 @@
       *---- (01.01.07) LINE ADD END   --------------------------------
       *Èé²¼¶ÚÆùÃí¼Í
            03  CONS-HIKAKIN    PIC X(09)   VALUE   "130000510".
+      *    ¡Ê¥µ¡Ë
+           03  CONS-RINYAK     PIC X(09)   VALUE   "820000046".
       *½é¿Ç²Ã»»     
       *    ½é¿Ç¡Ê¿ÇÎÅ½ê¡Ë¾Ò²ð´µ¼Ô²Ã»»
            03  WRK-CONS-SYOSIN-KASAN1  PIC X(09)   VALUE 
@@ -1185,7 +1190,8 @@
                                IF   RECE05-SRYSYUKBN  =  "334"
                                    MOVE    5         TO  IDY
                                ELSE
-                                 IF      IDY          =   ZERO
+                                 IF (     IDY            =   ZERO      )
+                                 OR ( RECE05-SRYCD (IDX) = CONS-RINYAK )
                                    MOVE    2         TO  IDY
                                  END-IF
                                END-IF    
@@ -1289,6 +1295,18 @@
                                   MOVE    "¡ö"  TO 
                                          TBL-ZAIW-TANINAME  (IDY IDZ) 
                                END-IF
+                            END-IF
+                          END-IF
+                       END-IF
+      *
+                       IF      RECE05-SRYCD (IDX) (1:1)  =  "6"
+                          IF   RECE05-SRYCD (IDX) (1:2)  =  "63"
+                               CONTINUE
+                          ELSE
+                            IF  TBL-ZAIW-TANINAME  (IDY IDZ)  
+                                                    =   SPACE
+                                  MOVE    "¡ö"  TO 
+                                         TBL-ZAIW-TANINAME  (IDY IDZ) 
                             END-IF
                           END-IF
                        END-IF
@@ -2771,6 +2789,9 @@
                   (WRK-TENSUGOKEI     =   ZERO)                         
                GO  TO  440-TNSKAI-SET-EXT                               
            END-IF                                                       
+           IF      RECE04-SAFLG       =   "1"
+               GO  TO  440-TNSKAI-SET-EXT                              
+           END-IF  
       *---- (01.00.05) LINE ADD END   --------------------------------
       *
            IF      IDY               >   ZERO         
@@ -2877,6 +2898,8 @@
                ELSE
                        MOVE   ZERO           TO  RECE06-KNSJISKBN
                END-IF
+      *
+               MOVE    RECE04-SAFLG          TO  RECE06-SAFLG
       *
                WRITE   RECE06-REC
       *         

@@ -53,6 +53,7 @@
       *  01.01.02    NACL-¾®Æ¦Âô  04/12/10  Æþ±¡Î¬¾Î¥Þ¥¹¥¿¤ÎÆÉ¤ß¹þ¤ß¥ï¡¼¥¯
       *                                     ÂÐ±þ
       *  01.01.03    NACL-Æ£¸¶    04/11/01  µ­ºÜ¤Ê¤·¤Î¸øÈñ¤Î½èÍý
+      *  01.01.04    NACL-ÌçÏÆ    05/03/03  ¿©»ö¤Ë´Ø¤¹¤ëÊÔ½¸½¤Àµ
       *****************************************************************
       *
       *
@@ -747,16 +748,20 @@
                 END-IF
            END-PERFORM
       *
-           IF  SYS-5000-SHOKUJIRYOYOCD   =  "197000110"
+           EVALUATE    SYS-5000-SHOKUJIRYOYOCD
+      *      Æþ±¡¿©»öÎÅÍÜ¡Ê£±¡Ë
+             WHEN         "197000110"
                   MOVE     1         TO   WRK-SHOKUJIRYOYO
-                  IF  SYS-5000-SHOKUKBN(1) =  "1"
+                  EVALUATE  SYS-5000-SHOKUKBN(1)
+                    WHEN     "1"
                        MOVE  ZERO    TO   WRK-TOKUKANRIKASAN
-                  ELSE
-                       MOVE  1       TO   WRK-TOKUKANRIKASAN
-                  END-IF
-           ELSE
+                    WHEN     "2"
+                       MOVE   1      TO   WRK-TOKUKANRIKASAN
+                  END-EVALUATE
+      *      Æþ±¡¿©»öÎÅÍÜ¡Ê£²¡Ë
+             WHEN         "197000710"
                   MOVE     2         TO   WRK-SHOKUJIRYOYO
-           END-IF
+           END-EVALUATE
       *
            .
        10011-SYSKAN-HENSYU-EXT.
@@ -2763,29 +2768,31 @@
       *****************************************************************
        200114-RECE62-HENSYU4-SEC                SECTION.
       *
-      *    ¿©»öÎ¬¾Î¤Î¼èÆÀ
-           PERFORM  VARYING  IDY    FROM    1   BY  1
-                          UNTIL   IDY     >       31
+           IF    WRK-SHOKUJIRYOYO   NOT =  ZERO
+      *       ¿©»öÎ¬¾Î¤Î¼èÆÀ
+              PERFORM  VARYING  IDY    FROM    1   BY  1
+                             UNTIL   IDY     >       31
       *
-              PERFORM  VARYING  IDX1    FROM    1   BY  1
-                             UNTIL   IDX1    >       10
-                             OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
+                 PERFORM  VARYING  IDX1    FROM    1   BY  1
+                                UNTIL   IDX1    >       10
+                                OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
-               IF  WRK-DAY1(IDY) NOT =  ZERO 
-                 IF   WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
-                      IF   (WRK-DAY4(IDY)   NOT =    ZERO)  
-                      AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
-                           PERFORM   201141-NYUINKHN-GET4-SEC
-                      END-IF
-                      MOVE    10    TO    IDX1
-                 END-IF
-               ELSE
-                 MOVE     10        TO    IDX1
-               END-IF
+                  IF  WRK-DAY1(IDY) NOT =  ZERO 
+                    IF   WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
+                         IF   (WRK-DAY4(IDY)   NOT =    ZERO)  
+                         AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
+                              PERFORM   201141-NYUINKHN-GET4-SEC
+                         END-IF
+                         MOVE    10    TO    IDX1
+                    END-IF
+                  ELSE
+                    MOVE     10        TO    IDX1
+                  END-IF
+      *
+                 END-PERFORM
       *
               END-PERFORM
-      *
-           END-PERFORM
+           END-IF
       *
            .
        200114-RECE62-HENSYU4-EXT.

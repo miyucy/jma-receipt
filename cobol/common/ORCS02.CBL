@@ -77,6 +77,7 @@
       *  01.00.36    NACL-ÌçÏÆ    04/11/25  Ê¡Åç¸©ÆýÍÄ»ùÆÃ¼ì·×»»ÂÐ±þ
       *  01.00.37    NACL-ÌçÏÆ    05/01/14  ²¬»³¸©ÆýÍÄ»ùÆÃ¼ì·×»»ÂÐ±þ
       *  01.00.38    NACL-ÌçÏÆ    05/01/25  ËÌ³¤Æ»ÃÏÊý¸øÈñ½¤Àµ
+      *  01.00.39    NACL-ÌçÏÆ    05/03/03  ¿©»ö¤Ë´Ø¤¹¤ëÊÔ½¸½¤Àµ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -5042,18 +5043,25 @@
                    MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
                    PERFORM   SYSKANRI-READ-SEC
                    IF    MCP-RC             =     ZERO
-                     IF  SYS-5000-SHOKUJIRYOYOCD   =  "197000110"
-                            MOVE     1       TO   WK-SHOKUJIRYOYO
-                            IF  SYS-5000-SHOKUKBN(1) =  "1"
-                               MOVE  ZERO    TO   WK-TOKUKANRIKASAN
-                            ELSE
-                               MOVE  1       TO   WK-TOKUKANRIKASAN
-                            END-IF
-                     ELSE
-                            MOVE     2       TO   WK-SHOKUJIRYOYO
-                     END-IF
+      *
+                     EVALUATE    SYS-5000-SHOKUJIRYOYOCD
+      *                Æþ±¡¿©»öÎÅÍÜ¡Ê£±¡Ë
+                       WHEN         "197000110"
+                          MOVE     1         TO   WK-SHOKUJIRYOYO
+                          EVALUATE  SYS-5000-SHOKUKBN(1)
+                            WHEN     "1"
+                              MOVE  ZERO     TO   WK-TOKUKANRIKASAN
+                            WHEN     "2"
+                              MOVE    1      TO   WK-TOKUKANRIKASAN
+                          END-EVALUATE
+      *                Æþ±¡¿©»öÎÅÍÜ¡Ê£²¡Ë
+                       WHEN         "197000710"
+                          MOVE     2         TO   WK-SHOKUJIRYOYO
+                     END-EVALUATE
+      *
                      MOVE   SYS-5000-BRMSGK-TAXKBN
                                              TO   WK-BRMSGK-TAXKBN
+      *
                    END-IF 
            END-IF.
       *
@@ -5159,40 +5167,42 @@
                                            MCPDATA-REC.
       *
       *
-           INITIALIZE                            NYUINACCT-REC.
-           MOVE    LNK-SYU-HOSPID        TO      NACCT-HOSPID.
-           MOVE    LNK-SYU-NYUGAIKBN     TO      NACCT-NYUGAIKBN.
-           MOVE    LNK-SYU-PTID          TO      NACCT-PTID.
-      ***  MOVE    "00"                  TO      NACCT-SRYKA.
-           MOVE    LNK-SYU-SRYYMD(1:6)   TO      NACCT-SRYYM.
-           MOVE    NYUINACCT-REC         TO      MCPDATA-REC.
-           MOVE    "DBSELECT"            TO      MCP-FUNC.
-           MOVE    "NYUINACCT-KEY7"      TO      ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC.
-           IF      MCP-RC             =       ZERO
+           IF    WK-SHOKUJIRYOYO   NOT =  ZERO
+             INITIALIZE                            NYUINACCT-REC
+             MOVE    LNK-SYU-HOSPID        TO      NACCT-HOSPID
+             MOVE    LNK-SYU-NYUGAIKBN     TO      NACCT-NYUGAIKBN
+             MOVE    LNK-SYU-PTID          TO      NACCT-PTID
+      ***    MOVE    "00"                  TO      NACCT-SRYKA
+             MOVE    LNK-SYU-SRYYMD(1:6)   TO      NACCT-SRYYM
+             MOVE    NYUINACCT-REC         TO      MCPDATA-REC
+             MOVE    "DBSELECT"            TO      MCP-FUNC
+             MOVE    "NYUINACCT-KEY7"      TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+             IF      MCP-RC             =       ZERO
       *
-               MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
-               PERFORM  NYUINACCT-READ-SEC
-               PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
+                 MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
+                 PERFORM  NYUINACCT-READ-SEC
+                 PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
-                 IF     NACCT-SRYCDTOTAL    =    099999913   
-                             PERFORM        23044-SHOKUJI-COUNT-SEC
-                 END-IF
+                   IF     NACCT-SRYCDTOTAL    =    099999913   
+                               PERFORM        23044-SHOKUJI-COUNT-SEC
+                   END-IF
       * 
-                 MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
-                 PERFORM        NYUINACCT-READ-SEC
-               END-PERFORM
+                   MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
+                   PERFORM        NYUINACCT-READ-SEC
+                 END-PERFORM
       *
+             END-IF
+      *
+             MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
+             MOVE    "NYUINACCT-KEY7"        TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
            END-IF.
-      *
-           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC.
-           MOVE    "NYUINACCT-KEY7"        TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC.
       *
            IF   LNK-SYU-SHOKUJI1-NISSU      =  ZERO
            AND  LNK-SYU-SHOKUJI2-NISSU  NOT =  ZERO

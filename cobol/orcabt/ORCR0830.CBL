@@ -38,6 +38,7 @@
       *  01.01.03    NACL-ÌçÏÆ    05/01/26  ¥·¥¹¥Æ¥à´ÉÍý£´£°£°£±¤Ë´Ø¤¹¤ë½¤Àµ
       *  01.01.04    NACL-ÌçÏÆ    05/01/27  ¹ø¡¦¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
       *                                     »ÈÍÑ²Ã»»¤Îµ»½Ñ¡¦ÌôºÞÅù¤ÎÁªÂòÂÐ±þ
+      *  01.01.05    NACL-ÌçÏÆ    05/03/03  ¿©»ö¤Ë´Ø¤¹¤ëÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -544,16 +545,20 @@
       *****************************************************************
        110-SYSKAN-HENSYU-SEC                SECTION.
       *
-           IF  SYS-5000-SHOKUJIRYOYOCD   =  "197000110"
+           EVALUATE    SYS-5000-SHOKUJIRYOYOCD
+      *      Æþ±¡¿©»öÎÅÍÜ¡Ê£±¡Ë
+             WHEN         "197000110"
                   MOVE     1         TO   WRK-SHOKUJIRYOYO
-                  IF  SYS-5000-SHOKUKBN(1) =  "1"
+                  EVALUATE  SYS-5000-SHOKUKBN(1)
+                    WHEN     "1"
                        MOVE  ZERO    TO   WRK-TOKUKANRIKASAN
-                  ELSE
-                       MOVE  1       TO   WRK-TOKUKANRIKASAN
-                  END-IF
-           ELSE
+                    WHEN     "2"
+                       MOVE   1      TO   WRK-TOKUKANRIKASAN
+                  END-EVALUATE
+      *      Æþ±¡¿©»öÎÅÍÜ¡Ê£²¡Ë
+             WHEN         "197000710"
                   MOVE     2         TO   WRK-SHOKUJIRYOYO
-           END-IF
+           END-EVALUATE
       *
            .
        110-SYSKAN-HENSYU-EXT.
@@ -1086,18 +1091,20 @@
       *****************************************************************
        250-RECE82-HENSYU4-SEC                SECTION.
       *
-           PERFORM  VARYING  IDY    FROM    1   BY  1
-                          UNTIL   IDY     >       31
+           IF    WRK-SHOKUJIRYOYO   NOT =  ZERO
+              PERFORM  VARYING  IDY    FROM    1   BY  1
+                             UNTIL   IDY     >       31
       *
-                 IF  WRK-DAY1(IDY) NOT =  ZERO 
-                 AND WRK-DAY5(IDY)  =  RECE82-HKNCOMBI
-                      IF   (WRK-DAY4(IDY)   NOT =    ZERO)  
-                      AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
-                           PERFORM   2501-NYUINKHN-GET4-SEC
-                      END-IF
-                 END-IF
+                    IF  WRK-DAY1(IDY) NOT =  ZERO 
+                    AND WRK-DAY5(IDY)  =  RECE82-HKNCOMBI
+                         IF   (WRK-DAY4(IDY)   NOT =    ZERO)  
+                         AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
+                              PERFORM   2501-NYUINKHN-GET4-SEC
+                         END-IF
+                    END-IF
       *
-           END-PERFORM
+              END-PERFORM
+           END-IF
       *
            .
        250-RECE82-HENSYU4-EXT.
