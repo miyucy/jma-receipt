@@ -47,6 +47,12 @@
                   06  Q01-COMMENT-TBL.
                     07  Q01-COMMENT            PIC X(50)   OCCURS 3.
                 05  Q01-FIXED17.
+                  06  Q01-CMB-HONKZKKBN.
+                    07  Q01-HONKZKKBN          PIC X(10).
+                    07  Q01-CMB-HONKZKKBN-COUNT
+                                               PIC S9(9)   BINARY.
+                    07  Q01-CMB-HONKZKKBN-ITEM
+                                               PIC X(10)   OCCURS 5.
                   06  Q01-HKNJANUM-TBL.
                     07  Q01-HKNJANUM           PIC X(08)   OCCURS 5.
                   06  Q01-CMB-HKNNUM-TBL.

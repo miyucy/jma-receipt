@@ -117,6 +117,13 @@ Q01	{
 				};
 			};
 			fixed17	{
+				CMB_HONKZKKBN{
+					HONKZKKBN{
+						value	varchar(10);
+					};
+					count	int;
+					item	varchar(10)[5];
+				};
 				HKNJANUM1	{
 					value	varchar(8);
 				};

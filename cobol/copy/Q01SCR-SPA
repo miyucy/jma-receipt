@@ -114,6 +114,12 @@
                                                        OCCURS  3.
       *                瘦副　给锐
                        09  SPA-GMN-Q01-HOKEN-AREA.
+                           11  SPA-GMN-Q01-HONKZKKBN-G.
+                               13  SPA-GMN-Q01-HONKZKKBN
+                                                       PIC X(1).
+                               13                      PIC X(1).
+                               13  SPA-GMN-Q01-HONKZKKBNMEI
+                                                       PIC X(8).
       *                    瘦副　瘦副荚戎规
                            11  SPA-GMN-Q01-HKNJANUMTBL.
                                13  SPA-GMN-Q01-HKNJANUM
@@ -286,6 +292,14 @@
                                13  SPA-GMN-Q01-SEXL        PIC X(01).
                                13                          PIC X(01).
                                13  SPA-GMN-Q01-SEXMEIL     PIC X(08).
+                       09  SPA-GMN-Q01-HONKZKKBNLST-G.
+                           11  SPA-GMN-Q01-HONKZKKBNLST-MAX
+                                                            PIC 9(05).
+                           11  SPA-GMN-Q01-HONKZKKBNLST    OCCURS  5.
+                               13  SPA-GMN-Q01-HONKZKKBNL  PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-Q01-HONKZKKBNMEIL
+                                                           PIC X(08).
                        09  SPA-GMN-Q01-HKNNUMLST-G.
                            11  SPA-GMN-Q01-HKNNUMLST-MAX   PIC 9(05).
                            11  SPA-GMN-Q01-HKNNUMLST       OCCURS  50.
@@ -543,6 +557,7 @@
                                                        OCCURS  5.
       *            瘦副　给锐
                    07  SPA-Q01-HOKEN-AREA.
+                       09  SPA-Q01-HONKZKKBN           PIC X(01).
                        09  SPA-Q01-HKNJANUM-G.
                            11  SPA-Q01-HKNJANUM        PIC X(08)
                                                        OCCURS 5.

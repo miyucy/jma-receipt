@@ -930,6 +930,25 @@
       *
            PERFORM 900-SQL-JYOKEN-EDIT3-SEC
       *
+           IF      ( SPA-Q01-HONKZKKBN NOT =   SPACE )
+      *
+               MOVE    1                   TO  CNT-JYOKEN
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+               STRING  "("
+                       WRK-SQL-TBL-NAME        DELIMITED   BY  SPACE
+                       ".honkzkkbn = '"        DELIMITED   BY  SIZE
+                       SPA-Q01-HONKZKKBN       DELIMITED   BY  SIZE
+                       "')"                    DELIMITED   BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+           END-IF
+      *
+      *
            MOVE    ZERO    TO      CNT-JYOKEN
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL   (   IDX1    >   5 )

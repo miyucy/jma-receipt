@@ -445,6 +445,12 @@
                                        TO  SPA-GMN-Q01-SRYCD (IDXZ)
                MOVE    IDXZ            TO  IDXA
                PERFORM 4121-SRYCD-CHK-SEC
+               IF    ( SPA-Q01-Q96-MOTOIDX =   5 )
+                   COMPUTE SPA-GMN-Q01-CUR =   1
+               ELSE
+                   COMPUTE SPA-GMN-Q01-CUR
+                                       =   314 +   SPA-Q01-Q96-MOTOIDX
+               END-IF
            ELSE
                COMPUTE SPA-GMN-Q01-CUR =   313 +   SPA-Q01-Q96-MOTOIDX
            END-IF 
@@ -523,6 +529,9 @@
            MOVE    SPA-GMN-Q01-SEXLST (1)
                                        TO  SPA-GMN-Q01-SEX-G
       *
+      *    本人家族コンボ初期処理
+           PERFORM 3101-HONKZKKBN-CMB-SYOKI-SEC
+      *
       *    保険の種類・公費の種類コンボ初期処理
            PERFORM 3101-HKNKOH-CMB-SYOKI-SEC
       *
@@ -573,6 +582,22 @@
 	   .
       *
        3101-SEX-CMB-SYOKI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    本人家族コンボ初期処理
+      *****************************************************************
+       3101-HONKZKKBN-CMB-SYOKI-SEC       SECTION.
+      *
+           MOVE    2                   TO  SPA-GMN-Q01-HONKZKKBNLST-MAX
+      *
+           MOVE    "1"                 TO  SPA-GMN-Q01-HONKZKKBNL    (1)
+           MOVE    "本人"              TO  SPA-GMN-Q01-HONKZKKBNMEIL (1)
+           MOVE    "2"                 TO  SPA-GMN-Q01-HONKZKKBNL    (2)
+           MOVE    "家族"              TO  SPA-GMN-Q01-HONKZKKBNMEIL (2)
+      *
+           .
+       3101-HONKZKKBN-CMB-SYOKI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1220,6 +1245,9 @@
                                        TO  SPA-GMN-Q01-COMMENT  (IDXB)
            END-PERFORM
       *
+      *    本人家族
+           MOVE    Q01-HONKZKKBN       TO  SPA-GMN-Q01-HONKZKKBN-G
+      *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL   IDXB    >       5
       *
@@ -1408,6 +1436,12 @@
       *    保険　公費タブ入力チェック処理
       *****************************************************************
        4101-HKN-INPUT-CHK-SEC          SECTION.
+      *
+      *    本人家族チェック
+           PERFORM 4114-HONKZKKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-HKN-INPUT-CHK-EXT
+           END-IF
       *
       *    保険者番号チェック
            PERFORM VARYING IDXA    FROM    1   BY  1
@@ -2193,6 +2227,42 @@
            EXIT.
       *
       *****************************************************************
+      *    本人家族チェック処理
+      *****************************************************************
+       4114-HONKZKKBN-CHK-SEC             SECTION.
+      *
+           COMPUTE WRK-ERR-CUR         =   201
+      *
+           IF    ( SPA-GMN-Q01-HONKZKKBN-G =   SPACE )
+               GO  TO  4114-HONKZKKBN-CHK-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-CHK
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   SPA-GMN-Q01-HONKZKKBNLST-MAX )
+               IF    ( SPA-GMN-Q01-HONKZKKBN
+                                   =   SPA-GMN-Q01-HONKZKKBNL (IDX2))
+                   MOVE    SPA-GMN-Q01-HONKZKKBNLST (IDX2)
+                                       TO  SPA-GMN-Q01-HONKZKKBN-G
+                   MOVE    1           TO  FLG-CHK
+                   MOVE    SPA-GMN-Q01-HONKZKKBNLST-MAX
+                                       TO  IDX2
+               END-IF
+           END-PERFORM
+      *
+           IF    ( FLG-CHK         =   ZERO )
+               MOVE    "0113"          TO  SPA-ERRCD
+               MOVE    WRK-ERR-CUR     TO  SPA-GMN-Q01-CUR
+               GO TO   4114-HONKZKKBN-CHK-EXT
+           END-IF
+      *
+      *
+           .
+       4114-HONKZKKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    保険者番号チェック処理
       *****************************************************************
        4114-HKNJANUM-CHK-SEC           SECTION.
@@ -2209,7 +2279,7 @@
       *
            MOVE    IDXA                TO  IDX1
       *
-           COMPUTE WRK-ERR-CUR         =   205 +   IDX1
+           COMPUTE WRK-ERR-CUR         =   206 +   IDX1
       *
            IF    ( SPA-GMN-Q01-HKNNUM-G (IDX1) =   SPACE )
                GO  TO  4114-HKNNUM-CHK-EXT
@@ -2221,6 +2291,8 @@
                    UNTIL ( IDX2    >   SPA-GMN-Q01-HKNNUMLST-MAX )
                IF    ( SPA-GMN-Q01-HKNNUM (IDX1)
                                        =   SPA-GMN-Q01-HKNNUML (IDX2))
+                   MOVE    SPA-GMN-Q01-HKNNUMLST (IDX2)
+                                       TO  SPA-GMN-Q01-HKNNUM-G (IDX1)
                    MOVE    1           TO  FLG-CHK
                    MOVE    SPA-GMN-Q01-HKNNUMLST-MAX
                                        TO  IDX2
@@ -2289,7 +2361,7 @@
       *
            MOVE    IDXA                TO  IDX1
       *
-           COMPUTE WRK-ERR-CUR         =   220 +   IDX1
+           COMPUTE WRK-ERR-CUR         =   221 +   IDX1
       *
            IF    ( SPA-GMN-Q01-KOHNUM-G (IDX1) =   SPACE )
                GO  TO  4116-KOHNUM-CHK-EXT
@@ -2301,6 +2373,8 @@
                    UNTIL ( IDX2    >   SPA-GMN-Q01-KOHNUMLST-MAX )
                IF    ( SPA-GMN-Q01-KOHNUM (IDX1)
                                        =   SPA-GMN-Q01-KOHNUML (IDX2))
+                   MOVE    SPA-GMN-Q01-KOHNUMLST (IDX2)
+                                       TO  SPA-GMN-Q01-KOHNUM-G (IDX1)
                    MOVE    1           TO  FLG-CHK
                    MOVE    SPA-GMN-Q01-KOHNUMLST-MAX
                                        TO  IDX2
@@ -2469,6 +2543,8 @@
       *
                IF  ( SPA-GMN-Q01-UBYOMEI
                                    =   SPA-GMN-Q01-UBYOMEIL (IDX2))
+                   MOVE    SPA-GMN-Q01-UBYOMEILST (IDX2)
+                                   TO  SPA-GMN-Q01-UBYOMEI-G
                    MOVE    IDX2        TO  WRK-IDX
                    MOVE    100         TO  IDX2
                END-IF
@@ -3046,6 +3122,8 @@
                    UNTIL ( IDX2    >   SPA-GMN-Q01-SORTLST-MAX )
                IF    ( SPA-GMN-Q01-KMK (IDX1)
                                        =   SPA-GMN-Q01-SORTL (IDX2))
+                   MOVE    SPA-GMN-Q01-SORTLST (IDX2)
+                                       TO  SPA-GMN-Q01-KMK-G (IDX1)
                    MOVE    1           TO  FLG-CHK
                    MOVE    SPA-GMN-Q01-SORTLST-MAX
                                        TO  IDX2
@@ -3965,6 +4043,8 @@
                MOVE    SPACE               TO  SPA-Q01-KOHNUM-JKN
            END-IF
       *
+           MOVE    SPA-GMN-Q01-HONKZKKBN   TO  SPA-Q01-HONKZKKBN
+      *
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC    >   5 )
       *
@@ -4199,7 +4279,8 @@
       *
       *
       *    該当（５）
-           IF  ( SPA-Q01-HKNJANUM-G        NOT =   SPACE )
+           IF  ( SPA-Q01-HONKZKKBN         NOT =   SPACE )
+            OR ( SPA-Q01-HKNJANUM-G        NOT =   SPACE )
             OR ( SPA-Q01-HKNNUM-G          NOT =   SPACE )
             OR ( SPA-Q01-KIGO-G            NOT =   SPACE )
             OR ( SPA-Q01-NUM-G             NOT =   SPACE )
@@ -4407,8 +4488,20 @@
                                            TO  Q01-COMMENT (IDX1)
            END-PERFORM
       *
+      *    本人家族
+           MOVE    SPA-GMN-Q01-HONKZKKBN-G TO  Q01-HONKZKKBN
+           MOVE    SPA-GMN-Q01-HONKZKKBNLST-MAX
+                                           TO  Q01-CMB-HONKZKKBN-COUNT
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       5
+                   UNTIL ( IDX1    >   SPA-GMN-Q01-HONKZKKBNLST-MAX )
+      *
+               MOVE    SPA-GMN-Q01-HONKZKKBNLST (IDX1)
+                                   TO  Q01-CMB-HONKZKKBN-ITEM (IDX1)
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   5 )
       *
       *        保険者番号
                MOVE    SPA-GMN-Q01-HKNJANUM(IDX1)
@@ -4664,64 +4757,66 @@
       *
       *    保険・公費タブ
            WHEN   201
-               MOVE  "HKNJANUM1"   TO  MCP-WIDGET
+               MOVE  "HONKZKKBN"   TO  MCP-WIDGET
            WHEN   202
-               MOVE  "HKNJANUM2"   TO  MCP-WIDGET
+               MOVE  "HKNJANUM1"   TO  MCP-WIDGET
            WHEN   203
-               MOVE  "HKNJANUM3"   TO  MCP-WIDGET
+               MOVE  "HKNJANUM2"   TO  MCP-WIDGET
            WHEN   204
-               MOVE  "HKNJANUM4"   TO  MCP-WIDGET
+               MOVE  "HKNJANUM3"   TO  MCP-WIDGET
            WHEN   205
-               MOVE  "HKNJANUM5"   TO  MCP-WIDGET
+               MOVE  "HKNJANUM4"   TO  MCP-WIDGET
            WHEN   206
-               MOVE  "HKNNUM1"     TO  MCP-WIDGET
+               MOVE  "HKNJANUM5"   TO  MCP-WIDGET
            WHEN   207
-               MOVE  "HKNNUM2"     TO  MCP-WIDGET
+               MOVE  "HKNNUM1"     TO  MCP-WIDGET
            WHEN   208
-               MOVE  "HKNNUM3"     TO  MCP-WIDGET
+               MOVE  "HKNNUM2"     TO  MCP-WIDGET
            WHEN   209
-               MOVE  "HKNNUM4"     TO  MCP-WIDGET
+               MOVE  "HKNNUM3"     TO  MCP-WIDGET
            WHEN   210
-               MOVE  "HKNNUM5"     TO  MCP-WIDGET
+               MOVE  "HKNNUM4"     TO  MCP-WIDGET
            WHEN   211
-               MOVE  "KIGO1"       TO  MCP-WIDGET
+               MOVE  "HKNNUM5"     TO  MCP-WIDGET
            WHEN   212
-               MOVE  "NUM1"        TO  MCP-WIDGET
+               MOVE  "KIGO1"       TO  MCP-WIDGET
            WHEN   213
-               MOVE  "KIGO2"       TO  MCP-WIDGET
+               MOVE  "NUM1"        TO  MCP-WIDGET
            WHEN   214
-               MOVE  "NUM2"        TO  MCP-WIDGET
+               MOVE  "KIGO2"       TO  MCP-WIDGET
            WHEN   215
-               MOVE  "KIGO3"       TO  MCP-WIDGET
+               MOVE  "NUM2"        TO  MCP-WIDGET
            WHEN   216
-               MOVE  "NUM3"        TO  MCP-WIDGET
+               MOVE  "KIGO3"       TO  MCP-WIDGET
            WHEN   217
-               MOVE  "KIGO4"       TO  MCP-WIDGET
+               MOVE  "NUM3"        TO  MCP-WIDGET
            WHEN   218
-               MOVE  "NUM4"        TO  MCP-WIDGET
+               MOVE  "KIGO4"       TO  MCP-WIDGET
            WHEN   219
-               MOVE  "KIGO5"       TO  MCP-WIDGET
+               MOVE  "NUM4"        TO  MCP-WIDGET
            WHEN   220
-               MOVE  "NUM5"        TO  MCP-WIDGET
+               MOVE  "KIGO5"       TO  MCP-WIDGET
            WHEN   221
-               MOVE  "KOHNUM1"     TO  MCP-WIDGET
+               MOVE  "NUM5"        TO  MCP-WIDGET
            WHEN   222
-               MOVE  "KOHNUM2"     TO  MCP-WIDGET
+               MOVE  "KOHNUM1"     TO  MCP-WIDGET
            WHEN   223
-               MOVE  "KOHNUM3"     TO  MCP-WIDGET
+               MOVE  "KOHNUM2"     TO  MCP-WIDGET
            WHEN   224
-               MOVE  "KOHNUM4"     TO  MCP-WIDGET
+               MOVE  "KOHNUM3"     TO  MCP-WIDGET
            WHEN   225
-               MOVE  "KOHNUM5"     TO  MCP-WIDGET
+               MOVE  "KOHNUM4"     TO  MCP-WIDGET
            WHEN   226
-               MOVE  "FTNJANUM1"   TO  MCP-WIDGET
+               MOVE  "KOHNUM5"     TO  MCP-WIDGET
            WHEN   227
-               MOVE  "FTNJANUM2"   TO  MCP-WIDGET
+               MOVE  "FTNJANUM1"   TO  MCP-WIDGET
            WHEN   228
-               MOVE  "FTNJANUM3"   TO  MCP-WIDGET
+               MOVE  "FTNJANUM2"   TO  MCP-WIDGET
            WHEN   229
-               MOVE  "FTNJANUM4"   TO  MCP-WIDGET
+               MOVE  "FTNJANUM3"   TO  MCP-WIDGET
            WHEN   230
+               MOVE  "FTNJANUM4"   TO  MCP-WIDGET
+           WHEN   231
                MOVE  "FTNJANUM5"   TO  MCP-WIDGET
       *
       *    病名・診療行為タブ
@@ -4857,66 +4952,68 @@
                MOVE  133           TO  SPA-GMN-Q01-CUR
       *
       *    保険・公費タブ
-           WHEN   "HKNJANUM1"
+           WHEN   "HONKZKKBN"
                MOVE  201           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNJANUM2"
+           WHEN   "HKNJANUM1"
                MOVE  202           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNJANUM3"
+           WHEN   "HKNJANUM2"
                MOVE  203           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNJANUM4"
+           WHEN   "HKNJANUM3"
                MOVE  204           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNJANUM5"
+           WHEN   "HKNJANUM4"
                MOVE  205           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNNUM1"
+           WHEN   "HKNJANUM5"
                MOVE  206           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNNUM2"
+           WHEN   "HKNNUM1"
                MOVE  207           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNNUM3"
+           WHEN   "HKNNUM2"
                MOVE  208           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNNUM4"
+           WHEN   "HKNNUM3"
                MOVE  209           TO  SPA-GMN-Q01-CUR
-           WHEN   "HKNNUM5"
+           WHEN   "HKNNUM4"
                MOVE  210           TO  SPA-GMN-Q01-CUR
-           WHEN   "KIGO1"
+           WHEN   "HKNNUM5"
                MOVE  211           TO  SPA-GMN-Q01-CUR
-           WHEN   "NUM1"
+           WHEN   "KIGO1"
                MOVE  212           TO  SPA-GMN-Q01-CUR
-           WHEN   "KIGO2"
+           WHEN   "NUM1"
                MOVE  213           TO  SPA-GMN-Q01-CUR
-           WHEN   "NUM2"
+           WHEN   "KIGO2"
                MOVE  214           TO  SPA-GMN-Q01-CUR
-           WHEN   "KIGO3"
+           WHEN   "NUM2"
                MOVE  215           TO  SPA-GMN-Q01-CUR
-           WHEN   "NUM3"
+           WHEN   "KIGO3"
                MOVE  216           TO  SPA-GMN-Q01-CUR
-           WHEN   "KIGO4"
+           WHEN   "NUM3"
                MOVE  217           TO  SPA-GMN-Q01-CUR
-           WHEN   "NUM4"
+           WHEN   "KIGO4"
                MOVE  218           TO  SPA-GMN-Q01-CUR
-           WHEN   "KIGO5"
+           WHEN   "NUM4"
                MOVE  219           TO  SPA-GMN-Q01-CUR
-           WHEN   "NUM5"
+           WHEN   "KIGO5"
                MOVE  220           TO  SPA-GMN-Q01-CUR
-           WHEN   "KOHNUM1"
+           WHEN   "NUM5"
                MOVE  221           TO  SPA-GMN-Q01-CUR
-           WHEN   "KOHNUM2"
+           WHEN   "KOHNUM1"
                MOVE  222           TO  SPA-GMN-Q01-CUR
-           WHEN   "KOHNUM3"
+           WHEN   "KOHNUM2"
                MOVE  223           TO  SPA-GMN-Q01-CUR
-           WHEN   "KOHNUM4"
+           WHEN   "KOHNUM3"
                MOVE  224           TO  SPA-GMN-Q01-CUR
-           WHEN   "KOHNUM5"
+           WHEN   "KOHNUM4"
                MOVE  225           TO  SPA-GMN-Q01-CUR
-           WHEN   "FTNJANUM1"
+           WHEN   "KOHNUM5"
                MOVE  226           TO  SPA-GMN-Q01-CUR
-           WHEN   "FTNJANUM2"
+           WHEN   "FTNJANUM1"
                MOVE  227           TO  SPA-GMN-Q01-CUR
-           WHEN   "FTNJANUM3"
+           WHEN   "FTNJANUM2"
                MOVE  228           TO  SPA-GMN-Q01-CUR
-           WHEN   "FTNJANUM4"
+           WHEN   "FTNJANUM3"
                MOVE  229           TO  SPA-GMN-Q01-CUR
-           WHEN   "FTNJANUM5"
+           WHEN   "FTNJANUM4"
                MOVE  230           TO  SPA-GMN-Q01-CUR
+           WHEN   "FTNJANUM5"
+               MOVE  231           TO  SPA-GMN-Q01-CUR
       *
       *    病名・診療行為タブ
            WHEN   "BYOBUN"
@@ -5089,6 +5186,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0112"
                MOVE    "項目名入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0113"
+               MOVE    "本人家族入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "開始診療年月日＞終了診療年月日となっています"
