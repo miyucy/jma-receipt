@@ -2550,6 +2550,7 @@
       *
       *    保険組合せ
            MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  P02-HKNLIST-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-HKNCOMBI-MAX
                ADD     1                   TO  IDX2
@@ -2575,7 +2576,7 @@
       *
                MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
            END-PERFORM
-           MOVE    SPA-HKNCOMBI-MAX    TO  P02-HKNLIST-COUNT
+           MOVE    IDX2                TO  P02-HKNLIST-COUNT
       *
            MOVE    SPA-GMN-SELNUM      TO  P02-P02-SELNUM
       *
