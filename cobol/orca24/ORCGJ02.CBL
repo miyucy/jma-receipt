@@ -3955,6 +3955,19 @@
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
       *
+      *    ø«Œ≈≤ Õ˙ŒÚ —ππ
+           INITIALIZE                  ORCSKARRKAREA
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
+           MOVE    SPA-NAI-SRYYM       TO  SKARRK-SRYYM
+           MOVE    SPA-SRYKA           TO  WRK-SRYKA
+           MOVE    SPA-RRK-SRYKA  (SPA-NAI-RRKSELNUM)
+                                       TO  SPA-SRYKA
+           CALL    "ORCSKARRK"         USING
+                                       ORCSKARRKAREA
+                                       SPA-AREA
+           MOVE    WRK-SRYKA           TO  SPA-SRYKA
+      *
+      *
       *    ºıø«œ¢»÷§Œ —ππ∆¸∫∆ ‘Ω∏
            MOVE    ZERO                TO  FLG-JYURRK-UPD
            PERFORM 4101613-JYURRK-SEISET-SEC
