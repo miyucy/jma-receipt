@@ -1608,6 +1608,17 @@
                                            ORCMCPAREA
                                            MCPDATA-REC.
       *
+           IF   LNK-SYU-SHOKUJI1-NISSU      =  ZERO
+           AND  LNK-SYU-SHOKUJI2-NISSU  NOT =  ZERO
+      *
+             MOVE  LNK-SYU-SHOKUJI2-NISSU  TO  LNK-SYU-SHOKUJI1-NISSU
+             MOVE  LNK-SYU-SHOKUJI2        TO  LNK-SYU-SHOKUJI1
+      *
+             MOVE  ZERO                    TO  LNK-SYU-SHOKUJI2-NISSU
+             MOVE  ZERO                    TO  LNK-SYU-SHOKUJI2
+      *
+           END-IF.
+      *
        2300-SHOKUJI-KEISAN-EXT.
            EXIT.
       *
