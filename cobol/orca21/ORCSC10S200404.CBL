@@ -1349,6 +1349,10 @@
                END-IF
            END-PERFORM
       *
+           IF      WRK-YMD(1:6)        =   SPACE
+               MOVE    SPACE           TO  WRK-YMD
+           END-IF
+      *
            MOVE    WRK-YMD             TO  SPA-KYUSEI-YMD
       *    180Æü¸å·×»»
            IF      WRK-YMD             =   SPACE
