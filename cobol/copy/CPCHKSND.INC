@@ -37,15 +37,15 @@
       *連番号
                05  CHKSND-RENNUM         PIC  9(03).
       *適用コード
-               05  CHKSND-CD             PIC  X(170).
+           03  CHKSND-CD                 PIC  X(170).
       *病名
-               05  CHKSND-BYOMEI         PIC  X(160).
+           03  CHKSND-BYOMEI             PIC  X(160).
       *条件区分
-               05  CHKSND-COMPKBN        PIC  X(1).
+           03  CHKSND-COMPKBN            PIC  X(1).
       *病名編集フラグ
-               05  CHKSND-BYOMEIHENFLG   PIC  X(1).
+           03  CHKSND-BYOMEIHENFLG       PIC  X(1).
       *入外区分
-               05  CHKSND-NYUGAIKBN      PIC  X(1).
+           03  CHKSND-NYUGAIKBN          PIC  X(1).
       *端末ＩＤ
            03  CHKSND-TERMID             PIC  X(16).
       *オペーレータＩＤ
