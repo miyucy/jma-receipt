@@ -226,7 +226,6 @@
                    GO  TO              200-MAIN-EXT
            END-IF
       *    更新プログラム実行
-           DISPLAY "take para-uppg = " PARA-UPPG
            CALL    PARA-UPPG           USING
                                        LNK-AREA
       *
