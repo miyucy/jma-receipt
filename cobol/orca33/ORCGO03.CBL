@@ -1136,7 +1136,7 @@
                                    =   ZERO
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "7777"          TO  SPA-ERRCD
-                   MOVE    "レセプト印刷中です"
+                   MOVE    "請求書印刷中です"
                                            TO  WRK-TEIKIERR
                ELSE
       *************IF     JOB-TERMID       =   SPA-TERMID     
@@ -1578,7 +1578,7 @@
                WHEN    "1002"
                    MOVE    "指定印刷をします"        TO  WRK-OIDMSG
                WHEN    "6666"
-                   MOVE    "レセプト印刷中です"      TO  WRK-OIDMSG
+                   MOVE    "請求書印刷中です"      TO  WRK-OIDMSG
                WHEN    "8888"
                    MOVE    "処理が正常に終了しました"
                                                      TO  WRK-OIDMSG
