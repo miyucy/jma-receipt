@@ -39,6 +39,8 @@
       *  01.00.08    NACL-Æ£¸¶    03/05/09  ÆþÂà±¡ÍúÎò¾ðÊó¤ËÆþ±¡Ãæ¶èÊ¬¤ÎÄÉ²Ã
       *  01.00.09    NACL-ÌçÏÆ    03/05/28  ÉÂÅïÈÖ¹æ¡¦¼ïÊÌÊÔ½¸
       *  01.00.10    NACL-Æ£¸¶    03/06/16  ¥ì¥»¥×¥È¼ïÊÌ¤Î½¤Àµ
+      *  01.00.11    NACL-Æ£¸¶    03/07/25  Æþ±¡Îò¤ËÏ«ºÒ¡¦¼«ÇåÀÕ¤òÂÐ¾Ý
+      *                                     ¤È¤·¤Ê¤¤¤è¤¦¤Ë¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -191,7 +193,8 @@
            03  FLG-TNKRRK                              PIC 9(01).
            03  FLG-PTNYUINRRK                          PIC 9(01).
            03  FLG-PTNYUINRRK12                        PIC 9(01).
-           03  FLG-PTNYUINRRK13                        PIC 9(01).
+           03  FLG-PTNYUINRRK22                        PIC 9(01).
+           03  FLG-PTNYUINRRK23                        PIC 9(01).
            03  FLG-ARI                                 PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
@@ -274,6 +277,7 @@
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                        BY         //WRK-PTNYUINRRK-//.
       *
+      *    ¸ÇÄêÃÍ
        01  WRK-CONS-AREA.
       *    
       *    À¸³èÊÝ¸îÊÝ¸±ÈÖ¹æ 
@@ -544,7 +548,7 @@
       *
                IF      IDZ             =   1               
                    PERFORM 230-RECE69-HENSYU-SEC
-                   PERFORM 240-RECE68-HENSYU-SEC
+                   PERFORM 240-PTNYUINRRK-SYORI-SEC
                END-IF
       *
                PERFORM     220-DATA-WRITE-SEC
@@ -611,59 +615,6 @@
                    OR      RECE61-SRYKA (IDX)  =   SPACE
                MOVE    RECE61-SRYKA (IDX)  TO  RECE62-SRYKA (IDX)
            END-PERFORM
-      *
-           INITIALIZE                      PTNYUINRRK-REC
-           MOVE    RECE61-HOSPID       TO  PTNYUINRRK-HOSPID
-           MOVE    RECE61-PTID         TO  PTNYUINRRK-PTID
-           MOVE    RECE61-SRYYM        TO  PTNYUINRRK-NYUINYMD (1:6)
-           MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING   MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
-               PERFORM 900-PTNYUINRRK-KEY12-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTNYUINRRK12    
-           END-IF
-           PERFORM                     UNTIL   FLG-PTNYUINRRK12    =   1
-               IF      PTNYUINRRK-NYUINYMD (1:6)
-                                           =   RECE62-SRYYM
-               OR      PTNYUINRRK-TAIINYMD (1:6)
-                                           >=  RECE62-SRYYM
-                   PERFORM VARYING IDW FROM    1   BY  1
-                           UNTIL   IDW >       20
-                           OR      PTNYUINRRK-NYUINKA
-                                               =   RECE62-SRYKA (IDW)
-                       IF      RECE62-SRYKA (IDW)  =   SPACE  
-                           PERFORM VARYING IDX FROM    1   BY  1
-                                   UNTIL   IDX >       10
-                                   OR      RECE62-HKNCOMBI (IDX)
-                                                       =   ZERO
-                               IF      RECE62-HKNCOMBI (IDX)   =
-                                               PTNYUINRRK-HKNCOMBINUM
-                                   MOVE    PTNYUINRRK-NYUINKA  
-                                               TO  RECE62-SRYKA (IDW)
-                                   MOVE    10  TO  IDX
-                               END-IF
-                           END-PERFORM
-                           MOVE    20          TO  IDW
-                       END-IF
-                   END-PERFORM
-               END-IF
-               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
-               PERFORM 900-PTNYUINRRK-KEY12-READ-SEC
-           END-PERFORM
-      *                 
-           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING   MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
-
       *    ¿³ºº»ÙÊ§µ¡´Ø
            IF      RECE61-HKNNUM        =   "060"   OR    "067"
                MOVE    2                TO  RECE62-TEISYUTUSAKI
@@ -1064,39 +1015,8 @@
       *
            END-IF
       *
-      *    Æþ±¡Ç¯·îÆü¡¦ºÇ½ª²Ê
-           INITIALIZE                      PTNYUINRRK-REC
-           MOVE    RECE61-HOSPID       TO  PTNYUINRRK-HOSPID
-           MOVE    RECE61-PTID         TO  PTNYUINRRK-PTID
-           MOVE    RECE62-SRYYM        TO  PTNYUINRRK-NYUINYMD (1:6)
-           MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY12"  TO  WRK-PATH
-           PERFORM 900-PTNYUINRRK-INV-SEC
-           IF      FLG-PTNYUINRRK       =   ZERO
-               MOVE    PTNYUINRRK-NYUINYMD TO  RECE62-NYUINYMD
-               MOVE    PTNYUINRRK-NYUINKA  TO  RECE62-LASTSRYKA
-               MOVE    PTNYUINRRK-REC      TO  WRK-PTNYUINRRK-REC
-               INITIALIZE                      PTNYUINRRK-REC
-               MOVE    RECE61-HOSPID       TO  PTNYUINRRK-HOSPID
-               MOVE    RECE61-PTID         TO  PTNYUINRRK-PTID
-               MOVE    WRK-PTNYUINRRK-SHONUM
-                                           TO  PTNYUINRRK-SHONUM
-               MOVE    RECE62-SRYYM        TO  PTNYUINRRK-NYUINYMD (1:6)
-               MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
-               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-               MOVE    "PTNYUINRRK-KEY13"  TO  WRK-PATH
-               PERFORM 900-PTNYUINRRK-INV-SEC
-               IF      FLG-PTNYUINRRK      =   ZERO
-                   MOVE    PTNYUINRRK-NYUINYMD TO  RECE62-NYUINYMD
-               END-IF
-           END-IF        
-      *
       *    ÉÂ±¡¡¦¿ÇÎÅ½ê¶èÊ¬
            MOVE    SYS-1001-HOSPSBT TO  RECE62-HOSPSBT               
-      *
-      *    ÉÂÅï¶èÊ¬¥»¥Ã¥È
-           PERFORM    BYOTOKBN-SET-SEC
       *
       *    ¥ì¥»¥×¥È¼ïÊÌÉÔÌÀ¥¨¥é¡¼¾ðÊó
            IF      RECE61-TEISEIKBN      =   "1"
@@ -1988,117 +1908,6 @@
            EXIT.
       *
       *****************************************************************
-      *    ÉÂÅï¶èÊ¬¥»¥Ã¥È                                              
-      *****************************************************************
-       BYOTOKBN-SET-SEC                SECTION.                        
-      *                                                                
-           INITIALIZE                      WRK-BYOTOKBN-TABLE          
-      *                                                                
-           INITIALIZE                      PTNYUINRRK-REC              
-           MOVE    RECE61-HOSPID       TO  PTNYUINRRK-HOSPID           
-           MOVE    RECE61-PTID         TO  PTNYUINRRK-PTID             
-           MOVE    RECE62-SRYYM        TO  PTNYUINRRK-NYUINYMD (1:6)   
-           MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)   
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC                 
-           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH                  
-           MOVE    "DBSELECT"          TO  MCP-FUNC                    
-           CALL    "ORCMCPSUB"         USING   MCPAREA                 
-                                               ORCMCPAREA              
-                                               MCPDATA-REC             
-           IF      MCP-RC              =   ZERO                        
-               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH              
-               PERFORM 900-PTNYUINRRK-KEY12-READ-SEC                   
-           ELSE                                                        
-               MOVE    1                   TO  FLG-PTNYUINRRK12        
-           END-IF                                                      
-           PERFORM   UNTIL   FLG-PTNYUINRRK12    =   1                 
-                      OR     PTNYUINRRK-TAIINYMD (1:6)                 
-                                           <   RECE62-SRYYM            
-               IF      PTNYUINRRK-NYUINYMD (1:6)                       
-                                           <=  RECE62-SRYYM            
-      *             ÉÂÅï¾ðÊó                                           
-                    MOVE    SPACE                 TO  SYSKANRI-REC     
-                    INITIALIZE                        SYSKANRI-REC     
-                    MOVE    "5001"                TO  SYS-KANRICD      
-                    MOVE    PTNYUINRRK-BTUNUM     TO  SYS-KBNCD        
-                    MOVE    PTNYUINRRK-TENNYUYMD  TO  ORC-DBYMD        
-                    PERFORM 960-SYSKANRI-READ-SEC                      
-                    IF      FLG-SYSKANRI        =   ZERO               
-                      MOVE  MCPDATA-REC           TO  SYS-5001-REC     
-                      IF    SYS-5001-RECEDSPKBN =  SPACE               
-                        CONTINUE                                       
-                      ELSE                                             
-                        MOVE     ZERO     TO    FLG-ARI                
-                        PERFORM  VARYING  IDX3   FROM    1   BY  1     
-                                 UNTIL    IDX3    >  4                 
-                                  OR    WRK-BYOTOKBN(IDX3) = SPACE     
-                                  OR    FLG-ARI            = 1         
-                             IF  WRK-BYOTOKBN(IDX3)                    
-                                        =  SYS-5001-RECEDSPKBN         
-                                 MOVE  1   TO   FLG-ARI                
-                             END-IF                                    
-                        END-PERFORM                                    
-                        IF   FLG-ARI  =  ZERO                          
-                        AND  IDX3    <=  4                             
-                             MOVE   SYS-5001-RECEDSPKBN                
-                                           TO   WRK-BYOTOKBN(IDX3)     
-                        END-IF                                         
-                      END-IF                                           
-      *               ÉÂÅïÈÖ¹æ¡¦¼ïÊÌ
-                      MOVE   RECE62-SRYYM  TO  WRK-SRYYYMM
-                      PERFORM  VARYING  IDX3   FROM    1   BY  1
-                                 UNTIL    IDX3    >  31
-                        MOVE    IDX3       TO  WRK-SRYDD
-                        IF   PTNYUINRRK-TENNYUYMD  <=  WRK-SRYYMD
-                        AND  PTNYUINRRK-TENSTUYMD  >=  WRK-SRYYMD
-                          IF   RECE62-BYOTONUM(IDX3)     =  SPACE
-                             MOVE  SYS-5001-BTU-NUM
-                                      TO    RECE62-BYOTONUM(IDX3)
-                             MOVE  SYS-5001-BTU-SBT
-                                      TO    RECE62-BYOTOSYUBETU(IDX3)
-                          END-IF
-                        END-IF
-                      END-PERFORM
-      *
-                    END-IF                                             
-               END-IF                                                  
-               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH              
-               PERFORM 900-PTNYUINRRK-KEY12-READ-SEC                   
-           END-PERFORM                                                 
-      *                                                                
-           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH                  
-           MOVE    "DBCLOSE"           TO  MCP-FUNC                    
-           CALL    "ORCMCPSUB"         USING   MCPAREA                 
-                                               ORCMCPAREA              
-                                               MCPDATA-REC             
-      *                                                                
-      *    ¥³¡¼¥É½ç¤ËÊÂ¤ÓÂØ¤¨                                          
-      *                                                                
-           PERFORM    VARYING   IDX3     FROM    1   BY  1             
-                  UNTIL  ( IDX3                   >   4    )           
-                    OR   ( WRK-BYOTOKBN(IDX3)     =  SPACE )           
-             COMPUTE    IDX4  =  IDX3  +  1                            
-             PERFORM  VARYING  IDX5  FROM  IDX4  BY  1                 
-                        UNTIL  ( IDX5                >   4    )        
-                          OR   ( WRK-BYOTOKBN(IDX5)  =  SPACE )        
-                IF       WRK-BYOTOKBN(IDX3)  >                         
-                                           WRK-BYOTOKBN(IDX5)          
-                   MOVE  WRK-BYOTOKBN(IDX3) TO  WRK-BYOTOKBN-DATA      
-                   MOVE  WRK-BYOTOKBN(IDX5) TO  WRK-BYOTOKBN(IDX3)     
-                   MOVE  WRK-BYOTOKBN-DATA  TO  WRK-BYOTOKBN(IDX5)     
-                END-IF                                                 
-             END-PERFORM                                               
-           END-PERFORM                                                 
-      *                                                                
-           PERFORM    VARYING   IDX3     FROM    1   BY  1             
-                  UNTIL   IDX3    >     4                              
-                MOVE    WRK-BYOTOKBN(IDX3)  TO  RECE62-BYOTOKBN(IDX3)  
-           END-PERFORM                                                 
-           .                                                           
-       BYOTOKBN-SET-EXT.                                               
-           EXIT.                                                       
-      *
-      *****************************************************************
       *    ¥Ç¡¼¥¿½ÐÎÏ½èÍý
       *****************************************************************
        220-DATA-WRITE-SEC                SECTION.
@@ -2212,87 +2021,233 @@
            EXIT.
       * 
       *****************************************************************
-      *    ÆþÂà±¡ÍúÎò¾ðÊóÊÔ½¸½èÍý
+      *    ÆþÂà±¡ÍúÎò¤è¤ê¾ðÊó¼èÆÀ½èÍý
       *****************************************************************
-       240-RECE68-HENSYU-SEC                   SECTION.
+       240-PTNYUINRRK-SYORI-SEC                   SECTION.
+      *
+           INITIALIZE                      WRK-BYOTOKBN-TABLE
       *
       *    ¿ÇÎÅ·îÆâ¤ÎÆþÂà±¡¾ðÊó
            INITIALIZE                      PTNYUINRRK-REC
-           MOVE    RECE61-HOSPID       TO  PTNYUINRRK-HOSPID
-           MOVE    RECE61-PTID         TO  PTNYUINRRK-PTID
-           MOVE    RECE61-SRYYM        TO  PTNYUINRRK-NYUINYMD (1:6)
+           MOVE    RECE62-HOSPID       TO  PTNYUINRRK-HOSPID
+           MOVE    RECE62-PTID         TO  PTNYUINRRK-PTID
+           MOVE    RECE62-SRYYM        TO  PTNYUINRRK-NYUINYMD (1:6)
            MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
+           MOVE    RECE62-SRYYM        TO  PTNYUINRRK-TAIINYMD (1:6)
+           MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+           MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING   MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
-               PERFORM 900-PTNYUINRRK-KEY12-READ-SEC
+               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
+               PERFORM 900-PTNYUINRRK-KEY23-READ-SEC
            ELSE
-               MOVE    1                   TO  FLG-PTNYUINRRK12    
+               MOVE    1                   TO  FLG-PTNYUINRRK23
            END-IF
-           PERFORM                     UNTIL   FLG-PTNYUINRRK12    =   1
+           PERFORM                 UNTIL   FLG-PTNYUINRRK23    =   1
                IF      PTNYUINRRK-NYUINYMD (1:6)
-                                           =   RECE62-SRYYM
-               OR      PTNYUINRRK-TAIINYMD (1:6)
-                                           >=  RECE62-SRYYM
-                   PERFORM 2401-RECE68-WRITE-SEC
-      *            ¿ÇÎÅ·îÆâ¤ÎÆþÂà±¡¾ðÊó¤ÎÍúÎò
-                   IF      FLG-RECE68          =   1                            
-                       MOVE    PTNYUINRRK-REC  TO  WRK-PTNYUINRRK-REC
-                       INITIALIZE                  PTNYUINRRK-REC
-                       MOVE    RECE61-HOSPID   TO  PTNYUINRRK-HOSPID
-                       MOVE    RECE61-PTID     TO  PTNYUINRRK-PTID
-                       MOVE    WRK-PTNYUINRRK-SHONUM
-                                               TO  PTNYUINRRK-SHONUM
-                       MOVE    RECE61-SRYYM    TO
-                                               PTNYUINRRK-NYUINYMD (1:6)
-                       MOVE    "31"            TO
-                                               PTNYUINRRK-NYUINYMD (7:2)
-                       MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-                       MOVE    "PTNYUINRRK-KEY13"
-                                               TO  ORC-DBPATH
-                       MOVE    "DBSELECT"      TO  MCP-FUNC
-                       CALL    "ORCMCPSUB"     USING   MCPAREA
-                                                       ORCMCPAREA
-                                                       MCPDATA-REC
-                       IF      MCP-RC              =   ZERO
-                           PERFORM 900-PTNYUINRRK-KEY13-READ-SEC
-                       ELSE
-                           MOVE    1               TO  FLG-PTNYUINRRK13 
+                                               <   RECE62-SRYYM
+                   MOVE    1                   TO  IDX4
+               ELSE
+                   MOVE    PTNYUINRRK-NYUINYMD TO  WRK-SRYYMD
+                   MOVE    WRK-SRYDD           TO  IDX4
+               END-IF 
+               IF      PTNYUINRRK-TAIINYMD (1:6)
+                                               >   RECE62-SRYYM
+                   MOVE    31                  TO  IDX5
+               ELSE
+                   MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SRYYMD
+                   MOVE    WRK-SRYDD           TO  IDX5
+               END-IF
+      *        ÊÝ¸±ÁÈ¹ç¤»¤Î¥Á¥§¥Ã¥¯
+               PERFORM VARYING IDX FROM    IDX4    BY  1
+                       UNTIL   IDX >       IDX5
+                   PERFORM VARYING IDY FROM    1   BY  1
+                           UNTIL   IDY >       10
+                           OR  RECE62-HKNCOMBI (IDY)   =   ZERO
+                       IF      RECE61-DAY (IDX)
+                                           =   RECE62-HKNCOMBI (IDY)
+                           PERFORM 2401-PTNYUINRRK-HENSYU-SEC
+                           MOVE    10                  TO  IDY
+                           MOVE   IDX5                 TO  IDX
                        END-IF
-                       PERFORM             UNTIL   FLG-PTNYUINRRK13 =  1
-                           PERFORM 2401-RECE68-WRITE-SEC
-                           PERFORM 900-PTNYUINRRK-KEY13-READ-SEC
-                       END-PERFORM
+                   END-PERFORM
+               END-PERFORM        
       *                 
-                       MOVE    "PTNYUINRRK-KEY13"  TO  ORC-DBPATH
-                       MOVE    "DBCLOSE"           TO  MCP-FUNC
-                       CALL    "ORCMCPSUB"         USING   MCPAREA
-                                                           ORCMCPAREA
-                                                           MCPDATA-REC
-                   END-IF
-               END-IF        
-               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
-               PERFORM 900-PTNYUINRRK-KEY12-READ-SEC
+               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
+               PERFORM 900-PTNYUINRRK-KEY23-READ-SEC
            END-PERFORM        
       *                 
-           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+           MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING   MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
+      *                                                                
+      *    ÉÂÅï¶èÊ¬ÊÂÂØ¤¨
+      *                                                                
+           PERFORM    VARYING   IDX3     FROM    1   BY  1             
+                  UNTIL  ( IDX3                   >   4    )           
+                    OR   ( WRK-BYOTOKBN(IDX3)     =  SPACE )           
+             COMPUTE    IDX4  =  IDX3  +  1                            
+             PERFORM  VARYING  IDX5  FROM  IDX4  BY  1                 
+                        UNTIL  ( IDX5                >   4    )        
+                          OR   ( WRK-BYOTOKBN(IDX5)  =  SPACE )        
+                IF       WRK-BYOTOKBN(IDX3)  >                         
+                                           WRK-BYOTOKBN(IDX5)          
+                   MOVE  WRK-BYOTOKBN(IDX3) TO  WRK-BYOTOKBN-DATA      
+                   MOVE  WRK-BYOTOKBN(IDX5) TO  WRK-BYOTOKBN(IDX3)     
+                   MOVE  WRK-BYOTOKBN-DATA  TO  WRK-BYOTOKBN(IDX5)     
+                END-IF                                                 
+             END-PERFORM                                               
+           END-PERFORM                                                 
+      *                                                                
+           PERFORM    VARYING   IDX3     FROM    1   BY  1             
+                  UNTIL   IDX3    >     4                              
+                MOVE    WRK-BYOTOKBN(IDX3)  TO  RECE62-BYOTOKBN(IDX3)  
+           END-PERFORM                                                 
+      *                                                                
            .
-       240-RECE68-HENSYU-EXT.
+       240-PTNYUINRRK-SYORI-EXT.
            EXIT.
+      * 
+      *****************************************************************
+      *    ÆþÂà±¡ÍúÎò¾ðÊóÊÔ½¸½èÍý
+      *****************************************************************
+       2401-PTNYUINRRK-HENSYU-SEC           SECTION.
+      *
+      *    ÉÂÅï¶èÊ¬¥»¥Ã¥È
+           PERFORM    24011-BYOTOKBN-SET-SEC
+      *
+      *    ¿ÇÎÅ²Ê¾ðÊó¤Î¥»¥Ã¥È
+           PERFORM VARYING IDW FROM    1   BY  1
+                   UNTIL   IDW >       20
+                   OR      PTNYUINRRK-NYUINKA
+                                           =   RECE62-SRYKA (IDW)
+               IF      RECE62-SRYKA (IDW)  =   SPACE  
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       10
+                           OR      RECE62-HKNCOMBI (IDX)
+                                                   =   ZERO
+                       IF      RECE62-HKNCOMBI (IDX)   =
+                                               PTNYUINRRK-HKNCOMBINUM
+                           MOVE    PTNYUINRRK-NYUINKA  
+                                               TO  RECE62-SRYKA (IDW)
+                           MOVE    10  TO  IDX
+                       END-IF
+                   END-PERFORM
+                   MOVE    20          TO  IDW
+               END-IF
+           END-PERFORM
+      *
+      *    Æþ±¡Ç¯·îÆü¡¦ºÇ½ª²Ê
+           IF      RECE62-LASTSRYKA    =   SPACE
+               MOVE    PTNYUINRRK-NYUINYMD TO  RECE62-NYUINYMD
+               MOVE    PTNYUINRRK-NYUINKA  TO  RECE62-LASTSRYKA
+           END-IF
+      *
+      *    ÆþÂà±¡ÍúÎò¾ðÊó
+           PERFORM 24012-RECE68-WRITE-SEC
+      *
+      *    ¿ÇÎÅ·îÆâ¤ÎÆþÂà±¡¾ðÊó¤ÎÍúÎò
+           IF      FLG-RECE68          =   1                            
+               MOVE    PTNYUINRRK-REC  TO  WRK-PTNYUINRRK-REC
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    RECE61-HOSPID   TO  PTNYUINRRK-HOSPID
+               MOVE    RECE61-PTID     TO  PTNYUINRRK-PTID
+               MOVE    WRK-PTNYUINRRK-SHONUM
+                                       TO  PTNYUINRRK-SHONUM
+               MOVE    RECE61-SRYYM    TO  PTNYUINRRK-NYUINYMD (1:6)
+               MOVE    "31"            TO  PTNYUINRRK-NYUINYMD (7:2)
+               MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+               MOVE    "PTNYUINRRK-KEY22"  TO  ORC-DBPATH
+               MOVE    "DBSELECT"      TO  MCP-FUNC
+               CALL    "ORCMCPSUB"     USING   MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   PERFORM 900-PTNYUINRRK-KEY22-READ-SEC
+               ELSE
+                   MOVE    1               TO  FLG-PTNYUINRRK22 
+               END-IF
+      *
+      *        Æþ±¡Ç¯·îÆü
+               IF      PTNYUINRRK-NYUINYMD <    RECE62-NYUINYMD
+                   MOVE    PTNYUINRRK-NYUINYMD TO  RECE62-NYUINYMD
+               END-IF
+      *
+               PERFORM             UNTIL   FLG-PTNYUINRRK22 =  1
+                   PERFORM 24012-RECE68-WRITE-SEC
+                   PERFORM 900-PTNYUINRRK-KEY22-READ-SEC
+               END-PERFORM
+      *                 
+               MOVE    "PTNYUINRRK-KEY22"  TO  ORC-DBPATH
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+           END-IF
+           .
+       2401-PTNYUINRRK-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÉÂÅï¶èÊ¬¥»¥Ã¥È                                              
+      *****************************************************************
+       24011-BYOTOKBN-SET-SEC                SECTION.
+      *
+      *    ÉÂÅï¾ðÊó                                           
+           MOVE    SPACE               TO  SYSKANRI-REC     
+           INITIALIZE                      SYSKANRI-REC     
+           MOVE    "5001"              TO  SYS-KANRICD      
+           MOVE    PTNYUINRRK-BTUNUM   TO  SYS-KBNCD        
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                       TO  ORC-DBYMD        
+           PERFORM 960-SYSKANRI-READ-SEC                      
+           IF      FLG-SYSKANRI        =   ZERO               
+               MOVE  MCPDATA-REC           TO  SYS-5001-REC
+      *
+               IF      SYS-5001-RECEDSPKBN =  SPACE
+                   CONTINUE
+               ELSE
+                   PERFORM VARYING IDX3    FROM    1   BY  1
+                           UNTIL   IDX3    >       4
+                           OR      WRK-BYOTOKBN (IDX3)
+                                           =   SYS-5001-RECEDSPKBN
+                       IF      WRK-BYOTOKBN (IDX3) =   SPACE
+                           MOVE    SYS-5001-RECEDSPKBN
+                                               TO   WRK-BYOTOKBN (IDX3)
+                           MOVE    4           TO  IDX3
+                       END-IF
+                   END-PERFORM
+               END-IF                                           
+      *        ÉÂÅïÈÖ¹æ¡¦¼ïÊÌ
+               MOVE    RECE62-SRYYM        TO  WRK-SRYYYMM
+               PERFORM VARYING IDX3    FROM    1   BY  1
+                       UNTIL   IDX3    >       31
+                   IF      RECE62-BYOTONUM(IDX3)   =  SPACE
+                       MOVE    IDX3            TO  WRK-SRYDD
+                       IF       PTNYUINRRK-TENNYUYMD  <=  WRK-SRYYMD
+                       AND      PTNYUINRRK-TENSTUYMD  >=  WRK-SRYYMD
+                           MOVE  SYS-5001-BTU-NUM
+                                           TO  RECE62-BYOTONUM    (IDX3)
+                           MOVE  SYS-5001-BTU-SBT
+                                           TO  RECE62-BYOTOSYUBETU(IDX3)
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+           .                                                           
+       24011-BYOTOKBN-SET-EXT.                   
+           EXIT.                                                       
       *
       *****************************************************************
       *    ÆþÂà±¡ÍúÎò½ÐÎÏ½èÍý
       *****************************************************************
-       2401-RECE68-WRITE-SEC         SECTION.
+       24012-RECE68-WRITE-SEC         SECTION.
       *
            MOVE    RECE62-HOSPID       TO  RECE68-HOSPID
            MOVE    RECE62-SRYYM        TO  RECE68-SRYYM
@@ -2316,7 +2271,7 @@
                ADD     1                   TO  CNT-RECE68
            END-IF    
            .
-       2401-RECE68-WRITE-EXT.
+       24012-RECE68-WRITE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2716,64 +2671,89 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡ÍúÎòÆÉ¹þ¡Ê£Ë£Å£Ù£±£³¡Ë
+      *    Æþ±¡ÍúÎòÆÉ¹þ¡Ê£Ë£Å£Ù£²£²¡Ë
       *****************************************************************
-       900-PTNYUINRRK-KEY13-READ-SEC    SECTION.
+       900-PTNYUINRRK-KEY22-READ-SEC    SECTION.
       *    
            MOVE    "DBFETCH"            TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY13"   TO  ORC-DBPATH
+           MOVE    "PTNYUINRRK-KEY22"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC               =   ZERO
-               MOVE    ZERO                 TO  FLG-PTNYUINRRK13
+               MOVE    ZERO                 TO  FLG-PTNYUINRRK22
                MOVE    MCPDATA-REC          TO  PTNYUINRRK-REC
            ELSE
-               MOVE    1                    TO  FLG-PTNYUINRRK13
+               MOVE    1                    TO  FLG-PTNYUINRRK22
            END-IF
            .
-       900-PTNYUINRRK-KEY13-READ-EXT.
-           EXIT.
-      *      
-      *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
-      *****************************************************************
-       100-DBOPEN-SEC                SECTION.
-      *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           .
-       100-DBOPEN-EXT.
+       900-PTNYUINRRK-KEY22-READ-EXT.
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    Æþ±¡ÍúÎòÆÉ¹þ¡Ê£Ë£Å£Ù£±£³¡Ë
       *****************************************************************
-       900-DBDISCONNECT-SEC            SECTION.
-      *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+       900-PTNYUINRRK-KEY23-READ-SEC    SECTION.
+      *    
+           MOVE    "DBFETCH"            TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-KEY23"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
-                                        MCPDATA-REC.
-      *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
+           IF      MCP-RC               =   ZERO
+               MOVE    ZERO                 TO  FLG-PTNYUINRRK23
+               MOVE    MCPDATA-REC          TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1                    TO  FLG-PTNYUINRRK23
+           END-IF
            .
-       900-DBCLOSE-EXT.
+       900-PTNYUINRRK-KEY23-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿ÆÉ¹þ
+      *****************************************************************
+       910-HKNCOMBI-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-HKNCOMBI
+                   MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
+                   IF      COMB-DELKBN         =   "1"
+                       MOVE    1                   TO  FLG-HKNCOMBI
+                   END-IF
+               ELSE
+                   MOVE    1                   TO  FLG-HKNCOMBI
+                   INITIALIZE                      HKNCOMBI-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-HKNCOMBI
+               INITIALIZE                      HKNCOMBI-REC
+           END-IF
+      *
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       910-HKNCOMBI-INV-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2822,4 +2802,44 @@
        900-RECE68-READ-EXT.
            EXIT.
       *
+      *      
+      *****************************************************************
+      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *****************************************************************
+       100-DBOPEN-SEC                SECTION.
+      *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       100-DBOPEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       900-DBDISCONNECT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       900-DBDISCONNECT-EXT.
+           EXIT.
       

@@ -32,6 +32,7 @@
       *  01.00.03    NACL-藤原    03/03/15  入院会計からの診療科の編集の修正
       *  01.01.04    NACL-藤原    03/04/21  レセのとき地方公費のみの場合は
       *                                     出力しない
+      *  01.01.05    NACL-藤原    03/07/28  診療回数テーブルを編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1411,6 +1412,9 @@
            ELSE              
                MOVE    ACCT-SRYKA     TO  WRK-RECE61-SRYKA      (1)
            END-IF
+           IF      WRK-DBKBN          =   "2"
+               MOVE    WRK-DAY-TBL (2)    TO  WRK-RECE61-DAY-AREA
+           END-IF
            MOVE    PTHKN-TEKSTYMD     TO  WRK-RECE61-TEKSTYMDX  (1)
            MOVE    PTHKN-TEKEDYMD     TO  WRK-RECE61-TEKEDYMDX  (1)
            MOVE    PTHKN-CONTKBN      TO  WRK-RECE61-CONTKBN
@@ -1490,6 +1494,10 @@
                    END-IF    
                END-IF    
            END-PERFORM
+      *
+           IF      WRK-DBKBN          =   "2"
+               MOVE    WRK-DAY-TBL (2)    TO  WRK-RECE61-DAY-AREA
+           END-IF
       *
            IF      WRK-TEISEIKBN           =   "1"
                IF      WRK-RECE61-TEISEIKBN    =   SPACE
