@@ -35,6 +35,8 @@
       *  01.00.04    NACL-ÌçÏÆ    04/01/28  ¿ÇÎÅ¶èÊ¬£¹£°¡¢£¹£²¤Î¥³¥á¥ó¥È
       *                                     ¤Î¤ß¤ÎºÞ¤â¥ì¥»µ­ºÜ¤ÎÂÐ¾Ý¤Ë¤¹¤ë
       *  01.00.05    NACL-ÌçÏÆ    04/02/05  ¿ÇÎÅ¥³¡¼¥É¡ö¿ôÎÌ¤ÎÎß·×ÊÔ½¸
+      *  01.00.06    NACL-ÌçÏÆ    04/02/06  ¼«ÇåÀÕ¤Î¿©»öÎÅÍÜÈñ¤òÏ«ºÒ
+      *                                     ¤Î£±¡¥£²ÇÜ¤Ç·×»»¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -224,6 +226,9 @@
            03  IDX4                                    PIC 9(03).
            03  IDX5                                    PIC 9(03).
            03  IDX6                                    PIC 9(03).
+           03  IDX7                                    PIC 9(03).
+           03  IDX8                                    PIC 9(03).
+           03  IDX9                                    PIC 9(03).
            03  IDY                                     PIC 9(03).
            03  IDY2                                    PIC 9(03).
            03  IDZ                                     PIC 9(03).
@@ -278,7 +283,7 @@
                05  WRK-SKJ-ZAITEN                      PIC 9(08).
                05  WRK-SKJ-ZAIKAISU                    PIC 9(04).
                05  WRK-SKJ-SRYCD-T.
-                06  WRK-SKJ-SRYCD-OCC                  OCCURS   10.
+                06  WRK-SKJ-SRYCD-OCC                  OCCURS   15.
                  07  WRK-SKJ-SRYCD                     PIC 9(09).
       *
        01  WRK-SKJ-TABLE2.
@@ -288,7 +293,7 @@
                05  WRK-SKJ2-MEISAISU                   PIC 9(04).
                05  WRK-SKJ2-SRYCDTOTAL                 PIC 9(14).
                05  WRK-SKJ2-SRYCD-T.
-                06  WRK-SKJ2-SRYCD-OCC                 OCCURS   10.
+                06  WRK-SKJ2-SRYCD-OCC                 OCCURS   15.
                  07  WRK-SKJ2-SRYCD                    PIC 9(09).
                05  WRK-SKJ2-KAISU-T.
                 06  WRK-SKJ2-KAISU-OCC                 OCCURS   31.
@@ -302,10 +307,14 @@
                05  WRK-ORCSTEN-DAY                     PIC 9(03).
            03  WRK-ORCSTEN-ZAIKAISU                    PIC 9(04).
       *
-      *    ¥·¥¹¥«¥ó¡Ê£µ£°£°£°¡ËÂàÈòÍÑÎÎ°è
+      *    °åÎÅµ¡´Ø¡ÊÆþ±¡´ðËÜ¡ËÂàÈòÍÑÎÎ°è
        01  TBL-SYS5000-T.
            03  TBL-SYS5000-OCC     OCCURS  10.
                05  TBL-SYS5000                         PIC X(610).
+      *    Ï«ºÒ¼«Çå°åÎÅµ¡´ØÂàÈòÍÑÎÎ°è
+       01  TBL-SYS4001-T.
+           03  TBL-SYS4001-OCC     OCCURS  10.
+               05  TBL-SYS4001                         PIC X(610).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -343,6 +352,7 @@
       *
            03  WRK-SHOKUJIRYOYO                        PIC 9(01).
            03  WRK-TOKUKANRIKASAN                      PIC 9(01).
+           03  WRK-4001-SKJKBN                         PIC X(01).
       *
            03  WRK-KEISAN                              PIC 9(09).
            03  WRK-KOYOMI-YMD                          PIC 9(08).
@@ -548,6 +558,8 @@
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý
            COPY    "CPSYSKANRI.INC".
+      *    Ï«ºÒ¼«Çå°åÎÅµ¡´Ø¾ðÊó
+           COPY    "CPSK4001.INC".
       *
            COPY    "CPSK5000.INC".
       *
@@ -702,6 +714,67 @@
              PERFORM   CSR-CLOSE-SEC
       *
            END-IF
+      *
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
+      *       ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡Ê£´£°£°£±¡Ë¤«¤é¼«ÇåÀÕ¿©»ö
+      *       ÎÅÍÜÈñ¶èÊ¬¤Î¼èÆÀ
+              MOVE    SPACE                TO    WRK-4001-SKJKBN
+      *
+              INITIALIZE                         SYSKANRI-REC
+              MOVE    "4001"               TO    SYS-KANRICD
+              MOVE    "*"                  TO    SYS-KBNCD
+              MOVE    WRK-PARA-SRYYM       TO    ORC-DBYMD (1:6)
+              MOVE    "01"                 TO    ORC-DBYMD (7:2)
+              MOVE    SYSKANRI-REC         TO    MCPDATA-REC
+              MOVE    "DBSELECT"           TO    MCP-FUNC
+              MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
+              CALL    "ORCMCPSUB"                USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY"   TO  ORC-DBPATH
+                  PERFORM 960-KANRIMST-READ-SEC
+                  MOVE    MCPDATA-REC      TO  SYS-4001-REC
+                  MOVE    SYS-4001-SKJKBN  TO  WRK-4001-SKJKBN
+              END-IF
+      *
+              MOVE   "SYSKANRI-KEY"        TO  WK-PATH
+              PERFORM   CSR-CLOSE-SEC
+           ELSE
+              MOVE     ZERO                TO  SYSKAN-IDX
+              MOVE     SPACE               TO  TBL-SYS4001-T
+              INITIALIZE                       TBL-SYS4001-T
+      *
+              INITIALIZE                       SYSKANRI-REC
+              MOVE    "4001"               TO  SYS-KANRICD
+              MOVE    "*"                  TO  SYS-KBNCD
+              MOVE    SYSKANRI-REC         TO  MCPDATA-REC
+              MOVE    "DBSELECT"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"      TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"              USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                 MOVE    "SYSKANRI-KEY8"   TO  ORC-DBPATH
+                 PERFORM 960-KANRIMST-READ-SEC
+                 PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
+      *
+                   MOVE    MCPDATA-REC     TO  SYS-4001-REC
+                   ADD     1               TO  SYSKAN-IDX
+                   MOVE   SYS-4001-REC     TO  TBL-SYS4001(SYSKAN-IDX)
+      *
+                   MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                   PERFORM 960-KANRIMST-READ-SEC
+      *
+                 END-PERFORM
+              END-IF
+      *
+              MOVE   "SYSKANRI-KEY8"       TO  WK-PATH
+              PERFORM   CSR-CLOSE-SEC
+           END-IF
+      *
       *
            MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
@@ -1327,15 +1400,10 @@
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
-                        COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                        ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                        PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     ADD    1             TO   IDY2
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+                     PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
       *              ÆÃÊÌ´ÉÍý²Ã»»
                      IF    WRK-TOKUKANRIKASAN  =  1
                         ADD    1             TO   IDY2
@@ -1345,15 +1413,10 @@
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
-                           COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                           ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                           PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        ADD    1             TO  IDY2
-                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
+                        PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
                      END-IF
       *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
@@ -1364,15 +1427,10 @@
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
-                           COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                           ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                           PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        ADD    1             TO  IDY2
-                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
+                        PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
                      END-IF
                   WHEN  2
       *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
@@ -1384,15 +1442,10 @@
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
-                        COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                        ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                        PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     ADD    1             TO   IDY2
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+                     PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
                 END-EVALUATE
               WHEN  2
       *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
@@ -1404,15 +1457,10 @@
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
-                        COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                        ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                        PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     ADD    1             TO   IDY2
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+                     PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
       *              ÆÃÊÌ´ÉÍý²Ã»»
                      IF    WRK-TOKUKANRIKASAN  =  1
                         ADD    1             TO   IDY2
@@ -1422,15 +1470,10 @@
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
-                           COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                           ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                           PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        ADD    1             TO  IDY2
-                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
+                        PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
                      END-IF
       *              ÆÃÊÌ¿©²Ã»»
                      ADD    1             TO   IDY2
@@ -1440,15 +1483,10 @@
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
-                        COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                        ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                        PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     ADD    1             TO   IDY2
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+                     PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
       *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
                         ADD    1             TO   IDY2
@@ -1458,15 +1496,10 @@
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
-                           COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                           ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                           PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        ADD    1             TO  IDY2
-                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
+                        PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
                      END-IF
               WHEN  3
       *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
@@ -1478,15 +1511,10 @@
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
-                        COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                        ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                        PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     ADD    1             TO   IDY2
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+                     PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
       *              ÆÃÊÌ´ÉÍý²Ã»»
                      IF    WRK-TOKUKANRIKASAN  =  1
                         ADD    1             TO   IDY2
@@ -1496,15 +1524,10 @@
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
-                           COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                           ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                           PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        ADD    1             TO  IDY2
-                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
+                        PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
                      END-IF
       *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
@@ -1515,15 +1538,10 @@
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
-                           COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                           ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                           PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        ADD    1             TO  IDY2
-                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
+                        PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
                      END-IF
       *              Ê£¿ô¸¥Î©²Ã»»
                      ADD    1             TO   IDY2
@@ -1533,15 +1551,10 @@
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
-                        COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                        ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                        PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     ADD    1             TO   IDY2
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+                     PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
               WHEN  4
       *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
@@ -1552,15 +1565,10 @@
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
-                        COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                        ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                        PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     ADD    1             TO   IDY2
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+                     PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
       *              ÆÃÊÌ´ÉÍý²Ã»»
                      IF    WRK-TOKUKANRIKASAN  =  1
                         ADD    1             TO   IDY2
@@ -1570,15 +1578,10 @@
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
-                           COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                           ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                           PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                         END-IF
       *                 Ï«ºÒ¾è¿ô
-                        ADD    1             TO  IDY2
-                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
+                        PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
                      END-IF
       *              ÆÃÊÌ¿©²Ã»»
                      ADD    1             TO   IDY2
@@ -1588,15 +1591,10 @@
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
-                        COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                        ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                        PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     ADD    1             TO   IDY2
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+                     PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
       *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
                         ADD    1             TO   IDY2
@@ -1606,15 +1604,10 @@
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
-                          COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                          COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                          COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                          COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                          ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                           PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                         END-IF
-      *                 Ï«ºÒ¾è¿ô 
-                        ADD    1             TO  IDY2
-                        MOVE  "101970010"    TO  WRK-SKJ-SRYCD(IDY IDY2)
+      *                 Ï«ºÒ¾è¿ô
+                        PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
                      END-IF
       *              Ê£¿ô¸¥Î©²Ã»»
                      ADD    1             TO   IDY2
@@ -1624,19 +1617,52 @@
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
-                        COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
-                        COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
-                        ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+                        PERFORM  23011-NYUINACCT-SYU-KEISAN-SEC
                      END-IF
       *              Ï«ºÒ¾è¿ô
-                     ADD    1             TO   IDY2
-                     MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+                     PERFORM     23011-NYUINACCT-SYU-JYOSU-SEC
            END-EVALUATE
       *
            .
        2301-NYUINACCT-SYU-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    ¿©»öÎÅÍÜÈñ¤Î·×»»
+      **************************************************************
+       23011-NYUINACCT-SYU-KEISAN-SEC           SECTION.
+      *
+           COMPUTE  WRK-KEISAN   =   TNS-TEN     *  1.2
+           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  +   5
+           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  /  10
+           COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  10
+           IF      RECE82-HKNKBN    =   "4"
+           AND     WRK-4001-SKJKBN  =   "2"
+               COMPUTE  WRK-KEISAN   =   WRK-KEISAN  *  1.2
+           END-IF
+           ADD      WRK-KEISAN  TO   WRK-SKJ-ZAITEN(IDY)
+      *
+           .
+       23011-NYUINACCT-SYU-KEISAN-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    ¿©»öÎÅÍÜÈñ¤ÎÏ«ºÒ¾è¿ô¥»¥Ã¥È
+      **************************************************************
+       23011-NYUINACCT-SYU-JYOSU-SEC           SECTION.
+      *
+           ADD    1             TO   IDY2
+           MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+           IF      RECE82-HKNKBN    =   "4"
+           AND     WRK-4001-SKJKBN  =   "2"
+      *       ¼«ÇåÀÕ¡Ê£±¡¥£²ÇÜ¡Ë
+              ADD    1             TO   IDY2
+      *       MOVE  "101970010"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+              MOVE  "099609901"    TO   WRK-SKJ-SRYCD(IDY IDY2)
+           END-IF
+      *
+           .
+       23011-NYUINACCT-SYU-JYOSU-EXT.
            EXIT.
       *
       **************************************************************
@@ -1672,7 +1698,7 @@
                      MOVE  WRK-SKJ-SRYCD-T  (SYUKEI-IDX)  TO  
                                        WRK-SKJ2-SRYCD-T  (SYUKEI-IDX2)
                      PERFORM  VARYING  SYUKEI-IDX3  FROM  1  BY  1
-                        UNTIL ( SYUKEI-IDX3     >   10 )
+                        UNTIL ( SYUKEI-IDX3     >   15 )
                          OR   ( WRK-SKJ-SRYCD(SYUKEI-IDX SYUKEI-IDX3) 
                                                                =  ZERO)
       *
@@ -2130,10 +2156,23 @@
                MOVE     1               TO      FLG-NYUINACT
            END-IF
            IF  FLG-NYUINACT   =   ZERO
+               MOVE      1      TO     IDX7
+               MOVE      1      TO     IDX8
+               MOVE      5      TO     IDX9
                PERFORM   23011-RECE85-TENSOU2-SKJ-SEC
                PERFORM   RECE85-WRITE-SEC
                IF   WRK-SKJ2-SRYCD(SYUKEI-IDX3 6)  NOT =   ZERO
-                  PERFORM   23011-RECE85-TENSOU2-SKJ2-SEC
+                  MOVE      2      TO     IDX7
+                  MOVE      6      TO     IDX8
+                  MOVE     10      TO     IDX9
+                  PERFORM   23011-RECE85-TENSOU2-SKJ-SEC
+                  PERFORM   RECE85-WRITE-SEC
+               END-IF
+               IF   WRK-SKJ2-SRYCD(SYUKEI-IDX3 11)  NOT =   ZERO
+                  MOVE      3      TO     IDX7
+                  MOVE     11      TO     IDX8
+                  MOVE     15      TO     IDX9
+                  PERFORM   23011-RECE85-TENSOU2-SKJ-SEC
                   PERFORM   RECE85-WRITE-SEC
                END-IF
            END-IF
@@ -2851,7 +2890,7 @@
            MOVE    RECE82-TEKSTYMD      TO      RECE85-TEKSTYMD
            COMPUTE WRK-ZAINUM    =  99999920  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE85-ZAINUM
-           MOVE    1                    TO      RECE85-RENNUM
+           MOVE    IDX7                 TO      RECE85-RENNUM
            MOVE    RECE82-PTNUM         TO      RECE85-PTNUM
       *
            MOVE    NSRY-SRYKA           TO      RECE85-SRYKA
@@ -2860,8 +2899,8 @@
            MOVE    NSRY-JIHIMONEYTOTAL  TO      RECE85-JIHIMONEY
       *
            MOVE    ZERO                 TO      IDX4
-           PERFORM     VARYING   IDX2   FROM    1    BY   1
-                  UNTIL  (IDX2      >    5)    
+           PERFORM     VARYING   IDX2   FROM    IDX8    BY   1
+                  UNTIL  (IDX2      >    IDX9)    
                     OR   (WRK-SKJ2-SRYCD(SYUKEI-IDX3 IDX2)  =   ZERO)
       *
                 ADD     1                    TO    IDX4  
@@ -2907,80 +2946,6 @@
       *
            .
        23011-RECE85-TENSOU2-SKJ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¥ì¥»¥×¥ÈÃæ´Ö¥Õ¥¡¥¤¥ë¤Î¹àÌÜÅ¾Á÷¡Ê£Æ£°£°£µ¡Ë
-      *****************************************************************
-       23011-RECE85-TENSOU2-SKJ2-SEC                SECTION.
-      *
-           MOVE    SPACE                TO      RECE85-REC
-           INITIALIZE                           RECE85-REC
-           MOVE    RECE82-HOSPID        TO      RECE85-HOSPID
-           MOVE    RECE82-SRYYM         TO      RECE85-SRYYM
-           MOVE    RECE82-NYUGAIKBN     TO      RECE85-NYUGAIKBN
-           MOVE    RECE82-PTID          TO      RECE85-PTID
-           MOVE    RECE82-RECEKA        TO      RECE85-RECEKA
-           MOVE    RECE82-HKNID      TO      RECE85-HKNID
-           MOVE    RECE82-TEKSTYMD      TO      RECE85-TEKSTYMD
-           COMPUTE WRK-ZAINUM    =  99999920  +  SYUKEI-IDX3
-           MOVE    WRK-ZAINUM           TO      RECE85-ZAINUM
-           MOVE    2                    TO      RECE85-RENNUM
-           MOVE    RECE82-PTNUM         TO      RECE85-PTNUM
-      *
-           MOVE    NSRY-SRYKA           TO      RECE85-SRYKA
-           MOVE    NSRY-SRYKBN          TO      RECE85-SRYKBN
-           MOVE    NSRY-SRYSYUKBN       TO      RECE85-SRYSYUKBN
-           MOVE    NSRY-JIHIMONEYTOTAL  TO      RECE85-JIHIMONEY
-      *
-           MOVE    ZERO                 TO      IDX4
-           PERFORM     VARYING   IDX2   FROM    6    BY   1
-                  UNTIL  (IDX2      >   10)    
-                    OR   (WRK-SKJ2-SRYCD(SYUKEI-IDX3 IDX2)  =   ZERO)
-      *
-                ADD     1                    TO    IDX4  
-                MOVE    WRK-SKJ2-SRYCD(SYUKEI-IDX3 IDX2)
-                                             TO  RECE85-SRYCD(IDX4)
-                MOVE    1                    TO  RECE85-SRYSURYO(IDX4)
-                MOVE    ZERO                 TO  RECE85-SRYKAISU(IDX4)
-                MOVE    SPACE                TO  RECE85-MEISKYFLG(IDX4)
-                MOVE    SPACE                TO  RECE85-AUTOKBN(IDX4)
-                MOVE    ZERO                 TO  RECE85-INPUTNUM(IDX4)
-                MOVE    WRK-SKJ2-SRYCD(SYUKEI-IDX3 IDX2)
-                                             TO  WRK-SRYCD
-                MOVE    RECE85-SRYYM         TO  WK-TAIHI-SRYYM
-                MOVE    WK-TAIHI-DAY         TO  WK-TAIHI-SRYD
-                PERFORM    TENSU-TBL-SEC
-                MOVE    TNS-TANICD          TO  RECE85-TANICD(IDX4)
-                MOVE    TNS-TANIMOJISU      TO  RECE85-TANIMOJISU(IDX4)
-                MOVE    TNS-TANINAME        TO  RECE85-TANINAME(IDX4)
-                IF      TNS-TENSIKIBETU    =     1   OR   3  OR  8
-                    MOVE  TNS-TENSIKIBETU   TO  RECE85-TENSIKIBETU(IDX4)
-                    MOVE  TNS-TEN           TO  RECE85-TEN(IDX4)
-                END-IF
-                MOVE    TNS-NYUTENTTLKBN    TO  RECE85-TENTTLKBN(IDX4)
-                MOVE    TNS-YUKOKETA        TO  RECE85-YUKOKETA(IDX4)
-                MOVE    TNS-DATAKBN         TO  RECE85-DATAKBN (IDX4)
-                MOVE    TNS-HOUKNSKBN       TO  RECE85-HOUKNSKBN(IDX4)
-                MOVE    TNS-KNSJISKBN       TO  RECE85-KNSJISKBN(IDX4)
-                MOVE    TNS-CDKBN-KBN       TO  RECE85-CDKBN-KBN(IDX4)
-                MOVE    TNS-CDKBN-SYO       TO  RECE85-CDKBN-SYO(IDX4)
-                MOVE    TNS-CDKBN-BU        TO  RECE85-CDKBN-BU(IDX4)
-                MOVE    TNS-CDKBN-KBNNUM  
-                                      TO  RECE85-CDKBN-KBNNUM(IDX4)
-                MOVE    TNS-CDKBN-KBNNUM-EDA
-                                      TO  RECE85-CDKBN-KBNNUM-EDA(IDX4)
-                MOVE    TNS-CDKBN-KOUBAN
-                                      TO  RECE85-CDKBN-KOUBAN(IDX4)
-                MOVE    TNS-KOUHYOJYUNNUM  
-                                      TO  RECE85-KOUHYOJYUNNUM(IDX4)
-                MOVE    TNS-NAME            TO  RECE85-NAME(IDX4)
-                MOVE     "1"                TO  RECE85-SIKFLG(IDX4)
-      *
-           END-PERFORM
-      *
-           .
-       23011-RECE85-TENSOU2-SKJ2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4674,6 +4639,30 @@
                        AND  ( WRK-SYS-SRYYMD     <=  SYS-5000-EDYUKYMD )
                           MOVE     1       TO    FLG-SET
                           PERFORM  110-SYSKAN-HENSYU-SEC
+                       END-IF
+      *
+                      END-PERFORM
+                   END-IF
+      *
+                   IF   WRK-PARA-SRYYM    NOT =  ZERO
+                      CONTINUE
+                   ELSE
+      *               ¼«ÇåÀÕ¿©»öÎÅÍÜÈñ¶èÊ¬¡Ê¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤ê¡Ë
+                      MOVE    SPACE      TO  WRK-4001-SKJKBN
+      *
+                      MOVE  ZERO         TO  FLG-SET
+                      MOVE  RECE82-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+                      MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
+                      PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                           UNTIL  ( SYSKAN-IDX              >  10   )
+                            OR    ( TBL-SYS4001(SYSKAN-IDX) = SPACE )
+                            OR    ( FLG-SET                 =   1   )
+      *
+                       MOVE  TBL-SYS4001(SYSKAN-IDX)  TO  SYS-4001-REC
+                       IF   ( SYS-4001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                       AND  ( WRK-SYS-SRYYMD     <=  SYS-4001-EDYUKYMD )
+                          MOVE     1               TO    FLG-SET
+                          MOVE    SYS-4001-SKJKBN  TO    WRK-4001-SKJKBN
                        END-IF
       *
                       END-PERFORM
