@@ -741,13 +741,18 @@
                    MOVE    "12"      TO      WRK-TOKKI
            END-EVALUATE
       *
+      *    既に同じ特記事項コードが編集済みのときはセットしない
            PERFORM VARYING TOKKI-IDX  FROM    1   BY  1
                    UNTIL ( TOKKI-IDX       >   5     )
-                   OR    ( RECE62-TOKKI(IDX)   =   SPACE )
-                   CONTINUE
+               IF      RECE62-TOKKI(IDX)   =   SPACE
+                   MOVE    WRK-TOKKI       TO  RECE62-TOKKI (TOKKI-IDX)
+                   MOVE    5               TO  TOKKI-IDX
+               ELSE
+                   IF      WRK-TOKKI     =   RECE62-TOKKI(IDX)
+                       MOVE    5                 TO  TOKKI-IDX
+                   END-IF 
+               END-IF
            END-PERFORM
-      *
-           MOVE    WRK-TOKKI         TO      RECE62-TOKKI(TOKKI-IDX)
            .
        TOKKI-HENSYU-EXT.
            EXIT.
@@ -1170,6 +1175,7 @@
                    MOVE  TNS-GAITENTTLKBN TO    RECE65-TENTTLKBN(IDX4)
                END-IF
                MOVE    TNS-YUKOKETA       TO    RECE65-YUKOKETA(IDX4)
+               MOVE    TNS-DATAKBN        TO    RECE65-DATAKBN (IDX4)
                IF      NSRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     NSRY-INPUTNUM (IDX2)      NOT =   ZERO
                    MOVE    NSRY-HOSPID           TO  PTCOM-HOSPID
