@@ -22,12 +22,16 @@
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  03/02/17  レイアウト変更
       *****************************************************************
        01  HC011PARA.
            03  FILLER                  PIC  X(09) VALUE "/var/tmp/".
            03  HC011PARA-FORM-ID        PIC  X(05).
            03  FILLER                  PIC  X(01) VALUE ".".
-           03  HC011PARA-TERMID         PIC  X(16).
+      ***  03  HC011PARA-TERMID        PIC  X(16).
+           03  HC011PARA-TERMID        PIC  X(32).
            03  FILLER                  PIC  X(01) VALUE ".".
-           03  HC011PARA-CNT            PIC  X(03).
+           03  HC011PARA-SYOHMS        PIC  9(08).
+           03  FILLER                  PIC  X(01) VALUE ".".
+           03  HC011PARA-CNT           PIC  9(06).
            03  FILLER                  PIC  X(04) VALUE ".dat".
