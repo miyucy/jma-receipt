@@ -104,6 +104,8 @@
       *  01.02.15   NACL-門脇     03.02.06  コメントカウントフラグの編集追加
       *  01.02.14   NACL-藤原     03.02.12  補助区分の追加
       *  01.02.15   NACL-門脇     03.03.07  在総診フラグセット取りやめ
+      *  01.02.16   NACL-藤原     03.04.09  特定器材（画像診断のフィルム以外）の
+      *                                     単価を表示するように修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -450,7 +452,7 @@
            03  CONS-TOKKI12        PIC X(14) VALUE "00000099990112".
       *
       *    酸素 
-           COPY    "CMSANSOTBL.INC".
+      *****COPY    "CMSANSOTBL.INC".
       *
       *   日本語数字
        01  TBL-SUJI-AREA.
@@ -1067,17 +1069,21 @@
                    MOVE    TNS-NAME            TO    RECE05-NAME(IDX4)
                END-IF
       *
-      *        酸素のとき単価を編集
+      *        特定器材（画像診断のフィルム以外）のとき単価を編集
                IF      SRY-SRYCD (IDX2) (1:1)  =   "7"
-                   SET     TBL-SANSO           TO  1
-                   SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
-                       AT  END
-                           MOVE    ZERO            TO  FLG-SANSO-OK
-                       WHEN    SRY-SRYCD (IDX2)    =   TBL-SANSO-SRYCD
-                                                            (TBL-SANSO)
-                           MOVE    1               TO  FLG-SANSO-OK
-                   END-SEARCH
-                   IF      FLG-SANSO-OK        =   "1"
+                   IF    ( SRY-SRYKBN               =   "70" )
+                   AND   ( TNS-DATAKBN              =   "3"  )
+                       CONTINUE
+                   ELSE
+      *********        SET     TBL-SANSO           TO  1
+      *                SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
+      *                     AT  END
+      *                         MOVE    ZERO            TO  FLG-SANSO-OK
+      *                     WHEN    SRY-SRYCD (IDX2)    =   TBL-SANSO-SRYCD
+      *                                                          (TBL-SANSO)
+      *                         MOVE    1               TO  FLG-SANSO-OK
+      *                END-SEARCH
+      *********        IF      FLG-SANSO-OK        =   "1"
                        PERFORM RECE05-TENSOU-TANKA-HEN-SEC
                        COMPUTE IDW =   RECE05-YUKOKETA(IDX4)  *  2 
                                                    +   3                    
