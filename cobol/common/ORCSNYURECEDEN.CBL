@@ -266,6 +266,10 @@
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
+      *    ÁªÄêÎÅÍÜÈñ
+       01  SENTEICDCHG-REC.
+           COPY    "CPSENTEICDCHG.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -821,7 +825,31 @@
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-NYUINKHN(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
+                   IF     FLG-SENTEI-SET    NOT =   ZERO
+                       IF   TBL-SENTEI(IDX1)    =   1
+                           MOVE    ZERO    TO  FLG-SENTEICDCHG
+                           INITIALIZE  SENTEICDCHG-REC
+                           MOVE    WRK-NYUINKHN(IDX1)
+                                           TO  SENCHG-IPNSRYCD
+                           MOVE    "SENTEICDCHG-KEY2"
+                                           TO  ORC-DBPATH
+                           PERFORM   910-SENTEICDCHG-SELECT-SEC
+                           IF      FLG-SENTEICDCHG  =    ZERO
+                               MOVE    "SENTEICDCHG-KEY2" 
+                                                TO   ORC-DBPATH
+                               PERFORM  910-SENTEICDCHG-READ-SEC
+                               IF    FLG-SENTEICDCHG  =   ZERO
+                                   MOVE  SENCHG-SENTEISRYCD
+                                                TO  WRK-SO-SRYCD
+                                                   (IDX1 WRK-MEISAISU)
+                               END-IF
+                          END-IF
+                          MOVE    "SENTEICDCHG-KEY2"   TO  ORC-DBPATH
+                         PERFORM   910-DB-CLOSE-SEC
+                       END-IF
+                   END-IF
                END-IF
+      *
       *        ½é´ü²Ã»»¡ÊÄ¹´ü¸º»»¡Ë
                IF      (WRK-GAIHAKU(IDX1)        =         SPACE)  AND
                        (WRK-SHOKIKSN(IDX1)   NOT =         SPACE)
@@ -948,6 +976,18 @@
                    MOVE   WRK-GENSAN4       TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                    MOVE     1               TO  WRK-GENSAN4-MIJISI
+               END-IF
+      *        ÁªÄêÆþ±¡»þ¤Î³°Çñ
+               IF   (TBL-SENTEI(IDX1)    =         1)   AND
+                    (WRK-GAIHAKU-KBN(IDX1)     NOT =  ZERO)
+                   EVALUATE   WRK-GAIHAKU-KBN(IDX1)
+      *                ³°Çñ
+                       WHEN   3
+                           INITIALIZE   WRK-NYUIN-SORT-TBL(IDX1)
+      *                Â¾°åÎÅµ¡´Ø¼õ¿Ç
+                       WHEN   4
+                           INITIALIZE   WRK-NYUIN-SORT-TBL(IDX1)
+                   END-EVALUATE
                END-IF
            END-PERFORM
       *
@@ -1928,6 +1968,49 @@
       *
            .
        910-NYUINACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÁªÄêÆþ±¡ÎÁ¿¶ÂØ¥Þ¥¹¥¿¡¼¸¡º÷
+      *****************************************************************
+       910-SENTEICDCHG-SELECT-SEC        SECTION.
+      *
+           MOVE    SENTEICDCHG-REC     TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-SENTEICDCHG
+           ELSE
+               MOVE    1                  TO  FLG-SENTEICDCHG
+           END-IF
+      *
+           .
+       910-SENTEICDCHG-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÁªÄêÆþ±¡ÎÁ¿¶ÂØ¥Þ¥¹¥¿¡¼¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       910-SENTEICDCHG-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC        TO  SENTEICDCHG-REC
+               MOVE    ZERO               TO  FLG-SENTEICDCHG
+           ELSE
+               INITIALIZE                     SENTEICDCHG-REC
+               MOVE    1                  TO  FLG-SENTEICDCHG
+           END-IF
+      *
+           .
+       910-SENTEICDCHG-READ-EXT.
            EXIT.
       *
       *****************************************************************
