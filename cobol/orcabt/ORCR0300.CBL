@@ -238,7 +238,7 @@
            03  SUM-TOTALKENSU         PIC 9(06).
            03  SUM-TOTALTEN         PIC 9(10).
       *
-      *    シスカン（１００１）退避用領域
+      *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC         OCCURS  10.
                05  TBL-SYS1001         PIC  X(610).
@@ -665,7 +665,7 @@
               IF      FLG-SYSKANRI        =   ZERO
                   MOVE    MCPDATA-REC         TO  SYS-1001-REC
               ELSE
-                  MOVE    "*** ORCR0300 SYS1001 INVALID ***" 
+                  MOVE    "医療機関情報が取得できませんでした。"
                                               TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
               END-IF
@@ -695,12 +695,7 @@
       *
                     MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
                     PERFORM 900-SYSKANRI-READ-SEC
-      *
                   END-PERFORM
-              ELSE
-                  MOVE    "*** ORCR0300 SYS1001 INVALID ***" 
-                                              TO  WRK-RECEERR
-                  PERFORM 500-ERR-HENSYU-SEC
               END-IF
       *
               MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -709,6 +704,12 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+      *
+               IF      SYSKAN-IDX          =   ZERO
+                   MOVE    "医療機関情報が取得できませんでした。"
+                                               TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+               END-IF
            END-IF
       *         
       *    レセプト編集区分情報
@@ -2864,9 +2865,9 @@
                                    JOBKANRI-REC
       *
            PERFORM 900-DBDISCONNECT-SEC
-           DISPLAY "RECE300  CNT " CNT-IN  
-           DISPLAY "RECE300  CNT " CNT-RECE04  
-           DISPLAY "RECE300  CNT " CNT-OUT  
+           DISPLAY "RECE02  CNT-IN  :" CNT-IN  
+           DISPLAY "RECE04  CNT-IN  :" CNT-RECE04  
+           DISPLAY "DB      CNT-OUT :" CNT-OUT  
            DISPLAY "*** ORCR0300 END ***"
       *     ACCEPT  WRK-IN FROM CONSOLE 
       *
@@ -3394,39 +3395,49 @@
                    MOVE    RECE02-RECEKA 
                                        TO  KEY-N-SRYKA
       *
-                   IF   WRK-PARA-SRYYM    NOT =  ZERO
-                     CONTINUE
-                   ELSE
-      *              医療機関ＩＤ編集
-                     MOVE  ZERO         TO  FLG-SET
-                     MOVE  RECE02-SRYYM TO  WRK-SYS-SRYYMD(1:6)
-                     MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
-                     PERFORM VARYING SYSKAN-IDX FROM 1 BY 1
-                       UNTIL ( SYSKAN-IDX              >  10   )
-                        OR   ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
-                        OR   ( FLG-SET                 =   1   )
+                   DISPLAY "RECE02  PTNUM=" RECE02-PTNUM     
       *
-                        MOVE   TBL-SYS1001(SYSKAN-IDX) 
-                                          TO  SYS-1001-REC
-                        IF  (SYS-1001-STYUKYMD 
-                                         <= WRK-SYS-SRYYMD   )
-                        AND (WRK-SYS-SRYYMD    
-                                         <= SYS-1001-EDYUKYMD)
-                           MOVE     1     TO  FLG-SET
-                        END-IF
-      *
-                     END-PERFORM
-                     IF     FLG-SET  =  ZERO
-                         MOVE    "*** ORCR0300 SYS1001 INVALID ***" 
-                                                 TO  WRK-RECEERR
-                         PERFORM 500-ERR-HENSYU-SEC
-                     END-IF
+                   IF      WRK-PARA-SRYYM  =   ZERO
+      *                医療機関ＩＤ編集
+                       MOVE  RECE02-SRYYM      TO  WRK-SYS-SRYYMD(1:6)
+                       MOVE  "01"              TO  WRK-SYS-SRYYMD(7:2)
+                       PERFORM 900-SYSKANRI-HENSYU-SEC
                    END-IF
-      *
            END-READ
            .
        910-RECE02-READ-EXT.
            EXIT.
+      *
+      ****************************************************************
+      *    診療年月の対象となるシス管理を取得（個別処理のみ
+      ****************************************************************
+       900-SYSKANRI-HENSYU-SEC         SECTION.
+      *
+      *    医療機関情報（基本情報）
+           MOVE    ZERO                TO  FLG-SET
+      *
+           PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                   UNTIL ( SYSKAN-IDX              >  10   )
+                   OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                   OR    ( FLG-SET                 =   1   )
+               MOVE    TBL-SYS1001(SYSKAN-IDX) TO  SYS-1001-REC
+               IF    ( SYS-1001-STYUKYMD       <= WRK-SYS-SRYYMD    )
+               AND   ( WRK-SYS-SRYYMD          <= SYS-1001-EDYUKYMD )
+                   MOVE     1                  TO  FLG-SET
+               END-IF
+           END-PERFORM
+           IF      FLG-SET             =   ZERO
+               STRING  "医療機関情報が取得できませんでした。診療年月＝"
+                                               DELIMITED  BY  SIZE 
+                       WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+           .
+       900-SYSKANRI-HENSYU-EXT.
+           EXIT.
+      *
       *
       ****************************************************************
       *    レセプト０３１データ読み

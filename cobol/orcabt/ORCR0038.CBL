@@ -476,9 +476,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "RECE04     :" CNT-IN   
-           DISPLAY "RECE042    :" CNT-RECE042
-           DISPLAY "RECE04W    :" CNT-RECE04W
+           DISPLAY "RECE04  CNT-IN  :" CNT-IN
+           DISPLAY "RECE042 CNT-OUT :" CNT-RECE042
+           DISPLAY "RECE04W CNT-OUT :" CNT-RECE04W
            DISPLAY "*** ORCR0038 END ***"
            .
        300-TERM-EXT.
@@ -494,6 +494,8 @@
                    MOVE    1           TO  FLG-RECE02
                NOT AT  END
                    ADD     ZERO        TO  FLG-RECE02
+      *
+                   DISPLAY "RECE02  PTNUM=" RECE02-PTNUM
            END-READ
            .
        900-RECE02-READ-EXT.

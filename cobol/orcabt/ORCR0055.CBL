@@ -382,10 +382,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-      ***     DISPLAY "RECE03   IN  " CNT-IN  UPON CONSOLE 
-      ***     DISPLAY "RECE031  CNT " CNT-OUT UPON CONSOLE 
-      ***     DISPLAY "*** ORCR0055 END ***"
-      ***     ACCEPT  WRK-IN FROM CONSOLE 
+           DISPLAY "RECE03  CNT-IN  :" CNT-IN
+           DISPLAY "RECE031 CNT-OUT :" CNT-OUT
+           DISPLAY "*** ORCR0055 END ***"
            .
        300-TERM-EXT.
            EXIT.
@@ -420,6 +419,8 @@
                    ELSE
                        MOVE    RECE03-TENKIYMD     TO  KEY-N-TENKIYMD
                    END-IF    
+      *
+                   DISPLAY "RECE03  PTID=" RECE03-PTID
            END-READ
            .
        900-RECE03-READ-EXT.

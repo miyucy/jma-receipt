@@ -66,6 +66,9 @@
       *                                     県外扱いの保険者
       *                                     ２７老人＋障害者医療
       *  01.02.03    NACL-藤原    03/10/27  患者情報の編集追加
+      *                                     県番号の追加
+      *  01.02.04    NACL-藤原    03/11/06  社保・国保で作成とときも
+      *                                     読み飛ばしをしない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -170,6 +173,7 @@
       * 
            03  FLG-KOH                                 PIC 9(01).
            03  FLG-CONTKBN                             PIC 9(01).
+           03  FLG-SET                                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -185,6 +189,7 @@
            03  IDY                                     PIC 9(03). 
            03  IDZ                                     PIC 9(03).
            03  TBL-MAX                                 PIC 9(03).
+           03  SYSKAN-IDX                              PIC 9(03).
       *
        01  KEY-AREA                            VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -201,7 +206,7 @@
       *
        01  WRK-AREA.
            03  WRK-PARA.
-               05  WRK-PARA-PREFNUM                    PIC  X(02). 
+      *********05  WRK-PARA-PREFNUM                    PIC  X(02). 
                05  WRK-PARA-SRYYM                      PIC  X(06).
                05  WRK-PARA-TERMID                     PIC  X(16).
                05  WRK-PARA-SYSYMD                     PIC  X(08).
@@ -256,7 +261,9 @@
                    07  WRK-1033-STYUKYMD
                                    PIC X(08).
                    07  WRK-1033-EDYUKYMD 
-                                   PIC X(08).                                       
+                                   PIC X(08).
+      *
+           03  WRK-SYS-SRYYMD      PIC X(08).
       *
       *    公費並替え用ワーク
            03  WRK-KOHI-AREA.
@@ -303,6 +310,11 @@
                05  FILLER              PIC X(03)   VALUE   "972".
            03  WRK-SRT-TABLE-R         REDEFINES   WRK-SRT-TABLE.
                05  WRK-SRT-KOHHKNNUM   PIC X(03)   OCCURS  22.
+      *
+      *    医療機関（基本情報）退避用領域
+       01  TBL-SYS1001-T.
+           03  TBL-SYS1001-OCC         OCCURS  10.
+               05  TBL-SYS1001         PIC X(610).
       *
        01  WRK-CONS-AREA.
       *    労災保険番号 
@@ -476,10 +488,9 @@
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
       *
+      *    医療機関ＩＤ編集
            IF   WRK-PARA-SRYYM    NOT =  ZERO
-      *
-      *       医療機関ＩＤ編集
-              INITIALIZE                  SYS-1001-REC
+               INITIALIZE                  SYS-1001-REC
               MOVE    "1001"              TO  SYS-1001-KANRICD
               MOVE    "*"                 TO  SYS-1001-KBNCD
               MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
@@ -493,7 +504,46 @@
                                           TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
               END-IF
+           ELSE
+              MOVE     ZERO               TO  SYSKAN-IDX
+              MOVE     SPACE              TO  TBL-SYS1001-T
+              INITIALIZE                      TBL-SYS1001-T
       *
+              INITIALIZE                      SYS-1001-REC
+              MOVE    "1001"              TO  SYS-1001-KANRICD
+              MOVE    "*"                 TO  SYS-1001-KBNCD
+              MOVE    SYS-1001-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                  PERFORM 900-SYSKANRI-READ-SEC
+                  PERFORM  UNTIL   FLG-SYSKANRI  =    1
+      *
+                    MOVE    MCPDATA-REC   TO  SYS-1001-REC
+                    ADD     1             TO  SYSKAN-IDX
+                    MOVE    SYS-1001-REC  TO  TBL-SYS1001(SYSKAN-IDX)
+      *
+                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                    PERFORM 900-SYSKANRI-READ-SEC
+      *
+                  END-PERFORM
+              ELSE
+                  MOVE    "医療機関情報が取得できませんでした。"
+                                            TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+              END-IF
+      *
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
            END-IF
       *
       *    患者番号構成管理情報編集
@@ -802,6 +852,10 @@
            MOVE    SYS-1001-HOSPID         TO  PTINF-HOSPID
            MOVE    KEY-N-PTID              TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
+      *
+           DISPLAY "SRYACCT PTID=" KEY-N-PTID 
+                   " TSTPTNUMKBN=" PTINF-TSTPTNUMKBN
+      *
            IF      FLG-PTINF           =   ZERO
            AND     PTINF-TSTPTNUMKBN   =   "1"
                MOVE    KEY-NEW             TO  KEY-OLD
@@ -848,20 +902,21 @@
                    MOVE    KEY-NEW             TO  KEY-OLD
                    PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                    OR      KEY-NEW     NOT =   KEY-OLD
-      *                社保・国保の読み飛ばし
-                       EVALUATE    WRK-PARA-RECEKBN
-                           WHEN    "0"
-                               PERFORM 20011-FILE-SYORI-SEC 
-                           WHEN    "1"
-                               IF      COMB-HKNNUM 
-                                               NOT =   "060" AND "067"
-                                   PERFORM 20011-FILE-SYORI-SEC 
-                               END-IF
-                           WHEN    "2"
-                               IF      COMB-HKNNUM =   "060" OR  "067"
-                                   PERFORM 20011-FILE-SYORI-SEC 
-                               END-IF
-                       END-EVALUATE
+      *****************社保・国保の読み飛ばし
+      *****************EVALUATE    WRK-PARA-RECEKBN
+      *                    WHEN    "0"
+      *                        PERFORM 20011-FILE-SYORI-SEC 
+      *                    WHEN    "1"
+      *                        IF      COMB-HKNNUM 
+      *                                        NOT =   "060" AND "067"
+      *                            PERFORM 20011-FILE-SYORI-SEC 
+      *                        END-IF
+      *                    WHEN    "2"
+      *                        IF      COMB-HKNNUM =   "060" OR  "067"
+      *                            PERFORM 20011-FILE-SYORI-SEC 
+      *                        END-IF
+      *****************END-EVALUATE
+                       PERFORM 20011-FILE-SYORI-SEC 
       *
                        IF      WRK-UPDKBN          =   SPACE                   
       *                    同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
@@ -1028,7 +1083,7 @@
                    PERFORM 900-HKNNUM-INV-SEC
       *            福岡県の国保のとき（４１老人以外）
                    IF    ( COMB-HKNNUM         =   "060"   OR  "067" )
-                   AND   ( WRK-PARA-PREFNUM    =   "40"              )
+                   AND   ( SYS-1001-PREFNUM    =   "40"              )
                    AND   ( HKN-HBTNUM      NOT =   "41"              )    
                        PERFORM 20011-PREFKBN-40-CHECK-SEC
                    ELSE
@@ -1108,7 +1163,7 @@
                MOVE    PTHKN-HKNJANUM (1:2)
                                        TO  WRK-PREFNUM
            END-IF
-           IF      WRK-PREFNUM         =   WRK-PARA-PREFNUM
+           IF      WRK-PREFNUM         =   SYS-1001-PREFNUM
                MOVE    "1"                 TO  WRK-PREFKBN
            ELSE
                IF      WRK-PARA-SYOKBN     =   "1"
@@ -1142,7 +1197,7 @@
            ELSE
                INITIALIZE                  ORCSKOHPLUS-AREA
                MOVE    COMB-HOSPID         TO  LNK-SKOHPLUS-HOSPID
-               MOVE    WRK-PARA-PREFNUM    TO  LNK-SKOHPLUS-PREFNUM
+               MOVE    SYS-1001-PREFNUM    TO  LNK-SKOHPLUS-PREFNUM
                MOVE    COMB-PTID           TO  LNK-SKOHPLUS-PTID
                MOVE    COMB-HKNCOMBINUM    TO  LNK-SKOHPLUS-HKNCOMBI
                IF      WRK-PARA-SYOKBN     =   "1"
@@ -1359,9 +1414,9 @@
            MOVE   PTINF-TSTPTNUMKBN    TO  WRK-RECE01-TSTPTNUMKBN
       *    患者年齢計算
            INITIALIZE                      ORCSAGECHKAREA
-           MOVE    WRK-RECE01-HOSPID       TO  AGECHK-HOSPID
-           MOVE    WRK-RECE01-PTID         TO  AGECHK-PTID
-           MOVE    WRK-RECE01-SRYYM        TO  AGECHK-SRYYMD(1:6)
+           MOVE    WRK-RECE01-HOSPID   TO  AGECHK-HOSPID
+           MOVE    WRK-RECE01-PTID     TO  AGECHK-PTID
+           MOVE    WRK-RECE01-SRYYM    TO  AGECHK-SRYYMD(1:6)
            MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
            MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
            CALL    "ORCSAGECHK"            USING
@@ -1385,7 +1440,9 @@
            IF       FLG-KYUSEIRRK      =   ZERO
                MOVE    KYUSEI-NAME         TO  WRK-RECE01-NAME
                MOVE    KYUSEI-KANANAME     TO  WRK-RECE01-KANANAME
-           END-IF         
+           END-IF
+      *    県番号
+           MOVE    SYS-1001-PREFNUM    TO  WRK-RECE01-PREFNUM
       *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
@@ -1652,19 +1709,28 @@
       *
            MOVE    MCPDATA-REC         TO  SYS-2002-REC
       *
-      *    医療機関ＩＤ編集
-           INITIALIZE                  SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    SYS-2002-SRYYM      TO  ORC-DBYMD (1:6)
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1001-REC
-           ELSE
-               MOVE    "医療機関情報が取得できませんでした。"
-                                       TO  WRK-RECEERR
+           DISPLAY "SYS PTID=" SYS-2002-PTID 
+      *
+      *    該当診療年月の医療機関情報取得
+           MOVE  ZERO           TO  FLG-SET
+           MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+           MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+           PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                    UNTIL  ( SYSKAN-IDX              >  10   )
+                     OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                     OR    ( FLG-SET                 =   1   )
+                MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
+                IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
+                    MOVE     1       TO    FLG-SET
+                END-IF
+           END-PERFORM
+           IF     FLG-SET              =   ZERO
+               STRING   "医療機関情報が取得できませんでした。診療年月＝"
+                                           DELIMITED  BY  SIZE 
+                        SYS-2002-SRYYM     DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
                PERFORM 500-ERR-HENSYU-SEC
                GO       TO      20021-KOBETU-HENSYU-EXT
            END-IF
@@ -1808,19 +1874,20 @@
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      KEY-NEW     NOT =   KEY-OLD
-      *            社保・国保の読み飛ばし
-                   EVALUATE    WRK-PARA-RECEKBN
-                       WHEN    "0"
-                           PERFORM 20011-FILE-SYORI-SEC 
-                       WHEN    "1"
-                           IF      COMB-HKNNUM NOT =   "060" AND "067"
-                               PERFORM 20011-FILE-SYORI-SEC 
-                           END-IF
-                       WHEN    "2"
-                           IF      COMB-HKNNUM     =   "060" OR  "067"
-                               PERFORM 20011-FILE-SYORI-SEC 
-                           END-IF
-                   END-EVALUATE
+      *************社保・国保の読み飛ばし
+      *            EVALUATE    WRK-PARA-RECEKBN
+      *                WHEN    "0"
+      *                    PERFORM 20011-FILE-SYORI-SEC 
+      *                WHEN    "1"
+      *                    IF      COMB-HKNNUM NOT =   "060" AND "067"
+      *                        PERFORM 20011-FILE-SYORI-SEC 
+      *                    END-IF
+      *                WHEN    "2"
+      *                    IF      COMB-HKNNUM     =   "060" OR  "067"
+      *                        PERFORM 20011-FILE-SYORI-SEC 
+      *                    END-IF
+      *************END-EVALUATE
+                   PERFORM 20011-FILE-SYORI-SEC 
       *
                    IF      WRK-UPDKBN          =   SPACE                   
       *                同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
@@ -1901,8 +1968,8 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *     
-           DISPLAY "RECE01  CNT " CNT-OUT1 
-           DISPLAY "RECE01X CNT " CNT-OUT2  
+           DISPLAY "RECE01  CNT-OUT :" CNT-OUT1
+           DISPLAY "RECE01X CNT-OUT :" CNT-OUT2
            DISPLAY "*** ORCR0010 END ***"
            .
        300-TERM-EXT.
@@ -1964,7 +2031,6 @@
            .
        910-SYSKANRI-INV-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    診療行為マスタ　ＲＥＡＤ

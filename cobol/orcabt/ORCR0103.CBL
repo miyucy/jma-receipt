@@ -301,11 +301,11 @@
                05  KEY-O-RECESYUBETU   PIC  9(04).
                05  KEY-O-HKNJANUM-KEY  PIC  X(08).
       *
-      *    シスカン（１００１）退避用領域
+      *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC         OCCURS  10.
                05  TBL-SYS1001         PIC  X(610).
-      *    シスカン（１００２）退避用領域
+      *    医療機関（住所等情報）退避用領域
        01  TBL-SYS1002-T.
            03  TBL-SYS1002-OCC         OCCURS  10.
                05  TBL-SYS1002         PIC  X(610).
@@ -876,12 +876,6 @@
                     PERFORM 900-KANRIMST-NEXT-SEC
       *
                   END-PERFORM
-              ELSE
-                  MOVE    "医療機関情報が取得できませんでした。"
-                                       TO  WRK-RECEERR
-                  PERFORM 500-ERR-HENSYU-SEC
-                  MOVE    2            TO  SPA-STS
-                  GO  TO  120-HOSPINF-GET-EXT
               END-IF
       *
               MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -890,6 +884,14 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+      *
+              IF      SYSKAN-IDX          =   ZERO
+                   MOVE    "医療機関情報が取得できませんでした。"
+                                               TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    2            TO  SPA-STS
+                   GO  TO  120-HOSPINF-GET-EXT
+              END-IF
            END-IF
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
@@ -937,12 +939,6 @@
                     PERFORM 900-KANRIMST-NEXT-SEC
       *
                   END-PERFORM
-              ELSE
-                  MOVE "医療機関情報（所在地）が取得できませんでした。"
-                                       TO  WRK-RECEERR
-                  PERFORM 500-ERR-HENSYU-SEC
-                  MOVE    2            TO  SPA-STS
-                  GO  TO  120-HOSPINF-GET-EXT
               END-IF
       *
               MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -951,6 +947,15 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+      *
+               IF      SYSKAN-IDX          =   ZERO
+                   MOVE
+                       "医療機関情報（所在地）が取得できませんでした。"
+                                               TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    2            TO  SPA-STS
+                   GO  TO  120-HOSPINF-GET-EXT
+               END-IF
            END-IF
       *         
       *    レセプト編集区分情報
@@ -1330,6 +1335,13 @@
       *    公費請求書不明分レセプト出力処理
       *****************************************************************
        20021-KOHSKY-FUMEI-HENSYU-SEC           SECTION.
+      *
+           IF   WRK-PARA-SRYYM         =   ZERO
+      *        医療機関編集
+               MOVE  RECE02X-SRYYM         TO  WRK-SYS-SRYYMD(1:6)
+               MOVE  "01"                  TO  WRK-SYS-SRYYMD(7:2)
+               PERFORM 900-SYSKANRI-HENSYU-SEC
+           END-IF
       *
            MOVE    RECE02X-REC         TO  RECE02-REC 
       *
@@ -3822,9 +3834,9 @@
       *****    PERFORM 500-ERR-HENSYU-SEC
       *****END-IF
      *
-           DISPLAY "*** ORCR0103 IN  RECE02 ="  CNT-RECE02
-           DISPLAY "*** ORCR0103 IN  RECE02X="  CNT-RECE02X
-           DISPLAY "*** ORCR0103 OUT  "  CNT-OUT
+           DISPLAY "RECE02  CNT-IN  :"  CNT-RECE02
+           DISPLAY "RECE02X CNT-IN  :"  CNT-RECE02X
+           DISPLAY "        PAGE    :"  CNT-OUT
            DISPLAY "*** ORCR0103 END ***"
       *
       *    ステップ管理終了処理
@@ -3865,6 +3877,8 @@
                        IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM
                            GO  TO  990-RECE02-READ-SEC
                        ELSE
+                           DISPLAY "RECE02  PTNUM=" RECE02-PTNUM     
+      *
                            ADD     1               TO  CNT-RECE02
                            MOVE    RECE02-HOSPID   TO  KEY-N-HOSPID
                            MOVE    RECE02-SRYYM    TO  KEY-N-SRYYM
@@ -3879,61 +3893,13 @@
                                                    TO  KEY-N-RECESYUBETU
                            MOVE    RECE02-HKNJANUM-KEY
                                                    TO KEY-N-HKNJANUM-KEY
-                           IF   WRK-PARA-SRYYM    NOT =  ZERO
-                             CONTINUE
-                           ELSE
-      *                      医療機関ＩＤ編集
-                             MOVE  ZERO         TO  FLG-SET
-                             MOVE  RECE02-SRYYM TO  WRK-SYS-SRYYMD(1:6)
-                             MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
-                             PERFORM VARYING SYSKAN-IDX FROM 1 BY 1
-                               UNTIL ( SYSKAN-IDX              >  10   )
-                                OR   ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
-                                OR   ( FLG-SET                 =   1   )
-      *
-                                MOVE   TBL-SYS1001(SYSKAN-IDX) 
-                                                  TO  SYS-1001-REC
-                                IF  (SYS-1001-STYUKYMD 
-                                                 <= WRK-SYS-SRYYMD   )
-                                AND (WRK-SYS-SRYYMD    
-                                                 <= SYS-1001-EDYUKYMD)
-                                   MOVE     1     TO  FLG-SET
-                                END-IF
-      *
-                             END-PERFORM
-                             IF     FLG-SET  =  ZERO
-                          MOVE  "医療機関情報が取得できませんでした。"
-                                                   TO  WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               MOVE    2           TO  SPA-STS
-                               MOVE    1           TO  FLG-RECE02
-                             END-IF
-      *                      医療機関情報（所在地ほか）
-                             MOVE  ZERO         TO  FLG-SET
-                             MOVE  RECE02-SRYYM TO  WRK-SYS-SRYYMD(1:6)
-                             MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
-                             PERFORM VARYING SYSKAN-IDX FROM 1 BY 1
-                               UNTIL ( SYSKAN-IDX              >  10   )
-                                OR   ( TBL-SYS1002(SYSKAN-IDX) = SPACE )
-                                OR   ( FLG-SET                 =   1   )
-      *
-                                 MOVE   TBL-SYS1002(SYSKAN-IDX) 
-                                                  TO  SYS-1002-REC
-                                 IF  (SYS-1002-STYUKYMD 
-                                                   <= WRK-SYS-SRYYMD   )
-                                 AND (WRK-SYS-SRYYMD    
-                                                   <= SYS-1002-EDYUKYMD)
-                                    MOVE     1       TO    FLG-SET
-                                 END-IF
-      *
-                             END-PERFORM
-                             IF     FLG-SET  =  ZERO
-                 MOVE "医療機関情報（所在地）が取得できませんでした。"
-                                                      TO  WRK-RECEERR
-                                PERFORM 500-ERR-HENSYU-SEC
-                                MOVE    2             TO  SPA-STS
-                                MOVE    1             TO  FLG-RECE02
-                             END-IF
+                           IF      WRK-PARA-SRYYM  =  ZERO
+      *                        医療機関ＩＤ編集
+                               MOVE  RECE02-SRYYM     TO
+                                                   WRK-SYS-SRYYMD(1:6)
+                               MOVE  "01"             TO
+                                                   WRK-SYS-SRYYMD(7:2)
+                               PERFORM 900-SYSKANRI-HENSYU-SEC
                            END-IF
                        END-IF 
                    END-IF    
@@ -3969,68 +3935,69 @@
       *            AND     RECE02X-TOTALTEN (5) =   ZERO
       *                GO  TO  990-RECE02X-READ-SEC
       *************END-IF
+                   DISPLAY "RECE02X PTNUM=" RECE02X-PTNUM     
+      *
                    MOVE    ZERO                TO  FLG-RECE02X
                    ADD     1                   TO  CNT-RECE02X
-                   IF   WRK-PARA-SRYYM    NOT =  ZERO
-                      CONTINUE
-                   ELSE
-      *               医療機関ＩＤ編集
-                      MOVE  ZERO          TO  FLG-SET
-                      MOVE  RECE02X-SRYYM TO  WRK-SYS-SRYYMD(1:6)
-                      MOVE  "01"          TO  WRK-SYS-SRYYMD(7:2)
-                      PERFORM VARYING SYSKAN-IDX FROM 1 BY 1
-                        UNTIL ( SYSKAN-IDX              >  10   )
-                         OR   ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
-                         OR   ( FLG-SET                 =   1   )
-      *
-                            MOVE   TBL-SYS1001(SYSKAN-IDX) 
-                                              TO  SYS-1001-REC
-                            IF  (SYS-1001-STYUKYMD 
-                                             <= WRK-SYS-SRYYMD   )
-                            AND (WRK-SYS-SRYYMD    
-                                             <= SYS-1001-EDYUKYMD)
-                               MOVE     1     TO  FLG-SET
-                            END-IF
-      *
-                      END-PERFORM
-                      IF     FLG-SET  =  ZERO
-                      MOVE  "医療機関情報が取得できませんでした。"
-                                              TO  WRK-RECEERR
-                           PERFORM 500-ERR-HENSYU-SEC
-                           MOVE    2          TO  SPA-STS
-                           MOVE    1          TO  FLG-RECE02X
-                      END-IF
-      *               医療機関情報（所在地ほか）
-                      MOVE  ZERO          TO  FLG-SET
-                      MOVE  RECE02X-SRYYM TO  WRK-SYS-SRYYMD(1:6)
-                      MOVE  "01"          TO  WRK-SYS-SRYYMD(7:2)
-                      PERFORM VARYING SYSKAN-IDX FROM 1 BY 1
-                        UNTIL ( SYSKAN-IDX              >  10   )
-                         OR   ( TBL-SYS1002(SYSKAN-IDX) = SPACE )
-                         OR   ( FLG-SET                 =   1   )
-      *
-                          MOVE   TBL-SYS1002(SYSKAN-IDX) 
-                                              TO  SYS-1002-REC
-                          IF  (SYS-1002-STYUKYMD 
-                                            <= WRK-SYS-SRYYMD   )
-                          AND (WRK-SYS-SRYYMD    
-                                            <= SYS-1002-EDYUKYMD)
-                             MOVE     1       TO  FLG-SET
-                          END-IF
-      *
-                      END-PERFORM
-                      IF     FLG-SET  =  ZERO
-                 MOVE "医療機関情報（所在地）が取得できませんでした。"
-                                               TO  WRK-RECEERR
-                         PERFORM 500-ERR-HENSYU-SEC
-                         MOVE    2             TO  SPA-STS
-                         MOVE    1             TO  FLG-RECE02X
-                      END-IF
-                   END-IF
            END-READ
       *
            .
        990-RECE02X-READ-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    診療年月の対象となるシス管理を取得（個別処理のみ
+      ****************************************************************
+       900-SYSKANRI-HENSYU-SEC         SECTION.
+      *
+      *    医療機関情報（基本情報）
+           MOVE    ZERO                TO  FLG-SET
+      *
+           PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                   UNTIL ( SYSKAN-IDX              >  10   )
+                   OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                   OR    ( FLG-SET                 =   1   )
+               MOVE    TBL-SYS1001(SYSKAN-IDX) TO  SYS-1001-REC
+               IF    ( SYS-1001-STYUKYMD       <= WRK-SYS-SRYYMD    )
+               AND   ( WRK-SYS-SRYYMD          <= SYS-1001-EDYUKYMD )
+                   MOVE     1                  TO  FLG-SET
+               END-IF
+           END-PERFORM
+           IF      FLG-SET             =   ZERO
+               STRING  "医療機関情報が取得できませんでした。診療年月＝"
+                                               DELIMITED  BY  SIZE 
+                       WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    2           TO  SPA-STS
+               GO  TO  900-SYSKANRI-HENSYU-EXT
+           END-IF
+      *
+      *    医療機関情報（所在地ほか）
+           MOVE    ZERO                TO  FLG-SET
+      *
+           PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                   UNTIL ( SYSKAN-IDX              >  10   )
+                   OR    ( TBL-SYS1002(SYSKAN-IDX) = SPACE )
+                   OR    ( FLG-SET                 =   1   )
+               MOVE    TBL-SYS1002(SYSKAN-IDX) TO  SYS-1002-REC
+               IF    ( SYS-1002-STYUKYMD       <= WRK-SYS-SRYYMD    )
+               AND   ( WRK-SYS-SRYYMD          <= SYS-1002-EDYUKYMD )
+                   MOVE     1                  TO  FLG-SET
+               END-IF
+           END-PERFORM
+           IF      FLG-SET             =   ZERO
+               STRING  "医療機関情報が取得できませんでした。診療年月＝"
+                                               DELIMITED  BY  SIZE 
+                       WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    2                   TO  SPA-STS
+           END-IF
+           .
+       900-SYSKANRI-HENSYU-EXT.
            EXIT.
       *
       ****************************************************************

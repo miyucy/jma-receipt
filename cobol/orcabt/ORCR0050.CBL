@@ -651,10 +651,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-          DISPLAY "RECE02  IN  " CNT-IN 
-          DISPLAY "RECE03  CNT " CNT-OUT  
-          DISPLAY "*** ORCR0050 END ***"
-      ***     ACCEPT  WRK-IN FROM CONSOLE 
+           DISPLAY "RECE02  CNT-IN  :" CNT-IN
+           DISPLAY "RECE03  CNT-OUT :" CNT-OUT  
+           DISPLAY "*** ORCR0050 END ***"
            .
        300-TERM-EXT.
            EXIT.
@@ -690,6 +689,8 @@
                NOT AT  END
                    ADD     1           TO  CNT-IN
                    MOVE    ZERO        TO  FLG-END
+      *
+                   DISPLAY "RECE02  PTNUM=" RECE02-PTNUM
            END-READ
            .
        900-RECE02-READ-EXT.

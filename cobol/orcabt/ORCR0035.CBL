@@ -483,11 +483,10 @@
                    RECE04-FILE
                    RECE05-FILE
       *
-           DISPLAY "RECE02-IN  :" CNT-IN   
-           DISPLAY "RECE04-MOD :" CNT-OUT1  
-           DISPLAY "RECE05-MOD :" CNT-OUT2 
+           DISPLAY "RECE02  CNT-IN  :" CNT-IN 
+           DISPLAY "RECE04  CNT-MOD :" CNT-OUT1  
+           DISPLAY "RECE05  CNT-MOD :" CNT-OUT2 
            DISPLAY "*** ORCR0035 END ***"
-      ***     ACCEPT  WRK-IN FROM CONSOLE 
            .
        300-TERM-EXT.
            EXIT.
@@ -502,6 +501,8 @@
                    MOVE    1     TO    FLG-END
                NOT  AT  END
                    ADD     1     TO    CNT-IN
+      *
+                   DISPLAY "RECE02  PTNUM=" RECE02-PTNUM
            END-READ
            .
        RECE02-READ-EXT.

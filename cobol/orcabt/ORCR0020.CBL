@@ -87,6 +87,7 @@
       *                                     国保の場合は公費カウントしない
       *                                     （法別番号４１以外のとき）
       *  01.00.32    NACL-藤原    03/10/27  患者情報の編集の修正
+      *                                     県番号の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -210,6 +211,7 @@
            03  FLG-MONTHLYNUM                          PIC 9(01).
            03  FLG-TSYRRK                              PIC 9(01).
            03  FLG-TNKRRK                              PIC 9(01).
+           03  FLG-SET                                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -226,6 +228,7 @@
            03  IDX3                                    PIC 9(03).
            03  IDZ                                     PIC 9(02).
            03  TOKKI-IDX                               PIC 9(02).
+           03  SYSKAN-IDX                              PIC 9(03).
       *
       *    パス名領域
        01  WK-PATH                                     PIC X(20).
@@ -241,14 +244,16 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-PATH                                PIC X(64).
-      *****03  WRK-IN                                  PIC X(01).
            03  WRK-PARA.
-               05  WRK-PARA-PREFNUM                    PIC  X(02). 
+      *********05  WRK-PARA-PREFNUM                    PIC  X(02). 
                05  WRK-PARA-SRYYM                      PIC  X(06).
                05  WRK-PARA-TERMID                     PIC  X(16).
                05  WRK-PARA-SYSYMD                     PIC  X(08).
+               05  WRK-PARA-RECEKBN                    PIC  X(01).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
+      *
+           03  WRK-SYS-SRYYMD                          PIC  X(08).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -346,8 +351,8 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    患者番号構成管理情報
-           COPY  "CPSK1009.INC".
+      *    医療機関情報
+           COPY  "CPSK1001.INC".
       *
       *    月代わり受給者番号
        01  MONTHLYNUM-REC.
@@ -442,33 +447,6 @@
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
-      *    患者番号構成管理情報編集
-           INITIALIZE                  SYS-1009-REC
-           MOVE    "1009"              TO  SYS-1009-KANRICD
-           MOVE    "*"                 TO  SYS-1009-KBNCD
-           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
-           MOVE    SYS-1009-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-1009-REC
-               MOVE    SYS-1009-PTNUMKSIKBN
-                                           TO  SPA-1009-PTNUMKSIKBN
-               MOVE    SYS-1009-HJNKSIKBN  TO  SPA-1009-HJNKSIKBN
-               MOVE    SYS-1009-HJNKSINENKBN 
-                                           TO  SPA-1009-HJNKSINENKBN
-               MOVE    SYS-1009-HJNKSIRENNUMKBN
-                                           TO  SPA-1009-HJNKSIRENNUMKBN
-               MOVE    SYS-1009-HJNKSIRENNUMKETA
-                                           TO  SPA-1009-HJNKSIRENNUMKETA
-           ELSE
-               MOVE    "患者番号構成管理情報が取得できませんでした"
-                                           TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               MOVE    1                   TO  FLG-END
-           END-IF
-      *
           .
        100-INIT-EXT.
            EXIT.
@@ -540,13 +518,25 @@
       *
            PERFORM                     UNTIL   FLG-RECE01  =   1
       *
+      *        保険履歴情報編集処理
                IF      IDZ             =   1               
                    PERFORM 230-RECE09-HENSYU-SEC
                END-IF
       *            
-               PERFORM     210-HENSYU-SEC
-      *
-               PERFORM     220-DATA-WRITE-SEC
+      *        編集処理
+      *        処理区分（社保・国保）により読み飛ばす
+               EVALUATE    WRK-PARA-RECEKBN
+                   WHEN    "0"
+                       PERFORM 210-HENSYU-SEC
+                   WHEN    "1"
+                       IF      RECE01-HKNNUM   NOT =   "060" AND "067"
+                           PERFORM 210-HENSYU-SEC
+                       END-IF
+                   WHEN    "2"
+                       IF      RECE01-HKNNUM       =   "060" OR  "067"
+                           PERFORM 210-HENSYU-SEC
+                       END-IF
+               END-EVALUATE
       *
                PERFORM     RECE01-READ-SEC
            END-PERFORM
@@ -605,31 +595,32 @@
                MOVE    1                TO  RECE02-TEISYUTUSAKI
            END-IF
       *    患者情報の取得
-           MOVE   RECE01-KANANAME      TO  RECE02-KANANAME
-           MOVE   RECE01-NAME          TO  RECE02-NAME
-           MOVE   RECE01-SEX           TO  RECE02-SEX
-           MOVE   RECE01-BIRTHDAY      TO  RECE02-BIRTHDAY
-           MOVE   RECE01-DEATHKBN      TO  RECE02-DEATHKBN
-           MOVE   RECE01-TSTPTNUMKBN   TO  RECE02-TSTPTNUMKBN
-           MOVE   RECE01-AGE           TO  WRK-NENREI
+           MOVE    RECE01-KANANAME     TO  RECE02-KANANAME
+           MOVE    RECE01-NAME         TO  RECE02-NAME
+           MOVE    RECE01-SEX          TO  RECE02-SEX
+           MOVE    RECE01-BIRTHDAY     TO  RECE02-BIRTHDAY
+           MOVE    RECE01-DEATHKBN     TO  RECE02-DEATHKBN
+           MOVE    RECE01-TSTPTNUMKBN  TO  RECE02-TSTPTNUMKBN
+           MOVE    RECE01-AGE          TO  WRK-NENREI
                                            RECE02-AGE
-                
+      *    県番号
+           MOVE    RECE01-PREFNUM      TO  RECE02-PREFNUM
       *    患者保険情報テーブルから主保険情報の取得
-           IF  RECE01-HKNID             NOT =   ZERO
-               INITIALIZE                           PTHKNINF-REC
-               MOVE    RECE01-HOSPID        TO      PTHKN-HOSPID
-               MOVE    RECE01-PTID          TO      PTHKN-PTID
-               MOVE    RECE01-HKNID         TO      PTHKN-HKNID
-               MOVE    PTHKNINF-REC         TO      MCPDATA-REC
-     **********MOVE    RECE01-TEKSTYMDX     TO      ORC-DBYMD
-               MOVE    RECE02-TEKSTYMD      TO      ORC-DBYMD
-               MOVE    "DBSELECT"           TO      MCP-FUNC
-               MOVE    "PTHKNINF-KEY3"      TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-               IF      MCP-RC               =       ZERO
-                   MOVE    "PTHKNINF-KEY3"  TO      ORC-DBPATH
+           IF  RECE01-HKNID            NOT =   ZERO
+               INITIALIZE                          PTHKNINF-REC
+               MOVE    RECE01-HOSPID       TO      PTHKN-HOSPID
+               MOVE    RECE01-PTID         TO      PTHKN-PTID
+               MOVE    RECE01-HKNID        TO      PTHKN-HKNID
+               MOVE    PTHKNINF-REC        TO      MCPDATA-REC
+     **********MOVE    RECE01-TEKSTYMDX    TO      ORC-DBYMD
+               MOVE    RECE02-TEKSTYMD     TO      ORC-DBYMD
+               MOVE    "DBSELECT"          TO      MCP-FUNC
+               MOVE    "PTHKNINF-KEY3"     TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+               IF      MCP-RC              =       ZERO
+                   MOVE    "PTHKNINF-KEY3" TO      ORC-DBPATH
                    PERFORM  PTHKNINF-READ-SEC
                    IF       FLG-PTHKNINF        =   ZERO
                         MOVE   PTHKN-HKNID      TO  RECE02-HKNID
@@ -965,6 +956,8 @@
                MOVE    RECE01-ERR-TEKSTYMD   TO  RECE02-ERR-TEKSTYMD
                MOVE    RECE01-ERR-TEKEDYMD   TO  RECE02-ERR-TEKEDYMD
            END-IF 
+      *
+           PERFORM     220-DATA-WRITE-SEC
            .
        210-HENSYU-EXT.
            EXIT.
@@ -1128,7 +1121,8 @@
            END-EVALUATE
       *
       *    山形地方公費対応
-           IF      WRK-PARA-PREFNUM    =   "06"
+      *****IF      WRK-PARA-PREFNUM    =   "06"
+           IF      RECE02-PREFNUM      =   "06"
                IF  WK-KOKUHO               =     "1"  OR  "2"
                    IF   (RECE02-KOHNUM(1) (1:1)  =   "1")   OR
                         (RECE02-KOHNUM(2) (1:1)  =   "1")   OR
@@ -1144,7 +1138,8 @@
            END-IF
       *
       *    福岡地方公費対応
-           IF      WRK-PARA-PREFNUM    =   "40"
+      *****IF      WRK-PARA-PREFNUM    =   "40"
+           IF      RECE02-PREFNUM      =   "40"
                IF  WK-KOKUHO               =   "1" OR  "2"
                    IF   (RECE02-KOHNUM   (1)(1:1)  =   "1" OR  "2")
                    AND  (RECE02-KOHHBTNUM(1)   NOT =   "41"       )     
@@ -2610,6 +2605,27 @@
            EXIT.
       *
       *****************************************************************
+      *    管理マスタ読み込み
+      *****************************************************************
+       810-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           .
+       810-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    旧姓履歴マスタ読み込み
       *****************************************************************
        800-KYUSEIRRK-READ-SEC           SECTION.
@@ -2753,6 +2769,9 @@
                    MOVE    1     TO    FLG-RECE01
                NOT  AT  END
                    ADD     1     TO    CNT-IN (IDZ)
+      *
+                   DISPLAY "RECE01 " IDZ " PTNUM=" RECE01-PTNUM     
+      *
            END-READ
            .
        RECE01-READ-EXT.

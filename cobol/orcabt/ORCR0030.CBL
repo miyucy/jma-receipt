@@ -267,11 +267,11 @@
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
-           03  CNT-IN                                  PIC 9(06).
            03  CNT-IN-COMMIT                           PIC 9(06).
            03  CNT-OUT1                                PIC 9(06).
            03  CNT-OUT2                                PIC 9(06).
            03  CNT-TBL-OCC                             OCCURS  2.
+               05  CNT-IN                              PIC 9(06).
                05  CNT-OUT3                            PIC 9(06).
       *
       *    Åº»úÎÎ°è
@@ -425,7 +425,7 @@
        01  WRK-AREA.
            03  WRK-IN                                  PIC X(01).
            03  WRK-PARA.
-               05  WRK-PARA-PREFNUM                    PIC X(02).
+      *********05  WRK-PARA-PREFNUM                    PIC X(02).
                05  WRK-PARA-SRYYM                      PIC X(06).
                05  WRK-PARA-TERMID                     PIC X(16).
                05  WRK-PARA-SYSYMD                     PIC X(08).
@@ -4697,12 +4697,11 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-      **     DISPLAY "RECE02-IN  :" CNT-IN   
-      **     DISPLAY "RECE02-MOD :" CNT-OUT3  
-      **     DISPLAY "RECE04-OUT :" CNT-OUT1 
-      **     DISPLAY "RECE05-OUT :" CNT-OUT2  
-             DISPLAY "*** ORCR0030 END ***"
-      **     ACCEPT  WRK-IN FROM CONSOLE 
+           DISPLAY "RECE02  CNT-IN  :" CNT-IN  (1) 
+           DISPLAY "RECE04  CNT-OUT :" CNT-OUT1  
+           DISPLAY "RECE05  CNT-OUT :" CNT-OUT2  
+           DISPLAY "RECE02X CNT-IN  :" CNT-IN  (2) 
+           DISPLAY "*** ORCR0030 END ***"
            .
        300-TERM-EXT.
            EXIT.
@@ -5057,8 +5056,11 @@
                AT  END
                    MOVE    1     TO    FLG-RECE02
                NOT  AT  END
-                   ADD     1     TO    CNT-IN
+                   ADD     1     TO    CNT-IN (IDZ)
                    ADD     1     TO    CNT-IN-COMMIT
+      *
+                   DISPLAY "RECE02 " IDZ " PTNUM=" RECE02-PTNUM     
+      *
                    IF   WRK-PARA-SRYYM    NOT =  ZERO
                      CONTINUE
                    ELSE
