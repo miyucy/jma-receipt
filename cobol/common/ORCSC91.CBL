@@ -34,6 +34,7 @@
       *                                     »»ÄÉ²Ã
       *  01.00.05    NACL-Â¿¡¹Ç¼  02.12.17  Æþ±¡»þ»»Äê¥Á¥§¥Ã¥¯ÊÑ¹¹
       *  01.00.06    NACL-Â¿¡¹Ç¼  03.03.17  ²ðÃ£¸£°ú¤òÆ±»þ»»Äê¤ØÄÉ²Ã
+      *  01.00.07    NACL-Â¿¡¹Ç¼  04.09.02  Ï«ºÒ¤Î¼¾ÉÛ½èÃÖ»»Äê½¤Àµ
       *****************************************************************
       *
       *
@@ -54,6 +55,7 @@
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-NYU-CHK         PIC 9(01).
+           03  FLG-ERR             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -77,9 +79,14 @@
            03  WRK-DAYCNT              PIC 9(04).
            03  WRK-DOCNT               PIC 9(04).
            03  WRK-CNT-OK              PIC 9(04).
+           03  WRK-DAYCNT-SUM          PIC 9(04).
+           03  WRK-DOCNT-SUM           PIC 9(04).
+           03  WRK-DAYCNT-P            PIC 9(04).
+           03  WRK-DOCNT-P             PIC 9(04).
       *
            03  WRK-SRYCD               PIC X(09).
            03  WRK-CODE                PIC X(03).
+           03  WRK-CHK                 PIC X(01).
       *    ¸½ºß·ï¿ô
            03  WRK-SC91-CNT            PIC 9(04).
            03  WRK-SC91-DAYCNT         PIC 9(04).
@@ -105,66 +112,67 @@
       *    Æ±»þ¤Ë»»Äê¤¹¤ë¿ÇÎÅ¹Ô°Ù¥³¡¼¥É°ìÍ÷
        01  TBL-DOUJI-AREA.
       *     ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê¡Ê½èÊýäµ¸òÉÕ¤¢¤ê¡Ë
-      *    03  FILLER                  PIC X(03)   VALUE   "001".
+      *    03  FILLER                  PIC X(04)   VALUE   "001".
       *    03  FILLER                  PIC X(09)   VALUE   "114701210".
       *     ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê¡Ê½èÊýäµ¸òÉÕ¤Ê¤·¡Ë
-      *    03  FILLER                  PIC X(03)   VALUE   "001".
+      *    03  FILLER                  PIC X(04)   VALUE   "001".
       *    03  FILLER                  PIC X(09)   VALUE   "114701710".
       *
       *     ÌôºÞ¾ðÊóÄó¶¡ÎÁ
-           03  FILLER                  PIC X(03)   VALUE   "002".
+           03  FILLER                  PIC X(04)   VALUE   "002".
            03  FILLER                  PIC X(09)   VALUE   "120002370".
       *     ÌôºÞ¾ðÊóÄó¶¡ÎÁ¡ÊÏ·¿Í¼êÄ¢µ­ºÜ¤Ê¤·¡Ë
-           03  FILLER                  PIC X(03)   VALUE   "002".
+           03  FILLER                  PIC X(04)   VALUE   "002".
            03  FILLER                  PIC X(09)   VALUE   "113701410".
       *     ÌôºÞ¾ðÊóÄó¶¡ÎÁ¡ÊÏ·¿Í¼êÄ¢µ­ºÜ¤¢¤ê¡Ë
-           03  FILLER                  PIC X(03)   VALUE   "002".
+           03  FILLER                  PIC X(04)   VALUE   "002".
            03  FILLER                  PIC X(09)   VALUE   "113701310".
       *
       *     ÆÃÄê¼À´µ½èÊý´ÉÍý²Ã»»½èÊýäµÎÁ
-           03  FILLER                  PIC X(03)   VALUE   "003".
+           03  FILLER                  PIC X(04)   VALUE   "003".
            03  FILLER                  PIC X(09)   VALUE   "120002570".
       *     ÆÃÄê¼À´µ½èÊý´ÉÍý²Ã»»½èÊýÎÁ
-           03  FILLER                  PIC X(03)   VALUE   "003".
+           03  FILLER                  PIC X(04)   VALUE   "003".
            03  FILLER                  PIC X(09)   VALUE   "120002270".
       *
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¡Ê±¡³°½èÊý¡Ë½é¿Ç
-           03  FILLER                  PIC X(03)   VALUE   "004".
+           03  FILLER                  PIC X(04)   VALUE   "004".
            03  FILLER                  PIC X(09)   VALUE   "113003510".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¡Ê±¡Æâ½èÊý¡Ë½é¿Ç
-           03  FILLER                  PIC X(03)   VALUE   "004".
+           03  FILLER                  PIC X(04)   VALUE   "004".
            03  FILLER                  PIC X(09)   VALUE   "113003710".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¡Ê±¡³°½èÊý¡ËºÆ¿Ç
-           03  FILLER                  PIC X(03)   VALUE   "004".
+           03  FILLER                  PIC X(04)   VALUE   "004".
            03  FILLER                  PIC X(09)   VALUE   "113003610".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¡Ê±¡Æâ½èÊý¡ËºÆ¿Ç
-           03  FILLER                  PIC X(03)   VALUE   "004".
+           03  FILLER                  PIC X(04)   VALUE   "004".
            03  FILLER                  PIC X(09)   VALUE   "113003810".
       *    ¾Ã±êÄÃÄË½èÃÖ¥Æ¡¼¥Ö¥ë
-           03  FILLER                  PIC X(03)   VALUE   "005".
+           03  FILLER                  PIC X(04)   VALUE   "005".
            03  FILLER                  PIC X(09)   VALUE   "140029610".
-           03  FILLER                  PIC X(03)   VALUE   "005".
+           03  FILLER                  PIC X(04)   VALUE   "005".
            03  FILLER                  PIC X(09)   VALUE   "140040310".
-           03  FILLER                  PIC X(03)   VALUE   "005".
+      *    ¼¾ÉÛ½èÃÖ
+           03  FILLER                  PIC X(04)   VALUE   "005P".
            03  FILLER                  PIC X(09)   VALUE   "140002210".
-           03  FILLER                  PIC X(03)   VALUE   "005".
+           03  FILLER                  PIC X(04)   VALUE   "005P".
            03  FILLER                  PIC X(09)   VALUE   "140002310".
       *    ²ðÃ£¸£°ú
-           03  FILLER                  PIC X(03)   VALUE   "005".
+           03  FILLER                  PIC X(04)   VALUE   "005".
            03  FILLER                  PIC X(09)   VALUE   "140048010".
       *
       *    ·ÑÂ³´ÉÍý²Ã»»¡Ê°ìÈÌ¡Ë
-           03  FILLER                  PIC X(03)   VALUE   "006".
+           03  FILLER                  PIC X(04)   VALUE   "006".
            03  FILLER                  PIC X(09)   VALUE   "112007170".
       *    ·ÑÂ³´ÉÍý²Ã»»¡ÊÏ·¿Í¡Ë
-           03  FILLER                  PIC X(03)   VALUE   "006".
+           03  FILLER                  PIC X(04)   VALUE   "006".
            03  FILLER                  PIC X(09)   VALUE   "112702270".
       *
       *    Ä¹´üÅêÌô²Ã»»¡Ê½èÊýäµÎÁ¡Ë
-           03  FILLER                  PIC X(03)   VALUE   "007".
+           03  FILLER                  PIC X(04)   VALUE   "007".
            03  FILLER                  PIC X(09)   VALUE   "120003270".
       *    Ä¹´üÅêÌô²Ã»»¡Ê½èÊýÎÁ¡Ë
-           03  FILLER                  PIC X(03)   VALUE   "007".
+           03  FILLER                  PIC X(04)   VALUE   "007".
            03  FILLER                  PIC X(09)   VALUE   "120003170".
       *
        01  TBL-DOUJI-AREA-R            REDEFINES  TBL-DOUJI-AREA.
@@ -172,6 +180,7 @@
       *****03  TBL-DOUJI-OCC           OCCURS   13  INDEXED   TBL-IDX.
            03  TBL-DOUJI-OCC           OCCURS   18  INDEXED   TBL-IDX.
                05  TBL-CODE                PIC X(03).
+               05  TBL-CHK                 PIC X(01).
                05  TBL-SRYCD               PIC X(09).
       *01  TBL-MAX                     PIC 9(04)   VALUE   9.
        01  TBL-MAX                     PIC 9(04)   VALUE   18.
@@ -784,19 +793,33 @@
                        GO      TO      200-DOUJI-CHK-EXT
                    WHEN    LNK-SC91-SRYCD      =   TBL-SRYCD (TBL-IDX)
                        MOVE    TBL-CODE   (TBL-IDX)    TO  WRK-CODE
+                       MOVE    TBL-CHK    (TBL-IDX)    TO  WRK-CHK
            END-SEARCH
       *
            MOVE    SPACE               TO  WRK-CHK-SRYCD
            MOVE    SPACE               TO  WRK-CHK-NAME
            MOVE    SPACE               TO  WRK-CHK-SRYYMD
            MOVE    ZERO                TO  WRK-CNT
-           MOVE    ZERO                TO  WRK-DOCNT
-           MOVE    ZERO                TO  WRK-DAYCNT
+           MOVE    ZERO                TO  WRK-DOCNT-SUM
+           MOVE    ZERO                TO  WRK-DAYCNT-SUM
+           MOVE    ZERO                TO  WRK-DOCNT-P
+           MOVE    ZERO                TO  WRK-DAYCNT-P
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL       IDX2    >   TBL-MAX
+               MOVE    ZERO                TO  WRK-DOCNT
+               MOVE    ZERO                TO  WRK-DAYCNT
                SET     TBL-IDX         TO  IDX2
-               IF      (LNK-SC91-SRYCD NOT =   TBL-SRYCD (TBL-IDX)) AND
-                       (WRK-CODE           =   TBL-CODE  (TBL-IDX))
+      *        Ï«ºÒ¤Ç¡¢¾Ã±êÄÃÄË¤Î»þ¡¢¼¾ÉÛÂÐ¾Ý³°
+               IF      (SPA-HKNKBN     NOT =   ZERO    ) AND
+                       (WRK-CHK        NOT =   SPACE   )  AND
+                       (WRK-CHK            =   TBL-CHK (TBL-IDX))
+                   MOVE    1                   TO  FLG-ERR
+               ELSE
+                   MOVE    ZERO                TO  FLG-ERR
+               END-IF
+               IF      (WRK-CODE           =   TBL-CODE  (TBL-IDX))
+                   AND (LNK-SC91-SRYCD NOT =   TBL-SRYCD(TBL-IDX) )
+                   AND (FLG-ERR            =   ZERO    )
                    MOVE    TBL-SRYCD (TBL-IDX)     TO  WRK-SRYCD
                    MOVE    WRK-SRYCD               TO  TNS-SRYCD
                    PERFORM 910-TENSU-READ-SEC
@@ -817,6 +840,15 @@
       *                    º£²óÆþÎÏÊ¬¥«¥¦¥ó¥È
                            PERFORM 2003-DOJINPUT-CHK-SEC
                       END-IF
+                      IF      (SPA-HKNKBN      NOT =   ZERO    ) AND
+                              (TBL-CHK (TBL-IDX)   NOT =   SPACE)
+      *                    Ï«ºÒ¤Ç¼¾ÉÛ¤Î»þ
+                           IF      WRK-DOCNT       >   ZERO
+                               MOVE    1           TO  WRK-DOCNT-P
+                           END-IF
+                      ELSE
+                           ADD     WRK-DOCNT       TO  WRK-DOCNT-SUM
+                      END-IF
       *
       *               ¾å¸ÂÂ¾·î¿ô
                       IF      TNS-JGNCNTETCM     >   ZERO
@@ -824,14 +856,25 @@
                       ELSE
                           PERFORM 2001-DOJSANTEI-YMD-SEC
                       END-IF
+                      IF      (SPA-HKNKBN      NOT =   ZERO    ) AND
+                              (TBL-CHK (TBL-IDX)   NOT =   SPACE)
+      *                    Ï«ºÒ¤Ç¼¾ÉÛ¤Î»þ
+                           IF      WRK-DAYCNT      >   ZERO
+                               MOVE    1           TO  WRK-DOCNT-P
+                           END-IF
+                      ELSE
+                           ADD     WRK-DAYCNT      TO  WRK-DAYCNT-SUM
+                      END-IF
                    END-IF
                END-IF
            END-PERFORM
+           COMPUTE WRK-DOCNT-SUM       =   WRK-DOCNT-SUM
+                                       +   WRK-DOCNT-P
       *
       *    Åö·î¤Î£Í£Á£Ø
            IF     (LNK-SC91-MAXCNT     >   ZERO  )  AND
                   (LNK-SC91-MAXCNT     <= ( WRK-SC91-CNT  +  WRK-CNT
-                                                          +  WRK-DOCNT))
+                                       +  WRK-DOCNT-SUM))
                MOVE    "0033"          TO  LNK-SC91-ERRCD
       *        ¾å¸Â²ó¿ô¥¨¥é¡¼½èÍý¡á£¹¤Î»þ¡¢²ó¿ô¥¨¥é¡¼¤Ï·Ù¹ð¤È¤¹¤ë
                IF       WRK-JGNCNTERR      =   9
@@ -839,6 +882,9 @@
                END-IF
            END-IF
       *
+      *    ÊÝ¸±Ëè¤Î¥³¡¼¥É¤ÎÈ½Äê
+           MOVE    LNK-SC91-SRYCD      TO  WRK-SRYCD
+           PERFORM 1000-SANTEI-CHK-SEC
       *
       *    Ï«ºÒ¤Ç¾Ã±êÄÃÄË½èÃÖ¤Î»þ¡¢ÅöÆü¾å¸Â²ó¿ô¤òÊÑ¹¹¤¹¤ë
            MOVE    LNK-SC91-DAYMAXCNT  TO  WRK-DAYMAXCNT
@@ -861,8 +907,9 @@
            IF     (LNK-SC91-ERRCD      =   SPACE  )  AND
                   (WRK-DAYMAXCNT       >   ZERO   )
                IF      WRK-DAYMAXCNT
-                                   <= ( WRK-SC91-DAYCNT  +  WRK-DAYCNT
-                                                         +  WRK-DOCNT )
+                                   <=  (  WRK-SC91-DAYCNT
+                                       +  WRK-DAYCNT-SUM
+                                       +  WRK-DOCNT-SUM )
                    MOVE    "0033"          TO  LNK-SC91-ERRCD
       *            ¾Ã±êÄÃÄË½èÃÖ¤Î»þ¡¢¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸¤ò´¹¤¨¤ë
                    IF      WRK-CODE        =   "005"
