@@ -6,7 +6,6 @@ exec_prefix= @exec_prefix@
 screendir = ${exec_prefix}/screen
 
 EXTRA_DIST = \
-             C01.glade \
              C02.glade \
              C03.glade \
              C04.glade \
@@ -39,7 +38,6 @@ EXTRA_DIST = \
              H99.glade \
              HERR.glade \
              HID1.glade \
-             I01.glade \
              J02.glade \
              J021.glade \
              J022.glade \
@@ -83,7 +81,6 @@ EXTRA_DIST = \
              M02.glade \
              M95.glade \
              M96.glade \
-             MD1.glade \
              MERR.glade \
              MID1.glade \
              MVER.glade \
@@ -173,7 +170,6 @@ EXTRA_DIST = \
              XERR.glade \
              XID1.glade \
              Y01.glade \
-             Y02.glade \
              Y03.glade \
              Y04.glade \
              YERR.glade \
