@@ -8484,6 +8484,9 @@
                        MOVE    SPACE           TO  SYU-ACCT-UPDKBN
                    END-IF
       *
+                   MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -8525,6 +8528,9 @@
       *        会計変更区分
                MOVE    SPACE           TO  SYU-ACCT-UPDKBN
            END-IF
+      *
+           MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -9916,6 +9922,11 @@
       *    収納更新処理
       *****************************************************************
        490-SYUNOU-CHK-SEC      SECTION.
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *
            IF      SPA-NYUGAIKBN       =   "2"
                PERFORM 49012-SYUNOU-SAIKEISAN-SEC
