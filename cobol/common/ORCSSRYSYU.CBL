@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.00    NACL-多々納  02/09/12  ディレクトリをサブプロへ
+      *  01.00.01    NACL-多々納  02/10/09  最大数を１００へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -133,8 +134,8 @@
                        MOVE    1           TO  FLG-SRYKBN
                    NOT AT  END
                       ADD     1           TO  IDX
-                      IF      IDX         >   70
-                           DISPLAY "SRYSYU 70 OVER !!! TBL ERR"
+                      IF      IDX         >   100
+                           DISPLAY "SRYSYU 100 OVER !!! TBL ERR"
                            MOVE    1           TO  FLG-SRYKBN
                        ELSE
                            MOVE    SRYKBN-REC      TO  MSYU-TBL-OCC
