@@ -398,6 +398,7 @@
            03  WRK-FTN-NYUINYMD            PIC X(08).
            03  WRK-FTN-TAIINYMD            PIC X(08).
            03  WRK-FTN-RRKNUM              PIC 9(03).
+           03  WRK-NYUREKILST-SEL          PIC 9(05).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -3355,6 +3356,10 @@
            MOVE    SPA-GMN-I01-B08-STT
                                    TO  WRK-WIDGET-B08-STT
       *
+      *    コラムリストの選択位置を退避
+           MOVE    SPA-GMN-I01-NYUREKILST-SEL
+                                   TO  WRK-NYUREKILST-SEL
+      *
            INITIALIZE              SPA-GMN-I01-INPUT-AREA
                                    SPA-NAI-I01-INPUT-AREA
       *
@@ -3460,9 +3465,15 @@
            MOVE    WRK-WIDGET-B07-STT  TO  SPA-GMN-I01-B07-STT
            MOVE    WRK-WIDGET-B08-STT  TO  SPA-GMN-I01-B08-STT
       *
-           IF    ( SPA-GMN-I01-NYUREKILST-CNT  >   ZERO )
-               MOVE    1           TO  SPA-GMN-I01-NYUREKILST-SEL
-                                       SPA-GMN-I01-SELNUM
+           IF    ( SPA-GMN-I01-SYORIKBN-CD     =   "10" )
+               MOVE    WRK-NYUREKILST-SEL
+                                       TO  SPA-GMN-I01-NYUREKILST-SEL
+                                           SPA-GMN-I01-SELNUM
+           ELSE
+               IF    ( SPA-GMN-I01-NYUREKILST-CNT  >   ZERO )
+                   MOVE    1           TO  SPA-GMN-I01-NYUREKILST-SEL
+                                           SPA-GMN-I01-SELNUM
+               END-IF
            END-IF
       *
       *    保険組合せが存在していること
@@ -6002,12 +6013,23 @@
       *****************************************************************
        480-TOUROKU-SEC                 SECTION.
       *
-           PERFORM 410-INPUT-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  480-TOUROKU-EXT
+           IF    ( SPA-GMN-I01-SYORIKBN-CD     =   "10" )
+      *
+               PERFORM 4101-GMN-SPA-SET-SEC
+           ELSE
+      *
+               PERFORM 410-INPUT-CHK-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  480-TOUROKU-EXT
+               END-IF
+      *
+               PERFORM 4801-KANREN-CHK-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  480-TOUROKU-EXT
+               END-IF
            END-IF
       *
-           PERFORM 4801-KANREN-CHK-SEC
+           PERFORM 4801-SYORI-KANREN-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  480-TOUROKU-EXT
            END-IF
@@ -6316,6 +6338,14 @@
                END-IF
            END-IF
       *
+           .
+       4801-KANREN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理別関連チェック処理
+      *****************************************************************
+       4801-SYORI-KANREN-CHK-SEC       SECTION.
+      *
       *    処理区分固有の関連チェック
            EVALUATE    SPA-GMN-I01-SYORIKBN-CD
       *    入院登録
@@ -6349,7 +6379,7 @@
            END-EVALUATE
       *
            .
-       4801-KANREN-CHK-EXT.
+       4801-SYORI-KANREN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院登録時関連チェック
