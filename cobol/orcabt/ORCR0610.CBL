@@ -785,20 +785,21 @@
                    MOVE    KEY-NEW             TO  KEY-OLD
                    PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                    OR      KEY-NEW     NOT =   KEY-OLD
-      *                社保・国保の読み飛ばし
-                       EVALUATE    WRK-PARA-RECEKBN
-                           WHEN    "0"
-                               PERFORM 20011-FILE-SYORI-SEC 
-                           WHEN    "1"
-                               IF      COMB-HKNNUM 
-                                               NOT =   "060" AND "067"
-                                   PERFORM 20011-FILE-SYORI-SEC 
-                               END-IF
-                           WHEN    "2"
-                               IF      COMB-HKNNUM =   "060" OR  "067"
-                                   PERFORM 20011-FILE-SYORI-SEC 
-                               END-IF
-                       END-EVALUATE
+      *****************社保・国保の読み飛ばし
+      *****************EVALUATE    WRK-PARA-RECEKBN
+      *                    WHEN    "0"
+      *                        PERFORM 20011-FILE-SYORI-SEC 
+      *                    WHEN    "1"
+      *                        IF      COMB-HKNNUM 
+      *                                        NOT =   "060" AND "067"
+      *                            PERFORM 20011-FILE-SYORI-SEC 
+      *                        END-IF
+      *                    WHEN    "2"
+      *                        IF      COMB-HKNNUM =   "060" OR  "067"
+      *                            PERFORM 20011-FILE-SYORI-SEC 
+      *                        END-IF
+      *****************END-EVALUATE
+                       PERFORM 20011-FILE-SYORI-SEC 
       *
                        IF      WRK-UPDKBN          =   SPACE                   
       *                    同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
@@ -1135,28 +1136,28 @@
                                            WRK-CONS-JIBAI-HKNNUM 
                            MOVE    "1"         TO
                                            WRK-HKNCOMBI-SYOKBN (IDX1)
-                       ELSE    
-      *                社保・国保の読み飛ばし
-                           EVALUATE    WRK-PARA-RECEKBN
-                               WHEN    "0"
-                                   CONTINUE 
-                               WHEN    "1"
-                                   IF      COMB-HKNNUM 
-                                               NOT =   "060" AND "067"
-                                       CONTINUE
-                                   ELSE
-                                       MOVE    "1"       TO
-                                           WRK-HKNCOMBI-SYOKBN (IDX1)   
-                                   END-IF
-                               WHEN    "2"
-                                   IF      COMB-HKNNUM
-                                                   =   "060" OR  "067"
-                                               CONTINUE
-                                   ELSE
-                                       MOVE    "1"       TO
-                                           WRK-HKNCOMBI-SYOKBN (IDX1)      
-                                   END-IF
-                           END-EVALUATE
+      *****************ELSE    
+      *********************社保・国保の読み飛ばし
+      *********************EVALUATE    WRK-PARA-RECEKBN
+      *                        WHEN    "0"
+      *                            CONTINUE 
+      *                        WHEN    "1"
+      *                            IF      COMB-HKNNUM 
+      *                                        NOT =   "060" AND "067"
+      *                                CONTINUE
+      *                            ELSE
+      *                                MOVE    "1"       TO
+      *                                    WRK-HKNCOMBI-SYOKBN (IDX1)   
+      *                            END-IF
+      *                        WHEN    "2"
+      *                            IF      COMB-HKNNUM
+      *                                            =   "060" OR  "067"
+      *                                        CONTINUE
+      *                            ELSE
+      *                                MOVE    "1"       TO
+      *                                    WRK-HKNCOMBI-SYOKBN (IDX1)      
+      *                            END-IF
+      *********************END-EVALUATE
                        END-IF
                    ELSE
                        MOVE    WRK-DAY (2 IDX) TO
@@ -1960,19 +1961,20 @@
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      KEY-NEW     NOT =   KEY-OLD
-      *            社保・国保の読み飛ばし
-                   EVALUATE    WRK-PARA-RECEKBN
-                       WHEN    "0"
-                           PERFORM 20011-FILE-SYORI-SEC 
-                       WHEN    "1"
-                           IF      COMB-HKNNUM NOT =   "060" AND "067"
-                               PERFORM 20011-FILE-SYORI-SEC 
-                           END-IF
-                       WHEN    "2"
-                           IF      COMB-HKNNUM     =   "060" OR  "067"
-                               PERFORM 20011-FILE-SYORI-SEC 
-                           END-IF
-                   END-EVALUATE
+      *************社保・国保の読み飛ばし
+      *            EVALUATE    WRK-PARA-RECEKBN
+      *                WHEN    "0"
+      *                    PERFORM 20011-FILE-SYORI-SEC 
+      *                WHEN    "1"
+      *                    IF      COMB-HKNNUM NOT =   "060" AND "067"
+      *                        PERFORM 20011-FILE-SYORI-SEC 
+      *                    END-IF
+      *                WHEN    "2"
+      *                    IF      COMB-HKNNUM     =   "060" OR  "067"
+      *                        PERFORM 20011-FILE-SYORI-SEC 
+      *                    END-IF
+      *************END-EVALUATE
+                   PERFORM 20011-FILE-SYORI-SEC 
       *
                    IF      WRK-UPDKBN          =   SPACE                   
       *                同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
