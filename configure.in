@@ -32,11 +32,16 @@ AC_ARG_WITH(open-cobol-exec-prefix,[--with-open-cobol-exec-prefix=<direcotry> Pr
     no_cobc=yes
   else
     if test -x $COBC ; then
-      AC_MSG_RESULT(yes)
+      no_cobc=""
     else
+      no_cobc=yes
+    fi
+  fi
+  if test "x$no_cobc" = x ; then
+      AC_MSG_RESULT(yes)
+  else
       AC_MSG_RESULT(no)
       AC_MSG_ERROR(OpenCOBOL compiler not found.)
-    fi
   fi
 
 AC_SUBST(COBC)
