@@ -371,22 +371,47 @@
            03  FILLER          PIC X(14)  VALUE    "03 1 160021510".
       *    イオン化カルシウム
            03  FILLER          PIC X(14)  VALUE    "03 1 160021610".
-      *
+      *どれか１つ
+      *    蛋白分画
+           03  FILLER          PIC X(14)  VALUE    "04 1 160022810".
+      *    Ａ／Ｇ
+           03  FILLER          PIC X(14)  VALUE    "04 11160022350".
       *
        01  TBL-KENSA-JYU-AREA-R    REDEFINES   TBL-KENSA-JYU-AREA.
-           03  TBL-KENSA-JYU-OCC       OCCURS  8   INDEXED  JYU-IDX.
+           03  TBL-KENSA-JYU-OCC       OCCURS  10  INDEXED  JYU-IDX.
                05  TBL-JYU-KBN         PIC X(02).
                05  TBL-FILLER1         PIC X(01).
                05  TBL-JYU-KEN         PIC X(01).
                05  TBL-FILLER2         PIC X(01).
                05  TBL-JYU-SRYCD       PIC X(09).
-       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   8.
+       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   10.
+      *
+      *    重複算定不可テーブル（２）
+       01  TBL-KENSA-JYU2-AREA.
+      *どれか２つ
+      *    ＴＰ
+           03  FILLER          PIC X(14)  VALUE    "01 2 160017410".
+      *    Ａ／Ｇ
+           03  FILLER          PIC X(14)  VALUE    "01 2 160022350".
+      *    アルブミン
+           03  FILLER          PIC X(14)  VALUE    "01 2 160018910".
+      *
+      *
+       01  TBL-KENSA-JYU2-AREA-R    REDEFINES  TBL-KENSA-JYU2-AREA.
+           03  TBL-KENSA-JYU2-OCC      OCCURS  3   INDEXED  JYU2-IDX.
+               05  TBL2-JYU-KBN         PIC X(02).
+               05  TBL2-FILLER1         PIC X(01).
+               05  TBL2-JYU-KEN         PIC X(01).
+               05  TBL2-FILLER2         PIC X(01).
+               05  TBL2-JYU-SRYCD       PIC X(09).
+       01  KEN-JYU2-MAX                 PIC 9(04)   VALUE   3.
       *
        01  WRK-JYUFUKU-CHK.
            03  WRK-JYU-CNT             PIC 9(02).
            03  WRK-JYU-IDX             PIC 9(04).
            03  WRK-JYU-KBN             PIC X(02).
            03  WRK-JYU-KEN             PIC 9(01).
+           03  WRK-JYU-FLG             PIC X(01).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1821,6 +1846,7 @@
                    AT  END
                        MOVE    SPACE           TO  WRK-JYU-KBN
                        MOVE    ZERO            TO  WRK-JYU-KEN
+                       MOVE    SPACE           TO  WRK-JYU-FLG
                    WHEN    WRK-COM-INPUTCD (IDX-Z)
                                                =   TBL-JYU-SRYCD
                                                            (JYU-IDX)
@@ -1828,6 +1854,8 @@
                                                 TO  WRK-JYU-KBN
                        MOVE    TBL-JYU-KEN  (JYU-IDX)
                                                 TO  WRK-JYU-KEN
+                       MOVE    TBL-FILLER2  (JYU-IDX)
+                                                TO  WRK-JYU-FLG
            END-SEARCH
       *
            IF      WRK-JYU-KBN         =   SPACE
@@ -1864,9 +1892,73 @@
                MOVE    "0060"              TO  SPA-ERRCD
                MOVE    "1"                 TO  WRK-COM-CUR (WRK-JYU-IDX)
            END-IF
+      *
+           IF      WRK-JYU-FLG     NOT =   SPACE
+      *        別テーブルのチェック
+               PERFORM 20012-JYUFUKU-CHK2-SEC
+           END-IF
            .
       *
        20011-JYUFUKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     重複算定不可チェック２処理
+      *****************************************************************
+       20012-JYUFUKU-CHK2-SEC           SECTION.
+      *
+      *    同一検査算定有無の判定
+           SET     JYU2-IDX            TO  1
+           SEARCH      TBL-KENSA-JYU2-OCC   VARYING   JYU2-IDX
+                   AT  END
+                       MOVE    SPACE           TO  WRK-JYU-KBN
+                       MOVE    ZERO            TO  WRK-JYU-KEN
+                   WHEN    WRK-COM-INPUTCD (IDX-Z)
+                                               =   TBL2-JYU-SRYCD
+                                                           (JYU2-IDX)
+                       MOVE    TBL2-JYU-KBN  (JYU2-IDX)
+                                                TO  WRK-JYU-KBN
+                       MOVE    TBL2-JYU-KEN  (JYU2-IDX)
+                                                TO  WRK-JYU-KEN
+           END-SEARCH
+      *
+           IF      WRK-JYU-KBN         =   SPACE
+               GO      TO      20012-JYUFUKU-CHK2-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  WRK-JYU-CNT
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   KEN-JYU2-MAX)  OR
+                              (SPA-ERRCD   NOT =   SPACE  )
+               SET     JYU2-IDX            TO  IDX
+               IF     (TBL2-JYU-KBN  (JYU2-IDX)  =   WRK-JYU-KBN ) AND
+                      (TBL2-JYU-SRYCD(JYU2-IDX)
+                                           NOT =   WRK-COM-INPUTCD
+                                                         (IDX-Z))
+                   MOVE    TBL2-JYU-SRYCD (JYU2-IDX) TO  WRK-SRYCD
+                   PERFORM VARYING     IDX2    FROM    1   BY  1
+                           UNTIL      (IDX2    >   200  )  OR
+                                      (WRK-COM-INPUTCD (IDX2)
+                                                   =   SPACE  AND
+                                       WRK-GMN-INPUTCD (IDX2)
+                                                   =   SPACE  )
+                       IF     (WRK-COM-INPUTCD(IDX-Z)
+                                               NOT =   WRK-COM-INPUTCD
+                                                             (IDX2)) AND
+                              (WRK-COM-INPUTCD (IDX2)  =   WRK-SRYCD)
+                           ADD     1               TO  WRK-JYU-CNT
+                           MOVE    IDX2            TO  WRK-JYU-IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+           IF      WRK-JYU-KEN         <=  WRK-JYU-CNT
+               MOVE    "0060"              TO  SPA-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (WRK-JYU-IDX)
+           END-IF
+           .
+      *
+       20012-JYUFUKU-CHK2-EXT.
            EXIT.
       *
       *****************************************************************
