@@ -97,6 +97,7 @@
            03  WRK-JOBID           PIC 9(03).
            03  WRK-STR             PIC 9(05).
            03  WRK-SELNUM          PIC S9(05).
+           03  WRK-RENNUM          PIC 9(04).
            03  WRK-NUM             PIC ZZ9.
            03  WRK-MOTOPG          PIC X(08).
            03  WRK-PATH.
@@ -986,15 +987,22 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *    追加処理    
-           ADD     1                TO  SPA-NAI-T02-BTPARA-RENNUM
+           INITIALIZE                      BTPARA-REC
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  BTPARA-SHELLID
+           MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
+                                       TO  BTPARA-SCRIPTID
+           MOVE    PATH-TBL-BTPARA-KEY6
+                                       TO  WRK-PATH
+           PERFORM 900-BTPARA-READ-SEC
+           COMPUTE WRK-RENNUM  =   BTPARA-RENNUM   +   1
       *
            INITIALIZE                      BTPARA-REC
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  BTPARA-SHELLID
            MOVE    SPA-NAI-T02-TKBNCD (SPA-NAI-T02-SELNUM1)
                                        TO  BTPARA-DSP-RENNUM
-           MOVE    SPA-NAI-T02-BTPARA-RENNUM
-                                       TO  BTPARA-RENNUM
+           MOVE    WRK-RENNUM          TO  BTPARA-RENNUM
            MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
                                        TO  BTPARA-SCRIPTID
            MOVE    SPA-NAI-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
@@ -1019,8 +1027,7 @@
                MOVE    "1002"          TO  SPA-ERRCD
            ELSE
                ADD     1                TO  SPA-GMN-T02-PARA-MAX
-               MOVE    SPA-NAI-T02-BTPARA-RENNUM
-                                        TO  SPA-GMN-T02-TRENNUM2
+               MOVE    WRK-RENNUM       TO  SPA-GMN-T02-TRENNUM2
                                             (SPA-GMN-T02-PARA-MAX)
                MOVE    SPA-GMN-T02-PARA-MAX
                                         TO  IDX
