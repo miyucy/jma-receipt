@@ -143,6 +143,8 @@
       *  01.08.11    NACL-藤原    04/05/14  簡単修正時の開始日と
       *                                     保険組合せのチェックの修正
       *  01.08.12    NACL-藤原    04/06/21  アフターケア日の表示修正
+      *  01.08.13    NACL-藤原    04/08/19  開始日の未来日を入力したとき
+      *                                     警告を表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -743,12 +745,16 @@
                    GO      TO      300-SCREEN-EXT
                END-IF
       *
-               IF      SPA-CIDCD       =   "0102"
+               IF      SPA-CIDCD       =   "0102"  OR  "0103"
       ********     MOVE    SPACE           TO  SPA-CIDCD
                    IF      SPA-CID1-FLG    =   "OK"
                        PERFORM 4502-TOUROKU-SYORI-SEC
                    ELSE
-                       MOVE    1               TO  SPA-GMN-C02-CUR
+                       IF      SPA-CIDCD       =   "0103"
+                           MOVE    9               TO  SPA-GMN-C02-CUR
+                       ELSE
+                           MOVE    1               TO  SPA-GMN-C02-CUR
+                       END-IF
                    END-IF
                    MOVE    SPACE           TO  SPA-CIDCD
                    GO      TO      300-SCREEN-EXT
@@ -5504,35 +5510,44 @@
                    MOVE    6                  TO  IDXX                  
                END-IF
            END-PERFORM
-           IF      SPA-ERRCD        NOT =   SPACE
-              GO  TO  450-TOUROKU-EXT
-           END-IF
       *
-      *    主病名の存在チェック
-           IF      SPA-GMN-C02-SYUBYOFLG       =   SPACE
-               IF      SPA-C02-2005-SYUBYOHENFLG   =   ZERO
-                   CONTINUE
-               ELSE
-                   INITIALIZE                  PTBYOMEI-REC
-                   MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
-                   MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
-                   MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
-                   MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-                   IF      SPA-C02-1001-HOSPSBT1   =   "1"
-                       MOVE    "PTBYOMEI-KEY14"    TO  WRK-DBPATH
+      *    警告チェック
+           IF      SPA-ERRCD            =   SPACE
+      *        主病名の存在チェック（警告）
+               IF      SPA-GMN-C02-SYUBYOFLG       =   SPACE
+                   IF      SPA-C02-2005-SYUBYOHENFLG   =   ZERO
+                       CONTINUE
                    ELSE
-                       MOVE    "PTBYOMEI-KEY15"    TO  WRK-DBPATH
+                       INITIALIZE                  PTBYOMEI-REC
+                       MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+                       MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+                       MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
+                       MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+                       IF      SPA-C02-1001-HOSPSBT1   =   "1"
+                           MOVE    "PTBYOMEI-KEY14"    TO  WRK-DBPATH
+                       ELSE
+                           MOVE    "PTBYOMEI-KEY15"    TO  WRK-DBPATH
+                       END-IF
+                       PERFORM 900-PTBYO-INV-SEC
+                       IF      FLG-PTBYOMEI        =   1
+                           MOVE    "0102"            TO  SPA-CIDCD
+                       END-IF
                    END-IF
-                   PERFORM 900-PTBYO-INV-SEC
-                   IF      FLG-PTBYOMEI        =   1
-                       MOVE    "0102"            TO  SPA-CIDCD
-                       GO  TO  450-TOUROKU-EXT
+               END-IF
+      *
+      *        開始日の未来日入力チェック（警告）         
+               IF      SPA-CIDCD            =   SPACE
+                   IF      SPA-NAI-C02-SRYYMD  >   SPA-NAI-C02-SYSYMD
+                       MOVE    "0103"            TO  SPA-CIDCD
                    END-IF
                END-IF
            END-IF
       *
       *    登録処理
-           PERFORM 4502-TOUROKU-SYORI-SEC
+           IF    ( SPA-ERRCD            =   SPACE )
+           AND   ( SPA-CIDCD            =   SPACE )
+               PERFORM 4502-TOUROKU-SYORI-SEC
+           END-IF
            .
        450-TOUROKU-EXT.
            EXIT.
@@ -7805,9 +7820,12 @@
                WHEN    "0102"
                    MOVE    "主病名がありません。更新しますか？"
                                        TO  WRK-CIDMSG
-               WHEN    OTHER
-                   MOVE    SPA-ERRCD
+               WHEN    "0103"
+                   MOVE
+                   "開始日が未来日で入力されています。更新しますか？" 
                                        TO  WRK-CIDMSG
+               WHEN    OTHER
+                   MOVE    SPA-ERRCD   TO  WRK-CIDMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-CID1-FLG
