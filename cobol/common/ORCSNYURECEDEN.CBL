@@ -66,6 +66,9 @@
            03  IDX2                        PIC 9(04).
            03  IDX3                        PIC 9(04).
            03  IDX4                        PIC 9(04).
+           03  IDX5                        PIC 9(04).
+           03  IDX6                        PIC 9(04).
+           03  IDX7                        PIC 9(04).
            03  KSN-IDX                     PIC 9(04).
            03  GENSAN-IDX                  PIC 9(04).
            03  GENSAN-IDX2                 PIC 9(04).
@@ -232,9 +235,51 @@
                    07  WRK-SKJFTN-SRYCD        PIC X(09).
                    07  WRK-SKJFTN-KAISU        PIC 9(02).
       *
-      * ÁªÄêÎÅÍÜÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
+      *    ÁªÄêÎÅÍÜÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
            03  TABLE-SENTEI.
                05  TBL-SENTEI                  PIC 9(01)   OCCURS  31.
+      *
+      *    ³°Çñ¥³¥á¥ó¥ÈÍÑÆüÉÕÂàÈòÎÎ°è
+           03  WRK-GAIHAKU-DAY-TABLE.
+               05  WRK-GAIHAKU-DAY             OCCURS  31.
+                   07  WRK-GAIHAKU-DAY-ST      PIC  9(02).
+                   07  WRK-GAIHAKU-DAY-ED      PIC  9(02).
+      *
+      *    ÆüÉÕÁ´³ÑÊÑ´¹ÎÎ°è
+       01  TBL-DAY-AREA.
+           03  FILLER              PIC X(04)  VALUE "¡¡£±".
+           03  FILLER              PIC X(04)  VALUE "¡¡£²".
+           03  FILLER              PIC X(04)  VALUE "¡¡£³".
+           03  FILLER              PIC X(04)  VALUE "¡¡£´".
+           03  FILLER              PIC X(04)  VALUE "¡¡£µ".
+           03  FILLER              PIC X(04)  VALUE "¡¡£¶".
+           03  FILLER              PIC X(04)  VALUE "¡¡£·".
+           03  FILLER              PIC X(04)  VALUE "¡¡£¸".
+           03  FILLER              PIC X(04)  VALUE "¡¡£¹".
+           03  FILLER              PIC X(04)  VALUE "£±£°".
+           03  FILLER              PIC X(04)  VALUE "£±£±".
+           03  FILLER              PIC X(04)  VALUE "£±£²".
+           03  FILLER              PIC X(04)  VALUE "£±£³".
+           03  FILLER              PIC X(04)  VALUE "£±£´".
+           03  FILLER              PIC X(04)  VALUE "£±£µ".
+           03  FILLER              PIC X(04)  VALUE "£±£¶".
+           03  FILLER              PIC X(04)  VALUE "£±£·".
+           03  FILLER              PIC X(04)  VALUE "£±£¸".
+           03  FILLER              PIC X(04)  VALUE "£±£¹".
+           03  FILLER              PIC X(04)  VALUE "£²£°".
+           03  FILLER              PIC X(04)  VALUE "£²£±".
+           03  FILLER              PIC X(04)  VALUE "£²£²".
+           03  FILLER              PIC X(04)  VALUE "£²£³".
+           03  FILLER              PIC X(04)  VALUE "£²£´".
+           03  FILLER              PIC X(04)  VALUE "£²£µ".
+           03  FILLER              PIC X(04)  VALUE "£²£¶".
+           03  FILLER              PIC X(04)  VALUE "£²£·".
+           03  FILLER              PIC X(04)  VALUE "£²£¸".
+           03  FILLER              PIC X(04)  VALUE "£²£¹".
+           03  FILLER              PIC X(04)  VALUE "£³£°".
+           03  FILLER              PIC X(04)  VALUE "£³£±".
+       01  TBL-DAY-AREA-R          REDEFINES   TBL-DAY-AREA.
+           03  TBL-DAY             PIC X(04)   OCCURS   31.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -354,8 +399,6 @@
                MOVE    1               TO  LNK-NYURECEDEN-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
-           DISPLAY  "LNK-NYURECEDEN-SANTEIYM = "
-                     LNK-NYURECEDEN-SANTEIYM
       *
       *    ´µ¼Ô¥Þ¥¹¥¿¡¼¸¡º÷
            INITIALIZE                      PTINF-REC
@@ -1155,6 +1198,66 @@
                                      LNK-NYURECEDEN-KAISU(1 IDX2 IDX3)
                          END-IF
                      END-PERFORM
+      *              ³°Çñ¥³¥á¥ó¥È¥»¥Ã¥È½èÍý
+                     IF   WRK-SO-GAIHAKU-TBL(IDX1)   =  ALL"0"
+                         CONTINUE
+                     ELSE
+                         MOVE     ZERO    TO   IDX6
+                         PERFORM  VARYING  IDX5   FROM  1  BY  1
+                           UNTIL  IDX5   >  31
+                               IF   WRK-SO-GAIHAKU-KBN(IDX1 IDX5)  =  1
+                                 IF  IDX5   =   1
+                                    ADD   1    TO   IDX6
+                                    MOVE  IDX5   TO  
+                                               WRK-GAIHAKU-DAY-ST(IDX6)
+                                    MOVE  IDX5   TO  
+                                               WRK-GAIHAKU-DAY-ED(IDX6)
+                                 ELSE
+                                   COMPUTE   IDX7  =   IDX5  -  1
+                                   IF WRK-SO-GAIHAKU-KBN(IDX1 IDX7) = 1
+                                        MOVE  IDX5  TO
+                                              WRK-GAIHAKU-DAY-ED(IDX6)
+                                   ELSE
+                                     ADD   1    TO   IDX6
+                                     MOVE  IDX5   TO  
+                                              WRK-GAIHAKU-DAY-ST(IDX6)
+                                     MOVE  IDX5   TO  
+                                              WRK-GAIHAKU-DAY-ED(IDX6)
+                                   END-IF
+                                 END-IF
+                               END-IF
+                         END-PERFORM
+                     END-IF
+                     PERFORM   VARYING  IDX5  FROM  1  BY  1
+                       UNTIL   (IDX5  >  31)   OR
+                               (WRK-GAIHAKU-DAY-ST(IDX5) =  ZERO)
+                           ADD    1     TO
+                                       LNK-NYURECEDEN-MEISAISU(1 IDX2)
+                           IF   WRK-GAIHAKU-DAY-ST(IDX5) = 
+                                               WRK-GAIHAKU-DAY-ED(IDX5)
+                                MOVE   "CO"   TO   
+                                    LNK-NYURECEDEN-RECSKB(1 IDX2 IDX3)
+                                MOVE  "840000015"  TO
+                                      LNK-NYURECEDEN-SRYCD(1 IDX2 IDX3)
+                                MOVE   WRK-GAIHAKU-DAY-ST(IDX5) TO IDX6
+                                MOVE   TBL-DAY(IDX6)  TO
+                                    LNK-NYURECEDEN-COMMENT(1 IDX2 IDX3)
+                           ELSE
+                                MOVE   "CO"   TO   
+                                    LNK-NYURECEDEN-RECSKB(1 IDX2 IDX3)
+                                MOVE  "840000016"  TO
+                                      LNK-NYURECEDEN-SRYCD(1 IDX2 IDX3)
+                                MOVE   WRK-GAIHAKU-DAY-ST(IDX5) TO IDX6
+                                MOVE   TBL-DAY(IDX6)  TO
+                                    LNK-NYURECEDEN-COMMENT(1 IDX2 IDX3)
+                                                          (1:4)
+                                MOVE   WRK-GAIHAKU-DAY-ED(IDX5) TO IDX6
+                                MOVE   TBL-DAY(IDX6)  TO
+                                    LNK-NYURECEDEN-COMMENT(1 IDX2 IDX3)
+                                                          (5:4)
+                           END-IF
+                           ADD    1     TO   IDX3
+                     END-PERFORM
                 END-IF
            END-PERFORM
       *    ¥ì¥»ÅÅ¥µ¥ÖÊÖµÑ¥¨¥ê¥¢¤Ø¤Î¥»¥Ã¥È¡ÊÆÃÄêÆþ±¡ÎÁ¡¡¿ÇÎÅ¶èÊ¬£¹£²¡Ë
@@ -1187,6 +1290,66 @@
                                MOVE   WRK-SO-KAISU(IDX1)   TO
                                      LNK-NYURECEDEN-KAISU(1 IDX2 IDX3)
                          END-IF
+                     END-PERFORM
+      *              ³°Çñ¥³¥á¥ó¥È¥»¥Ã¥È½èÍý
+                     IF   WRK-SO-GAIHAKU-TBL(IDX1)   =  ALL"0"
+                         CONTINUE
+                     ELSE
+                         MOVE     ZERO    TO   IDX6
+                         PERFORM  VARYING  IDX5   FROM  1  BY  1
+                           UNTIL  IDX5   >  31
+                               IF   WRK-SO-GAIHAKU-KBN(IDX1 IDX5)  =  1
+                                 IF  IDX5   =   1
+                                    ADD   1    TO   IDX6
+                                    MOVE  IDX5   TO  
+                                               WRK-GAIHAKU-DAY-ST(IDX6)
+                                    MOVE  IDX5   TO  
+                                               WRK-GAIHAKU-DAY-ED(IDX6)
+                                 ELSE
+                                   COMPUTE   IDX7  =   IDX5  -  1
+                                   IF WRK-SO-GAIHAKU-KBN(IDX1 IDX7) = 1
+                                        MOVE  IDX5  TO
+                                              WRK-GAIHAKU-DAY-ED(IDX6)
+                                   ELSE
+                                     ADD   1    TO   IDX6
+                                     MOVE  IDX5   TO  
+                                              WRK-GAIHAKU-DAY-ST(IDX6)
+                                     MOVE  IDX5   TO  
+                                              WRK-GAIHAKU-DAY-ED(IDX6)
+                                   END-IF
+                                 END-IF
+                               END-IF
+                         END-PERFORM
+                     END-IF
+                     PERFORM   VARYING  IDX5  FROM  1  BY  1
+                       UNTIL   (IDX5  >  31)   OR
+                               (WRK-GAIHAKU-DAY-ST(IDX5) =  ZERO)
+                           ADD    1     TO
+                                       LNK-NYURECEDEN-MEISAISU(1 IDX2)
+                           IF   WRK-GAIHAKU-DAY-ST(IDX5) = 
+                                               WRK-GAIHAKU-DAY-ED(IDX5)
+                                MOVE   "CO"   TO   
+                                    LNK-NYURECEDEN-RECSKB(1 IDX2 IDX3)
+                                MOVE  "840000015"  TO
+                                      LNK-NYURECEDEN-SRYCD(1 IDX2 IDX3)
+                                MOVE   WRK-GAIHAKU-DAY-ST(IDX5) TO IDX6
+                                MOVE   TBL-DAY(IDX6)  TO
+                                    LNK-NYURECEDEN-COMMENT(1 IDX2 IDX3)
+                           ELSE
+                                MOVE   "CO"   TO   
+                                    LNK-NYURECEDEN-RECSKB(1 IDX2 IDX3)
+                                MOVE  "840000016"  TO
+                                      LNK-NYURECEDEN-SRYCD(1 IDX2 IDX3)
+                                MOVE   WRK-GAIHAKU-DAY-ST(IDX5) TO IDX6
+                                MOVE   TBL-DAY(IDX6)  TO
+                                    LNK-NYURECEDEN-COMMENT(1 IDX2 IDX3)
+                                                          (1:4)
+                                MOVE   WRK-GAIHAKU-DAY-ED(IDX5) TO IDX6
+                                MOVE   TBL-DAY(IDX6)  TO
+                                    LNK-NYURECEDEN-COMMENT(1 IDX2 IDX3)
+                                                          (5:4)
+                           END-IF
+                           ADD    1     TO   IDX3
                      END-PERFORM
                 END-IF
            END-PERFORM
