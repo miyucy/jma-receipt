@@ -22,6 +22,7 @@ bind	"K09"		"OpenCOBOL"	"ORCGK09";
 bind	"K10"		"OpenCOBOL"	"ORCGK10";
 bind	"K98"		"OpenCOBOL"	"ORCGK98";
 bind	"K99"		"OpenCOBOL"	"ORCGK99";
+bind	"K03X"		"OpenCOBOL"	"ORCGK03X";
 bind	"KERR"		"OpenCOBOL"	"ORCGKERR";
 bind	"KERR2"		"OpenCOBOL"	"ORCGKERR2";
 bind	"KID1"		"OpenCOBOL"	"ORCGKID1";
@@ -52,6 +53,7 @@ data	{
                 K10;
 		K98;
 		K99;
+		K03X;
                 KERR;
                 KERR2;
                 KID1;
