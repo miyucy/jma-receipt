@@ -4833,6 +4833,7 @@
        410191-NYUACCT-SAKUSEI-SEC   SECTION.                             021118
       *                                                                 021118
       *     DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
+            DISPLAY   "SPA-NAI-SRYYM-41 = " SPA-NAI-SRYYM-41
            INITIALIZE      ORCSSYOKIKSNAREA
            MOVE    SPA-NAI-SRYYM-41   TO   WRK-NAI-SRYYM-41.
       *
@@ -5392,7 +5393,10 @@
       *医療機関加算（減算）情報
            INITIALIZE              SYSKANRI-REC
            MOVE    "5000"          TO  SYS-KANRICD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SPA-NAI-SRYYM-41
+                                   TO  ORC-DBYMD(1:6)
+           MOVE    "01"            TO  ORC-DBYMD(7:2)
+      *     MOVE    SPA-SYSYMD      TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタの医療機関情報より取得
@@ -5788,7 +5792,10 @@
            MOVE    "5001"          TO  SYS-KANRICD
            MOVE    PTNYUINRRK-BTUNUM
                                    TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SPA-NAI-SRYYM-41
+                                   TO  ORC-DBYMD(1:6)
+           MOVE    "01"            TO  ORC-DBYMD(7:2)
+      *     MOVE    SPA-SYSYMD      TO  ORC-DBYMD
       *     DISPLAY "4801-BTUSEL-SEC PTNYUINRRK-BTUNUM = " 
       *                                  PTNYUINRRK-BTUNUM
       *     DISPLAY "4801-BTUSEL-SEC SPA-SYSYMD = " SPA-SYSYMD
@@ -5822,7 +5829,10 @@
            MOVE    "5002"          TO  SYS-KANRICD
            MOVE    PTNYUINRRK-BRMNUM
                                    TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SPA-NAI-SRYYM-41
+                                   TO  ORC-DBYMD(1:6)
+           MOVE    "01"            TO  ORC-DBYMD(7:2)
+      *     MOVE    SPA-SYSYMD      TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
