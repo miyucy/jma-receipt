@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-太田    03.11.18  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -57,6 +58,7 @@
            03  FLG-KIKAN-DABURI                    PIC 9(01).
            03  FLG-UPD-KBN                         PIC 9(01).
            03  FLG-ARI                             PIC 9(01).
+           03  FLG-SYSKANRI                        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -77,6 +79,8 @@
                05  WRK-SAGAKU1-R       REDEFINES   WRK-SAGAKU1.
                    07  WRK-SAGAKU1-9               PIC 9(05).
            03  WRK-NUM-05                          PIC 9(05).
+           03  WRK-CREYMD                          PIC X(08).
+      *
       *    メッセージ領域
        01  T-MESSAGE-AREA.
            03  T-MESSAGE-001       PIC X(16)   VALUE
@@ -171,6 +175,9 @@
       *
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -738,35 +745,41 @@
       *
            EVALUATE    SPA-W22-KANRICD-C
                WHEN    "5101"
-                   MOVE    SYS-5101-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5101-REC    TO  SYSKANRI-REC
                WHEN    "5102"
-                   MOVE    SYS-5102-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5102-REC    TO  SYSKANRI-REC
                WHEN    "5103"
-                   MOVE    SYS-5103-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5103-REC    TO  SYSKANRI-REC
                WHEN    "5104"
-                   MOVE    SYS-5104-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5104-REC    TO  SYSKANRI-REC
                WHEN    "5105"
-                   MOVE    SYS-5105-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5105-REC    TO  SYSKANRI-REC
                WHEN    "5106"
-                   MOVE    SYS-5106-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5106-REC    TO  SYSKANRI-REC
                WHEN    "5107"
-                   MOVE    SYS-5107-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5107-REC    TO  SYSKANRI-REC
                WHEN    "5108"
-                   MOVE    SYS-5108-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5108-REC    TO  SYSKANRI-REC
                WHEN    "5109"
-                   MOVE    SYS-5109-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5109-REC    TO  SYSKANRI-REC
                WHEN    "5110"
-                   MOVE    SYS-5110-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5110-REC    TO  SYSKANRI-REC
                WHEN    "5111"
-                   MOVE    SYS-5111-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5111-REC    TO  SYSKANRI-REC
                WHEN    "5113"
-                   MOVE    SYS-5113-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5113-REC    TO  SYSKANRI-REC
                WHEN    "5114"
-                   MOVE    SYS-5114-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5114-REC    TO  SYSKANRI-REC
                WHEN    "5115"
-                   MOVE    SYS-5115-REC    TO  MCPDATA-REC
+                   MOVE    SYS-5115-REC    TO  SYSKANRI-REC
            END-EVALUATE.
       *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
+                                               SYS-UPYMD
+           MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
+           MOVE    SYSKANRI-REC          TO  MCPDATA-REC.
            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH.
            PERFORM 910-DB-INSERT-SEC.
       *
@@ -783,6 +796,38 @@
       *    入院関連情報更新処理
       *****************************************************************
        4201-UPDATE-SEC                SECTION.
+      *
+      *    更新対象存在チェック
+           MOVE    ZERO                    TO  FLG-SYSKANRI
+           MOVE    SPACE                   TO  WRK-CREYMD
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-W22-KANRICD-C       TO  SYS-KANRICD
+           MOVE    SPA-W22-KBNCD           TO  SYS-KBNCD
+           MOVE    SPA-W22-STYUKYMD-OLD    TO  ORC-DBYMD
+           MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
+           MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+           PERFORM 910-DB-SELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 910-DB-READ-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+                   MOVE    SYS-CREYMD      TO  WRK-CREYMD
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC
+      *
+           IF    ( FLG-SYSKANRI    NOT =   ZERO )
+               MOVE    T-MESSAGE-051       TO  SPA-W22-ERRMSG
+               GO  TO  4201-UPDATE-EXT
+           END-IF
       *
            PERFORM 4201-EDIT-SEC.
       *
@@ -821,6 +866,13 @@
            MOVE    SPA-W22-KBNCD         TO  SYSUP-KBNCD.
            MOVE    SPA-W22-STYUKYMD-OLD  TO  SYSUP-STYUKYMD.
            MOVE    SPA-W22-EDYUKYMD-OLD  TO  SYSUP-EDYUKYMD.
+      *
+      *
+           MOVE    WRK-CREYMD            TO  SYS-CREYMD
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD          TO  SYS-UPYMD
+           MOVE    SMCNDATE-HMS          TO  SYS-UPHMS
+      *
            MOVE    SYSKANRI-REC          TO  MCPDATA-REC.
       *
            MOVE    "SYSKANRI-UPD1"       TO  ORC-DBPATH.
@@ -1578,4 +1630,15 @@
            END-IF.
       *
        HIZUKE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
