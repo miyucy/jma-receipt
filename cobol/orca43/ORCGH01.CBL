@@ -337,29 +337,24 @@
                    IF      SPTID-RC        NOT =   ZERO
                        MOVE    "0004"          TO  SPA-ERRCD
                    ELSE
-                       IF      SPTID-PTID          =   SPA-H01NAI-PTID
-                           CONTINUE
-                       ELSE
-                           INITIALIZE              SPA-H01GMN-TABLE
-                                                   SPA-H01GMN-KOUMOKU
-                           MOVE    SPTID-PTNUM     TO  SPA-H01GMN-PTNUM
-                           MOVE    SPTID-PTID      TO  SPA-H01NAI-PTID
+                       INITIALIZE              SPA-H01GMN-TABLE
+                                               SPA-H01GMN-KOUMOKU
+                       MOVE    SPTID-PTNUM     TO  SPA-H01GMN-PTNUM
+                       MOVE    SPTID-PTID      TO  SPA-H01NAI-PTID
       *                患者マスター存在チェック
-                           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
-                           MOVE    SPA-H01NAI-PTID TO  PTINF-PTID
-                           PERFORM 900-PTINF-READ-SEC
-                           IF      FLG-PTINF   NOT =   ZERO
-                               MOVE    "0001"      TO  SPA-ERRCD
-                           ELSE
+                       MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+                       MOVE    SPA-H01NAI-PTID TO  PTINF-PTID
+                       PERFORM 900-PTINF-READ-SEC
+                       IF      FLG-PTINF   NOT =   ZERO
+                           MOVE    "0001"      TO  SPA-ERRCD
+                       ELSE
       *
-      *                        排他制御処理
-                               PERFORM 990-LOCK-IN-SEC
-                               IF      SPA-ERRCD       =   SPACE
-                                   MOVE    PTINF-NAME  TO
-                                                       SPA-H01GMN-NAME
-                               END-IF
+      *                    排他制御処理
+                           PERFORM 990-LOCK-IN-SEC
+                           IF      SPA-ERRCD       =   SPACE
+                               MOVE    PTINF-NAME  TO  SPA-H01GMN-NAME
                            END-IF
-                       END-IF 
+                       END-IF
                    END-IF     
                END-IF    
                MOVE    2                   TO  SPA-H01GMN-CUR
@@ -889,30 +884,26 @@
            END-EVALUATE
       *
            IF      SPA-ERRCD           =   SPACE
-               IF      SPTID-PTID          =   SPA-H01NAI-PTID
-                   MOVE    SPTID-PTNUM     TO  SPA-H01GMN-PTNUM
+               INITIALIZE                  SPA-H01GMN-TABLE
+                                           SPA-H01GMN-KOUMOKU
+               MOVE    SPTID-PTNUM     TO  SPA-H01GMN-PTNUM
+               MOVE    SPTID-PTID      TO  SPA-H01NAI-PTID
+      *        患者マスター存在チェック
+               MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+               MOVE    SPA-H01NAI-PTID TO  PTINF-PTID
+               PERFORM 900-PTINF-READ-SEC
+               IF      FLG-PTINF   NOT =   ZERO
+                   MOVE    "0001"      TO  SPA-ERRCD
                ELSE
-                   INITIALIZE                  SPA-H01GMN-TABLE
-                                               SPA-H01GMN-KOUMOKU
-                   MOVE    SPTID-PTNUM     TO  SPA-H01GMN-PTNUM
-                   MOVE    SPTID-PTID      TO  SPA-H01NAI-PTID
-      *            患者マスター存在チェック
-                   MOVE    SPA-HOSPID      TO  PTINF-HOSPID
-                   MOVE    SPA-H01NAI-PTID TO  PTINF-PTID
-                   PERFORM 900-PTINF-READ-SEC
-                   IF      FLG-PTINF   NOT =   ZERO
-                       MOVE    "0001"      TO  SPA-ERRCD
-                   ELSE
       *
-      *                排他制御処理
-                       PERFORM 990-LOCK-IN-SEC
-                       IF      SPA-ERRCD       NOT =   SPACE
-                           GO      TO     4101-PTNUM-CHK-EXT
-                       ELSE
-                           MOVE    PTINF-NAME  TO  SPA-H01GMN-NAME
-                       END-IF
+      *            排他制御処理
+                   PERFORM 990-LOCK-IN-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO     4101-PTNUM-CHK-EXT
+                   ELSE
+                       MOVE    PTINF-NAME  TO  SPA-H01GMN-NAME
                    END-IF
-               END-IF     
+               END-IF
            END-IF
       *
       *    請求管理ＤＢ検索処理
