@@ -35,6 +35,7 @@
       *  01.01.03    NACL-藤原    02/10/30  受給者番号が全角のときの印刷の対応
       *  01.01.04    NACL-藤原    02/11/06  保険履歴の半角空白を全角に変換する
       *  01.01.05    NACL-藤原    02/11/07  医療機関ＩＤ・診療年月を追加
+      *                                     船員保険の職務上の事由の修正 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1120,10 +1121,16 @@
            IF      RECE02-HKNNUM       =   "002"
                EVALUATE    RECE02-HOJOKBN
                    WHEN    "1"
+                   WHEN    "A"
+                   WHEN    "D"
                        MOVE    "職務上"              TO  HC06-JIYU
                    WHEN    "2"
+                   WHEN    "B"
+                   WHEN    "E"
                        MOVE    "下船後３ヶ月以内"    TO  HC06-JIYU
                    WHEN    "3"
+                   WHEN    "C"
+                   WHEN    "F"
                        MOVE    "通勤災害"            TO  HC06-JIYU
                END-EVALUATE
            END-IF                 
