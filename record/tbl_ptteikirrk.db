@@ -7,9 +7,12 @@ tbl_ptteikirrk {
        SKYSTYMD        char(8);
        SKYEDYMD        char(8);
        SKYTEN          number(9);
+       SKYMONEY_TAX_SAI
+                       number(7);
        SKYMONEY        number(9);
        RRKNUM          number(03);
        DENPNUM         number(07);
+       SKYUPDFLG       number(01);
        TERMID          varchar(16);
        OPID            varchar(16);
        CREYMD          varchar(8);
@@ -122,6 +125,19 @@ path	all2		{
 		SELECT *
 		FROM tbl_ptteikirrk
         WHERE  SRYYM  =   :SRYYM
+		;
+	};
+};
+
+path	key6		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptteikirrk_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptteikirrk
+        WHERE  
+               HOSPID  =   :HOSPID
+        AND    PTID    =   :PTID
+        AND    DENPNUM =   :DENPNUM
 		;
 	};
 };
