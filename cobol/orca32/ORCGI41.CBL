@@ -5881,7 +5881,8 @@
            MOVE    "HKNCOMBI-KEY"      TO   WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *    老人対象患者であれば入院診療コードの置き換え（労災除く）
-           IF   SPA-RSI-HKNKBN      =   SPACE
+           IF   (COMB-HKNNUM         NOT =   "971")  AND
+                (COMB-HKNNUM         NOT =   "973")
              IF  ((FLG-HKNCOMBI     =   ZERO)    AND
                   (COMB-KOH1HKNNUM  =   "027"))      OR
                  ((WRK-NENREI      >=    70)     AND
