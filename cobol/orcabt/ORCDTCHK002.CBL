@@ -3079,6 +3079,7 @@
                MOVE    MCPDATA-REC     TO  CHK-REC
            ELSE
                MOVE    1               TO  FLG-CHKMST
+               MOVE    2               TO  FLG-CHKMST-BYOMEI
            END-IF
       *
            PERFORM UNTIL ( FLG-CHKMST  NOT =   ZERO )
