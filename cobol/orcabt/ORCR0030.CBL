@@ -161,6 +161,11 @@
       *  01.03.07   NACL-ÂÀÅÄ     04/05/06  ÅÀ¿ô¥Þ¥¹¥¿¸¡º÷¥í¥¸¥Ã¥¯½¤Àµ
       *  01.03.08   NACL-ÌçÏÆ     04/05/13  ½é¿Ç»þ¤Ë»þ´Ö³°¡¦¿¼Ìë¡¦µÙÆü¤¬
       *                                     £²¤Ä°Ê¾å¤¢¤Ã¤¿¾ì¹ç¤Îµ­ºÜÂÐ±þ
+      *  01.03.09   NACL-¾®Æ¦Âô   04/06/08  £Ã£Ô¡¦£Í£Ò£É¡Ê£²²óÌÜ°Ê¹ß¡Ë¤Î
+      *                                     Å¦Í×Íóµ­ºÜ½ç½¤Àµ
+      *  01.03.10   NACL-¾®Æ¦Âô   04/06/11  Èé²¼¶ÚÆùÃí¼Í¤Ç¡¢ÌôºÞÅÀ¡¦´ïºàÅÀ
+      *                                     ¤¬Ìµ¤¤¤Î¾ì¹ç¤ÎÅ¦Í×Íóµ­ºÜÂÐ±þ
+      *  01.03.11   NACL-ÌçÏÆ     04/06/21  À¸³èÊÝ¸î¤ÎÉéÃ´¶â³Ûµ­ºÜ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -688,6 +693,13 @@
       *    ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ
            03  CONS-HINKAI-COMMENT   PIC X(09)  VALUE  "114009410".
       *
+      *    Èé²¼¶ÚÆùÃí¼Í
+           03  CONS-HIKAKIN          PIC X(09)  VALUE  "130000510".
+      *    À¸Êª³ØÅªÀ½ºÞÃí¼Í
+           03  CONS-SEIBUTU          PIC X(09)  VALUE  "130000110".
+      *    ËãÌôÃí¼Í
+           03  CONS-MAYAKU           PIC X(09)  VALUE  "130000310".
+      *
       *    »ÀÁÇ 
       *****COPY    "CMSANSOTBL.INC".
       *
@@ -1022,6 +1034,7 @@
            PERFORM     BUNTENSU-CLEAR-SEC                               
            PERFORM     SAIKEI-KEISAN-SEC
            PERFORM     NYUYOJI-COMENTFLG-SET-SEC
+           PERFORM     ICHIBUFUTAN-OKIKAE-SEC
       *
            IF      IDZ                  =   1
                IF ( RECE02-TEISYUTUSAKI     =     1   AND
@@ -1740,6 +1753,14 @@
                                       TO RECE05-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE05-KOUHYOJYUNNUM(IDX4)
+      *
+               IF     TNS-SRYCD       =  "170022290"  OR
+                                         "170022390"  OR
+                                         "170022490"
+                      MOVE   202      TO  RECE05-CDKBN-KBNNUM(IDX4)
+                      MOVE   99       TO  RECE05-CDKBN-KOUBAN(IDX4)
+               END-IF
+      *
                IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                       (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
                AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )
@@ -1757,6 +1778,11 @@
                    MOVE    TNS-NAME            TO    RECE05-NAME(IDX4)
                END-IF
       *
+               IF          SRY-SRYCD(IDX2)  =    CONS-HIKAKIN
+                                           OR    CONS-SEIBUTU
+                                           OR    CONS-MAYAKU
+                   MOVE    SPACE           TO    RECE05-NAME(IDX4)
+               END-IF
                IF  ( SRY-SRYSYUKBN         =  "334"       )
                AND ((SRY-SRYCD(IDX2)       =  "810000001") OR
                     (SRY-SRYCD(IDX2)(1:3)  =  "008"      ))
@@ -2973,22 +2999,26 @@
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE02-TENSU(11 BUN-IDX)  =
                                      RECE02-TENSU(11 BUN-IDX)  +
-                           (WRK-TNS-TEN(IDX3)    *  ACCT-ZAIKAISU)
+                           (WK-SYUTEN            *  ACCT-ZAIKAISU)
+      ***                  (WRK-TNS-TEN(IDX3)    *  ACCT-ZAIKAISU)
                        END-IF
                        IF    BUN-IDX2       =   2
                            COMPUTE   RECE02-TENSU(11 BUN-IDX2)  =
                                      RECE02-TENSU(11 BUN-IDX2)  +
-                           (WRK-TNS-TEN(IDX3)    *  ACCT-ZAIKAISU)
+                           (WK-SYUTEN            *  ACCT-ZAIKAISU)
+      ***                  (WRK-TNS-TEN(IDX3)    *  ACCT-ZAIKAISU)
                        END-IF
                        IF    BUN-IDX3       =   3
                            COMPUTE   RECE02-TENSU(11 BUN-IDX3)  =
                                      RECE02-TENSU(11 BUN-IDX3)  +
-                           (WRK-TNS-TEN(IDX3)    *  ACCT-ZAIKAISU)
+                           (WK-SYUTEN            *  ACCT-ZAIKAISU)
+      ***                  (WRK-TNS-TEN(IDX3)    *  ACCT-ZAIKAISU)
                        END-IF
                        IF    BUN-IDX4       =   4
                            COMPUTE   RECE02-TENSU(11 BUN-IDX4)  =
                                      RECE02-TENSU(11 BUN-IDX4)  +
-                           (WRK-TNS-TEN(IDX3)    *  ACCT-ZAIKAISU)
+                           (WK-SYUTEN            *  ACCT-ZAIKAISU)
+      ***                  (WRK-TNS-TEN(IDX3)    *  ACCT-ZAIKAISU)
                        END-IF
                    END-IF
       *            ¤½¤ÎÂ¾
@@ -3825,10 +3855,6 @@
            MOVE   "SYUNOU-KEY16"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
-      *    À¸ÊÝ¤Î°ìÉôÉéÃ´¶â³ÛÊÔ½¸
-      *
-           PERFORM         KOH-FUTAN-SET-SEC
-      *
            .
        YKZFTN-SET-EXT.
            EXIT.
@@ -4237,86 +4263,6 @@
            EXIT.
       *
       *****************************************************************
-      *    À¸ÊÝ¤Î°ìÉôÉéÃ´¶â³ÛÊÔ½¸
-      *****************************************************************
-       KOH-FUTAN-SET-SEC               SECTION.
-      *
-           PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
-                  UNTIL    KOHFTN-IDX    >    4
-      *
-             IF   (RECE02-KOHNUM(KOHFTN-IDX) =  "012"   )   AND
-                  (RECE02-SRYYM             >=  "200304")
-      *
-                PERFORM  KOHFTN-KINGAKU-SEC
-      *
-                MOVE  WRK-GAIJGNGAK
-                             TO  RECE02-FTNMONEY(KOHFTN-IDX + 1)
-      *
-             END-IF
-      *
-           END-PERFORM
-      *
-           .
-       KOH-FUTAN-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼Ô¸øÈñÉéÃ´¡Ê¶â³Û¡Ë¼è¹þ¤ß½èÍý
-      *****************************************************************
-       KOHFTN-KINGAKU-SEC               SECTION.
-      *
-           MOVE      ZERO                  TO      WRK-GAIJGNGAK
-      *
-           INITIALIZE                              PTKOHFTN-REC
-           MOVE    RECE02-HOSPID           TO      PTKOHFTN-HOSPID
-           MOVE    RECE02-PTID             TO      PTKOHFTN-PTID
-           MOVE    RECE02-KOHID(KOHFTN-IDX)   TO   PTKOHFTN-KOHID
-           MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
-           MOVE    "DBSELECT"              TO      MCP-FUNC
-           MOVE    "PTKOHFTN-KEY4"         TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
-           IF      MCP-RC               =       ZERO
-             MOVE    "PTKOHFTN-KEY4"     TO      ORC-DBPATH
-             PERFORM  PTKOHFTN-READ-SEC
-             PERFORM  UNTIL
-                 (FLG-PTKOHFTN       =   1)    OR
-                ((PTKOHFTN-TEKSTYMD(1:6) <=   RECE02-SRYYM   )  AND
-                 (RECE02-SRYYM           <=   PTKOHFTN-TEKEDYMD(1:6)))
-               MOVE     "PTKOHFTN-KEY4"  TO      ORC-DBPATH
-               PERFORM   PTKOHFTN-READ-SEC
-             END-PERFORM
-           ELSE
-             MOVE    1                   TO      FLG-PTKOHFTN
-           END-IF
-      *
-           IF   FLG-PTKOHFTN  =  ZERO
-      *
-             MOVE   PTKOHFTN-GAIJGNGAK   TO      WRK-GAIJGNGAK
-      *
-      ***    IF  ( RECE02-AGE            >=   70      )
-      ***    OR  ( RECE02-AGE            >=   65  AND  
-      ***          RECE02-RJNHKNNUM   NOT =   SPACE   )
-      ***         IF    WRK-GAIJGNGAK    >   8000
-      ***              MOVE    8000    TO   WRK-GAIJGNGAK
-      ***         END-IF
-      ***    END-IF
-      *
-           END-IF
-      *
-           MOVE    "DBCLOSE"             TO  MCP-FUNC
-           MOVE    "PTKOHFTN-KEY4"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC
-      *
-           .
-       KOHFTN-KINGAKU-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ¥ì¥»¥×¥ÈÃæ´Ö¥Õ¥¡¥¤¥ë¤Î¹àÌÜÅ¾Á÷£²¡Ê£Æ£°£°£²¡Ë:¼ÂÆü¿ôÊÔ½¸
       *****************************************************************
        JNISSU-SET-SEC                    SECTION.                       
@@ -4500,6 +4446,89 @@
       *
            .
        NYUYOJI-COMENTFLG-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    °ìÉôÉéÃ´¶â³Û¤ÎÃÖ¤­´¹¤¨
+      *****************************************************************
+       ICHIBUFUTAN-OKIKAE-SEC               SECTION.
+      *
+      *    À¸ÊÝ
+      *
+           PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                  UNTIL    KOHFTN-IDX    >    4
+      *
+             IF   (RECE02-KOHNUM(KOHFTN-IDX) =  "012"   )   AND
+                  (RECE02-SRYYM             >=  "200304")
+      *
+                PERFORM  KOHFTN-KINGAKU-SEC
+      *
+                IF    RECE02-HKNNUM   =  SPACE
+                   MOVE     WRK-GAIJGNGAK
+                             TO  RECE02-FTNMONEY(KOHFTN-IDX + 1)
+                END-IF
+      *
+             END-IF
+      *
+           END-PERFORM
+      *
+           .
+       ICHIBUFUTAN-OKIKAE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼Ô¸øÈñÉéÃ´¡Ê¶â³Û¡Ë¼è¹þ¤ß½èÍý
+      *****************************************************************
+       KOHFTN-KINGAKU-SEC               SECTION.
+      *
+           MOVE      ZERO                  TO      WRK-GAIJGNGAK
+      *
+           INITIALIZE                              PTKOHFTN-REC
+           MOVE    RECE02-HOSPID           TO      PTKOHFTN-HOSPID
+           MOVE    RECE02-PTID             TO      PTKOHFTN-PTID
+           MOVE    RECE02-KOHID(KOHFTN-IDX)   TO   PTKOHFTN-KOHID
+           MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
+           MOVE    "DBSELECT"              TO      MCP-FUNC
+           MOVE    "PTKOHFTN-KEY4"         TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+             MOVE    "PTKOHFTN-KEY4"     TO      ORC-DBPATH
+             PERFORM  900-PTKOHFTN-READ-SEC
+             PERFORM  UNTIL
+                 (FLG-PTKOHFTN       =   1)    OR
+                ((PTKOHFTN-TEKSTYMD(1:6) <=   RECE02-SRYYM   )  AND
+                 (RECE02-SRYYM           <=   PTKOHFTN-TEKEDYMD(1:6)))
+               MOVE     "PTKOHFTN-KEY4"  TO      ORC-DBPATH
+               PERFORM   900-PTKOHFTN-READ-SEC
+             END-PERFORM
+           ELSE
+             MOVE    1                   TO      FLG-PTKOHFTN
+           END-IF
+      *
+           IF   FLG-PTKOHFTN  =  ZERO
+      *
+             MOVE   PTKOHFTN-GAIJGNGAK   TO      WRK-GAIJGNGAK
+      *
+      ***    IF  ( RECE02-AGE            >=   70      )
+      ***    OR  ( RECE02-AGE            >=   65  AND  
+      ***          RECE02-RJNHKNNUM   NOT =   SPACE   )
+      ***         IF    WRK-GAIJGNGAK    >   8000
+      ***              MOVE    8000    TO   WRK-GAIJGNGAK
+      ***         END-IF
+      ***    END-IF
+      *
+           END-IF
+      *
+           MOVE    "DBCLOSE"             TO  MCP-FUNC
+           MOVE    "PTKOHFTN-KEY4"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+      *
+           .
+       KOHFTN-KINGAKU-EXT.
            EXIT.
       *
       *****************************************************************

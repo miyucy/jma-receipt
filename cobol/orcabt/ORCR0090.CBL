@@ -113,6 +113,8 @@
       *  01.04.02    NACL-門脇    04.04.10  在宅患者訪問点滴注射管理指導料
       *                                     算定時の点滴注射のコメント対応
       *  01.04.03    NACL-門脇    04.04.26  ユーザーコメント追加対応
+      *  01.04.04    NACL-小豆沢  04.06.11  皮下筋肉注射で、薬剤点・器材点
+      *                                     が無いの場合の摘要欄記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1252,7 +1254,12 @@
                        END-IF
                        IF      RECE04-SRYKBN     =   "31"
                        AND     RECE05-SRYCD(IDX) =   CONS-HIKAKIN
-                           MOVE    1             TO  FLG-HIKAKIN
+                           IF  (RECE04-YKZTEN     =   ZERO)
+                           AND (RECE04-KIZAITEN   =   ZERO)
+                               CONTINUE
+                           ELSE
+                               MOVE    1         TO  FLG-HIKAKIN
+                           END-IF
                        END-IF  
                    END-IF
                END-PERFORM
@@ -1996,6 +2003,13 @@
                    MOVE    1                 TO  FLG-NOPRT
                END-IF
            END-PERFORM
+      *
+           IF   ( RECE04-SRYKBN               = "31"  )
+           AND  ( TBL-ZAIW-NAME (3 1)         = SPACE )
+           AND  ( TBL-ZAIW-NAME (3 WRK-WIDX2) = SPACE )
+           AND  ( WRK-WIDX2               NOT = 1     )
+                   MOVE    1                 TO  FLG-NOPRT
+           END-IF
       *
            .
        200521-SEYKBNELSE-MEISAI-EXT.
