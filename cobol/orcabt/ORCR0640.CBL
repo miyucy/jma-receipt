@@ -5161,7 +5161,7 @@
                       ELSE
                         IF   (  RECE62-KYURATE         =  20     )
                         AND  (  FLG-CHIHOU             =  1      )
-                           COMPUTE  WRK-KINGAKU2  =  RECE62-TOTALTEN(1)
+                           COMPUTE  WRK-KINGAKU2  =  RECE62-TOTALTEN(2)
                                                   *  10
                            IF   WRK-KINGAKU2  >  361500
                               COMPUTE  WRK-KINGAKU3 =
