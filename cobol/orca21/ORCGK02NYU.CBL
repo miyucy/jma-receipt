@@ -3533,7 +3533,8 @@
       *            転出日
                    IF     (PTNYUINRRK-TENSTUYMD    =   SPACE )  OR
                           (PTNYUINRRK-TENSTUYMD    NOT =   SPACE AND
-                           PTNYUINRRK-TENSTUYMD    >=  SPA-SRYYMD)
+      *****************    PTNYUINRRK-TENSTUYMD    >=  SPA-SRYYMD)
+                           PTNYUINRRK-TENSTUYMD    >   SPA-SRYYMD)
       *                入院対象処理
                        MOVE    1               TO  FLG-OK
                        PERFORM 4101011-PTNYUINRRK-HEN-SEC
