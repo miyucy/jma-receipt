@@ -39,6 +39,7 @@
       *                                     加算点数でも告示区分１により
       *                                     基本点数剤とする
       *  01.00.05    NACL-藤原    03/08/17  廃止年月日の取扱
+      *  01.00.06    NACL-藤原    03/08/20  レセプト番号の編集を止める
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -697,9 +698,9 @@
            MOVE    "RE,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
       *    レセプト番号
-           ADD     1                   TO  WRK-RECENUM
-           MOVE    WRK-RECENUM         TO  WRK-NUM
-           MOVE    6                   TO  WRK-NAGASA
+      *****ADD     1                   TO  WRK-RECENUM
+      *****MOVE    WRK-RECENUM         TO  WRK-NUM
+      *****MOVE    6                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    レセプト種別
            MOVE    RECE02-RECESYUBETU  TO  WRK-DATA

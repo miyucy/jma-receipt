@@ -432,6 +432,7 @@
        2002-HENSYU-SEC              SECTION.
       *
            IF      RECEDEN-RECEDATA (1:2)  =   "RE"
+      *        総件数・点数の集計
                EVALUATE    RECEDEN-RECESYUBETU (3:1)
                    WHEN    "1"
                        ADD     1               TO  SUM-TOTALKENSU
@@ -441,7 +442,21 @@
                        ADD     3               TO  SUM-TOTALKENSU
                END-EVALUATE
       *
-               ADD     RECEDEN-TOTALTEN    TO  SUM-TOTALTEN       
+               ADD     RECEDEN-TOTALTEN    TO  SUM-TOTALTEN
+      *  
+      *        レセプト番号の編集
+               MOVE    "RE,"               TO  WRK-REC
+               MOVE    3                   TO  WRK-REC-LENGTH
+               ADD     1                   TO  WRK-RECENUM
+               MOVE    WRK-RECENUM         TO  WRK-NUM
+               MOVE    6                   TO  WRK-NAGASA
+               PERFORM 5005-NUM-HENSYU-SEC
+      *
+               STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
+                       RECEDEN-RECEDATA (5:)     DELIMITED  BY  SIZE
+                       INTO        WRK-REC
+               END-STRING
+               MOVE    WRK-REC         TO  RECEDEN-RECEDATA
            END-IF
       *          
            MOVE    RECEDEN-RECEDATA    TO  RECE30-R
