@@ -7193,11 +7193,11 @@
 	<widget>
 	  <class>GtkLabel</class>
 	  <name>label2021</name>
-	  <x>400</x>
+	  <x>408</x>
 	  <y>112</y>
-	  <width>162</width>
+	  <width>136</width>
 	  <height>18</height>
-	  <label>食事標準負担減額開始日</label>
+	  <label>長期入院該当年月日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -7209,7 +7209,7 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>P024_TSYSKJGNSTYMD</name>
-	  <x>568</x>
+	  <x>552</x>
 	  <y>112</y>
 	  <width>91</width>
 	  <height>20</height>
@@ -7482,7 +7482,7 @@
 	      <class>GtkLabel</class>
 	      <child_name>CList:title</child_name>
 	      <name>label1900</name>
-	      <label>食事減額開始日</label>
+	      <label>長期入院該当</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
