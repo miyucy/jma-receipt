@@ -4650,17 +4650,18 @@
       *    剤のチェック
            PERFORM 45011-NAIYOU-CHK-SEC
       *    同一剤が存在している時、エラーとする
-           IF      FLG-OK              =   1
+           IF     (FLG-OK              =   1   )  AND
+                  (FLG-OK2             =   ZERO  OR  1  )
                MOVE    "1025"              TO  SPA-ERRCD
                GO      TO      4100-TOROKU-EXT
            END-IF
       *
-           IF     (FLG-OK2             =   1   )  AND
-                  (WRK-ZAINUM          =   ZERO )
+      ***  IF     (FLG-OK2             =   1   )  AND
+      *           (WRK-ZAINUM          =   ZERO )
       *        剤変更なしとして、処理を終了する
-               PERFORM 210-BACK
-               GO      TO      4100-TOROKU-EXT
-           END-IF
+      *        PERFORM 210-BACK
+      *        GO      TO      4100-TOROKU-EXT
+      ***  END-IF
       *
       *    外用薬で回数が２８以上の時、警告表示
            IF      SPA-CHOKITOFLG      =   1
@@ -4959,7 +4960,11 @@
                MOVE    1               TO  FLG-OK
                IF      WRK-ZAINUM      =   SPA-ZAINUM
       *            変更なし
-                   MOVE    1               TO  FLG-OK2
+                   IF      SPA-SEL-RRKYMD      =   SPACE
+                       MOVE    2               TO  FLG-OK2
+                   ELSE
+                       MOVE    1               TO  FLG-OK2
+                   END-IF
                END-IF
            END-IF
       *
