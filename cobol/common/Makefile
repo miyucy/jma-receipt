@@ -5,6 +5,7 @@ SRCS = ORCHC01.CBL \
        ORCHC28.CBL \
        ORCMCPSUB.CBL \
        ORCS01NEW.CBL \
+       ORCS01.CBL  \
        ORCSC10.CBL \
        ORCSC20.CBL \
        ORCSC30.CBL \
