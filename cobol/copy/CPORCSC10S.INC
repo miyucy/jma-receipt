@@ -31,8 +31,10 @@
            03  LNK-SC10S-SYORI          PIC X(01).
       *    ∫«Ω™•∆°º•÷•Î∞Ã√÷
            03  LNK-SC10S-IDX2           PIC 9(04).
-      *    ø«ª°Œ¡ ‘Ω∏§ §∑(1:ø«ª°Œ¡ªªƒÍ∫—§ﬂ°À
-           03  LNK-SC10S-SINSATU        PIC 9(01).
-           03  LNK-SC10S-ZAINUM-AREA.
-               05  LNK-SC10S-ZAINUM     PIC  9(08)   OCCURS  5.
+      *!   ø«ª°Œ¡ ‘Ω∏§ §∑(1:ø«ª°Œ¡ªªƒÍ∫—§ﬂ°À
+      *!   03  LNK-SC10S-SINSATU        PIC 9(01).
+      *!   03  LNK-SC10S-ZAINUM-AREA.
+      *!       05  LNK-SC10S-ZAINUM     PIC  9(08)   OCCURS  5.
+      *    ≥´ªœ•∆°º•÷•Î∞Ã√÷
+           03  LNK-SC10S-STRIDX         PIC 9(04).
       *
