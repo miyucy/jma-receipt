@@ -128,6 +128,7 @@
            03  FLG-IN-SEX             PIC 9(01).
            03  FLG-IN-BIRTHDAY        PIC 9(01).
            03  FLG-IN-POST            PIC 9(01).
+           03  FLG-IN-DISCOUNTKBN     PIC 9(01).
       *    二重登録疑い用
            03  FLG-P02A-SYORI         PIC 9(01).
            03  FLG-CHK                PIC 9(01).
@@ -2105,6 +2106,13 @@
            ELSE
                MOVE    1                   TO  FLG-IN-POST
            END-IF
+           IF      P02-P02-DISCOUNTKBN(1:2)
+                                           =   SPA-MAE-DISCOUNTKBN
+               MOVE    ZERO                TO  FLG-IN-DISCOUNTKBN
+           ELSE
+               MOVE    1                   TO  FLG-IN-DISCOUNTKBN
+           END-IF
+      *
            MOVE    P02-P02-POST        TO  SPA-GMN-POST
            MOVE    P02-P02-ADRS        TO  SPA-GMN-EDITADRS-NAME
            MOVE    P02-P02-TEL2        TO  SPA-GMN-TEL2
@@ -3135,10 +3143,10 @@
        4101-DISCOUNTKBN-CHK-SEC        SECTION.
       *
       *    減免事由が未入力
-           IF      SPA-GMN-DISCOUNTKBN =   SPACE
-               MOVE    ZERO            TO  SPA-GMN-DISCOUNTKBN
+      *    IF      SPA-GMN-DISCOUNTKBN =   SPACE
+      *        MOVE    ZERO            TO  SPA-GMN-DISCOUNTKBN
       ******** GO  TO                  4101-DISCOUNTKBN-CHK-EXT
-           END-IF
+      *    END-IF
       *    減免事由より割引率区分を取得
            MOVE    SPACE               TO  WRK-RATEKBN
            MOVE    ZERO                TO  FLG-CHK
@@ -3159,8 +3167,15 @@
                MOVE    45                  TO  SPA-GMN-CUR
                GO  TO                  4101-DISCOUNTKBN-CHK-EXT
            END-IF
+      *
       *    見つからない場合、セットしない
-           IF  WRK-RATEKBN             =   SPACE
+           IF      WRK-RATEKBN             =   SPACE
+               GO  TO                  4101-DISCOUNTKBN-CHK-EXT
+           END-IF
+      *
+           MOVE    SPA-GMN-DISCOUNTKBN     TO  SPA-MAE-DISCOUNTKBN
+      *    減免事由を入力時のみ、割引率設定
+           IF      FLG-IN-DISCOUNTKBN  =   ZERO
                GO  TO                  4101-DISCOUNTKBN-CHK-EXT
            END-IF
       *

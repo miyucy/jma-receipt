@@ -383,6 +383,7 @@
                    07  SPA-MAE-SEX             PIC X(01).
                    07  SPA-MAE-BIRTHDAY        PIC X(09).
                    07  SPA-MAE-POST            PIC X(07).
+                   07  SPA-MAE-DISCOUNTKBN     PIC X(02).
       *
       *
       *    ÊÝ¸±¡¦¸øÈñ¾ðÊó

@@ -1530,6 +1530,7 @@
            MOVE    SPA-GMN-NAME        TO  SPA-MAE-NAME
            MOVE    SPA-GMN-SEX         TO  SPA-MAE-SEX
            MOVE    SPA-GMN-BIRTHDAYW   TO  SPA-MAE-BIRTHDAY
+           MOVE    SPA-GMN-DISCOUNTKBN TO  SPA-MAE-DISCOUNTKBN
       *
            .
        10021-PTINF-SET-EXT.
