@@ -323,6 +323,7 @@
        01  WRK-JINZOU-AREA.
            03  WRK-JINZOU-T                    OCCURS   5.
              05  WRK-JINZOU                    PIC  X(01)  OCCURS 31.   
+             05  WRK-JINZOU-HKNCOMBI           PIC  9(04).              XXX
       *
       *再診４回目以降実施カレンダー
        01  WRK-SAISHIN4-AREA.
@@ -699,6 +700,7 @@
            03  TBL-COUNT-INF2       OCCURS     5.
                05  CNT-DENWA              PIC 9(06).
                05  CNT-DOUJITU            PIC 9(06).
+               05  TBL-COUNT-HKNCOMBI     PIC 9(04).                    XXX
       *
       *
       *    パス名領域
@@ -1561,6 +1563,8 @@
                                  =    RECE04-KOHBUNRI  +  1
                       ADD   RECE04-ZAIKAISU  
                                  TO   CNT-DENWA(WRK-KOHBUNRI)
+                      MOVE  RECE04-HKNCOMBI                             XXX
+                                 TO   TBL-COUNT-HKNCOMBI(WRK-KOHBUNRI)  XXX
                   END-IF
               END-IF
       *
@@ -1617,6 +1621,8 @@
                                  =    RECE04-KOHBUNRI  +  1
                       ADD   RECE04-ZAIKAISU  
                                  TO   CNT-DOUJITU(WRK-KOHBUNRI)
+                      MOVE  RECE04-HKNCOMBI                             XXX
+                                 TO   TBL-COUNT-HKNCOMBI(WRK-KOHBUNRI)  XXX
                   END-IF
               END-IF
       *
@@ -1657,6 +1663,9 @@
            MOVE    "99"                TO  RECE041-SRYKBN
       *
            MOVE    2                   TO  RECE041-MEISAISU
+      *
+           MOVE    TBL-COUNT-HKNCOMBI(IDX)                              XXX
+                                       TO  RECE041-HKNCOMBI             XXX
       *
            WRITE   RECE041-REC
            ADD     1                   TO  CNT-RECE04
@@ -1729,6 +1738,9 @@
       *
            MOVE    1                   TO  RECE041-MEISAISU
       *
+           MOVE    TBL-COUNT-HKNCOMBI(IDX)                              XXX
+                                       TO  RECE041-HKNCOMBI             XXX
+      *
            WRITE   RECE041-REC
            ADD     1                   TO  CNT-RECE04
       *
@@ -1789,6 +1801,9 @@
            MOVE    "99"                TO  RECE041-SRYKBN
       *
            MOVE    1                   TO  RECE041-MEISAISU
+      *
+           MOVE    TBL-COUNT-HKNCOMBI(IDX)                              XXX
+                                       TO  RECE041-HKNCOMBI             XXX
       *
            WRITE   RECE041-REC
            ADD     1                   TO  CNT-RECE04
@@ -1934,6 +1949,8 @@
                                      WRK-JINZOU(WRK-KOHBUNRI IDX1)
                           END-IF
                       END-PERFORM
+                      MOVE   RECE04-HKNCOMBI  TO                        XXX
+                                     WRK-JINZOU-HKNCOMBI(WRK-KOHBUNRI)  XXX
                   END-IF
               END-IF
       *
@@ -2116,6 +2133,9 @@
            MOVE    WRK-RECE04-SRYKBN   TO  RECE041-SRYKBN
       *
            MOVE    1                   TO  RECE041-MEISAISU
+      *
+           MOVE    WRK-JINZOU-HKNCOMBI(IDX)                             XXX
+                                       TO  RECE041-HKNCOMBI             XXX
       *
            WRITE   RECE041-REC
            ADD     1                   TO  CNT-RECE04
