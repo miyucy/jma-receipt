@@ -3249,7 +3249,8 @@
                END-IF                                                   
                IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
-                   (LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051")
+                  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
+                  ( HKN-RECEFTNDSPKBN            =      "2"   )
                    CONTINUE
                ELSE
                    COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
@@ -3317,14 +3318,16 @@
            ELSE
                IF      ((HKN-HKNKOHSBTKBN     =       "3")    AND
                         (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
-                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "051")
+                       ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
+                       ( HKN-RECEFTNDSPKBN            =      "2"   )
                    IF    WK-TOKUTEI-COMPFTN   NOT =    ZERO
                        MOVE  WK-TOKUTEI-COMPFTN  TO  LNK-SYU-SYUCOMPFTN
                    END-IF
                END-IF
                IF     (((HKN-HKNKOHSBTKBN     =       "3")    AND       
                         (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR 
-                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "051")    )   
+                       ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR 
+                       ( HKN-RECEFTNDSPKBN            =      "2"   ))   
                AND    (  LNK-SYU-KOH-HKNNUM(1)        =   "027"     )   
                    IF    WK-TOKUTEI-COMPFTN3   NOT =    ZERO            
                        MOVE   WK-TOKUTEI-COMPFTN3                       
@@ -3496,7 +3499,8 @@
       **       IF    LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "051"       
                IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
-                   (LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051")
+                  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
+                  ( HKN-RECEFTNDSPKBN            =      "2"   )
                    CONTINUE
                ELSE
                    COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX) =
