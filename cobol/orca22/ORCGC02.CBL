@@ -745,16 +745,12 @@
                    GO      TO      300-SCREEN-EXT
                END-IF
       *
-               IF      SPA-CIDCD       =   "0102"  OR  "0103"
+               IF      SPA-CIDCD       =   "0102"
       ********     MOVE    SPACE           TO  SPA-CIDCD
                    IF      SPA-CID1-FLG    =   "OK"
                        PERFORM 4502-TOUROKU-SYORI-SEC
                    ELSE
-                       IF      SPA-CIDCD       =   "0103"
-                           MOVE    9               TO  SPA-GMN-C02-CUR
-                       ELSE
-                           MOVE    1               TO  SPA-GMN-C02-CUR
-                       END-IF
+                       MOVE    1               TO  SPA-GMN-C02-CUR
                    END-IF
                    MOVE    SPACE           TO  SPA-CIDCD
                    GO      TO      300-SCREEN-EXT
@@ -3406,15 +3402,21 @@
                END-IF
            END-IF        
       *
-      *    新規のときエラーがなかったら登録処理へ     
            IF      SPA-ERRCD           =   SPACE
+      *
+      *        未来日入力チェック（警告）         
+               IF      SPA-NAI-C02-SRYYMD  >   SPA-NAI-C02-SYSYMD
+                   MOVE    "0039"          TO  SPA-ERRCD
+               END-IF
       *
       *        レセ電エラーフラグ
                PERFORM 41041-RECEDENFLG-CHK-SEC
+               MOVE    17                  TO  SPA-GMN-C02-CUR
+      *********新規のときエラーがなかったら登録処理へ     
       *********IF      SPA-GMN-C02-BANGO   =   ZERO
       *********    MOVE    1                   TO  FLG-UPDKBN
       *********ELSE
-                   MOVE    17                  TO  SPA-GMN-C02-CUR
+      *********    MOVE    17                  TO  SPA-GMN-C02-CUR
       *********END-IF 
            END-IF     
            .
@@ -5357,7 +5359,10 @@
            END-IF
            MOVE    SPA-GMN-C02-SRYYMD      TO  C02-SRYYMD
            PERFORM 41012-SRYYMD-CHK-SEC
-           IF      SPA-ERRCD           NOT =   SPACE         
+           IF      SPA-ERRCD               =   "0039"
+               MOVE    SPACE                   TO  SPA-ERRCD
+           END-IF     
+           IF      SPA-ERRCD           NOT =   SPACE
                GO  TO  450-TOUROKU-EXT
            END-IF
            MOVE    SPA-GMN-C02-TENKIYMD    TO  C02-TENKIYMD
@@ -5532,13 +5537,6 @@
                        IF      FLG-PTBYOMEI        =   1
                            MOVE    "0102"            TO  SPA-CIDCD
                        END-IF
-                   END-IF
-               END-IF
-      *
-      *        開始日の未来日入力チェック（警告）         
-               IF      SPA-CIDCD            =   SPACE
-                   IF      SPA-NAI-C02-SRYYMD  >   SPA-NAI-C02-SYSYMD
-                       MOVE    "0103"            TO  SPA-CIDCD
                    END-IF
                END-IF
            END-IF
@@ -7627,6 +7625,10 @@
                                                DELIMITED   BY  SIZE 
                                                INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "0039"
+                   MOVE
+                   "（警告）開始日が未来日で入力されています" 
+                                               TO  SPA-ERRMSG
                WHEN    "0050"
                    MOVE    "患者番号・診療科の入力がありません" 
                                                TO  SPA-ERRMSG
@@ -7819,10 +7821,6 @@
                                        TO  WRK-CIDMSG (25:)
                WHEN    "0102"
                    MOVE    "主病名がありません。更新しますか？"
-                                       TO  WRK-CIDMSG
-               WHEN    "0103"
-                   MOVE
-                   "開始日が未来日で入力されています。更新しますか？" 
                                        TO  WRK-CIDMSG
                WHEN    OTHER
                    MOVE    SPA-ERRCD   TO  WRK-CIDMSG
