@@ -128,6 +128,7 @@
       *  01.00.50    NACL-門脇    04/04/06  在総診フラグ編集修正
       *  01.00.51    NACL-門脇    04/07/27  国保負担割合編集修正
       *  01.00.52    NACL-門脇    04/07/27  新潟県地方公費対応
+      *  01.00.53    NACL-門脇    04/08/04  同一保険番号対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -604,6 +605,10 @@
       *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
+      *    ワーク保険組み合わせ
+       01  WRK-HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC"
+                               REPLACING  //COMB-// BY //WRK-COMB-//.
       *
       *    保険番号
        01  HKNNUM-REC.
@@ -3060,6 +3065,47 @@
       ******************************************************************
        2201-SYUNOU-COUNT-SEC          SECTION.
       *
+      *    保険組合せマスタの検索
+           INITIALIZE                         WRK-HKNCOMBI-REC.
+           MOVE    SYU-HOSPID         TO      WRK-COMB-HOSPID.
+           MOVE    SYU-PTID           TO      WRK-COMB-PTID.
+           MOVE    SYU-HKNCOMBINUM    TO      WRK-COMB-HKNCOMBINUM.
+           MOVE    WRK-HKNCOMBI-REC   TO      MCPDATA-REC.
+           MOVE    "DBSELECT"         TO      MCP-FUNC.
+           MOVE    "HKNCOMBI-KEY"     TO      ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING   MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC.
+           IF      MCP-RC               =       ZERO
+               MOVE    "HKNCOMBI-KEY" TO      ORC-DBPATH 
+               PERFORM   HKNCOMBI-READ2-SEC
+               IF      FLG-HKNCOMBI     =       1
+                   MOVE    "DBCLOSE"        TO      MCP-FUNC
+                   MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
+                   CALL    "ORCMCPSUB"       USING   MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                   DISPLAY "HKNCOMBI DBFETCH ERR"
+                   MOVE     10          TO      LNK-S01-RC
+                   GO   TO              MAIN-EXT
+               END-IF
+           ELSE
+               MOVE    "DBCLOSE"        TO      MCP-FUNC
+               MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"       USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+               MOVE    1                TO      FLG-HKNCOMBI
+               DISPLAY "HKNCOMBI DBSELECT ERR"
+               MOVE     10              TO      LNK-S01-RC
+               GO   TO                  MAIN-EXT
+           END-IF.
+           MOVE    "DBCLOSE"            TO      MCP-FUNC.
+           MOVE    "HKNCOMBI-KEY"       TO      ORC-DBPATH.
+           CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC.
+      *
       *----(01.00.23) LINE ADD START --------------------------
       *平成１４年１０月改正対応
       *高齢者の在宅総合・在宅末期算定患者
@@ -3216,10 +3262,14 @@
            IF  (COMB-KOH1HKNNUM               NOT =   SPACE)  AND
                (COMB-KOH1-GAIJGNKBN           =       "1"  )  AND
                (FLG-ZAITAKU                   =       ZERO )
-               IF        (LNK-SYU-KOH1HKNNUM  =  SYU-KOH1HKNNUM)   OR
-                         (LNK-SYU-KOH1HKNNUM  =  SYU-KOH2HKNNUM)   OR
-                         (LNK-SYU-KOH1HKNNUM  =  SYU-KOH3HKNNUM)   OR
-                         (LNK-SYU-KOH1HKNNUM  =  SYU-KOH4HKNNUM)
+               IF   ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH1HKNNUM ) AND
+                     (COMB-KOH1ID         =  WRK-COMB-KOH1ID))
+               OR   ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH2HKNNUM ) AND
+                     (COMB-KOH1ID         =  WRK-COMB-KOH2ID))
+               OR   ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH3HKNNUM ) AND
+                     (COMB-KOH1ID         =  WRK-COMB-KOH3ID))
+               OR   ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH4HKNNUM ) AND
+                     (COMB-KOH1ID         =  WRK-COMB-KOH4ID))
                    MOVE   SYU-SRYYMD(7:2)     TO   IDX2X
                    IF   (MAX-KIN-KOHI1-D    NOT =  ZERO)
                    OR   (MAX-KIN-KOHI1-M    NOT =  ZERO)
@@ -3574,10 +3624,14 @@
       *    公費２カウント
            IF  (COMB-KOH2HKNNUM               NOT = SPACE)   AND
                (COMB-KOH2-GAIJGNKBN           =     "1")     
-               IF        (LNK-SYU-KOH2HKNNUM  =  SYU-KOH1HKNNUM)   OR
-                         (LNK-SYU-KOH2HKNNUM  =  SYU-KOH2HKNNUM)   OR
-                         (LNK-SYU-KOH2HKNNUM  =  SYU-KOH3HKNNUM)   OR
-                         (LNK-SYU-KOH2HKNNUM  =  SYU-KOH4HKNNUM)
+               IF   ((LNK-SYU-KOH2HKNNUM  =  SYU-KOH1HKNNUM ) AND
+                     (COMB-KOH2ID         =  WRK-COMB-KOH1ID))
+               OR   ((LNK-SYU-KOH2HKNNUM  =  SYU-KOH2HKNNUM ) AND
+                     (COMB-KOH2ID         =  WRK-COMB-KOH2ID))
+               OR   ((LNK-SYU-KOH2HKNNUM  =  SYU-KOH3HKNNUM ) AND
+                     (COMB-KOH2ID         =  WRK-COMB-KOH3ID))
+               OR   ((LNK-SYU-KOH2HKNNUM  =  SYU-KOH4HKNNUM ) AND
+                     (COMB-KOH2ID         =  WRK-COMB-KOH4ID))
                    MOVE   SYU-SRYYMD(7:2)     TO    IDX2X
                    IF   (MAX-KIN-KOHI2-D    NOT =  ZERO)
                    OR   (MAX-KIN-KOHI2-M    NOT =  ZERO)
@@ -3931,10 +3985,14 @@
       *    公費３カウント
            IF  (COMB-KOH3HKNNUM               NOT = SPACE)   AND
                (COMB-KOH3-GAIJGNKBN           =     "1")     
-               IF        (LNK-SYU-KOH3HKNNUM  =  SYU-KOH1HKNNUM)   OR
-                         (LNK-SYU-KOH3HKNNUM  =  SYU-KOH2HKNNUM)   OR
-                         (LNK-SYU-KOH3HKNNUM  =  SYU-KOH3HKNNUM)   OR
-                         (LNK-SYU-KOH3HKNNUM  =  SYU-KOH4HKNNUM)
+               IF   ((LNK-SYU-KOH3HKNNUM  =  SYU-KOH1HKNNUM ) AND
+                     (COMB-KOH3ID         =  WRK-COMB-KOH1ID))
+               OR   ((LNK-SYU-KOH3HKNNUM  =  SYU-KOH2HKNNUM ) AND
+                     (COMB-KOH3ID         =  WRK-COMB-KOH2ID))
+               OR   ((LNK-SYU-KOH3HKNNUM  =  SYU-KOH3HKNNUM ) AND
+                     (COMB-KOH3ID         =  WRK-COMB-KOH3ID))
+               OR   ((LNK-SYU-KOH3HKNNUM  =  SYU-KOH4HKNNUM ) AND
+                     (COMB-KOH3ID         =  WRK-COMB-KOH4ID))
                    MOVE   SYU-SRYYMD(7:2)     TO    IDX2X
                    IF   (MAX-KIN-KOHI3-D    NOT =  ZERO)
                    OR   (MAX-KIN-KOHI3-M    NOT =  ZERO)
@@ -4288,10 +4346,14 @@
       *    公費４カウント
            IF  (COMB-KOH4HKNNUM               NOT = SPACE)   AND
                (COMB-KOH4-GAIJGNKBN           =     "1")     
-               IF        (LNK-SYU-KOH4HKNNUM  =  SYU-KOH1HKNNUM)   OR
-                         (LNK-SYU-KOH4HKNNUM  =  SYU-KOH2HKNNUM)   OR
-                         (LNK-SYU-KOH4HKNNUM  =  SYU-KOH3HKNNUM)   OR
-                         (LNK-SYU-KOH4HKNNUM  =  SYU-KOH4HKNNUM)
+               IF   ((LNK-SYU-KOH4HKNNUM  =  SYU-KOH1HKNNUM ) AND
+                     (COMB-KOH4ID         =  WRK-COMB-KOH1ID))
+               OR   ((LNK-SYU-KOH4HKNNUM  =  SYU-KOH2HKNNUM ) AND
+                     (COMB-KOH4ID         =  WRK-COMB-KOH2ID))
+               OR   ((LNK-SYU-KOH4HKNNUM  =  SYU-KOH3HKNNUM ) AND
+                     (COMB-KOH4ID         =  WRK-COMB-KOH3ID))
+               OR   ((LNK-SYU-KOH4HKNNUM  =  SYU-KOH4HKNNUM ) AND
+                     (COMB-KOH4ID         =  WRK-COMB-KOH4ID))
                    MOVE   SYU-SRYYMD(7:2)     TO    IDX2X
                    IF   (MAX-KIN-KOHI4-D    NOT =  ZERO)
                    OR   (MAX-KIN-KOHI4-M    NOT =  ZERO)
@@ -8726,6 +8788,28 @@
       *
            .
        HKNCOMBI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスター読込
+      *****************************************************************
+       HKNCOMBI-READ2-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  WRK-HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  WRK-HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       HKNCOMBI-READ2-EXT.
            EXIT.
       *
       *****************************************************************
