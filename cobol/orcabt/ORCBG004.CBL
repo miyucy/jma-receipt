@@ -643,7 +643,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE   "HCMG004.red"        TO  SPRT-PRTID
-           MOVE    "入院会計未作成者一覧表"
+           MOVE    "入院患者通算日数一覧表"
                                        TO  SPRT-TITLE
            MOVE    HCMG004             TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
