@@ -1359,7 +1359,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1387,7 +1387,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1415,7 +1415,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1443,7 +1443,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1471,7 +1471,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1499,7 +1499,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1527,7 +1527,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1555,7 +1555,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1583,7 +1583,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1611,7 +1611,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1639,7 +1639,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1667,7 +1667,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1695,7 +1695,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1723,7 +1723,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1751,7 +1751,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1779,7 +1779,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1807,7 +1807,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1835,7 +1835,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1863,7 +1863,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1891,7 +1891,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1919,7 +1919,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1947,7 +1947,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -1975,7 +1975,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>62</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
