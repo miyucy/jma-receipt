@@ -334,6 +334,10 @@
                05  WRK-DR-SEMONKACD   PIC X(02)
                                               OCCURS  5.
       *
+      *    コラムリスト位置
+           03  WRK-Y01-ROW             PIC S9(09).
+           03  FLG-GMN-INIT            PIC  9(01).
+      *
       *  ＳＯＲＴ用ワーク
       *    受付患者一覧
        01  WRK-SORT-AREA.
@@ -2115,6 +2119,7 @@
       *****************************************************************
        4001-KNJICHI-SEC            SECTION.
       *
+           MOVE    1                   TO  FLG-GMN-INIT
       *
            INITIALIZE                  SPA-GMN-TBL
            INITIALIZE                  SPA-NAI-TBL
@@ -3495,7 +3500,19 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           IF      FLG-GMN-INIT        =   1
+               MOVE    ZERO                TO  WRK-Y01-ROW
+           ELSE
+               MOVE    Y01-PTLIST-ROW      TO  WRK-Y01-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  Y01
+      *
+           MOVE    ZERO                TO  Y01-PTLIST-ROW
+           MOVE    ZERO                TO  Y01-PTLIST-ROWATTR
+           IF      WRK-Y01-ROW     NOT =   ZERO
+               MOVE    WRK-Y01-ROW         TO  Y01-PTLIST-ROW
+           END-IF
       *
       *    カレンダー
       *    予約日が選択時、予約時、以外の時、システム日付とする
