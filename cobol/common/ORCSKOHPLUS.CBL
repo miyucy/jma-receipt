@@ -28,10 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−小豆沢 03/10/07  引数にレセプト請求区分の追加
-      *  01.00.02    NACL−小豆沢 06/12/15  MONFUNC対応
-      *
-      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *  04.02.01    NACL-門脇    08/02/29  平成２０年４月改正対応
       *****************************************************************
       *
       *
@@ -100,6 +96,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
       *
@@ -115,12 +112,9 @@
       *
       *    公費付加情報取得用パラメタ
            COPY    "CPORCSKOHPLUS.INC".
-grpsys*
-grpsys     COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
            ORCSKOHPLUS-AREA
-grpsys     SPA-AREA
            .
       *
       *****************************************************************
@@ -156,7 +150,7 @@ grpsys     SPA-AREA
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      ***  DISPLAY "KOHPLUS PRM-CHK-SEC"
+           DISPLAY "KOHPLUS PRM-CHK-SEC"
            IF    ( LNK-SKOHPLUS-SRYYMD    =   SPACE )
                MOVE    1               TO  LNK-SKOHPLUS-RC
                GO  TO  100-PRM-CHK-EXT
@@ -164,7 +158,7 @@ grpsys     SPA-AREA
       *
       *    患者マスター検索
            INITIALIZE                      PTINF-REC
-grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  PTINF-HOSPNUM
+           MOVE    LNK-SKOHPLUS-HOSPID    TO  PTINF-HOSPID
            MOVE    LNK-SKOHPLUS-PTID      TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           NOT =   ZERO
@@ -181,31 +175,26 @@ grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  PTINF-HOSPNUM
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      ***  DISPLAY "KOHPLUS MAIN-SEC"
+           DISPLAY "KOHPLUS MAIN-SEC"
       *保険組合せ情報取得
            MOVE    ZERO                TO   FLG-HKNCOMBI
            INITIALIZE                       HKNCOMBI-REC
-grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM
-                                       TO   COMB-HOSPNUM
+           MOVE    LNK-SKOHPLUS-HOSPID TO  COMB-HOSPID
            MOVE    LNK-SKOHPLUS-PTID   TO   COMB-PTID
            MOVE    LNK-SKOHPLUS-HKNCOMBI
                                        TO   COMB-HKNCOMBINUM
-           MOVE    "tbl_hkncombi"      TO   MCP-TABLE
-           MOVE    "key"               TO   MCP-PATHNAME
+           MOVE    "HKNCOMBI-KEY"      TO   ORC-DBPATH
            PERFORM 910-HKNCOMBI-SELECT-SEC
            IF      FLG-HKNCOMBI        =    ZERO
-               MOVE    "tbl_hkncombi"  TO   MCP-TABLE
-               MOVE    "key"           TO   MCP-PATHNAME
+               MOVE     "HKNCOMBI-KEY" TO   ORC-DBPATH
                PERFORM   910-HKNCOMBI-READ-SEC
            END-IF
       *    保険組合せクローズ
-           MOVE    "tbl_hkncombi"      TO   MCP-TABLE
-           MOVE    "key"               TO   MCP-PATHNAME
+           MOVE    "HKNCOMBI-KEY"      TO   ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
       *老人保健該当者かを判定
            IF     COMB-KOHHKNNUM(1)    =    "027"
-           OR     COMB-HKNNUM          =    "039"
                   MOVE     1           TO   FLG-RJNHKN
            END-IF
       *
@@ -219,46 +208,37 @@ grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM
                  END-IF
            END-PERFORM
       *
-           IF       KOH-IDX   =   ZERO
-                MOVE    3              TO  LNK-SKOHPLUS-RC
-                GO   TO    200-MAIN-EXT
-           END-IF
       *市町村番号の取得（公費負担者番号の５桁目から長さ３桁）
            INITIALIZE                         PTKOHINF-REC
-grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  PTKOH-HOSPNUM
+           MOVE    LNK-SKOHPLUS-HOSPID    TO  PTKOH-HOSPID
            MOVE    LNK-SKOHPLUS-PTID      TO  PTKOH-PTID
            MOVE    COMB-KOHID(KOH-IDX)    TO  PTKOH-KOHID
-           MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
-           MOVE    "key"                  TO  MCP-PATHNAME
+           MOVE    "PTKOHINF-KEY"         TO  ORC-DBPATH
            PERFORM 910-PTKOHINF-SELECT-SEC
            IF      FLG-PTKOHINF           =   ZERO
-               MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
-               MOVE    "key"              TO  MCP-PATHNAME
+               MOVE     "PTKOHINF-KEY"    TO  ORC-DBPATH
                PERFORM   910-PTKOHINF-READ-SEC
            END-IF
       *    患者公費情報クローズ
-           MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
-           MOVE    "key"                  TO  MCP-PATHNAME
+           MOVE    "PTKOHINF-KEY"         TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
       *公費付加情報テーブルより情報取得
            INITIALIZE                         KOHPLUS-REC
-grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
+           MOVE    LNK-SKOHPLUS-HOSPID    TO  KOHPLUS-HOSPID
            MOVE    LNK-SKOHPLUS-PREFNUM   TO  KOHPLUS-PREFNUM
            MOVE    PTKOH-FTNJANUM(5:3)    TO  KOHPLUS-CITYNUM
            MOVE    COMB-KOHHKNNUM(KOH-IDX) TO KOHPLUS-KOHNUM
            MOVE    "0"                    TO  KOHPLUS-PTKBN
            MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOSTYMD
            MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOEDYMD
-           MOVE    "tbl_kohplus"          TO  MCP-TABLE
-           MOVE    "key2"                 TO  MCP-PATHNAME
+           MOVE    "KOHPLUS-KEY2"         TO  ORC-DBPATH
            PERFORM 910-KOHPLUS-SELECT-SEC
            IF      FLG-KOHPLUS            =   ZERO
-               MOVE    "tbl_kohplus"      TO  MCP-TABLE
-               MOVE    "key2"             TO  MCP-PATHNAME
+               MOVE     "KOHPLUS-KEY2"    TO  ORC-DBPATH
                PERFORM   910-KOHPLUS-READ-SEC
                IF    FLG-KOHPLUS          =   ZERO
-      ***          DISPLAY "KOHPLUS FETCH COMPLETE"
+                   DISPLAY "KOHPLUS FETCH COMPLETE"
       *            返却領域のセット
                    MOVE   KOHPLUS-FTNKBN  TO LNK-SKOHPLUS-FTNKBN
                    MOVE   KOHPLUS-NYUSKJRYYKBN
@@ -266,12 +246,8 @@ grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
                    MOVE   KOHPLUS-RECESKYKBN
                                           TO  LNK-SKOHPLUS-RECESKYKBN
                ELSE
-      *            公費付加情報クローズ
-                   MOVE    "tbl_kohplus"          TO  MCP-TABLE
-                   MOVE    "key2"                 TO  MCP-PATHNAME
-                   PERFORM   910-DB-CLOSE-SEC
                    INITIALIZE                         KOHPLUS-REC
-grpsys             MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
+                   MOVE    LNK-SKOHPLUS-HOSPID    TO  KOHPLUS-HOSPID
                    MOVE    LNK-SKOHPLUS-PREFNUM   TO  KOHPLUS-PREFNUM
                    MOVE    PTKOH-FTNJANUM(5:3)    TO  KOHPLUS-CITYNUM
                    MOVE    COMB-KOHHKNNUM(KOH-IDX) TO KOHPLUS-KOHNUM
@@ -282,15 +258,13 @@ grpsys             MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
                    END-IF
                    MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOSTYMD
                    MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOEDYMD
-                   MOVE    "tbl_kohplus"          TO  MCP-TABLE
-                   MOVE    "key2"                 TO  MCP-PATHNAME
+                   MOVE    "KOHPLUS-KEY2"         TO  ORC-DBPATH
                    PERFORM 910-KOHPLUS-SELECT-SEC
                    IF      FLG-KOHPLUS            =   ZERO
-                       MOVE    "tbl_kohplus"      TO  MCP-TABLE
-                       MOVE    "key2"             TO  MCP-PATHNAME
+                       MOVE     "KOHPLUS-KEY2"    TO  ORC-DBPATH
                        PERFORM   910-KOHPLUS-READ-SEC
                        IF    FLG-KOHPLUS          =   ZERO
-      ***                  DISPLAY "KOHPLUS FETCH COMPLETE"
+                           DISPLAY "KOHPLUS FETCH COMPLETE"
       *                    返却領域のセット
                            MOVE   KOHPLUS-FTNKBN TO LNK-SKOHPLUS-FTNKBN
                            MOVE   KOHPLUS-NYUSKJRYYKBN
@@ -298,21 +272,19 @@ grpsys             MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
                            MOVE   KOHPLUS-RECESKYKBN
                                           TO  LNK-SKOHPLUS-RECESKYKBN
                        ELSE
-      ***                  DISPLAY "KOHPLUS FETCH ERR "
+                           DISPLAY "KOHPLUS FETCH ERR "
                            MOVE    3              TO  LNK-SKOHPLUS-RC
                        END-IF
                    ELSE
                        DISPLAY "KOHPLUS SELECT ERR "
                        MOVE    3              TO  LNK-SKOHPLUS-RC
                    END-IF
-               END-IF
            ELSE
                DISPLAY "KOHPLUS SELECT ERR "
                MOVE    3              TO  LNK-SKOHPLUS-RC
            END-IF
       *    公費付加情報クローズ
-           MOVE    "tbl_kohplus"          TO  MCP-TABLE
-           MOVE    "key2"                 TO  MCP-PATHNAME
+           MOVE    "KOHPLUS-KEY2"         TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
            .
@@ -325,27 +297,32 @@ grpsys             MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
        900-PTINF-READ-SEC         SECTION.
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptinf"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBFETCH-SEC
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PTINF-REC
-                   MOVE    ZERO            TO  FLG-PTINF
+                   MOVE    MCPDATA-REC        TO  PTINF-REC
+                   MOVE    ZERO               TO  FLG-PTINF
                ELSE
-                   INITIALIZE                  PTINF-REC
-                   MOVE    1               TO  FLG-PTINF
+                   INITIALIZE                     PTINF-REC
+                   MOVE    1                  TO  FLG-PTINF
                END-IF
            ELSE
                INITIALIZE                 PTINF-REC
                MOVE    1              TO  FLG-PTINF
            END-IF
       *
-           MOVE     "tbl_ptinf"       TO  MCP-TABLE
-           MOVE     "key"             TO  MCP-PATHNAME
+           MOVE    "PTINF-KEY"        TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
            .
@@ -358,11 +335,15 @@ grpsys         PERFORM 900-DBFETCH-SEC
        910-PTKOHINF-SELECT-SEC        SECTION.
       *
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-grpsys     PERFORM 900-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-PTKOHINF
+               MOVE    ZERO               TO  FLG-PTKOHINF
            ELSE
-               MOVE    1               TO  FLG-PTKOHINF
+               MOVE    1                  TO  FLG-PTKOHINF
            END-IF
       *
            .
@@ -374,13 +355,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        910-PTKOHINF-READ-SEC        SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
-           IF      MCP-RC               =   ZERO
-               MOVE    MCPDATA-REC      TO  PTKOHINF-REC
-               MOVE    ZERO             TO  FLG-PTKOHINF
+           MOVE    "DBFETCH"            TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC        TO  PTKOHINF-REC
+               MOVE    ZERO               TO  FLG-PTKOHINF
            ELSE
-               INITIALIZE                   PTKOHINF-REC
-               MOVE    1                TO  FLG-PTKOHINF
+               INITIALIZE                     PTKOHINF-REC
+               MOVE    1                  TO  FLG-PTKOHINF
            END-IF
       *
            .
@@ -393,11 +378,15 @@ grpsys     PERFORM 900-DBFETCH-SEC
        910-KOHPLUS-SELECT-SEC        SECTION.
       *
            MOVE    KOHPLUS-REC         TO  MCPDATA-REC
-grpsys     PERFORM 900-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-KOHPLUS
+               MOVE    ZERO               TO  FLG-KOHPLUS
            ELSE
-               MOVE    1               TO  FLG-KOHPLUS
+               MOVE    1                  TO  FLG-KOHPLUS
            END-IF
       *
            .
@@ -409,13 +398,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        910-KOHPLUS-READ-SEC        SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
-           IF      MCP-RC               =   ZERO
-               MOVE    MCPDATA-REC      TO  KOHPLUS-REC
-               MOVE    ZERO             TO  FLG-KOHPLUS
+           MOVE    "DBFETCH"            TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC        TO  KOHPLUS-REC
+               MOVE    ZERO               TO  FLG-KOHPLUS
            ELSE
-               INITIALIZE                   KOHPLUS-REC
-               MOVE    1                TO  FLG-KOHPLUS
+               INITIALIZE                     KOHPLUS-REC
+               MOVE    1                  TO  FLG-KOHPLUS
            END-IF
       *
            .
@@ -428,11 +421,15 @@ grpsys     PERFORM 900-DBFETCH-SEC
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-grpsys     PERFORM 900-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-HKNCOMBI
+               MOVE    ZERO               TO  FLG-HKNCOMBI
            ELSE
-               MOVE    1               TO  FLG-HKNCOMBI
+               MOVE    1                  TO  FLG-HKNCOMBI
            END-IF
       *
            .
@@ -444,7 +441,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
                MOVE    ZERO                TO  FLG-HKNCOMBI
@@ -458,49 +459,17 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ＤＢＳＥＬＥＣＴ処理
-      *****************************************************************
-       900-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-           .
-       900-DBSELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢＦＥＴＣＨ処理
-      *****************************************************************
-       900-DBFETCH-SEC                SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-      *
-           .
-       900-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBCLOSE"            TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
            .
       *
        910-DB-CLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    テーブルアクセス処理
-      *****************************************************************
-       900-ORCDBMAIN-SEC               SECTION.
-      *
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-      *
-       900-ORCDBMAIN-EXT.
            EXIT.
