@@ -124,6 +124,7 @@
       *                                     合計で行うようにする 
       *  01.05.04    NACL-藤原    04.08.30  剤で記載する項目がないときは
       *                                     点数・回数の編集を行わない 
+      *  01.05.05    NACL-門脇    04.09.22  薬剤・器材の記載順修正
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/09/28  中止処理の追加
       *****************************************************************
@@ -1220,7 +1221,9 @@
                    ELSE
       *                先頭の診療行為コード編集              
                        IF      WRK-RECE05        =   ZERO
-                         IF  RECE05-SRYCD(IDX)(1:1)  =  "8" OR "0"
+                         IF  ( RECE05-SRYCD(IDX)(1:1)  =  "8"       )
+                         OR  ((RECE05-SRYCD(IDX)(1:3)  NOT =  "059") AND
+                              (RECE05-SRYCD(IDX)(1:1)  =  "0"      ))
                            CONTINUE
                          ELSE
                            MOVE    RECE05-SRYCD (IDX)
@@ -2784,10 +2787,15 @@
                END-IF                                                   
       *---------適用欄並び替え用の編集（表用番号等）-----------------
                IF      IDY               =   1
-      *
-                 IF        WRK-ZAIW-SRYCD1(1:1)  =   "6"  OR  "7"
+                 IF       (WRK-ZAIW-SRYCD1(1:1)  =   "6"  OR  "7")
+                 OR       (WRK-ZAIW-SRYCD1(1:3)  =   "059"       )
                      MOVE    ALL "9"            TO
                                             WRK-ZAIW-CDKBN-AREA
+                     IF    WRK-ZAIW-SRYCD1(1:1)  =   "6"
+                       MOVE   "999999998"  TO  WRK-ZAIW-KOUHYOJYUNNUM
+                     ELSE
+                       MOVE   "999999999"  TO  WRK-ZAIW-KOUHYOJYUNNUM
+                     END-IF
                  END-IF
                END-IF
                MOVE    WRK-ZAIW-CDKBN-SYO  TO  RECE06-CDKBN-SYO
@@ -2815,9 +2823,7 @@
                    MOVE    RECE04-ZAITEN     TO  RECE06-ZAITEN
                END-IF
       *
-      ****     IF      TNS-SRYKBN        =   "60"
                IF      RECE04-SRYKBN     =   "60"
-      ****             MOVE   TNS-KNSJISKBN  TO  RECE06-KNSJISKBN
                        MOVE   WRK-ZAIW-KNSJISKBN
                                              TO  RECE06-KNSJISKBN
                ELSE
@@ -2829,7 +2835,6 @@
                IF  STS-RECE          NOT =   ZERO
                    DISPLAY "*** ORCR0090 RECE06 WRITE ERR  ***"
                    MOVE   WRK-TBLMAX     TO  IDY
-      *********    MOVE    2             TO  SPA-STS                       
                ELSE
                    ADD     1             TO  CNT-RECE06
                END-IF    
@@ -2840,7 +2845,7 @@
            .
        450-RECE06-OUT-EXT.
            EXIT.
-     *
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************

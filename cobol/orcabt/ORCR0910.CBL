@@ -37,6 +37,7 @@
       *  01.01.02    NACL-門脇    04.04.26  ユーザーコメント追加対応
       *  01.01.03    NACL-藤原    04.07.16  検査のまとめを回数テーブルの
       *                                     合計で行うようにする 
+      *  01.01.04    NACL-門脇    04.09.22  薬剤・器材の記載順修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -957,7 +958,9 @@
                    ELSE
       *                先頭の診療行為コード編集              
                        IF      WRK-RECE85        =   ZERO
-                         IF  RECE85-SRYCD(IDX)(1:1)  =  "8" OR "0"
+                         IF  ( RECE85-SRYCD(IDX)(1:1)  =  "8"       )
+                         OR  ((RECE85-SRYCD(IDX)(1:3)  NOT =  "059") AND
+                              (RECE85-SRYCD(IDX)(1:1)  =  "0"      ))
                            CONTINUE
                          ELSE
                            MOVE    RECE85-SRYCD (IDX)
@@ -2286,43 +2289,17 @@
       *
       *---------適用欄並び替え用の編集（表用番号等）-----------------
                IF      IDY               =   1
-      *
-      ***        INITIALIZE                           TNS-TENSU-REC
-                 IF        TBL-ZAIW-SRYCD1(1:1)  =   "6"  OR  "7"
+                 IF       (TBL-ZAIW-SRYCD1(1:1)  =   "6"  OR  "7")
+                 OR       (TBL-ZAIW-SRYCD1(1:3)  =   "059"       )
                      MOVE    ALL "9"            TO
-      ***                                   TNS-CDKBN-KBN
-      ***                                   TNS-CDKBN-SYO
-      ***                                   TNS-CDKBN-BU
-      ***                                   TNS-CDKBN-KBNNUM
-      ***                                   TNS-CDKBN-KBNNUM-EDA
-      ***                                   TNS-CDKBN-KOUBAN
-      ***                                   TNS-KOUHYOJYUNNUM
-      ******                                TBL-ZAIW-CDKBN-KBN
-      ******                                TBL-ZAIW-CDKBN-SYO
-      ******                                TBL-ZAIW-CDKBN-BU
-      ******                                TBL-ZAIW-CDKBN-KBNNUM
-      ******                                TBL-ZAIW-CDKBN-KBNNUM-EDA
-      ******                                TBL-ZAIW-CDKBN-KOUBAN
-      ******                                TBL-ZAIW-KOUHYOJYUNNUM
                                             TBL-ZAIW-CDKBN-AREA
-      ***        ELSE
-      ***            MOVE    TBL-ZAIW-SRYCD1   TO  TNS-SRYCD
-      ***            MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
-      ***            MOVE    RECE84-SRYYM      TO  ORC-DBYMD(1:6)
-      ***            MOVE    "01"              TO  ORC-DBYMD(7:2)
-      ***            PERFORM 900-TENSU-INV-SEC
-      ***            IF      FLG-TENSU            =       1
-      ***                INITIALIZE               TNS-TENSU-REC
-      ***            END-IF
+                     IF    TBL-ZAIW-SRYCD1(1:1)  =   "6"
+                       MOVE   "999999998"  TO  TBL-ZAIW-KOUHYOJYUNNUM
+                     ELSE
+                       MOVE   "999999999"  TO  TBL-ZAIW-KOUHYOJYUNNUM
+                     END-IF
                  END-IF
                END-IF
-      ***      MOVE    TNS-CDKBN-SYO       TO  RECE86-CDKBN-SYO
-      ***      MOVE    TNS-CDKBN-BU        TO  RECE86-CDKBN-BU
-      ***      MOVE    TNS-CDKBN-KBN       TO  RECE86-CDKBN-KBN
-      ***      MOVE    TNS-CDKBN-KBNNUM    TO  RECE86-CDKBN-KBNNUM
-      ***      MOVE    TNS-CDKBN-KBNNUM-EDA
-      ***                                  TO  RECE86-CDKBN-KBNNUM-EDA
-      ***      MOVE    TNS-CDKBN-KOUBAN    TO  RECE86-CDKBN-KOUBAN
                MOVE    TBL-ZAIW-CDKBN-SYO  TO  RECE86-CDKBN-SYO
                MOVE    TBL-ZAIW-CDKBN-BU   TO  RECE86-CDKBN-BU
                MOVE    TBL-ZAIW-CDKBN-KBN  TO  RECE86-CDKBN-KBN
@@ -2336,7 +2313,6 @@
                AND     TBL-ZAIW-SRYCD1     NOT =   CONS-TEIGEN
                    CONTINUE
                ELSE
-      ***          MOVE    TNS-KOUHYOJYUNNUM
                    MOVE    TBL-ZAIW-KOUHYOJYUNNUM
                                            TO  RECE86-KOUHYOJUNNUM
                END-IF
@@ -2344,9 +2320,7 @@
       *--------------------------------------------------------------
                MOVE    RECE84-ZAITEN     TO  RECE86-ZAITEN
       *
-      ***      IF      TNS-SRYKBN        =   "60"
                IF      RECE84-SRYKBN     =   "60"
-      ***              MOVE   TNS-KNSJISKBN  TO  RECE86-KNSJISKBN
                        MOVE   TBL-ZAIW-KNSJISKBN
                                              TO  RECE86-KNSJISKBN
                ELSE
@@ -2358,7 +2332,6 @@
                IF  STS-RECE86        NOT =   ZERO
                    DISPLAY "*** ORCR0910 RECE86 WRITE ERR  ***"
                    MOVE   WRK-TBLMAX     TO  IDY
-      ***          MOVE    2             TO  SPA-STS                       
                ELSE
                    ADD     1             TO  CNT-RECE86
                END-IF    
