@@ -287,11 +287,16 @@
                UNTIL     ( IDX1    >   7 )
       *
                IF    ( SYOKIKSN-IN-SANTEISTYMD
-                                   >   WRK-KGNTEN-YUKOEDYMD (IDX1))
-                   MOVE    SPACE   TO  WRK-KGNTEN-SRYCD  (IDX1)
+                                   >=  WRK-KGNTEN-YUKOSTYMD (IDX1) )
+                AND  ( SYOKIKSN-IN-SANTEISTYMD
+                                   <=  WRK-KGNTEN-YUKOEDYMD (IDX1) )
+                       MOVE    SYOKIKSN-IN-SANTEISTYMD
+                                       TO  WRK-KGNTEN-YUKOSTYMD (IDX1)
                ELSE
-                   MOVE    SYOKIKSN-IN-SANTEISTYMD
-                                   TO  WRK-KGNTEN-YUKOSTYMD (IDX1)
+                   IF    ( SYOKIKSN-IN-SANTEISTYMD
+                                   >   WRK-KGNTEN-YUKOEDYMD (IDX1))
+                       MOVE    SPACE   TO  WRK-KGNTEN-SRYCD  (IDX1)
+                   END-IF
                END-IF
       *
            END-PERFORM
