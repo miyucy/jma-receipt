@@ -597,6 +597,10 @@
       *    １日１回とする
            MOVE    1                   TO  IDX-KAI1
            MOVE    1                   TO  TBL-KAISU (IDX-KAI1)
+      *    回数
+           IF      LNK-SC97-KAISU      =   ZERO
+               MOVE    1               TO  LNK-SC97-KAISU
+           END-IF
       *
       *    算定日
            PERFORM VARYING     IDX-2       FROM    1   BY  1
