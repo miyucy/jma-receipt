@@ -1325,10 +1325,17 @@
       ****************************************************************
        1001-HIHKNJANAME-CHK-SEC     SECTION.
       *
+      *    被保険者名入力以外
+           IF      SPA-MCP-WIDGET      =   "P02_HIHKNJANAME"
+               MOVE    1               TO  SPA-NAI-HIHKNFLG
+           END-IF
+      *
       *    新規の時、氏名または、世帯主を編集
-           IF     (SPA-GMN-HKNNUM      NOT =   SPACE        )
+           IF     (SPA-GMN-HKNNUM      NOT =   SPACE  )
+           AND    (SPA-NAI-HIHKNFLG        =   ZERO   )
+      *
       *        本人の場合、氏名を編集する
-               IF      SPA-GMN-HONKZKKBN       =   "1"
+               IF     (SPA-GMN-HONKZKKBN       =   "1" )
                    IF     (SPA-GMN-HIHKNJANAME =   SPACE     )  OR
                          ((SPA-HEN-FLG         =   1         ) AND
                           (SPA-HZN-NAME        =   SPA-GMN-HIHKNJANAME))
@@ -1339,27 +1346,7 @@
                    IF     (SPA-GMN-HIHKNJANAME    =   SPACE )  OR
                           (SPA-GMN-HIHKNJANAME    =   SPA-GMN-NAME AND
                            SPA-HZN-NAME           =   SPACE  )
-      *                姓の判定
-                       MOVE    ZERO                TO  IDX-S1
-                       PERFORM VARYING     IDX-S2  FROM    1   BY  2
-                               UNTIL       IDX-S2  >   50
-                           IF      SPA-GMN-NAME(IDX-S2:2)     =   "　"
-                               MOVE    50              TO  IDX-S2
-                           ELSE
-                               ADD     2               TO  IDX-S1
-                           END-IF
-                       END-PERFORM
-                       IF     (SPA-GMN-SETAINUSI   NOT =   SPACE)   AND
-                              (SPA-GMN-SETAINUSI   NOT =   SPA-GMN-NAME)
-                           MOVE    SPA-GMN-SETAINUSI
-                                                 TO  SPA-GMN-HIHKNJANAME
-                       ELSE
-                           MOVE    SPA-GMN-NAME(1:IDX-S1)
-                                                 TO  SPA-GMN-HIHKNJANAME
-      *                    世帯主名が空白で氏名と同じ時、姓だけ
-                           MOVE    SPA-GMN-NAME(1:IDX-S1)
-                                                 TO  SPA-GMN-SETAINUSI
-                       END-IF
+                       PERFORM 10011-HIHKNJANAME-HENSYU-SEC
                    END-IF
                END-IF
            END-IF
@@ -1378,12 +1365,60 @@
       *    被保険者名入力で、家族の場合世帯主名を編集する
            IF     (SPA-GMN-HIHKNJANAME NOT =   SPACE     )  AND
                   (SPA-MCP-WIDGET          =   "P02_HIHKNJANAME") AND
-                  (SPA-GMN-HONKZKKBN       =   "2"      )
+                  (SPA-GMN-HONKZKKBN       =   "2"      )  AND
+                  (SPA-GMN-HKNNUM      NOT =   "060"   AND 
+                                               "067"    )
                MOVE    SPA-GMN-HIHKNJANAME     TO  SPA-GMN-SETAINUSI
            END-IF
            .
       *
        1001-HIHKNJANAME-CHK-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    保険名家族編集処理
+      ****************************************************************
+       10011-HIHKNJANAME-HENSYU-SEC     SECTION.
+      *
+      *    姓の判定
+           MOVE    ZERO                TO  IDX-S1
+           PERFORM VARYING     IDX-S2  FROM    1   BY  2
+                   UNTIL       IDX-S2  >   50
+               IF      SPA-GMN-NAME(IDX-S2:2)     =   "　"
+                   MOVE    50              TO  IDX-S2
+               ELSE
+                   ADD     2               TO  IDX-S1
+               END-IF
+           END-PERFORM
+      *
+      *    国保、退職国保の場合
+           IF      SPA-GMN-HKNNUM      =   "060"
+                                       OR  "067"
+               IF      SPA-GMN-HIHKNJANAME     =   SPACE
+                   MOVE    SPA-GMN-NAME    TO  SPA-GMN-HIHKNJANAME
+               END-IF
+               IF     (SPA-GMN-SETAINUSI   =   SPACE )  OR
+                      (SPA-GMN-SETAINUSI   =   SPA-GMN-NAME)
+      *             世帯主名が空白で氏名と同じ時、姓だけ
+                    MOVE    SPA-GMN-NAME(1:IDX-S1)
+                                                 TO  SPA-GMN-SETAINUSI
+               END-IF
+           ELSE
+      *        国保以外
+               IF     (SPA-GMN-SETAINUSI   NOT =   SPACE)   AND
+                      (SPA-GMN-SETAINUSI   NOT =   SPA-GMN-NAME)
+                   MOVE    SPA-GMN-SETAINUSI   TO  SPA-GMN-HIHKNJANAME
+               ELSE
+                   MOVE    SPA-GMN-NAME(1:IDX-S1)
+                                                 TO  SPA-GMN-HIHKNJANAME
+      *            世帯主名が空白で氏名と同じ時、姓だけ
+                   MOVE    SPA-GMN-NAME(1:IDX-S1)
+                                                 TO  SPA-GMN-SETAINUSI
+               END-IF
+           END-IF
+           .
+      *
+       10011-HIHKNJANAME-HENSYU-EXT.
            EXIT.
       *
       ****************************************************************
