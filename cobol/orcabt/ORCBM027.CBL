@@ -36,6 +36,8 @@
       *                                     に修正
       *  01.00.05    NACL-藤原    04/09/14  開設者氏名の文字数変更
       *  01.00.06    NACL-藤原    04/12/10  備考欄の一部負担金等の記載
+      *返戻分対応  
+      *  01.01.01    NACL-藤原    05/02/25  返戻分対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -63,10 +65,12 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *****COPY    "HCM2K.INC".
-           COPY    "HCM2KV01.INC"  REPLACING  //HCM2KV01//
+      *****COPY    "HCM2KV01.INC"  REPLACING  //HCM2KV01//
+           COPY    "HCM2KV02.INC"  REPLACING  //HCM2KV02//
                                    BY         //HCM2K//.
       *****COPY    "HCM2L.INC".
-           COPY    "HCM2LV01.INC"  REPLACING  //HCM2LV01//
+      *****COPY    "HCM2LV01.INC"  REPLACING  //HCM2LV01//
+           COPY    "HCM2LV02.INC"  REPLACING  //HCM2LV02//
                                    BY         //HCM2L//.
       *
       *    スパ領域
@@ -262,12 +266,17 @@
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-PAGE       PIC 9(10).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
+           03  WRK-PARA-SYOKBN     PIC X(01).
+      *
+       01  WRK-SYOKBN              PIC X(01).
       *
       ******************************************************************
       *
        PROCEDURE                       DIVISION
                                        USING   SUM-AREA
-                                               WRK-PARA.
+                                               WRK-PARA
+                                               WRK-SYOKBN
+           .
       *
       *****************************************************************
       *    主　　処理
@@ -430,6 +439,11 @@
                    MOVE    "在総診または在医総を算定したレセ"
                                                TO  HCM2K-TITLE     
            END-EVALUATE
+      *
+           EVALUATE    WRK-SYOKBN
+               WHEN    "2"
+                   MOVE    "（返戻分）"  TO  HCM2K-TITLE1
+           END-EVALUATE           
            .
        310-HEAD-HEN-01-EXT.
            EXIT.
@@ -450,6 +464,11 @@
                    MOVE    "在総診または在医総を算定したレセ"
                                                TO  HCM2L-TITLE     
            END-EVALUATE
+      *
+           EVALUATE    WRK-SYOKBN
+               WHEN    "2"
+                   MOVE    "（返戻分）"  TO  HCM2L-TITLE1
+           END-EVALUATE           
       *
            .
        310-HEAD-HEN-02-EXT.
@@ -806,18 +825,26 @@
                                        TO  SPRT-PRIORITY
            IF      FLG-PRTKBN          =   ZERO                            
       *********MOVE    "HCM2K.red"         TO  SPRT-PRTID
-               MOVE    "HCM2KV01.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2KV01.red"      TO  SPRT-PRTID
+               MOVE    "HCM2KV02.red"      TO  SPRT-PRTID
                MOVE    HCM2K               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM2L.red"         TO  SPRT-PRTID
-               MOVE    "HCM2LV01.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2LV01.red"      TO  SPRT-PRTID
+               MOVE    "HCM2LV02.red"      TO  SPRT-PRTID
                MOVE    HCM2L               TO  SPRT-PRTDATA
            END-IF    
-           EVALUATE    IDX1
-               WHEN    1                            
+           EVALUATE    IDX1    ALSO    WRK-SYOKBN
+               WHEN    1       ALSO    "1"                            
                    MOVE    "社保総括表"        TO  SPRT-TITLE
-               WHEN    2                            
+               WHEN    2       ALSO    "1"                            
                    MOVE    "社保総括表（在総診等）"
+                                               TO  SPRT-TITLE
+               WHEN    1       ALSO    "2"                            
+                   MOVE    "社保総括表［返戻分］"
+                                               TO  SPRT-TITLE
+               WHEN    2       ALSO    "2"                            
+                   MOVE    "社保総括表（在総診等）［返戻分］"
                                                TO  SPRT-TITLE
            END-EVALUATE        
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID

@@ -36,6 +36,8 @@
       *                                     公費欄の保険番号の表示を法別番号
       *                                     に修正
       *  01.00.05    NACL-藤原    04/09/14  開設者氏名の文字数変更
+      *返戻分対応  
+      *  01.01.01    NACL-藤原    05/02/25  返戻分対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -43,14 +45,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -65,10 +67,12 @@
       *****COPY    "HCM2C.INC".
       *****COPY    "HCM2CV01.INC"  REPLACING  //HCM2CV01//
       *****COPY    "HCM2CV02.INC"  REPLACING  //HCM2CV02//
-           COPY    "HCM2CV03.INC"  REPLACING  //HCM2CV03//
+      *****COPY    "HCM2CV03.INC"  REPLACING  //HCM2CV03//
+           COPY    "HCM2CV04.INC"  REPLACING  //HCM2CV04//
                                    BY         //HCM2C//.
       *****COPY    "HCM2D.INC".
-           COPY    "HCM2DV01.INC"  REPLACING  //HCM2DV01//
+      *****COPY    "HCM2DV01.INC"  REPLACING  //HCM2DV01//
+           COPY    "HCM2DV02.INC"  REPLACING  //HCM2DV02//
                                    BY         //HCM2D//.
       *
       *    スパ領域
@@ -266,12 +270,17 @@
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-PAGE       PIC 9(10).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
+           03  WRK-PARA-SYOKBN     PIC X(01).
+      *
+       01  WRK-SYOKBN              PIC X(01).
       *
       ******************************************************************
       *
        PROCEDURE                       DIVISION
                                        USING   SUM-AREA
-                                               WRK-PARA.
+                                               WRK-PARA
+                                               WRK-SYOKBN
+           .
       *
       *****************************************************************
       *    主　　処理
@@ -447,6 +456,11 @@
                                                    TO  HCM2C-TITLE     
                END-EVALUATE
            END-IF           
+      *
+           EVALUATE    WRK-SYOKBN
+               WHEN    "2"
+                   MOVE    "（返戻分）"  TO  HCM2C-TITLE1
+           END-EVALUATE           
            .
        310-HEAD-HEN-01-EXT.
            EXIT.
@@ -479,6 +493,11 @@
                                                    TO  HCM2D-TITLE     
                END-EVALUATE
            END-IF           
+      *
+           EVALUATE    WRK-SYOKBN
+               WHEN    "2"
+                   MOVE    "（返戻分）"  TO  HCM2D-TITLE1
+           END-EVALUATE           
       *
            .
        310-HEAD-HEN-02-EXT.
@@ -828,18 +847,26 @@
       *********MOVE    "HCM2C.red"         TO  SPRT-PRTID
       *********MOVE    "HCM2CV01.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2CV02.red"      TO  SPRT-PRTID
-               MOVE    "HCM2CV03.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2CV03.red"      TO  SPRT-PRTID
+               MOVE    "HCM2CV04.red"      TO  SPRT-PRTID
                MOVE    HCM2C               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM2D.red"         TO  SPRT-PRTID
-               MOVE    "HCM2DV01.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2DV01.red"      TO  SPRT-PRTID
+               MOVE    "HCM2DV02.red"      TO  SPRT-PRTID
                MOVE    HCM2D               TO  SPRT-PRTDATA
            END-IF    
-           EVALUATE    IDX1
-               WHEN    1                            
+           EVALUATE    IDX1    ALSO    WRK-SYOKBN
+               WHEN    1       ALSO    "1"                            
                    MOVE    "社保総括表"        TO  SPRT-TITLE
-               WHEN    2                            
+               WHEN    2       ALSO    "1"                            
                    MOVE    "社保総括表（在総診等）"
+                                               TO  SPRT-TITLE
+               WHEN    1       ALSO    "2"                            
+                   MOVE    "社保総括表［返戻分］"
+                                               TO  SPRT-TITLE
+               WHEN    2       ALSO    "2"                            
+                   MOVE    "社保総括表（在総診等）［返戻分］"
                                                TO  SPRT-TITLE
            END-EVALUATE        
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID

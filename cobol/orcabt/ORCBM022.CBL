@@ -41,6 +41,7 @@
       *                                     Æ±¤¸Íó¤ËÊÔ½¸¤¹¤ë
       *  01.01.03    NACL-Æ£¸¶    03/10/30  È÷¹ÍÍó¤ËÏ·¿ÍºÆ·Ç¤òÄÉ²Ã
       *  01.01.04    NACL-Æ£¸¶    04/12/10  È÷¹ÍÍó¤Î°ìÉôÉéÃ´¶âÅù¤Îµ­ºÜ
+      *  01.01.05    NACL-Æ£¸¶    05/02/25  ÊÖÌáÊ¬ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -122,6 +123,7 @@
            03  WRK-PARA-HOSPID     PIC X(24).
            03  WRK-PARA-PAGE       PIC 9(10).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
+           03  WRK-PARA-SYOKBN     PIC X(01).
       *          
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -130,9 +132,15 @@
            03  WRK-PRTFLG          PIC 9(01).
       *
            03  WRK-RECEERR         PIC X(200). 
-           03  WRK-PATH            PIC X(64).
+      *
+           03  WRK-PATH.
+               05  FILLER          PIC S9(09)  BINARY.
+               05  FILLER          PIC S9(09)  BINARY.
+               05  FILLER          PIC S9(09)  BINARY.
+      *
            03  WRK-INDEX           PIC 9(02).
-           03  WRK-FTNMONEY        PIC  9(10).
+           03  WRK-FTNMONEY        PIC 9(10).
+           03  WRK-SYOKBN          PIC X(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -207,6 +215,8 @@
            03  WRK-CONS-SRYYM-200210   PIC X(06)   VALUE   "200210".
       *    £²£°£°£³Ç¯£´·î²þÀµ
            03  WRK-CONS-SRYYM-200304   PIC X(06)   VALUE   "200304".
+      *     
+           COPY    "ORCA-DBPATH".         
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -288,6 +298,8 @@
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-NYUGAIKBN
+                                               WRK-PARA-SYOKBN
+           END-UNSTRING  
       *
       *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -318,6 +330,36 @@
       *
            OPEN    OUTPUT              UPD-FILE
       *
+           EVALUATE    WRK-PARA-SYOKBN
+               WHEN    ZERO
+               WHEN    "2"
+                   MOVE    "2"         TO  WRK-SYOKBN
+                   PERFORM 2001-SYOKBN-SYUKEI-SEC
+           END-EVALUATE
+           EVALUATE    WRK-PARA-SYOKBN
+               WHEN    ZERO
+               WHEN    "1"
+                   MOVE    "1"         TO  WRK-SYOKBN
+                   PERFORM 2001-SYOKBN-SYUKEI-SEC
+           END-EVALUATE
+      *
+           CLOSE   UPD-FILE
+      *
+          IF      FLG-UPD        =   1
+          AND     FLG-ERR        =   ZERO 
+              IF      CNT-UPDFILE    >   ZERO
+                  PERFORM 310-SEIKYU-UPD-SEC
+              END-IF    
+           END-IF
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ½¸·×½èÍý
+      *****************************************************************
+       2001-SYOKBN-SYUKEI-SEC         SECTION.
+      *
       *    Æþ±¡³°Ê¬
       *
            MOVE    "2"                 TO  WRK-NYUGAIKBN
@@ -334,25 +376,29 @@
                    IF      CNT-RECE10          >   ZERO 
                        IF      WRK-PARA-NYUGAIKBN  =   "1"
                            IF      WRK-PRTFLG      =   1    
-                               CALL    "ORCBM024"          USING 
-                                                           SUM-AREA
-                                                           WRK-PARA
-                                                           WRK-NYUGAIKBN
+                               CALL    "ORCBM024"      USING 
+                                                       SUM-AREA
+                                                       WRK-PARA
+                                                       WRK-NYUGAIKBN
+                                                       WRK-SYOKBN
                            ELSE
-                               CALL    "ORCBM028"          USING 
-                                                           SUM-AREA
-                                                           WRK-PARA
-                                                           WRK-NYUGAIKBN
+                               CALL    "ORCBM028"      USING 
+                                                       SUM-AREA
+                                                       WRK-PARA
+                                                       WRK-NYUGAIKBN
+                                                       WRK-SYOKBN
                            END-IF
                        ELSE
                            IF      WRK-PRTFLG      =   1    
-                               CALL    "ORCBM023"          USING 
-                                                           SUM-AREA
-                                                           WRK-PARA
+                               CALL    "ORCBM023"      USING 
+                                                       SUM-AREA
+                                                       WRK-PARA
+                                                       WRK-SYOKBN
                            ELSE    
-                               CALL    "ORCBM027"          USING 
-                                                           SUM-AREA
-                                                           WRK-PARA
+                               CALL    "ORCBM027"      USING 
+                                                       SUM-AREA
+                                                       WRK-PARA
+                                                       WRK-SYOKBN
                            END-IF
                        END-IF
                    END-IF    
@@ -376,31 +422,24 @@
       *
                        IF      CNT-RECE10          >   ZERO 
                            IF      WRK-PRTFLG      =   1    
-                               CALL    "ORCBM024"          USING 
-                                                           SUM-AREA
-                                                           WRK-PARA
-                                                           WRK-NYUGAIKBN
+                               CALL    "ORCBM024"      USING 
+                                                       SUM-AREA
+                                                       WRK-PARA
+                                                       WRK-NYUGAIKBN
+                                                       WRK-SYOKBN
                            ELSE
-                               CALL    "ORCBM028"          USING 
-                                                           SUM-AREA
-                                                           WRK-PARA
-                                                           WRK-NYUGAIKBN
+                               CALL    "ORCBM028"      USING 
+                                                       SUM-AREA
+                                                       WRK-PARA
+                                                       WRK-NYUGAIKBN
+                                                       WRK-SYOKBN
                            END-IF
                        END-IF
                    END-IF    
                END-PERFORM
            END-IF
-      *
-           CLOSE   UPD-FILE
-      *
-          IF      FLG-UPD        =   1
-          AND     FLG-ERR        =   ZERO 
-              IF      CNT-UPDFILE    >   ZERO
-                  PERFORM 310-SEIKYU-UPD-SEC
-              END-IF    
-           END-IF
            .
-       200-MAIN-EXT.
+       2001-SYOKBN-SYUKEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -412,35 +451,43 @@
            MOVE    ZERO                TO  CNT-RECE10
       *
       *    ¤½¤ÎÂ¾¤Î¥ì¥»
-           MOVE    "SEIKYU-KEY9"       TO  WRK-PATH  
+           EVALUATE    WRK-SYOKBN
+               WHEN    "1"
+                   MOVE    PATH-TBL-SEIKYU-KEY28    TO  WRK-PATH
+               WHEN    "2"
+                   MOVE    PATH-TBL-SEIKYU-KEY27    TO  WRK-PATH
+           END-EVALUATE  
            PERFORM 900-SEIKYU-SELECT-SEC
       *
            MOVE    1                   TO  WRK-INDEX
            PERFORM 2001-SYUKEI-SEC     UNTIL   FLG-RECE10   =   1 
                                        OR      FLG-ERR      =   1
       *
+           MOVE    WRK-PATH            TO  MCP-PATH
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            IF      FLG-ERR             =   ZERO
       *        ºßÁí¿Ç¤Þ¤¿¤Ïºß°åÁí¤ò»»Äê¤·¤¿¥ì¥»
-               MOVE    "SEIKYU-KEY10"      TO  WRK-PATH  
+               EVALUATE    WRK-SYOKBN
+                   WHEN    "1"
+                       MOVE    PATH-TBL-SEIKYU-KEY30   TO  WRK-PATH
+                   WHEN    "2"
+                       MOVE    PATH-TBL-SEIKYU-KEY29   TO  WRK-PATH
+               END-EVALUATE  
                PERFORM 900-SEIKYU-SELECT-SEC
       *
                MOVE    2                   TO  WRK-INDEX
                PERFORM 2001-SYUKEI-SEC     UNTIL   FLG-RECE10   =   1 
                                            OR      FLG-ERR      =   1
       *
+               MOVE    WRK-PATH            TO  MCP-PATH
                MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               CALL    "MCPSUB"            USING
+                                               MCPAREA
+                                               MCPDATA-REC
            END-IF
            .
        2001-GAIRAI-SYUKEI-EXT.
@@ -454,19 +501,23 @@
            INITIALIZE                      SUM-AREA
            MOVE    ZERO                TO  CNT-RECE10
       *
-           MOVE    "SEIKYU-KEY18"       TO  WRK-PATH  
+           EVALUATE    WRK-SYOKBN
+               WHEN    "1"
+                   MOVE    PATH-TBL-SEIKYU-KEY32       TO  WRK-PATH
+               WHEN    "2"
+                   MOVE    PATH-TBL-SEIKYU-KEY31       TO  WRK-PATH
+           END-EVALUATE  
            PERFORM 900-SEIKYU-SELECT-SEC
       *
            MOVE    1                   TO  WRK-INDEX
            PERFORM 2001-SYUKEI-SEC     UNTIL   FLG-RECE10   =   1 
                                        OR      FLG-ERR      =   1
       *
+           MOVE    WRK-PATH            TO  MCP-PATH
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE     WRK-PATH           TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
            .
        2001-NYUIN-SYUKEI-EXT.
            EXIT.
@@ -723,7 +774,7 @@
            IF      FLG-UPD             =   1
                PERFORM 230-UPD-FILE-HENSYU-SEC
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  MCP-PATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                DISPLAY "*** ORCBM022 ERR KEY=" RECE10-KEY
@@ -1221,7 +1272,7 @@
       *     
       *    ÀÁµá´ÉÍý£Ä£Â¸¡º÷
            MOVE    SPACE               TO  RECE10-REC
-           INITIALIZE                  RECE10-REC
+           INITIALIZE                      RECE10-REC
            MOVE    WRK-PARA-HOSPID     TO  RECE10-HOSPID
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
            IF      WRK-PRTFLG          =   1
@@ -1233,16 +1284,22 @@
                MOVE    WRK-CONS-SRYYM-200304
                                            TO  RECE10-SRYYM
                MOVE    999999              TO  RECE10-XXSRYYM
-           END-IF            
+           END-IF
+           MOVE    WRK-NYUGAIKBN        TO  RECE10-NYUGAIKBN
+      *
+      *###
+           DISPLAY "SYOKBN=" WRK-SYOKBN
+                   " SRYYM=" RECE10-SRYYM "-" RECE10-XXSRYYM 
+                   " NYUGAIKBN= " RECE10-NYUGAIKBN
+      *###
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    WRK-PATH            TO  MCP-PATH
+           CALL    "MCPSUB"          USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  MCP-PATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-RECE10
@@ -1256,11 +1313,10 @@
       *****************************************************************
        900-SEIKYU-READ-SEC           SECTION.
       *
-           MOVE    WRK-PATH            TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  MCP-PATH
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MCPSUB"          USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-RECE10
@@ -1278,12 +1334,15 @@
                MOVE    RECE10-PTID         TO  PTINF-PTID
                MOVE    PTINF-REC           TO  MCPDATA-REC
                PERFORM 800-PTINF-READ-SEC
-               IF      FLG-PTINF           =   ZERO
-               AND     PTINF-TSTPTNUMKBN   =   "1"
+               IF    ( FLG-PTINF           =   ZERO )
+               AND   ( PTINF-TSTPTNUMKBN   =   "1"  )
                    GO  TO  900-SEIKYU-READ-SEC
                END-IF
       *         
                ADD     1                   TO  CNT-RECE10
+      *         
+               DISPLAY "PTNUM=" RECE10-PTNUM 
+      *         
            ELSE
                MOVE    1                   TO  FLG-RECE10
            END-IF

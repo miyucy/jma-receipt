@@ -51,10 +51,8 @@
       *  01.00.10    NACL-藤原    05/01/25  酸素の計算式を対象としないよ
       *                                     うにする
       *  01.00.11    NACL-小豆沢  05/02/10  負担区分の判定に公費ＩＤを追加
-      *  01.00.12    NACL-藤原    05/02/23  注加算による加算項目の記載
+      *  01.00.12    NACL-藤原    05/03/01  注加算による加算項目の記載
       *                                     （処置・その他）
-      *                                     加算項目であるが基本項目となって
-      *                                     いる項目がある場合の記載順
       *                                     超音波内視鏡加算を逓減の後に記載
       *****************************************************************
       *
@@ -240,7 +238,6 @@
            03  FLG-HIT                 PIC 9(01).
            03  FLG-COMMENT             PIC 9(01).
            03  FLG-CHK                 PIC 9(01).
-           03  FLG-KOUI                PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -347,8 +344,6 @@
            03  WRK-COM-RENNUM          PIC 9(04).
       *
            03  WRK-COM-FTNKBN          PIC X(01).
-      *
-           03  WRK-CHUKSNCD            PIC X(04).
       *
       *    1桁目:生保 2桁目:結核 3桁目:精神
            03  WRK-3SYU-KBN.
@@ -3083,74 +3078,18 @@
                GO  TO  20074-ZAI-KOUI-SORT-EXT
            END-IF
       *
-           MOVE    ZERO                TO  IDY
-           MOVE    1                   TO  IDX
-           PERFORM UNTIL   IDX >   WRK-TBLMAX1
-               MOVE    SPACE               TO  WRK-CHUKSNCD
-               MOVE    ZERO                TO  FLG-KOUI
-      *
-               PERFORM UNTIL   IDX >   WRK-TBLMAX1
-                 EVALUATE    TBL-KOUI-SRYCD (IDX) (1:1)
-                           ALSO    TBL-KOUI-KOKUJISKBKBN1 (IDX)
-                   WHEN    SPACE   ALSO    ANY
-                       CONTINUE
-                   WHEN    "0"     ALSO    ANY
-                   WHEN    "8"     ALSO    ANY
-                       ADD     1                           TO  IDY
-                       MOVE    TBL-KOUI-REC          (IDX) TO
-                                       WRK-KOUI-TAIHI-REC          (IDY)
-                       MOVE    TBL-KOUI-SRYCD        (IDX) TO
-                                       WRK-KOUI-TAIHI-SRYCD        (IDY)
-                       MOVE    TBL-KOUI-TENSIKIBETU  (IDX) TO
-                                       WRK-KOUI-TAIHI-TENSIKIBETU  (IDY)
-                       MOVE    TBL-KOUI-CHUKSNCD     (IDX) TO
-                                       WRK-KOUI-TAIHI-CHUKSNCD     (IDY)
-                       MOVE    TBL-KOUI-KOKUJISKBKBN1(IDX) TO
-                                       WRK-KOUI-TAIHI-KOKUJISKBKBN1(IDY)
-                       INITIALIZE      TBL-KOUI-REC (IDX)
-                       MOVE    SPACE               TO  WRK-CHUKSNCD
-                   WHEN    ANY    ALSO    "1"
-                   WHEN    ANY    ALSO    "3"
-                   WHEN    ANY    ALSO    "5"
-                       IF      WRK-CHUKSNCD        =   SPACE
-                           MOVE    TBL-KOUI-CHUKSNCD     (IDX) TO
-                                       WRK-CHUKSNCD
-                           ADD     1                           TO  IDY
-                           MOVE    TBL-KOUI-REC          (IDX) TO
-                                       WRK-KOUI-TAIHI-REC          (IDY)
-                           MOVE    TBL-KOUI-SRYCD        (IDX) TO
-                                       WRK-KOUI-TAIHI-SRYCD        (IDY)
-                           MOVE    TBL-KOUI-TENSIKIBETU  (IDX) TO
-                                       WRK-KOUI-TAIHI-TENSIKIBETU  (IDY)
-                           MOVE    TBL-KOUI-CHUKSNCD     (IDX) TO
-                                       WRK-KOUI-TAIHI-CHUKSNCD     (IDY)
-                           MOVE    TBL-KOUI-KOKUJISKBKBN1(IDX) TO
-                                       WRK-KOUI-TAIHI-KOKUJISKBKBN1(IDY)
-                           INITIALIZE      TBL-KOUI-REC (IDX)
-                       ELSE
-                           MOVE    1               TO  FLG-KOUI
-                       END-IF    
-                   WHEN    OTHER
-                       ADD     1                           TO  IDY
-                       MOVE    TBL-KOUI-REC          (IDX) TO
-                                       WRK-KOUI-TAIHI-REC          (IDY)
-                       MOVE    TBL-KOUI-SRYCD        (IDX) TO
-                                       WRK-KOUI-TAIHI-SRYCD        (IDY)
-                       MOVE    TBL-KOUI-TENSIKIBETU  (IDX) TO
-                                       WRK-KOUI-TAIHI-TENSIKIBETU  (IDY)
-                       MOVE    TBL-KOUI-CHUKSNCD     (IDX) TO
-                                       WRK-KOUI-TAIHI-CHUKSNCD     (IDY)
-                       MOVE    TBL-KOUI-KOKUJISKBKBN1(IDX) TO
-                                       WRK-KOUI-TAIHI-KOKUJISKBKBN1(IDY)
-                       INITIALIZE      TBL-KOUI-REC (IDX)
-                 END-EVALUATE    
-                 COMPUTE IDX     =   IDX     +   1
-               END-PERFORM
-      *
-      *        出力対象となっていないデータがある 
-               IF      FLG-KOUI            =   1
-                   MOVE    1                   TO  IDX
-               END-IF
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       WRK-TBLMAX1
+               MOVE    TBL-KOUI-REC          (IDX) TO
+                                       WRK-KOUI-TAIHI-REC          (IDX)
+               MOVE    TBL-KOUI-SRYCD        (IDX) TO
+                                       WRK-KOUI-TAIHI-SRYCD        (IDX)
+               MOVE    TBL-KOUI-TENSIKIBETU  (IDX) TO
+                                       WRK-KOUI-TAIHI-TENSIKIBETU  (IDX)
+               MOVE    TBL-KOUI-CHUKSNCD     (IDX) TO
+                                       WRK-KOUI-TAIHI-CHUKSNCD     (IDX)
+               MOVE    TBL-KOUI-KOKUJISKBKBN1(IDX) TO
+                                       WRK-KOUI-TAIHI-KOKUJISKBKBN1(IDX)
            END-PERFORM
       *
            INITIALIZE                      TBL-KOUI-AREA

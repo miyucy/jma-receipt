@@ -34,6 +34,8 @@
       *  01.00.03    NACL-藤原    04/01/19  公費欄の保険番号の表示を法別番号
       *                                     に修正
       *  01.00.04    NACL-藤原    04/09/14  開設者氏名の文字数変更
+      *返戻分対応  
+      *  01.01.01    NACL-藤原    05/02/25  返戻分対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -61,11 +63,13 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *****COPY    "HCM2I.INC".
-           COPY    "HCM2IV01.INC"  REPLACING  //HCM2IV01//
+      *****COPY    "HCM2IV01.INC"  REPLACING  //HCM2IV01//
+           COPY    "HCM2IV02.INC"  REPLACING  //HCM2IV02//
                                    BY         //HCM2I//.
       *****COPY    "HCM2J.INC".
       *****COPY    "HCM2JV01.INC"  REPLACING  //HCM2JV01//
-           COPY    "HCM2JV02.INC"  REPLACING  //HCM2JV02//
+      *****COPY    "HCM2JV02.INC"  REPLACING  //HCM2JV02//
+           COPY    "HCM2JV03.INC"  REPLACING  //HCM2JV03//
                                    BY         //HCM2J//.
       *
       *    スパ領域
@@ -265,8 +269,11 @@
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-PAGE       PIC 9(10).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
+           03  WRK-PARA-SYOKBN     PIC X(01).
       *
        01  WRK-NYUGAIKBN           PIC X(01).
+      *
+       01  WRK-SYOKBN              PIC X(01).
       *
       ******************************************************************
       *
@@ -274,6 +281,7 @@
                                        USING   SUM-AREA
                                                WRK-PARA
                                                WRK-NYUGAIKBN
+                                               WRK-SYOKBN
            .
       *
       *****************************************************************
@@ -446,6 +454,11 @@
                    MOVE    "○"      TO  HCM2I-NYUGAIKBN (2)
            END-EVALUATE           
       *
+           EVALUATE    WRK-SYOKBN
+               WHEN    "2"
+                   MOVE    "（返戻分）"  TO  HCM2I-TITLE1
+           END-EVALUATE           
+      *
            .
        310-HEAD-HEN-01-EXT.
            EXIT.
@@ -474,6 +487,11 @@
                    MOVE    "○"      TO  HCM2J-NYUGAIKBN (1)
                WHEN    "2"
                    MOVE    "○"      TO  HCM2J-NYUGAIKBN (2)
+           END-EVALUATE           
+      *
+           EVALUATE    WRK-SYOKBN
+               WHEN    "2"
+                   MOVE    "（返戻分）"  TO  HCM2J-TITLE1
            END-EVALUATE           
       *
            .
@@ -1002,19 +1020,34 @@
                                        TO  SPRT-PRIORITY
            IF      FLG-PRTKBN          =   ZERO                            
       *********MOVE    "HCM2I.red"         TO  SPRT-PRTID
-               MOVE    "HCM2IV01.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2IV01.red"      TO  SPRT-PRTID
+               MOVE    "HCM2IV02.red"      TO  SPRT-PRTID
                MOVE    HCM2I               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM2J.red"         TO  SPRT-PRTID
       *********MOVE    "HCM2JV01.red"      TO  SPRT-PRTID
-               MOVE    "HCM2JV02.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2JV02.red"      TO  SPRT-PRTID
+               MOVE    "HCM2JV03.red"      TO  SPRT-PRTID
                MOVE    HCM2J               TO  SPRT-PRTDATA
            END-IF    
-           EVALUATE    IDX1
-               WHEN    1                            
+           EVALUATE    IDX1    ALSO    WRK-SYOKBN
+                                           ALSO    WRK-NYUGAIKBN 
+               WHEN    ANY     ALSO    "1" ALSO    "1"                           
                    MOVE    "社保総括表・入院"  TO  SPRT-TITLE
-               WHEN    2                            
-                   MOVE    "社保総括表・入院（在総診等）"
+               WHEN    ANY     ALSO    "2" ALSO    "1"                           
+                   MOVE    "社保総括表・入院［返戻分］"
+                                               TO  SPRT-TITLE
+               WHEN    1       ALSO    "1" ALSO    "2"                           
+                   MOVE    "社保総括表・入院外"
+                                               TO  SPRT-TITLE
+               WHEN    2       ALSO    "1" ALSO    "2"
+                   MOVE    "社保総括表・入院外（在総診等）"
+                                               TO  SPRT-TITLE
+               WHEN    1       ALSO    "2" ALSO    "2"                            
+                   MOVE    "社保総括表・入院外［返戻分］"
+                                               TO  SPRT-TITLE
+               WHEN    2       ALSO    "2" ALSO    "2"          
+                   MOVE    "社保総括表・入院外（在総診等）［返戻分］"
                                                TO  SPRT-TITLE
            END-EVALUATE        
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
