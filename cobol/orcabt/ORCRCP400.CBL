@@ -260,7 +260,7 @@
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC         OCCURS  10.
                05  TBL-SYS1001         PIC  X(610).
-      *    シスカン（１００２）退避用領域
+      *    医療機関（住所等情報）退避用領域
        01  TBL-SYS1002-T.
            03  TBL-SYS1002-OCC         OCCURS  10.
                05  TBL-SYS1002         PIC  X(610).
@@ -4861,7 +4861,8 @@
                END-IF
            END-PERFORM
            IF      FLG-SET             =   ZERO
-               STRING  "医療機関情報が取得できませんでした。診療年月＝"
+               STRING
+              "医療機関情報（所在地）が取得できませんでした。診療年月＝"
                                                DELIMITED  BY  SIZE 
                        WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
                                        INTO    WRK-RECEERR

@@ -4987,7 +4987,8 @@
                END-IF
            END-PERFORM
            IF      FLG-SET             =   ZERO
-               STRING  "医療機関情報が取得できませんでした。診療年月＝"
+               STRING
+              "医療機関情報（所在地）が取得できませんでした。診療年月＝"
                                                DELIMITED  BY  SIZE 
                        WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
                                        INTO    WRK-RECEERR
