@@ -1797,7 +1797,7 @@
       *    ø«Œ≈π‘∞Ÿ•ﬁ•π•ø°º•¡•ß•√•Ø
            INITIALIZE                      SRYACT-REC
            MOVE    SPA-HOSPID          TO  SRY-HOSPID
-           MOVE    1                   TO  SRY-NYUGAIKBN
+           MOVE    "1"                 TO  SRY-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  SRY-PTID
            MOVE    SPA-NAI-SRYYM    TO  SRY-SRYYM
            MOVE    SPA-5000-DSPCD-41 (IDZ2) TO  SRY-SRYCD (1)
@@ -3597,6 +3597,7 @@
            MOVE    WRK-SRYYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
            MOVE    WRK-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
+           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
       *    …È√¥Œ®
@@ -5543,6 +5544,7 @@
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
            MOVE    PTNYUINRRK-HKNCOMBINUM
                                        TO  AGECHK-HKNCOMBINUM
+           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
       *
