@@ -1813,6 +1813,12 @@
                         MOVE    SPACE              TO  FLG-TOROKU
                         PERFORM 510-TBLHEN-SEC
                         MOVE    SPACE              TO  FLG-TOROKU
+                   ELSE
+                        MOVE    ZERO               TO  FLG-RIHTEI
+      *                 ¿ÇÎÅ¹Ô°Ù¡¢·×·×»»½èÍý¡¢ÊÔ½¸
+                        MOVE    SPACE              TO  FLG-TOROKU
+                        PERFORM 510-TBLHEN-SEC
+                        MOVE    SPACE              TO  FLG-TOROKU
                    END-IF
                    MOVE    SPACE               TO  SPA-KIDCD
       *
