@@ -2439,7 +2439,11 @@
                END-IF
       *
       *        入金方法
-               MOVE  SPA-GMN-NYKN-HOHO     TO  SMEI-NYUKIN-HOHO
+               IF    ( SPA-GMN-NYUKIN      >   ZERO )
+                   MOVE  SPA-GMN-NYKN-HOHO TO  SMEI-NYUKIN-HOHO
+               ELSE
+                   MOVE   SPACE            TO  SMEI-NYUKIN-HOHO
+               END-IF
       *
       *        伝票状態区分
                IF    ( SPA-NAI-DENPJTIKBN  NOT = "8" )
