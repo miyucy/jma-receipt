@@ -779,19 +779,23 @@
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
                                   (SRY-SRYCD (IDZ) =   SPACE )
-      *            コメント、薬剤投与、粉砕は対象外
+      *            コメント、薬剤投与、粉砕、自動発生分は対象外
                    IF     (SRY-SRYCD (IDZ)(1:1)    =   "8"  )  OR
                           (SRY-SRYCD (IDZ)(1:3)    =   "001")  OR
                           (SRY-SRYCD (IDZ)         =   "099209901") OR
                           (SRY-SRYCD (IDZ)         =   "099309901") OR
-                          (SRY-AUTOKBN(IDZ)    NOT =   SPACE )
+                          (SRY-AUTOKBN(IDZ)        =   "2"
+                                                   OR  "3" )
                        CONTINUE
                    ELSE
       *                点数マスタを取得する
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
-                       IF     (FLG-TENSU           =   ZERO  )  AND
-                              (TNS-DATAKBN     NOT =   2  AND  3 )
+      *                加算とフィルムは対象外とする
+                       IF     (FLG-TENSU       NOT =   ZERO  )  OR
+                              (TNS-DATAKBN         =   "2"  OR  "3")
+                           CONTINUE
+                       ELSE
                            PERFORM 31011-SINKOUI-SPA-SEC
                        END-IF
                    END-IF
