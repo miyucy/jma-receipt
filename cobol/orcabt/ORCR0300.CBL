@@ -1533,8 +1533,8 @@
                            PERFORM 200711-COMMENT-TAIHI-SEC
                        WHEN    "1"
                            PERFORM 200711-KOUI-TAIHI-SEC
-                       WHEN    "6" 
-                           PERFORM 200711-YKZ-TAIHI-SEC
+      *****************WHEN    "6" 
+      ******************** PERFORM 200711-YKZ-TAIHI-SEC
                        WHEN    OTHER
                            PERFORM 200711-ELSE-TAIHI-SEC
                    END-EVALUATE
@@ -1646,23 +1646,7 @@
       *    摘要データ（薬剤）退避処理
       *****************************************************************
        200711-YKZ-TAIHI-SEC          SECTION.
-      *
-      *    20点以下の場合編集しない
-           IF      FLG-YKZ20          =   1
-               CONTINUE
-           ELSE    
-      *        --- 薬剤点数20点以下の場合 ---（投薬／注射）
-               IF    (     ( RECE041-SRYKBN =   "21"  OR  "22"  OR
-                                                         "23"     )
-                       AND ( FLG-TEIGEN    =   ZERO               )
-                       AND ( RECE041-ZAITEN <=  20                 ) )
-               OR    (     ( RECE041-SRYKBN =   "31"  OR  "32"  OR
-                                                         "33"     )
-                       AND ( RECE041-ZAITEN <=  20                 ) )
-                   MOVE    1               TO  FLG-YKZ20
-               END-IF
                PERFORM 200711-ELSE-TAIHI-SEC    
-           END-IF    
            .
        200711-YKZ-TAIHI-EXT.
            EXIT.
