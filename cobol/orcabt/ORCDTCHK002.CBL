@@ -163,6 +163,9 @@
            03  FLG-INTERACT                            PIC 9(01).
            03  FLG-ERRSET                              PIC 9(01).
            03  FLG-JNISSU-HIT                          PIC 9(01).
+           03  FLG-SEIHO                               PIC 9(01).
+           03  FLG-RJN                                 PIC 9(01).
+           03  FLG-PROC                                PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -208,6 +211,7 @@
            03  IDX17                                   PIC 9(05). 
            03  IDX18                                   PIC 9(05). 
            03  IDX19                                   PIC 9(05). 
+           03  IDX20                                   PIC 9(05). 
            03  IDXA                                    PIC 9(05). 
            03  IDXE                                    PIC 9(05). 
            03  IDX-TSRYKA                              PIC 9(05).
@@ -2235,15 +2239,19 @@
       *    患者保険情報チェック処理
            IF    ( ORCBSD01-CHKKBN (1) NOT =   ZERO  )
             OR   ( ORCBSD01-CHKKBN (2) NOT =   ZERO  )
-            OR   ( ORCBSD01-CHKKBN (4) NOT =   ZERO  )
                PERFORM 200111-PTHKNINF-CHK-SEC
            END-IF
       *
       *    患者公費情報チェック処理
            IF    ( ORCBSD01-CHKKBN (3) NOT =   ZERO  )
-            OR   ( ORCBSD01-CHKKBN (4) NOT =   ZERO  )
                PERFORM 200111-PTKOHINF-CHK-SEC
            END-IF
+      *
+      *    保険適応年齢チェック
+           IF    ( ORCBSD01-CHKKBN (4) NOT =   ZERO  )
+               PERFORM 200111-HKNAGE-CHK-SEC
+           END-IF
+      *
       *
       *    患者病名情報チェック処理
            IF    ( ORCBSD01-CHKKBN (5) NOT =   ZERO  )
@@ -2342,10 +2350,6 @@
                MOVE    1               TO  FLG-CHKEND (2)
            END-IF
       *
-           IF    ( ORCBSD01-CHKKBN (4) =   ZERO  )
-               MOVE    1               TO  FLG-CHKEND (4)
-           END-IF
-      *
            PERFORM VARYING IDX4    FROM    1   BY  1
                    UNTIL ( IDX4    >   THKNID-MAX )
       *
@@ -2364,14 +2368,8 @@
                    PERFORM 200111-KIGONUM-CHK-SEC
                END-IF
       *
-      *        保険適応年齢
-               IF    ( FLG-CHKEND (4)          =   ZERO )
-                   PERFORM 200111-HKNAGE-CHK-SEC
-               END-IF
-      *
                IF    ( FLG-CHKEND (1)  =   1 )
                 AND  ( FLG-CHKEND (2)  =   1 )
-                AND  ( FLG-CHKEND (4)  =   1 )
                    MOVE    THKNID-MAX  TO  IDX4
                END-IF
       *
@@ -2462,36 +2460,12 @@
        200111-KIGONUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    保険適応年齢チェック
-      *****************************************************************
-       200111-HKNAGE-CHK-SEC           SECTION.
-      *
-           IF    ( AGECHK-NENREI       <   15 )
-            AND  ( PTHKN-HONKZKKBN     =   "1" )
-               MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
-               MOVE    "040001"        TO  WRK-ERRCD
-               PERFORM 211-ERRMES-HEN-SEC
-      *
-               IF    ( ORCBSD01-CHKKBN (4) =   "1" )
-                   MOVE    1       TO  FLG-CHKEND (4)
-                   GO  TO  200111-HKNAGE-CHK-EXT
-               END-IF
-           END-IF
-      *
-           .
-       200111-HKNAGE-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    患者公費情報チェック処理
       *****************************************************************
        200111-PTKOHINF-CHK-SEC         SECTION.
       *
            IF    ( ORCBSD01-CHKKBN (3) =   ZERO  )
                MOVE    1               TO  FLG-CHKEND (3)
-           END-IF
-      *
-           IF    ( ORCBSD01-CHKKBN (4) =   ZERO  )
-               MOVE    1               TO  FLG-CHKEND (4)
            END-IF
       *
            PERFORM VARYING IDX4    FROM    1   BY  1
@@ -2512,18 +2486,10 @@
                END-IF
       *
                IF    ( FLG-CHKEND (3)  =   1 )
-                 AND ( FLG-CHKEND (4)  =   1 )
                    MOVE    TKOHID-MAX  TO  IDX4
                END-IF
       *
            END-PERFORM
-      *
-      *    保険適応年齢
-           IF    ( FLG-CHKEND (4)          =   ZERO )
-               IF    ( TKOHID-MAX  >   ZERO )
-                   PERFORM 200111-KOHAGE-CHK-SEC
-               END-IF
-           END-IF
       *
            .
        200111-PTKOHINF-CHK-EXT.
@@ -2597,37 +2563,171 @@
        200111-FTNJKYNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    保険適応年齢チェック
+      *    保険適応年齢チェック処理
       *****************************************************************
-       200111-KOHAGE-CHK-SEC           SECTION.
+       200111-HKNAGE-CHK-SEC           SECTION.
       *
-           IF    ( TKOHID-RJNFLG       =   1 )
+           IF    ( ORCBSD01-CHKKBN (4) =   ZERO  )
+               MOVE    1               TO  FLG-CHKEND (4)
+           END-IF
+      *
+      *    診療会計の保険組合せをチェック
+           MOVE    ZERO                TO  FLG-PROC
+           PERFORM VARYING IDX20   FROM    1   BY  1
+                   UNTIL ( IDX20   >   THKNCOMBI-MAX )
+                    OR   ( FLG-CHKEND (4)  =   1 )
+      *
+               MOVE    THKNCOMBI-HKNCOMBI (IDX20)
+                                       TO  WRK-HKNCOMBI
+               PERFORM 900-HKNCOMBI-KEY-SEL-SEC
+      *
+               IF    ( COMB-HKNID      NOT =   ZERO )
+                AND  ( COMB-HKNNUM     NOT =   "971" )
+                AND  ( COMB-HKNNUM     NOT =   "973" )
+                AND  ( COMB-HKNNUM (1:2)
+                                       NOT =   "98" )
+      *
+                   PERFORM 200112-HKNAGE-CHK-SEC
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+      *    入院会計の保険組合せをチェック
+           MOVE    1                   TO  FLG-PROC
+           PERFORM VARYING IDX20   FROM    1   BY  1
+                   UNTIL ( IDX20   >   TNACCT-HKNCOMBI-MAX )
+                    OR   ( FLG-CHKEND (4)  =   1 )
+      *
+               MOVE    TNACCT-HKNCOMBI-HKNCOMBI (IDX20)
+                                       TO  WRK-HKNCOMBI
+               PERFORM 900-HKNCOMBI-KEY-SEL-SEC
+      *
+               IF    ( COMB-HKNID      NOT =   ZERO )
+                AND  ( COMB-HKNNUM     NOT =   "971" )
+                AND  ( COMB-HKNNUM     NOT =   "973" )
+                AND  ( COMB-HKNNUM (1:2)
+                                       NOT =   "98" )
+      *
+                   PERFORM 200112-HKNAGE-CHK-SEC
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       200111-HKNAGE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険適応年齢チェック処理
+      *****************************************************************
+       200112-HKNAGE-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SEIHO
+           MOVE    ZERO                TO  FLG-RJN
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >       4 )
+                    OR   ( COMB-KOHID (IDX0)
+                                           =   ZERO )
+      *
+                IF    ( COMB-KOHHKNNUM (IDX0)
+                                           =   "012" )
+                    MOVE   1           TO  FLG-SEIHO
+                END-IF
+      *
+                IF    ( COMB-KOHHKNNUM (IDX0)
+                                           =   "027" )
+                    MOVE   1           TO  FLG-RJN
+                END-IF
+           END-PERFORM
+      *
+      *    患者保険情報検索処理
+           MOVE    COMB-HKNID          TO  WRK-HKNID
+           PERFORM 900-PTHKNINF-KEY-SEL-SEC
+      *
+           IF    ( AGECHK-NENREI       <   15 )
+            AND  ( PTHKN-HONKZKKBN     =   "1" )
+               MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
+               MOVE    "040001"        TO  WRK-ERRCD
+               PERFORM 200112-HKNAGE-ERRMES-HEN-SEC
+               PERFORM 215-ERRMES-HEN-SEC
+      *
+               IF    ( ORCBSD01-CHKKBN (4) =   "1" )
+                   MOVE    1       TO  FLG-CHKEND (4)
+                   GO  TO  200112-HKNAGE-CHK-EXT
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-RJN         =   1 )
                IF    ( AGECHK-ROUJIN   NOT = 1 )
+                   MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                    MOVE    "040002"        TO  WRK-ERRCD
-                   PERFORM 210-ERRMES-HEN-SEC
+                   PERFORM 200112-HKNAGE-ERRMES-HEN-SEC
+                   PERFORM 215-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (4) =   "1" )
                        MOVE    1           TO  FLG-CHKEND (4)
-                       GO  TO  200111-KOHAGE-CHK-EXT
+                       GO  TO  200112-HKNAGE-CHK-EXT
                    END-IF
                END-IF
            END-IF
       *
-           IF    ( TKOHID-RJNFLG       =   ZERO )
-            AND  ( TKOHID-SEIHOFLG     =   ZERO )
+           IF    ( FLG-RJN             =   ZERO )
+            AND  ( FLG-SEIHO           =   ZERO )
                IF    ( AGECHK-ROUJIN   =   1 )
+                   MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                    MOVE    "040003"        TO  WRK-ERRCD
-                   PERFORM 210-ERRMES-HEN-SEC
+                   PERFORM 200112-HKNAGE-ERRMES-HEN-SEC
+                   PERFORM 215-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (4) =   "1" )
                        MOVE    1           TO  FLG-CHKEND (4)
-                       GO  TO  200111-KOHAGE-CHK-EXT
+                       GO  TO  200112-HKNAGE-CHK-EXT
                    END-IF
                END-IF
            END-IF
       *
            .
-       200111-KOHAGE-CHK-EXT.
+       200112-HKNAGE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険適応年齢エラーメッセージ編集処理
+      *****************************************************************
+       200112-HKNAGE-ERRMES-HEN-SEC    SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMES-PLUS
+      *
+           IF    ( FLG-PROC            =   ZERO )
+               MOVE    "診療会計："    TO  WRK-STR
+           ELSE
+               MOVE    "入院会計："    TO  WRK-STR
+           END-IF
+      *
+           PERFORM VARYING IDX0   FROM    1   BY  1
+                   UNTIL ( IDX0   >   ORCSHKN-HKN-MAX )
+                    OR   ( COMB-HKNCOMBINUM
+                                       =   ORCSHKN-GMN-HKNCOMBINUM
+                                                              (IDX0))
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX0            >   ORCSHKN-HKN-MAX )
+               MOVE    COMB-HKNCOMBINUM
+                                   TO  WRK-MAE-INPUT
+           ELSE
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX0)
+                                   TO  WRK-MAE-INPUT
+           END-IF
+      *
+           PERFORM 800-ZENKAKU-HEN-SEC
+           STRING  WRK-STR         DELIMITED   BY  SPACE
+                   WRK-OUT-INPUT   DELIMITED   BY  SPACE
+           INTO    WRK-ERRMES-PLUS
+           END-STRING
+      *
+           .
+       200112-HKNAGE-ERRMES-HEN-EXT.
            EXIT.
       *****************************************************************
       *    患者病名情報チェック処理
