@@ -14,6 +14,7 @@ tbl_jyurrk {
 	DENPNUM				number(7);
 	GRP_DENPNUM			number(7);
 	GRP_RENNUM			number(2);
+	SYU_UPDKBN  			char(1);
 	SRYKBN1				char(2);
 	SRYKBN2				char(2);
 	SRYKBN3				char(2);

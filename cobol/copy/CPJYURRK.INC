@@ -60,6 +60,8 @@
            03  JYURRK-GRP-DENPNUM          PIC 9(07).
       *§ﬁ§»§·∆˛Œœœ¢»÷
            03  JYURRK-GRP-RENNUM           PIC 9(02).
+      *º˝«ºππø∑∂Ë ¨
+           03  JYURRK-SYU-UPDKBN           PIC  X(01).
       *ø«Œ≈∂Ë ¨
            03  JYURRK-SRYKBN-G.
       *  ø«Œ≈∂Ë ¨£±
