@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    03/11/19  患者入院履歴よりデータを取得
+      *                                     するよう修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -61,7 +63,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
-           03  FLG-VIEWI001            PIC 9(01).
+           03  FLG-PTNYUINRRK          PIC 9(01).
            03  FLG-DBRC                PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
       *
@@ -140,9 +142,13 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    入院患者照会用ビュー
-       01  I001-REC.
-           COPY    "CPI001.INC".
+      *    患者番号
+       01  PTNUM-REC.
+           COPY    "CPPTNUM.INC".
+      *
+      *    患者入院履歴
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
@@ -310,22 +316,22 @@
       *
            MOVE    ZERO                TO  CNT-BG005
       *
-      *    入院患者照会用ビュー検索
-           MOVE    ZERO                TO  FLG-VIEWI001
-           INITIALIZE                      I001-REC
+      *    患者入院履歴検索
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+           INITIALIZE                      PTNYUINRRK-REC
       *
-           MOVE    WRK-PARA-HOSPID     TO  I001-HOSPID
-           MOVE    WRK-PARA-KJNYMD     TO  I001-NYUINYMD
-           MOVE    I001-REC            TO  MCPDATA-REC
-           MOVE    "I001-KEY3"         TO  WRK-DBPATH
+           MOVE    WRK-PARA-HOSPID     TO  PTNYUINRRK-HOSPID
+           MOVE    WRK-PARA-KJNYMD     TO  PTNYUINRRK-NYUINYMD
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTNYUINRRK-KEY28"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF        ( FLG-DBRC        NOT =   ZERO )
-               MOVE    1                   TO  FLG-VIEWI001
+               MOVE    1                   TO  FLG-PTNYUINRRK
            ELSE
-               MOVE    MCPDATA-REC         TO  I001-REC
+               MOVE    MCPDATA-REC         TO  PTNYUINRRK-REC
            END-IF
       *
-           PERFORM UNTIL ( FLG-VIEWI001    =   1 )
+           PERFORM UNTIL ( FLG-PTNYUINRRK  =   1 )
       *
                MOVE    SPACE               TO  HCMG005
       *
@@ -333,7 +339,7 @@
                PERFORM 210-HEAD-EDIT-SEC
       *
                MOVE    ZERO                TO  CNT-LINE
-               PERFORM UNTIL ( FLG-VIEWI001    =   1 )
+               PERFORM UNTIL ( FLG-PTNYUINRRK  =   1 )
                        OR    ( CNT-LINE        >=  CONST-LINE-MAX )
       *
       *            明細編集処理
@@ -347,7 +353,7 @@
            END-PERFORM
       *
       *
-           MOVE    "I001-KEY3"         TO  WRK-DBPATH
+           MOVE    "PTNYUINRRK-KEY28"  TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
            MOVE    1                   TO  FLG-END
@@ -389,27 +395,27 @@
                                        WRK-HCMG005-BIRTHDAY
       *
            IF        ( CNT-LINE        =   1 )
-               OR    ( KEY-BTUNUM  NOT =   I001-BTUNUM )
+               OR    ( KEY-BTUNUM  NOT =   PTNYUINRRK-BTUNUM )
                PERFORM 2101-BODY-BTUNAME-EDIT-SEC
            END-IF
       *
            IF        ( CNT-LINE        =   1 )
-               OR    ( KEY-BTUNUM  NOT =   I001-BTUNUM )
-               OR    ( KEY-BRMNUM  NOT =   I001-BRMNUM )
+               OR    ( KEY-BTUNUM  NOT =   PTNYUINRRK-BTUNUM )
+               OR    ( KEY-BRMNUM  NOT =   PTNYUINRRK-BRMNUM )
                PERFORM 2101-BODY-BRMNUM-EDIT-SEC
            END-IF
       *
            IF        ( CNT-LINE        =   1 )
-               OR    ( KEY-BTUNUM  NOT =   I001-BTUNUM )
-               OR    ( KEY-BRMNUM  NOT =   I001-BRMNUM )
-               OR    ( KEY-SRYKA   NOT =   I001-NYUINKA )
+               OR    ( KEY-BTUNUM  NOT =   PTNYUINRRK-BTUNUM )
+               OR    ( KEY-BRMNUM  NOT =   PTNYUINRRK-BRMNUM )
+               OR    ( KEY-SRYKA   NOT =   PTNYUINRRK-NYUINKA )
                PERFORM 2101-BODY-SRYKA-EDIT-SEC
            END-IF
       *
       *    キーを設定
-           MOVE    I001-BTUNUM         TO  KEY-BTUNUM
-           MOVE    I001-BRMNUM         TO  KEY-BRMNUM
-           MOVE    I001-NYUINKA        TO  KEY-SRYKA
+           MOVE    PTNYUINRRK-BTUNUM         TO  KEY-BTUNUM
+           MOVE    PTNYUINRRK-BRMNUM         TO  KEY-BRMNUM
+           MOVE    PTNYUINRRK-NYUINKA        TO  KEY-SRYKA
       *
       *    病棟名称
            MOVE    WRK-HCMG005-BTUNAME TO  HCMG005-BTUNAME(CNT-LINE)
@@ -439,20 +445,20 @@
                                        TO  HCMG005-BIRTHDAY(CNT-LINE)
       *
       *    入院日
-           MOVE    I001-NYUINYMD       TO  WRK-SYMD
+           MOVE    PTNYUINRRK-NYUINYMD TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-EDTYMD1         TO  HCMG005-NYUINYMD(CNT-LINE)
       *
       *    通算日数チェックサブ呼出
            INITIALIZE                      ORCSTUSANCHKAREA
            MOVE    WRK-PARA-HOSPID     TO  STUSANCHK-HOSPID
-           MOVE    I001-PTID           TO  STUSANCHK-PTID
-           MOVE    I001-NYUINYMD       TO  STUSANCHK-NYUINYMD
+           MOVE    PTNYUINRRK-PTID     TO  STUSANCHK-PTID
+           MOVE    PTNYUINRRK-NYUINYMD TO  STUSANCHK-NYUINYMD
            MOVE    WRK-PARA-KJNYMD     TO  STUSANCHK-KJNYMD
            CALL    "ORCSTUSANCHK"          USING
                                            ORCSTUSANCHKAREA
            IF        ( STUSANCHK-RC    NOT =   ZERO )
-               MOVE    I001-PTNUM          TO  ERR-PTNUM
+               MOVE    PTNUM-PTNUM         TO  ERR-PTNUM
                PERFORM 800-ERRMSG-EDIT-SEC
                MOVE    ERR-HEN-ERRMSG      TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
@@ -495,12 +501,12 @@
       *
            COMPUTE CNT-BG005       =   CNT-BG005   +   1
       *
-           MOVE    "I001-KEY3"         TO  WRK-DBPATH
+           MOVE    "PTNYUINRRK-KEY28"      TO  WRK-DBPATH
            PERFORM 900-TBL-READ-SEC
            IF        ( FLG-DBRC    NOT =   ZERO )
-               MOVE    1                   TO  FLG-VIEWI001
+               MOVE    1                   TO  FLG-PTNYUINRRK
            ELSE
-               MOVE    MCPDATA-REC         TO  I001-REC
+               MOVE    MCPDATA-REC         TO  PTNYUINRRK-REC
            END-IF
       *
            .
@@ -514,7 +520,7 @@
       *    病棟情報
            INITIALIZE                      SYS-5001-REC
            MOVE    "5001"              TO  SYS-5001-KANRICD
-           MOVE    I001-BTUNUM         TO  SYS-5001-KBNCD
+           MOVE    PTNYUINRRK-BTUNUM   TO  SYS-5001-KBNCD
            MOVE    WRK-PARA-KJNYMD     TO  ORC-DBYMD
            MOVE    SYS-5001-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
@@ -539,7 +545,8 @@
        2101-BODY-BRMNUM-EDIT-SEC   SECTION.
       *
            INITIALIZE  ORCSBRMNUMAREA
-           MOVE   I001-BRMNUM(3:)  TO  SBRMNUM-IN-BRMNUM
+           MOVE   PTNYUINRRK-BRMNUM(3:)
+                                       TO  SBRMNUM-IN-BRMNUM
            CALL   "ORCSBRMNUM"         USING
                                        ORCSBRMNUMAREA
       *
@@ -556,7 +563,7 @@
       *    診療科情報
            INITIALIZE                      SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    I001-NYUINKA        TO  SYS-1005-KBNCD
+           MOVE    PTNYUINRRK-NYUINKA  TO  SYS-1005-KBNCD
            MOVE    WRK-PARA-KJNYMD     TO  ORC-DBYMD
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
@@ -581,10 +588,26 @@
       *****************************************************************
        2101-BODY-PTINF-EDIT-SEC    SECTION.
       *
+      *    患者番号読み込み
+           INITIALIZE                  PTNUM-REC
+           MOVE    PTNYUINRRK-HOSPID   TO  PTNUM-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  PTNUM-PTID
+           MOVE    PTNUM-REC       TO  MCPDATA-REC
+           MOVE    "PTNUM-KEY"     TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF        ( FLG-DBRC        NOT =   ZERO )
+               INITIALIZE                  PTNUM-REC
+           ELSE
+               MOVE    MCPDATA-REC     TO  PTNUM-REC
+           END-IF
+      *
+           MOVE    "PTNUM-KEY"     TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    患者情報読み込み
            INITIALIZE                  PTINF-REC
-           MOVE    I001-HOSPID     TO  PTINF-HOSPID
-           MOVE    I001-PTID       TO  PTINF-PTID
+           MOVE    PTNYUINRRK-HOSPID   TO  PTINF-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  PTINF-PTID
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "PTINF-KEY"     TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -598,7 +621,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    患者番号
-           MOVE    I001-PTNUM      TO  WRK-HCMG005-PTNUM
+           MOVE    PTNUM-PTNUM     TO  WRK-HCMG005-PTNUM
       *
       *    氏名
            MOVE    PTINF-NAME      TO  WRK-HCMG005-NAME
