@@ -136,6 +136,7 @@
            03  IDX-SA              PIC 9(04).
       *
            03  IDX-STR             PIC 9(04).
+           03  IDY-STR             PIC 9(04).
       *
            03  IDX-SIN             PIC 9(04).
            03  IDX-ERR             PIC 9(04).
@@ -229,6 +230,7 @@
            03  WRK-ZAIKEI          PIC 9(08)V99.
            03  WRK-GAIKEI          PIC 9(08)V99.
            03  WRK-ZAITEN          PIC 9(08).
+           03  WRK-ZAITEN-90       PIC 9(08).
            03  WRK-GAITEN          PIC 9(08).
            03  WRK-KIZKEI          PIC 9(08).
            03  WRK-KIZTEN          PIC 9(08).
@@ -351,7 +353,7 @@
       *    画面制御
            03  WRK-PUTTYPE         PIC X(08).
       *
-           03  WRK-JIDMSG              PIC X(80).
+           03  WRK-JIDMSG          PIC X(80).
       *
            03  WRK-ERRCD           PIC X(04).
       *
@@ -933,12 +935,15 @@
       *
            MOVE    ZERO                TO  WRK-IN-MAP-IDX.
            MOVE    SPA-GMN-IDX4        TO  WRK-STR.
+           MOVE    ZERO                TO  IDY-STR.
       *
            PERFORM VARYING     IDX-I48 FROM    1   BY  1
                    UNTIL      (IDX-I48             >   5   )  OR
                               (SPA-I48-SRYCD(IDX-I48)  =   SPACE )
       *
-               MOVE    "1"                 TO  SPA-COM-IN (SPA-GMN-IDX4)
+               IF      IDY-STR             =   ZERO
+                   MOVE    SPA-GMN-IDX4    TO  IDY-STR
+               END-IF
       *
                IF      IDX-I48             =   1
                    MOVE    SPA-I48-SRYCD(IDX-I48)
@@ -1083,7 +1088,7 @@
       *
            INITIALIZE                  ORCSC92AREA.
            MOVE    IDX2                TO  LNK-SC92-GMN-IDX.
-           MOVE    "I44"               TO  LNK-SC92-PG.
+           MOVE    "J04"               TO  LNK-SC92-PG.
            MOVE    SPA-COM-INPUTCD(IDX2)
                                        TO  LNK-SC92-SRYCD.
            MOVE    SPA-NAI-NENREI      TO  LNK-SC92-NENREI.
@@ -1222,7 +1227,7 @@
       *
            INITIALIZE                  ORCSC92AREA.
            MOVE    IDX2                TO  LNK-SC92-GMN-IDX.
-           MOVE    "I44"               TO  LNK-SC92-PG.
+           MOVE    "J04"               TO  LNK-SC92-PG.
            MOVE    SPA-COM-INPUTCD(IDX2)
                                        TO  LNK-SC92-SRYCD.
            MOVE    SPA-NAI-NENREI      TO  LNK-SC92-NENREI.
@@ -1318,7 +1323,7 @@
       *    画面再編集・基本チェック
            INITIALIZE                  ORCSC94AREA.
            MOVE    "1"                 TO  LNK-SC94-KBN.
-           MOVE    "I44"               TO  LNK-SC94-PG.
+           MOVE    "J04"               TO  LNK-SC94-PG.
            MOVE    IDX                 TO  LNK-SC94-IDX.
            CALL    "ORCSC94"           USING
                                        ORCSC94AREA
@@ -2132,7 +2137,7 @@
       *
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA.
-           MOVE    "I44"               TO  LNK-SC92-PG.
+           MOVE    "J04"               TO  LNK-SC92-PG.
            MOVE    SPACE               TO  LNK-SC92-KBN.
            MOVE    SPA-GMN-IDX4        TO  LNK-SC92-GMN-IDX.
            MOVE    SPA-COM-INPUTCD (SPA-GMN-IDX4)
@@ -2192,6 +2197,14 @@
                END-IF
            ELSE
                MOVE    SPACE               TO  SPA-COM-KEIFLG
+                                                          (SPA-GMN-IDX4)
+           END-IF.
+      *
+           IF     (TNS-SRYKBN       =   "90")   AND
+                  (SPA-GMN-IDX4    >=   IDY-STR)
+               MOVE    TNS-SRYKBN          TO  SPA-COM-SRYKBN
+                                                          (SPA-GMN-IDX4)
+               MOVE    TNS-TEN             TO  SPA-COM-TENSU
                                                           (SPA-GMN-IDX4)
            END-IF.
       *
@@ -2677,7 +2690,7 @@
       *            点数マスタ編集・基本チェック
                    INITIALIZE                  ORCSC92AREA
                    MOVE    SPACE               TO  LNK-SC92-KBN
-                   MOVE    "I44"               TO  LNK-SC92-PG
+                   MOVE    "J04"               TO  LNK-SC92-PG
                    MOVE    SPA-GMN-IDX4        TO  LNK-SC92-GMN-IDX
                    MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX4)
                                                TO  LNK-SC92-SRYCD
@@ -2869,7 +2882,6 @@
       *
       *    剤分離処理
            INITIALIZE                  ORCSC93AREA.
-      **     MOVE    "I44"               TO  LNK-SC93-PG.
            MOVE    "J04"               TO  LNK-SC93-PG.
       *    小児科外来診療科があり、３歳満の時
            IF      (SPA-SYONIKA        =   1   )  AND
@@ -2919,9 +2931,8 @@
                    END-IF
                END-IF
       *
-               IF     (IDX                 =   SPA-GMN-MAX   )  OR
-                      (SPA-COM-ZAIEND (IDX)
-                                           =   "1"           )
+               IF     (IDX                    =   SPA-GMN-MAX )  OR
+                      (SPA-COM-ZAIEND (IDX)   =   "1"         )
       *            剤ごとの処理
                    PERFORM 5102-ZAIBETU-SEC
                    INITIALIZE                  WRK-SCR-REC
@@ -2974,7 +2985,7 @@
       *
            INITIALIZE                  ORCSC00AREA.
            MOVE    "1"                 TO  LNK-ORCSC-KBN.
-           MOVE    "I44"               TO  LNK-ORCSC-PG.
+           MOVE    "J04"               TO  LNK-ORCSC-PG.
            MOVE    WRK-KAISU           TO  LNK-ORCSC-KAISU.
            MOVE    SPA-ROUJIN          TO  LNK-ORCSC-ROUJIN. 
            MOVE    SPA-NAI-NENREI      TO  LNK-ORCSC-NENREI.
@@ -3132,7 +3143,7 @@
       *        画面再編集・基本チェック
                INITIALIZE                  ORCSC94AREA
                MOVE    "2"                 TO  LNK-SC94-KBN
-               MOVE    "I44"               TO  LNK-SC94-PG
+               MOVE    "J04"               TO  LNK-SC94-PG
                MOVE    IDX-Z               TO  LNK-SC94-IDX
                CALL    "ORCSC94"           USING
                                            ORCSC94AREA
@@ -3897,6 +3908,7 @@
            MOVE    ZERO                TO  WRK-KINGAK.
            MOVE    ZERO                TO  WRK-MEINUM.
            MOVE    ZERO                TO  WRK-ZAITEN.
+           MOVE    ZERO                TO  WRK-ZAITEN-90.
            MOVE    ZERO                TO  WRK-SRYCDKEI.
            MOVE    ZERO                TO  WRK-SURYOKEI.
            MOVE    ZERO                TO  WRK-MEISAISU.
@@ -3965,10 +3977,6 @@
                    ELSE
                        MOVE    SPA-COM-TENSU  (IDX)    TO  WRK-ZAITEN
                    END-IF
-               DISPLAY "**SPA-COM-SYUTEN1 " SPA-COM-SYUTEN1(IDX)
-               DISPLAY "  SPA-COM-SYUTEN2 " SPA-COM-SYUTEN2 (IDX)
-               DISPLAY "  SPA-COM-YKZTEN  " SPA-COM-YKZTEN  (IDX)
-               DISPLAY "  SPA-COM-KIZAITEN " SPA-COM-KIZAITEN(IDX)
                    MOVE    SPA-COM-SYUTEN1(IDX)    TO  WRK-SYUTEN1
                    MOVE    SPA-COM-SYUTEN2 (IDX)   TO  WRK-SYUTEN2
                    MOVE    SPA-COM-YKZTEN  (IDX)   TO  WRK-YKZTEN
@@ -4402,10 +4410,6 @@
                ELSE
                    MOVE    SPA-COM-TENSU  (IDX)    TO  WRK-ZAITEN
                END-IF
-               DISPLAY "**SPA-COM-SYUTEN1 " SPA-COM-SYUTEN1(IDX)
-               DISPLAY "  SPA-COM-SYUTEN2 " SPA-COM-SYUTEN2 (IDX)
-               DISPLAY "  SPA-COM-YKZTEN  " SPA-COM-YKZTEN  (IDX)
-               DISPLAY "  SPA-COM-KIZAITEN " SPA-COM-KIZAITEN(IDX)
                MOVE    SPA-COM-SYUTEN1(IDX)    TO  WRK-SYUTEN1
                MOVE    SPA-COM-SYUTEN2 (IDX)   TO  WRK-SYUTEN2
                MOVE    SPA-COM-YKZTEN  (IDX)   TO  WRK-YKZTEN
@@ -4421,6 +4425,12 @@
                ADD     WRK-SRYCD-9             TO  WRK-SRYCDKEI
       *        数量
                ADD     SPA-COM-SURYO  (IDX)    TO  WRK-SURYOKEI
+           END-IF.
+      *
+           IF     (SPA-COM-SRYKBN (IDX)  =   "90")   AND
+                  (IDX                  >=   IDY-STR)
+               COMPUTE   WRK-ZAITEN-90    =   WRK-ZAITEN-90   +
+                                              SPA-COM-TENSU (IDX)
            END-IF.
       *
       *    明細数
@@ -4575,7 +4585,12 @@
            END-IF.
       *
       *    剤点数
-           MOVE    WRK-ZAITEN          TO  NACCT-ZAITEN.
+           IF      NACCT-SRYKBN      =  "90"
+               COMPUTE   NACCT-ZAITEN    =   NACCT-ZAITEN   +
+                                              WRK-ZAITEN-90
+           ELSE
+               MOVE    WRK-ZAITEN          TO  NACCT-ZAITEN
+           END-IF.
       *    診療コード計
            MOVE    WRK-SRYCDKEI        TO  NACCT-SRYCDTOTAL.
       *    数量計
