@@ -22,6 +22,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-藤原    04/04/07  コメント欄（上部）追加
+      *  01.00.02    NACL-藤原    04/08/23  特記事項（レセ電用）の追加
       ************************************************************
       *01  RECE67-REC.
            03  RECE67-KEY.
@@ -69,6 +70,9 @@
                05  RECE67-KOHFTNJANUM     PIC  X(08).
       *公費−受給者番号
                05  RECE67-KOHJKYSNUM      PIC  X(20).
+      *特記事項情報
+           03  RECE67-TOKKIINF            OCCURS  5.
+               05  RECE67-TOKKI           PIC  X(02).
       *コメント欄（上部）
            03  RECE67-HEAD4-G.
                05  RECE67-HEAD4           PIC  X(62)   OCCURS  2.
