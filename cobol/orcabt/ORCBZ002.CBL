@@ -20,13 +20,14 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 随時帳票
-      *  コンポーネント名  : カルテ３号紙（外来）一括印刷
+      *  コンポーネント名  : カルテ３号紙一括印刷
       *  管理者            : 
       *  作成日付    作業者        記述
       *  03/07/04    NACL−多々納  新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  04/12/15  入院印刷追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -91,6 +92,7 @@
            03  WRK-PARA-SRYYM          PIC X(06).
            03  WRK-PARA-SRYYM-END      PIC X(06).
            03  WRK-PARA-SRYKA          PIC X(02).
+           03  WRK-PARA-NYUGAIKBN      PIC X(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -221,6 +223,7 @@
                                        WRK-PARA-SRYYM
                                        WRK-PARA-SRYYM-END
                                        WRK-PARA-SRYKA
+                                       WRK-PARA-NYUGAIKBN
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -228,7 +231,7 @@
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBZ002"          TO  JOB-PGID
-           MOVE    "カルテ３号紙（外来）一括印刷"
+           MOVE    "カルテ３号紙（標準）一括印刷"
                                        TO  JOB-SHELLMSG
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
@@ -316,6 +319,11 @@
                                        TO  SPA-1009-KKCKSIATOKETA
            END-IF
       *
+      *    入外区分
+           IF      WRK-PARA-NYUGAIKBN  NOT =   "1"
+               MOVE    "2"             TO  WRK-PARA-NYUGAIKBN
+           END-IF
+      *
            .
        110-SYOKI-SET-EXT.
            EXIT.
@@ -341,9 +349,15 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE    "HCM33.red"         TO  SPRT-PRTID
-           MOVE    "カルテ３号紙（外来）一括"
-                                       TO  SPRT-TITLE
+           IF      WRK-PARA-NYUGAIKBN  =   "2"
+               MOVE    "HCM33.red"         TO  SPRT-PRTID
+               MOVE    "カルテ３号紙（外来）一括"
+                                           TO  SPRT-TITLE
+           ELSE
+               MOVE    "HCM33N.red"        TO  SPRT-PRTID
+               MOVE    "カルテ３号紙（入院）一括"
+                                           TO  SPRT-TITLE
+           END-IF
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
@@ -383,12 +397,20 @@
                MOVE    WRK-PARA-SRYKA      TO  ORCHC33-SRYKA
                MOVE    WRK-PARA-SRYYM      TO  ORCHC33-SRYYM
                MOVE    WRK-PARA-SRYYM-END  TO  ORCHC33-SRYYM-END
-               MOVE    "2"                 TO  ORCHC33-NYUGAIKBN
+               MOVE    WRK-PARA-NYUGAIKBN  TO  ORCHC33-NYUGAIKBN
       *        一括パラメタ
                MOVE    ORCSPRTAREA         TO  ORCHC33-PRTAREA
-               CALL    "ORCHC33"           USING
-                                           SPA-AREA
-                                           ORCHC33AREA
+               IF      WRK-PARA-NYUGAIKBN  =   "2"
+      *            外来
+                   CALL    "ORCHC33"           USING
+                                               SPA-AREA
+                                               ORCHC33AREA
+               ELSE
+      *            入院
+                   CALL    "ORCHCN33"          USING
+                                               SPA-AREA
+                                               ORCHC33AREA
+               END-IF
       *
                IF      ORCHC33-RC          =   ZERO
                    ADD     ORCHC33-PAGE        TO  CNT-PAGE
@@ -399,6 +421,12 @@
                MOVE    "PTINF-KEY10"       TO  ORC-DBPATH
                PERFORM 900-PTINF-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTINF-KEY10"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
              .
        200-MAIN-EXT.
