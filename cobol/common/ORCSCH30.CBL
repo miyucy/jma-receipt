@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/09/04  種別区分の追加
       * 01.00.02     NACL-多々納  02/09/17  処方のみの時院内処方とする
+      * 01.00.03     NACL-多々納  02/10/04  逓減を対象外とする
       *****************************************************************
       *
       *
@@ -465,7 +466,11 @@
                        PERFORM VARYING     IDXA    FROM    1   BY  1
                                UNTIL      (IDXA    >   5   )  OR
                                           (SRY-SRYCD (IDXA)   =   SPACE)
-                           PERFORM 20022-TBLSET-SEC
+                           IF      SRY-SRYCD (IDXA)     =   "630010002"
+                               CONTINUE
+                           ELSE
+                               PERFORM 20022-TBLSET-SEC
+                           END-IF
                        END-PERFORM
                    END-IF
                END-IF
@@ -715,6 +720,9 @@
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL      (IDXA    >   5   )  OR
                               (WKSRY-SRYCD (IDXA) =   SPACE)
+            IF      WKSRY-SRYCD (IDXA)     =   "630010002"
+               CONTINUE
+            ELSE
       *
       *        薬剤編集
                IF      WKSRY-SRYCD (IDXA)(1:1)   =   "6"
@@ -730,6 +738,8 @@
                IF      WKSRY-SRYCD (IDXA)(1:3) =   "001"
                    MOVE    WKSRY-SRYCD (IDXA)  TO  WRK-YSRYCD
                END-IF
+      *
+             END-IF
       *
            END-PERFORM
       *
