@@ -119,6 +119,7 @@
            03  WRK-STYMD-OK                PIC X(08).
            03  WRK-EDYMD-OK                PIC X(08).
            03  WRK-EDYMD-HZN               PIC X(08).
+           03  WRK-STYMD-HZN               PIC X(08).
       *    会計情報
            03  WRK-ACT-STYMD               PIC X(08).
            03  WRK-ACT-EDYMD               PIC X(08).
@@ -863,6 +864,7 @@
                               (HZN-SRYCD (IDX) =   SPACE )
                MOVE    ZERO            TO  FLG-CHK
                MOVE    SPACE           TO  WRK-EDYMD-HZN
+               MOVE    SPACE           TO  WRK-STYMD-HZN
       *
                IF      HZN-KGN-YMD (IDX)   NOT =   SPACE
       *            下限日が終了日以降は対象外
@@ -871,7 +873,8 @@
                    ELSE
       *            下限日が開始日以降は対象外
                        IF      HZN-KGN-YMD(IDX)    >   WRK-ACT-STYMD
-                           MOVE    1               TO  FLG-CHK
+      *********************MOVE    1               TO  FLG-CHK
+                           MOVE    HZN-KGN-YMD(IDX)    TO  WRK-STYMD-HZN
                        END-IF
                    END-IF
                END-IF
@@ -895,6 +898,13 @@
                    IF      WRK-EDYMD-HZN   NOT =   SPACE
                        IF      WRK-EDYMD-HZN   <   WRK-EDYMD-OK
                            MOVE    WRK-EDYMD-HZN   TO  WRK-EDYMD-OK
+                       END-IF
+                   END-IF
+      *            開始日変更
+                   IF      WRK-STYMD-HZN   NOT =   SPACE
+                       IF     (WRK-STYMD-HZN   >   WRK-STYMD-OK ) AND
+                              (WRK-STYMD-HZN   <=  WRK-EDYMD-OK )
+                           MOVE    WRK-STYMD-HZN   TO  WRK-STYMD-OK
                        END-IF
                    END-IF
                END-IF
