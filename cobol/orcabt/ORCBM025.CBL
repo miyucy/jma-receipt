@@ -32,6 +32,9 @@
       *  01.00.01    NACL-藤原    03/03/16  入院対応
       *  01.00.02    NACL-藤原    03/03/20  点数・負担額などの桁数を変更 
       *                                     頁・二枚目に保険者番号の表示
+      *
+      *  ２００３．４改正対応
+      *  01.01.01    NACL-藤原    03/04/10  ２００３．３以前のみ対象とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -77,9 +80,13 @@
       *
       *****COPY    "HCM2E.INC".
       *****COPY    "HCM2F.INC".
-           COPY    "HCM2EV01.INC"  REPLACING  //HCM2EV01//
+      *****COPY    "HCM2EV01.INC"  REPLACING  //HCM2EV01//
+      *****                        BY         //HCM2E//.
+      *****COPY    "HCM2FV01.INC"  REPLACING  //HCM2FV01//
+      *****                        BY         //HCM2F//.
+           COPY    "HCM2EV02.INC"  REPLACING  //HCM2EV02//
                                    BY         //HCM2E//.
-           COPY    "HCM2FV01.INC"  REPLACING  //HCM2FV01//
+           COPY    "HCM2FV02.INC"  REPLACING  //HCM2FV02//
                                    BY         //HCM2F//.
       *
       *    スパ領域
@@ -212,7 +219,9 @@
        01  WRK-CONS-AREA.
       *
       *    ２００２年１０月改正
-           03  WRK-CONS-SRYYM        PIC X(06)   VALUE   "200210".              
+           03  WRK-CONS-SRYYM          PIC X(06)   VALUE   "200210".              
+      *    ２００３年４月改正
+           03  WRK-CONS-SRYYM-200304   PIC X(06)   VALUE   "200304".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -418,7 +427,8 @@
            MOVE    LOW-VALUE           TO  KEY-AREA
            MOVE    1                   TO  WRK-INDEX
       *     
-           MOVE    "SEIKYU-KEY12"      TO  WRK-PATH
+      *****MOVE    "SEIKYU-KEY12"      TO  WRK-PATH
+           MOVE    "SEIKYU-KEY21"      TO  WRK-PATH
            PERFORM 900-SEIKYU-SELECT-SEC
       *
            PERFORM 200-HENSYU-SEC      UNTIL   FLG-RECE10   =   1 
@@ -436,7 +446,8 @@
                MOVE    LOW-VALUE           TO  KEY-AREA
                MOVE    2                   TO  WRK-INDEX
       *         
-               MOVE    "SEIKYU-KEY13"      TO  WRK-PATH
+     **********MOVE    "SEIKYU-KEY13"      TO  WRK-PATH
+               MOVE    "SEIKYU-KEY22"      TO  WRK-PATH
                PERFORM 900-SEIKYU-SELECT-SEC
       *
                PERFORM 200-HENSYU-SEC      UNTIL   FLG-RECE10   =   1 
@@ -748,13 +759,25 @@
            END-IF                                
            MOVE    KEY-O-HKNJANUM      TO  HCM2E-HKNJANUM
       *
-           EVALUATE    WRK-INDEX
-               WHEN    1
-                   MOVE    "その他のレセ"      TO  HCM2E-TITLE  
-               WHEN    2
-                   MOVE    "在総診または在医総を算定したレセ"
-                                               TO  HCM2E-TITLE     
-           END-EVALUATE           
+           IF       LNK-PRTKANRI-SRYYM <   WRK-CONS-SRYYM-200304
+               EVALUATE    WRK-INDEX
+                   WHEN    1
+                       MOVE    "その他のレセ"      TO  HCM2E-TITLE  
+                   WHEN    2
+                       MOVE    "在総診または在医総を算定したレセ"
+                                                   TO  HCM2E-TITLE     
+               END-EVALUATE           
+           ELSE
+               EVALUATE    WRK-INDEX
+                   WHEN    1
+                       MOVE    "その他のレセ（月遅れ分）"
+                                                   TO  HCM2E-TITLE  
+                   WHEN    2
+                       MOVE
+                       "在総診または在医総を算定したレセ（月遅れ分）"
+                                                   TO  HCM2E-TITLE     
+               END-EVALUATE
+           END-IF           
       *
            .
        20021-HEAD-HEN-01-EXT.
@@ -769,13 +792,25 @@
       *    
            MOVE    SYS-1001-HOSPCDN    TO  HCM2F-HOSPCD 
       *
-           EVALUATE    WRK-INDEX
-               WHEN    1
-                   MOVE    "その他のレセ"      TO  HCM2F-TITLE  
-               WHEN    2
-                   MOVE    "在総診または在医総を算定したレセ"
-                                               TO  HCM2F-TITLE     
-           END-EVALUATE   
+           IF       LNK-PRTKANRI-SRYYM <   WRK-CONS-SRYYM-200304
+               EVALUATE    WRK-INDEX
+                   WHEN    1
+                       MOVE    "その他のレセ"      TO  HCM2F-TITLE  
+                   WHEN    2
+                       MOVE    "在総診または在医総を算定したレセ"
+                                                   TO  HCM2F-TITLE     
+               END-EVALUATE   
+           ELSE
+               EVALUATE    WRK-INDEX
+                   WHEN    1
+                       MOVE    "その他のレセ（月遅れ分）"
+                                                   TO  HCM2F-TITLE  
+                   WHEN    2
+                       MOVE
+                       "在総診または在医総を算定したレセ（月遅れ分）"
+                                                   TO  HCM2F-TITLE     
+               END-EVALUATE
+           END-IF           
       *        
            MOVE    KEY-O-HKNJANUM      TO  HCM2F-HKNJANUM
       *
@@ -912,18 +947,18 @@
                                            TO  HCM2F-KOH-YKZFTN(IDY IDZ)
                         END-IF   
                    END-PERFORM     
-                   MOVE    SUM-SHOKUJIKENSU(IDX)
+                   MOVE    SUM-KOH-SHOKUJIKENSU (IDX2)
                                            TO  WRK-KENSUZ
-                   MOVE    WRK-KENSUZ      TO  HCM2F-KOH-SYOKENSU (IDZ)
-                   MOVE    SUM-SHOKUJINISSU(IDX)
+                   MOVE    WRK-KENSUZ      TO  HCM2F-KOH-SYOKENSU (IDY)
+                   MOVE    SUM-KOH-SHOKUJINISSU (IDX2)
                                            TO  WRK-NISSUZ
-                   MOVE    WRK-NISSUZ      TO  HCM2F-KOH-SYONISSU (IDZ)
-                   MOVE    SUM-SHOKUJIRYOYOHI(IDX)
+                   MOVE    WRK-NISSUZ      TO  HCM2F-KOH-SYONISSU (IDY)
+                   MOVE    SUM-KOH-SHOKUJIRYOYOHI (IDX2)
                                            TO  WRK-KINGAKZ
-                   MOVE    WRK-KINGAKZ     TO  HCM2F-KOH-SYOKINGAK(IDZ)
-                   MOVE    SUM-SHOKUJIFTN   (IDX)
+                   MOVE    WRK-KINGAKZ     TO  HCM2F-KOH-SYOKINGAK(IDY)
+                   MOVE    SUM-KOH-SHOKUJIFTN    (IDX2)
                                            TO  WRK-FTNGAKZ
-                   MOVE    WRK-FTNGAKZ     TO  HCM2F-KOH-SYOFTNGAK(IDZ)
+                   MOVE    WRK-FTNGAKZ     TO  HCM2F-KOH-SYOFTNGAK(IDY)
       *             
                    ADD     1               TO  IDX2   
                END-IF        
@@ -1032,12 +1067,14 @@
                WHEN    ZERO 
                    MOVE    WRK-PAGE            TO  HCM2E-PAGE
       *************MOVE    "HCM2E.red"         TO  SPRT-PRTID
-                   MOVE    "HCM2EV01.red"      TO  SPRT-PRTID
+      *************MOVE    "HCM2EV01.red"      TO  SPRT-PRTID
+                   MOVE    "HCM2EV02.red"      TO  SPRT-PRTID
                    MOVE    HCM2E               TO  SPRT-PRTDATA
                WHEN    1                            
                    MOVE    WRK-PAGE            TO  HCM2F-PAGE
-      *************MOVE   "HCM2F.red"          TO  SPRT-PRTID
-                   MOVE   "HCM2FV01.red"       TO  SPRT-PRTID
+      *************MOVE    "HCM2F.red"         TO  SPRT-PRTID
+      *************MOVE    "HCM2FV01.red"      TO  SPRT-PRTID
+                   MOVE    "HCM2FV02.red"      TO  SPRT-PRTID
                    MOVE    HCM2F               TO  SPRT-PRTDATA
            END-EVALUATE        
            EVALUATE    WRK-INDEX
@@ -1219,6 +1256,8 @@
            MOVE    WRK-PARA-HOSPID     TO  RECE10-HOSPID
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
            MOVE    WRK-CONS-SRYYM      TO  RECE10-SRYYM 
+           MOVE    WRK-CONS-SRYYM-200304
+                                       TO  RECE10-XXSRYYM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH

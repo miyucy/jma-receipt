@@ -123,6 +123,14 @@ FORM_files = \
               HCM2J.red \
               HCM2K.red \
               HCM2L.red \
+              HCM2M.red \
+              HCM2N.red \
+              HCM2O.red \
+              HCM2P.red \
+              HCM2EV02.red \
+              HCM2FV02.red \
+              HCM2GV02.red \
+              HCM2HV02.red \
 
 all:   
 

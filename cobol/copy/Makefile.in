@@ -703,6 +703,14 @@ COPYS = \
         HCM2J.INC \
         HCM2K.INC \
         HCM2L.INC \
+        HCM2M.INC \
+        HCM2N.INC \
+        HCM2O.INC \
+        HCM2P.INC \
+        HCM2EV02.INC \
+        HCM2FV02.INC \
+        HCM2GV02.INC \
+        HCM2HV02.INC \
 
 DBPATH = \
 	ORCA-DBPATH

@@ -1078,7 +1078,7 @@
            ELSE
                MOVE    WRK-CONS-SRYYM-200304
                                            TO  RECE10-SRYYM
-               MOVE    ALL "999999"        TO  RECE10-XXSRYYM
+               MOVE    ALL "9"             TO  RECE10-XXSRYYM
            END-IF            
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC

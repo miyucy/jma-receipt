@@ -67,12 +67,25 @@ RENNUM=0
                if  [ ${15} = 1 ]; then
                    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM026 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20}
                else
-                 $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM025 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20}
+                   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM025 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20}
                fi	
                if  [ -e ${18} ]; then
                    exit
                fi
-           fi    
+            fi    
+
+            
+            if  [ $5 -ge '200304' ]; then
+               RENNUM=$(expr $RENNUM + 1) 
+               if  [ ${15} = 1 ]; then
+                   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20}
+               else
+                   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20}
+               fi	
+               if  [ -e ${18} ]; then
+                   exit
+               fi
+            fi    
        fi
        
        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${16}${17}
