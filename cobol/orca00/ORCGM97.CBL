@@ -368,12 +368,20 @@
       *****************************************************************
        320-MID1-SET-SEC            SECTION.
       *
-           IF      SPA-MID1-FLG    =   "OK"
-      *        更新処理
-               PERFORM 420-KOUSHIN-SEC
-           ELSE
-               MOVE    1               TO  SPA-GMN-CUR
-           END-IF
+           EVALUATE    SPA-MIDCD
+               WHEN    "0202"
+                   IF      SPA-MID1-FLG    =   "OK"
+      *            更新処理
+                       PERFORM 420-KOUSHIN-SEC
+                   END-IF
+               WHEN    "0301"
+                   IF      SPA-MID1-FLG    =   "OK"
+      *                戻る処理
+                       PERFORM 830-GAMENN-SET6-SEC
+                   END-IF
+           END-EVALUATE
+      *
+           MOVE    1               TO  SPA-GMN-CUR
       *
            MOVE    SPACE           TO  SPA-MID1-FLG
            MOVE    SPACE           TO  SPA-MIDCD
