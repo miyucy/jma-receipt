@@ -48,6 +48,7 @@
       *  01.00.16    NACL-藤原    03/05/09  入退院履歴情報の入院中区分が
       *                                     １のとき次の退院日と一緒に表示する
       *  01.00.17    NACL-藤原    03/05/23  給付割合のカスタマイズ方法の修正
+      *  01.00.18    NACL-藤原    03/06/10  入退院歴の改頁処理の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4006,10 +4007,6 @@
                                              NOT =  RECE68-HOJOKBN     )
                    OR    ( RECE62-TEKSTYMD   NOT =  RECE68-TEKSTYMD    )
       *
-               IF  WRK-LINETEK         >   WRK-TEKIYOU-LINE
-                   PERFORM 34120-PAGE-SEC
-               END-IF    
-      *
                IF      WRK-NYUINCHUKBN     =   ZERO
                    MOVE    RECE68-NYUINYMD     TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
@@ -4030,7 +4027,11 @@
                END-IF
       *
                IF      RECE68-NYUINCHUKBN  =   ZERO
+                   IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   END-IF    
                    ADD     1                   TO  WRK-LINETEK
+      *
                    INSPECT WRK-NYUTAI-RIREKI-AREA  REPLACING   ALL "  "
                                                                BY  "　"  
                    IF      CNT-PAGE        =   1   
@@ -4056,6 +4057,9 @@
       *    最後の履歴が入院中のときに編集する
            IF      WRK-NYUTAI-RIREKI-AREA
                                        NOT =   SPACE                   
+               IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                   PERFORM 34120-PAGE-SEC
+               END-IF    
                ADD     1                   TO  WRK-LINETEK
       *
                INSPECT WRK-NYUTAI-RIREKI-AREA  REPLACING   ALL "  "
@@ -4078,6 +4082,9 @@
       *    最後の行の後に１行あける
            IF      WRK-NYUTAI-RIREKI-AREA
                                        =   SPACE                   
+               IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                   PERFORM 34120-PAGE-SEC
+               END-IF    
                ADD     1               TO  WRK-LINETEK     
            END-IF
       *
