@@ -32,6 +32,8 @@
       *  01.00.02    NACL-伊藤    04.02.17  統計データの転送エラー
       *                                     メッセージの追加
       *  01.00.03    NACL-藤原    04.03.01  確認画面出力の条件修正
+      *  01.00.04    NACL-藤原    04.08.10  処理開始前にジョブ管理の
+      *                                     チェックを再度行なう
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -504,24 +506,32 @@
                        MOVE    "JOIN"             TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
                    WHEN    "1004"
-                       IF   (( SPA-GMN-FILE1       =   "1" OR  "2" ) AND
-                             ( SPA-GMN-DATAKBN1-VALUE
+      *                ジョブ管理チェック処理
+                       PERFORM 4501-JOBKANRI-CHK-SEC
+                       IF      SPA-ERRCD      =   SPACE
+                           IF   (( SPA-GMN-FILE1   =   "1" OR  "2" ) AND
+                                 ( SPA-GMN-DATAKBN1-VALUE
                                                    =   "T" OR
-                               SPA-GMN-DATAKBN2-VALUE
+                                   SPA-GMN-DATAKBN2-VALUE
                                                    =   "T"         )   )
-                       OR   (( SPA-GMN-FILE2       =   "1" OR  "2" ) AND
-                             ( SPA-GMN-DATAKBN1-VALUE
+                           OR   (( SPA-GMN-FILE2   =   "1" OR  "2" ) AND
+                                 ( SPA-GMN-DATAKBN1-VALUE
                                                    =   "T" OR
-                               SPA-GMN-DATAKBN3-VALUE
+                                   SPA-GMN-DATAKBN3-VALUE
                                                    =   "T"         )   )
-                           MOVE    SPACE               TO  SPA-GID1-FLG
-                           MOVE    "2001"              TO  SPA-GIDCD
-                           GO  TO  330-GID1-SET-EXT
-                       ELSE
-                           PERFORM 500-KAKUTEI-SEC
+                               MOVE    SPACE           TO  SPA-GID1-FLG
+                               MOVE    "2001"          TO  SPA-GIDCD
+                               GO  TO  330-GID1-SET-EXT
+                           ELSE
+                               PERFORM 500-KAKUTEI-SEC
+                           END-IF    
                        END-IF
                    WHEN    "2001"
-                       PERFORM 500-KAKUTEI-SEC
+      *                ジョブ管理チェック処理
+                       PERFORM 4501-JOBKANRI-CHK-SEC
+                       IF      SPA-ERRCD      =   SPACE
+                           PERFORM 500-KAKUTEI-SEC
+                       END-IF    
                END-EVALUATE
            END-IF
       *
@@ -967,9 +977,24 @@
       *    入力チェック
            MOVE    1               TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  450-KAKUTEI-MAE-EXT
-           END-IF
+           IF      SPA-ERRCD       =   SPACE
+      *        ジョブ管理チェック処理
+               PERFORM 4501-JOBKANRI-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+                   MOVE    "1004"          TO  SPA-GIDCD
+               END-IF
+           END-IF        
+      *
+           .
+       450-KAKUTEI-MAE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理チェック処理
+      *****************************************************************
+       4501-JOBKANRI-CHK-SEC       SECTION.
+      *
+           MOVE    SPACE           TO  SPA-ERRCD
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
@@ -992,13 +1017,10 @@
                            "】"              DELIMITED  BY  SIZE      
                                              INTO  WRK-TOUKEIERR
                    END-STRING                          
-                   GO  TO  450-KAKUTEI-MAE-EXT
                END-IF
            END-IF    
-      *
-           MOVE    "1004"              TO  SPA-GIDCD
            .
-       450-KAKUTEI-MAE-EXT.
+       4501-JOBKANRI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
