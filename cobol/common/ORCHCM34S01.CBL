@@ -1217,7 +1217,7 @@
                        = ( WRK-KHNTEN  *   WRK-SENTEI-KEISU )  +  0.5
                END-EVALUATE
            ELSE
-               EVALUATE  NACCT-DAY (IDXD)
+               EVALUATE  FLG-GAIHAKUDAY(IDXD)
                WHEN   1
                WHEN   4
                    COMPUTE WRK-GAIHAKU-TEN
