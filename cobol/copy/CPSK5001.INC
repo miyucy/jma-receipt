@@ -91,30 +91,37 @@
       *ÉÂÅï½ªÎ»¶èÊ¬
                05  SYS-5001-BTU-EDKBN
                                                PIC  X(01).
+      *²Ã»»ÎÎ°è
+               05  SYS-5001-KSNAREA.
       *ÆñÉÂ´µ¼ÔÅùÆÃÊÌÆþ±¡¿ÇÎÅ²Ã»»
-               05  SYS-5001-NANBYO.
+                 06  SYS-5001-NANBYO.
                    07  SYS-5001-NANBYO-CD      PIC X(09).
                    07  SYS-5001-NANBYO-KBN     PIC X(01).
       *ÆÃ¼ì¼À´µÆþ±¡»ÜÀß´ÉÍý²Ã»»
-               05  SYS-5001-TOKUSYU.
+                 06  SYS-5001-TOKUSYU.
                    07  SYS-5001-TOKUSYU-CD     PIC X(09).
                    07  SYS-5001-TOKUSYU-KBN    PIC X(01).
       *ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
-               05  SYS-5001-YORYO              OCCURS  3.
+                 06  SYS-5001-YORYO              OCCURS  3.
                    07  SYS-5001-YORYO-CD       PIC X(09).
                    07  SYS-5001-YORYO-KBN      PIC X(01).
       *»ùÆ¸¡¦»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»
-               05  SYS-5001-JIDO.
+                 06  SYS-5001-JIDO.
                    07  SYS-5001-JIDO-CD        PIC X(09).
                    07  SYS-5001-JIDO-KBN       PIC X(01).
       *Àº¿À²Ê±þµÞÆþ±¡»ÜÀß´ÉÍý²Ã»»
-               05  SYS-5001-SEISIN.
+                 06  SYS-5001-SEISIN.
                    07  SYS-5001-SEISIN-CD      PIC X(09).
                    07  SYS-5001-SEISIN-KBN     PIC X(01).
       *´Ç¸îÇÛÃÖ²Ã»»
-               05  SYS-5001-KANGO              OCCURS  5.
+                 06  SYS-5001-KANGO              OCCURS  5.
                    07  SYS-5001-KANGO-CD       PIC X(09).
                    07  SYS-5001-KANGO-KBN      PIC X(01).
+      *Æþ±¡ÎÁ²Ã»»ºÆÄêµÁ
+               05  SYS-5001-KSNTBLR  REDEFINES  SYS-5001-KSNAREA.
+                 07  SYS-5001-KSN              OCCURS  12.
+                   09  SYS-5001-KSNCD          PIC X(09).
+                   09  SYS-5001-KSNKBN         PIC X(01).
       *Í½È÷
            03                                  PIC  X(296).
       *Ã¼Ëö£É£Ä
