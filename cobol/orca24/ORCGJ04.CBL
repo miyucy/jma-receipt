@@ -1419,13 +1419,14 @@
       *
       *    自賠責の時、対象外
            IF     (SPA-HKNKBN          =   1    )  AND
-                  (SPA-RSI-HKNKBN      =   "4"  )  AND
+      **********  (SPA-RSI-HKNKBN      =   "4"  )  AND
                   (SPA-COM-SRYKBN (IDX2)
                                        =   "80"  )  AND
                   (SPA-COM-INPUTCD(IDX2)(1:5)
                                        =   "09591"  OR
                                            "09592"  OR
-                                           "09593"  )
+                                           "09593"  OR
+                                           "09594"  )
                MOVE    SPACE               TO  SPA-COM-KEIFLG(IDX2)
                GO      TO      31011-SPA-HEN-EXT
            END-IF
@@ -3090,13 +3091,14 @@
       *
       *    自賠責の時、対象外
            IF     (SPA-HKNKBN          =   1    )  AND
-                  (SPA-RSI-HKNKBN      =   "4"  )  AND
+      ************(SPA-RSI-HKNKBN      =   "4"  )  AND
                   (SPA-COM-SRYKBN (SPA-GMN-IDX)
                                        =   "80"  )  AND
                   (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
                                        =   "09591"  OR
                                            "09592"  OR
-                                           "09593"  )
+                                           "09593"  OR
+                                           "09594"  )
                MOVE    SPACE               TO  SPA-COM-KEIFLG
                                                            (SPA-GMN-IDX)
                GO      TO      4101191-JIHI-HEN-EXT
@@ -5260,6 +5262,10 @@
       *   算定履歴追加処理
       *****************************************************************
        450422-SANTEI-UPD-SEC          SECTION.
+      *
+           IF     ACCT-HKNCOMBI        =   "9999"
+               GO      TO      450422-SANTEI-UPD-EXT
+           END-IF
       *
       *    診療会計マスターから診療行為マスターを検索する
            INITIALIZE                      SRYACT-REC

@@ -38,7 +38,7 @@
       *  01.00.07    NACL−多々納 02/08/20  検査グループ変更
       *  01.00.08    NACL−多々納 02/11/05  一括入力へ変更
       *  01.00.09    NACL−多々納 02/12/11  期限外の空白表示修正
-      *  01.00.11    NACL−多々納 03/10/31  セットからの次頁追加
+      *  01.00.10    NACL−多々納 03/10/31  セットからの次頁追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -146,6 +146,10 @@
       *
            03  WRK-HEN-NAME        PIC X(70).
            03  WRK-KENSA-HEN       PIC X(02).
+      *
+      *    コラムリスト位置
+           03  WRK-J98-ROW         PIC S9(09).
+           03  FLG-GMN-INIT        PIC  9(01).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -345,6 +349,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-J04
            MOVE    SPA-WORK        TO  SPA-J01KYOUTU
@@ -461,6 +469,8 @@
       *    画面編集処理
       *****************************************************************
        310-SPA-SET-SEC                 SECTION.
+      *
+           MOVE    1                   TO  FLG-GMN-INIT
       *
            INITIALIZE                  SPA-J98-GMN-TBL
            MOVE    ZERO                TO  SPA-J98-GMN-MAX
@@ -1170,8 +1180,22 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           IF     (FLG-GMN-INIT        =   1   )  OR
+                  (SPA-J98-GMN-MAX     =   ZERO )
+               MOVE    ZERO                TO  WRK-J98-ROW
+           ELSE
+               MOVE    J98-ROW             TO  WRK-J98-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  J98
            INITIALIZE                      J98
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  J98-ROW
+           MOVE    ZERO                TO  J98-ROWATTR
+           IF      WRK-J98-ROW     NOT =   ZERO
+               MOVE    WRK-J98-ROW         TO  J98-ROW
+           END-IF
+      *
       *
            MOVE    SPA-J98-GMN-INPUT   TO  J98-INPUT
       *

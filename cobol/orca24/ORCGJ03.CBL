@@ -135,7 +135,7 @@
       *  保険組合せ一覧
                05  SPA-HKNCOMI-AREA.
                    07  SPA-GMN-HKNCOMBI-LISTG.
-                       09  SPA-GMN-HKN-LIST    OCCURS  17.
+                       09  SPA-GMN-HKN-LIST    OCCURS  20.
                            11  SPA-GMN-THKNCOMBINUM-G.
                                13  SPA-GMN-THKNCOMBINUM    PIC X(04).
                                13  SPA-GMN-THKNCOMBY1      PIC X(01).
@@ -424,6 +424,10 @@
 030100*    主　　処理
 030200**************************************************************
 030300 200-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
 030400*
 030500     MOVE    SPA-COMMON      TO  SPA-AREA
 030600     MOVE    SPA-FREE        TO  SPA-J03
@@ -621,7 +625,7 @@
       *
            MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAY
            MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD(1:6)
-           MOVE    "01"                TO  SPA-SRYYMD(7:2)
+           MOVE    "00"                TO  SPA-SRYYMD(7:2)
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
       *
            INITIALIZE                  ORCSHKNSETAREA
@@ -1692,14 +1696,16 @@
                        IF      (SRY-SRYCD (IDZ)(1:3)   =   "101"  )  OR
                                (SRY-SRYCD (IDZ)(1:5)   =   "09591" OR
                                                            "09592" OR
-                                                           "09593" )
+                                                           "09593" OR
+                                                           "09594" )
                            MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                            PERFORM 910-TENSU-READ-SEC
       *                    労災の金額算定分の時、点数をゼロとする
                            IF     (TNS-TENSIKIBETU     =   1  )  OR
                                   (TNS-SRYCD (1:5)     =   "09591" OR
                                                            "09592" OR
-                                                           "09593" )
+                                                           "09593" OR
+                                                           "09594" )
                                COMPUTE WRK-SUM-TEN     =   WRK-SUM-TEN
                                                        +  (TNS-TEN
                                                        /   10  )

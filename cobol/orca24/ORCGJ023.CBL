@@ -92,6 +92,10 @@
       *
            03  WRK-JIDMSG          PIC X(80).
       *
+      *    コラムリスト位置
+           03  WRK-J023-RECE-ROW       PIC S9(09).
+           03  FLG-GMN-INIT            PIC  9(01).
+      *
       *    保険組合せワーク
            03  WRK-J023-HKNCOMB-COMB.
                05  WRK-J023-HKN-LIST    OCCURS  10.
@@ -337,6 +341,8 @@
       *    画面編集処理
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
+      *
+           MOVE    1                   TO  FLG-GMN-INIT
       *
            INITIALIZE                  SPA-J023-AREA
       *
@@ -1009,7 +1015,21 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+      *    コラムリスト位置保存
+           IF      FLG-GMN-INIT        =   1
+               MOVE    ZERO                TO  WRK-J023-RECE-ROW
+           ELSE
+               MOVE    J023-RECE-ROW       TO  WRK-J023-RECE-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  J023
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  J023-RECE-ROW
+           MOVE    ZERO                TO  J023-RECE-ROWATTR
+           IF      WRK-J023-RECE-ROW   NOT =   ZERO
+               MOVE    WRK-J023-RECE-ROW   TO  J023-RECE-ROW
+           END-IF
       *
       *    画面編集
            MOVE    SPA-J023-SRYYM      TO  J023-SRYYM

@@ -83,7 +83,10 @@
            03  WRK-JIDMSG          PIC X(80).
       *
            03  WRK-COMMENT         PIC X(400).
-      *
+      *    コラムリスト位置
+           03  WRK-J024-BUNREI-ROW     PIC S9(09).
+           03  FLG-GMN-INIT            PIC  9(01).
+     *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -293,6 +296,8 @@
       *****************************************************************
        3101-BUNREI-HEN-SEC        SECTION.
       *
+           MOVE    ZERO                TO  FLG-GMN-INIT
+      *
            INITIALIZE                  SPA-J024-BUNNREI-G
            MOVE    ZERO                TO  SPA-J024-BUNREIMAX
       *
@@ -338,7 +343,22 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+      *    コラムリスト位置保存
+           IF      FLG-GMN-INIT        =   1
+               MOVE    ZERO                TO  WRK-J024-BUNREI-ROW
+           ELSE
+               MOVE    J024-BUNREI-ROW     TO  WRK-J024-BUNREI-ROW
+           END-IF
+      *
+      *
            MOVE    SPACE               TO  J024
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  J024-BUNREI-ROW
+           MOVE    ZERO                TO  J024-BUNREI-ROWATTR
+           IF      WRK-J024-BUNREI-ROW NOT =   ZERO
+               MOVE    WRK-J024-BUNREI-ROW TO  J024-BUNREI-ROW
+           END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-J024-BUNREIMAX

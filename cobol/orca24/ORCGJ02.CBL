@@ -393,6 +393,11 @@
       *    カルテ３号紙プログラム名
            03  WRK-PRINT-PG            PIC X(20).
       *
+      *    コラムリスト位置
+           03  WRK-J02-DATALIST-ROW    PIC S9(09).
+           03  WRK-J02-RRKLIST-ROW     PIC S9(09).
+           03  FLG-GMN-INIT            PIC  9(01).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -1462,7 +1467,7 @@
       *
            MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAY
            MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD(1:6)
-           MOVE    "01"                TO  SPA-SRYYMD(7:2)
+           MOVE    "00"                TO  SPA-SRYYMD(7:2)
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
       *
            INITIALIZE                  ORCSHKNSETAREA
@@ -1480,6 +1485,7 @@
       *    全体を追加
            MOVE    "0000"              TO  SPA-GMN-THKNCOMBINUM (01)
            MOVE    "全保険"            TO  SPA-GMN-THKNCOMBIMEI (01)
+           MOVE    ZERO                TO  SPA-NAI-THKNKBN      (01)
       *
            MOVE    1                   TO  IDH
            PERFORM VARYING     IDX     FROM   1   BY  1
@@ -1490,10 +1496,12 @@
                MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
                                        TO  SPA-GMN-THKNCOMBIMEI (IDH)
       *
-      ******   MOVE    ORCSHKN-NAI-HKNID (IDX)
-      ******                           TO  SPA-NAI-HKNID  (IDH)
+               MOVE    ORCSHKN-NAI-HKNID (IDX)
+                                       TO  SPA-NAI-THKNID  (IDH)
                MOVE    ORCSHKN-NAI-HKNNUM (IDX)
                                        TO  SPA-NAI-THKNNUM  (IDH)
+               MOVE    ORCSHKN-NAI-HKNKBN (IDX)
+                                       TO  SPA-NAI-THKNKBN  (IDH)
                MOVE    ORCSHKN-NAI-KOH1HKNNUM (IDX)
                                        TO  SPA-NAI-TKOH1HKNNUM (IDH)
                MOVE    ORCSHKN-NAI-KOH2HKNNUM (IDX)
@@ -1505,6 +1513,15 @@
       *
                MOVE    ORCSHKN-NAI-FTNRATE (IDX)
                                        TO  SPA-NAI-TFTNRATE (IDH)
+      *        四肢区分
+               MOVE    ORCSHKN-NAI-RSI-SISIKBN (IDX)
+                                       TO  SPA-NAI-TRSI-SISIKBN (IDH)
+      *        傷病年月日
+               MOVE    ORCSHKN-NAI-RSI-SHOBYOYMD (IDX)
+                                       TO  SPA-NAI-TRSI-SHOBYOYMD(IDH)
+      *        労災区分
+               MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX)
+                                       TO  SPA-NAI-TRSI-HKNKBN  (IDH)
       *
                MOVE    IDH             TO  SPA-HKN-MAX
            END-PERFORM
@@ -2530,7 +2547,28 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+      *    コラムリスト位置保存
+           IF      FLG-GMN-INIT        =   1
+               MOVE    ZERO                TO  WRK-J02-DATALIST-ROW
+               MOVE    ZERO                TO  WRK-J02-RRKLIST-ROW
+           ELSE
+               MOVE    J02-DATALIST-ROW    TO  WRK-J02-DATALIST-ROW
+               MOVE    J02-RRKLIST-ROW     TO  WRK-J02-RRKLIST-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  J02
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  J02-DATALIST-ROW
+           MOVE    ZERO                TO  J02-DATALIST-ROWATTR
+           MOVE    ZERO                TO  J02-RRKLIST-ROW
+           MOVE    ZERO                TO  J02-RRKLIST-ROWATTR
+           IF      WRK-J02-DATALIST-ROW    NOT =   ZERO
+               MOVE    WRK-J02-DATALIST-ROW    TO  J02-DATALIST-ROW
+           END-IF
+           IF      WRK-J02-RRKLIST-ROW     NOT =   ZERO
+               MOVE    WRK-J02-RRKLIST-ROW     TO  J02-RRKLIST-ROW
+           END-IF
       *
            MOVE    SPA-GMN-PTNUM       TO  J02-PTNUM
            MOVE    SPA-GMN-KANANAME    TO  J02-KANANAME
@@ -3469,6 +3507,14 @@
                                                =   SPA-GMN-HKNCOMBI
                        MOVE    SPA-GMN-THKNCOMBIMEI (IDH)
                                                TO  SPA-GMN-HKNCOMBIMEI
+                       MOVE    SPA-NAI-THKNKBN (IDH)
+                                               TO  SPA-NAI-HKNKBN
+                       MOVE    SPA-NAI-TRSI-SISIKBN (IDH)
+                                               TO  SPA-NAI-SISIKBN
+                       MOVE    SPA-NAI-TRSI-HKNKBN (IDH)
+                                               TO  SPA-NAI-RSI-HKNKBN
+                       MOVE    SPA-NAI-TRSI-SHOBYOYMD (IDH)
+                                               TO  SPA-RSI-SHOBYOYMD
                    END-IF
                END-PERFORM
       *!       MOVE    SPA-GMN-HKNCOMBI    TO  WRK-HKNCOMBI
@@ -5108,15 +5154,6 @@
            MOVE    AGECHK-FTNRATEMEI   TO  SPA-J02-FTNRATEMEI
       *    老人区分
            MOVE    AGECHK-ROUJIN       TO  SPA-ROUJIN
-      *
-      **** PERFORM VARYING     IDH     FROM    1   BY  1
-      *            UNTIL       IDH     >   SPA-J021-MAX
-      *        IF      SPA-NAI-HKNCOMBI(IDX)
-      *                                =   SPA-J021-THKNCOMBI (IDH)
-      *            MOVE    SPA-J021-TFTNWARI  (IDH)
-      *                                    TO  SPA-J02-FTNRATEMEI
-      *        END-IF
-      **** END-PERFORM
       *    回数テーブル
            MOVE    SPA-GMN-DAY-G       TO  SPA-SEL-DAY-G
       *
@@ -5179,7 +5216,6 @@
       *
       *    保存用パラメタ作成
            PERFORM 4201-SRYACCT-PARA-SEC
-      *
       *
            MOVE    "J02"               TO  SPA-MOTOPG
            MOVE    "J04"               TO  SPA-SAKIPG
@@ -5642,6 +5678,9 @@
       *    診療会計マスターより編集　処理
       *****************************************************************
        410181-SRYACCT-HEN-SEC             SECTION.
+      *
+      *    コラムリスト位置
+           MOVE    1                  TO  FLG-GMN-INIT
       *
            MOVE    SPA-NAI-SRYYM      TO  WRK-SYMD(1:6)
            MOVE    "01"               TO  WRK-SYMD(7:2)
@@ -6908,6 +6947,11 @@
       *****************************************************************
        4902-SANTEI-KOUSIN-SEC           SECTION.
       *
+      *    包括入力の時対象外
+           IF      ACCT-HKNCOMBI       =   "9999"
+               GO      TO      4902-SANTEI-KOUSIN-EXT
+           END-IF
+      *
       *    診療行為マスター読み込み
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPID         TO  SRY-HOSPID
@@ -7028,12 +7072,7 @@
                IF      SPA-GMN-THKNCOMBINUM (IDH)
                                            =   SPA-HKNCOMBINUM
       *            労災判定
-                   IF      SPA-NAI-THKNNUM (IDH)   =   "971"
-                                                   OR  "973"
-                       MOVE    1                   TO  SPA-HKNKBN
-                   ELSE
-                       MOVE    ZERO                TO  SPA-HKNKBN
-                   END-IF
+                   MOVE    SPA-NAI-THKNKBN(IDH)    TO  SPA-HKNKBN
                END-IF
            END-PERFORM
       *
