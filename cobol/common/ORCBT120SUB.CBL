@@ -771,7 +771,7 @@
                    WHEN    "3"         ALSO    ANY     ALSO    ANY
                        MOVE    7021        TO    WRK-RECESYUBETU
                    WHEN    "4"         ALSO    ANY     ALSO    ANY
-                       MOVE    7001        TO    WRK-RECESYUBETU
+                       MOVE    7011        TO    WRK-RECESYUBETU
                    END-EVALUATE
                GO  TO  240-RECESYUBETU-SET-EXT
            END-IF
