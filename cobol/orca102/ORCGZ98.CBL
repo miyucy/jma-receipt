@@ -1080,7 +1080,8 @@
            END-IF
       *
            ADD     1                   TO  WRK-CNT-ENT
-           MOVE    IDX2                TO  SPA-Z98-GMN-NO   (IDX)
+      *****MOVE    IDX2                TO  SPA-Z98-GMN-NO   (IDX)
+           MOVE    IDX                 TO  SPA-Z98-GMN-NO   (IDX)
            MOVE    TNS-SRYCD           TO  SPA-Z98-GMN-INPUTCD
                                                             (IDX)
            MOVE    TNS-SRYCD           TO  SPA-Z98-GMN-SRYCD(IDX)
