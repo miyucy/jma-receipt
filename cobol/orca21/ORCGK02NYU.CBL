@@ -6454,6 +6454,20 @@
                    ELSE
                        ADD     WRK-KAISU           TO  WRK-NYU-KAISU
                    END-IF
+      *            ·Ù¹ðÈ½Äê
+                   IF      LNK-SC91-ERRCD(1:1)     =   "K"
+                       IF      SPA-COM-KZMFLG (IDX)    =   SPACE
+                           MOVE    "1"             TO  SPA-COM-KZMFLG
+                                                                (IDX)
+                           MOVE    "2"             TO  SPA-COM-CUR
+                                                                (IDX)
+                       ELSE
+                           MOVE    SPACE           TO  LNK-SC91-ERRCD
+                           MOVE    SPACE           TO  LNK-SC91-ERRMSG
+                           MOVE    SPACE           TO  SPA-COM-CUR
+                                                                (IDX)
+                       END-IF
+                   END-IF
                    MOVE    LNK-SC91-ERRCD      TO  SPA-ERRCD
                    IF     (LNK-SC91-ERRCD  NOT =   SPACE )  AND
                           (LNK-SC91-ERRMSG     =   SPACE )
