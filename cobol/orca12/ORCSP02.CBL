@@ -2669,6 +2669,15 @@
            MOVE    SPA-HKNJA-ADRS      TO  P02-P02-HKNJAADRS
            MOVE    SPA-HKNJA-BANTI     TO  P02-P02-HKNJAADRS2
            MOVE    SPA-HKNJA-TEL       TO  P02-P02-HKNJATEL
+      *    ラベルの全角空白を半角へ
+           INSPECT P02-P02-HKNNAME
+                   REPLACING   ALL "　"  BY  "  "
+           INSPECT P02-P02-HKNNAME2
+                   REPLACING   ALL "　"  BY  "  "
+           INSPECT P02-P02-HKNJAADRS
+                   REPLACING   ALL "　"  BY  "  "
+           INSPECT P02-P02-HKNJAADRS2
+                   REPLACING   ALL "　"  BY  "  "
       *
       *    公費情報１
            MOVE    SPA-GMN-KOHNUM-G (01)   TO  P02-P02-KOHNUM1
