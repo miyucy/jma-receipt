@@ -36,6 +36,8 @@
       *  ２００３．４改正対応
       *  01.03.01    NACL-藤原    03/04/17  対象がないときエラーを表示する
       *  01.03.02    NACL-藤原    04/07/09  印刷画面への自動遷移
+      *  01.03.03    NACL-藤原    04/08/03  プレビューの該当が無いときの
+      *                                     カーソルとボタンの設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -342,9 +344,10 @@
                    MOVE   100                   TO
                                             R99-PROGRESSBAR-VALUE
                    IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
-                       IF      SPA-RID1-FLG    =   "PV"
-                           MOVE    WIDGET-NORMAL    TO  R99-B12-STATE
-                           MOVE    "B12"            TO  MCP-WIDGET
+                       IF    ( SPA-RID1-FLG    =   "PV" )
+                       AND   ( JOB-UPDCNT      >   ZERO )
+                           MOVE    WIDGET-NORMAL   TO  R99-B12-STATE
+                           MOVE    "B12"           TO  MCP-WIDGET
                            IF      SPA-R01-AUTODSPKBN   =   "1"
       *                        プレビュー画面への自動遷移
                                PERFORM 4501-NEXT-GMN-SEC
