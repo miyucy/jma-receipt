@@ -31,6 +31,8 @@
       *  01.00.02    MCC-藤原     01/10/24  削除ができるように修正 
       *  01.00.03    NACL-藤原    02/09/05  保険番号のコラムリストを
       *                                     １００に変更
+      *  02.00.00    NACL-多々納  03/07/07  異動情報追加
+      *                                     一括入力へ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -80,12 +82,26 @@
                            11  SPA-GMN-HKNNUM     PIC X(03).
                            11  SPA-GMN-FL         PIC X(01).
                            11  SPA-GMN-HKNNUMNM   PIC X(20).
+      *            異動内容
+                   07  SPA-GMN-IDOKBN-G.
+                       09  SPA-GMN-IDOKBN         PIC X(01).
+                       09  SPA-GMN-F2L            PIC X(01).
+                       09  SPA-GMN-IDOKBNMEI      PIC X(20).
+                   07  SPA-GMN-IDOKBNLST       OCCURS  10.
+                       09  SPA-GMN-IDOKBNL        PIC X(01).
+                       09  SPA-GMN-F1L            PIC X(01).
+                       09  SPA-GMN-IDOKBNMEIL     PIC X(20).
+                   07  SPA-GMN-IDOMAX         PIC 9(03).
+      *            異動年月日
+                   07  SPA-GMN-IDOYMD         PIC X(10).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-UPDFLG     PIC 9(01).
                    07  SPA-HKNJANUM-LEN   PIC 9(01).
                    07  SPA-NAI-HKNNUML    OCCURS  100.
                        09  SPA-NAI-HKNKOHSBTKBN   PIC X(01).
+      *            異動年月日
+                   07  SPA-NAI-IDOYMD         PIC X(08).
       *
       *   
            COPY    "ENUM-VALUE".
@@ -95,6 +111,10 @@
            03  FLG-HKNJAINF        PIC 9(01).
            03  FLG-ADRS            PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01). 
+      *
+           03  FLG-TOUROKU         PIC 9(01). 
+           03  FLG-ERR             PIC 9(01). 
+           03  FLG-OK              PIC 9(01). 
       *
       *    添字領域
       *
@@ -118,6 +138,12 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+      *
+           03  WRK-MAE-INPUT       PIC X(400).
+           03  WRK-ATO-INPUT       PIC X(400).
+      *
+           03  WRK-MCP-WIDGET      PIC X(64).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -149,10 +175,13 @@
            COPY    "CPORCCHKDGT.INC".
       *
       *    日付サブルーチン領域
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *   画面日付変換サブ
+           COPY    "CPORCSGDAY.INC".
       *
-           COPY  "CPORCSDAY.INC".
-      *
-           COPY  "CPORCSLNK.INC".
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -357,6 +386,13 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
+      *    異動内容
+           MOVE    "1:廃止"            TO  SPA-GMN-IDOKBNLST (1)
+           MOVE    "2:支部廃止"        TO  SPA-GMN-IDOKBNLST (2)
+           MOVE    "3:解散"            TO  SPA-GMN-IDOKBNLST (3)
+           MOVE    "4:合併後消滅"      TO  SPA-GMN-IDOKBNLST (4)
+           MOVE    4                   TO  SPA-GMN-IDOMAX
+      *
            MOVE    1                   TO  SPA-GMN-CUR
            . 
        31O-SPASET-EXT.
@@ -390,35 +426,51 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
+      *    入力個所のセット
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
                WHEN    "ACTIVATE"      ALSO    "HKNJANUM"
+      *            保険者番号入力
                    PERFORM 4100-HKNJANUM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HKNJANAME"
-                   PERFORM 4101-HKNJANAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HKNJANAMETAN1"
-                   PERFORM 4102-HKNJANAMETAN1-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HKNJANAMETAN2"
-                   PERFORM 4103-HKNJANAMETAN2-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HKNJANAMETAN3"
-                   PERFORM 4104-HKNJANAMETAN3-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HKNNUM"
-                   PERFORM 4105-HKNNUM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "POST"
-                   PERFORM 4106-POST-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "ADRS"
-                   PERFORM 4107-ADRS-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "BANTI"
-                   PERFORM 4108-BANTI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "TEL"
-                   PERFORM 4109-TEL-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "KIGO"
-                   PERFORM 4110-KIGO-CHK-SEC
-           END-EVALUATE
       *
+               WHEN    OTHER
+      *            入力チェック処理
+                   PERFORM 410-INPUT-CHK-SEC
+           END-EVALUATE
            .
+      *
        200-ENTRY-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC          SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェックと別画面処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+      *    登録時、必須入力チェック
+           IF      FLG-TOUROKU         =   1
+               PERFORM 4109-TOUROKU-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      410-INPUT-CHK-EXT
+               END-IF
+           END-IF
+      *
+           .
+      *
+       410-INPUT-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    保険者番号チェック
       *****************************************************************
@@ -426,7 +478,7 @@
       *
            MOVE    1                TO  SPA-GMN-CUR
       *
-           MOVE    N01-HKNJANUM     TO  SPA-GMN-HKNJANUM           
+           MOVE    N01-HKNJANUM     TO  SPA-GMN-HKNJANUM
       * 
       *
            MOVE    ZERO             TO  SPA-HKNJANUM-LEN
@@ -485,6 +537,12 @@
                MOVE    HKNJA-BANTI         TO  SPA-GMN-BANTI
                MOVE    HKNJA-TEL           TO  SPA-GMN-TEL
                MOVE    HKNJA-KIGO          TO  SPA-GMN-KIGO
+               MOVE    HKNJA-IDOKBN        TO  SPA-GMN-IDOKBN
+      *
+               MOVE    HKNJA-IDOYMD        TO  SPA-NAI-IDOYMD
+               MOVE    SPA-NAI-IDOYMD      TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  SPA-GMN-IDOYMD
            ELSE
                MOVE    ZERO                TO  SPA-NAI-UPDFLG
                MOVE    SPACE               TO  SPA-GMN-KOUMOKU
@@ -516,21 +574,124 @@
                        END-IF       
                END-EVALUATE                
            END-IF
-      *     
+      *    保険番号
            IF      SPA-GMN-HKNNUM      NOT =   SPACE        
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SPA-GMN-HKNIDX
-                   IF      SPA-GMN-HKNNUM  =   SPA-GMN-HKNNUML (IDX)
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       SPA-GMN-HKNIDX
+                   IF      SPA-GMN-HKNNUM      =   SPA-GMN-HKNNUML (IDX)
                        MOVE    SPA-GMN-HKNNUMLST (IDX)
-                                           TO  SPA-GMN-HKNNUM-G
-                       MOVE    50          TO  IDX                    
+                                               TO  SPA-GMN-HKNNUM-G
+                       MOVE    SPA-GMN-HKNIDX  TO  IDX
                    END-IF
                END-PERFORM
            END-IF       
-      *             
+      *    異動内容
+           IF      SPA-GMN-IDOKBN    =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-IDOKBN-G
+           ELSE
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       SPA-GMN-IDOMAX
+                   IF      SPA-GMN-IDOKBN    =   SPA-GMN-IDOKBNL
+                                                               (IDX)
+                       MOVE    SPA-GMN-IDOKBNLST (IDX)
+                                               TO  SPA-GMN-IDOKBN-G
+                       MOVE    SPA-GMN-IDOMAX  TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF       
+      *
            MOVE    2                  TO  SPA-GMN-CUR
            .
        4100-HKNJANUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC          SECTION.
+      *
+           MOVE    N01-HKNJANAME       TO  SPA-GMN-HKNJANAME
+           MOVE    N01-HKNJANAMETAN1   TO  SPA-GMN-HKNJANAMETAN1
+           MOVE    N01-HKNJANAMETAN2   TO  SPA-GMN-HKNJANAMETAN2
+           MOVE    N01-HKNJANAMETAN3   TO  SPA-GMN-HKNJANAMETAN3
+           MOVE    N01-HKNNUM          TO  SPA-GMN-HKNNUM-G
+           MOVE    N01-POST            TO  SPA-GMN-POST
+           MOVE    N01-ADRS            TO  SPA-GMN-ADRS
+           MOVE    N01-BANTI           TO  SPA-GMN-BANTI
+           MOVE    N01-TEL             TO  SPA-GMN-TEL
+           MOVE    N01-KIGO            TO  SPA-GMN-KIGO
+      *
+           MOVE    N01-IDOKBN        TO  SPA-GMN-IDOKBN-G
+           MOVE    N01-IDOYMD          TO  SPA-GMN-IDOYMD
+      *
+           .
+      *
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC          SECTION.
+      *
+      *    保険者名称チェック
+           PERFORM 4101-HKNJANAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    保険者名称（短縮１）チェック
+           PERFORM 4102-HKNJANAMETAN1-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    保険者名称（短縮２）チェック
+           PERFORM  4103-HKNJANAMETAN2-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    保険者名称（短縮３）チェック
+           PERFORM 4104-HKNJANAMETAN3-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    保険番号チェック
+           PERFORM 4105-HKNNUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    郵便番号チェック
+           PERFORM 4106-POST-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    住所チェック
+           PERFORM 4107-ADRS-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    番地・方書チェック
+           PERFORM 4108-BANTI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    記号
+           PERFORM 4110-KIGO-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    異動内容
+           PERFORM 4111-IDOKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    異動年月日
+           PERFORM 4111-IDOYMD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           .
+      *
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -538,16 +699,22 @@
       *****************************************************************
        4101-HKNJANAME-CHK-SEC       SECTION.
       *
-           MOVE    2                   TO  SPA-GMN-CUR
+           MOVE    SPA-GMN-HKNJANAME   TO  WRK-MAE-INPUT
+           PERFORM 800-KANACHK-SEC
+           IF      FLG-ERR             =   ZERO
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-HKNJANAME
+           ELSE
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
+               GO      TO      4101-HKNJANAME-CHK-EXT
+           END-IF
       *
-           MOVE    N01-HKNJANAME       TO  SPA-GMN-HKNJANAME
-      *
-           IF      SPA-GMN-HKNJANAMETAN1
-                                       =   SPACE
+           IF     (WRK-MCP-WIDGET      =   "HKNJANAME" )  AND
+                  (SPA-GMN-HKNJANAMETAN1
+                                       =   SPACE       )
                MOVE    SPA-GMN-HKNJANAME   TO  SPA-GMN-HKNJANAMETAN1
            END-IF                                      
       *
-           MOVE    3                   TO  SPA-GMN-CUR
            .
        4101-HKNJANAME-CHK-EXT.
            EXIT.
@@ -557,17 +724,23 @@
       *****************************************************************
        4102-HKNJANAMETAN1-CHK-SEC     SECTION.
       *
-           MOVE    3                   TO  SPA-GMN-CUR
+           MOVE    SPA-GMN-HKNJANAMETAN1   TO  WRK-MAE-INPUT
+           PERFORM 800-KANACHK-SEC
+           IF      FLG-ERR             =   ZERO
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-HKNJANAMETAN1
+           ELSE
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-GMN-CUR
+               GO      TO      4102-HKNJANAMETAN1-CHK-EXT
+           END-IF
       *
-           MOVE    N01-HKNJANAMETAN1   TO  SPA-GMN-HKNJANAMETAN1
-      *
-           IF      SPA-GMN-HKNJANAMETAN2
-                                       =   SPACE
+           IF     (WRK-MCP-WIDGET      =   "HKNJANAMETAN1" )  AND
+                  (SPA-GMN-HKNJANAMETAN2
+                                       =   SPACE       )
                MOVE    SPA-GMN-HKNJANAMETAN1
                                        TO  SPA-GMN-HKNJANAMETAN2
-           END-IF                                      
+           END-IF 
       *                           
-           MOVE    4                   TO  SPA-GMN-CUR
            .
        4102-HKNJANAMETAN1-CHK-EXT.
            EXIT.
@@ -577,17 +750,23 @@
       *****************************************************************
        4103-HKNJANAMETAN2-CHK-SEC     SECTION.
       *
-           MOVE    4                   TO  SPA-GMN-CUR
+           MOVE    SPA-GMN-HKNJANAMETAN2   TO  WRK-MAE-INPUT
+           PERFORM 800-KANACHK-SEC
+           IF      FLG-ERR             =   ZERO
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-HKNJANAMETAN2
+           ELSE
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    4                   TO  SPA-GMN-CUR
+               GO      TO      4103-HKNJANAMETAN2-CHK-EXT
+           END-IF
       *
-           MOVE    N01-HKNJANAMETAN2   TO  SPA-GMN-HKNJANAMETAN2
-      *
-           IF      SPA-GMN-HKNJANAMETAN3
-                                       =   SPACE
+           IF     (WRK-MCP-WIDGET      =   "HKNJANAMETAN2" )  AND
+                  (SPA-GMN-HKNJANAMETAN3
+                                       =   SPACE       )
                MOVE    SPA-GMN-HKNJANAMETAN2
                                        TO  SPA-GMN-HKNJANAMETAN3
-           END-IF                                      
+           END-IF 
       *
-           ADD     1                   TO  SPA-GMN-CUR
            .
        4103-HKNJANAMETAN2-CHK-EXT.
            EXIT.
@@ -597,11 +776,16 @@
       *****************************************************************
        4104-HKNJANAMETAN3-CHK-SEC          SECTION.
       *
-           MOVE    5                   TO  SPA-GMN-CUR
+           MOVE    SPA-GMN-HKNJANAMETAN3   TO  WRK-MAE-INPUT
+           PERFORM 800-KANACHK-SEC
+           IF      FLG-ERR             =   ZERO
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-HKNJANAMETAN3
+           ELSE
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    5                   TO  SPA-GMN-CUR
+               GO      TO      4104-HKNJANAMETAN3-CHK-EXT
+           END-IF
       *
-           MOVE    N01-HKNJANAMETAN3   TO  SPA-GMN-HKNJANAMETAN3
-      *
-           ADD     1                   TO  SPA-GMN-CUR
            .
        4104-HKNJANAMETAN3-CHK-EXT.
            EXIT.
@@ -610,10 +794,6 @@
       *    保険者番号チェック
       *****************************************************************
        4105-HKNNUM-CHK-SEC          SECTION.
-      *
-           MOVE    6                   TO  SPA-GMN-CUR
-      *
-           MOVE    N01-HKNNUM          TO  SPA-GMN-HKNNUM-G
       *
            IF      SPA-GMN-HKNNUM      =   SPACE
                CONTINUE
@@ -628,23 +808,24 @@
                        MOVE    1          TO  WRK-HENFLG
                    END-IF
                END-PERFORM
-               IF      WRK-HENFLG         =   ZERO
-                   MOVE    "0001"               TO  SPA-ERRCD
+               IF      WRK-HENFLG          =   ZERO
+                   MOVE    "0004"              TO  SPA-ERRCD
+                   MOVE    6                   TO  SPA-GMN-CUR
                    GO  TO  4105-HKNNUM-CHK-EXT
                END-IF
       *
                EVALUATE    SPA-GMN-HKNNUM
                    WHEN    "001"
                        IF      SPA-HKNJANUM-LEN NOT =   4
-                           MOVE    "0001"         TO  SPA-ERRCD
+                           MOVE    "0005"         TO  SPA-ERRCD
                        END-IF                       
                    WHEN    "060"
                        IF      SPA-HKNJANUM-LEN NOT =   6
-                           MOVE    "0001"         TO  SPA-ERRCD
+                           MOVE    "0005"         TO  SPA-ERRCD
                        END-IF
                    WHEN    OTHER
                        IF      SPA-HKNJANUM-LEN NOT =   8
-                           MOVE    "0001"         TO  SPA-ERRCD
+                           MOVE    "0005"         TO  SPA-ERRCD
                        ELSE
                           INITIALIZE                  HKNNUM-REC
                           MOVE    SPA-HOSPID          TO  HKN-HOSPID
@@ -657,17 +838,17 @@
                           IF      FLG-HKNNUM          =   ZERO
                               IF      HKN-HBTNUM      NOT =
                                               SPA-GMN-HKNJANUM (1:2)
-                                  MOVE    "0001"         TO  SPA-ERRCD
+                                  MOVE    "0005"         TO  SPA-ERRCD
                               END-IF
                            ELSE    
-                               MOVE    "0001"         TO  SPA-ERRCD
+                               MOVE    "0005"         TO  SPA-ERRCD
                            END-IF      
                        END-IF                     
                END-EVALUATE                     
            END-IF        
       *
-           IF      SPA-ERRCD           =   SPACE
-               ADD     1                   TO  SPA-GMN-CUR
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    6                   TO  SPA-GMN-CUR
            END-IF    
            .
        4105-HKNNUM-CHK-EXT.
@@ -678,24 +859,20 @@
       *****************************************************************
        4106-POST-CHK-SEC        SECTION.
       *
-           MOVE    7                   TO  SPA-GMN-CUR
-      *
-           MOVE    N01-POST            TO  SPA-GMN-POST
-      *
-           IF      SPA-GMN-POST    NOT =   SPACE
-               MOVE    SPACE               TO  ADRS-REC    
+           IF     (WRK-MCP-WIDGET      =   "POST" )  AND
+                  (SPA-GMN-POST    NOT =   SPACE  )
+               MOVE    SPACE               TO  ADRS-REC
                INITIALIZE                  ADRS-REC
                MOVE    SPA-GMN-POST        TO  ADRS-POST
                MOVE    ADRS-REC            TO  MCPDATA-REC
                PERFORM 900-ADRS-INV-SEC
                IF      FLG-ADRS            =   ZERO
                    MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN-ADRS
-               ELSE
-                   MOVE    SPACE               TO  SPA-GMN-ADRS    
+      ******** ELSE
+      ********     MOVE    SPACE               TO  SPA-GMN-ADRS
                END-IF
            END-IF
-      *                 
-           ADD     1                   TO  SPA-GMN-CUR
+      *
            .
        4106-POST-CHK-EXT.
            EXIT.
@@ -705,11 +882,15 @@
       *****************************************************************
        4107-ADRS-CHK-SEC            SECTION.
       *
-           MOVE    8                   TO  SPA-GMN-CUR
+           MOVE    SPA-GMN-ADRS        TO  WRK-MAE-INPUT
+           PERFORM 800-KANACHK-SEC
+           IF      FLG-ERR             =   ZERO
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-ADRS
+           ELSE
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    8                   TO  SPA-GMN-CUR
+           END-IF
       *
-           MOVE    N01-ADRS            TO  SPA-GMN-ADRS
-      *
-           ADD     1                   TO  SPA-GMN-CUR
            .
        4107-ADRS-CHK-EXT.
            EXIT.
@@ -719,27 +900,17 @@
       *****************************************************************
        4108-BANTI-CHK-SEC        SECTION.
       *
-           MOVE    9                   TO  SPA-GMN-CUR
+           MOVE    SPA-GMN-BANTI      TO  WRK-MAE-INPUT
+           PERFORM 800-KANACHK-SEC
+           IF      FLG-ERR             =   ZERO
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-BANTI
+           ELSE
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    9                   TO  SPA-GMN-CUR
+           END-IF
       *
-           MOVE    N01-BANTI           TO  SPA-GMN-BANTI
-      *
-           ADD     1                   TO  SPA-GMN-CUR
            .
        4108-BANTI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    電話番号チェック
-      *****************************************************************
-       4109-TEL-CHK-SEC            SECTION.
-      *
-           MOVE    10                  TO  SPA-GMN-CUR
-      * 
-           MOVE    N01-TEL             TO  SPA-GMN-TEL
-      *
-           ADD     1                   TO  SPA-GMN-CUR
-           .
-       4109-TEL-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -747,13 +918,112 @@
       *****************************************************************
        4110-KIGO-CHK-SEC         SECTION.
       *
-           MOVE    11                  TO  SPA-GMN-CUR
+           MOVE    SPA-GMN-KIGO        TO  WRK-MAE-INPUT
+           PERFORM 800-KANACHK-SEC
+           IF      FLG-ERR             =   ZERO
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-KIGO
+           ELSE
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    11                  TO  SPA-GMN-CUR
+           END-IF
       *
-           MOVE    N01-KIGO            TO  SPA-GMN-KIGO
-      *
-           MOVE    99                 TO  SPA-GMN-CUR
            .
        4110-KIGO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    異動内容チェック
+      *****************************************************************
+       4111-IDOKBN-CHK-SEC            SECTION.
+      *
+           IF      SPA-GMN-IDOKBN    =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-IDOKBN-G
+           ELSE
+               MOVE    ZERO            TO  FLG-OK
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       SPA-GMN-IDOMAX
+                   IF      SPA-GMN-IDOKBN    =   SPA-GMN-IDOKBNL
+                                                               (IDX)
+                       MOVE    SPA-GMN-IDOKBNLST (IDX)
+                                               TO  SPA-GMN-IDOKBN-G
+                       MOVE    1               TO  FLG-OK
+                       MOVE    SPA-GMN-IDOMAX  TO  IDX
+                   END-IF
+               END-PERFORM
+      *
+               IF      FLG-OK              =   ZERO
+                   MOVE    "0006"          TO  SPA-ERRCD
+                   MOVE    12              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4111-IDOKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    異動年月日チェック
+      *****************************************************************
+       4111-IDOYMD-CHK-SEC            SECTION.
+      *
+           IF      SPA-GMN-IDOYMD      =   SPACE
+               MOVE    SPACE               TO  SPA-NAI-IDOYMD
+           ELSE
+      *
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN-IDOYMD      TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY         TO  SPA-GMN-IDOYMD
+                   MOVE    SGDAY-SDAY          TO  SPA-NAI-IDOYMD
+               ELSE
+                   MOVE    "0007"              TO  SPA-ERRCD
+                   MOVE    13                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4111-IDOYMD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    必須入力チェック処理
+      *****************************************************************
+       4109-TOUROKU-CHK-SEC             SECTION.
+      *
+           IF      SPA-GMN-HKNJANUM     =   SPACE
+               MOVE    "0008"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+               GO      TO      4109-TOUROKU-CHK-EXT
+           END-IF
+      *
+           .
+       4109-TOUROKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    半角チェック処理
+      *****************************************************************
+       800-KANACHK-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+      *        全角半角混在エラー
+               MOVE    1                   TO  FLG-ERR
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
+           ELSE
+               MOVE    ZERO                TO  FLG-ERR
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
+           END-IF
+           .
+      *
+       800-KANACHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -802,7 +1072,7 @@
        403-DEL-SEC                               SECTION.
       *
            IF      SPA-NAI-UPDFLG      =   ZERO
-               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    "0010"              TO  SPA-ERRCD
            ELSE    
                MOVE    "1002"              TO  SPA-NIDCD
            END-IF    
@@ -844,6 +1114,15 @@
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
       *
+           MOVE    SPACE               TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    1                   TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      490-TOUROKU-EXT
+           END-IF
+      *
            MOVE    "1001"           TO  SPA-NIDCD
            .
        490-TOUROKU-EXT.
@@ -855,34 +1134,44 @@
        490-KOUSHIN-SEC           SECTION.
       *
       *
-           IF      SPA-NAI-UPDFLG      =   1
+      ***  IF      SPA-NAI-UPDFLG      =   1
                MOVE    SPACE               TO  HKNJAINF-REC
                INITIALIZE                      HKNJAINF-REC
                MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
                MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
                MOVE    HKNJAINF-REC        TO  MCPDATA-REC
                PERFORM 900-HKNJAINF-INV-SEC
+      *
+           IF      FLG-HKNJAINF        =   ZERO
+               CONTINUE
            ELSE
                MOVE    SPACE               TO  HKNJAINF-REC
                INITIALIZE                      HKNJAINF-REC
                MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
                MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
            END-IF
-      *          
-           MOVE    SPA-GMN-HKNJANAME       TO  HKNJA-HKNJANAME 
-           MOVE    SPA-GMN-HKNJANAMETAN1   TO  HKNJA-HKNJANAME-TAN1 
-           MOVE    SPA-GMN-HKNJANAMETAN2   TO  HKNJA-HKNJANAME-TAN2 
-           MOVE    SPA-GMN-HKNJANAMETAN3   TO  HKNJA-HKNJANAME-TAN3 
-           MOVE    SPA-GMN-HKNNUM          TO  HKNJA-HKNNUM 
-           MOVE    SPA-GMN-POST            TO  HKNJA-POST 
-           MOVE    SPA-GMN-ADRS            TO  HKNJA-ADRS 
-           MOVE    SPA-GMN-BANTI           TO  HKNJA-BANTI 
-           MOVE    SPA-GMN-TEL             TO  HKNJA-TEL 
-           MOVE    SPA-GMN-KIGO            TO  HKNJA-KIGO 
+      *
+           MOVE    SPA-GMN-HKNJANAME   TO  HKNJA-HKNJANAME 
+           MOVE    SPA-GMN-HKNJANAMETAN1
+                                       TO  HKNJA-HKNJANAME-TAN1 
+           MOVE    SPA-GMN-HKNJANAMETAN2
+                                       TO  HKNJA-HKNJANAME-TAN2 
+           MOVE    SPA-GMN-HKNJANAMETAN3
+                                       TO  HKNJA-HKNJANAME-TAN3 
+           MOVE    SPA-GMN-HKNNUM      TO  HKNJA-HKNNUM 
+           MOVE    SPA-GMN-POST        TO  HKNJA-POST 
+           MOVE    SPA-GMN-ADRS        TO  HKNJA-ADRS 
+           MOVE    SPA-GMN-BANTI       TO  HKNJA-BANTI 
+           MOVE    SPA-GMN-TEL         TO  HKNJA-TEL 
+           MOVE    SPA-GMN-KIGO        TO  HKNJA-KIGO 
+      *
+           MOVE    SPA-GMN-IDOKBN      TO  HKNJA-IDOKBN
+           MOVE    SPA-NAI-IDOYMD      TO  HKNJA-IDOYMD
       *
            MOVE    HKNJAINF-REC            TO  MCPDATA-REC
            MOVE    "HKNJAINF-KEY"          TO  ORC-DBPATH
-           IF      SPA-NAI-UPDFLG      =   1
+      *****IF      SPA-NAI-UPDFLG      =   1
+           IF      FLG-HKNJAINF        =   ZERO
                MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE
                MOVE    "DBINSERT"              TO  MCP-FUNC
@@ -891,16 +1180,20 @@
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
-           IF      MCP-RC              NOT =   ZERO 
+           IF      MCP-RC              NOT =   ZERO
+               DISPLAY "N01 HKNJAINF ERR:" MCP-FUNC
+                       ",MCP-RC:" MCP-RC
+                       ",KYE:" HKNJA-HOSPID
+                       ","   HKNJA-HKNJANUM
+      *
                MOVE    "1001"                  TO  SPA-ERRCD
                GO  TO  490-KOUSHIN-EXT
-           END-IF      
+           END-IF
       *
            PERFORM 310-SPASET-SEC 
            .
        490-KOUSHIN-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    自画面編集処理
@@ -943,13 +1236,23 @@
            MOVE    SPA-GMN-BANTI         TO  N01-BANTI  
            MOVE    SPA-GMN-TEL           TO  N01-TEL
            MOVE    SPA-GMN-KIGO          TO  N01-KIGO
+           MOVE    SPA-GMN-IDOKBN-G      TO  N01-IDOKBN
+           MOVE    SPA-GMN-IDOYMD        TO  N01-IDOYMD
       *
            MOVE    SPA-GMN-HKNNUM-G      TO  N01-HKNNUM
            PERFORM VARYING IDX FROM    1       BY  1
                    UNTIL       IDX             >   SPA-GMN-HKNIDX
-               MOVE    SPA-GMN-HKNNUMLST (IDX) TO  N01-HKNNUMLST (IDX)
-               MOVE    IDX                     TO  N01-COUNT
+               MOVE    SPA-GMN-HKNNUMLST (IDX) TO  N01-HKNNUM-ITEM (IDX)
+               MOVE    IDX                     TO  N01-HKNNUM-COUNT
            END-PERFORM
+      *
+      *
+           PERFORM VARYING     IDX     FROM    1       BY  1
+                   UNTIL       IDX     >   SPA-GMN-IDOMAX
+               MOVE    SPA-GMN-IDOKBNLST (IDX)
+                                           TO  N01-IDOKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-IDOMAX      TO  N01-IDOKBN-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -961,15 +1264,35 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "入力エラー"        TO  SPA-ERRMSG
+                   MOVE    "保険者番号入力エラー"
+                                               TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "検証番号チェックエラー"
                                                TO  SPA-ERRMSG
                WHEN    "0003"
+                   MOVE    "全角で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "保険番号がありません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE    "保険番号と保険者番号の構成が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "異動内容がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0007"
+                   MOVE    "異動年月日入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0008"
+                   MOVE    "保険者番号を入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0010"
                    MOVE    "未登録のデータなので削除できません"
                                                TO  SPA-ERRMSG
                WHEN    "0099"
@@ -1040,6 +1363,10 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+          IF       SPA-GMN-CUR         =   ZERO
+               PERFORM 50011-GMNCUR-SET-SEC
+          END-IF
+      *
           EVALUATE    SPA-GMN-CUR
                 WHEN    01
                     MOVE    "HKNJANUM"          TO   MCP-WIDGET
@@ -1063,6 +1390,10 @@
                     MOVE    "TEL"               TO   MCP-WIDGET
                 WHEN    11
                     MOVE    "KIGO"              TO   MCP-WIDGET
+                WHEN    12
+                    MOVE    "IDOKBN"          TO   MCP-WIDGET
+                WHEN    13
+                    MOVE    "IDOYMD"            TO   MCP-WIDGET
                 WHEN    99
                     MOVE    "B12"               TO   MCP-WIDGET
             END-EVALUATE
@@ -1072,35 +1403,41 @@
            EXIT.
       *
       *****************************************************************
-      *    日付チェック・編集処理
+      *    カーソル設定処理
       *****************************************************************
-       5002-HIZUKE-CHK-SEC         SECTION.
+       50011-GMNCUR-SET-SEC         SECTION.
       *
-           IF      WRK-YMD  (1:7)  NOT NUMERIC
-               INSPECT     WRK-YMD      REPLACING   ALL " " BY  "0"
-               MOVE    WRK-YMD(1:1)     TO  WRK-WGO
-               MOVE    WRK-YMD(2:2)     TO  WRK-WYY
-               MOVE    WRK-YMD(5:2)     TO  WRK-WMM
-               MOVE    WRK-YMD(8:2)     TO  WRK-WDD
-           ELSE
-               MOVE    WRK-YMD(1:7)     TO  WRK-WYMD
-           END-IF
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "HKNJANUM"
+                   MOVE    2               TO  SPA-GMN-CUR
+               WHEN    "HKNJANAME"
+                   MOVE    3               TO  SPA-GMN-CUR
+               WHEN    "HKNJANAMETAN1"
+                   MOVE    4               TO  SPA-GMN-CUR
+               WHEN    "HKNJANAMETAN2"
+                   MOVE    5               TO  SPA-GMN-CUR
+               WHEN    "HKNJANAMETAN3"
+                   MOVE    6               TO  SPA-GMN-CUR
+               WHEN    "HKNNUM"
+                   MOVE    7               TO  SPA-GMN-CUR
+               WHEN    "POST"
+                   MOVE    8               TO  SPA-GMN-CUR
+               WHEN    "ADRS"
+                   MOVE    9               TO  SPA-GMN-CUR
+               WHEN    "BANTI"
+                   MOVE    10              TO  SPA-GMN-CUR
+               WHEN    "TEL"
+                   MOVE    11              TO  SPA-GMN-CUR
+               WHEN    "KIGO"
+                   MOVE    12              TO  SPA-GMN-CUR
+               WHEN    "IDOKBN"
+                   MOVE    13              TO  SPA-GMN-CUR
+               WHEN    "IDOYMD"
+                   MOVE    99              TO  SPA-GMN-CUR
+           END-EVALUATE
       *
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY1-AREA
-           MOVE    "12"                TO  LNK-DAY1-IRAI
-           MOVE    ZERO                TO  LNK-DAY1-YMD
-           MOVE    WRK-WYMD            TO  LNK-DAY1-YMD(2:7)
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY1-AREA
-           IF      STS-DAY-RC1     NOT =   ZERO
-               MOVE    "0001"          TO  SPA-ERRCD
-           ELSE
-               MOVE    LNK-DAY1-YMD        TO  WRK-SYMD
-               PERFORM 5002-HIZUKE-HEN-SEC
-           END-IF
            .
-       5002-HIZUKE-CHK-EXT.
+       50011-GMNCUR-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1108,7 +1445,12 @@
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
-           IF      WRK-SYMD            =   ALL "9"  OR   SPACE
+           IF      WRK-SYMD            =   SPACE
+               MOVE    SPACE               TO  WRK-HENYMDG
+               GO      TO      5002-HIZUKE-HEN-EXT
+           END-IF
+      *
+           IF      WRK-SYMD            =   ALL "9"
                MOVE    SPACE               TO  WRK-HGO
                MOVE    WRK-SYMD(3:2)       TO  WRK-HYY
                MOVE    WRK-SYMD(5:2)       TO  WRK-HMM
