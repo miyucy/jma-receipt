@@ -396,7 +396,7 @@
     </element>
     <element name="NYUTENSUN" occurs="10">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" type="X" length="14"/>
       </appinfo>
     </element>
     <element name="NYUKOHTENN" occurs="10">
