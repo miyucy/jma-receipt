@@ -88,8 +88,9 @@ path	key4 	{
 		DECLARE tbl_help_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_help
-			WHERE   LDNAME    =   :LDNAME
-			AND   KEY_OPID    =   :KEY_OPID
+			WHERE   HELPKBN    =   :HELPKBN
+			AND     LDNAME     =   :LDNAME
+			AND   KEY_OPID     =   :KEY_OPID
 			AND   MENU       LIKE  :MENU
 			AND  (EDANUM       =   0   OR
 			      EDANUM       =   1 )
