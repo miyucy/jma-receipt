@@ -451,7 +451,7 @@
                05  WRK-KEI-Z       PIC Z(08).
            03  WRK-KEI-H           PIC X(08).
            03  WRK-ZAIKEI-H        PIC X(40).
-           03  WRK-ZZ              PIC ZZ.
+           03  WRK-ZZ              PIC ZZZ.
       *
       *    ø«Œ≈π‘∞Ÿ∆‚Õ∆»Ê≥”Õ—•∆°º•÷•Î
       *01  TBL-AREA.
