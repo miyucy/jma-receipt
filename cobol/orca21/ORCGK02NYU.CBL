@@ -3535,11 +3535,13 @@
       *            Å¾½ÐÆü
                    IF     (PTNYUINRRK-TENSTUYMD    =   SPACE )  OR
                           (PTNYUINRRK-TENSTUYMD    NOT =   SPACE AND
-      *****************    PTNYUINRRK-TENSTUYMD    >=  SPA-SRYYMD)
-                           PTNYUINRRK-TENSTUYMD    >   SPA-SRYYMD)
+                           PTNYUINRRK-TENSTUYMD    >=  SPA-SRYYMD)
       *                Æþ±¡ÂÐ¾Ý½èÍý
-                       MOVE    1               TO  FLG-OK
-                       PERFORM 4101011-PTNYUINRRK-HEN-SEC
+                       IF     (PTNYUINRRK-TAIINYMD     =   SPA-SRYYMD)
+                         OR   (PTNYUINRRK-TENSTUYMD    >   SPA-SRYYMD)
+                           MOVE    1               TO  FLG-OK
+                           PERFORM 4101011-PTNYUINRRK-HEN-SEC
+                       END-IF
                    ELSE
                        MOVE    PTNYUINRRK-REC  TO  HZN-PTNYUINRRK-REC
                    END-IF
