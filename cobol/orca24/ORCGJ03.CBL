@@ -135,7 +135,7 @@
       *  保険組合せ一覧
                05  SPA-HKNCOMI-AREA.
                    07  SPA-GMN-HKNCOMBI-LISTG.
-                       09  SPA-GMN-HKN-LIST    OCCURS  18.
+                       09  SPA-GMN-HKN-LIST    OCCURS  17.
                            11  SPA-GMN-THKNCOMBINUM-G.
                                13  SPA-GMN-THKNCOMBINUM    PIC X(04).
                                13  SPA-GMN-THKNCOMBY1      PIC X(01).
@@ -666,6 +666,12 @@
       *
                MOVE    IDH             TO  SPA-HKN-MAX
            END-PERFORM
+      *    最終行が包括まとめ以外の時、全保険名称を修正
+           IF      SPA-GMN-THKNCOMBINUM (SPA-HKN-MAX)  =   "9999"
+               CONTINUE
+           ELSE
+               MOVE    "全保険"        TO  SPA-GMN-THKNCOMBIMEI (01)
+           END-IF
       *
            MOVE    SPA-GMN-THKNCOMBINUM-G (01)
                                        TO  SPA-GMN-HHKNCOMBI-G
