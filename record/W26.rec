@@ -64,6 +64,8 @@ W26	{
 		scrolledwindow1	{
 			YUKOYMDLST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(3);
 					value1	varchar(9);

@@ -24,6 +24,8 @@
               03  Y03-SCROLLEDWINDOW1.
                 04  Y03-TSLIST.
                   05  Y03-COUNT   PIC S9(9)   BINARY.
+                  05  Y03-ROW       PIC S9(9)   BINARY.
+                  05  Y03-ROWATTR   PIC S9(9)   BINARY.
                   05  Y03-ITEM        OCCURS  200 TIMES.
                         08  Y03-TNUM        PIC X(4).
                         08  Y03-TYYKTIME    PIC X(5).

@@ -79,6 +79,8 @@
               04  W21-SCROLLEDWINDOW28.
                 05  W21-BRMLST-TBL.
                   06  W21-BRMLST-CNT       PIC S9(9)   BINARY.
+                  06  W21-BRMLST-ROW       PIC S9(9)   BINARY.
+                  06  W21-BRMLST-ROWATTR   PIC S9(9)   BINARY.
                   06  W21-BRMLST-OCC       OCCURS  200.
                     07  W21-TSELNUM        PIC X(4).
                     07  W21-TBRM-NUM       PIC X(10).
@@ -96,6 +98,8 @@
               04  W21-SCROLLEDWINDOW29.
                 05  W21-RIREKILST-TBL.
                   06  W21-RIREKILST-CNT    PIC S9(9)   BINARY.
+                  06  W21-RIREKILST-ROW    PIC S9(9)   BINARY.
+                  06  W21-RIREKILST-ROWATTR    PIC S9(9)   BINARY.
                   06  W21-RIREKILST-OCC    OCCURS  20.
                     07  W21-TRSELNUM       PIC X(04).
                     07  W21-TRIREKI        PIC X(22).

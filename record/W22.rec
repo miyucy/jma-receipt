@@ -22,6 +22,8 @@ W22	{
 		MEISYOUWINDOW	{
 			MEISYOULIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(16);
 					value2	varchar(60);

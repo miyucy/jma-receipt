@@ -33,6 +33,8 @@
               04  W22-MEISYOUWINDOW.
                 05  W22-MEISYOULIST.
                   06  W22-MEISYOU-COUNT      PIC S9(9)   BINARY.
+                  06  W22-MEISYOU-ROW        PIC S9(9)   BINARY.
+                  06  W22-MEISYOU-ROWATTR    PIC S9(9)   BINARY.
                   06  W22-MEISYOU-ITEM           OCCURS  20 TIMES.
                     07  W22-VALUE1           PIC X(16).
                     07  W22-VALUE2           PIC X(60).

@@ -52,6 +52,8 @@
               03  Z07-SCROLLEDWINDOW1.
                 04  Z07-TENSU-LIST.
                   05  Z07-TENSU-COUNT   PIC S9(9)   BINARY.
+                  05  Z07-TENSU-ROW     PIC S9(9)   BINARY.
+                  05  Z07-TENSU-ROWATTR PIC S9(9)   BINARY.
                   05  Z07-ITEM        OCCURS  200 TIMES.
                     06  Z07-TNUM      PIC X(3).
                     06  Z07-TINPUTCD  PIC X(20).

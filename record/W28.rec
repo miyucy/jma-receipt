@@ -3,6 +3,8 @@ W28	{
 		scrolledwindow1	{
 			BTULST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(4);
 					value1	varchar(4);

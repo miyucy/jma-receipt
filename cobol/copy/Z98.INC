@@ -25,6 +25,8 @@
               03  Z98-SCROLLEDWINDOW26.
                 04  Z98-LIST.
                   05  Z98-COUNT   PIC S9(9)   BINARY.
+                  05  Z98-ROW     PIC S9(9)   BINARY.
+                  05  Z98-ROWATTR PIC S9(9)   BINARY.
                   05  Z98-ITEM        OCCURS  200 TIMES.
                     06  Z98-NO      PIC X(3).
                     06  Z98-NAME    PIC X(70).

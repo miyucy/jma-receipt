@@ -31,6 +31,8 @@
               03  W13-SCROLLEDWINDOW6.
                 04  W13-SONSHOUKBNLST.
                   05  W13-SONSHOUKBN-COUNT   PIC S9(9)   BINARY.
+                  05  W13-SONSHOUKBN-ROW     PIC S9(9)   BINARY.
+                  05  W13-SONSHOUKBN-ROWATTR  PIC S9(9)   BINARY.
                   05  W13-SONSHOUKBN-ITEM    OCCURS  40 TIMES.
                     06  W13-TSONSHOUKBN      PIC X(4).
                     06  W13-TSONSHOUNAME     PIC X(60).

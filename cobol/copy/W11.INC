@@ -36,6 +36,8 @@
                   05  W11-USERLSTSCROLLE.
                     06  W11-USERLST.
                       07  W11-USERLST-COUNT    PIC S9(9)   BINARY.
+                      07  W11-USERLST-ROW      PIC S9(9)   BINARY.
+                      07  W11-USERLST-ROWATTR  PIC S9(9)   BINARY.
                       07  W11-ITEM             OCCURS  100 TIMES.
                         08  W11-USERNUM        PIC X(4).
                         08  W11-USERNAME       PIC X(16).

@@ -192,6 +192,10 @@
                 05  W20-BTULST-TBL.
                   06  W20-BTULST-CNT
                                            PIC S9(9)   BINARY.
+                  06  W20-BTULST-ROW
+                                           PIC S9(9)   BINARY.
+                  06  W20-BTULST-ROWATTR
+                                           PIC S9(9)   BINARY.
                   06  W20-BTULST-OCC       OCCURS  50.
                     07  W20-TBTU-NUM       PIC X(04).
                     07  W20-TBTU-NAME      PIC X(20).
@@ -226,6 +230,8 @@
               04  W20-SCROLLEDWINDOW29.
                 05  W20-RIREKILST-TBL.
                   06  W20-RIREKILST-CNT    PIC S9(9)   BINARY.
+                  06  W20-RIREKILST-ROW    PIC S9(9)   BINARY.
+                  06  W20-RIREKILST-ROWATTR    PIC S9(9)   BINARY.
                   06  W20-RIREKILST-OCC    OCCURS  20.
                     07  W20-TSELNUM        PIC X(04).
                     07  W20-TRIREKI        PIC X(22).

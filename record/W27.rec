@@ -16,6 +16,8 @@ W27	{
 		scrolledwindow1	{
 			BRMLST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(4);
 					value1	varchar(4);

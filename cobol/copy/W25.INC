@@ -25,6 +25,8 @@
               03  W25-SCROLLEDWINDOW26.
                 04  W25-LIST.
                   05  W25-COUNT   PIC S9(9)   BINARY.
+                  05  W25-ROW     PIC S9(9)   BINARY.
+                  05  W25-ROWATTR PIC S9(9)   BINARY.
                   05  W25-ITEM        OCCURS  200 TIMES.
                     06  W25-NO      PIC X(3).
                     06  W25-NAME    PIC X(70).

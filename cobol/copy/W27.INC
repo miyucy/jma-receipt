@@ -26,6 +26,8 @@
               04  W27-SCROLLEDWINDOW1.
                 05  W27-BRMLST.
                   06  W27-BRMLST-CNT       PIC S9(9)   BINARY.
+                  06  W27-BRMLST-ROW       PIC S9(9)   BINARY.
+                  06  W27-BRMLST-ROWATTR   PIC S9(9)   BINARY.
                   06  W27-BRMLST-ITM       OCCURS  400 TIMES.
                     07  W27-TYUKO          PIC X(4).
                     07  W27-TSELNUM        PIC X(4).

@@ -478,6 +478,8 @@
               03  Y01-S-SROLLEDWINDOW3.
                 04  Y01-PTLIST.
                   05  Y01-PTLIST-COUNT   PIC S9(9)   BINARY.
+                  05  Y01-PTLIST-ROW     PIC S9(9)   BINARY.
+                  05  Y01-PTLIST-ROWATTR  PIC S9(9)   BINARY.
                   05  Y01-ITEM        OCCURS  200 TIMES.
                     06  Y01-TBANGO       PIC X(3).
                     06  Y01-TYYKTIME     PIC X(5).

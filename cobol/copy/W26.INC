@@ -34,6 +34,8 @@
               03  W26-SCROLLEDWINDOW1.
                 04  W26-YUKOYMDLST.
                   05  W26-YUKOYMDLST-CNT   PIC S9(9)   BINARY.
+                  05  W26-YUKOYMDLST-ROW   PIC S9(9)   BINARY.
+                  05  W26-YUKOYMDLST-ROWATTR   PIC S9(9)   BINARY.
                   05  W26-YUKOYMDLST-ITM   OCCURS  100 TIMES.
                     06  W26-TSELNUM        PIC X(3).
                     06  W26-TSTYUKYMD      PIC X(9).

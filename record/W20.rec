@@ -171,6 +171,8 @@ W20	{
 		scrolledwindow28	{
 			BTULST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(4);
 					value1	varchar(20);
@@ -198,6 +200,8 @@ W20	{
 		scrolledwindow29	{
 			RIREKILST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(4);
 					value1	varchar(22);

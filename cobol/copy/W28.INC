@@ -20,6 +20,8 @@
               03  W28-SCROLLEDWINDOW1.
                 04  W28-BTULST.
                   05  W28-BTULST-CNT       PIC S9(9)   BINARY.
+                  05  W28-BTULST-ROW       PIC S9(9)   BINARY.
+                  05  W28-BTULST-ROWATTR   PIC S9(9)   BINARY.
                   05  W28-BTULST-ITM       OCCURS  400 TIMES.
                     06  W28-TYUKO          PIC X(4).
                     06  W28-TSELNUM        PIC X(4).

@@ -21,6 +21,8 @@ W13	{
 		scrolledwindow6	{
 			SONSHOUKBNLST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(4);
 					value1	varchar(60);

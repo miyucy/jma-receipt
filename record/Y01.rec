@@ -688,6 +688,8 @@ Y01	{
 		scrolledwindow3	{
 			PTLIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(3);
 					value2	varchar(5);

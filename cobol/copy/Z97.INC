@@ -21,6 +21,8 @@
               03  Z97-SCROLLEDWINDOW28.
                 04  Z97-JOBKANRILST.
                   05  Z97-COUNT   PIC S9(9)   BINARY.
+                  05  Z97-ROW     PIC S9(9)   BINARY.
+                  05  Z97-ROWATTR PIC S9(9)   BINARY.
                   05  Z97-ITEM        OCCURS  30 TIMES.
                     06  Z97-RENNUM    PIC X(7).
                     06  Z97-SHORINM   PIC X(26).

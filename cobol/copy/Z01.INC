@@ -29,6 +29,8 @@
               04  Z01-SCROLLEDWINDOW1.
                 05  Z01-TENSU-LIST.
                   06  Z01-COUNT   PIC S9(9)   BINARY.
+                  06  Z01-ROW     PIC S9(9)   BINARY.
+                  06  Z01-ROWATTR PIC S9(9)   BINARY.
                   06  Z01-ITEM        OCCURS  30 TIMES.
                     07  Z01-TRENNUM  PIC X(3).
                     07  Z01-TYUKOSTYMD  PIC X(9).

@@ -42,6 +42,8 @@
               03  Y04-KANJA-LIST1.
                 04  Y04-PT-LIST1.
                   05  Y04-LIST1-COUNT   PIC S9(9)   BINARY.
+                  05  Y04-LIST1-ROW     PIC S9(9)   BINARY.
+                  05  Y04-LIST1-ROWATTR PIC S9(9)   BINARY.
                   05  Y04-ITEM        OCCURS  200 TIMES.
                     06  Y04-LIST1-SRYNAIYO  PIC X(2).
                     06  Y04-LIST1-YYKTIME  PIC X(5).
@@ -50,6 +52,8 @@
               03  Y04-KANJA-LIST2.
                 04  Y04-PT-LIST2.
                   05  Y04-LIST2-COUNT   PIC S9(9)   BINARY.
+                  05  Y04-LIST2-ROW     PIC S9(9)   BINARY.
+                  05  Y04-LIST2-ROWATTR PIC S9(9)   BINARY.
                   05  Y04-ITEM        OCCURS  200 TIMES.
                     06  Y04-LIST2-SRYNAIYO  PIC X(2).
                     06  Y04-LIST2-YYKTIME  PIC X(5).
@@ -58,6 +62,8 @@
               03  Y04-KANJA-LIST3.
                 04  Y04-PT-LIST3.
                   05  Y04-LIST3-COUNT   PIC S9(9)   BINARY.
+                  05  Y04-LIST3-ROW     PIC S9(9)   BINARY.
+                  05  Y04-LIST3-ROWATTR PIC S9(9)   BINARY.
                   05  Y04-ITEM        OCCURS  200 TIMES.
                     06  Y04-LIST3-SRYNAIYO  PIC X(2).
                     06  Y04-LIST3-YYKTIME  PIC X(5).
@@ -66,6 +72,8 @@
               03  Y04-KANJA-LIST4.
                 04  Y04-PT-LIST4.
                   05  Y04-LIST4-COUNT   PIC S9(9)   BINARY.
+                  05  Y04-LIST4-ROW     PIC S9(9)   BINARY.
+                  05  Y04-LIST4-ROWATTR PIC S9(9)   BINARY.
                   05  Y04-ITEM        OCCURS  200 TIMES.
                     06  Y04-LIST4-SRYNAIYO  PIC X(2).
                     06  Y04-LIST4-YYKTIME  PIC X(5).
@@ -74,6 +82,8 @@
               03  Y04-KANJA-LIST5.
                 04  Y04-PT-LIST5.
                   05  Y04-LIST5-COUNT   PIC S9(9)   BINARY.
+                  05  Y04-LIST5-ROW     PIC S9(9)   BINARY.
+                  05  Y04-LIST5-ROWATTR PIC S9(9)   BINARY.
                   05  Y04-ITEM        OCCURS  200 TIMES.
                     06  Y04-LIST5-SRYNAIYO  PIC X(2).
                     06  Y04-LIST5-YYKTIME  PIC X(5).
@@ -82,6 +92,8 @@
               03  Y04-KANJA-LIST6.
                 04  Y04-PT-LIST6.
                   05  Y04-LIST6-COUNT   PIC S9(9)   BINARY.
+                  05  Y04-LIST6-ROW     PIC S9(9)   BINARY.
+                  05  Y04-LIST6-ROWATTR PIC S9(9)   BINARY.
                   05  Y04-ITEM        OCCURS  200 TIMES.
                     06  Y04-LIST6-SRYNAIYO        PIC X(2).
                     06  Y04-LIST6-YYKTIME         PIC X(5).
