@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    02.11.27  同日複数再診、電話再診の
+      *                                     コメントの差込
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -218,6 +220,7 @@
                05  WRK-PARA-SHELLID            PIC  X(08).
       *
            03  WRK-RENNUM          PIC 9(02).
+           03  WRK-CNT-MEISAI      PIC 9(04).
            03  WRK-RECEERR         PIC X(200).
       *
            03  TBL-SHUJUTSU-DAY.
@@ -1145,6 +1148,7 @@
                                              ORCMCPAREA
                                              MCPDATA-REC
                IF      MCP-RC        =       ZERO
+                   MOVE    RECE04-REC        TO      WRK-RECE04-REC
                    MOVE    MCPDATA-REC       TO      SRYACT-REC
                    INITIALIZE                        SRYACCT-REC
                    MOVE    SRY-HOSPID        TO      ACCT-HOSPID
@@ -1610,55 +1614,55 @@
       *
            PERFORM   2001-SHUJUTSU-DAY-SEC
       *
-           MOVE    RECE04-REC        TO      RECE041-REC
-           ADD     1                 TO      RECE041-MEISAISU
-           WRITE   RECE041-REC
-           ADD     1                 TO      CNT-RECE04
+      **     MOVE    RECE04-REC        TO      RECE041-REC
+      **     ADD     1                 TO      RECE041-MEISAISU
+      **     WRITE   RECE041-REC
+      **     ADD     1                 TO      CNT-RECE04
       *
-           IF      RECE041-MEISAISU  <=      2
-             INITIALIZE                      RECE05-REC
-             MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
-             MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
-             MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
-             MOVE    RECE04-PTID         TO  RECE05-PTID
-             MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
-             MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
-             MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
-             MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
-             MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
-             MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
-             START   RECE05-FILE
-                 KEY IS    >=   RECE05-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE05
-                 NOT INVALID
-                     PERFORM 990-RECE05-NEXT-SEC
-             END-START
+      **     IF      RECE041-MEISAISU  <=      2
+      **       INITIALIZE                      RECE05-REC
+      **       MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
+      **       MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
+      **       MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
+      **       MOVE    RECE04-PTID         TO  RECE05-PTID
+      **       MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
+      **       MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
+      **       MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
+      **       MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
+      **       MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
+      **       MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
+      **       START   RECE05-FILE
+      **           KEY IS    >=   RECE05-KEY
+      **           INVALID
+      **               MOVE    1           TO  FLG-RECE05
+      **           NOT INVALID
+      **               PERFORM 990-RECE05-NEXT-SEC
+      **       END-START
       *
-             MOVE    RECE05-REC       TO      RECE051-REC
-             MOVE    RECE05-SRYACTINF(1)  TO  RECE051-SRYACTINF(2)
-             MOVE    RECE05-SRYACTINF(2)  TO  RECE051-SRYACTINF(3)
-             MOVE    RECE05-SRYACTINF(3)  TO  RECE051-SRYACTINF(4)
-             MOVE    RECE05-SRYACTINF(4)  TO  RECE051-SRYACTINF(5)
-             MOVE    RECE05-NAMEINF(1)    TO  RECE051-NAMEINF(2)
-             MOVE    RECE05-NAMEINF(2)    TO  RECE051-NAMEINF(3)
-             MOVE    RECE05-NAMEINF(3)    TO  RECE051-NAMEINF(4)
-             MOVE    RECE05-NAMEINF(4)    TO  RECE051-NAMEINF(5)
+      **       MOVE    RECE05-REC       TO      RECE051-REC
+      **       MOVE    RECE05-SRYACTINF(1)  TO  RECE051-SRYACTINF(2)
+      **       MOVE    RECE05-SRYACTINF(2)  TO  RECE051-SRYACTINF(3)
+      **       MOVE    RECE05-SRYACTINF(3)  TO  RECE051-SRYACTINF(4)
+      **       MOVE    RECE05-SRYACTINF(4)  TO  RECE051-SRYACTINF(5)
+      **       MOVE    RECE05-NAMEINF(1)    TO  RECE051-NAMEINF(2)
+      **       MOVE    RECE05-NAMEINF(2)    TO  RECE051-NAMEINF(3)
+      **       MOVE    RECE05-NAMEINF(3)    TO  RECE051-NAMEINF(4)
+      **       MOVE    RECE05-NAMEINF(4)    TO  RECE051-NAMEINF(5)
       *
-             MOVE    SPACE                TO  RECE051-SRYACTINF(1)
-             INITIALIZE                       RECE051-SRYACTINF(1)
-             MOVE    "840000042"          TO  RECE051-SRYCD(1)
-             MOVE    ZERO                 TO  RECE051-SRYSURYO(1)
-             MOVE    6                    TO  RECE051-YUKOKETA(1)
-             MOVE    "手術　　　日"       TO  RECE051-NAME(1)
-             MOVE     TB-SHUJUTSU-DAY(1)  TO  DAY-IDX
-             MOVE    TBL-DAY(DAY-IDX)    TO  RECE051-NAME(1)(7:4)
-             WRITE   RECE051-REC
-             ADD     1                    TO  CNT-RECE05
+      **       MOVE    SPACE                TO  RECE051-SRYACTINF(1)
+      **       INITIALIZE                       RECE051-SRYACTINF(1)
+      **       MOVE    "840000042"          TO  RECE051-SRYCD(1)
+      **       MOVE    ZERO                 TO  RECE051-SRYSURYO(1)
+      **       MOVE    6                    TO  RECE051-YUKOKETA(1)
+      **       MOVE    "手術　　　日"       TO  RECE051-NAME(1)
+      **       MOVE     TB-SHUJUTSU-DAY(1)  TO  DAY-IDX
+      **       MOVE    TBL-DAY(DAY-IDX)    TO  RECE051-NAME(1)(7:4)
+      **       WRITE   RECE051-REC
+      **       ADD     1                    TO  CNT-RECE05
       *    
-           ELSE
+      **     ELSE
       *
-      *      ※明細が５以上の場合
+      **     ※明細が５以上の場合
              INITIALIZE                      RECE05-REC
              MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
              MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
@@ -1738,6 +1742,7 @@
              MOVE       ZERO             TO      IDX
              MOVE       ZERO             TO      IDX-RECE05
              MOVE       ZERO             TO      WRK-RENNUM
+             MOVE       ZERO             TO      WRK-CNT-MEISAI
              PERFORM    UNTIL     FLG-WRKRECE05  =    1
                     INITIALIZE                        RECE051-REC
                     MOVE    WRK-RECE05-KEY       TO   RECE051-KEY
@@ -1760,13 +1765,19 @@
                                             TO   RECE051-SRYACTINF(IDX)  
                            MOVE  WRK-NAMEINF(IDX-RECE05)
                                             TO   RECE051-NAMEINF(IDX)
+                           ADD   1          TO   WRK-CNT-MEISAI
                        END-IF  
                     END-PERFORM
                     WRITE   RECE051-REC
                     ADD     1                    TO  CNT-RECE05
              END-PERFORM     
       *
-           END-IF
+             MOVE    RECE04-REC        TO      RECE041-REC
+             MOVE    WRK-CNT-MEISAI    TO      RECE041-MEISAISU
+             WRITE   RECE041-REC
+             ADD     1                 TO      CNT-RECE04
+      *
+      **     END-IF
       *
            .
        2001-SHUJUTSU-COMMENT-EXT.
