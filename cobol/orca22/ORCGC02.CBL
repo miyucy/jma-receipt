@@ -97,6 +97,7 @@
       *  01.07.08    NACL-藤原    03/02/14  入力ＣＤ検索から戻ったときの
       *                                     カルテ病名の編集を追加
       *  01.07.09    NACL-藤原    03/02/28  診療科４０に変更
+      *  02.00.06    NACL-藤原    03/03/05  排他制御処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -359,6 +360,8 @@
           COPY    "CPORCSGDAY.INC".
       *----(01.00.03) LINE ADD END   ----------------------------------
       *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -877,9 +880,14 @@
                MOVE    SPA-SRYYMD      TO  SPA-NAI-C02-SYSYMD
                MOVE    SPA-SRYKAMEI    TO  SPA-GMN-C02-SRYKAMEI
                MOVE    SPA-SRYKA       TO  SPA-GMN-C02-SRYKA
-               PERFORM 310-SPASET-PTBYO-HENSYU-SEC
-               PERFORM 310-SPASET-HKNCOMBI-HENSYU-SEC
-               MOVE    1               TO  SPA-GMN-C02-CUR
+               IF      SPA-ERRCD       =   SPACE
+                   PERFORM 310-SPASET-PTBYO-HENSYU-SEC
+                   PERFORM 310-SPASET-HKNCOMBI-HENSYU-SEC
+                   MOVE    1               TO  SPA-GMN-C02-CUR
+               ELSE
+                   MOVE    27              TO  SPA-GMN-C02-CUR
+                   MOVE    SPACE           TO  SPA-ERRCD
+               END-IF
            ELSE    
                MOVE    SPA-SYSYMDWH    TO  SPA-GMN-C02-SYSYMD
                MOVE    SPA-SYSYMD      TO  SPA-NAI-C02-SYSYMD
@@ -1616,6 +1624,13 @@
                IF      FLG-PTINF           NOT =   ZERO
                    MOVE    "0031"              TO  SPA-ERRCD
                ELSE
+      *
+      *            排他制御処理
+                   PERFORM 990-LOCK-IN-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                           GO      TO      41015-PTNUM-CHK-EXT
+                   END-IF
+      *
                    MOVE    PTINF-NAME        TO  SPA-GMN-C02-NAME
                    MOVE    PTINF-KANANAME    TO  SPA-GMN-C02-KANANAME
                    EVALUATE    PTINF-SEX
@@ -1651,6 +1666,25 @@
        41016-SRYKA-CHK-SEC             SECTION.
       *
            MOVE    27                  TO  SPA-GMN-C02-CUR
+      *
+      *    排他制御処理（診療行為で患者番号を入力したとき）
+           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
+                                                   OR  "K02N")
+           AND   ( SPA-PTNUM       NOT =   SPACE             )
+               MOVE    SPA-PTNUM       TO  C02-PTNUM
+               PERFORM 41015-PTNUM-CHK-SEC
+               MOVE    SPA-PTID        TO  SPA-NAI-C02-PTID
+               MOVE    SPA-HKNCOMBIMEI TO  SPA-GMN-C02-HKNCOMBIMEIH
+               MOVE    SPA-FTNRATEMEI  TO  SPA-GMN-C02-FTNRATE
+               MOVE    SPA-SRYYMDW     TO  SPA-GMN-C02-SYSYMD
+               MOVE    SPA-SRYYMD      TO  SPA-NAI-C02-SYSYMD
+               MOVE    SPA-SRYKAMEI    TO  SPA-GMN-C02-SRYKAMEI
+               MOVE    SPA-SRYKA       TO  SPA-GMN-C02-SRYKA
+               IF      SPA-ERRCD       NOT =   SPACE
+                   MOVE    27              TO  SPA-GMN-C02-CUR
+                   GO      TO      41016-SRYKA-CHK-EXT
+               END-IF
+           END-IF
       *
            INITIALIZE                  SPA-DEL-TBL
                                        SPA-DEL-C02-MAX
@@ -3979,6 +4013,9 @@
            END-IF
       *----(01.00.02) LINE ADD END   ----------------------------------
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            MOVE    SPA-C02-MOTOPG     TO  SPA-SAKIPG
            IF      SPA-C02-MOTOPG NOT =   "K02"  AND  "U02"   AND
                                           "K02N"
@@ -4023,6 +4060,10 @@
                                         SPA-NAI-C02-SELNO
                MOVE    1                TO  SPA-GMN-C02-CUR
            ELSE                             
+      *
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
+      *
                INITIALIZE                  SPA-DEL-TBL
                                            SPA-DEL-C02-MAX
       *                              
@@ -5321,6 +5362,8 @@
                END-IF
            END-IF     
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
            INITIALIZE                  SPA-DEL-TBL
                                        SPA-DEL-C02-MAX
@@ -6214,7 +6257,7 @@
                                                    OR  "K02N")
            AND   ( SPA-PTNUM       NOT =   SPACE             )
                MOVE    WIDGET-INSENSITIVE  TO  C02-PTNUM-STATE
-                                               C02-B03-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  C02-B03-STATE
                                                C02-B09-STATE
            ELSE
               MOVE    WIDGET-NORMAL        TO  C02-PTNUM-STATE
@@ -6298,6 +6341,8 @@
                     MOVE  "SRYKA"    TO  MCP-WIDGET
              WHEN   29
                     MOVE  "BYOMEIINPUTCD"    TO  MCP-WIDGET
+             WHEN   30
+                    MOVE  "PTNUM"    TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -6511,6 +6556,11 @@
                WHEN    "1005"
                    MOVE    "自院病名の更新処理でエラーになりました"
                                                        TO  SPA-ERRMSG
+      *
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
            END-EVALUATE
       *
            MOVE    SPACE                TO  WRK-HAISIYMDH
@@ -6969,6 +7019,40 @@
        993-PTRSIINF-NEXT-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN-SEC         SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-NAI-C02-PTID    TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF      SLOCK-RETURN    NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
