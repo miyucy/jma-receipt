@@ -277,6 +277,7 @@
       *  01.01.98    NACL-小豆沢  03/08/29  KOHPLUSの追加
       *  01.01.99    NACL-藤原    03/08/29  RECEPRT-KEY18〜KEY29追加
       *  01.01.100   NACL-太田    03/08/29  KOHPLUS-UPD1の追加
+      *  01.01.101   NACL-太田    03/09/02  PTNYUINRRK-KEY26追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2616,6 +2617,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY25"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY25
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY26"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY26
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-ALL"
                    MOVE    PATH-TBL-PTNYUINRRK-ALL
