@@ -34,6 +34,8 @@
            03  TNSP-SAIKETUKBN          PIC  9(01).
       *    入力チェック区分
            03  TNSP-INPCHKKBN           PIC  9(01).
+      *    添付資料用薬剤分類区分
+           03  TNSP-TENPUYAKKBN         PIC  X(02).
       *
            03  TNSP-TERMID              PIC  X(16).
            03  TNSP-OPID                PIC  X(16).
