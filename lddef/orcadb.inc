@@ -72,6 +72,7 @@ db	{
         tbl_senteicdchg;
 	tbl_ptkohftn;
 	view_Q002;
+	tbl_receden;
 };
 db	"shell"	{
 	shell;
