@@ -197,6 +197,11 @@
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
+      *    入院診療会計マスタ−
+       01  HZN-NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC"   REPLACING
+                                     //NACCT-// BY //HZN-NACCT-//.
+      *
       *    点数マスタ−
            COPY    "CPTENSU.INC".
       *
@@ -1758,6 +1763,63 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *    入院取消の時外泊は残す
+           IF      LNK-SCNYUACCT-SYORI-KBN     =   "5"
+               GO      TO      5001-NYUINACCT-DEL-EXT
+           END-IF
+      *
+      *    外泊削除
+           MOVE    ZERO                TO  WRK-CNT
+      *    診療会計マスターを特定する
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  NACCT-PTID
+           MOVE    SPA-SRYKA           TO  NACCT-SRYKA
+           MOVE    WRK-STYMD(1:6)      TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY15"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "NYUINACCT-KEY15"   TO  ORC-DBPATH
+               PERFORM 930-NYUINACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-NYUINACCT
+           END-IF
+           MOVE    ZERO                TO  FLG-DELETE
+           PERFORM
+               UNTIL  (FLG-NYUINACCT       =   1 )  OR
+                      (FLG-DELETE          =   1 )
+               ADD     1                   TO  WRK-CNT
+      *        回数がゼロか、外泊で月をすべて削除する時
+               IF      NACCT-ZAISKBKBN     =   "2"
+                   MOVE    NYUINACCT-REC       TO  HZN-NYUINACCT-REC
+               ELSE
+                   MOVE    1               TO  FLG-DELETE
+               END-IF
+      *
+               MOVE    "NYUINACCT-KEY15"   TO  ORC-DBPATH
+               PERFORM 930-NYUINACCT-READ-SEC
+           END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY15"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF      (FLG-DELETE          =   ZERO )  AND
+                   (WRK-CNT             =   1    )
+               MOVE    HZN-NYUINACCT-REC    TO  NYUINACCT-REC
+      *        診療会計削除
+               PERFORM 20012-NYUINACCT-DELETE-SEC
+           END-IF
+      *
            .
        5001-NYUINACCT-DEL-EXT.
            EXIT.
