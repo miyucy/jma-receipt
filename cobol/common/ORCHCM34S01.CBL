@@ -1235,6 +1235,7 @@
            WHEN    221 THRU    222
            WHEN    224
            WHEN    227 THRU    228
+           WHEN    230 THRU    232
                MOVE    "190108790"     TO  WRK-GAIHAKU-SRYCD
            WHEN    013 THRU    021
            WHEN    101 THRU    109
