@@ -8581,7 +8581,7 @@
       *****************************************************************
        4410-WSINPARA-SEC             SECTION.
       *
-           IF      SPA-PTID        NOT =   ZERO
+      *!   IF      SPA-PTID        NOT =   ZERO
                INITIALIZE                  ORCSCWKSRYAREA
                MOVE    "4"                 TO  ORCSCWKSRY-KBN
                MOVE    "K02N"              TO  ORCSCWKSRY-PG
@@ -8591,7 +8591,7 @@
                                            SPA-AREA
                                            SPA-K02
                                            SPA-SCR-REC
-           END-IF
+      *!   END-IF
       *
            .
        4410-WSINPARA-EXT.

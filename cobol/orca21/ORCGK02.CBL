@@ -10090,7 +10090,7 @@
       *        PERFORM 45101-SNRYO-SYORI-SEC
       **** END-IF
       *
-           IF      SPA-PTID        NOT =   ZERO
+      *!   IF      SPA-PTID        NOT =   ZERO
                INITIALIZE                  ORCSCWKSRYAREA
                MOVE    "4"                 TO  ORCSCWKSRY-KBN
                MOVE    "K02"               TO  ORCSCWKSRY-PG
@@ -10100,9 +10100,7 @@
                                            SPA-AREA
                                            SPA-K02
                                            SPA-SCR-REC
-               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           END-IF
-      *
+      *!   END-IF
            .
        4410-WSINPARA-EXT.
            EXIT.
