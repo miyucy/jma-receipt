@@ -2184,44 +2184,74 @@
       *****************************************************************
        30051-NYUINREKI-SEC         SECTION.
       *
+           MOVE    SPACE               TO  WRK-NYMD
       *    Æþ±¡ÍúÎòÈ½Äê
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
            MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
+           MOVE    LNK-ORCSC-NYUINYMD  TO  PTNYUINRRK-NYUINYMD
+           MOVE    LNK-ORCSC-TAIINYMD  TO  PTNYUINRRK-TAIINYMD
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
+           MOVE    "PTNYUINRRK-KEY11"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
+               MOVE    "PTNYUINRRK-KEY11"  TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            ELSE
                MOVE    1               TO  FLG-PTNYUINRRK
                INITIALIZE                  PTNYUINRRK-REC
            END-IF
       *
-           MOVE    SPACE               TO  WRK-NYMD
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM
-                   UNTIL      (FLG-PTNYUINRRK      =   1 )  OR
-                              (FLG-OK              =   1 )
-      *        Æþ±¡ÆüÁ°
-               IF      PTNYUINRRK-NYUINYMD     <   LNK-ORCSC-NYUINYMD
-      *            Æþ±¡Ãæ¶èÊ¬È½Äê
-                   IF      PTNYUINRRK-NYUINCHUKBN  =   "1"
-                       MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYMD
-                   END-IF
-                   MOVE    1                   TO  FLG-OK
-               END-IF
+           IF      FLG-PTNYUINRRK      =   ZERO
       *
-               MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
+      *    Æþ±¡ÍúÎòÈ½Äê
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-KEY13"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTNYUINRRK-KEY13"  TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
-           END-PERFORM
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  PTNYUINRRK-REC
+           END-IF
+           IF      FLG-PTNYUINRRK      =   ZERO
+               MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYMD
+           END-IF
+      *
+           END-IF
+      *
+      *TEST
+           DISPLAY "LNK-ORCSC-NYUINYMD:" LNK-ORCSC-NYUINYMD
+                   ",WRK-NYMD:" WRK-NYMD
+      *TEST
+      ***  MOVE    SPACE               TO  WRK-NYMD
+      *    MOVE    ZERO                TO  FLG-OK
+      *    PERFORM
+      *            UNTIL      (FLG-PTNYUINRRK      =   1 )  OR
+      *                       (FLG-OK              =   1 )
+      *        Æþ±¡ÆüÁ°
+      *        IF      PTNYUINRRK-NYUINYMD     <   LNK-ORCSC-NYUINYMD
+      *            Æþ±¡Ãæ¶èÊ¬È½Äê
+      *            IF      PTNYUINRRK-NYUINCHUKBN  =   "1"
+      *                MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYMD
+      *            END-IF
+      *            MOVE    1                   TO  FLG-OK
+      *        END-IF
+      *
+      *        MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
+      *        PERFORM 910-PTNYUINRRK-READ-SEC
+      *****END-PERFORM
       *
            IF      WRK-NYMD            =   SPACE
                MOVE    LNK-ORCSC-NYUINYMD  TO  WRK-NYMD
