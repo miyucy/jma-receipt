@@ -280,10 +280,10 @@
                05  WK-FREE-YUKOKETA          PIC  9(02).
                05  WK-FREE-NAME              PIC  X(200).
       *
-       01  WRK-FREE-AREA2.                                              0304
-           03  WRK-FREEINF2                    OCCURS 50.               0304
-               05  WK-FREE-YUKOKETA2         PIC  9(02).                0304
-               05  WK-FREE-NAME2             PIC  X(200).               0304
+       01  WRK-FREE-AREA2.                                              
+           03  WRK-FREEINF2                    OCCURS 50.               
+               05  WK-FREE-YUKOKETA2         PIC  9(02).                
+               05  WK-FREE-NAME2             PIC  X(200).               
       *
       *理学療法剤番号退避領域
        01  WRK-TAIHI-ZAINUM.
@@ -2329,10 +2329,10 @@
       *
            PERFORM   2001-SANTEI-DAY-SEC
       *
-           MOVE       ZERO       TO   IDZ                               0304
-           INITIALIZE            WRK-FREE-AREA2                         0304
+           MOVE       ZERO       TO   IDZ                               
+           INITIALIZE            WRK-FREE-AREA2                         
       *
-           PERFORM  2002-FREE-COMMENT2-SEC                              0304
+           PERFORM  2002-FREE-COMMENT2-SEC                              
       *
       *    ※明細が５以上の場合
            INITIALIZE                      RECE05-REC
@@ -2513,7 +2513,7 @@
       *****************************************************************
       *    手術日等の日付の編集
       *****************************************************************
-       2002-FREE-COMMENT2-SEC          SECTION.                         0304
+       2002-FREE-COMMENT2-SEC          SECTION.                         
       *
            ADD      1          TO    IDZ
       *
@@ -2668,7 +2668,7 @@
       *****************************************************************
       *    手術日等の日付の編集（改行）
       *****************************************************************
-       2002-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  0304
+       2002-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  
       *
            ADD      1              TO  IDZ
       *
