@@ -62,6 +62,8 @@ tbl_ptinf {
 	ED_SRYYMD			char(8),virtual;
 	NYUGAIKBN			char(1),virtual;
 	HKNKBN				char(1),virtual;
+	SRYYMD				char(8),virtual;
+	SRYYM				char(6),virtual;
 };
 
 primary	{
@@ -225,6 +227,60 @@ path	key12	{
 		AND nyugaikbn	=	:NYUGAIKBN 
 		AND hknkbn	=	:HKNKBN 
 		group by ptid) b 
+		WHERE a.hospid	=	:HOSPID 
+		AND a.ptid	=	b.ptid 
+		AND a.tstptnumkbn	<>	'1'
+		;
+	};
+};
+path	key13	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key13_csr CURSOR FOR
+		SELECT a.ptid from tbl_ptinf a, 
+		(SELECT distinct ptid from tbl_jyurrk 
+		WHERE hospid	=	:HOSPID 
+		AND sryymd	LIKE	:SRYYMD
+		AND (upymd 	<=	:ED_SRYYMD 
+		AND upymd 	>=	:ST_SRYYMD) 
+		AND nyugaikbn	=	:NYUGAIKBN 
+		AND hknkbn	=	:HKNKBN 
+		group by ptid 
+		UNION
+		SELECT distinct ptid from tbl_receupd
+		WHERE hospid	=	:HOSPID 
+		AND sryym 	=	:SRYYM 
+		AND nyugaikbn	=	:NYUGAIKBN 
+                AND (upymd      <=      :ED_SRYYMD
+                AND upymd       >=      :ST_SRYYMD)
+		AND hknkbn	=	:HKNKBN 
+		group by ptid) b
+		WHERE a.hospid	=	:HOSPID 
+		AND a.ptid	=	b.ptid 
+		AND a.tstptnumkbn	<>	'1'
+		;
+	};
+};
+path	key14	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key14_csr CURSOR FOR
+		SELECT a.* from tbl_ptinf a, 
+		(SELECT distinct ptid from tbl_jyurrk 
+		WHERE hospid	=	:HOSPID 
+		AND sryymd	LIKE	:SRYYMD
+		AND (upymd 	<=	:ED_SRYYMD 
+		AND upymd 	>=	:ST_SRYYMD) 
+		AND nyugaikbn	=	:NYUGAIKBN 
+		AND hknkbn	=	:HKNKBN 
+		group by ptid 
+		UNION
+		SELECT distinct ptid from tbl_receupd
+		WHERE hospid	=	:HOSPID 
+		AND sryym 	=	:SRYYM 
+		AND nyugaikbn	=	:NYUGAIKBN 
+                AND (upymd      <=      :ED_SRYYMD
+                AND upymd       >=      :ST_SRYYMD)
+		AND hknkbn	=	:HKNKBN 
+		group by ptid) b
 		WHERE a.hospid	=	:HOSPID 
 		AND a.ptid	=	b.ptid 
 		AND a.tstptnumkbn	<>	'1'

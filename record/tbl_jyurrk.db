@@ -1,7 +1,7 @@
 tbl_jyurrk {
 	HOSPID				char(24);
 	PTID 				number(10);
-        NYUGAIKBN                       char(1);
+	NYUGAIKBN			char(1);
 	SRYKA				char(2);
 	SRYYMD				char(8);
 	RENNUM				number(1);
@@ -654,6 +654,18 @@ path	st_key1 	{
 		a.RENNUM,
 		a.DOUJI_RENNNUM,
 		a.EDANUM
+		;
+	};
+};
+
+path	key27 	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key27_csr CURSOR FOR
+		SELECT distinct hospid,ptid,nyugaikbn,sryka,substring(sryymd,1,6) as sryymd,hknkbn
+		FROM tbl_jyurrk
+			WHERE HOSPID      =    :HOSPID
+			AND   PTID        =    :PTID
+			AND   SRYYMD      LIKE :SRYYMD
 		;
 	};
 };
