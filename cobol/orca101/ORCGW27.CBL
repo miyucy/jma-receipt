@@ -27,6 +27,8 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  00.00.01    ÂÀÅÄ         03/05/01  ¹¹¿·»þ¤Ë½èÍý¤¬¥ë¡¼¥×¤¹¤ë
+      *                                     ÉÔ¶ñ¹ç¤ò½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -70,6 +72,7 @@
            03  IDX3                                PIC 9(05).
            03  IDX4                                PIC 9(05).
            03  IDX5                                PIC 9(05).
+           03  IDX6                                PIC 9(05).
            03  IDXI                                PIC 9(05).
       *
       *    °ì»þÎÎ°è
@@ -932,12 +935,12 @@
            END-IF
       *
       *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   3 )
-               IF    ( SPA-GMN-W27-CHK-BTU-RYOYO  (IDX1)  =   "F" )
-                   MOVE    "1"     TO  SYS-5002-BTU-RYOYO-KBN (IDX1)
+           PERFORM VARYING IDX6    FROM    1   BY  1
+                   UNTIL ( IDX6    >   3 )
+               IF    ( SPA-GMN-W27-CHK-BTU-RYOYO  (IDX6)  =   "F" )
+                   MOVE    "1"     TO  SYS-5002-BTU-RYOYO-KBN (IDX6)
                ELSE
-                   MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (IDX1)
+                   MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (IDX6)
                END-IF
            END-PERFORM
            .
