@@ -24,6 +24,10 @@
       *
         02  I04.
       *     02  I04-FIXED3.
+              03  I04-LBLTAIINKEISAN-G.
+                04  I04-LBLTAIINKEISAN-STYLE
+                                         PIC X(20).
+                04  I04-LBLTAIINKEISAN   PIC X(20).
               03  I04-PTNUM.
                 04  I04-VALUE   PIC X(20).
               03  I04-KANANAME.

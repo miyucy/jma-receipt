@@ -665,6 +665,7 @@
                WHEN    "K02"
                WHEN    "K02N"
                WHEN    "U02"
+               WHEN    "I01"
       *            他の業務より遷移時の初期処理
                    PERFORM 320-SENIJI-SYOGMN-EDIT-SEC
                    GO  TO  300-SCREEN-EXT
@@ -2084,7 +2085,8 @@
       *
       *    診療行為より遷移時、診療行為へ
            MOVE    SPACE               TO  LINKAREA
-           IF    ( SPA-MOTOPG2         =   "K02" OR "K02N" OR "U02" )
+           IF    ( SPA-MOTOPG2         =   "K02" OR "K02N"
+                                       OR  "U02" OR "I01" )
                MOVE    SPA-MOTOPG2     TO  SPA-SAKIPG
                MOVE    "S02"           TO  SPA-MOTOPG
                MOVE    SPACE           TO  SPA-MOTOPG2

@@ -31,7 +31,7 @@
                 05  I01-SYORIKBN                   PIC X(23).
                 05  I01-SYORIKBN-CNT               PIC S9(9)   BINARY.
                 05  I01-SYORIKBN-ITM               PIC X(23)
-                                                   OCCURS  10.
+                                                   OCCURS  20.
               04  I01-IDOYMD                       PIC X(10).
               04  I01-IDOYMD-STT                   PIC S9(9)   BINARY.
               04  I01-MAEIDOYMD                    PIC X(9).

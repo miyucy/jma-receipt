@@ -1,5 +1,9 @@
 I04	{
 	fixed3	{
+		LBLTAIINKEISAN	{
+			style   varchar(20);
+			value	varchar(20);
+		};
 		PTNUM	{
 			value	varchar(20);
 		};

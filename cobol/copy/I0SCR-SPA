@@ -245,7 +245,7 @@
                  11  SPA-GMN-I01-CMB-SYORIKBN.
                    13  SPA-GMN-I01-SYORIKBN-CNT    PIC S9(9)   BINARY.
                    13  SPA-GMN-I01-SYORIKBN-ITM    PIC X(23)
-                                           OCCURS  10
+                                           OCCURS  20
                                            INDEXED BY  CMB-IDX01.
       *          病棟番号コンボ
                  11  SPA-GMN-I01-CMB-BTUNAME.
