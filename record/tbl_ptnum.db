@@ -40,6 +40,19 @@ path	key2 	{
 	};
 };
 
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_ptnum_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnum
+			WHERE   (HOSPID       =   :HOSPID)  AND
+		        	(PTNUM       >= :PTNUM)
+			ORDER  BY  PTNUM
+		;
+	};
+};
+
 path	all 	{
 	DBSELECT	{
 		DECLARE tbl_ptnum_all_csr CURSOR FOR

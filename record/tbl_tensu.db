@@ -962,9 +962,20 @@ path	key20   	{
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
 			WHERE a.SRYCD    =   b.SRYCD
-			AND   YUKOEDYMD  =   :YUKOEDYMD
+			AND   YUKOEDYMD  =  :YUKOEDYMD
 			ORDER  BY  SRYCD
+		;
+	};
+};
 
+path	key21   	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key21_csr CURSOR FOR
+		SELECT *
+                FROM tbl_tensu
+			WHERE SRYCD      =   :SRYCD
+			AND   YUKOSTYMD  >   :YUKOSTYMD
+			ORDER  BY  YUKOSTYMD
 		;
 	};
 };
