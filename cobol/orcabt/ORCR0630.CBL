@@ -295,8 +295,6 @@
                         UNTIL     GENSAN-IDX   >   4
                     IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"    
                         EVALUATE  GENSAN-IDX
-      **>                   WHEN  1
-      **>                       ?? 
                             WHEN  2
                                 COMPUTE WRK-MIJISI = WRK-MIJISI
                                                    + 5
@@ -519,7 +517,7 @@
                            END-IF
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
-                                IF   ACCT-SRYKBN  =  "90"  
+                                IF   ACCT-SRYKBN  =  "90" OR "92"   
                                     PERFORM   NYUINRYO-TAIHI-SEC
                                 END-IF
                            END-IF
@@ -904,7 +902,7 @@
                                                RECE62-HKNCOMBI (IDX1)
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
-                                IF   ACCT-SRYKBN  =  "90"  
+                                IF   ACCT-SRYKBN  =  "90" OR "92"  
                                     PERFORM      RECE62-TENSOU23-SEC
                                 END-IF
                            END-IF
@@ -1605,7 +1603,7 @@
                                                RECE62-HKNCOMBI (IDX1)
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
-                                IF   ACCT-SRYKBN  =  "90"  
+                                IF   ACCT-SRYKBN  =  "90" OR "92"  
                                     PERFORM   ACCTKHN-GET3-SEC
                                 END-IF
                            END-IF
@@ -1835,8 +1833,6 @@
                         MOVE    "197000570"  TO  WRK-SRYCD
                         PERFORM  NYUINKHN-SET4-SEC
                      END-IF
-      *              MOVE    "197000470"  TO  WRK-SRYCD
-      *              PERFORM  NYUINKHN-SET4-SEC
              WHEN  3
                      MOVE    "197000110"  TO  WRK-SRYCD
                      PERFORM  NYUINKHN-SET4-SEC
@@ -1848,8 +1844,6 @@
                         MOVE    "197000570"  TO  WRK-SRYCD
                         PERFORM  NYUINKHN-SET4-SEC
                      END-IF
-      *              MOVE    "197000670"  TO  WRK-SRYCD
-      *              PERFORM  NYUINKHN-SET4-SEC
            END-EVALUATE
       *
            .
@@ -2138,7 +2132,7 @@
                MOVE    WRK-RECEERR         TO  RECEERR-REC
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
-      *         
+      *
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
