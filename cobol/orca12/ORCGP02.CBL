@@ -330,6 +330,9 @@
        01  PTTEIKIRRK-REC.
            COPY    "CPPTTEIKIRRK.INC".
       *
+      *    孟数给锐懒滇今
+           COPY    "CPKOHSKY.INC".
+      *
       *****************************************************************
       *    サブプロ脱　挝拌
       *****************************************************************
@@ -2075,6 +2078,18 @@
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "PTTEIKIRRK-DEL1"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    孟数给锐懒滇今
+           INITIALIZE                      KOHSKY-REC
+           MOVE    SPA-HOSPID          TO  KOHSKY-HOSPID
+           MOVE    SPA-GMN-PTID        TO  KOHSKY-PTID
+           MOVE    KOHSKY-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "KOHSKY-DEL3"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
