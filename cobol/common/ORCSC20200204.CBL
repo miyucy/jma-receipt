@@ -1527,15 +1527,16 @@
                GO      TO      30011-GENTUIKA-EXT
            END-IF
       *
-           IF      IDX-S               =   1
+           IF     (IDX-S               =   200)  OR
+                  (WRK-COM-SRYKBN (IDX-S + 1)(1:1) NOT =   "2")
                MOVE    "21"                TO  WRK-COM-SRYKBN(IDX-S)
                MOVE    "21"                TO  WRK-GMN-SRYKBN(IDX-S)
                MOVE    "210"               TO  WRK-COM-SRYSYUKBN(IDX-S)
            ELSE
-               MOVE    WRK-COM-SRYKBN (IDX-S - 1)
+               MOVE    WRK-COM-SRYKBN (IDX-S + 1)
                                            TO  WRK-COM-SRYKBN(IDX-S)
                MOVE    SPACE               TO  WRK-GMN-SRYKBN(IDX-S)
-               MOVE    WRK-COM-SRYSYUKBN (IDX-S - 1)
+               MOVE    WRK-COM-SRYSYUKBN (IDX-S + 1)
                                            TO  WRK-COM-SRYSYUKBN(IDX-S)
            END-IF
       *
