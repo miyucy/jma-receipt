@@ -134,7 +134,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:28 GMT</last_modification_time>
       </signal>
-      <label>追加</label>
+      <label>前頁</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -157,7 +157,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:36 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>全体表示</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -203,7 +203,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:48 GMT</last_modification_time>
       </signal>
-      <label>変更</label>
+      <label>次頁</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -323,11 +323,34 @@
     </widget>
 
     <widget>
+      <class>GtkButton</class>
+      <name>B22</name>
+      <x>776</x>
+      <y>696</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F10</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:44:14 GMT</last_modification_time>
+      </signal>
+      <label>ＣＤ表示</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
       <class>GtkNumberEntry</class>
       <name>BANGO</name>
       <x>360</x>
       <y>432</y>
-      <width>40</width>
+      <width>50</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -343,182 +366,14 @@
 	<last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
       </signal>
       <editable>True</editable>
-      <format>ZZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>BYOMEICD_1</name>
-      <x>360</x>
-      <y>536</y>
-      <width>96</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 31 Jan 2001 01:21:46 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 31 Jan 2001 01:22:18 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>7</text_max_length>
-      <text>12345</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>BYOMEICD_2</name>
-      <x>464</x>
-      <y>536</y>
-      <width>96</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Tue, 26 Dec 2000 01:07:59 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Tue, 26 Dec 2000 01:08:17 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>7</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>BYOMEICD_3</name>
-      <x>568</x>
-      <y>536</y>
-      <width>96</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Tue, 26 Dec 2000 01:08:42 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Tue, 26 Dec 2000 01:08:57 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>7</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>BYOMEICD_4</name>
-      <x>672</x>
-      <y>536</y>
-      <width>96</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Tue, 26 Dec 2000 01:09:18 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Tue, 26 Dec 2000 01:09:32 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>7</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>BYOMEICD_5</name>
-      <x>776</x>
-      <y>536</y>
-      <width>96</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Tue, 26 Dec 2000 01:09:53 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Tue, 26 Dec 2000 01:10:06 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>7</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>BYOMEICD_6</name>
-      <x>880</x>
-      <y>536</y>
-      <width>96</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Tue, 26 Dec 2000 01:10:22 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Tue, 26 Dec 2000 01:10:36 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>7</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
       <class>GtkPandaEntry</class>
       <name>BYOMEI</name>
       <x>360</x>
-      <y>572</y>
+      <y>536</y>
       <width>616</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -546,7 +401,7 @@
       <class>GtkPandaEntry</class>
       <name>CHARTBYOMEI</name>
       <x>360</x>
-      <y>608</y>
+      <y>572</y>
       <width>616</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -717,7 +572,7 @@
       <class>GtkNumberEntry</class>
       <name>DSPSEQ</name>
       <x>360</x>
-      <y>672</y>
+      <y>640</y>
       <width>40</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -766,8 +621,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Fri, 07 Sep 2001 04:48:18 GMT</last_modification_time>
 	</signal>
-	<columns>9</columns>
-	<column_widths>35,130,85,330,180,35,35,35,35</column_widths>
+	<columns>10</columns>
+	<column_widths>35,130,85,50,330,140,35,35,35,35</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -803,6 +658,19 @@
 	  <child_name>CList:title</child_name>
 	  <name>label492</name>
 	  <label>入力コード</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label550</name>
+	  <label>種別</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -895,7 +763,7 @@
       <class>GtkPandaCombo</class>
       <name>UTAGAIFLGCOMBO</name>
       <x>360</x>
-      <y>640</y>
+      <y>608</y>
       <width>112</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -964,7 +832,7 @@
       <class>GtkPandaCombo</class>
       <name>HKNBYOMEIFLGCOMBO</name>
       <x>864</x>
-      <y>640</y>
+      <y>608</y>
       <width>112</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -1004,6 +872,45 @@
     </widget>
 
     <widget>
+      <class>GtkPandaCombo</class>
+      <name>BYOMEISBTCOMBO</name>
+      <x>650</x>
+      <y>464</y>
+      <width>112</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>0  病名</items>
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>BYOMEISBT</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>10</text_max_length>
+	<text>0 病名</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
       <name>label584</name>
       <x>408</x>
@@ -1023,7 +930,7 @@
       <class>GtkPandaCombo</class>
       <name>MANSEIFLGCOMBO</name>
       <x>545</x>
-      <y>640</y>
+      <y>608</y>
       <width>250</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -1065,7 +972,7 @@
       <class>GtkLabel</class>
       <name>label585</name>
       <x>280</x>
-      <y>672</y>
+      <y>640</y>
       <width>72</width>
       <height>24</height>
       <label>表示連番</label>
@@ -1081,10 +988,10 @@
       <class>GtkLabel</class>
       <name>label481</name>
       <x>280</x>
-      <y>640</y>
+      <y>604</y>
       <width>80</width>
       <height>24</height>
-      <label>疑    い      </label>
+      <label>疑    い</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -1097,7 +1004,7 @@
       <class>GtkLabel</class>
       <name>label582</name>
       <x>280</x>
-      <y>604</y>
+      <y>568</y>
       <width>80</width>
       <height>24</height>
       <label>カルテ病名</label>
@@ -1113,26 +1020,10 @@
       <class>GtkLabel</class>
       <name>label502</name>
       <x>280</x>
-      <y>572</y>
-      <width>72</width>
-      <height>24</height>
-      <label>病    名    </label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label526</name>
-      <x>280</x>
       <y>536</y>
       <width>72</width>
       <height>24</height>
-      <label>病名コード</label>
+      <label>病    名    </label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -1191,9 +1082,25 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>label576</name>
+      <x>580</x>
+      <y>464</y>
+      <width>60</width>
+      <height>24</height>
+      <label>病名種別</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>label484</name>
       <x>484</x>
-      <y>640</y>
+      <y>604</y>
       <width>64</width>
       <height>24</height>
       <label>疾患区分</label>
@@ -1209,7 +1116,7 @@
       <class>GtkLabel</class>
       <name>label505</name>
       <x>800</x>
-      <y>640</y>
+      <y>604</y>
       <width>64</width>
       <height>24</height>
       <label>保険病名</label>

@@ -1,0 +1,10 @@
+CID4	{
+	fixed1	{
+		ID1CODE	{
+			value	char(10);
+		};
+		ID1MSG	{
+			value	char(70);
+		};
+	};
+};

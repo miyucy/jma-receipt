@@ -20,6 +20,10 @@
       *****************************************************************
       *  修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03/10/28  病名コードを２１に変更
+      *                                     病名コード数を９（２）に変更
+      *                                     病名種別・基本病名コード・
+      *                                     基本部位コードを追加
       *****************************************************************
       *
       *01  USERBYOMEI-REC.
@@ -35,7 +39,7 @@
       *表示連番
            03  USBYO-DSPSEQ            PIC 9(02).
       *病名コード数
-           03  USBYO-BYOMEICDSU        PIC 9(01).
+           03  USBYO-BYOMEICDSU        PIC 9(02).
       *病名コード
            03  USBYO-BYOMEICD-G.
                05  USBYO-BYOMEICD-1    PIC X(07).
@@ -44,10 +48,25 @@
                05  USBYO-BYOMEICD-4    PIC X(07).
                05  USBYO-BYOMEICD-5    PIC X(07).
                05  USBYO-BYOMEICD-6    PIC X(07).
+               05  USBYO-BYOMEICD-7    PIC X(07).
+               05  USBYO-BYOMEICD-8    PIC X(07).
+               05  USBYO-BYOMEICD-9    PIC X(07).
+               05  USBYO-BYOMEICD-10   PIC X(07).
+               05  USBYO-BYOMEICD-11   PIC X(07).
+               05  USBYO-BYOMEICD-12   PIC X(07).
+               05  USBYO-BYOMEICD-13   PIC X(07).
+               05  USBYO-BYOMEICD-14   PIC X(07).
+               05  USBYO-BYOMEICD-15   PIC X(07).
+               05  USBYO-BYOMEICD-16   PIC X(07).
+               05  USBYO-BYOMEICD-17   PIC X(07).
+               05  USBYO-BYOMEICD-18   PIC X(07).
+               05  USBYO-BYOMEICD-19   PIC X(07).
+               05  USBYO-BYOMEICD-20   PIC X(07).
+               05  USBYO-BYOMEICD-21   PIC X(07).
       *
            03  USBYO-BYOMEICD-R        REDEFINES   USBYO-BYOMEICD-G.
                05  USBYO-BYOMEICD      PIC X(07)
-                                       OCCURS   6.
+                                       OCCURS   21.
       *疑いフラグ
            03  USBYO-UTAGAIFLG         PIC X(01).
       *慢性区分
@@ -64,6 +83,13 @@
            03  USBYO-BYOMEIHENFLG      PIC X(01).
       *保険病名フラグ
            03  USBYO-HKNBYOMEIFLG      PIC X(01).
+      *病名種別
+           03  USBYO-BYOMEISBT         PIC X(01).
+      *基本病名コード
+           03  USBYO-KHNBYOMEICD       PIC X(07).
+      *基本部位コード
+           03  USBYO-KHNBUICD-G.
+               05  USBYO-KHNBUICD      PIC X(07)   OCCURS  3.
       *端末ＩＤ
            03  USBYO-TERMID            PIC X(16).
       *オペーレータＩＤ

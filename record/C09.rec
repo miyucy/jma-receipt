@@ -1,0 +1,16 @@
+C09	{
+	fixed6	{
+		scrolledwindow28	{
+			BYOMEICDLST	{
+				count	int;
+				row 	int;
+				rowattr	int;
+				item	{
+					value0	varchar(7);
+					value1	varchar(40);
+				}	[21];
+				select	bool[21];
+			};
+		};
+	};
+};

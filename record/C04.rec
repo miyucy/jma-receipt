@@ -1,7 +1,7 @@
 C04	{
 	fixed6	{
 		SELNUM2	{
-			value	number(3);
+			value	number(5);
 		};
 		INPUTCD1	{
 			value	varchar(11);
@@ -24,7 +24,7 @@ C04	{
 		BYOMEI	{
 			value	varchar(401);
 		};
-		SELNUM1	{
+		BUNRUICD	{
 			value	number(3);
 		};
 		KENBYOMEI	{
@@ -33,6 +33,8 @@ C04	{
 		SCR_ACTLST	{
 			BUNRUILST	{
 				count	int;
+				row 	int;
+				rowattr	int;
 				item	{
 					value1	varchar(4);
 					value2	varchar(20);
@@ -43,12 +45,14 @@ C04	{
 		scrolledwindow28	{
 			BYOMEILST	{
 				count	int;
+				row 	int;
+				rowattr	int;
 				item	{
-					value1	varchar(4);
+					value1	varchar(5);
 					value3	varchar(10);
 					value4	varchar(80);
 				}	[700];
-				select	bool[700];
+				select	bool[100];
 			};
 		};
 	};

@@ -15,9 +15,12 @@ SCREEN_screen = \
 	C06.glade \
 	C07.glade \
 	C08.glade \
+	C09.glade \
 	CERR.glade \
 	CID1.glade \
 	CID2.glade \
+	CID3.glade \
+	CID4.glade \
 	D01.glade \
 	D99.glade \
 	DERR.glade \

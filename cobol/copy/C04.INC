@@ -17,18 +17,20 @@
       ********************************************************************
           02  C04.
               03  C04-SELNUM2.
-                04  C04-VALUE   PIC S9(3).
+                04  C04-VALUE   PIC S9(5).
               03  C04-INPUTCD-G.
                 04  C04-INPUTCD PIC X(11)    OCCURS  6.
               03  C04-BYOMEI.
                 04  C04-VALUE   PIC X(401).
-              03  C04-SELNUM1.
+              03  C04-BUNRUICD.
                 04  C04-VALUE   PIC S9(3).
               03  C04-KENBYOMEI.
                 04  C04-VALUE   PIC X(51).
               03  C04-SCR-ACTLST.
                 04  C04-BUNRUILST.
                   05  C04-BUNRUI-COUNT   PIC S9(9)   BINARY.
+                  05  C04-BUNRUI-ROW     PIC S9(9)   BINARY.
+                  05  C04-BUNRUI-ROWATTR PIC S9(9)   BINARY.
                   05  C04-ITEM        OCCURS  100 TIMES.
                     06  C04-BBUNRUICD    PIC X(4).
                     06  C04-BBUNRUIMEI   PIC X(20).
@@ -36,8 +38,10 @@
               03  C04-SCROLLEDWINDOW28.
                 04  C04-BYOMEILST.
                   05  C04-BYOMEILST-COUNT   PIC S9(9)   BINARY.
+                  05  C04-BYOMEILST-ROW     PIC S9(9)   BINARY.
+                  05  C04-BYOMEILST-ROWATTR PIC S9(9)   BINARY.
                   05  C04-ITEM        OCCURS  700 TIMES.
-                    06  C04-TBANGO          PIC X(4).
+                    06  C04-TBANGO          PIC X(5).
                     06  C04-TBYOMEIINPUTCD  PIC X(10).
                     06  C04-TBYOMEI         PIC X(80).
-                  05  C04-BYOMEILST-SELECT  PIC X   OCCURS  700 TIMES.
+                  05  C04-BYOMEILST-SELECT  PIC X   OCCURS  100 TIMES.

@@ -25,35 +25,35 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/08/20  病名コード移行用項目の追加
       *  01.00.02    NACL-藤原    03/05/16  コラムリストの分類名を３０に変更
+      *
+      *  01.01.01    NACL-藤原    03/08/28  登録数の制限をなくす
       *****************************************************************
       *
       *01  SPA-SCR-REC.
       *
            03  SPA-C03-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
-               05  SPA-GMN-LINE        PIC 9(02).
                05  SPA-GMN-MAX         PIC 9(04).
-               05  SPA-DEL-MAX         PIC 9(04).
                05  SPA-GMN-CUR         PIC 9(02).
+               05  SPA-GMN-NEXT        PIC 9(01).
                05  SPA-GMN-AREA.
                    07  SPA-GMN.
                        09  SPA-GMN-BUNRUICD-TBL.
                            11  SPA-GMN-BUNRUICD-TBLO   OCCURS   100.
                                13  SPA-GMN-BBUNRUICD   PIC 9(03).
-      *************************13  SPA-GMN-BBUNRUIMEI  PIC X(20).
                                13  SPA-GMN-BBUNRUIMEI  PIC X(30).
                            11  SPA-GMN-BUNRUI-MAX      PIC 9(04).
       *
                        09  SPA-GMN-BYOMEI-TBL.
-                           11  SPA-GMN-TBLO            OCCURS   700.
-                               13  SPA-GMN-TBANGO      PIC 9(03).
-      *************************13  SPA-GMN-TBUNRUIMEI  PIC X(16).
+                           11  SPA-GMN-TBLO            OCCURS   100.
+                               13  SPA-GMN-TBANGO      PIC 9(05).
                                13  SPA-GMN-TBUNRUIMEI  PIC X(30).
                                13  SPA-GMN-TBYOMEIINPUTCD
                                                        PIC X(10).
-                               13  SPA-GMN-TBYOMEI     PIC X(81).
+                               13  SPA-GMN-TBYOMEISBT  PIC X(06).
+                               13  SPA-GMN-TBYOMEI     PIC X(80).
                                13  SPA-GMN-TCHARTBYOMEI
-                                                       PIC X(81).
+                                                       PIC X(80).
                                13  SPA-GMN-TUTAGAIFLG  PIC X(14).
                                13  SPA-GMN-TMANSEIKBN  PIC X(42).
                                13  SPA-GMN-THKNBYOMEIFLG
@@ -61,13 +61,13 @@
                                13  SPA-GMN-TDSPSEQ     PIC 9(02).
       *                 
                        09  SPA-GMN-KOUMOKU.
-                           11  SPA-GMN-BANGO           PIC 9(03).
+                           11  SPA-GMN-BANGO           PIC 9(05).
                            11  SPA-GMN-BUNRUICD        PIC 9(03).
                            11  SPA-GMN-BUNRUIMEI       PIC X(30).
                            11  SPA-GMN-BYOMEIINPUTCD   PIC X(10).
                            11  SPA-GMN-BYOMEICD-G.
-                               13  SPA-GMN-BYOMEICD    OCCURS  6
-                                                       PIC X(7).
+                               13  SPA-GMN-BYOMEICD    OCCURS  21
+                                                       PIC X(07).
                            11  SPA-GMN-UTAGAIFLG-G.
                                13  SPA-GMN-UTAGAIFLG   PIC X(01).
                                13  SPA-GMN-F1          PIC X(01).
@@ -86,6 +86,10 @@
                                13  SPA-GMN-HKNBYOMEIFLG    PIC X(01).
                                13  SPA-GMN-F1              PIC X(01).
                                13  SPA-GMN-HKNBYOMEIFLGMEI PIC X(08).
+                           11  SPA-GMN-BYOMEISBT-G.
+                               13  SPA-GMN-BYOMEISBT       PIC X(01).
+                               13  SPA-GMN-F1              PIC X(01).
+                               13  SPA-GMN-BYOMEISBTMEI    PIC X(06).
       *
                        09  SPA-GMN-UTAGAIFLGLST        OCCURS  5.
                            11  SPA-GMN-UTAGAIFLGL      PIC X(01).
@@ -105,6 +109,11 @@
                            11  SPA-GMN-HKNBYOMEIFLGMEIL
                                                        PIC X(08).
                        09  SPA-GMN-HKNBYOMEIFLG-MAX    PIC 9(02).                                    
+                       09  SPA-GMN-BYOMEISBTLST        OCCURS  4.
+                           11  SPA-GMN-BYOMEISBTL      PIC X(01).
+                           11  SPA-GMN-F1L             PIC X(01).
+                           11  SPA-GMN-BYOMEISBTMEIL   PIC X(06).
+                       09  SPA-GMN-BYOMEISBT-MAX       PIC 9(02).                                    
       *
                    07  SPA-NAIB-AREA.
                        09  SPA-NAI-KOUMOKU.
@@ -113,7 +122,7 @@
                            11  SPA-NAI-BYOMEIHENFLG    PIC X(01).
                            11  SPA-NAI-CHARTBYOMEIMOJI PIC 9(02).
                            11  SPA-NAI-BYOMEI-TBL.
-                               13  SPA-NAI-BYOMEI-OCC  OCCURS  6.
+                               13  SPA-NAI-BYOMEI-OCC  OCCURS  21.
                                    15  SPA-NAI-BYOMEI-G.
                                        17  SPA-NAI-BYOMEI  
                                                        PIC X(80).
@@ -121,36 +130,13 @@
                                                        PIC X(01).
                                        17  SPA-NAI-TOKSKNCD
                                                        PIC 9(02).
-                           11  SPA-NAI-BYOMEICD-MAX    PIC 9(01).        
+                           11  SPA-NAI-UPDFLG          PIC 9(01). 
       *
                        09  SPA-NAI-TBL.
-                           11  SPA-NAI-TBLO         OCCURS   700.
-                               13  SPA-NAI-TRENNUM      PIC 9(03). 
-                               13  SPA-NAI-TKEY.
-                                   15  SPA-NAI-TDSPSEQ  PIC 9(02).
-                                   15  SPA-NAI-TBYOMEIINPUTCD
-                                                        PIC X(10).
-                               13  SPA-NAI-TBUNRUICD    PIC 9(03).                         
-                               13  SPA-NAI-TCDSYU       PIC X(01).    
-                               13  SPA-NAI-TBYOMEIHENFLG
-                                                        PIC X(01).
-                               13  SPA-NAI-TBYOMEICD-G.
-                                   15  SPA-NAI-TBYOMEICD
-                                                        PIC X(07)
-                                                            OCCURS  6.
-                               13  SPA-NAI-TBYOMEICDSU  PIC 9(01).                                                           
-                               13  SPA-NAI-TUTAGAIFLG   PIC X(01).
-                               13  SPA-NAI-TMANSEIKBN   PIC 9(02).
-                               13  SPA-NAI-THKNBYOMEIFLG
-                                                        PIC X(01).
-                               13  SPA-NAI-TBYOMEIMOJI  PIC 9(02).
-                               13  SPA-NAI-TCHARTBYOMEIMOJI
-                                                        PIC 9(02). 
-                               13  SPA-NAI-TUPDFLG      PIC 9(01).
+                           11  SPA-NAI-TBLO         OCCURS   100.
+                               13  SPA-NAI-TCDSYU      PIC X(01).    
       *                         
                        09  SPA-NAI-SELNO                PIC 9(03).
-      *            更新フラグ
-                       09  SPA-C03-UPDFLG               PIC X(01).
       *            病名コード移行用領域
                        09  SPA-C03-IKOSAKI-BYOMEICD
                                                    PIC X(07).
@@ -159,8 +145,3 @@
                        09  SPA-C03-IKOMOTO-BYOMEICD
                                                    PIC X(07).
                        09  SPA-C03-IKOMOTO-BYOMEI  PIC X(200).
-      *
-                       09  SPA-DEL-TBL.
-                           11  SPA-DEL-TBLO             OCCURS   700.
-                               15  SPA-DEL-TBYOMEIINPUTCD   PIC X(10).
-                               15  SPA-DEL-TCDSYU           PIC X(01).

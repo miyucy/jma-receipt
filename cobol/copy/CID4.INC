@@ -15,16 +15,9 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  C08.
-              03  C08-SELNUM.
-                04  C08-VALUE  PIC S9(3).
-              03  C08-SCROLLEDWINDOW1.
-                04  C08-BUNREILIST.
-                  05  C08-BUNREI-COUNT  PIC S9(9)   BINARY.
-                  05  C08-BUNREI-ROW    PIC S9(9)   BINARY.
-                  05  C08-BUNREI-ROWATTR
-                                        PIC S9(9)   BINARY.
-                  05  C08-ITEM          OCCURS  200 TIMES.
-                    06  C08-TRENNUM        PIC X(3).
-                    06  C08-TCOMMENT       PIC X(100).
-                  05  C08-BUNREI-SELECT PIC X       OCCURS  200 TIMES.
+        02  CID4.
+            03  CID4-FIXED1.
+              04  CID4-ID1CODE.
+                05  CID4-VALUE  PIC X(10).
+              04  CID4-ID1MSG.
+                05  CID4-VALUE  PIC X(70).

@@ -5,14 +5,34 @@ tbl_ptbyomei {
 	SRYYMD				char(8);
 	RENNUM  			number(2);
 	KHNBYOMEICD			char(7);
-	BYOMEIINPUTCD		varchar(20);
-	BYOMEICDSU			number(1);
+	BYOMEIINPUTCD_1		varchar(20);
+	BYOMEIINPUTCD_2		varchar(20);
+	BYOMEIINPUTCD_3		varchar(20);
+	BYOMEIINPUTCD_4		varchar(20);
+	BYOMEIINPUTCD_5		varchar(20);
+	BYOMEIINPUTCD_6		varchar(20);
+	BYOMEICDSU			number(2);
 	BYOMEICD_1			char(7);
 	BYOMEICD_2			char(7);
 	BYOMEICD_3 			char(7);
 	BYOMEICD_4			char(7);
 	BYOMEICD_5			char(7);
 	BYOMEICD_6			char(7);
+	BYOMEICD_7			char(7);
+	BYOMEICD_8			char(7);
+	BYOMEICD_9 			char(7);
+	BYOMEICD_10			char(7);
+	BYOMEICD_11			char(7);
+	BYOMEICD_12			char(7);
+	BYOMEICD_13			char(7);
+	BYOMEICD_14			char(7);
+	BYOMEICD_15			char(7);
+	BYOMEICD_16			char(7);
+	BYOMEICD_17			char(7);
+	BYOMEICD_18			char(7);
+	BYOMEICD_19			char(7);
+	BYOMEICD_20			char(7);
+	BYOMEICD_21			char(7);
 	UTAGAIFLG           char(1);
 	SYUBYOFLG   		char(1);
 	MANSEIKBN  			number(2);
@@ -28,6 +48,11 @@ tbl_ptbyomei {
 	CHARTBYOMEIMOJI    	number(2);
 	BYOMEIHENFLG		char(1);
 	HKNBYOMEIFLG		char(1);
+	RECEDENFLG  		char(1);
+	HKNNUM      		char(3);
+	KHNBUICD_1  		char(7);
+	KHNBUICD_2  		char(7);
+	KHNBUICD_3  		char(7);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
@@ -309,11 +334,11 @@ path	key16	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
-			ORDER BY SRYYMD DESC,RENNUM 
+			AND   SRYYMD      <=  :SRYYMD
+			ORDER BY SRYYMD,RENNUM 
 		;
 	};
 };
-
 
 path	key17	{ 	
 	DBSELECT	{
@@ -322,14 +347,8 @@ path	key17	{
 		FROM tbl_ptbyomei
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
-			AND   SRYKA       =   :SRYKA
-			AND ((BYOMEICD_1  =   :BYOMEICD_1)
-			 OR  (BYOMEICD_2  =   :BYOMEICD_2)
-			 OR  (BYOMEICD_3  =   :BYOMEICD_3)
-			 OR  (BYOMEICD_4  =   :BYOMEICD_4)
-			 OR  (BYOMEICD_5  =   :BYOMEICD_5)
-			 OR  (BYOMEICD_6  =   :BYOMEICD_6))
-			ORDER BY SRYYMD DESC,RENNUM 
+			AND   SRYYMD      <=  :SRYYMD
+			ORDER  BY  PTID,SRYYMD,SRYKA,RENNUM
 		;
 	};
 };

@@ -1,38 +1,32 @@
-      *******************************************************************
-      * Project code name "ORCA"
-      * 日医標準レセプトソフト（JMA standard receipt software）
-      * Copyright(C) 2002 JMA (Japan Medical Association)
-      *
-      * This program is part of "JMA standard receipt software".
-      *
-      *     This program is distributed in the hope that it will be useful
-      * for further advancement in medical care, according to JMA Open
-      * Source License, but WITHOUT ANY WARRANTY.
-      *     Everyone is granted permission to use, copy, modify and
-      * redistribute this program, but only under the conditions described
-      * in the JMA Open Source License. You should have received a copy of
-      * this license along with this program. If not, stop using this
-      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
-      * 113-8621, Japan.
-      ********************************************************************
-        02  C05.
-            03  C05-FIXED9.
-              04  C05-SELNUM          PIC 9(4).
-              04  C05-HENCOD          PIC X(7).
-              04  C05-HENBYO          PIC X(101).
-              04  C05-BYOKEN          PIC X(31).
-              04  C05-TBYOCD2-ITEM  OCCURS 6.
-                  06  C05-TBYOCD2     PIC X(8).
-              04  C05-SYOBYO          PIC 9(1).
-              04  C05-SCR-BYOMEILST.
-                05  C05-BYOMEILST.
-                  06  C05-COUNT       PIC S9(9)   BINARY.
-                  06  C05-BYOMEI-ITEM        OCCURS  100 TIMES.
-                    07  C05-TBANGO    PIC X(5).
-                    07  C05-TSYUBET   PIC X(7).
-                    07  C05-TIKOSAKICD
-                                      PIC X(5).
-                    07  C05-TBYOMEI   PIC X(51).
-                    07  C05-THAISIYMD PIC X(10).
-                    07  C05-TBYOCD    PIC X(8).
-                  06  C05-SELECT      PIC X  OCCURS  100 TIMES.
+            02  C05.
+              03  C05-SELNUM1.
+                04  C05-VALUE   PIC S9(5).
+              03  C05-EDITBYOMEI.
+                04  C05-VALUE   PIC X(100).
+              03  C05-BYOMEIKEN.
+                04  C05-VALUE   PIC X(30).
+              03  C05-SCR-BYOMEILST.
+                04  C05-BYOMEILST.
+                  05  C05-COUNT        PIC S9(9)   BINARY.
+                  05  C05-ROW          PIC S9(9)   BINARY.
+                  05  C05-ROWATTR      PIC S9(9)   BINARY.
+                  05  C05-ITEM         OCCURS  100 TIMES.
+                    06  C05-TBANGO     PIC X(5).
+                    06  C05-TSYUBET    PIC X(6).
+                    06  C05-TIKOSAKICD PIC X(4).
+                    06  C05-TBYOMEI    PIC X(54).
+                    06  C05-THAISIYMD  PIC X(9).
+                    06  C05-TBYOCD     PIC X(7).
+                  05  C05-SELECT       PIC X       OCCURS  100 TIMES.
+              03  C05-SELNUM2.
+                04  C05-VALUE   PIC S9(2).
+              03  C05-SCR-BYOMEICDLST.
+                04  C05-BYOMEICDLST.
+                  05  C05-BYOMEICDLST-COUNT   PIC S9(9)   BINARY.
+                  05  C05-BYOMEICDLST-ROW     PIC S9(9)   BINARY.
+                  05  C05-BYOMEICDLST-ROWATTR PIC S9(9)   BINARY.
+                  05  C05-BYOMEICDLST-ITEM    OCCURS  21 TIMES.
+                    06  C05-TBANGO1     PIC X(2).
+                    06  C05-TBYOMEICD1  PIC X(7).
+                    06  C05-TBYOMEI1    PIC X(80).
+                  05  C05-BYOMEICDLST-SELECT  PIC X OCCURS  21 TIMES.

@@ -16,7 +16,6 @@
       * 113-8621, Japan.
       ********************************************************************
            02  C02.
-      ***  02  C02-FIXED6.
               03  C02-PTNUM-G.
                 04  C02-PTNUM-STATE   PIC S9(9)   BINARY.
                 04  C02-PTNUM   PIC X(20).
@@ -40,12 +39,19 @@
                                 PIC S9(9)   BINARY.
                 04  C02-SRYKALST
                                 PIC X(21)   OCCURS  40 TIMES.
+              03  C02-SYOKBN-COMBO.
+                04  C02-SYOKBN   PIC X(6).
+                04  C02-SYOKBN-COUNT
+                                PIC S9(9)   BINARY.
+                04  C02-SYOKBNLST
+                                PIC X(6)   OCCURS  3 TIMES.
               03  C02-B03-STATE
                                 PIC S9(9)   BINARY.
               03  C02-B09-STATE
                                 PIC S9(9)   BINARY.
+              03  C02-B21-LABEL PIC X(4).
               03  C02-BANGO.
-                04  C02-VALUE   PIC S9(3).
+                04  C02-VALUE   PIC X(40).
               03  C02-SRYYMD.
                 04  C02-VALUE   PIC X(10).
               03  C02-REZEMM.
@@ -54,7 +60,7 @@
                 04  C02-VALUE   PIC X(10).
               03  C02-BYOMEICD-G    OCCURS  6.
                 04  C02-BYOMEICD.
-                  05  C02-VALUE PIC X(10).
+                  05  C02-VALUE PIC X(12).
               03  C02-BYOMEI.
                 04  C02-VALUE   PIC X(480).
               03  C02-CHARTBYOMEI.
@@ -83,10 +89,8 @@
                 04  C02-HKNCOMBI.
                   05  C02-VALUE   PIC X(40).
                 04  C02-HKNCOMBI-COUNT   PIC S9(9)   BINARY.
-                04  C02-HKNCOMBI-ITEM    PIC X(40)   OCCURS  10 TIMES.
+                04  C02-HKNCOMBI-ITEM    PIC X(40)   OCCURS  20 TIMES.
               03  C02-BYOMEIHENFLG.
-                04  C02-VALUE   PIC X(10).
-              03  C02-BYOMEIINPUTCD.
                 04  C02-VALUE   PIC X(10).
               03  C02-TENKICOMBO.
                 04  C02-TENKIKBN.
@@ -106,15 +110,20 @@
               03  C02-SCROLLEDWINDOW6.
                 04  C02-HKNCOMBILST.
                   05  C02-HKN-COUNT       PIC S9(9)   BINARY.
-                  05  C02-HKN-ITEM        OCCURS  20 TIMES.
+                  05  C02-HKN-ROW         PIC S9(9)   BINARY.
+                  05  C02-HKN-ROWATTR     PIC S9(9)   BINARY.
+                  05  C02-HKN-ITEM        OCCURS  40 TIMES.
                     06  C02-HKNCOMBINUM   PIC X(4).
                     06  C02-HKNCOMBIMEI   PIC X(50).
-                  05  C02-HKN-SELECT      PIC X   OCCURS  20 TIMES.
+                  05  C02-HKN-SELECT      PIC X   OCCURS  40 TIMES.
               03  C02-SCROLLEDWINDOW28.
                 04  C02-BYOMEILST.
-                  05  C02-BYO-COUNT   PIC S9(9)   BINARY.
+                  05  C02-BYO-COUNT       PIC S9(9)   BINARY.
+                  05  C02-BYO-ROW         PIC S9(9)   BINARY.
+                  05  C02-BYO-ROWATTR     PIC S9(9)   BINARY.
                   05  C02-BYO-ITEM        OCCURS  200 TIMES.
-                    06  C02-TBANGO        PIC X(4).
+                    06  C02-TBANGO        PIC X(5).
+                    06  C02-TSRYKA        PIC X(4).
                     06  C02-TBYOMEI       PIC X(50).
                     06  C02-TSRYYMD       PIC X(10).
                     06  C02-TTENKIYMD     PIC X(10).
@@ -128,3 +137,9 @@
                     06  C02-TREZEMM       PIC X(4).
                     06  C02-THKNBYOMEIFLG PIC X(10).
                   05  C02-BYO-SELECT      PIC X   OCCURS  200 TIMES.
+              03  C02-BSRYKA-COMBO.
+                04  C02-BSRYKA  PIC X(21).
+                04  C02-BSRYKA-COUNT
+                                PIC S9(9)   BINARY.
+                04  C02-BSRYKALST
+                                PIC X(21)   OCCURS  40 TIMES.

@@ -22,6 +22,9 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     01/06/06  保険病名フラグの追加
       *  01/00/02    MCC-藤原     01.12.06  新しいレイアウトに変更     
+      *
+      *  新患者病名マスタ対応
+      *  01.02.01    NACL-藤原    04/01/07  新しいレイアウトに変更
       *****************************************************************
       *
       *01  PTBYOMEI-REC.
@@ -39,9 +42,11 @@
       *基本病名コード
            03  PTBYO-KHNBYOMEICD       PIC X(07).
       *病名入力コード
-           03  PTBYO-BYOMEIINPUTCD     PIC X(20).
+           03  PTBYO-BYOMEIINPUTCD-G.
+               05  PTBYO-BYOMEIINPUTCD PIC X(20)
+                                       OCCURS  6.
       *病名コード数
-           03  PTBYO-BYOMEICDSU        PIC 9(01).
+           03  PTBYO-BYOMEICDSU        PIC 9(02).
       *病名コード
            03  PTBYO-BYOMEICD-G.
                05  PTBYO-BYOMEICD-1    PIC X(07).
@@ -50,10 +55,25 @@
                05  PTBYO-BYOMEICD-4    PIC X(07).
                05  PTBYO-BYOMEICD-5    PIC X(07).
                05  PTBYO-BYOMEICD-6    PIC X(07).
+               05  PTBYO-BYOMEICD-7    PIC X(07).
+               05  PTBYO-BYOMEICD-8    PIC X(07).
+               05  PTBYO-BYOMEICD-9    PIC X(07).
+               05  PTBYO-BYOMEICD-10   PIC X(07).
+               05  PTBYO-BYOMEICD-11   PIC X(07).
+               05  PTBYO-BYOMEICD-12   PIC X(07).
+               05  PTBYO-BYOMEICD-13   PIC X(07).
+               05  PTBYO-BYOMEICD-14   PIC X(07).
+               05  PTBYO-BYOMEICD-15   PIC X(07).
+               05  PTBYO-BYOMEICD-16   PIC X(07).
+               05  PTBYO-BYOMEICD-17   PIC X(07).
+               05  PTBYO-BYOMEICD-18   PIC X(07).
+               05  PTBYO-BYOMEICD-19   PIC X(07).
+               05  PTBYO-BYOMEICD-20   PIC X(07).
+               05  PTBYO-BYOMEICD-21   PIC X(07).
       *
            03  PTBYO-BYOMEICD-R        REDEFINES   PTBYO-BYOMEICD-G.
                05  PTBYO-BYOMEICD      PIC X(07)
-                                       OCCURS   6.
+                                       OCCURS   21.
       *疑いフラグ
            03  PTBYO-UTAGAIFLG         PIC X(01).
       *主病名フラグ
@@ -86,6 +106,14 @@
       *保険病名フラグ
            03  PTBYO-HKNBYOMEIFLG      PIC X(01).
       *----(01.00.01) LINE ADD END   ----------------------------------
+      *レセ電エラーフラグ
+           03  PTBYO-RECEDENFLG        PIC X(01).
+      *保険番号
+           03  PTBYO-HKNNUM            PIC X(03).
+      *基本部位コード
+           03  PTBYO-KHNBUICD-G.
+               05  PTBYO-KHNBUICD      PIC X(07)
+                                       OCCURS  3.
       *端末ＩＤ
            03  PTBYO-TERMID            PIC X(16).
       *オペーレータＩＤ

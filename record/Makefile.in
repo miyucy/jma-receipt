@@ -12,9 +12,12 @@ RECORD_files = \
 	C06.rec \
 	C07.rec \
 	C08.rec \
+	C09.rec \
 	CERR.rec \
 	CID1.rec \
 	CID2.rec \
+	CID3.rec \
+	CID4.rec \
 	D01.rec \
 	D99.rec \
 	DERR.rec \
