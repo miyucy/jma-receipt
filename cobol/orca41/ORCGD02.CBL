@@ -667,7 +667,6 @@
            PERFORM T-000-CHEKCHEK-SEC VARYING IDX1  FROM  1  BY 1
                                       UNTIL   IDX1  >     4.
       *
-
            MOVE    SPACE                   TO  W-CHK-ST1-KBN.
            MOVE    SPACE                   TO  W-CHK-ST2-KBN.
            MOVE    SPACE                   TO  W-CHK-ST3-KBN.
@@ -2823,7 +2822,6 @@
                        (W-SRYCD-12 (IDX4)   =   SPACE)
                        MOVE    IDX4                TO  IDY1
                        MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-11 (IDX4)
-                       PERFORM T-530-RECECHEK-CHK2-1-SEC
                        IF  W-SRYCD-S3-KBN  =  SPACE
                            PERFORM T-530-RECECHEK-CHK2-1-SEC
                        END-IF
@@ -4098,12 +4096,13 @@
       *
            OPEN    INPUT   DID3-FILE.
       *
-           IF  STS-DID3    =   ZERO
-               OPEN    OUTPUT              DID4-FILE
-               MOVE    "処理中止"          TO  DID4-REC
-               WRITE   DID4-REC
-               CLOSE   DID4-FILE
-           END-IF.
+           READ    DID3-FILE
+                   NOT  AT  END
+                        OPEN    OUTPUT              DID4-FILE
+                        MOVE    "処理中止"          TO  DID4-REC
+                        WRITE   DID4-REC
+                        CLOSE   DID4-FILE
+           END-READ.
       *
            CLOSE   DID3-FILE.
       *

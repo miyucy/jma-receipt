@@ -48,7 +48,7 @@
                05  SHELL-TERMID       PIC  X(64).
                05  SHELL-SYSYMD       PIC  X(08). 
                05  SHELL-OPID         PIC  X(16).
-               05  FILLER             PIC  X(38) VALUE SPACE.
+               05  FILLER             PIC  X(06) VALUE SPACE.
            03  SHELL-ARG2.
                05  SHELL-SYOKBN       PIC  X(01) VALUE SPACE.
                05  FILLER             PIC  X(99) VALUE SPACE.
@@ -56,9 +56,9 @@
                05  SHELL-RECEKBN      PIC  X(01) VALUE SPACE.
                05  FILLER             PIC  X(99) VALUE SPACE.
            03  SHELL-ARG4.
-               05  SHELL-ERRFILE      PIC  X(50) VALUE SPACE.
-               05  FILLER             PIC  X(50) VALUE SPACE.
+               05  SHELL-ERRFILE      PIC  X(90) VALUE SPACE.
+               05  FILLER             PIC  X(10) VALUE SPACE.
            03  SHELL-ARG5.
       *         05  SHELL-WK-TERMID    PIC  X(32) VALUE SPACE.
                05  SHELL-WK-TERMID    PIC  X(64) VALUE SPACE.
-               05  FILLER             PIC  X(68) VALUE SPACE.
+               05  FILLER             PIC  X(36) VALUE SPACE.
