@@ -5671,14 +5671,24 @@
                       PERFORM   KOHJNISSUTBL-SET-SEC
       *
                       ADD      1          TO   RECE62-KOHKENSU(1)
-                      IF    (RECE62-FTNMONEY(1)  =  ZERO)
-                      AND   (RECE62-KOHNUM(1)    =  "010" OR "021")
-                            CONTINUE
-                      ELSE
-                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                      IF    (RECE62-SRYYM        >=  "200404")
+                      AND   (RECE62-KOUREI    NOT =    SPACE )
+                      AND   (RECE62-KOHNUM(1)     =  "015" OR "016"
+                                                           OR "051")
+                         ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
-                            ADD   SYU-SKJ-FTN(IDX3)      TO
+                         ADD   SYU-SKJ-FTN(IDX3)          TO
                                          WRK-SKJ-FTN(KH-IDX)
+                      ELSE
+                         IF    (RECE62-FTNMONEY(1)  =  ZERO)
+                         AND   (RECE62-KOHNUM(1)    =  "010" OR "021")
+                               CONTINUE
+                         ELSE
+                               ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                            RECE62-FTNMONEY(KH-IDX)
+                               ADD   SYU-SKJ-FTN(IDX3)      TO
+                                            WRK-SKJ-FTN(KH-IDX)
+                         END-IF
                       END-IF
       *
                       IF     FLG-FUKUSHI-SKJ  =   1
@@ -5732,14 +5742,24 @@
                       PERFORM   KOHJNISSUTBL-SET-SEC
       *
                       ADD      1          TO   RECE62-KOHKENSU(2)
-                      IF    (RECE62-FTNMONEY(1)  =  ZERO)
-                      AND   (RECE62-KOHNUM(2)    =  "010" OR "021")
-                            CONTINUE
-                      ELSE
-                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                      IF    (RECE62-SRYYM        >=  "200404")
+                      AND   (RECE62-KOUREI    NOT =    SPACE )
+                      AND   (RECE62-KOHNUM(2)     =  "015" OR "016"
+                                                           OR "051")
+                         ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
-                            ADD   SYU-SKJ-FTN(IDX3)      TO
+                         ADD   SYU-SKJ-FTN(IDX3)          TO
                                          WRK-SKJ-FTN(KH-IDX)
+                      ELSE
+                         IF    (RECE62-FTNMONEY(1)  =  ZERO)
+                         AND   (RECE62-KOHNUM(2)    =  "010" OR "021")
+                               CONTINUE
+                         ELSE
+                               ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                            RECE62-FTNMONEY(KH-IDX)
+                               ADD   SYU-SKJ-FTN(IDX3)      TO
+                                            WRK-SKJ-FTN(KH-IDX)
+                         END-IF
                       END-IF
       *
                       IF     FLG-FUKUSHI-SKJ  =   1
@@ -5793,14 +5813,24 @@
                       PERFORM   KOHJNISSUTBL-SET-SEC
       *
                       ADD      1          TO   RECE62-KOHKENSU(3)
-                      IF    (RECE62-FTNMONEY(1)  =  ZERO)
-                      AND   (RECE62-KOHNUM(3)    =  "010" OR "021")
-                            CONTINUE
-                      ELSE
-                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                      IF    (RECE62-SRYYM        >=  "200404")
+                      AND   (RECE62-KOUREI    NOT =    SPACE )
+                      AND   (RECE62-KOHNUM(3)     =  "015" OR "016"
+                                                           OR "051")
+                         ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
-                            ADD   SYU-SKJ-FTN(IDX3)      TO
+                         ADD   SYU-SKJ-FTN(IDX3)          TO
                                          WRK-SKJ-FTN(KH-IDX)
+                      ELSE
+                         IF    (RECE62-FTNMONEY(1)  =  ZERO)
+                         AND   (RECE62-KOHNUM(3)    =  "010" OR "021")
+                               CONTINUE
+                         ELSE
+                               ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                            RECE62-FTNMONEY(KH-IDX)
+                               ADD   SYU-SKJ-FTN(IDX3)      TO
+                                            WRK-SKJ-FTN(KH-IDX)
+                         END-IF
                       END-IF
       *
                       IF     FLG-FUKUSHI-SKJ  =   1
@@ -5854,14 +5884,24 @@
                       PERFORM   KOHJNISSUTBL-SET-SEC
       *
                       ADD      1          TO   RECE62-KOHKENSU(4)
-                      IF    (RECE62-FTNMONEY(1)  =  ZERO)
-                      AND   (RECE62-KOHNUM(4)    =  "010" OR "021")
-                            CONTINUE
-                      ELSE
-                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                      IF    (RECE62-SRYYM        >=  "200404")
+                      AND   (RECE62-KOUREI    NOT =    SPACE )
+                      AND   (RECE62-KOHNUM(4)     =  "015" OR "016"
+                                                           OR "051")
+                         ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
-                            ADD   SYU-SKJ-FTN(IDX3)      TO
+                         ADD   SYU-SKJ-FTN(IDX3)          TO
                                          WRK-SKJ-FTN(KH-IDX)
+                      ELSE
+                         IF    (RECE62-FTNMONEY(1)  =  ZERO)
+                         AND   (RECE62-KOHNUM(4)    =  "010" OR "021")
+                               CONTINUE
+                         ELSE
+                               ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                            RECE62-FTNMONEY(KH-IDX)
+                               ADD   SYU-SKJ-FTN(IDX3)      TO
+                                            WRK-SKJ-FTN(KH-IDX)
+                         END-IF
                       END-IF
       *
                       IF     FLG-FUKUSHI-SKJ  =   1

@@ -3721,12 +3721,20 @@
                                           RECE02-YKZFTN(KH-IDX) +
                                           SYU-KOH-COMPYKZFTN(IDX3)
                       ADD      1          TO   RECE02-KOHKENSU(1)
-                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
-                      AND   (RECE02-KOHNUM(1)    =  "010" OR "021")
-                            CONTINUE
+                      IF    (RECE02-SRYYM        >=  "200404")
+                      AND   (RECE02-ZAITAKU   NOT =    SPACE )
+                      AND   (RECE02-KOHNUM(1)     =  "015" OR "016"
+                                                           OR "051")
+                         ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
+                                            RECE02-FTNMONEY(KH-IDX)
                       ELSE
-                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
-                                         RECE02-FTNMONEY(KH-IDX)
+                         IF    (RECE02-FTNMONEY(1)  =  ZERO)
+                         AND   (RECE02-KOHNUM(1)    =  "010" OR "021")
+                               CONTINUE
+                         ELSE
+                               ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                            RECE02-FTNMONEY(KH-IDX)
+                         END-IF
                       END-IF
                       IF   RECE02-KOHNUM(1) =  "051"
                       AND  FLG-KOH      NOT =   2
@@ -3755,12 +3763,20 @@
                                           RECE02-YKZFTN(KH-IDX) +
                                           SYU-KOH-COMPYKZFTN(IDX3)
                       ADD      1          TO   RECE02-KOHKENSU(2)
-                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
-                      AND   (RECE02-KOHNUM(2)    =  "010" OR "021")
-                            CONTINUE
+                      IF    (RECE02-SRYYM        >=  "200404")
+                      AND   (RECE02-ZAITAKU   NOT =    SPACE )
+                      AND   (RECE02-KOHNUM(2)     =  "015" OR "016"
+                                                           OR "051")
+                         ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
+                                            RECE02-FTNMONEY(KH-IDX)
                       ELSE
-                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
-                                         RECE02-FTNMONEY(KH-IDX)
+                         IF    (RECE02-FTNMONEY(1)  =  ZERO)
+                         AND   (RECE02-KOHNUM(2)    =  "010" OR "021")
+                               CONTINUE
+                         ELSE
+                               ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                            RECE02-FTNMONEY(KH-IDX)
+                         END-IF
                       END-IF
                       IF   RECE02-KOHNUM(2) =  "051"
                       AND  FLG-KOH      NOT =   2
@@ -3789,12 +3805,20 @@
                                           RECE02-YKZFTN(KH-IDX) +
                                           SYU-KOH-COMPYKZFTN(IDX3)
                       ADD      1          TO   RECE02-KOHKENSU(3)
-                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
-                      AND   (RECE02-KOHNUM(3)    =  "010" OR "021")
-                            CONTINUE
+                      IF    (RECE02-SRYYM        >=  "200404")
+                      AND   (RECE02-ZAITAKU   NOT =    SPACE )
+                      AND   (RECE02-KOHNUM(3)     =  "015" OR "016"
+                                                           OR "051")
+                         ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
+                                            RECE02-FTNMONEY(KH-IDX)
                       ELSE
-                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
-                                         RECE02-FTNMONEY(KH-IDX)
+                         IF    (RECE02-FTNMONEY(1)  =  ZERO)
+                         AND   (RECE02-KOHNUM(3)    =  "010" OR "021")
+                               CONTINUE
+                         ELSE
+                               ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                            RECE02-FTNMONEY(KH-IDX)
+                         END-IF
                       END-IF
                       IF   RECE02-KOHNUM(3) =  "051"
                       AND  FLG-KOH      NOT =   2
@@ -3823,12 +3847,20 @@
                                           RECE02-YKZFTN(KH-IDX) +
                                           SYU-KOH-COMPYKZFTN(IDX3)
                       ADD      1          TO   RECE02-KOHKENSU(4)
-                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
-                      AND   (RECE02-KOHNUM(4)    =  "010" OR "021")
-                            CONTINUE
+                      IF    (RECE02-SRYYM        >=  "200404")
+                      AND   (RECE02-ZAITAKU   NOT =    SPACE )
+                      AND   (RECE02-KOHNUM(4)     =  "015" OR "016"
+                                                           OR "051")
+                         ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
+                                            RECE02-FTNMONEY(KH-IDX)
                       ELSE
-                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
-                                         RECE02-FTNMONEY(KH-IDX)
+                         IF    (RECE02-FTNMONEY(1)  =  ZERO)
+                         AND   (RECE02-KOHNUM(4)    =  "010" OR "021")
+                               CONTINUE
+                         ELSE
+                               ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                            RECE02-FTNMONEY(KH-IDX)
+                         END-IF
                       END-IF
                       IF   RECE02-KOHNUM(4) =  "051"
                       AND  FLG-KOH      NOT =   2
