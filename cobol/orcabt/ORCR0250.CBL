@@ -258,11 +258,10 @@
                 MOVE  9                TO  WRK-KOHBUNRI
                 MOVE  ZERO             TO  WRK-HKNCOMBI
                 MOVE  RECE64-KEY(1:65) TO  OLD-KEY
-           ELSE
-               IF      RECE64-KOHBUNRI     <   WRK-KOHBUNRI
-                    MOVE   RECE64-KOHBUNRI TO  WRK-KOHBUNRI
-                    MOVE   RECE64-HKNCOMBI TO  WRK-HKNCOMBI
-               END-IF
+           END-IF
+           IF      RECE64-KOHBUNRI     <   WRK-KOHBUNRI
+                MOVE   RECE64-KOHBUNRI TO  WRK-KOHBUNRI
+                MOVE   RECE64-HKNCOMBI TO  WRK-HKNCOMBI
            END-IF
            IF      RECE64-SRYKBN   =   "99"
                MOVE    "11"            TO  RECE641-SRYKBN
