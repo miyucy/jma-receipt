@@ -32,6 +32,7 @@
       *  01.01.02    NACL-多々納  03/06/16  確認画面追加
       *  01.01.03    NACL-森脇    03/06/24  印刷処理追加
       *  01.01.04    NACL-多々納  03/06/25  受付一覧更新追加
+      *  01.01.05    NACL-多々納  03/06/27  状態編集追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -227,6 +228,8 @@
            COPY  "CPSK1012.INC".
       *    職員情報
            COPY  "CPSK1010.INC".
+      *    状態情報
+           COPY    "CPSK1018.INC".
       *
       *
       *****************************************************************
@@ -1293,6 +1296,7 @@
       *    スパ内部コード変換
       *****************************************************************
        5003-SPA-HEN-SEC           SECTION.
+      *
            MOVE    IDX2               TO  SPA-GMN-NO (IDX IDX2)
       *    患者マスタ読み出し
            IF      SPA-GMN-PTID(IDX IDX2) NOT  =  ZERO
@@ -1305,9 +1309,11 @@
                                                              (IDX IDX2)
                    MOVE    PTINF-NICKNAME      TO  SPA-GMN-NICKNAME
                                                              (IDX IDX2)
+      *            状態１
+                   PERFORM 50030-SPA-CONDITION-SEC
                END-IF
-      *        患者番号取得
       *
+      *        患者番号取得
                INITIALIZE                      ORCSPTIDAREA
                MOVE    SPA-HOSPID          TO  SPTID-HOSPID
                MOVE    SPA-GMN-PTID(IDX IDX2)
@@ -1366,14 +1372,38 @@
            . 
       *
        5003-SPA-HEN-EXT.
-072600     EXIT.
-072700*****************************************************************
-072800*    受付状況並べ替え
-072900*****************************************************************
-073000 5002-SORT-SEC              SECTION.
-073100*
-073200     MOVE    ZERO                   TO  IDX2  
-073300*    受付時間順にＳＯＲＴ
+           EXIT.
+      *****************************************************************
+      *    状態１編集処理
+      *****************************************************************
+       50030-SPA-CONDITION-SEC              SECTION.
+     *
+           MOVE    SPACE               TO  SYS-1018-REC
+           MOVE    "1018"              TO  SYS-1018-KANRICD
+           MOVE    PTINF-CONDITION-1   TO  SYS-1018-KBNCD
+      *
+           MOVE    SYS-1018-REC        TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1018-REC
+               IF      PTINF-CONDITION-1   NOT =   ZERO
+                   MOVE    SYS-1018-CONDITION-WORD
+                                           TO  SPA-GMN-CONDITION 
+                                                 (IDX IDX2)
+               END-IF
+           END-IF
+      *
+           . 
+      *
+       50030-SPA-CONDITION-EXT.
+           EXIT.
+      *****************************************************************
+      *    受付状況並べ替え
+      *****************************************************************
+       5002-SORT-SEC              SECTION.
+      *
+           MOVE    ZERO                   TO  IDX2  
+      *    受付時間順にＳＯＲＴ
            PERFORM VARYING   IDX2      FROM    1   BY  1
                    UNTIL     IDX2          >   100
                IF  IDX  =  1
