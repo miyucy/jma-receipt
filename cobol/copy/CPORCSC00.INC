@@ -98,6 +98,7 @@
                05  LNK-ORCSC-HOUMON-ARI           PIC  9(01).
       *        小児科外来診療科算定有り
                05  LNK-ORCSC-SYONIKA-ARI         PIC  9(01).
+               05  LNK-ORCSC-SYONIKA-ARI2        PIC  9(01).
       *
       *    電話再診の有無
            03  LNK-ORCSC-TELSAI-ARI        PIC 9(01).

@@ -3305,10 +3305,15 @@
       *                                                    =  "14"
       *                                CONTINUE
       *****************************ELSE
+      *                            ¼ïÊÌ¤Î¤ß¤Ï£Ï£Ë
+                                   IF      SPA-GMN-INPUTCD(IDX)(1:4)
+                                                         =   ".130"
+                                       CONTINUE
+                                   ELSE
                                        MOVE    "0044"  TO  SPA-ERRCD
                                        MOVE    "1"     TO  SPA-COM-CUR
                                                                 (IDX)
-      *****************************END-IF
+                                   END-IF
                            END-EVALUATE
       *
       *                ±ý¿ÇÎÁ¤Ç¤¢¤ë¤³¤È
@@ -3374,9 +3379,14 @@
       *                                                         (IDX)
       *                      END-IF
       *********************END-IF
-                           MOVE    "0044"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR
+      *                    ¼ïÊÌ¤Î¤ß¤Ï£Ï£Ë
+                           IF      SPA-GMN-INPUTCD(IDX)(1:4) =   ".130"
+                               CONTINUE
+                           ELSE
+                               MOVE    "0044"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  SPA-COM-CUR
                                                                 (IDX)
+                           END-IF
                    END-EVALUATE
                ELSE
       *        ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê°Ê³°¤Î»þ¡¢¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤Ç¤Ê¤¤¤³¤È

@@ -475,11 +475,11 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
-       01  WRK-GMNGYO-AREA.
-           03  WRK-MAP-MAX         PIC 9(04).
-           03  WRK-MAP-CUR         PIC 9(04).
-           03  WRK-MAP-CUR2        PIC 9(04).
-           03  WRK-PAGE            PIC 9(04).
+      *01  WRK-GMNGYO-AREA.
+      *    03  WRK-MAP-MAX         PIC 9(04).
+      *    03  WRK-MAP-CUR         PIC 9(04).
+      *    03  WRK-MAP-CUR2        PIC 9(04).
+      *****03  WRK-PAGE            PIC 9(04).
       *
        01  WRK-MOJI-AREA.
            03  FLG-SP              PIC 9(02).
@@ -3112,6 +3112,12 @@
       *    ºÞÊ¬Î¥½èÍý
            INITIALIZE                  ORCSC93AREA
            MOVE    "J04"               TO  LNK-SC93-PG
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤¬¤¢¤ê¡¢£³ºÐËþ¤Î»þ
+           IF      (SPA-SYONIKA        =   1   )  AND
+                   (SPA-NAI-NENREI-YY  <   3   )
+               MOVE    1                   TO  LNK-SC93-SYONIKA-ARI2
+           END-IF
+      *
            CALL    "ORCSC93"           USING
                                        MCPAREA
                                        SPA-SCR-REC
@@ -3248,6 +3254,11 @@
            MOVE    SPA-TOKTEI-YMD      TO  LNK-ORCSC-TOKTEI-YMD
       *    »þ´Ö³°ÆÃÎã¶èÊ¬
            MOVE    SPA-JIKANTOKU       TO  LNK-ORCSC-JIKANTOKU
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤¬¤¢¤ê¡¢£³ºÐËþ¤Î»þ
+           IF      (SPA-SYONIKA        =   1   )  AND
+                   (SPA-NAI-NENREI-YY  <   3   )
+               MOVE    1                   TO  LNK-ORCSC-SYONIKA-ARI2
+           END-IF
       *
       *
            EVALUATE    WRK-COM-SRYKBN (01)
@@ -3979,6 +3990,11 @@
            MOVE    SPA-TOKTEI-YMD      TO LNK-ORCSC-TOKTEI-YMD
       *    »þ´Ö³°ÆÃÎã¶èÊ¬
            MOVE    SPA-JIKANTOKU       TO  LNK-ORCSC-JIKANTOKU
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤¬¤¢¤ê¡¢£³ºÐËþ¤Î»þ
+           IF      (SPA-SYONIKA        =   1   )  AND
+                   (SPA-NAI-NENREI-YY  <   3   )
+               MOVE    1                   TO  LNK-ORCSC-SYONIKA-ARI2
+           END-IF
       *            ¿ÇÎÅ
            IF      SPA-SRYKBN-CNT (01) >   ZERO
                CALL    "ORCSC10"       USING

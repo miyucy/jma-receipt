@@ -2741,6 +2741,12 @@
                        LNK-WKSRY-SRYCD (IDX IDY)       =   "830000021")
                    OR (LNK-WKSRY-SRYKBN    (IDX)       =   "11" AND
                        LNK-WKSRY-SRYCD (IDX IDY)       =   "830000020")
+      *                ÄûÀµ¤Î»þ¡¢»þ´Ö³°¤Î¤ß¤Î»þ
+                   OR (LNK-WKSRY-SRYKBN    (IDX)       =   "13" AND
+                       LNK-WKSRY-SRYCD (IDX IDY)       =   "112005770"
+                                                       OR  "112005870"
+                                                       OR  "112005970"
+                                                       OR  "112006070" )
                    ADD     1                   TO  IDX2
                    MOVE    "."                 TO  SPA-GMN-INPUTCD
                                                             (IDX2)(1:1)
@@ -6096,6 +6102,8 @@
       *    ºÞÊ¬Î¥½èÍý
            INITIALIZE                  ORCSC93AREA
            MOVE    "K02"               TO  LNK-SC93-PG
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê»»ÄêÍ­¤ê
+           MOVE    SPA-SYONIKA-ARI2    TO  LNK-SC93-SYONIKA-ARI2
            CALL    "ORCSC93"           USING
                                        MCPAREA
                                        SPA-SCR-REC
@@ -6347,6 +6355,7 @@
            MOVE    SPA-NETAKIRI-ARI    TO  LNK-ORCSC-NETAKIRI-ARI
            MOVE    SPA-NETAKIRI-ARI2   TO  LNK-ORCSC-NETAKIRI-ARI2
            MOVE    SPA-SYONIKA-ARI     TO  LNK-ORCSC-SYONIKA-ARI
+           MOVE    SPA-SYONIKA-ARI2    TO  LNK-ORCSC-SYONIKA-ARI2
       *    À¸³è½¬´·ÉÂ»ØÆ³´ÉÍýÎÁ
            MOVE    SPA-SEIKATU-ARI     TO  LNK-ORCSC-SEIKATU-ARI
            MOVE    SPA-SEIKATU-ARI2    TO  LNK-ORCSC-SEIKATU-ARI2
@@ -7305,6 +7314,7 @@
            MOVE    SPA-NETAKIRI-ARI    TO  LNK-ORCSC-NETAKIRI-ARI
            MOVE    SPA-NETAKIRI-ARI2   TO  LNK-ORCSC-NETAKIRI-ARI2
            MOVE    SPA-SYONIKA-ARI     TO  LNK-ORCSC-SYONIKA-ARI
+           MOVE    SPA-SYONIKA-ARI2    TO  LNK-ORCSC-SYONIKA-ARI2
       *    À¸³è½¬´·ÉÂ»ØÆ³´ÉÍýÎÁ
            MOVE    SPA-SEIKATU-ARI     TO  LNK-ORCSC-SEIKATU-ARI
            MOVE    SPA-SEIKATU-ARI2    TO  LNK-ORCSC-SEIKATU-ARI2

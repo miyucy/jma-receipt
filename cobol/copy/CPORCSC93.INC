@@ -31,4 +31,6 @@
       *
       *    セット入力（Ｋ０５）のセットコード
            03  LNK-SC93-SETCODE       PIC X(06).
+      *    小児科外来診療科算定有り
+           03  LNK-SC93-SYONIKA-ARI2  PIC  9(01).
       *
