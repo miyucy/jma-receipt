@@ -39,6 +39,7 @@
       *  02.00.04    NACL¡ÝÂ¿¡¹Ç¼ 02/09/13  ¼«ÇåÀÕÄÉ²Ã
       *  02.00.05    NACL-Â¿¡¹Ç¼  02/11/11  £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁÄÉ²Ã
       *  02.00.06    NACL-Â¿¡¹Ç¼  02/11/15  ¼«Èñ¾ÃÈñÀÇÂÐ±þ½¤Àµ
+      *  02.00.07    NACL-Â¿¡¹Ç¼  02/12/05  ½é¿ÇÎÁ»»ÄêÆüÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4135,6 +4136,12 @@
                MOVE    SPA-TOKTEI-YMD  TO  SSANTEI-SYOKAIYMD
            END-IF
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
+      *    ½é¿ÇÎÁ»»ÄêÆü
+           IF      KARRK-SYOSINYMD2    =   SPACE
+               MOVE    KARRK-SYOSINYMD1    TO  SSANTEI-SYOYMD
+           ELSE
+               MOVE    KARRK-SYOSINYMD2    TO  SSANTEI-SYOYMD
+           END-IF
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
                                        SPA-AREA

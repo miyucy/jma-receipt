@@ -1331,8 +1331,6 @@
       *    入外区分
            IF      SPA-NYUGAIKBN       =   "2"
       *        外来の時、外来処理へ
-               MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
-               MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
                PERFORM 410109-K02IDOU-SEC
                GO      TO      3009-SAIHEN-EXT
            END-IF
@@ -6141,6 +6139,7 @@
                WHEN    "23"
                WHEN    "25"
       *
+               WHEN    "24"
                WHEN    "26"
                WHEN    "27"
                    CALL    "ORCSC20"       USING

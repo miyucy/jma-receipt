@@ -1407,21 +1407,21 @@
       *
            MOVE    WRK-DAY             TO  SPA-GMN-TMSANTEID   (IDX)
       *
-           IF       WRK-DAY            =   ZERO
-               MOVE    SPACE               TO  SPA-NAI-TFSANTEIYMD(IDX)
-               MOVE    SPACE               TO  SPA-GMN-TFSANTEIYMD(IDX)
-           ELSE
-               MOVE    SPA-NAI-TFSANTEIYMD(IDX)    TO  WRK-SYMD
+      *****IF       WRK-DAY            =   ZERO
+      *        MOVE    SPACE               TO  SPA-NAI-TFSANTEIYMD(IDX)
+      *        MOVE    SPACE               TO  SPA-GMN-TFSANTEIYMD(IDX)
+      *    ELSE
+      *        MOVE    SPA-NAI-TFSANTEIYMD(IDX)    TO  WRK-SYMD
       ******** IF      SPA-NAI-TFSANTEIYMD (IDX)(7:2)  >  WRK-DAY
-               IF      WRK-SDD             >  WRK-DAY
-                   MOVE    WRK-DAY         TO  SPA-NAI-TFSANTEIYMD(IDX)
-                                                                  (7:2)
-                   MOVE    SPA-NAI-TFSANTEIYMD(IDX)    TO  WRK-SYMD
-                   PERFORM 5002-HIZUKE-HEN-SEC
-                   MOVE    WRK-HENYMDG         TO  SPA-GMN-TFSANTEIYMD
-                                                                 (IDX)
-               END-IF
-           END-IF
+      *        IF      WRK-SDD             >  WRK-DAY
+      *            MOVE    WRK-DAY         TO  SPA-NAI-TFSANTEIYMD(IDX)
+      *                                                           (7:2)
+      *            MOVE    SPA-NAI-TFSANTEIYMD(IDX)    TO  WRK-SYMD
+      *            PERFORM 5002-HIZUKE-HEN-SEC
+      *            MOVE    WRK-HENYMDG         TO  SPA-GMN-TFSANTEIYMD
+      *                                                          (IDX)
+      *        END-IF
+      *****END-IF
       *
            EVALUATE   MCP-WIDGET
                WHEN    "B02"

@@ -1828,6 +1828,7 @@
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    SPA-GMN-PTNUM   TO  SPA-PTNUM
                        MOVE    SPA-GMN-PTID    TO  SPA-PTID
+                       MOVE    "JOIN"              TO  WRK-PUTTYPE
                        PERFORM 450-K02N-SYORI-SEC
                    ELSE
                        MOVE    ZERO            TO  SPA-GMN-CUR
@@ -3835,6 +3836,7 @@
       *    Ｎのとき、入院へ
            IF     (SPA-GMN-PTNUM(1:1)  =   "N" OR "n")  AND
                   (SPA-BEDSU           >   ZERO)
+               MOVE    SPACE               TO  WRK-PUTTYPE
                PERFORM 450-K02N-SYORI-SEC
                GO      TO      41010-PTNUM-SYORI-EXT
            END-IF
@@ -8681,7 +8683,11 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           IF      WRK-PUTTYPE     NOT =   SPACE
+               MOVE    WRK-PUTTYPE         TO  MCP-PUTTYPE
+           ELSE
+               MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           END-IF
            MOVE    "K02N"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
