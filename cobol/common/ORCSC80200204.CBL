@@ -248,7 +248,7 @@
        01  TBL-RIHABIRI-AREA.
            03  FILLER              PIC X(09)   VALUE   "180022970".
            03  FILLER              PIC X(09)   VALUE   "180023070".
-           03  FILLER              PIC X(09)   VALUE   "180023100".
+           03  FILLER              PIC X(09)   VALUE   "180023170".
            03  FILLER              PIC X(09)   VALUE   "180023270".
            03  FILLER              PIC X(09)   VALUE   "180023370".
            03  FILLER              PIC X(09)   VALUE   "180023470".
