@@ -57,6 +57,9 @@
       *  01.00.17    NACL-藤原    03/11/17  傷病名データファイル名の変更
       *  01.00.18    NACL-藤原    03/11/19  老人外来金額の項目変更
       *  01.00.19    NACL-藤原    03/11/20  給付割合の編集の変更
+      *                                     その他材料の単価の編集
+      *                                     老人減免区分コードの編集
+      *                                     医薬品・特定器材の出力順
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -263,7 +266,9 @@
       *
            03  WRK-SYS-SRYYMD          PIC X(08).
       *
-           03  WRK-RECEERR             PIC X(200). 
+           03  WRK-RECEERR             PIC X(200).
+      *
+           03  WRK-KIZAI-SRYCD         PIC X(09).
       *     右ずめ編集用     
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
@@ -366,9 +371,10 @@
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
       *
-      *    適用レコード用待避テーブル
+      *    医薬品・特定器材用テーブル
        01  TBL-ZAIW-AREA.
-           03  TBL-ZAIW-REC      OCCURS 100.
+         02  TBL-ZAIW-TABLE        OCCURS  2.
+           03  TBL-ZAIW-REC        OCCURS 100.
                05  TBL-ZAIW-SRYACTINF.
       *            診療コード/数量/回数
                    07  TBL-ZAIW-SRYCD           PIC  X(09).
@@ -385,7 +391,7 @@
                        09  TBL-ZAIW-YUKOKETA    PIC  9(02).
                        09  TBL-ZAIW-NAME        PIC  X(200).
       *
-      *    診療行為データ用テーブル
+      *    診療行為・コメント用テーブル
        01  TBL-KOUI-AREA.
            03  TBL-KOUI-REC                     OCCURS  100.
                05  TBL-KOUI-SRYCD1              PIC X(01).
@@ -1146,10 +1152,13 @@
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    負担金額（老人減免区分）
-      *****IF      RECE02-RJNGENMENKBN >   ZERO
-      *****    MOVE    RECE02-RJNGENMENKBN     TO  WRK-NUM
-      *****    MOVE    1                   TO  WRK-NAGASA
-      *****END-IF    
+           IF    ( RECE02-TEISYUTUSAKI     =   "2"        )
+           AND   ( RECE02-RJNHKNNUM    NOT =   SPACE      )
+           AND   ((RECE02-ETC-KOHNUM (1)   =   "019" ) OR
+                  (RECE02-KOHNUM     (1)       =   "019" )) 
+               MOVE    4                   TO  WRK-NUM
+               MOVE    1                   TO  WRK-NAGASA
+           END-IF    
            PERFORM 5005-NUM-HENSYU-SEC     
       *    老人医療（老人外来金額）
            IF    ( RECE02-NYUGAIKBN    =   "2"  )
@@ -1770,7 +1779,10 @@
                          UNTIL   ( IDX               >   5     )
                          OR      ( RECE05-SRYCD(IDX) =   SPACE )
                          OR      ( FLG-END           =   1     )
+                   MOVE    SPACE                TO  WRK-KIZAI-SRYCD
                    IF      RECE05-SRYCD (IDX) (1:3) = "059"
+                       MOVE    RECE05-SRYCD (IDX)
+                                                TO  WRK-KIZAI-SRYCD
                        MOVE    "777770000"      TO  RECE05-SRYCD (IDX)
                    END-IF
       *
@@ -1780,8 +1792,10 @@
                            PERFORM 200711-COMMENT-TAIHI-SEC
                        WHEN    "1"
                            PERFORM 200711-KOUI-TAIHI-SEC
-                       WHEN    OTHER
-                           PERFORM 200711-ELSE-TAIHI-SEC
+                       WHEN    "6"
+                           PERFORM 200711-YKZ-TAIHI-SEC
+                       WHEN    "7"
+                           PERFORM 200711-KIZAI-TAIHI-SEC
                    END-EVALUATE
                END-PERFORM
       *
@@ -1997,81 +2011,103 @@
            EXIT.
       *
       *****************************************************************
-      *    摘要データ（その他）退避処理
+      *    摘要データ（医薬品）退避処理
       *****************************************************************
-       200711-ELSE-TAIHI-SEC          SECTION.
+       200711-YKZ-TAIHI-SEC          SECTION.
       *
-           EVALUATE    RECE05-SRYCD (IDX) (1:1)
-               WHEN    "6"
-                   IF      RECE05-SRYCD (IDX)
-                                       =   WRK-CONS-TEIGEN
-                       CONTINUE
-                   ELSE
-                       IF      RECE041-YKZTEN    =   ZERO
-                           GO  TO  200711-ELSE-TAIHI-EXT
-                       END-IF
-                   END-IF
-               WHEN    "7"
-                   IF      RECE041-SRYKBN    NOT =   "70"
-                       IF      RECE041-KIZAITEN  =   ZERO
-                           GO  TO  200711-ELSE-TAIHI-EXT
-                       END-IF
-                   END-IF
-           END-EVALUATE 
+           IF      RECE05-SRYCD (IDX)  =   WRK-CONS-TEIGEN
+               CONTINUE
+           ELSE
+               IF      RECE041-YKZTEN    =   ZERO
+                   GO  TO  200711-YKZ-TAIHI-EXT
+               END-IF
+           END-IF
       *                                   
-           ADD     1                   TO  WRK-ZAIWMAX
+           ADD     1                   TO  WRK-TBLMAX6
       *
-           IF      WRK-ZAIWMAX         =   1
+           IF      WRK-TBLMAX6         =   1
                IF      RECE05-SRYCD (IDX)
                                        =   WRK-CONS-TEIGEN
                    MOVE    1               TO  FLG-TEIGEN
                END-IF
            END-IF
       *     
-           IF      WRK-ZAIWMAX         >   100
+           IF      WRK-TBLMAX6         >   100
                MOVE    "*** ORCR0300 TABLE 100 OVER  ***"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1                   TO  FLG-END
            ELSE
                MOVE    RECE05-SRYCD      (IDX) TO
-                                   TBL-ZAIW-SRYCD      (WRK-ZAIWMAX)
+                                   TBL-ZAIW-SRYCD      (1 WRK-TBLMAX6)
                MOVE    RECE05-SRYSURYO   (IDX) TO
-                                   TBL-ZAIW-SRYSURYO   (WRK-ZAIWMAX)
+                                   TBL-ZAIW-SRYSURYO   (1 WRK-TBLMAX6)
                MOVE    RECE05-TANICD     (IDX) TO
-                                   TBL-ZAIW-TANICD     (WRK-ZAIWMAX)
+                                   TBL-ZAIW-TANICD     (1 WRK-TBLMAX6)
                MOVE    RECE05-TENSIKIBETU(IDX) TO
-                                   TBL-ZAIW-TENSIKIBETU(WRK-ZAIWMAX)
+                                   TBL-ZAIW-TENSIKIBETU(1 WRK-TBLMAX6)
                MOVE    RECE05-TEN        (IDX) TO
-                                   TBL-ZAIW-TEN        (WRK-ZAIWMAX)
+                                   TBL-ZAIW-TEN        (1 WRK-TBLMAX6)
                MOVE    RECE05-DATAKBN    (IDX) TO
-                                   TBL-ZAIW-DATAKBN    (WRK-ZAIWMAX)
+                                   TBL-ZAIW-DATAKBN    (1 WRK-TBLMAX6)
                MOVE    RECE05-NAMEINF   (IDX)  TO
-                                   TBL-ZAIW-NAMEINF    (WRK-ZAIWMAX)
-      *
-               EVALUATE    TBL-ZAIW-SRYCD (WRK-ZAIWMAX) (1:1)
-                   WHEN    "7"
-                       INITIALIZE                  TNS-TENSU-REC
-                       MOVE   TBL-ZAIW-SRYCD (WRK-ZAIWMAX)
-                                                   TO  TNS-SRYCD
-                       PERFORM 900-TENSU-READ-SEC
-                       IF      FLG-TENSU           =   ZERO
-                           MOVE    TNS-TENSIKIBETU     TO
-                                   TBL-ZAIW-TENSIKIBETU  (WRK-ZAIWMAX)
-                           MOVE    TNS-TEN             TO
-                                   TBL-ZAIW-TEN          (WRK-ZAIWMAX)
-                       END-IF
-               END-EVALUATE
+                                   TBL-ZAIW-NAMEINF    (1 WRK-TBLMAX6)
            END-IF
-      *
-           EVALUATE    TBL-ZAIW-SRYCD (WRK-ZAIWMAX) (1:1)
-               WHEN    "6"
-                   MOVE    WRK-ZAIWMAX      TO  WRK-TBLMAX6
-               WHEN    "7"
-                   MOVE    WRK-ZAIWMAX      TO  WRK-TBLMAX7
-           END-EVALUATE 
            .
-       200711-ELSE-TAIHI-EXT.
+       200711-YKZ-TAIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    摘要データ（その他）退避処理
+      *****************************************************************
+       200711-KIZAI-TAIHI-SEC          SECTION.
+      *
+           IF      RECE041-SRYKBN    NOT =   "70"
+               IF      RECE041-KIZAITEN  =   ZERO
+                   GO  TO  200711-KIZAI-TAIHI-EXT
+               END-IF
+           END-IF
+      *                                   
+           ADD     1                   TO  WRK-TBLMAX7
+      *     
+           IF      WRK-TBLMAX7         >   100
+               MOVE    "*** ORCR0300 TABLE 100 OVER  ***"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                   TO  FLG-END
+           ELSE
+               MOVE    RECE05-SRYCD      (IDX) TO
+                                   TBL-ZAIW-SRYCD      (2 WRK-TBLMAX7)
+               MOVE    RECE05-SRYSURYO   (IDX) TO
+                                   TBL-ZAIW-SRYSURYO   (2 WRK-TBLMAX7)
+               MOVE    RECE05-TANICD     (IDX) TO
+                                   TBL-ZAIW-TANICD     (2 WRK-TBLMAX7)
+               MOVE    RECE05-TENSIKIBETU(IDX) TO
+                                   TBL-ZAIW-TENSIKIBETU(2 WRK-TBLMAX7)
+               MOVE    RECE05-TEN        (IDX) TO
+                                   TBL-ZAIW-TEN        (2 WRK-TBLMAX7)
+               MOVE    RECE05-DATAKBN    (IDX) TO
+                                   TBL-ZAIW-DATAKBN    (2 WRK-TBLMAX7)
+               MOVE    RECE05-NAMEINF   (IDX)  TO
+                                   TBL-ZAIW-NAMEINF    (2 WRK-TBLMAX7)
+      *
+               INITIALIZE                  TNS-TENSU-REC
+               IF      RECE05-SRYCD (IDX)  =   "777770000"
+                   MOVE    WRK-KIZAI-SRYCD     TO  TNS-SRYCD
+               ELSE
+                   MOVE    TBL-ZAIW-SRYCD (2 WRK-TBLMAX7)
+                                               TO  TNS-SRYCD
+               END-IF
+               PERFORM 900-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+                   MOVE    TNS-TENSIKIBETU     TO
+                                   TBL-ZAIW-TENSIKIBETU  (2 WRK-TBLMAX7)
+                   MOVE    TNS-TEN             TO
+                                   TBL-ZAIW-TEN          (2 WRK-TBLMAX7)
+               END-IF
+           END-IF
+           .
+       200711-KIZAI-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2287,15 +2323,16 @@
                PERFORM 5001-FILE-WRITE-SEC
            END-PERFORM
       *
-      *    医薬品／特定機材データの編集                 
+      *    医薬品データの編集                 
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-ZAIWMAX
-               EVALUATE    TBL-ZAIW-SRYCD (IDX)(1:1)
-                   WHEN    "6"
-                       PERFORM 200722-YKZ-HENSYU-SEC
-                   WHEN    "7"
-                       PERFORM 200723-KIZAI-HENSYU-SEC
-               END-EVALUATE
+                   UNTIL   IDX >       WRK-TBLMAX6
+               PERFORM 200722-YKZ-HENSYU-SEC
+           END-PERFORM            
+      *
+      *    特定器材データの編集                 
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       WRK-TBLMAX7
+               PERFORM 200723-KIZAI-HENSYU-SEC
            END-PERFORM            
            .
        20072-ZAI-HENSYU-EXT.
@@ -2324,26 +2361,26 @@
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    医薬品コード
-           MOVE    TBL-ZAIW-SRYCD (IDX)
+           MOVE    TBL-ZAIW-SRYCD (1 IDX)
                                        TO  WRK-DATA
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    使用量
-           IF      TBL-ZAIW-SRYCD (IDX)
+           IF      TBL-ZAIW-SRYCD (1 IDX)
                                        =   WRK-CONS-TEIGEN
                CONTINUE
            ELSE
-               IF      TBL-ZAIW-SRYSURYO (IDX) >   ZERO
-                   MOVE    TBL-ZAIW-SRYSURYO (IDX) TO  WRK-SRYSURYO
-                   MOVE    WRK-SRYSURYO            TO  WRK-NUM
-                   MOVE    9                       TO  WRK-NAGASA
-                   MOVE    3                       TO  WRK-SYOSUU     
+               IF      TBL-ZAIW-SRYSURYO (1 IDX) >   ZERO
+                   MOVE    TBL-ZAIW-SRYSURYO (1 IDX) TO  WRK-SRYSURYO
+                   MOVE    WRK-SRYSURYO              TO  WRK-NUM
+                   MOVE    9                         TO  WRK-NAGASA
+                   MOVE    3                         TO  WRK-SYOSUU     
                END-IF
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
       *    点数 
            IF      IDX                 =   WRK-TBLMAX6
-               IF      TBL-ZAIW-SRYCD (IDX)
+               IF      TBL-ZAIW-SRYCD (1 IDX)
                                        =   WRK-CONS-TEIGEN
                    MOVE    RECE041-ZAITEN      TO  WRK-NUM
                    MOVE    7                   TO  WRK-NAGASA
@@ -2394,29 +2431,29 @@
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    特定器材コード
-           MOVE    TBL-ZAIW-SRYCD (IDX)
+           MOVE    TBL-ZAIW-SRYCD (2 IDX)
                                        TO  WRK-DATA
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    使用量
-           IF      TBL-ZAIW-SRYSURYO (IDX)     >   ZERO
-               MOVE    TBL-ZAIW-SRYSURYO (IDX) TO  WRK-SRYSURYO
-               MOVE    WRK-SRYSURYO            TO  WRK-NUM
-               MOVE    9                       TO  WRK-NAGASA
-               MOVE    3                       TO  WRK-SYOSUU
+           IF      TBL-ZAIW-SRYSURYO (2 IDX)   >   ZERO
+               MOVE    TBL-ZAIW-SRYSURYO (2 IDX)   TO  WRK-SRYSURYO
+               MOVE    WRK-SRYSURYO                TO  WRK-NUM
+               MOVE    9                           TO  WRK-NAGASA
+               MOVE    3                           TO  WRK-SYOSUU
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
       *    点数 
            IF      IDX                     =   WRK-TBLMAX7
                IF     ( RECE041-SRYKBN    =   "70" )
-               AND    ( TBL-ZAIW-DATAKBN (IDX)
+               AND    ( TBL-ZAIW-DATAKBN (2 IDX)
                                           =   "3"  )
                    MOVE    RECE041-SYUTEN2     TO  WRK-TENSU
                    MOVE    WRK-TENSU           TO  WRK-NUM
                    MOVE    7                   TO  WRK-NAGASA
                ELSE
                    IF     ( RECE041-SRYKBN    =   "70" )
-                   AND    ( TBL-ZAIW-SRYCD (IDX)
+                   AND    ( TBL-ZAIW-SRYCD (2 IDX)
                                               =   "799990070"  )
                        MOVE    RECE041-SYUTEN2     TO  WRK-TENSU
                        MOVE    WRK-TENSU           TO  WRK-NUM
@@ -2440,34 +2477,34 @@
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC
       *    単位コード
-           IF      TBL-ZAIW-TANICD (IDX)       >   ZERO
-               MOVE    TBL-ZAIW-TANICD (IDX)   TO  WRK-NUM
+           IF      TBL-ZAIW-TANICD (2 IDX)     >   ZERO
+               MOVE    TBL-ZAIW-TANICD (2 IDX) TO  WRK-NUM
                MOVE    3                       TO  WRK-NAGASA
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
       *    単価
-           IF    ( TBL-ZAIW-TENSIKIBETU (IDX)  =   2               )
-           OR    ( TBL-ZAIW-SRYCD       (IDX)  =   "777770000"     )
-           OR    ( TBL-ZAIW-SRYCD       (IDX)  =   WRK-CONS-SANSO1
-                                               OR  WRK-CONS-SANSO2
-                                               OR  WRK-CONS-SANSO3
-                                               OR  WRK-CONS-SANSO4
-                                               OR  WRK-CONS-SANSO5
-                                               OR  WRK-CONS-SANSO6
-                                               OR  WRK-CONS-SANSO7
-                                               OR  WRK-CONS-SANSO8 )
+           IF    ( TBL-ZAIW-TENSIKIBETU (2 IDX)    =   2               )
+           OR    ( TBL-ZAIW-SRYCD       (2 IDX)    =   "777770000"     )
+           OR    ( TBL-ZAIW-SRYCD       (2 IDX)    =   WRK-CONS-SANSO1
+                                                   OR  WRK-CONS-SANSO2
+                                                   OR  WRK-CONS-SANSO3
+                                                   OR  WRK-CONS-SANSO4
+                                                   OR  WRK-CONS-SANSO5
+                                                   OR  WRK-CONS-SANSO6
+                                                   OR  WRK-CONS-SANSO7
+                                                   OR  WRK-CONS-SANSO8 )
           
-               IF      TBL-ZAIW-TEN (IDX)  >   ZERO
-                   MOVE    TBL-ZAIW-TEN (IDX)  TO  WRK-TANKA
-                   MOVE    WRK-TANKA           TO  WRK-NUM
-                   MOVE    10                  TO  WRK-NAGASA
-                   MOVE    2                   TO  WRK-SYOSUU
+               IF      TBL-ZAIW-TEN (2 IDX)  >   ZERO
+                   MOVE    TBL-ZAIW-TEN (2 IDX)  TO  WRK-TANKA
+                   MOVE    WRK-TANKA             TO  WRK-NUM
+                   MOVE    10                    TO  WRK-NAGASA
+                   MOVE    2                     TO  WRK-SYOSUU
                END-IF
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
       *    特定器材名称
-           IF      TBL-ZAIW-SRYCD (IDX)        =   "777770000"
-               MOVE    TBL-ZAIW-NAME (IDX)     TO  WRK-DATA
+           IF      TBL-ZAIW-SRYCD (2 IDX)        =   "777770000"
+               MOVE    TBL-ZAIW-NAME (2 IDX)     TO  WRK-DATA
            END-IF
            MOVE    40                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
