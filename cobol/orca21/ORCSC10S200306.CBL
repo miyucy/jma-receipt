@@ -109,6 +109,7 @@
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê»»Äê
            03  FLG-SYONIKA         PIC 9(01).
            03  FLG-SYONIKA-ARI     PIC 9(01).
+           03  FLG-SYONIKA-TEI     PIC 9(01).
       *    ¿²¤¿¤­¤êÏ·¿Í»»Äê
            03  FLG-TOUG-SANTEI         PIC 9(03).
            03  FLG-JYURR-ARI           PIC 9(01).
@@ -157,6 +158,8 @@
            03  IDX-SIN             PIC 9(04).
            03  IDX-GAI             PIC 9(04).
            03  IDX-WK              PIC 9(04).
+      *
+           03  IDX-T               PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -1036,6 +1039,24 @@
            IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      1001-TOUGETU-KAISU-EXT
            END-IF
+      *    ÄûÀµ¤Ç¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤ò»»ÄêºÑ¤ß¤Î¾ì¹ç
+           MOVE    ZERO                TO  FLG-SYONIKA-TEI
+           IF      SPA-SYORIFLG        =   1
+               PERFORM VARYING    IDX-T    FROM    1   BY  1
+                       UNTIL     (IDX-T    >   100 )  OR
+                                 (SPA-K02-TEI-SRYCD(IDX-T) =   SPACE)
+                   EVALUATE    SPA-K02-TEI-SRYCD(IDX-T)
+      *        ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê
+                       WHEN    "113003510"
+                       WHEN    "113003610"
+                       WHEN    "113003710"
+                       WHEN    "113003810"
+                           MOVE    1           TO  FLG-SYONIKA-TEI
+                           MOVE    100         TO  IDX-T
+                   END-EVALUATE
+               END-PERFORM
+           END-IF
+      *
       *
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    SPACE               TO  SANTEI-REC
@@ -1151,6 +1172,10 @@
                WHEN    "113003810"
                    ADD     SANTEI-MSANTEICNT   TO  WRK-NYUYOJI
                    ADD     WRK-DAYCNT          TO  WRK-DAYCNT-SUM
+                   IF     (FLG-SYONIKA-TEI     =   ZERO) AND
+                          (SANTEI-DAY (IDX-Y2) >   ZERO)
+                       ADD    SANTEI-DAY (IDX-Y2)  TO  WRK-DAYCNT-SUM
+                   END-IF
       *        ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê
                WHEN    "114701210"
                WHEN    "114701710"
@@ -2455,7 +2480,8 @@
       *
       *    »»Äê¤¬¤¢¤ê¡¢´û¤ËÅöÆüÂ¾¤Î¿Ç»¡ÎÁ¤ò»»Äê¤·¤Æ¤¤¤ë»þ¡¢¥¨¥é¡¼
            IF     (SPA-SYOSIN          =   ZERO  )  AND
-                  (SPA-LSTYMD          =   SPA-SRYYMD)  AND
+                 ((SPA-LSTYMD          =   SPA-SRYYMD) OR
+                  (WRK-DAY-SINSATUCNT  >   ZERO    )) AND
                   (SPA-SYORIFLG        =   ZERO   )
                INITIALIZE              SPA-GMN-TBLREC (SPA-GMN-IDX)
                INITIALIZE              SPA-COM-TBLREC (SPA-GMN-IDX)
@@ -4667,8 +4693,6 @@
                    UNTIL      (IDX     >   200  )  OR
                              ((HZN-COM-INPUTCD (IDX)   =   SPACE ) AND
                               (HZN-GMN-INPUTCD (IDX)   =   SPACE ))
-      *!                      (HZN-GMN-INPUTCD (IDX)   =   SPACE ))  OR
-      *!                     ( FLG-ARI2                =   1     )
       *
                MOVE    ZERO                    TO  FLG-ARI
                IF     (HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
@@ -4967,10 +4991,10 @@
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
            MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
