@@ -194,7 +194,7 @@
                05  WRK-SS          PIC X(02).
       *                             
        01  WRK-SHELL-NAME.
-           05  FILLER             PIC X(16) VALUE
+           05  FILLER             PIC X(14) VALUE
                                              "scripts/daily/".
            05  WRK-SHELL-SHELL    PIC X(20).         
       *              
