@@ -60,6 +60,7 @@
       *
       *  ２００３．４改正対応
       *  01.03.01    NACL-藤原    03/04/17  対象がないときエラーを表示する
+      *  01.03.02    NACL-藤原    03/05/22  県番号をパラメタに追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -243,6 +244,9 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *
+      *    医療機関情報
+           COPY    "CPSK1001.INC".
       *
            COPY    "CPSK2001.INC".
       *
@@ -1435,6 +1439,19 @@
                    OPEN    OUTPUT   RECEERR-FILE
                    CLOSE   RECEERR-FILE
       *
+      *            県番号の取得
+                   INITIALIZE                  SYS-1001-REC
+                   MOVE    "1001"          TO  SYS-1001-KANRICD
+                   MOVE    "*"             TO  SYS-1001-KBNCD
+                   MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+                   MOVE    SYS-1001-REC    TO  MCPDATA-REC
+                   PERFORM 900-SYSKANRI-INV-SEC
+                   IF      FLG-SYSKANRI    =   ZERO
+                       MOVE   MCPDATA-REC  TO  SYS-1001-REC
+                   ELSE
+                       MOVE   SPACE        TO  SYS-1001-REC
+                   END-IF
+      *
       *            県単ＰＧの設定
                    INITIALIZE                  SYS-2005-REC
                    MOVE    "2005"          TO  SYS-2005-KANRICD
@@ -1508,6 +1525,8 @@
                    MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG8
                    MOVE    WRK-SYSYMD      TO  SHELLTBL-ARG9
                    MOVE    SYS-TIME        TO  SHELLTBL-ARG10
+                   MOVE    SYS-1001-PREFNUM
+                                           TO  SHELLTBL-ARG11
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    PATH-SHELL-SHELL
