@@ -127,6 +127,7 @@
       *                                     一部負担金・食事療養費標準
       *                                     負担額区分の編集
       *  01.03.01    NACL-門脇    05/03/24  小児特定上限対応
+      *  01.03.02    NACL-小豆沢  05/03/24  老人理学療法摘要欄対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -735,6 +736,21 @@
            03  CONS-HINKAI-COMMENT   PIC X(09)  VALUE  "114009410".
       *    （サ）
            03  CONS-RINYAK           PIC X(09)  VALUE  "820000046".
+      *
+      *    老人理学療法の摘要欄記載判定用（名称に老人を追加）
+           03  CONS-RJNRIGAKU1     PIC X(09) VALUE "180706810".
+           03  CONS-RJNRIGAKU2     PIC X(09) VALUE "180706910".
+           03  CONS-RJNRIGAKU3     PIC X(09) VALUE "180707010".
+           03  CONS-RJNRIGAKU4     PIC X(09) VALUE "180707110".
+           03  CONS-RJNRIGAKU5     PIC X(09) VALUE "180707210".
+           03  CONS-RJNRIGAKU6     PIC X(09) VALUE "180707310".
+           03  CONS-RJNRIGAKU7     PIC X(09) VALUE "180707410".
+           03  CONS-RJNRIGAKU8     PIC X(09) VALUE "180707510".
+           03  CONS-RJNRIGAKU9     PIC X(09) VALUE "180707670".
+           03  CONS-RJNRIGAKU10    PIC X(09) VALUE "180707770".
+           03  CONS-RJNRIGAKU11    PIC X(09) VALUE "180707870".
+           03  CONS-RJNRIGAKU12    PIC X(09) VALUE "180707970".
+           03  CONS-RJNRIGAKU13    PIC X(09) VALUE "180708070".
       *
       *    酸素 
            COPY    "CMSANSOTBL.INC".
@@ -2074,6 +2090,24 @@
                                                      RECE65-INPUTCOMENT
                                                                 (IDX4)
                    MOVE    TNS-YUKOKETA    TO    RECE65-YUKOKETA(IDX4)
+                   IF      TNS-SRYCD       =     CONS-RJNRIGAKU1  OR
+                                                 CONS-RJNRIGAKU2  OR
+                                                 CONS-RJNRIGAKU3  OR
+                                                 CONS-RJNRIGAKU4  OR
+                                                 CONS-RJNRIGAKU5  OR
+                                                 CONS-RJNRIGAKU6  OR
+                                                 CONS-RJNRIGAKU7  OR
+                                                 CONS-RJNRIGAKU8  OR
+                                                 CONS-RJNRIGAKU9  OR
+                                                 CONS-RJNRIGAKU10 OR
+                                                 CONS-RJNRIGAKU11 OR
+                                                 CONS-RJNRIGAKU12 OR
+                                                 CONS-RJNRIGAKU13
+                         MOVE  "老人"    TO   RECE65-NAME(IDX4)(1:4)
+                         MOVE  TNS-NAME  TO   RECE65-NAME(IDX4)(5:) 
+                         COMPUTE  RECE65-YUKOKETA(IDX4) =
+                                  RECE65-YUKOKETA(IDX4) + 2
+                   END-IF
                END-IF
       *
                IF  RECE65-YUKOKETA(IDX4)  =  ZERO
