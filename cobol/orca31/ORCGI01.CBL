@@ -6758,7 +6758,7 @@
            PERFORM   48012-TENSU-SEL-SEC
            MOVE    WRK-KSN-NYUKSNKBN
                                    TO  NYUKSNCHK-KSNKBN
-           MOVE    WRK-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SYOKIKSN-IN-SANTEISTYMD    TO  ORC-DBYMD
       *
            MOVE    "NYUKSNCHK-KEY" TO  WRK-DBPATH
            MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
@@ -6793,7 +6793,7 @@
       *
            MOVE    LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                                    TO  TNS-SRYCD
-           MOVE    WRK-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SYOKIKSN-IN-SANTEISTYMD    TO  ORC-DBYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
            MOVE    "TENSU-KEY"     TO  WRK-DBPATH
@@ -6831,7 +6831,7 @@
       *
            MOVE    SYS-5000-KSNCD(IDX7)
                                    TO  TNS-SRYCD
-           MOVE    WRK-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SYOKIKSN-IN-SANTEISTYMD    TO  ORC-DBYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
            MOVE    "TENSU-KEY"     TO  WRK-DBPATH
@@ -6851,7 +6851,7 @@
            END-IF
       *
            MOVE    TNS-NYUKHNKSNKBN
-                                   TO  WRK-NYUKSNKBN
+                                   TO  WRK-KSN-NYUKSNKBN
            .
       *
        48012-TENSU-SEL-EXT.
