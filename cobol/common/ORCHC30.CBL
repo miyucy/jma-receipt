@@ -145,7 +145,8 @@
            03  WRK-HENKEIJYO           PIC X(180).
            03  WRK-HENNAIYO            PIC X(128).
            03  WRK-HENCYUJKO           PIC X(425).
-      *
+           03  WRK-SRYCD-NAME          PIC X(100).
+      * 
            03  WRK-PRTNM               PIC X(20).
            03  WRK-SRYCD               PIC X(09).
       *----(00.01.04)--UPD-START----
@@ -394,7 +395,8 @@
       *
       *        薬剤名セット
                IF  YAKUJYO-NAME    =   SPACE
-                   MOVE    TNS-NAME        TO  WRK-HENYKZNAME
+      ************ MOVE    TNS-NAME        TO  WRK-HENYKZNAME
+                   MOVE    WRK-SRYCD-NAME  TO  WRK-HENYKZNAME
                ELSE
                    MOVE    YAKUJYO-NAME    TO  WRK-HENYKZNAME
                END-IF
@@ -464,13 +466,8 @@
       *
       *        改行、最大文字で改行
                IF       (IDX-KET       >=  KOU-MAX  )
-                   OR  ((IDX-STR      <=  600  )
-                   AND (WRK-NAIYOU(IDX-STR:)  =   SPACE))
                    ADD     1                   TO  IDX
                    MOVE    1                   TO  IDX-KET
-                   IF          WRK-NAIYOU(IDX-STR:1)    =   X"0A"
-                       COMPUTE IDX-STR     =   IDX-STR     +   1
-                   END-IF
                END-IF
       *
            END-PERFORM
@@ -700,6 +697,7 @@
       *    点数マスタ薬剤検索
            MOVE    ORCHC30-SRYCD(CNT-PARA)     TO  WRK-SRYCD
            PERFORM 900-TENSU-READ-SEC
+           MOVE    TNS-NAME            TO  WRK-SRYCD-NAME
       *
            IF      CNT-KAISU           =   ZERO
       *        その他の用法
