@@ -1100,28 +1100,28 @@
                END-IF
            END-PERFORM
       *   結果表示
-      **     PERFORM    VARYING   IDX1   FROM  1  BY  1
-      **                UNTIL     (IDX1   >     31)
-      **          DISPLAY  "IDX1 = " IDX1
-      **          DISPLAY  "WRK-SO-HKNCOMBI-DAY = " WRK-SO-HKNCOMBI-DAY
-      **                                                         (IDX1)
-      **          DISPLAY  "WRK-SO-SRYKBN   = " WRK-SO-SRYKBN(IDX1)
-      **          DISPLAY  "WRK-SO-MEISAISU = " WRK-SO-MEISAISU(IDX1)
-      **          DISPLAY  "WRK-SO-SRYCD(1) = " WRK-SO-SRYCD(IDX1 1)
-      **          DISPLAY  "WRK-SO-SRYCD(2) = " WRK-SO-SRYCD(IDX1 2)
-      **          DISPLAY  "WRK-SO-SRYCD(3) = " WRK-SO-SRYCD(IDX1 3)
-      **          DISPLAY  "WRK-SO-SRYCD(4) = " WRK-SO-SRYCD(IDX1 4)
-      **          DISPLAY  "WRK-SO-SRYCD(5) = " WRK-SO-SRYCD(IDX1 5)
-      **          DISPLAY  "WRK-SO-SRYCDTOTAL = " WRK-SO-SRYCDTOTAL(IDX1)
-      **          DISPLAY  "WRK-SO-TEN      = " WRK-SO-TEN(IDX1)
-      **          DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
-      **          PERFORM   VARYING  IDX2  FROM  1  BY  1
-      **                    UNTIL  IDX2  >  31
-      **                     DISPLAY  "IDX2 = " IDX2
-      **                     DISPLAY  "WRK-SO-GAIHAKU-KBN = " 
-      **                               WRK-SO-GAIHAKU-KBN(IDX1 IDX2)
-      **          END-PERFORM
-      **     END-PERFORM
+      *     PERFORM    VARYING   IDX1   FROM  1  BY  1
+      *                UNTIL     (IDX1   >     31)
+      *          DISPLAY  "IDX1 = " IDX1
+      *          DISPLAY  "WRK-SO-HKNCOMBI-DAY = " WRK-SO-HKNCOMBI-DAY
+      *                                                         (IDX1)
+      *          DISPLAY  "WRK-SO-SRYKBN   = " WRK-SO-SRYKBN(IDX1)
+      *          DISPLAY  "WRK-SO-MEISAISU = " WRK-SO-MEISAISU(IDX1)
+      *          DISPLAY  "WRK-SO-SRYCD(1) = " WRK-SO-SRYCD(IDX1 1)
+      *          DISPLAY  "WRK-SO-SRYCD(2) = " WRK-SO-SRYCD(IDX1 2)
+      *          DISPLAY  "WRK-SO-SRYCD(3) = " WRK-SO-SRYCD(IDX1 3)
+      *          DISPLAY  "WRK-SO-SRYCD(4) = " WRK-SO-SRYCD(IDX1 4)
+      *          DISPLAY  "WRK-SO-SRYCD(5) = " WRK-SO-SRYCD(IDX1 5)
+      *          DISPLAY  "WRK-SO-SRYCDTOTAL = " WRK-SO-SRYCDTOTAL(IDX1)
+      *          DISPLAY  "WRK-SO-TEN      = " WRK-SO-TEN(IDX1)
+      *          DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
+      *          PERFORM   VARYING  IDX2  FROM  1  BY  1
+      *                    UNTIL  IDX2  >  31
+      *                     DISPLAY  "IDX2 = " IDX2
+      *                     DISPLAY  "WRK-SO-GAIHAKU-KBN = " 
+      *                               WRK-SO-GAIHAKU-KBN(IDX1 IDX2)
+      *          END-PERFORM
+      *     END-PERFORM
       *
       *    レセ電サブ返却エリアへのセット
            MOVE       ZERO      TO     IDX2
@@ -1137,10 +1137,10 @@
                      PERFORM   VARYING   IDX3   FROM   1   BY  1
                                UNTIL (WRK-SO-SRYCD(IDX1 IDX3) = SPACE)
                                   OR (IDX3   >   20)
-                         IF    IDX3   =    1
-                               MOVE   "SI"   TO   
+                         MOVE   "SI"   TO   
                                     LNK-NYURECEDEN-RECSKB(1 IDX2 IDX3)
-                               MOVE   WRK-SO-SRYKBN(IDX3)  TO   
+                         IF    IDX3   =    1
+                               MOVE   WRK-SO-SRYKBN(IDX1)  TO   
                                     LNK-NYURECEDEN-SRYSKB(1 IDX2 IDX3)
                          END-IF
                          MOVE  WRK-SO-SRYCD(IDX1 IDX3) TO
