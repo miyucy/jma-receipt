@@ -349,6 +349,9 @@
       *    保険年齢パラメタ
            COPY    "CPORCSAGECHK.INC".
       *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -586,34 +589,46 @@
                                         MCPDATA-REC
       *
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               PERFORM 900-KANRIMST-READ-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-1031-REC
-               END-IF
-           ELSE
-               INITIALIZE                  SYS-1031-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           INITIALIZE                      SYS-1031-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    SPA-SRYYMD          TO  ORCSPRTNM-SRYYMD
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+      *TEST
+            DISPLAY "SYS-1031-PRTNM(2):" SYS-1031-PRTNM(2)
+      *TEST
+      *
+      **** MOVE    SPACE               TO  SYS-1031-REC
+      *    INITIALIZE                  SYS-1031-REC
+      *    MOVE    "1031"              TO  SYS-1031-KANRICD
+      *    MOVE    "*"                 TO  SYS-1031-KBNCD
+      *    MOVE    SYS-1031-REC        TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *        PERFORM 900-KANRIMST-READ-SEC
+      *        IF      MCP-RC              =   ZERO
+      *            MOVE    MCPDATA-REC     TO  SYS-1031-REC
+      *        END-IF
+      *    ELSE
+      *        INITIALIZE                  SYS-1031-REC
+      *        MOVE    1               TO  FLG-SYSKANRI
+      *    END-IF
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      ******                            MCPDATA-REC
       *
       *    処方箋ＧＥ出力情報編集
            MOVE    SPACE               TO  SYS-1030-REC
