@@ -77,6 +77,7 @@ EXTRA_DIST = \
              K022.glade \
              K023.glade \
              K03.glade \
+             K03X.glade \
              K04.glade \
              K05.glade \
              K051.glade \
