@@ -135,6 +135,7 @@
            03  WK-MEISAI                   PIC  9(08).
       *
            03  WK-YOUBUKASAN               PIC  9(08).
+           03  WK-KYOBUKASAN               PIC  9(08).
            03  WK-RYOYOTEATE               PIC  9(08).
       *
            03  WK-SYUTEN-KEI               PIC  9(08).
@@ -1323,6 +1324,7 @@
                                             -   WK-RSISDO
                                             -   WK-RSIETC
                                             -   WK-YOUBUKASAN
+                                            -   WK-KYOBUKASAN
                                             -   WK-RYOYOTEATE
       *
              MOVE      WK-SINDAN       TO   LNK-S01-SINDAN(IDY)
@@ -1863,6 +1865,10 @@
       *
                          IF    SRY-SRYCD (IDX3)  =   "140037490"
                            COMPUTE WK-YOUBUKASAN = WK-YOUBUKASAN +
+                                  (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
+                         END-IF
+                         IF    SRY-SRYCD (IDX3)  =   "140040110"
+                           COMPUTE WK-KYOBUKASAN = WK-KYOBUKASAN +
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
                          END-IF
       *

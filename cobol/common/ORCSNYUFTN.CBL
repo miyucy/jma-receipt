@@ -85,6 +85,7 @@
            03  WRK-SINDAN                  PIC 9(09).
            03  WRK-MEISAI                  PIC 9(09).
            03  WRK-YOUBUKASAN              PIC 9(09).
+           03  WRK-KYOBUKASAN              PIC 9(09).
            03  WRK-RYOYOTEATE              PIC 9(09).
       *
        01  WRK-JIBAI-TABLE.
@@ -3418,6 +3419,10 @@
                            COMPUTE WRK-YOUBUKASAN = WRK-YOUBUKASAN +
                                   (TNS-TEN  *   SINRYO-COUNT)
                          END-IF
+                         IF    SRY-SRYCD (IDZ)  =   "140040110"
+                           COMPUTE WRK-KYOBUKASAN = WRK-KYOBUKASAN +
+                                  (TNS-TEN  *   SINRYO-COUNT)
+                         END-IF
       *
                          IF    SRY-SRYCD (IDZ)  =   "199000510"
                            COMPUTE WRK-RYOYOTEATE = WRK-RYOYOTEATE +
@@ -3543,6 +3548,7 @@
                                         -    WRK-RSISDO
                                         -    WRK-RSIETC
                                         -    WRK-YOUBUKASAN
+                                        -    WRK-KYOBUKASAN
                                         -    WRK-RYOYOTEATE
       *
              ADD    SYU-HKNTEN(11)     TO    WRK-JIBAI-SYUTEN(IDX)

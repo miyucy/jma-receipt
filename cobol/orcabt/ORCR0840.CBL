@@ -354,6 +354,7 @@
            03  WRK-SURYOUTOTAL                         PIC 9(07)V9(03).
            03  WRK-KSNRATE                             PIC 9V99.    
            03  WRK-YOUBUKASAN                          PIC 9(07).
+           03  WRK-KYOBUKASAN                          PIC 9(07).
            03  WRK-RYOYOTEATE                          PIC 9(07).
            03  WRK-RYOYOTEATE2                         PIC 9(07).
       *
@@ -464,6 +465,8 @@
       *
       *    π¯…Ù∏«ƒÍ¬”≤√ªª
            03  CONS-YOUBUKASAN PIC X(09)   VALUE   "140037490".
+      *    ∂ª…Ù∏«ƒÍ¬”≤√ªª
+           03  CONS-KYOBUKASAN PIC X(09)   VALUE   "140040110".
       *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ° ∆˛±°°À
            03  CONS-RYOYOTEATE PIC X(09)   VALUE   "199000510".
       *
@@ -1083,6 +1086,7 @@
                                           WRK-SRYCDTOTAL
                                           WRK-SURYOUTOTAL
                                           WRK-YOUBUKASAN
+                                          WRK-KYOBUKASAN
                                           WRK-RYOYOTEATE
       *
                        MOVE   ZERO   TO   WRK-SRYSURYO
@@ -1110,6 +1114,7 @@
                                                     WRK-SRYCDTOTAL
                                                     WRK-SURYOUTOTAL
                                                     WRK-YOUBUKASAN
+                                                    WRK-KYOBUKASAN
                                                     WRK-RYOYOTEATE
       *
                                  MOVE   ZERO   TO   WRK-SRYSURYO
@@ -2490,6 +2495,14 @@
                     COMPUTE  RECE84-KIZAITEN  =  RECE84-KIZAITEN
                                               +  TNS-TEN
                   END-IF
+                  IF      SRY-SRYCD(IDX2)    =     CONS-KYOBUKASAN
+                    COMPUTE  WRK-KYOBUKASAN   =  WRK-KYOBUKASAN
+                                              +  TNS-TEN
+                    COMPUTE  RECE84-SYUTEN1   =  RECE84-SYUTEN1
+                                              -  TNS-TEN
+                    COMPUTE  RECE84-KIZAITEN  =  RECE84-KIZAITEN
+                                              +  TNS-TEN
+                  END-IF
       *           º´«Â¿’°¶Œ≈Õ‹√¥≈ˆºÍ≈ˆÕ—∆√Œ„ΩËÕ˝
       *           ° º´«Â¿’§ŒæÏπÁ°¢£±£∞≈¿§Ú£±£≤£∞±ﬂ§À∆…§ﬂ¬ÿ§®§Î°À
       *           ° Œ≈Õ‹√¥≈ˆºÍ≈ˆ°ß£±∑Ó£±≤Û§ŒªªƒÍ°À
@@ -3489,6 +3502,12 @@
                                    COMPUTE  WK-YKZTEN  = WK-YKZTEN
                                                        + WRK-YOUBUKASAN
                                   END-IF
+                                  IF  WRK-KYOBUKASAN  NOT =  ZERO
+                                   COMPUTE  WK-SYUTEN  = WK-SYUTEN
+                                                       - WRK-KYOBUKASAN
+                                   COMPUTE  WK-YKZTEN  = WK-YKZTEN
+                                                       + WRK-KYOBUKASAN
+                                  END-IF
                              END-IF
                            END-IF                                       
                          END-IF
@@ -3503,6 +3522,12 @@
                                                      -  WRK-YOUBUKASAN
                                 COMPUTE  WK-KIZAITEN =  WK-KIZAITEN
                                                      +  WRK-YOUBUKASAN
+                             END-IF
+                             IF  WRK-KYOBUKASAN  NOT =  ZERO
+                                COMPUTE  WK-SYUTEN   =  WK-SYUTEN
+                                                     -  WRK-KYOBUKASAN
+                                COMPUTE  WK-KIZAITEN =  WK-KIZAITEN
+                                                     +  WRK-KYOBUKASAN
                              END-IF
                            END-IF
                        END-IF

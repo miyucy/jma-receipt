@@ -264,6 +264,8 @@
       *
       *    π¯…Ù∏«ƒÍ¬”≤√ªª
            03  CONS-YOUBUKASAN PIC X(09)   VALUE   "140037490".
+      *    ∂ª…Ù∏«ƒÍ¬”≤√ªª
+           03  CONS-KYOBUKASAN PIC X(09)   VALUE   "140040110".
       *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
            03  CONS-RYOYOTEATE PIC X(09)   VALUE   "199000610".
       *
@@ -1444,6 +1446,7 @@
                        END-IF
       *
                        IF   SRY-SRYCD(IDY) =  CONS-YOUBUKASAN
+                                           OR CONS-KYOBUKASAN
                             COMPUTE  TBL-SYUTEN-JI(ID1)  =
                                      TBL-SYUTEN-JI(ID1)  -
                                     ( WRK-ZAIKAISU-JI * TNS-TEN )

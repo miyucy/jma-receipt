@@ -556,6 +556,8 @@
       *
       *    ¹øÉô¸ÇÄêÂÓ²Ã»»
            03  WRK-CONS-YOUBUKASAN     PIC X(09)   VALUE "140037490".
+      *    ¶»Éô¸ÇÄêÂÓ²Ã»»
+           03  WRK-CONS-KYOBUKASAN     PIC X(09)   VALUE "140040110".
       *
       *    ¥Õ¥£¥ë¥àÎÁ¡ÊÆýÍÄ»ù¡Ë²Ã»»
            03  WRK-CONS-FILM-YOUJI-KASAN
@@ -928,6 +930,7 @@
                                ELSE
                                    IF  RECE85-SRYCD (IDX)    =
                                            WRK-CONS-YOUBUKASAN
+                                        OR WRK-CONS-KYOBUKASAN
                                        MOVE    4         TO  IDY
                                    ELSE
                                        MOVE    3         TO  IDY
