@@ -279,6 +279,7 @@
            03  WRK-DAY-TBL.
                05  WRK-DAY-OCC         OCCURS   31.
                    07  WRK-DAY         PIC 9(03).
+                   07  WRK-DAYDEL      PIC 9(01).
            03  WRK-KOMENT-TBL.
                05  WRK-KOMENTO-OCC         OCCURS   60.
                    07  WRK-KAISU           PIC X(60).
@@ -1345,6 +1346,9 @@
            INITIALIZE                  SPA-SCR-REC-AREA
            MOVE    ZERO                TO  SPA-NAI-MAX-41
            MOVE    ZERO                TO  SPA-GMN-MAX-41
+      *
+      *    対象の患者の入院会計作成済み年月判定
+           PERFORM 31019-NYUINACCT-SEL-SEC
       *
       *    入院履歴より当月の対象科判定
            PERFORM 31010-PTNYUINRRK-CHK-SEC
@@ -3257,10 +3261,6 @@
                       (WRK-DAY2-9      =   ZERO )  OR
                       (WRK-DAY1-9      >   WRK-DAY2-9 )
                    MOVE    "0122"              TO  SPA-ERRCD
-               ELSE
-                   IF      WRK-KAISU-9     =   ZERO
-                       MOVE    1               TO  WRK-KAISU-9
-                   END-IF
                END-IF
       *        一括変更チェック
                IF      WRK-DAY2-9          =   99
@@ -3281,6 +3281,9 @@
                        MOVE    "0123"              TO  SPA-ERRCD
                    ELSE
                        MOVE    WRK-KAISU-9     TO  WRK-DAY(IDW3)
+                       IF      WRK-KAISU-9     =   ZERO
+                           MOVE    1               TO  WRK-DAYDEL (IDW3)
+                       END-IF
                    END-IF
                END-PERFORM
            END-PERFORM
@@ -3296,6 +3299,10 @@
                          OR   (IDX-D   >   31             )
                IF      WRK-DAY(IDX-D)  >   ZERO
                    MOVE    WRK-DAY(IDX-D)  TO  SPA-GMN-DAY-41(IDX-D)
+               ELSE
+                   IF      WRK-DAYDEL(IDX-D)   =   1
+                       MOVE    ZERO            TO  SPA-GMN-DAY-41(IDX-D)
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -4055,6 +4062,10 @@
            MOVE    ZERO                TO  FLG-SET
            MOVE    SPA-NAI-SRYYM       TO  WRK-SRYYM
       *
+      *TEST
+           DISPLAY "I41 WRK-SRYYM:" WRK-SRYYM
+                  ",SPA-SRYYM-BIG:" SPA-SRYYM-BIG
+      *TEST
            PERFORM UNTIL  (FLG-SET         =   1   )  OR
                           (WRK-SRYYM       >   SPA-SRYYM-BIG)
       *        入院会計マスターより対象の判定
