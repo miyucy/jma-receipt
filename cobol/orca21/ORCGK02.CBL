@@ -2631,6 +2631,7 @@
                END-IF
            END-PERFORM
       *
+           MOVE    1                    TO  SPA-GMN-CUR
            .
        30014-K023-SET-EXT.
            EXIT.
