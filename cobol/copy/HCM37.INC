@@ -2,7 +2,6 @@
             02  HCM37-PAGE  PIC X(3).
             02  HCM37-HKNSBT1   PIC X(6).
             02  HCM37-HKNSBT2   PIC X(6).
-            02  HCM37-HKNSBT3   PIC X(6).
             02  HCM37-HONKZK    PIC X(10).
             02  HCM37-SRYM  PIC X(16).
             02  HCM37-HOSPCD    PIC X(7).

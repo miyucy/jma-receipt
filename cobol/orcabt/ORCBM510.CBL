@@ -68,6 +68,8 @@
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
+           03  CNT-PAGE                PIC 9(03).
+           03  CNT-LINE                PIC 9(02).
            03  CNT-RECEDEN             PIC 9(06).
            03  CNT-RECE10              PIC 9(06).
       *
@@ -76,14 +78,6 @@
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDZ                     PIC 9(04).
-      *
-       01  KEY-AREA                    VALUE   LOW-VALUE.
-           03  KEY-NEW.
-               05  KEY-N-PTID          PIC X(10).
-               05  KEY-N-SRYKA         PIC X(02).
-           03  KEY-OLD.
-               05  KEY-O-PTID          PIC X(10).
-               05  KEY-O-SRYKA         PIC X(02).
       *
       *    ¥Ñ¥é¥á¥¿ÎÎ°è
        01  WRK-PARA.
@@ -121,7 +115,7 @@
            COPY    "CPSK1001.INC".
       *
       *    ¿ÇÎÅ²Ê¾ðÊó
-           COPY    "CPSK1005.INC".
+      *     COPY    "CPSK1005.INC".
       *
       *    ÀÁµá´ÉÍý¾ðÊó
            COPY    "CPRCF010.INC".
@@ -211,12 +205,13 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           DISPLAY "*** ORCBM031 START ***"
+           DISPLAY "*** ORCBM510 START ***"
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+           INITIALIZE                  IDX-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -267,6 +262,8 @@
            ELSE  
                MOVE    "SEIKYU-KEY4"       TO  WRK-PATH
            END-IF
+      *
+      *    ÀÁµá´ÉÍýÆÉ¤ß¹þ¤ß
            PERFORM 900-SEIKYU-SELECT-SEC
       *
            .
@@ -278,24 +275,26 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           MOVE    KEY-NEW         TO  KEY-OLD
            PERFORM UNTIL   FLG-END     =   1
-                   OR      KEY-NEW NOT =   KEY-OLD
-      *
+      *        ¥ì¥»¥×¥ÈÅÅ»»¾ðÊóÆÉ¤ß¹þ¤ß
                PERFORM 900-RECEDEN-SELECT-SEC
-               IF      FLG-RECEDEN     =   ZERO
+      *
+               PERFORM UNTIL   FLG-RECEDEN =   1
       *            Ä¢É¼ÊÔ½¸<¥Ø¥Ã¥À¡¼Éô>½èÍý
                    PERFORM 210-HEAD-HEN-SEC
-                   PERFORM UNTIL ( FLG-RECEDEN =   1 )
-                           OR    ( CNT-RECEDEN >   32 )
+      *
+                   PERFORM VARYING CNT-LINE    FROM    1   BY  1
+                           UNTIL ( FLG-RECEDEN =   1 )
+                           OR    ( CNT-LINE    >   32 )
                        MOVE   RECEDEN-RECEDATA
-                                       TO  HCM37-NAIYO(CNT-RECEDEN)
+                                       TO  HCM37-NAIYO(CNT-LINE)
+      *                ¥ì¥»¥×¥ÈÅÅ»»¾ðÊóÆÉ¤ß¹þ¤ß
                        PERFORM 900-RECEDEN-READ-SEC
                    END-PERFORM
       *
       *            Ä¢É¼°õºþ½èÍý
                    PERFORM 400-PRINT-OUT-SEC
-               END-IF
+               END-PERFORM
       *
                MOVE    "DBCLOSE"           TO  MCP-FUNC
                MOVE    "RECEDEN-KEY2"      TO  ORC-DBPATH
@@ -305,10 +304,9 @@
                                            MCPDATA-REC
       *
                MOVE    WRK-PATH            TO  ORC-DBPATH
+      *        ÀÁµá´ÉÍýÆÉ¤ß¹þ¤ß
                PERFORM 900-SEIKYU-READ-SEC
            END-PERFORM
-      *
-           MOVE    1                  TO  FLG-END
       *
            .
        200-MAIN-EXT.
@@ -321,6 +319,83 @@
       *
            INITIALIZE                      HCM37
       *
+           ADD     1                   TO  CNT-PAGE
+           MOVE    CNT-PAGE            TO  WRK-ZZ9
+           MOVE    WRK-ZZ9             TO  HCM37-PAGE
+      *
+      *    ÊÝ¸±¼ïÊÌ£±
+           EVALUATE    RECE10-RECESYUBETU (2:1)
+           WHEN    "1"
+               EVALUATE    RECE10-TEISYUTUSAKI
+               WHEN    1
+                   MOVE    "£±¼Ò"      TO  HCM37-HKNSBT1
+               WHEN    2
+                   MOVE    "£±¹ñ"      TO  HCM37-HKNSBT1
+               END-EVALUATE
+           WHEN    "2"
+               MOVE    "£²¸øÈñ"        TO  HCM37-HKNSBT1
+           WHEN    "3"
+               MOVE    "£³Ï·¿Í"        TO  HCM37-HKNSBT1
+           WHEN    "4"
+               MOVE    "£´Âà¿¦"        TO  HCM37-HKNSBT1
+           END-EVALUATE
+      *
+      *    ÊÝ¸±¼ïÊÌ£²
+           EVALUATE    RECE10-RECESYUBETU (3:1)
+           WHEN    "1"
+               MOVE    "£±Ã±ÆÈ"        TO  HCM37-HKNSBT2
+           WHEN    "2"
+               MOVE    "£²£²Ê»"        TO  HCM37-HKNSBT2
+           WHEN    "3"
+               MOVE    "£³£³Ê»"        TO  HCM37-HKNSBT2
+           END-EVALUATE
+      *
+      *    ËÜ¿Í¡¦²ÈÂ²
+      *    ¹ñÊÝ
+           IF  RECE10-TEISYUTUSAKI     =   "2"
+      *        ¹ñÊÝ¡¡¡õ¡¡Ï·¿Í¡õÂà¿¦¼Ô
+               IF  ( RECE10-RJNHKNNUM    NOT =   SPACE )  OR
+                   ( RECE10-HKNNUM           =   "067" )
+                   EVALUATE    RECE10-RECESYUBETU (4:1)
+                   WHEN    "1"
+                       MOVE    "£±ËÜÆþ"    TO  HCM37-HONKZK
+                   WHEN    "2"
+                       MOVE    "£²ËÜ³°"    TO  HCM37-HONKZK
+                   WHEN    "5"
+                       MOVE    "£µ²ÈÆþ"    TO  HCM37-HONKZK
+                   WHEN    "6"
+                       MOVE    "£¶²È³°"    TO  HCM37-HONKZK
+                   END-EVALUATE
+               ELSE
+      *            ¹ñÊÝ¡¡¡õ¡¡Ï·¿Í¡õÂà¿¦¼Ô°Ê³°
+                   IF  RECE10-HONKZKKBN    =   "1"
+                       IF  RECE10-NYUGAIKBN      =   "1"
+                           MOVE    "£±ËÜÆþ"        TO  HCM37-HONKZK
+                       ELSE
+                           MOVE    "£²ËÜ³°"        TO  HCM37-HONKZK
+                       END-IF
+                   ELSE
+                       IF  RECE10-NYUGAIKBN      =   "1"
+                           MOVE    "£µ²ÈÆþ"        TO  HCM37-HONKZK
+                       ELSE
+                           MOVE    "£¶²È³°"        TO  HCM37-HONKZK
+                       END-IF
+                   END-IF
+               END-IF
+           ELSE
+      *        ¹ñÊÝ°Ê³°
+               EVALUATE    RECE10-RECESYUBETU (4:1)
+               WHEN    "1"
+                   MOVE    "£±ËÜÆþ"    TO  HCM37-HONKZK
+               WHEN    "2"
+                   MOVE    "£²ËÜ³°"    TO  HCM37-HONKZK
+               WHEN    "5"
+                   MOVE    "£µ²ÈÆþ"    TO  HCM37-HONKZK
+               WHEN    "6"
+                   MOVE    "£¶²È³°"    TO  HCM37-HONKZK
+               END-EVALUATE
+           END-IF
+      *
       *    ¿ÇÎÅÇ¯·î
            MOVE    WRK-SRYYMWH         TO  HCM37-SRYM
       *
@@ -331,11 +406,11 @@
            MOVE    SYS-1001-HOSPNAME   TO  HCM37-HOSPNAME
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý¿ÇÎÅ²ÊÆÉ¤ß¹þ¤ß
-           PERFORM 900-SYS1005-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
+      *     PERFORM 900-SYS1005-READ-SEC
+      *     IF      FLG-SYSKANRI        =   ZERO
       *        ¿ÇÎÅ²Ê
-               MOVE    SYS-1005-SRYKANAME  TO  HCM37-SRYKA
-           END-IF
+      *         MOVE    SYS-1005-SRYKANAME  TO  HCM37-SRYKA
+      *     END-IF
       *
       *    ´µ¼Ô¾ðÊóÆÉ¤ß¹þ¤ß
            PERFORM 900-PTINF-READ-SEC
@@ -359,9 +434,9 @@
                MOVE    "¡û"                TO  HCM37-BIRTHG(4)
            END-EVALUATE
       *
-           MOVE    WRK-HENYMDG(3:2)    TO  HCM37-BIRTHY
-           MOVE    WRK-HENYMDG(5:2)    TO  HCM37-BIRTHM
-           MOVE    WRK-HENYMDG(7:2)    TO  HCM37-BIRTHD
+           MOVE    WRK-SYMD(3:2)       TO  HCM37-BIRTHY
+           MOVE    WRK-SYMD(5:2)       TO  HCM37-BIRTHM
+           MOVE    WRK-SYMD(7:2)       TO  HCM37-BIRTHD
       *
       *    Æþ³°¶èÊ¬
            EVALUATE    RECE10-NYUGAIKBN
@@ -395,7 +470,7 @@
            END-IF
       *
       *    ¥«¥ë¥ÆÈÖ¹æ
-           MOVE    RECE10-PTID         TO  HCM37-DEMPNUM
+           MOVE    RECE10-PTNUM        TO  HCM37-DEMPNUM
       *
            .
        210-HEAD-HEN-EXT.
@@ -480,11 +555,11 @@
                MOVE    WRK-RECEERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
                CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
+                                       ORCSJOBKANRIAREA
                                        JOBKANRI-REC
            END-IF
       *
-           MOVE    1                   TO  FLG-END     
+           MOVE    1                   TO  FLG-END
       *
            .
        500-ERR-HENSYU-EXT.
@@ -508,7 +583,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    CNT-RECE10      TO  JOB-UPDCNT
+           MOVE    CNT-PAGE        TO  JOB-UPDCNT
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -585,22 +660,22 @@
       *****************************************************************
       *    ¥·¥¹¥Æ¥à´ÉÍý¿ÇÎÅ²ÊÆÉ¹þ
       *****************************************************************
-       900-SYS1005-READ-SEC            SECTION.
+      * 900-SYS1005-READ-SEC            SECTION.
       *
-           INITIALIZE                  SYS-1005-REC
-           MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    RECE10-RECEKA       TO  SYS-1005-KBNCD
-           MOVE    SYS-1005-REC        TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1005-REC
-           ELSE
-               INITIALIZE                      SYS-1005-REC
-           END-IF
+      *     INITIALIZE                  SYS-1005-REC
+      *     MOVE    "1005"              TO  SYS-1005-KANRICD
+      *     MOVE    RECE10-RECEKA       TO  SYS-1005-KBNCD
+      *     MOVE    SYS-1005-REC        TO  MCPDATA-REC
+      *     PERFORM 800-SYSKANRI-READ-SEC
+      *     IF      FLG-SYSKANRI        =   ZERO
+      *         MOVE    MCPDATA-REC         TO  SYS-1005-REC
+      *     ELSE
+      *         INITIALIZE                      SYS-1005-REC
+      *     END-IF
       *
-           .
-       900-SYS1005-READ-EXT.
-           EXIT.
+      *     .
+      * 900-SYS1005-READ-EXT.
+      *     EXIT.
       *
       *****************************************************************
       *    ÀÁµá´ÉÍýÆÉ¹þ
@@ -649,8 +724,6 @@
                    GO  TO  900-SEIKYU-READ-SEC
                END-IF
                ADD     1                   TO  CNT-RECE10
-               MOVE    RECE10-RECEKA       TO  KEY-N-SRYKA
-               MOVE    RECE10-PTID         TO  KEY-N-PTID
            ELSE
                MOVE    1                   TO  FLG-END
            END-IF

@@ -16,11 +16,6 @@
         <embed object="string" length="6"/>
       </appinfo>
     </element>
-    <element name="HKNSBT3" occurs="1">
-      <appinfo>
-        <embed object="string" length="6"/>
-      </appinfo>
-    </element>
     <element name="HONKZK" occurs="1">
       <appinfo>
         <embed object="string" length="10"/>
@@ -1000,9 +995,45 @@
         </composite>
       </attribute>
     </object>
+    <object type="Standard - Text" version="0" id="O29">
+      <attribute name="obj_pos">
+        <point val="14.05,3.5"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="14.05,3.22636;15.1105,3.57636"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#163;&#177;&#176;&#229;&#178;&#202;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.35"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="14.05,3.5"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
   </layer>
   <layer name="&#186;&#185;&#164;&#183;&#185;&#254;&#164;&#223;" visible="true">
-    <object type="Embed - Text" version="0" id="O29">
+    <object type="Embed - Text" version="0" id="O30">
       <attribute name="obj_pos">
         <point val="19.5,2"/>
       </attribute>
@@ -1044,12 +1075,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Embed - Text" version="0" id="O30">
+    <object type="Embed - Text" version="0" id="O31">
       <attribute name="obj_pos">
-        <point val="14.1,3.5"/>
+        <point val="15.25,3.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="14.1,3.22636;15.1605,3.57636"/>
+        <rectangle val="15.25,3.22636;16.3105,3.57636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNSBT1#</string>
@@ -1069,7 +1100,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="14.1,3.5"/>
+            <point val="15.25,3.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -1086,12 +1117,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Embed - Text" version="0" id="O31">
+    <object type="Embed - Text" version="0" id="O32">
       <attribute name="obj_pos">
-        <point val="15.3,3.5"/>
+        <point val="16.45,3.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.3,3.22636;16.3605,3.57636"/>
+        <rectangle val="16.45,3.22636;17.5105,3.57636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNSBT2#</string>
@@ -1111,49 +1142,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="15.3,3.5"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O32">
-      <attribute name="obj_pos">
-        <point val="16.5,3.5"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="16.5,3.22636;17.5605,3.57636"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#HKNSBT3#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#&#164;&#162;&#164;&#162;&#164;&#162;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="16.5,3.5"/>
+            <point val="16.45,3.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -1172,10 +1161,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O33">
       <attribute name="obj_pos">
-        <point val="17.7,3.5"/>
+        <point val="17.65,3.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="17.7,3.22636;19.4675,3.57636"/>
+        <rectangle val="17.65,3.22636;19.4175,3.57636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HONKZK#</string>
@@ -1195,7 +1184,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="17.7,3.5"/>
+            <point val="17.65,3.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
