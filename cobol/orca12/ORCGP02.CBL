@@ -3325,7 +3325,7 @@
                    MOVE    "処方箋選択は１です。再入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "2004"
-                   MOVE    "未登録予約者は存在していません"
+                   MOVE    "未登録受付者は存在していません"
                                                TO  SPA-ERRMSG
                WHEN    "2008"
                    MOVE    "１０件以上登録できません"

@@ -138,6 +138,10 @@
       *****************************************************************
        000-PROC-SEC                     SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  WRK-AREA
+      *
            MOVE    SPA-COMMON           TO  SPA-AREA.
            MOVE    SPA-FREE             TO  SPA-P02SCRAREA
            MOVE    SPA-WORK             TO  SPA-P02KYOUTU
@@ -164,6 +168,7 @@
            MOVE    SPA-P02KYOUTU                 TO  SPA-WORK
            MOVE    SPA-AREA                      TO  SPA-COMMON
            MOVE    SPA-P02SCRAREA                TO  SPA-FREE
+           .
       *
            EXIT    PROGRAM.
       *
@@ -175,8 +180,24 @@
            INITIALIZE                            FLG-AREA.
            INITIALIZE                            CNT-AREA.
       *
-      *    初期画面セット
-           PERFORM 420-ERRSET-SEC.
+      *    エラー画面より
+           IF      SPA-MOTOPG          =   "PERR"
+               MOVE    SPACE               TO  SPA-MOTOPG
+               PERFORM 500-GMNHEN-SEC
+           ELSE
+      *
+      *        初期画面編集
+      *        PERFORM 300-SCREEN-SEC
+      *        IF      FLG-END             =   1
+      *            GO      TO      100-INIT-EXT
+      *        END-IF
+      *
+      *        画面編集
+               PERFORM 500-GMNHEN-SEC
+           END-IF
+      *
+      *****初期画面セット
+      **** PERFORM 420-ERRSET-SEC.
       *
            MOVE    "NEW"                         TO  MCP-PUTTYPE.
            MOVE    "P0201"                       TO  MCP-WINDOW.
@@ -231,7 +252,7 @@
       *****************************************************************
        310-BACK-SEC                              SECTION.
       *
-           MOVE    SPA-MOTOPG                    TO  SPA-SAKIPG.
+           MOVE    "P02"                         TO  SPA-SAKIPG.
            MOVE    "P0201"                       TO  SPA-MOTOPG.
       *
       *****MOVE   "BACK"                         TO  MCP-PUTTYPE.
@@ -263,7 +284,13 @@
                    MOVE    "0001"                TO  SPA-ERRCD
                    GO      TO      320-KAKUTEI-EXT
                END-IF
-           END-IF.
+           END-IF
+      *
+      *    既に患者を選択している時、エラーとする
+           IF      SPA-GMN-PTNUM   NOT =   SPACE
+               MOVE    "0001"                TO  SPA-ERRCD
+               GO      TO      320-KAKUTEI-EXT
+           END-IF
       *
       *    共通ＳＰＡ編集
            MOVE  SPACE                           TO  UKETUKE-REC
@@ -374,7 +401,11 @@
        400-SET-SCREEN-SEC                        SECTION.
       *
            PERFORM 500-GMNHEN-SEC
-           PERFORM 420-ERRSET-SEC.
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+                PERFORM 420-ERRSET-SEC
+               GO      TO              400-SET-SCREEN-EXT
+           END-IF
       *
            MOVE    SPACE                         TO  LINKAREA.
       *
@@ -502,10 +533,29 @@
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    "入力された番号は選択できません" 
-                       TO  SPA-ERRMSG
+                                           TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE    "既に患者が選択されています。選択できません" 
+                                           TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "数字のみ入力可能です" TO  SPA-ERRMSG
            END-EVALUATE.
+      *
+           MOVE    SPACE               TO  PERR
+           MOVE    SPA-ERRCD           TO  PERR-ERRCODE
+           MOVE    SPA-ERRMSG          TO  PERR-ERRMSG
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "P0201"             TO  SPA-MOTOPG
+           MOVE    "PERR"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "PERR"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+           .
       *
        420-ERRSET-EXT.
            EXIT.
