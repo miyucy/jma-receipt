@@ -119,6 +119,8 @@
                  07  BD002-KOH-HKNFTNMONEY     PIC  9(07).
       *给锐≥纷换砷么垛
                  07  BD002-KOH-COMPFTN         PIC  9(07).
+      *给锐≥纷换砷么垛∈边帽疤淡峡脱∷
+                 07  BD002-KOH-COMPFTN-ENTANI  PIC  9(07).
       *给锐≥纷换挑恨办婶砷么垛
                  07  BD002-KOH-COMPYKZFTN      PIC  9(07).
       *给锐≥纷换砷么垛纷
