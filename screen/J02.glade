@@ -2696,6 +2696,29 @@
       <label>Æþ±¡Ä´ºÞÊÑ¹¹</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B12S</name>
+      <x>924</x>
+      <y>700</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F12</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 21 Dec 2000 08:28:32 GMT</last_modification_time>
+      </signal>
+      <label>¥«¥ë¥Æ°õºþ</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
   </widget>
 </widget>
 
