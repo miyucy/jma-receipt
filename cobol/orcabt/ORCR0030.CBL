@@ -173,6 +173,7 @@
       *  01.04.04   NACL-æÆ∆¶¬Ù   04/06/11  »È≤º∂⁄∆˘√ÌºÕ§«°¢ÃÙ∫ﬁ≈¿°¶¥Ô∫‡≈¿
       *                                     §¨Ãµ§§§ŒæÏπÁ§Œ≈¶Õ◊ÕÛµ≠∫‹¬–±˛
       *  01.04.05   NACL-ÃÁœ∆     04/06/21  ¿∏≥Ë ›∏Ó§Œ…È√¥∂‚≥€µ≠∫‹Ω§¿µ
+      *  01.04.06   NACL-ÃÁœ∆     04/07/28  ≈ÍÃÙŒ¡§Œ¥Ô∫‡≈¿§ŒΩ∏∑◊Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3140,8 +3141,10 @@
                    END-IF
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   )
+                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
+                                                       OR "7"       )
+                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
+                                                         OR "059"   )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE02-TENSU(14 BUN-IDX)  =
@@ -3264,8 +3267,10 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                WHEN    "23"
-                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   )
+                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
+                                                       OR "7"       )
+                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
+                                                         OR "059"   )
                        ADD    WK-ZAIKAISU    TO   RECE02-KAISU(17)
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE02-TENSU(17 BUN-IDX)  =
