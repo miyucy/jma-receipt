@@ -602,8 +602,8 @@
       *********                (FLG-SYSKANRI   =   1    )
            PERFORM    UNTIL   FLG-SYSKANRI    =   1
                MOVE    MCPDATA-REC   TO  SYS-2003-REC
-               IF      SYS-2003-TEISYUTUSAKI   =   "1" OR  "2" 
-               AND     SYS-2003-NYUGAIKBN      =   "2"
+               IF    ( SYS-2003-TEISYUTUSAKI   =   "1" OR  "2" ) 
+               AND   ( SYS-2003-NYUGAIKBN      =   "2"         )
                    EVALUATE    SYS-2003-TEISYUTUSAKI
                        WHEN    "1"
                            MOVE    1               TO  IDY
