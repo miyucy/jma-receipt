@@ -944,7 +944,8 @@
                END-IF
            ELSE
       *        ºÞ½ªÎ»
-               IF     (IDX                 =   1        )  OR
+               IF    ((IDX                 =   1    )  AND
+                      (FLG-SYORI       NOT =   2    )   )  OR
                       (SPA-COM-KAIFLG(IDX) =   "1"      )
                    MOVE    "1"             TO  SPA-COM-ZAIEND (IDX)
                    MOVE    SPACE           TO  WRK-SRYSYUKBN
