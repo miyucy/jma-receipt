@@ -3,6 +3,21 @@ O01	{
 		SEIYM	{
 			value	varchar(6);
 		};
+		IKKATU	{
+			value	bool;
+		};
+		KOBETU	{
+			value	bool;
+		};
+		CHK_KIKAN01	{
+			value	bool;
+		};
+		CHK_KIKAN02	{
+			value	bool;
+		};
+		CHK_KIKAN03	{
+			value	bool;
+		};
 		KIKAN01	{
 			value	varchar(20);
 		};
@@ -11,21 +26,6 @@ O01	{
 		};
 		KIKAN03	{
 			value	varchar(20);
-		};
-		CHKBUTON05	{
-			value	bool;
-		};
-		CHKBUTON01	{
-			value	bool;
-		};
-		CHKBUTON02	{
-			value	bool;
-		};
-		CHKBUTON03	{
-			value	bool;
-		};
-		CHKBUTON04	{
-			value	bool;
 		};
 	};
 };
