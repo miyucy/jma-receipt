@@ -19,6 +19,7 @@ COPYS = \
 	C07.INC \
 	C08.INC \
 	C09.INC \
+	C10.INC \
 	CERR.INC \
 	CID1.INC \
 	CID2.INC \
