@@ -11,48 +11,33 @@ fi
 
 #-------------------------------------------#
 #    レセ電ファイル作成処理
-#        CPCOMMONSHELL1.INC  
-#        $1 SRYYM TERID SYSYMD
-#        $2 請求年月
-#        $3 提出先
-#        $4 ファイル形式
-#        $5 レセ電ファイル出力先
-#        $6 JOBID 
-#        $7 SHELLID
-#        $8 エラーファイル名 
+#        $1-${11} 印刷ＤＢ用固定引数
+#        $12 請求年月
+#        $13 提出先
+#        $14 レセ電ファイル出力先
+#        $15 JOBID 
+#        $16 SHELLID
+#        $17 エラーファイル名 
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
-	echo "echo " $8
-        if  [ -e $8 ]; then
-            rm  $8
+	echo "echo " ${17}
+        if  [ -e ${17} ]; then
+            rm  ${17}
         fi
         
-        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0200 -parameter $1$6$7
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM500 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${15},${16}
         
-        if  [ $4 = '1' ]; then          
-#           固定長のとき
-	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0210 -parameter $1,$2,$3,$6,$7
-        else 
-#           ＣＳＶのとき 
-	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0300 -parameter $1,$2,$3,$6,$7
-        fi 
         
-        if  [ -e $8 ]; then
+        if  [ -e ${17} ]; then
             exit 
         fi
         
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$6$7
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${15}${16}
 
         
 
 #       漢字コード変換（ＥＵＣからシフトＪＩＳ）	
-        if  [ $4 = '1' ]; then          
-#           固定長のとき
-	    nkf -s /var/tmp/RECE200.dat > $5RECEIPTJ.UKE
-	else
-#           ＣＳＶのとき 
-	    nkf -s /var/tmp/RECE300.dat > $5RECEIPTC.UKE
-	fi
-	    
+        nkf -s /var/tmp/RECE300.dat > ${14}RECEIPTC.UKE
+
         exit 
