@@ -545,6 +545,7 @@
            INITIALIZE                  SODRNACCT-AREA
            MOVE    SODR-ORDERID    TO  SODRNACCT-ORDERID
            MOVE    ZERO            TO  SODRNACCT-NYUKBN
+           MOVE    SODR-SRYYMD     TO  SODRNACCT-STARTYMD
            MOVE    TRRK-REC        TO  LNK-PTNYUINRRK-REC
       *
            CALL    "ORCSODRNACCT"      USING
