@@ -104,17 +104,16 @@
       *                09  SPA-GMN-NO            PIC 9(03).
       ****             09  SPA-GMN-SRYYMD        PIC X(10).
                05  SPA-GMN-TBL.
-                   07  SPA-GMN-TBLREC  OCCURS  200.
+                   07  SPA-GMN-TBLREC  OCCURS  400.
+                       09  SPA-GMN-TBANGO      PIC 9(03).
                        09  SPA-GMN-TMEISYO     PIC X(200).
                        09  SPA-GMN-TMEISYO-1   REDEFINES
                                                    SPA-GMN-TMEISYO.
-                           11  SPA-GMN-TBANGO1     PIC 9(02).
                            11  SPA-GMN-TYOBI0      PIC X(02).
                            11  SPA-GMN-TMEISYO1    PIC X(196).
                        09  SPA-GMN-TMEISYO-2   REDEFINES
                                                SPA-GMN-TMEISYO.
-                           11  SPA-GMN-TBANGO2     PIC X(02).
-                           11  SPA-GMN-TMEISYO2    PIC X(40).
+                           11  SPA-GMN-TMEISYO2    PIC X(44).
                            11  SPA-GMN-HEN1.
                                13  SPA-GMN-TSURYOU     PIC X(18).
                                13  SPA-GMN-TTANI1      PIC X(08).
@@ -123,9 +122,9 @@
                                13  SPA-GMN-TYOBI1      PIC X(14).
                            11  SPA-GMN-HEN2    REDEFINES
                                                SPA-GMN-HEN1.
-                               13  SPA-GMN-TYOBI       PIC X(02).
                                13  SPA-GMN-TZAIKEI     PIC X(40).
       *
+                       09  SPA-NAI-TBANGO        PIC  9(03).
       *
       *****    05  SPA-GMN-SELNUM            PIC X(03).
                05  SPA-GMN-DOSEL             PIC X(40).
@@ -139,7 +138,7 @@
       ****         07  SPA-NAI-SELNUM            PIC 9(03).
       *
                    07  SPA-NAI-TBL.
-                       09  SPA-NAI-TBLREC            OCCURS   200.
+                       09  SPA-NAI-TBLREC            OCCURS   400.
                            11  SPA-NAI-ZAINUM        PIC  9(08).
                        09  SPA-SEL-IDX               PIC  9(02).
                        09  SPA-SEL-RENNUM            PIC  9(01).
@@ -222,7 +221,9 @@
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
       *
+           03  WRK-BANGO               PIC 9(03).
            03  WRK-DOSELNUM            PIC 9(03).
+           03  WRK-BANGO-X             PIC X(03).
       *
            03  WRK-DOSEL.
                05  WRK-DOSEL-OCC   OCCURS   100.
@@ -362,7 +363,7 @@
       *
       *    診療行為マスタワーク
        01  LNK-WKSRYACT-AREA.
-           02  LNK-WKSRYACT-REC      OCCURS   30.
+           02  LNK-WKSRYACT-REC      OCCURS   300.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
@@ -416,6 +417,7 @@
            COPY    "K98.INC".
            COPY    "K99.INC".
            COPY    "KERR.INC".
+           COPY    "KERR2.INC".
            COPY    "KID1.INC".
            COPY    "KID2.INC".
       *
@@ -710,8 +712,8 @@
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 450-RIREKI-SEC
       *        登録
-      ******** WHEN    "CLICKED"       ALSO    "B12"
-      ********      PERFORM 450-TOROKU-SEC
+               WHEN    "CLICKED"       ALSO    "B12"
+                    PERFORM 450-TOROKU-SEC
            END-EVALUATE
           .
       *
@@ -730,6 +732,9 @@
       *        診療日選択
                WHEN    ANY             ALSO    "RRKLIST"
                    PERFORM 430-RRKLIST-CHK-SEC
+      *        明細選択
+               WHEN    ANY             ALSO    "MEILIST"
+                   PERFORM 440-MEILIST-CHK-SEC
       *        剤番号選択
                WHEN    "ACTIVATE"      ALSO    "DOSEL"
                    PERFORM 420-DOSEL-CHK-SEC
@@ -795,8 +800,8 @@
       *
            PERFORM VARYING     IDX   FROM   1   BY  1
                    UNTIL       IDX   >   SPA-GMN-MAX1
-              IF      K09-SELECT1(IDX)        =  "T"
-                  IF      IDX                 =   SPA-NAI-DOSELNUM
+              IF      K09-RRKLIST-SELECT(IDX)  =  "T"
+                  IF      IDX                  =   SPA-NAI-DOSELNUM
                       CONTINUE
                   ELSE
                       MOVE    SPA-GMN-NO (IDX)    TO  WRK-DOSELNUM
@@ -829,6 +834,53 @@
       *
            .
        430-RRKLIST-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    明細選択選択処理
+      *****************************************************************
+       440-MEILIST-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-BANGO
+      *
+           PERFORM VARYING     IDX   FROM   1   BY  1
+                   UNTIL       IDX   >   SPA-GMN-MAX2
+              IF      K09-MEILIST-SELECT(IDX)  =  "T"
+                  MOVE    SPA-NAI-TBANGO (IDX)     TO  WRK-BANGO
+              END-IF
+           END-PERFORM
+      *
+           IF      WRK-BANGO           =   ZERO
+               GO      TO      440-MEILIST-CHK-EXT
+           END-IF
+      *
+           MOVE    WRK-BANGO           TO  WRK-ZZ
+           MOVE    SPACE               TO  WRK-BANGO-X
+           MOVE    ZERO                TO  IDX-D1
+           PERFORM VARYING     IDX-D2  FROM    1   BY  1
+                   UNTIL       IDX-D2  >   3
+               IF      WRK-ZZ(IDX-D2:1)    NOT =   SPACE
+                   ADD     1               TO  IDX-D1
+                   MOVE    WRK-ZZ(IDX-D2:1)    TO  WRK-BANGO-X(IDX-D1:1)
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-DOSEL       TO  WRK-DOSEL
+           MOVE    SPACE               TO  SPA-GMN-DOSEL
+           IF      WRK-DOSEL           =   SPACE
+               STRING WRK-BANGO-X         DELIMITED   BY  SPACE
+                      INTO                SPA-GMN-DOSEL
+               END-STRING
+           ELSE
+               STRING  WRK-DOSEL           DELIMITED   BY  SPACE
+                       ","                 DELIMITED   BY  SIZE
+                       WRK-BANGO-X         DELIMITED   BY  SPACE
+                      INTO                SPA-GMN-DOSEL
+               END-STRING
+           END-IF
+      *
+           .
+       440-MEILIST-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1010,6 +1062,7 @@
            INITIALIZE                  JYURRK-KEY
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
+      ***  MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-NAI-RRKYMD(SPA-NAI-DOSELNUM)
                                        TO  JYURRK-SRYYMD
@@ -1037,7 +1090,8 @@
                                            =   JYURRK-DOUJI-RENNUM
       *
                    PERFORM VARYING     IDX-R   FROM    1   BY  1
-                           UNTIL      (IDX-R           >   15  )
+                           UNTIL      (IDG             >   400 )  OR
+                                      (IDX-R           >   15  )
                        IF      JYURRK-ZAINUM (IDX-R)   NOT =   ZERO
                            PERFORM 41011-ZAISET-HEN-SEC
                        END-IF
@@ -1290,7 +1344,7 @@
       *        剤明細編集
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
-                                  (IDG         >   200 )  OR
+                                  (IDG         >   400 )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDZ) =  SPACE)
                    ADD     1                   TO  WRK-MEISAISU
       *            自費の時、金額を表示
@@ -1332,19 +1386,17 @@
                PERFORM 31013-INPUTCD-HEN-SEC
                MOVE    WRK-ZAIKEIJ         TO  SPA-GMN-TZAIKEI (IDG)
       *
-               INSPECT SPA-GMN-TBANGO2 (IDG)   REPLACING
-                                               ALL "  "  BY  "　"
                INSPECT SPA-GMN-TMEISYO2(IDG)   REPLACING
                                                ALL "  "  BY  "　"
-               INSPECT SPA-GMN-TYOBI   (IDG)   REPLACING
-                                               ALL "  "  BY  "　"
+      *        INSPECT SPA-GMN-TYOBI   (IDG)   REPLACING
+      *                                        ALL "  "  BY  "　"
                INSPECT SPA-GMN-TZAIKEI (IDG)   REPLACING
                                                ALL "  "  BY  "　"
            END-IF
       *
       *    剤終了編集
            ADD     1                   TO  IDG
-           IF      IDG                 >   200
+           IF      IDG                 >   400
                GO      TO      3101-WKSRYACT-HEN-EXT
            END-IF
            MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
@@ -1383,22 +1435,23 @@
            END-IF
       *
            IF      LNK-WKSRY-SRYSYUKBN (IDX)   =   SPACE
-               MOVE    SPACE           TO  SPA-GMN-TMEISYO1(IDG)
-               MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO1(IDG)(7:)
+               MOVE    SPACE           TO  SPA-GMN-TMEISYO (IDG)
+               MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO (IDG)(7:)
            ELSE
-               MOVE    "."             TO  SPA-GMN-TMEISYO1(IDG)(1:1)
+               MOVE    "."             TO  SPA-GMN-TMEISYO (IDG)(1:1)
                MOVE    LNK-WKSRY-SRYSYUKBN (IDX)
-                                       TO  SPA-GMN-TMEISYO1(IDG)(2:3)
-               MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO1(IDG)(7:)
+                                       TO  SPA-GMN-TMEISYO (IDG)(2:3)
+               MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO (IDG)(7:)
            END-IF
       *
-           INSPECT SPA-GMN-TMEISYO1 (IDG)   REPLACING
+           INSPECT SPA-GMN-TMEISYO  (IDG)   REPLACING
                                             ALL "  "  BY  "　"
            INSPECT SPA-GMN-TYOBI0   (IDG)   REPLACING
                                             ALL "  "  BY  "　"
       *
       *    番号
-           MOVE    SPA-NAI-MAX2        TO  SPA-GMN-TBANGO1   (IDG)
+           MOVE    SPA-NAI-MAX2        TO  SPA-GMN-TBANGO    (IDG)
+           MOVE    SPA-NAI-MAX2        TO  SPA-NAI-TBANGO    (IDG)
       *
            .
        31011-GYO1-HEN-EXT.
@@ -1410,9 +1463,10 @@
        31012-ZAIMEI-HEN-SEC                  SECTION.
       *
            ADD     1                   TO  IDG
-           IF      IDG                 >   200
+           IF      IDG                 >   400
                GO      TO      31012-ZAIMEI-HEN-EXT
            END-IF
+           MOVE    SPA-NAI-MAX2        TO  SPA-NAI-TBANGO    (IDG)
       *
       *    約束セット編集
            IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "S"
@@ -1470,7 +1524,6 @@
                MOVE    "分画"              TO  SPA-GMN-TTANI2  (IDG)
            END-IF
       *
-           INSPECT SPA-GMN-TBANGO2 (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TSURYOU (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TTANMEI (IDG) REPLACING  ALL "  "  BY  "　"
@@ -1495,9 +1548,10 @@
        31013-JIHIMEI-HEN-SEC           SECTION.
       *
            ADD     1                   TO  IDG
-           IF      IDG                 >   300
+           IF      IDG                 >   400
                GO      TO      31013-JIHIMEI-HEN-EXT
            END-IF
+           MOVE    SPA-NAI-MAX2        TO  SPA-NAI-TBANGO    (IDG)
       *
       *    約束セット編集
            IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "S"
@@ -1567,9 +1621,8 @@
                MOVE    WRK-ZAIKEIJ         TO  SPA-GMN-TZAIKEI (IDG)
            END-IF
       *
-           INSPECT SPA-GMN-TBANGO2 (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "　"
-           INSPECT SPA-GMN-TYOBI   (IDG) REPLACING  ALL "  "  BY  "　"
+      **** INSPECT SPA-GMN-TYOBI   (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TZAIKEI (IDG) REPLACING  ALL "  "  BY  "　"
       *
       *    コメント以外の最終行セット
@@ -1979,7 +2032,7 @@
       *****MOVE    "BACK"              TO  MCP-PUTTYPE
       ** **MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE    "JOIN"              TO  MCP-PUTTYPE.
-           MOVE    "K02"               TO  MCP-WINDOW
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -1992,19 +2045,26 @@
       *****************************************************************
        450-TOROKU-SEC             SECTION.
       *
-           MOVE    "K02"               TO  SPA-SAKIPG
-           MOVE    "K09"               TO  SPA-MOTOPG
+           PERFORM 420-DOSEL-CHK-SEC
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      IDX-H               =   ZERO
+      *        戻る
+               PERFORM 210-BACK
+           END-IF
       *
-           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *    MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
+      *    MOVE    "K09"               TO  SPA-MOTOPG
       *
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE
-           MOVE    "K02"               TO  MCP-WINDOW
+      *    MOVE    SPACE               TO  LINKAREA
       *
-           PERFORM 900-PUT-WINDOW
+      *    MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
-           MOVE    1                   TO  FLG-END
+      *    MOVE    "CHANGE"            TO  MCP-PUTTYPE
+      *    MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+      *
+      *    PERFORM 900-PUT-WINDOW
+      *
+      *    MOVE    1                   TO  FLG-END
            .
        450-TOROKU-EXT.
            EXIT.
@@ -2066,18 +2126,26 @@
                MOVE    WRK-ZZ                  TO  K09-NO  (IDX)
                MOVE    SPA-GMN-RRKYMD (IDX)    TO  K09-RRKYMD(IDX)
                IF      SPA-GMN-NO (IDX)    =   SPA-NAI-DOSELNUM
-                   MOVE    "T"             TO  K09-SELECT1 (IDX)
+                   MOVE    "T"             TO  K09-RRKLIST-SELECT (IDX)
                ELSE
-                   MOVE    "F"             TO  K09-SELECT1 (IDX)
+                   MOVE    "F"             TO  K09-RRKLIST-SELECT (IDX)
                END-IF
            END-PERFORM
-           MOVE    SPA-GMN-MAX1        TO  K09-COUNT1
+           MOVE    SPA-GMN-MAX1        TO  K09-RRKLIST-COUNT
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-GMN-MAX2
-               MOVE    SPA-GMN-TMEISYO (IDX)   TO  K09-ITEM(IDX)
+               IF      SPA-GMN-TMEISYO(IDX)(1:1)   =   "-"
+                   MOVE    ALL "-"             TO  K09-MNO (IDX)
+               ELSE
+                   IF      SPA-GMN-TBANGO (IDX)    NOT =   ZERO
+                       MOVE    SPA-GMN-TBANGO (IDX)    TO  WRK-ZZ
+                       MOVE    WRK-ZZ                  TO  K09-MNO (IDX)
+                   END-IF
+               END-IF
+               MOVE    SPA-GMN-TMEISYO (IDX)   TO  K09-MEISAI (IDX)
            END-PERFORM
-           MOVE    SPA-GMN-MAX2        TO  K09-COUNT2
+           MOVE    SPA-GMN-MAX2        TO  K09-MEILIST-COUNT
       *
       *
            MOVE    SPA-GMN-DOSELNUM    TO  K09-SELNUM
