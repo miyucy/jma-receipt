@@ -516,6 +516,10 @@
       *    入退院日
            03  WRK-NYUINYMD            PIC X(08).
            03  WRK-TAIINYMD            PIC X(08).
+      *    診療選択より
+           03  WRK-DRCD                PIC X(05).
+           03  WRK-SRYKA               PIC X(02).
+           03  WRK-HKNCOMBINUM         PIC X(04).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -1404,6 +1408,16 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      3009-SAIHEN-EXT
            END-IF
+      *    診療選択からの時、診療選択分とする
+           IF      SPA-MOTOPG          =   "K01"
+               MOVE    SPA-DRCD            TO  WRK-DRCD
+               MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBINUM
+               MOVE    SPA-SRYKA           TO  WRK-SRYKA
+           ELSE
+               MOVE    SPACE               TO  WRK-DRCD
+               MOVE    SPACE               TO  WRK-HKNCOMBINUM
+               MOVE    SPACE               TO  WRK-SRYKA
+           END-IF
       *
       *    入院が存在するかのチェック
            PERFORM 410101-NYUINRRK-CHK-SEC
@@ -1413,6 +1427,14 @@
                MOVE    SPACE               TO  WRK-PUTTYPE
                PERFORM 410109-K02IDOU-SEC
                GO      TO      3009-SAIHEN-EXT
+           END-IF
+      *
+      *    診療選択からの時、診療選択分とする
+           IF      SPA-MOTOPG          =   "K01"
+               MOVE    WRK-DRCD            TO  SPA-DRCD
+               MOVE    WRK-HKNCOMBINUM     TO  SPA-HKNCOMBINUM
+               MOVE    WRK-SRYKA           TO  SPA-SRYKA
+               MOVE    WRK-SRYKA           TO  SPA-GMN-SRYKA
            END-IF
       *
       *
@@ -1425,7 +1447,12 @@
                MOVE    "K01"               TO  LNK-SC95-PG
            ELSE
                MOVE    "K02"               TO  LNK-SC95-PG
-               MOVE    SPACE               TO  SPA-SRYKA
+               IF     (SPA-MOTOPG          =   "K01"    )  AND
+                      (WRK-SRYKA       NOT =   SPACE    )
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE               TO  SPA-SRYKA
+               END-IF
            END-IF
            CALL    "ORCSC95"           USING
                                        MCPAREA
