@@ -52,6 +52,8 @@
       *                                     »»Äê½¤Àµ
       *  01.00.16    NACL-ÌçÏÆ    04/07/01  ÅÁÉ¼ºîÀ®¶èÊ¬¡¢ÅÁÉ¼¾õÂÖ¶èÊ¬¤Î
       *                                     ÊÔ½¸½¤Àµ
+      *  01.00.17    NACL-ÌçÏÆ    04/08/23  Æþ±¡ÎÁÌ¤»»Äê»þ¤Î¼¼ÎÁº¹³Û·×»»¤ò
+      *                                     È½Äê½¤Àµ¡Ê¥·¥¹¥Æ¥à´ÉÍý¤è¤ê)
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1816,13 +1818,14 @@
                          WHEN  SPACE
                          WHEN  "1"
                            IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
-                             (NACCT-DAY(SYU-IDX) NOT =  ZERO)
+                               (NACCT-DAY(SYU-IDX) NOT =  ZERO)
                              MOVE  NACCT-DAY(SYU-IDX)  TO  RMSAGAKU-IDX
                              ADD   TBL-RMSAGAKU (RMSAGAKU-IDX)
                                                  TO   SYU-RMSAGAKU
                            END-IF
                          WHEN  "2"
-                           IF  NACCT-DAY(SYU-IDX) NOT =  ZERO
+                           IF  (SYU-DAY(SYU-IDX)   NOT =  SPACE)   AND
+                               (NACCT-DAY(SYU-IDX) NOT =  ZERO)
                              MOVE  NACCT-DAY(SYU-IDX)  TO  RMSAGAKU-IDX
                              ADD   TBL-RMSAGAKU (RMSAGAKU-IDX)
                                                  TO   SYU-RMSAGAKU
