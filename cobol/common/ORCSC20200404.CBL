@@ -97,6 +97,8 @@
            03  FLG-CHOKIKA1         PIC 9(01).
            03  FLG-CHOKIKA2         PIC 9(01).
       *
+           03  FLG-CHOKIKSN         PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -132,6 +134,9 @@
            03  WRK-MOJI            PIC X(01). 
       *
            03  WRK-ERRCD           PIC X(04). 
+      *
+           03  WRK-ERRCD3          PIC X(04). 
+           03  WRK-ERRCD6          PIC X(04). 
       *
            03  WRK-SYOKEIS         PIC 9(08)V99.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
@@ -1229,10 +1234,6 @@
                END-IF
            END-IF
       *
-      *TEST
-               DISPLAY "C20 SPA-CHOKITOFLG:" SPA-CHOKITOFLG
-                       ",SPA-TOKUTEIFLG:" SPA-TOKUTEIFLG
-      *TEST
       *    特定疾患処方管理加算のチェック
            IF     (FLG-SYOHOSENN       =   1  )  AND
                   (LNK-ORCSC-TOKUTEI   =   1  )
@@ -1295,17 +1296,20 @@
                   (SPA-CHOKITOFLG      =   ZERO)
       *        長期投薬加算チェック
                MOVE    "120003270"         TO  WRK-SRYCD
+               MOVE     1                  TO  FLG-CHOKIKSN
       *        算定可能かのチェック
                PERFORM 3001-KYOUTU-CHEK-SEC
       *        算定回数エラー
-               IF      LNK-SC92-ERRCD3     NOT =   SPACE
+               IF     (FLG-ERR             =   ZERO )  AND
+                      (WRK-ERRCD3      NOT =   SPACE)
       *            算定済み
                    MOVE    9               TO  SPA-TOKUTEIFLG
                    MOVE    9               TO  SPA-CHOKITOFLG
                    GO      TO      30011-INGAITOKUTEIKSN-CHK-EXT
                END-IF
       *        併用算定エラー
-               IF      LNK-SC92-ERRCD6     NOT =   SPACE
+               IF     (FLG-ERR             =   ZERO )  AND
+                      (WRK-ERRCD6      NOT =   SPACE)
                    IF      SPA-CHOKITOFLG-CHK  =   ZERO
                        MOVE    "K019"          TO  SPA-ERRCD
                        MOVE    1               TO  SPA-CHOKITOFLG-CHK
@@ -1557,10 +1561,6 @@
       *        END-IF
       *****END-IF
       *
-      *TEST
-               DISPLAY "C20 SPA-CHOKITOFLG:" SPA-CHOKITOFLG
-                       ",SPA-TOKUTEIFLG:" SPA-TOKUTEIFLG
-      *TEST
       *    特定疾患処方管理加算のチェック
            IF     (FLG-SYOHORYO            =   1  )  AND
                   (LNK-ORCSC-TOKUTEI       =   1  )
@@ -1625,16 +1625,19 @@
       *        長期投薬加算チェック
                MOVE    "120003170"         TO  WRK-SRYCD
       *        算定可能かのチェック
+               MOVE     1                  TO  FLG-CHOKIKSN
                PERFORM 3001-KYOUTU-CHEK-SEC
       *        算定回数エラー
-               IF      LNK-SC92-ERRCD3     NOT =   SPACE
+               IF     (FLG-ERR             =   ZERO )  AND
+                      (WRK-ERRCD3      NOT =   SPACE)
       *            算定済み
                    MOVE    9               TO  SPA-TOKUTEIFLG
                    MOVE    9               TO  SPA-CHOKITOFLG
                    GO      TO      30021-INNAITOKUTEIKSN-CHK-EXT
                END-IF
       *        併用算定エラー
-               IF      LNK-SC92-ERRCD6     NOT =   SPACE
+               IF     (FLG-ERR             =   ZERO )  AND
+                      (WRK-ERRCD6      NOT =   SPACE)
                    IF      SPA-CHOKITOFLG-CHK  =   ZERO
                        MOVE    "K019"          TO  SPA-ERRCD
                        MOVE    1               TO  SPA-CHOKITOFLG-CHK
@@ -2217,6 +2220,7 @@
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
            MOVE    "3"                 TO  LNK-SC92-KBN
+      *
            COMPUTE LNK-SC92-GMN-IDX    =   WRK-GMN-MAX
                                        +   1
            IF      LNK-SC92-GMN-IDX    >   200
@@ -2238,6 +2242,7 @@
            DISPLAY "C20 SRYCD:" WRK-SRYCD
                   ",SPA-ERRCD:" SPA-ERRCD
                   ",LNK-SC92-ERRAREA:" LNK-SC92-ERRAREA
+                  ",LNK-SC92-KBN:" LNK-SC92-KBN
       *TEST
       *
       *    エラーの時、追加なし
@@ -2249,6 +2254,21 @@
       *        追加あり
                MOVE    ZERO            TO  FLG-ERR
            END-IF
+      *    長期の時、併用・回数エラーは別へ
+           IF      FLG-CHOKIKSN        =   1
+               MOVE    LNK-SC92-ERRCD3     TO  WRK-ERRCD3
+               MOVE    LNK-SC92-ERRCD6     TO  WRK-ERRCD6
+               MOVE    SPACE               TO  LNK-SC92-ERRCD3
+               MOVE    SPACE               TO  LNK-SC92-ERRCD6
+               IF     (SPA-ERRCD           NOT =   SPACE )  OR
+                      (LNK-SC92-ERRAREA    NOT =   SPACE )
+      *            追加なし
+                   MOVE    1               TO  FLG-ERR
+               ELSE
+                   MOVE    ZERO            TO  FLG-ERR
+               END-IF
+           END-IF
+           MOVE    ZERO                TO  FLG-CHOKIKSN
       *
            .
        3001-KYOUTU-CHEK-EXT.

@@ -897,38 +897,38 @@
                    IF      SPA-BEDSU           >=  1  AND  <=  99
                        CONTINUE
                    ELSE
-                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD7
                    END-IF
                WHEN    2
                    IF      SPA-BEDSU           >=  100 AND  <=  199
                        CONTINUE
                    ELSE
-                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD7
                    END-IF
                WHEN    3
                    IF      SPA-BEDSU           <   200
                        CONTINUE
                    ELSE
-                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD7
                    END-IF
                WHEN    4
                    IF      SPA-BEDSU           >=  200
                        CONTINUE
                    ELSE
-                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD7
                    END-IF
       *        °ìÈÌÉÂ¾²¿ôÈ½Äê
                WHEN    5
                    IF      SPA-BEDSUIPN        >=  0  AND  <=  199
                        CONTINUE
                    ELSE
-                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD7
                    END-IF
                WHEN    6
                    IF      SPA-BEDSUIPN        >=  200
                        CONTINUE
                    ELSE
-                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD7
                    END-IF
            END-EVALUATE
       *
