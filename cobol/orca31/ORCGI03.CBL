@@ -33,6 +33,9 @@
       *  01.00.03    NACL-太田    03.06.05  日付以外の修正を可とする
       *                                     区分追加
       *  01.00.04    NACL-太田    03.11.14  更新日付編集対応
+      *  01.00.05    NACL-小豆沢  05.02.04  他院歴作成については
+      *                                     「入院期間≧通算対象日数となっていること」
+      *                                     のチェックを外す
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1648,17 +1651,20 @@
            END-IF
       *
       *    入院期間≧通算対象日数となっていること
+      *    （自院歴のみチェックを行う）
            MOVE    SPA-NAI-I03-NYUINYMD
                                    TO  WRK-STYMD
            MOVE    SPA-NAI-I03-TAIINYMD
                                    TO  WRK-EDYMD
            PERFORM 5002-KIKAN-CALC-SEC
-           IF    ( WRK-NISSU2     >=   SPA-GMN-I03-TAISYONISSU )
-               CONTINUE
-           ELSE
-               MOVE    "1006"      TO  SPA-ERRCD
-               MOVE    5           TO  SPA-GMN-I03-CUR
-               GO  TO  4801-KANREN-CHK-EXT
+           IF    SPA-GMN-I03-RRKKBN-CD      =    "1"
+               IF    ( WRK-NISSU2     >=   SPA-GMN-I03-TAISYONISSU )
+                   CONTINUE
+               ELSE
+                   MOVE    "1006"      TO  SPA-ERRCD
+                   MOVE    5           TO  SPA-GMN-I03-CUR
+                   GO  TO  4801-KANREN-CHK-EXT
+               END-IF
            END-IF
       *
       *    継続の場合、
