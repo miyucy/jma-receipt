@@ -560,15 +560,20 @@
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
       *
+      *    保存ＳＰＡ領域ワーク
+       01  WRK-HZN-SCR-AREA.
+           COPY    "CPK02SPASCR.INC"  REPLACING
+                                       //SPA-// BY //WRK-HZN-//.
+      *
       *    ワークテーブル２(算定用一時保存用）
       *          (CPK02SPASCR.INC の長さを変更したら、変更すること）
-       01  WRK-HOZ-AREA.
-           03  WRK-HGMN-TBL            OCCURS   200.
-               05  WRK-HGMN-TBLREC.
-                   07  WRK-HGMN-DATA   PIC X(150).
-               05  WRK-HCOM-TBLREC.
-                   07  WRK-HCOM-DATA   PIC X(800).
-           03  WRK-HOZ-IDX             PIC 9(04).
+      *01  WRK-HOZ-AREA.
+      *    03  WRK-HGMN-TBL            OCCURS   200.
+      *        05  WRK-HGMN-TBLREC.
+      *            07  WRK-HGMN-DATA   PIC X(150).
+      *        05  WRK-HCOM-TBLREC.
+      *******      07  WRK-HCOM-DATA   PIC X(800).
+        01  WRK-HOZ-IDX                PIC 9(04).
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
@@ -2934,7 +2939,17 @@
                    MOVE    "U"                 TO  SPA-K98-GMN-SYORI
                    MOVE    "U1"                TO  SPA-K98-GMN-SYORI3
                END-IF
-               MOVE    SPACE                   TO  SPA-K98-INPUTCD
+      *        診療種別一覧
+               IF      SPA-K98-INPUTCD(3:1)    =   "."
+                   MOVE    "."                 TO  SPA-K98-INPUTCD
+               ELSE
+      *            区分番号別
+                   IF      SPA-K98-INPUTCD(3:1)    =   "*"
+                       MOVE    SPA-K98-INPUTCD(3:) TO  SPA-K98-INPUTCD
+                   ELSE
+                       MOVE    SPACE               TO  SPA-K98-INPUTCD
+                   END-IF
+               END-IF
       *        画面編集
                MOVE    SPACE               TO  K98
                INITIALIZE                      K98
@@ -3951,7 +3966,7 @@
            MOVE    SPACE               TO  WRK-KEI-ERRCD
            MOVE    SPACE               TO  WRK-ERR-ERRCD
            INITIALIZE                  WRK-SCR-REC
-           INITIALIZE                  WRK-HOZ-AREA
+           INITIALIZE                  WRK-HZN-SCR-AREA
            INITIALIZE                  WRK-HOZ-IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200      )   OR
@@ -4043,11 +4058,16 @@
            INITIALIZE                  SPA-GMN-REC
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   200
-               IF      WRK-HGMN-TBLREC (IDX)   NOT =   SPACE
+               IF     (WRK-HZN-GMN-INPUTCD (IDX)   =   SPACE)  AND
+                      (WRK-HZN-COM-INPUTCD (IDX)   =   SPACE)
+                   CONTINUE
+               ELSE
                    ADD     1                   TO  SPA-GMN-MAX
-                   MOVE    WRK-HGMN-TBLREC (IDX)   TO  SPA-GMN-TBLREC
+                   MOVE    WRK-HZN-GMN-TBLREC (IDX)
+                                               TO  SPA-GMN-TBLREC
                                                          (SPA-GMN-MAX)
-                   MOVE    WRK-HCOM-TBLREC (IDX)   TO  SPA-COM-TBLREC
+                   MOVE    WRK-HZN-COM-TBLREC (IDX)
+                                               TO  SPA-COM-TBLREC
                                                          (SPA-GMN-MAX)
                END-IF
            END-PERFORM
@@ -4293,10 +4313,10 @@
       *
                ADD     1                   TO  WRK-HOZ-IDX
                MOVE    WRK-COM-TBLREC (IDX-Z)
-                                           TO  WRK-HCOM-TBLREC
+                                           TO  WRK-HZN-COM-TBLREC
                                                        (WRK-HOZ-IDX)
                MOVE    WRK-GMN-TBLREC (IDX-Z)
-                                           TO  WRK-HGMN-TBLREC
+                                           TO  WRK-HZN-GMN-TBLREC
                                                        (WRK-HOZ-IDX)
       *
            END-PERFORM
