@@ -466,6 +466,9 @@
                                    MOVE    1          TO  SPA-NAI-FTNCHK
                                                                 (IDX-K)
                                    GO      TO      1001-FTNJANUM-CHK-EXT
+                               ELSE
+      *                            法別番号より公費種類を決定する
+                                   PERFORM 10011-HKNNUM-SET-SEC
                                END-IF
                        END-EVALUATE
       *            その他
