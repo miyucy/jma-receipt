@@ -102,6 +102,7 @@
                        09  SPA-I41-HKNNUM-41             PIC X(03).
                        09  SPA-I41-HKNKBN-41             PIC X(01).
                        09  SPA-I41-SISIKBN-41            PIC 9(01).
+                       09  SPA-I41-THKNID-41             PIC 9(10).
       *    剤行為変更画面用
            03  SPA-SCR-REC-AREA-41.
                05  SPA-SCR-REC-41.
