@@ -431,7 +431,7 @@
            03  SYU-KYUFUGAI.
                05  SYU-KYUFUGAI-TBL          OCCURS   6.
       *    給付対象外点数
-                   09  SYU-KYUFUGA-TEN       PIC  9(07).
+                   09  SYU-KYUFUGAI-TEN      PIC  9(07).
       *診療区分別給付外点数再定義
            03  SYU-KYUFUGAI-R      REDEFINES   SYU-KYUFUGAI.
       *給付対象外点数（初診）
