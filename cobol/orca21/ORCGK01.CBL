@@ -1892,12 +1892,7 @@
            MOVE    SPACE               TO  WRK-SRYKA
            MOVE    SPACE               TO  WRK-DRCD
            MOVE    SPACE               TO  WRK-HKNCOMBINUM
-           PERFORM
-               UNTIL    FLG-JYURRK         =   1
-      *    Êñ³çÊÝ¸±¤ÏÂÐ¾Ý³°
-           IF      JYURRK-HKNCOMBINUM      =    "9999"
-               CONTINUE
-           ELSE
+           IF      FLG-JYURRK           =   ZERO
       *        ¿ÇÎÅ²Ê¤¬¤Ê¤¤»þ
                IF      SPA-GMN-SRYKA       =   SPACE
                    MOVE    JYURRK-SRYKA        TO  WRK-SRYKA
@@ -1916,11 +1911,6 @@
       *********END-IF
       *
            END-IF
-      *
-      ******** MOVE    "JYURRK-KEY3"       TO  ORC-DBPATH
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-               PERFORM 970-JYURRK-READ-SEC
-           END-PERFORM
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
       **** MOVE    "JYURRK-KEY3"       TO  ORC-DBPATH
