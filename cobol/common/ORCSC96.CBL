@@ -637,8 +637,8 @@
                                        TO  SPA-ERRMSG
                    MOVE    "会計照会で訂正して下さい。"
                                        TO  SPA-ERRMSG(31:)
-               WHEN    "9020"
-                   MOVE    "食事は外来では入力できません。"
+               WHEN    "9200"
+                   MOVE    "入院・食事は外来では入力できません。"
                                        TO  SPA-ERRMSG
            END-EVALUATE
            .
