@@ -1256,6 +1256,21 @@
       *
            END-PERFORM
       *
+      *    当日小児科外来診察料を算定済みの時、時間外のみはＯＫとする
+           IF      LNK-ORCSC-SYONIKA-ARI2  =   1
+               EVALUATE    WRK-COM-INPUTCD (IDX-Z) 
+      *            再診時時間外加算
+                   WHEN    "112005770"
+      *            再診時休日加算
+                   WHEN    "112005870"
+      *            再診時深夜加算
+                   WHEN    "112005970"
+      *            再診時時間外特例
+                   WHEN    "112006070"
+                       GO      TO      1005-KASAN-CHK-EXT
+               END-EVALUATE
+           END-IF
+      *
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)

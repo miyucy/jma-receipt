@@ -1003,6 +1003,27 @@
                                        =   "21"  OR  "22"  OR  "23" )
                MOVE    ZERO                TO  FLG-ARI
            END-IF
+      *
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤Î»þ´Ö³°¤Î¤ß¤Ï£Ï£Ë¤È¤¹¤ë
+           IF      FLG-ARI             =   ZERO
+               IF      LNK-SC93-SYONIKA-ARI2   =   1
+                   EVALUATE    SPA-COM-INPUTCD (IDX) 
+      *                ºÆ¿Ç»þ»þ´Ö³°²Ã»»
+                       WHEN    "112005770"
+      *                ºÆ¿Ç»þµÙÆü²Ã»»
+                       WHEN    "112005870"
+      *                ºÆ¿Ç»þ¿¼Ìë²Ã»»
+                       WHEN    "112005970"
+      *                ºÆ¿Ç»þ»þ´Ö³°ÆÃÎã
+                       WHEN    "112006070"
+                           IF     (IDX             >   1 )  AND
+                                  (SPA-GMN-INPUTCD(IDX - 1)(1:4)
+                                                   =   ".130")
+                               MOVE    1           TO  FLG-ARI
+                           END-IF
+                   END-EVALUATE
+               END-IF
+           END-IF
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"              TO  SPA-ERRCD
                MOVE    "1"                 TO  SPA-COM-CUR(IDX)
