@@ -329,8 +329,6 @@
                    07  W-SRYCD-62      PIC X(01).
                    07  W-SRYCD-71      PIC X(09).
                    07  W-SRYCD-72      PIC X(01).
-                   07  W-SRYCD-81      PIC X(09).
-                   07  W-SRYCD-82      PIC X(01).
            03  W-TABLE-S4.
                05  W-S-KBN             PIC X(01).
                05  W-S-MAX             PIC 9(03).
@@ -603,6 +601,17 @@
            03  W-YOYAKU6           PIC X(09)   VALUE   "113003710".
       *    ¼ÂÆü¿ô»»Äê
            03  W-YOYAKU7           PIC X(09)   VALUE   "099409901".
+      *    Æ±ÆüºÆ¿Ç¡Ê¿ÇÎÅ½ê¡Ë
+           03  W-YOYAKU8           PIC X(09)   VALUE   "112700850".
+      *    Æ±ÆüºÆ¿Ç¡Ê¿ÇÎÅ½ê¡Ë
+           03  W-YOYAKU9           PIC X(09)   VALUE   "112003350".
+      *    Â¾ÊÝ¸±¤Ë¤Æ¿ÇÎÅ²Ê»»ÄêºÑ
+           03  W-YOYAKU10          PIC X(09)   VALUE   "099999902".
+      *    ½é¿ÇÎÁ¡Ê£Ä£Õ£Í£Í£Ù¡Ë
+           03  W-YOYAKU11          PIC X(09)   VALUE   "099110001".
+      *    ºÆ¿ÇÎÁ¡Ê£Ä£Õ£Í£Í£Ù¡Ë
+           03  W-YOYAKU12          PIC X(09)   VALUE   "099120001".
+
        01  WRK-HKNNUM.
       *    Ï«ºÒ
            03  W-HKNNUM1           PIC X(03)   VALUE   "971".
@@ -1257,18 +1266,20 @@
                MOVE    SPACE             TO  T-ERR-13-2
                MOVE    SPACE             TO  T-ERR-14
                MOVE    SPACE             TO  T-ERR-15
-               IF  (T-NYUGAIKBN-AREA       =  "1")     AND
-                   (SPA-GMN-CNV (12)   NOT =  SPACE)   AND
-                   (PTINF-TSTPTNUMKBN  NOT =  "1")
-                   PERFORM T-540-RECECHEK-CHK3-SEC
-                   PERFORM T-540-RECECHEK-CHK7-SEC
-               END-IF
            END-IF.
            IF  PTINF-TSTPTNUMKBN  NOT =  "1"
-               IF  (ACCT-HOSPID     NOT =   COMB-HOSPID)  OR
-                   (ACCT-PTID       NOT =   COMB-PTID)  OR
+               IF  (ACCT-HOSPID     NOT =   COMB-HOSPID)      OR
+                   (ACCT-PTID       NOT =   COMB-PTID)        OR
                    (ACCT-HKNCOMBI   NOT =   COMB-HKNCOMBINUM)
                    PERFORM T-200-RECECHEK-SEC
+               END-IF
+               IF  (T-HANNTEI8         =   "*")               AND
+                   ((ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
+                    (ACCT-PTID     NOT =   W1-SRY-PTID))      AND
+                   (T-NYUGAIKBN-AREA       =  "1")            AND
+                   (SPA-GMN-CNV (12)   NOT =  SPACE)
+                   PERFORM T-540-RECECHEK-CHK3-SEC
+                   PERFORM T-540-RECECHEK-CHK7-SEC
                END-IF
                IF  T-HANNTEI5   =   "*"
                    PERFORM T-200-RECECHEK-CHK1-SEC
@@ -1619,6 +1630,9 @@
            MOVE    ACCT-HOSPID         TO  COMB-HOSPID.
            MOVE    ACCT-PTID           TO  COMB-PTID.
            MOVE    ACCT-HKNCOMBI       TO  COMB-HKNCOMBINUM.
+      *½¤Àµ/*³«»Ï*03.08.26*********************************************
+           MOVE    SPACE               TO  T-HANNTEI8.
+      *½¤Àµ/*½ªÎ»*03.08.26*********************************************
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC.
            MOVE    "DBSELECT"          TO  MCP-FUNC.
@@ -1656,7 +1670,23 @@
                ELSE
                    MOVE    MCPDATA-REC            TO  HKNCOMBI-REC
                    MOVE    "*"                    TO  T-HANNTEI5
-                   IF  (SPA-GMN-CNV (14) NOT =  SPACE)  AND
+      *½¤Àµ/*³«»Ï*03.08.26*********************************************
+                   IF  ((SPA-GMN-CNV (19)  =   SPACE)  AND
+                        (COMB-HKNNUM   NOT =   W-HKNNUM1   AND
+                                               W-HKNNUM2   AND
+                                               W-HKNNUM3   AND
+                                               W-HKNNUM4))    OR
+                       ((SPA-GMN-CNV (19)  =   "1")    AND
+                        (COMB-HKNNUM   NOT =   W-HKNNUM1))    OR
+                       ((SPA-GMN-CNV (19)  =   "2")    AND
+                        (COMB-HKNNUM       =   W-HKNNUM2   OR
+                                               W-HKNNUM3   OR
+                                               W-HKNNUM4))
+                       MOVE    "*"               TO  T-HANNTEI8
+                   END-IF
+      *½¤Àµ/*½ªÎ»*03.08.26*********************************************
+                   IF  (T-HANNTEI8           =  "*")    AND
+                       (SPA-GMN-CNV (14) NOT =  SPACE)  AND
                        (T-ERR-14             =  SPACE)
                        PERFORM T-200-RECECHEK-CHK2-SEC
                    END-IF
@@ -1732,20 +1762,6 @@
       *          (COMB-KOH4ID    NOT =   ZERO))
       *         PERFORM T-404-RECECHEK-SEC
       *     END-IF.
-           MOVE    SPACE             TO  T-HANNTEI8.
-           IF  ((SPA-GMN-CNV (19)  =   SPACE)  AND
-                (COMB-HKNNUM   NOT =   W-HKNNUM1   AND
-                                       W-HKNNUM2   AND
-                                       W-HKNNUM3   AND
-                                       W-HKNNUM4))    OR
-               ((SPA-GMN-CNV (19)  =   "1")    AND
-                (COMB-HKNNUM   NOT =   W-HKNNUM1))    OR
-               ((SPA-GMN-CNV (19)  =   "2")    AND
-                (COMB-HKNNUM       =   W-HKNNUM2   OR
-                                       W-HKNNUM3   OR
-                                       W-HKNNUM4))
-               MOVE    "*"               TO  T-HANNTEI8
-           END-IF.
            IF  T-HANNTEI8         =   "*"
                IF  ((T-ERR-01          =   SPACE)         OR
                     (T-ERR-02          =   SPACE)         OR
@@ -3232,32 +3248,21 @@
       *                 (ACCT-SRYKBN      NOT >  "80")   AND
       *                 ((SRY-SRYKBN           =  "11")   OR
       *                  (SRY-SRYKBN           =  "12")   OR
-                   IF  (SPA-GMN-CNV (12) NOT =  SPACE)             AND
-                       (T-ERR-12             =  SPACE)             AND
-                       (T-NYUGAIKBN-AREA     =  "2")               AND
-                       (((ACCT-SRYKBN      NOT <  "10")       AND
-                         (ACCT-SRYKBN      NOT >  "80")       AND
-                         ((SRY-SRYKBN            =  "11")        OR
-                          (SRY-SRYKBN            =  "12")        OR
-                          (SRY-SRYKBN            =  "13")        OR
-                          (SRY-SRYKBN            =  "14")))      OR
-                        ((ACCT-SRYKBN          =  "99")       AND
-                         (ACCT-SRYCDTOTAL(6:9) =  W-YOYAKU7)))
+      *                 MOVE    ZERO                 TO  W-JITU-DAY4
+      *                 PERFORM VARYING  IDX6  FROM  1  BY  1
+      *                         UNTIL    IDX6  >    31
+      *                     IF  (ACCT-DAY (1,IDX6)  NOT =  ZERO)  OR
+      *                         (ACCT-DAY (2,IDX6)  NOT =  ZERO)  OR
+      *                         (ACCT-DAY (3,IDX6)  NOT =  ZERO)  OR
+      *                         (ACCT-DAY (4,IDX6)  NOT =  ZERO)
+      *                         MOVE    "1"        TO  W-JITU-DAY1 (IDX6)
+      *                     END-IF
+      *                     IF  W-JITU-DAY1 (IDX6)   =    "1"
+      *                         COMPUTE W-JITU-DAY4 = W-JITU-DAY4 + 1
+      *                     END-IF
+      *                 END-PERFORM
+      *             END-IF
       *½¤Àµ/*½ªÎ»*03.08.21*********************************************
-                       MOVE    ZERO                 TO  W-JITU-DAY4
-                       PERFORM VARYING  IDX6  FROM  1  BY  1
-                               UNTIL    IDX6  >    31
-                           IF  (ACCT-DAY (1,IDX6)  NOT =  ZERO)  OR
-                               (ACCT-DAY (2,IDX6)  NOT =  ZERO)  OR
-                               (ACCT-DAY (3,IDX6)  NOT =  ZERO)  OR
-                               (ACCT-DAY (4,IDX6)  NOT =  ZERO)
-                               MOVE    "1"        TO  W-JITU-DAY1 (IDX6)
-                           END-IF
-                           IF  W-JITU-DAY1 (IDX6)   =    "1"
-                               COMPUTE W-JITU-DAY4 = W-JITU-DAY4 + 1
-                           END-IF
-                       END-PERFORM
-                   END-IF
                    PERFORM VARYING IDX3  FROM  1  BY 1
                            UNTIL   IDX3  >     5
       *½¤Àµ/*³«»Ï*03.08.21*********************************************
@@ -3267,41 +3272,41 @@
       *                     (ACCT-SRYKBN       NOT >  "80")   AND
       *                     (SRY-SRYKBN        NOT =  "11")   AND
       *                     (SRY-SRYKBN        NOT =  "12")   AND
+      *                     (SRY-SRYCD (IDX3)(1:1) =   "1")   AND
+      *                     (W-JITU-DAY5       NOT >  ACCT-ZAIKAISU)
+      *                     MOVE    SPACE         TO  W-SRYCD-S3-KBN
+      *                     PERFORM T-540-RECECHEK-CHK-SEC
+      *                     IF  (T-ERR-12          =  SPACE)  AND
+      *                         (W-SRYCD-S3-KBN    =   "*")
+      *                         PERFORM T-540-RECECHEK-COMP-SEC
+      *                     END-IF
+      *                 END-IF
+                       MOVE    SPACE         TO  W-SRYCD-S3-KBN
                        IF  (SPA-GMN-CNV (12)  NOT =  SPACE)  AND
                            (T-ERR-12              =  SPACE)  AND
-                           (T-NYUGAIKBN-AREA      =  "2")    AND
-                           (ACCT-SRYKBN       NOT <  "10")   AND
-                           (ACCT-SRYKBN       NOT >  "80")   AND
-                           (SRY-SRYKBN        NOT =  "11")   AND
-                           (SRY-SRYKBN        NOT =  "12")   AND
-                           (SRY-SRYKBN        NOT =  "13")   AND
-                           (SRY-SRYKBN        NOT =  "14")   AND
-      *½¤Àµ/*½ªÎ»*03.08.21*********************************************
-                           (SRY-SRYCD (IDX3)(1:1) =   "1")
-      *½¤Àµ/*³«»Ï*03.08.19*********************************************
-      *                     (W-JITU-DAY5       NOT >  ACCT-ZAIKAISU)
-      *½¤Àµ/*½ªÎ»*03.08.19*********************************************
-                           MOVE    SPACE         TO  W-SRYCD-S3-KBN
-                           PERFORM VARYING IDY1  FROM  1  BY 1
-                                   UNTIL   IDY1  >  3000
-                               IF  W-SRYCD-81 (IDY1)   =   SPACE
-                                   MOVE    IDY1            TO  IDY5
-                                   MOVE    4000            TO  IDY1
-                                   PERFORM T-540-RECECHEK-CHK-SEC
-                               ELSE
-                                   IF  W-SRYCD-81 (IDY1)   =
-                                                        SRY-SRYCD (IDX3)
-                                       MOVE    W-SRYCD-82 (IDY1)
-                                                      TO  W-SRYCD-S3-KBN
-                                       MOVE    4000   TO  IDY1
-                                   END-IF
+                           (T-NYUGAIKBN-AREA      =  "2")  AND
+                           (SRY-SRYCD (IDX3)  NOT =  SPACE)
+                           PERFORM T-540-RECECHEK-CHK-SEC
+                       END-IF
+                       IF  W-SRYCD-S3-KBN    =   "A"
+                           MOVE    ZERO                 TO  W-JITU-DAY4
+                           PERFORM VARYING  IDX6  FROM  1  BY  1
+                                   UNTIL    IDX6  >    31
+                               IF  (ACCT-DAY (1,IDX6)  NOT =  ZERO)  OR
+                                   (ACCT-DAY (2,IDX6)  NOT =  ZERO)  OR
+                                   (ACCT-DAY (3,IDX6)  NOT =  ZERO)  OR
+                                   (ACCT-DAY (4,IDX6)  NOT =  ZERO)
+                                   MOVE    "1"    TO  W-JITU-DAY1 (IDX6)
+                               END-IF
+                               IF  W-JITU-DAY1 (IDX6)   =    "1"
+                                   COMPUTE W-JITU-DAY4 = W-JITU-DAY4 + 1
                                END-IF
                            END-PERFORM
-                           IF  (T-ERR-12          =  SPACE)  AND
-                               (W-SRYCD-S3-KBN    =   "*")
-                               PERFORM T-540-RECECHEK-COMP-SEC
-                           END-IF
                        END-IF
+                       IF  W-SRYCD-S3-KBN    =   "N"
+                           PERFORM T-540-RECECHEK-COMP-SEC
+                       END-IF
+      *½¤Àµ/*½ªÎ»*03.08.21*********************************************
                        IF  (SRY-SRYCD (IDX3)   NOT =   ZERO)   AND
                            (SRY-SRYCD (IDX3)   NOT =   SPACE)
                            IF  SPA-GMN-CNV (11) NOT =   SPACE
@@ -4680,20 +4685,28 @@
                    END-IF
                ELSE
                    MOVE    MCPDATA-REC       TO  TNS-TENSU-REC
-                   MOVE    SRY-SRYCD (IDX3)  TO  W-SRYCD-81 (IDY5)
-                   IF  (TNS-SRYKBN    NOT =  "11")  AND
-                       (TNS-SRYKBN    NOT =  "12")  AND
       *½¤Àµ/*³«»Ï*03.08.21*********************************************
-                       (TNS-SRYKBN    NOT =  "13")  AND
-                       (TNS-SRYKBN    NOT =  "14")  AND
-      *½¤Àµ/*½ªÎ»*03.08.21*********************************************
-                       (TNS-JITUDAY       =   1)    AND
-                       (TNS-DAYCNT        =   0)
-                       MOVE    "*"               TO  W-SRYCD-S3-KBN
-                       MOVE    "*"               TO  W-SRYCD-82 (IDY5)
+      *             IF  (TNS-SRYKBN    NOT =  "11")  AND
+      *                 (TNS-SRYKBN    NOT =  "12")  AND
+      *                 (TNS-JITUDAY       =   1)    AND
+      *                 (TNS-DAYCNT        =   0)
+      *                 MOVE    "*"               TO  W-SRYCD-S3-KBN
+      *                 MOVE    "*"               TO  W-SRYCD-82 (IDY5)
+      *             ELSE
+      *                 MOVE    SPACE             TO  W-SRYCD-S3-KBN
+      *                 MOVE    SPACE             TO  W-SRYCD-82 (IDY5)
+                   IF  ((TNS-JITUDAY       =   2)           AND
+                        (TNS-DAYCNT        =   1   OR   2))     OR
+                       (SRY-SRYCD (IDX3)  =  W-YOYAKU7      OR
+                                             W-YOYAKU8      OR
+                                             W-YOYAKU9      OR
+                                             W-YOYAKU10     OR
+                                             W-YOYAKU11     OR
+                                             W-YOYAKU12)
+                       MOVE    "A"               TO  W-SRYCD-S3-KBN
                    ELSE
-                       MOVE    SPACE             TO  W-SRYCD-S3-KBN
-                       MOVE    SPACE             TO  W-SRYCD-82 (IDY5)
+                       MOVE    "N"               TO  W-SRYCD-S3-KBN
+      *½¤Àµ/*½ªÎ»*03.08.21*********************************************
                    END-IF
                END-IF
            END-IF.
