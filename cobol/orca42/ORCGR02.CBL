@@ -721,7 +721,7 @@
                    END-IF
                END-PERFORM
            ELSE
-               IF    ( SPA-R01-RECE07-SYORISBT =   "2" OR  "3" )
+               IF    ( SPA-R01-RECE07-SYORISBT =   "1" OR  "2" )
                AND   ( SYS-2005-PRTJYUNKBN2    =   "05"        )
                    MOVE    SYS-2005-PRTJYUNKBN1
                                            TO  SYS-2005-PRTJYUNKBN2
