@@ -30,6 +30,7 @@
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
       *  01.00.01    NACL-¬¿≈ƒ    02.12.10  º˝«ºÃ¿∫Ÿ∫ÔΩ¸ΩËÕ˝ƒ…≤√
       *  01.00.02    NACL-¬¿≈ƒ    02.12.26  ∆˛±°≤ §ŒΩÈ¥¸…Ωº®§ÚΩ§¿µ
+      *  01.01.03    NACL-¬¿≈ƒ    03.01.24  ø©ªˆ§ŒΩ∏∑◊ ˝À°Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -7846,7 +7847,7 @@
                        =   TTLSYU-RSIETC-MONEY
                        +   LNK-SYU-RSIETC-MONEY (IDX11)
       *
-      *            ø©ªˆŒ≈Õ‹»Ò
+      *            ø©ªˆŒ≈Õ‹»Ò°  ›∏±°À
                    COMPUTE SUMSYU-RYOYOHI-SKJ (WRK-SYU-SUM-IDX)
                        =   SUMSYU-RYOYOHI-SKJ (WRK-SYU-SUM-IDX)
                        +   LNK-SYU-RYOYOHI-SKJ (IDX11)
@@ -7854,13 +7855,65 @@
                        =   TTLSYU-RYOYOHI-SKJ
                        +   LNK-SYU-RYOYOHI-SKJ (IDX11)
       *
-      *            ø©ªˆ…È√¥≥€
+      *            ø©ªˆ…È√¥≥€°  ›∏±°ßº´∏ …È√¥°À
                    COMPUTE SUMSYU-SKYMONEY-SKJ (WRK-SYU-SUM-IDX)
                        =   SUMSYU-SKYMONEY-SKJ (WRK-SYU-SUM-IDX)
                        +   LNK-SYU-SKYMONEY-SKJ (IDX11)
                    COMPUTE TTLSYU-SKYMONEY-SKJ
                        =   TTLSYU-SKYMONEY-SKJ
                        +   LNK-SYU-SKYMONEY-SKJ (IDX11)
+      *
+      *            ø©ªˆ…È√¥≥€°  ›∏±°ßº´∏ …È√¥æ√»Ò¿«°À
+                   COMPUTE SUMSYU-SKYMONEY-SKJ-TAX (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-SKJ-TAX (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-SKJ-TAX (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-SKJ-TAX
+                       =   TTLSYU-SKYMONEY-SKJ-TAX
+                       +   LNK-SYU-SKYMONEY-SKJ-TAX (IDX11)
+      *
+      *            ø©ªˆ…È√¥≥€°  ›∏±°ßº´∏ …È√¥πÁ∑◊°À
+                   COMPUTE SUMSYU-SKYMONEY-SKJ-KEI (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-SKJ-KEI (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-SKJ-KEI (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-SKJ-KEI
+                       =   TTLSYU-SKYMONEY-SKJ-KEI
+                       +   LNK-SYU-SKYMONEY-SKJ-KEI (IDX11)
+      *
+      *            ø©ªˆŒ≈Õ‹»Ò° º´»Ò°À
+                   COMPUTE SUMSYU-RYOYOHI-SKJ-JIHI (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-RYOYOHI-SKJ-JIHI (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-RYOYOHI-SKJ-JIHI (IDX11)
+                   COMPUTE TTLSYU-RYOYOHI-SKJ-JIHI
+                       =   TTLSYU-RYOYOHI-SKJ-JIHI
+                       +   LNK-SYU-RYOYOHI-SKJ-JIHI (IDX11)
+      *
+      *            ø©ªˆ…È√¥≥€° º´»Ò°ßº´∏ …È√¥°À
+                   COMPUTE SUMSYU-SKYMONEY-SKJ-JIHI (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-SKJ-JIHI (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-SKJ-JIHI (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-SKJ-JIHI
+                       =   TTLSYU-SKYMONEY-SKJ-JIHI
+                       +   LNK-SYU-SKYMONEY-SKJ-JIHI (IDX11)
+      *
+      *            ø©ªˆ…È√¥≥€° º´»Ò°ßº´∏ …È√¥æ√»Ò¿«°À
+                   COMPUTE SUMSYU-SKYMONEY-SKJ-JIHI-TAX
+                                                    (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-SKJ-JIHI-TAX
+                                                    (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-SKJ-JIHI-TAX (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-SKJ-JIHI-TAX
+                       =   TTLSYU-SKYMONEY-SKJ-JIHI-TAX
+                       +   LNK-SYU-SKYMONEY-SKJ-JIHI-TAX (IDX11)
+      *
+      *            ø©ªˆ…È√¥≥€° º´»Ò°ßº´∏ …È√¥πÁ∑◊°À
+                   COMPUTE SUMSYU-SKYMONEY-SKJ-JIHI-KEI
+                                                    (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-SKJ-JIHI-KEI
+                                                    (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-SKJ-JIHI-KEI (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-SKJ-JIHI-KEI
+                       =   TTLSYU-SKYMONEY-SKJ-JIHI-KEI
+                       +   LNK-SYU-SKYMONEY-SKJ-JIHI-KEI (IDX11)
       *
       *            ººŒ¡∫π≥€
                    COMPUTE SUMSYU-RMSAGAKU (WRK-SYU-SUM-IDX)
