@@ -30,6 +30,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/09/20  自賠責の追加
+      *  01.00.02    NACL-藤原    02/09/27  パラメタに入外区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -102,6 +103,7 @@
                                                      PIC X(01).
                        09  WRK-PARA-RECE09-RECESYUBETU
                                                      PIC X(04).
+                       09  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).
                     07  WRK-PARA-RECE09-PRTJYUN      PIC X(02).
                 05  WRK-PARA-RECE09-STDATA           PIC X(100).
                 05  WRK-PARA-RECE09-EDDATA           PIC X(100).
@@ -232,6 +234,7 @@
            MOVE    WRK-PARA-RECE09-PREFKBN      TO  RECE08-PREFKBN
            MOVE    WRK-PARA-RECE09-TEISYUTUSAKI TO  RECE08-TEISYUTUSAKI
       **** MOVE    WRK-PARA-RECE09-RECESYUBETU  TO  RECE08-RECESYUBETU
+           MOVE    WRK-PARA-RECE09-NYUGAIKBN    TO  RECE08-NYUGAIKBN
       *
            MOVE    WRK-PARA-RECE09-STDATA       TO  RECE08-STKANANAME
            MOVE    WRK-PARA-RECE09-EDDATA       TO  RECE08-EDKANANAME
@@ -341,9 +344,11 @@
            MOVE    RECE08-REC          TO  MCPDATA-REC
       *
            IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
-               MOVE    "RECEPRT-KEY7"          TO  ORC-DBPATH
-           ELSE
-               MOVE    "RECEPRT-KEY8"          TO  ORC-DBPATH
+      *********    MOVE    "RECEPRT-KEY7"          TO  ORC-DBPATH
+                   MOVE    "RECEPRT-KEY16"         TO  ORC-DBPATH
+               ELSE
+      *********    MOVE    "RECEPRT-KEY8"          TO  ORC-DBPATH
+                   MOVE    "RECEPRT-KEY17"         TO  ORC-DBPATH
            END-IF
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -369,9 +374,11 @@
        900-RECEPRT-FET-SEC            SECTION.
       *
            IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
-               MOVE    "RECEPRT-KEY7"          TO  ORC-DBPATH
-           ELSE
-               MOVE    "RECEPRT-KEY8"          TO  ORC-DBPATH
+      *********    MOVE    "RECEPRT-KEY7"          TO  ORC-DBPATH
+                   MOVE    "RECEPRT-KEY16"         TO  ORC-DBPATH
+               ELSE
+      *********    MOVE    "RECEPRT-KEY8"          TO  ORC-DBPATH
+                   MOVE    "RECEPRT-KEY17"         TO  ORC-DBPATH
            END-IF
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
@@ -401,27 +408,13 @@
       *****************************************************************
        900-RECEPRT-CLS-SEC            SECTION.
       *
-           IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
-               IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
-                   MOVE    "RECEPRT-KEY7"          TO  ORC-DBPATH
+           IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
+      *********    MOVE    "RECEPRT-KEY7"          TO  ORC-DBPATH
+                   MOVE    "RECEPRT-KEY16"         TO  ORC-DBPATH
                ELSE
-                   MOVE    "RECEPRT-KEY8"          TO  ORC-DBPATH
-               END-IF
-           ELSE 
-               IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO  
-                   IF      WRK-PARA-RECE09-PRTJYUN      =   "01"
-                       MOVE    "RECEPRT-KEY5"          TO  ORC-DBPATH
-                   ELSE
-                       MOVE    "RECEPRT-KEY6"          TO  ORC-DBPATH
-                   END-IF
-               ELSE 
-                   IF      WRK-PARA-RECE09-PRTJYUN      =   "01"
-                       MOVE    "RECEPRT-KEY"           TO  ORC-DBPATH
-                   ELSE
-                       MOVE    "RECEPRT-KEY2"          TO  ORC-DBPATH
-                   END-IF
-               END-IF   
-           END-IF    
+      *********    MOVE    "RECEPRT-KEY8"          TO  ORC-DBPATH
+                   MOVE    "RECEPRT-KEY17"         TO  ORC-DBPATH
+           END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
