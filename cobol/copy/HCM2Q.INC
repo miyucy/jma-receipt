@@ -5,6 +5,7 @@
             02  HCM2Q-ADRS  PIC X(50).
             02  HCM2Q-HOSPNAME  PIC X(100).
             02  HCM2Q-KAISETUNAME   PIC X(60).
+            02  HCM2Q-PAGE  PIC X(4).
             02  HCM2Q-MEI-TBL           OCCURS  23 TIMES.
               03  HCM2Q-HKNJANUM  PIC X(8).
               03  HCM2Q-ROU-KENSU

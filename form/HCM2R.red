@@ -6,6 +6,11 @@
         <embed object="string" length="20"/>
       </appinfo>
     </element>
+    <element name="PAGE" occurs="1">
+      <appinfo>
+        <embed object="string" length="4"/>
+      </appinfo>
+    </element>
     <element name="MEI-TBL" occurs="23">
       <element name="HKNJANUM" occurs="1">
         <appinfo>
@@ -21002,6 +21007,48 @@
           </attribute>
           <attribute name="multi">
             <real val="0.1414"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O533">
+      <attribute name="obj_pos">
+        <point val="28.4,1.6"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="27.6728,1.36545;28.4,1.66545"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#PAGE#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="1"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#9999#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="28.4,1.6"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="2"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>

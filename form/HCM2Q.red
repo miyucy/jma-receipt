@@ -31,6 +31,11 @@
         <embed object="string" length="60"/>
       </appinfo>
     </element>
+    <element name="PAGE" occurs="1">
+      <appinfo>
+        <embed object="string" length="4"/>
+      </appinfo>
+    </element>
     <element name="MEI-TBL" occurs="23">
       <element name="HKNJANUM" occurs="1">
         <appinfo>
@@ -1480,7 +1485,7 @@
           <point val="27.5513,4.49874"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="27.5513,4.2642;27.8543,4.5642"/>
+          <rectangle val="27.5513,4.26419;27.8543,4.56419"/>
         </attribute>
         <attribute name="text">
           <composite type="text">
@@ -22673,6 +22678,48 @@
           </attribute>
           <attribute name="multi">
             <real val="0.1414"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O576">
+      <attribute name="obj_pos">
+        <point val="28.5,1.6"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="27.7728,1.36545;28.5,1.66545"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#PAGE#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="1"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#9999#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="28.5,1.6"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="2"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
