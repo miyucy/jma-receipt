@@ -1729,8 +1729,8 @@
            PERFORM 3110-KYURATE-SET-SEC
       *
       *    ¥«¥Ê»áÌ¾
-           IF     RECE62-KANANAME (41:)    =   SPACE
-                MOVE    RECE62-KANANAME     TO  HC06-KANANAME2
+           IF     RECE62-KANANAME (41:)    NOT =   SPACE
+                MOVE    RECE62-KANANAME    TO  HC06-KANANAME2
            ELSE
                 MOVE    RECE62-KANANAME     TO  HC06-KANANAME
            END-IF
