@@ -507,28 +507,24 @@
            CALL    "ORCSDAY"            USING   STS-AREA-DAY
                                                 LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI      TO      PTNYUINRRK-NYUINYMD
-           MOVE    "PTNYUINRRK-KEY27"   TO      ORC-DBPATH
+           MOVE    "PTNYUINRRK-KEY10"   TO      ORC-DBPATH
            PERFORM   910-PTNYUINRRK-SELECT-SEC
            IF      FLG-PTNYUINRRK       =       ZERO
-               MOVE    "PTNYUINRRK-KEY27"    TO      ORC-DBPATH
+               MOVE    "PTNYUINRRK-KEY10"    TO      ORC-DBPATH
                PERFORM  910-PTNYUINRRK-READ-SEC
-               PERFORM  UNTIL  FLG-PTNYUINRRK    =    1
-                       MOVE    PTNYUINRRK-PTID   TO  WRK-PTID
-      *                入院会計存在チェック
-                       PERFORM    2001-NYUINACCT-CHK-SEC
-                       IF         FLG-NYUINACCTARI   =    ZERO
-      *                     前月分入院会計の存在チェック
-      *                     （併せて保険組合せと食事の情報を退避）
-                            PERFORM     2001-NYUINACCT-MAECHK-SEC
-      *                     入院会計作成処理
-                            PERFORM     2001-NYUINACCT-INS-SEC
-                       END-IF
-                   MOVE    "PTNYUINRRK-KEY27"    TO      ORC-DBPATH
-                   PERFORM  910-PTNYUINRRK-READ-SEC
-               END-PERFORM
+               MOVE    PTNYUINRRK-PTID   TO  WRK-PTID
+      *        入院会計存在チェック
+               PERFORM    2001-NYUINACCT-CHK-SEC
+               IF         FLG-NYUINACCTARI   =    ZERO
+      *             前月分入院会計の存在チェック
+      *             （併せて保険組合せと食事の情報を退避）
+                    PERFORM     2001-NYUINACCT-MAECHK-SEC
+      *             入院会計作成処理
+                    PERFORM     2001-NYUINACCT-INS-SEC
+               END-IF
            END-IF
       *
-           MOVE     "PTNYUINRRK-KEY27"       TO  ORC-DBPATH
+           MOVE     "PTNYUINRRK-KEY10"       TO  ORC-DBPATH
            PERFORM   900-TBL-CLOSE-SEC
       *
            IF    ( CNT-LINE            >   ZERO )
@@ -1745,6 +1741,7 @@
       *****************************************************************
        410191-IPNNYUACCT-SAKUSEI-SEC   SECTION.
       *
+           DISPLAY "PTID = " WRK-PTID
       *     DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
            INITIALIZE      ORCSSYOKIKSNAREA
            MOVE    IPN-SANTEISTYMD(1:6)  TO WRK-NAI-SRYYM-41(1:6)
@@ -2122,6 +2119,7 @@
       *****************************************************************
        410191-NYUKSN-GET-SEC         SECTION.
       *
+           DISPLAY "410191-NYUKSN-GET-SEC"
            MOVE    ZERO                TO   IDX8
       *
       *医療機関加算（減算）情報
@@ -2160,6 +2158,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
       *病棟加算情報
+           DISPLAY "4801-BTUSEL-SEC"
            PERFORM 4801-BTUSEL-SEC
       *
            IF      FLG-SYSKANRI        =   ZERO
@@ -2521,6 +2520,7 @@
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
            MOVE    "5001"          TO  SYS-KANRICD
+           DISPLAY  "PTNYUINRRK-BTUNUM = " PTNYUINRRK-BTUNUM
            MOVE    PTNYUINRRK-BTUNUM
                                    TO  SYS-KBNCD
            MOVE    WRK-PARA-SRYYM  TO  ORC-DBYMD(1:6)
