@@ -405,6 +405,9 @@
            03  WRK-FTN-RRKNUM              PIC 9(03).
            03  WRK-NYUREKILST-SEL          PIC 9(05).
       *    転科／転棟／転室時に食事会計を退避する項目（最大２カ月分）
+           03  WRK-TENROOM-SKJ-SRYYMX.
+               05  WRK-TENROOM-SKJ-SRYYY9  PIC 9(04).
+               05  WRK-TENROOM-SKJ-SRYMM9  PIC 9(02).
            03  WRK-TENROOM-SKJ-TABLE.
                05  WRK-TENROOM-SKJ-TBL     OCCURS  2.
                    07  WRK-TENROOM-SKJ-SRYYM
@@ -9666,6 +9669,7 @@
            MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
            MOVE    SPA-NAI-I01-IDOYMD(1:6)
                                        TO  NACCT-SRYYM
+                                           WRK-TENROOM-SKJ-SRYYMX
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
@@ -9680,6 +9684,35 @@
                          UNTIL     IDX-SKJ   >   31
                     MOVE   NACCT-DAY(IDX-SKJ)
                                        TO  WRK-TENROOM-SKJ(1 IDX-SKJ)
+               END-PERFORM
+           END-IF
+      *    入院会計マスタクローズ
+           MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *    （異動翌月分）
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           IF      WRK-TENROOM-SKJ-SRYMM9  =  12
+               ADD   1     TO   WRK-TENROOM-SKJ-SRYYY9
+               MOVE  1     TO   WRK-TENROOM-SKJ-SRYMM9
+           ELSE
+               ADD   1     TO   WRK-TENROOM-SKJ-SRYMM9
+           END-IF
+           MOVE    WRK-TENROOM-SKJ-SRYYMX
+                                       TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+           PERFORM   900-TBL-SELECT-SEC
+           IF      FLG-DBRC            =   ZERO
+               MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *        食事を退避
+               MOVE    NACCT-SRYYM     TO  WRK-TENROOM-SKJ-SRYYM(2)
+               PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                         UNTIL     IDX-SKJ   >   31
+                    MOVE   NACCT-DAY(IDX-SKJ)
+                                       TO  WRK-TENROOM-SKJ(2 IDX-SKJ)
                END-PERFORM
            END-IF
       *    入院会計マスタクローズ
@@ -10215,6 +10248,37 @@
            MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
+      *    （異動翌月分）
+           IF   WRK-TENROOM-SKJ-SRYYM(2)  NOT =   SPACE
+               INITIALIZE                      NYUINACCT-REC
+               MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+               MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+               MOVE    WRK-TENROOM-SKJ-SRYYM(2)
+                                           TO  NACCT-SRYYM
+      *
+               MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+               MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+               PERFORM   900-TBL-SELECT-SEC
+               IF      FLG-DBRC            =   ZERO
+                   MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *            食事を復元
+                   PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                             UNTIL     IDX-SKJ   >   31
+                        MOVE   WRK-TENROOM-SKJ(2 IDX-SKJ)
+                                           TO  NACCT-DAY(IDX-SKJ)
+                   END-PERFORM
+               END-IF
+               MOVE     NYUINACCT-REC      TO  MCPDATA-REC
+               MOVE     "DBUPDATE"         TO  MCP-FUNC
+               MOVE     "NYUINACCT-KEY"    TO  ORC-DBPATH
+               CALL     "ORCMCPSUB"        USING  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC 
+      *        入院会計マスタクローズ
+               MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+               PERFORM 900-TBL-CLOSE-SEC
+           END-IF
+      *
            .
        4801-TENROOM-EDIT-EXT.
            EXIT.
@@ -10294,6 +10358,7 @@
            MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
            MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
                                        TO  NACCT-SRYYM
+                                           WRK-TENROOM-SKJ-SRYYMX
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
@@ -10310,6 +10375,35 @@
                          UNTIL     IDX-SKJ   >   31
                     MOVE   NACCT-DAY(IDX-SKJ)
                                        TO  WRK-TENROOM-SKJ(1 IDX-SKJ)
+               END-PERFORM
+           END-IF
+      *    入院会計マスタクローズ
+           MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *    （異動翌月分）
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           IF      WRK-TENROOM-SKJ-SRYMM9  =  12
+               ADD   1     TO   WRK-TENROOM-SKJ-SRYYY9
+               MOVE  1     TO   WRK-TENROOM-SKJ-SRYMM9
+           ELSE
+               ADD   1     TO   WRK-TENROOM-SKJ-SRYMM9
+           END-IF
+           MOVE    WRK-TENROOM-SKJ-SRYYMX
+                                       TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+           PERFORM   900-TBL-SELECT-SEC
+           IF      FLG-DBRC            =   ZERO
+               MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *        食事を退避
+               MOVE    NACCT-SRYYM     TO  WRK-TENROOM-SKJ-SRYYM(2)
+               PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                         UNTIL     IDX-SKJ   >   31
+                    MOVE   NACCT-DAY(IDX-SKJ)
+                                       TO  WRK-TENROOM-SKJ(2 IDX-SKJ)
                END-PERFORM
            END-IF
       *    入院会計マスタクローズ
@@ -10947,6 +11041,37 @@
       *    入院会計マスタクローズ
            MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
+      *    （異動翌月分）
+           IF   WRK-TENROOM-SKJ-SRYYM(2)  NOT =   SPACE
+               INITIALIZE                      NYUINACCT-REC
+               MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+               MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+               MOVE    WRK-TENROOM-SKJ-SRYYM(2)
+                                           TO  NACCT-SRYYM
+      *
+               MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+               MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+               PERFORM   900-TBL-SELECT-SEC
+               IF      FLG-DBRC            =   ZERO
+                   MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *            食事を復元
+                   PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                             UNTIL     IDX-SKJ   >   31
+                        MOVE   WRK-TENROOM-SKJ(2 IDX-SKJ)
+                                           TO  NACCT-DAY(IDX-SKJ)
+                   END-PERFORM
+               END-IF
+               MOVE     NYUINACCT-REC      TO  MCPDATA-REC
+               MOVE     "DBUPDATE"         TO  MCP-FUNC
+               MOVE     "NYUINACCT-KEY"    TO  ORC-DBPATH
+               CALL     "ORCMCPSUB"        USING  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC 
+      *        入院会計マスタクローズ
+               MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+               PERFORM 900-TBL-CLOSE-SEC
+           END-IF
+      *
            .
        4801-IDOKAIKEI-CANCEL-EXT.
            EXIT.
