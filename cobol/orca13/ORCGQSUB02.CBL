@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      * 01.00.01     NACL-ÂÀÅÄ    04/06/21  ºÇ½ª¼õ¿ÇÆü¸¡º÷¾ò·ï½¤Àµ
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -201,7 +202,29 @@
       *
       *    ºÇ½ª¼õ¿ÇÆü
            IF  ( SPA-Q01-GTBL (3)  =   "1" )
-               STRING  ",tbl_srykarrk b"       DELIMITED  BY  SIZE
+               STRING  ",(select hospid,ptid from "
+                                                   DELIMITED  BY  SIZE
+                       "tbl_srykarrk "             DELIMITED  BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+      *
+               IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
+                   STRING  "where sryka ='"        DELIMITED  BY  SIZE
+                           SPA-Q01-SRYKA           DELIMITED  BY  SPACE
+                           "' "                    DELIMITED  BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               END-IF
+      *
+               STRING  "group by hospid,ptid  "    DELIMITED  BY  SIZE
+                       "having max(lastymd) between '"
+                                                   DELIMITED  BY  SIZE
+                       WRK-STLASTYMD               DELIMITED  BY  SPACE
+                       "' and '"                   DELIMITED  BY  SIZE
+                       WRK-EDLASTYMD               DELIMITED  BY  SPACE
+                       "') b"                      DELIMITED  BY  SIZE
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
                END-STRING
@@ -576,26 +599,7 @@
        1001-SRYKARRK-SQL-EDIT-SEC      SECTION.
       *
            MOVE    "b"             TO  WRK-SQL-TBL-NAME
-           PERFORM 900-SQL-JYOKEN-EDIT1-SEC
-      *
-           IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
-               PERFORM 10011-SRYKA-SQL-EDIT-SEC
-           END-IF
-      *
-           MOVE    1               TO  CNT-JYOKEN
-           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-           STRING  "(b.lastymd >= '"           DELIMITED   BY  SIZE
-                   WRK-STLASTYMD               DELIMITED   BY  SIZE
-                   "') and "                   DELIMITED   BY  SIZE
-                   "(b.lastymd <= '"           DELIMITED   BY  SIZE
-                   WRK-EDLASTYMD               DELIMITED   BY  SIZE
-                   "')"                        DELIMITED   BY  SIZE
-           INTO    WRK-SQL
-           WITH    POINTER     WRK-SQL-PNT
-           END-STRING
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+           PERFORM 900-SQL-JYOKEN-EDIT8-SEC
       *
            PERFORM 900-SQL-JYOKEN-EDIT4-SEC
       *
@@ -2195,6 +2199,32 @@
       *
            .
        900-SQL-JYOKEN-EDIT7-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ó£Ñ£Ì¾ò·ïÊÔ½¸½èÍý£¸
+      *****************************************************************
+       900-SQL-JYOKEN-EDIT8-SEC            SECTION.
+      *
+           IF  ( FLG-JYOKEN        =   1 )
+               STRING " and "      DELIMITED   BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER     WRK-SQL-PNT
+               END-STRING
+           END-IF
+      *
+           STRING  "(("                        DELIMITED   BY  SIZE
+                   WRK-SQL-TBL-NAME            DELIMITED   BY  SPACE
+                   ".hospid='"                 DELIMITED   BY  SIZE
+                   SPA-HOSPID                  DELIMITED   BY  SIZE
+                   "')and("                    DELIMITED   BY  SIZE
+                   WRK-SQL-TBL-NAME            DELIMITED   BY  SPACE
+                   ".ptid=a.ptid) "            DELIMITED   BY  SIZE
+           INTO    WRK-SQL
+           WITH    POINTER     WRK-SQL-PNT
+           END-STRING
+      *
+           .
+       900-SQL-JYOKEN-EDIT8-EXT.
            EXIT.
       *****************************************************************
       *    Ê¸»úÎóÄ¹¼èÆÀ½èÍý
