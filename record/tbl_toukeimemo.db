@@ -1,0 +1,56 @@
+tbl_toukeimemo {
+	PGID		            char(20);
+	KANRICD		            char(4);
+	KBNCD                   char(8);
+	STYUKYMD                char(8);
+	EDYUKYMD                char(8);
+	MEMO                    varchar(6000);
+	TERMID  	        	varchar(32);
+	OPID             		varchar(16);
+	CREYMD  	        	char(8);
+	UPYMD   	        	char(8);
+	UPHMS		        	char(6);
+};
+
+primary	{
+	PGID,KANRICD,KBNCD,STYUKYMD,EDYUKYMD ;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_toukeimemo_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_toukeimemo
+			WHERE   PGID      =  :PGID
+			AND     KANRICD   =  :KANRICD
+			AND     KBNCD     =  :KBNCD
+			AND     STYUKYMD  =  :STYUKYMD
+			AND     EDYUKYMD  =  :EDYUKYMD
+		;
+	};
+};
+
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_toukeimemo_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_toukeimemo
+			WHERE   PGID      =  :PGID
+			AND     KANRICD   =  :KANRICD
+			AND     KBNCD     =  :KBNCD
+			AND     STYUKYMD <=  :STYUKYMD
+			AND     EDYUKYMD >=  :EDYUKYMD
+		;
+	};
+};
+
+path	del1		{ 	
+	DBDELETE	{
+		DELETE	FROM tbl_toukeimemo
+			WHERE   KANRICD   =  :KANRICD
+			AND     KBNCD     =  :KBNCD
+			AND     STYUKYMD  =  :STYUKYMD
+			AND     EDYUKYMD  =  :EDYUKYMD
+		;
+	};
+};

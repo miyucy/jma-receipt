@@ -80,6 +80,7 @@ db	{
         tbl_pgkanri;
         tbl_opecom;
         tbl_syutotal;
+        tbl_toukeimemo;
 };
 db	"shell"	{
 	shell;
