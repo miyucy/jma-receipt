@@ -132,7 +132,7 @@
       *更新時間
            03  JYURRK-UPHMS                PIC  X(06).
       *　　主キー更新用項目
-           03  JYURRKUP-KEY.
+           03  JYURRK-UPKEY.
                05  JYURRK-UPHOSPID           PIC  X(24).
                05  JYURRK-UPPTID             PIC  9(10).
                05  JYURRK-UNYUGAIKBN         PIC  X(01).
