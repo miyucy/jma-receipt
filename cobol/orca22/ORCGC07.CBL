@@ -103,7 +103,7 @@
       *
       *    保険組合せワーク
            03  WRK-C07-HKNCOMB-COMB.
-               05  WRK-C07-HKN-LIST    OCCURS  10.
+               05  WRK-C07-HKN-LIST    OCCURS  30.
                    07  WRK-C07-THKNCOMBINUM    PIC X(04).
                    07  WRK-C07-THKNCOMBY1      PIC X(01).
                    07  WRK-C07-THKNCOMBIMEI    PIC X(100).
@@ -433,7 +433,7 @@
            MOVE    ZERO                TO  IDH
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL      (IDX     >   ORCSHKN-HKN-MAX )  OR
-                              (IDH     >=  10              )
+                              (IDH     >=  30              )
                ADD     1                   TO  IDH
                MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
                                            TO  SPA-C07-THKNCOMBINUM
@@ -792,7 +792,7 @@
            INITIALIZE                  SPA-C07-HKNCOMB-COMB
            MOVE    ZERO                TO  SPA-C07-HKNMAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >    10
+                   UNTIL       IDX     >    WRK-C07-HKNMAX
                IF      WRK-C07-FLG  (IDX)  =   "1"
                    ADD     1                TO  SPA-C07-HKNMAX
                    MOVE    WRK-C07-THKNCOMBINUM(IDX)
