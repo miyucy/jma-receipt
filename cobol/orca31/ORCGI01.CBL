@@ -8076,6 +8076,7 @@
            INITIALIZE      ORCSSYOKIKSNAREA
       *
       *    通算日数、算定開始日を求める
+           MOVE    SPA-NAI-I01-MAEIDOYMD  TO   PTNYUINRRK-TENNYUYMD
            PERFORM 4801-TSUSAN-SANTEI-GET-SEC
            IF    ( SPA-ERRCD    NOT =  SPACE )
                GO  TO  4801-IDOKAIKEI-CANCEL-EXT
