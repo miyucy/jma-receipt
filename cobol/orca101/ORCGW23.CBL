@@ -835,7 +835,7 @@
            MOVE    ZERO                TO  SPA-NAI-SEIKYU02
       *
            IF    ( SPA-GMN-SEIKYU02        =   SPACE )
-               GO  TO  T-000-YMDCHEK1-EXT
+               GO  TO  T-000-YMDCHEK2-EXT
            END-IF
       *
            INITIALIZE                  ORCSNUMAREA
@@ -847,7 +847,7 @@
             OR ( SNUM-SYOKBN   NOT =   SPACE )
                MOVE    "0001"          TO  SPA-ERRCD
                MOVE    2               TO  SPA-GMN-CUR
-               GO TO   T-000-YMDCHEK1-EXT
+               GO TO   T-000-YMDCHEK2-EXT
            ELSE
                MOVE    SNUM-OUTNUM     TO  WRK-DAY
                IF    (( WRK-DAY        >=  01 )
@@ -857,7 +857,7 @@
                ELSE
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    2           TO  SPA-GMN-CUR
-                   GO TO   T-000-YMDCHEK1-EXT
+                   GO TO   T-000-YMDCHEK2-EXT
                END-IF
            END-IF
       *
@@ -876,7 +876,7 @@
            MOVE    ZERO                TO  SPA-NAI-SEIKYU03
       *
            IF    ( SPA-GMN-SEIKYU03        =   SPACE )
-               GO  TO  T-000-YMDCHEK1-EXT
+               GO  TO  T-000-YMDCHEK3-EXT
            END-IF
       *
            INITIALIZE                  ORCSNUMAREA
@@ -888,7 +888,7 @@
             OR ( SNUM-SYOKBN   NOT =   SPACE )
                MOVE    "0001"          TO  SPA-ERRCD
                MOVE    3               TO  SPA-GMN-CUR
-               GO TO   T-000-YMDCHEK1-EXT
+               GO TO   T-000-YMDCHEK3-EXT
            ELSE
                MOVE    SNUM-OUTNUM     TO  WRK-DAY
                IF    (( WRK-DAY        >=  01 )
@@ -898,7 +898,7 @@
                ELSE
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    3           TO  SPA-GMN-CUR
-                   GO TO   T-000-YMDCHEK1-EXT
+                   GO TO   T-000-YMDCHEK3-EXT
                END-IF
            END-IF
       *
