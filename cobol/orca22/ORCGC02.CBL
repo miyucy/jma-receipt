@@ -4167,13 +4167,17 @@
       *    単独使用禁止の病名があるとき
            IF      SPA-NAI-C02-BYOMEIHENFLG    =   SPACE
                MOVE    ZERO                TO  IDX
+               INITIALIZE                  WRK-TANDOKUKBN-BYOMEICD
+                                           WRK-TANDOKUKBN-BYOMEI
                PERFORM VARYING IDZ FROM    1   BY  1
                        UNTIL   IDZ >       6
-                       OR      SPA-GMN-C02-BYOMEICD (IDZ)  
-                                       =   SPACE
+                 IF      SPA-GMN-C02-BYOMEICD (IDZ)  
+                                   NOT =   SPACE
                    IF      SPA-NAI-C02-BYOMEITOP (IDZ) =   "1"
                    AND     IDZ                         >   1
                        IF      IDX                 =   ZERO
+                       AND     WRK-TANDOKUKBN-BYOMEICD
+                                               NOT =   SPACE
                            MOVE    "0076"              TO  SPA-ERRCD  
                            GO  TO  420-TUIKA-EXT
                        END-IF
@@ -4188,7 +4192,8 @@
                                            TO  WRK-TANDOKUKBN-BYOMEICD  
                        MOVE    SPA-NAI-C02-BYOMEI   (IDZ)
                                            TO  WRK-TANDOKUKBN-BYOMEI  
-                   END-IF   
+                   END-IF
+                 END-IF     
                END-PERFORM
                IF      IDX                 =   ZERO
                    MOVE    "0076"              TO  SPA-ERRCD  
