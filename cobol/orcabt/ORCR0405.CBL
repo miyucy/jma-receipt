@@ -813,6 +813,8 @@
                        MOVE    "2"                 TO  PTINF-NYUGAIKBN
                        MOVE    "2"                 TO  PTINF-HKNKBN
                        MOVE    BTPARA-INFO-PARA(17:6) 
+                                                   TO  PTINF-SRYYM
+                       MOVE    BTPARA-INFO-PARA(17:6) 
                                                    TO  PTINF-SRYYMD(1:6)
                        MOVE    "__"                TO  PTINF-SRYYMD(7:2)
                        MOVE    PTINF-REC           TO  MCPDATA-REC

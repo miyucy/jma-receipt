@@ -2082,6 +2082,7 @@
                            MOVE    "2"            TO  PTINF-HKNKBN
                    END-EVALUATE
                    IF      SPA-GMN-SYORI       =   "2"
+                       MOVE    SPA-NAI-TEISEIYM    TO  PTINF-SRYYM
                        MOVE    SPA-NAI-TEISEIYM    TO  PTINF-SRYYMD(1:6)
                        MOVE    '__'                TO  PTINF-SRYYMD(7:2)
                    END-IF 
