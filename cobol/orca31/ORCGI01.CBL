@@ -66,6 +66,7 @@
       *  01.00.27    NACL-小豆沢  03.07.10  退院取消時に診療録管理体制加算を
       *                                     算定しない
       *  01.00.28    NACL-小豆沢  03.07.10  退院取消時の通算日数算定を修正
+      *  01.00.29    NACL-太田    03.07.10  排他制御処理修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1755,7 +1756,7 @@
       *    患者番号が入力されていること
            IF    ( SPA-GMN-I01-PTNUM   =   SPACE )
                MOVE    "1001"      TO  SPA-ERRCD
-               PERFORM 510-ERRCD-SET-SEC
+               MOVE    SPA-ERRCD   TO  SPA-GMN-I01-ERRCD (1)
                GO  TO  4101-PTNUM-CHK-EXT
            END-IF
       *
@@ -1777,7 +1778,7 @@
                    MOVE    SPTNUM-PTID         TO  SPA-NAI-I01-PTID
                WHEN   10
                    MOVE    "0002"              TO  SPA-ERRCD
-                   PERFORM 510-ERRCD-SET-SEC
+                   MOVE    SPA-ERRCD           TO  SPA-GMN-I01-ERRCD (1)
                    GO  TO  4101-PTNUM-CHK-EXT
                WHEN    20
       *            氏名検索へ
@@ -1799,7 +1800,7 @@
                    GO      TO     4101-PTNUM-CHK-EXT
                WHEN    OTHER
                    MOVE    "0002"              TO  SPA-ERRCD
-                   PERFORM 510-ERRCD-SET-SEC
+                   MOVE    SPA-ERRCD           TO  SPA-GMN-I01-ERRCD (1)
                    GO  TO  4101-PTNUM-CHK-EXT
            END-EVALUATE
       *
@@ -1816,6 +1817,7 @@
       *        排他制御処理
                PERFORM 990-LOCK-IN-SEC
                IF  (   SPA-ERRCD   NOT =   SPACE )
+                   MOVE    SPA-ERRCD           TO  SPA-GMN-I01-ERRCD (1)
                    GO  TO  4101-PTNUM-CHK-EXT
                END-IF
       *
@@ -1832,7 +1834,7 @@
       *
            ELSE
                MOVE    "0002"                  TO  SPA-ERRCD
-               PERFORM 510-ERRCD-SET-SEC
+               MOVE    SPA-ERRCD               TO  SPA-GMN-I01-ERRCD (1)
            END-IF
       *
       *    患者マスタクローズ
@@ -2258,6 +2260,7 @@
       *        排他制御処理
                PERFORM 990-LOCK-IN-SEC
                IF  (   SPA-ERRCD   NOT =   SPACE )
+                   MOVE    SPA-ERRCD   TO  SPA-GMN-I01-ERRCD (1)
                    GO  TO  4101-PTINF-SELECT-EXT
                END-IF
       *
@@ -3109,7 +3112,7 @@
       *
            IF    ( SPA-GMN-I01-SYORIKBN    =   SPACE )
                MOVE    "1002"      TO  SPA-ERRCD
-               PERFORM 510-ERRCD-SET-SEC
+               MOVE    SPA-ERRCD   TO  SPA-GMN-I01-ERRCD (2)
                GO  TO  4101-SYORIKBN-CHK-EXT
            END-IF
       *
@@ -3121,7 +3124,7 @@
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SYORIKBN
            ELSE
                MOVE    "0012"      TO  SPA-ERRCD
-               PERFORM 510-ERRCD-SET-SEC
+               MOVE    SPA-ERRCD           TO  SPA-GMN-I01-ERRCD (2)
                MOVE    2           TO  SPA-GMN-I01-CUR
                GO  TO  4101-SYORIKBN-CHK-EXT
            END-IF
@@ -11112,17 +11115,6 @@
            .
        510-ERRSET-EXT.
            EXIT.
-      *****************************************************************
-      *    エラーコード設定処理
-      *****************************************************************
-       510-ERRCD-SET-SEC               SECTION.
-      *
-           MOVE    SPA-ERRCD   TO  SPA-GMN-I01-ERRCD (SPA-GMN-I01-CUR)
-      *
-           .
-       510-ERRCD-SET-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    ガイドメッセージ表示
       *****************************************************************
