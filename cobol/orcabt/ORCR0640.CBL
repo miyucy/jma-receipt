@@ -329,7 +329,8 @@
        01  WRK-GAI-TABLE2.
            03  WRK-GAI-T2                              OCCURS   20.
                05  WRK-GAI2-DAY                        PIC 9(02).
-               05  WRK-GAI2-SRYCD                      PIC 9(09).
+               05  WRK-GAI2-SRYCD.
+                   07  WRK-GAI2-SRYCD-9                PIC 9(09).
                05  WRK-GAI2-ZAITEN                     PIC 9(08).
                05  WRK-GAI2-ZAIKAISU                   PIC 9(04).
                05  WRK-GAI2-SRYKBNFLG                  PIC 9(01).
@@ -1906,7 +1907,7 @@
                         (NSRY-SRYCD(IDX2)   =  SPACE)
                      MOVE    NSRY-SRYCD(IDX2)    TO  WRK-SRYCD
                      MOVE    NACCT-SRYYM         TO  WK-TAIHI-SRYYM
-                     MOVE    "01"                TO  WK-TAIHI-SRYD
+                     MOVE    1                   TO  WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF   FLG-TENSU      =    ZERO
                        IF   TNS-DATAKBN    =    1
@@ -1954,7 +1955,7 @@
       *
                     MOVE     SENCHG-SENTEISRYCD  TO   WRK-SRYCD
                     MOVE     NACCT-SRYYM         TO   WK-TAIHI-SRYYM
-                    MOVE     "01"                TO   WK-TAIHI-SRYD
+                    MOVE     1                   TO   WK-TAIHI-SRYD
                     PERFORM  TENSU-TBL-SEC
                     IF       FLG-TENSU      =    ZERO
                        MOVE     TNS-TEN          TO   WRK-SENTEI-KHNTEN
@@ -2130,7 +2131,7 @@
            IF    WRK-GAIHAKU-SRYCD    NOT =   SPACE
                MOVE    WRK-GAIHAKU-SRYCD   TO  WRK-SRYCD
                MOVE    NACCT-SRYYM         TO  WK-TAIHI-SRYYM
-               MOVE    "01"                TO  WK-TAIHI-SRYD
+               MOVE    1                   TO  WK-TAIHI-SRYD
                PERFORM    TENSU-TBL-SEC
                IF   FLG-TENSU      =    ZERO
                      MOVE     TNS-TEN      TO  WRK-GAIHAKU-KHNTEN
@@ -2470,7 +2471,7 @@
                      MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY 1)
                      MOVE  "197000110"    TO   WRK-SRYCD
                      MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     MOVE   1             TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
                         ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2480,7 +2481,7 @@
                         MOVE  "197000270"    TO   WRK-SKJ-SRYCD(IDY 2)
                         MOVE  "197000270"    TO   WRK-SRYCD
                         MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        MOVE   1             TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
                            ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2491,7 +2492,7 @@
                         MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 4)
                         MOVE  "197000570"    TO   WRK-SRYCD
                         MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        MOVE   1             TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
                            ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2504,7 +2505,7 @@
                      MOVE  "197000710"    TO   WRK-SKJ-SRYCD(IDY 1)
                      MOVE  "197000710"    TO   WRK-SRYCD
                      MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     MOVE   1             TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
                         ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2516,7 +2517,7 @@
                      MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY 1)
                      MOVE  "197000110"    TO   WRK-SRYCD
                      MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     MOVE   1             TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
                         ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2526,7 +2527,7 @@
                         MOVE  "197000270"    TO   WRK-SKJ-SRYCD(IDY 2)
                         MOVE  "197000270"    TO   WRK-SRYCD
                         MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        MOVE   1             TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
                            ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2536,7 +2537,7 @@
                      MOVE  "197000470"    TO   WRK-SKJ-SRYCD(IDY 3)
                      MOVE  "197000470"    TO   WRK-SRYCD
                      MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     MOVE   1             TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
                         ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2546,7 +2547,7 @@
                         MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 4)
                         MOVE  "197000570"    TO   WRK-SRYCD
                         MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        MOVE   1             TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
                            ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2558,7 +2559,7 @@
                      MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY 1)
                      MOVE  "197000110"    TO   WRK-SRYCD
                      MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     MOVE   1             TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
                         ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2568,7 +2569,7 @@
                         MOVE  "197000270"    TO   WRK-SKJ-SRYCD(IDY 2)
                         MOVE  "197000270"    TO   WRK-SRYCD
                         MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        MOVE   1             TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
                            ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2579,7 +2580,7 @@
                         MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 4)
                         MOVE  "197000570"    TO   WRK-SRYCD
                         MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        MOVE   1             TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
                            ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2589,7 +2590,7 @@
                      MOVE  "197000670"    TO   WRK-SKJ-SRYCD(IDY 5)
                      MOVE  "197000670"    TO   WRK-SRYCD
                      MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     MOVE   1             TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
                         ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2600,7 +2601,7 @@
                      MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY 1)
                      MOVE  "197000110"    TO   WRK-SRYCD
                      MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     MOVE   1             TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
                         ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2610,7 +2611,7 @@
                         MOVE  "197000270"    TO   WRK-SKJ-SRYCD(IDY 2)
                         MOVE  "197000270"    TO   WRK-SRYCD
                         MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        MOVE   1             TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
                            ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2620,7 +2621,7 @@
                      MOVE  "197000470"    TO   WRK-SKJ-SRYCD(IDY 3)
                      MOVE  "197000470"    TO   WRK-SRYCD
                      MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     MOVE   1             TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
                         ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2630,7 +2631,7 @@
                         MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 4)
                         MOVE  "197000570"    TO   WRK-SRYCD
                         MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        MOVE   1             TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
                         IF       FLG-TENSU      =    ZERO
                            ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2640,7 +2641,7 @@
                      MOVE  "197000670"    TO   WRK-SKJ-SRYCD(IDY 5)
                      MOVE  "197000670"    TO   WRK-SRYCD
                      MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
-                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     MOVE   1             TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
                         ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
@@ -2727,7 +2728,7 @@
       ***              MOVE    "190799770"   TO   WRK-SRYCD
       ***            END-IF
                      MOVE    RECE62-SRYYM    TO   WK-TAIHI-SRYYM
-                     MOVE    "01"            TO   WK-TAIHI-SRYD
+                     MOVE    1               TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
                         MOVE    TNS-TEN   TO   WRK-SYS-MIJISI-ZAITEN
@@ -2742,7 +2743,7 @@
       ***              MOVE    "190809090"   TO   WRK-SRYCD
       ***            END-IF
                      MOVE    RECE62-SRYYM    TO   WK-TAIHI-SRYYM
-                     MOVE    "01"            TO   WK-TAIHI-SRYD
+                     MOVE    1               TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
                         MOVE    TNS-TEN   TO   WRK-SYS-MIJISI-ZAITEN
@@ -2757,7 +2758,7 @@
       ***              MOVE    "190809190"   TO   WRK-SRYCD
       ***            END-IF
                      MOVE    RECE62-SRYYM    TO   WK-TAIHI-SRYYM
-                     MOVE    "01"            TO   WK-TAIHI-SRYD
+                     MOVE    1               TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
                      IF       FLG-TENSU      =    ZERO
                         MOVE    TNS-TEN   TO   WRK-SYS-MIJISI-ZAITEN
@@ -3031,7 +3032,7 @@
                                         TO      RECE64-ZAIKAISU
            MOVE    WRK-GAI2-ZAITEN(SYUKEI-IDX3)
                                         TO      RECE64-SYUTEN1
-           MOVE    WRK-GAI2-SRYCD(SYUKEI-IDX3)
+           MOVE    WRK-GAI2-SRYCD-9 (SYUKEI-IDX3)
                                         TO      RECE64-SRYCDTOTAL
            MOVE    1                    TO      RECE64-SURYOUTOTAL
            MOVE    ZERO                 TO      RECE64-SYUTEN2
@@ -4470,19 +4471,19 @@
            EVALUATE   SYUKEI-IDX3
                WHEN  2
       ***        IF    RECE62-RJNHKNNUM    =    SPACE
-                    MOVE    190080570   TO      RECE65-SRYCD(1)
+                    MOVE    "190080570" TO      RECE65-SRYCD(1)
       ***        ELSE
       ***           MOVE    190799770   TO      RECE65-SRYCD(1)
       ***        END-IF
                WHEN  3
       ***        IF    RECE62-RJNHKNNUM    =    SPACE
-                    MOVE    190111690   TO      RECE65-SRYCD(1)
+                    MOVE    "190111690" TO      RECE65-SRYCD(1)
       ***        ELSE
       ***           MOVE    190809090   TO      RECE65-SRYCD(1)
       ***        END-IF
                WHEN  4
       ***        IF    RECE62-RJNHKNNUM    =    SPACE
-                    MOVE    190111790   TO      RECE65-SRYCD(1)
+                    MOVE    "190111790" TO      RECE65-SRYCD(1)
       ***        ELSE
       ***           MOVE    190809190   TO      RECE65-SRYCD(1)
       ***        END-IF
