@@ -95,6 +95,7 @@
                05  WRK-SDD                         PIC 9(02).
            03  WRK-HENYMDG                         PIC X(09).
            03  WRK-KANACHK-MAE-INPUT               PIC X(400).
+           03  WRK-KANACHK-OUT-INPUT               PIC X(400).
            03  WRK-BTU-NUM                         PIC 9(02).
            03  WRK-ZZZ9                            PIC ZZZ9.
            03  WRK-ZZZZZZZZZ9                      PIC Z(09)9.
@@ -2551,6 +2552,8 @@
            MOVE    SPA-GMN-W20-BTU-NAME
                                    TO  WRK-KANACHK-MAE-INPUT
            PERFORM 800-ENRTRY-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-W20-BTU-NAME
            IF    ( FLG-ENTRYCHK    NOT =   ZERO )
                MOVE    2           TO  SPA-GMN-W20-CUR
                MOVE    "0002"      TO  SPA-ERRCD
@@ -2570,6 +2573,8 @@
            MOVE    SPA-GMN-W20-BTU-TANNAME
                                    TO  WRK-KANACHK-MAE-INPUT
            PERFORM 800-ENRTRY-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-W20-BTU-TANNAME
            IF    ( FLG-ENTRYCHK    NOT =   ZERO )
                MOVE    3           TO  SPA-GMN-W20-CUR
                MOVE    "0002"      TO  SPA-ERRCD
@@ -5767,6 +5772,8 @@
       *
            MOVE    ZERO            TO  FLG-ENTRYCHK
       *
+           MOVE    SPACE           TO  WRK-KANACHK-OUT-INPUT
+      *
            IF  ( WRK-KANACHK-MAE-INPUT
                                    =   SPACE )
                GO  TO  800-ENRTRY-CHK-EXT
@@ -5778,6 +5785,8 @@
            MOVE    WRK-KANACHK-MAE-INPUT
                                    TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
            IF      ( KANACHK-RC    NOT =   ZERO )
                MOVE    1           TO  FLG-ENTRYCHK
                GO  TO  800-ENRTRY-CHK-EXT
