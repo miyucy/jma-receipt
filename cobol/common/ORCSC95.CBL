@@ -1416,10 +1416,10 @@
            END-IF
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-           CALL    "MCPDBSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        200211-FUKU-HEN-EXT.
@@ -3475,10 +3475,10 @@
            END-IF
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-           CALL    "MCPDBSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      FLG-SYUNOU          =   ZERO
       *        ≈¡…ºæı¬÷∂Ë ¨

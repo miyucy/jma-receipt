@@ -610,8 +610,8 @@
                            ELSE
                                MOVE    "99"         TO  SPA-COM-SRYKBN
                                                              (IDX)
-                               MOVE    "990"       TO  SPA-COM-SRYSYUKBN
-                                                                 (IDX)
+      *!                       MOVE    "990"       TO  SPA-COM-SRYSYUKBN
+      *!                                                         (IDX)
                            END-IF
       *                ≤Ë¡¸ø«√«ª£±∆…Ù∞Ã(¡∞§¨≤Ë¡¸ø«√«§«§¢§Î§≥§»°À
                        WHEN    "002"
@@ -837,8 +837,8 @@
                              WHEN    OTHER
                                MOVE    "99"          TO  SPA-COM-SRYKBN
                                                                   (IDX)
-                               MOVE    "990"       TO  SPA-COM-SRYSYUKBN
-                                                                 (IDX)
+      *!                       MOVE    "990"       TO  SPA-COM-SRYSYUKBN
+      *!                                                         (IDX)
                            END-EVALUATE
                    END-EVALUATE
       *
