@@ -224,6 +224,11 @@
            03  SESNIDX             PIC 9(02).
       *
       *    
+       01  SUM-AREA                          VALUE   ZERO.          
+           03  SUM-NYUKHNNISSU         PIC 9(03).
+           03  SUM-NYUKHNKEI           PIC 9(07)     OCCURS  2.
+      *
+      *    
        01  KEY-AREA                          VALUE   LOW-VALUE.          
            03  KEY-NEW.
                05  KEY-NEW1.
@@ -2184,36 +2189,59 @@
                    MOVE    WRK-KOUTEN        TO  HC06-NYUKOHTEN (IDX)
                END-IF
            END-PERFORM
+      *
+           IF        RECE62-NYUKHNRYO (5)    >   ZERO
+               MOVE    ZERO                  TO  SUM-AREA  
+               PERFORM   VARYING   IDX   FROM    4   BY  1
+                         UNTIL     IDX       >   10
+                         OR        RECE62-NYUKHNRYO (IDX)    >   ZERO
+      *            <Æü¿ô>
+                   ADD     RECE62-NYUKHNNISSU(IDX)
+                                                 TO  SUM-NYUKHNNISSU
+      *            <¶â³Û¡¦¸øÈñ¶â³Û>
+                   ADD     RECE62-NYUKHNKEI(IDX IDX1)
+                                                 TO  SUM-NYUKHNKEI (1)
+                   IF      IDX2                  >   ZERO
+                       ADD    RECE62-NYUKHNKEI(IDX IDX2)
+                                                 TO  SUM-NYUKHNKEI (2)
+                   END-IF
+               END-PERFORM    
+      *        <´ðËÜÎÁ>
+               MOVE    SPACE                 TO  HC06-NYUKHNTEN (4)
+      *        <Æü¿ô>
+               MOVE    SUM-NYUKHNNISSU       TO  WRK-KAISUZ
+               MOVE    WRK-KAISU             TO  HC06-NYUKAISU  (4)
+      *        <¶â³Û¡¦¸øÈñ¶â³Û>
+               MOVE    SUM-NYUKHNKEI(1)      TO  WRK-TENSUZ
+               MOVE    WRK-TENSU             TO  HC06-NYUTENSU  (4)
+               IF      IDX2                  >   ZERO
+                   MOVE    SUM-NYUKHNKEI (2) TO  WRK-KOUTENZ
+                   MOVE    WRK-KOUTEN        TO  HC06-NYUKOHTEN (4)
+               END-IF
+           END-IF
       *        <Æþ±¡´ðËÜÎÁ¡¦²Ã»»>
-      *???
-      *     MOVE    -123456   TO  RECE62-NYUKHNKEI2  (IDX1)
-      *???     
            MOVE    RECE62-NYUKHNKEI2 (IDX1)   TO  WRK-TENSUZ
            MOVE    WRK-TENSU                  TO  HC06-NYUTENSU  (5)
            IF      RECE62-NYUKHNKEI2 (IDX1)   <   ZERO
-               PERFORM VARYING IDZ FROM    7   BY  -1
+               PERFORM VARYING IDZ FROM    6   BY  -1
                        UNTIL   IDZ <       1
                    IF      WRK-TENSUZ (IDZ:1)  =   SPACE
-                       MOVE    "¢¤"        TO  HC06-NYUTENSUN-S (5 IDZ)
+                       MOVE    "¢¤"        TO  HC06-NYUTENSUN (5 IDZ)
                        MOVE    1           TO  IDZ
                    END-IF
                END-PERFORM
            END-IF
-      *???
-      **     MOVE    2   TO  IDX2
-      **     MOVE    -123456   TO  RECE62-NYUKHNKEI2 (IDX2)
-      *???     
            IF      IDX2                    >   ZERO
                MOVE    RECE62-NYUKHNKEI2 (IDX2)
                                                TO  WRK-KOUTENZ
                MOVE    WRK-KOUTEN              TO  HC06-NYUKOHTEN  (5)
                IF      RECE62-NYUKHNKEI2 (IDX2)
                                                <   ZERO
-                   PERFORM VARYING IDZ FROM    7   BY  -1
+                   PERFORM VARYING IDZ FROM    6   BY  -1
                            UNTIL   IDZ <       1
                        IF      WRK-TENSUZ (IDZ:1)  =   SPACE
                            MOVE    "¢¤"    TO
-                                           HC06-NYUKOHTENN-S (5 IDZ)
+                                           HC06-NYUKOHTENN (5 IDZ)
                            MOVE    1           TO  IDZ
                        END-IF
                    END-PERFORM
@@ -2247,20 +2275,47 @@
                    END-IF
                END-IF    
            END-PERFORM
+      *
+           IF        RECE62-NYUTOKRYO (5)    >   ZERO
+               MOVE    ZERO                  TO  SUM-AREA  
+               PERFORM   VARYING   IDX   FROM    4   BY  1
+                         UNTIL     IDX       >   10
+                         OR        RECE62-NYUTOKRYO (IDX)    >   ZERO
+      *            <Æü¿ô>
+                   ADD     RECE62-NYUTOKNISSU(IDX)
+                                                 TO  SUM-NYUKHNNISSU
+      *            <¶â³Û¡¦¸øÈñ¶â³Û>
+                   ADD     RECE62-NYUTOKKEI(IDX IDX1)
+                                                 TO  SUM-NYUKHNKEI (1)
+                   IF      IDX2                  >   ZERO
+                       ADD    RECE62-NYUTOKKEI(IDX IDX2)
+                                                 TO  SUM-NYUKHNKEI (2)
+                   END-IF
+               END-PERFORM    
+      *        <´ðËÜÎÁ>
+               MOVE    SPACE                 TO  HC06-NYUKHNTEN (9)
+      *        <Æü¿ô>
+               MOVE    SUM-NYUKHNNISSU       TO  WRK-KAISUZ
+               MOVE    WRK-KAISU             TO  HC06-NYUKAISU  (9)
+      *        <¶â³Û¡¦¸øÈñ¶â³Û>
+               MOVE    SUM-NYUKHNKEI(1)      TO  WRK-TENSUZ
+               MOVE    WRK-TENSU             TO  HC06-NYUTENSU  (9)
+               IF      IDX2                  >   ZERO
+                   MOVE    SUM-NYUKHNKEI (2) TO  WRK-KOUTENZ
+                   MOVE    WRK-KOUTEN        TO  HC06-NYUKOHTEN (9)
+               END-IF
+           END-IF
       *        <ÆÃÄêÆþ±¡ÎÁ¡¦¤½¤ÎÂ¾>
-      *???
-      **     MOVE    -1234   TO  RECE62-NYUTOKKEI2  (IDX1)
-      *???     
            MOVE    RECE62-NYUTOKKEI2 (IDX1)
                                            TO  WRK-TENSUZ
            MOVE    WRK-TENSU               TO  HC06-NYUTENSU  (10)
            IF      RECE62-NYUTOKKEI2 (IDX1)
                                            <   ZERO
-               PERFORM VARYING IDZ FROM    7   BY  -1
+               PERFORM VARYING IDZ FROM    6   BY  -1
                        UNTIL   IDZ <       1
                    IF      WRK-TENSUZ (IDZ:1)  =   SPACE
                        MOVE    "¢¤"        TO
-                                           HC06-NYUTENSUN-S (10 IDZ)
+                                           HC06-NYUTENSUN (10 IDZ)
                        MOVE    1           TO  IDZ
                    END-IF
                END-PERFORM
@@ -2271,11 +2326,11 @@
                MOVE    WRK-KOUTEN              TO  HC06-NYUKOHTEN  (10)
                IF      RECE62-NYUTOKKEI2 (IDX2)
                                                <   ZERO
-                   PERFORM VARYING IDZ FROM    7   BY  -1
+                   PERFORM VARYING IDZ FROM    6   BY  -1
                            UNTIL   IDZ <       1
                        IF      WRK-TENSUZ (IDZ:1)  =   SPACE
                            MOVE    "¢¤"        TO
-                                           HC06-NYUKOHTENN-S (10 IDZ)
+                                           HC06-NYUKOHTENN (10 IDZ)
                            MOVE    1           TO  IDZ
                        END-IF
                    END-PERFORM
