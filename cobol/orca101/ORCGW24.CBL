@@ -30,6 +30,8 @@
       *  00.00.01    NACL-太田    03.01.24  入院診療計画未実施減算を
       *                                     画面から削除
       *  00.00.02    NACL-太田    03.03.05  入院歴表示区分を追加
+      *  00.00.03    NACL-太田    03.03.07  請求書発行区分を追加
+      *                                     退院証明書発行区分を追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -411,6 +413,12 @@
       *    入院歴表示コンボ
            PERFORM 310-CMB-REKI-DISPKBN-SET-SEC
       *
+      *    請求書発行区分コンボ
+           PERFORM 310-CMB-SKYPRTKBN-SET-SEC
+      *
+      *    退院証明書発行区分コンボ
+           PERFORM 310-CMB-TAIPRTKBN-SET-SEC
+      *
            .
        310-CMB-SYOKI-EXT.
            EXIT.
@@ -560,6 +568,38 @@
        310-CMB-REKI-DISPKBN-SET-EXT.
            EXIT.
       *****************************************************************
+      *    請求書発行区分コンボ
+      *****************************************************************
+       310-CMB-SKYPRTKBN-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-SKYPRTKBN-CNT
+      *
+           MOVE    "0 発行しない" 
+                                   TO  SPA-GMN-W24-SKYPRTKBN-ITM (1)
+      *
+           MOVE    "1 発行する"
+                                   TO  SPA-GMN-W24-SKYPRTKBN-ITM (2)
+      *
+           .
+       310-CMB-SKYPRTKBN-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院証明書発行区分コンボ
+      *****************************************************************
+       310-CMB-TAIPRTKBN-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-TAIPRTKBN-CNT
+      *
+           MOVE    "0 発行しない" 
+                                   TO  SPA-GMN-W24-TAIPRTKBN-ITM (1)
+      *
+           MOVE    "1 発行する"
+                                   TO  SPA-GMN-W24-TAIPRTKBN-ITM (2)
+      *
+           .
+       310-CMB-TAIPRTKBN-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    入力情報編集処理
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -662,6 +702,26 @@
            ELSE
                MOVE    SPA-GMN-W24-REKI-DISPKBN-ITM (1)
                                            TO  SPA-GMN-W24-REKI-DISPKBN
+           END-IF
+      *
+      *    請求書発行発行区分
+           MOVE    SYS-5000-SKYPRTKBN   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-SKYPRTKBN-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-W24-SKYPRTKBN
+           ELSE
+               MOVE    SPA-GMN-W24-SKYPRTKBN-ITM (2)
+                                           TO  SPA-GMN-W24-SKYPRTKBN
+           END-IF
+      *
+      *    退院証明書発行区分
+           MOVE    SYS-5000-TAIPRTKBN   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-TAIPRTKBN-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-W24-TAIPRTKBN
+           ELSE
+               MOVE    SPA-GMN-W24-TAIPRTKBN-ITM (2)
+                                           TO  SPA-GMN-W24-TAIPRTKBN
            END-IF
       *
       *
@@ -873,6 +933,12 @@
       *    入院歴表示区分
            MOVE    W24-REKI-DISPKBN    TO  SPA-GMN-W24-REKI-DISPKBN
       *
+      *    請求書発行区分
+           MOVE    W24-SKYPRTKBN       TO  SPA-GMN-W24-SKYPRTKBN
+      *
+      *    退院証明書発行区分
+           MOVE    W24-TAIPRTKBN       TO  SPA-GMN-W24-TAIPRTKBN
+      *
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -958,6 +1024,18 @@
       *
       *    入院歴表示区分チェック処理
            PERFORM 4100-REKI-DISPKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    請求書発行区分チェック処理
+           PERFORM 4100-SKYPRTKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    退院証明書発行区分チェック処理
+           PERFORM 4100-TAIPRTKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1263,6 +1341,14 @@
       *    入院歴表示区分
            MOVE    SPA-GMN-W24-REKI-DISPKBN-CD
                                    TO  SYS-5000-REKI-DISPKBN
+      *
+      *    請求書発行区分
+           MOVE    SPA-GMN-W24-SKYPRTKBN-CD
+                                   TO  SYS-5000-SKYPRTKBN
+      *
+      *    退院証明書発行区分
+           MOVE    SPA-GMN-W24-TAIPRTKBN-CD
+                                   TO  SYS-5000-TAIPRTKBN
       *
            .
       *
@@ -1870,6 +1956,8 @@
        4100-REKI-DISPKBN-CHK-SEC       SECTION.
       *
            IF    ( SPA-GMN-W24-REKI-DISPKBN =   SPACE )
+               MOVE    SPA-GMN-W24-REKI-DISPKBN-ITM (1)
+                                       TO  SPA-GMN-W24-REKI-DISPKBN
                GO  TO  4100-REKI-DISPKBN-CHK-EXT
            END-IF
       *
@@ -1887,6 +1975,58 @@
            .
       *
        4100-REKI-DISPKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求書発行区分チェック処理
+      *****************************************************************
+       4100-SKYPRTKBN-CHK-SEC       SECTION.
+      *
+           IF    ( SPA-GMN-W24-SKYPRTKBN =   SPACE )
+               MOVE    SPA-GMN-W24-SKYPRTKBN-ITM (2)
+                                       TO  SPA-GMN-W24-SKYPRTKBN
+               GO  TO  4100-SKYPRTKBN-CHK-EXT
+           END-IF
+      *
+      *    該当コードのデータが存在するかチェック
+           MOVE    SPA-GMN-W24-SKYPRTKBN-CD
+                                       TO  WRK-CMB-CD
+           PERFORM 4103-CMB-SKYPRTKBN-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SKYPRTKBN
+           ELSE
+               MOVE    SPA-GMN-W24-SKYPRTKBN-ITM (2)
+                                       TO  SPA-GMN-W24-SKYPRTKBN
+           END-IF
+      *
+           .
+      *
+       4100-SKYPRTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院歴表示チェック処理
+      *****************************************************************
+       4100-TAIPRTKBN-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-W24-TAIPRTKBN =   SPACE )
+               MOVE    SPA-GMN-W24-TAIPRTKBN-ITM (2)
+                                       TO  SPA-GMN-W24-TAIPRTKBN
+               GO  TO  4100-TAIPRTKBN-CHK-EXT
+           END-IF
+      *
+      *    該当コードのデータが存在するかチェック
+           MOVE    SPA-GMN-W24-TAIPRTKBN-CD
+                                       TO  WRK-CMB-CD
+           PERFORM 4103-CMB-TAIPRTKBN-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-TAIPRTKBN
+           ELSE
+               MOVE    SPA-GMN-W24-TAIPRTKBN-ITM (2)
+                                       TO  SPA-GMN-W24-TAIPRTKBN
+           END-IF
+      *
+           .
+      *
+       4100-TAIPRTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院時食事療養サーチ処理
@@ -2121,6 +2261,58 @@
            .
       *
        4103-CMB-REKI-DISPKBN-SRH-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求書発行区分サーチ処理
+      *****************************************************************
+       4103-CMB-SKYPRTKBN-SRH-SEC   SECTION.
+      *
+           SET     CMB-IDX10       TO  1
+           SEARCH  SPA-GMN-W24-SKYPRTKBN-ITM
+                   VARYING CMB-IDX10
+           AT  END
+               INITIALIZE          WRK-CMB-ITM
+                                   WRK-CMB-IDX
+           WHEN    SPA-GMN-W24-SKYPRTKBN-ITM (CMB-IDX10) (1 : 1)
+                                   =   WRK-CMB-CD
+               SET WRK-CMB-IDX     TO  CMB-IDX10
+               MOVE    SPA-GMN-W24-SKYPRTKBN-ITM (CMB-IDX10)
+                                   TO  WRK-CMB-ITM
+           WHEN    SPA-GMN-W24-SKYPRTKBN-ITM (CMB-IDX10)
+                                   =   SPACE
+               INITIALIZE          WRK-CMB-ITM
+                                   WRK-CMB-IDX
+           END-SEARCH
+      *
+           .
+      *
+       4103-CMB-SKYPRTKBN-SRH-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院証明書発行区分サーチ処理
+      *****************************************************************
+       4103-CMB-TAIPRTKBN-SRH-SEC   SECTION.
+      *
+           SET     CMB-IDX11       TO  1
+           SEARCH  SPA-GMN-W24-TAIPRTKBN-ITM
+                   VARYING CMB-IDX11
+           AT  END
+               INITIALIZE          WRK-CMB-ITM
+                                   WRK-CMB-IDX
+           WHEN    SPA-GMN-W24-TAIPRTKBN-ITM (CMB-IDX11) (1 : 1)
+                                   =   WRK-CMB-CD
+               SET WRK-CMB-IDX     TO  CMB-IDX11
+               MOVE    SPA-GMN-W24-TAIPRTKBN-ITM (CMB-IDX11)
+                                   TO  WRK-CMB-ITM
+           WHEN    SPA-GMN-W24-TAIPRTKBN-ITM (CMB-IDX11)
+                                   =   SPACE
+               INITIALIZE          WRK-CMB-ITM
+                                   WRK-CMB-IDX
+           END-SEARCH
+      *
+           .
+      *
+       4103-CMB-TAIPRTKBN-SRH-EXT.
            EXIT.
       *****************************************************************
       *    入力情報領域初期化処理
@@ -2497,6 +2689,32 @@
       *
            END-PERFORM
       *
+      *    請求書発行区分
+           MOVE    SPA-GMN-W24-SKYPRTKBN
+                                   TO  W24-SKYPRTKBN
+           MOVE    SPA-GMN-W24-SKYPRTKBN-CNT
+                                   TO  W24-SKYPRTKBN-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   W24-SKYPRTKBN-CNT )
+      *
+               MOVE    SPA-GMN-W24-SKYPRTKBN-ITM (IDX1)
+                                   TO  W24-SKYPRTKBN-ITM (IDX1)
+      *
+           END-PERFORM
+      *
+      *    退院証明書発行区分
+           MOVE    SPA-GMN-W24-TAIPRTKBN
+                                   TO  W24-TAIPRTKBN
+           MOVE    SPA-GMN-W24-TAIPRTKBN-CNT
+                                   TO  W24-TAIPRTKBN-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   W24-TAIPRTKBN-CNT )
+      *
+               MOVE    SPA-GMN-W24-TAIPRTKBN-ITM (IDX1)
+                                   TO  W24-TAIPRTKBN-ITM (IDX1)
+      *
+           END-PERFORM
+      *
       *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
       *
@@ -2665,6 +2883,10 @@
                MOVE    "SRYCD10"       TO  MCP-WIDGET
            WHEN    039
                MOVE    "REKI_DISPKBN"  TO  MCP-WIDGET
+           WHEN    040
+               MOVE    "SKYPRTKBN"     TO  MCP-WIDGET
+           WHEN    041
+               MOVE    "TAIPRTKBN"     TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -2757,13 +2979,17 @@
                MOVE    038             TO  SPA-GMN-W24-CUR
            WHEN    "REKI_DISPKBN"
                MOVE    039             TO  SPA-GMN-W24-CUR
+           WHEN    "SKYPRTKBN"
+               MOVE    040             TO  SPA-GMN-W24-CUR
+           WHEN    "TAIPRTKBN"
+               MOVE    041             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
       *    次カーソル位置を設定
            EVALUATE    MCP-WIDGET
            WHEN    "SK_SYOKUDO"
                MOVE    005             TO  SPA-GMN-W24-CUR
-           WHEN    "REKI_DISPKBN"
+           WHEN    "TAIPRTKBN"
                MOVE    212             TO  SPA-GMN-W24-CUR
            WHEN    OTHER
                COMPUTE SPA-GMN-W24-CUR =   SPA-GMN-W24-CUR

@@ -31,6 +31,7 @@
       *  01.00.02    NACL-太田    03.01.23  食事の計算方法修正
       *  01.00.03    NACL-太田    03.01.24  保険組合せリストの表示を修正
       *  01.00.04    NACL-太田    03.02.05  自院歴作成データを考慮する
+      *  01.00.05    NACL-太田    03.03.07  帳票発行コンボの初期表示修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -213,6 +214,8 @@
            COPY    "CPSK1013.INC".
       *    ドクター
            COPY    "CPSK1010.INC".
+      *    医療機関入院基本情報
+           COPY    "CPSK5000.INC".
       *    出力先プリンタ名割り当て情報\
            COPY  "CPSK1031.INC".
       *    帳票プログラム選択情報
@@ -512,12 +515,39 @@
       *    コンボボックス初期化
            PERFORM 3100-CMB-SYOKI-SEC
       *
-      *    請求書兼領収書発行初期値
-           MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (02)
+      *    システム管理マスタ検索処理
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "5000"          TO  SYS-KANRICD
+           MOVE    "*"             TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        =   ZERO )
+               MOVE    MCPDATA-REC TO  SYS-5000-REC
+           ELSE
+               INITIALIZE              SYS-5000-REC
+           END-IF
+      *
+      *    システム管理マスタクローズ
+           MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( SYS-5000-SKYPRTKBN   =   "0" )
+               MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (01)
                                    TO  SPA-GMN-I04-SKYPRTOUT
-      *    退院証明書発行初期値
-           MOVE    SPA-GMN-I04-TAIPRTOUT-ITM (02)
+           ELSE
+               MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (02)
+                                   TO  SPA-GMN-I04-SKYPRTOUT
+           END-IF
+           IF    ( SYS-5000-TAIPRTKBN   =   "0" )
+               MOVE    SPA-GMN-I04-TAIPRTOUT-ITM (01)
                                    TO  SPA-GMN-I04-TAIPRTOUT
+           ELSE
+               MOVE    SPA-GMN-I04-TAIPRTOUT-ITM (02)
+                                   TO  SPA-GMN-I04-TAIPRTOUT
+           END-IF
+      *
       *    主治医氏名初期値
            MOVE    SPA-GMN-I01-DR-CD (1)
                                    TO  WRK-CMB-CD
@@ -1455,11 +1485,11 @@
                MOVE    SPA-GMN-I04-TAIPRTOUT-ITM (2)
                                      TO    SPA-GMN-I04-TAIPRTOUT
       *    コンボ初期化（テスト用）
-           WHEN    "CLICKED"       ALSO    "B08"
-               MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (1)
-                                     TO    SPA-GMN-I04-SKYPRTOUT
-               MOVE    SPA-GMN-I04-TAIPRTOUT-ITM (1)
-                                     TO    SPA-GMN-I04-TAIPRTOUT
+      *    WHEN    "CLICKED"       ALSO    "B08"
+      *        MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (1)
+      *                              TO    SPA-GMN-I04-SKYPRTOUT
+      *        MOVE    SPA-GMN-I04-TAIPRTOUT-ITM (1)
+      *                              TO    SPA-GMN-I04-TAIPRTOUT
       *    登録
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 450-TOUROKU-SEC

@@ -285,5 +285,19 @@ W24	{
 			count	int;
 			item	varchar(24)[05];
 		};
+		CMB_SKYPRTKBN	{
+			SKYPRTKBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[05];
+		};
+		CMB_TAIPRTKBN	{
+			TAIPRTKBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[05];
+		};
 	};
 };

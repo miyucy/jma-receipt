@@ -91,3 +91,15 @@
                                                BINARY.
                 05  W24-REKI-DISPKBN-ITM       PIC X(24)
                                                OCCURS  5.
+              04  W24-CMB-SKYPRTKBN.
+                05  W24-SKYPRTKBN              PIC X(20).
+                05  W24-SKYPRTKBN-CNT          PIC S9(9)
+                                               BINARY.
+                05  W24-SKYPRTKBN-ITM          PIC X(20)
+                                               OCCURS  5.
+              04  W24-CMB-TAIPRTKBN.
+                05  W24-TAIPRTKBN              PIC X(20).
+                05  W24-TAIPRTKBN-CNT          PIC S9(9)
+                                               BINARY.
+                05  W24-TAIPRTKBN-ITM          PIC X(20)
+                                               OCCURS  5.

@@ -105,6 +105,14 @@
                    13  SPA-GMN-W24-REKI-DISPKBN-CD     PIC X(01).
                    13                                  PIC X(01).
                    13  SPA-GMN-W24-REKI-DISPKBN-NM     PIC X(22).
+                 11  SPA-GMN-W24-SKYPRTKBN.
+                   13  SPA-GMN-W24-SKYPRTKBN-CD        PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-SKYPRTKBN-NM        PIC X(18).
+                 11  SPA-GMN-W24-TAIPRTKBN.
+                   13  SPA-GMN-W24-TAIPRTKBN-CD        PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-TAIPRTKBN-NM        PIC X(18).
       *        •≥•Û•‹π‡Ã‹ŒŒ∞Ë
                09  SPA-GMN-W24-CMB-DAT-AREA.
       *          ∆˛±°ª˛ø©ªˆŒ≈Õ‹
@@ -185,6 +193,22 @@
                    13  SPA-GMN-W24-REKI-DISPKBN-ITM    PIC X(24)
                                                        OCCURS  5
                                            INDEXED BY  CMB-IDX09.
+      *
+      *          ¿¡µ·ΩÒ»Øπ‘∂Ë ¨
+                 11  SPA-GMN-W24-CMB-SKYPRTKBN.
+                   13  SPA-GMN-W24-SKYPRTKBN-CNT       PIC S9(9)
+                                                       BINARY.
+                   13  SPA-GMN-W24-SKYPRTKBN-ITM       PIC X(20)
+                                                       OCCURS  5
+                                           INDEXED BY  CMB-IDX10.
+      *
+      *          ¬‡±°æ⁄Ã¿ΩÒ»Øπ‘∂Ë ¨
+                 11  SPA-GMN-W24-CMB-TAIPRTKBN.
+                   13  SPA-GMN-W24-TAIPRTKBN-CNT       PIC S9(9)
+                                                       BINARY.
+                   13  SPA-GMN-W24-TAIPRTKBN-ITM       PIC X(20)
+                                                       OCCURS  5
+                                           INDEXED BY  CMB-IDX11.
       *    ø«Œ≈π‘∞Ÿ∏°∫˜≤ËÃÃ£”£–£¡
            03  SPA-W25-MOTOPG                    PIC X(08).
            03  SPA-W25GMN-AREA.
