@@ -39,6 +39,7 @@
       *                                     帳票ＩＤ追加
       *  01.00.07    NACL-藤原    03/02/14  頁数のジョブ管理ＤＢへの更新
       *  01.00.08    NACL-藤原    03/02/24  プリンタ名をオンラインより渡す
+      *  01.00.09    NACL-藤原    03/03/03  再印刷機能のためにパラメタを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -52,7 +53,7 @@
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -144,6 +145,8 @@
                05  WRK-PARA-SYOKBN               PIC X(01).
                05  WRK-PARA-PRTNM                PIC X(16).
       *
+           COPY    "CPORCSPRTLNK.INC".
+      *
       *    労災レセプト
            COPY    "HCM21.INC".
            COPY    "HCM21V01.INC".
@@ -175,14 +178,17 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *
-      *    出力先プリンタ名割り当て情報
-           COPY    "CPSK1031.INC".
       *     
       *    レセプト印刷情報
            COPY    "CPSK2005.INC".
       *
            COPY    "CPRCF008.INC".
+      *
+       01  PRTKANRI-REC.
+           COPY    "CPPRTKANRI.INC".
+      *
+       01  PRTDATA-REC.
+           COPY    "CPPRTDATA.INC".          
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -194,6 +200,9 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    印刷ＤＢ更新サブ
+           COPY    "CPORCSPRT.INC".          
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -245,6 +254,17 @@
                                              WRK-PARA-TERMID32
                                              WRK-PARA-SYOKBN
                                              WRK-PARA-PRTNM
+                                             LNK-PRTKANRI-RENNUM
+                                             LNK-PRTKANRI-TBL-KEY
+                                             LNK-PRTKANRI-TBL-GROUP
+                                             LNK-PRTKANRI-SHORI-RENNUM
+                                             LNK-PRTKANRI-SRYYM
+                                             LNK-PRTKANRI-SKYYMD
+                                             LNK-PRTKANRI-SHELLID
+                                             LNK-PRTKANRI-PRIORITY
+                                             LNK-PRTKANRI-TERMID
+                                             LNK-PRTKANRI-OPID    
+                                             LNK-PRTKANRI-PRTNM
            END-UNSTRING                                  
       *
            PERFORM 100-DBOPEN-SEC
@@ -263,7 +283,7 @@
                                    JOBKANRI-REC
       *
       *    出力先プリンタ名割り当て情報処理
-      *****PERFORM 110-SYSKANRI-HENSYU-SEC
+           PERFORM 110-SYSKANRI-HENSYU-SEC
       *     
            MOVE    "HC21"              TO  HC01PARA-FORM-ID
            MOVE    WRK-PARA-TERMID32   TO  HC01PARA-TERMID
@@ -278,19 +298,6 @@
       *    出力先プリンタ名割り当て情報処理
       *****************************************************************
        110-SYSKANRI-HENSYU-SEC                   SECTION.
-      *
-      *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
-           ELSE    
-               INITIALIZE                  SYS-1031-REC
-           END-IF                                     
       *
       *    レセプト印刷情報編集
            MOVE    SPACE               TO  SYS-2005-REC
@@ -365,6 +372,46 @@
                MOVE    PATH-SHELL-SHELL
                                        TO  MCP-PATH
                CALL    "MCPSUB"        USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+      *        最新以外の帳票管理ＤＢを削除
+               MOVE    SPACE           TO  PRTKANRI-REC
+               INITIALIZE                  PRTKANRI-REC
+               MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  PRTKANRI-PRIORITY
+               MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  PRTKANRI-TBL-GROUP
+               MOVE    PRTKANRI-REC    TO  MCPDATA-REC
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    PATH-TBL-PRTKANRI-DEL12
+                                           TO  MCP-PATH
+               ELSE
+                   MOVE    PATH-TBL-PRTKANRI-DEL13
+                                           TO  MCP-PATH
+               END-IF
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+      *        最新以外の帳票ＤＢを削除
+               MOVE    SPACE           TO  PRTDATA-REC
+               INITIALIZE                  PRTDATA-REC
+               MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  PRTDATA-PRIORITY
+               MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  PRTDATA-TBL-GROUP
+               MOVE    PRTDATA-REC     TO  MCPDATA-REC
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    PATH-TBL-PRTDATA-DEL12
+                                           TO  MCP-PATH
+               ELSE
+                   MOVE    PATH-TBL-PRTDATA-DEL13
+                                           TO  MCP-PATH
+               END-IF
+               CALL    "MCPSUB"            USING
                                            MCPAREA
                                            MCPDATA-REC
            END-IF                                                
@@ -480,10 +527,74 @@
       *
            ADD     1                   TO  CNT-OUT     
       *
+           PERFORM 390-PRINT-OUT-SEC
+      *
            PERFORM 900-RECEPRT-FET-SEC
       *
            .
        2001-RECEPRT-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票印刷処理
+      *****************************************************************
+       390-PRINT-OUT-SEC                SECTION.
+      *     
+           INITIALIZE                  ORCSPRTAREA
+           MOVE    "INS"               TO  SPRT-MODE
+           MOVE    LNK-PRTKANRI-RENNUM TO  SPRT-RENNUM
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                       TO  SPRT-TBL-KEY
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  SPRT-TBL-GROUP
+           IF      WRK-PARA-SYOKBN     =   "1"
+               MOVE    LNK-PRTKANRI-SRYYM  TO  SPRT-SRYYM
+           ELSE
+               MOVE    ZERO                TO  SPRT-SRYYM
+           END-IF
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SPRT-SKYYMD
+           MOVE    LNK-PRTKANRI-SHELLID 
+                                       TO  SPRT-SHELLID
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                       TO  SPRT-SHORI-RENNUM
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  SPRT-PRIORITY
+           MOVE    RECE08-FORMID       TO  SPRT-PRTID
+           MOVE    RECE08-PRTDATA      TO  SPRT-PRTDATA
+      *         
+           EVALUATE    RECE08-FORMID
+               WHEN    "HCM21.red"                  
+               WHEN    "HCM21V01.red"                  
+               WHEN    "HCM22.red"                  
+               WHEN    "HCM22V01.red"                  
+               WHEN    "HCM24.red"                  
+               WHEN    "HCM24V01.red"                  
+               WHEN    "HCM18.red"                  
+               WHEN    "HCM18V01.red"                  
+               WHEN    "HCM20.red"                  
+               WHEN    "HCM20V01.red"                  
+                   MOVE    "労災レセプト（入院外）"    TO  SPRT-TITLE
+               WHEN    "HCM23.red"                  
+               WHEN    "HCM23V01.red"                  
+               WHEN    "HCM29.red"                  
+                   MOVE    "自賠責レセプト（入院外）"  TO  SPRT-TITLE
+           END-EVALUATE
+           MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
+           MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
+           MOVE    WRK-PARA-PRTNM      TO  SPRT-PRTNM
+           MOVE    "1"                 TO  SPRT-SITEKBN
+           MOVE    "1"                 TO  SPRT-PRTFLG
+           CALL    "ORCSPRT"           USING
+                                       ORCSPRTAREA
+           IF      SPRT-RETURN         =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "印刷ＤＢに更新できませんでした"
+                                          TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC                           
+           END-IF                                                              
+           .
+       390-PRINT-OUT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -514,7 +625,7 @@
        2001-RECEPRT-CLEAR-EXT.
            EXIT.
       *
-057400*
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************

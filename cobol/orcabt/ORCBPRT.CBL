@@ -32,6 +32,8 @@
       *  01.00.02    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.01.01    NACL-藤原    02/10/10  印刷用コンスタント領域の追加
       *                                     印刷用ファイルにサイト区分を追加
+      *  01.01.02    NACL-藤原    03/03/04  印刷ＤＢへのプリンタ名追加による
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -324,7 +326,11 @@
       *
            MOVE    SPACE               TO  PRT-REC 
            MOVE    PRTDATA-PRTID       TO  PRT-PRTID
-           MOVE    PRTKANRI-PRTNM      TO  PRT-PRTNM
+           IF      PRTDATA-PRTNM       =   SPACE
+               MOVE    PRTKANRI-PRTNM      TO  PRT-PRTNM
+           ELSE
+               MOVE    PRTDATA-PRTNM       TO  PRT-PRTNM
+           END-IF
            EVALUATE    PRTDATA-SITEKBN
                WHEN    "1"
                WHEN    "2"               

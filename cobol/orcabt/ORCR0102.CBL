@@ -60,7 +60,7 @@
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -176,9 +176,6 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *
-      *    出力先プリンタ名割り当て情報
-           COPY    "CPSK1031.INC".
       *     
       *    レセプト印刷情報
            COPY    "CPSK2005.INC".
@@ -376,6 +373,46 @@
                CALL    "MCPSUB"        USING
                                            MCPAREA
                                            MCPDATA-REC
+      *
+      *        最新以外の帳票管理ＤＢを削除
+               MOVE    SPACE           TO  PRTKANRI-REC
+               INITIALIZE                  PRTKANRI-REC
+               MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  PRTKANRI-PRIORITY
+               MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  PRTKANRI-TBL-GROUP
+               MOVE    PRTKANRI-REC    TO  MCPDATA-REC
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    PATH-TBL-PRTKANRI-DEL12
+                                           TO  MCP-PATH
+               ELSE
+                   MOVE    PATH-TBL-PRTKANRI-DEL13
+                                           TO  MCP-PATH
+               END-IF
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+      *        最新以外の帳票ＤＢを削除
+               MOVE    SPACE           TO  PRTDATA-REC
+               INITIALIZE                  PRTDATA-REC
+               MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  PRTDATA-PRIORITY
+               MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  PRTDATA-TBL-GROUP
+               MOVE    PRTDATA-REC     TO  MCPDATA-REC
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    PATH-TBL-PRTDATA-DEL12
+                                           TO  MCP-PATH
+               ELSE
+                   MOVE    PATH-TBL-PRTDATA-DEL13
+                                           TO  MCP-PATH
+               END-IF
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
            END-IF                                                
       *
            MOVE    1                   TO  FLG-END     
@@ -479,11 +516,11 @@
            EVALUATE    RECE08-FORMID
                WHEN    "HCM06.red"                  
                WHEN    "HCM06V01.red"                  
-                   MOVE    "入院外レセプト"        TO  SPRT-TITLE
+                   MOVE    "医科レセプト（入院外）"    TO  SPRT-TITLE
                WHEN    "HCN06.red"                  
                WHEN    "HCN061.red"                  
                WHEN    "HCN062.red"                  
-                   MOVE    "入院レセプト"          TO  SPRT-TITLE
+                   MOVE    "医科レセプト（入院）"      TO  SPRT-TITLE
                END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
@@ -495,6 +532,7 @@
                    MOVE    WRK-PARA-KKHPRTNM   TO  SPRT-PRTNM
            END-EVALUATE
            MOVE    "1"                 TO  SPRT-SITEKBN
+           MOVE    "1"                 TO  SPRT-PRTFLG
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
            IF      SPRT-RETURN         =   ZERO

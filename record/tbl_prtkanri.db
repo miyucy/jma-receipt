@@ -65,6 +65,30 @@ path	del11	{
 	};
 };
 
+path	del12	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_prtkanri
+                    WHERE   TBL_KEY      =   'RECEPT2'
+                    AND     SRYYM        <>  '000000'
+                    AND     TBL_GROUP    <>  :TBL_GROUP
+                    AND     PRIORITY     =   :PRIORITY
+		;
+	};
+};
+
+path	del13	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_prtkanri
+                    WHERE   TBL_KEY      =   'RECEPT2'
+                    AND     SRYYM        =   '000000'
+                    AND     TBL_GROUP    <>  :TBL_GROUP
+                    AND     PRIORITY     =   :PRIORITY
+		;
+	};
+};
+
 path	all	{
 	DBSELECT	{
 		DECLARE tbl_prtkanri_all_csr CURSOR FOR

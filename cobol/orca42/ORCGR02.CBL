@@ -59,7 +59,7 @@
       *  01.04.02    NACL-藤原    03/01/08  通し番号のためのパラメタ追加 
       *  01.04.03    NACL-藤原    03/01/15  確定のとき自動的に情報確認画面を表示
       *  01.04.04    NACL-藤原    03/02/25  プリンタ名をオンラインより渡す
-      *  01.04.05    NACL-藤原    03/03/03  再印刷ボタン追加
+      *  01.04.05    NACL-藤原    03/03/03  再印刷機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1726,7 +1726,11 @@
                                    TO  LNK-PRTKANRI-SRYYM 
            MOVE    SPA-SYSYMD      TO  LNK-PRTKANRI-SKYYMD
            MOVE    "recept2.sh"    TO  LNK-PRTKANRI-SHELLID
-           MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
+           IF      SPA-R01-RECE07-NYUGAIKBN    =   "1"
+               MOVE    1               TO  LNK-PRTKANRI-PRIORITY
+           ELSE
+               MOVE    2               TO  LNK-PRTKANRI-PRIORITY
+           END-IF
            MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
            MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
       *****MOVE    SYS-1031-PRTNM (5)

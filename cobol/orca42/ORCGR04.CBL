@@ -36,6 +36,7 @@
       *  01.01.03    NACL-藤原    03/01/09  通し番号のためのパラメタ追加 
       *  01.01.04    NACL-藤原    03/02/08  確定のとき自動的に情報確認画面を表示
       *  01.01.05    NACL-藤原    03/02/25  プリンタ名をオンラインより渡す
+      *  01.01.06    NACL-藤原    03/03/03  再印刷機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -44,14 +45,14 @@
        FILE-CONTROL.
       *
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -204,6 +205,16 @@
              05  WRK-SHELL-SRYYM   PIC  X(06).
              05  WRK-SHELL-TERMID  PIC  X(16).
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
+      *      
+           03  WRK-SYSYMD.
+               05  WRK-SYSYY       PIC 9(04).
+               05  WRK-SYSMM       PIC 9(02).
+               05  WRK-SYSDD       PIC 9(02).
+           03  SYS-YMD.
+               05  SYS-YY          PIC 9(02).
+               05  SYS-MM          PIC 9(02).
+               05  SYS-DD          PIC 9(02).
+           03  SYS-TIME            PIC X(06).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG1        PIC X(09).
@@ -227,11 +238,20 @@
                                              "scripts/monthly/".
            05  WRK-SHELL-SHELL    PIC X(20).         
       *
+       01  WRK-LNK-AREA.
+           COPY    "CPORCSPRTLNK.INC".             
+      *
        01  WRK-CONS-AREA.
       *    ジョブ管理ＤＢのキー値  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "RECEPT2".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
+      *
+      *    印刷管理ＤＢのキー値  
+           03  WRK-CONS-PRTKANRI-TBL-KEY
+                                   PIC X(08)   VALUE   "RECEPT2".
+           03  WRK-CONS-PRTKANRI-TBL-GROUP
+                                   PIC X(14)   VALUE   SPACE.
       *
            COPY    "CPSHELLTBL.INC".
       *     
@@ -1252,6 +1272,18 @@
                END-IF
            END-IF
       *
+      *    印刷ＤＢのＫＥＹ用     
+           ACCEPT  SYS-YMD         FROM    DATE
+           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
+           MOVE    SYS-MM              TO  WRK-SYSMM
+           MOVE    SYS-DD              TO  WRK-SYSDD
+           ACCEPT  SYS-TIME            FROM    TIME
+           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
+           MOVE    WRK-SYSYMD          TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
+           MOVE    SYS-TIME            TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (9:)
+      *
       *    印刷処理
       *
       *****MOVE    "recept7.sh"        TO  SHELL-SHELL
@@ -1294,6 +1326,59 @@
            MOVE    SPA-TERMID          TO  SHELLTBL-ARG8
            MOVE    SPA-NAI-1031-PRTNM
                                    TO  SHELLTBL-ARG11
+      *                                 
+           MOVE    SPACE           TO  LNK-PRTKANRI-AREA
+           INITIALIZE                  LNK-PRTKANRI-AREA
+           MOVE    1               TO  LNK-PRTKANRI-RENNUM 
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                   TO  LNK-PRTKANRI-TBL-KEY 
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                   TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    SPA-R01-RECE07-SRYYM
+                                   TO  LNK-PRTKANRI-SRYYM 
+           MOVE    SPA-SYSYMD      TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "recept7.sh"    TO  LNK-PRTKANRI-SHELLID
+           IF      SPA-R01-RECE07-NYUGAIKBN    =   "1"
+               EVALUATE    SPA-R01-RECE07-RECEKBN
+                   WHEN    "3"
+                       MOVE    3           TO  LNK-PRTKANRI-PRIORITY
+                   WHEN    "4"
+                       MOVE    5           TO  LNK-PRTKANRI-PRIORITY
+               END-EVALUATE
+           ELSE
+               EVALUATE    SPA-R01-RECE07-RECEKBN
+                   WHEN    "3"
+                       MOVE    4           TO  LNK-PRTKANRI-PRIORITY
+                   WHEN    "4"
+                       MOVE    6           TO  LNK-PRTKANRI-PRIORITY
+               END-EVALUATE
+           END-IF
+           MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
+      *****MOVE    SYS-1031-PRTNM (5)
+      *****                        TO  LNK-PRTKANRI-PRTNM
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  SHELLTBL-ARG12       
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  SHELLTBL-ARG13     
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  SHELLTBL-ARG14       
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  SHELLTBL-ARG15       
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SHELLTBL-ARG16       
+           MOVE    LNK-PRTKANRI-SKYYMD
+                                   TO  SHELLTBL-ARG17       
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  SHELLTBL-ARG18       
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                   TO  SHELLTBL-ARG19      
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  SHELLTBL-ARG20       
+           MOVE    LNK-PRTKANRI-OPID
+                                   TO  SHELLTBL-ARG21      
+           MOVE    LNK-PRTKANRI-PRTNM
+                                   TO  SHELLTBL-ARG22
       *     
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

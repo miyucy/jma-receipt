@@ -27,6 +27,7 @@
 001100*****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Æ£¸¶    03.03.03  ¿ÇÎÅ²Ê¿ô£±£°¤«¤é£²£°¤ØÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1397,13 +1398,13 @@
                END-IF
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       10
+                   UNTIL   IDX >       20
                IF      WRK-RECE61-SRYKA    (IDX)       =   SPACE
                    MOVE    ACCT-SRYKA      TO  WRK-RECE61-SRYKA (IDX)
-                   MOVE    10              TO  IDX
+                   MOVE    20              TO  IDX
                ELSE
                    IF      WRK-RECE61-SRYKA    (IDX)   =   ACCT-SRYKA
-                       MOVE    10                  TO  IDX
+                       MOVE    20                  TO  IDX
                    END-IF
                END-IF    
            END-PERFORM
