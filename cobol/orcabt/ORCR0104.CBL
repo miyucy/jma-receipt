@@ -3022,8 +3022,10 @@
            END-IF
       *
       *    レセプト特記事項編集情報
-           IF    ( FLG-SYS-2006            =   1     )
-           AND   ( RECE02-KOHNUM (1)   NOT =   SPACE )
+           IF  (   FLG-SYS-2006            =   1       )
+           AND ( ( RECE02-KOHNUM (1)   NOT =   SPACE )
+           OR    ( RECE02-ETC-KOHNUM (1)
+                                       NOT =   SPACE ) )
                PERFORM 800-SYS2006-CHECK-SEC
                IF      FLG-2006-CHK        =   1
                    COMPUTE WRK-KYURATE-9   =
@@ -5835,7 +5837,6 @@
                PERFORM VARYING IDW2    FROM     1   BY  1
                        UNTIL   IDW2             >   SYSKAN-IDY
                        OR      TBL-SYS2006 (IDW2)   =   SPACE
-      *
                    MOVE    ZERO                TO  FLG-2006-ERR
                    MOVE    TBL-SYS2006 (IDW2)  TO  WRK-2006-REC
       *
@@ -5843,48 +5844,7 @@
                                            >   ZERO            )
                    AND   ( RECE02-KOHNUM (IDW1)
                                            =   WRK-2006-HKNNUM )
-      *
-                       IF      WRK-2006-TEISYUTUSAKI
-                                           NOT =   SPACE
-                           IF      RECE02-TEISYUTUSAKI
-                                               =   WRK-2006-TEISYUTUSAKI
-                               CONTINUE
-                           ELSE
-                               MOVE    1           TO  FLG-2006-ERR
-                           END-IF
-                       END-IF
-      *
-                      IF      WRK-2006-HKNJANUM
-                                           NOT =   SPACE
-                          IF      RECE02-HKNJANUM
-                                               =   WRK-2006-HKNJANUM
-                              CONTINUE
-                           ELSE
-                               MOVE    1           TO  FLG-2006-ERR
-                          END-IF
-                       END-IF
-      *
-                       IF      WRK-2006-RJNKBN =   "1"
-                           IF      RECE02-RJNHKNID >   ZERO
-                               CONTINUE
-                           ELSE
-                               MOVE    1           TO  FLG-2006-ERR
-                           END-IF
-                       END-IF
-      *
-                       IF      WRK-2006-ZAITAKU    =   "1"
-                           IF      RECE02-ZAITAKU      =    "1"
-                               CONTINUE
-                           ELSE
-                               MOVE    1           TO  FLG-2006-ERR
-                           END-IF
-                       END-IF
-      *
-                       IF      FLG-2006-ERR        =   ZERO
-                           MOVE    WRK-2006-REC   TO  SYS-2006-REC
-                           MOVE    1              TO  FLG-2006-CHK
-                           
-                       END-IF
+                       PERFORM 8001-SYS2006-CHECK-SEC
                    END-IF
                END-PERFORM
       *
@@ -5892,6 +5852,88 @@
                    MOVE    4               TO  IDW1
                END-IF
            END-PERFORM
+      *
+           IF      RECE02-ETC-KOHNUM (1)
+                                       =   SPACE
+               GO  TO  800-SYS2006-CHECK-EXT
+           END-IF
+      *
+      *    割合が設定されなかったとき又は 
+      *    原爆（０１９）より優先順位が低い公費で検索した場合
+      *    レセプト記載外公費情報の原爆を検索
+           IF    ( FLG-2006-CHK     =   ZERO                     )
+           OR    ( SYS-2006-HKNNUM =   "023"    OR  "051"    OR
+                                       "091"    OR  "052"    OR
+                                       "053"    OR  "012"        )
+           OR    ( SYS-2006-HKNNUM >   "100"                     )
+               PERFORM VARYING IDW1    FROM    1   BY  1
+                       UNTIL ( IDW1    >       4                 )
+                       OR    ( RECE02-ETC-KOHNUM(IDW1) =   SPACE )
+                   IF      RECE02-ETC-KOHNUM (IDW1)
+                                           =   "019"
+                       PERFORM VARYING IDW2    FROM     1   BY  1
+                               UNTIL   IDW2             >   SYSKAN-IDY
+                           MOVE    ZERO                TO  FLG-2006-ERR
+                           MOVE    TBL-SYS2006 (IDW2)  TO  WRK-2006-REC
+      *
+                           IF    ( WRK-2006-KYURATE
+                                                   >   ZERO            )
+                           AND   ( RECE02-ETC-KOHNUM (IDW1)
+                                                   =   WRK-2006-HKNNUM )
+                               PERFORM 8001-SYS2006-CHECK-SEC
+                       END-PERFORM
+      *
+                       MOVE    4               TO  IDW1
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       800-SYS2006-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト特記事項編集情報条件チェック処理
+      *****************************************************************
+       8001-SYS2006-CHECK-SEC          SECTION.
+      *
+           IF      WRK-2006-TEISYUTUSAKI
+                                   NOT =   SPACE
+               IF      RECE02-TEISYUTUSAKI =   WRK-2006-TEISYUTUSAKI
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-2006-ERR
+               END-IF
+           END-IF
+      *
+           IF      WRK-2006-HKNJANUM
+                                   NOT =   SPACE
+               IF      RECE02-HKNJANUM     =   WRK-2006-HKNJANUM
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-2006-ERR
+               END-IF
+           END-IF
+      *
+           IF      WRK-2006-RJNKBN     =   "1"
+               IF      RECE02-RJNHKNID     >   ZERO
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-2006-ERR
+               END-IF
+           END-IF
+      *
+           IF      WRK-2006-ZAITAKU    =   "1"
+               IF      RECE02-ZAITAKU      =    "1"
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-2006-ERR
+               END-IF
+           END-IF
+      *
+           IF      FLG-2006-ERR        =   ZERO
+               MOVE    WRK-2006-REC   TO  SYS-2006-REC
+               MOVE    1              TO  FLG-2006-CHK
+           END-IF
            .
        800-SYS2006-CHECK-EXT.
            EXIT.
