@@ -30,6 +30,9 @@
            05  SPA-X01-EDYUKYMD            PIC 9(08).
            05  SPA-X01-STYUKYMDH           PIC X(09).
            05  SPA-X01-EDYUKYMDH           PIC X(09).
+      *
+           05  SPA-X01-SEL-STYUKYMD        PIC X(08).
+           05  SPA-X01-SEL-EDYUKYMD        PIC X(08).
       *ø«Œ≈•≥°º•…
            05  SPA-X01-SRYCD               PIC X(09).
            05  SPA-X01-NAME                PIC X(100).

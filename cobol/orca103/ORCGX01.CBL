@@ -32,6 +32,7 @@
       *  01.01.03    MCC-多々納   02/04/26  印刷の追加      
       *  01.01.04    NACL-多々納  02/10/02  添え字を数字へ修正
       *  01.01.05    NACL-多々納  02/11/18  一括入力・診療コード入力修正
+      *  01.01.06    NACL-太田    03/11/19  有効期間編集修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -448,8 +449,10 @@
             END-IF
       *
            IF      SPA-NAI-SELNUM      =   ZERO
-               MOVE    SPA-GMN-MAX         TO  SPA-NAI-SELNUM
-               MOVE    SPA-NAI-SELNUM      TO  SPA-GMN-SELNUM
+               MOVE    ZERO                TO  SPA-NAI-SELNUM
+               MOVE    SPACE               TO  SPA-GMN-SELNUM
+               MOVE    4                   TO  SPA-GMN-CUR
+               GO  TO  4101-SELNUM-CHK-EXT 
            ELSE
       *        選択番号チェック
                IF      SPA-NAI-SELNUM      >=  1
@@ -1122,22 +1125,18 @@
                IF      SPA-NAI-SELNUM      =   IDX 
                    CONTINUE
                ELSE
-                   IF      SPA-NAI-STYUKYMD    >=  SPA-NAI-TSTYUKYMD
-                                                                  (IDX)
-                   AND     SPA-NAI-STYUKYMD    <=  SPA-NAI-TEDYUKYMD
-                                                                  (IDX)
-                       MOVE    "0004"              TO  SPA-ERRCD 
-                   END-IF
-                   IF      SPA-NAI-EDYUKYMD    >=  SPA-NAI-TSTYUKYMD
-                                                                 (IDX)
-                   AND     SPA-NAI-EDYUKYMD    <=  SPA-NAI-TEDYUKYMD
-                                                                 (IDX)
+                   IF    ( SPA-NAI-EDYUKYMD    <  SPA-NAI-TSTYUKYMD
+                                                              (IDX))
+                   OR    ( SPA-NAI-STYUKYMD    >  SPA-NAI-TEDYUKYMD
+                                                              (IDX))
+                       CONTINUE
+                   ELSE
                        MOVE    "0004"              TO  SPA-ERRCD 
                    END-IF
                END-IF
            END-PERFORM 
            IF      SPA-ERRCD           NOT =   SPACE
-               MOVE    2                   TO  SPA-GMN-CUR
+               MOVE    4                   TO  SPA-GMN-CUR
                GO  TO  410-KAKUTEI-EXT
            END-IF      
       *
@@ -1148,6 +1147,12 @@
            MOVE    SPA-NAI-EDYUKYMD    TO  SPA-X01-EDYUKYMD 
            MOVE    SPA-GMN-STYUKYMD    TO  SPA-X01-STYUKYMDH
            MOVE    SPA-GMN-EDYUKYMD    TO  SPA-X01-EDYUKYMDH
+           IF      SPA-NAI-SELNUM      >   ZERO
+               MOVE    SPA-NAI-TSTYUKYMD (SPA-NAI-SELNUM)
+                                           TO  SPA-X01-SEL-STYUKYMD
+               MOVE    SPA-NAI-TEDYUKYMD (SPA-NAI-SELNUM)
+                                           TO  SPA-X01-SEL-EDYUKYMD
+           END-IF
            MOVE    SPA-GMN-CHKKBN-G    TO  SPA-X01-CHKKBN-G
            MOVE    SPA-GMN-SRYCD       TO  SPA-X01-SRYCD
            MOVE    SPA-GMN-NAME        TO  SPA-X01-NAME  
