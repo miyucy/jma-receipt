@@ -158,6 +158,7 @@
            03  WRK-YY                  PIC 9(03).
       *
            03  WRK-SRYKBN              PIC X(02).
+           03  WRK-SRYSYUKBN           PIC X(03).
       *
        01  TBL-NYUIN-AREA.
            03  TBL-NYUIN-OCC           OCCURS   10.
@@ -974,11 +975,20 @@
            MOVE    WRK-ACT-STYMD(1:6)  TO  NACCT-SRYYM
            IF     (TBL-SRYCD (01)(2:2) =   "97" )  OR
                   (TBL-SRYCD (01)      =   "099999913")
-               MOVE    "97"                TO  NACCT-SRYKBN
+               MOVE    "97"                TO  WRK-SRYKBN
+               MOVE    "970"               TO  WRK-SRYSYUKBN
            ELSE
-               MOVE    "90"                TO  NACCT-SRYKBN
+               MOVE    "90"                TO  WRK-SRYKBN
+               MOVE    "900"               TO  WRK-SRYSYUKBN
            END-IF
-           MOVE    NACCT-SRYKBN        TO  WRK-SRYKBN
+      *    特定入院料の時、９２０とする
+           IF     (LNK-SCNYUACCT-TOKUTEINYUIN-KBN   =   "1" )  AND
+                  (WRK-ACT-ZAISKBKBN       =   "1"  OR  "6")
+               MOVE    "92"                TO  WRK-SRYKBN
+               MOVE    "920"               TO  WRK-SRYSYUKBN
+           END-IF
+      *
+           MOVE    WRK-SRYKBN          TO  NACCT-SRYKBN
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1339,13 +1349,15 @@
            MOVE    WRK-ZAINUM          TO  NSRY-ZAINUM
       *    連番号
            MOVE    WRK-RENNUM          TO  NSRY-RENNUM
-           IF      TBL-SRYCD (01)(2:2) =   "97"
-               MOVE    "970"               TO  NSRY-SRYSYUKBN
-               MOVE    "97"                TO  NSRY-SRYKBN
-           ELSE
-               MOVE    "900"               TO  NSRY-SRYSYUKBN
-               MOVE    "90"                TO  NSRY-SRYKBN
-           END-IF
+      **** IF      TBL-SRYCD (01)(2:2) =   "97"
+      *        MOVE    "970"               TO  NSRY-SRYSYUKBN
+      *        MOVE    "97"                TO  NSRY-SRYKBN
+      *    ELSE
+      *        MOVE    "900"               TO  NSRY-SRYSYUKBN
+      *        MOVE    "90"                TO  NSRY-SRYKBN
+      *****END-IF
+           MOVE    WRK-SRYSYUKBN       TO  NSRY-SRYSYUKBN
+           MOVE    WRK-SRYKBN          TO  NSRY-SRYKBN
       *
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC

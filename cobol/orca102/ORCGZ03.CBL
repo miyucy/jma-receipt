@@ -922,6 +922,9 @@
                        WHEN    "90"
                            MOVE    "ェ情"      TO  SPA-GMN-SRYKBNME-L
                                                                (IDX-1)
+                       WHEN    "92"
+                           MOVE    "ェ情"      TO  SPA-GMN-SRYKBNME-L
+                                                               (IDX-1)
                        WHEN    OTHER
                            MOVE    "公及職"    TO  SPA-GMN-SRYKBNME-L
                                                                (IDX-1)
