@@ -66,6 +66,8 @@
       *  01.02.07    NACL-藤原    03/08/05  月内で保険者が変わったときの
       *                                     件数の集計方法を変更する
       *  01.02.08    NACL-藤原    04/01/19  病床数の記載の修正
+      *  01.02.09    NACL-門脇    04/01/20  自費レセプトの自費分
+      *                                     摘要欄記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3497,7 +3499,17 @@
                                                 MCPDATA-REC
       *
                IF      MCP-RC     =   ZERO
-                   ADD     1                 TO  CNT-OUT 
+                   IF      RECE02-RECESYUBETU  =   8888
+                   AND     RECE02-TOTALTEN (1) =   ZERO
+                   AND     RECE02-TOTALTEN (2) =   ZERO
+                   AND     RECE02-TOTALTEN (3) =   ZERO
+                   AND     RECE02-TOTALTEN (4) =   ZERO
+                   AND     RECE02-TOTALTEN (5) =   ZERO
+                   AND     CNT-RECE061         =   ZERO
+                       CONTINUE
+                   ELSE
+                       ADD     1                 TO  CNT-OUT
+                   END-IF
                ELSE 
                    DISPLAY "ORCR0103 RECE08=" MCP-RC " " RECE08-KEY 
                    STRING
@@ -3883,6 +3895,7 @@
                    AND     RECE02-TOTALTEN (3) =   ZERO 
                    AND     RECE02-TOTALTEN (4) =   ZERO
                    AND     RECE02-TOTALTEN (5) =   ZERO
+                   AND     RECE02-RECESYUBETU  NOT =  8888
                        GO  TO  990-RECE02-READ-SEC
                    ELSE
                        IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM
