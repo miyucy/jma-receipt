@@ -2,15 +2,16 @@ tbl_prtdata	{
 	TBL_KEY			char(8);
 	RENNUM  		number(4);
 	TBL_GROUP		char(14);
-	SHORI_RENNUM	number(4);
+	SHORI_RENNUM		number(4);
 	SHELLID			varchar(20);
 	PRTID   		varchar(20);
 	SRYYM			varchar(06);
 	SKYYMD   		varchar(08);
 	PTID			number(10);
-	PRIORITY        number(4);
-	PAGE        	number(5);
+	PRIORITY       		number(4);
+	PAGE        		number(5);
 	PRTFLG			char(1);
+	SITEKBN			char(1);
 	PRTDATA			varchar(10000);
 #-----> ธกบ๗อันเฬÜ
 	STPAGE			number(5),virtual;
