@@ -2908,7 +2908,6 @@
       *
       *    入院日の時、初診料のみ算定する
            IF     (SPA-NYUGAIKBN       =   "1" )
-      ************(SPA-K02N-NYUINYMD   =   SPA-NAI-SRYYMD
                GO      TO      2009-RSIHKN-SET-EXT
            END-IF
           IF      WRK-SRYCD(1:2)      =   "83"
@@ -4278,7 +4277,12 @@
                PERFORM VARYING     IDXS    FROM    1   BY  1
                        UNTIL      (IDXS    >   SPA-GMN-IDX )  OR
                                   (FLG-ARI2    =   1           )
-                   IF      WRK-SRYCD       =   SPA-COM-INPUTCD (IDXS)
+                   IF     (SPA-COM-SRYSYUKBN(IDXS)(1:1)
+                                                   =   "0" ) AND
+                          (SPA-COM-SRYKBN (IDXS)   =   HZN-COM-SRYKBN
+                                                            (IDX)) AND
+                          (WRK-SRYCD               =   SPA-COM-INPUTCD
+                                                            (IDXS))
                        MOVE    1               TO  FLG-ARI2
                    END-IF
                END-PERFORM
@@ -4343,7 +4347,12 @@
            PERFORM VARYING     IDXS    FROM    1   BY  1
                    UNTIL      (IDXS    >   SPA-GMN-IDX )  OR
                               (FLG-ARI =   1           )
-               IF      WRK-SRYCD       =   SPA-COM-INPUTCD (IDXS)
+               IF     (SPA-COM-SRYSYUKBN(IDXS)(1:1)
+                                               =   "0" ) AND
+                      (SPA-COM-SRYKBN (IDXS)   =   HZN-COM-SRYKBN
+                                                            (IDX)) AND
+                      (WRK-SRYCD               =   SPA-COM-INPUTCD
+                                                            (IDXS))
                    MOVE    1               TO  FLG-ARI
                END-IF
            END-PERFORM
