@@ -30,6 +30,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       * 01.00.01     ¤Ò¤µ¤Ê¤¬     02/08/09  ³°Éô¥Õ¥¡¥¤¥ëÌ¾Ä¹¤µ¸í¤ê½¤Àµ
       * 01.00.02     ¤Ò¤µ¤Ê¤¬     02/12/20  ºî¶È¹àÌÜÄ¹¤µ½¤Àµ
+      * 01.00.03     ¤Ò¤µ¤Ê¤¬     03/04/08  ¿ÇÎÅÇ¯·î¤Î³«»Ï°ÌÃÖ¸í¤ê½¤Àµ
       *
       *****************************************************************
       *
@@ -76,10 +77,7 @@
       *
       *    £Ã£Ó£Ö£±¡Á£¶£°¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
        01  EIECSPARA.
-      *½¤Àµ/*³«»Ï*02.08.09*********************************************
-      *     03  EIECSPARA-FILE-ID   PIC X(25).
            03  EIECSPARA-FILE-ID   PIC X(128).
-      *½¤Àµ/*½ªÎ»*02.08.09*********************************************
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -107,10 +105,7 @@
            03  WK-EIECS-REC            PIC  X(6000).
            03  WRK-PARA.
                05  WRK-PARA-SRYYM      PIC  X(06).
-      *½¤Àµ/*³«»Ï*02.12.20*********************************************
-      *         05  WRK-PARA-TERMID     PIC  X(16).
                05  WRK-PARA-TERMID     PIC  X(64).
-      *½¤Àµ/*½ªÎ»*02.12.20*********************************************
                05  WRK-PARA-SYSYMD     PIC  X(08).
                05  WRK-PARA-SYOKBN     PIC  X(01).
                05  WRK-PARA-RECEKBN    PIC  X(01).
@@ -121,6 +116,9 @@
            03  WK-STPNT                PIC  9(06).
            03  WK-KTPNT                PIC  9(05).
            03  WK-PTPNT                PIC  9(05).
+      *½¤Àµ/*³«»Ï*03.04.08*********************************************
+           03  WK-SRYYM-S              PIC  9(06).
+      *½¤Àµ/*½ªÎ»*03.04.08*********************************************
       *
       *    ºî¶È¥Æ¡¼¥Ö¥ëÌ¾¾ÎÎÎ°è
        01  WK-TBL1.
@@ -360,6 +358,11 @@
            IF      WK-TBL-RMSG (IDX1)   =   SPACE
                MOVE    501                         TO  IDX1
            ELSE
+      *½¤Àµ/*³«»Ï*03.04.08*********************************************
+               IF      WK-TBL-RMSG (IDX1)(1:5)   =   "SRYYM"
+                   MOVE    WK-TBL-RMSG (IDX1)(71:6)    TO  WK-SRYYM-S
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.04.08*********************************************
                MOVE    WK-TBL-RMSG (IDX1)(71:6)    TO  WK-STPNT
                MOVE    WK-TBL-RMSG (IDX1)(51:5)    TO  WK-KTPNT
                MOVE    WK-TBL-RMSG (IDX1)(61:5)    TO  WK-PTPNT
@@ -444,22 +447,40 @@
                    WRITE   EIECS-REC
                END-PERFORM
            ELSE
-               IF      ((WK-TBL-MSG (IDX2)(1:6) = "JYURRK")
-                   AND  (MCPDATA-REC(37:6) = WK-SRYYM))
-               OR      ((WK-TBL-MSG (IDX2)(1:8) = "PTBYOMEI")
-                   AND  (MCPDATA-REC(37:6) = WK-SRYYM))
-               OR      ((WK-TBL-MSG (IDX2)(1:7) = "SRYACCT")
-                   AND  (MCPDATA-REC(38:6) = WK-SRYYM))
-               OR      ((WK-TBL-MSG (IDX2)(1:6) = "SRYACT")
-                   AND  (MCPDATA-REC(38:6) = WK-SRYYM))
-               OR      ((WK-TBL-MSG (IDX2)(1:8) = "WKSRYACT")
-                   AND  (MCPDATA-REC(38:6) = WK-SRYYM))
-               OR      ((WK-TBL-MSG (IDX2)(1:6) = "SANTEI")
-                   AND  (MCPDATA-REC(35:6) = WK-SRYYM))
-               OR      ((WK-TBL-MSG (IDX2)(1:6) = "SEIKYU")
-                   AND  (MCPDATA-REC(25:6) = WK-SRYYM))
-               OR      ((WK-TBL-MSG (IDX2)(1:5) = "BD002")
-                   AND  (MCPDATA-REC(47:6) = WK-SRYYM))
+      *½¤Àµ/*³«»Ï*03.04.08*********************************************
+      *         IF      ((WK-TBL-MSG (IDX2)(1:6) = "JYURRK")
+      *             AND  (MCPDATA-REC(37:6) = WK-SRYYM))
+      *         OR      ((WK-TBL-MSG (IDX2)(1:8) = "PTBYOMEI")
+      *             AND  (MCPDATA-REC(37:6) = WK-SRYYM))
+      *         OR      ((WK-TBL-MSG (IDX2)(1:7) = "SRYACCT")
+      *             AND  (MCPDATA-REC(38:6) = WK-SRYYM))
+      *         OR      ((WK-TBL-MSG (IDX2)(1:6) = "SRYACT")
+      *             AND  (MCPDATA-REC(38:6) = WK-SRYYM))
+      *         OR      ((WK-TBL-MSG (IDX2)(1:8) = "WKSRYACT")
+      *             AND  (MCPDATA-REC(38:6) = WK-SRYYM))
+      *         OR      ((WK-TBL-MSG (IDX2)(1:6) = "SANTEI")
+      *             AND  (MCPDATA-REC(35:6) = WK-SRYYM))
+      *         OR      ((WK-TBL-MSG (IDX2)(1:6) = "SEIKYU")
+      *             AND  (MCPDATA-REC(25:6) = WK-SRYYM))
+      *         OR      ((WK-TBL-MSG (IDX2)(1:5) = "BD002")
+      *             AND  (MCPDATA-REC(47:6) = WK-SRYYM))
+               IF      ((WK-TBL-MSG (IDX2)(1:6) = "JYURRK")     AND
+                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
+                       ((WK-TBL-MSG (IDX2)(1:8) = "PTBYOMEI")   AND
+                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
+                       ((WK-TBL-MSG (IDX2)(1:7) = "SRYACCT")    AND
+                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
+                       ((WK-TBL-MSG (IDX2)(1:6) = "SRYACT")     AND
+                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
+                       ((WK-TBL-MSG (IDX2)(1:8) = "WKSRYACT")   AND
+                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
+                       ((WK-TBL-MSG (IDX2)(1:6) = "SANTEI")     AND
+                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
+                       ((WK-TBL-MSG (IDX2)(1:6) = "SEIKYU")     AND
+                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
+                       ((WK-TBL-MSG (IDX2)(1:5) = "BD002")      AND
+                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))
+      *½¤Àµ/*½ªÎ»*03.04.08*********************************************
                    PERFORM VARYING IDX5   FROM   1   BY   1
                            UNTIL   IDX5   >   IDX4
                        MOVE    WK-EIECS-REC(IDX5:1)    TO  EIECS-REC
