@@ -30,6 +30,7 @@
       *  01.00.01    NACL-¬¿≈ƒ    03.09.19  º´±°ŒÚ§Ë§Í∑—¬≥§∑§∆∆˛±°§∑§∆§§§Î
       *                                     æÏπÁ§Œ∆˛±°∆¸§ÚΩ§¿µ
       *  01.00.02    NACL-¬¿≈ƒ    04.01.16   Ò≥Á ¨§ŒπÕŒ∏§Úƒ…≤√
+      *  01.00.02    NACL-¬¿≈ƒ    04.01.19  ººŒ¡∫π≥€æ√»Ò¿«∂Ë ¨§ŒπÕŒ∏§Úƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -258,6 +259,7 @@
            03  WRK-TTL-JIHI                        PIC 9(09).
            03  WRK-TTL-JIHI-TAX                    PIC 9(09).
            03  WRK-TTL-BRMSAGAKU                   PIC 9(09).
+           03  WRK-TTL-BRMSAGAKU-TAX               PIC 9(09).
            03  WRK-KINGAKKU-LBL                    PIC X(100).
            03  WRK-KINGAKKU                        PIC 9(09).
            03  WRK-GAIHAKU-ST                      PIC 9(02).
@@ -571,6 +573,9 @@
       *    œ´∫“º´«Â¿’∞ÂŒ≈µ°¥ÿæ Û¿ﬂƒÍ
            COPY    "CPSK4001.INC".
       *
+      *    ∞ÂŒ≈µ°¥ÿæ Û°›∆˛±°¥À‹
+           COPY    "CPSK5000.INC".
+      *
       *    …¬≈Ôæ Û
            COPY    "CPSK5001.INC".
       *
@@ -678,6 +683,9 @@
       *    ∞ÂŒ≈µ°¥ÿæ ÛºË∆¿ΩËÕ˝
            PERFORM 1001-SYS1001-GET-SEC
       *
+      *    ∞ÂŒ≈µ°¥ÿæ Û°›∆˛±°¥À‹ºË∆¿ΩËÕ˝
+           PERFORM 1001-SYS5000-GET-SEC
+      *
       *    œ´∫“º´«Â¿’∞ÂŒ≈µ°¥ÿæ ÛºË∆¿ΩËÕ˝
            PERFORM 1001-SYS4001-GET-SEC
       *
@@ -742,6 +750,36 @@
       *
            .
        1001-SYS1001-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ∞ÂŒ≈µ°¥ÿæ Û°›∆˛±°¥À‹ºË∆¿ΩËÕ˝
+      *****************************************************************
+       1001-SYS5000-GET-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYS-5000-REC
+           MOVE    "5000"              TO  SYS-5000-KANRICD
+           MOVE    "*"                 TO  SYS-5000-KBNCD
+           MOVE    ORCHCM34-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-5000-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-5000-REC
+           ELSE
+               INITIALIZE                  SYS-5000-REC
+           END-IF
+      *
+           .
+       1001-SYS5000-GET-EXT.
            EXIT.
       *****************************************************************
       *    ∞ÂŒ≈µ°¥ÿæ ÛºË∆¿ΩËÕ˝
@@ -4293,6 +4331,21 @@
                                            TO  WRK-KINGAKKU-LBL
                MOVE    WRK-TTL-BRMSAGAKU   TO  WRK-KINGAKKU
                PERFORM 2001111-KINGAKU-HEN-SEC
+      *
+               MOVE    ZERO                TO  WRK-TTL-BRMSAGAKU-TAX
+      *
+      *        æ√»Ò¿«…Ωº® ‘Ω∏»ΩƒÍ
+               IF    ( SYS-5000-BRMSGK-TAXKBN  =   "1" )
+                   COMPUTE    WRK-TTL-BRMSAGAKU-TAX
+                       =    ( WRK-TTL-BRMSAGAKU    *   0.05 )
+                   IF    ( WRK-TTL-BRMSAGAKU-TAX   >   ZERO )
+                       MOVE    "°°°°°°°°°°ººŒ¡∫π≥€æ√»Ò¿«≥€"
+                                           TO  WRK-KINGAKKU-LBL
+                       MOVE    WRK-TTL-BRMSAGAKU-TAX
+                                           TO  WRK-KINGAKKU
+                       PERFORM 2001111-KINGAKU-HEN-SEC
+                   END-IF
+               END-IF
       *
            END-IF
       *
