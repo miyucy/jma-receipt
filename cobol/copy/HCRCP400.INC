@@ -75,3 +75,4 @@
             02  HCRCP400-KYUFUGAI2  PIC X(10).
             02  HCRCP400-KYUFUGAI3  PIC X(12).
             02  HCRCP400-KYUFUGAI-TEN   PIC X(5).
+            02  HCRCP400-KYUFUGAI4  PIC X(2).
