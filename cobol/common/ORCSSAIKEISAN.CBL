@@ -443,6 +443,9 @@
                         IF    SAI-IDX   >   4
                             MOVE      4         TO  SAI-IDX
                         END-IF
+                        IF    JYURRK-SRYKBN1 = "01"
+                            MOVE   "1"   TO   LNK-S01-SINSATUFLG
+                        END-IF
                     END-IF
                  END-IF
                  MOVE    "DBCLOSE"              TO  MCP-FUNC

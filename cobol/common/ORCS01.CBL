@@ -137,6 +137,7 @@
       *                                     ¤Î½¤Àµ
       *  01.01.05    NACL-ÌçÏÆ    04/09/07  ËÌ³¤Æ»ÃÏÊý¸øÈñÂÐ±þ
       *  01.01.06    NACL-ÌçÏÆ    04/09/08  À¸ÊÝÃ±ÆÈ¤Î¸ÂÅÙ³Û½¤Àµ
+      *  01.01.07    NACL-ÌçÏÆ    04/09/09  »³·Á¸©ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -6807,6 +6808,16 @@
                                                    OR "144") AND
                   (LNK-SYU-SRYYMD(1:6)    >= "200410"      )
                IF    LNK-S01-SYOSINFLG  =  SPACE
+                    MOVE    SPACE   TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
+                    MOVE    ZERO    TO   WK-GAIKFTNRATE
+                    MOVE    "0"     TO   WK-GAIYKZFTNKBN
+                    MOVE    ZERO    TO   WK-GAIKKOTGAK
+               END-IF
+           END-IF.
+      *
+           IF     (WK-1001-PREFNUM         =  06           ) AND
+                  (COMB-KOHHKNNUM(KOH-IDX) = "182" OR "183")
+               IF    LNK-S01-SINSATUFLG =  SPACE
                     MOVE    SPACE   TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
                     MOVE    ZERO    TO   WK-GAIKFTNRATE
                     MOVE    "0"     TO   WK-GAIYKZFTNKBN
