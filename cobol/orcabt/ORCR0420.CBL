@@ -212,6 +212,7 @@
            03  FLG-RECE45                              PIC 9(01).
            03  FLG-REWRITE                             PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
+           03  FLG-HOUSIJI-COM                         PIC 9(01).
       *
       *    ¥À‹≈¿øÙ§Œ»Û…Ωº®»ΩƒÍÕ—•’•È•∞
        01  FLG-KHNTEN-AREA.
@@ -463,6 +464,8 @@
            03  CONS-RYOYO-COMMENT    PIC X(09)  VALUE  "113004310".
       *    À¨Ã‰¥«∏Óªÿº®Œ¡
            03  CONS-HOUSIJI-COMMENT  PIC X(09)  VALUE  "114008010".
+      *    À¨Ã‰¥«∏Óªÿº®Œ¡ªªƒÍ∆¸
+           03  CONS-HOUSIJI2-COMMENT PIC X(09)  VALUE  "840000073".
       *    ºÍΩ—∆¸•≥•·•Û•»
            03  CONS-SHUJUTU-COMMENT  PIC X(09)  VALUE  "840000042".
       *    ∆¨…Ù√±Ω„£√£‘ª£±∆
@@ -822,6 +825,7 @@
                                                        WRK-TANICD
                                                        WRK-TANIMOJISU
                                MOVE    SPACE   TO      WRK-TANINAME
+                               MOVE    ZERO    TO      FLG-HOUSIJI-COM
       *
                                PERFORM   RECE44-TENSOU-SEC
                                PERFORM   RECE45-HENSYU-SEC
@@ -856,6 +860,7 @@
                                                       WRK-TANICD
                                                       WRK-TANIMOJISU
                                       MOVE  SPACE TO  WRK-TANINAME
+                                      MOVE  ZERO  TO  FLG-HOUSIJI-COM
       *
                                       PERFORM   RECE44-TENSOU-SEC
                                       PERFORM   RECE45-HENSYU-SEC
@@ -926,6 +931,7 @@
                                                      WRK-TANICD
                                                      WRK-TANIMOJISU
                                MOVE    SPACE   TO    WRK-TANINAME
+                               MOVE    ZERO    TO    FLG-HOUSIJI-COM
       *
                                PERFORM   RECE44-TENSOU-SEC
                                PERFORM   RECE45-HENSYU-SEC
@@ -962,6 +968,7 @@
                                                       WRK-TANICD
                                                       WRK-TANIMOJISU
                                       MOVE  SPACE TO  WRK-TANINAME
+                                      MOVE  ZERO  TO  FLG-HOUSIJI-COM
       *
                                       PERFORM   RECE44-TENSOU-SEC
                                       PERFORM   RECE45-HENSYU-SEC
@@ -1673,7 +1680,12 @@
       *
            IF      RECE44-SRYKBN      =     "14"
               IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI-COMMENT
+              AND  FLG-HOUSIJI-COM    =     ZERO
                    MOVE   "1"   TO    RECE44-FLG-HOUSIJI-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI2-COMMENT
+                   MOVE  SPACE  TO    RECE44-FLG-HOUSIJI-COMMENT
+                   MOVE    1    TO    FLG-HOUSIJI-COM
               END-IF
            END-IF
       *

@@ -246,6 +246,7 @@
            03  FLG-CHIHOU                              PIC 9(01).
            03  FLG-SHOSAISIN                           PIC 9(01).       XXX
            03  FLG-SET                                 PIC 9(01).
+           03  FLG-HOUSIJI-COM                         PIC 9(01).
       *
       *    ¥À‹≈¿øÙ§Œ»Û…Ωº®»ΩƒÍÕ—•’•È•∞
        01  FLG-KHNTEN-AREA.
@@ -602,6 +603,8 @@
            03  CONS-RYOYO-COMMENT    PIC X(09)  VALUE  "113004310".
       *    À¨Ã‰¥«∏Óªÿº®Œ¡
            03  CONS-HOUSIJI-COMMENT  PIC X(09)  VALUE  "114008010".
+      *    À¨Ã‰¥«∏Óªÿº®Œ¡ªªƒÍ∆¸
+           03  CONS-HOUSIJI2-COMMENT PIC X(09)  VALUE  "840000073".
       *    ºÍΩ—∆¸•≥•·•Û•»
            03  CONS-SHUJUTU-COMMENT  PIC X(09)  VALUE  "840000042".
       *    ∆¨…Ù√±Ω„£√£‘ª£±∆
@@ -1057,6 +1060,7 @@
                                MOVE  ZERO  TO   WRK-TANICD
                                MOVE  ZERO  TO   WRK-TANIMOJISU
                                MOVE  SPACE TO   WRK-TANINAME
+                               MOVE  ZERO  TO   FLG-HOUSIJI-COM
       *
                                PERFORM   RECE02-TOTALTEN-HENSYU-SEC     XXX
                                PERFORM   RECE04-TENSOU-SEC
@@ -1087,6 +1091,7 @@
                                       MOVE  ZERO  TO   WRK-TANICD
                                       MOVE  ZERO  TO   WRK-TANIMOJISU
                                       MOVE  SPACE TO   WRK-TANINAME
+                                      MOVE  ZERO  TO   FLG-HOUSIJI-COM
       *
                                       PERFORM   RECE04-TENSOU-SEC
                                       PERFORM   RECE05-HENSYU-SEC
@@ -1932,7 +1937,12 @@
       *
            IF      RECE04-SRYKBN      =     "14"
               IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI-COMMENT
+              AND  FLG-HOUSIJI-COM    =     ZERO
                    MOVE   "1"   TO    RECE04-FLG-HOUSIJI-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI2-COMMENT
+                   MOVE  SPACE  TO    RECE04-FLG-HOUSIJI-COMMENT
+                   MOVE    1    TO    FLG-HOUSIJI-COM
               END-IF
            END-IF
       *
