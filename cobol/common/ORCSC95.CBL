@@ -158,6 +158,7 @@
                05  WRK-ZAINUM-G        OCCURS   50.
                    07  WRK-TZAINUM         PIC  9(08)
                                             OCCURS 15.
+           03  WRK-RENNUM              PIC  9(01).
            03  WRK-RRK-SRYYMD          PIC  X(08).
            03  WRK-RRK-DENPNUM         PIC  9(07).
       *  診療履歴保存
@@ -3569,6 +3570,7 @@
                    ELSE
                        MOVE    JYURRK-SRYYMD       TO  WRK-RRK-SRYYMD
                        MOVE    JYURRK-DENPNUM      TO  WRK-RRK-DENPNUM
+                       MOVE    JYURRK-RENNUM       TO  WRK-RENNUM
                        MOVE    JYURRK-ZAINUM-G     TO  WRK-ZAINUM-G
                                                           (IDX-JYU)
                        MOVE    1                   TO  FLG-SYORI
@@ -3637,6 +3639,7 @@
            MOVE    SPACE               TO  WRK-KEY-HKNCOMBI
            MOVE    SPACE               TO  WRK-KEY-DRCD
            MOVE    SPACE               TO  WRK-KEY-SRYYMD
+           MOVE    ZERO                TO  WRK-RENNUM
            PERFORM
                    UNTIL    FLG-JYURRK     =   1
                MOVE    ZERO                TO  FLG-NO
@@ -3678,6 +3681,7 @@
                    IF      IDX-JYU                 >   50
                        CONTINUE
                    ELSE
+                       MOVE    JYURRK-RENNUM       TO  WRK-RENNUM
                        MOVE    JYURRK-ZAINUM-G     TO  WRK-ZAINUM-G
                                                             (IDX-JYU)
                        MOVE    1                   TO  FLG-SYORI
@@ -3898,7 +3902,8 @@
       *    回数決定
                MOVE    WRK-RRK-SRYYMD(7:2)     TO  IDX-STR
       *        診療連番のある時、連番の回数
-               EVALUATE    LNK-SC95-RENNUM
+      ******** EVALUATE    LNK-SC95-RENNUM 
+               EVALUATE    WRK-RENNUM
                    WHEN    ZERO
       *            同日再診の最終回セット
                        EVALUATE    TRUE
