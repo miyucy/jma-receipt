@@ -52,6 +52,7 @@
       *  03.00.05    NACL−多々納 02/10/10  外来管理加算チェックの有無
       *                                     訂正時の薬情表示等
       *  03.00.06    NACL−多々納 02/10/11  老人判定の修正
+      *  03.00.07    NACL−多々納 02/10/31  外来管理加算自動算定なしの追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6505,6 +6506,8 @@
            END-IF
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-ORCSC-TEISEI-AREA
       *
+      *    外来管理加算削除のチェック
+           MOVE    SPA-GAIKANRIKBN-CHK TO  LNK-ORCSC-GAIKANRIKBN-CHK
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *            診療
@@ -7470,6 +7473,8 @@
            END-IF
       *
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-ORCSC-TEISEI-AREA
+      *    外来管理加算削除のチェック
+           MOVE    SPA-GAIKANRIKBN-CHK TO  LNK-ORCSC-GAIKANRIKBN-CHK
       *
       *            診療
            IF      SPA-SRYKBN-CNT (01) >   ZERO
@@ -7498,7 +7503,7 @@
                MOVE    LNK-ORCSC-GAIRAI-TEN    TO  SPA-GAIRAI-TEN
       *
       *        外来管理加算削除のチェック
-               IF      SPA-GAIKANRIKBN-CHK     =   "1"
+               IF      SPA-GAIKANRIKBN-CHK     =   "1"  OR  "2"
                    IF     (LNK-ORCSC-KIDCD     =   "0102" )  AND
                           (LNK-ORCSC-KBN       =   "2"    )  AND
                           (FLG-TOROKU          =   SPACE  )
