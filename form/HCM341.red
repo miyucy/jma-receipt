@@ -46,9 +46,9 @@
         <embed object="string" length="22"/>
       </appinfo>
     </element>
-    <element name="SRYKA" occurs="1">
+    <element name="SRYKA" occurs="2">
       <appinfo>
-        <embed object="string" length="10"/>
+        <embed object="string" length="16"/>
       </appinfo>
     </element>
     <element name="NYUINYMD" occurs="1">
@@ -815,14 +815,14 @@
     </object>
     <object type="Standard - Line" version="0" id="O24">
       <attribute name="obj_pos">
-        <point val="15.4,1"/>
+        <point val="15.3,1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.385,0.985;15.415,2.315"/>
+        <rectangle val="15.285,0.985;15.315,2.315"/>
       </attribute>
       <attribute name="conn_endpoints">
-        <point val="15.4,1"/>
-        <point val="15.4,2.3"/>
+        <point val="15.3,1"/>
+        <point val="15.3,2.3"/>
       </attribute>
       <attribute name="numcp">
         <int val="0"/>
@@ -4979,13 +4979,13 @@
     </object>
     <object type="Embed - Text" version="0" id="O180">
       <attribute name="obj_pos">
-        <point val="15.5,2.2"/>
+        <point val="15.35,1.85"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.5,1.93771;17.2342,2.27771"/>
+        <rectangle val="15.35,1.59543;18.0431,1.92543"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYKA#</string>
+        <string>#SRYKA[0]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -4993,16 +4993,16 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.34"/>
+            <real val="0.33"/>
           </attribute>
           <attribute name="pos">
-            <point val="15.5,2.2"/>
+            <point val="15.35,1.85"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5011,10 +5011,10 @@
             <enum val="0"/>
           </attribute>
           <attribute name="single">
-            <real val="0.20604"/>
+            <real val="0.19998"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.173417"/>
+            <real val="0.168317"/>
           </attribute>
         </composite>
       </attribute>
@@ -50167,10 +50167,10 @@
     </group>
     <object type="Embed - Text" version="0" id="O1255">
       <attribute name="obj_pos">
-        <point val="15.5,1.4"/>
+        <point val="15.45,1.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.5,1.13771;16.5405,1.47771"/>
+        <rectangle val="15.45,1.13771;17.8778,1.47771"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#LBLSRYKA#</string>
@@ -50181,7 +50181,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#191;&#199;&#206;&#197;&#178;&#202;#</string>
+            <string>#&#191;&#199;&#206;&#197;&#178;&#202;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -50190,7 +50190,7 @@
             <real val="0.34"/>
           </attribute>
           <attribute name="pos">
-            <point val="15.5,1.4"/>
+            <point val="15.45,1.4"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -50287,6 +50287,48 @@
           </attribute>
           <attribute name="multi">
             <real val="0.173417"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O1258">
+      <attribute name="obj_pos">
+        <point val="15.35,2.2"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="15.35,1.94543;18.0431,2.27543"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#SRYKA[1]#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.33"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="15.35,2.2"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.19998"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.168317"/>
           </attribute>
         </composite>
       </attribute>

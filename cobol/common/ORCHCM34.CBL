@@ -77,6 +77,7 @@
            03  FLG-SP                              PIC 9(01).
            03  FLG-LINE                            PIC 9(01).
            03  FLG-MINUS                           PIC 9(01).
+           03  FLG-LOOPEND                         PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -112,6 +113,7 @@
            03  IDX10                               PIC 9(05).
            03  IDX11                               PIC 9(05).
            03  IDX12                               PIC 9(05).
+           03  IDX13                               PIC 9(05).
            03  IDXA                                PIC 9(05).
            03  IDXB                                PIC 9(05).
            03  IDXC                                PIC 9(05).
@@ -133,7 +135,10 @@
                05  WRK-HCM34-PTNUM                 PIC X(10).
                05  WRK-HCM34-PTNUM2                PIC X(20).
                05  WRK-HCM34-BIRTHDAY              PIC X(22).
-               05  WRK-HCM34-SRYKA                 PIC X(10).
+               05  WRK-HCM34-SRYKA-MAX             PIC 9(05).
+               05  WRK-HCM34-SRYKA-G.
+                   07  WRK-HCM34-SRYKA             PIC X(16)
+                                                   OCCURS 2.
                05  WRK-HCM34-NYUINYMD              PIC X(22).
                05  WRK-HCM34-TAIINYMD              PIC X(22).
                05  WRK-HCM34-LBLSRYKA              PIC X(06).
@@ -177,7 +182,6 @@
            03  WRK-PTBYO-BYOMEI                    PIC X(200).
            03  WRK-PTBYO-BYOMEIMOJI                PIC 9(05).
            03  WRK-PTBYO-UTAGAIFLG                 PIC X(01).
-           03  WRK-SRYKA                           PIC X(02).
            03  WRK-BASEYMD.
                05  WRK-BYY                         PIC 9(04).
                05  WRK-BMM                         PIC 9(02).
@@ -211,7 +215,14 @@
            03  WRK-TENSUKAISU                      PIC X(20).
            03  WRK-KEY-HKNCOMBI                    PIC X(04).
            03  WRK-TNS-HOUKNSKBN                   PIC 9(02).
-
+           03  WRK-KUGIRI                          PIC X(02).
+      *
+       01  WRK-SRYKA-TBL.
+           03  WRK-SRYKA-OCC                       OCCURS  20.
+               05  WRK-SRYKA                       PIC X(02).
+               05  WRK-SRYKA-SRYKAMEI1             PIC X(20).
+               05  WRK-SRYKA-SRYKAMEI2             PIC X(12).
+               05  WRK-SRYKA-SRYKAMEI3             PIC X(04).
       *
        01  WRK-SRYACT-AREA.
            03  WRK-SRYACT-STR                      PIC X(520).
@@ -319,7 +330,8 @@
       *    ÌôºÞÎÁÄþ¸º
            03  CONST-TEIGEN                PIC X(09)   VALUE
                "630010002".
-      *          
+           03  CONST-SRYKAMEI-LEN          PIC 9(05)   VALUE   32.
+      *
       *    ¥¹¥ÑÎÎ°è ¥ï¡¼¥¯
            COPY    "COMMON-SPA"
                    REPLACING   //SPA-//    BY //WRK-SPA-//.
@@ -628,7 +640,8 @@
                MOVE    "¿ÇÎÅ²Ê"        TO  WRK-HCM34-LBLSRYKA
                MOVE    SPACE           TO  WRK-HCM34-LBLNYUINYMD
                MOVE    SPACE           TO  WRK-HCM34-LBLTAIINYMD
-               MOVE    SPACE           TO  WRK-HCM34-SRYKA
+      *        ¼õ¿ÇÍúÎò¤è¤ê¡¢¿ÇÎÅ²Ê¤ò¼èÆÀ
+               PERFORM 10011-SRYKA-HEN-SEC
                MOVE    SPACE           TO  WRK-HCM34-NYUINYMD
                MOVE    SPACE           TO  WRK-HCM34-TAIINYMD
            END-EVALUATE
@@ -660,7 +673,7 @@
            MOVE    MCPDATA-REC         TO  PTNYUINRRK-REC
            MOVE    PTNYUINRRK-NYUINKA  TO  SRH-SRYKA
            PERFORM 200111-SRYKA-HEN-SEC
-           MOVE    SRH-SRYKAMEI1       TO  WRK-HCM34-SRYKA
+           MOVE    SRH-SRYKAMEI1       TO  WRK-HCM34-SRYKA(2)
       *
            MOVE    PTNYUINRRK-NYUINYMD TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
@@ -672,6 +685,118 @@
       *
            .
        10011-PTNYUINRRK-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÊÔ½¸½èÍý
+      *****************************************************************
+       10011-SRYKA-HEN-SEC             SECTION.
+      *
+           INITIALIZE                      WRK-SRYKA-TBL
+           MOVE    ZERO                TO  WRK-HCM34-SRYKA-MAX
+           MOVE    SPACE               TO  WRK-HCM34-SRYKA-G
+      *
+           MOVE    ZERO                TO  FLG-SRYACCT
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    ORCHCM34-NYUGAIKBN  TO  ACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    ORCHCM34-SRYYM      TO  ACCT-SRYYM
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "SRYACCT-KEY23"     TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-SRYACCT
+           ELSE
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+           END-IF
+      *
+           MOVE    ZERO                TO  WKSRYACCT-MAX
+           INITIALIZE                      WKSRYACCT-REC
+           PERFORM UNTIL     ( FLG-SRYACCT =   1 )
+      *
+               PERFORM VARYING IDX13   FROM    1   BY  1
+                       UNTIL ( IDX13       >   WKSRYACCT-MAX )
+                        OR   ( IDX13       >   20 )
+                        OR   ( ACCT-SRYKA  =   WRK-SRYKA (IDX13) )
+                   CONTINUE
+               END-PERFORM
+      *
+               IF    ( IDX13               >   WKSRYACCT-MAX )
+                   COMPUTE WKSRYACCT-MAX   =   WKSRYACCT-MAX   +   1
+                   IF    ( WKSRYACCT-MAX   >   20 )
+                       MOVE    20          TO  WKSRYACCT-MAX
+                   ELSE
+                       MOVE    ACCT-SRYKA  TO  WRK-SRYKA (WKSRYACCT-MAX)
+                       MOVE    ACCT-SRYKA  TO  SRH-SRYKA
+                       PERFORM 200111-SRYKA-HEN-SEC
+                       MOVE    SRH-SRYKAMEI1
+                                           TO  WRK-SRYKA-SRYKAMEI1
+                                                         (WKSRYACCT-MAX)
+                       MOVE    SRH-SRYKAMEI2
+                                           TO  WRK-SRYKA-SRYKAMEI2
+                                                         (WKSRYACCT-MAX)
+                       MOVE    SRH-SRYKAMEI3
+                                           TO  WRK-SRYKA-SRYKAMEI3
+                                                         (WKSRYACCT-MAX)
+                   END-IF
+               END-IF
+      *
+               MOVE    "SRYACCT-KEY23"     TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC        NOT =   ZERO )
+                   MOVE    1               TO  FLG-SRYACCT
+               ELSE
+                   MOVE    MCPDATA-REC     TO  SRYACCT-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SRYACCT-KEY23"     TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           MOVE    1                   TO  WRK-PNT
+           MOVE    ZERO                TO  FLG-LOOPEND
+           MOVE    ALL "¡¡"            TO  WRK-HCM34-SRYKA-G
+           PERFORM VARYING IDX13   FROM    1   BY  1
+                   UNTIL ( FLG-LOOPEND NOT =   ZERO )
+                    OR   ( IDX13   >   WKSRYACCT-MAX )
+               MOVE    WRK-SRYKA-SRYKAMEI2 (IDX13) TO  WRK-STR
+               PERFORM 800-STRLEN-CHK-SEC
+               IF    ( WRK-STRLEN  +   WRK-PNT - 1
+                                   <   CONST-SRYKAMEI-LEN - 2 )
+                OR   ( ( WRK-STRLEN  +   WRK-PNT - 1
+                                   <=  CONST-SRYKAMEI-LEN - 2 )
+                   AND ( IDX13     >=    WKSRYACCT-MAX ) )
+                   MOVE    "¡¿"        TO  WRK-KUGIRI
+                   IF    ( IDX13       =   1 )
+                       MOVE    SPACE   TO  WRK-KUGIRI
+                   END-IF
+                   STRING  WRK-KUGIRI      DELIMITED   BY  SPACE
+                           WRK-SRYKA-SRYKAMEI2 (IDX13)
+                                           DELIMITED   BY  SPACE
+                   INTO    WRK-HCM34-SRYKA-G
+                   WITH    POINTER     WRK-PNT
+                   END-STRING
+               ELSE
+                   MOVE    1           TO  FLG-LOOPEND
+               END-IF
+           END-PERFORM
+      *
+           IF    ( FLG-LOOPEND     NOT =   ZERO )
+               COMPUTE WRK-PNT     =    CONST-SRYKAMEI-LEN - 1
+               MOVE    "Â¾"            TO   WRK-HCM34-SRYKA-G
+                                                   (WRK-PNT:2)
+           ELSE
+               IF    ( WRK-HCM34-SRYKA (2) =    SPACE )
+                   MOVE    WRK-HCM34-SRYKA (1)
+                                       TO  WRK-HCM34-SRYKA (2)
+                   MOVE    SPACE       TO  WRK-HCM34-SRYKA (1)
+               END-IF
+           END-IF
+      *
+           .
+       10011-SRYKA-HEN-EXT.
            EXIT.
       *****************************************************************
       *    ÊÝ¸±¤Î¼ïÎà¡¦¸øÈñ¤Î¼ïÎàÊÔ½¸½èÍý
@@ -3201,7 +3326,8 @@
            MOVE    PTINF-NAME              TO  HCM341-NAME
            MOVE    PTINF-KANANAME          TO  HCM341-KANANAME
            MOVE    WRK-HCM34-BIRTHDAY      TO  HCM341-BIRTHDAY
-           MOVE    WRK-HCM34-SRYKA         TO  HCM341-SRYKA
+           MOVE    WRK-HCM34-SRYKA(1)      TO  HCM341-SRYKA(1)
+           MOVE    WRK-HCM34-SRYKA(2)      TO  HCM341-SRYKA(2)
            MOVE    WRK-HCM34-NYUINYMD      TO  HCM341-NYUINYMD
            MOVE    WRK-HCM34-TAIINYMD      TO  HCM341-TAIINYMD
            MOVE    WRK-HCM34-LBLSRYKA      TO  HCM341-LBLSRYKA
@@ -3234,7 +3360,8 @@
            MOVE    PTINF-NAME              TO  HCM342-NAME
            MOVE    PTINF-KANANAME          TO  HCM342-KANANAME
            MOVE    WRK-HCM34-BIRTHDAY      TO  HCM342-BIRTHDAY
-           MOVE    WRK-HCM34-SRYKA         TO  HCM342-SRYKA
+           MOVE    WRK-HCM34-SRYKA(1)      TO  HCM342-SRYKA(1)
+           MOVE    WRK-HCM34-SRYKA(2)      TO  HCM342-SRYKA(2)
            MOVE    WRK-HCM34-NYUINYMD      TO  HCM342-NYUINYMD
            MOVE    WRK-HCM34-TAIINYMD      TO  HCM342-TAIINYMD
            MOVE    WRK-HCM34-LBLSRYKA      TO  HCM342-LBLSRYKA

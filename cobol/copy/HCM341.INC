@@ -8,7 +8,7 @@
             02  HCM341-KANANAME PIC X(50).
             02  HCM341-NAME PIC X(50).
             02  HCM341-BIRTHDAY PIC X(22).
-            02  HCM341-SRYKA    PIC X(10).
+            02  HCM341-SRYKA    PIC X(16)       OCCURS  2 TIMES.
             02  HCM341-NYUINYMD PIC X(22).
             02  HCM341-TAIINYMD PIC X(22).
             02  HCM341-LBLSRYKA PIC X(6).
