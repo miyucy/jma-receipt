@@ -174,7 +174,6 @@
            03  T-HANNTEI6          PIC X(02).
            03  T-HANNTEI7          PIC X(02).
            03  T-HANNTEI8          PIC X(01).
-           03  T-HANNTEI8-2        PIC X(01).
            03  T-ERR-01            PIC X(01).
            03  T-ERR-02            PIC X(01).
            03  T-ERR-03            PIC X(01).
@@ -764,7 +763,6 @@
            INITIALIZE                      W-TABLE-S4.
            INITIALIZE                      W-PTBYO-BYOMEI-AREA1.
            INITIALIZE                      W-PTBYO-BYOMEI-AREA2.
-           MOVE    SPACE                   TO  T-HANNTEI8-2.
            MOVE    ALL SPACE               TO  WK-JITUDAY6.
            MOVE    ZERO                    TO  W-JITU-DAY3.
            MOVE    ZERO                    TO  W-JITU-DAY4.
@@ -1137,10 +1135,6 @@
       *½¤Àµ/*³«»Ï*03.08.06*********************************************
                MOVE    SPACE             TO  T-ERR-08
                MOVE    SPACE             TO  T-ERR-09
-               IF  T-HANNTEI8-2   =   SPACE
-                   MOVE    ZERO              TO  W-PTBYO-MAX1
-                   MOVE    ZERO              TO  W-PTBYO-MAX2
-               END-IF
                IF  W-PTBYO-MAX2   NOT =  ZERO
                    PERFORM T-530-RECECHEK-CHK8-1-SEC
                END-IF
@@ -1316,10 +1310,6 @@
                     (ACCT-PTID     NOT =   W1-SRY-PTID))
                    MOVE    SPACE             TO  T-ERR-08
                    MOVE    SPACE             TO  T-ERR-09
-                   IF  T-HANNTEI8-2   =   SPACE
-                       MOVE    ZERO              TO  W-PTBYO-MAX1
-                       MOVE    ZERO              TO  W-PTBYO-MAX2
-                   END-IF
                    IF  W-PTBYO-MAX2   NOT =  ZERO
                        PERFORM T-530-RECECHEK-CHK8-1-SEC
                    END-IF
@@ -1340,7 +1330,6 @@
            MOVE    ACCT-SRYKA   TO  W1-SRY-SRYKA.
            MOVE    COMB-HKNNUM  TO  W-COMB-HKNNUM.
            MOVE    "ED"         TO  T-HANNTEI6.
-           MOVE    T-HANNTEI8   TO  T-HANNTEI8-2.
       *
        T-100-RECECHEK-HANTEI-1-EXT.
            EXIT.
