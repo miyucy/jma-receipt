@@ -471,7 +471,6 @@ path	key19	{
                         AND   A.HOSPID    = B.HOSPID
                         AND   A.NYUGAIKBN = B.NYUGAIKBN
                         AND   A.PTID      = B.PTID
-                        AND   A.SRYKA     = B.SRYKA
                         AND   A.SRYYM     = B.SRYYM
                         AND   A.ZAINUM    = B.ZAINUM
 			ORDER  BY   A.SRYKA,
