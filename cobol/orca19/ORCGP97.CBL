@@ -37,6 +37,7 @@
       *   01.00.07    NACL-多々納  02/12/12  検索条件の追加
       *   01.00.08    NACL-太田    03/02/06  入力引数に名前が設定されて
       *                                      いる場合は全角変換して使う
+      *   01.00.09    NACL-多々納  04/07/22  保険の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -88,6 +89,7 @@
                            11  SPA-GMN-NENREI      PIC X(10).
                            11  SPA-GMN-RRKYMD      PIC X(10).
                            11  SPA-GMN-SRYKA       PIC X(04).
+                           11  SPA-GMN-HKNCOMBI    PIC X(06).
                            11  SPA-GMN-BRMNUM      PIC X(09).
                    07  SPA-GMN-SELNO          PIC 9(04).
       *
@@ -112,6 +114,7 @@
            03  FLG-SRYKARRK        PIC 9(01).
            03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-NYUIN           PIC 9(01).
@@ -179,6 +182,10 @@
                05  WRK-YYS2        PIC 9(04).
                05  WRK-MMS2        PIC 9(02).
                05  WRK-DDS2        PIC 9(02).
+      *
+           03  WRK-HKNCOMBI        PIC X(04).
+           03  WRK-HKNCOMBI-MEI    PIC X(10).
+           03  WRK-HKNNUM          PIC X(03).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -250,6 +257,10 @@
       *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -749,6 +760,7 @@
                        MOVE    ZERO            TO  FLG-OK
                    END-IF
                END-IF
+               MOVE    SPACE               TO  WRK-HKNCOMBI
       *        病室編集
                PERFORM 20111-NYUINCHK-SEC
       *
@@ -846,6 +858,9 @@
                MOVE    WRK-BRMNUM          TO  SPA-GMN-BRMNUM (IDX)
       *        年齢計算
                PERFORM 20122-NENREI-KEI-SEC
+      *        保険表示
+               PERFORM 20123-HKNCOMBI-MEI-SEC
+               MOVE    WRK-HKNCOMBI-MEI    TO  SPA-GMN-HKNCOMBI (IDX)
       *
                MOVE    IDX                 TO  SPA-GMN-MAX
            END-IF
@@ -897,6 +912,8 @@
                MOVE    WRK-LSTYMD          TO  WRK-SYMD
                PERFORM 700-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG         TO  SPA-GMN-RRKYMD (IDX)
+      *        保険の判定
+               PERFORM 201211-JYURRK-HKN-HEN-SEC
            END-IF
       *
       *    カーソルクロース
@@ -908,6 +925,48 @@
       *
            .
        20121-JYURRK-HEN-EXT.
+           EXIT.
+           .
+      *
+      *****************************************************************
+      *    保険編集処理（外来）
+      *****************************************************************
+       201211-JYURRK-HKN-HEN-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  JYURRK-REC
+           INITIALIZE                  JYURRK-KEY
+           MOVE    PTINF-HOSPID        TO  JYURRK-HOSPID
+           MOVE    "2"                 TO  JYURRK-NYUGAIKBN
+           MOVE    PTINF-PTID          TO  JYURRK-PTID
+           MOVE    WRK-LSTYMD          TO  JYURRK-SRYYMD
+           MOVE    WRK-SRYKA           TO  JYURRK-SRYKA
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
+               PERFORM 970-JYURRK-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  JYURRK-REC
+               INITIALIZE                  JYURRK-REC
+               MOVE    1                   TO  FLG-JYURRK
+           END-IF
+           PERFORM UNTIL    FLG-JYURRK     =   1
+               IF      JYURRK-HKNCOMBINUM  NOT =   "9999"
+                   MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
+                   MOVE    1                   TO  FLG-JYURRK
+               ELSE
+                   MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
+                   PERFORM 970-JYURRK-READ-SEC
+               END-IF
+           END-PERFORM
+           .
+       201211-JYURRK-HKN-HEN-EXT.
            EXIT.
            .
       *
@@ -961,10 +1020,12 @@
                    MOVE    PTNYUINRRK-BRMNUM(3:6)  TO  WRK-BRMNUM2
                END-IF
                MOVE    PTNYUINRRK-NYUINKA  TO  WRK-SRYKA
+               MOVE    PTNYUINRRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
                MOVE    1                   TO  FLG-NYUIN
            ELSE
                MOVE    SPACE               TO  WRK-BRMNUM
                MOVE    SPACE               TO  WRK-SRYKA
+               MOVE    SPACE               TO  WRK-HKNCOMBI
                MOVE    ZERO                TO  FLG-NYUIN
            END-IF
       *
@@ -1063,6 +1124,124 @@
       *
            .
        20119-SRYKA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険表示処理
+      *****************************************************************
+       20123-HKNCOMBI-MEI-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  WRK-HKNCOMBI-MEI
+           MOVE    SPACE               TO  WRK-HKNNUM
+      *
+           IF      WRK-HKNCOMBI    NOT =   SPACE
+               PERFORM 201231-HKNCOMBI-CHK1-SEC
+           END-IF
+           IF      WRK-HKNCOMBI-MEI    =   SPACE
+               PERFORM 201232-HKNCOMBI-CHK2-SEC
+           END-IF
+      *
+           .
+       20123-HKNCOMBI-MEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険表示処理
+      *****************************************************************
+       201231-HKNCOMBI-CHK1-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  HKNCOMBI-REC
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    PTINF-HOSPID        TO  COMB-HOSPID
+           MOVE    PTINF-PTID          TO  COMB-PTID
+           MOVE    WRK-HKNCOMBI        TO  COMB-HKNCOMBINUM
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               PERFORM 910-HKNCOMBI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+           MOVE    SPACE               TO  WRK-HKNCOMBI-MEI
+           MOVE    SPACE               TO  WRK-HKNNUM
+           IF     (FLG-HKNCOMBI        =   ZERO )  AND
+                  (COMB-DELKBN     NOT =   "1"  )  AND
+                 ((SPA-SYSYMD          >=  COMB-TEKSTYMD ) AND
+                  (SPA-SYSYMD          <=  COMB-TEKEDYMD ))
+               PERFORM 201231-HKNCOMBI-MEI-SEC
+           END-IF
+      *
+           .
+       201231-HKNCOMBI-CHK1-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険表示処理
+      *****************************************************************
+       201232-HKNCOMBI-CHK2-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  HKNCOMBI-REC
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    PTINF-HOSPID        TO  COMB-HOSPID
+           MOVE    PTINF-PTID          TO  COMB-PTID
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+               PERFORM 910-HKNCOMBI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+           MOVE    SPACE               TO  WRK-HKNCOMBI-MEI
+           MOVE    SPACE               TO  WRK-HKNNUM
+           PERFORM
+               UNTIL       FLG-HKNCOMBI        =   1
+               IF     (COMB-DELKBN     NOT =   "1"  )  AND
+                     ((SPA-SYSYMD          >=  COMB-TEKSTYMD ) AND
+                      (SPA-SYSYMD          <=  COMB-TEKEDYMD ))
+                   IF     (WRK-HKNNUM      =   SPACE )  OR
+                          (COMB-HKNNUM     =   "971"  OR  "973")
+                       PERFORM 201231-HKNCOMBI-MEI-SEC
+                   END-IF
+               END-IF
+               IF      FLG-HKNCOMBI        =   ZERO
+                   MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+                   PERFORM 910-HKNCOMBI-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           .
+       201232-HKNCOMBI-CHK2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ名称編集処理
+      *****************************************************************
+       201231-HKNCOMBI-MEI-SEC               SECTION.
+      *    主保険がない時
+           IF      COMB-SYU-TANSEIDONAME   =   SPACE
+               MOVE    COMB-KOH1-TANSEIDONAME  TO  WRK-HKNCOMBI-MEI
+           ELSE
+               MOVE    COMB-SYU-TANSEIDONAME   TO  WRK-HKNCOMBI-MEI
+               MOVE    COMB-HKNNUM             TO  WRK-HKNNUM
+           END-IF
+      *
+           .
+       20123-HKNCOMBI-MEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1339,6 +1518,7 @@
                MOVE    SPA-GMN-NENREI(IDX)     TO  P97-NENREI (IDX)
                MOVE    SPA-GMN-RRKYMD(IDX)     TO  P97-RRKYMD (IDX)
                MOVE    SPA-GMN-SRYKA (IDX)     TO  P97-SRYKA  (IDX)
+               MOVE    SPA-GMN-HKNCOMBI(IDX)   TO  P97-HKNCOMBI (IDX)
                MOVE    SPA-GMN-BRMNUM(IDX)     TO  P97-BRMNUM (IDX)
       *
                MOVE    IDX                     TO  P97-COUNT
@@ -1528,6 +1708,48 @@
       *
            .
        900-KANRIMST-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       910-HKNCOMBI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    受診履歴マスター読込
+      *****************************************************************
+       970-JYURRK-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  JYURRK-REC
+               MOVE    ZERO            TO  FLG-JYURRK
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           .
+       970-JYURRK-READ-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
