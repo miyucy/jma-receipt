@@ -432,6 +432,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    保険算定用年齢・割合計算サブ
+           COPY    "CPORCSAGECHK.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -5768,18 +5771,33 @@
                MOVE    1               TO  FLG-PTINF
            END-IF
       *
-           IF      FLG-PTINF           =   1
-               MOVE    ZERO            TO  WRK-NENREI
+      *     IF      FLG-PTINF           =   1
+      *         MOVE    ZERO            TO  WRK-NENREI
+      *     ELSE
+      *         MOVE   PTINF-BIRTHDAY   TO  WRK-YMDS1
+      *         MOVE   SYOKIKSN-IN-SANTEISTYMD
+      *                                 TO  WRK-YMDS2
+      *         MOVE   ZERO             TO  WRK-NENREI
+      *         COMPUTE  WRK-NENREI     =   WRK-YYS2
+      *                                 -   WRK-YYS1
+      *         IF   WRK-YMDS1(5:4)     >   WRK-YMDS2(5:4)
+      *              ADD   -1           TO  WRK-NENREI
+      *         END-IF
+      *     END-IF
+      *
+      *    入院患者の年齢計算
+           INITIALIZE ORCSAGECHKAREA
+           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  AGECHK-PTID
+           MOVE    SYOKIKSN-IN-SANTEISTYMD
+                                       TO  AGECHK-SRYYMD
+           MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"        USING
+                                           ORCSAGECHKAREA
+           IF    ( AGECHK-RC       =   ZERO )
+               MOVE     AGECHK-NENREI  TO  WRK-NENREI
            ELSE
-               MOVE   PTINF-BIRTHDAY   TO  WRK-YMDS1
-               MOVE   SYOKIKSN-IN-SANTEISTYMD
-                                       TO  WRK-YMDS2
-               MOVE   ZERO             TO  WRK-NENREI
-               COMPUTE  WRK-NENREI     =   WRK-YYS2
-                                       -   WRK-YYS1
-               IF   WRK-YMDS1(5:4)     >   WRK-YMDS2(5:4)
-                    ADD   -1           TO  WRK-NENREI
-               END-IF
+               INITIALIZE  ORCSAGECHKAREA
            END-IF
       *
            .
@@ -5892,7 +5910,8 @@
              IF  ((FLG-HKNCOMBI     =   ZERO)    AND
                   (COMB-KOH1HKNNUM  =   "027"))      OR
                  ((WRK-NENREI      >=    70)     AND
-                  (PTINF-BIRTHDAY  <=   "19320930"))
+                  (PTINF-BIRTHDAY  <=   "19320930"))  OR
+                  (AGECHK-ROUJIN    =    1)
                INITIALIZE              SRYCDCHG-REC
       *
                MOVE    SYOKIKSN-IN-KHNSRYCD

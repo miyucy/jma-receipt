@@ -10114,7 +10114,8 @@
                   (COMB-KOH1HKNNUM  =   "027"))      OR
                  ( AGECHK-NENREI   >=    75)         OR
                  ((AGECHK-NENREI   >=    70)     AND
-                  (PTINF-BIRTHDAY  <=   "19320930"))
+                  (PTINF-BIRTHDAY  <=   "19320930")) OR
+                  (AGECHK-ROUJIN    =    1)
                MOVE    1            TO  FLG-RJN
            END-IF
       *
