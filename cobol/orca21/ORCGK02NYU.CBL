@@ -2227,7 +2227,13 @@
                MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
            END-IF
            MOVE    ZERO                TO  SPA-RJN-ERR
+           MOVE    ZERO                TO  SPA-HKN-ERR
       *
+      *    Ｈ１５．４以降の保険期間が違う時
+           IF      AGECHK-HKNCHK       =   1
+               MOVE    "1028"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-HKN-ERR
+           END-IF
       *    老人でＨ１４．１０の保険変更がない時
            IF      AGECHK-RJNCHK       =   1
                MOVE    "1027"              TO  SPA-ERRCD
@@ -7825,6 +7831,7 @@
        210-BACK                    SECTION.
       *
            MOVE    ZERO                TO  SPA-RJN-ERR
+           MOVE    ZERO                TO  SPA-HKN-ERR
            IF      SPA-MACHIPG         =   "U02"
                MOVE    "U02"               TO  WRK-SAKIPG
                PERFORM 210-BACK-SYORI-SEC
@@ -8956,6 +8963,16 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41001-KIHON-CHK-EXT
            END-IF
+      *    老人保険編集エラーがある時、エラーとする
+           IF      SPA-RJN-ERR         =   1
+               MOVE    "1027"              TO  SPA-ERRCD
+               GO      TO      41001-KIHON-CHK-EXT
+           END-IF
+      *    保険エラーがある時、エラーとする
+           IF      SPA-HKN-ERR         =   1
+               MOVE    "1028"              TO  SPA-ERRCD
+               GO      TO      41001-KIHON-CHK-EXT
+           END-IF
       *
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
@@ -8999,7 +9016,7 @@
       *
            MOVE   ZERO                 TO  IDX-SET
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX              >   WRK-GYO-MAX)   OR
+                   UNTIL      (IDX              >   WRK-GYO-MAX)  OR
                               (SPA-ERRCD        NOT =   SPACE )   OR
                               (SPA-GMN-INPUTCD(IDX) =   SPACE )
                IF     (SPA-COM-CHKFLG (IDX)    =   SPACE )  AND
@@ -9007,8 +9024,7 @@
                                            NOT =   "."  AND "S"
                                                         AND "*" )
       *
-      *
-      *            点数マスタ編集・基本チェック
+      *           点数マスタ編集・基本チェック
                    INITIALIZE                  ORCSC92AREA
                    MOVE    SPACE               TO  LNK-SC92-KBN
                    MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
@@ -10759,6 +10775,10 @@
       *    老人保険編集エラーがある時、エラーとする
            IF      SPA-RJN-ERR         =   1
                MOVE    "1027"              TO  SPA-ERRCD
+           END-IF
+      *    保険エラーがある時、エラーとする
+           IF      SPA-HKN-ERR         =   1
+               MOVE    "1028"              TO  SPA-ERRCD
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE

@@ -794,6 +794,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "保険を登録し直して下さい。"
                                        TO  SPA-ERRMSG(37:)
+               WHEN    "1028"
+                   MOVE    "保険組合に矛盾があります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "患者登録で保険を登録し直して下さい。"
+                                       TO  SPA-ERRMSG(27:)
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG

@@ -2598,6 +2598,13 @@
                MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
            END-IF
            MOVE    ZERO                TO  SPA-RJN-ERR
+           MOVE    ZERO                TO  SPA-HKN-ERR
+      *
+      *    Ｈ１５．４以降の保険期間が違う時
+           IF      AGECHK-HKNCHK       =   1
+               MOVE    "1028"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-HKN-ERR
+           END-IF
       *
       *    老人でＨ１４．１０の保険変更がない時
            IF      AGECHK-RJNCHK       =   1
@@ -7814,6 +7821,7 @@
            MOVE    SPA-YAKJYO-1        TO  LNK-ORCSC-YAKJYO-1
            MOVE    SPA-YAKJYO-2        TO  LNK-ORCSC-YAKJYO-2
            MOVE    SPA-YAKJYO-3        TO  LNK-ORCSC-YAKJYO-3
+           MOVE    SPA-TOKUTEI-FLG     TO  LNK-ORCSC-TOKUTEI-FLG
       *
            MOVE    SPA-ROUMANSEI-ARI   TO  LNK-ORCSC-ROUMANSEI-ARI
            MOVE    SPA-ROUMANSEI-ARI2  TO  LNK-ORCSC-ROUMANSEI-ARI2
@@ -8245,6 +8253,7 @@
        210-BACK                    SECTION.
       *
            MOVE    ZERO                TO  SPA-RJN-ERR
+           MOVE    ZERO                TO  SPA-HKN-ERR
            IF      SPA-MACHIPG         =   "U02"
                MOVE    "U02"               TO  WRK-SAKIPG
                PERFORM 210-BACK-SYORI-SEC
@@ -9563,6 +9572,16 @@
                END-IF
            END-IF
            IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41001-KIHON-CHK-EXT
+           END-IF
+      *    老人保険編集エラーがある時、エラーとする
+           IF      SPA-RJN-ERR         =   1
+               MOVE    "1027"              TO  SPA-ERRCD
+               GO      TO      41001-KIHON-CHK-EXT
+           END-IF
+      *    保険エラーがある時、エラーとする
+           IF      SPA-HKN-ERR         =   1
+               MOVE    "1028"              TO  SPA-ERRCD
                GO      TO      41001-KIHON-CHK-EXT
            END-IF
       *
@@ -11818,6 +11837,10 @@
       *    老人保険編集エラーがある時、エラーとする
            IF      SPA-RJN-ERR         =   1
                MOVE    "1027"              TO  SPA-ERRCD
+           END-IF
+      *    保険エラーがある時、エラーとする
+           IF      SPA-HKN-ERR         =   1
+               MOVE    "1028"              TO  SPA-ERRCD
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE

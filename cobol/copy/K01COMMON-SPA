@@ -136,6 +136,8 @@
                05  SPA-WKSRY-HKNCOMBI      PIC  9(04).
       *老人保険変更なし
                05  SPA-RJN-ERR             PIC  9(01).
+      *保険変更なし
+               05  SPA-HKN-ERR             PIC  9(01).
       *診療年月日末日
                05  SPA-SRYLST-DD           PIC 9(02).
       *

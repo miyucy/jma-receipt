@@ -55,6 +55,7 @@
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-PTHKNINF        PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
+           03  FLG-HKNNUM-OK       PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-OK2             PIC 9(01).
@@ -276,6 +277,15 @@
            ELSE
                GO      TO      200-FTNRATE-EXT
            END-IF
+      *
+      *    Ｈ１５．４改正後以下のチェックを行う
+           IF      AGECHK-SRYYMD       >=  "20030401"
+               PERFORM 400-PTHKNCHK-SEC
+               IF      AGECHK-HKNCHK   NOT =   ZERO
+                   GO      TO      200-FTNRATE-EXT
+               END-IF
+           END-IF
+      *
       *    ７０歳以上の時、老人であること
            IF      AGECHK-NENREI       <   70
                GO      TO      200-FTNRATE-EXT
@@ -486,6 +496,57 @@
       *
            .
        3001-HKNNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険の切り替えチェック処理
+      *****************************************************************
+       400-PTHKNCHK-SEC         SECTION.
+      *
+           IF      COMB-HKNNUM         =   SPACE
+               GO      TO      400-PTHKNCHK-EXT
+           END-IF
+      *
+           INITIALIZE                  HKNNUM-REC
+           MOVE    AGECHK-HOSPID       TO  HKN-HOSPID
+           MOVE    COMB-HKNNUM         TO  HKN-HKNNUM
+           MOVE    ZERO                TO  HKN-PAYKBN
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    AGECHK-SRYYMD       TO  ORC-DBYMD
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
+               PERFORM 921-HKNNUM-NEXT-SEC
+           ELSE
+               INITIALIZE                  HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+           MOVE    ZERO                TO  FLG-HKNNUM-OK
+           PERFORM
+               UNTIL   (FLG-HKNNUM     =   1  )  OR
+                       (FLG-HKNNUM-OK  =   1  )
+      *
+               IF     (HKN-TEKSTYMD        <=  COMB-TEKSTYMD ) AND
+                      (HKN-TEKEDYMD        >=  COMB-TEKEDYMD )
+      *            保険期間対象あり
+                   MOVE    1                   TO  FLG-HKNNUM-OK
+               END-IF
+      *
+               MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
+               PERFORM 921-HKNNUM-NEXT-SEC
+           END-PERFORM
+           IF      FLG-HKNNUM-OK       =   ZERO
+               MOVE    1               TO  AGECHK-HKNCHK
+           END-IF
+      *
+           .
+       400-PTHKNCHK-EXT.
            EXIT.
       *
       *****************************************************************
