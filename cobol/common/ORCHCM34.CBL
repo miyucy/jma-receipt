@@ -4751,7 +4751,9 @@
       *
            MOVE    ORCHCM34-PRTAREA    TO  ORCSPRTAREA
       *
-           MOVE   "HCM341.red"         TO  SPRT-PRTID
+           MOVE    SPA-PTID            TO  SPRT-PTID
+           MOVE    ORCHCM34-SRYYM      TO  SPRT-SRYYM
+           MOVE    "HCM341.red"        TO  SPRT-PRTID
            MOVE    HCM341              TO  SPRT-PRTDATA
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
@@ -4776,6 +4778,8 @@
       *
            MOVE    ORCHCM34-PRTAREA    TO  ORCSPRTAREA
       *
+           MOVE    SPA-PTID            TO  SPRT-PTID
+           MOVE    ORCHCM34-SRYYM      TO  SPRT-SRYYM
            MOVE   "HCM342.red"         TO  SPRT-PRTID
            MOVE    HCM342              TO  SPRT-PRTDATA
            MOVE    "1"                 TO  SPRT-SITEKBN
