@@ -755,20 +755,20 @@
            END-IF
       *
       *    社保（継続）編集処理
-           MOVE    SPACE                   TO  WRK-CONTKBN-KEY
+      *****MOVE    SPACE                   TO  WRK-CONTKBN-KEY
       *
-           IF      COMB-KOHHKNNUM (1)  =   "012"   OR
-                   COMB-KOHHKNNUM (2)  =   "012"   OR
-                   COMB-KOHHKNNUM (3)  =   "012"   OR
-                   COMB-KOHHKNNUM (4)  =   "012" 
-               IF      COMB-HKNID          NOT =   ZERO
-                   IF      PTHKN-CONTKBN           =   1       
-                       PERFORM 20011-CONTKBN-CHECK-SEC
-                   END-IF
-               ELSE
-                   PERFORM 20011-CONTKBN-CHECK-SEC
-               END-IF
-           END-IF
+      *     IF      COMB-KOHHKNNUM (1)  =   "012"   OR
+      *             COMB-KOHHKNNUM (2)  =   "012"   OR
+      *             COMB-KOHHKNNUM (3)  =   "012"   OR
+      *             COMB-KOHHKNNUM (4)  =   "012" 
+      *         IF      COMB-HKNID          NOT =   ZERO
+      *             IF      PTHKN-CONTKBN           =   1       
+      *                 PERFORM 20011-CONTKBN-CHECK-SEC
+      *             END-IF
+      *         ELSE
+      *             PERFORM 20011-CONTKBN-CHECK-SEC
+      *         END-IF
+      *****END-IF
       *
       *    公費のレセプト・請求書への出力
       *
@@ -833,19 +833,19 @@
       *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
-           IF      WRK-CONTKBN-KEY     NOT =   SPACE
+      *****IF      WRK-CONTKBN-KEY     NOT =   SPACE
       *        社保（継続）＋生保のとき
-               MOVE    WRK-CONTKBN-KEY     TO  WRK-RECE61-KEY
-               MOVE    WRK-RECE61-KEY      TO  RECE61-KEY 
-               PERFORM 900-RECE61-READ-SEC
-               IF      FLG-RECE61          =   ZERO
-                   MOVE    RECE61-REC          TO  WRK-RECE61-REC 
-                   PERFORM 20011-RECE61-REWRITE-SEC
-               END-IF
-           ELSE
+      *         MOVE    WRK-CONTKBN-KEY     TO  WRK-RECE61-KEY
+      *         MOVE    WRK-RECE61-KEY      TO  RECE61-KEY 
+      *         PERFORM 900-RECE61-READ-SEC
+      *         IF      FLG-RECE61          =   ZERO
+      *             MOVE    RECE61-REC          TO  WRK-RECE61-REC 
+      *             PERFORM 20011-RECE61-REWRITE-SEC
+      *         END-IF
+      *****ELSE
       *        社保（継続）＋生保以外のとき
                PERFORM 20011-FILE-HENSYU-SEC
-           END-IF   
+      *****END-IF   
       *
       *    医療費請求書
            IF      FLG-KOH             =   1  
@@ -1035,13 +1035,13 @@
            END-IF
       *
       *    最終診療日
-      **     MOVE    ACCT-SRYYM          TO  WRK-SRYYM
-      **     PERFORM VARYING IDX FROM    1   BY  1
-      **             UNTIL   IDX >       31
-      **         IF      ACCT-DAY (1 IDX)    >   ZERO
-      **             MOVE    IDX                 TO  WRK-SRYDD
-      **         END-IF
-      **     END-PERFORM
+           MOVE    NACCT-SRYYM         TO  WRK-SRYYM
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       31
+               IF      NACCT-DAY (IDX)     >   ZERO
+                   MOVE    IDX                 TO  WRK-SRYDD
+               END-IF
+           END-PERFORM
       *
       *   主保険情報読み出し
            IF      COMB-HKNID          NOT =   ZERO
@@ -1057,7 +1057,7 @@
            END-IF
       *
       *    社保（継続）編集処理
-           MOVE    SPACE                   TO  WRK-CONTKBN-KEY
+      *****MOVE    SPACE                   TO  WRK-CONTKBN-KEY
       *
       **     IF      COMB-KOHHKNNUM (1)  =   "012"   OR
       **             COMB-KOHHKNNUM (2)  =   "012"   OR
@@ -1088,6 +1088,9 @@
                        UNTIL   IDX >       4
                        OR      COMB-KOHHKNNUM (IDX)    
                                                =   SPACE
+      *???
+               DISPLAY "COMB=" IDX "##" COMB-KOHHKNNUM (IDX) "##"
+      *???
                    IF      COMB-KOHHKNNUM (IDX)(1:1)
                                                >=  "1" AND <=  "8"
                        INITIALIZE                      HKNNUM-REC
@@ -1099,6 +1102,9 @@
                        MOVE    HKNNUM-REC              TO  MCPDATA-REC
                        PERFORM 900-HKNNUM-INV-SEC
       *
+      *??? 
+               DISPLAY "HKNNUM=" COMB-HKNNUM "##" HKN-RECESKYKBN "##"
+      *??? 
                        IF      COMB-HKNNUM         =   "060"   OR  "067" 
                            IF      HKN-RECESKYKBN      =   "1" OR  "3"
                                MOVE    2                   TO  IDX1
@@ -1135,19 +1141,19 @@
       *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
-           IF      WRK-CONTKBN-KEY     NOT =   SPACE
+      *****IF      WRK-CONTKBN-KEY     NOT =   SPACE
       *        社保（継続）＋生保のとき
-               MOVE    WRK-CONTKBN-KEY     TO  WRK-RECE61-KEY
-               MOVE    WRK-RECE61-KEY      TO  RECE61-KEY 
-               PERFORM 900-RECE61-READ-SEC
-               IF      FLG-RECE61          =   ZERO
-                   MOVE    RECE61-REC          TO  WRK-RECE61-REC 
-                   PERFORM 20011-RECE61-REWRITE-SEC
-               END-IF
-           ELSE
+      *         MOVE    WRK-CONTKBN-KEY     TO  WRK-RECE61-KEY
+      *         MOVE    WRK-RECE61-KEY      TO  RECE61-KEY 
+      *         PERFORM 900-RECE61-READ-SEC
+      *         IF      FLG-RECE61          =   ZERO
+      *             MOVE    RECE61-REC          TO  WRK-RECE61-REC 
+      *             PERFORM 20011-RECE61-REWRITE-SEC
+      *         END-IF
+      *****ELSE
       *        社保（継続）＋生保以外のとき
                PERFORM 20011-FILE-HENSYU-SEC
-           END-IF   
+      *****END-IF   
       *
       *    医療費請求書
            IF      FLG-KOH             =   1  
@@ -1200,19 +1206,11 @@
       *            公費単独のとき
       *****        IF      RECE61-HKNID        =   ZERO
                    IF      RECE61-HKNNUM       =   SPACE
-      *???
-      **                 DISPLAY "DELETE " RECE61-KEY "##"
-      ***                 ACCEPT  WRK-IN
-      *???
                        DELETE  RECE61-FILE RECORD
                    ELSE     
       *            社保（継続）のとき対象データとする
                        IF      RECE61-CONTKBN      =   "1"
                            MOVE    RECE61-KEY      TO  WRK-CONTKBN-KEY     
-      *???
-      ***                 DISPLAY "CONTKBN " WRK-CONTKBN-KEY "##"
-      ***                 ACCEPT  WRK-IN
-      *???
                        END-IF      
                    END-IF
                    MOVE    1                   TO  FLG-RECE61
