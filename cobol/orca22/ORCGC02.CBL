@@ -134,6 +134,8 @@
       *  01.08.07    NACL-藤原    04/03/30  開始日と保険組合せのチェックの修正
       *  01.08.08    NACL-藤原    04/04/05  ＣＤ検索からの病名コードの
       *                                     編集の修正
+      *  01.08.09    NACL-藤原    04/04/13  修飾語コードのみ検索時の病名
+      *                                     編集フラグのクリア
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4707,7 +4709,9 @@
                MOVE    "0006"          TO  SPA-ERRCD
                MOVE    SPACE           TO  SPA-CIDCD2
                                            WRK-HAISIYMDH
-               MOVE    ZERO            TO  SPA-NAI-C02-BYOMEIMOJI 
+               MOVE    ZERO            TO  SPA-NAI-C02-BYOMEIMOJI
+               MOVE    SPACE           TO  SPA-NAI-C02-BYOMEIHENFLG
+                                           SPA-GMN-C02-BYOMEIHENFLG
                GO  TO  41013-BYOMEI-CHK-EXT
            END-IF
       *
