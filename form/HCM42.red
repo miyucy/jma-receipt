@@ -13,7 +13,7 @@
     </element>
     <element name="KKNYM" occurs="1">
       <appinfo>
-        <embed object="string" length="34"/>
+        <embed object="string" length="100"/>
       </appinfo>
     </element>
     <element name="SAKYMD" occurs="1">

@@ -211,7 +211,8 @@
                    07  WRK-SRYKAL                  PIC X(02).
                    07  WRK-SRYKAL-STYUKYMD         PIC X(08).
                    07  WRK-SRYKAL-EDYUKYMD         PIC X(08).
-                   07  WRK-SRYKAMEIL               PIC X(20).
+                   07  WRK-SRYKAMEIL               PIC X(80).
+                   07  WRK-SRYKAMEIL1              PIC X(20).
            03  WRK-KKN-HEN.
                05  WRK-KKNSTYMD                    PIC X(16).
                05  WRK-KKNMID                      PIC X(02).
@@ -236,6 +237,7 @@
            03  WRK-SRT-SRYKA                       PIC X(02).
            03  WRK-SRT-SRYYMD                      PIC X(08).
            03  WRK-SPRT-SRYYM                      PIC X(06).
+           03  WRK-KKNYM                           PIC X(100).
       *
        01  HEAD-AREA.
            03  HEAD-NYUGAI                         PIC X(10).
@@ -603,7 +605,8 @@
                                                              (IDX1)
                MOVE    SYS-1005-EDYUKYMD   TO  WRK-SRYKAL-EDYUKYMD
                                                              (IDX1)
-               MOVE    SYS-1005-SRYKANAME1 TO  WRK-SRYKAMEIL (IDX1)
+               MOVE    SYS-1005-SRYKANAME  TO  WRK-SRYKAMEIL (IDX1)
+               MOVE    SYS-1005-SRYKANAME1 TO  WRK-SRYKAMEIL1(IDX1)
       *
                MOVE    PATH-TBL-SYSKANRI-KEY5  TO  MCP-PATH
                PERFORM 910-DBFETCH-SEC
@@ -865,6 +868,36 @@
            MOVE    CNT-PAGE        TO  WRK-ZZ9
            MOVE    WRK-ZZ9         TO  HCM42-PAGE
       *
+      *
+           IF    ( WRK-PARA-KAKBN  =   "1" )
+      *
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   WRK-SRYKALST-MAX )
+      *
+                   IF    ( BG012SRT-SYU-SRYKA
+                                   =   WRK-SRYKAL (IDX1) )
+                    AND  ( BG012SRT-SYU-SRYYMD
+                                  >=  WRK-SRYKAL-STYUKYMD (IDX1))
+                    AND  ( BG012SRT-SYU-SRYYMD
+                                  <=  WRK-SRYKAL-EDYUKYMD (IDX1))
+      *
+                       MOVE    SPACE       TO  WRK-KKNYM
+                       STRING  HCM42-KKNYM     DELIMITED   BY  SPACE
+                               "¡¡"            DELIMITED   BY  SIZE
+                               WRK-SRYKAMEIL (IDX1)
+                                               DELIMITED   BY  SPACE
+                       INTO    WRK-KKNYM
+                       END-STRING
+      *
+                       MOVE    WRK-KKNYM   TO  HCM42-KKNYM
+                       MOVE    WRK-SRYKALST-MAX
+                                           TO  IDX1
+      *
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
            .
        210-HEAD-EXT.
            EXIT.
@@ -890,7 +923,7 @@
                IF    ( SYU-SRYKA   =   WRK-SRYKAL (IDX1) )
                 AND  ( SYU-SRYYMD  >=  WRK-SRYKAL-STYUKYMD (IDX1))
                 AND  ( SYU-SRYYMD  <=  WRK-SRYKAL-EDYUKYMD (IDX1))
-                   MOVE    WRK-SRYKAMEIL (IDX1)
+                   MOVE    WRK-SRYKAMEIL1(IDX1)
                                    TO  HCM42-SRYKA (CNT-LINE)
                END-IF
       *

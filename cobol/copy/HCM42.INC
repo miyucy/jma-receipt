@@ -1,7 +1,7 @@
         01  HCM42.
             02  HCM42-NYUGAI    PIC X(10).
             02  HCM42-SRTKBN    PIC X(20).
-            02  HCM42-KKNYM PIC X(34).
+            02  HCM42-KKNYM PIC X(100).
             02  HCM42-SAKYMD    PIC X(22).
             02  HCM42-PAGE  PIC X(3).
             02  HCM42-NAIYO-TBL         OCCURS  30 TIMES.
