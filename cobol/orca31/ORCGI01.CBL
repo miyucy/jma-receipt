@@ -41,6 +41,8 @@
       *  01.00.09    NACL-太田    03.03.12  選定療養費１８０日越えの
       *                                     日数算定方法修正
       *  01.00.10    NACL-太田    03.03.12  カルテ印刷機能追加
+      *  01.00.11    NACL-太田    03.03.14  転科・転棟・転室時、入院料
+      *                                     のみの変更も可とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -94,6 +96,7 @@
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-SRYACCT                 PIC 9(01).
            03  FLG-SYUARI                  PIC 9(01).
+           03  FLG-RJN                     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -204,6 +207,11 @@
            03  WRK-NYUINKA-KEY             PIC X(02).
            03  WRK-BTUNUM-KEY              PIC X(02).
            03  WRK-BRMNUM-KEY              PIC X(08).
+           03  WRK-HKNCOMBI-KEY            PIC X(04).
+           03  WRK-TOKUTEI-KEY.
+               05  WRK-TOKUTEI-KBN-KEY     PIC X(01).
+               05  WRK-TOKUTEI-NYUIN-KEY   PIC X(02).
+      *
            03  WRK-REKI-BYOMEI-EDIT-AREA.
                05  WRK-REKI-BYOMEI-EDIT-OCC
                                            OCCURS 50
@@ -280,6 +288,7 @@
            03  WRK-MCP-PUTTYPE             PIC X(08).
            03  WRK-ORCHCN01-SYORIKBN       PIC X(01).
            03  WRK-ORCHCN01-PRTKBN         PIC X(01).
+           03  WRK-AGECHK-SRYYMD           PIC X(08).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -452,6 +461,9 @@
       *
       *    入院カルテ
            COPY    "CPORCHCN01.INC".
+      *
+      *    保険算定用年齢・割合計算サブ
+           COPY    "CPORCSAGECHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1812,8 +1824,8 @@
                                    TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
       *
-           IF      ( PTNYUINRRK-JTIKBN       = "2" OR "3" OR "4" )
-            AND    ( PTNYUINRRK-TAIINYMD     = "99999999" )
+           IF      ( PTNYUINRRK-JTIKBN     = "2" OR "3" OR "4" OR "7" )
+            AND    ( PTNYUINRRK-TAIINYMD   = "99999999" )
                MOVE    WRK-HENYMDG TO  SPA-GMN-I01-MAEIDOYMD
            END-IF
       *
@@ -1850,7 +1862,8 @@
                                    TO  WRK-CMB-CD
            PERFORM 4103-CMB-NYUINKA-SRH-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-NYUINKA
-                                       SPA-NAI-I01-NYUINKA-MOT
+           MOVE    PTNYUINRRK-NYUINKA
+                                   TO  SPA-NAI-I01-NYUINKA-MOT
       *
       *    保険組合せ番号
            MOVE    PTNYUINRRK-HKNCOMBINUM
@@ -1858,6 +1871,8 @@
            PERFORM 4103-CMB-HKNCOMBI-SRH-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-HKNCOMBI
            MOVE    WRK-CMB-ITM2    TO  SPA-NAI-I01-FTNRATE
+           MOVE    PTNYUINRRK-HKNCOMBINUM
+                                   TO  SPA-NAI-I01-HKNCOMBI-MOT
       *
       *    入院日
            MOVE    PTNYUINRRK-NYUINYMD
@@ -1894,6 +1909,7 @@
            PERFORM 4103-CMB-TOKNYUIN-SRH2-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-TOKNYUIN
            MOVE    WRK-CMB-ITM2    TO  SPA-NAI-I01-TOKNYUIN-ORG
+                                       SPA-NAI-I01-TOKNYUINMOT
       *
       *    室料差額
            MOVE    PTNYUINRRK-RM-SAGAKU
@@ -1987,7 +2003,6 @@
       *    病棟名称
            MOVE    PTNYUINRRK-BTUNAME
                                    TO  SPA-GMN-I01-BTUNAME
-                                       SPA-NAI-I01-BTUNAME-MOT
       *
       *    入院日
            MOVE    PTNYUINRRK-NYUINYMD
@@ -3912,6 +3927,26 @@
                END-IF
            END-IF
       *
+      *    老人の場合、老人一般病棟特定入院基本料をコンボに設定
+           MOVE    WRK-KJNYMD  TO  WRK-AGECHK-SRYYMD
+           PERFORM 4801-RJN-TAISYO-CHK-SEC
+           DISPLAY "WRK-AGECHK-SRYYMD = " WRK-AGECHK-SRYYMD
+           DISPLAY "FLG-RJN = " FLG-RJN
+           IF    ( FLG-RJN         =   1 )
+               MOVE    "5111"      TO  WRK-KANRICD
+               MOVE    "22"        TO  WRK-KBNCD
+               PERFORM 4102-SYSKANRI-SEL-SEC
+               IF    ( FLG-SYSKANRI    =   ZERO )
+                   MOVE    MCPDATA-REC     TO  SYS-5111-REC
+                   MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
+                                           TO  WRK-TOKNYUIN-NM
+                   MOVE    "3"             TO  WRK-TOKNYUIN-KBN
+                   MOVE    SYS-5111-KBNCD
+                                           TO  WRK-TOKNYUIN-CD
+                   PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
+               END-IF
+           END-IF
+      *
       *    短期滞在手術基本料をコンボに設定
            MOVE    "5111"      TO  WRK-KANRICD
            MOVE    "21"        TO  WRK-KBNCD
@@ -3925,6 +3960,7 @@
                                        TO  WRK-TOKNYUIN-CD
                PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
            END-IF
+      *
       *
            .
        4101-CMB-TOKNYUIN-SET-EXT.
@@ -4000,7 +4036,8 @@
                IF    ( SPA-GMN-I01-TOKNYUIN-ITM2 (IDX10) (1 : 1)
                                    =   "1" OR  "2" OR  "3" )
                    IF    ( SPA-GMN-I01-TOKNYUIN-ITM2 (IDX10)
-                                   =   "321" )
+                                   =   "321" 
+                     OR                "322" )
                        CONTINUE
                    ELSE
                        MOVE    SPA-GMN-I01-TOKNYUIN-ITM (IDX10)
@@ -6032,11 +6069,14 @@
                END-IF
            END-IF
       *
-      *    入院科または、病室番号または、病棟名のいずれかが
-      *    変更されていること 
-           IF    ( SPA-GMN-I01-NYUINKA =   SPA-NAI-I01-NYUINKA-MOT )
-            AND  ( SPA-GMN-I01-BTUNAME =   SPA-NAI-I01-BTUNAME-MOT )
-            AND  ( SPA-GMN-I01-BRMNUM  =   SPA-NAI-I01-BRMNUM-MOT  )
+      *    入院科または、病室番号または、病棟名または、特定入院料のいずれ
+      *    かが変更されていること 
+           IF    ( SPA-GMN-I01-NYUINKA-CD  =   SPA-NAI-I01-NYUINKA-MOT )
+            AND  ( SPA-GMN-I01-BTUNAME     =   SPA-NAI-I01-BTUNAME-MOT )
+            AND  ( SPA-GMN-I01-BRMNUM      =   SPA-NAI-I01-BRMNUM-MOT  )
+            AND  ( SPA-GMN-I01-HKNCOMBI-CD =   SPA-NAI-I01-HKNCOMBI-MOT)
+            AND  ( SPA-NAI-I01-TOKNYUIN-ORG
+                                           =   SPA-NAI-I01-TOKNYUINMOT )
                    MOVE    "1017"      TO  SPA-ERRCD
                    MOVE    4           TO  SPA-GMN-I01-CUR
                    GO  TO  4801-TEKNA-CHK-EXT
@@ -6196,6 +6236,14 @@
       *        病室が変わった場合
                WHEN    WRK-BRMNUM-KEY  NOT =   PTNYUINRRK-BRMNUM
                    MOVE    "4"   TO  PTNYUINRRK-JTIKBN
+      *        入院料が変わったとき
+               WHEN  ( WRK-HKNCOMBI-KEY
+                                       NOT  =  PTNYUINRRK-HKNCOMBINUM )
+               WHEN  ( WRK-TOKUTEI-KBN-KEY
+                                   NOT =   PTNYUINRRK-TOKUTEI-KBN )
+                 OR  ( WRK-TOKUTEI-NYUIN-KEY
+                                   NOT =   PTNYUINRRK-TOKUTEI-NYUIN )
+                   MOVE    "7"   TO  PTNYUINRRK-JTIKBN
                END-EVALUATE
       *
                MOVE    SPA-NAI-I01-IDOYMD
@@ -6235,6 +6283,7 @@
                                        WRK-NYUINKA-KEY
                                        WRK-BTUNUM-KEY
                                        WRK-BRMNUM-KEY
+                                       WRK-TOKUTEI-KEY
            MOVE    ZERO            TO  WRK-SHONUM
       *
            MOVE    SPA-NAI-I01-PTRRKNUM
@@ -6929,6 +6978,12 @@
                                TO  WRK-BTUNUM-KEY
            MOVE    PTNYUINRRK-BRMNUM
                                TO  WRK-BRMNUM-KEY
+           MOVE    PTNYUINRRK-TOKUTEI-KBN
+                               TO  WRK-TOKUTEI-KBN-KEY
+           MOVE    PTNYUINRRK-HKNCOMBINUM
+                               TO  WRK-HKNCOMBI-KEY
+           MOVE    PTNYUINRRK-TOKUTEI-NYUIN
+                               TO  WRK-TOKUTEI-NYUIN-KEY
       *
            .
        4801-TENSYUTU-MOTO-UPD-EXT.
@@ -8491,37 +8546,11 @@
       *****************************************************************
        4801-RJNCD-CHG-SEC   SECTION.
       *
-      *    入院患者の老人保険判定
-           INITIALIZE              HKNCOMBI-REC
-           MOVE    ZERO            TO   FLG-HKNCOMBI
-      *
-           MOVE    SPA-HOSPID      TO   COMB-HOSPID
-           MOVE    SPA-NAI-I01-PTID
-                                   TO   COMB-PTID
-           MOVE    SPA-GMN-I01-HKNCOMBI-CD
-                                   TO   COMB-HKNCOMBINUM
-           MOVE    HKNCOMBI-REC         TO   MCPDATA-REC
-           MOVE    "HKNCOMBI-KEY"       TO   WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC 
-           IF    ( FLG-DBRC    =   ZERO )
-               MOVE    MCPDATA-REC
-                                   TO   HKNCOMBI-REC
-           ELSE
-               MOVE    1           TO   FLG-HKNCOMBI
-           END-IF
-      *
-           MOVE    "HKNCOMBI-KEY"  TO   WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
-      *    入院患者の年齢計算
-           PERFORM    4801-PT-AGE-SEC
-      *
-      *    老人対象患者であれば入院診療コードの置き換え
-           IF    ((FLG-HKNCOMBI     =   ZERO)    AND
-                  (COMB-KOH1HKNNUM  =   "027"))      OR
-                 (WRK-NENREI       >=    75)         OR
-                 ((WRK-NENREI      >=    70)     AND
-                  (PTINF-BIRTHDAY  <=   "19320930"))
+      *    老人対象患者チェック
+           MOVE    SYOKIKSN-IN-SANTEISTYMD
+                                   TO  WRK-AGECHK-SRYYMD
+           PERFORM 4801-RJN-TAISYO-CHK-SEC
+           IF    ( FLG-RJN         =   1 )
                INITIALIZE              SRYCDCHG-REC
       *
                MOVE    SYOKIKSN-IN-KHNSRYCD
@@ -8544,6 +8573,64 @@
       *
            .
        4801-RJNCD-CHG-EXT.
+           EXIT.
+      *****************************************************************
+      *    老人対象患者チェック
+      *****************************************************************
+       4801-RJN-TAISYO-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-RJN
+      *
+      *    入院患者の老人保険判定
+           MOVE    ZERO                TO   FLG-HKNCOMBI
+           INITIALIZE              HKNCOMBI-REC
+      *
+           MOVE    SPA-HOSPID          TO   COMB-HOSPID
+           MOVE    SPA-NAI-I01-PTID
+                                       TO   COMB-PTID
+           MOVE    SPA-GMN-I01-HKNCOMBI-CD
+                                       TO   COMB-HKNCOMBINUM
+           MOVE    HKNCOMBI-REC        TO   MCPDATA-REC
+           MOVE    "HKNCOMBI-KEY"      TO   WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC 
+           IF    ( FLG-DBRC    =   ZERO )
+               MOVE    MCPDATA-REC
+                                       TO   HKNCOMBI-REC
+           ELSE
+               MOVE    1               TO   FLG-HKNCOMBI
+           END-IF
+      *
+           MOVE    "HKNCOMBI-KEY"      TO   WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *    入院患者の年齢計算
+           INITIALIZE ORCSAGECHKAREA
+           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-NAI-I01-PTID
+                                       TO  AGECHK-PTID
+           MOVE    WRK-AGECHK-SRYYMD
+                                       TO  AGECHK-SRYYMD
+           MOVE    SPA-NAI-I01-BIRTHDAY
+                                       TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"        USING
+                                           ORCSAGECHKAREA
+           IF    ( AGECHK-RC       =   ZERO )
+               CONTINUE
+           ELSE
+               INITIALIZE  ORCSAGECHKAREA
+           END-IF
+      *
+      *    老人対象患者判定
+           IF    ((FLG-HKNCOMBI     =   ZERO)    AND
+                  (COMB-KOH1HKNNUM  =   "027"))      OR
+                 ( AGECHK-NENREI   >=    75)         OR
+                 ((AGECHK-NENREI   >=    70)     AND
+                  (PTINF-BIRTHDAY  <=   "19320930"))
+               MOVE    1            TO  FLG-RJN
+           END-IF
+      *
+           .
+       4801-RJN-TAISYO-CHK-EXT.
            EXIT.
       *****************************************************************
       *    患者情報更新処理
@@ -9898,8 +9985,10 @@
                MOVE    "異動日＜前回異動日となっています"
                                        TO  SPA-ERRMSG
            WHEN    "1017"
-               MOVE    "入院科（病棟または病室）を変更してください"
-                                       TO  SPA-ERRMSG
+               MOVE    "入院科・病棟・病室・保険組合せ・特定入院"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "料のいずれかを変更してください"
+                                       TO  SPA-ERRMSG (41 : )
            WHEN    "1018"
                MOVE    "入院日≦前回退院日となっています"
                                        TO  SPA-ERRMSG

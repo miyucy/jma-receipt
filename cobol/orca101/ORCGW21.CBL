@@ -686,7 +686,9 @@
                                        TO  SYS-5111-REC
       *
                IF    ( SYS-5111-KBNCD      =   "20"
-                   OR                          "21"    )
+                   OR                          "21"
+                   OR                          "22"
+                                                    )
                    CONTINUE
                ELSE
                    COMPUTE SPA-GMN-W21-BRM-TOKNYUIN-CNT

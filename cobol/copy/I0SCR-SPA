@@ -203,6 +203,9 @@
                  11  SPA-NAI-I01-NYUINKA-MOT       PIC X(27).
       *          退院日（西暦）
                  11  SPA-NAI-I01-TAIINYMD          PIC X(08).
+      *          保険組み合わせ
+                 11  SPA-NAI-I01-HKNCOMBI-MOT      PIC X(04).
+      *
       *          保険組み合わせ負担率
                  11  SPA-NAI-I01-FTNRATE           PIC X(05).
       *          特定入院料
@@ -211,6 +214,7 @@
                                                    PIC X(01).
                    13  SPA-NAI-I01-TOKNYUIN-ORG-CD
                                                    PIC X(02).
+                 11  SPA-NAI-I01-TOKNYUINMOT       PIC X(3).
       *          退院処理時、請求データ取消フラグ
                  11  SPA-NAI-I01-TORIKESI-FLG      PIC 9(01).
       *        入院歴リスト内部領域
