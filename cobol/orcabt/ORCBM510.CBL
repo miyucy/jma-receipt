@@ -888,7 +888,7 @@
            INITIALIZE                  MONTHLYNUM-REC
            MOVE    RECE10-HOSPID   TO  MONTHLYNUM-HOSPID
            MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
-           MOVE    012             TO  MONTHLYNUM-KOHNUM
+           MOVE    "012"           TO  MONTHLYNUM-KOHNUM
            MOVE    PTKOH-TEKSTYMD(1:6)
                                    TO  MONTHLYNUM-SRYYM
            MOVE    RECE10-NYUGAIKBN TO  MONTHLYNUM-NYUGAIKBN
