@@ -1331,9 +1331,6 @@
                                               NYUIN-TGMONEY +
                                              (WRK-KHNTEN  -  
                                               WRK-SENTEI-KHNTEN) * 10
-                                 DISPLAY "WRK-KHNTEN = " WRK-KHNTEN
-                                 DISPLAY "WRK-SENTEI-KHNTEN = " 
-                                                    WRK-SENTEI-KHNTEN
       *                          ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
                                  WHEN   3
                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
