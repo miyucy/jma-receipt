@@ -1709,7 +1709,7 @@
                    END-IF
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE02-TENSU(14 BUN-IDX)  =
@@ -1860,7 +1860,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
                        ADD    WK-ZAIKAISU    TO   RECE02-KAISU(17)
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE02-TENSU(17 BUN-IDX)  =
