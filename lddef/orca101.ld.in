@@ -34,6 +34,7 @@ bind	"W98"		"OpenCOBOL"	"ORCGW98";
 bind	"W99"		"OpenCOBOL"	"ORCGW99";
 bind	"WERR"		"OpenCOBOL"	"ORCGWERR";
 bind	"WID1"		"OpenCOBOL"	"ORCGWID1";
+bind	"WID2"		"OpenCOBOL"	"ORCGWID2";
 
 multiplex_group	orca101;
 
@@ -72,6 +73,7 @@ data	{
 		W99;
 		WERR;
 		WID1;
+		WID2;
 	};
 };
 
