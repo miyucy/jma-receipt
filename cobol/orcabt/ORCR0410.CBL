@@ -45,6 +45,8 @@
       *  01.00.14    NACL-門脇    04.10.15  自賠責特定器材等消費税対応
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.01.02    NACL-門脇    04/12/17  胸部固定帯加算、創外固定器
+      *                                     使用加算を薬剤等へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -266,6 +268,8 @@
            03  CONS-YOUBUKASAN PIC X(09)   VALUE   "140037490".
       *    胸部固定帯加算
            03  CONS-KYOBUKASAN PIC X(09)   VALUE   "140040110".
+      *    創外固定器使用加算
+           03  CONS-SOGAIKASAN PIC X(09)   VALUE   "150266970".
       *    療養担当手当て
            03  CONS-RYOYOTEATE PIC X(09)   VALUE   "199000610".
       *
@@ -1447,6 +1451,7 @@
       *
                        IF   SRY-SRYCD(IDY) =  CONS-YOUBUKASAN
                                            OR CONS-KYOBUKASAN
+                                           OR CONS-SOGAIKASAN
                             COMPUTE  TBL-SYUTEN-JI(ID1)  =
                                      TBL-SYUTEN-JI(ID1)  -
                                     ( WRK-ZAIKAISU-JI * TNS-TEN )

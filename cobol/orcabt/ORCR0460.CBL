@@ -66,6 +66,8 @@
       *  01.01.06    NACL-門脇    04.09.22  薬剤・器材の記載順修正
       *  中止処理追加
       *  01.02.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.02.02    NACL-門脇    04/12/17  胸部固定帯加算、創外固定器
+      *                                     使用加算を薬剤等へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -608,6 +610,8 @@
            03  WRK-CONS-YOUBUKASAN     PIC X(09)   VALUE "140037490".
       *    胸部固定帯加算
            03  WRK-CONS-KYOBUKASAN     PIC X(09)   VALUE "140040110".
+      *    創外固定器使用加算
+           03  WRK-CONS-SOGAIKASAN     PIC X(09)   VALUE "150266970".
       *
       *    フィルム料（乳幼児）加算
            03  WRK-CONS-FILM-YOUJI-KASAN
@@ -996,6 +1000,7 @@
                                    IF  RECE45-SRYCD (IDX)    =
                                            WRK-CONS-YOUBUKASAN
                                         OR WRK-CONS-KYOBUKASAN
+                                        OR WRK-CONS-SOGAIKASAN
                                        MOVE    4             TO  IDY
                                    ELSE
                                        MOVE    3             TO  IDY

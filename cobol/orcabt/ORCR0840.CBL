@@ -51,6 +51,8 @@
       *  01.01.09    NACL-門脇    04/10/15  自賠責特定器材等消費税対応
       *  中止処理追加
       *  01.02.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.02.02    NACL-門脇    04/12/17  胸部固定帯加算、創外固定器
+      *                                     使用加算を薬剤等へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -355,6 +357,7 @@
            03  WRK-KSNRATE                             PIC 9V99.    
            03  WRK-YOUBUKASAN                          PIC 9(07).
            03  WRK-KYOBUKASAN                          PIC 9(07).
+           03  WRK-SOGAIKASAN                          PIC 9(07).
            03  WRK-RYOYOTEATE                          PIC 9(07).
            03  WRK-RYOYOTEATE2                         PIC 9(07).
       *
@@ -467,6 +470,8 @@
            03  CONS-YOUBUKASAN PIC X(09)   VALUE   "140037490".
       *    胸部固定帯加算
            03  CONS-KYOBUKASAN PIC X(09)   VALUE   "140040110".
+      *    創外固定器使用加算
+           03  CONS-SOGAIKASAN PIC X(09)   VALUE   "150266970".
       *    療養担当手当（入院）
            03  CONS-RYOYOTEATE PIC X(09)   VALUE   "199000510".
       *
@@ -1087,6 +1092,7 @@
                                           WRK-SURYOUTOTAL
                                           WRK-YOUBUKASAN
                                           WRK-KYOBUKASAN
+                                          WRK-SOGAIKASAN
                                           WRK-RYOYOTEATE
       *
                        MOVE   ZERO   TO   WRK-SRYSURYO
@@ -1115,6 +1121,7 @@
                                                     WRK-SURYOUTOTAL
                                                     WRK-YOUBUKASAN
                                                     WRK-KYOBUKASAN
+                                                    WRK-SOGAIKASAN
                                                     WRK-RYOYOTEATE
       *
                                  MOVE   ZERO   TO   WRK-SRYSURYO
@@ -2503,6 +2510,14 @@
                     COMPUTE  RECE84-KIZAITEN  =  RECE84-KIZAITEN
                                               +  TNS-TEN
                   END-IF
+                  IF      SRY-SRYCD(IDX2)    =     CONS-SOGAIKASAN
+                    COMPUTE  WRK-SOGAIKASAN   =  WRK-SOGAIKASAN
+                                              +  TNS-TEN
+                    COMPUTE  RECE84-SYUTEN1   =  RECE84-SYUTEN1
+                                              -  TNS-TEN
+                    COMPUTE  RECE84-KIZAITEN  =  RECE84-KIZAITEN
+                                              +  TNS-TEN
+                  END-IF
       *           自賠責・療養担当手当用特例処理
       *           （自賠責の場合、１０点を１２０円に読み替える）
       *           （療養担当手当：１月１回の算定）
@@ -3508,6 +3523,12 @@
                                    COMPUTE  WK-YKZTEN  = WK-YKZTEN
                                                        + WRK-KYOBUKASAN
                                   END-IF
+                                  IF  WRK-SOGAIKASAN  NOT =  ZERO
+                                   COMPUTE  WK-SYUTEN  = WK-SYUTEN
+                                                       - WRK-SOGAIKASAN
+                                   COMPUTE  WK-YKZTEN  = WK-YKZTEN
+                                                       + WRK-SOGAIKASAN
+                                  END-IF
                              END-IF
                            END-IF                                       
                          END-IF
@@ -3528,6 +3549,12 @@
                                                      -  WRK-KYOBUKASAN
                                 COMPUTE  WK-KIZAITEN =  WK-KIZAITEN
                                                      +  WRK-KYOBUKASAN
+                             END-IF
+                             IF  WRK-SOGAIKASAN  NOT =  ZERO
+                                COMPUTE  WK-SYUTEN   =  WK-SYUTEN
+                                                     -  WRK-SOGAIKASAN
+                                COMPUTE  WK-KIZAITEN =  WK-KIZAITEN
+                                                     +  WRK-SOGAIKASAN
                              END-IF
                            END-IF
                        END-IF
