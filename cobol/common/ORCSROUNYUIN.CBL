@@ -268,8 +268,7 @@
       *            Ï«ºÒÊÝ¸±¤ÎÈ½Äê
                    MOVE      ZERO              TO  FLG-ROUSAI
                    PERFORM   VARYING   IDX   FROM  1   BY  1
-                             UNTIL    (FLG-ROUSAI   =   1)  OR
-                                      (IDX   >   31)
+                             UNTIL    IDX   >   31
                         IF   LNK-SROUNYUIN-HKNCOMBI  =
                                                NACCT-DAY(IDX)
                              MOVE    1         TO  FLG-ROUSAI
