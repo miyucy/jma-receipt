@@ -428,12 +428,6 @@
       *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK-MAE-SEC
-      *    追加
-               WHEN    "CLICKED"       ALSO    "B02"
-                   PERFORM 420-TUIKA-SEC
-      *    変更
-               WHEN    "CLICKED"       ALSO    "B03"
-                   PERFORM 430-HENKOU-SEC
       *    削除
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 440-SAKUJYO-SEC
@@ -656,6 +650,12 @@
       *    パラメタ選択処理
       *****************************************************************
        41002-SELNUM2-CHK-SEC            SECTION.
+      *
+           IF      SPA-NAI-T02-SELNUM1  =  ZERO
+               MOVE    "0006"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-T02-CUR
+               GO  TO  41002-SELNUM2-CHK-EXT
+           END-IF
       *                                     
            MOVE    3                   TO  SPA-GMN-T02-CUR
       *
@@ -705,6 +705,12 @@
       *****************************************************************
        41003-PARA-CHK-SEC          SECTION.
       *
+           IF      SPA-NAI-T02-SELNUM1  =  ZERO
+               MOVE    "0006"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-T02-CUR
+               GO  TO  41003-PARA-CHK-EXT
+           END-IF
+      *
            MOVE    4               TO  SPA-GMN-T02-CUR
       *
            INITIALIZE                  SPA-NAI-T02-PTID
@@ -712,9 +718,17 @@
       *
            MOVE    T02-PARA        TO  SPA-GMN-T02-PARA
       *
-           IF    ( SPA-GMN-T02-PARA    =   SPACE )
-           AND   ( SPA-GMN-T02-SELNUM2 =   ZERO  )
-               MOVE    1               TO  SPA-GMN-T02-CUR
+           IF      SPA-GMN-T02-PARA    =   SPACE
+               IF      SPA-GMN-T02-SELNUM2 =   ZERO
+                   MOVE    1               TO  SPA-GMN-T02-CUR
+               ELSE
+                   EVALUATE    SPA-NAI-T02-TPARAKBN(SPA-NAI-T02-SELNUM1)
+                       WHEN    "1"    
+                           MOVE    "0016"          TO  SPA-ERRCD
+                       WHEN    "2"    
+                           MOVE    "0015"          TO  SPA-ERRCD
+                   END-EVALUATE 
+               END-IF
            ELSE
                EVALUATE    SPA-NAI-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
                    WHEN    "1"    
@@ -789,10 +803,163 @@
                            MOVE    "0007"          TO  SPA-ERRCD
                        END-IF
                    END-IF
-               END-IF         
+               END-IF
+      *
+      *        更新処理 
+               IF      SPA-ERRCD           =   SPACE         
+                   IF      SPA-GMN-T02-SELNUM2 =   ZERO
+                       PERFORM 410031-TUIKA-SEC
+                   ELSE
+                       PERFORM 410032-HENKOU-SEC
+                   END-IF
+               END-IF     
            END-IF
            .
        41003-PARA-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    追加処理
+      *****************************************************************
+       410031-TUIKA-SEC                SECTION.
+      *
+      *    最大登録数チェック
+           IF      SPA-GMN-T02-PARA-MAX
+                                       =   100
+               MOVE    "0002"              TO  SPA-ERRCD
+               GO      TO      410031-TUIKA-EXT
+           END-IF
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *    追加処理    
+           INITIALIZE                      BTPARA-REC
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  BTPARA-SHELLID
+           MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
+                                       TO  BTPARA-SCRIPTID
+           MOVE    PATH-TBL-BTPARA-KEY6
+                                       TO  WRK-PATH
+           PERFORM 900-BTPARA-READ-SEC
+           COMPUTE WRK-RENNUM  =   BTPARA-RENNUM   +   1
+      *
+           INITIALIZE                      BTPARA-REC
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  BTPARA-SHELLID
+           MOVE    SPA-NAI-T02-TKBNCD (SPA-NAI-T02-SELNUM1)
+                                       TO  BTPARA-DSP-RENNUM
+           MOVE    WRK-RENNUM          TO  BTPARA-RENNUM
+           MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
+                                       TO  BTPARA-SCRIPTID
+           MOVE    SPA-NAI-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
+                                       TO  BTPARA-INFO-KBN
+           EVALUATE    SPA-NAI-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
+               WHEN    "1"
+                   MOVE    SPA-GMN-T02-PARA    TO  BTPARA-INFO-PARA
+               WHEN    "2"
+                   MOVE    SPA-NAI-T02-PTID    TO  BTPARA-INFO-PTID
+                   MOVE    SPA-GMN-T02-PARA    TO  BTPARA-INFO-PTNUM
+           END-EVALUATE
+           MOVE    SMCNDATE-YMD        TO  BTPARA-CREYMD
+           MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
+           MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
+           MOVE    BTPARA-REC          TO  MCPDATA-REC
+           MOVE    PATH-TBL-BTPARA-KEY TO  MCP-PATH
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC      NOT =   ZERO
+               MOVE    "1002"          TO  SPA-ERRCD
+           ELSE
+               ADD     1                TO  SPA-GMN-T02-PARA-MAX
+               MOVE    WRK-RENNUM       TO  SPA-GMN-T02-TRENNUM2
+                                            (SPA-GMN-T02-PARA-MAX)
+               MOVE    SPA-GMN-T02-PARA-MAX
+                                        TO  IDX
+               PERFORM 4100311-INTBL-SET-SEC
+      *
+               MOVE    SPA-GMN-T02-PARA-MAX
+                                        TO  T02-PARALST-ROW
+      *
+               MOVE    4                TO  SPA-GMN-T02-CUR  
+           END-IF
+      *
+           .
+       410031-TUIKA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力項目編集処理
+      *****************************************************************
+       4100311-INTBL-SET-SEC              SECTION.
+      *
+           MOVE    SPA-GMN-T02-PARA    TO  SPA-GMN-T02-TPARA  (IDX)
+           MOVE    SPA-NAI-T02-PTID    TO  SPA-NAI-T02-TPTID  (IDX)
+           MOVE    SPA-GMN-T02-NAME    TO  SPA-GMN-T02-TNAME  (IDX)
+      *
+           INITIALIZE                   SPA-GMN-T02-KOUMOKU2
+                                        SPA-NAI-T02-KOUMOKU2
+      *
+          .
+       4100311-INTBL-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    変更　処理
+      *****************************************************************
+       410032-HENKOU-SEC              SECTION.
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+      *    更新処理    
+           INITIALIZE                      BTPARA-REC
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  BTPARA-SHELLID
+           MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
+                                       TO  BTPARA-SCRIPTID
+           MOVE    SPA-GMN-T02-TRENNUM2 (SPA-NAI-T02-SELNUM2)
+                                       TO  BTPARA-RENNUM
+           MOVE    PATH-TBL-BTPARA-KEY4
+                                       TO  WRK-PATH
+           PERFORM 900-BTPARA-READ-SEC
+           IF      FLG-BTPARA          =   ZERO
+               EVALUATE    SPA-NAI-T02-TPARAKBN(SPA-NAI-T02-SELNUM1)
+                   WHEN    "1"
+                       MOVE    SPA-GMN-T02-PARA    TO  BTPARA-INFO-PARA
+                   WHEN    "2"
+                       MOVE    SPA-NAI-T02-PTID    TO  BTPARA-INFO-PTID
+                       MOVE    SPA-GMN-T02-PARA    TO  BTPARA-INFO-PTNUM
+               END-EVALUATE
+               MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
+               MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
+               MOVE    BTPARA-REC          TO  MCPDATA-REC
+               MOVE    PATH-TBL-BTPARA-KEY TO  MCP-PATH
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               CALL    "MCPSUB"            USING
+                                               MCPAREA
+                                               MCPDATA-REC
+               IF      MCP-RC      NOT =   ZERO
+                   MOVE    "1003"          TO  SPA-ERRCD
+               END-IF
+           ELSE
+               MOVE    "1004"              TO  SPA-ERRCD
+           END-IF
+      * 
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    SPA-NAI-T02-SELNUM2 TO  IDX
+               PERFORM 4100311-INTBL-SET-SEC
+      *
+               MOVE    4                   TO  SPA-GMN-T02-CUR
+           END-IF  
+      *
+          .
+       410032-HENKOU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -958,209 +1125,6 @@
       *
            .
        210-BACK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    追加処理
-      *****************************************************************
-       420-TUIKA-SEC                SECTION.
-      *
-           IF      SPA-NAI-T02-SELNUM1  =  ZERO
-               MOVE    "0006"              TO  SPA-ERRCD
-               GO  TO  420-TUIKA-EXT
-           END-IF
-      *
-           IF      SPA-NAI-T02-SELNUM2  >   ZERO
-               MOVE    "0005"              TO  SPA-ERRCD
-               GO  TO  420-TUIKA-EXT
-           END-IF
-      *
-           IF      SPA-GMN-T02-PARA    =  SPACE
-               EVALUATE    SPA-NAI-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
-                   WHEN    "1"
-                       MOVE    "0016"              TO  SPA-ERRCD
-                   WHEN    "2"
-                       MOVE    "0015"              TO  SPA-ERRCD
-               END-EVALUATE
-               GO  TO  420-TUIKA-EXT
-           END-IF
-      *
-      *    最大登録数チェック
-           IF      SPA-GMN-T02-PARA-MAX
-                                       =   100
-               MOVE    "0002"              TO  SPA-ERRCD
-               GO      TO      420-TUIKA-EXT
-           END-IF
-      *   
-      *    パラメタ入力チェック
-           MOVE    SPA-GMN-T02-PARA    TO  T02-PARA
-           PERFORM 41003-PARA-CHK-SEC
-           IF      SPA-ERRCD    NOT =   SPACE
-               GO  TO  420-TUIKA-EXT
-           END-IF    
-      *
-      *    更新日取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-      *    追加処理    
-           INITIALIZE                      BTPARA-REC
-           MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  BTPARA-SHELLID
-           MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
-                                       TO  BTPARA-SCRIPTID
-           MOVE    PATH-TBL-BTPARA-KEY6
-                                       TO  WRK-PATH
-           PERFORM 900-BTPARA-READ-SEC
-           COMPUTE WRK-RENNUM  =   BTPARA-RENNUM   +   1
-      *
-           INITIALIZE                      BTPARA-REC
-           MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  BTPARA-SHELLID
-           MOVE    SPA-NAI-T02-TKBNCD (SPA-NAI-T02-SELNUM1)
-                                       TO  BTPARA-DSP-RENNUM
-           MOVE    WRK-RENNUM          TO  BTPARA-RENNUM
-           MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
-                                       TO  BTPARA-SCRIPTID
-           MOVE    SPA-NAI-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
-                                       TO  BTPARA-INFO-KBN
-           EVALUATE    SPA-NAI-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
-               WHEN    "1"
-                   MOVE    SPA-GMN-T02-PARA    TO  BTPARA-INFO-PARA
-               WHEN    "2"
-                   MOVE    SPA-NAI-T02-PTID    TO  BTPARA-INFO-PTID
-                   MOVE    SPA-GMN-T02-PARA    TO  BTPARA-INFO-PTNUM
-           END-EVALUATE
-           MOVE    SMCNDATE-YMD        TO  BTPARA-CREYMD
-           MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
-           MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
-           MOVE    BTPARA-REC          TO  MCPDATA-REC
-           MOVE    PATH-TBL-BTPARA-KEY TO  MCP-PATH
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
-           IF      MCP-RC      NOT =   ZERO
-               MOVE    "1002"          TO  SPA-ERRCD
-           ELSE
-               ADD     1                TO  SPA-GMN-T02-PARA-MAX
-               MOVE    WRK-RENNUM       TO  SPA-GMN-T02-TRENNUM2
-                                            (SPA-GMN-T02-PARA-MAX)
-               MOVE    SPA-GMN-T02-PARA-MAX
-                                        TO  IDX
-               PERFORM 4201-INTBL-SET-SEC
-      *
-               MOVE    SPA-GMN-T02-PARA-MAX
-                                        TO  T02-PARALST-ROW
-      *
-               MOVE    4                TO  SPA-GMN-T02-CUR  
-           END-IF
-      *
-           .
-       420-TUIKA-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入力項目編集処理
-      *****************************************************************
-       4201-INTBL-SET-SEC              SECTION.
-      *
-           MOVE    SPA-GMN-T02-PARA    TO  SPA-GMN-T02-TPARA  (IDX)
-           MOVE    SPA-NAI-T02-PTID    TO  SPA-NAI-T02-TPTID  (IDX)
-           MOVE    SPA-GMN-T02-NAME    TO  SPA-GMN-T02-TNAME  (IDX)
-      *
-           INITIALIZE                   SPA-GMN-T02-KOUMOKU2
-                                        SPA-NAI-T02-KOUMOKU2
-      *
-          .
-       4201-INTBL-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    変更　処理
-      *****************************************************************
-       430-HENKOU-SEC              SECTION.
-      *
-           IF      SPA-NAI-T02-SELNUM1  =  ZERO
-               MOVE    "0006"              TO  SPA-ERRCD
-               GO  TO  430-HENKOU-EXT
-           END-IF
-      *
-           IF      SPA-NAI-T02-SELNUM2 =   ZERO
-               MOVE    "0004"              TO  SPA-ERRCD
-               GO  TO  430-HENKOU-EXT
-           END-IF
-      *
-           IF      SPA-GMN-T02-PARA    =  SPACE
-               EVALUATE    SPA-NAI-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
-                   WHEN    "1"
-                       MOVE    "0016"              TO  SPA-ERRCD
-                   WHEN    "2"
-                       MOVE    "0015"              TO  SPA-ERRCD
-               END-EVALUATE
-               GO  TO  430-HENKOU-EXT
-           END-IF
-      *   
-      *    パラメタ入力チェック
-           MOVE    SPA-GMN-T02-PARA    TO  T02-PARA
-           PERFORM 41003-PARA-CHK-SEC
-           IF      SPA-ERRCD    NOT =   SPACE
-               GO  TO  430-HENKOU-EXT
-           END-IF    
-      *
-      *    更新日取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-      *
-      *    更新処理    
-           IF      SPA-ERRCD           =   SPACE
-               INITIALIZE                      BTPARA-REC
-               MOVE    WRK-CONS-JOB-SHELLID
-                                           TO  BTPARA-SHELLID
-               MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
-                                           TO  BTPARA-SCRIPTID
-               MOVE    SPA-GMN-T02-TRENNUM2 (SPA-NAI-T02-SELNUM2)
-                                           TO  BTPARA-RENNUM
-               MOVE    PATH-TBL-BTPARA-KEY4
-                                           TO  WRK-PATH
-               PERFORM 900-BTPARA-READ-SEC
-               IF      FLG-BTPARA          =   ZERO
-                   EVALUATE    SPA-NAI-T02-TPARAKBN(SPA-NAI-T02-SELNUM1)
-                       WHEN    "1"
-                           MOVE    SPA-GMN-T02-PARA
-                                                   TO  BTPARA-INFO-PARA
-                       WHEN    "2"
-                           MOVE    SPA-NAI-T02-PTID
-                                                   TO  BTPARA-INFO-PTID
-                           MOVE    SPA-GMN-T02-PARA
-                                                   TO  BTPARA-INFO-PTNUM
-                   END-EVALUATE
-                   MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
-                   MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
-                   MOVE    BTPARA-REC          TO  MCPDATA-REC
-                   MOVE    PATH-TBL-BTPARA-KEY TO  MCP-PATH
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   CALL    "MCPSUB"            USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                   IF      MCP-RC      NOT =   ZERO
-                       MOVE    "1003"          TO  SPA-ERRCD
-                   END-IF
-               ELSE
-                   MOVE    "1004"              TO  SPA-ERRCD
-               END-IF
-           END-IF
-      * 
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPA-NAI-T02-SELNUM2 TO  IDX
-               PERFORM 4201-INTBL-SET-SEC
-      *
-               MOVE    4                   TO  SPA-GMN-T02-CUR
-           END-IF  
-      *
-          .
-       430-HENKOU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1544,9 +1508,6 @@
                    MOVE    "処理区分入力エラー"        TO  SPA-ERRMSG
                WHEN    "0009"
                    MOVE    "選択番号エラー"            TO  SPA-ERRMSG
-               WHEN    "0010"
-                   MOVE    "パラメタ区分が患者番号を選択してありません"
-                                                       TO  SPA-ERRMSG
                WHEN    "0011"
                    MOVE
                        "パラメタ区分が指定してないので入力できません"
@@ -1564,9 +1525,6 @@
                WHEN    "0015" 
                    MOVE
                        "患者番号が未入力です"          TO  SPA-ERRMSG
-               WHEN    "0016" 
-                   MOVE
-                       "保険者番号が未入力です"        TO  SPA-ERRMSG
                WHEN    "0016" 
                    MOVE
                        "保険者番号が未入力です"        TO  SPA-ERRMSG
