@@ -412,7 +412,6 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *
            EVALUATE    ORCSCGAIRAI-KBN
       *        ø«Œ≈π‘∞Ÿ∫Ó¿Æ
                WHEN    "1"
@@ -4035,6 +4034,8 @@
            IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                MOVE    ZERO            TO  FLG-TOKTEI
                MOVE    1               TO  WRK-KAISU
+               MOVE    SPA-SRYKA       TO  WRK-SRYKA
+               MOVE    SPA-HKNCOMBINUM TO  WRK-HKNCOMBI
       *        ªªƒÍÕ˙ŒÚ∫Ó¿Æ
                PERFORM 45021-SANTEI-UPD-SEC
       *        ø«Œ≈≤ Õ˙ŒÚΩËÕ˝
