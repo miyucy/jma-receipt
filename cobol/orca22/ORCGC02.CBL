@@ -1542,13 +1542,17 @@
                PERFORM 410112-USERBYOMEI-HENSYU-SEC
            END-PERFORM
       *
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL   IDX3    >       6
+               PERFORM 4101111-BYOMEITOP-HENSYU-SEC
+           END-PERFORM
            PERFORM 41021-BYOMEI-HENSYU-SEC
            PERFORM 41022-CHARTBYOMEI-HENSYU-SEC
       *
       *   入力病名コード数カウント
            PERFORM 410111-BYOMEICDSU-HENSYU-SEC
       *
-           MOVE    9                   TO  SPA-GMN-C02-CUR     
+           MOVE    9                   TO  SPA-GMN-C02-CUR
            .
        320-C04SPASET-EXT.
            EXIT.
@@ -1725,6 +1729,7 @@
                                        SPA-GMN-C02-HKN-MAX
                                        SPA-GMN-C02-HKNCOMBI-MAX
       *
+           MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
            MOVE    SPA-GMN-C02-SYOKBNLST (1)
                                        TO  SPA-GMN-C02-SYOKBN-G
       *
@@ -1843,6 +1848,7 @@
                                        SPA-GMN-C02-TBL
                                        SPA-NAI-C02-TBL
                                        SPA-GMN-C02-MAX
+           MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
       *
            MOVE    C02-SRYKA           TO  SPA-GMN-C02-SRYKA-G
       *
@@ -2374,8 +2380,8 @@
                            END-IF 
                        END-IF    
                    END-PERFORM
-                   MOVE    IDZ               TO  IDX3
-                   PERFORM 4101111-BYOMEITOP-HENSYU-SEC
+      *************MOVE    IDZ               TO  IDX3
+      *************PERFORM 4101111-BYOMEITOP-HENSYU-SEC
                ELSE    
                    MOVE    "■■■"      TO  SPA-NAI-C02-BYOMEI   (IDZ)
                END-IF
@@ -2906,13 +2912,13 @@
        41021-BYOMEI-HENSYU-SEC        SECTION.
       *
       *    未コード化傷病名のとき
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       6 
-               IF      SPA-NAI-C02-BYOMEICD (IDX)
-                                       =   WRK-CONS-BYOMEICD
-                   GO  TO  41021-BYOMEI-HENSYU-EXT
-               END-IF
-           END-PERFORM                                
+      *****PERFORM VARYING IDX FROM    1   BY  1
+      *****        UNTIL   IDX >       6 
+      *****    IF      SPA-NAI-C02-BYOMEICD (IDX)
+      *****                            =   WRK-CONS-BYOMEICD
+      *****            GO  TO  41021-BYOMEI-HENSYU-EXT
+      *****    END-IF
+      *****END-PERFORM                                
       *         
            MOVE    ZERO                TO  SPA-NAI-C02-BYOMEIMOJI
            MOVE    SPACE               TO  SPA-GMN-C02-BYOMEIHENFLG
@@ -4139,6 +4145,7 @@
            IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
                MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
            END-IF
+           MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
       *
            .
        220-CLEAR-EXT.
@@ -4624,9 +4631,6 @@
       *    病名編集処理（単独病名・共通項目）
       *****************************************************************
        4503-BYOMEICD-HENSYU-02-SEC     SECTION.
-      *??
-           DISPLAY "IDXX=" IDXX "#"
-      *???
       *
       *    単独病名のとき画面より編集
            IF      SPA-NAI-C02-BYOMEICD-MAX    =   1
