@@ -17,6 +17,7 @@ SRCS = ORCGW01.CBL \
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global
+
 install: all
 	-@if [ ! -d $(libdir) ]; then \
 	  $(MKDIR) $(libdir); \
