@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    02.10.02  摘要出力項目変更
+      *  01.00.02    NACL-門脇    02.11.21  自賠責（ポリネック等の対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -649,7 +650,12 @@
                    INITIALIZE               TNS-TENSU-REC
                END-IF
            END-IF
-           MOVE    TNS-GAITENTTLKBN  TO  RECE46-GAITENTTLKBN
+           IF ( RECE46-SRYKBN        =  "40"              ) AND         
+              ( RECE46-SRYCD1(1:5)   =  "09593"           )             
+              MOVE    999               TO  RECE46-GAITENTTLKBN         
+           ELSE                                                         
+              MOVE    TNS-GAITENTTLKBN  TO  RECE46-GAITENTTLKBN
+           END-IF                                                       
       *
            WRITE   RECE46-REC
            IF      STS-RECE46          NOT =   ZERO
