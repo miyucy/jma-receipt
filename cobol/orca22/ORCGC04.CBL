@@ -66,7 +66,8 @@
            03  FLG-USERBYOMEI      PIC 9(01).
            03  FLG-BYOMEI          PIC 9(01).
       *
-           03  FLG-CHK             PIC 9(01).     
+           03  FLG-CHK             PIC 9(01).   
+           03  FLG-ROW             PIC 9(01).  
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -101,7 +102,9 @@
       * 
            03  WRK-SYOKBN          PIC 9(01).
            03  WRK-BANGO           PIC S9(05).
-           03  WRK-SEIGYO          PIC X(01).  
+           03  WRK-SEIGYO          PIC X(01). 
+      * 
+           03  WRK-C04-BYO-ROW     PIC S9(09). 
       *
        01  WRK-TBL-MAX             PIC 9(03)   VALUE   100.
       *
@@ -542,6 +545,8 @@
            ELSE
                MOVE    ZERO                TO  SPA-GMN-C04-NEXT
            END-IF
+      *
+           MOVE    1                   TO  FLG-ROW 
            .
        3101-USERBYOMEI-LST-EXT.
            EXIT.
@@ -1265,6 +1270,12 @@
       *    ²èÌÌÊÔ½¸½èÍý
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
+      *
+           IF      FLG-ROW             =   1
+               MOVE    ZERO                TO  WRK-C04-BYO-ROW
+           ELSE
+               MOVE    C04-BYOMEILST-ROW   TO  WRK-C04-BYO-ROW
+           END-IF
       * 
            MOVE    SPACE               TO  C04
       *
@@ -1280,6 +1291,10 @@
                                            TO  C04-TBYOMEI   (IDX)
            END-PERFORM
            MOVE    SPA-GMN-C04-MAX     TO  C04-BYOMEILST-COUNT
+           MOVE    ZERO                TO  C04-BYOMEILST-ROW
+           IF      WRK-C04-BYO-ROW     >   ZERO
+               MOVE    WRK-C04-BYO-ROW     TO  C04-BYOMEILST-ROW
+           END-IF
       *
            MOVE    SPA-GMN-C04-KENBYOMEI   TO  C04-KENBYOMEI
            MOVE    SPA-GMN-C04-BUNRUICD    TO  C04-BUNRUICD
@@ -1304,6 +1319,7 @@
                END-IF
            END-PERFORM    
            MOVE    SPA-GMN-C04-BUNRUI-MAX  TO  C04-BUNRUI-COUNT
+           MOVE    ZERO                    TO  C04-BUNRUI-ROW
                
            PERFORM 5001-MAPCUR-SEC
       *

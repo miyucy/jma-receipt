@@ -353,6 +353,7 @@
                END-IF
            END-PERFORM
            MOVE    SPA-C08-BUNREIMAX  TO  C08-BUNREI-COUNT
+           MOVE    ZERO               TO  C08-BUNREI-ROW
       *
            MOVE    SPA-C08-SELNUM     TO  C08-SELNUM
       *

@@ -1193,6 +1193,7 @@
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-BYOMEI-MAX      TO  C05-COUNT
+           MOVE    ZERO                    TO  C05-ROW
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-BYOMEICD-MAX
@@ -1211,6 +1212,7 @@
            END-PERFORM
            MOVE    SPA-GMN-BYOMEICD-MAX
                                        TO  C05-BYOMEICDLST-COUNT
+           MOVE    ZERO                TO  C05-BYOMEICDLST-ROW
       *
            PERFORM 5001-MAPCUR-SEC
       *

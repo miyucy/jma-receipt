@@ -1145,10 +1145,10 @@
                    MOVE    SPACE               TO  C07-MIDASI
                    MOVE    SPACE               TO  C07-MIDASI-STYLE
                WHEN    1
-                   MOVE    "°„ —°°ππ°‰"        TO  C07-MIDASI
+                   MOVE    "°„ —  ππ°‰"        TO  C07-MIDASI
                    MOVE    "red"               TO  C07-MIDASI-STYLE
                WHEN    2
-                   MOVE    "°„ ∏°°Œ„°‰"        TO  C07-MIDASI
+                   MOVE    "°„ ∏  Œ„°‰"        TO  C07-MIDASI
                    MOVE    "red"               TO  C07-MIDASI-STYLE
            END-EVALUATE
       *
@@ -1175,6 +1175,7 @@
                END-IF
            END-PERFORM
            MOVE    SPA-C07-RECE-MAX   TO  C07-RECE-COUNT
+           MOVE    ZERO               TO  C07-RECE-ROW
       *
            MOVE    SPA-C07-SELNUM     TO  C07-SELNUM
            MOVE    SPA-C07-BUNNUM     TO  C07-BUNNUM
@@ -1195,6 +1196,7 @@
                END-IF
            END-PERFORM
            MOVE    SPA-C07-RRKMAX     TO  C07-JYURRK-COUNT
+           MOVE    ZERO               TO  C07-JYURRK-ROW
       *
            MOVE    SPA-C07-JYURRKNUM  TO  C07-JYURRKNUM
       *

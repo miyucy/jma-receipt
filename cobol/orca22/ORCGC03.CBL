@@ -126,6 +126,7 @@
            03  FLG-SPASCR          PIC 9(01).
       *
            03  FLG-END2            PIC 9(01).
+           03  FLG-ROW             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -168,6 +169,9 @@
       * 
            03  WRK-SYOKBN          PIC 9(01).
            03  WRK-BANGO           PIC S9(05).
+      *
+           03  WRK-C03-BYO-ROW     PIC S9(09). 
+      *
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
@@ -799,6 +803,8 @@
            ELSE
                MOVE    ZERO                TO  SPA-GMN-NEXT
            END-IF
+      *
+           MOVE    1                   TO  FLG-ROW
       *
            .
        3101-USERBYOMEI-LST-EXT.
@@ -2487,13 +2493,9 @@
       *****************************************************************
        450-C05-SYORI-SEC           SECTION.
       *
-      *    未コード化傷病名コードがあるときは遷移しない 
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
-               IF      SPA-GMN-BYOMEICD (IDX)  =   "0000999"
-                   GO  TO  450-C05-SYORI-EXT
-               END-IF                              
-           END-PERFORM 
+           IF      SPA-NAI-BYOMEIHENFLG    =  "1"
+               GO  TO  450-C05-SYORI-EXT
+           END-IF
       *
       *    画面移行用のパラメタ変更
       *    受付と患者検索以外の元をセット
@@ -2503,16 +2505,18 @@
            MOVE    "C03"               TO  SPA-C01-MOTOPG
            MOVE    ZERO                TO  IDY
       * 
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
-               IF      SPA-GMN-BYOMEICD (IDX)  NOT =   SPACE
-                   ADD     1               TO  IDY              
-                   MOVE    SPA-GMN-BYOMEICD (IDX)
+           IF      SPA-NAI-BYOMEIMOJI  >   ZERO
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
+                   IF      SPA-GMN-BYOMEICD (IDX)  NOT =   SPACE
+                       ADD     1               TO  IDY              
+                       MOVE    SPA-GMN-BYOMEICD (IDX)
                                            TO  SPA-C01-TBYOMEICD (IDY)
-                   MOVE    SPA-NAI-BYOMEI   (IDX)
+                       MOVE    SPA-NAI-BYOMEI   (IDX)
                                            TO  SPA-C01-TBYOMEI   (IDY)
-               END-IF                              
-           END-PERFORM 
+                   END-IF                              
+               END-PERFORM
+           END-IF 
       *
            MOVE    SPA-C01KYOUTU       TO  SPA-WORK
       *
@@ -2776,6 +2780,12 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
+      *
+           IF      FLG-ROW             =   1
+               MOVE    ZERO                TO  WRK-C03-BYO-ROW
+           ELSE
+               MOVE    C03-BYOMEILST-ROW   TO  WRK-C03-BYO-ROW
+           END-IF
       * 
            MOVE    SPACE               TO  C03
       *
@@ -2811,6 +2821,10 @@
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-MAX         TO  C03-BYOMEILST-COUNT
+           MOVE    ZERO                TO  C03-BYOMEILST-ROW
+           IF      WRK-C03-BYO-ROW     >   ZERO
+               MOVE    WRK-C03-BYO-ROW     TO  C03-BYOMEILST-ROW
+           END-IF
       *
            MOVE    SPA-GMN-BANGO          TO  C03-BANGO
            MOVE    SPA-GMN-BUNRUICD       TO  C03-BUNRUICD
@@ -2827,6 +2841,7 @@
                MOVE    SPA-GMN-BBUNRUIMEI(IDX) TO  C03-BBUNRUIMEI(IDX)
            END-PERFORM    
            MOVE    SPA-GMN-BUNRUI-MAX    TO  C03-BUNRUI-COUNT
+           MOVE    ZERO                  TO  C03-BUNRUI-ROW
       *
            MOVE    SPA-GMN-UTAGAIFLG-G TO  C03-UTAGAIFLG
            PERFORM VARYING IDX FROM    1       BY  1

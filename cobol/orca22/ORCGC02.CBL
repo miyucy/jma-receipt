@@ -197,6 +197,7 @@
       *
            03  FLG-END2            PIC 9(01).
            03  FLG-UPDKBN          PIC 9(01).
+           03  FLG-ROW             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -311,7 +312,9 @@
       *
            03  WRK-BYOMEI-OLD      PIC X(480).
       * 
-           03  WRK-SEIGYO          PIC X(01).  
+           03  WRK-SEIGYO          PIC X(01).
+      *
+           03  WRK-C02-BYO-ROW     PIC S9(09). 
       *
       *    未コード化傷病名コード
        01  WRK-CONS-BYOMEICD       PIC X(07)   VALUE   "0000999". 
@@ -855,7 +858,6 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-      *
            INITIALIZE              SPA-C02-AREA
                                    SPA-GMN-C02-TBL
                                    SPA-NAI-C02-TBL
@@ -1163,6 +1165,7 @@
                MOVE    ZERO                TO  SPA-GMN-C02-NEXT
            END-IF
       *
+           MOVE    1                   TO  FLG-ROW
            .
        310-SPASET-PTBYO-HENSYU-EXT.
            EXIT.
@@ -2112,32 +2115,50 @@
              END-PERFORM
            END-IF    
       *
-      *    転帰区分チェック
+      *    転帰区分・転帰日チェック
+           IF    ( WRK-HENSYU-DATA-O (1)   =   "-"   )
+           AND   ( WRK-HENSYU-DATA-O (2)   =   SPACE )
+               MOVE    "-"                     TO  WRK-HENSYU-DATA-O (2)
+           END-IF
+      *
            IF      WRK-HENSYU-DATA-O (1)   =   SPACE OR  "-"
-               CONTINUE
+               IF      WRK-HENSYU-DATA-O (2)   NOT =   SPACE   AND "-"
+                   IF      WRK-HENSYU-DATA-O (1)   =   SPACE
+                       MOVE    "0037"              TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "0025"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
            ELSE
                IF      WRK-HENSYU-DATA-O (1) (2:)
                                            NOT =   SPACE
-                   MOVE    "0037"              TO  SPA-ERRCD
-                   GO  TO  410113-KANTAN-SYUSEI-EXT
+                   MOVE    "0024"              TO  SPA-ERRCD
                ELSE
                    MOVE    WRK-HENSYU-DATA-O (1)
-                                           TO  WRK-KBN        
+                                               TO  WRK-KBN        
                    PERFORM 5001-TENKIKBN-HENSYU-SEC
                    IF      WRK-KBNMEI          =   SPACE
-                       MOVE    "0037"              TO  SPA-ERRCD
-                       GO  TO  410113-KANTAN-SYUSEI-EXT
-                   END-IF
-                   IF      WRK-HENSYU-DATA-O (2)   =   SPACE
-                       MOVE    SPA-NAI-C02-SYSYMD  TO
-                                                   WRK-HENSYU-DATA-O (2)
+                       MOVE    "0024"              TO  SPA-ERRCD
+                   ELSE
+                       IF      WRK-HENSYU-DATA-O (2)   =   SPACE
+                           MOVE    SPA-NAI-C02-SYSYMD  TO
+                                               WRK-HENSYU-DATA-O (2)
+                       END-IF
                    END-IF
                END-IF 
            END-IF
+           IF      SPA-ERRCD           NOT =   SPACE
+               GO  TO  410113-KANTAN-SYUSEI-EXT
+           END-IF
       *
-      *    転帰区分・転帰日チェック
            IF      WRK-HENSYU-DATA-O (2)   =   SPACE OR  "-"
-               CONTINUE
+               IF      WRK-HENSYU-DATA-O (1)   NOT =   SPACE   AND "-"
+                   MOVE    "0036"              TO  SPA-ERRCD
+                   GO  TO  410113-KANTAN-SYUSEI-EXT
+               END-IF
+               IF      WRK-HENSYU-DATA-O (2)   =   "-"
+                   MOVE    "00000000"          TO  WRK-HENSYU-DATA-O (2)
+               END-IF
            ELSE
                INITIALIZE                      ORCSGDAYAREA
                INITIALIZE                      ORCSNUMAREA
@@ -2259,19 +2280,16 @@
                END-IF
            END-IF
       *
-      *    転帰のチェック
+      *    転帰と開始日のチェック
            IF      WRK-HENSYU-DATA-O (1)   NOT =   SPACE
-           OR      WRK-HENSYU-DATA-O (2)   NOT =   SPACE
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       5
                    IF      WRK-STNUM-O (IDXX)  >   ZERO
                        PERFORM VARYING IDX     FROM
                                                WRK-STNUM-O (IDXX)  BY  1
                                UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
-      *                    転帰と開始日のチェック
-                           IF      SPA-NAI-C02-TSRYYMD (IDX)
-                                           >    WRK-HENSYU-DATA-O (2)
-                               MOVE    "????"      TO  SPA-ERRCD
+                           PERFORM 4101132-KANTAN-SYUSEI-TENKI-CHK-SEC
+                           IF      SPA-ERRCD   NOT =   SPACE
                                GO  TO  410113-KANTAN-SYUSEI-EXT
                            END-IF
                        END-PERFORM
@@ -2328,6 +2346,73 @@
            PERFORM 310-SPASET-PTBYO-HENSYU-SEC
            .
        410113-KANTAN-SYUSEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    簡単修正転帰チェック処理
+      *****************************************************************
+       4101132-KANTAN-SYUSEI-TENKI-CHK-SEC         SECTION.
+      *
+      *    転帰と開始日のチェック
+           IF      WRK-HENSYU-DATA-O (1)
+                               NOT =   "-" 
+               IF      SPA-NAI-C02-TSRYYMD (IDX)
+                                       >    WRK-HENSYU-DATA-O (2)
+                   MOVE    "0084"      TO  SPA-ERRCD
+                   GO  TO  4101132-KANTAN-SYUSEI-TENKI-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *    マスタとのチェック
+           INITIALIZE                  PTBYO-KEY
+           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+           MOVE    SPA-NAI-C02-TSRYKA  (IDX)
+                                       TO  PTBYO-SRYKA
+           MOVE    SPA-GMN-C02-TBYOMEI (IDX)
+                                       TO  PTBYO-BYOMEI
+           MOVE    "PTBYOMEI-KEY13"    TO  WRK-DBPATH
+           PERFORM 900-PTBYO-INV-SEC
+      *
+           PERFORM                 UNTIL   FLG-PTBYOMEI    =   1
+                                   OR      SPA-ERRCD   NOT =   SPACE
+               IF      SPA-NAI-C02-TSRYYMD (IDX)   =   PTBYO-SRYYMD
+               AND     SPA-NAI-C02-TSRYKA  (IDX)   =   PTBYO-SRYKA
+               AND     SPA-NAI-C02-TRENNUM (IDX)   =   PTBYO-RENNUM
+                   CONTINUE
+               ELSE
+                   IF      SPA-NAI-C02-TSRYYMD (IDX)
+                                           <   PTBYO-SRYYMD
+                       IF      WRK-HENSYU-DATA-O (2)   =   "-"
+                           MOVE    "0038"          TO  SPA-ERRCD
+                       ELSE
+                           IF     WRK-HENSYU-DATA-O (2)
+                                                   >   PTBYO-SRYYMD
+                               MOVE    "0038"          TO  SPA-ERRCD
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               PERFORM 900-PTBYO-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTBYOMEI-KEY13"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           IF      SPA-ERRCD           =   "0038"
+               MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    LNK-DAY2-EDTYMD3    TO  WRK-ERR-SRYYMD
+               MOVE    SPA-GMN-C02-TBYOMEI (IDX)
+                                           TO  WRK-ERR-BYOMEI
+           END-IF
+           .
+       4101132-KANTAN-SYUSEI-TENKI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2517,10 +2602,10 @@
       *
            MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
       *???
            DISPLAY "PTBYO=" PTBYO-KEY "#" MCP-FUNC "#"
       *???                
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "PTBYOMEI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
@@ -2701,9 +2786,6 @@
                    ADD     1               TO  SPA-NAI-C02-BYOMEICD-MAX
                END-IF
            END-PERFORM
-      *??
-           DISPLAY "CDSU=" SPA-NAI-C02-BYOMEICD-MAX
-      *?? 
       *
            .
        410111-BYOMEICDSU-HENSYU-EXT.
@@ -5392,9 +5474,6 @@
       *    入力病名重複チェック処理
       *****************************************************************
        4502-DABURI-CHK-SEC        SECTION.
-      *???
-           DISPLAY "BYOMEI=" IDXX "#" WRK-PTBYO-BYOMEI (IDXX) "#"
-      *???
       *
       *    修飾語コードのみの病名のとき
            IF      WRK-PTBYO-BYOMEIHENFLG (IDXX)
@@ -5488,6 +5567,13 @@
       *
                PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTBYOMEI-KEY13"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            .                   
        4502-DABURI-CHK-EXT.
            EXIT.
@@ -5496,11 +5582,6 @@
       *    登録処理
       *****************************************************************
        4502-TOUROKU-SYORI-SEC             SECTION.
-      *
-      *???
-           DISPLAY "4502-TOUROKU-SYORI-SEC MAX="
-                               SPA-NAI-C02-BYOMEICD-MAX "#"
-      *???
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -6471,7 +6552,13 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
-      * 
+      *
+           IF      FLG-ROW             =   1
+               MOVE    ZERO                TO  WRK-C02-BYO-ROW
+           ELSE
+               MOVE    C02-BYO-ROW         TO  WRK-C02-BYO-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  C02
       *
            MOVE    SPA-GMN-C02-PTNUM       TO  C02-PTNUM
@@ -6552,6 +6639,10 @@
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-C02-MAX         TO  C02-BYO-COUNT
+           MOVE    ZERO                    TO  C02-BYO-ROW
+           IF      WRK-C02-BYO-ROW         >   ZERO
+               MOVE    WRK-C02-BYO-ROW         TO  C02-BYO-ROW
+           END-IF
       *
            IF      SPA-GMN-C02-BANGO-X NOT =   SPACE
                MOVE    SPA-GMN-C02-BANGO-X     TO  C02-BANGO
@@ -6585,6 +6676,7 @@
       ****     MOVE    IDX                     TO  C02-HKN-COUNT
            END-PERFORM
            MOVE    SPA-GMN-C02-HKN-MAX    TO  C02-HKN-COUNT
+           MOVE    ZERO                   TO  C02-HKN-ROW 
       *
            MOVE    SPA-GMN-C02-TENKIKBN-G TO  C02-TENKIKBN
            PERFORM VARYING IDX FROM    1       BY  1
@@ -6974,6 +7066,12 @@
                WHEN    "0083"
                  MOVE    "全体表示のときは、全部指定はできません"
                                                        TO  SPA-ERRMSG
+               WHEN    "0084"
+                 MOVE
+                     "入力した転帰日以降の診療開始日の病名が指定"
+                                                   TO  SPA-ERRMSG
+                 MOVE
+                     "してあります"                TO  SPA-ERRMSG (43:)
                WHEN    "0103"
                    MOVE    "病名コードでの組み立てができませんでした。"
                                        TO  SPA-ERRMSG
