@@ -41,6 +41,7 @@
       *  01.00.08    NACL-¾®Æ¦Âô  04.03.15  °¡µÞÀ­´üÆþ±¡°åÎÅ´ÉÍýÎÁ¤Î»»ÄêÂÐ±þÄÉ²Ã
       *  01.00.51    NACL-¾®Æ¦Âô  04.03.16  £±£µºÐÌ¤Ëþ¤Î´µ¼Ô¤ÏÁªÄêÆþ±¡ÂÐ¾Ý³°
       *  02.00.00    NACL-Â¿¡¹Ç¼  04.05.06  »ÅÍÍÅý°ì¤Ë¤è¤ë²þÂ¤
+      *  02.00.01    NACL-Â¿¡¹Ç¼  04.08.31  ¿©»ö²Ã»»¤Îºï½üÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -145,6 +146,8 @@
            03  TN-IDX              PIC 9(02).
       *
            03  IDX-D2              PIC 9(02).
+      *
+           03  IDX-KSN             PIC 9(04).
       *
       *    ÅÀ¿ô¥Þ¥¹¥¿Í½Ìó¥³¡¼¥ÉÎÎ°è¡ÊÁªÄêÆþ±¡ÎÁ¡Ë
        01  WRK-YOYAKU.
@@ -3431,6 +3434,14 @@
                                                        (SPA-NAI-BANGO)
            MOVE    SPA-NAI-IKKATUKAI   TO  SPA-NAI-TIKKATUKAI
                                                        (SPA-NAI-BANGO)
+      *
+      *    ¿©»ö¤Î»þ¡¢¿©»ö²Ã»»¤ÎÊÑ¹¹
+           MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)  TO  IDG
+           IF     (SPA-NAI-TZAISKBKBN-41 (SPA-NAI-BANGO)
+                                           =   "4"   )  AND
+                  (SPA-GMN-TSRYCD (IDG)    =   "099999913")
+               PERFORM 47011-SYOKUJI-CHK-SEC
+           END-IF
       *    ÊÑ¹¹ÆþÎÏÍó
            INITIALIZE                  SPA-GMN-INPUT-41
       *
@@ -3445,6 +3456,37 @@
       *
            .
        4701-KAKUTEI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿©»ö²Ã»»¤ÎÊÑ¹¹½èÍý
+      *****************************************************************
+       47011-SYOKUJI-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  IDX-KSN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-NAI-MAX-41)
+                         OR   (IDX-KSN >   ZERO           )
+               IF      SPA-NAI-BANGO       NOT =   IDX
+                   MOVE    SPA-NAI-TBANGO (IDX)    TO  IDG
+                   IF     (SPA-NAI-TZAISKBKBN-41 (IDX)
+                                               =   "4"   )  AND
+                          (SPA-GMN-TSRYCD (IDG)    =   "197000570")
+                       MOVE    IDX                 TO  IDX-KSN
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF     IDX-KSN              >   ZERO
+               PERFORM VARYING     IDX-D   FROM    1   BY  1
+                       UNTIL       IDX-D   >   31  
+                   IF      SPA-GMN-DAY-41(IDX-D)   =   ZERO
+                       MOVE    ZERO           TO  SPA-NAI-DAY-41
+                                                      (IDX-KSN IDX-D)
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       47011-SYOKUJI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
