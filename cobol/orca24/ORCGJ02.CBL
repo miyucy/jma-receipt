@@ -6420,12 +6420,14 @@
                GO      TO      41018-ZENGETU-HEN-EXT
            END-IF
       *
-           MOVE    1                   TO  SPA-J02-SEL
+           IF      SPA-GMN-PTNUM   NOT =   SPACE
+               MOVE    1                   TO  SPA-J02-SEL
       *
-           IF      SPA-UPDFLG          =   "1"
-               MOVE    "0106"              TO  SPA-JIDCD
-           ELSE
-               PERFORM 41018-ZENGETU-SYORI-SEC
+               IF      SPA-UPDFLG          =   "1"
+                   MOVE    "0106"              TO  SPA-JIDCD
+               ELSE
+                   PERFORM 41018-ZENGETU-SYORI-SEC
+               END-IF
            END-IF
       *
            .
@@ -6661,11 +6663,13 @@
            END-IF
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
-           MOVE    2                   TO  SPA-J02-SEL
-           IF      SPA-UPDFLG          =   "1"
-               MOVE    "0106"              TO  SPA-JIDCD
-           ELSE
-               PERFORM 41019-JIGETU-SYORI-SEC
+           IF      SPA-GMN-PTNUM   NOT =   SPACE
+               MOVE    2                   TO  SPA-J02-SEL
+               IF      SPA-UPDFLG          =   "1"
+                   MOVE    "0106"              TO  SPA-JIDCD
+               ELSE
+                   PERFORM 41019-JIGETU-SYORI-SEC
+               END-IF
            END-IF
       *
            .
@@ -6773,7 +6777,8 @@
       *****************************************************************
        440-MAEGMN-SEC             SECTION.
       *
-           IF      SPA-GMN-PAGE        =   1
+           IF     (SPA-GMN-PAGE        =   1  )
+              OR  (SPA-GMN-PTNUM       =   SPACE)
                GO      TO       440-MAEGMN-EXT
            END-IF
       *
@@ -6836,6 +6841,7 @@
        450-ATOGMN-SEC             SECTION.
       *
           IF      SPA-SRYACCT-MAX     <=  SPA-ENDNUM
+             OR  (SPA-GMN-PTNUM       =   SPACE)
                GO      TO       450-ATOGMN-EXT
            END-IF
       *
@@ -9923,15 +9929,19 @@
       *****************************************************************
        490-SYUNOU-CHK-SEC      SECTION.
       *
-      *    更新日取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
+           IF      SPA-GMN-PTNUM       =   SPACE
+               CONTINUE
+           ELSE
       *
-           IF      SPA-NYUGAIKBN       =   "2"
-               PERFORM 49012-SYUNOU-SAIKEISAN-SEC
-               IF      FLG-END         =   1
-                   MOVE    10              TO  SPA-J025-SYORI
+      *        更新日取得
+               INITIALIZE                  ORCSMCNDATEAREA
+               CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+               IF      SPA-NYUGAIKBN       =   "2"
+                   PERFORM 49012-SYUNOU-SAIKEISAN-SEC
+                   IF      FLG-END         =   1
+                       MOVE    10              TO  SPA-J025-SYORI
+                   END-IF
                END-IF
            END-IF
       *
