@@ -1775,19 +1775,14 @@
            END-IF
       *
       *    入院期間作成
-      *    開始日の翌月の末日を求める
-           MOVE    LNK-SCNYUACCT-STSRYYMD  TO  WRK-STYMD
-           PERFORM 100-INIT-SEC
       *    退院日＋１日を開始日とする
            MOVE    LNK-SCNYUACCT-EDSRYYMD
                                        TO  WRK-INYMD
            MOVE    1                   TO  WRK-ZOGEN
            PERFORM 800-HIZUKE-KEI-SEC
            MOVE    WRK-OTYMD           TO  WRK-STYMD
-      *
-           IF      WRK-STYMD           >   WRK-EDYMD
-               GO      TO     700-TAIINDEL-SYORI-EXT
-           END-IF
+      *    開始日の翌月の末日を求める
+           PERFORM 100-INIT-SEC
       *
       *    入院から退院までの期間を求める
            INITIALIZE                      STS-AREA-DAY
@@ -1839,9 +1834,9 @@
            PERFORM VARYING     IDX-K   FROM    1   BY  1
                    UNTIL       IDX-K   >   7
       *      開始日が対象であること
+      *****  IF     (LNK-SCNYUACCT-KAGEN-STYUKYMD (IDX-K)
+      *****                            >=  LNK-SCNYUACCT-STSRYYMD) AND
              IF     (LNK-SCNYUACCT-KAGEN-STYUKYMD (IDX-K)
-                                       >=  LNK-SCNYUACCT-STSRYYMD) AND
-                    (LNK-SCNYUACCT-KAGEN-STYUKYMD (IDX-K)
                                                <=  WRK-EDYMD  )   AND
                     (LNK-SCNYUACCT-KAGEN-EDYUKYMD (IDX-K)
                                                >=  WRK-STYMD)
