@@ -113,6 +113,7 @@
            03  SRYACT-IDX                              PIC 9(03).
            03  ID1                                     PIC 9(03).
            03  GENSAN-IDX                              PIC 9(03).
+           03  TENTEK-IDX                              PIC 9(03).
       *
       *    º¬∆¸øÙ•´•¶•Û•»Õ—ŒŒ∞Ë
        01  TBL-JNISSU.
@@ -145,6 +146,17 @@
                05  WRK-PARA-SYSYMD                     PIC X(08).
                05  WRK-PARA-JOBID                      PIC 9(07).
                05  WRK-PARA-SHELLID                    PIC X(08).
+       01  WRK-TENTEK.
+           03  WRK-TENTEK-SYUTEN                       PIC 9(07).
+           03  WRK-TENTEK-TABLE.
+               05  WRK-TENTEK-TBL                      OCCURS  10.
+                   07  WRK-TENTEK-YKZTEN               PIC 9(07).
+                   07  WRK-TENTEK-KIZAITEN             PIC 9(07).
+           03  WRK-TENTEK-FLG-TABLE.
+               05  WRK-TENTEK-FLG-TBL                  OCCURS  10.
+                   07  WRK-TENTEK-FLG                  PIC 9(01).
+                   07  WRK-TENTEK-FLG1                 PIC 9(01)
+                                                           OCCURS 4.
       *
        01  WRK-CONS-AREA.
       *    ∏«ƒÍ√ºÀˆ£…£ƒ
@@ -169,6 +181,8 @@
            03  WRK-SRYYMD-TAIHI                        PIC X(08).       
       *
            COPY    "MCPAREA".
+      *
+           COPY    "COMMON-SPA".
       *
       *****************************************************************
       *    •’•°•§•Î•Ï•§•¢•¶•»
@@ -219,6 +233,9 @@
            COPY    "CPORCSPTID.INC".
       *   •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏Ê•µ•÷
            COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    ∆˛±°≈¿≈©∞Ï≥Áππø∑•µ•÷
+           COPY    "CPORCSTENTEK.INC".
       *
       *    £ƒ£¬∏°∫˜
            COPY    "MCPDATA.INC".
@@ -1896,6 +1913,11 @@
       *****************************************************************
        RECE62-HENSYU9-SEC                SECTION.
       *
+      *     ≈¿≈©ÃÙ∫ﬁ° ¥Ô∫‡°À§ﬁ§»§·ΩËÕ˝
+           PERFORM    TENTEK-MATOME-SEC
+      *
+           INITIALIZE    WRK-TENTEK-FLG-TABLE
+      *
            INITIALIZE                           SRYACCT-REC
            MOVE    RECE62-HOSPID        TO      ACCT-HOSPID
            MOVE    RECE62-NYUGAIKBN     TO      ACCT-NYUGAIKBN
@@ -1918,6 +1940,7 @@
                            OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
                        IF      ACCT-HKNCOMBI   =
                                                RECE62-HKNCOMBI (IDX1)
+                           MOVE   IDX1          TO   TENTEK-IDX
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                PERFORM   RECE62-TENSOU9-SEC
@@ -1965,10 +1988,24 @@
                              (ACCT-ZAITEN  *  
                               ACCT-ZAIKAISU)
                  ELSE
-                   COMPUTE   TBL-TOTALTEN-ACCT(1) =  
-                             TBL-TOTALTEN-ACCT(1) +
-                             (ACCT-ZAITEN  *  
-                              ACCT-ZAIKAISU)
+                   IF        WRK-TENTEK-FLG(TENTEK-IDX)  =   ZERO
+                       COMPUTE   TBL-TOTALTEN-ACCT(1) =  
+                                 TBL-TOTALTEN-ACCT(1) +
+                                 WRK-TENTEK-YKZTEN(TENTEK-IDX) +
+                                 WRK-TENTEK-KIZAITEN(TENTEK-IDX)
+                       MOVE  1        TO   WRK-TENTEK-FLG(TENTEK-IDX)
+                   END-IF
+                   IF        ACCT-SRYKBN     =    "33"
+                       PERFORM   TENTEK-SYUTEN-SEC
+                       COMPUTE   TBL-TOTALTEN-ACCT(1) =  
+                                 TBL-TOTALTEN-ACCT(1) +
+                                 WRK-TENTEK-SYUTEN
+                   ELSE
+                       COMPUTE   TBL-TOTALTEN-ACCT(1) =  
+                                 TBL-TOTALTEN-ACCT(1) +
+                                 (ACCT-ZAITEN  *  
+                                  ACCT-ZAIKAISU)
+                   END-IF
                  END-IF
                END-IF
            END-IF
@@ -2020,10 +2057,26 @@
                                 (ACCT-ZAITEN * 
                                  ACCT-ZAIKAISU)
                      ELSE
-                       COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
-                                TBL-TOTALTEN-ACCT(KH-IDX) +
-                                (ACCT-ZAITEN * 
-                                 ACCT-ZAIKAISU)
+                       IF        WRK-TENTEK-FLG1(TENTEK-IDX KH-IDX)
+                                                             =   ZERO
+                           COMPUTE   TBL-TOTALTEN-ACCT(KH-IDX) =  
+                                     TBL-TOTALTEN-ACCT(KH-IDX) +
+                                     WRK-TENTEK-YKZTEN(TENTEK-IDX) +
+                                     WRK-TENTEK-KIZAITEN(TENTEK-IDX)
+                           MOVE  1       TO   WRK-TENTEK-FLG1
+                                                   (TENTEK-IDX KH-IDX)
+                       END-IF
+                       IF        ACCT-SRYKBN     =    "33"
+                           PERFORM   TENTEK-SYUTEN-SEC
+                           COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
+                                    TBL-TOTALTEN-ACCT(KH-IDX) +
+                                    WRK-TENTEK-SYUTEN
+                       ELSE
+                           COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
+                                    TBL-TOTALTEN-ACCT(KH-IDX) +
+                                   (ACCT-ZAITEN * 
+                                    ACCT-ZAIKAISU)
+                       END-IF
                      END-IF
                    END-IF
                  END-IF
@@ -2033,6 +2086,104 @@
       *
            .
        RECE62-TENSOU9-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ≈¿≈©√ÌºÕ§ŒÃÙ∫ﬁ° ¥Ô∫‡°À≈¿øÙªªƒÍ
+      *****************************************************************
+       TENTEK-MATOME-SEC                    SECTION.
+      *
+           DISPLAY "TENTEK-MATOME-SEC"
+      *
+           INITIALIZE                  WRK-TENTEK-TABLE
+      *
+           PERFORM     VARYING   TENTEK-IDX  FROM  1  BY  1
+                         UNTIL  (TENTEK-IDX  >  10)    OR
+                                (RECE62-HKNCOMBI(TENTEK-IDX) = ZERO)
+               INITIALIZE                  ORCSTENTEKAREA
+               MOVE    "2"                 TO  ORCSTEN-KBN
+               MOVE    RECE62-PTID        TO  ORCSTEN-PTID
+               MOVE    RECE62-SRYYM       TO  ORCSTEN-SRYYM
+               MOVE    RECE62-HKNCOMBI(TENTEK-IDX)
+                                          TO  ORCSTEN-HKNCOMBI
+               MOVE    RECE62-HOSPID      TO  SPA-HOSPID
+               CALL    "ORCSTENTEK"        USING
+                                           SPA-AREA
+                                           ORCSTENTEKAREA
+      *        ÃÙ∫ﬁ≈¿øÙ§»¥Ô∫‡≈¿øÙ
+               PERFORM  VARYING  IDX1    FROM    1   BY  1
+                          UNTIL  IDX1     >       31
+      *
+                        IF  ORCSTEN-ZAITEN(IDX1)  NOT =  ZERO
+                            ADD    ORCSTEN-ZAITEN(IDX1)
+                                   TO  WRK-TENTEK-YKZTEN(TENTEK-IDX)
+                        END-IF
+               END-PERFORM
+      *
+               PERFORM  VARYING  IDX1    FROM    1   BY  1
+                          UNTIL  IDX1     >       50
+      *
+                        IF  ORCSTEN-KIZ-ZAITEN(IDX1)  NOT =  ZERO
+                            ADD    ORCSTEN-KIZ-ZAITEN(IDX1)
+                                   TO  WRK-TENTEK-KIZAITEN(TENTEK-IDX)
+                        END-IF
+               END-PERFORM
+               DISPLAY "WRK-TENTEK-YKZTEN = " 
+                        WRK-TENTEK-YKZTEN(TENTEK-IDX)
+               DISPLAY "WRK-TENTEK-KIZAITEN = " 
+                        WRK-TENTEK-KIZAITEN(TENTEK-IDX)
+           END-PERFORM
+      *
+           .
+       TENTEK-MATOME-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ≈¿≈©√ÌºÕ§ŒºÍµª≈¿øÙªªƒÍ
+      *****************************************************************
+       TENTEK-SYUTEN-SEC                    SECTION.
+      *
+           DISPLAY "TENTEK-SYUTEN-SEC"
+      *
+      *ø«Œ≈π‘∞Ÿ•∆°º•÷•Î§´§Èø«Œ≈ºÔ Ã∂Ë ¨§ŒºË∆¿
+           MOVE    ZERO               TO   FLG-SRYACT
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPID        TO   SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN     TO   SRY-NYUGAIKBN
+           MOVE    ACCT-PTID          TO   SRY-PTID
+           MOVE    ACCT-SRYKA         TO   SRY-SRYKA
+           MOVE    ACCT-SRYYM         TO   SRY-SRYYM
+           MOVE    ACCT-ZAINUM        TO   SRY-ZAINUM
+           MOVE    SRYACT-REC         TO   MCPDATA-REC
+           MOVE    "DBSELECT"         TO   MCP-FUNC
+           MOVE    "SRYACT-KEY2"      TO   ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC             =    ZERO
+                 MOVE    "SRYACT-KEY2"    TO   ORC-DBPATH
+                 PERFORM  SRYACT-READ-SEC
+           ELSE
+                 MOVE    1                TO   FLG-SRYACT
+           END-IF
+      *
+           MOVE    ZERO                   TO   WRK-TENTEK-SYUTEN
+      *
+           IF   FLG-SRYACT   =    ZERO
+                EVALUATE  SRY-SRYSYUKBN
+                    WHEN  "330"
+                    WHEN  "331"
+                       COMPUTE WRK-TENTEK-SYUTEN = WRK-TENTEK-SYUTEN +
+                               (ACCT-SYUTEN1 * ACCT-ZAIKAISU)
+                    WHEN  "340"
+                       COMPUTE WRK-TENTEK-SYUTEN = WRK-TENTEK-SYUTEN +
+                               (ACCT-ZAITEN * ACCT-ZAIKAISU)
+                END-EVALUATE
+           END-IF
+      *
+           .
+       TENTEK-SYUTEN-EXT.
            EXIT.
       *
       *****************************************************************
