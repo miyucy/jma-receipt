@@ -262,9 +262,9 @@
       *
            IF      WRK-PARA-TEISYUTUSAKI
                                        =   "1"
-               MOVE    "SEIKYU-KEY3"       TO  WRK-PATH
+               MOVE    "SEIKYU-KEY23"      TO  WRK-PATH
            ELSE  
-               MOVE    "SEIKYU-KEY4"       TO  WRK-PATH
+               MOVE    "SEIKYU-KEY24"      TO  WRK-PATH
            END-IF
       *
       *    ¿¡µ·¥…Õ˝∆…§ﬂπ˛§ﬂ
@@ -283,8 +283,6 @@
       *        •Ï•ª•◊•»≈≈ªªæ Û∆…§ﬂπ˛§ﬂ
                PERFORM 900-RECEDEN-SELECT-SEC
       *
-               DISPLAY "FLG-RECEDEN=" FLG-RECEDEN
-               DISPLAY "RECE10-PTID=" RECE10-PTID
                PERFORM UNTIL   FLG-RECEDEN =   1
       *            ƒ¢…º ‘Ω∏<•ÿ•√•¿°º…Ù>ΩËÕ˝
                    PERFORM 210-HEAD-HEN-SEC
@@ -330,60 +328,45 @@
            MOVE    WRK-ZZ9             TO  HCM37-PAGE
       *
       *     ›∏±ºÔ Ã£±
-      *    …‘Ã¿ ¨°¶º´»Ò§œ ‘Ω∏§∑§ §§
-           IF      RECE10-RECESYUBETU  =    ZERO    OR  8888
-               CONTINUE
-           ELSE
-               EVALUATE    RECE10-RECESYUBETU (2:1)
-               WHEN    "1"
-                   EVALUATE    RECE10-TEISYUTUSAKI
-                   WHEN    1
-                       MOVE    "£±º“"      TO  HCM37-HKNSBT1
-                   WHEN    2
-                       MOVE    "£±πÒ"      TO  HCM37-HKNSBT1
-                   END-EVALUATE
-               WHEN    "2"
-                   MOVE    "£≤∏¯»Ò"        TO  HCM37-HKNSBT1
-               WHEN    "3"
-                   MOVE    "£≥œ∑øÕ"        TO  HCM37-HKNSBT1
-               WHEN    "4"
-                   MOVE    "£¥¬‡ø¶"        TO  HCM37-HKNSBT1
+           EVALUATE    RECE10-RECESYUBETU (2:1)
+           WHEN    "1"
+               EVALUATE    RECE10-TEISYUTUSAKI
+               WHEN    1
+                   MOVE    "£±º“"      TO  HCM37-HKNSBT1
+               WHEN    2
+                   MOVE    "£±πÒ"      TO  HCM37-HKNSBT1
                END-EVALUATE
-           END-IF
+           WHEN    "2"
+               MOVE    "£≤∏¯»Ò"        TO  HCM37-HKNSBT1
+           WHEN    "3"
+               MOVE    "£≥œ∑øÕ"        TO  HCM37-HKNSBT1
+           WHEN    "4"
+               MOVE    "£¥¬‡ø¶"        TO  HCM37-HKNSBT1
+           END-EVALUATE
       *
       *     ›∏±ºÔ Ã£≤
-      *    …‘Ã¿ ¨°¶º´»Ò§œ ‘Ω∏§∑§ §§
-           IF      RECE10-RECESYUBETU  =    ZERO    OR  8888
-               CONTINUE
-           ELSE
-               EVALUATE    RECE10-RECESYUBETU (3:1)
-               WHEN    "1"
-                   MOVE    "£±√±∆»"        TO  HCM37-HKNSBT2
-               WHEN    "2"
-                   MOVE    "£≤£≤ ª"        TO  HCM37-HKNSBT2
-               WHEN    "3"
-                   MOVE    "£≥£≥ ª"        TO  HCM37-HKNSBT2
-               END-EVALUATE
-           END-IF
+           EVALUATE    RECE10-RECESYUBETU (3:1)
+           WHEN    "1"
+               MOVE    "£±√±∆»"        TO  HCM37-HKNSBT2
+           WHEN    "2"
+               MOVE    "£≤£≤ ª"        TO  HCM37-HKNSBT2
+           WHEN    "3"
+               MOVE    "£≥£≥ ª"        TO  HCM37-HKNSBT2
+           END-EVALUATE
       *
       *    À‹øÕ°¶≤»¬≤
-      *    …‘Ã¿ ¨°¶º´»Ò§œ ‘Ω∏§∑§ §§
-           IF      RECE10-RECESYUBETU  =    ZERO    OR  8888
-               CONTINUE
-           ELSE
-               EVALUATE    RECE10-RECESYUBETU (4:1)
-                   WHEN    "0"
-                       MOVE    "£∞π‚≥∞£∏"     TO  HCM37-HONKZK
-                   WHEN    "2"
-                       MOVE    "£≤À‹≥∞"       TO  HCM37-HONKZK
-                   WHEN    "4"
-                       MOVE    "£¥ª∞≥∞"       TO  HCM37-HONKZK
-                   WHEN    "6"
-                       MOVE    "£∂≤»≥∞"       TO  HCM37-HONKZK
-                   WHEN    "8"
-                       MOVE    "£∏π‚≥∞£π"     TO  HCM37-HONKZK
-               END-EVALUATE
-           END-IF
+           EVALUATE    RECE10-RECESYUBETU (4:1)
+           WHEN    "0"
+               MOVE    "£∞π‚≥∞£∏"      TO  HCM37-HONKZK
+           WHEN    "2"
+               MOVE    "£≤À‹≥∞"        TO  HCM37-HONKZK
+           WHEN    "4"
+               MOVE    "£¥ª∞≥∞"        TO  HCM37-HONKZK
+           WHEN    "6"
+               MOVE    "£∂≤»≥∞"        TO  HCM37-HONKZK
+           WHEN    "8"
+               MOVE    "£∏π‚≥∞£π"      TO  HCM37-HONKZK
+           END-EVALUATE
       *
       *    ø«Œ≈«Ø∑Ó
            MOVE    WRK-SRYYMWH         TO  HCM37-SRYM
@@ -832,15 +815,16 @@
            MOVE    RECE10-PTID         TO  PTKOH-PTID
            MOVE    WRK-KOHNUM          TO  PTKOH-KOHNUM
            MOVE    PTKOH-REC           TO  MCPDATA-REC
+           MOVE    RECE10-TEKSTYMD     TO  ORC-DBYMD
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTKOHINF-KEY4"     TO  ORC-DBPATH
+           MOVE    "PTKOHINF-KEY5"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "PTKOHINF-KEY4"     TO  ORC-DBPATH
+               MOVE    "PTKOHINF-KEY5"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA
