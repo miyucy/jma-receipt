@@ -5542,10 +5542,11 @@
       *****************************************************************
        920-DBCLOSE-SEC               SECTION.
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+      *    暫定的にコメント化
+      *    MOVE    "DBCLOSE"       TO  MCP-FUNC
+      *    CALL    "MCPSUB"            USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
       *
            .
        920-DBCLOSE-EXT.
