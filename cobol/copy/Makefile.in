@@ -693,7 +693,7 @@ all: ORCA-DBPATH MCPAREA $(COPYS_inc)
 	    -e "s,\@printscripts_len\@,$$printscripts_len,g" \
 	  $< > $@
 
-ORCA-DBPATH: $(top_builddir)/lddef/directory
+ORCA-DBPATH: $(top_builddir)/lddef/directory $(top_builddir)/lddef/dbgroup.inc $(top_builddir)/record/*.db
 	$(COPYGEN) -dbpath -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -lddir $(top_builddir)/lddef -bddir $(top_builddir)/lddef -ld orca00 > $@ || (rm -f $@; false)
 	test -s $@ || (rm -f $@; false)
 
