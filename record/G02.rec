@@ -3,11 +3,19 @@ G02	{
 		SRYYM	{
 			value	varchar(7);
 		};
-		FILENM1	{
-			value	varchar(150);
+		FILE1_COMBO	{
+			FILE1	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[5];
 		};
-		FILENM2	{
-			value	varchar(150);
+		FILE2_COMBO	{
+			FILE2	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[5];
 		};
 		HOUKATUKBN1	{
 			value	bool;
@@ -42,6 +50,12 @@ G02	{
 		};
 		CDKBN2	{
 			value	bool;
+		};
+		FILENM1	{
+			value	varchar(150);
+		};
+		FILENM2	{
+			value	varchar(150);
 		};
 	};
 };

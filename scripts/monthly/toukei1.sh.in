@@ -20,16 +20,22 @@ fi
 #        $7  FILENM1
 #        $8  FILENM2 
 #        $9  DATAKBN
-#        ${10}  HOUKATUKBN
+#        ${10} HOUKATUKBN
 #        ${11} KOJINKBN
-#        ${12}  CDKBN
+#        ${12} CDKBN
 #        ${13} JOBID
 #        ${14} SHELLID
 #        ${15} ERRFILENM
+#        ${16} ファイル出力先区分（診療）
+#        ${17} ファイル出力先区分（病名）
+#        ${18} 端末ｉｐアドレス
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
-	echo "echo " ${15}
+	echo "echo " $9
+	echo "echo " ${16}
+	echo "echo " ${17}
+	echo "echo " ${18}
         if  [ -e ${15} ]; then
             rm  ${15}
         fi
@@ -54,18 +60,53 @@ fi
 
         if  [ ${12} -eq '2' ]; then
             if   [ ${9} != '2' ]; then
-                nkf -s /var/tmp/toukei01.dat > $7
+                nkf -s /tmp/toukei01.dat > /tmp/$7
             fi 
             if   [ ${9} != '1' ]; then
-                nkf -s /var/tmp/toukei02.dat > $8
+                nkf -s /tmp/toukei02.dat > /tmp/$8
             fi 
         else
             if   [ ${9} != '2' ]; then
-                cp  /var/tmp/toukei01.dat $7
+                cp  /var/tmp/toukei01.dat /tmp/$7
             fi 
             if   [ ${9} != '1' ]; then
-                cp  /var/tmp/toukei02.dat $8
+                cp  /var/tmp/toukei02.dat /tmp/$8
             fi
         fi
+#
+##
+        $FDW -host ${18} -command jma-receipt-fd-write.sh /tmp/$8 $8
+        exit
+##
+##
+        if   [ ${9} != '2' ]; then
+             case ${16} in
+                  1) 	$FDW -host ${18} -command jma-receipt-fd-write.sh /tmp/$7 $7
+                        continue;;
+                  2) 	$FDW -host ${18} -command jma-receipt-mo-write.sh /tmp/$7 $7
+                        continue;;
+                  3) 	$FDW -host ${18} -command jma-receipt-user1-write.sh /tmp/$7 $7
+                        continue;;
+                  4) 	$FDW -host ${18} -command jma-receipt-user2-write.sh /tmp/$7 $7
+                        continue;;
+                  5) 	$FDW -host ${18} -command jma-receipt-user3-write.sh /tmp/$7 $7
+                        continue;;
+             esac
+        fi         
+        if   [ ${9} != '1' ]; then
+             case ${17} in
+                  1) 	$FDW -host ${18} -command jma-receipt-fd-write.sh /tmp/$8 $8
+                        continue;;
+                  2) 	$FDW -host ${18} -command jma-receipt-mo-write.sh /tmp/$8 $8
+                        continue;;
+                  3) 	$FDW -host ${18} -command jma-receipt-user1-write.sh /tmp/$8 $8
+                        continue;;
+                  4) 	$FDW -host ${18} -command jma-receipt-user2-write.sh /tmp/$8 $8
+                        continue;;
+                  5) 	$FDW -host ${18} -command jma-receipt-user3-write.sh /tmp/$8 $8
+                        continue;;
+             esac
+        fi         
+
 	
         exit 

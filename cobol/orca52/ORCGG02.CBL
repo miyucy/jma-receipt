@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    04.02.17  ファイルの出力先指定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -68,6 +69,8 @@
                05  SPA-GMN-CUR                     PIC 9(02).
                05  SPA-GMN-AREA.
                    07  SPA-GMN-SRYYM               PIC X(07).
+                   07  SPA-GMN-FILENM1             PIC X(150).
+                   07  SPA-GMN-FILENM2             PIC X(150).
       *                         
                    07  SPA-GMN-NYUGAIKBNLST        OCCURS  2.
                        09  SPA-GMN-NYUGAIKBNL      PIC X(01).
@@ -80,8 +83,27 @@
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-NYUGAIKBNMEI    PIC X(06).
       *
-                   07  SPA-GMN-FILENM1             PIC X(150).
-                   07  SPA-GMN-FILENM2             PIC X(150).
+                   07  SPA-GMN-FILE1LST            OCCURS  5.
+                       09  SPA-GMN-FILE1L          PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-FILE1MEIL       PIC X(20).
+                   07  SPA-GMN-FILE1-MAX           PIC 9(02).    
+      *                                             
+                   07  SPA-GMN-FILE1-G.
+                       09  SPA-GMN-FILE1           PIC X(01).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-FILE1MEI        PIC X(20).
+      *                                             
+                   07  SPA-GMN-FILE2LST            OCCURS  5.
+                       09  SPA-GMN-FILE2L          PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-FILE2MEIL       PIC X(20).
+                   07  SPA-GMN-FILE2-MAX           PIC 9(02).    
+      *                                             
+                   07  SPA-GMN-FILE2-G.
+                       09  SPA-GMN-FILE2           PIC X(01).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-FILE2MEI        PIC X(20).
       *
                    07  SPA-GMN-DATAKBN.         
                        09  SPA-GMN-DATAKBN1-VALUE  PIC X(01).
@@ -245,6 +267,7 @@
            COPY    "CPSHELLTBL.INC".
       *     
            COPY    "ORCA-DBPATH".         
+           COPY    "ORCA-DBMETA".
       *
       *
       *****************************************************************
@@ -331,6 +354,13 @@
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
+               IF      SPA-GIDCD       NOT =   SPACE
+                   EVALUATE    SPA-GIDCD
+                       WHEN    "2001"
+                           PERFORM 520-GIDSET-SEC
+                           GO  TO  100-INIT-EXT
+                   END-EVALUATE
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -406,19 +436,55 @@
            MOVE    1               TO  SPA-GMN-NYUGAIKBN-MAX
       *
            MOVE    SPA-GMN-NYUGAIKBNLST (1)
-                                       TO  SPA-GMN-NYUGAIKBN-G
+                                   TO  SPA-GMN-NYUGAIKBN-G
       *
-           MOVE    "T"                 TO  SPA-GMN-DATAKBN1-VALUE
-           MOVE    "F"                 TO  SPA-GMN-DATAKBN2-VALUE
-           MOVE    "F"                 TO  SPA-GMN-DATAKBN3-VALUE
-           MOVE    "T"                 TO  SPA-GMN-HOUKATUKBN1-VALUE
-           MOVE    "F"                 TO  SPA-GMN-HOUKATUKBN2-VALUE
-           MOVE    "T"                 TO  SPA-GMN-KOJINKBN1-VALUE
-           MOVE    "F"                 TO  SPA-GMN-KOJINKBN2-VALUE
-           MOVE    "T"                 TO  SPA-GMN-CDKBN1-VALUE
-           MOVE    "F"                 TO  SPA-GMN-CDKBN2-VALUE
+           MOVE    "1"             TO  SPA-GMN-FILE1L        (1)
+           MOVE    "フロッピィ"    TO  SPA-GMN-FILE1MEIL     (1)
+           MOVE    "2"             TO  SPA-GMN-FILE1L        (2)
+           MOVE    "ＭＯ"          TO  SPA-GMN-FILE1MEIL     (2)
+           MOVE    "3"             TO  SPA-GMN-FILE1L        (3)
+           MOVE    "ユーザー指定場所１"
+                                   TO  SPA-GMN-FILE1MEIL     (3)
+           MOVE    "4"             TO  SPA-GMN-FILE1L        (4)
+           MOVE    "ユーザー指定場所２"
+                                   TO  SPA-GMN-FILE1MEIL     (4)
+           MOVE    "5"             TO  SPA-GMN-FILE1L        (5)
+           MOVE    "ユーザー指定場所３"
+                                   TO  SPA-GMN-FILE1MEIL     (5)
+           MOVE    5               TO  SPA-GMN-FILE1-MAX
       *
-           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    SPA-GMN-FILE1LST (1)
+                                   TO  SPA-GMN-FILE1-G
+      *
+           MOVE    "1"             TO  SPA-GMN-FILE2L        (1)
+           MOVE    "フロッピィ"    TO  SPA-GMN-FILE2MEIL     (1)
+           MOVE    "2"             TO  SPA-GMN-FILE2L        (2)
+           MOVE    "ＭＯ"          TO  SPA-GMN-FILE2MEIL     (2)
+           MOVE    "3"             TO  SPA-GMN-FILE2L        (3)
+           MOVE    "ユーザー指定場所１"
+                                   TO  SPA-GMN-FILE2MEIL     (3)
+           MOVE    "4"             TO  SPA-GMN-FILE2L        (4)
+           MOVE    "ユーザー指定場所２"
+                                   TO  SPA-GMN-FILE2MEIL     (4)
+           MOVE    "5"             TO  SPA-GMN-FILE2L        (5)
+           MOVE    "ユーザー指定場所３"
+                                   TO  SPA-GMN-FILE2MEIL     (5)
+           MOVE    5               TO  SPA-GMN-FILE2-MAX
+      *
+           MOVE    SPA-GMN-FILE2LST (1)
+                                       TO  SPA-GMN-FILE2-G
+      *
+           MOVE    "T"             TO  SPA-GMN-DATAKBN1-VALUE
+           MOVE    "F"             TO  SPA-GMN-DATAKBN2-VALUE
+           MOVE    "F"             TO  SPA-GMN-DATAKBN3-VALUE
+           MOVE    "T"             TO  SPA-GMN-HOUKATUKBN1-VALUE
+           MOVE    "F"             TO  SPA-GMN-HOUKATUKBN2-VALUE
+           MOVE    "T"             TO  SPA-GMN-KOJINKBN1-VALUE
+           MOVE    "F"             TO  SPA-GMN-KOJINKBN2-VALUE
+           MOVE    "T"             TO  SPA-GMN-CDKBN1-VALUE
+           MOVE    "F"             TO  SPA-GMN-CDKBN2-VALUE
+      *
+           MOVE    1               TO  SPA-GMN-CUR
       *
            .
        310-SPASET-EXT.
@@ -430,12 +496,22 @@
        330-GID1-SET-SEC            SECTION.
       *
            IF      SPA-GID1-FLG    =   "OK"
-               IF      SPA-GIDCD       =    "6666"
-                   MOVE    "JOIN"            TO  MCP-PUTTYPE
-                   PERFORM 210-BACK-SYORI-SEC
-               ELSE
-                   PERFORM 500-KAKUTEI-SEC
-               END-IF
+               EVALUATE    SPA-GIDCD
+                   WHEN    "6666"
+                       MOVE    "JOIN"             TO  MCP-PUTTYPE
+                       PERFORM 210-BACK-SYORI-SEC
+                   WHEN    "1004"
+                       IF    ( SPA-GMN-FILE1       =   "1" OR  "2" )
+                       AND   ( SPA-GMN-FILE2       =   "1" OR  "2" )
+                           MOVE    SPACE               TO  SPA-GID1-FLG
+                           MOVE    "2001"              TO  SPA-GIDCD
+                           GO  TO  330-GID1-SET-EXT
+                       ELSE
+                           PERFORM 500-KAKUTEI-SEC
+                       END-IF
+                   WHEN    "2001"
+                       PERFORM 500-KAKUTEI-SEC
+               END-EVALUATE
            END-IF
       *
            MOVE    SPACE           TO  SPA-GID1-FLG
@@ -531,6 +607,8 @@
            MOVE    G02-NYUGAIKBN        TO  SPA-GMN-NYUGAIKBN-G
            MOVE    G02-FILENM1          TO  SPA-GMN-FILENM1
            MOVE    G02-FILENM2          TO  SPA-GMN-FILENM2
+           MOVE    G02-FILE1            TO  SPA-GMN-FILE1-G
+           MOVE    G02-FILE2            TO  SPA-GMN-FILE2-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -551,13 +629,23 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
+      *    （診療）出力先
+           PERFORM 41023-FILE1-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    （病名）出力先
+           PERFORM 41024-FILE2-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
       *    （診療）出力ファイル名
-           PERFORM 41023-FILENM1-CHK-SEC
+           PERFORM 41025-FILENM1-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    （病名）出力ファイル名
-           PERFORM 41024-FILENM2-CHK-SEC
+           PERFORM 41026-FILENM2-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -618,21 +706,105 @@
            EXIT.
       *
       *****************************************************************
-      *    （診療）出力先ファイル名チェック処理
+      *    （診療）出力先チェック処理
       *****************************************************************
-       41023-FILENM1-CHK-SEC           SECTION.
+       41023-FILE1-CHK-SEC           SECTION.
       *
+           IF      SPA-GMN-FILE1     =   SPACE
+               MOVE    SPA-GMN-FILE1LST (1)
+                                           TO  SPA-GMN-FILE1-G
+           ELSE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-FILE1-MAX
+                   IF        SPA-GMN-FILE1
+                                   =   SPA-GMN-FILE1L (IDX)
+                       MOVE    SPA-GMN-FILE1MEIL (IDX)
+                                           TO  SPA-GMN-FILE1MEI
+                       MOVE    SPA-GMN-FILE1-MAX
+                                           TO  IDX
+                   END-IF
+               END-PERFORM        
+               IF      SPA-GMN-FILE1MEI  =   SPACE  
+                   MOVE    SPA-GMN-FILE1LST (1)
+                                               TO  SPA-GMN-FILE1-G
+               END-IF
+           END-IF
            .
-       41023-FILENM1-CHK-EXT.
+       41023-FILE1-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    （病名）出力先チェック処理
+      *****************************************************************
+       41024-FILE2-CHK-SEC           SECTION.
+      *
+           IF      SPA-GMN-FILE2     =   SPACE
+               MOVE    SPA-GMN-FILE2LST (1)
+                                           TO  SPA-GMN-FILE2-G
+           ELSE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-FILE2-MAX
+                   IF        SPA-GMN-FILE2
+                                   =   SPA-GMN-FILE2L (IDX)
+                       MOVE    SPA-GMN-FILE2MEIL (IDX)
+                                           TO  SPA-GMN-FILE2MEI
+                       MOVE    SPA-GMN-FILE2-MAX
+                                           TO  IDX
+                   END-IF
+               END-PERFORM        
+               IF      SPA-GMN-FILE2MEI  =   SPACE  
+                   MOVE    SPA-GMN-FILE2LST (1)
+                                               TO  SPA-GMN-FILE2-G
+               END-IF
+           END-IF
+           .
+       41024-FILE2-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    （病名）出力先ファイル名チェック処理
       *****************************************************************
-       41024-FILENM2-CHK-SEC           SECTION.
+       41025-FILENM1-CHK-SEC           SECTION.
       *
+           IF      SPA-GMN-FILENM1     =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       150
+                       OR      SPA-GMN-FILENM1 (IDX:1)
+                                           =   SPACE
+                   IF        SPA-GMN-FILENM1 (IDX:1)
+                                               =   "/"
+                       MOVE    "0005"              TO  SPA-ERRCD
+                       MOVE    150                 TO  IDX
+                   END-IF
+               END-PERFORM        
+           END-IF
            .
-       41024-FILENM2-CHK-EXT.
+       41025-FILENM1-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    （病名）出力先ファイル名チェック処理
+      *****************************************************************
+       41026-FILENM2-CHK-SEC           SECTION.
+      *
+           IF      SPA-GMN-FILENM2     =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       150
+                       OR      SPA-GMN-FILENM2 (IDX:1)
+                                           =   SPACE
+                   IF        SPA-GMN-FILENM2 (IDX:1)
+                                               =   "/"
+                       MOVE    "0005"              TO  SPA-ERRCD
+                       MOVE    150                 TO  IDX
+                   END-IF
+               END-PERFORM        
+           END-IF
+           .
+       41026-FILENM2-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -640,19 +812,23 @@
       *****************************************************************
        4101-KAKUTEI-CHK-SEC        SECTION.
       *
-           IF      SPA-GMN-DATAKBN2-VALUE  =   "T"
-           AND     SPA-GMN-FILENM1         =   SPACE
-               MOVE    3                   TO  SPA-GMN-CUR
-               MOVE    "0003"              TO  SPA-ERRCD
-               GO  TO  4101-KAKUTEI-CHK-EXT
+           IF    ( SPA-GMN-DATAKBN2-VALUE  =   "T" )
+           OR    ( SPA-GMN-DATAKBN1-VALUE  =   "T" )
+               IF      SPA-GMN-FILENM1         =   SPACE
+                   MOVE    3                   TO  SPA-GMN-CUR
+                   MOVE    "0003"              TO  SPA-ERRCD
+                   GO  TO  4101-KAKUTEI-CHK-EXT
+               END-IF
            END-IF
       *
-           IF      SPA-GMN-DATAKBN3-VALUE  =   "T"
-           AND     SPA-GMN-FILENM2         =   SPACE
-               MOVE    4                   TO  SPA-GMN-CUR
-               MOVE    "0004"              TO  SPA-ERRCD
-               GO  TO  4101-KAKUTEI-CHK-EXT
-           END-IF
+           IF    ( SPA-GMN-DATAKBN3-VALUE  =   "T" )
+           OR    ( SPA-GMN-DATAKBN1-VALUE  =   "T" )
+               IF      SPA-GMN-FILENM2         =   SPACE
+                   MOVE    4                   TO  SPA-GMN-CUR
+                   MOVE    "0004"              TO  SPA-ERRCD
+                   GO  TO  4101-KAKUTEI-CHK-EXT
+               END-IF
+           END-IF  
       *
            .
        4101-KAKUTEI-CHK-EXT.
@@ -903,6 +1079,16 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG14
            MOVE    TOUKEIERR       TO  SHELLTBL-ARG15
+           MOVE    SPA-GMN-FILE1   TO  SHELLTBL-ARG16
+           MOVE    SPA-GMN-FILE2   TO  SHELLTBL-ARG17
+      *    ipアドレス取得
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           MOVE    PATH-METADB-PRIMARY
+                                   TO  MCP-PATH
+           CALL    "MCPSUB"        USING
+                                   MCPAREA
+                                   DBMETA
+           MOVE    DBMETA-HOST     TO  SHELLTBL-ARG18
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -1110,6 +1296,22 @@
            END-PERFORM
            MOVE    SPA-GMN-NYUGAIKBN-MAX   TO  G02-NYUGAIKBN-COUNT
       *
+           MOVE    SPA-GMN-FILE1-G     TO  G02-FILE1
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-FILE1-MAX
+               MOVE    SPA-GMN-FILE1LST (IDX)
+                                           TO  G02-FILE1-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-FILE1-MAX   TO  G02-FILE1-COUNT
+      *
+           MOVE    SPA-GMN-FILE2-G     TO  G02-FILE2
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-FILE2-MAX
+               MOVE    SPA-GMN-FILE2LST (IDX)
+                                           TO  G02-FILE2-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-FILE2-MAX TO  G02-FILE2-COUNT
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -1190,6 +1392,9 @@
                WHEN    "0004"
                    MOVE    "（病名）出力ファイル名入力エラー"
                                                        TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE    "出力ファイル名に”／”が入力してあります"
+                                                       TO  SPA-ERRMSG
                WHEN    "7777"
                    MOVE    WRK-TOUKEIERR               TO  SPA-ERRMSG
            END-EVALUATE
@@ -1227,9 +1432,12 @@
                                              DELIMITED  BY  SIZE 
                                              INTO  WRK-GIDMSG
                    END-STRING
+               WHEN    "2001"
+                   MOVE    "媒体をドライブにセットして下さい"
+                                       TO  WRK-GIDMSG
                WHEN    "6666"
                    MOVE    "統計データ作成中です"
-                                            TO  WRK-GIDMSG
+                                       TO  WRK-GIDMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  GID1

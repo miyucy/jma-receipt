@@ -1,10 +1,18 @@
           02  G02.
               03  G02-SRYYM.
                 04  G02-VALUE   PIC X(7).
-              03  G02-FILENM1.
-                04  G02-VALUE   PIC X(150).
-              03  G02-FILENM2.
-                04  G02-VALUE   PIC X(150).
+              03  G02-FILE1-COMBO.
+                04  G02-FILE1.
+                  05  G02-VALUE    PIC X(22).
+                04  G02-FILE1-COUNT PIC S9(9)   BINARY.
+                04  G02-FILE1-ITEM
+                        PIC X(22)   OCCURS  5 TIMES.
+              03  G02-FILE2-COMBO.
+                04  G02-FILE2.
+                  05  G02-VALUE    PIC X(22).
+                04  G02-FILE2-COUNT PIC S9(9)   BINARY.
+                04  G02-FILE2-ITEM
+                        PIC X(22)   OCCURS  5 TIMES.
               03  G02-HOUKATUKBN1.
                 04  G02-VALUE   PIC X.
               03  G02-HOUKATUKBN2.
@@ -28,3 +36,7 @@
                 04  G02-VALUE   PIC X.
               03  G02-CDKBN2.
                 04  G02-VALUE   PIC X.
+              03  G02-FILENM1.
+                04  G02-VALUE   PIC X(150).
+              03  G02-FILENM2.
+                04  G02-VALUE   PIC X(150).
