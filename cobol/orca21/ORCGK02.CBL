@@ -1437,14 +1437,14 @@
                                                   OR  "K02N" )  AND
                   (SPA-PTID        NOT =   SPA-GMN-PTID )
                IF      SPA-MOTOPG          =   "P02"  OR  "U02"
-                                                      OR  "K02N"
                    MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
                    MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
+               END-IF
                    IF      SPA-SRYYMD          =   SPACE
                        MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
                        MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
                    END-IF
-               END-IF
+      *********END-IF
       *        ½é´ü£Ó£Ð£ÁÊÔ½¸½èÍý
                INITIALIZE                  ORCSC95AREA
                MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD

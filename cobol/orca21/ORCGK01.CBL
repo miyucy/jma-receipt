@@ -1935,6 +1935,7 @@
            END-IF
       *
            MOVE    WRK-HENYMDG         TO  K01-SRYYMD
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-SRYYMD
            PERFORM 4103-SRYYMD-CHK-SEC
       *
            .

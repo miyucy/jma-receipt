@@ -1331,6 +1331,8 @@
       *    入外区分
            IF      SPA-NYUGAIKBN       =   "2"
       *        外来の時、外来処理へ
+               MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
+               MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
                PERFORM 410109-K02IDOU-SEC
                GO      TO      3009-SAIHEN-EXT
            END-IF
