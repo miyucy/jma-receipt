@@ -39,7 +39,7 @@
                 04  Y03-SRYNAIYO.
                   05  Y03-VALUE   PIC X(21).
                 04  Y03-SRYNAIY-COUNT   PIC S9(9)   BINARY.
-                04  Y03-SRYNAIY-ITEM    PIC X(21)   OCCURS  20 TIMES.
+                04  Y03-SRYNAIY-ITEM    PIC X(21)   OCCURS  30 TIMES.
               03  Y03-DRNAME-COB.
                 04  Y03-DRNAME.
                   05  Y03-VALUE   PIC X(29).

@@ -41,7 +41,7 @@
                 04  U02-SRYNAIYO.
                   05  U02-VALUE   PIC X(21).
                 04  U02-SRYNAIYO-COUNT   PIC S9(9)   BINARY.
-                04  U02-SRYNAIYO-ITEM    PIC X(21)   OCCURS  10 TIMES.
+                04  U02-SRYNAIYO-ITEM    PIC X(21)   OCCURS  30 TIMES.
               03  U02-KARUTE-COMBO.
                 04  U02-KARUTE.
                   05  U02-VALUE   PIC X(14).

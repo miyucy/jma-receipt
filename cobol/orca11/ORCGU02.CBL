@@ -616,8 +616,8 @@
            END-IF
       *
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL      (IDX             >   10    )   OR
-                              (FLG-SYSKANRI      =   1   )
+                   UNTIL      (IDX             >   30    )   OR
+                              (FLG-SYSKANRI    =   1   )
       *
                MOVE    MCPDATA-REC       TO  SYS-1012-REC
                MOVE    SYS-1012-KBNCD    TO  SPA-GMN-SRYNAIYOCD

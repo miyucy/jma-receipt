@@ -491,7 +491,7 @@
                        09  SPA-GMN20-SRYNAICD    PIC X(02).
                        09  SPA-GMN20-SRYNA1      PIC X(01).
                        09  SPA-GMN20-SRYNAIMEI   PIC X(17).
-                   07  SPA-GMN20-SRYNAILST     OCCURS  10.
+                   07  SPA-GMN20-SRYNAILST     OCCURS  30.
                        09  SPA-SRYNAI-CD           PIC X(02).
                        09  SPA-SRYNAI-H            PIC X(01).
                        09  SPA-SRYNAI-MEI          PIC X(16).

@@ -74,7 +74,7 @@
                     06  P02-P020-SRYNAIYO.
                       07  P02-VALUE   PIC X(21).
                     06  P02-P020-SRYNAIYO-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P020-SRYNAIYO-ITEM    PIC X(21)   OCCURS 10.
+                    06  P02-P020-SRYNAIYO-ITEM    PIC X(21)   OCCURS 30.
                   05  P02-P020-KARUTE-COB.
                     06  P02-P020-KARUTE.
                       07  P02-VALUE   PIC X(16).
