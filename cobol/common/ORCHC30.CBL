@@ -274,7 +274,6 @@
       *
       *    出力先プリンタ名割り当て情報編集
            PERFORM 900-1031-READ-SEC
-           DISPLAY "SYS-1031-PRTNM(8)=" SYS-1031-PRTNM(8)
       *
       *    医療機関情報−基本情報セット
            PERFORM 900-1001-READ-SEC

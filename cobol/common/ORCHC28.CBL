@@ -25,6 +25,10 @@
       *  作成日付    作業者        記述
       *  02/05/20    MCC-森脇      新規作成
       *****************************************************************
+      *  プログラム修正履歴
+      *  Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01     NACL-森脇    03/07/15  出力先プリンタサブ追加
+      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
@@ -139,6 +143,11 @@
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
+      *----(00.00.01)--ADD-START---
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *----(00.00.01)--ADD-END-----
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -198,20 +207,36 @@
       *****************************************************************
       *    パラメタ編集処理
       *****************************************************************
-       110-PARA-HENSYU-SEC                   SECTION.              
-      *      
+       110-PARA-HENSYU-SEC                   SECTION. 
+      *
+      *----(00.00.01)--UPD-START---
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
-           ELSE    
+           INITIALIZE                      SYS-1031-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
                INITIALIZE                  SYS-1031-REC
-           END-IF                                     
+           END-IF 
+      * 
+      *    出力先プリンタ名割り当て情報編集
+      *     MOVE    SPACE               TO  SYS-1031-REC
+      *     INITIALIZE                  SYS-1031-REC
+      *     MOVE    "1031"              TO  SYS-1031-KANRICD
+      *     MOVE    "*"                 TO  SYS-1031-KBNCD
+      *     MOVE    SYS-1031-REC        TO  MCPDATA-REC
+      *     PERFORM 800-SYSKANRI-READ-SEC
+      *     IF      FLG-SYSKANRI        =   ZERO
+      *         MOVE    MCPDATA-REC         TO  SYS-1031-REC
+      *     ELSE    
+      *         INITIALIZE                  SYS-1031-REC
+      *     END-IF                                     
+      *----(00.00.01)--UPD-END-----
            .
       *
        110-PARA-HENSYU-EXT.
@@ -465,44 +490,46 @@
        900-DBREAD-EXT.
            EXIT.
       *
+      *----(00.00.01)--UPD-START---
       *****************************************************************
       *    システム管理マスタ読み込み
       *****************************************************************
-       800-SYSKANRI-READ-SEC           SECTION.
+      * 800-SYSKANRI-READ-SEC           SECTION.
       *
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO            TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    1               TO  FLG-SYSKANRI
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
+      *     MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+      *     MOVE    "DBSELECT"          TO  MCP-FUNC
+      *     MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *     CALL    "ORCMCPSUB"          USING
+      *                                  MCPAREA
+      *                                  ORCMCPAREA
+      *                                  MCPDATA-REC
+      *     IF      MCP-RC              =   ZERO
+      *         MOVE    "DBFETCH"           TO  MCP-FUNC
+      *         MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *         CALL    "ORCMCPSUB"          USING
+      *                                      MCPAREA
+      *                                      ORCMCPAREA
+      *                                      MCPDATA-REC
+      *         IF      MCP-RC              =   ZERO
+      *             MOVE    ZERO            TO  FLG-SYSKANRI
+      *         ELSE
+      *             MOVE    1               TO  FLG-SYSKANRI
+      *         END-IF
+      *     ELSE
+      *         MOVE    1               TO  FLG-SYSKANRI
+      *     END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+      *     MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *     MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *     CALL    "ORCMCPSUB"          USING
+      *                                  MCPAREA
+      *                                  ORCMCPAREA
+      *                                  MCPDATA-REC
       *
-           .
-       800-SYSKANRI-READ-EXT.
-           EXIT.
+      *     .
+      * 800-SYSKANRI-READ-EXT.
+      *     EXIT.
+      *----(00.00.01)--UPD-END-----
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
