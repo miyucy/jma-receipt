@@ -3218,8 +3218,11 @@
                WHEN    "0086"
                    MOVE    "公費の年齢適用エラーです"
                                                TO  SPA-ERRMSG
-               WHEN    "K086"
-                   MOVE    "警告！公費の年齢適用エラーです"
+               WHEN    "K005"
+                   MOVE    "警告！公費の年齢開始日適用エラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "K006"
+                   MOVE    "警告！公費の年齢終了日適用エラーです"
                                                TO  SPA-ERRMSG
                WHEN    "0087"
                    MOVE    "適用開始日時点での年齢が６５歳未満です"

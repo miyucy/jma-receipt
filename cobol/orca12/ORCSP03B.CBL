@@ -1402,15 +1402,17 @@
       *
                IF  ( WRK-NENREI-YY         <   WRK-STYEAR )  OR
                    ( WRK-NENREI-YY         >   WRK-EDYEAR )
-                   IF      SPA-NAI-AGECHK (IDX-K)  =   ZERO
+                   IF     (FLG-AUTO            =   ZERO  )  AND
+                          (SPA-NAI-AGECHK (IDX-K)  =   ZERO)
                        MOVE    1               TO  SPA-NAI-AGECHK(IDX-K)
       *
       **************** MOVE    "0086"          TO  SPA-ERRCD
-                       MOVE    "K086"          TO  SPA-ERRCD
                        IF      IDX             =   1
                            MOVE    23              TO  SPA-GMN-CUR
+                           MOVE    "K005"          TO  SPA-ERRCD
                        ELSE
                            MOVE    24              TO  SPA-GMN-CUR
+                           MOVE    "K006"          TO  SPA-ERRCD
                        END-IF
                    END-IF
                END-IF
