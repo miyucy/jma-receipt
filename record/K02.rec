@@ -348,7 +348,7 @@ K02	{
 				row	int;
 				rowattr	int;
 				item	{
-					value0	varchar(3);
+					value0	varchar(4);
 					value1	varchar(13);
 					value2	varchar(2);
 					value3	varchar(4);

@@ -3206,7 +3206,7 @@
 	  <last_modification_time>Fri, 31 Aug 2001 02:23:14 GMT</last_modification_time>
 	</signal>
 	<columns>4</columns>
-	<column_widths>23,88,13,34</column_widths>
+	<column_widths>27,90,13,28</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
