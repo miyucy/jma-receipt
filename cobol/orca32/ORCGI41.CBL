@@ -2895,12 +2895,17 @@
                               (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-DAY-41 (IDX-D)  NOT =   ZERO
                    PERFORM 410121-DAY-NAI-CHK-SEC
+               ELSE
+                   IF      SPA-NAI-TZAISKBKBN-41 (SPA-NAI-BANGO) =  "5"
+                       PERFORM 410122-DAY-NASI-CHK-SEC
+                   END-IF
                END-IF
       *        入院期間外等の時、元へ戻す
                IF      SPA-ERRCD           =   "0033"
                                            OR  "0032"
                                            OR  "0039"
                                            OR  "0042"
+                                           OR  "0046"
                    MOVE    SPA-NAI-DAY-41(SPA-NAI-BANGO IDX-D)
                                            TO  SPA-GMN-DAY-41 (IDX-D)
                    MOVE    SPA-ERRCD       TO  WRK-ERRCD
@@ -3086,6 +3091,21 @@
            .
       *
        410121-DAY-NAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せのクリアチェック処理
+      *****************************************************************
+       410122-DAY-NASI-CHK-SEC             SECTION.
+      *
+      *    入院基本料算定中
+           IF      SPA-CHK-NYUIN (IDX-D)   NOT =   SPACE
+               MOVE    "0046"             TO  SPA-ERRCD
+           END-IF
+      *
+           .
+      *
+       410122-DAY-NASI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3322,6 +3342,10 @@
                          OR   (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-DAY-41 (IDX-D)  NOT =   ZERO
                    PERFORM 410121-DAY-NAI-CHK-SEC
+               ELSE
+                   IF      SPA-NAI-TZAISKBKBN-41 (SPA-NAI-BANGO) =  "5"
+                       PERFORM 410122-DAY-NASI-CHK-SEC
+                   END-IF
                END-IF
            END-PERFORM
            IF      SPA-ERRCD       NOT =   SPACE
@@ -6320,6 +6344,9 @@
                                        TO  WRK-ERRMSG(43:20)
                WHEN    "0045"
                    MOVE    "診療内容です。選択できません。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0046"
+                   MOVE    "保険組合せはクリアできません。"
                                        TO  WRK-ERRMSG
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません。"
