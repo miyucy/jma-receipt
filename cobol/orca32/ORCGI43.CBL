@@ -277,7 +277,7 @@
            MOVE    LNK-SCRSPA      TO  SPA-I4.
            MOVE    SPA-WORK        TO  SPA-I4KYOUTU.
       *
-           PERFORM                     310-SPA-SET-SEC.
+           PERFORM 310-SPA-SET-SEC.
       *
            MOVE    1               TO  SPA-I43-CUR.
       *
@@ -339,11 +339,11 @@
       *    保険組合せ
            PERFORM 3101-HKNCOMBI-HEN-SEC.
       *
-      *    コメント編集編集
-           PERFORM 3103-RECECOM-HEN-SEC.
-      *
       *    初期編集
            PERFORM 314-SYOKI-SEC.
+      *
+      *    コメント編集編集
+           PERFORM 3103-RECECOM-HEN-SEC.
       *
        310-SPA-SET-EXT.
            EXIT.
@@ -377,7 +377,7 @@
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
            END-IF.
-           PERFORM UNTIL      (FLG-HKNCOMBI        =   1)
+           PERFORM UNTIL      FLG-HKNCOMBI        =   1
       *
       *        対象の保険組合せのみ編集
                MOVE    ZERO                TO  FLG-HKNCOMBICHK
@@ -495,6 +495,7 @@
            INITIALIZE                  RECECOM-REC.
            MOVE    SPA-HOSPID          TO  RECECOM-HOSPID.
            MOVE    SPA-GMN-PTID        TO  RECECOM-PTID.
+           MOVE    "1"                 TO  RECECOM-NYUGAIKBN.
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC.
            MOVE    "DBSELECT"          TO  MCP-FUNC.
@@ -512,31 +513,72 @@
            END-IF.
            MOVE    ZERO                TO  IDX.
            PERFORM UNTIL       FLG-RECECOM        =   1
-               ADD     1                   TO  IDX
-               MOVE    IDX                 TO  SPA-I43-RECE-MAX
-               MOVE    IDX                 TO  SPA-I43-TRENNUM (IDX)
-               MOVE    RECECOM-SRYKA       TO  SPA-I43-NSRYKA  (IDX)
-               MOVE    RECECOM-SRYYM       TO  SPA-I43-NSRYYM  (IDX)
-               MOVE    RECECOM-HKNCOMBI    TO  SPA-I43-NHKNCOMBI(IDX)
-               MOVE    RECECOM-COMMENT     TO  SPA-I43-TCOMMENT(IDX)
-      *        入院年月
-               MOVE    RECECOM-SRYYM       TO  WRK-SYMD(1:6)
-               MOVE    "01"                TO  WRK-SYMD(7:2)
-               PERFORM 800-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG (1:6)   TO  SPA-I43-TSRYYM (IDX)
-      *        入院科
-               MOVE    RECECOM-SRYKA       TO  WRK-NSRYKA
-               PERFORM 810-NSRYKA-SET-SEC
-               MOVE    WRK-NSRYKAMEI       TO  SPA-I43-TSRYKA (IDX)
-      *        保険組合せ番号
-               MOVE    RECECOM-HKNCOMBI    TO  WRK-HKNCOMBI
-               PERFORM 820-HKNCOMBI-SET-SEC
-               MOVE    WRK-HKNCOMBIMEI     TO  SPA-I43-THKNCOMBI(IDX)
-      *        入院日
-               IF      RECECOM-SRYDD       =   ZERO
-                   MOVE    SPACE               TO  SPA-I43-TSRYDD (IDX)
+               IF      SPA-I43-SRYKA      =   "00"
+                   ADD     1                 TO  IDX
+                   MOVE    IDX               TO  SPA-I43-RECE-MAX
+                   MOVE    IDX               TO  SPA-I43-TRENNUM (IDX)
+                   MOVE    RECECOM-SRYKA     TO  SPA-I43-NSRYKA  (IDX)
+                   MOVE    RECECOM-SRYYM     TO  SPA-I43-NSRYYM  (IDX)
+                   MOVE    RECECOM-HKNCOMBI  TO  SPA-I43-NHKNCOMBI(IDX)
+                   MOVE    RECECOM-COMMENT   TO  SPA-I43-TCOMMENT(IDX)
+      *            入院年月
+                   MOVE    RECECOM-SRYYM     TO  WRK-SYMD(1:6)
+                   MOVE    "01"              TO  WRK-SYMD(7:2)
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG (1:6) TO  SPA-I43-TSRYYM (IDX)
+      *            入院科
+                   MOVE    RECECOM-SRYKA     TO  WRK-NSRYKA
+                   PERFORM 810-NSRYKA-SET-SEC
+                   MOVE    WRK-NSRYKAMEI     TO  SPA-I43-TSRYKA (IDX)
+      *            保険組合せ番号
+                   MOVE    RECECOM-HKNCOMBI  TO  WRK-HKNCOMBI
+                   PERFORM 820-HKNCOMBI-SET-SEC
+                   MOVE    WRK-HKNCOMBIMEI   TO  SPA-I43-THKNCOMBI(IDX)
+      *            入院日
+                   IF      RECECOM-SRYDD       =   ZERO
+                       MOVE    SPACE           TO  SPA-I43-TSRYDD (IDX)
+                   ELSE
+                       MOVE    RECECOM-SRYDD   TO  SPA-I43-TSRYDD (IDX)
+                   END-IF
                ELSE
-                   MOVE    RECECOM-SRYDD       TO  SPA-I43-TSRYDD (IDX)
+                   IF      SPA-I43-SRYKA      =   RECECOM-SRYKA
+                       ADD     1                 TO  IDX
+                       MOVE    IDX               TO  SPA-I43-RECE-MAX
+                       MOVE    IDX               TO
+                                                 SPA-I43-TRENNUM (IDX)
+                       MOVE    RECECOM-SRYKA     TO
+                                                 SPA-I43-NSRYKA  (IDX)
+                       MOVE    RECECOM-SRYYM     TO
+                                                 SPA-I43-NSRYYM  (IDX)
+                       MOVE    RECECOM-HKNCOMBI  TO
+                                                 SPA-I43-NHKNCOMBI(IDX)
+                       MOVE    RECECOM-COMMENT   TO
+                                                 SPA-I43-TCOMMENT(IDX)
+      *                入院年月
+                       MOVE    RECECOM-SRYYM     TO  WRK-SYMD(1:6)
+                       MOVE    "01"              TO  WRK-SYMD(7:2)
+                       PERFORM 800-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG (1:6) TO
+                                                 SPA-I43-TSRYYM (IDX)
+      *                入院科
+                       MOVE    RECECOM-SRYKA     TO  WRK-NSRYKA
+                       PERFORM 810-NSRYKA-SET-SEC
+                       MOVE    WRK-NSRYKAMEI     TO
+                                                 SPA-I43-TSRYKA (IDX)
+      *                保険組合せ番号
+                       MOVE    RECECOM-HKNCOMBI  TO  WRK-HKNCOMBI
+                       PERFORM 820-HKNCOMBI-SET-SEC
+                       MOVE    WRK-HKNCOMBIMEI   TO
+                                                 SPA-I43-THKNCOMBI(IDX)
+      *                入院日
+                       IF      RECECOM-SRYDD       =   ZERO
+                           MOVE    SPACE           TO
+                                                   SPA-I43-TSRYDD (IDX)
+                       ELSE
+                           MOVE    RECECOM-SRYDD   TO
+                                                   SPA-I43-TSRYDD (IDX)
+                       END-IF
+                   END-IF
                END-IF
       *
                MOVE    "RECECOM-KEY2"      TO  ORC-DBPATH
@@ -683,8 +725,8 @@
                MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
                PERFORM 910-HKNCOMBI-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-HKNCOMBI
-               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1                   TO  FLG-HKNCOMBI
+               INITIALIZE                      HKNCOMBI-REC
            END-IF.
            IF      FLG-HKNCOMBI        =   ZERO
                PERFORM 31011-HKNCOMBI-HEN-SEC
@@ -928,6 +970,7 @@
                MOVE    "0001"              TO  SPA-ERRCD
            ELSE
                MOVE    1                   TO  SPA-I43-CUR
+               PERFORM 3103-RECECOM-HEN-SEC
            END-IF.
       *
        400-NSRYKA-EXT.
@@ -1106,9 +1149,11 @@
            INITIALIZE                    RECECOM-REC.
            MOVE    SPA-HOSPID            TO  RECECOM-HOSPID.
            MOVE    SPA-GMN-PTID          TO  RECECOM-PTID.
+           MOVE    "1"                   TO  RECECOM-NYUGAIKBN.
            MOVE    WRK-I43-NSRYKA (IDY)  TO  RECECOM-SRYKA.
            MOVE    SPA-I43-SRYYMS        TO  RECECOM-SRYYM.
            MOVE    SPA-I43-HKNCOMBINUM   TO  RECECOM-HKNCOMBI.
+           MOVE    "00"                  TO  RECECOM-SRYDD.
       *
            MOVE    RECECOM-REC           TO  MCPDATA-REC.
            MOVE    "DBSELECT"            TO  MCP-FUNC.
@@ -1139,36 +1184,38 @@
                   PERFORM 2120-RECECOM-SEL-SEC
                   IF      FLG-RECECOM         =   ZERO
       *               更新
-                      MOVE    SPA-I43-COMMENT       TO  RECECOM-COMMENT
+                      MOVE    SPA-I43-COMMENT      TO  RECECOM-COMMENT
       *
-                      MOVE    RECECOM-REC           TO  MCPDATA-REC
-                      MOVE    "DBUPDATE"            TO  MCP-FUNC
-                      MOVE    "RECECOM-KEY"         TO  ORC-DBPATH
-                      CALL    "ORCMCPSUB"           USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+                      MOVE    RECECOM-REC          TO  MCPDATA-REC
+                      MOVE    "DBUPDATE"           TO  MCP-FUNC
+                      MOVE    "RECECOM-KEY"        TO  ORC-DBPATH
+                      CALL    "ORCMCPSUB"          USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
                       IF      MCP-RC          NOT =   ZERO
                           DISPLAY "I43 RECECOM UPD ERR:" MCP-RC "."
                       END-IF
                   ELSE
       *               追加
-                      MOVE    SPACE                 TO  RECECOM-REC
-                      INITIALIZE                    RECECOM-REC
-                      MOVE    SPA-HOSPID            TO  RECECOM-HOSPID
-                      MOVE    SPA-GMN-PTID          TO  RECECOM-PTID
-                      MOVE    WRK-I43-NSRYKA (IDY)  TO  RECECOM-SRYKA
-                      MOVE    SPA-I43-SRYYMS        TO  RECECOM-SRYYM
-                      MOVE    SPA-I43-HKNCOMBINUM   TO  RECECOM-HKNCOMBI
-                      MOVE    SPA-I43-COMMENT       TO  RECECOM-COMMENT
+                      MOVE    SPACE                TO  RECECOM-REC
+                      INITIALIZE                   RECECOM-REC
+                      MOVE    SPA-HOSPID           TO  RECECOM-HOSPID
+                      MOVE    SPA-GMN-PTID         TO  RECECOM-PTID
+                      MOVE    "1"                  TO  RECECOM-NYUGAIKBN
+                      MOVE    WRK-I43-NSRYKA (IDY) TO  RECECOM-SRYKA
+                      MOVE    SPA-I43-SRYYMS       TO  RECECOM-SRYYM
+                      MOVE    SPA-I43-HKNCOMBINUM  TO  RECECOM-HKNCOMBI
+                      MOVE    "00"                 TO  RECECOM-SRYDD
+                      MOVE    SPA-I43-COMMENT      TO  RECECOM-COMMENT
       *
-                      MOVE    RECECOM-REC           TO  MCPDATA-REC
-                      MOVE    "DBINSERT"            TO  MCP-FUNC
-                      MOVE    "RECECOM-KEY"         TO  ORC-DBPATH
-                      CALL    "ORCMCPSUB"           USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+                      MOVE    RECECOM-REC          TO  MCPDATA-REC
+                      MOVE    "DBINSERT"           TO  MCP-FUNC
+                      MOVE    "RECECOM-KEY"        TO  ORC-DBPATH
+                      CALL    "ORCMCPSUB"          USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
                       IF      MCP-RC          NOT =   ZERO
                           DISPLAY "I43 RECECOM INS ERR:" MCP-RC "."
                       END-IF
@@ -1403,14 +1450,14 @@
            INITIALIZE                  RECECOM-REC.
            MOVE    SPA-HOSPID          TO  RECECOM-HOSPID.
            MOVE    SPA-GMN-PTID        TO  RECECOM-PTID.
+           MOVE    "1"                 TO  RECECOM-NYUGAIKBN.
            MOVE    SPA-I43-NSRYKA (IDX)
                                        TO  RECECOM-SRYKA.
            MOVE    SPA-I43-NSRYYM (IDX)
                                        TO  RECECOM-SRYYM.
            MOVE    SPA-I43-NHKNCOMBI (IDX)
                                        TO  RECECOM-HKNCOMBI.
-           MOVE    SPA-I43-TSRYDD (IDX)
-                                       TO  RECECOM-SRYDD.
+           MOVE    "00"                TO  RECECOM-SRYDD.
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC.
            MOVE    "DBDELETE"          TO  MCP-FUNC.
@@ -1462,13 +1509,10 @@
                                        TO  SPA-I43-SRYYM.
            MOVE    SPA-I43-NSRYYM  (SPA-I43-SELNUM)
                                        TO  SPA-I43-SRYYMS.
-      *
            MOVE    SPA-I43-NSRYKA  (SPA-I43-SELNUM)
                                        TO  I43-SRYKA.
-           PERFORM 400-NSRYKA-SEC.
            MOVE    SPA-I43-NHKNCOMBI  (SPA-I43-SELNUM)
                                        TO  I43-HKNCOMBI.
-           PERFORM 410-HKNCOMBI-SEC.
            MOVE    SPA-I43-TCOMMENT(SPA-I43-SELNUM)
                                        TO  SPA-I43-COMMENT.
       *
