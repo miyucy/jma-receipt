@@ -2057,6 +2057,12 @@
                    MOVE    "0101"           TO  SPA-KIDCD
                    GO      TO      450-TOROKU-EXT
                END-IF
+           ELSE
+      *        診療行為が無かった時、終了とする
+               IF      IDX-KOUI         =   ZERO
+                   PERFORM 4900-END-SYORI-SEC
+                   GO      TO      450-TOROKU-EXT
+               END-IF
            END-IF
       *    ＣＬＡＩＭ接続チェック処理
            PERFORM 4905-CLAIM-CHK-SEC
@@ -2121,6 +2127,37 @@
            MOVE    1                   TO  FLG-END
            .
        4500-TOROKU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療行為なしの終了処理
+      *****************************************************************
+       4900-END-SYORI-SEC          SECTION.
+      *
+           MOVE    "CHANGE"            TO  WRK-MCP-PUTTYPE
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
+      *    共通のキーをクリアする
+           MOVE    SPACE               TO  SPA-ERRMSG
+           INITIALIZE                      SPA-KYOTUKEY
+           INITIALIZE                      SPA-K01KYOUTU
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "K02"               TO  SPA-SAKIPG
+           MOVE    "K03"               TO  SPA-MOTOPG
+      *
+           MOVE    WRK-MCP-PUTTYPE     TO  MCP-PUTTYPE
+           MOVE    "K02"               TO  MCP-WINDOW
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4900-END-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
