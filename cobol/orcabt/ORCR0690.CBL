@@ -2198,7 +2198,6 @@
                 IF   WRK-SRYSYUKBN                =  "340"
       *         AND  TBL-ZAI-IDX(IDY)             =   1
                 AND  RECE66-TENTEKIKBN            =   ZERO
-                AND  TBL-ZAI-SRYCD(IDY)(1:1)  NOT =  "8"
                          MOVE   6              TO  RECE66-TENTEKIKBN
                          MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
@@ -2217,17 +2216,10 @@
                          MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
-                IF   WRK-SRYSYUKBN           =  "340"
-      *         AND  TBL-ZAI-IDX(IDY)        =   1
-                AND  TBL-ZAI-SRYCD(IDY)(1:1) =  "8"
-                         MOVE   9             TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
-                END-IF
-      *
                 IF   WRK-SRYSYUKBN           =  "350"
       *         AND  TBL-ZAI-IDX(IDY)        =   1
                 AND  TBL-ZAI-SRYCD(IDY)(1:1) =  "8"
-                         MOVE   10             TO  RECE66-TENTEKIKBN
+                         MOVE   9              TO  RECE66-TENTEKIKBN
                          MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
