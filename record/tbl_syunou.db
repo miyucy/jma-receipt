@@ -302,7 +302,6 @@ path	key7 	{
 			AND     DENPJTIKBN   =   :DENPJTIKBN
 			AND     SKYSTYMD     >=  :SKYSTYMD
 			AND     SKYEDYMD     <=  :SKYEDYMD
-			ORDER   BY     SKYEDYMD  DESC
 		;
 	};
 };
@@ -318,6 +317,7 @@ path	key8 	{
 			AND     DENPJTIKBN   =   :DENPJTIKBN
 			AND     SKYSTYMD     >=  :SKYSTYMD
 			AND     SKYEDYMD     <=  :SKYEDYMD
+			ORDER   BY     SKYEDYMD  DESC
 		;
 	};
 };

@@ -5248,7 +5248,7 @@
            MOVE    "00000000"      TO  SYU-SKYSTYMD
            MOVE    "99999999"      TO  SYU-SKYEDYMD
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
-           MOVE    "SYUNOU-KEY7"   TO  WRK-DBPATH
+           MOVE    "SYUNOU-KEY8"   TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC        =   ZERO )
                MOVE    MCPDATA-REC TO  SYUNOU-REC
@@ -5256,7 +5256,7 @@
                MOVE    1           TO  FLG-SYUNOU
            END-IF
       *
-           MOVE    "SYUNOU-KEY7"   TO  WRK-DBPATH
+           MOVE    "SYUNOU-KEY8"   TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-SYUNOU      =   ZERO )
