@@ -439,7 +439,6 @@ COPYS = \
 	OID2.INC \
 	ORCA-DBCOMM \
 	ORCA-DBINFO \
-	ORCA-DBPATH \
 	ORCA-SPA \
 	P014.INC \
 	P02.INC \
@@ -570,7 +569,23 @@ COPYS = \
 	P02X.INC \
 	U02COMMON-SPA \
 	U02X.INC \
-	W15.INC
+	W15.INC \
+	I42.INC \
+	I43.INC \
+	I44.INC \
+	I45.INC \
+	I46.INC \
+	I47.INC \
+	I48.INC \
+	I49.INC \
+	I4COMMON-SPA \
+	I4SCR-SPA2 \
+	I4SCR-SPA3 \
+	I4SCR-SPA4 \
+	I4SCR-SPA5
+
+DBPATH = \
+	ORCA-DBPATH
 
 
 prefix = @prefix@
@@ -591,6 +606,8 @@ scriptsdir = ${ORCA_DIR}/scripts
 copydir = ${ORCA_DIR}/cobol/copy
 libdir  = @libdir@
 
+COPYGEN = @COPYGEN@
+
 SITEDIR = @sitedir@
 SITESRCDIR = @sitesrcdir@
 SITELIBDIR = @sitelibdir@
@@ -609,8 +626,6 @@ dailyscripts = ${scriptsdir}/daily
 monthlyscripts = ${scriptsdir}/monthly
 printscripts = ${scriptsdir}/daily/print-data.rb
 
-srcdir = @srcdir@
-
 COBOL = @COBC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -621,7 +636,7 @@ COPYS_inc = $(COPYS_sources:.INC.in=.INC)
 
 .SUFFIXES: .INC.in .INC
 
-all: $(COPYS_inc)
+all: ORCA-DBPATH $(COPYS_inc)
 
 .INC.in.INC: 
 	formdir_len=`echo -n "$(formdir)/"|wc -c|sed -e "s/ //g"` &&\
@@ -649,8 +664,11 @@ all: $(COPYS_inc)
 	    -e "s,\@printscripts_len\@,$$printscripts_len,g" \
 	  $< > $@
 
+ORCA-DBPATH: $(top_builddir)/lddef/directory
+	$(COPYGEN) -dbpath -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -lddir $(top_builddir)/lddef -ld orca00 > $@
+
 clean: 
-	-rm $(COPYS_inc)
+	-rm $(COPYS_inc) $(DBPATH)
 
 distclean: clean
 	-rm -f Makefile
@@ -669,6 +687,7 @@ filecheck:
 	-name "CPCOMMONSHELL1.INC" -o \
 	-name "CPCOMMONSHELL4.INC" -o \
 	-name "CPCOMMONSHELLMST.INC" -o \
+	-name "ORCA-DBPATH" -o \
 	-printf "file\t%f\n") \
 	|sort +1 |uniq -u -f1 
 

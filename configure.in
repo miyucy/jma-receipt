@@ -26,6 +26,7 @@ AC_SUBST(sitedir)dnl
 AC_SUBST(sitesrcdir)dnl
 AC_SUBST(sitelibdir)dnl
 
+AC_MSG_CHECKING(OpenCOBOL compiler)
 AC_ARG_WITH(open-cobol-prefix,
              [  --with-open-cobol-prefix=PFX   prefix where open-cobol is installed (optional)], 
   open_cobol_prefix="$withval", open_cobol_prefix="")
@@ -47,7 +48,6 @@ AC_ARG_WITH(open-cobol-exec-prefix,
 
   AC_PATH_PROG(COBC, cobc, no)
 
-  AC_MSG_CHECKING(OpenCOBOL compiler)
   if test "$COBC" = "no" ; then
     no_cobc=yes
   else
@@ -80,6 +80,42 @@ AC_ARG_WITH(open-cobol-exec-prefix,
 AC_SUBST(COBC)
 AC_SUBST(COBOLFLAGS)
 AC_SUBST(EXEC_COBOLFLAGS)
+
+AC_MSG_CHECKING(MONTSUQI(panda))
+AC_ARG_WITH(panda-dir,
+             [  --with-panda-dir=[=DIR]  where panda is installed (optional)], 
+  panda_dir="$withval", panda_dir="")
+
+if test x$panda_dir != x; then
+  dir=$panda_dir
+else
+  dir="/usr/local/"
+fi
+
+for d in $dir /usr /usr/local/panda /usr/lib/panda /usr/local
+do
+  if test -f $d/sbin/dbstub; then
+    dbstub_command=$d/sbin/dbstub
+    copygen_command=$d/bin/copygen
+    break
+  elif test -f $d/bin/dbstub; then
+    dbstub_command=$d/bin/dbstub
+    copygen_command=$d/bin/copygen
+    break
+  fi
+done
+
+if test x$dbstub_command != x; then
+  AC_MSG_RESULT(yes)
+  DBSTUB=$dbstub_command
+  COPYGEN=$copygen_command
+else
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR(MONTSUQI(panda) not found.)
+fi
+
+AC_SUBST(DBSTUB)
+AC_SUBST(COPYGEN)
 
 dnl Checks for libraries.
 
