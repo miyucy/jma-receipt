@@ -234,6 +234,20 @@ W07	{
 					count	int;
 					item	varchar(28)[2];
 				};
+				DOUMEI_CHKFLG_COMBO	{
+					DOUMEI_CHKFLG	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[2];
+				};
+				JYUFUKU_CHKKBN_CONBO	{
+					JYUFUKU_CHKKBN	{
+						value	varchar(60);
+					};
+					count	int;
+					item	varchar(60)[5];
+				};
 			};
 			TAGNAME2    {
 			    state   int;
