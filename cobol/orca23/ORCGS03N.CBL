@@ -125,6 +125,7 @@
                        09  SPA-GMN-JOUTAI-T      PIC X(10).
                        09  SPA-GMN-NYUKINYMD-IN9 PIC 9(08).
                        09  SPA-GMN-JOUTAI-TX     PIC X(16).
+                       09  SPA-GMN-JOUTAIKBN-T   PIC X(1).
       *                 
                    07  SPA-GMN-RIREKIIN          PIC 9(02).
                    07  SPA-GMN-RIREKIIN9         PIC 9(02).
@@ -690,6 +691,7 @@
                    MOVE SMEI-DENPEDANUM TO  SPA-GMN-EDABAN-T (IDX)
                    MOVE SMEI-SKYMONEY   TO  SPA-GMN-SEIKYU-T (IDX)
                    MOVE SMEI-NYUHEN-MONEY TO SPA-GMN-NYUKIN-T (IDX)
+                   MOVE SMEI-JOUTAIKBN    TO SPA-GMN-JOUTAIKBN-T (IDX)
                    EVALUATE SMEI-JOUTAIKBN
                        WHEN SPACE
                             MOVE   "請求額なし"
@@ -1201,6 +1203,16 @@
                                                >   SPA-GMN-MISYU-MAX
                        IF    S03N-SELECT (WRK-MAP-INDEX)    =   "T"
                            MOVE WRK-MAP-INDEX   TO   SPA-IDX
+                           IF    ( SPA-S01-SYORINO =   "08" )
+                               IF    ( SPA-GMN-JOUTAIKBN-T (SPA-IDX)
+                                                   =   "1" OR "2" )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    1       TO  SPA-GMN-CUR
+                                   MOVE    "0009"  TO  SPA-ERRCD
+                                   GO  TO  200-ENTRY-EXT
+                               END-IF
+                           END-IF
                            MOVE SPA-GMN-NYUKIN-T(SPA-IDX)
                                             TO  SPA-GMN-NYUKIN-IN
                            MOVE SPA-GMN-SYORIYMD-T(SPA-IDX)
@@ -1228,6 +1240,16 @@
                    IF      SPA-IDX    <  1   OR  >  SPA-GMN-MISYU-MAX
                        MOVE    "0005"         TO  SPA-ERRCD
                    ELSE    
+                       IF    ( SPA-S01-SYORINO =   "08" )
+                           IF    ( SPA-GMN-JOUTAIKBN-T (SPA-IDX)
+                                                   =   "1" OR "2" )
+                               CONTINUE
+                           ELSE
+                               MOVE    1       TO  SPA-GMN-CUR
+                               MOVE    "0009"  TO  SPA-ERRCD
+                               GO  TO  200-ENTRY-EXT
+                           END-IF
+                       END-IF
                        MOVE SPA-GMN-NYUKIN-T(SPA-IDX)
                                             TO  SPA-GMN-NYUKIN-IN
                        MOVE SPA-GMN-SYORIYMD-T(SPA-IDX)
@@ -1454,6 +1476,10 @@
                MOVE    "0003"      TO  SPA-ERRCD
            END-IF
       *
+           IF  SPA-NYUKINGK     <  ZERO
+               MOVE    "0008"      TO  SPA-ERRCD
+               GO  TO  41011-CHK-EXT
+           END-IF
            .
       *
        41011-CHK-EXT.
@@ -2013,6 +2039,12 @@
                                        TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "入金額、入金日が未入力です"
+                                       TO  SPA-ERRMSG
+               WHEN    "0008"
+                   MOVE    "入金合計額が０円を下回ります"
+                                       TO  SPA-ERRMSG
+               WHEN    "0009"
+                   MOVE    "入金データを選択してください"
                                        TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "収納の更新処理でエラーになりました"
