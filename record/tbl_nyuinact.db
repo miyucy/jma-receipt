@@ -1,5 +1,5 @@
 tbl_nyuinact {
-	HOSPNUM				number(2,0);
+	HOSPID				char(24);
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	SRYKA				char(2);
@@ -47,7 +47,7 @@ tbl_nyuinact {
 };
 
 primary	{
-	HOSPNUM,NYUGAIKBN,PTID,SRYKA,SRYYM,ZAINUM,RENNUM;
+	HOSPID,NYUGAIKBN,PTID,SRYKA,SRYYM,ZAINUM,RENNUM;
 };
 
 path	key 	{
@@ -55,7 +55,7 @@ path	key 	{
 		DECLARE tbl_nyuinact_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -71,7 +71,7 @@ path	key2 	{
 		DECLARE tbl_nyuinact_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -87,7 +87,7 @@ path	key3 	{
 		DECLARE tbl_nyuinact_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -103,7 +103,7 @@ path	key4 	{
 		DECLARE tbl_nyuinact_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -119,7 +119,7 @@ path	key5	{
 		DECLARE tbl_nyuinact_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			ORDER   BY        SRYKA,
@@ -135,7 +135,7 @@ path	key6	{
 		DECLARE tbl_nyuinact_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND ((SRYCD1      =   :SRYCD1)
@@ -156,7 +156,7 @@ path	key7	{
 		DECLARE tbl_nyuinact_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -178,7 +178,7 @@ path	key8	{
 		DECLARE tbl_nyuinact_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -201,7 +201,7 @@ path	key9 	{
 		DECLARE tbl_nyuinact_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -215,7 +215,7 @@ path	del11 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -230,7 +230,6 @@ path	all	{
 		DECLARE tbl_nyuinact_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -239,7 +238,7 @@ path	del12 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 		;
 	};
@@ -250,36 +249,7 @@ path	all2	{
 		DECLARE tbl_nyuinact_all2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   SRYYM    =   :SRYYM
-		;
-	};
-};
-
-#sitekey
-path	st_key1 	{
-	DBSELECT	{
-		DECLARE tbl_nyuinact_st_key1_csr CURSOR FOR
-		SELECT a.*
-		FROM tbl_nyuinact a,tbl_ptinf b
-		WHERE   a.HOSPNUM        =  :HOSPNUM
-		AND     a.SRYYM         =  :SRYYM
-		AND     a.HOSPNUM        =  b.HOSPNUM
-		AND     a.PTID          =  b.PTID
-		AND     b.TSTPTNUMKBN  <> '1'
-		ORDER   BY a.PTID,a.SRYKA,a.ZAINUM
-		;
-	};
-};
-
-path	del13 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_nyuinact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   '1'
-			AND   PTID        =   :PTID
-			AND   SRYYM       >=  :SRYYM
+			WHERE   SRYYM    =   :SRYYM
 		;
 	};
 };
