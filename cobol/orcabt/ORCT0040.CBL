@@ -954,6 +954,7 @@
       *    入金連番
            MOVE    01                  TO  SMEI-NYUKINRENNUM
       *
+           MOVE    "00"                TO  SMEI-NYUKIN-HOHO
            IF    ( SYS-5010-NYUKINKBN  =   "2" )
                IF    ( SYU-NYUKIN-TOTAL    =   ZERO )
                    CONTINUE
@@ -1421,6 +1422,8 @@
                                        TO  SMEI-SKYMONEY
       *
            MOVE    SMEI-SKYPRINTYMD    TO  SMEI-NYUHEN-YMD 
+      *
+           MOVE    "00"                TO  SMEI-NYUKIN-HOHO
       *
       *    入金額がゼロの時、入金力なし
            IF    ( SYS-5010-NYUKINKBN  =   "2" )

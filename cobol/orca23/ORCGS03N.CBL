@@ -2443,7 +2443,7 @@
                IF    ( SPA-GMN-NYUKIN      >   ZERO )
                    MOVE  SPA-GMN-NYKN-HOHO TO  SMEI-NYUKIN-HOHO
                ELSE
-                   MOVE   SPACE            TO  SMEI-NYUKIN-HOHO
+                   MOVE   "00"             TO  SMEI-NYUKIN-HOHO
                END-IF
       *
       *        ≈¡…ºæı¬÷∂Ë ¨

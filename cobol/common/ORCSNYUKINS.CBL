@@ -297,6 +297,7 @@
                MOVE    LNK-SCNYUKINS-NYUKIN-HOHO
                                        TO  SMEI-NYUKIN-HOHO
            ELSE
+               MOVE    "00"            TO  SMEI-NYUKIN-HOHO
                MOVE    SPACE           TO  SMEI-NYUHEN-KBN
            END-IF
       *¾õÂÖ¶èÊ¬
