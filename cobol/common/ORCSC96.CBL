@@ -593,6 +593,12 @@
                                        TO  SPA-ERRMSG
                    MOVE    "会計照会で訂正して下さい。"
                                        TO  SPA-ERRMSG(31:)
+               WHEN    "9020"
+                   MOVE    "薬剤は入力できません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9021"
+                   MOVE    "食事は外来では入力できません。"
+                                       TO  SPA-ERRMSG
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
