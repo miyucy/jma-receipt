@@ -2149,10 +2149,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KOHNUM1</name>
-	  <x>56</x>
-	  <y>336</y>
-	  <width>168</width>
+	  <name>CNB_HKNNUM1</name>
+	  <x>170</x>
+	  <y>96</y>
+	  <width>140</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2164,7 +2164,7 @@
 	  <widget>
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KOHNUM1</name>
+	    <name>HKNNUM1</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>
@@ -2189,10 +2189,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KOHNUM2</name>
-	  <x>56</x>
-	  <y>364</y>
-	  <width>168</width>
+	  <name>CNB_HKNNUM2</name>
+	  <x>170</x>
+	  <y>124</y>
+	  <width>140</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2204,7 +2204,7 @@
 	  <widget>
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KOHNUM2</name>
+	    <name>HKNNUM2</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>
@@ -2229,10 +2229,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KOHNUM3</name>
-	  <x>56</x>
-	  <y>392</y>
-	  <width>168</width>
+	  <name>CNB_HKNNUM3</name>
+	  <x>170</x>
+	  <y>152</y>
+	  <width>140</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2244,7 +2244,7 @@
 	  <widget>
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KOHNUM3</name>
+	    <name>HKNNUM3</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>
@@ -2269,10 +2269,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KOHNUM4</name>
-	  <x>56</x>
-	  <y>420</y>
-	  <width>168</width>
+	  <name>CNB_HKNNUM4</name>
+	  <x>170</x>
+	  <y>180</y>
+	  <width>140</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2284,7 +2284,7 @@
 	  <widget>
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KOHNUM4</name>
+	    <name>HKNNUM4</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>
@@ -2309,10 +2309,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KOHNUM5</name>
-	  <x>56</x>
-	  <y>448</y>
-	  <width>168</width>
+	  <name>CNB_HKNNUM5</name>
+	  <x>170</x>
+	  <y>208</y>
+	  <width>140</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2324,7 +2324,7 @@
 	  <widget>
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KOHNUM5</name>
+	    <name>HKNNUM5</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>
@@ -2629,10 +2629,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_HKNNUM1</name>
-	  <x>170</x>
-	  <y>96</y>
-	  <width>140</width>
+	  <name>CNB_KOHNUM1</name>
+	  <x>56</x>
+	  <y>336</y>
+	  <width>168</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2644,7 +2644,7 @@
 	  <widget>
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>HKNNUM1</name>
+	    <name>KOHNUM1</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>
@@ -2669,10 +2669,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_HKNNUM2</name>
-	  <x>170</x>
-	  <y>124</y>
-	  <width>140</width>
+	  <name>CNB_KOHNUM2</name>
+	  <x>56</x>
+	  <y>364</y>
+	  <width>168</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2684,7 +2684,7 @@
 	  <widget>
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>HKNNUM2</name>
+	    <name>KOHNUM2</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>
@@ -2709,10 +2709,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_HKNNUM3</name>
-	  <x>170</x>
-	  <y>152</y>
-	  <width>140</width>
+	  <name>CNB_KOHNUM3</name>
+	  <x>56</x>
+	  <y>392</y>
+	  <width>168</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2724,7 +2724,7 @@
 	  <widget>
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>HKNNUM3</name>
+	    <name>KOHNUM3</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>
@@ -2749,10 +2749,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_HKNNUM4</name>
-	  <x>170</x>
-	  <y>180</y>
-	  <width>140</width>
+	  <name>CNB_KOHNUM4</name>
+	  <x>56</x>
+	  <y>420</y>
+	  <width>168</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2764,7 +2764,7 @@
 	  <widget>
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>HKNNUM4</name>
+	    <name>KOHNUM4</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>
@@ -2789,10 +2789,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_HKNNUM5</name>
-	  <x>170</x>
-	  <y>208</y>
-	  <width>140</width>
+	  <name>CNB_KOHNUM5</name>
+	  <x>56</x>
+	  <y>448</y>
+	  <width>168</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2804,7 +2804,7 @@
 	  <widget>
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>HKNNUM5</name>
+	    <name>KOHNUM5</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>

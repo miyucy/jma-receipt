@@ -22,35 +22,34 @@ Q02	{
 			state	int;
 		};
 		HYODAI	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		JYOKEN1	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		JYOKEN2	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		SCR_KEKKALST	{
 			KEKKALST	{
 				count	int;
 				item	{
-					value1	varchar(5);
-					value2  varchar(20);
-					value3	varchar(50);
-					value4	varchar(2);
-					value5	varchar(10);
-					value6	varchar(8);
-					value7	varchar(80);
+					value0	varchar(5);
+					value1	varchar(20);
+					value2	varchar(50);
+					value3	varchar(2);
+					value4	varchar(10);
+					value5	varchar(8);
+					value6	varchar(80);
 				}	[200];
 				select	bool[200];
 			};
 		};
-                TOTAL   {
-                        value   varchar(22);
-                };
-
-                SELNUM  {
-                        value   number(5);
-                };
+		TOTAL	{
+			value	varchar(22);
+		};
+		SELNUM	{
+			value	number(5);
+		};
 	};
 };

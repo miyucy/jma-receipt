@@ -24,9 +24,9 @@
               04  Q02-B11-STATE                PIC S9(9)   BINARY.
               04  Q02-B12-STATE                PIC S9(9)   BINARY.
               04  Q02-B24-STATE                PIC S9(9)   BINARY.
-              04  Q02-HYODAI                   PIC X(101).
-              04  Q02-JYOKEN1                  PIC X(101).
-              04  Q02-JYOKEN2                  PIC X(101).
+              04  Q02-HYODAI                   PIC X(100).
+              04  Q02-JYOKEN1                  PIC X(100).
+              04  Q02-JYOKEN2                  PIC X(100).
               04  Q02-SCR-KEKKALST.
                 05  Q02-KEKKALST.
                   06  Q02-KEKKALST-COUNT       PIC S9(9)   BINARY.

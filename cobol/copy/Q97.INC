@@ -17,7 +17,7 @@
       ********************************************************************
         02  Q97.
           03  Q97-MSG.
-            04  Q97-VALUE          PIC X(81).
+            04  Q97-VALUE          PIC X(80).
           03  Q97-SCROLLEDWINDOW28.
             04  Q97-JOBKANRILST.
               05  Q97-COUNT        PIC S9(9)   BINARY.

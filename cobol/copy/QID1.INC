@@ -17,6 +17,6 @@
       ********************************************************************
         02  QID1.
               03  QID1-ID1CODE.
-                04  QID1-VALUE  PIC X(11).
+                04  QID1-VALUE  PIC X(10).
               03  QID1-ID1MSG.
-                04  QID1-VALUE  PIC X(71).
+                04  QID1-VALUE  PIC X(70).

@@ -17,11 +17,11 @@
       ********************************************************************
         02  Q100.
             03  Q100-FIXED1.
-              04  Q100-ID1CODE         PIC X(11).
-              04  Q100-ID1MSG          PIC X(81).
-              04  Q100-LBLFILENAME     PIC X(13).
-              04  Q100-FILENAME        PIC X(101).
+              04  Q100-ID1CODE         PIC X(10).
+              04  Q100-ID1MSG          PIC X(80).
+              04  Q100-LBLFILENAME     PIC X(14).
+              04  Q100-FILENAME        PIC X(100).
               04  Q100-FILENAME-STATE  PIC S9(9)   BINARY.
-              04  Q100-LBLNUMSEL       PIC X(11).
+              04  Q100-LBLNUMSEL       PIC X(10).
               04  Q100-STNUM           PIC S9(9).
               04  Q100-EDNUM           PIC S9(9).

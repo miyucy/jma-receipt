@@ -42,6 +42,7 @@
       *                                     Q01:公費の種類をコンボに変更
       *                                     Q01:テスト患者を検索対象から
       *                                         外せるようにする
+      * 01.00.02     NACL-太田    02/10/17  woody対応
       *****************************************************************
        01   SPA-Q01FREE.
       *    Ｑ０１用
@@ -91,7 +92,7 @@
       *----(01.00.01) LINE DEL END   ----------------------------------
       *----(01.00.01) LINE ADD START ----------------------------------
                                13  SPA-GMN-Q01-SEX
-                                                       PIC X(11).
+                                                       PIC X(10).
                                13  SPA-GMN-Q01-SEX-ITEM-AREA.
                                    15  SPA-GMN-Q01-SEX-ITEM
                                                        PIC X(10)
@@ -142,14 +143,14 @@
       *                    保険　保険者番号
                            11  SPA-GMN-Q01-HKNJANUM-TBL.
                                13  SPA-GMN-Q01-HKNJANUM
-                                                       PIC X(09)
+                                                       PIC X(08)
                                                        OCCURS 5.
       *                    保険　保険の種類
                            11  SPA-GMN-Q01-CNB-HKNNUM-TBL.
                                13  SPA-GMN-Q01-CNB-HKNNUM-OCC
                                                        OCCURS 5.
                                    15  SPA-GMN-Q01-HKNNUM
-                                                       PIC X(21).
+                                                       PIC X(20).
                                    15  SPA-GMN-Q01-CNB-HKNNUM-COUNT
                                                        PIC S9(9)
                                                        BINARY.
@@ -177,7 +178,7 @@
                                13  SPA-GMN-Q01-CNB-KOHNUM-OCC
                                                        OCCURS 5.
                                    15  SPA-GMN-Q01-KOHNUM 
-                                                       PIC X(21).
+                                                       PIC X(20).
                                    15  SPA-GMN-Q01-CNB-KOHNUM-COUNT
                                                        PIC S9(9)
                                                        BINARY.
@@ -329,11 +330,11 @@
                                                        BINARY.
       *----(01.00.01) LINE ADD END   ----------------------------------
       *                表題
-                       09  SPA-GMN-Q02-HYODAI          PIC X(101).
+                       09  SPA-GMN-Q02-HYODAI          PIC X(100).
       *                条件上段
-                       09  SPA-GMN-Q02-JYOKEN1         PIC X(101).
+                       09  SPA-GMN-Q02-JYOKEN1         PIC X(100).
       *                条件下段
-                       09  SPA-GMN-Q02-JYOKEN2         PIC X(101).
+                       09  SPA-GMN-Q02-JYOKEN2         PIC X(100).
       *                検索結果
                        09  SPA-GMN-Q02-KEKKATBL.
                            11  SPA-GMN-Q02-KEKKAOCC    OCCURS 200.
@@ -406,11 +407,11 @@
                    07  SPA-GMN-Q98-CUR                 PIC 9(05).
       *
                    07  SPA-GMN-Q98-AREA.
-                       09  SPA-GMN-Q98-POST            PIC X(8).
-                       09  SPA-GMN-Q98-ADRS            PIC X(101).
+                       09  SPA-GMN-Q98-POST            PIC X(7).
+                       09  SPA-GMN-Q98-ADRS            PIC X(100).
                        09  SPA-GMN-Q98-ADRS-TBL.
                            11  SPA-GMN-Q98-ADRS-OCC    OCCURS  60.
-                               13  SPA-GMN-Q98-TADRS   PIC X(21).
+                               13  SPA-GMN-Q98-TADRS   PIC X(20).
                        09  SPA-GMN-Q98-SELNUM          PIC 9(3).
       *                検索結果読み飛ばし件数
                        09  SPA-GMN-Q98-SKIP-KNS        PIC 9(08).
@@ -480,13 +481,13 @@
       *            メッセージ
                    07  SPA-GMN-Q100-MSG                PIC X(80).
       *            ファイル名ラベル
-                   07  SPA-GMN-Q100-LBLFILENAME        PIC X(12).
+                   07  SPA-GMN-Q100-LBLFILENAME        PIC X(14).
       *            ファイル名
                    07  SPA-GMN-Q100-FILENAME           PIC X(100).
                    07  SPA-GMN-Q100-FILENAME-STATE     PIC S9(9)
                                                        BINARY.
       *            件数（ページ数）ラベル
-                   07  SPA-GMN-Q100-LBLNUMSEL          PIC X(100).
+                   07  SPA-GMN-Q100-LBLNUMSEL          PIC X(10).
       *            開始件数（ページ数）
                    07  SPA-GMN-Q100-STNUM              PIC  9(09).
       *            終了件数（ページ数）
