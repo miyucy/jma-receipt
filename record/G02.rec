@@ -4,10 +4,10 @@ G02	{
 			value	varchar(7);
 		};
 		FILENM1	{
-			value	varchar(256);
+			value	varchar(150);
 		};
 		FILENM2	{
-			value	varchar(256);
+			value	varchar(150);
 		};
 		HOUKATUKBN1	{
 			value	bool;
