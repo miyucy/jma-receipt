@@ -1049,9 +1049,11 @@
                END-IF
            END-IF
       *
-      **     IF      RECE02-RJNHKNNUM     =   "027"
-      **         MOVE        "1"          TO  WK-RJN
-      **     END-IF
+           IF      RECE02-SRYYM     <      "200210" 
+             IF      RECE02-RJNHKNNUM     =   "027"
+                 MOVE        "1"          TO  WK-RJN
+             END-IF
+           END-IF
       *
            EVALUATE    TRUE
                WHEN    (RECE02-KOHNUM(1)   =     SPACE)    AND
