@@ -80,12 +80,18 @@
            03  TOUKEI01-RJNHKN.
       *        老人保険−保険番号
                05  TOUKEI01-RJNHKNNUM      PIC  X(03).
+      *        老人支払区分
+               05  TOUKEI01-RJNPAYKBN      PIC  X(02).
       *        老人保険−法別番号
                05  TOUKEI01-RJNHBTNUM      PIC  X(02).
       *        老人保険−市町村番号
                05  TOUKEI01-RJNFTNJANUM    PIC  X(08).
       *        老人保険−受給者番号
                05  TOUKEI01-RJNJKYSNUM     PIC  X(07).
+      *        老人適用開始年月日
+               05  TOUKEI01-RJNTEKSTYMD    PIC  X(08).
+      *        老人適用終了年月日
+               05  TOUKEI01-RJNTEKEDYMD    PIC  X(08).
       * 
       *    公費情報
            03 TOUKEI01-KOHI-AREA.
