@@ -136,7 +136,7 @@
       *        看護師数区分が空白の場合、看護配置適合に置き換える
                IF    ( W20SUB01-I-KBN          =   "2" )
                  AND ( NYUKHN-KHNSRYCD         =   "190097010" )
-                 AND ( W20SUB01-I-KNGSISUKBN   =   SPACE )
+                 AND ( W20SUB01-I-KNGSISUKBN   =   "1" )
                    INITIALIZE  NYUINKHN-REC
                    MOVE    "190109670"     TO  NYUKHN-KHNSRYCD
                    MOVE    W20SUB01-I-KJNYMD
