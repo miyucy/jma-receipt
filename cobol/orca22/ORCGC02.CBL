@@ -145,6 +145,8 @@
       *  01.08.12    NACL-藤原    04/06/21  アフターケア日の表示修正
       *  01.08.13    NACL-藤原    04/08/19  開始日の未来日を入力したとき
       *                                     警告を表示
+      *                                     まとめ入力時の番号の整数以外
+      *                                     のチェックを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2295,7 +2297,7 @@
            ELSE
              PERFORM VARYING IDXX    FROM    1   BY  1
                      UNTIL   IDXX    >       5
-                   OR      SPA-ERRCD   NOT =   SPACE
+                     OR      SPA-ERRCD   NOT =   SPACE
                MOVE    SPACE               TO  WRK-STNUM
                                                WRK-EDNUM
                IF      WRK-HENSYU-NUM-O (IDXX) =   SPACE
@@ -2317,7 +2319,9 @@
                        MOVE    WRK-STNUM       TO  SNUM-INX
                        CALL    "ORCSNUM"           USING
                                                    ORCSNUMAREA
-                       IF      SNUM-RC         =   ZERO
+                       IF    ( SNUM-RC         =   ZERO  )
+                       AND   ( SNUM-MINKBN     =   SPACE )
+                       AND   ( SNUM-SYOKBN     =   SPACE ) 
                            MOVE    SNUM-OUTNUM     TO  WRK-BANGO
                            COMPUTE WRK-BANGO
                                    =   WRK-BANGO
@@ -2344,7 +2348,9 @@
                        MOVE    WRK-EDNUM       TO  SNUM-INX
                        CALL    "ORCSNUM"           USING
                                                    ORCSNUMAREA
-                       IF      SNUM-RC         =   ZERO
+                       IF    ( SNUM-RC         =   ZERO  )
+                       AND   ( SNUM-MINKBN     =   SPACE )
+                       AND   ( SNUM-SYOKBN     =   SPACE ) 
                            MOVE    SNUM-OUTNUM     TO  WRK-BANGO
                            COMPUTE WRK-BANGO
                                    =   WRK-BANGO
@@ -2355,6 +2361,10 @@
                                MOVE    "0012"      TO  SPA-ERRCD
                            ELSE
                                MOVE    WRK-BANGO   TO  WRK-EDNUM-O(IDXX)
+                               IF      WRK-STNUM       =   SPACE
+                                   MOVE    WRK-EDNUM-O(IDXX)
+                                                   TO  WRK-STNUM-O(IDXX)
+                               END-IF
                            END-IF
                        ELSE
                            MOVE    "0012"          TO  SPA-ERRCD
