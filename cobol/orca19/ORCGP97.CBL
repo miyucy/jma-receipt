@@ -443,6 +443,9 @@
       *
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
+           IF      FLG-KNJHEN          =   1
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
            .
        200-ENTRY-EXT.
            EXIT.
