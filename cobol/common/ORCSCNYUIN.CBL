@@ -432,7 +432,9 @@
            END-PERFORM
       *    ’＊’の行がなかった時、１回の診療日とする
            IF      TBL-KAISU (01)          =   ZERO
-               MOVE    1                   TO  TBL-KAISU (01)
+      *        回数計
+               MOVE    LNK-WKSRY-ZAIKAIKEI (IDX-KOUI)
+                                           TO  TBL-KAISU (01)
                MOVE    SPA-SRYYMD(7:2)     TO  IDX-KAI2
                MOVE    1                   TO  TBL-DAY   (01 IDX-KAI2)
            END-IF
@@ -547,6 +549,8 @@
                MOVE    LNK-WKSRY-YKZTEN  (IDX)     TO  WRK-YKZTEN
       *        器材
                MOVE    LNK-WKSRY-KIZAITEN (IDX)    TO  WRK-KIZAITEN
+      *        回数計
+               MOVE    LNK-WKSRY-ZAIKAIKEI(IDX)    TO  WRK-SRYKAISUKEI
       *        自費
                IF      LNK-WKSRY-JIHIMONEYTOTAL (IDX)  NOT =   ZERO
                    MOVE    LNK-WKSRY-JIHIMONEYTOTAL (IDX) 
