@@ -1104,23 +1104,6 @@
       *        ÃÏÊý¸øÈñ¤Î¤È¤­¥ì¥»¥×¥ÈÀÁµá¶èÊ¬¤ò¼èÆÀ¤·¤ÆÈ½ÊÌ
                IF      COMB-KOHHKNNUM (IDX)(1:1)
                                            >=  "1" AND <=  "8"
-      *            ÃÏÊý¸øÈñ¥ì¥»µ­ºÜÈ½Äê
-                   INITIALIZE              ORCSFTNJGNCHKAREA
-                   MOVE    COMB-HOSPID     TO  LNK-FTNJGNCHK-HOSPID
-                   MOVE    COMB-PTID       TO  LNK-FTNJGNCHK-PTID
-                   MOVE    "2"             TO  LNK-FTNJGNCHK-NYUGAIKBN
-      *            ¿ÇÎÅÇ¯·î
-                   MOVE    WRK-SRYYMD(1:6) TO  LNK-FTNJGNCHK-SRYYM
-      *            ¸øÈñÈÖ¹æ
-                   MOVE    COMB-KOHHKNNUM (IDX)
-                                           TO  LNK-FTNJGNCHK-KOHNUM
-      *            ¸øÈñ£É£Ä
-                   MOVE    COMB-KOHID (IDX)
-                                           TO  LNK-FTNJGNCHK-KOHID
-      *
-                   CALL    "ORCSFTNJGNCHK"     USING
-                                               ORCSFTNJGNCHKAREA
-                                               SPA-AREA
       *
                    INITIALIZE                      HKNNUM-REC
                    MOVE    SYS-1001-HOSPID         TO  HKN-HOSPID
@@ -1162,6 +1145,22 @@
                        END-IF
                    END-IF
                    IF     IDX1          =        1
+      *                ÃÏÊý¸øÈñ¥ì¥»µ­ºÜÈ½Äê
+                       INITIALIZE          ORCSFTNJGNCHKAREA
+                       MOVE    COMB-HOSPID TO  LNK-FTNJGNCHK-HOSPID
+                       MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
+                       MOVE    "2"         TO  LNK-FTNJGNCHK-NYUGAIKBN
+      *                ¿ÇÎÅÇ¯·î
+                       MOVE    WRK-SRYYMD(1:6) TO  LNK-FTNJGNCHK-SRYYM
+      *                ¸øÈñÈÖ¹æ
+                       MOVE    COMB-KOHHKNNUM (IDX)
+                                               TO  LNK-FTNJGNCHK-KOHNUM
+      *                ¸øÈñ£É£Ä
+                       MOVE    COMB-KOHID (IDX)
+                                               TO  LNK-FTNJGNCHK-KOHID
+      *
+                       CALL    "ORCSFTNJGNCHK"     USING
+                                                   ORCSFTNJGNCHKAREA
                        IF     LNK-FTNJGNCHK-RC   =   1
                            MOVE       2        TO    IDX1
                        END-IF
