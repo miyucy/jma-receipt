@@ -151,6 +151,10 @@
            03  WK-NYUJGNKBN            PIC X(01).
            03  WK-NYUJGNGAK            PIC 9(07).
       *
+           03  WK-DAYTAIHI-FTNMONEY    PIC 9(07).
+           03  WK-DAYTAIHI-COMPFTN     PIC 9(07).
+           03  WK-DAYTAIHI-COMPFTNWK   PIC 9(07).
+      *
       *    保険区分（空白：医保　１：労災・自賠）
            03  WK-HKNKBN               PIC X(01).
       *
@@ -438,6 +442,8 @@
            03  IDZ                     PIC  9(02)  VALUE  ZERO.
            03  HKNNYU-IDX              PIC  9(02)  VALUE  ZERO.
            03  KOH-IDX                 PIC  9(02)  VALUE  ZERO.
+           03  KOH-IDX2                PIC  9(02)  VALUE  ZERO.
+           03  KOH-IDX3                PIC  9(02)  VALUE  ZERO.
       *
       *    高齢者の負担上限算定エリア
        01  WK-SYUHKN-TAIHI-AREA.
@@ -7660,7 +7666,10 @@
       ******************************************************************
        23072-KOHHI-HIKAKU-SEC           SECTION.
       *
-           EVALUATE    KOH-IDX
+           IF    LNK-SYU-KOH-HKNNUM(KOH-IDX) =  "972"
+             CONTINUE
+           ELSE
+             EVALUATE    KOH-IDX
                WHEN    2
                    IF  LNK-SYU-KOH-COMPFTN(1) < LNK-SYU-KOH-COMPFTN(2)
                    AND LNK-SYU-KOH1HKNNUM   NOT =  SPACE
@@ -7677,7 +7686,8 @@
                        MOVE  LNK-SYU-KOH-COMPFTN(3)
                                             TO  LNK-SYU-KOH-COMPFTN(4)
                    END-IF
-           END-EVALUATE.
+             END-EVALUATE
+           END-IF.
       *
        23072-KOHHI-HIKAKU-EXT.
            EXIT.
@@ -7688,7 +7698,10 @@
       ******************************************************************
        23073-KOHHI-HIKAKU2-SEC           SECTION.                             
       *
-           EVALUATE    KOH-IDX
+           IF    LNK-SYU-KOH-HKNNUM(KOH-IDX) =  "972"
+             CONTINUE
+           ELSE
+             EVALUATE    KOH-IDX
                WHEN    2
                  IF  WK-KOH-COMPFTN(1)  =  ALL"9"
                    IF  LNK-SYU-KOH-COMPFTN(1) < WK-KOH-COMPFTN(2)
@@ -7727,7 +7740,8 @@
                                             TO  WK-KOH-COMPFTN(4)
                    END-IF
                  END-IF
-           END-EVALUATE.
+             END-EVALUATE
+           END-IF.
       *
        23073-KOHHI-HIKAKU2-EXT.
            EXIT.                                                        
@@ -7840,7 +7854,10 @@
       ******************************************************************
        23075-KOHHI-HIKAKU4-SEC           SECTION.                             
       *
-           EVALUATE    KOH-IDX
+           IF    LNK-SYU-KOH-HKNNUM(KOH-IDX) =  "972"
+             CONTINUE
+           ELSE
+             EVALUATE    KOH-IDX
                WHEN    2
                    IF  LNK-SYU-KOH-COMPFTN-ENTANI(1) 
                                    <     LNK-SYU-KOH-COMPFTN-ENTANI(2)
@@ -7860,7 +7877,8 @@
                        MOVE  LNK-SYU-KOH-COMPFTN-ENTANI(3) 
                                      TO  LNK-SYU-KOH-COMPFTN-ENTANI(4)
                    END-IF
-           END-EVALUATE.
+             END-EVALUATE
+           END-IF.
       *
        23075-KOHHI-HIKAKU4-EXT.
            EXIT.                                                        
@@ -7924,17 +7942,12 @@
                               10                    *
                               WK-FUTANWARI           )  + 0.9
                  ELSE
-                    IF    LNK-SYU-SYUHKNNUM  NOT =   SPACE
-                       MOVE  ZERO  TO  LNK-SDAY-COMPFTN  (IDX2 KOH-IDX)
-                                       LNK-SDAY-COMPFTNWK(IDX2 KOH-IDX)
-                    ELSE
-                       COMPUTE   LNK-SDAY-COMPFTN(IDX2 KOH-IDX)    =
-                                 LNK-SDAY-HKNTEN(IDX2) *
-                                 10                     
-                       COMPUTE   LNK-SDAY-COMPFTNWK(IDX2 KOH-IDX)  =
-                                 LNK-SDAY-HKNTEN(IDX2) *
-                                 10                     
-                    END-IF
+                    COMPUTE   LNK-SDAY-COMPFTN(IDX2 KOH-IDX)    =
+                              LNK-SDAY-HKNTEN(IDX2) *
+                              10                     
+                    COMPUTE   LNK-SDAY-COMPFTNWK(IDX2 KOH-IDX)  =
+                              LNK-SDAY-HKNTEN(IDX2) *
+                              10                     
                  END-IF
                  IF   ((KOH-IDX                =   1    ) AND
                        (LNK-SYU-SYUHKNNUM  NOT =   SPACE) AND
@@ -7944,6 +7957,11 @@
                                            NOT =   SPACE) AND
                        (LNK-SYU-KOH-COMPFTN(KOH-IDX - 1)
                                                =   ZERO ))
+                 OR   ((KOH-IDX                >   1    ) AND
+                       (LNK-SYU-SYUHKNNUM  NOT =   SPACE) AND
+                       (LNK-SYU-KOH-HKNNUM(1)
+                                           NOT =   "027") AND
+                       (LNK-SYU-SYUCOMPFTN     =   ZERO ))
                     MOVE   ZERO   TO  LNK-SDAY-COMPFTN  (IDX2 KOH-IDX)
                                       LNK-SDAY-COMPFTNWK(IDX2 KOH-IDX)
                  END-IF
@@ -8014,12 +8032,13 @@
                                WK-FTN   *  10
                  END-IF
       *
-                 IF   ( FLG-HIKOTEI                         =    2  )
+                 IF   ( FLG-HIKOTEI                     NOT =  ZERO )
                  AND  ( LNK-SDAY-COMPFTN(IDX2 KOH-IDX)  NOT =  ZERO )
                     MOVE   ZAN-KOHI-D3(IDX2 KOH-IDX)  TO
                               LNK-SDAY-COMPFTNWK(IDX2 KOH-IDX)
-                    MOVE   WK-ZAN-KOHI-D              TO
+                    MOVE   ZAN-KOHI-D2(IDX2 KOH-IDX)  TO
                               LNK-SDAY-COMPFTN  (IDX2 KOH-IDX)
+                    MOVE   WK-ZAN-KOHI-D              TO
                               LNK-SDAY-FTNMONEY (IDX2 KOH-IDX)
                     MOVE   ZERO        TO   ZAN-KOHI-D(IDX2 KOH-IDX)
                  ELSE
@@ -8040,35 +8059,15 @@
                     END-IF
                  END-IF
       *
-                 IF   ( FLG-HIKOTEI                         =    1  )
-                 AND  ( LNK-SDAY-COMPFTN(IDX2 KOH-IDX)  NOT =  ZERO )
-      ****          ADD   WK-ZAN-KOHI-D    TO
-      ****                          WK-DAY-KOH-COMPFTN(KOH-IDX)
-                    ADD   LNK-SDAY-COMPFTN(IDX2 KOH-IDX)  TO
-                                    WK-DAY-KOH-COMPFTN(KOH-IDX)
+                 ADD   LNK-SDAY-COMPFTN(IDX2 KOH-IDX)  TO
+                                 WK-DAY-KOH-COMPFTN(KOH-IDX)
       *
-      *             収納項目
-      ****          ADD   WK-ZAN-KOHI-D
-      ****                     TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
-                    ADD   LNK-SDAY-FTNMONEY(IDX2 KOH-IDX)
-                               TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+      *          収納項目
+                 ADD   LNK-SDAY-FTNMONEY(IDX2 KOH-IDX)
+                            TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
       *
-      ****          ADD   ZAN-KOHI-D3(IDX2 KOH-IDX)
-      ****                     TO   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
-      *
-                    ADD   LNK-SDAY-COMPFTNWK(IDX2 KOH-IDX)                 
-                               TO   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
-                 ELSE
-                    ADD   LNK-SDAY-COMPFTN(IDX2 KOH-IDX)  TO
-                                    WK-DAY-KOH-COMPFTN(KOH-IDX)
-      *
-      *             収納項目
-                    ADD   LNK-SDAY-FTNMONEY(IDX2 KOH-IDX)
-                               TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
-      *
-                    ADD   LNK-SDAY-COMPFTNWK(IDX2 KOH-IDX)                 
-                               TO   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
-                 END-IF
+                 ADD   LNK-SDAY-COMPFTNWK(IDX2 KOH-IDX)                 
+                            TO   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
       *
                END-IF
       *
@@ -8146,28 +8145,35 @@
                 END-IF
            END-IF.
       *
-           IF     FLG-HIKOTEI    =      2
-               IF  (LNK-SYU-KOH-HKNNUM(1)  =  "027"     ) AND
-                   (KOH-IDX                =   2        )
-                   IF  LNK-SYU-KOH-COMPFTN(2) > LNK-SYU-KOH-COMPFTN(1)
-                       MOVE   LNK-SYU-KOH-COMPFTN(2)
-                                  TO  LNK-SYU-KOH-COMPFTN(1)
-                                      LNK-SYU-KOH-COMPTOTAL(1)
-                       MOVE   LNK-SYU-KOH-COMPFTN-ENTANI(2)
-                                  TO  LNK-SYU-KOH-COMPFTN-ENTANI(1)
-                   END-IF
-               END-IF
-               IF   KOH-IDX                =   1
-                   IF  (LNK-SYU-SYUHKNNUM  NOT =   SPACE           )
-                   AND (LNK-SYU-KOH-COMPFTN(1) > LNK-SYU-SYUCOMPFTN)
-                       MOVE   LNK-SYU-KOH-COMPFTN(1)
-                                  TO  LNK-SYU-SYUCOMPFTN
-                                      LNK-SYU-SYUCOMPTOTAL
-                       MOVE   LNK-SYU-KOH-COMPFTN-ENTANI(1)
-                                  TO  LNK-SYU-SYUCOMPFTN-ENTANI
-                   END-IF
-               END-IF
-           END-IF.
+      ***     IF     FLG-HIKOTEI    =      2
+      ***         IF  (LNK-SYU-KOH-HKNNUM(1)  =  "027"     ) AND
+      ***             (KOH-IDX                =   2        )
+      ***             IF  WK-DAY-KOH-COMPFTN(2) > LNK-SYU-KOH-COMPFTN(1)
+      ***                 MOVE   WK-DAY-KOH-COMPFTN(2)
+      ***                            TO  LNK-SYU-KOH-COMPFTN(1)
+      ***                                LNK-SYU-KOH-COMPTOTAL(1)
+      ***             END-IF
+      ***             IF  LNK-SYU-KOH-COMPFTN-ENTANI(2)
+      ***                                > LNK-SYU-KOH-COMPFTN-ENTANI(1)
+      ***                 MOVE   LNK-SYU-KOH-COMPFTN-ENTANI(2)
+      ***                            TO  LNK-SYU-KOH-COMPFTN-ENTANI(1)
+      ***             END-IF
+      ***         END-IF
+      ***         IF   KOH-IDX                =   1
+      ***             IF    LNK-SYU-SYUHKNNUM  NOT =   SPACE
+      ***               IF  WK-DAY-KOH-COMPFTN(1)  >  LNK-SYU-SYUCOMPFTN
+      ***                 MOVE   WK-DAY-KOH-COMPFTN(1)
+      ***                            TO  LNK-SYU-SYUCOMPFTN
+      ***                                LNK-SYU-SYUCOMPTOTAL
+      ***               END-IF
+      ***               IF  LNK-SYU-KOH-COMPFTN-ENTANI(1)
+      ***                                > LNK-SYU-SYUCOMPFTN-ENTANI
+      ***                 MOVE   LNK-SYU-KOH-COMPFTN-ENTANI(1)
+      ***                            TO  LNK-SYU-SYUCOMPFTN-ENTANI
+      ***               END-IF
+      ***             END-IF
+      ***         END-IF
+      ***     END-IF.
       *
            PERFORM    23072-KOHHI-HIKAKU-SEC.
            PERFORM    23074-KOHHI-HIKAKU3-SEC.
@@ -9664,6 +9670,9 @@
               END-IF
            END-IF.
       *
+      *    日別データ置き換え編集処理
+           PERFORM   23093-DAYDATA-OKIKAE-HENSYU-SEC.
+      *
       ***     IF   FLG-SYUHEN                 =   "1"
       *
       ***        IF   COMB-HKNNUM            NOT =   SPACE
@@ -9983,6 +9992,72 @@
            .
       *
        23092-TOKUSYU-HENSYU-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *        日別データ置き換え編集処理
+      ******************************************************************
+       23093-DAYDATA-OKIKAE-HENSYU-SEC         SECTION.
+      *
+           PERFORM    VARYING   KOH-IDX2   FROM   1   BY   1
+                       UNTIL    KOH-IDX2    >     4
+      *
+             IF   WK-DAYINFFLG(KOH-IDX2)   =    1
+      *
+               MOVE  LNK-SYU-KOH-HKNFTNMONEY(KOH-IDX2)
+                                  TO   WK-DAYTAIHI-FTNMONEY
+               MOVE  LNK-SYU-KOH-COMPFTN(KOH-IDX2)
+                                  TO   WK-DAYTAIHI-COMPFTN
+               COMPUTE  WK-DAYTAIHI-COMPFTNWK =
+                        LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX2) + 0.9
+      *
+               PERFORM    VARYING   KOH-IDX3   FROM   1   BY   1
+                           UNTIL    KOH-IDX3    >    31
+      *
+                   IF    KOHI-TBL(KOH-IDX3 KOH-IDX2)  =   9
+      *
+                       IF  LNK-SDAY-FTNMONEY(KOH-IDX3 KOH-IDX2)
+                                        <=    WK-DAYTAIHI-FTNMONEY
+                         COMPUTE WK-DAYTAIHI-FTNMONEY  =
+                                 WK-DAYTAIHI-FTNMONEY  -
+                                 LNK-SDAY-FTNMONEY(KOH-IDX3 KOH-IDX2)
+                       ELSE
+                         MOVE    WK-DAYTAIHI-FTNMONEY  TO
+                                 LNK-SDAY-FTNMONEY(KOH-IDX3 KOH-IDX2)
+                         MOVE    ZERO    TO   WK-DAYTAIHI-FTNMONEY
+                       END-IF
+      *
+                       IF  LNK-SDAY-COMPFTN(KOH-IDX3 KOH-IDX2)
+                                        <=    WK-DAYTAIHI-COMPFTN
+                         COMPUTE WK-DAYTAIHI-COMPFTN  =
+                                 WK-DAYTAIHI-COMPFTN  -
+                                 LNK-SDAY-COMPFTN(KOH-IDX3 KOH-IDX2)
+                       ELSE
+                         MOVE    WK-DAYTAIHI-COMPFTN   TO
+                                 LNK-SDAY-COMPFTN(KOH-IDX3 KOH-IDX2)
+                         MOVE    ZERO    TO   WK-DAYTAIHI-COMPFTN
+                       END-IF
+      *
+                       IF  LNK-SDAY-COMPFTNWK(KOH-IDX3 KOH-IDX2)
+                                        <=    WK-DAYTAIHI-COMPFTNWK
+                         COMPUTE WK-DAYTAIHI-COMPFTNWK  =
+                                 WK-DAYTAIHI-COMPFTNWK  -
+                                 LNK-SDAY-COMPFTNWK(KOH-IDX3 KOH-IDX2)
+                       ELSE
+                         MOVE    WK-DAYTAIHI-COMPFTNWK   TO  
+                                 LNK-SDAY-COMPFTNWK(KOH-IDX3 KOH-IDX2)
+                         MOVE    ZERO    TO   WK-DAYTAIHI-COMPFTNWK
+                       END-IF
+      *
+                   END-IF
+      *
+               END-PERFORM
+      *
+             END-IF
+      *
+           END-PERFORM.
+      *
+       23093-DAYDATA-OKIKAE-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

@@ -151,6 +151,7 @@
       *                                     ¾ì¹ç¡¢£±£°£°£°£°±ß¾å¸Â¤È¤¹¤ë
       *  01.01.17    NACL-ÌçÏÆ    05/03/23  ÊÝ¸±ÁÈ¹ç¤»¤Î¾å¸Â¶èÊ¬ÊÔ½¸
       *  01.02.01    NACL-ÌçÏÆ    05/03/24  ¾®»ùÆÃÄê¾å¸ÂÂÐ±þ
+      *  01.02.02    NACL-ÌçÏÆ    05/03/30  ÂçºåÉÜÃÏÊý¸øÈñ¡ÜÄ¹´üÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -7065,6 +7066,9 @@
                END-IF
            END-IF.
       *
+      *    ÂçºåÉÜÃÏÊý¸øÈñ¡ÜÄ¹´ü¤ÎÃÏÊý¸øÈñ»Ä³ÛÃÖ¤­´¹¤¨
+           PERFORM   2308-ZANOKIKAE-HENSYU-SEC.
+      *
       *    ¼çÊÝ¸±ÉéÃ´¶â³Û¤Î¸øÈñ¸ÂÅÙ³ÛÂÐ±þÍÑ¡¡»Ä¶â³Û·×»»
            IF      FLG-SYUHEN   =   "1"
                 PERFORM    2301-SYUHEN-ZANKIN-KEISAN-SEC
@@ -7116,6 +7120,157 @@
             PERFORM   2307-FTNKIN-HIKAKU-SEC.
       *
        230-FTNKIN-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *        ÂçºåÉÜÃÏÊý¸øÈñ¡ÜÄ¹´ü¤ÎÃÏÊý¸øÈñ»Ä³ÛÃÖ¤­´¹¤¨
+      ******************************************************************
+       2308-ZANOKIKAE-HENSYU-SEC           SECTION.
+      *
+           IF     WK-1001-PREFNUM       =   27
+             IF   COMB-KOH1HKNNUM       =  "180"
+                  IF   COMB-KOH2HKNNUM  =  "972"
+                      IF   ZAN-KOHI1  >  ZAN-KOHI2
+                          MOVE   ZAN-KOHI2   TO  ZAN-KOHI1
+                      END-IF
+                      IF   ZAN-KOHI12 >  ZAN-KOHI22
+                          MOVE   ZAN-KOHI22  TO  ZAN-KOHI12
+                      END-IF
+                      IF   ZAN-KOHI13 >  ZAN-KOHI23
+                          MOVE   ZAN-KOHI23  TO  ZAN-KOHI13
+                      END-IF
+                  END-IF
+                  IF   COMB-KOH3HKNNUM  =  "972"
+                      IF   ZAN-KOHI1  >  ZAN-KOHI3
+                          MOVE   ZAN-KOHI3   TO  ZAN-KOHI1
+                      END-IF
+                      IF   ZAN-KOHI12 >  ZAN-KOHI32
+                          MOVE   ZAN-KOHI32  TO  ZAN-KOHI12
+                      END-IF
+                      IF   ZAN-KOHI13 >  ZAN-KOHI33
+                          MOVE   ZAN-KOHI33  TO  ZAN-KOHI13
+                      END-IF
+                  END-IF
+                  IF   COMB-KOH4HKNNUM  =  "972"
+                      IF   ZAN-KOHI1  >  ZAN-KOHI4
+                          MOVE   ZAN-KOHI4   TO  ZAN-KOHI1
+                      END-IF
+                      IF   ZAN-KOHI12 >  ZAN-KOHI42
+                          MOVE   ZAN-KOHI42  TO  ZAN-KOHI12
+                      END-IF
+                      IF   ZAN-KOHI13 >  ZAN-KOHI43
+                          MOVE   ZAN-KOHI43  TO  ZAN-KOHI13
+                      END-IF
+                  END-IF
+             END-IF
+             IF   COMB-KOH2HKNNUM       =  "180"
+                  IF   COMB-KOH1HKNNUM  =  "972"
+                      IF   ZAN-KOHI2  >  ZAN-KOHI1
+                          MOVE   ZAN-KOHI1   TO  ZAN-KOHI2
+                      END-IF
+                      IF   ZAN-KOHI22 >  ZAN-KOHI12
+                          MOVE   ZAN-KOHI12  TO  ZAN-KOHI22
+                      END-IF
+                      IF   ZAN-KOHI23 >  ZAN-KOHI13
+                          MOVE   ZAN-KOHI13  TO  ZAN-KOHI23
+                      END-IF
+                  END-IF
+                  IF   COMB-KOH3HKNNUM  =  "972"
+                      IF   ZAN-KOHI2  >  ZAN-KOHI3
+                          MOVE   ZAN-KOHI3   TO  ZAN-KOHI2
+                      END-IF
+                      IF   ZAN-KOHI22 >  ZAN-KOHI32
+                          MOVE   ZAN-KOHI32  TO  ZAN-KOHI22
+                      END-IF
+                      IF   ZAN-KOHI23 >  ZAN-KOHI33
+                          MOVE   ZAN-KOHI33  TO  ZAN-KOHI23
+                      END-IF
+                  END-IF
+                  IF   COMB-KOH4HKNNUM  =  "972"
+                      IF   ZAN-KOHI2  >  ZAN-KOHI4
+                          MOVE   ZAN-KOHI4   TO  ZAN-KOHI2
+                      END-IF
+                      IF   ZAN-KOHI22 >  ZAN-KOHI42
+                          MOVE   ZAN-KOHI42  TO  ZAN-KOHI22
+                      END-IF
+                      IF   ZAN-KOHI23 >  ZAN-KOHI43
+                          MOVE   ZAN-KOHI43  TO  ZAN-KOHI23
+                      END-IF
+                  END-IF
+             END-IF
+             IF   COMB-KOH3HKNNUM       =  "180"
+                  IF   COMB-KOH1HKNNUM  =  "972"
+                      IF   ZAN-KOHI3  >  ZAN-KOHI1
+                          MOVE   ZAN-KOHI1   TO  ZAN-KOHI3
+                      END-IF
+                      IF   ZAN-KOHI32 >  ZAN-KOHI12
+                          MOVE   ZAN-KOHI12  TO  ZAN-KOHI32
+                      END-IF
+                      IF   ZAN-KOHI33 >  ZAN-KOHI13
+                          MOVE   ZAN-KOHI13  TO  ZAN-KOHI33
+                      END-IF
+                  END-IF
+                  IF   COMB-KOH2HKNNUM  =  "972"
+                      IF   ZAN-KOHI3  >  ZAN-KOHI2
+                          MOVE   ZAN-KOHI2   TO  ZAN-KOHI3
+                      END-IF
+                      IF   ZAN-KOHI32 >  ZAN-KOHI22
+                          MOVE   ZAN-KOHI22  TO  ZAN-KOHI32
+                      END-IF
+                      IF   ZAN-KOHI33 >  ZAN-KOHI23
+                          MOVE   ZAN-KOHI23  TO  ZAN-KOHI33
+                      END-IF
+                  END-IF
+                  IF   COMB-KOH4HKNNUM  =  "972"
+                      IF   ZAN-KOHI3  >  ZAN-KOHI4
+                          MOVE   ZAN-KOHI4   TO  ZAN-KOHI3
+                      END-IF
+                      IF   ZAN-KOHI32 >  ZAN-KOHI42
+                          MOVE   ZAN-KOHI42  TO  ZAN-KOHI32
+                      END-IF
+                      IF   ZAN-KOHI33 >  ZAN-KOHI43
+                          MOVE   ZAN-KOHI43  TO  ZAN-KOHI33
+                      END-IF
+                  END-IF
+             END-IF
+             IF   COMB-KOH4HKNNUM       =  "180"
+                  IF   COMB-KOH1HKNNUM  =  "972"
+                      IF   ZAN-KOHI4  >  ZAN-KOHI1
+                          MOVE   ZAN-KOHI1   TO  ZAN-KOHI4
+                      END-IF
+                      IF   ZAN-KOHI42 >  ZAN-KOHI12
+                          MOVE   ZAN-KOHI12  TO  ZAN-KOHI42
+                      END-IF
+                      IF   ZAN-KOHI43 >  ZAN-KOHI13
+                          MOVE   ZAN-KOHI13  TO  ZAN-KOHI43
+                      END-IF
+                  END-IF
+                  IF   COMB-KOH2HKNNUM  =  "972"
+                      IF   ZAN-KOHI4  >  ZAN-KOHI2
+                          MOVE   ZAN-KOHI2   TO  ZAN-KOHI4
+                      END-IF
+                      IF   ZAN-KOHI42 >  ZAN-KOHI22
+                          MOVE   ZAN-KOHI22  TO  ZAN-KOHI42
+                      END-IF
+                      IF   ZAN-KOHI43 >  ZAN-KOHI23
+                          MOVE   ZAN-KOHI23  TO  ZAN-KOHI43
+                      END-IF
+                  END-IF
+                  IF   COMB-KOH3HKNNUM  =  "972"
+                      IF   ZAN-KOHI4  >  ZAN-KOHI3
+                          MOVE   ZAN-KOHI3   TO  ZAN-KOHI4
+                      END-IF
+                      IF   ZAN-KOHI42 >  ZAN-KOHI32
+                          MOVE   ZAN-KOHI32  TO  ZAN-KOHI42
+                      END-IF
+                      IF   ZAN-KOHI43 >  ZAN-KOHI33
+                          MOVE   ZAN-KOHI33  TO  ZAN-KOHI43
+                      END-IF
+                  END-IF
+             END-IF
+           END-IF.
+      *
+       2308-ZANOKIKAE-HENSYU-EXT.
            EXIT.
       *
       ******************************************************************
@@ -8856,7 +9011,10 @@
       ******************************************************************
        23051-KOHHI-HIKAKU-SEC           SECTION.
       *
-           EVALUATE    KOH-IDX
+           IF    LNK-SYU-KOH-HKNNUM(KOH-IDX) =  "972"
+             CONTINUE
+           ELSE
+             EVALUATE    KOH-IDX
                WHEN    2
                    IF  LNK-SYU-KOH-COMPFTN(1) < LNK-SYU-KOH-COMPFTN(2)
                    AND LNK-SYU-KOH1HKNNUM   NOT =  SPACE
@@ -8873,7 +9031,8 @@
                        MOVE  LNK-SYU-KOH-COMPFTN(3)
                                             TO  LNK-SYU-KOH-COMPFTN(4)
                    END-IF
-           END-EVALUATE.
+             END-EVALUATE
+           END-IF.
       *
        23051-KOHHI-HIKAKU-EXT.
            EXIT.
@@ -8884,7 +9043,10 @@
       ******************************************************************
        23052-KOHHI-HIKAKU2-SEC           SECTION.                             
       *
-           EVALUATE    KOH-IDX
+           IF    LNK-SYU-KOH-HKNNUM(KOH-IDX) =  "972"
+             CONTINUE
+           ELSE
+             EVALUATE    KOH-IDX
                WHEN    2
                  IF  WK-KOH-COMPFTN(1)  =  ALL"9"
                    IF  LNK-SYU-KOH-COMPFTN(1) < WK-KOH-COMPFTN(2)
@@ -8923,7 +9085,8 @@
                                             TO  WK-KOH-COMPFTN(4)
                    END-IF
                  END-IF
-           END-EVALUATE.
+             END-EVALUATE
+           END-IF.
       *
        23052-KOHHI-HIKAKU2-EXT.
            EXIT.                                                        
@@ -8934,7 +9097,10 @@
       ******************************************************************
        23053-KOHHI-HIKAKU3-SEC           SECTION.
       *
-           EVALUATE    KOH-IDX
+           IF    LNK-SYU-KOH-HKNNUM(KOH-IDX) =  "972"
+             CONTINUE
+           ELSE
+             EVALUATE    KOH-IDX
                WHEN    2
                    IF  LNK-SYU-KOH-COMPFTN-ENTANI(1) 
                                    <     LNK-SYU-KOH-COMPFTN-ENTANI(2)
@@ -8954,7 +9120,8 @@
                        MOVE  LNK-SYU-KOH-COMPFTN-ENTANI(3) 
                                      TO  LNK-SYU-KOH-COMPFTN-ENTANI(4)
                    END-IF
-           END-EVALUATE.
+             END-EVALUATE
+           END-IF.
       *
        23053-KOHHI-HIKAKU3-EXT.
            EXIT.                                                        
