@@ -2,18 +2,21 @@
 
 . @sysconfdir@/jma-receipt.env
 
-echo datadir = $datadir
-echo formdir = $formdir
-echo initdir = $initdir
-echo lddefdir = $lddefdir
-echo recorddir = $recorddir
-echo screendir = $screendir
-echo scriptsdir = $scriptsdir
-echo libdir  = $libdir
+echo DATADIR = $DATADIR
+echo FORMDIR = $FORMDIR
+echo INITDIR = $INITDIR
+echo LDDEFDIR = $LDDEFDIR
+echo RECORDDIR = $RECORDDIR
+echo SCREENDIR = $SCREENDIR
+echo SCRIPTSDIR = $SCRIPTSDIR
+echo LIBDIR  = $LIBDIR
+echo SITEDIR=$SITEDIR
+echo SITESRCDIR=$SITESRCDIR
+echo SITELIBDIR=$SITELIBDIR
 
 echo DBSTUB = $DBSTUB
 
 #example
-echo $DBSTUB -record $recorddir -dir $lddefdir/directory -bddir $lddefdir -db orca -bd orcabt ORCBQ01 -parameter
+echo $DBSTUB -record $RECORDDIR -dir $LDDERDIR/directory -bddir $LDDEFDIR -db orca -bd orcabt ORCBQ01 -parameter
 
 exit 0

@@ -7,6 +7,24 @@ dnl Checks for programs.
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
+AC_ARG_WITH(site,
+	    [  --with-sitedir=DIR      site libraries in DIR [PREFIX/site-lib]],
+            [sitedir=$withval],
+            [sitedir='${prefix}/site-lib'])
+
+AC_ARG_WITH(sitesrcdir,
+	    [  --with-sitesrcdir=DIR      site libraries in DIR [PREFIX/site-src]],
+            [sitesrcdir=$withval],
+            [sitesrcdir='${prefix}/site-src'])
+
+AC_ARG_WITH(sitelibdir,
+	    [  --with-sitelibdir=DIR      site libraries in DIR [PREFIX/site-lib/lib]],
+            [sitelibdir=$withval],
+            [sitelibdir='${prefix}/site-lib/lib'])
+
+AC_SUBST(sitedir)dnl
+AC_SUBST(sitesrcdir)dnl
+AC_SUBST(sitelibdir)dnl
 
 AC_ARG_WITH(open-cobol-prefix,[--with-open-cobol-prefix=<direcotry> Prefix open-cobol is installed(optional)], 
   open_cobol_prefix="$withval", open_cobol_prefix="")

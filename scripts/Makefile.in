@@ -9,41 +9,41 @@ sysconfdir= @sysconfdir@
 scriptsdir = ${exec_prefix}/scripts
 
 noinst_shell_sources = \
-		sample.sh.in 
-
+		sample.sh.in \
 
 shell_sources = \
-		allways/ORCBQ01.sh.in \
-		allways/master_upgrade.sh.in \
-		allways/orcbsd01.sh.in \
-		allways/orcbse01.sh.in \
-		allways/orcbsf01.sh.in \
-		allways/orcbsf02.sh.in \
-		allways/orcbsf03.sh.in \
-		allways/orhcml09.sh.in \
-		allways/print.sh.in \
-		allways/site-upgrade.sh.in \
-		allways/tensu.sh.in \
-		daily/HCALL.sh.in \
-		daily/execoprg.sh.in \
-		daily/HC01.sh.in \
-		daily/HCALL2.sh.in \
-		monthly/recept1.sh.in \
-		monthly/recept2.sh.in \
-		monthly/recept3.sh.in \
-		monthly/recept4.sh.in \
-		monthly/recept5.sh.in \
-		monthly/recept6.sh.in \
-		monthly/recept7.sh.in \
-		monthly/recept8.sh.in \
-		monthly/sokatsu.sh.in 
+		allways/site-upgrade.sh.in 
 
 ruby_sources = \
 		daily/print-data.rb.in \
 		daily/print_parent2.rb.in \
 		daily/print_parent.rb.in
 
-shell_scripts = $(shell_sources:.sh.in=.sh)
+shell_scripts = $(shell_sources:.sh.in=.sh) \
+		allways/ORCBQ01.sh \
+		allways/master_upgrade.sh \
+		allways/orcbsd01.sh \
+		allways/orcbse01.sh \
+		allways/orcbsf01.sh \
+		allways/orcbsf02.sh \
+		allways/orcbsf03.sh \
+		allways/orhcml09.sh \
+		allways/print.sh \
+		allways/tensu.sh \
+		daily/HCALL.sh \
+		daily/execoprg.sh \
+		daily/HC01.sh \
+		daily/HCALL2.sh \
+		monthly/recept1.sh \
+		monthly/recept2.sh \
+		monthly/recept3.sh \
+		monthly/recept4.sh \
+		monthly/recept5.sh \
+		monthly/recept6.sh \
+		monthly/recept7.sh \
+		monthly/recept8.sh \
+		monthly/sokatsu.sh 
+
 noinst_shell_scripts = $(noinst_shell_sources:.sh.in=.sh)
 
 ruby_scripts = $(ruby_sources:.rb.in=.rb)
@@ -56,11 +56,11 @@ ruby_scripts = $(ruby_sources:.rb.in=.rb)
 
 all:   \
 	$(noinst_shell_scripts) \
-#	$(shell_scripts)
+	$(shell_scripts)
 
 clean: 
 	-rm $(noinst_shell_scripts)
-#	-rm $(shell_scripts)
+	-rm $(shell_scripts)
 
 distclean: clean
 	-rm -f Makefile
