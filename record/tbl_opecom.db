@@ -45,7 +45,7 @@ path	key2		{
 		FROM tbl_opecom
 			WHERE   HOSPID    =   :HOSPID
 			AND     PTID      =   :PTID
-			ORDER   BY     SRYYMD  DESC
+			ORDER   BY     SRYYMD DESC,SRYCD DESC,RENNUM DESC
 		;
 	};
 };
@@ -83,6 +83,38 @@ path	del1	{
 			AND   SRYYMD      =   :SRYYMD
 			AND   SRYCD       =   :SRYCD
 			AND   RENNUM      =   :RENNUM
+		;
+	};
+};
+
+path	key4		{ 	
+	DBSELECT	{
+		DECLARE tbl_opecom_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_opecom
+			WHERE   HOSPID    =   :HOSPID
+			AND     PTID      =   :PTID
+			AND     TEKSTYM   <=  :TEKSTYM
+			AND     TEKEDYM   >=  :TEKEDYM
+			AND     NYUGAIKBN IN  (' ',:NYUGAIKBN)
+			AND     SRYYMD    <>  ''
+			ORDER   BY     SRYYMD,SRYCD,RENNUM
+		;
+	};
+};
+
+path	key5		{ 	
+	DBSELECT	{
+		DECLARE tbl_opecom_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_opecom
+			WHERE   HOSPID    =   :HOSPID
+			AND     PTID      =   :PTID
+			AND     TEKSTYM   <=  :TEKSTYM
+			AND     TEKEDYM   >=  :TEKEDYM
+			AND     NYUGAIKBN IN  (' ',:NYUGAIKBN)
+			AND     SRYYMD    =   ''
+			ORDER   BY     RENNUM
 		;
 	};
 };
