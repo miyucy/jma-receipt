@@ -5364,6 +5364,8 @@
                MOVE    "1002"                  TO  SPA-ERRCD
                DISPLAY "PTBYOMEI-KEY =>" PTBYO-KEY 
                GO  TO  440-SAKUJYO-EXT
+           ELSE
+               PERFORM 450221-RECEUPD-UPDATE-SEC
            END-IF
       *
            COMPUTE C02-BYO-ROW =   SPA-NAI-C02-SELNO   -   1    
