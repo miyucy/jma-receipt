@@ -1290,6 +1290,7 @@
                   (SPA-NYUGAIKBN       =  "1"   ) AND
                   (SPA-NAI-NYUINYMD    =  SPACE )
                PERFORM 410101-NYUINRRK-CHK-SEC
+               PERFORM 410102-NYUINRRK-LST-SEC
            END-IF
       *
       *    診療科未入力の時、終了へ
@@ -1340,6 +1341,24 @@
       *
            .
        310-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入外区分編集処理
+      *****************************************************************
+       410102-NYUINRRK-LST-SEC                  SECTION.
+      *
+           MOVE    SPA-NYUGAIKBN       TO  SPA-GMN-NYUGAIKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-NYUGAI-MAX
+               IF      SPA-GMN-NYUGAIKBN   =   SPA-GMN-NYUGAIKBN-LST
+                                                           (IDX)(1:1)
+                   MOVE    SPA-GMN-NYUGAIKBN-LST (IDX)
+                                           TO  SPA-GMN-NYUGAIKBN-G
+               END-IF
+           END-PERFORM
+           .
+       410102-NYUINRRK-LST-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3140,6 +3159,7 @@
       *    入院が存在するかのチェック
            IF      SPA-BEDSU           >   ZERO
                PERFORM 410101-NYUINRRK-CHK-SEC
+               PERFORM 410102-NYUINRRK-LST-SEC
            END-IF
       *
       *    受診履歴編集
@@ -3201,9 +3221,13 @@
            MOVE    ZERO                TO  SPA-NAI-BANGO
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
-               IF      SPA-GMN-BANGO       =   SPA-GMN-TBANGO  (IDX)
-                   MOVE    IDX             TO  WRK-BANGO
-                   MOVE    SPA-GMN-MAX     TO  IDX
+               IF      SPA-GMN-TBLREC(IDX)(1:3)    =   "---"
+                   CONTINUE
+               ELSE
+                   IF      SPA-GMN-BANGO       =   SPA-GMN-TBANGO  (IDX)
+                       MOVE    IDX             TO  WRK-BANGO
+                       MOVE    SPA-GMN-MAX     TO  IDX
+                   END-IF
                END-IF
            END-PERFORM
            IF      WRK-BANGO           =   ZERO
@@ -5288,6 +5312,7 @@
       *    入院が存在するかのチェック
            IF      SPA-BEDSU           >   ZERO
                PERFORM 410101-NYUINRRK-CHK-SEC
+               PERFORM 410102-NYUINRRK-LST-SEC
            END-IF
       *
       *    受診履歴編集
@@ -5495,6 +5520,7 @@
       *    入院が存在するかのチェック
            IF      SPA-BEDSU           >   ZERO
                PERFORM 410101-NYUINRRK-CHK-SEC
+               PERFORM 410102-NYUINRRK-LST-SEC
            END-IF
       *
       *    受診履歴編集
