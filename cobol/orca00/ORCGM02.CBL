@@ -375,6 +375,7 @@
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
                        MOVE    "Z01"           TO  SPA-SAKIPG
+                   END-IF
       * チェックマスタ
                WHEN    "103"
                    IF      SYS-1010-GSRAUTH(63:1)    =  "0"
