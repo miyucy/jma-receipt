@@ -6,7 +6,6 @@ SRCS = \
 	ORCL0030.CBL \
 	ORCL0031.CBL \
 	ORCL0031N.CBL  \
-	CHON01.CBL  \
 
 CSRCS = \
 	orcuidset.c
