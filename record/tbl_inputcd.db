@@ -115,6 +115,8 @@ path	all	{
 		DECLARE tbl_inputcd_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_inputcd
+			ORDER   BY         INPUTCD
+                       
  		;
 	};
 };
