@@ -1454,9 +1454,9 @@
       *
            STRING   "µÞÀ­È¯¾ÉÆü¡§"     DELIMITED  BY  SIZE
                    WRK-KYUSEI-YMD      DELIMITED  BY  SIZE
-                   "¡¡£¹£°±Û¡§"        DELIMITED  BY  SIZE
+                   "¡¡£¹£°Ä¶¡§"        DELIMITED  BY  SIZE
                    WRK-KYUSEI-90       DELIMITED  BY  SIZE
-                   "¡¡£±£¸£°±Û¡§"      DELIMITED  BY  SIZE
+                   "¡¡£±£¸£°Ä¶¡§"      DELIMITED  BY  SIZE
                    WRK-KYUSEI-180      DELIMITED  BY  SIZE
                    INTO                SPA-GMN-KYUSEI
            END-STRING
