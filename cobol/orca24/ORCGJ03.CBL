@@ -184,6 +184,8 @@
       *
            03  FLG-HKNKBN          PIC 9(01).
            03  FLG-OK              PIC 9(01).
+      *
+           03  FLG-GENZAN          PIC 9(01).
 012400*
 012500*    カウント領域
 012600 01  CNT-AREA.
@@ -233,7 +235,7 @@
            03  WRK-RSI-TEN         PIC 9(07).
            03  WRK-GOK-JIHIKIN     PIC 9(08).
            03  WRK-GOK-RSITENSU    PIC 9(08).
-           03  WRK-GOK-TENSU       PIC 9(07).
+           03  WRK-GOK-TENSU       PIC S9(07).
 016100*
            03  WRK-ZZZ              PIC ZZZ.
            03  WRK-Z8               PIC ZZ,ZZZ,ZZZ.
@@ -1555,10 +1557,20 @@
                                                OR  "13"  OR   "80" ))
                        PERFORM 31092-SRYACCT-HEN-SEC
                    ELSE
+                       MOVE    ZERO                TO  FLG-GENZAN
+      *                内服の逓減かどうかを判定する
+                       IF      ACCT-SRYKBN         =   "21"
+                           PERFORM 31092-SRYACCT-HEN-SEC
+                       END-IF
                        COMPUTE WRK-TENSU       =   ACCT-ZAITEN
                                                *   ACCT-ZAIKAISU
-                       COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
-                                               +   WRK-TENSU
+                       IF      FLG-GENZAN          =   ZERO
+                           COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
+                                                   +   WRK-TENSU
+                       ELSE
+                           COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
+                                                   -   WRK-TENSU
+                       END-IF
                    END-IF
                END-IF
       *
@@ -1680,7 +1692,14 @@
            MOVE    ZERO                TO  WRK-SUM-TEN
            MOVE    ZERO                TO  WRK-RSI-TEN
       *
+           MOVE    ZERO                TO  FLG-GENZAN
            PERFORM UNTIL       FLG-SRYACT      =   1
+      *        薬剤料逓減　を減算
+               IF     (ACCT-SRYKBN         =   "21" )  AND
+                      (SRY-SRYCD (01)      =   "630010002")
+                   MOVE    1               TO  FLG-GENZAN
+                   MOVE    1               TO  FLG-SRYACT
+               END-IF
       *        自費の時、自費合計を集計
                IF      ACCT-SRYKBN         =   "96"  OR  "95"
                    COMPUTE WRK-GOK-JIHIKIN     =   WRK-GOK-JIHIKIN
@@ -1691,7 +1710,9 @@
       *            剤明細編集
                    PERFORM VARYING     IDZ     FROM    1   BY  1
                            UNTIL      (IDZ         >   5   )  OR
-                                      (SRY-SRYCD (IDZ) =   SPACE )
+                                      (SRY-SRYCD (IDZ) =   SPACE )  OR
+                                      (FLG-SRYACT      =   1     )
+      *
       *                労災コードの時、点数取得
                        IF      (SRY-SRYCD (IDZ)(1:3)   =   "101"  )  OR
                                (SRY-SRYCD (IDZ)(1:5)   =   "09591" OR
@@ -1727,6 +1748,7 @@
                                         MCPDATA-REC
       *    自費の時、自費合計を集計
            IF      ACCT-SRYKBN         =   "96"  OR  "95"
+                                       OR  "21"
                GO      TO      31092-SRYACCT-HEN-EXT
            END-IF
       *
