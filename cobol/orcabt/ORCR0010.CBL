@@ -464,8 +464,9 @@
            INITIALIZE                  RECE10-REC
            MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
            MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
+           MOVE    "2"                 TO  RECE10-NYUGAIKBN
            MOVE    RECE10-REC          TO  MCPDATA-REC
-           MOVE    "SEIKYU-DEL2"       TO  ORC-DBPATH
+           MOVE    "SEIKYU-DEL5"       TO  ORC-DBPATH
            MOVE    "DBDELETE"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"              USING
                                             MCPAREA
@@ -483,9 +484,10 @@
                INITIALIZE                  RECE10-REC
                MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
+               MOVE    "2"                 TO  RECE10-NYUGAIKBN
                MOVE    "1"                 TO  RECE10-TEISYUTUSAKI
                MOVE    RECE10-REC          TO  MCPDATA-REC
-               MOVE    "SEIKYU-DEL3"       TO  ORC-DBPATH
+               MOVE    "SEIKYU-DEL6"       TO  ORC-DBPATH
                MOVE    "DBDELETE"          TO  MCP-FUNC
                CALL    "ORCMCPSUB"              USING
                                                 MCPAREA
@@ -504,9 +506,10 @@
                INITIALIZE                  RECE10-REC
                MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
+               MOVE    "2"                 TO  RECE10-NYUGAIKBN
                MOVE    "2"                 TO  RECE10-TEISYUTUSAKI
                MOVE    RECE10-REC          TO  MCPDATA-REC
-               MOVE    "SEIKYU-DEL3"       TO  ORC-DBPATH
+               MOVE    "SEIKYU-DEL6"       TO  ORC-DBPATH
                MOVE    "DBDELETE"          TO  MCP-FUNC
                CALL    "ORCMCPSUB"              USING
                                                 MCPAREA
