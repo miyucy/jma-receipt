@@ -28,7 +28,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       * 00.00.01     NACL-¿¹ÏÆ    03/04/25  ½ÐÎÏ¾ò·ï½¤Àµ¡¢²ÊÌ¾¥»¥Ã¥ÈÊÑ¹¹
-      * 00.00.02     NACL-¿¹ÏÆ    03/09/29  ·«¤êÊÖ¤·½èÍý¤Î½¤Àµ
+      * 02.01.01     Nacl-¿¹ÏÆ    03/11/25  ±¡³°¶èÊ¬¤ò¥Ñ¥é¥á¥¿¤ËÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -60,23 +60,35 @@
        FD  TOKEI-FILE.
        01  TOKEI-REC. 
            03  TOKEI-KEY.
+      *----(02.01.01)--ADD-START---
+               05  TOKEI-INGAIKBN      PIC 9(01).
+      *----(02.01.01)--ADD-END-----
                05  TOKEI-YKZKBN        PIC 9(01).
                05  TOKEI-KANANAME      PIC X(200).
                05  TOKEI-SRYCD         PIC X(09).
                05  TOKEI-SRYKA         PIC X(02).
-           03  TOKEI-NAME              PIC X(48).
-           03  TOKEI-TANI              PIC X(14).
+      *----(02.01.01)--UPD-START---
+           03  TOKEI-NAME              PIC X(40).
+           03  TOKEI-TANI              PIC X(10).
+           03  TOKEI-TEN               PIC 9(07)V9(02).
+      *----(02.01.01)--UPD-END-----
            03  TOKEI-SRYSURYO          PIC 9(05)V9(03).
       *
        FD  TOKEIX-FILE.
        01  TOKEIX-REC. 
            03  TOKEIX-KEY.
+      *----(02.01.01)--ADD-START---
+               05  TOKEIX-INGAIKBN     PIC 9(01).
+      *----(02.01.01)--ADD-END-----
                05  TOKEIX-YKZKBN       PIC 9(01).
                05  TOKEIX-KANANAME     PIC X(200).
                05  TOKEIX-SRYCD        PIC X(09).
                05  TOKEIX-SRYKA        PIC X(02).
-           03  TOKEIX-NAME             PIC X(48).
-           03  TOKEIX-TANI             PIC X(14).
+      *----(02.01.01)--UPD-START---
+           03  TOKEIX-NAME             PIC X(40).
+           03  TOKEIX-TANI             PIC X(10).
+           03  TOKEIX-TEN              PIC 9(07)V9(02).
+      *----(02.01.01)--UPD-END-----
            03  TOKEIX-SRYSURYO         PIC 9(05)V9(03).
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
@@ -148,6 +160,9 @@
            03  WRK-PARA-HOSPID         PIC X(24).
            03  WRK-PARA-DENPPRTYM      PIC X(06).
            03  WRK-PARA-YKZKBN         PIC 9(01).
+      *----(02.01.01)--ADD-START---
+           03  WRK-PARA-INGAIKBN       PIC 9(01).
+      *----(02.01.01)--ADD-END-----
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -165,6 +180,9 @@
       *
            03  WRK-SRYCD               PIC X(9).
            03  WRK-YKZKBN              PIC X(01).
+      *----(02.01.01)--ADD-START---
+           03  WRK-INGAIKBN            PIC X(01).
+      *----(02.01.01)--ADD-END-----
            03  WRK-HENSURYO            PIC X(12).
       *
            03  WRK-GSURYO              PIC 9(05)V9(03).
@@ -181,6 +199,22 @@
                05  WRK-SURYO-Z2        PIC X(01).
                05  WRK-SURYO-Z3        PIC ZZZ.
       *
+      *----(02.01.01)--ADD-START---
+           03  WRK-HENTEN              PIC X(10).
+      *
+           03  WRK-TEN                 PIC 9(07)V9(02).
+           03  WRK-TEN-R               REDEFINES   WRK-TEN.
+               05  WRK-TEN-S1          PIC 9(07).
+               05  WRK-TEN-S2          PIC 9(02).
+      *
+           03  WRK-TEN-X.
+               05  WRK-TEN-Z1          PIC ZZZZZZZ.
+               05  WRK-TEN-Z1-9        REDEFINES   WRK-TEN-Z1
+                                       PIC ZZZZZZ9.
+               05  WRK-TEN-Z2          PIC X(01).
+               05  WRK-TEN-Z3          PIC ZZ.
+      *----(02.01.01)--ADD-END-----
+      *
            03  WRK-ZZ9                 PIC ZZ9.
            03  WRK-Z9                  PIC Z9.
       *
@@ -192,6 +226,9 @@
                05  WRK-DENPPRTYMWH     PIC X(16).
                05  WRK-DAI-MSG2        PIC X(6).
                05  WRK-YKZKBNWH        PIC X(12).
+      *----(02.01.01)--ADD-START---
+               05  WRK-INGAIKBNWH      PIC X(12).
+      *----(02.01.01)--ADD-END-----
            03  WRK-PAGE.
                05  WRK-PAGE1           PIC X(03).
                05  WRK-PAGE-MSG1       PIC X(01).
@@ -199,6 +236,7 @@
       *
            03  WRK-DD                  PIC 9(02).
       *
+      *----(02.01.01)--UPD-START---
            03  WRK-TAI-AREA.
                05  WRK-TAI-TBL         OCCURS  49  TIMES.
                  07  WRK-TAI-SRYKA     PIC X(02).
@@ -206,10 +244,12 @@
            03  WRK-NAI-AREA.
                05  WRK-NAI-TBL         OCCURS  35  TIMES.
                  07  WRK-NAI-SRYCD     PIC X(9).
-                 07  WRK-NAI-NAME      PIC X(48).
-                 07  WRK-NAI-TANI      PIC X(14).
+                 07  WRK-NAI-NAME      PIC X(40).
+                 07  WRK-NAI-TEN       PIC X(10).
+                 07  WRK-NAI-TANI      PIC X(10).
                  07  WRK-NAI-NAIYO     PIC X(10)
                                        OCCURS  49  TIMES.
+      *----(02.01.01)--UPD-END-----
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -329,6 +369,9 @@
                                        WRK-PARA-HOSPID
                                        WRK-PARA-DENPPRTYM
                                        WRK-PARA-YKZKBN
+      *----(02.01.01)--ADD-START---
+                                       WRK-PARA-INGAIKBN
+      *----(02.01.01)--ADD-END-----
       *
       *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -449,10 +492,6 @@
       *        ¿ÇÎÅ²ÊÌÜÊÔ½¸
                PERFORM 900-SYS1005-DBFETCH-SEC
            END-PERFORM
-      *****(00.00.02)******ADD-START************
-      *    ¿ÇÎÅ²ÊÌÜÊÔ½¸
-           PERFORM 900-SYS1005-DBCLOSE-SEC
-      *****(00.00.02)******ADD-END**************
       *
            EVALUATE    CNT-SRYKA
                WHEN    1   THRU    6
@@ -470,10 +509,6 @@
                WHEN    42  THRU    48
                    MOVE    49          TO  CNT-MAX
            END-EVALUATE
-      *
-      *****(00.00.02)******ADD-START************
-           MOVE    "¹ç·×"      TO  WRK-TAI-NAIYO(CNT-MAX)
-      *****(00.00.02)******ADD-END**************
       *
            .
        210-MAIN-SRYKA-EXT.
@@ -509,9 +544,9 @@
                MOVE    ZERO                TO  WRK-DD
                PERFORM VARYING     IDX-D   FROM    1   BY   1
                        UNTIL       IDX-D   >   31
-                   IF          ACCT-DAY(1 IDX-D)   >   ZERO
-                       MOVE    IDX-D               TO  WRK-DD
-                       MOVE    31                  TO  IDX-D
+                   IF      ACCT-DAY (1 IDX-D)  >   ZERO
+                       MOVE    IDX-D           TO  WRK-DD
+                       MOVE    31              TO  IDX-D
                    END-IF
                END-PERFORM
       *        »»Äê¤¬¤¢¤ë»þÂÐ¾Ý
@@ -547,7 +582,6 @@
       *****************************************************************
        230-MAIN-SRY-SEC            SECTION.
       *
-      *
            INITIALIZE                  SRYACT-REC
            MOVE    ACCT-HOSPID         TO  SRY-HOSPID
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
@@ -572,19 +606,32 @@
            END-IF
       *
            PERFORM UNTIL ( FLG-SRYACT      =   1 )
+      *----(02.01.01)--UPD-START---
                IF      ACCT-ZAITEN         >   ZERO
       *            ÅÀ¿ô¤¬¤¢¤ë»þ
-                   PERFORM 240-MAIN-HEN-SEC
+                   IF      WRK-PARA-INGAIKBN   NOT =   2
+                       MOVE    1           TO  WRK-INGAIKBN
+                       PERFORM 240-MAIN-HEN-SEC
+                   END-IF
                ELSE
-      *            ½èÊý¤Î¤ß¡¢¼«Èñ¤ÏÂÐ¾Ý¤È¤¹¤ë
+      *            ±¡Æâ½èÊýÊ¬¡¢¼«Èñ¤ÏÂÐ¾Ý¤È¤¹¤ë
                    IF     (SRY-SRYSYUKBN       =   "213"  OR
                                                    "223"  OR
                                                    "233"  OR
                                                    "950"  OR
                                                    "960")
-                       PERFORM 240-MAIN-HEN-SEC
+                       IF      WRK-PARA-INGAIKBN   NOT =   2
+                           MOVE    1           TO  WRK-INGAIKBN
+                           PERFORM 240-MAIN-HEN-SEC
+                       END-IF
+                   ELSE
+                       IF      WRK-PARA-INGAIKBN   NOT =   1
+                           MOVE    2           TO  WRK-INGAIKBN
+                           PERFORM 240-MAIN-HEN-SEC
+                       END-IF
                    END-IF
                END-IF
+      *----(02.01.01)--UPD-END-----
       *
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SRY-DBFETCH-SEC
@@ -672,6 +719,9 @@
       *
       *    Åý·×¥Ç¡¼¥¿¸¡º÷
            INITIALIZE                  TOKEI-REC
+      *----(02.01.01)--ADD-START---
+           MOVE    WRK-INGAIKBN    TO  TOKEI-INGAIKBN
+      *----(02.01.01)--ADD-END-----
            MOVE    TNS-YKZKBN      TO  TOKEI-YKZKBN
            MOVE    TNS-KANANAME    TO  TOKEI-KANANAME
            MOVE    SRY-SRYCD(IDX)  TO  TOKEI-SRYCD
@@ -680,11 +730,17 @@
       *
            IF        ( FLG-TOKEI       =   1 )
                INITIALIZE                  TOKEI-REC
+      *----(02.01.01)--ADD-START---
+               MOVE    WRK-INGAIKBN    TO  TOKEI-INGAIKBN
+      *----(02.01.01)--ADD-END-----
                MOVE    TNS-YKZKBN      TO  TOKEI-YKZKBN
                MOVE    TNS-KANANAME    TO  TOKEI-KANANAME
                MOVE    SRY-SRYCD(IDX)  TO  TOKEI-SRYCD
                MOVE    ACCT-SRYKA      TO  TOKEI-SRYKA
                MOVE    TNS-NAME        TO  TOKEI-NAME
+      *----(02.01.01)--ADD-START---
+               MOVE    TNS-TEN         TO  TOKEI-TEN
+      *----(02.01.01)--ADD-END-----
                MOVE    TNS-TANINAME    TO  TOKEI-TANI
                MOVE    ZERO            TO  TOKEI-SRYSURYO
                COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
@@ -711,9 +767,15 @@
            MOVE    ZERO                TO  CNT-PAGE
            MOVE    ZERO                TO  IDY
       *
+      *----(02.01.01)--ADD-START---
+           MOVE    TOKEI-INGAIKBN      TO  WRK-INGAIKBN
+      *----(02.01.01)--ADD-END-----
            MOVE    TOKEI-YKZKBN        TO  WRK-YKZKBN
            PERFORM
                UNTIL    (FLG-TOKEI         =   1  )  OR
+      *----(02.01.01)--ADD-START---
+                        (TOKEI-INGAIKBN    NOT = WRK-INGAIKBN) OR
+      *----(02.01.01)--ADD-END-----
                         (TOKEI-YKZKBN  NOT = WRK-YKZKBN)
       *        Åý·×ÊÔ½¸½èÍý
                PERFORM 2601-TOUKEI-HEN-SEC
@@ -744,6 +806,13 @@
            MOVE    TOKEI-SRYCD         TO  WRK-NAI-SRYCD (IDY)
            MOVE    TOKEI-NAME          TO  WRK-NAI-NAME  (IDY)
            MOVE    TOKEI-TANI          TO  WRK-NAI-TANI  (IDY)
+      *----(02.01.01)--ADD-START---
+           DISPLAY "TOKEI-TEN=" TOKEI-TEN
+      *    ÅÀ¿ôÊÔ½¸
+           MOVE    TOKEI-TEN           TO  WRK-TEN
+           PERFORM 400-ZHEN-TEN-SET-SEC
+           MOVE    WRK-HENTEN          TO  WRK-NAI-TEN(IDY)
+      *----(02.01.01)--ADD-END-----
       *
            MOVE    TOKEI-SRYCD         TO  WRK-SRYCD
            MOVE    ZERO                TO  WRK-GSURYO
@@ -843,6 +912,14 @@
                WHEN  OTHER
                    MOVE    "¡ö¡ö¡ö¡ö"          TO  WRK-YKZKBNWH
            END-EVALUATE
+      *----(02.01.01)--ADD-START---
+           EVALUATE  WRK-INGAIKBN
+               WHEN  "1"
+                   MOVE    "¡Ê±¡Æâ¡Ë"        TO  WRK-INGAIKBNWH
+               WHEN  "2"
+                   MOVE    "¡Ê±¡³°¡Ë"        TO  WRK-INGAIKBNWH
+           END-EVALUATE
+      *----(02.01.01)--ADD-END-----
       *
            IF          CNT-MAX         <=  7
                MOVE    CNT-PAGE        TO  WRK-ZZ9
@@ -862,6 +939,9 @@
            MOVE    "¿ÇÎÅ¹Ô°Ù¥³¡¼¥É"    TO  HCMG001-TAI-CD
            MOVE    "Ì¾¾Î"              TO  HCMG001-TAI-NAME
            MOVE    "Ã±°Ì"              TO  HCMG001-TAI-TANI
+      *----(02.01.01)--ADD-START---
+           MOVE    "Ìô²Á"              TO  HCMG001-TAI-TEN
+      *----(02.01.01)--ADD-END-----
       *
            .
        280-PRT-HEAD-SET-EXT.
@@ -881,29 +961,30 @@
                                        TO  HCMG001-NAME(CNT-LINE)
                MOVE    WRK-NAI-TANI(CNT-LINE)
                                        TO  HCMG001-TANI(CNT-LINE)
+      *----(02.01.01)--ADD-START---
+               MOVE    WRK-NAI-TEN(CNT-LINE)
+                                       TO  HCMG001-TEN(CNT-LINE)
+      *----(02.01.01)--ADD-END-----
            END-PERFORM
       *
-      *****(00.00.02)******UPD-START************
       *    ¿ÇÎÅ²ÊÊÌÊÔ½¸
            PERFORM VARYING IDX         FROM    1   BY  1
                    UNTIL ( IDX         >   7 )
                    OR    ( IDZ         =   CNT-MAX )
                COMPUTE IDZ                 =   IDZ +   1
-      *
-               IF        ( IDZ         =   CNT-MAX )
-                   OR    ( IDZ         <=  CNT-SRYKA )
-      *            ²ÊÌ¾ÊÔ½¸
-                   MOVE    WRK-TAI-NAIYO(IDZ)
-                                       TO  HCMG001-TAI-NAIYO(IDX)
-      *            ¿ôÎÌÊÔ½¸
-                   PERFORM VARYING CNT-LINE    FROM    1   BY   1
-                           UNTIL ( CNT-LINE    >   35 )
-                       MOVE    WRK-NAI-NAIYO(CNT-LINE IDZ)
-                                       TO  HCMG001-NAIYO(CNT-LINE IDX)
-                   END-PERFORM
+      *        ²ÊÌ¾ÊÔ½¸
+               MOVE    WRK-TAI-NAIYO(IDZ)
+                                           TO  HCMG001-TAI-NAIYO(IDX)
+               IF      (IDZ            =   CNT-MAX )
+                   MOVE    "¹ç·×"          TO  HCMG001-TAI-NAIYO(IDX)
                END-IF
-           END-PERFORM
-      *****(00.00.02)******UPD-END**************
+      *        ¿ôÎÌÊÔ½¸
+               PERFORM VARYING CNT-LINE    FROM    1   BY   1
+                       UNTIL ( CNT-LINE    >   35 )
+                   MOVE    WRK-NAI-NAIYO(CNT-LINE IDZ)
+                                       TO  HCMG001-NAIYO(CNT-LINE IDX)
+               END-PERFORM
+          END-PERFORM
       *
            .
        290-PRT-BODY-SET-EXT.
@@ -971,6 +1052,51 @@
        400-ZHEN-SURYO-SET-EXT.
            EXIT.
       *
+      *----(02.01.01)--ADD-START---
+      *****************************************************************
+      *   Ä¢É¼£ÚÊÔ½¸½èÍý
+      *****************************************************************
+       400-ZHEN-TEN-SET-SEC      SECTION.
+      *
+      *    ÅÀ¿ô£ÚÊÔ½¸
+           MOVE    SPACE           TO  WRK-TEN-X
+           MOVE    WRK-TEN-S1      TO  WRK-TEN-Z1
+      *
+      *    ÅÀ¿ô¾®¿ôÅÀ°Ê²¼ÊÔ½¸
+           MOVE    ZERO            TO  FLG-SP
+           PERFORM VARYING CNT-KETA    FROM    2   BY  -1
+                   UNTIL ( CNT-KETA    <   1 )
+               IF        ( WRK-TEN-S2(CNT-KETA:1) NOT =   ZERO )
+                   MOVE    1           TO  FLG-SP
+               END-IF
+               IF        ( FLG-SP  =   1 )
+                   MOVE    WRK-TEN-S2(CNT-KETA:1)
+                                       TO  WRK-TEN-Z3(CNT-KETA:1)
+               END-IF
+           END-PERFORM
+      *
+           IF      ( WRK-TEN-Z3    NOT =   SPACE )
+               MOVE    "."             TO  WRK-TEN-Z2
+               IF      ( WRK-TEN-X(1:7)    =   SPACE )
+                   MOVE    WRK-TEN-S1    TO  WRK-TEN-Z1-9
+               END-IF
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-HENTEN
+           MOVE    ZERO                TO  CNT-KETA
+           PERFORM VARYING     CNT-KETA2     FROM    1   BY  1
+                   UNTIL ( CNT-KETA2    >   10 )
+               IF        ( WRK-TEN-X(CNT-KETA2:1)  NOT =   SPACE )
+                   COMPUTE CNT-KETA   =   CNT-KETA    +   1
+                   MOVE  WRK-TEN-X(CNT-KETA2:1)
+                         TO  WRK-HENTEN(CNT-KETA:1)
+               END-IF
+           END-PERFORM
+      *
+           .
+       400-ZHEN-TEN-SET-EXT.
+           EXIT.
+      *----(02.01.01)--ADD-END-----
       *****************************************************************
       *    Ä¢É¼°õºþ½èÍý
       *****************************************************************
