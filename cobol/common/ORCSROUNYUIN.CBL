@@ -546,12 +546,12 @@
                                            (IDX WRK-MEISAISU)
                END-IF
       *        Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
-               IF         WRK-KEIKAKU-GENSAN1      NOT =   ZERO
+               IF         WRK-KEIKAKU-GENSAN1(IDX) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-KEIKAKU-GENSAN1 TO  LNK-SROUNYUIN-SRYCD
                                            (IDX WRK-MEISAISU)
                END-IF
-               IF         WRK-KEIKAKU-GENSAN2      NOT =   ZERO
+               IF         WRK-KEIKAKU-GENSAN2(IDX) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-KEIKAKU-GENSAN2 TO  LNK-SROUNYUIN-SRYCD
                                            (IDX WRK-MEISAISU)
