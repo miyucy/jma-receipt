@@ -527,9 +527,9 @@
 	  <y>56</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>点数表　　　　　　　　</label>
+	  <label>点数表                </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -543,9 +543,9 @@
 	  <y>88</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>医療機関コード　　　　</label>
+	  <label>医療機関コード        </label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -559,9 +559,9 @@
 	  <y>120</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>医療機関種別　　　　　</label>
+	  <label>医療機関種別          </label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -575,9 +575,9 @@
 	  <y>152</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>医療機関ＩＤ　　　　　</label>
+	  <label>医療機関ＩＤ          </label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -591,9 +591,9 @@
 	  <y>184</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>医療機関名称　　　　　</label>
+	  <label>医療機関名称          </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -607,9 +607,9 @@
 	  <y>216</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>開設者名　　　　　　　</label>
+	  <label>開設者名              </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -623,9 +623,9 @@
 	  <y>248</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>管理者氏名（院長）　　</label>
+	  <label>管理者氏名（院長）    </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -639,9 +639,9 @@
 	  <y>280</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>病床数　　　　　　　　</label>
+	  <label>病床数                </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -655,9 +655,9 @@
 	  <y>312</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>老人支払区分　　　　　</label>
+	  <label>老人支払区分          </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -671,9 +671,9 @@
 	  <y>344</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>旧総合病院フラグ　　　</label>
+	  <label>旧総合病院フラグ      </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -687,9 +687,9 @@
 	  <y>24</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>都道府県番号　　　　　</label>
+	  <label>都道府県番号          </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1018,9 +1018,9 @@
 	  <y>312</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>請求書発行フラグ　　　</label>
+	  <label>請求書発行フラグ      </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1036,7 +1036,7 @@
 	  <height>24</height>
 	  <label>院外処方せん発行フラグ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1092,7 +1092,7 @@
 	  <height>24</height>
 	  <label>前回処方表示フラグ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1108,7 +1108,7 @@
 	  <height>24</height>
 	  <label>薬剤情報発行フラグ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1164,7 +1164,7 @@
 	  <height>18</height>
 	  <label>医療機関コード（漢字）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1178,9 +1178,9 @@
 	  <y>376</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>院外処方区分　　　　　</label>
+	  <label>院外処方区分          </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1366,9 +1366,9 @@
 	  <y>24</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>郵便番号　　　　　　　</label>
+	  <label>郵便番号              </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1382,9 +1382,9 @@
 	  <y>56</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>所在地　　　　　　　　</label>
+	  <label>所在地                </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1398,9 +1398,9 @@
 	  <y>88</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>電話番号　　　　　　　</label>
+	  <label>電話番号              </label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1414,9 +1414,9 @@
 	  <y>120</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>ＦＡＸ番号　　　　　　</label>
+	  <label>ＦＡＸ番号            </label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1506,9 +1506,9 @@
 	  <y>56</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>ＨＰアドレス　　　　　</label>
+	  <label>ＨＰアドレス          </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1522,9 +1522,9 @@
 	  <y>24</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>ｅメールアドレス　　　</label>
+	  <label>ｅメールアドレス      </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1610,9 +1610,9 @@
 	  <y>56</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>割引率（定額）　　　　</label>
+	  <label>割引率（定額）        </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1626,9 +1626,9 @@
 	  <y>24</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>定率定額区分　　　　　</label>
+	  <label>定率定額区分          </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1718,9 +1718,9 @@
 	  <y>56</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>割引率区分　　　　　　</label>
+	  <label>割引率区分            </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1734,9 +1734,9 @@
 	  <y>24</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>減免事由　　　　　　　</label>
+	  <label>減免事由              </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1826,9 +1826,9 @@
 	  <y>88</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>アイコンファイル名　　</label>
+	  <label>アイコンファイル名    </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1842,9 +1842,9 @@
 	  <y>56</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>比喩単語　　　　　　　</label>
+	  <label>比喩単語              </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1858,9 +1858,9 @@
 	  <y>24</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>状態内容　　　　　　　</label>
+	  <label>状態内容              </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -1950,9 +1950,9 @@
 	  <y>24</y>
 	  <width>155</width>
 	  <height>18</height>
-	  <label>自費名称　　　　　　　</label>
+	  <label>自費名称              </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
