@@ -2753,8 +2753,8 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "RECE02  IN  " CNT-RECE02   
-           DISPLAY "RECE06  CNT " CNT-RECE06 
+           DISPLAY "RECE02  CNT-IN  :" CNT-RECE02
+           DISPLAY "RECE06  CNT-OUT :" CNT-RECE06 
            DISPLAY "*** ORCR0090 END ***"
       *
            .
@@ -2874,6 +2874,8 @@
                NOT AT  END
                    ADD     1           TO  CNT-RECE02
                    MOVE    ZERO        TO  FLG-END
+      *
+                   DISPLAY "RECE02  PTNUM=" RECE02-PTNUM
            END-READ
       *
            .

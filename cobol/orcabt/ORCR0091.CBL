@@ -134,7 +134,6 @@
                05  WRK-PARA-SYSYMD                     PIC  X(08).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
-      *****03  WRK-IN                                  PIC X(01).
       *
            03  WRK-RECEERR             PIC X(200). 
       *
@@ -367,7 +366,7 @@
            .
        RECE061-WRITE-EXT.
            EXIT.
-057400*
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -422,10 +421,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-      ***     DISPLAY "RECE06-IN   :" CNT-IN   UPON CONSOLE 
-      ***     DISPLAY "RECE061-OUT :" CNT-OUT  UPON CONSOLE 
-      ***     DISPLAY "*** ORCR0091 END ***"
-      ***     ACCEPT  WRK-IN FROM CONSOLE 
+           DISPLAY "RECE06  CNT-IN  :" CNT-IN
+           DISPLAY "RECE061 CNT-OUT :" CNT-OUT
+           DISPLAY "*** ORCR0091 END ***"
            .
        300-TERM-EXT.
            EXIT.
@@ -440,6 +438,8 @@
                    MOVE    1     TO    FLG-END
                NOT  AT  END
                    ADD     1     TO    CNT-IN
+      *
+                   DISPLAY "RECE06  PTID=" RECE06-PTID
            END-READ
            .
        RECE06-READ-EXT.
