@@ -29,8 +29,9 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    04.02.17  ファイルの出力先指定
-      *  01.00.05    NACL-伊藤    04.02.17  レセ電ファイルの転送エラー
+      *  01.00.02    NACL-伊藤    04.02.17  統計データの転送エラー
       *                                     メッセージの追加
+      *  01.00.03    NACL-藤原    04.03.01  確認画面出力の条件修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -503,8 +504,16 @@
                        MOVE    "JOIN"             TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
                    WHEN    "1004"
-                       IF    ( SPA-GMN-FILE1       =   "1" OR  "2" )
-                       OR    ( SPA-GMN-FILE2       =   "1" OR  "2" )
+                       IF   (( SPA-GMN-FILE1       =   "1" OR  "2" ) AND
+                             ( SPA-GMN-DATAKBN1-VALUE
+                                                   =   "T" OR
+                               SPA-GMN-DATAKBN2-VALUE
+                                                   =   "T"         )   )
+                       OR   (( SPA-GMN-FILE2       =   "1" OR  "2" ) AND
+                             ( SPA-GMN-DATAKBN1-VALUE
+                                                   =   "T" OR
+                               SPA-GMN-DATAKBN3-VALUE
+                                                   =   "T"         )   )
                            MOVE    SPACE               TO  SPA-GID1-FLG
                            MOVE    "2001"              TO  SPA-GIDCD
                            GO  TO  330-GID1-SET-EXT
