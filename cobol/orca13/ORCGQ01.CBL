@@ -5432,8 +5432,6 @@
       *
            PERFORM 5012-CUR-SKIP-SEC
       *
-           DISPLAY "BF SPA-GMN-Q01-CUR = " SPA-GMN-Q01-CUR
-      *
            EVALUATE    SPA-GMN-Q01-CUR
       *
       *    ¿ÇÎÅÇ¯·îÆü
@@ -5644,9 +5642,6 @@
            WHEN   403
                MOVE  "KMK3"        TO  MCP-WIDGET
            END-EVALUATE
-      *
-           DISPLAY "SPA-GMN-Q01-CUR = " SPA-GMN-Q01-CUR
-           DISPLAY "MCP-WIDGET      = " MCP-WIDGET
       *
            .
        5001-MAPCUR-EXT.
