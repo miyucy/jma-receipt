@@ -76,6 +76,7 @@
            03  FLG-TENSU                           PIC 9(01).
            03  FLG-SP                              PIC 9(01).
            03  FLG-LINE                            PIC 9(01).
+           03  FLG-MINUS                           PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -315,6 +316,9 @@
             03 CONST-KENSACOMMENT-R        REDEFINES
                                            CONST-KENSACOMMENT-VAL.
                 05  CONST-KENSACOMMENT     PIC X(50)   OCCURS  8.
+      *    ÌôºÞÎÁÄþ¸º
+           03  CONST-TEIGEN                PIC X(09)   VALUE
+               "630010002".
       *          
       *    ¥¹¥ÑÎÎ°è ¥ï¡¼¥¯
            COPY    "COMMON-SPA"
@@ -1741,9 +1745,16 @@
                        MOVE   TNS-CDKBN-KOUBAN
                                        TO  SRT-SRYACCT-CDKBN-KOUBAN
                                                           (SRT-IDX1)
-                       MOVE   TNS-KOUHYOJYUNNUM
+                       IF    (  ACCT-SRYKBN    =   "21" )
+                        AND  (  TNS-SRYCD      =   CONST-TEIGEN )
+                           MOVE   ALL "9"
                                        TO  SRT-SRYACCT-KOUHYOJYUNNUM
                                                           (SRT-IDX1)
+                       ELSE
+                           MOVE   TNS-KOUHYOJYUNNUM
+                                       TO  SRT-SRYACCT-KOUHYOJYUNNUM
+                                                          (SRT-IDX1)
+                       END-IF
       *
                    END-IF
                END-IF
@@ -1758,7 +1769,7 @@
                PERFORM VARYING SRT-IDX2    FROM    SRT-STIDX   BY  -1
                        UNTIL ( SRT-IDX2    <   1 )
                           OR ( SRT-SRYACCT-KEY (1001)
-                                       >   SRT-SRYACCT-KEY (SRT-IDX2) )
+                                       >=  SRT-SRYACCT-KEY (SRT-IDX2) )
                        MOVE    SRT-SRYACCT-OCC (SRT-IDX2)
                                    TO  SRT-SRYACCT-OCC (SRT-IDX2 + 1)
                END-PERFORM
@@ -1879,6 +1890,7 @@
            END-IF
       *
            MOVE    ZERO                TO  CNT-HOUSRYACT
+           MOVE    ZERO                TO  FLG-MINUS
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
            MOVE    ZERO                TO  FLG-SRYACT
@@ -1943,6 +1955,10 @@
                        UNTIL ( IDX9                >  5    )
                         OR   ( WRK-SRYACT-MAX      >   500 )
                         OR   ( SRY-SRYCD (IDX9)    =   SPACE )
+      *
+                   IF    ( SRY-SRYCD (IDX9)    =   CONST-TEIGEN )
+                       MOVE    1           TO  FLG-MINUS
+                   END-IF
       *
       *            ¼«Èñ¤Î»þ¡¢¶â³Û¤òÉ½¼¨
                    IF    ( SRY-SRYKBN  =   "95"  OR  "96" )
@@ -2194,6 +2210,13 @@
            MOVE    1               TO  WRK-PNT
            MOVE    SPACE           TO  WRK-TENSUKAISU
            MOVE    ACCT-ZAITEN     TO  WRK-STR-LEFT-ZX99
+      *
+           IF    ( FLG-MINUS       NOT =   ZERO )
+               STRING  "¢¥"            DELIMITED   BY  SIZE
+               INTO    WRK-TENSUKAISU
+               WITH    POINTER WRK-PNT
+               END-STRING
+           END-IF
       *
            PERFORM 800-STR-HIDARIZUME-HEN-SEC
            STRING  WRK-STR-LEFT        DELIMITED   BY  SPACE
