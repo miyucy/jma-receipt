@@ -222,6 +222,7 @@
            03  FLG-RIHTEI           PIC 9(01).
       *
            03  FLG-TEISEI           PIC 9(01).
+           03  FLG-MOD-FLG           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1823,7 +1824,13 @@
                        PERFORM                 3002-PARA-SET-SEC
       *                画面用スパ編集処理
                        PERFORM                     310-SPA-GMNSET-SEC
+      *                ワーク診療行為クリア
+                       MOVE    1                   TO  FLG-MOD-FLG
+                       PERFORM 4900-WKSRYACT-CLEAR-SEC
                    ELSE
+      *                ワーク診療行為クリア
+                       MOVE    2                   TO  FLG-MOD-FLG
+                       PERFORM 4900-WKSRYACT-CLEAR-SEC
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
       *
@@ -1876,6 +1883,10 @@
                    IF      SPA-KID1-FLG        =   "OK"
       *                内容置換え
                        PERFORM 410132-SAIHENSYU-SEC
+                   ELSE
+      *                ワーク診療行為クリア
+                       MOVE    2                   TO  FLG-MOD-FLG
+                       PERFORM 4900-WKSRYACT-CLEAR-SEC
                    END-IF
       *        中途終了時刷確認
                WHEN    "0117"
@@ -3769,6 +3780,10 @@
       *****************************************************************
        41010-PTNUM-SYORI-SEC           SECTION.
       *
+           IF      SPA-PTID        NOT =   ZERO
+      *        ワーク診療行為クリア
+               PERFORM 4900-WKSRYACT-CLEAR-SEC
+           END-IF
            MOVE    ZERO                TO  SPA-GMN-CUR
            MOVE    1                   TO  FLG-GMN-INIT
       *    ＳＰＡクリア処理
@@ -4372,6 +4387,10 @@
       *****************************************************************
        410132-SAIHENSYU-SEC         SECTION.
       *
+      *    ワーク診療行為クリア
+           MOVE    1                   TO  FLG-MOD-FLG
+           PERFORM 4900-WKSRYACT-CLEAR-SEC
+      *
       *    スパ共通編集処理
            PERFORM                     310-SPA-SET-SEC
       *
@@ -4463,6 +4482,13 @@
            IF      SPA-SYORIFLG        =   ZERO
                MOVE    SPACE               TO  SPA-HKNCOMBINUM
                MOVE    SPACE               TO  SPA-DRCD
+      *        診療内容を残さない時、展開中のクリア
+               IF      SPA-KID1-FLG        =   "OK"
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO            TO  FLG-MOD-FLG
+                   PERFORM 4900-WKSRYACT-CLEAR-SEC
+               END-IF
            END-IF
       *
            MOVE    SPA-SCR-REC         TO  HZN-SCR-REC
@@ -8136,6 +8162,9 @@
                                        TO  SPA-DOUJI-RENNUM
            MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
            MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
+      *    入院が存在するかのチェック
+           PERFORM 410101-NYUINRRK-CHK-SEC
+      *
       *    診療科
            MOVE    SPA-NAI-RRK-SRYKA(SPA-NAI-DOSELNUM)
                                        TO  SPA-SRYKA
@@ -8149,9 +8178,6 @@
       *
       *    訂正処理
            MOVE    1                   TO  SPA-SYORIFLG
-      *
-      *    入院が存在するかのチェック
-           PERFORM 410101-NYUINRRK-CHK-SEC
       *
       *    ＳＰＡ編集処理
            INITIALIZE                  SPA-SCR-REC
@@ -8376,6 +8402,10 @@
       *****************************************************************
        220-CLEAR-SYORI-SEC            SECTION.
       *
+           IF      SPA-GMN-PTID    NOT =   ZERO
+      *        ワーク診療行為クリア
+               PERFORM 4900-WKSRYACT-CLEAR-SEC
+           END-IF
       *
            INITIALIZE              SPA-SCR-REC
       *
@@ -8384,6 +8414,66 @@
       *
            .
        220-CLEAR-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ワーク診療行為クリア処理
+      *****************************************************************
+       4900-WKSRYACT-CLEAR-SEC             SECTION.
+      *
+           INITIALIZE                  WKSRYACT-REC
+           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+           MOVE    SPA-PTID            TO  WKSRY-PTID
+      *
+           MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
+               PERFORM 970-WKSRYACT-READ-SEC
+           ELSE
+               INITIALIZE                  WKSRYACT-REC
+               MOVE    1               TO  FLG-WKSRYACT
+           END-IF
+           PERFORM
+               UNTIL   FLG-WKSRYACT    =   1
+               EVALUATE    FLG-MOD-FLG
+                   WHEN    1
+      *                展開中止
+                       IF      WKSRY-MOD-FLG       =   9
+                           MOVE    ZERO                TO  WKSRY-MOD-FLG
+                       END-IF
+                   WHEN    2
+      *                前の展開
+                       IF      WKSRY-MOD-FLG       =   9
+                           MOVE    1                   TO  WKSRY-MOD-FLG
+                       ELSE
+                           IF      WKSRY-MOD-FLG       =   1
+                               MOVE    ZERO            TO  WKSRY-MOD-FLG
+                           END-IF
+                       END-IF
+                   WHEN    0
+                       MOVE    ZERO                TO  WKSRY-MOD-FLG
+               END-EVALUATE
+      *
+               MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "WKSRYACT-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+               MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
+               PERFORM 970-WKSRYACT-READ-SEC
+           END-PERFORM
+      *
+           .
+       4900-WKSRYACT-CLEAR-EXT.
            EXIT.
       *
       *****************************************************************
@@ -12666,6 +12756,9 @@
       *    排他制御解除処理
       *****************************************************************
        990-LOCK-OUT-SEC         SECTION.
+      *
+      *    ワーク診療行為クリア
+           PERFORM 4900-WKSRYACT-CLEAR-SEC
       *
       *    排他制御解除処理
            MOVE    2                   TO  SLOCK-MODE
