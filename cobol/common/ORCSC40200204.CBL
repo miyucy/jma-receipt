@@ -402,12 +402,12 @@
        100115-SANSO-CHK-SEC           SECTION.
       *
       *
-           SET     TBL-SAN             TO  1
-           SEARCH      TBL-SANSO-OCC   VARYING   TBL-SAN
+           SET     TBL-SANSO           TO  1
+           SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
                    AT  END
                        MOVE    ZERO            TO  FLG-SANSO-OK
                    WHEN    WRK-SRYCD       =   TBL-SANSO-SRYCD
-                                                           (TBL-SAN)
+                                                           (TBL-SANSO)
                        MOVE    1               TO  FLG-SANSO-OK
            END-SEARCH 
       *

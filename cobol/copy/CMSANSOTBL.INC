@@ -43,7 +43,7 @@
            03  FILLER              PIC X(09)   VALUE   "739270000".
       *
        01  TBL-SANSO-AREA-R        REDEFINES   TBL-SANSO-AREA.
-           03  TBL-SANSO-OCC       OCCURS   8  INDEXED   TBL-SAN.
+           03  TBL-SANSO-OCC       OCCURS   8  INDEXED   TBL-SANSO.
                05  TBL-SANSO-SRYCD     PIC X(09).
       *    ª¿¡«•’•È•∞
        01  FLG-SANSO-OK                PIC 9(01).
