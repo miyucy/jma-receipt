@@ -376,6 +376,7 @@ DB_files = \
 	tbl_ptkohftn.db \
 	view_I001.db \
 	view_Q001.db \
+	view_Q002.db \
 	view_bd001.db \
 	view_bd002.db 
 
