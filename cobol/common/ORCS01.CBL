@@ -3167,6 +3167,8 @@
            MOVE     SYUTTL-KEY                TO  SYU-KEY.
       *ø«Œ≈∆¸
            MOVE     SYUTTL-SRYYMD             TO  SYU-SRYYMD.
+      * ›∏±¡»πÁ§ª»÷πÊ
+           MOVE     SYUTTL-HKNCOMBINUM        TO  SYU-HKNCOMBINUM.
       *ºÁ ›∏±°›…È√¥æ Û
            MOVE     SYUTTL-SYUHKNNUM          TO  SYU-SYUHKNNUM.
            MOVE     SYUTTL-SYUHKNFTNMONEY     TO  SYU-SYUHKNFTNMONEY.
