@@ -575,9 +575,9 @@
       *                ÇÑ´þ¿ôÎÌ
                        MOVE    1               TO  TBL-HAIKI
                                                           (IDX-T IDX-D)
-                       COMPUTE WRK-HAIKI-SURYO =   WRK-SURYO-9
-                                               -  (SRY-SRYSURYO(IDX2)
-                                               *   ACCT-DAY (1 IDX-D))
+                       COMPUTE WRK-HAIKI-SURYO =  (WRK-SURYO-9
+                                               -   SRY-SRYSURYO(IDX2))
+                                               *   ACCT-DAY (1 IDX-D)
                        ADD     WRK-HAIKI-SURYO TO  TBL-HAIKI-SURYO
                                                           (IDX-T IDX-D)
                    END-IF
@@ -635,9 +635,9 @@
       *                ÇÑ´þ¿ôÎÌ
                        MOVE    1               TO  TBL-HAIKI2
                                                           (IDX-T IDX-D)
-                       COMPUTE WRK-HAIKI-SURYO =   WRK-SURYO-9
-                                               -  (SRY-SRYSURYO(IDX2)
-                                               *   ACCT-DAY (1 IDX-D))
+                       COMPUTE WRK-HAIKI-SURYO =  (WRK-SURYO-9
+                                               -   SRY-SRYSURYO(IDX2))
+                                               *   ACCT-DAY (1 IDX-D)
                        ADD     WRK-HAIKI-SURYO TO  TBL-HAIKI-SURYO2
                                                           (IDX-T IDX-D)
                    END-IF
@@ -684,9 +684,9 @@
       *                ÇÑ´þ¿ôÎÌ
                        MOVE    1               TO  TBL-HAIKI2
                                                           (IDX-T IDX-D)
-                       COMPUTE WRK-HAIKI-SURYO =   WRK-SURYO-9
-                                               -  (SRY-SRYSURYO(IDX2)
-                                               *   ACCT-DAY (1 IDX-D))
+                       COMPUTE WRK-HAIKI-SURYO =  (WRK-SURYO-9
+                                               -   SRY-SRYSURYO(IDX2))
+                                               *   ACCT-DAY (1 IDX-D)
                        ADD     WRK-HAIKI-SURYO TO  TBL-HAIKI-SURYO3
                                                           (IDX-T IDX-D)
                    END-IF
