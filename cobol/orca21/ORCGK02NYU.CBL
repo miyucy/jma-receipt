@@ -6128,13 +6128,13 @@
       *    剤分離処理
            INITIALIZE                  ORCSC93AREA
            MOVE    "K02N"              TO  LNK-SC93-PG
-      *    小児科外来診療科算定有り
-           MOVE    SPA-SYONIKA-ARI2    TO  LNK-SC93-SYONIKA-ARI2
+      *!   小児科外来診療科算定有り
+      *    MOVE    SPA-SYONIKA-ARI2    TO  LNK-SC93-SYONIKA-ARI2
       *    寝たきり在宅科算定有り
-           IF      (SPA-NETAKIRI-ARI   NOT =   ZERO  )  OR
-                   (SPA-NETAKIRI-ARI2  NOT =   ZERO  )
-               MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
-           END-IF
+      *    IF      (SPA-NETAKIRI-ARI   NOT =   ZERO  )  OR
+      *            (SPA-NETAKIRI-ARI2  NOT =   ZERO  )
+      *        MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
+      *!   END-IF
            CALL    "ORCSC93"           USING
                                        MCPAREA
                                        SPA-SCR-REC
@@ -6145,16 +6145,16 @@
                GO      TO      5101-TBLSAIHEN-EXT
            END-IF
       *
-      *    特定診療チェック
-           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-           INITIALIZE                      ORCSC10SAREA
-           MOVE    "7"                 TO  LNK-SC10S-SYORI
-           CALL    "ORCSC10S"          USING
-                                       ORCSC10SAREA
-                                       SPA-AREA
-                                       SPA-SCR-REC
-                                       SPA-K02
-           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *!   特定診療チェック
+      *    MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *    INITIALIZE                      ORCSC10SAREA
+      *    MOVE    "7"                 TO  LNK-SC10S-SYORI
+      *    CALL    "ORCSC10S"          USING
+      *                                ORCSC10SAREA
+      *                                SPA-AREA
+      *                                SPA-SCR-REC
+      *                                SPA-K02
+      *!   MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      5101-TBLSAIHEN-EXT
            END-IF
@@ -6595,7 +6595,7 @@
       *    処理フラグ
            MOVE    SPA-SYORIFLG        TO  LNK-ORCSC-SYORIFLG
       *    初診フラグ
-      *    MOVE    SPA-SYOSIN          TO  LNK-ORCSC-SYOSIN2
+           MOVE    SPA-SYOSIN          TO  LNK-ORCSC-SYOSIN2
       *    初診フラグ（初診で、履歴の無い時、’１’）
       *    IF      (SPA-SYOSIN         =   1   )  AND
       *            (SPA-GMN-MAX1       =   ZERO)  AND
@@ -6718,6 +6718,8 @@
                                            WRK-SCR-REC
                                            SPA-AREA
                    ADD     1               TO  SPA-SRYKBN-CNT (01)
+      *            初診フラグ
+                   MOVE    LNK-ORCSC-SYOSIN2   TO  SPA-SYOSIN
       *            診察の時間加算の時、全体へ
                    MOVE    LNK-ORCSC-TIMEFLG   TO  WRK-TIMEFLG
       *

@@ -105,6 +105,7 @@
            03  FLG-ARI3            PIC 9(01).
       *
            03  FLG-SYOSIN          PIC 9(01).
+           03  FLG-SYOSIN2         PIC 9(01).
       *
            03  FLG-ROUMANSEI       PIC 9(01).
       *    小児科外来診療科算定
@@ -1789,9 +1790,8 @@
                GO      TO      200-SYOSIN-SET-EXT
            END-IF
       *
-      *
       *    入院日の時、初診料のみ算定する
-           IF      SPA-K02N-NYUINYMD   =   SPA-NAI-SRYYMD
+           IF      SPA-K02N-NYUINYMD(1:6)  =   SPA-NAI-SRYYMD(1:6)
                IF      SPA-SYOSIN          =   1
                    CONTINUE
                ELSE
@@ -2907,7 +2907,8 @@
            END-IF
       *
       *    入院日の時、初診料のみ算定する
-           IF      SPA-K02N-NYUINYMD   =   SPA-NAI-SRYYMD
+           IF     (SPA-NYUGAIKBN       =   "1" )
+      ************(SPA-K02N-NYUINYMD   =   SPA-NAI-SRYYMD
                GO      TO      2009-RSIHKN-SET-EXT
            END-IF
           IF      WRK-SRYCD(1:2)      =   "83"
@@ -3976,6 +3977,7 @@
       *****************************************************************
        1010-SINSATU-HEN-SEC              SECTION.
       *
+           MOVE    ZERO                TO  FLG-SYOSIN2
            MOVE    ZERO                TO  FLG-GAI
            MOVE    ZERO                TO  FLG-DUMMY
            MOVE    ZERO                TO  FLG-SINSATU-ARI
@@ -4028,7 +4030,8 @@
                    IF      FLG-ARI             =   1
       *                初診
                        IF      WRK-KBN             =   "F"
-                           MOVE    1               TO  SPA-SYOSIN
+      ******************   MOVE    1               TO  SPA-SYOSIN
+                           MOVE    1               TO  FLG-SYOSIN2
                        END-IF
       *                外来管理加算
                        IF      WRK-KBN             =   "G"
@@ -4084,9 +4087,10 @@
            END-IF
       *    初診料算定で、既に当日受診がある時は対象
            IF     (LNK-SC10S-SYORI     =   "W"  )  AND
-                  (SPA-SYOSIN          =   1    )
+                  (FLG-SYOSIN2         =   1    )
       *             初診料以外の時、自動発生あり
                IF      SPA-SRYYMD      NOT =   SPA-LSTYMD
+                   MOVE    FLG-SYOSIN2         TO  SPA-SYOSIN
                    GO      TO      1010-SINSATU-HEN-EXT
                ELSE
                    MOVE    ZERO            TO  SPA-SYOSIN
