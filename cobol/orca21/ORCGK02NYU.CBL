@@ -1300,6 +1300,7 @@
                    PERFORM 3002-PARA-SET-SEC
       *            特定疾患判定のクリア
                    MOVE    ZERO            TO  SPA-TOKUTEIFLG
+                   MOVE    ZERO            TO  SPA-CHOZAI-CHK
       *            診療行為、計計算処理、編集
       *            MOVE    "2"             TO  FLG-TOROKU
                    MOVE    SPACE           TO  FLG-TOROKU
@@ -1320,6 +1321,7 @@
                    IF      SPA-MOTOPG      =   "K03"
       *                特定疾患判定のクリア
                        MOVE    ZERO            TO  SPA-TOKUTEIFLG
+                       MOVE    ZERO            TO  SPA-CHOZAI-CHK
                    END-IF
                    PERFORM 3003-GMN-HEN-SEC
            END-EVALUATE
@@ -8215,6 +8217,9 @@
                                        SPA-AREA
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
+               IF      LNK-ORCSC-KBN       =   "3"
+                   MOVE    SPA-WORK        TO  SPA-K01KYOUTU
+               END-IF
            END-IF
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD       NOT =   SPACE )

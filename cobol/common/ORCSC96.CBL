@@ -1024,6 +1024,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "２回以上の算定になります。"
                                        TO  SPA-ERRMSG(23:)
+               WHEN    "K017"
+                   MOVE    "警告！既に外来で調剤技術基本料が算定済み"
+                                       TO  SPA-ERRMSG
+                   MOVE    "です。自動算定しません。"
+                                       TO  SPA-ERRMSG(41:)
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG

@@ -1695,12 +1695,36 @@
                                                          (02 IDXS)
                        MOVE    "27"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
+                   ELSE
+      *                病院で外来で算定済みかの判断
+                       IF      WRK-SRYCD       =   "120001710" 
+                           PERFORM 300211-CHOZAI-CHK-SEC
+                       END-IF
                    END-IF
                END-IF
            END-IF
       *
            .
        30021-NYUIN-INNAI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来の調剤技術基本料算定チェック処理
+      *****************************************************************
+       300211-CHOZAI-CHK-SEC           SECTION.
+      *
+           MOVE    "120001810"         TO  WRK-SRYCD
+           PERFORM 3001-SANTEI-CHK-SEC
+           IF      FLG-ERR             =   1
+               IF      SPA-CHOZAI-CHK      =   ZERO
+                   MOVE    1               TO  SPA-CHOZAI-CHK
+                   MOVE    "K017"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+           .
+       300211-CHOZAI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
