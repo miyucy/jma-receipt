@@ -310,14 +310,23 @@
       *    ÆýÍÄ»ù²Ã»»
            03  CONS-NYUKSN1        PIC X(09) VALUE "111000370".         
            03  CONS-NYUKSN2        PIC X(09) VALUE "111011470".
-      *    ÅÅÏÃÅùºÆ¿Ç¡Ê£²²óÌÜ°Ê¹ß¤Î¥³¡¼¥É¡Ë
-      **>  03  CONS-SAISHIN-A1     PIC X(09) VALUE "112009850".
-      **>  03  CONS-SAISHIN-A2     PIC X(09) VALUE "112009950".
-      **>  03  CONS-SAISHIN-A3     PIC X(09) VALUE "112010050".
-      **>  03  CONS-SAISHIN-A4     PIC X(09) VALUE "112012750".
-      *    ºÆ¿Ç¡Ê£³·îÄ¶¡Ë¡Ê£µ²óÄ¶¡Ë
-           03  CONS-SAISHIN-B1     PIC X(09) VALUE "101120060".
+      *    ºÆ¿Ç¡Ê£³·îÄ¶¡Ë¡Ê£µ²óÄ¶¡Ë¤Ê¤É
+      *    ¡Ê£´£¶£µ¤Ë´Ø·¸¤¢¤ê¡Ë
+           03  CONS-SAISHIN-A1     PIC X(09) VALUE "101120060".
+           03  CONS-SAISHIN-A2     PIC X(09) VALUE "112001210".
+           03  CONS-SAISHIN-A3     PIC X(09) VALUE "112701110".
+           03  CONS-SAISHIN-A4     PIC X(09) VALUE "112000970".
+           03  CONS-SAISHIN-A5     PIC X(09) VALUE "112001070".
+           03  CONS-SAISHIN-A6     PIC X(09) VALUE "112006970".
+           03  CONS-SAISHIN-A7     PIC X(09) VALUE "112007070".
+           03  CONS-SAISHIN-A8     PIC X(09) VALUE "112001310".
+           03  CONS-SAISHIN-A9     PIC X(09) VALUE "112701210".
+           03  CONS-SAISHIN-A10    PIC X(09) VALUE "112001110".
+           03  CONS-SAISHIN-A11    PIC X(09) VALUE "112701010".
+           03  CONS-SAISHIN-A12    PIC X(09) VALUE "112001410".
+           03  CONS-SAISHIN-A13    PIC X(09) VALUE "112701310".
       *    ³°Íè´ÉÍý²Ã»»¡Ê£³·îÄ¶¡Ë¡Ê£µ²óÄ¶¡Ë
+      *    ¡Ê£´£¶£°¤Ë´Ø·¸¤¢¤ê¡Ë
            03  CONS-GAIRAI         PIC X(09) VALUE "101120090".
       *    Ï«ºÒ¼«ÇåÀÕ´Ø·¸
            03  CONS-ROUSAI1    PIC X(09)   VALUE   "101110010".
@@ -854,13 +863,19 @@
                                                 CONS-KEIZOKU2
                         MOVE   "1"      TO    RECE41-KEIZOKU-PRTKBN
                    END-IF
-      **>          IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN-A1  OR
-      **>                                       CONS-SAISHIN-A2  OR
-      **>                                       CONS-SAISHIN-A3  OR
-      **>                                       CONS-SAISHIN-A4  
-      **>               MOVE   "1"      TO    RECE41-SAISHIN-PRTKBN
-      **>          END-IF
-                   IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN-B1  
+                   IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN-A1   OR
+                                                CONS-SAISHIN-A2   OR
+                                                CONS-SAISHIN-A3   OR
+                                                CONS-SAISHIN-A4   OR
+                                                CONS-SAISHIN-A5   OR
+                                                CONS-SAISHIN-A6   OR
+                                                CONS-SAISHIN-A7   OR
+                                                CONS-SAISHIN-A8   OR
+                                                CONS-SAISHIN-A9   OR
+                                                CONS-SAISHIN-A10  OR
+                                                CONS-SAISHIN-A11  OR
+                                                CONS-SAISHIN-A12  OR
+                                                CONS-SAISHIN-A13    
                         MOVE   "1"      TO    RECE41-SAISHIN-PRTKBN2
                    END-IF
                    IF   SRY-SRYCD(IDX2)   =     CONS-GAIRAI 
