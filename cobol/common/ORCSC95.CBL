@@ -995,7 +995,8 @@
       *        最終受診日と科をが同じ時、保険組合せを決定する
                IF      (JYURRK-SRYYMD      =   SPA-LSTYMD )  AND
                        (JYURRK-SRYKA       =   SPA-LSTSRYKA) AND
-                       (SPA-HKNCOMBINUM    =   SPACE      )
+                       (SPA-HKNCOMBINUM    =   SPACE      )  AND
+                       (JYURRK-HKNCOMBINUM NOT =   "9999"  )
                    MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM
                END-IF
       *
@@ -1342,6 +1343,9 @@
                    UNTIL       IDX     >   SPA-GMN-MAX1
       *        診療日より後の履歴は対象外
                IF      SPA-SRYYMD      >=  SPA-NAI-RRKYMD (IDX)
+      *        包括保険は対象外
+                 AND   (SPA-NAI-RRK-HKNCOMBI(IDX)  NOT =   "9999")
+      *
       *            最後の受診履歴を対象とする（診療日以前のもの）
                    IF    ( SPA-SRYKA           =   SPACE  )  OR
                          ((SPA-SRYKA       NOT =   SPACE  )  AND
@@ -1373,6 +1377,7 @@
       *
       *        診療日の受診内容を保存
                IF      SPA-SRYYMD          =   SPA-NAI-RRKYMD (IDX)
+                AND   (SPA-NAI-RRK-HKNCOMBI(IDX)   NOT =   "9999")
                    PERFORM 100111-DOUJI-JYURRK-SEC
                END-IF
       *
@@ -1811,9 +1816,11 @@
       *
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "1"                 TO  ORCSHKN-KBN
+           MOVE    "1"                 TO  ORCSHKN-KBN2
            CALL    "ORCSHKNSET"        USING
                                        SPA-AREA
                                        ORCSHKNSETAREA
+      *
       *
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   ORCSHKN-HKN-MAX

@@ -1187,9 +1187,6 @@
       *    入力コードマスター読込
       *****************************************************************
        930-INPUTCD-READ-SEC         SECTION.
-      *TEST
-           DISPLAY "C97 INPUTCD-READ:" ICD-INPUTCD
-      *TEST
       *
            IF      WRK-CD-MCNT         =   20
                MOVE    "INPUTCD-KEY2"      TO  WRK-PATH

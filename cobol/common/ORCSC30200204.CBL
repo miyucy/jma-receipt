@@ -1152,6 +1152,10 @@
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *----(01.00.01) LINE ADD START ----------------------------------
+      *    包括まとめ入力は以下対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      200-ALL-SYORI-EXT
+           END-IF
       *
            MOVE    ZERO                TO  FLG-TENTEKI
            MOVE    ZERO                TO  FLG-DOUCHU
@@ -1223,9 +1227,7 @@
       *    手術がある時、注射の手技料は警告とする
            IF     (FLG-SYUJUTU         =   1  )  AND
                   (IDX-CHU             >   ZERO )
-               IF     (WRK-COM-KZMFLG (IDX-CHU)    =   SPACE )
-                  AND (LNK-ORCSC-KEI-IDX           =   ZERO )
-                   MOVE    IDX-CHU         TO  LNK-ORCSC-KEI-IDX
+               IF      WRK-COM-KZMFLG (IDX-CHU)    =   SPACE
                    MOVE    "K140"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-KZMFLG
                                                            (IDX-CHU)
@@ -1241,6 +1243,11 @@
       *    自動算定処理
       *****************************************************************
        300-AUTO-SYORI-SEC              SECTION.
+      *
+      *    包括まとめ入力は以下対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      300-AUTO-SYORI-EXT
+           END-IF
       *
       *    Ｋ０２時、自動発生する
            IF      LNK-ORCSC-PG        =   "K02"

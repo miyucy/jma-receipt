@@ -438,6 +438,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "あります。"
                                        TO  SPA-ERRMSG(37:)
+               WHEN    "0096"
+                   MOVE    "検査逓減になります。剤を分けて入力"
+                                       TO  SPA-ERRMSG
+                   MOVE    "して下さい"
+                                       TO  SPA-ERRMSG(35:)
                WHEN    "0110"
                    MOVE    "他保険にて診察料算定済のコメントは"
                                        TO  SPA-ERRMSG
@@ -945,6 +950,9 @@
                                        TO  SPA-ERRMSG
                    MOVE    "患者登録で保険組合せを登録し直して下さい。"
                                        TO  SPA-ERRMSG(29:)
+               WHEN    "1033"
+                   MOVE    "訂正で包括まとめ入力の変更はできません。"
+                                       TO  SPA-ERRMSG
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG

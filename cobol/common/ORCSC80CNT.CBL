@@ -412,6 +412,8 @@
       *
                IF     (ACCT-ZAITEN         =   ZERO )  OR
                       (ACCT-ZAIKAISU       =   ZERO )
+      *          包括まとめ入力はリハビリ対象外
+                 OR   (ACCT-HKNCOMBI       =   "9999")
                    CONTINUE
                ELSE
       *            診療行為マスター編集
@@ -466,9 +468,9 @@
                    MOVE    SRY-SRYCD(IDX2)     TO  WRK-SRYCD
                    PERFORM 20021-RIGAKU-TBL-SEC
                    IF      WRK-RIGAKU-RYO  NOT =   SPACE
-      **               IF      WRK-RIGAKU-RYO-A    NOT =   SPACE
+      **************   IF      WRK-RIGAKU-RYO-A    NOT =   SPACE
       **                  PERFORM 2004-SOUKI-HENSYU-SEC
-      **               END-IF
+      **************   END-IF
                        MOVE    WRK-RIGAKU-RYO      TO  WRK-RIGAKU-RYO-A
                    END-IF
       *            加算判定

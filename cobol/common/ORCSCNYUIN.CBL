@@ -445,6 +445,13 @@
                PERFORM 200-JYURRK-SYORI-SEC
            END-IF
       *
+      *    包括まとめの時、以下対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+      *        ワーク診療行為マスタ−が存在した時、削除する
+               PERFORM 400-WKSRYACT-DEL-SEC
+               GO      TO      100-SAKUSEI-SYORI-EXT
+           END-IF
+      *
       *    当月の調剤料を算定しなおす
            INITIALIZE                  ORCSCHOZAIAREA
            MOVE    "1"                 TO  ORCSCHO-KBN

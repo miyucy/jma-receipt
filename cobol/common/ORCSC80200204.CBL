@@ -554,6 +554,12 @@
       *****************************************************************
        100112-RIGAKU-CHK-SEC            SECTION.
       *
+      *    包括まとめ入力は対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      100112-RIGAKU-CHK-EXT
+           END-IF
+      *
+      *
            SET     TBL-SAN             TO  1
            SEARCH      TBL-SANTEI-OCC  VARYING   TBL-SAN
                    AT  END
@@ -594,6 +600,12 @@
       *****************************************************************
        100113-SEISIN-CHK-SEC            SECTION.
       *
+      *    包括まとめ入力は対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      100113-SEISIN-CHK-EXT
+           END-IF
+      *
+      *
            IF      WRK-COM-INPUTCD (IDX-Z) =   "180012210"  OR
                                                "180012310"  OR
                                                "180020410"  OR
@@ -627,10 +639,6 @@
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
            MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYOYMD
-      *TEST
-           DISPLAY "C80 LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
-                   ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
-      *TEST
       *
       *
            EVALUATE    WRK-COM-INPUTCD(IDX-Z)

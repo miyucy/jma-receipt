@@ -800,6 +800,12 @@
                END-IF
            END-IF
       *
+      *    包括まとめ入力は以下対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      10011-SYUGISYORI-EXT
+           END-IF
+      *
+      *
       *----(01.00.02) LINE ADD START ----------------------------------
       *    寝たきり老人在宅総合診療科を算定時、加算を追加
            IF      WRK-COM-INPUTCD (IDX-Z)     =   "114701210"  OR
@@ -2174,6 +2180,11 @@
       *****************************************************************
        10018-COMMENT-SEC                  SECTION.
       *
+      *    包括まとめ入力は以下対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      10018-COMMENT-EXT
+           END-IF
+      *
       *    特定薬剤治療管理初回算定コメントがあれば初回とする
            IF     (WRK-COM-INPUTCD (IDX-Z) =   "840000038" ) AND
                   (LNK-ORCSC-TOKTEI-YMD    NOT =   SPACE   )
@@ -2556,6 +2567,11 @@
       *    重複チェック
            PERFORM 2000-JYUFUKU-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      200-ALL-SYORI-EXT
+           END-IF
+      *
+      *    包括まとめ入力は対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      200-ALL-SYORI-EXT
            END-IF
       *

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  03/05/12  自賠責割合変更追加
       * 01.00.02     NACL-多々納  03/07/29  労災割合変更追加
+      * 01.00.03     NACL-多々納  04/01/06  包括まとめ入力追加
       *****************************************************************
       *
       *
@@ -107,6 +108,8 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *    チェック機能制御
+           COPY  "CPSK1008.INC".
       *
       *    労災医療機関情報
            COPY    "CPSK4001.INC".
@@ -173,6 +176,11 @@
       *
       *    保険組合せ編集処理
            PERFORM 100-HKNCOMBI-HENSYU-SEC
+      *
+      *    包括保険追加編集
+           IF      ORCSHKN-KBN2        =   "1"
+               PERFORM 400-HOUKATU-HENSYU-SEC
+           END-IF
       *
            IF      ORCSHKN-HKN-MAX     >   ZERO
       *        今回対象保険
@@ -561,6 +569,8 @@
                MOVE    ZERO                TO  WRK-CNT-HKN2
                IF      (SPA-SRYYMD     >=  ORCSHKN-NAI-TEKSTYMD(IDX))
                    AND (SPA-SRYYMD     <=  ORCSHKN-NAI-TEKEDYMD(IDX))
+                   AND (ORCSHKN-GMN-HKNCOMBINUM (IDX)
+                                       NOT =   "9999"    )
       *
                    IF      ORCSHKN-NAI-HKNNUM (IDX)    NOT =   SPACE
                        ADD     1                   TO  WRK-CNT-HKN2
@@ -630,9 +640,16 @@
                MOVE    1               TO  FLG-JYURRK
            END-IF
       *
-           IF      FLG-JYURRK          =   ZERO
-               MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBINUM
-           END-IF
+           PERFORM UNTIL    FLG-JYURRK     =   1
+      *        包括保険以外であること
+               IF      JYURRK-HKNCOMBINUM  NOT =   "9999"
+                   MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBINUM
+                   MOVE    1                   TO  FLG-JYURRK
+               ELSE
+                   MOVE    "JYURRK-KEY11"      TO  ORC-DBPATH
+                   PERFORM 970-JYURRK-READ-SEC
+               END-IF
+           END-PERFORM
       *
            .
        2001-JYURRK-CHK-EXT.
@@ -706,6 +723,66 @@
       *
            .
        1002-RSI-SYSKANRI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括保険追加編集処理
+      *****************************************************************
+       400-HOUKATU-HENSYU-SEC             SECTION.
+      *
+      *    システム管理検索（チェック機能制御情報）
+           MOVE    SPACE               TO  SYS-1008-REC
+           INITIALIZE                  SYS-1008-REC
+           MOVE    "1008"              TO  SYS-1008-KANRICD
+           MOVE    "*"                 TO  SYS-1008-KBNCD
+           MOVE    SYS-1008-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1008-REC
+               INITIALIZE                  SYS-1008-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1008-REC
+           ELSE
+               MOVE    SPACE               TO  SYS-1008-REC
+               INITIALIZE                  SYS-1008-REC
+           END-IF
+      *    相互作用チェック期間
+           IF      SYS-1008-HOUKATU-FLG    =   "1"
+               CONTINUE
+           ELSE
+               GO     TO      400-HOUKATU-HENSYU-EXT
+           END-IF
+      *
+           IF      ORCSHKN-HKN-MAX     >   ZERO
+               ADD     1                   TO  ORCSHKN-HKN-MAX
+               MOVE    "9999"              TO  ORCSHKN-GMN-HKNCOMBINUM
+                                                      (ORCSHKN-HKN-MAX)
+               MOVE    "包括まとめ入力"    TO  ORCSHKN-GMN-HKNCOMBIMEI
+                                                      (ORCSHKN-HKN-MAX)
+               MOVE    ZERO                TO  ORCSHKN-NAI-TEKSTYMD
+                                                      (ORCSHKN-HKN-MAX)
+               MOVE    ALL "9"             TO  ORCSHKN-NAI-TEKEDYMD
+                                                      (ORCSHKN-HKN-MAX)
+               MOVE    "00.00.00"          TO  ORCSHKN-GMN-TEKSTYMD
+                                                      (ORCSHKN-HKN-MAX)
+               MOVE    "99.99.99"          TO  ORCSHKN-GMN-TEKEDYMD
+                                                      (ORCSHKN-HKN-MAX)
+      *
+           END-IF
+           .
+       400-HOUKATU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

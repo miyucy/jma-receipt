@@ -728,6 +728,11 @@
       *****************************************************************
        2001-SANTEI-CHK-SEC             SECTION.
       *
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      2001-SANTEI-CHK-EXT
+           END-IF
+      *
+      *
            MOVE    TNS-TENSU-REC       TO  HZN-TNS-TENSU-REC
       *    算定履歴チェック処理
            INITIALIZE                  ORCSC91AREA
@@ -974,6 +979,12 @@
       *    併用算定チェック処理
       *****************************************************************
        2005-HEIYOU-CHK-SEC           SECTION.
+      *
+      *   包括まとめ入力は以下対象外
+          IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      2005-HEIYOU-CHK-EXT
+           END-IF
+      *
       *
            IF      SPA-COM-CHKFLG (IDX-T)  =   "1"
                GO      TO      2005-HEIYOU-CHK-EXT
@@ -1703,6 +1714,11 @@
       *     労災・自賠責 チェック処理
       *****************************************************************
        20088-RSIJIB-CHK-SEC        SECTION.
+      *
+      *    包括まとめ入力は以下対象外
+          IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      20088-RSIJIB-CHK-EXT
+           END-IF
       *
       *     労災のコード
            IF     (LNK-SC92-SRYCD (1:1)    =   "1"  )  AND

@@ -382,6 +382,12 @@
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
       *
+      *        包括まとめ入力は対象外とする
+               IF     (ORCSTEN-HKNCOMBI    NOT =   "9999" )  AND
+                      (ACCT-HKNCOMBI           =   "9999" )
+                   MOVE    ZERO                TO  FLG-ZAIARI
+               END-IF
+      *
       *        回数があるもの
                IF      FLG-ZAIARI          =   1
       *            診療行為より液量集計
@@ -1177,6 +1183,8 @@
            PERFORM UNTIL       (FLG-SRYACCT         =   1       )
       *        輸血の判定
                IF      ACCT-SYUTEN1        >   ZERO
+      *        包括まとめ入力は対象外とする
+                 AND  (ACCT-HKNCOMBI   NOT =   "9999" )
                    PERFORM 30031-SRYACT-YUKETU-SEC
                ELSE
                    MOVE    1                   TO  FLG-YUKETU

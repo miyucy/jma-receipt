@@ -362,6 +362,9 @@
            PERFORM
                UNTIL       (FLG-SRYACCT         =   1       )
              IF      ACCT-YKZTEN       >   ZERO
+      *        包括まとめ入力は対象外とする
+               AND  (ACCT-HKNCOMBI NOT =   "9999" )
+      *
       *        最初の日を保存（点数マスタ検索のため）
                MOVE    01                  TO  WRK-DD
                PERFORM VARYING     IDY2    FROM    1   BY  1
@@ -512,6 +515,9 @@
            PERFORM
                UNTIL       (FLG-SRYACCT         =   1       )
                IF      ACCT-YKZTEN       >   ZERO
+      *        包括まとめ入力は対象外とする
+               AND  (ACCT-HKNCOMBI NOT =   "9999" )
+      *
       *            最初の日を保存（点数マスタ検索のため）
                    MOVE    01                  TO  WRK-DD
                    PERFORM VARYING     IDY2    FROM    1   BY  1
@@ -809,6 +815,9 @@
                UNTIL       (FLG-SRYACCT         =   1 )  OR
                            (IDX1                >=  10 )
                IF      ACCT-SYUTEN1        >   ZERO
+      *            包括まとめ入力は対象外とする
+                  AND  (ACCT-HKNCOMBI NOT =   "9999" )
+      *
                    ADD     1                   TO  IDX1
                    MOVE    ACCT-ZAINUM         TO  TBL-CHO-ZAINUM(IDX1)
                    MOVE    ACCT-SRYKA          TO  TBL-CHO-SRYKA (IDX1)
@@ -858,11 +867,16 @@
            PERFORM
                UNTIL       (FLG-SRYACCT         =   1 )  OR
                            (IDX1                >=  10 )
+      *        包括まとめ入力は対象外とする
+               IF   (ACCT-HKNCOMBI NOT =   "9999" )
+      *
                ADD     1                   TO  IDX1
                MOVE    ACCT-ZAINUM         TO  TBL-MAD-ZAINUM  (IDX1)
                MOVE    ACCT-SRYKA          TO  TBL-MAD-SRYKA   (IDX1)
                MOVE    ACCT-HKNCOMBI       TO  TBL-MAD-HKNCOMBI(IDX1)
                MOVE    ACCT-DAY-AREA       TO  TBL-MAD-DAY-AREA(IDX1)
+      *
+               END-IF
       *
                MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
                PERFORM 930-SRYACCT-READ-SEC

@@ -739,6 +739,11 @@
       *****************************************************************
        300-AUTO-SYORI-SEC              SECTION.
       *
+      *    包括まとめ入力は以下対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      300-AUTO-SYORI-EXT
+           END-IF
+      *
            IF      LNK-ORCSC-PG        =   "K02"
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *        他保険で算定済み

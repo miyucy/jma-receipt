@@ -929,6 +929,11 @@
                GO      TO      10012-SYUGI-CHK-EXT
            END-IF
       *
+      *    包括まとめ入力は対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      10012-SYUGI-CHK-EXT
+           END-IF
+      *
            MOVE    IDX-SAT             TO  IDX-Z
       *
       *****MOVE    SPACE               TO  WRK-HEN-SRYCD
@@ -2523,6 +2528,12 @@
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *
+      *    包括まとめ入力は対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      200-ALL-SYORI-EXT
+           END-IF
+      *
+      *
            MOVE    ZERO                TO  FLG-JIKASAN
            MOVE    ZERO                TO  IDX-GAI
            MOVE    ZERO                TO  IDX-CT
@@ -2840,6 +2851,12 @@
       *    自動算定処理
       *****************************************************************
        300-AUTO-SYORI-SEC                SECTION.
+      *
+      *    包括まとめ入力は対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      300-AUTO-SYORI-EXT
+           END-IF
+      *
       *
            MOVE    ZERO                TO  FLG-CTMRI
            MOVE    ZERO                TO  FLG-XSEN

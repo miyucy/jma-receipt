@@ -523,6 +523,12 @@
       *****************************************************************
        100112-SYOEN-CHK-SEC           SECTION.
       *
+      *    包括まとめ入力は以下対象外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      100112-SYOEN-CHK-EXT
+           END-IF
+      *
+      *
            SET     TBL-IDX              TO  1
            SEARCH  TBL-SYOCHI-OCC       VARYING   TBL-IDX
                    AT   END

@@ -1705,6 +1705,11 @@
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *
+      *    包括まとめ入力は以下対象外
+          IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      200-ALL-SYORI-EXT
+           END-IF
+      *
            IF      SPA-NYUGAIKBN       =   "1"
       *        入院時のチェック
                PERFORM 210-NYUIN-SYORI-SEC
@@ -2433,6 +2438,12 @@
       *    自動算定処理
       *****************************************************************
        300-AUTO-SYORI-SEC                SECTION.
+      *
+      *    包括まとめ入力は以下対象外
+          IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      300-AUTO-SYORI-EXT
+           END-IF
+      *
       *
            MOVE    ZERO                TO  IDXS
       *

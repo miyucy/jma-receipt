@@ -38,6 +38,7 @@
       * 01.00.07     NACL-多々納  03/05/12  自賠責割合変更追加
       * 01.00.08     NACL-多々納  03/09/03  公費期限チェック追加
       * 01.00.09     NACL-多々納  03/11/13  老人区分追加
+      * 01.00.11     NACL-多々納  04/01/06  包括まとめ入力追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -249,6 +250,12 @@
       *    負担割合を算定処理
       *****************************************************************
        200-FTNRATE-SEC                SECTION.
+      *
+      *    包括まとめ入力
+           IF      AGECHK-HKNCOMBINUM  =   "9999"
+               PERFORM 2009-HOUKATUHKN-SEC
+               GO      TO      200-FTNRATE-EXT
+           END-IF
       *
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  FLG-OK2
@@ -636,7 +643,6 @@
                                        OR  "973"
                MOVE    ZERO            TO  AGECHK-ROUJIN
            END-IF
-           .
       *
        2009-ROUJIN-HANTEI-EXT.
            EXIT.
@@ -838,6 +844,24 @@
       *
            .
        4101-HKNNUM-KIKANCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括まとめ入力処理
+      *****************************************************************
+       2009-HOUKATUHKN-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  AGECHK-FTNRATE
+           MOVE    SPACE               TO  AGECHK-FTNRATEMEI
+      *
+      *    老人判定
+           IF     (AGECHK-NENREI       >=  65  )  AND
+                  (AGECHK-ROUJIN       =   ZERO)
+               PERFORM 2009-ROUJIN-CHK-SEC
+           END-IF
+      *
+           .
+       2009-HOUKATUHKN-EXT.
            EXIT.
       *
       *****************************************************************
