@@ -300,17 +300,40 @@
       *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
-      * 
+      *
       *    県内分
       *
            MOVE    ZERO            TO  SUM-GOK-AREA     
       *     
+      *    県内保険者分
            MOVE    "SEIKYU-KEY6"   TO  WRK-PATH 
            PERFORM 900-SEIKYU-SELECT-SEC 
       *
            PERFORM             UNTIL   FLG-RECE10  =   1     
                INITIALIZE                  SUM-HKN-AREA
                MOVE    KEY-NEW             TO  KEY-OLD      
+               PERFORM             UNTIL   FLG-RECE10  =   1
+                                   OR      KEY-NEW NOT =   KEY-OLD
+                   PERFORM 2001-SYUKEI-SEC
+               END-PERFORM
+      *         
+               PERFORM 2002-PRINT-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *     
+      *    県内扱い保険者分
+           MOVE    "SEIKYU-KEY20"  TO  WRK-PATH 
+           PERFORM 900-SEIKYU-SELECT-SEC 
+      *
+           PERFORM             UNTIL   FLG-RECE10  =   1     
+               INITIALIZE                  SUM-HKN-AREA
+               MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM             UNTIL   FLG-RECE10  =   1
                                    OR      KEY-NEW NOT =   KEY-OLD
                    PERFORM 2001-SYUKEI-SEC
@@ -569,7 +592,7 @@
       *
            ADD     1                   TO  CNT-LINE
       *
-           IF      WRK-PATH            =   "SEIKYU-KEY6"     
+           IF      WRK-PATH            =   "SEIKYU-KEY20"     
                MOVE    "県合計"            TO  HC27-NAME (CNT-LINE)
            ELSE    
                MOVE    "県外計"            TO  HC27-NAME (CNT-LINE)
