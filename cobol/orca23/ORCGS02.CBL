@@ -1300,6 +1300,9 @@
            MOVE    PTINF-BIRTHDAY    TO  WRK-SYMD
            PERFORM 31011-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG       TO  SPA-GMN-BIRTHDAY
+      *    Á°²ó´µ¼Ô
+           MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
+           MOVE    SPA-GMN-PTNUM       TO  SPA-LAST-PTNUM
       *
            MOVE    3                 TO  SPA-GMN-CUR
            .
