@@ -214,10 +214,10 @@
        MAIN-RTN            SECTION.
        MAIN-000.
       *
-           ACCEPT  SYS-YMD         FROM    DATE.
-           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000.
-           MOVE    SYS-MM          TO  WRK-SYSMM.
-           MOVE    SYS-DD          TO  WRK-SYSDD.
+      *    ACCEPT  SYS-YMD         FROM    DATE.
+      *    COMPUTE WRK-SYSYY       =   SYS-YY      +   2000.
+      *    MOVE    SYS-MM          TO  WRK-SYSMM.
+      *    MOVE    SYS-DD          TO  WRK-SYSDD.
       *
            MOVE    ZERO            TO  LNK-S02-RC.
            MOVE    ZERO            TO  NYUIN-COUNT.
@@ -681,7 +681,8 @@
               MOVE WRK-HANBETU-KAISHI(IDX)
                                       TO LNK-SYU-SRYYMD(IDX)(7:2)
       ***>    MOVE "2"                TO LNK-SYU-DENPJTIKBN(IDX)
-              MOVE WRK-SYSYMD         TO LNK-SYU-DENPPRTYMD(IDX)
+      *       MOVE WRK-SYSYMD         TO LNK-SYU-DENPPRTYMD(IDX)
+              MOVE LNK-S02-SYSYMD     TO LNK-SYU-DENPPRTYMD(IDX)
               MOVE WRK-HANBETU-SKYYM(IDX)
                                       TO LNK-SYU-SKYSTYMD(IDX)(1:6)
               MOVE WRK-HANBETU-KAISHI(IDX)
