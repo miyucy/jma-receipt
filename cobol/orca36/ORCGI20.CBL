@@ -32,6 +32,7 @@
       *  01.00.03    NACL-太田    03/10/14  CSV出力、印刷機能追加
       *  01.00.04    NACL-太田    04/01/14  退院日入力機能追加
       *  01.00.05    NACL-太田    04/01/30  状態に当月在院を追加
+      *  01.00.06    NACL-太田    04/02/09  コラムリスト編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,6 +84,7 @@
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-JYOKEN          PIC 9(01).
            03  FLG-JOBEND          PIC 9(01).
+           03  FLG-GMN-INIT        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -148,6 +150,9 @@
            03  WRK-SELNUMED        PIC 9(05).
            03  WRK-STYMD           PIC X(08).
            03  WRK-EDYMD           PIC X(08).
+      *
+       01  WRK-ROW-AREA.
+           03  WRK-KANJYALST-ROW   PIC S9(9)   BINARY.
       *
        01  WRK-HEN-AREA.
            03  WRK-LENGTH          PIC 9(02).
@@ -1714,6 +1719,8 @@
                                        SPA-GMN-TBL
                                        SPA-NAI-KOUMOKU
                                        SPA-NAI-TBL
+                                       SPA-GMN-SELNUM
+      *
            MOVE    ZERO                TO  SPA-GMN-MAX
                                            SPA-NAI-NAME-MAX                            
       *
@@ -2089,6 +2096,7 @@
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-NAI-TBL
                                        SPA-NAI-SQL
+                                       SPA-GMN-SELNUM
       *
            MOVE    ZERO                TO  SPA-GMN-MAX
       *
@@ -2407,6 +2415,8 @@
       *    患者病名画面編集処理
       *****************************************************************
        4502-LIST-HENSYU-SEC        SECTION.
+      *
+           MOVE    1               TO  FLG-GMN-INIT
       *
            MOVE    IDX             TO  SPA-GMN-MAX
       *
@@ -2774,7 +2784,18 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       * 
+           MOVE    I20-ROW             TO  WRK-KANJYALST-ROW
+      * 
            MOVE    SPACE               TO  I20
+      *
+           IF    ( FLG-GMN-INIT        =   1 )
+               MOVE    ZERO            TO  I20-ROW
+               MOVE    ZERO            TO  I20-ROWATTR
+           ELSE
+               MOVE    WRK-KANJYALST-ROW
+                                       TO  I20-ROW
+               MOVE    ZERO            TO  I20-ROWATTR
+           END-IF
       *
            MOVE    SPA-GMN-PTNUM       TO  I20-PTNUM
            MOVE    SPA-GMN-NAME        TO  I20-NAME
