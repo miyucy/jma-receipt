@@ -6226,7 +6226,7 @@
                         (IDX7                    >   12)
                     IF   IDX7          =       6
       *                 »ùÆ¸»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»¡Ê£²£°ºÍÌ¤Ëþ¡Ë
-                        IF   SYS-5001-KSNKBN         =   "2"
+                        IF   SYS-5001-KSNKBN(IDX7)   =   "2"
                              PERFORM   4801-PT-AGE-SEC
                              IF     WRK-NENREI    <      20
                                  ADD    1                TO  IDX8
