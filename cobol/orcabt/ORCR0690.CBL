@@ -34,6 +34,7 @@
       *                                     しない
       *  01.00.03    NACL-藤原    03.01.30  乳幼児加算の時手技に表示
       *  01.00.04    NACL-藤原    03.02.04  検査に加算があるときまとめない
+      *  01.00.05    NACL-門脇    03.03.06  初再診のコメント編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -154,6 +155,7 @@
            03  FLG-TEIGEN          PIC 9(01).
            03  FLG-COMMENT         PIC 9(01).
            03  FLG-COMMENT2        PIC 9(01).
+           03  FLG-COMMENT3        PIC 9(01).
            03  FLG-HIKAKIN         PIC 9(01).
            03  FLG-DSAISHIN        PIC 9(01).
            03  FLG-SRYCD1          PIC 9(01).
@@ -167,6 +169,8 @@
            03  CNT-RECE66          PIC 9(06).
       *
            03  CNT-SRYKBN60        PIC 9(03).     
+      *
+           03  CNT-SYOSIN-KASAN    PIC 9(02).
       *
       *    添字領域
        01  IDX-AREA.
@@ -818,6 +822,7 @@
                MOVE    ZERO                TO  FLG-TEIGEN
                                                FLG-COMMENT
                                                FLG-COMMENT2
+                                               FLG-COMMENT3
                                                FLG-HIKAKIN 
                MOVE    ZERO                TO  WRK-RECE65
                                                IDY                           
@@ -1034,6 +1039,9 @@
                                                      CONS-COMMENT8     
                            MOVE    1             TO  FLG-COMMENT2      
                        END-IF                                          
+                       IF      RECE65-SRYCD(IDX)(1:1)   =   "8"        
+                           MOVE    1             TO  FLG-COMMENT3      
+                       END-IF                                     
       *---- (01.00.05) LINE ADD END --------------------------------
       *
                        IF      RECE65-SRYCD(IDX) =   CONS-TEIGEN
@@ -1075,6 +1083,7 @@
            MOVE    ZERO              TO  WRK-TBLMAX
            MOVE    ZERO              TO  WRK-TENSUGOKEI
            MOVE    ZERO              TO  CNT-ZAITAISYO
+           MOVE    ZERO              TO  CNT-SYOSIN-KASAN
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       1  
@@ -1139,31 +1148,48 @@
       *
       *    初診加算の時だけ印刷＋検診
            IF      FLG-NOPRT                 =   ZERO
-               IF      TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                             =   WRK-CONS-SYOSIN-KASAN1
-                                             OR  WRK-CONS-SYOSIN-KASAN2
-                                             OR  WRK-CONS-SYOSIN-KASAN3
-                                             OR  WRK-CONS-SYOSIN-KASAN4
-                                             OR  WRK-CONS-SYOSIN-KASAN5
-                                             OR  WRK-CONS-SYOSIN-KASAN6
-                                             OR  WRK-CONS-SYOSIN-KASAN7
-                                             OR  WRK-CONS-SYOSIN-KASAN8
-                                             OR  WRK-CONS-SYOSIN-KASAN9
-                                             OR  CONS-COMMENT5         
-                                             OR  CONS-COMMENT6         
-                                             OR  CONS-COMMENT7         
-                                             OR  CONS-COMMENT8         
+               IF    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
+                                            =   WRK-CONS-SYOSIN-KASAN1
+                                            OR  WRK-CONS-SYOSIN-KASAN2
+                                            OR  WRK-CONS-SYOSIN-KASAN3
+                                            OR  WRK-CONS-SYOSIN-KASAN4
+                                            OR  WRK-CONS-SYOSIN-KASAN5
+                                            OR  WRK-CONS-SYOSIN-KASAN6
+                                            OR  WRK-CONS-SYOSIN-KASAN7
+                                            OR  WRK-CONS-SYOSIN-KASAN8
+                                            OR  WRK-CONS-SYOSIN-KASAN9
+                                            OR  CONS-COMMENT5         
+                                            OR  CONS-COMMENT6         
+                                            OR  CONS-COMMENT7         
+                                            OR  CONS-COMMENT8         )
+               OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  = "8")
+      *
+                   IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)             
+                                             =   WRK-CONS-SYOSIN-KASAN1 
+                                             OR  WRK-CONS-SYOSIN-KASAN2 
+                                             OR  WRK-CONS-SYOSIN-KASAN3 
+                                             OR  WRK-CONS-SYOSIN-KASAN4 
+                                             OR  WRK-CONS-SYOSIN-KASAN5 
+                                             OR  WRK-CONS-SYOSIN-KASAN6 
+                                             OR  WRK-CONS-SYOSIN-KASAN7 
+                                             OR  WRK-CONS-SYOSIN-KASAN8 
+                                             OR  WRK-CONS-SYOSIN-KASAN9 
+                        ADD      1           TO  CNT-SYOSIN-KASAN       
+                   END-IF                                               
+      *
                    MOVE    TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                              TO  TNS-SRYCD
                    MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
-                   MOVE    RECE65-SRYYM      TO  ORC-DBYMD(1:6)
+                   MOVE    RECE64-SRYYM      TO  ORC-DBYMD(1:6)
                    MOVE    "01"              TO  ORC-DBYMD(7:2)
                    PERFORM 900-TENSU-INV-SEC
       *            点数・回数セット
-                   MOVE    TNS-TEN           TO  WRK-ZAITENX
-                   MOVE    RECE64-ZAIKAISU   TO  WRK-ZAIKAISUX
-      *            必要有効桁数・開始位置・回数編集
-                   PERFORM 810-TENSUKAI-HEN-SEC
+                   IF    TNS-TEN  NOT =  ZERO
+                     MOVE    TNS-TEN           TO  WRK-ZAITENX
+                     MOVE    RECE64-ZAIKAISU   TO  WRK-ZAIKAISUX
+      *              必要有効桁数・開始位置・回数編集
+                     PERFORM 810-TENSUKAI-HEN-SEC
+                   END-IF
                ELSE    
                    MOVE    1                 TO  FLG-NOPRT
                END-IF
@@ -1424,7 +1450,7 @@
            PERFORM UNTIL   IDX     >       WRK-KENSA-MAX
                MOVE    TBL-SRYCD(IDX)       TO      TNS-SRYCD
                MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-               MOVE    RECE65-SRYYM         TO      ORC-DBYMD(1:6)
+               MOVE    RECE64-SRYYM         TO      ORC-DBYMD(1:6)
                MOVE    "01"                 TO      ORC-DBYMD(7:2)
                PERFORM 900-TENSU-INV-SEC
                IF      TNS-HOUKNSKBN        =   ZERO
@@ -1653,7 +1679,7 @@
                    MOVE    TBL-ZAIW-SRYCD (3 1)
                                              TO  TNS-SRYCD
                    MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
-                   MOVE    RECE65-SRYYM      TO  ORC-DBYMD(1:6)
+                   MOVE    RECE64-SRYYM      TO  ORC-DBYMD(1:6)
                    MOVE    "01"              TO  ORC-DBYMD(7:2)
                    PERFORM 900-TENSU-INV-SEC
                    IF      TNS-KNSJISKBN     =   "2"
@@ -1876,6 +1902,7 @@
                    MOVE    ZERO                TO  FLG-TEIGEN
                                                    FLG-COMMENT
                                                    FLG-COMMENT2
+                                                   FLG-COMMENT3
                                                    FLG-HIKAKIN 
                    MOVE    ZERO                TO  WRK-RECE65
                                                    IDY
@@ -2287,9 +2314,20 @@
                   (RECE64-SRYKBN      =   "99")
                GO  TO  440-TNSKAI-SET-EXT
            END-IF
-           IF     (FLG-COMMENT2       =   1)                           
+           IF     (FLG-COMMENT2       =   1)     AND                   
+                  (RECE64-SRYKBN      =   "11" OR "12" OR "99")
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF                                                      
+           IF     (FLG-COMMENT3       =    1  )   AND                  
+                  (RECE64-SRYKBN      =   "11")   AND                  
+                  (CNT-SYOSIN-KASAN   =   ZERO)                        
+               GO  TO  440-TNSKAI-SET-EXT                              
+           END-IF                                                      
+           IF     (FLG-COMMENT3       =    1  )   AND                  
+                  (RECE64-SRYKBN      =   "12")   AND                  
+                  (RECE64-ZAITEN      =   ZERO)                        
+               GO  TO  440-TNSKAI-SET-EXT                              
+           END-IF     
       *---- (01.00.05) LINE ADD END   --------------------------------
       *         
            MOVE    WRK-TNSKAI-ST     TO  IDA
@@ -2382,6 +2420,11 @@
                      MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                   END-IF
                END-IF
+      *
+               IF    ( FLG-COMMENT2     =   1           )               
+               AND   ( RECE64-SRYKBN    =  "11" OR "12" )               
+                   MOVE  SPACE           TO  RECE66-SRYKBN              
+               END-IF        
       *
       *---------適用欄並び替え用の編集（表用番号等）-----------------
                IF      IDY               =   1

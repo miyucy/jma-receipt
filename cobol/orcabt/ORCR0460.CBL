@@ -42,6 +42,7 @@
       *  01.00.08    NACL-藤原    03.01.10  検査の回数の編集
       *                                     画像診断のフィルムを手技に表示
       *  01.00.09    NACL-門脇    03.02.13  乳幼児加算の時手技に表示
+      *  01.00.10    NACL-門脇    03.03.06  初再診のコメント編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1209,7 +1210,7 @@
            PERFORM UNTIL   IDX     >       WRK-KENSA-MAX
                MOVE    TBL-SRYCD(IDX)       TO      TNS-SRYCD
                MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-               MOVE    RECE45-SRYYM         TO      ORC-DBYMD(1:6)
+               MOVE    RECE44-SRYYM         TO      ORC-DBYMD(1:6)
                MOVE    "01"                 TO      ORC-DBYMD(7:2)
                PERFORM 900-TENSU-INV-SEC
                IF      TNS-HOUKNSKBN        =   ZERO
@@ -1430,7 +1431,7 @@
                    MOVE    TBL-ZAIW-SRYCD (3 1)
                                              TO  TNS-SRYCD
                    MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
-                   MOVE    RECE45-SRYYM      TO  ORC-DBYMD(1:6)
+                   MOVE    RECE44-SRYYM      TO  ORC-DBYMD(1:6)
                    MOVE    "01"              TO  ORC-DBYMD(7:2)
                    PERFORM 900-TENSU-INV-SEC
                    IF      TNS-KNSJISKBN     =   "2"
@@ -2093,7 +2094,8 @@
                   (RECE44-SRYKBN      =   "99")
                GO  TO  440-TNSKAI-SET-EXT
            END-IF
-           IF     (FLG-COMMENT2       =   1)                            
+           IF     (FLG-COMMENT2       =   1)     AND                    
+                  (RECE44-SRYKBN      =   "11" OR "12" OR "99")         
                GO  TO  440-TNSKAI-SET-EXT                               
            END-IF                                                       
       *---- (01.00.05) LINE ADD END   --------------------------------
@@ -2149,6 +2151,11 @@
                MOVE    RECE44-SRYKA      TO  RECE46-SRYKA
                MOVE    RECE44-SRYKBN     TO  RECE46-SRYKBN
                MOVE    TBL-ZAI (IDY)     TO  RECE46-TEKIYO-INF
+      *
+               IF    ( FLG-COMMENT2     =   1           )               
+               AND   ( RECE44-SRYKBN    =  "11" OR "12" )               
+                   MOVE  SPACE           TO  RECE46-SRYKBN              
+               END-IF                                     
       *---------適用欄並び替え用の編集（表用番号等）-----------------
                IF      IDY               =   1
       *

@@ -1263,7 +1263,7 @@
                          UNTIL   ( IDX               >   49    )
                          OR      ( WK-FREE-NAME(IDX) =   SPACE )
                 ADD    1                  TO  IDX-RECE05
-                MOVE   "810000002"        TO  COM-SRYCD(2)
+                MOVE   "810000001"        TO  COM-SRYCD(2)
                 MOVE   ZERO               TO  COM-SRYSURYO(2)
                 MOVE   COM-SRYACTINF(2)   TO  WRK-SRYACTINF(IDX-RECE05)
                 MOVE   WRK-FREEINF(IDX)   TO  WRK-NAMEINF(IDX-RECE05)

@@ -1092,7 +1092,7 @@
               PERFORM   RECE62-HENSYU3-IDX-SEC
       *
               INITIALIZE                  ORCSTENTEKAREA
-              MOVE    "4"                 TO  ORCSTEN-KBN
+              MOVE    "2"                 TO  ORCSTEN-KBN
               MOVE    RECE62-PTID         TO  ORCSTEN-PTID
               MOVE    RECE62-SRYYM        TO  ORCSTEN-SRYYM
               MOVE    RECE62-HKNCOMBI (IDX1)

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    03.03.06  初再診のコメント編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -268,9 +269,7 @@
            MOVE    RECE66-ZAIMEISAISU   TO      RECE661-ZAIMEISAISU
            MOVE    RECE66-PTNUM         TO      RECE661-PTNUM
            MOVE    RECE66-SRYKA         TO      RECE661-SRYKA
-           IF   (  RECE66-SRYKBN        =       "99"          )
-           OR   (( RECE66-SRYKBN        =       "11" OR "12" )  AND
-                 ( RECE66-ZAITEN        =       ZERO         )) 
+           IF      RECE66-SRYKBN        =       "99"          
                MOVE  SPACE              TO      RECE661-SRYKBN
            ELSE
                MOVE  RECE66-SRYKBN      TO      RECE661-SRYKBN

@@ -1060,10 +1060,13 @@
                                               CONS-ROUCOM2      )
                       OR  ( SRY-SRYCD(1)    = CONS-ROUSAI2  OR
                                               CONS-ROUSAI3      )
+                      OR (( SRY-SRYCD(1)    = CONS-ROUSAI1      ) AND
+                          ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
                       OR (( SRY-SRYCD(1)    = CONS-ROUSAI5  OR
                                               CONS-ROUSAI6  OR
                                               CONS-ROUSAI7      ) AND
                           ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
+      *
                          ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE45-SIKFLG(IDX4)
       *
