@@ -60,6 +60,7 @@
       *                                     §Ω§Œ¬æ∫‡Œ¡§Œ√±≤¡§Œ ‘Ω∏
       *                                     œ∑øÕ∏∫Ã»∂Ë ¨•≥°º•…§Œ ‘Ω∏
       *                                     ∞ÂÃÙ… °¶∆√ƒÍ¥Ô∫‡§ŒΩ–ŒœΩÁ
+      *  01.00.20    NACL-∆£∏∂    03/11/26  ¿∏¬Œ∏°∫∫§Œ≤√ªª§À§ƒ§§§∆
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -213,6 +214,8 @@
            03  FLG-GAITENTTLKBN        PIC 9(03).
            03  FLG-TBLMAX              PIC 9(01).
            03  FLG-SRYSYUKBN721        PIC 9(01).
+           03  FLG-KENSA-KASAN         PIC 9(01).
+           03  FLG-KENSA-TEIGEN        PIC 9(01).
            03  FLG-SET                 PIC 9(01).
       *
       *    •´•¶•Û•»ŒŒ∞Ë
@@ -439,10 +442,18 @@
        01  WRK-RECE05-REC.
            COPY    "CPRCF005.INC"  REPLACING  //RECE05//
                                    BY         //WRK-RECE05//.
-      *
+      *    ≤Ë¡¸ø«√«Õ—¬‡»Ú•®•Í•¢
        01  WRK-721-RECE05-REC.
            COPY    "CPRCF005.INC"  REPLACING  //RECE05//
                                    BY         //WRK-721-RECE05//.
+      *    ¿∏¬Œ∏°∫∫°¶≤√ªªÕ—¬‡»Ú•®•Í•¢
+       01  WRK-KASAN-RECE05-REC.
+           COPY    "CPRCF005.INC"  REPLACING  //RECE05//
+                                   BY         //WRK-KASAN-RECE05//.
+      *    ¿∏¬Œ∏°∫∫°¶ƒ˛∏∫Õ—¬‡»Ú•®•Í•¢
+       01  WRK-TEIGEN-RECE05-REC.
+           COPY    "CPRCF005.INC"  REPLACING  //RECE05//
+                                   BY         //WRK-TEIGEN-RECE05//.
       *  
        01  WRK-CONS-AREA.
       *    •≥•Û•ﬁ
@@ -535,6 +546,14 @@
            03  WRK-CONS-SANSO7        PIC X(09)   VALUE   "739230000".
       *    ª¿¡«•‹•Û•Ÿ°¶æÆ∑ø° Œ•≈Á°À
            03  WRK-CONS-SANSO8        PIC X(09)   VALUE   "739270000".
+      *
+      *    ø∑¿∏ª˘≤√ªª° ¿∏¬Œ∏°∫∫°À
+           03  WRK-CONS-KENSA-KASAN1  PIC X(09)   VALUE   "160155290".
+      *    ∆˝Õƒª˘≤√ªª° ¿∏¬Œ∏°∫∫°À
+           03  WRK-CONS-KENSA-KASAN2  PIC X(09)   VALUE   "160155390".
+      *
+      *    ∏°∫∫ƒ˛∏∫
+           03  WRK-CONS-KENSA-TEIGEN  PIC X(09)   VALUE   "160000190".
       *
       *    ≤˛π‘•≥°º•…
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -1809,6 +1828,18 @@
                PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
            END-IF
       *
+      *    ¿∏¬Œ∏°∫∫§»§≠ΩÁ»÷§Ú —§®§Î
+           IF      FLG-KENSA-TEIGEN    >   ZERO
+               MOVE    FLG-KENSA-TEIGEN        TO  IDX 
+               MOVE    WRK-TEIGEN-RECE05-REC   TO  RECE05-REC
+               PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+           END-IF
+           IF      FLG-KENSA-KASAN     >   ZERO
+               MOVE     FLG-KENSA-KASAN        TO  IDX 
+               MOVE    WRK-KASAN-RECE05-REC    TO  RECE05-REC
+               PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+           END-IF
+      *
            .
        20071-TBL-TAIHI-EXT.
            EXIT.
@@ -1920,7 +1951,7 @@
                END-PERFORM
            END-IF
       *
-      *    ≤Ë¡¸ø«√«§Œ§»§≠ΩÁ»÷§Ú —§®§Î
+      *    ≤Ë¡¸ø«√«°¶¿∏¬Œ∏°∫∫§Œ§»§≠ΩÁ»÷§Ú —§®§Î
            INITIALIZE                      TNS-TENSU-REC
            MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
            PERFORM 900-TENSU-READ-SEC
@@ -1943,8 +1974,19 @@
                    MOVE    IDX             TO  FLG-SRYSYUKBN721
                    MOVE    RECE05-REC      TO WRK-721-RECE05-REC
                ELSE
-                   PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
-               END-IF
+                   IF      RECE05-SRYCD (IDX)  =   WRK-CONS-KENSA-KASAN1
+                                               OR  WRK-CONS-KENSA-KASAN2
+                       MOVE    IDX             TO  FLG-KENSA-KASAN
+                       MOVE    RECE05-REC      TO  WRK-KASAN-RECE05-REC
+                   ELSE
+                       IF      RECE05-SRYCD (IDX)  =
+                                               WRK-CONS-KENSA-TEIGEN
+                       MOVE    IDX             TO  FLG-KENSA-TEIGEN
+                       MOVE    RECE05-REC      TO  WRK-TEIGEN-RECE05-REC
+                   ELSE
+                       PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+                   END-IF
+               END-IF     
            END-IF
            .
        200711-KOUI-TAIHI-EXT.
