@@ -165,7 +165,7 @@
            03  WRK-HENYMDG         PIC X(22).
            03  WRK-HYYMMDD         PIC X(09).
       *
-           03  WRK-Z9              PIC --------9.
+           03  WRK-Z9              PIC ----,---,--9.
       *
            03  WRK-SYORIYMD        PIC X(24).
            03  WRK-PAGE            PIC ZZ9.
