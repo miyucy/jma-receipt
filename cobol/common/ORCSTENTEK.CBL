@@ -30,6 +30,7 @@
       *  01.00.01    NACL-Â¿¡¹Ç¼  03/03/20  ÌôºÞÅÀ¿ô·×»»½¤Àµ
       *  01.00.02    NACL¡ÝÂ¿¡¹Ç¼ 03/04/02  Ãæ¿´ÀÅÌ®¼«Æ°È¯À¸ÄÉ²Ã
       *  01.00.03    NACL¡ÝÂ¿¡¹Ç¼ 03/05/21  ÇÑ´þ¿ôÎÌ½¤Àµ
+      *  01.00.04    NACL¡ÝÂ¿¡¹Ç¼ 03/10/16  Í¢·ìÈ½ÄêÄÉ²Ã
       *****************************************************************
       *
       *
@@ -68,6 +69,8 @@
            03  FLG-CHK             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-TENTEKI         PIC 9(01).
+      *    Í¢·ì¤ÎÍ­Ìµ
+           03  FLG-YUKETU          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -1164,8 +1167,15 @@
                MOVE    1                   TO  FLG-SRYACCT
            END-IF
            PERFORM UNTIL       (FLG-SRYACCT         =   1       )
-      *        ¼êµ»ÎÁ¤¬¤¢¤ë¤â¤Î
+      *        Í¢·ì¤ÎÈ½Äê
                IF      ACCT-SYUTEN1        >   ZERO
+                   PERFORM 30031-SRYACT-YUKETU-SEC
+               ELSE
+                   MOVE    1                   TO  FLG-YUKETU
+               END-IF
+      *        ¼êµ»ÎÁ¤¬¤¢¤ë¤â¤Î
+               IF     (FLG-YUKETU          =   ZERO  )  AND
+                      (ACCT-SYUTEN1        >   ZERO  )
                    PERFORM VARYING     IDX2    FROM    1   BY  1
                            UNTIL       IDX2    >   31
       *                ¼ê½ÑÍ­
@@ -1189,6 +1199,47 @@
       *
            .
        3001-SYUJYU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     ¿ÇÎÅ¹Ô°Ù¤è¤êÍ¢·ì¤ÎÈ½Äê½èÍý
+      *****************************************************************
+       30031-SRYACT-YUKETU-SEC         SECTION.
+      *
+      *
+      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤«¤é¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼¤ò¸¡º÷¤¹¤ë
+           MOVE    SPACE               TO  SRYACT-REC
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 920-SRYACT-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
+           MOVE    ZERO                TO  FLG-YUKETU
+           IF      FLG-SRYACT          =   ZERO
+      *        Í¢·ì¤Î»þÂÐ¾Ý³°
+               IF      SRY-SRYSYUKBN       =   "510"
+                   MOVE    1                   TO  FLG-YUKETU
+               END-IF
+           END-IF
+      *
+           .
+       30031-SRYACT-YUKETU-EXT.
            EXIT.
       *
       *****************************************************************

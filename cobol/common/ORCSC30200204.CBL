@@ -1188,7 +1188,7 @@
                END-IF
       *        手術がある時、点滴手技料は算定できない
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
-                      (WRK-COM-SRYKBN   (IDX)      =   "50"  )  AND
+                      (WRK-COM-SRYSYUKBN(IDX)      =   "500" )  AND
                       (WRK-COM-INPUTCD  (IDX)(1:1) =   "1"   )  AND
                       (WRK-COM-DATAKBN  (IDX)      =   "1"   )
                    MOVE    1                   TO  FLG-SYUJUTU
@@ -1787,8 +1787,13 @@
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
       *        手技料点数がないものは対象外
-               IF      ACCT-SYUTEN1       =   ZERO
+               IF      ACCT-SYUTEN1        =   ZERO
                    MOVE    ZERO               TO  FLG-ZAIARI
+               END-IF
+      *        輸血の判定
+               IF      FLG-ZAIARI          =   1
+      *            診療行為より
+                   PERFORM 30031-SRYACT-YUKETU-SEC
                END-IF
       *
       *        回数編集
@@ -1813,6 +1818,46 @@
       *                                MCPDATA-REC
            .
        3003-SYUJYU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     診療行為より輸血の判定処理
+      *****************************************************************
+       30031-SRYACT-YUKETU-SEC         SECTION.
+      *
+      *
+      *    診療会計マスターから診療行為マスターを検索する
+           MOVE    SPACE               TO  SRYACT-REC
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-SRYACT-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
+           IF      FLG-SRYACT          =   ZERO
+      *        輸血の時対象外
+               IF      SRY-SRYSYUKBN       =   "510"
+                   MOVE    ZERO                TO  FLG-ZAIARI
+               END-IF
+           END-IF
+      *
+           .
+       30031-SRYACT-YUKETU-EXT.
            EXIT.
       *
       *****************************************************************
