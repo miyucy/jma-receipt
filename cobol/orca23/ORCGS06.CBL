@@ -1386,7 +1386,7 @@
        4101-SELNUM-CHK-SEC             SECTION.
       *
            IF    ( SPA-GMN-SELNUM  =   ZERO )
-               MOVE    "0012"      TO  SPA-ERRCD
+               MOVE    "0013"      TO  SPA-ERRCD
                MOVE    2           TO  SPA-GMN-CUR
                GO  TO  4101-SELNUM-CHK-EXT
            END-IF
@@ -2209,7 +2209,7 @@
            WHEN    "0012"
                MOVE    "入金日入力エラー"
                                            TO  SPA-ERRMSG
-           WHEN    "0012"
+           WHEN    "0013"
                MOVE    "選択番号を入力してください"
                                            TO  SPA-ERRMSG
            WHEN    "4001"  THRU    "4999"
