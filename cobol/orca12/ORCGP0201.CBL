@@ -287,8 +287,9 @@
            END-IF
       *
       *    既に患者を選択している時、エラーとする
-           IF      SPA-GMN-PTNUM   NOT =   SPACE
-               MOVE    "0001"                TO  SPA-ERRCD
+           IF     (SPA-GMN-PTNUM   NOT =   SPACE )  OR
+                  (SPA-P02-UKEID   NOT =   ZERO  )
+               MOVE    "0003"                TO  SPA-ERRCD
                GO      TO      320-KAKUTEI-EXT
            END-IF
       *
