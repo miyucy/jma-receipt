@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-藤原    02/09/19  アフターケア・自賠責対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -59,6 +60,7 @@
            03  FLG-RECECOM         PIC 9(01).
            03  FLG-EXAMPLE         PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
+           03  FLG-PTRSIINF        PIC 9(01).
       *
            03  FLG-HKNCOMBICHK     PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -73,6 +75,7 @@
            03  WRK-SYMD            PIC X(08).
            03  WRK-HKNCOMBI        PIC 9(04).
            03  WRK-HKNCOMBIMEI     PIC X(100).
+           03  WRK-HKNKBN-MEI      PIC X(02).
       *
            03  WRK-SRYKA           PIC X(02).
            03  WRK-SRYKAMEI        PIC X(20).
@@ -81,6 +84,9 @@
            03  WRK-SELNUM2         PIC 9(03).
       *
            03  WRK-ZZZ             PIC ZZZ.
+           03  WRK-ZZ              PIC ZZ.
+      *
+           03  WRK-DBPATH          PIC X(20).
       *
            03  WRK-CIDMSG          PIC X(80).
       *
@@ -89,8 +95,9 @@
                05  WRK-C07-HKN-LIST    OCCURS  10.
                    07  WRK-C07-THKNCOMBINUM    PIC X(04).
                    07  WRK-C07-THKNCOMBY1      PIC X(01).
-                   07  WRK-C07-THKNCOMBIMEI    PIC X(40).
+                   07  WRK-C07-THKNCOMBIMEI    PIC X(100).
                    07  WRK-C07-FLG             PIC X(01).
+                   07  WRK-C07-RSI-HKNKBN      PIC X(01).
                 05  WRK-C07-HKNMAX              PIC 9(04).
       *
        01  WRK-HEN-AREA.
@@ -123,6 +130,10 @@
       *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
+      *
+      *    患者労災保険情報
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -432,6 +443,72 @@
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBIMEI
            END-STRING
+      *    主保険がない時
+           IF      COMB-SYU-TANSEIDONAME   =   SPACE
+               MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                         INTO              WRK-HKNCOMBIMEI
+               END-STRING
+           END-IF
+      *
+      *    労災の時、コメントの追加
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
+      *        患者保険情報検索
+               INITIALIZE                      PTRSIINF-REC
+               MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+               MOVE    SPA-NAI-C02-PTID    TO  PTRSI-PTID
+               MOVE    COMB-HKNID          TO  PTRSI-HKNID
+               MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "PTRSIINF-KEY"     TO  ORC-DBPATH
+                   PERFORM 993-PTRSIINF-NEXT-SEC
+               ELSE
+                   INITIALIZE                      PTRSIINF-REC
+                   MOVE    1                   TO  FLG-PTRSIINF
+               END-IF
+               MOVE    SPACE               TO  WRK-HKNKBN-MEI
+               EVALUATE    PTRSI-HKNKBN
+                   WHEN    "1"
+                       MOVE    "短"        TO  WRK-HKNKBN-MEI
+                   WHEN    "2"
+                       MOVE    "傷"        TO  WRK-HKNKBN-MEI
+                   WHEN    "3"
+                       MOVE    "ア"        TO  WRK-HKNKBN-MEI
+               END-EVALUATE
+               IF      PTRSI-COMMENT       =   SPACE
+                   MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+                   STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                           " "                     DELIMITED  BY  SIZE
+                           WRK-HKNKBN-MEI          DELIMITED  BY  SPACE
+                           INTO              WRK-HKNCOMBIMEI
+                   END-STRING
+               ELSE
+                   MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+                   STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                           " "                     DELIMITED  BY  SIZE
+                           WRK-HKNKBN-MEI          DELIMITED  BY  SPACE
+                           "（"                    DELIMITED  BY  SIZE
+                           PTRSI-COMMENT           DELIMITED  BY  SPACE
+                           "）"                    DELIMITED  BY  SIZE
+                           INTO              WRK-HKNCOMBIMEI
+                   END-STRING
+               END-IF
+      *
+               MOVE    PTRSI-HKNKBN        TO  SPA-C07-RSI-THKNKBN
+                                                      (SPA-C07-HKNMAX)
+           END-IF
       *
            .
        31011-HKNCOMBI-HEN-EXT.
@@ -517,6 +594,12 @@
                MOVE    RECECOM-HKNCOMBI    TO  WRK-HKNCOMBI
                PERFORM 820-HKNCOMBI-SET-SEC
                MOVE    WRK-HKNCOMBIMEI     TO  SPA-C07-THKNCOMBI(IDX)
+      *        診療日
+               IF      RECECOM-SRYDD       =   ZERO
+                   MOVE    SPACE               TO  SPA-C07-TSRYDD (IDX)
+               ELSE
+                   MOVE    RECECOM-SRYDD       TO  SPA-C07-TSRYDD (IDX)
+               END-IF
       *
                MOVE    "RECECOM-KEY2"      TO  ORC-DBPATH
                PERFORM 920-RECECOM-READ-SEC
@@ -526,6 +609,7 @@
            MOVE    ZERO                TO  SPA-C07-SELNUM
            MOVE    ZERO                TO  SPA-C07-BUNNUM
            MOVE    SPACE               TO  SPA-C07-HKNCOMBI-G
+           MOVE    ZERO                TO  SPA-C07-JYURRKNUM
       *
            .
        3103-RECECOM-HEN-EXT.
@@ -545,6 +629,8 @@
                                       TO  WRK-C07-THKNCOMBINUM(IDX)
                MOVE    SPA-C07-THKNCOMBIMEI(IDX)
                                       TO  WRK-C07-THKNCOMBIMEI(IDX)
+               MOVE    SPA-C07-RSI-THKNKBN  (IDX)
+                                      TO  WRK-C07-RSI-HKNKBN  (IDX)
            END-PERFORM
            MOVE    SPA-C07-HKNMAX     TO  WRK-C07-HKNMAX
       *
@@ -604,6 +690,9 @@
                    MOVE    WRK-C07-THKNCOMBIMEI(IDX)
                                       TO  SPA-C07-THKNCOMBIMEI
                                                 (SPA-C07-HKNMAX)
+                   MOVE    WRK-C07-RSI-HKNKBN  (IDX)
+                                      TO  SPA-C07-RSI-THKNKBN
+                                                (SPA-C07-HKNMAX)
                END-IF
            END-PERFORM
       *
@@ -612,9 +701,91 @@
                                        TO  SPA-C07-SRYKA-G
             MOVE    SPA-C07-HKN-LIST(01)
                                        TO  SPA-C07-HKNCOMBI-G
+      *                                 
+      *    労災保険区分がアフターケアの時、履歴日を表示する
+           MOVE    SPA-C07-RSI-THKNKBN (01)
+                                       TO  SPA-C07-RSI-HKNKBN
+           IF      SPA-C07-RSI-HKNKBN =   "3"
+               PERFORM 31401-AFTER-JYURRK-SEC
+           END-IF
       *
            .
        314-SYOKI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労災保険区分がアフターケアの時、履歴日編集処理
+      *****************************************************************
+       31401-AFTER-JYURRK-SEC          SECTION.
+      *
+      *
+      *    受診歴を検索する  医療機関、患者ＩＤ
+           INITIALIZE                  JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-NAI-C02-PTID    TO JYURRK-PTID
+           MOVE    SPA-C07-SRYYMS      TO  JYURRK-SRYYMD(1:6)
+           MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
+           MOVE    SPA-C07-SRYYMS      TO  JYURRK-UPSRYYMD(1:6)
+           MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
+           MOVE    SPA-C07-HKNCOMBINUM
+                                       TO  JYURRK-HKNCOMBINUM
+           IF      SPA-C07-SRYKA      =   "00"
+               MOVE    "JYURRK-KEY17"      TO  WRK-DBPATH
+           ELSE
+               MOVE    "JYURRK-KEY18"      TO  WRK-DBPATH
+           END-IF
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               PERFORM 970-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           INITIALIZE                  SPA-C07-JYURRK-LIST
+           PERFORM
+               UNTIL    FLG-JYURRK     =   1
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL       IDY     >   10
+                   IF      SPA-C07-JYURRKYMD (IDY)
+                                          =    JYURRK-SRYYMD
+                       MOVE    10              TO  IDY
+                   ELSE
+                       IF      SPA-C07-JYURRKYMD (IDY)  =   SPACE
+                           MOVE    JYURRK-SRYYMD   TO
+                                               SPA-C07-JYURRKYMD(IDY)
+                           MOVE    JYURRK-SRYYMD   TO  WRK-SYMD
+                           PERFORM 800-SEIWA-HEN-SEC
+                           MOVE    WRK-HENYMDG     TO
+                                               SPA-C07-JYURRKYMDW(IDY)
+                           MOVE    10              TO  IDY
+                       END-IF
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               PERFORM 970-JYURRK-READ-SEC
+           END-PERFORM
+      *
+           MOVE    ZERO                TO  SPA-C07-RRKMAX
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   10
+               IF      SPA-C07-JYURRKYMD (IDY)    NOT =   SPACE
+                   MOVE    IDY        TO  SPA-C07-TRRKNUM (IDY)
+                   MOVE    IDY        TO  SPA-C07-RRKMAX
+               END-IF
+           END-PERFORM
+      *
+           .
+       31401-AFTER-JYURRK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -862,6 +1033,12 @@
                MOVE    SPA-C07-TSRYYM  (IDX)  TO  C07-TSRYYM  (IDX)
                MOVE    SPA-C07-TSRYKA  (IDX)  TO  C07-TSRYKA  (IDX)
                MOVE    SPA-C07-THKNCOMBI(IDX) TO  C07-THKNCOMBI(IDX)
+               IF      SPA-C07-TSRYDD  (IDX)  =   ZERO
+                   MOVE    SPACE               TO  C07-TSRYDD  (IDX)
+               ELSE
+                   MOVE    SPA-C07-TSRYDD  (IDX)
+                                               TO  C07-TSRYDD  (IDX)
+               END-IF
                MOVE    SPA-C07-TCOMMENT(IDX)  TO  C07-TCOMMENT  (IDX)
       *
                IF      SPA-C07-SELNUM     =   SPA-C07-TRENNUM (IDX)
@@ -874,6 +1051,25 @@
       *
            MOVE    SPA-C07-SELNUM     TO  C07-SELNUM
            MOVE    SPA-C07-BUNNUM     TO  C07-BUNNUM
+      *
+      *
+      *    受診履歴
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-C07-RRKMAX
+               MOVE    SPA-C07-TRRKNUM   (IDX)  TO  WRK-ZZ
+               MOVE    WRK-ZZ                  TO  C07-TJYURRKNUM(IDX)
+               MOVE    SPA-C07-JYURRKYMDW(IDX)
+                                               TO  C07-TJYURRKYMD(IDX)
+      *
+               IF      SPA-C07-JYURRKNUM  =   SPA-C07-TRRKNUM (IDX)
+                   MOVE    "T"             TO  C07-JYURRK-SELECT (IDX)
+               ELSE
+                   MOVE    "F"             TO  C07-JYURRK-SELECT (IDX)
+               END-IF
+           END-PERFORM
+           MOVE    SPA-C07-RRKMAX     TO  C07-JYURRK-COUNT
+      *
+           MOVE    SPA-C07-JYURRKNUM  TO  C07-JYURRKNUM
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -903,6 +1099,8 @@
                    MOVE    "B08"               TO  MCP-WIDGET
                WHEN    8
                    MOVE    "B05"               TO  MCP-WIDGET
+               WHEN    9
+                   MOVE    "JYURRKNUM"         TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -974,6 +1172,12 @@
       *        明細選択
                WHEN    ANY             ALSO    "RECELIST"
                    PERFORM 440-RECELIST-SEC
+      *        受診履歴選択番号
+               WHEN    "ACTIVATE"      ALSO    "JYURRKNUM"
+                   PERFORM 450-JYURRKNUM-SEC
+      *        受診履歴選択
+               WHEN    ANY             ALSO    "JYURRKLIST"
+                   PERFORM 460-RECELIST-SEC
            END-EVALUATE
       *
            .
@@ -1046,12 +1250,28 @@
                                            SPA-C07-THKNCOMBINUM (IDX)
                    MOVE    SPA-C07-HKN-LIST  (IDX)
                                            TO  SPA-C07-HKNCOMBI-G
+                   MOVE    SPA-C07-RSI-THKNKBN (IDX)
+                                           TO  SPA-C07-RSI-HKNKBN
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0002"              TO  SPA-ERRCD
+               GO      TO      410-HKNCOMBI-EXT
+           END-IF
+      *
+      *    労災保険区分がアフターケアの時、履歴日を表示する
+           IF      SPA-C07-RSI-HKNKBN =   "3"
+               PERFORM 31401-AFTER-JYURRK-SEC
+               IF      SPA-C07-RRKMAX     =   ZERO
+                   MOVE    "0012"              TO  SPA-ERRCD
+                   GO      TO      410-HKNCOMBI-EXT
+               END-IF
+               MOVE    9                   TO  SPA-C07-CUR
            ELSE
+               INITIALIZE                  SPA-C07-JYURRK-LIST
+               MOVE    ZERO                TO  SPA-C07-RRKMAX
+               MOVE    ZERO                TO  SPA-C07-JYURRKNUM
                MOVE    6                   TO  SPA-C07-CUR
            END-IF
       *
@@ -1142,6 +1362,63 @@
            EXIT.
       *
       *****************************************************************
+      *    受診履歴選択番号処理
+      *****************************************************************
+       450-JYURRKNUM-SEC                 SECTION.
+      *
+           MOVE    9                   TO  SPA-C07-CUR
+      *
+           MOVE    C07-JYURRKNUM      TO  SPA-C07-JYURRKNUM
+      *
+           IF      SPA-C07-JYURRKNUM  =   ZERO
+               GO      TO      450-JYURRKNUM-EXT
+           END-IF
+           IF      SPA-C07-JYURRKNUM  >   SPA-C07-RRKMAX
+               MOVE    "0015"              TO  SPA-ERRCD
+               GO      TO      450-JYURRKNUM-EXT
+           END-IF
+      *
+           MOVE    6                   TO  SPA-C07-CUR
+      *
+           .
+       450-JYURRKNUM-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    明細選択処理
+      *****************************************************************
+       460-RECELIST-SEC                 SECTION.
+      *
+           MOVE    ZERO                TO  WRK-SELNUM
+           MOVE    ZERO                TO  WRK-SELNUM2
+      *
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   SPA-C07-RRKMAX
+              IF      C07-JYURRK-SELECT (IDX)   =  "T"
+                  IF      SPA-C07-TRRKNUM(IDX)
+                                                 =   SPA-C07-JYURRKNUM
+                      MOVE    SPA-C07-TRRKNUM(IDX)  TO  WRK-SELNUM
+                  ELSE
+                      MOVE    SPA-C07-TRRKNUM(IDX)  TO  WRK-SELNUM2
+                  END-IF
+              END-IF
+           END-PERFORM
+      *
+           IF      WRK-SELNUM2     NOT =   ZERO
+               MOVE    WRK-SELNUM2         TO  SPA-C07-JYURRKNUM
+           ELSE
+               MOVE    WRK-SELNUM          TO  SPA-C07-JYURRKNUM
+           END-IF
+      *
+           MOVE    SPA-C07-JYURRKNUM  TO  C07-JYURRKNUM
+           PERFORM 450-JYURRKNUM-SEC
+      *
+           .
+       460-RECELIST-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    クリア　処理
       *****************************************************************
        220-CLEA-SEC                   SECTION.
@@ -1173,6 +1450,14 @@
            IF      SPA-C07-HKNCOMBINUM    =   SPACE
                MOVE    "0002"              TO  SPA-ERRCD
                GO      TO      212-TOUROKU-EXT
+           END-IF
+      *    アフターケアの時、受診日を選択すること
+           IF      SPA-C07-RSI-HKNKBN     =   "3"
+               IF      SPA-C07-JYURRKNUM  =   ZERO
+                   MOVE    "0014"              TO  SPA-ERRCD
+                   MOVE    9                   TO  SPA-C07-CUR
+                   GO      TO      212-TOUROKU-EXT
+               END-IF
            END-IF
       *
            IF      SPA-C07-COMMENT    =   SPACE
@@ -1234,13 +1519,13 @@
                IF      SPA-C07-SRYKA      =   "00"
                    IF      SPA-C07-HKNCOMBINUM
                                            =   JYURRK-HKNCOMBINUM
-                       MOVE    1               TO  FLG-OK
+                       PERFORM 21301-HKNCOBMI-RSCHK-SEC
                    END-IF
                ELSE
                    IF     (SPA-C07-HKNCOMBINUM
                                            =   JYURRK-HKNCOMBINUM) AND
                           (SPA-C07-SRYKA  =   JYURRK-SRYKA      )
-                       MOVE    1               TO  FLG-OK
+                       PERFORM 21301-HKNCOBMI-RSCHK-SEC
                    END-IF
                END-IF
       *
@@ -1252,8 +1537,27 @@
                MOVE    "0012"          TO  SPA-ERRCD
            END-IF
       *
+      *
            .
        2130-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険チェック処理
+      *****************************************************************
+       21301-HKNCOBMI-RSCHK-SEC        SECTION.
+      *
+           IF      SPA-C07-RSI-HKNKBN =   "3"
+               IF      SPA-C07-JYURRKYMD (SPA-C07-JYURRKNUM)
+                                           =   JYURRK-SRYYMD
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-OK
+           END-IF
+      *
+           .
+       21301-HKNCOBMI-RSCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1270,6 +1574,12 @@
            MOVE    SPA-C07-SRYYMS     TO  RECECOM-SRYYM
            MOVE    SPA-C07-HKNCOMBINUM
                                        TO  RECECOM-HKNCOMBI
+           IF      SPA-C07-RSI-HKNKBN     =   "3"
+               MOVE    SPA-C07-JYURRKYMD (SPA-C07-JYURRKNUM)(7:2)
+                                           TO  RECECOM-SRYDD
+           ELSE
+               MOVE    ZERO                TO  RECECOM-SRYDD
+           END-IF
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1320,6 +1630,12 @@
                MOVE    SPA-C07-SRYYMS     TO  RECECOM-SRYYM
                MOVE    SPA-C07-HKNCOMBINUM
                                        TO  RECECOM-HKNCOMBI
+               IF      SPA-C07-RSI-HKNKBN     =   "3"
+                   MOVE    SPA-C07-JYURRKYMD (SPA-C07-JYURRKNUM)(7:2)
+                                               TO  RECECOM-SRYDD
+               ELSE
+                   MOVE    ZERO                TO  RECECOM-SRYDD
+               END-IF
                MOVE    SPA-C07-COMMENT    TO  RECECOM-COMMENT
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
@@ -1611,6 +1927,11 @@
                                        TO  RECECOM-SRYYM
            MOVE    SPA-C07-NHKNCOMBI (IDX)
                                        TO  RECECOM-HKNCOMBI
+           MOVE    SPA-C07-TSRYDD (IDX)
+                                       TO  RECECOM-SRYDD
+           IF      SPA-C07-TSRYDD (IDX)   =   SPACE
+               MOVE    ZERO                TO  RECECOM-SRYDD
+           END-IF
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -1683,6 +2004,23 @@
            PERFORM 410-HKNCOMBI-SEC
            MOVE    SPA-C07-TCOMMENT(SPA-C07-SELNUM)
                                        TO  SPA-C07-COMMENT
+      *
+      *    アフターケアの時診療日を選択させる
+           IF       SPA-C07-TSRYDD (SPA-C07-SELNUM)  =   "00" OR
+                                                           SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   SPA-C07-RRKMAX
+                   IF      SPA-C07-JYURRKYMD (IDX)(7:2)
+                                           =   SPA-C07-TSRYDD
+                                                  (SPA-C07-SELNUM)
+                       MOVE    IDX             TO  SPA-C07-JYURRKNUM
+                       MOVE    SPA-C07-RRKMAX
+                                               TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            MOVE    1                   TO  SPA-C07-CUR
            .
@@ -1889,6 +2227,12 @@
                WHEN    "0013"
                    MOVE    "コメントは全角で入力して下さい"
                                        TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "アフターケアの時、診療日を選択して下さい"
+                                       TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE    "アフターケア診療日選択番号がありません"
+                                       TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  CERR
@@ -2056,6 +2400,28 @@
       *
            .
        970-JYURRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者労災保険情報読み込み
+      *****************************************************************
+       993-PTRSIINF-NEXT-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTRSIINF-REC
+               MOVE    ZERO            TO  FLG-PTRSIINF
+           ELSE
+               INITIALIZE                  PTRSIINF-REC
+               MOVE    1               TO  FLG-PTRSIINF
+           END-IF
+      *
+           .
+       993-PTRSIINF-NEXT-EXT.
            EXIT.
       *
       *****************************************************************

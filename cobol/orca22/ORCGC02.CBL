@@ -86,6 +86,7 @@
       *
       *  01.07.01    NACL-藤原    02/08/20  新傷病名マスタ対応
       *  01.07.02    NACL-藤原    02/08/28  労災のとき保険組合せの名称の修正
+      *  01.07.03    NACL-藤原    02/09/17  自賠責とき保険組合せの名称の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1136,19 +1137,32 @@
       *
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
       *
-           STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                   " "                 DELIMITED  BY  SIZE
-                   COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                   " "                 DELIMITED  BY  SIZE
-                   COMB-KOH2-TANSEIDONAME   DELIMITED  BY  SPACE
-                   " "                 DELIMITED  BY  SIZE
-                   COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                   " "                 DELIMITED  BY  SIZE
-                   COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
-                         INTO              WRK-HKNCOMBIMEI
+           IF       COMB-SYU-TANSEIDONAME  NOT =   SPACE                    
+               STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                       " "                 DELIMITED  BY  SIZE
+                       COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                 DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                 DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                 DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                             INTO              WRK-HKNCOMBIMEI
+               END-STRING
+           ELSE
+               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                 DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                 DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                 DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                             INTO              WRK-HKNCOMBIMEI
+               END-STRING
+           END-IF                      
       *
       *    労災の時、コメントの追加
-           IF      COMB-HKNNUM         =   "971"
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
                MOVE    SPA-HOSPID          TO  PTRSI-HOSPID

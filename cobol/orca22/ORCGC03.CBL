@@ -44,6 +44,7 @@
       *                                     入力時にも追加
       *
       *  01.01.01    NACL-藤原    02/08/20  新傷病名マスタ対応
+      *  01.01.02    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -179,6 +180,8 @@
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
       *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
        01  WRK-TBL-MAX             PIC 9(03)   VALUE   700.
       *    未コード化傷病名コード
@@ -199,8 +202,8 @@
       *
       *   印刷用呼出SHELL
        01  SHELL-AREA.
-           03  SHELL-NAME          PIC X(43)   VALUE
-               "/usr/local/orca/scripts/allways/orhcml09.sh".
+           03  SHELL-NAME          PIC X(27)   VALUE
+               "scripts/allways/orhcml09.sh".
            03  SHELL-TERMID        PIC X(32).
            03  SHELL-SYSYMD        PIC X(8).
            03  SHELL-HOSPID        PIC X(24).   
@@ -2875,7 +2878,12 @@
            MOVE    SPA-SYSYMD      TO  SHELL-SYSYMD  
            MOVE    SPA-HOSPID      TO  SHELL-HOSPID  
       *
-           MOVE    SHELL-NAME      TO  SHELLTBL-NAME
+      *****MOVE    SHELL-NAME      TO  SHELLTBL-NAME
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
            MOVE    SHELL-TERMID    TO  SHELLTBL-ARG1
            MOVE    SHELL-SYSYMD    TO  SHELLTBL-ARG2
            MOVE    SHELL-HOSPID    TO  SHELLTBL-ARG3
