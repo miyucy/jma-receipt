@@ -56,6 +56,8 @@
            03  LNK-S01-SINDAN              PIC  9(07).
       *自賠責明細書料金額
            03  LNK-S01-MEISAI              PIC  9(07).
+      *自賠責療養担当手当点数
+           03  LNK-S01-RYOYO               PIC  9(07).
       *船員保険（被保険者）＋通勤災害＋初診時
            03  LNK-S01-SENINFLG            PIC  X(01).
       *復帰コード
