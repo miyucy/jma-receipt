@@ -1585,7 +1585,7 @@
            IF      FLG-CHK             =   ZERO
                MOVE    3                   TO  SPA-GMN-CUR
                MOVE    "0002"              TO  SPA-ERRCD
-               GO      TO      41013-SRYKAI-SYORI-EXT
+               GO      TO      41017-NYUGAIKBN-CHK-EXT
            END-IF
       *
       *    画面編集用内容編集処理

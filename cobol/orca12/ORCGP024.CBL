@@ -2071,7 +2071,7 @@
                                            >   SPA-NAI24-FTNSTYMD
                MOVE    "2432"              TO  SPA-ERRCD
                MOVE    32                  TO  SPA-GMN24-CUR
-               GO      TO      41031-FTNEDYMD-EXT
+               GO      TO      41031-FTNSTYMD-EXT
            END-IF
            .
        41031-FTNSTYMD-EXT.
