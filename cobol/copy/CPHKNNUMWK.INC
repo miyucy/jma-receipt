@@ -70,6 +70,8 @@
            03 HKNWK-TENTNK                PIC  9(03).
       *レセプト請求区分
            03 HKNWK-RECESKYKBN            PIC  X(01).
+      *レセプト１円単位表示区分
+           03 HKNWK-RECEFTNDSPKBN         PIC  X(01).
       *
            03 HKNWK-NAIYOU.
       *本人
