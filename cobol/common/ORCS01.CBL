@@ -123,6 +123,7 @@
       *                                     SRYACCT5¢™31
       *  01.00.46    NACL-ÃÁœ∆    04/01/15  æ√»Ò¿«π‡Ã‹≈˘ƒ…≤√π‡Ã‹ ‘Ω∏
       *  01.00.47    NACL-ÃÁœ∆    04/02/10  ¿∏ ›§Œ∏¯»Ò…È√¥∏¬≈Ÿ≥€¿ﬂƒÍ
+      *  01.00.48    NACL-æÆ∆¶¬Ù  04/02/19   °≤¨¥µº‘§ŒµÎ…’≥∞•®•Í•¢ΩÈ¥¸≤Ω
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -5585,6 +5586,12 @@
                                         *  WK-FUTANWARI
                     WHEN  "2"
                       MOVE    ZERO   TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                      MOVE    ZERO   TO   LNK-SYU-KYUFUGAI-SHOSHIN-TEN
+                                          LNK-SYU-KYUFUGAI-SIDOU-TEN
+                                          LNK-SYU-KYUFUGAI-OSIN1-TEN
+                                          LNK-SYU-KYUFUGAI-OSIN2-TEN
+                                          LNK-SYU-KYUFUGAI-OSIN3-TEN
+                                          LNK-SYU-KYUFUGAI-GOKEI-TEN
                  END-EVALUATE
                ELSE
                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
@@ -6027,6 +6034,12 @@
                                         *  WK-FUTANWARI
                     WHEN  "2"
                       MOVE    ZERO   TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                      MOVE    ZERO   TO   LNK-SYU-KYUFUGAI-SHOSHIN-TEN
+                                          LNK-SYU-KYUFUGAI-SIDOU-TEN
+                                          LNK-SYU-KYUFUGAI-OSIN1-TEN
+                                          LNK-SYU-KYUFUGAI-OSIN2-TEN
+                                          LNK-SYU-KYUFUGAI-OSIN3-TEN
+                                          LNK-SYU-KYUFUGAI-GOKEI-TEN
                  END-EVALUATE
                ELSE
                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
