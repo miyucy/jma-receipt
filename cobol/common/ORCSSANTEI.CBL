@@ -263,6 +263,18 @@
       *
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
+           IF     (WRK-SRYCD (1:3)     =   "099"  )  OR
+                  (TNS-SRYKBN      NOT =   "70"   )
+               CONTINUE
+           ELSE
+      *        £Ã£Ô¡¢£Í£Ò£É¤Î»þ»»Äê¤Î¥³¡¼¥É¤òÃÖ´¹¤¨¤ë
+               PERFORM 10010-SANTEI-SRYCD-SEC
+               IF      WRK-SRYCD       NOT =   TNS-SRYCD
+                   MOVE    WRK-SRYCD           TO  SSANTEI-SRYCD
+                   MOVE    WRK-SRYCD           TO  TNS-SRYCD
+                   PERFORM 910-TENSU-READ-SEC
+               END-IF
+           END-IF
       *
            EVALUATE    SSANTEI-PG
                WHEN    "K03"
@@ -320,6 +332,27 @@
            .
       *
        1001-SANTEI-KEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »»ÄêÍÑ¤Î¿ÇÎÅ¥³¡¼¥É¤ØÊÑ¹¹½èÍý
+      *****************************************************************
+       10010-SANTEI-SRYCD-SEC              SECTION.
+      *
+      *    Êñ³çÄþ¸º¶èÊ¬È½Äê
+           EVALUATE    TNS-HOUKATUTEIGENKBN
+      *        Æ¬Éô
+               WHEN    201
+                   MOVE    "099700101"         TO  WRK-SRYCD
+      *        ¶í´´
+               WHEN    202
+                   MOVE    "099700102"         TO  WRK-SRYCD
+      *        »Í»è
+               WHEN    203
+                   MOVE    "099700103"         TO  WRK-SRYCD
+           END-EVALUATE
+           .
+       10010-SANTEI-SRYCD-EXT.
            EXIT.
       *
       *****************************************************************

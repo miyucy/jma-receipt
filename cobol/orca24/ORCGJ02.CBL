@@ -6592,7 +6592,15 @@
       *            手技料の時、算定歴を判定する
                    IF      SRY-SRYCD (IDZ)(1:1)    =   "1"
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
+                       MOVE    SRY-SRYCD (IDZ)     TO  WRK-SRYCD
                        PERFORM 910-TENSU-READ-SEC
+      *                算定用の診療コードへ変更
+                       PERFORM 45020-SANTEI-SRYCD-SEC
+                       IF      SRY-SRYCD (IDZ)
+                                               NOT =   WRK-SRYCD
+                           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
+                       END-IF
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                            PERFORM 49021-SANTEI-UPD-SEC
                        END-IF
@@ -6612,6 +6620,26 @@
            .
        4902-SANTEI-KOUSIN-EXT.
            EXIT.
+      *****************************************************************
+      *    算定用の診療コードへ変更処理
+      *****************************************************************
+       45020-SANTEI-SRYCD-SEC              SECTION.
+      *
+      *    包括逓減区分判定
+           EVALUATE    TNS-HOUKATUTEIGENKBN
+      *        頭部
+               WHEN    201
+                   MOVE    "099700101"         TO  WRK-SRYCD
+      *        躯幹
+               WHEN    202
+                   MOVE    "099700102"         TO  WRK-SRYCD
+      *        四肢
+               WHEN    203
+                   MOVE    "099700103"         TO  WRK-SRYCD
+           END-EVALUATE
+           .
+       45020-SANTEI-SRYCD-EXT.
+           EXIT.
       *
       *****************************************************************
       *    算定履歴更新処理
@@ -6622,7 +6650,8 @@
            INITIALIZE                  ORCSSANTEIAREA
            MOVE    "1"                 TO  SSANTEI-SYORI
            MOVE    "J02"               TO  SSANTEI-PG
-           MOVE    SRY-SRYCD (IDZ)     TO  SSANTEI-SRYCD
+      **** MOVE    SRY-SRYCD (IDZ)     TO  SSANTEI-SRYCD
+           MOVE    WRK-SRYCD           TO  SSANTEI-SRYCD
            MOVE    ACCT-SRYYM          TO  SSANTEI-SRYYMD(1:6)
            MOVE    "01"                TO  SSANTEI-SRYYMD(7:2)
            MOVE    ACCT-PTID           TO  SSANTEI-PTID
