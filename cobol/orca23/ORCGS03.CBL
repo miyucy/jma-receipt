@@ -242,6 +242,7 @@
            03  WRK-SKYPRT-SKYMONEY                 PIC S9(10).
            03  WRK-SKYPRT-NYUKIN                   PIC S9(10).
            03  WRK-SEIKYU-PG                       PIC X(20).
+           03  WRK-SKYPRTKBN                       PIC X(01).
       *
        01  WRK-ROW.
            03  WRK-SMEILIST1-ROW                   PIC S9(9)   BINARY.
@@ -1196,15 +1197,16 @@
                    MOVE    SPA-GMN-NYKN-HOHOLST (IDX0)
                                            TO  S03-NYUKINHOUHOULST(IDX0)
                END-PERFORM
-           END-EVALUATE
       *
-           MOVE    SPA-GMN-SKYPRT-G    TO  S03-SKYPRT
-           MOVE    SPA-GMN-SKYPRT-MAX  TO  S03-SKYPRT-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SPA-GMN-SKYPRT-MAX )
-               MOVE    SPA-GMN-SKYPRTLST (IDX0)
-                                       TO  S03-SKYPRTLST(IDX0)
-           END-PERFORM
+               MOVE    SPA-GMN-SKYPRT-G    TO  S03-SKYPRT
+               MOVE    SPA-GMN-SKYPRT-MAX  TO  S03-SKYPRT-COUNT
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   SPA-GMN-SKYPRT-MAX )
+                   MOVE    SPA-GMN-SKYPRTLST (IDX0)
+                                           TO  S03-SKYPRTLST(IDX0)
+               END-PERFORM
+      *
+           END-EVALUATE
       *
            MOVE    SPA-GMN-SELNUM          TO  S03-RIREKIIN
       *
@@ -1249,35 +1251,42 @@
            MOVE    SPA-GMN-RSISDO      TO  S03-RSISDO
            MOVE    SPA-GMN-RSIETC      TO  S03-RSIETC
       *
+           MOVE    WIDGET-NORMAL       TO  S03-NYUKINGK2-STATE
+                                           S03-NYUKINYMD-STATE
+                                           S03-NYUKINHOUHOU-STATE
+                                           S03-NYUKINHOUHOULST-STATE
+                                           S03-SKYPRT-STATE
+                                           S03-SKYPRTLST-STATE
+                                           S03-B12-STATE
+                                           S03-B12S-STATE
+                                           S03-NAIYO-STATE
+                                           S03-NAIYOLST-STATE
+      *
            IF    ( SPA-S01-SYORINO     =   CONST-PROC-SYOKAI )
                MOVE    WIDGET-INSENSITIVE  TO  S03-NYUKINGK2-STATE
                                                S03-NYUKINYMD-STATE
                                                S03-NYUKINHOUHOU-STATE
                                                S03-NYUKINHOUHOULST-STATE
-                                               S03-B12-STATE
-           ELSE
-               MOVE    WIDGET-NORMAL       TO  S03-NYUKINGK2-STATE
-                                               S03-NYUKINYMD-STATE
-                                               S03-NYUKINHOUHOU-STATE
-                                               S03-NYUKINHOUHOULST-STATE
+                                               S03-SKYPRT-STATE
+                                               S03-SKYPRTLST-STATE
                                                S03-B12-STATE
            END-IF
       *
            IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
-               MOVE    WIDGET-INSENSITIVE  TO  S03-NAIYO-STATE
-                                               S03-NAIYOLST-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  S03-NYUKINGK2-STATE
+                                               S03-NYUKINYMD-STATE
+                                               S03-NYUKINHOUHOU-STATE
+                                               S03-NYUKINHOUHOULST-STATE
                                                S03-SKYPRT-STATE
                                                S03-SKYPRTLST-STATE
+                                               S03-B12-STATE
+                                               S03-NAIYO-STATE
+                                               S03-NAIYOLST-STATE
                                                S03-B12S-STATE
       *
                MOVE    SPACE               TO  S03-B03-LABEL
       *
            ELSE
-               MOVE    WIDGET-NORMAL       TO  S03-NAIYO-STATE
-                                               S03-NAIYOLST-STATE
-                                               S03-SKYPRT-STATE
-                                               S03-SKYPRTLST-STATE
-                                               S03-B12S-STATE
       *
                EVALUATE SPA-S01-SYORINO
       *
@@ -1667,7 +1676,7 @@
            END-EVALUATE
       *
       *
-           PERFORM 310-SPA-SET-SEC
+           PERFORM 4200-SPA-SET-SEC
       *
            MOVE    1               TO  FLG-SMEILIST1-ROW
       *
@@ -2032,6 +2041,8 @@
       *    MOVE   ????                 TO  ORCHC03-SEIKYU-TAX-SAI
            MOVE   WRK-SKYPRT-NYUKIN    TO  ORCHC03-NYUKIN
            MOVE   3                    TO  ORCHC03-HAKKOFLG
+           MOVE   WRK-SKYPRT-DENPEDANUM
+                                       TO  ORCHC03-DENPEDANUM
            CALL  WRK-SEIKYU-PG     USING   WRK-SPA-AREA
                                            ORCHC03AREA
       *
@@ -2093,7 +2104,7 @@
                    PERFORM 4101-SKYPRT-PRINT-SEC
                END-IF
       *
-               PERFORM 310-SPA-SET-SEC
+               PERFORM 4200-SPA-SET-SEC
       *
                EVALUATE    SPA-S01-SYORINO
                WHEN    CONST-PROC-NYUKIN
@@ -2440,7 +2451,7 @@
                MOVE    CONST-PROC-SYOKAI   TO  SPA-S01-SYORINO
                END-EVALUATE
       *
-               PERFORM 310-SPA-SET-SEC
+               PERFORM 4200-SPA-SET-SEC
       *
                MOVE    1               TO  FLG-SMEILIST1-ROW
       *
@@ -2550,6 +2561,19 @@
       *
            .
        4200-SKYPRTLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＳＰＡ編集処理
+      *****************************************************************
+       4200-SPA-SET-SEC                SECTION.
+      *
+           MOVE    SPA-GMN-SKYPRT          TO  WRK-SKYPRTKBN
+           PERFORM 310-SPA-SET-SEC
+           MOVE    WRK-SKYPRTKBN           TO  SPA-GMN-SKYPRT
+           PERFORM 4101-SKYPRT-CHK-SEC
+      *
+           .
+       4200-SPA-SET-EXT.
            EXIT.
       *************************************************************
       *    エラーメッセージ表示理
