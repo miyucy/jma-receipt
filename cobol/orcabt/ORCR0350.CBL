@@ -3572,8 +3572,12 @@
            END-IF
            IF    ( IDXX                =   2               )
            AND   ( IDX                 =   WRK-SRYCD72-MAX )
-               COMPUTE WRK-TENSU   =   RECE641-KIZAITEN    -
-                                       RECE641-SYUTEN2
+               IF      RECE641-SRYKBN      =   "70"
+                   MOVE    RECE641-KIZAITEN    TO  WRK-TENSU
+               ELSE
+                   COMPUTE WRK-TENSU   =   RECE641-KIZAITEN    -
+                                           RECE641-SYUTEN2
+               END-IF
                IF      WRK-TENSU       >   ZERO
                    MOVE    WRK-TENSU           TO  WRK-NUM
                    MOVE    7                   TO  WRK-NAGASA

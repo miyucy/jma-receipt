@@ -121,7 +121,7 @@
       *                                     共済組合の下船３ヶ月を追加
       *                                     医療保険一部負担金額の編集追加 
       *                                     パラメタの追加
-      *  01.00.04    NACL-藤原    04/11/16  特定器材レコードのフィルムと
+      *  01.02.07    NACL-藤原    04/11/16  特定器材レコードのフィルムと
       *                                     器材の点数・回数を別々に記載
       *****************************************************************
       *
@@ -3132,8 +3132,12 @@
            END-IF
            IF    ( IDXX                =   2               )
            AND   ( IDX                 =   WRK-SRYCD72-MAX )
-               COMPUTE WRK-TENSU   =   RECE041-KIZAITEN    -
-                                       RECE041-SYUTEN2
+               IF      RECE041-SRYKBN      =   "70"
+                   MOVE    RECE041-KIZAITEN    TO  WRK-TENSU
+               ELSE
+                   COMPUTE WRK-TENSU   =   RECE041-KIZAITEN    -
+                                           RECE041-SYUTEN2
+               END-IF
                IF      WRK-TENSU       >   ZERO
                    MOVE    WRK-TENSU           TO  WRK-NUM
                    MOVE    7                   TO  WRK-NAGASA
