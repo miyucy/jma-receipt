@@ -29,6 +29,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-藤原    03/05/30  地方公費の判定の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1106,12 +1107,11 @@
                    MOVE     IDX         TO  SESNIDX
                END-IF
       *        地方公費
-               IF  RECE02-KOHNUM (IDX)  =   "183"  OR  "283"   OR
-                                            "182"  OR  "282"   OR
-                                            "184"
-                   MOVE     IDX         TO  KOHIDX
-                   COMPUTE KOHIDX1 =   KOHIDX     +   1
-               END-IF
+               EVALUATE    RECE02-KOHNUM (IDX)  (1:1)
+                   WHEN    "1" THRU    "2" 
+                       MOVE     IDX         TO  KOHIDX
+                       COMPUTE KOHIDX1 =   KOHIDX     +   1
+               END-EVALUATE
            END-PERFORM
       *
       *    県単用項目ファイル読込処理
