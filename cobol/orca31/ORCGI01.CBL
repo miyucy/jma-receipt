@@ -467,6 +467,16 @@
          02    SUMTEIKIRRK-OCC     OCCURS 50.
            COPY  "CPTEIKIRRK.INC"  REPLACING  //TEIKIRRK-//
                                            BY //SUMTEIKIRRK-//.
+      *
+      *    退院日の同日再入院用ワーク領域
+       01  WRK-DOU-AREA.
+           03  WRK-DOU-NAI-I01-NYUINYMD      PIC X(08).
+           03  WRK-DOU-PTNYUINRRK-TENNYUYMD  PIC X(08).
+           03  WRK-DOU-TENNYUYMD             PIC X(08).
+           03  FLG-JIINRRK                   PIC 9(01).
+       01  WRK-PTNYUINRRK-REC.
+           COPY  "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
+                                            BY  //WRK-PTNYUINRRK-//.
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -6624,7 +6634,7 @@
       *    前回退院日＜入院日となっていること
            IF    ( SPA-NAI-I01-TTAIINYMD (1) NOT =   SPACE )
                IF    ( SPA-NAI-I01-TTAIINYMD (1)
-                                  <    SPA-NAI-I01-NYUINYMD )
+                                  <=    SPA-NAI-I01-NYUINYMD )
                    CONTINUE
                ELSE
                    MOVE    "1018"      TO  SPA-ERRCD
@@ -8146,6 +8156,63 @@
       *****************************************************************
        4801-NYUKAIKEI-EDIT-SEC         SECTION.
       *
+      *---------------退院日の同日入院処理ここから----------------------
+           MOVE   SPACE                TO  WRK-DOU-TENNYUYMD
+      *    同日再入院用に入院日（転入日）を退避
+           MOVE   SPA-NAI-I01-NYUINYMD TO  WRK-DOU-NAI-I01-NYUINYMD
+           MOVE   PTNYUINRRK-TENNYUYMD TO  WRK-DOU-PTNYUINRRK-TENNYUYMD
+      *    入院履歴の退避
+           MOVE   PTNYUINRRK-REC       TO  WRK-PTNYUINRRK-REC
+      *    最終入院履歴が自院歴かを判定する
+           MOVE    ZERO                TO  FLG-JIINRRK
+           INITIALIZE  PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-NAI-I01-PTID    TO  PTNYUINRRK-PTID
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTNYUINRRK-KEY9"   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO  )
+               MOVE    "PTNYUINRRK-KEY9"   TO  WRK-DBPATH
+               PERFORM  900-TBL-READ-SEC
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+               IF      PTNYUINRRK-JTIKBN   NOT =   "5"  AND "6"
+                   DISPLAY "PTNYUINRRK-RRKNUM = " PTNYUINRRK-RRKNUM
+                   DISPLAY "PTNYUINRRK-TAIINYMD = " PTNYUINRRK-TAIINYMD
+                   IF  PTNYUINRRK-TAIINYMD  = WRK-DOU-NAI-I01-NYUINYMD                   
+                       MOVE   1        TO  FLG-JIINRRK
+                   END-IF
+               END-IF
+           END-IF
+      *    入院履歴クローズ
+           MOVE    "PTNYUINRRK-KEY9"   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *    入院履歴の復元
+           MOVE    WRK-PTNYUINRRK-REC  TO  PTNYUINRRK-REC
+      *    前歴が自院歴（同日退院分）の場合、入院会計作成日を１日ずらす
+           IF     FLG-JIINRRK    =     1
+               INITIALIZE                  STS-AREA-DAY
+               INITIALIZE                  LNK-DAY6-AREA
+               MOVE    "61"            TO  LNK-DAY6-IRAI
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                       TO  LNK-DAY6-KIJUN
+               MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+               MOVE    1               TO  LNK-DAY6-ZOGEN
+               CALL    "ORCSDAY"       USING     STS-AREA-DAY
+                                                 LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN TO  SPA-NAI-I01-NYUINYMD
+               INITIALIZE                  STS-AREA-DAY
+               INITIALIZE                  LNK-DAY6-AREA
+               MOVE    "61"            TO  LNK-DAY6-IRAI
+               MOVE    WRK-DOU-PTNYUINRRK-TENNYUYMD
+                                       TO  LNK-DAY6-KIJUN
+               MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+               MOVE    1               TO  LNK-DAY6-ZOGEN
+               CALL    "ORCSDAY"       USING     STS-AREA-DAY
+                                                 LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN TO  WRK-DOU-TENNYUYMD
+           END-IF
+      *---------------退院日の同日入院処理ここまで----------------------
+      *
            INITIALIZE      ORCSSYOKIKSNAREA
       *
       *    通算日数、算定開始日を求める
@@ -8154,6 +8221,7 @@
                GO  TO  4801-NYUKAIKEI-EDIT-EXT
            END-IF
       *
+           DISPLAY  "==WRK-TSUSAN == " WRK-TSUSAN
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
@@ -9044,6 +9112,55 @@
       *****************************************************************
        4801-NYUKAIKEI-ERASE-SUB-SEC         SECTION.
       *
+           DISPLAY "4801-NYUKAIKEI-ERASE-SUB-SEC"
+           DISPLAY "SPA-NAI-I01-NYUINYMD = " SPA-NAI-I01-NYUINYMD
+           DISPLAY "PTNYUINRRK-PTID      = " PTNYUINRRK-PTID
+           DISPLAY "PTNYUINRRK-NYUINYMD  = " PTNYUINRRK-NYUINYMD
+           DISPLAY "PTNYUINRRK-TAIINYMD  = " PTNYUINRRK-TAIINYMD
+           DISPLAY "PTNYUINRRK-HKNCOMBINUM  = " PTNYUINRRK-HKNCOMBINUM
+      *---------------退院日の同日入院処理ここから----------------------
+           MOVE   SPACE                TO  WRK-DOU-TENNYUYMD
+      *    同日再入院用に入院日（転入日）を退避
+           MOVE   SPA-NAI-I01-NYUINYMD TO  WRK-DOU-NAI-I01-NYUINYMD
+      *    入院履歴の退避
+           MOVE   PTNYUINRRK-REC       TO  WRK-PTNYUINRRK-REC
+      *    最終入院履歴が自院歴かを判定する
+           MOVE    ZERO                TO  FLG-JIINRRK
+           INITIALIZE  PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-NAI-I01-PTID    TO  PTNYUINRRK-PTID
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTNYUINRRK-KEY9"   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO  )
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+               IF      PTNYUINRRK-JTIKBN   NOT =   "5"  AND "6"
+                   DISPLAY "PTNYUINRRK-RRKNUM = " PTNYUINRRK-RRKNUM
+                   DISPLAY "PTNYUINRRK-TAIINYMD = " PTNYUINRRK-TAIINYMD
+                   IF  PTNYUINRRK-TAIINYMD  = WRK-DOU-NAI-I01-NYUINYMD                   
+                       MOVE   1        TO  FLG-JIINRRK
+                   END-IF
+               END-IF
+           END-IF
+      *    入院履歴クローズ
+           MOVE    "PTNYUINRRK-KEY9"   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *    入院履歴の復元
+           MOVE    WRK-PTNYUINRRK-REC  TO  PTNYUINRRK-REC
+      *    前歴が自院歴（同日退院分）の場合、入院会計作成日を１日ずらす
+           IF     FLG-JIINRRK    =     1
+               INITIALIZE                  STS-AREA-DAY
+               INITIALIZE                  LNK-DAY6-AREA
+               MOVE    "61"            TO  LNK-DAY6-IRAI
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                       TO  LNK-DAY6-KIJUN
+               MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+               MOVE    1               TO  LNK-DAY6-ZOGEN
+               CALL    "ORCSDAY"       USING     STS-AREA-DAY
+                                                 LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN TO  SPA-NAI-I01-NYUINYMD
+           END-IF
+      *---------------退院日の同日入院処理ここまで----------------------
       *    入院会計作成サブの呼出し
            INITIALIZE            ORCSNYUACCT-AREA
            MOVE     SPA-GMN-I01-SYORIKBN-CD(2:1)
@@ -9067,6 +9184,7 @@
                   DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
                             LNK-SCNYUACCT-RC
            END-IF
+           DISPLAY "4801-NYUKAIKEI-ERASE-SUB-EXT"
       *
            .
        4801-NYUKAIKEI-ERASE-SUB-EXT.
@@ -11230,6 +11348,7 @@
       *    通算日数取得処理
       *****************************************************************
        4801-TSUSAN-SANTEI-GET-SEC      SECTION.
+           DISPLAY "4801-TSUSAN-SANTEI-GET-SEC"
       *
            INITIALIZE                  WRK-TSUSAN
                                        WRK-SANTEISTYMD
@@ -11237,6 +11356,11 @@
            INITIALIZE                  ORCSTUSANAREA
            MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
            MOVE    PTNYUINRRK-PTID TO  STUSAN-PTID
+      *---------------退院日の同日入院処理ここから----------------------
+           IF   WRK-DOU-TENNYUYMD    NOT =   SPACE
+               MOVE    WRK-DOU-TENNYUYMD  TO  PTNYUINRRK-TENNYUYMD
+           END-IF
+      *---------------退院日の同日入院処理ここまで----------------------
            MOVE    PTNYUINRRK-TENNYUYMD
                                    TO  STUSAN-KJNYMD
       *    特定入院での算定済日数を取得用
@@ -11300,6 +11424,14 @@
            END-IF
       *
            COMPUTE WRK-TSUSAN  =   STUSAN-NISSU03  -   1
+           DISPLAY "==PTNYUINRRK-TENNYUYMD1 = " PTNYUINRRK-TENNYUYMD
+      *---------------退院日の同日入院処理ここから----------------------
+      *     IF   WRK-DOU-TENNYUYMD    NOT =   SPACE
+      *         MOVE    WRK-DOU-TENNYUYMD  TO  PTNYUINRRK-TENNYUYMD
+      *     END-IF
+      *---------------退院日の同日入院処理ここまで----------------------
+           DISPLAY "==WRK-DOU-TENNYUYMD =" WRK-DOU-TENNYUYMD
+           DISPLAY "==PTNYUINRRK-TENNYUYMD2 = " PTNYUINRRK-TENNYUYMD
            MOVE    PTNYUINRRK-TENNYUYMD
                                    TO  WRK-SANTEISTYMD
       *
@@ -11314,6 +11446,7 @@
       *
            PERFORM 5002-CALENDAR-SEC
            MOVE    WRK-KEISANYMD   TO  WRK-SENTEI-STYMD
+           DISPLAY "4801-TSUSAN-SANTEI-GET-EXT"
       *
            .
        4801-TSUSAN-SANTEI-GET-EXT.
@@ -13434,7 +13567,7 @@
                MOVE    "料のいずれかを変更してください"
                                        TO  SPA-ERRMSG (41 : )
            WHEN    "1018"
-               MOVE    "入院日≦前回退院日となっています"
+               MOVE    "入院日＜前回退院日となっています"
                                        TO  SPA-ERRMSG
            WHEN    "1019"
                MOVE    "入院歴を選択してください"
