@@ -1953,16 +1953,12 @@
                          UNTIL     IDY         >  31
                    MOVE    SPACE                    TO  WRK-CHK-SKB
                    PERFORM   VARYING   IDX     FROM    1   BY  1
-                             UNTIL     IDX         >   SPA-I41-MAX-41
-                       MOVE    SPA-I41-THKNCOMBI-41 (IDX)
-                                                        TO  WRK-SURYO-Z1
-                       IF     SPA-GMN-TDAY-41 (IDW IDY)   =   ALL SPACE
+                             UNTIL     IDX         >  I41-KUMILIST-COUNT
+                       MOVE    I41-KUMINO (IDX)         TO  WRK-SURYO-Z1
+                       IF     (SPA-GMN-TDAY-41 (IDW IDY)  =
+                                                  WRK-SURYO-Z1(4:2))  OR
+                              (SPA-GMN-TDAY-41 (IDW IDY)  =  ALL SPACE)
                            MOVE    "*"                  TO  WRK-CHK-SKB
-                       ELSE
-                           IF     SPA-GMN-TDAY-41 (IDW IDY)     =
-                                                      WRK-SURYO-Z1(4:2)
-                               MOVE    "*"              TO  WRK-CHK-SKB
-                           END-IF
                        END-IF
                    END-PERFORM
                    IF     WRK-CHK-SKB   =   SPACE
