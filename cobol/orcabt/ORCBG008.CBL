@@ -504,7 +504,7 @@
            CLOSE                       TOKEIX-FILE
       *
            MOVE    1                   TO  FLG-END
-      
+      *
       *    ファイル削除
            MOVE    ZERO        TO  IF-RESULT
            MOVE    TOKEIPARA   TO  IF-FILENAME
@@ -572,28 +572,16 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF          MCP-RC          =   ZERO
-               MOVE    "SRYACCT-KEY7"      TO  ORC-DBPATH
                PERFORM 900-ACCT-DBFETCH-SEC
            ELSE
                MOVE    1                   TO  FLG-SRYACCT
            END-IF
       *
            PERFORM UNTIL   FLG-SRYACCT     =   1
-      *        最初の算定日を取得する
-               MOVE    ZERO                TO  WRK-DD
-               PERFORM VARYING     IDX-D   FROM    1   BY   1
-                       UNTIL       IDX-D   >   31
-                   IF          ACCT-DAY(1 IDX-D)   >   ZERO
-                       MOVE    IDX-D               TO  WRK-DD
-                       PERFORM 230-MAIN-SRY-SEC
-                   END-IF
-               END-PERFORM
-      *
-               MOVE    "SRYACCT-KEY7"          TO  ORC-DBPATH
+               PERFORM 230-MAIN-SRY-SEC
                PERFORM 900-ACCT-DBFETCH-SEC
            END-PERFORM
       *
-           MOVE    "SRYACCT-KEY7"          TO  ORC-DBPATH
            PERFORM 900-ACCT-DBCLOSE-SEC
       *
            .
@@ -604,6 +592,19 @@
       *    診療行為処理
       *****************************************************************
        230-MAIN-SRY-SEC            SECTION.
+      *
+           EVALUATE     ACCT-SRYKBN(1:1)
+           WHEN    "2"
+               MOVE    1                   TO  WRK-SYUBETU
+           WHEN    "3"
+               MOVE    2                   TO  WRK-SYUBETU
+           WHEN    "4"
+               MOVE    3                   TO  WRK-SYUBETU
+           WHEN    "5"
+               MOVE    4                   TO  WRK-SYUBETU
+           WHEN    OTHER
+               GO  TO  230-MAIN-SRY-EXT
+           END-EVALUATE
       *
            INITIALIZE                  SRYACT-REC
            MOVE    ACCT-HOSPID         TO  SRY-HOSPID
@@ -621,7 +622,6 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF          MCP-RC          =   ZERO
-               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SRY-DBFETCH-SEC
            ELSE
                INITIALIZE                  SRYACT-REC
@@ -630,11 +630,9 @@
       *
            PERFORM UNTIL   FLG-SRYACT      =   1
                PERFORM 240-MAIN-HEN-SEC
-               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SRY-DBFETCH-SEC
            END-PERFORM
       *
-           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
            PERFORM 900-SRY-DBCLOSE-SEC
             .
        230-MAIN-SRY-EXT.
@@ -645,25 +643,19 @@
       *****************************************************************
        240-MAIN-HEN-SEC            SECTION.
       *
-           EVALUATE     SRY-SRYKBN(1:1)
-           WHEN    "2"
-               MOVE    1                   TO  WRK-SYUBETU
-           WHEN    "3"
-               MOVE    2                   TO  WRK-SYUBETU
-           WHEN    "4"
-               MOVE    3                   TO  WRK-SYUBETU
-           WHEN    "5"
-               MOVE    4                   TO  WRK-SYUBETU
-           WHEN    OTHER
-               GO  TO  240-MAIN-HEN-EXT
-           END-EVALUATE
-      *
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL ( IDX     >   5 )
-                   OR    ( SRY-SRYCD(IDX)  =   SPACE )
-      *        薬剤を対象とする
-               IF      SRY-SRYCD(IDX)(1:1)     =   "6"
-                   PERFORM 250-TOKEI-HEN-SEC 
+           MOVE    ZERO                TO  WRK-DD
+           PERFORM VARYING     IDX-D   FROM    1   BY   1
+                   UNTIL       IDX-D   >   31
+               IF          ACCT-DAY(1 IDX-D)   >   ZERO
+                   MOVE    IDX-D               TO  WRK-DD
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL ( IDX     >   5 )
+                           OR    ( SRY-SRYCD(IDX)  =   SPACE )
+      *                薬剤を対象とする
+                       IF      SRY-SRYCD(IDX)(1:1)     =   "6"
+                           PERFORM 250-TOKEI-HEN-SEC 
+                       END-IF
+                   END-PERFORM
                END-IF
            END-PERFORM
             .
@@ -1049,6 +1041,7 @@
       *****************************************************************
        900-ACCT-DBFETCH-SEC        SECTION.
       *
+           MOVE    "SRYACCT-KEY7"      TO  ORC-DBPATH
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1069,6 +1062,7 @@
       *****************************************************************
        900-ACCT-DBCLOSE-SEC        SECTION.
       *
+           MOVE    "SRYACCT-KEY7"      TO  ORC-DBPATH
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1083,6 +1077,7 @@
       *****************************************************************
        900-SRY-DBFETCH-SEC         SECTION.
       *
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1103,6 +1098,7 @@
       *****************************************************************
        900-SRY-DBCLOSE-SEC         SECTION.
       *
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
