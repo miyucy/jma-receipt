@@ -284,6 +284,7 @@
       *
            MOVE    1                       TO  WRK-INDEX
            PERFORM 2001-SYUKEI-SEC     UNTIL   FLG-RECE10   =   1 
+                                       OR      FLG-ERR      =   1
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "SEIKYU-KEY9"       TO  ORC-DBPATH
@@ -299,6 +300,7 @@
       *
                MOVE    2                   TO  WRK-INDEX
                PERFORM 2001-SYUKEI-SEC     UNTIL   FLG-RECE10   =   1 
+                                           OR      FLG-ERR      =   1
       *
                MOVE    "DBCLOSE"           TO  MCP-FUNC
                MOVE    "SEIKYU-KEY10"      TO  ORC-DBPATH

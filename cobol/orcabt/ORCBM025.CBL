@@ -411,6 +411,7 @@
            PERFORM 900-SEIKYU-SELECT-SEC
       *
            PERFORM 200-HENSYU-SEC      UNTIL   FLG-RECE10   =   1 
+                                       OR      FLG-ERR      =   1
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
@@ -428,6 +429,7 @@
                PERFORM 900-SEIKYU-SELECT-SEC
       *
                PERFORM 200-HENSYU-SEC      UNTIL   FLG-RECE10   =   1 
+                                           OR      FLG-ERR      =   1
       *
                MOVE    "DBCLOSE"           TO  MCP-FUNC
                MOVE    WRK-PATH            TO  ORC-DBPATH
