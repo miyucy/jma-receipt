@@ -155,7 +155,6 @@
                05  SPA-NAI-T02-AREA.
                    07  SPA-NAI-T02-KOUMOKU.
                        09  SPA-NAI-T02-SELNUM1         PIC 9(03).
-                       09  SPA-NAI-T02-BTPARA-RENNUM   PIC 9(04).
                        09  SPA-NAI-T02-KOUMOKU2.
                            11  SPA-NAI-T02-SELNUM2     PIC 9(03).
                            11  SPA-NAI-T02-PTID        PIC 9(10).
