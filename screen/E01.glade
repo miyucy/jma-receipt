@@ -5,13 +5,9 @@
   <name>E01</name>
   <program_name>E01</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -29,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 05 Jan 2001 11:20:35 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -517,6 +513,63 @@
       </signal>
       <label>処理結果</label>
       <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>CHKMSG01</name>
+      <x>600</x>
+      <y>15</y>
+      <width>230</width>
+      <height>22</height>
+      <label>患者ＩＤを患者番号に置換しますか</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>CHKMSG02</name>
+      <x>850</x>
+      <y>15</y>
+      <width>45</width>
+      <height>22</height>
+      <label>しない</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKBTN01</name>
+      <x>830</x>
+      <y>18</y>
+      <width>16</width>
+      <height>17</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 26 May 2003 07:11:16 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>enter</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Mon, 26 May 2003 07:11:54 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
     </widget>
   </widget>
 </widget>

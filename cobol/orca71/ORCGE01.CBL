@@ -24,7 +24,7 @@
       *  コンポーネント名  : ＣＳＶ作成（Ｅ０１）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  01/09/15    ひさなが 　   新規作成
+      *  01/09/15    ひさなが      新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -39,6 +39,7 @@
       *                                     月代り受給者番号の追加
       * 01.00.05     ひさなが     02/09/13  ディレクトリをサブプロへ
       * 01.00.06     ひさなが     03/05/12  入院関連テーブルの追加
+      * 01.00.07     ひさなが     03/06/05  患者ＩＤ置換メッセージの追加
       *
       *****************************************************************
       *
@@ -91,6 +92,10 @@
                05  SPA-GMN-CUR                PIC 9(02).
                05  SPA-GMN-AREA.
                    07  SPA-GMN-TBLG.
+      *修正/*開始*03.06.05*********************************************
+                       09  SPA-GMN-CHKBTN01   PIC X(01).
+                       09  SPA-GMN-CHKMSG02   PIC X(06).
+      *修正/*終了*03.06.05*********************************************
                        09  SPA-GNM-TBL2       OCCURS  90.
                            11  SPA-GMN-MSG-A  PIC X(20).
                            11  SPA-GMN-BTN-A  PIC X(01).
@@ -102,8 +107,6 @@
                            11  SPA-GMN-TBL-B  PIC X(20).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-MOTOPG         PIC X(08).
-       01  SPA-WRK-AREA.
-           03  SPA-WRK-TBLG1       PIC X(7578).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -136,6 +139,12 @@
                "作成テーブル未設定。".
            03  T-MESSAGE-05        PIC X(18)   VALUE
                "条件設定途中です。".
+           03  T-MESSAGE-51        PIC X(32)   VALUE
+               "患者ＩＤを患者番号へ置換しますか".
+           03  T-MESSAGE-52        PIC X(06)   VALUE
+               "する  ".
+           03  T-MESSAGE-53        PIC X(06)   VALUE
+               "しない".
       *
       *    作業テーブル名称領域
        01  WK-TBL.
@@ -259,6 +268,9 @@
                END-IF
            END-PERFORM.
       *
+           MOVE    SPACE               TO  LINKAREA.
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
+           MOVE    SPA-E01-AREA        TO  LNK-SCRSPA.
            MOVE    SPACE               TO  MCP-PUTTYPE.
            MOVE    "E01"               TO  MCP-WINDOW.
       *
@@ -279,7 +291,7 @@
       *    他のＬＤより
            IF  LINKAREA   NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
-               MOVE    LNK-SCRSPA          TO  SPA-WRK-AREA
+               MOVE    LNK-SCRSPA          TO  SPA-E01-AREA
            END-IF.
       *
            MOVE    1                       TO  SPA-GMN-CUR.
@@ -439,10 +451,6 @@
       *
            PERFORM T-000-SETTABLE-SEC.
       *
-           IF  SPA-WRK-AREA   NOT =   SPACE
-               MOVE    SPA-WRK-AREA            TO  SPA-E01-AREA
-           END-IF.
-      *
        300-SCREEN-EXT.
            EXIT.
       *
@@ -514,6 +522,10 @@
                    PERFORM T-000-CLST1CHK-SEC
                WHEN      ANY           ALSO    "CLIST2"
                    PERFORM T-000-CLST2CHK-SEC
+      *修正/*開始*03.06.05*********************************************
+               WHEN    "CLICKED"       ALSO    "CHKBTN01"
+                   PERFORM T-000-CHKBTN01-SEC
+      *修正/*終了*03.06.05*********************************************
                WHEN    OTHER
                    MOVE    1                   TO  SPA-GMN-CUR
            END-EVALUATE.
@@ -602,6 +614,12 @@
                MOVE    SPA-GMN-BTN-B (IDX1)   TO  E01-SELECT2 (IDX1)
                MOVE    IDX1                   TO  E01-COUNT2
            END-PERFORM.
+      *
+      *修正/*開始*03.06.05*********************************************
+           MOVE    T-MESSAGE-51           TO  E01-CHKMSG01.
+           MOVE    SPA-GMN-CHKBTN01       TO  E01-CHKBTN01.
+           MOVE    SPA-GMN-CHKMSG02       TO  E01-CHKMSG02.
+      *修正/*終了*03.06.05*********************************************
       *
            PERFORM 5011-MAPCUR-SEC.
       *
@@ -903,6 +921,25 @@
        T-000-CLST2CHK-EXT.
            EXIT.
       *
+      *修正/*開始*03.06.05*********************************************
+      *
+      *****************************************************************
+      *    ボタン０１クリック 処理
+      *****************************************************************
+       T-000-CHKBTN01-SEC                SECTION.
+      *
+           IF  SPA-GMN-CHKBTN01  =  "F"
+               MOVE    "T"           TO  SPA-GMN-CHKBTN01
+               MOVE    T-MESSAGE-52  TO  SPA-GMN-CHKMSG02
+           ELSE
+               MOVE    "F"           TO  SPA-GMN-CHKBTN01
+               MOVE    T-MESSAGE-53  TO  SPA-GMN-CHKMSG02
+           END-IF.
+      *
+       T-000-CHKBTN01-EXT.
+           EXIT.
+      *
+      *修正/*終了*03.06.05*********************************************
       *
       *****************************************************************
       *    テーブル名称 セット処理
@@ -958,12 +995,19 @@
        T-000-SETTABLE-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    確認条件 出力処理
       *****************************************************************
        T-000-RECECHEK-SEC                SECTION.
       *
+      *修正/*開始*03.06.05*********************************************
+           MOVE    SPACE                 TO  EIE00-REC.
+           MOVE    SPA-GMN-CHKBTN01      TO  EIE00-REC(1:1).
+           MOVE    SPA-GMN-CHKMSG02      TO  EIE00-REC(3:6).
+           MOVE    "00000"               TO  EIE00-REC(10:5).
+           MOVE    SPA-SYSYMD            TO  EIE00-REC(16:8).
+           WRITE   EIE00-REC.
+      *修正/*終了*03.06.05*********************************************
            PERFORM VARYING IDX1  FROM  1  BY 1
                    UNTIL   IDX1  >    SPA-GMN-MAX-B
                MOVE    SPACE                 TO  EIE00-REC
@@ -985,21 +1029,41 @@
            MOVE    ZERO                    TO  SPA-GMN-MAX-B.
            MOVE    SPACE                   TO  FLG-SEL
            MOVE    "ORCE00.CNV"            TO  EIE00PARA-FILE.
+           MOVE    1                       TO  IDX1.
+      *修正/*開始*03.06.05*********************************************
+           MOVE    "F"                     TO  SPA-GMN-CHKBTN01.
+           MOVE    T-MESSAGE-53            TO  SPA-GMN-CHKMSG02.
+      *修正/*終了*03.06.05*********************************************
       *
            OPEN    INPUT                   EIE00-FILE.
       *
            IF      STS-EIE00         =   ZERO
-               PERFORM VARYING IDX1  FROM  1  BY 1
-                       UNTIL   IDX1  >    90
+      *修正/*開始*03.06.05*********************************************
+               READ    EIE00-FILE
+                 AT   END
+                   MOVE    91              TO  IDX1
+                 NOT  AT  END
+                   IF  (EIE00-REC(3:6)   =   "する  ")  OR
+                       (EIE00-REC(3:6)   =   "しない")
+                       MOVE    EIE00-REC(1:1)   TO  SPA-GMN-CHKBTN01
+                       MOVE    EIE00-REC(3:6)   TO  SPA-GMN-CHKMSG02
+                   ELSE
+                       MOVE    EIE00-REC(1:20)  TO  SPA-GMN-MSG-B (IDX1)
+                       MOVE    EIE00-REC(26:20) TO  SPA-GMN-TBL-B (IDX1)
+                       MOVE    IDX1             TO  SPA-GMN-MAX-B
+                       COMPUTE  IDX1   =   IDX1   +   1
+                   END-IF
+               END-READ
+      *修正/*終了*03.06.05*********************************************
+               PERFORM UNTIL   IDX1  >    90
                    READ    EIE00-FILE
-                           AT   END
-                                MOVE    91    TO  IDX1
-                           NOT  AT  END
-                                MOVE    EIE00-REC(1:20)
-                                              TO  SPA-GMN-MSG-B (IDX1)
-                                MOVE    EIE00-REC(26:20)
-                                              TO  SPA-GMN-TBL-B (IDX1)
-                                MOVE    IDX1  TO  SPA-GMN-MAX-B
+                     AT   END
+                       MOVE    91       TO  IDX1
+                     NOT  AT  END
+                       MOVE    EIE00-REC(1:20)  TO  SPA-GMN-MSG-B (IDX1)
+                       MOVE    EIE00-REC(26:20) TO  SPA-GMN-TBL-B (IDX1)
+                       MOVE    IDX1             TO  SPA-GMN-MAX-B
+                       COMPUTE  IDX1   =   IDX1   +   1
                    END-READ
                END-PERFORM
                CLOSE                           EIE00-FILE

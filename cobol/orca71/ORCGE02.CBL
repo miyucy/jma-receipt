@@ -24,7 +24,7 @@
       *  コンポーネント名  : ＣＳＶ作成（Ｅ０２）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  01/09/15    ひさなが 　   新規作成
+      *  01/09/15    ひさなが      新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -32,6 +32,7 @@
       * 01.00.03     ひさなが     02/09/13  ディレクトリをサブプロへ
       * 01.00.04     ひさなが     03/04/08  診療年月チェックの修正
       * 01.00.05     ひさなが     03/05/12  入院関連テーブルの追加
+      * 01.00.06     ひさなが     03/06/05  患者ＩＤ置換メッセージの追加
       *
       *****************************************************************
       *
@@ -97,7 +98,7 @@
                05  SPA-GMN-MAX-B              PIC 9(03).
                05  SPA-GMN-CUR                PIC 9(03).
                05  SPA-GMN-KBN                PIC X(02).
-               05  SPA-GMN-RUN                PIC 9(01).
+               05  SPA-GMN-RUN                PIC X(01).
                05  SPA-GMN-AREA.
                    07  SPA-GMN-SRYYM          PIC X(06).
                    07  SPA-GMN-TBLNM          PIC X(20).
@@ -157,45 +158,55 @@
       *
       *    編集作業
        01  W-AREA.
-           03  WK-SEW01                PIC  X(02).
-           03  WK-SEW02                PIC  X(02).
-           03  WK-SEW03                PIC  X(02).
-           03  WK-SEW04                PIC  X(128).
-           03  WK-SEW05                PIC  9(05).
+           03  WK-SEW01                    PIC  X(02).
+           03  WK-SEW02                    PIC  X(02).
+           03  WK-SEW03                    PIC  X(02).
+           03  WK-SEW04                    PIC  X(128).
+           03  WK-SEW05                    PIC  9(05).
       *
       *    作業テーブル名称領域
-       01  WK-TBL0.
-           03  WK-TBLSET0           OCCURS  600.
-               11  WK-TBL-BTN-A        PIC X(001).
-               11  WK-TBL-MSG-A        PIC X(128).
-               11  WK-TBL-BTN-B        PIC X(001).
-               11  WK-TBL-MSG-B        PIC X(128).
        01  WK-TBL1.
-           03  WK-TBLSET1           OCCURS  90.
-               05  WK-TBL-MSG          PIC X(20).
-               05  WK-TBL-KBN1         PIC X(01).
-               05  WK-TBL-KBN2         PIC X(01).
-               05  WK-TBL-NAME         PIC X(20).
-       01  WK-TBL2.
-           03  WK-TBLSET2           OCCURS  600.
-               05  WK-TBL-MSG-C.
-                   07  WK-TBL-MSG-C1   PIC x(01).
-                   07  WK-TBL-MSG-C2   PIC X(29).
-                   07  WK-TBL-MSG-C3   PIC x(07).
-                   07  WK-TBL-MSG-C4   PIC X(13).
-                   07  WK-TBL-MSG-C5   PIC x(05).
-                   07  WK-TBL-MSG-C6   PIC X(05).
-                   07  WK-TBL-MSG-C7   PIC x(05).
-                   07  WK-TBL-MSG-C8   PIC X(05).
-                   07  WK-TBL-MSG-C9   PIC x(06).
-                   07  WK-TBL-MSG-C10  PIC X(52).
-               05  WK-TBL-BTN-C        PIC X(001).
+      *修正/*開始*03.06.05*********************************************
+           03  WK-TBL-CHKBTN01             PIC X(01).
+           03  WK-TBL-CHKMSG02             PIC X(06).
+           03  WK-TBL-CHKPTMUM             PIC X(05).
+           03  WK-TBL-SYSYMD               PIC X(08).
+      *修正/*終了*03.06.05*********************************************
+           03  WK-TBLSET1               OCCURS  90.
+               05  WK-TBL-MSG              PIC X(20).
+               05  WK-TBL-KBN1             PIC X(01).
+               05  WK-TBL-KBN2             PIC X(01).
+               05  WK-TBL-NAME             PIC X(20).
+       01  WK-TBL2-S.
+           03  WK-TBL2-1.
+               05  WK-TBLSET0           OCCURS  600.
+                   07  WK-TBL-BTN-A        PIC X(001).
+                   07  WK-TBL-MSG-A        PIC X(128).
+                   07  WK-TBL-BTN-B        PIC X(001).
+                   07  WK-TBL-MSG-B        PIC X(128).
+      *修正/*開始*03.06.05*********************************************
+           03  WK-TBL-MSG-KBN              PIC X(01).
+      *修正/*終了*03.06.05*********************************************
+           03  WK-TBL2-2.
+               05  WK-TBLSET2           OCCURS  600.
+                   07  WK-TBL-MSG-C.
+                       09  WK-TBL-MSG-C1   PIC X(01).
+                       09  WK-TBL-MSG-C2   PIC X(29).
+                       09  WK-TBL-MSG-C3   PIC X(07).
+                       09  WK-TBL-MSG-C4   PIC X(13).
+                       09  WK-TBL-MSG-C5   PIC X(05).
+                       09  WK-TBL-MSG-C6   PIC X(05).
+                       09  WK-TBL-MSG-C7   PIC X(05).
+                       09  WK-TBL-MSG-C8   PIC X(05).
+                       09  WK-TBL-MSG-C9   PIC X(06).
+                       09  WK-TBL-MSG-C10  PIC X(52).
+                   07  WK-TBL-BTN-C        PIC X(01).
        01  WK-TBL3.
-           03  WK-TBL-MSG-D            PIC X(128).
-           03  WK-TBL-SW-CNT           PIC 9(003).
-           03  WK-TBL-SW-SW            PIC X(001).
+           03  WK-TBL-MSG-D                PIC X(128).
+           03  WK-TBL-SW-CNT               PIC 9(003).
+           03  WK-TBL-SW-SW                PIC X(001).
        01  WK-ARE0.
-           03  WK-SRYYM                PIC X(006).
+           03  WK-SRYYM                    PIC X(006).
       *
       *    シェル用領域
            COPY    "CPSHELLTBL.INC".
@@ -203,8 +214,8 @@
       *
       *    ジョブ管理
        01  WRK-JOBKANRI-AREA.
-           03  WRK-JOBKANRI-MODE       PIC X(03).
-           03  WRK-JOBKANRI-RETURN     PIC S9(03).
+           03  WRK-JOBKANRI-MODE           PIC X(03).
+           03  WRK-JOBKANRI-RETURN         PIC S9(03).
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -273,7 +284,7 @@
       *    入力
                WHEN      OTHER
                    PERFORM 530-RIDSET2-SEC
-                   IF  SPA-GMN-RUN   =   ZERO   OR   2
+                   IF  SPA-GMN-RUN   =   SPACE   OR   "2"
                        PERFORM 200-ENTRY
                    END-IF
            END-EVALUATE.
@@ -299,7 +310,7 @@
            IF  SPA-MOTOPG   =   "EERR" OR "EID1" OR "EID2"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5011-MAPCUR-SEC
-               IF  (SPA-GMN-RUN   =   ZERO   OR   2)   AND
+               IF  (SPA-GMN-RUN   =   SPACE   OR   "2")   AND
                    (SPA-GMN-KBN   =   "OK")
                    MOVE    "CHK"               TO  WRK-JOBKANRI-MODE
                    INITIALIZE                      JOBKANRI-REC
@@ -379,6 +390,9 @@
            END-PERFORM.
       *
            MOVE    SPACE               TO  LINKAREA.
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
+           MOVE    SPA-E02             TO  LNK-COMMON.
+           MOVE    WK-TBL2-S           TO  LNK-SCRSPA.
            MOVE    SPACE               TO  MCP-PUTTYPE.
            MOVE    "E02"               TO  MCP-WINDOW.
       *
@@ -395,13 +409,13 @@
        300-SCREEN-SEC              SECTION.
       *
            INITIALIZE              SPA-E02.
-           INITIALIZE              WK-TBL0.
+           INITIALIZE              WK-TBL2-1.
       *
       *    他のＬＤより
            IF  LINKAREA   NOT =   SPACE
                MOVE    LNK-KYOUTU              TO  SPA-KYOUTU
                MOVE    LNK-COMMON              TO  SPA-E02
-               MOVE    LNK-SCRSPA              TO  WK-TBL0
+               MOVE    LNK-SCRSPA              TO  WK-TBL2-S
            END-IF.
       *
            MOVE    ZERO                    TO  SPA-GMN-CUR.
@@ -471,24 +485,26 @@
                    PERFORM T-000-WRITCHEK-SEC
                    PERFORM 530-RIDSET3-SEC
                WHEN    "CLICKED"       ALSO    "B12"
-                   PERFORM T-001-WRITCHEK-SEC
-                   PERFORM T-000-WRITCHEK-SEC
-                   MOVE    SPACE                TO    SPA-ERRCD
-                   PERFORM VARYING IDX1  FROM  1  BY 1
-                           UNTIL   IDX1  >    90
+                   IF  FLG-SEL   NOT =   SPACE
+                       MOVE    "0004"              TO    SPA-ERRCD
+                       PERFORM 500-SET-SCREEN
+                   ELSE
+                       PERFORM T-001-WRITCHEK-SEC
+                       PERFORM T-000-WRITCHEK-SEC
+                       MOVE    SPACE               TO    SPA-ERRCD
+                       PERFORM VARYING IDX1  FROM  1  BY 1
+                               UNTIL   IDX1  >    90
                            IF  (WK-TBL-KBN1 (IDX1)     = "*")  AND
                                (WK-TBL-KBN2 (IDX1) NOT = "*")
                                MOVE    "0002"          TO  SPA-ERRCD
                                MOVE    91              TO  IDX1
                            END-IF
-                   END-PERFORM
-                   IF  FLG-SEL   NOT =   SPACE
-                       MOVE    "0004"              TO    SPA-ERRCD
-                   END-IF
-                   IF  SPA-ERRCD  NOT = SPACE
-                       PERFORM 500-SET-SCREEN
-                   ELSE
-                       PERFORM 530-RIDSET2-SEC
+                       END-PERFORM
+                       IF  SPA-ERRCD  NOT = SPACE
+                           PERFORM 500-SET-SCREEN
+                       ELSE
+                           PERFORM 530-RIDSET2-SEC
+                       END-IF
                    END-IF
                WHEN    "CLICKED"       ALSO    "B13"
                    PERFORM 530-RIDSET2-SEC
@@ -587,22 +603,22 @@
            IF  SPA-GMN-MAX-A   NOT =   ZERO
                PERFORM VARYING IDX7  FROM  1  BY 1
                        UNTIL   IDX7  >   SPA-GMN-MAX-A
-                       MOVE    WK-TBL-MSG-A (IDX7)(1:25)
+                   MOVE    WK-TBL-MSG-A (IDX7)(1:25)
                                          TO  E02-VALUE1 (IDX7)(1:25)
-                       MOVE    WK-TBL-BTN-A (IDX7)
+                   MOVE    WK-TBL-BTN-A (IDX7)
                                          TO  E02-SELECT1 (IDX7)
-                       MOVE    IDX7      TO  E02-COUNT1
+                   MOVE    IDX7          TO  E02-COUNT1
                END-PERFORM
            END-IF.
       *
            IF  SPA-GMN-MAX-B   NOT =   ZERO
                PERFORM VARYING IDX7  FROM  1  BY 1
                        UNTIL   IDX7  >   SPA-GMN-MAX-B
-                       MOVE    WK-TBL-MSG-B (IDX7)(1:25)
+                   MOVE    WK-TBL-MSG-B (IDX7)(1:25)
                                          TO  E02-VALUE2 (IDX7)(1:25)
-                       MOVE    WK-TBL-BTN-B (IDX7)
+                   MOVE    WK-TBL-BTN-B (IDX7)
                                          TO  E02-SELECT2 (IDX7)
-                       MOVE    IDX7      TO  E02-COUNT2
+                   MOVE    IDX7          TO  E02-COUNT2
                END-PERFORM
            END-IF.
       *
@@ -677,12 +693,12 @@
                                       WRK-JOBKANRI-AREA  
                                       JOBKANRI-REC.
            MOVE    SPACE              TO  EID2.
-           MOVE    ZERO               TO  SPA-GMN-RUN.
+           MOVE    SPACE              TO  SPA-GMN-RUN.
            IF  WRK-JOBKANRI-RETURN   =   ZERO
                IF  JOB-ENDYMD            =   SPACE
                    MOVE    "7777"             TO  EID2-ID2CODE
                    MOVE    T-MESSAGE-01       TO  EID2-ID2MSG
-                   MOVE    1                  TO  SPA-GMN-RUN
+                   MOVE    "1"                TO  SPA-GMN-RUN
                ELSE
                    IF  MCP-WIDGET             =   "B13"
                        MOVE    "8888"             TO  EID2-ID2CODE
@@ -692,7 +708,7 @@
                        MOVE    JOB-ENDTIME(3:2)   TO  EID2-ID2MSG(35:2)
                        MOVE    "分"               TO  EID2-ID2MSG(37:2)
                        MOVE    T-MESSAGE-03       TO  EID2-ID2MSG(39:16)
-                       MOVE    2                  TO  SPA-GMN-RUN
+                       MOVE    "2"                TO  SPA-GMN-RUN
                    END-IF
                END-IF
                IF  MCP-WIDGET   =   "B01"   OR   "B13"
@@ -706,7 +722,7 @@
            END-IF.
       *
            IF  MCP-WIDGET             =   "B12"
-               IF  SPA-GMN-RUN        NOT =   1
+               IF  SPA-GMN-RUN        NOT =   "1"
                    MOVE    "1001"                TO  EID1-ID1CODE
                    MOVE    T-MESSAGE-05          TO  EID1-ID1MSG
                    MOVE    "E02"                 TO  SPA-MOTOPG
@@ -740,7 +756,7 @@
            MOVE    SPACE               TO  LINKAREA.
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
            MOVE    SPA-E02             TO  LNK-COMMON.
-           MOVE    WK-TBL0             TO  LNK-SCRSPA.
+           MOVE    WK-TBL2-S           TO  LNK-SCRSPA.
            MOVE   "CHANGE"             TO  MCP-PUTTYPE.
            MOVE   "XB01"               TO  MCP-WINDOW.
       *
@@ -980,7 +996,7 @@
                PERFORM UNTIL   IDX9  >   SPA-GMN-MAX-B
                    IF  WK-TBL-BTN-B (IDX9)   =   "T"
                        COMPUTE  IDX7 = IDX9 - 1
-                       IF      IDX7  >  ZERO
+                       IF  IDX7  >  ZERO
                            MOVE    WK-TBL-MSG-B (IDX9)
                                            TO  WK-TBL-MSG-D
                            MOVE    "F"     TO  WK-TBL-BTN-B (IDX9)
@@ -1025,7 +1041,7 @@
                PERFORM UNTIL   IDX9  <   1
                    IF  WK-TBL-BTN-B (IDX9)   =   "T"
                        COMPUTE  IDX7 = IDX9 + 1
-                       IF      IDX7  NOT >  SPA-GMN-MAX-B
+                       IF  IDX7  NOT >  SPA-GMN-MAX-B
                            MOVE    WK-TBL-MSG-B (IDX9)
                                            TO  WK-TBL-MSG-D
                            MOVE    "F"     TO  WK-TBL-BTN-B (IDX9)
@@ -1133,22 +1149,86 @@
       *
            MOVE    "ORCE00.CNV"          TO  EIE00PARA-FILE.
            MOVE    SPACE                 TO  WK-TBL1.
+           MOVE    1                     TO  IDX1.
            MOVE    ZERO                  TO  IDX2.
       *
            OPEN    INPUT                   EIE00-FILE.
       *
            IF  STS-EIE00   =   ZERO
-               PERFORM VARYING IDX1  FROM  1  BY 1
-                       UNTIL   IDX1  >    90
+      *修正/*開始*03.06.05*********************************************
+               READ    EIE00-FILE
+                 AT   END
+                   MOVE    91              TO  IDX1
+                 NOT  AT  END
+                   IF  (EIE00-REC(3:6)   =   "する  ")  OR
+                       (EIE00-REC(3:6)   =   "しない")
+                       MOVE    EIE00-REC(1:1)  TO  WK-TBL-CHKBTN01
+                       MOVE    EIE00-REC(3:6)  TO  WK-TBL-CHKMSG02
+                       MOVE    EIE00-REC(10:5) TO  WK-TBL-CHKPTMUM
+                       MOVE    EIE00-REC(16:8) TO  WK-TBL-SYSYMD
+                   ELSE
+                       PERFORM T-000-READCHEK1-SEC
+                   END-IF
+               END-READ
+      *修正/*終了*03.06.05*********************************************
+               PERFORM UNTIL   IDX1  >    90
                    READ    EIE00-FILE
-                           AT   END
-                                MOVE    91    TO  IDX1
-                           NOT  AT  END
-                                PERFORM T-000-READCHEK1-SEC
+                     AT   END
+                       MOVE    91    TO  IDX1
+                     NOT  AT  END
+                       PERFORM T-000-READCHEK1-SEC
                    END-READ
                END-PERFORM
                CLOSE                           EIE00-FILE
            END-IF.
+      *
+      *修正/*開始*03.06.05*********************************************
+           IF  WK-TBL-CHKBTN01   =   "T"
+               MOVE    "tbl_ptnum.db"        TO  EIE02-FILE-ID
+               MOVE    EIE02PARA-NAME        TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"          USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01          TO  EIE02PARA
+      *
+               MOVE    1                     TO  IDX4
+               MOVE    1                     TO  IDY1
+               MOVE    ZERO                  TO  IDY2
+               MOVE    ZERO                  TO  IDY3
+               MOVE    ZERO                  TO  FLG-FIL
+               MOVE    SPACE                 TO  FLG-SEL
+               MOVE    SPACE                 TO  WK-TBL2-2
+               MOVE    SPACE                 TO  WK-SEW01
+               MOVE    SPACE                 TO  WK-SEW02
+               MOVE    SPACE                 TO  WK-SEW03
+               MOVE    SPACE                 TO  WK-SEW04
+               MOVE    SPACE                 TO  WK-TBL-MSG-KBN
+      *
+               OPEN    INPUT                 EIE02-FILE
+      *
+               IF  STS-EIE02   =   ZERO
+                   PERFORM UNTIL   FLG-FIL  =    1
+                       READ    EIE02-FILE
+                         AT   END
+                           MOVE    1                 TO  FLG-FIL
+                         NOT  AT  END
+                           IF  EIE02-REC = "}"
+                               MOVE    1                 TO  FLG-FIL
+                           ELSE
+                               PERFORM T-000-SETECHEK-01-SEC
+                           END-IF
+                       END-READ
+                   END-PERFORM
+                   CLOSE                           EIE02-FILE
+               END-IF
+      *
+               PERFORM VARYING IDX1  FROM  1  BY 1
+                       UNTIL   IDX1  >     600
+                   IF  WK-TBL-MSG-C (IDX1)(1:5)   =   "PTNUM"
+                       MOVE    WK-TBL-MSG-C5 (IDX1)  TO  WK-TBL-CHKPTMUM
+                       MOVE    601                   TO  IDX1
+                   END-IF
+               END-PERFORM
+           END-IF.
+      *修正/*終了*03.06.05*********************************************
       *
        T-000-READCHEK-EXT.
            EXIT.
@@ -1170,16 +1250,17 @@
                    ".SLT"               DELIMITED  BY    SIZE
                                         INTO       EIE01PARA-FILE.
            OPEN    INPUT                EIE01-FILE.
-           IF      STS-EIE01         =   ZERO
+           IF  STS-EIE01   =   ZERO
                READ    EIE01-FILE
-                       NOT  AT  END
+                 NOT  AT  END
                    READ    EIE01-FILE
-                           NOT  AT  END
-                       MOVE    "*"              TO  WK-TBL-KBN2 (IDX1)
+                     NOT  AT  END
+                       MOVE    "*"          TO  WK-TBL-KBN2 (IDX1)
                    END-READ
                END-READ
                CLOSE                        EIE01-FILE
            END-IF.
+           COMPUTE  IDX1   =   IDX1   +   1.
       *
        T-000-READCHEK1-EXT.
            EXIT.
@@ -1194,41 +1275,39 @@
            MOVE    ZERO                    TO  SPA-GMN-MAX-B.
            MOVE    SPACE                   TO  WK-SRYYM.
       *
-           IF      STS-EIE01         =   ZERO
-              READ    EIE01-FILE
-                      NOT  AT  END
-                           MOVE    EIE01-REC(1:6)     TO  SPA-GMN-SRYYM
-                           IF  EIE01-REC(1:6) NOT =  SPACE
-                               INITIALIZE             ORCSGDAYAREA
-                               MOVE    "1"            TO  SGDAY-INTYPE
-                               MOVE    EIE01-REC(1:6) TO  SGDAY-INDAY
-                               CALL    "ORCSGDAY"  USING   ORCSGDAYAREA
-                               IF  SGDAY-RC   =   ZERO
-                                   MOVE    SGDAY-OTDAY(1:6)
-                                                      TO  SPA-GMN-SRYYM
-                               END-IF
+           IF  STS-EIE01   =   ZERO
+               READ    EIE01-FILE
+                 NOT  AT  END
+                   MOVE    EIE01-REC(1:6)     TO  SPA-GMN-SRYYM
+                   IF  EIE01-REC(1:6) NOT =  SPACE
+                       INITIALIZE             ORCSGDAYAREA
+                       MOVE    "1"            TO  SGDAY-INTYPE
+                       MOVE    EIE01-REC(1:6) TO  SGDAY-INDAY
+                       CALL    "ORCSGDAY"  USING   ORCSGDAYAREA
+                       IF  SGDAY-RC   =   ZERO
+                           MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SRYYM
+                        END-IF
+                   END-IF
+                   MOVE    EIE01-REC(1:6)           TO  WK-SRYYM
+                   MOVE    EIE01-REC(8:128)         TO  SPA-GMN-FILE-ID
+                   MOVE    EIE01-REC(137:64)        TO  SPA-GMN-FILE-KEY
+                   PERFORM VARYING IDX1  FROM  1  BY 1
+                           UNTIL   IDX1  >   600
+                       READ    EIE01-FILE
+                         AT   END
+                           MOVE    601          TO  IDX1
+                         NOT  AT  END
+                           IF  EIE01-REC(1:8)  NOT =  "SRYYM***"  AND
+      *修正/*開始*03.06.05*********************************************
+                                                      "HOSPID**"
+      *修正/*終了*03.06.05*********************************************
+                               MOVE    EIE01-REC TO  WK-TBL-MSG-B (IDX1)
+                               MOVE    IDX1      TO  SPA-GMN-MAX-B
                            END-IF
-                           MOVE    EIE01-REC(1:6)  TO  WK-SRYYM
-                           MOVE    EIE01-REC(8:128)
-                                                   TO  SPA-GMN-FILE-ID
-                           MOVE    EIE01-REC(137:64)
-                                                   TO  SPA-GMN-FILE-KEY
-                           PERFORM VARYING IDX1  FROM  1  BY 1
-                                   UNTIL   IDX1  >   600
-                               READ    EIE01-FILE
-                                 AT   END
-                                      MOVE    601          TO  IDX1
-                                 NOT  AT  END
-                                   IF  EIE01-REC(1:8)  NOT =  "SRYYM***"
-                                      MOVE    EIE01-REC
-                                                 TO  WK-TBL-MSG-B (IDX1)
-                                      MOVE    IDX1
-                                                 TO  SPA-GMN-MAX-B
-                                   END-IF
-                               END-READ
-                           END-PERFORM
-              END-READ
-              CLOSE                           EIE01-FILE
+                       END-READ
+                   END-PERFORM
+               END-READ
+               CLOSE                           EIE01-FILE
            END-IF.
       *
        T-001-READCHEK-EXT.
@@ -1241,9 +1320,19 @@
       *
            OPEN    OUTPUT                  EIE00-FILE.
       *
+      *修正/*開始*03.06.05*********************************************
+           MOVE    SPACE                 TO  EIE00-REC.
+           MOVE    WK-TBL-CHKBTN01       TO  EIE00-REC(1:1).
+           MOVE    WK-TBL-CHKMSG02       TO  EIE00-REC(3:6).
+           MOVE    WK-TBL-CHKPTMUM       TO  EIE00-REC(10:5).
+           MOVE    WK-TBL-SYSYMD         TO  EIE00-REC(16:8)
+           WRITE   EIE00-REC.
+      *修正/*終了*03.06.05*********************************************
+      *
            PERFORM VARYING IDX1  FROM  1  BY 1
                    UNTIL   IDX1  >    90
                IF  WK-TBL-MSG (IDX1)   NOT =   SPACE
+                   MOVE    SPACE                   TO  EIE00-REC
                    MOVE    WK-TBL-MSG (IDX1)       TO  EIE00-REC(1:20)
                    MOVE    WK-TBL-KBN1 (IDX1)      TO  EIE00-REC(22:1)
                    MOVE    WK-TBL-KBN2 (IDX1)      TO  EIE00-REC(24:1)
@@ -1277,18 +1366,18 @@
                WRITE   EIE01-REC
            END-PERFORM.
       *
-           IF  (SPA-GMN-TBLNM(1:6)  = "JYURRK")       OR
-               (SPA-GMN-TBLNM(1:8)  = "PTBYOMEI")     OR
-               (SPA-GMN-TBLNM(1:7)  = "SRYACCT")      OR
-               (SPA-GMN-TBLNM(1:6)  = "SRYACT")       OR
-               (SPA-GMN-TBLNM(1:8)  = "WKSRYACT")     OR
-               (SPA-GMN-TBLNM(1:6)  = "SANTEI")       OR
-               (SPA-GMN-TBLNM(1:6)  = "SEIKYU")       OR
-               (SPA-GMN-TBLNM(1:5)  = "BD002")        OR
+           IF  (SPA-GMN-FILE-KEY(1:6)  = "JYURRK")       OR
+               (SPA-GMN-FILE-KEY(1:8)  = "PTBYOMEI")     OR
+               (SPA-GMN-FILE-KEY(1:7)  = "SRYACCT")      OR
+               (SPA-GMN-FILE-KEY(1:6)  = "SRYACT")       OR
+               (SPA-GMN-FILE-KEY(1:8)  = "WKSRYACT")     OR
+               (SPA-GMN-FILE-KEY(1:6)  = "SANTEI")       OR
+               (SPA-GMN-FILE-KEY(1:6)  = "SEIKYU")       OR
+               (SPA-GMN-FILE-KEY(1:5)  = "BD002")        OR
       *修正/*開始*03.05.12*********************************************
-               (SPA-GMN-TBLNM(1:9)  = "NYUINACCT")    OR
-               (SPA-GMN-TBLNM(1:8)  = "NYUINACT")     OR
-               (SPA-GMN-TBLNM(1:10) = "PTTEIKIRRK")
+               (SPA-GMN-FILE-KEY(1:9)  = "NYUINACCT")    OR
+               (SPA-GMN-FILE-KEY(1:8)  = "NYUINACT")     OR
+               (SPA-GMN-FILE-KEY(1:10) = "PTTEIKIRRK")
       *修正/*終了*03.05.12*********************************************
                PERFORM VARYING IDX1  FROM  1  BY 1
                        UNTIL   IDX1  >     600
@@ -1302,12 +1391,28 @@
                END-PERFORM
            END-IF.
       *
+      *修正/*開始*03.06.05*********************************************
+           IF  (WK-TBL-CHKBTN01  = "T")      AND
+               (WK-TBL-MSG-KBN   = "T")
+               PERFORM VARYING IDX1  FROM  1  BY 1
+                       UNTIL   IDX1  >     600
+                   IF  WK-TBL-MSG-C (IDX1)(1:6)   =   "HOSPID"
+                       MOVE    SPACE                 TO  EIE01-REC
+                       MOVE    WK-TBL-MSG-C (IDX1)   TO  EIE01-REC
+                       MOVE    "HOSPID**"            TO  EIE01-REC(1:8)
+                       WRITE   EIE01-REC
+                       MOVE    601                   TO  IDX1
+                   END-IF
+               END-PERFORM
+           END-IF.
+      *修正/*終了*03.06.05*********************************************
+      *
            CLOSE                           EIE01-FILE.
       *
-           IF   SPA-GMN-MAX-B   NOT =   ZERO
-                MOVE    "*"                   TO  WK-TBL-KBN2 (IDX2)
+           IF  SPA-GMN-MAX-B   NOT =   ZERO
+               MOVE    "*"                   TO  WK-TBL-KBN2 (IDX2)
            ELSE
-                MOVE    SPACE                 TO  WK-TBL-KBN2 (IDX2)
+               MOVE    SPACE                 TO  WK-TBL-KBN2 (IDX2)
            END-IF.
       *
        T-001-WRITCHEK-EXT.
@@ -1318,8 +1423,8 @@
       *****************************************************************
        T-001-HANTCHEK-SEC                SECTION.
       *
-           IF   SPA-GMN-MAX-B   NOT =   ZERO
-                MOVE    "*"                   TO  WK-TBL-KBN2 (IDX2)
+           IF  SPA-GMN-MAX-B   NOT =   ZERO
+               MOVE    "*"                   TO  WK-TBL-KBN2 (IDX2)
            END-IF.
       *
            COMPUTE   IDX3 = IDX2 + 1.
@@ -1378,11 +1483,14 @@
            MOVE    ZERO                  TO  IDY3.
            MOVE    ZERO                  TO  FLG-FIL.
            MOVE    SPACE                 TO  FLG-SEL.
-           MOVE    SPACE                 TO  WK-TBL2.
+           MOVE    SPACE                 TO  WK-TBL2-2.
            MOVE    SPACE                 TO  WK-SEW01.
            MOVE    SPACE                 TO  WK-SEW02.
            MOVE    SPACE                 TO  WK-SEW03.
            MOVE    SPACE                 TO  WK-SEW04.
+      *修正/*開始*03.06.05*********************************************
+           MOVE    SPACE                 TO  WK-TBL-MSG-KBN.
+      *修正/*終了*03.06.05*********************************************
       *
            OPEN    INPUT                 EIE02-FILE.
       *
@@ -1390,13 +1498,13 @@
                PERFORM UNTIL   FLG-FIL  =    1
                    READ    EIE02-FILE
                      AT   END
-                          MOVE    1                 TO  FLG-FIL
+                       MOVE    1                 TO  FLG-FIL
                      NOT  AT  END
-                          IF  EIE02-REC = "}"
-                              MOVE    1                 TO  FLG-FIL
-                          ELSE
-                              PERFORM T-000-SETECHEK-01-SEC
-                          END-IF
+                       IF  EIE02-REC = "}"
+                           MOVE    1                 TO  FLG-FIL
+                       ELSE
+                           PERFORM T-000-SETECHEK-01-SEC
+                       END-IF
                    END-READ
                END-PERFORM
                CLOSE                           EIE02-FILE
@@ -1430,6 +1538,11 @@
                     (WK-TBL-MSG-C3 (IDX4)    =   "varchar"))  AND
                    (WK-TBL-MSG-C1 (IDX4) NOT =   "#")         AND
                    (WK-SEW04 (IDY9:1)        NOT =  X"2C")
+      *修正/*開始*03.06.05*********************************************
+                   IF  WK-TBL-MSG-C (IDX4)(1:4)   =   "PTID"
+                       MOVE    "T"                   TO  WK-TBL-MSG-KBN
+                   END-IF
+      *修正/*終了*03.06.05*********************************************
                    IF  IDY5   =   ZERO
                        MOVE    5         TO  IDY7
                        MOVE    IDY6      TO  IDY8

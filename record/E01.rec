@@ -18,5 +18,14 @@ E01	{
 				select	bool[90];
 			};
 		};
+		CHKBTN01	{
+			value	bool;
+		};
+		CHKMSG01	{
+			value	char(32);
+		};
+		CHKMSG02	{
+			value	char(06);
+		};
 	};
 };

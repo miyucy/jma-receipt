@@ -29,3 +29,9 @@
                   06  E01-ITEM2        OCCURS  90 TIMES.
                     07  E01-VALUE2  PIC X(25).
                   06  E01-SELECT2  PIC X       OCCURS  90 TIMES.
+              04  E01-CHKBTN01.
+                05  E01-VALUE3  PIC X.
+              04  E01-CHKMSG01.
+                05  E01-VALUE4  PIC X(32).
+              04  E01-CHKMSG02.
+                05  E01-VALUE5  PIC X(06).

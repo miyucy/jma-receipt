@@ -33,6 +33,7 @@
       * 01.00.03     ひさなが     03/04/08  診療年月の開始位置誤り修正
       * 01.00.04     ひさなが     03/05/12  入院関連テーブルの追加
       * 01.00.05     ひさなが     03/05/21  診療年月設定時の判定順変更
+      * 01.00.06     ひさなが     03/06/05  患者ＩＤ置換メッセージの追加
       *
       *****************************************************************
       *
@@ -97,14 +98,15 @@
            03  IDX2                PIC 9(03).
            03  IDX3                PIC 9(03).
            03  IDX4                PIC 9(05).
-           03  IDX5                PIC 9(04).
+           03  IDX5                PIC 9(05).
            03  IDX6                PIC 9(03).
            03  IDX7                PIC 9(03).
            03  IDX8                PIC 9(03).
+           03  IDX9                PIC 9(05).
       *
       *    編集作業
        01  W-AREA.
-           03  WK-EIECS-REC            PIC  X(20000).
+           03  WK-EIECS-REC            PIC  X(51000).
            03  WRK-PARA.
                05  WRK-PARA-SRYYM      PIC  X(06).
                05  WRK-PARA-TERMID     PIC  X(64).
@@ -118,30 +120,41 @@
            03  WK-STPNT                PIC  9(06).
            03  WK-KTPNT                PIC  9(05).
            03  WK-PTPNT                PIC  9(05).
-      *修正/*開始*03.04.08*********************************************
            03  WK-SRYYM-S              PIC  9(06).
            03  WK-SRYYM-L              PIC  9(06).
-      *修正/*終了*03.04.08*********************************************
+           03  WK-HOSPID-S             PIC  9(06).
+           03  WK-HOSPID-L             PIC  9(06).
+           03  WK-PTID-C               PIC  9(06).
+           03  WK-PTID-S               PIC  9(06).
+           03  WK-PTID-SL              PIC  9(06).
+           03  WK-PTID-L               PIC  9(06).
+           03  WK-PTID-K               PIC  X(01).
       *
       *    作業テーブル名称領域
        01  WK-TBL1.
+      *修正/*開始*03.06.05*********************************************
+           03  WK-TBL-CHKBTN01         PIC X(01).
+           03  WK-TBL-CHKMSG02         PIC X(06).
+           03  WK-TBL-CHKPTMUM         PIC X(05).
+           03  WK-TBL-SYSYMD           PIC X(08).
+      *修正/*終了*03.06.05*********************************************
            03  WK-TBLSET       OCCURS  90.
-               05  WK-TBL-MSG      PIC X(20).
-               05  WK-TBL-KBN1     PIC X(01).
-               05  WK-TBL-KBN2     PIC X(01).
-               05  WK-TBL-NAME     PIC X(20).
+               05  WK-TBL-MSG          PIC X(20).
+               05  WK-TBL-KBN1         PIC X(01).
+               05  WK-TBL-KBN2         PIC X(01).
+               05  WK-TBL-NAME         PIC X(20).
        01  WK-TBL2.
            03  WK-TBLRET       OCCURS  600.
                05  WK-TBL-RMSG.
-                   07  WK-TBL-RMSG-1   PIC x(01).
+                   07  WK-TBL-RMSG-1   PIC X(01).
                    07  WK-TBL-RMSG-2   PIC X(29).
-                   07  WK-TBL-RMSG-3   PIC x(07).
+                   07  WK-TBL-RMSG-3   PIC X(07).
                    07  WK-TBL-RMSG-4   PIC X(13).
-                   07  WK-TBL-RMSG-5   PIC x(05).
+                   07  WK-TBL-RMSG-5   PIC X(05).
                    07  WK-TBL-RMSG-6   PIC X(05).
-                   07  WK-TBL-RMSG-7   PIC x(05).
+                   07  WK-TBL-RMSG-7   PIC X(05).
                    07  WK-TBL-RMSG-8   PIC X(05).
-                   07  WK-TBL-RMSG-9   PIC x(06).
+                   07  WK-TBL-RMSG-9   PIC X(06).
                    07  WK-TBL-RMSG-10  PIC X(52).
       *
       *    シェル用領域
@@ -153,7 +166,18 @@
       *    連絡　領域
       *****************************************************************
       *
+      *修正/*開始*03.06.05*********************************************
       *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
+           COPY    "CPSK1009.INC".
+      *
+      *    患者番号変換
+       01  PTNUM-REC.
+           COPY    "CPPTNUM.INC".
+      *
+      *修正/*終了*03.06.05*********************************************
       *    連絡
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -206,6 +230,7 @@
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC.
+      *
        000-DBOPEN-EXT.
            EXIT.
       *
@@ -225,6 +250,7 @@
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC.
+      *
        000-DBCLOSE-EXT.
            EXIT.
       *
@@ -237,29 +263,80 @@
            MOVE    "ORCE00.CNV"    TO  EIE00PARA-FILE.
       *
            MOVE    SPACE           TO  WK-TBL1.
+           MOVE    1               TO  IDX1.
       *
            OPEN    INPUT               EIE00-FILE.
       *
            IF  STS-EIE00   =   ZERO
-               PERFORM VARYING IDX1  FROM  1  BY 1
-                       UNTIL   IDX1  >    90
+      *修正/*開始*03.06.05*********************************************
+               READ    EIE00-FILE
+                 AT   END
+                   MOVE    91              TO  IDX1
+                 NOT  AT  END
+                   IF  (EIE00-REC(3:6)   =   "する  ")  OR
+                       (EIE00-REC(3:6)   =   "しない")
+                       MOVE    EIE00-REC(1:1)  TO  WK-TBL-CHKBTN01
+                       MOVE    EIE00-REC(3:6)  TO  WK-TBL-CHKMSG02
+                       MOVE    EIE00-REC(10:5) TO  WK-TBL-CHKPTMUM
+                       MOVE    EIE00-REC(16:8) TO  WK-TBL-SYSYMD
+                   ELSE
+                       MOVE    EIE00-REC(1:20)   TO  WK-TBL-MSG (IDX1)
+                       MOVE    EIE00-REC(22:1)   TO  WK-TBL-KBN1 (IDX1)
+                       MOVE    EIE00-REC(24:1)   TO  WK-TBL-KBN2 (IDX1)
+                       MOVE    EIE00-REC(26:20)  TO  WK-TBL-NAME (IDX1)
+                       COMPUTE  IDX1   =   IDX1   +   1
+                   END-IF
+               END-READ
+      *修正/*終了*03.06.05*********************************************
+               PERFORM UNTIL   IDX1  >    90
                    READ  EIE00-FILE
-                         AT   END
-                              MOVE    91       TO  IDX1
-                         NOT  AT  END
-                              MOVE    EIE00-REC(1:20)
-                                               TO  WK-TBL-MSG (IDX1)
-                              MOVE    EIE00-REC(22:1)
-                                               TO  WK-TBL-KBN1 (IDX1)
-                              MOVE    EIE00-REC(24:1)
-                                               TO  WK-TBL-KBN2 (IDX1)
-                              MOVE    EIE00-REC(26:20)
-                                               TO  WK-TBL-NAME (IDX1)
+                     AT   END
+                       MOVE    91       TO  IDX1
+                     NOT  AT  END
+                       MOVE    EIE00-REC(1:20)   TO  WK-TBL-MSG (IDX1)
+                       MOVE    EIE00-REC(22:1)   TO  WK-TBL-KBN1 (IDX1)
+                       MOVE    EIE00-REC(24:1)   TO  WK-TBL-KBN2 (IDX1)
+                       MOVE    EIE00-REC(26:20)  TO  WK-TBL-NAME (IDX1)
+                       COMPUTE  IDX1   =   IDX1   +   1
                    END-READ
                END-PERFORM
+               CLOSE                       EIE00-FILE
            END-IF.
       *
-           CLOSE                       EIE00-FILE.
+      *修正/*開始*03.06.05*********************************************
+           MOVE    SPACE               TO  SYS-1009-REC.
+           MOVE    "1009"              TO  SYS-1009-KANRICD.
+           MOVE    ZERO                TO  SYS-1009-STYUKYMD.
+           MOVE    ALL "9"             TO  SYS-1009-EDYUKYMD.
+      *    システム管理検索
+           MOVE    SYS-1009-REC        TO  MCPDATA-REC.
+           MOVE    WK-TBL-SYSYMD       TO  ORC-DBYMD.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               MOVE    MCPDATA-REC         TO  SYS-1009-REC
+           ELSE
+               INITIALIZE                  SYS-1009-REC
+           END-IF.
+      *
+           INITIALIZE              MCPAREA.
+           MOVE    "DBCLOSE"       TO  MCP-FUNC.
+           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"     USING
+                                   MCPAREA
+                                   ORCMCPAREA
+                                   MCPDATA-REC.
+      *修正/*終了*03.06.05*********************************************
       *
        T-000-CHEKCHEK-EXT.
            EXIT.
@@ -293,35 +370,53 @@
            MOVE    SPACE               TO  WK-PATH.
            MOVE    SPACE               TO  WK-SRYYM.
            MOVE    SPACE               TO  WK-TBL2.
+           MOVE    ZERO                TO  FLG-END.
+           MOVE    ZERO                TO  IDX1.
+      *修正/*開始*03.06.05*********************************************
+           MOVE    ZERO                TO  WK-HOSPID-S.
+           MOVE    ZERO                TO  WK-HOSPID-L.
+           MOVE    ZERO                TO  WK-PTID-C.
+           MOVE    SPACE               TO  WK-PTID-K.
+           INITIALIZE                  PTNUM-REC.
+      *修正/*終了*03.06.05*********************************************
       *
            OPEN    INPUT               EIE01-FILE.
       *
            IF  STS-EIE01   =   ZERO
                READ    EIE01-FILE
                  NOT  AT  END
-                      MOVE    EIE01-REC(1:6)    TO  WK-SRYYM
-                      MOVE    EIE01-REC(8:128)  TO  EIECSPARA-FILE-ID
-                      MOVE    EIE01-REC(137:64) TO  WK-PATH
-                      PERFORM VARYING IDX1  FROM  1  BY 1
-                              UNTIL   IDX1  >   600
-                          READ    EIE01-FILE
-                             AT   END
-                                  MOVE    601    TO  IDX1
-                             NOT  AT  END
-                                  IF      EIE01-REC(1:8)  =  "SRYYM***"
-                                      MOVE    EIE01-REC(71:6)
+                   MOVE    EIE01-REC(1:6)    TO  WK-SRYYM
+                   MOVE    EIE01-REC(8:128)  TO  EIECSPARA-FILE-ID
+                   MOVE    EIE01-REC(137:64) TO  WK-PATH
+                   PERFORM UNTIL   FLG-END   NOT  =  ZERO
+                       READ    EIE01-FILE
+                         AT   END
+                           MOVE    1      TO  FLG-END
+                         NOT  AT  END
+                           EVALUATE    EIE01-REC(1:8)
+                               WHEN    "SRYYM***"
+                                   MOVE    EIE01-REC(71:6)
                                                  TO  WK-SRYYM-S
-                                      COMPUTE WK-SRYYM-L  =  WK-SRYYM-S
-                                                          +  6
-                                  ELSE
-                                      MOVE    EIE01-REC
+                                   COMPUTE WK-SRYYM-L  =  WK-SRYYM-S
+                                                                  +  6
+      *修正/*開始*03.06.05*********************************************
+                               WHEN    "HOSPID**"
+                                   MOVE    EIE01-REC(71:6)
+                                                 TO  WK-HOSPID-S
+                                   MOVE    EIE01-REC(51:5)
+                                                 TO  WK-HOSPID-L(2:5)
+      *修正/*終了*03.06.05*********************************************
+                               WHEN    OTHER
+                                   COMPUTE IDX1  =  IDX1  +  1
+                                   MOVE    EIE01-REC
                                                  TO  WK-TBL-RMSG (IDX1)
-                                  END-IF
-                          END-READ
-                      END-PERFORM
+                           END-EVALUATE
+                       END-READ
+                   END-PERFORM
                END-READ
       *
                CLOSE                       EIE01-FILE
+               OPEN    OUTPUT              EIECS-FILE
       *
                MOVE    SPACE           TO  MCPDATA-REC
                IF  WK-SRYYM   NOT =   SPACE
@@ -333,8 +428,6 @@
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
-      *
-               OPEN    OUTPUT              EIECS-FILE
       *
                IF  MCP-RC   =   ZERO
                    PERFORM T-001-TBLFETCH-01-SEC
@@ -433,9 +526,6 @@
            IF  WK-TBL-RMSG (IDX1)   =   SPACE
                MOVE    601                         TO  IDX1
            ELSE
-               MOVE    WK-TBL-RMSG-9 (IDX1)        TO  WK-STPNT
-               MOVE    WK-TBL-RMSG-5 (IDX1)        TO  WK-KTPNT
-               MOVE    WK-TBL-RMSG-7 (IDX1)        TO  WK-PTPNT
                PERFORM T-001-TBLCNVAT-02-SEC
            END-IF.
       *
@@ -446,6 +536,20 @@
       *
        T-001-TBLCNVAT-02-SEC             SECTION.
       *
+           MOVE    WK-TBL-RMSG-9 (IDX1)        TO  WK-STPNT.
+           MOVE    WK-TBL-RMSG-5 (IDX1)        TO  WK-KTPNT.
+           MOVE    WK-TBL-RMSG-7 (IDX1)        TO  WK-PTPNT.
+      *修正/*開始*03.06.05*********************************************
+           IF  (WK-TBL-MSG (IDX2)(1:5)    NOT =   "PTNUM")  AND
+               (WK-TBL-MSG (IDX2)(1:5)    NOT =   "BD001")  AND
+               (WK-TBL-MSG (IDX2)(1:4)    NOT =   "I001")   AND
+               (WK-TBL-RMSG (IDX1)(1:4)       =   "PTID")
+               MOVE    IDX4                        TO  WK-PTID-C
+               MOVE    WK-TBL-RMSG-9 (IDX1)        TO  WK-PTID-S
+               MOVE    WK-TBL-RMSG-5 (IDX1)        TO  WK-PTID-L
+               MOVE    "*"                         TO  WK-PTID-K
+           END-IF.
+      *修正/*終了*03.05.12*********************************************
            IF  WK-TBL-RMSG-3 (IDX1)   =   "char   "
                MOVE    MCPDATA-REC(WK-STPNT:WK-KTPNT)
                              TO  WK-EIECS-REC(IDX4:WK-KTPNT)
@@ -514,11 +618,92 @@
            COMPUTE       IDX4 = IDX4 - 1.
            MOVE    X"0A"                TO  WK-EIECS-REC(IDX4:1).
       *
-           PERFORM VARYING IDX5   FROM   1   BY   1
-                   UNTIL   IDX5   >   IDX4
-               MOVE    WK-EIECS-REC(IDX5:1)    TO  EIECS-REC
-               WRITE   EIECS-REC
-           END-PERFORM.
+      *修正/*開始*03.05.12*********************************************
+           IF  (WK-TBL-CHKBTN01               =   "T")   AND
+               (WK-PTID-K                     =   "*")   AND
+               (WK-HOSPID-S               NOT =   ZERO)  AND
+               (WK-HOSPID-L               NOT =   ZERO)
+               COMPUTE       IDX9  =  WK-PTID-C  -  1
+               PERFORM VARYING IDX5   FROM   1   BY   1
+                       UNTIL   IDX5   >   IDX9
+                   MOVE    WK-EIECS-REC(IDX5:1)    TO  EIECS-REC
+                   WRITE   EIECS-REC
+               END-PERFORM
+      *
+               MOVE    WK-PTID-L               TO  WK-PTID-SL
+               EVALUATE    SYS-1009-PTNUMKSIKBN
+                   WHEN    "1"
+                       COMPUTE       WK-PTID-SL  =  WK-PTID-L
+                                            -  SYS-1009-JIYKSIKETA
+                   WHEN    "2"
+                       COMPUTE       WK-PTID-SL  =  WK-PTID-L
+                                            -  SYS-1009-HJNKSIRENNUMKETA
+                   WHEN    "3"
+                       COMPUTE       WK-PTID-SL  =  WK-PTID-L
+                                            -  SYS-1009-KKCKSIATOKETA
+               END-EVALUATE
+      *
+               INITIALIZE                  PTNUM-REC
+               IF  ((MCPDATA-REC(WK-HOSPID-S:WK-HOSPID-L)
+                                              NOT =   PTNUM-HOSPID)  OR
+                    (MCPDATA-REC(WK-PTID-S:WK-PTID-L)
+                                              NOT =   PTNUM-PTID))  AND
+                   (MCPDATA-REC(WK-PTID-S:WK-PTID-SL)    =   ZERO)
+                   MOVE    MCPDATA-REC(WK-HOSPID-S:WK-HOSPID-L)
+                                               TO  PTNUM-HOSPID
+                   MOVE    MCPDATA-REC(WK-PTID-S:WK-PTID-L)
+                                               TO  PTNUM-PTID
+      *
+                   MOVE    PTNUM-REC           TO  MCPDATA-REC
+                   MOVE    "DBSELECT"          TO  MCP-FUNC
+                   MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+      *
+                   IF  MCP-RC    =   ZERO
+                       MOVE    "DBFETCH"           TO  MCP-FUNC
+                       MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"         USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+                       IF  MCP-RC    =   ZERO
+                           MOVE    MCPDATA-REC         TO  PTNUM-REC
+                       END-IF
+                   END-IF
+      *
+                   INITIALIZE                  MCPAREA
+                   MOVE    "DBCLOSE"           TO  MCP-FUNC
+                   MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+               END-IF
+      *
+               MOVE    WK-TBL-CHKPTMUM         TO  WK-KTPNT
+               PERFORM VARYING IDX5   FROM   1   BY   1
+                       UNTIL   IDX5   >   WK-KTPNT
+                   MOVE    PTNUM-PTNUM(IDX5:1)     TO  EIECS-REC
+                   WRITE   EIECS-REC
+               END-PERFORM
+      *
+               COMPUTE       IDX9 = WK-PTID-C + WK-PTID-L
+               PERFORM VARYING IDX5   FROM   IDX9   BY   1
+                       UNTIL   IDX5   >   IDX4
+                   MOVE    WK-EIECS-REC(IDX5:1)    TO  EIECS-REC
+                   WRITE   EIECS-REC
+               END-PERFORM
+      *修正/*終了*03.05.12*********************************************
+           ELSE
+               PERFORM VARYING IDX5   FROM   1   BY   1
+                       UNTIL   IDX5   >   IDX4
+                   MOVE    WK-EIECS-REC(IDX5:1)    TO  EIECS-REC
+                   WRITE   EIECS-REC
+               END-PERFORM
+           END-IF.
       *
        T-001-WRITWRIT-01-EXT.
            EXIT.
