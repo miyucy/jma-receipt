@@ -640,6 +640,9 @@
                                        TO  SPA-ERRMSG
                    MOVE    "約束セットを修正して下さい。"
                                        TO  SPA-ERRMSG(43:)
+               WHEN    "A002"
+                   MOVE    "数量ゼロは入力できません。"
+                                       TO  SPA-ERRMSG
                WHEN    "9001"
                    MOVE    "診療日付では入院は存在しません。"
                                        TO  SPA-ERRMSG
@@ -951,7 +954,7 @@
                    MOVE    "患者登録で保険組合せを登録し直して下さい。"
                                        TO  SPA-ERRMSG(29:)
                WHEN    "1033"
-                   MOVE    "訂正で包括まとめ入力の変更はできません。"
+                   MOVE    "訂正で包括分入力の変更はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"

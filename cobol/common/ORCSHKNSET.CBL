@@ -769,7 +769,7 @@
                ADD     1                   TO  ORCSHKN-HKN-MAX
                MOVE    "9999"              TO  ORCSHKN-GMN-HKNCOMBINUM
                                                       (ORCSHKN-HKN-MAX)
-               MOVE    "包括まとめ入力"    TO  ORCSHKN-GMN-HKNCOMBIMEI
+               MOVE    "包括分入力"        TO  ORCSHKN-GMN-HKNCOMBIMEI
                                                       (ORCSHKN-HKN-MAX)
                MOVE    ZERO                TO  ORCSHKN-NAI-TEKSTYMD
                                                       (ORCSHKN-HKN-MAX)
