@@ -5,12 +5,9 @@
   <name>U01</name>
   <program_name>U01</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
@@ -29,7 +26,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Mon, 25 Dec 2000 05:03:47 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -112,18 +109,24 @@
 
     <widget>
       <class>GtkButton</class>
-      <name>button140</name>
+      <name>B04</name>
       <x>248</x>
       <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F4</key>
+	<signal>clicked</signal>
+      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
-	<last_modification_time>Tue, 05 Dec 2000 19:14:33 GMT</last_modification_time>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 16 Jun 2003 05:02:51 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>°ìÍ÷°õºþ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -163,7 +166,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 08:26:05 GMT</last_modification_time>
       </signal>
-      <label>Á°ÊÇ</label>
+      <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -186,7 +189,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 08:26:32 GMT</last_modification_time>
       </signal>
-      <label>¼¡ÊÇ</label>
+      <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
