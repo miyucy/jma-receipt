@@ -801,7 +801,7 @@
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF      KANACHK-RC          =   ZERO
-               MOVE    KANACHK-OUT-INPUT(1:24)    TO  WRK-ZHENSYU24
+               MOVE    KANACHK-OUT-INPUT(7:24)    TO  WRK-ZHENSYU24
            END-IF
            .
        800-HENKAN-EXT.
