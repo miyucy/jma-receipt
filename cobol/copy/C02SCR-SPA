@@ -43,6 +43,7 @@
       *  01.04.02    NACL-藤原    03/02/28  診療科４０に変更
       *  01.04.03    NACL-藤原    03/03/05  コメント画面に入外区分を追加
       *  01.04.04    NACL-藤原    03/07/02  主病名編集フラグの追加
+      *  01.04.05    NACL-藤原    03/07/07  開始日、転帰日の長さを変更
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -93,7 +94,7 @@
                        09  SPA-GMN-C02-KOUMOKU.
                            11  SPA-GMN-C02-BANGO           PIC 9(03).
       *----(01.00.04) LINE UPD START ----------------------------------
-                           11  SPA-GMN-C02-SRYYMD          PIC X(09).
+                           11  SPA-GMN-C02-SRYYMD          PIC X(10).
       *********************11  SPA-GMN-C02-SRYYMD.
       ***                      13  SPA-GMN-C02-SRYNENGO    PIC X(01).
       ***                      13  SPA-GMN-C02-SRYYY       PIC X(02).
@@ -141,7 +142,7 @@
                                13  SPA-GMN-F1              PIC X(01).
                                13  SPA-GMN-C02-TENKIKBNMEI PIC X(06).
       *----(01.00.04) LINE UPD START ----------------------------------
-                           11  SPA-GMN-C02-TENKIYMD        PIC X(09).
+                           11  SPA-GMN-C02-TENKIYMD        PIC X(10).
       *********************11  SPA-GMN-C02-TENKIYMD.
       ***                      13  SPA-GMN-C02-TENKINENGO  PIC X(01).
       ***                      13  SPA-GMN-C02-TENKIYY     PIC X(02).
