@@ -35,6 +35,8 @@
       *  01.00.06    NACL-ÌçÏÆ    03.04.10  ´Ç¸îÇÛÃÖÅ¬¹ç¤Î³°ÇñÂÐ±þ
       *  01.00.07    NACL-Æ£¸¶    03/04/21  ÃÏÊý¸øÈñ¥Ç¡¼¥¿¤Î¤È¤­ÉÔÌÀÊ¬¤Ï
       *                                     ½èÍý¤ÎÂÐ¾Ý¤È¤·¤Ê¤¤
+      *  01.00.08    NACL-ÌçÏÆ    03/06/06  ÆÃÄêÆþ±¡ÎÁ¤ÎÎ¬¾Î¤¬Ìµ¤¤¾ì¹ç¤Î
+      *                                     ÂÐ±þ
       *****************************************************************
       *
       *
@@ -1366,6 +1368,9 @@
                       ADD        1           TO  RECE62-NYUTOKNISSU(ID1)
                       MOVE   WRK-RYAKUSHO    TO  RECE62-NYUTOKRYO-RYAKU
                                                                    (ID1)
+      ***             Î¬¾Î¤¬Ìµ¤¤¾ì¹ç¤Î°Ù¤Î½èÃÖ
+                      MOVE   999999999       TO  RECE62-NYUTOKRYO(ID1)
+      *
                       ADD    WRK-NYUTOKRYO   
                                        TO  RECE62-NYUTOKKEI(ID1 KH-IDX)
                     END-IF
@@ -1388,6 +1393,11 @@
                     END-PERFORM  
                     IF  FLG-ARI  =  ZERO  
                       ADD        1           TO  RECE62-NYUTOKNISSU(ID1)
+      ***             Î¬¾Î¤¬Ìµ¤¤¾ì¹ç¤Î°Ù¤Î½èÃÖ
+                      MOVE   "£¹£¹£¹£¹£¹£¹£¹"
+                                             TO  RECE62-NYUTOKRYO-RYAKU
+                                                                   (ID1)
+      *
                       MOVE   WRK-NYUTOKRYO   TO  RECE62-NYUTOKRYO(ID1)
                       ADD    WRK-NYUTOKRYO   
                                        TO  RECE62-NYUTOKKEI(ID1 KH-IDX)
@@ -2698,6 +2708,17 @@
                  ELSE
                     MOVE    ZERO    TO   RECE62-NYUKHNKEI2(IDY)
                     MOVE    ZERO    TO   RECE62-NYUTOKKEI2(IDY)
+                 END-IF
+           END-PERFORM
+      *
+           PERFORM    VARYING    IDX    FROM   1   BY   1
+                      UNTIL      IDX    >      10
+                 IF   RECE62-NYUTOKRYO(IDX)  =  999999999
+                    MOVE    ZERO    TO   RECE62-NYUTOKRYO(IDX)
+                 END-IF
+                 IF   RECE62-NYUTOKRYO-RYAKU(IDX)  
+                                             =  "£¹£¹£¹£¹£¹£¹£¹"
+                    MOVE    SPACE   TO   RECE62-NYUTOKRYO-RYAKU(IDX)
                  END-IF
            END-PERFORM
       *
