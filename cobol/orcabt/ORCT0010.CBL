@@ -1175,7 +1175,7 @@
                GO  TO  20021-SEIKYU-KIKAN-GET-EXT
            END-IF
       *
-           IF    ( SYS-5012-SAKKBN =   "1" OR  "2" )
+           IF    ( SYS-5012-SAKKBN =   "0" OR  "1" )
                COMPUTE WRK-CNT =   WRK-CNT +   1
                MOVE    WRK-CNT TO  WRK-KIKAN-MAX
                MOVE    SYS-5012-SRYYM  (1 : 6)
@@ -1193,7 +1193,7 @@
                END-IF
            END-IF
       *
-           IF    ( SYS-5012-SAKKBN =   "1" OR  "3" )
+           IF    ( SYS-5012-SAKKBN =   "0" OR  "2" )
                COMPUTE WRK-CNT =   WRK-CNT +   1
                MOVE    WRK-CNT TO  WRK-KIKAN-MAX
                MOVE    SYS-5012-SRYYM (1 : 6)  TO  WRK-YMD (1 : 6)
@@ -1212,7 +1212,7 @@
                                        TO  WRK-KIKANED (WRK-CNT)(7 : 2)
                END-IF
            END-IF
-           IF    ( SYS-5012-SAKKBN =   "1" OR  "4" )
+           IF    ( SYS-5012-SAKKBN =   "0" OR  "3" )
                COMPUTE WRK-CNT =   WRK-CNT +   1
                MOVE    WRK-CNT TO  WRK-KIKAN-MAX
                MOVE    SYS-5012-SRYYM (1 : 6)  TO  WRK-YMD (1 : 6)
