@@ -2187,11 +2187,20 @@
                    MOVE    SODRNACCT-STARTYMD      TO  WRK-STARTYMD
                    EVALUATE   SODRNACCT-ORDERID(3:2)
                        WHEN   "01"
-                           MOVE   1     TO   NACCT-DAY(WRK-STARTYMD-D)
+                           IF     NACCT-DAY(WRK-STARTYMD-D)  =  ZERO
+                               MOVE  1  TO   NACCT-DAY(WRK-STARTYMD-D)
+                           END-IF
                        WHEN   "02"
-                           MOVE   2     TO   NACCT-DAY(WRK-STARTYMD-D)
+                           IF     NACCT-DAY(WRK-STARTYMD-D) =  ZERO OR
+                                                               1    OR
+                                                               3
+                               MOVE  2  TO   NACCT-DAY(WRK-STARTYMD-D)
+                           END-IF
                        WHEN   "03"
-                           MOVE   3     TO   NACCT-DAY(WRK-STARTYMD-D)
+                           IF     NACCT-DAY(WRK-STARTYMD-D) =  ZERO OR
+                                                               1
+                               MOVE  3  TO   NACCT-DAY(WRK-STARTYMD-D)
+                           END-IF
                        WHEN   "04"
                            MOVE   4     TO   NACCT-DAY(WRK-STARTYMD-D)
                        WHEN   "05"
