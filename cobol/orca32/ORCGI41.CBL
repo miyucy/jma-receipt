@@ -121,6 +121,7 @@
            03  IDM                 PIC 9(04).
            03  IDX-H               PIC 9(04).
            03  IDX-D               PIC 9(02).
+           03  IDXS1               PIC 9(04).
            03  IDW3                PIC 9(04).
            03  IDW4                PIC 9(04).
            03  IDW5                PIC 9(04).
@@ -518,7 +519,7 @@
            ELSE
       *    初期画面編集
                MOVE    ZERO                TO  IDX4
-               MOVE    ZERO                TO  IDX6
+               MOVE    ZERO                TO  IDXS1
                PERFORM 300-SCREEN-SEC
                IF      FLG-END         =   1
                    GO      TO      100-INIT-EXT
@@ -678,7 +679,6 @@
        3003-JID1-SET-SEC                  SECTION.
       *
            EVALUATE    SPA-IIDCD
-               WHEN    "0101"
                WHEN    "0102"
       *            戻るの確認
                    IF      SPA-I4ID-FLG        =   "OK"
@@ -1982,10 +1982,10 @@
                IF      SPA-GENSAN-RE2-41       =   1
                    IF      SPA-GMN-MAX-41       =   ZERO
                        MOVE    1                   TO  IDX4
-                       COMPUTE IDX6   =   IDG   +   1
+                       COMPUTE IDXS1   =   IDG   +   1
                    ELSE
                        MOVE    SPA-GMN-MAX-41      TO  IDX4
-                       MOVE    SPA-GMN-MAX-41      TO  IDX6
+                       MOVE    SPA-GMN-MAX-41      TO  IDXS1
                    END-IF
                    PERFORM VARYING     IDZ2    FROM    1   BY  1
                            UNTIL       IDZ2            >   50
@@ -1997,11 +1997,10 @@
                MOVE    ZERO                TO  SPA-GENSAN-RE1-41
            END-IF.
       *
-           IF      (IDX6             NOT =   ZERO)   AND
-                   (SPA-GENSAN-ST2-41    >   IDX6)
+           IF      (IDXS1            NOT =   ZERO)   AND
+                   (SPA-GENSAN-ST2-41    >   IDXS1)
                MOVE    IDX4                 TO  IDX5
-               MOVE    IDX6                 TO  IDX7
-               PERFORM   VARYING   IDX    FROM    IDX6   BY  1
+               PERFORM   VARYING   IDX    FROM    IDXS1  BY  1
                          UNTIL     IDX        >   SPA-GENSAN-ST2-41
                    IF      SPA-GMN-TMEISYO-41 (IDX)   =   ALL "-"
                        MOVE    ALL "-"      TO  I41-DATELIST-ITEM (IDX4)
@@ -2026,7 +2025,6 @@
                    ADD     1              TO  IDX4
                END-PERFORM
                MOVE    IDX5                 TO  IDX4
-               MOVE    IDX7                 TO  IDX6
                MOVE    SPA-GENSAN-ST2-41    TO  I41-DATELIST-COUNT
                IF      SPA-ERRCD   =   "0031"
                    MOVE    SPACE                TO  SPA-ERRCD
@@ -3249,7 +3247,7 @@
            PERFORM 990-LOCK-OUT-SEC.
       *
            IF      SPA-GMN-NUM-41    =   ZERO
-      *    前回患者へ待避
+      *        前回患者へ待避
                IF      SPA-GMN-PTNUM    NOT =   SPACE
                    MOVE    SPA-GMN-PTNUM        TO  SPA-LAST-PTNUM
                    MOVE    SPA-GMN-PTID         TO  SPA-LAST-PTID
@@ -3506,13 +3504,19 @@
       *
       *    更新前のチェック
            IF      SPA-UPDFLG-41          =   "1"
-               MOVE    "0102"          TO  SPA-IIDCD
-               MOVE    99              TO  SPA-GMN-CUR-41
+               MOVE    "0102"               TO  SPA-IIDCD
+               MOVE    99                   TO  SPA-GMN-CUR-41
                GO      TO      210-BACK-EXT
            END-IF.
       *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC.
+      *
+      *    前回患者へ待避
+           IF      SPA-GMN-PTNUM    NOT =   SPACE
+               MOVE    SPA-GMN-PTNUM        TO  SPA-LAST-PTNUM
+               MOVE    SPA-GMN-PTID         TO  SPA-LAST-PTID
+           END-IF.
       *
            MOVE    "I41"               TO  SPA-MOTOPG.
            MOVE    SPA-MOTOPG2         TO  SPA-SAKIPG.
@@ -6118,10 +6122,6 @@
        520-JIDSET-SEC              SECTION.
       *
            EVALUATE    SPA-IIDCD
-               WHEN    "0101"
-               MOVE
-               "剤が選択されています。ＯＫ　で選択内容はクリアされます"
-                                       TO  WRK-JIDMSG
                WHEN    "0102"
                MOVE
            "剤が修正されています。ＯＫで修正分は反映されずに終了します"
