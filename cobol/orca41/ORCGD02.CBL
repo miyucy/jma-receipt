@@ -84,6 +84,9 @@
       *  01.00.32    ひさなが     03/09/20  患者氏名、患者病名チェック
       *                                     全空白、全単バイト文字修正
       *                                     保険適応年齢チェックの修正
+      *  01.00.33    ひさなが     03/10/20  患者病名チェックの
+      *                                     転帰日の範囲を修正
+      *                                     診療開始日のチェックを修正
       *
       *****************************************************************
       *
@@ -253,6 +256,9 @@
            03  W-YY5               PIC 9(04).
            03  W-MM5               PIC 9(02).
            03  W-DD5               PIC 9(02).
+       01  W-TENKIYM.
+           03  W-TENKIYMD-YY       PIC X(06).
+           03  W-TENKIYMD-MM       PIC X(02).
       *
       *    実日数計算作業
        01  W-JITUDAY.
@@ -514,6 +520,9 @@
            03  T-MESSAGE-510-09    PIC X(90)   VALUE
                "510-09該当患者は病名に全角文字以外が入力されています    
       -        "                                  ".
+           03  T-MESSAGE-510-10    PIC X(90)   VALUE
+               "510-10該当患者はカルテ病名に全角文字以外が入力されていま
+      -        "す                                ".
            03  T-MESSAGE-520-01    PIC X(90)   VALUE
                "520-01診療科履歴情報テーブル異常                        
       -        "                                  ".
@@ -1988,7 +1997,9 @@
                            MOVE    COMB-HKNID        TO  DID2-REC(37:10)
                            MOVE    T-MESSAGE-300-04  TO  DID2-REC(71:90)
                            WRITE   DID2-REC
-                           MOVE    "*"               TO  T-ERR-02
+                           IF  SPA-GMN-CNV (2)  =  "1"
+                               MOVE    "*"           TO  T-ERR-02
+                           END-IF
                        END-IF
                        IF  (T-ERR-02            =   SPACE)  AND
                            (PTHKN-KIGO      NOT =   SPACE)
@@ -1997,7 +2008,9 @@
                            MOVE    PTHKN-KIGO      TO  KANACHK-MAE-INPUT
                            CALL    "ORCSKANACHK"   USING
                                                    ORCSKANACHKAREA
-                           IF  KANACHK-RC   NOT =   ZERO
+                           IF  (KANACHK-RC     NOT =   ZERO)  OR
+                               (KANACHK-RC2        =   0008)  OR
+                               (PTHKN-KIGO(1:1)    <   X"A1")
                                COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                                MOVE    SPACE         TO  DID2-REC
                                MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
@@ -2011,24 +2024,6 @@
                                IF  SPA-GMN-CNV (2)  =  "1"
                                    MOVE    "*"           TO  T-ERR-02
                                END-IF
-                           ELSE
-                               IF  PTHKN-KIGO(1:1)     <   X"A1"
-                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                                   MOVE    SPACE     TO  DID2-REC
-                                   MOVE    ACCT-HOSPID
-                                                     TO  DID2-REC(1:24)
-                                   MOVE    "-"       TO  DID2-REC(25:1)
-                                   MOVE    ACCT-PTID TO  DID2-REC(26:10)
-                                   MOVE    "-"       TO  DID2-REC(36:1)
-                                   MOVE    COMB-HKNID
-                                                     TO  DID2-REC(37:10)
-                                   MOVE    T-MESSAGE-300-05
-                                                     TO  DID2-REC(71:90)
-                                   WRITE   DID2-REC
-                                   IF  SPA-GMN-CNV (2)  =  "1"
-                                       MOVE    "*"          TO  T-ERR-02
-                                   END-IF
-                               END-IF
                            END-IF
                        END-IF
                        IF  (T-ERR-02            =   SPACE)  AND
@@ -2038,7 +2033,9 @@
                            MOVE    PTHKN-NUM       TO  KANACHK-MAE-INPUT
                            CALL    "ORCSKANACHK"   USING
                                                    ORCSKANACHKAREA
-                           IF  KANACHK-RC   NOT =   ZERO
+                           IF  (KANACHK-RC    NOT =   ZERO)  OR
+                               (KANACHK-RC2       =   0008)  OR
+                               (PTHKN-NUM(1:1)    <   X"A1")
                                COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                                MOVE    SPACE         TO  DID2-REC
                                MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
@@ -2051,25 +2048,6 @@
                                WRITE   DID2-REC
                                IF  SPA-GMN-CNV (2)  =  "1"
                                    MOVE    "*"           TO  T-ERR-02
-                               END-IF
-                           ELSE
-                               IF  PTHKN-NUM(1:1)      <   X"A1"
-                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                                   MOVE    SPACE     TO  DID2-REC
-                                   MOVE    ACCT-HOSPID
-                                                     TO  DID2-REC(1:24)
-                                   MOVE    "-"       TO  DID2-REC(25:1)
-                                   MOVE    ACCT-PTID
-                                                     TO  DID2-REC(26:10)
-                                   MOVE    "-"       TO  DID2-REC(36:1)
-                                   MOVE    COMB-HKNID
-                                                     TO  DID2-REC(37:10)
-                                   MOVE    T-MESSAGE-300-06
-                                                     TO  DID2-REC(71:90)
-                                   WRITE   DID2-REC
-                                   IF  SPA-GMN-CNV (2)  =  "1"
-                                       MOVE    "*"          TO  T-ERR-02
-                                   END-IF
                                END-IF
                            END-IF
                        END-IF
@@ -2209,7 +2187,9 @@
                    IF  PTKOH-KOHNUM   =   W-KOHNUM1
                        MOVE    PTKOH-KOHNUM      TO  W-COMB-HANNTEI1
                    ELSE
-                       MOVE    SPACE             TO  W-COMB-HANNTEI1
+                       IF  W-COMB-HANNTEI1   NOT =   W-KOHNUM1
+                           MOVE    SPACE             TO  W-COMB-HANNTEI1
+                       END-IF
                    END-IF
                END-IF
            END-IF.
@@ -2333,7 +2313,9 @@
                    IF  PTKOH-KOHNUM   =   W-KOHNUM1
                        MOVE    PTKOH-KOHNUM      TO  W-COMB-HANNTEI1
                    ELSE
-                       MOVE    SPACE             TO  W-COMB-HANNTEI1
+                       IF  W-COMB-HANNTEI1   NOT =   W-KOHNUM1
+                           MOVE    SPACE             TO  W-COMB-HANNTEI1
+                       END-IF
                    END-IF
                END-IF
            END-IF.
@@ -2457,7 +2439,9 @@
                    IF  PTKOH-KOHNUM   =   W-KOHNUM1
                        MOVE    PTKOH-KOHNUM      TO  W-COMB-HANNTEI1
                    ELSE
-                       MOVE    SPACE             TO  W-COMB-HANNTEI1
+                       IF  W-COMB-HANNTEI1   NOT =   W-KOHNUM1
+                           MOVE    SPACE             TO  W-COMB-HANNTEI1
+                       END-IF
                    END-IF
                END-IF
            END-IF.
@@ -2581,7 +2565,9 @@
                    IF  PTKOH-KOHNUM   =   W-KOHNUM1
                        MOVE    PTKOH-KOHNUM      TO  W-COMB-HANNTEI1
                    ELSE
-                       MOVE    SPACE             TO  W-COMB-HANNTEI1
+                       IF  W-COMB-HANNTEI1   NOT =   W-KOHNUM1
+                           MOVE    SPACE             TO  W-COMB-HANNTEI1
+                       END-IF
                    END-IF
                END-IF
            END-IF.
@@ -2694,11 +2680,9 @@
        T-500-RECECHEK2-SEC               SECTION.
       *
            IF  (COMB-HKNNUM       NOT =   W-HKNNUM1)  AND
-      *修正/*開始*03.09.20*********************************************
                (COMB-HKNNUM       NOT =   W-HKNNUM2)  AND
                (COMB-HKNNUM       NOT =   W-HKNNUM3)  AND
                (COMB-HKNNUM       NOT =   W-HKNNUM4)
-      *修正/*終了*03.09.20*********************************************
                IF  (T-ERR-04              =   SPACE)  AND
                    (SPA-GMN-CNV (4)   NOT =   SPACE)
                    MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM1
@@ -2711,8 +2695,10 @@
                    ELSE
                         COMPUTE W-YY3 = W-YY3 + 75
                    END-IF
-                   IF  (W-COMB-HANNTEI2   =   "1")    AND
-                       (T-SINRYOU-AREA    <   W-YM1)
+                   IF  (W-COMB-HANNTEI2     =   "1")                AND
+                       (T-SINRYOU-AREA  NOT <   COMB-TEKSTYMD(1:6)) AND
+                       (T-SINRYOU-AREA  NOT >   COMB-TEKEDYMD(1:6)) AND
+                       (T-SINRYOU-AREA      <   W-YM1)
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                        MOVE    SPACE             TO  DID2-REC
                        MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
@@ -2722,8 +2708,10 @@
                        WRITE   DID2-REC
                        MOVE    "*"               TO  T-ERR-04
                    END-IF
-                   IF  (W-COMB-HANNTEI1   =   W-KOHNUM1)  AND
-                       (T-SINRYOU-AREA    <   W-YM2)
+                   IF  (W-COMB-HANNTEI1     =   W-KOHNUM1)          AND
+                       (T-SINRYOU-AREA  NOT <   COMB-TEKSTYMD(1:6)) AND
+                       (T-SINRYOU-AREA  NOT >   COMB-TEKEDYMD(1:6)) AND
+                       (T-SINRYOU-AREA      <   W-YM2)
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                        MOVE    SPACE             TO  DID2-REC
                        MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
@@ -2733,11 +2721,15 @@
                        WRITE   DID2-REC
                        MOVE    "*"               TO  T-ERR-04
                    END-IF
-                   IF  ((W-COMB-HANNTEI1      =   "---")  AND
-                        (T-SINRYOU-AREA       >   W-YM3))  OR
-                       ((W-COMB-HANNTEI1      =   "---")  AND
-                        (T-SINRYOU-AREA       =   W-YM3)  AND
-                        (PTINF-BIRTHDAY(7:2)  =   "01"))
+                   IF  ((W-COMB-HANNTEI1 NOT =   W-KOHNUM1)          AND
+                        (T-SINRYOU-AREA  NOT <   COMB-TEKSTYMD(1:6)) AND
+                        (T-SINRYOU-AREA  NOT >   COMB-TEKEDYMD(1:6)) AND
+                        (T-SINRYOU-AREA      >   W-YM3))              OR
+                       ((W-COMB-HANNTEI1 NOT =   W-KOHNUM1)          AND
+                        (T-SINRYOU-AREA  NOT <   COMB-TEKSTYMD(1:6)) AND
+                        (T-SINRYOU-AREA  NOT >   COMB-TEKEDYMD(1:6)) AND
+                        (T-SINRYOU-AREA      =   W-YM3)              AND
+                        (PTINF-BIRTHDAY(7:2) =   "01"))
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                        MOVE    SPACE             TO  DID2-REC
                        MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
@@ -2751,47 +2743,35 @@
            END-IF.
            IF  (T-ERR-13               =   SPACE)  AND
                (SPA-GMN-CNV (13)   NOT =   SPACE)
-               INITIALIZE              ORCSKANACHKAREA
-               MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    PTINF-KANANAME  TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"   USING
-                                       ORCSKANACHKAREA
-               IF  KANACHK-RC           NOT =   ZERO
-                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+               MOVE    "*"         TO  T-CHK-SPACE
+               PERFORM VARYING  IDW5  FROM  1  BY 2
+                       UNTIL    IDW5  >   100
+                   IF  (PTINF-KANANAME(IDW5:2)  NOT =  "  ") AND
+                       (PTINF-KANANAME(IDW5:2)  NOT =  "　")
+                       MOVE    SPACE     TO  T-CHK-SPACE
+                       MOVE    200       TO  IDW5
+                   END-IF
+               END-PERFORM
+               IF  T-CHK-SPACE = "*"
+                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                    MOVE    SPACE             TO  DID2-REC
                    MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
                    MOVE    "-"               TO  DID2-REC(25:1)
                    MOVE    ACCT-PTID         TO  DID2-REC(26:10)
-                   MOVE    T-MESSAGE-600-02  TO  DID2-REC(71:90)
+                   MOVE    T-MESSAGE-600-04  TO  DID2-REC(71:90)
                    WRITE   DID2-REC
                    IF  SPA-GMN-CNV (13)  =  "1"
                        MOVE    "*"               TO  T-ERR-13
                    END-IF
                ELSE
-      *修正/*開始*03.09.20*********************************************
-                   MOVE    "*"         TO  T-CHK-SPACE
-                   PERFORM VARYING  IDW5  FROM  1  BY 2
-                           UNTIL    IDW5  >   100
-                       IF  (PTINF-KANANAME(IDW5:2)  NOT =  "  ") AND
-                           (PTINF-KANANAME(IDW5:2)  NOT =  "　")
-                           MOVE    SPACE     TO  T-CHK-SPACE
-                           MOVE    200       TO  IDW5
-                       END-IF
-                   END-PERFORM
-                   IF  T-CHK-SPACE = "*"
-                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                       MOVE    SPACE             TO  DID2-REC
-                       MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
-                       MOVE    "-"               TO  DID2-REC(25:1)
-                       MOVE    ACCT-PTID         TO  DID2-REC(26:10)
-                       MOVE    T-MESSAGE-600-04  TO  DID2-REC(71:90)
-                       WRITE   DID2-REC
-                       IF  SPA-GMN-CNV (13)  =  "1"
-                           MOVE    "*"               TO  T-ERR-13
-                       END-IF
-                   END-IF
-                   IF  (PTINF-KANANAME      NOT =   SPACE) AND
-                       (PTINF-KANANAME(1:1)     <   X"A1")
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI
+                   MOVE    PTINF-KANANAME  TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING
+                                           ORCSKANACHKAREA
+                   IF  (KANACHK-RC         NOT =   ZERO)   OR
+                       (KANACHK-RC2            =   0008)   OR
+                       (PTINF-KANANAME(1:1)    <   X"A1")
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                        MOVE    SPACE             TO  DID2-REC
                        MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
@@ -2803,52 +2783,39 @@
                            MOVE    "*"               TO  T-ERR-13
                        END-IF
                    END-IF
-      *修正/*終了*03.09.20*********************************************
                END-IF
            END-IF.
            IF  (T-ERR-13               =   SPACE)  AND
                (SPA-GMN-CNV (13)   NOT =   SPACE)
-               INITIALIZE              ORCSKANACHKAREA
-               MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    PTINF-NAME      TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"   USING
-                                       ORCSKANACHKAREA
-               IF  KANACHK-RC   NOT =   ZERO
+               MOVE    "*"         TO  T-CHK-SPACE
+               PERFORM VARYING  IDW5  FROM  1  BY 2
+                       UNTIL    IDW5  >   100
+                   IF  (PTINF-NAME(IDW5:2)  NOT =  "  ") AND
+                       (PTINF-NAME(IDW5:2)  NOT =  "　")
+                       MOVE    SPACE     TO  T-CHK-SPACE
+                       MOVE    200       TO  IDW5
+                   END-IF
+               END-PERFORM
+               IF  T-CHK-SPACE = "*"
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                    MOVE    SPACE             TO  DID2-REC
                    MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
                    MOVE    "-"               TO  DID2-REC(25:1)
                    MOVE    ACCT-PTID         TO  DID2-REC(26:10)
-                   MOVE    T-MESSAGE-600-01  TO  DID2-REC(71:90)
+                   MOVE    T-MESSAGE-600-03  TO  DID2-REC(71:90)
                    WRITE   DID2-REC
                    IF  SPA-GMN-CNV (13)  =  "1"
                        MOVE    "*"               TO  T-ERR-13
                    END-IF
                ELSE
-      *修正/*開始*03.09.20*********************************************
-                   MOVE    "*"         TO  T-CHK-SPACE
-                   PERFORM VARYING  IDW5  FROM  1  BY 2
-                           UNTIL    IDW5  >   100
-                       IF  (PTINF-NAME(IDW5:2)  NOT =  "  ") AND
-                           (PTINF-NAME(IDW5:2)  NOT =  "　")
-                           MOVE    SPACE     TO  T-CHK-SPACE
-                           MOVE    200       TO  IDW5
-                       END-IF
-                   END-PERFORM
-                   IF  T-CHK-SPACE = "*"
-                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                       MOVE    SPACE             TO  DID2-REC
-                       MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
-                       MOVE    "-"               TO  DID2-REC(25:1)
-                       MOVE    ACCT-PTID         TO  DID2-REC(26:10)
-                       MOVE    T-MESSAGE-600-03  TO  DID2-REC(71:90)
-                       WRITE   DID2-REC
-                       IF  SPA-GMN-CNV (13)  =  "1"
-                           MOVE    "*"               TO  T-ERR-13
-                       END-IF
-                   END-IF
-                   IF  (PTINF-NAME         NOT =   SPACE) AND
-                       (PTINF-NAME(1:1)        <   X"A1")
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI
+                   MOVE    PTINF-NAME      TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING
+                                           ORCSKANACHKAREA
+                   IF  (KANACHK-RC     NOT =   ZERO)   OR
+                       (KANACHK-RC2        =   0008)   OR
+                       (PTINF-NAME(1:1)    <   X"A1")
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                        MOVE    SPACE             TO  DID2-REC
                        MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
@@ -2860,7 +2827,6 @@
                            MOVE    "*"               TO  T-ERR-13
                        END-IF
                    END-IF
-      *修正/*終了*03.09.20*********************************************
                END-IF
            END-IF.
       *
@@ -2975,7 +2941,7 @@
            ELSE
                PERFORM T-510-RECECHEK-READ-SEC
                IF  MCP-RC   NOT =   ZERO
-                   IF  (SPA-GMN-CNV (5) NOT =   SPACE)   AND
+                   IF  (SPA-GMN-CNV (5) NOT = SPACE)   AND
                        (T-ERR-05            = SPACE)
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                        MOVE    SPACE                 TO  DID2-REC
@@ -3006,8 +2972,12 @@
                                (PTBYO-TENKIYMD(1:6) NOT < ACCT-SRYYM)
                                MOVE    SPACE             TO  T-HANNTEI3
                            END-IF
+                           MOVE    PTBYO-TENKIYMD(1:6) TO  W-TENKIYM
                            IF  (SPA-GMN-CNV (5) NOT = SPACE)  AND
-                               (T-ERR-05            = SPACE)
+                               (T-ERR-05            = SPACE)  AND
+                               ((W-TENKIYM           = SPACE)  OR
+                                (W-TENKIYM           = ZERO)   OR
+                                (W-TENKIYM       NOT < ACCT-SRYYM))
                                MOVE    "*"         TO  T-CHK-SPACE
                                PERFORM VARYING  IDW5  FROM  1  BY 2
                                        UNTIL    IDW5  >   160
@@ -3028,10 +2998,10 @@
                                    MOVE    ACCT-PTID TO  DID2-REC(26:10)
                                    MOVE    ACCT-SRYKA
                                                      TO  DID2-REC(191:2)
-                                   STRING T-MESSAGE-510-03
+                                   STRING  T-MESSAGE-510-03
                                                      DELIMITED BY SPACE
-                                          "、"       DELIMITED BY SIZE
-                                          PTBYO-BYOMEICD (1)
+                                           "、"      DELIMITED BY SIZE
+                                           PTBYO-BYOMEICD (1)
                                                      DELIMITED BY SPACE
                                                 INTO DID2-REC(71:90)
                                    END-STRING
@@ -3044,14 +3014,19 @@
                            END-IF
                            IF  (SPA-GMN-CNV (5) NOT = SPACE)  AND
                                (T-ERR-05            = SPACE)  AND
-                               (PTBYO-BYOMEI    NOT = SPACE)
+                               (PTBYO-BYOMEI    NOT = SPACE)  AND
+                               ((W-TENKIYM           = SPACE)  OR
+                                (W-TENKIYM           = ZERO)   OR
+                                (W-TENKIYM       NOT < ACCT-SRYYM))
                                INITIALIZE           ORCSKANACHKAREA
                                MOVE "1"             TO KANACHK-SYORI
                                MOVE PTBYO-BYOMEI    TO KANACHK-MAE-INPUT
                                CALL "ORCSKANACHK"      USING
                                                        ORCSKANACHKAREA
-                               IF  KANACHK-RC   NOT =   ZERO
-                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                               IF  (KANACHK-RC      NOT =   ZERO)   OR
+                                   (KANACHK-RC2         =   0008)   OR
+                                   (PTBYO-BYOMEI(1:1)   <  X"A1")
+                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                                    MOVE    SPACE     TO  DID2-REC
                                    MOVE    ACCT-HOSPID
                                                      TO  DID2-REC(1:24)
@@ -3066,37 +3041,23 @@
                                        MOVE    "*"        TO  T-ERR-05
                                        MOVE    "ED"       TO  T-HANNTEI6
                                    END-IF
-                               ELSE
-                                   IF  PTBYO-BYOMEI(1:1)   < X"A1"
-                                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                                       MOVE    SPACE TO  DID2-REC
-                                       MOVE    ACCT-HOSPID
-                                                     TO  DID2-REC(1:24)
-                                       MOVE    "-"   TO  DID2-REC(25:1)
-                                       MOVE    ACCT-PTID
-                                                     TO  DID2-REC(26:10)
-                                       MOVE    ACCT-SRYKA
-                                                     TO  DID2-REC(191:2)
-                                       MOVE    T-MESSAGE-510-09
-                                                     TO  DID2-REC(71:90)
-                                       WRITE   DID2-REC
-                                       IF  SPA-GMN-CNV (5)  =  "1"
-                                           MOVE    "*"    TO  T-ERR-05
-                                           MOVE    "ED"   TO  T-HANNTEI6
-                                       END-IF
-                                   END-IF
                                END-IF
                            END-IF
                            IF  (SPA-GMN-CNV (5)      NOT = SPACE)  AND
                                (T-ERR-05                 = SPACE)  AND
-                               (PTBYO-CHARTBYOMEI    NOT = SPACE)
+                               (PTBYO-CHARTBYOMEI    NOT = SPACE)  AND
+                               ((W-TENKIYM                = SPACE)  OR
+                                (W-TENKIYM                = ZERO)   OR
+                                (W-TENKIYM            NOT < ACCT-SRYYM))
                                INITIALIZE          ORCSKANACHKAREA
                                MOVE    "1"         TO  KANACHK-SYORI
                                MOVE    PTBYO-CHARTBYOMEI
                                                    TO  KANACHK-MAE-INPUT
                                CALL    "ORCSKANACHK"   USING
                                                        ORCSKANACHKAREA
-                               IF  KANACHK-RC   NOT =   ZERO
+                               IF  (KANACHK-RC         NOT =   ZERO)  OR
+                                   (KANACHK-RC2            =   0008)  OR
+                                   (PTBYO-CHARTBYOMEI(1:1) <  X"A1")
                                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                                    MOVE    SPACE    TO  DID2-REC
                                    MOVE    ACCT-HOSPID
@@ -3106,32 +3067,12 @@
                                                     TO  DID2-REC(26:10)
                                    MOVE    ACCT-SRYKA
                                                     TO  DID2-REC(191:2)
-                                   MOVE    T-MESSAGE-510-09
+                                   MOVE    T-MESSAGE-510-10
                                                     TO  DID2-REC(71:90)
                                    WRITE   DID2-REC
                                    IF  SPA-GMN-CNV (5)  =  "1"
                                        MOVE    "*"       TO  T-ERR-05
                                        MOVE    "ED"      TO  T-HANNTEI6
-                                   END-IF
-                               ELSE
-                                   IF  PTBYO-CHARTBYOMEI(1:1)  <  X"A1"
-                                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                                       MOVE    SPACE
-                                                     TO  DID2-REC
-                                       MOVE    ACCT-HOSPID
-                                                     TO  DID2-REC(1:24)
-                                       MOVE    "-"   TO  DID2-REC(25:1)
-                                       MOVE    ACCT-PTID
-                                                     TO  DID2-REC(26:10)
-                                       MOVE    ACCT-SRYKA
-                                                     TO  DID2-REC(191:2)
-                                       MOVE    T-MESSAGE-510-09
-                                                     TO  DID2-REC(71:90)
-                                       WRITE   DID2-REC
-                                       IF  SPA-GMN-CNV (5)  =  "1"
-                                           MOVE    "*"    TO  T-ERR-05
-                                           MOVE    "ED"   TO  T-HANNTEI6
-                                        END-IF
                                    END-IF
                                END-IF
                            END-IF
@@ -3347,7 +3288,8 @@
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                    ELSE
                        MOVE    MCPDATA-REC       TO  SRYKARRK-REC
-                       IF  W-S-SRYYMD (IDW4)    NOT =  KARRK-SYOSINYMD1
+                       IF (W-S-SRYYMD (IDW4) NOT = KARRK-SYOSINYMD1) AND
+                          (W-S-SRYYMD (IDW4) NOT = KARRK-SYOSINYMD2)
                            MOVE    SPACE             TO  DID2-REC
                            MOVE    W-S-HOSPID (IDW4) TO  DID2-REC(1:24)
                            MOVE    "-"               TO  DID2-REC(25:1)
