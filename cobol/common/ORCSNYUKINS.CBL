@@ -186,11 +186,13 @@
                    IF      LNK-SCNYUKINS-NYUKIN-MONEY(IDX)  >  ZERO
                        ADD     1              TO  SYU-NYUKIN-KAISU
                    END-IF
-                   IF      SYU-SKYMONEY        >   SYU-NYUKIN-TOTAL
-                       MOVE   "2"          TO  SYU-DENPJTIKBN
-                   ELSE
-                       MOVE   "1"          TO  SYU-DENPJTIKBN
-                   END-IF
+                   IF      SYU-DENPJTIKBN   NOT =   "3"
+                     IF      SYU-SKYMONEY        >   SYU-NYUKIN-TOTAL
+                         MOVE   "2"          TO  SYU-DENPJTIKBN
+                     ELSE
+                         MOVE   "1"          TO  SYU-DENPJTIKBN
+                     END-IF
+                  END-IF
       *           ¼ýÇ¼¹¹¿·
                   MOVE    SYUNOU-REC          TO  MCPDATA-REC
                   MOVE    "DBUPDATE"          TO  MCP-FUNC
