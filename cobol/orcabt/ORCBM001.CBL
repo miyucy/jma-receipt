@@ -39,7 +39,6 @@
       *  £²£°£°£²Ç¯£±£°·î²þÀµÂÐ±þ
       *  01.01.01    NACL-Æ£¸¶    02/10/09  £²£°£°£²Ç¯£¹·î°ÊÁ°¤Î¤ß½¸·×
       *                                     Á¥°÷ÊÝ¸±¤Î½¸·×ÊýË¡¤Î½¤Àµ 
-      *  01.01.02    NACL-Æ£¸¶    02/11/13  ¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë¤ÎÊÔ½¸¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -573,9 +572,7 @@
       *****************************************************************
        230-UPD-FILE-HENSYU-SEC         SECTION.
       *
-      *****MOVE    RECE10-REC          TO  RECE10X-REC
-           MOVE    SPACE               TO  RECE10X-REC
-           MOVE    RECE10-KEY          TO  RECE10X-KEY
+           MOVE    RECE10-REC          TO  RECE10X-REC
            WRITE   RECE10X-REC
       *
            ADD     1                   TO  CNT-UPDFILE
