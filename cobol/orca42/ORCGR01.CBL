@@ -1708,10 +1708,6 @@
                                                        LNK-DAY6-AREA
                    MOVE    LNK-DAY6-KEISAN     TO  SPA-NAI-STJYUSINYMD
                                                    WRK-SYMD
-      *??
-                   MOVE    RECE07-CREYMD     TO  SPA-NAI-STJYUSINYMD
-                                                   WRK-SYMD
-      *??
                    PERFORM 5002-HIZUKE-HEN-SEC
                    MOVE    WRK-HENYMDG         TO  SPA-GMN-STJYUSINYMD
       *
