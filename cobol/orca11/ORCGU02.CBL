@@ -59,6 +59,7 @@
       *  02.00.09    NACL-多々納  03/06/30  カスタマイズ帳票名取得サブ追加
       *  02.00.10    NACL-多々納  03/09/26  業務権限判定追加
       *                                     処方せんにドクターなし追加
+      *  02.00.11    NACL-多々納  03/10/15  ２００明細へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -178,7 +179,7 @@
                 05  WRK-COMBO-SCODEMEIL               PIC X(18).  
       *
 026700  01  WRK-SORT-TBL.
-026800      03  WRK-SORT-TBLO                         OCCURS   100.
+026800      03  WRK-SORT-TBLO                         OCCURS   200.
                 05  WRK-SORT-TUKEID                   PIC 9(05).  
 026900          05  WRK-SORT-TYYKTIME                 PIC X(04).
 027000          05  WRK-SORT-TUKETIME                 PIC X(06).
@@ -696,7 +697,7 @@
            END-IF
       *
            PERFORM UNTIL     (FLG-YYK            =  1     )  OR
-                             (IDX               >=  100   )
+                             (IDX               >=  200   )
                IF     (YYK-YYKID       NOT       =   ZERO       ) AND
                       (YYK-RAIINZUMI             =   SPACE      )
                    ADD     1             TO  IDX
@@ -744,7 +745,7 @@
            END-IF
 061700*
 061800     PERFORM     UNTIL  (FLG-UKETUKE        =  1     )  OR
-062000                        (IDX               >=  100   )
+062000                        (IDX               >=  200   )
                IF     (UKE-UKEID         >   ZERO    )   AND
 062300                (UKE-KAIKEITIME    =   ZERO    ) 
 062400                 ADD     1             TO  IDX
@@ -810,7 +811,7 @@
 070700     INITIALIZE              SPA-GMN-TBL
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       100 
+                   UNTIL   IDX >       200 
                    OR      WRK-SORT-NARABE(IDX)   =   SPACE
                MOVE    IDX                 TO  SPA-UKE-MAX
       *
@@ -902,11 +903,11 @@
 070400 31012-SORT-SEC              SECTION.
 070800*  
 070900     PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       99
+                   UNTIL   IDX     >=      200
                    OR      WRK-SORT-NARABE(IDX)   =   SPACE
                COMPUTE IDY     =   IDX     +   1
                PERFORM VARYING IDZ     FROM    IDY     BY  1
-                       UNTIL   IDZ     >       100
+                       UNTIL   IDZ     >       200
                        OR      WRK-SORT-NARABE(IDZ)   =   SPACE
                    IF      WRK-SORT-NARABE (IDX)   >   
                                            WRK-SORT-NARABE (IDZ)
