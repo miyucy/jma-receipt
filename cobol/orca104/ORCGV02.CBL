@@ -1101,6 +1101,12 @@
       *****************************************************************
        4103-HKNKOHSBTKBN-CHK-SEC     SECTION.
       *
+           IF      SPA-GMN-HKNKOHSBTKBN    =   SPACE
+               IF      FLG-KOUSIN      NOT =   2
+                   GO      TO  4103-HKNKOHSBTKBN-CHK-EXT
+               END-IF
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   SPA-GMN-HKNKOHSBTKBN-MAX
@@ -1126,6 +1132,12 @@
       *****************************************************************
        4103-HBTNUMCHKKBN-CHK-SEC     SECTION.
       *
+           IF      SPA-GMN-HBTNUMCHKKBN    =   SPACE
+               IF      FLG-KOUSIN      NOT =   2
+                   GO      TO  4103-HBTNUMCHKKBN-CHK-EXT
+               END-IF
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   2
@@ -1150,6 +1162,12 @@
       *    検証番号チェック区分チェック
       *****************************************************************
        4104-KENSNUMCHKKBN-CHK-SEC          SECTION.
+      *
+           IF      SPA-GMN-KENSNUMCHKKBN    =   SPACE
+               IF      FLG-KOUSIN      NOT =   2
+                   GO      TO  4104-KENSNUMCHKKBN-CHK-EXT
+               END-IF
+           END-IF
       *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM   1   BY  1
@@ -1289,6 +1307,12 @@
       *****************************************************************
        4130-RECESKYKBN-CHK-SEC         SECTION.
       *
+           IF      SPA-GMN-RECESKYKBN    =   SPACE
+               IF      FLG-KOUSIN      NOT =   2
+                   GO      TO  4130-RECESKYKBN-CHK-EXT
+               END-IF
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   SPA-GMN-RECESKYKBN-MAX
@@ -1326,6 +1350,13 @@
       *    レセプト金額チェック
       *****************************************************************
        4140-RECEFTNDSPKBN-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-RECEFTNDSPKBN    =   SPACE
+               IF      FLG-KOUSIN      NOT =   2
+                   GO      TO  4140-RECEFTNDSPKBN-CHK-EXT
+               END-IF
+           END-IF
+      *
       *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM   1   BY  1
@@ -1383,6 +1414,13 @@
                END-IF
            END-PERFORM
       *
+           IF      SPA-GMN-GAIFTNKBN (IDX) =   SPACE
+               IF      FLG-KOUSIN      NOT =   2
+                   GO      TO  4111-GAIFTNKBN-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *
            IF      FLG-CHK             =   ZERO
                MOVE    "0006"              TO  SPA-ERRCD
                MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
@@ -1437,6 +1475,12 @@
                END-IF
            END-PERFORM
       *
+           IF      SPA-GMN-GAIYKZFTNKBN (IDX) =   SPACE
+               IF      FLG-KOUSIN      NOT =   2
+                   GO      TO      4120-GAIYKZFTNKBN-CHK-EXT
+               END-IF
+           END-IF
+      *
            IF      FLG-CHK             =   ZERO
                MOVE    "0007"              TO  SPA-ERRCD
                MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
@@ -1481,6 +1525,13 @@
                                            TO  IDY
                END-IF
            END-PERFORM
+      *
+           IF      SPA-GMN-NYUFTNKBN (IDX) =   SPACE
+               IF      FLG-KOUSIN      NOT =   2
+                   GO      TO      4121-NYUFTNKBN-CHK-EXT
+               END-IF
+           END-IF
+      *
       *
            IF      FLG-CHK             =   ZERO
                MOVE    "0008"              TO  SPA-ERRCD
@@ -1533,6 +1584,12 @@
                                            TO  IDY
                END-IF
            END-PERFORM
+      *
+           IF      SPA-GMN-NYUSKJRYYKBN (IDX) =   SPACE
+               IF      FLG-KOUSIN      NOT =   2
+                   GO      TO      4129-NYUSKJRYYKBN-CHK-EXT
+               END-IF
+           END-IF
       *
            IF      FLG-CHK             =   ZERO
                MOVE    "0009"              TO  SPA-ERRCD
