@@ -2076,12 +2076,13 @@
                    IF    FLG-ZAITAKU    =   ZERO
                        COMPUTE   RECE41-TENSU(12)  =
                                  RECE41-TENSU(12)  +
-                                (WK-KIZAITEN   *   WK-ZAIKAISU)  +
+      ***                       (WK-KIZAITEN   *   WK-ZAIKAISU)  +
                                 (WK-SYUTEN     *   WK-ZAIKAISU)
                    END-IF
       *            ÃÙ∫ﬁ
                    COMPUTE   RECE41-TENSU(13)  =
                              RECE41-TENSU(13)  +
+                             (WK-KIZAITEN *   WK-ZAIKAISU)  +
                              (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
