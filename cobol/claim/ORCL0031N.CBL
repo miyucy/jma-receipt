@@ -384,6 +384,8 @@
                        IF    (  LF04-IJICD (IDXA IDXB)
                                                =   NORDERID-NYUINCL2
                                                OR  NORDERID-TAIINCL2
+                                               OR  NORDERID-GAIHKCL2
+                                               OR  NORDERID-GBACKCL2
                                                                      )
                            COMPUTE CNT-IDOKBN  =   CNT-IDOKBN  +   1
                            MOVE    LF04-IJICD (IDXA IDXB)
@@ -391,9 +393,7 @@
                        END-IF
                    WHEN    NORDERID-ORDER-KYUSYOKU
                        IF    (  LF04-IJICD (IDXA IDXB)
-                                               =   NORDERID-GAIHKCL2
-                                               OR  NORDERID-GBACKCL2
-                                               OR  NORDERID-FNORLCL2
+                                               =   NORDERID-FNORLCL2
                                                OR  NORDERID-FSPCLCL2
                                                OR  NORDERID-FSELECL2
                                                OR  NORDERID-FSTOPCL2

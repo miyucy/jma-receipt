@@ -44,14 +44,14 @@
                    07  NORDERID-TAIINMES2  PIC X(10) VALUE "轉情".
       *
                05  NORDERID-GAIHK-G.
-                   07  NORDERID-GAIHKCL1   PIC X(02) VALUE "02".
+                   07  NORDERID-GAIHKCL1   PIC X(02) VALUE "01".
                    07  NORDERID-GAIHKCL2   PIC X(03) VALUE "006".
                    07  NORDERID-GAIHKID    PIC X(04) VALUE "0201".
                    07  NORDERID-GAIHKMES1  PIC X(30) VALUE "陸⑨".
                    07  NORDERID-GAIHKMES2  PIC X(10) VALUE "陸⑨".
       *
       *        05  NORDERID-GCURE-G.
-      *            07  NORDERID-GCURECL1   PIC X(02) VALUE "02".
+      *            07  NORDERID-GCURECL1   PIC X(02) VALUE "01".
       *            07  NORDERID-GCURECL2   PIC X(03) VALUE "000".
       *            07  NORDERID-GCUREID    PIC X(04) VALUE "0202".
       *            07  NORDERID-GCUREMES1  PIC X(30) 
@@ -59,7 +59,7 @@
       *            07  NORDERID-GCUREMES2  PIC X(10) VALUE "慫陸⑨".
       *
       *        05  NORDERID-GSENT-G.
-      *            07  NORDERID-GSENTCL1   PIC X(02) VALUE "02".
+      *            07  NORDERID-GSENTCL1   PIC X(02) VALUE "01".
       *            07  NORDERID-GSENTCL2   PIC X(03) VALUE "000".
       *            07  NORDERID-GSENTID    PIC X(04) VALUE "0203".
       *            07  NORDERID-GSENTMES1  PIC X(30) 
@@ -67,7 +67,7 @@
       *            07  NORDERID-GSENTMES2  PIC X(10) VALUE "薊陸⑨".
       *
       *        05  NORDERID-GOTHC-G.
-      *            07  NORDERID-GOTHCCL1   PIC X(02) VALUE "02".
+      *            07  NORDERID-GOTHCCL1   PIC X(02) VALUE "01".
       *            07  NORDERID-GOTHCCL2   PIC X(03) VALUE "000".
       *            07  NORDERID-GOTHCID    PIC X(04) VALUE "0204".
       *            07  NORDERID-GOTHCMES1  PIC X(30) 
@@ -75,7 +75,7 @@
       *            07  NORDERID-GOTHCMES2  PIC X(10) VALUE "職熬褲".
       *
                05  NORDERID-GBACK-G.
-                   07  NORDERID-GBACKCL1   PIC X(02) VALUE "02".
+                   07  NORDERID-GBACKCL1   PIC X(02) VALUE "01".
                    07  NORDERID-GBACKCL2   PIC X(03) VALUE "007".
                    07  NORDERID-GBACKID    PIC X(04) VALUE "0205".
                    07  NORDERID-GBACKMES1  PIC X(30) VALUE "窖情".
