@@ -1817,6 +1817,11 @@
       *
            PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
                         UNTIL     GENSAN-IDX   >   4
+                MOVE   ZERO   TO  WRK-SYS-MIJISI-ZAITEN(GENSAN-IDX)
+           END-PERFORM
+      *
+           PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
+                        UNTIL     GENSAN-IDX   >   4
       *
               IF    WRK-SYS-MIJISI(GENSAN-IDX)  =   1    
                  EVALUATE    GENSAN-IDX
