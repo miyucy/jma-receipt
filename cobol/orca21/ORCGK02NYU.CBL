@@ -6223,6 +6223,10 @@
                INSPECT SPA-GMN-INPUTCD(IDX)
                        REPLACING   FIRST "*"  BY  " "
            END-IF
+      *    訂正の時、剤の最後が回数入力となっている
+           IF      SPA-COM-KAIFLG (IDX)    =   "1"
+               MOVE    1               TO  FLG-KAISU
+           END-IF
       *
            .
        51011-KAISU-CHK-EXT.
@@ -6611,9 +6615,9 @@
                END-IF
       *
       *        最終行を剤終了とする
-               IF      (IDX-Z              =   WRK-GYO-MAX )  OR
-                       (WRK-COM-INPUTCD(IDX-Z + 1) =   SPACE  AND
-                        WRK-GMN-INPUTCD(IDX-Z + 1) =   SPACE )
+               IF      ( IDX-Z             =   WRK-GYO-MAX )  OR
+                       ((WRK-COM-INPUTCD(IDX-Z + 1) =   SPACE ) AND
+                        (WRK-GMN-INPUTCD(IDX-Z + 1) =   SPACE ))
                    MOVE    "1"             TO  WRK-COM-ZAIEND(IDX-Z)
                    MOVE    IDX-Z           TO  WRK-MAX
                ELSE
