@@ -6559,11 +6559,11 @@
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
       *****MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-           IF      WRK-CD-MCNT         =   20
-               MOVE    "INPUTCD-KEY2"      TO  ORC-DBPATH
-           ELSE
+      *    IF      WRK-CD-MCNT         =   20
+      *        MOVE    "INPUTCD-KEY2"      TO  ORC-DBPATH
+      **** ELSE
                MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-           END-IF
+      *****END-IF
            MOVE    SPA-SRYYMD          TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

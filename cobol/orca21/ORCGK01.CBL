@@ -1241,44 +1241,32 @@
        4102-KIHON-CHK-SEC       SECTION.
       *
            PERFORM 4102-SRYKA-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
       *
-           PERFORM 4103-SRYYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4103-SRYYMD-CHK-SEC
            END-IF
       *    前回処方入力
-           PERFORM 4104-ZENKAI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4104-ZENKAI-CHK-SEC
            END-IF
       *    ドクター入力
-           PERFORM 4105-DRCD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4105-DRCD-CHK-SEC
            END-IF
       *    分散入力
-           PERFORM 4107-BUNSAN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4107-BUNSAN-CHK-SEC
            END-IF
       *    院外処方区分
-           PERFORM 4108-INGAISHOHOKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4108-INGAISHOHOKBN-CHK-SEC
            END-IF
       *    保険組合わせ
-           PERFORM 4104-HKNCOMBI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4104-HKNCOMBI-CHK-SEC
            END-IF
       *    継続区分
       *****PERFORM 4109-CONTKBN-CHK-SEC
-      *    IF      SPA-ERRCD       NOT =   SPACE
-      *        GO      TO      4102-KIHON-CHK-EXT
-      **** END-IF
       *
            .
        4102-KIHON-CHK-EXT.
@@ -1572,7 +1560,6 @@
       *    入院が１件もないとき、外来とする
            IF      FLG-PTNYUINRRK      =   1
                MOVE    "2"                 TO  SPA-NYUGAIKBN
-               GO      TO     41015-PTNYUINRRK-CHK-EXT
            END-IF
       *
            PERFORM
@@ -1603,6 +1590,12 @@
                MOVE    "PTNYUINRRK-KEY34"  TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-KEY34"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *    入院中の時、エラーとする
            IF      FLG-NYUIN           =   1
                MOVE    "1"             TO  SPA-NYUGAIKBN
@@ -2032,7 +2025,6 @@
       *****************************************************************
        4102-SRYKA-CHK-SEC             SECTION.
       *
-      *
       *    訂正の時、入力エラー
            IF      SPA-SYORIFLG        =   1
                IF      SPA-GMN-SRYKA-G     NOT =   SPA-MAE-SRYKA-G
@@ -2042,7 +2034,6 @@
                END-IF
                GO      TO      4102-SRYKA-CHK-EXT
            END-IF
-      *
       *
            IF      SPA-MAE-SRYKA-G     =   SPA-GMN-SRYKA-G
                MOVE    ZERO            TO  FLG-HEN
@@ -2057,35 +2048,38 @@
                IF     (SNUM-RC         NOT =   ZERO  )   OR
                       (SNUM-MINKBN     NOT =   SPACE )   OR
                       (SNUM-SYOKBN     NOT =   SPACE )
-                   MOVE    "0012"                  TO  SPA-ERRCD
+                   MOVE    "0012"              TO  SPA-ERRCD
                    MOVE    2                   TO  SPA-GMN-CUR
-                   GO      TO      4102-SRYKA-CHK-EXT
                ELSE
-                   MOVE    SNUM-OUTEDT(14:2)       TO  SPA-GMN-SRYKA
+                   MOVE    SNUM-OUTEDT(14:2)   TO  SPA-GMN-SRYKA
                END-IF
            END-IF
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL       IDX     >   SPA-SRYKA-MAX
+                   UNTIL      (IDX     >   SPA-SRYKA-MAX )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-SRYKA       =   SPA-GMN-SRYKAL(IDX)
                    MOVE    SPA-GMN-SRYKALST(IDX)   TO  SPA-GMN-SRYKA-G
                    MOVE    SPA-SRYKA-MAX           TO  IDX
                    MOVE    1                       TO  FLG-OK
                END-IF
            END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    "0012"                  TO  SPA-ERRCD
+           IF     (FLG-OK              =   ZERO )  AND
+                  (SPA-ERRCD           =   SPACE )
+               MOVE    "0012"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-GMN-CUR
-               GO      TO      4102-SRYKA-CHK-EXT
            END-IF
-           MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
       *
-      *    受診歴より、保険組合せを確定する
-           IF     (FLG-HEN             =   1   )  AND
-                  (SPA-NYUGAIKBN       =   "2" )
-      *        ドクターを受診履歴より
-               MOVE    SPACE               TO  SPA-NAI-DRCD
-               PERFORM 41014-JYURRK-HKNCOMBI-SEC
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
+      *
+      *        受診歴より、保険組合せを確定する
+               IF     (FLG-HEN             =   1   )  AND
+                      (SPA-NYUGAIKBN       =   "2" )
+      *            ドクターを受診履歴より
+                   MOVE    SPACE               TO  SPA-NAI-DRCD
+                   PERFORM 41014-JYURRK-HKNCOMBI-SEC
+               END-IF
            END-IF
       *
       **** 変更があった時、ドクターを変更する
@@ -2135,8 +2129,8 @@
                MOVE    SGDAY-OTDAY         TO  SPA-GMN-SRYYMD
       *        誕生日以前の時、エラー
                IF      SGDAY-SDAY          <   SPA-BIRTHDAY
-                    MOVE    "0017"          TO  SPA-ERRCD
-                    MOVE    3                   TO  SPA-GMN-CUR
+                    MOVE    "0017"         TO  SPA-ERRCD
+                    MOVE    3              TO  SPA-GMN-CUR
                     GO      TO      4103-SRYYMD-CHK-EXT
                END-IF
       *********変更のない時、以降の処理はそのまま
@@ -2212,14 +2206,13 @@
                MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
       *        MOVE    WRK-HENYMDG         TO  SPA-GMN-SRYYMD
       *        MOVE    WRK-CAL-YMD         TO  SPA-NAI-SRYYMDS
+      *
+               MOVE    WRK-HENYMDG         TO  K01-SRYYMD
+               MOVE    WRK-HENYMDG         TO  SPA-GMN-SRYYMD
+               PERFORM 4103-SRYYMD-CHK-SEC
            ELSE
                MOVE    "0013"              TO  SPA-ERRCD
-               GO      TO      4112-CALENDAR-EXT
            END-IF
-      *
-           MOVE    WRK-HENYMDG         TO  K01-SRYYMD
-           MOVE    WRK-HENYMDG         TO  SPA-GMN-SRYYMD
-           PERFORM 4103-SRYYMD-CHK-SEC
       *
            .
        4112-CALENDAR-EXT.

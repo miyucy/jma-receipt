@@ -698,7 +698,6 @@
       *
            PERFORM                     310-SPA-SET-SEC
       *
-      *
            .
        3001-SCREEN-SYORI-EXT.
            EXIT.
@@ -1214,6 +1213,12 @@
                MOVE    1               TO  FLG-SYUNOU
                INITIALIZE              SYUNOU-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *    ÀÁµá¶â³Û
            MOVE    SYU-SKYMONEY        TO  SPA-MAE-SKYMONEY (IDX)
       *    Æþ¶â¹ç·×³Û
@@ -1255,6 +1260,12 @@
                MOVE    1               TO  FLG-SYUTTL
                INITIALIZE              SYUTTL-REC
            END-IF
+           MOVE    "DBCOSE"            TO  MCP-FUNC
+           MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      FLG-SYUTTL          =   ZERO
       *        ÀÁµá¶â³Û
                MOVE    SYUTTL-SKYMONEY     TO  SPA-MAE-SKYMONEY (IDX)
@@ -1907,6 +1918,12 @@
                INITIALIZE                  SYS-1038-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1038-REC
       *        Æþ¶â´ÉÍý¶èÊ¬
@@ -1999,6 +2016,12 @@
                MOVE    "SYSKANRI-KEY2"      TO  ORC-DBPATH
                PERFORM 960-KANRIMST-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *    ½é´üÉ½¼¨
            MOVE    SPA-GMN-NYUKINHOU-LIST (1)
                                        TO  SPA-GMN-NYUKINHOU-G

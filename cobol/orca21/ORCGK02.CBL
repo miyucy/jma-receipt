@@ -709,7 +709,7 @@
       *
       *    自動加算テーブル
        01  WRK-KASAN-AREA.
-           03  WRK-KASAN-TBL                       OCCURS   30.
+           03  WRK-KASAN-TBL               OCCURS   60.
                05  WRK-KSN-HKNCOMBI        PIC X(04).
                05  WRK-KSN-SRYKA           PIC X(02).
                05  WRK-KSN-SRYSYUKBN       PIC X(03).
@@ -1133,10 +1133,12 @@
            PERFORM UNTIL       FLG-SPASCR  =   1
                READ    SPASCR-FILE
                    AT  END
-                       MOVE   1            TO  FLG-SPASCR
+                       MOVE   1                TO  FLG-SPASCR
                    NOT AT  END
-                       ADD    1            TO  IDX
-                       MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
+                       ADD    1                TO  IDX
+                       IF     IDX              <=  10
+                           MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
+                       END-IF
                END-READ
            END-PERFORM
       *
@@ -1964,6 +1966,7 @@
            MOVE    SPA-GMN-MAX         TO  IDX2
            MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
            MOVE    SPA-GMN-MAX         TO  IDX-STR2
+           MOVE    SPACE               TO  WRK-ERRCD1
       *    再表示編集処理
            IF      LNK-WKSRYACT-MAX    >   ZERO
                MOVE    3               TO  FLG-K09TUIKA
@@ -1998,6 +2001,10 @@
       *
            MOVE    SPACE               TO  SPA-ERRCD
            MOVE    SPACE               TO  SPA-KIDCD
+      *
+           IF      WRK-ERRCD1      NOT =   SPACE
+               MOVE    WRK-ERRCD1          TO  SPA-ERRCD
+           END-IF
       *
            .
        30092-SAIHEN3-EXT.
@@ -2716,7 +2723,12 @@
                   (LNK-WKSRYACT-MAX    >   ZERO )
                MOVE    ZERO            TO  FLG-SYOSIN
                MOVE    1               TO  FLG-K09TUIKA
+               MOVE    SPACE           TO  WRK-ERRCD1
                PERFORM 3103-SAIHEN-HEN-SEC
+      *
+               IF      WRK-ERRCD1      NOT =   SPACE
+                   MOVE    WRK-ERRCD1          TO  SPA-ERRCD
+               END-IF
       *
       *        診療行為、計計算処理、編集
       ******** MOVE    "2"             TO  FLG-TOROKU
@@ -3292,7 +3304,6 @@
            IF      LNK-WKSRYACT-MAX    >   ZERO
                MOVE    ZERO            TO  FLG-K09TUIKA
                PERFORM 3103-SAIHEN-HEN-SEC
-      *
                IF      SPA-SYORIFLG            =   1
       *            初診料算定の判定
                    MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -3342,6 +3353,10 @@
       *
            MOVE    SPACE               TO  SPA-ERRCD
            MOVE    SPACE               TO  SPA-KIDCD
+      *
+           IF      WRK-ERRCD1      NOT =   SPACE
+               MOVE    WRK-ERRCD1          TO  SPA-ERRCD
+           END-IF
       *
            .
        310-SPA-GMNSET-EXT.
@@ -3404,6 +3419,7 @@
        3103-SAIHEN-HEN-SEC                  SECTION.
       *
            MOVE    ZERO               TO  FLG-SET
+           MOVE    SPACE              TO  WRK-ERRCD1
       *
       *    ワーク診療行為からの時、剤毎に剤点数を編集し直す
            IF      LNK-WKSRY-TERMID (1)    =   "WKSRYACT"
@@ -3497,10 +3513,12 @@
                            (LNK-WKSRY-ZAINUM (IDX + 1)
                                            NOT =   LNK-WKSRY-ZAINUM
                                                                 (IDX)))
-                       MOVE    "1"             TO  SPA-COM-KAIFLG
+                       IF      IDX2            <=  200
+                           MOVE    "1"             TO  SPA-COM-KAIFLG
                                                                (IDX2)
-                       MOVE    "1"             TO  SPA-COM-ZAIEND
+                           MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                (IDX2)
+                       END-IF
                        MOVE    ZERO                TO  FLG-SET
       *                院内・院外処方を点数より変更
       *                院外
@@ -3517,7 +3535,10 @@
                END-IF
            END-PERFORM
       *
-           MOVE    ZERO                 TO  IDX-TEI
+           IF      IDX2                >   200
+               MOVE    200             TO  IDX2
+           END-IF
+           MOVE    ZERO                TO  IDX-TEI
       *    約束コード以外の画面再編集
            PERFORM VARYING     IDX-1 FROM    1   BY  1
                    UNTIL      (IDX-1     >   200     )  OR
@@ -3607,7 +3628,8 @@
                    IF     (SPA-COM-INPUTCD(IDX)    =   "114701210" OR
                                                        "114701710" )
       *                次行が自動発生の２４時間加算の時、自動としない
-                       IF      (SPA-COM-AUTOKBN (IDX + 1)  =   "2")
+                       IF      (IDX                <   200   )  AND
+                               (SPA-COM-AUTOKBN (IDX + 1)  =   "2")
                            MOVE    SPACE           TO  SPA-COM-AUTOKBN
                                                            (IDX + 1)
                        END-IF
@@ -3778,11 +3800,11 @@
                    ADD     1                   TO  IDX2
                    IF      IDX2                >   200
                         MOVE    "9100"         TO  WRK-ERRCD1
-                        GO      TO      31011-SPA-HEN-EXT
-                   END-IF
-                   MOVE    LNK-WKSRY-INPUTCD (IDX IDY)
+                   ELSE
+                       MOVE    LNK-WKSRY-INPUTCD (IDX IDY)
                                                TO  SPA-GMN-INPUTCD
                                                             (IDX2)
+                   END-IF
                END-IF
                GO      TO      31011-SPA-HEN-EXT
            END-IF
@@ -4252,18 +4274,22 @@
            IF      LNK-WKSRY-INPUTCD (IDX IDY)(1:1) =   "$"
       *        診療科
                ADD     1                   TO  IDX2
-               MOVE    IDX2                TO  IDX-KA2
-               MOVE    IDX                 TO  IDX-H1
-               MOVE    IDY                 TO  IDX-H2
-               MOVE    LNK-WKSRY-INPUTCD (IDX IDY)
+               IF      IDX2                >   200
+                    MOVE    "9100"         TO  WRK-ERRCD1
+               ELSE
+                   MOVE    IDX2                TO  IDX-KA2
+                   MOVE    IDX                 TO  IDX-H1
+                   MOVE    IDY                 TO  IDX-H2
+                   MOVE    LNK-WKSRY-INPUTCD (IDX IDY)
                                            TO  SPA-GMN-INPUTCD
                                                             (IDX2)
-               MOVE    SPA-GMN-INPUTCD(IDX2)   TO  LNK-SC97-INPUTCD
-               MOVE    IDX2                TO  SPA-GMN-IDX
-               PERFORM 410114-GMN-SRYKA-SEC
-               MOVE    SPA-GMN-IDX         TO  IDX2
-               MOVE    IDX-H1              TO  IDX
-               MOVE    IDX-H2              TO  IDY
+                   MOVE    SPA-GMN-INPUTCD(IDX2)   TO  LNK-SC97-INPUTCD
+                   MOVE    IDX2                TO  SPA-GMN-IDX
+                   PERFORM 410114-GMN-SRYKA-SEC
+                   MOVE    SPA-GMN-IDX         TO  IDX2
+                   MOVE    IDX-H1              TO  IDX
+                   MOVE    IDX-H2              TO  IDY
+               END-IF
            END-IF
            IF      LNK-WKSRY-INPUTCD (IDX IDY)(1:1) =   "#"
       *        保険組合せ
@@ -4272,25 +4298,31 @@
                    MOVE    IDX-KA2         TO  IDX2
                END-IF
                ADD     1                   TO  IDX2
-               MOVE    IDX2                TO  SPA-GMN-IDX
-               MOVE    IDX                 TO  IDX-H1
-               MOVE    IDY                 TO  IDX-H2
-               PERFORM 41014-GYOINSN-SEC
-               MOVE    IDX-H1              TO  IDX
-               MOVE    IDX-H2              TO  IDY
-               MOVE    LNK-WKSRY-INPUTCD (IDX IDY)
+               IF      IDX2                >   200
+                    MOVE    "9100"         TO  WRK-ERRCD1
+               ELSE
+                   MOVE    IDX2                TO  SPA-GMN-IDX
+                   MOVE    IDX                 TO  IDX-H1
+                   MOVE    IDY                 TO  IDX-H2
+                   PERFORM 41014-GYOINSN-SEC
+               END-IF
+               IF      SPA-ERRCD       =   SPACE
+                   MOVE    IDX-H1              TO  IDX
+                   MOVE    IDX-H2              TO  IDY
+                   MOVE    LNK-WKSRY-INPUTCD (IDX IDY)
                                            TO  SPA-GMN-INPUTCD
                                                             (IDX2)
-               MOVE    SPA-GMN-INPUTCD(IDX2)   TO  LNK-SC97-INPUTCD
-               MOVE    SPACE               TO  SPA-MAE-INPUTCD
+                   MOVE    SPA-GMN-INPUTCD(IDX2)   TO  LNK-SC97-INPUTCD
+                   MOVE    SPACE               TO  SPA-MAE-INPUTCD
                                                       (SPA-GMN-IDX)
-               PERFORM 410113-GMN-HKNCOMBI-SEC
-               MOVE    IDX-H1              TO  IDX
-               MOVE    IDX-H2              TO  IDY
-               IF      SPA-GMN-MAX         >   SPA-GMN-IDX
-                   MOVE    SPA-GMN-MAX         TO  IDX2
-               ELSE
-                   MOVE    SPA-GMN-IDX         TO  IDX2
+                   PERFORM 410113-GMN-HKNCOMBI-SEC
+                   MOVE    IDX-H1              TO  IDX
+                   MOVE    IDX-H2              TO  IDY
+                   IF      SPA-GMN-MAX         >   SPA-GMN-IDX
+                       MOVE    SPA-GMN-MAX         TO  IDX2
+                   ELSE
+                       MOVE    SPA-GMN-IDX         TO  IDX2
+                   END-IF
                END-IF
            END-IF
            .
@@ -6093,7 +6125,6 @@
                                        *   20
                                        +   WRK-IDX2
            END-IF
-      *
       *
            .
        41011-GYOU-SET-EXT.
@@ -8432,7 +8463,7 @@
       *            自動追加で画像診断の時対象外
                    IF      (SPA-COM-SRYKBN(IDX) NOT =  "95" AND
                                                        "96" ) AND
-                           (SPA-COM-INPUTCD  (IDX) =  "170012070"
+                           (SPA-COM-INPUTCD  (IDX) =   "170012070"
                                                    OR  "170020470")
                         MOVE    ZERO            TO  FLG-TAISYO
                    END-IF
@@ -8994,12 +9025,20 @@
                                            SPA-AREA
       *
                ADD     1                   TO  WRK-HOZ-IDX
-               MOVE    WRK-COM-TBLREC (IDX-Z)
+               IF      WRK-HOZ-IDX         >   200
+                   IF      SPA-SYORIFLG        =   1
+                       MOVE    "9100"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "0007"          TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   MOVE    WRK-COM-TBLREC (IDX-Z)
                                            TO  WRK-HZN-COM-TBLREC
                                                        (WRK-HOZ-IDX)
-               MOVE    WRK-GMN-TBLREC (IDX-Z)
+                  MOVE    WRK-GMN-TBLREC (IDX-Z)
                                            TO  WRK-HZN-GMN-TBLREC
                                                        (WRK-HOZ-IDX)
+               END-IF
       *
            END-PERFORM
            .
@@ -9936,11 +9975,11 @@
                                        SPA-AREA
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
-      *TEST
+      *
                IF      LNK-ORCSC-KIDCD     NOT =   SPACE
                    MOVE    SPACE           TO  SPA-ERRCD
                END-IF
-      *TEST
+      *
            END-IF
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD       NOT =   SPACE )
@@ -12095,9 +12134,11 @@
            MOVE    ZERO                TO  WRK-ZAINUM
            MOVE    ZERO                TO  IDX-S
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
+                   UNTIL      (IDX     >   10  )   OR
+                              (IDX-S   >=  60  )
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL      (IDY     >   30      )
+                              OR  (IDX-S   >=  60  )
                IF      LNK-ORCSC-SRYCD (IDX IDY)
                                        NOT = SPACE
                    ADD     1               TO  IDX-S
@@ -12484,7 +12525,7 @@
       *    自動加算料
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX             >   WRK-KSN-IDX
+                   UNTIL       IDX     >   WRK-KSN-IDX
                IF      IDY             =   ZERO
                    MOVE    SPACE               TO  WKSRYACT-REC
                    INITIALIZE                  WKSRYACT-REC

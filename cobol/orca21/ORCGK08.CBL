@@ -1344,6 +1344,12 @@
                INITIALIZE                  SYS-1010-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
                MOVE    SYS-1010-NAME       TO  WRK-DRCD-MEI
@@ -3494,6 +3500,12 @@
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      FLG-HKNCOMBI        =   ZERO
       *        本人で通勤災害
                IF     (COMB-HONKZKKBN      =   "1"  )  AND
@@ -4038,6 +4050,56 @@
            EXIT.
       *
       *****************************************************************
+      *    ワーク診療行為クリア処理
+      *****************************************************************
+       4900-WKSRYACT-CLEAR-SEC             SECTION.
+      *
+           INITIALIZE                  WKSRYACT-REC
+           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+           MOVE    SPA-PTID            TO  WKSRY-PTID
+      *
+           MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
+               PERFORM 970-WKSRYACT-READ-SEC
+           ELSE
+               INITIALIZE                  WKSRYACT-REC
+               MOVE    1               TO  FLG-WKSRYACT
+           END-IF
+           PERFORM
+               UNTIL   FLG-WKSRYACT    =   1
+               MOVE    ZERO                TO  WKSRY-MOD-FLG
+      *
+               MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "WKSRYACT-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+               MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
+               PERFORM 970-WKSRYACT-READ-SEC
+           END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       4900-WKSRYACT-CLEAR-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    西暦和暦編集処理
       *****************************************************************
        520-SEIWA-HEN-SEC             SECTION.
@@ -4318,9 +4380,9 @@
                    MOVE    "剤を減らして入力して下さい。"
                                        TO  SPA-ERRMSG(41:)
                WHEN    "1000"
-                   MOVE    "５００行以上になります。"
+                   MOVE    "６００行以上になります。"
                                        TO  SPA-ERRMSG
-                   MOVE    "５００行以上は表示しません。"
+                   MOVE    "６００行以上は表示しません。"
                                        TO  SPA-ERRMSG(25:)
                WHEN    "1036"
                    MOVE    "受診履歴の伝票番号がゼロです。"
@@ -4641,12 +4703,35 @@
            .
        960-SYSKANRI-READ-EXT.
            EXIT.
+      *    ワーク診療行為データ次読込
+      *****************************************************************
+       970-WKSRYACT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  WKSRYACT-REC
+               MOVE    ZERO                TO  FLG-WKSRYACT
+           ELSE
+               INITIALIZE                      WKSRYACT-REC
+               MOVE    1                   TO  FLG-WKSRYACT
+           END-IF
+      *
+           .
+       970-WKSRYACT-READ-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    排他制御解除処理
       *****************************************************************
        990-LOCK-OUT-SEC         SECTION.
       *
+      *    ワーク診療行為クリア
+           PERFORM 4900-WKSRYACT-CLEAR-SEC
       *    排他制御解除処理
            MOVE    2                   TO  SLOCK-MODE
            CALL    "ORCSLOCK"          USING
