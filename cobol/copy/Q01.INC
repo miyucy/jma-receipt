@@ -54,21 +54,21 @@
                       08  Q01-CMB-CONDITION1-COUNT PIC S9(9)
                                                            BINARY.
                       08  Q01-CMB-CONDITION1-ITEM  PIC X(23)
-                                                           OCCURS 10.
+                                                           OCCURS 99.
                   06  Q01-CMB-CONDITION2-TBL.
                     07  Q01-CMB-CONDITION2-OCC             OCCURS 3.
                       08  Q01-CONDITION2           PIC X(23).
                       08  Q01-CMB-CONDITION2-COUNT PIC S9(9)
                                                            BINARY.
                       08  Q01-CMB-CONDITION2-ITEM  PIC X(23)
-                                                           OCCURS 10.
+                                                           OCCURS 99.
                   06  Q01-CMB-CONDITION3-TBL.
                     07  Q01-CMB-CONDITION3-OCC             OCCURS 3.
                       08  Q01-CONDITION3           PIC X(23).
                       08  Q01-CMB-CONDITION3-COUNT PIC S9(9)
                                                            BINARY.
                       08  Q01-CMB-CONDITION3-ITEM  PIC X(23)
-                                                           OCCURS 10.
+                                                           OCCURS 99.
                   06  Q01-COMMENT-TBL.
                     07  Q01-COMMENT            PIC X(50)   OCCURS 3.
                 05  Q01-FIXED17.

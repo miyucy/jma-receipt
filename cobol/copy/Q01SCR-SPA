@@ -332,7 +332,7 @@
                        09  SPA-GMN-Q01-CONDITION1LST-G.
                            11  SPA-GMN-Q01-CONDITION1LST-MAX
                                                            PIC 9(05).
-                           11  SPA-GMN-Q01-CONDITION1LST   OCCURS  10.
+                           11  SPA-GMN-Q01-CONDITION1LST   OCCURS  99.
                                13  SPA-GMN-Q01-CONDITION1L PIC X(02).
                                13                          PIC X(01).
                                13  SPA-GMN-Q01-CONDITION1MEIL
@@ -340,7 +340,7 @@
                        09  SPA-GMN-Q01-CONDITION2LST-G.
                            11  SPA-GMN-Q01-CONDITION2LST-MAX
                                                            PIC 9(05).
-                           11  SPA-GMN-Q01-CONDITION2LST   OCCURS  10.
+                           11  SPA-GMN-Q01-CONDITION2LST   OCCURS  99.
                                13  SPA-GMN-Q01-CONDITION2L PIC X(02).
                                13                          PIC X(01).
                                13  SPA-GMN-Q01-CONDITION2MEIL
@@ -348,7 +348,7 @@
                        09  SPA-GMN-Q01-CONDITION3LST-G.
                            11  SPA-GMN-Q01-CONDITION3LST-MAX
                                                            PIC 9(05).
-                           11  SPA-GMN-Q01-CONDITION3LST   OCCURS  10.
+                           11  SPA-GMN-Q01-CONDITION3LST   OCCURS  99.
                                13  SPA-GMN-Q01-CONDITION3L PIC X(02).
                                13                          PIC X(01).
                                13  SPA-GMN-Q01-CONDITION3MEIL

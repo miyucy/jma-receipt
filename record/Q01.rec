@@ -118,63 +118,63 @@ Q01	{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				CMB_CONDITION12{
 					CONDITION12{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				CMB_CONDITION13{
 					CONDITION13{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				CMB_CONDITION21{
 					CONDITION21{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				CMB_CONDITION22{
 					CONDITION22{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				CMB_CONDITION23{
 					CONDITION23{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				CMB_CONDITION31{
 					CONDITION31{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				CMB_CONDITION32{
 					CONDITION32{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				CMB_CONDITION33{
 					CONDITION33{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				COMMENT1	{
 					value	varchar(50);
