@@ -218,7 +218,7 @@ W07	{
 						value	varchar(28);
 					};
 					count	int;
-					item	varchar(28)[2];
+					item	varchar(28)[3];
 				};
 				JISYOKBN_COMBO	{
 					JISYOKBN	{

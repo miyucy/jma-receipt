@@ -111,7 +111,7 @@
                     06  W07-BYOMEIKBN.
                       07  W07-VALUE   PIC X(28).
                     06  W07-BYOMEIKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W07-BYOMEIKBN-ITEM    PIC X(28)   OCCURS  2.
+                    06  W07-BYOMEIKBN-ITEM    PIC X(28)   OCCURS  3.
                   05  W07-JISYOKBN-COMBO.
                     06  W07-JISYOKBN.
                       07  W07-VALUE   PIC X(28).
