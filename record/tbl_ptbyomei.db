@@ -202,16 +202,14 @@ path	key9		{
                                	WHERE   HOSPID    =   :HOSPID
 		        	AND   PTID        =   :PTID
                                 AND   SRYYMD      <   :SRYYMD
-                                AND   TENKIKBN    =   '1'
-                                AND   TENKIYMD    <=  :TENKIYMD ))
+                                AND   TENKIKBN    =   '1'))
                           OR (TENKIYMD    =
                            (SELECT MAX(TENKIYMD)
                                    FROM tbl_ptbyomei 
                                	WHERE   HOSPID    =   :HOSPID
 		        	AND   PTID        =   :PTID
                                 AND   SRYYMD      <   :SRYYMD
-                                AND   TENKIKBN    =   '3'
-                                AND   TENKIYMD    <=  :TENKIYMD ))) 
+                                AND   TENKIKBN    =   '3'))) 
 			ORDER  BY  TENKIKBN DESC,
                                    SRYYMD
 		;
