@@ -67,8 +67,10 @@
       *                                     ２７老人＋障害者医療
       *  01.02.03    NACL-藤原    03/10/27  患者情報の編集追加
       *                                     県番号の追加
-      *  01.02.04    NACL-藤原    03/11/06  社保・国保で作成とときも
+      *  01.02.04    NACL-藤原    03/11/06  社保・国保別で作成のとき
       *                                     読み飛ばしをしない
+      *  01.02.05    NACL-藤原    03/11/19  老人＋原爆のレセ記載をシス管
+      *                                     より取得
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -362,6 +364,8 @@
       *     
       *    県内扱い保険者情報
            COPY    "CPSK1033.INC".
+      *     
+           COPY    "CPSK2005.INC".
       *
       *    診療会計
        01  SRYACCT-REC.
@@ -611,6 +615,23 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *     
+      *    レセプト編集区分情報
+           INITIALIZE                  SYS-2005-REC
+           MOVE    "2005"              TO  SYS-2005-KANRICD
+           MOVE    "*"                 TO  SYS-2005-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-2005-REC        TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2005-REC
+           ELSE    
+               MOVE    SPACE               TO  SYS-2005-REC
+           END-IF
+           IF      SYS-2005-RJNGNBKKBN =   SPACE
+               MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
+           END-IF
       *
       *
            OPEN    OUTPUT              RECE011-FILE
@@ -1549,33 +1570,32 @@
       *    公費の追加 
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
-             IF      WRK-SEIKYU-KOHID (IDX1 IDX)    =   ZERO
-               MOVE    4                   TO  IDX
-             ELSE    
-               IF      WRK-RECE01-KOHID    NOT =   ZERO
-               AND     WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)  
-                                               =   "019"
-                   MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
-                                           TO  WRK-RECE01-ETC-HKNNUM
-               ELSE                                    
-                   PERFORM VARYING IDY FROM    1   BY  1
-                           UNTIL   IDY >       4
-                       IF      WRK-KOHID-O (IDY)   =   ZERO
-                           MOVE    WRK-SEIKYU-KOHID    (IDX1 IDX)
-                                               TO  WRK-KOHID-O    (IDY)
-                           MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
-                                               TO  WRK-KOHHKNNUM-O(IDY)
-                           MOVE    1           TO  FLG-ADDKBN
-                           MOVE    4           TO  IDY
-                       ELSE 
-                           IF      WRK-SEIKYU-KOHID (IDX1 IDX)
-                                               =   WRK-KOHID-O  (IDY)
-                               MOVE    4           TO  IDY
+               IF      WRK-SEIKYU-KOHID (IDX1 IDX)    =   ZERO
+                   MOVE    4                   TO  IDX
+               ELSE
+      *            老人＋原爆のとき  
+                   IF    ( WRK-RECE01-KOHID    NOT =   ZERO  )
+                   AND   ( WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)  
+                                                   =   "019" )
+                       IF      WRK-RECE01-HKNNUM   =   "060"   OR  "067" 
+                           IF      SYS-2005-RJNGNBKKBN =   "1" OR  ZERO
+                               MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
+                                               TO  WRK-RECE01-ETC-HKNNUM
+                           ELSE
+                               PERFORM 200121-KOHID-TBL-HENSYU-SEC
+                           END-IF
+                       ELSE                
+                           IF      SYS-2005-RJNGNBKKBN =   "2" OR  ZERO
+                               MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
+                                               TO  WRK-RECE01-ETC-HKNNUM
+                           ELSE
+                               PERFORM 200121-KOHID-TBL-HENSYU-SEC
                            END-IF
                        END-IF
-                   END-PERFORM
-               END-IF
-             END-IF      
+                   ELSE
+                       PERFORM 200121-KOHID-TBL-HENSYU-SEC
+                   END-IF
+               END-IF      
            END-PERFORM
       *
       *    公費を追加しなかったとき
@@ -1639,6 +1659,31 @@
            END-PERFORM
            .
        20012-KOHID-HENSYU-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    公費情報退避処理
+      *****************************************************************
+       200121-KOHID-TBL-HENSYU-SEC     SECTION.
+      *
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       4
+               IF      WRK-KOHID-O (IDY)   =   ZERO
+                   MOVE    WRK-SEIKYU-KOHID    (IDX1 IDX)
+                                           TO  WRK-KOHID-O    (IDY)
+                   MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
+                                           TO  WRK-KOHHKNNUM-O(IDY)
+                   MOVE    1               TO  FLG-ADDKBN
+                   MOVE    4               TO  IDY
+               ELSE 
+                   IF      WRK-SEIKYU-KOHID (IDX1 IDX)
+                                       =   WRK-KOHID-O  (IDY)
+                       MOVE    4           TO  IDY
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       200121-KOHID-TBL-HENSYU-EXT.
            EXIT.
       * 
       *****************************************************************
