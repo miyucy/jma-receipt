@@ -1154,6 +1154,7 @@
                                 COMPUTE SYU-HKNTEN(11) = SYU-HKNTEN(11)
                                                     - (5 * NYUIN-COUNT)
                         END-EVALUATE
+                    END-IF
                END-PERFORM
            END-IF
       *
