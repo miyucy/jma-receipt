@@ -982,6 +982,7 @@
            COPY    "KERR2.INC".
            COPY    "KID1.INC".
            COPY    "KID2.INC".
+           COPY    "KHELP.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1309,6 +1310,9 @@
                                                         (SPA-GMN-IDX)
                        END-IF
                    END-IF
+                   MOVE    2                   TO  FLG-GMN
+               WHEN    "KHELP"
+      *            ヘルプ画面より
                    MOVE    2                   TO  FLG-GMN
            END-EVALUATE
       *
@@ -4927,6 +4931,10 @@
       *        入力コード設定へ
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 4106S-INPUTCD-SYORI-SEC
+      *TEST
+      *        ヘルプ
+               WHEN    "CLICKED"       ALSO    "BHELP"
+                   PERFORM 4199-HELP-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -11443,6 +11451,50 @@
            .
        4102-UKETUKE-EXT.
            EXIT.
+      *TEST
+      *
+      *****************************************************************
+      *    ヘルプ処理
+      *****************************************************************
+       4199-HELP-SYORI-SEC             SECTION.
+      *    初期画面セット
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGKHELP"         USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *
+      *    戻り先
+           MOVE    "K02"               TO  SPA-KHELP-MOTOPG
+           MOVE    "KHELP"             TO  SPA-SAKIPG
+           MOVE    "K02"               TO  SPA-MOTOPG
+      *
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "SELNUM"            TO  MCP-WIDGET
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "KHELP"             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       4199-HELP-SYORI-EXT.
+           EXIT.
+      *TEST
       *
       *****************************************************************
       *    訂正処理
@@ -14332,6 +14384,13 @@
            END-IF
       *
            MOVE    SPA-DRCD-NAME       TO  K02-DRNAME
+      *    病名
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX         >   SPA-BYOMEI-MAX
+               MOVE    SPA-GMN-BYOMEI-NO(IDX)  TO  K02-BYOMEIKA(IDX)
+               MOVE    SPA-GMN-BYOMEI   (IDX)  TO  K02-BYOMEI(IDX)
+           END-PERFORM
+           MOVE    SPA-BYOMEI-MAX      TO  K02-BYOMEI-COUNT
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC

@@ -172,6 +172,7 @@
            COPY    "KERR2.INC".
            COPY    "KID1.INC".
            COPY    "KID2.INC".
+           COPY    "KHELP.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

@@ -1204,6 +1204,9 @@
                    PERFORM 3013-K09-SET-SEC
                    MOVE    2                   TO  FLG-GMN
       *************GO      TO      300-SCREEN-EXT
+               WHEN    "KHELP"
+      *            ヘルプ画面より
+                   MOVE    2                   TO  FLG-GMN
            END-EVALUATE
       *
            IF      FLG-GMN         NOT =   ZERO
@@ -3697,6 +3700,9 @@
       *        入院会計照会へ
                WHEN    "CLICKED"       ALSO    "B11S"
                    PERFORM 4111S-NYUKAIKEI-SEC
+      *        ヘルプ
+               WHEN    "CLICKED"       ALSO    "BHELP"
+                   PERFORM 4199-HELP-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -9613,6 +9619,49 @@
            .
        4102-UKETUKE-EXT.
            EXIT.
+      *TEST
+      *
+      *****************************************************************
+      *    ヘルプ処理
+      *****************************************************************
+       4199-HELP-SYORI-SEC             SECTION.
+      *    初期画面セット
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGKHELP"         USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *    戻り先
+           MOVE    "K02N"              TO  SPA-KHELP-MOTOPG
+           MOVE    "KHELP"             TO  SPA-SAKIPG
+           MOVE    "K02N"              TO  SPA-MOTOPG
+      *
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "SELNUM"            TO  MCP-WIDGET
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "KHELP"             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       4199-HELP-SYORI-EXT.
+           EXIT.
+      *TEST
       *
       *****************************************************************
       *    訂正処理
