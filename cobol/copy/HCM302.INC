@@ -14,7 +14,7 @@
               03  HCM302-NUM  PIC X(2).
               03  HCM302-YKZNAME  PIC X(26)       OCCURS  3 TIMES.
               03  HCM302-KONOKOKA PIC X(30)       OCCURS  6 TIMES.
-              03  HCM302-GAZO PIC X(1024).
+              03  HCM302-GAZO PIC X(100).
               03  HCM302-KEIJYO   PIC X(16)       OCCURS  10 TIMES.
               03  HCM302-KBN  PIC X(2)    OCCURS  4 TIMES.
               03  HCM302-NAIYO    PIC X(16)       OCCURS  8 TIMES.
