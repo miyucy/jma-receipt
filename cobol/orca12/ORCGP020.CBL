@@ -1480,8 +1480,12 @@
       *****************************************************************
        490-TOUROKU-SEC             SECTION.
       *
+           MOVE    SPA-NAI20-TBL       TO  WRK-NAI-TBL
+      *
       *    受診内容をパラメタへ保存
            PERFORM 500-SPA-PARA-SEC
+      *
+           MOVE    WRK-NAI-TBL         TO  SPA-NAI20-TBL
       *
           .
        490-TOUROKU-EXT.
