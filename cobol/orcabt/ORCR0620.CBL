@@ -38,6 +38,7 @@
       *                                     無い場合は不明分とする
       *  01.00.08    NACL-藤原    03/05/09  入退院履歴情報に入院中区分の追加
       *  01.00.09    NACL-門脇    03/05/28  病棟番号・種別編集
+      *  01.00.10    NACL-藤原    03/06/16  レセプト種別の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1663,7 +1664,7 @@
                    MOVE    1418            TO    RECE62-RECESYUBETU
                WHEN    "8"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1409            TO    RECE62-RECESYUBETU
+                   MOVE    1419            TO    RECE62-RECESYUBETU
                WHEN    "8"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1410            TO    RECE62-RECESYUBETU
