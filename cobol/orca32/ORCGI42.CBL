@@ -81,9 +81,11 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-NYUINACT        PIC 9(01).
+           03  FLG-SRYACT          PIC 9(01).
            03  FLG-HKNMST          PIC 9(01).
            03  FLG-HKNKUMI         PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
+           03  FLG-SRYACCT         PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-TENSUKBN        PIC 9(01).
            03  FLG-KNJCOM          PIC 9(01).
@@ -112,6 +114,8 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
+           03  IDX4                PIC 9(04).
+           03  IDX5                PIC 9(04).
            03  IDX-D               PIC 9(04).
            03  IDX-MAX             PIC 9(04).
       *
@@ -143,25 +147,32 @@
       *
       *    編集用テーブル
        01  WRK-TBL-AREA.
-           03  WRK-TBL-OCCURS          OCCURS  6.
-               05  WRK-TBL-OCC2        OCCURS  200.
+           03  WRK-TBL-OCCURS                  OCCURS  6.
+               05  WRK-TBL-OCC2                OCCURS  200.
                    07  WRK-TBL-SRYCD           PIC X(09).
                    07  WRK-TBL-SRYYYMM         PIC X(06).
                    07  WRK-TBL-MEISYO          PIC X(50).
                    07  WRK-TBL-SRYKBN          PIC X(02).
       *        コード表記 
                    07  WRK-TBL-KNO.
-                       09  WRK-TBL-KNOKBN          PIC  X(01).
-                       09  WRK-TBL-KNONO           PIC  X(03).
-                       09  WRK-TBL-KNONO2          PIC  X(02).
+                       09  WRK-TBL-KNOKBN      PIC  X(01).
+                       09  WRK-TBL-KNONO       PIC  X(03).
+                       09  WRK-TBL-KNONO2      PIC  X(02).
                    07  WRK-TBL-OCC3            OCCURS   31.
-                       09  WRK-TBL-KAISU           PIC 9(02).
-                   07  WRK-TBL-TUKIKAISU           PIC 9(04).
+                       09  WRK-TBL-KAISU       PIC 9(02).
+                   07  WRK-TBL-TUKIKAISU       PIC 9(04).
        01  WRK-TBL-AREA2.
-           03  TBL-IDX1                PIC 9(04).
-           03  TBL-IDX2                PIC 9(04).
-           03  TBL-IDX3                PIC 9(02).
-           03  TBL-IDX4                PIC 9(02).
+           03  TBL-IDX1                        PIC 9(04).
+           03  TBL-IDX2                        PIC 9(04).
+           03  TBL-IDX3                        PIC 9(02).
+           03  TBL-IDX4                        PIC 9(02).
+      *    表示対象診療会計作業
+       01  WRK-SRY-TBL.
+           03  WRK-SRY-TBL-CHK                 OCCURS  50.
+               05  WRK-SRY-NYUGAIKBN           PIC  X(01).
+               05  WRK-SRY-SRYKA               PIC  X(02).
+               05  WRK-SRY-ZAINUM              PIC  9(08).
+               05  WRK-SRY-SRYKBN              PIC  X(02).
       *
       *    ソート編集用テーブル
        01  WRK-STBL-AREA.
@@ -232,13 +243,21 @@
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
       *
+      *    診療行為マスタ−
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
+      *
       *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    入院行為マスタ−
+      *    入院会計マスタ−
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
+      *
+      *    診療会計マスタ−
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
       *
       *    患者コメント
        01  PTCOM-REC.
@@ -429,6 +448,20 @@
       *    当月分
            MOVE    SPA-I40-SRYYMD(1:6) TO  WRK-SRYYM.
            PERFORM 3101-NACCT-SYORI-SEC.
+           INITIALIZE                      WRK-SRY-TBL.
+           MOVE    ZERO                TO  IDX5.
+           PERFORM VARYING     IDX4    FROM    1   BY  1
+                   UNTIL       IDX4            >   10
+               IF      SPA-5000-DSPCD-41 (IDX4) NOT = SPACE
+                   PERFORM 3100-SRYACT-CHK-SEC
+               END-IF
+           END-PERFORM.
+           PERFORM VARYING     IDX4    FROM    1   BY  1
+                   UNTIL       IDX4            >   50
+               IF      WRK-SRY-NYUGAIKBN (IDX4) NOT = SPACE
+                   PERFORM 3101-SACCT-SYORI-SEC
+               END-IF
+           END-PERFORM.
       *    前月分
            COMPUTE WRK-SRYMM           =   WRK-SRYMM     -   1.
            IF      WRK-SRYMM           =   ZERO
@@ -436,6 +469,19 @@
                COMPUTE WRK-SRYYY           =   WRK-SRYYY      -   1
            END-IF.
            PERFORM 3101-NACCT-SYORI-SEC.
+           INITIALIZE                      WRK-SRY-TBL.
+           MOVE    ZERO                TO  IDX5.
+           PERFORM VARYING     IDX4    FROM    1   BY  1
+                   UNTIL       IDX4            >   10
+               IF      SPA-5000-DSPCD-41 (IDX4) NOT = SPACE
+                   PERFORM 3100-SRYACT-CHK-SEC
+               END-IF
+           END-PERFORM.
+           PERFORM VARYING     IDX4    FROM    1   BY  1
+                   UNTIL       IDX4            >   50
+               IF      WRK-SRY-NYUGAIKBN (IDX4) NOT = SPACE
+                   PERFORM 3101-SACCT-SYORI-SEC
+           END-PERFORM.
       *
       *    診療年月・診療コード順にＳＯＲＴ
            PERFORM 310121-SORT-01-SEC.
@@ -449,6 +495,67 @@
        310-SPA-SET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    診療行為マスターチェック　処理
+      *****************************************************************
+       3100-SRYACT-CHK-SEC                 SECTION.
+      *
+      *    診療行為マスターチェック
+           INITIALIZE                       SRYACT-REC.
+           MOVE    SPA-HOSPID               TO  SRY-HOSPID.
+           MOVE    2                        TO  SRY-NYUGAIKBN.
+           MOVE    SPA-GMN-PTID             TO  SRY-PTID.
+           MOVE    WRK-SRYYM                TO  SRY-SRYYM.
+           MOVE    SPA-5000-DSPCD-41 (IDX4) TO  SRY-SRYCD (1).
+           MOVE    SPA-5000-DSPCD-41 (IDX4) TO  SRY-SRYCD (2).
+           MOVE    SPA-5000-DSPCD-41 (IDX4) TO  SRY-SRYCD (3).
+           MOVE    SPA-5000-DSPCD-41 (IDX4) TO  SRY-SRYCD (4).
+           MOVE    SPA-5000-DSPCD-41 (IDX4) TO  SRY-SRYCD (5).
+      *
+           MOVE    SRYACT-REC               TO  MCPDATA-REC.
+           MOVE    "DBSELECT"               TO  MCP-FUNC.
+           MOVE    "SRYACT-KEY7"            TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACT-KEY7"       TO  ORC-DBPATH
+               PERFORM 930-SRYACT-RAED-SEC
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF.
+      *
+           IF      FLG-SRYACCT               =   1
+               CONTINUE
+           ELSE
+               PERFORM UNTIL      (FLG-SRYACCT     =   1)  OR
+                                  (IDX5            =   50)
+                   ADD     1               TO  IDX5
+                   IF      SPA-GMN-SRYKA-I-41     =   SRY-SRYKA
+                       MOVE    SRY-NYUGAIKBN TO
+                                           WRK-SRY-NYUGAIKBN (IDX5)
+                       MOVE    SRY-SRYKA     TO
+                                           WRK-SRY-SRYKA (IDX5)
+                       MOVE    SRY-ZAINUM    TO
+                                           WRK-SRY-ZAINUM (IDX5)
+                       MOVE    SRY-SRYKBN    TO
+                                           WRK-SRY-SRYKBN (IDX5)
+                   END-IF
+                   PERFORM 930-SRYACT-RAED-SEC
+               END-PERFORM
+           END-IF.
+      *
+           MOVE    "DBCLOSE"          TO  MCP-FUNC.
+           MOVE    "SRYACT-KEY7"      TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+       3100-SRYACT-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    入院会計マスターから編集処理
@@ -481,28 +588,11 @@
       *        診療区分により、処理を決定する
                MOVE    ZERO                TO  IDX
                EVALUATE    NACCT-SRYKBN
-      *        診療
+      *        診療、入院
                    WHEN    "11"
                    WHEN    "12"
                    WHEN    "90"
                        MOVE    1               TO  IDX
-      *        処方
-                   WHEN    "21"
-                   WHEN    "22"
-                   WHEN    "23"
-                       MOVE    2               TO  IDX
-      *        処置
-                   WHEN    "40"
-                       MOVE    3               TO  IDX
-      *        検査
-                   WHEN    "60"
-                       MOVE    4               TO  IDX
-      *        Ｘ線
-                   WHEN    "70"
-                       MOVE    5               TO  IDX
-      *        リハビリ
-                   WHEN    "80"
-                       MOVE    6               TO  IDX
                END-EVALUATE
       *        当月、前月のみ対象とする
                IF      NACCT-SRYYM          =   WRK-SRYYM   OR
@@ -527,6 +617,86 @@
                                         MCPDATA-REC.
       *
        3101-NACCT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計マスターから編集処理
+      *****************************************************************
+       3101-SACCT-SYORI-SEC               SECTION.
+      *
+      *    診療会計マスターから編集
+           INITIALIZE                       SRYACCT-REC.
+           MOVE    SPA-HOSPID               TO  ACCT-HOSPID.
+           MOVE    WRK-SRY-NYUGAIKBN (IDX4) TO  ACCT-NYUGAIKBN.
+           MOVE    SPA-GMN-PTID             TO  ACCT-PTID.
+           MOVE    WRK-SRY-SRYKA (IDX4)     TO  ACCT-SRYKA.
+           MOVE    WRK-SRYYM                TO  ACCT-SRYYM.
+           MOVE    WRK-SRY-ZAINUM (IDX4)    TO  ACCT-ZAINUM.
+           MOVE    WRK-SRY-SRYKBN (IDX4)    TO  ACCT-SRYKBN.
+      *
+           MOVE    SRYACCT-REC              TO  MCPDATA-REC.
+           MOVE    "DBSELECT"               TO  MCP-FUNC.
+           MOVE    "SRYACCT-KEY"            TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+               PERFORM 900-SRYACCT-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF.
+           MOVE    ZERO                TO  IDX.
+           PERFORM UNTIL       FLG-SRYACCT       =   1
+      *        診療区分により、処理を決定する
+               MOVE    ZERO                TO  IDX
+               EVALUATE    ACCT-SRYKBN
+      *        診療
+                   WHEN    "11"
+                   WHEN    "12"
+                       MOVE    1               TO  IDX
+      *        処方
+                   WHEN    "21"
+                   WHEN    "22"
+                   WHEN    "23"
+                       MOVE    2               TO  IDX
+      *        処置
+                   WHEN    "40"
+                       MOVE    3               TO  IDX
+      *        検査
+                   WHEN    "60"
+                       MOVE    4               TO  IDX
+      *        Ｘ線
+                   WHEN    "70"
+                       MOVE    5               TO  IDX
+      *        リハビリ
+                   WHEN    "80"
+                       MOVE    6               TO  IDX
+               END-EVALUATE
+      *        当月、前月のみ対象とする
+               IF      ACCT-SRYYM          =   WRK-SRYYM   OR
+                                               SPA-I40-SRYYMD(1:6)
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO                TO  IDX
+               END-IF
+      *
+               IF      IDX             NOT =   ZERO
+                   PERFORM 3101-SRYACCT-SPA-SEC
+               END-IF
+               MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+               PERFORM 900-SRYACCT-READ-SEC
+           END-PERFORM.
+      *
+           MOVE    "DBCLOSE"          TO  MCP-FUNC.
+           MOVE    "SRYACCT-KEY"      TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+       3101-SACCT-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -604,6 +774,80 @@
            EXIT.
       *
       *****************************************************************
+      *   診療会計マスターより画面内容編集処理
+      *****************************************************************
+       3101-SRYACCT-SPA-SEC             SECTION.
+      *
+      *    診療行為マスター読み込み
+           INITIALIZE                      SRYACT-REC.
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID.
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN.
+           MOVE    ACCT-PTID           TO  SRY-PTID.
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA.
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM.
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM.
+      *    点数検索用日付編集
+           MOVE    ACCT-SRYYM          TO  WRK-SYSYMD(1:6).
+           MOVE    01                  TO  WRK-SYSDD.
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+               IF      ACCT-DAY (1 IDX-D)  NOT =   ZERO
+                   MOVE    IDX-D           TO  WRK-SYSDD
+                   MOVE    31              TO  IDX-D
+               END-IF
+           END-PERFORM.
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 930-SRYACT-RAED-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF.
+      *
+           PERFORM UNTIL       FLG-SRYACT      =   1       
+      *        剤明細編集
+               PERFORM VARYING     IDZ     FROM    1   BY  1
+                       UNTIL      (IDZ         >   5   )  OR
+                                  (SRY-SRYCD (IDZ) =   SPACE)
+      *            コメント、薬剤投与、粉砕は対象外
+                   IF     (SRY-SRYCD (IDZ)(1:1)    =   "8"  )  OR
+                          (SRY-SRYCD (IDZ)(1:3)    =   "001")  OR
+                          (SRY-SRYCD (IDZ)         =   "099209901") OR
+                          (SRY-AUTOKBN(IDZ)    NOT =   SPACE )
+                       CONTINUE
+                   ELSE
+      *            点数マスタを取得する
+                       MOVE    SRY-SRYCD (IDZ)    TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
+                       IF     (FLG-TENSU           =   ZERO  )  AND
+                              (TNS-DATAKBN     NOT =   2  AND  3 )
+                           PERFORM 31011-SRYACT-SPA-SEC
+                       END-IF
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 930-SRYACT-RAED-SEC
+           END-PERFORM.
+      *
+           MOVE    "DBCLOSE"          TO  MCP-FUNC.
+           MOVE    "SRYACT-KEY2"      TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+       3101-SRYACCT-SPA-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *   入院行為ごとの編集処理
       *****************************************************************
        31011-NYUKOUI-SPA-SEC           SECTION.
@@ -616,7 +860,23 @@
                PERFORM 310112-NYUKOUI-02-SEC 
            END-IF.
       *
-       3101-NYUACCT-SPA-EXT.
+       3101-NYUKOUI-SPA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   診療行為ごとの編集処理
+      *****************************************************************
+       31011-SRYACT-SPA-SEC            SECTION.
+      *
+           IF     IDX               =   1   OR  2
+      *        行為別編集
+               PERFORM 310111-SINKOUI-01-SEC 
+           ELSE
+      *        コード表別編集
+               PERFORM 310112-SINKOUI-02-SEC 
+           END-IF.
+      *
+       3101-SRYACT-SPA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -671,6 +931,60 @@
            END-PERFORM.
       *
        310111-NYUKOUI-01-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   行為ごとの編集処理
+      *****************************************************************
+       310111-SINKOUI-01-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  TBL-IDX2.
+      *    行為より、対象チェック
+           PERFORM VARYING     TBL-IDX1    FROM    1   BY  1
+                   UNTIL       TBL-IDX1       >    200
+               EVALUATE    TRUE
+                   WHEN    WRK-TBL-SRYCD (IDX TBL-IDX1)   =   SPACE
+                       MOVE    SRY-SRYCD (IDZ)     TO
+                                        WRK-TBL-SRYCD (IDX TBL-IDX1)
+                       MOVE    ACCT-SRYKBN         TO
+                                        WRK-TBL-SRYKBN (IDX TBL-IDX1)
+                       MOVE    ACCT-SRYYM          TO
+                                        WRK-TBL-SRYYYMM (IDX TBL-IDX1)
+                       MOVE    TNS-NAME            TO
+                                        WRK-TBL-MEISYO (IDX TBL-IDX1)
+                       MOVE    TNS-CDKBN-KBN       TO
+                                        WRK-TBL-KNOKBN (IDX TBL-IDX1)
+                       MOVE    TNS-CDKBN-KBNNUM    TO
+                                        WRK-TBL-KNONO (IDX TBL-IDX1)
+                       MOVE    TNS-CDKBN-KBNNUM-EDA  TO
+                                        WRK-TBL-KNONO2 (IDX TBL-IDX1)
+                       MOVE    TBL-IDX1            TO  TBL-IDX2
+                       MOVE    200                 TO  TBL-IDX1
+                   WHEN    (SRY-SRYCD (IDZ)   =
+                                        WRK-TBL-SRYCD (IDX TBL-IDX1))
+                       AND (ACCT-SRYYM        =
+                                        WRK-TBL-SRYYYMM (IDX TBL-IDX1))
+                       MOVE    TBL-IDX1            TO  TBL-IDX2
+                       MOVE    200                 TO  TBL-IDX1
+               END-EVALUATE
+           END-PERFORM.
+      *
+           IF      TBL-IDX2            =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+               GO      TO      310111-SINKOUI-01-EXT
+           END-IF.
+      *
+      *    診療行為回数計算
+           PERFORM VARYING     TBL-IDX3    FROM    1   BY  1
+                   UNTIL       TBL-IDX3    >   31
+      *
+               IF      ACCT-DAY(1 TBL-IDX3)   NOT =   ZERO
+                   ADD     1              TO  WRK-TBL-KAISU
+                                         (IDX TBL-IDX2 TBL-IDX3)
+               END-IF
+           END-PERFORM.
+      *
+       310111-SINKOUI-01-EXT.
            EXIT.
       *
       *****************************************************************
@@ -737,6 +1051,72 @@
            END-PERFORM.
       *
        310112-NYUKOUI-02-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   コード表ごとの編集処理
+      *****************************************************************
+       310112-SINKOUI-02-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  TBL-IDX2.
+      *
+      *    コード表がない時、対象外
+           IF     (TNS-CDKBN-KBN       =   SPACE )  AND
+                  (TNS-CDKBN-KBNNUM    =   ZERO  )  AND
+                  (TNS-CDKBN-KBNNUM-EDA    =   ZERO  )
+               GO      TO      310112-SINKOUI-02-EXT
+           END-IF.
+      *
+      *    診療行為より、対象チェック
+           PERFORM VARYING     TBL-IDX1    FROM    1   BY  1
+                   UNTIL       TBL-IDX1       >    200
+               EVALUATE    TRUE
+                   WHEN    WRK-TBL-KNO   (IDX TBL-IDX1)    =   SPACE
+                       MOVE    SRY-SRYCD (IDZ)     TO  WRK-TBL-SRYCD
+                                                       (IDX TBL-IDX1)
+                       MOVE    ACCT-SRYYM          TO  WRK-TBL-SRYYYMM
+                                                       (IDX TBL-IDX1)
+                       MOVE    TNS-CDKBN-KBN       TO  WRK-TBL-KNOKBN
+                                                       (IDX TBL-IDX1)
+                       MOVE    TNS-CDKBN-KBNNUM    TO  WRK-TBL-KNONO
+                                                       (IDX TBL-IDX1)
+                       MOVE    TNS-CDKBN-KBNNUM-EDA  TO  WRK-TBL-KNONO2
+                                                       (IDX TBL-IDX1)
+      *
+      *                名称編集
+                       PERFORM 3101121-KNO-MEI-SEC
+      *
+                       MOVE    TBL-IDX1            TO  TBL-IDX2
+                       MOVE    200                 TO  TBL-IDX1
+                   WHEN    (TNS-CDKBN-KBN     
+                                  =   WRK-TBL-KNOKBN(IDX TBL-IDX1))
+                       AND (TNS-CDKBN-KBNNUM   
+                                  =   WRK-TBL-KNONO(IDX TBL-IDX1))
+                       AND (TNS-CDKBN-KBNNUM-EDA   
+                                  =   WRK-TBL-KNONO2(IDX TBL-IDX1))
+                       AND (ACCT-SRYYM         
+                                  =   WRK-TBL-SRYYYMM(IDX TBL-IDX1))
+                       MOVE    TBL-IDX1            TO  TBL-IDX2
+                       MOVE    200                 TO  TBL-IDX1
+               END-EVALUATE
+           END-PERFORM.
+      *
+           IF      TBL-IDX2            =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+               GO      TO      310112-SINKOUI-02-EXT
+           END-IF.
+      *
+      *    診療行為回数計算
+           PERFORM VARYING     TBL-IDX3    FROM    1   BY  1
+                   UNTIL       TBL-IDX3    >   31
+      *
+               IF      ACCT-DAY(1 TBL-IDX3)   NOT =   ZERO
+                   ADD     1              TO  WRK-TBL-KAISU
+                                         (IDX TBL-IDX2 TBL-IDX3)
+               END-IF
+           END-PERFORM.
+      *
+       310112-SINKOUI-02-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1210,6 +1590,7 @@
       *
        510-ERRSET-EXT.
            EXIT.
+      *
       *****************************************************************
       *    点数マスター読込
       *****************************************************************
@@ -1275,6 +1656,28 @@
       *
        900-NYUINACCT-NEXT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    診療会計マスター読込
+      *****************************************************************
+       900-SRYACCT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYACCT-REC
+               MOVE    ZERO                TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                      SRYACCT-REC
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF.
+      *
+       900-SRYACCT-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    入院行為マスター読込
       *****************************************************************
@@ -1295,6 +1698,28 @@
       *
        930-NYUKOUI-RAED-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    診療行為マスター読込
+      *****************************************************************
+       930-SRYACT-RAED-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYACT-REC
+               MOVE    ZERO                TO  FLG-SRYACT
+           ELSE
+               INITIALIZE                      SRYACT-REC
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF.
+      *
+       930-SRYACT-RAED-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
