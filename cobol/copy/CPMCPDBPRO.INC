@@ -208,6 +208,7 @@
       *                                     KENSASORT-ALL追加 
       *  01.01.43    NACL-多々納　03/03/04  SYUNOU-KEY11,KEY12追加
       *  01.01.44    ひさなが     03/03/05  PTNYUINRRK-KEY19の追加
+      *  01.01.45    NACL-森脇    03/03/05  SYUMEI-KEY4,KEY5の追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -603,14 +604,20 @@
       *        WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL6"
       *            MOVE    PATH-TBL-SYUNOU-DEL6
       *                                TO  WRK-PATH
+      *追加/*開始*01.01.45********************************************
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY"
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY2"
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY4"
+               WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY5"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY2"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY3"
+               WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY4"
+               WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY5"
                    MOVE    PATH-TBL-SYUMEI-KEY
                                        TO  WRK-PATH
+      *追加/*終了*01.01.45********************************************
                WHEN    "DBDELETE"      ALSO   "SYUMEI-DEL1"
                    MOVE    PATH-TBL-SYUMEI-DEL1
                                        TO  WRK-PATH
@@ -1445,7 +1452,7 @@
                WHEN    ANY             ALSO   "SRYACT-ALL"
                    MOVE    PATH-TBL-SRYACT-ALL
                                        TO  WRK-PATH
-      *追加/*終了*01.09.15********************************************
+      *追加/*終了*01.01.45********************************************
                WHEN    ANY             ALSO   "SYUMEI-KEY"
                    MOVE    PATH-TBL-SYUMEI-KEY
                                        TO  WRK-PATH
@@ -1455,9 +1462,17 @@
                WHEN    ANY             ALSO   "SYUMEI-KEY3"
                    MOVE    PATH-TBL-SYUMEI-KEY3
                                        TO  WRK-PATH
-      *追加/*開始*01.09.15********************************************
+      *追加/*開始*01.01.45********************************************
                WHEN    ANY             ALSO   "SYUMEI-ALL"
                    MOVE    PATH-TBL-SYUMEI-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "SYUMEI-KEY4"
+                   MOVE    PATH-TBL-SYUMEI-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUMEI-KEY5"
+                   MOVE    PATH-TBL-SYUMEI-KEY5
                                        TO  WRK-PATH
       *追加/*終了*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-KEY"

@@ -97,3 +97,28 @@ path	del2 	{
 	};
 };
 
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_syumei_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syumei
+			WHERE   HOSPID        =  :HOSPID
+			AND     NYUHEN_YMD    =  :NYUHEN_YMD
+			ORDER   BY	SRYKA,PTID,DENPNUM,DENPEDANUM
+		;
+	};
+};
+
+path	key5	{
+	DBSELECT	{
+		DECLARE tbl_syumei_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syumei
+			WHERE   HOSPID        =  :HOSPID
+			AND   DENPNUM         =  :DENPNUM
+			AND   DENPEDANUM      <  :DENPEDANUM
+                        ORDER BY	DENPEDANUM
+		;
+	};
+};
+
