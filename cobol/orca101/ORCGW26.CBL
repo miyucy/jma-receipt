@@ -271,6 +271,7 @@
            COPY    "W99.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA

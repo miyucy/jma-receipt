@@ -192,6 +192,7 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -238,6 +239,7 @@
            COPY    "W99.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -330,7 +332,10 @@
       *
            EVALUATE    SPA-MOTOPG
                WHEN    "WID1"
-                   PERFORM 330-WID1-SET-SEC
+                   PERFORM 330-WID-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "WID2"
+                   PERFORM 330-WID2-SET-SEC
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -341,32 +346,57 @@
            EXIT.
       *
       *****************************************************************
-      *    確認画面（ＣＩＤ１）ＯＫ処理
+      *    確認画面（ＷＩＤ１）ＯＫ処理
       *****************************************************************
-       330-WID1-SET-SEC            SECTION.
+       330-WID-SET-SEC            SECTION.
       *
            IF      SPA-WID1-FLG    =   "OK"
                PERFORM 490-KOUSHIN-SEC
+               EVALUATE    SPA-WIDCD
+                   WHEN    "1003"
+                   WHEN    "1004"
+                       MOVE    "JOIN"           TO  MCP-PUTTYPE
+                       PERFORM 210-BACK
+                       GO  TO  330-WID-SET-EXT 
+               END-EVALUATE
            ELSE
                EVALUATE    SPA-WIDCD
                    WHEN    "1001"
+                   WHEN    "1003"
                        MOVE    2            TO  SPA-GMN-CUR
                    WHEN    "1002"
+                   WHEN    "1004"
                        MOVE    101          TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF
       *
-           EVALUATE    SPA-WIDCD
+           MOVE    SPACE           TO  SPA-WID1-FLG
+           MOVE    SPACE           TO  SPA-WIDCD      
+      *
+           .
+       330-WID-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面２（ＷＩＤ２）ＯＫ処理
+      *****************************************************************
+       330-WID2-SET-SEC            SECTION.
+      *
+           IF      SPA-WID2-FLG    =   "OK"
+               PERFORM 490-KOUSHIN-SEC
+           END-IF
+      *
+           EVALUATE    SPA-WIDCD2
                WHEN    "1003"
                    MOVE    101          TO  SPA-GMN-CUR
                WHEN    "1004"
                    MOVE    1            TO  SPA-GMN-CUR
            END-EVALUATE
       *
-           MOVE    SPACE           TO  SPA-WID1-FLG
-           MOVE    SPACE           TO  SPA-WIDCD      
+           MOVE    SPACE           TO  SPA-WID2-FLG
+           MOVE    SPACE           TO  SPA-WIDCD2    
            .
-       330-WID1-SET-EXT.
+       330-WID2-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -904,14 +934,32 @@
                        WHEN    "N01"
                            IF      SPA-GMN-KOUMOKU2 =   SPACE
                                MOVE    1            TO  SPA-GMN-CUR
-                           ELSE 
-                               MOVE    "1004"       TO  SPA-WIDCD
+                           ELSE
+                               IF  (   SPA-W01-SELNUM
+                                                    >   ZERO           )
+                               AND ( ( SPA-W01-STYUKYMD
+                                        NOT =   SPA-W01-SEL-STYUKYMD )
+                                  OR ( SPA-W01-EDYUKYMD
+                                        NOT =   SPA-W01-SEL-EDYUKYMD ) )
+                                   MOVE    "1004"       TO  SPA-WIDCD
+                               ELSE
+                                   MOVE    "1004"       TO  SPA-WIDCD2
+                               END-IF
                            END-IF
                        WHEN    "N02"
                            IF      SPA-GMN-KBNCD    =   SPACE
                                MOVE    101          TO  SPA-GMN-CUR
                            ELSE 
-                               MOVE    "1003"       TO  SPA-WIDCD
+                               IF  (   SPA-W01-SELNUM
+                                                    >   ZERO           )
+                               AND ( ( SPA-W01-STYUKYMD
+                                        NOT =   SPA-W01-SEL-STYUKYMD )
+                                  OR ( SPA-W01-EDYUKYMD
+                                        NOT =   SPA-W01-SEL-EDYUKYMD ) )
+                                   MOVE    "1003"       TO  SPA-WIDCD
+                               ELSE
+                                   MOVE    "1003"       TO  SPA-WIDCD2
+                               END-IF
                            END-IF 
                    END-EVALUATE
                END-IF
@@ -969,13 +1017,29 @@
                        IF      SPA-GMN-KOUMOKU2 =   SPACE
                            MOVE    1            TO  SPA-GMN-CUR
                        ELSE 
-                           MOVE    "1004"       TO  SPA-WIDCD
-                       END-IF
+                           IF  (   SPA-W01-SELNUM   >   ZERO           )
+                           AND ( ( SPA-W01-STYUKYMD
+                                        NOT =   SPA-W01-SEL-STYUKYMD )
+                              OR ( SPA-W01-EDYUKYMD
+                                        NOT =   SPA-W01-SEL-EDYUKYMD ) )
+                               MOVE    "1004"       TO  SPA-WIDCD
+                           ELSE
+                               MOVE    "1004"       TO  SPA-WIDCD2
+                           END-IF
+                       END-IF    
                    WHEN    0
                        IF      SPA-GMN-KBNCD    =   SPACE
                            MOVE    101          TO  SPA-GMN-CUR
                        ELSE 
-                           MOVE    "1003"       TO  SPA-WIDCD
+                           IF  (   SPA-W01-SELNUM   >   ZERO           )
+                           AND ( ( SPA-W01-STYUKYMD
+                                        NOT =   SPA-W01-SEL-STYUKYMD )
+                              OR ( SPA-W01-EDYUKYMD
+                                        NOT =   SPA-W01-SEL-EDYUKYMD ) )
+                               MOVE    "1003"       TO  SPA-WIDCD
+                           ELSE
+                               MOVE    "1003"       TO  SPA-WIDCD2
+                           END-IF
                        END-IF 
                END-EVALUATE
            END-IF        
@@ -996,12 +1060,23 @@
               GO      TO      490-KOUSHIN-MAE-EXT
            END-IF
       *
-           EVALUATE   W18-PAGENO
-               WHEN   0
-                   MOVE    "1001"              TO  SPA-WIDCD
-               WHEN   1
-                   MOVE    "1002"              TO  SPA-WIDCD
-           END-EVALUATE 
+           IF  (   SPA-W01-SELNUM          >   ZERO                   )
+           AND ( ( SPA-W01-STYUKYMD    NOT =   SPA-W01-SEL-STYUKYMD )
+              OR ( SPA-W01-EDYUKYMD    NOT =   SPA-W01-SEL-EDYUKYMD ) ) 
+               EVALUATE   W18-PAGENO
+                   WHEN   0
+                       MOVE    "1003"              TO  SPA-WIDCD
+                   WHEN   1
+                       MOVE    "1004"              TO  SPA-WIDCD
+               END-EVALUATE
+           ELSE
+               EVALUATE   W18-PAGENO
+                   WHEN   0
+                       MOVE    "1001"              TO  SPA-WIDCD
+                   WHEN   1
+                       MOVE    "1002"              TO  SPA-WIDCD
+               END-EVALUATE
+           END-IF 
            .
        490-KOUSHIN-MAE-EXT.
            EXIT.
@@ -1051,9 +1126,9 @@
                            MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
                            MOVE    SYS-KANRICD     TO  SYSUP-KANRICD
                            MOVE    SYS-KBNCD       TO  SYSUP-KBNCD
-                           MOVE    SPA-W01-SEL-STYUKYMD
+                           MOVE    SPA-W01-STYUKYMD
                                                    TO  SYSUP-STYUKYMD
-                           MOVE    SPA-W01-SEL-EDYUKYMD
+                           MOVE    SPA-W01-EDYUKYMD
                                                    TO  SYSUP-EDYUKYMD
                            MOVE    "SYSKANRI-UPD1" TO  ORC-DBPATH
                            MOVE    "DBUPDATE"      TO  MCP-FUNC
@@ -1134,9 +1209,9 @@
                                MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
                                MOVE    SYS-KANRICD     TO  SYSUP-KANRICD
                                MOVE    SYS-KBNCD       TO  SYSUP-KBNCD
-                               MOVE    SPA-W01-SEL-STYUKYMD
+                               MOVE    SPA-W01-STYUKYMD
                                                    TO  SYSUP-STYUKYMD
-                               MOVE    SPA-W01-SEL-EDYUKYMD
+                               MOVE    SPA-W01-EDYUKYMD
                                                    TO  SYSUP-EDYUKYMD
                                MOVE    "SYSKANRI-UPD1" TO  ORC-DBPATH
                                MOVE    "DBUPDATE"      TO  MCP-FUNC
@@ -1221,9 +1296,9 @@
                            MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
                            MOVE    SYS-KANRICD     TO  SYSUP-KANRICD
                            MOVE    SYS-KBNCD       TO  SYSUP-KBNCD
-                           MOVE    SPA-W01-SEL-STYUKYMD
+                           MOVE    SPA-W01-STYUKYMD
                                                    TO  SYSUP-STYUKYMD
-                           MOVE    SPA-W01-SEL-EDYUKYMD
+                           MOVE    SPA-W01-EDYUKYMD
                                                    TO  SYSUP-EDYUKYMD
                            MOVE    "SYSKANRI-UPD1" TO  ORC-DBPATH
                            MOVE    "DBUPDATE"      TO  MCP-FUNC
@@ -1247,6 +1322,80 @@
       *
                    MOVE    101                 TO  SPA-GMN-CUR
            END-EVALUATE
+      *  
+           EVALUATE    SPA-WIDCD     
+               WHEN    "1003"
+               WHEN    "1004"
+      *            医療機関編集情報
+                   MOVE    SPACE               TO  SYSKANRI-REC
+                   INITIALIZE                      SYSKANRI-REC
+                   MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
+                   MOVE    SPA-W01-EDYUKYMD    TO  SYS-EDYUKYMD
+                   MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
+                   MOVE    "1901"              TO  SYSUP-KANRICD
+                   MOVE    SPA-W01-SEL-STYUKYMD
+                                               TO  SYSUP-STYUKYMD
+                   MOVE    SPA-W01-SEL-EDYUKYMD
+                                               TO  SYSUP-EDYUKYMD
+                   MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    PATH-TBL-SYSKANRI-UPD2
+                                               TO  MCP-PATH
+                   CALL    "MCPSUB"            USING
+                                               MCPAREA
+                                               MCPDATA-REC      
+                   IF      MCP-RC          NOT =   ZERO 
+                       MOVE    "1003"              TO  SPA-ERRCD
+                       GO  TO  490-KOUSHIN-EXT
+                   END-IF
+      *
+                   MOVE    SPACE               TO  SYSKANRI-REC
+                   INITIALIZE                      SYSKANRI-REC
+                   MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
+                   MOVE    SPA-W01-EDYUKYMD    TO  SYS-EDYUKYMD
+                   MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
+                   MOVE    "1902"              TO  SYSUP-KANRICD
+                   MOVE    SPA-W01-SEL-STYUKYMD
+                                               TO  SYSUP-STYUKYMD
+                   MOVE    SPA-W01-SEL-EDYUKYMD
+                                               TO  SYSUP-EDYUKYMD
+                   MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    PATH-TBL-SYSKANRI-UPD2
+                                               TO  MCP-PATH
+                   CALL    "MCPSUB"            USING
+                                               MCPAREA
+                                               MCPDATA-REC      
+                   IF      MCP-RC          NOT =   ZERO 
+                       MOVE    "1005"              TO  SPA-ERRCD
+                       GO  TO  490-KOUSHIN-EXT
+                   END-IF
+      *
+                   MOVE    SPACE               TO  SYSKANRI-REC
+                   INITIALIZE                      SYSKANRI-REC
+                   MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
+                   MOVE    SPA-W01-EDYUKYMD    TO  SYS-EDYUKYMD
+                   MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
+                   MOVE    "1900"              TO  SYSUP-KANRICD
+                   MOVE    SPA-W01-SEL-STYUKYMD
+                                               TO  SYSUP-STYUKYMD
+                   MOVE    SPA-W01-SEL-EDYUKYMD
+                                               TO  SYSUP-EDYUKYMD
+                   MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    PATH-TBL-SYSKANRI-UPD2
+                                               TO  MCP-PATH
+                   CALL    "MCPSUB"            USING
+                                               MCPAREA
+                                               MCPDATA-REC      
+                   IF      MCP-RC          NOT =   ZERO 
+                       MOVE    "1001"              TO  SPA-ERRCD
+                       GO  TO  490-KOUSHIN-EXT
+                   END-IF
+           END-EVALUATE    
            .
        490-KOUSHIN-EXT.
            EXIT.
@@ -1371,6 +1520,11 @@
       *
            IF      SPA-WIDCD       NOT =   SPACE
                PERFORM 520-WIDSET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
+      *
+           IF      SPA-WIDCD2      NOT =   SPACE
+               PERFORM 530-WID2SET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
@@ -1529,12 +1683,9 @@
                    MOVE    "帳票別指定情報を登録します"
                                                 TO  WRK-WIDMSG
                WHEN    "1003"
-                   MOVE
-                   "画面を切替えます。医療機関編集情報を登録しますか？"
-                                                TO  WRK-WIDMSG
                WHEN    "1004"
                    MOVE
-                   "画面切替えます。帳票別指定情報を登録しますか？"
+                   "適用日を変更しますので、登録後選択画面へ戻ります"
                                                 TO  WRK-WIDMSG
            END-EVALUATE
       *
@@ -1555,6 +1706,45 @@
       *
            .
        520-WIDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ガイドメッセージ表示
+      *****************************************************************
+       530-WID2SET-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRK-WIDMSG
+      *
+           EVALUATE    SPA-WIDCD2
+               WHEN    "1003"
+                   MOVE
+                   "画面を切替えます。医療機関編集情報を登録しますか？"
+                                                TO  WRK-WIDMSG
+               WHEN    "1004"
+                   MOVE
+                   "画面を切替えます。帳票別指定情報を登録しますか？"
+                                                TO  WRK-WIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE                TO  WID2
+           MOVE    SPA-WIDCD            TO  WID2-ID1CODE
+           MOVE    WRK-WIDMSG           TO  WID2-ID1MSG
+           MOVE    "いいえ"             TO  WID2-B01 
+           MOVE    "は  い"             TO  WID2-B12 
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "W18"                TO  SPA-MOTOPG
+           MOVE    "WID2"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "WID2"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END              
+      *
+           .
+       530-WID2SET-EXT.
            EXIT.
       *
       *****************************************************************
