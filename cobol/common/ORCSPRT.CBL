@@ -31,6 +31,8 @@
       *  01.00.02    NACL-藤原    03/03/03  印刷済フラグ追加
       *  01.01.02    NACL-藤原    03/03/04  印刷ＤＢへのプリンタ名追加による
       *                                     修正
+      *  01.03.01    NACL-藤原    03/07/07  プレビュー機能追加
+      *                                     ★にて追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -163,9 +165,35 @@
                MOVE    SPRT-TBL-GROUP      TO  PRTKANRI-TBL-GROUP
                MOVE    SPRT-SHELLID        TO  PRTKANRI-SHELLID
                MOVE    SPRT-SHORI-RENNUM   TO  PRTKANRI-SHORI-RENNUM
-               MOVE    SPRT-SRYYM          TO  PRTKANRI-SRYYM
                MOVE    SPRT-SKYYMD         TO  PRTKANRI-SKYYMD
-               MOVE    SPRT-PRIORITY       TO  PRTKANRI-PRIORITY
+      * ★ プレビュー対応
+      *        MOVE    SPRT-SRYYM          TO  PRTKANRI-SRYYM
+      *        MOVE    SPRT-PRIORITY       TO  PRTKANRI-PRIORITY
+               EVALUATE    SPRT-PRIORITY
+                   WHEN    11
+                   WHEN    21
+                   WHEN    31
+                   WHEN    41
+                   WHEN    51
+                   WHEN    61
+                           COMPUTE PRTKANRI-PRIORITY  =   SPRT-PRIORITY 
+                                                      /   10
+                           MOVE    SPRT-SRYYM         TO  PRTKANRI-SRYYM
+                   WHEN    12
+                   WHEN    22
+                   WHEN    32
+                   WHEN    42
+                   WHEN    52
+                   WHEN    62
+                           COMPUTE PRTKANRI-PRIORITY  =   SPRT-PRIORITY 
+                                                      /   10
+                           MOVE    ZERO               TO  PRTKANRI-SRYYM
+                   WHEN    OTHER
+                           MOVE    SPRT-SRYYM         TO  PRTKANRI-SRYYM
+                           MOVE    SPRT-PRIORITY      TO  
+                                                      PRTKANRI-PRIORITY
+               END-EVALUATE
+      * ★ end
                MOVE    1                   TO  PRTKANRI-PAGE
                IF      SPRT-PRTFLG         =   "1"
                    MOVE    "1"                 TO  PRTKANRI-PRTFLG
@@ -226,10 +254,36 @@
            MOVE    SPRT-SHELLID        TO  PRTDATA-SHELLID
            MOVE    SPRT-PRTID          TO  PRTDATA-PRTID
            MOVE    SPRT-SHORI-RENNUM   TO  PRTDATA-SHORI-RENNUM
-           MOVE    SPRT-SRYYM          TO  PRTDATA-SRYYM
            MOVE    SPRT-SKYYMD         TO  PRTDATA-SKYYMD
            MOVE    SPRT-PTID           TO  PRTDATA-PTID 
-           MOVE    SPRT-PRIORITY       TO  PRTDATA-PRIORITY
+      * ★ プレビュー対応
+      *    MOVE    SPRT-SRYYM          TO  PRTDATA-SRYYM
+      *    MOVE    SPRT-PRIORITY       TO  PRTDATA-PRIORITY
+               EVALUATE    SPRT-PRIORITY
+                   WHEN    11
+                   WHEN    21
+                   WHEN    31
+                   WHEN    41
+                   WHEN    51
+                   WHEN    61
+                           COMPUTE PRTDATA-PRIORITY   =   SPRT-PRIORITY 
+                                                      /   10
+                           MOVE    SPRT-SRYYM         TO  PRTDATA-SRYYM
+                   WHEN    12
+                   WHEN    22
+                   WHEN    32
+                   WHEN    42
+                   WHEN    52
+                   WHEN    62
+                           COMPUTE PRTDATA-PRIORITY   =   SPRT-PRIORITY 
+                                                      /   10
+                           MOVE    SPRT-SRYYM         TO  PRTDATA-SRYYM
+                   WHEN    OTHER
+                           MOVE    SPRT-SRYYM         TO  PRTDATA-SRYYM
+                           MOVE    SPRT-PRIORITY      TO  
+                                                      PRTDATA-PRIORITY
+               END-EVALUATE
+      * ★ end
            MOVE    PRTKANRI-PAGE       TO  PRTDATA-PAGE
            IF      SPRT-PRTFLG         =   "1"
                MOVE    "1"                 TO  PRTDATA-PRTFLG
