@@ -2435,8 +2435,12 @@
                                               CONS-ROUCOM6  OR
                                               CONS-ROUCOM7      )
                       OR  ( SRY-SRYCD(1)    = CONS-ROUSAI2      )
-                      OR (( SRY-SRYCD(1)    = CONS-ROUSAI1      ) AND
-                          ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
+                      OR (( ACCT-SRYKBN     = "11"              ) AND
+                          ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ) AND
+                          ( SRY-SRYCD(IDX2) NOT = "830000020"   ))
+      *
+      **>             OR (( SRY-SRYCD(1)    = CONS-ROUSAI1      ) AND
+      **>                 ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
       *
                          ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE85-SIKFLG(IDX4)
@@ -2600,7 +2604,8 @@
                                             "180024810"   OR
                                             "180025110"   OR
                                             "180025010"   
-                        MOVE   "1"        TO    RECE82-COMCNTFLG
+                        MOVE   "1"    TO    RECE82-COMCNTFLG
+                        MOVE   "1"    TO    RECE84-RIHABIRI-COMMENT
               END-IF
            END-IF
       *

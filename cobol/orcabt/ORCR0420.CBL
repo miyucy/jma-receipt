@@ -1347,12 +1347,19 @@
                                               CONS-ROUCOM2      )
                       OR  ( SRY-SRYCD(1)    = CONS-ROUSAI2  OR
                                               CONS-ROUSAI3      )
-                      OR (( SRY-SRYCD(1)    = CONS-ROUSAI1      ) AND
-                          ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
-                      OR (( SRY-SRYCD(1)    = CONS-ROUSAI5  OR
-                                              CONS-ROUSAI6  OR
-                                              CONS-ROUSAI7      ) AND
-                          ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
+                      OR (( ACCT-SRYKBN     = "11"              ) AND
+                          ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ) AND
+                          ( SRY-SRYCD(IDX2) NOT = "830000020"   ))
+                      OR (( ACCT-SRYKBN     = "12"              ) AND
+                          ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ) AND
+                          ( SRY-SRYCD(IDX2) NOT = "830000021"   ))
+      *
+      **>             OR (( SRY-SRYCD(1)    = CONS-ROUSAI1      ) AND
+      **>                 ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
+      **>             OR (( SRY-SRYCD(1)    = CONS-ROUSAI5  OR
+      **>                                     CONS-ROUSAI6  OR
+      **>                                     CONS-ROUSAI7      ) AND
+      **>                 ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
       *
                          ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE45-SIKFLG(IDX4)
@@ -1520,13 +1527,15 @@
       *
            IF      RECE44-SRYKBN      =     "11"
               IF   SRY-SRYCD(IDX2)    =     "830000020"
-                        MOVE   "1"        TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-SYOSANTEIKA-COMMENT
               END-IF
            END-IF
       *
            IF      RECE44-SRYKBN      =     "12"
               IF   SRY-SRYCD(IDX2)    =     "830000021"
-                        MOVE   "1"        TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-SAISANTEIKA-COMMENT
               END-IF
            END-IF
       *
@@ -1562,7 +1571,8 @@
                                             "180024810"   OR
                                             "180025110"   OR
                                             "180025010"   
-                        MOVE   "1"        TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-RIHABIRI-COMMENT
               END-IF
            END-IF
       *

@@ -230,8 +230,6 @@
                05  WRK-SRYYM         PIC 9(06).
                05  WRK-SRYDD         PIC 9(02).
       *
-           03  WRK-SRYCD             PIC X(09).
-      *
        01  WRK-RECE44-REC. 
            COPY    "CPRCF044.INC"  REPLACING   //RECE44//
                                    BY          //WRK-RECE44//.
@@ -388,10 +386,6 @@
        01  CONST-AREA.
       *    慢性とう痛疾患
            03  CONS-MANSEI          PIC X(09) VALUE "113006510".
-      *    初診料算定科：
-           03  CONS-SYOSINSANTEIKA  PIC X(09) VALUE "830000020".
-      *    再診料算定科：
-           03  CONS-SAISINSANTEIKA  PIC X(09) VALUE "830000021".
       *
       *   リハビリ診療行為テーブル
        01  TBL-RIHA-AREA.
@@ -628,29 +622,37 @@
                   EVALUATE      RECE44-SRYKBN
                       WHEN      "11"
       *               （初診料算定科：のカウント）
-                         MOVE    CONS-SYOSINSANTEIKA  TO  WRK-SRYCD
-                         PERFORM    2001-SANTEIKA-COUNT-SEC
+                         IF  RECE44-SYOSANTEIKA-COMMENT  =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
+                         END-IF
                       WHEN      "12"
       *               （再診料算定科：のカウント）
-                         MOVE    CONS-SAISINSANTEIKA  TO  WRK-SRYCD
-                         PERFORM    2001-SANTEIKA-COUNT-SEC
+                         IF  RECE44-SAISANTEIKA-COMMENT  =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
+                         END-IF
                       WHEN      "80"
       *               （リハビリのカウント）
-                         PERFORM    2001-RIHA-COUNT-SEC
+                         IF  RECE44-RIHABIRI-COMMENT     =  "1"
+                            PERFORM    2001-RIHA-COUNT-SEC              
+                         END-IF
                   END-EVALUATE
                ELSE                                                     
                   EVALUATE      RECE44-SRYKBN  
                       WHEN      "11"
       *               （初診料算定科：のカウント）
-                         MOVE    CONS-SYOSINSANTEIKA  TO  WRK-SRYCD
-                         PERFORM    2001-SANTEIKA-COUNT-SEC
+                         IF  RECE44-SYOSANTEIKA-COMMENT  =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
+                         END-IF
                       WHEN      "12"
       *               （再診料算定科：のカウント）
-                         MOVE    CONS-SAISINSANTEIKA  TO  WRK-SRYCD
-                         PERFORM    2001-SANTEIKA-COUNT-SEC
+                         IF  RECE44-SAISANTEIKA-COMMENT  =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
+                         END-IF
                       WHEN      "40"                                    
       *               （リハビリのカウント）                            
-                         PERFORM    2001-RIHA-COUNT-SEC                 
+                         IF  RECE44-RIHABIRI-COMMENT     =  "1"
+                            PERFORM    2001-RIHA-COUNT-SEC              
+                         END-IF
                   END-EVALUATE                                          
                END-IF                                                   
       *
@@ -871,56 +873,6 @@
       *
            .
        200-MAIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    算定科：のカウント
-      *****************************************************************
-       2001-SANTEIKA-COUNT-SEC          SECTION.
-      *
-           INITIALIZE                          SRYACT-REC
-           MOVE    RECE44-HOSPID       TO      SRY-HOSPID
-           MOVE    RECE44-NYUGAIKBN    TO      SRY-NYUGAIKBN
-           MOVE    RECE44-PTID         TO      SRY-PTID
-           MOVE    RECE44-SRYYM        TO      SRY-SRYYM
-           MOVE    RECE44-ZAINUM       TO      SRY-ZAINUM
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (1)
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (2)
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (3)
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (4)
-           MOVE    WRK-SRYCD           TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                         ADD    RECE44-ZAIKAISU  
-                                       TO   CNT-SANTEIKA
-               END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           .
-       2001-SANTEIKA-COUNT-EXT.
            EXIT.
       *
       *****************************************************************

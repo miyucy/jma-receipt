@@ -89,6 +89,10 @@
            03  RECE64-TEIGENRATE          PIC  X(01).
       *コメントコードフラグ
            03  RECE64-COMCDFLG            PIC  X(01).
+      *
+      *リハビリ
+           03  RECE64-RIHABIRI-COMMENT    PIC  X(01).
+      *
       *薬剤管理指導料
            03  RECE64-FLG-YAKUKAN-COMMENT PIC  X(01).
       *入院栄養食事指導料

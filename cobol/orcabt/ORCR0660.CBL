@@ -626,7 +626,9 @@
                EVALUATE      RECE64-SRYKBN
                    WHEN      "80"
       *            （リハビリのカウント）
-                      PERFORM    2001-RIHA-COUNT-SEC
+                      IF  RECE64-RIHABIRI-COMMENT     =  "1"
+                         PERFORM    2001-RIHA-COUNT-SEC
+                      END-IF
                END-EVALUATE
       *
                PERFORM 990-RECE64-NEXT-SEC

@@ -3592,7 +3592,8 @@
                                             "180024810"   OR
                                             "180025110"   OR
                                             "180025010"   
-                        MOVE   "1"        TO    RECE62-COMCNTFLG
+                        MOVE   "1"    TO    RECE62-COMCNTFLG
+                        MOVE   "1"    TO    RECE64-RIHABIRI-COMMENT
               END-IF
            END-IF
       *

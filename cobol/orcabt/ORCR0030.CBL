@@ -1612,7 +1612,7 @@
       *       ½é¿ÇÎÁ»»Äê²Ê¡§
               IF   SRY-SRYCD(IDX2)    =     "830000020"
                         MOVE   "1"    TO    RECE02-COMCNTFLG
-                        MOVE   "1"    TO    RECE04-SYOSANTEIKA-COMMENT  YYY
+                        MOVE   "1"    TO    RECE04-SYOSANTEIKA-COMMENT
               END-IF
            END-IF
       *
@@ -1620,7 +1620,7 @@
       *       ºÆ¿ÇÎÁ»»Äê²Ê¡§
               IF   SRY-SRYCD(IDX2)    =     "830000021"
                         MOVE   "1"    TO    RECE02-COMCNTFLG
-                        MOVE   "1"    TO    RECE04-SAISANTEIKA-COMMENT  YYY
+                        MOVE   "1"    TO    RECE04-SAISANTEIKA-COMMENT
               END-IF
       *       ÅÅÏÃºÆ¿Ç
               IF   SRY-SRYCD(IDX2)    =     "112009750"   OR
@@ -1660,7 +1660,7 @@
                                             "112703650"   OR
                                             "112706550"     
                         MOVE   "1"    TO    RECE02-COMCNTFLG
-                        MOVE   "1"    TO    RECE04-DENWASAI-COMMENT     YYY
+                        MOVE   "1"    TO    RECE04-DENWASAI-COMMENT
               END-IF
       *       Æ±ÆüºÆ¿Ç
               IF   SRY-SRYCD(IDX2)    =     "112010150"   OR
@@ -1700,7 +1700,7 @@
                                             "112703250"   OR
                                             "112703350"     
                         MOVE   "1"    TO    RECE02-COMCNTFLG
-                        MOVE   "1"    TO    RECE04-DOUJITUSAI-COMMENT   YYY
+                        MOVE   "1"    TO    RECE04-DOUJITUSAI-COMMENT
               END-IF
       *       ºÆ¿Ç¡Ê£´²óÌÜ°Ê¹ß¡¿¿Í¹©¿ÕÂ¡¡Ë
               IF   SRY-SRYCD(IDX2)    =     "112009510"   OR
@@ -1720,7 +1720,7 @@
                                             "112008750"   OR
                                             "112703350"     
                         MOVE   "1"    TO    RECE02-COMCNTFLG
-                        MOVE   "1"    TO    RECE04-SAIJINKO-COMMENT     YYY
+                        MOVE   "1"    TO    RECE04-SAIJINKO-COMMENT
               END-IF
            END-IF
       *
@@ -1729,7 +1729,7 @@
               IF   SRY-SRYCD(IDX2)    =     "140036710"   OR
                                             "140007710"
                         MOVE   "1"    TO    RECE02-COMCNTFLG
-                        MOVE   "1"    TO    RECE04-JINKOJIN-COMMENT     YYY
+                        MOVE   "1"    TO    RECE04-JINKOJIN-COMMENT
               END-IF
            END-IF
       *
@@ -1764,7 +1764,7 @@
                                             "180025110"   OR
                                             "180025010"     
                         MOVE   "1"    TO    RECE02-COMCNTFLG
-                        MOVE   "1"    TO    RECE04-RIHABIRI-COMMENT     YYY
+                        MOVE   "1"    TO    RECE04-RIHABIRI-COMMENT
               END-IF
            END-IF
       *
