@@ -13,6 +13,9 @@ X04	{
 		B10	{
 			state	int;
 		};
+		BTN_ALLINS	{
+			state	int;
+		};
 		CHKKBN	{
 			value	varchar(50);
 		};
@@ -33,7 +36,7 @@ X04	{
 				value	varchar(22);
 			};
 			count	int;
-			item	varchar(22)[02];
+			item	varchar(22)[05];
 		};
 		SELNUM	{
 			value	varchar(50);

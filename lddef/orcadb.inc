@@ -88,6 +88,7 @@ db	{
         query_dtchk;
 	tbl_receupd;
 	tbl_orderprt;
+	tbl_medyakko;
 };
 db	"shell"	{
 	shell;

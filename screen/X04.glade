@@ -687,9 +687,9 @@
 
     <widget>
       <class>GtkButton</class>
-      <name>BTN_INS</name>
+      <name>BTN_ALLINS</name>
       <x>500</x>
-      <y>270</y>
+      <y>275</y>
       <width>40</width>
       <height>35</height>
       <can_focus>True</can_focus>
@@ -699,7 +699,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Oct 2004 06:58:36 GMT</last_modification_time>
       </signal>
-      <label>бу</label>
+      <label>бубу</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1396,6 +1396,24 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>BTN_INS</name>
+      <x>500</x>
+      <y>230</y>
+      <width>40</width>
+      <height>35</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 21 Oct 2004 06:58:36 GMT</last_modification_time>
+      </signal>
+      <label>бу</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>
 </widget>

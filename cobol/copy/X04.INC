@@ -6,6 +6,7 @@
                   05  X04-B05-STATE PIC S9(9)   BINARY.
               03  X04-B09-STATE PIC S9(9)   BINARY.
               03  X04-B10-STATE PIC S9(9)   BINARY.
+              03  X04-BTN-ALLINS-STATE PIC S9(9)   BINARY.
               03  X04-CHKKBN.
                 04  X04-VALUE   PIC X(50).
               03  X04-SRYCD.
@@ -21,7 +22,7 @@
                   05  X04-VALUE   PIC X(22).
                 04  X04-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
                 04  X04-NYUGAIKBN-ITEM
-                        PIC X(22)   OCCURS  2 TIMES.
+                        PIC X(22)   OCCURS  5 TIMES.
               03  X04-SELNUM.
                 04  X04-VALUE   PIC X(50).
               03  X04-BYOSTATUS.
