@@ -2258,16 +2258,24 @@
            MOVE    1                   TO  FLG-JYOKEN
       *
       *    Âà±¡Æü
-           PERFORM 45011-JYOKEN-HENSYU-SEC
-           STRING  "(taiinymd >= '"        DELIMITED  BY  SIZE
+           IF    ( SPA-NAI-STTAIINYMD      =   "00000000" )
+            AND  ( SPA-NAI-EDTAIINYMD      =   "99999999" )
+               CONTINUE
+           ELSE
+               PERFORM 45011-JYOKEN-HENSYU-SEC
+               STRING  "(taiinymd <> '99999999' )"
+                                           DELIMITED  BY  SIZE
+                   "and"                   DELIMITED  BY  SIZE
+                   "(taiinymd >= '"        DELIMITED  BY  SIZE
                    SPA-NAI-STTAIINYMD      DELIMITED  BY  SIZE
                    "' and taiinymd <= '"   DELIMITED  BY  SIZE
                    SPA-NAI-EDTAIINYMD      DELIMITED  BY  SIZE
                    "')"                    DELIMITED  BY  SIZE                        
                    INTO    WRK-SQL
                    WITH    POINTER WRK-SQL-PNT
-           END-STRING
-           MOVE    1                   TO  FLG-JYOKEN
+               END-STRING
+               MOVE    1                   TO  FLG-JYOKEN
+           END-IF    
       *
       *    ¿ÇÎÅ²Ê
            IF      SPA-GMN-SRYKA       =   SPACE
