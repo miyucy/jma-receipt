@@ -438,13 +438,13 @@
            MOVE    SPA-SYSYMD(1:6)     TO  SPA-NAI-HYO-SRYYM
            MOVE    SPA-SYSYMDWH(1:6)   TO  SPA-NAI-HYO-SRYYMH
       *
-           MOVE    "1"                 TO  SPA-GMN-SAKKBNL      (1)
+           MOVE    "0"                 TO  SPA-GMN-SAKKBNL      (1)
            MOVE    "該当月すべて"      TO  SPA-GMN-SAKKBNMEIL   (1)
-           MOVE    "2"                 TO  SPA-GMN-SAKKBNL      (2)
+           MOVE    "1"                 TO  SPA-GMN-SAKKBNL      (2)
            MOVE    "１期分のみ"        TO  SPA-GMN-SAKKBNMEIL   (2)
-           MOVE    "3"                 TO  SPA-GMN-SAKKBNL      (3)
+           MOVE    "2"                 TO  SPA-GMN-SAKKBNL      (3)
            MOVE    "２期分のみ"        TO  SPA-GMN-SAKKBNMEIL   (3)
-           MOVE    "4"                 TO  SPA-GMN-SAKKBNL      (4)
+           MOVE    "3"                 TO  SPA-GMN-SAKKBNL      (4)
            MOVE    "３期分のみ"        TO  SPA-GMN-SAKKBNMEIL   (4)
            MOVE    4                   TO  SPA-GMN-SAKKBN-MAX
       *
