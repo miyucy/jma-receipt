@@ -15,26 +15,26 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-000200 IDENTIFICATION          DIVISION.
-000300 PROGRAM-ID.             ORCR0300.
-000400*****************************************************************
-000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : レセプト
-000700*  コンポーネント名  : レセプト電算ファイル作成（ＣＳＶ形式）
-000800*  管理者            : 
-000900*  作成日付    作業者        記述
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCR0300.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : レセプト電算ファイル作成（ＣＳＶ形式）
+      *  管理者            : 
+      *  作成日付    作業者        記述
       *  03/07/18    NACL−藤原    新規作成
-001100*****************************************************************
+      *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03/07/18  主病名編集フラグによって
       *                                     主傷病名コードを変更する
       *****************************************************************
-001200*
-001300 ENVIRONMENT             DIVISION.
-001400 CONFIGURATION           SECTION.
-001500 INPUT-OUTPUT            SECTION.
-001600 FILE-CONTROL.
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION           SECTION.
+       INPUT-OUTPUT            SECTION.
+       FILE-CONTROL.
       *
       *    レセプト明細書  
            SELECT  RECE02-FILE     ASSIGN  RECE02PARA
@@ -2463,11 +2463,11 @@
                    MOVE    1           TO  FLG-END
                    MOVE    HIGH-VALUE  TO KEY-NEW
                NOT AT  END
-                   IF      RECE02-TEISYUTUSAKI
-                                       NOT =   WRK-PARA-TEISYUTUSAKI
-                   OR      RECE02-PTNUM    =   SPACE
-                   OR      RECE02-RECESYUBETU
-                                           =   ZERO                  
+                   IF    ( RECE02-TEISYUTUSAKI
+                                       NOT =   WRK-PARA-TEISYUTUSAKI )
+                   OR    ( RECE02-PTNUM    =   SPACE                 )
+                   OR    ( RECE02-RECESYUBETU
+                                           =   ZERO    OR    8888    )
                            GO  TO  900-RECE02-READ-SEC
                    END-IF                       
                    ADD     1           TO  CNT-IN
