@@ -4557,6 +4557,9 @@
                INSPECT SPA-Q01-BYOMEI(IDXC)
                        REPLACING   ALL "*" BY  "%"
       *
+               INSPECT SPA-Q01-BYOMEI(IDXC)
+                       REPLACING   ALL "¡ö" BY  "%%"
+      *
                MOVE    SPA-NAI-Q01-SRYCD (IDXC)
                                            TO  SPA-Q01-SRYCD (IDXC)
            END-PERFORM
