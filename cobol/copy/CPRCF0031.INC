@@ -28,6 +28,7 @@
       *  01.00.04    MCC-藤原     02.04.19  主病名フラグの位置変更
       *  01.00.05    MCC-藤原     02.06.11  転帰日をＫＥＹに追加
       *  01.00.06    NACL-藤原    03/03/12  補助区分の追加
+      *  01.00.07    NACL-藤原    04/02/01  病名コード２１に変更
       ************************************************************
       *01  RECE031-REC.
            03  RECE031-KEY.
@@ -75,10 +76,25 @@
                05  RECE031-BYOMEICD-4    PIC X(07).
                05  RECE031-BYOMEICD-5    PIC X(07).
                05  RECE031-BYOMEICD-6    PIC X(07).
+               05  RECE031-BYOMEICD-7    PIC X(07).
+               05  RECE031-BYOMEICD-8    PIC X(07).
+               05  RECE031-BYOMEICD-9    PIC X(07).
+               05  RECE031-BYOMEICD-10   PIC X(07).
+               05  RECE031-BYOMEICD-11   PIC X(07).
+               05  RECE031-BYOMEICD-12   PIC X(07).
+               05  RECE031-BYOMEICD-13   PIC X(07).
+               05  RECE031-BYOMEICD-14   PIC X(07).
+               05  RECE031-BYOMEICD-15   PIC X(07).
+               05  RECE031-BYOMEICD-16   PIC X(07).
+               05  RECE031-BYOMEICD-17   PIC X(07).
+               05  RECE031-BYOMEICD-18   PIC X(07).
+               05  RECE031-BYOMEICD-19   PIC X(07).
+               05  RECE031-BYOMEICD-20   PIC X(07).
+               05  RECE031-BYOMEICD-21   PIC X(07).
       *
            03  RECE031-BYOMEICD-R        REDEFINES   RECE031-BYOMEICD-G.
                05  RECE031-BYOMEICD      PIC X(07)
-                                       OCCURS   6.
+                                       OCCURS   21.
       *疑いフラグ
            03  RECE031-UTAGAIFLG         PIC X(01).
       *慢性フラグ

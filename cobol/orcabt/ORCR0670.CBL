@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03.03.03  診療科数１０から２０へ変更
       *  01.00.02    NACL-藤原    03/07/02  主病名編集フラグによる編集の追加
+      *  01.00.03    NACL-藤原    04/02/01  疑いフラグからのコードの編集
+      *                                     病名コード２１に変更
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -157,6 +159,14 @@
            03  WRK-CONS-KYUSEI     PIC X(04)   VALUE   "急性".      
            03  WRK-CONS-KYUSEI-MOJISU
                                    PIC 9(02)   VALUE   4.       
+      *
+       01  WRK-CONS-AREA.
+      *    疑い
+           03  WRK-CONS-BYOMEICD-UTAGAI
+                                   PIC X(07)   VALUE   "ZZZ8002".   
+      *    急性
+           03  WRK-CONS-BYOMEICD-KYUSEI
+                                   PIC X(07)   VALUE   "ZZZ4012".   
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -487,9 +497,21 @@
                STRING  PTBYO-BYOMEI        DELIMITED BY  SPACE
                        WRK-CONS-UTAGAI     DELIMITED BY  SIZE
                        INTO                WRK-BYOMEI
+               END-STRING
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
-               MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG                 
+               IF      PTBYO-BYOMEICD (21)  NOT =   SPACE             
+                   MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
+               ELSE
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       21
+                       IF      PTBYO-BYOMEICD (IDX)    =   SPACE
+                           MOVE    WRK-CONS-BYOMEICD-UTAGAI
+                                               TO  PTBYO-BYOMEICD (IDX)
+                           MOVE    21          TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
            END-IF    
            IF    ( PTBYO-UTAGAIFLG   =   "2" OR  "3" )
            AND   ( WRK-HENFLG2         =   SPACE     )                          
@@ -497,10 +519,23 @@
                STRING  WRK-CONS-KYUSEI     DELIMITED BY  SIZE
                        WRK-BYOMEI          DELIMITED BY  SPACE
                        INTO                WRK-BYOMEIW
+               END-STRING
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
                MOVE    WRK-BYOMEIW         TO  WRK-BYOMEI  
                MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG                 
+               IF      PTBYO-BYOMEICD (21) NOT =   SPACE             
+                   MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
+               ELSE
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       21
+                       IF      PTBYO-BYOMEICD (IDX)    =   SPACE
+                           MOVE    WRK-CONS-BYOMEICD-KYUSEI
+                                               TO  PTBYO-BYOMEICD (IDX)
+                           MOVE    21          TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
            END-IF
       *
            ADD     1                   TO  WRK-RENNUM

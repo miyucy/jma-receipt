@@ -69,6 +69,7 @@
       *                                     山形の地方公費対応（国保）
       *  01.00.24    NACL-藤原    04/01/19  病床数の記載の修正
       *  01.00.25    NACL-藤原    04/01/20  老人減免区分コードの修正
+      *  01.00.26    NACL-藤原    04/02/01  病名コード２１に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1447,7 +1448,7 @@
            ELSE    
                MOVE    ZERO                TO  IDY
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       6
+                       UNTIL   IDX >       21
                        OR      RECE031-BYOMEICD(IDX)   =   SPACE
                    IF      RECE031-BYOMEICD(IDX)(1:3)  NOT =   "ZZZ"
                        IF      WRK-BYOMEICD                =   SPACE

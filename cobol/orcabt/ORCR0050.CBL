@@ -41,6 +41,7 @@
       *                                     診療科数１０から２０へ変更
       *  01.00.10    NACL-藤原    03/07/02  主病名編集フラグによる編集の追加
       *  01.00.11    NACL-藤原    03/09/03  疑いフラグからのコードの編集
+      *  01.00.12    NACL-藤原    04/02/01  病名コード２１に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -512,17 +513,18 @@
                STRING  PTBYO-BYOMEI        DELIMITED BY  SPACE
                        WRK-CONS-UTAGAI     DELIMITED BY  SIZE
                        INTO                WRK-BYOMEI
+               END-STRING
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
-               IF      PTBYO-BYOMEICD (6)  NOT =   SPACE             
+               IF      PTBYO-BYOMEICD (21)  NOT =   SPACE             
                    MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
                ELSE
                    PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       6
+                           UNTIL   IDX >       21
                        IF      PTBYO-BYOMEICD (IDX)    =   SPACE
                            MOVE    WRK-CONS-BYOMEICD-UTAGAI
                                                TO  PTBYO-BYOMEICD (IDX)
-                           MOVE    6           TO  IDX
+                           MOVE    21          TO  IDX
                        END-IF
                    END-PERFORM
                END-IF
@@ -533,18 +535,19 @@
                STRING  WRK-CONS-KYUSEI     DELIMITED BY  SIZE
                        WRK-BYOMEI          DELIMITED BY  SPACE
                        INTO                WRK-BYOMEIW
+               END-STRING
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
                MOVE    WRK-BYOMEIW         TO  WRK-BYOMEI  
-               IF      PTBYO-BYOMEICD (6)  NOT =   SPACE             
+               IF      PTBYO-BYOMEICD (21) NOT =   SPACE             
                    MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
                ELSE
                    PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       6
+                           UNTIL   IDX >       21
                        IF      PTBYO-BYOMEICD (IDX)    =   SPACE
                            MOVE    WRK-CONS-BYOMEICD-KYUSEI
                                                TO  PTBYO-BYOMEICD (IDX)
-                           MOVE    6           TO  IDX
+                           MOVE    21          TO  IDX
                        END-IF
                    END-PERFORM
                END-IF
