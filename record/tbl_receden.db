@@ -106,3 +106,13 @@ path	all2	{
 		;
 	};
 };
+path	del3 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_receden
+                WHERE   HOSPID      =   :HOSPID
+                  AND   PTID        =   :PTID
+		;
+	};
+};
+

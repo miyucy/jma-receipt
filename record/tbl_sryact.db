@@ -313,3 +313,14 @@ path	st_key4 	{
 		;
 	};
 };
+
+path	del3 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_sryact
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+		;
+	};
+};

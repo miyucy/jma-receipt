@@ -690,3 +690,14 @@ path	del1 	{
 		;
 	};
 };
+
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syuday
+			WHERE   HOSPID       =   :HOSPID
+			AND     NYUGAIKBN    =   :NYUGAIKBN
+			AND      PTID        =   :PTID
+		;
+	};
+};

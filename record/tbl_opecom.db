@@ -118,3 +118,13 @@ path	key5		{
 		;
 	};
 };
+
+path	del2	{ 	
+	DBDELETE	{
+		DELETE
+		FROM tbl_opecom
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};

@@ -768,3 +768,14 @@ path	key35 	{
 	};
 };
 
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+		;
+	};
+};
+
