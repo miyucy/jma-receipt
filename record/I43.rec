@@ -1,0 +1,50 @@
+I43	{
+	fixed1	{
+		COMMENT	{
+			value	varchar(400);
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		BUNNUM	{
+			value	number(3);
+		};
+		SRYYM	{
+			value	varchar(6);
+		};
+		SRYKACOMB	{
+			SRYKA	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[41];
+		};
+		MIDASI	{
+		    style   varchar(20); 
+			value	varchar(20);
+		};
+		HKNCOMBICOMB	{
+			HKNCOMBI	{
+				value	varchar(55);
+			};
+			count	int;
+			item	varchar(55)[10];
+		};
+		scrolledwindow1	{
+			RECELIST	{
+				count	int;
+				row int;
+				rowattr int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(6);
+					value2	varchar(10);
+					value3	varchar(50);
+					value4	varchar(3);
+					value5	varchar(50);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};
