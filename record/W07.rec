@@ -113,6 +113,20 @@ W07	{
 					count	int;
 					item	varchar(22)[2];
 				};
+				JIKANTOKUNYU_COMB	{
+					JIKANTOKUNYU	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				GAZOUKSN1_COMB	{
+					GAZOUKSN1	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
 			};
 			TAGNAME1    {
 			    state   int;
