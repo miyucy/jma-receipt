@@ -1005,7 +1005,10 @@
       *    各画面へ
                WHEN    OTHER
                    MOVE    ZERO                TO  SPA-TAGU-FLG
-                   PERFORM 3002-GMNSET-SEC
+      *            患者未設定
+                   IF      SPA-GMN-PTNUM   NOT =   SPACE
+                       PERFORM 3002-GMNSET-SEC
+                   END-IF
            END-EVALUATE
       *
            .
