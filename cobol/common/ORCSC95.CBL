@@ -1337,7 +1337,11 @@
       *    ¿ÇÎÅ²Ê
            IF     (SPA-SRYKA           =   SPACE )  AND
                   (IDX-J1              >   ZERO  )
-               MOVE    SPA-NAI-RRK-SRYKA(IDX-J1)   TO  SPA-SRYKA
+               IF      IDX-J2          >   ZERO
+                   MOVE    SPA-NAI-RRK-SRYKA(IDX-J2)   TO  SPA-SRYKA
+               ELSE
+                   MOVE    SPA-NAI-RRK-SRYKA(IDX-J1)   TO  SPA-SRYKA
+               END-IF
            END-IF
       *    Æ±Æü¿ÇÎÅ²ÊÊÝÂ¸
            MOVE    SPACE               TO  SPA-TAKA-SRYKA-R
