@@ -928,7 +928,8 @@
                IF     (SPA-NYUGAIKBN               =   "1" )  AND
                       (WRK-COM-SRYKBN (IDX)(1:1)   =   "2" )  AND
                       ((WRK-GMN-INPUTCD(IDX)(1:1)  =   "*" )  OR
-                       (WRK-COM-KAIFLG (IDX)       =   "1" ))
+                       (WRK-COM-KAIFLG (IDX)       =   "1" )  OR
+                       (WRK-COM-ZAIEND (IDX)       =   "1" ))
                    PERFORM 3009-NYUINKAISU-SEC
                END-IF
                IF      WRK-COM-ZAIEND (IDX)    =   "1"
