@@ -131,8 +131,8 @@ SRCS = \
        ORCMUP0091.CBL \
        ORCBZ001.CBL \
        ORCBZ002.CBL \
-       ORCBM031.CBL \
-       ORCBM032.CBL \
+       ORCBG008.CBL \
+       ORCBG009.CBL \
 
 EXEC_SRCS =  ORCXSMST1.CBL
 

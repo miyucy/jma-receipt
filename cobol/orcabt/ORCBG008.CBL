@@ -16,14 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCBM032.
+       PROGRAM-ID.             ORCBG008.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 月次処理
-      *  コンポーネント名  : 診療内容参考資料
+      *  コンポーネント名  : 経過表
       *  管理者            :
       *  作成日付    作業者        記述
-      *  03/07/23    NACL−森脇    新規作成
+      *  03/07/17    NACL−森脇    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -58,10 +58,10 @@
        01  TOKEI-REC. 
            03  TOKEI-KEY.
                05  TOKEI-PTID          PIC 9(10).
+               05  TOKEI-SYUBETU       PIC 9(01).
                05  TOKEI-YKZKBN        PIC 9(01).
                05  TOKEI-SRYCD         PIC X(09).
            03  TOKEI-NAME              PIC X(48).
-           03  TOKEI-TANINAME          PIC X(04).
            03  TOKEI-CNT-G.
                05  TOKEI-CNT           PIC 9(05)V9(03) OCCURS  31.
       *    クリア用ファイル（レセプト種別）
@@ -69,10 +69,10 @@
        01  TOKEIX-REC. 
            03  TOKEIX-KEY.
                05  TOKEIX-PTID         PIC 9(10).
-               05  TOKEIX-YKZKBN        PIC 9(01).
+               05  TOKEIX-SYUBETU      PIC 9(01).
+               05  TOKEIX-YKZKBN       PIC 9(01).
                05  TOKEIX-SRYCD        PIC X(09).
            03  TOKEIX-NAME             PIC X(48).
-           03  TOKEIX-TANINAME         PIC X(04).
            03  TOKEIX-CNT-G.
                05  TOKEIX-CNT          PIC 9(05)V9(03) OCCURS  31.
       *    エラーファイル
@@ -90,7 +90,7 @@
            03  FILLER                  PIC X(04)   VALUE   ".dat".
       *
       *    印刷用領域
-           COPY    "HCM36.INC".
+           COPY    "HCM35.INC".
       *
       *    スパ領域
        01  STS-AREA.
@@ -142,6 +142,7 @@
       *    キー領域
        01  KEY-AREA.
            03  KEY-PTID                PIC 9(10).
+           03  KEY-SYUBETU             PIC X(01).
       *
       *    作業領域
        01  WRK-AREA.
@@ -192,9 +193,6 @@
       *
       *    医療機関情報情報
            COPY    "CPSK1001.INC".
-      *
-      *    医療機関情報−所在地、連絡先 
-           COPY    "CPSK1002.INC".
       *
       *    患者番号構成管理
            COPY    "CPSK1009.INC".
@@ -332,9 +330,8 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    PARA-JOBID          TO  JOB-JOBID
            MOVE    PARA-SHELLID        TO  JOB-SHELLID
-           MOVE    "ORCBM032"          TO  JOB-PGID
-           MOVE    "診療内容参考資料表"
-                                   TO  JOB-SHELLMSG
+           MOVE    "ORCBG008"          TO  JOB-PGID
+           MOVE    "経過表"            TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -379,22 +376,6 @@
            PERFORM 800-SYSKANRI-READ-SEC
            IF          FLG-SYSKANRI    =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
-           ELSE
-               MOVE    "医療機関情報が取得できませんでした"
-                                           TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               MOVE    1                   TO  FLG-END
-               GO  TO  110-PARA-HENSYU-EXT
-           END-IF 
-      *
-      *    医療機関情報−所在地、連絡先
-           INITIALIZE                  SYS-1002-REC
-           MOVE    "1002"              TO  SYS-1002-KANRICD
-           MOVE    "*"                 TO  SYS-1002-KBNCD
-           MOVE    SYS-1002-REC        TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF          FLG-SYSKANRI    =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1002-REC
            ELSE
                MOVE    "医療機関情報が取得できませんでした"
                                            TO  WRK-RECEERR
@@ -499,6 +480,7 @@
       *
            PERFORM UNTIL   FLG-TOKEI       =   1
                MOVE    TOKEI-PTID          TO  KEY-PTID
+               MOVE    TOKEI-SYUBETU       TO  KEY-SYUBETU
       *        帳票編集<見出し>処理
                PERFORM 310-HEAD-HEN-SEC
       *        帳票編集<明細>処理
@@ -705,6 +687,7 @@
       *    統計データ検索
            INITIALIZE                  TOKEI-REC
            MOVE    ACCT-PTID           TO  TOKEI-PTID
+           MOVE    WRK-SYUBETU         TO  TOKEI-SYUBETU
            MOVE    WRK-YKZKBN          TO  TOKEI-YKZKBN
            MOVE    SRY-SRYCD(IDX)      TO  TOKEI-SRYCD
            PERFORM 900-TOKEI-READ-SEC
@@ -712,10 +695,10 @@
            IF          FLG-TOKEI       =   1
                INITIALIZE                  TOKEI-REC
                MOVE    ACCT-PTID           TO  TOKEI-PTID
+               MOVE    WRK-SYUBETU         TO  TOKEI-SYUBETU
                MOVE    WRK-YKZKBN          TO  TOKEI-YKZKBN
                MOVE    SRY-SRYCD(IDX)      TO  TOKEI-SRYCD
                MOVE    TNS-NAME            TO  TOKEI-NAME
-               MOVE    TNS-TANINAME        TO  TOKEI-TANINAME
       *
                IF      WRK-SYUBETU         =   "1"
                    COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
@@ -774,17 +757,31 @@
            MOVE    ZERO                TO  CNT-LINE
            ADD     1                   TO  CNT-PAGE
       *
-           INITIALIZE                  HCM36
-           MOVE    SPACE               TO  HCM36
+           INITIALIZE                  HCM35
+           MOVE    SPACE               TO  HCM35
       *
-           MOVE    WRK-DATAYM          TO  HCM36-SHINRYOYM
+           MOVE    WRK-DATAYM          TO  HCM35-SHINRYOYM
       *
-           MOVE    SYS-1002-ADRS       TO  HCM36-HOSPADRS
-           MOVE    SYS-1001-HOSPNAME   TO  HCM36-HOSPNAME
+           EVALUATE    TOKEI-SYUBETU
+      *    投薬
+           WHEN    "1"
+               MOVE    "○"            TO  HCM35-KBN(1)
+      *    注射
+           WHEN    "2"
+               MOVE    "○"            TO  HCM35-KBN(2)
+      *    処置
+           WHEN    "3"
+               MOVE    "○"            TO  HCM35-KBN(3)
+      *    手術
+           WHEN    "4"
+               MOVE    "○"            TO  HCM35-KBN(4)
+           END-EVALUATE
+      *
+           MOVE    SYS-1001-HOSPCD     TO  HCM35-HOSPCD
       *
            PERFORM 900-PTINF-READ-SEC
       *
-           MOVE    PTINF-NAME          TO  HCM36-PTNAME
+           MOVE    PTINF-NAME          TO  HCM35-PTNAME
       *
            .
        310-HEAD-HEN-EXT.
@@ -795,14 +792,14 @@
       *****************************************************************
        320-BODY-HEN-SEC            SECTION.
       *
-           PERFORM UNTIL ( CNT-LINE        >   21 )
+           PERFORM UNTIL ( CNT-LINE        >   31 )
                    OR    ( FLG-TOKEI       =   1 )
                    OR    ( KEY-PTID    NOT =   TOKEI-PTID )
+                   OR    ( KEY-SYUBETU NOT =   TOKEI-SYUBETU )
       *
                ADD     1                   TO  CNT-LINE
       *
-               MOVE    TOKEI-NAME          TO  HCM36-USENAME(CNT-LINE)
-               MOVE    TOKEI-TANINAME      TO  HCM36-USETANI(CNT-LINE)
+               MOVE    TOKEI-NAME          TO  HCM35-USENAME(CNT-LINE)
       *
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       31
@@ -810,8 +807,8 @@
                    MOVE    TOKEI-CNT(IDX)      TO  WRK-SURYO
                    PERFORM 400-ZHEN-SURYO-SET-SEC
                    MOVE    WRK-HENSURYO
-                                       TO  HCM36-USERYO(CNT-LINE IDX)
-                   MOVE    WRK-COM     TO  HCM36-USETEN(CNT-LINE IDX)
+                                       TO  HCM35-USERYO(CNT-LINE IDX)
+                   MOVE    WRK-COM     TO  HCM35-USETEN(CNT-LINE IDX)
                END-PERFORM
       *
       *        統計ファイル読み込み
@@ -843,9 +840,9 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE    "HCM36.red"         TO  SPRT-PRTID
-           MOVE    "診療内容参考資料"  TO  SPRT-TITLE
-           MOVE    HCM36               TO  SPRT-PRTDATA
+           MOVE    "HCM35.red"         TO  SPRT-PRTID
+           MOVE    "経過表"            TO  SPRT-TITLE
+           MOVE    HCM35               TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
@@ -906,7 +903,7 @@
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-           DISPLAY "*** ORCBM032 END ***"
+           DISPLAY "*** ORCBG008 END ***"
       *     
       *    ステップ管理終了処理
            MOVE    "STE"               TO  SJOBKANRI-MODE
@@ -1027,8 +1024,7 @@
            .
        900-ACCT-DBFETCH-EXT.
            EXIT.
-      *101
-
+      *
       *****************************************************************
       *    診療会計マスタクローズ処理
       *****************************************************************
@@ -1150,7 +1146,6 @@
             .
        900-PTINF-READ-EXT.
            EXIT.
-      *
       ******************************************************************
       *    点数マスター読込
       *****************************************************************
@@ -1200,11 +1195,13 @@
        900-SEIKYU-SELECT-SEC       SECTION.
       *
            INITIALIZE                  RECE10-REC
+           MOVE    PARA-HOSPID         TO  RECE10-HOSPID
            MOVE    PARA-DENPPRTYM      TO  RECE10-SRYYM
+           MOVE    "1"                 TO  RECE10-NYUGAIKBN
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SEIKYU-ALL2"       TO  ORC-DBPATH
+           MOVE    "SEIKYU-KEY19"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1225,7 +1222,7 @@
        900-SEIKYU-FETCH-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    "SEIKYU-ALL2"       TO  ORC-DBPATH
+           MOVE    "SEIKYU-KEY19"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1246,7 +1243,7 @@
        900-SEIKYU-CLOSE-SEC        SECTION.
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SEIKYU-ALL2"       TO  ORC-DBPATH
+           MOVE    "SEIKYU-KEY19"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
