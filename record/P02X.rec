@@ -13,8 +13,8 @@ P02X	{
 					value1	varchar(22);
 					value2	varchar(22);
 					value3	varchar(22);
-				}	[10];
-				select	bool[10];
+				}	[20];
+				select	bool[20];
 			};
 		};
 		SCODE_COMBO	{

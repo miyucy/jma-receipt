@@ -158,7 +158,7 @@
       *
                05  SPA-U02X-GMN-SEL                    PIC 9(03).
                05  SPA-U02X-GMN-ADRLST.
-                   07  SPA-U02X-GMN-ADR-TBL        OCCURS  10.
+                   07  SPA-U02X-GMN-ADR-TBL        OCCURS  20.
                        09  SPA-U02X-GMN-SELNOL     PIC 9(03).
                        09  SPA-U02X-GMN-ADRL       PIC X(22).
                        09  SPA-U02X-GMN-PORTL      PIC X(22).

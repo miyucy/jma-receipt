@@ -7,12 +7,12 @@
                   05  U02X-LIST-COUNT  PIC S9(9)   BINARY.
                   05  U02X-LIST-ROW    PIC S9(9)   BINARY.
                   05  U02X-LIST-ROWATTR  PIC S9(9)   BINARY.
-                  05  U02X-ITEM       OCCURS  10 TIMES.
+                  05  U02X-ITEM       OCCURS  20 TIMES.
                     06  U02X-NO     PIC X(3).
                     06  U02X-ADR    PIC X(22).
                     06  U02X-PORT   PIC X(22).
                     06  U02X-MEMO   PIC X(22).
-                  05  U02X-LIST-SELECT PIC X       OCCURS  10 TIMES.
+                  05  U02X-LIST-SELECT PIC X       OCCURS  20 TIMES.
               03  U02X-SCODE-COMBO.
                 04  U02X-SCODE.
                   05  U02X-VALUE  PIC X(20).

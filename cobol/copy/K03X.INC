@@ -24,12 +24,12 @@
                   05  K03X-LIST-COUNT   PIC S9(9)   BINARY.
                   05  K03X-ROW     PIC S9(9)   BINARY.
                   05  K03X-ROWATTR PIC S9(9)   BINARY.
-                  05  K03X-ITEM        OCCURS  10 TIMES.
+                  05  K03X-ITEM        OCCURS  20 TIMES.
                     06  K03X-NO     PIC X(3).
                     06  K03X-ADR    PIC X(22).
                     06  K03X-PORT    PIC X(22).
                     06  K03X-MEMO   PIC X(22).
-                  05  K03X-LIST-SELECT  PIC X       OCCURS  10 TIMES.
+                  05  K03X-LIST-SELECT  PIC X       OCCURS  20 TIMES.
               03  K03X-SCODE-COMBO.
                 04  K03X-SCODE.
                   05  K03X-VALUE   PIC X(20).

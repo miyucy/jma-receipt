@@ -223,7 +223,7 @@
            END-IF
            MOVE    ZERO                TO  SPA-P02X-GMN-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   10   )  OR
+                   UNTIL       (IDX            >   20   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-9001-REC
                MOVE    SYS-9001-KBNCD (1:2)  TO  WRK-GMN-SELNUM     
