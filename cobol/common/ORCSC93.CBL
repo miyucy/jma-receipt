@@ -36,6 +36,7 @@
       * 01.00.07     NACL-多々納  02/11/22  画像診断の点滴追加（731)
       * 01.00.08     NACL-多々納  02/12/17  在宅指導料の追加（143)
       * 01.00.09     NACL-多々納  02/12/20  自費修正時の修正
+      * 01.00.10     NACL-多々納  03/01/30  入院時検査まとめをやめる
       *****************************************************************
       *
       *
@@ -200,10 +201,16 @@
                GO      TO      100-ZAI-SET-EXT
            END-IF
       *    検査の包括があった時、まとめる
-           IF      FLG-KENSA-ARI       =   1
-               PERFORM 200-KENSA-SORT-SEC
-      *        剤分離
-               PERFORM 1002-ZAIBUNNRI-SEC
+      *    入院で診療行為入力はしない
+           IF     (SPA-NYUGAIKBN       =   "1" )  AND
+                  (LNK-SC93-PG         =   "K02N")
+               CONTINUE
+           ELSE
+              IF      FLG-KENSA-ARI       =   1
+                   PERFORM 200-KENSA-SORT-SEC
+      *            剤分離
+                   PERFORM 1002-ZAIBUNNRI-SEC
+               END-IF
            END-IF
       *
       *

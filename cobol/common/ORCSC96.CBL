@@ -402,6 +402,11 @@
                WHEN    "0094"
                    MOVE    "既にこの労災では算定済です。算定できません"
                                        TO  SPA-ERRMSG
+               WHEN    "0095"
+                   MOVE    "個別療法と集団療法の混在している日が"
+                                       TO  SPA-ERRMSG
+                   MOVE    "あります。"
+                                       TO  SPA-ERRMSG(37:)
                WHEN    "0110"
                    MOVE    "他保険にて診察料算定済のコメントは"
                                        TO  SPA-ERRMSG

@@ -1502,6 +1502,10 @@
        200-ALL-SYORI-SEC                SECTION.
       *
       *    同一検査をエラーとする
+           IF      SPA-NYUGAIKBN       =   "1"
+               CONTINUE
+           ELSE
+      *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
@@ -1525,6 +1529,7 @@
                END-IF
            END-PERFORM
       *
+           END-IF
       *
            MOVE    ZERO                TO  FLG-JIKASAN
            MOVE    ZERO                TO  IDX-JIKAN
@@ -1637,18 +1642,19 @@
                    PERFORM 20081-SANTEI-TBLCHK-SEC
                END-IF
            END-PERFORM
-      *    逓減加算自動追加
-           IF      WRK-SANTEI-CNT      >   ZERO
-               MOVE    IDX-Z               TO  IDX-TEIGEN
-           END-IF
       *
       *    入院の時、複数日で逓減なしの時エラー
            IF     (SPA-NYUGAIKBN       =   "1"  )  AND
-                  (WRK-SANTEI-CNT      =   ZERO )
+                  (WRK-SANTEI-CNT      >=  WRK-COM-NYU-KAI (IDX-Z) )
                IF      WRK-COM-NYU-KAI (IDX-Z)     >   1
                    MOVE    "9021"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
                END-IF
+           END-IF
+      *
+      *    逓減加算自動追加
+           IF      WRK-SANTEI-CNT      >   ZERO
+               MOVE    IDX-Z               TO  IDX-TEIGEN
            END-IF
            .
       *
@@ -1683,7 +1689,12 @@
                               (WRK-SANTEI-CNT  >   ZERO   )
                IF      WRK-SRYCD           =   WRK-COM-INPUTCD
                                                          (IDX2)
-                   ADD     1               TO  WRK-SANTEI-CNT
+                   IF      WRK-COM-NYU-KAI (IDX-Z)     >   1
+                       ADD     WRK-COM-NYU-KAI (IDX-Z)
+                                               TO  WRK-SANTEI-CNT
+                   ELSE
+                       ADD     1               TO  WRK-SANTEI-CNT
+                   END-IF
                END-IF
            END-PERFORM
            .
