@@ -49,6 +49,8 @@
       *                                     在宅寝たきり処置チェック変更
       *  02.00.12    NACL-多々納  04/11/30  きざみ値上限判定修正他
       *                                     コメントコード判定追加
+      *  02.00.13    NACL-多々納  05/01/13  入院の消炎鎮痛処理と
+      *                                     慢性疼痛管理料チェック追加
       *****************************************************************
       *
       *
@@ -1223,6 +1225,12 @@
                   (CHK-CD (IDX-C)      =   "114005810" ))
                PERFORM 20054-NETAKIRI-CHK-SEC
            END-IF
+      *    慢性疼痛疾患管理料の入院チェック
+           IF     (WRK-SANTEI-CNT      >   ZERO    )  AND
+                 ((LNK-SC92-SRYCD      =   "113006510" ) OR
+                  (CHK-CD (IDX-C)      =   "113006510" ))
+               PERFORM 20055-NYUIN-MANSEI-CHK-SEC
+           END-IF
       *
       *    算定歴の回数をチェックする
            IF      WRK-SANTEI-CNT      >   ZERO
@@ -1420,6 +1428,60 @@
            EXIT.
       *
       *****************************************************************
+      *     慢性疼痛疾患管理料の入院チェック処理
+      *****************************************************************
+       20055-NYUIN-MANSEI-CHK-SEC        SECTION.
+      *    理学療法４、消炎鎮痛等処置の時チェック
+           IF     (LNK-SC92-SRYCD      =   "180707410"
+                                       OR  "180022710"
+                                       OR  "180022810"
+                                       OR  "180707510"
+                                       OR  "140029610"
+                                       OR  "140040310"
+                                       OR  "140002210"
+                                       OR  "140002310"
+      *            介達牽引
+                                       OR  "140048010")  OR
+                  (CHK-CD (IDX-C)      =   "180707410"
+                                       OR  "180022710"
+                                       OR  "180022810"
+                                       OR  "180707510"
+                                       OR  "140029610"
+                                       OR  "140040310"
+                                       OR  "140002210"
+                                       OR  "140002310" 
+      *            介達牽引
+                                       OR  "140048010") 
+               CONTINUE
+           ELSE
+               GO      TO      20055-NYUIN-MANSEI-CHK-EXT
+           END-IF
+      *
+      *    入院中の場合対象外
+           IF     (SPA-NYUGAIKBN       =   "1"     )  AND
+                  (CHK-CD (IDX-C)      =   "113006510" )
+               MOVE    ZERO                TO  WRK-SANTEI-CNT
+           ELSE
+      *
+      *    外来で当月入院が有り消炎鎮痛の場合のみ対象とする
+               IF     (CHK-CD (IDX-C)      =   "180707410"
+                                           OR  "180022710"
+                                           OR  "180022810"
+                                           OR  "180707510"
+                                           OR  "140029610"
+                                           OR  "140040310"
+                                           OR  "140002210"
+                                           OR  "140002310" 
+      *            介達牽引
+                                           OR  "140048010") 
+                   PERFORM 200541-NYUIN-CHK-SEC
+               END-IF
+           END-IF
+           .
+       20055-NYUIN-MANSEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *     在宅寝たきり患者処置指導管理料のチェック処理
       *****************************************************************
        20054-NETAKIRI-CHK-SEC        SECTION.
@@ -1452,12 +1514,20 @@
                                        OR  "140040310"
                                        OR  "140002210"
                                        OR  "140002310")
-               CONTINUE
+               PERFORM 200541-NYUIN-CHK-SEC
            ELSE
                GO      TO      20054-NETAKIRI-CHK-EXT
            END-IF
       *
+           .
+       20054-NETAKIRI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    入院中の場合、算定なしとする
+      *****************************************************************
+       200541-NYUIN-CHK-SEC                SECTION.
+      *
       *    入院履歴判定
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
@@ -1516,6 +1586,7 @@
                                       (WRK-SANTEI-CNT  =   ZERO )
                        COMPUTE WRK-SANTEI-CNT  =   WRK-SANTEI-CNT
                                            -   SANTEI-DAY (IDX-Y3)
+                       MOVE    ZERO        TO  SANTEI-DAY (IDX-Y3)
                    END-PERFORM
                END-IF
       *
@@ -1530,8 +1601,18 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
       *
+      *    初回算定日の変更
+           IF      WRK-SANTEI-CNT      >   ZERO
+               PERFORM VARYING     IDX-Y3  FROM    1   BY   1
+                       UNTIL       IDX-Y3  >   31
+                   IF      SANTEI-DAY (IDX-Y3)     >   ZERO
+                       MOVE    IDX-Y3          TO  SANTEI-MSANTEID
+                       MOVE    31              TO  IDX-Y3
+                   END-IF
+               END-PERFORM
+           END-IF
            .
-       20054-NETAKIRI-CHK-EXT.
+       200541-NYUIN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
