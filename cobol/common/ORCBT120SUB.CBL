@@ -52,6 +52,7 @@
            03  FLG-SYUNOU                  PIC 9(01).
            03  FLG-PTHKNINF                PIC 9(01).
            03  FLG-PTRSIINF                PIC 9(01).
+           03  FLG-NYUIN-HIT1              PIC 9(01).
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
@@ -253,6 +254,7 @@
        200-MAIN-SEC            SECTION.
       *
       *∆˛±°≤ °ø∆˛¬‡±°∂Ë ¨°ø…¬≈Ô»÷πÊ°ø…¬ºº»÷πÊ°ø¬‡±°ªˆÕ≥°ø•…•Ø•ø°º§ŒºË∆¿
+           MOVE    ZERO                     TO  FLG-NYUIN-HIT1
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    LNK-ORCBT120SUB-HOSPID   TO  PTNYUINRRK-HOSPID
            MOVE    LNK-ORCBT120SUB-PTID     TO  PTNYUINRRK-PTID
@@ -261,7 +263,8 @@
            IF      FLG-PTNYUINRRK            =   ZERO
                MOVE     "PTNYUINRRK-KEY3"   TO  ORC-DBPATH
                PERFORM   910-PTNYUINRRK-READ-SEC
-               PERFORM   UNTIL   (FLG-PTNYUINRRK    =   1)
+               PERFORM   UNTIL   (FLG-PTNYUINRRK    =   1)  OR
+                                 (FLG-NYUIN-HIT1    =   1)
                    IF   PTNYUINRRK-JTIKBN    =    "5" OR "6"
                        CONTINUE
                    ELSE
@@ -269,6 +272,7 @@
                                LNK-ORCBT120SUB-SANTEIYMD)   AND
                             (PTNYUINRRK-TENSTUYMD >=
                                LNK-ORCBT120SUB-SANTEIYMD)
+                           MOVE    1      TO   FLG-NYUIN-HIT1
       *                    ∆˛±°≤ 
                            MOVE    PTNYUINRRK-NYUINKA
                                          TO  LNK-ORCBT120SUB-NYUINKA
@@ -471,11 +475,15 @@
            MOVE    LNK-ORCBT120SUB-PTID     TO  SYU-PTID
            MOVE    "SYUNOU-KEY2"            TO  ORC-DBPATH
            PERFORM 910-SYUNOU-SELECT-SEC
+           DISPLAY  "SYUNOU-SEL RC= " FLG-SYUNOU
            IF      FLG-SYUNOU                =  ZERO
                MOVE     "SYUNOU-KEY2"       TO  ORC-DBPATH
                PERFORM   910-SYUNOU-READ-SEC
+               DISPLAY  "SYUNOU-FET RC= " FLG-SYUNOU
                PERFORM   UNTIL   (FLG-SYUNOU    =   1)   OR
                                  (SYU-IDX       >=  10)
+                   DISPLAY "SYU-DENPJTIKBN = " SYU-DENPJTIKBN
+                   DISPLAY "SYU-DENPPRTYMD = " SYU-DENPPRTYMD
                    IF   SYU-DENPJTIKBN    =    "3"
                        CONTINUE
                    ELSE
@@ -485,6 +493,7 @@
                    END-IF
                    MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
                    PERFORM 910-SYUNOU-READ-SEC
+                   DISPLAY  "SYUNOU-FET RC= " FLG-SYUNOU
                END-PERFORM
            END-IF
       *    º˝«º•Ø•Ì°º•∫
@@ -570,6 +579,7 @@
       *****************************************************************
        210-SYUNOU-SET-SEC         SECTION.
       *
+           DISPLAY  "210-SYUNOU-SET-SEC"
            ADD    1     TO   SYU-IDX
       *    ≈¡…º»÷πÊ
            MOVE    SYU-DENPNUM         TO  LNK-ORCBT120SUB-DENPNUM
