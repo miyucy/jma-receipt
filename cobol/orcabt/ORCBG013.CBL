@@ -427,35 +427,21 @@
       *
            PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
       *
-      *        患者情報読み込み
+      *        患者番号取得
                MOVE    SYU-PTID    TO  WRK-PTID
-               PERFORM 900-PTINF-KEY-SEL-SEC
-               IF    ( FLG-PTINF   =   ZERO )
-                   MOVE    MCPDATA-REC TO  PTINF-REC
+               PERFORM 900-PTNUM-KEY-SEL-SEC
+               IF    ( FLG-PTNUM   =   ZERO )
+                   MOVE    MCPDATA-REC TO  PTNUM-REC
                ELSE
-                   PERFORM 21011-PTINF-ERR-HEN-SEC
+                   PERFORM 21011-PTNUM-ERR-HEN-SEC
                    GO  TO  2101-BG01301-OUT-EXT
                END-IF
       *
-      *        テスト患者は対象外とする
-               IF    ( PTINF-TSTPTNUMKBN   NOT =   "1" )
+               INITIALIZE              BG01301-REC
+               MOVE    PTNUM-PTNUM     TO  BG01301-PTNUM
+               MOVE    SYU-PTID        TO  BG01301-PTID
       *
-      *            患者番号取得
-                   MOVE    SYU-PTID    TO  WRK-PTID
-                   PERFORM 900-PTNUM-KEY-SEL-SEC
-                   IF    ( FLG-PTNUM   =   ZERO )
-                       MOVE    MCPDATA-REC TO  PTNUM-REC
-                   ELSE
-                       PERFORM 21011-PTNUM-ERR-HEN-SEC
-                       GO  TO  2101-BG01301-OUT-EXT
-                   END-IF
-      *
-                   INITIALIZE              BG01301-REC
-                   MOVE    PTNUM-PTNUM     TO  BG01301-PTNUM
-                   MOVE    SYU-PTID        TO  BG01301-PTID
-      *
-                   WRITE   BG01301-REC
-               END-IF
+               WRITE   BG01301-REC
       *
                PERFORM 900-SYUNOU-KEY36-FET-SEC
       *

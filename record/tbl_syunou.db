@@ -869,12 +869,13 @@ path	key36 	{
 	DBSELECT	{
 		DECLARE tbl_syunou_key36_csr CURSOR FOR
 		SELECT PTID
-		FROM tbl_syunou
-			WHERE   HOSPID    =   :HOSPID
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   SRYYMD      LIKE :SRYYMD
-			AND   CREATEKBN   <>  '3'
-			AND   DENPJTIKBN  <> '3'
+		FROM tbl_syunou a join tbl_ptinf b using (hospid,ptid)
+			WHERE   A.HOSPID    =   :HOSPID
+			AND   a.NYUGAIKBN   =   :NYUGAIKBN
+			AND   a.SRYYMD      LIKE :SRYYMD
+			AND   a.CREATEKBN   <>  '3'
+			AND   a.DENPJTIKBN  <> '3'
+			AND   b.TSTPTNUMKBN <> '1'
 			GROUP BY PTID
 		;
 	};
