@@ -691,9 +691,7 @@
                MOVE    SYSKANRI-REC
                                        TO  SYS-5111-REC
       *
-               IF    ( SYS-5111-KBNCD      =   "20"
-                   OR                          "21"
-                   OR                          "22"
+               IF    ( SYS-5111-KBNCD      >=  "20"
                                                     )
                    CONTINUE
                ELSE

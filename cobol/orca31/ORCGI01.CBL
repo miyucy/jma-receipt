@@ -53,6 +53,8 @@
       *  01.00.18    NACL-ÂÀÅÄ    03.05.19  Âà±¡»þ¿ÇÎÅ¹Ô°Ù¥Á¥§¥Ã¥¯ÄÉ²Ã
       *  01.00.19    NACL-ÂÀÅÄ    03.06.05  Æþ±¡Îò¤Î½¤Àµ¤òÆüÉÕ¹àÌÜ°Ê³°¤Ï
       *                                     ¤¤¤Ä¤Ç¤âÊÑ¹¹²Ä¤È¤¹¤ë
+      *  01.00.20    NACL-ÂÀÅÄ    03.06.24  ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ¡Ê£³£°Æü
+      *                                     °ÊÆâºÆÆþ±¡¡Ë¤Î¹ÍÎ¸¤òÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3834,14 +3836,33 @@
                                        TO  WRK-TOKNYUIN-CD
                        PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
                    END-IF
+      *
+      *            ÉÂ¼¼¤ÎÆÃÄêÆþ±¡ÎÁ¤¬¡¢¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ¤Î¾ì¹ç¡¢
+      *            ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ¡Ê£³£°Æü°ÊÆâºÆÆþ±¡¡Ë¤â¥³¥ó¥Ü¤Ø
+      *            ÄÉ²Ã¤¹¤ë
+                   IF    ( SYS-5002-BRM-TOKTEI-NYUIN   =   "02" )
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    "23"        TO  WRK-KBNCD
+                       PERFORM 4102-SYSKANRI-SEL-SEC
+                       IF    ( FLG-SYSKANRI    =   ZERO )
+                           MOVE    MCPDATA-REC
+                                       TO  SYS-5111-REC
+                           MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
+                                       TO  WRK-TOKNYUIN-NM
+                           MOVE    "3"     TO  WRK-TOKNYUIN-KBN
+                           MOVE    SYS-5111-KBNCD
+                                       TO  WRK-TOKNYUIN-CD
+                           PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
+                       END-IF
+      *
+                   END-IF
+      *
                END-IF
            END-IF
       *
       *    Ï·¿Í¤Î¾ì¹ç¡¢Ï·¿Í°ìÈÌÉÂÅïÆÃÄêÆþ±¡´ðËÜÎÁ¤ò¥³¥ó¥Ü¤ËÀßÄê
            MOVE    WRK-KJNYMD  TO  WRK-AGECHK-SRYYMD
            PERFORM 4801-RJN-TAISYO-CHK-SEC
-           DISPLAY "WRK-AGECHK-SRYYMD = " WRK-AGECHK-SRYYMD
-           DISPLAY "FLG-RJN = " FLG-RJN
            IF    ( FLG-RJN         =   1 )
                MOVE    "5111"      TO  WRK-KANRICD
                MOVE    "22"        TO  WRK-KBNCD
@@ -3946,8 +3967,7 @@
                IF    ( SPA-GMN-I01-TOKNYUIN-ITM2 (IDX10) (1 : 1)
                                    =   "1" OR  "2" OR  "3" )
                    IF    ( SPA-GMN-I01-TOKNYUIN-ITM2 (IDX10)
-                                   =   "321" 
-                     OR                "322" )
+                                   >=  "321" )
                        CONTINUE
                    ELSE
                        MOVE    SPA-GMN-I01-TOKNYUIN-ITM (IDX10)
