@@ -695,6 +695,7 @@
                    MOVE "/tmp/"
                                TO  SPA-NAI-ENV
            END-IF
+           MOVE "/tmp/"                TO  SPA-NAI-ENV
       *     
            PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL       IDY     >       10
