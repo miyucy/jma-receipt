@@ -278,5 +278,12 @@ W24	{
 				};
 			};
 		};
+		CMB_REKI_DISPKBN	{
+			REKI_DISPKBN	{
+				value	varchar(24);
+			};
+			count	int;
+			item	varchar(24)[05];
+		};
 	};
 };

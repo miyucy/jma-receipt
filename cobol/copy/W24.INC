@@ -85,3 +85,9 @@
                                                OCCURS 10.
                   06  W24-SRYACT               PIC X(30)
                                                OCCURS 10.
+              04  W24-CMB-REKI-DISPKBN.
+                05  W24-REKI-DISPKBN           PIC X(24).
+                05  W24-REKI-DISPKBN-CNT       PIC S9(9)
+                                               BINARY.
+                05  W24-REKI-DISPKBN-ITM       PIC X(24)
+                                               OCCURS  5.

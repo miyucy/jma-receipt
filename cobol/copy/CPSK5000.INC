@@ -57,8 +57,13 @@
       *入院会計テーブル表示情報
                05  SYS-5000-GENSAN-INF     OCCURS  10.
                    07  SYS-5000-DSPCD      PIC  X(09).
-      *予備
-           03                              PIC  X(92).
+      *予備（１）
+               05                          PIC  X(60).
+      *入院歴表示区分
+               05  SYS-5000-REKI-DISPKBN
+                                           PIC  X(01).
+      *予備（２）
+               05                          PIC  X(31).
       *端末ＩＤ
            03  SYS-5000-TERMID             PIC  X(16).
       *オペーレータＩＤ

@@ -45,6 +45,7 @@ SCREEN_screen = \
 	I04.glade \
 	I0ERR.glade \
 	I0ID1.glade \
+	I0ID2.glade \
 	I20.glade \
 	I21.glade \
 	I2ERR.glade \

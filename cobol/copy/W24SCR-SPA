@@ -101,6 +101,10 @@
                                                        OCCURS 10.
                    13  SPA-GMN-W24-SRYACT              PIC X(30)
                                                        OCCURS 10.
+                 11  SPA-GMN-W24-REKI-DISPKBN.
+                   13  SPA-GMN-W24-REKI-DISPKBN-CD     PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-REKI-DISPKBN-NM     PIC X(22).
       *        ¥³¥ó¥Ü¹àÌÜÎÎ°è
                09  SPA-GMN-W24-CMB-DAT-AREA.
       *          Æþ±¡»þ¿©»öÎÅÍÜ
@@ -168,12 +172,19 @@
                                            INDEXED BY  CMB-IDX07.
       *          ÃÏ°è²Ã»»
                  11  SPA-GMN-W24-CMB-CHIIKIKSN.
-                   13  SPA-GMN-W24-CHIIKIKSN-CNT
-                                                       PIC S9(9)
+                   13  SPA-GMN-W24-CHIIKIKSN-CNT       PIC S9(9)
                                                        BINARY.
                    13  SPA-GMN-W24-CHIIKIKSN-ITM-OCC   OCCURS  5
                                            INDEXED BY  CMB-IDX08.
                         15  SPA-GMN-W24-CHIIKIKSN-ITM  PIC X(28).
+      *
+      *          Æþ±¡ÎòÉ½¼¨
+                 11  SPA-GMN-W24-CMB-REKI-DISPKBN.
+                   13  SPA-GMN-W24-REKI-DISPKBN-CNT    PIC S9(9)
+                                                       BINARY.
+                   13  SPA-GMN-W24-REKI-DISPKBN-ITM    PIC X(24)
+                                                       OCCURS  5
+                                           INDEXED BY  CMB-IDX09.
       *    ¿ÇÎÅ¹Ô°Ù¸¡º÷²èÌÌ£Ó£Ð£Á
            03  SPA-W25-MOTOPG                    PIC X(08).
            03  SPA-W25GMN-AREA.

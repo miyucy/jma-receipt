@@ -1,0 +1,22 @@
+I0ID2	{
+	fixed1	{
+		ID2CODE	{
+			value	varchar(10);
+		};
+		ID2MSG	{
+			value	varchar(70);
+		};
+		IDOYMD	{
+			value	varchar(10);
+		};
+		NYUINKA	{
+			value	varchar(24);
+		};
+		BRM	{
+			value	varchar(6);
+		};
+		BTU	{
+			value	varchar(20);
+		};
+	};
+};

@@ -43,6 +43,7 @@ RECORD_files = \
 	I04.rec \
 	I0ERR.rec \
 	I0ID1.rec \
+	I0ID2.rec \
 	I20.rec \
 	I21.rec \
 	I2ERR.rec \

@@ -25,6 +25,12 @@
          03  SPA-I0ID1-AREA. 
            05  SPA-I0ID1-FLG                   PIC X(02).
       *
+      *    ·Ù¹ð¥á¥Ã¥»¡¼¥¸
+         03  SPA-I0IDCD2                       PIC X(04).
+      *    ·Ù¹ð²èÌÌ¤è¤ê
+         03  SPA-I0ID2-AREA. 
+           05  SPA-I0ID2-FLG                   PIC X(02).
+      *
       *      £É£°£±¢«¢ª£É£°£²Á«°Ü¾ðÊó
          03  SPA-I01-I02-AREA.
       *        ´µ¼Ô£É£Ä

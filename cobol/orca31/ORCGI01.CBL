@@ -33,6 +33,8 @@
       *  01.00.03    NACL-太田    03.01.24  食事の集計方法修正
       *  01.00.04    NACL-太田    03.02.03  退院時診療行為チェック追加
       *  01.00.05    NACL-太田    03.02.05  自院歴作成データを考慮する
+      *  01.00.06    NACL-太田    03.03.05  異動取消機能を追加
+      *                                     入院歴の表示を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -116,7 +118,7 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-I0IDCD                  PIC X(04).
-           03  WRK-I0ID1-FLG               PIC X(02).
+           03  WRK-I0ID-FLG                PIC X(02).
            03  WRK-I0IDMSG                 PIC X(80). 
            03  WRK-MOTOPG                  PIC X(08).
            03  WRK-YMD                     PIC X(10). 
@@ -452,6 +454,7 @@
            COPY    "I04.INC".
            COPY    "I0ERR.INC".
            COPY    "I0ID1.INC".
+           COPY    "I0ID2.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -528,6 +531,11 @@
                    GO  TO  100-INIT-EXT
                END-IF
       *
+               IF    ( SPA-I0IDCD2 NOT =   SPACE )
+                   PERFORM 520-I0IDSET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+      *
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -571,6 +579,13 @@
       *    確認画面
            WHEN    "I0ID1"
                PERFORM 330-I0ID1-SET-SEC
+      *
+               GO  TO      300-SCREEN-EXT
+      *
+      *
+      *    確認画面２
+           WHEN    "I0ID2"
+               PERFORM 330-I0ID2-SET-SEC
       *
                GO  TO      300-SCREEN-EXT
       *
@@ -777,6 +792,28 @@
       *
            .
        310-CMB-SYORIKBN-SET5-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理区分コンボ初期処理（入院中）
+      *****************************************************************
+       310-CMB-SYORIKBN-SET6-SEC       SECTION.
+      *
+           INITIALIZE              SPA-GMN-I01-CMB-SYORIKBN
+      *
+           MOVE    7               TO  SPA-GMN-I01-SYORIKBN-CNT
+      *
+           MOVE    "02 退院登録"   TO  SPA-GMN-I01-SYORIKBN-ITM (01)
+           MOVE    "03 変更"       TO  SPA-GMN-I01-SYORIKBN-ITM (02)
+           MOVE    "04 照会"       TO  SPA-GMN-I01-SYORIKBN-ITM (03)
+           MOVE    "05 入院取消"   TO  SPA-GMN-I01-SYORIKBN-ITM (04)
+           MOVE    "06 入院取消（会計含む）"
+                                   TO  SPA-GMN-I01-SYORIKBN-ITM (05)
+           MOVE    "08 転科　転棟　転室"
+                                   TO  SPA-GMN-I01-SYORIKBN-ITM (06)
+           MOVE    "09 異動取消"   TO  SPA-GMN-I01-SYORIKBN-ITM (07)
+      *
+           .
+       310-CMB-SYORIKBN-SET6-EXT.
            EXIT.
       *****************************************************************
       *    室料差額コンボ初期処理
@@ -1016,19 +1053,21 @@
       *****************************************************************
        330-I0ID1-SET-SEC               SECTION.
       *
-           MOVE    SPA-I0ID1-FLG   TO  WRK-I0ID1-FLG
+           MOVE    SPA-I0ID1-FLG   TO  WRK-I0ID-FLG
            MOVE    SPA-I0IDCD      TO  WRK-I0IDCD
       *
            MOVE    SPACE           TO  SPA-I0ID1-FLG
            MOVE    SPACE           TO  SPA-I0IDCD
       *
-           IF    ( WRK-I0ID1-FLG   =   "OK" )
+           IF    ( WRK-I0ID-FLG    =   "OK" )
                MOVE    SPACE       TO  WRK-UPDKBN
                EVALUATE    WRK-I0IDCD
       *        入院取消
                WHEN "3001"
+               WHEN "3006"
       *        入院取消（会計含む）
                WHEN "3002"
+               WHEN "3007"
                    MOVE    "DEL"   TO  WRK-UPDKBN
                    PERFORM 4801-PTNYUINRRK-UPD-SEC
                    IF    ( SPA-ERRCD       NOT =   SPACE )
@@ -1071,8 +1110,10 @@
                EVALUATE    WRK-I0IDCD
       *        入院取消
                WHEN "3001"
+               WHEN "3006"
       *        入院取消（会計含む）
                WHEN "3002"
+               WHEN "3007"
       *        退院取消
                WHEN "3003"
                    MOVE    02      TO  SPA-GMN-I01-CUR
@@ -1084,6 +1125,34 @@
       *
            .
        330-I0ID1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面（Ｉ０ＩＤ２）からの戻り値設定処理
+      *****************************************************************
+       330-I0ID2-SET-SEC               SECTION.
+      *
+           MOVE    SPA-I0ID2-FLG   TO  WRK-I0ID-FLG
+           MOVE    SPA-I0IDCD2     TO  WRK-I0IDCD
+      *
+           MOVE    SPACE           TO  SPA-I0ID2-FLG
+           MOVE    SPACE           TO  SPA-I0IDCD2
+      *
+           IF    ( WRK-I0ID-FLG    =   "OK" )
+               MOVE    SPACE       TO  WRK-UPDKBN
+               EVALUATE    WRK-I0IDCD
+               WHEN "3101"
+                   MOVE    "DEL"   TO  WRK-UPDKBN
+                   PERFORM 4801-PTNYUINRRK-UPD-SEC
+                   IF    ( SPA-ERRCD       NOT =   SPACE )
+                       GO  TO  330-I0ID2-SET-EXT
+                   END-IF
+      *
+               END-EVALUATE
+           END-IF
+      *
+           .
+       330-I0ID2-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2138,7 +2207,12 @@
            WHEN    3
                MOVE    2               TO  SPA-GMN-I01-CUR
                PERFORM 4101-INPUT-AREA-EDIT-SEC
-               PERFORM 310-CMB-SYORIKBN-SET3-SEC
+               IF    ( PTNYUINRRK-RRKEDANUM    >   1   )
+                   PERFORM 310-CMB-SYORIKBN-SET6-SEC
+               ELSE
+                   PERFORM 310-CMB-SYORIKBN-SET3-SEC
+               END-IF
+      *
                PERFORM 4101-WIDGET-HENKOU-STT-SEC
       *        デフォルトの処理区分に変更を設定
                MOVE    SPA-GMN-I01-SYORIKBN-ITM (02)
@@ -2232,6 +2306,40 @@
       *
       *    自院他院フラグ
            MOVE    ZERO            TO  SPA-NAI-I01-TZITA-FLG (IDX1)
+      *
+      *
+      *    システム管理マスタ検索処理
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "5000"          TO  SYS-KANRICD
+           MOVE    "*"             TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        =   ZERO )
+               MOVE    MCPDATA-REC TO  SYS-5000-REC
+           ELSE
+               INITIALIZE              SYS-5000-REC
+           END-IF
+      *
+      *    システム管理マスタクローズ
+           MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( SYS-5000-REKI-DISPKBN   =   "2" )
+               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+               MOVE    "PTNYUINRRK-KEY4"   TO  WRK-DBPATH
+               PERFORM 900-TBL-SELECT-SEC
+               IF    ( FLG-DBRC        =   ZERO )
+                   MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+
+               END-IF
+      *
+      *        システム管理マスタクローズ
+               MOVE    "PTNYUINRRK-KEY4"
+                                       TO  WRK-DBPATH
+               PERFORM 900-TBL-CLOSE-SEC
+           END-IF
       *
       *    入院歴
            MOVE    PTNYUINRRK-RRKNUM
@@ -3096,7 +3204,6 @@
                MOVE    SPA-NAI-I01-IDOYMD
                                        TO  WRK-KJNYMD
                PERFORM 4101-JYURRK-SEL-SEC
-      *
       *    その他
            WHEN    OTHER
                PERFORM 4201-WIDGET-INSENSITIVE-SEC
@@ -4584,6 +4691,9 @@
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    SPACE               TO  SPA-WORK 
+           INITIALIZE                      SPA-KYOTUKEY
+                                           SPA-KYOTU-SET
+      *
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
@@ -5214,15 +5324,28 @@
                MOVE    "INS"       TO  WRK-UPDKBN
       *    入院取消
            WHEN    "05"
-               MOVE    "3001"      TO  SPA-I0IDCD
+               IF    ( SPA-NAI-I01-PTRRKEDANUM >   1 )
+                   MOVE    "3006"      TO  SPA-I0IDCD
+               ELSE
+                   MOVE    "3001"      TO  SPA-I0IDCD
+               END-IF
                GO  TO  480-TOUROKU-EXT
       *    入院取消（会計含む）
            WHEN    "06"
-               MOVE    "3002"      TO  SPA-I0IDCD
+               IF    ( SPA-NAI-I01-PTRRKEDANUM >   1 )
+                   MOVE    "3007"      TO  SPA-I0IDCD
+               ELSE
+                   MOVE    "3002"      TO  SPA-I0IDCD
+               END-IF
                GO  TO  480-TOUROKU-EXT
       *    退院取消
            WHEN    "07"
                MOVE    "3003"      TO  SPA-I0IDCD
+               GO  TO  480-TOUROKU-EXT
+      *    異動取消
+           WHEN    "09"
+               MOVE    "DEL"       TO  WRK-UPDKBN
+               MOVE    "3101"      TO  SPA-I0IDCD2
                GO  TO  480-TOUROKU-EXT
       *    その他
            WHEN    OTHER
@@ -5264,8 +5387,14 @@
                PERFORM 900-TBL-UPDATE-SEC
            WHEN    "DEL"
       *        入院履歴マスタ削除
-               MOVE    "PTNYUINRRK-DEL1"
+               IF    ( SPA-GMN-I01-SYORIKBN-CD
+                                       =   "05"  OR  "06" )
+                   MOVE    "PTNYUINRRK-DEL1"
                                        TO  WRK-DBPATH
+               ELSE
+                   MOVE    "PTNYUINRRK-KEY"
+                                       TO  WRK-DBPATH
+               END-IF
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 900-TBL-DELETE-SEC
            END-EVALUATE
@@ -5299,6 +5428,11 @@
       *    入院会計テーブルを編集する（転科／転棟／転室時）
            IF     SPA-GMN-I01-SYORIKBN-CD =   "08"
                PERFORM 4801-TENROOM-EDIT-SEC
+           END-IF
+      *
+      *    入院会計テーブルを編集する（異動取消時）
+           IF     SPA-GMN-I01-SYORIKBN-CD =   "09"
+               PERFORM 4801-IDOKAIKEI-CANCEL-SEC
            END-IF
       *
       *    患者情報の入院歴番号を更新する
@@ -5463,6 +5597,9 @@
       *    転科　転棟　転室
            WHEN    "08"
                PERFORM 4801-TEKNA-CHK-SEC
+      *    異動取消
+           WHEN    "09"
+               PERFORM 4801-IDO-TORIKESI-CHK-SEC
            END-EVALUATE
       *
            .
@@ -5731,6 +5868,16 @@
       *
            .
        4801-TEKNA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    異動取消時関連チェック
+      *****************************************************************
+       4801-IDO-TORIKESI-CHK-SEC       SECTION.
+      *
+        
+      *
+           .
+       4801-IDO-TORIKESI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院履歴データ編集
@@ -7415,6 +7562,15 @@
            EXIT.
       *
       *****************************************************************
+      *    異動取消時会計テーブル編集処理
+      *****************************************************************
+       4801-IDOKAIKEI-CANCEL-SEC       SECTION.
+      *
+      *
+           .
+       4801-IDOKAIKEI-CANCEL-EXT.
+           EXIT.
+      *****************************************************************
       *    通算日数、算定開始日取得処理（入院登録時）
       *****************************************************************
        4801-NYUTSUSAN-SANTEI-GET-SEC   SECTION.
@@ -8528,6 +8684,11 @@
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
+           IF    ( SPA-I0IDCD2 NOT =   SPACE )
+               PERFORM 520-I0ID2SET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
+      *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
            MOVE    "I01    "           TO  MCP-WINDOW.
       *
@@ -9330,6 +9491,20 @@
                DELIMITED BY SIZE
                INTO  WRK-I0IDMSG
                END-STRING
+           WHEN    "3006"
+               MOVE    SPACE           TO  WRK-I0IDMSG
+               STRING  "入院情報（異動歴あり）を削除します"
+                       "（会計情報は残ります）"
+               DELIMITED BY SIZE
+               INTO  WRK-I0IDMSG
+               END-STRING
+           WHEN    "3007"
+               MOVE    SPACE           TO  WRK-I0IDMSG
+               STRING  "入院情報（異動歴あり）を削除します"
+                       "（会計情報も併せて削除します）"
+               DELIMITED BY SIZE
+               INTO  WRK-I0IDMSG
+               END-STRING
            END-EVALUATE
       *
       *
@@ -9350,6 +9525,48 @@
       *
            .
        520-I0IDSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ガイドメッセージ表示
+      *****************************************************************
+       520-I0ID2SET-SEC            SECTION.
+      *
+           EVALUATE    SPA-I0IDCD2
+           WHEN    "3101"
+               MOVE    "転科（転棟・転室）歴を削除します"
+                                       TO  WRK-I0IDMSG
+           END-EVALUATE
+      *
+      *
+           MOVE    SPACE               TO  I0ID2
+           MOVE    SPA-I0IDCD2         TO  I0ID2-ID2CODE
+           MOVE    WRK-I0IDMSG         TO  I0ID2-ID2MSG
+      *
+      *
+           MOVE    SPA-GMN-I01-MAEIDOYMD
+                                       TO  I0ID2-IDOYMD
+           MOVE    SPA-GMN-I01-NYUINKA-NM
+                                       TO  I0ID2-NYUINKA
+      *
+           MOVE    SPA-GMN-I01-BRMNUM  TO  I0ID2-BRM
+      *
+           MOVE    SPA-GMN-I01-BTUNAME-NM
+                                       TO  I0ID2-BTU
+      *
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "I01"                TO  SPA-MOTOPG
+           MOVE    "I0ID2"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "I0ID2"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+      *
+           .
+       520-I0ID2SET-EXT.
            EXIT.
       *****************************************************************
       *    日付チェック・編集処理

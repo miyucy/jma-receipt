@@ -176,6 +176,7 @@
            COPY    "I04.INC".
            COPY    "I0ERR.INC".
            COPY    "I0ID1.INC".
+           COPY    "I0ID2.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
