@@ -125,6 +125,7 @@
            03  WK-RSISAISHIN               PIC  9(08).
            03  WK-RSISDO                   PIC  9(08).
            03  WK-RSIETC                   PIC  9(08).
+           03  WK-RSIETC2                  PIC  9(08).
       *
            03  WK-SINDAN                   PIC  9(08).
            03  WK-MEISAI                   PIC  9(08).
@@ -1300,6 +1301,7 @@
                            LNK-SYU-HKNTEN(IDY 10)   -
                            WK-RSIETC-TENSU
              END-IF
+             MOVE     WK-RSIETC2    TO   LNK-SYU-RSIETC-MONEY(IDY)
            END-IF
       *
       *    ¼«ÇåÀÕÊÝ¸±½èÍý
@@ -1313,8 +1315,10 @@
                                             -   WK-YOUBUKASAN
                                             -   WK-RYOYOTEATE
       *
-             COMPUTE   LNK-S01-SINDAN(IDY)  =  WK-SINDAN  *  10
-             COMPUTE   LNK-S01-MEISAI(IDY)  =  WK-MEISAI  *  10
+      ***    COMPUTE   LNK-S01-SINDAN(IDY)  =  WK-SINDAN  *  10
+      ***    COMPUTE   LNK-S01-MEISAI(IDY)  =  WK-MEISAI  *  10
+             MOVE      WK-SINDAN       TO   LNK-S01-SINDAN(IDY)
+             MOVE      WK-MEISAI       TO   LNK-S01-MEISAI(IDY)
       *
              MOVE      WK-RYOYOTEATE   TO   LNK-S01-RYOYO(IDY)
       *
@@ -1821,14 +1825,18 @@
                                                      OR    "09593"     
                            COMPUTE WK-RSIETC = WK-RSIETC +             
                                   (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
+                           COMPUTE WK-RSIETC2 = WK-RSIETC2 +           
+                                  (TNS-TEN  *   TBL-ZAIKAISU (IDX1))   
                          END-IF                                        
                          IF    SRY-SRYCD (IDX3)(1:5)   =   "09591"     
                            COMPUTE WK-SINDAN = WK-SINDAN +             
-                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
+      ****                        (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
+                                  (TNS-TEN  *   TBL-ZAIKAISU (IDX1))   
                          END-IF                                        
                          IF    SRY-SRYCD (IDX3)(1:5)   =   "09592"     
                            COMPUTE WK-MEISAI = WK-MEISAI +             
-                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
+      ****                        (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
+                                  (TNS-TEN  *   TBL-ZAIKAISU (IDX1))   
                          END-IF                                        
       *
                          IF    SRY-SRYCD (IDX3)  =   "140037490"

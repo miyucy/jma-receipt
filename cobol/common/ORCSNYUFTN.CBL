@@ -79,6 +79,7 @@
            03  WRK-RSISHOSHIN              PIC 9(09).
            03  WRK-RSISDO                  PIC 9(09).
            03  WRK-RSIETC                  PIC 9(09).
+           03  WRK-RSIETC2                 PIC 9(09).
            03  WRK-SINDAN                  PIC 9(09).
            03  WRK-MEISAI                  PIC 9(09).
            03  WRK-YOUBUKASAN              PIC 9(09).
@@ -3066,6 +3067,8 @@
                                              "101910100"
                            COMPUTE WRK-RSIETC = WRK-RSIETC +
                                   (WRK-TEN  *   SINRYO-COUNT)
+                           COMPUTE WRK-RSIETC2 = WRK-RSIETC2 +
+                                  (TNS-TEN  *   SINRYO-COUNT)
                       END-IF
       *
                       IF     SYU-SYUHKNNUM   =   "971"
@@ -3074,6 +3077,8 @@
                                                     OR    "09594"
                            COMPUTE WRK-RSIETC = WRK-RSIETC +
                                   (WRK-TEN  *   SINRYO-COUNT)
+                           COMPUTE WRK-RSIETC2 = WRK-RSIETC2 +
+                                  (TNS-TEN  *   SINRYO-COUNT)
                          END-IF
       *
                       END-IF
@@ -3086,6 +3091,8 @@
                                                     OR    "09594"
                            COMPUTE WRK-RSIETC = WRK-RSIETC +
                                   (WRK-TEN  *   SINRYO-COUNT)
+                           COMPUTE WRK-RSIETC2 = WRK-RSIETC2 +
+                                  (TNS-TEN  *   SINRYO-COUNT)
                          END-IF
                          IF    SRY-SRYCD (IDZ)(1:5)   =   "09591"
                            COMPUTE WRK-SINDAN = WRK-SINDAN +
@@ -3196,9 +3203,10 @@
            IF      WRK-RSIETC         NOT =    ZERO
                    COMPUTE SYU-HKNTEN (10)  =  SYU-HKNTEN (10)
                                             -  WRK-RSIETC
-                   COMPUTE SYU-RSIETC-MONEY      =  WRK-RSIETC
-                                                 *  10
+      ****         COMPUTE SYU-RSIETC-MONEY      =  WRK-RSIETC
+      ****                                       *  10
            END-IF
+           MOVE    WRK-RSIETC2    TO   SYU-RSIETC-MONEY
       *
            IF  SYU-SYUHKNNUM       =   "973"
       *
