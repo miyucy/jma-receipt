@@ -82,6 +82,12 @@
                05  FLG-NYUINGENDAY-OCC         OCCURS  4.
                    07  FLG-NYUINGENDAY         PIC 9(01)
                                                OCCURS  31.
+           03  FLG-BRMSGKSANTEIDAY-G.
+               05  FLG-BRMSGKSANTEIDAY         PIC 9(01)
+                                               OCCURS  31.
+           03  FLG-SKJSANTEIDAY-G.
+               05  FLG-SKJSANTEIDAY            PIC 9(01)
+                                               OCCURS  31.
            03  FLG-SANTEI                      PIC 9(01).
       *
       *    カウント領域
@@ -545,6 +551,8 @@
                                            WRK-TOKUKANRIKASAN
                                            WRK-SENTEI-PTFTN-G
                                            FLG-NYUINGENDAY-G
+                                           FLG-BRMSGKSANTEIDAY-G
+                                           FLG-SKJSANTEIDAY-G
       *
       *    医療機関情報取得処理
            PERFORM 1501-SYS1001-GET-SEC
@@ -682,6 +690,24 @@
                END-IF
       *
            END-PERFORM
+      *
+           IF   ( SYS-5000-NACCT-BRMSGKKBN     =   "2" )
+               PERFORM VARYING IDX0    FROM    WRK-STIDX   BY  1
+                           UNTIL ( IDX0        >   WRK-EDIDX )
+      *
+                   MOVE   1        TO  FLG-BRMSGKSANTEIDAY (IDX0)
+      *
+               END-PERFORM
+           END-IF
+      *
+           IF   ( SYS-5000-NACCT-SKJKBN     =   "2" )
+               PERFORM VARYING IDX0    FROM    WRK-STIDX   BY  1
+                           UNTIL ( IDX0        >   WRK-EDIDX )
+      *
+                   MOVE   1        TO  FLG-SKJSANTEIDAY (IDX0)
+      *
+               END-PERFORM
+           END-IF
       *
            .
        1501-SYS5000-HEN-EXT.
@@ -1730,7 +1756,7 @@
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
       *
-                    IF    (  SYS-5000-NACCT-BRMSGKKBN  =   "2" )
+                    IF    (  FLG-BRMSGKSANTEIDAY (IDXD)    =   1 )
                             MOVE   1       TO  FLG-SANTEI
                     ELSE
                         IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
@@ -2026,7 +2052,7 @@
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
-                    IF    (  SYS-5000-NACCT-SKJKBN =   "2" )
+                    IF    (  FLG-SKJSANTEIDAY (IDXD)   =   1 )
                             MOVE   1       TO  FLG-SANTEI
                     ELSE
                         IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
