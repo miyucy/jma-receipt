@@ -6,6 +6,7 @@ textsize	400;
 bind	""		"OpenCOBOL"	"ORCGU01";
 bind	"U01"		"OpenCOBOL"	"ORCGU01";
 bind	"U1ERR"		"OpenCOBOL"	"ORCGU1ERR";
+bind	"U1ID1"		"OpenCOBOL"	"ORCGU1ID1";
 
 multiplex_group	orca18;
 
@@ -15,6 +16,7 @@ data	{
 	window	{
 		U01;
                 U1ERR;
+                U1ID1;
 	};
 };
 
