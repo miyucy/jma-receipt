@@ -146,6 +146,7 @@
        WORKING-STORAGE SECTION.
       *
        01  WK-END                      PIC 9(08).
+       01  WK-KEISAN                   PIC S9(07).
        01  WK-RYOYO                    PIC 9(07).
        01  WK-KSNRATE9                 PIC 9(03).
        01  WK-KSNRATE                  PIC 9V99.
@@ -1292,8 +1293,17 @@
       *
       *
       *    ÀÁµá¶â³Û¤Î·×»»¡ÊÄ´À°¶â¤Î²Ã¸º»»¡Ë
-           COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
+      ***  COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
+      ***                                   LNK-SYU-CHOSEI.
+           COMPUTE    WK-KEISAN         =   LNK-SYU-SKYMONEY    +
                                             LNK-SYU-CHOSEI.
+           IF   WK-KEISAN  <  ZERO
+               COMPUTE  LNK-SYU-CHOSEI  =   LNK-SYU-SKYMONEY
+                                        *   -1
+               MOVE   ZERO            TO   LNK-SYU-SKYMONEY
+           ELSE
+               MOVE   WK-KEISAN       TO   LNK-SYU-SKYMONEY
+           END-IF.
       *
        MAIN-EXT.
            EXIT PROGRAM
