@@ -7602,41 +7602,6 @@
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
            END-IF
       *
-      *    œ∑øÕ¿≠√‘ Úº¿¥µº£Œ≈…¬≈Ô∆˛±°Œ¡
-           IF    SYOKIKSN-IN-KHNSRYCD   =   "190739910"
-                 MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
-                                         LNK-SCNYUACCT-NYUKHN-SRYCD(1)
-                 MOVE   "190739910"  TO  LNK-SCNYUACCT-KAGEN-SRYCD(1)
-                 MOVE   SPA-NAI-I01-NYUINYMD
-                                  TO  LNK-SCNYUACCT-KAGEN-STYUKYMD(1)
-                 INITIALIZE                STS-AREA-DAY
-                 INITIALIZE                LNK-DAY6-AREA
-                 MOVE    "61"              TO  LNK-DAY6-IRAI
-                 MOVE   SPA-NAI-I01-NYUINYMD
-                                           TO  LNK-DAY6-KIJUN
-                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
-                 MOVE    89                TO  LNK-DAY6-ZOGEN
-                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY6-AREA
-                 MOVE    LNK-DAY6-KEISAN
-                                  TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
-      *
-                 MOVE   "190740010"  TO  LNK-SCNYUACCT-KAGEN-SRYCD(2)
-                 INITIALIZE                STS-AREA-DAY
-                 INITIALIZE                LNK-DAY6-AREA
-                 MOVE    "61"              TO  LNK-DAY6-IRAI
-                 MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
-                                           TO  LNK-DAY6-KIJUN
-                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
-                 MOVE     1                TO  LNK-DAY6-ZOGEN
-                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY6-AREA
-                 MOVE    LNK-DAY6-KEISAN
-                                  TO LNK-SCNYUACCT-KAGEN-STYUKYMD(2)
-                 MOVE    "99999999"
-                                  TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
-           END-IF
-      *
       *    ∆√ƒÍ∆˛±°Œ¡§«£∑∆¸§ﬁ§«°¢£±£¥∆¸§ﬁ§«°¢§Ω§Ï∞ πﬂ§œ∞Ï»Ã∆˛±°Œ¡§ÚªªƒÍ§π§Î
       *    æÏπÁ§Œø«Œ≈•≥°º•…§ÚºË∆¿
            PERFORM    4801-TOKUTEI-NYUIN-7-14-SEC
@@ -8539,7 +8504,7 @@
                  MOVE   SPA-NAI-I01-NYUINYMD
                                            TO  LNK-DAY6-KIJUN
                  MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
-                 MOVE    89                TO  LNK-DAY6-ZOGEN
+                 MOVE    88                TO  LNK-DAY6-ZOGEN
                  CALL  "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                  MOVE    LNK-DAY6-KEISAN
