@@ -329,7 +329,7 @@ K02	{
 				value	varchar(16);
 			};
 			count	int;
-			item	varchar(16)[10];
+			item	varchar(16)[40];
 		};
 		TABOOCOB	{
 			TABOO	{

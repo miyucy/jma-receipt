@@ -26,6 +26,7 @@
       *  01.00.03    MCC-多々納   02/04/09  労災用追加
       *  01.00.04    NACL-多々納  02/09/02  併用算定エラーメッセージ
       *  01.00.05    NACL-多々納  02/08/26  在宅末期・老人区分追加
+      *  01.00.06    NACL-多々納  03/02/19  療養担当手当追加
       ************************************************************
       *
        01  SPA-K01KYOUTU.
@@ -266,7 +267,7 @@
       *診療科一覧
            03  SPA-K01SONOTA.
                05  SPA-GMN-SRYKA-AREA.
-                   07  SPA-GMN-SRYKALST                OCCURS  10.
+                   07  SPA-GMN-SRYKALST                OCCURS  40.
                        09  SPA-GMN-SRYKAL      PIC X(02).
                        09  SPA-GMN-F1L         PIC X(01).
                        09  SPA-GMN-SRYKAMEIL   PIC X(12).

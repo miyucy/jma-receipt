@@ -29,7 +29,7 @@
                 04  K01-SRYKA.
                   05  K01-VALUE   PIC X(21).
                 04  K01-SRYKA-COUNT   PIC S9(9)   BINARY.
-                04  K01-SRYKA-ITEM    PIC X(21)   OCCURS  10 TIMES.
+                04  K01-SRYKA-ITEM    PIC X(21)   OCCURS  40 TIMES.
               03  K01-SRYYMD.
                 04  K01-VALUE   PIC X(10).
               03  K01-ZENKAICOMB.
@@ -39,9 +39,9 @@
                 04  K01-ZENKAI-ITEM    PIC X(20)   OCCURS  5 TIMES.
               03  K01-DRNAMECOMBO.
                 04  K01-DRNAME.
-                  05  K01-VALUE   PIC X(27).
+                  05  K01-VALUE   PIC X(29).
                 04  K01-DRNAME-COUNT   PIC S9(9)   BINARY.
-                04  K01-DRNAME-ITEM    PIC X(27)   OCCURS  10 TIMES.
+                04  K01-DRNAME-ITEM    PIC X(29)   OCCURS  20 TIMES.
               03  K01-BUNSANCOMB.
                 04  K01-BUNSAN.
                   05  K01-VALUE   PIC X(20).

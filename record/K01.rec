@@ -16,7 +16,7 @@ K01	{
 				value	varchar(21);
 			};
 			count	int;
-			item	varchar(21)[10];
+			item	varchar(21)[40];
 		};
 		SRYYMD	{
 			value	varchar(10);
@@ -30,10 +30,10 @@ K01	{
 		};
 		DRNAMECOMBO	{
 			DRNAME	{
-				value	varchar(27);
+				value	varchar(29);
 			};
 			count	int;
-			item	varchar(27)[10];
+			item	varchar(29)[20];
 		};
 		BUNSANCOMB	{
 			BUNSAN	{
