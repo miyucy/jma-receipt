@@ -35,6 +35,9 @@
       *                                     画像診断の点数の変更
       *                                     薬剤・器材の剤点数が０のとき
       *                                     摘要欄に印刷しないように修正
+      *  01.00.04    NACL-伊藤    03/08/13  指導料・在宅料摘要欄編集
+      *                                     加算点数でも告示区分１により
+      *                                     基本点数剤とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -78,12 +81,12 @@
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-RECE30.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
-006900*
-007000 DATA                    DIVISION.
-007100 FILE                    SECTION.
+      *
+       DATA                    DIVISION.
+       FILE                    SECTION.
       *
       *    レセプト明細書  
        FD  RECE02-FILE.
@@ -114,11 +117,11 @@
        FD  RECE30-FILE.
        01  RECE30-R         PIC X(200).
       *     
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
-010200 WORKING-STORAGE             SECTION.
+       WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -154,7 +157,7 @@
                                    BY         //RECEERR//.
            03                      PIC X(04)   VALUE   ".dat".
       *
-018000*    フラグ領域
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE30              PIC X(02).
            03  STS-RECE02              PIC X(02).
@@ -164,13 +167,13 @@
            03  STS-RECE09              PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
-018100 01  FLG-AREA.
+       01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-BYOMEI              PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
            03  FLG-PTCOM               PIC 9(01).
            03  FLG-HKNCOMBI            PIC 9(01). 
-018900     03  FLG-SYSKANRI            PIC 9(01).
+           03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-RECECOM             PIC 9(01).
            03  FLG-RECEDEN             PIC 9(01).
            03  FLG-RECE30              PIC 9(01).
@@ -183,10 +186,10 @@
            03  FLG-TEIGEN              PIC 9(01).
            03  FLG-YKZ20               PIC 9(01).
            03  FLG-TOTALTEN            PIC 9(01).      
-020700*
-020800*    カウント領域
-020900 01  CNT-AREA.
-021000     03  CNT-IN                  PIC 9(06).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-IN                  PIC 9(06).
            03  CNT-OUT                 PIC 9(06).
            03  CNT-RECE04              PIC 9(06).
            03  CNT-RECE09              PIC 9(06).
@@ -212,9 +215,9 @@
        01  SUM-AREA                                VALUE   ZERO.
            03  SUM-TOTALKENSU         PIC 9(06).
            03  SUM-TOTALTEN         PIC 9(10).
-024000*
-024100*    一時領域
-024200 01  WRK-AREA.
+      *
+      *    一時領域
+       01  WRK-AREA.
       *    パラメタエリア
            03  WRK-PARA.
                05  WRK-PARA1.
@@ -376,7 +379,12 @@
                    07  TBL-KOUI-SRYCD           PIC  X(09).
       *            数量
                    07  TBL-KOUI-SRYSURYO        PIC  9(05)V9(03).
-      *    並び替え用ワーク      
+      *----(01.00.04) LINE ADD START ----------------------------------
+      *            点数識別区分/点数
+                   07  TBL-KOUI-TENSIKIBETU     PIC  9(01).
+                   07  TBL-KOUI-TEN             PIC  9(09)V9(02).
+      *----(01.00.04) LINE ADD END ------------------------------------
+      *    並び替え用ワーク
        01  TBL-KOUI-SORT                        PIC X(100).
       *  
        01  WRK-CONS-AREA.
@@ -1588,7 +1596,7 @@
                            MOVE    PTCOM-INPUTCOMENT (IDW:)
                                                    TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)
-                       ELSE    
+                       ELSE
                            MOVE    SPACE               TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)  
                            INITIALIZE              ORCSKANACHKAREA
@@ -1651,7 +1659,13 @@
                                    TBL-KOUI-CDKBN-KOUBAN (WRK-TBLMAX1)
                    MOVE    TNS-KOUHYOJYUNNUM   TO
                                    TBL-KOUI-KOUHYOJUNNUM (WRK-TBLMAX1)
-               END-IF                    
+      *----(01.00.04) LINE ADD START ----------------------------------
+                   MOVE    TNS-TENSIKIBETU     TO
+                                   TBL-KOUI-TENSIKIBETU  (WRK-TBLMAX1)
+                   MOVE    TNS-TEN             TO
+                                   TBL-KOUI-TEN          (WRK-TBLMAX1)
+      *----(01.00.04) LINE ADD END ------------------------------------
+               END-IF
            END-IF
            .
        200711-KOUI-TAIHI-EXT.
@@ -1796,10 +1810,10 @@
       *
                PERFORM 5001-FILE-WRITE-SEC
            END-PERFORM
-      *     
+      *
       *    診療行為データの編集
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-TBLMAX1     
+                   UNTIL   IDX >       WRK-TBLMAX1
       *
                MOVE    SPACE               TO  WRK-REC
                MOVE    ZERO                TO  WRK-REC-LENGTH
@@ -1807,12 +1821,24 @@
                MOVE    "SI,"               TO  WRK-REC
                MOVE    3                   TO  WRK-REC-LENGTH
       *        診療識別
+      *----(01.00.04) LINE ADD START ----------------------------------
+               IF      RECE041-SRYKBN            =   "13"  OR  "14"
+                   IF      IDX                   >   1
+                       IF      TBL-KOUI-KOKUJISKBKBN1 (IDX)
+                                                 =   1
+                         MOVE    RECE041-SRYKBN  TO  WRK-DATA
+                         MOVE    2               TO  WRK-NAGASA
+                         MOVE    SPACE           TO  WRK-SRYKBN
+                       END-IF
+                   END-IF
+               END-IF
+      *----(01.00.04) LINE ADD END ------------------------------------
                IF      IDX                 =   1
-               AND     WRK-SRYKBN      NOT =   SPACE     
+               AND     WRK-SRYKBN      NOT =   SPACE
                    MOVE    WRK-SRYKBN          TO  WRK-DATA
                    MOVE    2                   TO  WRK-NAGASA
                    MOVE    SPACE               TO  WRK-SRYKBN
-               END-IF    
+               END-IF
                PERFORM 5004-MOJI-HENSYU-SEC  
       *        負担区分
                MOVE    WRK-FTNKBN          TO  WRK-DATA
@@ -1836,7 +1862,23 @@
                    END-IF
                END-IF    
                PERFORM 5005-NUM-HENSYU-SEC  
-      *        点数 
+      *        点数
+      *----(01.00.04) LINE ADD START ----------------------------------
+               IF      RECE041-SRYKBN            =   "13"  OR  "14"
+                   IF      IDX                   <   WRK-TBLMAX1
+                       IF      TBL-KOUI-KOKUJISKBKBN1 (IDX)
+                                                 =   1
+                           MOVE    TBL-KOUI-TEN (IDX)
+                                                 TO  WRK-TENSU
+                           MOVE    WRK-TENSU     TO  WRK-NUM
+                           MOVE    7             TO  WRK-NAGASA
+                           COMPUTE RECE041-SYUTEN1
+                                                 =   RECE041-SYUTEN1
+                                                 -   TBL-KOUI-TEN (IDX)
+                       END-IF
+                   END-IF
+               END-IF
+      *----(01.00.04) LINE ADD END ------------------------------------
                IF      IDX               =   WRK-TBLMAX1
                    IF      RECE041-SYUTEN1       >   ZERO
                        IF      RECE041-SRYKBN    =   "70"
@@ -1851,13 +1893,24 @@
                END-IF    
                PERFORM 5005-NUM-HENSYU-SEC  
       *        回数
+      *----(01.00.04) LINE ADD START ----------------------------------
+               IF      RECE041-SRYKBN            =   "13"  OR  "14"
+                   IF      IDX                   <   WRK-TBLMAX1
+                       IF      RECE041-ZAIKAISU  >   ZERO
+                           MOVE    1             TO  WRK-KAISU
+                           MOVE    WRK-KAISU     TO  WRK-NUM
+                           MOVE    3             TO  WRK-NAGASA
+                       END-IF
+                   END-IF
+               END-IF
+      *----(01.00.04) LINE ADD END ------------------------------------
                IF      IDX               =   WRK-TBLMAX1
                    IF      RECE041-ZAIKAISU      >   ZERO
                        MOVE    RECE041-ZAIKAISU  TO  WRK-KAISU
                        MOVE    WRK-KAISU         TO  WRK-NUM
                        MOVE    3                 TO  WRK-NAGASA
                    END-IF
-               END-IF    
+               END-IF
                MOVE    1                   TO  WRK-END 
                PERFORM 5005-NUM-HENSYU-SEC  
       *
