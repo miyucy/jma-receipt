@@ -202,6 +202,8 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    "レセ電用データ並び変え"
+                                   TO  JOB-SHELLMSG
            MOVE    "ORCR0200"      TO  JOB-PGID
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
