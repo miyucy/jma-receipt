@@ -85,6 +85,10 @@
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
+      *    患者公費情報
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
+      *
       *    公費付加情報
        01  KOHPLUS-REC.
            COPY    "CPKOHPLUS.INC".
@@ -209,11 +213,13 @@
                  END-IF
            END-PERFORM
       *
+      *市町村番号の取得（公費負担者番号の５桁目から長さ３桁）
+      *
       *公費付加情報テーブルより情報取得
            INITIALIZE                         KOHPLUS-REC
            MOVE    LNK-SKOHPLUS-HOSPID    TO  KOHPLUS-HOSPID
            MOVE    LNK-SKOHPLUS-PREFNUM   TO  KOHPLUS-PREFNUM
-           MOVE    LNK-SKOHPLUS-CITYNUM   TO  KOHPLUS-CITYNUM
+           MOVE    PTKOH-FTNJANUM(5:3)    TO  KOHPLUS-CITYNUM
            MOVE    COMB-KOHHKNNUM(KOH-IDX) TO KOHPLUS-KOHNUM
            IF      FLG-HKN       =    ZERO
                MOVE    "0"       TO   KOHPLUS-HKNKBN
