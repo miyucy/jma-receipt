@@ -19,7 +19,9 @@ ruby_sources = \
 		daily/print_parent2.rb.in \
 		daily/print_parent.rb.in
 
-shell_scripts = $(shell_sources:.sh.in=.sh) \
+shell_scripts = $(shell_sources:.sh.in=.sh) 
+
+inst_scripts =  $(shell_sources:.sh.in=.sh) \
 		allways/ORCBQ01.sh \
 		allways/master_upgrade.sh \
 		allways/orcbsd01.sh \
@@ -70,7 +72,7 @@ install: all
 	$(INSTALL) -d $(scriptsdir)/allways
 	$(INSTALL) -d $(scriptsdir)/daily
 	$(INSTALL) -d $(scriptsdir)/monthly
-	for file in $(shell_scripts) $(ruby_scripts); do \
+	for file in $(inst_scripts) $(ruby_scripts); do \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
 	  $(INSTALL) $$file $(scriptsdir)/$$dir; \
 	done
