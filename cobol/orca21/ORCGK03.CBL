@@ -266,6 +266,9 @@
                05  WRK-HKNTEN-KIN              PIC 9(07).
       *
                05  WRK-HKNTEN-KEI              PIC 9(07)V99.
+      *    保険組合せ保存
+           03  WRK-HZN-HKNCOMBINUM     PIC X(04).
+           03  WRK-HZN-HKNKBN          PIC X(01).
       *
       *    診療行為内容比較用テーブル
       *01  TBL-AREA.
@@ -3472,6 +3475,12 @@
       *****************************************************************
        4500112-TEISEI-SRYACCT-SEC          SECTION.
       *
+      *    保険組合せを保存する
+           MOVE    SPA-HKNCOMBINUM     TO  WRK-HZN-HKNCOMBINUM
+           MOVE    SPA-HKNKBN          TO  WRK-HZN-HKNKBN
+           MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM
+           MOVE    JYURRK-HKNKBN       TO  SPA-HKNKBN
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   15  )  OR
                               (JYURRK-ZAINUM (IDX) =   ZERO )
@@ -3579,6 +3588,10 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
            END-PERFORM
+      *
+      *    保険組合せを戻す
+           MOVE    WRK-HZN-HKNCOMBINUM     TO  SPA-HKNCOMBINUM
+           MOVE    WRK-HZN-HKNKBN          TO  SPA-HKNKBN
       *
            .
        4500112-TEISEI-SRYACCT-EXT.
