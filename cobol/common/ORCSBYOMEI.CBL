@@ -24,6 +24,10 @@
       *  管理者            : 
       *  03/12/01    NACL−藤原    新規作成
       *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-藤原    04/03/17  開始日と廃止日のよるチェック
+      *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -98,6 +102,7 @@
                05  WRK-KEN-ADDKBN  PIC X(01).
                05  FLG-BUBUN       PIC 9(03).
            03  WRK-MOJISU          PIC 9(03).
+           03  WRK-BYOMEIHENFLG    PIC X(01).
            03  WRK-BUI-MAX         PIC 9(01).
       *
            03  WRK-BYOMEI          PIC X(200).                             
@@ -109,11 +114,25 @@
            03  WRK-RECECD-TBL.
                05  WRK-RECECD      PIC X(01)   OCCURS  3.
       *
+      *    傷病名編集フラグ（疑い）
+           03  WRK-HENFLG1         PIC X(01).
+      *    傷病名編集フラグ（急性）
+           03  WRK-HENFLG2         PIC X(01). 
+      *
       *    固定値
        01  WRK-CONS-AREA.
       * 
       *    病名コードＭＡＸ
            03  WRK-CONS-BYOMEI-MAX PIC 9(02)   VALUE   21.
+      *
+      *    疑い編集
+      *    の疑い
+           03  WRK-CONS-UTAGAI     PIC X(07)   VALUE   "ZZZ8002".                                     
+           03  WRK-CONS-UTAGAI-MOJISU
+                                   PIC 9(02)   VALUE   6.       
+      *    急性
+           03  WRK-CONS-KYUSEI-MOJISU
+                                   PIC 9(02)   VALUE   4. 
       *    
       *    ワーク病名
        01  WRK-BYOMEI-REC.
@@ -259,34 +278,104 @@
                END-IF
            END-IF
       *
-      *    レセ電エラーフラグ（編集病名のとき）
-           IF      LNK-BYO-BYOMEIHENFLG    =   "1"
+      *    レセ電エラーフラグ
+           PERFORM 200-RECEDENFLG-HENSYU-SEC
+      *???
+      *****DISPLAY "LNK=" LNK-BYOMEI-KENSAKU-AREA "#"
+      *****DISPLAY "ERR=" LNK-BYOMEI-KENSAKU-ERR-AREA "#"
+      *****DISPLAY "MAX=" LNK-BYO-BYOMEI-MAX "#"     
+      *****PERFORM VARYING IDZ FROM    1   BY  1
+      *****        UNTIL   IDZ >       LNK-BYO-BYOMEI-MAX
+      *****  DISPLAY IDZ "=" LNK-BYO-BYOMEICD-G (IDZ) "#"     
+      *****END-PERFORM
+      *???
+           .
+       000-PROC-EXT.
+      *
+           EXIT    PROGRAM
+           .
+      *     
+      *****************************************************************
+      *    レセ電エラーフラグ編集処理
+      *****************************************************************
+       200-RECEDENFLG-HENSYU-SEC       SECTION.
+      *
+           COMPUTE WRK-MOJISU      =   LNK-BYO-BYOMEIMOJI
+                                       *   2
+           MOVE    LNK-BYO-BYOMEIHENFLG
+                                   TO  WRK-BYOMEIHENFLG
+      *   
+      *    疑いフラグが設定されているとき
+           IF      LNK-BYO-UTAGAIFLG-IN
+                                   NOT =   SPACE
+               MOVE    SPACE               TO  WRK-HENFLG1
+                                               WRK-HENFLG2
+      *     
+               IF      LNK-BYO-UTAGAIFLG-IN    =   "1" OR  "3"
+                   IF      WRK-MOJISU      <   8
+                       MOVE    1               TO  IDZ
+                   ELSE    
+                       COMPUTE IDZ     =   WRK-MOJISU    -   7
+                   END-IF    
+                   PERFORM VARYING IDY FROM    IDZ BY  2
+                           UNTIL   IDY >       WRK-MOJISU
+                       IF      LNK-BYO-BYOMEI  (IDY:2) =   "疑"
+                           MOVE    "1"              TO  WRK-HENFLG1
+                           MOVE    WRK-MOJISU       TO  IDY
+                       END-IF
+                   END-PERFORM
+               END-IF                
+               IF      LNK-BYO-UTAGAIFLG-IN    =   "2" OR  "3"
+                   PERFORM VARYING IDY FROM    1   BY  2
+                           UNTIL   IDY >       WRK-MOJISU
+                       IF      LNK-BYO-BYOMEI  (IDY:4) =  "急性"
+                           MOVE    "1"              TO  WRK-HENFLG2
+                           MOVE    WRK-MOJISU       TO  IDY
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
+               IF    ( LNK-BYO-UTAGAIFLG-IN
+                                           =   "1" OR  "3" )
+               AND   ( WRK-HENFLG1         =   SPACE       )                         
+                   COMPUTE WRK-MOJISU          =      
+                                WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
+                   IF      LNK-BYO-TBYOMEICD (21)   NOT =   SPACE             
+                       MOVE    "1"                 TO  WRK-BYOMEIHENFLG
+                   END-IF
+               END-IF    
+               IF    ( LNK-BYO-UTAGAIFLG-IN
+                                           =   "2" OR  "3" )
+               AND   ( WRK-HENFLG2         =   SPACE       )                         
+                   COMPUTE WRK-MOJISU          =      
+                                WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
+                   IF      LNK-BYO-TBYOMEICD (21) NOT =   SPACE             
+                       MOVE    "1"                 TO  WRK-BYOMEIHENFLG
+                   END-IF
+               END-IF
+           END-IF    
+      *
+           COMPUTE WRK-MOJISU      =   WRK-MOJISU  /   2
+      *  
+           IF  (   WRK-BYOMEIHENFLG        =   "1"                    )
+           OR  ( ( LNK-BYO-HAISIYMD-ERR    >   ZERO             ) AND
+                 ( LNK-BYO-HAISIYMD-ERR    <   LNK-BYO-SRYYMD-IN )    )
                EVALUATE    LNK-BYO-SYUBYOFLG
                    WHEN    "1"
-                       IF      LNK-BYO-BYOMEIMOJI  >   17
+                       IF      WRK-MOJISU      >   17
                            MOVE    "1"         TO  LNK-BYO-RECEDENFLG
                        END-IF
                    WHEN    SPACE
-                       IF      LNK-BYO-BYOMEIMOJI  >   20
+                       IF      WRK-MOJISU      >   20
                            MOVE    "1"         TO  LNK-BYO-RECEDENFLG
                        END-IF
                    WHEN    OTHER
                        MOVE    4           TO  LNK-BYO-RC
                END-EVALUATE
            END-IF    
-      *???
-           DISPLAY "LNK=" LNK-BYOMEI-KENSAKU-AREA "#"
-           DISPLAY "ERR=" LNK-BYOMEI-KENSAKU-ERR-AREA "#"
-           DISPLAY "MAX=" LNK-BYO-BYOMEI-MAX "#"     
-           PERFORM VARYING IDZ FROM    1   BY  1
-                   UNTIL   IDZ >       LNK-BYO-BYOMEI-MAX
-             DISPLAY IDZ "=" LNK-BYO-BYOMEICD-G (IDZ) "#"     
-           END-PERFORM
-      *???
            .
-       000-PROC-EXT.
-      *
-           EXIT    PROGRAM
+       200-RECEDENFLG-HENSYU-EXT.
+           EXIT
            .
       *     
       *****************************************************************
@@ -613,11 +702,11 @@
                    ELSE
                        ADD     1               TO  LNK-BYO-BYOMEI-MAX
       *???
-           DISPLAY " LNK-BYO-BYOMEI-MAX="  LNK-BYO-BYOMEI-MAX "#"
-           DISPLAY "WRK=" IDX "#" WRK-BYOMEI-BYOMEI (IDX) "#"
-                          WRK-BYOMEI-FLG  (IDX) "#"
-                          WRK-BYOMEI-BYOMEICD (IDX 1) "#"
-                          WRK-BYOMEI-BYOMEICD (IDX 2) "#"
+      *     DISPLAY " LNK-BYO-BYOMEI-MAX="  LNK-BYO-BYOMEI-MAX "#"
+      *     DISPLAY "WRK=" IDX "#" WRK-BYOMEI-BYOMEI (IDX) "#"
+      *                    WRK-BYOMEI-FLG  (IDX) "#"
+      *                    WRK-BYOMEI-BYOMEICD (IDX 1) "#"
+      *                    WRK-BYOMEI-BYOMEICD (IDX 2) "#"
       *???
                        EVALUATE    TRUE
                            WHEN  ( WRK-BYOMEI-BYOMEICD (IDX 1)
@@ -770,8 +859,8 @@
       *
            MOVE    LNK-BYO-BYOMEI-MAX  TO  IDY
       *???
-           DISPLAY "2003=" WRK-BYOMEI-BYOMEICD   (IDX  IDX2) "#" 
-                           WRK-BYOMEI-BYOMEI     (IDX) "#" IDY "#"
+      *     DISPLAY "2003=" WRK-BYOMEI-BYOMEICD   (IDX  IDX2) "#" 
+      *                     WRK-BYOMEI-BYOMEI     (IDX) "#" IDY "#"
       *??
       *
            MOVE    WRK-BYOMEI-BYOMEI     (IDX)
@@ -970,9 +1059,6 @@
            MOVE    ZERO            TO  FLG-KENSAKU
                                        FLG-TBLERR
       *
-      *???
-           DISPLAY "2006  =" WRK-KENBYOMEI "#" FLG-HENSYU "#" IDY "#"
-      *???
            SET     TBL-BYOMEICD-IDX    TO  1
            SEARCH  TBL-BYOMEICD-OCC    VARYING TBL-BYOMEICD-IDX
                AT  END
@@ -1005,9 +1091,6 @@
                            END-IF
                    END-EVALUATE
       *
-      *???
-           DISPLAY "2006 UP=" WRK-KENBYOMEI "#" IDY "#"
-      *???
                    MOVE    "1"         TO  WRK-BYOMEI-FLG      (IDY)
                    MOVE    TBL-YYK-BYOMEICD (TBL-BYOMEICD-IDX)
                                        TO  WRK-BYOMEI-BYOMEICD (IDY 1) 
@@ -1043,8 +1126,8 @@
            COMPUTE WRK-LENGTH  =   IDZ     -   FLG-BUBUN
            MOVE    FLG-BUBUN       TO  WRK-ST
       *???
-           DISPLAY "2007 UP=" FLG-BUBUN "#" IDY "#"
-                             WRK-KEN-BYOMEI (WRK-ST:WRK-LENGTH) "#"
+      *     DISPLAY "2007 UP=" FLG-BUBUN "#" IDY "#"
+      *                       WRK-KEN-BYOMEI (WRK-ST:WRK-LENGTH) "#"
       *???
       *     
            MOVE    WRK-KEN-BYOMEI (WRK-ST:WRK-LENGTH)
