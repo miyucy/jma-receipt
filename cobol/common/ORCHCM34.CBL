@@ -2340,11 +2340,11 @@
                            PERFORM 200111-KENSASU-HEN-SEC
                        END-IF
                    END-IF
+      *            点数回数編集処理
+                   MOVE    ACCT-ZAITEN         TO  WRK-ZAITEN
+                   MOVE    ACCT-ZAIKAISU       TO  WRK-ZAIKAISU
+                   PERFORM 205-TENSUKAISU-HEN-SEC
                END-IF
-      *        点数回数編集処理
-               MOVE    ACCT-ZAITEN         TO  WRK-ZAITEN
-               MOVE    ACCT-ZAIKAISU       TO  WRK-ZAIKAISU
-               PERFORM 205-TENSUKAISU-HEN-SEC
            END-IF
       *
            MOVE    "5"                     TO  WRK-ITEM-KBN
