@@ -690,8 +690,9 @@
                                        MOVE    "1"     TO  WRK-COM-CUR
                                                                 (IDX-Z)
       *********************************GO      TO      10011-CHK-EXT
+                                       GO      TO      10011-CHK-EXT
                                    END-IF
-                                   GO      TO      10011-CHK-EXT
+      **************************   GO      TO      10011-CHK-EXT
                                END-IF
                                MOVE    4               TO  FLG-SINDAN
                                MOVE    IDX-Z           TO  IDX-SAT
