@@ -45,6 +45,7 @@
       *  02.00.08    NACL-藤原    03/08/21  続紙区分（入院外）
       *                                     ・続紙出力先の追加
       *  02.00.09    NACL-太田    03/11/18  老人と原爆区分の追加
+      *  02.00.10    NACL-太田    04/01/15  自費レセプト摘要欄記載区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -156,6 +157,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-RJNGNBKKBNMEI
                                               PIC X(22).
+                       09  SPA-GMN-JIHITEKKSIKBN-G.
+                           11  SPA-GMN-JIHITEKKSIKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-JIHITEKKSIKBNMEI
+                                              PIC X(08).
       *                                        
                    07  SPA-GMN-BYOMEIHENKBNLST        OCCURS  2.
                        09  SPA-GMN-BYOMEIHENKBNL
@@ -258,6 +265,16 @@
                                               PIC X(22).
                    07  SPA-GMN-RJNGNBKKBN-MAX
                                               PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-JIHITEKKSIKBNLST
+                                              OCCURS  2.
+                       09  SPA-GMN-JIHITEKKSIKBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-JIHITEKKSIKBNMEIL
+                                              PIC X(08).
+                   07  SPA-GMN-JIHITEKKSIKBN-MAX
+                                              PIC 9(02).    
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD       PIC 9(08).
@@ -332,6 +349,9 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -593,6 +613,12 @@
            MOVE    "社保、国保とも印刷"
                                        TO  SPA-GMN-RJNGNBKKBNMEIL (4)
            MOVE    4                   TO  SPA-GMN-RJNGNBKKBN-MAX 
+      *     
+           MOVE    "0"                 TO  SPA-GMN-JIHITEKKSIKBNL    (1)
+           MOVE    "なし"              TO  SPA-GMN-JIHITEKKSIKBNMEIL (1)
+           MOVE    "1"                 TO  SPA-GMN-JIHITEKKSIKBNL    (2)
+           MOVE    "あり"              TO  SPA-GMN-JIHITEKKSIKBNMEIL (2)
+           MOVE    2                   TO  SPA-GMN-JIHITEKKSIKBN-MAX 
       * 
            MOVE    SPACE               TO  SYS-2005-REC
            INITIALIZE                      SYS-2005-REC
@@ -770,6 +796,18 @@
                                            TO  IDY
                    END-IF
                END-PERFORM
+      *
+               MOVE    SYS-2005-JIHITEKKSIKBN TO  SPA-GMN-JIHITEKKSIKBN
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-JIHITEKKSIKBN-MAX
+                   IF      SPA-GMN-JIHITEKKSIKBN 
+                                   =   SPA-GMN-JIHITEKKSIKBNL (IDY)
+                       MOVE    SPA-GMN-JIHITEKKSIKBNLST (IDY)
+                                           TO  SPA-GMN-JIHITEKKSIKBN-G
+                       MOVE    SPA-GMN-JIHITEKKSIKBN-MAX
+                                           TO  IDY
+                   END-IF
+               END-PERFORM
            END-IF
       *
            IF     SPA-GMN-BYOMEIHENKBN-G   =   SPACE
@@ -811,6 +849,10 @@
            IF     SPA-GMN-RJNGNBKKBN-G  =   SPACE
                MOVE    SPA-GMN-RJNGNBKKBNLST (1)
                                            TO  SPA-GMN-RJNGNBKKBN-G
+           END-IF                                              
+           IF     SPA-GMN-JIHITEKKSIKBN-G  =   SPACE
+               MOVE    SPA-GMN-JIHITEKKSIKBNLST (1)
+                                           TO  SPA-GMN-JIHITEKKSIKBN-G
            END-IF                                              
       *
            MOVE    1                   TO  SPA-GMN-CUR
@@ -889,6 +931,7 @@
            MOVE    W12-NEXTPRTKBN      TO  SPA-GMN-NEXTPRTKBN-G 
            MOVE    W12-NEXTPRTKBN1     TO  SPA-GMN-NEXTPRTKBN1-G 
            MOVE    W12-RJNGNBKKBN      TO  SPA-GMN-RJNGNBKKBN-G 
+           MOVE    W12-JIHITEKKSIKBN   TO  SPA-GMN-JIHITEKKSIKBN-G 
            MOVE    W12-SYAPRTNM-NEXT   TO  SPA-GMN-SYAPRTNM-NEXT
            MOVE    W12-KKHPRTNM-NEXT   TO  SPA-GMN-KKHPRTNM-NEXT
       *
@@ -992,6 +1035,11 @@
            END-IF
       *
            PERFORM 4117-RJNGNBKKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4118-JIHITEKKSIKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1444,6 +1492,33 @@
        4117-RJNGNBKKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    自費レセ摘要欄記載区分チェック
+      *****************************************************************
+       4118-JIHITEKKSIKBN-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-JIHITEKKSIKBN    =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-JIHITEKKSIKBN-MAX
+                        OR     SPA-GMN-JIHITEKKSIKBN
+                                   =       SPA-GMN-JIHITEKKSIKBNL (IDY)
+                   CONTINUE
+               END-PERFORM
+      * 
+               IF      IDY <=      SPA-GMN-JIHITEKKSIKBN-MAX
+                   MOVE    SPA-GMN-JIHITEKKSIKBNLST (IDY)
+                                          TO  SPA-GMN-JIHITEKKSIKBN-G
+               ELSE
+                   MOVE    20             TO  SPA-GMN-CUR
+                   MOVE    "0011"         TO  SPA-ERRCD
+               END-IF
+           END-IF    
+      *
+           .
+       4118-JIHITEKKSIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
@@ -1522,11 +1597,17 @@
            MOVE    SPA-GMN-NEXTPRTKBN      TO  SYS-2005-NEXTPRTKBN
            MOVE    SPA-GMN-NEXTPRTKBN1     TO  SYS-2005-NEXTPRTKBN-G
            MOVE    SPA-GMN-RJNGNBKKBN      TO  SYS-2005-RJNGNBKKBN
+           MOVE    SPA-GMN-JIHITEKKSIKBN   TO  SYS-2005-JIHITEKKSIKBN
            MOVE    SPA-GMN-SYAPRTNM-NEXT   TO  SYS-2005-SYAPRTNM-NEXT
            MOVE    SPA-GMN-KKHPRTNM-NEXT   TO  SYS-2005-KKHPRTNM-NEXT
            MOVE    SYS-2005-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
                MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
@@ -1534,6 +1615,12 @@
                MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
                MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
+                                                   SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
@@ -1638,6 +1725,7 @@
            MOVE    SPA-GMN-NEXTPRTKBN-G     TO  W12-NEXTPRTKBN
            MOVE    SPA-GMN-NEXTPRTKBN1-G    TO  W12-NEXTPRTKBN1
            MOVE    SPA-GMN-RJNGNBKKBN-G     TO  W12-RJNGNBKKBN
+           MOVE    SPA-GMN-JIHITEKKSIKBN-G  TO  W12-JIHITEKKSIKBN
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-BYOMEIHENKBN-MAX
@@ -1739,6 +1827,14 @@
            END-PERFORM
            MOVE    SPA-GMN-RJNGNBKKBN-MAX
                                        TO  W12-RJNGNBKKBN-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-JIHITEKKSIKBN-MAX
+               MOVE    SPA-GMN-JIHITEKKSIKBNLST (IDY)
+                                       TO  W12-JIHITEKKSIKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-JIHITEKKSIKBN-MAX
+                                       TO  W12-JIHITEKKSIKBN-COUNT 
       *
            MOVE    SPA-GMN-SYAPRTNM    TO  W12-SYAPRTNM
       *
@@ -1807,6 +1903,9 @@
                    MOVE    "主病名編集フラグ入力エラー"  TO  SPA-ERRMSG
                WHEN    "0011"
                    MOVE    "老人と原爆区分入力エラー"    TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "自費レセ摘要欄記載区分入力エラー"
+                                                         TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
                                                TO  SPA-ERRMSG
@@ -1917,6 +2016,8 @@
                     MOVE  "KKHPRTNM_NEXT"    TO   MCP-WIDGET
                 WHEN    19
                     MOVE  "RJNGNBKKBN"       TO   MCP-WIDGET
+                WHEN    20
+                    MOVE  "JIHITEKKSIKBN"       TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -1969,6 +2070,8 @@
                WHEN    "NEXTPRTKBN"
                    MOVE    16          TO  SPA-GMN-CUR
                WHEN    "RJNGNBKKBN"
+                   MOVE    20          TO  SPA-GMN-CUR
+               WHEN    "JIHITEKKSIKBN"
                    MOVE    11          TO  SPA-GMN-CUR
                WHEN    "KKHPRTKBN"
                    MOVE    99          TO  SPA-GMN-CUR
@@ -2036,6 +2139,17 @@
        5002-HIZUKE-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
+           EXIT.
       *****************************************************************
       *    管理マスター読込（キー）
       *****************************************************************

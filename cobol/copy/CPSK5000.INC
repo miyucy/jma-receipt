@@ -93,8 +93,11 @@
                    SYS-5000-SENTEI-KINGAKU-X.
                    07  SYS-5000-SENTEI-KINGAKU
                                            PIC  9(04).
+      *¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
+               05  SYS-5000-BRMSGK-TAXKBN
+                                           PIC  X(01).
       *Í½È÷¡Ê£²¡Ë
-               05                          PIC  X(17).
+               05                          PIC  X(16).
       *Ã¼Ëö£É£Ä
            03  SYS-5000-TERMID             PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

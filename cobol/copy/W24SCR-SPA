@@ -79,6 +79,11 @@
                      15                                PIC X(01).
                      15  SPA-GMN-W24-GN-JOKUSO-NM      PIC X(26).
       *
+      *          ººŒ¡∫π≥€æ√»Ò¿«∂Ë ¨
+                 11  SPA-GMN-W24-BRMSGK-TAX.
+                   13  SPA-GMN-W24-BRMSGK-TAX-CD       PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-BRMSGK-TAX-NM       PIC X(08).
       *          ∆˛±°≤√ªªæ Û
                  11  SPA-GMN-W24-FRAME3.
                    13  SPA-GMN-W24-CHK-NYUKSN.
@@ -259,6 +264,14 @@
                    13  SPA-GMN-W24-SKYMISYUPRTKBN-ITM  PIC X(20)
                                                        OCCURS  5
                                            INDEXED BY  CMB-IDX14.
+      *
+      *          ººŒ¡∫π≥€æ√»Ò¿«∂Ë ¨
+                 11  SPA-GMN-W24-CMB-BRMSGK-TAX.
+                   13  SPA-GMN-W24-BRMSGK-TAX-CNT      PIC S9(9)
+                                                       BINARY.
+                   13  SPA-GMN-W24-BRMSGK-TAX-ITM      PIC X(10)
+                                                       OCCURS  5
+                                           INDEXED BY  CMB-IDX15.
       *
       *    ø«Œ≈π‘∞Ÿ∏°∫˜≤ËÃÃ£”£–£¡
            03  SPA-W25-MOTOPG                    PIC X(08).

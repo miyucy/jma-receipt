@@ -65,6 +65,12 @@
                                                BINARY.
                     07  W24-GN-JOKUSO-ITM      PIC X(28)
                                                OCCURS  5.
+              04  W24-CMB-BRMSGK-TAX.
+                05  W24-BRMSGK-TAX             PIC X(10).
+                05  W24-BRMSGK-TAX-CNT         PIC S9(9)
+                                               BINARY.
+                05  W24-BRMSGK-TAX-ITM         PIC X(10)
+                                               OCCURS  5.
               04  W24-FRAME3.
                 05  W24-FIXED9.
                   06  W24-CHK-NYUKSN.

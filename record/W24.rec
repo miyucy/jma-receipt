@@ -63,6 +63,13 @@ W24	{
 				};
 			};
 		};
+		CMB_BRMSGK_TAX	{
+			BRMSGK_TAX	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[05];
+		};
 		frame3	{
 			fixed9	{
 				CHK_NYUKSN01	{

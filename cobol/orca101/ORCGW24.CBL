@@ -36,6 +36,7 @@
       *  00.00.05    NACL-ÂÀÅÄ    03.04.10  ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬¤òÄÉ²Ã
       *  00.00.06    NACL-ÂÀÅÄ    03/06/25  ÅÀ¿ô¥Þ¥¹¥¿Í­¸ú´ü´Ö¤Î»ØÄê¤ò½¤Àµ
       *  00.00.07    NACL-ÂÀÅÄ    04/01/07  ¹¹¿·ÆüÉÕÊÔ½¸ÂÐ±þ
+      *  00.00.08    NACL-ÂÀÅÄ    04/01/15  ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -440,6 +441,9 @@
       *    Âà±¡¾ÚÌÀ½ñÈ¯¹Ô¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-CMB-TAIPRTKBN-SET-SEC
       *
+      *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬¥³¥ó¥Ü
+           PERFORM 310-CMB-BRMSGK-TAX-SET-SEC
+      *
            .
        310-CMB-SYOKI-EXT.
            EXIT.
@@ -670,6 +674,20 @@
        310-CMB-TAIPRTKBN-SET-EXT.
            EXIT.
       *****************************************************************
+      *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬¥³¥ó¥Ü
+      *****************************************************************
+      310-CMB-BRMSGK-TAX-SET-SEC   SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-BRMSGK-TAX-CNT
+      *
+           MOVE    "0 ¤Ê¤·"        TO  SPA-GMN-W24-BRMSGK-TAX-ITM (1)
+      *
+           MOVE    "1 ¤¢¤ê"        TO  SPA-GMN-W24-BRMSGK-TAX-ITM (2)
+      *
+           .
+      310-CMB-BRMSGK-TAX-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÊÔ½¸½èÍý
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -723,6 +741,16 @@
            MOVE    SYS-5000-GENKBN (4) TO  WRK-CMB-CD
            PERFORM 4103-CMB-GN-JOKUSO-SRH-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-GN-JOKUSO
+      *
+      *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
+           MOVE    SYS-5000-BRMSGK-TAXKBN  TO  WRK-CMB-CD
+           PERFORM 4103-CMB-BRMSGK-TAX-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-W24-BRMSGK-TAX
+           ELSE
+               MOVE    SPA-GMN-W24-BRMSGK-TAX-ITM (1)
+                                           TO  SPA-GMN-W24-BRMSGK-TAX
+           END-IF
       *
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -1043,6 +1071,8 @@
            MOVE    W24-GN-ANZEN        TO  SPA-GMN-W24-GN-ANZEN
       *    êóáìÂÐºöÌ¤¼Â»Ü¸º»»
            MOVE    W24-GN-JOKUSO       TO  SPA-GMN-W24-GN-JOKUSO
+      *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇÊ¬
+           MOVE    W24-BRMSGK-TAX      TO  SPA-GMN-W24-BRMSGK-TAX
       *
       *    Æþ±¡²Ã»»¾ðÊó
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -1130,6 +1160,12 @@
       *
       *    êóáìÂÐºöÌ¤¼Â»Ü¸º»»¥Á¥§¥Ã¥¯½èÍý
            PERFORM 4100-GN-JOKUSO-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
+           PERFORM 4100-BRMSGK-TAX-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1490,6 +1526,10 @@
            MOVE    SPA-GMN-W24-GN-JOKUSO-CD
                                    TO  SYS-5000-GENKBN (4)
       *
+      *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
+           MOVE    SPA-GMN-W24-BRMSGK-TAX-CD
+                                   TO  SYS-5000-BRMSGK-TAXKBN
+      *
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >    20 )
@@ -1753,6 +1793,31 @@
            .
       *
        4100-GN-JOKUSO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
+      *****************************************************************
+       4100-BRMSGK-TAX-CHK-SEC         SECTION.
+      *
+           IF    ( SPA-GMN-W24-BRMSGK-TAX =   SPACE )
+               MOVE    SPA-GMN-W24-BRMSGK-TAX-ITM (1)
+                                       TO  SPA-GMN-W24-BRMSGK-TAX
+               GO  TO  4100-BRMSGK-TAX-CHK-EXT
+           END-IF
+      *
+      *    ³ºÅö¥³¡¼¥É¤Î¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯
+           MOVE    SPA-GMN-W24-BRMSGK-TAX-CD
+                                       TO  WRK-CMB-CD
+           PERFORM 4103-CMB-BRMSGK-TAX-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-BRMSGK-TAX
+           ELSE
+               MOVE    SPA-GMN-W24-BRMSGK-TAX-ITM (1)
+                                       TO  SPA-GMN-W24-BRMSGK-TAX
+           END-IF
+      *
+           .
+       4100-BRMSGK-TAX-CHK-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡²Ã»»¾ðÊó¥Á¥§¥Ã¥¯½èÍý
@@ -2703,6 +2768,31 @@
        4103-CMB-SENTEI-TAX-SRH-EXT.
            EXIT.
       *****************************************************************
+      *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¥µ¡¼¥Á½èÍý
+      *****************************************************************
+       4103-CMB-BRMSGK-TAX-SRH-SEC     SECTION.
+      *
+           SET     CMB-IDX15       TO  1
+           SEARCH  SPA-GMN-W24-BRMSGK-TAX-ITM
+                   VARYING CMB-IDX15
+           AT  END
+               INITIALIZE          WRK-CMB-ITM
+                                   WRK-CMB-IDX
+           WHEN    SPA-GMN-W24-BRMSGK-TAX-ITM (CMB-IDX15) (1 : 1)
+                                   =   WRK-CMB-CD
+               SET WRK-CMB-IDX     TO  CMB-IDX15
+               MOVE    SPA-GMN-W24-BRMSGK-TAX-ITM (CMB-IDX15)
+                                   TO  WRK-CMB-ITM
+           WHEN    SPA-GMN-W24-BRMSGK-TAX-ITM (CMB-IDX15)
+                                   =   SPACE
+               INITIALIZE          WRK-CMB-ITM
+                                   WRK-CMB-IDX
+           END-SEARCH
+      *
+           .
+       4103-CMB-BRMSGK-TAX-SRH-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÎÎ°è½é´ü²½½èÍý
       *****************************************************************
        4201-INPUT-AREA-CLEAR-SEC       SECTION.
@@ -2737,6 +2827,9 @@
       *
            MOVE    SPA-GMN-W24-GN-JOKUSO-ITM (1)
                                    TO  SPA-GMN-W24-GN-JOKUSO
+      *
+           MOVE    SPA-GMN-W24-BRMSGK-TAX-ITM (1)
+                                   TO  SPA-GMN-W24-BRMSGK-TAX
       *
            MOVE    SPA-GMN-W24-SENTEI-FTNKBN-ITM (1)
                                    TO  SPA-GMN-W24-SENTEI-FTNKBN
@@ -3077,6 +3170,19 @@
       *
            END-PERFORM
       *
+      *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
+           MOVE    SPA-GMN-W24-BRMSGK-TAX
+                                   TO  W24-BRMSGK-TAX
+           MOVE    SPA-GMN-W24-BRMSGK-TAX-CNT
+                                   TO  W24-BRMSGK-TAX-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   W24-BRMSGK-TAX-CNT )
+      *
+               MOVE    SPA-GMN-W24-BRMSGK-TAX-ITM (IDX1)
+                                   TO  W24-BRMSGK-TAX-ITM (IDX1)
+      *
+           END-PERFORM
+      *
       *    Æþ±¡²Ã»»¾ðÊó
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   20 )
@@ -3379,6 +3485,8 @@
                                        TO  MCP-WIDGET
            WHEN    045
                MOVE    "TAIPRTKBN"     TO  MCP-WIDGET
+           WHEN    046
+               MOVE    "BRMSGK_TAX"    TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -3489,10 +3597,16 @@
                MOVE    044             TO  SPA-GMN-W24-CUR
            WHEN    "TAIPRTKBN"
                MOVE    045             TO  SPA-GMN-W24-CUR
+           WHEN    "BRMSGK_TAX"
+               MOVE    046             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
       *    ¼¡¥«¡¼¥½¥ë°ÌÃÖ¤òÀßÄê
            EVALUATE    MCP-WIDGET
+           WHEN    "GN_JOKUSO"
+               MOVE    046             TO  SPA-GMN-W24-CUR
+           WHEN    "BRMSGK_TAX"
+               MOVE    008             TO  SPA-GMN-W24-CUR
            WHEN    "SK_SYOKUDO"
                MOVE    005             TO  SPA-GMN-W24-CUR
            WHEN    "TAIPRTKBN"
