@@ -63,6 +63,8 @@
       *                                     とする
       *  01.00.22    NACL-藤原    04/07/23  補助区分の追加に伴うレセプト
       *                                     種別・給付割合の編集を変更
+      *  01.00.23    NACL-藤原    04/10/04  特例退職者＋老人のとき本人の
+      *                                     み不明分とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1486,7 +1488,8 @@
                    PERFORM   CSR-CLOSE-SEC
            END-IF
       *
-           IF      WK-RJN      NOT =   SPACE     
+           IF    ( WK-RJN          NOT =   SPACE )
+           AND   ( RECE62-HONKZKKBN    =   "1"   )     
                IF      RECE62-HKNNUM   =   "063"   OR  "072"   OR
                                            "073"   OR  "074"   OR
                                            "075"
