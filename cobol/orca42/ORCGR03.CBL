@@ -1399,6 +1399,11 @@
       *****************************************************************
        450-KOUSHIN-SEC                 SECTION.
       *
+      *    フラグ初期化
+           MOVE    ZERO            TO  SPA-R01-JOBCNT       
+                                       SPA-R01-STOPFLG    
+           MOVE    SPACE           TO  SPA-R99-CANCEL
+      *
       *    新規分作成のときレセプト指示コード更新
       *
            EVALUATE    SPA-GMN-SYOKBN    ALSO    SPA-GMN-IKKATU

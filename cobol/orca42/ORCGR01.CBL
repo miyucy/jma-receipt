@@ -1161,6 +1161,15 @@
       *****************************************************************
        210-BACK-SYORI-SEC              SECTION.
       *
+           MOVE    SPACE           TO  SPA-R99-FLG
+           MOVE    SPACE           TO  SPA-RIDCD
+           MOVE    SPACE           TO  SPA-RIDCD2      
+           MOVE    SPACE           TO  SPA-RIDCD3
+           MOVE    ZERO            TO  SPA-R01-JOBCNT       
+                                       SPA-R01-STOPFLG    
+           MOVE    SPACE           TO  SPA-RID1-FLG
+                                       SPA-R99-CANCEL
+      *
            MOVE    "R03"               TO  SPA-SAKIPG
            MOVE    "R01"               TO  SPA-MOTOPG
       *
@@ -1669,6 +1678,11 @@
       *    更新処理
       *****************************************************************
        450-KOUSHIN-SEC                 SECTION.
+      *
+      *    フラグ初期化
+           MOVE    ZERO            TO  SPA-R01-JOBCNT       
+                                       SPA-R01-STOPFLG    
+           MOVE    SPACE           TO  SPA-R99-CANCEL
       *
       *    レセプト指示更新
            INITIALIZE                  SYS-2001-REC
