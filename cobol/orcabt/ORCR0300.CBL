@@ -1614,8 +1614,11 @@
                ELSE
                    IF      RECE05-SRYCD (IDX)   =   "810000001"
                        CONTINUE
-                   ELSE  
-                     IF      RECE05-INPUTNUM(IDX)    NOT =   ZERO
+                   ELSE
+                     IF      RECE05-INPUTNUM(IDX) =   ZERO
+                           MOVE    "810000001"     TO  
+                                       TBL-COMMENT-SRYCD (WRK-TBLMAX8)
+                     ELSE
                        MOVE    RECE02-HOSPID           TO  PTCOM-HOSPID
                        MOVE    RECE02-PTID             TO  PTCOM-PTID
                        MOVE    RECE05-ZAINUM           TO  PTCOM-ZAINUM
