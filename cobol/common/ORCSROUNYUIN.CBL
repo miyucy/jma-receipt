@@ -33,6 +33,8 @@
       *  01.00.03    NACL-ÌçÏÆ    04/03/17  Â¾°åÎÅµ¡´Ø¼õ¿Ç¤ÎÈ½ÄêÍÑ¥³¡¼¥É
       *                                     ¡ÊÆþ±¡´ðËÜÎÁ²Ã»»¶èÊ¬¡ËÄÉ²Ã
       *  01.00.04    NACL-ÌçÏÆ    04/03/29  êóáì´µ¼Ô´ÉÍý²Ã»»¤ÎÂÐ±þ
+      *  01.00.05    NACL-¾®Æ¦Âô  04/09/10  Ï«ºÒ¾è¿ô¤ò¥µ¥Ö¥ë¡¼¥Á¥ó¤«¤é¤Î
+      *                                     È½Äê¤ËÊÑ¹¹
       *****************************************************************
       *
       *
@@ -116,6 +118,9 @@
            03  WRK-SRYKBN                  PIC X(02).
            03  WRK-KSNKBN                  PIC 9(03).
            03  WRK-ZAISKBKBN               PIC X(01).
+           03  WRK-SANTEIED-DDX            PIC X(02).
+           03  WRK-SANTEIED-DD9            REDEFINES  WRK-SANTEIED-DDX
+                                           PIC 9(02).
       *
            03  WRK-SYS5000-COUNT           PIC 9(02).
       *
@@ -239,6 +244,9 @@
       *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
            COPY    "CPORCSAGECHK.INC".
       *
+      *    ÄÌ»»Æü¿ô¼èÆÀ¥µ¥Ö¡ÊÏ«ºÒÊÝ¸±ÍÑ¡Ë
+           COPY    "CPORCSRSITUSAN.INC".
+      *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
@@ -349,6 +357,37 @@
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
+      *Ï«ºÒ¾è¿ô¤Î£²½µ´Ö°ÊÆâ¤ÎºÇ½ªÆü¤ò¼èÆÀ
+           INITIALIZE                      ORCSRSITUSANAREA
+           MOVE    LNK-SROUNYUIN-HOSPID
+                                       TO  RSITUSAN-HOSPID
+           MOVE    LNK-SROUNYUIN-PTID
+                                       TO  RSITUSAN-PTID
+           MOVE    LNK-SROUNYUIN-HKNCOMBI
+                                       TO  RSITUSAN-HKNCOMBI
+           MOVE    LNK-SROUNYUIN-SANTEIYM
+                                       TO  RSITUSAN-SRYYM
+           CALL    "ORCSRSITUSAN"      USING
+                                           ORCSRSITUSANAREA
+           IF    ( RSITUSAN-RC          =   ZERO )
+               CONTINUE
+           ELSE
+               INITIALIZE  ORCSRSITUSANAREA
+           END-IF
+           PERFORM   VARYING   IDX1   FROM 1  BY  1
+                     UNTIL     IDX1   >    31
+               IF    RSITUSAN-SANTEIEDYMD(1:6) < LNK-SROUNYUIN-SANTEIYM
+                   MOVE   "2"       TO    LNK-SROUNYUIN-JOUSU-KBN(IDX1)
+               ELSE
+                   MOVE   RSITUSAN-SANTEIEDYMD(7:2)
+                                    TO    WRK-SANTEIED-DDX
+                   IF     IDX1        <=    WRK-SANTEIED-DD9
+                       MOVE   "1"   TO    LNK-SROUNYUIN-JOUSU-KBN(IDX1)
+                   ELSE
+                       MOVE   "2"   TO    LNK-SROUNYUIN-JOUSU-KBN(IDX1)
+                   END-IF
+               END-IF
+           END-PERFORM
       *Ï«ºÒÆþ±¡ÎÁ¤Î¼èÆÀ
            MOVE    ZERO                    TO  FLG-OK
            INITIALIZE                          NYUINACCT-REC
