@@ -527,3 +527,19 @@ path	key20	{
 		;
 	};
 };
+
+path	key21	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key21_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+                        AND  (SRYYMD      >=  :SRYYMD
+                        AND   SRYYMD      <=  :UPSRYYMD)
+			AND   LASTKBN     =   '1'
+			ORDER   BY        PTID,
+                                          SRYYMD
+		;
+	};
+};

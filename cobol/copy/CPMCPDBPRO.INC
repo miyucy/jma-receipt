@@ -234,6 +234,7 @@
       *  01.01.63    NACL-太田    03/04/28  PTTEIKIRRK-KEY5追加
       *  01.01.64    NACL-太田    03/04/28  SYUNOU-KEY15追加
       *  01.01.65    NACL-太田    03/04/30  SYUNOU-KEY16,17追加
+      *  01.01.51    NACL-多々納　03/05/01  JYURRK-KEY21追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1243,6 +1244,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "JYURRK-KEY20"
                    MOVE    PATH-TBL-JYURRK-KEY20
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY21"
+                   MOVE    PATH-TBL-JYURRK-KEY21
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "JYURRK-ALL"
