@@ -683,6 +683,7 @@ COPYS = \
         HCN01.INC \
         HCN011.INC \
         HCM06V02.INC \
+        CPPTKOHFTN.INC \
 
 DBPATH = \
 	ORCA-DBPATH
