@@ -140,6 +140,7 @@
                            11  SPA-GMN-TNAME       PIC X(20).
                            11  SPA-GMN-TKAMEI      PIC X(04).
                            11  SPA-GMN-TRAIINZUMI  PIC X(04).
+      *
                    07  SPA-GMN-SELBAN              PIC X(03).
       *           ¥«¥ì¥ó¥À¡¼ÎÎ°è
                    07  SPA-GMN-CALENDR.
@@ -2150,12 +2151,14 @@
       *    Í½Ìó¥ê¥¹¥ÈÁªÂò»þ
       *****************************************************************
        41019-CLIST-SEC            SECTION.
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   Y01-PTLIST-COUNT)
+      ************ UNTIL      (IDX         >   Y01-PTLIST-COUNT)
+                   UNTIL      (IDX         >   SPA-GMN-MAX     )
                IF      Y01-PTLIST-SELECT (IDX) =   "T"
                    MOVE  SPA-GMN-TBANGO(IDX)
-                                        TO  Y01-SELNUM
-                   COMPUTE    IDX       =   Y01-PTLIST-COUNT + 1
+                                               TO  Y01-SELNUM
+                   MOVE    SPA-GMN-MAX         TO  IDX
                END-IF
            END-PERFORM
       *
@@ -3135,8 +3138,8 @@
            MOVE     WRK-GMN-KENSUU         TO  Y01-FIXED2
       *
            PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL       IDX     >   50
-             IF  SPA-GMN-TBANGO (IDX)  NOT  =  ZERO
+                   UNTIL       IDX     >   SPA-GMN-MAX
+      *******IF  SPA-GMN-TBANGO (IDX)  NOT  =  ZERO
                MOVE    SPA-GMN-TBANGO (IDX)
                                            TO  Y01-TBANGO (IDX)
                IF      SPA-GMN-TYYKTIME(IDX)   NOT =   SPACE
@@ -3160,8 +3163,9 @@
                ELSE
                    MOVE    "F"             TO  Y01-PTLIST-SELECT  (IDX)
                END-IF
-             END-IF
+      ****** END-IF
            END-PERFORM
+           MOVE    SPA-GMN-MAX         TO  Y01-PTLIST-COUNT
       *
       *
            IF      SPA-YYK-MAX         =   ZERO
