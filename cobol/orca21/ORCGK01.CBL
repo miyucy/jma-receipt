@@ -36,6 +36,7 @@
       *  02.00.02    NACL-¬ø°π«º  02/10/18  ∆˛±°ƒ…≤√
       *  02.00.03    NACL-¬ø°π«º  02/11/15  ∞Ï≥Á∆˛Œœ°¢ ›∏±¡™¬ÚΩ§¿µ
       *  02.00.04    NACL-¬ø°π«º  03/03/05  «”¬æ¿©∏ÊΩËÕ˝ƒ…≤√
+      *  02.00.05    NACL-¬ø°π«º  03/09/09  ºıø«Õ˙ŒÚ°¢∆˛±°Õ˙ŒÚ§Ë§Íø«Œ≈≤ ≈˘∑ËƒÍ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -208,7 +209,7 @@
                        09  SPA-MAE-SRYKA       PIC X(02).
                        09  SPA-MAE-F1          PIC X(01).
                        09  SPA-MAE-SRYKAMEI    PIC X(18).
-                   07  SPA-MAE-SRYYMD          PIC X(09).
+                   07  SPA-MAE-SRYYMD          PIC X(10).
                    07  SPA-MAE-CONTKBN-G.
                        09  SPA-MAE-CONTKBN         PIC X(01).
                        09  SPA-MAE-CONTKBNH        PIC X(01).
@@ -879,6 +880,12 @@
                    END-IF
                END-PERFORM
            END-IF
+      *
+      *    ∆˛Œœ•¡•ß•√•ØÕ—
+           MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
+           MOVE    SPA-GMN-SRYYMD      TO  SPA-MAE-SRYYMD
+           MOVE    SPA-GMN-CONTKBN-G   TO  SPA-MAE-CONTKBN-G
+      *
            .
        31O-SPASET-EXT.
            EXIT.
@@ -990,7 +997,7 @@
            MOVE    SPA-GMN-SRYYMD      TO  SPA-MAE-SRYYMD
            MOVE    SPA-GMN-CONTKBN-G   TO  SPA-MAE-CONTKBN-G
            .
-       31O-K02SPASET-EXT.
+       310-K02SPASET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1703,7 +1710,18 @@
                                        SPA-AREA
                                        ORCSDRSETAREA
            MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
-           MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-DRCD-G
+           IF      ORCSDR-IN-DRCD-G    NOT =   SPACE
+               MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-DRCD-G
+           ELSE
+               IF      ORCSDR-DRCD-IDX     =   ZERO
+                   MOVE    1                   TO  IDX
+               ELSE
+                   MOVE    ORCSDR-DRCD-IDX     TO  IDX
+               END-IF
+               MOVE    SPA-GMN-DRCDLST(IDX) TO  SPA-GMN-DRCD-G
+               MOVE    "1"                  TO  SPA-NAI-DRCD (1:1)
+               MOVE    SPA-GMN-DRCDL  (IDX) TO  SPA-NAI-DRCD (2:)
+           END-IF
            MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
       *
       *
@@ -2089,7 +2107,6 @@
       *****************************************************************
        4103-SRYYMD-CHK-SEC             SECTION.
       *
-      *
       ***  IF      K01-SRYYMD          =   SPA-GMN-SRYYMD
       *        MOVE    4                   TO  SPA-GMN-CUR
       *        GO      TO      4103-SRYYMD-CHK-EXT
@@ -2148,6 +2165,15 @@
                MOVE    SPACE               TO  SPA-GMN-SRYKA
                PERFORM 41014-JYURRK-HKNCOMBI-SEC
            END-IF
+      *
+      *    ø«Œ≈≤ 
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
+               IF      SPA-GMN-SRYKA       =   SPA-GMN-SRYKAL(IDX)
+                   MOVE    SPA-GMN-SRYKALST(IDX)   TO  SPA-GMN-SRYKA-G
+                   MOVE    SPA-SRYKA-MAX           TO  IDX
+               END-IF
+           END-PERFORM
       *
       *    •…•Ø•ø°º ‘Ω∏
       *****PERFORM 4105-DRCD-CHK-SEC
@@ -2851,6 +2877,7 @@
            END-IF
       *
            INITIALIZE              SPA-K01
+           MOVE    SPACE           TO  SPA-DRCD
       *
            PERFORM 310-SPASET-SEC
       *
