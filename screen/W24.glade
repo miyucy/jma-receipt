@@ -506,7 +506,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1002</name>
 	  <x>15</x>
-	  <y>65</y>
+	  <y>35</y>
 	  <width>182</width>
 	  <height>25</height>
 	  <label>°åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤¼Â»Ü¸º»»</label>
@@ -522,7 +522,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1005</name>
 	  <x>15</x>
-	  <y>95</y>
+	  <y>65</y>
 	  <width>126</width>
 	  <height>25</height>
 	  <label>êóáìÂÐºöÌ¤¼Â»Ü¸º»»</label>
@@ -538,7 +538,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1003</name>
 	  <x>15</x>
-	  <y>35</y>
+	  <y>5</y>
 	  <width>182</width>
 	  <height>25</height>
 	  <label>±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»</label>
@@ -553,7 +553,7 @@
 	<widget>
 	  <class>GtkLabel</class>
 	  <name>label1004</name>
-	  <x>15</x>
+	  <x>3015</x>
 	  <y>5</y>
 	  <width>154</width>
 	  <height>25</height>
@@ -569,7 +569,7 @@
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_GN_NYUSRY</name>
-	  <x>205</x>
+	  <x>3205</x>
 	  <y>5</y>
 	  <width>230</width>
 	  <height>25</height>
@@ -584,7 +584,7 @@
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
 	    <name>GN_NYUSRY</name>
-	    <can_focus>True</can_focus>
+	    <can_focus>False</can_focus>
 	    <signal>
 	      <name>activate</name>
 	      <handler>send_event</handler>
@@ -610,7 +610,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_GN_INKANSEN</name>
 	  <x>205</x>
-	  <y>35</y>
+	  <y>5</y>
 	  <width>230</width>
 	  <height>25</height>
 	  <value_in_list>False</value_in_list>
@@ -650,7 +650,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_GN_ANZEN</name>
 	  <x>205</x>
-	  <y>65</y>
+	  <y>35</y>
 	  <width>230</width>
 	  <height>25</height>
 	  <value_in_list>False</value_in_list>
@@ -690,7 +690,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_GN_JOKUSO</name>
 	  <x>205</x>
-	  <y>95</y>
+	  <y>65</y>
 	  <width>230</width>
 	  <height>25</height>
 	  <value_in_list>False</value_in_list>

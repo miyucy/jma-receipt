@@ -27,6 +27,8 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  00.00.01    NACL-ÂÀÅÄ    03.01.24  Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»¤ò
+      *                                     ²èÌÌ¤«¤éºï½ü
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -390,7 +392,7 @@
            PERFORM 310-CMB-SK-SYOKUDO-SET-SEC
       *
       *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»¥³¥ó¥Ü
-           PERFORM 310-CMB-GN-NYUSRY-SET-SEC
+      *    PERFORM 310-CMB-GN-NYUSRY-SET-SEC
       *
       *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»¥³¥ó¥Ü
            PERFORM 310-CMB-GN-INKANSEN-SET-SEC
@@ -457,18 +459,18 @@
       *****************************************************************
       *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»¥³¥ó¥Ü 
       *****************************************************************
-       310-CMB-GN-NYUSRY-SET-SEC      SECTION.
+      *310-CMB-GN-NYUSRY-SET-SEC      SECTION.
       *
-           MOVE    2               TO  SPA-GMN-W24-GN-NYUSRY-CNT
+      *    MOVE    2               TO  SPA-GMN-W24-GN-NYUSRY-CNT
       *
-           MOVE    "1 ¸º»»¤·¤Ê¤¤" 
-                                   TO  SPA-GMN-W24-GN-NYUSRY-ITM (1)
-           MOVE    "2 ¸º»»¤¹¤ë" 
-                                   TO  SPA-GMN-W24-GN-NYUSRY-ITM (2)
+      *    MOVE    "1 ¸º»»¤·¤Ê¤¤" 
+      *                            TO  SPA-GMN-W24-GN-NYUSRY-ITM (1)
+      *    MOVE    "2 ¸º»»¤¹¤ë" 
+      *                            TO  SPA-GMN-W24-GN-NYUSRY-ITM (2)
       *
-           .
-       310-CMB-GN-NYUSRY-EXT.
-           EXIT.
+      *    .
+      *310-CMB-GN-NYUSRY-EXT.
+      *    EXIT.
       *****************************************************************
       *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»¥³¥ó¥Ü
       *****************************************************************
@@ -572,9 +574,9 @@
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SK-SYOKUDO
       *
       *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
-           MOVE    SYS-5000-GENKBN (1) TO  WRK-CMB-CD
-           PERFORM 4103-CMB-GN-NYUSRY-SRH-SEC
-           MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-GN-NYUSRY
+      *    MOVE    SYS-5000-GENKBN (1) TO  WRK-CMB-CD
+      *    PERFORM 4103-CMB-GN-NYUSRY-SRH-SEC
+      *    MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-GN-NYUSRY
       *
       *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
            MOVE    SYS-5000-GENKBN (2) TO  WRK-CMB-CD
@@ -811,7 +813,7 @@
       *    ¿©Æ²²Ã»»
            MOVE    W24-SK-SYOKUDO      TO  SPA-GMN-W24-SK-SYOKUDO
       *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
-           MOVE    W24-GN-NYUSRY       TO  SPA-GMN-W24-GN-NYUSRY
+      *    MOVE    W24-GN-NYUSRY       TO  SPA-GMN-W24-GN-NYUSRY
       *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
            MOVE    W24-GN-INKANSEN     TO  SPA-GMN-W24-GN-INKANSEN
       *    °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤¼Â»Ü¸º»»
@@ -865,10 +867,10 @@
            END-IF
       *
       *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 4100-GN-NYUSRY-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
+      *    PERFORM 4100-GN-NYUSRY-CHK-SEC
+      *    IF    ( SPA-ERRCD   NOT =   SPACE )
+      *        GO  TO  4102-KIHON-CHK-EXT
+      *    END-IF
       *
       *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»¥Á¥§¥Ã¥¯½èÍý
            PERFORM 4100-GN-INKANSEN-CHK-SEC
@@ -1165,10 +1167,10 @@
                                    TO  SYS-5000-SHOKUKBN (2)
       *
       *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
-           MOVE    CONST-GENCD (1)
-                                   TO  SYS-5000-GENCD (1)
-           MOVE    SPA-GMN-W24-GN-NYUSRY-CD
-                                   TO  SYS-5000-GENKBN (1)
+      *    MOVE    CONST-GENCD (1)
+      *                            TO  SYS-5000-GENCD (1)
+      *    MOVE    SPA-GMN-W24-GN-NYUSRY-CD
+      *                            TO  SYS-5000-GENKBN (1)
       *
       *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
            MOVE    CONST-GENCD (2)
@@ -1305,31 +1307,31 @@
       *****************************************************************
       *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       4100-GN-NYUSRY-CHK-SEC          SECTION.
+      *4100-GN-NYUSRY-CHK-SEC          SECTION.
       *
-           IF    ( SPA-GMN-W24-GN-NYUSRY =   SPACE )
-               MOVE   "1"              TO  WRK-CMB-CD
-               PERFORM 4103-CMB-GN-NYUSRY-SRH-SEC
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-GN-NYUSRY
-               GO  TO  4100-GN-NYUSRY-CHK-EXT
-           END-IF
+      *    IF    ( SPA-GMN-W24-GN-NYUSRY =   SPACE )
+      *        MOVE   "1"              TO  WRK-CMB-CD
+      *        PERFORM 4103-CMB-GN-NYUSRY-SRH-SEC
+      *        MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-GN-NYUSRY
+      *        GO  TO  4100-GN-NYUSRY-CHK-EXT
+      *    END-IF
       *
       *    ³ºÅö¥³¡¼¥É¤Î¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯
-           MOVE    SPA-GMN-W24-GN-NYUSRY-CD
-                                       TO  WRK-CMB-CD
-           PERFORM 4103-CMB-GN-NYUSRY-SRH-SEC
-           IF   (  WRK-CMB-ITM     =   SPACE )
-               MOVE    4           TO  SPA-GMN-W24-CUR
-               MOVE    "0001"      TO  SPA-ERRCD
-               GO  TO  4100-GN-NYUSRY-CHK-EXT
-           END-IF
+      *    MOVE    SPA-GMN-W24-GN-NYUSRY-CD
+      *                                TO  WRK-CMB-CD
+      *    PERFORM 4103-CMB-GN-NYUSRY-SRH-SEC
+      *    IF   (  WRK-CMB-ITM     =   SPACE )
+      *        MOVE    4           TO  SPA-GMN-W24-CUR
+      *        MOVE    "0001"      TO  SPA-ERRCD
+      *        GO  TO  4100-GN-NYUSRY-CHK-EXT
+      *    END-IF
       *
-           MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-GN-NYUSRY
+      *    MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-GN-NYUSRY
       *
-           .
+      *    .
       *
-       4100-GN-NYUSRY-CHK-EXT.
-           EXIT.
+      *4100-GN-NYUSRY-CHK-EXT.
+      *    EXIT.
       *****************************************************************
       *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
@@ -1898,29 +1900,29 @@
       *****************************************************************
       *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»¥µ¡¼¥Á½èÍý
       *****************************************************************
-       4103-CMB-GN-NYUSRY-SRH-SEC      SECTION.
+      *4103-CMB-GN-NYUSRY-SRH-SEC      SECTION.
       *
-           SET     CMB-IDX04       TO  1
-           SEARCH  SPA-GMN-W24-GN-NYUSRY-ITM
-                   VARYING CMB-IDX04
-           AT  END
-               INITIALIZE          WRK-CMB-ITM
-                                   WRK-CMB-IDX
-           WHEN    SPA-GMN-W24-GN-NYUSRY-ITM (CMB-IDX04) (1 : 1)
-                                   =   WRK-CMB-CD
-               SET WRK-CMB-IDX     TO  CMB-IDX04
-               MOVE    SPA-GMN-W24-GN-NYUSRY-ITM (CMB-IDX04)
-                                   TO  WRK-CMB-ITM
-           WHEN    SPA-GMN-W24-GN-NYUSRY-ITM (CMB-IDX04)
-                                   =   SPACE
-               INITIALIZE          WRK-CMB-ITM
-                                   WRK-CMB-IDX
-           END-SEARCH
+      *    SET     CMB-IDX04       TO  1
+      *    SEARCH  SPA-GMN-W24-GN-NYUSRY-ITM
+      *            VARYING CMB-IDX04
+      *    AT  END
+      *        INITIALIZE          WRK-CMB-ITM
+      *                            WRK-CMB-IDX
+      *    WHEN    SPA-GMN-W24-GN-NYUSRY-ITM (CMB-IDX04) (1 : 1)
+      *                            =   WRK-CMB-CD
+      *        SET WRK-CMB-IDX     TO  CMB-IDX04
+      *        MOVE    SPA-GMN-W24-GN-NYUSRY-ITM (CMB-IDX04)
+      *                            TO  WRK-CMB-ITM
+      *    WHEN    SPA-GMN-W24-GN-NYUSRY-ITM (CMB-IDX04)
+      *                            =   SPACE
+      *        INITIALIZE          WRK-CMB-ITM
+      *                            WRK-CMB-IDX
+      *    END-SEARCH
       *
-           .
+      *    .
       *
-       4103-CMB-GN-NYUSRY-SRH-EXT.
-           EXIT.
+      *4103-CMB-GN-NYUSRY-SRH-EXT.
+      *    EXIT.
       *****************************************************************
       *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»¥µ¡¼¥Á½èÍý
       *****************************************************************
@@ -2049,8 +2051,8 @@
            MOVE    SPA-GMN-W24-SK-SYOKUDO-ITM (1)
                                    TO  SPA-GMN-W24-SK-SYOKUDO
       *
-           MOVE    SPA-GMN-W24-GN-NYUSRY-ITM (1)
-                                   TO  SPA-GMN-W24-GN-NYUSRY
+      *    MOVE    SPA-GMN-W24-GN-NYUSRY-ITM (1)
+      *                            TO  SPA-GMN-W24-GN-NYUSRY
       *
            MOVE    SPA-GMN-W24-GN-INKANSEN-ITM (1)
                                    TO  SPA-GMN-W24-GN-INKANSEN
@@ -2303,17 +2305,17 @@
            END-PERFORM
       *
       *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
-           MOVE    SPA-GMN-W24-GN-NYUSRY
-                                   TO  W24-GN-NYUSRY
-           MOVE    SPA-GMN-W24-GN-NYUSRY-CNT
-                                   TO  W24-GN-NYUSRY-CNT
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   W24-GN-NYUSRY-CNT )
+      *    MOVE    SPA-GMN-W24-GN-NYUSRY
+      *                            TO  W24-GN-NYUSRY
+      *    MOVE    SPA-GMN-W24-GN-NYUSRY-CNT
+      *                            TO  W24-GN-NYUSRY-CNT
+      *    PERFORM VARYING IDX1    FROM    1   BY  1
+      *            UNTIL ( IDX1    >   W24-GN-NYUSRY-CNT )
       *
-               MOVE    SPA-GMN-W24-GN-NYUSRY-ITM (IDX1)
-                                   TO  W24-GN-NYUSRY-ITM (IDX1)
+      *        MOVE    SPA-GMN-W24-GN-NYUSRY-ITM (IDX1)
+      *                            TO  W24-GN-NYUSRY-ITM (IDX1)
       *
-           END-PERFORM
+      *    END-PERFORM
       *
       *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
            MOVE    SPA-GMN-W24-GN-INKANSEN
@@ -2423,8 +2425,8 @@
                MOVE    "SK_TOKKSN"     TO  MCP-WIDGET
            WHEN    003
                MOVE    "SK_SYOKUDO"    TO  MCP-WIDGET
-           WHEN    004
-               MOVE    "GN_NYUSRY"     TO  MCP-WIDGET
+      *    WHEN    004
+      *        MOVE    "GN_NYUSRY"     TO  MCP-WIDGET
            WHEN    005
                MOVE    "GN_INKANSEN"   TO  MCP-WIDGET
            WHEN    006
@@ -2573,8 +2575,8 @@
                MOVE    002             TO  SPA-GMN-W24-CUR
            WHEN    "SK_SYOKUDO"
                MOVE    003             TO  SPA-GMN-W24-CUR
-           WHEN    "GN_NYUSRY"
-               MOVE    004             TO  SPA-GMN-W24-CUR
+      *    WHEN    "GN_NYUSRY"
+      *        MOVE    004             TO  SPA-GMN-W24-CUR
            WHEN    "GN_INKANSEN"
                MOVE    005             TO  SPA-GMN-W24-CUR
            WHEN    "GN_ANZEN"
@@ -2647,6 +2649,8 @@
       *
       *    ¼¡¥«¡¼¥½¥ë°ÌÃÖ¤òÀßÄê
            EVALUATE    MCP-WIDGET
+           WHEN    "SK_SYOKUDO"
+               MOVE    005             TO  SPA-GMN-W24-CUR
            WHEN    "SRYCD10"
                MOVE    212             TO  SPA-GMN-W24-CUR
            WHEN    OTHER
