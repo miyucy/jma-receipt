@@ -1536,6 +1536,7 @@
                END-PERFORM
       *        訂正の時、集計なし
                IF     (LNK-ORCSC-SYORIFLG =   "1"    )  AND
+                      (ACCT-SRYKA         =   SPA-SRYKA  )   AND
                       (ACCT-HKNCOMBI      =   SPA-HKNCOMBINUM)
                    MOVE    ZERO               TO  FLG-ZAIARI
                END-IF
@@ -1724,6 +1725,7 @@
                MOVE    1                   TO  FLG-ZAIARI
       *        訂正の時、集計なし
                IF     (LNK-ORCSC-SYORIFLG  =   "1"    )  AND
+                      (ACCT-SRYKA          =   SPA-SRYKA )  AND
                       (ACCT-HKNCOMBI       =   SPA-HKNCOMBINUM)
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
@@ -1757,7 +1759,7 @@
            EXIT.
       *
       *****************************************************************
-      *     当日のすべての手術の有無を判定処理
+      *     当日のすべての画像診断点滴の有無を判定処理
       *****************************************************************
        3003-GAZOU-CHK-SEC         SECTION.
       *
@@ -1787,6 +1789,7 @@
                MOVE    1                   TO  FLG-ZAIARI
       *        訂正の時、集計なし
                IF     (LNK-ORCSC-SYORIFLG  =   "1"    )  AND
+                      (ACCT-SRYKA          =   SPA-SRYKA )  AND
                       (ACCT-HKNCOMBI       =   SPA-HKNCOMBINUM)
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
