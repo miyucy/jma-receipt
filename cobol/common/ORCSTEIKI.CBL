@@ -2392,10 +2392,12 @@
            PERFORM  VARYING  IDX1    FROM    1   BY  1
                       UNTIL  IDX1     >       31
       *
+               IF  SYU-DAY(IDX1)   =   "1"  OR  "2"
                     IF  ORCSTEN-ZAITEN(IDX1)  NOT =  ZERO
                         ADD    ORCSTEN-ZAITEN(IDX1)
                                       TO   SYU-HKNTEN (05)
                     END-IF
+               END-IF
       *
            END-PERFORM
       *
@@ -2406,8 +2408,10 @@
                     MOVE    ZERO   TO   WRK-ZAIKAISU
                     PERFORM  VARYING  IDX2    FROM    1   BY  1
                           UNTIL   IDX2     >       31
+                      IF  SYU-DAY(IDX2)   =   "1"  OR  "2"
                         ADD    ORCSTEN-KIZ-DAY(IDX1 IDX2)
                                       TO   WRK-ZAIKAISU
+                      END-IF
                     END-PERFORM
       *
                     COMPUTE  SYU-HKNTEN (05)  =
