@@ -115,8 +115,10 @@
                05  WRK-DAY1                            PIC 9(04).
                05  WRK-DAY2                            PIC 9(04).
                05  WRK-DAY4                            PIC 9(04).
+               05  WRK-DAY41                           PIC 9(04).
                05  WRK-DAY5                            PIC 9(04).
                05  WRK-DAY6                            PIC 9(04).
+               05  WRK-DAY6-ZAITEN                     PIC 9(08).
       *
       *    一時領域
        01  WRK-AREA.
@@ -138,6 +140,9 @@
            03  WRK-NYUKHNRYO                           PIC 9(09).
            03  WRK-NYUTOKRYO                           PIC 9(09).
            03  WRK-MIJISI                              PIC 9(09).
+           03  WRK-SHOKUJIRYOYO                        PIC 9(01).
+           03  WRK-TOKUKANRIKASAN                      PIC 9(01).
+           03  WRK-SRYCD                               PIC 9(09).
       *
            COPY    "MCPAREA".
       *
@@ -247,6 +252,8 @@
       *
       *    医療機関減算の取得（システム管理テーブルより）
            MOVE     ZERO               TO  WRK-MIJISI
+                                           WRK-SHOKUJIRYOYO
+                                           WRK-TOKUKANRIKASAN
       *
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
@@ -281,6 +288,18 @@
                         END-EVALUATE
                     END-IF
                END-PERFORM
+      *
+               IF  SYS-5000-SHOKUJIRYOYOCD   =  "197000110"
+                      MOVE     1         TO   WRK-SHOKUJIRYOYO
+                      IF  SYS-5000-SHOKUKBN(1) =  "1"
+                           MOVE  ZERO    TO   WRK-TOKUKANRIKASAN
+                      ELSE
+                           MOVE  1       TO   WRK-TOKUKANRIKASAN
+                      END-IF
+               ELSE
+                      MOVE     2         TO   WRK-SHOKUJIRYOYO
+               END-IF
+      *
            END-IF
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
@@ -359,6 +378,7 @@
                PERFORM    RECE62-HENSYU-SEC
                PERFORM    RECE62-HENSYU2-SEC
                PERFORM    RECE62-HENSYU3-SEC
+               PERFORM    RECE62-HENSYU4-SEC
                PERFORM    RECE62-HENSYU9-SEC
       ***  END-PERFORM
       *
@@ -453,7 +473,11 @@
                END-IF 
       *
                IF     NACCT-ZAISKBKBN    =    "4"  
+                 IF    NACCT-SRYCDTOTAL  =    197000570 
+                    MOVE   NACCT-DAY(IDY)  TO   WRK-DAY41(IDY) 
+                 ELSE 
                     MOVE   NACCT-DAY(IDY)  TO   WRK-DAY4(IDY) 
+                 END-IF
                END-IF 
       *
                IF     NACCT-ZAISKBKBN    =    "5"  
@@ -461,7 +485,11 @@
                END-IF 
       *
                IF     NACCT-ZAISKBKBN    =    "6"  
+                 PERFORM      NYUINKHN-GET2-SEC
+                 IF   WRK-NYUTENTTLKBN  =  920
                     MOVE   NACCT-DAY(IDY)  TO   WRK-DAY6(IDY) 
+                    ADD    NACCT-ZAITEN    TO   WRK-DAY6-ZAITEN(IDY)
+                 END-IF
                END-IF 
       *
              END-IF
@@ -723,29 +751,14 @@
                          MOVE     NACCT-ZAITEN   TO  
                                        WRK-NYUKHNRYO
                      WHEN   1
-      *                  COMPUTE  WRK-NYUKHNRYO =
-      *                          (WRK-KHNTEN    *  0.85)
-      *                                         +  0.5
-      *                  ADD      WRK-KSNTEN     TO  
-      *                                WRK-NYUKHNRYO
                          COMPUTE  WRK-NYUKHNRYO =
                                  (WRK-KHNTEN    *  0.15)
                                                 +  0.5
                      WHEN   2
-      *                  COMPUTE  WRK-NYUKHNRYO =
-      *                          (WRK-KHNTEN    *  0.7)
-      *                                         +  0.5
-      *                  ADD      WRK-KSNTEN     TO  
-      *                                WRK-NYUKHNRYO
                          COMPUTE  WRK-NYUKHNRYO =
                                  (WRK-KHNTEN    *  0.3)
                                                 +  0.5
                      WHEN   5
-      *                  COMPUTE  WRK-NYUKHNRYO =
-      *                          (WRK-KHNTEN    *  0.9)
-      *                                         +  0.5
-      *                  ADD      WRK-KSNTEN     TO  
-      *                                WRK-NYUKHNRYO
                          COMPUTE  WRK-NYUKHNRYO =
                                  (WRK-KHNTEN    *  0.1)
                                                 +  0.5
@@ -777,24 +790,19 @@
                          MOVE     NACCT-ZAITEN   TO  
                                        WRK-NYUTOKRYO
                      WHEN   3
-      *                  COMPUTE  WRK-NYUTOKRYO =
-      *                          (WRK-KHNTEN    *  0.85)
-      *                                         +  0.5
-      *                  ADD      WRK-KSNTEN     TO  
-      *                                WRK-NYUTOKRYO
                          COMPUTE  WRK-NYUTOKRYO =
                                  (WRK-KHNTEN    *  0.15)
                                                 +  0.5
                      WHEN   4
-      *                  COMPUTE  WRK-NYUTOKRYO =
-      *                          (WRK-KHNTEN    *  0.7)
-      *                                         +  0.5
-      *                  ADD      WRK-KSNTEN     TO  
-      *                                WRK-NYUTOKRYO
                          COMPUTE  WRK-NYUTOKRYO =
                                  (WRK-KHNTEN    *  0.3)
                                                 +  0.5
                   END-EVALUATE
+                  IF  WRK-DAY6(IDY)          NOT =  ZERO
+                  AND WRK-DAY6-ZAITEN(IDY)   NOT =  ZERO
+                      COMPUTE  WRK-NYUTOKRYO = WRK-NYUTOKRYO
+                                             + WRK-DAY6-ZAITEN(IDY)
+                  END-IF
                   COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
                            RECE62-NYUTOKKEI2(KH-IDX)  -  WRK-MIJISI
                   MOVE     ZERO     TO    FLG-ARI
@@ -830,9 +838,9 @@
                 WHEN   903
                     COMPUTE  RECE62-NYUKHNKEI2(KH-IDX)  =
                              RECE62-NYUKHNKEI2(KH-IDX)  +  NACCT-ZAITEN
-                WHEN   920
-                    COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
-                             RECE62-NYUTOKKEI2(KH-IDX)  +  NACCT-ZAITEN
+      *         WHEN   920
+      *             COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
+      *                      RECE62-NYUTOKKEI2(KH-IDX)  +  NACCT-ZAITEN
            END-EVALUATE
       *
            .
@@ -954,6 +962,8 @@
                                                   OR  "190809090"
                                                   OR  "190111790"
                                                   OR  "190809190"
+                     CONTINUE
+                   ELSE
                      MOVE    SPACE         TO   TNS-TENSU-REC
                      INITIALIZE                 TNS-TENSU-REC
                      MOVE    NSRY-SRYCD(NYUINACT-IDX) TO   TNS-SRYCD
@@ -1178,6 +1188,125 @@
       *
            .
        NYUINKHN-GET3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの編集（Ｆ００２）
+      *****************************************************************
+       RECE62-HENSYU4-SEC                SECTION.
+      *
+           PERFORM  VARYING  IDY    FROM    1   BY  1
+                          UNTIL   IDY     >       31
+      *
+              PERFORM  VARYING  IDX1    FROM    1   BY  1
+                             UNTIL   IDX1    >       10
+                             OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
+      *
+                 IF  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
+                      IF   WRK-DAY4(IDY)   NOT =    ZERO  
+                           PERFORM   NYUINKHN-GET4-SEC
+                      END-IF
+                 END-IF
+      *
+              END-PERFORM
+      *
+           END-PERFORM
+      *
+           .
+       RECE62-HENSYU4-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    食事略称の取得
+      **************************************************************
+       NYUINKHN-GET4-SEC           SECTION.
+      *
+           EVALUATE   WRK-DAY4(IDY)
+             WHEN  1
+                EVALUATE   WRK-SHOKUJIRYOYO
+                  WHEN  1
+                     MOVE    "197000110"  TO  WRK-SRYCD
+                     PERFORM  NYUINKHN-SET4-SEC
+                     IF    WRK-TOKUKANRIKASAN  =  1
+                        MOVE    "197000270"  TO  WRK-SRYCD
+                        PERFORM  NYUINKHN-SET4-SEC
+                     END-IF
+                     IF    WRK-DAY41(IDY)  =  1
+                        MOVE    "197000570"  TO  WRK-SRYCD
+                        PERFORM  NYUINKHN-SET4-SEC
+                     END-IF
+                  WHEN  2
+                     MOVE    "197000710"  TO  WRK-SRYCD
+                     PERFORM  NYUINKHN-SET4-SEC
+                END-EVALUATE
+             WHEN  2
+                     MOVE    "197000110"  TO  WRK-SRYCD
+                     PERFORM  NYUINKHN-SET4-SEC
+                     IF    WRK-TOKUKANRIKASAN  =  1
+                        MOVE    "197000270"  TO  WRK-SRYCD
+                        PERFORM  NYUINKHN-SET4-SEC
+                     END-IF
+                     IF    WRK-DAY41(IDY)  =  1
+                        MOVE    "197000570"  TO  WRK-SRYCD
+                        PERFORM  NYUINKHN-SET4-SEC
+                     END-IF
+      *              MOVE    "197000470"  TO  WRK-SRYCD
+      *              PERFORM  NYUINKHN-SET4-SEC
+             WHEN  3
+                     MOVE    "197000110"  TO  WRK-SRYCD
+                     PERFORM  NYUINKHN-SET4-SEC
+                     IF    WRK-TOKUKANRIKASAN  =  1
+                        MOVE    "197000270"  TO  WRK-SRYCD
+                        PERFORM  NYUINKHN-SET4-SEC
+                     END-IF
+                     IF    WRK-DAY41(IDY)  =  1
+                        MOVE    "197000570"  TO  WRK-SRYCD
+                        PERFORM  NYUINKHN-SET4-SEC
+                     END-IF
+      *              MOVE    "197000670"  TO  WRK-SRYCD
+      *              PERFORM  NYUINKHN-SET4-SEC
+           END-EVALUATE
+      *
+           .
+       NYUINKHN-GET4-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    食事略称のセット
+      **************************************************************
+       NYUINKHN-SET4-SEC           SECTION.
+      *
+           MOVE    SPACE          TO   NYURYAKUSHO-REC
+           INITIALIZE                  NYURYAKUSHO-REC
+           MOVE    WRK-SRYCD      TO   NYURYAKUSHO-SRYCD
+           MOVE    RECE62-SRYYM   TO   ORC-DBYMD(1:6)
+           MOVE    "01"           TO   ORC-DBYMD(7:2)
+           PERFORM  NYURYAKUSHO-READ-SEC
+           IF       FLG-NYURYAKUSHO    =    ZERO
+                MOVE     ZERO     TO    FLG-ARI
+                PERFORM  VARYING  ID1    FROM    1   BY  1
+                       UNTIL   ID1                   > 3
+                         OR    RECE62-SHOKUJISYUBETU(ID1) = SPACE
+                         OR    FLG-ARI                = 1 
+                    IF  RECE62-SHOKUJISYUBETU(ID1)  
+                               =  NYURYAKUSHO-RYAKUSHO
+                        MOVE  1   TO   FLG-ARI
+                    END-IF
+                END-PERFORM  
+                IF  FLG-ARI  =  ZERO  
+                    MOVE   NYURYAKUSHO-RYAKUSHO
+                             TO   RECE62-SHOKUJISYUBETU(ID1)
+                END-IF
+           END-IF                  
+           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       NYUINKHN-SET4-EXT.
            EXIT.
       *
       *****************************************************************
