@@ -5,12 +5,9 @@
   <name>K08</name>
   <program_name>K08</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
@@ -28,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 04 Jan 2001 03:26:09 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -752,7 +749,7 @@
       <name>SELNUM01</name>
       <x>96</x>
       <y>688</y>
-      <width>40</width>
+      <width>32</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -774,9 +771,9 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM02</name>
-      <x>136</x>
+      <x>128</x>
       <y>688</y>
-      <width>40</width>
+      <width>32</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -798,9 +795,9 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM03</name>
-      <x>176</x>
+      <x>160</x>
       <y>688</y>
-      <width>40</width>
+      <width>32</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -822,9 +819,9 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM04</name>
-      <x>216</x>
+      <x>192</x>
       <y>688</y>
-      <width>40</width>
+      <width>32</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -846,9 +843,9 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM05</name>
-      <x>256</x>
+      <x>224</x>
       <y>688</y>
-      <width>40</width>
+      <width>32</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -870,9 +867,9 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM06</name>
-      <x>296</x>
+      <x>256</x>
       <y>688</y>
-      <width>40</width>
+      <width>32</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -894,9 +891,9 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM07</name>
-      <x>336</x>
+      <x>288</x>
       <y>688</y>
-      <width>40</width>
+      <width>32</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -918,9 +915,9 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM08</name>
-      <x>376</x>
+      <x>320</x>
       <y>688</y>
-      <width>40</width>
+      <width>32</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -942,9 +939,9 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM09</name>
-      <x>416</x>
+      <x>352</x>
       <y>688</y>
-      <width>40</width>
+      <width>32</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -966,9 +963,9 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM10</name>
-      <x>456</x>
+      <x>384</x>
       <y>688</y>
-      <width>40</width>
+      <width>32</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -1354,6 +1351,22 @@
 	  </widget>
 	</widget>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MSGDATA</name>
+      <x>424</x>
+      <y>688</y>
+      <width>428</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

@@ -5,18 +5,15 @@
   <name>KERR</name>
   <program_name>KERR</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
   <class>GtkWindow</class>
   <name>KERR2</name>
-  <width>527</width>
+  <width>560</width>
   <height>130</height>
   <signal>
     <name>map_event</name>
@@ -28,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 26 Jan 2001 04:22:42 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -65,7 +62,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B01</name>
-      <x>232</x>
+      <x>240</x>
       <y>96</y>
       <width>64</width>
       <height>32</height>
@@ -90,7 +87,7 @@
       <name>ERRMSG</name>
       <x>8</x>
       <y>40</y>
-      <width>516</width>
+      <width>548</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <editable>False</editable>
@@ -106,7 +103,7 @@
       <name>ERRMSG2</name>
       <x>8</x>
       <y>64</y>
-      <width>516</width>
+      <width>548</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <editable>False</editable>
