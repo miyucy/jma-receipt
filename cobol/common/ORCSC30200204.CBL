@@ -341,10 +341,19 @@
                    PERFORM 100-SEL-SYORI-SEC
       *        全体のチェック
                WHEN    "2"
-                   PERFORM 200-ALL-SYORI-SEC
+                   IF      SPA-HKNCOMBINUM     =   "9999"
+                       CONTINUE
+                   ELSE
+                       PERFORM 200-ALL-SYORI-SEC
+                   END-IF
       *        自動算定
                WHEN    "3"
-                   PERFORM 300-AUTO-SYORI-SEC
+                   IF     (SPA-HKNCOMBINUM     =   "9999" )  OR
+                          (LNK-ORCSC-PG    NOT =   "K02"  )
+                       CONTINUE
+                   ELSE
+                       PERFORM 300-AUTO-SYORI-SEC
+                   END-IF
                WHEN    OTHER
                    MOVE    "1099"          TO  SPA-ERRCD
            END-EVALUATE
@@ -687,6 +696,7 @@
       *        END-IF
       *        GO    TO      1002-TENTEKI-CHK-EXT
       *****END-IF
+      *
            IF      WRK-SRYCD           =   SPACE
                GO    TO      1002-TENTEKI-CHK-EXT
            END-IF
@@ -934,12 +944,11 @@
       *
            MOVE    1                   TO  FLG-ADD
       *    手技料の変更の時、診療区分のセットはしない
-           IF      FLG-SYUGIADD         =   1
+           IF     (FLG-SYUGIADD         =   1    )  OR
+                  (IDX-S               =   1  OR  ZERO )
               GO      TO      1100-JIDOTUIKA-EXT
            END-IF
-           IF      IDX-S               =   1  OR  ZERO
-              GO      TO      1100-JIDOTUIKA-EXT
-           END-IF
+      *
            MOVE    WRK-COM-SRYKBN (IDX-S - 1)
                                        TO  WRK-COM-SRYKBN(IDX-S)
            MOVE    SPACE               TO  WRK-GMN-SRYKBN(IDX-S)
@@ -1077,18 +1086,17 @@
       *
            MOVE    "099309901"         TO  WRK-SRYCD
            IF      WRK-COM-INPUTCD (IDX-HAI + 1) =   WRK-SRYCD
-               GO      TO      10011-HAIKI-ADD-EXT
+               CONTINUE
+           ELSE
+               MOVE    IDX-HAI             TO  IDX-S
+               MOVE    ZERO                TO  FLG-ARI
+               MOVE    ZERO                TO  FLG-SYUGIADD
+               PERFORM 1100-JIDOTUIKA-SEC
            END-IF
-      *
-           MOVE    IDX-HAI             TO  IDX-S
-           MOVE    ZERO                TO  FLG-ARI
-           MOVE    ZERO                TO  FLG-SYUGIADD
-           PERFORM 1100-JIDOTUIKA-SEC
       *
            .
        10011-HAIKI-ADD-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    割合加算計算処理
@@ -1177,11 +1185,6 @@
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *----(01.00.01) LINE ADD START ----------------------------------
-      *    包括まとめ入力は以下対象外
-           IF      SPA-HKNCOMBINUM     =   "9999"
-               GO      TO      200-ALL-SYORI-EXT
-           END-IF
-      *
            MOVE    ZERO                TO  FLG-TENTEKI
            MOVE    ZERO                TO  FLG-DOUCHU
       *
@@ -1269,24 +1272,24 @@
       *****************************************************************
        300-AUTO-SYORI-SEC              SECTION.
       *
-      *    包括まとめ入力は以下対象外
-           IF      SPA-HKNCOMBINUM     =   "9999"
-               GO      TO      300-AUTO-SYORI-EXT
-           END-IF
-      *
-      *    Ｋ０２時、自動発生する
-           IF      LNK-ORCSC-PG        =   "K02"
-               CONTINUE
-           ELSE
-               GO      TO      300-AUTO-SYORI-EXT
-           END-IF
-      *
       *    入院の時、自動発生する
            IF      SPA-NYUGAIKBN       =   "2"
       *        外来の時、点滴液量チェック
                PERFORM 3001-GAIRAI-TENTEKI-SEC
-               GO      TO      300-AUTO-SYORI-EXT
+           ELSE
+      *        入院の時、点滴手技料自動発生
+               PERFORM 3002-NYUIN-TENTEKI-SEC
            END-IF
+      *
+           .
+       300-AUTO-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院の時、点滴手技料自動発生処理
+      *****************************************************************
+       3002-NYUIN-TENTEKI-SEC         SECTION.
+      *
            MOVE    SPACE               TO  WRK-ERRCD
       *
            INITIALIZE                  TBL-NISUU-AREA
@@ -1416,31 +1419,49 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               GO      TO      300-AUTO-SYORI-EXT
-           END-IF
-      *    当日のすべての点滴液量を集計する
-           PERFORM 3001-EKIRYO-SYUKEI-SEC
-      *    当日のすべての手術の有無を判定
-           PERFORM 3003-SYUJYU-CHK-SEC
-      *    当日のすべての画像点滴手技の有無を判定
-           PERFORM 3003-GAZOU-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      300-AUTO-SYORI-EXT
+               CONTINUE
+           ELSE
+      *        当日のすべての点滴液量を集計する
+               PERFORM 3001-EKIRYO-SYUKEI-SEC
+      *        当日のすべての手術の有無を判定
+               PERFORM 3003-SYUJYU-CHK-SEC
+      *        当日のすべての画像点滴手技の有無を判定
+               PERFORM 3003-GAZOU-CHK-SEC
            END-IF
       *
            MOVE    ZERO                TO  IDXS
       *
       *    中心静脈発生チェック
-           PERFORM 3004-IVH-AUTO-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      300-AUTO-SYORI-EXT
+           IF     (FLG-OK              =   ZERO  )  OR
+                  (SPA-ERRCD       NOT =   SPACE )
+               CONTINUE
+           ELSE
+               PERFORM 3004-IVH-AUTO-SEC
            END-IF
       *
       *    点滴注射発生チェック
-           PERFORM 3005-TENTEKI-AUTO-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      300-AUTO-SYORI-EXT
+           IF     (FLG-OK              =   ZERO  )  OR
+                  (SPA-ERRCD       NOT =   SPACE )
+               CONTINUE
+           ELSE
+               PERFORM 3005-TENTEKI-AUTO-SEC
            END-IF
+      *
+           IF     (FLG-OK              =   ZERO  )  OR
+                  (SPA-ERRCD       NOT =   SPACE )
+               CONTINUE
+           ELSE
+               PERFORM 30021-NYUIN-AUTO-SEC
+           END-IF
+      *
+           .
+       3002-NYUIN-TENTEKI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院手技料自動発生処理
+      *****************************************************************
+       30021-NYUIN-AUTO-SEC         SECTION.
       *
       *    点滴手技料自動発生
            INITIALIZE                  WRK-NISUU-HEN-AREA
@@ -1525,7 +1546,7 @@
            END-IF
       *
            .
-       300-AUTO-SYORI-EXT.
+       30021-NYUIN-AUTO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1536,6 +1557,7 @@
            MOVE    ZERO                TO  IDX-SYU
            MOVE    ZERO                TO  IDX-CHU
            MOVE    ZERO                TO  WRK-CHUSYA
+           MOVE    ZERO                TO  FLG-SYUJUTU
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
@@ -1565,16 +1587,36 @@
                        MOVE    IDX             TO  IDX-CHU
                    END-IF
                END-IF
+      *        手術
+               IF     (SPA-NYUGAIKBN               =   "2"   )  AND
+                      (WRK-COM-SRYSYUKBN(IDX)      =   "500" )  AND
+                      (WRK-COM-INPUTCD  (IDX)(1:1) =   "1"   )  AND
+                      (WRK-COM-DATAKBN  (IDX)      =   "1"   )
+                   MOVE    1                   TO  FLG-SYUJUTU
+               END-IF
            END-PERFORM
       *    今回と前回の両方に手技がある場合は、チェックしない
-           IF     (IDX-SYU             >   ZERO ) AND
-                  (LNK-ACCT2-SRYCD NOT =   SPACE)
-               GO      TO      3001-GAIRAI-TENTEKI-EXT
+      *    手術がある時対象外
+           IF    ((IDX-SYU             >   ZERO ) AND
+                  (LNK-ACCT2-SRYCD NOT =   SPACE) )  OR
+                  (FLG-SYUJUTU         =   1      )  OR
+                  (WRK-CHUSYA          =   ZERO   )  OR
+      *           前回に点滴がない時
+                 ((LNK-ACCT2-CSYYOURYO =   ZERO   ) AND
+                  (LNK-ACCT2-SRYCD     =   SPACE  ))
+               CONTINUE
+           ELSE
+               PERFORM 30011-GAIRAI-TEN-CHK-SEC
            END-IF
+           .
+       3001-GAIRAI-TENTEKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    外来点滴液量チェック処理
+      *****************************************************************
+       30011-GAIRAI-TEN-CHK-SEC         SECTION.
+      *
       *    外来の当日の合計液量判定
-           IF       WRK-CHUSYA         =   ZERO
-               GO      TO      3001-GAIRAI-TENTEKI-EXT
-           END-IF
            COMPUTE WRK-CHUSYA      =   WRK-CHUSYA
                                    +   LNK-ACCT2-CSYYOURYO
            IF      LNK-ORCSC-NENREI-YY     <   6
@@ -1602,7 +1644,7 @@
                END-IF
            END-IF
            .
-       3001-GAIRAI-TENTEKI-EXT.
+       30011-GAIRAI-TEN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    点滴液量集計処理
