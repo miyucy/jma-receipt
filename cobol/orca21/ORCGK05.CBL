@@ -2693,6 +2693,8 @@
                IF      SPA-COM-KISOTEN (SPA-GMN-IDX)  =   ZERO
                    MOVE    WRK-SURYO       TO  SPA-COM-KEI(SPA-GMN-IDX)
                    MOVE    WRK-SURYO       TO  SPA-GMN-KEI(SPA-GMN-IDX)
+                   MOVE    WRK-SURYO       TO  SPA-COM-JIHIMONEY
+                                                          (SPA-GMN-IDX)
                    MOVE    "1"             TO  SPA-COM-KEIFLG
                                                          (SPA-GMN-IDX)
                ELSE
