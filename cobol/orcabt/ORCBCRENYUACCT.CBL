@@ -130,6 +130,7 @@
            03  WRK-KANACHK-MAE-INPUT               PIC X(400).
       *
       *    入院会計作成用ワーク
+       01  WRK-KAIKEI-AREA.
            03  WRK-YMD             PIC X(10). 
            03  WRK-NAI-SRYYM-41.
                05  WRK-NAI-SRYYM-41-YY  PIC 9(04).
@@ -517,6 +518,7 @@
       *                入院会計存在チェック
                        PERFORM    2001-NYUINACCT-CHK-SEC
                        IF         FLG-NYUINACCTARI   =    ZERO
+                            INITIALIZE  WRK-KAIKEI-AREA
       *                     前月分入院会計の存在チェック
       *                     （併せて保険組合せと食事の情報を退避）
                             PERFORM     2001-NYUINACCT-MAECHK-SEC
