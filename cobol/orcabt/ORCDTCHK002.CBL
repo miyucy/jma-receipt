@@ -177,6 +177,14 @@
            03  CNT-TAISYO                              PIC 9(06).
            03  CNT-STR                                 PIC 9(06).
       *
+      *    システム領域
+       01  SYS-AREA.
+           03  SYS-TIME                                PIC 9(08).
+           03  SYS-YMD.
+               05  SYS-YY                              PIC 9(02).
+               05  SYS-MM                              PIC 9(02).
+               05  SYS-DD                              PIC 9(02).
+      *
        01  IDX-AREA.
            03  IDX0                                    PIC 9(05). 
            03  IDX1                                    PIC 9(05). 
@@ -197,6 +205,7 @@
            03  IDX16                                   PIC 9(05). 
            03  IDX17                                   PIC 9(05). 
            03  IDXA                                    PIC 9(05). 
+           03  IDXE                                    PIC 9(05). 
            03  IDX-TSRYKA                              PIC 9(05).
            03  IDX-TKAISU                              PIC 9(05).
            03  IDX-ERRCD                               PIC 9(05).
@@ -256,6 +265,16 @@
            03  WRK-PTINF-NAME                          PIC X(100).
            03  WRK-PTINF-KANANAME                      PIC X(100).
            03  WRK-CHK-SRYCD                           PIC X(09).
+           03  WRK-SHO                                 PIC 9(05).
+           03  WRK-AMARI                               PIC 9(05).
+           03  WRK-STR-LEFT                            PIC X(500).
+           03  WRK-STR-LEFT-Z      REDEFINES           WRK-STR-LEFT.
+               05  WRK-STR-LEFT-ZX99                   PIC Z(9)9.
+               05                                      PIC X(490).
+           03  WRK-STR-LEFT-TMP                        PIC X(500).
+           03  WRK-N.
+               05  WRK-KNS-N                           PIC X(10).
+               05  WRK-TIME-N                          PIC X(16).
       *    
       *    TEST
            03  WRK-DATE                                PIC X(08).
@@ -694,6 +713,7 @@
       *
            INITIALIZE                      TCHK-AREA
                                            TTNS-AREA
+
       *
            .
        1001-INIT-VAL-SET-EXT.
@@ -988,6 +1008,9 @@
       *        データチェック処理
                PERFORM 20011-DATA-CHK-SEC
       *
+      *        処理経過編集処理
+               PERFORM 20011-SYORI-KEIKA-HEN-SEC
+      *
       *        対象患者情報ファイル読込処理
                PERFORM 900-DTCHK003-READ-SEC
       *
@@ -1009,11 +1032,17 @@
       *
       *    併用禁忌・併用算定のチェック用に
       *    入力引数とは反対の入外区分で診療会計テーブルを検索する
-           PERFORM 200112-SRYACCT-TAIHI-SEC
+           IF    ( ORCBSD01-CHKKBN (10)    NOT =   ZERO )
+            OR   ( ORCBSD01-CHKKBN (11)    NOT =   ZERO )
+               PERFORM 200112-SRYACCT-TAIHI-SEC
+           END-IF
       *
       *    入院会計保険組み合わせ退避処理
-           IF    ( ORCBSD01-NYUGAIKBN      =   "1" )
-               PERFORM 200111-NACCT-COMBI-TAIHI-SEC
+           IF    ( ORCBSD01-CHKKBN (13)    NOT =   ZERO )
+            OR   ( ORCBSD01-CHKKBN (14)    NOT =   ZERO )
+               IF    ( ORCBSD01-NYUGAIKBN      =   "1" )
+                   PERFORM 200111-NACCT-COMBI-TAIHI-SEC
+               END-IF
            END-IF
       *
            .
@@ -1102,16 +1131,31 @@
                END-IF
       *
       *        診療行為情報退避処理
-               IF    ( FLG-TAISYO-HKN      =   1 )
-                   PERFORM 200111-SRYACT-TAIHI-SEC
+      *        以下のチェックの際に退避する
+      *        ・診療開始日
+      *        ・薬剤と病名
+      *        ・診療行為と病名
+      *        ・併用禁忌の薬剤
+      *        ・併用算定の診療行為
+      *        ・実日数
+               IF    ( ORCBSD01-CHKKBN (06)    NOT =   ZERO )
+                OR   ( ORCBSD01-CHKKBN (08)    NOT =   ZERO )
+                OR   ( ORCBSD01-CHKKBN (09)    NOT =   ZERO )
+                OR   ( ORCBSD01-CHKKBN (10)    NOT =   ZERO )
+                OR   ( ORCBSD01-CHKKBN (11)    NOT =   ZERO )
+                OR   ( ORCBSD01-CHKKBN (12)    NOT =   ZERO )
+      *
+                   IF    ( FLG-TAISYO-HKN      =   1 )
+                       PERFORM 200111-SRYACT-TAIHI-SEC
+                   END-IF
                END-IF
       *
                IF    ( ORCBSD01-NYUGAIKBN  =   1 )
       *
-      *            入院診療行為日編集処理
+      *            入院診療行為日編集処理（実日数チェック用）
                    PERFORM 200111-TNYUIN-ACCT-HEN-SEC
       *
-      *            入院調剤料算定日編集処理
+      *            入院調剤料算定日編集処理（実日数チェック用）
                    IF    ( ACCT-SRYKBN     =   "24" )
                        PERFORM 200111-TNYUIN-CHOZAI-HEN-SEC
                    END-IF
@@ -2583,7 +2627,7 @@
            MOVE    DTCHK003-PTID       TO  PTBYO-PTID
            MOVE    TSRYKA-SRYKA (IDX4) TO  PTBYO-SRYKA
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-           MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY16"    TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
@@ -2635,7 +2679,8 @@
                    MOVE    1           TO  FLG-CHK-END
                END-IF
       *
-               MOVE    "PTBYOMEI-KEY2" TO  ORC-DBPATH
+               MOVE    "PTBYOMEI-KEY16"
+                                       TO  ORC-DBPATH
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC TO  PTBYOMEI-REC
@@ -2645,7 +2690,7 @@
       *
            END-PERFORM
       *
-           MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY16"    TO  ORC-DBPATH
            PERFORM 910-DBCLOSE-SEC
       *
       *    患者病名登録チェック
@@ -3121,6 +3166,7 @@
       *
            END-PERFORM
       *
+           .
        200112-TCHK-YKZ-BYO-CHK-EXT.
            EXIT.
       *****************************************************************
@@ -3214,7 +3260,7 @@
            END-PERFORM
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-           MOVE    "PTBYOMEI-KEY5"     TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY17"    TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
@@ -3242,7 +3288,8 @@
                    END-IF
                END-IF
       *
-               MOVE    "PTBYOMEI-KEY5" TO  ORC-DBPATH
+               MOVE    "PTBYOMEI-KEY17"
+                                       TO  ORC-DBPATH
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC TO  PTBYOMEI-REC
@@ -3252,7 +3299,7 @@
       *
            END-PERFORM
       *
-           MOVE    "PTBYOMEI-KEY5"     TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY17"    TO  ORC-DBPATH
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-CHKMST-BYOMEI   =   ZERO )
@@ -3383,6 +3430,7 @@
       *
            END-PERFORM
       *
+           .
        200112-TCHK-SRY-BYO-CHK-EXT.
            EXIT.
       *****************************************************************
@@ -3596,6 +3644,7 @@
       *
            END-PERFORM
       *
+           .
        200112-TCHK-HEI-YKZ-CHK-EXT.
            EXIT.
       *****************************************************************
@@ -3968,6 +4017,7 @@
       *
            END-PERFORM
       *
+           .
        200112-TCHK-HEI-SRY-CHK-EXT.
            EXIT.
       *****************************************************************
@@ -4859,6 +4909,58 @@
        2111-SRYKA-GET-EXT.
            EXIT.
       *****************************************************************
+      *    処理経過編集処理
+      *****************************************************************
+       20011-SYORI-KEIKA-HEN-SEC        SECTION.
+      *
+           MOVE    ZERO            TO  WRK-SHO
+                                       WRK-AMARI
+           DIVIDE  50          INTO    CNT-DTCHK003   GIVING  WRK-SHO
+           REMAINDER WRK-AMARI
+           END-DIVIDE
+      *
+           IF    ( WRK-AMARI       NOT =   ZERO )
+               GO  TO  20011-SYORI-KEIKA-HEN-EXT
+           END-IF
+      *
+           MOVE    CNT-DTCHK003    TO  WRK-STR-LEFT-ZX99
+           PERFORM 800-STR-HIDARIZUME-HEN-SEC
+           MOVE    WRK-STR-LEFT    TO  WRK-MAE-INPUT
+           PERFORM 800-ZENKAKU-HEN-SEC
+           MOVE    WRK-OUT-INPUT   TO  WRK-KNS-N
+           ACCEPT  SYS-TIME        FROM    TIME
+           MOVE    SPACE           TO  WRK-MAE-INPUT
+           MOVE    SYS-TIME(1:2)   TO  WRK-MAE-INPUT(1:2)
+           MOVE    "."             TO  WRK-MAE-INPUT(3:1)
+           MOVE    SYS-TIME(3:2)   TO  WRK-MAE-INPUT(4:2)
+           MOVE    "."             TO  WRK-MAE-INPUT(6:1)
+           MOVE    SYS-TIME(5:2)   TO  WRK-MAE-INPUT(7:2)
+      *    PERFORM 800-ZENKAKU-HEN-SEC
+      *    MOVE    WRK-OUT-INPUT   TO  WRK-TIME-N
+           MOVE    WRK-MAE-INPUT   TO  WRK-TIME-N
+      *
+      *    ステップ途中処理
+           MOVE    "STM"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           STRING  "処理患者数："      DELIMITED BY SIZE
+                   WRK-KNS-N           DELIMITED BY SPACE
+                   "件　"              DELIMITED BY SIZE
+                   WRK-TIME-N          DELIMITED BY SPACE
+           INTO    JOB-YOBI
+           END-STRING
+           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+           MOVE    "ORCDTCHK002"       TO  JOB-PGID
+           MOVE    "データチェック"    TO  JOB-SHELLMSG
+      *
+           CALL    "ORCSJOB"               USING
+                                           ORCSJOBKANRIAREA
+                                           JOBKANRI-REC
+      *
+           .
+       20011-SYORI-KEIKA-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
@@ -4918,6 +5020,29 @@
        300-END-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    文字列左詰処理
+      *****************************************************************
+       800-STR-HIDARIZUME-HEN-SEC      SECTION.
+      *
+           MOVE    WRK-STR-LEFT    TO  IDXE
+           PERFORM VARYING IDXE    FROM    1   BY  1
+                   UNTIL ( IDXE    >       500 )
+      *
+               IF    ( WRK-STR-LEFT (IDXE:1)
+                                       NOT =   SPACE )
+                   MOVE    WRK-STR-LEFT (IDXE:)
+                                           TO  WRK-STR-LEFT-TMP
+                   MOVE    WRK-STR-LEFT-TMP
+                                           TO  WRK-STR-LEFT
+                   MOVE    500             TO  IDXE
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       800-STR-HIDARIZUME-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    全角半角混在チェック
       *****************************************************************
