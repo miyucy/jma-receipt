@@ -2172,6 +2172,11 @@
                MOVE    "1028"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-HKN-ERR
            END-IF
+      *    Ｈ１５．４以降の公費期間が違う時
+           IF      AGECHK-HKNCHK       =   2
+               MOVE    "1032"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-HKN-ERR
+           END-IF
       *    老人でＨ１４．１０の保険変更がない時
            IF      AGECHK-RJNCHK       =   1
                MOVE    "1027"              TO  SPA-ERRCD
@@ -9180,6 +9185,10 @@
                MOVE    "1028"              TO  SPA-ERRCD
                GO      TO      41001-KIHON-CHK-EXT
            END-IF
+           IF      SPA-HKN-ERR         =   2
+               GO      TO      41001-KIHON-CHK-EXT
+               MOVE    "1032"              TO  SPA-ERRCD
+           END-IF
       *
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
@@ -11037,6 +11046,9 @@
       *    保険エラーがある時、エラーとする
            IF      SPA-HKN-ERR         =   1
                MOVE    "1028"              TO  SPA-ERRCD
+           END-IF
+           IF      SPA-HKN-ERR         =   2
+               MOVE    "1032"              TO  SPA-ERRCD
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
