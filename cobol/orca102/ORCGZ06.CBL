@@ -850,7 +850,8 @@
                                            TO  WRK-YMD
       *            ÂÐ¾ÝÆü¡Ü£±Æü
                    PERFORM 800-DAYSET-SEC
-                   IF      SPA-NAI-YUKOSTYMD   NOT =   WRK-OTYMD
+      *******:     IF      SPA-NAI-YUKOSTYMD   NOT =   WRK-OTYMD
+                   IF      SPA-NAI-YUKOSTYMD       <   WRK-OTYMD
                        MOVE    "0011"              TO  SPA-ERRCD
                        MOVE    1                   TO  SPA-GMNZ6-CUR
                        GO      TO      4109-TOUROKU-CHK-EXT
@@ -863,7 +864,7 @@
       *            ÂÐ¾ÝÆü¡Ü£±Æü
                    PERFORM 800-DAYSET-SEC
                    IF      SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM + 1)
-                                               NOT =   WRK-OTYMD
+                                                   <   WRK-OTYMD
                        MOVE    "0011"              TO  SPA-ERRCD
                        MOVE    2                   TO  SPA-GMNZ6-CUR
                        GO      TO      4109-TOUROKU-CHK-EXT

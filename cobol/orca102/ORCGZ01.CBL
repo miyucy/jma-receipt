@@ -1098,7 +1098,9 @@
                                            TO  WRK-YMD
       *        対象日＋１日
                PERFORM 800-DAYSET-SEC
-               IF      SPA-Z01NAI-YUKOSTYMD  NOT =   WRK-OTYMD
+      *********IF      SPA-Z01NAI-YUKOSTYMD  NOT =   WRK-OTYMD
+      *        重複しないこと
+               IF      SPA-Z01NAI-YUKOSTYMD    <     WRK-OTYMD
                    MOVE    3                   TO  SPA-GMN-CUR
                    MOVE    "0010"              TO  SPA-ERRCD
                    GO      TO      41031-YUKOHANI-CHK-EXT
@@ -1110,8 +1112,11 @@
                                            TO  WRK-YMD
       *        対象日＋１日
                PERFORM 800-DAYSET-SEC
+      *******  IF      SPA-Z01NAI-TYUKOSTYMD(SPA-Z01NAI-SELNUM + 1)
+      *****                                NOT =   WRK-OTYMD
+      *        重複しないこと
                IF      SPA-Z01NAI-TYUKOSTYMD(SPA-Z01NAI-SELNUM + 1)
-                                           NOT =   WRK-OTYMD
+                                               <   WRK-OTYMD
                    MOVE    4                   TO  SPA-GMN-CUR
                    MOVE    "0010"              TO  SPA-ERRCD
                    GO      TO      41031-YUKOHANI-CHK-EXT

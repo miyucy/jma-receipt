@@ -1037,7 +1037,8 @@
                                            TO  WRK-YMD
       *            ÂÐ¾ÝÆü¡Ü£±Æü
                    PERFORM 800-DAYSET-SEC
-                   IF      SPA-NAI-YUKOSTYMD   NOT =   WRK-OTYMD
+      **********   IF      SPA-NAI-YUKOSTYMD   NOT =   WRK-OTYMD
+                   IF      SPA-NAI-YUKOSTYMD       <   WRK-OTYMD
                        MOVE    "YUKOSTYMD"         TO  SPA-GMN-CUR
                        MOVE    "0011"              TO  SPA-ERRCD
                        GO      TO      412-TOUROKU-EXT
@@ -1049,8 +1050,10 @@
                                            TO  WRK-YMD
       *            ÂÐ¾ÝÆü¡Ü£±Æü
                    PERFORM 800-DAYSET-SEC
+      ********     IF      SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM + 1)
+      *******                                  NOT =   WRK-OTYMD
                    IF      SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM + 1)
-                                               NOT =   WRK-OTYMD
+                                                   <   WRK-OTYMD
                        MOVE    "YUKOEDYMD"         TO  SPA-GMN-CUR
                        MOVE    "0011"              TO  SPA-ERRCD
                        GO      TO      412-TOUROKU-EXT
