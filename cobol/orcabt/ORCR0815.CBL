@@ -39,6 +39,7 @@
       *                                     SRYACCT-KEY30 -> SRYACCT-KEY37
       *  01.01.02    NACL-嚏掀    05/01/07  极清勒么碰板コ〖ド、极清勒瘦
       *                                     副柴家叹の试礁
+      *  01.01.03    NACL-嚏掀    05/01/26  システム瓷妄４００１に簇する饯赖
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1095,9 +1096,6 @@
            MOVE   PTRSI-SAIGAIKBN      TO  WRK-RECE82-SAIGAIKBN 
            MOVE   PTRSI-RYOSTYMD       TO  WRK-RECE82-SHOSHINYMD
       *
-      *    极清勒裁换唯
-           MOVE    WRK-KSNRATE         TO  WRK-RECE82-KSNRATE
-      *
       *    陕薄ˇ壳闻疥惰尸
            MOVE    SYS-1001-HOSPSBT    TO  WRK-RECE82-HOSPSBT
       *
@@ -1112,6 +1110,24 @@
       *
            MOVE   PTRSI-DRCD           TO  WRK-RECE82-DRCD
            MOVE   PTRSI-HOKENNAME      TO  WRK-RECE82-HOKENNAME
+      *
+      *    爬眶帽擦
+           EVALUATE  SYS-4001-TENKBN
+               WHEN  "1"
+                    MOVE     11.5        TO   WRK-RECE82-TANKA
+               WHEN  "2"
+                    MOVE     12.0        TO   WRK-RECE82-TANKA
+           END-EVALUATE
+      *    极清勒裁换唯
+           MOVE    WRK-KSNRATE           TO   WRK-RECE82-KSNRATE
+      *    极清勒矢今瘟久锐狼
+           MOVE    SYS-4001-TAXKBN       TO   WRK-RECE82-TAXKBN
+      *    极清勒咯祸闻蛙锐
+           MOVE    SYS-4001-SKJKBN       TO   WRK-RECE82-SKJKBN
+      *    极清勒泼年达亨霹久锐狼
+           MOVE    SYS-4001-TAXKBN-KZI   TO   WRK-RECE82-TAXKBN-KZI
+      *    极清勒盖年掠裁换霹艰胺
+           MOVE    SYS-4001-KOTEIKBN     TO   WRK-RECE82-KOTEIKBN
       *
            MOVE    WRK-RECE82-REC      TO  RECE82-REC
            WRITE   RECE82-REC

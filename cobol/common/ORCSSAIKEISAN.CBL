@@ -31,6 +31,8 @@
       *  01.00.02    NACL-ÌçÏÆ    04/12/01  ¼ýÇ¼³°Íè°ì³çºÆ·×»»ÂÐ±þ
       *  01.00.03    NACL-ÌçÏÆ    04/12/17  ¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
       *                                     »ÈÍÑ²Ã»»¤òÌôºÞÅù¤Ø
+      *  01.00.04    NACL-ÌçÏÆ    05/01/27  ¹ø¡¦¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
+      *                                     »ÈÍÑ²Ã»»¤Îµ»½Ñ¡¦ÌôºÞÅù¤ÎÁªÂòÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -100,6 +102,7 @@
               04  WRK-DOUJI-SRYKA-TBL-OCC  OCCURS  15.
                  05  WRK-DOUJI-SRYKA       PIC X(02)
                                            OCCURS  10.
+           03  WRK-4001-KOTEIKBN           PIC X(01).
       *
       *    ºÞÈÖ¹æÅùÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  ZAIBAN-TABLE.
@@ -211,6 +214,8 @@
       *    ¥·¥¹¥Æ¥à´ÉÍý
            COPY    "CPSK1038.INC".
       *
+           COPY    "CPSK4001.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -304,6 +309,12 @@
                END-IF
                MOVE     SYS-1038-KAGRPFLG TO      WRK-KAGRPFLG
                                                   LNK-S01-KAGRPFLG
+      *
+               MOVE     SPACE   TO   WRK-4001-KOTEIKBN
+               IF   SYU-SYUHKNNUM   =   "971" OR "973"
+                 PERFORM  900-SYS4001-READ-SEC
+                 MOVE     SYS-4001-KOTEIKBN   TO  WRK-4001-KOTEIKBN
+               END-IF
       *
                IF   WRK-GRP-DENPNUM   =   ZERO
                  ADD     1                TO      IDY
@@ -1868,16 +1879,22 @@
                          END-IF                                        
       *
                          IF    SRY-SRYCD (IDX3)  =   "140037490"
+                          IF  WRK-4001-KOTEIKBN  =  SPACE OR "2"
                            COMPUTE WK-YOUBUKASAN = WK-YOUBUKASAN +
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
+                          END-IF
                          END-IF
                          IF    SRY-SRYCD (IDX3)  =   "140040110"
+                          IF  WRK-4001-KOTEIKBN  =  SPACE OR "2"
                            COMPUTE WK-KYOBUKASAN = WK-KYOBUKASAN +
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
+                          END-IF
                          END-IF
                          IF    SRY-SRYCD (IDX3)  =   "150266970"
+                          IF  WRK-4001-KOTEIKBN  =  SPACE OR "2"
                            COMPUTE WK-SOGAIKASAN = WK-SOGAIKASAN +
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
+                          END-IF
                          END-IF
       *
                          IF    SRY-SRYCD (IDX3)  =   "199000610"
@@ -2417,6 +2434,37 @@
        900-SYS1038-READ-EXT.
            EXIT.
       *
+      ******************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý£´£°£°£±ÆÉ¹þ
+      ******************************************************************
+       900-SYS4001-READ-SEC           SECTION.
+      *
+           INITIALIZE                         SYS-4001-REC.
+           MOVE    "4001"               TO    SYS-4001-KANRICD.
+           MOVE    "*"                  TO    SYS-4001-KBNCD.
+           MOVE    WRK-SAIKEISAN-YMD    TO    ORC-DBYMD.
+           MOVE    SYS-4001-REC         TO    MCPDATA-REC.
+           MOVE    "DBSELECT"           TO    MCP-FUNC.
+           MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           IF      MCP-RC               =     ZERO
+               MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
+               PERFORM   901-SYSKANRI-READ-SEC
+           END-IF.
+      *
+           MOVE    "DBCLOSE"            TO  MCP-FUNC.
+           MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC.
+      *
+       900-SYS4001-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ¥·¥¹¥Æ¥à´ÉÍýÆÉ¹þ
       *****************************************************************
@@ -2429,9 +2477,11 @@
                                         MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1038-REC
+                                           SYS-4001-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
                INITIALIZE                  SYS-1038-REC
+                                           SYS-4001-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF.
       *

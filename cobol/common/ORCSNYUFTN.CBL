@@ -62,6 +62,8 @@
       *                                     ¥­¡¼ÊÑ¹¹
       *  01.00.22    NACL-ÌçÏÆ    04/12/17  ¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
       *                                     »ÈÍÑ²Ã»»¤òÌôºÞÅù¤Ø
+      *  01.00.23    NACL-ÌçÏÆ    05/01/27  ¹ø¡¦¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
+      *                                     »ÈÍÑ²Ã»»¤Îµ»½Ñ¡¦ÌôºÞÅù¤ÎÁªÂòÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -78,6 +80,7 @@
            03  WRK-EDYMD                   PIC X(08).
            03  WRK-ZAIKAISU                PIC 9(04).
            03  WRK-TAX1001-KBN             PIC X(01).
+           03  WRK-4001-KOTEIKBN           PIC X(01).
       *
        01  WRK-ROSAI-AREA.
            03  WRK-SYUTEN                  PIC 9(09).
@@ -324,6 +327,8 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1001.INC".
+      *
+           COPY    "CPSK4001.INC".
       *
            COPY    "CPSK5000.INC".
            COPY    "CPSK5001.INC".
@@ -2855,6 +2860,31 @@
            MOVE    LNK-SYUNOU-REC(IDX) TO  SYUNOU-REC
            MOVE    LNK-SYUDAY-REC(IDX) TO  SYUDAY-REC                  
       *
+      *    ¥·¥¹¥Æ¥à´ÉÍý£´£°£°£±¤«¤é¼«ÇåÀÕ¸ÇÄêÂÓ²Ã»»Åù¼è°·¤òÆÉ¤ß¹þ¤à
+           MOVE    SPACE     TO    WRK-4001-KOTEIKBN
+           IF   SYU-SYUHKNNUM    =    "973"
+              INITIALIZE                         SYS-4001-REC
+              MOVE    "4001"               TO    SYS-4001-KANRICD
+              MOVE    "*"                  TO    SYS-4001-KBNCD
+              MOVE    SYU-SRYYMD           TO    ORC-DBYMD
+              MOVE    SYS-4001-REC         TO    MCPDATA-REC
+              MOVE    "DBSELECT"           TO    MCP-FUNC
+              MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
+              CALL    "ORCMCPSUB"                USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+              IF      MCP-RC               =     ZERO
+                  MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
+                  PERFORM   SYSKANRI-READ-SEC
+                  MOVE      SYS-4001-KOTEIKBN
+                                           TO    WRK-4001-KOTEIKBN
+              END-IF
+      *
+              MOVE     "SYSKANRI-KEY"      TO  WK-PATH
+              PERFORM   CSR-CLOSE-SEC
+           END-IF
+      *
            MOVE    SPACE               TO  HKNTEKGAI-TABLE
            INITIALIZE                      HKNTEKGAI-TABLE
            MOVE    SPACE               TO  JIHI-TABLE
@@ -3452,16 +3482,22 @@
                          END-IF
       *
                          IF    SRY-SRYCD (IDZ)  =   "140037490"
+                          IF  WRK-4001-KOTEIKBN  =  SPACE OR "2"
                            COMPUTE WRK-YOUBUKASAN = WRK-YOUBUKASAN +
                                   (TNS-TEN  *   SINRYO-COUNT)
+                          END-IF
                          END-IF
                          IF    SRY-SRYCD (IDZ)  =   "140040110"
+                          IF  WRK-4001-KOTEIKBN  =  SPACE OR "2"
                            COMPUTE WRK-KYOBUKASAN = WRK-KYOBUKASAN +
                                   (TNS-TEN  *   SINRYO-COUNT)
+                          END-IF
                          END-IF
                          IF    SRY-SRYCD (IDZ)  =   "150266970"
+                          IF  WRK-4001-KOTEIKBN  =  SPACE OR "2"
                            COMPUTE WRK-SOGAIKASAN = WRK-SOGAIKASAN +
                                   (TNS-TEN  *   SINRYO-COUNT)
+                          END-IF
                          END-IF
       *
                          IF    SRY-SRYCD (IDZ)  =   "199000510"
@@ -4448,6 +4484,7 @@
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
                                            SYS-1001-REC
+                                           SYS-4001-REC
                                            SYS-5000-REC
                                            SYS-5001-REC
                                            SYS-5113-REC
@@ -4455,6 +4492,7 @@
            ELSE
                INITIALIZE                  SYSKANRI-REC
                                            SYS-1001-REC
+                                           SYS-4001-REC
                                            SYS-5000-REC
                                            SYS-5001-REC
                                            SYS-5113-REC

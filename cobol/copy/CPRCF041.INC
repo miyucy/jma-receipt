@@ -27,6 +27,7 @@
       *                                     月日の追加
       *  01.01.04   NACL-門脇     05.01.07  自賠責担当医コード、自賠責保
       *                                     険会社名の追加
+      *  01.01.05   NACL-門脇     05.01.26  ４００１情報の追加
       ************************************************************
       *01  RECE41-REC.
            03  RECE41-KEY.
@@ -103,6 +104,10 @@
                05  RECE41-COMMENT         PIC  X(200).
       *主保険−災害区分
                05  RECE41-SAIGAIKBN       PIC  X(01).
+      *主保険−自賠責担当医コード
+               05  RECE41-DRCD            PIC  X(05).
+      *主保険−自賠責保険会社名
+               05  RECE41-HOKENNAME       PIC  X(80).
       *
       *保険組合せ番号
            03  RECE41-HKNCOMBI            PIC  9(04).
@@ -195,8 +200,6 @@
            03  RECE41-KENSAKBN            PIC  X(01).
       *前回検査年月日
            03  RECE41-KENSAYMD-ZEN        PIC  X(08).
-      *自賠責加算率
-           03  RECE41-KSNRATE             PIC  9(03).
       *通院日情報
            03  RECE41-TUUININF            OCCURS  31.
                05  RECE41-TUUIN-DAY       PIC  X(01).
@@ -223,8 +226,17 @@
            03  RECE41-KYUGYOFLG           PIC  X(01).
       *休業期間終了月日
            03  RECE41-KYUGYO-END          PIC  X(04).
-      *自賠責担当医コード
-           03  RECE41-DRCD                PIC  X(05).
-      *自賠責保険会社名
-           03  RECE41-HOKENNAME           PIC  X(80).
+      *
+      *４００１情報
+           03  RECE41-4001-INF.
+      *点数単価
+               05  RECE41-TANKA           PIC  9(02)V99.
+      *自賠責加算率
+               05  RECE41-KSNRATE         PIC  9(03).
+      *自賠責文書料消費税
+               05  RECE41-TAXKBN          PIC  X(01).
+      *自賠責特定器材等消費税
+               05  RECE41-TAXKBN-KZI      PIC  X(01).
+      *自賠責固定帯加算等取扱
+               05  RECE41-KOTEIKBN        PIC  X(01).
       *

@@ -42,6 +42,8 @@
       *  01.02.01    NACL-藤原    04/10/13  中止処理の追加
       *  01.02.02    NACL-門脇    04/12/17  胸部固定帯加算、創外固定器
       *                                     使用加算を薬剤等へ
+      *  01.02.03    NACL-門脇    05/01/27  腰・胸部固定帯加算、創外固定器
+      *                                     使用加算の技術・薬剤等の選択対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -936,7 +938,11 @@
                                            WRK-CONS-YOUBUKASAN
                                         OR WRK-CONS-KYOBUKASAN
                                         OR WRK-CONS-SOGAIKASAN
+                                     IF  RECE82-KOTEIKBN = SPACE OR "2"
                                        MOVE    4         TO  IDY
+                                     ELSE
+                                       MOVE    3         TO  IDY
+                                     END-IF
                                    ELSE
                                        MOVE    3         TO  IDY
                                    END-IF

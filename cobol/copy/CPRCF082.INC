@@ -23,6 +23,7 @@
       * Maj/Min/Rev  饯赖荚       泣烧      柒推
       *  01.01.01   NACL-嚏掀     05.01.07  极清勒么碰板コ〖ド、极清勒瘦
       *                                     副柴家叹の纳裁
+      *  01.01.02   NACL-嚏掀     05.01.26  ４００１攫鼠の纳裁
       ************************************************************
       *01  RECE82-REC.
            03  RECE82-KEY.
@@ -95,6 +96,10 @@
                05  RECE82-COMMENT         PIC  X(200).
       *肩瘦副≥阂巢惰尸
                05  RECE82-SAIGAIKBN       PIC  X(01).
+      *肩瘦副≥极清勒么碰板コ〖ド
+               05  RECE82-DRCD            PIC  X(05).
+      *肩瘦副≥极清勒瘦副柴家叹
+               05  RECE82-HOKENNAME       PIC  X(80).
       *
       *瘦副寥圭せ戎规
            03  RECE82-HKNCOMBI            PIC  9(04).
@@ -226,8 +231,6 @@
            03  RECE82-KYUKYU-PRTKBN       PIC  X(01).
       *颠缔板闻瓷妄裁换换年泣
            03  RECE82-KYUKYUYMD           PIC  X(08).
-      *极清勒裁换唯
-           03  RECE82-KSNRATE             PIC  9(03).
       *泣侍缄祷爬ˇ挑恨霹爬眶攫鼠
            03  RECE82-TENSUINF            OCCURS  31.
                05  RECE82-SYUTEN-JI       PIC  9(08).
@@ -247,8 +250,19 @@
                05  RECE82-ERR-TEKEDYMD    PIC 9(08).
       *戮瘦副掐薄瘟换年貉みフラグ
            03  RECE82-NYUINRYOFLG         PIC  X(01).
-      *极清勒么碰板コ〖ド
-           03  RECE82-DRCD                PIC  X(05).
-      *极清勒瘦副柴家叹
-           03  RECE82-HOKENNAME           PIC  X(80).
+      *
+      *４００１攫鼠
+           03  RECE82-4001-INF.
+      *爬眶帽擦
+               05  RECE82-TANKA           PIC  9(02)V99.
+      *极清勒裁换唯
+               05  RECE82-KSNRATE         PIC  9(03).
+      *极清勒矢今瘟久锐狼
+               05  RECE82-TAXKBN          PIC  X(01).
+      *极清勒咯祸闻蛙锐
+               05  RECE82-SKJKBN          PIC  X(01).
+      *极清勒泼年达亨霹久锐狼
+               05  RECE82-TAXKBN-KZI      PIC  X(01).
+      *极清勒盖年掠裁换霹艰胺
+               05  RECE82-KOTEIKBN        PIC  X(01).
       *

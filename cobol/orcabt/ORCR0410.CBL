@@ -49,6 +49,9 @@
       *                                     使用加算を薬剤等へ
       *  01.01.03    NACL-門脇    05.01.07  自賠責担当医コード、自賠責保
       *                                     険会社名の編集
+      *  01.01.04    NACL-門脇    05.01.26  システム管理４００１に関する修正
+      *  01.01.05    NACL-門脇    05.01.27  腰・胸部固定帯加算、創外固定器
+      *                                     使用加算の技術・薬剤等の選択対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -177,6 +180,7 @@
            03  WRK-TANKA                               PIC  9(02)V99.
            03  WRK-KSNRATE                             PIC  9(03).      
            03  WRK-TAXKBN                              PIC  X(01).      
+           03  WRK-KOTEIKBN                            PIC  X(01).
       *
            03  WRK-TAIHI-FLG                           PIC  9(01).
            03  WRK-TAIHI-SRYYMD.
@@ -519,6 +523,7 @@
                                            +  100                          
                   END-IF                                                   
                   MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN                
+                  MOVE   SYS-4001-KOTEIKBN TO    WRK-KOTEIKBN
               ELSE
                   MOVE    "労災自賠医療機関情報が取得できませんでした"     
                                               TO  WRK-RECEERR
@@ -793,8 +798,16 @@
       *
            END-IF 
       *
+      *    点数単価
+           MOVE    WRK-TANKA             TO   RECE41-TANKA
       *    自賠責加算率
-           MOVE    WRK-KSNRATE   TO     RECE41-KSNRATE                  
+           MOVE    WRK-KSNRATE           TO   RECE41-KSNRATE
+      *    自賠責文書料消費税
+           MOVE    WRK-TAXKBN            TO   RECE41-TAXKBN
+      *    自賠責特定器材等消費税
+           MOVE    SYS-4001-TAXKBN-KZI   TO   RECE41-TAXKBN-KZI
+      *    自賠責固定帯加算等取扱
+           MOVE    WRK-KOTEIKBN          TO   RECE41-KOTEIKBN
       *
            .
        210-HENSYU-EXT.
@@ -1457,12 +1470,14 @@
                        IF   SRY-SRYCD(IDY) =  CONS-YOUBUKASAN
                                            OR CONS-KYOBUKASAN
                                            OR CONS-SOGAIKASAN
+                         IF   WRK-KOTEIKBN  =  SPACE  OR  "2"
                             COMPUTE  TBL-SYUTEN-JI(ID1)  =
                                      TBL-SYUTEN-JI(ID1)  -
                                     ( WRK-ZAIKAISU-JI * TNS-TEN )
                             COMPUTE  TBL-YKZTEN-JI(ID1)  =
                                      TBL-YKZTEN-JI(ID1)  +
                                     ( WRK-ZAIKAISU-JI * TNS-TEN )
+                         END-IF
                        END-IF
       *
                        IF   SRY-SRYCD(IDY) =  CONS-RYOYOTEATE
@@ -2382,6 +2397,7 @@
                                             +  100
                    END-IF
                    MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN
+                   MOVE   SYS-4001-KOTEIKBN TO    WRK-KOTEIKBN
                 END-IF
       *
               END-PERFORM
