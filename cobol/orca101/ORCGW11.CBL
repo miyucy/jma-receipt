@@ -957,7 +957,9 @@
       *
             PERFORM VARYING IDX FROM    1   BY  1
                     UNTIL   IDX >       SPA-GPGNM-MAX
-                IF     (SPA-NAI-TORGPGCHK(IDX)
+                IF     (SPA-NAI-TORGPGNM(IDX)
+                                        =   SPA-GMN-TORGPGNM (IDX)) AND
+                       (SPA-NAI-TORGPGCHK(IDX)
                                         =   SPA-GMN-TORGPGCHK(IDX)) AND
                        (SPA-NAI-TCSTPGNM(IDX)
                                         =   SPA-GMN-TCSTPGNM (IDX)) AND
@@ -979,7 +981,9 @@
       *
             PERFORM VARYING IDX FROM    1   BY  1
                     UNTIL   IDX >       SPA-NPGNM-MAX
-               IF      (SPA-NAI-TORGPGCHK-N(IDX)
+               IF      (SPA-NAI-TORGPGNM-N(IDX)
+                                        =   SPA-GMN-TORGPGNM-N(IDX) )
+                  AND  (SPA-NAI-TORGPGCHK-N(IDX)
                                         =   SPA-GMN-TORGPGCHK-N(IDX))
                   AND  (SPA-NAI-TCSTPGNM-N(IDX)
                                         =   SPA-GMN-TCSTPGNM-N(IDX) )
@@ -2111,7 +2115,9 @@
            PERFORM VARYING IDZ2        FROM    1   BY  1
                    UNTIL  (IDZ2        >   SPA-GPGNM-MAX )  OR
                           (SPA-ERRCD   NOT =   SPACE     )
-               IF     (SPA-NAI-TORGPGCHK(IDZ2)
+               IF     (SPA-NAI-TORGPGNM(IDZ2)
+                                           =   SPA-GMN-TORGPGNM(IDZ2))
+                 AND  (SPA-NAI-TORGPGCHK(IDZ2)
                                            =   SPA-GMN-TORGPGCHK(IDZ2))
                  AND  (SPA-NAI-TCSTPGNM(IDZ2)
                                            =   SPA-GMN-TCSTPGNM (IDZ2))
@@ -2160,7 +2166,9 @@
            PERFORM VARYING IDZ2        FROM    1   BY  1
                    UNTIL  (IDZ2        >   SPA-NPGNM-MAX )  OR
                           (SPA-ERRCD   NOT =   SPACE     )
-               IF     (SPA-NAI-TORGPGCHK-N(IDZ2)
+               IF     (SPA-NAI-TORGPGNM-N(IDZ2)
+                                       =   SPA-GMN-TORGPGNM-N (IDZ2))
+                 AND  (SPA-NAI-TORGPGCHK-N(IDZ2)
                                        =   SPA-GMN-TORGPGCHK-N(IDZ2))
                  AND  (SPA-NAI-TCSTPGNM-N(IDZ2)
                                        =   SPA-GMN-TCSTPGNM-N (IDZ2))
