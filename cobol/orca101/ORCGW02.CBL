@@ -1108,7 +1108,7 @@
       *
            MOVE    ZERO                TO  SPA-GMN-DISCOUNT-KBN-MAX
            PERFORM             UNTIL ( FLG-SYSKANRI   =   1 )
-                               OR    ( SPA-GMN-DISCOUNT-KBN-MAX > 10 )
+                               OR    ( SPA-GMN-DISCOUNT-KBN-MAX >= 10 )
                MOVE    MCPDATA-REC     TO  SYS-1027-REC
       *
                COMPUTE SPA-GMN-DISCOUNT-KBN-MAX
