@@ -58,8 +58,8 @@
       *
            03  SPA-Y03-AREA.
                05  SPA-GMN-PAGE            PIC 9(02).
-               05  SPA-GMN-LINE            PIC 9(02).
-               05  SPA-GMN-MAX             PIC 9(02).
+               05  SPA-GMN-LINE            PIC 9(04).
+               05  SPA-GMN-MAX             PIC 9(04).
                05  SPA-GMN-CUR             PIC 9(02).
       *
                05  SPA-NAI-NEXT            PIC 9(01).
