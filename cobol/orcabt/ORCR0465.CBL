@@ -650,8 +650,7 @@
       ****         INITIALIZE               TNS-TENSU-REC
       ****     END-IF
       **** END-IF
-           IF ( RECE46-SRYKBN        =  "40"              ) AND         
-              ( RECE46-SRYCD1(1:5)   =  "09593"           )             
+           IF    RECE46-SRYCD1(1:5)   =  "09593"
               MOVE    999               TO  RECE46-GAITENTTLKBN         
            ELSE                                                         
       ****    MOVE    TNS-GAITENTTLKBN  TO  RECE46-GAITENTTLKBN

@@ -626,19 +626,24 @@
       ***          INITIALIZE               TNS-TENSU-REC            
       ***      END-IF                                                
       ***  END-IF                                                    
-           IF ( RECE86-SRYKBN        =  "40"              ) AND      
-              ( RECE86-SRYCD1(1:5)   =  "09593"           )          
-              MOVE    998               TO  RECE86-NYUTENTTLKBN      
-           ELSE                                                      
-              IF ( RECE86-SRYKBN        =  "40"              ) AND   
-                 ( RECE86-SRYCD1(1:5)   =  "09594"           )       
-                 MOVE    999               TO  RECE86-NYUTENTTLKBN   
-              ELSE          
-      ***        MOVE    TNS-NYUTENTTLKBN  TO  RECE86-NYUTENTTLKBN      
-                 MOVE    TBL-ZAI-TENTTLKBN(1)                           
-                                           TO  RECE86-NYUTENTTLKBN      
+           IF   RECE86-SRYCD1   =  "101110020"
+                MOVE    778             TO  RECE86-NYUTENTTLKBN
+           ELSE
+              IF  (RECE86-SRYCD1(1:5)   =  "09594")
+              OR  (RECE86-SRYCD1  =  "101910010" OR "101910020" OR
+                                     "101910030" OR "101910040" OR
+                                     "101910070" OR "101910080" OR
+                                     "101910090" OR "101910100"   )
+                MOVE    779             TO  RECE86-NYUTENTTLKBN
+              ELSE
+                IF  RECE86-SRYCD1(1:5)  =  "09593"
+                  MOVE    999           TO  RECE86-NYUTENTTLKBN
+                ELSE
+                  MOVE    TBL-ZAI-TENTTLKBN(1)
+                                        TO  RECE86-NYUTENTTLKBN
+                END-IF
               END-IF
-           END-IF                                                       
+           END-IF
       *
            WRITE   RECE86-REC
            IF      STS-RECE86          NOT =   ZERO
