@@ -1,7 +1,7 @@
 #!/bin/bash
-ORCADIR=/usr/lib/jma-receipt
-ORCABT="$ORCADIR"
-DBSTUB=/usr/lib/panda/sbin/dbstub
+ORCADIR=/usr/local/orca
+ORCABT="$ORCADIR"/lib
+DBSTUB=/usr/local/panda/bin/dbstub
 #-------------------------------------------#
 #    労災請求書用ファイル作成
 #        CPCOMMONSHELL1.INC  
