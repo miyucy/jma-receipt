@@ -32,6 +32,7 @@
       *                           04/10/12  ∏© Ã§ÀΩ∏∑◊
       *                           04/10/13  ∏©∆‚°¢∏©≥∞ Ã§ÀΩ–Œœ
       *  01.01.02    NACL-æÆ∆¶¬Ù  04/10/20  ¿¡µ·£ƒ£¬ππø∑ΩËÕ˝ƒ…≤√
+      *  01.01.03    NACL-∆£∏∂    05/02/16   ÷Ã· ¨§ÚΩËÕ˝¬–æ›§»§∑§ §§
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -69,7 +70,7 @@
                                    BY         //RECEUPD//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-      *    •®•È°º•’•°•§•Î ÃææŒŒŒ∞Ë 
+      *    •®•È°º•’•°•§•Î ÃææŒŒŒ∞Ë
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEERR//.
@@ -112,8 +113,7 @@
            03  WRK-PARA-HOSPID     PIC X(24).
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
-           03  WRK-PARA-NYUGAIKBN  PIC X(01).
-           03  WRK-PARA-HKNJANUM   PIC X(08).
+           03  WRK-PARA-ERRFILE    PIC X(50).
       *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
@@ -141,7 +141,7 @@
            03  CNT-PAGE            PIC 9(04).
            03  CNT-RECE10          PIC 9(06).
            03  CNT-LINE            PIC 9(02).
-           03  CNT-UPDFILE           PIC 9(06).
+           03  CNT-UPDFILE         PIC 9(06).
       *
       *    Ω∏∑◊ŒŒ∞Ë
        01  SUM-AREA.
@@ -150,9 +150,6 @@
                05  SUM-KENSU           PIC 9(06).
                05  SUM-TOTALTEN        PIC 9(10).
                05  SUM-FTNMONEY        PIC 9(10).
-      *----(01.01.01)--UPD-START---
-      *         05  SUM-YKZFTN          PIC 9(10).
-      *----(01.01.01)--UPD-END-----
                05  SUM-SHOKUJIKENSU    PIC 9(06).
                05  SUM-SHOKUJIRYOYOHI  PIC 9(10).
                05  SUM-SHOKUJIFTN      PIC 9(10).
@@ -169,9 +166,6 @@
                05  GSUM-KENSU          PIC 9(06).
                05  GSUM-TOTALTEN       PIC 9(10).
                05  GSUM-FTNMONEY       PIC 9(10).
-      *----(01.01.01)--UPD-START---
-      *         05  GSUM-YKZFTN         PIC 9(10).
-      *----(01.01.01)--UPD-END-----
       *    ø©ªˆ¡Ì∑◊
            03  GSUM-SHO-TBL        OCCURS  2.
                05  GSUM-SHO-KENSU      PIC 9(06).
@@ -181,20 +175,17 @@
       *    •≠°ºŒŒ∞Ë
        01  KEY-AREA            VALUE   LOW-VALUE.
            03  KEY-NEW.
-               05  KEY-N-HKNJANUM      PIC X(08).
+               05  KEY-N-HKNJANUM.
+                   07  KEY-N-HKNJANUM1 PIC X(02).
+                   07  KEY-N-HKNJANUM2 PIC X(06).
            03  KEY-OLD.
-               05  KEY-O-HKNJANUM      PIC X(08).
+               05  KEY-O-HKNJANUM.
+                   07  KEY-O-HKNJANUM1 PIC X(02).
+                   07  KEY-O-HKNJANUM2 PIC X(06).
       *
            COPY    "CPSHELLTBL.INC".
       *
            COPY    "ORCA-DBPATH".
-      *
-      *    ∏«ƒÍπ‡Ã‹
-       01  WRK-CONS-AREA.
-      *    £≤£∞£∞£≤«Ø£±£∞∑Ó≤˛¿µ
-           03  WRK-CONS-SRYYM          PIC X(06)   VALUE   "200210".
-      *    £≤£∞£∞£≥«Ø£¥∑Ó≤˛¿µ
-           03  WRK-CONS-SRYYM-200304   PIC X(06)   VALUE   "200304".
       *
       *****************************************************************
       *    •’•°•§•Î•Ï•§•¢•¶•»
@@ -302,8 +293,8 @@
                                                WRK-PARA-HOSPID
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
-                                               WRK-PARA-NYUGAIKBN
-                                               WRK-PARA-HKNJANUM
+                                               WRK-PARA-ERRFILE
+           END-UNSTRING
       *
       *    •π•∆•√•◊¥…Õ˝≥´ªœΩËÕ˝
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -312,7 +303,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCBM031"      TO  JOB-PGID
-           MOVE    "ø«Œ≈ ÛΩ∑¿¡µ·ΩÒ° ∞Â≤ °¶ªı≤ °À"
+           MOVE    "πÒ ›•Ï•ª≈≈°¶ø«Œ≈ ÛΩ∑¿¡µ·ΩÒ° ∞Â≤ °¶ªı≤ °À"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
@@ -322,9 +313,8 @@
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  RECEUPD-TERMID
       *
-           MOVE    "RECEERR"       TO  RECEERR-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID
-                                   TO  RECEERR-TERMID
+           MOVE    WRK-PARA-ERRFILE
+                                   TO  RECEERR
       *
            MOVE    LNK-PRTKANRI-SRYYM
                                    TO  WRK-SRYYMD (1:6)
@@ -422,7 +412,6 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
       *
-      *     MOVE    1               TO  FLG-END
            .
        200-MAIN-EXT.
            EXIT.
@@ -511,7 +500,7 @@
                PERFORM 20012-KOH-SYUKEI-SEC
            END-IF
       *
-      *    Ω∏∑◊§Œ¬–æ›§À§ §È§ §´§√§ø§»§≠
+      *    Ω∏∑◊§Œ¬–æ›§À§ §√§ø§»§≠
            IF          FLG-UPD     =   1
                PERFORM 20013-UPD-FILE-HENSYU-SEC
       *
@@ -551,13 +540,6 @@
                                    TO  SUM-TOTALTEN(IDX)
            ADD     RECE10-FTNMONEY(1)
                                    TO  SUM-FTNMONEY(IDX)
-      *----(01.01.01)--UPD-START---
-      *     IF        ( RECE10-NYUGAIKBN    =   "2")
-      *         AND   ( IDX                =   3   OR  5   OR  8 )
-      *         ADD     RECE10-YKZFTN(1)
-      *                                 TO  SUM-YKZFTN(IDX)
-      *     END-IF
-      *----(01.01.01)--UPD-END-----
       *    ø©ªˆŒ≈Õ‹
            IF          RECE10-NYUGAIKBN    =   "1"
                IF          RECE10-SHOKUJINISSU(1)   >   ZERO
@@ -594,11 +576,6 @@
                                    TO  SUM-FTNMONEY(12)
       *
                EVALUATE    RECE10-NYUGAIKBN
-      *----(01.01.01)--UPD-START---
-      *         WHEN    "2"
-      *             ADD     RECE10-YKZFTN(IDY)
-      *                                 TO  SUM-YKZFTN(12)
-      *----(01.01.01)--UPD-END-----
       *        ø©ªˆŒ≈Õ‹
                WHEN    "1"
                    IF      RECE10-SHOKUJINISSU(IDY)   >   ZERO
@@ -658,7 +635,7 @@
       *----(01.01.01)--ADD-START---
            ELSE
                IF   (( FLG-KBN         =   2)  AND
-                     ( KEY-O-HKNJANUM(1:2) NOT =   KEY-N-HKNJANUM(1:2)))
+                     ( KEY-O-HKNJANUM1 NOT =   KEY-N-HKNJANUM1))
                    IF          CNT-LINE   =   ZERO
                        PERFORM 20021-HEAD-HEN-SEC
                    END-IF
@@ -682,6 +659,10 @@
            INITIALIZE                  HCM2Q
            INITIALIZE                  HCM2R
       *
+           ADD     1               TO  CNT-PAGE
+           MOVE    CNT-PAGE        TO  WRK-PAGE
+           MOVE    WRK-PAGE        TO  HCM2Q-PAGE
+      *
            MOVE    WRK-SEIYMDWH    TO  HCM2Q-SEIYMD
       *
            MOVE    WRK-SRYYMWH     TO  HCM2Q-PRTYM
@@ -689,13 +670,21 @@
       *    ∞ÂŒ≈µ°¥ÿΩªΩÍ
            MOVE    SYS-1002-ADRS   TO  HCM2Q-ADRS
       *    ∞ÂŒ≈µ°¥ÿÃæ
-           MOVE    SYS-1001-HOSPNAME   TO  HCM2Q-HOSPNAME
+           MOVE    SYS-1001-HOSPNAME
+                                   TO  HCM2Q-HOSPNAME
       *
            MOVE    SYS-1001-KAISETUNAME
                                    TO  HCM2Q-KAISETUNAME
       *
-           MOVE    SYS-1001-HOSPCDN    TO  HCM2Q-HOSPCD
-           MOVE    SYS-1001-HOSPCDN    TO  HCM2R-HOSPCD
+           MOVE    SYS-1001-HOSPCDN
+                                   TO  HCM2Q-HOSPCD
+      *
+           ADD     1               TO  CNT-PAGE
+           MOVE    CNT-PAGE        TO  WRK-PAGE
+           MOVE    WRK-PAGE        TO  HCM2R-PAGE
+      *
+           MOVE    SYS-1001-HOSPCDN
+                                   TO  HCM2R-HOSPCD
       *
            .
        20021-HEAD-HEN-EXT.
@@ -727,13 +716,6 @@
                                        TO  WRK-ITBFTNZ
                        MOVE    WRK-ITBFTNZ
                                TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
-      *----(01.01.01)--UPD-START---
-      *             WHEN    3
-      *                 MOVE    SUM-YKZFTN(IDX)
-      *                                 TO  WRK-ITBFTNZ
-      *                 MOVE    WRK-ITBFTNZ
-      *                         TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
-      *----(01.01.01)--UPD-END-----
                    END-EVALUATE
       *
                    ADD     SUM-SHOKUJIKENSU(IDX)
@@ -751,24 +733,16 @@
                                        TO  WRK-TENSUZ
                    MOVE    WRK-TENSUZ  TO  HCM2R-TAI-TENSU(CNT-LINE IDZ)
                    EVALUATE    IDX
-      *----(01.01.01)--UPD-START---
-      *             WHEN    5
-      *             WHEN    8
-      *                 MOVE    SUM-YKZFTN(IDX)
-      *                                 TO  WRK-ITBFTNZ
-      *                 MOVE    WRK-ITBFTNZ
-      *                         TO  HCM2R-TAI-ITBFTN(CNT-LINE IDZ)
-                   WHEN    6
-                       MOVE    SUM-FTNMONEY(IDX)
-                                       TO  WRK-ITBFTNZ
-                       MOVE    WRK-ITBFTNZ
-                               TO  HCM2R-TAI-ITBFTN(CNT-LINE 1)
-                   WHEN    7
-                       MOVE    SUM-FTNMONEY(IDX)
-                                       TO  WRK-ITBFTNZ
-                       MOVE    WRK-ITBFTNZ
-                               TO  HCM2R-TAI-ITBFTN(CNT-LINE 2)
-      *----(01.01.01)--UPD-END-----
+                       WHEN    6
+                           MOVE    SUM-FTNMONEY(IDX)
+                                           TO  WRK-ITBFTNZ
+                           MOVE    WRK-ITBFTNZ
+                                   TO  HCM2R-TAI-ITBFTN(CNT-LINE 1)
+                       WHEN    7
+                           MOVE    SUM-FTNMONEY(IDX)
+                                           TO  WRK-ITBFTNZ
+                           MOVE    WRK-ITBFTNZ
+                                   TO  HCM2R-TAI-ITBFTN(CNT-LINE 2)
                    END-EVALUATE
       *
                    ADD     SUM-SHOKUJIKENSU(IDX)
@@ -805,10 +779,6 @@
                    MOVE    SUM-FTNMONEY(IDX)
                                            TO  WRK-ITBFTNZ
                    MOVE    WRK-ITBFTNZ TO  HCM2R-KOU-ITBFTN(CNT-LINE)
-      *----(01.01.01)--UPD-START---
-      *             MOVE    SUM-YKZFTN(IDX) TO  WRK-ITBFTNZ
-      *             MOVE    WRK-ITBFTNZ TO  HCM2R-KOU-KNJFTN(CNT-LINE)
-      *----(01.01.01)--UPD-END-----
       *
                    ADD     SUM-SHOKUJIKENSU(IDX)
                                    TO  SUM-SHO-KENSU(2)
@@ -821,9 +791,6 @@
                ADD     SUM-KENSU(IDX)      TO  GSUM-KENSU(IDX)
                ADD     SUM-TOTALTEN(IDX)   TO  GSUM-TOTALTEN(IDX)
                ADD     SUM-FTNMONEY(IDX)   TO  GSUM-FTNMONEY(IDX)
-      *----(01.01.01)--UPD-START---
-      *         ADD     SUM-YKZFTN(IDX)     TO  GSUM-YKZFTN(IDX)
-      *----(01.01.01)--UPD-END-----
       *
            END-PERFORM
       *
@@ -862,7 +829,7 @@
            MOVE    23              TO  CNT-LINE
       *
            MOVE    "°°πÁ°°∑◊"      TO  HCM2Q-HKNJANUM(CNT-LINE)
-           MOVE    "°°πÁ°°∑◊"      TO  HCM2R-HKNJANUM(CNT-LINE)
+                                       HCM2R-HKNJANUM(CNT-LINE)
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >   12
@@ -880,13 +847,6 @@
                                        TO  WRK-ITBFTNZ
                        MOVE    WRK-ITBFTNZ
                                TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
-      *----(01.01.01)--UPD-START---
-      *             WHEN    3
-      *                 MOVE    GSUM-YKZFTN(IDX)
-      *                                 TO  WRK-ITBFTNZ
-      *                 MOVE    WRK-ITBFTNZ
-      *                         TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
-      *----(01.01.01)--UPD-END-----
                    END-EVALUATE
       *        πÒÃ±∑ÚπØ ›∏±° ¬‡ø¶º‘°À
                WHEN    5   THRU    9
@@ -897,13 +857,6 @@
                                        TO  WRK-TENSUZ
                    MOVE    WRK-TENSUZ  TO  HCM2R-TAI-TENSU(CNT-LINE IDZ)
                    EVALUATE    IDX
-      *----(01.01.01)--UPD-START---
-      *             WHEN    5
-      *             WHEN    8
-      *                 MOVE    GSUM-YKZFTN(IDX)
-      *                                 TO  WRK-ITBFTNZ
-      *                 MOVE    WRK-ITBFTNZ
-      *                         TO  HCM2R-TAI-ITBFTN(CNT-LINE IDZ)
                    WHEN    6
                        MOVE    GSUM-FTNMONEY(IDX)
                                        TO  WRK-ITBFTNZ
@@ -914,7 +867,6 @@
                                        TO  WRK-ITBFTNZ
                        MOVE    WRK-ITBFTNZ
                                TO  HCM2R-TAI-ITBFTN(CNT-LINE 2)
-      *----(01.01.01)--UPD-END-----
                    END-EVALUATE
       *
       *        œ∑øÕ ›∑Ú
@@ -938,12 +890,8 @@
                    MOVE    WRK-TENSUZ      TO  HCM2R-KOU-TENSU(CNT-LINE)
                    MOVE    GSUM-FTNMONEY(IDX)
                                            TO  WRK-ITBFTNZ
-                   MOVE    WRK-ITBFTNZ TO  HCM2R-KOU-ITBFTN(CNT-LINE)
-      *----(01.01.01)--UPD-START---
-      *             MOVE    GSUM-YKZFTN(IDX)
-      *                                     TO  WRK-ITBFTNZ
-      *             MOVE    WRK-ITBFTNZ TO  HCM2R-KOU-KNJFTN(CNT-LINE)
-      *----(01.01.01)--UPD-END-----
+                   MOVE    WRK-ITBFTNZ     TO
+                                           HCM2R-KOU-ITBFTN(CNT-LINE)
                END-EVALUATE
       *
            END-PERFORM
@@ -977,7 +925,6 @@
       *
            PERFORM VARYING FLG-PRTKBN  FROM  1  BY  1
                    UNTIL   FLG-PRTKBN  >   2
-               ADD     1               TO  CNT-PAGE
       *
                INITIALIZE                  ORCSPRTAREA
                MOVE    "INS"           TO  SPRT-MODE
@@ -1006,7 +953,8 @@
                    MOVE    HCM2R           TO  SPRT-PRTDATA
                END-EVALUATE
       *
-               MOVE    "ø«Œ≈ ÛΩ∑¿¡µ·ΩÒ"    TO  SPRT-TITLE
+               MOVE    "πÒ ›•Ï•ª≈≈°¶ø«Œ≈ ÛΩ∑¿¡µ·ΩÒ"
+                                           TO  SPRT-TITLE
                MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
                MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
                MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
@@ -1181,9 +1129,6 @@
            MOVE    WRK-PARA-HOSPID TO  RECE10-HOSPID
            MOVE    LNK-PRTKANRI-SRYYM
                                    TO  RECE10-SKYYM
-      *     MOVE    WRK-CONS-SRYYM  TO  RECE10-SRYYM
-      *     MOVE    WRK-CONS-SRYYM-200304
-      *                             TO  RECE10-XXSRYYM
       *----(01.01.01)--ADD-START---
            MOVE    "00"            TO  RECE10-XXPREFNUM
       *----(01.01.01)--ADD-END-----
@@ -1219,7 +1164,12 @@
            IF          MCP-RC      =   ZERO
                MOVE    ZERO            TO  FLG-RECE10
                MOVE    MCPDATA-REC     TO  RECE10-REC
-      *
+      * 
+      *         ÷Ã· ¨§Œ§»§≠∆…§ﬂ»Ù§–§π
+               IF      RECE10-HENREIYM NOT =   ZERO
+                   GO  TO  900-SEIKYU-READ-SEC
+               END-IF
+      * 
       *        •∆•π•»¥µº‘§Œ§»§≠§œ∆…§ﬂ»Ù§–§π
                MOVE    SPACE           TO  PTINF-REC
                INITIALIZE                  PTINF-REC
@@ -1306,8 +1256,9 @@
       *****************************************************************
        910-SYSKANRI-INV-SEC        SECTION.
       *
-           MOVE    LNK-PRTKANRI-SKYYMD
-                                   TO  ORC-DBYMD
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  ORC-DBYMD (1:6)
+           MOVE    "00"            TO  ORC-DBYMD (7:2)
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
