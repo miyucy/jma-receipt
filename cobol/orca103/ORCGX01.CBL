@@ -536,7 +536,20 @@
        4101-GMN-SPA-SET-SEC       SECTION.
       *
            MOVE    X01-CHKKBN          TO  SPA-GMN-CHKKBN-G
-           MOVE    X01-SRYCD           TO  SPA-GMN-SRYCD
+      *
+      *    Á´³Ñ
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    X01-SRYCD(1:2)      TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC          =   ZERO ) AND
+                  (KANACHK-SYUBETU     =   2    )
+               MOVE    SPACE               TO  SPA-GMN-SRYCD
+               MOVE    X01-SRYCD(1:8)      TO  SPA-GMN-SRYCD
+           ELSE
+               MOVE    X01-SRYCD           TO  SPA-GMN-SRYCD
+           END-IF
       *
            MOVE    X01-STYUKYMD        TO  SPA-GMN-STYUKYMD
            MOVE    X01-EDYUKYMD        TO  SPA-GMN-EDYUKYMD
