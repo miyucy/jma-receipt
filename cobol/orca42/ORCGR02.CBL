@@ -814,6 +814,7 @@
                MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
                MOVE    SPA-NAI-TEISYUTUSAKI(1 IDX)
                                            TO  RECE07-TEISYUTUSAKI
+               MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
                MOVE    RECE07-REC          TO  MCPDATA-REC                             
       *
                MOVE    "DBSELECT"          TO  MCP-FUNC
