@@ -15,6 +15,29 @@ distclean:
 	-rm -f Makefile
 	-rm -f config.cache config.log config.status
 
+VERSION=1.0.1
+
+distdir=jma-receipt-$(VERSION)
+
+dist: $(distdir).tar.gz
+	-rm -rf $(distdir)
+
+$(distdir).tar.gz: distdir
+	tar czf $@ $(distdir)
+
+distdir:
+	-rm -rf $(distdir)
+	for x in `cd $(top_srcdir) && find . -name CVS -prune -o -print`; do \
+	  file=`expr X$$x : 'X\./\(.*\)'`; \
+	  if test -d "$(top_srcdir)/$$file" ; then \
+	    mkdir "$(distdir)/$$file" && chmod 777 "$(distdir)/$$file";	\
+	  else \
+	    ln "$(top_srcdir)/$$file" "$(distdir)/$$file" >/dev/null 2>&1 \
+	      || cp "$(top_srcdir)/$$file" "$(distdir)/$$file"; \
+	  fi || exit; \
+	done
+
+	make -C $(distdir) distclean
 
 install installdirs:
 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done

@@ -3,7 +3,6 @@ include $(top_builddir)/Makefile.directories
 COBOL = @COBC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-MKDIR = mkdir -p
 CC = @CC@
 
 COBCOPYS = -I$(srcdir)/../../cobol/copy
@@ -58,19 +57,7 @@ filecheck:
 
 install: all installdirs
 	for f in $(COBJS) $(OBJS) $(EXEC); do \
-	  $(INSTALL) -m 555 $${f} $(libdir) ; done
+	  $(INSTALL) -m 555 $${f} $(orcalibdir) ; done
 
 installdirs:
-	-@if [ ! -d $(libdir) ]; then \
-	  $(MKDIR) $(libdir); \
-	fi
-
-install-copys: install-copydirs
-	for f in $(COPYS); do \
-	  $(INSTALL_DATA) $${f} $(copydir) ; done
-
-install-copydirs:
-	-@if [ ! -d $(copydir) ]; then \
-	  $(MKDIR) $(copydir); \
-	fi
-
+	$(INSTALL) -d $(orcalibdir)

@@ -1,7 +1,7 @@
 prefix = @prefix@
 exec_prefix= @exec_prefix@
 sysconfdir = @sysconfdir@
-libdir  = @libdir@
+orcalibdir  = @libdir@
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@

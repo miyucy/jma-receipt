@@ -648,7 +648,6 @@ MCPAREA = \
 COBOL = @COBC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-MKDIR = mkdir -p
 top_builddir = ../..
 
 COPYS_inc = $(COPYS_sources:.INC.in=.INC)
@@ -724,7 +723,4 @@ install-copys: install-copydirs
 	  $(INSTALL_DATA) $${f} $(copydir) ; done
 
 install-copydirs:
-	-@if [ ! -d $(copydir) ]; then \
-	  $(MKDIR) $(copydir); \
-	fi
-
+	$(INSTALL) -d $(copydir)
