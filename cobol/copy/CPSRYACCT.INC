@@ -117,4 +117,6 @@
            03  ACCT-UPYMD               PIC  X(08).
       *更新時間
            03  ACCT-UPHMS               PIC  X(06).
-      *
+      *診療年月検索用項目
+           03  ACCT-STSRYYM             PIC  X(06).
+           03  ACCT-EDSRYYM             PIC  X(06).

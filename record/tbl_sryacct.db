@@ -149,6 +149,9 @@ tbl_sryacct {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
+#-----> ¸¡º÷ÍÑ¹àÌÜ
+    STSRYYM 			char(6),virtual;
+    EDSRYYM 			char(6),virtual;
 };
 
 primary	{
@@ -726,6 +729,41 @@ path	key33 	{
 			ORDER  BY   SRYKA,
                                     SRYKBN,
                                     ZAINUM
+		;
+	};
+};
+
+path	key34 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key34_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYYM       >=  :STSRYYM
+			AND   SRYYM       <=  :EDSRYYM
+			AND   ZAIKAISU    >   0
+			AND   SRYKBN      =   :SRYKBN
+			AND   HKNCOMBI    <>  '9999'
+			ORDER  BY   SRYYM,SRYKA,ZAINUM
+		;
+	};
+};
+
+path	key35 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key35_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYM       >=  :STSRYYM
+			AND   SRYYM       <=  :EDSRYYM
+			AND   ZAIKAISU    >   0
+			AND   SRYKBN      =   :SRYKBN
+			AND   HKNCOMBI    <>  '9999'
+			ORDER  BY   SRYYM,SRYKA,ZAINUM
 		;
 	};
 };
