@@ -33,6 +33,12 @@
            03  ORCHC33-PTNUM           PIC X(20).
       *    患者ＩＤ
            03  ORCHC33-PTID            PIC 9(10).
+      *    患者氏名
+           03  ORCHC33-NAME            PIC X(50).
+      *    患者性別
+           03  ORCHC33-SEX             PIC X(02).
+      *    患者生年月日
+           03  ORCHC33-BIRTHDAY        PIC X(08).
       *    診療年月
            03  ORCHC33-SRYYM           PIC X(06).
       *    診療年月（終了）

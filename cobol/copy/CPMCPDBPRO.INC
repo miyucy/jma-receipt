@@ -253,6 +253,7 @@
       *  01.01.79    NACL-小豆沢　03/06/20  BYOMEI-KEY6追加
       *  01.01.80    NACL-多々納　03/06/24  TENSU-KEY21追加
       *                                     PTNUM-KEY3 追加 
+      *  01.01.81    NACL-多々納　03/07/10  PTINF-KEY10 追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1431,6 +1432,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTINF-KEY9"
                    MOVE    PATH-TBL-PTINF-KEY9
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTINF-KEY10"
+                   MOVE    PATH-TBL-PTINF-KEY10
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "PTINF-ALL"
