@@ -131,6 +131,8 @@
       *                                     する
       *  01.02.11    NACL-藤原    05/01/18  特定器材レコードの点数の編集
       *                                     方法を修正
+      *  01.02.12    NACL-藤原    05/01/25  酸素の計算式を対象としないよ
+      *                                     うにする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2219,6 +2221,7 @@
                          UNTIL   ( IDX               >   5     )
                          OR      ( RECE05-SRYCD(IDX) =   SPACE )
                          OR      ( FLG-END           =   1     )
+                 IF      RECE05-RECEDENFLG(IDX) =   SPACE
                    MOVE    SPACE                TO  WRK-KIZAI-SRYCD
                    IF      RECE05-SRYCD (IDX) (1:3) = "059"
                        MOVE    RECE05-SRYCD (IDX)
@@ -2242,6 +2245,7 @@
                        WHEN    "7"
                            PERFORM 200711-KIZAI-TAIHI-SEC
                    END-EVALUATE
+                 END-IF
                END-PERFORM
       *
                PERFORM 990-RECE05-NEXT-SEC

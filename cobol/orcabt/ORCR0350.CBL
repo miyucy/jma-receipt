@@ -48,6 +48,8 @@
       *                                     ÊýË¡¤ò½¤Àµ
       *  01.00.09    NACL-Æ£¸¶    05/01/20  ¿ÇÎÅ¶èÊ¬£¹£°¡¦£¹£²¤Î¥³¥á¥ó¥È
       *                                     ¤ÎÊÔ½¸
+      *  01.00.10    NACL-Æ£¸¶    05/01/25  »ÀÁÇ¤Î·×»»¼°¤òÂÐ¾Ý¤È¤·¤Ê¤¤¤è
+      *                                     ¤¦¤Ë¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2622,6 +2624,7 @@
                          UNTIL   ( IDX               >   5     )
                          OR      ( RECE65-SRYCD(IDX) =   SPACE )
                          OR      ( FLG-END           =   1     )
+                 IF      RECE65-RECEDENFLG (IDX)     =   SPACE
                    MOVE    SPACE                TO  WRK-KIZAI-SRYCD
                    IF      RECE65-SRYCD (IDX) (1:3) = "059"
                        MOVE    RECE65-SRYCD (IDX)
@@ -2645,6 +2648,7 @@
                        WHEN    "7"
                            PERFORM 200711-KIZAI-TAIHI-SEC
                    END-EVALUATE
+                 END-IF
                END-PERFORM
       *
                PERFORM 990-RECE65-NEXT-SEC
