@@ -16,48 +16,41 @@
       * 113-8621, Japan.
       ********************************************************************
       *-------------------------------------------------*
-      *         システム管理マスタ     (CPSK1008.INC)   *
-      *         （１００８）                            *
-      *         チェック機能制御情報                    *
+      *         システム管理マスタ     (CPSK1017.INC)   *
+      *         （１０１７）                            *
+      *         患者登録機能制御情報                    *
       *-------------------------------------------------*
       *****************************************************************
       *  修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-多々納  02/10/10  外来管理加算チェック追加
-      *  01.00.02    NACL-多々納  03/10/16  育児栄養加算自動算定から
-      *                                     外来カーソル移動追加
       *****************************************************************
-       01  SYS-1008-REC.
-           03  SYS-1008-KEY.
+       01  SYS-1017-REC.
+           03  SYS-1017-KEY.
       *管理コード
-               05  SYS-1008-KANRICD     PIC  X(04).
+               05  SYS-1017-KANRICD     PIC  X(04).
       *区分コード
-               05  SYS-1008-KBNCD       PIC  X(08).
+               05  SYS-1017-KBNCD       PIC  X(08).
       *有効開始年月日
-               05  SYS-1008-STYUKYMD    PIC  X(08).
+               05  SYS-1017-STYUKYMD    PIC  X(08).
       *有効終了年月日
-               05  SYS-1008-EDYUKYMD    PIC  X(08).
-      *相互作用チェック期間
-           03  SYS-1008-INTERACT-KIKAN  PIC 9(02).
-      *外来管理加算チェック
-           03  SYS-1008-GAIKANRIKBN-CHK PIC X(01).
-      *育児栄養加算自動算定
-           03  SYS-1008-IKUJIEIYO-FLG   PIC X(01).
-      *育児栄養加算自動算定科
-           03  SYS-1008-IKUJIEIYO-SRYKA PIC X(02).
+               05  SYS-1017-EDYUKYMD    PIC  X(08).
+      *人名辞書使用チェック
+           03  SYS-1017-JINMEI-USE      PIC X(01).
+      *カルテ病名編集
+           03  SYS-1017-KARUTE-BYOMEI   PIC X(01).
+      *患者登録のカルテ発行
+           03  SYS-1017-KARUTE-HAKKO    PIC X(01).
+      *自費保険の補助区分
+           03  SYS-1017-JIHIHKN-TAX     PIC X(01).
       *予備
-           03  FILLER                   PIC X(04).
-      *外来カーソル移動
-           03  SYS-1008-GAI-CURSOR-SET-1   PIC X(01).
-      *予備
-           03  FILLER                   PIC X(489).
+           03  FILLER                   PIC X(496).
       *端末ＩＤ
-           03  SYS-1008-TERMID          PIC  X(16).
+           03  SYS-1017-TERMID          PIC  X(16).
       *オペーレータＩＤ
-           03  SYS-1008-OPID            PIC  X(16).
+           03  SYS-1017-OPID            PIC  X(16).
       *作成年月日
-           03  SYS-1008-CREYMD          PIC  X(08).
+           03  SYS-1017-CREYMD          PIC  X(08).
       *更新年月日
-           03  SYS-1008-UPYMD           PIC  X(08).
+           03  SYS-1017-UPYMD           PIC  X(08).
       *更新時間
-           03  SYS-1008-UPHMS           PIC  X(06).
+           03  SYS-1017-UPHMS           PIC  X(06).
