@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
           01  HC24.
-              03  HC24-PTNAME    PIC  X(26).
+              03  HC24-PTNAME    PIC  X(20).
               03  HC24-HOSPNAME    PIC  X(30).
               03  HC24-HOSPNUM    PIC  X(30).
               03  HC24-PTAGE    PIC  X(3).
@@ -26,4 +26,3 @@
               03  HC24-PTNUM    PIC  X(30).
               03  HC24-NENNUM   PIC  X(9).
               03  HC24-HKNNUM   PIC  X(14).
-              03  HC24-PTKANANAME   PIC  X(30).
