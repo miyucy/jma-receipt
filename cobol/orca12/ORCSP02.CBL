@@ -1336,8 +1336,8 @@
            END-IF
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL   ( IDX       >   10 )
-                     OR    ( SPA-GMN-DISCOUNTKBN-KBNCD(IDX) = SPACE )
-                     OR    ( SPA-GMN-DISCOUNTKBN (4:)   NOT = SPACE )
+      ******         OR    ( SPA-GMN-DISCOUNTKBN-KBNCD(IDX) = SPACE )
+      *****          OR    ( SPA-GMN-DISCOUNTKBN (4:)   NOT = SPACE )
                IF  SPA-GMN-DISCOUNTKBN
                                      =   SPA-GMN-DISCOUNTKBN-KBNCD(IDX)
                    MOVE    SPA-GMN-DISCOUNTKBN-BODY (IDX)
