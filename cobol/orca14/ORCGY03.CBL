@@ -745,6 +745,9 @@
       *****************************************************************
        3001-TBL-SORT-SEC              SECTION.
       *
+           MOVE    SPA-GMN-TBANGO (01) TO  IDX-G
+           COMPUTE IDX-G               =   IDX-G   -   1
+      *
            INITIALIZE                  WRK-SORT-AREA
            MOVE    SPA-GMN-TBL         TO  WRK-GMN-TBL
            MOVE    SPA-NAI-TBL         TO  WRK-NAI-TBL
@@ -775,7 +778,8 @@
                                            TO  SPA-GMN-TBLO(IDX)
                    MOVE    WRK-NAI-TBLO (WRK-IDX)
                                            TO  SPA-NAI-TBLO(IDX)
-                   MOVE    IDX             TO  SPA-GMN-TBANGO (IDX)
+                   ADD     1               TO  IDX-G
+                   MOVE    IDX-G           TO  SPA-GMN-TBANGO (IDX)
                    INITIALIZE              WRK-GMN-TBLO (WRK-IDX)
                    INITIALIZE              WRK-NAI-TBLO (WRK-IDX)
                END-IF
