@@ -449,9 +449,6 @@
       *    定期請求印刷情報削除処理
            PERFORM 900-TEIKIPRT-DEL-SEC
       *
-      *    ダミー収納削除処理
-           PERFORM 2001-DUMMY-SYUNOU-DEL-SEC
-      *
       *    前回定期請求情報更新処理
            PERFORM 2002-MAE-SEIKYU-KOUSIN-SEC
       *
@@ -476,26 +473,6 @@
        200-MAIN-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    ダミー収納削除処理
-      *****************************************************************
-       2001-DUMMY-SYUNOU-DEL-SEC       SECTION.
-      *
-           INITIALIZE                  SYUNOU-REC
-           MOVE    TEIKI1P-HOSPID      TO  SYU-HOSPID
-           MOVE    "1"                 TO  SYU-NYUGAIKBN
-           MOVE    "3"                 TO  SYU-CREATEKBN
-           MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "SYUNOU-DEL2"       TO  ORC-DBPATH
-           PERFORM 910-DBDELETE-SEC
-           IF  (   MCP-RC          NOT =   ZERO )
-               MOVE    ERR-MES04       TO  WRK-TEIKIERR
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
-      *
-           .
-       2001-DUMMY-SYUNOU-DEL-EXT.
-           EXIT.
       *****************************************************************
       *    前回定期請求情報更新処理
       *****************************************************************
