@@ -1036,12 +1036,14 @@
       *     
            ADD     1               TO  WRK-LINETEK
       *
+           INSPECT WRK-BYOMEI2
+                           REPLACING    ALL   "  "   BY   "　"
+      *
            IF      CNT-PAGE        =   1
                MOVE    WRK-BYOMEI2     TO  HC22-TEKIYO2 (WRK-LINETEK)
            ELSE
                MOVE    WRK-BYOMEI2     TO  HC24-TEKIYO  (WRK-LINETEK)
            END-IF    
-      *
       *
       *    クリア
            MOVE    SPACE           TO  WRK-BYOMEI2
