@@ -4,6 +4,7 @@
       ************************************************************
       *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  02.00.00    NACL-Â¿¡¹Ç¼  04/03/19  ²þÀµÂÐ±þ
       ************************************************************
        01  CPJIDOTBL.
            02  JIDOTBL-T.
@@ -60,12 +61,16 @@
                05  FILLER              PIC  X(9)   VALUE   "120001710" .
                05  FILLER              PIC  X(9)   VALUE   "120001110" .
                05  FILLER              PIC  X(9)   VALUE   "120000410" .
+      *£È£±£¶¡¥£´²þÀµÊ¬
+      *        Ä¹´üÅêÌô²Ã»»
+               05  FILLER              PIC  X(9)   VALUE   "120003170" .
+               05  FILLER              PIC  X(9)   VALUE   "120003270" .
       *
            02  JIDOTBL-R  REDEFINES   JIDOTBL-T.
       *******03  JIDOTBL-TX           OCCURS  38.
       *******03  JIDOTBL-TX           OCCURS  42.
       ****** 03  JIDOTBL-TX           OCCURS  39.
-             03  JIDOTBL-TX           OCCURS  42.
+             03  JIDOTBL-TX           OCCURS  44.
                05  JIDOTBL-CODE        PIC  X(9).
-       01  JIDO-MAX                PIC 9(04)   VALUE   42.
+       01  JIDO-MAX                PIC 9(04)   VALUE   44.
       *
