@@ -68,6 +68,7 @@
       *  01.01.04    NACL-藤原    04/05/06  不明分を必ず出力するように修正
       *  01.01.05    NACL-門脇    04/05/13  初診時に時間外・深夜・休日が
       *                                     ２つ以上あった場合の記載対応
+      *  01.01.06    NACL-小豆沢  04/05/19  ＤＢ書き込み時のコミット追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -253,6 +254,7 @@
            03  CNT-ZAIMEISAISU     PIC 9(03).
            03  CNT-PAGE            PIC 9(03).
            03  CNT-KENSU           PIC 9(03). 
+           03  CNT-COMMIT          PIC 9(03). 
       *
       *    添字領域
        01  IDX-AREA.
@@ -1150,6 +1152,13 @@
                        ADD     1                      TO  CNT-KENSU
       *                                      
                        PERFORM 2001-SYORI-SEC
+      *
+                       ADD     1                 TO  CNT-COMMIT
+                       IF  CNT-COMMIT      =    300
+                           MOVE  ZERO      TO      CNT-COMMIT
+                           PERFORM 900-DBCOMMIT-SEC
+                           PERFORM 900-DBSTART-SEC
+                       END-IF
       *
                        PERFORM 990-RECE02-READ-SEC
                    END-PERFORM
@@ -4509,6 +4518,7 @@
            IF      FLG-ERR              =   1
                MOVE    2                    TO  SPA-STS
            END-IF
+      *
            .
        390-PRINT-OUT-EXT.
            EXIT.
@@ -5641,4 +5651,32 @@
                                         MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ　ＣＯＭＭＩＴ処理
+      *****************************************************************
+       900-DBCOMMIT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "MCPSUB"          USING
+                                        MCPAREA
+                                        MCPDATA-REC.
+      *
+           .
+       900-DBCOMMIT-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    ＤＢ　ＳＴＡＲＴ処理
+      *****************************************************************
+       900-DBSTART-SEC                SECTION.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       900-DBSTART-EXT.
            EXIT.
