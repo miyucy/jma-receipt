@@ -1336,7 +1336,8 @@
       *        入院点滴で診療種別が入力されていること
                IF      SPA-NYUGAIKBN           =   "1"
                    IF      (SPA-COM-TNSSRYSYUKBN (IDX) =   "300" OR
-                                                           "330" )  AND
+                                                           "330" OR
+                                                           "340" )  AND
                            (IDX                    >   1 )  AND
                            (SPA-GMN-INPUTCD(IDX - 1)(1:4)
                                                    =   ".330" OR
