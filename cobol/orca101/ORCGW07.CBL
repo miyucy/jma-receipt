@@ -45,6 +45,7 @@
       *  02.01.05    NACL-ÂÀÅÄ    04/01/16  ¿ÇÎÅ¹Ô°Ùµ¡Ç½¾ðÊó¥¿¥°ÄÉ²Ã
       *  02.01.06    NACL-Â¿¡¹Ç¼  04/01/23  Æþ±¡Ä´´ð¥Á¥§¥Ã¥¯ÄÉ²Ã
       *  02.01.07    NACL-ÂÀÅÄ    04/01/23  ¼ýÇ¼µ¡Ç½¾ðÊó¥¿¥°ÄÉ²Ã
+      *  02.01.08    NACL-Â¿¡¹Ç¼  04/03/08  »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ùÂ¾ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -91,6 +92,17 @@
                            11  SPA-GMN-NYUSYOSIN       PIC X(01).
                            11  SPA-GMN-FN              PIC X(01).
                            11  SPA-GMN-NYUSYOSINMEI    PIC X(10).
+      *
+      *                »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù
+                       09  SPA-GMN-JIKANTOKU-NYU-G.
+                           11  SPA-GMN-JIKANTOKU-NYU   PIC X(01).
+                           11  SPA-GMN-FN              PIC X(01).
+                           11  SPA-GMN-JIKANTOKU-NYUMEI    PIC X(10).
+      *                ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±
+                       09  SPA-GMN-GAZOUKSN1-G.
+                           11  SPA-GMN-GAZOUKSN1       PIC X(01).
+                           11  SPA-GMN-FN              PIC X(01).
+                           11  SPA-GMN-GAZOUKSN1MEI    PIC X(10).
       *
       *                Áê¸ßºîÍÑ¥Á¥§¥Ã¥¯´ü´Ö
                        09  SPA-GMN-INTERACT-KIKAN      PIC 9(02).
@@ -676,6 +688,13 @@
       *        Êñ³ç¤Þ¤È¤á
                MOVE    SYS-1008-HOUKATU-FLG
                                        TO  SPA-GMN-HOUKATU
+      *
+      *        »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù
+               MOVE    SYS-1008-JIKANTOKU-NYU-FLG
+                                       TO  SPA-GMN-JIKANTOKU-NYU
+      *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±
+               MOVE    SYS-1008-GAZOUKSN1-FLG
+                                       TO  SPA-GMN-GAZOUKSN1
            END-IF
       *
       *    Æþ±¡½é¿ÇÎÁ
@@ -731,6 +750,38 @@
                     MOVE    SPA-GMN-GAIKANRIKBN-LIST(1)
                                                TO  SPA-GMN-GAIKANRIKBN-G
             END-EVALUATE
+      *
+      *    »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-JIKANTOKU-NYU
+                                       =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST(IDY)
+                                           TO SPA-GMN-JIKANTOKU-NYU-G
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    SPA-GMN-DATA-MAX    TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-DATALST(01) TO SPA-GMN-JIKANTOKU-NYU-G
+           END-IF
+      *
+      *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-GAZOUKSN1
+                                       =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST(IDY)
+                                           TO SPA-GMN-GAZOUKSN1-G
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    SPA-GMN-DATA-MAX    TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-DATALST(01) TO SPA-GMN-GAZOUKSN1-G
+           END-IF
       *
       *    Êñ³ç¤Þ¤È¤á
            IF      SPA-GMN-HOUKATU    =   SPACE
@@ -1036,6 +1087,9 @@
            END-PERFORM
       *    Æþ±¡½é¿ÇÎÁ¼«Æ°»»Äê
            MOVE    W07-NYUSYOSIN       TO  SPA-GMN-NYUSYOSIN-G
+      *    »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù
+           MOVE    W07-JIKANTOKUNYU    TO  SPA-GMN-JIKANTOKU-NYU-G
+           MOVE    W07-GAZOUKSN1       TO  SPA-GMN-GAZOUKSN1-G
       *
            MOVE    W07-SRYKACD         TO  SPA-GMN-SRYKACD
            MOVE    W07-SRYKAMEI        TO  SPA-GMN-SRYKAMEI
@@ -1085,6 +1139,16 @@
                    END-IF
       *            Æþ±¡½é¿ÇÎÁ¼«Æ°»»Äê¥Á¥§¥Ã¥¯
                    PERFORM 4103-NYUSYOSIN-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+      *            »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù
+                   PERFORM 4103-JIKANTOKU-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+      *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±
+                   PERFORM 4103-GAZOUKSN1-CHK-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
@@ -1233,11 +1297,62 @@
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0013"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    13                  TO  SPA-GMN-CUR
            END-IF
       *
           .
-       4103-DATA08-CHK-EXT.
+       4103-NYUSYOSIN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4103-GAZOUKSN1-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-GAZOUKSN1   =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
+                                           TO  SPA-GMN-GAZOUKSN1-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0018"              TO  SPA-ERRCD
+               MOVE    18                  TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       4103-GAZOUKSN1-CHK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù»»Äê¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4103-JIKANTOKU-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-JIKANTOKU-NYU   =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
+                                           TO  SPA-GMN-JIKANTOKU-NYU-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0017"              TO  SPA-ERRCD
+               MOVE    17                  TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       4103-JIKANTOKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1925,6 +2040,12 @@
       *    Æþ±¡Ä´´ð¥Á¥§¥Ã¥¯
            MOVE    SPA-GMN-CHOKICHK        TO  SYS-1008-CHOKICHK-FLG
       *
+      *    »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù
+           MOVE    SPA-GMN-JIKANTOKU-NYU   TO
+                                           SYS-1008-JIKANTOKU-NYU-FLG
+      *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê¼Ì¿¿¿ÇÃÇ¡Ë
+           MOVE    SPA-GMN-GAZOUKSN1       TO  SYS-1008-GAZOUKSN1-FLG
+      *
            MOVE    SYS-1008-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
@@ -2257,6 +2378,24 @@
            END-PERFORM
            MOVE    SPA-GMN-DATA-MAX    TO  W07-NYUSYOSIN-COUNT
       *
+      *    »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù
+           MOVE    SPA-GMN-JIKANTOKU-NYU-G TO  W07-JIKANTOKUNYU
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-JIKANTOKUNYU-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-JIKANTOKUNYU-COUNT
+      *
+      *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê¼Ì¿¿¿ÇÃÇ¡Ë
+           MOVE    SPA-GMN-GAZOUKSN1-G TO  W07-GAZOUKSN1
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-GAZOUKSN1-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-GAZOUKSN1-COUNT
+      *
            MOVE  SPA-GMN-INTERACT-KIKAN    TO  W07-KIKAN
       *    ³°Íè´ÉÍý²Ã»»¥Á¥§¥Ã¥¯
            MOVE    SPA-GMN-GAIKANRIKBN-G   TO  W07-GAIKANKBN
@@ -2465,6 +2604,14 @@
                WHEN    "0016"
                    MOVE    "Æþ±¡Ä´ºÞµ»½Ñ´ðËÜÎÁ¥Á¥§¥Ã¥¯¥¨¥é¡¼"
                                                        TO  SPA-ERRMSG
+               WHEN    "0017"
+                   MOVE    "»þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù¥Á¥§¥Ã¥¯¥¨¥é¡¼"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0018"
+                   MOVE    "²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê¼Ì¿¿¿ÇÃÇ¡Ë"
+                                                       TO  SPA-ERRMSG
+                   MOVE    "¥Á¥§¥Ã¥¯¥¨¥é¡¼"
+                                                   TO  SPA-ERRMSG(33:)
       *
                WHEN    "0020"
                    MOVE    "¥«¥ë¥Æ¤ÎÉÂÌ¾ÂÐ¾Ý¶èÊ¬¤¬¤¢¤ê¤Þ¤»¤ó¡£"
@@ -2608,9 +2755,13 @@
                WHEN    14
                    MOVE  "SURYOZERO"       TO   MCP-WIDGET
                WHEN    15
-                   MOVE  "CHOKICHK"       TO   MCP-WIDGET
+                   MOVE  "CHOKICHK"        TO   MCP-WIDGET
                WHEN    16
                    MOVE  "HOUKATU"         TO   MCP-WIDGET
+               WHEN    17
+                   MOVE  "JIKANTOKUNYU"    TO   MCP-WIDGET
+               WHEN    18
+                   MOVE  "GAZOUKSN1"       TO   MCP-WIDGET
       *
                WHEN    20
                    MOVE  "BYOMEIKBN"       TO   MCP-WIDGET
@@ -2673,7 +2824,12 @@
                WHEN    "SRYKACD"
                    MOVE    13              TO  SPA-GMN-CUR
                WHEN    "NYUSYOSIN"
+                   MOVE    17              TO  SPA-GMN-CUR
+               WHEN    "JIKANTOKUNYU"
+                   MOVE    18              TO  SPA-GMN-CUR
+               WHEN    "GAZOUKSN1"
                    MOVE    10              TO  SPA-GMN-CUR
+      *
                WHEN    "KIKAN"
                    MOVE    11              TO  SPA-GMN-CUR
                WHEN    "GAIKANKBN"
