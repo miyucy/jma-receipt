@@ -599,7 +599,7 @@
       *****************************************************************
       *    ¡™ƒÍŒ≈Õ‹»Ò°›…È√¥∂Ë ¨•≥•Û•‹
       *****************************************************************
-      310-CMB-SENTEI-FTNKBN-SET-SEC       SECTION.
+       310-CMB-SENTEI-FTNKBN-SET-SEC       SECTION.
       *
            MOVE    3               TO  SPA-GMN-W24-SENTEI-FTNKBN-CNT
       *
@@ -613,12 +613,12 @@
                                    TO  SPA-GMN-W24-SENTEI-FTNKBN-ITM (3)
       *
            .
-      310-CMB-SENTEI-FTNKBN-SET-EXT.
+       310-CMB-SENTEI-FTNKBN-SET-EXT.
            EXIT.
       *****************************************************************
       *    ¡™ƒÍŒ≈Õ‹»Ò°›æ√»Ò¿«•≥•Û•‹
       *****************************************************************
-      310-CMB-SENTEI-TAX-SET-SEC       SECTION.
+       310-CMB-SENTEI-TAX-SET-SEC       SECTION.
       *
            MOVE    2               TO  SPA-GMN-W24-SENTEI-TAX-CNT
       *
@@ -627,7 +627,7 @@
            MOVE    "1 §¢§Í"        TO  SPA-GMN-W24-SENTEI-TAX-ITM (2)
       *
            .
-      310-CMB-SENTEI-TAX-SET-EXT.
+       310-CMB-SENTEI-TAX-SET-EXT.
            EXIT.
       *****************************************************************
       *    ∆˛±°ŒÚ…Ωº®•≥•Û•‹
@@ -696,7 +696,7 @@
       *****************************************************************
       *    ººŒ¡∫π≥€æ√»Ò¿«∂Ë ¨•≥•Û•‹
       *****************************************************************
-      310-CMB-BRMSGK-TAX-SET-SEC   SECTION.
+       310-CMB-BRMSGK-TAX-SET-SEC   SECTION.
       *
            MOVE    2               TO  SPA-GMN-W24-BRMSGK-TAX-CNT
       *
@@ -705,7 +705,7 @@
            MOVE    "1 §¢§Í"        TO  SPA-GMN-W24-BRMSGK-TAX-ITM (2)
       *
            .
-      310-CMB-BRMSGK-TAX-SET-EXT.
+       310-CMB-BRMSGK-TAX-SET-EXT.
            EXIT.
       *****************************************************************
       *    ∆˛Œœæ Û ‘Ω∏ΩËÕ˝

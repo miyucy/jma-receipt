@@ -90,8 +90,8 @@
                    07  SPA-NAI-CHKKBN             PIC X(01).
                    07  SPA-NAI-SRYCD              PIC X(09). 
                    07  SPA-NAI-KOUMOKU1.
-                       09  SPA-NAI-STYUKYMD       PIC 9(08).
-                       09  SPA-NAI-EDYUKYMD       PIC 9(08).
+                       09  SPA-NAI-STYUKYMD       PIC X(08).
+                       09  SPA-NAI-EDYUKYMD       PIC X(08).
                        09  SPA-NAI-SELNUM         PIC 9(03).
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBLO    OCCURS  100.

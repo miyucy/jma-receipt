@@ -370,14 +370,25 @@
                        09 SRT-SRYACCT-HKNCOMBI     PIC X(04).
                        09 SRT-SRYACCT-SRYKBN       PIC X(02).
                        09 SRT-SRYACCT-KNSJISKBN    PIC 9(01).
-                       09 SRT-SRYACCT-CDKBN-SYO    PIC 9(01).
-                       09 SRT-SRYACCT-CDKBN-BU     PIC 9(02).
-                       09 SRT-SRYACCT-CDKBN-KBN    PIC X(01).
-                       09 SRT-SRYACCT-CDKBN-KBNNUM PIC 9(03).
-                       09 SRT-SRYACCT-CDKBN-KBNNUM-EDA
+                       09 SRT-SRYACCT-CDKBN-SYO-G.
+                           11 SRT-SRYACCT-CDKBN-SYO
+                                                   PIC 9(01).
+                       09 SRT-SRYACCT-CDKBN-BU-G.
+                           11 SRT-SRYACCT-CDKBN-BU PIC 9(02).
+                       09 SRT-SRYACCT-CDKBN-KBN-G.
+                           11 SRT-SRYACCT-CDKBN-KBN
+                                                   PIC X(01).
+                       09 SRT-SRYACCT-CDKBN-KBNNUM-G.
+                           11 SRT-SRYACCT-CDKBN-KBNNUM
+                                                   PIC 9(03).
+                       09 SRT-SRYACCT-CDKBN-KBNNUM-EDA-G.
+                           11 SRT-SRYACCT-CDKBN-KBNNUM-EDA
                                                    PIC 9(02).
-                       09 SRT-SRYACCT-CDKBN-KOUBAN PIC 9(02).
-                       09 SRT-SRYACCT-KOUHYOJYUNNUM
+                       09 SRT-SRYACCT-CDKBN-KOUBAN-G.
+                           11 SRT-SRYACCT-CDKBN-KOUBAN
+                                                   PIC 9(02).
+                       09 SRT-SRYACCT-KOUHYOJYUNNUM-G.
+                          11 SRT-SRYACCT-KOUHYOJYUNNUM
                                                    PIC 9(09).
                        09 SRT-SRYACCT-SRYSYUKBN    PIC X(03).
                        09 SRT-SRYACCT-ZAITEN       PIC 9(08).
@@ -2412,19 +2423,19 @@
                                CONTINUE
                            ELSE
                                MOVE    ALL "9"
-                                       TO   SRT-SRYACCT-CDKBN-SYO
+                                   TO  SRT-SRYACCT-CDKBN-SYO-G
                                                           (SRT-IDX1)
-                                            SRT-SRYACCT-CDKBN-BU
+                                       SRT-SRYACCT-CDKBN-BU-G
                                                           (SRT-IDX1)
-                                            SRT-SRYACCT-CDKBN-KBN
+                                       SRT-SRYACCT-CDKBN-KBN-G
                                                           (SRT-IDX1)
-                                            SRT-SRYACCT-CDKBN-KBNNUM
+                                       SRT-SRYACCT-CDKBN-KBNNUM-G
                                                           (SRT-IDX1)
-                                            SRT-SRYACCT-CDKBN-KBNNUM-EDA
+                                       SRT-SRYACCT-CDKBN-KBNNUM-EDA-G
                                                           (SRT-IDX1)
-                                            SRT-SRYACCT-CDKBN-KOUBAN
+                                       SRT-SRYACCT-CDKBN-KOUBAN-G
                                                           (SRT-IDX1)
-                                            SRT-SRYACCT-KOUHYOJYUNNUM
+                                       SRT-SRYACCT-KOUHYOJYUNNUM-G
                                                           (SRT-IDX1)
                            END-IF
                        ELSE
@@ -2620,17 +2631,17 @@
       *
            EVALUATE    TRUE
            WHEN  ( TNS-KNSJISKBN       =   2 )
-               MOVE    "5"     TO  SRT-SRYACCT-KNSJISKBN (SRT-IDX1)
+               MOVE    5       TO  SRT-SRYACCT-KNSJISKBN (SRT-IDX1)
            WHEN  ( TNS-CDKBN-KBN       =   "9" )
-               MOVE    "4"     TO  SRT-SRYACCT-KNSJISKBN (SRT-IDX1)
+               MOVE    4       TO  SRT-SRYACCT-KNSJISKBN (SRT-IDX1)
            WHEN    OTHER
                EVALUATE    TNS-CDKBN-KBNNUM
                WHEN  ZERO    THRU    199
-                   MOVE    "1"     TO  SRT-SRYACCT-KNSJISKBN (SRT-IDX1)
+                   MOVE    1       TO  SRT-SRYACCT-KNSJISKBN (SRT-IDX1)
                WHEN  400     THRU    499
-                   MOVE    "2"     TO  SRT-SRYACCT-KNSJISKBN (SRT-IDX1)
+                   MOVE    2       TO  SRT-SRYACCT-KNSJISKBN (SRT-IDX1)
                WHEN  200     THRU    399
-                   MOVE     "3"    TO  SRT-SRYACCT-KNSJISKBN (SRT-IDX1)
+                   MOVE    3       TO  SRT-SRYACCT-KNSJISKBN (SRT-IDX1)
                END-EVALUATE
            END-EVALUATE
       *
@@ -3861,7 +3872,7 @@
       *
            END-PERFORM
       *
-           MOVE    6                       TO  WRK-ITEM-KBN
+           MOVE    "6"                     TO  WRK-ITEM-KBN
            MOVE    1                       TO  FLG-LINE
            PERFORM 210-SRYACT-HEN-SEC
       *
@@ -3888,7 +3899,7 @@
            MOVE    "PTNYUINRRK-KEY24"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC            NOT =   ZERO )
-               MOVE    "1"             TO  FLG-PTNYUINRRK
+               MOVE    1               TO  FLG-PTNYUINRRK
            ELSE
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
            END-IF
@@ -3917,7 +3928,7 @@
                MOVE    "PTNYUINRRK-KEY24"  TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
                IF    ( FLG-DBRC            NOT =   ZERO )
-                   MOVE    "1"             TO  FLG-PTNYUINRRK
+                   MOVE    1               TO  FLG-PTNYUINRRK
                ELSE
                    MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
                END-IF

@@ -604,7 +604,7 @@
       *    ¼«ÈñÌ¾¾ÎÊÔ½¸
            PERFORM 3102-JIHIMSG-HEN-SEC
       *
-           MOVE    SPACE               TO  WRK-KINGAKU-Z
+           MOVE    ZERO                TO  WRK-KINGAKU-Z
            MOVE    SPACE               TO  WRK-ZHENSYU-G
       *
       *    ÀÁµáÆâÍÆ

@@ -1023,6 +1023,7 @@
                IF  MCP-RC    =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    TNS-NAME            TO  W-MESG-NAME1
+               END-IF
            END-IF.
       *
            INITIALIZE                  MCPAREA.

@@ -368,8 +368,8 @@
            03  WK-RSISDO           PIC  9(08).                         
            03  WK-RSIETC           PIC  9(08).                         
       *
-           03  WK-SINDAN           PIC  9(08).                          
-           03  WK-MEISAI           PIC  9(08).                          
+           03  WK-SINDAN           PIC  9(08).                         
+           03  WK-MEISAI           PIC  9(08).                         
       *
            03  WK-YOUBUKASAN       PIC  9(08).
            03  WK-RYOYOTEATE       PIC  9(08).
@@ -1275,6 +1275,7 @@
                        CONTINUE
                    ELSE
                        MOVE    1       TO  FLG-SYORI
+                   END-IF
                ELSE
                    MOVE    1           TO  FLG-SYORI
                END-IF
@@ -2911,7 +2912,7 @@
                     COMPUTE SYU-HKNTEN (01) =  SYU-HKNTEN (01)  +
                            (TBL-ZAITEN (IDX1) *   TBL-ZAIKAISU (IDX1))
                     IF   (TBL-SRYKBN  (IDX1)  =  "11")
-                    AND  (FLG-SENIN          =   1)                      
+                    AND  (FLG-SENIN          =   1)                     
                          MOVE    1     TO     FLG-SENIN-SYOSIN          
                     END-IF                                              
       *            »ØÆ³
@@ -4040,11 +4041,11 @@
                          END-IF                                        
                          IF    SRY-SRYCD (IDX8)(1:5)   =   "09591"      
                            COMPUTE WK-SINDAN = WK-SINDAN +              
-                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX1))     
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX1))    
                          END-IF                                         
                          IF    SRY-SRYCD (IDX8)(1:5)   =   "09592"      
                            COMPUTE WK-MEISAI = WK-MEISAI +              
-                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX1))     
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX1))    
                          END-IF                                         
       *
                          IF    SRY-SRYCD (IDX8)  =   "140037490"

@@ -80,8 +80,8 @@
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-HKNNUM             PIC X(03).
                    07  SPA-NAI-KOUMOKU.
-                       09  SPA-NAI-STYUKYMD       PIC 9(08).
-                       09  SPA-NAI-EDYUKYMD       PIC 9(08).
+                       09  SPA-NAI-STYUKYMD       PIC X(08).
+                       09  SPA-NAI-EDYUKYMD       PIC X(08).
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBLO    OCCURS  100.
                            11  SPA-NAI-TSTYUKYMD  PIC 9(08).

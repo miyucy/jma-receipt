@@ -136,12 +136,12 @@
        100-PRM-CHK-SEC                     SECTION.
       *
            IF    ( STUSANCHK-NYUINYMD  =   SPACE )
-               MOVE    "99"            TO  STUSANCHK-RC
+               MOVE    99              TO  STUSANCHK-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
            IF    ( STUSANCHK-KJNYMD    =   SPACE )
-               MOVE    "99"            TO  STUSANCHK-RC
+               MOVE    99              TO  STUSANCHK-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *

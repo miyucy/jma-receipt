@@ -788,7 +788,7 @@
                MOVE    SPA-SYSYMD      TO  SPA-NAI-HENPARA(IDXA IDXB)
                MOVE    SPA-SYSYMDWH    TO  SPA-GMN-PARA   (IDXA IDXB)
            WHEN    "PSN1"
-               MOVE    0               TO  SPA-NAI-HENPARA(IDXA IDXB)
+               MOVE    "0"             TO  SPA-NAI-HENPARA(IDXA IDXB)
                MOVE    "0"
                                        TO  SPA-GMN-PARA   (IDXA IDXB)
            WHEN    "PTNUM"

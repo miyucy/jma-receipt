@@ -1775,7 +1775,7 @@
                                              >   SYS-5002-EDYUKYMD )
                        CONTINUE
                    ELSE
-                       MOVE    "1"             TO  FLG-KIKAN-DABURI
+                       MOVE    1             TO  FLG-KIKAN-DABURI
                    END-IF
                END-IF
       *
@@ -2878,7 +2878,7 @@
       *****************************************************************
        4100-BRM-NUM-LSTSEL-SEC         SECTION.
       *
-           MOVE    "1"             TO  FLG-BRM-NUM
+           MOVE    1               TO  FLG-BRM-NUM
            MOVE    ZERO            TO  IDX-BRMLST
       *
            PERFORM VARYING IDX1    FROM    1   BY  1

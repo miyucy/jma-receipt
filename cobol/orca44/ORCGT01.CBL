@@ -1123,7 +1123,8 @@
                    MOVE    ZERO                TO  SPA-NAI-HKNJANUM
                ELSE
                    IF      SPA-GMN-HKNJAMEI        =   SPACE    
-                   MOVE    "0005"              TO  SPA-ERRCD
+                       MOVE    "0005"          TO  SPA-ERRCD
+                   END-IF
                END-IF    
            END-IF    
       *

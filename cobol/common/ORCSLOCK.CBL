@@ -232,9 +232,9 @@
                        MOVE  1             TO  FLG-END
            END-EVALUATE
       *???
-           DISPLAY "ORCSLOCK ED RETRN =" SLOCK-RETURN "##"
-           DISPLAY "ORCSLOCK ED SPA-HAITAFLG =" SPA-HAITAFLG "##"
-           DISPLAY "ORCSLOCK ED MCP-WINDOW = [" MCP-WINDOW "]"
+      *    DISPLAY "ORCSLOCK ED RETRN =" SLOCK-RETURN "##"
+      *    DISPLAY "ORCSLOCK ED SPA-HAITAFLG =" SPA-HAITAFLG "##"
+      *    DISPLAY "ORCSLOCK ED MCP-WINDOW = [" MCP-WINDOW "]"
       *???     
       *
            .
@@ -295,7 +295,7 @@
       *****************************************************************
        1102-TERMID-BUNKAI-SEC        SECTION.
       *
-           DISPLAY "WRK-TERMID = " WRK-TERMID
+      *    DISPLAY "WRK-TERMID = " WRK-TERMID
       **     IF  WRK-TERMID(9:1)       =  SPACE
       *  For IPV4
       **         MOVE    1             TO IDZ
@@ -406,7 +406,7 @@
       *    自端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
            MOVE    MCP-TERM                TO  LOCK-TERMID
-           DISPLAY "MAKE --> MCP-TERM = [" LOCK-TERMID "]"
+      *    DISPLAY "MAKE --> MCP-TERM = [" LOCK-TERMID "]"
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
            IF      FLG-LOCK       NOT  =  ZERO
@@ -417,7 +417,7 @@
                MOVE  MCP-USER          TO  LOCK-OPID
                MOVE  WRK-LD            TO  LOCK-LDNAME(01)
                MOVE  SLOCK-PTID        TO  LOCK-PTID(01)
-               MOVE  1                 TO  LOCK-FLG(01)
+               MOVE  "1"               TO  LOCK-FLG(01)
                ACCEPT LOCK-STARTDATE(01)   FROM  DATE
                ACCEPT LOCK-STARTTIME(01)   FROM  TIME
                MOVE  TBL-LOCK          TO  MCPDATA-REC
@@ -445,7 +445,7 @@
                MOVE  SLOCK-PTID             TO    LOCK-PTID(IDZ)
                ACCEPT LOCK-STARTDATE(IDZ)   FROM  DATE
                ACCEPT LOCK-STARTTIME(IDZ)   FROM  TIME
-               MOVE  1                      TO    LOCK-FLG(IDZ)
+               MOVE  "1"                    TO    LOCK-FLG(IDZ)
                MOVE  TBL-LOCK               TO    MCPDATA-REC
                PERFORM 910-LOCK-UPD-SEC
            END-IF
@@ -561,7 +561,7 @@
            PERFORM 1101-LD-GET-SEC
       *    自端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
-           DISPLAY  "RESET MCP-TERM   = " MCP-TERM                 
+      *    DISPLAY  "RESET MCP-TERM   = " MCP-TERM                 
            MOVE    MCP-TERM                TO  LOCK-TERMID
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
@@ -571,11 +571,11 @@
                GO    TO                120-RESET-EXT
            ELSE
       *    レコードが存在した場合は、該当のＬＤをクリア
-               DISPLAY  "WRK-LD = " WRK-LD
+      *        DISPLAY  "WRK-LD = " WRK-LD
                MOVE    ZERO             TO  IDZ
                PERFORM VARYING      IDX FROM  1   BY   1
                        UNTIL       (IDX     >     50)
-               DISPLAY  "LOCK-LDNAME (" IDX ") = " LOCK-LDNAME(IDX)
+      *        DISPLAY  "LOCK-LDNAME (" IDX ") = " LOCK-LDNAME(IDX)
                  IF  WRK-LD                 =     LOCK-LDNAME(IDX)
                      MOVE  IDX              TO    IDZ
                      MOVE  99               TO    IDX
@@ -596,11 +596,11 @@
                MOVE  SPACE                  TO  LOCK-ENDTIME(IDZ)
                MOVE  SPACE                  TO  LOCK-FLG(IDZ)
       *    項目（日付、時間）
-               DISPLAY  "RESET IDZ =  [" IDZ "]"
+      *        DISPLAY  "RESET IDZ =  [" IDZ "]"
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 910-LOCK-UPD-SEC
                IF      MCP-RC     =   ZERO
-                   DISPLAY "UPD OK = [" MCP-RC "]"   
+      *            DISPLAY "UPD OK = [" MCP-RC "]"   
                    CONTINUE
                ELSE
                    DISPLAY "INSERT ERR KEY = [" MCP-RC "]"   
@@ -779,7 +779,7 @@
                                        MCPAREA
                                        MCPDATA-REC
       *????
-               DISPLAY "FETCH=" MCP-RC    
+      *        DISPLAY "FETCH=" MCP-RC    
       *???? 
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TBL-LOCK
@@ -814,7 +814,7 @@
                                        MCPAREA
                                        MCPDATA-REC
       *????
-               DISPLAY "FETCH=" MCP-RC    
+      *        DISPLAY "FETCH=" MCP-RC    
       *???? 
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TBL-LOCK
@@ -823,7 +823,7 @@
                    MOVE    1                   TO  FLG-LOCK
                END-IF
            ELSE
-               DISPLAY "SELECT=" MCP-RC    
+      *        DISPLAY "SELECT=" MCP-RC    
                MOVE    1                   TO  FLG-LOCK
            END-IF
       *
@@ -850,7 +850,7 @@
                                        MCPAREA
                                        MCPDATA-REC
       *????
-               DISPLAY "LDMAP FETCH=" MCP-RC    
+      *        DISPLAY "LDMAP FETCH=" MCP-RC    
       *???? 
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TBL-LDMAP
@@ -859,7 +859,7 @@
                    MOVE    ZERO                TO  FLG-MAP
                END-IF
            ELSE
-               DISPLAY "LDMAP SELECT=" MCP-RC    
+      *        DISPLAY "LDMAP SELECT=" MCP-RC    
                MOVE    9                       TO  FLG-MAP
            END-IF
       *
@@ -879,7 +879,7 @@
                                    MCPAREA
                                    MCPDATA-REC
       *????
-               DISPLAY "FETCH=" MCP-RC    
+      *        DISPLAY "FETCH=" MCP-RC    
       *???? 
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  TBL-LOCK

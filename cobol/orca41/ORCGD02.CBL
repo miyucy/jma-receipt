@@ -2940,7 +2940,7 @@
        T-510-RECECHEK-SEC                SECTION.
       *
            MOVE    ACCT-SRYYM          TO  W-YMD4(1:6).
-           MOVE    00                  TO  W-YMD4(7:2).
+           MOVE    "00"                TO  W-YMD4(7:2).
            IF  W-MM4   =   1
                COMPUTE  W-YY4 = W-YY4 - 1
                MOVE    12              TO  W-MM4

@@ -731,7 +731,7 @@
                             ELSE
                                 MOVE   "入金／ＪＤ"
                                       TO    SPA-GMN-JOUTAI-T (IDX)
-                                MOVE   "02  デビットカード"
+                                MOVE   "02  デビット"
                                       TO    SPA-GMN-JOUTAI-TX (IDX)
                             END-IF
                        WHEN "3"

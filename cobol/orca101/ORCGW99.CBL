@@ -1227,25 +1227,25 @@
            MOVE    SPA-GMN-SYNBUTTON-G     TO  SYS-9000-SYNBUTTON-G
       *     
            IF    ( SPA-GMN-PTINF-SEND (2)      =   "T" )
-               MOVE    1                   TO  SYS-9000-PT-FLG
+               MOVE    "1"                 TO  SYS-9000-PT-FLG
            ELSE
                MOVE    SPACE               TO  SYS-9000-PT-FLG
            END-IF
       *     
            IF    ( SPA-GMN-RECEDENKA-SEND (2)  =   "T" )
-               MOVE    1                   TO  SYS-9000-RECEDEN-FLG
+               MOVE    "1"                 TO  SYS-9000-RECEDEN-FLG
            ELSE
                MOVE    SPACE               TO  SYS-9000-RECEDEN-FLG
            END-IF
       *     
            IF    ( SPA-GMN-BYOMEI-AGG (2)      =   "T" )
-               MOVE    1                   TO  SYS-9000-BYOMEI-SYU-FLG
+               MOVE    "1"                 TO  SYS-9000-BYOMEI-SYU-FLG
            ELSE
                MOVE    SPACE               TO  SYS-9000-BYOMEI-SYU-FLG
            END-IF
       *     
            IF    ( SPA-GMN-BYOMEI-SYNC (2)     =   "T" )
-               MOVE    1                   TO  SYS-9000-BYOMEI-DOUKI-FLG
+               MOVE    "1"                 TO  SYS-9000-BYOMEI-DOUKI-FLG
            ELSE
                MOVE    SPACE               TO  SYS-9000-BYOMEI-DOUKI-FLG
            END-IF

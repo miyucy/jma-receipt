@@ -5671,7 +5671,7 @@
       *****************************************************************
        4801-HKNCOMBI-KETTEI-SEC        SECTION.
       *
-           MOVE    SPACE           TO  WRK-ORCHCN01-HKNCOMBINUM
+           INITIALIZE                  WRK-ORCHCN01-HKNCOMBINUM
       *
            EVALUATE    SPA-GMN-I01-SYORIKBN-CD
            WHEN    "01"

@@ -67,7 +67,7 @@
       *    パラメータファイル名
        01  PRFNAME.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "ORCBI201".
+           03  FILLER              PIC X(08)   VALUE   "ORCBI201".
            03  PRFNAME-TERMID      PIC X(64).
            03  PRFNAME-SYSYMD      PIC X(08).
            03  PRFNAME-SYSTIME     PIC 9(08).
@@ -1130,7 +1130,7 @@
                        OR      WRK-HENFLG =   1
                    IF      SPA-GMN-STAGE 
                                   =   SPA-GMN-STAGEL (IDY)
-                       MOVE    1              TO  WRK-HENFLG
+                       MOVE    "1"        TO  WRK-HENFLG
                    END-IF
                END-PERFORM
                IF      WRK-HENFLG         =   ZERO
@@ -1158,7 +1158,7 @@
                        OR      WRK-HENFLG =   1
                    IF      SPA-GMN-EDAGE 
                                   =   SPA-GMN-STAGEL (IDY)
-                       MOVE    1              TO  WRK-HENFLG
+                       MOVE    "1"        TO  WRK-HENFLG
                    END-IF
                END-PERFORM
                IF      WRK-HENFLG         =   ZERO
@@ -1345,7 +1345,7 @@
                                       =   SPA-GMN-SRYKAL (IDY)
                        MOVE    SPA-GMN-SRYKALST (IDY)
                                           TO  SPA-GMN-SRYKA-G
-                       MOVE    1          TO  WRK-HENFLG
+                       MOVE    "1"        TO  WRK-HENFLG
                    END-IF
                END-PERFORM
                IF      WRK-HENFLG         =   ZERO
@@ -1374,7 +1374,7 @@
                                       =   SPA-GMN-BTUNUML (IDY)
                        MOVE    SPA-GMN-BTUNUMLST (IDY)
                                          TO  SPA-GMN-BTUNUM-G
-                       MOVE    1          TO  WRK-HENFLG
+                       MOVE    "1"       TO  WRK-HENFLG
                    END-IF
                END-PERFORM
                IF      WRK-HENFLG         =   ZERO
@@ -1403,7 +1403,7 @@
                                       =   SPA-GMN-JOTAIL (IDY)
                        MOVE    SPA-GMN-JOTAILST (IDY)
                                          TO  SPA-GMN-JOTAI-G
-                       MOVE    1          TO  WRK-HENFLG
+                       MOVE    "1"       TO  WRK-HENFLG
                    END-IF
                END-PERFORM
                IF      WRK-HENFLG         =   ZERO

@@ -220,7 +220,7 @@
        100-PRM-CHK-SEC                     SECTION.
       *
            IF    ( STUSAN-KJNYMD       =   SPACE )
-               MOVE    "99"            TO  STUSAN-RC
+               MOVE    99              TO  STUSAN-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
@@ -270,7 +270,7 @@
            IF    ( PTNYUINRRK-NYUINYMD <=  STUSAN-KJNYMD )
            AND   ( PTNYUINRRK-TAIINYMD >=  STUSAN-KJNYMD )
                IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
-                   MOVE    "99"            TO  STUSAN-RC
+                   MOVE    99              TO  STUSAN-RC
                    GO  TO  2100-KONKAI-NYUIN-TUSAN-EXT
                END-IF
       *
@@ -336,7 +336,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
-               MOVE    "99"            TO  STUSAN-RC
+               MOVE    99              TO  STUSAN-RC
                GO  TO  2110-NYUINRRK-SEL-EXT
            END-IF
       *
@@ -433,7 +433,7 @@
            MOVE    "NYUINACCT-KEY7"    TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC            =   "1" )
-               MOVE    "1"             TO  FLG-NYUINACCT
+               MOVE    1               TO  FLG-NYUINACCT
            END-IF
       *
            PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
@@ -452,7 +452,7 @@
                MOVE    "NYUINACCT-KEY7"    TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
                IF    ( FLG-DBRC            =   "1" )
-                   MOVE    "1"         TO  FLG-NYUINACCT
+                   MOVE    1           TO  FLG-NYUINACCT
                END-IF
       *
            END-PERFORM
@@ -488,7 +488,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-NYUINACT    NOT =   ZERO )
-               MOVE    "99"            TO  STUSAN-RC
+               MOVE    99              TO  STUSAN-RC
                GO  TO  2121-NYUINACT-SEL-EXT
            END-IF
       *
@@ -520,7 +520,7 @@
            END-PERFORM
       *
            IF    ( FLG-HIT             =   ZERO )
-               MOVE    "99"            TO  STUSAN-RC
+               MOVE    99              TO  STUSAN-RC
                GO  TO  2121-NYUINACT-SEL-EXT
            END-IF
       *

@@ -420,7 +420,7 @@
       *****************************************************************
       *    联年闻蛙锐≥砷么惰尸コンボ
       *****************************************************************
-      310-CMB-SENTEI-FTNKBN-SET-SEC       SECTION.
+       310-CMB-SENTEI-FTNKBN-SET-SEC       SECTION.
       *
            MOVE    2               TO  SPA-GMN-W28-SENTEI-FTNKBN-CNT
       *
@@ -429,12 +429,12 @@
            MOVE    "2 年驰肋年"    TO  SPA-GMN-W28-SENTEI-FTNKBN-ITM (2)
       *
            .
-      310-CMB-SENTEI-FTNKBN-SET-EXT.
+       310-CMB-SENTEI-FTNKBN-SET-EXT.
            EXIT.
       *****************************************************************
       *    联年闻蛙锐≥久锐狼コンボ
       *****************************************************************
-      310-CMB-SENTEI-TAX-SET-SEC       SECTION.
+       310-CMB-SENTEI-TAX-SET-SEC       SECTION.
       *
            MOVE    2               TO  SPA-GMN-W28-SENTEI-TAX-CNT
       *
@@ -443,7 +443,7 @@
            MOVE    "1 あり"        TO  SPA-GMN-W28-SENTEI-TAX-ITM (2)
       *
            .
-      310-CMB-SENTEI-TAX-SET-EXT.
+       310-CMB-SENTEI-TAX-SET-EXT.
            EXIT.
       *****************************************************************
       *    陕棚リスト试礁借妄

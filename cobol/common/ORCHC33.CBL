@@ -476,7 +476,7 @@
       *    年齢計算（末日時点の年齢とする）
            MOVE    ORCHC33-BIRTHDAY    TO  WRK-YMDS1
            MOVE    ORCHC33-SRYYM       TO  WRK-YMDS2
-           MOVE    "31"                TO  WRK-DDS2
+           MOVE    31                  TO  WRK-DDS2
            COMPUTE WRK-NENREI-YY       =   WRK-YYS2
                                        -   WRK-YYS1
            IF      WRK-YMDS1(5:4)      >   WRK-YMDS2(5:4)

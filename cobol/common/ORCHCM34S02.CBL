@@ -813,9 +813,9 @@
                MOVE    IDX8            TO  WRK-CHK-DD
       *
                IF    ( WRK-CHK-YMD    <=   WRK-RSI-14-YMD )
-                   MOVE    1           TO  WRK-RSI-JOUSUKBN (IDX8)
+                   MOVE    "1"         TO  WRK-RSI-JOUSUKBN (IDX8)
                ELSE
-                   MOVE    2           TO  WRK-RSI-JOUSUKBN (IDX8)
+                   MOVE    "2"         TO  WRK-RSI-JOUSUKBN (IDX8)
                END-IF
       *
            END-PERFORM
@@ -949,7 +949,7 @@
            MOVE    "PTNYUINRRK-KEY25"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC            NOT =   ZERO )
-               MOVE    "1"             TO  FLG-PTNYUINRRK
+               MOVE    1               TO  FLG-PTNYUINRRK
            ELSE
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
            END-IF
@@ -970,7 +970,7 @@
                MOVE    "PTNYUINRRK-KEY25"  TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
                IF    ( FLG-DBRC            NOT =   ZERO )
-                   MOVE    "1"             TO  FLG-PTNYUINRRK
+                   MOVE    1               TO  FLG-PTNYUINRRK
                ELSE
                    MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
                END-IF
@@ -1279,6 +1279,7 @@
                    MOVE    1           TO  FLG-HIT
                    MOVE    WRK-SYS-5113-BRMSAGAKU(IDX3)
                                        TO  WRK-BRMSAGAKU
+               END-IF
       *
            END-PERFORM
       *

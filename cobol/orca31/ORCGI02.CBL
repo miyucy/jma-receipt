@@ -884,7 +884,7 @@
            END-IF
       *
            .
-      3101-NYUINRRKLST-BIKO-EDIT-EXT.
+       3101-NYUINRRKLST-BIKO-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    備考編集処理

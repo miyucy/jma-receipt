@@ -2117,7 +2117,7 @@
            ELSE
                MOVE    WRK-YM(1:5)      TO  WRK-WYMD (1:5)
            END-IF
-           MOVE    "01"             TO  WRK-WDD
+           MOVE    01                   TO  WRK-WDD
       *
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY1-AREA

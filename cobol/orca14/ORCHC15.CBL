@@ -484,7 +484,7 @@
                MOVE    ZERO                TO  FLG-YYK
                MOVE    MCPDATA-REC         TO  YYK-REC
            ELSE
-               MOVE    1                   TO  FLG-YYK
+               MOVE    "1"                 TO  FLG-YYK
            END-IF
            .
       *

@@ -1893,7 +1893,7 @@
                                                >   KOHPLUS-YUKOEDYMD )
                        CONTINUE
                    ELSE
-                       MOVE    "1"         TO  FLG-KIKAN-DABURI
+                       MOVE    1           TO  FLG-KIKAN-DABURI
                    END-IF
                END-IF
       *

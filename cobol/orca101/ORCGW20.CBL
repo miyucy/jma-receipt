@@ -1861,7 +1861,7 @@
                                            >   SYS-5001-EDYUKYMD )
                        CONTINUE
                    ELSE
-                       MOVE    "1"         TO  FLG-KIKAN-DABURI
+                       MOVE    1           TO  FLG-KIKAN-DABURI
                    END-IF
                END-IF
       *
@@ -4553,7 +4553,7 @@
       *****************************************************************
        4100-BTU-NUM-LSTSEL-SEC         SECTION.
       *
-           MOVE    "1"                 TO  FLG-BTU-NUM
+           MOVE    1                   TO  FLG-BTU-NUM
            MOVE    ZERO                TO  IDX-BTULST
       *
       *

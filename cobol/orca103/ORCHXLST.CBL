@@ -282,7 +282,7 @@
        400-SYOKI-PRINT-SEC             SECTION.
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
-           MOVE    "HCP7LA"            TO  HC01PARA-FORM-ID
+           MOVE    "HCP7"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
       *

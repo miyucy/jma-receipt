@@ -175,7 +175,8 @@
            03  WRK-ZZ              PIC ZZ9.
       *  
            03  WRK-STPAGE          PIC 9(05).
-           03  WRK-EDPAGE          PIC 9(05).
+           03  WRK-EDPAGE-G.
+               05  WRK-EDPAGE      PIC 9(05).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1305,7 +1306,7 @@
       *
            MOVE    SPA-GMN-STPAGE      TO  WRK-STPAGE
            IF      SPA-GMN-EDPAGE      =   ZERO
-               MOVE    ALL "9"             TO  WRK-EDPAGE                                 
+               MOVE    ALL "9"             TO  WRK-EDPAGE-G
            ELSE
                MOVE    SPA-GMN-EDPAGE      TO  WRK-EDPAGE
            END-IF                            

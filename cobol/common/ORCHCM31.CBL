@@ -460,7 +460,7 @@
        230-PRT-WRITE-SEC           SECTION.
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
-           MOVE    "HCM31"         TO  HC01PARA-FORM-ID
+           MOVE    "HC31"          TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE        TO  HC01PARA-CNT

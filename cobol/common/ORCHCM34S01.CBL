@@ -1819,6 +1819,7 @@
                    MOVE    1           TO  FLG-HIT
                    MOVE    WRK-SYS-5113-BRMSAGAKU(IDX3)
                                        TO  WRK-BRMSAGAKU
+               END-IF
       *
            END-PERFORM
       *

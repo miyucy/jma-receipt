@@ -725,7 +725,7 @@
                            (SPA-W22-EDYUKYMD-OLD   >   SYS-EDYUKYMD)
                            CONTINUE
                        ELSE
-                           MOVE    "1"             TO  FLG-KIKAN-DABURI
+                           MOVE    1               TO  FLG-KIKAN-DABURI
                        END-IF
                    END-IF
                    COMPUTE  IDX   =   IDX   +   1

@@ -4873,6 +4873,7 @@
       *
                    MOVE    "130001"        TO  WRK-ERRCD
                    PERFORM 210-ERRMES-HEN-SEC
+               END-IF
       *
                IF    ( ORCBSD01-CHKKBN (13) =   "1" )
                    MOVE    1           TO  FLG-CHKEND (13)
@@ -4911,6 +4912,7 @@
       *
                    MOVE    "130002"    TO  WRK-ERRCD
                    PERFORM 210-ERRMES-HEN-SEC
+               END-IF
       *
                IF    ( ORCBSD01-CHKKBN (13) =   "1" )
                    MOVE    1           TO  FLG-CHKEND (13)
