@@ -143,6 +143,8 @@
       *  01.01.10    NACL-ÌçÏÆ    04/10/01  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ±þ
       *  01.01.11    NACL-ÌçÏÆ    04/10/21  ¸øÈñ»Í¼Î¸ÞÆþ¤·¤Ê¤¤¾ì¹ç¤Î½¤Àµ
       *  01.01.12    NACL-ÌçÏÆ    04/11/15  ¸øÈñ·î¾å¸Â³Û¼èÆÀ½¤Àµ
+      *  01.01.13    NACL-ÌçÏÆ    04/11/24  ºë¶Ì¸©£´£±Ï·¿Í¤¬Ä¹´ü¤ÈÊ»ÍÑ¤Î
+      *                                     ¾ì¹ç¡¢£±£°£°£°£°±ß¾å¸Â¤È¤¹¤ë
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2580,6 +2582,15 @@
                  END-IF
                END-IF
       *
+               IF  ( WK-1001-PREFNUM         =  11   ) AND
+                   ( COMB-KOH1HKNNUM(2:2)    = "41"  ) AND
+                   ((COMB-KOH2HKNNUM         = "972") OR
+                    (COMB-KOH3HKNNUM         = "972") OR
+                    (COMB-KOH4HKNNUM         = "972"))
+                    MOVE   10000   TO    MAX-KIN-KOHI1-M
+                    MOVE    "1"    TO    COMB-KOH1-GAIJGNKBN
+               END-IF
+      *
            END-IF.
       *
            MOVE    "DBCLOSE"            TO  MCP-FUNC.
@@ -2639,6 +2650,15 @@
                     MOVE    "1"    TO    COMB-KOH2-GAIJGNKBN
                     MOVE    "1"    TO    FLG-CHIHOU(2)
                  END-IF
+               END-IF
+      *
+               IF  ( WK-1001-PREFNUM         =  11   ) AND
+                   ( COMB-KOH2HKNNUM(2:2)    = "41"  ) AND
+                   ((COMB-KOH1HKNNUM         = "972") OR
+                    (COMB-KOH3HKNNUM         = "972") OR
+                    (COMB-KOH4HKNNUM         = "972"))
+                    MOVE   10000   TO    MAX-KIN-KOHI2-M
+                    MOVE    "1"    TO    COMB-KOH2-GAIJGNKBN
                END-IF
       *
            END-IF.
@@ -2702,6 +2722,15 @@
                  END-IF
                END-IF
       *
+               IF  ( WK-1001-PREFNUM         =  11   ) AND
+                   ( COMB-KOH3HKNNUM(2:2)    = "41"  ) AND
+                   ((COMB-KOH1HKNNUM         = "972") OR
+                    (COMB-KOH2HKNNUM         = "972") OR
+                    (COMB-KOH4HKNNUM         = "972"))
+                    MOVE   10000   TO    MAX-KIN-KOHI3-M
+                    MOVE    "1"    TO    COMB-KOH3-GAIJGNKBN
+               END-IF
+      *
            END-IF.
       *
            MOVE    "DBCLOSE"            TO  MCP-FUNC.
@@ -2761,6 +2790,15 @@
                     MOVE    "1"    TO    COMB-KOH4-GAIJGNKBN
                     MOVE    "1"    TO    FLG-CHIHOU(4)
                  END-IF
+               END-IF
+      *
+               IF  ( WK-1001-PREFNUM         =  11   ) AND
+                   ( COMB-KOH4HKNNUM(2:2)    = "41"  ) AND
+                   ((COMB-KOH1HKNNUM         = "972") OR
+                    (COMB-KOH2HKNNUM         = "972") OR
+                    (COMB-KOH3HKNNUM         = "972"))
+                    MOVE   10000   TO    MAX-KIN-KOHI4-M
+                    MOVE    "1"    TO    COMB-KOH4-GAIJGNKBN
                END-IF
       *
            END-IF.
@@ -2993,6 +3031,16 @@
               END-IF
            END-IF.
       *
+           IF  ( WK-1001-PREFNUM         =  11   ) AND
+               ( COMB-KOH1HKNNUM(2:2)    = "41"  ) AND
+               ((COMB-KOH2HKNNUM         = "972") OR
+                (COMB-KOH3HKNNUM         = "972") OR
+                (COMB-KOH4HKNNUM         = "972"))
+               IF   MAX-KIN-KOHI1-M   >     10000
+                     MOVE    10000   TO    MAX-KIN-KOHI1-M
+               END-IF
+           END-IF.
+      *
        2103-KOH1-KAISU-EXT.
            EXIT.
       ******************************************************************
@@ -3050,6 +3098,16 @@
               AND (MAX-KIN-KOHI2-M             >   12000    )
                      MOVE    12000   TO    MAX-KIN-KOHI2-M
               END-IF
+           END-IF.
+      *
+           IF  ( WK-1001-PREFNUM         =  11   ) AND
+               ( COMB-KOH2HKNNUM(2:2)    = "41"  ) AND
+               ((COMB-KOH1HKNNUM         = "972") OR
+                (COMB-KOH3HKNNUM         = "972") OR
+                (COMB-KOH4HKNNUM         = "972"))
+               IF   MAX-KIN-KOHI2-M   >     10000
+                     MOVE    10000   TO    MAX-KIN-KOHI2-M
+               END-IF
            END-IF.
       *
        2104-KOH2-KAISU-EXT.
@@ -3111,6 +3169,16 @@
               END-IF
            END-IF.
       *
+           IF  ( WK-1001-PREFNUM         =  11   ) AND
+               ( COMB-KOH3HKNNUM(2:2)    = "41"  ) AND
+               ((COMB-KOH1HKNNUM         = "972") OR
+                (COMB-KOH2HKNNUM         = "972") OR
+                (COMB-KOH4HKNNUM         = "972"))
+               IF   MAX-KIN-KOHI3-M   >     10000
+                     MOVE    10000   TO    MAX-KIN-KOHI3-M
+               END-IF
+           END-IF.
+      *
        2105-KOH3-KAISU-EXT.
            EXIT.
       ******************************************************************
@@ -3168,6 +3236,16 @@
               AND (MAX-KIN-KOHI4-M             >   12000    )
                      MOVE    12000   TO    MAX-KIN-KOHI4-M
               END-IF
+           END-IF.
+      *
+           IF  ( WK-1001-PREFNUM         =  11   ) AND
+               ( COMB-KOH4HKNNUM(2:2)    = "41"  ) AND
+               ((COMB-KOH1HKNNUM         = "972") OR
+                (COMB-KOH2HKNNUM         = "972") OR
+                (COMB-KOH3HKNNUM         = "972"))
+               IF   MAX-KIN-KOHI4-M   >     10000
+                     MOVE    10000   TO    MAX-KIN-KOHI4-M
+               END-IF
            END-IF.
       *
        2106-KOH4-KAISU-EXT.
