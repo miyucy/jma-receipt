@@ -31,6 +31,9 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-藤原    03/05/30  地方公費の判定の修正
       *  01.00.02    NACL-藤原    03/06/10  保険履歴の改頁処理の修正
+      *  01.00.03    NACL-藤原    03/06/30  カスタマイズ項目をＯＣＲにも対応
+      *  01.00.04    NACL-藤原    03/07/02  主病名編集フラグによって区切り線の
+      *                                     編集方法を変更する 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -514,6 +517,68 @@
       *
        01  WRK-CNT                 PIC  9(5).
       *
+      *    ＯＣＲ編集領域
+       01  OCR1-AREA.
+           03  OCR1-HKNJANUM                           PIC 9(08).
+           03  OCR1-HOSPCD                             PIC 9(07).
+           03  OCR1-SKYTENSU                           PIC 9(07).
+           03  OCR1-CHKDGT1                            PIC 9(01).
+           03  OCR1-YKZFTN                             PIC 9(05).
+           03  OCR1-CHKDGT2                            PIC 9(01).
+           03  OCR1-FTNMONEY                           PIC 9(05).
+           03  OCR1-CHKDGT3                            PIC 9(01).
+           03  OCR1-CHKDGT4                            PIC 9(01).
+           03  OCR1-JNISSU                             PIC 9(02).
+           03  OCR1-SRYYM                              PIC 9(04).
+           03  OCR1-CHKDGT5                            PIC 9(01).
+           03  OCR1-FTNJANUM                           PIC 9(08).
+           03  OCR1-JKYSNUM                            PIC 9(07).
+           03  OCR1-CHKDGT6                            PIC 9(01).
+           03  OCR1-PREFNUM                            PIC 9(02).
+           03  OCR1-TENSUHYO                           PIC 9(01).
+           03  OCR1-HKNSYUBETU1                        PIC 9(01).
+           03  OCR1-HKNSYUBETU2                        PIC 9(01).
+           03  OCR1-HONKZKKBN                          PIC 9(01).
+           03  OCR1-SEIRINO                            PIC 9(01).
+           03  OCR1-CHKDGT7                            PIC 9(01).
+      *
+       01  OCR2-AREA.
+           03  OCR2-SEX                                PIC 9(01).
+           03  OCR2-GENGO                              PIC 9(01).
+           03  OCR2-BIRTHYY                            PIC 9(02).
+           03  OCR2-CHKDGT1                            PIC 9(01).
+           03  OCR2-KIGO                               PIC 9(10).
+           03  OCR2-NUM                                PIC 9(10).
+           03  OCR2-CHKDGT2                            PIC 9(01).
+           03  OCR2-AREA-X.
+               05  OCR2-FTNJANUM                       PIC 9(08).
+               05  OCR2-JKYSNUM                        PIC 9(07).
+               05  OCR2-CHKDGT3                        PIC 9(01).
+               05  OCR2-JNISSU                         PIC 9(02).
+               05  OCR2-TENSU                          PIC 9(07).
+               05  OCR2-CHKDGT4                        PIC 9(01).
+               05  OCR2-YKZFTN                         PIC 9(05).
+               05  OCR2-CHKDGT5                        PIC 9(01).
+               05  OCR2-FTNMONEY                       PIC 9(05).
+               05  OCR2-CHKDGT6                        PIC 9(01).
+               05  OCR2-CHKDGT7                        PIC 9(01).
+           03  OCR2-YOBI                               PIC X(02).
+      *
+       01  OCR3-AREA.
+           03  OCR3-AREA-X.
+               05  OCR3-FTNJANUM                       PIC 9(08).
+               05  OCR3-JKYSNUM                        PIC 9(07).
+               05  OCR3-CHKDGT1                        PIC 9(01).
+               05  OCR3-JNISSU                         PIC 9(02).
+               05  OCR3-TENSU                          PIC 9(07).
+               05  OCR3-CHKDGT2                        PIC 9(01).
+               05  OCR3-YKZFTN                         PIC 9(05).
+               05  OCR3-CHKDGT3                        PIC 9(01).
+               05  OCR3-FTNMONEY                       PIC 9(05).
+               05  OCR3-CHKDGT4                        PIC 9(01).
+               05  OCR3-CHKDGT5                        PIC 9(01).
+           03  OCR3-YOBI                               PIC X(28).
+      *
        01  WRK-ERR-MSG-AREA.
            03  WRK-ERR-MSG-1.
                05  WRK-ERR-HKNCOMBINUM-1
@@ -612,6 +677,12 @@
       *
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    数値変換サブ
+           COPY    "CPORCSNUM.INC".
+      *
+      *    チェックディジット（モジュラス１１用）算出サブ
+           COPY    "CPORCCHKDGT11.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -811,6 +882,9 @@
            END-IF
            IF      SYS-2005-TENKIHENKBN     =   SPACE
                MOVE    ZERO             TO  SYS-2005-TENKIHENKBN
+           END-IF
+           IF      SYS-2005-SYUBYOHENFLG    =   SPACE
+               MOVE    ZERO             TO  SYS-2005-SYUBYOHENFLG
            END-IF
       * 
       *    県内扱い保険者情報
@@ -1374,6 +1448,14 @@
            PERFORM 990-RECE11-READ-SEC
            IF      FLG-RECE11          =   ZERO
                MOVE    RECE11-PRTDATA      TO  RECE11-HC06
+      *        カスタマイズ項目があるときＯＣＲに反映させる 
+               IF   RECE02-TEISYUTUSAKI     =     1
+               OR  (RECE02-TEISYUTUSAKI     =     2   AND
+                    SYS-2005-KKHOCRKBN      =     "1"     )
+                   MOVE    RECE02-OCR1            TO  OCR1-AREA
+                   MOVE    RECE02-OCR2            TO  OCR2-AREA
+                   MOVE    RECE02-OCR3            TO  OCR3-AREA
+               END-IF  
            END-IF    
            .
        301-RECE11-HENSYU-EXT.
@@ -1520,6 +1602,18 @@
       *
       *    ＯＣＲ
            IF  CNT-PAGE                =   1
+      *        カスタマイズ項目があるときＯＣＲに反映させる 
+               IF      FLG-RECE11          =   ZERO
+                   IF   RECE02-TEISYUTUSAKI     =     1
+                   OR  (RECE02-TEISYUTUSAKI     =     2   AND
+                        SYS-2005-KKHOCRKBN      =     "1"     )
+                       MOVE    RECE02-OCR1            TO  OCR1-AREA
+                       MOVE    RECE02-OCR2            TO  OCR2-AREA
+                       MOVE    RECE02-OCR3            TO  OCR3-AREA
+                       PERFORM 3301-OCR-HENSYU-SEC
+                   END-IF
+               END-IF    
+      *
                MOVE    RECE02-OCR3     TO  HC06-OCR1
                MOVE    RECE02-OCR2     TO  HC06-OCR2
                MOVE    RECE02-OCR1     TO  HC06-OCR3
@@ -2409,24 +2503,27 @@
       ****************************************************************
        3211-SYUBYOFLG-HENSYU-SEC         SECTION.
       *
-      *    主病名との区切り線（副傷病名があるときのみ）     
-           IF      WRK-BYO-OLD        =   LOW-VALUE
-               CONTINUE
-           ELSE
-               IF      FLG-RECE031             =   ZERO
-               AND     RECE031-SYUBYOFLG   NOT =   WRK-BO-SYUBYOFLG 
-               AND     WRK-BO-SYUBYOFLG        =   "1"
-                   IF      WRK-LINEBYO     <   WRK-BYOMEI-LINE
-                       ADD     1           TO  WRK-LINEBYO
-                       MOVE    WRK-KUGIRI3 TO
+      *    主病名編集フラグが区切り有のときのみ処理を行う
+           IF      SYS-2005-SYUBYOHENFLG   =   "1"
+      *        主病名との区切り線（副傷病名があるときのみ）     
+               IF      WRK-BYO-OLD        =   LOW-VALUE
+                   CONTINUE
+               ELSE
+                   IF    ( FLG-RECE031             =   ZERO            )
+                   AND   ( RECE031-SYUBYOFLG   NOT =   WRK-BO-SYUBYOFLG)
+                   AND   ( WRK-BO-SYUBYOFLG        =   "1"             )
+                       IF      WRK-LINEBYO     <   WRK-BYOMEI-LINE
+                           ADD     1           TO  WRK-LINEBYO
+                           MOVE    WRK-KUGIRI3 TO
                                           HC06-BYOMEI(WRK-LINEBYO)(2:52)
-                   ELSE
-                       IF      WRK-LINETEK >=   WRK-TEKIYOU-LINE
-                           PERFORM 34120-PAGE-SEC
-                       END-IF    
-                       ADD     1           TO  WRK-LINETEK
-                       MOVE    WRK-KUGIRI1 TO
+                       ELSE
+                           IF      WRK-LINETEK >=   WRK-TEKIYOU-LINE
+                               PERFORM 34120-PAGE-SEC
+                           END-IF    
+                           ADD     1           TO  WRK-LINETEK
+                           MOVE    WRK-KUGIRI1 TO
                                            HC06-TEKIYO (WRK-LINETEK)
+                       END-IF 
                    END-IF
                END-IF
            END-IF        
@@ -2831,6 +2928,291 @@
       *
            .
        330-HC101-TENSU-HEN-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    編集処理
+      *****************************************************************
+       3301-OCR-HENSYU-SEC              SECTION.
+      *
+           IF      RECE11-KOHINF (IDA) NOT =   SPACE
+      *        公費１負担者番号
+               IF      RECE11-KOHFTNJANUM(IDA) =      SPACE
+                   MOVE  ZERO               TO      OCR2-FTNJANUM
+               ELSE
+                   INITIALIZE                       ORCSNUMAREA
+                   MOVE    RECE11-KOHFTNJANUM(IDA)
+                                            TO      SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =       ZERO
+                       MOVE   SNUM-OUTNUM
+                                        TO      OCR2-FTNJANUM
+                   ELSE
+                       MOVE   ZERO      TO      OCR2-FTNJANUM
+                   END-IF
+               END-IF
+      *        公費１受給者番号
+               IF      RECE11-KOHJKYSNUM(IDA) =       SPACE
+                   MOVE  ZERO               TO      OCR2-JKYSNUM
+               ELSE
+                   INITIALIZE                       ORCSNUMAREA
+                   MOVE    RECE11-KOHJKYSNUM(IDA)
+                                            TO      SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =       ZERO
+                       MOVE   SNUM-OUTNUM
+                                        TO      OCR2-JKYSNUM
+                   ELSE
+                       MOVE   ZERO      TO      OCR2-JKYSNUM
+                   END-IF
+               END-IF
+           END-IF 
+      *
+           IF      RECE11-KOHINF (IDB) NOT =   SPACE
+      *        公費２負担者番号
+               IF      RECE11-KOHFTNJANUM(IDB) =      SPACE
+                   MOVE  ZERO               TO      OCR3-FTNJANUM
+               ELSE
+                   INITIALIZE                       ORCSNUMAREA
+                   MOVE    RECE11-KOHFTNJANUM(IDB)
+                                            TO      SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =       ZERO
+                       MOVE   SNUM-OUTNUM
+                                        TO      OCR3-FTNJANUM
+                   ELSE
+                       MOVE   ZERO      TO      OCR3-FTNJANUM
+                   END-IF
+               END-IF
+      *        公費２受給者番号
+               IF      RECE11-KOHJKYSNUM(IDB) =       SPACE
+                   MOVE  ZERO               TO      OCR3-JKYSNUM
+               ELSE
+                   INITIALIZE                       ORCSNUMAREA
+                   MOVE    RECE11-KOHJKYSNUM(IDB)
+                                            TO      SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =       ZERO
+                       MOVE   SNUM-OUTNUM
+                                        TO      OCR3-JKYSNUM
+                   ELSE
+                       MOVE   ZERO      TO      OCR3-JKYSNUM
+                   END-IF
+               END-IF
+      *  
+      *        診療実日数
+               IF      RECE11-JNISSU (IDX1) >   ZERO
+                   MOVE    RECE11-JNISSU(IDX1)     TO  OCR1-JNISSU
+               END-IF
+      *        公費１診療実日数
+               IF      RECE11-JNISSU (IDX2) >   ZERO
+                   MOVE    RECE11-JNISSU  (IDX2)   TO  OCR2-JNISSU
+               END-IF
+      *        公費２診療実日数
+               IF      RECE11-JNISSU (IDX3) >   ZERO
+                   MOVE    RECE11-JNISSU  (IDX3)   TO  OCR3-JNISSU
+               END-IF
+      *        請求点数
+               IF      RECE11-TOTALTEN (IDX1)  >   ZERO
+                   MOVE    RECE11-TOTALTEN(IDX1)   TO  OCR1-SKYTENSU
+               END-IF
+               IF      RECE11-FTNMONEY (IDX1)  >   ZERO
+                   MOVE    RECE11-FTNMONEY(IDX1)   TO  OCR1-FTNMONEY
+               END-IF
+      *        公費・請求点数１
+               IF      RECE11-TOTALTEN (IDX2)  >   ZERO                     
+                   MOVE    RECE11-TOTALTEN(IDX2)   TO  OCR2-TENSU
+               END-IF
+               IF    RECE11-FTNMONEY (IDX2)    >   ZERO
+                   MOVE    RECE11-FTNMONEY(IDX2)   TO  OCR2-FTNMONEY
+               END-IF
+      *        公費・請求点数２
+               IF      RECE11-TOTALTEN (IDX3)  >   ZERO                      
+                   MOVE    RECE11-TOTALTEN(IDX3)   TO  OCR3-TENSU
+               END-IF
+               IF      RECE11-FTNMONEY (IDX3)  >   ZERO
+                   MOVE    RECE11-FTNMONEY(IDX3)   TO  OCR3-FTNMONEY
+               END-IF
+           END-IF
+      *
+           PERFORM 3301-OCR1-HENSYU-SEC
+           PERFORM 3302-OCR2-HENSYU-SEC
+           PERFORM 3303-OCR3-HENSYU-SEC
+           .
+       3301-OCR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプトＯＣＲ領域のセット１（Ｆ００２）
+      *****************************************************************
+       3301-OCR1-HENSYU-SEC                   SECTION.
+      *
+      *チェックディジット１
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR1-SKYTENSU        TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR1-CHKDGT1
+           ELSE
+                   MOVE  ZERO           TO      OCR1-CHKDGT1
+           END-IF
+      *チェックディジット３
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR1-FTNMONEY        TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR1-CHKDGT3
+           ELSE
+                   MOVE  ZERO           TO      OCR1-CHKDGT3
+           END-IF
+      *チェックディジット４
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR1-AREA(1:35)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR1-CHKDGT4
+           ELSE
+                   MOVE  ZERO           TO      OCR1-CHKDGT4
+           END-IF
+      *チェックディジット５
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR1-AREA(37:6)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR1-CHKDGT5
+           ELSE
+                   MOVE  ZERO           TO      OCR1-CHKDGT5
+           END-IF
+      *
+           MOVE    OCR1-AREA            TO      RECE02-OCR1           
+      *
+           .
+       3301-OCR1-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプトＯＣＲ領域のセット２（Ｆ００２）
+      *****************************************************************
+       3302-OCR2-HENSYU-SEC                   SECTION.
+      *
+      *チェックディジット２
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR2-AREA(6:20)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT2
+           ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT2
+           END-IF
+      *チェックディジット３
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR2-AREA(27:15)     TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT3
+           ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT3
+           END-IF
+      *チェックディジット４
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR2-AREA(45:7)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT4
+           ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT4
+           END-IF
+      *チェックディジット６
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR2-AREA(59:5)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT6
+           ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT6
+           END-IF
+      *チェックディジット７
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR2-AREA(43:22)     TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT7
+           ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT7
+           END-IF
+      *
+           IF      OCR2-AREA-X          =   ALL "0"
+               MOVE    SPACE                    TO  OCR2-AREA-X
+           END-IF  
+           MOVE    OCR2-AREA            TO      RECE02-OCR2
+      *
+           .
+       3302-OCR2-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプトＯＣＲ領域のセット３（Ｆ００２）
+      *****************************************************************
+       3303-OCR3-HENSYU-SEC                   SECTION.
+      *
+      *チェックディジット１
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR3-AREA(1:15)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR3-CHKDGT1
+           ELSE
+                   MOVE  ZERO           TO      OCR3-CHKDGT1
+           END-IF
+      *チェックディジット２
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR3-AREA(19:7)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR3-CHKDGT2
+           ELSE
+                   MOVE  ZERO           TO      OCR3-CHKDGT2
+           END-IF
+      *チェックディジット４
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR3-AREA(33:5)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR3-CHKDGT4
+           ELSE
+                   MOVE  ZERO           TO      OCR3-CHKDGT4
+           END-IF
+      *チェックディジット５
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR3-AREA(17:22)     TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR3-CHKDGT5
+           ELSE
+                   MOVE  ZERO           TO      OCR3-CHKDGT5
+           END-IF
+      *
+           IF      OCR3-AREA-X          =   ALL "0"
+               MOVE    SPACE                TO  RECE02-OCR3
+           ELSE 
+               MOVE    OCR3-AREA            TO  RECE02-OCR3
+           END-IF
+      *
+           .
+       3303-OCR3-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

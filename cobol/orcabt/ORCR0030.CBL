@@ -277,6 +277,9 @@
       *     
            03  IDA                 PIC 9(04).
            03  IDB                 PIC 9(04).
+           03  IDX5                PIC 9(03).
+           03  IDX6                PIC 9(03).
+           03  IDX7                PIC 9(03).
            03  SEIHIDX             PIC 9(02).
            03  KAKKIDX             PIC 9(02).
            03  SESNIDX             PIC 9(02).
@@ -843,16 +846,16 @@
                        MOVE    KAKKIDX     TO  IDA
                        MOVE    SESNIDX     TO  IDB
                    END-IF
-                   COMPUTE IDX1     =   SEIHIDX    +   1
-                   COMPUTE IDX2     =   IDA        +   1
-                   COMPUTE IDX3     =   IDB        +   1
+                   COMPUTE IDX5     =   SEIHIDX    +   1
+                   COMPUTE IDX6     =   IDA        +   1
+                   COMPUTE IDX7     =   IDB        +   1
                ELSE    
       *            £≥ºÔ∞ ≥∞§ŒæÏπÁ
                    MOVE    1               TO  IDA
                    MOVE    2               TO  IDB
-                   MOVE    1               TO  IDX1
-                   MOVE    2               TO  IDX2
-                   MOVE    3               TO  IDX3
+                   MOVE    1               TO  IDX5
+                   MOVE    2               TO  IDX6
+                   MOVE    3               TO  IDX7
                END-IF
       *
                PERFORM     OCR1-HENSYU-SEC
@@ -3577,7 +3580,7 @@
       *∞ÂŒ≈µ°¥ÿ•≥°º•…
            MOVE   SYS-1001-HOSPCD       TO      OCR1-HOSPCD
       *¿¡µ·≈¿øÙ
-           MOVE    RECE02-TOTALTEN(IDX1)
+           MOVE    RECE02-TOTALTEN(IDX5)
                                         TO      OCR1-SKYTENSU
       *•¡•ß•√•Ø•«•£•∏•√•»£±
            INITIALIZE                           LNK-CHKDGT-AREA
@@ -3590,7 +3593,7 @@
                    MOVE  ZERO           TO      OCR1-CHKDGT1
            END-IF
       *ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚
-           MOVE    RECE02-YKZFTN(IDX1)  TO      OCR1-YKZFTN
+           MOVE    RECE02-YKZFTN(IDX5)  TO      OCR1-YKZFTN
       *•¡•ß•√•Ø•«•£•∏•√•»£≤
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
@@ -3602,7 +3605,7 @@
                    MOVE  ZERO           TO      OCR1-CHKDGT2
            END-IF
       *∞Ï…Ù…È√¥∂‚
-           MOVE    RECE02-FTNMONEY(IDX1)
+           MOVE    RECE02-FTNMONEY(IDX5)
                                         TO      OCR1-FTNMONEY
       *•¡•ß•√•Ø•«•£•∏•√•»£≥
            INITIALIZE                           LNK-CHKDGT-AREA
@@ -3625,7 +3628,7 @@
                    MOVE  ZERO           TO      OCR1-CHKDGT4
            END-IF
       *ø«Œ≈º¬∆¸øÙ
-           MOVE    RECE02-JNISSU(IDX1)  TO      OCR1-JNISSU
+           MOVE    RECE02-JNISSU(IDX5)  TO      OCR1-JNISSU
       *ø«Œ≈«Ø∑Ó° œ¬ŒÒ°À
            INITIALIZE                           LNK-DAY1-AREA
            INITIALIZE                           STS-AREA-DAY
@@ -3837,13 +3840,13 @@
                    MOVE  ZERO           TO      OCR2-CHKDGT3
            END-IF
       *∏¯»Ò£±ø«Œ≈º¬∆¸øÙ°¶¿¡µ·≈¿øÙ
-           IF      RECE02-JNISSU   (IDX1)  =   RECE02-JNISSU   (IDX2)
-           AND     RECE02-TOTALTEN (IDX1)  =   RECE02-TOTALTEN (IDX2)
+           IF      RECE02-JNISSU   (IDX5)  =   RECE02-JNISSU   (IDX6)
+           AND     RECE02-TOTALTEN (IDX5)  =   RECE02-TOTALTEN (IDX6)
                MOVE    ZERO                 TO  OCR2-JNISSU
                                                 OCR2-TENSU   
            ELSE    
-               MOVE    RECE02-JNISSU  (IDX2)   TO  OCR2-JNISSU
-               MOVE    RECE02-TOTALTEN(IDX2)   TO  OCR2-TENSU
+               MOVE    RECE02-JNISSU  (IDX6)   TO  OCR2-JNISSU
+               MOVE    RECE02-TOTALTEN(IDX6)   TO  OCR2-TENSU
            END-IF
       *•¡•ß•√•Ø•«•£•∏•√•»£¥
            INITIALIZE                           LNK-CHKDGT-AREA
@@ -3856,7 +3859,7 @@
                    MOVE  ZERO           TO      OCR2-CHKDGT4
            END-IF
       *∏¯»Ò£±ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚
-           MOVE    RECE02-YKZFTN(IDX2)  TO      OCR2-YKZFTN
+           MOVE    RECE02-YKZFTN(IDX6)  TO      OCR2-YKZFTN
       *•¡•ß•√•Ø•«•£•∏•√•»£µ
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
@@ -3868,7 +3871,7 @@
                    MOVE  ZERO           TO      OCR2-CHKDGT5
            END-IF
       *∏¯»Ò£±¥µº‘…È√¥≥€
-           MOVE    RECE02-FTNMONEY(IDX2)
+           MOVE    RECE02-FTNMONEY(IDX6)
                                         TO      OCR2-FTNMONEY
       *•¡•ß•√•Ø•«•£•∏•√•»£∂
            INITIALIZE                           LNK-CHKDGT-AREA
@@ -3950,13 +3953,16 @@
                    MOVE  ZERO           TO      OCR3-CHKDGT1
            END-IF
       *∏¯»Ò£≤ø«Œ≈º¬∆¸øÙ°¶¿¡µ·≈¿øÙ
-           IF      RECE02-JNISSU   (IDX1)  =   RECE02-JNISSU   (IDX3)
-           AND     RECE02-TOTALTEN (IDX1)  =   RECE02-TOTALTEN (IDX3)
+      *???
+           DISPLAY "IDX=" IDX5 "#" IDX7 "#"
+      *???
+           IF      RECE02-JNISSU   (IDX5)  =   RECE02-JNISSU   (IDX7)
+           AND     RECE02-TOTALTEN (IDX5)  =   RECE02-TOTALTEN (IDX7)
                MOVE    ZERO                 TO  OCR3-JNISSU
                                                 OCR3-TENSU   
            ELSE    
-               MOVE    RECE02-JNISSU  (IDX3)   TO  OCR3-JNISSU
-               MOVE    RECE02-TOTALTEN(IDX3)   TO  OCR3-TENSU
+               MOVE    RECE02-JNISSU  (IDX7)   TO  OCR3-JNISSU
+               MOVE    RECE02-TOTALTEN(IDX7)   TO  OCR3-TENSU
            END-IF
       *•¡•ß•√•Ø•«•£•∏•√•»£≤
            INITIALIZE                           LNK-CHKDGT-AREA
@@ -3969,7 +3975,7 @@
                    MOVE  ZERO           TO      OCR3-CHKDGT2
            END-IF
       *∏¯»Ò£≤ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚
-           MOVE    RECE02-YKZFTN(IDX3)  TO      OCR3-YKZFTN
+           MOVE    RECE02-YKZFTN(IDX7)  TO      OCR3-YKZFTN
       *•¡•ß•√•Ø•«•£•∏•√•»£≥
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
@@ -3981,7 +3987,7 @@
                    MOVE  ZERO           TO      OCR3-CHKDGT3
            END-IF
       *∏¯»Ò£≤¥µº‘…È√¥≥€
-           MOVE    RECE02-FTNMONEY(IDX3)
+           MOVE    RECE02-FTNMONEY(IDX7)
                                         TO      OCR3-FTNMONEY
       *•¡•ß•√•Ø•«•£•∏•√•»£¥
            INITIALIZE                           LNK-CHKDGT-AREA

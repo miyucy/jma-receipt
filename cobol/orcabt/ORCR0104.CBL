@@ -37,6 +37,8 @@
       *  01.00.04    NACL-藤原    03/05/23  給付割合のカスタマイズ方法の修正
       *  01.00.05    NACL-藤原    03/06/10  保険履歴の改頁処理の修正
       *  01.00.06    NACL-藤原    03/06/30  カスタマイズ項目をＯＣＲにも対応
+      *  01.00.07    NACL-藤原    03/07/02  主病名編集フラグによって区切り線の
+      *                                     編集方法を変更する 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -880,6 +882,9 @@
            END-IF
            IF      SYS-2005-TENKIHENKBN     =   SPACE
                MOVE    ZERO             TO  SYS-2005-TENKIHENKBN
+           END-IF
+           IF      SYS-2005-SYUBYOHENFLG    =   SPACE
+               MOVE    ZERO             TO  SYS-2005-SYUBYOHENFLG
            END-IF
       * 
       *    県内扱い保険者情報
@@ -2424,24 +2429,27 @@
       ****************************************************************
        3211-SYUBYOFLG-HENSYU-SEC         SECTION.
       *
-      *    主病名との区切り線（副傷病名があるときのみ）     
-           IF      WRK-BYO-OLD        =   LOW-VALUE
-               CONTINUE
-           ELSE
-               IF      FLG-RECE031             =   ZERO
-               AND     RECE031-SYUBYOFLG   NOT =   WRK-BO-SYUBYOFLG 
-               AND     WRK-BO-SYUBYOFLG        =   "1"
-                   IF      WRK-LINEBYO     <   WRK-BYOMEI-LINE
-                       ADD     1           TO  WRK-LINEBYO
-                       MOVE    WRK-KUGIRI3 TO
+      *    主病名編集フラグが区切り有のときのみ処理を行う
+           IF      SYS-2005-SYUBYOHENFLG   =   "1"
+      *        主病名との区切り線（副傷病名があるときのみ）     
+               IF      WRK-BYO-OLD             =   LOW-VALUE
+                   CONTINUE
+               ELSE
+                   IF    ( FLG-RECE031             =   ZERO            )
+                   AND   ( RECE031-SYUBYOFLG   NOT =   WRK-BO-SYUBYOFLG)
+                   AND   ( WRK-BO-SYUBYOFLG        =   "1"             )
+                       IF      WRK-LINEBYO     <   WRK-BYOMEI-LINE
+                           ADD     1           TO  WRK-LINEBYO
+                           MOVE    WRK-KUGIRI3 TO
                                           HC06-BYOMEI(WRK-LINEBYO)(2:52)
-                   ELSE
-                       IF      WRK-LINETEK >=   WRK-TEKIYOU-LINE
-                           PERFORM 34120-PAGE-SEC
-                       END-IF    
-                       ADD     1           TO  WRK-LINETEK
-                       MOVE    WRK-KUGIRI1 TO
-                                           HC06-TEKIYO (WRK-LINETEK)
+                       ELSE
+                           IF      WRK-LINETEK >=   WRK-TEKIYOU-LINE
+                               PERFORM 34120-PAGE-SEC
+                           END-IF    
+                           ADD     1           TO  WRK-LINETEK
+                           MOVE    WRK-KUGIRI1 TO
+                                               HC06-TEKIYO (WRK-LINETEK)
+                       END-IF
                    END-IF
                END-IF
            END-IF        

@@ -39,6 +39,7 @@
       *                                     をするように修正
       *  01.00.09    NACL-藤原    03.03.12  補助区分の追加
       *                                     診療科数１０から２０へ変更
+      *  01.00.10    NACL-藤原    03/07/02  主病名編集フラグによる編集の追加
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -279,6 +280,9 @@
            END-IF
            IF      SYS-2005-BYOMEIHENKBN1   =   SPACE
                MOVE    ZERO             TO  SYS-2005-BYOMEIHENKBN1
+           END-IF
+           IF      SYS-2005-SYUBYOHENFLG    =   SPACE
+               MOVE    ZERO             TO  SYS-2005-SYUBYOHENFLG
            END-IF
       *
       *        レセプト明細０２読み込み
@@ -537,11 +541,15 @@
            MOVE    PTBYO-BYOMEICD-G    TO  RECE03-BYOMEICD-G
            MOVE    PTBYO-UTAGAIFLG     TO  RECE03-UTAGAIFLG
       *****MOVE    PTBYO-SYUBYOFLG     TO  RECE03-SYUBYOFLG   
-           IF      PTBYO-SYUBYOFLG     =   "1"
-               MOVE    PTBYO-SYUBYOFLG     TO  RECE03-SYUBYOFLG    
-           ELSE
+           IF      SYS-2005-SYUBYOHENFLG    =   ZERO
                MOVE    "9"                 TO  RECE03-SYUBYOFLG 
-           END-IF   
+           ELSE
+               IF      PTBYO-SYUBYOFLG     =   "1"
+                   MOVE    PTBYO-SYUBYOFLG     TO  RECE03-SYUBYOFLG    
+               ELSE
+                   MOVE    "9"                 TO  RECE03-SYUBYOFLG 
+               END-IF
+           END-IF
            MOVE    PTBYO-MANSEIKBN     TO  RECE03-MANSEIKBN
            IF      RECE02-SRYYM        <   PTBYO-TENKIYMD(1:6)
                CONTINUE
