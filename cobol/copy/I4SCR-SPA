@@ -84,7 +84,7 @@
                    07  SPA-GMN-SRYKAH-I-41               PIC X(01).
                    07  SPA-GMN-SRYKAMEI-I-41             PIC X(12).
                05  SPA-GMN-SRYKA-AREA-L-41.
-                   07  SPA-GMN-SRYKA-LIST-L-41           OCCURS  10.
+                   07  SPA-GMN-SRYKA-LIST-L-41           OCCURS  100.
                        09  SPA-GMN-SRYKA-L-41            PIC X(02).
                        09  SPA-GMN-F1-L-41               PIC X(01).
                        09  SPA-GMN-SRYKAMEI-L-41         PIC X(12).
