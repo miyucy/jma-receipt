@@ -320,6 +320,8 @@
       *
            COPY    "CPSK1005.INC".
       *
+           COPY    "CPSK1010.INC".
+      *
       *    患者番号構成管理情報
            COPY  "CPSK1009.INC".
       *
@@ -712,13 +714,54 @@
            END-IF
       *
       *    ドクター
-           IF      LF04-DOCCD (1:5)    NUMERIC
+           IF     (LF04-DOCCD (1:5)    NUMERIC )  AND
+                  (LF04-DOCCD (1:1)    =   "1" )
                MOVE    LF04-DOCCD(1:5)     TO  WRK-DRCD
+               PERFORM 2003-DRCD-CHK-SEC
            ELSE
                MOVE    SPACE               TO  WRK-DRCD
            END-IF
            .
        2000-SYOKI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ドクターチェック処理
+      *****************************************************************
+       2003-DRCD-CHK-SEC                SECTION.
+      *
+           INITIALIZE                  SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    WRK-DRCD            TO  SYS-1010-KBNCD
+      *    システム管理検索
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    WRK-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1010-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           IF      FLG-SYSKANRI        =   1
+               MOVE    SPACE               TO  WRK-DRCD
+           END-IF
+           .
+       2003-DRCD-CHK-EXT.
            EXIT.
       *
       *****************************************************************

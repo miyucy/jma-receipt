@@ -283,6 +283,8 @@
       *
            COPY    "CPSK1005.INC".
       *
+           COPY    "CPSK1010.INC".
+      *
       *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
@@ -446,6 +448,15 @@
                                            WRK-LF02-CRE401-DPERTID
            END-IF
       *
+      *    ドクター
+           IF      LNK-DRCD            =   "@@@@@"
+               CONTINUE
+           ELSE
+               PERFORM 2001-DRCD-NAME-SEC
+               MOVE    SYS-1010-NAME   TO  WRK-LF02-CRE401-FULLNAME
+               MOVE    LNK-DRCD        TO  WRK-LF02-CRE401-PERSONALID
+           END-IF
+      *
       *    入外区分
            MOVE    "false"         TO  WRK-LF02-NYUGAIKBN
       *
@@ -597,6 +608,28 @@
            END-IF     
            .
        200-MAIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ドクター設定処理
+      *****************************************************************
+       2001-DRCD-NAME-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                      SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    LNK-DRCD            TO  SYS-1010-KBNCD
+           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+      *
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1010-REC
+           ELSE
+               INITIALIZE                      SYS-1010-REC
+           END-IF
+      *
+           .
+       2001-DRCD-NAME-EXT.
            EXIT.
       *
       *****************************************************************
