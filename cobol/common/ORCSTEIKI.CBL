@@ -85,6 +85,18 @@
       *
        01  WRK-HANBETU-DATA                PIC X(66).
       *
+       01  WRK-KOSEI-TABLE.
+           03  WRK-KOSEI-TBL    OCCURS    2.
+              05 WRK-KOSEI-YYMM            PIC X(06).
+              05 WRK-KOSEI-NISUU           PIC 9(02).
+              05 WRK-KOSEI-DAY             PIC X(01)   OCCURS   31.
+      *
+       01  WRK-IKUSEI-TABLE.
+           03  WRK-IKUSEI-TBL   OCCURS    2.
+              05 WRK-IKUSEI-YYMM           PIC X(06).
+              05 WRK-IKUSEI-NISUU          PIC 9(02).
+              05 WRK-IKUSEI-DAY            PIC X(01)   OCCURS   31.
+      *
       *    入院点数算定用ワークエリア
        01  WRK-NYUIN-TENSU-AREA.
            03  WRK-KHNTEN                  PIC  9(08). 
@@ -158,6 +170,8 @@
            03  RMSAGAKU-IDX                PIC 9(02).
            03  GENSAN-IDX                  PIC 9(02).
            03  SENTEI-IDX                  PIC 9(02).
+           03  KOHFTN-IDX                  PIC 9(02).
+           03  KOHFTN-IDX2                 PIC 9(02).
       *
       *    システム領域
        01  SYS-AREA.
@@ -278,6 +292,8 @@
                          WRK-DAY-TABLE
                          WRK-HANBETU-TABLE
                          WRK-HANBETU2-TABLE
+                         WRK-KOSEI-TABLE
+                         WRK-IKUSEI-TABLE
                          FLG-AREA.
       *
       *    調剤料一括変更処理
@@ -378,6 +394,8 @@
            PERFORM    KAISHISYURYO-SYORI-SEC.
       *
            PERFORM    HKNNUM-SYUTOKU-SYORI-SEC.
+      *
+           PERFORM    KOHFTN-DAY-SYORI-SEC.
       *
            PERFORM    NARABIKAE-SYORI-SEC.
       *
@@ -702,6 +720,13 @@
       ******************************************************************
        HKNNUM-SYUTOKU-SYORI-SEC        SECTION.
       *
+           MOVE  WRK-SKYYM(1)    TO     WRK-KOSEI-YYMM(1)
+                                        WRK-IKUSEI-YYMM(1)
+      *
+           MOVE  WRK-SKYYM(2)    TO     WRK-KOSEI-YYMM(2)
+                                        WRK-IKUSEI-YYMM(2)
+      *
+      *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX            >    10)
                                 OR   (WRK-HANBETU-SKYYM(IDX) =  SPACE)
@@ -795,9 +820,90 @@
                      MOVE   999       TO  WRK-HANBETU-YUSENBAN(IDX)
               END-IF
       *
+              IF    WRK-HANBETU-KOH1HKNNUM(IDX)  =  "015"
+              OR    WRK-HANBETU-KOH2HKNNUM(IDX)  =  "015"
+              OR    WRK-HANBETU-KOH3HKNNUM(IDX)  =  "015"
+              OR    WRK-HANBETU-KOH4HKNNUM(IDX)  =  "015"
+                  IF  WRK-HANBETU-SKYYM(IDX)  =   WRK-KOSEI-YYMM(1)
+                    PERFORM  VARYING  KOHFTN-IDX  FROM   1   BY   1
+                               UNTIL  KOHFTN-IDX   >    31
+                      IF  WRK-HANBETU-DAY(IDX KOHFTN-IDX)  NOT =  SPACE
+                          MOVE   WRK-HANBETU-DAY(IDX KOHFTN-IDX)
+                                       TO  WRK-KOSEI-DAY(1 KOHFTN-IDX)
+                      END-IF
+                    END-PERFORM
+                  END-IF
+                  IF  WRK-HANBETU-SKYYM(IDX)  =   WRK-KOSEI-YYMM(2)
+                    PERFORM  VARYING  KOHFTN-IDX  FROM   1   BY   1
+                               UNTIL  KOHFTN-IDX   >    31
+                      IF  WRK-HANBETU-DAY(IDX KOHFTN-IDX)  NOT =  SPACE
+                          MOVE   WRK-HANBETU-DAY(IDX KOHFTN-IDX)
+                                       TO  WRK-KOSEI-DAY(2 KOHFTN-IDX)
+                      END-IF
+                    END-PERFORM
+                  END-IF
+              END-IF
+      *
+              IF    WRK-HANBETU-KOH1HKNNUM(IDX)  =  "016"
+              OR    WRK-HANBETU-KOH2HKNNUM(IDX)  =  "016"
+              OR    WRK-HANBETU-KOH3HKNNUM(IDX)  =  "016"
+              OR    WRK-HANBETU-KOH4HKNNUM(IDX)  =  "016"
+                  IF  WRK-HANBETU-SKYYM(IDX)  =   WRK-IKUSEI-YYMM(1)
+                    PERFORM  VARYING  KOHFTN-IDX  FROM   1   BY   1
+                               UNTIL  KOHFTN-IDX   >    31
+                      IF  WRK-HANBETU-DAY(IDX KOHFTN-IDX)  NOT =  SPACE
+                          MOVE   WRK-HANBETU-DAY(IDX KOHFTN-IDX)
+                                       TO  WRK-IKUSEI-DAY(1 KOHFTN-IDX)
+                      END-IF
+                    END-PERFORM
+                  END-IF
+                  IF  WRK-HANBETU-SKYYM(IDX)  =   WRK-IKUSEI-YYMM(2)
+                    PERFORM  VARYING  KOHFTN-IDX  FROM   1   BY   1
+                               UNTIL  KOHFTN-IDX   >    31
+                      IF  WRK-HANBETU-DAY(IDX KOHFTN-IDX)  NOT =  SPACE
+                          MOVE   WRK-HANBETU-DAY(IDX KOHFTN-IDX)
+                                       TO  WRK-IKUSEI-DAY(2 KOHFTN-IDX)
+                      END-IF
+                    END-PERFORM
+                  END-IF
+              END-IF
+      *
            END-PERFORM.
       *
        HKNNUM-SYUTOKU-SYORI-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    公費（更正・育成）の請求年月・入院日数引数へセット          *
+      ******************************************************************
+       KOHFTN-DAY-SYORI-SEC        SECTION.
+      *
+           PERFORM  VARYING  KOHFTN-IDX  FROM   1   BY   1
+                     UNTIL   KOHFTN-IDX   >     2
+              PERFORM  VARYING  KOHFTN-IDX2  FROM   1   BY   1
+                        UNTIL   KOHFTN-IDX2   >    31
+                 IF   WRK-KOSEI-DAY(KOHFTN-IDX KOHFTN-IDX2) NOT = SPACE
+                     ADD     1   TO    WRK-KOSEI-NISUU(KOHFTN-IDX)
+                 END-IF
+                 IF   WRK-IKUSEI-DAY(KOHFTN-IDX KOHFTN-IDX2) NOT = SPACE
+                     ADD     1   TO    WRK-IKUSEI-NISUU(KOHFTN-IDX)
+                 END-IF
+              END-PERFORM
+           END-PERFORM
+      *
+           PERFORM  VARYING  KOHFTN-IDX  FROM   1   BY   1
+                     UNTIL   KOHFTN-IDX   >     2
+                 MOVE  WRK-KOSEI-YYMM(KOHFTN-IDX)  
+                                 TO  LNK-S02-KOSEI-YYMM(KOHFTN-IDX)
+                 MOVE  WRK-KOSEI-NISUU(KOHFTN-IDX)  
+                                 TO  LNK-S02-KOSEI-NISUU(KOHFTN-IDX)
+                 MOVE  WRK-IKUSEI-YYMM(KOHFTN-IDX)  
+                                 TO  LNK-S02-IKUSEI-YYMM(KOHFTN-IDX)
+                 MOVE  WRK-IKUSEI-NISUU(KOHFTN-IDX)  
+                                 TO  LNK-S02-IKUSEI-NISUU(KOHFTN-IDX)
+           END-PERFORM.
+      *
+       KOHFTN-DAY-SYORI-EXT.
            EXIT.
       *
       ******************************************************************
