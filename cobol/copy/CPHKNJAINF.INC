@@ -47,6 +47,10 @@
            03  HKNJA-TEL                     PIC  X(15).
       *記号
            03  HKNJA-KIGO                    PIC  X(80).
+      *異動区分
+           03  HKNJA-IDOKBN                  PIC  X(01).
+      *異動年月日
+           03  HKNJA-IDOYMD                  PIC  X(08).
       *端末ＩＤ
            03  HKNJA-TERMID                  PIC  X(16).
       *オペーレータＩＤ

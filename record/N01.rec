@@ -1,41 +1,51 @@
 N01	{
 	fixed6	{
 		HKNJANUM	{
-			value	varchar(9);
-		};
-		BANTI	{
-			value	varchar(101);
-		};
-		HKNJANAMETAN1	{
-			value	varchar(51);
-		};
-		HKNJANAMETAN2	{
-			value	varchar(21);
-		};
-		HKNJANAMETAN3	{
-			value	varchar(21);
-		};
-		POST	{
 			value	varchar(8);
 		};
+		BANTI	{
+			value	varchar(100);
+		};
+		HKNJANAMETAN1	{
+			value	varchar(50);
+		};
+		HKNJANAMETAN2	{
+			value	varchar(20);
+		};
+		HKNJANAMETAN3	{
+			value	varchar(20);
+		};
+		POST	{
+			value	varchar(7);
+		};
 		ADRS	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		HKNJANAME	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		TEL	{
-			value	varchar(16);
+			value	varchar(15);
 		};
 		KIGO	{
-			value	varchar(41);
+			value	varchar(40);
+		};
+		IDOYMD	{
+			value	varchar(10);
 		};
 		HKNNUMCOMBO	{
 			HKNNUM	{
-				value	varchar(31);
+				value	varchar(30);
 			};
 			count	int;
 			item	varchar(30)[100];
+		};
+		IDOKBNCOBO	{
+			IDOKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[10];
 		};
 	};
 };
