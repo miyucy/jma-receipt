@@ -386,7 +386,6 @@
            03  MAX-KIN-SYU-M           PIC 9(08).
            03  FTN-SYU-M               PIC 9(08).
            03  ZAN-SYU-M               PIC 9(08).
-           03  WK-ZAITAKU-FLG          PIC X(01).
            03  FLG-SANTEI-SYU          PIC X(01).
       *----(01.00.23) LINE ADD END   --------------------------
       *
