@@ -826,7 +826,7 @@
 	  <name>NYUSKJRYYKBN1_CMB</name>
 	  <x>570</x>
 	  <y>280</y>
-	  <width>210</width>
+	  <width>230</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -854,7 +854,7 @@
 	    </signal>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
-	    <text_max_length>26</text_max_length>
+	    <text_max_length>28</text_max_length>
 	    <text></text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
@@ -1670,7 +1670,7 @@
 	  <name>NYUSKJRYYKBN2_CMB</name>
 	  <x>570</x>
 	  <y>280</y>
-	  <width>210</width>
+	  <width>230</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -1698,7 +1698,7 @@
 	    </signal>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
-	    <text_max_length>26</text_max_length>
+	    <text_max_length>28</text_max_length>
 	    <text></text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
@@ -2514,7 +2514,7 @@
 	  <name>NYUSKJRYYKBN3_CMB</name>
 	  <x>570</x>
 	  <y>280</y>
-	  <width>210</width>
+	  <width>230</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2542,7 +2542,7 @@
 	    </signal>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
-	    <text_max_length>26</text_max_length>
+	    <text_max_length>28</text_max_length>
 	    <text></text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
@@ -3358,7 +3358,7 @@
 	  <name>NYUSKJRYYKBN4_CMB</name>
 	  <x>570</x>
 	  <y>280</y>
-	  <width>210</width>
+	  <width>230</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3386,7 +3386,7 @@
 	    </signal>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
-	    <text_max_length>26</text_max_length>
+	    <text_max_length>28</text_max_length>
 	    <text></text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>

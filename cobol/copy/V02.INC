@@ -67,9 +67,9 @@
                   05  V02-NYUMJGNCNT.
                     06  V02-VALUE   PIC S9(2).
                   05  V02-NYUSKJRYYKBN-COMBO.
-                    06  V02-NYUSKJRYYKBN       PIC X(27).
+                    06  V02-NYUSKJRYYKBN       PIC X(29).
                     06  V02-NYUSKJRYYKBN-COUNT PIC S9(9) BINARY.
-                    06  V02-NYUSKJRYYKBNLST    PIC X(26) OCCURS  4.
+                    06  V02-NYUSKJRYYKBNLST    PIC X(28) OCCURS  5.
               03  V02-HKNNUM.
                 04  V02-VALUE   PIC X(4).
               03  V02-PAYKBN.

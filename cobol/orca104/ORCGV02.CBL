@@ -90,12 +90,12 @@
                                               PIC X(20).
                    07  SPA-GMN-NYUFTNKBN-MAX  PIC 9(01).
                    07  SPA-GMN-NYUSKJRYYKBNLST
-                                              OCCURS  4.
+                                              OCCURS  5.
                        09  SPA-GMN-NYUSKJRYYKBNL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-NYUSKJRYYKBNMEIL
-                                              PIC X(24).
+                                              PIC X(26).
                    07  SPA-GMN-NYUSKJRYYKBN-MAX
                                               PIC 9(01).
                    07  SPA-GMN-HKNKOHSBTKBNLST    OCCURS  9.
@@ -210,7 +210,7 @@
                                                   PIC X(01).
                            11  SPA-GMN-F1         PIC X(01).
                            11  SPA-GMN-NYUSKJRYYKBNMEI
-                                                  PIC X(24).
+                                                  PIC X(26).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
@@ -544,7 +544,10 @@
                                        TO  SPA-GMN-NYUSKJRYYKBNMEIL (3)
            MOVE    "3"                 TO  SPA-GMN-NYUSKJRYYKBNL    (4)
            MOVE    "¥µº‘…È√¥§ §∑"      TO  SPA-GMN-NYUSKJRYYKBNMEIL (4)
-           MOVE    4                   TO  SPA-GMN-NYUSKJRYYKBN-MAX
+           MOVE    "4"                 TO  SPA-GMN-NYUSKJRYYKBNL    (5)
+           MOVE    "¥µº‘…È√¥§¢§Í° æ√»Ò¿«§¢§Í°À"
+                                       TO  SPA-GMN-NYUSKJRYYKBNMEIL (5)
+           MOVE    5                   TO  SPA-GMN-NYUSKJRYYKBN-MAX
       *
       *     ›∏±»÷πÊ•ﬁ•π•ø§Ë§Í ‘Ω∏  
            INITIALIZE                      HKNNUM-REC

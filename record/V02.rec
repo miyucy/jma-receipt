@@ -80,10 +80,10 @@ V02	{
 				};
 				NYUSKJRYYKBN1_CMB	{
 					NYUSKJRYYKBN1	{
-						value	varchar(27);
+						value	varchar(29);
 					};
 					count	int;
-					item	varchar(26)[4];
+					item	varchar(28)[5];
 				};
 			};
 			fixed31	{
@@ -155,10 +155,10 @@ V02	{
 				};
 				NYUSKJRYYKBN2_CMB	{
 					NYUSKJRYYKBN2	{
-						value	varchar(27);
+						value	varchar(29);
 					};
 					count	int;
-					item	varchar(26)[4];
+					item	varchar(28)[5];
 				};
 			};
 			fixed30	{
@@ -230,10 +230,10 @@ V02	{
 				};
 				NYUSKJRYYKBN3_CMB	{
 					NYUSKJRYYKBN3	{
-						value	varchar(27);
+						value	varchar(29);
 					};
 					count	int;
-					item	varchar(26)[4];
+					item	varchar(28)[5];
 				};
 			};
 			fixed29	{
@@ -305,10 +305,10 @@ V02	{
 				};
 				NYUSKJRYYKBN4_CMB	{
 					NYUSKJRYYKBN4	{
-						value	varchar(27);
+						value	varchar(29);
 					};
 					count	int;
-					item	varchar(26)[4];
+					item	varchar(28)[5];
 				};
 			};
 		};
