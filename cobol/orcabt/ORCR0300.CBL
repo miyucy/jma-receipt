@@ -162,6 +162,7 @@
 020900 01  CNT-AREA.
 021000     03  CNT-IN                  PIC 9(06).
            03  CNT-OUT                 PIC 9(06).
+           03  CNT-RECE04              PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDW                     PIC 9(03).
@@ -1284,8 +1285,8 @@
            MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
            MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
            MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
-           MOVE    RECE02-HKNJANUM     TO  RECE041-HKNJANUM
-           MOVE    RECE02-HOJOKBN      TO  RECE041-HOJOKBN
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE041-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
            MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
       *
            START   RECE041-FILE
@@ -1307,8 +1308,10 @@
                                          NOT =   RECE041-TEISYUTUSAKI )
                OR     ( RECE02-RECESYUBETU
                                          NOT =   RECE041-RECESYUBETU  )
-               OR     ( RECE02-HKNJANUM  NOT =   RECE041-HKNJANUM     )
-               OR     ( RECE02-HOJOKBN   NOT =   RECE041-HOJOKBN      )
+               OR     ( RECE02-HKNJANUM-KEY
+                                         NOT =   RECE041-HKNJANUM     )
+               OR     ( RECE02-HOJOKBN-KEY
+                                         NOT =   RECE041-HOJOKBN      )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE041-TEKSTYMD     )
       *        負担区分編集処理
                PERFORM 20070-FTNKBN-HENSYU-SEC        
@@ -1370,8 +1373,8 @@
                END-IF
            END-IF    
       *???
-      **     DISPLAY "HKNNUM=" COMB-HKNNUM  "KOH1=" COMB-KOH1HKNNUM "##"
-      **             "KOH2="   COMB-KOH2HKNNUM "##"        
+           DISPLAY "HKNNUM=" COMB-HKNNUM  "KOH1=" COMB-KOH1HKNNUM "##"
+                   "KOH2="   COMB-KOH2HKNNUM "##" WRK-FTNKBN        
       *???              
       *
            IF      WRK-FTNKBN     NOT =   SPACE
@@ -1397,10 +1400,11 @@
                END-IF    
            END-PERFORM
       *???
-      **     DISPLAY "RECE02(1)=" RECE02-KOHNUM (1) "(2)=" RECE02-KOHNUM (2)
-      **             "(3)=" RECE02-KOHNUM (3) "##"
-      **     DISPLAY "(1)=" WRK-KOHNUM (1) "(2)=" WRK-KOHNUM (2)
-      **             "(3)=" WRK-KOHNUM (3) "##"
+           DISPLAY "RECE02(1)=" RECE02-KOHNUM (1) "(2)="
+                                RECE02-KOHNUM (2)
+                   "(3)=" RECE02-KOHNUM (3) "##"
+           DISPLAY "(1)=" WRK-KOHNUM (1) "(2)=" WRK-KOHNUM (2)
+                   "(3)=" WRK-KOHNUM (3) "##"
       *???                  
       *                                                      
       *    主保険があるとき      
@@ -1452,7 +1456,7 @@
            END-IF
       *???  
            IF      WRK-FTNKBN    =   SPACE
-               DISPLAY "DTNKBN ERR " RECE02-PTNUM "##"
+               DISPLAY "FTNKBN ERR " RECE02-PTNUM "##"
            END-IF
       *???              
            .
@@ -2046,8 +2050,9 @@
                                    JOBKANRI-REC
       *
            PERFORM 900-DBDISCONNECT-SEC
-           DISPLAY "RECE02  CNT " CNT-IN  
-           DISPLAY "RECE30  CNT " CNT-OUT  
+           DISPLAY "RECE300  CNT " CNT-IN  
+           DISPLAY "RECE300  CNT " CNT-RECE04  
+           DISPLAY "RECE300  CNT " CNT-OUT  
            DISPLAY "*** ORCR0300 END ***"
       *     ACCEPT  WRK-IN FROM CONSOLE 
       *
@@ -2506,6 +2511,7 @@
                    MOVE    1         TO  FLG-RECE04
                NOT AT  END
                    MOVE    ZERO      TO  FLG-RECE04
+                   ADD     1         TO  CNT-RECE04
            END-READ
       *
            .
