@@ -1072,17 +1072,50 @@
                (COMB-KOH4-NYUJGNKBN       =       "1")      OR
                (LNK-S02-KOUREI-NYUIN-KBN  =       "1")
       *
-               INITIALIZE                         SYU-SYUNOU-REC
-               MOVE    LNK-SYU-HOSPID     TO      SYU-HOSPID
-               MOVE    LNK-SYU-NYUGAIKBN  TO      SYU-NYUGAIKBN
-               MOVE    LNK-SYU-PTID       TO      SYU-PTID
-               MOVE    SYU-SYUNOU-REC     TO      MCPDATA-REC
-               MOVE    "DBSELECT"         TO      MCP-FUNC
-               MOVE    "SYUNOU-KEY2"      TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
-               IF      MCP-RC             =       ZERO
+               IF   LNK-S02-TEIKI-KBN     =   "X"
+                 INITIALIZE                         SYU-SYUNOU-REC
+                 MOVE    LNK-SYU-HOSPID     TO      SYU-HOSPID
+                 MOVE    LNK-SYU-NYUGAIKBN  TO      SYU-NYUGAIKBN
+                 MOVE    LNK-SYU-PTID       TO      SYU-PTID
+                 MOVE    SYU-SYUNOU-REC     TO      MCPDATA-REC
+                 MOVE    "DBSELECT"         TO      MCP-FUNC
+                 MOVE    "SYUNOU-KEY10"     TO      ORC-DBPATH
+                 CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                 IF      MCP-RC             =       ZERO
+                   MOVE    "SYUNOU-KEY10" TO      ORC-DBPATH
+                   PERFORM  SYUNOU-READ-SEC
+                   PERFORM  UNTIL  (FLG-SYUNOU   =    "1")
+                     IF (LNK-SYU-SKYSTYMD(1:6) = SYU-SKYSTYMD(1:6)) AND
+                        (SYU-DENPJTIKBN    NOT =  "3")
+                             PERFORM        2201-SYUNOU-COUNT-SEC
+                     END-IF
+                     MOVE           "SYUNOU-KEY10"   TO   ORC-DBPATH
+                     PERFORM        SYUNOU-READ-SEC
+                   END-PERFORM
+                 ELSE
+                   MOVE    12              TO        LNK-S02-RC
+                 END-IF
+      *
+                 MOVE    "DBCLOSE"               TO  MCP-FUNC
+                 MOVE    "SYUNOU-KEY10"          TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"              USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+               ELSE
+                 INITIALIZE                         SYU-SYUNOU-REC
+                 MOVE    LNK-SYU-HOSPID     TO      SYU-HOSPID
+                 MOVE    LNK-SYU-NYUGAIKBN  TO      SYU-NYUGAIKBN
+                 MOVE    LNK-SYU-PTID       TO      SYU-PTID
+                 MOVE    SYU-SYUNOU-REC     TO      MCPDATA-REC
+                 MOVE    "DBSELECT"         TO      MCP-FUNC
+                 MOVE    "SYUNOU-KEY2"      TO      ORC-DBPATH
+                 CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                 IF      MCP-RC             =       ZERO
                    MOVE    "SYUNOU-KEY2"  TO      ORC-DBPATH
                    PERFORM  SYUNOU-READ-SEC
                    PERFORM  UNTIL  (FLG-SYUNOU   =    "1")
@@ -1093,17 +1126,17 @@
                      MOVE           "SYUNOU-KEY2"    TO   ORC-DBPATH
                      PERFORM        SYUNOU-READ-SEC
                    END-PERFORM
-               ELSE
+                 ELSE
                    MOVE    12              TO        LNK-S02-RC
+                 END-IF
+      *
+                 MOVE    "DBCLOSE"               TO  MCP-FUNC
+                 MOVE    "SYUNOU-KEY2"           TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"              USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
                END-IF
-      *
-               MOVE    "DBCLOSE"               TO  MCP-FUNC
-               MOVE    "SYUNOU-KEY2"           TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-      *
       *
                PERFORM    VARYING   IDZ    FROM   1   BY   1
                            UNTIL  (IDZ    >    10)
