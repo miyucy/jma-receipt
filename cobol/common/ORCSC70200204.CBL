@@ -38,6 +38,7 @@
       * 01.00.08     NACL−多々納 02/12/24  フィルム料を手技料へ加算
       * 01.00.09     NACL-多々納  03/01/16  撮影量回数訂正時修正
       * 01.00.11     NACL-多々納  03/02/18  フィルム料を手技料２へ
+      * 01.00.12     NACL-多々納  03/02/26  点数ゼロのきざみ値計算の修正
       *****************************************************************
       *
       *
@@ -1327,9 +1328,14 @@
                                            /   TNS-KZM
                                            +   0.999
                    MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
-                   COMPUTE WRK-KEI-TEN     =   WRK-SATU-TEN
-                                           + ( WRK-KEI-TEN2
-                                           *   WRK-KZMTEN )
+      *            点数がゼロの時、この点数とする
+                   IF      WRK-SATU-TEN        =   ZERO
+                       MOVE    WRK-KEI-TEN2    TO  WRK-KEI-TEN
+                   ELSE
+                       COMPUTE WRK-KEI-TEN     =   WRK-SATU-TEN
+                                               + ( WRK-KEI-TEN2
+                                               *   WRK-KZMTEN )
+                   END-IF
                    COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
       *
       *            上限値＜データ
@@ -1344,9 +1350,14 @@
                                                /   TNS-KZM
                                                +   0.999
                        MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
-                       COMPUTE WRK-KEI-TEN     =   WRK-SATU-TEN
-                                               + ( WRK-KEI-TEN2
-                                               *   WRK-KZMTEN )
+      *                点数がゼロの時、この点数とする
+                       IF      WRK-SATU-TEN        =   ZERO
+                           MOVE    WRK-KEI-TEN2    TO  WRK-KEI-TEN
+                       ELSE
+                           COMPUTE WRK-KEI-TEN     =   WRK-SATU-TEN
+                                                   + ( WRK-KEI-TEN2
+                                                   *   WRK-KZMTEN )
+                       END-IF
                        COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN  +  0.5
                    END-IF
            END-EVALUATE
