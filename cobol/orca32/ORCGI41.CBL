@@ -4109,11 +4109,13 @@
            END-IF.
            PERFORM UNTIL       FLG-NYUINACCT   =   1
                MOVE    MCPDATA-REC           TO  NYUINACCT-REC
-               IF      WRK-SRYYM-SML    >   NACCT-SRYYM
-                   MOVE    NACCT-SRYYM           TO  WRK-SRYYM-SML
-               END-IF
-               IF      WRK-SRYYM-BIG    <   NACCT-SRYYM
-                   MOVE    NACCT-SRYYM           TO  WRK-SRYYM-BIG
+               IF      NACCT-ZAISKBKBN  =   "1"
+                   IF      WRK-SRYYM-SML    >   NACCT-SRYYM
+                       MOVE    NACCT-SRYYM           TO  WRK-SRYYM-SML
+                   END-IF
+                   IF      WRK-SRYYM-BIG    <   NACCT-SRYYM
+                       MOVE    NACCT-SRYYM           TO  WRK-SRYYM-BIG
+                   END-IF
                END-IF
                MOVE    "NYUINACCT-KEY4"      TO  ORC-DBPATH
                PERFORM 900-NYUINACCT-READ-SEC
