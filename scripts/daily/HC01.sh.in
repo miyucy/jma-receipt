@@ -12,10 +12,10 @@ fi
 export HOME=/home/orca
 #
 	if	[ $1 = 'red2ps' ]	;then
-		if	[ $5 != '' ]	;then
-			$1 $2 $4 -p $5
-		else
+		if	[ -z $5  ]	;then
 			$1 $2 $4 -p lp1
+		else
+			$1 $2 $4 -p $5
 		fi
 	else	
 		ruby $1 $2 $3 $4 $5
