@@ -270,11 +270,8 @@ path	key5 	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
-			AND (  DENPJTIKBN <>  'A' 
-               AND DENPJTIKBN <>  'X' )
 			AND   SKYSTYMD    >=  :SKYSTYMD
 			AND   SKYEDYMD    <=  :SKYEDYMD
-			ORDER   BY        SRYYMD
 		;
 	};
 };
