@@ -530,7 +530,7 @@
       *****************************************************************
        300-SYUNOU-GMN-SEC           SECTION.
       *
-           MOVE    ZERO                TO  FLG-SYORI-END
+           MOVE    ZERO                TO  FLG-SYOSIN-ERR
       *    受診歴を検索する
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
@@ -567,7 +567,7 @@
       *
            PERFORM
                    UNTIL   (FLG-JYURRK     =   1 )  OR
-                           (FLG-SYORI-END  =   1 )
+                           (FLG-SYOSIN-ERR =   1 )
                PERFORM VARYING     IDX-Z   FROM    1  BY  1
                        UNTIL       IDX-Z   >   15
                    IF      JYURRK-ZAINUM (IDX-Z)  NOT =   ZERO
@@ -682,6 +682,8 @@
       *    診療会計チェック処理
       *****************************************************************
        3001-SRYACCT-CHK-SEC            SECTION.
+     *
+           MOVE    ZERO                TO  FLG-SYORI-END
      *
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPID          TO  ACCT-HOSPID
