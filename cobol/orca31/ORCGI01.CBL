@@ -3284,7 +3284,8 @@
            PERFORM 900-TBL-SELECT-SEC
       *
            PERFORM
-               UNTIL ( FLG-DBRC    NOT =   ZERO )
+               UNTIL ( FLG-DBRC        NOT =   ZERO )
+                OR   ( WKJYURRK-REC    NOT =   SPACE )
       *
                MOVE    MCPDATA-REC TO  JYURRK-REC  
       *
@@ -3292,9 +3293,7 @@
                IF    ((SPA-GMN-I01-NYUINKA     NOT =   SPACE  )
                   AND (SPA-GMN-I01-NYUINKA-CD      =   JYURRK-SRYKA ) )
                 OR    ( SPA-GMN-I01-NYUINKA        =   SPACE        )
-                   IF    ( WRK-KJNYMD             >=   JYURRK-SRYYMD )
-                           MOVE    JYURRK-REC      TO  WKJYURRK-REC
-                   END-IF
+                   MOVE    JYURRK-REC  TO  WKJYURRK-REC
                END-IF
       *
       *        ¼õ¿ÇÍúÎòÆÉ¹þ
