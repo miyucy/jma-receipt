@@ -58,7 +58,10 @@
        01  TOKEI-REC. 
            03  TOKEI-KEY.
                05  TOKEI-PTID          PIC 9(10).
+               05  TOKEI-YKZKBN        PIC 9(01).
                05  TOKEI-SRYCD         PIC X(09).
+           03  TOKEI-NAME              PIC X(48).
+           03  TOKEI-TANINAME          PIC X(04).
            03  TOKEI-CNT-G.
                05  TOKEI-CNT           PIC 9(05)V9(03) OCCURS  31.
       *    クリア用ファイル（レセプト種別）
@@ -66,7 +69,10 @@
        01  TOKEIX-REC. 
            03  TOKEIX-KEY.
                05  TOKEIX-PTID         PIC 9(10).
+               05  TOKEIX-YKZKBN        PIC 9(01).
                05  TOKEIX-SRYCD        PIC X(09).
+           03  TOKEIX-NAME             PIC X(48).
+           03  TOKEIX-TANINAME         PIC X(04).
            03  TOKEIX-CNT-G.
                05  TOKEIX-CNT          PIC 9(05)V9(03) OCCURS  31.
       *    エラーファイル
@@ -167,6 +173,8 @@
       *
            03  WRK-DATAYM              PIC X(16).
            03  WRK-NAIYO               PIC 9(08).
+           03  WRK-SYUBETU             PIC 9(01).
+           03  WRK-YKZKBN              PIC 9(01).
       *
            03  WRK-HENSURYO            PIC X(02).
            03  WRK-COM                 PIC X(01).
@@ -637,6 +645,19 @@
       *****************************************************************
        240-MAIN-HEN-SEC            SECTION.
       *
+           EVALUATE     SRY-SRYKBN(1:1)
+           WHEN    "2"
+               MOVE    1                   TO  WRK-SYUBETU
+           WHEN    "3"
+               MOVE    2                   TO  WRK-SYUBETU
+           WHEN    "4"
+               MOVE    3                   TO  WRK-SYUBETU
+           WHEN    "5"
+               MOVE    4                   TO  WRK-SYUBETU
+           WHEN    OTHER
+               GO  TO  240-MAIN-HEN-EXT
+           END-EVALUATE
+      *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL ( IDX     >   5 )
                    OR    ( SRY-SRYCD(IDX)  =   SPACE )
@@ -654,39 +675,91 @@
       *****************************************************************
        250-TOKEI-HEN-SEC           SECTION.
       *
+           INITIALIZE                  TNS-TENSU-REC
+           MOVE    SRY-SRYCD(IDX)      TO  TNS-SRYCD
+      *    点数マスタ検索
+           PERFORM 900-TNS-READ-SEC
+      *
+      *    薬剤区分チェック
+           EVALUATE    TNS-YKZKBN
+      *    内服薬
+           WHEN    1
+               MOVE    1               TO  WRK-YKZKBN
+      *    外用薬
+           WHEN    6
+               MOVE    2               TO  WRK-YKZKBN
+      *    注射薬
+           WHEN    4
+               MOVE    3               TO  WRK-YKZKBN
+      *    その他
+           WHEN    3
+               MOVE    4               TO  WRK-YKZKBN
+      *    歯科用薬剤
+           WHEN    8
+               MOVE    5               TO  WRK-YKZKBN
+      *    歯科用特定薬剤
+           WHEN    9
+               MOVE    1               TO  WRK-YKZKBN
+           END-EVALUATE
+      *
       *    統計データ検索
            INITIALIZE                  TOKEI-REC
            MOVE    ACCT-PTID           TO  TOKEI-PTID
+           MOVE    WRK-YKZKBN          TO  TOKEI-YKZKBN
            MOVE    SRY-SRYCD(IDX)      TO  TOKEI-SRYCD
            PERFORM 900-TOKEI-READ-SEC
       *
            IF          FLG-TOKEI       =   1
                INITIALIZE                  TOKEI-REC
                MOVE    ACCT-PTID           TO  TOKEI-PTID
+               MOVE    WRK-YKZKBN          TO  TOKEI-YKZKBN
                MOVE    SRY-SRYCD(IDX)      TO  TOKEI-SRYCD
+               MOVE    TNS-NAME            TO  TOKEI-NAME
+               MOVE    TNS-TANINAME        TO  TOKEI-TANINAME
       *
-               COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
-               MOVE    WRK-DD              TO  CNT-DAY
+               IF      WRK-SYUBETU         =   "1"
+	               COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
+	               MOVE    WRK-DD              TO  CNT-DAY
       *
-               PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
-                       OR    ( CNT-DAY     >   WRK-DAYED )
-                   MOVE    ZERO                TO  TOKEI-CNT(CNT-DAY)
-                   COMPUTE TOKEI-CNT(CNT-DAY)  =   TOKEI-CNT(CNT-DAY)
-                                               +   SRY-SRYSURYO(IDX)
-                   COMPUTE CNT-DAY =   CNT-DAY +   1
-               END-PERFORM
+	               PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
+	                       OR    ( CNT-DAY     >   WRK-DAYED )
+	                   MOVE    ZERO            TO  TOKEI-CNT(CNT-DAY)
+	                   COMPUTE TOKEI-CNT(CNT-DAY)
+                                               =   TOKEI-CNT(CNT-DAY)
+	                                           +   SRY-SRYSURYO(IDX)
+	                   COMPUTE CNT-DAY =   CNT-DAY +   1
+	               END-PERFORM
+               ELSE
+                   MOVE    ZERO            TO  WRK-SURYO
+                   COMPUTE WRK-SURYO       =   SRY-SRYSURYO(IDX)
+                                           *   ACCT-DAY(1 WRK-DD)
+	               MOVE    ZERO            TO  TOKEI-CNT(WRK-DD)
+	               COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
+	                                           +   WRK-SURYO
+               END-IF
+      *
                WRITE   TOKEI-REC
                COMPUTE CNT-TOKEI           =   CNT-TOKEI   +   1
            ELSE
-               COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
-               MOVE    WRK-DD              TO  CNT-DAY
+               IF      WRK-SYUBETU         =   "1"
+	               COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
+	               MOVE    WRK-DD              TO  CNT-DAY
       *
-               PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
-                       OR    ( CNT-DAY     >   WRK-DAYED )
-                   COMPUTE TOKEI-CNT(CNT-DAY)  =   TOKEI-CNT(CNT-DAY)
-                                               +   SRY-SRYSURYO(IDX)
-                   COMPUTE CNT-DAY =   CNT-DAY +   1
-               END-PERFORM
+	               PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
+	                       OR    ( CNT-DAY     >   WRK-DAYED )
+	                   COMPUTE TOKEI-CNT(CNT-DAY)
+                                               =   TOKEI-CNT(CNT-DAY)
+	                                           +   SRY-SRYSURYO(IDX)
+	                   COMPUTE CNT-DAY =   CNT-DAY +   1
+	               END-PERFORM
+               ELSE
+                   MOVE    ZERO            TO  WRK-SURYO
+                   COMPUTE WRK-SURYO       =   SRY-SRYSURYO(IDX)
+                                           *   ACCT-DAY(1 WRK-DD)
+	               COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
+	                                           +   WRK-SURYO
+               END-IF
+      *
                REWRITE TOKEI-REC
            END-IF
              .
@@ -725,12 +798,11 @@
            PERFORM UNTIL ( CNT-LINE        >   21 )
                    OR    ( FLG-TOKEI       =   1 )
                    OR    ( KEY-PTID    NOT =   TOKEI-PTID )
-      *        点数マスタ読み込み
-               PERFORM 900-TENSU-READ-SEC
+      *
                ADD     1                   TO  CNT-LINE
       *
-               MOVE    TNS-NAME            TO  HCM36-USENAME(CNT-LINE)
-               MOVE    TNS-TANINAME        TO  HCM36-USETANI(CNT-LINE)
+               MOVE    TOKEI-NAME          TO  HCM36-USENAME(CNT-LINE)
+               MOVE    TOKEI-TANINAME      TO  HCM36-USETANI(CNT-LINE)
       *
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       31
@@ -1082,10 +1154,8 @@
       ******************************************************************
       *    点数マスター読込
       *****************************************************************
-       900-TENSU-READ-SEC          SECTION.
+       900-TNS-READ-SEC          SECTION.
       *
-           INITIALIZE                  TNS-TENSU-REC
-           MOVE    TOKEI-SRYCD         TO  TNS-SRYCD
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
@@ -1121,7 +1191,7 @@
                                        MCPDATA-REC
       *
            .
-       900-TENSU-READ-EXT.
+       900-TNS-READ-EXT.
            EXIT.
       *
       *****************************************************************
