@@ -50,6 +50,7 @@
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
       *
            03  FLG-ZAIARI          PIC 9(01).
            03  FLG-SEIBUTU         PIC 9(01).
@@ -199,6 +200,9 @@
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *   算定履歴更新サブ
+           COPY    "CPORCSSANTEI.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -673,12 +677,6 @@
                    UNTIL      IDX-D    >   31
       *        最大液量と対象診療コード
                PERFORM 3004-TENSRYCD-HEN-SEC
-      *TEST
-               DISPLAY IDX-D
-                      "ORCSTEN-CHUSYARYO:" ORCSTEN-CHUSYARYO(IDX-D)
-                     ",WRK-MAX-RYOU:" WRK-MAX-RYOU
-                     ",SYU-ARI:" TBL-SYU-ARI       (IDX-D)
-      *TEST
       *        液量が対象で手術なしの時
                IF     (ORCSTEN-CHUSYARYO (IDX-D) >=  WRK-MAX-RYOU) AND
                       (TBL-SYU-ARI       (IDX-D) =   ZERO        )
@@ -948,6 +946,8 @@
                    MOVE    1               TO  FLG-SRYACCT
                END-IF
                IF      FLG-SRYACCT          =   ZERO
+      *            受診履歴変更
+                   PERFORM 490063-SANTEI-DEL-SEC
       *            診療会計マスターを変更する
                    PERFORM 490061-DAY-DEL-SEC
       *
@@ -996,8 +996,6 @@
                    MOVE    ZERO                TO  ACCT-DAY (2 IDX-D)
                    MOVE    ZERO                TO  ACCT-DAY (3 IDX-D)
                    MOVE    ZERO                TO  ACCT-DAY (4 IDX-D)
-      *            受診履歴変更
-                   PERFORM 490062-JYURRK-HEN-SEC
               END-IF
            END-PERFORM
            .
@@ -1095,6 +1093,139 @@
       *
            .
        490062-JYURRK-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    算定履歴更新処理
+      *****************************************************************
+       490063-SANTEI-DEL-SEC           SECTION.
+      *
+      *    診療会計マスターから診療行為マスターを検索する
+           MOVE    SPACE               TO  SRYACT-REC
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 920-SRYACT-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
+           PERFORM UNTIL      FLG-SRYACT   =   1
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2        >   5   )  OR
+                                  (SRY-SRYCD(IDX2)     =   SPACE )
+      *            点数マスタ
+                   MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
+                   PERFORM 910-TENSU-READ-SEC
+      *            算定履歴を削除する
+                   IF      TNS-SANTEIRRKKBN    NOT =   ZERO
+                       PERFORM 49021-SANTEI-UPD-SEC
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 920-SRYACT-NEXT-SEC
+           END-PERFORM
+      *
+      *
+           .
+       490063-SANTEI-DEL-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    算定履歴更新処理
+      *****************************************************************
+       49021-SANTEI-UPD-SEC           SECTION.
+      *
+      *    保険組合せ
+           MOVE    ACCT-HKNCOMBI       TO  SPA-HKNCOMBINUM
+      *    保険内容編集
+           PERFORM 510-HKNCOMBI-MEI-SEC
+      *
+           INITIALIZE                  ORCSSANTEIAREA
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+              IF      TBL-HEN-DEL (IDY IDX-D) =   1
+      *            今回分
+                   MOVE    ACCT-DAY(1  IDX-D)
+                                           TO  SSANTEI-DAY (IDX-D)
+               END-IF
+           END-PERFORM
+      *    削除
+           MOVE    "3"                 TO  SSANTEI-SYORI
+           MOVE    "J02"               TO  SSANTEI-PG
+           MOVE    SRY-SRYCD (IDX2)    TO  SSANTEI-SRYCD
+           MOVE    ACCT-SRYYM          TO  SSANTEI-SRYYMD(1:6)
+           MOVE    IDX-D               TO  SSANTEI-SRYYMD(7:2)
+           MOVE    ACCT-PTID           TO  SSANTEI-PTID
+           MOVE    ACCT-NYUGAIKBN      TO  SSANTEI-NYUGAIKBN
+           MOVE    ACCT-SRYKA          TO  SSANTEI-SRYKA
+           CALL    "ORCSSANTEI"        USING
+                                       ORCSSANTEIAREA
+                                       SPA-AREA
+      *
+           .
+       49021-SANTEI-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ名称編集処理
+      *****************************************************************
+       510-HKNCOMBI-MEI-SEC           SECTION.
+      *
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    ACCT-HOSPID         TO  COMB-HOSPID
+           MOVE    ACCT-PTID           TO  COMB-PTID
+           MOVE    ACCT-HKNCOMBI       TO  COMB-HKNCOMBINUM
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               PERFORM 940-HKNCOMBI-NEXT-SEC
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *    保険区分編集
+           EVALUATE    COMB-HKNNUM
+      *        労災
+               WHEN    "971"
+      *        自賠責
+               WHEN    "973"
+                   MOVE    1                   TO  SPA-HKNKBN
+               WHEN    OTHER
+      *        健保
+                   MOVE    ZERO                TO  SPA-HKNKBN
+           END-EVALUATE
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *
+           .
+       510-HKNCOMBI-MEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1247,6 +1378,28 @@
       *
            .
        970-JYURRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスター読込
+      *****************************************************************
+       940-HKNCOMBI-NEXT-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
+               MOVE    ZERO                TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                      HKNCOMBI-REC
+               MOVE    1                   TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       940-HKNCOMBI-NEXT-EXT.
            EXIT.
       *
       *
