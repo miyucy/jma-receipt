@@ -752,10 +752,20 @@
                        PERFORM 910-PTHKNINF-INV-SEC
                        MOVE    PTHKN-HKNJANUM  
                                TO  WRK-LF01-HKNJANUM (IDX)
-                       MOVE    PTHKN-KIGO      
+                       IF      PTHKN-KIGO          =   SPACE
+                           MOVE    "記載なし"     
                                TO  WRK-LF01-KIGO     (IDX)
-                       MOVE    PTHKN-NUM       
+                       ELSE
+                           MOVE    PTHKN-KIGO      
+                               TO  WRK-LF01-KIGO     (IDX)
+                       END-IF
+                       IF      PTHKN-NUM           =   SPACE
+                           MOVE    "記載なし"     
                                TO  WRK-LF01-NUM      (IDX)
+                       ELSE
+                           MOVE    PTHKN-NUM       
+                               TO  WRK-LF01-NUM      (IDX)
+                       END-IF
                        IF      PTHKN-HONKZKKBN =   "1"
                            MOVE    "true"      
                                TO  WRK-LF01-HONKZKKBN (IDX)
