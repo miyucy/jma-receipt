@@ -47,6 +47,7 @@
       *  01.02.08    NACL-藤原    03/03/01  排他制御 追加
       *  01.02.09    NACL-伊藤    03/03/10  端末ＩＤ６４バイトへ拡張
       *  01.02.10    NACL-多々納  03/06/27  職員コード追加
+      *  01.02.11    NACL-多々納  03/08/25  県番号追加
       *****************************************************************
       *
       *
@@ -360,6 +361,10 @@
                ELSE
                    MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
                END-IF
+      *
+      *        県番号
+               MOVE    SYS-1001-PREFNUM    TO  SPA-PREFNUM
+      *
       *TEST    すべて外来とする
       *         MOVE    ZERO                TO  SPA-BEDSU
       *         MOVE    ZERO                TO  SPA-BEDSUIPN
