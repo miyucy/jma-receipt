@@ -458,6 +458,12 @@
               "1234567890".
        01  TBL-SUJI-X-R        REDEFINES   TBL-SUJI-AREA-X.
            03  TBL-SUJI-X      PIC X(01)   OCCURS   10.
+      *    
+      *
+       01  WRK-CONS-AREA.    
+      *    ¸ÇÄêÃ¼Ëö£É£Ä
+           03  WRK-CONS-TERMID     PIC X(32)   VALUE
+                                   "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
       *
            COPY    "MCPAREA".
       *
@@ -625,7 +631,7 @@
                ELSE
       *    ÀÁµá½ñ½èÍý
                    MOVE    "RECE02X"           TO  RECE01PARA-FILE-ID
-                   MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
+                   MOVE    WRK-CONS-TERMID     TO  RECE01PARA-TERMID
                END-IF
       *
                PERFORM 200-HENSYU-SEC
@@ -654,7 +660,6 @@
                OPEN    OUTPUT              RECE04-FILE
                                            RECE05-FILE
            END-IF
-      *
            OPEN    I-O                 RECE02-FILE
       *
            PERFORM    RECE02-READ-SEC
