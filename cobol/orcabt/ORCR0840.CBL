@@ -2218,6 +2218,11 @@
       *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE85-SRYCD(IDX4)
       *
+               IF      SRY-SRYCD(IDX2)(1:1)  =  "S"
+                  COMPUTE   RECE84-MEISAISU  =  RECE84-MEISAISU
+                                             -  1
+               END-IF
+      *
                IF      SRY-SRYCD(IDX2)    =     CONS-BYOITAIYO
                   EVALUATE  RECE82-HOSPSBT
                      WHEN     "1"

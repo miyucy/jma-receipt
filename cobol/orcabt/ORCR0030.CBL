@@ -1308,6 +1308,12 @@
                ADD     1                  TO    IDX4
       *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE05-SRYCD(IDX4)
+      *
+               IF      SRY-SRYCD(IDX2)(1:1)  =  "S"
+                  COMPUTE   RECE04-MEISAISU  =  RECE04-MEISAISU
+                                             -  1
+               END-IF
+      *
                IF      SRY-SRYKBN         =     "12"
                    IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN1    OR
                                                 CONS-SAISHIN2    OR
