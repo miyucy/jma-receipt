@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    02.11.28  同日複数再診、電話再診の
+      *                                     コメント差込み
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -199,6 +201,8 @@
            03  CNT-GENGO2-KO       PIC 9(06).
            03  CNT-GENGO1-SHU      PIC 9(06).
            03  CNT-GENGO2-SHU      PIC 9(06).
+           03  CNT-DENWA           PIC 9(06).
+           03  CNT-DOUJITU         PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
@@ -385,7 +389,97 @@
            03  CONS-GENGO1-KO       PIC X(09) VALUE "180024810".
            03  CONS-GENGO2-SHU      PIC X(09) VALUE "180025110".
            03  CONS-GENGO2-KO       PIC X(09) VALUE "180025010".
-      *     
+      *
+      *
+      *   電話再診対象診療行為テーブル
+       01  TBL-DENWA-AREA.
+      *    電話等再診（診療所）（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112009750".
+      *    電話等再診（診療所）（２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112009850".
+      *    電話等再診（診療所）（４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112009950".
+      *    電話等再診（診療所）（４回目以降）(１５歳未満）
+           03  FILLER          PIC X(09)   VALUE   "112010050".
+      *    電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112012750".
+      *    老：電話等再診（診療所）（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112704150".
+      *    老：電話等再診（診療所）（２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112704250".
+      *    老：電話等再診（診療所）（４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112704350".
+      *    老：電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112706750".
+      *    同日電話等再診（診療所）（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112010650".
+      *    同日電話等再診（診療所）（２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112010750".
+      *    同日電話等再診（診療所）（４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112010850".
+      *    同日電話等再診（診療所）（４回目以降）(１５歳未満）
+           03  FILLER          PIC X(09)   VALUE   "112010950".
+      *    同日電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112012850".
+      *    老：同日電話等再診（診療所）（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112704850".
+      *    老：同日電話等再診（診療所）（２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112704950".
+      *    老：同日電話等再診（診療所）（４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112705050".
+      *    老：同日電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112706850".
+      *
+       01  TBL-DENWA-R         REDEFINES   TBL-DENWA-AREA.
+            03  TBL-DENWA      PIC X(09)   OCCURS   18.       
+      *
+       01  TBL-DENWA-MAX       PIC 9(02)   VALUE    18.  
+      *
+      *
+      *   同日再診対象診療行為テーブル
+       01  TBL-DOUJITU-AREA.
+      *    同日再診（診療所）（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112010150".
+      *    同日再診（診療所）（２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112010250".
+      *    同日再診（診療所）（４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112010350".
+      *    同日再診（診療所）（４回目以降）(１５歳未満）
+           03  FILLER          PIC X(09)   VALUE   "112010450".
+      *    同日再診（診療所）（４回目以降）(厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112010550".
+      *    老：同日再診（診療所）（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112704450".
+      *    老：同日再診（診療所）（２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112704550".
+      *    老：同日再診（診療所）（４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112704650".
+      *    老：同日再診（診療所）（４回目以降）(厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112704750".
+      *    同日電話等再診（診療所）（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112010650".
+      *    同日電話等再診（診療所）（２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112010750".
+      *    同日電話等再診（診療所）（４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112010850".
+      *    同日電話等再診（診療所）（４回目以降）(１５歳未満）
+           03  FILLER          PIC X(09)   VALUE   "112010950".
+      *    同日電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112012850".
+      *    老：同日電話等再診（診療所）（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112704850".
+      *    老：同日電話等再診（診療所）（２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112704950".
+      *    老：同日電話等再診（診療所）（４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112705050".
+      *    老：同日電話等再診（診療所）（４回目以降）(厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112706850".
+      *
+       01  TBL-DOUJITU-R       REDEFINES   TBL-DOUJITU-AREA.
+            03  TBL-DOUJITU    PIC X(09)   OCCURS   18.       
+      *
+       01  TBL-DOUJITU-MAX     PIC 9(02)   VALUE    18.  
+      *
       *
       *    パス名領域
        01  WRK-PATH                        PIC X(64).
@@ -536,6 +630,70 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+      *    電話再診・同日複数再診
+           INITIALIZE                      RECE04-REC
+           MOVE    RECE02-HOSPID       TO  RECE04-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE04-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE04-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE04-PTID
+           MOVE    RECE02-RECEKA       TO  RECE04-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE04-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE04-RECESYUBETU
+           MOVE    RECE02-HKNJANUM     TO  RECE04-HKNJANUM
+           MOVE    RECE02-TEKSTYMD     TO  RECE04-TEKSTYMD
+           MOVE    ZERO                TO  RECE04-ZAINUM
+      *
+           START   RECE04-FILE
+               KEY IS    >=   RECE04-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE04
+               NOT INVALID
+                   PERFORM 990-RECE04-NEXT-SEC
+           END-START
+           MOVE    ZERO                TO      CNT-DENWA
+                                               CNT-DOUJITU
+           PERFORM
+               UNTIL  ( FLG-RECE04           =   1                   )
+               OR     ( RECE02-HOSPID    NOT =   RECE04-HOSPID       )
+               OR     ( RECE02-SRYYM     NOT =   RECE04-SRYYM        )
+               OR     ( RECE02-NYUGAIKBN NOT =   RECE04-NYUGAIKBN    )
+               OR     ( RECE02-PTID      NOT =   RECE04-PTID         )
+               OR     ( RECE02-RECEKA    NOT =   RECE04-RECEKA       )
+               OR     ( RECE02-TEISYUTUSAKI
+                                         NOT =   RECE04-TEISYUTUSAKI )
+               OR     ( RECE02-RECESYUBETU
+                                         NOT =   RECE04-RECESYUBETU  )
+               OR     ( RECE02-HKNJANUM  NOT =   RECE04-HKNJANUM     )
+               OR     ( RECE02-TEKSTYMD  NOT =   RECE04-TEKSTYMD     )
+      *
+               MOVE          SPACE       TO      RECE041-REC
+               INITIALIZE    RECE041-REC
+               EVALUATE      RECE04-SRYKBN
+                   WHEN      "12"
+      *            （電話再診のカウント）
+                      PERFORM    2001-DENWA-COUNT-SEC
+      *            （同日再診のカウント）
+                      PERFORM    2001-DOUJITU-COUNT-SEC
+               END-EVALUATE
+      *
+               PERFORM 990-RECE04-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           IF         CNT-DENWA     >   ZERO
+           AND        CNT-DOUJITU   >   ZERO
+                      PERFORM    2002-DENWA-DOUJITU-COMMENT-SEC
+           ELSE
+               IF         CNT-DENWA     >   ZERO
+               AND        CNT-DOUJITU   =   ZERO
+                      PERFORM    2002-DENWA-COMMENT-SEC
+               ELSE
+                   IF         CNT-DENWA     =   ZERO
+                   AND        CNT-DOUJITU   >   ZERO
+                      PERFORM    2002-DOUJITU-COMMENT-SEC
+                   END-IF
+               END-IF
+           END-IF
       *
       *    人工腎臓の判定
            INITIALIZE                      RECE04-REC
@@ -701,6 +859,349 @@
        200-MAIN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    電話再診のカウント
+      *****************************************************************
+       2001-DENWA-COUNT-SEC          SECTION.
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( IDX           >   TBL-DENWA-MAX )
+      *
+              INITIALIZE                        SRYACT-REC
+              MOVE    RECE04-HOSPID     TO      SRY-HOSPID
+              MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
+              MOVE    RECE04-PTID       TO      SRY-PTID
+              MOVE    RECE04-SRYYM      TO      SRY-SRYYM
+              MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
+              MOVE    TBL-DENWA(IDX)    TO      SRY-SRYCD (1)
+              MOVE    TBL-DENWA(IDX)    TO      SRY-SRYCD (2)
+              MOVE    TBL-DENWA(IDX)    TO      SRY-SRYCD (3)
+              MOVE    TBL-DENWA(IDX)    TO      SRY-SRYCD (4)
+              MOVE    TBL-DENWA(IDX)    TO      SRY-SRYCD (5)
+      *
+              MOVE    SRYACT-REC        TO      MCPDATA-REC
+              MOVE    "DBSELECT"        TO      MCP-FUNC
+              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+              IF  MCP-RC                =       ZERO
+                  MOVE    "DBFETCH"     TO      MCP-FUNC
+                  MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+                  CALL    "ORCMCPSUB"           USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                  IF      MCP-RC        =       ZERO
+                      MOVE    RECE04-REC        TO      WRK-RECE04-REC
+                      MOVE    MCPDATA-REC       TO      SRYACT-REC
+                      INITIALIZE                        SRYACCT-REC
+                      MOVE    SRY-HOSPID        TO      ACCT-HOSPID
+                      MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
+                      MOVE    SRY-PTID          TO      ACCT-PTID
+                      MOVE    SRY-SRYKA         TO      ACCT-SRYKA
+                      MOVE    SRY-SRYYM         TO      ACCT-SRYYM
+                      MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
+                      MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
+                      MOVE    SRYACCT-REC       TO      MCPDATA-REC
+                      MOVE    "DBSELECT"        TO      MCP-FUNC
+                      MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
+                      CALL    "ORCMCPSUB"       USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                      IF      MCP-RC    =       ZERO
+                          MOVE    "DBFETCH"     TO      MCP-FUNC
+                          MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
+                          CALL    "ORCMCPSUB"           USING
+                                                        MCPAREA
+                                                        ORCMCPAREA
+                                                        MCPDATA-REC
+                          IF      MCP-RC        =       ZERO
+                               MOVE  MCPDATA-REC    TO   SRYACCT-REC
+                               ADD   ACCT-ZAIKAISU  TO   CNT-DENWA
+                          END-IF
+                      END-IF
+                  END-IF
+              END-IF
+      *
+              INITIALIZE                        MCPAREA
+              MOVE    "DBCLOSE"         TO      MCP-FUNC
+              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+              INITIALIZE                        MCPAREA
+              MOVE    "DBCLOSE"         TO      MCP-FUNC
+              MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           END-PERFORM
+           .
+       2001-DENWA-COUNT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同日再診のカウント
+      *****************************************************************
+       2001-DOUJITU-COUNT-SEC          SECTION.
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( IDX           >   TBL-DOUJITU-MAX )
+      *
+              INITIALIZE                        SRYACT-REC
+              MOVE    RECE04-HOSPID     TO      SRY-HOSPID
+              MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
+              MOVE    RECE04-PTID       TO      SRY-PTID
+              MOVE    RECE04-SRYYM      TO      SRY-SRYYM
+              MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
+              MOVE    TBL-DOUJITU(IDX)  TO      SRY-SRYCD (1)
+              MOVE    TBL-DOUJITU(IDX)  TO      SRY-SRYCD (2)
+              MOVE    TBL-DOUJITU(IDX)  TO      SRY-SRYCD (3)
+              MOVE    TBL-DOUJITU(IDX)  TO      SRY-SRYCD (4)
+              MOVE    TBL-DOUJITU(IDX)  TO      SRY-SRYCD (5)
+      *
+              MOVE    SRYACT-REC        TO      MCPDATA-REC
+              MOVE    "DBSELECT"        TO      MCP-FUNC
+              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+              IF  MCP-RC                =       ZERO
+                  MOVE    "DBFETCH"     TO      MCP-FUNC
+                  MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+                  CALL    "ORCMCPSUB"           USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                  IF      MCP-RC        =       ZERO
+                      MOVE    RECE04-REC        TO      WRK-RECE04-REC
+                      MOVE    MCPDATA-REC       TO      SRYACT-REC
+                      INITIALIZE                        SRYACCT-REC
+                      MOVE    SRY-HOSPID        TO      ACCT-HOSPID
+                      MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
+                      MOVE    SRY-PTID          TO      ACCT-PTID
+                      MOVE    SRY-SRYKA         TO      ACCT-SRYKA
+                      MOVE    SRY-SRYYM         TO      ACCT-SRYYM
+                      MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
+                      MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
+                      MOVE    SRYACCT-REC       TO      MCPDATA-REC
+                      MOVE    "DBSELECT"        TO      MCP-FUNC
+                      MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
+                      CALL    "ORCMCPSUB"       USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                      IF      MCP-RC    =       ZERO
+                          MOVE    "DBFETCH"     TO      MCP-FUNC
+                          MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
+                          CALL    "ORCMCPSUB"           USING
+                                                        MCPAREA
+                                                        ORCMCPAREA
+                                                        MCPDATA-REC
+                          IF      MCP-RC        =       ZERO
+                               MOVE  MCPDATA-REC    TO   SRYACCT-REC
+                               ADD   ACCT-ZAIKAISU  TO   CNT-DOUJITU
+                          END-IF
+                      END-IF
+                  END-IF
+              END-IF
+      *
+              INITIALIZE                        MCPAREA
+              MOVE    "DBCLOSE"         TO      MCP-FUNC
+              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+              INITIALIZE                        MCPAREA
+              MOVE    "DBCLOSE"         TO      MCP-FUNC
+              MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           END-PERFORM
+           .
+       2001-DOUJITU-COUNT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    電話再診・同日複数再診のコメント編集
+      *****************************************************************
+       2002-DENWA-DOUJITU-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE041-REC
+           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE041-PTID
+           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
+           MOVE    RECE02-HKNJANUM     TO  RECE041-HKNJANUM
+           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
+           MOVE    ZERO                TO  RECE041-ZAINUM
+           MOVE    WRK-RECE04-KOHBUNRI TO  RECE041-KOHBUNRI
+           MOVE    "99"                TO  RECE041-SRYKBN
+      *
+           WRITE   RECE041-REC
+           ADD     1                   TO  CNT-RECE04
+      *
+           INITIALIZE                      RECE051-REC
+           MOVE    RECE02-HOSPID       TO  RECE051-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE051-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE051-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE051-PTID
+           MOVE    RECE02-RECEKA       TO  RECE051-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE051-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE051-RECESYUBETU
+           MOVE    RECE02-HKNJANUM     TO  RECE051-HKNJANUM
+           MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
+           MOVE    ZERO                TO  RECE051-ZAINUM
+           MOVE    "99"                TO  RECE051-SRYKBN
+      *    電話再診のコメントの挿入
+           MOVE    SPACE                TO  COM-RECE05-REC
+           INITIALIZE                       COM-RECE05-REC
+           MOVE    "840000001"          TO  COM-SRYCD(1)
+           MOVE    ZERO                 TO  COM-SRYSURYO(1)
+           MOVE    9                    TO  COM-YUKOKETA(1)
+           MOVE    "電話再診（　　回）" TO  COM-NAME(1)
+           MOVE    CNT-DENWA            TO  DAY-IDX
+           MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(11:4)
+           MOVE    COM-SRYACTINF(1)     TO  RECE051-SRYACTINF(1)
+           MOVE    COM-NAMEINF(1)       TO  RECE051-NAMEINF(1)
+      *    同日複数再診のコメントの挿入
+           MOVE    "840000002"          TO  COM-SRYCD(2)
+           MOVE    ZERO                 TO  COM-SRYSURYO(2)
+           MOVE    11                   TO  COM-YUKOKETA(2)
+           MOVE    "同日複数再診（　　回）"  TO COM-NAME(2)
+           MOVE    CNT-DOUJITU          TO  DAY-IDX
+           MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(2)(15:4)
+           MOVE    COM-SRYACTINF(2)     TO  RECE051-SRYACTINF(2)
+           MOVE    COM-NAMEINF(2)       TO  RECE051-NAMEINF(2)
+      *
+           WRITE   RECE051-REC
+           ADD     1                    TO  CNT-RECE05
+      *
+           .
+       2002-DENWA-DOUJITU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    電話再診のコメント編集
+      *****************************************************************
+       2002-DENWA-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE041-REC
+           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE041-PTID
+           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
+           MOVE    RECE02-HKNJANUM     TO  RECE041-HKNJANUM
+           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
+           MOVE    ZERO                TO  RECE041-ZAINUM
+           MOVE    WRK-RECE04-KOHBUNRI TO  RECE041-KOHBUNRI
+           MOVE    "99"                TO  RECE041-SRYKBN
+      *
+           WRITE   RECE041-REC
+           ADD     1                   TO  CNT-RECE04
+      *
+           INITIALIZE                      RECE051-REC
+           MOVE    RECE02-HOSPID       TO  RECE051-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE051-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE051-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE051-PTID
+           MOVE    RECE02-RECEKA       TO  RECE051-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE051-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE051-RECESYUBETU
+           MOVE    RECE02-HKNJANUM     TO  RECE051-HKNJANUM
+           MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
+           MOVE    ZERO                TO  RECE051-ZAINUM
+           MOVE    "99"                TO  RECE051-SRYKBN
+      *    電話再診のコメントの挿入
+           MOVE    SPACE                TO  COM-RECE05-REC
+           INITIALIZE                       COM-RECE05-REC
+           MOVE    "840000001"          TO  COM-SRYCD(1)
+           MOVE    ZERO                 TO  COM-SRYSURYO(1)
+           MOVE    9                    TO  COM-YUKOKETA(1)
+           MOVE    "電話再診（　　回）" TO  COM-NAME(1)
+           MOVE    CNT-DENWA            TO  DAY-IDX
+           MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(11:4)
+           MOVE    COM-SRYACTINF(1)     TO  RECE051-SRYACTINF(1)
+           MOVE    COM-NAMEINF(1)       TO  RECE051-NAMEINF(1)
+           WRITE   RECE051-REC
+           ADD     1                    TO  CNT-RECE05
+      *
+           .
+       2002-DENWA-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同日複数再診のコメント編集
+      *****************************************************************
+       2002-DOUJITU-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE041-REC
+           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE041-PTID
+           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
+           MOVE    RECE02-HKNJANUM     TO  RECE041-HKNJANUM
+           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
+           MOVE    ZERO                TO  RECE041-ZAINUM
+           MOVE    WRK-RECE04-KOHBUNRI TO  RECE041-KOHBUNRI
+           MOVE    "99"                TO  RECE041-SRYKBN
+      *
+           WRITE   RECE041-REC
+           ADD     1                   TO  CNT-RECE04
+      *
+           INITIALIZE                      RECE051-REC
+           MOVE    RECE02-HOSPID       TO  RECE051-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE051-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE051-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE051-PTID
+           MOVE    RECE02-RECEKA       TO  RECE051-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE051-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE051-RECESYUBETU
+           MOVE    RECE02-HKNJANUM     TO  RECE051-HKNJANUM
+           MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
+           MOVE    ZERO                TO  RECE051-ZAINUM
+           MOVE    "99"                TO  RECE051-SRYKBN
+      *    同日複数再診のコメントの挿入
+           MOVE    SPACE                TO  COM-RECE05-REC
+           INITIALIZE                       COM-RECE05-REC
+           MOVE    "840000002"          TO  COM-SRYCD(1)
+           MOVE    ZERO                 TO  COM-SRYSURYO(1)
+           MOVE    11                   TO  COM-YUKOKETA(1)
+           MOVE    "同日複数再診（　　回）"  TO COM-NAME(1)
+           MOVE    CNT-DOUJITU          TO  DAY-IDX
+           MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(15:4)
+           MOVE    COM-SRYACTINF(1)     TO  RECE051-SRYACTINF(1)
+           MOVE    COM-NAMEINF(1)       TO  RECE051-NAMEINF(1)
+           WRITE   RECE051-REC
+           ADD     1                    TO  CNT-RECE05
+      *
+           .
+       2002-DOUJITU-COMMENT-EXT.
+           EXIT.
       *
       *****************************************************************
       *    再診４回目以降のカウント
@@ -1557,8 +2058,10 @@
            PERFORM   2001-SHIDOU-DAY-SEC
       *
              MOVE       RECE04-REC    TO   RECE041-REC
+             ADD     1                TO   RECE041-MEISAISU
              WRITE      RECE041-REC
-             ADD     1          TO      CNT-RECE04
+             ADD     1                TO   CNT-RECE04
+      *
              INITIALIZE                      RECE05-REC
              MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
              MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
