@@ -37,6 +37,7 @@
       *                                     Ç¯Îð¡¦µëÉÕ³ä¹ç¤ÎÄÉ²Ã
       *  01.01.02    NACL-Æ£¸¶    02/09/18  ÊÝ¸±¼ÔÈÖ¹æ¤ÎÄÉ²Ã
       *  01.01.03    NACL-Æ£¸¶    02/10/10  ¥µ¥¤¥È¶èÊ¬ÄÉ²Ã
+      *  01.01.04    NACL-Æ£¸¶    02/10/11  £²£°£°£²Ç¯£±£°·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -108,7 +109,7 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *     
       *    ¥·¥§¥ëÍÑÎÎ°è
-           COPY    "CPCOMMONSHELL.INC".
+      *****COPY    "CPCOMMONSHELL.INC".
       *
            COPY    "HC041.INC".
       *
@@ -233,6 +234,10 @@
            COPY    "CPSHELLTBL.INC".
       *     
            COPY    "ORCA-DBPATH".
+      *
+       01  WRK-CONS-AREA.
+      *    £²£°£°£²Ç¯£±£°·î²þÀµ
+           03  WRK-CONS-SRYYM        PIC X(06)   VALUE   "200210".              
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -519,7 +524,8 @@
            IF      FLG-UPD             =   1
                PERFORM 230-UPD-FILE-HENSYU-SEC
       *
-               MOVE    "SEIKYU-KEY4"       TO  ORC-DBPATH
+      *********MOVE    "SEIKYU-KEY4"       TO  ORC-DBPATH
+               MOVE    "SEIKYU-KEY11"      TO  ORC-DBPATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    SPACE               TO  WRK-RECEERR
@@ -1080,7 +1086,8 @@
            CLOSE   UPD-FILE
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SEIKYU-KEY4"       TO  ORC-DBPATH
+      *****MOVE    "SEIKYU-KEY4"       TO  ORC-DBPATH
+           MOVE    "SEIKYU-KEY11"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -1196,15 +1203,18 @@
            INITIALIZE                  RECE10-REC
            MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
            MOVE    WRK-PARA-SKYYM      TO  RECE10-SKYYM
+           MOVE    WRK-CONS-SRYYM      TO  RECE10-SRYYM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SEIKYU-KEY4"       TO  ORC-DBPATH
+      *****MOVE    "SEIKYU-KEY4"       TO  ORC-DBPATH
+           MOVE    "SEIKYU-KEY11"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SEIKYU-KEY4"       TO  ORC-DBPATH
+      *****    MOVE    "SEIKYU-KEY4"       TO  ORC-DBPATH
+               MOVE    "SEIKYU-KEY11"      TO  ORC-DBPATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-END
@@ -1219,7 +1229,8 @@
       *****************************************************************
        900-SEIKYU-READ-SEC           SECTION.
       *
-           MOVE    "SEIKYU-KEY4"       TO  ORC-DBPATH
+      *****MOVE    "SEIKYU-KEY4"       TO  ORC-DBPATH
+           MOVE    "SEIKYU-KEY11"      TO  ORC-DBPATH
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

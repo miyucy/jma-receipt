@@ -117,11 +117,6 @@
            03  WRK-YKZFTNZ           PIC ZZZZ,ZZZ.
            03  WRK-FTNMONEYZ         PIC Z,ZZZ,ZZZ. 
            03  WRK-GKENSUZ           PIC ZZZZZZZ. 
-                       
-      *
-           03  WRK-IDX-AREA.
-               05  WRK-IDX-OCC           OCCURS  3.
-                   07  WRK-IDX           PIC 9(03).
       *             
            03  WRK-KOHKBN.
                05  WRK-KOHNUM        PIC X(04).
@@ -767,7 +762,13 @@
                MOVE    "HCM2D.red"         TO  SPRT-PRTID
                MOVE    HCM2D               TO  SPRT-PRTDATA
            END-IF    
-           MOVE    "º“ ›¡Ì≥Á…Ω"        TO  SPRT-TITLE
+           EVALUATE    IDX1
+               WHEN    1                            
+                   MOVE    "º“ ›¡Ì≥Á…Ω"        TO  SPRT-TITLE
+               WHEN    2                            
+                   MOVE    "º“ ›¡Ì≥Á…Ω° ∫ﬂ¡Ìø«≈˘°À"
+                                               TO  SPRT-TITLE
+           END-EVALUATE        
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
