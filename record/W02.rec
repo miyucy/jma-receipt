@@ -153,11 +153,18 @@ W02	{
 	            	state	int;
 	            };
 			fixed26	{
-				TEIRITU	{
-					value	varchar(1);
+				TEIRITU_COMBO	{
+					TEIRITU	{
+						value	varchar(10);
+					};
+					count	int;
+					item	varchar(10)[2];
 				};
 				DISCOUNTRATE	{
 					value	number(7);
+				};
+				LBL_RATE	{
+					value	varchar(2);
 				};
 			};
 	            N04	{
@@ -167,8 +174,12 @@ W02	{
 				DISCOUNTBODY	{
 					value	varchar(20);
 				};
-				DISCOUNTKBN	{
-					value	varchar(2);
+				DISCOUNTKBN_COMBO	{
+					DISCOUNTKBN	{
+						value	varchar(23);
+					};
+					count	int;
+					item	varchar(23)[10];
 				};
 			};
 	            N05	{

@@ -42,6 +42,8 @@
       *  01.00.12    NACL-太田    03/05/21  減免端数区分追加
       *  01.00.13    NACL-多々納  03/05/27  診療内容追加（１０１２）
       *  01.00.14    NACL-太田    03/06/06  消費税端数区分追加
+      *  01.00.15    NACL-太田    03/07/09  割引率区分・定額定率区分の
+      *                                     入力をコンボボックスに変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -219,11 +221,32 @@
                        09  SPA-GMN-EMAIL          PIC X(100).
                        09  SPA-GMN-HPURL          PIC X(100).
                    07  SPA-GMN-1026-AREA.
+                       09  SPA-GMN-DISCOUNT-KBNLST    OCCURS  10.
+                           11  SPA-GMN-DISCOUNT-KBNL
+                                                  PIC X(02).
+                           11                     PIC X(01).
+                           11  SPA-GMN-DISCOUNT-KBNMEIL
+                                                  PIC X(20).
+                       09  SPA-GMN-DISCOUNT-KBN-MAX
+                                                  PIC 9(05).
                        09  SPA-GMN-DISCOUNT-BODY  PIC X(20).
-                       09  SPA-GMN-DISCOUNT-KBN   PIC X(02).
+                       09  SPA-GMN-DISCOUNT-KBN-G.
+                           11  SPA-GMN-DISCOUNT-KBN
+                                                  PIC X(02).
+                           11                     PIC X(01).
+                           11  SPA-GMN-DISCOUNT-KBNMEI
+                                                  PIC X(20).
                    07  SPA-GMN-1027-AREA.
-                       09  SPA-GMN-TEIRITU        PIC X(01).
+                       09  SPA-GMN-TEIRITULST         OCCURS  2.
+                           11  SPA-GMN-TEIRITUL       PIC X(01).
+                           11                         PIC X(01).
+                           11  SPA-GMN-TEIRITUMEIL    PIC X(08).
+                       09  SPA-GMN-TEIRITU-G.
+                           11  SPA-GMN-TEIRITU        PIC X(01).
+                           11                         PIC X(01).
+                           11  SPA-GMN-TEIRITUMEI     PIC X(08).
                        09  SPA-GMN-DISCOUNT-RATE  PIC 9(07).
+                       09  SPA-GMN-LBL-RATE       PIC X(02).
                    07  SPA-GMN-1018-AREA.
                        09  SPA-GMN-CONDITION-BODY PIC X(20).
                        09  SPA-GMN-CONDITION-WORD PIC X(02).
@@ -258,6 +281,7 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDZ                 PIC 9(04).
       *
       *    一時領域
       *
@@ -275,6 +299,12 @@
                05  WRK-WDD         PIC 9(02).
       *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
+           03  WRK-RATE-AREA.
+               05  WRK-RATE-EDIT.
+                   07  WRK-RATE-EDITZ  PIC ZZZZZZZ.
+                   07  WRK-RATE-TANI   PIC X(04).
+               05  WRK-RATE-EDIT-R  REDEFINES    WRK-RATE-EDIT.
+                   07  WRK-RATE-EDITR  PIC X(11).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -669,6 +699,15 @@
                                TO  SPA-GMN-TAX-HASU-KBNMEIL (2)
            MOVE    SPA-GMN-TAX-HASU-KBNLST (2)
                                TO  SPA-GMN-TAX-HASU-KBN-G
+      *
+           MOVE    "1"         TO  SPA-GMN-TEIRITUL (1)
+           MOVE    "定率"      TO  SPA-GMN-TEIRITUMEIL (1)
+      * 
+           MOVE    "2"         TO  SPA-GMN-TEIRITUL (2)
+           MOVE    "定額"      TO  SPA-GMN-TEIRITUMEIL (2)
+      * 
+      *    割引率区分設定処理
+           PERFORM 3101-DISCOUNT-KBN-SET-SEC
       * 
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                      SYS-1001-REC
@@ -864,12 +903,32 @@
                        MOVE    MCPDATA-REC         TO  SYS-1026-REC
                        MOVE    SYS-1026-DISCOUNT-BODY  TO
                                                SPA-GMN-DISCOUNT-BODY
-                       MOVE    SYS-1026-DISCOUNT-KBN   TO
-                                               SPA-GMN-DISCOUNT-KBN
+                       PERFORM VARYING IDY     FROM    1   BY  1
+                               UNTIL ( IDY
+                                       >   SPA-GMN-DISCOUNT-KBN-MAX )
+                           IF    ( SYS-1026-DISCOUNT-KBN
+                                       =   SPA-GMN-DISCOUNT-KBNL (IDY) )
+                               MOVE    SPA-GMN-DISCOUNT-KBNLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-KBN-G
+                               MOVE    SPA-GMN-DISCOUNT-KBN-MAX
+                                       TO  IDY
+                           END-IF
+                       END-PERFORM
       *    医療機関情報ー割引率情報
                    WHEN    "1027"
                        MOVE    MCPDATA-REC         TO  SYS-1027-REC
-                       MOVE    SYS-1027-TEIRITU    TO  SPA-GMN-TEIRITU
+      *
+                       EVALUATE    SYS-1027-TEIRITU
+                       WHEN    "1"
+                           MOVE    SPA-GMN-TEIRITULST (1)
+                                                   TO  SPA-GMN-TEIRITU-G
+                           MOVE    "％"            TO  SPA-GMN-LBL-RATE
+                       WHEN    "2"
+                           MOVE    SPA-GMN-TEIRITULST (2)
+                                                   TO  SPA-GMN-TEIRITU-G
+                           MOVE    "円"            TO  SPA-GMN-LBL-RATE
+                       END-EVALUATE
+      *
                        MOVE    SYS-1027-DISCOUNT-RATE  TO
                                                SPA-GMN-DISCOUNT-RATE
       *    医療機関情報ー状態コメント情報
@@ -922,6 +981,69 @@
        31O-SPASET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    割引率区分設定処理
+      *****************************************************************
+       3101-DISCOUNT-KBN-SET-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1027-REC 
+           INITIALIZE                      SYS-1027-REC
+           MOVE    "1027"                  TO  SYS-1027-KANRICD
+           MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
+           MOVE    SYS-1027-REC            TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    ZERO                TO  SPA-GMN-DISCOUNT-KBN-MAX
+           PERFORM             UNTIL ( FLG-SYSKANRI   =   1 )
+                               OR    ( SPA-GMN-DISCOUNT-KBN-MAX > 10 )
+               MOVE    MCPDATA-REC     TO  SYS-1027-REC
+      *
+               COMPUTE SPA-GMN-DISCOUNT-KBN-MAX
+                   =   SPA-GMN-DISCOUNT-KBN-MAX    +   1
+      *
+               MOVE    SPACE           TO  WRK-RATE-AREA
+               MOVE    SYS-1027-DISCOUNT-RATE
+                                       TO  WRK-RATE-EDITZ
+               EVALUATE    SYS-1027-TEIRITU
+               WHEN    "0"
+                   MOVE    "該当なし"  TO  WRK-RATE-EDIT-R
+               WHEN    "1"
+                   MOVE    "(%)"       TO  WRK-RATE-TANI
+               WHEN    "2"
+                   MOVE    "(円)"      TO  WRK-RATE-TANI
+               END-EVALUATE
+               MOVE    SYS-1027-KBNCD (1 : 2)
+                                       TO  SPA-GMN-DISCOUNT-KBNL
+                                            (SPA-GMN-DISCOUNT-KBN-MAX )
+               MOVE    WRK-RATE-AREA   TO  SPA-GMN-DISCOUNT-KBNMEIL
+                                            (SPA-GMN-DISCOUNT-KBN-MAX )
+      *
+               MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       3101-DISCOUNT-KBN-SET-EXT.
+           EXIT.
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
@@ -1016,12 +1138,12 @@
            MOVE    W02-FAX             TO  SPA-GMN-FAX
            MOVE    W02-EMAIL           TO  SPA-GMN-EMAIL
            MOVE    W02-HPURL           TO  SPA-GMN-HPURL
-           MOVE    W02-TEIRITU         TO  SPA-GMN-TEIRITU
+           MOVE    W02-TEIRITU         TO  SPA-GMN-TEIRITU-G
       *
            MOVE    W02-DISCOUNTRATE    TO  SPA-GMN-DISCOUNT-RATE
       *
            MOVE    W02-DISCOUNTBODY    TO  SPA-GMN-DISCOUNT-BODY
-           MOVE    W02-DISCOUNTKBN     TO  SPA-GMN-DISCOUNT-KBN
+           MOVE    W02-DISCOUNTKBN     TO  SPA-GMN-DISCOUNT-KBN-G
       *
            MOVE    W02-CONDITIONBODY   TO  SPA-GMN-CONDITION-BODY
            MOVE    W02-CONDITIONWORD   TO  SPA-GMN-CONDITION-WORD
@@ -1242,6 +1364,9 @@
       *    割引率情報タグ処理
       *****************************************************************
        41021-KIHON-1027-SEC       SECTION.
+      *
+      *    定額定率区分チェック処理
+           PERFORM 4122-TEIRITU-CHK-SEC
       *
            .
        41021-KIHON-1027-EXT.
@@ -1684,15 +1809,18 @@
       *****************************************************************
        4122-DISCOUNT-KBN-CHK-SEC        SECTION.
       *
-           INITIALIZE                      SYS-1027-REC
-           MOVE    "1027"                  TO  SYS-1027-KANRICD
-           MOVE    SPA-GMN-DISCOUNT-KBN    TO  SYS-1027-KBNCD
-           MOVE    SYS-1027-REC            TO  MCPDATA-REC
-           MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI            =   ZERO
-               CONTINUE
-           ELSE
+           MOVE    ZERO            TO  FLG-OK
+           PERFORM VARYING IDZ     FROM    1   BY  1
+                   UNTIL ( IDZ     >   SPA-GMN-DISCOUNT-KBN-MAX )
+               IF    ( SPA-GMN-DISCOUNT-KBN
+                                   =   SPA-GMN-DISCOUNT-KBNL (IDZ) )
+                   MOVE    SPA-GMN-DISCOUNT-KBNLST (IDZ)
+                                   TO  SPA-GMN-DISCOUNT-KBN-G
+                   MOVE    1       TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK          =   ZERO
                MOVE    "0010"              TO  SPA-ERRCD
                MOVE    51                  TO  SPA-GMN-CUR
                GO  TO  4122-DISCOUNT-KBN-CHK-EXT
@@ -1700,6 +1828,36 @@
       *
            .
        4122-DISCOUNT-KBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    割引率区分チェック処理
+      *****************************************************************
+       4122-TEIRITU-CHK-SEC        SECTION.
+      *
+           IF    ( SPA-GMN-TEIRITU-G   =   SPACE )
+               MOVE    ZERO        TO  SPA-GMN-DISCOUNT-RATE
+               MOVE    SPACE       TO  SPA-GMN-LBL-RATE
+               GO  TO  4122-TEIRITU-CHK-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  SPA-GMN-LBL-RATE
+           EVALUATE    SPA-GMN-TEIRITU
+           WHEN    "1"
+               MOVE    SPA-GMN-TEIRITULST (1)
+                                       TO  SPA-GMN-TEIRITU-G
+               MOVE    "％"            TO  SPA-GMN-LBL-RATE
+           WHEN    "2"
+               MOVE    SPA-GMN-TEIRITULST (2)
+                                       TO  SPA-GMN-TEIRITU-G
+               MOVE    "円"            TO  SPA-GMN-LBL-RATE
+           WHEN    OTHER
+               MOVE    "0015"          TO  SPA-ERRCD
+               MOVE    41              TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
+           .
+       4122-TEIRITU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2011,7 +2169,11 @@
                    END-IF 
                    MOVE    SPA-W01-STYUKYMD    TO  SYS-1027-STYUKYMD
                    MOVE    SPA-W01-EDYUKYMD    TO  SYS-1027-EDYUKYMD
-                   MOVE    SPA-GMN-TEIRITU     TO  SYS-1027-TEIRITU 
+                   IF    ( SPA-GMN-TEIRITU     =   SPACE )
+                       MOVE    "0"             TO  SYS-1027-TEIRITU 
+                   ELSE
+                       MOVE    SPA-GMN-TEIRITU TO  SYS-1027-TEIRITU 
+                   END-IF
                    MOVE    SPA-GMN-DISCOUNT-RATE
                                            TO  SYS-1027-DISCOUNT-RATE
                    MOVE    SYS-1027-REC        TO  SYSKANRI-REC
@@ -2282,12 +2444,26 @@
            MOVE    SPA-GMN-HPURL        TO  W02-HPURL
       *
       *    医療機関情報ー減免事由情報
-           MOVE    SPA-GMN-TEIRITU          TO  W02-TEIRITU
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       2
+               MOVE    SPA-GMN-TEIRITULST(IDX)
+                                       TO  W02-TEIRITULST (IDX)
+           END-PERFORM    
+           MOVE    2                   TO  W02-TEIRITU-COUNT     
+           MOVE    SPA-GMN-TEIRITU-G        TO  W02-TEIRITU
            MOVE    SPA-GMN-DISCOUNT-RATE    TO  W02-DISCOUNTRATE
+           MOVE    SPA-GMN-LBL-RATE         TO  W02-LBL-RATE
       *
       *    医療機関情報ー割引率情報
+           MOVE    SPA-GMN-DISCOUNT-KBN-MAX
+                                       TO  W02-DISCOUNTKBN-COUNT
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-DISCOUNT-KBN-MAX
+               MOVE    SPA-GMN-DISCOUNT-KBNLST (IDX)
+                                       TO  W02-DISCOUNTKBNLST (IDX)
+           END-PERFORM    
            MOVE    SPA-GMN-DISCOUNT-BODY    TO  W02-DISCOUNTBODY
-           MOVE    SPA-GMN-DISCOUNT-KBN     TO  W02-DISCOUNTKBN
+           MOVE    SPA-GMN-DISCOUNT-KBN-G   TO  W02-DISCOUNTKBN
       *
       *    医療機関情報ー状態コメント情報
            MOVE    SPA-GMN-CONDITION-BODY   TO  W02-CONDITIONBODY
@@ -2403,6 +2579,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0014"
                    MOVE    "消費税端数設定入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE    "定率定額区分入力エラー"
                                                TO  SPA-ERRMSG
       *----(01.00.09) LINE ADD END   ----------------------------------
                WHEN    "0099"

@@ -114,16 +114,25 @@
                     06  W02-VALUE   PIC X(100).
                 04  W02-N03-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED26.
-                  05  W02-TEIRITU.
-                    06  W02-VALUE   PIC X(1).
+                  05  W02-TEIRITU-COMBO.
+                    06  W02-TEIRITU PIC X(10).
+                    06  W02-TEIRITU-COUNT
+                                             PIC S9(9)   BINARY.
+                    06  W02-TEIRITULST       PIC X(10)
+                                                         OCCURS  2.
                   05  W02-DISCOUNTRATE.
                     06  W02-VALUE   PIC S9(7).
+                  05  W02-LBL-RATE  PIC X(02).
                 04  W02-N04-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED27.
                   05  W02-DISCOUNTBODY.
                     06  W02-VALUE   PIC X(20).
-                  05  W02-DISCOUNTKBN.
-                    06  W02-VALUE   PIC X(2).
+                  05  W02-DISCOUNTKBN-COMBO.
+                    06  W02-DISCOUNTKBN      PIC X(23).
+                    06  W02-DISCOUNTKBN-COUNT
+                                             PIC S9(9)   BINARY.
+                    06  W02-DISCOUNTKBNLST   PIC X(23)
+                                                         OCCURS  10.
                 04  W02-N05-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED28.
                   05  W02-CONDITIONBODY.
