@@ -479,6 +479,7 @@
            MOVE    "3:その他"          TO  SPA-K98-USERLST (3)
            MOVE    "4:コメント"        TO  SPA-K98-USERLST (4)
            MOVE    "5:労災"            TO  SPA-K98-USERLST (5)
+           MOVE    "6:システム予約"    TO  SPA-K98-USERLST (6)
            MOVE    SPACE               TO  SPA-K98-USER-G
       *
            IF      (SPA-K98-GMN-INPUT  =   SPACE )  AND
@@ -1250,6 +1251,16 @@
                            END-IF
                    END-EVALUATE
                END-IF
+      *        システム予約の入力不可分
+               IF      SPA-K98-GMN-SYORI3      =   "U6"
+                   IF      TNS-SRYCD           >=  "099999911"
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+                   IF      TNS-SRYCD(1:4)      =   "0996"
+                                               OR  "0997"
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+               END-IF
       *
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
@@ -1380,6 +1391,12 @@
                    MOVE    "TENSU-KEY12S"       TO  WRK-PATH
                    MOVE    "100000000"          TO  TNS-SRYCD
                    MOVE    "109999999"          TO  TNSUP-SRYCD
+                   MOVE    "1"                  TO  SPA-K98-GMN-ALL
+               WHEN    "U6"
+      *            予約コード
+                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                   MOVE    "099000000"          TO  TNS-SRYCD
+                   MOVE    "099999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-K98-GMN-ALL
            END-EVALUATE
       *
@@ -1535,6 +1552,9 @@
                CONTINUE
            ELSE
                IF      TNS-SRYCD (1:1)     =   "1"
+                   MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
+               END-IF
+               IF      TNS-SRYCD (1:3)     =   "099"
                    MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
                END-IF
            END-IF
@@ -1758,6 +1778,9 @@
                        WHEN    "U5"
                            MOVE    "労災"
                                                TO  K98-SENTAKU
+                       WHEN    "U6"
+                           MOVE    "システム予約コード"
+                                               TO  K98-SENTAKU
                    END-EVALUATE
       *        その他
                WHEN    OTHER
@@ -1834,7 +1857,8 @@
                END-IF
       *
       *!!      MOVE    SPA-K98-GMN-TANI (IDX)  TO  K98-TANI (IDX)
-               IF      SPA-K98-GMN-SRYCD (IDX) (1:1)   =   "1"
+               IF     (SPA-K98-GMN-SRYCD (IDX) (1:1)   =   "1" ) OR
+                      (SPA-K98-GMN-SRYCD (IDX) (1:3)   =   "099")
                    MOVE    SPA-K98-GMN-TANI (IDX)  TO  K98-SRYKBN(IDX)
                ELSE
                    MOVE    SPA-K98-GMN-TANI (IDX)  TO  K98-TANI (IDX)
@@ -2807,6 +2831,8 @@
                    MOVE    "U4"            TO  SPA-K98-GMN-SYORI3
                WHEN    "5"
                    MOVE    "U5"            TO  SPA-K98-GMN-SYORI3
+               WHEN    "6"
+                   MOVE    "U6"            TO  SPA-K98-GMN-SYORI3
                WHEN    OTHER
                    MOVE    "0011"          TO  SPA-ERRCD
                    GO      TO      41014-USER-CHK-EXT
