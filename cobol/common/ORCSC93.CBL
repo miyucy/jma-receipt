@@ -1140,7 +1140,7 @@
       *
       *    前行が急性発生の時終了とする
            IF     (SPA-COM-INPUTCD(IDX)    =   "099800101"
-                                           OR  "099800101" )
+                                           OR  "099800102" )
                MOVE    1               TO  FLG-HASSYO
            ELSE
                IF      FLG-HASSYO          =   1
