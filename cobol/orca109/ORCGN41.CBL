@@ -139,6 +139,7 @@
            03  FLG-ARI             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-KOUSIN          PIC 9(01).
+           03  FLG-HELP-ARI        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -371,8 +372,10 @@
       *    初期表示
            MOVE    SPA-GMN-LDNAME-LDC(1)   TO  SPA-GMN-LDNAME-LD
            MOVE    SPA-GMN-LDNAME-ITEM(1)  TO  SPA-GMN-LDNAME
-      *
+      *??
            MOVE    SPA-GMN-HELPKBN-ITEM(1) TO  SPA-GMN-HELPKBN-G
+      *??
+           MOVE    SPA-GMN-HELPKBN-ITEM(2) TO  SPA-GMN-HELPKBN-G
       *
            MOVE    1                   TO  SPA-GMN-PAGE
            MOVE    1                   TO  SPA-SYORIFLG
@@ -398,6 +401,7 @@
                MOVE    ZERO                TO  SPA-NAI-MENU1FLG
                MOVE    ZERO                TO  SPA-NAI-MENU2FLG
                MOVE    ZERO                TO  SPA-GMN-SELNUM
+               MOVE    ZERO                TO  SPA-NAI-MENUNUM1
                MOVE    SPACE               TO  SPA-GMN-MENU
            ELSE
                PERFORM 30012-MENU2-HENSYU-SEC
@@ -541,6 +545,7 @@
            MOVE    IDX                 TO  SPA-GMN-TBLMAX2
       *    クリア
            MOVE    ZERO                TO  SPA-GMN-SELNUM2
+           MOVE    ZERO                TO  SPA-NAI-MENUNUM2
            MOVE    SPACE               TO  SPA-GMN-MENU2
            MOVE    ZERO                TO  SPA-NAI-MENU2FLG
            .
@@ -680,8 +685,10 @@
                MOVE    "0001"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
            ELSE
+               MOVE    SPACE               TO  SPA-GMN-HEADMENU
                MOVE    1                   TO  SPA-GMN-PAGE
                MOVE    1                   TO  SPA-SYORIFLG
+               MOVE    ZERO                TO  SPA-SYORIFLG2
                PERFORM 3001-MENU-HENSYU-SEC
            END-IF
       *
@@ -715,6 +722,7 @@
            ELSE
                MOVE    1                   TO  SPA-GMN-PAGE
                MOVE    1                   TO  SPA-SYORIFLG
+               MOVE    SPACE               TO  SPA-GMN-HEADMENU
                PERFORM 3001-MENU-HENSYU-SEC
            END-IF
       *
@@ -916,6 +924,7 @@
            INITIALIZE                  SPA-NAI-COPY-AREA
            MOVE    ZERO                TO  SPA-COPYFLG
            MOVE    ZERO                TO  SPA-SYORIFLG2
+           MOVE    ZERO                TO  SPA-NAI-MENUNUM1
            MOVE    ZERO                TO  SPA-NAI-MENUNUM2
       *
            IF      SPA-GMN-TBLMAX      >   ZERO
@@ -1027,7 +1036,8 @@
                    MOVE    ZERO                TO  WRK-MENUNUM2
       *            登録済みかの判定
                    PERFORM 41011-HELP-HENSYU-SEC
-                   IF      FLG-HELP            =   ZERO
+                   IF      FLG-HELP-ARI        =   1
+                       MOVE    SPACE           TO  SPA-GMN-HELP
                        MOVE    "0020"          TO  SPA-ERRCD
                        MOVE    3               TO  SPA-GMN-CUR
                    ELSE
@@ -1083,6 +1093,7 @@
                INITIALIZE                  HELP-REC
                MOVE    1               TO  FLG-HELP
            END-IF
+           MOVE    ZERO                TO  FLG-HELP-ARI
            PERFORM UNTIL       (FLG-HELP   =   1  )  OR
                                (IDX-H      >=  40 )
                IF      HELP-EDANUM         >   ZERO
@@ -1090,6 +1101,7 @@
                    MOVE    HELP-HELP           TO  WRK-HELP (IDX-H)
                    MOVE    HELP-HELP           TO  SPA-NAI-HELP (IDX-H)
                END-IF
+               MOVE    1                   TO  FLG-HELP-ARI
       *
                MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
                PERFORM 900-HELP-READ-SEC
@@ -1162,9 +1174,17 @@
                    ELSE
                        MOVE    SPACE               TO  SPA-GMN-HELP
                        MOVE    1                   TO  SPA-NAI-MENU2FLG
+                       IF      FLG-HELP-ARI        =   1
+                           MOVE    SPACE           TO  SPA-GMN-HELP
+                           MOVE    "0020"          TO  SPA-ERRCD
+                           MOVE    5               TO  SPA-GMN-CUR
+                           MOVE    ZERO            TO  SPA-NAI-MENU2FLG
+                       END-IF
                    END-IF
-                   MOVE    6                   TO  SPA-GMN-CUR
-                   MOVE    SPA-GMN-SELNUM2     TO  SPA-NAI-MENUNUM2
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    6                   TO  SPA-GMN-CUR
+                       MOVE    SPA-GMN-SELNUM2     TO  SPA-NAI-MENUNUM2
+                   END-IF
                END-IF
            END-IF
            .
@@ -1271,15 +1291,6 @@
            IF      SPA-GMN-HELP        =   SPACE
                CONTINUE
            ELSE
-      *?       最後の１文字チェック
-      *        INITIALIZE                  ORCSKANACHKAREA
-      *        MOVE    "1"                 TO  KANACHK-SYORI
-      *        MOVE    SPA-GMN-HELP        TO  KANACHK-MAE-INPUT
-      *        CALL    "ORCSKANACHK"       USING
-      *                                    ORCSKANACHKAREA
-      *        IF      KANACHK-RC2         =   7
-      *            MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-HELP
-      *?       END-IF
       *        ２５文字ずつのチェック
                MOVE    SPACE               TO  WRK-HELP-AREA
                MOVE    ZERO                TO  FLG-CHK
@@ -1389,10 +1400,12 @@
        4104-HELPKBN-CP-CHK-SEC              SECTION.
       *
       *    標準は対象外
-      *TEST テストの為、業務も
-      *TEST
+           MOVE    2                   TO  IDY
+      *??
+           MOVE    1                   TO  IDY
+      *??
            MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
+           PERFORM VARYING     IDX     FROM    IDY   BY  1
                    UNTIL      (IDX     >   SPA-HELPKBN-MAX )  OR
                               (FLG-OK  =   1   )
                IF      SPA-GMN-HELPKBN-CP  =   SPA-GMN-HELPKBN-ITEM
@@ -1801,7 +1814,10 @@
                END-IF
       *
                MOVE    1                   TO  SPA-COPYFLG
+               MOVE    12                  TO  SPA-GMN-CUR
+      *??
                MOVE    10                  TO  SPA-GMN-CUR
+      *??
            END-IF
       *
            END-IF
@@ -2219,7 +2235,7 @@
            PERFORM 410112-HELP-KENSAKU-SEC
            IF      FLG-ARI              =   1
                MOVE    "0009"          TO  SPA-ERRCD
-               MOVE    6               TO  SPA-GMN-CUR
+               MOVE    10              TO  SPA-GMN-CUR
            END-IF
       *
       *    目次１の登録
@@ -2464,18 +2480,19 @@
            IF      SPA-COPYFLG         =   1
                MOVE    SPA-GMN-HELPKBN-CP-G    TO  N41-HELPKBN-CP
       *        標準は対象外（開始を２）
+               MOVE    1                   TO  IDY
+      *??
                MOVE    ZERO                TO  IDY
-      *TEST
-      *        標準も
-      *TEST
+      *??
+               MOVE    ZERO                TO  N41-HELPKBN-CP-COUNT
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >   SPA-HELPKBN-MAX
                    ADD     1               TO  IDY
-                   MOVE    SPA-GMN-HELPKBN-ITEM(IDX)
+                   MOVE    SPA-GMN-HELPKBN-ITEM(IDY)
                                            TO  N41-HELPKBN-CP-ITEM
-                                                                 (IDY)
+                                                                 (IDX)
+                   MOVE    IDX             TO  N41-HELPKBN-CP-COUNT
                END-PERFORM
-               MOVE    IDY                 TO  N41-HELPKBN-CP-COUNT
       *
                MOVE    SPA-GMN-LDNAME-CP-G TO  N41-LDNAME-CP
                PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2506,10 +2523,10 @@
       *        標準は更新不可
                MOVE    WIDGET-INSENSITIVE  TO  N41-B12-STATE
                MOVE    WIDGET-INSENSITIVE  TO  N41-B03-STATE
-      *TEST
+      *??
                MOVE    WIDGET-NORMAL       TO  N41-B12-STATE
                MOVE    WIDGET-NORMAL       TO  N41-B03-STATE
-      *TEST
+      *??
            ELSE
                MOVE    WIDGET-NORMAL       TO  N41-B12-STATE
                MOVE    WIDGET-NORMAL       TO  N41-B03-STATE
@@ -2711,9 +2728,9 @@
                    MOVE    "複写中です。選択はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "0020"
-                   MOVE    "番号が目次にありません。"
+                   MOVE    "既に登録済みの番号です。"
                                        TO  SPA-ERRMSG
-                   MOVE    "一覧から選択して下さい"
+                   MOVE    "一覧表に表示してから選択して下さい"
                                        TO  SPA-ERRMSG(25:)
                WHEN    "0021"
                    MOVE    "複写中です。目次名変更はできません。"
