@@ -1752,8 +1752,8 @@
                        PERFORM 31032-PTCOM-SET-SEC
                    END-IF
                END-IF
-      *            Ì¾¾ÎÊÔ½¸
-                   PERFORM 31031-MEISYOU-HEN-SEC
+      *        Ì¾¾ÎÊÔ½¸
+               PERFORM 31031-MEISYOU-HEN-SEC
       *********END-IF
            END-IF
       *
@@ -1795,8 +1795,9 @@
            MOVE    WRK-TNS-NAME        TO  WRK-MEISYOU1   (IDX-S)
            IF      WRK-TNS-NAME(45:)   NOT =   SPACE
                MOVE    WRK-TNS-NAME        TO  WRK-MEISYOU3   (IDX-S)
-               IF     (SRY-SRYCD (IDXA)(1:1)   =   "6"  OR  "7" )  OR
-                      (SRY-SRYCD (IDXA)(1:3)   =   "059"  )
+               IF    ((SRY-SRYCD (IDXA)(1:1)   =   "6"  OR  "7" )  OR
+                      (SRY-SRYCD (IDXA)(1:3)   =   "059"  ))
+                 AND  (WRK-TNS-NAME(81:)       =   SPACE   )
                    ADD     1                   TO  IDX-S
                    MOVE    ALL "¡¡"            TO  WRK-NO     (IDX-S)
                    MOVE    ALL "¡¡"            TO  WRK-K2     (IDX-S)
