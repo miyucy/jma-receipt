@@ -164,7 +164,7 @@ path	key 	{
 	DBSELECT	{
 		DECLARE tbl_syutotal_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_syunou
+		FROM tbl_syutotal
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
