@@ -56,6 +56,7 @@
            03  IDX1                        PIC 9(04).
            03  IDX2                        PIC 9(04).
            03  SYU-IDX                     PIC 9(04).
+           03  COMB-IDX                    PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -74,6 +75,10 @@
                    07  WRK-MAE-SANTEIMM        PIC 9(02).
                05  WRK-MAE-SANTEIDD            PIC 9(02).
       *
+      *    保険組合せ番号数字変換
+           03  WRK-HKNCOMBINUM-X               PIC X(04).
+           03  WRK-HKNCOMBINUM-9  REDEFINES  WRK-HKNCOMBINUM-X
+                                               PIC 9(04).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -460,7 +465,8 @@
            IF      FLG-SYUNOU                =  ZERO
                MOVE     "SYUNOU-KEY2"       TO  ORC-DBPATH
                PERFORM   910-SYUNOU-READ-SEC
-               PERFORM   UNTIL   (FLG-SYUNOU    =   1)
+               PERFORM   UNTIL   (FLG-SYUNOU    =   1)   OR
+                                 (SYU-IDX       >=  10)
                    IF   SYU-DENPJTIKBN    =    "3"
                        CONTINUE
                    ELSE
@@ -475,6 +481,50 @@
       *    収納クローズ
            MOVE    "SYUNOU-KEY2"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
+      *
+      *    保険情報の取得
+           PERFORM    VARYING   SYU-IDX   FROM  1  BY  1
+             UNTIL   (LNK-ORCBT120SUB-HKNCOMBINUM(SYU-IDX) = ZERO) OR
+                     (SYU-IDX     >     10)
+               INITIALIZE                      HKNCOMBI-REC
+               MOVE    LNK-ORCBT120SUB-HOSPID
+                                        TO     COMB-HOSPID
+               MOVE    LNK-ORCBT120SUB-PTID
+                                        TO      COMB-PTID
+               MOVE    LNK-ORCBT120SUB-HKNCOMBINUM(SYU-IDX)
+                                        TO      COMB-HKNCOMBINUM
+               MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
+               PERFORM 910-HKNCOMBI-SELECT-SEC
+               IF    FLG-HKNCOMBI       =       ZERO
+                   MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
+                   PERFORM 910-HKNCOMBI-READ-SEC
+                   IF    FLG-HKNCOMBI   =       ZERO
+                       MOVE   COMB-HKNNUM
+                                  TO  LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
+                       MOVE   COMB-HKNID
+                                  TO  LNK-ORCBT120SUB-HKNID(SYU-IDX)
+                       MOVE   COMB-HONKZKKBN
+                               TO  LNK-ORCBT120SUB-HONKZKKBN(SYU-IDX)
+                       MOVE   COMB-HOJOKBN
+                                  TO  LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
+                       MOVE   COMB-CONTKBN
+                                  TO  LNK-ORCBT120SUB-CONTKBN(SYU-IDX)
+                       PERFORM   VARYING  COMB-IDX  FROM  1  BY  1
+                                 UNTIL   (COMB-KOHID(COMB-IDX) = ZERO)
+                                    OR   (COMB-IDX    >   4)
+                           MOVE   COMB-KOHHKNNUM(COMB-IDX)
+                               TO  LNK-ORCBT120SUB-KOH-HKNNUM
+                                                 (SYU-IDX COMB-IDX)
+                           MOVE   COMB-KOHID(COMB-IDX)
+                               TO  LNK-ORCBT120SUB-KOH-ID
+                                                 (SYU-IDX COMB-IDX)
+                           MOVE   COMB-KOHPAYKBN(COMB-IDX)
+                               TO  LNK-ORCBT120SUB-KOH-PAYKBN
+                                                 (SYU-IDX COMB-IDX)
+                       END-PERFORM
+                   END-IF
+               END-IF
+           END-PERFORM
       *
            .
        200-MAIN-EXT.
@@ -525,6 +575,11 @@
       *                                                    (SYU-IDX)
       *    請求金額
            MOVE    SYU-SKYMONEY        TO  LNK-ORCBT120SUB-SKYMONEY
+                                                           (SYU-IDX)
+      *
+      *    保険組合せ番号
+           MOVE    SYU-HKNCOMBINUM     TO  WRK-HKNCOMBINUM-X
+           MOVE    WRK-HKNCOMBINUM-9   TO  LNK-ORCBT120SUB-HKNCOMBINUM
                                                            (SYU-IDX)
       *
            .
