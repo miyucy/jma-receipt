@@ -34,6 +34,7 @@
       *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
       * 01.00.01     NACL-¬ø°π«º  03/05/23  £»£±£µ«Ø£∂∑Ó≤˛¿µ¬–±˛
+      * 01.00.02     NACL-¬ø°π«º  03/07/01  ≥∞ÕËø«Œ≈Œ¡ƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -385,9 +386,19 @@
       *    æÆª˘≤ ≥∞ÕËø«ª°Œ¡(±°∆‚ΩË ˝ ∫∆ø«)
            03  FILLER              PIC X(14)   VALUE   "200  113003810".
       *
+      *    ≥∞ÕËø«Œ≈Œ¡
+           03  FILLER              PIC X(14)   VALUE   "501  112011310".
+      *    ∆±∆¸≥∞ÕËø«Œ≈Œ¡
+           03  FILLER              PIC X(14)   VALUE   "501D 112011710".
+      *    ≥∞ÕËø«Œ≈Œ¡° œ∑øÕ°À
+           03  FILLER              PIC X(14)   VALUE   "511  112705510".
+      *    ∆±∆¸≥∞ÕËø«Œ≈Œ¡° œ∑øÕ°À
+           03  FILLER              PIC X(14)   VALUE   "511D 112705850".
+      *
+      *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
-           03  TBL-SINSATU-OCC         OCCURS  84    INDEXED  TBL-IDX.
-      *        ≤ÛøÙ
+           03  TBL-SINSATU-OCC         OCCURS  88    INDEXED  TBL-IDX.
+      *        ≤ÛøÙ° £µ°ß≥∞ÕËø«Œ≈Œ¡°À
                05  TBL-KAISU           PIC 9(01).
       *        œ∑øÕ∞Ï»Ã∂Ë ¨° £∞°ß∞Ï»Ã°¢£±°ßœ∑øÕ°À
                05  TBL-ROUJIN          PIC 9(01).
@@ -400,7 +411,8 @@
       *        ø«Œ≈•≥°º•…
                05  TBL-SRYCD           PIC X(09).
       *
-       01  TBL-SIN-MAX                 PIC 9(04)   VALUE   84.
+      *01  TBL-SIN-MAX                 PIC 9(04)   VALUE   84.
+       01  TBL-SIN-MAX                 PIC 9(04)   VALUE   88.
       *
       *****************************************************************
       *    •’•°•§•Î•Ï•§•¢•¶•»
@@ -592,10 +604,10 @@
                MOVE    PTINF-KANANAME
                                    TO  WRK-LF01-KANANAME
            END-IF
-      *    
+      *
            MOVE    "I"             TO  WRK-LF01-NAME-REPCODE
            MOVE    PTINF-NAME      TO  WRK-LF01-NAME
-      * 
+      *
            MOVE    PTINF-BIRTHDAY  TO  WRK-WYMD
            PERFORM 500-HIZUKE-HENSYU-SEC
            MOVE    WRK-HENYMD      TO  WRK-LF01-BIRTHDAY
@@ -989,9 +1001,9 @@
                      WRK-LF01-CRE301-FACILITYNAME
       *¥…Õ˝º‘Ãæ
                MOVE  SYS-1001-KANRINAME     TO  WRK-LF01-CRE001-FULLNAME
-                                                WRK-LF01-CRE101-FULLNAME  
-      *                                         WRK-LF01-CRE201-FULLNAME  
-                                                WRK-LF01-CRE301-FULLNAME  
+                                                WRK-LF01-CRE101-FULLNAME
+      *                                         WRK-LF01-CRE201-FULLNAME
+                                                WRK-LF01-CRE301-FULLNAME
       *∞ÂŒ≈µ°¥ÿ•≥°º•…
                MOVE  SYS-1001-HOSPCD     TO  WRK-LF01-CRE001-PERSONALID
                                              WRK-LF01-CRE101-PERSONALID
@@ -1037,11 +1049,14 @@
                        MOVE  LNK-SRYKA           
                              TO  WRK-LF01-CRE201-DPERTID(IDX)
                        MOVE  SYS-1002-POST(1:3) 
-                                            TO  WRK-LF01-CRE201-ZIP(IDX)(1:3)
+                                            TO  WRK-LF01-CRE201-ZIP(IDX)
+                                                                 (1:3)
                        MOVE  "-"            
-                                            TO  WRK-LF01-CRE201-ZIP(IDX)(4:1)
+                                            TO  WRK-LF01-CRE201-ZIP(IDX)
+                                                                  (4:1)
                        MOVE  SYS-1002-POST(4:4)     
-                                            TO  WRK-LF01-CRE201-ZIP(IDX)(5:4)
+                                            TO  WRK-LF01-CRE201-ZIP(IDX)
+                                                                   (5:4)
                        MOVE  SYS-1002-ADRS  
                                             TO  
                              WRK-LF01-CRE201-ADRFULLNAME(IDX)
@@ -1212,21 +1227,20 @@
            MOVE    PTINF-BIRTHDAY      TO  WRK-BIRTHDAY
            COMPUTE WRK-BIRTH-YY        =   WRK-BIRTH-YY    +  15
       *
-      *
-      *    £»£±£µ«Ø£∂∑Ó§Ë§Í§π§Ÿ§∆£±≤ÛÃ‹§»§π§Î
-           IF      LNK-SYSYMD          >=  "20030601"
-               GO      TO      1000-SINSATU-KAISU-EXT
-           END-IF
-      *
-      *
       *    ºıø«Õ˙ŒÚ§Ë§Íºıø«≤ÛøÙ§Úµ·§·§Î
       *    ºıø«ŒÚ§Ú∏°∫˜§π§Î° ø«Œ≈∑Ó£±∆¸§´§Èø«Œ≈∆¸§ﬁ§«§Œ»œ∞œ°À
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
            MOVE    LNK-HOSPID          TO  JYURRK-HOSPID
            MOVE    LNK-PTID            TO  JYURRK-PTID
-           MOVE    LNK-SYSYMD          TO  JYURRK-SRYYMD
-           MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
+      *
+      *    £»£±£µ«Ø£∂∑Ó§Ë§Í§π§Ÿ§∆£±≤ÛÃ‹§»§π§Î
+           IF      LNK-SYSYMD          >=  "20030601"
+               MOVE    LNK-SYSYMD          TO  JYURRK-SRYYMD
+           ELSE
+               MOVE    LNK-SYSYMD          TO  JYURRK-SRYYMD
+               MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
+           END-IF
            MOVE    LNK-SYSYMD          TO  JYURRK-UPSRYYMD
            MOVE    "2"                 TO  JYURRK-NYUGAIKBN
       *
@@ -1416,15 +1430,23 @@
            IF      WRK-SRYKBN          =   "11"
                MOVE    1               TO  WRK-KAISU
            ELSE
-               EVALUATE    WRK-SINSATU-CNT
-                   WHEN    0
-                       MOVE    1               TO  WRK-KAISU
-                   WHEN    1
-                   WHEN    2
-                       MOVE    2               TO  WRK-KAISU
-                   WHEN    OTHER
-                       MOVE    4               TO  WRK-KAISU
-               END-EVALUATE
+      ******   EVALUATE    WRK-SINSATU-CNT
+      *            WHEN    0
+      *                MOVE    1               TO  WRK-KAISU
+      *            WHEN    1
+      *            WHEN    2
+      *                MOVE    2               TO  WRK-KAISU
+      *            WHEN    OTHER
+      *                MOVE    4               TO  WRK-KAISU
+      ******** END-EVALUATE
+      *        …¬±°§«£≤£∞£∞æ≤∞ æÂ§œ≥∞ÕËø«Œ≈Œ¡§»§π§Î
+               IF      (SYS-1001-HOSPSBT       =   "1"  )  AND
+                       (SYS-1001-BEDSUIPN      >=  200  )
+                   MOVE    5               TO  WRK-KAISU
+               ELSE
+      *        ∞ ≥∞§œ§π§Ÿ§∆£±≤ÛÃ‹§»§π§Î
+                   MOVE    ZERO            TO  WRK-KAISU
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  WRK-KBN2
