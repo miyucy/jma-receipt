@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  03/11/06  出力先プリンタサブ追加
+      *                                     出力先を予約一覧（７）へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -133,6 +135,9 @@
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
       *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -156,7 +161,7 @@
       *
       *    初期処理
            PERFORM 100-INIT-SEC
-      *
+      *    主　　処理
            PERFORM 200-MAIN-SEC
       *
            .
@@ -257,14 +262,16 @@
                MOVE    UKE-NAME        TO  HCM16-NAME(CNT-LINE)
       *
       *        患者番号変換
-               INITIALIZE                  ORCSPTIDAREA
-               MOVE    SPA-HOSPID      TO  SPTID-HOSPID
-               MOVE    UKE-PTID        TO  SPTID-PTID
-               CALL    "ORCSPTID"          USING
-                                           ORCSPTIDAREA
-                                           SPA-1009-TBL
-               IF      SPTID-RC    =   ZERO
-                   MOVE    SPTID-PTNUM     TO  HCM16-PTNUM(CNT-LINE)
+               IF      UKE-PTID        NOT =   ZERO
+                   INITIALIZE                  ORCSPTIDAREA
+                   MOVE    SPA-HOSPID      TO  SPTID-HOSPID
+                   MOVE    UKE-PTID        TO  SPTID-PTID
+                   CALL    "ORCSPTID"          USING
+                                               ORCSPTIDAREA
+                                               SPA-1009-TBL
+                   IF      SPTID-RC    =   ZERO
+                       MOVE    SPTID-PTNUM     TO  HCM16-PTNUM(CNT-LINE)
+                   END-IF
                END-IF
       *
       *        診療科読み込み
@@ -276,8 +283,10 @@
                MOVE    SYS-1012-SRYNAIYODSP    TO  HCM16-NAIYO(CNT-LINE)
       *
       *        職員情報読み込み
-               PERFORM 900-SYS1010-READ-SEC
-               MOVE    SYS-1010-NAME   TO  HCM16-DRNAME(CNT-LINE)
+               IF      UKE-DRCD(2:4)   NOT =   SPACE
+                   PERFORM 900-SYS1010-READ-SEC
+                   MOVE    SYS-1010-NAME   TO  HCM16-DRNAME(CNT-LINE)
+               END-IF
       *
       *        受付時間
                MOVE    UKE-UKETIME(1:2)    TO  WRK-HTHH
@@ -317,7 +326,8 @@
            MOVE    "HCM16.red"     TO  MKPRT-DIA
            MOVE    SPACE           TO  MKPRT-DEF
            MOVE    HC01PARA        TO  MKPRT-DAT
-           MOVE    SYS-1031-PRTNM(9)   TO  MKPRT-PRTNM
+      *****MOVE    SYS-1031-PRTNM(9)   TO  MKPRT-PRTNM
+           MOVE    SYS-1031-PRTNM(7)   TO  MKPRT-PRTNM
            CALL    "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
       *
@@ -449,15 +459,29 @@
       ****************************************************************
        900-SYS1031-READ-SEC        SECTION.
       *
-           MOVE    SPACE           TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"          TO  SYS-1031-KANRICD
-           MOVE    "*"             TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC    TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI    =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1031-REC
-           ELSE
+      **** MOVE    SPACE           TO  SYS-1031-REC
+      *    INITIALIZE                  SYS-1031-REC
+      *    MOVE    "1031"          TO  SYS-1031-KANRICD
+      *    MOVE    "*"             TO  SYS-1031-KBNCD
+      *    MOVE    SYS-1031-REC    TO  MCPDATA-REC
+      *    PERFORM 800-SYSKANRI-READ-SEC
+      *    IF      FLG-SYSKANRI    =   ZERO
+      *        MOVE    MCPDATA-REC     TO  SYS-1031-REC
+      *    ELSE
+      *        INITIALIZE                  SYS-1031-REC
+      **** END-IF
+      *
+      *    出力先プリンタ名割り当て情報編集
+           INITIALIZE                      SYS-1031-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
                INITIALIZE                  SYS-1031-REC
            END-IF
       *
