@@ -1462,11 +1462,11 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-      *TE  IF      MCP-RC          NOT =   ZERO
-      *        MOVE    "0005"          TO  SPA-ERRCD
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "0005"          TO  SPA-ERRCD
                DISPLAY "K08 JYURRK INS ERR:" MCP-RC 
                         ",KEY:" JYURRK-KEY "."
-      *TE  END-IF
+           END-IF
       *
            .
        20011-JYURRK-SYOKI-EXT.
@@ -1505,7 +1505,7 @@
            PERFORM
                    UNTIL       FLG-JYURRK      =   1
                IF     (SPA-DOUJI-RENNUM    =   JYURRK-DOUJI-RENNUM) AND
-                      (SPA-HKNCOMBINUM     =   JYURRK-HKNCOMBINUM ) AND
+                      (SPA-RENNUM          =   JYURRK-RENNUM      ) AND
                       (SPA-DENPNUM         =   ZERO               )
                    MOVE    JYURRK-RENNUM       TO  WRK-JYURRK-RENNUM
                    MOVE    JYURRK-DOUJI-RENNUM TO
