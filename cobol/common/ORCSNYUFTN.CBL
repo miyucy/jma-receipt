@@ -839,8 +839,9 @@
       **          IF  WRK-HANBETU-KOH2HKNNUM(IDX)  =  "051"
       **             MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
       **          ELSE
-                    IF  WRK-HANBETU-YUSENBAN(IDX) 
-                                       > WRK-HANBETU-KOH2HKNNUM(IDX)
+                    IF (WRK-HANBETU-YUSENBAN(IDX) 
+                                       > WRK-HANBETU-KOH2HKNNUM(IDX))
+                    OR (WRK-HANBETU-KOH1HKNNUM(IDX)  =  "027"       )
                      MOVE  WRK-HANBETU-KOH2HKNNUM(IDX)
                                       TO WRK-HANBETU-YUSENBAN(IDX)
                     END-IF
