@@ -33,6 +33,7 @@
       *  01.01.07    NACL-藤原    03.02.12  補助区分の追加
       *  01.01.08    NACL-藤原    03.03.03  診療科数１０から２０へ変更
       *  01.01.09    NACL-藤原    03.03.11  レセプト種別不明情報の追加
+      *  01.01.10    NACL-藤原    03.10.27  患者情報の追加
       ************************************************************
       *01  RECE01-REC.
            03  RECE01-KEY.
@@ -87,6 +88,24 @@
            03  RECE01-CONTKBN             PIC  X(01).
       *レセプト記載外公費番号
            03  RECE01-ETC-HKNNUM          PIC  X(03).
+      *患者情報
+           03  RECE01-PTINF.
+      *患者番号  
+               05  RECE01-PTNUM           PIC  X(20).
+      *カナ氏名
+               05  RECE01-KANANAME        PIC  X(50).
+      *漢字氏名
+               05  RECE01-NAME            PIC  X(100).
+      *性別
+               05  RECE01-SEX             PIC  X(01).
+      *生年月日
+               05  RECE01-BIRTHDAY        PIC  9(08).
+      *死亡区分
+               05  RECE01-DEATHKBN        PIC  X(01).
+      *年齢
+               05  RECE01-AGE             PIC  9(03).
+      *テスト患者番号区分
+               05  RECE01-TSTPTNUMKBN     PIC  X(01).
       *未訂正区分
            03  RECE01-TEISEIKBN           PIC  X(01).
       *レセプト種別不明エラー情報
