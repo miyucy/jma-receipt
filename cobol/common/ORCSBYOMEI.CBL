@@ -180,8 +180,15 @@
            PERFORM 200-TBL-HENSYU-SEC
       *
       *    最大病名コード数以上検索したとき
-           IF      WRK-BYOMEI-MAX  >   WRK-CONS-BYOMEI-MAX
+      *****IF      WRK-BYOMEI-MAX  >   WRK-CONS-BYOMEI-MAX
+           IF      FLG-TBLERR      =   1
                MOVE    1               TO  LNK-BYO-BYOMEICD-MAX-ERR  
+               MOVE    "0000999"           TO  LNK-BYO-TBYOMEICD (1)
+                                               LNK-BYO-KHNBYOMEICD
+               MOVE    LNK-BYO-BYOMEI      TO  LNK-BYO-TBYOMEI   (1)
+               MOVE    "1"                 TO  LNK-BYO-BYOMEIHENFLG
+               MOVE    1                   TO  LNK-BYO-BYOMEICDSU
+                                               LNK-BYO-BYOMEI-MAX
            END-IF
       *
       *    コードが検索できなかったとき（コード存在エラー以外）
@@ -570,6 +577,8 @@
       *****************************************************************
        200-TBL-HENSYU-SEC          SECTION.
       *
+           MOVE    ZERO            TO  FLG-TBLERR
+      *
       *    予約以外の病名コードを検索できなかったとき
            IF      WRK-BYOMEI-MAX      =   ZERO
                GO  TO  200-TBL-HENSYU-EXT
@@ -580,7 +589,6 @@
                                            WRK-BUI-MAX
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       40
-                   OR      LNK-BYO-BYOMEI-MAX  >=  WRK-CONS-BYOMEI-MAX
                IF      ( WRK-BYOMEI-BYOMEICD (IDX 1)
                                                =   SPACE AND
                         WRK-BYOMEI-BYOMEICD (IDX 2)
@@ -591,6 +599,11 @@
       *****        IF      WRK-BYOMEI-FLG  (IDX)   =   "1"
       *****            CONTINUE
       *****        ELSE
+                   IF      LNK-BYO-BYOMEI-MAX
+                                   >=  WRK-CONS-BYOMEI-MAX
+                       MOVE    1               TO  FLG-TBLERR
+                       MOVE    40              TO  IDX
+                   ELSE
                        ADD     1               TO  LNK-BYO-BYOMEI-MAX
       *???
            DISPLAY " LNK-BYO-BYOMEI-MAX="  LNK-BYO-BYOMEI-MAX "#"
@@ -641,7 +654,7 @@
                                    END-IF
                                END-IF
                        END-EVALUATE
-      *****        END-IF     
+                   END-IF     
                END-IF
            END-PERFORM
       *
