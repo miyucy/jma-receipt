@@ -19,14 +19,16 @@
 000300 PROGRAM-ID.             ORCR0400.
 000400*****************************************************************
 000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : レセプト（労災）
-000700*  コンポーネント名  : 月次業務　労災明細書ファイル作成（対象患者抽出）
+000600*  サブシステム名    : レセプト（労災・自賠責）
+000700*  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
+      *                              （対象患者抽出）
 000800*  管理者            : 
 000900*  作成日付    作業者        記述
       *  00/12/01    MCC−藤原　   新規作成
 001100*****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    02.09.09  自賠責対応
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -154,7 +156,7 @@
       *
        01  WRK-CONS-AREA.
       *    労災保険番号 
-           03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
+           03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971".
       *     
       * 
        01  WRK-RECE40-REC. 
@@ -257,7 +259,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCR0400"      TO  JOB-PGID
-           MOVE    "対象患者抽出（労災）"
+           MOVE    "対象患者抽出（労災）"                              
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -399,8 +401,7 @@
                                                    WRK-ROUSAIKBN
       *
                    IF      FLG-HKNCOMBI    =   ZERO
-                       IF      COMB-HKNNUM     =
-                                               WRK-CONS-ROUSAI-HKNNUM
+                       IF      COMB-HKNNUM  =   WRK-CONS-ROUSAI-HKNNUM
                            IF      COMB-TEKSTYMD   <=  WRK-STYMD
                            AND     COMB-TEKEDYMD   >=  WRK-EDYMD
                                MOVE    SPACE           TO  WRK-UPDKBN
@@ -423,9 +424,10 @@
       *
       *                処理対象以外かアフターケア以外か日付変更がないとき
       *                同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
-                       IF    ( WRK-ROUSAIKBN           =   "1"         )  
-                       OR    (     WRK-UPDKBN          =   SPACE         
-                               AND PTRSI-HKNKBN        =   "1" OR  "2" )
+                       IF    ( WRK-ROUSAIKBN         =   "1"         )  
+                       OR    (     WRK-UPDKBN        =   SPACE         
+                               AND PTRSI-HKNKBN      =   "1" OR  "2" 
+                                                             OR  "4" )  
                            MOVE    KEY-NEW             TO  KEY-OLD
                            PERFORM     UNTIL   FLG-SRYACCT =   1 
                                        OR      KEY-NEW NOT =   KEY-OLD
@@ -459,7 +461,7 @@
                MOVE    "1"             TO  WRK-ROUSAIKBN
            END-IF                
       *
-      *    労災保険以外のとき処理しない
+      *    労災・自賠責保険以外のとき処理しない
            IF      WRK-ROUSAIKBN       =   "1"
                GO  TO  20011-FILE-SYORI-EXT
            END-IF
@@ -742,8 +744,7 @@
                                                WRK-ROUSAIKBN
       *
                IF      FLG-HKNCOMBI    =   ZERO
-                   IF      COMB-HKNNUM     =
-                                           WRK-CONS-ROUSAI-HKNNUM
+                   IF      COMB-HKNNUM  =   WRK-CONS-ROUSAI-HKNNUM
                        IF      COMB-TEKSTYMD   <=  WRK-STYMD
                        AND     COMB-TEKEDYMD   >=  WRK-EDYMD
                            MOVE    SPACE           TO  WRK-UPDKBN
@@ -766,7 +767,8 @@
       *
                    IF    ( WRK-ROUSAIKBN           =   "1"         )  
                    OR    (     WRK-UPDKBN          =   SPACE         
-                           AND PTRSI-HKNKBN        =   "1" OR  "2" )
+                           AND PTRSI-HKNKBN        =   "1" OR  "2" 
+                                                           OR  "4" )    
                        MOVE    KEY-NEW             TO  KEY-OLD
                        PERFORM     UNTIL   FLG-SRYACCT     =   1 
                                    OR      KEY-NEW     NOT =   KEY-OLD
