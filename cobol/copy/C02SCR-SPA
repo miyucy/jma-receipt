@@ -613,7 +613,7 @@
                                13  SPA-GMN-C11-HKNNUM  PIC X(03).
                                13  SPA-GMN-C11-F1      PIC X(01).
                                13  SPA-GMN-C11-HKNNUMMEI
-                                                       PIC X(10).
+                                                       PIC X(14).
                            11  SPA-GMN-C11-TEKSTYM     PIC X(06).
                            11  SPA-GMN-C11-TEKEDYM     PIC X(06).
       *                         
@@ -621,7 +621,7 @@
                                13  SPA-GMN-C11-HKNNUML PIC X(03).
                                13  SPA-GMN-C11-F1L     PIC X(01).
                                13  SPA-GMN-C11-HKNNUMMEIL
-                                                       PIC X(10).
+                                                       PIC X(14).
                            11  SPA-GMN-C11-HKNNUM-MAX  PIC 9(02).
       *                         
                    07  SPA-GMN-C11-OPELIST-TBL.
@@ -640,7 +640,7 @@
                            11  SPA-GMN-C11-COM-TOPENAME    PIC X(50).
                            11  SPA-GMN-C11-COM-TSRYYMD     PIC X(9).
                            11  SPA-GMN-C11-COM-TNYUGAIKBN  PIC X(6).
-                           11  SPA-GMN-C11-COM-THKNNUM     PIC X(10).
+                           11  SPA-GMN-C11-COM-THKNNUM     PIC X(12).
                            11  SPA-GMN-C11-COM-TTEKYM      PIC X(16).
                        09  SPA-GMN-C11-COM-MAX             PIC 9(03).
       *
@@ -675,6 +675,7 @@
                            11  SPA-NAI-C11-OPE-TSRYCD      PIC X(9).
                            11  SPA-NAI-C11-OPE-THKNCOMBI   PIC 9(4).
                            11  SPA-NAI-C11-OPE-TSRYKA      PIC X(2).
+                           11  SPA-NAI-C11-OPE-TNYUGAIKBN  PIC X(1).
                    07  SPA-NAI-C11-COMMENTLIST-TBL.
                        09  SPA-NAI-C11-COMMENTLIST-OCC     OCCURS  100.
                            11  SPA-NAI-C11-COM-TSRYYMD     PIC X(8).
