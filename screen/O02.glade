@@ -367,7 +367,7 @@
 
     <widget>
       <class>GtkPandaEntry</class>
-      <name>SEIYM</name>
+      <name>SRYYM</name>
       <x>668</x>
       <y>650</y>
       <width>88</width>

@@ -30,7 +30,7 @@
       *ファイル区分（１：一括　２：個別）
            05  SPA-O01-FILEKBN             PIC  X(01).
       *請求年月
-           05  SPA-O01-SEIYM               PIC  9(06).
+           05  SPA-O01-SRYYM               PIC  9(06).
       *請求期間チェックボタン
            05  SPA-O01-CHK-KIKAN01         PIC X(01).
            05  SPA-O01-CHK-KIKAN02         PIC X(01).

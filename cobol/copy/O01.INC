@@ -18,7 +18,7 @@
       *
         02  O01.
       *     02  O01-FIXED17.
-              03  O01-SEIYM.
+              03  O01-SRYYM.
                 04  O01-VALUE   PIC X(6).
               03  O01-IKKATU.
                 04  O01-VALUE   PIC X.

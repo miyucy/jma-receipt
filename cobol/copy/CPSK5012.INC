@@ -41,7 +41,7 @@
       *´µ¼Ô£É£Ä
                05  SYS-5012-PTID        PIC  X(10).
       *ÀÁµáÇ¯·î
-               05  SYS-5012-SEIYM       PIC  X(06).
+               05  SYS-5012-SRYYM       PIC  X(06).
       *ºîÀ®¶èÊ¬
                05  SYS-5012-SAKKBN      PIC  X(01).
       *Í½È÷

@@ -56,7 +56,7 @@
        01  WRK-TEIKI09-REC. 
            03  WRK-TEIKI09-KEY.
                05  WRK-TEIKI09-PRTID       PIC X(04).
-               05  WRK-TEIKI09-SEIYM       PIC X(06).
+               05  WRK-TEIKI09-SRYYM       PIC X(06).
                05  WRK-TEIKI09-CREYMD      PIC X(08).
                05  WRK-TEIKI09-CREHMS      PIC X(06).
                05  WRK-TEIKI09-PRTJYUN     PIC X(02).
@@ -163,7 +163,7 @@
            03  WRK-HENFLG          PIC 9(01).
       *     
            03  WRK-SHELL-ARG1.
-             05  WRK-SHELL-SEIYM   PIC  X(06).
+             05  WRK-SHELL-SRYYM   PIC  X(06).
              05  WRK-SHELL-TERMID  PIC  X(16).
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
       *
@@ -384,7 +384,7 @@
       *    ファイル作成区分
            EVALUATE    SPA-O01-FILEKBN
                WHEN    "1"
-                   MOVE    SPA-O01-SEIYM       TO  WRK-SYMD (1:6)
+                   MOVE    SPA-O01-SRYYM       TO  WRK-SYMD (1:6)
                    MOVE    "01"                TO  WRK-SYMD (7:2) 
                    PERFORM 5002-HIZUKE-HEN-SEC
                    STRING  WRK-HENYMDG3(1:16) DELIMITED  BY  SIZE
@@ -859,7 +859,7 @@
                END-IF
            END-IF
       *
-      *    レセプトが選択されているか
+      *    請求データが選択されているか
            MOVE    ZERO                TO  IDX3
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   2 )
@@ -933,7 +933,7 @@
                                    TO  SHELLTBL-ARG1
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG2
-           MOVE    ZERO            TO  WRK-SHELL-SEIYM
+           MOVE    ZERO            TO  WRK-SHELL-SRYYM
            MOVE    SPA-TERMID      TO  WRK-SHELL-TERMID
            MOVE    SPA-SYSYMD      TO  WRK-SHELL-SYSYMD
            MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG3 
@@ -984,9 +984,9 @@
       *    MOVE    SPA-O01-TEIKI07-PRTID
       *                                TO  WRK-RECE09-PRTID
       *    IF    ( SPA-O01-TEIKI07-SYOKBN  =   "1" )
-      *        MOVE    SPA-O01-SEIYM       TO  WRK-RECE09-SEIYM
+      *        MOVE    SPA-O01-SRYYM       TO  WRK-RECE09-SRYYM
       *    ELSE
-      *        MOVE    ZERO                TO  WRK-RECE09-SEIYM
+      *        MOVE    ZERO                TO  WRK-RECE09-SRYYM
       *    END-IF
       *
       *    MOVE    SPA-O01-RECE07-CREYMD   TO  WRK-RECE09-CREYMD
@@ -1023,8 +1023,8 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG2
            MOVE    SPA-TERMID      TO  WRK-SHELL-TERMID
-      *    MOVE    SPA-O01-RECE07-SEIYM
-      *                            TO  WRK-SHELL-SEIYM
+      *    MOVE    SPA-O01-RECE07-SRYYM
+      *                            TO  WRK-SHELL-SRYYM
            MOVE    SPA-SYSYMD      TO  WRK-SHELL-SYSYMD
            MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG3 
            MOVE    "0"             TO  SHELLTBL-ARG4

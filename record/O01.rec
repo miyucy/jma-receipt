@@ -1,6 +1,6 @@
 O01	{
 	fixed17	{
-		SEIYM	{
+		SRYYM	{
 			value	varchar(6);
 		};
 		IKKATU	{

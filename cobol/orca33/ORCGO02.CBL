@@ -75,13 +75,13 @@
                            11  SPA-GMN-TRENNUM     PIC 9(03).
                            11  SPA-GMN-TPTNUM      PIC X(20).
                            11  SPA-GMN-TNAME       PIC X(50).
-                           11  SPA-GMN-TSEIYM      PIC X(06).
+                           11  SPA-GMN-TSRYYM      PIC X(06).
                            11  SPA-GMN-TSAKKBN     PIC X(14).
                    07  SPA-GMN-KOUMOKU.
                        09  SPA-GMN-RENNUM          PIC 9(03).
                        09  SPA-GMN-PTNUM           PIC X(20).
                        09  SPA-GMN-NAME            PIC X(50).
-                       09  SPA-GMN-SEIYM           PIC X(07).
+                       09  SPA-GMN-SRYYM           PIC X(07).
       * ** 暫定 **
       *                09  SPA-GMN-SAKKBN-G.
       *                    11  SPA-GMN-SAKKBN      PIC X(01).
@@ -100,16 +100,16 @@
                05  SPA-NAI-SELNO                   PIC 9(03).
       *
                05  SPA-NAI-O02-AREA.
-                   07  SPA-NAI-HYO-SEIYM           PIC 9(06).
-                   07  SPA-NAI-HYO-SEIYMH          PIC X(06).
+                   07  SPA-NAI-HYO-SRYYM           PIC 9(06).
+                   07  SPA-NAI-HYO-SRYYMH          PIC X(06).
                    07  SPA-NAI-KOUMOKU.
                        09  SPA-NAI-PTID            PIC 9(10).
-                       09  SPA-NAI-SEIYM           PIC 9(06).
+                       09  SPA-NAI-SRYYM           PIC 9(06).
       * 
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBL-G           OCCURS   100.
                            11  SPA-NAI-TPTID       PIC 9(10).
-                           11  SPA-NAI-TSEIYM      PIC 9(06).
+                           11  SPA-NAI-TSRYYM      PIC 9(06).
                            11  SPA-NAI-TSAKKBN     PIC X(01).
       *
       *    ファイルデイレクトリ位置指定サブ
@@ -144,13 +144,13 @@
                    07  WRK-GMN-TRENNUM     PIC 9(03).
                    07  WRK-GMN-TPTNUM      PIC X(20).
                    07  WRK-GMN-TNAME       PIC X(50).
-                   07  WRK-GMN-TSEIYM      PIC X(06).
+                   07  WRK-GMN-TSRYYM      PIC X(06).
                    07  WRK-GMN-TSAKKBN     PIC X(14).
       *
            03  WRK-NAI-TBL.
                05  WRK-NAI-TBL-G           OCCURS   100.
                    07  WRK-NAI-TPTID       PIC 9(10).
-                   07  WRK-NAI-TSEIYM      PIC 9(06).
+                   07  WRK-NAI-TSRYYM      PIC 9(06).
                    07  WRK-NAI-TSAKKBN     PIC X(1).
       *
       *    一時領域
@@ -173,7 +173,7 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-SHELL-ARG1.
-             05  WRK-SHELL-SEIYM   PIC  X(06).
+             05  WRK-SHELL-SRYYM   PIC  X(06).
              05  WRK-SHELL-TERMID  PIC  X(16).
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
            03  WRK-HENFLG          PIC 9(01).
@@ -429,8 +429,8 @@
       *
            INITIALIZE              SPA-O02-AREA
       *
-           MOVE    SPA-SYSYMD(1:6)     TO  SPA-NAI-HYO-SEIYM
-           MOVE    SPA-SYSYMDWH(1:6)   TO  SPA-NAI-HYO-SEIYMH
+           MOVE    SPA-SYSYMD(1:6)     TO  SPA-NAI-HYO-SRYYM
+           MOVE    SPA-SYSYMDWH(1:6)   TO  SPA-NAI-HYO-SRYYMH
       *
            MOVE    "1"                 TO  SPA-GMN-SAKKBNL      (1)
            MOVE    "該当月すべて"      TO  SPA-GMN-SAKKBNMEIL   (1)
@@ -552,8 +552,8 @@
                    PERFORM 4102-RENNUM-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "PTNUM"
                    PERFORM 4103-PTNUM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SEIYM"
-                   PERFORM 4104-SEIYM-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "SRYYM"
+                   PERFORM 4104-SRYYM-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "SAKKBN"
                    PERFORM 4105-SAKKBN-CHK-SEC
                WHEN    ANY             ALSO    "TEIKILST"
@@ -610,10 +610,10 @@
                                        TO  SPA-NAI-PTID
            MOVE    SPA-GMN-TNAME      (SPA-GMN-RENNUM)
                                        TO  SPA-GMN-NAME
-           MOVE    SPA-GMN-TSEIYM     (SPA-GMN-RENNUM)
-                                       TO  SPA-GMN-SEIYM
-           MOVE    SPA-NAI-TSEIYM     (SPA-GMN-RENNUM)
-                                       TO  SPA-NAI-SEIYM
+           MOVE    SPA-GMN-TSRYYM     (SPA-GMN-RENNUM)
+                                       TO  SPA-GMN-SRYYM
+           MOVE    SPA-NAI-TSRYYM     (SPA-GMN-RENNUM)
+                                       TO  SPA-NAI-SRYYM
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   SPA-GMN-SAKKBN-MAX )
@@ -677,29 +677,29 @@
       *****************************************************************
       *    請求年月チェック処理
       *****************************************************************
-       4104-SEIYM-CHK-SEC          SECTION.
+       4104-SRYYM-CHK-SEC          SECTION.
       *
            MOVE    5                  TO  SPA-GMN-CUR
       *
-           MOVE   O02-SEIYM           TO  SPA-GMN-SEIYM
+           MOVE   O02-SRYYM           TO  SPA-GMN-SRYYM
       *
       *
-           IF    ( SPA-GMN-SEIYM      =   SPACE )
-               MOVE    SPA-NAI-HYO-SEIYM   TO  SPA-NAI-SEIYM
-               MOVE    SPA-NAI-HYO-SEIYMH  TO  SPA-GMN-SEIYM
+           IF    ( SPA-GMN-SRYYM      =   SPACE )
+               MOVE    SPA-NAI-HYO-SRYYM   TO  SPA-NAI-SRYYM
+               MOVE    SPA-NAI-HYO-SRYYMH  TO  SPA-GMN-SRYYM
            ELSE
       *    日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
-               MOVE    SPA-GMN-SEIYM       TO  SGDAY-INDAY
+               MOVE    SPA-GMN-SRYYM       TO  SGDAY-INDAY
                MOVE    "1"                 TO  SGDAY-INTYPE
                CALL    "ORCSGDAY"          USING
                                            ORCSGDAYAREA
                IF    ( SGDAY-RC            =   ZERO )
-                   MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SEIYM
-                   MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-SEIYM
+                   MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SRYYM
+                   MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-SRYYM
                ELSE
                    MOVE    "0001"          TO  SPA-ERRCD
-                   GO  TO  4104-SEIYM-CHK-EXT
+                   GO  TO  4104-SRYYM-CHK-EXT
                END-IF
            END-IF
       *
@@ -707,7 +707,7 @@
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                  LNK-DAY1-AREA
            MOVE    "71"                TO   LNK-DAY7-IRAI
-           MOVE    SPA-NAI-SEIYM       TO   LNK-DAY7-YM
+           MOVE    SPA-NAI-SRYYM       TO   LNK-DAY7-YM
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-SYMD
@@ -758,7 +758,7 @@
            END-IF
       *
            .
-       4104-SEIYM-CHK-EXT.
+       4104-SRYYM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -928,7 +928,7 @@
       * 
            PERFORM 4103-PTNUM-CHK-SEC
            IF      SPA-ERRCD            =   SPACE
-               PERFORM 4104-SEIYM-CHK-SEC
+               PERFORM 4104-SRYYM-CHK-SEC
            END-IF
            IF      SPA-ERRCD            =   SPACE
                PERFORM 4105-SAKKBN-CHK-SEC
@@ -954,7 +954,7 @@
                    CONTINUE
                ELSE
                    IF    ( SPA-NAI-TPTID   (IDX1)  =   SPA-NAI-PTID    )
-                   AND   ( SPA-GMN-TSEIYM  (IDX1)  =   SPA-GMN-SEIYM   )
+                   AND   ( SPA-GMN-TSRYYM  (IDX1)  =   SPA-GMN-SRYYM   )
                    AND   ( SPA-NAI-TSAKKBN (IDX1)  =   SPA-GMN-SAKKBN  )
                        MOVE    "0002"              TO  SPA-ERRCD
                        MOVE    100                 TO  IDX1
@@ -974,8 +974,8 @@
            MOVE    SPA-GMN-PTNUM        TO  SPA-GMN-TPTNUM     (IDX1)
            MOVE    SPA-NAI-PTID         TO  SPA-NAI-TPTID      (IDX1)
            MOVE    SPA-GMN-NAME         TO  SPA-GMN-TNAME      (IDX1)
-           MOVE    SPA-GMN-SEIYM        TO  SPA-GMN-TSEIYM     (IDX1)
-           MOVE    SPA-NAI-SEIYM        TO  SPA-NAI-TSEIYM     (IDX1)
+           MOVE    SPA-GMN-SRYYM        TO  SPA-GMN-TSRYYM     (IDX1)
+           MOVE    SPA-NAI-SRYYM        TO  SPA-NAI-TSRYYM     (IDX1)
            MOVE    SPA-GMN-SAKKBNMEI    TO  SPA-GMN-TSAKKBN    (IDX1)
            MOVE    SPA-GMN-SAKKBN       TO  SPA-NAI-TSAKKBN    (IDX1)
       *
@@ -1183,13 +1183,13 @@
                    MOVE    PTINF-NAME  TO  SPA-GMN-TNAME (SPA-GMN-MAX)
                END-IF
       *
-               MOVE    SYS-5012-SEIYM  TO  SPA-NAI-TSEIYM (SPA-GMN-MAX)
-               MOVE    SPA-NAI-TSEIYM (SPA-GMN-MAX)
+               MOVE    SYS-5012-SRYYM  TO  SPA-NAI-TSRYYM (SPA-GMN-MAX)
+               MOVE    SPA-NAI-TSRYYM (SPA-GMN-MAX)
                                        TO  WRK-SYMD(1:6)
                MOVE    "01"            TO  WRK-SYMD(7:2)
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG(1:6)
-                                       TO  SPA-GMN-TSEIYM(SPA-GMN-MAX)
+                                       TO  SPA-GMN-TSRYYM(SPA-GMN-MAX)
       *
                MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
@@ -1324,7 +1324,7 @@
                    MOVE    ALL "9"                 TO  SYS-5012-EDYUKYMD
                    MOVE    SPA-GMN-TPTNUM(IDX1)    TO  SYS-5012-PTNUM
                    MOVE    SPA-NAI-TPTID (IDX1)    TO  SYS-5012-PTID
-                   MOVE    SPA-NAI-TSEIYM(IDX1)    TO  SYS-5012-SEIYM
+                   MOVE    SPA-NAI-TSRYYM(IDX1)    TO  SYS-5012-SRYYM
                    MOVE    SPA-NAI-TSAKKBN(IDX1)
                                                TO  SYS-5012-SAKKBN
                    MOVE    SYS-5012-REC        TO  MCPDATA-REC
@@ -1376,21 +1376,20 @@
            INITIALIZE              ORCSMKPASSAREA
            MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
-           MOVE    ZERO            TO  WRK-SHELL-SEIYM
+           MOVE    SPA-NAI-SRYYM   TO  WRK-SHELL-SRYYM
            MOVE    SPA-TERMID      TO  WRK-SHELL-TERMID
            MOVE    SPA-SYSYMD      TO  WRK-SHELL-SYSYMD
+           MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG1
+           MOVE    "2"             TO  SHELLTBL-ARG2
+           MOVE    "DUMMY"         TO  SHELLTBL-ARG3
+           MOVE    TEIKIERR        TO  SHELLTBL-ARG4
            MOVE    WRK-CONS-JOB-JOBID
-                                   TO  SHELLTBL-ARG1
+                                   TO  SHELLTBL-ARG5
            MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  SHELLTBL-ARG2
-      *    MOVE    ????            TO  SHELLTBL-ARG3
-      *    MOVE    ????            TO  SHELLTBL-ARG4
-      *    MOVE    ????            TO  SHELLTBL-ARG5
-      *    MOVE    ????            TO  SHELLTBL-ARG6
-      *    MOVE    ????            TO  SHELLTBL-ARG7
-      *    MOVE    ????            TO  SHELLTBL-ARG8
+                                   TO  SHELLTBL-ARG6
+           MOVE    "DUMMY"         TO  SHELLTBL-ARG7
+           MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG8
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -1412,7 +1411,7 @@
       *
       *    画面移行用のパラメタ変更
       *
-           MOVE    SPA-NAI-TSEIYM (1)  TO  SPA-O01-SEIYM
+           MOVE    SPA-NAI-TSRYYM (1)  TO  SPA-O01-SRYYM
       *
            MOVE    SPA-O01KYOUTU       TO  SPA-WORK
       * 
@@ -1579,8 +1578,8 @@
        5002-HIZUKE-CHK-SEC         SECTION.
       *
            IF      WRK-YM          =   SPACE
-               MOVE    SPA-NAI-HYO-SEIYM   TO  WRK-SYMD    (1:6)
-               MOVE    SPA-NAI-HYO-SEIYMH  TO  WRK-HENYMDG (1:6)
+               MOVE    SPA-NAI-HYO-SRYYM   TO  WRK-SYMD    (1:6)
+               MOVE    SPA-NAI-HYO-SRYYMH  TO  WRK-HENYMDG (1:6)
                GO  TO  5002-HIZUKE-CHK-EXT
            END-IF
       * 
@@ -1682,8 +1681,8 @@
                                                TO  WRK-NUM
                    MOVE    WRK-NUM             TO  O02-TRENNUM   (IDX1)
                END-IF
-               MOVE    SPA-GMN-TSEIYM     (IDX1)
-                                               TO  O02-TSEIYM    (IDX1)
+               MOVE    SPA-GMN-TSRYYM     (IDX1)
+                                               TO  O02-TSRYYM    (IDX1)
                MOVE    SPA-GMN-TPTNUM     (IDX1)
                                                TO  O02-TPTNUM    (IDX1)
                MOVE    SPA-GMN-TNAME      (IDX1)
@@ -1702,7 +1701,7 @@
            MOVE    SPA-GMN-RENNUM         TO  O02-RENNUM
            MOVE    SPA-GMN-PTNUM          TO  O02-PTNUM
            MOVE    SPA-GMN-NAME           TO  O02-NAME
-           MOVE    SPA-GMN-SEIYM          TO  O02-SEIYM
+           MOVE    SPA-GMN-SRYYM          TO  O02-SRYYM
            MOVE    SPA-GMN-SAKKBN-G       TO  O02-SAKKBN
       *    ** 暫定 **
            MOVE    WIDGET-INSENSITIVE     TO  O02-SAKKBN-STATE
@@ -1725,7 +1724,7 @@
              WHEN    4
                     MOVE  "PTNUM"      TO  MCP-WIDGET
              WHEN    5
-                    MOVE  "SEIYM"      TO  MCP-WIDGET
+                    MOVE  "SRYYM"      TO  MCP-WIDGET
       *      暫定的にコメント
       *      WHEN    6
       *             MOVE  "SAKKBN"     TO  MCP-WIDGET

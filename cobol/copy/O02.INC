@@ -23,7 +23,7 @@
       *     02  O02-FIXED6.
               03  O02-RENNUM.
                 04  O02-VALUE   PIC 9(3).
-              03  O02-SEIYM.
+              03  O02-SRYYM.
                 04  O02-VALUE   PIC X(7).
               03  O02-PTNUM.
                 04  O02-VALUE   PIC X(20).
@@ -42,6 +42,6 @@
                     06  O02-TRENNUM  PIC X(3).
                     06  O02-TPTNUM   PIC X(20).
                     06  O02-TNAME    PIC X(50).
-                    06  O02-TSEIYM   PIC X(7).
+                    06  O02-TSRYYM   PIC X(7).
                     06  O02-TSAKKBN  PIC X(14).
                   05  O02-SELECT  PIC X       OCCURS  100 TIMES.

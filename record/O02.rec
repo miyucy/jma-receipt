@@ -3,7 +3,7 @@ O02	{
 		RENNUM	{
 			value	number(3);
 		};
-		SEIYM	{
+		SRYYM	{
 			value	varchar(7);
 		};
 		PTNUM	{

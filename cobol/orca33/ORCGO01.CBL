@@ -68,7 +68,7 @@
                05  SPA-GMN-PAGE                    PIC 9(02).
                05  SPA-GMN-CUR                     PIC 9(02).
                05  SPA-GMN-AREA.
-                   07  SPA-GMN-SEIYM               PIC X(07).
+                   07  SPA-GMN-SRYYM               PIC X(07).
                    07  SPA-GMN-IKKATU              PIC X(01).
                    07  SPA-GMN-KOBETU              PIC X(01).
                    07  SPA-GMN-CHK-KIKAN01         PIC X(01).
@@ -79,8 +79,8 @@
                    07  SPA-GMN-KIKAN03             PIC X(20).
       *
                05  SPA-NAI-O01-AREA.
-                   07  SPA-NAI-SEIYM               PIC 9(06).
-                   07  SPA-NAI-SEIYMH              PIC X(16).
+                   07  SPA-NAI-SRYYM               PIC 9(06).
+                   07  SPA-NAI-SRYYMH              PIC X(16).
                    07  SPA-NAI-KIKAN.
                        09  SPA-NAI-KIKAN01ST       PIC X(08).
                        09  SPA-NAI-KIKAN01ED       PIC X(08).
@@ -115,8 +115,8 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-TEIKIERR        PIC X(200).
-           03  WRK-SEIYM           PIC X(06).
-           03  WRK-SEIYM-MOT       PIC X(06).
+           03  WRK-SRYYM           PIC X(06).
+           03  WRK-SRYYM-MOT       PIC X(06).
            03  WRK-CREYMD          PIC X(08).
            03  WRK-OIDMSG          PIC X(70).
            03  WRK-YM              PIC X(07). 
@@ -131,9 +131,14 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-SHELL-ARG1.
-             05  WRK-SHELL-SEIYM   PIC  X(06).
+             05  WRK-SHELL-SRYYM   PIC  X(06).
              05  WRK-SHELL-TERMID  PIC  X(16).
              05  WRK-SHELL-SYSYMD  PIC  X(08).
+           03  WRK-SHELL-ARG3.
+             05  WRK-SHELL-ARG3-OCC    OCCURS  3.
+               07  WRK-SHELL-KIKAN-ST  PIC  X(08).
+               07  WRK-SHELL-KIKAN-ED  PIC  X(08).
+               07  WRK-SHELL-KIKAN-KBN PIC  X(01).
            03  WRK-KIKAN-YMD.
                05  WRK-KIKAN-STYMD-S   PIC  X(08).
                05  WRK-KIKAN-EDYMD-S   PIC  X(08).
@@ -371,10 +376,10 @@
            MOVE    "F"             TO  SPA-GMN-KOBETU
       *
            MOVE    SPA-SYSYMD (1:6)
-                                   TO  SPA-NAI-SEIYM
+                                   TO  SPA-NAI-SRYYM
            MOVE    SPA-SYSYMDWH (1:6)
-                                   TO  SPA-GMN-SEIYM
-           MOVE    SPA-O01-SYSYMH  TO  SPA-NAI-SEIYMH
+                                   TO  SPA-GMN-SRYYM
+           MOVE    SPA-O01-SYSYMH  TO  SPA-NAI-SRYYMH
       *
            MOVE    "F"             TO  SPA-GMN-CHK-KIKAN01
                                        SPA-GMN-CHK-KIKAN02
@@ -411,7 +416,7 @@
       *
            INITIALIZE                      ORCSGDAYAREA
            MOVE    "1"                 TO  SGDAY-INTYPE
-           MOVE    SPA-NAI-SEIYM       TO  SGDAY-INDAY
+           MOVE    SPA-NAI-SRYYM       TO  SGDAY-INDAY
            CALL    "ORCSGDAY"          USING
                                        ORCSGDAYAREA
            MOVE    SGDAY-OTDAY         TO  WRK-KIKAN-STYMD-W
@@ -512,23 +517,23 @@
            END-EVALUATE
       *
            IF  (   SPA-O01-FILEKBN     =   "1" )
-               MOVE    SPA-O01-SEIYM       TO  SPA-NAI-SEIYM
-               IF    ( SPA-O01-SEIYM       =   ZERO )
+               MOVE    SPA-O01-SRYYM       TO  SPA-NAI-SRYYM
+               IF    ( SPA-O01-SRYYM       =   ZERO )
                    MOVE    SPA-SYSYMDWH (1 : 6)
-                                           TO  SPA-GMN-SEIYM
+                                           TO  SPA-GMN-SRYYM
                    MOVE    SPA-SYSYMD   (1 : 6)
-                                           TO  SPA-NAI-SEIYM
-                   MOVE    SPA-O01-SYSYMH  TO  SPA-NAI-SEIYMH
+                                           TO  SPA-NAI-SRYYM
+                   MOVE    SPA-O01-SYSYMH  TO  SPA-NAI-SRYYMH
                    PERFORM 3101-TEIKI-KIKAN-GET-SEC
                    MOVE    "F"                 TO  SPA-GMN-CHK-KIKAN01
                    MOVE    "F"                 TO  SPA-GMN-CHK-KIKAN02
                    MOVE    "F"                 TO  SPA-GMN-CHK-KIKAN03
                ELSE
-                   MOVE    SPA-O01-SEIYM   TO  WRK-SYMD (1:6)
+                   MOVE    SPA-O01-SRYYM   TO  WRK-SYMD (1:6)
                    MOVE    "01"            TO  WRK-SYMD (7:2) 
                    PERFORM 5002-HIZUKE-HEN-SEC
-                   MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SEIYM
-                   MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SEIYMH
+                   MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM
+                   MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
                    PERFORM 3101-TEIKI-KIKAN-GET-SEC
                    MOVE    SPA-O01-CHK-KIKAN01 TO  SPA-GMN-CHK-KIKAN01
                    MOVE    SPA-O01-CHK-KIKAN02 TO  SPA-GMN-CHK-KIKAN02
@@ -537,10 +542,10 @@
       *
            ELSE
                MOVE    SPA-SYSYMDWH (1 : 6)
-                                           TO  SPA-GMN-SEIYM
+                                           TO  SPA-GMN-SRYYM
                MOVE    SPA-SYSYMD   (1 : 6)
-                                           TO  SPA-NAI-SEIYM
-               MOVE    SPA-O01-SYSYMH      TO  SPA-NAI-SEIYMH
+                                           TO  SPA-NAI-SRYYM
+               MOVE    SPA-O01-SYSYMH      TO  SPA-NAI-SRYYMH
                PERFORM 3101-TEIKI-KIKAN-GET-SEC
                MOVE    "F"                 TO  SPA-GMN-CHK-KIKAN01
                MOVE    "F"                 TO  SPA-GMN-CHK-KIKAN02
@@ -621,8 +626,8 @@
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *
-               WHEN    "ACTIVATE"      ALSO    "SEIYM"
-                   PERFORM 4101-SEIYM-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "SRYYM"
+                   PERFORM 4101-SRYYM-CHK-SEC
            END-EVALUATE
       *
            .
@@ -632,37 +637,37 @@
       *****************************************************************
       *    請求年月（一括）チェック処理
       *****************************************************************
-       4101-SEIYM-CHK-SEC           SECTION.
+       4101-SRYYM-CHK-SEC           SECTION.
       *
            MOVE    2                  TO  SPA-GMN-CUR
       *
            IF      SPA-GMN-IKKATU         =   "F"
                MOVE    "0007"             TO  SPA-ERRCD
                MOVE    3                  TO  SPA-GMN-CUR
-               GO  TO  4101-SEIYM-CHK-EXT
+               GO  TO  4101-SRYYM-CHK-EXT
            END-IF
       *
-           MOVE   SPA-GMN-SEIYM        TO  WRK-SEIYM-MOT
-           MOVE   O01-SEIYM            TO  SPA-GMN-SEIYM
+           MOVE   SPA-GMN-SRYYM        TO  WRK-SRYYM-MOT
+           MOVE   O01-SRYYM            TO  SPA-GMN-SRYYM
       *
       *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
            MOVE    "1"                 TO  SGDAY-INTYPE
-           MOVE    SPA-GMN-SEIYM       TO  SGDAY-INDAY
+           MOVE    SPA-GMN-SRYYM       TO  SGDAY-INDAY
            CALL    "ORCSGDAY"          USING
                                        ORCSGDAYAREA
            IF      SGDAY-RC            =   ZERO
-               MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SEIYM
-               MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-SEIYM
+               MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SRYYM
+               MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-SRYYM
            ELSE
-               MOVE    WRK-SEIYM-MOT   TO  SPA-GMN-SEIYM
+               MOVE    WRK-SRYYM-MOT   TO  SPA-GMN-SRYYM
                MOVE    "0001"          TO  SPA-ERRCD
-               GO  TO  4101-SEIYM-CHK-EXT
+               GO  TO  4101-SRYYM-CHK-EXT
            END-IF
       *
            MOVE    SGDAY-SDAY          TO  WRK-SYMD
            PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SEIYMH
+           MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
       *
            PERFORM 3101-TEIKI-KIKAN-GET-SEC
       *
@@ -671,7 +676,7 @@
            MOVE    7               TO  SPA-GMN-CUR
       *
            .
-       4101-SEIYM-CHK-EXT.
+       4101-SRYYM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -844,7 +849,7 @@
       *    一括作成のときのチェック
            EVALUATE    SPA-GMN-IKKATU
                WHEN    "T"
-                   IF    ( SPA-NAI-SEIYM      =   ZERO )
+                   IF    ( SPA-NAI-SRYYM      =   ZERO )
                        MOVE    "0001"              TO  SPA-ERRCD
                        GO  TO  450-TOUROKU-EXT
                    END-IF
@@ -893,7 +898,7 @@
                    MOVE    ALL "9"         TO  SYS-5011-EDYUKYMD
                END-IF 
                MOVE    "1"                 TO  SYS-5011-SYOKBN
-               MOVE    SPA-NAI-SEIYM       TO  SYS-5011-SEIYM
+               MOVE    SPA-NAI-SRYYM       TO  SYS-5011-SRYYM
                MOVE    SYS-5011-REC        TO  MCPDATA-REC
                IF      FLG-SYSKANRI        =   1
                    MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -947,18 +952,52 @@
                INITIALIZE              ORCSMKPASSAREA
                MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
                CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
+               MOVE    SPA-NAI-SRYYM   TO  WRK-SHELL-SRYYM
+               MOVE    SPA-TERMID      TO  WRK-SHELL-TERMID
+               MOVE    SPA-SYSYMD      TO  WRK-SHELL-SYSYMD
+               MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG1
+               MOVE    "1"             TO  SHELLTBL-ARG2
+      *
+               MOVE    SPA-NAI-KIKAN01ST
+                                       TO  WRK-SHELL-KIKAN-ST (1)
+               MOVE    SPA-NAI-KIKAN01ED
+                                       TO  WRK-SHELL-KIKAN-ED (1)
+               IF    ( SPA-GMN-CHK-KIKAN01 =   "T" )
+                   MOVE    "1"         TO  WRK-SHELL-KIKAN-KBN (1)
+               ELSE
+                   MOVE    SPACE       TO  WRK-SHELL-KIKAN-KBN (1)
+               END-IF
+      *
+               MOVE    SPA-NAI-KIKAN02ST
+                                       TO  WRK-SHELL-KIKAN-ST (2)
+               MOVE    SPA-NAI-KIKAN02ED
+                                       TO  WRK-SHELL-KIKAN-ED (2)
+               IF    ( SPA-GMN-CHK-KIKAN02 =   "T" )
+                   MOVE    "1"         TO  WRK-SHELL-KIKAN-KBN (2)
+               ELSE
+                   MOVE    SPACE       TO  WRK-SHELL-KIKAN-KBN (2)
+               END-IF
+      *
+               MOVE    SPA-NAI-KIKAN03ST
+                                       TO  WRK-SHELL-KIKAN-ST (3)
+               MOVE    SPA-NAI-KIKAN03ED
+                                       TO  WRK-SHELL-KIKAN-ED (3)
+               IF    ( SPA-GMN-CHK-KIKAN03 =   "T" )
+                   MOVE    "1"         TO  WRK-SHELL-KIKAN-KBN (3)
+               ELSE
+                   MOVE    SPACE       TO  WRK-SHELL-KIKAN-KBN (3)
+               END-IF
+      *
+               MOVE    WRK-SHELL-ARG3
+                                       TO  SHELLTBL-ARG3
+               MOVE    TEIKIERR        TO  SHELLTBL-ARG4
                MOVE    WRK-CONS-JOB-JOBID
-                                       TO  SHELLTBL-ARG1
+                                       TO  SHELLTBL-ARG5
                MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  SHELLTBL-ARG2
-      *        MOVE    ????            TO  SHELLTBL-ARG3
-      *        MOVE    ????            TO  SHELLTBL-ARG4
-      *        MOVE    ????            TO  SHELLTBL-ARG5
-      *        MOVE    ????            TO  SHELLTBL-ARG6
-      *        MOVE    ????            TO  SHELLTBL-ARG7
-      *        MOVE    ????            TO  SHELLTBL-ARG8
+                                       TO  SHELLTBL-ARG6
+               MOVE    "DUMMY"         TO  SHELLTBL-ARG7
+               MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG8
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    PATH-SHELL-SHELL
@@ -1011,7 +1050,7 @@
       *
            IF    ( SPA-GMN-IKKATU          =   "T" )
                MOVE    "1"             TO  SPA-O01-FILEKBN
-               MOVE    SPA-NAI-SEIYM   TO  SPA-O01-SEIYM
+               MOVE    SPA-NAI-SRYYM   TO  SPA-O01-SRYYM
                MOVE    SPA-GMN-CHK-KIKAN01
                                        TO  SPA-O01-CHK-KIKAN01
                MOVE    SPA-GMN-CHK-KIKAN02
@@ -1026,7 +1065,7 @@
                                        TO  SPA-O01-KIKAN01ED
            ELSE
                MOVE    "2"             TO  SPA-O01-FILEKBN
-               MOVE    ZERO            TO  SPA-O01-SEIYM
+               MOVE    ZERO            TO  SPA-O01-SRYYM
                MOVE    "F"             TO  SPA-O01-CHK-KIKAN01
                MOVE    "F"             TO  SPA-O01-CHK-KIKAN02
                MOVE    "F"             TO  SPA-O01-CHK-KIKAN03
@@ -1252,7 +1291,7 @@
       *
            MOVE    SPACE               TO  O01
       *
-           MOVE    SPA-GMN-SEIYM       TO  O01-SEIYM
+           MOVE    SPA-GMN-SRYYM       TO  O01-SRYYM
       *
            MOVE    SPA-GMN-IKKATU      TO  O01-IKKATU
            MOVE    SPA-GMN-KOBETU      TO  O01-KOBETU
@@ -1278,7 +1317,7 @@
              WHEN    1
                     MOVE  "SYOKBN"     TO  MCP-WIDGET
              WHEN    2
-                    MOVE  "SEIYM"      TO  MCP-WIDGET
+                    MOVE  "SRYYM"      TO  MCP-WIDGET
              WHEN    3
                     MOVE  "CHK_KIKAN01"
                                        TO  MCP-WIDGET
@@ -1361,7 +1400,7 @@
       *
            EVALUATE    SPA-OIDCD
                WHEN    "1001"
-                   MOVE    SPA-NAI-SEIYMH   TO  WRK-OIDMSG
+                   MOVE    SPA-NAI-SRYYMH   TO  WRK-OIDMSG
                    MOVE    "分新規作成処理を行います"
                                             TO  WRK-OIDMSG (17:)
                WHEN    "1003"
