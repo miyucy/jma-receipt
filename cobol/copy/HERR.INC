@@ -17,5 +17,5 @@
       ********************************************************************
          02  HERR.
             03  HERR-FIXED1.
-              04  HERR-ERRCODE    PIC X(11).
-              04  HERR-ERRMSG     PIC X(61).
+              04  HERR-ERRCODE    PIC X(10).
+              04  HERR-ERRMSG     PIC X(60).

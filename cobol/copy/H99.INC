@@ -17,12 +17,12 @@
       ********************************************************************
           02  H99.
               03  H99-PTNUM.
-                04  H99-VALUE   PIC X(21).
+                04  H99-VALUE   PIC X(20).
               03  H99-SRYYM.
-                04  H99-VALUE   PIC X(9).
+                04  H99-VALUE   PIC X(8).
               03  H99-SRYKA.
                 04  H99-SRYKA-STATE   PIC S9(9)   BINARY.
-                04  H99-SRYKA-VALUE   PIC X(3).
+                04  H99-SRYKA-VALUE   PIC X(2).
               03  H99-SCROLLEDWINDOW1.
                 04  H99-RECELST.
                   05  H99-COUNT   PIC S9(9)   BINARY.
@@ -39,7 +39,7 @@
                 04  H99-VALUE   PIC S9(2).
               03  H99-NAME.
                 04  H99-NAME-STYLE   PIC X(20).
-                04  H99-NAME-VALUE   PIC X(25).
+                04  H99-NAME-VALUE   PIC X(24).
               03  H99-SRYKANAME.
                 04  H99-SRYKANAME-STYLE   PIC X(20).
                 04  H99-SRYKANAME-VALUE   PIC X(18).

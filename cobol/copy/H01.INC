@@ -17,12 +17,12 @@
       ********************************************************************
             02  H01.
               03  H01-PTNUM.
-                04  H01-VALUE   PIC X(21).
+                04  H01-VALUE   PIC X(20).
               03  H01-SRYYM.
-                04  H01-VALUE   PIC X(8).
+                04  H01-VALUE   PIC X(7).
               03  H01-SRYKA.
                 04  H01-SRYKA-STATE   PIC S9(9)   BINARY.
-                04  H01-SRYKA-VALUE   PIC X(3).
+                04  H01-SRYKA-VALUE   PIC X(2).
               03  H01-MIDASI-G  OCCURS  35.
                 04  H01-MIDASI-STYLE   PIC X(20).
                 04  H01-MIDASI         PIC X(18).
@@ -70,15 +70,15 @@
                 04  H01-SKYKBN-COUNT   PIC S9(9)   BINARY.
                 04  H01-SKYKBNLST PIC X(14)   OCCURS  3 TIMES.
               03  H01-SKYYM.
-                04  H01-VALUE   PIC X(8).
+                04  H01-VALUE   PIC X(7).
               03  H01-HENREIYM.
-                04  H01-VALUE   PIC X(8).
+                04  H01-VALUE   PIC X(7).
               03  H01-SRYKANAME.
                 04  H01-SRYKANAME-STYLE   PIC X(20).
                 04  H01-SRYKANAME-VALUE   PIC X(18).
               03  H01-NAME.
                 04  H01-NAME-STYLE   PIC X(20).
-                04  H01-NAME-VALUE   PIC X(25).
+                04  H01-NAME-VALUE   PIC X(24).
               03  H01-TEISEIKBNNM.
                 04  H01-TEISEIKBNNM-STYLE   PIC X(20).
                 04  H01-TEISEIKBNNM-VALUE   PIC X(14).
