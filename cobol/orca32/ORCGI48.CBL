@@ -1614,7 +1614,7 @@
       **             PERFORM 41014-KENSA-SEL-SEC
       **         END-IF
       **     ELSE
-               PERFORM 41012-SRYCD-SEL-SEC
+               PERFORM 41012-SRYCD-SEL-SEC.
       **     END-IF.
       *
        41011-SELNUM-CHK-EXT.
