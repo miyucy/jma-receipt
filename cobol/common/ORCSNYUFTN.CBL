@@ -103,6 +103,7 @@
               03 WRK-HANBETU-HKNCOMBINUM   PIC 9(04).
               03 WRK-HANBETU-DAY           PIC X(01)   OCCURS   31.
               03 WRK-HANBETU-KAISHI        PIC X(02).
+              03 WRK-HANBETU-KAISHI2       PIC X(02).
               03 WRK-HANBETU-SYURYO        PIC X(02).
               03 WRK-HANBETU-SYUHKNNUM     PIC X(03).
               03 WRK-HANBETU-KOH1HKNNUM    PIC X(03).
@@ -409,7 +410,7 @@
       *    入院会計から収納エリアへのセット
            PERFORM    VARYING   IDX    FROM   1   BY   1
                       UNTIL  (IDX            >    10)
-                        OR   (LNK-SYU-SKYSTYMD(IDX) =  SPACE)
+                        OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
               IF   LNK-SYU-SYUHKNNUM(IDX)  =  "971"  OR  "973"
                       PERFORM       NYUIN-KAIKEI-SET2-SEC
               ELSE
@@ -420,14 +421,14 @@
       *    診療会計から収納エリアへのセット
            PERFORM    VARYING   IDX    FROM   1   BY   1
                       UNTIL  (IDX            >    10)
-                        OR   (LNK-SYU-SKYSTYMD(IDX) =  SPACE)
+                        OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
                       PERFORM       SINRYO-KAIKEI-SET-SEC
            END-PERFORM.
       *
       *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX            >    10)
-                                OR   (LNK-SYU-SKYSTYMD(IDX) =  SPACE)
+                                OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
                                 OR   (LNK-S02-RC        NOT =  ZERO )
       *
                 MOVE     WRK-HANBETU-SENINFLG2(IDX)                     
@@ -804,27 +805,27 @@
                 END-IF
               END-PERFORM
       *
-      ***     IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(1)
-      ***         MOVE   WRK-HI-ST(1)  TO  WRK-HANBETU-KAISHI(IDX)
-      ***     END-IF
-      ***     IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(2)
-      ***         MOVE   WRK-HI-ST(2)  TO  WRK-HANBETU-KAISHI(IDX)
-      ***     END-IF
+              IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(1)
+                  MOVE   WRK-HI-ST(1)  TO  WRK-HANBETU-KAISHI2(IDX)
+              END-IF
+              IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(2)
+                  MOVE   WRK-HI-ST(2)  TO  WRK-HANBETU-KAISHI2(IDX)
+              END-IF
       *
-              PERFORM    VARYING   IDY   FROM  31   BY  -1
-                                         UNTIL    IDY    <    1
-                IF        WRK-HANBETU-DAY(IDX IDY)   NOT =  SPACE 
-                   MOVE   IDY     TO    WRK-HANBETU-SYURYO(IDX)
-                   MOVE   1       TO    IDY
-                END-IF
-              END-PERFORM
+      ****    PERFORM    VARYING   IDY   FROM  31   BY  -1
+      ****                               UNTIL    IDY    <    1
+      ****      IF        WRK-HANBETU-DAY(IDX IDY)   NOT =  SPACE 
+      ****         MOVE   IDY     TO    WRK-HANBETU-SYURYO(IDX)
+      ****         MOVE   1       TO    IDY
+      ****      END-IF
+      ****    END-PERFORM
       *
-      ***     IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(1)
-      ***         MOVE   WRK-HI-ED(1)  TO  WRK-HANBETU-SYURYO(IDX)
-      ***     END-IF
-      ***     IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(2)
-      ***         MOVE   WRK-HI-ED(2)  TO  WRK-HANBETU-SYURYO(IDX)
-      ***     END-IF
+              IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(1)
+                  MOVE   WRK-HI-ED(1)  TO  WRK-HANBETU-SYURYO(IDX)
+              END-IF
+              IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(2)
+                  MOVE   WRK-HI-ED(2)  TO  WRK-HANBETU-SYURYO(IDX)
+              END-IF
       *
            END-PERFORM.
       *
@@ -1106,7 +1107,7 @@
               MOVE LNK-S02-SYSYMD     TO LNK-SYU-DENPPRTYMD(IDX)
               MOVE WRK-HANBETU-SKYYM(IDX)
                                       TO LNK-SYU-SKYSTYMD(IDX)(1:6)
-              MOVE WRK-HANBETU-KAISHI(IDX)
+              MOVE WRK-HANBETU-KAISHI2(IDX)
                                       TO LNK-SYU-SKYSTYMD(IDX)(7:2)
               MOVE WRK-HANBETU-SKYYM(IDX)
                                       TO LNK-SYU-SKYEDYMD(IDX)(1:6)
@@ -1165,7 +1166,7 @@
            MOVE    SYU-HOSPID          TO  NACCT-HOSPID
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    SYU-PTID            TO  NACCT-PTID
-           MOVE    SYU-SKYSTYMD (1:6)  TO  NACCT-SRYYM
+           MOVE    SYU-SRYYMD (1:6)  TO  NACCT-SRYYM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "NYUINACCT-KEY9"    TO  ORC-DBPATH
@@ -1197,7 +1198,7 @@
            MOVE    SYU-HOSPID          TO  NACCT-HOSPID
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    SYU-PTID            TO  NACCT-PTID
-           MOVE    SYU-SKYSTYMD (1:6)  TO  NACCT-SRYYM
+           MOVE    SYU-SRYYMD (1:6)  TO  NACCT-SRYYM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "NYUINACCT-KEY9"    TO  ORC-DBPATH
@@ -1238,7 +1239,7 @@
            MOVE    SYU-HOSPID          TO  NACCT-HOSPID
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    SYU-PTID            TO  NACCT-PTID
-           MOVE    SYU-SKYSTYMD (1:6)  TO  NACCT-SRYYM
+           MOVE    SYU-SRYYMD (1:6)  TO  NACCT-SRYYM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "NYUINACCT-KEY9"    TO  ORC-DBPATH
@@ -1271,7 +1272,7 @@
              INITIALIZE                      SYSKANRI-REC
              MOVE    "5000"              TO  SYS-KANRICD
              MOVE    "*"                 TO  SYS-KBNCD
-             MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
+             MOVE    SYU-SRYYMD        TO  ORC-DBYMD
              MOVE    SYSKANRI-REC        TO  MCPDATA-REC
              MOVE    "DBSELECT"          TO  MCP-FUNC
              MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -1401,7 +1402,7 @@
            MOVE    SYU-HOSPID          TO  NACCT-HOSPID
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    SYU-PTID            TO  NACCT-PTID
-           MOVE    SYU-SKYSTYMD (1:6)  TO  NACCT-SRYYM
+           MOVE    SYU-SRYYMD (1:6)  TO  NACCT-SRYYM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "NYUINACCT-KEY9"    TO  ORC-DBPATH
@@ -1439,7 +1440,7 @@
       **************************************************************
        GAIHAKU-SET-SEC           SECTION.
       *
-           IF  NACCT-SRYYM      =   SYU-SKYSTYMD(1:6)
+           IF  NACCT-SRYYM      =   SYU-SRYYMD(1:6)
                MOVE     ZERO        TO  WRK-GAIHAKU-COUNT
       *    外泊情報のテーブルセット
                IF   NACCT-ZAISKBKBN   =   "2"
@@ -1467,7 +1468,7 @@
       **************************************************************
        SENTEI-SET-SEC           SECTION.
       *
-           IF  NACCT-SRYYM      =   SYU-SKYSTYMD(1:6)
+           IF  NACCT-SRYYM      =   SYU-SRYYMD(1:6)
       *    選定療養情報のテーブルセット
                IF  (NACCT-ZAISKBKBN   =   "1")    AND
                    (NACCT-SRYCDTOTAL  =   099999916)
@@ -1496,16 +1497,16 @@
       *
            MOVE      ZERO           TO     WRK-SENTEI-GAIHAKU-KEISU
       *
-           IF  SYU-SKYSTYMD(1:6)    <=    "200303"
+           IF  SYU-SRYYMD(1:6)    <=    "200303"
                MOVE   0.1           TO     WRK-SENTEI-GAIHAKU-KEISU
            END-IF
       *
-           IF (SYU-SKYSTYMD(1:6)    >=    "200304")   AND
-              (SYU-SKYSTYMD(1:6)    <=    "200403")
+           IF (SYU-SRYYMD(1:6)    >=    "200304")   AND
+              (SYU-SRYYMD(1:6)    <=    "200403")
                MOVE   0.05           TO    WRK-SENTEI-GAIHAKU-KEISU
            END-IF
       *
-           IF  SYU-SKYSTYMD(1:6)    >=    "200404"
+           IF  SYU-SRYYMD(1:6)    >=    "200404"
                MOVE   ZERO          TO     WRK-SENTEI-GAIHAKU-KEISU
            END-IF
       *
@@ -1520,7 +1521,7 @@
        NYUINACCT-GET-SEC           SECTION.
       *
            IF    (NACCT-ZAITEN            NOT = ZERO  )           AND
-                 (NACCT-SRYYM(1:6)    =   SYU-SKYSTYMD(1:6))
+                 (NACCT-SRYYM(1:6)    =   SYU-SRYYMD(1:6))
       *
       *        入院料の集計
                IF  (NACCT-ZAISKBKBN      =   "1")   AND
@@ -1534,7 +1535,7 @@
                    INITIALIZE                  ORCSBTUSENTEIAREA
                    MOVE    SYU-HOSPID          TO  SBTUSENTEI-HOSPID
                    MOVE    SYU-PTID            TO  SBTUSENTEI-PTID
-                   MOVE    SYU-SKYSTYMD (1:6)  TO  SBTUSENTEI-SRYYM
+                   MOVE    SYU-SRYYMD (1:6)  TO  SBTUSENTEI-SRYYM
                    CALL    "ORCSBTUSENTEI"     USING
                                                ORCSBTUSENTEIAREA
       *            入院料と外泊を比較して点数算定
@@ -1585,7 +1586,7 @@
                                                               +  0.5)   XXX
       *                          他医療機関受診（１５％）平成１６年４月より３０％に変更
                                  WHEN   4
-                                     IF  SYU-SKYSTYMD(1:6) >= "200404"
+                                     IF  SYU-SRYYMD(1:6) >= "200404"
                                          COMPUTE  SYU-HKNTEN(11)  =
                                                   SYU-HKNTEN(11)  +
                                                 ((WRK-KHNTEN  *  0.3)
@@ -1686,7 +1687,7 @@
       **************************************************************
        NYUINACCT-GET-ETC-SEC           SECTION.
       *
-           IF     NACCT-SRYYM         =   SYU-SKYSTYMD(1:6)
+           IF     NACCT-SRYYM         =   SYU-SRYYMD(1:6)
       *        室料差額の集計
                IF   NACCT-ZAISKBKBN       =   "3"
       *
@@ -1694,7 +1695,7 @@
                    MOVE    ZERO                TO   FLG-SYSKANRI
                    INITIALIZE                       SYS-5113-REC
                    MOVE    "5113"              TO   SYS-5113-KANRICD
-                   MOVE    SYU-SKYSTYMD        TO   ORC-DBYMD
+                   MOVE    SYU-SRYYMD        TO   ORC-DBYMD
                    MOVE    SYS-5113-REC        TO   MCPDATA-REC
                    MOVE    "DBSELECT"          TO   MCP-FUNC
                    MOVE    "SYSKANRI-KEY2"     TO   ORC-DBPATH
@@ -1942,7 +1943,7 @@
            MOVE    "1"                TO   NSRY-NYUGAIKBN
            MOVE    SYU-PTID           TO   NSRY-PTID
            MOVE    "00"               TO   NSRY-SRYKA
-           MOVE    SYU-SKYSTYMD(1:6)  TO   NSRY-SRYYM
+           MOVE    SYU-SRYYMD(1:6)  TO   NSRY-SRYYM
            MOVE    NACCT-ZAINUM       TO   NSRY-ZAINUM
            MOVE    1                  TO   NSRY-RENNUM
            MOVE    NYUINACT-REC       TO   MCPDATA-REC
@@ -1967,7 +1968,7 @@
                      MOVE    SPACE         TO   TNS-TENSU-REC
                      INITIALIZE                 TNS-TENSU-REC
                      MOVE    NSRY-SRYCD(NYUINACT-IDX) TO   TNS-SRYCD
-                     MOVE    SYU-SKYSTYMD(1:6)  TO  ORC-DBYMD(1:6)
+                     MOVE    SYU-SRYYMD(1:6)  TO  ORC-DBYMD(1:6)
                      MOVE    "01"               TO  ORC-DBYMD(7:2)
                      PERFORM  TENSU-READ-SEC
                      IF       FLG-TENSU      =    ZERO
@@ -2023,7 +2024,7 @@
                MOVE    SPACE         TO   TNS-TENSU-REC
                INITIALIZE                 TNS-TENSU-REC
                MOVE    SENCHG-SENTEISRYCD TO  TNS-SRYCD
-               MOVE    SYU-SKYSTYMD(1:6)  TO  ORC-DBYMD(1:6)
+               MOVE    SYU-SRYYMD(1:6)  TO  ORC-DBYMD(1:6)
                MOVE    "01"               TO  ORC-DBYMD(7:2)
                PERFORM  TENSU-READ-SEC
                IF       FLG-TENSU      =    ZERO
@@ -2189,7 +2190,7 @@
                MOVE    SPACE         TO   TNS-TENSU-REC
                INITIALIZE                 TNS-TENSU-REC
                MOVE    WRK-GAIHAKU-SRYCD  TO  TNS-SRYCD
-               MOVE    SYU-SKYSTYMD(1:6)  TO  ORC-DBYMD(1:6)
+               MOVE    SYU-SRYYMD(1:6)  TO  ORC-DBYMD(1:6)
                MOVE    "01"               TO  ORC-DBYMD(7:2)
                PERFORM  TENSU-READ-SEC
                IF       FLG-TENSU      =    ZERO
@@ -2213,7 +2214,7 @@
            INITIALIZE                         SYS-1001-REC
            MOVE    "1001"               TO    SYS-1001-KANRICD
            MOVE    "*"                  TO    SYS-1001-KBNCD
-           MOVE    SYU-SKYSTYMD         TO    ORC-DBYMD
+           MOVE    SYU-SRYYMD         TO    ORC-DBYMD
            MOVE    SYS-1001-REC         TO    MCPDATA-REC
            MOVE    "DBSELECT"           TO    MCP-FUNC
            MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -2234,7 +2235,7 @@
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
-           MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
+           MOVE    SYU-SRYYMD        TO  ORC-DBYMD
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -2541,7 +2542,7 @@
            MOVE    SYU-HOSPID          TO  ACCT-HOSPID
            MOVE    "1"                 TO  ACCT-NYUGAIKBN
            MOVE    SYU-PTID            TO  ACCT-PTID
-           MOVE    SYU-SKYSTYMD(1:6)   TO  ACCT-SRYYM
+           MOVE    SYU-SRYYMD(1:6)   TO  ACCT-SRYYM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
@@ -2904,7 +2905,7 @@
                     MOVE    SPACE             TO   TNS-TENSU-REC
                     INITIALIZE                     TNS-TENSU-REC
                     MOVE    SRY-SRYCD(IDZ)    TO   TNS-SRYCD
-                    MOVE    SYU-SKYSTYMD(1:6) TO   ORC-DBYMD(1:6)
+                    MOVE    SYU-SRYYMD(1:6) TO   ORC-DBYMD(1:6)
                     MOVE    "01"              TO   ORC-DBYMD(7:2)
                     PERFORM    TENSU-READ-SEC
       *
@@ -3066,7 +3067,7 @@
                                MOVE    SPACE         TO   TNS-TENSU-REC
                                INITIALIZE                 TNS-TENSU-REC
                                MOVE    SRY-SRYCD(IDZ) TO   TNS-SRYCD
-                               MOVE    SYU-SKYSTYMD(1:6)
+                               MOVE    SYU-SRYYMD(1:6)
                                                      TO  ORC-DBYMD(1:6)
                                MOVE    "01"          TO  ORC-DBYMD(7:2)
                                PERFORM    TENSU-READ-SEC
@@ -3166,7 +3167,7 @@
                            MOVE    SPACE          TO   TNS-TENSU-REC
                            INITIALIZE                  TNS-TENSU-REC
                            MOVE    SRY-SRYCD(IDZ) TO   TNS-SRYCD
-                           MOVE    SYU-SKYSTYMD(1:6)
+                           MOVE    SYU-SRYYMD(1:6)
                                                   TO   ORC-DBYMD(1:6)
                            MOVE    "01"           TO   ORC-DBYMD(7:2)
                            PERFORM    TENSU-READ-SEC
@@ -3269,7 +3270,7 @@
                                MOVE    SPACE         TO   TNS-TENSU-REC
                                INITIALIZE                 TNS-TENSU-REC
                                MOVE    SRY-SRYCD(IDZ) TO   TNS-SRYCD
-                               MOVE    SYU-SKYSTYMD(1:6)
+                               MOVE    SYU-SRYYMD(1:6)
                                                      TO  ORC-DBYMD(1:6)
                                MOVE    "01"          TO  ORC-DBYMD(7:2)
                                PERFORM    TENSU-READ-SEC
@@ -3369,7 +3370,7 @@
                            MOVE    SPACE          TO   TNS-TENSU-REC
                            INITIALIZE                  TNS-TENSU-REC
                            MOVE    SRY-SRYCD(IDZ) TO   TNS-SRYCD
-                           MOVE    SYU-SKYSTYMD(1:6)
+                           MOVE    SYU-SRYYMD(1:6)
                                                   TO   ORC-DBYMD(1:6)
                            MOVE    "01"           TO   ORC-DBYMD(7:2)
                            PERFORM    TENSU-READ-SEC
@@ -3605,7 +3606,7 @@
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
-           MOVE    SYU-SKYSTYMD(1:6)   TO  ORC-DBYMD(1:6)
+           MOVE    SYU-SRYYMD(1:6)   TO  ORC-DBYMD(1:6)
            MOVE    "__"                TO  ORC-DBYMD(7:2)
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -3644,7 +3645,7 @@
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
-           MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
+           MOVE    SYU-SRYYMD        TO  ORC-DBYMD
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -3680,7 +3681,7 @@
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
-           MOVE    SYU-SKYSTYMD(1:6)   TO  ORC-DBYMD(1:6)
+           MOVE    SYU-SRYYMD(1:6)   TO  ORC-DBYMD(1:6)
            MOVE    "__"                TO  ORC-DBYMD(7:2)
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC

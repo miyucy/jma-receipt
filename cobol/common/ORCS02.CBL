@@ -652,7 +652,7 @@
                INITIALIZE                         SYS-4001-REC
                MOVE    "4001"               TO    SYS-4001-KANRICD
                MOVE    "*"                  TO    SYS-4001-KBNCD
-               MOVE    LNK-SYU-SKYSTYMD     TO    ORC-DBYMD
+               MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
                MOVE    SYS-4001-REC         TO    MCPDATA-REC
                MOVE    "DBSELECT"           TO    MCP-FUNC
                MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -1176,7 +1176,7 @@
                INITIALIZE                         SYS-1026-REC
                MOVE    "1026"               TO    SYS-1026-KANRICD
                MOVE    PTINF-DISCOUNT-KBN   TO    SYS-1026-KBNCD
-               MOVE    LNK-SYU-SKYSTYMD     TO    ORC-DBYMD
+               MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
                MOVE    SYS-1026-REC         TO    MCPDATA-REC
                MOVE    "DBSELECT"           TO    MCP-FUNC
                MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -1203,7 +1203,7 @@
                INITIALIZE                         SYS-1027-REC
                MOVE    "1027"               TO    SYS-1027-KANRICD
                MOVE    PTINF-DISCOUNT       TO    SYS-1027-KBNCD
-               MOVE    LNK-SYU-SKYSTYMD     TO    ORC-DBYMD
+               MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
                MOVE    SYS-1027-REC         TO    MCPDATA-REC
                MOVE    "DBSELECT"           TO    MCP-FUNC
                MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -1303,8 +1303,8 @@
                PERFORM  TNKRRK-READ-SEC
                PERFORM  UNTIL
                           (FLG-TNKRRK     =    1)    OR
-                         ((TNKRRK-STYMD     <=   LNK-SYU-SKYSTYMD)  AND
-                          (LNK-SYU-SKYSTYMD <=   TNKRRK-EDYMD))
+                         ((TNKRRK-STYMD     <=   LNK-SYU-SRYYMD  )  AND
+                          (LNK-SYU-SRYYMD   <=   TNKRRK-EDYMD))
                    PERFORM   TNKRRK-READ-SEC
                END-PERFORM
            ELSE
@@ -1332,8 +1332,8 @@
                PERFORM  TSYRRK-READ-SEC
                PERFORM  UNTIL
                        (FLG-TSYRRK      =    1)    OR
-                      ((TSYRRK-NINSTYMD   <=   LNK-SYU-SKYSTYMD)  AND
-                       (LNK-SYU-SKYSTYMD  <=   TSYRRK-NINEDYMD))
+                      ((TSYRRK-NINSTYMD   <=   LNK-SYU-SRYYMD  )  AND
+                       (LNK-SYU-SRYYMD    <=   TSYRRK-NINEDYMD))
                    PERFORM   TSYRRK-READ-SEC
                END-PERFORM
            ELSE
@@ -1522,7 +1522,7 @@
                INITIALIZE                    ORCSAGECHKAREA
                MOVE    LNK-SYU-HOSPID    TO  AGECHK-HOSPID
                MOVE    LNK-SYU-PTID      TO  AGECHK-PTID
-               MOVE    LNK-SYU-SKYSTYMD  TO  AGECHK-SRYYMD
+               MOVE    LNK-SYU-SRYYMD    TO  AGECHK-SRYYMD
                MOVE    PTINF-BIRTHDAY    TO  AGECHK-BIRTHDAY
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
@@ -1640,8 +1640,8 @@
                  PERFORM  HKNNUM-READ-SEC
                  PERFORM  UNTIL
                    (FLG-HKNNUM     =    1)                       OR
-                  ((HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SKYSTYMD(1:6)) AND
-                   (LNK-SYU-SKYSTYMD(1:6) <=  HKN-TEKEDYMD(1:6))     AND
+                  ((HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SRYYMD(1:6)  ) AND
+                   (LNK-SYU-SRYYMD(1:6)   <=  HKN-TEKEDYMD(1:6))     AND
                    (WK-PAYKBN            =  HKN-PAYKBN))
                      PERFORM   HKNNUM-READ-SEC
                  END-PERFORM
@@ -1694,8 +1694,8 @@
                  PERFORM  HKNNUM-READ-SEC
                  PERFORM  UNTIL
                    (FLG-HKNNUM     =    1)                      OR
-                  ((HKN-TEKSTYMD(1:6)     <= LNK-SYU-SKYSTYMD(1:6)) AND
-                   (LNK-SYU-SKYSTYMD(1:6) <= HKN-TEKEDYMD(1:6))     AND
+                  ((HKN-TEKSTYMD(1:6)     <= LNK-SYU-SRYYMD(1:6)  ) AND
+                   (LNK-SYU-SRYYMD(1:6)   <= HKN-TEKEDYMD(1:6))     AND
                    (WK-PAYKBN            = HKN-PAYKBN))
                      PERFORM   HKNNUM-READ-SEC
                  END-PERFORM
@@ -1748,8 +1748,8 @@
                  PERFORM  HKNNUM-READ-SEC
                  PERFORM  UNTIL
                    (FLG-HKNNUM     =    1)                      OR
-                  ((HKN-TEKSTYMD(1:6)     <= LNK-SYU-SKYSTYMD(1:6)) AND
-                   (LNK-SYU-SKYSTYMD(1:6) <= HKN-TEKEDYMD(1:6))     AND
+                  ((HKN-TEKSTYMD(1:6)     <= LNK-SYU-SRYYMD(1:6)  ) AND
+                   (LNK-SYU-SRYYMD(1:6)   <= HKN-TEKEDYMD(1:6))     AND
                    (WK-PAYKBN            = HKN-PAYKBN))
                      PERFORM   HKNNUM-READ-SEC
                  END-PERFORM
@@ -1802,8 +1802,8 @@
                  PERFORM  HKNNUM-READ-SEC
                  PERFORM  UNTIL
                    (FLG-HKNNUM     =    1)                       OR
-                  ((HKN-TEKSTYMD(1:6)     <= LNK-SYU-SKYSTYMD(1:6)) AND
-                   (LNK-SYU-SKYSTYMD(1:6) <= HKN-TEKEDYMD(1:6))     AND
+                  ((HKN-TEKSTYMD(1:6)     <= LNK-SYU-SRYYMD(1:6)  ) AND
+                   (LNK-SYU-SRYYMD(1:6)   <= HKN-TEKEDYMD(1:6))     AND
                    (WK-PAYKBN            = HKN-PAYKBN))
                      PERFORM   HKNNUM-READ-SEC
                  END-PERFORM
@@ -3951,7 +3951,7 @@
            INITIALIZE                         SYS-5000-REC.
            MOVE    "5000"               TO    SYS-5000-KANRICD.
            MOVE    "*"                  TO    SYS-5000-KBNCD.
-           MOVE    LNK-SYU-SKYSTYMD     TO    ORC-DBYMD.
+           MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD.
            MOVE    SYS-5000-REC         TO    MCPDATA-REC.
            MOVE    "DBSELECT"           TO    MCP-FUNC.
            MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH.
@@ -3992,7 +3992,7 @@
       *    INITIALIZE                   LNK-DAY5-AREA.
       *    MOVE    "51"                 TO  LNK-DAY5-IRAI.
       *    MOVE    LNK-S02-SKYSTYMD     TO  LNK-DAY5-START.
-      *    MOVE    LNK-SYU-SKYSTYMD     TO  LNK-DAY5-END.
+      *    MOVE    LNK-SYU-SRYYMD       TO  LNK-DAY5-END.
       *    CALL    "ORCSDAY"            USING   STS-AREA-DAY
       *                                         LNK-DAY5-AREA.
       *    IF      ( STS-DAY-RC1    =   ZERO )
@@ -4006,7 +4006,7 @@
            MOVE    LNK-SYU-NYUGAIKBN     TO      NACCT-NYUGAIKBN.
            MOVE    LNK-SYU-PTID          TO      NACCT-PTID.
       ***  MOVE    "00"                  TO      NACCT-SRYKA.
-           MOVE    LNK-SYU-SKYSTYMD(1:6) TO      NACCT-SRYYM.
+           MOVE    LNK-SYU-SRYYMD(1:6)   TO      NACCT-SRYYM.
            MOVE    NYUINACCT-REC         TO      MCPDATA-REC.
            MOVE    "DBSELECT"            TO      MCP-FUNC.
            MOVE    "NYUINACCT-KEY7"      TO      ORC-DBPATH.
@@ -4045,7 +4045,7 @@
            MOVE    LNK-SYU-HOSPID        TO      ACCT-HOSPID.
            MOVE    LNK-SYU-NYUGAIKBN     TO      ACCT-NYUGAIKBN.
            MOVE    LNK-SYU-PTID          TO      ACCT-PTID.
-           MOVE    LNK-SYU-SKYSTYMD(1:6) TO      ACCT-SRYYM.
+           MOVE    LNK-SYU-SRYYMD(1:6)   TO      ACCT-SRYYM.
            MOVE    SRYACCT-REC           TO      MCPDATA-REC.
            MOVE    "DBSELECT"            TO      MCP-FUNC.
            MOVE    "SRYACCT-KEY33"       TO      ORC-DBPATH.
@@ -4084,7 +4084,7 @@
            MOVE    LNK-SYU-NYUGAIKBN     TO      NACCT-NYUGAIKBN.
            MOVE    LNK-SYU-PTID          TO      NACCT-PTID.
       ***  MOVE    "00"                  TO      NACCT-SRYKA.
-           MOVE    LNK-SYU-SKYSTYMD(1:6) TO      NACCT-SRYYM.
+           MOVE    LNK-SYU-SRYYMD(1:6)   TO      NACCT-SRYYM.
            MOVE    NYUINACCT-REC         TO      MCPDATA-REC.
            MOVE    "DBSELECT"            TO      MCP-FUNC.
            MOVE    "NYUINACCT-KEY7"      TO      ORC-DBPATH.
@@ -4568,7 +4568,7 @@
       *                   ADD     500    TO   WK-SHOKUJI-FTN
       *             END-IF
                     IF    WRK-SKJGNSTYMD-S   NOT  =   SPACE
-                       MOVE   LNK-SYU-SKYSTYMD(1:6) 
+                       MOVE   LNK-SYU-SRYYMD(1:6) 
                                          TO  WRK-SKJGNSTYYMM2
                        MOVE   IDY        TO  WRK-SKJGNSTDD2
                        IF   WRK-SKJGNSTYMD-S  <=  WRK-SKJGNSTYMD2
@@ -4680,8 +4680,8 @@
                PERFORM  HKNNUM-READ-SEC
                PERFORM  UNTIL
                  (FLG-HKNNUM     =    1)                       OR
-                ((HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SKYSTYMD(1:6)) AND
-                 (LNK-SYU-SKYSTYMD(1:6) <=  HKN-TEKEDYMD(1:6))     AND
+                ((HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SRYYMD(1:6)  ) AND
+                 (LNK-SYU-SRYYMD(1:6)   <=  HKN-TEKEDYMD(1:6))     AND
                  (WK-PAYKBN            =  HKN-PAYKBN))
                    PERFORM   HKNNUM-READ-SEC
                END-PERFORM
@@ -4750,7 +4750,7 @@
                PERFORM  PTINF-READ-SEC
                IF       MCP-RC          =       ZERO
                     MOVE   PTINF-BIRTHDAY   TO  WRK-YMDS1
-                    MOVE   LNK-SYU-SKYSTYMD TO  WRK-YMDS2
+                    MOVE   LNK-SYU-SRYYMD   TO  WRK-YMDS2
                     MOVE   ZERO             TO  WRK-NENREI
                     COMPUTE  WRK-NENREI     =   WRK-YYS2
                                             -   WRK-YYS1
@@ -5204,8 +5204,8 @@
                PERFORM  HKNNUM-READ-SEC
                PERFORM  UNTIL
                  (FLG-HKNNUM     =    1)                       OR
-                ((HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SKYSTYMD(1:6)) AND
-                 (LNK-SYU-SKYSTYMD(1:6) <=  HKN-TEKEDYMD(1:6))     AND
+                ((HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SRYYMD(1:6)  ) AND
+                 (LNK-SYU-SRYYMD(1:6)   <=  HKN-TEKEDYMD(1:6))     AND
                  (WK-PAYKBN            =  HKN-PAYKBN))
                    PERFORM   HKNNUM-READ-SEC
                END-PERFORM
@@ -7603,7 +7603,7 @@
            INITIALIZE                           TNS-TENSU-REC
            MOVE    WK-SRYCD             TO      TNS-SRYCD
            MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-           MOVE    LNK-SYU-SKYSTYMD     TO      ORC-DBYMD
+           MOVE    LNK-SYU-SRYYMD       TO      ORC-DBYMD
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    "TENSU-KEY"          TO      ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
