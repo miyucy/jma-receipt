@@ -469,6 +469,11 @@
       *
                IF      IDX                 >   ZERO     
       *
+                   DISPLAY  "BD002-PTNUM = " BD002-PTNUM
+                   DISPLAY  "BD002-RSIJIBAI-SKYMONEY = "
+                             BD002-RSIJIBAI-SKYMONEY
+                   DISPLAY  "BD002-JIHI-TOTAL-TAX = "
+                             BD002-JIHI-TOTAL-TAX
       *            自費以外のとき自費分だけ集計
                    IF      IDX             =   7
                        MOVE    ZERO            TO  WRK-JIHI
@@ -480,10 +485,12 @@
                                            +   BD002-JIHI-TAX
                    END-IF
                    IF    IDX  =  8  OR  9
-                       MOVE  BD002-RSIJIBAI-SKYMONEY TO BD002-SKYMONEY
-                   END-IF
-                   COMPUTE WRK-MONEY       =   BD002-SKYMONEY
+                       COMPUTE WRK-MONEY   =   BD002-RSIJIBAI-SKYMONEY
+                                           -   WRK-JIHI
+                   ELSE
+                       COMPUTE WRK-MONEY   =   BD002-SKYMONEY
                                            -   WRK-JIHI                  
+                   END-IF
                    DISPLAY "WRK-JIHI=" WRK-JIHI
                    DISPLAY "BD002-SKYMONEY=" BD002-SKYMONEY
                    DISPLAY "WRK-MONEY=" WRK-MONEY

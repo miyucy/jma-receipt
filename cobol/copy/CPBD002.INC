@@ -9,6 +9,7 @@
       ************************************************************
       *01  BD002-REC.
            03  BD002-KEY.
+      *
       *°åÎÅµ¡´Ø£É£Ä
                05  BD002-HOSPID          PIC  X(24).
       *Æþ³°¶èÊ¬
@@ -240,8 +241,7 @@
                05  BD002-JIHI-4-TAX          PIC  9(07). 
                05  BD002-JIHI-5              PIC  9(07). 
                05  BD002-JIHI-5-TAX          PIC  9(07). 
-           03  BD002-JIHI-NAIYOU-R           REDEFINES  
-	       BD002-JIHI-NAIYOU.
+           03  BD002-JIHI-NAIYOU-R       REDEFINES  BD002-JIHI-NAIYOU.
                05  BD002-JIHI-TBL            OCCURS   5.
                  07  BD002-JIHI-TAXNASI        PIC  9(07).
                  07  BD002-JIHI-TAXARI         PIC  9(07).
@@ -327,8 +327,7 @@
                05  BD002-SHOKUJI6        PIC  9(07).
                05  BD002-SHOKUJI7-NISSU  PIC  9(02).
                05  BD002-SHOKUJI7        PIC  9(07).
-           03  BD002-SYOKUJI-NAIYOUR     REDEFINES   
-	       BD002-SHOKUJI-NAIYOU.
+           03  BD002-SYOKUJI-NAIYOUR REDEFINES   BD002-SHOKUJI-NAIYOU.
                05  BD002-SYOKUJI-TBL     OCCURS   7.
                  07  BD002-SHOKUJI-NISSU   PIC  9(02).
                  07  BD002-SHOKUJI         PIC  9(07).
@@ -475,7 +474,6 @@
            03  BD002-UPYMD               PIC  X(08).
       *¹¹¿·»þ´Ö
            03  BD002-UPHMS               PIC  X(06).
-      *
-      *
+      *      *
       *´µ¼ÔÈÖ¹æ
            03  BD002-PTNUM               PIC  X(20).
