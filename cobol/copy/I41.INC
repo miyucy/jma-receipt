@@ -38,6 +38,7 @@
             04  I41-VALUE       PIC X(9).
           03  I41-TAINBI.
             04  I41-VALUE       PIC X(9).
+          03  I41-NYUINNISSU    PIC S9(6).
           03  I41-NUM.
             04  I41-VALUE       PIC X(3).
           03  I41-MEISYO.

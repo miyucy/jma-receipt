@@ -45,6 +45,7 @@
                    07  SPA-GMN-IJYOU180                  PIC X(09).
                    07  SPA-GMN-NYUINBI-41                PIC X(09).
                    07  SPA-GMN-TAINBI-41                 PIC X(09).
+                   07  SPA-GMN-NYUINNISSU                PIC S9(06).
       *
                    07  SPA-GMN-INPUT-41.
                        09  SPA-GMN-NUM-41                PIC 9(03).

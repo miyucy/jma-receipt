@@ -1512,6 +1512,29 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>NYUINNISSU</name>
+      <x>80</x>
+      <y>88</y>
+      <width>60</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Sep 2002 08:54:46 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Sep 2002 08:55:10 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>IJYOU180</name>
       <x>434</x>
@@ -2554,6 +2577,38 @@
       <label>*</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label212</name>
+      <x>8</x>
+      <y>88</y>
+      <width>60</width>
+      <height>24</height>
+      <label>入院日数</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label213</name>
+      <x>144</x>
+      <y>88</y>
+      <width>20</width>
+      <height>24</height>
+      <label>日</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>

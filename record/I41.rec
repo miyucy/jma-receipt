@@ -33,6 +33,9 @@ I41	{
 		TAINBI	{
 			value	varchar(9);
 		};
+		NYUINNISSU	{
+			value	number(6);
+		};
 		NUM	{
 			value	varchar(3);
 		};

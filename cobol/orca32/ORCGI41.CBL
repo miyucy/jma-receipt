@@ -189,6 +189,8 @@
            03  WRK-SAGAKU.
                05  WRK-SAGAKU-Z1   PIC ------,--9.
                05  WRK-SAGAKU-X1   PIC X(02).
+           03  WRK-NYUINNISSU.
+               05  WRK-NYUINNISSU-Z PIC ZZZZZZ.
       *    分画数画面編集用
            03  WRK-BUNGSU-X.
                05  WRK-BUNGSU-Z1   PIC ZZZ.
@@ -1164,6 +1166,45 @@
                END-IF
            END-IF.
       *
+           MOVE    "PTNYUINRRK-KEY3"   TO  WRK-DBPATH.
+           PERFORM 900-TBL-CLOSE-SEC.
+      *
+      *    入院日数の表示
+           INITIALIZE                  PTNYUINRRK-REC.
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID.
+           MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID.
+           MOVE    SPA-SYSYMD          TO  PTNYUINRRK-NYUINYMD.
+           MOVE    SPA-SYSYMD          TO  PTNYUINRRK-TAIINYMD.
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "PTNYUINRRK-KEY11"  TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTNYUINRRK-KEY11"   TO  ORC-DBPATH
+               PERFORM 970-PTNYUINRRK-READ-SEC
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF.
+      *
+           IF      FLG-PTNYUINRRK      =   ZERO
+               INITIALIZE                  ORCSTUSANAREA
+               MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
+               MOVE    PTNYUINRRK-PTID TO  STUSAN-PTID
+               MOVE    SPA-SYSYMD      TO  STUSAN-KJNYMD
+               CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+               MOVE    STUSAN-NISSU01  TO  SPA-GMN-NYUINNISSU
+           ELSE
+               MOVE    ZERO            TO  SPA-GMN-NYUINNISSU
+           END-IF.
+      *
+           MOVE    "PTNYUINRRK-KEY11"  TO  WRK-DBPATH.
+           PERFORM 900-TBL-CLOSE-SEC.
+      *
        3103-PTNYUINRRK-HEN-EXT.
            EXIT.
       *
@@ -2088,6 +2129,7 @@
            MOVE    SPA-GMN-IJYOU180    TO  I41-IJYOU180.
            MOVE    SPA-GMN-NYUINBI-41  TO  I41-NYUINBI.
            MOVE    SPA-GMN-TAINBI-41   TO  I41-TAINBI.
+           MOVE    SPA-GMN-NYUINNISSU  TO  I41-NYUINNISSU.
       *    入院科
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-GMN-SRYKA-MAX-41
@@ -2627,6 +2669,7 @@
            INITIALIZE                  SPA-GMN-IJYOU180.
            INITIALIZE                  SPA-GMN-NYUINBI-41.
            INITIALIZE                  SPA-GMN-TAINBI-41.
+           INITIALIZE                  SPA-GMN-NYUINNISSU.
       *
            PERFORM 310-SPA-SET-SEC.
            IF     SPA-ERRCD       NOT =   SPACE
