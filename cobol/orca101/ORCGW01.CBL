@@ -63,6 +63,7 @@
       *  01.05.14    NACL-多々納  03/10/00  診療行為自動設定へ、
       *                                     患者登録機能情報追加
       *  01.05.16    NACL-多々納  03/11/25  期間変更修正
+      *  01.05.17    NACL-太田    04/01/17  診療行為機能情報追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -246,6 +247,8 @@
            03  FILLER              PIC X(35)   VALUE
                "1036 高額請求資料用薬剤分類情報".
            03  FILLER              PIC X(35)   VALUE
+               "1038 診療行為機能情報".
+           03  FILLER              PIC X(35)   VALUE
                "2003 レセプト作成指示（印刷順）情報".
            03  FILLER              PIC X(35)   VALUE
                "2005 レセプト・総括印刷情報".
@@ -259,11 +262,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   26.
+           03  TBL-KANRICD-TBL         OCCURS   27.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   26.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   27.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -1569,6 +1572,7 @@
       *********WHEN    "1008"
                WHEN    "1017"
       *---- (01.05.01) LINE ADD END ----------------------------------
+               WHEN    "1038"
                    MOVE    "W07"               TO  SPA-SAKIPG
       *---- (01.02.04) LINE ADD START --------------------------------
                WHEN    "3001"

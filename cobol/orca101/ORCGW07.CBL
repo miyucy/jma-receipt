@@ -42,6 +42,7 @@
       *  02.01.02    NACL-多々納  03/11/07  入院初診料追加
       *  02.01.03    NACL-多々納  04/01/09  包括登録追加
       *  02.01.04    NACL-多々納  04/01/15  数量ゼロ入力追加
+      *  02.01.05    NACL-太田    04/01/16  診療行為機能情報タグ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -157,6 +158,19 @@
                        09  SPA-GMN-HOJYOKBN-COMB.
                            11  SPA-GMN-HOJYOKBN-LIST       PIC X(28)
                                                            OCCURS  2.
+                   07  SPA-GMN-PAGE3-AREA.
+      *                入金管理情報（診療行為機能情報）
+                       09  SPA-GMN-SRYNYKNKNRKBN-G.
+                           11  SPA-GMN-SRYNYKNKNRKBN       PIC X(01).
+                           11  SPA-GMN-SRYNYKNKNRKBN-F1    PIC X(01).
+                           11  SPA-GMN-SRYNYKNKNRKBNMEI    PIC X(38).
+                       09  SPA-GMN-SRYNYKNKNRKBNLST-G.
+                           11  SPA-GMN-SRYNYKNKNRKBN-MAX   PIC 9(03).
+                           11  SPA-GMN-SRYNYKNKNRKBNLST    OCCURS  5.
+                               13  SPA-GMN-SRYNYKNKNRKBNL  PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-SRYNYKNKNRKBNMEIL
+                                                           PIC X(38).
       *
                    07  SPA-GMN-DATALST        OCCURS  2.
                        09  SPA-GMN-DATAL      PIC X(01).
@@ -228,6 +242,8 @@
            COPY  "CPSK1017.INC".
       *    診療科情報
            COPY  "CPSK1005.INC".
+      *    診療行為機能情報
+           COPY  "CPSK1038.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -242,6 +258,9 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -403,11 +422,17 @@
                        PERFORM  4032-DEL-1007-SEC
                        PERFORM  4032-DEL-1008-SEC
                    WHEN   "1003"
-      *                患者登録報の更新
+      *                患者登録情報の更新
                        PERFORM  491-KOUSHIN-1017-SEC
                    WHEN   "1004"
-      *                患者登録報の削除
+      *                患者登録情報の削除
                        PERFORM  4032-DEL-1017-SEC
+                   WHEN   "1005"
+      *                診療行為情報の更新
+                       PERFORM  491-KOUSHIN-1038-SEC
+                   WHEN   "1006"
+      *                診療行為情報の削除
+                       PERFORM  4032-DEL-1038-SEC
                END-EVALUATE
            ELSE
                EVALUATE    SPA-W01-KANRICD
@@ -415,6 +440,8 @@
                        MOVE    2            TO  SPA-GMN-CUR
                    WHEN    "1017"
                        MOVE    20           TO  SPA-GMN-CUR
+                   WHEN    "1038"
+                       MOVE    30           TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF
       *
@@ -476,6 +503,18 @@
            MOVE    "0 課税"            TO  SPA-GMN-HOJYOKBN-LIST(1)
            MOVE    "1 非課税"          TO  SPA-GMN-HOJYOKBN-LIST(2)
       *
+           MOVE    "1 今回請求分のみ入金"
+                                       TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
+           MOVE    "2 今回分、日付の古い未収順に入金"
+                                       TO  SPA-GMN-SRYNYKNKNRKBNLST(2)
+           MOVE    "3 今回分、日付の新しい未収順に入金"
+                                       TO  SPA-GMN-SRYNYKNKNRKBNLST(3)
+           MOVE    "4 日付の古い未収順に入金"
+                                       TO  SPA-GMN-SRYNYKNKNRKBNLST(4)
+           MOVE    "5 日付の新しい未収順に入金"
+                                       TO  SPA-GMN-SRYNYKNKNRKBNLST(5)
+           MOVE    5                   TO  SPA-GMN-SRYNYKNKNRKBN-MAX
+      *
            EVALUATE    SPA-W01-KANRICD
       *        診療行為情報
                WHEN    "1007"
@@ -483,6 +522,9 @@
       *        患者登録機能制御情報
                WHEN    "1017"
                    PERFORM 310-SPASET-1017-SEC
+      *        診療行為機能情報
+               WHEN    "1038"
+                   PERFORM 310-SPASET-1038-SEC
            END-EVALUATE
       *
            . 
@@ -742,6 +784,50 @@
            EXIT.
       *
       *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       310-SPASET-1038-SEC         SECTION.
+      *
+      *    診療行為機能情報
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "1038"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1038-REC
+           ELSE
+               INITIALIZE  SYS-1038-REC
+           END-IF
+      *
+           MOVE    SYS-1038-NYKNKNRKBN TO  SPA-GMN-SRYNYKNKNRKBN
+      *
+      *    入金管理区分
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-SRYNYKNKNRKBN-MAX
+               IF      SPA-GMN-SRYNYKNKNRKBN
+                                       =   SPA-GMN-SRYNYKNKNRKBNL (IDY)
+                   MOVE    SPA-GMN-SRYNYKNKNRKBNLST(IDY)
+                                       TO SPA-GMN-SRYNYKNKNRKBN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-SRYNYKNKNRKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-SRYNYKNKNRKBNLST (1)
+                                       TO  SPA-GMN-SRYNYKNKNRKBN-G
+           END-IF
+      *
+            MOVE    30                 TO  SPA-GMN-CUR
+      *
+           . 
+       31O-SPASET-1007-EXT.
+           EXIT.
+      *****************************************************************
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
@@ -823,6 +909,9 @@
            MOVE    W07-HAKKOKBN        TO  SPA-GMN-HAKKOKBN-G
            MOVE    W07-HOJYOKBN        TO  SPA-GMN-HOJYOKBN-G
       *
+      *    診療行為機能情報
+           MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
+      *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -892,6 +981,12 @@
                    END-IF
       *            自費保険の補助区分チェック
                    PERFORM 4107-HOJYO-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+               WHEN    "1038"
+      *            入金管理区分チェック
+                   PERFORM 4108-SRYNYKNKNRKBN-CHK-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
@@ -1227,6 +1322,30 @@
            EXIT.
       *
       *****************************************************************
+      *    入金管理区分チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-SRYNYKNKNRKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SRYNYKNKNRKBN-MAX
+               IF      SPA-GMN-SRYNYKNKNRKBN
+                                       =   SPA-GMN-SRYNYKNKNRKBNL (IDX)
+                   MOVE    SPA-GMN-SRYNYKNKNRKBNLST(IDX)
+                                          TO  SPA-GMN-SRYNYKNKNRKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    30              TO  SPA-GMN-CUR
+               MOVE    "0024"          TO  SPA-ERRCD
+               GO      TO      4108-SRYNYKNKNRKBN-CHK-EXT
+           END-IF
+      *
+           .
+       4108-SRYNYKNKNRKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -1257,6 +1376,8 @@
                    MOVE    "1002"              TO  SPA-WIDCD
                WHEN    "1017"
                    MOVE    "1004"              TO  SPA-WIDCD
+               WHEN    "1038"
+                   MOVE    "1006"              TO  SPA-WIDCD
            END-EVALUATE
       *
            .    
@@ -1358,6 +1479,37 @@
            .
        4032-DEL-1017-EXT.
            EXIT.
+      *****************************************************************
+      *    削除処理１０３８
+      *****************************************************************
+       4032-DEL-1038-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1038-REC
+           INITIALIZE                      SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1038-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  SYS-1038-EDYUKYMD
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+           IF      MCP-RC              NOT =   ZERO 
+               MOVE    "1002"              TO  SPA-ERRCD
+               DISPLAY "SYSKANRI-KEY =>" SYS-1038-KEY 
+                       ",MCP-RC:" MCP-RC 
+               GO  TO  4032-DEL-1038-EXT
+           END-IF
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           PERFORM 210-BACK
+           .
+       4032-DEL-1038-EXT.
+           EXIT.
       *
       *****************************************************************
       *       登録前処理
@@ -1379,6 +1531,10 @@
                WHEN    "1017"
                    IF      SPA-ERRCD        =   SPACE
                        MOVE    "1003"           TO  SPA-WIDCD
+                   END-IF
+               WHEN    "1038"
+                   IF      SPA-ERRCD        =   SPACE
+                       MOVE    "1005"           TO  SPA-WIDCD
                    END-IF
           END-EVALUATE
       *     
@@ -1416,6 +1572,11 @@
            MOVE    SYS-1007-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
                MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
@@ -1423,6 +1584,12 @@
                MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
                MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
+                                                   SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
@@ -1482,6 +1649,11 @@
            MOVE    SYS-1008-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
                MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
@@ -1489,6 +1661,12 @@
                MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
                MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
+                                                   SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
@@ -1541,6 +1719,11 @@
            MOVE    SYS-1017-REC            TO  SYSKANRI-REC
       *
            IF      FLG-SYSKANRI            =   ZERO
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
                MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
@@ -1548,6 +1731,12 @@
                MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
                MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
+                                                   SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
@@ -1570,6 +1759,73 @@
        490-KOUSHIN-1017-EXT.
            EXIT.
       *
+      ******************************************************************
+      *       登録処理
+      *****************************************************************
+       491-KOUSHIN-1038-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1038-REC
+           INITIALIZE                      SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1038-REC
+           ELSE
+               MOVE    SPACE               TO  SYS-1038-REC
+               INITIALIZE                      SYS-1038-REC
+               MOVE    "1038"              TO  SYS-1038-KANRICD
+               MOVE    "*"                 TO  SYS-1038-KBNCD
+           END-IF
+      *
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-1038-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD        TO  SYS-1038-EDYUKYMD
+           MOVE    SPA-GMN-SRYNYKNKNRKBN   TO  SYS-1038-NYKNKNRKBN
+      *
+           MOVE    SYS-1038-REC            TO  SYSKANRI-REC
+      *
+           IF      FLG-SYSKANRI            =   ZERO
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
+               MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
+               MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
+               MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
+               MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
+               MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
+               MOVE    "DBUPDATE"              TO  MCP-FUNC
+           ELSE
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
+                                                   SYS-UPYMD
+               MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+      *
+               MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
+               MOVE    "DBINSERT"              TO  MCP-FUNC
+           END-IF
+           MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+           CALL    "ORCMCPSUB"                 USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+           IF      MCP-RC              NOT =   ZERO
+               MOVE    "1003"                  TO  SPA-ERRCD
+               DISPLAY "W07 ERR:" MCP-RC
+                        ",SYS-1038-KEY:" SYS-1038-KEY
+                        ",MCP-FUNC:" MCP-FUNC
+               GO  TO  490-KOUSHIN-1038-EXT
+           END-IF
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           PERFORM 210-BACK
+           .
+       490-KOUSHIN-1038-EXT.
+           EXIT.
       *****************************************************************
       *       入力項目の関連チェック処理
       *****************************************************************
@@ -1729,6 +1985,18 @@
       *
            PERFORM 5001-MAPCUR-SEC
       *
+      *    入金管理区分（診療行為機能情報）
+           MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SRYNYKNKNRKBN-MAX
+               MOVE    SPA-GMN-SRYNYKNKNRKBNLST (IDX)
+                                       TO  W07-SRYNYKNKNRKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-SRYNYKNKNRKBN-MAX
+                                       TO  W07-SRYNYKNKNRKBN-COUNT
+      *
+           PERFORM 5001-MAPCUR-SEC
+      *
            .
        500-GMNHEN-EXT.
            EXIT.
@@ -1741,6 +2009,7 @@
            MOVE    WIDGET-INSENSITIVE  TO  W07-B03-STATE
                                            W07-TAGNAME1-STATE
                                            W07-TAGNAME2-STATE
+                                           W07-TAGNAME3-STATE
                                            W07-SRYKACD-STATE
       *
            IF      SPA-W01-SELNUM          >   ZERO
@@ -1752,6 +2021,8 @@
                    MOVE    WIDGET-NORMAL   TO  W07-TAGNAME1-STATE
                WHEN    "1017" 
                    MOVE    WIDGET-NORMAL   TO  W07-TAGNAME2-STATE
+               WHEN    "1038" 
+                   MOVE    WIDGET-NORMAL   TO  W07-TAGNAME3-STATE
            END-EVALUATE
       *
            IF      SPA-GMN-DATA(7)         =   "1"
@@ -1827,6 +2098,9 @@
                WHEN    "0023"
                    MOVE    "自費保険の補助区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "0024"
+                   MOVE    "入金管理区分がありません。"
+                                                       TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"    TO  SPA-ERRMSG
                WHEN    "1001"
@@ -1877,6 +2151,12 @@
                                                        TO  WRK-WIDMSG
                WHEN    "1004"
                    MOVE    "患者登録機能情報を削除します"
+                                                       TO  WRK-WIDMSG
+               WHEN    "1005"
+                   MOVE    "診療行為機能情報を登録します"
+                                                       TO  WRK-WIDMSG
+               WHEN    "1006"
+                   MOVE    "診療行為機能情報を削除します"
                                                        TO  WRK-WIDMSG
            END-EVALUATE
       *
@@ -1946,6 +2226,8 @@
                    MOVE  "HAKKOKBN"        TO   MCP-WIDGET
                WHEN    23
                    MOVE  "HOJYOKBN"        TO   MCP-WIDGET
+               WHEN    30
+                   MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
       *
                WHEN    99
                    MOVE  "B12"             TO   MCP-WIDGET
@@ -1956,6 +2238,8 @@
                    MOVE    0               TO  W07-PAGENO
                WHEN    20  THRU    23
                    MOVE    1               TO  W07-PAGENO
+               WHEN    30  THRU    30
+                   MOVE    2               TO  W07-PAGENO
            END-EVALUATE
       *
            .
@@ -2008,6 +2292,8 @@
                WHEN    "HAKKOKBN"
                    MOVE    23              TO  SPA-GMN-CUR
                WHEN    "HOJYOKBN"
+                   MOVE    99              TO  SPA-GMN-CUR
+               WHEN    "SRYNYKNKNRKBN"
                    MOVE    99              TO  SPA-GMN-CUR
            END-EVALUATE
       *
@@ -2072,6 +2358,17 @@
        5002-HIZUKE-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
+           EXIT.
       *****************************************************************
       *    管理マスター読込（キー）
       *****************************************************************

@@ -143,6 +143,18 @@ W07	{
 			TAGNAME2    {
 			    state   int;
 			};
+			TAG3	{
+				SRYNYKNKNRKBN_COMBO	{
+					SRYNYKNKNRKBN	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[5];
+				};
+			};
+			TAGNAME3    {
+			  	state   int;
+			};
 		};
 	};
 };
