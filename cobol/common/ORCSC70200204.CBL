@@ -2411,21 +2411,24 @@
       *    Ｘ線
            IF      FLG-XSEN-ARI        =   1
       *        入院時の初日
-               IF      WRK-XSEN-DAY    <   IDN1
+               IF     (WRK-XSEN-DAY    =   ZERO )  OR
+                      (WRK-XSEN-DAY    <   IDN1 )
                    MOVE    IDN1            TO  WRK-XSEN-DAY
                END-IF
            END-IF
       *    核医学
            IF      FLG-KAKUI-ARI       =   1
       *        入院時の初日
-               IF      WRK-KAKUI-DAY   <   IDN1
+               IF     (WRK-KAKUI-DAY   =   ZERO )  OR
+                      (WRK-KAKUI-DAY   <   IDN1 )
                    MOVE    IDN1            TO  WRK-KAKUI-DAY
                END-IF
            END-IF
       *    コンピュータ
            IF      FLG-CTMRI-ARI       =   1
       *        入院時の初日
-               IF      WRK-CTMRI-DAY   <   IDN1
+               IF     (WRK-CTMRI-DAY   =   ZERO )  OR
+                      (WRK-CTMRI-DAY   <   IDN1 )
                    MOVE    IDN1            TO  WRK-CTMRI-DAY
                END-IF
            END-IF

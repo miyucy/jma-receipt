@@ -2380,28 +2380,32 @@
       *    判断料の時、初日を設定
            IF      WRK-KENIDX          >   ZERO
       *        入院時の初日
-               IF      WRK-KEN-DAY (WRK-KENIDX)    <  IDN1
+               IF     (WRK-KEN-DAY (WRK-KENIDX)    =   ZERO )  OR
+                      (WRK-KEN-DAY (WRK-KENIDX)    >  IDN1  )
                    MOVE    IDN1            TO  WRK-KEN-DAY  (WRK-KENIDX)
                END-IF
            END-IF
       *    採血料
            IF      FLG-BV-ARI          =   1
       *        入院時の初日
-               IF      WRK-BV-DAY      <   IDN1
+               IF     (WRK-BV-DAY      =   ZERO )  OR
+                      (WRK-BV-DAY      >   IDN1 )
                    MOVE    IDN1            TO  WRK-BV-DAY
                END-IF
            END-IF
       *    採血料
            IF      FLG-BC-ARI          =   1
       *        入院時の初日
-               IF      WRK-BC-DAY      <   IDN1
+               IF     (WRK-BC-DAY      =   ZERO )  OR
+                      (WRK-BC-DAY      >   IDN1 )
                    MOVE    IDN1            TO  WRK-BC-DAY
                END-IF
            END-IF
       *    採血料
            IF      FLG-BA-ARI          =   1
       *        入院時の初日
-               IF      WRK-BA-DAY      <   IDN1
+               IF     (WRK-BA-DAY      =   ZERO )  OR
+                      (WRK-BA-DAY      >   IDN1 )
                    MOVE    IDN1            TO  WRK-BA-DAY
                END-IF
            END-IF
