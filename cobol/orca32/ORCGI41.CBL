@@ -4248,9 +4248,13 @@
       *    通算算定済日数
                MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
                DISPLAY  "WRK-TSUSAN = " WRK-TSUSAN
-      *    入院料加算診療コード
+      *    入院料加算診療コード取り込み
+           PERFORM    410191-NYUKSN-GET-SEC
+      *    特定入院料区分のセット
            IF      WRK-TOKUTEI-NYUIN    =   SPACE
-               PERFORM    410191-NYUKSN-GET-SEC
+               MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
+           ELSE
+               MOVE     "1"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
            END-IF
       *    外泊
            MOVE   "099999911"   TO  LNK-SCNYUACCT-GAIHAKU-SRYCD
