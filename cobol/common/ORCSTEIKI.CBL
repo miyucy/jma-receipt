@@ -1222,7 +1222,7 @@
                                MOVE    "01"          TO  ORC-DBYMD(7:2)
                                PERFORM    TENSU-READ-SEC
                                IF      MCP-RC         =    ZERO
-                                   EVALUATE    TNS-GAITENTTLKBN
+                                   EVALUATE    TNS-NYUTENTTLKBN
                                        WHEN    1
                                           COMPUTE  TBL-JIHI-TAXNASI(1)
                                                =   TBL-JIHI-TAXNASI(1)
@@ -1406,7 +1406,7 @@
                                MOVE    "01"          TO  ORC-DBYMD(7:2)
                                PERFORM    TENSU-READ-SEC
                                IF      MCP-RC         =    ZERO
-                                   EVALUATE    TNS-GAITENTTLKBN
+                                   EVALUATE    TNS-NYUTENTTLKBN
                                        WHEN    1
                                           COMPUTE  TBL-JIHI-TAXARI(1)
                                                =   TBL-JIHI-TAXARI(1)
