@@ -279,6 +279,9 @@
                WHEN    "0057"
                    MOVE    "点滴は１日１回しか算定できません。"
                                        TO  SPA-ERRMSG
+               WHEN    "0157"
+                   MOVE    "動脈注射は１日１回しか算定できません。"
+                                       TO  SPA-ERRMSG
                WHEN    "0058"
                    MOVE    "外来管理加算は算定済です。算定できません。"
                                        TO  SPA-ERRMSG
@@ -594,9 +597,6 @@
                    MOVE    "会計照会で訂正して下さい。"
                                        TO  SPA-ERRMSG(31:)
                WHEN    "9020"
-                   MOVE    "薬剤は入力できません。"
-                                       TO  SPA-ERRMSG
-               WHEN    "9021"
                    MOVE    "食事は外来では入力できません。"
                                        TO  SPA-ERRMSG
            END-EVALUATE
