@@ -22,6 +22,18 @@ copydir = ${ORCA_DIR}/cobol/copy
 
 COPYGEN = @COPYGEN@
 
+PATCHDIR = @patchdir@
+PATCHLIBDIR = @patchlibdir@
+
+PATCHCOPYDIR = ${PATCHDIR}/cobol/copy
+PATCHDATADIR = ${PATCHDIR}/data
+PATCHFORMDIR = ${PATCHDIR}/form
+PATCHINITDIR = ${PATCHDIR}/init
+PATCHLDDEFDIR = ${PATCHDIR}/lddef
+PATCHRECORDDIR = ${PATCHDIR}/record
+PATCHSCREENDIR = ${PATCHDIR}/screen
+PATCHSCRIPTSDIR = ${PATCHDIR}/scripts
+
 SITEDIR = @sitedir@
 SITESRCDIR = @sitesrcdir@
 SITELIBDIR = @sitelibdir@

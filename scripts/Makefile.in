@@ -24,6 +24,9 @@ shell_sources = \
 	allways/preprint.sh.in \
 	allways/orc_file_del.sh.in \
 	allways/tensu.sh.in \
+	allways/program_upgrade_online.sh.in \
+	allways/program_upgrade_copy.sh.in \
+	allways/program_upgrade_restart.sh.in \
 	daily/HCALL.sh.in \
 	daily/execoprg.sh.in \
 	daily/HC01.sh.in \
@@ -90,6 +93,7 @@ noinst_shell_scripts = $(noinst_shell_sources:.sh.in=.sh)
 
 .sh.in.sh: 
 	sed -e 's,\@jma-receipt-env\@,$(sysconfdir)\/jma-receipt\.env,g' \
+	    -e 's,\@VERSION\@,$(VERSION),g' \
 	$< > $@
 	chmod +x $@
 
@@ -155,6 +159,9 @@ filecheck:
 	-name "tensu.sh" -o \
 	-name "toukei1.sh" -o \
 	-name "orcbi201.sh" -o \
+	-name "program_upgrade_online.sh" -o \
+	-name "program_upgrade_copy.sh" -o \
+	-name "program_upgrade_restart.sh" -o \
 	-printf "file\t%f\n") \
 	|sort +1 |uniq -u -f1
 

@@ -2,9 +2,9 @@ name	orca;
 
 base	"@ORCA_DIR@";
 
-lddir	"@sitelddefdir@:@lddefdir@";
-bddir	"@sitelddefdir@:@lddefdir@";
-record	"@siterecorddir@:@recorddir@";
+lddir	"@sitelddefdir@:@patchlddefdir@:@lddefdir@";
+bddir	"@sitelddefdir@:@patchlddefdir@:@lddefdir@";
+record	"@siterecorddir@:@patchrecorddir@:@recorddir@";
 
 multiplex_level	aps;
 

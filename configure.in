@@ -42,6 +42,19 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
+AC_ARG_WITH(patchdir,
+	    [  --with-patchdir=DIR      patch libraries in DIR [PREFIX]],
+            [patchdir=$withval],
+            [patchdir='${prefix}'])
+
+AC_ARG_WITH(patchlibdir,
+	    [  --with-patchlibdir=DIR   patch cobol libraries in DIR [PREFIX/lib]],
+            [patchlibdir=$withval],
+            [patchlibdir='${prefix}/lib'])
+
+AC_SUBST(patchdir)dnl
+AC_SUBST(patchlibdir)dnl
+
 AC_ARG_WITH(sitedir,
 	    [  --with-sitedir=DIR      site libraries in DIR [PREFIX]],
             [sitedir=$withval],

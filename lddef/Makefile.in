@@ -82,6 +82,9 @@ directory: directory.in
 	sed -e 's,\@ORCA_DIR\@,$(ORCA_DIR),g' \
 	    -e 's,\@lddefdir\@,$(lddefdir),g' \
 	    -e 's,\@recorddir\@,$(recorddir),g' \
+	    -e 's,\@patchdir\@,$(PATCHDIR),g' \
+	    -e 's,\@patchlddefdir\@,$(PATCHLDDEFDIR),g' \
+	    -e 's,\@patchrecorddir\@,$(PATCHRECORDDIR),g' \
 	    -e 's,\@sitedir\@,$(SITEDIR),g' \
 	    -e 's,\@sitelddefdir\@,$(SITELDDEFDIR),g' \
 	    -e 's,\@siterecorddir\@,$(SITERECORDDIR),g' \
