@@ -39,18 +39,20 @@
       *保険組合せ
            03  LNK-SROUNYUIN-HKNCOMBI                PIC  9(04).
       *返却項目
-           03  LNK-SROUNYUIN-HENKYAKU-AREA           OCCURS  31.
+           03  LNK-SROUNYUIN-HENKYAKU-AREA.
+      *返却テーブル
+               05  LNK-SROUNYUIN-HENKYAKU-TBL        OCCURS  31.
       *労災入院フラグ（空白：労災入院なし　１：労災入院中）
-               05  LNK-SROUNYUIN-NYUIN-FLG           PIC  X(01).      
+                   07  LNK-SROUNYUIN-NYUIN-FLG       PIC  X(01).      
       *剤点数
-               05  LNK-SROUNYUIN-ZAITEN              PIC  9(08).
+                   07  LNK-SROUNYUIN-ZAITEN          PIC  9(08).
       *診療コード計
-               05  LNK-SROUNYUIN-SRYCDTOTAL          PIC  9(14).
+                   07  LNK-SROUNYUIN-SRYCDTOTAL      PIC  9(14).
       *明細数
-               05  LNK-SROUNYUIN-MEISAISU            PIC  9(07).
+                   07  LNK-SROUNYUIN-MEISAISU        PIC  9(07).
       *診療コード
-               05  LNK-SROUNYUIN-ROUSAI.
-                   07  LNK-SROUNYUIN-SRYCD           PIC  X(09)
+                   07  LNK-SROUNYUIN-ROUSAI.
+                       09  LNK-SROUNYUIN-SRYCD       PIC  X(09)
                                                      OCCURS 20.
       *復帰コード（１：算定年月エラー　２：患者検索エラー　３：労災入院なし）
            03  LNK-SROUNYUIN-RC                      PIC S9(9) BINARY.
