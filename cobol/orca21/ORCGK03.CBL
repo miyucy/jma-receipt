@@ -1352,7 +1352,6 @@
                ADD     SPA-TEI-CHOSEI  (SPA-SYUNOU-IDX)
                                            TO  SPA-NAI-CHOSEI
            END-IF
-      *
       *    全科の時、単独科の保険を集計
            IF      SPA-GMN-SRYKA       =   ZERO
                PERFORM VARYING     IDX4    FROM    1   BY  1
@@ -1409,7 +1408,19 @@
                MOVE    SPA-SYUNOU-REC(IDX)     TO  WRK-SYUNOU-REC
                IF     (WRK-HKNCOMBI        =   WRK-SYU-HKNCOMBINUM) AND
                       (WRK-SRYKA           =   WRK-SYU-SRYKA      )
-                   PERFORM 31000-SYUNOU-ADD-SEC
+                   IF      SYU-PTID        =   ZERO
+                       MOVE    WRK-SYUNOU-REC      TO  SYUNOU-REC
+                       IF     (WRK-SYU-DENPNUM     >   ZERO )
+                           ADD     SPA-TEI-SKYMONEY(IDX)
+                                           TO  SPA-NAI-SEIKYU
+                           ADD     SPA-TEI-SKYMONEY-TAX-SAI(IDX)
+                                           TO  SPA-NAI-SKYMONEY-TAX-SAI
+                           ADD     SPA-TEI-CHOSEI  (IDX)
+                                           TO  SPA-NAI-CHOSEI
+                       END-IF
+                   ELSE
+                       PERFORM 31000-SYUNOU-ADD-SEC
+                   END-IF
                    MOVE    1               TO  FLG-FUKU
                END-IF
            END-PERFORM
