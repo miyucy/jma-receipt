@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.01.01     NACL-森脇    03/08/21  分類区分判定
+      * 01.01.02     NACL-森脇    03/08/26  使用量カウント構成変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -58,28 +59,40 @@
        FD  TOKEI-FILE.
        01  TOKEI-REC. 
            03  TOKEI-KEY.
+      *----(01.01.02)--ADD-START---
+               05  TOKEI-NYUGAIKBN     PIC X(01).
+      *----(01.01.02)--ADD-END-----
                05  TOKEI-PTID          PIC 9(10).
                05  TOKEI-YKZKBN        PIC 9(01).
       *----(01.01.01)--ADD-START---
                05  TOKEI-BUNRUI        PIC 9(02).
       *----(01.01.01)--ADD-END-----
                05  TOKEI-SRYCD         PIC X(09).
-           03  TOKEI-NAME              PIC X(48).
-           03  TOKEI-TANINAME          PIC X(04).
+      *----(01.01.02)--UPD-START---
+               05  TOKEI-ZAINUM        PIC 9(08).
+           03  TOKEI-NAME              PIC X(54).
+           03  TOKEI-TANINAME          PIC X(16).
+      *----(01.01.02)--UPD-END-----
            03  TOKEI-CNT-G.
                05  TOKEI-CNT           PIC 9(05)V9(03) OCCURS  31.
       *    クリア用ファイル（レセプト種別）
        FD  TOKEIX-FILE.
        01  TOKEIX-REC. 
            03  TOKEIX-KEY.
+      *----(01.01.02)--ADD-START---
+               05  TOKEIX-NYUGAIKBN    PIC X(01).
+      *----(01.01.02)--ADD-END-----
                05  TOKEIX-PTID         PIC 9(10).
                05  TOKEIX-YKZKBN       PIC 9(01).
       *----(01.01.01)--ADD-START---
                05  TOKEIX-BUNRUI       PIC 9(02).
       *----(01.01.01)--ADD-END-----
                05  TOKEIX-SRYCD        PIC X(09).
-           03  TOKEIX-NAME             PIC X(48).
-           03  TOKEIX-TANINAME         PIC X(04).
+      *----(01.01.02)--UPD-START---
+               05  TOKEIX-ZAINUM       PIC 9(08).
+           03  TOKEIX-NAME             PIC X(54).
+           03  TOKEIX-TANINAME         PIC X(16).
+      *----(01.01.02)--UPD-END-----
            03  TOKEIX-CNT-G.
                05  TOKEIX-CNT          PIC 9(05)V9(03) OCCURS  31.
       *    エラーファイル
@@ -151,6 +164,9 @@
       *
       *    キー領域
        01  KEY-AREA.
+      *----(01.01.02)--ADD-START---
+           03  KEY-NYUGAIKBN           PIC X(01).
+      *----(01.01.02)--ADD-END-----
            03  KEY-PTID                PIC 9(10).
       *
       *    作業領域
@@ -191,6 +207,12 @@
            03  WRK-DD                  PIC 9(02).
            03  WRK-DAY                 PIC 9(02).
            03  WRK-DAYED               PIC 9(02).
+      *
+           03  WRK-NAME                PIC X(100).
+           03  WRK-MAE-INPUT           PIC X(100).
+           03  WRK-OUT-INPUT           PIC X(100).
+           03  WRK-OUT-MAX             PIC 9(03).
+           03  WRK-HENSURYO2           PIC X(03).
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -517,6 +539,7 @@
            PERFORM 900-TOKEI-NEXT-SEC
       *
            PERFORM UNTIL   FLG-TOKEI       =   1
+               MOVE    TOKEI-NYUGAIKBN     TO  KEY-NYUGAIKBN
                MOVE    TOKEI-PTID          TO  KEY-PTID
       *        帳票編集<見出し>処理
                PERFORM 310-HEAD-HEN-SEC
@@ -742,66 +765,55 @@
       *
       *    統計データ検索
            INITIALIZE                  TOKEI-REC
+      *----(01.01.02)--ADD-START---
+           MOVE    ACCT-NYUGAIKBN      TO  TOKEI-NYUGAIKBN
+      *----(01.01.02)--ADD-END-----
            MOVE    ACCT-PTID           TO  TOKEI-PTID
            MOVE    WRK-YKZKBN          TO  TOKEI-YKZKBN
            MOVE    TNSP-TENPUYAKKBN    TO  TOKEI-BUNRUI
            MOVE    SRY-SRYCD(IDX)      TO  TOKEI-SRYCD
+      *----(01.01.02)--ADD-START---
+           MOVE    SRY-ZAINUM          TO  TOKEI-ZAINUM
+      *----(01.01.02)--ADD-END-----
+      *
            PERFORM 900-TOKEI-READ-SEC
       *
            IF          FLG-TOKEI       =   1
+      *----(01.01.02)--UPD-START---
                INITIALIZE                  TOKEI-REC
+      *----(01.01.02)--ADD-START---
+               MOVE    ACCT-NYUGAIKBN      TO  TOKEI-NYUGAIKBN
+      *----(01.01.02)--ADD-END-----
                MOVE    ACCT-PTID           TO  TOKEI-PTID
                MOVE    WRK-YKZKBN          TO  TOKEI-YKZKBN
                MOVE    TNSP-TENPUYAKKBN    TO  TOKEI-BUNRUI
                MOVE    SRY-SRYCD(IDX)      TO  TOKEI-SRYCD
+               MOVE    SRY-ZAINUM          TO  TOKEI-ZAINUM
                MOVE    TNS-NAME            TO  TOKEI-NAME
-               MOVE    TNS-TANINAME        TO  TOKEI-TANINAME
       *
-               IF      WRK-SYUBETU         =   "1"
-                   COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
-                   MOVE    WRK-DD              TO  CNT-DAY
+               MOVE    SRY-SRYSURYO(IDX)   TO  WRK-SURYO
+               PERFORM 400-ZHEN-SURYO-SET2-SEC
+               MOVE    WRK-HENSURYO2       TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
       *
-                   PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
-                           OR    ( CNT-DAY     >   WRK-DAYED )
-                       MOVE    ZERO            TO  TOKEI-CNT(CNT-DAY)
-                       COMPUTE TOKEI-CNT(CNT-DAY)
-                                               =   TOKEI-CNT(CNT-DAY)
-                                               +   SRY-SRYSURYO(IDX)
-                       COMPUTE CNT-DAY =   CNT-DAY +   1
-                   END-PERFORM
-               ELSE
-                   MOVE    ZERO            TO  WRK-SURYO
-                   COMPUTE WRK-SURYO       =   SRY-SRYSURYO(IDX)
-                                           *   ACCT-DAY(1 WRK-DD)
-                   MOVE    ZERO            TO  TOKEI-CNT(WRK-DD)
-                   COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
-                                               +   WRK-SURYO
-               END-IF
+               MOVE    SPACE               TO  WRK-NAME
+               STRING  WRK-OUT-INPUT       DELIMITED  BY  SPACE
+                       TNS-TANINAME        DELIMITED  BY  SPACE
+                                   INTO    WRK-NAME
+               END-STRING
+               MOVE    WRK-NAME        TO  TOKEI-TANINAME
       *
+               MOVE    ZERO            TO  TOKEI-CNT(WRK-DD)
+               COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
+                                           +   ACCT-DAY(1 WRK-DD)
                WRITE   TOKEI-REC
                COMPUTE CNT-TOKEI           =   CNT-TOKEI   +   1
            ELSE
-               IF      WRK-SYUBETU         =   "1"
-                   COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
-                   MOVE    WRK-DD              TO  CNT-DAY
-      *
-                   PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
-                           OR    ( CNT-DAY     >   WRK-DAYED )
-                       COMPUTE TOKEI-CNT(CNT-DAY)
-                                               =   TOKEI-CNT(CNT-DAY)
-                                               +   SRY-SRYSURYO(IDX)
-                       COMPUTE CNT-DAY =   CNT-DAY +   1
-                   END-PERFORM
-               ELSE
-                   MOVE    ZERO            TO  WRK-SURYO
-                   COMPUTE WRK-SURYO       =   SRY-SRYSURYO(IDX)
-                                           *   ACCT-DAY(1 WRK-DD)
-                   COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
-                                               +   WRK-SURYO
-               END-IF
-      *
+               COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
+                                           +   ACCT-DAY(1 WRK-DD)
                REWRITE TOKEI-REC
            END-IF
+      *----(01.01.02)--UPD-END-----
              .
        250-TOKEI-HEN-EXT.
            EXIT.
@@ -835,8 +847,9 @@
       *****************************************************************
        320-BODY-HEN-SEC            SECTION.
       *
-           PERFORM UNTIL ( CNT-LINE        >   21 )
+           PERFORM UNTIL ( CNT-LINE        >=  21 )
                    OR    ( FLG-TOKEI       =   1 )
+                   OR    ( KEY-NYUGAIKBN   NOT =   TOKEI-NYUGAIKBN )
                    OR    ( KEY-PTID    NOT =   TOKEI-PTID )
       *
                ADD     1                   TO  CNT-LINE
@@ -1007,6 +1020,58 @@
            MOVE    SPACE               TO  WRK-SURYO-X
            MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
       *
+      *----(01.01.02)--UPD-START---
+      *    数量小数点以下編集
+      *     MOVE    ZERO                TO  FLG-SP
+      *     PERFORM VARYING CNT-KETA    FROM    3   BY  -1
+      *             UNTIL   CNT-KETA    <   1
+      *         IF          WRK-SURYO-S2(CNT-KETA:1)    NOT =   ZERO
+      *             MOVE    1               TO  FLG-SP
+      *         END-IF
+      *         IF          FLG-SP          =   1
+      *             MOVE    WRK-SURYO-S2(CNT-KETA:1)
+      *                     TO  WRK-SURYO-Z3(CNT-KETA:1)
+      *         END-IF
+      *     END-PERFORM
+      *
+      *     IF          WRK-SURYO-Z3    NOT =   SPACE
+      *         MOVE    "."             TO  WRK-SURYO-Z2
+      *         IF          WRK-SURYO-X(1:5)    =   SPACE
+      *             MOVE    WRK-SURYO-S1    TO  WRK-SURYO-Z1-9
+      *         END-IF
+      *     END-IF
+      *
+           MOVE    SPACE               TO  WRK-HENSURYO
+      *     MOVE    SPACE               TO  WRK-COM
+           MOVE    ZERO                TO  CNT-KETA
+           PERFORM VARYING CNT-KETA2   FROM    1   BY  1
+                   UNTIL   CNT-KETA2   >   5
+                   OR      CNT-KETA    >=  2
+               IF          WRK-SURYO-X(CNT-KETA2:1)  NOT =   SPACE
+      *             IF          WRK-SURYO-X(CNT-KETA2:1)  =   "."
+      *                 MOVE    "."       TO  WRK-COM
+      *             ELSE
+                   COMPUTE CNT-KETA    =   CNT-KETA    +   1
+                   MOVE  WRK-SURYO-X(CNT-KETA2:1)
+                                       TO  WRK-HENSURYO(CNT-KETA:1)
+      *             END-IF
+      *----(01.01.02)--UPD-END-----
+               END-IF
+           END-PERFORM
+      *
+           .
+       400-ZHEN-SURYO-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   帳票Ｚ編集処理
+      *****************************************************************
+       400-ZHEN-SURYO-SET2-SEC      SECTION.
+      *
+      *    数量Ｚ編集
+           MOVE    SPACE               TO  WRK-SURYO-X
+           MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
+      *
       *    数量小数点以下編集
            MOVE    ZERO                TO  FLG-SP
            PERFORM VARYING CNT-KETA    FROM    3   BY  -1
@@ -1027,25 +1092,20 @@
                END-IF
            END-IF
       *
-           MOVE    SPACE               TO  WRK-HENSURYO
-           MOVE    SPACE               TO  WRK-COM
+           MOVE    SPACE               TO  WRK-HENSURYO2
            MOVE    ZERO                TO  CNT-KETA
            PERFORM VARYING CNT-KETA2   FROM    1   BY  1
                    UNTIL   CNT-KETA2   >   8
-                   OR      CNT-KETA    >=  2
-               IF          WRK-SURYO-X(CNT-KETA2:1)  NOT =   SPACE
-                   IF          WRK-SURYO-X(CNT-KETA2:1)  =   "."
-                       MOVE    "."       TO  WRK-COM
-                   ELSE
-                       COMPUTE CNT-KETA    =   CNT-KETA    +   1
-                       MOVE  WRK-SURYO-X(CNT-KETA2:1)
-                                         TO  WRK-HENSURYO(CNT-KETA:1)
-                   END-IF
+                   OR      CNT-KETA    >=  3
+               IF        WRK-SURYO-X(CNT-KETA2:1)  NOT =   SPACE
+                   COMPUTE CNT-KETA    =   CNT-KETA    +   1
+                   MOVE  WRK-SURYO-X(CNT-KETA2:1)
+                                       TO  WRK-HENSURYO2(CNT-KETA:1)
                END-IF
            END-PERFORM
       *
            .
-       400-ZHEN-SURYO-SET-EXT.
+       400-ZHEN-SURYO-SET2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1117,6 +1177,28 @@
        900-SRY-DBCLOSE-EXT.
            EXIT.
       *
+      *----(01.01.02)--ADD-START---
+      *****************************************************************
+      *    全角変換処理
+      *****************************************************************
+       800-ZENKAKU-HEN-SEC         SECTION.
+      *
+           MOVE    SPACE           TO  WRK-OUT-INPUT
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"             TO  KANACHK-SYORI
+           MOVE  WRK-MAE-INPUT     TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF    ( KANACHK-RC      =   ZERO )
+               MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-OUT-INPUT
+               MOVE    KANACHK-MAX TO  WRK-OUT-MAX
+           END-IF
+      *
+           .
+       800-ZENKAKU-HEN-EXT.
+           EXIT.
+      *----(01.01.02)--ADD-END-----
       *****************************************************************
       *    統計ファイル読込
       *****************************************************************
@@ -1285,7 +1367,6 @@
       *
            INITIALIZE                  RECE10-REC
            MOVE    PARA-DENPPRTYM      TO  RECE10-SRYYM
-      *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SEIKYU-ALL2"       TO  ORC-DBPATH
