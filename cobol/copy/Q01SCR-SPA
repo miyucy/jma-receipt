@@ -432,6 +432,10 @@
                                13  SPA-GMN-Q02-KEKKALST-AGE
                                                        PIC X(08).
       *
+      *                        保険組合せ
+                               13  SPA-GMN-Q02-KEKKALST-HKN
+                                                       PIC X(10).
+      *
       *                        郵便番号
                                13  SPA-GMN-Q02-KEKKALST-POST
                                                        PIC X(8).
@@ -439,6 +443,10 @@
       *                        診療内容
                                13  SPA-GMN-Q02-KEKKALST-SRYACT
                                                        PIC X(200).
+      *
+      *                        電話番号
+                               13  SPA-GMN-Q02-KEKKALST-TEL
+                                                       PIC X(16).
       *
                            11  SPA-GMN-Q02-KEKKA-MAX   PIC 9(05).
                            11  SPA-GMN-Q02-KEKKA-SEL   PIC 9(05).

@@ -5,13 +5,9 @@
   <name>Q02</name>
   <program_name>Q02</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -29,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 22 Dec 2000 05:08:28 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -67,8 +63,8 @@
       </signal>
       <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B02</name>
@@ -90,8 +86,8 @@
       </signal>
       <label>クリア</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B03</name>
@@ -102,8 +98,8 @@
       <can_focus>True</can_focus>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B04</name>
@@ -125,8 +121,8 @@
       </signal>
       <label>　　</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B05</name>
@@ -148,8 +144,8 @@
       </signal>
       <label>患者登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B06</name>
@@ -171,8 +167,8 @@
       </signal>
       <label>前頁</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B07</name>
@@ -194,8 +190,8 @@
       </signal>
       <label>次頁</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B08</name>
@@ -206,8 +202,8 @@
       <can_focus>True</can_focus>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B09</name>
@@ -218,8 +214,8 @@
       <can_focus>True</can_focus>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B10</name>
@@ -241,8 +237,8 @@
       </signal>
       <label>情報削除</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B11</name>
@@ -264,8 +260,8 @@
       </signal>
       <label>CSV出力</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
@@ -287,8 +283,8 @@
       </signal>
       <label>印刷</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B24</name>
@@ -310,8 +306,8 @@
       </signal>
       <label>処理結果</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkPandaEntry</class>
       <name>HYODAI</name>
@@ -338,8 +334,8 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
-
     </widget>
+
     <widget>
       <class>GtkPandaEntry</class>
       <name>JYOKEN1</name>
@@ -366,8 +362,8 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
-
     </widget>
+
     <widget>
       <class>GtkPandaEntry</class>
       <name>JYOKEN2</name>
@@ -394,8 +390,8 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
-
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label410</name>
@@ -410,8 +406,8 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label417</name>
@@ -426,8 +422,8 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-
     </widget>
+
     <widget>
       <class>GtkScrolledWindow</class>
       <name>SCR_KEKKALST</name>
@@ -464,8 +460,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Wed, 31 Jan 2001 12:09:23 GMT</last_modification_time>
 	</signal>
-	<columns>8</columns>
-	<column_widths>50,120,200,30,90,60,60,500</column_widths>
+	<columns>10</columns>
+	<column_widths>50,120,200,30,80,60,50,60,500,140</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -481,8 +477,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -494,8 +490,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -507,8 +503,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -520,8 +516,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -533,8 +529,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -546,8 +542,21 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label418</name>
+	  <label>保険</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -559,8 +568,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -572,10 +581,23 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label420</name>
+	  <label>電話番号</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
       </widget>
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>TOTAL</name>
@@ -590,8 +612,8 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-
     </widget>
+
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM</name>
@@ -614,8 +636,8 @@
       </signal>
       <editable>True</editable>
       <format>ZZZZZ</format>
-
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label411</name>
@@ -630,8 +652,8 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-
     </widget>
   </widget>
 </widget>
+
 </GTK-Interface>

@@ -33,6 +33,7 @@
       *  01.00.04    NACL-太田    02/10/21  印刷用ファイルにサイト区分を追加
       *  01.00.05    NACL-太田    03/07/01  出力先プリンタサブ追加
       *  01.00.06    NACL-太田    03/09/11  郵便番号を追加
+      *  01.00.07    NACL-太田    04/08/05  保険、電話番号を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -131,7 +132,6 @@
            03  WRK-PTINF-ADR-LEN       PIC 9(05).
            03  WRK-PTINF-BANTI-LEN     PIC 9(05).
            03  WRK-ADRS                PIC X(400).
-           03  WRK-ADRS-LEN            PIC 9(05).
            03  WRK-PARA.
                05  WRK-PARA-PAFNAME
                                        PIC X(100).
@@ -147,7 +147,6 @@
            03  WRK-HENYMDG1            PIC X(09).
            03  WRK-HENYMDG3            PIC X(22).
            03  WRK-PRTNM               PIC X(20).
-      *----(01.00.02) LINE ADD START ----------------------------------
            03  WRK-CALC-YMD1.
                05  WRK-CALC-YY1                    PIC 9(04).
                05  WRK-CALC-MM1                    PIC 9(02).
@@ -162,7 +161,6 @@
            03  WRK-AGE-G.
                05  WRK-AGE-Z                       PIC ---9.
                05  WRK-AGE-MEI                     PIC X(04).
-      *----(01.00.02) LINE ADD END   ----------------------------------
       * 
        01  CSV-EDIT-AREA.
            03  CSV-NO                  PIC Z(9)9.
@@ -179,17 +177,19 @@
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-AGETANI             PIC X(04).
            03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-HKN                 PIC X(20).
+           03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-POST                PIC X(07).
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-JYUSYO              PIC X(400).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-TEL                 PIC X(16).
       * 
        01  CONST-AREA.
            03  CONST-LINE              PIC 9(05)   VALUE   30.
-      *----(01.00.02) LINE ADD START ----------------------------------
            03  CONST-JOBID             PIC 9(07)   VALUE   1.
            03  CONST-JOB-SHELLID                   PIC X(08)
                VALUE   "ORCBQ01".
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -224,16 +224,18 @@
            COPY    "CPORCMCP.INC".
            COPY    "ORCA-DBPATH".
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
-           COPY  "CPMKPASS.INC".
+           COPY    "CPMKPASS.INC".
+      *
+      *    照会用サブ
+           COPY    "CPQSUB03.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -281,9 +283,7 @@
       *    ＤＢオープン
            PERFORM 120-DBOPEN-SEC
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
            PERFORM 900-JOB-STEP-START-SEC
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
            MOVE    WRK-PARA-PAFNAME    TO  PRFNAME
       *
@@ -345,18 +345,6 @@
                                            ORCSPRTNMAREA
                                            SPA-AREA
                                            SYS-1031-REC
-      *
-      *    MOVE    SPACE               TO  SYS-1031-REC
-      *    INITIALIZE                  SYS-1031-REC
-      *    MOVE    "1031"              TO  SYS-1031-KANRICD
-      *    MOVE    "*"                 TO  SYS-1031-KBNCD
-      *    MOVE    SYS-1031-REC        TO  MCPDATA-REC
-      *    PERFORM 800-SYSKANRI-READ-SEC
-      *    IF      FLG-SYSKANRI        =   ZERO
-      *        MOVE    MCPDATA-REC         TO  SYS-1031-REC
-      *    ELSE
-      *        INITIALIZE                  SYS-1031-REC
-      *    END-IF
            .
       *
        110-PRTNUM-GET-EXT.
@@ -449,9 +437,7 @@
                                            MCPDATA-REC
            END-IF
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
            PERFORM 900-JOB-STEP-END-SEC
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -485,11 +471,15 @@
            MOVE    QUERY-PTINF-BIRTHDAY (7:2)
                                    TO  CSV-BIRTHDAY (9:2)
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
            PERFORM 900-AGE-EDIT-SEC
            MOVE    WRK-AGE-Z       TO  CSV-AGENUM
            MOVE    WRK-AGE-MEI     TO  CSV-AGETANI
-      *----(01.00.02) LINE ADD END   ----------------------------------
+      *
+           MOVE    WRK-PARA-HOSPID     TO  QSUB03-HOSPID
+           MOVE    QUERY-PTINF-PTID    TO  QSUB03-PTID
+           MOVE    WRK-PARA-SYSYMD     TO  QSUB03-KJNYMD
+           CALL    "ORCGQSUB03"        USING QSUB03-LNK
+           MOVE    QSUB03-HKNCOMBIMEI  TO  CSV-HKN
       *
            MOVE    QUERY-PTINF-HOME-POST
                                    TO  CSV-POST
@@ -497,6 +487,9 @@
            PERFORM 900-ADRS-EDIT-SEC
       *
            MOVE    WRK-ADRS        TO  CSV-JYUSYO
+      *
+           MOVE    QUERY-PTINF-HOME-TEL1
+                                   TO  CSV-TEL
       *
            MOVE    CSV-EDIT-AREA   TO  CSV-REC
       *
@@ -514,11 +507,6 @@
       *
            MOVE    CNT-KNS         TO  WRK-ZZZZ9
            MOVE    WRK-ZZZZ9       TO  HC28-CD     (CNT-LINE)
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *    MOVE    QUERY-PTINF-PTNUM
-      *                            TO  HC28-PTNUM  (CNT-LINE)
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
       *    住所の実際の文字列長を求める
            MOVE    20                    TO  WRK-STR-LEN
            MOVE    QUERY-PTINF-PTNUM     TO  WRK-STR
@@ -532,10 +520,15 @@
               MOVE    QUERY-PTINF-PTNUM
                                    TO  HC28-PTNUM  (CNT-LINE)
            END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
-           MOVE    QUERY-PTINF-NAME
+           IF    ( QUERY-PTINF-NAME (21: ) NOT =   SPACE )
+               MOVE    QUERY-PTINF-NAME
+                                   TO  HC28-NAME2  (CNT-LINE)
+           ELSE
+               MOVE    QUERY-PTINF-NAME
                                    TO  HC28-NAME   (CNT-LINE)
+           END-IF
+      *
            EVALUATE    QUERY-PTINF-SEX
            WHEN    1
                MOVE    "男"        TO  HC28-SEIBETU(CNT-LINE)
@@ -550,11 +543,15 @@
            MOVE    WRK-HENYMDG1    TO  HC28-TANJYOBI
                                                    (CNT-LINE)
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
            PERFORM 900-AGE-EDIT-SEC
            MOVE    WRK-AGE-Z       TO  HC28-AGENUM (CNT-LINE)
            MOVE    WRK-AGE-MEI     TO  HC28-AGETANI(CNT-LINE)
-      *----(01.00.02) LINE ADD END   ----------------------------------
+      *
+           MOVE    WRK-PARA-HOSPID     TO  QSUB03-HOSPID
+           MOVE    QUERY-PTINF-PTID    TO  QSUB03-PTID
+           MOVE    WRK-PARA-SYSYMD     TO  QSUB03-KJNYMD
+           CALL    "ORCGQSUB03"        USING QSUB03-LNK
+           MOVE    QSUB03-HKNCOMBIMEI  TO  HC28-HKN (CNT-LINE)
       *
            IF    ( QUERY-PTINF-HOME-POST   NOT =   SPACE )
                MOVE    QUERY-PTINF-HOME-POST (1:3)
@@ -568,11 +565,14 @@
       *
            PERFORM 900-ADRS-EDIT-SEC
       *
-           IF    ( WRK-ADRS-LEN   <=   70 )
-               MOVE    WRK-ADRS        TO  HC28-JYUSYO (CNT-LINE)
-           ELSE
+           IF    ( WRK-ADRS (51:)  NOT =   SPACE )
                MOVE    WRK-ADRS        TO  HC28-JYUSYO2 (CNT-LINE)
+           ELSE
+               MOVE    WRK-ADRS        TO  HC28-JYUSYO (CNT-LINE)
            END-IF
+      *
+           MOVE    QUERY-PTINF-HOME-TEL1
+                                       TO  HC28-TEL (CNT-LINE)
       *
            IF  ( CNT-LINE         >=   CONST-LINE )
       *
@@ -637,7 +637,6 @@
            .
        800-SEIWA-HEN-EXT.
            EXIT.
-      *----(01.00.02) LINE ADD START ----------------------------------
       *****************************************************************
       *    年齢編集処理
       *****************************************************************
@@ -695,14 +694,12 @@
            .
        900-AGE-CALC-EXT.
            EXIT.
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *****************************************************************
       *    住所編集処理
       *****************************************************************
        900-ADRS-EDIT-SEC                   SECTION.
       *
            MOVE    SPACE           TO  WRK-ADRS
-           MOVE    ZERO            TO  WRK-ADRS-LEN
       *
       *    住所の項目長を求める
            MOVE    1               TO  WRK-STR-LEN
@@ -750,10 +747,6 @@
                INTO    WRK-ADRS
                WITH    POINTER WRK-STR-PNT
                END-STRING
-           END-IF
-      *
-           IF    ( WRK-STR-PNT         >   0 )
-               COMPUTE WRK-ADRS-LEN    =   WRK-ADRS-LEN    -   1 
            END-IF
       *
            .
@@ -984,7 +977,3 @@
        900-DBDISCONNECT-EXT.
            EXIT.
       *
-      *----(01.00.XX) LINE ADD START ----------------------------------
-      *----(01.00.XX) LINE ADD END   ----------------------------------
-      *----(01.00.XX) LINE UPD START ----------------------------------
-      *----(01.00.XX) LINE UPD END   ----------------------------------

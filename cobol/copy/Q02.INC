@@ -39,9 +39,11 @@
                     07  Q02-KEKKALST-SEX       PIC X(2).
                     07  Q02-KEKKALST-BIRTH     PIC X(10).
                     07  Q02-KEKKALST-AGE       PIC X(08).
-                    07  Q02-KEKKALST-POST       PIC X(08).
+                    07  Q02-KEKKALST-HKN       PIC X(06).
+                    07  Q02-KEKKALST-POST      PIC X(08).
                     07  Q02-KEKKALST-SRYACTNAIYO
                                                PIC X(200).
+                    07  Q02-KEKKALST-TEL       PIC X(16).
                   06  Q02-KEKKALST-SELECT      PIC X
                                            OCCURS  200 TIMES.
               04  Q02-TOTAL                    PIC X(22).

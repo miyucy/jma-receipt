@@ -58,6 +58,7 @@
       * 01.00.05     NACL-太田    03/06/10+一括入力対応
       * 01.00.06     NACL-太田    03/09/11+コラムリストに郵便番号を追加
       * 01.00.07     NACL-太田    04/02/09+コラムリスト編集修正
+      * 01.00.08     NACL-太田    04/08/05+保険、電話番号を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -258,11 +259,10 @@
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    照会用ＳＰＡ領域退避サブ
+      *    照会用サブ
            COPY    "CPQSUB01.INC".
-      *
-      *    ＳＱＬ組み立てサブ
            COPY    "CPQSUB02.INC".
+           COPY    "CPQSUB03.INC".
       *
       *    患者一覧印刷パラメタ
            COPY    "CPORCHC28.INC".
@@ -727,6 +727,14 @@
                MOVE    WRK-AGE-G           TO  SPA-GMN-Q02-KEKKALST-AGE
                                                                (IDX-GMN)
       *
+      *        保険組合せ
+               MOVE    SPA-HOSPID          TO  QSUB03-HOSPID
+               MOVE    QUERY-PTINF-PTID    TO  QSUB03-PTID
+               MOVE    SPA-SYSYMD          TO  QSUB03-KJNYMD
+               CALL    "ORCGQSUB03"        USING QSUB03-LNK
+               MOVE    QSUB03-HKNCOMBIMEI  TO  SPA-GMN-Q02-KEKKALST-HKN
+                                                               (IDX-GMN)
+      *
       *        郵便番号
                IF    ( QUERY-PTINF-HOME-POST   NOT =   SPACE )
                    MOVE    QUERY-PTINF-HOME-POST (1:3)
@@ -791,6 +799,11 @@
                    WITH    POINTER WRK-STR-PNT
                    END-STRING
                END-IF
+      *
+      *        電話番号
+               MOVE    QUERY-PTINF-HOME-TEL1
+                                   TO  SPA-GMN-Q02-KEKKALST-TEL
+                                                        (IDX-GMN)
       *
                MOVE    IDX-GMN     TO  SPA-GMN-Q02-KEKKA-MAX
       *
@@ -1750,12 +1763,18 @@
       *        年齢
                MOVE    SPA-GMN-Q02-KEKKALST-AGE (IDX1)
                                    TO  Q02-KEKKALST-AGE (IDX1)
+      *        保険組合せ
+               MOVE    SPA-GMN-Q02-KEKKALST-HKN (IDX1)
+                                   TO  Q02-KEKKALST-HKN (IDX1)
       *        郵便番号
                MOVE    SPA-GMN-Q02-KEKKALST-POST (IDX1)
                                    TO  Q02-KEKKALST-POST (IDX1)
       *        診療内容
                MOVE    SPA-GMN-Q02-KEKKALST-SRYACT (IDX1)
                                    TO  Q02-KEKKALST-SRYACTNAIYO (IDX1)
+      *        電話番号
+               MOVE    SPA-GMN-Q02-KEKKALST-TEL (IDX1)
+                                   TO  Q02-KEKKALST-TEL (IDX1)
       *
                IF      ( SPA-GMN-Q02-KEKKA-SEL =   IDX1 )
                    MOVE    "T"     TO  Q02-KEKKALST-SELECT (IDX1)
