@@ -295,6 +295,10 @@
                                  (NACCT-DAY(IDX)   =   1)
                                MOVE    NSRY-SRYCD(1)   TO  
                                                    WRK-NYUINKHN(IDX)
+      *                        ≥∞«Ò•≥°º•… ‘Ω∏Õ—§À∆˛±°¥À‹Œ¡≤√ªª∂Ë ¨§»
+      *                        ø«Œ≈∂Ë ¨§Œ¬‡»Ú
+                               PERFORM   210-GAIHAKU-MAE-SEC
+      *
                                IF   NSRY-SRYCD(2)  NOT =   SPACE
                                    MOVE   NSRY-SRYCD(2)  TO
                                                    WRK-SHOKIKSN(IDX)
@@ -453,9 +457,6 @@
                          UNTIL (LNK-SROUNYUIN-SRYCD(IDX IDX2) = SPACE)
                             OR (IDX2    >      20)
                    PERFORM    210-TENSU-KEISAN-SEC
-                   IF    IDX2     =     1
-                       MOVE   TNS-SRYKBN  TO  LNK-SROUNYUIN-SRYKBN(IDX)
-                   END-IF
                END-PERFORM
            END-PERFORM
       *
@@ -487,6 +488,25 @@
       *
            .
        210-NYUINACT-GET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ≥∞«Ò¡∞ΩËÕ˝
+      *****************************************************************
+       210-GAIHAKU-MAE-SEC            SECTION.
+      *
+      *    ≥∞«Ò•≥°º•… ‘Ω∏Õ—§À∆˛±°¥À‹Œ¡≤√ªª∂Ë ¨§»ø«Œ≈∂Ë ¨§Œ¬‡»Ú
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    LNK-SROUNYUIN-SRYCD(IDX IDX2)
+                                           TO  TNS-SRYCD
+           MOVE    LNK-SROUNYUIN-SANTEIYM  TO  ORC-DBYMD(1:6)
+           MOVE    "01"                    TO  ORC-DBYMD(7:2)
+           PERFORM TENSU-READ-SEC
+           MOVE    TNS-SRYKBN          TO  LNK-SROUNYUIN-SRYKBN(IDX)
+           MOVE    TNS-NYUKHNKSNKBN    TO  WRK-NYUKHNKSNKBN(IDX)
+      *
+           .
+       210-GAIHAKU-MAE-EXT.
            EXIT.
       *
       *****************************************************************
