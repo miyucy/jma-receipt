@@ -3,6 +3,15 @@ W13	{
 	        B03	{
 	           	state	int;
 	        };
+	        BTNPREV	{
+	           	state	int;
+	        };
+	        BTNNEXT	{
+	           	state	int;
+	        };
+	        BTNDEL	{
+	           	state	int;
+	        };
 		YUKOSTYMD	{
 			value	varchar(9);
 		};
@@ -63,6 +72,30 @@ W13	{
 			};
 			count	int;
 			item	varchar(20)[2];
+		};
+		KIZAITAXKBN_COMBO	{
+			KIZAITAXKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[02];
+		};
+		LBLKIZAILST	{
+			label	varchar(60);
+		};
+		scrolledwindow7	{
+			KIZAILST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(1);
+					value2	varchar(9);
+					value3	varchar(60);
+				}	[50];
+				select	bool[50];
+			};
 		};
 	};
 };

@@ -17,7 +17,13 @@
       ********************************************************************
         02  W13.
               03  W13-B03.
-                04  W13-B03-STATE   PIC S9(9)   BINARY.
+                04  W13-B03-STATE      PIC S9(9)   BINARY.
+              03  W13-BTNPREV.
+                04  W13-BTNPREV-STATE  PIC S9(9)   BINARY.
+              03  W13-BTNNEXT.
+                04  W13-BTNNEXT-STATE  PIC S9(9)   BINARY.
+              03  W13-BTNDEL-G.
+                04  W13-BTNDEL-STATE   PIC S9(9)   BINARY.
               03  W13-YUKOSTYMD.
                 04  W13-VALUE   PIC X(9).
               03  W13-YUKOEDYMD.
@@ -57,3 +63,20 @@
                 04  W13-SKJKBN           PIC X(20).
                 04  W13-SKJKBN-COUNT     PIC S9(9)   BINARY.
                 04  W13-SKJKBNLST        PIC X(20)   OCCURS  2 TIMES.
+              03  W13-KIZAITAXKBN-COMBO.
+                04  W13-KIZAITAXKBN        PIC X(10).
+                04  W13-KIZAITAXKBN-COUNT  PIC S9(9)   BINARY.
+                04  W13-KIZAITAXKBNLST     PIC X(10)   OCCURS  2 TIMES.
+              03  W13-LBLKIZAILST         PIC X(60).
+              03  W13-SCROLLEDWINDOW7.
+                04  W13-KIZAILST.
+                  05  W13-KIZAILST-COUNT   PIC S9(9)   BINARY.
+                  05  W13-KIZAILST-ROW     PIC S9(9)   BINARY.
+                  05  W13-KIZAILST-ROWATTR PIC S9(9)   BINARY.
+                  05  W13-KIZAILST-ITEM    OCCURS  50 TIMES.
+                    06  W13-TNUM            PIC X(3).
+                    06  W13-TSRYCD-MARK     PIC X(1).
+                    06  W13-TSRYCD          PIC X(9).
+                    06  W13-TSRYCDNAME      PIC X(60).
+                  05  W13-KIZAILIST-SELECT
+                          PIC X       OCCURS  50 TIMES.

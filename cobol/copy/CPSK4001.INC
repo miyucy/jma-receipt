@@ -38,19 +38,21 @@
       *瓷妄テ〖ブル
            03  SYS-4001-TBL.
       *汐阂回年板闻怠簇惰尸
-               05  SYS-4001-RSIIRYOKBN  PIC  X(1).
+               05  SYS-4001-RSIIRYOKBN  PIC  X(01).
       *回年板闻怠簇コ〖ド
                05  SYS-4001-RSIIRYOCDN  PIC  X(80).
       *爬眶帽擦惰尸
-               05  SYS-4001-TENKBN      PIC  X(1).
-      *裁换唯
+               05  SYS-4001-TENKBN      PIC  X(01).
+      *极清勒裁换唯
                05  SYS-4001-KSNRATE     PIC  9(02).
-      *矢今瘟∈久锐狼∷
+      *极清勒矢今瘟久锐狼
                05  SYS-4001-TAXKBN      PIC  X(01).
       *极清勒咯祸闻蛙锐
                05  SYS-4001-SKJKBN      PIC  X(01).
+      *极清勒泼年达亨霹久锐狼
+               05  SYS-4001-TAXKBN-KZI  PIC  X(01).
       *徒洒
-           03                           PIC  X(414).
+           03                           PIC  X(413).
       *眉琐ＩＤ
            03  SYS-4001-TERMID          PIC  X(16).
       *オペ〖レ〖タＩＤ
