@@ -612,6 +612,7 @@
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF
       *
+           .
       *
        4001-YUKOYMD-CHK-EXT.
            EXIT.
