@@ -285,12 +285,6 @@
            03  WRK-STYMDW          PIC X(06).
            03  WRK-EDYMDW          PIC X(06).
       *
-           03  WRK-STRYMD999.
-               05  WRK-STRYMD999-YY  PIC X(02).
-               05  WRK-STRYMD999-MM  PIC X(02).
-               05  WRK-STRYMD999-DD  PIC X(02).
-      *
-      *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG.
                05  WRK-HENGENGO    PIC X(01).
@@ -773,25 +767,18 @@
            MOVE    WRK-HENMM           TO  HC23-SYOSHINBIMM
            MOVE    WRK-HENDD           TO  HC23-SYOSHINBIDD
       *
-           MOVE    SPACE               TO  WRK-STRYMD999
       *    療養開始年月日
            IF      RECE41-RYOSTYMD     <   WRK-STYMD
                MOVE    WRK-STYMDW(1:2)     TO  HC23-STRYY
-                                               WRK-STRYMD999-YY
                MOVE    WRK-STYMDW(3:2)     TO  HC23-STRMM
-                                               WRK-STRYMD999-MM
                MOVE    WRK-STYMDW(5:2)     TO  HC23-STRDD
-                                               WRK-STRYMD999-DD
                MOVE    WRK-STYMD(7:2)      TO  IDX5
            ELSE      
                MOVE    RECE41-RYOSTYMD     TO  WRK-SYMD
                PERFORM 31012-SE-WA-YMDEDIT-SEC
                MOVE    WRK-HENYY           TO  HC23-STRYY
-                                               WRK-STRYMD999-YY
                MOVE    WRK-HENMM           TO  HC23-STRMM
-                                               WRK-STRYMD999-MM
                MOVE    WRK-HENDD           TO  HC23-STRDD
-                                               WRK-STRYMD999-DD
                MOVE  RECE41-RYOSTYMD(7:2)  TO  IDX5
            END-IF    
       *    療養終了年月日
@@ -814,7 +801,6 @@
                  IF   RECE41-NYUINBITBL(IDX4)  =  SPACE
                      MOVE    IDX4                TO  WRK-ZZ
                      MOVE    WRK-ZZ              TO  HC23-STRDD
-                                                     WRK-STRYMD999-DD
                      MOVE    IDX6                TO  IDX4
                  END-IF
            END-PERFORM
@@ -829,9 +815,14 @@
            END-PERFORM
       *
            IF      RECE41-JNISSU  =  999
-                MOVE   WRK-STRYMD999-YY   TO   HC23-ENDYY
-                MOVE   WRK-STRYMD999-MM   TO   HC23-ENDMM
-                MOVE   WRK-STRYMD999-DD   TO   HC23-ENDDD
+                MOVE    RECE41-RYOSTYMD     TO  WRK-SYMD
+                PERFORM 31012-SE-WA-YMDEDIT-SEC
+                MOVE    WRK-HENYY           TO  HC23-STRYY
+                                                HC23-ENDYY
+                MOVE    WRK-HENMM           TO  HC23-STRMM
+                                                HC23-ENDMM
+                MOVE    WRK-HENDD           TO  HC23-STRDD
+                                                HC23-ENDDD
            END-IF
       *
       *    実日数
