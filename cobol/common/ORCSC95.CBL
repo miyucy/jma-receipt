@@ -1287,6 +1287,7 @@
       *    Ê£¿ô¿ÇÎÅ²Ê¡¦ÊÝ¸±
            MOVE    JYURRK-GRP-DENPNUM TO  SPA-NAI-GRP-DENPNUM (IDX)
            MOVE    JYURRK-GRP-RENNUM  TO  SPA-NAI-GRP-RENNUM (IDX)
+           MOVE    JYURRK-SYU-UPDKBN  TO  SPA-NAI-SYU-UPDKBN (IDX)
       *
            MOVE    IDX                 TO  SPA-GMN-MAX1
       *

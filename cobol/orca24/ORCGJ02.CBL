@@ -239,6 +239,7 @@
            03  IDX3                PIC 9(04).
            03  IDX-T               PIC 9(04).
            03  IDT                 PIC 9(04).
+           03  IDX-SYU             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -419,7 +420,7 @@
            03  WRK-RRK-DRCD            PIC X(05).
            03  WRK-GRP-DENPNUM         PIC 9(07).
       *
-           03  WRK-SYU-ACCT-UPDKBN     PIC X(01).
+           03  WRK-ACCT-UPDKBN         PIC X(01).
       *    点滴算定エラー
            03  WRK-ERR-TBL.
                05  WRK-ERR-DAY         PIC 9(01)   OCCURS  31.
@@ -580,6 +581,16 @@
       *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
+      *    保存用収納ワーク
+       01  TBL-SYUNOU-AREA.
+         02  TBL-SYUNOU-REC        OCCURS   10.
+           COPY    "CPSYUNOU.INC"  REPLACING
+                                     //SYU-// BY //TBL-SYU-//.
+      *    保存用収納ワーク
+       01  WRK-SYUNOU-REC.
+           COPY    "CPSYUNOU.INC"  REPLACING
+                                     //SYU-// BY //WRK-SYU-//.
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -7197,11 +7208,11 @@
                                        TO  JYURRK-HKNCOMBINUM
            MOVE    SPA-RRK-HKNKBN(IDX) TO  JYURRK-HKNKBN
            MOVE    ZERO                TO  JYURRK-DENPNUM
-      *@
+      *
            IF      SPA-NYUGAIKBN       =   "2"
                PERFORM 49011212-DENPNUM-SET-SEC
            END-IF
-      *@
+      *
       *    剤番号変更
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDR     FROM    1   BY   1
@@ -7227,15 +7238,16 @@
            IF      IDX2                >   ZERO
                PERFORM 490111-JYURRK-INS-SEC
            END-IF
-      *@   外来の時、収納作成
-           IF      SPA-NYUGAIKBN       =   "2"
+      *    外来の時、収納作成
+           IF     (SPA-NYUGAIKBN       =   "2" ) AND
+                  (SPA-RRK-HKNCOMBI(IDX)   NOT =   "9999" )
                PERFORM 49011212-SYUNOU-INS-SEC
            END-IF
       *
            .
        4901121-JYURRK-ADDHEN-EXT.
            EXIT.
-      *@@
+      *
       *****************************************************************
       *    収納マスタ登録処理
       *****************************************************************
@@ -7369,15 +7381,12 @@
            .
        49011212-DENPNUM-SET-EXT.
            EXIT.
-      *@@
+      *
       *
       *****************************************************************
       *    受診履歴種別編集処理
       *****************************************************************
        4901122-JYURRK-SRYKBN-SEC           SECTION.
-      *TEST
-           DISPLAY "J02 SPA-RRK-ZAINUM;" SPA-RRK-ZAINUM (IDX IDR)
-                  ",SPA-RRK-SRYKBN:" SPA-RRK-SRYKBN (IDX IDR)
       *
            EVALUATE    SPA-RRK-SRYKBN (IDX IDR)
                WHEN   "11"
@@ -7526,17 +7535,23 @@
            MOVE    ZERO                TO  WRK-GRP-DENPNUM
            PERFORM
                    UNTIL   FLG-SYUNOU      =   1
+      *TEST
+              DISPLAY "SYU-GRP-DENPNUM:" SYU-GRP-DENPNUM
+                  ",SYU-SRYYMD:" SYU-SRYYMD
+                  ",SYU-ACCT-UPDKBN:" SYU-ACCT-UPDKBN
+                  ",SYU-GRP-DENPNUM:" SYU-GRP-DENPNUM
+                  ",WRK-GRP-DENPNUM:" WRK-GRP-DENPNUM
+      *TEST
+               IF     (SYU-GRP-DENPNUM     =   ZERO )  OR
+                      (SYU-GRP-RENNUM      =   1    )
+                   MOVE    ZERO                TO  WRK-GRP-DENPNUM
+               END-IF
                IF      SYU-ACCT-UPDKBN     NOT =   SPACE
-                   IF     (SYU-GRP-DENPNUM NOT =   ZERO )  AND
-                          (SYU-GRP-DENPNUM     =   WRK-GRP-DENPNUM)
-                       CONTINUE
+                   IF      SYU-GRP-DENPNUM NOT =   ZERO
+                       PERFORM 490123-SYUNOU-TOTAL-SEC
                    ELSE
                        PERFORM 490121-SYUNOU-SAIKEI-SEC
                    END-IF
-               END-IF
-               IF     (SYU-GRP-DENPNUM     =   ZERO )  OR
-                      (SYU-GRP-RENNUM      =   1    )
-                   MOVE    SYU-GRP-DENPNUM     TO  WRK-GRP-DENPNUM
                END-IF
       *
                MOVE    "SYUNOU-KEY28"      TO  ORC-DBPATH
@@ -7546,9 +7561,100 @@
            IF     (SPA-ERRCD           =   SPACE) AND
                   (SPA-J025-MAX        >   ZERO )
                PERFORM 490129-J025-SYRI-SEC
+           ELSE
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0064"          TO  SPA-ERRCD
+                END-IF
            END-IF
            .
        49012-SYUNOU-SAIKEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納まとめ再計算用処理
+      *****************************************************************
+       490123-SYUNOU-TOTAL-SEC           SECTION.
+      *
+           MOVE    SYUNOU-REC          TO  WRK-SYUNOU-REC
+           INITIALIZE                  TBL-SYUNOU-AREA
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY27"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY27"      TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYUNOU-REC
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX-SYU
+           PERFORM
+                   UNTIL   FLG-SYUNOU      =   1
+               IF      SYU-ACCT-UPDKBN     NOT =   SPACE
+                   ADD     1                   TO  IDX-SYU
+                   MOVE    SYUNOU-REC          TO  TBL-SYUNOU-REC
+                                                    (IDX-SYU)
+               END-IF
+               MOVE    "SYUNOU-KEY27"      TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           END-PERFORM
+      *
+           IF      IDX-SYU             =   ZERO
+                MOVE    WRK-SYUNOU-REC     TO  SYUNOU-REC
+           ELSE
+                MOVE    TBL-SYUNOU-REC(1)  TO  SYUNOU-REC
+           END-IF
+           PERFORM 490121-SYUNOU-SAIKEI-SEC
+      *
+           PERFORM VARYING     IDX     FROM    2   BY  1
+                   UNTIL       IDX     >   IDX-SYU
+      *
+               MOVE    TBL-SYUNOU-REC(IDX) TO  SYUNOU-REC
+               ADD     1                   TO  SPA-J025-MAX
+               IF      SPA-J025-MAX        <=  100
+                   PERFORM 490122-J025-HENSYU-SEC
+               END-IF
+      *
+               MOVE    SYUNOU-REC          TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+                   PERFORM 980-SYUNOU-READ-SEC
+               ELSE
+                   MOVE    SPACE               TO  SYUNOU-REC
+                   INITIALIZE                  SYUNOU-REC
+                   MOVE    1               TO  FLG-SYUNOU
+               END-IF
+      *
+               IF      FLG-ERR         =   1
+                   IF      SPA-J025-MAX        <=  100
+                       MOVE    "エラ−"    TO  SPA-J025-KBNMEI
+                                                 (SPA-J025-MAX)
+                   END-IF
+               END-IF
+               IF     (FLG-SYUNOU          =   ZERO )  AND
+                      (FLG-ERR             =   ZERO )
+                   IF      SPA-J025-MAX        <=  100
+                       MOVE    SYU-SKYMONEY    TO  SPA-J025-ATO-SKYMONEY
+                                                    (SPA-J025-MAX)
+                   END-IF
+                END-IF
+           END-PERFORM
+      *
+           .
+       490123-SYUNOU-TOTAL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7560,7 +7666,7 @@
            IF      SPA-J025-MAX        <=  100
                PERFORM 490122-J025-HENSYU-SEC
            END-IF
-           MOVE    SYU-ACCT-UPDKBN     TO  WRK-SYU-ACCT-UPDKBN
+           MOVE    SYU-ACCT-UPDKBN     TO  WRK-ACCT-UPDKBN
       *
            MOVE    SPACE               TO  SPA-ERRCD
            INITIALIZE                  LNK-ORCSSAIKEISAN-REC
@@ -7572,11 +7678,16 @@
            CALL    "ORCSSAIKEISAN"     USING
                                        SPA-AREA
                                        LNK-ORCSSAIKEISAN-REC
+      *
            IF      SPA-ERRCD           =   SPACE
                MOVE    0                   TO  FLG-ERR
            ELSE
                MOVE    1                   TO  FLG-ERR
            END-IF
+      *
+      *    受診履歴更新
+           PERFORM 4901211-JYURRK-UPDKBN-SEC
+      *
            MOVE    SPACE               TO  SPA-ERRCD
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
@@ -7612,7 +7723,7 @@
                    MOVE    SYU-SKYMONEY    TO  SPA-J025-ATO-SKYMONEY
                                                     (SPA-J025-MAX)
                END-IF
-               IF      WRK-SYU-ACCT-UPDKBN =   "2"
+               IF      WRK-ACCT-UPDKBN     =   "2"
       *            入返金額
                    MOVE    SYU-SKYMONEY        TO  SYU-NYUKIN-TOTAL
       *            入金回数
@@ -7764,6 +7875,60 @@
       *
            .
        490122-J025-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    受診履歴更新処理
+      *****************************************************************
+       4901211-JYURRK-UPDKBN-SEC           SECTION.
+      *
+           INITIALIZE                  JYURRK-REC
+           MOVE    SYU-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SYU-PTID            TO  JYURRK-PTID
+           MOVE    SYU-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SYU-SRYKA           TO  JYURRK-SRYKA
+           MOVE    SYU-DENPNUM         TO  JYURRK-DENPNUM
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
+               PERFORM 970-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           IF      FLG-JYURRK          =   ZERO
+      *        収納更新区分
+               IF      FLG-ERR             =   1
+                   MOVE    "1"                 TO  JYURRK-SYU-UPDKBN
+               ELSE
+                   MOVE    SPACE               TO  JYURRK-SYU-UPDKBN
+               END-IF
+      *
+               MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+      *
+               MOVE    JYURRK-REC          TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J02 JYURRK UPD ERR:" MCP-RC
+                                   ",KEY:" JYURRK-KEY
+                   MOVE    "2001"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       4901211-JYURRK-UPDKBN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8786,6 +8951,7 @@
                PERFORM 49012-SYUNOU-SAIKEISAN-SEC
                IF      FLG-END         =   1
                    MOVE    10              TO  SPA-J025-SYORI
+               
                END-IF
            END-IF
       *
@@ -8990,6 +9156,9 @@
                                        TO  WRK-ERRMSG
                WHEN    "0063"
                    MOVE    "日付が重複しています。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0064"
+                   MOVE    "更新すべき収納はありません。"
                                        TO  WRK-ERRMSG
                WHEN    "2000"
                    MOVE    "更新エラーです。"

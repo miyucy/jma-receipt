@@ -9814,7 +9814,7 @@
                                        >   SPA-GMN-MAX1
                CONTINUE
            ELSE
-               MOVE    K02-NO  (SPA-NAI-DOSELNUM)
+               MOVE    K02-NO  (SPA-NAI-DOSELNUM)(2:3)
                                            TO  SPA-GMN-DOSELNUM
       *
                IF      SPA-NAI-SYORI       =   ZERO
@@ -14021,10 +14021,17 @@
                      UNTIL     IDX         >   SPA-GMN-MAX1
                MOVE    SPA-GMN-NO     (IDX)    TO  WRK-ZZ
                MOVE    WRK-ZZ                  TO  K02-NO  (IDX)
+                                                       (2:3)
                MOVE    SPA-GMN-RRKYMD (IDX)    TO  K02-RRKYMD(IDX)
                MOVE    SPA-GMN-RRKSRYKA(IDX)   TO  K02-RRKSRYKA(IDX)
                MOVE    SPA-GMN-RRKHKNCOMBI(IDX)
                                                TO  K02-RRKHKNCOMBI(IDX)
+      *T
+               IF      SPA-NAI-SYU-UPDKBN (IDX)    =   "1"
+                   MOVE    "*"                 TO  K02-NO  (IDX)
+                                                          (1:1)
+               END-IF
+      *T
                IF      SPA-GMN-NO (IDX)    =   SPA-NAI-TESELNUM
                    MOVE    "T"             TO  K02-SELECT  (IDX)
       *            ÄûÀµ¤Î»þ
