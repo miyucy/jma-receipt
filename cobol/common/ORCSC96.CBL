@@ -283,6 +283,11 @@
                WHEN    "0157"
                    MOVE    "動脈注射は１日１回しか算定できません。"
                                        TO  SPA-ERRMSG
+               WHEN    "0140"
+                   MOVE    "手術が算定されています。注射料は算定"
+                                       TO  SPA-ERRMSG
+                   MOVE    "できません。手技料なしの種別にして下さい。"
+                                       TO  SPA-ERRMSG(37:)
                WHEN    "0058"
                    MOVE    "外来管理加算は算定済です。算定できません。"
                                        TO  SPA-ERRMSG

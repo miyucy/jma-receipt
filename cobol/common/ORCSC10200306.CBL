@@ -2745,13 +2745,15 @@
            END-IF
       *    初診料・再診料の重複チェック
            IF     (IDX-ZAI1            >   ZERO) AND
-                  (IDX-ZAI2            >   ZERO)
+                  (IDX-ZAI2            >   ZERO) AND
+                  (IDX-SYU2            >   ZERO)
                MOVE    "0017"          TO  SPA-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-SYU2)
                GO      TO      200-ALL-SYORI-EXT
            END-IF
-           IF     (IDX-ZAI1            >   1   ) OR
-                  (IDX-ZAI2            >   1   )
+           IF    ((IDX-ZAI1            >   1   ) OR
+                  (IDX-ZAI2            >   1   )) AND
+                 ( IDX-SYU2            >   ZERO )
                MOVE    "0017"          TO  SPA-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-SYU2)
                GO      TO      200-ALL-SYORI-EXT
@@ -2760,14 +2762,16 @@
            IF     (LNK-ORCSC-PG        =   "K02"  )  AND
                   (LNK-ORCSC-SYOSIN    =   1      )
                IF     (IDX-ZAI1            =   ZERO) AND
-                      (IDX-ZAI2            =   1   )
+                      (IDX-ZAI2            =   1   )  AND
+                      (IDX-SYU2            >   ZERO )
                    MOVE    "1017"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR (IDX-SYU2)
                    GO      TO      200-ALL-SYORI-EXT
                END-IF
            END-IF
       *    他保険算定済みのコメントがある時、診察料がないこと
-           IF      FLG-TAHOKEN         =   1
+           IF     (FLG-TAHOKEN         =   1    )  AND
+                  (IDX-SYU2            >   ZERO )
                IF      (IDX-ZAI1       >   ZERO )  OR
                        (IDX-ZAI2       >   ZERO )
                    MOVE    "0110"          TO  SPA-ERRCD

@@ -87,6 +87,9 @@
       *    内服
            03  FLG-NAIFUKU          PIC 9(01).
            03  FLG-OK3              PIC 9(01).
+      *    診察料
+           03  FLG-SINSATU          PIC 9(01).
+           03  FLG-JYURRK-END       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -177,10 +180,16 @@
       *    末日
            03  WRK-MATU                    PIC 9(02).
       *
+           03  WRK-ORC-DBPATH          PIC X(63).
+      *
+           03  WRK-HEN-MEI             PIC X(20).
+           03  WRK-HENSYU-MEISYO       PIC X(60).
+      *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
            03  WRK-CONTCHK-OCC         OCCURS  30.
                05  WRK-TBL-SRYCD       PIC X(09).
+           03  WRK-TBL-HKNCOMBI        PIC X(04).
            03  WRK-IDX-Y               PIC 9(04).
            03  IDX-TBL                 PIC 9(04).
            03  FLG-CNTCHK              PIC 9(01).
@@ -242,6 +251,9 @@
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *    診療行為用共通パラメタ
+           COPY    "K01COMMON-SPA".
       *
       *****************************************************************
       *    連絡　領域
@@ -727,15 +739,21 @@
       *****************************************************************
        300-AUTO-SYORI-SEC              SECTION.
       *
+           IF      LNK-ORCSC-PG        =   "K02"
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *        他保険で算定済み
+               INITIALIZE                  SPA-SYOHOU-ZUMI
+           END-IF
+      *
            INITIALIZE                      WRK-CONTCHK-TBL
            MOVE    ZERO                TO  WRK-KAISU
       *
       *    継続の時、算定分の編集
-           IF     (LNK-ORCSC-CONTKBN    =   "1"  OR  "2" )
+      *!!  IF     (LNK-ORCSC-CONTKBN    =   "1"  OR  "2" )
       *        入院の時
-               OR (SPA-NYUGAIKBN        =   "1"  )
+      *!!      OR (SPA-NYUGAIKBN        =   "1"  )
                PERFORM 30010-JYURRK-SYORI-SEC
-           END-IF
+      *!!  END-IF
       *
            MOVE    ZERO                TO  FLG-NAIYAK
            MOVE    ZERO                TO  FLG-TONPUK
@@ -749,9 +767,11 @@
            MOVE    ZERO                TO  FLG-KOUHATU
            MOVE    ZERO                TO  IDX-SYOHOU
            MOVE    ZERO                TO  FLG-MADOKU-ARI
+           MOVE    ZERO                TO  FLG-SINSATU
       *
            INITIALIZE                  WRK-ZAIKEI-AREA
            INITIALIZE                  TBL-NYUINDAY-AREA
+           MOVE    SPACE               TO  WRK-HENSYU-MEISYO
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
@@ -959,6 +979,12 @@
                IF      WRK-COM-ZAIEND (IDX)    =   "1"
                    MOVE    ZERO                TO  FLG-MADOKU-ARI
                END-IF
+      *
+      *        他保険にて算定の判定
+               IF     (WRK-COM-SRYKBN (IDX)    =   "11"  OR
+                                                   "12"  )
+                   MOVE    1                   TO  FLG-SINSATU
+               END-IF
            END-PERFORM
       *
            MOVE    ZERO                TO  IDXS
@@ -966,7 +992,6 @@
            PERFORM 3001-INGAI-SYORI-SEC
       *    院内分
            PERFORM 3002-INNAI-SYORI-SEC
-      *
       *     特定疾患処方管理加算処方箋料がある時、処方箋料があること
            IF      FLG-TOKUSYO1        =   1
                IF      FLG-SYOHOSENN       =   ZERO
@@ -998,6 +1023,12 @@
                    END-IF
                END-IF
            END-IF
+      *
+           IF      LNK-ORCSC-PG        =   "K02"
+               MOVE    WRK-HENSYU-MEISYO   TO  SPA-SYOHO-MEI
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           END-IF
+      *
       *
            .
        300-AUTO-SYORI-EXT.
@@ -1865,7 +1896,20 @@
                END-EVALUATE
            END-PERFORM
            IF      FLG-ERR             =   1
-               GO      TO      3002-KASAN-SYORI-EXT
+      *        継続、入院の場合算定しない
+               IF     (LNK-ORCSC-CONTKBN    =   "1"  OR  "2" )
+      *            入院の時
+                   OR (SPA-NYUGAIKBN        =   "1"  )
+                   GO      TO      3002-KASAN-SYORI-EXT
+               ELSE
+                   MOVE    ZERO                TO  FLG-ERR
+                   IF      FLG-SINSATU         =   ZERO
+                       MOVE    "1"             TO  SPA-SYOHO-KBN
+                       MOVE    WRK-TBL-HKNCOMBI
+                                               TO  SPA-SYOHO-HKN
+                       PERFORM 30021-DOUJI-HEN-SEC
+                   END-IF
+               END-IF
            END-IF
       *
            PERFORM 3001-KYOUTU-CHEK-SEC
@@ -1943,6 +1987,44 @@
       *
            .
        3001-KYOUTU-CHEK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    調剤料の他保険の算定済み編集処理
+      *****************************************************************
+       30021-DOUJI-HEN-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  WRK-HEN-MEI
+           EVALUATE    WRK-SRYCD
+               WHEN    "120000710"
+                   MOVE    "内服調剤料"        TO  WRK-HEN-MEI
+               WHEN    "120001010"
+                   MOVE    "外用調剤料"        TO  WRK-HEN-MEI
+               WHEN    "120001210"
+               WHEN    "120002610"
+                   MOVE    "処方料"            TO  WRK-HEN-MEI
+               WHEN    "120002710"
+               WHEN    "120002910"
+               WHEN    "120003010"
+               WHEN    "120002810"
+                   MOVE    "処方せん料"         TO  WRK-HEN-MEI
+           END-EVALUATE
+           IF      WRK-HEN-MEI         =   SPACE
+               GO      TO      30021-DOUJI-HEN-EXT
+           END-IF
+      *
+           IF      WRK-HENSYU-MEISYO   =   SPACE
+               MOVE    WRK-HEN-MEI         TO  WRK-HENSYU-MEISYO
+           ELSE
+               STRING  WRK-HENSYU-MEISYO   DELIMITED  BY  SPACE
+                       "、"                DELIMITED  BY  SIZE
+                       WRK-HEN-MEI         DELIMITED  BY  SPACE
+                                           INTO      WRK-HENSYU-MEISYO
+               END-STRING
+           END-IF
+      *
+           .
+       30021-DOUJI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2158,19 +2240,28 @@
            MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
            IF      SPA-NYUGAIKBN       =   "1"
                MOVE    1                   TO  JYURRK-RENNUM
+               MOVE    "JYURRK-KEY5"       TO  WRK-ORC-DBPATH
            ELSE
-               MOVE    LNK-ORCSC-DOUJI-RENNUM  TO  JYURRK-RENNUM
+      *        継続の時、算定分の編集
+               IF     (LNK-ORCSC-CONTKBN    =   "1"  OR  "2" )
+                   MOVE    LNK-ORCSC-DOUJI-RENNUM  TO  JYURRK-RENNUM
+                   MOVE    "JYURRK-KEY5"       TO  WRK-ORC-DBPATH
+               ELSE
+                   MOVE    "JYURRK-KEY4"       TO  WRK-ORC-DBPATH
+               END-IF
            END-IF
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+      **** MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+      ******** MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            ELSE
                INITIALIZE                  JYURRK-REC
@@ -2180,14 +2271,27 @@
            MOVE    ZERO                TO  FLG-CHK
            PERFORM
                UNTIL    FLG-JYURRK         =   1
+               MOVE     ZERO            TO  FLG-JYURRK-END
                IF      (LNK-ORCSC-SYORIFLG     =   1  )   AND
                        (LNK-ORCSC-DENPNUM      =   JYURRK-DENPNUM)
-                   CONTINUE
+      *            訂正の時対象外
+                   MOVE    1               TO  FLG-JYURRK-END
                ELSE
+      *            入院、継続の時、算定分の編集
+                   IF      (SPA-NYUGAIKBN        =   "1"    )  OR
+                           (LNK-ORCSC-CONTKBN    =   "1"  OR  "2" )
+                       CONTINUE
+                   ELSE
+                       IF      JYURRK-HKNCOMBINUM  =   SPA-HKNCOMBINUM
+                           MOVE    1               TO  FLG-JYURRK-END
+                       END-IF
+                   END-IF
+               END-IF
       *
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL      (IDX                 >   15  )  OR
-                                  (JYURRK-ZAINUM(IDX)  =   SPACE)
+                                  (FLG-JYURRK-END      =   1    ) OR
+                                  (JYURRK-ZAINUM(IDX)  =   ZERO )
       *            診療会計マスタ読み込み
                    MOVE    SPACE               TO  SRYACCT-REC
                    INITIALIZE                      SRYACCT-REC
@@ -2232,9 +2336,10 @@
                    END-PERFORM
                END-PERFORM
       *
-               END-IF
+      ******** END-IF
       *
-               MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+      ******** MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
       *
@@ -2296,6 +2401,7 @@
                        END-EVALUATE
                        MOVE    WRK-SRYCD           TO  WRK-TBL-SRYCD
                                                         (IDX-TBL)
+                       MOVE    JYURRK-HKNCOMBINUM  TO  WRK-TBL-HKNCOMBI
                    END-IF
                END-PERFORM
       *

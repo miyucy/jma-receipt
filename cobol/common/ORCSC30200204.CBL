@@ -35,6 +35,7 @@
       * 01.00.05     NACL−多々納 03/01/07  入院点滴処理追加
       * 01.00.06     NACL−多々納 03/04/01  中心静脈自動発生追加
       * 01.00.07     NACL−多々納 03/04/10  皮下筋注射変換なし(312)追加
+      * 01.00.08     NACL−多々納 03/09/04  手術料との算定エラー追加
       *****************************************************************
       *
       *
@@ -179,6 +180,11 @@
       *    診療種別
            03  WRK-SRYSYUKBN           PIC X(03).
            03  WRK-SRYKBN              PIC X(02).
+      *
+      *    手術チェック
+           03  FLG-SYUJUTU             PIC 9(01).
+           03  IDX-CHU                 PIC 9(04).
+      *
       *
        01  TBL-NISUU-AREA.
            03  TBL-NISUU-OCC           OCCURS   31.
@@ -1026,7 +1032,7 @@
       *        薬剤
                WHEN    "6"
       *            廃棄が有った時、破棄コメントを追加する
-                   IF      LNK-SC90-HAIKI          =   1
+                   IF     (LNK-SC90-HAIKI          =   1 )
                        MOVE    IDX-Z               TO  IDX-HAI
                        PERFORM 10011-HAIKI-ADD-SEC
                    END-IF
@@ -1039,7 +1045,7 @@
       *****************************************************************
       *    破棄コメント自動発生成処理
       *****************************************************************
-       10011-HAIKI-ADD-SEC           SECTION.
+       10011-HAIKI-ADD-SEC             SECTION.
       *
            MOVE    "099309901"         TO  WRK-SRYCD
            IF      WRK-COM-INPUTCD (IDX-HAI + 1) =   WRK-SRYCD
@@ -1147,6 +1153,9 @@
            MOVE    ZERO                TO  FLG-TENTEKI
            MOVE    ZERO                TO  FLG-DOUCHU
       *
+           MOVE    ZERO                TO  FLG-SYUJUTU
+           MOVE    ZERO                TO  IDX-CHU
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
@@ -1176,6 +1185,24 @@
                    END-IF
                    MOVE    1               TO  FLG-DOUCHU
                END-IF
+      *        手術がある時、点滴手技料は算定できない
+               IF     (SPA-NYUGAIKBN               =   "2"   )  AND
+                      (WRK-COM-SRYKBN   (IDX)      =   "50"  )  AND
+                      (WRK-COM-INPUTCD  (IDX)(1:1) =   "1"   )  AND
+                      (WRK-COM-DATAKBN  (IDX)      =   "1"   )
+                   MOVE    1                   TO  FLG-SYUJUTU
+               END-IF
+      *        注射の判定（外来のみ）
+               IF     (SPA-NYUGAIKBN           =   "2"   )  AND
+                      (WRK-COM-SRYKBN (IDX)    =   "31" OR
+                                                   "32" OR
+                                                   "33"  )  AND
+                      (WRK-COM-INPUTCD(IDX)(1:1)  =  "1" )  AND
+                      (WRK-COM-DATAKBN(IDX)    =   "1"   )
+                   IF      IDX-CHU             =   ZERO
+                       MOVE    IDX                 TO  IDX-CHU
+                   END-IF
+               END-IF
       *****    点滴は１回のみとする
       *        IF     (WRK-GMN-INPUTCD (IDX)(1:1)   =   "."  )  AND
       *               (WRK-COM-SRYSYUKBN (IDX)      =   "330")
@@ -1187,6 +1214,13 @@
       ******   END-IF
            END-PERFORM
       *----(01.00.01) LINE ADD START ----------------------------------
+      *
+      *    手術がある時、注射の手技料はエラーとする
+           IF     (FLG-SYUJUTU         =   1  )  AND
+                  (IDX-CHU             >   ZERO )
+               MOVE    "0140"              TO  SPA-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR(IDX-CHU)
+           END-IF
       *
            .
        200-ALL-SYORI-EXT.
@@ -1219,6 +1253,7 @@
                               (WRK-COM-INPUTCD(IDX)  =   SPACE ))
       *        点滴の時のみ
                IF      WRK-COM-SRYSYUKBN (IDX)     =   "330"
+                                                   OR  "333"
                    MOVE    1                   TO  FLG-OK
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
@@ -1263,6 +1298,7 @@
       *
       *        中心静脈の薬剤
                IF      WRK-COM-SRYSYUKBN (IDX)     =   "350"
+                                                   OR  "353"
                    MOVE    1                   TO  FLG-OK
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
@@ -1559,7 +1595,9 @@
                                   (SRY-SRYCD(IDX2)     =   SPACE )
                    IF     (SRY-SRYCD (IDX2)(1:1)   =   "6" )  AND
                           (SRY-SRYSYUKBN           =   "330"
-                                                   OR  "350" )
+                                                   OR  "333"
+                                                   OR  "350"
+                                                   OR  "353" )
       *                点数マスタより、液量取得
                        MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
@@ -1619,6 +1657,7 @@
       *                                MCPDATA-REC
       *    日別の液量集計
            IF      WRK-SRYSYUKBN       =   "350"
+                                       OR  "353"
                PERFORM 300112-IVH-TBL-SEC
            ELSE
                PERFORM 300111-TENTEKI-TBL-SEC
