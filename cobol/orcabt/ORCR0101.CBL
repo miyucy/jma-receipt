@@ -373,7 +373,8 @@
            ELSE 
                IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
                                                     OR  "8888"      
-                   IF      WRK-PARA-RECE09-PRTJYUN      =   "01"
+                   IF      WRK-PARA-RECE09-PRTJYUN      =   "01"   OR  
+                                                            "03" 
       *********        MOVE    "RECEPRT-KEY5"          TO  ORC-DBPATH
                        MOVE    "RECEPRT-KEY14"         TO  ORC-DBPATH
                    ELSE
@@ -425,7 +426,8 @@
            ELSE 
                IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
                                                     OR  "8888"      
-                   IF      WRK-PARA-RECE09-PRTJYUN      =   "01"
+                   IF      WRK-PARA-RECE09-PRTJYUN      =   "01"    OR  
+                                                            "03" 
       *********        MOVE    "RECEPRT-KEY5"          TO  ORC-DBPATH
                        MOVE    "RECEPRT-KEY14"         TO  ORC-DBPATH
                    ELSE
@@ -433,7 +435,7 @@
                        MOVE    "RECEPRT-KEY15"         TO  ORC-DBPATH
                    END-IF
                ELSE 
-                   IF      WRK-PARA-RECE09-PRTJYUN      =   "01"
+                   IF      WRK-PARA-RECE09-PRTJYUN      =   "01" 
       *********        MOVE    "RECEPRT-KEY"           TO  ORC-DBPATH
                        MOVE    "RECEPRT-KEY10"         TO  ORC-DBPATH
                    ELSE
@@ -475,7 +477,8 @@
            ELSE 
                IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
                                                     OR  "8888"      
-                   IF      WRK-PARA-RECE09-PRTJYUN      =   "01"
+                   IF      WRK-PARA-RECE09-PRTJYUN      =   "01"   OR  
+                                                            "03" 
       *********        MOVE    "RECEPRT-KEY5"          TO  ORC-DBPATH
                        MOVE    "RECEPRT-KEY14"         TO  ORC-DBPATH
                    ELSE
