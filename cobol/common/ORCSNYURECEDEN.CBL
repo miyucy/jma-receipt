@@ -1345,7 +1345,7 @@
                                     LNK-NYURECEDEN-SKJ-HKNCOMBI(IDX2)
                     MOVE   "SI"   TO
                                   LNK-NYURECEDEN-SKJ-RECSKB(IDX2 1)
-                    MOVE   "97"   TO
+                    MOVE   SPACE   TO
                                   LNK-NYURECEDEN-SKJ-SRYSKB(IDX2 1)
                     MOVE   WRK-SKJ3-TOKU-SHOKU(IDX1)  TO
                                   LNK-NYURECEDEN-SKJ-SRYCD(IDX2 1)
@@ -1368,7 +1368,7 @@
                                     LNK-NYURECEDEN-SKJ-HKNCOMBI(IDX2)
                     MOVE   "SI"   TO
                                   LNK-NYURECEDEN-SKJ-RECSKB(IDX2 1)
-                    MOVE   "97"   TO
+                    MOVE   SPACE   TO
                                   LNK-NYURECEDEN-SKJ-SRYSKB(IDX2 1)
                     MOVE   WRK-SKJ2-FUKUSU(IDX1)  TO
                                   LNK-NYURECEDEN-SKJ-SRYCD(IDX2 1)
