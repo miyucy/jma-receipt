@@ -28,6 +28,8 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Æ£¸¶    02.08.30  ¥¿¥¤¥Þ¡¼µ¡Ç½¤ÎÄÉ²Ã
+      *
+      *  01.01.01    NACL-Æ£¸¶    02/09/24  £²£°£°£²¡¥£±£°²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -65,6 +67,8 @@
       *
        01  WRK-AREA.
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
+      *
+           03  WRK-PATH            PIC X(64).      
       *     
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
@@ -255,9 +259,13 @@
                                            TO  R99-MSG
                        ELSE                    
                            MOVE    SPA-RECE07-KEY
-                                              TO  SPA-R01-RECE07-KEY
+                                          TO  SPA-R01-RECE07-KEY
                            MOVE    SPA-RECE07-RECEKBN
-                                              TO  SPA-R01-RECE07-RECEKBN
+                                          TO  SPA-R01-RECE07-RECEKBN
+                           MOVE    SPA-RECE07-SRYYM
+                                          TO  SPA-R01-RECE07-SRYYM
+                           MOVE    SPA-RECE07-NYUGAIKBN
+                                          TO  SPA-R01-RECE07-NYUGAIKBN
                        END-IF
                    ELSE
                        STRING  JOB-YOBI    DELIMITED  BY  SPACE
@@ -303,6 +311,8 @@
       *
            INITIALIZE              SPA-RECE07-KEY
                                    SPA-RECE07-RECEKBN
+                                   SPA-RECE07-NYUGAIKBN
+                                   SPA-RECE07-SRYYM
       *
       *
            INITIALIZE                  RECE07-REC
@@ -318,14 +328,21 @@
            END-IF            
            IF      SPA-R01-FILEKBN         =   "1"
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
+               MOVE    "1"                 TO  RECE07-SYOKBN
+               MOVE    "2"                 TO  RECE07-NYUGAIKBN
+               MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
            ELSE
-               MOVE    ZERO                TO  RECE07-SRYYM
+      *****    MOVE    ZERO                TO  RECE07-SRYYM
+               MOVE    "2"                 TO  RECE07-SYOKBN
+               MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
            END-IF
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
                MOVE    RECE07-KEY          TO  SPA-RECE07-KEY
                MOVE    RECE07-RECEKBN      TO  SPA-RECE07-RECEKBN
+               MOVE    RECE07-SRYYM        TO  SPA-RECE07-SRYYM
+               MOVE    RECE07-NYUGAIKBN    TO  SPA-RECE07-NYUGAIKBN
            END-IF
       *
            .
@@ -359,14 +376,16 @@
        900-RECE07-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+      *****MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+      **********MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+                MOVE    WRK-PATH            TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -382,7 +401,8 @@
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+      *****MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
