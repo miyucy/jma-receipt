@@ -37,6 +37,7 @@
       *  01.00.07    MCC-藤原     02/05/15  処理前にジョブ管理を削除する
       *  01.00.08    MCC-藤原     02/06/04  再印刷・情報削除ボタン追加
       *  01.00.09    NACL-藤原    02/07/25  確定のとき自動的に情報確認画面を表示
+      *  01.00.10    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -120,9 +121,12 @@
            03  IDZ1                   PIC 9(04).
            03  IDZ2                   PIC 9(04). 
       *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
+      *
        01  SHELL-AREA.
-           03  SHELL-NAME          PIC X(41)   VALUE
-               "/usr/local/orca/scripts/daily/execoprg.sh".
+           03  SHELL-NAME          PIC X(25)   VALUE
+               "scripts/daily/execoprg.sh".
       *         
        01  WRK-AREA.
            03  WRK-PRTKANRI-RENNUM PIC 9(04).
@@ -965,7 +969,12 @@
                                            TO  LNK-PRTKANRI-PRTNM
       *                                     
                    MOVE    SPACE           TO  SHELLTBL
-                   MOVE    SHELL-NAME      TO  SHELLTBL-NAME
+      *************MOVE    SHELL-NAME      TO  SHELLTBL-NAME
+      *            ファイルデイレクトリ位置指定
+                   INITIALIZE              ORCSMKPASSAREA
+                   MOVE    SHELL-NAME      TO  MKPASS-IN-01
+                   CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+                   MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
                    MOVE    LNK-PRTKANRI-RENNUM
                                            TO  SHELLTBL-ARG1       
                    MOVE    LNK-PRTKANRI-TBL-KEY
@@ -1018,8 +1027,14 @@
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *             
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "/usr/local/orca/scripts/allways/print.sh"
-                                       TO  SHELLTBL-NAME
+      *****MOVE    "/usr/local/orca/scripts/allways/print.sh"
+      *****                            TO  SHELLTBL-NAME
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    "/scripts/allways/print.sh"
+                                       TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
            MOVE    SPACE               TO  LNK-PRTKANRI-AREA
            INITIALIZE                      LNK-PRTKANRI-AREA
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
