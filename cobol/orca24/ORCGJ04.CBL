@@ -3357,13 +3357,18 @@
            END-IF
       *    寝たきり在宅科算定有りとする
            MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
-      *
            CALL    "ORCSC93"           USING
                                        MCPAREA
                                        SPA-SCR-REC
                                        SPA-AREA
                                        ORCSC93AREA
                                        MSYU-DATA-REC
+           IF      SPA-SRYKBN      NOT =   SPA-COM-SRYKBN(01)
+               MOVE    "1020"          TO  SPA-ERRCD
+               MOVE    "1"             TO  SPA-COM-CUR  (01)
+               MOVE    SPACE           TO  SPA-MAE-INPUTCD (01)
+               GO      TO      510-TBLHEN-EXT
+           END-IF
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      510-TBLHEN-EXT
            END-IF
@@ -5435,6 +5440,11 @@
        450422-SANTEI-UPD-SEC          SECTION.
       *
            IF     ACCT-HKNCOMBI        =   "9999"
+               GO      TO      450422-SANTEI-UPD-EXT
+           END-IF
+      *
+      *    自費の時対象外
+           IF      ACCT-SRYKBN         =   "95"  OR  "96"
                GO      TO      450422-SANTEI-UPD-EXT
            END-IF
       *
