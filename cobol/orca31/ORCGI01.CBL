@@ -7700,9 +7700,11 @@
       *
       **     MOVE    SENCHG-SENTEISRYCD
       **                             TO  LNK-SCNYUACCT-SENTEI-SRYCD
-           MOVE    "099999916"       TO  LNK-SCNYUACCT-SENTEI-SRYCD
-           MOVE    WRK-SENTEI-STYMD
-                                   TO  LNK-SCNYUACCT-SENTEI-STYMD
+           IF      SENCHG-SENTEISRYCD    NOT =  SPACE
+               MOVE    "099999916"   TO  LNK-SCNYUACCT-SENTEI-SRYCD
+               MOVE    WRK-SENTEI-STYMD
+                                     TO  LNK-SCNYUACCT-SENTEI-STYMD
+           END-IF
       *
       *
            DISPLAY "LNK-SCNYUACCT-SENTEI-SRYCD = "
