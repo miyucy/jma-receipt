@@ -1011,17 +1011,17 @@
                        IF      RECE85-SRYCD(IDX) =   CONS-TEIGEN
                            MOVE    1             TO  FLG-TEIGEN
                        END-IF
-                       IF    ( RECE84-SRYKBN     =   "90" OR "92"      )
-                       AND   ( RECE85-SRYCD(IDX) =   CONS-GENZAN1  OR 
-                                                     CONS-GENZAN2  OR
-                                                     CONS-GENZAN3  OR
-                                                     CONS-GENZAN4  OR
-                                                     CONS-GENZAN5  OR
-                                                     CONS-GENZAN6  OR
-                                                     CONS-GENZAN7  OR
-                                                     CONS-GENZAN8      )
-                           MOVE    1             TO  FLG-TEIGEN
-                       END-IF
+      ***>             IF    ( RECE84-SRYKBN     =   "90" OR "92"      )
+      ***>             AND   ( RECE85-SRYCD(IDX) =   CONS-GENZAN1  OR 
+      ***>                                           CONS-GENZAN2  OR
+      ***>                                           CONS-GENZAN3  OR
+      ***>                                           CONS-GENZAN4  OR
+      ***>                                           CONS-GENZAN5  OR
+      ***>                                           CONS-GENZAN6  OR
+      ***>                                           CONS-GENZAN7  OR
+      ***>                                           CONS-GENZAN8      )
+      ***>                 MOVE    1             TO  FLG-TEIGEN
+      ***>             END-IF
                        IF    ( RECE84-SRYKBN     =   "31"         )
                        AND   ( RECE85-SRYCD(IDX) =   CONS-HIKAKIN )
                            MOVE    1             TO  FLG-HIKAKIN

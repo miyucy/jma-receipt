@@ -467,8 +467,8 @@
                MOVE     WRK-NYUINKHN(IDX)   TO  LNK-SROUNYUIN-SRYCD
                                            (IDX WRK-MEISAISU)
       *        ≥∞«Ò
-               ADD      1                   TO  WRK-MEISAISU
                IF         WRK-GAIHAKU(IDX)   NOT =        SPACE
+                   ADD      1                   TO  WRK-MEISAISU
                    MOVE   WRK-GAIHAKU(IDX)  TO  LNK-SROUNYUIN-SRYCD
                                            (IDX WRK-MEISAISU)
                END-IF
@@ -585,10 +585,10 @@
       *
       *    ≥∞«Ò•≥°º•… ‘Ω∏Õ—§À∆˛±°¥À‹Œ¡≤√ªª∂Ë ¨§»ø«Œ≈∂Ë ¨§Œ¬‡»Ú
            INITIALIZE                      TNS-TENSU-REC
-           MOVE    LNK-SROUNYUIN-SRYCD(IDX IDX2)
-                                           TO  TNS-SRYCD
-           MOVE    LNK-SROUNYUIN-SANTEIYM  TO  ORC-DBYMD(1:6)
-           MOVE    "01"                    TO  ORC-DBYMD(7:2)
+           MOVE    NSRY-SRYCD(1)       TO  TNS-SRYCD
+           MOVE    LNK-SROUNYUIN-SANTEIYM
+                                       TO  ORC-DBYMD(1:6)
+           MOVE    "01"                TO  ORC-DBYMD(7:2)
            PERFORM TENSU-READ-SEC
            MOVE    TNS-SRYKBN          TO  LNK-SROUNYUIN-SRYKBN(IDX)
            MOVE    TNS-NYUKHNKSNKBN    TO  WRK-NYUKHNKSNKBN(IDX)
