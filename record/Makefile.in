@@ -288,6 +288,7 @@ RECORD_files = \
 	W19.rec \
 	S99.rec \
 	SID2.rec \
+	J026.rec \
 
 
 DEF_files = \

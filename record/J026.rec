@@ -1,0 +1,16 @@
+J026	{
+	fixed1	{
+		STRDD	{
+			value	number(2);
+		};
+		ENDPAGE	{
+			value	number(3);
+		};
+		ENDLINE	{
+			value	number(2);
+		};
+		MIDASI	{
+			value	varchar(40);
+		};
+	};
+};

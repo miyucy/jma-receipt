@@ -386,6 +386,9 @@ W11	{
 							count	int;
 							item	varchar(20)[2];
 						};
+						ORCAORGNM04N	{
+							value	varchar(20);
+						};
 						ORCAORGCHK01N	{
 							value	bool;
 						};
@@ -393,6 +396,9 @@ W11	{
 							value	bool;
 						};
 						ORCAORGCHK03N	{
+							value	bool;
+						};
+						ORCAORGCHK04N	{
 							value	bool;
 						};
 						ORCACSTNM01N	{
@@ -404,6 +410,9 @@ W11	{
 						ORCACSTNM03N	{
 							value	varchar(20);
 						};
+						ORCACSTNM04N	{
+							value	varchar(20);
+						};
 						ORCACSTCHK01N	{
 							value	bool;
 						};
@@ -411,6 +420,9 @@ W11	{
 							value	bool;
 						};
 						ORCACSTCHK03N	{
+							value	bool;
+						};
+						ORCACSTCHK04N	{
 							value	bool;
 						};
 					};
@@ -432,6 +444,13 @@ W11	{
 					};
 					count	int;
 					item	varchar(12)[2];
+				};
+				KARUTE3KBN_COMBO	{
+					KARUTE3KBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
 				};
 			};
 			            N02	{ state	int;
