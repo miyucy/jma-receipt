@@ -162,7 +162,6 @@
            03  CNT-DAY22                               PIC 9(06).
            03  CNT-DAY24                               PIC 9(06).
            03  CNT-ZAIREN                              PIC 9(02).
-           03  CNT-SENTEI-ZAINUM                       PIC 9(03).       
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -323,6 +322,7 @@
            03  WRK-EDIDX                               PIC 9(02).
            03  WRK-SRYCD                               PIC 9(09).
            03  WRK-ZAINUM                              PIC 9(08).
+           03  WRK-ZAINUM-CNT                          PIC 9(03).
            03  WRK-RENNUM                              PIC 9(02).
            03  WRK-TANICD                              PIC 9(03).
            03  WRK-TANIMOJISU                          PIC 9(01).
@@ -879,8 +879,6 @@
            PERFORM   CSR-CLOSE-SEC
       *
       *
-           MOVE    ZERO                  TO      CNT-SENTEI-ZAINUM      
-      *
            INITIALIZE                            NYUINACCT-REC
            MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
            MOVE    RECE62-NYUGAIKBN      TO      NACCT-NYUGAIKBN
@@ -1028,7 +1026,6 @@
       *
                       IF   FLG-DAY21-SENTEI    =   1
                          ADD    1     TO   CNT-ZAIREN
-                         ADD    1     TO   CNT-SENTEI-ZAINUM
                          PERFORM   RECE64-TENSOU2-SEN-SEC
                          PERFORM   RECE65-HENSYU2-SEN-SEC
                          PERFORM   RECE64-WRITE-SEC
@@ -1890,7 +1887,22 @@
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
            MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
-           MOVE    NACCT-ZAINUM         TO      RECE64-ZAINUM
+      *
+           MOVE    ZERO                 TO      WRK-ZAINUM-CNT
+           IF      NACCT-ZAISKBKBN      =  "1"
+             PERFORM     VARYING   IDX2   FROM    1    BY   1
+                           UNTIL     IDX2   >       31
+                            OR       WRK-ZAINUM-CNT  NOT =  ZERO
+                 IF  WRK-DAY21(IDX2)   NOT =   ZERO
+                     MOVE    IDX2       TO      WRK-ZAINUM-CNT
+                 END-IF
+             END-PERFORM
+             COMPUTE WRK-ZAINUM  = 99999800  +  WRK-ZAINUM-CNT
+             MOVE    WRK-ZAINUM         TO      RECE64-ZAINUM
+           ELSE
+             MOVE    NACCT-ZAINUM       TO      RECE64-ZAINUM
+           END-IF
+      *
            MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
            MOVE    RECE62-PTNUM         TO      RECE64-PTNUM
       *
@@ -1946,8 +1958,18 @@
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
            MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
-           COMPUTE WRK-ZAINUM    =  99999700  +  CNT-SENTEI-ZAINUM
+      *
+           MOVE        ZERO             TO      WRK-ZAINUM-CNT
+           PERFORM     VARYING   IDX2   FROM    1    BY   1
+                           UNTIL     IDX2   >       31
+                            OR       WRK-ZAINUM-CNT  NOT =  ZERO
+               IF  WRK-DAY21-SENTEI(IDX2)   NOT =   ZERO
+                   MOVE    IDX2         TO      WRK-ZAINUM-CNT
+               END-IF
+           END-PERFORM
+           COMPUTE WRK-ZAINUM   =  99999800  +  WRK-ZAINUM-CNT
            MOVE    WRK-ZAINUM           TO      RECE64-ZAINUM
+      *
            MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
            MOVE    RECE62-PTNUM         TO      RECE64-PTNUM
       *
@@ -2071,7 +2093,7 @@
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
            MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
-           COMPUTE WRK-ZAINUM    =  99999930  +  SYUKEI-IDX3
+           COMPUTE WRK-ZAINUM    =  99999920  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE64-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
            MOVE    RECE62-PTNUM         TO      RECE64-PTNUM
@@ -2261,9 +2283,9 @@
            MOVE    "33"                 TO      RECE64-SRYKBN
            MOVE    SPACE                TO      RECE64-ZAISKBKBN
            IF    FLG-SIKIBETU  =  1
-             COMPUTE WRK-ZAINUM    =  99999800  +  IDY
+             COMPUTE WRK-ZAINUM    =  99999700  +  IDY
            ELSE
-             COMPUTE WRK-ZAINUM    =  99999840  +  IDY
+             COMPUTE WRK-ZAINUM    =  99999740  +  IDY
            END-IF
            MOVE    WRK-ZAINUM           TO      RECE64-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
@@ -2778,7 +2800,14 @@
            MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
-           MOVE    NSRY-ZAINUM          TO      RECE65-ZAINUM
+      *
+           IF      WRK-ZAINUM-CNT    NOT =   ZERO
+             COMPUTE WRK-ZAINUM   =  99999800  +  WRK-ZAINUM-CNT
+             MOVE    WRK-ZAINUM         TO      RECE65-ZAINUM
+           ELSE
+             MOVE    NSRY-ZAINUM        TO      RECE65-ZAINUM
+           END-IF
+      *
            MOVE    CNT-ZAIREN           TO      RECE65-ZAIREN
            MOVE    NSRY-RENNUM          TO      RECE65-RENNUM
            MOVE    RECE62-PTNUM         TO      RECE65-PTNUM
@@ -2855,7 +2884,7 @@
            MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
-           COMPUTE WRK-ZAINUM    =  99999700  +  CNT-SENTEI-ZAINUM
+           COMPUTE WRK-ZAINUM   =  99999800  +  WRK-ZAINUM-CNT
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE65-ZAIREN
            MOVE    NSRY-RENNUM          TO      RECE65-RENNUM
@@ -3010,7 +3039,7 @@
            MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
-           COMPUTE WRK-ZAINUM    =  99999930  +  SYUKEI-IDX3
+           COMPUTE WRK-ZAINUM    =  99999920  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE65-ZAIREN
            MOVE    NSRY-RENNUM          TO      RECE65-RENNUM
@@ -3180,9 +3209,9 @@
               MOVE    RECE62-TEKSTYMD      TO   RECE65-TEKSTYMD
               MOVE    ZERO                 TO   RECE65-KOHBUNRI
               IF    FLG-SIKIBETU  =  1
-                COMPUTE WRK-ZAINUM    =  99999800  +  IDY
+                COMPUTE WRK-ZAINUM    =  99999700  +  IDY
               ELSE
-                COMPUTE WRK-ZAINUM    =  99999840  +  IDY
+                COMPUTE WRK-ZAINUM    =  99999740  +  IDY
               END-IF
               MOVE    WRK-ZAINUM           TO   RECE65-ZAINUM
               MOVE    CNT-ZAIREN           TO   RECE65-ZAIREN
