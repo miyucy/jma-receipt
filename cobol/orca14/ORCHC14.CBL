@@ -239,9 +239,9 @@
                    UNTIL       FLG-YYK     =   1
                IF     (YYK-YYKID           >   ZERO          )  AND
                       (YYK-YYKYMD          =   SPA-Y01-YYKYMDS )  AND
-                      (SPA-Y01-YYKID       =   ZERO  OR
-                       (SPA-Y01-YYKID  NOT =   ZERO ) AND
-                       (YYK-RAIINZUMI      =   SPACE) )
+                      ((SPA-Y01-YYKID       =   ZERO )  OR
+                      ((SPA-Y01-YYKID  NOT =   ZERO ) AND
+                       (YYK-RAIINZUMI      =   SPACE) ))
                    ADD     1               TO  IDX
                    IF      IDX             >   34
       *                Ä¢É¼°õºþ³«»Ï½èÍý

@@ -359,9 +359,9 @@
                    UNTIL       FLG-YYK      =   1
                IF     (YYK-YYKID       >   ZERO           )  AND
                       (YYK-YYKYMD      =   SPA-NAI-SINYMD )  AND
-                      (SPA-Y01-YYKID       =   ZERO  OR
-                       (SPA-Y01-YYKID  NOT =   ZERO ) AND
-                       (YYK-RAIINZUMI      =   SPACE) )
+                      ((SPA-Y01-YYKID      =   ZERO  )  OR
+                      ((SPA-Y01-YYKID  NOT =   ZERO  ) AND
+                       (YYK-RAIINZUMI      =   SPACE )) )
                    ADD     1               TO  IDX
                    MOVE    IDX             TO  SPA-GMN-TBANGO  (IDX)
                    MOVE    YYK-KEYYYKTIME  TO  SPA-NAI-TKYYKTIME (IDX)

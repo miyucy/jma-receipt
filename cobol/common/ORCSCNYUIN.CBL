@@ -422,9 +422,9 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-KOUI
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL      (IDY     >   5   )  OR
-                                  (LNK-WKSRY-SRYCD (IDX IDY) =   SPACE)
-                             AND  (LNK-WKSRY-INPUTCD(IDX IDY) =   SPACE)
+                       UNTIL     ( IDY     >   5   )  OR
+                                 ((LNK-WKSRY-SRYCD  (IDX IDY) =  SPACE)
+                            AND   (LNK-WKSRY-INPUTCD(IDX IDY) =  SPACE))
                    IF      LNK-WKSRY-INPUTCD(IDX IDY)(1:1)
                                                =   "*"
                        PERFORM 1001-KAISUU-SYORI-SEC
