@@ -35,6 +35,7 @@
       *                                     ¡Ü½é¿Ç»þ¡¡ÂÐ±þ
       *  00.00.05    NACL-¾®Æ¦Âô  03/05/16  ÁªÄêÆþ±¡ÎÁ¤Î¼«¸ÊÉéÃ´·×»»ÊÑ¹¹
       *  00.00.06    NACL-ÌçÏÆ    03/07/28  Ï«ºÒ¡¦¼«ÇåÀÕÆþ±¡ÂÐ±þ
+      *  00.00.07    NACL-¾®Æ¦Âô  03/08/04  Æþ±¡ÎÁ¤ÎÊÝ¸±Å¬ÍÑ³°ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -164,7 +165,7 @@
       *
       * ÊÝ¸±Å¬ÍÑ³°¶â³ÛÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  HKNTEKGAI-TABLE.
-           03  HKNTEKGAI-TBL               OCCURS 10.
+           03  HKNTEKGAI-TBL               OCCURS 11.
                05  TBL-TGMONEY             PIC 9(08).
                05  TBL-TGMONEY-TAX         PIC 9(08).
       *
@@ -2401,7 +2402,7 @@
                WHEN    "95"
                    PERFORM     VARYING    IDZ    FROM    1     BY    1
                                  UNTIL   (IDZ         >   5    )   OR
-       	                                  (SRY-SRYCD(IDZ)  =   SPACE)
+                                         (SRY-SRYCD(IDZ)  =   SPACE)
                        IF    SRY-SRYCD (IDZ) (1:3)   =   "095"
                                                      OR  "096"
                            IF    SRY-SRYCD (IDZ) (4:2)    =   "00"
@@ -2500,6 +2501,11 @@
                                                 TBL-TGMONEY(10)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
+                                   WHEN   "90"
+                                       COMPUTE  TBL-TGMONEY(11)  =
+                                                TBL-TGMONEY(11)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
                                END-EVALUATE
                            END-IF
                        ELSE
@@ -2564,6 +2570,11 @@
                                    WHEN   "80"
                                        COMPUTE  TBL-TGMONEY(10)  =
                                                 TBL-TGMONEY(10)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
+                                   WHEN   "90"
+                                       COMPUTE  TBL-TGMONEY(11)  =
+                                                TBL-TGMONEY(11)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
                                    WHEN   OTHER
@@ -2692,6 +2703,11 @@
                                                 TBL-TGMONEY-TAX(10)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
+                                   WHEN   "90"
+                                       COMPUTE  TBL-TGMONEY-TAX(11)  =
+                                                TBL-TGMONEY-TAX(11)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
                                END-EVALUATE
                            END-IF
                        ELSE
@@ -2758,6 +2774,11 @@
                                                 TBL-TGMONEY-TAX(10)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
+                                   WHEN   "90"
+                                       COMPUTE  TBL-TGMONEY-TAX(11)  =
+                                                TBL-TGMONEY-TAX(11)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
                                    WHEN   OTHER
                                      IF   TNS-SRYCD(1:1)    =   "6"
                                        IF    TNS-YKZKBN     =    4
@@ -2794,7 +2815,7 @@
       *
       *  ÊÝ¸±Å¬ÍÑ³°
            PERFORM     VARYING   IDZ    FROM   1    BY    1
-                         UNTIL   IDZ    >      10
+                         UNTIL   IDZ    >      11
                   MOVE   TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(IDZ)
                   MOVE   TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(IDZ)
                   ADD    TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(12)
@@ -2802,8 +2823,8 @@
            END-PERFORM
       *
       *  Æþ±¡ÊÝ¸±Å¬ÍÑ³°
-           MOVE   NYUIN-TGMONEY                TO  SYU-TGMONEY(11)
-           MOVE   NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(11)
+           ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(11)
+           ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(11)
            ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(12)
            ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(12)
       *
