@@ -2,7 +2,6 @@ tbl_nyuinryakusho	{
 	SRYCD			char(9);
 	YUKOSTYMD		char(8);
 	YUKOEDYMD		char(8);
-	IPROUKBN		char(1);
 	RYAKUSHO		varchar(20);
 	NAME			varchar(200);
 	TERMID		varchar(16);
