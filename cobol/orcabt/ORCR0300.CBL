@@ -74,6 +74,8 @@
       *                                     の編集
       *  01.00.28    NACL-藤原    04/03/02  出力対象のコメントを追加
       *  01.00.29    NACL-藤原    04/03/18  画像診断の出力順の修正
+      *  01.00.30    NACL-藤原    04/03/19  ５１公費のとき実施機関番号「６０２」
+      *                                     のときのみ公費負担額を記録する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1393,10 +1395,18 @@
            MOVE    8                      TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    負担金額（公費）
-           IF      RECE02-FTNMONEY(IDX)   >   ZERO     
-               MOVE    RECE02-FTNMONEY(IDX)
-                                              TO  WRK-NUM
-               MOVE    8                      TO  WRK-NAGASA
+           IF     RECE02-KOHFTNJANUM (IDY) (1:2)
+                                           =   "51"
+               IF      RECE02-KOHFTNJANUM (IDY) (5:3)
+                                               =   "602"
+                   MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM
+                   MOVE    8                      TO  WRK-NAGASA
+               END-IF
+           ELSE
+               IF      RECE02-FTNMONEY(IDX)   >   ZERO     
+                   MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM
+                   MOVE    8                      TO  WRK-NAGASA
+               END-IF
            END-IF    
            PERFORM 5005-NUM-HENSYU-SEC
       *    負担金額（老人公費給付対象老人外来一部負担金）
