@@ -106,6 +106,8 @@
       *  02.07.16    NACL-藤原    03/06/03  未コード化傷病名コードのとき
       *                                     病名よりコード検索をする
       *                                     病名からのコード検索方法の修正
+      *  02.07.18    NACL-藤原    03/07/03  主病名編集フラグにより主病名
+      *                                     のチェックを行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -326,6 +328,8 @@
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK1010.INC".
+      *
+           COPY    "CPSK2005.INC".
       *
       *    病名マスタ−
        01  BYOMEI-REC.
@@ -901,8 +905,7 @@
            MOVE    "1"             TO  SPA-GMN-C02-REZEFLGL         (1)
            MOVE    "表示しない"    TO  SPA-GMN-C02-REZEFLGMEIL      (1)
            MOVE    1               TO  SPA-GMN-C02-REZEFLG-MAX
-      *
-      
+      *      
       *    患者情報（診療行為で患者番号を入力したとき） 
            IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
                                                    OR  "K02N")
@@ -930,14 +933,24 @@
                MOVE    26              TO  SPA-GMN-C02-CUR
            END-IF   
       *
-           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
-                                                   OR  "K02N")
-               CONTINUE
-           ELSE                                                
-               MOVE    "2"             TO  SPA-NYUGAIKBN
-           END-IF    
-      *        
            PERFORM 3104-SRYKA-SPA-SEC
+      *         
+      *    主病名編集フラグ情報
+           MOVE    SPACE            TO  SYSKANRI-REC
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "2005"           TO  SYS-KANRICD
+           MOVE    "*"              TO  SYS-KBNCD
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC      TO  SYS-2005-REC
+           ELSE    
+               MOVE    SPACE            TO  SYS-2005-REC
+           END-IF
+           IF      SYS-2005-SYUBYOHENFLG    =   SPACE
+               MOVE    ZERO             TO  SYS-2005-SYUBYOHENFLG
+           END-IF
+           MOVE    SYS-2005-SYUBYOHENFLG
+                                       TO  SPA-C02-2005-SYUBYOHENFLG
       *
            MOVE    1               TO  SPA-GMN-C02-PAGE
            .
@@ -5264,18 +5277,24 @@
            END-IF
       *
       *    主病名の存在チェック
-           MOVE    SPACE                   TO  WRK-CHKFLG    
-           PERFORM VARYING IDX FROM    1   BY  1
-                      UNTIL   IDX >       SPA-GMN-C02-MAX
-                      OR      WRK-CHKFLG   =   "1" 
-              IF      SPA-NAI-C02-TSYUBYOFLG (IDX)
-                                             =   "1"
-                  MOVE    "1"                TO  WRK-CHKFLG
-              END-IF
-           END-PERFORM
-           IF      WRK-CHKFLG        =   SPACE
-               MOVE    "0102"            TO  SPA-CIDCD
-               GO  TO  450-TOUROKU-EXT
+           IF      SPA-C02-2005-SYUBYOHENFLG   =   ZERO
+               CONTINUE
+           ELSE
+               IF      SPA-GMN-C02-MAX         >   1
+                   MOVE    SPACE                   TO  WRK-CHKFLG    
+                   PERFORM VARYING IDX FROM    1   BY  1
+                          UNTIL   IDX >       SPA-GMN-C02-MAX
+                          OR      WRK-CHKFLG   =   "1" 
+                      IF      SPA-NAI-C02-TSYUBYOFLG (IDX)
+                                                     =   "1"
+                          MOVE    "1"                TO  WRK-CHKFLG
+                      END-IF
+                   END-PERFORM
+                   IF      WRK-CHKFLG        =   SPACE
+                       MOVE    "0102"            TO  SPA-CIDCD
+                       GO  TO  450-TOUROKU-EXT
+                   END-IF
+               END-IF
            END-IF
       *
            PERFORM 4501-TOUROKU-SYORI-SEC         
@@ -7064,6 +7083,46 @@
       *
            .
        900-PTINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読込
+      *****************************************************************
+       900-SYSKANRI-INV-SEC         SECTION.
+      *
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+           MOVE    SPA-NAI-C02-SYSYMD
+                                   TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"     USING
+                                   MCPAREA
+                                   ORCMCPAREA
+                                   MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "ORCMCPSUB"     USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       900-SYSKANRI-INV-EXT.
            EXIT.
       *     
       *****************************************************************
