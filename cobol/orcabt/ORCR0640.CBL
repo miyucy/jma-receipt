@@ -140,6 +140,8 @@
            03  CNT-OUT2                                PIC 9(06).
            03  CNT-TBL-OCC                             OCCURS  2.
                05  CNT-OUT3                            PIC 9(06).
+           03  CNT-DAY52                               PIC 9(06).
+           03  CNT-ZAIREN                              PIC 9(02).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -189,6 +191,10 @@
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
                05  WRK-DAY5                            PIC 9(04).
+      *
+       01  WRK-DAY-TABLE2.
+           03  WRK-DAY-T2                              OCCURS   31.
+               05  WRK-DAY52                           PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -648,25 +654,35 @@
                  IF     NACCT-ZAISKBKBN    =    "1"  OR  "2"  OR
                                                 "4"  OR  "6"
       *
-                   PERFORM  VARYING  IDY    FROM    1   BY  1
-                                  UNTIL   IDY     >       31
+                   MOVE     ZERO       TO    CNT-ZAIREN
       *
-                      PERFORM  VARYING  IDX1    FROM    1   BY  1
+                   PERFORM  VARYING  IDX1    FROM    1   BY  1
                              UNTIL   IDX1    >       10
                              OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
-                         IF  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
-                              IF   NACCT-ZAITEN    NOT =    ZERO  
-                              AND  NACCT-DAY(IDY)  NOT =    ZERO  
-                                   PERFORM   RECE64-TENSOU2-SEC
-                                   PERFORM   RECE65-HENSYU2-SEC
-                                   PERFORM   RECE64-WRITE-SEC
-                                   MOVE    31     TO    IDY
+                      INITIALIZE          WRK-DAY-TABLE2
+                      MOVE     ZERO       TO    CNT-DAY52
+      *
+                      PERFORM  VARYING  IDY    FROM    1   BY  1
+                                  UNTIL   IDY     >       31
+      *
+                         IF  RECE62-HKNCOMBI (IDX1)  =  WRK-DAY5(IDY)
+                              IF   NACCT-ZAITEN    NOT =  ZERO
+                              AND  NACCT-DAY(IDY)  NOT =  ZERO
+                                 MOVE   NACCT-DAY(IDY)  
+                                              TO   WRK-DAY52(IDY) 
+                                 ADD    1     TO   CNT-DAY52
                               END-IF
-                              MOVE    10     TO    IDX1
                          END-IF
       *
                       END-PERFORM
+      *
+                      IF  CNT-DAY52  NOT  =  ZERO
+                             ADD    1     TO   CNT-ZAIREN
+                             PERFORM   RECE64-TENSOU2-SEC
+                             PERFORM   RECE65-HENSYU2-SEC
+                             PERFORM   RECE64-WRITE-SEC
+                      END-IF
       *
                    END-PERFORM
       *
@@ -804,16 +820,18 @@
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
            MOVE    NACCT-ZAINUM         TO      RECE64-ZAINUM
+           MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
            MOVE    RECE62-PTNUM         TO      RECE64-PTNUM
       *
            MOVE    NACCT-SRYKA          TO      RECE64-SRYKA
-           MOVE    NACCT-HKNCOMBI       TO      RECE64-HKNCOMBI
+           MOVE    RECE62-HKNCOMBI(IDX1)
+                                        TO      RECE64-HKNCOMBI
            MOVE    SPACE                TO      RECE64-JIHOKBN
            MOVE    NACCT-ZAITEN         TO      RECE64-ZAITEN
            MOVE    NACCT-SRYCDTOTAL     TO      RECE64-SRYCDTOTAL
            MOVE    NACCT-SURYOUTOTAL    TO      RECE64-SURYOUTOTAL
            MOVE    NACCT-MEISAISU       TO      RECE64-MEISAISU
-           MOVE    NACCT-ZAIKAISU       TO      RECE64-ZAIKAISU
+           MOVE    CNT-DAY52            TO      RECE64-ZAIKAISU
            MOVE    NACCT-SYUTEN1        TO      RECE64-SYUTEN1
            MOVE    NACCT-SYUTEN2        TO      RECE64-SYUTEN2
            MOVE    NACCT-YKZTEN         TO      RECE64-YKZTEN
@@ -825,10 +843,10 @@
            MOVE        ZERO             TO      WK-TAIHI-FLG
            PERFORM     VARYING   IDX2   FROM    1    BY   1
                            UNTIL     IDX2   >       31
-                   MOVE    NACCT-DAY(IDX2)  TO
+                   MOVE    WRK-DAY52(IDX2)  TO
                                             RECE64-KAISU (1 IDX2)
-                   IF     (WK-TAIHI-FLG            =   ZERO)   AND
-                          (NACCT-DAY(IDX2)    NOT =   ZERO)
+                   IF     (WK-TAIHI-FLG           =   ZERO)   AND
+                          (WRK-DAY52(IDX2)    NOT =   ZERO)
                        MOVE     IDX2    TO      WK-TAIHI-DAY
                        MOVE     1       TO      WK-TAIHI-FLG
                    END-IF    
@@ -1107,6 +1125,7 @@
            MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
            MOVE    NSRY-ZAINUM          TO      RECE65-ZAINUM
+           MOVE    CNT-ZAIREN           TO      RECE65-ZAIREN
            MOVE    NSRY-RENNUM          TO      RECE65-RENNUM
            MOVE    RECE62-PTNUM         TO      RECE65-PTNUM
       *
@@ -1132,7 +1151,7 @@
                MOVE    TNS-TANICD          TO  RECE65-TANICD(IDX4)
                MOVE    TNS-TANIMOJISU      TO  RECE65-TANIMOJISU(IDX4)
                MOVE    TNS-TANINAME        TO  RECE65-TANINAME(IDX4)
-               IF      TNS-TENSIKIBETU    =     1   OR   3
+               IF      TNS-TENSIKIBETU    =     1   OR   3  OR  8
                    MOVE  TNS-TENSIKIBETU   TO  RECE65-TENSIKIBETU(IDX4)
                    MOVE  TNS-TEN           TO  RECE65-TEN(IDX4)
                END-IF
