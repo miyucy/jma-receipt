@@ -5726,8 +5726,7 @@
       *
                    MOVE    1           TO  FLG-LOOP-END
       *
-                   IF    ( ACCT-ZAITEN     =   ZERO )
-                    OR   ( ACCT-ZAIKAISU   =   ZERO )
+                   IF    ( ACCT-ZAIKAISU   =   ZERO )
       *
                         MOVE   ZERO    TO  FLG-LOOP-END
       *
