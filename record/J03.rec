@@ -77,5 +77,11 @@ J03	{
 		SRYYM	{
 			value	varchar(6);
 		};
+		NYUTENSU	{
+			value	varchar(10);
+		};
+		MIDASIN	{
+			value	varchar(10);
+		};
 	};
 };

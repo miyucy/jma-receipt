@@ -23,12 +23,5 @@ I48	{
 				select	bool[200];
 			};
 		};
-		USERCOB	{
-			USER	{
-				value	varchar(10);
-			};
-			count	int;
-			item	varchar(10)[10];
-		};
 	};
 };
