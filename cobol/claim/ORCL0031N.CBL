@@ -240,37 +240,37 @@
            MOVE    ZERO            TO  CNT-ERR
       *
            IF    ( SCL31N-HOSPID   =   SPACE )
-               MOVE    "0011"      TO  ERRCD-KHNERR
+               MOVE    "0001"      TO  ERRCD-KHNERR
                PERFORM 1001-KIHON-ERRSET-SEC
            END-IF
       *
            IF    ( SCL31N-SRYKA    =   SPACE )
-               MOVE    "0021"      TO  ERRCD-KHNERR
+               MOVE    "0002"      TO  ERRCD-KHNERR
                PERFORM 1001-KIHON-ERRSET-SEC
            END-IF
       *
            IF    ( SCL31N-PTNUM    =   SPACE )
-               MOVE    "0031"      TO  ERRCD-KHNERR
+               MOVE    "0003"      TO  ERRCD-KHNERR
                PERFORM 1001-KIHON-ERRSET-SEC
            END-IF
       *
            IF    ( SCL31N-PTID     =   ZERO )
-               MOVE    "0041"      TO  ERRCD-KHNERR
+               MOVE    "0004"      TO  ERRCD-KHNERR
                PERFORM 1001-KIHON-ERRSET-SEC
            END-IF
       *
            IF    ( SCL31N-HKNCOMBI =   ZERO )
-               MOVE    "0051"      TO  ERRCD-KHNERR
+               MOVE    "0005"      TO  ERRCD-KHNERR
                PERFORM 1001-KIHON-ERRSET-SEC
            END-IF
       *
            IF    ( SCL31N-NYUGAIKBN    NOT =   "1" )
-               MOVE    "0061"      TO  ERRCD-KHNERR
+               MOVE    "0006"      TO  ERRCD-KHNERR
                PERFORM 1001-KIHON-ERRSET-SEC
            END-IF
       *
            IF    ( SCL31N-SRYYMD   =   SPACE )
-               MOVE    "0071"      TO  ERRCD-KHNERR
+               MOVE    "0007"      TO  ERRCD-KHNERR
                PERFORM 1001-KIHON-ERRSET-SEC
            END-IF
       *
@@ -311,7 +311,7 @@
       *            WHEN    "02"
       *                PERFORM 2001-KYUSYOKU-SEC
                    WHEN    OTHER
-                       MOVE    "1005"  TO  WRK-ERRCD
+                       MOVE    "0008"  TO  WRK-ERRCD
                        MOVE    "00"    TO  WRK-IDOKBN
                        PERFORM 20011-ZAIERR-HEN-SEC
                    END-EVALUATE
@@ -380,22 +380,22 @@
            END-PERFORM
       *
            IF    ( CNT-ORDER           <=  ZERO )
-               MOVE    "1001"          TO  ERRCD-IDOERR
+               MOVE    "0009"          TO  ERRCD-IDOERR
                GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
            IF    ( CNT-IDOKBN          <=  ZERO )
-               MOVE    "1002"          TO  ERRCD-IDOERR
+               MOVE    "0010"          TO  ERRCD-IDOERR
                GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
            IF    ( CNT-ORDER           >   1 )
-               MOVE    "1003"          TO  ERRCD-IDOERR
+               MOVE    "0011"          TO  ERRCD-IDOERR
                GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
            IF    ( CNT-IDOKBN          >   1 )
-               MOVE    "1004"          TO  ERRCD-IDOERR
+               MOVE    "0012"          TO  ERRCD-IDOERR
                GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
@@ -855,10 +855,10 @@
            MOVE    WRK-ERRCD           TO  ORDER-ERRCD-ZAI
       *    IF    ( FLG-CHRERR          =   ZERO )
       *        項目チェック無し
-               MOVE    "9002"          TO  ORDER-ERRCD-ITEM
+               MOVE    "0901"          TO  ORDER-ERRCD-ITEM
       *    ELSE
       *        文字化け
-      *        MOVE    "9001"          TO  ORDER-ERRCD-ITEM
+      *        MOVE    "090?"          TO  ORDER-ERRCD-ITEM
       *    END-IF
       *
            MOVE    "0"                 TO  ORDER-CREKBN

@@ -430,12 +430,12 @@
                            MOVE    WRK-TAIINCD TO  ITEM-TAIINCD
                        ELSE
       *
-                          MOVE    "1216"  TO   ERRCD-ERRCD
+                          MOVE    "2001"  TO   ERRCD-ERRCD
                           PERFORM 2100-ITEM-WRN-SET-SEC
                        END-IF
                    ELSE
       *
-                       MOVE    "1217"  TO   ERRCD-ERRCD
+                       MOVE    "2002"  TO   ERRCD-ERRCD
                        PERFORM 2100-ITEM-WRN-SET-SEC
                    END-IF
       *
@@ -483,7 +483,7 @@
       *        定期請求処理中チェック
                PERFORM 20021-TEIKI-JOB-CHK-SEC
                IF    ( FLG-TEIKIJOB    =   1 )
-                   MOVE    "1210"      TO  ERRCD-ZAI
+                   MOVE    "2003"      TO  ERRCD-ZAI
                END-IF
            END-IF
       *
@@ -495,14 +495,14 @@
       *    // 以下オンラインでは確認ダイアログを表示するチェック
            IF    ( ERRCD-ZAI       =   SPACE )
                IF    ( FLG-SYUARI      =   1 )
-                   MOVE    "1208"      TO  ERRCD-ZAI
+                   MOVE    "2004"      TO  ERRCD-ZAI
                END-IF
            END-IF
       *
            IF    ( ERRCD-ZAI       =   SPACE )
                PERFORM 20021-SRYACCT-CHK-SEC
                IF    ( FLG-ACCTARI     =   1 )
-                   MOVE    "1209"      TO  ERRCD-ZAI
+                   MOVE    "2005"      TO  ERRCD-ZAI
                END-IF
            END-IF
       *
@@ -557,7 +557,7 @@
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-PTNYUINRRK  =   1 )
-               MOVE    "1201"      TO  ERRCD-ZAI
+               MOVE    "2006"      TO  ERRCD-ZAI
                GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
@@ -569,17 +569,17 @@
       *
       *    入院中であること
            IF    ( PTNYUINRRK-TAIINYMD NOT =   "99999999" )
-               MOVE    "1202"      TO  ERRCD-ZAI
+               MOVE    "2007"      TO  ERRCD-ZAI
                GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
            IF    ( PTNYUINRRK-TENSTUYMD    =   "99999999" )
                IF    ( PTNYUINRRK-NYUINYMD >  SODR-SRYYMD )
-                   MOVE    "1203"  TO  ERRCD-ZAI
+                   MOVE    "2008"  TO  ERRCD-ZAI
                END-IF
            ELSE
                IF    ( PTNYUINRRK-TENSTUYMD    >  SODR-SRYYMD )
-                   MOVE    "1215"  TO  ERRCD-ZAI
+                   MOVE    "2009"  TO  ERRCD-ZAI
                END-IF
            END-IF
       *
@@ -601,7 +601,7 @@
                                    <= WRK-KEISANYMD (1 : 6) )
                CONTINUE
            ELSE
-               MOVE    "1205"      TO  ERRCD-ZAI
+               MOVE    "2010"      TO  ERRCD-ZAI
                GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
@@ -622,7 +622,7 @@
       *    退院月に会計テーブルが存在していること
            PERFORM 900-NYUINACCT-KEY17-SEL-SEC
            IF    ( FLG-NYUINACCT   NOT =   ZERO )
-               MOVE    "1207"          TO  ERRCD-ZAI
+               MOVE    "2011"          TO  ERRCD-ZAI
            END-IF
       *
            .
@@ -648,7 +648,7 @@
                MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
                IF    ( PTTEIKIRRK-SKYEDYMD
                                        >=  SODR-SRYYMD )
-                   MOVE    "1204"      TO  ERRCD-ZAI
+                   MOVE    "2012"      TO  ERRCD-ZAI
                    GO  TO  20021-SKYSTYMD-GET-EXT
                END-IF
       *
@@ -704,7 +704,7 @@
                IF    ( SYU-DENPJTIKBN  NOT =   "3" )
                    MOVE    1           TO  FLG-SYUARI
                    IF    ( SYU-NYUKIN-TOTAL    >   ZERO )
-                       MOVE    "1206"  TO  ERRCD-ZAI
+                       MOVE    "2013"  TO  ERRCD-ZAI
                    END-IF
                END-IF
       *
@@ -909,7 +909,7 @@
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( WRK-NYUINKA         =   SPACE )
-               MOVE    "1217"          TO  ERRCD-ZAI
+               MOVE    "2014"          TO  ERRCD-ZAI
            END-IF
       *
            .
@@ -927,7 +927,7 @@
            MOVE    WRK-SKYSTYMD    TO  WRK-EDYMD
            PERFORM 800-KIKAN-CALC-SEC
            IF    ( FLG-ORCSDAY     NOT =   ZERO )
-               MOVE    "1211"      TO  ERRCD-ZAI
+               MOVE    "2015"      TO  ERRCD-ZAI
                GO  TO  2101-ORCSNYUFTN-CALL-EXT
            END-IF
       *
@@ -952,14 +952,14 @@
                                    LNK-SYUDAY-REC-T
            IF    ( LNK-S02-RC      = ZERO )
                IF    ( LNK-SYU-SKYSTYMD(1) =   SPACE )
-                   MOVE    "1212"      TO  ERRCD-ZAI
+                   MOVE    "2016"      TO  ERRCD-ZAI
                END-IF
            ELSE
                EVALUATE LNK-S02-RC
                WHEN    13
-                   MOVE    "1213"      TO  ERRCD-ZAI
+                   MOVE    "2017"      TO  ERRCD-ZAI
                WHEN    OTHER
-                   MOVE    "1214"      TO  ERRCD-ZAI
+                   MOVE    "2018"      TO  ERRCD-ZAI
                END-EVALUATE
            END-IF
       *
@@ -1442,7 +1442,7 @@
                                        OR  NCLAIMID-TAIINCDID )
                CONTINUE
            ELSE
-               MOVE    "9002"          TO  ORDER-ERRCD-ITEM
+               MOVE    "2901"          TO  ORDER-ERRCD-ITEM
            END-IF
       *
            MOVE    "CLAIM"             TO  ORDER-OPID

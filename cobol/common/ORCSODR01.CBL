@@ -278,12 +278,12 @@
                        MOVE    LNK-ORDER-SRYCD (IDXA)
                                        TO  ITEM-NYUKBN
                    WHEN    OTHER
-                       MOVE    "1101"  TO  ERRCD-ERRCD
+                       MOVE    "1001"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                    END-EVALUATE
       *
                    IF    ( SODR-NYUKBN-FLG NOT =   ZERO )
-                       MOVE    "1102"  TO  ERRCD-ERRCD
+                       MOVE    "1002"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                    END-IF
       *
@@ -312,12 +312,12 @@
                        MOVE    LNK-ORDER-SRYCD (IDXA)
                                        TO  ITEM-SYOKAI
                    WHEN    OTHER
-                       MOVE    "1104"  TO  ERRCD-ERRCD
+                       MOVE    "1003"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                    END-EVALUATE
       *
                    IF    ( SODR-SYOKAI-FLG NOT =   ZERO )
-                       MOVE    "1105"  TO  ERRCD-ERRCD
+                       MOVE    "1004"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                    END-IF
       *
@@ -353,12 +353,12 @@
                                        TO  ITEM-SANTEICD
       *
                    ELSE
-                       MOVE    "1106"  TO  ERRCD-ERRCD
+                       MOVE    "1005"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                    END-IF
       *
                    IF    ( SODR-BTUNUM-FLG NOT =   ZERO )
-                       MOVE    "1107"  TO  ERRCD-ERRCD
+                       MOVE    "1006"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                    END-IF
                END-IF
@@ -397,12 +397,12 @@
                        MOVE    WRK-SYS-KBNCD
                                        TO  ITEM-BRMNUM
                    ELSE
-                       MOVE    "1108"  TO  ERRCD-ERRCD
+                       MOVE    "1007"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                    END-IF
       *
                    IF    ( SODR-BRMNUM-FLG NOT =   ZERO )
-                       MOVE    "1119"  TO  ERRCD-ERRCD
+                       MOVE    "1008"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                    END-IF
                END-IF
@@ -426,7 +426,7 @@
                    PERFORM 200111-SAGAKUCD-CHK-SEC
       *
                    IF    ( SODR-SAGAKU-FLG NOT =   ZERO )
-                       MOVE    "1110"  TO  ERRCD-ERRCD
+                       MOVE    "1009"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                    END-IF
       *
@@ -446,7 +446,7 @@
                                    TO  WRK-SNUM-INX
            PERFORM 800-ORCSNUM-SEC
            IF    ( FLG-ORCSNUM     NOT =   ZERO )
-               MOVE    "1111"      TO  ERRCD-ERRCD
+               MOVE    "1010"      TO  ERRCD-ERRCD
                PERFORM 2100-ITEM-ERR-SET-SEC
            END-IF
       *
@@ -492,7 +492,7 @@
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( ITEM-SAGAKUCD   =   SPACE )
-               MOVE    "1112"      TO  ERRCD-ERRCD
+               MOVE    "1011"      TO  ERRCD-ERRCD
                PERFORM 2100-ITEM-ERR-SET-SEC
            END-IF
       *
@@ -523,12 +523,12 @@
                                TO  ITEM-DRCD (ITEM-DRCD-MAX)
                        END-IF
                    ELSE
-                       MOVE    "1113"  TO  ERRCD-ERRCD
+                       MOVE    "1012"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                    END-IF
       *
                    IF    ( SODR-DR-FLG NOT =   ZERO )
-                       MOVE    "1114"  TO  ERRCD-ERRCD
+                       MOVE    "1013"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                    END-IF
       *
@@ -584,7 +584,7 @@
        20021-NYUKBN-CHK-SEC            SECTION.
       *
            IF    ( ITEM-NYUKBN     NOT =   "01" )
-               MOVE    "1115"          TO  ERRCD-ZAI
+               MOVE    "1014"          TO  ERRCD-ZAI
            END-IF
       *
            .
@@ -596,7 +596,7 @@
        20021-SYOKAI-CHK-SEC            SECTION.
       *
            IF    ( ITEM-SYOKAI     NOT =   "00" )
-               MOVE    "1116"          TO  ERRCD-ZAI
+               MOVE    "1015"          TO  ERRCD-ZAI
            END-IF
       *
            .
@@ -633,19 +633,19 @@
       *
       *    入院中で無いこと
            IF    ( PTNYUINRRK-TAIINYMD =   "99999999" )
-               MOVE    "1117"          TO  ERRCD-ZAI
+               MOVE    "1016"          TO  ERRCD-ZAI
                GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
       *    入院日≦前回退院日でないこと
            IF    (  SODR-SRYYMD        =   PTNYUINRRK-TAIINYMD )
-               MOVE    "1118"          TO  ERRCD-ZAI
+               MOVE    "1017"          TO  ERRCD-ZAI
                GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
       *    （暫）一般の入院料が取得できていない場合
            IF    ( ITEM-SANTEICD       =   SPACE )
-               MOVE    "1119"          TO  ERRCD-ZAI
+               MOVE    "1018"          TO  ERRCD-ZAI
                GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
@@ -868,7 +868,7 @@
                                        OR  NCLAIMID-DRID     )
                CONTINUE
            ELSE
-               MOVE    "9002"          TO  ORDER-ERRCD-ITEM
+               MOVE    "1901"          TO  ORDER-ERRCD-ITEM
            END-IF
       *
            MOVE    "CLAIM"             TO  ORDER-OPID
