@@ -352,6 +352,8 @@
                    07  WRK-MAE-KKAKUNINYMDW        PIC X(09).
       *            £¶£µºÐ°Ê¾å·Ù¹ð
                    07  WRK-NAI-AGE65               PIC 9(01).
+      *            Ç¯Îð·Ù¹ð
+                   07  WRK-NAI-AGECHK              PIC 9(01).
       *            ÊÝ¸±¼Ô°ÛÆ°Æü·Ù¹ð
                    07  WRK-PTKOH-IDOYMD            PIC X(08).
                    07  WRK-NAI-PTKOH-KEIFLG        PIC X(01).
