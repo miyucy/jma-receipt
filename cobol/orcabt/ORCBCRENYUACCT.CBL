@@ -205,6 +205,13 @@
            03  KEY-SRYYM                           PIC X(06).
       *
        01  LST-AREA.
+           03  LST-HEAD1.
+               05                      PIC X(40)   VALUE   " ".
+               05                      PIC X(30)   VALUE   
+                             "入院会計一括作成結果リスト".
+               05                      PIC X(30)   VALUE   " ".
+               05  LST-HEAD-PAGE       PIC Z,ZZ9.
+               05                      PIC X(05)   VALUE   "頁".
            03  LST-HEAD.
                05                      PIC X(04)   VALUE   "番号".
                05                      PIC X(02)   VALUE   " ".
@@ -215,11 +222,9 @@
                05                      PIC X(08)   VALUE   "対象年月".
                05                      PIC X(02)   VALUE   " ".
                05                      PIC X(30)   VALUE   "処理結果".
-               05  LST-HEAD-PAGE       PIC Z,ZZ9.
-               05                      PIC X(05)   VALUE   "頁".
       *
            03  LST-MEISAI-G.
-               05  LST-MEISAI-OCC      OCCURS      54.
+               05  LST-MEISAI-OCC      OCCURS      50.
                    07  LST-NO          PIC Z(04).
                    07  LST-FIL1        PIC X(01).
                    07  LST-PTNUM       PIC X(20).
@@ -231,8 +236,8 @@
                    07  LST-NAIYO       PIC X(52).
       *
        01  CONST-AREA.
-           03  CONST-LST-HEAD-LINE     PIC 9(05)   VALUE   1.
-           03  CONST-LST-MEISAI-MAX    PIC 9(05)   VALUE   54.
+           03  CONST-LST-HEAD-LINE     PIC 9(05)   VALUE   2.
+           03  CONST-LST-MEISAI-MAX    PIC 9(05)   VALUE   50.
       *
       *    入院履歴退避用ワーク
        01  WK-PTNYUINRRK-REC.
@@ -706,7 +711,8 @@
            COMPUTE CNT-PAGE    =   CNT-PAGE    +   1
       *
            MOVE    CNT-PAGE            TO  LST-HEAD-PAGE
-           MOVE    LST-HEAD            TO  HCMSL55-MOJI (1)
+           MOVE    LST-HEAD1           TO  HCMSL55-MOJI (1)
+           MOVE    LST-HEAD            TO  HCMSL55-MOJI (2)
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   CONST-LST-MEISAI-MAX )
@@ -784,7 +790,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    CNT-JOB-UPDCNT  TO  JOB-UPDCNT
+           MOVE    CNT-PAGE        TO  JOB-UPDCNT
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -1200,57 +1206,6 @@
            .
        910-PTINF-READ-EXT.
            EXIT.
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
-      *
       *
       *
       *****************************************************************
