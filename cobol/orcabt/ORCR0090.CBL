@@ -2144,14 +2144,14 @@
                                    MOVE    ZERO    TO  WRK-RECE04-KAISU
                                                       (IDW 1 IDZ)
                                                        WRK-RECE04-KAISU
-                                                      (IDW 2 IDXX)
+                                                      (IDW 2 IDZ)
                                                        WRK-RECE04-KAISU
-                                                      (IDW 3 IDXX)
+                                                      (IDW 3 IDZ)
                                                        WRK-RECE04-KAISU
-                                                      (IDW 4 IDXX)
+                                                      (IDW 4 IDZ)
                                    COMPUTE WRK-SUM-KAISU (IDZ) 
                                                    =
-                                                   WRK-SUM-KAISU (IDZ) - 
+                                                   WRK-SUM-KAISU (IDZ) -
                                                    WRK-KAISU   (1)                                       
                                END-IF
                            END-PERFORM
