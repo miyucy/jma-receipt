@@ -4840,7 +4840,7 @@
            IF    ((FLG-HKNCOMBI     =   ZERO)    AND
                   (COMB-KOH1HKNNUM  =   "027"))      OR
                  ((WRK-NENREI      >=    70)     AND
-                  (PTINF-BIRTHDAY  <=   "19320930))
+                  (PTINF-BIRTHDAY  <=   "19320930"))
                INITIALIZE              SRYCDCHG-REC
       *
                MOVE    SYOKIKSN-IN-KHNSRYCD
