@@ -28,12 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.07.02  タイマーイベント追加
-      *  01.00.15    NACL-藤原    03/11/12  統計データ作成画面の追加
-      *  01.00.05    NACL-伊藤    04.02.17  レセ電ファイルの転送エラー
-      *                                     メッセージの追加
-      *  03.05.00    NACL-太田    07.05.28  グループ診療対応
-      *  03.05.01    NACL-藤原    07/08/01  クライアント保存対応
-      *  04.06.00    NACL-竹田    10/11/25  クライアント保存拡張対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -50,13 +44,6 @@
       *    スパ領域
            COPY    "COMMON-SPA".
       *
-           COPY    "G01COMMON-SPA".
-      *   
-           COPY    "ENUM-VALUE".
-      *
-      *    画面用ＳＰＡ
-           COPY    "G01SCR-SPA".
-      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -68,8 +55,6 @@
       *
        01  WRK-AREA.
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
-           03  WRK-PRT-PAGE        PIC 9(10).
-           03  WRK-KENSU-Z         PIC ZZZZZZ9.
       *     
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
@@ -92,11 +77,6 @@
                                    PIC X(08)   VALUE   "MONTHLY".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *
-      *    ジョブ管理ＤＢのキー値（統計処理用）  
-           03  WRK-CONS-JOB-SHELLID1
-                                   PIC X(08)   VALUE   "MONTHLY1".
-           03  WRK-CONS-JOB-JOBID1 PIC 9(07)   VALUE   1.
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -113,17 +93,11 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+      *     
+           COPY    "CPORCMCP.INC".  
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-      *    クライアント保存ＤＢ制御サブ
-           COPY    "CPORCSFILESV.INC".
-      *
-           COPY    "ORCA-BLOB".
-      *
-      *    ファイル削除パラメタ
-           COPY    "CPORCSFDEL.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -136,7 +110,12 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA51SCRAREA.INC".
+           COPY    "G01.INC".
+           COPY    "G02.INC".
+           COPY    "G99.INC".
+           COPY    "GERR.INC".
+           COPY    "GID1.INC".
+           COPY    "GID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -149,13 +128,7 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           INITIALIZE                  FLG-AREA
-                                       IDX-AREA
-                                       WRK-AREA
-      *
            MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-FREE        TO  SPA-G01FREE
-           MOVE    SPA-WORK        TO  SPA-G01KYOUTU
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -165,9 +138,7 @@
                    PERFORM 200-GMNSENI
            END-EVALUATE
       *
-           MOVE    SPA-G01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-G01FREE     TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
@@ -176,16 +147,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
-           MOVE    "B01"               TO  MCP-WIDGET
-           MOVE    SPACE               TO  LINKAREA
-      *
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "G99    "           TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
       * 
            .
        100-INIT-EXT.
@@ -204,9 +165,6 @@
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
-      *    プレビュー画面へ
-               WHEN    "CLICKED"       ALSO    "B12"
-                   PERFORM 4501-NEXT-GMN-SEC
            END-EVALUATE
       *
            .
@@ -217,23 +175,7 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-      *    クライアント保存用作業ファイル削除
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-SFILESV-MAX
-               INITIALIZE              ORCSFDELAREA
-               STRING  SPA-SFILESV-FOR-FOLDER (IDX)
-                                           DELIMITED  BY  SPACE
-                       SPA-SFILESV-FOR-DATA   (IDX) 
-                                           DELIMITED  BY  SPACE
-                                           INTO  IF-FILENAME
-               END-STRING
-               CALL    "orcfiledel"    USING
-                                       ORCSFDELAREA
-           END-PERFORM
-      *
-           MOVE    SPACE               TO  SPA-G99-FLG
-      *
-           MOVE    SPA-G99-MOTOPG      TO  SPA-SAKIPG
+           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
            MOVE    "G99"               TO  SPA-MOTOPG
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
@@ -248,300 +190,92 @@
            EXIT.
       *
       *****************************************************************
-      *    更新処理
-      *****************************************************************
-       4501-NEXT-GMN-SEC            SECTION.
-      *
-           MOVE    "OK"                TO  SPA-G99-FLG
-      *     
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "G99"               TO  SPA-MOTOPG
-      *
-           MOVE    "JOIN"              TO  MCP-PUTTYPE
-           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
-      *
-           .
-       4501-NEXT-GMN-EXT.
-           EXIT.
-      *****************************************************************
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *     
-           INITIALIZE                      G99
+           MOVE    SPACE               TO  G99
            MOVE    ZERO                TO  G99-COUNT
-           MOVE    WIDGET-INSENSITIVE  TO  G99-B12-STATE
-      *
-           MOVE    5                   TO  G99-DURATION
-      *
-           MOVE    ZERO                TO  WRK-PRT-PAGE
-      *
-           IF      SPA-MOTOPG          =   "G01"        
-               MOVE    SPACE               TO  SYS-3003-REC 
-               INITIALIZE                      SYS-3003-REC
-               MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
-               MOVE    "3003"              TO  SYS-3003-KANRICD
-               MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-               MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
-                                               SYS-3003-EDYUKYMD
-               MOVE    SYS-3003-REC        TO  MCPDATA-REC
-               PERFORM 900-SYSKANRI-INV-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-3003-REC 
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       SYS-3003-JOBID
-      *                ジョブ管理チェック処理
-                       MOVE    "CHK"           TO  SJOBKANRI-MODE
-                       INITIALIZE                  JOBKANRI-REC
-                       MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-                       MOVE    IDX             TO  JOB-JOBID
-                       MOVE    WRK-CONS-JOB-SHELLID
-                                               TO  JOB-SHELLID
-                       CALL    "ORCSJOB"       USING
-                                               ORCSJOBKANRIAREA  
-                                               JOBKANRI-REC 
-                                               SPA-AREA
-                       IF      SJOBKANRI-RETURN    =   ZERO
-                           PERFORM 4901-KAKUNIN-HYOUJI-SEC
-                       END-IF
-                   END-PERFORM
-               END-IF
-           ELSE
-      *       ジョブ管理チェック処理
-               MOVE    "CHK"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-               MOVE    WRK-CONS-JOB-JOBID1
-                                       TO  JOB-JOBID
-               MOVE    WRK-CONS-JOB-SHELLID1
-                                       TO  JOB-SHELLID
-               CALL    "ORCSJOB"       USING
+      *        
+           MOVE    SPACE               TO  SYS-3003-REC 
+           INITIALIZE                      SYS-3003-REC
+           MOVE    "3003"              TO  SYS-3003-KANRICD
+           MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD 
+           MOVE    SYS-3003-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-3003-REC 
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SYS-3003-JOBID
+      *            ジョブ管理チェック処理
+                   MOVE    "CHK"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    IDX             TO  JOB-JOBID
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  JOB-SHELLID
+                   CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC
-                                           SPA-AREA
-               MOVE    1               TO  IDX 
-               IF      SJOBKANRI-RETURN    =   ZERO
-                   PERFORM 4901-KAKUNIN-HYOUJI-SEC
-               END-IF
+                                           JOBKANRI-REC 
+                   IF      SJOBKANRI-RETURN    =   ZERO
+                       MOVE    JOB-JOBID       TO  G99-RENNUM   (IDX)
+                       MOVE    JOB-SHELLMSG    TO  G99-SHORINM  (IDX)
+                       MOVE    JOB-STARTTIME(1:2)
+                                               TO  WRK-HH
+                       MOVE    JOB-STARTTIME(3:2)
+                                               TO  WRK-MM
+                       MOVE    JOB-STARTTIME(5:2)
+                                               TO  WRK-SS
+                       MOVE    WRK-HENTIME     TO  G99-STARTTIME(IDX)
+                       MOVE    JOB-ENDTIME(1:2)
+                                               TO  WRK-HH
+                       MOVE    JOB-ENDTIME(3:2)
+                                               TO  WRK-MM
+                       MOVE    JOB-ENDTIME(5:2)
+                                               TO  WRK-SS
+                       MOVE    WRK-HENTIME     TO  G99-ENDTIME  (IDX)
+                       MOVE    JOB-UPDCNT      TO  WRK-PAGE
+                       MOVE    WRK-PAGE        TO  G99-PAGE     (IDX)
+                       MOVE    JOB-YOBI        TO  G99-ERRMSG   (IDX)
+                       IF      JOB-ENDYMD      =   SPACE
+                           MOVE    "処理中です"    TO  G99-MSG
+                       ELSE
+                           IF      JOB-ERRCD       =   SPACE
+                               CONTINUE
+                           ELSE
+                               INITIALIZE          G99-MSG
+                               STRING  JOB-YOBI    DELIMITED  BY  SPACE
+                                       "【"        DELIMITED  BY  SIZE
+                                      JOB-SHELLMSG DELIMITED  BY  SPACE
+                                      "】"         DELIMITED  BY  SIZE      
+                                                   INTO  G99-MSG
+                           END-IF                          
+                       END-IF    
+                       MOVE    IDX                     TO  G99-COUNT    
+                   END-IF
+               END-PERFORM
            END-IF
-      *
-           MOVE    "B11"               TO  MCP-WIDGET
-           IF    ( G99-MSG             =   SPACE )
-               MOVE    "B01"           TO  MCP-WIDGET
-               IF    ( G99-COUNT       >   ZERO )
+           IF      G99-MSG              =   SPACE
+               MOVE    "B01"                TO  MCP-WIDGET
+               IF      G99-COUNT            >   ZERO    
                    MOVE    "処理は正常に終了しました"
-                                       TO  G99-MSG
+                                                TO  G99-MSG
                ELSE
                    MOVE    "該当する処理はありません"
-                                       TO  G99-MSG
-               END-IF
-           END-IF
+                                                TO  G99-MSG
+               END-IF                                 
+           ELSE                                        
+               MOVE    "B11"                TO  MCP-WIDGET
+           END-IF                                 
       *
-           IF    ( SPA-GID1-FLG    =   "PV" )
-               MOVE    "F12:プレビュー"    TO  G99-B12-LABEL
-               IF    ( WRK-PRT-PAGE    >   ZERO )
-                   MOVE    WIDGET-NORMAL   TO  G99-B12-STATE
-                   MOVE    "B12"           TO  MCP-WIDGET
-               END-IF
-           END-IF
-           IF    ( SPA-GID1-FLG    =   "SV" )
-               IF      JOB-ENDYMD  NOT =   SPACE
-                   IF      JOB-ERRCD       =   "9999"
-                       CONTINUE
-                   ELSE
-                       IF      SPA-G99-FILESV-CHK-FLG  =   ZERO
-                           PERFORM 4902-FILE-INFO-CHK-SEC
-                       ELSE
-      *                    ファイルエントリ処理(クライアント保存)
-                           IF      SPA-SFILESV-MAX   >   SPA-SFILESV-IDX
-                               ADD     1   TO  SPA-SFILESV-IDX 
-                               PERFORM 3001-FILEENTRY-SEC
-                           ELSE
-                               IF      SPA-SFILESV-MAX NOT =   ZERO
-                                   MOVE    ZERO    TO  G99-DURATION
-                                   MOVE    ZERO    TO  SPA-SFILESV-IDX
-                               END-IF
-                           END-IF
-                       END-IF
-                   END-IF
-               END-IF    
-           END-IF
+           MOVE    SPACE               TO  LINKAREA
       *
-           IF    ( FLG-END             =   ZERO )
-      *
-               MOVE    "CURRENT"           TO  MCP-PUTTYPE
-               MOVE    "G99    "           TO  MCP-WINDOW
-      *
-               PERFORM 900-PUT-WINDOW
-           END-IF
-      *
-           .
-       490-KAKUNIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    処理確認処理
-      *****************************************************************
-       4901-KAKUNIN-HYOUJI-SEC            SECTION.
-      *     
-           MOVE    JOB-JOBID       TO  G99-RENNUM   (IDX)
-           MOVE    JOB-SHELLMSG    TO  G99-SHORINM  (IDX)
-           MOVE    JOB-STARTTIME(1:2)
-                                   TO  WRK-HH
-           MOVE    JOB-STARTTIME(3:2)
-                                   TO  WRK-MM
-           MOVE    JOB-STARTTIME(5:2)
-                                   TO  WRK-SS
-           MOVE    WRK-HENTIME     TO  G99-STARTTIME(IDX)
-           MOVE    JOB-ENDTIME(1:2)
-                                   TO  WRK-HH
-           MOVE    JOB-ENDTIME(3:2)
-                                   TO  WRK-MM
-           MOVE    JOB-ENDTIME(5:2)
-                                   TO  WRK-SS
-           MOVE    WRK-HENTIME     TO  G99-ENDTIME  (IDX)
-           MOVE    JOB-UPDCNT      TO  WRK-PAGE
-           MOVE    WRK-PAGE        TO  G99-PAGE     (IDX)
-           MOVE    JOB-YOBI        TO  G99-ERRMSG   (IDX)
-           IF      JOB-ENDYMD      =   SPACE
-               MOVE    "処理中です"    TO  G99-MSG
-           ELSE
-              IF      JOB-ERRCD       =   SPACE
-                  CONTINUE
-              ELSE
-                  MOVE    SPACE       TO  G99-MSG
-                  PERFORM 4901-JOB-ERRSET-SEC
-                  IF      G99-MSG     =   SPACE
-                       STRING  JOB-YOBI        DELIMITED BY SPACE
-                               "【"            DELIMITED BY SIZE
-                               JOB-SHELLMSG    DELIMITED BY SPACE
-                               "】"            DELIMITED BY SIZE
-                                               INTO  G99-MSG
-                       END-STRING   
-                   END-IF
-              END-IF                          
-           END-IF    
-           MOVE    IDX                     TO  G99-COUNT
-           IF    ( JOB-JOBID   =   SPA-G01-JOB-JOBID )
-                   MOVE    JOB-UPDCNT  TO  WRK-PRT-PAGE
-           END-IF    
-           .
-       4901-KAKUNIN-HYOUJI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    クライアント保存情報チェック処理
-      *****************************************************************
-       4902-FILE-INFO-CHK-SEC          SECTION.
-      *
-           INITIALIZE                  ORCSFILESVAREA
-           MOVE    "R"             TO  SFILESV-MODE
-           MOVE    WRK-CONS-JOB-SHELLID1
-                                   TO  SFILESV-TBL-KEY
-           CALL    "ORCSFILESV"    USING
-                                       ORCSFILESVAREA
-                                       SPA-AREA  
-           IF      SFILESV-RETURN  =   ZERO
-               INITIALIZE               SPA-SFILESV-AREA
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       100
-                       OR      SFILESV-SHELLID (IDX)
-                                   =       SPACE
-                   MOVE    SFILESV-TITLE        (IDX)
-                                       TO  SPA-SFILESV-TITLE     (IDX)
-                   MOVE    SFILESV-CNT-ALL      (IDX)
-                                       TO  SPA-SFILESV-CNT-ALL   (IDX)
-                   MOVE    SFILESV-FOR-FOLDER   (IDX)
-                                       TO  SPA-SFILESV-FOR-FOLDER(IDX)
-                   MOVE    SFILESV-FOR-DATA     (IDX)
-                                       TO  SPA-SFILESV-FOR-DATA  (IDX)
-                   MOVE    SFILESV-TO-FOLDER    (IDX)
-                                       TO  SPA-SFILESV-TO-FOLDER (IDX)
-                   MOVE    SFILESV-TO-DATA      (IDX)
-                                       TO  SPA-SFILESV-TO-DATA   (IDX)
-                   MOVE    SFILESV-CODE-TYPE    (IDX)
-                                       TO  SPA-SFILESV-CODE-TYPE (IDX)
-                   MOVE    SFILESV-DATA-TYPE    (IDX)
-                                       TO  SPA-SFILESV-DATA-TYPE (IDX)
-                   ADD     1           TO  SPA-SFILESV-MAX
-               END-PERFORM
-      *
-               MOVE    1                   TO  SPA-G99-FILESV-CHK-FLG
-      *
-               MOVE    1                   TO  G99-DURATION
-           END-IF
-      *
-           .
-       4902-FILE-INFO-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ファイルエントリ処理(クライアント保存)
-      *****************************************************************
-       3001-FILEENTRY-SEC          SECTION.
-      *
-           INITIALIZE                      ORCA-BLOB
-           MOVE    "BLOBIMPORT"        TO  MCP-FUNC
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "blob"              TO  MCP-TABLE
-           STRING  SPA-SFILESV-FOR-FOLDER (SPA-SFILESV-IDX)
-                                       DELIMITED  BY  SPACE
-                   SPA-SFILESV-FOR-DATA   (SPA-SFILESV-IDX) 
-                                       DELIMITED  BY  SPACE
-                                       INTO  ORCA-BLOB-FILE
-           END-STRING
-           CALL   "ORCDBMAIN"          USING
-                                       MCPAREA
-                                       ORCA-BLOB
-                                       SPA-AREA
-      *
-           MOVE    ORCA-BLOB-OBJECT    TO  G99-OBJECTDATA
-           MOVE    SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
-                                       TO  G99-FILENAME
-           MOVE    1                   TO  G99-DURATION
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE
+           MOVE    "G99    "           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
-           MOVE    1                   TO  FLG-END
            .
-       3001-FILEENTRY-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    エラーメッセージセット処理
-      *****************************************************************
-       4901-JOB-ERRSET-SEC             SECTION.
-      *
-           EVALUATE    JOB-ERRCD
-               WHEN    "0001"
-                   MOVE    "【ファイルがありません】" 
-                                               TO  G99-MSG
-               WHEN    "0002"
-                   MOVE    "【ｆｄｄが起動されていません】" 
-                                               TO  G99-MSG
-               WHEN    "0003"
-               WHEN    "0004"
-                   MOVE    "【ｆｄｄで処理が失敗しました】" 
-                                               TO  G99-MSG
-               WHEN    "0011"
-                   MOVE    "【媒体がマウントできませんでした】" 
-                                               TO  G99-MSG
-               WHEN    "0012"
-                   MOVE    "【媒体がアンマウントできませんでした】" 
-                                               TO  G99-MSG
-               WHEN    "0021"
-                   MOVE    "【ファイルコピーでエラーが発生しました】" 
-                                               TO  G99-MSG
-               WHEN    "0127"
-                   MOVE    "【スクリプトが実行できませんでした】" 
-                                               TO  G99-MSG
-           END-EVALUATE
-      *
-           .
-       4901-JOB-ERRSET-EXT.
+       490-KAKUNIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -550,20 +284,18 @@
        900-SYSKANRI-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
@@ -573,13 +305,12 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        900-SYSKANRI-INV-EXT.
@@ -591,10 +322,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL   "ORCMCPSUB"   USING
+                                MCPAREA
+                                ORCMCPAREA
+                                MCPDATA-REC.
       *
            .
        900-PUT-WINDOW-EXT.

@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-太田    07.05.28  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -61,6 +60,8 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+      *     
+           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    連絡　領域
@@ -73,7 +74,12 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA51SCRAREA.INC".
+           COPY    "G01.INC".
+           COPY    "G02.INC".
+           COPY    "G99.INC".
+           COPY    "GERR.INC".
+           COPY    "GID1.INC".
+           COPY    "GID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -122,10 +128,6 @@
                WHEN    "CLICKED"                 ALSO    "B01"
                    MOVE    SPACE                 TO  SPA-GID1-FLG
                    PERFORM 210-BACK
-      *     プレビュー
-               WHEN    "CLICKED"                 ALSO    "B10"
-                   MOVE    "PV"                  TO  SPA-GID1-FLG
-                   PERFORM 210-BACK
       *     印刷しない
                WHEN    "CLICKED"                 ALSO    "B11"
                    MOVE    "NO"                  TO  SPA-GID1-FLG
@@ -164,11 +166,10 @@
        900-PUT-WINDOW                            SECTION.
       *
            MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           .
+           CALL   "ORCMCPSUB"                     USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC.
       *
        900-PUT-WINDOW-EXT.
            EXIT.
