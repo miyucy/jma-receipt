@@ -2281,7 +2281,7 @@
       *
       *    Æþ±¡Ä´ºÞÎÁ¤Î¼«Æ°ºï½ü
            INITIALIZE                  ORCSCHOZAIAREA
-           MOVE    "1"                 TO  ORCSCHO-KBN
+           MOVE    "2"                 TO  ORCSCHO-KBN
            MOVE    SPA-PTID            TO  ORCSCHO-PTID
            MOVE    ORCSCNYUIN-YMD(1:6) TO  ORCSCHO-SRYYM
            CALL    "ORCSCHOZAI"        USING

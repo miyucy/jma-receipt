@@ -248,11 +248,11 @@
       *
            MOVE    "1"                 TO  SPA-NYUGAIKBN
       *
+      *    入院・外泊の編集
+           PERFORM 200-GAIHAKU-HEN-SEC
+      *
       *    投薬の日数編集
            PERFORM 100-TOUYAKU-HEN-SEC
-      *
-      *    外泊の編集
-           PERFORM 200-GAIHAKU-HEN-SEC
       *
       *    入院調剤料と麻毒の確定
            PERFORM 300-CHOZAI-HEN-SEC
@@ -272,7 +272,7 @@
       *
            INITIALIZE                  TBL-TOUYAKU-AREA
            MOVE    ORCSCHO-SRYYM       TO  WRK-SRYYM
-      *    前後３月分
+      *    前１月分
            COMPUTE WRK-SRYMM           =   WRK-SRYMM   -   1
            IF      WRK-SRYMM           =   ZERO
                COMPUTE WRK-SRYYY       =   WRK-SRYYY   -   1
@@ -355,6 +355,7 @@
       *        回数により保存
                PERFORM VARYING     IDY2    FROM    1   BY  1
                        UNTIL       IDY2    >   31
+      *            投薬の日が入院中であること
                    IF      ACCT-DAY (1 IDY2)   >   ZERO
                        MOVE    ACCT-DAY (1 IDY2)   TO  WRK-KAISU
                        PERFORM VARYING IDX2    FROM    1   BY   1
@@ -374,13 +375,19 @@
                            ELSE
                                MOVE    IDX             TO  IDX1
                            END-IF
-                           MOVE    1               TO  TBL-TOU-DAY
+      *                    当月で退院以降はなしとする
+                           IF     (IDX1            =   2  )  AND
+                                  (TBL-NYU-DAY (IDX3)  =   ZERO)
+                               MOVE    WRK-KAISU       TO  IDX2
+                           ELSE
+                               MOVE    1               TO  TBL-TOU-DAY
                                                             (IDX1 IDX3)
-                           PERFORM 100111-TOU-SRYKAHEN-SEC
-                           IF      FLG-MADOKU      =   1
-                               MOVE    1               TO  TBL-DOK-DAY
+                               PERFORM 100111-TOU-SRYKAHEN-SEC
+                               IF      FLG-MADOKU      =   1
+                                   MOVE    1           TO  TBL-DOK-DAY
                                                             (IDX1 IDX3)
-                               PERFORM 100112-DOK-SRYKAHEN-SEC
+                                   PERFORM 100112-DOK-SRYKAHEN-SEC
+                               END-IF
                            END-IF
                        END-PERFORM
                    END-IF
@@ -584,7 +591,7 @@
        600111-SRYACT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    外泊の編集処理
+      *    入院・外泊の編集処理
       *****************************************************************
        200-GAIHAKU-HEN-SEC             SECTION.
       *
@@ -628,20 +635,16 @@
            INITIALIZE                  PTNYUINRRK-REC
            MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
            MOVE    ORCSCHO-PTID        TO  PTNYUINRRK-PTID
-           MOVE    ORCSCHO-SRYYM       TO  PTNYUINRRK-NYUINYMD(1:6)
-           MOVE    "01"                TO  PTNYUINRRK-NYUINYMD(7:2)
-           MOVE    ORCSCHO-SRYYM       TO  PTNYUINRRK-TAIINYMD(1:6)
-           MOVE    "01"                TO  PTNYUINRRK-TAIINYMD(7:2)
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY11"  TO  ORC-DBPATH
+           MOVE    "PTNYUINRRK-KEY2"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY11"  TO  ORC-DBPATH
+               MOVE    "PTNYUINRRK-KEY2"  TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            ELSE
                MOVE    1               TO  FLG-PTNYUINRRK
@@ -651,7 +654,9 @@
            MOVE    ZERO                TO  FLG-OK
            PERFORM
                    UNTIL      (FLG-PTNYUINRRK      =   1 )  OR
-                              (FLG-OK              =   1 )
+                              (FLG-OK              =   1 )  OR
+                              (PTNYUINRRK-TAIINYMD(1:6)
+                                                   <  ORCSCHO-SRYYM)
       *        入院日から９０日以上の判定
                MOVE    ZERO                    TO  WRK-MAX
                IF      PTNYUINRRK-NYUINYMD(1:6)    <   ORCSCHO-SRYYM
@@ -682,7 +687,7 @@
                END-IF
       *        入院日
                IF      PTNYUINRRK-NYUINYMD(1:6)  =   ORCSCHO-SRYYM
-                   MOVE    PTNYUINRRK-TAIINYMD(7:2)  TO  IDX-S
+                   MOVE    PTNYUINRRK-NYUINYMD(7:2)  TO  IDX-S
                END-IF
                IF      PTNYUINRRK-NYUINYMD(1:6)  <   ORCSCHO-SRYYM
                    MOVE    1                         TO  IDX-S
@@ -691,7 +696,8 @@
                IF     PTNYUINRRK-TAIINYMD(1:6)   =   ORCSCHO-SRYYM
                    MOVE    PTNYUINRRK-TAIINYMD(7:2)  TO  IDX-E
                END-IF
-               IF     PTNYUINRRK-TAIINYMD(1:6)   >   ORCSCHO-SRYYM
+               IF    (PTNYUINRRK-TAIINYMD(1:6)   >   ORCSCHO-SRYYM) OR
+                     (PTNYUINRRK-TAIINYMD        =   ALL "9"  )
                    MOVE    31                        TO  IDX-E
                END-IF
       *
@@ -717,7 +723,7 @@
                    END-PERFORM
                END-IF
       *
-               MOVE    "PTNYUINRRK-KEY11"  TO  ORC-DBPATH
+               MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            END-PERFORM
       *
@@ -1098,6 +1104,12 @@
                    MOVE    TBL-CHO-DAY-AREA(IDX)   TO  ACCT-DAY-AREA
                    PERFORM 40051-DAY-UPD-SEC
       *
+      *            退院で回数がない時、削除する
+                   IF     (ORCSCHO-KBN         =   "2"  )  AND
+                          (ACCT-ZAIKAISU       =   ZERO )
+                       PERFORM 40052-SRYACCT-DEL-SEC
+                   ELSE
+      *
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
@@ -1110,6 +1122,8 @@
                                 ",KEY:" ACCT-KEY
                         MOVE    1               TO  ORCSCHO-ERRCD
                         GO  TO  4005-CHOU-UPDATE-EXT
+                   END-IF
+      *
                    END-IF
                ELSE
                    DISPLAY "ORCSCHOZAII SRYACCT READ ERR:" ACCT-KEY
@@ -1134,6 +1148,28 @@
       *
            .
        4005-CHOU-UPDATE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計マスター削除処理
+      *****************************************************************
+       40052-SRYACCT-DEL-SEC           SECTION.
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCSCHOZAI SRYACCT DEL ERR:" MCP-RC
+                                ",KEY:" ACCT-KEY
+               MOVE    1               TO  ORCSCHO-ERRCD
+           END-IF
+      *
+           .
+       40052-SRYACCT-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1190,6 +1226,11 @@
       *            診療会計マスターを変更する
                    MOVE    TBL-MAD-DAY-AREA(IDX)   TO  ACCT-DAY-AREA
                    PERFORM 40051-DAY-UPD-SEC
+      *            退院で回数がない時、削除する
+                   IF     (ORCSCHO-KBN         =   "2"  )  AND
+                          (ACCT-ZAIKAISU       =   ZERO )
+                       PERFORM 40052-SRYACCT-DEL-SEC
+                   ELSE
       *
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1203,6 +1244,8 @@
                                 ",KEY:" ACCT-KEY
                         MOVE    1               TO  ORCSCHO-ERRCD
                         GO  TO  4006-MADO-UPDATE-EXT
+                   END-IF
+      *
                    END-IF
                ELSE
                    DISPLAY "ORCSCHOZAI SRYACCT READ ERR:" ACCT-KEY
