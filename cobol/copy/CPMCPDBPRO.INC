@@ -275,6 +275,7 @@
       *  01.01.96    NACL-太田    03/08/26  PTNYUINRRK-KEY25追加
       *  01.01.97    NACL-小豆沢　03/08/29  PTHKNINF-KEY6追加
       *  01.01.98    NACL-小豆沢  03/08/29  KOHPLUSの追加
+      *  01.01.99    NACL-藤原    03/08/29  RECEPRT-KEY18〜KEY29追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2170,6 +2171,42 @@
                                        TO  WRK-PATH
                 WHEN    ANY             ALSO   "RECEPRT-KEY17"
                    MOVE    PATH-TBL-RECEPRT-KEY17
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY18"
+                   MOVE    PATH-TBL-RECEPRT-KEY18
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY19"
+                   MOVE    PATH-TBL-RECEPRT-KEY19
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY20"
+                   MOVE    PATH-TBL-RECEPRT-KEY20
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY21"
+                   MOVE    PATH-TBL-RECEPRT-KEY21
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY22"
+                   MOVE    PATH-TBL-RECEPRT-KEY22
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY23"
+                   MOVE    PATH-TBL-RECEPRT-KEY23
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY24"
+                   MOVE    PATH-TBL-RECEPRT-KEY24
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY25"
+                   MOVE    PATH-TBL-RECEPRT-KEY25
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY26"
+                   MOVE    PATH-TBL-RECEPRT-KEY26
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY27"
+                   MOVE    PATH-TBL-RECEPRT-KEY27
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY28"
+                   MOVE    PATH-TBL-RECEPRT-KEY28
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY29"
+                   MOVE    PATH-TBL-RECEPRT-KEY29
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "RECEPRT-ALL"
