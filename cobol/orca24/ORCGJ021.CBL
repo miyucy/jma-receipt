@@ -1137,8 +1137,11 @@
                                MOVE    "0009"          TO  SPA-ERRCD
                                MOVE    4               TO  SPA-J021-CUR
                            ELSE
-                               MOVE    SPA-NAI-TEKSTYMD (IDX)(7:2)
+                               IF      SPA-NAI-TEKSTYMD (IDX)(7:2)
+                                                   >   SPA-J021-STDAY
+                                   MOVE    SPA-NAI-TEKSTYMD (IDX)(7:2)
                                                    TO  SPA-J021-DAY1
+                               END-IF
                            END-IF
                        END-IF
       *                保険終了日が診療日より後であること
@@ -1270,8 +1273,7 @@
            END-IF
       *
            IF      (SPA-ERRCD          =   SPACE         )  AND
-                  ((SPA-J021-DAY2      <   SPA-J021-STDAY)  OR
-                   (SPA-J021-DAY2      >   SPA-J021-ENDAY))
+                   (SPA-J021-DAY2      <   SPA-J021-STDAY)
                MOVE    "0016"              TO  SPA-ERRCD
                MOVE    4                   TO  SPA-J021-CUR
            END-IF
@@ -1288,8 +1290,6 @@
                                             =  SPA-NAI-SRYYM
                        IF     (SPA-NAI-TEKSTYMD (IDX)(7:2)
                                                    <=  SPA-J021-DAY1)
-                          AND (SPA-NAI-TEKSTYMD (IDX)(7:2)
-                                                   >=  SPA-J021-DAY2)
                            CONTINUE
                        ELSE
                            MOVE    "0017"              TO  SPA-ERRCD
@@ -1299,8 +1299,6 @@
                    IF      SPA-NAI-TEKEDYMD (IDX)(1:6)
                                             =  SPA-NAI-SRYYM
                        IF     (SPA-NAI-TEKEDYMD (IDX)(7:2)
-                                                   <=  SPA-J021-DAY1)
-                          AND (SPA-NAI-TEKEDYMD (IDX)(7:2)
                                                    >=  SPA-J021-DAY2)
                            CONTINUE
                        ELSE
