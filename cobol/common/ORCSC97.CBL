@@ -411,9 +411,14 @@
            ELSE
                MOVE    1                   TO  WRK-IDX-FT
            END-IF
-      *    数量以下の変換
-           MOVE    LNK-SC97-GMN-IDX    TO  GMN-IDX
-           PERFORM 300-SURYOU-SYORI-SEC
+           IF      LNK-SC97-INPUTCD(1:1)   =   " "
+      *        削除行
+               CONTINUE
+           ELSE
+      *        数量以下の変換
+               MOVE    LNK-SC97-GMN-IDX    TO  GMN-IDX
+               PERFORM 300-SURYOU-SYORI-SEC
+           END-IF
            IF      LNK-SC97-INPUTCD(1:1)   =   " "
       *        削除行
                CONTINUE
