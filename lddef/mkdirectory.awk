@@ -1,10 +1,7 @@
 # generate "directory" file
 
 BEGIN {
-  start_port=9100;
   hosp=0;
-
-
   for (i = 2; i < ARGC; i++) {
     if (ARGV[i] == "hosp")
       hosp = 1;
