@@ -653,6 +653,14 @@
       *****************************************************************
        10011-YOUJIKASAN-SET-SEC        SECTION.
       *
+      *    通則年齢区分があるか、労災コードの場合のみ
+           IF     (WRK-COM-TSUSOKUAGE (IDX-ZS) =   "1" )  OR
+                  (WRK-COM-INPUTCD (IDX-ZS)(1:3)   =  "101")
+               CONTINUE
+           ELSE
+               GO      TO      10011-YOUJIKASAN-SET-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  WRK-SRYCD
       *
       *    新生児加算
