@@ -309,6 +309,10 @@
                    07  SPA-GMN-OLD-KANANAME    PIC X(50).
                    07  SPA-GMN-OLD-NAME        PIC X(50).
       *
+      *            »áÌ¾ÊÑ¹¹Í­Ìµ
+                   07  SPA-HZN-NAME            PIC X(50).
+                   07  SPA-HEN-FLG             PIC 9(01).
+      *
                    07  SPA-OLD-NAME            PIC X(50).
                    07  SPA-OLD-KANANAME        PIC X(50).
                    07  SPA-OLD-NICKNAME        PIC X(50).
@@ -1080,6 +1084,7 @@
                        09  SPA-GMN2F-PTNUM         PIC X(20).
                        09  SPA-GMN2F-PTID          PIC 9(10).
                    07  SPA-GMN2F-MAX           PIC 9(04).
+      *
       *
       *    £Ã£Ì£Á£É£Í²èÌÌ¡Ê£Ð£°£²£Ø¡Ë
            03  SPA-P02X-AREA.
