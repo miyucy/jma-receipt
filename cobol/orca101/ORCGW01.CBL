@@ -431,10 +431,13 @@
            MOVE    "4001"                  TO  SPA-GMN-KANRICDL (24)
       *****MOVE    "Ï«ºÒ°åÎÅµ¡´Ø¾ðÊó"
            MOVE    "Ï«ºÒ¼«Çå°åÎÅµ¡´Ø¾ðÊó"  TO  SPA-GMN-KANRICDMEIL(24)
+           MOVE    "9000"                  TO  SPA-GMN-KANRICDL (25)
+      *****MOVE    "Ï«ºÒ°åÎÅµ¡´Ø¾ðÊó"
+           MOVE    "£Ã£Ì£Á£É£Í"            TO  SPA-GMN-KANRICDMEIL(25)
       *
       *    Æþ±¡¤Ï¥Ù¥Ã¥È¿ô¤¬¤¢¤ë»þ¤Î¤ß
            IF      SPA-BEDSU           =   ZERO
-               MOVE    24                  TO  SPA-GMN-KANRICD-MAX
+               MOVE    25                  TO  SPA-GMN-KANRICD-MAX
                MOVE    1                   TO  SPA-GMN-CUR
                GO      TO        310-SPASET-EXT
            END-IF
@@ -1300,6 +1303,8 @@
                    MOVE    "W22"               TO  SPA-SAKIPG
                WHEN    "5010"
                    MOVE    "W23"               TO  SPA-SAKIPG
+               WHEN    "9000"
+                   MOVE    "W99"               TO  SPA-SAKIPG
            END-EVALUATE
            MOVE    "W01"               TO  SPA-MOTOPG
       *

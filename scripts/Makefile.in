@@ -38,11 +38,37 @@ shell_sources = \
 	monthly/recept8.sh.in \
 	monthly/sokatsu.sh.in \
 	monthly/teikiseikyu.sh.in \
+	claim/HL01.sh.in \
+	claim/HL02.sh.in \
+	claim/HL03.sh.in \
+	claim/ORC_CLAIM_SERVER.sh.in
 
 ruby_scripts = \
 	daily/print-data.rb \
 	daily/print_parent2.rb \
 	daily/print_parent.rb
+
+claim_scripts = \
+	claim/def/orca_layout_accounting.def \
+	claim/def/orca_layout_decode.def \
+	claim/def/orca_layout_front.def \
+	claim/dtd/MML1014_euc.dtd \
+	claim/link/link_decode.def \
+	claim/rb/claim_empty_elem.list \
+	claim/rb/clm_rcv.rb \
+	claim/rb/clm_snd.rb \
+	claim/rb/decode_xml.rb \
+	claim/rb/orca_jcnv.rb \
+	claim/rb/orca_lib.rb \
+	claim/rb/orca_lib_v100.rb \
+	claim/rb/orca_make_xml.rb \
+	claim/rb/orca_send.rb \
+	claim/rb/orca_send_xml.rb \
+	claim/rb/send_xml_main.rb \
+	claim/rb/xml_jcnv.rb \
+	claim/rb/xml_valid.rb \
+	claim/template/orca_base_accounting.xml \
+	claim/template/orca_base_front.xml \
 
 shell_scripts = $(shell_sources:.sh.in=.sh) 
 
@@ -57,13 +83,12 @@ noinst_shell_scripts = $(noinst_shell_sources:.sh.in=.sh)
 all:   $(noinst_shell_scripts) $(shell_scripts)
 
 filecheck:
-	@(for i in $(noinst_shell_sources) $(noinst_shell_scripts) \
-		  $(shell_sources) $(shell_scripts) $(ruby_scripts) \
+	@(for i in $(noinst_shell_sources) \
+		  $(shell_sources) $(ruby_scripts) $(claim_scripts) \
 			;do echo "make	`basename $${i}`"; done ; \
 	find . \
 	-name "." -o \
 	-name "CVS" -prune -o \
-	-name "claim" -prune -o \
 	-name "Makefile*" -o \
 	-name ".cvsignore" -o \
 	-name "*.bak" -o \
@@ -71,6 +96,42 @@ filecheck:
 	-name "allways" -o \
 	-name "daily" -o \
 	-name "monthly" -o \
+	-name "claim" -o \
+	-name "def" -o \
+	-name "dtd" -o \
+	-name "link" -o \
+	-name "rb" -o \
+	-name "template" -o \
+	-name "HC01.sh" -o \
+	-name "HCALL.sh" -o \
+	-name "HCALL2.sh" -o \
+	-name "HL01.sh" -o \
+	-name "HL02.sh" -o \
+	-name "HL03.sh" -o \
+	-name "ORCBQ01.sh" -o \
+	-name "ORC_CLAIM_SERVER.sh" -o \
+	-name "execoprg.sh" -o \
+	-name "master_upgrade.sh"  -o \
+	-name "orcbsd01.sh" -o \
+	-name "orcbse01.sh" -o \
+	-name "orcbsf01.sh" -o \
+	-name "orcbsf02.sh" -o \
+	-name "orcbsf03.sh" -o \
+	-name "orhcml09.sh" -o \
+	-name "print.sh" -o \
+	-name "recept1.sh" -o \
+	-name "recept2.sh" -o \
+	-name "recept3.sh" -o \
+	-name "recept4.sh" -o \
+	-name "recept5.sh" -o \
+	-name "recept6.sh" -o \
+	-name "recept7.sh" -o \
+	-name "recept8.sh" -o \
+	-name "sample.sh" -o \
+	-name "site-upgrade.sh"  -o \
+	-name "sokatsu.sh" -o \
+	-name "teikiseikyu.sh" -o \
+	-name "tensu.sh" -o \
 	-printf "file\t%f\n") \
 	|sort +1 |uniq -u -f1
 
@@ -86,7 +147,13 @@ install: all
 	$(INSTALL) -d $(scriptsdir)/allways
 	$(INSTALL) -d $(scriptsdir)/daily
 	$(INSTALL) -d $(scriptsdir)/monthly
-	for file in $(shell_scripts) $(ruby_scripts); do \
+	$(INSTALL) -d $(scriptsdir)/claim
+	$(INSTALL) -d $(scriptsdir)/claim/def
+	$(INSTALL) -d $(scriptsdir)/claim/dtd
+	$(INSTALL) -d $(scriptsdir)/claim/rb
+	$(INSTALL) -d $(scriptsdir)/claim/link
+	$(INSTALL) -d $(scriptsdir)/claim/template
+	for file in $(shell_scripts) $(ruby_scripts) $(claim_scripts); do \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
 	  $(INSTALL) $$file $(scriptsdir)/$$dir; \
 	done

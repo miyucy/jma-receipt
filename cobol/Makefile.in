@@ -38,7 +38,8 @@ SUBDIRS = \
 	orca105 \
 	orca106 \
 	orca107 \
-	orcabt
+	orcabt \
+	claim
 
 COPYDIRS = copy
 

@@ -4,6 +4,7 @@ AC_INIT(cobol/orca00/ORCGM00.CBL)
 AC_PREFIX_DEFAULT(/usr/local/orca)
 
 dnl Checks for programs.
+AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 

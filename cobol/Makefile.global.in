@@ -23,6 +23,7 @@ COBOL = @COBC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 MKDIR = mkdir -p
+CC = @CC@
 
 COBCOPYS = -I$(srcdir)/../../cobol/copy
 
@@ -32,10 +33,14 @@ DEPDIR = .deps
 
 OBJS = ${SRCS:.CBL=.so}
 EXEC = ${EXEC_SRCS:.CBL=}
+COBJS = ${CSRCS:.c=.so}
 
 define postprocess-depend
 @if test ! -d $(DEPDIR); then mkdir $(DEPDIR); fi
 endef
+
+%.so: %.c
+	$(CC) -fPIC -shared $< -o $@
 
 %.so: %.CBL
 	$(postprocess-depend)
@@ -45,19 +50,19 @@ endef
 	$(postprocess-depend)
 	$(COBOL) $(EXEC_COBOLFLAGS) $(COBCOPYS) -MT $@ -MF $(DEPDIR)/${@:=.Po} $<
 
-all: $(OBJS) $(EXEC)
+all: $(COBJS) $(OBJS) $(EXEC) 
 
 clean: 
-	-rm -f $(OBJS) $(EXEC)
+	-rm -f $(COBJS) $(OBJS) $(EXEC)
 
 distclean: 
-	-rm -f $(OBJS) $(EXEC)
+	-rm -f $(COBJS) $(OBJS) $(EXEC)
 	-rm -R $(DEPDIR)
 
 -include $(wildcard $(DEPDIR)/*.Po) /dev/null
 
 filecheck:
-	@(for i in $(SRCS) ;do echo "make	$${i}"; done ;\
+	@(for i in $(SRCS) $(CSRCS) ;do echo "make	$${i}"; done ;\
 	find . \
 	-name "." -o \
 	-name "CVS" -prune -o \
@@ -71,7 +76,7 @@ filecheck:
 	|sort +1 |uniq -u -f1 
 
 install: all installdirs
-	for f in $(OBJS) $(EXEC); do \
+	for f in $(COBJS) $(OBJS) $(EXEC); do \
 	  $(INSTALL) -m 555 $${f} $(libdir) ; done
 
 installdirs:
