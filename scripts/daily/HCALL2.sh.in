@@ -8,6 +8,7 @@ if ! test -f "$JMARECEIPT_ENV"; then
 fi
 
 . $JMARECEIPT_ENV
+export HOME=/home/orca
 
 #----------------------------------------------------------------------#
 #       °ú¿ô	

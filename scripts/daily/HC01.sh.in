@@ -9,6 +9,7 @@ fi
 
 . $JMARECEIPT_ENV
 
+export HOME=/home/orca
 #
 	if	[ $1 = 'red2ps' ]	;then
 		if	[ $5 != '' ]	;then
