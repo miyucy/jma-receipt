@@ -1237,7 +1237,6 @@
       ****                       (WRK-KHNTEN         *  0.15)
                                  (WRK-KHNTEN  *  WRK-SENTEI-KEISU)
                                                      +  0.5
-                         DISPLAY  "WRK-NYUKHNRYO=" WRK-NYUKHNRYO
                     END-EVALUATE
                   ELSE
                     EVALUATE   WRK-DAY2(IDY)
