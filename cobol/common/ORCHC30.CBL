@@ -35,6 +35,7 @@
       *  00.01.05    NACL-¿¹ÏÆ    02.10.01  ¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß¤Î½¤Àµ
       *  00.01.06    NACL-¿¹ÏÆ    02.10.02  ¶èÊ¬¤Îºî¶ÈÎÎ°è¤Î¥¯¥ê¥¢
       *  00.01.07    NACL-¿¹ÏÆ    02.11.07  µ­¹æ¤ÎÀÞ¤êÊÖ¤··å¿ôÊÑ¹¹
+      *  01.01.01    NACL-¿¹ÏÆ    02.12.12  MONPE¤ËÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -64,13 +65,15 @@
       *    COPY    "CPSHELLTBL.INC".
       *****COPY    "ORCA-DBPATH".
       *
+      *----(01.01.01)--UPD-START---
       *    Ä¢É¼ÎÎ°è
-           COPY    "HC301.INC".
-           COPY    "HC302.INC".
-           COPY    "HC303.INC".
-           COPY    "HC304.INC".
-           COPY    "HC305.INC".
-           COPY    "HC306.INC".
+           COPY    "HCM301.INC".
+           COPY    "HCM302.INC".
+           COPY    "HCM303.INC".
+           COPY    "HCM304.INC".
+           COPY    "HCM305.INC".
+           COPY    "HCM306.INC".
+      *----(01.01.01)--UPD-END-----
       *
       *----(00.01.02)--ADD-START----
        01  FILE-NAME           PIC X(512).
@@ -924,7 +927,7 @@
        270-PRT-WRITE-SEC               SECTION.
       *
       *    °õºþÍÑ¥Õ¥¡¥¤¥ëºîÀ®
-           MOVE    "HC30"              TO  HC01PARA-FORM-ID
+           MOVE    "HC30"             TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            ADD     1                   TO  WRK-PAGE
@@ -958,73 +961,74 @@
        270-PRT-WRITE-EXT.
            EXIT.
       *
+      *----(01.01.01)--UPD-STTART---
       *****************************************************************
       *    Ä¢É¼ÊÔ½¸½èÍý¡Ê£È£Ã£³£°£±¡Ë
       *****************************************************************
        2701-HC301-HENSYU-SEC                SECTION.
       *
-           INITIALIZE                  HC301
+           INITIALIZE                  HCM301
       *
-           MOVE    WRK-YKJ-SYORIBI          TO  HC301-SYORIBI
-           MOVE    WRK-YKJ-PAGE             TO  HC301-PAGE
-           MOVE    WRK-YKJ-SYURUI           TO  HC301-SYURUI
-           MOVE    WRK-YKJ-PTNUM            TO  HC301-ID
-           MOVE    WRK-YKJ-KANANAME         TO  HC301-KANANAME
-           MOVE    WRK-YKJ-NAME             TO  HC301-NAME
-           MOVE    WRK-YKJ-JYUSYO           TO  HC301-JYUSYO
-           MOVE    WRK-YKJ-HSPNAME          TO  HC301-HSPNAME
-           MOVE    WRK-YKJ-TEL              TO  HC301-TEL
-           MOVE    WRK-YKJ-DRNAME           TO  HC301-DRNAME
+           MOVE    WRK-YKJ-SYORIBI          TO  HCM301-SYORIBI
+           MOVE    WRK-YKJ-PAGE             TO  HCM301-PAGE
+           MOVE    WRK-YKJ-SYURUI           TO  HCM301-SYURUI
+           MOVE    WRK-YKJ-PTNUM            TO  HCM301-ID
+           MOVE    WRK-YKJ-KANANAME         TO  HCM301-KANANAME
+           MOVE    WRK-YKJ-NAME             TO  HCM301-NAME
+           MOVE    WRK-YKJ-JYUSYO           TO  HCM301-JYUSYO
+           MOVE    WRK-YKJ-HSPNAME          TO  HCM301-HSPNAME
+           MOVE    WRK-YKJ-TEL              TO  HCM301-TEL
+           MOVE    WRK-YKJ-DRNAME           TO  HCM301-DRNAME
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HC301-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HCM301-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   CNT-LINE
       *
-               MOVE    WRK-YKJ-NUM(IDX)     TO  HC301-NUM(IDX)
-               MOVE    WRK-YKJ-GAZO(IDX)    TO  HC301-GAZO(IDX)
+               MOVE    WRK-YKJ-NUM(IDX)     TO  HCM301-NUM
+               MOVE    WRK-YKJ-GAZO(IDX)    TO  HCM301-GAZO
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     3
                    MOVE    WRK-YKJ-YKZNAME(IDX IDY)
-                                            TO  HC301-YKZNAME(IDX IDY)
+                                            TO  HCM301-YKZNAME(IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     6
                    MOVE    WRK-YKJ-KONOKOKA(IDX IDY)
-                                            TO  HC301-KONOKOKA(IDX IDY)
+                                            TO  HCM301-KONOKOKA(IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     10
                    MOVE    WRK-YKJ-KEIJYO(IDX IDY)
-                                            TO  HC301-KEIJYO(IDX IDY)
+                                            TO  HCM301-KEIJYO(IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     4
                    MOVE    WRK-YKJ-KBN(IDX IDY)
-                                            TO  HC301-KBN(IDX IDY)
+                                            TO  HCM301-KBN(IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     8
                    MOVE    WRK-YKJ-NAIYO(IDX IDY)
-                                            TO  HC301-NAIYO(IDX IDY)
+                                            TO  HCM301-NAIYO(IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     10
                    MOVE    WRK-YKJ-CYUJKO(IDX IDY)
-                                            TO  HC301-CYUJKO(IDX IDY)
+                                            TO  HCM301-CYUJKO(IDY)
                END-PERFORM
            END-PERFORM
       *
-           MOVE    HC301               TO  PRT-PRTDATA
+           MOVE    HCM301               TO  PRT-PRTDATA
       *
            .
        2701-HC301-HENSYU-EXT.
@@ -1035,68 +1039,68 @@
       *****************************************************************
        2702-HC302-HENSYU-SEC                SECTION.
       *
-           INITIALIZE                  HC302
+           INITIALIZE                  HCM302
       *
-           MOVE    WRK-YKJ-SYORIBI          TO  HC302-SYORIBI
-           MOVE    WRK-YKJ-PAGE             TO  HC302-PAGE
-           MOVE    WRK-YKJ-SYURUI           TO  HC302-SYURUI
-           MOVE    WRK-YKJ-PTNUM            TO  HC302-ID
-           MOVE    WRK-YKJ-KANANAME         TO  HC302-KANANAME
-           MOVE    WRK-YKJ-NAME             TO  HC302-NAME
-           MOVE    WRK-YKJ-JYUSYO           TO  HC302-JYUSYO
-           MOVE    WRK-YKJ-HSPNAME          TO  HC302-HSPNAME
-           MOVE    WRK-YKJ-TEL              TO  HC302-TEL
-           MOVE    WRK-YKJ-DRNAME           TO  HC302-DRNAME
+           MOVE    WRK-YKJ-SYORIBI          TO  HCM302-SYORIBI
+           MOVE    WRK-YKJ-PAGE             TO  HCM302-PAGE
+           MOVE    WRK-YKJ-SYURUI           TO  HCM302-SYURUI
+           MOVE    WRK-YKJ-PTNUM            TO  HCM302-ID
+           MOVE    WRK-YKJ-KANANAME         TO  HCM302-KANANAME
+           MOVE    WRK-YKJ-NAME             TO  HCM302-NAME
+           MOVE    WRK-YKJ-JYUSYO           TO  HCM302-JYUSYO
+           MOVE    WRK-YKJ-HSPNAME          TO  HCM302-HSPNAME
+           MOVE    WRK-YKJ-TEL              TO  HCM302-TEL
+           MOVE    WRK-YKJ-DRNAME           TO  HCM302-DRNAME
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HC302-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HCM302-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   CNT-LINE
       *
-               MOVE    WRK-YKJ-NUM(IDX)     TO  HC302-NUM(IDX)
-               MOVE    WRK-YKJ-GAZO(IDX)    TO  HC302-GAZO(IDX)
+               MOVE    WRK-YKJ-NUM(IDX)     TO  HCM302-NUM(IDX)
+               MOVE    WRK-YKJ-GAZO(IDX)    TO  HCM302-GAZO(IDX)
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     3
                    MOVE    WRK-YKJ-YKZNAME(IDX IDY)
-                                            TO  HC302-YKZNAME(IDX IDY)
+                                            TO  HCM302-YKZNAME(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     6
                    MOVE    WRK-YKJ-KONOKOKA(IDX IDY)
-                                            TO  HC302-KONOKOKA(IDX IDY)
+                                            TO  HCM302-KONOKOKA(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     10
                    MOVE    WRK-YKJ-KEIJYO(IDX IDY)
-                                            TO  HC302-KEIJYO(IDX IDY)
+                                            TO  HCM302-KEIJYO(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     4
                    MOVE    WRK-YKJ-KBN(IDX IDY)
-                                            TO  HC302-KBN(IDX IDY)
+                                            TO  HCM302-KBN(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     8
                    MOVE    WRK-YKJ-NAIYO(IDX IDY)
-                                            TO  HC302-NAIYO(IDX IDY)
+                                            TO  HCM302-NAIYO(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     10
                    MOVE    WRK-YKJ-CYUJKO(IDX IDY)
-                                            TO  HC302-CYUJKO(IDX IDY)
+                                            TO  HCM302-CYUJKO(IDX IDY)
                END-PERFORM
            END-PERFORM
       *
-           MOVE    HC302               TO  PRT-PRTDATA
+           MOVE    HCM302               TO  PRT-PRTDATA
       *
            .
        2702-HC302-HENSYU-EXT.
@@ -1107,68 +1111,68 @@
       *****************************************************************
        2703-HC303-HENSYU-SEC                SECTION.
       *
-           INITIALIZE                  HC303
+           INITIALIZE                  HCM303
       *
-           MOVE    WRK-YKJ-SYORIBI          TO  HC303-SYORIBI
-           MOVE    WRK-YKJ-PAGE             TO  HC303-PAGE
-           MOVE    WRK-YKJ-SYURUI           TO  HC303-SYURUI
-           MOVE    WRK-YKJ-PTNUM            TO  HC303-ID
-           MOVE    WRK-YKJ-KANANAME         TO  HC303-KANANAME
-           MOVE    WRK-YKJ-NAME             TO  HC303-NAME
-           MOVE    WRK-YKJ-JYUSYO           TO  HC303-JYUSYO
-           MOVE    WRK-YKJ-HSPNAME          TO  HC303-HSPNAME
-           MOVE    WRK-YKJ-TEL              TO  HC303-TEL
-           MOVE    WRK-YKJ-DRNAME           TO  HC303-DRNAME
+           MOVE    WRK-YKJ-SYORIBI          TO  HCM303-SYORIBI
+           MOVE    WRK-YKJ-PAGE             TO  HCM303-PAGE
+           MOVE    WRK-YKJ-SYURUI           TO  HCM303-SYURUI
+           MOVE    WRK-YKJ-PTNUM            TO  HCM303-ID
+           MOVE    WRK-YKJ-KANANAME         TO  HCM303-KANANAME
+           MOVE    WRK-YKJ-NAME             TO  HCM303-NAME
+           MOVE    WRK-YKJ-JYUSYO           TO  HCM303-JYUSYO
+           MOVE    WRK-YKJ-HSPNAME          TO  HCM303-HSPNAME
+           MOVE    WRK-YKJ-TEL              TO  HCM303-TEL
+           MOVE    WRK-YKJ-DRNAME           TO  HCM303-DRNAME
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HC303-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HCM303-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   CNT-LINE
       *
-               MOVE    WRK-YKJ-NUM(IDX)     TO  HC303-NUM(IDX)
-               MOVE    WRK-YKJ-GAZO(IDX)    TO  HC303-GAZO(IDX)
+               MOVE    WRK-YKJ-NUM(IDX)     TO  HCM303-NUM(IDX)
+               MOVE    WRK-YKJ-GAZO(IDX)    TO  HCM303-GAZO(IDX)
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     3
                    MOVE    WRK-YKJ-YKZNAME(IDX IDY)
-                                            TO  HC303-YKZNAME(IDX IDY)
+                                            TO  HCM303-YKZNAME(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     6
                    MOVE    WRK-YKJ-KONOKOKA(IDX IDY)
-                                            TO  HC303-KONOKOKA(IDX IDY)
+                                            TO  HCM303-KONOKOKA(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     10
                    MOVE    WRK-YKJ-KEIJYO(IDX IDY)
-                                            TO  HC303-KEIJYO(IDX IDY)
+                                            TO  HCM303-KEIJYO(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     4
                    MOVE    WRK-YKJ-KBN(IDX IDY)
-                                            TO  HC303-KBN(IDX IDY)
+                                            TO  HCM303-KBN(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     8
                    MOVE    WRK-YKJ-NAIYO(IDX IDY)
-                                            TO  HC303-NAIYO(IDX IDY)
+                                            TO  HCM303-NAIYO(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     10
                    MOVE    WRK-YKJ-CYUJKO(IDX IDY)
-                                            TO  HC303-CYUJKO(IDX IDY)
+                                            TO  HCM303-CYUJKO(IDX IDY)
                END-PERFORM
            END-PERFORM
       *
-           MOVE    HC303               TO  PRT-PRTDATA
+           MOVE    HCM303               TO  PRT-PRTDATA
       *
            .
        2703-HC303-HENSYU-EXT.
@@ -1179,68 +1183,68 @@
       *****************************************************************
        2704-HC304-HENSYU-SEC                SECTION.
       *
-           INITIALIZE                  HC304
+           INITIALIZE                  HCM304
       *
-           MOVE    WRK-YKJ-SYORIBI          TO  HC304-SYORIBI
-           MOVE    WRK-YKJ-PAGE             TO  HC304-PAGE
-           MOVE    WRK-YKJ-SYURUI           TO  HC304-SYURUI
-           MOVE    WRK-YKJ-PTNUM            TO  HC304-ID
-           MOVE    WRK-YKJ-KANANAME         TO  HC304-KANANAME
-           MOVE    WRK-YKJ-NAME             TO  HC304-NAME
-           MOVE    WRK-YKJ-JYUSYO           TO  HC304-JYUSYO
-           MOVE    WRK-YKJ-HSPNAME          TO  HC304-HSPNAME
-           MOVE    WRK-YKJ-TEL              TO  HC304-TEL
-           MOVE    WRK-YKJ-DRNAME           TO  HC304-DRNAME
+           MOVE    WRK-YKJ-SYORIBI          TO  HCM304-SYORIBI
+           MOVE    WRK-YKJ-PAGE             TO  HCM304-PAGE
+           MOVE    WRK-YKJ-SYURUI           TO  HCM304-SYURUI
+           MOVE    WRK-YKJ-PTNUM            TO  HCM304-ID
+           MOVE    WRK-YKJ-KANANAME         TO  HCM304-KANANAME
+           MOVE    WRK-YKJ-NAME             TO  HCM304-NAME
+           MOVE    WRK-YKJ-JYUSYO           TO  HCM304-JYUSYO
+           MOVE    WRK-YKJ-HSPNAME          TO  HCM304-HSPNAME
+           MOVE    WRK-YKJ-TEL              TO  HCM304-TEL
+           MOVE    WRK-YKJ-DRNAME           TO  HCM304-DRNAME
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HC304-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HCM304-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   CNT-LINE
       *
-               MOVE    WRK-YKJ-NUM(IDX)     TO  HC304-NUM(IDX)
-               MOVE    WRK-YKJ-GAZO(IDX)    TO  HC304-GAZO(IDX)
+               MOVE    WRK-YKJ-NUM(IDX)     TO  HCM304-NUM(IDX)
+               MOVE    WRK-YKJ-GAZO(IDX)    TO  HCM304-GAZO(IDX)
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     3
                    MOVE    WRK-YKJ-YKZNAME(IDX IDY)
-                                            TO  HC304-YKZNAME(IDX IDY)
+                                            TO  HCM304-YKZNAME(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     6
                    MOVE    WRK-YKJ-KONOKOKA(IDX IDY)
-                                            TO  HC304-KONOKOKA(IDX IDY)
+                                            TO  HCM304-KONOKOKA(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     10
                    MOVE    WRK-YKJ-KEIJYO(IDX IDY)
-                                            TO  HC304-KEIJYO(IDX IDY)
+                                            TO  HCM304-KEIJYO(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     4
                    MOVE    WRK-YKJ-KBN(IDX IDY)
-                                            TO  HC304-KBN(IDX IDY)
+                                            TO  HCM304-KBN(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     8
                    MOVE    WRK-YKJ-NAIYO(IDX IDY)
-                                            TO  HC304-NAIYO(IDX IDY)
+                                            TO  HCM304-NAIYO(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     10
                    MOVE    WRK-YKJ-CYUJKO(IDX IDY)
-                                            TO  HC304-CYUJKO(IDX IDY)
+                                            TO  HCM304-CYUJKO(IDX IDY)
                END-PERFORM
            END-PERFORM
       *
-           MOVE    HC304               TO  PRT-PRTDATA
+           MOVE    HCM304               TO  PRT-PRTDATA
       *
            .
        2704-HC304-HENSYU-EXT.
@@ -1251,68 +1255,68 @@
       *****************************************************************
        2705-HC305-HENSYU-SEC                SECTION.
       *
-           INITIALIZE                  HC305
+           INITIALIZE                  HCM305
       *
-           MOVE    WRK-YKJ-SYORIBI          TO  HC305-SYORIBI
-           MOVE    WRK-YKJ-PAGE             TO  HC305-PAGE
-           MOVE    WRK-YKJ-SYURUI           TO  HC305-SYURUI
-           MOVE    WRK-YKJ-PTNUM            TO  HC305-ID
-           MOVE    WRK-YKJ-KANANAME         TO  HC305-KANANAME
-           MOVE    WRK-YKJ-NAME             TO  HC305-NAME
-           MOVE    WRK-YKJ-JYUSYO           TO  HC305-JYUSYO
-           MOVE    WRK-YKJ-HSPNAME          TO  HC305-HSPNAME
-           MOVE    WRK-YKJ-TEL              TO  HC305-TEL
-           MOVE    WRK-YKJ-DRNAME           TO  HC305-DRNAME
+           MOVE    WRK-YKJ-SYORIBI          TO  HCM305-SYORIBI
+           MOVE    WRK-YKJ-PAGE             TO  HCM305-PAGE
+           MOVE    WRK-YKJ-SYURUI           TO  HCM305-SYURUI
+           MOVE    WRK-YKJ-PTNUM            TO  HCM305-ID
+           MOVE    WRK-YKJ-KANANAME         TO  HCM305-KANANAME
+           MOVE    WRK-YKJ-NAME             TO  HCM305-NAME
+           MOVE    WRK-YKJ-JYUSYO           TO  HCM305-JYUSYO
+           MOVE    WRK-YKJ-HSPNAME          TO  HCM305-HSPNAME
+           MOVE    WRK-YKJ-TEL              TO  HCM305-TEL
+           MOVE    WRK-YKJ-DRNAME           TO  HCM305-DRNAME
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HC305-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HCM305-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   CNT-LINE
       *
-               MOVE    WRK-YKJ-NUM(IDX)     TO  HC305-NUM(IDX)
-               MOVE    WRK-YKJ-GAZO(IDX)    TO  HC305-GAZO(IDX)
+               MOVE    WRK-YKJ-NUM(IDX)     TO  HCM305-NUM(IDX)
+               MOVE    WRK-YKJ-GAZO(IDX)    TO  HCM305-GAZO(IDX)
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     3
                    MOVE    WRK-YKJ-YKZNAME(IDX IDY)
-                                            TO  HC305-YKZNAME(IDX IDY)
+                                            TO  HCM305-YKZNAME(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     6
                    MOVE    WRK-YKJ-KONOKOKA(IDX IDY)
-                                            TO  HC305-KONOKOKA(IDX IDY)
+                                            TO  HCM305-KONOKOKA(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     10
                    MOVE    WRK-YKJ-KEIJYO(IDX IDY)
-                                            TO  HC305-KEIJYO(IDX IDY)
+                                            TO  HCM305-KEIJYO(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     4
                    MOVE    WRK-YKJ-KBN(IDX IDY)
-                                            TO  HC305-KBN(IDX IDY)
+                                            TO  HCM305-KBN(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     8
                    MOVE    WRK-YKJ-NAIYO(IDX IDY)
-                                            TO  HC305-NAIYO(IDX IDY)
+                                            TO  HCM305-NAIYO(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     10
                    MOVE    WRK-YKJ-CYUJKO(IDX IDY)
-                                            TO  HC305-CYUJKO(IDX IDY)
+                                            TO  HCM305-CYUJKO(IDX IDY)
                END-PERFORM
            END-PERFORM
       *
-           MOVE    HC305               TO  PRT-PRTDATA
+           MOVE    HCM305               TO  PRT-PRTDATA
       *
            .
        2705-HC305-HENSYU-EXT.
@@ -1323,73 +1327,74 @@
       *****************************************************************
        2706-HC306-HENSYU-SEC                SECTION.
       *
-           INITIALIZE                  HC306
+           INITIALIZE                  HCM306
       *
-           MOVE    WRK-YKJ-SYORIBI          TO  HC306-SYORIBI
-           MOVE    WRK-YKJ-PAGE             TO  HC306-PAGE
-           MOVE    WRK-YKJ-SYURUI           TO  HC306-SYURUI
-           MOVE    WRK-YKJ-PTNUM            TO  HC306-ID
-           MOVE    WRK-YKJ-KANANAME         TO  HC306-KANANAME
-           MOVE    WRK-YKJ-NAME             TO  HC306-NAME
-           MOVE    WRK-YKJ-JYUSYO           TO  HC306-JYUSYO
-           MOVE    WRK-YKJ-HSPNAME          TO  HC306-HSPNAME
-           MOVE    WRK-YKJ-TEL              TO  HC306-TEL
-           MOVE    WRK-YKJ-DRNAME           TO  HC306-DRNAME
+           MOVE    WRK-YKJ-SYORIBI          TO  HCM306-SYORIBI
+           MOVE    WRK-YKJ-PAGE             TO  HCM306-PAGE
+           MOVE    WRK-YKJ-SYURUI           TO  HCM306-SYURUI
+           MOVE    WRK-YKJ-PTNUM            TO  HCM306-ID
+           MOVE    WRK-YKJ-KANANAME         TO  HCM306-KANANAME
+           MOVE    WRK-YKJ-NAME             TO  HCM306-NAME
+           MOVE    WRK-YKJ-JYUSYO           TO  HCM306-JYUSYO
+           MOVE    WRK-YKJ-HSPNAME          TO  HCM306-HSPNAME
+           MOVE    WRK-YKJ-TEL              TO  HCM306-TEL
+           MOVE    WRK-YKJ-DRNAME           TO  HCM306-DRNAME
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   7
-              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HC306-COMMENT(IDX)
+              MOVE    WRK-YKJ-COMMENT(IDX)      TO  HCM306-COMMENT(IDX)
            END-PERFORM
       *
            PERFORM VARYING    IDX       FROM    1   BY 1
                    UNTIL      IDX       >   CNT-LINE
       *
-               MOVE    WRK-YKJ-NUM(IDX)     TO  HC306-NUM(IDX)
-               MOVE    WRK-YKJ-GAZO(IDX)    TO  HC306-GAZO(IDX)
+               MOVE    WRK-YKJ-NUM(IDX)     TO  HCM306-NUM(IDX)
+               MOVE    WRK-YKJ-GAZO(IDX)    TO  HCM306-GAZO(IDX)
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     3
                    MOVE    WRK-YKJ-YKZNAME(IDX IDY)
-                                            TO  HC306-YKZNAME(IDX IDY)
+                                            TO  HCM306-YKZNAME(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     6
                    MOVE    WRK-YKJ-KONOKOKA(IDX IDY)
-                                            TO  HC306-KONOKOKA(IDX IDY)
+                                            TO  HCM306-KONOKOKA(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     10
                    MOVE    WRK-YKJ-KEIJYO(IDX IDY)
-                                            TO  HC306-KEIJYO(IDX IDY)
+                                            TO  HCM306-KEIJYO(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     4
                    MOVE    WRK-YKJ-KBN(IDX IDY)
-                                            TO  HC306-KBN(IDX IDY)
+                                            TO  HCM306-KBN(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     8
                    MOVE    WRK-YKJ-NAIYO(IDX IDY)
-                                            TO  HC306-NAIYO(IDX IDY)
+                                            TO  HCM306-NAIYO(IDX IDY)
                END-PERFORM
       *
                PERFORM VARYING    IDY       FROM  1  BY 1
                        UNTIL      IDY       >     10
                    MOVE    WRK-YKJ-CYUJKO(IDX IDY)
-                                            TO  HC306-CYUJKO(IDX IDY)
+                                            TO  HCM306-CYUJKO(IDX IDY)
                END-PERFORM
            END-PERFORM
       *
-           MOVE    HC306               TO  PRT-PRTDATA
+           MOVE    HCM306               TO  PRT-PRTDATA
       *
            .
        2706-HC306-HENSYU-EXT.
            EXIT.
       *
+      *----(01.01.01)--UPD-END-----
       *****************************************************************
       *    Ä¢É¼°õºþ½èÍý
       *****************************************************************
@@ -1435,29 +1440,36 @@
       *            MCPAREA
       *****        MCPDATA-REC
       *
-      *
+      *----(01.01.01)--UPD-START---
            INITIALIZE                  ORCSMKPRTAREA
            MOVE    "HC01.sh"           TO  MKPRT-ID
            EVALUATE  CNT-LINE
                WHEN  1
-                   MOVE   "HC301.dia"          TO  MKPRT-DIA
-                   MOVE   "HC301.def"          TO  MKPRT-DEF
+                   MOVE   "HCM301.red"         TO  MKPRT-DIA
+      *             MOVE   "HC301.dia"          TO  MKPRT-DIA
+      *             MOVE   "HC301.def"          TO  MKPRT-DEF
                WHEN  2
-                   MOVE   "HC302.dia"          TO  MKPRT-DIA
-                   MOVE   "HC302.def"          TO  MKPRT-DEF
+                   MOVE   "HCM302.red"         TO  MKPRT-DIA
+      *             MOVE   "HC302.dia"          TO  MKPRT-DIA
+      *             MOVE   "HC302.def"          TO  MKPRT-DEF
                WHEN  3
-                   MOVE   "HC303.dia"          TO  MKPRT-DIA
-                   MOVE   "HC303.def"          TO  MKPRT-DEF
+                   MOVE   "HCM303.red"         TO  MKPRT-DIA
+      *             MOVE   "HC303.dia"          TO  MKPRT-DIA
+      *             MOVE   "HC303.def"          TO  MKPRT-DEF
                WHEN  4
-                   MOVE   "HC304.dia"          TO  MKPRT-DIA
-                   MOVE   "HC304.def"          TO  MKPRT-DEF
+                   MOVE   "HCM304.red"         TO  MKPRT-DIA
+      *             MOVE   "HC304.dia"          TO  MKPRT-DIA
+      *             MOVE   "HC304.def"          TO  MKPRT-DEF
                WHEN  5
-                   MOVE   "HC305.dia"          TO  MKPRT-DIA
-                   MOVE   "HC305.def"          TO  MKPRT-DEF
+                   MOVE   "HCM305.red"         TO  MKPRT-DIA
+      *             MOVE   "HC305.dia"          TO  MKPRT-DIA
+      *             MOVE   "HC305.def"          TO  MKPRT-DEF
                WHEN  6
-                   MOVE   "HC306.dia"          TO  MKPRT-DIA
-                   MOVE   "HC306.def"          TO  MKPRT-DEF
+                   MOVE   "HCM306.red"         TO  MKPRT-DIA
+      *             MOVE   "HC306.dia"          TO  MKPRT-DIA
+      *             MOVE   "HC306.def"          TO  MKPRT-DEF
            END-EVALUATE
+           MOVE    SPACE               TO  MKPRT-DEF
            MOVE    HC01PARA            TO  MKPRT-DAT
            MOVE    SYS-1031-PRTNM(8)   TO  MKPRT-PRTNM
            CALL    "ORCSMKPRT"         USING

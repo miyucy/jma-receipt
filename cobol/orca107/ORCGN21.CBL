@@ -34,6 +34,7 @@
       * 00.01.04     NACL-森脇     20021011  登録時のクリア処理変更
       * 00.01.05     NACL-森脇     20021107  記号の半角全角混在チェック
       * 01.01.01     NACL-森脇     20021209  検索文字変更
+      * 01.01.02     NACL-森脇     20021212  検索文字引数クリア
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -313,6 +314,9 @@
       *    カナ入力
            IF          MCP-EVENT    =   "CLICKED"
                AND     MCP-WIDGET(1:3)  =   "KEN"
+      *----(01.01.02)--ADD-START---
+               MOVE    ZERO             TO  WRK-PIN
+      *----(01.01.02)--ADD-END-----
       *----(01.01.01)--ADD-START---
                IF      MCP-WIDGET(5:)   =   SPACE
                    MOVE    MCP-WIDGET(4:1)  TO  WRK-PIN(2:1)
