@@ -4649,6 +4649,9 @@
       *
       *    剤のチェック
            PERFORM 45011-NAIYOU-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4100-TOROKU-EXT
+           END-IF
       *    同一剤が存在している時、エラーとする
            IF     (FLG-OK              =   1   )  AND
                   (FLG-OK2             =   ZERO  OR  1  )
@@ -4948,10 +4951,13 @@
                    END-IF
                END-IF
            END-PERFORM
-      *
-           CALL    "ORCSCZAICHK"       USING   SPA-AREA
-                                               ORCSCZAICHKAREA
-           MOVE    ORCSCZAICHK-ZAINUM  TO  WRK-ZAINUM
+      *    明細がゼロの時、エラー
+           IF      WRK-MEISAISU        =   ZERO
+               MOVE    "1031"              TO  SPA-ERRCD
+           ELSE
+               CALL    "ORCSCZAICHK"       USING   SPA-AREA
+                                                   ORCSCZAICHKAREA
+               MOVE    ORCSCZAICHK-ZAINUM  TO  WRK-ZAINUM
       *
       *    同一剤なし
            IF      WRK-ZAINUM          =   ZERO
@@ -4966,6 +4972,8 @@
                        MOVE    1               TO  FLG-OK2
                    END-IF
                END-IF
+           END-IF
+      *
            END-IF
       *
            .
