@@ -77,6 +77,13 @@ I20	{
 		CHKTESTPT	{
 			value	bool;
 		};
+		SRTKBNCOMBO{
+			SRTKBN {
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[5];
+		};
 		TOTAL	{
 			value	varchar(22);
 		};

@@ -150,6 +150,7 @@
            03  WRK-SELNUMED        PIC 9(05).
            03  WRK-STYMD           PIC X(08).
            03  WRK-EDYMD           PIC X(08).
+           03  WRK-SRTKBN          PIC X(01).
       *
        01  WRK-ROW-AREA.
            03  WRK-KANJYALST-ROW   PIC S9(9)   BINARY.
@@ -684,6 +685,15 @@
            MOVE    "当月在院"          TO  SPA-GMN-JOTAIMEIL (3)
            MOVE    3                   TO  SPA-GMN-JOTAI-MAX
       *
+      *    並び順
+           MOVE    "1"                 TO  SPA-GMN-SRTKBNL (1)
+           MOVE    "2"                 TO  SPA-GMN-SRTKBNL (2)
+           MOVE    "3"                 TO  SPA-GMN-SRTKBNL (3)
+           MOVE    "病棟、病室順"      TO  SPA-GMN-SRTKBNMEIL (1)
+           MOVE    "患者番号順"        TO  SPA-GMN-SRTKBNMEIL (2)
+           MOVE    "カナ氏名順"        TO  SPA-GMN-SRTKBNMEIL (3)
+           MOVE    3                   TO  SPA-GMN-SRTKBN-MAX
+      *
            PERFORM 420-CLEAR-SEC
       *
            MOVE    1                   TO  SPA-GMN-CUR                                 
@@ -957,6 +967,7 @@
            MOVE    I20-BTUNUM          TO  SPA-GMN-BTUNUM-G
            MOVE    I20-JOTAI           TO  SPA-GMN-JOTAI-G
            MOVE    I20-CHKTESTPT       TO  SPA-GMN-CHKTESTPT
+           MOVE    I20-SRTKBN          TO  SPA-GMN-SRTKBN-G
       *
       *****MOVE    I20-SELNUM          TO  SPA-GMN-SELNUM
            .
@@ -1031,6 +1042,11 @@
            END-IF
       *    テスト患者
            PERFORM 41030-CHKTESTPT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE 
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *    テスト患者
+           PERFORM 41031-SRTKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE 
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1423,6 +1439,35 @@
        41030-CHKTESTPT-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    並び順区分チェック処理
+      *****************************************************************
+       41031-SRTKBN-CHK-SEC            SECTION.
+      *
+           MOVE    15                  TO  SPA-GMN-CUR
+      *
+           IF      SPA-GMN-SRTKBN      =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    ZERO               TO  WRK-HENFLG
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL   IDY >      SPA-GMN-SRTKBN-MAX
+                       OR      WRK-HENFLG =   1
+                   IF      SPA-GMN-SRTKBN 
+                                      =   SPA-GMN-SRTKBNL (IDY)
+                       MOVE    SPA-GMN-SRTKBNLST (IDY)
+                                       TO  SPA-GMN-SRTKBN-G
+                       MOVE    "1"     TO  WRK-HENFLG
+                   END-IF
+               END-PERFORM
+               IF      WRK-HENFLG         =   ZERO
+                   MOVE    SPACE       TO  SPA-GMN-SRTKBN-G
+               END-IF
+           END-IF
+      *
+           .
+       41031-SRTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    関連チェック処理
       *****************************************************************
        4103-KANREN-CHK-SEC             SECTION.
@@ -1722,6 +1767,8 @@
       *****************************************************************
        420-CLEAR-SEC                   SECTION.
       *
+           MOVE    SPA-GMN-SRTKBN      TO  WRK-SRTKBN
+      *
            INITIALIZE                  SPA-GMN-KOUMOKU
                                        SPA-GMN-TBL
                                        SPA-NAI-KOUMOKU
@@ -1742,6 +1789,19 @@
            MOVE    "F"                 TO  SPA-GMN-CHKTESTPT
       *
            MOVE    1                   TO  SPA-GMN-CUR
+      *
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL ( IDY     >   SPA-GMN-SRTKBN-MAX )
+                    OR   ( SPA-GMN-SRTKBN-G
+                                   NOT =   SPACE )
+               IF    ( SPA-GMN-SRTKBNL (IDY)
+                                       =   WRK-SRTKBN )
+                   MOVE    SPA-GMN-SRTKBNLST (IDY)
+                                       TO  SPA-GMN-SRTKBN-G
+               END-IF
+      *
+           END-PERFORM
+      *
            .
        420-CLEAR-EXT.
            EXIT.
@@ -2557,11 +2617,36 @@
       *****************************************************************
        4503-SQL-ORDER-SEC                 SECTION.
       *
-           STRING  " ORDER BY BRMNUM,KANANAME,PTNUM"
-                   DELIMITED  BY  SIZE
-           INTO    WRK-SQL
-           WITH    POINTER WRK-SQL-PNT
-           END-STRING
+           EVALUATE    SPA-GMN-SRTKBN
+      *
+           WHEN    "1"
+               STRING  " ORDER BY BRMNUM,KANANAME,PTNUM"
+                       DELIMITED  BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+      *
+           WHEN    "2"
+               STRING  " ORDER BY PTNUM"
+                       DELIMITED  BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+      *
+           WHEN    "3"
+               STRING  " ORDER BY KANANAME,PTNUM"
+                       DELIMITED  BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+      *
+           WHEN    OTHER
+               STRING  " ORDER BY BRMNUM,KANANAME,PTNUM"
+                       DELIMITED  BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           END-EVALUATE
       *
            .
        4503-SQL-ORDER-EXT.
@@ -2817,6 +2902,7 @@
            MOVE    SPA-GMN-BTUNUM-G    TO  I20-BTUNUM
            MOVE    SPA-GMN-JOTAI-G     TO  I20-JOTAI
            MOVE    SPA-GMN-CHKTESTPT   TO  I20-CHKTESTPT
+           MOVE    SPA-GMN-SRTKBN-G    TO  I20-SRTKBN
            MOVE    SPA-GMN-SELNUM      TO  I20-SELNUM
            MOVE    SPA-GMN-TOTAL       TO  I20-TOTAL
       *     
@@ -2846,6 +2932,12 @@
                MOVE    SPA-GMN-JOTAILST (IDX) TO  I20-JOTAILST (IDX)
            END-PERFORM
            MOVE    SPA-GMN-JOTAI-MAX  TO  I20-JOTAI-COUNT
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-SRTKBN-MAX
+               MOVE    SPA-GMN-SRTKBNLST (IDX) TO  I20-SRTKBNLST (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-SRTKBN-MAX  TO  I20-SRTKBN-COUNT
       *
            IF      SPA-GMN-MAX             =   ZERO
            AND     SPA-GMN-TNAME (1)   NOT =   SPACE
@@ -2948,6 +3040,8 @@
                    MOVE  "STTAIINYMD"      TO  MCP-WIDGET 
                WHEN    14
                    MOVE  "EDTAIINYMD"      TO  MCP-WIDGET 
+               WHEN    15
+                   MOVE  "SRTKBN"          TO  MCP-WIDGET 
            END-EVALUATE
       *
            .
@@ -2961,42 +3055,35 @@
       *
            EVALUATE    SPA-MCP-WIDGET
                WHEN    "PTNUM"
-                   MOVE    1                   TO  SPA-GMN-CUR
-               WHEN    "NAME"
                    MOVE    2                   TO  SPA-GMN-CUR
-               WHEN    "STAGE"
+               WHEN    "NAME"
                    MOVE    3                   TO  SPA-GMN-CUR
-               WHEN    "EDAGE"
+               WHEN    "STAGE"
                    MOVE    4                   TO  SPA-GMN-CUR
-               WHEN    "ADRS"
+               WHEN    "EDAGE"
                    MOVE    5                   TO  SPA-GMN-CUR
-               WHEN    "STNYUINYMD"
+               WHEN    "ADRS"
                    MOVE    6                   TO  SPA-GMN-CUR
-               WHEN    "EDNYUINYMD"
+               WHEN    "STNYUINYMD"
                    MOVE    7                   TO  SPA-GMN-CUR
-               WHEN    "SRYKA"
-                   MOVE    8                   TO  SPA-GMN-CUR
-               WHEN    "BTUNUM"
-                   MOVE    9                   TO  SPA-GMN-CUR
-               WHEN    "JOTAI"
-                   MOVE    11                  TO  SPA-GMN-CUR
-               WHEN    "CHKTESTPT"
-                   MOVE    11                  TO  SPA-GMN-CUR
-               WHEN    "STTAIINYMD"
+               WHEN    "EDNYUINYMD"
                    MOVE    13                  TO  SPA-GMN-CUR
-               WHEN    "EDTAIINYMD"
+               WHEN    "SRYKA"
+                   MOVE    9                   TO  SPA-GMN-CUR
+               WHEN    "BTUNUM"
+                   MOVE    10                  TO  SPA-GMN-CUR
+               WHEN    "JOTAI"
+                   MOVE    15                  TO  SPA-GMN-CUR
+               WHEN    "SRTKBN"
+                   MOVE    12                  TO  SPA-GMN-CUR
+               WHEN    "CHKTESTPT"
+                   MOVE    15                  TO  SPA-GMN-CUR
+               WHEN    "STTAIINYMD"
                    MOVE    14                  TO  SPA-GMN-CUR
+               WHEN    "EDTAIINYMD"
+                   MOVE    8                   TO  SPA-GMN-CUR
            END-EVALUATE
       *
-           EVALUATE SPA-MCP-WIDGET
-           WHEN    "EDNYUINYMD"
-               MOVE    13                      TO  SPA-GMN-CUR
-           WHEN    "EDTAIINYMD"
-               MOVE    8                       TO  SPA-GMN-CUR
-           WHEN    OTHER
-               COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR +   1
-           END-EVALUATE
-
            .
       *
        50011-INPUT-CUR-EXT.
