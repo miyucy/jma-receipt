@@ -19,8 +19,8 @@
        PROGRAM-ID.                 ORCXPMNT3.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : マスタ更新処理
-      *  コンポーネント名  : ＰＧファイル複写処理
+      *  サブシステム名    : プログラム更新処理
+      *  コンポーネント名  : プログラム複写処理
       *                    : 
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -35,14 +35,34 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    出力：再起動スイッチファイル
+           SELECT  OUT-FILE        ASSIGN
+                                   ASS-OUT
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-OUT.
+      *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
+      *    再起動スイッチファイル
+       FD  OUT-FILE.
+       01  OUT-REC.
+           03  OUT-RESTART             PIC X(32).
+      *
        WORKING-STORAGE             SECTION.
+      *
+      *    ファイル指定領域
+       01  ASS-AREA.
+           03  ASS-OUT                 PIC X(256).
+      *
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-OUT                 PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-PGKANRI             PIC 9(01).
+           03  FLG-RESTART             PIC 9(01).
            03  FLG-ERR                 PIC 9(01).
       *
       *    カウント領域
@@ -64,6 +84,16 @@
                05  WRK-SMM2            PIC 9(02).
                05  WRK-SDD2            PIC 9(02).
       *
+           COPY  "CPMKPASS.INC".
+      *
+           COPY  "CPSHELLTBL.INC".
+      *
+           COPY  "ORCA-DBPATH".
+      *
+       01  SHELL-AREA.
+           03  SHELL-NAME          PIC X(39)  VALUE
+               "scripts/allways/program_upgrade_copy.sh".
+      *
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -78,7 +108,16 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
-       PROCEDURE                   DIVISION.
+      *****************************************************************
+      *    連絡　領域
+      *****************************************************************
+       LINKAGE                     SECTION.
+       01  PARA-REC.
+           03  PARA-RSFILE           PIC X(32).
+      *
+       PROCEDURE                   DIVISION
+           USING
+           PARA-REC.
       ****************************************************************
       *    主　　処理
       *****************************************************************
@@ -139,18 +178,31 @@
            END-IF
       *
            PERFORM UNTIL       FLG-PGKANRI =   1
-               MOVE    SPACE           TO  WRK-NAIYO
-               STRING  PGKANRI-DEBIANVERSION   DELIMITED  BY  SPACE
-                       "/"                     DELIMITED  BY  SIZE
-                       PGKANRI-SYSTEMVERSION   DELIMITED  BY  SPACE
-                       "/"                     DELIMITED  BY  SIZE
-                       PGKANRI-PGNAME          DELIMITED  BY  SPACE
-                                       INTO    WRK-NAIYO
-               END-STRING
+               MOVE    SPACE           TO  SHELLTBL
+               INITIALIZE              ORCSMKPASSAREA
+               MOVE    SHELL-NAME      TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
-      *         PERFORM コピー処理
+               MOVE    PGKANRI-PGNAME  TO  SHELLTBL-ARG1
+               MOVE    PGKANRI-INSTALLDIR
+                                       TO  SHELLTBL-ARG2
+               MOVE    SHELLTBL        TO  MCPDATA-REC
+               MOVE    "SHELL"         TO  MCP-FUNC
+               MOVE    PATH-SHELL-SHELL
+                                       TO  MCP-PATH
+               CALL    "MCPSUB"        USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
                PERFORM 210-KOUSHIN-SEC
+               IF      FLG-RESTART     =   0   AND
+                       PGKANRI-RESTARTFLG
+                                       =   "T"
+                       PERFORM 220-RESTART-WRITE-SEC
+                       MOVE  1         TO  FLG-RESTART
+               END-IF
+      *
                PERFORM 910-PGKANRI-READ-SEC
            END-PERFORM
       *
@@ -192,6 +244,31 @@
            .
       *
        210-KOUSHIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       ＭＯＮＩＴＯＲ再起動スイッチ出力処理
+      *****************************************************************
+       220-RESTART-WRITE-SEC         SECTION.
+      *
+      *    ファイル情報
+           MOVE    PARA-RSFILE     TO  ASS-OUT
+      *
+      *    出力ファイル　オープン
+           OPEN    OUTPUT          OUT-FILE
+           IF      STS-OUT         NOT =   ZERO
+               DISPLAY "*(ORCXPMNT3)* OUT-FILE OPN STS[" STS-OUT "]"
+           ELSE
+               MOVE    SPACE       TO  OUT-REC
+               MOVE    "RESTART"   TO  OUT-RESTART
+               WRITE                   OUT-REC
+           END-IF
+      *
+      *    出力ファイル　クローズ
+           CLOSE   OUT-FILE
+           .
+      *
+       220-RESTART-WRITE-EXT.
            EXIT.
       *
       *****************************************************************
