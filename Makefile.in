@@ -15,9 +15,10 @@ distclean:
 	-rm -f Makefile
 	-rm -f config.cache config.log config.status
 
-VERSION=1.0.1
+VERSION=@VERSION@
+PACKAGE=@PACKAGE@
 
-distdir=jma-receipt-$(VERSION)
+distdir=$(PACKAGE)-$(VERSION)
 
 dist: $(distdir).tar.gz
 	-rm -rf $(distdir)
@@ -38,6 +39,9 @@ distdir:
 	done
 
 	make -C $(distdir) distclean
+
+snapshot:
+	$(MAKE) dist distdir=$(PACKAGE)-`date +"%Y%m%d"`
 
 install installdirs:
 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done
