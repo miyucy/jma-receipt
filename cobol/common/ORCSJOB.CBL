@@ -455,21 +455,25 @@
            END-IF
       *
       *    レコード更新
-           MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
-           MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-JOBKANRI-UPD1
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
-      *
-           IF      MCP-RC     =   ZERO
-               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+           IF      WRK-JOB-STOPFLG     =   2   OR  3
+               CONTINUE
            ELSE
-               DISPLAY "UPDATE ERR KEY = [" MCP-RC JOB-SHELLID "]"   
-               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
-           END-IF
+               MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
+               MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    PATH-TBL-JOBKANRI-UPD1
+                                           TO  MCP-PATH
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+               IF      MCP-RC     =   ZERO
+                   MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+               ELSE
+                   DISPLAY "UPDATE ERR KEY = [" MCP-RC JOB-SHELLID "]"   
+                   MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+               END-IF
+           END-IF    
       *
            .
        190-STP-EXT.
