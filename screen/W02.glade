@@ -2071,6 +2071,7 @@
 	<label>ÀÁµá½ñ¼«ÈñÌ¾¾Î¾ðÊó</label>
 	<relief>GTK_RELIEF_NORMAL</relief>
       </widget>
+
       <widget>
 	<class>GtkFixed</class>
 	<name>fixed30</name>
@@ -2100,7 +2101,7 @@
 	  <text_max_length>20</text_max_length>
 	  <text>12345678901234567890</text>
 	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
+	  <xim_enabled>True</xim_enabled>
 	</widget>
 
 	<widget>
@@ -2128,7 +2129,7 @@
 	  <text_max_length>14</text_max_length>
 	  <text>12345678901234</text>
 	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
+	  <xim_enabled>True</xim_enabled>
 	</widget>
 
 	<widget>
