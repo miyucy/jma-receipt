@@ -1514,10 +1514,6 @@
                   (WRK-SANTEI-ARI      NOT =   SPACE )
                PERFORM 10021-24KASAN-SET-SEC
            END-IF
-      *TEST
-           DISPLAY "C10S WRK-SANTEI-NASI:" WRK-SANTEI-NASI
-                  ",WRK-24KSAN-SRYCD:" WRK-24KSAN-SRYCD
-      *TEST
       *
            .
        1002-NETAKIRI-CHK-EXT.
@@ -2894,7 +2890,7 @@
                ELSE
       *            Ê¿À®£±£µÇ¯£¹·î£±Æü¤«¤éÄþ¸ºÇÑ»ß¤È¤¹¤ë
                    MOVE    ZERO                TO  WRK-KAISU
-                       MOVE    "S"                 TO  WRK-KBN
+                   MOVE    "S"                 TO  WRK-KBN
       *
                    PERFORM 20091-RSI-SINSATU-SEC
                END-IF
@@ -4282,11 +4278,20 @@
                GO      TO      10101-SINSATU-CHK-EXT
            END-IF
       *
-      *           ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê
+      *    ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê
            IF     WRK-SRYCD            =   "114701210"   OR
-                                           "114701710"   OR
-      *            ÆÃÄêËýÀ­¼À´µ»ØÆ³ÎÁ
-                                           "113700710"   OR
+                                           "114701710"
+               PERFORM VARYING     IDXS    FROM    1   BY  1
+                       UNTIL      (IDXS    >   SPA-GMN-IDX )  OR
+                                  (FLG-ARI =   1           )
+                   IF      SPA-COM-INPUTCD (IDXS)  =   "114701210" 
+                                                   OR  "114701710"
+                       MOVE    1               TO  FLG-ARI
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    ÆÃÄêËýÀ­¼À´µ»ØÆ³ÎÁ
+           IF     WRK-SRYCD            =   "113700710"   OR
                                            "113700810"   OR
                                            "113700610"   OR
                                            "113001910"   OR
@@ -4298,15 +4303,20 @@
                PERFORM VARYING     IDXS    FROM    1   BY  1
                        UNTIL      (IDXS    >   SPA-GMN-IDX )  OR
                                   (FLG-ARI =   1           )
-                   IF      WRK-SRYCD       =   SPA-COM-INPUTCD (IDXS)
+                   IF      SPA-COM-INPUTCD (IDXS)  =   "113700710"
+                                                   OR  "113700810"
+                                                   OR  "113700610"
+                                                   OR  "113001910"
+                                                   OR  "113002010"
+                                                   OR  "113001810"
+      *            ÈéÉæ²ÊÀ­¼À´µ»ØÆ³ÎÁ
+                                                   OR  "113000910"
+                                                   OR  "113002310"
                        MOVE    1               TO  FLG-ARI
                    END-IF
                END-PERFORM
-      *********Ï«ºÒ¤Î»þ¡¢ºï½ü
-      *        IF      SPA-HKNKBN      NOT =   ZERO
-      *            MOVE    1               TO  FLG-ARI
-      *********END-IF
            END-IF
+      *
       *    ¤½¤ÎÂ¾Æ±¤¸¥³¡¼¥É¤¬¤¢¤ë»þ
            PERFORM VARYING     IDXS    FROM    1   BY  1
                    UNTIL      (IDXS    >   SPA-GMN-IDX )  OR

@@ -4228,7 +4228,8 @@
            END-IF
       *
       *    老人区分が変更された時、チェックフラグをクリアする
-           IF      SPA-NAI-ROUJIN  NOT =   WRK-ROUJIN
+           IF     (SPA-NAI-ROUJIN  NOT =   WRK-ROUJIN )  OR
+                  (SPA-HKNKBN      NOT =   SPA-MAE-HKNKBN)
                PERFORM 410121-ROUJINCHK-SEC
            END-IF
       *

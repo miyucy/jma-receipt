@@ -5121,7 +5121,9 @@
            PERFORM                     310-SPA-SET-SEC
       *
       *    老人区分が変更された時、チェックフラグをクリアする
-           IF      SPA-NAI-ROUJIN  NOT =   WRK-ROUJIN
+           IF     (SPA-NAI-ROUJIN  NOT =   WRK-ROUJIN )  OR
+                  (SPA-NAI-ROUJIN  NOT =   SPA-MAE-ROUJIN) OR
+                  (SPA-HKNKBN      NOT =   SPA-MAE-HKNKBN )
                PERFORM 4101311-ROUJINCHK-SEC
            END-IF
       *    他保険受診がある時、診察料はないものとする
