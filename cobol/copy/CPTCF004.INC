@@ -35,7 +35,7 @@
       *        レセプト種別コード
                05  TOUKEI04-RECESYUBETU    PIC  9(04).
       *        入外区分
-               05  TOUKEI04-NYUGAIKBN      PIC  X(01).
+               05  TOUKEI04-NYUGAIKBN      PIC  9(01).
       *        診療科
                05  TOUKEI04-SRYKA          PIC  X(02).
       *        レセ電診療科
