@@ -242,6 +242,7 @@
       *  01.01.70    NACL-太田    03/05/09  I001-KEY2追加
       *  01.01.71    NACL-太田    03/05/15  I001-KEY3追加
       *  01.01.72    NACL-太田    03/05/17  NYUINACCT-KEY19追加
+      *  01.01.73    ひさなが     03/05/19  NYUKSNCHK-ALLの追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2517,6 +2518,9 @@
                WHEN    ANY             ALSO   "I001-ALL"
                    MOVE    PATH-VIEW-I001-ALL
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "Q001-ALL"
+                   MOVE    PATH-VIEW-Q001-ALL
+                                       TO  WRK-PATH
       *---- (NYUIN.10) LINE ADD END      -----------------------------
       *---- (NYUIN.15) LINE ADD START    -----------------------------
                WHEN    ANY             ALSO   "NYUKSNCHK-KEY"
@@ -2524,6 +2528,15 @@
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-NYUKSNCHK-SEC
       *---- (NYUIN.15) LINE ADD END      -----------------------------
+               WHEN    ANY             ALSO   "NYUKSNCHK-ALL"
+                   MOVE    PATH-TBL-NYUKSNCHK-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "LDMAP-ALL"
+                   MOVE    PATH-TBL-LDMAP-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "LOCK-ALL"
+                   MOVE    PATH-TBL-LOCK-ALL
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINRYAKUSHO-KEY"
                    MOVE    PATH-TBL-NYUINRYAKUSHO-KEY
                                        TO  WRK-PATH
