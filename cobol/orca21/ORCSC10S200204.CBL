@@ -1105,6 +1105,7 @@
        1001-SYONIKA-CHK-SEC                  SECTION.
       *
            MOVE    ZERO                TO  FLG-SYONIKA-ARI
+           MOVE    ZERO                TO  SPA-SYONIKA-ARI3
       *
       *    £³ºÐ¤Ë¤Ê¤ëÇ¯·îÆü¤ò·×»»
            MOVE    SPA-BIRTHDAY        TO  WRK-BIRTHDAY
@@ -1154,6 +1155,7 @@
            END-IF
       *    ¾®»ù²ÊÂÐ¾Ý
            MOVE    1                   TO  FLG-SYONIKA-ARI
+           MOVE    1                   TO  SPA-SYONIKA-ARI3
       *
            .
        1001-SYONIKA-CHK-EXT.
@@ -3302,6 +3304,9 @@
            IF      SPA-SYONIKA-ARI     =   ZERO
                MOVE    SPA-SYONIKA-ARI2    TO  SPA-SYONIKA-ARI
            END-IF
+           IF      SPA-SYONIKA-ARI     =   ZERO
+               MOVE    SPA-SYONIKA-ARI3    TO  SPA-SYONIKA-ARI
+           END-IF
            .
        600-SANTEI-CNT-EXT.
            EXIT.
@@ -3853,6 +3858,12 @@
            IF      SPA-ERRCD           NOT =   SPACE
                GO      TO      900-SYOSIN-CHK-EXT
            END-IF
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤ÇÇ¯Îð¥¨¥é¡¼¤Ï£Ï£Ë¤È¤¹¤ë
+           IF     (SPA-SYONIKA-ARI     NOT =   ZERO )  AND
+                  (LNK-SC92-ERRCD5     NOT =   SPACE)
+               MOVE    SPACE               TO  LNK-SC92-ERRCD5
+           END-IF
+      *
            IF      LNK-SC92-ERRAREA    NOT =   SPACE
                IF      LNK-SC92-ERRCD3     NOT =   SPACE
                    MOVE    LNK-SC92-ERRCD3         TO  SPA-ERRCD
