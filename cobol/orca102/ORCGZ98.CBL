@@ -551,8 +551,9 @@
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-               UNTIL      (IDX         >   200 )   OR
+           MOVE    ZERO                TO  IDX
+           PERFORM
+               UNTIL      (IDX             >=  200 )   OR
                           (FLG-INPUTCD     =   1   )
       *
                PERFORM 31011-INPUTCD-CHK-SEC
@@ -561,6 +562,7 @@
                    IF     (ICD-DSPNAME     NOT =   SPACE )  AND
                           (ICD-SRYCD(1:1)      =   "S"  OR  "P")
       *
+                       ADD     1                   TO  IDX
                        ADD     1                   TO  WRK-CNT-ENT
                        MOVE    IDX                 TO  SPA-Z98-GMN-NO
                                                                 (IDX)
@@ -597,6 +599,7 @@
       *
                        IF      FLG-TENSU           =   ZERO
       *
+                           ADD     1               TO  IDX
                            ADD     1               TO  WRK-CNT-ENT
                            MOVE    IDX             TO  SPA-Z98-GMN-NO
                                                                 (IDX)
