@@ -12,7 +12,6 @@ linkage	orcalink;
 blob {
     space   "/tmp/blob";
     port    "/tmp/blog.blob";
-    auth    "/etc/jma-receipt/passwd";
 };
 
 ld	{
