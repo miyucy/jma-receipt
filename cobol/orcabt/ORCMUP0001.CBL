@@ -203,6 +203,10 @@
       *    点数マスタ−
            COPY    "CPTENSU.INC".
       *
+      *    点数マスタ−保存
+           COPY    "CPTENSU.INC"       REPLACING
+                                       //TNS-// BY //WRK-TNS-//.
+      *
       *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
@@ -383,11 +387,22 @@
       *
       *    単純追加
            IF      TNSWK-YUKOEDYMD2    =   SPACE
-      *        追加エラー
+      *        追加エラー？
                IF      FLG-TENSU           =   ZERO
-                   MOVE    1               TO  WRK-ERRCD
-                   PERFORM 2040-ERR-SYORI-SEC
-                   GO      TO      2010-INSERT-SYORI-EXT
+                   PERFORM UNTIL    FLG-TENSU      =   1
+      *                最後のデータを対象とする
+                       MOVE  TNS-TENSU-REC TO  WRK-TNS-TENSU-REC
+      *
+                       MOVE  "TENSU-KEY4"  TO  ORC-DBPATH
+                       PERFORM                 910-TENSU-READ-SEC
+                   END-PERFORM
+                   MOVE    WRK-TNS-TENSU-REC
+                                           TO  TNS-TENSU-REC
+                   IF      TNSWK-YUKOSTYMD <=  TNS-YUKOEDYMD
+                       MOVE    1           TO  WRK-ERRCD
+                       PERFORM 2040-ERR-SYORI-SEC
+                       GO      TO      2010-INSERT-SYORI-EXT
+                   END-IF
                END-IF
       *
       *        ＤＢ追加
