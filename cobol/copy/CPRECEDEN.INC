@@ -45,7 +45,11 @@
                05  RECEDEN-HOJOKBN-KEY      PIC  X(01).
       *適用開始年月日
                05  RECEDEN-TEKSTYMD         PIC  X(08).
+      *レコード区分（１：レセ電、２：症状詳記）
+               05  RECEDEN-RECKBN           PIC  X(01).
       *データ連番
-           03  RECEDEN-RENNUM               PIC  9(05).
+               05  RECEDEN-RENNUM           PIC  9(04).
+      *作成年月日
+           03  RECEDEN-CREYMD               PIC  X(08).
       *レセ電データ
-           03  RECEDEN-RECEDATA             PIC  X(1000).
+           03  RECEDEN-RECEDATA             PIC  X(250).
