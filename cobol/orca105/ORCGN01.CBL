@@ -666,10 +666,10 @@
                    WHEN    6
                        MOVE    "060"           TO  SPA-GMN-HKNNUM
                        IF      SPA-GMN-HKNJANUM(3:1)   =   "3"
-                           MOVE    "0:£·³ä"    TO  SPA-GMN-HGKYURATE
-                                                   SPA-GMN-HNKYURATE
-                                                   SPA-GMN-KGKYURATE
-                                                   SPA-GMN-KNKYURATE
+                           MOVE    "0:£·³ä"    TO  SPA-GMN-HGKYURATE-G
+                                                   SPA-GMN-HNKYURATE-G
+                                                   SPA-GMN-KGKYURATE-G
+                                                   SPA-GMN-KNKYURATE-G
                        END-IF
                    WHEN    8
                        IF      SPA-GMN-HKNJANUM (1:2)
