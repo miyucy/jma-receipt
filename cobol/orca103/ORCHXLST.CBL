@@ -148,10 +148,10 @@
            03  B01-COMPKBN             PIC X(02).
            03  B01-TEKIYO              PIC X(92).
            03  B01-TEKIYO-R1           REDEFINES   B01-TEKIYO.
-               05  B01-SRYCD2          PIC X(07).
+               05  B01-SRYCD2          PIC X(09).
                05  FILLER              PIC X(01).
                05  B01-NAME2           PIC X(80).
-               05  B01-FIL-R1          PIC X(04).
+               05  B01-FIL-R1          PIC X(02).
            03  B01-TEKIYO-R2           REDEFINES   B01-TEKIYO.
                05  B01-BYOMEICD        PIC X(07).
                05  FILLER              PIC X(01).
