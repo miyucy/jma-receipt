@@ -36,6 +36,7 @@
       * 01.00.05     NACL-多々納  02/11/11  ＤＵＭＭＹ診察料追加
       * 01.00.06     NACL-多々納  02/11/28  中途終了再表示修正
       * 01.00.07     NACL-多々納  02/12/02  生活習慣病のコードエラー修正
+      * 01.00.08     NACL-多々納  02/12/06  慢性疼痛の算定チェック修正
       *****************************************************************
       *
       *
@@ -2534,6 +2535,13 @@
                    IF      SANTEI-SRYYM        =   SPA-SRYYMD(1:6)
                        MOVE    SANTEI-SRYYM        TO  WRK-SANTEI-YM
                        MOVE    SANTEI-MSANTEICNT   TO  FLG-TOUG-SANTEI
+      *                慢性疼痛の時、診療日より後の時なしとする
+                       IF     (WRK-SRYCD       =   "113006510" ) AND
+                              (SANTEI-FSANTEIYMD(1:6)
+                                               =   SANTEI-SRYYM ) AND
+                              (SPA-SRYYMD(7:2) <   SANTEI-MSANTEID)
+                           MOVE    ZERO        TO  FLG-TOUG-SANTEI
+                       END-IF
                    END-IF
                    IF      SANTEI-SRYYM        <   SPA-SRYYMD(1:6)
                        MOVE    SANTEI-SRYYM        TO  WRK-SANTEI-YM
