@@ -256,7 +256,7 @@ RECORD_files = \
 	orcaspa.rec \
         S04.rec \
         U1ID1.rec \
-        Z07.rec \
+        Z07.rec
 
 DEF_files = \
 	HC01.def \
@@ -393,7 +393,7 @@ DB_files = \
 	view_Q001.db \
 	view_Q002.db \
 	view_bd001.db \
-	view_bd002.db \ 
+	view_bd002.db
 
 all:   
 
