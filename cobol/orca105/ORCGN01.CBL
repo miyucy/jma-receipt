@@ -1521,6 +1521,9 @@
       *
            MOVE    SPACE               TO  SPA-GMN-KOUMOKU
                                            SPA-GMN-HKNJANUM
+           INITIALIZE                      SPA-GMN-IDOKBN-G
+           INITIALIZE                      SPA-GMN-IDOYMD
+           INITIALIZE                      SPA-NAI-IDOYMD
       *
            MOVE    ZERO                TO  SPA-NAI-UPDFLG
       *          
