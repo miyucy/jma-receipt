@@ -31,6 +31,7 @@
       * 01.00.02     NACL-多々納  02/12/26  転科時、会計削除の中止
       * 01.00.03     NACL-多々納  02/12/26  年齢チェック追加
       * 01.00.04     NACL-多々納  03/01/28  次月分作成追加
+      * 01.00.05     NACL-多々納  03/03/12  選定療養費追加
       *****************************************************************
       *
       *
@@ -60,6 +61,8 @@
            03  FLG-ARI             PIC 9(01).
            03  FLG-SYORI-END       PIC 9(01).
            03  FLG-CHK             PIC 9(01).
+      *    選定療養費
+           03  FLG-SENTEI              PIC 9(01).
       *    取消
            03  FLG-DELETE              PIC 9(01).
            03  FLG-DELETE-OK           PIC 9(01).
@@ -640,6 +643,30 @@
                PERFORM 400-NYUACT-SYORI-SEC
            END-IF
       *
+      *    選定療養費
+           IF      LNK-SCNYUACCT-SENTEI-SRYCD  NOT =   SPACE
+               IF      LNK-SCNYUACCT-SENTEI-STYMD
+                                               <   WRK-EDYMD
+                   INITIALIZE                  TBL-NYUIN-AREA
+                   MOVE    LNK-SCNYUACCT-SENTEI-SRYCD
+                                               TO  TBL-SRYCD (1)
+      *            選定療養開始日判定
+                   IF      LNK-SCNYUACCT-SENTEI-STYMD
+                                               >=  WRK-STYMD
+                       MOVE    LNK-SCNYUACCT-SENTEI-STYMD
+                                                   TO  WRK-KHN-STYMD
+                   ELSE
+                       MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
+                   END-IF
+                   MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
+                   MOVE    "1"                 TO  WRK-ACT-ZAISKBKBN
+                   MOVE    1                   TO  WRK-ACT-DAY
+                   MOVE    1                   TO  FLG-SENTEI
+                   PERFORM 400-NYUACT-SYORI-SEC
+                   MOVE    ZERO                TO  FLG-SENTEI
+               END-IF
+           END-IF
+      *
            .
        220-SONOTA-SYORI-EXT.
            EXIT.
@@ -986,6 +1013,12 @@
                   (WRK-ACT-ZAISKBKBN       =   "1"  OR  "6")
                MOVE    "92"                TO  WRK-SRYKBN
                MOVE    "920"               TO  WRK-SRYSYUKBN
+           END-IF
+      *
+      *    選定療養費の時、９００とする
+           IF      FLG-SENTEI              =   1
+               MOVE    "90"                TO  WRK-SRYKBN
+               MOVE    "900"               TO  WRK-SRYSYUKBN
            END-IF
       *
            MOVE    WRK-SRYKBN          TO  NACCT-SRYKBN
