@@ -239,6 +239,8 @@
       *
            03  FLG-HEN-CHK         PIC 9(01).
       *
+           03  FLG-IN1             PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -4103,6 +4105,9 @@
            INITIALIZE                  SPA-K02
            INITIALIZE                  SPA-SCR-REC
            INITIALIZE                  SPA-SRYKA
+      *    診療日に変更があったらＳＰＡを指定する
+           IF      SPA-SRYYMD      NOT =   SPA-SYSYMD
+      *
            MOVE    "1"                 TO  LNK-SC95-KBN
            MOVE    "K02"               TO  LNK-SC95-PG
            CALL    "ORCSC95"           USING
@@ -4111,6 +4116,8 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
+      *
+           END-IF
       *
            MOVE    "2"                 TO  LNK-SC95-KBN
            MOVE    "K02"               TO  LNK-SC95-PG
@@ -5544,6 +5551,7 @@
                   (WRK-MCNT3           =   ZERO )  AND
                   (WRK-MCNT4           =   ZERO )  AND
                   (FLG-KAISU           =   ZERO )
+               MOVE    ZERO                TO  FLG-IN1
       *        薬剤と数量入力必須の診療行為、薬剤コメント
                IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)   =   "059"
                    MOVE    "7"                     TO  WRK-MOJI
@@ -5551,21 +5559,51 @@
                    MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
                                                    TO  WRK-MOJI
                END-IF
-      *
+      *        数量の入力の有無
                IF     (WRK-MOJI                    =   "6" OR
                                                        "7" )  OR
-                     ((WRK-MOJI                    =   "1" ) AND
-                      (TNS-SRYSYUKBN(1:1)      NOT =   "7" ) AND
-                      (TNS-KZMCOMPSIKIBETU     NOT =   0   ))  OR
                      ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
-                                                   =   "001" ) OR
-                     ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
-                                                   =   "84" ) AND
-                      (TNS-SSTKIJUNCDTBL(1)    NOT =   ZERO ))  OR
-                     ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
+                                                   =   "001" )
+      *            薬剤・器材・用法
+                   MOVE    1                   TO  FLG-IN1
+               END-IF
+               IF      WRK-MOJI                =   "1"
+                   IF       LNK-SC97-NYURYOKU      =   1
+      *            診察料で、基準があるもの
+                       IF  (TNS-SRYSYUKBN(1:1)      NOT =   "7" ) AND
+                           (TNS-KZMCOMPSIKIBETU     NOT =   0   )
+                           MOVE    1                   TO  FLG-IN1
+                       END-IF
+                   ELSE
+                       IF  (SPA-COM-SRYSYUKBN(SPA-GMN-IDX)(1:1)
+                                                    NOT =   "7" ) AND
+                           (SPA-COM-KZMCOMPSIKIBETU(SPA-GMN-IDX)
+                                                    NOT =   0   )
+                           MOVE    1                   TO  FLG-IN1
+                       END-IF
+                   END-IF
+               END-IF
+               IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
+                                                   =   "84"
+      *            コメント
+                   MOVE    1                   TO  FLG-IN1
+               END-IF
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
                                                    =   "09500" OR
-                                                       "09600" ) AND
-                      (TNS-TEN                     =   ZERO ))
+                                                       "09600" )
+      *            自費
+                   IF     (LNK-SC97-NYURYOKU       =   1    )  AND
+                          (TNS-TEN                 =   ZERO )
+                       MOVE    1                   TO  FLG-IN1
+                   END-IF
+      *            自費
+                   IF     (LNK-SC97-NYURYOKU       =   ZERO  )  AND
+                          (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO )
+                       MOVE    1                   TO  FLG-IN1
+                   END-IF
+               END-IF
+      *
+               IF      FLG-IN1             =   1
                    MOVE    "2"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
                    MOVE    "1"             TO  SPA-COM-IN3 (SPA-GMN-IDX)
                END-IF
@@ -5794,16 +5832,18 @@
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-PTID            TO  PTBYO-PTID
+           MOVE    SPA-SRYYMD          TO  PTBYO-SRYYMD
+           MOVE    SPA-SRYYMD          TO  PTBYO-TENKIYMD
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH
+               MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
                PERFORM 980-PTBYOMEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
@@ -5819,7 +5859,7 @@
                            MOVE    1               TO  FLG-KEIZOKU
                    END-EVALUATE
                END-IF
-               MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH
+               MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
                PERFORM 980-PTBYOMEI-READ-SEC
            END-PERFORM
       *
@@ -5895,15 +5935,32 @@
       *        診療行為
                WHEN    "1"
       *            きざみ値計算識別判定がない時、数量入力エラー(29)
-                   IF      TNS-KZMCOMPSIKIBETU     =   0
-                       IF      WRK-SUR-MCNT    NOT =   ZERO
-                           MOVE    "0002"          TO  SPA-ERRCD
+                   IF      LNK-SC97-NYURYOKU       =   1
+                       IF      TNS-KZMCOMPSIKIBETU     =   0 
+                           IF      WRK-SUR-MCNT    NOT =   ZERO
+                               MOVE    "0002"          TO  SPA-ERRCD
+                           END-IF
+                       ELSE
+      *                数量　＞　きざみ値上限の時、エラー
+                           IF      SPA-COM-SURYO(SPA-GMN-IDX)
+                                                   >   TNS-KZMJGN
+                                   MOVE    "0037"          TO  SPA-ERRCD
+                           END-IF
                        END-IF
                    ELSE
+      *                コード変更なし
+                       IF      SPA-COM-KZMCOMPSIKIBETU(SPA-GMN-IDX)
+                                                       =   0
+                           IF      WRK-SUR-MCNT    NOT =   ZERO
+                               MOVE    "0002"          TO  SPA-ERRCD
+                           END-IF
+                       ELSE
       *                数量　＞　きざみ値上限の時、エラー
-                       IF      SPA-COM-SURYO(SPA-GMN-IDX)
-                                                   >   TNS-KZMJGN
-                           MOVE    "0037"          TO  SPA-ERRCD
+                           IF      SPA-COM-SURYO(SPA-GMN-IDX)
+                                                   >   SPA-COM-KZMJGN
+                                                           (SPA-GMN-IDX)
+                               MOVE    "0037"          TO  SPA-ERRCD
+                           END-IF
                        END-IF
                    END-IF
       *
@@ -5935,7 +5992,11 @@
       *        時間加算区分
                IF     (LNK-SC97-JIKAN      =   1   OR  2  OR  3
                                                    OR  4       )  AND
-                      (TNS-DATAKBN         =   "1"             )
+                      (((LNK-SC97-NYURYOKU     =   1    )  AND
+                        (TNS-DATAKBN           =   "1"  ))   OR
+                       ((LNK-SC97-NYURYOKU     =   ZERO   )  AND
+                        (SPA-COM-DATAKBN(SPA-GMN-IDX)
+                                               =   "1"  )) )
                    IF     (SPA-NAI-TIMEFLG     NOT =   ZERO    )  AND
                           (SPA-NAI-TIMEFLG     NOT =   LNK-SC97-JIKAN)
                                                                   AND

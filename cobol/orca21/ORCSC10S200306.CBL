@@ -1049,7 +1049,7 @@
            END-PERFORM
       *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+      *    MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
       *    CALL    "ORCMCPSUB"          USING
       *                                 MCPAREA
       *                                 ORCMCPAREA
@@ -1786,6 +1786,9 @@
       *??              (SPA-RRK-LSTYMD      =   SPA-SRYYMD ))
                    MOVE    1                   TO  FLG-DOUJITU
                END-IF
+      *TEST
+           DISPLAY " FLG-DOUJITU :"  FLG-DOUJITU
+      *TEST
                IF      (SPA-SYORIFLG        =   1       )   AND
                        (WRK-DAY-SINSATUCNT  >   ZERO    )
                    MOVE    1                   TO  FLG-DOUJITU
@@ -1807,6 +1810,10 @@
                    PERFORM 2001-SRYCD-TBL-SEC
                END-IF
            END-IF
+      *TEST
+           DISPLAY "WRK-SRYKBN:"  WRK-SRYKBN
+                  ",WRK-SRYCD:" WRK-SRYCD
+      *TEST
       *
       *    初診料自動追加処理
            PERFORM 3301-SYOSIN-SYORI-SEC
@@ -4403,6 +4410,10 @@
            END-PERFORM
       *    剤毎に対象を編集する
            IF      IDX3                >   ZERO
+               IF     (IDX3                =   1  )  AND
+                      (WRK-GMN-INPUTCD(IDX3)(1:1)  =  "." )
+                   MOVE    ZERO                TO  IDX3
+               END-IF
                PERFORM VARYING     IDX4    FROM   1   BY  1
                        UNTIL       IDX4    >   IDX3
                    ADD     1                   TO  IDX2
@@ -4611,12 +4622,13 @@
       *****************************************************************
        910-TENSU-READ-SEC              SECTION.
       *
+      *    算定履歴に関する項目のみ
            MOVE    ZERO                TO  TNS-YUKOSTYMD
            MOVE    ALL "9"             TO  TNS-YUKOEDYMD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
            MOVE    SPA-SRYYMD          TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -4624,7 +4636,7 @@
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -4642,7 +4654,7 @@
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

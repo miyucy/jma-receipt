@@ -4843,7 +4843,7 @@
        4101113-INPUTCD-CHK-SEC       SECTION.
       *
       *    入力コード変更ありの時
-           IF      LNK-SC97-NYURYOKU   =   1
+      *****IF      LNK-SC97-NYURYOKU   =   1
       *    診療行為コードをもとに点数マスター検索
            MOVE    ZERO                TO  FLG-TENSU
            MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
@@ -4855,7 +4855,7 @@
                GO      TO      4101113-INPUTCD-CHK-EXT
            END-IF
       *
-           END-IF
+      *****END-IF
       *
            MOVE    SPACE               TO  SPA-COM-IN3 (SPA-GMN-IDX)
       *
