@@ -53,6 +53,8 @@
                     06  W02-HOSPSBTLST        PIC X(10)   OCCURS  2.
                   05  W02-BEDSU.
                     06  W02-VALUE   PIC S9(4).
+                  05  W02-BEDSUIPPN.
+                    06  W02-VALUE   PIC S9(4).
                   05  W02-HOSPSBT1-COMBO.
                     06  W02-HOSPSBT1         PIC X(20).
                     06  W02-HOSPSBT1-COUNT   PIC S9(9)   BINARY.
