@@ -166,6 +166,7 @@ SCREEN_screen = \
 	T99.glade \
 	TERR.glade \
 	TID1.glade \
+	TID2.glade \
 	U01.glade \
 	U02.glade \
 	U1ERR.glade \

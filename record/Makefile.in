@@ -171,6 +171,7 @@ RECORD_files = \
 	T99.rec \
 	TERR.rec \
 	TID1.rec \
+	TID2.rec \
 	U01.rec \
 	U02.rec \
 	U02X.rec \

@@ -38,5 +38,11 @@ T01	{
                     style   varchar(20);
 			value	varchar(4);
 		};
+		HKNJANUM	{
+			value	varchar(8);
+		};
+		HKNJAMEI	{
+			value	varchar(40);
+		};
 	};
 };
