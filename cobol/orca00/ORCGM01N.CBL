@@ -170,6 +170,8 @@
            03   ACC1-ST            PIC  X(02).
            03   ACC1-FILENAME      PIC  X(128).
       *
+      *   ÇÓÂ¾À©¸æ 
+           COPY    "CPORCSLOCK.INC".
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
@@ -256,6 +258,15 @@
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    3                   TO  SLOCK-MODE
+           MOVE    ZERO                TO  SLOCK-PTID
+           CALL "ORCSLOCK"             USING   MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF      SLOCK-RETURN        NOT =   ZERO
+               MOVE    "9999"          TO  SPA-ERRCD
+           END-IF
       *
       ***  MOVE    "NEW"               TO  MCP-PUTTYPE.
            MOVE    SPACE               TO  MCP-PUTTYPE.

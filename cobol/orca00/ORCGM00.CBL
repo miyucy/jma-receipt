@@ -44,6 +44,7 @@
       *  01.02.05    NACL-多々納  02/10/22  病床数追加
       *  01.02.06    NACL-多々納  02/12/19  入院時日付変更修正
       *  01.02.07    NACL-多々納  03/02/10  病床数（一般）追加
+      *  01.02.08    NACL-藤原    03/03/01  排他制御 追加
       *****************************************************************
       *
       *
@@ -130,6 +131,10 @@
       *    患者番号構成管理情報
            COPY  "CPSK1009.INC".
       *---- (01.00.02) LINE ADD END   --------------------------------
+      *---- (01.02.08) LINE ADD START --------------------------------
+      *    排他管理情報
+           COPY  "CPSK9800.INC".
+      *---- (01.02.08) LINE ADD END   --------------------------------
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -424,6 +429,25 @@
            DISPLAY "310-SPASET-SEC SPA-1009-PTNUMKSIKBN = "
                                        SPA-1009-PTNUMKSIKBN
       *---- (01.00.02) LINE ADD END   --------------------------------
+      *---- (01.02.08) LINE ADD START --------------------------------
+      *    排他管理情報編集
+           MOVE    SPACE               TO  SYS-9800-REC
+           INITIALIZE                  SYS-9800-REC
+           MOVE    "9800"              TO  SYS-9800-KANRICD
+           MOVE    "*"                 TO  SYS-9800-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-9800-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC    TO  SYS-9800-REC
+               MOVE    SYS-9800-HAITA
+                                       TO  SPA-HAITAFLG
+           ELSE
+               MOVE    ZERO          
+                                       TO  SPA-HAITAFLG
+           END-IF
+      *---- (01.02.08) LINE ADD END   --------------------------------
       *
       *    端末ＩＤ
       *****MOVE    MCP-TERM (5:)       TO  SPA-TERMID
