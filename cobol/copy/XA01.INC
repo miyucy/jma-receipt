@@ -35,6 +35,8 @@
                   05  XA01-HEAD2.
                     06  XA01-VALUE         PIC X(10).
                   05  XA01-COUNT           PIC S9(9)   BINARY.
+                  05  XA01-ROW             PIC S9(9)   BINARY.
+                  05  XA01-ROWATTR         PIC S9(9)   BINARY.
                   05  XA01-ITEM            OCCURS  100 TIMES.
                     06  XA01-TNO           PIC X(3).
                     06  XA01-TTBL-GROUP    PIC X(14).

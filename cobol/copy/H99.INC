@@ -26,6 +26,8 @@
               03  H99-SCROLLEDWINDOW1.
                 04  H99-RECELST.
                   05  H99-COUNT   PIC S9(9)   BINARY.
+                  05  H99-ROW             PIC S9(9)   BINARY.
+                  05  H99-ROWATTR         PIC S9(9)   BINARY.
                   05  H99-ITEM        OCCURS  5 TIMES.
                     06  H99-TRENNUM       PIC X(2).
                     06  H99-TNYUGAIKBN    PIC X(6).

@@ -27,6 +27,8 @@ XA01	{
 					value	varchar(10);
 				};
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value1	varchar(3);
 					value2	varchar(14);

@@ -11,7 +11,9 @@
                     06  XC01-VALUE  PIC X(300).
                   05  XC01-SCROLLEDWINDOW26.
                     06  XC01-CLIST.
-                      07  XC01-COUNT  PIC S9(9)   BINARY.
+                      07  XC01-COUNT        PIC S9(9)   BINARY.
+                      07  XC01-ROW          PIC S9(9)   BINARY.
+                      07  XC01-ROWATTR      PIC S9(9)   BINARY.
                       07  XC01-ITEM       OCCURS  100 TIMES.
                         08  XC01-TNO    PIC X(5).
                         08  XC01-TPRT-TITLE PIC X(10).

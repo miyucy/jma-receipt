@@ -21,7 +21,9 @@
                 04  XA99-VALUE   PIC X(80).
               03  XA99-SCROLLEDWINDOW28.
                 04  XA99-JOBKANRILST.
-                  05  XA99-COUNT   PIC S9(9)   BINARY.
+                  05  XA99-COUNT       PIC S9(9)   BINARY.
+                  05  XA99-ROW         PIC S9(9)   BINARY.
+                  05  XA99-ROWATTR     PIC S9(9)   BINARY.
                   05  XA99-ITEM        OCCURS  30 TIMES.
                     06  XA99-RENNUM    PIC X(7).
                     06  XA99-SHORINM   PIC X(20).

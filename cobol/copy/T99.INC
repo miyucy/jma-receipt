@@ -3,7 +3,9 @@
                 04  T99-VALUE   PIC X(80).
               03  T99-SCROLLEDWINDOW28.
                 04  T99-JOBKANRILST.
-                  05  T99-COUNT   PIC S9(9)   BINARY.
+                  05  T99-COUNT       PIC S9(9)   BINARY.
+                  05  T99-ROW         PIC S9(9)   BINARY.
+                  05  T99-ROWATTR     PIC S9(9)   BINARY.
                   05  T99-ITEM        OCCURS  30 TIMES.
                     06  T99-RENNUM    PIC X(7).
                     06  T99-SHORINM   PIC X(20).

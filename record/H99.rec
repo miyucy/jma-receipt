@@ -13,6 +13,8 @@ H99	{
 		scrolledwindow1	{
 			RECELST	{
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value1	varchar(2);
 					value2	varchar(6);
