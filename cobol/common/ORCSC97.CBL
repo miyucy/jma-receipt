@@ -54,6 +54,7 @@
            03  FLG-SUJI            PIC 9(01).
            03  FLG-KAI             PIC 9(01).
            03  FLG-HI              PIC 9(01).
+           03  FLG-ALLSUJI         PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -451,6 +452,9 @@
                GO      TO      1002-NYUINKAISU-EXT
            END-IF
       *
+      *TEST
+           DISPLAY "TBL-NYUIN-KAISU-AREA:" TBL-NYUIN-KAISU-AREA
+      *TEST
       *    ´ü´ÖÊÔ½¸
            INITIALIZE                      LNK-SC97-NYUIN-KAISU
            MOVE    ZERO                TO  IDX
@@ -549,10 +553,14 @@
                MOVE    1                   TO  WRK-STR
                MOVE    2                   TO  WRK-END
                PERFORM 2010-MOJI-HENKAN-SEC
-               MOVE    SPACE               TO  WRK-INPUTCD
-               MOVE    WRK-HENKAN-ATO      TO  WRK-INPUTCD(1:1)
-               MOVE    LNK-SC97-INPUTCD(3:)
-                                           TO  WRK-INPUTCD(2:)
+               IF      FLG-ALLSUJI         =   1
+                   MOVE    SPACE               TO  WRK-INPUTCD
+                   MOVE    WRK-HENKAN-ATO      TO  WRK-INPUTCD(1:1)
+                   MOVE    LNK-SC97-INPUTCD(3:)
+                                                TO  WRK-INPUTCD(2:)
+               ELSE
+                   MOVE    LNK-SC97-INPUTCD     TO  WRK-INPUTCD
+               END-IF
            END-IF
       *
       *    £±·å¤¬¡Ç¡¥¡Ç¤Î»þ¡¢¼ïÊÌÆþÎÏ¤È¤¹¤ë
@@ -710,6 +718,7 @@
            MOVE    SPACE               TO  WRK-HENKAN-ATO
            MOVE    WRK-STR             TO  IDH1
            MOVE    ZERO                TO  IDH2
+           MOVE    ZERO                TO  FLG-ALLSUJI
            PERFORM
                    UNTIL       IDH1    >   WRK-END
              IF      WRK-HENKAN-MAE(IDH1:1)
@@ -718,42 +727,55 @@
                    WHEN    "£°"
                        ADD     1           TO  IDH2
                        MOVE    "0"         TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    "£±"
                        ADD     1           TO  IDH2
                        MOVE    "1"         TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    "£²"
                        ADD     1           TO  IDH2
                        MOVE    "2"         TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    "£³"
                        ADD     1           TO  IDH2
                        MOVE    "3"         TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    "£´"
                        ADD     1           TO  IDH2
                        MOVE    "4"         TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    "£µ"
                        ADD     1           TO  IDH2
                        MOVE    "5"         TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    "£¶"
                        ADD     1           TO  IDH2
                        MOVE    "6"         TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    "£·"
                        ADD     1           TO  IDH2
                        MOVE    "7"         TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    "£¸"
                        ADD     1           TO  IDH2
                        MOVE    "8"         TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    "£¹"
                        ADD     1           TO  IDH2
                        MOVE    "9"         TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    "¡¥"
                        ADD     1           TO  IDH2
                        MOVE    "."         TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    "¡ö"
                        ADD     1           TO  IDH2
                        MOVE    "*"         TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    "¡¡"
                        ADD     1           TO  IDH2
                        MOVE    SPACE       TO  WRK-HENKAN-ATO (IDH2:1)
+                       MOVE    1           TO  FLG-ALLSUJI
                    WHEN    OTHER
                        ADD     1           TO  IDH2
                        MOVE    WRK-HENKAN-MAE(IDH1:2)
