@@ -695,7 +695,7 @@ R02	{
 			label	varchar(41);
 		};
 		FILEKBN	{
-			value	varchar(35);
+			value	varchar(41);
 		};
 		CREYMD	{
 			value	varchar(23);

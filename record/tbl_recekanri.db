@@ -117,6 +117,7 @@ path	key7		{
                     AND     SYOKBN       =   :SYOKBN
                     AND     SRYYM        =   :SRYYM
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     RECEKBN      =   :RECEKBN
                     ORDER BY  CREYMD DESC,CREHMS DESC,TEISYUTUSAKI,RECESYUBETU
 		;
 	};
