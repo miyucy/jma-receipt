@@ -3893,7 +3893,7 @@
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-GMN-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
            MOVE    SPA-RRK-SRYKA  (SPA-NAI-RRKSELNUM)
                                        TO  JYURRK-SRYKA
            MOVE    SPA-RRK-RRKYMD (SPA-NAI-RRKSELNUM)
@@ -3954,6 +3954,11 @@
                MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
+      *
+      *    外来の時、収納の更新
+           IF      SPA-NYUGAIKBN       =   "2"
+               PERFORM 4101613-SYUNOU-UPD-SEC
+           END-IF
       *
       *    診療科履歴変更
            INITIALIZE                  ORCSKARRKAREA
@@ -4078,6 +4083,53 @@
       *
            .
        4101612-ACCT-UPDSYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納の更新編集処理
+      *****************************************************************
+       4101613-SYUNOU-UPD-SEC      SECTION.
+      *
+      *
+           INITIALIZE                  SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-GMN-PTID        TO  SYU-PTID
+           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-RRK-DENPNUM(SPA-NAI-RRKSELNUM)
+                                       TO  SYU-DENPNUM
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYUNOU-REC
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+               GO      TO      4101613-SYUNOU-UPD-EXT
+           END-IF
+      *
+      *    診療日が変更された時、収納も変更する
+           IF      SYU-SRYYMD      NOT =   SPA-NAI-HENSRYYMD
+               MOVE    SPA-NAI-HENSRYYMD   TO  SYU-SRYYMD
+      *
+               MOVE    SYUNOU-REC          TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           END-IF
+      *
+           .
+       4101613-SYUNOU-UPD-EXT.
            EXIT.
       *
       *****************************************************************
