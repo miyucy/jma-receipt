@@ -1623,7 +1623,26 @@
       *
       *    MOVE    13                  TO  SPA-GMN2D-CUR
       *
-      *    MOVE    P02D-PREFKBN       TO  SPA-GMN2D-PREFKBN-G
+      *    MOVE    P02D-PREFKBN        TO  SPA-GMN2D-PREFKBN-G
+           IF      SPA-GMN2D-PREFKBN-G =   SPACE
+               GO      TO      4101-PREFKBN-CHK-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN2D-PREFKBN-MAX
+               IF      SPA-GMN2D-PREFKBN-LST(IDX) (1:1)
+                                           =   SPA-GMN2D-PREFKBN
+                   MOVE    SPA-GMN2D-PREFKBN-LST (IDX)
+                                           TO  SPA-GMN2D-PREFKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0033"              TO  SPA-ERRCD
+               MOVE    13                  TO  SPA-GMN2D-CUR
+           END-IF
       *
       *
            .
@@ -1663,8 +1682,25 @@
       *****************************************************************
        4101-CITYKBN-CHK-SEC           SECTION.
       *
-      *    MOVE    P02D-CITYKBN        TO  SPA-GMN2D-CITYKBN-G
+           IF      SPA-GMN2D-CITYKBN-G     =   SPACE
+               GO      TO      4101-CITYKBN-CHK-EXT
+           END-IF
       *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN2D-CITYKBN-MAX
+               IF      SPA-GMN2D-CITYKBN-LST(IDX) (1:1)
+                                           =   SPA-GMN2D-CITYKBN
+                   MOVE    SPA-GMN2D-CITYKBN-LST (IDX)
+                                           TO  SPA-GMN2D-CITYKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0032"              TO  SPA-ERRCD
+               MOVE    15                  TO  SPA-GMN2D-CUR
+           END-IF
       *
            .
        4101-CITYKBN-CHK-EXT.
@@ -1715,6 +1751,27 @@
       *    MOVE    P02D-SONSHOUKBN     TO  SPA-GMN2D-SONSHOUKBN-G
       *
       *    MOVE    18                  TO  SPA-GMN2D-CUR
+           IF      SPA-GMN2D-SONSHOUKBN-G  =   SPACE
+               GO      TO      4101-SONSHOUKBN-CHK-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN2D-SONSHOUKBN-MAX) OR
+                              (FLG-OK  =   1    )
+               IF     (SPA-GMN2D-SONSHOUKBN-LST(IDX) (1:2)
+                                           =   SPA-GMN2D-SONSHOUKBN) AND
+                      (SPA-GMN2D-SONSHOUKBN-LST(IDX) (4:1)
+                                           =   SPA-GMN2D-SONSHOUKBNEDA)
+                   MOVE    SPA-GMN2D-SONSHOUKBN-LST (IDX)
+                                           TO  SPA-GMN2D-SONSHOUKBN-G
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0034"              TO  SPA-ERRCD
+               MOVE    17                  TO  SPA-GMN2D-CUR
+           END-IF
       *
            .
        4101-SONSHOUKBN-CHK-EXT.
@@ -2379,6 +2436,15 @@
                                                TO  SPA-ERRMSG
                WHEN    "0031"
                    MOVE    "傷病の部位は全角で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0032"
+                   MOVE    "郡市区がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0033"
+                   MOVE    "都道府県がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0034"
+                   MOVE    "損傷区分がありません。"
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *
