@@ -3378,6 +3378,9 @@
       <attribute name="dnode_path">
         <string>#PTNUM2#</string>
       </attribute>
+      <attribute name="embed_text_column">
+        <int val="10"/>
+      </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
       </attribute>
