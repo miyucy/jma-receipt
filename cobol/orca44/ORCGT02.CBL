@@ -653,22 +653,24 @@
       *                                     
            MOVE    3                   TO  SPA-GMN-T02-CUR
       *
-           MOVE    ZERO                TO  SPA-NAI-T02-SELNUM2
+           INITIALIZE                      SPA-GMN-T02-KOUMOKU2
+                                           SPA-NAI-T02-KOUMOKU2
       *
            MOVE    T02-SELNUM2         TO  SPA-GMN-T02-SELNUM2
       *
            IF      SPA-GMN-T02-SELNUM2 =   ZERO
                MOVE    4                   TO  SPA-GMN-T02-CUR
            ELSE  
-               COMPUTE WRK-SELNUM      =   SPA-GMN-T02-SELNUM2
-                                       - ( SPA-GMN-T02-PAGE    -   1 )
-                                           *   WRK-CONS-PARALST-MAX
-               IF    ( WRK-SELNUM          >   SPA-GMN-T02-PARA-MAX )
-               OR    ( WRK-SELNUM          <   1                    )
+               PERFORM VARYING IDX    FROM    1   BY  1
+                       UNTIL   IDX    >   WRK-CONS-PARALST-MAX
+                   IF      SPA-GMN-T02-SELNUM2
+                                      =   SPA-GMN-T02-TRENNUM2 (IDX)
+                       MOVE    IDX             TO  SPA-NAI-T02-SELNUM2
+                       PERFORM 410021-PARALST-SELECT-SEC
+                   END-IF
+               END-PERFORM
+               IF          SPA-NAI-T02-SELNUM2 =   ZERO
                    MOVE    "0009"              TO  SPA-ERRCD
-               ELSE
-                   MOVE    WRK-SELNUM      TO  SPA-NAI-T02-SELNUM2
-                   PERFORM 410021-PARALST-SELECT-SEC
                END-IF
            END-IF
            .
@@ -826,7 +828,7 @@
                                                   SPA-NAI-T02-PARA-TBL 
                        MOVE    1                  TO  SPA-GMN-T02-CUR
                    ELSE
-                       MOVE    3                  TO  SPA-GMN-T02-CUR
+                       MOVE    4                  TO  SPA-GMN-T02-CUR
                    END-IF
                END-IF
            END-IF
@@ -973,6 +975,7 @@
            END-IF
       *   
       *    パラメタ入力チェック
+           MOVE    SPA-GMN-T02-PARA    TO  T02-PARA
            PERFORM 41003-PARA-CHK-SEC
            IF      SPA-ERRCD    NOT =   SPACE
                GO  TO  420-TUIKA-EXT
@@ -1026,7 +1029,7 @@
                MOVE    SPA-GMN-T02-PARA-MAX
                                         TO  T02-PARALST-ROW
       *
-               MOVE    3                TO  SPA-GMN-T02-CUR  
+               MOVE    4                TO  SPA-GMN-T02-CUR  
            END-IF
       *
            .
@@ -1060,6 +1063,7 @@
            END-IF
       *   
       *    パラメタ入力チェック
+           MOVE    SPA-GMN-T02-PARA    TO  T02-PARA
            PERFORM 41003-PARA-CHK-SEC
            IF      SPA-ERRCD    NOT =   SPACE
                GO  TO  430-HENKOU-EXT
@@ -1113,7 +1117,7 @@
                MOVE    SPA-NAI-T02-SELNUM2 TO  IDX
                PERFORM 4201-INTBL-SET-SEC
       *
-               MOVE    3                   TO  SPA-GMN-T02-CUR
+               MOVE    4                   TO  SPA-GMN-T02-CUR
            END-IF  
       *
           .
@@ -1164,7 +1168,7 @@
                                            TO  MCP-PATH
                PERFORM 4100111-SHELLID-LST-SEC
       *
-               MOVE    3                   TO  SPA-GMN-T02-CUR
+               MOVE    4                   TO  SPA-GMN-T02-CUR
            END-IF
       *
           .
@@ -1479,16 +1483,14 @@
                WHEN    "0002"
                    MOVE    "これ以上追加できません"    TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE
-                       "保険者番号入力エラー"          TO  SPA-ERRMSG
+                   MOVE    "保険者番号入力エラー"      TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE    "処理区分入力エラー"        TO  SPA-ERRMSG
                WHEN    "0005"
                    MOVE    "対象の処理が選択してありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE
-                       "パラメタが選択してありますので追加できません"
+                   MOVE    "項目が選択してありますので追加できません"
                                                        TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "既に入力済です"            TO  SPA-ERRMSG
@@ -1513,7 +1515,10 @@
                                                        TO  SPA-ERRMSG
                WHEN    "0014"
                    MOVE
-                       "パラメタの入力中です"         TO  SPA-ERRMSG
+                       "パラメタの入力中です"          TO  SPA-ERRMSG
+               WHEN    "0015" 
+                   MOVE
+                       "パラメタが未入力です"          TO  SPA-ERRMSG
                WHEN    "1002"
                    MOVE    "パラメタＤＢの追加処理でエラーとなりました" 
                                                        TO  SPA-ERRMSG
