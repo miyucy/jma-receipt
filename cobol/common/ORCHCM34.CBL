@@ -868,7 +868,9 @@
       *    診療行為編集処理
            PERFORM 2001-SRYACT-HEN-SEC
       *
-           IF    ( CNT-SRYACT-LINE >   ZERO )
+           IF    ( CNT-PAGE        =   ZERO )
+            OR   (   ( CNT-PAGE        >   ZERO )
+                AND  ( CNT-SRYACT-LINE >   ZERO ))
                PERFORM 290-PRINT-SEC
            END-IF
       *
@@ -1464,7 +1466,7 @@
       *
            MOVE    PTBYO-SRYKA             TO  SRH-SRYKA
            PERFORM 200111-SRYKA-HEN-SEC
-           MOVE    SRH-SRYKAMEI3           TO  HCM341-BYOSRYKA (IDXA)
+           MOVE    SRH-SRYKAMEI2(1:4)      TO  HCM341-BYOSRYKA (IDXA)
       *
            IF    ( PTBYO-SYUBYOFLG         =   "1" )
                MOVE    "主"                TO  HCM341-SYUBYO (IDXA)
@@ -2597,14 +2599,14 @@
       *
            MOVE    PTBYO-SRYKA             TO  SRH-SRYKA
            PERFORM 200111-SRYKA-HEN-SEC
-           IF    ( SRH-SRYKAMEI3      NOT  =   SPACE )
-               STRING  SRH-SRYKAMEI3(1:2)  DELIMITED   BY  SIZE
+           IF    ( SRH-SRYKAMEI2      NOT  =   SPACE )
+               STRING  SRH-SRYKAMEI2(1:4)  DELIMITED   BY  SIZE
                        "　"                DELIMITED   BY  SIZE
                INTO    WRK-SRYACT-STR
                WITH    POINTER WRK-PNT
                END-STRING
            ELSE
-               STRING  "　　"              DELIMITED   BY  SIZE
+               STRING  "　　　"            DELIMITED   BY  SIZE
                INTO    WRK-SRYACT-STR
                WITH    POINTER WRK-PNT
                END-STRING
@@ -2780,7 +2782,7 @@
       *
            COMPUTE WRK-PNT =   CONST-SRYACT-LEN    -   WRK-STRLEN
            IF    ( CONST-SRYACT-LEN    -  ( WRK-SRYACT-PNT -   1 )
-                                       >=  WRK-STRLEN )
+                                       >=  WRK-STRLEN + 2 )
                MOVE    ALL "　"        TO  WRK-STR (1:WRK-PNT)
                STRING  WRK-SRYACT (WRK-SRYACT-MAX)
                                            DELIMITED   BY  SPACE

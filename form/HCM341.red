@@ -136,12 +136,12 @@
     <element name="BYOMEIAREA" occurs="10">
       <element name="BYOMEI" occurs="1">
         <appinfo>
-          <embed object="string" length="54"/>
+          <embed object="string" length="52"/>
         </appinfo>
       </element>
       <element name="BYOSRYKA" occurs="1">
         <appinfo>
-          <embed object="string" length="2"/>
+          <embed object="string" length="4"/>
         </appinfo>
       </element>
       <element name="SYUBYO" occurs="1">
@@ -1049,14 +1049,14 @@
     </object>
     <object type="Standard - Line" version="0" id="O37">
       <attribute name="obj_pos">
-        <point val="8.6,4.6"/>
+        <point val="8.3,4.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.595,4.595;8.605,6.605"/>
+        <rectangle val="8.295,4.595;8.305,6.605"/>
       </attribute>
       <attribute name="conn_endpoints">
-        <point val="8.6,4.6"/>
-        <point val="8.6,6.6"/>
+        <point val="8.3,4.6"/>
+        <point val="8.3,6.6"/>
       </attribute>
       <attribute name="numcp">
         <int val="0"/>
@@ -1121,14 +1121,14 @@
     </object>
     <object type="Standard - Line" version="0" id="O41">
       <attribute name="obj_pos">
-        <point val="21.4,4.6"/>
+        <point val="21.1,4.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="21.395,4.595;21.405,6.605"/>
+        <rectangle val="21.095,4.595;21.105,6.605"/>
       </attribute>
       <attribute name="conn_endpoints">
-        <point val="21.4,4.6"/>
-        <point val="21.4,6.6"/>
+        <point val="21.1,4.6"/>
+        <point val="21.1,6.6"/>
       </attribute>
       <attribute name="numcp">
         <int val="0"/>
@@ -2853,24 +2853,24 @@
     </object>
     <object type="Standard - Text" version="0" id="O122">
       <attribute name="obj_pos">
-        <point val="8.7,4.9"/>
+        <point val="8.35,4.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.7,4.66857;9.00603,4.96857"/>
+        <rectangle val="8.35,4.70714;9.11507,4.95714"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#178;&#202;#</string>
+            <string>#&#191;&#199;&#206;&#197;&#178;&#202;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.25"/>
           </attribute>
           <attribute name="pos">
-            <point val="8.7,4.9"/>
+            <point val="8.35,4.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2879,10 +2879,10 @@
             <enum val="0"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1818"/>
+            <real val="0.1515"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.127513"/>
           </attribute>
         </composite>
       </attribute>
@@ -2997,24 +2997,24 @@
     </object>
     <object type="Standard - Text" version="0" id="O126">
       <attribute name="obj_pos">
-        <point val="21.5,4.9"/>
+        <point val="21.15,4.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="21.5,4.66857;21.806,4.96857"/>
+        <rectangle val="21.15,4.70714;21.9151,4.95714"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#178;&#202;#</string>
+            <string>#&#191;&#199;&#206;&#197;&#178;&#202;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.25"/>
           </attribute>
           <attribute name="pos">
-            <point val="21.5,4.9"/>
+            <point val="21.15,4.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3023,10 +3023,10 @@
             <enum val="0"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1818"/>
+            <real val="0.1515"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.127513"/>
           </attribute>
         </composite>
       </attribute>
@@ -7897,218 +7897,216 @@
         </attribute>
       </object>
     </group>
-    <group>
-      <object type="Embed - Text" version="0" id="O249">
-        <attribute name="obj_pos">
-          <point val="8.7,5.3"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="8.7,5.06857;9.00603,5.36857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[0].BYOSRYKA#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#198;&#226;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="8.7,5.3"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="Embed - Text" version="0" id="O250">
-        <attribute name="obj_pos">
-          <point val="8.7,5.6"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="8.7,5.36857;9.00603,5.66857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[1].BYOSRYKA#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#198;&#226;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="8.7,5.6"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="Embed - Text" version="0" id="O251">
-        <attribute name="obj_pos">
-          <point val="8.7,5.9"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="8.7,5.66857;9.00603,5.96857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[2].BYOSRYKA#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#198;&#226;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="8.7,5.9"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="Embed - Text" version="0" id="O252">
-        <attribute name="obj_pos">
-          <point val="8.7,6.2"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="8.7,5.96857;9.00603,6.26857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[3].BYOSRYKA#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#198;&#226;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="8.7,6.2"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="Embed - Text" version="0" id="O253">
-        <attribute name="obj_pos">
-          <point val="8.7,6.5"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="8.7,6.26857;9.00603,6.56857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[4].BYOSRYKA#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#198;&#226;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="8.7,6.5"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-    </group>
+    <object type="Embed - Text" version="0" id="O249">
+      <attribute name="obj_pos">
+        <point val="8.4,5.3"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="8.4,5.06857;9.01206,5.36857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[0].BYOSRYKA#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#198;&#226;&#178;&#202;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="8.4,5.3"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O250">
+      <attribute name="obj_pos">
+        <point val="8.4,5.6"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="8.4,5.36857;9.01206,5.66857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[1].BYOSRYKA#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#198;&#226;&#178;&#202;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="8.4,5.6"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O251">
+      <attribute name="obj_pos">
+        <point val="8.4,5.9"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="8.4,5.66857;9.01206,5.96857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[2].BYOSRYKA#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#198;&#226;&#178;&#202;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="8.4,5.9"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O252">
+      <attribute name="obj_pos">
+        <point val="8.4,6.2"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="8.4,5.96857;9.01206,6.26857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[3].BYOSRYKA#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#198;&#226;&#178;&#202;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="8.4,6.2"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O253">
+      <attribute name="obj_pos">
+        <point val="8.4,6.5"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="8.4,6.26857;9.01206,6.56857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[4].BYOSRYKA#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#198;&#226;&#178;&#202;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="8.4,6.5"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
     <group>
       <object type="Embed - Text" version="0" id="O254">
         <attribute name="obj_pos">
@@ -8538,7 +8536,7 @@
         <point val="13.2,5.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.2,5.06857;21.4628,5.36857"/>
+        <rectangle val="13.2,5.06857;21.1568,5.36857"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#BYOMEIAREA[5].BYOMEI#</string>
@@ -8549,7 +8547,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;&#164;&#210;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -8580,7 +8578,7 @@
         <point val="13.2,5.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.2,5.36857;21.4628,5.66857"/>
+        <rectangle val="13.2,5.36857;21.1568,5.66857"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#BYOMEIAREA[6].BYOMEI#</string>
@@ -8591,7 +8589,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;&#164;&#210;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -8622,7 +8620,7 @@
         <point val="13.2,5.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.2,5.66857;21.4628,5.96857"/>
+        <rectangle val="13.2,5.66857;21.1568,5.96857"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#BYOMEIAREA[7].BYOMEI#</string>
@@ -8633,7 +8631,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;&#164;&#210;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -8664,7 +8662,7 @@
         <point val="13.2,6.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.2,5.96857;21.4628,6.26857"/>
+        <rectangle val="13.2,5.96857;21.1568,6.26857"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#BYOMEIAREA[8].BYOMEI#</string>
@@ -8675,7 +8673,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;&#164;&#210;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -8706,7 +8704,7 @@
         <point val="13.2,6.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.2,6.26857;21.4628,6.56857"/>
+        <rectangle val="13.2,6.26857;21.1568,6.56857"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#BYOMEIAREA[9].BYOMEI#</string>
@@ -8717,7 +8715,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;&#164;&#210;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -9167,218 +9165,216 @@
         </attribute>
       </object>
     </group>
-    <group>
-      <object type="Embed - Text" version="0" id="O279">
-        <attribute name="obj_pos">
-          <point val="21.5,5.3"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="21.5,5.06857;21.806,5.36857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[5].BYOSRYKA#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#198;&#226;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="21.5,5.3"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="Embed - Text" version="0" id="O280">
-        <attribute name="obj_pos">
-          <point val="21.5,5.6"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="21.5,5.36857;21.806,5.66857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[6].BYOSRYKA#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#198;&#226;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="21.5,5.6"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="Embed - Text" version="0" id="O281">
-        <attribute name="obj_pos">
-          <point val="21.5,5.9"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="21.5,5.66857;21.806,5.96857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[7].BYOSRYKA#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#198;&#226;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="21.5,5.9"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="Embed - Text" version="0" id="O282">
-        <attribute name="obj_pos">
-          <point val="21.5,6.2"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="21.5,5.96857;21.806,6.26857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[8].BYOSRYKA#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#198;&#226;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="21.5,6.2"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="Embed - Text" version="0" id="O283">
-        <attribute name="obj_pos">
-          <point val="21.5,6.5"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="21.5,6.26857;21.806,6.56857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[9].BYOSRYKA#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#198;&#226;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="21.5,6.5"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-    </group>
+    <object type="Embed - Text" version="0" id="O279">
+      <attribute name="obj_pos">
+        <point val="21.2,5.3"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="21.2,5.06857;21.8121,5.36857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[5].BYOSRYKA#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#198;&#226;&#178;&#202;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="21.2,5.3"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O280">
+      <attribute name="obj_pos">
+        <point val="21.2,5.6"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="21.2,5.36857;21.8121,5.66857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[6].BYOSRYKA#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#198;&#226;&#178;&#202;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="21.2,5.6"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O281">
+      <attribute name="obj_pos">
+        <point val="21.2,5.9"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="21.2,5.66857;21.8121,5.96857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[7].BYOSRYKA#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#198;&#226;&#178;&#202;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="21.2,5.9"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O282">
+      <attribute name="obj_pos">
+        <point val="21.2,6.2"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="21.2,5.96857;21.8121,6.26857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[8].BYOSRYKA#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#198;&#226;&#178;&#202;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="21.2,6.2"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O283">
+      <attribute name="obj_pos">
+        <point val="21.2,6.5"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="21.2,6.26857;21.8121,6.56857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[9].BYOSRYKA#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#198;&#226;&#178;&#202;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="21.2,6.5"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
     <group>
       <object type="Embed - Text" version="0" id="O284">
         <attribute name="obj_pos">
@@ -9591,218 +9587,216 @@
         </attribute>
       </object>
     </group>
-    <group>
-      <object type="Embed - Text" version="0" id="O289">
-        <attribute name="obj_pos">
-          <point val="0.4,5.3"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="0.4,5.06857;8.66281,5.36857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[0].BYOMEI#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;&#164;&#210;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="0.4,5.3"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="Embed - Text" version="0" id="O290">
-        <attribute name="obj_pos">
-          <point val="0.4,5.6"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="0.4,5.36857;8.66281,5.66857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[1].BYOMEI#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;&#164;&#210;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="0.4,5.6"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="Embed - Text" version="0" id="O291">
-        <attribute name="obj_pos">
-          <point val="0.4,5.9"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="0.4,5.66857;8.66281,5.96857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[2].BYOMEI#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;&#164;&#210;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="0.4,5.9"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="Embed - Text" version="0" id="O292">
-        <attribute name="obj_pos">
-          <point val="0.4,6.2"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="0.4,5.96857;8.66281,6.26857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[3].BYOMEI#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;&#164;&#210;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="0.4,6.2"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="Embed - Text" version="0" id="O293">
-        <attribute name="obj_pos">
-          <point val="0.4,6.5"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="0.4,6.26857;8.66281,6.56857"/>
-        </attribute>
-        <attribute name="dnode_path">
-          <string>#BYOMEIAREA[4].BYOMEI#</string>
-        </attribute>
-        <attribute name="embed_text_string">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;&#164;&#210;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.3"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="0.4,6.5"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-            <attribute name="single">
-              <real val="0.1818"/>
-            </attribute>
-            <attribute name="multi">
-              <real val="0.153015"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-    </group>
+    <object type="Embed - Text" version="0" id="O289">
+      <attribute name="obj_pos">
+        <point val="0.4,5.3"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="0.4,5.06857;8.35678,5.36857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[0].BYOMEI#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="0.4,5.3"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O290">
+      <attribute name="obj_pos">
+        <point val="0.4,5.6"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="0.4,5.36857;8.35678,5.66857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[1].BYOMEI#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="0.4,5.6"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O291">
+      <attribute name="obj_pos">
+        <point val="0.4,5.9"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="0.4,5.66857;8.35678,5.96857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[2].BYOMEI#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="0.4,5.9"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O292">
+      <attribute name="obj_pos">
+        <point val="0.4,6.2"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="0.4,5.96857;8.35678,6.26857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[3].BYOMEI#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="0.4,6.2"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O293">
+      <attribute name="obj_pos">
+        <point val="0.4,6.5"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="0.4,6.26857;8.35678,6.56857"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BYOMEIAREA[4].BYOMEI#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;&#164;&#207;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="0.4,6.5"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.153015"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
     <group>
       <object type="Embed - Text" version="0" id="O294">
         <attribute name="obj_pos">
