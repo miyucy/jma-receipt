@@ -55,9 +55,9 @@
       *
       *
        01  WRK-AREA.
-           03  WRK-SRYYMD.
-               05  WRK-SRYYM           PIC 9(06).
-               05  WRK-SRYDD           PIC 9(02).  
+           03  WRK-SYSYMD-8.
+               05  WRK-SYSYY           PIC 9(02).
+               05  WRK-SYSYMD          PIC 9(06).  
       *シェルＩＤ
            03  WRK-SHELLID             PIC X(08).
       *
@@ -161,7 +161,8 @@
       *****************************************************************
        110-JBS-SEC                 SECTION.
       *
-           ACCEPT  JOB-STARTYMD        FROM DATE
+           PERFORM 500-SYSYMD-HENSYU-SEC
+           MOVE    WRK-SYSYMD-8        TO  JOB-STARTYMD
            ACCEPT  JOB-STARTTIME       FROM TIME
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
@@ -210,7 +211,8 @@
            END-IF
       *
       *    レコード更新
-           ACCEPT  WRK-JOB-ENDYMD      FROM DATE
+           PERFORM 500-SYSYMD-HENSYU-SEC
+           MOVE    WRK-SYSYMD-8        TO  WRK-JOB-ENDYMD
            ACCEPT  WRK-JOB-ENDTIME     FROM TIME
            MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
            MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
@@ -494,7 +496,8 @@
            END-IF
       *
       *    レコード更新
-           ACCEPT  WRK-JOB-ENDYMD      FROM DATE
+           PERFORM 500-SYSYMD-HENSYU-SEC
+           MOVE    WRK-SYSYMD-8        TO  WRK-JOB-ENDYMD
            ACCEPT  WRK-JOB-ENDTIME     FROM TIME
            MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
            MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
@@ -518,6 +521,17 @@
        200-CANCEL-EXT.
            EXIT.
       * 
+      *****************************************************************
+      *    システム日付編集処理
+      *****************************************************************
+       500-SYSYMD-HENSYU-SEC       SECTION.
+      *
+           ACCEPT  WRK-SYSYMD          FROM DATE
+           MOVE    "20"                TO  WRK-SYSYY
+      *
+           .
+       500-SYSYMD-HENSYU-EXT.
+           EXIT.
       * 
       *****************************************************************
       *    ジョブ管理マスタ読込

@@ -1660,6 +1660,9 @@
                                "Ëç¤Ç¤¹"         DELIMITED  BY  SIZE
                                                 INTO  R99-MSG
                            END-STRING
+                           IF      JOB-STOPFLG     =   ZERO
+                               MOVE    WIDGET-NORMAL   TO  R99-B21-STATE
+                           END-IF
                        END-IF
                    END-IF
                    MOVE   100                   TO

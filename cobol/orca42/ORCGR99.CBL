@@ -259,7 +259,9 @@
                                    JOBKANRI-REC 
            IF    ( SJOBKANRI-RETURN
                                    =   ZERO  )
-           AND   ( JOB-ENDYMD      =   SPACE )
+             IF    ( SPA-R01-GMNKBN  =   "R02"  OR  "R04"           )
+             OR    ((SPA-R01-GMNKBN  NOT =   "R02"  OR  "R04" ) AND
+                    ( JOB-ENDYMD         =   SPACE            )     )
       *        ジョブ管理終了処理
                MOVE    "STP"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
@@ -458,6 +460,10 @@
                                    "枚です"         DELIMITED  BY  SIZE
                                                     INTO  R99-MSG
                                END-STRING
+                               IF      JOB-STOPFLG     =   ZERO
+                                   MOVE    WIDGET-NORMAL
+                                                       TO  R99-B21-STATE
+                               END-IF
                            END-IF
                        END-IF
                    ELSE
