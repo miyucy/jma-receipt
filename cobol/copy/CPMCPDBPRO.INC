@@ -128,6 +128,8 @@
       *  01.00.82    NACL-多々納  02/08/20  TENSU-KEY42K,KEY-42JK8追加
       *  01.00.83    NACL-太田    02/08/22  SYSKANRI-KEY9,KEY10追加
       *  01.00.84    NACL-藤原    02/08/27  BD002-KEY2追加
+      *  01.00.85    NACL-太田    02/09/03  TENSU-KEY13,14追加
+      *  01.00.86    NACL-太田    02/09/03  PTBYOMEI-KEY6追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -983,6 +985,9 @@
                    MOVE    PATH-TBL-PTBYOMEI-KEY5 
                                        TO  WRK-PATH
       *追加/*終了*02.03.19********************************************
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY6"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY6 
+                                       TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "PTBYOMEI-ALL"
                    MOVE    PATH-TBL-PTBYOMEI-ALL
@@ -1365,6 +1370,14 @@
                    PERFORM 2001-SEL-TENSU-REC
                WHEN    ANY             ALSO   "TENSU-KEY12M1"
                    MOVE    PATH-TBL-TENSU-KEY12M1
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY13"
+                   MOVE    PATH-TBL-TENSU-KEY13
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY14"
+                   MOVE    PATH-TBL-TENSU-KEY14
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-TENSU-REC
                WHEN    ANY             ALSO   "TENSU-UPD1"
