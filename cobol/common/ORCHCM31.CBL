@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    NACL-森脇    03.03.18  出力先プリンタの変更
       *  01.01.02    NACL-森脇    03/07/15  出力先プリンタサブ追加
+      *  02.01.01    NACL-森脇    03/12/10  出力条件修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -559,6 +560,11 @@
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYUNOU-REC
+      *----(02.01.01)--ADD-START---
+               IF      SYU-DENPJTIKBN      =   "3"
+                   GO  TO  900-SYUNOU-FETCH-SEC
+               END-IF
+      *----(02.01.01)--ADD-END-----
                MOVE    ZERO            TO  FLG-SYUNOU
            ELSE
                MOVE    1               TO  FLG-SYUNOU
