@@ -2367,8 +2367,7 @@
       *入返金額
            MOVE    ZERO                TO  SMEI-NYUHEN-MONEY
       *入返金日
-           MOVE    SPA-NAI-I04-TAIINYMD
-                                       TO  SMEI-NYUHEN-YMD
+           MOVE    SPA-SYSYMD          TO  SMEI-NYUHEN-YMD
       *入金方法
            MOVE    "00"                TO  SMEI-NYUKIN-HOHO
       *状態区分
@@ -2778,7 +2777,7 @@
       *    伝票状態区分
            MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
       *    請求発行日（発行日の西暦）
-           MOVE    SPA-NAI-I04-TAIINYMD
+           MOVE    SPA-SYSYMD
                                        TO  SMEI-SKYPRINTYMD
       *    請求再発行日
            MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
