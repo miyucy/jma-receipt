@@ -145,10 +145,10 @@
               04  W20-CHK-BTU-HIKSISUKBN-STT
                                            PIC S9(9)   BINARY.
       *
-              04  W20-YUKOSTYMD            PIC X(09).
+              04  W20-YUKOSTYMD            PIC X(10).
               04  W20-YUKOSTYMD-STT        PIC S9(9)   BINARY.
       *
-              04  W20-YUKOEDYMD            PIC X(09).
+              04  W20-YUKOEDYMD            PIC X(10).
               04  W20-YUKOEDYMD-STT        PIC S9(9)   BINARY.
       *
               04  W20-CMB-BTU-EDKBN.

@@ -841,7 +841,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>10</text_max_length>
       <text>99999999</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -869,7 +869,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>10</text_max_length>
       <text>99999999</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>

@@ -40,7 +40,7 @@
               04  W27-EDSELNUM             PIC S9(3).
               04  W27-STBRMNUM             PIC X(6).
               04  W27-EDBRMNUM             PIC X(6).
-              04  W27-KJNYMD               PIC X(9).
+              04  W27-KJNYMD               PIC X(10).
               04  W27-CHK-SINSEIJI         PIC X.
               04  W27-CHK-SNR-RYOYO        PIC X   OCCURS  2.
               04  W27-CHK-HOSYASEN         PIC X.

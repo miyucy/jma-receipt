@@ -147,9 +147,9 @@
                            11  SPA-GMN-W20-CHK-BTU-HIKSIS-STT
                                            PIC S9(9)       BINARY.
       *                    有効開始日
-                           11  SPA-GMN-W20-YUKOSTYMD       PIC X(09).
+                           11  SPA-GMN-W20-YUKOSTYMD       PIC X(10).
       *                    有効終了日
-                           11  SPA-GMN-W20-YUKOEDYMD       PIC X(09).
+                           11  SPA-GMN-W20-YUKOEDYMD       PIC X(10).
       *                    病棟終了区分
                            11  SPA-GMN-W20-BTU-EDKBN.
                                13  SPA-GMN-W20-BTU-EDKBN-CD
@@ -501,9 +501,9 @@
                                13  SPA-GMN-W21-BRM-KA-NM
                                                            PIC X(20).
       *                    有効開始日
-                           11  SPA-GMN-W21-YUKOSTYMD       PIC X(09).
+                           11  SPA-GMN-W21-YUKOSTYMD       PIC X(10).
       *                    有効終了日
-                           11  SPA-GMN-W21-YUKOEDYMD       PIC X(09).
+                           11  SPA-GMN-W21-YUKOEDYMD       PIC X(10).
       *                    選択番号２
                            11  SPA-GMN-W21-SELNUM2         PIC S9(2).
       *                病室情報コンボ領域

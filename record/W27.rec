@@ -42,7 +42,7 @@ W27	{
 			value	varchar(6);
 		};
 		KJNYMD	{
-			value	varchar(9);
+			value	varchar(10);
 		};
 		CHK_SINSEIJI	{
 			value	bool;

@@ -131,7 +131,7 @@
                  11  SPA-GMN-W27-CHK-RYOYO             PIC X.
       *        基準日
                09    SPA-GMN-W27-KJNYMD-AREA.
-                 11  SPA-GMN-W27-KJNYMD                PIC X(09).
+                 11  SPA-GMN-W27-KJNYMD                PIC X(10).
                  11  SPA-GMN-W27-KJNYMD-S              PIC X(08).
       *        病室情報リスト領域
                09  SPA-GMN-W27-BRMLST-AREA.

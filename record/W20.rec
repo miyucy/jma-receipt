@@ -127,11 +127,11 @@ W20	{
 			state	int;
 		};
 		YUKOSTYMD	{
-			value	varchar(9);
+			value	varchar(10);
 			state	int;
 		};
 		YUKOEDYMD	{
-			value	varchar(9);
+			value	varchar(10);
 			state	int;
 		};
 		CMB_BTU_EDKBN	{

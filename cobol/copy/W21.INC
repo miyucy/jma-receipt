@@ -71,9 +71,9 @@
                 05  W21-BRM-KA-CNT         PIC S9(9)   BINARY.
                 05  W21-BRM-KA-ITM         PIC X(23)   OCCURS  99.
                 05  W21-BRM-KA-ITM-STT     PIC S9(9)   BINARY.
-              04  W21-YUKOSTYMD            PIC X(9).
+              04  W21-YUKOSTYMD            PIC X(10).
               04  W21-YUKOSTYMD-STT        PIC S9(9)   BINARY.
-              04  W21-YUKOEDYMD            PIC X(9).
+              04  W21-YUKOEDYMD            PIC X(10).
               04  W21-YUKOEDYMD-STT        PIC S9(9)   BINARY.
               04  W21-SELNUM2              PIC S9(2).
               04  W21-SCROLLEDWINDOW28.
