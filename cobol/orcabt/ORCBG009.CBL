@@ -31,6 +31,7 @@
       * 01.01.02     NACL-¿¹ÏÆ     03/08/26  »ÈÍÑÎÌ¥«¥¦¥ó¥È¹½À®ÊÑ¹¹
       * 01.01.03     NACL-¿¹ÏÆ     03/08/27  ´µ¼Ô»ØÄê»þ½¤Àµ
       * 01.02.01     NACL-¿¹ÏÆ     04/01/23  Êñ³çÊ¬ÆÉ¤ßÈô¤Ð¤·
+      * 01.02.02     NACL-¿¹ÏÆ     04/08/31  ¾ò·ï½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -619,7 +620,13 @@
       *
       *        ÀÁµá´ÉÍý¾ðÊó¥»¥Ã¥È
                PERFORM UNTIL   FLG-SEIKYU      =   1
-                   IF          RECE10-TOTALTEN(1)  >=  WRK-NAIYO
+      *----(01.02.02)--UPD-START---
+                   IF    ( RECE10-TOTALTEN(1)  >=  WRK-NAIYO ) OR
+                         ( RECE10-TOTALTEN(2)  >=  WRK-NAIYO ) OR
+                         ( RECE10-TOTALTEN(3)  >=  WRK-NAIYO ) OR
+                         ( RECE10-TOTALTEN(4)  >=  WRK-NAIYO ) OR
+                         ( RECE10-TOTALTEN(5)  >=  WRK-NAIYO )
+      *----(01.02.02)--UPD-END-----
                        INITIALIZE                  SRYACCT-REC
                        MOVE    RECE10-HOSPID       TO  ACCT-HOSPID
                        MOVE    RECE10-NYUGAIKBN    TO  ACCT-NYUGAIKBN
