@@ -101,14 +101,14 @@
       *
            03  WRK-DD              PIC 9(02).
       *
-           03  WRK-TENSU           PIC 9(07).
+           03  WRK-TENSU           PIC 9(07)V9(04).
            03  WRK-SURYO-9         PIC 9(07).
            03  WRK-SURYO           PIC 9(07)V9(03).
            03  WRK-HAIKI-SURYO     PIC 9(07)V9(03).
            03  WRK-EKIRYOU         PIC 9(07)V9(03).
       *
            03  WRK-TENSU-KEI       PIC 9(07)V9(04).
-           03  WRK-SYOKEIS2        PIC 9(08)V9(03).
+           03  WRK-SYOKEIS2        PIC 9(08)V9(04).
            03  WRK-TENSU-GOK       PIC 9(08)V9(03).
       *
            03  WRK-SRYCD               PIC X(08).
@@ -985,7 +985,7 @@
                                                +   1
                    END-IF
                    COMPUTE WRK-TENSU           =   WRK-SYOKEIS2
-                                               +  0.999
+                                               +  0.9999
                    MOVE    WRK-TENSU           TO  ORCSTEN-ZAITEN
                                                            (IDX-D)
                ELSE
