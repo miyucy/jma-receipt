@@ -154,6 +154,8 @@
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
       *
+           03  WRK-ERRCD           PIC X(04).
+      *
            03  WRK-UKEID           PIC 9(04).
            03  WRK-HKN-CNT         PIC 9(04).
            03  WRK-KOH-CNT         PIC 9(04).
@@ -324,14 +326,17 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+      *    患者番号情報更新
+           PERFORM 280-PTNUM-SYORI-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      200-MAIN-EXT
+           END-IF
+      *
       *    患者情報更新
            PERFORM 210-PTINF-SYORI-SEC
       *
       *    旧姓履歴更新
            PERFORM 260-KYUSEIRRK-SYORI-SEC
-      *
-      *    患者番号情報更新
-           PERFORM 280-PTNUM-SYORI-SEC
       *
       *    公費負担額
            INITIALIZE                      PTKOHFTN-REC
@@ -408,6 +413,10 @@
       *    カルテ／処方箋発行処理
            PERFORM 2100-HC01-SYORI-SEC
       *
+           IF      WRK-ERRCD       NOT =   SPACE
+               MOVE    WRK-ERRCD           TO  SPA-ERRCD
+           END-IF
+      *
            .
        200-MAIN-EXT.
            EXIT.
@@ -444,6 +453,7 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTINF INS ERR:" MCP-RC
+                           ",KEY:" PTINF-KEY
                END-IF
            ELSE
                MOVE    MCPDATA-REC         TO  PTINF-REC
@@ -461,6 +471,7 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTINF UPD ERR:" MCP-RC
+                           ",KEY:" PTINF-KEY
                END-IF
            END-IF
            .
@@ -540,6 +551,7 @@
       *
            MOVE    PARA-DATA-REC       TO  PTHKNINF-REC
       *
+           MOVE    SPA-GMN-PTID        TO  PTHKN-PTID
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            PERFORM 910-PTHKNINF-READ-SEC
       *
@@ -553,7 +565,8 @@
                                             MCPDATA-REC
              IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTHKNINF INS ERR:" MCP-RC 
-                           ",PTHKN-KEY:" PTHKN-TEKSTYMD
+                           ",PTHKN-KEY:" PTHKN-KEY
+                           ",PTHKN-TEKSTYMD:" PTHKN-TEKSTYMD
                END-IF
            ELSE
                MOVE    PTHKNINF-REC        TO  MCPDATA-REC
@@ -565,7 +578,8 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTHKNINF UPD ERR:" MCP-RC
-                           ",PTHKN-KEY:" PTHKN-TEKSTYMD
+                           ",PTHKN-KEY:" PTHKN-KEY
+                           ",PTHKN-TEKSTYMD:" PTHKN-TEKSTYMD
                END-IF
            END-IF
            .
@@ -578,10 +592,12 @@
       *
            MOVE    PARA-DATA-REC        TO  PTKOHINF-REC
       *
+           MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            PERFORM 920-PTKOHINF-READ-SEC
       *
            IF      FLG-PTKOHINF        =   1
+               MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
@@ -591,6 +607,7 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTKOHINF INS ERR:" MCP-RC
+                           ",KEY:" PTKOH-KEY
                END-IF
            ELSE
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
@@ -602,6 +619,7 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTKOHINF UPD ERR:" MCP-RC
+                           ",KEY:" PTKOH-KEY
                END-IF
            END-IF
       *
@@ -617,7 +635,8 @@
       *****************************************************************
        2301-MONTHLYNUM-SYORI-SEC        SECTION.
       *
-           MOVE    PARA-DATA-REC        TO  PTKOHINF-REC
+           MOVE    PARA-DATA-REC       TO  PTKOHINF-REC
+           MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
       *
       *    編集
            MOVE    SPACE               TO  MONTHLYNUM-REC
@@ -652,6 +671,10 @@
                                                    MCPAREA
                                                    ORCMCPAREA
                                                    MCPDATA-REC
+                       IF      MCP-RC          NOT =   ZERO
+                            DISPLAY "P029 MONTHLYNUM UPD ERR:" MCP-RC
+                                   ",KEY:" MONTHLYNUM-KEY
+                       END-IF
                    END-IF
                END-IF
            ELSE
@@ -675,6 +698,10 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                    DISPLAY "P029 MONTHLYNUM INS ERR:" MCP-RC
+                                   ",KEY:" MONTHLYNUM-KEY
+               END-IF
            END-IF
       *
       *
@@ -695,6 +722,7 @@
                MOVE    UKE-DRCD            TO  SPA-DRCD
            END-IF
       *
+           MOVE    SPA-GMN-PTID        TO  UKE-PTID
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
            PERFORM 930-UKETUKE-READ-SEC
@@ -717,6 +745,11 @@
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC
+                   IF      MCP-RC          NOT =   ZERO
+                       DISPLAY "P029 UKETUKE UPD ERR:" MCP-RC 
+                               ",KEY:"  UKE-KEY
+                       MOVE    "0030"          TO  SPA-ERRCD
+                   END-IF
                ELSE
                    INITIALIZE                  UKETUKE-REC
                    MOVE    SPA-HOSPID          TO  UKE-HOSPID
@@ -734,11 +767,13 @@
                                                 MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "P029 UKETUKE INS ERR:" MCP-RC 
+                               ",KEY:"  UKE-KEY
                        MOVE    "0030"          TO  SPA-ERRCD
                    END-IF
                END-IF
       *
-               MOVE    PARA-DATA-REC        TO  UKETUKE-REC
+               MOVE    PARA-DATA-REC       TO  UKETUKE-REC
+               MOVE    SPA-GMN-PTID        TO  UKE-PTID
                MOVE    WRK-UKEID           TO  UKE-UKEID
       *
       *
@@ -751,10 +786,12 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 UKETUKE INS ERR:" MCP-RC
+                               ",KEY:"  UKE-KEY
                    MOVE    "0030"          TO  SPA-ERRCD
                END-IF
            ELSE
-               MOVE    PARA-DATA-REC        TO  UKETUKE-REC
+               MOVE    PARA-DATA-REC       TO  UKETUKE-REC
+               MOVE    SPA-GMN-PTID        TO  UKE-PTID
       *
                IF      UKE-UPYMD       =   ALL "9"
       *            削除
@@ -767,6 +804,7 @@
                                                 MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "P029 UKETUKE UPD ERR:" MCP-RC
+                               ",KEY:"  UKE-KEY
                    END-IF
                ELSE
       *            更新
@@ -779,6 +817,7 @@
                                                 MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "P029 UKETUKE UPD ERR:" MCP-RC
+                               ",KEY:"  UKE-KEY
                        MOVE    "0030"          TO  SPA-ERRCD
                    END-IF
                 END-IF
@@ -862,6 +901,7 @@
       *
            MOVE    PARA-DATA-REC       TO  HKNCOMBI-REC
       *
+           MOVE    SPA-GMN-PTID        TO  COMB-PTID
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            PERFORM 940-HKNCOMBI-READ-SEC
       *    保険変更による受診履歴修正の有無チェック
@@ -884,6 +924,7 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 HKNCOMBI INS ERR:" MCP-RC
+                           ",KEY:" COMB-KEY
                    MOVE    "0030"          TO  SPA-ERRCD
                END-IF
            ELSE
@@ -896,6 +937,7 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 HKNCOMBI UPD ERR:" MCP-RC
+                           ",KEY:" COMB-KEY
                END-IF
            END-IF
            .
@@ -1027,7 +1069,8 @@
                                                ORCMCPAREA
                                                MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
-                          DISPLAY "P029 KYUSEIRRK INS ERR:" MCP-RC
+                       DISPLAY "P029 KYUSEIRRK INS ERR:" MCP-RC
+                               ",KEY:" KYUSEI-KEY
                    END-IF
                END-IF
            END-PERFORM
@@ -1060,6 +1103,55 @@
       *    患者番号変換（管理）マスター処理
       *****************************************************************
        280-PTNUM-SYORI-SEC             SECTION.
+      *
+      *    患者ＩＤ決定
+           IF      SPA-GMN-PTID        =   ZERO
+      *        患者番号採番検索
+               INITIALIZE                  SYS-1009-REC
+               MOVE    "1009"              TO  SYS-1009-KANRICD
+               MOVE    "*"                 TO  SYS-1009-KBNCD
+               MOVE    SYS-1009-REC        TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+                   PERFORM 960-SYSKANRI-READ-SEC
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1009-REC
+               ELSE
+                   MOVE    "1011"          TO  SPA-ERRCD
+                   DISPLAY "P29 SYS1009(PTGETNUM)ERR:" MCP-RC  "."
+                   GO      TO      280-PTNUM-SYORI-EXT
+               END-IF
+               IF      SYS-1009-PTID       =   ALL "9"
+                   MOVE    "8001"              TO  WRK-ERRCD
+                   MOVE    ZERO                TO  SYS-1009-PTID
+               END-IF
+               COMPUTE SYS-1009-PTID           =   SYS-1009-PTID  +   1
+               MOVE    SYS-1009-PTID           TO  SPA-GMN-PTID
+      *        患者番号採番  更新
+               MOVE    SYS-1009-REC        TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"             USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+               IF      MCP-RC         NOT  =   ZERO
+                   MOVE    "1011"          TO  SPA-ERRCD
+                   DISPLAY "P012 SYSKANRI UPDATE:" MCP-RC "."
+                   GO      TO      280-PTNUM-SYORI-EXT
+               END-IF
+           END-IF
+      *
       *
            INITIALIZE                      PTNUM-REC
            MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
@@ -1107,6 +1199,10 @@
                           ",KEY:" PTNUM-KEY   "."
                END-IF
            ELSE
+               IF      SPA-GMN-PTNUM       NOT =   PTNUM-PTNUM
+                   MOVE    "8003"              TO  SPA-ERRCD
+                   GO      TO      280-PTNUM-SYORI-EXT
+               END-IF
                MOVE    SPA-HOSPID              TO  PTNUM-HOSPID
                MOVE    SPA-GMN-PTID            TO  PTNUM-PTID
                MOVE    SPA-GMN-PTNUM           TO  PTNUM-PTNUM
@@ -1124,6 +1220,7 @@
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTNUM UPD ERR:" MCP-RC "."
+                          ",KEY:" PTNUM-KEY   "."
                END-IF
            END-IF
            .
@@ -1149,6 +1246,7 @@
                                             MCPDATA-REC
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "P029 TSYRRK DEL ERR:" MCP-RC
+                          ",KEY:" TSYRRK-KEY
                END-IF
       *    変更
            WHEN    ( TSYRRK-NINSTYMD-O     NOT =   SPACE )
@@ -1161,9 +1259,11 @@
                                             MCPDATA-REC
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "P029 TSYRRK UPD ERR:" MCP-RC
+                          ",KEY:" TSYRRK-KEY
                END-IF
       *    追加
            WHEN    OTHER
+               MOVE    SPA-GMN-PTID    TO  TSYRRK-PTID
                MOVE    TSYRRK-REC      TO  MCPDATA-REC
                MOVE    "DBINSERT"      TO  MCP-FUNC
                MOVE    "TSYRRK-KEY"    TO  ORC-DBPATH
@@ -1181,6 +1281,7 @@
       *                                     MCPDATA-REC
       *         IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 TSYRRK INS ERR:" MCP-RC
+                          ",KEY:" TSYRRK-KEY
       *         END-IF
                END-IF
            END-EVALUATE
@@ -1207,6 +1308,7 @@
                                             MCPDATA-REC
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "P029 TNKRRK DEL ERR:" MCP-RC
+                          ",KEY:" TNKRRK-KEY
                END-IF
       *    変更
            WHEN    ( TNKRRK-STYMD-O    NOT =   SPACE )
@@ -1219,9 +1321,11 @@
                                             MCPDATA-REC
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "P029 TNKRRK UPD ERR:" MCP-RC
+                          ",KEY:" TNKRRK-KEY
                END-IF
       *    追加
            WHEN    OTHER
+               MOVE    SPA-GMN-PTID    TO  TNKRRK-PTID
                MOVE    TNKRRK-REC      TO  MCPDATA-REC
                MOVE    "DBINSERT"      TO  MCP-FUNC
                MOVE    "TNKRRK-KEY"    TO  ORC-DBPATH
@@ -1239,6 +1343,7 @@
       *                                     MCPDATA-REC
       *         IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 TNKRRK INS ERR:" MCP-RC
+                          ",KEY:" TNKRRK-KEY
       *         END-IF
                END-IF
            END-EVALUATE
@@ -1253,6 +1358,7 @@
       *
            MOVE    PARA-DATA-REC       TO  PTRSIINF-REC
       *
+           MOVE    SPA-GMN-PTID        TO  PTRSI-PTID
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
            PERFORM 990-PTRSIINF-READ-SEC
       *
@@ -1266,6 +1372,7 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTRSIINF INS ERR:" MCP-RC
+                          ",KEY:" PTRSI-KEY
                END-IF
            ELSE
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
@@ -1277,6 +1384,7 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTRSIINF UPD ERR:" MCP-RC
+                          ",KEY:" PTRSI-KEY
                END-IF
            END-IF
            .
@@ -1290,6 +1398,7 @@
       *
            MOVE    PARA-DATA-REC       TO  PTKOHFTN-REC
       *    公費負担読込み
+           MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
            MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTKOHFTN-KEY"      TO  ORC-DBPATH
@@ -1307,6 +1416,7 @@
            IF      FLG-PTKOHFTN        =   1
                MOVE    PARA-DATA-REC       TO  PTKOHFTN-REC
       *        新規
+               MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
                MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "PTKOHFTN-KEY"      TO  ORC-DBPATH

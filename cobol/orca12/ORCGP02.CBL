@@ -144,6 +144,7 @@
            03  WRK-PIDMSG          PIC X(100).
       *
            03  WRK-MOTOPG              PIC X(08).
+           03  WRK-ERRCD               PIC X(04).
       *
            03  WRK-MEISAI1         PIC 9(06).
            03  WRK-MEISAI2         PIC 9(06).
@@ -1317,7 +1318,6 @@
                                        ORCSP01AREA
                                        SPA-AREA
       *
-      *
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPA-HZN-PTNUM       TO  WRK-HZN-PTNUM
                MOVE    SPA-HZN-MOTOPG      TO  WRK-HZN-MOTOPG
@@ -1376,7 +1376,9 @@
                                        ORCSP01AREA
                                        SPA-AREA
       *
-           IF      SPA-ERRCD           =   SPACE
+           IF      SPA-ERRCD           =   SPACE  OR  "8000"
+               MOVE    SPA-ERRCD           TO  WRK-ERRCD
+               MOVE    SPACE               TO  SPA-ERRCD
       *
                MOVE    ORCSP01-PTNUM       TO  SPA-GMN-PTNUM
                MOVE    ORCSP01-PTID        TO  SPA-GMN-PTID
@@ -1385,6 +1387,9 @@
                PERFORM 310-SPA-SET-SEC
                MOVE    1                   TO  SPA-GMN-CUR
                MOVE    SPACE               TO  SPA-P02-WIDGET
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    WRK-ERRCD           TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            .
@@ -1408,9 +1413,13 @@
                                        ORCSP01AREA
                                        SPA-AREA
       *
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF      SPA-ERRCD           =   SPACE  OR  "8000"
+               CONTINUE
+           ELSE
                GO      TO      410012-P014-SET-EXT
            END-IF
+           MOVE    SPA-ERRCD           TO  WRK-ERRCD
+           MOVE    SPACE               TO  SPA-ERRCD
       *
            MOVE    ORCSP01-PTID        TO  SPA-GMN-PTID
            INITIALIZE                  SPA-P014-AREA
@@ -2314,7 +2323,9 @@
       *****************************************************************
        4901-KOUSINMAE-SEC             SECTION.
       *
-           IF      SPA-GMN-PTID        =   ZERO
+           IF    ( SPA-GMN-PTNUM       =   SPACE   )  OR
+                 ((SPA-P02-SYORI   NOT =   1     ) AND
+                  (SPA-GMN-PTID        =   ZERO  ))
                MOVE    ZERO                TO  SPA-GMN-CUR
                MOVE    "0009"              TO  SPA-ERRCD
                GO  TO                  4901-KOUSINMAE-EXT
@@ -2531,8 +2542,9 @@
       *****************************************************************
        499-COPY-SEC             SECTION.
       *
-           IF    ( SPA-GMN-PTNUM       =   SPACE ) OR
-                 ( SPA-GMN-PTID        =   ZERO  )
+           IF    ( SPA-GMN-PTNUM       =   SPACE   )  OR
+                 ((SPA-P02-SYORI   NOT =   1     ) AND
+                  (SPA-GMN-PTID        =   ZERO  ))
                MOVE    "1021"              TO  SPA-ERRCD
                MOVE    ZERO                TO  SPA-GMN-CUR
                GO      TO      499-COPY-EXT
@@ -3441,6 +3453,25 @@
                    MOVE    "全角で入力して下さい"    TO  SPA-ERRMSG
                WHEN    "2517"
                    MOVE    "変更年月日が重複しています"  TO  SPA-ERRMSG
+      *        患者番号取得エラー
+               WHEN    "8000"
+                   MOVE    "自動採番の患者番号が最大値です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "初期番号から採番しました。"
+                                               TO  SPA-ERRMSG(33:)
+               WHEN    "8001"
+                   MOVE    "患者ＩＤが最大値です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "初期番号から採番しました。"
+                                               TO  SPA-ERRMSG(23:)
+               WHEN    "8002"
+                   MOVE    "自動採番の患者番号が最大値になりました。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "連番号桁数を変更して下さい。"
+                                               TO  SPA-ERRMSG(41:)
+               WHEN    "8003"
+                   MOVE    "患者ＩＤが登録済です。登録できません。"
+                                               TO  SPA-ERRMSG
       *
                WHEN    "9000"
                    MOVE    "ＤＢ更新エラー"

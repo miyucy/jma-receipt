@@ -52,6 +52,8 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDX1                PIC 9(04).
+           03  IDXS                PIC 9(04).
            03  IDX2                PIC 9(02).
            03  IDX3                PIC 9(02).
            03  IDX4                PIC 9(02).
@@ -173,6 +175,11 @@
       *
       *    連番の更新
            PERFORM 1001-RENNUM-SEC
+           IF      SPA-ERRCD           =   SPACE   OR  "8000"
+               CONTINUE
+           ELSE
+               GO      TO      100-HAKKOU-EXT
+            END-IF
       *
       *    患者番号取得
            PERFORM 320-PTNUM-SET-SEC
@@ -219,12 +226,57 @@
       *****************************************************************
        1001-RENNUM-SEC               SECTION.
       *
-      *    患者ＩＤ発行（再発行以外の時）
-           IF      ORCSP01-SYORI   NOT =   "3"
-               COMPUTE SYS-1009-PTID       =   SYS-1009-PTID  +   1
-               MOVE    SYS-1009-PTID       TO  ORCSP01-PTID
+      *!   患者ＩＤ発行（再発行以外の時）
+      *!   IF      ORCSP01-SYORI   NOT =   "3"
+      *!       IF      SYS-1009-PTID       =   ALL "9"
+      *!           MOVE    "8001"              TO  SPA-ERRCD
+      *!           MOVE    ZERO                TO  SYS-1009-PTID
+      *!       END-IF
+      *!       COMPUTE SYS-1009-PTID       =   SYS-1009-PTID  +   1
+      *!       MOVE    SYS-1009-PTID       TO  ORCSP01-PTID
+      *!   END-IF
+      *
+      *    連番桁数算定
+           MOVE    ZERO                TO  IDX1
+           MOVE    ZERO                TO  IDXS
+           EVALUATE    SYS-1009-PTNUMKSIKBN
+      *    標準構成
+               WHEN    "2"
+                   MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  IDX1
+      *    拡張構成
+               WHEN    "3"
+                   MOVE    SYS-1009-KKCKSIRENNUMKETA   TO  IDX1
+           END-EVALUATE
+           IF      IDX1                >   ZERO
+               IF      IDX1            <   10
+                   COMPUTE IDXS        =   10
+                                       -   IDX1
+                                       +   1
+               ELSE
+                   MOVE    1           TO  IDXS
+                   MOVE    10          TO  IDX1
+               END-IF
            END-IF
       *
+           IF     (IDXS                >   ZERO )  AND
+                  (IDX1                >   ZERO )
+               IF      SYS-1009-RENNUM(IDXS:IDX1)   =   ALL "9"
+      *            標準構成の連番号のみの場合
+                   IF      (SYS-1009-PTNUMKSIKBN   =   "2"  )  AND
+                           (SYS-1009-HJNKSIKBN     =   "3"  OR  "4")
+                       MOVE    "8002"              TO  SPA-ERRCD
+                       GO      TO      1001-RENNUM-EXT
+                   ELSE
+                       MOVE    "8000"              TO  SPA-ERRCD
+                       MOVE    ZERO                TO  SYS-1009-RENNUM
+                   END-IF
+               END-IF
+           ELSE
+               IF      SYS-1009-RENNUM         =   ALL "9"
+                   MOVE    "8000"              TO  SPA-ERRCD
+                   MOVE    ZERO                TO  SYS-1009-RENNUM
+               END-IF
+           END-IF
            COMPUTE   SYS-1009-RENNUM   =   SYS-1009-RENNUM  +   1
       *
       *    患者番号採番  更新
@@ -239,7 +291,6 @@
                MOVE    "1011"          TO  SPA-ERRCD
                DISPLAY "P012 SYSKANRI UPDATE:" MCP-RC "."
            END-IF
-      *
       *
            .
        1001-RENNUM-EXT.
@@ -387,6 +438,7 @@
                        ADD         1      TO  IDY
                        MOVE    SYS-1009-RENNUM (1:10)
                                           TO  WRK-PTNUM2 (IDY:10)
+
                    END-IF
       *        <フリー + 連番号>
                WHEN   "2"
@@ -405,6 +457,7 @@
                        ADD     1           TO  IDY
                        MOVE    SYS-1009-RENNUM (1:10)
                                            TO  WRK-PTNUM2 (IDY:10)
+
                    END-IF
       *
       *        <連番号 + フリー>
@@ -546,12 +599,12 @@
            END-EVALUATE
       *
       *
-           IF      SPA-ERRCD       =   SPACE
-               IF      ORCSP01-PTID    =   ZERO
-      *            患者ＩＤの取得
-                   PERFORM 2001-PTID-SET-SEC
-               END-IF
-           END-IF
+      *!   IF      SPA-ERRCD       =   SPACE
+      *!       IF      ORCSP01-PTID    =   ZERO
+      *!           患者ＩＤの取得
+      *!           PERFORM 2001-PTID-SET-SEC
+      *!       END-IF
+      *!   END-IF
            .
        200-CHECK-EXT.
            EXIT.
@@ -581,6 +634,10 @@
       *
       *    患者ＩＤ発行（再発行以外の時）
            IF      ORCSP01-SYORI   NOT =   "3"
+               IF      SYS-1009-PTID       =   ALL "9"
+                   MOVE    "8001"              TO  SPA-ERRCD
+                   MOVE    ZERO                TO  SYS-1009-PTID
+               END-IF
                COMPUTE SYS-1009-PTID       =   SYS-1009-PTID  +   1
                MOVE    SYS-1009-PTID       TO  ORCSP01-PTID
            END-IF
@@ -597,7 +654,6 @@
                MOVE    "1011"          TO  SPA-ERRCD
                DISPLAY "P012 SYSKANRI UPDATE:" MCP-RC "."
            END-IF
-      *
       *
            .
        2001-PTID-SET-EXT.
