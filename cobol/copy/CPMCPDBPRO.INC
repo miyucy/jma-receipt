@@ -272,6 +272,7 @@
       *  01.01.93    NACL-藤原    03/08/18  SEIKYU-KEY23,KEY24追加
       *  01.01.94    NACL-森脇    03/08/25  TENSU-KEY23S,KEY23M,KEY23K
       *  01.01.95    NACL-太田    03/08/26  PTNYUINRRK-KEY24追加
+      *  01.01.96    NACL-太田    03/08/26  PTNYUINRRK-KEY25追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2556,6 +2557,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY24"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY24
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY25"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY25
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-ALL"
                    MOVE    PATH-TBL-PTNYUINRRK-ALL
