@@ -100,6 +100,8 @@
            03  FLG-KANJI           PIC 9(01).
            03  FLG-SPASCR          PIC 9(01).
       *
+           03  FLG-END2            PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -180,6 +182,9 @@
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *     
@@ -246,7 +251,9 @@
            END-IF
       *
       *    画面ＳＰＡ書込み
-           PERFORM 1003-C05SPA-OUT-SEC
+           IF      FLG-END2            =   ZERO
+               PERFORM 1003-C05SPA-OUT-SEC
+           END-IF
       *
            MOVE    SPA-C01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -446,6 +453,14 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
+      *    ファイルクリア
+           MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+           MOVE    1                   TO  FLG-END2
+      *
            MOVE    SPA-C01-MOTOPG      TO  SPA-SAKIPG
            MOVE    "C05"               TO  SPA-MOTOPG
       *
@@ -499,6 +514,14 @@
                MOVE    1                   TO  SPA-GMN-CUR  
                GO  TO  450-KAKUTEI-EXT
            END-IF 
+      *
+      *    ファイルクリア
+           MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+           MOVE    1                   TO  FLG-END2
       *
            MOVE    SPA-C01-MOTOPG      TO  SPA-SAKIPG
            MOVE    "C05"               TO  SPA-MOTOPG

@@ -98,6 +98,7 @@
       *                                     カルテ病名の編集を追加
       *  01.07.09    NACL-藤原    03/02/28  診療科４０に変更
       *  02.00.06    NACL-藤原    03/03/05  排他制御処理追加
+      *  02.00.07    NACL-多々納  03/03/14  ファイル削除追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -164,6 +165,8 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-SPASCR          PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+      *
+           03  FLG-END2            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -363,6 +366,9 @@
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *     
@@ -428,7 +434,9 @@
            END-IF
       *
       *    画面ＳＰＡ書込み
-           PERFORM 1003-C02SPA-OUT-SEC
+           IF      FLG-END2            =   ZERO
+               PERFORM 1003-C02SPA-OUT-SEC
+           END-IF
       *
       *
            MOVE    SPA-C01KYOUTU   TO  SPA-WORK
@@ -4015,6 +4023,14 @@
       *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
+      *
+      *    ファイルクリア
+           MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+           MOVE    1                   TO  FLG-END2
       *
            MOVE    SPA-C02-MOTOPG     TO  SPA-SAKIPG
            IF      SPA-C02-MOTOPG NOT =   "K02"  AND  "U02"   AND

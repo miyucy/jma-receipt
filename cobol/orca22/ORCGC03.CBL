@@ -110,6 +110,8 @@
            03  FLG-USERBYOMEI      PIC 9(01).
            03  FLG-SPASCR          PIC 9(01).
       *
+           03  FLG-END2            PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -236,6 +238,9 @@
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".  
@@ -300,7 +305,9 @@
            END-IF
       *
       *    画面ＳＰＡ書込み
-           PERFORM 1003-C03SPA-OUT-SEC
+           IF      FLG-END2            =   ZERO
+               PERFORM 1003-C03SPA-OUT-SEC
+           END-IF
       *
            MOVE    SPA-C01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -2215,6 +2222,14 @@
                MOVE    "0101"          TO  SPA-CIDCD
                GO      TO      210-BACK-EXT
            END-IF
+      *
+      *    ファイルクリア
+           MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+           MOVE    1                   TO  FLG-END2
       *
            MOVE    "C02"               TO  SPA-SAKIPG
            MOVE    "C03"               TO  SPA-MOTOPG
