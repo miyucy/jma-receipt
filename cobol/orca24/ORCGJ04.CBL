@@ -715,6 +715,9 @@
       *    内分泌負荷試験更新パラメタ
            COPY    "CPORCSSANFUKA.INC".
       *
+      *    レセプト作成管理マスタ更新サブ
+           COPY    "CPORCSRECEUPD.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -5545,11 +5548,11 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-      *!   IF      MCP-RC          NOT =   ZERO
+           IF      MCP-RC          NOT =   ZERO
                DISPLAY "J04 PTCOM INS ERR;"    MCP-RC
                        ",KEY:" PTCOM-KEY
-      *!       MOVE    "1029"              TO  SPA-ERRCD
-      *!   END-IF
+               MOVE    "1029"              TO  SPA-ERRCD
+           END-IF
       *
            MOVE    WRK-MEINUM          TO  SRY-INPUTNUM (IDS)
       *
@@ -5683,6 +5686,13 @@
                   (FLG-SYUNOU-ERR      =   1   )
                PERFORM 450423-SYUNOU-UPD1-SEC
            END-IF
+      *
+      *    レセプト作成管理マスタ更新処理
+           IF     (SPA-NYUGAIKBN       =   "2" )  AND
+                  (SPA-HKNCOMBINUM NOT =   "9999")
+               PERFORM 45021-RECEUPD-UPDATE-SEC
+           END-IF
+      *
            .
       *
        4502-SINKAI-KOU-EXT.
@@ -5851,6 +5861,29 @@
        450423-SYUNOU-UPD1-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    レセプト作成管理マスタ更新処理
+      *****************************************************************
+       45021-RECEUPD-UPDATE-SEC           SECTION.
+      *
+           INITIALIZE                      ORCSRECEUPDAREA
+           MOVE    "2"                 TO  LNK-UPD-SYORI
+           MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
+           MOVE    SPA-GMN-PTID        TO  LNK-UPD-PTID
+           MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
+           MOVE    SPA-OPID            TO  LNK-UPD-OPID
+           MOVE    SPA-NYUGAIKBN       TO  LNK-UPD-NYUGAIKBN
+           MOVE    SPA-SRYYMD(1:6)     TO  LNK-UPD-SRYYM
+           MOVE    SPA-HKNKBN          TO  LNK-UPD-HKNKBN
+           CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
+           IF      LNK-UPD-RC      NOT =   ZERO
+               MOVE    "0005"              TO  SPA-ERRCD
+               DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC
+           END-IF
+      *
+           .
+       45021-RECEUPD-UPDATE-EXT.
+           EXIT.
       *
       *****************************************************************
       *   診療会計マスタ追加、受診履歴変更処理

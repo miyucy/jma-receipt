@@ -392,6 +392,9 @@
       *    内分泌負荷試験更新パラメタ
            COPY    "CPORCSSANFUKA.INC".
       *
+      *    レセプト作成管理マスタ更新サブ
+           COPY    "CPORCSRECEUPD.INC".
+      *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
       *
@@ -3576,6 +3579,11 @@
                END-IF
            END-IF
       *
+      *    レセプト作成管理マスタ更新処理
+           IF      SPA-HKNCOMBINUM NOT =   "9999"
+               PERFORM 3009-RECEUPD-UPDATE-SEC
+           END-IF
+      *
            .
        300-DELETE-SYORI-EXT.
            EXIT.
@@ -4157,6 +4165,30 @@
       *
            .
        45099-SRYKARRK-ADD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト作成管理マスタ更新処理
+      *****************************************************************
+       3009-RECEUPD-UPDATE-SEC           SECTION.
+      *
+           INITIALIZE                      ORCSRECEUPDAREA
+           MOVE    "2"                 TO  LNK-UPD-SYORI
+           MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
+           MOVE    SPA-PTID            TO  LNK-UPD-PTID
+           MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
+           MOVE    SPA-OPID            TO  LNK-UPD-OPID
+           MOVE    SPA-NYUGAIKBN       TO  LNK-UPD-NYUGAIKBN
+           MOVE    SPA-SRYYMD(1:6)     TO  LNK-UPD-SRYYM
+           MOVE    SPA-HKNKBN          TO  LNK-UPD-HKNKBN
+           CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
+           IF      LNK-UPD-RC      NOT =   ZERO
+               MOVE    "0005"              TO  SPA-ERRCD
+               DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC
+           END-IF
+      *
+           .
+        3009-RECEUPD-UPDATE-EXT.
            EXIT.
       *
       *****************************************************************
