@@ -3121,7 +3121,7 @@
                    COMPUTE IDX1    =   SEIHIDX   +   1
                    MOVE    2                  TO  IDX2
                    IF      IDX1               =   IDX2
-                       MOVE    ZERO               TO  IDX2
+                       COMPUTE  IDX2  =  IDX1  +  1
                    END-IF
                ELSE
                    MOVE    2                  TO  IDX1
