@@ -493,6 +493,10 @@
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG    (1:6)   TO  SPA-GMN-SKYYM
            END-IF
+      *
+      *    請求年月日
+           MOVE    SPA-SYSYMD          TO  SPA-NAI-SKYYMD
+           MOVE    SPA-SYSYMDWH        TO  SPA-GMN-SKYYMD
       *             
       *    レセプト指示コード
            INITIALIZE                  SYS-2001-REC
