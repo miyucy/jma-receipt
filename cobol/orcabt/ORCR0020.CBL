@@ -49,9 +49,11 @@
       *  01.00.11   NACL-藤原     02.08.23  自費を不明分と分ける
       *  01.00.12   NACL-藤原     02.09.05  請求書用ファイルのみ端末ＩＤを固定
       *                                     にする
-      *
-      *  01.01.01   NACL-小豆沢   02.09.24  （平成１４年１０月改正対応）
+      *  01.00.13   NACL-小豆沢   02.09.24  （平成１４年１０月改正対応）
       *                                     レセプト種別コード追加
+      *  01.00.14   NACL-小豆沢   02.09.27  （平成１４年１０月改正対応）
+      *                                     老人保険の場合も給付割合のセットを
+      *                                     を行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -232,6 +234,8 @@
            03  WRK-JIHI-FLG              PIC X(01).
       *
            03  WRK-CHOKI                 PIC X(03).
+      *
+           03  RJN-RATE-KBN              PIC X(01).
       *
            COPY    "MCPAREA".
       *
@@ -494,6 +498,8 @@
            MOVE    SPACE                TO  RECE02-REC
            INITIALIZE                       RECE02-REC
       *
+           MOVE    SPACE                TO  RJN-RATE-KBN
+      *
            MOVE    RECE01-HOSPID        TO  RECE02-HOSPID
            MOVE    RECE01-SRYYM         TO  RECE02-SRYYM
            MOVE    RECE01-NYUGAIKBN     TO  RECE02-NYUGAIKBN
@@ -707,6 +713,18 @@
                         END-IF
                         MOVE   PTKOH-FTNJANUM   TO  RECE02-RJNFTNJANUM
                         MOVE   PTKOH-JKYSNUM    TO  RECE02-RJNJKYSNUM
+      *----(01.00.14) LINE ADD START --------------------------
+      *                 平成１４年１０月対応
+      *                 老人保険の患者について負担割合を退避
+                        IF   RECE02-SRYYM   >=   "200210"
+                            EVALUATE    PTKOH-PAYKBN
+                                WHEN    "01"
+                                    MOVE      "1"   TO  RJN-RATE-KBN
+                                WHEN    "02"
+                                    MOVE      "2"   TO  RJN-RATE-KBN
+                            END-EVALUATE
+                        END-IF
+      *----(01.00.14) LINE ADD END   --------------------------
                    ELSE
                         DISPLAY  "PTKOHINF FETCH ERR" 
       *                  ACCEPT    WRK-IN FROM CONSOLE 
@@ -1055,14 +1073,14 @@
                                        MOVE   "8"   TO   WK-RJN
                                END-EVALUATE
                            END-IF
+                       ELSE
+                           DISPLAY  "HKNCOMBI FETCH ERR" 
                        END-IF
+                   ELSE
+                       DISPLAY   "HKNCOMBI SELECT ERR" 
                    END-IF
                    MOVE   "HKNCOMBI-KEY"        TO   WK-PATH
                    PERFORM   CSR-CLOSE-SEC
-               ELSE    
-                   IF      RECE02-RJNHKNNUM     =   "027"
-                       MOVE        "1"          TO  WK-RJN
-                   END-IF
                END-IF
            END-IF
       *          
@@ -1658,33 +1676,80 @@
            MOVE    "HKNNUM-KEY2"        TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
+      *----(01.00.14) LINE MOD START --------------------------
+      *平成１４年１０月改正対応
+      *平成１４年９月まで有効
       *    保険組合せテーブルの補助区分から患者の負担割合を再セット
       *   （国保のみ）
-           IF    RECE01-HKNNUM           =    "060"   OR   "067"
-               IF   WRK-NENREI           <     3
-                   IF    COMB-HOJOKBN    =    "0"  OR   "1"
-                       EVALUATE   COMB-HOJOKBN
-                           WHEN   "0"
-                                  MOVE   ZERO      TO   RECE02-KYURATE
-                           WHEN   "1"
-                                  MOVE   10        TO   RECE02-KYURATE
-                       END-EVALUATE
-                   ELSE
-                       MOVE  20      TO    RECE02-KYURATE
-                   END-IF
+           IF      RECE02-SRYYM     <=      "200209"
+             IF    RECE01-HKNNUM           =    "060"
+               EVALUATE   COMB-HOJOKBN
+                   WHEN   "0"
+                          MOVE   ZERO      TO   RECE02-KYURATE
+                   WHEN   "1"
+                          MOVE   10        TO   RECE02-KYURATE
+                   WHEN   "2"
+                          MOVE   20        TO   RECE02-KYURATE
+                   WHEN   "3"
+                          MOVE   30        TO   RECE02-KYURATE
+               END-EVALUATE
+             ELSE
+               IF    COMB-HONKZKKBN        =    "1"
+                     MOVE   HKN-HON-GAIKFTNRATE  TO  RECE02-KYURATE
                ELSE
-                   EVALUATE   COMB-HOJOKBN
-                       WHEN   "0"
-                              MOVE   ZERO      TO   RECE02-KYURATE
-                       WHEN   "1"
-                              MOVE   10        TO   RECE02-KYURATE
-                       WHEN   "2"
-                              MOVE   20        TO   RECE02-KYURATE
-                       WHEN   "3"
-                              MOVE   30        TO   RECE02-KYURATE
-                   END-EVALUATE
+                     MOVE   HKN-KZK-GAIKFTNRATE  TO  RECE02-KYURATE
                END-IF
+             END-IF
            END-IF
+      *----(01.00.14) LINE MOD START --------------------------
+      *
+      *----(01.00.14) LINE ADD START --------------------------
+      *平成１４年１０月改正対応
+      *平成１４年１０月以降有効
+      *    保険組合せテーブルの補助区分から患者の負担割合を再セット
+           IF      RECE02-SRYYM     >=      "200210"
+              IF    RECE01-HKNNUM           =    "060"   OR   "067"
+                 IF   WRK-NENREI           <     3
+                     IF    COMB-HOJOKBN    =    "0"  OR   "1"
+                         EVALUATE   COMB-HOJOKBN
+                             WHEN   "0"
+                                    MOVE   ZERO    TO   RECE02-KYURATE
+                             WHEN   "1"
+                                    MOVE   10      TO   RECE02-KYURATE
+                         END-EVALUATE
+                     ELSE
+                         MOVE  20      TO    RECE02-KYURATE
+                     END-IF
+                 ELSE
+                     EVALUATE   COMB-HOJOKBN
+                         WHEN   "0"
+                                MOVE   ZERO      TO   RECE02-KYURATE
+                         WHEN   "1"
+                                MOVE   10        TO   RECE02-KYURATE
+                         WHEN   "2"
+                                MOVE   20        TO   RECE02-KYURATE
+                         WHEN   "3"
+                                MOVE   30        TO   RECE02-KYURATE
+                     END-EVALUATE
+                 END-IF
+              ELSE
+                 IF  COMB-HONKZKKBN      =     "1"
+                     MOVE   HKN-HON-GAIKFTNRATE  TO   RECE02-KYURATE
+                 ELSE
+                     MOVE   HKN-KZK-GAIKFTNRATE  TO   RECE02-KYURATE
+                 END-IF
+              END-IF
+      *
+              IF  RJN-RATE-KBN      NOT =    SPACE
+                  EVALUATE   RJN-RATE-KBN
+                      WHEN   "1"
+                             MOVE   10        TO   RECE02-KYURATE
+                      WHEN   "2"
+                             MOVE   20        TO   RECE02-KYURATE
+                  END-EVALUATE
+              END-IF
+           END-IF
+      *----(01.00.14) LINE ADD START --------------------------
       *
            .
        KYURATE-SET-EXT.
