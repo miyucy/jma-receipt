@@ -30,7 +30,7 @@
       *  01.00.01    NACL-藤原    03.01.30  食事負担額がゼロのとき処理しない
       *  01.00.02    NACL-藤原    03.01.27  公費請求書ＤＢを追加
       *  01.00.03    NACL-藤原    03.03.03  診療科数１０から２０へ変更
-      *  01.00.04    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加
+      *  01.00.04    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加      *  01.00.05    NACL-門脇    03.03.06  減算表示△を▲に変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2570,7 +2570,8 @@
                PERFORM VARYING IDZ FROM    6   BY  -1
                        UNTIL   IDZ <       1
                    IF      WRK-TENSUZ (IDZ:1)  =   SPACE
-                       MOVE    "△"        TO  HC06-NYUTENSUN (5 IDZ)
+      **               MOVE    "△"        TO  HC06-NYUTENSUN (5 IDZ)
+                       MOVE    "▲"        TO  HC06-NYUTENSUN (5 IDZ)
                        MOVE    1           TO  IDZ
                    END-IF
                END-PERFORM
@@ -2584,7 +2585,8 @@
                    PERFORM VARYING IDZ FROM    6   BY  -1
                            UNTIL   IDZ <       1
                        IF      WRK-KOUTENZ (IDZ:1) =   SPACE
-                           MOVE    "△"    TO
+      **                   MOVE    "△"    TO
+                           MOVE    "▲"    TO
                                            HC06-NYUKOHTENN (5 IDZ)
                            MOVE    1           TO  IDZ
                        END-IF
@@ -2664,7 +2666,8 @@
                PERFORM VARYING IDZ FROM    6   BY  -1
                        UNTIL   IDZ <       1
                    IF      WRK-TENSUZ (IDZ:1)  =   SPACE
-                       MOVE    "△"        TO
+      **               MOVE    "△"        TO
+                       MOVE    "▲"        TO
                                            HC06-NYUTENSUN (10 IDZ)
                        MOVE    1           TO  IDZ
                    END-IF
@@ -2679,7 +2682,8 @@
                    PERFORM VARYING IDZ FROM    6   BY  -1
                            UNTIL   IDZ <       1
                        IF      WRK-KOUTENZ (IDZ:1) =   SPACE
-                           MOVE    "△"        TO
+      **                   MOVE    "△"        TO
+                           MOVE    "▲"        TO
                                            HC06-NYUKOHTENN (10 IDZ)
                            MOVE    1           TO  IDZ
                        END-IF
