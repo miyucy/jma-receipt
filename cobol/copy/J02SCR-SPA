@@ -85,10 +85,6 @@
                        09  SPA-GMN-RRKSRYKA      PIC X(04).
                    07  SPA-RRK-MAX               PIC 9(03).
       *
-               05  SPA-GMN-NYUIN-AREA.
-                   07  SPA-GMN-NYUINMSG1         PIC X(50).
-                   07  SPA-GMN-NYUINMSG2         PIC X(50).
-      *
                05  SPA-NAIGMN-AREA.
                    07  SPA-NAI-RRKSELNUM         PIC 9(03).
                    07  SPA-NAI-HENSRYYMD         PIC X(08).

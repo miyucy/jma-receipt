@@ -67,6 +67,10 @@
                05  SPA-ENDNUM              PIC 9(04).
       *
                05  SPA-GMN-SRYKBN-MAE      PIC X(02).
+      *入院点滴算定エラーメッセージ
+               05  SPA-GMN-NYUIN-AREA.
+                   07  SPA-GMN-NYUINMSG1         PIC X(50).
+                   07  SPA-GMN-NYUINMSG2         PIC X(50).
       *
       *選択対象剤番号
       *　診療区分
