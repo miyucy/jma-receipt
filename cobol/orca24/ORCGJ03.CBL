@@ -840,11 +840,17 @@
            PERFORM VARYING     TBL-IDX3    FROM    1   BY  1
 058900             UNTIL       TBL-IDX3    >   31
 059000*
-059100         IF      ACCT-DAY(1 TBL-IDX3)
+               IF     (ACCT-SRYKBN         =   "21" )  AND
+                      (SPA-GMN-NYUGAIKBN   =   "1"  )
+                   ADD     ACCT-DAY(1 TBL-IDX3)    TO  WRK-TBL-KAISU
+                                             (IDX TBL-IDX2 TBL-IDX3)
+               ELSE
+059100             IF      ACCT-DAY(1 TBL-IDX3)
                                           NOT =   ZERO
 059200                 ADD     1              TO  WRK-TBL-KAISU
 059300                                       (IDX TBL-IDX2 TBL-IDX3)
-059400         END-IF
+                   END-IF
+               END-IF
 059500     END-PERFORM
 059600*
 059700     .
@@ -1169,8 +1175,16 @@
 073700                                                      (IDX IDX2)
                      END-IF
       *
-073900                 ADD     1                  TO  SPA-GMN-TKAISU2
+      *              ÅêÌô¡¢Æþ±¡¤Î»þ
+                     IF      (IDX                =   2  )  AND
+                             (SPA-GMN-NYUGAIKBN  =   "1" )
+                         ADD     WRK-TBL-KAISU (IDX TBL-IDX2 TBL-IDX3)
+                                                 TO  SPA-GMN-TKAISU2
+                                                            (IDX IDX1)
+                     ELSE
+073900                   ADD     1                TO  SPA-GMN-TKAISU2
 074000                                                      (IDX IDX1)
+                     END-IF
 074100             END-IF
 074200         END-PERFORM
 074300      END-PERFORM
