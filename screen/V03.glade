@@ -315,7 +315,7 @@
 	<last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
       </signal>
       <editable>True</editable>
-      <format>ZZ</format>
+      <format>ZZZ</format>
     </widget>
 
     <widget>

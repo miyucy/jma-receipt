@@ -72,8 +72,8 @@ V03	{
 					value7	varchar(4);
 					value8	varchar(9);
 					value9	varchar(9);
-				}	[200];
-				select	bool[200];
+				}	[500];
+				select	bool[500];
 			};
 		};
 	};

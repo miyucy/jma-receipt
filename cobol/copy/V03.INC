@@ -54,7 +54,7 @@
                   05  V03-KOHPLUSLST-COUNT PIC S9(9)   BINARY.
                   05  V03-KOHPLUSLST-ROW     PIC S9(9)   BINARY.
                   05  V03-KOHPLUSLST-ROWATTR PIC S9(9)   BINARY.
-                  05  V03-KOHPLUSLST-ITEM  OCCURS  200 TIMES.
+                  05  V03-KOHPLUSLST-ITEM  OCCURS  500 TIMES.
                     06  V03-TYUKO          PIC X(2).
                     06  V03-TSELNUM        PIC X(3).
                     06  V03-TPREFNUM       PIC X(10).
@@ -66,4 +66,4 @@
                     06  V03-TYUKOSTYMD     PIC X(9).
                     06  V03-TYUKOEDYMD     PIC X(9).
                   05  V03-KOHPLUSLST-SELECT
-                                           PIC X   OCCURS  200 TIMES.
+                                           PIC X   OCCURS  500 TIMES.

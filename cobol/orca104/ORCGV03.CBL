@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−太田   04/02/19  登録上限数を500に変更
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -110,7 +111,7 @@
                                                        PIC X(38).
                    07  SPA-GMN-KOHPLUSLST.
                        09  SPA-GMN-KOHPLUSLST-MAX      PIC 9(03).
-                       09  SPA-GMN-KOHPLUSLST-OCC      OCCURS 200.
+                       09  SPA-GMN-KOHPLUSLST-OCC      OCCURS 500.
                            11  SPA-GMN-TSELNUM         PIC 9(3).
                            11  SPA-GMN-TPREFNUM        PIC X(10).
                            11  SPA-GMN-TCITYNUM        PIC X(3).
@@ -134,7 +135,7 @@
                        09  SPA-NAI-YUKOEDYMD-MOT       PIC X(08).
                    07  SPA-NAI-KOHPLUSLST.
                        09  SPA-NAI-KOHPLUSLST-MAX      PIC 9(03).
-                       09  SPA-NAI-KOHPLUSLST-OCC      OCCURS 200.
+                       09  SPA-NAI-KOHPLUSLST-OCC      OCCURS 500.
                            11  SPA-NAI-TYUKOFLG        PIC 9(1).
                            11  SPA-NAI-TPREFNUM        PIC X(02).
                            11  SPA-NAI-THKNKBN         PIC X(1).
@@ -159,6 +160,7 @@
            03  FLG-HIZUKE-ERR              PIC 9(01).
            03  FLG-HKNNUM                  PIC 9(01).
            03  FLG-KIKAN-DABURI            PIC 9(01).
+           03  FLG-KOHPLUSLST-ROW          PIC 9(01).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -190,9 +192,13 @@
            03  WRK-STR                     PIC X(500).
            03  WRK-LEN                     PIC 9(05).
       *
+      *
+       01  WRK-ROW.
+           05  WRK-KOHPLUSLST-ROW          PIC S9(9)   BINARY.
+      *
       *    固定値領域
        01  CONST-REC.
-           03  CONST-KOHPLUSLST-MAX        PIC 9(03)   VALUE   200.
+           03  CONST-KOHPLUSLST-MAX        PIC 9(03)   VALUE   500.
       *    公費付加情報ワーク
        01  WKKOHPLUS-REC.
            COPY  "CPKOHPLUS.INC"   REPLACING  //KOHPLUS//
@@ -381,6 +387,7 @@
       *
       *    公費付加情報リスト編集処理
            PERFORM 3102-KOHPLUSLST-HEN-SEC
+           MOVE    1                   TO  FLG-KOHPLUSLST-ROW
       *
            MOVE    1                   TO  SPA-GMN-CUR
            . 
@@ -1550,6 +1557,7 @@
       *
       *    公費付加情報リスト編集
            PERFORM 3102-KOHPLUSLST-HEN-SEC
+           MOVE    2                       TO  FLG-KOHPLUSLST-ROW
       *
       *    入力項目を初期化する
            PERFORM 420-CLEAR-SEC
@@ -1941,6 +1949,8 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
+      *  
+           MOVE    V03-KOHPLUSLST-ROW  TO  WRK-KOHPLUSLST-ROW
       *
            INITIALIZE                      V03
       *
@@ -2067,6 +2077,19 @@
                END-IF
       *
            END-PERFORM
+      *  
+           EVALUATE    FLG-KOHPLUSLST-ROW
+           WHEN    1
+               MOVE    ZERO               TO  V03-KOHPLUSLST-ROW
+               MOVE    ZERO               TO  V03-KOHPLUSLST-ROWATTR
+           WHEN    2
+               MOVE    SPA-GMN-KOHPLUSLST-MAX
+                                          TO  V03-KOHPLUSLST-ROW
+               MOVE    1                  TO  V03-KOHPLUSLST-ROWATTR
+           WHEN    OTHER
+               MOVE    WRK-KOHPLUSLST-ROW TO  V03-KOHPLUSLST-ROW
+               MOVE    ZERO               TO  V03-KOHPLUSLST-ROWATTR
+           END-EVALUATE
       *
            PERFORM 5001-MAPCUR-SEC
       *
