@@ -105,6 +105,8 @@
            03  FLG-OK2              PIC 9(01).
       *    老人フラグ
            03  FLG-RJNHKN              PIC 9(01).
+      *    対象外フラグ
+           03  FLG-TAIGAI              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1448,6 +1450,8 @@
                MOVE    SRY-SRYSYUKBN       TO  WRK-SRYSYUKBN
                MOVE    SRY-SRYKBN          TO  WRK-SRYKBN
       *
+               MOVE    ZERO                TO  FLG-TAIGAI
+      *
       *        在宅の時、薬剤の有無をチェックする
                IF     (SRY-SRYKBN          =   "14"  )  AND
                       (FLG-ZAITAKU         =   ZERO  )
@@ -1467,33 +1471,46 @@
                MOVE    ZERO                TO  FLG-ZAITAKU
                IF     (SRY-SRYKBN          =   "14" )  AND
                       (FLG-ZAITAKU-ARI     =   1    )
-                   IF     (SRY-SRYSYUKBN       =   "148"  OR
-                                                   "149" )  AND
-                          (ORCHC19-KBN     NOT =   "3"   )
-                       MOVE    1               TO  FLG-ZAITAKU
-                   END-IF
-                   IF     (SRY-SRYSYUKBN   NOT =   "148"  AND
-                                                   "149" )  AND
-                          (ORCHC19-KBN         =   "3"   )
-                       MOVE    1               TO  FLG-ZAITAKU
+                   IF      ORCHC19-KBN         =   "3"
+      *                院内
+                       IF     (SRY-SRYSYUKBN       =   "148"  OR
+                                                       "149" )
+                           MOVE    1               TO  FLG-TAIGAI
+                       ELSE
+                           MOVE    1               TO  FLG-ZAITAKU
+                       END-IF
+                   ELSE
+      *                院外
+                       IF     (SRY-SRYSYUKBN       =   "148"  OR
+                                                       "149" )
+                           MOVE    1               TO  FLG-ZAITAKU
+                       ELSE
+                           MOVE    1               TO  FLG-TAIGAI
+                       END-IF
                    END-IF
                END-IF
       *        処方のみで、院内処方印刷の時
                MOVE    ZERO                TO  FLG-INNAI
                IF     (SRY-SRYSYUKBN       =   "213"  OR
                                                "223"  OR
-                                               "233")   AND
-                      (ORCHC19-KBN         =   "3"   )
-                   MOVE    1               TO  FLG-INNAI
+                                               "233")
+                   IF      ORCHC19-KBN         =   "3"
+                       MOVE    1               TO  FLG-INNAI
+                   ELSE
+                       MOVE    1               TO  FLG-TAIGAI
+                   END-IF
                END-IF
       *
-      *        薬剤を対象とする
-      *****    IF      SRY-SRYSYUKBN       =   "210"  OR  "220"  OR
-      *                                        "230"  OR  "212"  OR
-      *****                                    "222"  OR  "232"
       *        薬剤、在宅薬剤を対象とする
-               IF      SRY-SRYKBN          =   "21"   OR  "22" OR "23"
-                                           OR  "14"
+               IF     (SRY-SRYKBN          =   "21"   OR  "22" OR "23"
+                                           OR  "14"   )
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  FLG-TAIGAI
+               END-IF
+      *
+               IF      FLG-TAIGAI          =   ZERO
+      *
       *            診療会計より、点数チェック
                    PERFORM 20021-SRYACCT-SYORI-SEC
       *            点数がゼロのものを院外処方分とする
