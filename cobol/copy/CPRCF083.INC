@@ -22,6 +22,8 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    04/02/01  病名コード２１に変更
+      *                           04/11/24  レセプト記載順の修正による
+      *                                     キーの変更
       ************************************************************
       *01  RECE83-REC.
            03  RECE83-KEY.
@@ -38,13 +40,25 @@
       *保険ＩＤ        
                05  RECE83-HKNID           PIC  9(10).
       *適用開始年月日
-               05  RECE83-TEKSTYMD        PIC  X(08).
+               05  RECE83-TEKSTYMD        PIC  X(08). 
       *診療開始日
-               05  RECE83-SRYYMD          PIC  X(08).
+               05  RECE83-SRYYMD          PIC X(08).
+      *転帰区分
+               05  RECE83-TENKIKBN        PIC X(01).
+      *転帰日
+               05  RECE83-TENKIYMD        PIC X(08).
       *病名
-               05  RECE83-BYOMEI          PIC  X(160).
+               05  RECE83-BYOMEI          PIC X(160).
+      *主病名フラグ
+               05  RECE83-SYUBYOFLG       PIC X(01).
+      *連番号
+               05  RECE83-RENNUM          PIC 9(02).
+      *患者番号
+           03  RECE83-PTNUM               PIC X(20).
+      *診療科
+           03  RECE83-SRYKA               PIC X(02).
       *基本病名コード
-           03  RECE83-KHNBYOMEICD         PIC  X(07).
+           03  RECE83-KHNBYOMEICD         PIC X(07).
       *病名コード
            03  RECE83-BYOMEICD-G.
                05  RECE83-BYOMEICD-1    PIC X(07).
@@ -76,18 +90,12 @@
            03  RECE83-UTAGAIFLG         PIC X(01).
       *慢性フラグ
            03  RECE83-MANSEIKBN         PIC 9(02).
-      *主病名フラグ
-           03  RECE83-SYUBYOFLG       PIC  X(01).
       *保険組合番号
            03  RECE83-HKNCOMBI          PIC X(04).
       *レセプト表示フラグ
            03  RECE83-REZEFLG           PIC X(01).
       *レセプト表示月数
            03  RECE83-REZEMM            PIC 9(02).
-      *転帰区分
-           03  RECE83-TENKIKBN          PIC  X(01).
-      *転帰日
-           03  RECE83-TENKIYMD          PIC  X(08).
       *病名文字数
            03  RECE83-BYOMEIMOJI        PIC 9(03).
       *病名編集フラグ
@@ -98,3 +106,8 @@
            03  RECE83-KNRNUM            PIC 9(05).
       *標準病名コード
            03  RECE83-HYOJUNCD          PIC X(09).
+      *レセプト電算コード
+           03  RECE83-RECECD-G.
+               05  RECE83-RECECD        PIC X(07)
+                                       OCCURS   18.
+      *
