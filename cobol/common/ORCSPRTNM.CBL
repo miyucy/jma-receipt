@@ -57,6 +57,7 @@
       *    ワーク領域
        01  WRK-AREA.
            03  WRK-SRYYMD          PIC X(08).
+           03  WRK-NYUGAIKBN       PIC X(01).
       *
            03  WRK-KBNCD           PIC X(08).
            03  WRK-PRTPG           PIC X(20).
@@ -126,6 +127,13 @@
                MOVE    ORCSPRTNM-SRYYMD    TO  WRK-SRYYMD
            END-IF
       *
+      *    入外区分
+           IF      ORCSPRTNM-NYUGAIKBN     =   SPACE  OR  ZERO
+               MOVE    SPA-NYUGAIKBN           TO  WRK-NYUGAIKBN
+           ELSE
+               MOVE    ORCSPRTNM-NYUGAIKBN     TO  WRK-NYUGAIKBN
+           END-IF
+      *
       *    パラメタチェック
            EVALUATE    ORCSPRTNM-KBN
                WHEN    "1"
@@ -180,7 +188,7 @@
       *****************************************************************
        1001-PGNAME-SET-SEC                SECTION.
       *
-           IF      SPA-NYUGAIKBN       =   "1"
+           IF      WRK-NYUGAIKBN       =   "1"
       *        入院
                PERFORM 10012-1035-SET-SEC
            ELSE
@@ -318,7 +326,7 @@
       *****************************************************************
        2001-PRTNAME-SET-SEC                SECTION.
       *
-           IF      SPA-NYUGAIKBN       =   "1"
+           IF      WRK-NYUGAIKBN       =   "1"
       *        入院
                PERFORM 20012-1034-SET-SEC
            ELSE
