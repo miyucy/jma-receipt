@@ -359,7 +359,10 @@
            INITIALIZE                  ZOUSYU-DENPNUM
                                        ZOUSYU-DENPLASTNUM
                                        ZOUSYU-DENPJTIKBN
+                                       ZOUSYU-CREATEKBN
                                        ZOUSYU-DENPPRTYMD
+                                       ZOUSYU-NYUKIN-TOTAL
+                                       ZOUSYU-NYUKIN-KAISU
                                        ZOUSYU-TERMID
                                        ZOUSYU-OPID
                                        ZOUSYU-CREYMD
@@ -369,7 +372,10 @@
            INITIALIZE                  GENSYU-DENPNUM
                                        GENSYU-DENPLASTNUM
                                        GENSYU-DENPJTIKBN
+                                       GENSYU-CREATEKBN
                                        GENSYU-DENPPRTYMD
+                                       GENSYU-NYUKIN-TOTAL
+                                       GENSYU-NYUKIN-KAISU
                                        GENSYU-TERMID
                                        GENSYU-OPID
                                        GENSYU-CREYMD
