@@ -4274,22 +4274,22 @@
            IF    BUN-IDX        =   1
                  COMPUTE   RECE62-TENSU(12 BUN-IDX)  =
                            RECE62-TENSU(12 BUN-IDX)  +
-                           RECE64-ZAITEN
+                           (RECE64-ZAITEN  *  RECE64-ZAIKAISU)
            END-IF
            IF    BUN-IDX2       =   2
                  COMPUTE   RECE62-TENSU(12 BUN-IDX2)  =
                            RECE62-TENSU(12 BUN-IDX2)  +
-                           RECE64-ZAITEN
+                           (RECE64-ZAITEN  *  RECE64-ZAIKAISU)
            END-IF
            IF    BUN-IDX3       =   3
                  COMPUTE   RECE62-TENSU(12 BUN-IDX3)  =
                            RECE62-TENSU(12 BUN-IDX3)  +
-                           RECE64-ZAITEN
+                           (RECE64-ZAITEN  *  RECE64-ZAIKAISU)
            END-IF
            IF    BUN-IDX4       =   4
                  COMPUTE   RECE62-TENSU(12 BUN-IDX4)  =
                            RECE62-TENSU(12 BUN-IDX4)  +
-                           RECE64-ZAITEN
+                           (RECE64-ZAITEN  *  RECE64-ZAIKAISU)
            END-IF
       *
            .                                           
