@@ -63,6 +63,8 @@
       *                                     メッセージの追加
       *  01.05.06    NACL-藤原    04.03.18  レセ電時の印刷指示による処理の修正
       *  01.05.07    NACL-藤原    04.07.20  請求年月未入力のチェックの条件を修正
+      *  01.00.04    NACL-藤原    04.08.10  処理開始前にジョブ管理の
+      *                                     チェックを再度行なう
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -644,7 +646,11 @@
                    WHEN    "1013"
                        PERFORM 480-PRINT-SEC
                    WHEN    "2001"
-                       PERFORM 460-RECEDEN-SEC
+      *                ジョブ管理チェック処理
+                       PERFORM 4501-JOBKANRI-CHK-SEC
+                       IF      SPA-ERRCD       =   SPACE
+                           PERFORM 460-RECEDEN-SEC
+                       END-IF
                END-EVALUATE        
            END-IF
       *
@@ -666,18 +672,26 @@
                EVALUATE    SPA-TIDCD
                    WHEN    "1010"
                    WHEN    "1014"
-                       MOVE    SPA-TID1-FLG        TO  SPA-RECEDEN-FLG 
-                       IF      SPA-GMN-DATAKBN     =   "1" OR  "2"
-                           MOVE    SPACE           TO  SPA-TID1-FLG
-                           MOVE    "2001"          TO  SPA-TIDCD
-                           GO  TO  340-TID2-SET-EXT
-                       ELSE
-                           PERFORM 460-RECEDEN-SEC
+      *                ジョブ管理チェック処理
+                       PERFORM 4501-JOBKANRI-CHK-SEC
+                       IF      SPA-ERRCD       =   SPACE
+                           MOVE    SPA-TID1-FLG    TO  SPA-RECEDEN-FLG 
+                           IF      SPA-GMN-DATAKBN     =   "1" OR  "2"
+                               MOVE    SPACE           TO  SPA-TID1-FLG
+                               MOVE    "2001"          TO  SPA-TIDCD
+                               GO  TO  340-TID2-SET-EXT
+                           ELSE
+                               PERFORM 460-RECEDEN-SEC
+                           END-IF
                        END-IF
                    WHEN    "1011"
                        PERFORM 480-PRINT-SEC
                    WHEN    OTHER
-                       PERFORM 450-PRINT-SEC
+      *                ジョブ管理チェック処理
+                       PERFORM 4501-JOBKANRI-CHK-SEC
+                       IF      SPA-ERRCD      =   SPACE
+                           PERFORM 450-PRINT-SEC
+                       END-IF
                END-EVALUATE 
            END-IF
       *
@@ -1032,6 +1046,55 @@
       *****************************************************************
        450-PRINT-GID-SEC                SECTION.
       *
+           IF      SPA-NAI-SKYYM       =   ZERO
+               MOVE    "0001"              TO  SPA-ERRCD
+           END-IF    
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-SKYYMD      =   ZERO
+                   MOVE    "0002"              TO  SPA-ERRCD
+               END-IF    
+           END-IF    
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-HKNJANUM    =   SPACE
+                   MOVE    ZERO                TO  SPA-NAI-HKNJANUM
+               ELSE
+                   IF      SPA-GMN-HKNJAMEI        =   SPACE    
+                       MOVE    "0005"          TO  SPA-ERRCD
+                   END-IF
+               END-IF    
+           END-IF    
+      *        ジョブ管理チェック処理
+           IF      SPA-ERRCD       =   SPACE
+               PERFORM 4501-JOBKANRI-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+      *            ガイドメッセージセット
+                   EVALUATE    TRUE
+                       WHEN    T01-DATAKBN1-VALUE    =   "T" 
+                           MOVE    "1001"              TO  SPA-TIDCD
+                       WHEN    T01-DATAKBN2-VALUE    =   "T" 
+                           MOVE    "1002"              TO  SPA-TIDCD
+                       WHEN    T01-DATAKBN3-VALUE    =   "T" 
+                           MOVE    "1003"              TO  SPA-TIDCD
+                       WHEN    T01-DATAKBN4-VALUE    =   "T" 
+                           MOVE    "1004"              TO  SPA-TIDCD
+                       WHEN    T01-DATAKBN5-VALUE    =   "T" 
+                           MOVE    "1005"              TO  SPA-TIDCD
+                   END-EVALUATE
+               END-IF
+           END-IF
+           .
+       450-PRINT-GID-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理チェック処理
+      *****************************************************************
+       4501-JOBKANRI-CHK-SEC       SECTION.
+      *
+           MOVE    SPACE           TO  SPA-ERRCD
+      *
       *    ジョブ管理チェック        
            MOVE    SPACE               TO  SYS-3003-REC 
            INITIALIZE                      SYS-3003-REC
@@ -1094,46 +1157,8 @@
                    END-IF
                END-IF    
            END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-NAI-SKYYM       =   ZERO
-                   MOVE    "0001"              TO  SPA-ERRCD
-               END-IF    
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-NAI-SKYYMD      =   ZERO
-                   MOVE    "0002"              TO  SPA-ERRCD
-               END-IF    
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-GMN-HKNJANUM    =   SPACE
-                   MOVE    ZERO                TO  SPA-NAI-HKNJANUM
-               ELSE
-                   IF      SPA-GMN-HKNJAMEI        =   SPACE    
-                       MOVE    "0005"          TO  SPA-ERRCD
-                   END-IF
-               END-IF    
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE
-      *    ガイドメッセージセット
-               EVALUATE    TRUE
-                   WHEN    T01-DATAKBN1-VALUE    =   "T" 
-                       MOVE    "1001"              TO  SPA-TIDCD
-                   WHEN    T01-DATAKBN2-VALUE    =   "T" 
-                       MOVE    "1002"              TO  SPA-TIDCD
-                   WHEN    T01-DATAKBN3-VALUE    =   "T" 
-                       MOVE    "1003"              TO  SPA-TIDCD
-                   WHEN    T01-DATAKBN4-VALUE    =   "T" 
-                       MOVE    "1004"              TO  SPA-TIDCD
-                   WHEN    T01-DATAKBN5-VALUE    =   "T" 
-                       MOVE    "1005"              TO  SPA-TIDCD
-               END-EVALUATE
-           END-IF
            .
-       450-PRINT-GID-EXT.
+       4501-JOBKANRI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1829,90 +1854,29 @@
       *****************************************************************
        460-RECEDEN-GID-SEC                SECTION.
       *
-      *    ジョブ管理チェック        
-           MOVE    SPACE               TO  SYS-3003-REC 
-           INITIALIZE                      SYS-3003-REC
-           MOVE    "3003"              TO  SYS-3003-KANRICD
-           MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-           MOVE    SPA-NAI-SKYYM       TO  ORC-DBYMD (1:6)
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
-           MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-3003-REC 
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SYS-3003-JOBID
-      *            ジョブ管理チェック処理
-                   MOVE    "CHK"           TO  SJOBKANRI-MODE
-                   INITIALIZE                  JOBKANRI-REC
-                   MOVE    IDX             TO  JOB-JOBID
-                   MOVE    WRK-CONS-JOB-SHELLID
-                                           TO  JOB-SHELLID
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC
-                   IF      SJOBKANRI-RETURN
-                                           =   ZERO
-                       IF      JOB-ENDYMD      =   SPACE
-                           MOVE    "7777"          TO  SPA-ERRCD
-                           MOVE    SPACE           TO  WRK-RECEERR
-                           STRING  "処理中です【"  DELIMITED  BY  SIZE
-                                   JOB-SHELLMSG    DELIMITED  BY  SPACE
-                                   "】"            DELIMITED  BY  SIZE      
-                                                   INTO  WRK-RECEERR
-                           MOVE    SYS-3003-JOBID  TO  IDX
-                       END-IF
-                   END-IF    
-               END-PERFORM
-           END-IF
-      *
-      *
-      *    ジョブ管理チェック（レセプト）
-           IF      SPA-ERRCD           =   SPACE         
-               MOVE    "CHK"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-CONS-JOB-JOBID-RECEPT1
-                                       TO  JOB-JOBID
-               MOVE    WRK-CONS-JOB-SHELLID-RECEPT1
-                                       TO  JOB-SHELLID
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC 
-              IF      SJOBKANRI-RETURN
-                                       =   ZERO
-                   IF      JOB-ENDYMD      =   SPACE
-                       MOVE    "7777"          TO  SPA-ERRCD
-                       MOVE    SPACE             TO  WRK-RECEERR
-                       STRING  "レセプト作成処理中です【"
-                                                 DELIMITED  BY  SIZE
-                               JOB-SHELLMSG      DELIMITED  BY  SPACE
-                               "】"              DELIMITED  BY  SIZE      
-                                                 INTO  WRK-RECEERR
-                   END-IF
-               END-IF    
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-NAI-SKYYM       =   ZERO
-                   MOVE    "0001"              TO  SPA-ERRCD
-               END-IF    
+           IF      SPA-NAI-SKYYM       =   ZERO
+               MOVE    "0001"              TO  SPA-ERRCD
            END-IF    
       *
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-NAI-SKYYMD      =   ZERO
                    MOVE    "0002"              TO  SPA-ERRCD
                END-IF    
-           END-IF    
+           END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    MCP-WIDGET          TO  SPA-NAI-WIDGET
-      *        ガイドメッセージセット
-               EVALUATE    MCP-WIDGET
-                   WHEN    "B06"
-                       MOVE    "1010"              TO  SPA-TIDCD
-                   WHEN    "B07"
-                       MOVE    "1014"              TO  SPA-TIDCD
-               END-EVALUATE
+      *    ジョブ管理チェック処理
+           IF      SPA-ERRCD       =   SPACE
+               PERFORM 4501-JOBKANRI-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+                   MOVE    MCP-WIDGET          TO  SPA-NAI-WIDGET
+      *            ガイドメッセージセット
+                   EVALUATE    MCP-WIDGET
+                       WHEN    "B06"
+                           MOVE    "1010"              TO  SPA-TIDCD
+                       WHEN    "B07"
+                           MOVE    "1014"              TO  SPA-TIDCD
+                   END-EVALUATE
+               END-IF
            END-IF
       *
            .
