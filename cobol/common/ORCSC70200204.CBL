@@ -131,6 +131,8 @@
            03  IDX-D1              PIC 9(04).
            03  IDX-D2              PIC 9(04).
       *
+           03  IDX-K               PIC 9(04).
+      *
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -2309,6 +2311,12 @@
                                        WRK-SCR-REC
                                        SPA-AREA
                                        TNS-TENSU-REC
+      *TEST
+           DISPLAY "C70 2 LNK-SC91-ERRCD:" LNK-SC91-ERRCD
+                   ",LNK-SC91-CNT:" LNK-SC91-CNT
+                   ",LNK-SC91-ATO-CNT:" LNK-SC91-ATO-CNT
+                   ",WRK-COM-CHK-SRYCD:" WRK-COM-CHK-SRYCD (IDX-Z)
+      *TEST
            IF      LNK-SC91-ERRCD      =   "0001"
                MOVE    LNK-SC91-ERRCD      TO  SPA-ERRCD
                MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
@@ -2322,6 +2330,9 @@
            ELSE
                MOVE    ZERO            TO  LNK-SC91-CNT
            END-IF
+      *TEST
+           DISPLAY "C70 LNK-SC91-CNT:" LNK-SC91-CNT
+      *TEST
            IF      LNK-SC91-CNT        =  ZERO
       *        £Ã£Ô¡¥£Í£Ò£É¤Î»»Äê¥Á¥§¥Ã¥¯
                IF      WRK-COM-INPUTCD (IDX-Z)     =   "170022290"  OR

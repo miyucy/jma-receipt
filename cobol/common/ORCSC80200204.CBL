@@ -305,6 +305,11 @@
       *****************************************************************
       *
       *
+      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *
+      *
       *    ¿ÇÎÅ¹Ô°Ù»»ÄêÊÔ½¸¥Ñ¥é¥á¥¿
            COPY    "CPORCSC90.INC".
       *
@@ -1166,6 +1171,7 @@
       *
            IF      WRK-COM-INPUTCD (IDX-Z) =   "180012210"  OR
                                                "180012310"  OR
+                                               "180020410"  OR
                                                "180020570"
                CONTINUE
            ELSE
@@ -1176,17 +1182,32 @@
            IF      LNK-ORCSC-SYOYMD    =   SPACE
                MOVE    SPA-SRYYMD          TO  LNK-ORCSC-SYOYMD
            END-IF
-           MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
-           COMPUTE WRK-SYO-MM          =   WRK-SYO-MM    +   6
-           IF      WRK-SYO-MM          >   12
-               COMPUTE WRK-SYO-YY      =   WRK-SYO-YY    +   1
-               COMPUTE WRK-SYO-MM      =   WRK-SYO-MM    -   12
-           END-IF
+      **** MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
+      *    COMPUTE WRK-SYO-MM          =   WRK-SYO-MM    +   6
+      *    IF      WRK-SYO-MM          >   12
+      *        COMPUTE WRK-SYO-YY      =   WRK-SYO-YY    +   1
+      *        COMPUTE WRK-SYO-MM      =   WRK-SYO-MM    -   12
+      *****END-IF
+      *    ½é¿ÇÎÁ»»ÄêÆü¡Ü£¶·î¸å
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
+           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    6                   TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYOYMD
+      *TEST
+           DISPLAY "C80 LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
+                   ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
+      *
       *
            EVALUATE    WRK-COM-INPUTCD(IDX-Z)
                WHEN    "180012210"
                WHEN    "180012310"
-                   IF      SPA-SRYYMD          <   WRK-SYOYMD
+               WHEN    "180020410"
+                   IF      SPA-SRYYMD          <=  WRK-SYOYMD
       *            Äþ¸º¤¢¤ê
                        MOVE    IDX-Z               TO  IDX-S
                        MOVE    "180020570"         TO  WRK-SRYCD
@@ -1203,6 +1224,7 @@
                    IF      WRK-COM-INPUTCD (IDX-Z - 1)
                                                =   "180012210"  OR
                                                    "180012310"
+                                               OR  "180020410"
                        IF      SPA-SRYYMD      >   WRK-SYOYMD
                            MOVE    "0082"      TO  WRK-ERRCD
                            MOVE    "1"         TO  WRK-COM-CUR
