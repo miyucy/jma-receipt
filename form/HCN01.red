@@ -13622,10 +13622,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O407">
       <attribute name="obj_pos">
-        <point val="3.8,2.5"/>
+        <point val="3.8,2.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.8,2.20265;8.648,2.60265"/>
+        <rectangle val="3.8,2.15398;11.072,2.75398"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#PTNUM#</string>
@@ -13642,10 +13642,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.4"/>
+            <real val="0.6"/>
           </attribute>
           <attribute name="pos">
-            <point val="3.8,2.5"/>
+            <point val="3.8,2.6"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -13654,10 +13654,10 @@
             <enum val="0"/>
           </attribute>
           <attribute name="single">
-            <real val="0.2424"/>
+            <real val="0.3636"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.202"/>
+            <real val="0.303"/>
           </attribute>
         </composite>
       </attribute>

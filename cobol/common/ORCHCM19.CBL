@@ -1188,14 +1188,31 @@
       *****************************************************************
        300-HCM19-HEN-SEC                SECTION.
       *
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-PTID            TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+           IF    ( FLG-PTINF       NOT =   ZERO )
+               INITIALIZE              PTINF-REC
+           END-IF
+      *
            INITIALIZE                  HCM19
       *
       *    ¿ÇÎÅ²Ê
       *****MOVE    SPA-SRYKAMEI        TO  HCM19-SRYKA
       *    ´µ¼ÔÈÖ¹æ
            MOVE    SPA-PTNUM           TO  HCM19-PTNUM
+      *    ´µ¼ÔÌ¾¾Î¥«¥Ê
+           IF    ( PTINF-KANANAME (31 : )  =   SPACE )
+               MOVE    PTINF-KANANAME      TO  HCM19-KANANAME
+           ELSE
+               MOVE    PTINF-KANANAME      TO  HCM19-KANANAME2
+           END-IF
       *    ´µ¼ÔÌ¾¾Î
-           MOVE    SPA-NAME            TO  HCM19-NAME
+           IF    ( PTINF-NAME (27 : )  =   SPACE )
+               MOVE    PTINF-NAME      TO  HCM19-NAME
+           ELSE
+               MOVE    PTINF-NAME      TO  HCM19-NAME2
+           END-IF
       *
            MOVE    SPA-SEX             TO  HCM19-SEX
       *    À¸Ç¯·îÆü

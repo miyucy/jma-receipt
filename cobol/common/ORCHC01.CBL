@@ -40,6 +40,7 @@
       *  01.00.11    MCC-多々納   02/05/23  労災の追加
       *  01.00.12    NACL-多々納  02/09/13  自賠責・印刷サプの追加
       *  01.00.13    NACL-多々納  02/11/01  受給者番号の全角８文字以上対応
+      *  01.00.14    NACL-太田    03/03/20  フリガナ、年齢を表示する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -60,11 +61,13 @@
       *
       *    印刷用データ
        FD  PRT-FILE.
-           COPY    "HC01.INC".
+           COPY    "HCM01.INC"     REPLACING   //HCM01//
+                                   BY          //HC01//.
       *---- (01.00.05) LINE ADD START ----------------------------
       *    印刷用データ続紙
        FD  PRTX-FILE.
-           COPY    "HC011.INC".
+           COPY    "HCM011.INC"    REPLACING   //HCM011//
+                                   BY          //HC011//.
       *---- (01.00.05) LINE ADD END   ----------------------------
       *
        WORKING-STORAGE             SECTION.
@@ -428,8 +431,8 @@
       *
             INITIALIZE                 ORCSMKPRTAREA
             MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "HC01.dia"          TO  MKPRT-DIA
-            MOVE   "HC01.def"          TO  MKPRT-DEF
+            MOVE   "HCM01.red"         TO  MKPRT-DIA
+            MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
@@ -590,7 +593,16 @@
       *    MOVE    HC01LNK-PTNUM       TO  HC01-PTNUM
            MOVE    SPA-PTNUM           TO  HC01-PTNUM
       *---- (01.00.03) LINE MOD END -------------------------------
-           MOVE    PTINF-NAME          TO  HC01-NAME
+           IF    ( PTINF-KANANAME(31:) =   SPACE )
+               MOVE    PTINF-KANANAME      TO  HC01-KANANAME
+           ELSE
+               MOVE    PTINF-KANANAME      TO  HC01-KANANAME2
+           END-IF
+           IF      PTINF-NAME(31:)     =   SPACE
+               MOVE    PTINF-NAME          TO  HC01-NAME
+           ELSE
+               MOVE    PTINF-NAME          TO  HC01-NAME2
+           END-IF
       *
       *---- (01.00.01) LINE ADD START ----------------------------- 
       *    診療科
@@ -617,17 +629,14 @@
            MOVE    WRK-HMM             TO  HC01-TANJYOM
            MOVE    WRK-HDD             TO  HC01-TANJYOD
       *　　年齢
-           MOVE    SPA-SYSYMD(1:4)     TO  WRK-SPA-SYSYYYY
-           COMPUTE WRK-NENREI        =   WRK-SPA-SYSYY
+           MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
+           COMPUTE WRK-NENREI          =   WRK-SYSYY
                                        -   WRK-SYY
            IF      SPA-SYSYMD(5:4)     <   WRK-SYMD(5:4)
-               COMPUTE WRK-NENREI   =   WRK-NENREI   -   1
+               COMPUTE WRK-NENREI      =   WRK-NENREI   -   1
            END-IF
-      *---- (01.00.01) LINE MOD START ---------------------------------
-      *    MOVE   WRK-NENREI        TO  HC01-NENREI
-           MOVE    WRK-NENREI       TO  WRK-Z3
-      *****MOVE    WRK-Z3           TO  HC01-NENREI 
-      *---- (01.00.01) LINE MOD END -----------------------------------
+           MOVE    WRK-NENREI          TO  WRK-Z3
+           MOVE    WRK-Z3              TO  HC01-NENREI
       *
       *    自宅−住所
            MOVE    SPACE               TO  WRK-ADRS
@@ -685,11 +694,11 @@
       *    全角変換
            MOVE    PTHKN-KIGO          TO  WRK-MAE-INPUT
            PERFORM 2009-HENKAN-SEC
-           MOVE    WRK-OUT-INPUT(1:KANACHK-MAX)
+           MOVE    WRK-OUT-INPUT
                                        TO  WRK-KIGONUM
            MOVE    PTHKN-NUM           TO  WRK-MAE-INPUT
            PERFORM 2009-HENKAN-SEC
-           MOVE    WRK-OUT-INPUT(1:KANACHK-MAX)
+           MOVE    WRK-OUT-INPUT
                                        TO  WRK-NUM
       *
            IF      (WRK-KIGONUM        =   SPACE )  AND
@@ -887,7 +896,7 @@
       *            記号へ患者交付番号
                    MOVE    PTRSI-KOFUNUM       TO  WRK-MAE-INPUT
                    PERFORM 2009-HENKAN-SEC
-                   MOVE    WRK-OUT-INPUT(1:KANACHK-MAX)
+                   MOVE    WRK-OUT-INPUT
                                                TO  HC01-KIGONUM
       *
                END-IF
@@ -1019,7 +1028,7 @@
       *        MOVE    WRK-OUT-INPUT(1:14)        TO  WRK-JKYSNO
       *****END-IF
            MOVE    SPACE               TO  WRK-JKYSNO
-           MOVE    WRK-OUT-INPUT(1:KANACHK-MAX)
+           MOVE    WRK-OUT-INPUT
                                        TO  WRK-JKYSNO
       *
       *    適用開始年月日
@@ -1058,7 +1067,11 @@
            INITIALIZE  HC011
            MOVE    ZERO                TO  IDX
            MOVE    SPA-PTNUM           TO  HC011-PTNUM
-           MOVE    PTINF-NAME          TO  HC011-NAME
+           IF      PTINF-NAME(31:)     =   SPACE
+               MOVE    PTINF-NAME          TO  HC011-NAME
+           ELSE
+               MOVE    PTINF-NAME          TO  HC011-NAME2
+           END-IF
       *
       * 　 印刷項目編集
            PERFORM  UNTIL      FLG-PTBYOMEI    NOT =   ZERO
@@ -1138,8 +1151,8 @@
       *
             INITIALIZE                 ORCSMKPRTAREA
             MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "HC011.dia"         TO  MKPRT-DIA
-            MOVE   "HC011.def"         TO  MKPRT-DEF
+            MOVE   "HCM011.red"        TO  MKPRT-DIA
+            MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC011PARA           TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
@@ -1163,7 +1176,11 @@
            INITIALIZE  HC011
            MOVE    ZERO                TO  IDX
            MOVE    SPA-PTNUM           TO  HC011-PTNUM
-           MOVE    PTINF-NAME          TO  HC011-NAME
+           IF      PTINF-NAME(31:)     =   SPACE
+               MOVE    PTINF-NAME          TO  HC011-NAME
+           ELSE
+               MOVE    PTINF-NAME          TO  HC011-NAME2
+           END-IF
       *
            .
        20021-HC011-PRINT-EXT.
@@ -1311,14 +1328,16 @@
       *    全角変換処理
       *****************************************************************
        2009-HENKAN-SEC                 SECTION.
-     *
+      *
+           INITIALIZE                  WRK-OUT-INPUT
+      *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF      KANACHK-RC          =   ZERO
-               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+               MOVE    KANACHK-OUT-INPUT
                                            TO  WRK-OUT-INPUT
            ELSE
                MOVE    WRK-MAE-INPUT       TO  WRK-OUT-INPUT

@@ -685,6 +685,8 @@ COPYS = \
         HCM06V02.INC \
         CPPTKOHFTN.INC \
         HCM2CV01.INC \
+        HCM01.INC \
+        HCM011.INC \
 
 DBPATH = \
 	ORCA-DBPATH

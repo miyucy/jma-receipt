@@ -7,7 +7,10 @@
             02  HCM19-HKNJA PIC X(16).
             02  HCM19-KIGONUM   PIC X(32).
             02  HCM19-BIRTH PIC X(22).
-            02  HCM19-NAME  PIC X(24).
+            02  HCM19-KANANAME  PIC X(30).
+            02  HCM19-KANANAME2 PIC X(60).
+            02  HCM19-NAME  PIC X(26).
+            02  HCM19-NAME2 PIC X(52).
             02  HCM19-SEX   PIC X(2).
             02  HCM19-HONKZKKBN PIC X(16).
             02  HCM19-KOFYMD    PIC X(22).
