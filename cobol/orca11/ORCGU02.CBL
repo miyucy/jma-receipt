@@ -1220,7 +1220,7 @@
            IF      WRK-MCP-WIDGET      =   "SELNUM"
                PERFORM 4104-SELNUM-CHK-SEC
                IF      SPA-GMN-SELNUM      NOT =   ZERO
-                  GO      TO      4104-SELNUM-EXT
+                  GO      TO      4102-KIHON-CHK-EXT
                END-IF
            END-IF
       *
