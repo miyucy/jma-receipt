@@ -46,6 +46,7 @@
       *  01.00.11    NACL-門脇    03.03.12  先頭の診療行為コードの判定修正
       *  01.00.12    NACL-門脇    03.05.08  先頭の診療行為コードの判定修正
       *  01.00.13    NACL-門脇    03.05.13  腰部固定帯加算を器材点へ
+      *  01.00.14    NACL-藤原    03.05.27  検査のまとめの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -178,6 +179,7 @@
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDW                 PIC 9(04).
+           03  IDXX                PIC 9(04).
       *    点数回数編集用     
            03  IDA                 PIC 9(04).
            03  IDB                 PIC 9(04).
@@ -1717,48 +1719,48 @@
       **     END-IF
       *     
       *    検査のまとめ処理
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       31
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       31
                INITIALIZE                  WRK-RECE44-FLG-TABLE
                                            WRK-KAISU-G
                                            WRK-HOUKNSKBN
       ****                                 WRK-KOHBUNRI
       *
-               IF      WRK-SUM-KAISU (IDX)   >   ZERO
+               IF      WRK-SUM-KAISU (IDXX)   >   ZERO
                    PERFORM VARYING IDY FROM    1   BY  1
                            UNTIL   IDY >       WRK-RECE44-MAX
-                       IF      WRK-RECE44-KAISU (IDY 1 IDX)    
+                       IF      WRK-RECE44-KAISU (IDY 1 IDXX)    
                                                >   ZERO
                            IF      WRK-KAISU (1)   =   ZERO
-                               MOVE    WRK-RECE44-KAISU (IDY 1 IDX)
+                               MOVE    WRK-RECE44-KAISU (IDY 1 IDXX)
                                                    TO  WRK-KAISU (1)
-                               MOVE    WRK-RECE44-KAISU (IDY 2 IDX)
+                               MOVE    WRK-RECE44-KAISU (IDY 2 IDXX)
                                                    TO  WRK-KAISU (2)
-                               MOVE    WRK-RECE44-KAISU (IDY 3 IDX)
+                               MOVE    WRK-RECE44-KAISU (IDY 3 IDXX)
                                                    TO  WRK-KAISU (3)
-                               MOVE    WRK-RECE44-KAISU (IDY 4 IDX)
+                               MOVE    WRK-RECE44-KAISU (IDY 4 IDXX)
                                                    TO  WRK-KAISU (4)
                                MOVE    WRK-RECE44-HOUKNSKBN (IDY)
                                                    TO  WRK-HOUKNSKBN                    
       *****                    MOVE    WRK-RECE44-KOHBUNRI (IDY)
       *****                                        TO  WRK-KOHBUNRI                  
                            END-IF
-                           IF      WRK-RECE44-KAISU (IDY 2 IDX)
+                           IF      WRK-RECE44-KAISU (IDY 2 IDXX)
                                                    =   WRK-KAISU (2)
-                           AND     WRK-RECE44-KAISU (IDY 3 IDX)
+                           AND     WRK-RECE44-KAISU (IDY 3 IDXX)
                                                    =   WRK-KAISU (3)
-                           AND     WRK-RECE44-KAISU (IDY 4 IDX)
+                           AND     WRK-RECE44-KAISU (IDY 4 IDXX)
                                                    =   WRK-KAISU (4)
                            AND     WRK-RECE44-HOUKNSKBN (IDY)
                                                    =   WRK-HOUKNSKBN
       *****                AND     WRK-RECE44-KOHBUNRI  (IDY)
       *****                                        =   WRK-KOHBUNRI
                                MOVE    ZERO        TO
-                                           WRK-RECE44-KAISU (IDY 1 IDX)
-                               COMPUTE WRK-SUM-KAISU (IDX) 
-                                                   =
-                                                   WRK-SUM-KAISU (IDX) - 
-                                                   WRK-KAISU   (1)                                       
+                                           WRK-RECE44-KAISU (IDY 1 IDXX)
+                               COMPUTE WRK-SUM-KAISU (IDXX) 
+                                               =
+                                               WRK-SUM-KAISU (IDXX) - 
+                                               WRK-KAISU   (1)                                       
                                MOVE    "1"         TO  WRK-RECE44-FLG 
                                                        (IDY)
                            END-IF
@@ -1769,7 +1771,7 @@
                    END-IF
       *
       *            同じ検査が月に何日あるか
-                   COMPUTE IDX1    =   IDX     +   1
+                   COMPUTE IDX1    =   IDXX     +   1
                    PERFORM VARYING IDZ FROM    IDX1    BY  1
                            UNTIL   IDZ >       31
                        MOVE    ZERO                TO  FLG-OK                            
