@@ -5,7 +5,6 @@ exec_prefix= @exec_prefix@
 
 SUBDIRS = \
 	common \
-	copy \
 	orca00 \
 	orca01 \
 	orca02 \
@@ -36,14 +35,18 @@ SUBDIRS = \
 	orca107 \
 	orcabt
 
+COPYDIRS = copy
+
 all:   
-	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i all; done
+	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i all; done
 clean: 
-	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i clean; done
+	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i clean; done
 distclean: 
-	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
+	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
 	-rm -f Makefile Makefile.global
 
-install: 
-	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i install; done
+install installdirs:
+	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@ ; done
 
+install-copys install-copydirs: 
+	@set -e; for i in $(COPYDIRS); do $(MAKE) -C $$i $@ ; done

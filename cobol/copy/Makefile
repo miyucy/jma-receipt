@@ -480,10 +480,3 @@ COPYS = \
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global
 
-install: all
-	-@if [ ! -d $(copydir) ]; then \
-	  $(MKDIR) $(copydir); \
-	fi
-	for f in $(COPYS); do \
-	  $(INSTALL_DATA) $${f} $(copydir) ; done
-

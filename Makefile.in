@@ -20,13 +20,16 @@ scriptsdir = ${exec_prefix}/scripts
 SUBDIRS = cobol lddef record screen form scripts doc data etc init
 
 all:   
-	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i all; done
+	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i all; done
 clean: 
-	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i clean; done
+	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i clean; done
 
 distclean: 
-	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
+	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
 	-rm -f Makefile
 
-install: 
-	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i install; done
+install installdirs:
+	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done
+
+install-copys install-copydirs: 
+	$(MAKE) -C cobol $@

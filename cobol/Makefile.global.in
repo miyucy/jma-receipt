@@ -24,8 +24,8 @@ MKDIR = mkdir -p
 
 COBCOPYS = -I$(srcdir)/../../cobol/copy
 
-COBOLFLAGS =  -m -dynamic 
-EXEC_COBOLFLAGS = -dynamic 
+COBOLFLAGS =  -m -dynamic -F
+EXEC_COBOLFLAGS = -dynamic -F
 DEPDIR = .deps
 
 OBJS = ${SRCS:.CBL=.so}
@@ -53,3 +53,22 @@ distclean:
 	-rm -R $(DEPDIR)
 
 -include $(wildcard $(DEPDIR)/*.Po) /dev/null
+
+install: all installdirs
+	for f in $(OBJS) $(EXEC); do \
+	  $(INSTALL) -m 555 $${f} $(libdir) ; done
+
+installdirs:
+	-@if [ ! -d $(libdir) ]; then \
+	  $(MKDIR) $(libdir); \
+	fi
+
+install-copys: install-copydirs
+	for f in $(COPYS); do \
+	  $(INSTALL_DATA) $${f} $(copydir) ; done
+
+install-copydirs:
+	-@if [ ! -d $(copydir) ]; then \
+	  $(MKDIR) $(copydir); \
+	fi
+
