@@ -289,7 +289,7 @@
            03  WRK-HKNJANUM        PIC X(08).
            03  WRK-KYURATE-9       PIC 9(03).
            03  WRK-KYURATE         PIC Z9.
-           03  WRK-BEDSU           PIC ZZ9.
+           03  WRK-BEDSU           PIC ZZZ.
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -1348,7 +1348,8 @@
            IF      FLG-SEIKYU          =   ZERO
                MOVE    MCPDATA-REC         TO  RECE10-REC
                MOVE    RECE10-RECESYUBETU  TO  KOHSKY-RECESYUBETU
-      *****ELSE
+           ELSE
+                GO  TO  20022-KOHSKY-WRITE-EXT
       *         STRING  "レセプト種別が設定不能 PTNUM="
       *                                     DELIMITED  BY  SIZE
       *                 RECE02X-PTNUM       DELIMITED  BY  SIZE 
@@ -1628,8 +1629,18 @@
       *     END-IF
       *
       *    病床数
-           MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
-           MOVE    WRK-BEDSU           TO  HC06-BEDSU
+           IF    ( SYS-1001-BEDSU      >   ZERO )
+           AND   ( SYS-1001-HOSPSBT    =   "1"  ) 
+               IF      RECE02-BEDSUFLG     =   "1" 
+                   MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
+                   MOVE    WRK-BEDSU           TO  HC06-BEDSU
+               ELSE
+                   IF      SYS-1001-BEDSUIPN   >=  200
+                       MOVE    SYS-1001-BEDSUIPN   TO  WRK-BEDSU
+                       MOVE    WRK-BEDSU           TO  HC06-BEDSU
+                   END-IF
+               END-IF
+           END-IF
       *
       *    ＯＣＲ
            IF  CNT-PAGE                =   1
@@ -2991,7 +3002,7 @@
 
       *            
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL     IDX       >   WRK-TEKIYOU-LINE
+                     UNTIL     IDX       >   35
       *        <単価>
                EVALUATE    IDX
       *        再診

@@ -973,9 +973,17 @@
            MOVE    10                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    病床数
-           IF      SYS-1001-BEDSUIPN   >=  200
-               MOVE    SYS-1001-BEDSUIPN   TO  WRK-NUM
-               MOVE    3                   TO  WRK-NAGASA
+           IF    ( SYS-1001-BEDSU      >   ZERO )
+           AND   ( SYS-1001-HOSPSBT    =   "1"  ) 
+               IF      RECE02-BEDSUFLG     =   "1" 
+                   MOVE    SYS-1001-BEDSU      TO  WRK-NUM
+                   MOVE    4                   TO  WRK-NAGASA
+               ELSE
+                   IF      SYS-1001-BEDSUIPN   >=  200
+                       MOVE    SYS-1001-BEDSUIPN   TO  WRK-NUM
+                       MOVE    4                   TO  WRK-NAGASA
+                   END-IF
+               END-IF
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC         
       *    カルテ番号等
