@@ -231,6 +231,8 @@
            03  FLG-SYUBETU         PIC 9(01).
       *
            03  FLG-K09TUIKA           PIC 9(01).
+      *    入力なし
+           03  FLG-INPUT-NASI      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -471,6 +473,7 @@
            03  WRK-SPA-MAP-IDX     PIC 9(04).
       *
            03  WRK-ERRCD           PIC X(04).
+           03  WRK-KIDCD           PIC X(04).
       *    パス名
            03  WRK-PATH            PIC X(64).
       *
@@ -647,6 +650,16 @@
        01  WRK-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
+      *
+      *    保存ＳＰＡ領域ワーク
+       01  MAE-SCR-REC.
+           COPY    "CPK02SPASCR.INC"  REPLACING
+                                       //SPA-// BY //MAE-//.
+      *
+      *    保存ＳＰＡ領域ワーク
+       01  WRK-HZN-SCR-AREA.
+           COPY    "CPK02SPASCR.INC"  REPLACING
+                                       //SPA-// BY //WRK-HZN-//.
       *
       *    ワークテーブル２(算定用一時保存用）
       *          (CPK02SPASCR.INC の長さを変更したら、変更すること）
@@ -877,6 +890,8 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  MAE-SCR-REC
+           INITIALIZE                  WRK-SCR-REC
       *
            MOVE    SPA-COMMON          TO  SPA-AREA.
            MOVE    SPA-FREE            TO  SPA-K02
@@ -1219,9 +1234,6 @@
                        MOVE    ZERO               TO  SPA-SAISIN-CHK
                        MOVE    2                  TO  FLG-PARASET
                        PERFORM 3002-PARA-SET-SEC
-      *TEST
-           DISPLAY "K02 A SPA-HKNCOMINUM:" SPA-HKNCOMBINUM
-      *TEST
                        IF     (SPA-SYORIFLG        =   ZERO )
                           AND (SPA-WKSRY-HKNCOMBI  =   ZERO )
                           PERFORM 3009-SAIHEN-SEC
@@ -1590,20 +1602,32 @@
                                            SPA-AREA
                                            SPA-K01KYOUTU
                                            SPA-K02
-           END-IF
       *
-           INITIALIZE                  ORCSC95AREA
-      *****MOVE    "2"                 TO  LNK-SC95-KBN
-           MOVE    "8"                 TO  LNK-SC95-KBN
-           MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
-           MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
-           MOVE    "K02"               TO  LNK-SC95-PG
-           CALL    "ORCSC95"           USING
-                                       MCPAREA
-                                       ORCSC95AREA
-                                       SPA-AREA
-                                       SPA-K01KYOUTU
-                                       SPA-K02
+               INITIALIZE                  ORCSC95AREA
+               MOVE    "2"                 TO  LNK-SC95-KBN
+               MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
+               MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
+               MOVE    "K02"               TO  LNK-SC95-PG
+               CALL    "ORCSC95"           USING
+                                           MCPAREA
+                                           ORCSC95AREA
+                                           SPA-AREA
+                                           SPA-K01KYOUTU
+                                           SPA-K02
+           ELSE
+      *        中途終了分のみ表示
+               INITIALIZE                  ORCSC95AREA
+               MOVE    "3"                 TO  LNK-SC95-KBN
+               MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
+               MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
+               MOVE    "K02"               TO  LNK-SC95-PG
+               CALL    "ORCSC95"           USING
+                                           MCPAREA
+                                           ORCSC95AREA
+                                           SPA-AREA
+                                           SPA-K01KYOUTU
+                                           SPA-K02
+           END-IF
       *
            IF     SPA-HKNCOMBINUM      =   SPACE  OR  ZERO
       *        スパ共通編集処理
@@ -2414,7 +2438,7 @@
            END-IF
       *
       *    ＤＯ診療日付編集
-           PERFORM 3101-DORRKYMD-HEN-SEC
+      *****PERFORM 3101-DORRKYMD-HEN-SEC
       *
       *    ＤＯ編集
            MOVE    "F"                 TO  SPA-GMN-TEISEI
@@ -2424,129 +2448,6 @@
        310-SPA-SET-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    ＤＯ診療日付編集処理
-      *****************************************************************
-       3101-DORRKYMD-HEN-SEC              SECTION.
-      *
-           INITIALIZE                  SPA-GMN-RRKTBL
-      *    受診歴を検索する  医療機関、患者ＩＤ
-           INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
-           MOVE    SPA-PTID            TO  JYURRK-PTID
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-           MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
-      *
-           MOVE    JYURRK-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "JYURRK-KEY7"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "JYURRK-KEY7"      TO  ORC-DBPATH
-               PERFORM 970-JYURRK-READ-SEC
-           ELSE
-               INITIALIZE                  JYURRK-REC
-               MOVE    1               TO  FLG-JYURRK
-           END-IF
-      *
-           MOVE    ZERO                TO  IDX
-           PERFORM
-               UNTIL   (FLG-JYURRK         =   1   )  OR
-                       (SPA-GMN-MAX1       >=  100 )
-      *        診療日、連番で１行とする
-               MOVE    ZERO            TO  IDX-S
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL       IDX2    >   SPA-GMN-MAX1
-                   IF     (JYURRK-RENNUM       =   SPA-NAI-RENNUM
-                                                       (IDX2))  AND
-                          (JYURRK-DOUJI-RENNUM =   SPA-NAI-DOUJI-RENNUM
-                                                       (IDX2))  AND
-                          (JYURRK-SRYYMD       =   SPA-NAI-RRKYMD
-                                                       (IDX2))
-                       MOVE    IDX2            TO  IDX-S
-                       MOVE    SPA-GMN-MAX1    TO  IDX2
-                   END-IF
-               END-PERFORM
-      *
-               IF      IDX-S           =   ZERO
-                   ADD     1               TO  SPA-GMN-MAX1
-                   MOVE    SPA-GMN-MAX1    TO  IDX
-               ELSE
-                   MOVE    IDX-S           TO  IDX
-               END-IF
-      *
-      *        明細項目退避
-               PERFORM 3101-JYURRK-HEN-SEC
-      *
-               MOVE    "JYURRK-KEY7"    TO  ORC-DBPATH
-               PERFORM 970-JYURRK-READ-SEC
-           END-PERFORM
-      *
-      *    診察日の再編集
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-MAX1
-               IF     (SPA-NAI-RENNUM (IDX)    =   1  )  AND
-                      ((IDX                    <   100)  AND
-                       (SPA-NAI-RRKYMD (IDX)
-                                           NOT =   SPA-NAI-RRKYMD
-                                                       (IDX + 1))) AND
-                      (SPA-NAI-DOUJI-RENNUM (IDX)  =   ZERO  )
-                   CONTINUE
-               ELSE
-                   MOVE    "("                 TO  SPA-GMN-RRKYMD (IDX)
-                                                               (10:1)
-                   MOVE    SPA-NAI-RENNUM (IDX) 
-                                               TO  SPA-GMN-RRKYMD (IDX)
-                                                              (11:1)
-                   MOVE    ")"                 TO  SPA-GMN-RRKYMD (IDX)
-                                                              (12:1)
-                   IF      SPA-NAI-DOUJI-RENNUM (IDX)  NOT =   ZERO
-                       MOVE    SPA-NAI-DOUJI-RENNUM (IDX) 
-                                               TO  SPA-GMN-RRKYMD (IDX)
-                                                              (13:1)
-                   END-IF
-               END-IF
-               IF      SPA-NAI-RRK-HKNKBN  (IDX)  =   "1"
-                   MOVE    "(労)"            TO  SPA-GMN-RRKYMD (IDX)
-                                                              (13:)
-               END-IF
-               IF      SPA-NAI-RRK-HKNKBN  (IDX)  =   "2"
-                   MOVE    "(自)"            TO  SPA-GMN-RRKYMD (IDX)
-                                                              (13:)
-               END-IF
-           END-PERFORM
-      *
-           .
-       3101-DORRKYMD-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    画面編集処理
-      *****************************************************************
-       3101-JYURRK-HEN-SEC             SECTION.
-      *
-           MOVE    IDX                 TO  SPA-GMN-NO    (IDX)
-      *    連番
-           MOVE    JYURRK-RENNUM       TO  SPA-NAI-RENNUM(IDX)
-      *    連番
-           MOVE    JYURRK-DOUJI-RENNUM TO  SPA-NAI-DOUJI-RENNUM(IDX)
-      *    診察日
-           MOVE    JYURRK-SRYYMD       TO  SPA-NAI-RRKYMD(IDX)
-           MOVE    JYURRK-SRYYMD       TO  WRK-SYMD
-           PERFORM 520-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  SPA-GMN-RRKYMD (IDX)
-      *    保険区分
-           MOVE    JYURRK-HKNKBN       TO  SPA-NAI-RRK-HKNKBN (IDX)
-      *    保険組合せ
-           MOVE    JYURRK-HKNCOMBINUM  TO  SPA-NAI-RRK-HKNCOMBI (IDX)
-      *
-           MOVE    IDX                 TO  SPA-GMN-MAX1
-      *
-           .
-       3101-JYURRK-HEN-EXT.
-           EXIT.
       *****************************************************************
       *    保険組合決定編集処理
       *****************************************************************
@@ -2614,13 +2515,13 @@
            MOVE    SPA-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
-           IF      AGECHK-FTNRATE  NOT =   ZERO
+      **** IF      AGECHK-FTNRATE      =   ZERO
       *        負担率
                MOVE    AGECHK-FTNRATEMEI   TO  SPA-GMN-FTNRATEMEI
                MOVE    AGECHK-FTNRATEMEI   TO  SPA-FTNRATEMEI
                MOVE    AGECHK-FTNRATE      TO  SPA-GMN-FTNRATE
                MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
-           END-IF
+      *****END-IF
            MOVE    ZERO                TO  SPA-RJN-ERR
            MOVE    ZERO                TO  SPA-HKN-ERR
       *
@@ -2802,6 +2703,9 @@
        3103-SAIHEN-HEN-SEC                  SECTION.
       *
            MOVE    ZERO               TO  FLG-SET
+           IF      FLG-K09TUIKA       =   ZERO
+               MOVE    1                  TO  SPA-SINSATU-SAI
+           END-IF
       *
       *    診療室入力あり編集
            PERFORM     VARYING   IDX   FROM    1   BY  1
@@ -4524,19 +4428,27 @@
            END-IF
       *    訂正の時、エラー
            IF      SPA-SYORIFLG        =   1
-               MOVE    "1008"              TO  SPA-ERRCD
+      *********MOVE    "1008"              TO  SPA-ERRCD
+      *******  CONTINUE
+      *        訂正で継続のある時、エラーとする
+               IF      (SPA-CONTKBN        =   "1"   OR  "2")  AND
+                       (SPA-DENPJTIKBN     =   "1"   )
+                   MOVE    "1029"              TO  SPA-ERRCD
+                   GO      TO      41013-SRYKAI-SYORI-EXT
+               END-IF
            ELSE
                IF      SPA-PTID            =   ZERO
                    MOVE    ZERO                TO  SPA-GMN-CUR
                    MOVE    K02-SRYKA           TO  SPA-GMN-SRYKA-G
                    GO      TO      41013-SRYKAI-SYORI-EXT
                END-IF
+           END-IF
       ******** MOVE    "0107"              TO  SPA-KIDCD
       *
                MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
                MOVE    K02-SRYKA           TO  SPA-GMN-SRYKA-G
                PERFORM 41013-SRYKA-CHANGE-SEC
-           END-IF
+      *****END-IF
            .
        41013-SRYKAI-SYORI-EXT.
            EXIT.
@@ -4548,22 +4460,18 @@
       *
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
            MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
+      *    対象の科の保険組合せにする
+           IF      SPA-SYORIFLG        =   ZERO
+               MOVE    SPACE               TO  SPA-HKNCOMBINUM
+               MOVE    SPACE               TO  SPA-DRCD
+           END-IF
       *
-           MOVE    SPA-DRCD            TO  WRK-DRCD
-           MOVE    SPACE               TO  SPA-DRCD
-      *
+           MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
       *    初期ＳＰＡ編集処理
            INITIALIZE                  ORCSC95AREA
            MOVE    SPA-NAI-SRYYMD      TO  LNK-SC95-SRYYMD
            MOVE    SPA-GMN-SRYYMD      TO  LNK-SC95-SRYYMDG
-           INITIALIZE                  SPA-DENPNUM
-           INITIALIZE                  SPA-SYORIFLG
-           INITIALIZE                  SPA-K02-AREA
-           INITIALIZE                  SPA-SCR-REC
-           MOVE    SPA-SRYKA           TO  SPA-GMN-SRYKA
-           MOVE    SPA-SRYKAMEI        TO  SPA-GMN-SRYKAMEI
-      **** MOVE    "5"                 TO  LNK-SC95-KBN
-           MOVE    "2"                 TO  LNK-SC95-KBN
+           MOVE    "K"                 TO  LNK-SC95-KBN
            MOVE    "K02"               TO  LNK-SC95-PG
            CALL    "ORCSC95"           USING
                                        MCPAREA
@@ -4571,15 +4479,56 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
-           IF      SPA-DRCD            =   SPACE
-               MOVE    WRK-DRCD            TO  SPA-DRCD
+      *
+           MOVE    WRK-SCR-REC         TO  SPA-SCR-REC
+      *
+      *    再表示編集処理
+           IF      LNK-SC95-WKSRYACT   =   1
+               MOVE    "0107"          TO  SPA-KIDCD
+               GO      TO      41013-SRYKA-CHANGE-EXT
+           END-IF
+           MOVE    1               TO  SPA-GMN-PAGE
+           MOVE    1               TO  SPA-GMN-CUR
+           MOVE    1               TO  SPA-MAP-IDX
+      *    訂正の時、以下の処理なし
+           IF      SPA-SYORIFLG        =   1
+               GO      TO      41013-SRYKA-CHANGE-EXT
            END-IF
       *
+           MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
+           MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
+      *
+      **   MOVE    SPA-DRCD            TO  WRK-DRCD
+      *    MOVE    SPACE               TO  SPA-DRCD
+      *
+      *    初期ＳＰＡ編集処理
+      *    INITIALIZE                  ORCSC95AREA
+      *    MOVE    SPA-NAI-SRYYMD      TO  LNK-SC95-SRYYMD
+      *    MOVE    SPA-GMN-SRYYMD      TO  LNK-SC95-SRYYMDG
+      *    INITIALIZE                  SPA-DENPNUM
+      *    INITIALIZE                  SPA-SYORIFLG
+      *    INITIALIZE                  SPA-K02-AREA
+      *    INITIALIZE                  SPA-SCR-REC
+      *    MOVE    SPA-SRYKA           TO  SPA-GMN-SRYKA
+      *    MOVE    SPA-SRYKAMEI        TO  SPA-GMN-SRYKAMEI
+      **** MOVE    "5"                 TO  LNK-SC95-KBN
+      *    MOVE    "2"                 TO  LNK-SC95-KBN
+      *    MOVE    "K02"               TO  LNK-SC95-PG
+      *    CALL    "ORCSC95"           USING
+      *                                MCPAREA
+      *                                ORCSC95AREA
+      *                                SPA-AREA
+      *                                SPA-K01KYOUTU
+      *                                SPA-K02
+      *    IF      SPA-DRCD            =   SPACE
+      *        MOVE    WRK-DRCD            TO  SPA-DRCD
+      *    END-IF
+      *
       *    スパ共通編集処理
-           PERFORM                 310-SPA-SET-SEC
+      *    PERFORM                 310-SPA-SET-SEC
       *
       *    チェック用月内診療行為セット
-           PERFORM                 320-SPA-CHKSET-SEC
+      **** PERFORM                 320-SPA-CHKSET-SEC
       *
            IF      LNK-SC95-DOUJI-RENNUM   NOT =   ZERO
                MOVE    "0103"          TO  SPA-KIDCD
@@ -4597,20 +4546,38 @@
                GO      TO      41013-SRYKA-CHANGE-EXT
            END-IF
       *    パラメタファイルより表示
-           MOVE    3               TO  FLG-PARASET
-           PERFORM                 3002-PARA-SET-SEC
+      ***  MOVE    3               TO  FLG-PARASET
+      **** PERFORM                 3002-PARA-SET-SEC
       *
       *    スパ共通編集処理
-      *****PERFORM                 310-SPA-SET-SEC
+           PERFORM                 310-SPA-SET-SEC
       *
       *    画面用スパ編集処理
-           PERFORM                 310-SPA-GMNSET-SEC
+      *****PERFORM                 310-SPA-GMNSET-SEC
+      *
+      *    診察料のみ変換する
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           INITIALIZE                      ORCSC10SAREA
+           MOVE    "K"                 TO  LNK-SC10S-SYORI
+           CALL    "ORCSC10S"          USING
+                                       ORCSC10SAREA
+                                       SPA-AREA
+                                       SPA-SCR-REC
+                                       SPA-K02
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           MOVE    SPA-KIDCD       TO  WRK-KIDCD
+      *
+      *    診療行為、計計算処理、編集
+           MOVE    SPACE           TO  FLG-TOROKU
+           PERFORM 510-TBLHEN-SEC
+           MOVE    SPACE           TO  FLG-TOROKU
       *
            MOVE    ZERO            TO  SPA-SAISIN-CHK
       *
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-MAP-IDX
+           MOVE    WRK-KIDCD       TO  SPA-KIDCD
            .
        41013-SRYKA-CHANGE-EXT.
            EXIT.
@@ -4634,8 +4601,13 @@
       *    画面→ＳＰＡ編集処理
            PERFORM 410110-INPUT-GMNSET-SEC
       *
-      *    入力コード・名称チェック処理
-           PERFORM 410112-KOUI-SPACHK-SEC
+           IF      FLG-INPUT-NASI      =   1
+               PERFORM 410119-SAIINPUT-SEC
+           ELSE
+      *        入力コード・名称チェック処理
+               PERFORM 410112-KOUI-SPACHK-SEC
+      *
+           END-IF
       *
            .
        41011-KOUI-ALLHEN-EXT.
@@ -4654,9 +4626,18 @@
                MOVE    ZERO                TO  WRK-IN-MAP-IDX
            END-IF
       *
+      *    前回のＳＰＡを保存する
+           MOVE    SPA-SCR-REC         TO  MAE-SCR-REC
+      *
+           MOVE    1                   TO  FLG-INPUT-NASI
       *    カーソル位置のクリア等
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   200
+               IF      SPA-COM-CUR (IDX)   =   "1"
+                   IF      SPA-GMN-INPUTCD (IDX)   NOT =   SPACE
+                       MOVE    ZERO                TO  FLG-INPUT-NASI
+                   END-IF
+               END-IF
                MOVE    SPACE               TO  SPA-COM-CUR (IDX)
                MOVE    SPACE               TO  SPA-COM-IN  (IDX)
                MOVE    SPACE               TO  SPA-COM-IN2 (IDX)
@@ -4676,6 +4657,7 @@
                                                            (SPA-GMN-IDX)
                    MOVE    SPACE               TO  SPA-COM-CUR
                                                            (SPA-GMN-IDX)
+                   MOVE    ZERO                TO  FLG-INPUT-NASI
                END-IF
       *
                MOVE    K02-INPUTCD (WRK-IDX2)  TO  SPA-GMN-INPUTCD
@@ -4764,6 +4746,11 @@
       *
            IF      WRK-ERRCD       NOT =   SPACE
                MOVE    WRK-ERRCD           TO  SPA-ERRCD
+               GO      TO      410112-KOUI-SPACHK-EXT
+           END-IF
+      *
+      *    入力がない時、以下をしない
+           IF      FLG-INPUT-NASI      =   1
                GO      TO      410112-KOUI-SPACHK-EXT
            END-IF
       *
@@ -5224,8 +5211,18 @@
                       (SPA-GMN-INPUTCD(IDX)    NOT =   SPACE )
                    MOVE    IDX             TO  WRK-MAX-IDX
                END-IF
+      *        '_'をなくす
+               INSPECT SPA-GMN-INPUTCD (IDX)
+                       REPLACING   ALL "_"  BY  " "
+      *        ＊をなくす
+               PERFORM 51011-KAISU-CHK-SEC
+      *
            END-PERFORM
       *
+           IF     (FLG-INPUT-NASI      =   1  )  AND
+                  (FLG-KUHAKU          =   1  )
+               MOVE    ZERO                TO  WRK-IN-IDX
+           END-IF
            IF      WRK-IN-IDX          =   ZERO
                MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
                MOVE    WRK-MAX-IDX         TO  SPA-GMN-IDX
@@ -5415,7 +5412,9 @@
                END-IF
            ELSE
       *        上記以外で、数量５文字以上はエラー
-               IF      LNK-SC97-SURYOFLG        >   5
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX) (1:2)
+                                           NOT =   "09" )  AND
+                      (LNK-SC97-SURYOFLG        >   5   )
                    MOVE    "0051"          TO  SPA-ERRCD
                    GO      TO      4101113-INPUTCD-CHK-EXT
                END-IF
@@ -6488,7 +6487,7 @@
            MOVE    "6"                 TO  LNK-SC97-CDSYU
            MOVE    LNK-SC97-CDSYU      TO  ICD-CDSYU
       *
-           MOVE    WRK-INPUTCD             TO  ICD-INPUTCD
+           MOVE    WRK-INPUTCD         TO  ICD-INPUTCD
       *
            PERFORM 930-INPUTCD-READ-SEC
       *
@@ -8235,6 +8234,11 @@
                                        TO  SPA-DOUJI-RENNUM
            MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
            MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
+      *    診療科
+           MOVE    SPA-NAI-RRK-SRYKA(SPA-NAI-DOSELNUM)
+                                       TO  SPA-SRYKA
+           MOVE    SPA-NAI-RRK-SRYKA(SPA-NAI-DOSELNUM)
+                                       TO  SPA-OLD-SRYKA
       *
       *    訂正処理
            MOVE    1                   TO  SPA-SYORIFLG
@@ -10872,7 +10876,7 @@
       *    各合計計算処理
            PERFORM 4506-TOTALKEI-SEC
       *    薬剤一部負担金計算処理
-           PERFORM 4505-YAKFTN-KEI-SEC
+      *****PERFORM 4505-YAKFTN-KEI-SEC
       *
       *****IF      FLG-PARA            =   ZERO
       *        MOVE    SYUNOU-REC          TO  PARA-DATA-REC
@@ -12041,11 +12045,18 @@
            ELSE
                COMPUTE SPA-MAP-IDX         =   WRK-MAP-MAX
                                            +   1
-               IF      SPA-MAP-IDX         >   20
-                   OR  SPA-GMN-PAGE        <   WRK-MAP-MAXPAGE
-                   MOVE    99                  TO  SPA-MAP-IDX
+               IF      SPA-SINSATU-SAI     =   1
+      *            初期表示の時１ページ目へ
+                   IF     (SPA-MAP-IDX         >   20 )
+                       OR (SPA-GMN-PAGE        <   WRK-MAP-MAXPAGE)
+                       MOVE    99                  TO  SPA-MAP-IDX
+                   END-IF
+                   MOVE    ZERO            TO  SPA-SINSATU-SAI
                ELSE
-                   IF      SPA-GMN-PAGE    >   WRK-MAP-MAXPAGE
+      *            最終行へ
+                   IF      SPA-MAP-IDX         >   20
+                       MOVE    99                  TO  SPA-MAP-IDX
+                   ELSE
                        MOVE    WRK-MAP-MAXPAGE     TO  SPA-GMN-PAGE
                    END-IF
                END-IF
@@ -12171,6 +12182,9 @@
                MOVE    SPA-GMN-NO     (IDX)    TO  WRK-ZZ
                MOVE    WRK-ZZ                  TO  K02-NO  (IDX)
                MOVE    SPA-GMN-RRKYMD (IDX)    TO  K02-RRKYMD(IDX)
+               MOVE    SPA-GMN-RRKSRYKA(IDX)   TO  K02-RRKSRYKA(IDX)
+               MOVE    SPA-GMN-RRKHKNCOMBI(IDX)
+                                               TO  K02-RRKHKNCOMBI(IDX)
                IF      SPA-GMN-NO (IDX)    =   SPA-NAI-TESELNUM
                    MOVE    "T"             TO  K02-SELECT  (IDX)
                ELSE

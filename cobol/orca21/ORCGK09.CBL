@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  03/04/11  履歴に科表示追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1071,7 +1072,9 @@
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-           MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+      *****MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+           MOVE    SPA-NAI-RRK-SRYKA(SPA-NAI-DOSELNUM)
+                                       TO  JYURRK-SRYKA
            MOVE    SPA-NAI-RRKYMD(SPA-NAI-DOSELNUM)
                                        TO  JYURRK-SRYYMD
            MOVE    SPA-NAI-RENNUM(SPA-NAI-DOSELNUM)
@@ -1140,7 +1143,7 @@
            MOVE    SPA-HOSPID          TO  SRY-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
-           MOVE    SPA-SRYKA           TO  SRY-SRYKA
+           MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
            MOVE    JYURRK-SRYYMD(1:6)  TO  SRY-SRYYM
            MOVE    JYURRK-ZAINUM(IDX-R)
                                        TO  SRY-ZAINUM
@@ -1926,7 +1929,9 @@
            MOVE    SPA-HOSPID          TO  SRY-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
-           MOVE    SPA-SRYKA           TO  SRY-SRYKA
+      *****MOVE    SPA-SRYKA           TO  SRY-SRYKA
+           MOVE    SPA-NAI-RRK-SRYKA(SPA-NAI-DOSELNUM)
+                                       TO  SRY-SRYKA
            MOVE    SPA-NAI-RRKYMD(SPA-NAI-DOSELNUM)(1:6)
                                        TO  SRY-SRYYM
            MOVE    WRK-DOZAINUM (IDX-R)
@@ -2149,6 +2154,7 @@
                MOVE    SPA-GMN-NO     (IDX)    TO  WRK-ZZ
                MOVE    WRK-ZZ                  TO  K09-NO  (IDX)
                MOVE    SPA-GMN-RRKYMD (IDX)    TO  K09-RRKYMD(IDX)
+               MOVE    SPA-GMN-RRKSRYKA (IDX)  TO  K09-RRKSRYKA(IDX)
                IF      SPA-GMN-NO (IDX)    =   SPA-NAI-DOSELNUM
                    MOVE    "T"             TO  K09-RRKLIST-SELECT (IDX)
                ELSE

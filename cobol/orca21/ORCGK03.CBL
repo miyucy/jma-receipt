@@ -208,6 +208,7 @@
            03  WRK-TIME2.
                05  WRK-TIME22      PIC 9(04).
       *
+           03  WRK-DEL-RENNUM              PIC 9(01).
            03  WRK-JYURRK-RENNUM           PIC 9(01).
            03  WRK-JYURRK-EDANUM           PIC 9(01).
            03  WRK-JYURRK-DOUJI-RENNUM     PIC 9(01).
@@ -2430,8 +2431,16 @@
       *
            ELSE
                MOVE    SPA-DENPNUM     TO  WRK-DENPNUM
+      *        診療科変更時
+               IF      SPA-OLD-SRYKA   NOT =   SPA-SRYKA
+                   MOVE    SPA-SRYKA           TO  SYU-SRYKA
+               END-IF
            END-IF
       *
+      *TEST
+           DISPLAY "K03 SYU-SRYKA:" SYU-SRYKA
+                  ",WRK-DENPNUM:" WRK-DENPNUM
+      *TEST
            MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
       *    伝票番号発行日
            MOVE    SPA-SYSYMD          TO  SYU-DENPPRTYMD
@@ -2863,7 +2872,7 @@
       *入金連番
            MOVE    01                  TO  SMEI-NYUKINRENNUM
       *診療科
-           MOVE    SPA-SRYKA           TO  SMEI-SRYKA
+           MOVE    SYU-SRYKA           TO  SMEI-SRYKA
       *
       *    入金額がゼロの時、入金力なし
            IF      SPA-GMN-NYUKIN      =   ZERO
@@ -2896,7 +2905,8 @@
                                         MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "0005"          TO  SPA-ERRCD
-               DISPLAY "K03 SINMEI-SYORI ERR:" SPA-ERRCD
+               DISPLAY "K03 SINMEI-SYORI MCP-RC:" MCP-RC
+                        ",KEY:" SMEI-KEY
            END-IF
       *
            .
@@ -2937,6 +2947,23 @@
                    MOVE    SMEI-NYUKINRENNUM   TO  WRK-NYUKINRENNUM
                END-IF
       *
+      *        診療科変更
+               IF      SYU-SRYKA       NOT =   SMEI-SRYKA
+                   MOVE    SYU-SRYKA           TO  SMEI-SRYKA
+      *
+                   MOVE    SYUMEI-REC          TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+                   IF      MCP-RC          NOT =   ZERO
+                       DISPLAY "K03 SYUMEI UPD ERR:"  MCP-RC
+                               ",KEY:" SMEI-KEY
+                   END-IF
+               END-IF
+      *
                MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SYUMEI-READ-SEC
            END-PERFORM
@@ -2965,7 +2992,7 @@
       *領収書再発行日
            MOVE    SPACE               TO  SMEI-RYOSYUREPRINTYMD
       *診療科
-           MOVE    SPA-SRYKA           TO  SMEI-SRYKA
+           MOVE    SYU-SRYKA           TO  SMEI-SRYKA
       *請求金額
            IF      SYU-SKYMONEY    NOT =   WRK-SKYMONEY
                COMPUTE SMEI-SKYMONEY       =   SYU-SKYMONEY
@@ -3000,7 +3027,8 @@
                                         MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "0005"          TO  SPA-ERRCD
-               DISPLAY "K03 SINMEI-SYORI ERR:" SPA-ERRCD
+               DISPLAY "K03 SINMEI-SYORI MCP-RC:" MCP-RC
+                       ",KEY:" SMEI-KEY
            END-IF
       *
            .
@@ -3013,7 +3041,8 @@
        45001-JYURRK-SYORI1-SEC          SECTION.
       *
       *    訂正時、受診履歴等の削除
-           IF      SPA-SYORIFLG         =   1
+           IF     (SPA-SYORIFLG         =   1  )  AND
+                  (SPA-OLD-SRYKA        =   SPA-SRYKA)
       *********PERFORM 450011-TEISEI-SYORI-SEC
                GO      TO      45001-JYURRK-SYORI1-EXT
            END-IF
@@ -3103,7 +3132,7 @@
            MOVE    SYU-HOSPID          TO  JYURRK-HOSPID
            MOVE    SYU-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-           MOVE    SYU-SRYKA           TO  JYURRK-SRYKA
+           MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    SYU-SRYYMD          TO  JYURRK-SRYYMD
            MOVE    WRK-JYURRK-RENNUM   TO  JYURRK-RENNUM
            MOVE    WRK-JYURRK-DOUJI-RENNUM
@@ -3145,6 +3174,7 @@
       *****************************************************************
        450011-TEISEI-SYORI-SEC          SECTION.
       *
+           MOVE    ZERO                TO  WRK-DEL-RENNUM
            MOVE    ZERO                TO  WRK-JYURRK-RENNUM
            MOVE    ZERO                TO  WRK-JYURRK-EDANUM
            MOVE    ZERO                TO  WRK-JYURRK-DOUJI-RENNUM
@@ -3155,7 +3185,6 @@
            MOVE    SYU-HOSPID          TO  JYURRK-HOSPID
            MOVE    SYU-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-           MOVE    SYU-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-DENPNUM         TO  JYURRK-DENPNUM
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
@@ -3175,6 +3204,7 @@
                    UNTIL       FLG-JYURRK      =   1
                IF      SPA-DOUJI-RENNUM    =   JYURRK-DOUJI-RENNUM
                    MOVE    JYURRK-RENNUM       TO  WRK-JYURRK-RENNUM
+                   MOVE    JYURRK-RENNUM       TO  WRK-DEL-RENNUM
                    MOVE    JYURRK-DOUJI-RENNUM TO
                                                WRK-JYURRK-DOUJI-RENNUM
       *
@@ -3209,6 +3239,10 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *    訂正で診療科に変更がある時対象の科から連番の変更
+           IF      SPA-OLD-SRYKA   NOT =   SPA-SRYKA
+               PERFORM 4500111-TEISEI-JYURRK-HEN-SEC
+           END-IF
       *
       *    初期編集
            IF      SPA-CONTKBN         =   "1" OR  "2"
@@ -3222,6 +3256,83 @@
       *
            .
        450011-TEISEI-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計マスタの診療回数クリア処理
+      *****************************************************************
+       4500111-TEISEI-JYURRK-HEN-SEC          SECTION.
+      *
+      *
+           MOVE    ZERO                TO  WRK-JYURRK-RENNUM
+           MOVE    ZERO                TO  WRK-JYURRK-EDANUM
+           MOVE    ZERO                TO  WRK-JYURRK-DOUJI-RENNUM
+      *
+           MOVE    SPACE               TO  JYURRK-REC
+           INITIALIZE                      JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-OLD-SRYKA       TO  JYURRK-SRYKA
+           MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
+               PERFORM 970-JYURRK-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-JYURRK
+           END-IF
+           PERFORM
+                   UNTIL       FLG-JYURRK      =   1
+      *
+               MOVE    JYURRK-KEY          TO  JYURRK-UPKEY
+               IF     (JYURRK-EDANUM       =   1 )  AND
+                     ((JYURRK-DOUJI-RENNUM     =   ZERO )  OR
+                      (JYURRK-DOUJI-RENNUM NOT =
+                                           WRK-JYURRK-DOUJI-RENNUM))
+                   ADD     1               TO  WRK-JYURRK-RENNUM
+                   MOVE    JYURRK-DOUJI-RENNUM
+                                           TO  WRK-JYURRK-DOUJI-RENNUM
+               END-IF
+               MOVE    WRK-JYURRK-RENNUM   TO  JYURRK-RENNUM
+               IF     (WRK-KAIKEI-RENNUM   =   JYURRK-KAIKEI-RENNUM) AND
+                      (WRK-DEL-RENNUM      =   JYURRK-EDANUM  )
+                   ADD     1               TO  JYURRK-KAIKEI-RENNUM
+               END-IF
+      *
+      *        キー変換
+               MOVE    JYURRK-REC          TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "JYURRK-UPD1"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *!       IF      MCP-RC          NOT =   ZERO
+                    DISPLAY "K03 JYURRK UPD1 ERR:" MCP-RC
+                    DISPLAY "K03  KEY:" JYURRK-KEY
+                    DISPLAY "K03 UKEY:" JYURRK-UPKEY
+      *!       END-IF
+      *
+               MOVE    "JYURRK-KEY4"            TO  ORC-DBPATH
+               PERFORM 970-JYURRK-NEXT-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       4500111-TEISEI-JYURRK-HEN-EXT.
            EXIT.
       *****************************************************************
       *    診療会計マスタの診療回数クリア処理
@@ -3429,6 +3540,8 @@
            MOVE    SPA-PTID            TO  SSANTEI-PTID
            MOVE    SPA-SRYYMD          TO  SSANTEI-SRYYMD
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
+      *    診療科
+           MOVE    SRY-SRYKA           TO  SSANTEI-SRYKA
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
                                        SPA-AREA

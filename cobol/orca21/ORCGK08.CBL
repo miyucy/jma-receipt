@@ -168,6 +168,7 @@
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -399,6 +400,10 @@
       *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *    診療行為マスタワーク
        01  LNK-WKSRYACT-AREA.
@@ -2376,6 +2381,13 @@
            MOVE    SYU-CONTKBN         TO  WRK-SYU-CONTKBN
            MOVE    SPA-CONTKBN         TO  SYU-CONTKBN
       *
+      *    船員保険で初診料算定時
+           IF     (SPA-HKNNUM          =   "002" )  AND
+                  (SYU-HKNTEN (01)     >   ZERO  )  AND
+                  (SPA-SYOSIN          =   1     )
+               PERFORM 45053-SENINFLG-SET-SEC
+           END-IF
+      *
       *****CALL    "ORCS01NEW"         USING   MCPAREA
            CALL    "ORCS01"            USING   MCPAREA
                                                LNK-ORCS01-REC
@@ -2493,6 +2505,19 @@
                        COMPUTE WRK-TEN         =   TNS-TEN   /   10
                        ADD     WRK-TEN         TO  WRK-SYUTEN1
                    END-IF
+      *            自賠責金額集計
+                   IF      LNK-WKSRY-SRYKBN(IDX)       =   "80"
+      *                自賠責診断書料集計
+                       IF      LNK-WKSRY-SRYCD (IDX IDS)(1:5)
+                                                       =   "09591"
+                           ADD     TNS-TEN         TO  LNK-S01-SINDAN
+                       END-IF
+      *                自賠責明細書料集計
+                       IF      LNK-WKSRY-SRYCD (IDX IDS)(1:5)
+                                                       =   "09592"
+                           ADD     TNS-TEN         TO  LNK-S01-MEISAI
+                       END-IF
+                   END-IF
                END-PERFORM
            END-IF
       *
@@ -2508,6 +2533,45 @@
       *
            .
        450511-JIBAI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    船員保険で初診料算定時セット処理
+      *****************************************************************
+       45053-SENINFLG-SET-SEC            SECTION.
+      *
+      *    保険組合マスター編集
+           MOVE    SPACE               TO  HKNCOMBI-REC
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    SPA-HOSPID         TO  COMB-HOSPID
+           MOVE    SPA-PTID           TO  COMB-PTID
+           MOVE    SPA-HKNCOMBINUM    TO  COMB-HKNCOMBINUM
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               PERFORM 910-HKNCOMBI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+           IF      FLG-HKNCOMBI        =   ZERO
+      *        本人で通勤災害
+               IF     (COMB-HONKZKKBN      =   "1"  )  AND
+                      (COMB-HOJOKBN        =   "3"  OR
+                                               "C"  OR
+                                               "F"  )
+                   MOVE    "1"             TO  LNK-S01-SENINFLG
+               END-IF
+           END-IF
+           .
+       45053-SENINFLG-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3257,6 +3321,28 @@
       *
            .
        900-SRYACT-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスター読込
+      *****************************************************************
+       910-HKNCOMBI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       910-HKNCOMBI-READ-EXT.
            EXIT.
       *
       *****************************************************************

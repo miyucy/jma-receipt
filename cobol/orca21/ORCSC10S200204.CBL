@@ -130,11 +130,15 @@
       *    電話再診あり
            03  FLG-TEL-ARI         PIC 9(01).
       *
+           03  FLG-CHK-ALL         PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
+           03  IDX4                PIC 9(04).
            03  IDXS                PIC 9(04).
            03  IDX-S               PIC 9(04).
            03  IDX-Y2              PIC 9(02).
@@ -507,6 +511,11 @@
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //HZN-//.
       *
+      *    画面ＳＰＡ領域ワーク
+       01  WRK-SCR-REC.
+           COPY    "CPK02SPASCR.INC"  REPLACING
+                                       //SPA-// BY //WRK-//.
+      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -668,6 +677,9 @@
       *        初診料を算定中かの判定
                WHEN    "C"
                    PERFORM 1011-SYOSIN-CHK-SEC
+      *        診察料算定後、診察料のみの変更処理
+               WHEN    "K"
+                   PERFORM 1014-SINSATU-HENKAN-SEC
            END-EVALUATE
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            MOVE    IDX2                TO  LNK-SC10S-IDX2
@@ -2116,6 +2128,15 @@
                                        ORCSC94AREA
                                        SPA-SCR-REC
       *
+           IF      SPA-GMN-IDX         >   1
+               MOVE    SPA-COM-SRYSYUKBN (SPA-GMN-IDX - 1)
+                                           TO  SPA-COM-SRYSYUKBN
+                                                         (SPA-GMN-IDX)
+               MOVE    SPA-COM-SRYKBN (SPA-GMN-IDX - 1)
+                                           TO  SPA-COM-SRYKBN
+                                                         (SPA-GMN-IDX)
+           END-IF
+     *
            .
        3101-INPUTCD-HEN-EXT.
            EXIT.
@@ -3021,6 +3042,8 @@
       *****************************************************************
        300-DOUSAISIN-SET-SEC         SECTION.
       *
+           MOVE    SPA-SCR-REC         TO  HZN-SCR-REC
+      *
            MOVE    SPACE               TO  SPA-SCR-REC
            INITIALIZE                  SPA-SCR-REC
            MOVE    ZERO                TO  SPA-GMN-MAX
@@ -3037,6 +3060,8 @@
       *
       *    初診料自動追加
            PERFORM 3301-SYOSIN-SYORI-SEC
+      *    診療行為内容の編集
+           PERFORM 10102-SINSATU-CHENGE-SEC
            .
        300-DOUSAISIN-SET-EXT.
            EXIT.
@@ -4259,7 +4284,7 @@
            END-IF
       *    同時他科受診があった時は、診察料の変更をおこなわない
       *    （中途終了時以外）
-           IF    ( LNK-SC10S-SYORI NOT =   "W"  )  AND
+           IF    ( LNK-SC10S-SYORI NOT =   "W"  AND "K")  AND
                  ((SPA-LSTYMD          =   SPA-SRYYMD) OR
                   (SPA-RRK-LSTYMD      =   SPA-SRYYMD))
                IF      SPA-TAKA-SRYKA-R    NOT =   SPACE
@@ -4302,16 +4327,33 @@
       *    診察料編集
            PERFORM 200-SYOSIN-SET-SEC
       *    診療行為内容の編集
+           PERFORM 10102-SINSATU-CHENGE-SEC
+           .
+       1010-SINSATU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    診察料チェック変換処理
+      *****************************************************************
+       10102-SINSATU-CHENGE-SEC              SECTION.
+      *
+      *    診療行為内容の編集
            MOVE    ZERO                TO  FLG-JIKAN
            MOVE    ZERO                TO  FLG-CHK
+           MOVE    SPACE               TO  WRK-SCR-REC
+           INITIALIZE                  WRK-SCR-REC
+           MOVE    ZERO                TO  IDX3
+           MOVE    ZERO                TO  FLG-CHK-ALL
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
                               (HZN-COM-INPUTCD (IDX)   =   SPACE   AND
                                HZN-GMN-INPUTCD (IDX)   =   SPACE )
+      *
+               ADD     1                       TO  IDX3
+               MOVE    HZN-GMN-TBL (IDX)       TO  WRK-GMN-TBL (IDX3)
+      *
                MOVE    ZERO                    TO  FLG-ARI
-               IF    ((HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
-                                               OR  "13"  OR  "14" ) AND
-                      (HZN-COM-INPUTCD(IDX)(1:1)   =   "1"   ))  OR
+               IF     (HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
+                                               OR  "13"  OR  "14" ) OR
       *                療養担当手当
                      ( HZN-COM-INPUTCD(IDX)     =   "199000610" )
                    MOVE    HZN-COM-INPUTCD(IDX) TO  WRK-SRYCD
@@ -4324,20 +4366,53 @@
                        END-IF
                        MOVE    1               TO  FLG-CHK
                    END-IF
+      *TEST
+               DISPLAY "C10 S FLG-CHK:" FLG-CHK
+                       ",FLG-ARI;" FLG-ARI
+                       ",AUTO:" HZN-COM-AUTOKBN (IDX)
+                       ",INPU:" HZN-COM-INPUTCD (IDX)
+      *TEST
                END-IF
       *
                IF     (FLG-CHK         =   ZERO  )  OR
                       (FLG-CHK         =   1        AND
                        FLG-ARI         =   ZERO     AND
                        HZN-COM-AUTOKBN (IDX)   =   SPACE )
-                   ADD     1                   TO  IDX2
-                   ADD     1                   TO  SPA-GMN-IDX
-                   MOVE    HZN-GMN-TBL(IDX)    TO  SPA-GMN-TBL (IDX2)
+                   CONTINUE
+               ELSE
+                   MOVE    1                   TO  FLG-CHK-ALL
+      ********     ADD     1                   TO  IDX2
+      *            ADD     1                   TO  SPA-GMN-IDX
+      ********     MOVE    HZN-GMN-TBL(IDX)    TO  SPA-GMN-TBL (IDX2)
                END-IF
+      *        剤毎に対象を編集する
                IF      HZN-COM-ZAIEND (IDX)    =   "1"
-                   MOVE     ZERO               TO  FLG-CHK
+                   IF      FLG-CHK-ALL         =   ZERO
+                       PERFORM VARYING     IDX4    FROM   1   BY  1
+                               UNTIL       IDX4    >   IDX3
+                           ADD     1                   TO  IDX2
+                           ADD     1                   TO  SPA-GMN-IDX
+                           MOVE    WRK-GMN-TBL(IDX4)   TO  SPA-GMN-TBL
+                                                                (IDX2)
+                       END-PERFORM
+                   END-IF
+                   INITIALIZE                  WRK-SCR-REC
+                   MOVE    ZERO                TO  IDX3
+                   MOVE    ZERO                TO  FLG-CHK-ALL
                END-IF
            END-PERFORM
+      *    剤毎に対象を編集する
+           IF      IDX3                >   ZERO
+               IF      FLG-CHK-ALL         =   ZERO
+                   PERFORM VARYING     IDX4    FROM   1   BY  1
+                           UNTIL       IDX4    >   IDX3
+                       ADD     1                   TO  IDX2
+                       ADD     1                   TO  SPA-GMN-IDX
+                       MOVE    WRK-GMN-TBL(IDX4)   TO  SPA-GMN-TBL
+                                                                (IDX2)
+                   END-PERFORM
+               END-IF
+           END-IF
       *    時間外入力あり
            IF      FLG-JIKAN       NOT =   ZERO
                MOVE    SPA-GMN-INPUTCD(01) TO  WRK-INPUTCD
@@ -4349,7 +4424,7 @@
                MOVE    FLG-JIKAN           TO  SPA-COM-TIMEFLG(01)
            END-IF
            .
-       1010-SINSATU-HEN-EXT.
+       10102-SINSATU-CHENGE-EXT.
            EXIT.
       *****************************************************************
       *    診察料チェック変換処理
@@ -4520,6 +4595,17 @@
            END-PERFORM
            .
        1012-TAHOKEN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    診察料算定後、診察料のみの変更処理
+      *****************************************************************
+       1014-SINSATU-HENKAN-SEC              SECTION.
+      *
+      *
+           PERFORM 1010-SINSATU-HEN-SEC
+      *
+           .
+       1014-SINSATU-HENKAN-EXT.
            EXIT.
       *****************************************************************
       *    点数マスター読込
