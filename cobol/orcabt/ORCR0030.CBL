@@ -176,6 +176,7 @@
       *  01.04.06   NACL-門脇     04/07/28  投薬料の器材点の集計修正
       *  01.04.07   NACL-門脇     04/08/04  同一保険番号対応
       *  01.04.08   NACL-門脇     04/08/11  複数保険・複数科入力対応
+      *  01.04.09   NACL-門脇     04/09/17  ＯＣＲ公費２の編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5292,8 +5293,8 @@
                    MOVE  ZERO           TO      OCR3-CHKDGT1
            END-IF
       *公費２診療実日数・請求点数
-           IF      RECE02-JNISSU   (IDX5)  =   RECE02-JNISSU   (IDX7)
-           AND     RECE02-TOTALTEN (IDX5)  =   RECE02-TOTALTEN (IDX7)
+           IF      RECE02-JNISSU   (IDX6)  =   RECE02-JNISSU   (IDX7)
+           AND     RECE02-TOTALTEN (IDX6)  =   RECE02-TOTALTEN (IDX7)
                MOVE    ZERO                 TO  OCR3-JNISSU
                                                 OCR3-TENSU   
            ELSE    
