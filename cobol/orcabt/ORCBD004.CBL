@@ -31,6 +31,7 @@
       *                                     »ÈÍÑ¤¹¤ëHOSPID¤ÎÊÑ¹¹
       * 00.00.02     NACL-¿¹ÏÆ    03/05/02  ¶â³Û¤ò¥«¥ó¥ÞÊÔ½¸
       * 00.00.03     NACL-¿¹ÏÆ    03/06/05  °õºþ¶èÊ¬ÄÉ²Ã
+      * 00.00.04     NACL-¿¹ÏÆ    03/12/11  ½èÍý¶èÊ¬É½¼¨½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -629,8 +630,12 @@
                        MOVE    "ÀÁµá³Û¤Ê¤·"
                                            TO  WRK-JYOTAI(CNT-DENP)
                    WHEN    "1"
-                       IF   ( SYU-SKYMONEY
+      *----(00.00.04)--UPD-START---
+      *                 IF   ( SYU-SKYMONEY
+      *                                 >   SMEI-NYUHEN-MONEY )
+                       IF   ( SMEI-SKYMONEY
                                        >   SMEI-NYUHEN-MONEY )
+      *----(00.00.04)--UPD-END-----
                            MOVE    "ÀÁµá¡¦Ì¤¼ý"
                                            TO  WRK-JYOTAI(CNT-DENP)
                        ELSE
