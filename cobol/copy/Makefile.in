@@ -666,7 +666,7 @@ all: ORCA-DBPATH $(COPYS_inc)
 	  $< > $@
 
 ORCA-DBPATH: $(top_builddir)/lddef/directory
-	$(COPYGEN) -dbpath -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -lddir $(top_builddir)/lddef -ld orca00 > $@
+	$(COPYGEN) -dbpath -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -lddir $(top_builddir)/lddef -bddir $(top_builddir)/lddef -ld orca00 > $@
 
 clean: 
 	-rm $(COPYS_inc) $(DBPATH)
