@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  中止処理追加
       *  01.00.01    NACL-藤原    04/10/13  中止処理の追加
+      *                           04/11/24  レセプト記載順の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -146,14 +147,8 @@
        01  KEY-AREA                            VALUE   LOW-VALUE.
            03  KEY-NEW.
                05  KEY-N-SRYYMD    PIC 9(08).
-               05  KEY-N-TENKIKBN  PIC X(01).
-               05  KEY-N-TENKIYMD  PIC X(08).
-               05  KEY-N-BYOMEI    PIC X(160).
            03  KEY-OLD.
                05  KEY-O-SRYYMD    PIC 9(08).
-               05  KEY-O-TENKIKBN  PIC X(01).
-               05  KEY-O-TENKIYMD  PIC X(08).
-               05  KEY-O-BYOMEI    PIC X(160).
       *
       *    疑い編集
        01  WRK-UTAGAI-AREA.
@@ -299,25 +294,20 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *    
-      *    患者病名読み込み（開始日、病名、転帰区分、転帰年月日、
-      *                                                主病名フラグ順）
+      *    患者病名読み込み（患者ＩＤ、診療年月日、診療科順）
            INITIALIZE                  PTBYOMEI-REC
            MOVE    RECE82-HOSPID       TO  PTBYO-HOSPID
            MOVE    RECE82-PTID         TO  PTBYO-PTID
-           MOVE    RECE82-SRYYM        TO  PTBYO-SRYYMD (1:6)
-           MOVE    "31"                TO  PTBYO-SRYYMD (7:2)
-           MOVE    RECE82-HKNCOMBI     TO  PTBYO-HKNCOMBI
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY12"    TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTBYOMEI-KEY12"    TO  ORC-DBPATH 
+               MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH 
                PERFORM 900-PTBYO-READ-SEC
-               ADD     1                   TO  CNT-IN-CANCEL 
            ELSE
                INITIALIZE                  PTBYOMEI-REC
                MOVE    1                   TO  FLG-PTBYOMEI
@@ -325,23 +315,21 @@
       *
            PERFORM 2001-PTBYO-HENSYU-SEC
                            UNTIL       FLG-PTBYOMEI     =   1
-                           OR          FLG-END          =   1
       *    カーソルクロース
+           INITIALIZE                  MCPAREA
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY12"    TO  ORC-DBPATH 
+           MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH 
            CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
       *
-           IF      FLG-END             =   ZERO
-               PERFORM 900-RECE82-READ-SEC      
+           PERFORM 900-RECE82-READ-SEC      
       *
-      *        処理中止設定処理
-               IF      CNT-IN-CANCEL       =   50
-                   MOVE    ZERO                TO  CNT-IN-CANCEL
-                   PERFORM 500-CANCEL-HENSYU-SEC
-               END-IF
+      *    処理中止設定処理
+           IF      CNT-IN-CANCEL   =   50
+               MOVE    ZERO            TO  CNT-IN-CANCEL
+               PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
            .
        200-MAIN-EXT.
@@ -352,20 +340,16 @@
       *****************************************************************
        2001-PTBYO-HENSYU-SEC                SECTION.
       *
-           PERFORM 2001-PTBYO-CHK-SEC
-      * 
-           MOVE    KEY-NEW             TO  KEY-OLD   
-           PERFORM             UNTIL   FLG-END       =   1
-                               OR      KEY-NEW   NOT =   KEY-OLD
-               MOVE    "PTBYOMEI-KEY12"        TO  ORC-DBPATH 
-               PERFORM 900-PTBYO-READ-SEC
-               ADD     1                   TO  CNT-IN-CANCEL 
+           MOVE    PTBYO-SRYYMD            TO  KEY-N-SRYYMD
+           MOVE    ZERO                    TO  WRK-RENNUM
       *
-      *        処理中止設定処理
-               IF      CNT-IN-CANCEL       =   50
-                   MOVE    ZERO                TO  CNT-IN-CANCEL
-                   PERFORM 500-CANCEL-HENSYU-SEC
-               END-IF
+           MOVE    KEY-NEW                 TO  KEY-OLD   
+           PERFORM             UNTIL       FLG-PTBYOMEI    =   1
+                               OR          KEY-NEW     NOT =   KEY-OLD
+               PERFORM 2001-PTBYO-CHK-SEC
+      * 
+               MOVE    "PTBYOMEI-KEY3"         TO  ORC-DBPATH 
+               PERFORM 900-PTBYO-READ-SEC
            END-PERFORM    
            .
        2001-PTBYO-HENSYU-EXT.
@@ -400,6 +384,7 @@
                    IF      PTBYO-TENKIKBN       =   SPACE
                        CONTINUE
                    ELSE
+      ***              IF      PTBYO-TENKIYMD(1:6)  =   RECE82-SRYYM
                        IF      PTBYO-TENKIYMD(1:6)  >=  RECE82-SRYYM
                            CONTINUE
                        ELSE
@@ -418,6 +403,18 @@
                IF      PTBYO-NYUGAIKBN  NOT =   RECE82-NYUGAIKBN
                    GO  TO  2001-PTBYO-CHK-EXT
                END-IF
+           END-IF
+      *
+      *    保険組合せ
+           IF      PTBYO-HKNCOMBI       =   RECE82-HKNCOMBI 
+               CONTINUE
+           ELSE
+               GO  TO  2001-PTBYO-CHK-EXT
+           END-IF
+      *
+      *    レセプト表示月
+           IF      PTBYO-REZEFLG          =   "1"
+              GO  TO  2001-PTBYO-CHK-EXT
            END-IF
       *
            IF      PTBYO-REZEMM           >   ZERO
@@ -444,7 +441,7 @@
            EXIT. 
       *            
       *****************************************************************
-      *    編集処理
+      *    レセプト明細０３編集処理
       *****************************************************************
        20011-RECE83-WRITE-SEC              SECTION.
       *
@@ -490,7 +487,6 @@
                STRING  PTBYO-BYOMEI        DELIMITED BY  SPACE
                        WRK-CONS-UTAGAI     DELIMITED BY  SIZE
                        INTO                WRK-BYOMEI
-               END-STRING
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
                MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG                 
@@ -501,13 +497,14 @@
                STRING  WRK-CONS-KYUSEI     DELIMITED BY  SIZE
                        WRK-BYOMEI          DELIMITED BY  SPACE
                        INTO                WRK-BYOMEIW
-               END-STRING
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
                MOVE    WRK-BYOMEIW         TO  WRK-BYOMEI  
                MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG                 
            END-IF
       *
+           ADD     1                   TO  WRK-RENNUM
+           
            INITIALIZE                      RECE83-REC
            MOVE    RECE82-HOSPID       TO  RECE83-HOSPID
            MOVE    RECE82-SRYYM        TO  RECE83-SRYYM
@@ -517,39 +514,30 @@
            MOVE    RECE82-HKNID        TO  RECE83-HKNID
            MOVE    RECE82-TEKSTYMD     TO  RECE83-TEKSTYMD
            MOVE    PTBYO-SRYYMD        TO  RECE83-SRYYMD
-           MOVE    WRK-BYOMEI          TO  RECE83-BYOMEI
-           MOVE    RECE83-REC          TO  WRK-RECE83-REC
-           PERFORM 900-RECE83-READ-SEC
-           IF      FLG-RECE83          =   ZERO
-               IF      RECE83-SYUBYOFLG    =   "9"
-               AND     PTBYO-SYUBYOFLG     =   "1" 
-                   MOVE    PTBYO-SYUBYOFLG     TO  RECE83-SYUBYOFLG
-               END-IF
-               IF      RECE82-SRYYM        <   PTBYO-TENKIYMD(1:6)
-                   CONTINUE
-               ELSE    
-                   MOVE    PTBYO-TENKIKBN      TO  RECE83-TENKIKBN
-                   MOVE    PTBYO-TENKIYMD      TO  RECE83-TENKIYMD
-               END-IF
-               REWRITE RECE83-REC
+           MOVE    WRK-RENNUM          TO  RECE83-RENNUM
+           MOVE    RECE82-PTNUM        TO  RECE83-PTNUM
+           MOVE    PTBYO-SRYKA         TO  RECE83-SRYKA
+           MOVE    PTBYO-KHNBYOMEICD   TO  RECE83-KHNBYOMEICD   
+           MOVE    PTBYO-BYOMEICD-G    TO  RECE83-BYOMEICD-G
+           MOVE    PTBYO-UTAGAIFLG     TO  RECE83-UTAGAIFLG
+           IF      PTBYO-SYUBYOFLG     =   "1"
+               MOVE    PTBYO-SYUBYOFLG     TO  RECE83-SYUBYOFLG    
            ELSE
-               MOVE    PTBYO-KHNBYOMEICD   TO  RECE83-KHNBYOMEICD   
-               MOVE    PTBYO-BYOMEICD-G    TO  RECE83-BYOMEICD-G
-               MOVE    PTBYO-UTAGAIFLG     TO  RECE83-UTAGAIFLG
-               MOVE    PTBYO-MANSEIKBN     TO  RECE83-MANSEIKBN
-               COMPUTE RECE83-BYOMEIMOJI    =   WRK-MOJISU    /   2
-               MOVE    PTBYO-BYOMEIHENFLG  TO  RECE83-BYOMEIHENFLG   
-               MOVE    PTBYO-SYUBYOFLG     TO  RECE83-SYUBYOFLG
-               IF      RECE82-SRYYM        <   PTBYO-TENKIYMD(1:6)
-                   CONTINUE
-               ELSE    
-                   MOVE    PTBYO-TENKIKBN      TO  RECE83-TENKIKBN
-                   MOVE    PTBYO-TENKIYMD      TO  RECE83-TENKIYMD
-               END-IF
+               MOVE    "9"                 TO  RECE83-SYUBYOFLG 
+           END-IF   
+           MOVE    PTBYO-MANSEIKBN     TO  RECE83-MANSEIKBN
+           IF      RECE82-SRYYM        <   PTBYO-TENKIYMD(1:6)
+               CONTINUE
+           ELSE    
+               MOVE    PTBYO-TENKIKBN      TO  RECE83-TENKIKBN
+               MOVE    PTBYO-TENKIYMD      TO  RECE83-TENKIYMD   
+           END-IF    
+           MOVE    WRK-BYOMEI          TO  RECE83-BYOMEI
+           COMPUTE RECE83-BYOMEIMOJI    =   WRK-MOJISU    /   2
+           MOVE    PTBYO-BYOMEIHENFLG  TO  RECE83-BYOMEIHENFLG   
       *
-               WRITE   RECE83-REC
-               ADD     1                   TO  CNT-RECE83
-           END-IF
+           WRITE   RECE83-REC
+           ADD     1                   TO  CNT-RECE83
            .
        20011-RECE83-WRITE-EXT.
            EXIT.
@@ -678,12 +666,8 @@
                MOVE    ZERO            TO  FLG-PTBYOMEI
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC 
                MOVE    PTBYO-SRYYMD    TO  KEY-N-SRYYMD
-               MOVE    PTBYO-TENKIKBN  TO  KEY-N-TENKIKBN
-               MOVE    PTBYO-TENKIYMD  TO  KEY-N-TENKIYMD
-               MOVE    PTBYO-BYOMEI    TO  KEY-N-BYOMEI
            ELSE
                MOVE    1               TO  FLG-PTBYOMEI
-               MOVE    HIGH-VALUE      TO  KEY-NEW 
            END-IF
            .
        900-PTBYO-READ-EXT.
@@ -706,21 +690,6 @@
            END-READ
            .
        900-RECE82-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入退院履歴読込
-      *****************************************************************
-       900-RECE83-READ-SEC            SECTION.
-      *
-           READ    RECE83-FILE
-               INVALID
-                   MOVE    1           TO  FLG-RECE83
-               NOT INVALID
-                   MOVE    ZERO        TO  FLG-RECE83
-           END-READ
-           .
-       900-RECE83-READ-EXT.
            EXIT.
       *
       *****************************************************************

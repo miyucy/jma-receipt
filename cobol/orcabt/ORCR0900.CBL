@@ -31,6 +31,7 @@
       *  01.00.01    NACL-門脇    04.07.12  ファイルクリア追加
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
+      *                           04/11/24  レセプト記載順の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -107,6 +108,7 @@
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
+           03  FLG-SYSKANRI                            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -124,7 +126,32 @@
                05  WRK-PARA-SHELLID                    PIC  X(08).
       *
            03  WRK-RECEERR             PIC X(200).
-           03  WRK-RENNUM              PIC 9(04). 
+      *
+       01  KEY-AREA                            VALUE   LOW-VALUE.
+           03  KEY-NEW.
+               05  KEY-N-HOSPID        PIC X(24).
+               05  KEY-N-SRYYM         PIC 9(06).
+               05  KEY-N-NYUGAIKBN     PIC X(01).
+               05  KEY-N-PTID          PIC 9(10).
+               05  KEY-N-RECEKA        PIC X(02).
+               05  KEY-N-HKNID         PIC 9(10).
+               05  KEY-N-TEKSTYMD      PIC X(08). 
+               05  KEY-N-SRYYMD        PIC X(08).
+               05  KEY-N-TENKIKBN      PIC X(01).
+               05  KEY-N-TENKIYMD      PIC X(08).
+               05  KEY-N-BYOMEI        PIC X(160).
+           03  KEY-OLD.
+               05  KEY-O-HOSPID        PIC X(24).
+               05  KEY-O-SRYYM         PIC 9(06).
+               05  KEY-O-NYUGAIKBN     PIC X(01).
+               05  KEY-O-PTID          PIC 9(10).
+               05  KEY-O-RECEKA        PIC X(02).
+               05  KEY-O-HKNID         PIC 9(10).
+               05  KEY-O-TEKSTYMD      PIC X(08). 
+               05  KEY-O-SRYYMD        PIC X(08).
+               05  KEY-O-TENKIKBN      PIC X(01).
+               05  KEY-O-TENKIYMD      PIC X(08).
+               05  KEY-O-BYOMEI        PIC X(160).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -134,6 +161,11 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
+           COPY    "CPSK2005.INC".
+     *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -216,6 +248,21 @@
            OPEN    INPUT               RECE83-FILE
       *
            OPEN    OUTPUT              RECE831-FILE
+      *     
+      *    レセプト編集区分情報
+           MOVE    SPACE            TO  SYSKANRI-REC
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "2005"           TO  SYS-KANRICD
+           MOVE    "*"              TO  SYS-KBNCD
+           PERFORM 960-KANRIMST-READ-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC      TO  SYS-2005-REC
+           ELSE    
+               MOVE    SPACE            TO  SYS-2005-REC
+           END-IF
+           IF      SYS-2005-TENKIHENKBN    =   SPACE
+               MOVE    ZERO             TO  SYS-2005-TENKIHENKBN
+           END-IF
       *
       *        レセプト明細０３読み込み
            PERFORM 900-RECE83-READ-SEC
@@ -227,8 +274,6 @@
       *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
-      *
-           ADD     1                   TO  WRK-RENNUM
       *    
            INITIALIZE                      RECE831-REC
            MOVE    RECE83-HOSPID       TO  RECE831-HOSPID
@@ -241,12 +286,18 @@
            MOVE    RECE83-SRYYMD       TO  RECE831-SRYYMD
            MOVE    RECE83-SYUBYOFLG    TO  RECE831-SYUBYOFLG   
            MOVE    RECE83-TENKIKBN     TO  RECE831-TENKIKBN
-           MOVE    RECE83-TENKIYMD     TO  RECE831-TENKIYMD
-           MOVE    WRK-RENNUM          TO  RECE831-RENNUM   
+           MOVE    RECE83-RENNUM       TO  RECE831-RENNUM
+           MOVE    RECE83-PTNUM        TO  RECE831-PTNUM
+           MOVE    RECE83-SRYKA        TO  RECE831-SRYKA
            MOVE    RECE83-KHNBYOMEICD  TO  RECE831-KHNBYOMEICD   
            MOVE    RECE83-BYOMEICD-G   TO  RECE831-BYOMEICD-G
            MOVE    RECE83-UTAGAIFLG    TO  RECE831-UTAGAIFLG
            MOVE    RECE83-MANSEIKBN    TO  RECE831-MANSEIKBN
+           IF      SYS-2005-TENKIHENKBN    =   ZERO
+               MOVE    SPACE               TO  RECE831-TENKIYMD
+           ELSE    
+               MOVE    RECE83-TENKIYMD     TO  RECE831-TENKIYMD   
+           END-IF    
            MOVE    RECE83-BYOMEI       TO  RECE831-BYOMEI
            MOVE    RECE83-BYOMEIMOJI   TO  RECE831-BYOMEIMOJI
            MOVE    RECE83-BYOMEIHENFLG TO  RECE831-BYOMEIHENFLG   
@@ -254,13 +305,17 @@
            WRITE   RECE831-REC
            ADD     1                   TO  CNT-OUT
       *
-           PERFORM 900-RECE83-READ-SEC      
+           MOVE    KEY-NEW             TO  KEY-OLD   
+           PERFORM             UNTIL   FLG-END       =   1
+                               OR      KEY-NEW   NOT =   KEY-OLD
+               PERFORM 900-RECE83-READ-SEC      
       *
-      *    処理中止設定処理
-           IF      CNT-IN-CANCEL       =   50
-               MOVE    ZERO                TO  CNT-IN-CANCEL
-               PERFORM 500-CANCEL-HENSYU-SEC
-           END-IF
+      *        処理中止設定処理
+               IF      CNT-IN-CANCEL   =   50
+                   MOVE    ZERO            TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
+               END-IF
+           END-PERFORM    
            .
        200-MAIN-EXT.
            EXIT. 
@@ -389,9 +444,65 @@
       *
                    DISPLAY "RECE83  PTID=" RECE83-PTID
       *
+                   MOVE    RECE83-HOSPID       TO  KEY-N-HOSPID
+                   MOVE    RECE83-SRYYM        TO  KEY-N-SRYYM
+                   MOVE    RECE83-NYUGAIKBN    TO  KEY-N-NYUGAIKBN
+                   MOVE    RECE83-PTID         TO  KEY-N-PTID
+                   MOVE    RECE83-RECEKA       TO  KEY-N-RECEKA
+                   MOVE    RECE83-HKNID        TO  KEY-N-HKNID
+                   MOVE    RECE83-TEKSTYMD     TO  KEY-N-TEKSTYMD
+                   MOVE    RECE83-SRYYMD       TO  KEY-N-SRYYMD
+                   MOVE    RECE83-TENKIKBN     TO  KEY-N-TENKIKBN
+                   MOVE    RECE83-BYOMEI       TO  KEY-N-BYOMEI
+                   IF      SYS-2005-TENKIHENKBN    =   ZERO
+                       MOVE    SPACE               TO  KEY-N-TENKIYMD
+                   ELSE
+                       MOVE    RECE83-TENKIYMD     TO  KEY-N-TENKIYMD
+                   END-IF    
+      *
            END-READ
            .
        900-RECE83-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読込
+      *****************************************************************
+       960-KANRIMST-READ-SEC         SECTION.
+      * 
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+           MOVE    WRK-PARA-SRYYM  TO  ORC-DBYMD (1:6)
+           MOVE    "01"            TO  ORC-DBYMD (7:2) 
+           CALL    "ORCMCPSUB"     USING
+                                   MCPAREA
+                                   ORCMCPAREA
+                                   MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "ORCMCPSUB"     USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       960-KANRIMST-READ-EXT.
            EXIT.
       *      
       *****************************************************************
