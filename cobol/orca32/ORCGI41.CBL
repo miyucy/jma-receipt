@@ -461,9 +461,11 @@
                    PERFORM 100-INIT-SEC
       *    画面遷移
                WHEN    "PUTG"          ALSO    "CLICKED"
+                   MOVE    SPACE           TO  SPA-ERRCD
                    PERFORM 200-GMNSENI
       *    入力
                WHEN      OTHER
+                   MOVE    SPACE           TO  SPA-ERRCD
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
@@ -567,12 +569,12 @@
                IF      WRK-MOTOPG(1:3)     =   "Y01"  OR  "U01"  OR
                                                "P97"  OR  "I42"  OR
                                                "I43"  OR  "I44"
-                   MOVE    LNK-COMMON           TO  SPA-KYOUTU
-                   MOVE    LNK-SCRSPA           TO  SPA-I4
-                   MOVE    SPA-WORK             TO  SPA-I4KYOUTU
-                   MOVE    SPA-GMN-PTNUM        TO  I41-PTNUM
-                   MOVE    SPA-GMN-PTID         TO  SPA-GMN-PTID
-                   MOVE    1                    TO  SPA-NYUGAIKBN
+                   MOVE    LNK-COMMON           TO SPA-KYOUTU
+                   MOVE    LNK-SCRSPA           TO SPA-I4
+                   MOVE    SPA-WORK             TO SPA-I4KYOUTU
+                   MOVE    SPA-GMN-PTNUM        TO I41-PTNUM
+                   MOVE    SPA-GMN-PTID         TO SPA-GMN-PTID
+                   MOVE    1                    TO SPA-NYUGAIKBN
                    MOVE    SPA-I40-SRYYMDW(1:6) TO SPA-GMN-SRYYM-41
                    MOVE    SPA-I40-SRYYMD (1:6) TO SPA-NAI-SRYYM-41
                    MOVE    SPA-I40-SRYYMD (1:6) TO SPA-SAG-SRYYM-41
@@ -2780,8 +2782,7 @@
            IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)      =  "1")      AND
                  (SPA-GMN-TSRYCD-41 (IDX2)      NOT = W-YOYAKU)  AND
                  (SPA-GMN-DAY-41 (IDX)          NOT = ZERO)      AND
-                 (WRK-GMN-DAY (IDX)                 = ZERO)      AND
-                 (WRK-CHK-DAY (IDX)             NOT = ZERO)
+                 (SPA-WRK-CHK-KBN (IDX)             = ALL SPACE)
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
                GO      TO      41012-DAY-CHK-EXT
@@ -3120,8 +3121,8 @@
                          UNTIL    IDX       >    SPA-WRK-KOMENTO-E
                   IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)    =  "1")     AND
                         (SPA-GMN-TSRYCD-41 (IDX2)    NOT = W-YOYAKU) AND
-                        (WRK-GMN-DAY (IDX)               = ZERO)     AND
-                        (WRK-CHK-DAY (IDX)           NOT = ZERO)
+                        (WRK-GMN-DAY (IDX)           NOT = ZERO)     AND
+                        (SPA-WRK-CHK-KBN (IDX)           = ALL SPACE)
                       MOVE    03           TO  SPA-GMN-CUR-41
                       MOVE    "0024"       TO  SPA-ERRCD
                   END-IF
