@@ -536,6 +536,7 @@
       *
            MOVE    SPA-WORK                TO  SPA-P02KYOUTU
            MOVE    ZERO                    TO  SPA-FLG-END
+           MOVE    SPACE                   TO  SPA-ERRCD
       *
            EVALUATE    SPA-MOTOPG
       *        業務選択画面より
@@ -3064,9 +3065,6 @@
                                                TO  SPA-ERRMSG
                WHEN    "0066"
                    MOVE    "本人のみ入力可能です。"
-                                               TO  SPA-ERRMSG
-               WHEN    "0067"
-                   MOVE    "家族のみ入力可能です。"
                                                TO  SPA-ERRMSG
                WHEN    "1065"
                    MOVE    "補助区分は本人の時のみ入力可能です。"
