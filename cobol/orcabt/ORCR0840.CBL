@@ -47,6 +47,7 @@
       *  01.01.06    NACL-小豆沢  04/06/08  ＣＴ・ＭＲＩ（２回目以降）の
       *                                     摘要欄記載順修正
       *  01.01.07    NACL-門脇    04/07/28  投薬料の器材点の集計修正
+      *  01.01.08    NACL-門脇    04/10/04  点滴の診療コード＊数量の累計編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3081,6 +3082,10 @@
                                               +  WRK-ORCSTEN-SURYO(IDX2)
                   COMPUTE  RECE84-MEISAISU    =  RECE84-MEISAISU
                                               +  1
+      *
+                  COMPUTE  RECE84-RUIKEITOTAL =
+                           RECE84-RUIKEITOTAL +
+                          (WRK-SRYCD  *  WRK-ORCSTEN-SURYO(IDX2))
       *
       *           特定器材の単価編集
                   IF      WRK-ORCSTEN-SRYCD(IDX2)(1:1)  =   "7"

@@ -104,6 +104,7 @@
       *  01.01.16    NACL-太田    04/08/10  点数マスタ検索ロジック修正
       *  01.01.17    NACL-門脇    04/08/20  兵庫県地方公費対応
       *  01.01.18    NACL-藤原    04/09/17  ＯＣＲ記載対応
+      *  01.01.19    NACL-門脇    04/10/04  点滴の診療コード＊数量の累計編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4872,6 +4873,10 @@
                                               +  WRK-ORCSTEN-SURYO(IDX2)
                   COMPUTE  RECE64-MEISAISU    =  RECE64-MEISAISU
                                               +  1
+      *
+                  COMPUTE  RECE64-RUIKEITOTAL =
+                           RECE64-RUIKEITOTAL +
+                          (WRK-SRYCD  *  WRK-ORCSTEN-SURYO(IDX2))
       *
       *           特定器材の単価編集
                   IF      WRK-ORCSTEN-SRYCD(IDX2)(1:1)  =   "7"
