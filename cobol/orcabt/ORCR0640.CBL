@@ -1930,34 +1930,34 @@
                    END-IF
                    IF    BUN-IDX2       =   2
                          IF    TNS-GAITENTTLKBN   =    130
-                           COMPUTE   RECE62-TENSU(2 BUN-IDX)  =
-                                     RECE62-TENSU(2 BUN-IDX)  +
+                           COMPUTE   RECE62-TENSU(2 BUN-IDX2)  =
+                                     RECE62-TENSU(2 BUN-IDX2)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
                          ELSE  
-                           COMPUTE   RECE62-TENSU(21 BUN-IDX)  =
-                                     RECE62-TENSU(21 BUN-IDX)  +
+                           COMPUTE   RECE62-TENSU(21 BUN-IDX2)  =
+                                     RECE62-TENSU(21 BUN-IDX2)  +
                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
                          END-IF
                    END-IF
                    IF    BUN-IDX3       =   3
                          IF    TNS-GAITENTTLKBN   =    130
-                           COMPUTE   RECE62-TENSU(2 BUN-IDX)  =
-                                     RECE62-TENSU(2 BUN-IDX)  +
+                           COMPUTE   RECE62-TENSU(2 BUN-IDX3)  =
+                                     RECE62-TENSU(2 BUN-IDX3)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
                          ELSE  
-                           COMPUTE   RECE62-TENSU(21 BUN-IDX)  =
-                                     RECE62-TENSU(21 BUN-IDX)  +
+                           COMPUTE   RECE62-TENSU(21 BUN-IDX3)  =
+                                     RECE62-TENSU(21 BUN-IDX3)  +
                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
                          END-IF
                    END-IF
                    IF    BUN-IDX4       =   4
                          IF    TNS-GAITENTTLKBN   =    130
-                           COMPUTE   RECE62-TENSU(2 BUN-IDX)  =
-                                     RECE62-TENSU(2 BUN-IDX)  +
+                           COMPUTE   RECE62-TENSU(2 BUN-IDX4)  =
+                                     RECE62-TENSU(2 BUN-IDX4)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
                          ELSE
-                           COMPUTE   RECE62-TENSU(21 BUN-IDX)  =
-                                     RECE62-TENSU(21 BUN-IDX)  +
+                           COMPUTE   RECE62-TENSU(21 BUN-IDX4)  =
+                                     RECE62-TENSU(21 BUN-IDX4)  +
                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
                          END-IF
                    END-IF
