@@ -563,7 +563,7 @@
            END-PERFORM
       *
       *    労災・自賠の時、点数表示なし
-           IF      SPA-HKNKBN          =   1
+           IF  COMB-HKNNUM     =    "971" OR "973"
                PERFORM VARYING     IDX     FROM  1   BY  1
                        UNTIL       IDX     >     11
                    MOVE    SPACE           TO  HCN03-HKNRYO(IDX)
@@ -572,26 +572,26 @@
            END-IF
       *
       *    保険適用分
-           MOVE    SYU-HKNTEKMONEY     TO  WRK-Z7
-           MOVE    WRK-Z7              TO  WRK-ZHENSYU9
-           PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU18       TO  HCN03-HOKENBUN
-      *    労災・自賠の時、点数表示なし
-           IF      SPA-HKNKBN          =   1
-               IF      SPA-RSI-HKNKBN      =    "4"
-                   COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
-                                           +    SYU-RSISHOSHIN-MONEY
-                                           +    SYU-RSISAISHIN-MONEY
-                                           +    SYU-RSISDO-MONEY
-                                           +    SYU-RSIETC-MONEY
-                   MOVE    WRK-GOKTEN          TO  WRK-Z7
-                   MOVE    WRK-Z7              TO  WRK-ZHENSYU9
-                   PERFORM 800-HENKAN-SEC
-                   MOVE    WRK-ZHENSYU18       TO  HCN03-HOKENBUN
-               ELSE
-                   MOVE    SPACE               TO  HCN03-HOKENBUN
-               END-IF
-           END-IF
+      *    （労災・自賠の時、点数表示なし）
+           EVALUATE    COMB-HKNNUM
+           WHEN    "971"
+               MOVE    SPACE           TO  HCN03-HOKENBUN
+           WHEN    "973"
+               COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
+                                       +    SYU-RSISHOSHIN-MONEY
+                                       +    SYU-RSISAISHIN-MONEY
+                                       +    SYU-RSISDO-MONEY
+                                       +    SYU-RSIETC-MONEY
+               MOVE    WRK-GOKTEN          TO  WRK-Z7
+               MOVE    WRK-Z7              TO  WRK-ZHENSYU9
+               PERFORM 800-HENKAN-SEC
+               MOVE    WRK-ZHENSYU18       TO  HCN03-HOKENBUN
+           WHEN    OTHER
+               MOVE    SYU-HKNTEKMONEY     TO  WRK-Z7
+               MOVE    WRK-Z7              TO  WRK-ZHENSYU9
+               PERFORM 800-HENKAN-SEC
+               MOVE    WRK-ZHENSYU18       TO  HCN03-HOKENBUN
+           END-EVALUATE
       *
       *    保険適用外分
            MOVE    ZERO                TO  WRK-GOKTEN
