@@ -48,6 +48,8 @@
       *                                     ¡Ê°å»ÕÇÛÃÖÅ¬¹ç¡Ë¤ÎÂÐ±þ
       *  01.00.14    NACL-¾®Æ¦Âô  04/03/16  Â¾°åÎÅµ¡´Ø¼õ¿Ç¤Î·×»»³ä¹çÊÑ¹¹
       *                                     Ê¿À®£±£¶Ç¯£´·î¤è¤ê£³£°¡ó
+      *  01.00.15    NACL-ÌçÏÆ    04/04/23  ÁªÄêÆþ±¡»þ¤ÎÂ¾°åÎÅµ¡´Ø¼õ¿Ç¤Î
+      *                                     »»Äê½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2296,7 +2298,8 @@
                                       MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                       MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                       COMPUTE  WRK-SENTEI-GAIHAKU1 =
-                                              (WRK-KHNTEN * 0.30) + 0.5
+      ****                                    (WRK-KHNTEN * 0.30) + 0.5
+                                              (WRK-KHNTEN * 0.00) + 0.5
                                       COMPUTE  WRK-SENTEI-GAIHAKU2 =
                                               (WRK-KHNTEN * 
                                                WRK-SENTEI-GAIHAKU-KEISU)
@@ -2351,7 +2354,8 @@
                                       MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                       MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                       COMPUTE  WRK-SENTEI-GAIHAKU1 =
-                                              (WRK-KHNTEN * 0.30) + 0.5
+      ****                                    (WRK-KHNTEN * 0.30) + 0.5
+                                              (WRK-KHNTEN * 0.00) + 0.5
                                       COMPUTE  WRK-SENTEI-GAIHAKU2 =
                                               (WRK-KHNTEN * 
                                                WRK-SENTEI-GAIHAKU-KEISU)
@@ -2454,7 +2458,8 @@
                                   MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                   MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                   COMPUTE  WRK-SENTEI-GAIHAKU1 =
-                                          (WRK-KHNTEN * 0.30) + 0.5
+      ****                                (WRK-KHNTEN * 0.30) + 0.5
+                                          (WRK-KHNTEN * 0.00) + 0.5
                                   COMPUTE  WRK-SENTEI-GAIHAKU2 =
                                           (WRK-KHNTEN * 
                                            WRK-SENTEI-GAIHAKU-KEISU)
@@ -2509,7 +2514,8 @@
                                   MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                   MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                   COMPUTE  WRK-SENTEI-GAIHAKU1 =
-                                          (WRK-KHNTEN * 0.30) + 0.5
+      ****                                (WRK-KHNTEN * 0.30) + 0.5
+                                          (WRK-KHNTEN * 0.00) + 0.5
                                   COMPUTE  WRK-SENTEI-GAIHAKU2 =
                                           (WRK-KHNTEN * 
                                            WRK-SENTEI-GAIHAKU-KEISU)
