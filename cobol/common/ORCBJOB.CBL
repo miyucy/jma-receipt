@@ -185,12 +185,6 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           DISPLAY "DBOPEN"
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
-      *
            DISPLAY "START"
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "MCPSUB"            USING
@@ -209,11 +203,5 @@
            CALL    "MCPSUB"             USING
                                         MCPAREA
                                         MCPDATA-REC.
-      *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
-                                        MCPAREA
-                                        MCPDATA-REC.
-           .
        900-DBCLOSE-EXT.
            EXIT.
