@@ -15,13 +15,13 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-000200 IDENTIFICATION          DIVISION.
-000300 PROGRAM-ID.             ORCR0050.
-000400*****************************************************************
-000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : レセプト
-000700*  コンポーネント名  : 
-000800*  管理者            : 
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCR0050.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : 
+      *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
@@ -40,12 +40,13 @@
       *  01.00.09    NACL-藤原    03.03.12  補助区分の追加
       *                                     診療科数１０から２０へ変更
       *  01.00.10    NACL-藤原    03/07/02  主病名編集フラグによる編集の追加
+      *  01.00.11    NACL-藤原    03/09/03  疑いフラグからのコードの編集
       *****************************************************************
-001200*
-001300 ENVIRONMENT             DIVISION.
-001400 CONFIGURATION           SECTION.
-001500 INPUT-OUTPUT            SECTION.
-001600 FILE-CONTROL.
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION           SECTION.
+       INPUT-OUTPUT            SECTION.
+       FILE-CONTROL.
       *
       *    レセプト明細書  
            SELECT  RECE02-FILE     ASSIGN  RECE01PARA
@@ -53,24 +54,24 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE02-KEY
                                    FILE    STATUS  IS  STS-RECE02.
-006900*
+      *
            SELECT  RECE03-FILE     ASSIGN  RECE03PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE03-KEY
                                    FILE    STATUS  IS  STS-RECE03.
-006900*
+      *
            SELECT  RECE03W-FILE    ASSIGN  RECE03PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE03W-KEY
                                    FILE    STATUS  IS  STS-RECE03.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
-006900*
-007000 DATA                    DIVISION.
-007100 FILE                    SECTION.
+      *
+       DATA                    DIVISION.
+       FILE                    SECTION.
       *
       *    レセプト明細書  
        FD  RECE02-FILE.
@@ -85,11 +86,11 @@
        01  RECE03W-REC. 
            COPY    "CPRCF003.INC"  REPLACING  //RECE03//
                                    BY         //RECE03W//.
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
-010200 WORKING-STORAGE             SECTION.
+       WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC".
@@ -104,31 +105,30 @@
                                    BY         //RECEERR//.
            03                      PIC X(04)   VALUE   ".dat".
       *
-018000*    フラグ領域
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE02          PIC X(02).
            03  STS-RECE03          PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
-018100 01  FLG-AREA.
+       01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-018900     03  FLG-PTBYOMEI        PIC 9(01).
+           03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-CHK             PIC 9(01).
-020700*
-020800*    カウント領域
-020900 01  CNT-AREA.
-021000     03  CNT-IN              PIC 9(06).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-IN              PIC 9(06).
            03  CNT-OUT             PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDX                 PIC 9(03). 
            03  IDY                 PIC 9(03). 
            03  IDZ                 PIC 9(03).
-024000*
-024100*    一時領域
-024200 01  WRK-AREA.
-     ****  03  WRK-IN              PIC X(01).
+      *
+      *    一時領域
+       01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-SRYYM  PIC  X(06).
                05  WRK-PARA-TERMID PIC  X(16).
@@ -166,7 +166,15 @@
       *    急性
            03  WRK-CONS-KYUSEI     PIC X(04)   VALUE   "急性".      
            03  WRK-CONS-KYUSEI-MOJISU
-                                   PIC 9(02)   VALUE   4.       
+                                   PIC 9(02)   VALUE   4. 
+      *
+       01  WRK-CONS-AREA.
+      *    疑い
+           03  WRK-CONS-BYOMEICD-UTAGAI
+                                   PIC X(07)   VALUE   "ZZZ8002".   
+      *    急性
+           03  WRK-CONS-BYOMEICD-KYUSEI
+                                   PIC X(07)   VALUE   "ZZZ4012".   
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -506,7 +514,18 @@
                        INTO                WRK-BYOMEI
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
-               MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG                 
+               IF      PTBYO-BYOMEICD (6)  NOT =   SPACE             
+                   MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
+               ELSE
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       6
+                       IF      PTBYO-BYOMEICD (IDX)    =   SPACE
+                           MOVE    WRK-CONS-BYOMEICD-UTAGAI
+                                               TO  PTBYO-BYOMEICD (IDX)
+                           MOVE    6           TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
            END-IF    
            IF    ( PTBYO-UTAGAIFLG   =   "2" OR  "3" )
            AND   ( WRK-HENFLG2         =   SPACE     )                         
@@ -517,7 +536,18 @@
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
                MOVE    WRK-BYOMEIW         TO  WRK-BYOMEI  
-               MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG                 
+               IF      PTBYO-BYOMEICD (6)  NOT =   SPACE             
+                   MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
+               ELSE
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       6
+                       IF      PTBYO-BYOMEICD (IDX)    =   SPACE
+                           MOVE    WRK-CONS-BYOMEICD-KYUSEI
+                                               TO  PTBYO-BYOMEICD (IDX)
+                           MOVE    6           TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
            END-IF
       *
            ADD     1                   TO  WRK-RENNUM
