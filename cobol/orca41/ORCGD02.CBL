@@ -1136,14 +1136,6 @@
                     (T-ERR-13            =  SPACE))
                    PERFORM T-500-RECECHEK2-SEC
                END-IF
-      *½¤Àµ/*³«»Ï*03.06.20*********************************************
-               IF  (W1-SRY-HOSPID   NOT =  ALL "*")     AND
-                   (FLG-TENKIYMD-ER     =      1)       AND
-                   (T-ERR-08            =  SPACE)       AND
-                   (T-ERR-09            =  SPACE)
-                   PERFORM T-530-RECECHEK-CHK8-2-SEC
-               END-IF
-      *½¤Àµ/*½ªÎ»*03.06.20*********************************************
                PERFORM T-500-RECECHEK-SEC
                IF  (SPA-GMN-CNV (12)   =  "1")          AND
                    (T-ERR-12           =  SPACE)        AND
@@ -1210,6 +1202,22 @@
                END-IF
                MOVE    SPACE             TO  WK-SRYSYUKBN
       *
+      *½¤Àµ/*³«»Ï*03.06.20*********************************************
+               IF  (W1-SRY-HOSPID   NOT =  ALL "*")        AND
+                   ((ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
+                    (ACCT-PTID     NOT =   W1-SRY-PTID)    OR
+                    (ACCT-SRYKA    NOT =   W1-SRY-SRYKA))
+                   IF  (FLG-TENKIYMD-ER     =      1)          AND
+                       (T-ERR-08            =  SPACE)          AND
+                       (T-ERR-09            =  SPACE)
+                       PERFORM T-530-RECECHEK-CHK8-2-SEC
+                   END-IF
+                   INITIALIZE                W-TABLE-S4
+                   MOVE    ZERO              TO  FLG-TENKIYMD-ER
+                   MOVE    SPACE             TO  T-ERR-08
+                   MOVE    SPACE             TO  T-ERR-09
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.20*********************************************
                PERFORM T-530-RECECHEK-CHK1-SEC
                IF  (ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                    (ACCT-PTID     NOT =   W1-SRY-PTID)    OR
