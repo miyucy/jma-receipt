@@ -166,7 +166,7 @@
       *
       * 保険適用外金額退避用テーブル
        01  HKNTEKGAI-TABLE.
-           03  HKNTEKGAI-TBL               OCCURS 10.
+           03  HKNTEKGAI-TBL               OCCURS 11.
                05  TBL-TGMONEY             PIC 9(08).
                05  TBL-TGMONEY-TAX         PIC 9(08).
       *
@@ -2508,6 +2508,11 @@
                                                 TBL-TGMONEY(10)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
+                                   WHEN   "90"
+                                       COMPUTE  TBL-TGMONEY(11)  =
+                                                TBL-TGMONEY(11)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
                                END-EVALUATE
                            END-IF
                        ELSE
@@ -2572,6 +2577,11 @@
                                    WHEN   "80"
                                        COMPUTE  TBL-TGMONEY(10)  =
                                                 TBL-TGMONEY(10)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
+                                   WHEN   "90"
+                                       COMPUTE  TBL-TGMONEY(11)  =
+                                                TBL-TGMONEY(11)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
                                    WHEN   OTHER
@@ -2700,6 +2710,11 @@
                                                 TBL-TGMONEY-TAX(10)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
+                                   WHEN   "90"
+                                       COMPUTE  TBL-TGMONEY-TAX(11)  =
+                                                TBL-TGMONEY-TAX(11)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
                                END-EVALUATE
                            END-IF
                        ELSE
@@ -2766,6 +2781,11 @@
                                                 TBL-TGMONEY-TAX(10)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
+                                   WHEN   "90"
+                                       COMPUTE  TBL-TGMONEY-TAX(11)  =
+                                                TBL-TGMONEY-TAX(11)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
                                    WHEN   OTHER
                                      IF   TNS-SRYCD(1:1)    =   "6"
                                        IF    TNS-YKZKBN     =    4
@@ -2802,7 +2822,7 @@
       *
       *  保険適用外
            PERFORM     VARYING   IDZ    FROM   1    BY    1
-                         UNTIL   IDZ    >      10
+                         UNTIL   IDZ    >      11
                   MOVE   TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(IDZ)
                   MOVE   TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(IDZ)
                   ADD    TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(12)
@@ -2810,8 +2830,8 @@
            END-PERFORM
       *
       *  入院保険適用外
-           MOVE   NYUIN-TGMONEY                TO  SYU-TGMONEY(11)
-           MOVE   NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(11)
+           ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(11)
+           ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(11)
            ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(12)
            ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(12)
       *
