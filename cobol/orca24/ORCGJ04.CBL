@@ -115,6 +115,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
+           03  FLG-END2            PIC 9(01).
            03  FLG-SPASCR          PIC 9(01).
            03  FLG-SRYKBN          PIC 9(01).
            03  FLG-KNJBYO          PIC 9(01).
@@ -677,6 +678,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -754,7 +758,9 @@
            END-IF
       *
       *    画面ＳＰＡ書込み
-           PERFORM 1003-J04SPA-OUT-SEC
+           IF      FLG-END2            =   ZERO
+               PERFORM 1003-J04SPA-OUT-SEC
+           END-IF
       *
            MOVE    SPA-J01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -4160,6 +4166,14 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
+      *    ファイル削除
+           MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+           MOVE    1                   TO  FLG-END2
+      *
            MOVE    "J02"               TO  SPA-SAKIPG
            MOVE    "J04"               TO  SPA-MOTOPG
       *
@@ -4421,6 +4435,15 @@
            END-IF
       *    診療会計パラメタ更新
       *****PERFORM 4503-PARA-KOU-SEC
+      *
+      *    ファイル削除
+           MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+           MOVE    1                   TO  FLG-END2
+      *
       *
            MOVE    "J02"               TO  SPA-SAKIPG
            MOVE    "J04"               TO  SPA-MOTOPG

@@ -115,6 +115,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
+           03  FLG-END2            PIC 9(01).
            03  FLG-SPASCR          PIC 9(01).
            03  FLG-SRYKBN          PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
@@ -504,6 +505,9 @@
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -579,7 +583,9 @@
            END-IF
       *
       *    画面ＳＰＡ書込み
-           PERFORM 1003-J02SPA-OUT-SEC
+           IF      FLG-END2            =   ZERO
+               PERFORM 1003-J02SPA-OUT-SEC
+           END-IF
       *
            MOVE    SPA-J01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -4577,6 +4583,15 @@
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
+      *    ファイル削除
+           MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+           MOVE    1                   TO  FLG-END2
+      *
+      *
            MOVE    "J02"               TO  SPA-MOTOPG
            MOVE    SPA-MOTOPG2         TO  SPA-SAKIPG
            IF      SPA-J02-MOTOPG      =   "M01"
@@ -4614,6 +4629,15 @@
       *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
+      *
+      *    ファイル削除
+           MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+           MOVE    1                   TO  FLG-END2
+      *
       *
            MOVE    "J02"               TO  SPA-MOTOPG
            MOVE    SPA-J02-MOTOPG      TO  SPA-SAKIPG
