@@ -1698,18 +1698,26 @@
                    MOVE    1               TO  FLG-CHK
                END-IF
                IF      FLG-CHK             =   1
-                   IF     (SPA-NAI-STYUKYMD
-                                           >=  SPA-NAI-TSTYUKYMD (IDX))
-                   AND    (SPA-NAI-STYUKYMD
-                                           <=  SPA-NAI-TEDYUKYMD (IDX))
+                   IF     (SPA-NAI-TEDYUKYMD (IDX)
+                                           <   SPA-NAI-STYUKYMD )  OR
+                          (SPA-NAI-TSTYUKYMD (IDX)
+                                           >   SPA-NAI-EDYUKYMD )
+                       CONTINUE
+                   ELSE
                        MOVE    "0004"              TO  SPA-ERRCD 
                    END-IF
-                   IF      SPA-NAI-EDYUKYMD
-                                           >=  SPA-NAI-TSTYUKYMD (IDX)
-                   AND     SPA-NAI-EDYUKYMD
-                                           <=  SPA-NAI-TEDYUKYMD (IDX)
-                       MOVE    "0004"              TO  SPA-ERRCD 
-                   END-IF
+      *************IF     (SPA-NAI-STYUKYMD
+      *                                    >=  SPA-NAI-TSTYUKYMD (IDX))
+      *            AND    (SPA-NAI-STYUKYMD
+      *                                    <=  SPA-NAI-TEDYUKYMD (IDX))
+      *                MOVE    "0004"              TO  SPA-ERRCD 
+      *            END-IF
+      *            IF      SPA-NAI-EDYUKYMD
+      *                                    >=  SPA-NAI-TSTYUKYMD (IDX)
+      *            AND     SPA-NAI-EDYUKYMD
+      *                                    <=  SPA-NAI-TEDYUKYMD (IDX)
+      *                MOVE    "0004"              TO  SPA-ERRCD 
+      ************ END-IF
                END-IF
            END-PERFORM 
            IF      SPA-ERRCD           NOT =   SPACE
