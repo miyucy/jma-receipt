@@ -32,7 +32,8 @@
       *  01.00.01    NACL-藤原    03/05/19  対象保険者番号の追加
       *  01.00.02    NACL-藤原    03/07/10  特定疾患有り・無しの集計を
       *                                     同じ欄に編集する
-      *  01.01.03    NACL-藤原    03/07/21  公費欄の特定疾患の名称の変更
+      *  01.00.03    NACL-藤原    03/07/21  公費欄の特定疾患の名称の変更
+      *  01.00.04    NACL-藤原    04/04/09  一部負担金の記載の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -805,8 +806,11 @@
                                            TO  WRK-TENSUZ
                    MOVE    WRK-TENSUZ      TO  HCM2O-TENSU (IDX IDY)
                    IF    ( IDY             =   2                       )
-                   AND   ( IDX             =   1   OR  2   OR  9   OR
-                                               10                      )
+                   AND   ( IDX             =   3   OR  4   OR  5   OR
+                                               6   OR  7   OR  8   OR
+                                               11  OR  12              )
+                       CONTINUE
+                   ELSE    
                        MOVE    SUM-FTNMONEY    (IDX IDY)
                                                TO  WRK-FTNMONEYZ
                        MOVE    WRK-FTNMONEYZ   TO  HCM2O-ITBFTN(IDX IDY)
