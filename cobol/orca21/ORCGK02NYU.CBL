@@ -5107,11 +5107,13 @@
                IF      SPA-K98-INPUTCD(3:1)    =   "C" OR "c"
                    MOVE    "U"                 TO  SPA-K98-GMN-SYORI
                    MOVE    "U4"                TO  SPA-K98-GMN-SYORI3
+                   MOVE    SPACE               TO  SPA-K98-INPUTCD
                END-IF
       *        用法
                IF      SPA-K98-INPUTCD(3:1)    =   "Y" OR "y"
                    MOVE    "U"                 TO  SPA-K98-GMN-SYORI
                    MOVE    "U1"                TO  SPA-K98-GMN-SYORI3
+                   MOVE    SPACE               TO  SPA-K98-INPUTCD
                END-IF
       *        診療種別一覧
                IF      SPA-K98-INPUTCD(3:1)    =   "."

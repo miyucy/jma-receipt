@@ -6777,11 +6777,13 @@
                    WHEN    "c"
                        MOVE    "U"             TO  SPA-K98-GMN-SYORI
                        MOVE    "U4"            TO  SPA-K98-GMN-SYORI3
+                       MOVE    SPACE           TO  SPA-K98-INPUTCD
       *        用法
                    WHEN    "Y"
                    WHEN    "y"
                        MOVE    "U"             TO  SPA-K98-GMN-SYORI
                        MOVE    "U1"            TO  SPA-K98-GMN-SYORI3
+                       MOVE    SPACE               TO  SPA-K98-INPUTCD
       *        診療種別一覧
                    WHEN    "."
                        MOVE    "."             TO  SPA-K98-INPUTCD
