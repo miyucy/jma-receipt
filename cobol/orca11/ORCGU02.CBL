@@ -51,6 +51,7 @@
       *  02.00.01    NACL-多々納  02/10/09  未確認に記号番号追加
       *  02.00.02    NACL-多々納  02/11/20  ＣＬＡＩＭ処理追加
       *  02.00.03    NACL-多々納  02/11/26  診療科、ドクター件数変更
+      *  02.00.04    NACL-多々納  02/12/16  新規患者取消修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -442,6 +443,11 @@
       *
            EVALUATE    SPA-MOTOPG
                WHEN    "P02"
+                   IF     (SPA-ERRMSG(1:2)    =   "NO"  )  AND
+                          (SPA-PTNUM(1:1)     =   "*"   )
+                       MOVE    SPACE              TO  SPA-PTNUM
+                       MOVE    ZERO               TO  SPA-PTID
+                   END-IF
                    IF      SPA-PTNUM       NOT =   SPACE
                        MOVE    SPA-PTNUM           TO  U02-PTNUM
                        MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
