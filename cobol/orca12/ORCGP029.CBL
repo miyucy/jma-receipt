@@ -1702,7 +1702,7 @@
       *        END-IF
       *****END-IF
            IF      WRK-SYOHOU-PG       =   SPACE
-               MOVE    "ORCHC19"           TO  WRK-SYOHOU-PG
+               MOVE    "ORCHCM19"          TO  WRK-SYOHOU-PG
            END-IF
       *
            .
