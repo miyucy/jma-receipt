@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    02.09.19  自賠責対応
+      *  01.00.02    NACL-門脇    04.04.26  ユーザーコメント追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -595,8 +596,8 @@
       *
            INITIALIZE              WRK-TNSKAI-AREA
       *
-           IF      TBL-ZAIW-SRYCD (1:1)
-                                   =   "8"
+           IF    ( TBL-ZAIW-SRYCD (1:1)  =   "8"   )
+           OR    ( TBL-ZAIW-SRYCD (1:3)  =   "008" )
                GO  TO  4304-TENSUKAI-HEN-EXT
            END-IF
       *                                           

@@ -34,6 +34,7 @@
       *  £²£°£°£´Ç¯£´·î²þÀµÂÐ±þ
       *  01.01.01    NACL-ÌçÏÆ    04.04.01  ½é¿Ç¡ÊÆýÍÄ»ù¡Ë¡ÊÌë´Ö¡¦µÙÆü¡¦
       *                                     ¿¼Ìë¡Ë²Ã»»¤ÎÅ¦Í×Íóµ­ºÜ
+      *  01.01.02    NACL-ÌçÏÆ    04.04.26  ¥æ¡¼¥¶¡¼¥³¥á¥ó¥ÈÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -873,18 +874,30 @@
                                      MOVE    4             TO  IDY
                                  END-IF
                               ELSE
-                                 IF      IDY           =   ZERO
-                                     MOVE    1             TO  IDY
+                                 IF  RECE85-SRYCD (IDX) (1:3) = "008"
+                                    IF      IDY           =   ZERO
+                                        MOVE    2          TO  IDY
+                                    END-IF
+                                 ELSE
+                                    IF      IDY           =   ZERO
+                                        MOVE    1          TO  IDY
+                                    END-IF
                                  END-IF
-                              END-IF    
+                              END-IF
                             ELSE
                               IF     RECE85-SRYCD (IDX) (1:3) = "059"
                                      MOVE    4             TO  IDY
                               ELSE
-                                 IF      IDY           =   ZERO
-                                     MOVE    1             TO  IDY
+                                 IF  RECE85-SRYCD (IDX) (1:3) = "008"
+                                    IF      IDY           =   ZERO
+                                        MOVE    2          TO  IDY
+                                    END-IF
+                                 ELSE
+                                    IF      IDY           =   ZERO
+                                        MOVE    1          TO  IDY
+                                    END-IF
                                  END-IF
-                              END-IF    
+                              END-IF
                             END-IF
                            WHEN    "8"
                                IF      IDY           =   ZERO
@@ -1025,7 +1038,8 @@
                                                      CONS-COMMENT8     
                            MOVE    1             TO  FLG-COMMENT2      
                        END-IF                                          
-                       IF      RECE85-SRYCD(IDX)(1:1)   =   "8"        
+                       IF     (RECE85-SRYCD(IDX)(1:1)   =   "8"  )
+                       OR     (RECE85-SRYCD(IDX)(1:3)   =   "008")
                            MOVE    1             TO  FLG-COMMENT3      
                        END-IF                                     
       *---- (01.00.05) LINE ADD END --------------------------------
@@ -2232,23 +2246,26 @@
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
-                IF   WRK-SRYSYUKBN           =  "330"
-      *         AND  TBL-ZAI-IDX(IDY)        =   1
-                AND  TBL-ZAI-SRYCD(IDY)(1:1) =  "8"
+                IF  ( WRK-SRYSYUKBN           =  "330"  )
+      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
+                AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
+                     (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   7              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
-                IF   WRK-SRYSYUKBN           =  "331"
-      *         AND  TBL-ZAI-IDX(IDY)        =   1
-                AND  TBL-ZAI-SRYCD(IDY)(1:1) =  "8"
+                IF  ( WRK-SRYSYUKBN           =  "331"  )
+      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
+                AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
+                     (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   8             TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
-                IF   WRK-SRYSYUKBN           =  "350"
-      *         AND  TBL-ZAI-IDX(IDY)        =   1
-                AND  TBL-ZAI-SRYCD(IDY)(1:1) =  "8"
+                IF  ( WRK-SRYSYUKBN           =  "350"  )
+      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
+                AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
+                     (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   9              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF

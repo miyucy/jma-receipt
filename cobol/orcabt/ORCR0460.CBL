@@ -58,6 +58,7 @@
       *                                     深夜）加算の摘要欄記載
       *  01.01.02    NACL-門脇    04.04.10  在宅患者訪問点滴注射管理指導料
       *                                     算定時の点滴注射のコメント対応
+      *  01.01.03    NACL-門脇    04.04.26  ユーザーコメント追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -920,18 +921,38 @@
                                        MOVE    4             TO  IDY
                                    END-IF
                                ELSE
-                                   IF      IDY           =   ZERO
-                                       MOVE    1             TO  IDY
+                                   IF  RECE45-SRYCD (IDX) (1:3) = "008"
+                                     IF   RECE45-SRYSYUKBN  =  "334"
+                                         MOVE    5         TO  IDY
+                                     ELSE
+                                       IF      IDY          =   ZERO
+                                         MOVE    2         TO  IDY
+                                       END-IF
+                                     END-IF
+                                   ELSE
+                                     IF      IDY           =   ZERO
+                                         MOVE    1         TO  IDY
+                                     END-IF
                                    END-IF
-                               END-IF    
+                               END-IF
                              ELSE
                                IF      RECE45-SRYCD (IDX) (1:3) = "059"
                                        MOVE    4             TO  IDY
                                ELSE
-                                   IF      IDY           =   ZERO
-                                       MOVE    1             TO  IDY
+                                   IF  RECE45-SRYCD (IDX) (1:3) = "008"
+                                      IF   RECE45-SRYSYUKBN  =  "334"
+                                          MOVE    5         TO  IDY
+                                      ELSE
+                                        IF      IDY          =   ZERO
+                                          MOVE    2         TO  IDY
+                                        END-IF
+                                      END-IF
+                                   ELSE
+                                      IF      IDY           =   ZERO
+                                          MOVE    1         TO  IDY
+                                      END-IF
                                    END-IF
-                               END-IF    
+                               END-IF
                              END-IF
                            WHEN    "8"
                                IF   RECE45-SRYSYUKBN  =  "334"

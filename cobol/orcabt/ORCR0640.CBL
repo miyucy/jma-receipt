@@ -82,8 +82,7 @@
       *  01.01.02    NACL-門脇    04/04/01  リハ言語聴覚療法（３）追加対応
       *  01.01.03    NACL-門脇    04/04/05  在宅血液透析頻回指導管理料の
       *                                     コメント対応
-      *  01.01.04    NACL-門脇    04/04/23  選定入院時の他医療機関受診の
-      *                                     算定修正
+      *  01.01.04    NACL-門脇    04/04/26  ユーザーコメント追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3738,7 +3737,8 @@
                    MOVE  TNS-TEN          TO    RECE65-TEN(IDX4)
                END-IF
                MOVE    TNS-NYUTENTTLKBN   TO    RECE65-TENTTLKBN(IDX4)
-               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
+               IF     (SRY-SRYCD    (IDX2)(1:1)     =   "8"  )
+               OR     (SRY-SRYCD    (IDX2)(1:3)     =   "008")
                   MOVE ZERO               TO    RECE65-YUKOKETA(IDX4)
                ELSE
                   MOVE TNS-YUKOKETA       TO    RECE65-YUKOKETA(IDX4)
@@ -3757,8 +3757,9 @@
                                       TO RECE65-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE65-KOUHYOJYUNNUM(IDX4)
-               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
-               AND     SRY-INPUTNUM (IDX2)      NOT =   ZERO
+               IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
+                      (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
+               AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )
                    MOVE    SRY-HOSPID           TO  PTCOM-HOSPID
                    MOVE    SRY-PTID             TO  PTCOM-PTID
                    MOVE    SRY-ZAINUM           TO  PTCOM-ZAINUM
@@ -4107,8 +4108,9 @@
                                       TO RECE65-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE65-KOUHYOJYUNNUM(IDX4)
-               IF      NSRY-SRYCD    (IDX2)(1:1)     =   "8"
-               AND     NSRY-INPUTNUM (IDX2)      NOT =   ZERO
+               IF    ((NSRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
+                      (NSRY-SRYCD    (IDX2)(1:3)     =   "008"))
+               AND   ( NSRY-INPUTNUM (IDX2)      NOT =   ZERO  )
                    MOVE    NSRY-HOSPID           TO  PTCOM-HOSPID
                    MOVE    NSRY-PTID             TO  PTCOM-PTID
                    MOVE    NSRY-ZAINUM           TO  PTCOM-ZAINUM
@@ -4206,8 +4208,9 @@
                                       TO RECE65-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE65-KOUHYOJYUNNUM(IDX4)
-               IF      NSRY-SRYCD    (IDX2)(1:1)     =   "8"
-               AND     NSRY-INPUTNUM (IDX2)      NOT =   ZERO
+               IF    ((NSRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
+                      (NSRY-SRYCD    (IDX2)(1:3)     =   "008"))
+               AND   ( NSRY-INPUTNUM (IDX2)      NOT =   ZERO  )
                    MOVE    NSRY-HOSPID           TO  PTCOM-HOSPID
                    MOVE    NSRY-PTID             TO  PTCOM-PTID
                    MOVE    NSRY-ZAINUM           TO  PTCOM-ZAINUM
@@ -4926,7 +4929,7 @@
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001" OR "008"   )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE62-TENSU(4 BUN-IDX)  =

@@ -42,6 +42,7 @@
       *  01.01.02    NACL-門脇    04/04/01  リハ言語聴覚療法（３）追加対応
       *  01.01.03    NACL-門脇    04/04/05  在宅血液透析頻回指導管理料の
       *                                     コメント対応
+      *  01.01.04    NACL-門脇    04/04/26  ユーザーコメント追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2429,7 +2430,8 @@
                  END-IF
                END-IF                                                   
                MOVE    TNS-NYUTENTTLKBN   TO    RECE85-TENTTLKBN(IDX4)
-               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
+               IF     (SRY-SRYCD    (IDX2)(1:1)     =   "8"  )
+               OR     (SRY-SRYCD    (IDX2)(1:3)     =   "008")
                   MOVE ZERO               TO    RECE85-YUKOKETA(IDX4)
                ELSE
                   MOVE TNS-YUKOKETA       TO    RECE85-YUKOKETA(IDX4)
@@ -2448,8 +2450,9 @@
                                       TO RECE85-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE85-KOUHYOJYUNNUM(IDX4)
-               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
-               AND     SRY-INPUTNUM (IDX2)      NOT =   ZERO
+               IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
+                      (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
+               AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )
                    MOVE    SRY-HOSPID           TO  PTCOM-HOSPID
                    MOVE    SRY-PTID             TO  PTCOM-PTID
                    MOVE    SRY-ZAINUM           TO  PTCOM-ZAINUM
@@ -2538,9 +2541,8 @@
                       OR (( ACCT-SRYKBN     = "11"              ) AND
                           ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ) AND
                           ( SRY-SRYCD(IDX2) NOT = "830000020"   ))
-      *
-      **>             OR (( SRY-SRYCD(1)    = CONS-ROUSAI1      ) AND
-      **>                 ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
+                      OR (( ACCT-SRYKBN     = "11"              ) AND
+                          ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
       *
                          ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE85-SIKFLG(IDX4)
@@ -2550,8 +2552,9 @@
                                        TO    WRK-SRYCD
                          ADD   WRK-SRYCD 
                                        TO    WRK-SRYCDTOTAL
-                         IF    RECE84-COMCDFLG       =   "1" 
-                         AND   SRY-SRYCD(IDX2)(1:1)  =   "8" 
+                         IF  ( RECE84-COMCDFLG       =   "1"   )
+                         AND ((SRY-SRYCD(IDX2)(1:1)  =   "8"  ) OR
+                              (SRY-SRYCD(IDX2)(1:3)  =   "008"))
                             MOVE  "2"  TO    RECE84-COMCDFLG
                          END-IF
                       ELSE
@@ -2877,8 +2880,9 @@
                                       TO RECE85-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE85-KOUHYOJYUNNUM(IDX4)
-               IF      NSRY-SRYCD    (IDX2)(1:1)     =   "8"
-               AND     NSRY-INPUTNUM (IDX2)      NOT =   ZERO
+               IF    ((NSRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
+                      (NSRY-SRYCD    (IDX2)(1:3)     =   "008"))
+               AND   ( NSRY-INPUTNUM (IDX2)      NOT =   ZERO  )
                    MOVE    NSRY-HOSPID           TO  PTCOM-HOSPID
                    MOVE    NSRY-PTID             TO  PTCOM-PTID
                    MOVE    NSRY-ZAINUM           TO  PTCOM-ZAINUM
@@ -3385,7 +3389,7 @@
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001" OR "008"   )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                            COMPUTE   RECE82-TENSU(4)  =
                                      RECE82-TENSU(4)  -
@@ -3664,7 +3668,7 @@
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
-                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001" OR "008"   )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                            COMPUTE   RECE82-TENSU-YAK(4)  =
                                      RECE82-TENSU-YAK(4)  -
