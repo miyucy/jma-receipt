@@ -167,11 +167,18 @@
       *  01.01.20    NACL-太田    02/12/13  SYUNOU-KEY6追加
       *  01.01.21    NACL-藤原    02/12/17  PTNYUINRRK-KEY12,KEY13追加
       *  01.01.22    NACL-多々納  02/12/18  PTINF-KEY6,KEY7,KEY8,KEY9
-      *  01.01.23    NACL-太田    02/12/13  NYUINRYAKUSHO-KEY,ALL追加
+      *  01.01.23    NACL-太田    02/12/18  NYUINRYAKUSHO-KEY,ALL追加
       *                                     SRYACT-KEY9追加
       *                                     NYUINACT-KEY9追加
       *                                     PTNYUINRRK-KEY14追加
       *                                     SYUNOU-DEL2,3,4,5追加
+      *  01.01.24    NACL-太田    02/12/19  TEIKIKANRI-KEY,ALL追加
+      *                                     TEIKIKANRI-DEL1追加
+      *                                     TEIKIPRT-KEY,2,3,4,5,ALL追加
+      *                                     TEIKIPRT-DEL1追加
+      *  01.01.25    NACL-太田    02/12/20  SYUNOU-KEY7,8追加
+      *                                     SYUMEI-DEL2追加
+      *                                     SYUNOU-DEL6追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -529,12 +536,16 @@
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY4"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY5"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY6"
+               WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY7"
+               WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY8"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY2"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY3"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY4"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY5"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY6"
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY7"
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY8"
                    MOVE    PATH-TBL-SYUNOU-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL1"
@@ -552,6 +563,9 @@
                WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL5"
                    MOVE    PATH-TBL-SYUNOU-DEL5
                                        TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL6"
+                   MOVE    PATH-TBL-SYUNOU-DEL6
+                                       TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY"
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY2"
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY3"
@@ -562,6 +576,9 @@
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SYUMEI-DEL1"
                    MOVE    PATH-TBL-SYUMEI-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUMEI-DEL2"
+                   MOVE    PATH-TBL-SYUMEI-DEL2
                                        TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO   "TSYRRK-KEY"
                WHEN    "DBUPDATE"      ALSO   "TSYRRK-KEY2"
@@ -1259,6 +1276,12 @@
                WHEN     "DBDELETE"     ALSO   "KYUSEIRRK-DEL1"
                    MOVE    PATH-TBL-KYUSEIRRK-DEL1
                                        TO  WRK-PATH
+               WHEN     "DBDELETE"     ALSO   "TEIKIKANRI-DEL1"
+                   MOVE    PATH-TBL-TEIKIKANRI-DEL1
+                                       TO  WRK-PATH
+               WHEN     "DBDELETE"     ALSO   "TEIKIPRT-DEL1"
+                   MOVE    PATH-TBL-TEIKIPRT-DEL1
+                                       TO  WRK-PATH
       *
                WHEN    ANY             ALSO   "SRYACCT-KEY"
                    MOVE    PATH-TBL-SRYACCT-KEY
@@ -1369,6 +1392,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY6"
                    MOVE    PATH-TBL-SYUNOU-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY7"
+                   MOVE    PATH-TBL-SYUNOU-KEY7
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY8"
+                   MOVE    PATH-TBL-SYUNOU-KEY8
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"
@@ -2201,6 +2230,30 @@
                    PERFORM 2001-SEL-NYUINRYAKUSHO-SEC
                WHEN    ANY             ALSO   "NYUINRYAKUSHO-ALL"
                    MOVE    PATH-TBL-NYUINRYAKUSHO-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TEIKIKANRI-KEY"
+                   MOVE    PATH-TBL-TEIKIKANRI-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TEIKIKANRI-ALL"
+                   MOVE    PATH-TBL-TEIKIKANRI-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TEIKIPRT-KEY"
+                   MOVE    PATH-TBL-TEIKIPRT-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TEIKIPRT-KEY2"
+                   MOVE    PATH-TBL-TEIKIPRT-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TEIKIPRT-KEY3"
+                   MOVE    PATH-TBL-TEIKIPRT-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TEIKIPRT-KEY4"
+                   MOVE    PATH-TBL-TEIKIPRT-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TEIKIPRT-KEY5"
+                   MOVE    PATH-TBL-TEIKIPRT-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TEIKIPRT-ALL"
+                   MOVE    PATH-TBL-TEIKIPRT-ALL
                                        TO  WRK-PATH
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC

@@ -61,6 +61,8 @@ db	{
 	view_I001;
 	tbl_nyuksnchk;
 	tbl_nyuinryakusho;
+	tbl_teikikanri;
+	tbl_teikiprt;
 };
 db	"shell"	{
 	shell;

@@ -268,6 +268,7 @@ path	key5 	{
 		SELECT *
 		FROM tbl_syunou
 			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SKYSTYMD    >=  :SKYSTYMD
 			AND   SKYEDYMD    <=  :SKYEDYMD
@@ -285,6 +286,35 @@ path	key6 	{
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
 			ORDER   BY        SRYYMD DESC
+		;
+	};
+};
+
+path	key7 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND     NYUGAIKBN    =   :NYUGAIKBN
+			AND     DENPJTIKBN   =   :DENPJTIKBN
+			AND     SKYSTYMD     >=  :SKYSTYMD
+			AND     SKYEDYMD     <=  :SKYEDYMD
+		;
+	};
+};
+
+path	key8 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND     NYUGAIKBN    =   :NYUGAIKBN
+			AND     PTID         =   :PTID
+			AND     DENPJTIKBN   =   :DENPJTIKBN
+			AND     SKYSTYMD     >=  :SKYSTYMD
+			AND     SKYEDYMD     <=  :SKYEDYMD
 		;
 	};
 };
@@ -354,6 +384,19 @@ path	del5 	{
 			AND     DENPJTIKBN   =   :DENPJTIKBN
 			AND     SKYSTYMD     >=  :SKYSTYMD
 			AND     SKYEDYMD     <=  :SKYEDYMD
+		;
+	};
+};
+
+path	del6 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   SKYSTYMD    >=  :SKYSTYMD
+			AND   SKYEDYMD    <=  :SKYEDYMD
 		;
 	};
 };

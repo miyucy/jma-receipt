@@ -85,3 +85,15 @@ path	del1 	{
 	};
 };
 
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syumei
+			WHERE   HOSPID        =  :HOSPID
+			AND   NYUGAIKBN       =  :NYUGAIKBN
+			AND   PTID            =  :PTID
+			AND   DENPNUM         =  :DENPNUM
+		;
+	};
+};
+

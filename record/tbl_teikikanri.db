@@ -1,0 +1,42 @@
+tbl_teikikanri	{
+        BTUNUM              char(2);
+        SYOKBN              char(1);
+        CREYMD              char(8);
+        CREHMS              char(6);
+        SRYYM               char(6);
+        PAGE                number(5);
+        KENSU               number(5);
+        TERMID              varchar(16);
+};
+
+primary	{
+	BTUNUM;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_teikikanri_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_teikikanri
+        WHERE   BTUNUM     =   :BTUNUM
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_teikikanri_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_teikikanri
+ 		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_teikikanri
+		;
+	};
+};
+
