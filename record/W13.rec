@@ -54,5 +54,12 @@ W13	{
 			count	int;
 			item	varchar(10)[2];
 		};
+		SKJKBN_COMBO	{
+			SKJKBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
 	};
 };

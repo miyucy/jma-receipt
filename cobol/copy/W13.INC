@@ -51,3 +51,7 @@
                 04  W13-TAXKBN           PIC X(10).
                 04  W13-TAXKBN-COUNT     PIC S9(9)   BINARY.
                 04  W13-TAXKBNLST        PIC X(10)   OCCURS  2 TIMES.
+              03  W13-SKJKBN-COMBO.
+                04  W13-SKJKBN           PIC X(20).
+                04  W13-SKJKBN-COUNT     PIC S9(9)   BINARY.
+                04  W13-SKJKBNLST        PIC X(20)   OCCURS  2 TIMES.

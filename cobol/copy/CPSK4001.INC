@@ -47,8 +47,10 @@
                05  SYS-4001-KSNRATE     PIC  9(02).
       *文書料（消費税）
                05  SYS-4001-TAXKBN      PIC  X(01).
+      *自賠責食事療養費
+               05  SYS-4001-SKJKBN      PIC  X(01).
       *予備
-           03                           PIC  X(415).
+           03                           PIC  X(414).
       *端末ＩＤ
            03  SYS-4001-TERMID          PIC  X(16).
       *オペーレータＩＤ
