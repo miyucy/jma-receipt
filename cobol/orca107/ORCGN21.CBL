@@ -962,7 +962,7 @@
        470-DEL-SEC             SECTION.
       *
            IF          SPA-NAI-SRYCD     =   SPACE
-               MOVE    "00011"     TO  SPA-ERRCD
+               MOVE    "0011"      TO  SPA-ERRCD
            ELSE
                MOVE    "1002"      TO  SPA-N21IDCD
            END-IF

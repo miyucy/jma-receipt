@@ -334,7 +334,7 @@
            END-IF
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
-           MOVE    "HCML09"            TO  HC01PARA-FORM-ID
+           MOVE    "HCML"              TO  HC01PARA-FORM-ID
            MOVE    WRK-PARA-TERMID     TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE            TO  HC01PARA-CNT

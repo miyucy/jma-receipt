@@ -66,8 +66,8 @@
                            11  SPA-GMN-NAME       PIC X(100).
       *
                05  SPA-NAI-AREA.
-                   07  SPA-JYOKEN-KBN         PIC X.
-                   07  SPA-NAIYO-KBN          PIC X.
+                   07  SPA-JYOKEN-KBN         PIC X(01).
+                   07  SPA-NAIYO-KBN          PIC X(01).
       *
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -335,11 +335,11 @@
       *    結果リストセット
                EVALUATE  KANACNV-TYPE
                    WHEN  2
-                       MOVE    2           TO  SPA-JYOKEN-KBN
-                       PERFORM  500-KANJILIST-SET-SEC
+                       MOVE    "2"         TO  SPA-JYOKEN-KBN
+                       PERFORM 500-KANJILIST-SET-SEC
                    WHEN  OTHER
-                       MOVE    1           TO  SPA-JYOKEN-KBN
-                       PERFORM  500-KANALIST-SET-SEC
+                       MOVE    "1"         TO  SPA-JYOKEN-KBN
+                       PERFORM 500-KANALIST-SET-SEC
                END-EVALUATE
       *
            END-IF
@@ -393,10 +393,10 @@
                MOVE    SPA-GMN-NAME (SPA-GMN-SELNUM)
                                    TO  SPA-GMN-NAIYO
                EVALUATE  SPA-JYOKEN-KBN
-                   WHEN  1
-                       MOVE  2     TO  SPA-NAIYO-KBN
-                   WHEN  2
-                       MOVE  1     TO  SPA-NAIYO-KBN
+                   WHEN  "1"
+                       MOVE  "2"       TO  SPA-NAIYO-KBN
+                   WHEN  "2"
+                       MOVE  "1"       TO  SPA-NAIYO-KBN
                END-EVALUATE
            END-IF
       *
@@ -447,9 +447,9 @@
       *    結果リストセット
                EVALUATE  KANACNV-TYPE
                    WHEN  2
-                       MOVE    2           TO  SPA-NAIYO-KBN
+                       MOVE    "2"         TO  SPA-NAIYO-KBN
                    WHEN  OTHER
-                       MOVE    1           TO  SPA-NAIYO-KBN
+                       MOVE    "1"         TO  SPA-NAIYO-KBN
                END-EVALUATE
       *
             END-IF
@@ -500,10 +500,10 @@
            MOVE    SPA-GMN-NAME (SPA-GMN-SELNUM)
                                        TO  SPA-GMN-NAIYO
            EVALUATE  SPA-JYOKEN-KBN
-               WHEN  1
-                   MOVE  2     TO  SPA-NAIYO-KBN
-               WHEN  2
-                   MOVE  1     TO  SPA-NAIYO-KBN
+               WHEN  "1"
+                   MOVE  "2"           TO  SPA-NAIYO-KBN
+               WHEN  "2"
+                   MOVE  "1"           TO  SPA-NAIYO-KBN
            END-EVALUATE 
            .
       *
@@ -644,11 +644,11 @@
            INITIALIZE                  JINMEI-REC
       *
            EVALUATE  SPA-JYOKEN-KBN
-               WHEN  1
+               WHEN  "1"
                    MOVE    SPA-GMN-JYOKEN          TO  JINMEI-KANJI
                    MOVE    SPA-GMN-NAME(SPA-GMN-SELNUM)
                                                    TO  JINMEI-KANA
-               WHEN  2
+               WHEN  "2"
                    MOVE    SPA-GMN-NAME(SPA-GMN-SELNUM)
                                                    TO  JINMEI-KANJI
                    MOVE    SPA-GMN-JYOKEN          TO  JINMEI-KANA
@@ -695,20 +695,20 @@
            IF      SPA-ERRCD        =   SPACE
                IF  SPA-GMN-NAIYO   =   SPACE
                    EVALUATE  SPA-JYOKEN-KBN
-                       WHEN  1
+                       WHEN  "1"
                            MOVE    "1002"   TO  SPA-ERRCD
-                       WHEN  2
+                       WHEN  "2"
                            MOVE    "1003"   TO  SPA-ERRCD
                    END-EVALUATE
                ELSE
                    EVALUATE  SPA-JYOKEN-KBN
-                       WHEN  1
-                           IF  SPA-NAIYO-KBN  NOT  =  2
+                       WHEN  "1"
+                           IF  SPA-NAIYO-KBN  NOT  =  "2"
                                MOVE    "1002"   TO  SPA-ERRCD
                            END-IF
-                       WHEN  2
+                       WHEN  "2"
       *----(00.00.01)--UPD-START---
-      *                     IF  SPA-NAIYO-KBN  NOT  =  1
+      *                     IF  SPA-NAIYO-KBN  NOT  =  "1"
       *                         MOVE    "1003"   TO  SPA-ERRCD
       *                     END-IF
                            CONTINUE
@@ -725,10 +725,10 @@
                INITIALIZE                  JINMEI-REC
       *
                EVALUATE  SPA-JYOKEN-KBN
-                   WHEN  1
+                   WHEN  "1"
                        MOVE    SPA-GMN-JYOKEN          TO  JINMEI-KANJI
                        MOVE    SPA-GMN-NAIYO           TO  JINMEI-KANA
-                   WHEN  2
+                   WHEN  "2"
                        MOVE    SPA-GMN-NAIYO           TO  JINMEI-KANJI
                        MOVE    SPA-GMN-JYOKEN          TO  JINMEI-KANA
                END-EVALUATE
@@ -762,10 +762,10 @@
            INITIALIZE                  JINMEI-REC
       *
            EVALUATE  SPA-JYOKEN-KBN
-               WHEN  1
+               WHEN  "1"
                    MOVE    SPA-GMN-JYOKEN          TO  JINMEI-KANJI
                    MOVE    SPA-GMN-NAIYO           TO  JINMEI-KANA
-               WHEN  2
+               WHEN  "2"
                    MOVE    SPA-GMN-NAIYO           TO  JINMEI-KANJI
                    MOVE    SPA-GMN-JYOKEN          TO  JINMEI-KANA
            END-EVALUATE

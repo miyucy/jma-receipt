@@ -600,7 +600,7 @@
            PERFORM UNTIL ( FLG-SRYACT      =   1 )
                IF      ACCT-ZAITEN         >   ZERO
       *            点数がある時
-                   MOVE    1           TO  WRK-INGAIKBN
+                   MOVE    "1"         TO  WRK-INGAIKBN
                    IF      WRK-PARA-INGAIKBN   NOT =   1
                        PERFORM 240-MAIN-HEN-SEC
                    END-IF
@@ -611,12 +611,12 @@
                                                    "233"  OR
                                                    "950"  OR
                                                    "960")
-                       MOVE    1           TO  WRK-INGAIKBN
+                       MOVE    "1"         TO  WRK-INGAIKBN
                        IF      WRK-PARA-INGAIKBN   NOT =   1
                            PERFORM 240-MAIN-HEN-SEC
                        END-IF
                    ELSE
-                       MOVE    2           TO  WRK-INGAIKBN
+                       MOVE    "2"         TO  WRK-INGAIKBN
                        IF      ( WRK-PARA-INGAIKBN NOT =   0 )
                            AND ( WRK-PARA-INGAIKBN NOT =   SPACE )
                            PERFORM 240-MAIN-HEN-SEC

@@ -244,7 +244,7 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-OUT-INPUT    TO  WRK-MSTYMDH
       *
-           MOVE    "TENSUERR"       TO  TENSUERR-FILE-ID
+           MOVE    "TENSERR"        TO  TENSUERR-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                     TO  TENSUERR-TERMID
       *

@@ -262,7 +262,7 @@
            MOVE    WRK-OUT-INPUT    TO  WRK-MSTYMDH
       *----(01.01.02)--UPD-END-----
       *     
-           MOVE    "TENSUERR"       TO  TENSUERR-FILE-ID
+           MOVE    "TENSERR"        TO  TENSUERR-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                     TO  TENSUERR-TERMID
       *

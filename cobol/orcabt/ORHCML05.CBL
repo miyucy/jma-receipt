@@ -233,7 +233,7 @@
            PERFORM 831-YMDCONV12-SEC
            MOVE    WRK-LNKYMD       TO  WRK-MSTYMDH
       *     
-           MOVE    "TENSUERR"       TO  TENSUERR-FILE-ID
+           MOVE    "TENSERR"        TO  TENSUERR-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                     TO  TENSUERR-TERMID
       *    パラメタ編集処理
