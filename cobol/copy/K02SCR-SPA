@@ -92,6 +92,13 @@
                    07  SPA-GMN-TABOO-REC         OCCURS  32.
                        09  SPA-GMN-TABOO         PIC X(62).
                    07  SPA-TABOO-MAX             PIC 9(04).
+      *        病名内容
+               05  SPA-GMN-BYOMEITBL.
+                   07  SPA-GMN-BYOMEI-TBL        OCCURS  100.
+                       09  SPA-GMN-BYOMEI-G.
+                           11  SPA-GMN-BYOMEI-NO     PIC X(02).
+                           11  SPA-GMN-BYOMEI        PIC X(22).
+                   07  SPA-BYOMEI-MAX            PIC 9(04).
       *
       *漢字モード
       *************07  SPA-GMN-MCPCHK            PIC X(02).
