@@ -424,8 +424,9 @@
            PERFORM
                UNTIL     FLG-TENSU     =   1
       *
-               IF      (SPA-X01-STYUKYMD   >=  TNS-YUKOSTYMD )  AND
-                       (SPA-X01-EDYUKYMD   <=  TNS-YUKOEDYMD )
+      *        有効終了日が対象のマスタを対象とする
+      *********IF      (SPA-X01-STYUKYMD   >=  TNS-YUKOSTYMD )  AND
+               IF      (SPA-X01-EDYUKYMD   <=  TNS-YUKOEDYMD )
                    MOVE    TNS-NAME        TO  SPA-GMN-TNAME (IDX)
                    MOVE    1               TO  FLG-TENSU
                    MOVE    1               TO  FLG-OK
