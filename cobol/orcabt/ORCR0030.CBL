@@ -134,6 +134,8 @@
       *  01.02.33   NACL-門脇     03/10/06  実日数等の編集追加
       *  01.02.34   NACL-門脇     03/10/15  同日再診を実日数カウントの対象
       *                                     に追加
+      *  01.02.35   NACL-門脇     03/11/26  自費レセプトの自費分
+      *                                     摘要欄記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1414,6 +1416,21 @@
                MOVE    SRY-AUTOKBN(IDX2)  TO    RECE05-AUTOKBN(IDX4)
                MOVE    SRY-INPUTNUM(IDX2) TO    RECE05-INPUTNUM(IDX4)
                PERFORM    TENSU-TBL-SEC
+      *
+               IF      RECE02-RECESYUBETU  =  8888
+                 IF      SRY-SRYKBN    =     "95" OR "96"
+                   IF      SRY-SRYCD(IDX2)(1:3)  =  "095" OR "096"
+                     IF      SRY-SRYCD(IDX2)(1:5)  =  "09500" OR "09600"
+                                                  OR  "09591" OR "09691"
+                                                  OR  "09592" OR "09692"
+                                                  OR  "09593" OR "09693"
+                          CONTINUE
+                     ELSE
+                          ADD     TNS-TEN    TO   RECE04-SYUTEN1
+                     END-IF
+                   END-IF
+                 END-IF
+               END-IF
       *
       **診療実日数のカウントを行える剤であるかの判定
                IF  ((ACCT-ZAITEN    NOT =    ZERO)    AND               XXX
