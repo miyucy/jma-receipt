@@ -971,7 +971,7 @@
                        ELSE 
                            MOVE    "1004"       TO  SPA-WIDCD
                        END-IF
-                   WHEN    ZERO
+                   WHEN    0
                        IF      SPA-GMN-KBNCD    =   SPACE
                            MOVE    101          TO  SPA-GMN-CUR
                        ELSE 
@@ -997,7 +997,7 @@
            END-IF
       *
            EVALUATE   W18-PAGENO
-               WHEN   ZERO
+               WHEN   0
                    MOVE    "1001"              TO  SPA-WIDCD
                WHEN   1
                    MOVE    "1002"              TO  SPA-WIDCD
@@ -1012,7 +1012,7 @@
        490-KOUSHIN-SEC           SECTION.
       *
            EVALUATE    W18-PAGENO
-               WHEN    ZERO
+               WHEN    0
       *            ∞ÂŒ≈µ°¥ÿ ‘Ω∏æ Û
                    IF      SPA-GMN-KBNCD       =   SPACE
                        CONTINUE
@@ -1431,7 +1431,7 @@
       *
            PERFORM 5001-MAPCUR-SEC
       *
-           IF      W18-PAGENO          =   ZERO
+           IF      W18-PAGENO          =   0
                MOVE    WIDGET-NORMAL       TO  W18-B02-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  W18-B02-STATE
