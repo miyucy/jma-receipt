@@ -301,6 +301,7 @@
       *  01.01.119   NACL-太田    04/01/19  SYUNOU-KEY24追加
       *  01.01.120   NACL-太田    04/01/23  PTNYUINRRK-KEY29追加
       *  01.01.121   NACL-藤原    04/01/30  USERBYOMEI-DEL1,DEL2追加
+      *  01.01.122   NACL-太田    04/02/05  JYURRK-KEY25追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1374,6 +1375,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "JYURRK-KEY24"
                    MOVE    PATH-TBL-JYURRK-KEY24
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY25"
+                   MOVE    PATH-TBL-JYURRK-KEY25
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "JYURRK-ALL"
                    MOVE    PATH-TBL-JYURRK-ALL
