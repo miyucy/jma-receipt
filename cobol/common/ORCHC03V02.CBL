@@ -20,7 +20,7 @@
       *****************************************************************
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ´µ¼ÔÅÐÏ¿
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ÀÁµá½ñ·óÎÎ¼ý½ñ¡¡°õºþ¡Ê£È£Ã£Î£°£³£Ö£°£²¡Ë
+      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ³°ÍèÀÁµá½ñ·óÎÎ¼ý½ñ¡¡°õºþ¡Ê£È£Ã£Í£°£³£Ö£°£²¡Ë
       *  ´ÉÍý¼Ô            : 
       *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
       *  04/01/29    NACL¡Ý¾®Æ¦Âô  ¿·µ¬ºîÀ®
@@ -955,7 +955,7 @@
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HOKENGAI
-      *    ¼«Èñ£±
+      *    ¼«Èñ£±¤«¤é£µ
            MOVE    ZERO                TO  WRK-JIHI-REC
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   5
@@ -966,27 +966,9 @@
                MOVE    WRK-Z72-G       TO  HC03-JIHI(IDX)
            END-PERFORM
       *
-      **     MOVE    WRK-JIHI (1)        TO  WRK-Z72
-      **     PERFORM 800-HENKAN-SEC
-      **     MOVE    WRK-Z72-G           TO  HC03-JIHI1
-      **     MOVE    WRK-JIHI (2)        TO  WRK-Z72
-      **     PERFORM 800-HENKAN-SEC
-      **     MOVE    WRK-Z72-G           TO  HC03-JIHI2
-      **     MOVE    WRK-JIHI (3)        TO  WRK-Z72
-      **     PERFORM 800-HENKAN-SEC
-      **     MOVE    WRK-Z72-G           TO  HC03-JIHI3
-      **     MOVE    WRK-JIHI (4)        TO  WRK-Z72
-      **     PERFORM 800-HENKAN-SEC
-      **     MOVE    WRK-Z72-G           TO  HC03-JIHI4
-      **     MOVE    WRK-JIHI (5)        TO  WRK-Z72
-      **     PERFORM 800-HENKAN-SEC
-      **     MOVE    WRK-Z72-G           TO  HC03-JIHI5
       *    ¼«Èñ·×
            COMPUTE WRK-JIHI-TOTAL      =   SYU-JIHI-TOTAL
                                        +   SYU-JIHI-TOTAL-TAX
-      **     MOVE    WRK-JIHI-TOTAL      TO  WRK-Z72
-      **     PERFORM 800-HENKAN-SEC
-      **     MOVE    WRK-Z72-G           TO  HC03-JIHI6
       *    ¼«Èñ¾ÃÈñÀÇ
            MOVE    SYU-JIHI-TAX        TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
@@ -1036,7 +1018,7 @@
                MOVE    ORCHC03-KON-SEIKYU  TO  WRK-SKYMONEY
            END-IF
       *    º£²óÀÁµá³Û¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
-           MOVE    SYU-SKYMONEY-TAX-SAI TO  WRK-Z72
+           MOVE    ORCHC03-SEIKYU-TAX-SAI TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G            TO  HC03-SEIKYUZEI
       *
