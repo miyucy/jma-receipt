@@ -6054,15 +6054,15 @@
            IF   FLG-DBRC           =    ZERO
                MOVE    MCPDATA-REC TO   SYS-5000-REC
       *        °åÎÅµ¡´Ø¸º»»¾ðÊó
-               PERFORM   VARYING   IDX7   FROM   1  BY  1
-                 UNTIL  (SYS-5000-GENCD(IDX7)    =   SPACE)  OR
-                        (IDX7                    >   5)
-                    IF   SYS-5000-GENKBN(IDX7)   =   "2"
-                         ADD    1                TO  IDX8
-                         MOVE   SYS-5000-GENCD(IDX7)  TO
-                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
-                    END-IF
-               END-PERFORM
+      *         PERFORM   VARYING   IDX7   FROM   1  BY  1
+      *           UNTIL  (SYS-5000-GENCD(IDX7)    =   SPACE)  OR
+      *                  (IDX7                    >   5)
+      *              IF   SYS-5000-GENKBN(IDX7)   =   "2"
+      *                   ADD    1                TO  IDX8
+      *                   MOVE   SYS-5000-GENCD(IDX7)  TO
+      *                             LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+      *              END-IF
+      *         END-PERFORM
       *        Æþ±¡ÎÁ²Ã»»
                PERFORM   VARYING   IDX7   FROM   1  BY  1
                  UNTIL  (SYS-5000-KSNCD(IDX7)    =   SPACE)  OR
