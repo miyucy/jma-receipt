@@ -838,8 +838,6 @@
                       (WRK-CHK-SRYSYUKBN       =   "213" OR
                                                    "223" OR
                                                    "233"  )
-      *            点数がゼロの場合対象外とする
-                   OR (WRK-COM-KEI (IDX)       =   ZERO   )
                    CONTINUE
                ELSE
       *
@@ -897,11 +895,17 @@
                IF      (FLG-NAIFUKU            =   1  )  AND
                        (WRK-COM-ZAIEND (IDX)   =   "1")
                    IF      WRK-ZAITEN          <   205
+                       IF      WRK-ZAITEN          =   ZERO
+                           CONTINUE
+                       ELSE
+      *
                        IF      WRK-CHK-SRYSYUKBN   =   "211"
                                                    OR  "291"
                            ADD     1               TO  WRK-ZAICNT
                        ELSE
                            ADD     1               TO  WRK-ZAICNT2
+                       END-IF
+      *
                        END-IF
                    ELSE
                        IF      WRK-CHK-SRYSYUKBN   =   "211"
