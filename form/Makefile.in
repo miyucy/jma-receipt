@@ -78,6 +78,9 @@ EXTRA_DIST = \
               HCM304.red \
               HCM305.red \
               HCM306.red \
+              HCN06.red \
+              HCN061.red \
+              HCN062.red \
 
 all:   
 	touch build-stamp
