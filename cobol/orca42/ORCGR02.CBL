@@ -2141,23 +2141,29 @@
            AND   ( SPA-GMN-PREFKBN =   "1" )
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-CONS-LINE-MAX
-                       OR      SPA-NAI-PRTJYUNI(1 IDX)   =   SPACE
-                   IF    ( SPA-GMN-TCHK-VALUE  (1 IDX)
-                                                   =   "T"   )
-                   AND   ( SPA-GMN-TSTDATA (1 IDX) =   SPACE )
-                   AND   ( SPA-GMN-TEDDATA (1 IDX) =   SPACE )
-                       MOVE    "1"         TO  SPA-GMN-TPRTFLG (1 IDX)
-                   END-IF
-               END-PERFORM 
+                   IF      SPA-NAI-PRTJYUNI(1 IDX)   =   SPACE
+                       CONTINUE
+                   ELSE
+                       IF    ( SPA-GMN-TCHK-VALUE  (1 IDX)
+                                                       =   "T"   )
+                       AND   ( SPA-GMN-TSTDATA (1 IDX) =   SPACE )
+                       AND   ( SPA-GMN-TEDDATA (1 IDX) =   SPACE )
+                           MOVE    "1"     TO  SPA-GMN-TPRTFLG (1 IDX)
+                       END-IF
+                   END-IF 
+               END-PERFORM
                IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       WRK-CONS-LINE-MAX
-                           OR      SPA-NAI-PRTJYUNI(2 IDX)   =   SPACE
-                       IF    ( SPA-GMN-TCHK-VALUE  (2 IDX)
-                                                       =   "T"   )
-                       AND   ( SPA-GMN-TSTDATA (2 IDX) =   SPACE )
-                       AND   ( SPA-GMN-TEDDATA (2 IDX) =   SPACE )
-                           MOVE    "1"     TO  SPA-GMN-TPRTFLG (2 IDX)
+                       IF      SPA-NAI-PRTJYUNI(2 IDX)   =   SPACE
+                           CONTINUE
+                       ELSE
+                           IF    ( SPA-GMN-TCHK-VALUE  (2 IDX)
+                                                           =   "T"   )
+                           AND   ( SPA-GMN-TSTDATA (2 IDX) =   SPACE )
+                           AND   ( SPA-GMN-TEDDATA (2 IDX) =   SPACE )
+                               MOVE    "1" TO  SPA-GMN-TPRTFLG (2 IDX)
+                           END-IF
                        END-IF
                    END-PERFORM
                END-IF
