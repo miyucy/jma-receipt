@@ -45,7 +45,7 @@
       *    患者基本情報
            03  TOUKEI04-PTKHN-AREA.
       *        患者番号
-               05  TOUKEI04-PTID           PIC  X(20).
+               05  TOUKEI04-PTNUM          PIC  X(20).
       *        患者ＩＤ
                05  TOUKEI04-PTID           PIC  X(10).
       *        カナ氏名
