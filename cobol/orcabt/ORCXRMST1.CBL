@@ -122,7 +122,7 @@
       *
            03  WRK-TBL-DBRVERSION   OCCURS 100   INDEXED DBR-IDX.
                05  WRK-TBL-MASTER-KBN  PIC X(02).
-               05  WRK-TBL-DBRVERSION  PIC X(64).
+               05  WRK-TBL-DBRVERSION1 PIC X(64).
                05  WRK-TBL-UPDATE-FLG  PIC X(01).
       *****************************************************************
       *    ファイル定義
@@ -260,7 +260,7 @@
                    MOVE DBKANRI-KANRICD(7:2)
                                        TO  WRK-TBL-MASTER-KBN (IDX)
                    MOVE DBKANRI-DBRVERSION1
-                                       TO  WRK-TBL-DBRVERSION (IDX)
+                                       TO  WRK-TBL-DBRVERSION1(IDX)
                    MOVE SPACE          TO  WRK-TBL-UPDATE-FLG (IDX)
                END-IF
                IF      DBKANRI-KANRICD(1:8) =  "ORCADB00"
@@ -298,7 +298,7 @@
                         MOVE  SPACE    TO  WRK-DBRVERSION
                      WHEN     IN-MASTER-KBN
                                        =   WRK-TBL-MASTER-KBN(DBR-IDX)
-                        MOVE  WRK-TBL-DBRVERSION(DBR-IDX)
+                        MOVE  WRK-TBL-DBRVERSION1(DBR-IDX)
                                        TO  WRK-DBRVERSION
                END-SEARCH
                IF      WRK-DBRVERSION  NOT =   SPACE
@@ -312,7 +312,7 @@
                    ELSE
                        PERFORM 210-OUTFILE-SEC
                        MOVE    IN-DBRVERVION
-                                       TO  WRK-TBL-DBRVERSION(DBR-IDX)
+                                       TO  WRK-TBL-DBRVERSION1(DBR-IDX)
                        MOVE    "1"     TO  WRK-TBL-UPDATE-FLG(DBR-IDX)
                    END-IF
                  END-IF
@@ -344,7 +344,7 @@
                END-IF
       *
                IF      FLG-DBKANRI      =  ZERO
-                   MOVE    WRK-TBL-DBRVERSION(IDX)
+                   MOVE    WRK-TBL-DBRVERSION1(IDX)
                                        TO  DBKANRI-DBRVERSION2
                    MOVE    DBKANRI-REC TO  MCPDATA-REC
                    MOVE    "DBUPDATE"  TO  MCP-FUNC
