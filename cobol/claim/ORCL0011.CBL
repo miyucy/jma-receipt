@@ -843,23 +843,22 @@
       *
       *
       *    ¿ÇÎÅ²ÊÌ¾¾Î
-      * 
-      **** MOVE    SPACE               TO  SYS-1005-REC
-      *    INITIALIZE                      SYS-1005-REC
-      *    MOVE    "1005"              TO  SYS-1005-KANRICD
-      *    MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
-      *    MOVE    LNK-SYSYMD          TO  ORC-DBYMD
-      *    MOVE    SYS-1005-REC        TO  MCPDATA-REC
-      *    PERFORM 900-SYSKANRI-INV-SEC
-      *    IF      FLG-SYSKANRI        =   ZERO
-      ******** MOVE    MCPDATA-REC         TO  SYS-1005-REC
+           MOVE    SPACE               TO  SYS-1005-REC
+           INITIALIZE                      SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
+           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1005-REC
                MOVE    SYS-1005-SRYKANAME  TO  WRK-LF01-SRYNAME
                                            WRK-LF01-CRE001-DPERTNAME
                                            WRK-LF01-CRE301-DPERTNAME
                MOVE    WRK-SRYKA           TO  WRK-LF01-CRE001-DPERTID
                                            WRK-LF01-CRE301-DPERTID
                MOVE    "I"                 TO  WRK-LF01-SRYREP
-      *****END-IF
+           END-IF
       *
       *    ÊÝ¸±¾ðÊó  
            INITIALIZE                  HKNCOMBI-REC
