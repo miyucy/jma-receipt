@@ -891,14 +891,14 @@
                IF   RECE41-HKNKBN    NOT  =  "4"                        
                   IF      TNS-SRYKBN         =     "80"
                       IF  TNS-GAITENTTLKBN   =     130
-                          MOVE   '13'        TO    RECE44-SRYKBN
+                          MOVE   "13"        TO    RECE44-SRYKBN
                                                    RECE45-SRYKBN
                       END-IF
                   END-IF
                ELSE                                                     
                   IF ( ACCT-SRYKBN          =  "80"               ) AND
                      ( SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592" )
-                                MOVE   '95'   TO    RECE44-SRYKBN       
+                                MOVE   "95"   TO    RECE44-SRYKBN       
                                                     RECE45-SRYKBN       
                   ELSE
                    IF      TNS-SRYKBN         =     "80"                
@@ -911,10 +911,10 @@
                             CONTINUE                                    
                      ELSE                                               
                             IF    TNS-GAITENTTLKBN   =    130           
-                                MOVE   '13'   TO    RECE44-SRYKBN       
+                                MOVE   "13"   TO    RECE44-SRYKBN       
                                                     RECE45-SRYKBN       
                             ELSE                                        
-                                MOVE   '40'   TO    RECE44-SRYKBN       
+                                MOVE   "40"   TO    RECE44-SRYKBN       
                                                     RECE45-SRYKBN       
                             END-IF                                      
                      END-IF                                             
