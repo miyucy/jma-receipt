@@ -145,6 +145,7 @@
       *                                     るレセプト編集
       *                                     公費の負担者番号・受給者番号
       *                                     のカスタマイズ項目を中止
+      *  01.02.17    NACL-藤原    05/04/04  コメント編集行を変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -631,7 +632,7 @@
       *
       *    コメントデータ用テーブル
        01  TBL-COMMENT-AREA.
-           03  TBL-COMMENT-REC                  OCCURS  10.
+           03  TBL-COMMENT-REC                  OCCURS  100.
                05  TBL-COMMENT-SRYCD            PIC  X(09).
                05  TBL-COMMENT-NAME             PIC  X(200).
       *
@@ -2504,7 +2505,7 @@
                END-IF
            END-IF    
       *               
-           IF      WRK-TBLMAX8         >=  10
+           IF      WRK-TBLMAX8         >=  100
                MOVE    "*** ORCR0300 COMMENT TABLE  OVER  ***"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
