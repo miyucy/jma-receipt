@@ -2331,7 +2331,7 @@
            IF      SPA-GMN-HAKFLG  NOT =   "1"
                MOVE    "0024"              TO  SPA-ERRCD
                MOVE    07                  TO  SPA-GMN-CUR
-               GO      TO      460-FUKU-KEIZOKU-EXT
+               GO      TO      460-FUKU-KAKUATEI-EXT
            END-IF
       *
            MOVE    ZERO                TO  FLG-FUKU-FLG
@@ -4840,7 +4840,7 @@
            MOVE    WRK-DENPNUM         TO  ORCHC03-DENPNUM
            MOVE    SPA-GMN-SEIKYU      TO  ORCHC03-SEIKYU
            MOVE    SPA-GMN-NYUKIN      TO  ORCHC03-NYUKIN
-           IF      SPA-FUKU-DENPNUM    =   ZERO
+           IF      SPA-GMN-SYORI       =   ZERO
                IF      SPA-GMN-HAKFLG      =   "1"
                    CALL    WRK-SEIKYU-PG       USING   SPA-AREA
                                                    ORCHC03AREA
