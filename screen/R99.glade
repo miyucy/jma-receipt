@@ -5,13 +5,9 @@
   <name>R99</name>
   <program_name>R99</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -31,7 +27,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 05 Jan 2001 11:20:35 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -98,9 +94,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>MSG</name>
-      <x>248</x>
+      <x>280</x>
       <y>128</y>
-      <width>550</width>
+      <width>510</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -128,7 +124,7 @@
       <name>B12</name>
       <x>168</x>
       <y>128</y>
-      <width>80</width>
+      <width>110</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -142,7 +138,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>F12:印刷</label>
+      <label>F12:プレビュー</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
