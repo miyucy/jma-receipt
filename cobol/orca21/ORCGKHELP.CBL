@@ -108,6 +108,9 @@
       *    業務名
            COPY    "CPLOCKCONST.INC".
       *
+      *    画面色等
+           COPY    "ENUM-VALUE".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -468,6 +471,14 @@
                    MOVE    "F"             TO  KHELP-SELECT   (IDX)
                END-IF
            END-PERFORM
+      *
+           IF      SPA-KHELP-HELPKBN   =   "0"
+               MOVE    "【標準】"          TO  KHELP-HEAD-VALUE
+               MOVE    "blue"              TO  KHELP-HEAD-STYLE
+           ELSE
+               MOVE    "【自院】"          TO  KHELP-HEAD-VALUE
+               MOVE    "black"             TO  KHELP-HEAD-STYLE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
            .
