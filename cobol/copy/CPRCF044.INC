@@ -62,7 +62,7 @@
       *数量計
            03  RECE44-SURYOUTOTAL         PIC  9(07)V9(03).
       *診療コード＊数量の累計
-           03  RECE44-RUIKEITOTAL         PIC  9(21)V9(03).
+           03  RECE44-RUIKEITOTAL         PIC  9(15)V9(03).
       *明細数
            03  RECE44-MEISAISU            PIC  9(04).
       *剤回数

@@ -55,7 +55,7 @@
       *数量計
                05  RECE642-SURYOUTOTAL     PIC  9(07)V9(03).
       *診療コード＊数量の累計
-               05  RECE642-RUIKEITOTAL     PIC  9(21)V9(03).
+               05  RECE642-RUIKEITOTAL     PIC  9(15)V9(03).
       *明細数
                05  RECE642-MEISAISU        PIC  9(04).
       *コメント剤連番
