@@ -1,0 +1,1022 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCBT020.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次統計
+      *  コンポーネント名  : 月次統計ＣＳＶデータ作成
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/11/12    NACL−藤原    新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION           SECTION.
+       INPUT-OUTPUT            SECTION.
+       FILE-CONTROL.
+      *
+      *    月次統計データ（基本情報）
+           SELECT  TOUKEI01-FILE   ASSIGN  TOUKEI01
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  TOUKEI01-KEY
+                                   FILE    STATUS  IS  STS-TOUKEI01.
+      *
+      *    月次統計データ（診療情報）
+           SELECT  TOUKEI02-FILE   ASSIGN  TOUKEI02
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  TOUKEI02-KEY
+                                   FILE    STATUS  IS  STS-TOUKEI02.
+      *    月次統計データ（ＣＳＶ）  
+           SELECT  TOUKEI03-FILE   ASSIGN  "/var/tmp/toukei01.dat"
+                                   ORGANIZATION    IS  LINE
+                                                       SEQUENTIAL
+                                   FILE    STATUS  IS  STS-TOUKEI03.
+      *    エラーファイル
+           SELECT  TOUKEIERR-FILE  ASSIGN  WRK-PARA-ERRFILENM
+                                   FILE    STATUS  IS  STS-TOUKEIERR.
+      *
+       DATA                        DIVISION.
+       FILE                        SECTION.
+      *
+      *    月次統計データ（基本情報）
+       FD  TOUKEI01-FILE.
+       01  TOUKEI01-REC. 
+           COPY    "CPTCF001.INC".
+      *
+      *    月次統計データ（診療情報）
+       FD  TOUKEI02-FILE.
+       01  TOUKEI02-REC. 
+           COPY    "CPTCF002.INC".
+      *
+      *    月次統計データ（ＣＳＶ）  
+       FD  TOUKEI03-FILE.
+       01  TOUKEI03-REC            PIC X(3000). 
+      *
+      *    エラーファイル
+       FD  TOUKEIERR-FILE.
+       01  TOUKEIERR-REC           PIC X(200). 
+      *
+       WORKING-STORAGE             SECTION.
+      *
+      *    月次統計データ（基本情報）
+           COPY    "CPCOMMONDAT5.INC"
+                                   REPLACING  //TEIKI01PARA//
+                                   BY         //TOUKEI01//.
+      *
+      *    月次統計データ（診療情報）
+           COPY    "CPCOMMONDAT5.INC"
+                                   REPLACING  //TEIKI01PARA//
+                                   BY         //TOUKEI02//.
+      *
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-TOUKEI01                    PIC X(02).
+           03  STS-TOUKEI02                    PIC X(02).
+           03  STS-TOUKEI03                    PIC X(02).
+           03  STS-TOUKEIERR                   PIC X(02).
+      *
+       01  FLG-AREA.
+           03  FLG-END                         PIC 9(01).
+           03  FLG-TOUKEI02                    PIC 9(01).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-TOUKEI01                    PIC 9(06).
+           03  CNT-TOUKEI03                    PIC 9(06).
+      *
+       01  INDEX-AREA.
+           03  IDX                             PIC 9(03). 
+           03  IDY                             PIC 9(03). 
+           03  IDZ                             PIC 9(03).
+           03  IDW                             PIC 9(03).
+           03  IDX1                            PIC 9(03). 
+           03  IDX2                            PIC 9(03). 
+           03  IDX3                            PIC 9(03). 
+      *
+      *    一時領域
+      *
+       01  WRK-AREA.
+           03  WRK-PARA.
+               05  WRK-PARA-HOSPCD             PIC X(07).
+               05  WRK-PARA-SRYYM              PIC X(06).
+               05  WRK-PARA-TERMID             PIC X(16).
+               05  WRK-PARA-KOJINKBN           PIC X(01).
+               05  WRK-PARA-JOBID              PIC 9(07).
+               05  WRK-PARA-SHELLID            PIC X(08).
+               05  WRK-PARA-ERRFILENM          PIC X(100).
+      *
+           03  WRK-TOUKEIERR               PIC X(200). 
+      * 
+           03  WRK-YMD.
+               05  WRK-YY              PIC 9(04).
+               05  WRK-MM              PIC 9(02).
+               05  WRK-DD              PIC 9(02).
+      *
+           03  WRK-SYMD.
+               05  WRK-SYY             PIC 9(04).
+               05  WRK-SMM             PIC 9(02).
+               05  WRK-SDD             PIC 9(02).
+      *
+      *     右ずめ編集用     
+           03  WRK-HENKAN              PIC X(20).
+           03  WRK-LENGTH              PIC 9(02).
+           03  WRK-HENSYU              PIC X(20).
+      *    出力データ編集用
+           03  WRK-REC                 PIC X(3000).
+           03  WRK-REC-LENGTH          PIC 9(04).
+           03  WRK-HENSYU-AREA.
+               05  WRK-DATA            PIC X(200).
+               05  WRK-NUM             PIC ZZZZZZZZZ9.999. 
+               05  WRK-NAGASA          PIC 9(03).
+               05  WRK-ST              PIC 9(02). 
+               05  WRK-SYOSUU          PIC 9(01).
+               05  WRK-END             PIC 9(01).
+      *
+      *    ワーク主保険情報
+           03  WRK-HKN-AREA.
+      *        主保険−保険ＩＤ
+               05  WRK-HKN-HKNID       PIC  9(10).
+      *        主保険−記号
+               05  WRK-HKN-KIGO        PIC  X(80).
+      *        主保険−番号
+               05  WRK-HKN-NUM         PIC  X(80).
+      *        被保険者名
+               05  WRK-HKN-HIHKNJANAME
+                                       PIC  X(100).
+      *        資格取得年月日
+               05  WRK-HKN-SKKGETYMD   PIC  X(08).
+      *        適用開始年月日
+               05  WRK-HKN-TEKSTYMD    PIC  X(08). 
+      *        適用終了年月日
+               05  WRK-HKN-TEKEDYMD    PIC  X(08). 
+      *        主保険−継続区分
+               05  WRK-HKN-CONTKBN     PIC  X(01).
+      * 
+      *    ワーク公費情報
+           03  WRK-KOHI-AREA.
+      *        公費ＩＤ
+               07  WRK-KOHID          PIC  9(10).
+      *        公費保険番号
+               07  WRK-KOHHKNNUM      PIC  X(03).
+      *        公費支払区分
+               07  WRK-KOHPAYKBN      PIC  X(02).
+      *        公費−法別番号
+               07  WRK-KOHHBTNUM      PIC  X(02).
+      *        公費−負担者番号
+               07  WRK-KOHFTNJANUM    PIC  X(08).
+      *        公費−受給者番号
+               07  WRK-KOHJKYSNUM     PIC  X(20).
+      *        公費−レセプト請求区分
+               07  WRK-RECESKYKBN     PIC  X(01).
+      *        適用開始年月日
+               07  WRK-KOHTEKSTYMD    PIC  X(08).
+      *        適用終了年月日
+               07  WRK-KOHTEKEDYMD    PIC  X(08).
+      *  
+       01  WRK-CONS-AREA.
+      *    コンマ
+           03  WRK-KUGIRI              PIC X(01)   VALUE   ",".
+      *    改行コード
+           03  WRK-KAIGYO              PIC X(01)   VALUE   X"0D".
+      *    生活保護保険番号 
+           03  WRK-CONS-SEIHO-HKNNUM   PIC X(03)   VALUE   "012". 
+      *    自費保険番号 
+           03  WRK-CONS-JIHI-HKNNUM    PIC X(03)   VALUE   "980". 
+      *    労災保険番号 
+           03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
+      *    自賠責保険番号 
+           03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
+      *    原爆保険番号 
+           03  WRK-CONS-GENBAKU-HKNNUM PIC X(03)   VALUE   "019".       
+      *
+           COPY    "MCPAREA".
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    ジョブ管理マスタ
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
+      *
+      *****************************************************************
+      *    サブプロ用領域
+      *****************************************************************
+      *    数字変換領域
+           COPY    "CPORCSNUM.INC".
+      *   ジョブ管理ＤＢ制御サブ
+           COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    ＤＢ検索
+           COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
+      *
+           COPY    "COMMON-SPA".
+      *
+      ****************************************************************
+       LINKAGE                 SECTION.
+       01  COMMAND-PARAM.
+           02  FILLER      PIC X(1000).
+      ****************************************************************
+       PROCEDURE           DIVISION
+               USING
+           COMMAND-PARAM.
+      *
+      *****************************************************************
+      *    主処理
+      *****************************************************************
+       000-PROC-SEC                SECTION.
+      *
+           PERFORM 100-INIT-SEC
+      *
+           PERFORM 200-MAIN-SEC    UNTIL   FLG-END =   1 
+      *
+           PERFORM 300-TERM-SEC
+      *
+           STOP    RUN
+           .
+      *****************************************************************
+      *    初期　処理
+      *****************************************************************
+       100-INIT-SEC                SECTION.
+      *
+           INITIALIZE                  CNT-AREA
+                                       WRK-AREA
+                                       FLG-AREA
+      *
+           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
+                                       INTO    WRK-PARA-HOSPCD
+                                               WRK-PARA-SRYYM
+                                               WRK-PARA-TERMID
+                                               WRK-PARA-KOJINKBN
+                                               WRK-PARA-JOBID
+                                               WRK-PARA-SHELLID
+                                               WRK-PARA-ERRFILENM
+           END-UNSTRING 
+      *
+           PERFORM 100-DBOPEN-SEC
+      *
+      *    ステップ管理開始処理
+           MOVE    "STS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    "ORCBT020"      TO  JOB-PGID
+           MOVE    "ＣＳＶデータ作成"
+                                   TO  JOB-SHELLMSG
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           MOVE    "TOKEI010"          TO  TOUKEI01-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI01-TERMID
+      *
+           MOVE    "TOKEI020"          TO  TOUKEI02-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI02-TERMID
+      *
+           OPEN    I-O                 TOUKEI01-FILE
+                                       TOUKEI02-FILE
+                   OUTPUT              TOUKEI03-FILE
+      *
+           PERFORM 900-TOUKEI01-READ-SEC   
+           .
+       100-INIT-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    主処理
+      *****************************************************************
+       200-MAIN-SEC                SECTION.
+      *     
+      *    月次統計データ（診療情報）読み込み
+           INITIALIZE                      TOUKEI02-REC
+           MOVE    TOUKEI01-KEY        TO  TOUKEI02-KEY1
+      *
+           START   TOUKEI02-FILE
+                   KEY IS    >=   TOUKEI02-KEY
+               INVALID
+                   MOVE    1           TO  FLG-TOUKEI02
+               NOT INVALID
+                   PERFORM 900-TOUKEI02-READ-SEC
+           END-START
+      *     
+           PERFORM UNTIL   FLG-TOUKEI02        =   1
+                   OR      TOUKEI01-KEY    NOT =   TOUKEI02-KEY1
+               PERFORM 2001-FILE-HENSYU-SEC
+               PERFORM 900-TOUKEI02-READ-SEC
+           END-PERFORM       
+      *
+           PERFORM 900-TOUKEI01-READ-SEC   
+           .
+       200-MAIN-EXT.
+           EXIT. 
+      *
+      *****************************************************************
+      *    ＣＳＶファイル処理
+      *****************************************************************
+       2001-FILE-HENSYU-SEC         SECTION.
+      *
+      *    保険情報取得
+          
+           MOVE    SPACE               TO  WRK-REC
+           MOVE    ZERO                TO  WRK-REC-LENGTH
+      *    医療機関ＩＤ      
+           MOVE    TOUKEI01-HOSPID     TO  WRK-DATA
+           MOVE    24                  TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    医療機関コード
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    WRK-PARA-HOSPCD     TO  WRK-DATA
+               MOVE    7                   TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    診療年月
+           MOVE    WRK-PARA-SRYYM      TO  WRK-DATA
+           MOVE    6                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    レコード識別
+      *****MOVE    ?                   TO  WRK-NUM
+      *****MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC  
+      *    レセプト種別
+           MOVE    TOUKEI01-RECESYUBETU
+                                       TO  WRK-DATA
+           MOVE    4                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    入外区分
+           MOVE    TOUKEI01-NYUGAIKBN  TO  WRK-NUM
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC  
+      *    患者番号
+           MOVE    TOUKEI01-PTNUM      TO  WRK-DATA
+           MOVE    20                  TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    患者ＩＤ
+           MOVE    TOUKEI01-PTID       TO  WRK-NUM
+           MOVE    10                  TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC  
+      *    カナ氏名
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    TOUKEI01-KANANAME   TO  WRK-DATA
+               MOVE    50                  TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    氏名
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    TOUKEI01-NAME       TO  WRK-DATA
+               MOVE    50                  TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    性別
+           MOVE    TOUKEI01-SEX        TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    生年月日
+           MOVE    TOUKEI01-BIRTHDAY   TO  WRK-DATA
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    診療科
+           MOVE    TOUKEI02-SRYKA      TO  WRK-DATA
+           MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    レセ電診療科
+           MOVE    TOUKEI02-RECESRYKA  TO  WRK-DATA
+           MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    剤番号
+           MOVE    TOUKEI02-ZAINUM     TO  WRK-NUM
+           MOVE    4                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    剤内番号
+           MOVE    TOUKEI02-RENNUM     TO  WRK-NUM
+           MOVE    3                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    診療行為区分
+           MOVE    TOUKEI02-SRYKBN     TO  WRK-DATA
+           MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    診療種別区分
+           MOVE    TOUKEI02-SRYSYUKBN  TO  WRK-DATA
+           MOVE    3                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    剤点数識別
+           IF      TOUKEI02-SRYKBN     =   "95"    OR  "96"
+               MOVE    1                   TO  WRK-NUM
+           ELSE
+               MOVE    3                   TO  WRK-NUM
+           END-IF
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    剤点数
+           MOVE    TOUKEI02-ZAITEN     TO  WRK-NUM
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    剤回数
+           MOVE    TOUKEI02-ZAIKAISU   TO  WRK-NUM
+           MOVE    7                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    手技点数１
+           MOVE    TOUKEI02-SYUTEN1    TO  WRK-NUM
+           MOVE    7                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    手技点数２
+           MOVE    TOUKEI02-SYUTEN2    TO  WRK-NUM
+           MOVE    7                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    薬剤点数
+           MOVE    TOUKEI02-YKZTEN     TO  WRK-NUM
+           MOVE    7                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    器材点数
+           MOVE    TOUKEI02-KIZAITEN   TO  WRK-NUM
+           MOVE    7                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    保険組合せ
+           MOVE    TOUKEI02-HKNCOMBI   TO  WRK-NUM
+           MOVE    4                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    明細数
+           MOVE    TOUKEI02-MEISAISU   TO  WRK-NUM
+           MOVE    4                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    診療行為コード
+           MOVE    TOUKEI02-SRYCD      TO  WRK-DATA
+           MOVE    9                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    数量
+           MOVE    TOUKEI02-SRYSURYO   TO  WRK-NUM
+           MOVE    8                   TO  WRK-NAGASA
+           MOVE    3                   TO  WRK-SYOSUU     
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    回数
+           MOVE    TOUKEI02-SRYKAISU   TO  WRK-NUM
+           MOVE    3                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    点数識別
+           MOVE    TOUKEI02-TENSIKIBETU
+                                       TO  WRK-NUM
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    点数
+           MOVE    TOUKEI02-TEN        TO  WRK-NUM
+           MOVE    11                  TO  WRK-NAGASA
+           MOVE    2                   TO  WRK-SYOSUU     
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    名称入力番号
+           MOVE    TOUKEI02-INPUTNUM   TO  WRK-NUM
+           MOVE    3                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    自費金額
+           MOVE    TOUKEI02-JIHIMONEY  TO  WRK-NUM
+           MOVE    7                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    単位コード
+           MOVE    TOUKEI02-TANICD     TO  WRK-DATA
+           MOVE    3                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    単位名称
+           MOVE    TOUKEI02-TANINAME   TO  WRK-DATA
+           MOVE    12                  TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    名称
+           MOVE    TOUKEI02-NAME       TO  WRK-DATA
+           MOVE    100                 TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC    
+      *    正式名称
+           MOVE    TOUKEI02-FORMALNAME TO  WRK-DATA
+           MOVE    200                 TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    薬価基準コード
+           MOVE    TOUKEI02-YAKKAKJNCD TO  WRK-DATA
+           MOVE    12                  TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    入外中外来識別
+      *****MOVE    ??                  TO  WRK-DATA
+      *****MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    ドクターコード
+           MOVE    TOUKEI02-DRCD       TO  WRK-DATA
+           MOVE    5                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    カレンダー
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       31
+               MOVE    TOUKEI02-KAISU (IDX1)   TO  WRK-NUM
+               MOVE    3                       TO  WRK-NAGASA
+               PERFORM 5005-NUM-HENSYU-SEC
+           END-PERFORM
+      *
+      *保険情報
+      * 
+      *    保険番号
+           MOVE    TOUKEI02-HKNNUM     TO  WRK-DATA
+           MOVE    3                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    保険ＩＤ
+           MOVE    TOUKEI02-HKNID      TO  WRK-NUM
+           MOVE    10                  TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    保険者番号
+           MOVE    TOUKEI02-HKNJANUM   TO  WRK-DATA
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    本人家族区分
+           MOVE    TOUKEI02-HONKZKKBN  TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    補助区分
+           MOVE    TOUKEI02-HOJOKBN    TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *
+      *    保険情報取得
+           INITIALIZE                  WRK-HKN-AREA
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       5
+                   OR      TOUKEI01-THKNID (IDX1)  =   ZERO
+               IF      TOUKEI02-HKNID      =   TOUKEI01-THKNID (IDX1)
+                   MOVE    TOUKEI01-HKN-TBL (IDX1) TO  WRK-HKN-AREA
+                   MOVE    5                       TO  IDX1
+               END-IF
+           END-PERFORM
+      *    継続区分     
+           MOVE    WRK-HKN-CONTKBN     TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    記号
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    WRK-HKN-KIGO        TO  WRK-DATA
+               MOVE    40                  TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    番号
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    WRK-HKN-NUM         TO  WRK-DATA
+               MOVE    40                  TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    資格取得日
+           MOVE    WRK-HKN-SKKGETYMD   TO  WRK-NUM
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    資格開始日
+           MOVE    WRK-HKN-TEKSTYMD    TO  WRK-NUM
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    資格終了日
+           MOVE    WRK-HKN-TEKEDYMD    TO  WRK-NUM
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    被保険者名
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               EVALUATE    TOUKEI01-HKNNUM
+                   WHEN    WRK-CONS-ROUSAI-HKNNUM
+                   WHEN    WRK-CONS-JIBAI-HKNNUM
+                       MOVE    TOUKEI01-HIHKNJANAME
+                                                   TO  WRK-DATA
+                   WHEN    OTHER
+                       MOVE    WRK-HKN-HIHKNJANAME TO  WRK-DATA
+               END-EVALUATE
+               MOVE    50                  TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    
+      *    公費情報取得  
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       4
+               INITIALIZE                  WRK-KOHI-AREA
+               IF      TOUKEI02-TKOHID (IDX1)  >   ZERO
+                   PERFORM VARYING IDX2    FROM    1   BY  1
+                           UNTIL   IDX2    >       10
+                           OR      TOUKEI01-TKOHID (IDX2)  =   ZERO
+                       IF      TOUKEI02-TKOHID (IDX1)  =
+                                               TOUKEI01-TKOHID (IDX2)
+                           MOVE    TOUKEI01-KOHI-TBL (IDX2)
+                                                       TO  WRK-KOHI-AREA
+                           MOVE    10                  TO  IDX2
+                       END-IF
+                   END-PERFORM
+               END-IF  
+      *        公費保険番号     
+               MOVE    WRK-KOHHKNNUM       TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        公費ＩＤ
+               MOVE    WRK-KOHID           TO  WRK-NUM
+               MOVE    10                  TO  WRK-NAGASA
+               PERFORM 5005-NUM-HENSYU-SEC
+      *        支払区分
+               MOVE    WRK-KOHPAYKBN       TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        負担者番号
+               MOVE    WRK-KOHFTNJANUM     TO  WRK-DATA
+               MOVE    8                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        受給者番号
+               IF      WRK-PARA-KOJINKBN   =   "1"
+                   MOVE    WRK-KOHJKYSNUM      TO  WRK-DATA
+                   MOVE    20                  TO  WRK-NAGASA
+               END-IF
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        摘要開始日
+               MOVE    WRK-KOHTEKSTYMD     TO  WRK-NUM
+               MOVE    8                   TO  WRK-NAGASA
+               PERFORM 5005-NUM-HENSYU-SEC
+      *        摘要終了日
+               MOVE    WRK-KOHTEKEDYMD     TO  WRK-NUM
+               MOVE    8                   TO  WRK-NAGASA
+               PERFORM 5005-NUM-HENSYU-SEC
+           END-PERFORM
+      *
+      *    労災情報
+      *    
+      *    保険区分
+           MOVE    TOUKEI01-HKNKBN         TO  WRK-DATA
+           MOVE    1                       TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    患者交付番号
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    TOUKEI01-KOFUNUM        TO  WRK-DATA
+               MOVE    14                      TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    事業所名称
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    TOUKEI01-JIGYOUNAME     TO  WRK-DATA
+               MOVE    40                      TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    新継再別
+           MOVE    TOUKEI01-SINKEI         TO  WRK-DATA
+           MOVE    1                       TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    転帰事由
+           MOVE    TOUKEI01-TENKI          TO  WRK-DATA
+           MOVE    1                       TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    傷病年月日
+           MOVE    TOUKEI01-SHOBYOYMD      TO  WRK-NUM
+           MOVE    8                       TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    四肢特例区分
+           MOVE    TOUKEI01-SISIKBN        TO  WRK-DATA
+           MOVE    1                       TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    療養開始年月日
+           MOVE    TOUKEI01-RYOSTYMD       TO  WRK-NUM
+           MOVE    8                       TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    療養終了年月日
+           MOVE    TOUKEI01-RYOEDYMD       TO  WRK-NUM
+           MOVE    8                       TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    損傷区分
+           MOVE    TOUKEI01-SONSHOUKBN     TO  WRK-DATA
+           MOVE    2                       TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    損傷区分枝番
+           MOVE    TOUKEI01-SONSHOUKBN-EDANUM
+                                           TO  WRK-DATA
+           MOVE    1                       TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    アフター療養開始年月日
+           MOVE    TOUKEI01-SINSATUYMD     TO  WRK-NUM
+           MOVE    8                       TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    アフター療養終了年月日
+           MOVE    TOUKEI01-SINSATUEND     TO  WRK-NUM
+           MOVE    8                       TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    災害区分
+           MOVE    TOUKEI01-SAIGAIKBN      TO  WRK-DATA
+           MOVE    1                       TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    自賠責請求区分
+           MOVE    TOUKEI01-JIBAISEIKBN    TO  WRK-DATA
+           MOVE    1                       TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *
+      *患者属性情報
+      *
+      *    郵便番号
+           MOVE    TOUKEI01-HOME-POST      TO  WRK-DATA
+           MOVE    7                       TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    地方公共団体コード
+           MOVE    TOUKEI01-LPUBCD         TO  WRK-DATA
+           MOVE    5                       TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    住所
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    TOUKEI01-HOME-ADRS      TO  WRK-DATA
+               MOVE    200                     TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    電話番号
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    TOUKEI01-HOME-TEL1      TO  WRK-DATA
+               MOVE    15                      TO  WRK-NAGASA
+           END-IF
+           MOVE    1                       TO  WRK-END 
+           PERFORM 5004-MOJI-HENSYU-SEC
+      * 
+           PERFORM 5001-FILE-WRITE-SEC
+           .
+       2001-FILE-SYORI-EXT.
+           EXIT. 
+      *            
+      *
+      *****************************************************************
+      *    ファイル出力処理
+      *****************************************************************
+       5001-FILE-WRITE-SEC        SECTION.
+      *
+      *    改行コード編集 
+           STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
+                   WRK-KAIGYO                DELIMITED  BY  SIZE
+                   INTO        WRK-REC
+           END-STRING        
+      *
+           MOVE    WRK-REC             TO  TOUKEI03-REC  
+           WRITE   TOUKEI03-REC 
+           ADD     1                   TO  CNT-TOUKEI03
+           .
+       5001-FILE-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    右ずめ編集処理
+      *****************************************************************
+       5003-DATA-RIGHT-HENSYU-SEC          SECTION.
+      *
+           MOVE    SPACE          TO  WRK-HENSYU
+      *              
+           IF      WRK-HENKAN     =   SPACE
+               CONTINUE
+           ELSE    
+               PERFORM VARYING IDX FROM    WRK-LENGTH  BY  -1
+                       UNTIL   IDX <       1
+                   IF      WRK-HENKAN (IDX:1)  NOT =   SPACE
+                       COMPUTE IDZ     =   WRK-LENGTH  -   IDX +   1
+                       MOVE    WRK-HENKAN (1:IDX)
+                                           TO  WRK-HENSYU (IDZ:)
+                       MOVE    WRK-HENSYU  TO  WRK-HENKAN                            
+                       MOVE    1           TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF    
+      *
+           .
+       5003-DATA-RIGHT-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    出力レコード処理（文字）
+      *****************************************************************
+       5004-MOJI-HENSYU-SEC          SECTION.
+      *
+           IF      WRK-DATA        =   SPACE
+               CONTINUE
+           ELSE                   
+               PERFORM VARYING IDW FROM    WRK-NAGASA  BY  -1
+                       UNTIL   IDW <       1
+                   IF      WRK-DATA (IDW:1)    NOT =   SPACE
+                       IF      WRK-REC-LENGTH      =   ZERO
+                           MOVE    WRK-DATA (1:IDW)
+                                               TO  WRK-REC
+                       ELSE
+                           STRING  WRK-REC(1:WRK-REC-LENGTH)
+                                               DELIMITED   BY  SIZE
+                                   WRK-DATA(1:IDW)
+                                               DELIMITED   BY  SIZE
+                                   INTO        WRK-REC
+                           END-STRING
+                       END-IF
+                       ADD     IDW                 TO  WRK-REC-LENGTH        
+                       MOVE    1                   TO  IDW
+                   END-IF
+               END-PERFORM
+           END-IF
+      *     
+           IF      WRK-END         =   ZERO
+               STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
+                       WRK-KUGIRI                DELIMITED  BY  SIZE
+                       INTO        WRK-REC
+               END-STRING        
+               ADD     1                   TO  WRK-REC-LENGTH
+           END-IF    
+      *
+           INITIALIZE                      WRK-HENSYU-AREA
+           .
+       5004-MOJI-HENSYU-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    出力レコード処理（数字）ZZZZZZZZZ9.999の編集
+      *****************************************************************
+       5005-NUM-HENSYU-SEC          SECTION.
+      *
+           IF      WRK-NAGASA          =   ZERO
+               CONTINUE
+           ELSE                   
+      *        開始位置
+               COMPUTE WRK-ST  =   11      -   WRK-NAGASA
+               IF      WRK-SYOSUU          >   ZERO
+                   COMPUTE WRK-ST  =   WRK-ST  +   WRK-SYOSUU
+                                               +   1
+               END-IF                                
+      *     
+               PERFORM VARYING IDW FROM    WRK-ST    BY  1
+                       UNTIL   IDW >       10
+                   IF      WRK-NUM (IDW:1)   NOT =   SPACE
+                        COMPUTE IDZ     =    11  +   WRK-SYOSUU
+                                                 -   IDW       
+                        IF      WRK-SYOSUU       >   ZERO
+                            ADD     1                TO  IDZ
+                        END-IF     
+                        STRING  WRK-REC(1:WRK-REC-LENGTH)
+                                                 DELIMITED  BY  SIZE
+                               WRK-NUM(IDW:IDZ)  DELIMITED  BY  SIZE
+                               INTO        WRK-REC
+                       END-STRING
+                       COMPUTE WRK-REC-LENGTH    =   WRK-REC-LENGTH   +
+                                                     IDZ                  
+                       MOVE    10                TO  IDW
+                   END-IF
+               END-PERFORM
+           END-IF    
+      *     
+           IF      WRK-END         =   ZERO
+               STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
+                       WRK-KUGIRI                DELIMITED  BY  SIZE
+                       INTO        WRK-REC
+               END-STRING        
+               ADD     1                   TO  WRK-REC-LENGTH
+           END-IF    
+      *
+           INITIALIZE                      WRK-HENSYU-AREA
+           .
+       5005-NUM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー出力処理
+      *****************************************************************
+       500-ERR-HENSYU-SEC                SECTION.
+      *
+           OPEN    INPUT   TOUKEIERR-FILE
+           IF      STS-TOUKEIERR         =   ZERO
+               CLOSE   TOUKEIERR-FILE
+           ELSE
+               OPEN    OUTPUT              TOUKEIERR-FILE
+      *
+               MOVE    WRK-TOUKEIERR         TO  TOUKEIERR-REC
+               WRITE   TOUKEIERR-REC
+               CLOSE   TOUKEIERR-FILE
+      *         
+      *        ジョブ管理開始処理
+               MOVE    "JBE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               MOVE    WRK-TOUKEIERR     TO  JOB-YOBI
+               MOVE    "9999"          TO  JOB-ERRCD
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
+           END-IF
+      *                             
+           MOVE    1                   TO  FLG-END
+           .
+       500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    終了処理
+      *****************************************************************
+       300-TERM-SEC                SECTION.
+      *
+           CLOSE   TOUKEI01-FILE
+                   TOUKEI02-FILE
+                   TOUKEI03-FILE
+      *
+           IF      CNT-TOUKEI01           =   ZERO  
+               MOVE    "処理対象のデータがありませんでした"
+                                           TO  WRK-TOUKEIERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+      *    ステップ管理終了処理
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           PERFORM 900-DBDISCONNECT-SEC
+      *     
+           DISPLAY "TOUKEI01  CNT-TOUKEI01:" CNT-TOUKEI01
+           DISPLAY "TOUKEI03  CNT-TOUKEI03:" CNT-TOUKEI03
+           DISPLAY "*** ORCBT020 END ***"
+           .
+       300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    月次統計データ（基本情報）読込
+      *****************************************************************
+       900-TOUKEI01-READ-SEC             SECTION.
+      *
+           READ    TOUKEI01-FILE      NEXT
+               AT  END
+                   MOVE    1         TO  FLG-END
+               NOT AT  END
+                   ADD     1         TO  CNT-TOUKEI01
+           END-READ
+           .
+       900-TOUKEI01-READ-EXT.
+           EXIT.
+      *      
+      *
+      *****************************************************************
+      *    月次統計データ（診療情報）読込
+      *****************************************************************
+       900-TOUKEI02-READ-SEC             SECTION.
+      *
+           READ    TOUKEI02-FILE   NEXT
+               AT  END
+                   MOVE    1           TO  FLG-TOUKEI02
+               NOT AT  END
+                   MOVE    ZERO        TO  FLG-TOUKEI02
+           END-READ
+           .
+       900-TOUKEI02-READ-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    ＤＢ　オープン処理
+      *****************************************************************
+       100-DBOPEN-SEC                SECTION.
+      *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       100-DBOPEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ　クローズ処理
+      *****************************************************************
+       900-DBDISCONNECT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       900-DBCLOSE-EXT.
+           EXIT.

@@ -43,6 +43,7 @@
       *  01.00.13    NACL-太田    03/07/30  編集パラメータにPTNUM追加
       *  01.00.14    NACL-太田    03/08/05  パラメータを８つまで設定可能
       *                                     に修正
+      *  01.00.15    NACL-藤原    03/11/12  統計データ作成画面の追加
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -283,6 +284,7 @@
       *
        01  SCRAREA.
            COPY    "G01.INC".
+           COPY    "G02.INC".
            COPY    "G99.INC".
            COPY    "GERR.INC".
            COPY    "GID1.INC".
@@ -569,6 +571,9 @@
            WHEN    "CLICKED"       ALSO    "B02"
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
                PERFORM 230-CLEAR-SEC
+      *    統計データ作成
+           WHEN    "CLICKED"       ALSO    "B04"
+               PERFORM 240-TOUKEI-SEC
       *    再印刷
            WHEN    "CLICKED"       ALSO    "B05"
                PERFORM 450-REPRINT-SEC
@@ -814,6 +819,17 @@
                ELSE
                    GO  TO  41012-PARA-NAIYO-CHK-EXT
                END-IF
+           WHEN    "KKNYM"
+               MOVE    SPA-GMN-PARA (IDXA IDXB)    TO  WRK-YMD
+               PERFORM 5003-NENGETSU-KKN-CHK-SEC
+               IF    ( SPA-ERRCD       =   SPACE )
+                   MOVE    WRK-SYMD(1:6)
+                                       TO  SPA-NAI-HENPARA (IDXA IDXB)
+                   MOVE    WRK-HENYMDG(1:6)
+                                       TO  SPA-GMN-PARA    (IDXA IDXB)
+               ELSE
+                   GO  TO  41012-PARA-NAIYO-CHK-EXT
+               END-IF
            WHEN    "YMD"
                MOVE    SPA-GMN-PARA (IDXA IDXB)    TO  WRK-YMD
                PERFORM 5002-HIZUKE-CHK-SEC
@@ -1015,6 +1031,25 @@
       *
            .
        230-CLEAR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    統計データ作成画面へ
+      *****************************************************************
+       240-TOUKEI-SEC                  SECTION.
+      * 
+           MOVE    "G01"               TO  SPA-MOTOPG
+           MOVE    "G02"               TO  SPA-SAKIPG
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       240-TOUKEI-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
@@ -2369,6 +2404,28 @@
            END-IF
            .
        5003-NENGETSU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    年月（期間）チェック・編集処理
+      *****************************************************************
+       5003-NENGETSU-KKN-CHK-SEC       SECTION.
+      *
+           IF    ( WRK-YMD (1:6)     =     "000000" )
+               MOVE    "000000"       TO   WRK-HENYMDG
+                                           WRK-SYMD
+               GO  TO  5003-NENGETSU-KKN-CHK-EXT
+           END-IF
+      *
+           IF    ( WRK-YMD (1:6)     =     "999999" )
+               MOVE    "999999"       TO   WRK-HENYMDG
+                                           WRK-SYMD
+               GO  TO  5003-NENGETSU-KKN-CHK-EXT
+           END-IF
+      *
+           PERFORM 5003-NENGETSU-CHK-SEC
+      *
+           .
+       5003-NENGETSU-KKN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    管理マスター読込（キー）
