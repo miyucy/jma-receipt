@@ -531,7 +531,13 @@
            MOVE    WRK-PARA-HOSPID     TO  STUSANCHK-HOSPID
            MOVE    PTNYUINRRK-PTID     TO  STUSANCHK-PTID
            MOVE    PTNYUINRRK-NYUINYMD TO  STUSANCHK-NYUINYMD
-           MOVE    WRK-PARA-KJNYMD     TO  STUSANCHK-KJNYMD
+           IF    ( PTNYUINRRK-TAIINYMD >=  WRK-PARA-KJNYMD )
+               MOVE    WRK-PARA-KJNYMD TO  STUSANCHK-KJNYMD
+           ELSE
+               MOVE    PTNYUINRRK-TAIINYMD
+                                       TO  STUSANCHK-KJNYMD
+           END-IF
+      *
            CALL    "ORCSTUSANCHK"      USING   ORCSTUSANCHKAREA
            IF    ( STUSANCHK-RC    NOT =   ZERO )
                MOVE    PTNUM-PTNUM     TO  ERR-PTNUM
