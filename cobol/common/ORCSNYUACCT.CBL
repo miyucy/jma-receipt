@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/12/19  食堂加算追加
+      * 01.00.02     NACL-多々納  02/12/26  転科時、会計削除の中止
       *****************************************************************
       *
       *
@@ -1168,6 +1169,11 @@
                END-IF
            END-PERFORM
       *
+      *    転出の時、削除をしない
+           IF      LNK-SCNYUACCT-SYORI-KBN     =   "8"
+               GO      TO      200-TAIIN-SYORI-EXT
+           END-IF
+      *
       *    診療会計をすべて削除する
            INITIALIZE                  ORCSCNYUINAREA
            MOVE    "2"                 TO  ORCSCNYUIN-KBN
@@ -1509,10 +1515,6 @@
                                        TO  LNK-DAY5-END
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY5-AREA
-      *TEST
-           DISPLAY "KIKAN LNK-DAY5-NISSU2:" LNK-DAY5-NISSU2
-                   ",STS-DAY-RC:" STS-DAY-RC1
-      *TEST
            IF      STS-DAY-RC1         =   ZERO
                MOVE    LNK-DAY5-NISSU2     TO  WRK-NISUU
            ELSE
