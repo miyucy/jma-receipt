@@ -239,7 +239,7 @@
       *
        01  HEAD-AREA.
            03  HEAD-NYUGAI                         PIC X(10).
-           03  HEAD-KKNYM                          PIC X(24).
+           03  HEAD-KKNYM                          PIC X(34).
            03  HEAD-SAKYMD                         PIC X(22).
            03  HEAD-SRTKBN                         PIC X(20).
       *
