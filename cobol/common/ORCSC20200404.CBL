@@ -1848,13 +1848,13 @@
                   (FLG-GAIYAK          =   1    )
       *           調基が１であること
                IF      LNK-ORCSC-CHOKI-FLG   =   1
-                   IF      SPA-HOSPSBT         =   1
+      **********   IF      SPA-HOSPSBT         =   1
       *                病院
                        MOVE    "120001710"         TO  WRK-SRYCD
-                   ELSE
+      ************ ELSE
       *                診療所
-                       MOVE    "120001810"         TO  WRK-SRYCD
-                   END-IF
+      *:               MOVE    "120001810"         TO  WRK-SRYCD
+      *************END-IF
                    MOVE    SPACE               TO  WRK-SRYCD2
                    PERFORM 3002-KASAN-SYORI-SEC
                    IF      FLG-ERR             =   ZERO

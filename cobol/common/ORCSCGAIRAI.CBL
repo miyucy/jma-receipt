@@ -1664,8 +1664,8 @@
       *
       *            手技料の時、算定歴を判定する
                    IF     (SRY-SRYCD (IDY)(1:1)    =   "1"    )
-      *                ダミー追加
-                       OR (SRY-SRYCD (IDY)         =   "099110001" )
+      *                システム予約コード
+                       OR (SRY-SRYCD (IDY)(1:3)    =   "099" )
                        MOVE    SRY-SRYCD (IDY)     TO  WRK-SRYCD
       *
                        MOVE    WRK-SRYCD           TO  TNS-SRYCD
@@ -2431,7 +2431,8 @@
                                   (LNK-WKSRY-SRYCD (IDX IDY) =   SPACE)
       *            手技料の時、算定歴を判定する
                    IF    ((LNK-WKSRY-SRYCD (IDX IDY)(1:1)  =   "1" )
-                       OR (LNK-WKSRY-SRYCD (IDX IDY) =   "099110001" ))
+      *                システム予約コード
+                       OR (LNK-WKSRY-SRYCD (IDX IDY)(1:3)  =   "099"))
       *            自費の時、履歴なし
                    AND    (LNK-WKSRY-SRYKBN(IDX)   NOT =   "95"  AND
                                                            "96"  )

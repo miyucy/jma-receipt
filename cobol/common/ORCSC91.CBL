@@ -33,6 +33,7 @@
       *  01.00.04    NACL-多々納  02.08.06  同時算定チェックに継続管理加
       *                                     算追加
       *  01.00.05    NACL-多々納  02.12.17  入院時算定チェック変更
+      *  01.00.06    NACL-多々納  03.03.17  介達牽引を同時算定へ追加
       *****************************************************************
       *
       *
@@ -148,6 +149,9 @@
            03  FILLER                  PIC X(09)   VALUE   "140002210".
            03  FILLER                  PIC X(03)   VALUE   "005".
            03  FILLER                  PIC X(09)   VALUE   "140002310".
+      *    介達牽引
+           03  FILLER                  PIC X(03)   VALUE   "005".
+           03  FILLER                  PIC X(09)   VALUE   "140048010".
       *
       *    継続管理加算（一般）
            03  FILLER                  PIC X(03)   VALUE   "006".
@@ -159,11 +163,11 @@
        01  TBL-DOUJI-AREA-R            REDEFINES  TBL-DOUJI-AREA.
       *****03  TBL-DOUJI-OCC           OCCURS   9   INDEXED   TBL-IDX.
       *****03  TBL-DOUJI-OCC           OCCURS   13  INDEXED   TBL-IDX.
-           03  TBL-DOUJI-OCC           OCCURS   15  INDEXED   TBL-IDX.
+           03  TBL-DOUJI-OCC           OCCURS   16  INDEXED   TBL-IDX.
                05  TBL-CODE                PIC X(03).
                05  TBL-SRYCD               PIC X(09).
       *01  TBL-MAX                     PIC 9(04)   VALUE   9.
-       01  TBL-MAX                     PIC 9(04)   VALUE   15.
+       01  TBL-MAX                     PIC 9(04)   VALUE   16.
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".

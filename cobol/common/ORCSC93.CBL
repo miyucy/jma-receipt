@@ -716,6 +716,15 @@
                                    MOVE    "1"       TO  SPA-COM-ZAIEND
                                                              (IDX - 1)
                                END-IF
+      *                      £È£±£¶¡¥£´¤«¤éµÞÀ­È¯À¸Æü
+                             WHEN    "099800101"
+                               MOVE    "80"      TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                               MOVE    "810"     TO  SPA-COM-SRYSYUKBN
+                                                               (IDX)
+      *                        £±ºÞ£±ÌÀºÙ¤È¤¹¤ë
+                               MOVE    "1"       TO  SPA-COM-ZAIEND
+                                                             (IDX)
                              WHEN    OTHER
                                MOVE    "99"          TO  SPA-COM-SRYKBN
                                                                   (IDX)

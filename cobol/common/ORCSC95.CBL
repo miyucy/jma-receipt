@@ -2681,8 +2681,10 @@
                        MOVE    1               TO  FLG-TENKI
                        MOVE    ZERO            TO  FLG-CHIYU
                    ELSE
-      *D                MOVE    ZERO           TO  FLG-TENKI
-                       IF      WRK-CHIYUYMD        <   WRK-TENKIYMD
+      *D               MOVE    ZERO           TO  FLG-TENKI
+                       IF     (WRK-CHIYUYMD        <   WRK-TENKIYMD)
+      *                最終日より前の時、初診算定へ
+                       AND    (WRK-TENKIYMD        >   SPA-LSTYMD )
                            MOVE    1               TO  FLG-CHIYU
                        END-IF
                    END-IF
@@ -2804,6 +2806,8 @@
                        MOVE    ZERO            TO  FLG-CHIYU
                    ELSE
                        IF      WRK-CHIYUYMD        <   WRK-TENKIYMD
+      *                入院日より前の時、初診算定へ
+                       AND    (WRK-TENKIYMD        >  SPA-K02N-NYUINYMD)
                            MOVE    1               TO  FLG-CHIYU
                        END-IF
                    END-IF
