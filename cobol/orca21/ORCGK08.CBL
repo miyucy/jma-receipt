@@ -378,6 +378,8 @@
            03  FLG-GMN-INIT        PIC  9(01).
       *ÀÁµá¶â³Û
            03  WRK-SKYMONEY            PIC S9(07).
+      *º¹³Û¤ÎÀäÂÐÃÍ
+           03  WRK-GRP-SGKMONEY        PIC  9(07).
       *
       *    ·ÑÂ³¤Î»þ¡¢¼«Æ°È¯À¸¤Î¥Á¥§¥Ã¥¯
        01  WRK-CONTCHK-TBL.
@@ -3060,6 +3062,7 @@
                    MOVE    SYUNOU-REC          TO  LNK-SYUNOU2-REC(IDS1)
       *            ¼ýÇ¼¤Ëº¹³ÛÊÔ½¸¡¢ÀÁµá³ÛÊÑ¹¹
                    MOVE    ZERO                TO  IDS3
+                   MOVE    SYU-GRP-SGKMONEY    TO  WRK-GRP-SGKMONEY
                    PERFORM VARYING     IDS2    FROM    LNK-SYUNOU2-MAX
                                                        BY  -1
                            UNTIL      (IDS2    <   1   )  OR
@@ -3070,17 +3073,20 @@
                                            NOT =   ZERO  )
                            IF     (SYU-GRP-SGKMONEY    >   ZERO ) OR
                                   (LNK-SYU2-SKYMONEY(IDS2)
-                                               >   SYU-GRP-SGKMONEY)
+                                               >   WRK-GRP-SGKMONEY)
                                MOVE    IDS2        TO  IDS3
                            END-IF
                        END-IF
                    END-PERFORM
-                   MOVE    SYU-GRP-SGKMONEY    TO  LNK-SYU2-GRP-SGKMONEY
+                   IF      IDS3                >   ZERO
+                       MOVE    SYU-GRP-SGKMONEY
+                                              TO  LNK-SYU2-GRP-SGKMONEY
                                                                 (IDS3)
-                   COMPUTE LNK-SYU2-SKYMONEY(IDS3)
+                       COMPUTE LNK-SYU2-SKYMONEY(IDS3)
                                                =   LNK-SYU2-SKYMONEY
                                                                 (IDS3)
                                                +   SYU-GRP-SGKMONEY
+                   END-IF
                END-IF
            END-PERFORM
       *
