@@ -26,6 +26,8 @@ tbl_ptrsiinf {
         COMMENT  			varchar(200);
         SAIGAIKBN                       char(1);
         JIBAISEIKBN                     char(1);
+        DRCD			        char(5);
+        HOKENNAME			varchar(80);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);
