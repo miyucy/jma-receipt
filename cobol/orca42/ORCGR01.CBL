@@ -693,6 +693,7 @@
                ELSE
                    MOVE    SPACE           TO  SPA-ERRCD
                    MOVE    8               TO  SPA-GMN-CUR
+               END-IF
            ELSE
                EVALUATE    SPA-R01-NYUGAIKBN
                    WHEN    "1"
