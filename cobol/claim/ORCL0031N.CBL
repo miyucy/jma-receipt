@@ -53,7 +53,7 @@
            03  CNT-ORDER               PIC 9(05).
            03  CNT-IDOKBN              PIC 9(05).
            03  CNT-ERR                 PIC 9(05).
-           03  CNT-SRYSYUBETSUTBL      PIC 9(05).
+           03  CNT-TBLID               PIC 9(05).
       *
       *    添字領域
        01  IDX-AREA.
@@ -78,7 +78,7 @@
            03  WRK-KANACHK-MAE-INPUT   PIC X(500).
            03  WRK-KANACHK-OUT-INPUT   PIC X(500).
            03  WRK-PGNAME              PIC X(20).
-           03  WRK-SRYSYUBETSUTBL      PIC X(20).
+           03  WRK-TBLID               PIC X(20).
            03  WRK-IJICD               PIC X(10).
            03  WRK-CREKBN              PIC X(01).
            03  WRK-UKEYMD              PIC X(08).
@@ -363,7 +363,7 @@
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL ( IDXB        >   CONST-SRYTBLC-MAX )
       *
-               IF    ( LF04-SRYSYUBETSUTBL (IDXA IDXB)
+               IF    ( LF04-TBLID (IDXA IDXB)
                                    =   NCLAIMID-ORDERNM )
       *
                        COMPUTE CNT-ORDER   =   CNT-ORDER   +   1
@@ -417,7 +417,7 @@
                PERFORM VARYING IDX-IJI FROM    1   BY  1
                        UNTIL ( IDX-IJI >   NCLAIMID-CHAILD-MAX )
                         OR   ( FLG-END =   1 )
-                   IF    ( LF04-SRYSYUBETSUTBL (IDXA IDXB)
+                   IF    ( LF04-TBLID (IDXA IDXB)
                                    =   NCLAIMID-CHAILDNM (IDX-IJI) )
                        MOVE    NCLAIMID-CHAILDID (IDX-IJI)
                                        TO  WRK-SRYSKBKBN
@@ -497,7 +497,7 @@
                PERFORM VARYING IDX-IJI FROM    1   BY  1
                        UNTIL ( IDX-IJI >   NCLAIMID-CHAILD-MAX )
       *
-                   IF    ( LF04-SRYSYUBETSUTBL (IDXA IDXB)
+                   IF    ( LF04-TBLID (IDXA IDXB)
                                    =   NCLAIMID-CHAILDNM (IDX-IJI) )
                        MOVE    NCLAIMID-CHAILDID (IDX-IJI)
                                        TO  WRK-SRYSKBKBN
@@ -641,9 +641,9 @@
        20011-NYUKBN-CHK-SEC            SECTION.
       *
       *    入院区分チェック
-           MOVE    NCLAIMID-NYUKBNNM   TO  WRK-SRYSYUBETSUTBL
+           MOVE    NCLAIMID-NYUKBNNM   TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
-           IF        ( CNT-SRYSYUBETSUTBL  =   ZERO )
+           IF        ( CNT-TBLID   =   ZERO )
                    MOVE    2           TO  SODR-NYUKBN-FLG
                    MOVE    NCLAIMID-NYUKBNID
                                        TO  WRK-SRYSKBKBN
@@ -651,7 +651,7 @@
                    MOVE    "1"         TO  WRK-CREKBN
                    PERFORM 20011-LNK-ORDER-HEN-SEC
            ELSE
-               IF    ( CNT-SRYSYUBETSUTBL  >   1     )
+               IF    ( CNT-TBLID   >   1     )
                    MOVE    1           TO  SODR-NYUKBN-FLG
                END-IF
            END-IF
@@ -665,9 +665,9 @@
        20011-SYOKAI-CHK-SEC            SECTION.
       *
       *    継続区分チェック
-           MOVE    NCLAIMID-SYOKAINM   TO  WRK-SRYSYUBETSUTBL
+           MOVE    NCLAIMID-SYOKAINM   TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
-           IF    ( CNT-SRYSYUBETSUTBL  >   1     )
+           IF    ( CNT-TBLID   >   1     )
                MOVE    1               TO  SODR-SYOKAI-FLG
            END-IF
       *
@@ -680,9 +680,9 @@
        20011-BTUNUM-CHK-SEC            SECTION.
       *
       *    病棟コードチェック
-           MOVE    NCLAIMID-BTUNUMNM   TO  WRK-SRYSYUBETSUTBL
+           MOVE    NCLAIMID-BTUNUMNM   TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
-           IF        ( CNT-SRYSYUBETSUTBL  =   ZERO )
+           IF        ( CNT-TBLID   =   ZERO )
                    MOVE    2           TO  SODR-BTUNUM-FLG
                    MOVE    NCLAIMID-BTUNUMID
                                        TO  WRK-SRYSKBKBN
@@ -690,7 +690,7 @@
                    MOVE    "1"         TO  WRK-CREKBN
                    PERFORM 20011-LNK-ORDER-HEN-SEC
            ELSE
-               IF    ( CNT-SRYSYUBETSUTBL  >   1     )
+               IF    ( CNT-TBLID   >   1     )
                    MOVE    1           TO  SODR-BTUNUM-FLG
                END-IF
            END-IF
@@ -704,9 +704,9 @@
        20011-BRMNUM-CHK-SEC            SECTION.
       *
       *    病室コードチェック
-           MOVE    NCLAIMID-BRMNUMNM   TO  WRK-SRYSYUBETSUTBL
+           MOVE    NCLAIMID-BRMNUMNM   TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
-           IF        ( CNT-SRYSYUBETSUTBL  =   ZERO )
+           IF        ( CNT-TBLID   =   ZERO )
                    MOVE    2           TO  SODR-BRMNUM-FLG
                    MOVE    NCLAIMID-BRMNUMID
                                        TO  WRK-SRYSKBKBN
@@ -714,7 +714,7 @@
                    MOVE    "1"         TO  WRK-CREKBN
                    PERFORM 20011-LNK-ORDER-HEN-SEC
            ELSE
-               IF    ( CNT-SRYSYUBETSUTBL  >   1     )
+               IF    ( CNT-TBLID   >   1     )
                    MOVE    1           TO  SODR-BRMNUM-FLG
                END-IF
            END-IF
@@ -728,9 +728,9 @@
        20011-SAGAKU-CHK-SEC            SECTION.
       *
       *    室料差額チェック
-           MOVE    NCLAIMID-SAGAKUNM   TO  WRK-SRYSYUBETSUTBL
+           MOVE    NCLAIMID-SAGAKUNM   TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
-           IF    ( CNT-SRYSYUBETSUTBL  >   1     )
+           IF    ( CNT-TBLID   >   1     )
                MOVE    1               TO  SODR-SAGAKU-FLG
            END-IF
       *
@@ -743,9 +743,9 @@
        20011-DR-CHK-SEC                SECTION.
       *
       *    担当医チェック
-           MOVE    NCLAIMID-DRNM   TO  WRK-SRYSYUBETSUTBL
+           MOVE    NCLAIMID-DRNM   TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
-           IF    ( CNT-SRYSYUBETSUTBL  >   3     )
+           IF    ( CNT-TBLID   >   3     )
                MOVE    1               TO  SODR-DR-FLG
            END-IF
       *
@@ -758,9 +758,9 @@
        20011-TAIINCD-CHK-SEC                SECTION.
       *
       *    退院事由チェック
-           MOVE    NCLAIMID-TAIINCDNM  TO  WRK-SRYSYUBETSUTBL
+           MOVE    NCLAIMID-TAIINCDNM  TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
-           IF    ( CNT-SRYSYUBETSUTBL  >   1     )
+           IF    ( CNT-TBLID   >   1     )
                MOVE    1               TO  SODR-TAIINCD-FLG
            END-IF
       *
@@ -772,15 +772,15 @@
       *****************************************************************
        20011-ITEM-CNT-CHK-SEC          SECTION.
       *
-           MOVE    ZERO                TO  CNT-SRYSYUBETSUTBL
+           MOVE    ZERO                TO  CNT-TBLID
       *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL ( IDXB    >   CONST-SRYTBLC-MAX )
       *
-               IF    ( LF04-SRYSYUBETSUTBL (IDXA IDXB)
-                                   =   WRK-SRYSYUBETSUTBL )
-                   COMPUTE CNT-SRYSYUBETSUTBL
-                       =   CNT-SRYSYUBETSUTBL  +   1
+               IF    ( LF04-TBLID (IDXA IDXB)
+                                   =   WRK-TBLID )
+                   COMPUTE CNT-TBLID
+                       =   CNT-TBLID   +   1
                END-IF
       *
            END-PERFORM
