@@ -178,6 +178,7 @@
       *  01.04.08   NACL-ÌçÏÆ     04/08/11  Ê£¿ôÊÝ¸±¡¦Ê£¿ô²ÊÆþÎÏÂÐ±þ
       *  01.04.09   NACL-ÌçÏÆ     04/09/17  £Ï£Ã£Ò¸øÈñ£²¤ÎÊÔ½¸½¤Àµ
       *  01.04.10   NACL-Æ£¸¶     04/09/17  £Ï£Ã£Ò¶èÊ¬¤ÎÀßÄê¤ËÄÉ²Ã
+      *  01.04.11   NACL-ÌçÏÆ     04/10/14  ³°Íè´ÉÍý²Ã»»¤ÎºÞÈÖ¹æÃÖ¤­´¹¤¨
       *  Ãæ»ß½èÍýÄÉ²Ã
       *  01.01.01    NACL-Æ£¸¶    04/09/28  Ãæ»ß½èÍý¤ÎÄÉ²Ã
       *****************************************************************
@@ -1138,6 +1139,7 @@
            INITIALIZE                   CNT-SAISIN-AREA
       *
            MOVE      ZERO       TO      FLG-FUKUSHI
+           MOVE    88888880     TO      WRK-ZAINUM
       *
            PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL     (IDX      >   20)  OR
@@ -1221,7 +1223,6 @@
       *****************************************************************
        2101-RECE04-HENSYU-SEC                SECTION.
       *
-           MOVE    88888880             TO      WRK-ZAINUM
            INITIALIZE                           SRYACCT-REC
            MOVE    RECE02-HOSPID        TO      ACCT-HOSPID
            MOVE    RECE02-NYUGAIKBN     TO      ACCT-NYUGAIKBN
