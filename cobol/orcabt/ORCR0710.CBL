@@ -2185,28 +2185,39 @@
                END-IF
            END-PERFORM
       *        <Æþ±¡´ðËÜÎÁ¡¦²Ã»»>
-           IF      RECE62-NYUKHNKEI2 (1)     <   ZERO
-               MOVE    RECE62-NYUKHNKEI2 (1)     TO  WRK-TENSUZ
-               INITIALIZE              ORCSKANACHKAREA
-               MOVE    "2"             TO  KANACHK-SYORI 
-               MOVE    WRK-TENSUZ      TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-               IF      KANACHK-RC      =   ZERO
-                   PERFORM VARYING IDZ FROM    13  BY  -2
-                           UNTIL   IDZ <       3
-                       IF      KANACHK-OUT-INPUT (IDZ:2)
-                                                   =   SPACE
-                               MOVE    "¢¤"        TO
-                                   KANACHK-OUT-INPUT (IDZ:2)
-                               MOVE    1           TO  IDZ
+      *???
+      *     MOVE    -123456   TO  RECE62-NYUKHNKEI2  (IDX1)
+      *???     
+           MOVE    RECE62-NYUKHNKEI2 (IDX1)   TO  WRK-TENSUZ
+           MOVE    WRK-TENSU                  TO  HC06-NYUTENSU  (5)
+           IF      RECE62-NYUKHNKEI2 (IDX1)   <   ZERO
+               PERFORM VARYING IDZ FROM    7   BY  -1
+                       UNTIL   IDZ <       1
+                   IF      WRK-TENSUZ (IDZ:1)  =   SPACE
+                       MOVE    "¢¤"        TO  HC06-NYUTENSUN-S (5 IDZ)
+                       MOVE    1           TO  IDZ
+                   END-IF
+               END-PERFORM
+           END-IF
+      *???
+      **     MOVE    2   TO  IDX2
+      **     MOVE    -123456   TO  RECE62-NYUKHNKEI2 (IDX2)
+      *???     
+           IF      IDX2                    >   ZERO
+               MOVE    RECE62-NYUKHNKEI2 (IDX2)
+                                               TO  WRK-KOUTENZ
+               MOVE    WRK-KOUTEN              TO  HC06-NYUKOHTEN  (5)
+               IF      RECE62-NYUKHNKEI2 (IDX2)
+                                               <   ZERO
+                   PERFORM VARYING IDZ FROM    7   BY  -1
+                           UNTIL   IDZ <       1
+                       IF      WRK-TENSUZ (IDZ:1)  =   SPACE
+                           MOVE    "¢¤"    TO
+                                           HC06-NYUKOHTENN-S (5 IDZ)
+                           MOVE    1           TO  IDZ
                        END-IF
                    END-PERFORM
-                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                             TO  HC06-NYUTENSUN (5)
-               END-IF        
-           ELSE
-               MOVE    RECE62-NYUKHNKEI2     TO  WRK-TENSUZ
-               MOVE    WRK-TENSU             TO  HC06-NYUTENSU  (5)
+               END-IF
            END-IF
       *     
       *        <ÆÃÄêÆþ±¡ÎÁ>
@@ -2237,29 +2248,38 @@
                END-IF    
            END-PERFORM
       *        <ÆÃÄêÆþ±¡ÎÁ¡¦¤½¤ÎÂ¾>
-           IF      RECE62-NYUTOKKEI2  (2)     <   ZERO
-               MOVE    RECE62-NYUTOKKEI2  (2)
-                                       TO  WRK-TENSUZ
-               INITIALIZE              ORCSKANACHKAREA
-               MOVE    "2"             TO  KANACHK-SYORI 
-               MOVE    WRK-TENSUZ      TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-               IF      KANACHK-RC      =   ZERO
-                   PERFORM VARYING IDZ FROM    13  BY  -2
-                           UNTIL   IDZ <       3
-                       IF      KANACHK-OUT-INPUT (IDZ:2)
-                                                   =   SPACE
-                               MOVE    "¢¤"        TO
-                                   KANACHK-OUT-INPUT (IDZ:2)
-                               MOVE    1           TO  IDZ
+      *???
+      **     MOVE    -1234   TO  RECE62-NYUTOKKEI2  (IDX1)
+      *???     
+           MOVE    RECE62-NYUTOKKEI2 (IDX1)
+                                           TO  WRK-TENSUZ
+           MOVE    WRK-TENSU               TO  HC06-NYUTENSU  (10)
+           IF      RECE62-NYUTOKKEI2 (IDX1)
+                                           <   ZERO
+               PERFORM VARYING IDZ FROM    7   BY  -1
+                       UNTIL   IDZ <       1
+                   IF      WRK-TENSUZ (IDZ:1)  =   SPACE
+                       MOVE    "¢¤"        TO
+                                           HC06-NYUTENSUN-S (10 IDZ)
+                       MOVE    1           TO  IDZ
+                   END-IF
+               END-PERFORM
+           END-IF
+           IF      IDX2                    >   ZERO
+               MOVE    RECE62-NYUTOKKEI2 (IDX2)
+                                               TO  WRK-KOUTENZ
+               MOVE    WRK-KOUTEN              TO  HC06-NYUKOHTEN  (10)
+               IF      RECE62-NYUTOKKEI2 (IDX2)
+                                               <   ZERO
+                   PERFORM VARYING IDZ FROM    7   BY  -1
+                           UNTIL   IDZ <       1
+                       IF      WRK-TENSUZ (IDZ:1)  =   SPACE
+                           MOVE    "¢¤"        TO
+                                           HC06-NYUKOHTENN-S (10 IDZ)
+                           MOVE    1           TO  IDZ
                        END-IF
                    END-PERFORM
-                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                             TO  HC06-NYUTENSUN (10)
-               END-IF        
-           ELSE
-               MOVE    RECE62-NYUKHNKEI2     TO  WRK-TENSUZ
-               MOVE    WRK-TENSU             TO  HC06-NYUTENSU  (10)
+               END-IF
            END-IF
       *
       *        <Æþ±¡Ç¯·îÆü>
