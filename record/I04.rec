@@ -1,0 +1,250 @@
+I04	{
+	fixed3	{
+		PTNUM	{
+			value	varchar(20);
+		};
+		KANANAME	{
+			value	varchar(50);
+		};
+		SEX	{
+			value	varchar(2);
+		};
+		HKNCOMBI	{
+			value	varchar(60);
+		};
+		FTNRATE	{
+			value	varchar(5);
+		};
+		NAME	{
+			value	varchar(50);
+		};
+		BIRTHDAY	{
+			value	varchar(9);
+		};
+		NENREI	{
+			value	varchar(7);
+		};
+		SRYKA	{
+			value	varchar(10);
+		};
+		HAKYMD	{
+			value	varchar(9);
+		};
+		NYUINYMD	{
+			value	varchar(14);
+		};
+		TAIINYMD	{
+			value	varchar(14);
+		};
+		SSUHKNTEN	{
+			value	varchar(10);
+		};
+		SDOHKNTEN	{
+			value	varchar(10);
+		};
+		ZTKHKNTEN	{
+			value	varchar(10);
+		};
+		TYKHKNTEN	{
+			value	varchar(10);
+		};
+		CSYHKNTEN	{
+			value	varchar(10);
+		};
+		SYCHKNTEN	{
+			value	varchar(10);
+		};
+		SJTHKNTEN	{
+			value	varchar(10);
+		};
+		KNSHKNTEN	{
+			value	varchar(10);
+		};
+		GZUHKNTEN	{
+			value	varchar(10);
+		};
+		ETCHKNTEN	{
+			value	varchar(10);
+		};
+		NYUHKNTEN	{
+			value	varchar(10);
+		};
+		TOTALHKNTEN	{
+			value	varchar(10);
+		};
+		SUUTGMONEY	{
+			value	varchar(10);
+		};
+		SDOTGMONEY	{
+			value	varchar(10);
+		};
+		ZTKTGMONEY	{
+			value	varchar(10);
+		};
+		TYKTGMONEY	{
+			value	varchar(10);
+		};
+		CSYTGMONEY	{
+			value	varchar(10);
+		};
+		SYCTGMONEY	{
+			value	varchar(10);
+		};
+		SJTGMONEY	{
+			value	varchar(10);
+		};
+		KNSTGMONEY	{
+			value	varchar(10);
+		};
+		GZUTGMONEY	{
+			value	varchar(10);
+		};
+		ETCTGMONEY	{
+			value	varchar(10);
+		};
+		JIHIMSG1	{
+			value	varchar(12);
+		};
+		JIHIMSG2	{
+			value	varchar(12);
+		};
+		JIHIMSG3	{
+			value	varchar(12);
+		};
+		JIHIMSG4	{
+			value	varchar(12);
+		};
+		JIHIMSG5	{
+			value	varchar(12);
+		};
+		JIHI1	{
+			value	varchar(10);
+		};
+		JIHI2	{
+			value	varchar(10);
+		};
+		JIHI3	{
+			value	varchar(10);
+		};
+		JIHI4	{
+			value	varchar(10);
+		};
+		JIHI5	{
+			value	varchar(10);
+		};
+		JIHIGOK	{
+			value	varchar(10);
+		};
+		JIHITAX1	{
+			value	varchar(10);
+		};
+		JIHITAX2	{
+			value	varchar(10);
+		};
+		JIHITAX3	{
+			value	varchar(10);
+		};
+		JIHITAX4	{
+			value	varchar(10);
+		};
+		JIHITAX5	{
+			value	varchar(10);
+		};
+		JIHITAXGOK	{
+			value	varchar(10);
+		};
+		JIHITAX	{
+			value	varchar(10);
+		};
+		RYOYOHI_SKJ	{
+			value	varchar(10);
+		};
+		SKYMONEY_SKJ	{
+			value	varchar(10);
+		};
+		RJNFTN	{
+			value	varchar(10);
+		};
+		KOHFTN	{
+			value	varchar(10);
+		};
+		FTNTOTAL	{
+			value	varchar(10);
+		};
+		ROUSYOSIN	{
+			value	varchar(10);
+		};
+		ROUSAISIN	{
+			value	varchar(10);
+		};
+		ROUSIDOU	{
+			value	varchar(10);
+		};
+		ROUETC	{
+			value	varchar(10);
+		};
+		SKYMONEY	{
+			value	varchar(10);
+		};
+		NYUKIN	{
+			value	varchar(10);
+			state	int;
+		};
+		HKNTEKMONEY	{
+			value	varchar(10);
+		};
+		HKNTEKGAI	{
+			value	varchar(10);
+		};
+		MISYUZAN_GAI	{
+			value	varchar(10);
+		};
+		MISYUZAN_NYU	{
+			value	varchar(10);
+		};
+		GOKSKY	{
+			value	varchar(10);
+		};
+		RMSAGAKU	{
+			value	varchar(10);
+		};
+		CHOSEI	{
+			value	varchar(10);
+			state	int;
+		};
+		SELNUM	{
+			value	number(2);
+		};
+		CMB_SKYPRTOUT	{
+			SKYPRTOUT	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[02];
+		};
+		CMB_TAIPRTOUT	{
+			TAIPRTOUT	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[02];
+		};
+		CMB_DR	{
+			DR	{
+				value	varchar(27);
+			};
+			count	int;
+			item	varchar(27)[10];
+		};
+		scrolledwindow1	{
+			HKNCOMBILST	{
+				count	int;
+				item	{
+					value0	varchar(2);
+					value1	varchar(50);
+				}	[15];
+				select	bool[15];
+			};
+		};
+	};
+};

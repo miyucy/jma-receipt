@@ -1,0 +1,25 @@
+OBJS = ORCGL01.so   ORCGLERR.so   ORCGLID1.so
+
+COBOL = cobc
+INSTALL = @INSTALL@
+MKDIR = mkdir -p
+
+prefix = @prefix@
+exec_prefix= @exec_prefix@
+libdir = ${exec_prefix}/lib
+copydir = ../copy
+
+%.so: %.CBL
+	$(COBOL) -g -m -dynamic -I $(copydir) $<
+
+all: $(OBJS)
+
+clean: 
+	rm -f $(OBJS)
+
+install: all
+	-@if [ ! -d $(libdir) ]; then \
+	  $(MKDIR) $(libdir); \
+	fi
+	for f in $(OBJS); do \
+	  $(INSTALL) -m 555 $${f} $(libdir) ; done

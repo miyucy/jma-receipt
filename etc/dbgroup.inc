@@ -10,8 +10,8 @@ db_group "log" {
  priority 100;
  type "PostgreSQL";
  port "localhost";
- name "panda";
- file "orca.log";
+ name "orca";
+ file "/var/lib/jma-receipt/dbredirector/orca.log";
 };
 db_group "shell" {
  type "shell";

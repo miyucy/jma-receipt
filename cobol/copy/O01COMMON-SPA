@@ -1,0 +1,68 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      *****************************************************************
+      *
+      *    レセプト作成指示 共通ＳＰＡ(SPA-WORK の内容)
+      *          
+      *****************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+       01  SPA-O01KYOUTU.
+      *
+      *処理区分
+           05  SPA-O01-SYOKBN              PIC  X(01).
+      *ファイル区分（１：一括　２：個別）
+           05  SPA-O01-FILEKBN             PIC  X(01).
+      *診療年月
+           05  SPA-O01-SRYYM               PIC  9(06).
+      *対象データ区分
+      *    （一括作成分　０：医保全件　１：社保　２：国保
+      *                　３：労災全件　４：自賠責）
+           05  SPA-O01-RECEKBN             PIC  X(01).
+      *ＫＥＹ（対象のファイル）
+           05  SPA-O01-RECE07-KEY.
+      *帳票ＩＤ
+               07  SPA-O01-RECE07-PRTID    PIC  X(04).
+      *処理区分（１：一括、２：個別）
+               07  SPA-O01-RECE07-SYOKBN   PIC  X(01).
+      *作成日
+               07  SPA-O01-RECE07-CREYMD   PIC  X(08).
+      *作成時間
+               07  SPA-O01-RECE07-CREHMS   PIC  X(06).
+      *審査支払機関
+               07  SPA-O01-RECE07-TEISYUTUSAKI
+                                           PIC  X(01).
+      *レセプト種別
+               07  SPA-O01-RECE07-RECESYUBETU
+                                           PIC  X(04).
+      *データ区分
+           05  SPA-O01-RECE07-RECEKBN      PIC  X(01).
+      *診療年月（一括：診療年月、個別：先頭の診療年月）
+           05  SPA-O01-RECE07-SRYYM        PIC  X(06).
+      *入外区分
+           05  SPA-O01-RECE07-NYUGAIKBN    PIC  X(01).
+      *
+      *警告メッセージ
+           05  SPA-OIDCD                   PIC  X(04).
+           05  SPA-OIDCD2                  PIC  X(04).
+      *警告画面より
+           05  SPA-OID1-AREA. 
+               07  SPA-OID1-FLG            PIC  X(02).
+               07  SPA-O99-FLG             PIC  X(02).
+      *

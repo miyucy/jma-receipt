@@ -30,6 +30,7 @@
       *  01.00.01    MCC-藤原     01/08/07  CPPTKOHINF.INC 追加     
       *  01.00.02    MCC-多々納   02/04/04  CPADRS.INC 追加     
       *  01.00.03    MCC-藤原     01/04/09  CPUSERBYOMEI.INC 追加     
+      *  NYUIN.15    NACL-太田    02/11/19  CPNYUKSNCHK.INC追加
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -89,13 +90,19 @@
       *    請求管理マスタ
            COPY    "CPRCF010.INC".
       *
+      *---- (NYUIN.15) LINE ADD START    -----------------------------
+      *    入院料加算チェックマスター
+       01  NYUKSNCHK-REC.
+           COPY    "CPNYUKSNCHK.INC".
+      *---- (NYUIN.15) LINE ADD END      -----------------------------
+      *
            COPY    'ORCA-DBINFO'.
            COPY    'ORCA-DBCOMM'.
            COPY    'ORCA-DBPATH'.
       *
        LINKAGE                     SECTION.
            COPY    'MCPAREA'.
-           COPY    "CPORCMCP.INC".
-           COPY    "MCPDATA.INC".
+           COPY    'CPORCMCP.INC'.
+           COPY    'MCPDATA.INC'.
       *
            COPY    "CPMCPDBPRO.INC". 

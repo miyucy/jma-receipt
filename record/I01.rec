@@ -1,0 +1,187 @@
+I01	{
+	fixed6	{
+		B07	{
+			state	int;
+		};
+		B08	{
+			state	int;
+		};
+		B12	{
+			state	int;
+		};
+		PTNUM	{
+			value	varchar(20);
+		};
+		NAME	{
+			value	varchar(60);
+		};
+		SEX	{
+			value	varchar(4);
+		};
+		BIRTHDAY	{
+			value	varchar(9);
+		};
+		AGE	{
+			value	varchar(7);
+		};
+		CMB_SYORIKBN	{
+			SYORIKBN	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(23)[10];
+		};
+		IDOYMD	{
+			value	varchar(9);
+			state	int;
+		};
+		MAEIDOYMD	{
+			value	varchar(9);
+		};
+		BRMNUM	{
+			value	varchar(6);
+			state	int;
+		};
+		CMB_BTUNAME	{
+			BTUNAME	{
+				value	varchar(23);
+				state	int;
+			};
+			count	int;
+			item	varchar(23)[50];
+			state	int;
+		};
+		CMB_SAGAKU	{
+			SAGAKU	{
+				value	varchar(23);
+				state	int;
+			};
+			count	int;
+			item	varchar(23)[20];
+			state	int;
+		};
+		NYUINYMD	{
+			value	varchar(9);
+			state	int;
+		};
+		CMB_NYUINKA	{
+			NYUINKA	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[30];
+			state	int;
+		};
+		CMB_SHOKAI	{
+			SHOKAI	{
+				value	varchar(8);
+				state	int;
+			};
+			count	int;
+			item	varchar(8)[05];
+			state	int;
+		};
+		SHONUM	{
+			value	number(2);
+			state	int;
+		};
+		LBL_SHONYUINYMD	{
+			value	varchar(16);
+		};
+		TAIINYMD	{
+			value	varchar(9);
+			state	int;
+		};
+		CMB_DR1	{
+			DR1	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[20];
+			state	int;
+		};
+		CMB_DR2	{
+			DR2	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[20];
+			state	int;
+		};
+		CMB_DR3	{
+			DR3	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[20];
+			state	int;
+		};
+		CMB_HKNCOMBI	{
+			HKNCOMBI	{
+				value	varchar(51);
+				state	int;
+			};
+			count	int;
+			item	varchar(51)[30];
+			state	int;
+		};
+		CMB_TOKNYUIN	{
+			TOKNYUIN	{
+				value	varchar(51);
+				state	int;
+			};
+			count	int;
+			item	varchar(51)[30];
+			state	int;
+		};
+		MAEUKE	{
+			value	number(5);
+			state	int;
+		};
+		CMB_SEIKYU	{
+			SEIKYU	{
+				value	varchar(24);
+				state	int;
+			};
+			count	int;
+			item	varchar(24)[05];
+			state	int;
+		};
+		CMB_DISPKBN	{
+			DISPKBN	{
+				value	varchar(11);
+				state	int;
+			};
+			count	int;
+			item	varchar(11)[05];
+			state	int;
+		};
+		SELNUM	{
+			value	number(2);
+		};
+		scrolledwindow1	{
+			NYUREKILST	{
+				count	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(2);
+					value2	varchar(4);
+					value3	varchar(20);
+					value4	varchar(6);
+					value5	varchar(9);
+					value6	varchar(9);
+					value7	varchar(20);
+					value8	varchar(40);
+					value9	varchar(4);
+					value10	varchar(5);
+					value11	varchar(5);
+				}	[50];
+				select	bool[50];
+			};
+		};
+	};
+};

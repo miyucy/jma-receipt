@@ -23,6 +23,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     MCC-多々納   01.05.28  数字表示を、漢字へ
+      * 01.00.02     MCC-多々納   02.05.20  労災追加
       ************************************************************
       *
       *01  SPA-SCR-REC.
@@ -47,6 +48,8 @@
                        09  SPA-NAI-TBANGO2         PIC  9(03).
                        09  SPA-NAI-ENDBANGO        PIC  9(04).
                        09  SPA-NAI-SRYSYU          PIC  X(03).
+                       09  SPA-NAI-SRYKA           PIC  X(02).
+                       09  SPA-NAI-SRYKAMEI        PIC  X(02).
                        09  SPA-NAI-SRYKBN          PIC  X(02).
                        09  SPA-NAI-ZAINUM          PIC  9(08).
                        09  SPA-NAI-HKNCOMBI        PIC  9(04).

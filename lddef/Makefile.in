@@ -25,7 +25,12 @@ LDFILE_sources = \
 	orca22.ld.in \
 	orca23.ld.in \
 	orca24.ld.in \
-	orca41.ld.in\
+	orca31.ld.in \
+	orca32.ld.in \
+	orca33.ld.in \
+	orca34.ld.in \
+	orca36.ld.in \
+	orca41.ld.in \
 	orca42.ld.in \
 	orca43.ld.in \
 	orca44.ld.in \

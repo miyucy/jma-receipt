@@ -1,0 +1,32 @@
+O02	{
+	fixed6	{
+		PTNUM	{
+			value	varchar(21);
+		};
+		NAME	{
+			value	varchar(69);
+		};
+		SEIYM	{
+			value	varchar(7);
+		};
+		scrolledwindow1	{
+			LIST01	{
+				count	int;
+				item	{
+					value1	varchar(20);
+					value2	varchar(68);
+					value3	varchar(6);
+					value4	varchar(10);
+				}	[50];
+				select	bool[50];
+			};
+		};
+		SAKKBNCOMBO	{
+			SAKKBN	{
+				value	varchar(13);
+			};
+			count	int;
+			item	varchar(12)[10];
+		};
+	};
+};

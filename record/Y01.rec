@@ -312,6 +312,300 @@ Y01	{
 				KENSUU98	{
 					value	varchar(5);
 				};
+				CH_KENSUU02	{
+					value	bool;
+				};
+				CH_KENSUU03	{
+					value	bool;
+				};
+				CH_KENSUU04	{
+					value	bool;
+				};
+				CH_KENSUU05	{
+					value	bool;
+				};
+				CH_KENSUU06	{
+					value	bool;
+				};
+				CH_KENSUU08	{
+					value	bool;
+				};
+				CH_KENSUU09	{
+					value	bool;
+				};
+				CH_KENSUU10	{
+					value	bool;
+				};
+				CH_KENSUU11	{
+					value	bool;
+				};
+				CH_KENSUU12	{
+					value	bool;
+				};
+				CH_KENSUU13	{
+					value	bool;
+				};
+				CH_KENSUU14	{
+					value	bool;
+				};
+				CH_KENSUU15	{
+					value	bool;
+				};
+				CH_KENSUU16	{
+					value	bool;
+				};
+				CH_KENSUU17	{
+					value	bool;
+				};
+				CH_KENSUU18	{
+					value	bool;
+				};
+				CH_KENSUU19	{
+					value	bool;
+				};
+				CH_KENSUU20	{
+					value	bool;
+				};
+				CH_KENSUU21	{
+					value	bool;
+				};
+				CH_KENSUU22	{
+					value	bool;
+				};
+				CH_KENSUU23	{
+					value	bool;
+				};
+				CH_KENSUU24	{
+					value	bool;
+				};
+				CH_KENSUU25	{
+					value	bool;
+				};
+				CH_KENSUU26	{
+					value	bool;
+				};
+				CH_KENSUU27	{
+					value	bool;
+				};
+				CH_KENSUU28	{
+					value	bool;
+				};
+				CH_KENSUU29	{
+					value	bool;
+				};
+				CH_KENSUU30	{
+					value	bool;
+				};
+				CH_KENSUU31	{
+					value	bool;
+				};
+				CH_KENSUU32	{
+					value	bool;
+				};
+				CH_KENSUU33	{
+					value	bool;
+				};
+				CH_KENSUU34	{
+					value	bool;
+				};
+				CH_KENSUU35	{
+					value	bool;
+				};
+				CH_KENSUU36	{
+					value	bool;
+				};
+				CH_KENSUU37	{
+					value	bool;
+				};
+				CH_KENSUU38	{
+					value	bool;
+				};
+				CH_KENSUU39	{
+					value	bool;
+				};
+				CH_KENSUU40	{
+					value	bool;
+				};
+				CH_KENSUU41	{
+					value	bool;
+				};
+				CH_KENSUU42	{
+					value	bool;
+				};
+				CH_KENSUU43	{
+					value	bool;
+				};
+				CH_KENSUU44	{
+					value	bool;
+				};
+				CH_KENSUU45	{
+					value	bool;
+				};
+				CH_KENSUU46	{
+					value	bool;
+				};
+				CH_KENSUU47	{
+					value	bool;
+				};
+				CH_KENSUU48	{
+					value	bool;
+				};
+				CH_KENSUU49	{
+					value	bool;
+				};
+				CH_KENSUU50	{
+					value	bool;
+				};
+				CH_KENSUU51	{
+					value	bool;
+				};
+				CH_KENSUU52	{
+					value	bool;
+				};
+				CH_KENSUU53	{
+					value	bool;
+				};
+				CH_KENSUU54	{
+					value	bool;
+				};
+				CH_KENSUU55	{
+					value	bool;
+				};
+				CH_KENSUU56	{
+					value	bool;
+				};
+				CH_KENSUU57	{
+					value	bool;
+				};
+				CH_KENSUU58	{
+					value	bool;
+				};
+				CH_KENSUU59	{
+					value	bool;
+				};
+				CH_KENSUU60	{
+					value	bool;
+				};
+				CH_KENSUU61	{
+					value	bool;
+				};
+				CH_KENSUU62	{
+					value	bool;
+				};
+				CH_KENSUU63	{
+					value	bool;
+				};
+				CH_KENSUU64	{
+					value	bool;
+				};
+				CH_KENSUU65	{
+					value	bool;
+				};
+				CH_KENSUU66	{
+					value	bool;
+				};
+				CH_KENSUU67	{
+					value	bool;
+				};
+				CH_KENSUU68	{
+					value	bool;
+				};
+				CH_KENSUU69	{
+					value	bool;
+				};
+				CH_KENSUU70	{
+					value	bool;
+				};
+				CH_KENSUU71	{
+					value	bool;
+				};
+				CH_KENSUU72	{
+					value	bool;
+				};
+				CH_KENSUU73	{
+					value	bool;
+				};
+				CH_KENSUU74	{
+					value	bool;
+				};
+				CH_KENSUU75	{
+					value	bool;
+				};
+				CH_KENSUU76	{
+					value	bool;
+				};
+				CH_KENSUU77	{
+					value	bool;
+				};
+				CH_KENSUU79	{
+					value	bool;
+				};
+				CH_KENSUU80	{
+					value	bool;
+				};
+				CH_KENSUU81	{
+					value	bool;
+				};
+				CH_KENSUU82	{
+					value	bool;
+				};
+				CH_KENSUU83	{
+					value	bool;
+			    };
+				CH_KENSUU84	{
+					value	bool;
+				};
+				CH_KENSUU86	{
+					value	bool;
+				};
+				CH_KENSUU87	{
+					value	bool;
+				};
+				CH_KENSUU88	{
+					value	bool;
+				};
+				CH_KENSUU89	{
+					value	bool;
+				};
+				CH_KENSUU90	{
+					value	bool;
+				};
+				CH_KENSUU91	{
+					value	bool;
+				};
+				CH_KENSUU94	{
+					value	bool;
+				};
+				CH_KENSUU95	{
+					value	bool;
+				};
+				CH_KENSUU96	{
+					value	bool;
+				};
+				CH_KENSUU97	{
+					value	bool;
+				};
+				CH_KENSUU07	{
+					value	bool;
+				};
+				CH_KENSUU78	{
+					value	bool;
+				};
+				CH_KENSUU01	{
+					value	bool;
+				};
+				CH_KENSUU92	{
+					value	bool;
+				};
+				CH_KENSUU93	{
+					value	bool;
+				};
+				CH_KENSUU85	{
+					value	bool;
+				};
+				CH_KENSUU98	{
+					value	bool;
+				};
 			};
 		};
 		SEX	{
@@ -349,6 +643,27 @@ Y01	{
 		};
 		DAY7	{
 			value	varchar(5);
+		};
+		CH_DAY1	{
+			value	bool;
+		};
+		CH_DAY2	{
+			value	bool;
+		};
+		CH_DAY3	{
+			value	bool;
+		};
+		CH_DAY4	{
+			value	bool;
+		};
+		CH_DAY5	{
+			value	bool;
+		};
+		CH_DAY6	{
+			value	bool;
+		};
+		CH_DAY7	{
+			value	bool;
 		};
 		YYKYMD	{
 			value	varchar(10);
@@ -392,17 +707,17 @@ Y01	{
 		};
 		KAKREN_COMB	{
 			KAKREN	{
-				value	varchar(22);
+				value	varchar(23);
 			};
 			count	int;
-			item	varchar(22)[10];
+			item	varchar(23)[10];
 		};
 		YYKKBN_COMB	{
 			YYKKBN	{
-				value	varchar(27);
+				value	varchar(29);
 			};
 			count	int;
-			item	varchar(27)[10];
+			item	varchar(29)[10];
 		};
 	};
 };

@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
         02  Y01.
-      **   02  Y01-FIXED1.
+      ***   02  Y01-FIXED1.
               03  Y01-CALENDAR1.
                 04  Y01-YEAR    PIC S9(9)   BINARY.
                 04  Y01-MONTH   PIC S9(9)   BINARY.
@@ -25,7 +25,7 @@
                 04  Y01-VALUE   PIC X(3).
               03  Y01-PTNUM-G.
                 04  Y01-PTNUM-STATE   PIC S9(9)   BINARY.
-                04  Y01-PTNUM  PIC X(20).
+                04  Y01-PTNUM   PIC X(20).
               03  Y01-YYKNAME-G.
                 04  Y01-YYKNAME-STATE   PIC S9(9)   BINARY.
                 04  Y01-YYKNAME   PIC X(30).
@@ -227,6 +227,202 @@
                     06  Y01-VALUE   PIC X(5).
                   05  Y01-KENSUU98.
                     06  Y01-VALUE   PIC X(5).
+                  05  Y01-CH-KENSUU02.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU03.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU04.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU05.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU06.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU08.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU09.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU10.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU11.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU12.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU13.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU14.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU15.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU16.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU17.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU18.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU19.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU20.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU21.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU22.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU23.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU24.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU25.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU26.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU27.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU28.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU29.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU30.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU31.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU32.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU33.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU34.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU35.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU36.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU37.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU38.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU39.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU40.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU41.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU42.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU43.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU44.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU45.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU46.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU47.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU48.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU49.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU50.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU51.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU52.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU53.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU54.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU55.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU56.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU57.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU58.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU59.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU60.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU61.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU62.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU63.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU64.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU65.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU66.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU67.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU68.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU69.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU70.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU71.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU72.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU73.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU74.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU75.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU76.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU77.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU79.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU80.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU81.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU82.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU83.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU84.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU86.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU87.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU88.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU89.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU90.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU91.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU94.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU95.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU96.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU97.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU07.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU78.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU01.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU92.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU93.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU85.
+                    06  Y01-VALUE   PIC X.
+                  05  Y01-CH-KENSUU98.
+                    06  Y01-VALUE   PIC X.
               03  Y01-SEX.
                 04  Y01-VALUE   PIC X(2).
               03  Y01-BARTHDAY.
@@ -251,6 +447,20 @@
                 04  Y01-VALUE   PIC X(5).
               03  Y01-DAY7.
                 04  Y01-VALUE   PIC X(5).
+              03  Y01-CH-DAY1.
+                04  Y01-VALUE   PIC X.
+              03  Y01-CH-DAY2.
+                04  Y01-VALUE   PIC X.
+              03  Y01-CH-DAY3.
+                04  Y01-VALUE   PIC X.
+              03  Y01-CH-DAY4.
+                04  Y01-VALUE   PIC X.
+              03  Y01-CH-DAY5.
+                04  Y01-VALUE   PIC X.
+              03  Y01-CH-DAY6.
+                04  Y01-VALUE   PIC X.
+              03  Y01-CH-DAY7.
+                04  Y01-VALUE   PIC X.
               03  Y01-YYKYMD.
                 04  Y01-VALUE   PIC X(10).
               03  Y01-YYKTIME.
@@ -259,13 +469,13 @@
                 04  Y01-DRNAME.
                   05  Y01-VALUE   PIC X(27).
                 04  Y01-DRNAME-COUNT   PIC S9(9)   BINARY.
-                04  Y01-DRNAME-LST    PIC X(27)   OCCURS  10 TIMES.
+                04  Y01-DRNAME-LST     PIC X(27)   OCCURS  10 TIMES.
               03  Y01-SRYNAIYO-COMBO.
                 04  Y01-SRYNAIYO.
                   05  Y01-VALUE   PIC X(21).
                 04  Y01-SRYNAIYO-COUNT   PIC S9(9)   BINARY.
-                04  Y01-SRYNAIYO-LST     PIC X(21)   OCCURS  10 TIMES.
-              03  Y01-SCROLLEDWINDOW3.
+                04  Y01-SRYNAIYO-LST    PIC X(21)   OCCURS  10 TIMES.
+              03  Y01-S-SROLLEDWINDOW3.
                 04  Y01-PTLIST.
                   05  Y01-PTLIST-COUNT   PIC S9(9)   BINARY.
                   05  Y01-ITEM        OCCURS  50 TIMES.
@@ -282,11 +492,11 @@
                 04  Y01-SRYKA-LST    PIC X(17)   OCCURS  10 TIMES.
               03  Y01-KAKREN-COMB.
                 04  Y01-KAKREN.
-                  05  Y01-VALUE   PIC X(22).
+                  05  Y01-VALUE   PIC X(23).
                 04  Y01-KAKREN-COUNT   PIC S9(9)   BINARY.
-                04  Y01-KAKREN-LST    PIC X(22)   OCCURS  10 TIMES.
+                04  Y01-KAKREN-LST    PIC X(23)   OCCURS  10 TIMES.
               03  Y01-YYKKBN-COMB.
                 04  Y01-YYKKBN.
-                  05  Y01-VALUE   PIC X(27).
+                  05  Y01-VALUE   PIC X(29).
                 04  Y01-YYKKBN-COUNT   PIC S9(9)   BINARY.
-                04  Y01-YYKKBN-LST    PIC X(27)   OCCURS  10 TIMES.
+                04  Y01-YYKKBN-LST    PIC X(29)   OCCURS  10 TIMES.

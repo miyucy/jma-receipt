@@ -1,0 +1,129 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      ************************************************************
+      *         システム管理マスタ     (CPSK5001.INC)   *
+      *         （５００１）                            *
+      *         病棟マスタ                              *
+      ************************************************************
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      ************************************************************
+       01  SYS-5001-REC.
+           03  SYS-5001-KEY.
+      *管理コード
+               05  SYS-5001-KANRICD            PIC  X(04).
+      *区分コード
+               05  SYS-5001-KBNCD              PIC  X(08).
+      *有効開始年月日
+               05  SYS-5001-STYUKYMD           PIC  X(08).
+      *有効終了年月日
+               05  SYS-5001-EDYUKYMD           PIC  X(08).
+      *管理テーブル
+           03  SYS-5001-TBL.
+      *病棟番号
+               05  SYS-5001-BTU-NUM            PIC  X(02).
+      *病棟名称
+               05  SYS-5001-BTU-NAME           PIC  X(20).
+      *病棟短縮名称
+               05  SYS-5001-BTU-TANNAME        PIC  X(10).
+      *特定入院料
+               05  SYS-5001-BTU-TOKTEI-NYUIN
+                                               PIC  X(02).
+      *病棟科
+               05  SYS-5001-BTU-KA             PIC  X(02).
+      *病棟種別
+               05  SYS-5001-BTU-SBT
+                                               PIC  X(02).
+      *収容人数
+               05  SYS-5001-BTU-NINZU          PIC  9(03).
+      *平均在院日数区分
+               05  SYS-5001-BTU-HEIKINZAIKBN
+                                               PIC  X(02).
+      *看護配置区分
+               05  SYS-5001-BTU-KNGHAICHIKBN
+                                               PIC  X(02).
+      *看護師比率区分
+               05  SYS-5001-BTU-KNGHIRITUKBN
+                                               PIC  X(02).
+      *看護補助比率区分
+               05  SYS-5001-BTU-KNGHJOHAI
+                                               PIC  X(02).
+      *看護補助加算区分
+               05  SYS-5001-BTU-KNGHJOKSN
+                                               PIC  X(02).
+      *夜間勤務等看護加算区分
+               05  SYS-5001-BTU-YAKANKNGKSN
+                                               PIC  X(02).
+      *食堂加算区分
+               05  SYS-5001-BTU-SYOKUDOKBN
+                                               PIC  X(01).
+      *看護師人数区分
+               05  SYS-5001-BTU-KNGSISUKBN
+                                               PIC  X(01).
+      *保育士人数区分
+               05  SYS-5001-BTU-HIKSISUKBN
+                                               PIC  X(01).
+      *入院基本料点数コード
+               05  SYS-5001-BTU-KHNSRYCD
+                                               PIC  X(09).
+      *初期加算点数コード
+               05  SYS-5001-BTU-KSNSRYCD
+                                               PIC  X(09).
+      *長期減算点数コード
+               05  SYS-5001-BTU-GENSRYCD
+                                               PIC  X(09).
+      *病棟終了区分
+               05  SYS-5001-BTU-EDKBN
+                                               PIC  X(01).
+      *難病患者等特別入院診療加算
+               05  SYS-5001-NANBYO.
+                   07  SYS-5001-NANBYO-CD      PIC X(09).
+                   07  SYS-5001-NANBYO-KBN     PIC X(01).
+      *特殊疾患入院施設管理加算
+               05  SYS-5001-TOKUSYU.
+                   07  SYS-5001-TOKUSYU-CD     PIC X(09).
+                   07  SYS-5001-TOKUSYU-KBN    PIC X(01).
+      *療養病棟療養環境加算
+               05  SYS-5001-YORYO              OCCURS  3.
+                   07  SYS-5001-YORYO-CD       PIC X(09).
+                   07  SYS-5001-YORYO-KBN      PIC X(01).
+      *児童・思春期精神科入院医療管理加算
+               05  SYS-5001-JIDO.
+                   07  SYS-5001-JIDO-CD        PIC X(09).
+                   07  SYS-5001-JIDO-KBN       PIC X(01).
+      *精神科応急入院施設管理加算
+               05  SYS-5001-SEISIN.
+                   07  SYS-5001-SEISIN-CD      PIC X(09).
+                   07  SYS-5001-SEISIN-KBN     PIC X(01).
+      *看護配置加算
+               05  SYS-5001-KANGO              OCCURS  5.
+                   07  SYS-5001-KANGO-CD       PIC X(09).
+                   07  SYS-5001-KANGO-KBN      PIC X(01).
+      *予備
+           03                                  PIC  X(296).
+      *端末ＩＤ
+           03  SYS-5001-TERMID                 PIC  X(16).
+      *オペーレータＩＤ
+           03  SYS-5001-OPID                   PIC  X(16).
+      *作成年月日
+           03  SYS-5001-CREYMD                 PIC  X(08).
+      *更新年月日
+           03  SYS-5001-UPYMD                  PIC  X(08).
+      *更新時間
+           03  SYS-5001-UPHMS                  PIC  X(06).

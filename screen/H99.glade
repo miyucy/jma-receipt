@@ -407,7 +407,7 @@
       <y>100</y>
       <width>60</width>
       <height>18</height>
-      <label>ø«Œ≈≤ °°</label>
+      <label>ø«Œ≈≤   </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

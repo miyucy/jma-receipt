@@ -53,6 +53,13 @@ db	{
 	tbl_monthlynum;
 	view_Q001;
 	tbl_yakujyo;
+	tbl_nyuinkhn;
+	tbl_ptnyuinrrk;
+	tbl_pttainfuka;
+	tbl_nyuinacct;
+	tbl_nyuinact;
+	view_I001;
+	tbl_nyuksnchk;
 };
 db	"shell"	{
 	shell;

@@ -1,0 +1,10 @@
+OERR	{
+	fixed1	{
+		ERRCODE	{
+			value	varchar(11);
+		};
+		ERRMSG	{
+			value	varchar(61);
+		};
+	};
+};

@@ -39,6 +39,7 @@
       *                                     表示を追加(伝票状態区分＝８)
       *  01.01.09    MCC-藤原     02/02/27  未収理由の削除、自費消費税
       *                                     なしの追加
+      *  01.01.10    NACL-藤原    02/11/05  入外区分追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -77,6 +78,7 @@
                    07  SPA-GMN-NAME              PIC X(100).
                    07  SPA-GMN-BIRTHDAY          PIC X(09).
                    07  SPA-GMN-SRYKA             PIC X(16).
+                   07  SPA-GMN-NYUGAIKBN         PIC X(06).
       
                    07  SPA-GMN-SYORINAIYO        PIC X(10).
                    07  SPA-GMN-JOUTAI            PIC X(10).
@@ -495,6 +497,12 @@
       *****MOVE    SPA-S01-FTNRATEMEI  TO  SPA-GMN-RITU
            MOVE    SPA-S01-SRYKAMEI    TO  SPA-GMN-SRYKA
       *****MOVE    SPA-S01-SRYYMW      TO  SPA-GMN-SRYYMD 
+           EVALUATE    SPA-S01-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    "入院"          TO  SPA-GMN-NYUGAIKBN      
+               WHEN    "2"
+                   MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBN      
+           END-EVALUATE    
       *
       *    処理内容
            EVALUATE     SPA-S01-SYORINO
@@ -510,12 +518,13 @@
       *    伝票番号
       *>     MOVE    179                 TO  SPA-DENPNUM.
            MOVE    SPA-S01-DENPNUM       TO  SPA-GMN-DENPNO.
-           MOVE    "2"                 TO  SPA-NYUGAIKBN.
+      *****MOVE    "2"                 TO  SPA-NYUGAIKBN.
       *
       *    収納マスターを検索し内容をスパ領域にセット
            INITIALIZE                      SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
-           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+      *****MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-S01-NYUGAIKBN   TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
            MOVE    SPA-S01-DENPNUM     TO  SYU-DENPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
@@ -634,7 +643,8 @@
       *    収納明細マスターを検索し内容をスパ領域にセット
            MOVE    ZERO                TO  SPA-GMN-MISYU-MAX
            MOVE    SPA-HOSPID          TO  SMEI-HOSPID.
-           MOVE    SPA-NYUGAIKBN       TO  SMEI-NYUGAIKBN.
+      *****MOVE    SPA-NYUGAIKBN       TO  SMEI-NYUGAIKBN.
+           MOVE    SPA-S01-NYUGAIKBN   TO  SMEI-NYUGAIKBN.
            MOVE    SPA-S01-PTID        TO  SMEI-PTID.
            MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM.
            MOVE    SYUMEI-REC          TO  MCPDATA-REC.
@@ -763,7 +773,8 @@
            END-IF
            PERFORM
                UNTIL       FLG-SYSKANRI    =   1
-               IF      SPA-NYUGAIKBN       =   SYS-1013-KBNCD(1:1)
+      *****    IF      SPA-NYUGAIKBN       =   SYS-1013-KBNCD(1:1)
+               IF      SPA-S01-NYUGAIKBN   =   SYS-1013-KBNCD(1:1)
                    EVALUATE    SYS-1013-KBNCD(2:1)
                        WHEN    "1"
                            MOVE    SYS-1013-JIHINAME   TO
@@ -810,7 +821,8 @@
 
            INITIALIZE                      SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
-           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+      *****MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-S01-NYUGAIKBN   TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -939,6 +951,7 @@
            MOVE    SPA-GMN-SRYYMD      TO  S03-SRYYMD
            MOVE    SPA-GMN-BIRTHDAY    TO  S03-BIRTHDAY
            MOVE    SPA-GMN-SRYKA       TO  S03-SRYKA
+           MOVE    SPA-GMN-NYUGAIKBN   TO  S03-NYUGAIKBN
       *
            MOVE    SPA-GMN-SYORINAIYO  TO  S03-NAIYO
            MOVE    SPA-GMN-JOUTAI      TO  S03-DENPJTI
@@ -1388,7 +1401,8 @@
       *
            INITIALIZE                      SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
-           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+      *****MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-S01-NYUGAIKBN   TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
            MOVE    SPA-S01-DENPNUM     TO  SYU-DENPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
@@ -1430,7 +1444,8 @@
       *      
                    INITIALIZE                      SYUMEI-REC
                    MOVE    SPA-HOSPID          TO  SMEI-HOSPID
-                   MOVE    SPA-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+      *************MOVE    SPA-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+                   MOVE    SPA-S01-NYUGAIKBN   TO  SMEI-NYUGAIKBN
                    MOVE    SPA-S01-PTID        TO  SMEI-PTID
                    MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM
                    MOVE    SYUMEI-REC          TO  MCPDATA-REC
@@ -1484,7 +1499,8 @@
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
            MOVE    SPA-HOSPID          TO  SMEI-HOSPID
-           MOVE    SPA-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+      *****MOVE    SPA-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+           MOVE    SPA-S01-NYUGAIKBN   TO  SMEI-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SMEI-PTID
       *伝票番号
            MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM
@@ -1606,7 +1622,8 @@
       *
            INITIALIZE                      SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
-           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+      *****MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-S01-NYUGAIKBN   TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
            MOVE    SPA-S01-DENPNUM     TO  SYU-DENPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
@@ -1645,7 +1662,8 @@
                                                 MCPDATA-REC
                    INITIALIZE                      SYUMEI-REC
                    MOVE    SPA-HOSPID          TO  SMEI-HOSPID
-                   MOVE    SPA-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+      *************MOVE    SPA-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+                   MOVE    SPA-S01-NYUGAIKBN   TO  SMEI-NYUGAIKBN
                    MOVE    SPA-S01-PTID        TO  SMEI-PTID
                    MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM
                    MOVE    SPA-IDX             TO  SMEI-DENPEDANUM

@@ -1,0 +1,84 @@
+tbl_nyuinkhn	{
+	KHN_SRYCD		char(9);
+	YUKOSTYMD		char(8);
+	YUKOEDYMD		char(8);
+	IPROUKBN		char(1);
+	SSTKIJUNKBN		char(1);
+	BTUSBTKBN		char(2);
+	HEIKINZAIKBN		char(2);
+	KANGOHAICHIKBN	char(2);
+	KANGOHIRITUKBN	char(2);
+	KANGOHOJOHAICHIKBN	char(2);
+	KHN_TEN				number(6,0);
+	KAGEN_SRYCD1		char(9);
+	KAGEN_SRYCD2		char(9);
+	KAGEN_SRYCD3		char(9);
+	KAGEN_SRYCD4		char(9);
+	KAGEN_SRYCD5		char(9);
+	KAGEN_SRYCD6		char(9);
+	KAGEN_SRYCD7		char(9);
+	KAGEN_TEN1		number(6,0);
+	KAGEN_TEN2		number(6,0);
+	KAGEN_TEN3		number(6,0);
+	KAGEN_TEN4		number(6,0);
+	KAGEN_TEN5		number(6,0);
+	KAGEN_TEN6		number(6,0);
+	KAGEN_TEN7		number(6,0);
+	KETTEI_TEN1		number(6,0);
+	KETTEI_TEN2		number(6,0);
+	KETTEI_TEN3		number(6,0);
+	KETTEI_TEN4		number(6,0);
+	KETTEI_TEN5		number(6,0);
+	KETTEI_TEN6		number(6,0);
+	KETTEI_TEN7		number(6,0);
+	TERMID		varchar(16);
+	OPID		varchar(16);
+	CREYMD		char(8);
+	UPYMD		char(8);
+	UPHMS		char(6);
+};
+
+primary	{
+	KHN_SRYCD,YUKOSTYMD,YUKOEDYMD;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_nyuinkhn_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinkhn
+			WHERE
+						KHN_SRYCD      =  :KHN_SRYCD
+			AND		YUKOSTYMD     <=  :YUKOSTYMD
+			AND		YUKOEDYMD     >=  :YUKOEDYMD
+		;
+	};
+};
+
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_nyuinkhn_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinkhn
+			WHERE
+						IPROUKBN      =   :IPROUKBN
+			AND		SSTKIJUNKBN   =   :SSTKIJUNKBN
+			AND		BTUSBTKBN     =   :BTUSBTKBN 
+			AND		HEIKINZAIKBN  =   :HEIKINZAIKBN
+			AND		KANGOHAICHIKBN =  :KANGOHAICHIKBN
+			AND		KANGOHIRITUKBN =  :KANGOHIRITUKBN
+			AND		KANGOHOJOHAICHIKBN =  :KANGOHOJOHAICHIKBN
+			AND		YUKOSTYMD     <=  :YUKOSTYMD
+			AND		YUKOEDYMD     >=  :YUKOEDYMD
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_nyuinkhn_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinkhn
+      		;
+	};
+};

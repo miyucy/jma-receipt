@@ -30,6 +30,12 @@
                 05  M01-G22-STATE   PIC S9(09) BINARY.
                 05  M01-G23-STATE   PIC S9(09) BINARY.
                 05  M01-G24-STATE   PIC S9(09) BINARY.
+                05  M01-G31-STATE   PIC S9(09) BINARY.
+                05  M01-G32-STATE   PIC S9(09) BINARY.
+                05  M01-G33-STATE   PIC S9(09) BINARY.
+                05  M01-G34-STATE   PIC S9(09) BINARY.
+                05  M01-G35-STATE   PIC S9(09) BINARY.
+                05  M01-G36-STATE   PIC S9(09) BINARY.
                 05  M01-G41-STATE   PIC S9(09) BINARY.
                 05  M01-G42-STATE   PIC S9(09) BINARY.
                 05  M01-G43-STATE   PIC S9(09) BINARY.
@@ -42,5 +48,5 @@
                 05  M01-G91-STATE   PIC S9(09) BINARY.
                 05  M01-G92-STATE   PIC S9(09) BINARY.
               04  M01-STATE-R       REDEFINES  M01-STATE-G.
-                05  M01-STATE-O     PIC S9(09) BINARY  OCCURS  19.
+                05  M01-STATE-O     PIC S9(09) BINARY  OCCURS  25.
               04  M01-SELNUM  PIC 9(2).

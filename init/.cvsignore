@@ -1,2 +1,4 @@
 Makefile
 build-stamp
+orca-db-create.sh
+orca-db-install.sh

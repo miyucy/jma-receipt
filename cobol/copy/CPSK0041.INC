@@ -38,8 +38,11 @@
            03  SYS-0041-TBL.
       *最大伝票番号
                05  SYS-0041-DENPNUMMAX  PIC  9(08).
+      *最大伝票番号
+               05  SYS-0041-DENPNUMMAX-NYU
+                                        PIC  9(08).
       *予備
-           03                           PIC  X(492).
+           03                           PIC  X(484).
       *端末ＩＤ
            03  SYS-0041-TERMID          PIC  X(16).
       *オペーレータＩＤ

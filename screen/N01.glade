@@ -604,7 +604,7 @@
       <y>40</y>
       <width>80</width>
       <height>18</height>
-      <label>保険者番号　</label>
+      <label>保険者番号  </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -636,7 +636,7 @@
       <y>120</y>
       <width>140</width>
       <height>16</height>
-      <label>保険者名称　　　　</label>
+      <label>保険者名称        </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -652,7 +652,7 @@
       <y>570</y>
       <width>140</width>
       <height>18</height>
-      <label>記号　　　　　　　　</label>
+      <label>記号                </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -668,7 +668,7 @@
       <y>520</y>
       <width>140</width>
       <height>18</height>
-      <label>電話番号　　　　　　</label>
+      <label>電話番号            </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -684,7 +684,7 @@
       <y>470</y>
       <width>140</width>
       <height>18</height>
-      <label>番地方書　　　　　　</label>
+      <label>番地方書            </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -700,7 +700,7 @@
       <y>420</y>
       <width>140</width>
       <height>18</height>
-      <label>住所　　　　　　　　</label>
+      <label>住所                </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -716,7 +716,7 @@
       <y>370</y>
       <width>140</width>
       <height>18</height>
-      <label>郵便番号　　　　　　</label>
+      <label>郵便番号            </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -732,7 +732,7 @@
       <y>320</y>
       <width>140</width>
       <height>18</height>
-      <label>保険番号　　　　　　</label>
+      <label>保険番号            </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

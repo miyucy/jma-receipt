@@ -1,0 +1,26 @@
+name	orca36;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGI20";
+bind	"I20"		"OpenCOBOL"	"ORCGI20";
+bind	"I21"		"OpenCOBOL"	"ORCGI21";
+bind	"I2ERR"		"OpenCOBOL"	"ORCGI2ERR";
+bind	"I2ID1"		"OpenCOBOL"	"ORCGI2ID1";
+
+multiplex_group	orca36;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		I20;
+		I21;
+		I2ERR;
+                I2ID1;
+	};
+};
+
+#include "orcadb.inc"

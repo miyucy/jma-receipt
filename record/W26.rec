@@ -1,5 +1,8 @@
 W26	{
 	fixed6	{
+		B12	{
+			state	int;
+		};
 		CMB_BTU_NAME	{
 			BTU_NAME	{
 				value	varchar(23);
@@ -21,39 +24,65 @@ W26	{
 		};
 		CHK_NANBYO	{
 			value	bool;
+			state	int;
 		};
 		CHK_TOKUSYU	{
 			value	bool;
+			state	int;
 		};
 		CHK_YORYO1	{
 			value	bool;
+			state	int;
 		};
 		CHK_YORYO2	{
 			value	bool;
+			state	int;
 		};
 		CHK_YORYO3	{
 			value	bool;
+			state	int;
 		};
 		CHK_JIDO	{
 			value	bool;
+			state	int;
 		};
 		CHK_SEISIN	{
 			value	bool;
+			state	int;
 		};
 		CHK_KANGO1	{
 			value	bool;
+			state	int;
 		};
 		CHK_KANGO2	{
 			value	bool;
+			state	int;
 		};
 		CHK_KANGO3	{
 			value	bool;
+			state	int;
 		};
 		CHK_KANGO4	{
 			value	bool;
+			state	int;
 		};
 		CHK_KANGO5	{
 			value	bool;
+			state	int;
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		scrolledwindow1	{
+			YUKOYMDLST	{
+				count	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(9);
+					value2	varchar(9);
+				}	[100];
+				select	bool[100];
+			};
 		};
 	};
 };

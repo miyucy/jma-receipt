@@ -137,6 +137,26 @@
       *                                     RECEPRT-KEY10〜KEY17
       *  01.00.90    NACL-藤原    02/10/09  SEIKYU-KEY8〜KEY13
       *  01.00.91    NACL-藤原    02/10/17  SEIKYU-KEY14
+      *                                     RECEPRT-KEY10〜KEY17
+      *  NYUIN.01    NACL-太田    02/08/05  NYUINKHN-KEY,ALLの追加
+      *  NYUIN.02    NACL-太田    02/09/02  NYUINKHN-KEY2の追加
+      *  NYUIN.03    NACL-太田    02/09/10  PTNYUINRRK-KEY,KEY2,KEY3追加
+      *  NYUIN.04    NACL-太田    02/09/13  PTNYUINRRK-DEL1追加
+      *  NYUIN.04    NACL-太田    02/09/18  PTNYUINRRK-KEY4追加
+      *  NYUIN.05    NACL-太田    02/09/19  PTNYUINRRK-KEY5追加
+      *  NYUIN.06    NACL-太田    02/09/24  PTTAINFUKA-KEY,ALL追加
+      *  NYUIN.07    NACL-太田    02/09/13  PTTAINFUKA-DEL1追加
+      *  NYUIN.08    NACL-小豆沢  02/10/07  NYUINACCT追加
+      *                                     NYUINACT追加
+      *  NYUIN.09    NACL-太田    02/10/16  PTNYUINRRK-KEY6,7,8追加
+      *  NYUIN.10    NACL-太田    02/10/21  I001-KEY,ALL追加
+      *  NYUIN.11    NACL-太田    02/10/23  PTTAINFUKA-DEL2追加
+      *                                     PTNYUINRRK-DEL2追加
+      *  NYUIN.12    NACL-太田    02/10/25  JYURRK-KEY19追加
+      *  NYUIN.13    NACL-太田    02/10/30  JYURRK-KEY19追加
+      *  NYUIN.14    NACL-太田    02/10/31  PTNYUINRRK-KEY9追加
+      *  NYUIN.14    NACL-太田    02/11/01  SYUNOU-DEL2追加
+      *  NYUIN.15    NACL-太田    02/11/18  NYUKSNCHK-KEY追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -315,6 +335,7 @@
                WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY16"
                WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY17"
                WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY18"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY19"
                WHEN    "DBDELETE"      ALSO   "JYURRK-KEY"
                WHEN    "DBDELETE"      ALSO   "JYURRK-KEY2"
                WHEN    "DBDELETE"      ALSO   "JYURRK-KEY3"
@@ -331,6 +352,7 @@
                WHEN    "DBDELETE"      ALSO   "JYURRK-KEY16"
                WHEN    "DBDELETE"      ALSO   "JYURRK-KEY17"
                WHEN    "DBDELETE"      ALSO   "JYURRK-KEY18"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY19"
                    MOVE    PATH-TBL-JYURRK-KEY
                                        TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO   "JYURRK-UPD1"
@@ -491,6 +513,11 @@
                WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL1"
                    MOVE    PATH-TBL-SYUNOU-DEL1
                                        TO  WRK-PATH
+      *---- (NYUIN) LINE ADD START    --------------------------------
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL2"
+                   MOVE    PATH-TBL-SYUNOU-DEL2
+                                       TO  WRK-PATH
+      *---- (NYUIN) LINE ADD END      --------------------------------
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY"
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY2"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY"
@@ -715,6 +742,58 @@
                    MOVE    PATH-TBL-MONTHLYNUM-DEL1
                                        TO  WRK-PATH
       *------------------------------------
+      *---- (NYUIN) LINE ADD START    --------------------------------
+               WHEN    "DBDELETE"      ALSO   "PTNYUINRRK-DEL1"
+                   MOVE    PATH-TBL-PTNYUINRRK-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "PTNYUINRRK-DEL2"
+                   MOVE    PATH-TBL-PTNYUINRRK-DEL2
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "PTTAINFUKA-DEL1"
+                   MOVE    PATH-TBL-PTTAINFUKA-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "PTTAINFUKA-DEL2"
+                   MOVE    PATH-TBL-PTTAINFUKA-DEL2
+                                       TO  WRK-PATH
+      *---- (NYUIN) LINE ADD END      --------------------------------
+      *---- (NYUIN.08) LINE ADD START    -----------------------------
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY4"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY5"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY6"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY7"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY8"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY9"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY10"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY11"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY12"
+                   MOVE    PATH-TBL-NYUINACCT-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "NYUINACCT-DEL1"
+                   MOVE    PATH-TBL-NYUINACCT-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-UPD1"
+                   MOVE    PATH-TBL-NYUINACCT-UPD1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "NYUINACT-KEY"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACT-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACT-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACT-KEY4"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACT-KEY5"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACT-KEY6"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACT-KEY7"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACT-KEY8"
+                   MOVE    PATH-TBL-NYUINACT-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "NYUINACT-DEL11"
+                   MOVE    PATH-TBL-NYUINACT-DEL11
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "NYUINACT-DEL12"
+                   MOVE    PATH-TBL-NYUINACT-DEL12
+                                       TO  WRK-PATH
+      *---- (NYUIN.08) LINE ADD END      ------------------------------
                WHEN    ANY             ALSO   "SYSKANRI-KEY"
                    MOVE    PATH-TBL-SYSKANRI-KEY
                                        TO  WRK-PATH
@@ -971,6 +1050,9 @@
                WHEN    ANY             ALSO   "JYURRK-KEY18"
                    MOVE    PATH-TBL-JYURRK-KEY18
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY19"
+                   MOVE    PATH-TBL-JYURRK-KEY19
+                                       TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "JYURRK-ALL"
                    MOVE    PATH-TBL-JYURRK-ALL
@@ -1154,6 +1236,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-KEY11"
                    MOVE    PATH-TBL-SRYACCT-KEY11
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY12"
+                   MOVE    PATH-TBL-SRYACCT-KEY12
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY13"
+                   MOVE    PATH-TBL-SRYACCT-KEY13
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SRYACCT-ALL"
@@ -1891,6 +1979,132 @@
                    MOVE    PATH-TBL-YAKUJYO-ALL
                                        TO  WRK-PATH
       *---- (01.00.75) LINE ADD END   --------------------------------
+      *---- (NYUIN) LINE ADD START    --------------------------------
+               WHEN    ANY             ALSO   "NYUINKHN-KEY"
+                   MOVE    PATH-TBL-NYUINKHN-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINKHN-KEY2"
+                   MOVE    PATH-TBL-NYUINKHN-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINKHN-ALL"
+                   MOVE    PATH-TBL-NYUINKHN-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY2"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY3"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY4"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY5"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY6"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY7"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY7
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY8"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY8
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY9"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY9
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTTAINFUKA-KEY"
+                   MOVE    PATH-TBL-PTTAINFUKA-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTTAINFUKA-ALL"
+                   MOVE    PATH-TBL-PTTAINFUKA-ALL
+                                       TO  WRK-PATH
+      *---- (NYUIN) LINE ADD END       --------------------------------
+      *---- (NYUIN.08) LINE ADD START    -----------------------------
+               WHEN    ANY             ALSO   "NYUINACCT-KEY"
+                   MOVE    PATH-TBL-NYUINACCT-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY2"
+                   MOVE    PATH-TBL-NYUINACCT-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY3"
+                   MOVE    PATH-TBL-NYUINACCT-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY4"
+                   MOVE    PATH-TBL-NYUINACCT-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY5"
+                   MOVE    PATH-TBL-NYUINACCT-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY6"
+                   MOVE    PATH-TBL-NYUINACCT-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY7"
+                   MOVE    PATH-TBL-NYUINACCT-KEY7
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY8"
+                   MOVE    PATH-TBL-NYUINACCT-KEY8
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY9"
+                   MOVE    PATH-TBL-NYUINACCT-KEY9
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY10"
+                   MOVE    PATH-TBL-NYUINACCT-KEY10
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY11"
+                   MOVE    PATH-TBL-NYUINACCT-KEY11
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY12"
+                   MOVE    PATH-TBL-NYUINACCT-KEY12
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-ALL"
+                   MOVE    PATH-TBL-NYUINACCT-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACT-KEY"
+                   MOVE    PATH-TBL-NYUINACT-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACT-KEY2"
+                   MOVE    PATH-TBL-NYUINACT-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACT-KEY3"
+                   MOVE    PATH-TBL-NYUINACT-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACT-KEY4"
+                   MOVE    PATH-TBL-NYUINACT-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACT-KEY5"
+                   MOVE    PATH-TBL-NYUINACT-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACT-KEY6"
+                   MOVE    PATH-TBL-NYUINACT-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACT-KEY7"
+                   MOVE    PATH-TBL-NYUINACT-KEY7
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACT-KEY8"
+                   MOVE    PATH-TBL-NYUINACT-KEY8
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACT-ALL"
+                   MOVE    PATH-TBL-NYUINACT-ALL
+                                       TO  WRK-PATH
+      *---- (NYUIN.08) LINE ADD END      -----------------------------
+      *---- (NYUIN.10) LINE ADD START    -----------------------------
+               WHEN    ANY             ALSO   "I001-KEY"
+                   MOVE    PATH-VIEW-I001-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "I001-ALL"
+                   MOVE    PATH-VIEW-I001-ALL
+                                       TO  WRK-PATH
+      *---- (NYUIN.10) LINE ADD END      -----------------------------
+      *---- (NYUIN.15) LINE ADD START    -----------------------------
+               WHEN    ANY             ALSO   "NYUKSNCHK-KEY"
+                   MOVE    PATH-TBL-NYUKSNCHK-KEY
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-NYUKSNCHK-SEC
+      *---- (NYUIN.15) LINE ADD END      -----------------------------
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC
            END-EVALUATE
@@ -2166,6 +2380,27 @@
        2001-SEL-CHK-EXT.
            EXIT.
       *
+      *---- (NYUIN.15) LINE ADD START    -----------------------------
+      *****************************************************************
+      *     入院料加算チェックマスタを主キーより検索処理
+      *****************************************************************
+       2001-SEL-NYUKSNCHK-SEC    SECTION.
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-NYUKSNCHK-EXT
+           END-IF
+      *
+      *
+           MOVE    MCPDATA-REC         TO  NYUKSNCHK-REC
+      *
+           MOVE    ORC-DBYMD           TO  NYUKSNCHK-YUKOSTYMD
+                                           NYUKSNCHK-YUKOEDYMD
+           MOVE    NYUKSNCHK-REC       TO  MCPDATA-REC
+           .
+       2001-SEL-NYUKSNCHK-EXT.
+           EXIT.
+      *
+      *---- (NYUIN.15) LINE ADD END      -----------------------------
       *****************************************************************
       *     　　　入力セット編集検索処理
       *****************************************************************

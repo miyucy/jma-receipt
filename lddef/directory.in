@@ -4,9 +4,9 @@ name	orca;
 
 base	"@ORCA_DIR@";
 
-lddir	"=/lddef";
-bddir	"=/lddef";
-record	"=/record";
+lddir	"=/lddef:=/site-lib/lddef";
+bddir	"=/lddef:=/site-lib/lddef";
+record	"=/record:=/site-lib/record";
 
 multiplex_level	id;
 
@@ -26,6 +26,11 @@ ld	{
 	orca22	"localhost:9122";
 	orca23	"localhost:9123";
 	orca24	"localhost:9124";
+	orca31  "localhost:9131";
+	orca32  "localhost:9132";
+	orca33  "localhost:9133";
+	orca34  "localhost:9134";
+	orca36  "localhost:9136";
 	orca41	"localhost:9141";
 	orca42	"localhost:9142";
 	orca43	"localhost:9143";
@@ -45,7 +50,7 @@ ld	{
 bd	{
         orcabt;
         recept;
-#include	<../etc/kentan.inc>
+#include	<./kentan.inc>
 };
 
-#include	<../etc/dbgroup.inc>
+#include	<./dbgroup.inc>

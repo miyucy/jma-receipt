@@ -1,0 +1,31 @@
+O01	{
+	fixed17	{
+		SEIYM	{
+			value	varchar(7);
+		};
+		KIKAN01	{
+			value	varchar(21);
+		};
+		KIKAN02	{
+			value	varchar(21);
+		};
+		KIKAN03	{
+			value	varchar(21);
+		};
+		CHKBUTON05	{
+			value	bool;
+		};
+		CHKBUTON01	{
+			value	bool;
+		};
+		CHKBUTON02	{
+			value	bool;
+		};
+		CHKBUTON03	{
+			value	bool;
+		};
+		CHKBUTON04	{
+			value	bool;
+		};
+	};
+};

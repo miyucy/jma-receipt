@@ -41,7 +41,7 @@
                   06  S02-HKN        PIC X(17).
                   06  S02-FTNRATE    PIC X(5).
                   06  S02-SKYSTYMD   PIC X(11).
-                  06  S02-SRYYMD2    PIC X(11).
+                  06  S02-SRYYMD2    PIC X(15).
                   06  S02-SKYMONEY   PIC X(11).
                   06  S02-MISYUMONEY PIC X(11).
                   06  S02-DENPJTI    PIC X(12).
@@ -52,3 +52,8 @@
                 04  S02-SRYKALST      PIC X(21)   OCCURS  10 TIMES.
               03  S02-B03S.
                 04  S02-B03S-STATE   PIC S9(9)   BINARY.
+              03  S02-NYUGAIKBNCOMBO.
+                04  S02-NYUGAIKBN.
+                  05  S02-VALUE   PIC X(8).
+                04  S02-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
+                04  S02-NYUGAIKBN-ITEM    PIC X(8)    OCCURS  3 TIMES.

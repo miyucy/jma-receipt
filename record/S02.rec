@@ -32,7 +32,7 @@ S02	{
 					value4	varchar(17);
 					value5	varchar(5);
 					value6	varchar(11);
-					value7	varchar(11);
+					value7	varchar(15);
 					value8	varchar(11);
 					value9	varchar(11);
 					value10	varchar(12);
@@ -49,6 +49,13 @@ S02	{
 		};
 		B03S	{
 	           	state	int;
+		};
+		NYUGAIKBNCOMBO	{
+			NYUGAIKBN	{
+				value	varchar(8);
+			};
+			count	int;
+			item	varchar(8)[3];
 		};
 	};
 };

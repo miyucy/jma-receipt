@@ -1485,6 +1485,7 @@
                ELSE
                    MOVE    8       TO  SPA-GMN-W24-CUR
                    MOVE    "0004"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSNFLG (01)
                    GO  TO  4100-A200-CHK-EXT
                END-IF
            END-IF
@@ -1507,6 +1508,7 @@
                ELSE
                    MOVE    9       TO  SPA-GMN-W24-CUR
                    MOVE    "0004"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSNFLG (02)
                    GO  TO  4100-A201-CHK-EXT
                END-IF
            END-IF
@@ -1522,6 +1524,7 @@
                ELSE
                    MOVE    10      TO  SPA-GMN-W24-CUR
                    MOVE    "0004"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSNFLG (03)
                    GO  TO  4100-A201-CHK-EXT
                END-IF
            END-IF
@@ -1540,6 +1543,7 @@
                ELSE
                    MOVE    11      TO  SPA-GMN-W24-CUR
                    MOVE    "0004"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSNFLG (04)
                    GO  TO  4100-A202-CHK-EXT
                END-IF
            END-IF
@@ -1558,6 +1562,7 @@
                ELSE
                    MOVE    12      TO  SPA-GMN-W24-CUR
                    MOVE    "0004"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSNFLG (05)
                    GO  TO  4100-A203-CHK-EXT
                END-IF
            END-IF
@@ -1576,6 +1581,7 @@
                ELSE
                    MOVE    13      TO  SPA-GMN-W24-CUR
                    MOVE    "0004"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSNFLG (06)
                    GO  TO  4100-A204-CHK-EXT
                END-IF
            END-IF
@@ -1588,6 +1594,7 @@
                ELSE
                    MOVE    14      TO  SPA-GMN-W24-CUR
                    MOVE    "0004"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSNFLG (07)
                    GO  TO  4100-A204-CHK-EXT
                END-IF
            END-IF
@@ -1606,6 +1613,7 @@
                ELSE
                    MOVE    15      TO  SPA-GMN-W24-CUR
                    MOVE    "0004"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSNFLG (08)
                    GO  TO  4100-A207-CHK-EXT
                END-IF
            END-IF
@@ -1633,6 +1641,7 @@
                ELSE
                    MOVE    20      TO  SPA-GMN-W24-CUR
                    MOVE    "0004"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSNFLG (13)
                    GO  TO  4100-A230-CHK-EXT
                END-IF
            END-IF

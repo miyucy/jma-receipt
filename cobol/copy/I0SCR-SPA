@@ -1,0 +1,693 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      *****************************************************************
+       01  SPA-I0FREE.
+      *
+      *  入退院登録メイン画面
+         03  SPA-I01.
+           05  SPA-I01-AREA.
+             07  SPA-GMN-I01-PAGE                  PIC 9(02).
+             07  SPA-GMN-I01-MAX                   PIC 9(03).
+             07  SPA-GMN-I01-CUR                   PIC 9(03).
+             07  SPA-GMN-I01-KBN                   PIC X(02).
+      *      07  SPA-GMN-I01-KJNYMD                PIC X(08).
+      *      エラー情報退避テーブル（患者番号・処理区分）
+             07  SPA-GMN-I01-ERRCD-TBL.
+               09  SPA-GMN-I01-ERRCD               PIC X(04)
+                                                   OCCURS 2.
+      *      画面情報領域
+             07  SPA-GMN-I01-AREA.
+      *        画面ヘッダ部領域
+               09  SPA-GMN-I01-HEAD-AREA.
+      *          患者番号
+                 11  SPA-GMN-I01-PTNUM             PIC X(20).
+      *          患者氏名
+                 11  SPA-GMN-I01-NAME              PIC X(60).
+      *          患者性別
+                 11  SPA-GMN-I01-SEX               PIC X(04).
+      *          患者誕生日
+                 11  SPA-GMN-I01-BIRTHDAY          PIC X(09).
+      *          患者年齢
+                 11  SPA-GMN-I01-AGE               PIC X(07).
+      *          処理区分
+                 11  SPA-GMN-I01-SYORIKBN.
+                   13  SPA-GMN-I01-SYORIKBN-CD     PIC X(02).
+                   13                              PIC X(01).
+                   13  SPA-GMN-I01-SYORIKBN-NM     PIC X(20).
+      *          異動日
+                 11  SPA-GMN-I01-IDOYMD            PIC X(09).
+                 11  SPA-GMN-I01-IDOYMD-STT        PIC S9(9)   BINARY.
+      *          前回異動日
+                 11  SPA-GMN-I01-MAEIDOYMD         PIC X(09).
+      *
+      *        画面入力部領域
+               09  SPA-GMN-I01-INPUT-AREA.
+      *
+      *          他院歴作成ボタン（状態）
+                 11  SPA-GMN-I01-B07-STT           PIC S9(9)   BINARY.
+      *          他院歴修正ボタン（状態）
+                 11  SPA-GMN-I01-B08-STT           PIC S9(9)   BINARY.
+      *          登録ボタン（状態）
+                 11  SPA-GMN-I01-B12-STT           PIC S9(9)   BINARY.
+      *          病室番号
+                 11  SPA-GMN-I01-BRMNUM            PIC X(6).
+                 11  SPA-GMN-I01-BRMNUM-STT        PIC S9(9)   BINARY.
+      *          病棟名称
+                 11  SPA-GMN-I01-BTUNAME.
+                   13 SPA-GMN-I01-BTUNAME-CD       PIC X(02).
+                   13                              PIC X(01).
+                   13 SPA-GMN-I01-BTUNAME-NM       PIC X(20).
+                 11  SPA-GMN-I01-BTUNAME-STT       PIC S9(9)   BINARY.
+      *          室料差額
+                 11  SPA-GMN-I01-SAGAKU.
+                   13  SPA-GMN-I01-SAGAKU-CD       PIC X(02).
+                   13                              PIC X(01).
+                   13  SPA-GMN-I01-SAGAKU-NM       PIC X(20).
+                 11  SPA-GMN-I01-SAGAKU-STT        PIC S9(9)   BINARY.
+      *          入院日
+                 11  SPA-GMN-I01-NYUINYMD          PIC X(09).
+                 11  SPA-GMN-I01-NYUINYMD-STT      PIC S9(9)   BINARY.
+      *          入院科
+                 11  SPA-GMN-I01-NYUINKA.
+                   13  SPA-GMN-I01-NYUINKA-CD      PIC X(02).
+                   13                              PIC X(01).
+                   13  SPA-GMN-I01-NYUINKA-NM      PIC X(24).
+                 11  SPA-GMN-I01-NYUINKA-STT       PIC S9(9)   BINARY.
+      *          初回
+                 11  SPA-GMN-I01-SHOKAI.
+                   13  SPA-GMN-I01-SHOKAI-CD       PIC X(01).
+                   13                              PIC X(01).
+                   13  SPA-GMN-I01-SHOKAI-NM       PIC X(06).
+                 11  SPA-GMN-I01-SHOKAI-STT        PIC S9(9)   BINARY.
+      *          初回番号
+                 11  SPA-GMN-I01-SHONUM            PIC  9(3).
+                 11  SPA-GMN-I01-SHONUM-STT        PIC S9(9)   BINARY.
+      *          初回入院日
+                 11  SPA-GMN-I01-LBL-SHONYUINYMD   PIC X(16).
+      *          退院日
+                 11  SPA-GMN-I01-TAIINYMD          PIC X(09).
+                 11  SPA-GMN-I01-TAIINYMD-STT      PIC S9(9)   BINARY.
+      *          担当医
+                 11  SPA-GMN-I01-DR-TBL.
+                   13 SPA-GMN-I01-DR-OCC           OCCURS  3.
+                     15  SPA-GMN-I01-DR.
+                       17  SPA-GMN-I01-DR-CD       PIC X(04).
+                       17                          PIC X(01).
+                       17  SPA-GMN-I01-DR-NM       PIC X(22).
+                     15  SPA-GMN-I01-DR-STT        PIC S9(9)   BINARY.
+      *          保険組み合わせ
+                 11  SPA-GMN-I01-HKNCOMBI.
+                   13  SPA-GMN-I01-HKNCOMBI-CD     PIC X(04).
+                   13                              PIC X(01).
+                   13  SPA-GMN-I01-HKNCOMBI-NM     PIC X(46).
+                 11  SPA-GMN-I01-HKNCOMBI-STT      PIC S9(9)   BINARY.
+      *          特定入院
+                 11  SPA-GMN-I01-TOKNYUIN.
+                   13  SPA-GMN-I01-TOKNYUIN-CD     PIC X(02).
+                   13                              PIC X(01).
+                   13  SPA-GMN-I01-TOKNYUIN-NM     PIC X(48).
+                 11  SPA-GMN-I01-TOKNYUIN-STT      PIC S9(9)   BINARY.
+      *          前受け金
+                 11  SPA-GMN-I01-MAEUKE            PIC S9(5).
+                 11  SPA-GMN-I01-MAEUKE-STT        PIC S9(9)   BINARY.
+      *          定期請求
+                 11  SPA-GMN-I01-SEIKYU.
+                   13  SPA-GMN-I01-SEIKYU-CD       PIC X(01).
+                   13                              PIC X(01).
+                   13  SPA-GMN-I01-SEIKYU-NM       PIC X(22).
+                 11  SPA-GMN-I01-SEIKYU-STT        PIC S9(9)   BINARY.
+      *          検索時患者表示
+                 11  SPA-GMN-I01-DISPKBN.
+                   13  SPA-GMN-I01-DISPKBN-CD      PIC X(02).
+                   13                              PIC X(01).
+                   13  SPA-GMN-I01-DISPKBN-NM      PIC X(08).
+                 11  SPA-GMN-I01-DISPKBN-STT       PIC S9(9)   BINARY.
+      *          選択番号
+                 11  SPA-GMN-I01-SELNUM            PIC S9(2).
+      *        入院歴リスト領域
+               09  SPA-GMN-I01-NYUREKILST-AREA.
+                 11  SPA-GMN-I01-NYUREKILST-CNT    PIC S9(9)   BINARY.
+                 11  SPA-GMN-I01-NYUREKILST-ITM    OCCURS  50.
+      *            選択番号
+                   13  SPA-GMN-I01-TSELNUM         PIC 9(2).
+      *            初回
+                   13  SPA-GMN-I01-TSHOKAI         PIC X(2).
+      *            初回番号
+                   13  SPA-GMN-I01-TSHONUM         PIC 9(03).
+      *            病棟
+                   13  SPA-GMN-I01-TBTUNAME        PIC X(20).
+      *            病室
+                   13  SPA-GMN-I01-TBRMNUM         PIC X(6).
+      *            入院日
+                   13  SPA-GMN-I01-TNYUINYMD       PIC X(9).
+      *            退院日
+                   13  SPA-GMN-I01-TTAIINYMD       PIC X(9).
+      *            入院科
+                   13  SPA-GMN-I01-TNYUINKA        PIC X(20).
+      *            病名
+                   13  SPA-GMN-I01-TBYOMEI         PIC X(40).
+      *            転記
+                   13  SPA-GMN-I01-TTENKI          PIC X(4).
+      *            日数
+                   13  SPA-GMN-I01-TNISSU          PIC X(5).
+      *            通算
+                   13  SPA-GMN-I01-TTUSAN          PIC X(5).
+                 11  SPA-GMN-I01-NYUREKILST-SEL    PIC 9(05).
+      *        ヘッダ内部領域
+               09  SPA-NAI-I01-HEAD-AREA.
+      *          患者ＩＤ
+                 11  SPA-NAI-I01-PTID              PIC 9(10).
+      *          患者カナ氏名
+                 11  SPA-NAI-I01-KANANAME          PIC X(60).
+      *          患者誕生日（西暦）
+                 11  SPA-NAI-I01-BIRTHDAY          PIC X(08).
+      *          異動日（西暦）
+                 11  SPA-NAI-I01-IDOYMD            PIC X(08).
+      *          前回異動日（西暦）
+                 11  SPA-NAI-I01-MAEIDOYMD         PIC X(08).
+      *          入力データ入院履歴番号
+                 11  SPA-NAI-I01-PTRRKNUM          PIC 9(03).
+      *          入力データ入院履歴枝番号
+                 11  SPA-NAI-I01-PTRRKEDANUM       PIC 9(03).
+      *        入力領域内部領域
+               09  SPA-NAI-I01-INPUT-AREA.
+      *          他院歴表示フラグ（1...他院歴表示中/0：その他）
+                 11  SPA-NAI-I01-TAINRRK-FLG       PIC 9(01).
+      *          病室番号
+                 11  SPA-NAI-I01-BRMNUM-MAE        PIC X(6).
+                 11  SPA-NAI-I01-BRMNUM-ERR        PIC X(4).
+                 11  SPA-NAI-I01-BRMNUM-MOT        PIC X(6).
+      *          病棟名称
+                 11  SPA-NAI-I01-BTUNAME-MAE       PIC X(23).
+                 11  SPA-NAI-I01-BTUNAME-ERR       PIC X(4).
+                 11  SPA-NAI-I01-BTUNAME-MOT       PIC X(23).
+      *          入院日（西暦）
+                 11  SPA-NAI-I01-NYUINYMD          PIC X(08).
+      *          入院科
+                 11  SPA-NAI-I01-NYUINKA-MOT       PIC X(27).
+      *          退院日（西暦）
+                 11  SPA-NAI-I01-TAIINYMD          PIC X(08).
+      *          保険組み合わせ負担率
+                 11  SPA-NAI-I01-FTNRATE           PIC X(05).
+      *          特定入院料
+                 11  SPA-NAI-I01-TOKNYUIN-ORG.
+                   13  SPA-NAI-I01-TOKNYUIN-ORG-KBN
+                                                   PIC X(01).
+                   13  SPA-NAI-I01-TOKNYUIN-ORG-CD
+                                                   PIC X(02).
+      *        入院歴リスト内部領域
+               09  SPA-NAI-I01-NYUREKILST-AREA.
+                 11  SPA-NAI-I01-NYUREKILST-ITM    OCCURS  50.
+      *            自院他院フラグ
+                   13  SPA-NAI-I01-TZITA-FLG       PIC 9(01).
+      *            入院履歴番号
+                   13  SPA-NAI-I01-TRRKNUM         PIC 9(03).
+      *            入院日（西暦）
+                   13  SPA-NAI-I01-TNYUINYMD       PIC X(8).
+      *            退院日（西暦）
+                   13  SPA-NAI-I01-TTAIINYMD       PIC X(8).
+      *            他院通算対象日数
+                   13  SPA-NAI-I01-TTAINTAISYO     PIC 9(5).
+      *        画面コンボデータ領域
+               09  SPA-GMN-I01-CMB-DAT-AREA.
+      *          処理区分コンボ
+                 11  SPA-GMN-I01-CMB-SYORIKBN.
+                   13  SPA-GMN-I01-SYORIKBN-CNT    PIC S9(9)   BINARY.
+                   13  SPA-GMN-I01-SYORIKBN-ITM    PIC X(23)
+                                           OCCURS  10
+                                           INDEXED BY  CMB-IDX01.
+      *          病棟番号コンボ
+                 11  SPA-GMN-I01-CMB-BTUNAME.
+                   13  SPA-GMN-I01-BTUNAME-CNT     PIC S9(9)   BINARY.
+                   13  SPA-GMN-I01-BTUNAME-ITM-OCC
+                                           OCCURS  50
+                                           INDEXED BY  CMB-IDX02.
+                       15  SPA-GMN-I01-BTUNAME-ITM PIC X(23).
+      *                ITM2には同一病室名の病棟別の室料差額を退避する
+                       15  SPA-GMN-I01-BTUNAME-ITM2
+                                                   PIC X(02).
+                   13  SPA-GMN-I01-BTUNAME-ITM-STT
+                                                   PIC S9(9)   BINARY.
+      *          室料差額コンボ
+                 11  SPA-GMN-I01-CMB-SAGAKU.
+                   13  SPA-GMN-I01-SAGAKU-CNT      PIC S9(9)   BINARY.
+                   13  SPA-GMN-I01-SAGAKU-ITM      PIC X(23)
+                                           OCCURS  20
+                                           INDEXED BY  CMB-IDX03.
+                   13  SPA-GMN-I01-SAGAKU-ITM-STT  PIC S9(9)   BINARY.
+      *          入院科コンボ
+                 11  SPA-GMN-I01-CMB-NYUINKA.
+                   13  SPA-GMN-I01-NYUINKA-CNT     PIC S9(9)   BINARY.
+                   13  SPA-GMN-I01-NYUINKA-ITM     PIC X(27)
+                                           OCCURS  30
+                                           INDEXED BY  CMB-IDX04.
+                   13  SPA-GMN-I01-NYUINKA-ITM-STT PIC S9(9)   BINARY.
+      *          初回コンボ
+                 11  SPA-GMN-I01-CMB-SHOKAI.
+                   13  SPA-GMN-I01-SHOKAI-CNT      PIC S9(9)   BINARY.
+                   13  SPA-GMN-I01-SHOKAI-ITM      PIC X(8)
+                                           OCCURS  5
+                                           INDEXED BY  CMB-IDX05.
+                   13  SPA-GMN-I01-SHOKAI-ITM-STT  PIC S9(9)   BINARY.
+      *          担当医コンボ
+                 11  SPA-GMN-I01-CMB-DR.
+                   13 SPA-GMN-I01-CMB-DR-OCC       OCCURS  3.
+                     15  SPA-GMN-I01-DR-CNT        PIC S9(9)   BINARY.
+                     15  SPA-GMN-I01-DR-ITM        PIC X(27)
+                                           OCCURS  20
+                                           INDEXED BY  CMB-IDX06.
+                     15  SPA-GMN-I01-DR-ITM-STT    PIC S9(9)   BINARY.
+      *          保険組み合わせコンボ
+                 11  SPA-GMN-I01-CMB-HKNCOMBI.
+                   13  SPA-GMN-I01-HKNCOMBI-CNT    PIC S9(9)   BINARY.
+                   13  SPA-GMN-I01-HKNCOMBI-ITM-OCC
+                                            OCCURS  30
+                                           INDEXED BY  CMB-IDX07.
+                     15  SPA-GMN-I01-HKNCOMBI-ITM  PIC X(51).
+                     15  SPA-GMN-I01-HKNCOMBI-ITM2 PIC X(05).
+                                           
+                   13  SPA-GMN-I01-HKNCOMBI-ITM-STT
+                                                   PIC S9(9)   BINARY.
+      *          特定入院コンボ
+                 11  SPA-GMN-I01-CMB-TOKNYUIN.
+                   13  SPA-GMN-I01-TOKNYUIN-CNT    PIC S9(9)   BINARY.
+                   13  SPA-GMN-I01-TOKNYUIN-ITM-OCC
+                                           OCCURS  30
+                                           INDEXED BY  CMB-IDX08.
+                     15    SPA-GMN-I01-TOKNYUIN-ITM
+                                                   PIC X(51).
+      *              ITM2には特定入院料の正式コードを設定する。
+      *              (先頭１バイトに特定入院料の区分を付加）
+                     15    SPA-GMN-I01-TOKNYUIN-ITM2
+                                                   PIC X(3).
+                   13  SPA-GMN-I01-TOKNYUIN-ITM-STT
+                                                   PIC S9(9)   BINARY.
+      *          定期請求コンボ
+                 11  SPA-GMN-I01-CMB-SEIKYU.
+                   13  SPA-GMN-I01-SEIKYU-CNT      PIC S9(9)   BINARY.
+                   13  SPA-GMN-I01-SEIKYU-ITM      PIC X(24)
+                                           OCCURS  5
+                                           INDEXED BY  CMB-IDX09.
+                   13  SPA-GMN-I01-SEIKYU-ITM-STT  PIC S9(9)   BINARY.
+      *          検索時患者表示コンボ
+                 11  SPA-GMN-I01-CMB-DISPKBN.
+                   13  SPA-GMN-I01-DISPKBN-CNT     PIC S9(9)   BINARY.
+                   13  SPA-GMN-I01-DISPKBN-ITM     PIC X(11)
+                                           OCCURS  5
+                                           INDEXED BY  CMB-IDX10.
+                   13  SPA-GMN-I01-DISPKBN-ITM-STT PIC S9(9)   BINARY.
+      *
+      *  入院歴表示画面
+         03  SPA-I02.
+           05  SPA-I02-AREA.
+             07  SPA-GMN-I02-PAGE                  PIC 9(02).
+             07  SPA-GMN-I02-MAX                   PIC 9(03).
+             07  SPA-GMN-I02-CUR                   PIC 9(03).
+             07  SPA-GMN-I02-KBN                   PIC X(02).
+             07  SPA-GMN-I02-AREA.
+      *
+      *        画面入力部領域
+               09  SPA-GMN-I02-INPUT-AREA.
+      *          初回
+                 11  SPA-GMN-I02-SHOKAI            PIC X(4).
+      *          状態
+                 11  SPA-GMN-I02-JYOTAI            PIC X(20).
+      *          病棟名
+                 11  SPA-GMN-I02-BTUNAME           PIC X(20).
+      *          病室番号
+                 11  SPA-GMN-I02-BRMNUM            PIC X(6).
+      *          入院日
+                 11  SPA-GMN-I02-NYUINYMD          PIC X(9).
+      *          退院日
+                 11  SPA-GMN-I02-TAIINYMD          PIC X(9).
+      *          入院科
+                 11  SPA-GMN-I02-NYUINKA           PIC X(20).
+      *          主治医
+                 11  SPA-GMN-I02-DR                PIC X(24).
+      *          算定
+                 11  SPA-GMN-I02-SANTEI            PIC X(60).
+      *          入外区分
+                 11  SPA-GMN-I02-NYUGAI.
+                     13  SPA-GMN-I02-NYUGAI-CD     PIC X(01).
+                     13                            PIC X(01).
+                     13  SPA-GMN-I02-NYUGAI-NM     PIC X(06).
+                  11 SPA-GMN-I02-NYUGAI-STT        PIC S9(9)   BINARY.
+      *
+      *        転科（転棟・転室）履歴
+               09  SPA-GMN-I02-TENKALST-AREA.
+                 11  SPA-GMN-I02-TENKALST-CNT      PIC S9(9)   BINARY.
+                 11  SPA-GMN-I02-TENKALST-ITM      OCCURS  100.
+      *            入院科
+                   13  SPA-GMN-I02-TNYUINKA        PIC X(20).
+      *            病棟名
+                   13  SPA-GMN-I02-TBTUNAME        PIC X(20).
+      *            病室番号
+                   13  SPA-GMN-I02-TBRMNUM         PIC X(6).
+      *            転入日
+                   13  SPA-GMN-I02-TTENNYUYMD      PIC X(9).
+      *            転出日
+                   13  SPA-GMN-I02-TTENSTUYMD      PIC X(9).
+      *            日数
+                   13  SPA-GMN-I02-TNISSU          PIC X(5).
+      *            通算日数
+                   13  SPA-GMN-I02-TTUSAN          PIC X(5).
+                 11  SPA-GMN-I02-TENKALST-SEL      PIC 9(05).
+      *
+      *        病名情報
+               09  SPA-GMN-I02-BYOMEILST.
+                 11  SPA-GMN-I02-BYOMEILST-CNT     PIC S9(9)   BINARY.
+                 11  SPA-GMN-I02-BYOMEILST-ITM     OCCURS  500 TIMES.
+      *            主病名区分
+                   13  SPA-GMN-I02-TSYUBYO         PIC X(2).
+      *            入外区分
+                   13  SPA-GMN-I02-TNYUGAI         PIC X(4).
+      *            診療科
+                   13  SPA-GMN-I02-TSRYKA          PIC X(20).
+      *            病名
+                   13  SPA-GMN-I02-TBYOMEI         PIC X(50).
+      *            開始日
+                   13  SPA-GMN-I02-TSTSRYYMD       PIC X(9).
+      *            転帰日
+                   13  SPA-GMN-I02-TTENKIYMD       PIC X(9).
+      *            転帰理由
+                   13  SPA-GMN-I02-TTENKI          PIC X(4).
+                 11  SPA-GMN-I02-BYOMEILST-SEL     PIC 9(05).
+      *
+      *        画面入力部内部領域
+               09  SPA-NAI-I02-INPUT-AREA.
+      *          他院歴表示フラグ（1...他院歴表示中/0：その他）
+                 11  SPA-NAI-I02-TAINRRK-FLG       PIC 9(01).
+      *          入院日（西暦）
+                 11  SPA-NAI-I02-NYUINYMD          PIC X(08).
+      *          退院日（西暦）
+                 11  SPA-NAI-I02-TAIINYMD          PIC X(08).
+      *        転科（転棟・転室）履歴内部領域
+               09  SPA-NAI-I02-TENKALST-AREA.
+                 11  SPA-NAI-I02-TENKALST-ITM      OCCURS  100.
+      *            転入日
+                   13  SPA-NAI-I02-TTENNYUYMD      PIC X(8).
+      *            転出日
+                   13  SPA-NAI-I02-TTENSTUYMD      PIC X(8).
+      *
+      *        画面コンボデータ領域
+               09  SPA-GMN-I02-CMB-DAT-AREA.
+                 11  SPA-GMN-I02-CMB-NYUGAI.
+                   13  SPA-GMN-I02-NYUGAI-CNT      PIC S9(9)
+                                                   BINARY.
+                   13  SPA-GMN-I02-NYUGAI-ITM      PIC X(8)
+                                           OCCURS  5
+                                           INDEXED BY  CMB-IDX14.
+                   13  SPA-GMN-I02-NYUGAI-ITM-STT  PIC S9(9)   BINARY.
+      *  入院歴作成画面
+         03  SPA-I03.
+           05  SPA-I03-AREA.
+             07  SPA-GMN-I03-PAGE                  PIC 9(02).
+             07  SPA-GMN-I03-MAX                   PIC 9(03).
+             07  SPA-GMN-I03-CUR                   PIC 9(03).
+             07  SPA-GMN-I03-KBN                   PIC X(02).
+             07  SPA-GMN-I03-AREA.
+      *
+      *        画面入力部領域
+               09  SPA-GMN-I03-INPUT-AREA.
+                 11  SPA-GMN-I03-B04-STT           PIC S9(9)   BINARY.
+      *          初回
+                 11  SPA-GMN-I03-SHOKAI.
+                     13  SPA-GMN-I03-SHOKAI-CD     PIC X(01).
+                     13                            PIC X(01).
+                     13  SPA-GMN-I03-SHOKAI-NM     PIC X(06).
+                 11  SPA-GMN-I03-SHOKAI-STT        PIC S9(9)   BINARY.
+                 11  SPA-GMN-I03-SHONUM            PIC S9(3).
+                 11  SPA-GMN-I03-SHONUM-STT        PIC S9(9)   BINARY.
+      *          コメント
+                 11  SPA-GMN-I03-COMMENT           PIC X(20).
+      *          入院日
+                 11  SPA-GMN-I03-NYUINYMD          PIC X(09).
+      *          退院日
+                 11  SPA-GMN-I03-TAIINYMD          PIC X(09).
+      *          通算対象日数
+                 11  SPA-GMN-I03-TAISYONISSU       PIC S9(4).
+      *          病名
+                 11  SPA-GMN-I03-BYOMEI            PIC X(50)
+                                                   OCCURS  5.
+      *          入院基本料
+                 11  SPA-GMN-I03-KHNRYO            PIC X(50).
+      *
+      *        画面入力部領域
+               09  SPA-NAI-I03-INPUT-AREA.
+      *          入院日
+                 11  SPA-NAI-I03-NYUINYMD          PIC X(08).
+                 11  SPA-NAI-I03-NYUINYMD-MAE      PIC X(09).
+                 11  SPA-NAI-I03-NYUINYMD-ERRCD    PIC X(04).
+      *          退院日
+                 11  SPA-NAI-I03-TAIINYMD          PIC X(08).
+                 11  SPA-NAI-I03-TAIINYMD-MAE      PIC X(09).
+                 11  SPA-NAI-I03-TAIINYMD-ERRCD    PIC X(04).
+      *
+      *        画面コンボデータ領域
+               09  SPA-GMN-I03-CMB-DAT-AREA.
+                 11  SPA-GMN-I03-CMB-SHOKAI.
+                   13  SPA-GMN-I03-SHOKAI-CNT      PIC S9(9)
+                                                   BINARY.
+                   13  SPA-GMN-I03-SHOKAI-ITM PIC X(8)
+                                           OCCURS  2
+                                           INDEXED BY  CMB-IDX11.
+                 11  SPA-GMN-I03-SHOKAI-ITM-STT    PIC S9(9)   BINARY.
+      *
+      *    画面スパ領域
+         03  SPA-I04.
+           05  SPA-I04-AREA.
+               07  SPA-GMN-I04-PAGE                  PIC 9(02).
+               07  SPA-GMN-I04-LINE                  PIC 9(02).
+               07  SPA-GMN-I04-MAX                   PIC 9(02).
+               07  SPA-GMN-I04-CUR                   PIC 9(03).
+               07  SPA-GMN-I04-AREA.
+                   09  SPA-GMN-I04-HEAD-AREA.
+      *                患者番号
+                       11  SPA-GMN-I04-PTNUM         PIC X(20).
+      *                患者カナ氏名
+                       11  SPA-GMN-I04-KANANAME      PIC X(60).
+      *                患者氏名
+                       11  SPA-GMN-I04-NAME          PIC X(60).
+      *                患者性別
+                       11  SPA-GMN-I04-SEX           PIC X(04).
+      *                患者誕生日
+                       11  SPA-GMN-I04-BIRTHDAY      PIC X(09).
+      *                患者年齢
+                       11  SPA-GMN-I04-AGE           PIC X(07).
+      *                保険組み合わせ
+                       11  SPA-GMN-I04-HKNCOMBI      PIC X(60).
+      *                負担率
+                       11  SPA-GMN-I04-FTNRATE       PIC X(05).
+      *                入院科
+                       11  SPA-GMN-I04-NYUINKA       PIC X(10).
+                   09  SPA-GMN-I04-INPUT-AREA.
+      *                発行日
+                       11  SPA-GMN-I04-HAKYMD        PIC X(09).
+      *                入院日
+                       11  SPA-GMN-I04-NYUINYMD      PIC X(09).
+      *                退院日
+                       11  SPA-GMN-I04-TAIINYMD      PIC X(09).
+      *                診療料
+                       11  SPA-GMN-I04-HKNRYO        PIC 9(07)
+                                                     OCCURS  12.
+                       11  SPA-GMN-I04-SEIKYU-AREA.
+      *                    保険適用外診療料
+                           13  SPA-GMN-I04-TGMONEY       PIC 9(07)
+                                                         OCCURS  12.
+      *
+      *                    保険適用分
+                           13  SPA-GMN-I04-HKNTEKI       PIC 9(10).
+      *                    食事療養費
+                           13  SPA-GMN-I04-RYOYOHI-SKJ   PIC 9(07).
+      *                    食事負担額
+                           13  SPA-GMN-I04-SKYMONEY-SKJ  PIC 9(07).
+      *                    老人一部負担金
+                           13  SPA-GMN-I04-ROUFTN        PIC 9(07).
+      *                    公費一部負担金
+                           13  SPA-GMN-I04-KOHFTN        PIC 9(07).
+      *                    自費１
+                           13  SPA-GMN-I04-JIHI1         PIC 9(07).
+      *                    自費２
+                           13  SPA-GMN-I04-JIHI2         PIC 9(07).
+      *                    自費３
+                           13  SPA-GMN-I04-JIHI3         PIC 9(07).
+      *                    自費４
+                           13  SPA-GMN-I04-JIHI4         PIC 9(07).
+      *                    自費５
+                           13  SPA-GMN-I04-JIHI5         PIC 9(07).
+      *                    自費計
+                           13  SPA-GMN-I04-JIHIKEI       PIC 9(07).
+      *                    自費消費税あり１
+                           13  SPA-GMN-I04-JIHITAX1      PIC 9(07).
+      *                    自費消費税あり２
+                           13  SPA-GMN-I04-JIHITAX2      PIC 9(07).
+      *                    自費消費税あり３
+                           13  SPA-GMN-I04-JIHITAX3      PIC 9(07).
+      *                    自費消費税あり４
+                           13  SPA-GMN-I04-JIHITAX4      PIC 9(07).
+      *                    自費消費税あり５
+                           13  SPA-GMN-I04-JIHITAX5      PIC 9(07).
+      *                    自費消費税あり計
+                           13  SPA-GMN-I04-JIHITAXKEI    PIC 9(07).
+      *                    自費消費税
+                           13  SPA-GMN-I04-JIHIZEI       PIC 9(07).
+      *                    保険適用外
+                           13  SPA-GMN-I04-HKNGAI        PIC 9(07).
+      *                    一部負担金計
+                           13  SPA-GMN-I04-ICHIFTN       PIC 9(07).
+      *                    今回請求額
+                           13  SPA-GMN-I04-SEIKYU        PIC S9(07).
+      *                    今回入金額
+                           13  SPA-GMN-I04-NYUKIN        PIC S9(07).
+                           13  SPA-GMN-I04-NYUKIN-X      PIC X(10).
+                           13  SPA-GMN-I04-NYUKIN-STT    PIC S9(9)
+                                                         BINARY.
+      *                    合計請求額
+                           13  SPA-GMN-I04-SEIGOK        PIC S9(07).
+      *
+      *                    労災初診
+                           13  SPA-GMN-I04-ROUSYOSIN     PIC S9(07).
+      *                    労災再診
+                           13  SPA-GMN-I04-ROUSAISIN     PIC S9(07).
+      *                    労災指導
+                           13  SPA-GMN-I04-ROUSIDOU      PIC S9(07).
+      *                    労災その他
+                           13  SPA-GMN-I04-ROUETC        PIC S9(07).
+      *                    自費名称
+                           13  SPA-GMN-I04-JIHIMSG       PIC X(20)
+                                                         OCCURS   5.
+      *                    室料差額
+                           13  SPA-GMN-I04-RMSAGAKU      PIC S9(07).
+      *                    調整金
+                           13  SPA-GMN-I04-CHOSEI        PIC S9(07).
+                           13  SPA-GMN-I04-CHOSEI-X      PIC X(10).
+                           13  SPA-GMN-I04-CHOSEI-STT    PIC S9(9)
+                                                         BINARY.
+      *                前回未収額（外来）
+                       11  SPA-GMN-I04-ZENMISYU-GAI  PIC S9(07).
+      *                前回未収額（入院）
+                       11  SPA-GMN-I04-ZENMISYU-NYU  PIC S9(07).
+      *                選択番号
+                       11  SPA-GMN-I04-SELNUM        PIC 9(02).
+      *                請求書兼領収書発行
+                       11  SPA-GMN-I04-SKYPRTOUT.
+                           13   SPA-GMN-I04-SKYPRTOUT-CD
+                                                     PIC X(01).
+                           13                        PIC X(01).
+                           13   SPA-GMN-I04-SKYPRTOUT-NM
+                                                     PIC X(18).
+      *                退院証明書発行
+                       11  SPA-GMN-I04-TAIPRTOUT.
+                           13   SPA-GMN-I04-TAIPRTOUT-CD
+                                                     PIC X(01).
+                           13                        PIC X(01).
+                           13   SPA-GMN-I04-TAIPRTOUT-NM
+                                                     PIC X(18).
+      *                主治医氏名
+                       11  SPA-GMN-I04-DR.
+                           13   SPA-GMN-I04-DR-CD
+                                                     PIC X(04).
+                           13                        PIC X(01).
+                           13   SPA-GMN-I04-DR-NM    PIC X(22).
+      *
+      *            保険組み合わせリスト
+                   09  SPA-GMN-I04-HKNCOMBILST.
+                       11  SPA-GMN-I04-HKNCOMBILST-CNT
+                                                     PIC S9(9)   BINARY.
+                       11  SPA-GMN-I04-HKNCOMBILST-ITM  OCCURS   15.
+                           13  SPA-GMN-I04-TSELNUM   PIC 9(02).
+                           13  SPA-GMN-I04-THKNCOMBI PIC X(50).
+                       11  SPA-GMN-I04-HKNCOMBILST-SEL
+                                                     PIC 9(05).
+      *
+                   09  SPA-NAI-I04-HEAD-AREA.
+      *                患者ＩＤ
+                       11  SPA-NAI-I04-PTID          PIC 9(10).
+      *                入力データ入院履歴番号
+                       11  SPA-NAI-I04-PTRRKNUM      PIC 9(03).
+      *                入力データ入院履歴枝番号
+                       11  SPA-NAI-I04-PTRRKEDANUM   PIC 9(03).
+                   09  SPA-NAI-I04-INPUT-AREA.
+      *                入院日
+                       11  SPA-NAI-I04-NYUINYMD      PIC X(08).
+      *                退院日
+                       11  SPA-NAI-I04-TAIINYMD      PIC X(08).
+      *                発行日
+                       11  SPA-NAI-I04-HAKYMD        PIC X(08).
+      *                請求データ
+                       11  SPA-NAI-I04-SEIKYU-AREA.
+      *                    請求金額
+                           13  SPA-NAI-I04-SEIKYU-TBL.
+                               15  SPA-NAI-I04-SEIKYU-OCC
+                                                         OCCURS    15.
+                                   17  SPA-NAI-I04-SEIKYU    PIC S9(07).
+                                   17  SPA-NAI-I04-SEIKYU-KON
+                                                             PIC S9(07).
+      *                    調整金
+                           13  SPA-NAI-I04-CHOSEI-TBL.
+                               15  SPA-NAI-I04-CHOSEI-OCC
+                                                         OCCURS    15.
+                                   17  SPA-NAI-I04-CHOSEI    PIC S9(07).
+                                   17  SPA-NAI-I04-CHOSEI-X  PIC X(10).
+      *                    入金額
+                           13  SPA-NAI-I04-NYUKIN-TBL.
+                               15  SPA-NAI-I04-NYUKIN-OCC
+                                                         OCCURS    15.
+                                   17  SPA-NAI-I04-NYUKIN    PIC S9(07).
+                                   17  SPA-NAI-I04-NYUKIN-X  PIC X(10).
+      *
+                   09  SPA-NAI-I04-HKNCOMBILST.
+                       11  SPA-NAI-I04-HKNCOMBILST-ITM  OCCURS   15.
+                           13  SPA-NAI-I04-TTTLDAT-FLG   PIC 9(01).
+                           13  SPA-NAI-I04-THKNCOMBI-DAT.
+                               15  SPA-NAI-I04-TSELNUM   PIC Z9.
+      *            画面コンボデータ領域
+                   09  SPA-GMN-I04-CMB-DAT-AREA.
+      *                    請求書兼領収書
+                       11  SPA-GMN-I04-CMB-SKYPRTOUT.
+                           13  SPA-GMN-I04-SKYPRTOUT-CNT
+                                                     PIC S9(9)   BINARY.
+                           13  SPA-GMN-I04-SKYPRTOUT-ITM
+                                                     PIC X(20)
+                                                     OCCURS  2
+                                               INDEXED BY  CMB-IDX12.
+      *                    退院証明書
+                       11  SPA-GMN-I04-CMB-TAIPRTOUT.
+                           13  SPA-GMN-I04-TAIPRTOUT-CNT
+                                                     PIC S9(9)   BINARY.
+                           13  SPA-GMN-I04-TAIPRTOUT-ITM
+                                                     PIC X(20)
+                                                     OCCURS  2
+                                               INDEXED BY  CMB-IDX13.
+      *                    主治医氏名
+                       11  SPA-GMN-I04-CMB-DR.
+                           13  SPA-GMN-I04-DR-CNT    PIC S9(9)   BINARY.
+                           13  SPA-GMN-I04-DR-ITM    PIC X(27)
+                                                     OCCURS  10
+                                               INDEXED BY  CMB-IDX15.
+      *  収納データ
+         03  SPA-I0-SYUNOU-TBL.
+           05  SPA-I0-SYUNOU-CNT                     PIC 9(05).
+           05  SPA-I0-SYUNOU-OCC                     OCCURS  13.
+      *      収納合計フラグ  0:収納データ
+      *                      1:月別合計データ
+      *                      2:合計データ
+             07  SPA-I0-SYUNOU-TTLDAT-FLG            PIC 9(01).
+             07  SPA-I0-SYUNOU-YM-S                  PIC X(06).
+             07  SPA-I0-SYUNOU-YM-W                  PIC X(06).
+             07  SPA-I0-SYUNOU-HKNCOMBI              PIC X(50).
+             07  SPA-I0-SYUNOU-DAT                   PIC X(3000).

@@ -87,6 +87,7 @@
       *  01.07.01    NACL-藤原    02/08/20  新傷病名マスタ対応
       *  01.07.02    NACL-藤原    02/08/28  労災のとき保険組合せの名称の修正
       *  01.07.03    NACL-藤原    02/09/17  自賠責とき保険組合せの名称の修正
+      *  01.07.04    NACL-藤原    02/10/24  戻り先にｋ０２Ｎを追加
       *  01.07.04    NACL-藤原    02/11/19  編集病名のときの接頭語のチェック
       *                                     の修正
       *****************************************************************
@@ -564,7 +565,7 @@
                END-IF
       *
                IF      WRK-MOTOPG(1:3)     =   "M01"  OR  "U02"  OR
-                                               "K02"
+                                               "K02"  OR  "K02N"
                    MOVE    SPA-MOTOPG          TO  SPA-C02-MOTOPG
                END-IF
       *                      
@@ -856,7 +857,8 @@
       *
       
       *    患者情報（診療行為で患者番号を入力したとき） 
-           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02" )
+           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
+                                                   OR  "K02N")
            AND   ( SPA-PTNUM       NOT =   SPACE             )
                MOVE    SPA-PTNUM       TO  C02-PTNUM
                PERFORM 41015-PTNUM-CHK-SEC
@@ -3925,7 +3927,8 @@
       *----(01.00.02) LINE ADD END   ----------------------------------
       *
            MOVE    SPA-C02-MOTOPG     TO  SPA-SAKIPG
-           IF      SPA-C02-MOTOPG NOT =   "K02"  AND  "U02"
+           IF      SPA-C02-MOTOPG NOT =   "K02"  AND  "U02"   AND
+                                          "K02N"
       ********* 患者番号入力へ
       *********MOVE   "C01"            TO  SPA-SAKIPG
                MOVE   "M01"            TO  SPA-SAKIPG
@@ -3935,7 +3938,8 @@
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    SPACE               TO  SPA-WORK 
-           IF      SPA-C02-MOTOPG  NOT =   "K02"  AND  "U02"
+           IF      SPA-C02-MOTOPG  NOT =   "K02"  AND  "U02"  AND 
+                                           "K02N"
                INITIALIZE                  SPA-KYOTUKEY
                                            SPA-KYOTU-SET
            END-IF 
@@ -3980,7 +3984,8 @@
                                            SPA-GMN-C02-MAX
                                            SPA-GMN-C02-SRYKA-G
       *
-               IF      SPA-C02-MOTOPG      =   "K02"   OR  "U02"
+               IF      SPA-C02-MOTOPG      =   "K02"   OR  "U02"   OR
+                                               "K02N"
                    MOVE    27              TO  SPA-GMN-C02-CUR
                ELSE                                     
                    INITIALIZE              SPA-GMN-C02-HEAD
@@ -5272,7 +5277,8 @@
                                        SPA-NAI-C02-TBL
                                        SPA-GMN-C02-MAX
       *
-           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02" )
+           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02" 
+                                                   OR  "K02N")
            AND   ( SPA-PTNUM       NOT =   SPACE             )
       *****     INITIALIZE                  SPA-GMN-C02-SRYKA-G
       *****     MOVE    27                  TO  SPA-GMN-C02-CUR
@@ -6146,7 +6152,8 @@
            END-PERFORM
       *
       *    
-           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02" )
+           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02" 
+                                                   OR  "K02N")
            AND   ( SPA-PTNUM       NOT =   SPACE             )
                MOVE    WIDGET-INSENSITIVE  TO  C02-PTNUM-STATE
                                                C02-B03-STATE

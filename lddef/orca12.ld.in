@@ -16,6 +16,7 @@ bind	"P99"		"OpenCOBOL"	"ORCGP99";
 bind	"P0201"		"OpenCOBOL"	"ORCGP0201";
 bind	"P982"		"OpenCOBOL"	"ORCGP982";
 bind	"P100"		"OpenCOBOL"	"ORCGP100";
+bind	"P02X"		"OpenCOBOL"	"ORCGP02X";
 bind	"PERR"		"OpenCOBOL"	"ORCGPERR";
 bind	"PID1"		"OpenCOBOL"	"ORCGPID1";
 
@@ -38,6 +39,7 @@ data	{
 		P0201;
                 P982;
 		P100;
+		P02X;
 		PERR;
                 PID1;
 	};

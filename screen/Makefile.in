@@ -37,7 +37,26 @@ EXTRA_DIST = \
              H01.glade \
              H99.glade \
              HERR.glade \
+             I01.glade \
+             I02.glade \
+             I03.glade \
+             I04.glade \
+             I0ERR.glade \
+             I0ID1.glade \
+             I20.glade \
+             I21.glade \
+             I2ERR.glade \
+             I2ID1.glade \
+             I41.glade \
+             I4ERR.glade \
+             I4ID1.glade \
+             I51.glade \
+             I5ERR.glade \
+             I5ID1.glade \
+             H01.glade \
+             H99.glade \
              HID1.glade \
+             HERR.glade \
              J02.glade \
              J021.glade \
              J022.glade \
@@ -53,6 +72,7 @@ EXTRA_DIST = \
              JID1.glade \
              K01.glade \
              K02.glade \
+             K02N.glade \
              K021.glade \
              K022.glade \
              K023.glade \
@@ -94,6 +114,13 @@ EXTRA_DIST = \
              N21ID1.glade \
              NERR.glade \
              NID1.glade \
+             O01.glade \
+             O02.glade \
+             O03.glade \
+             O99.glade \
+             OERR.glade \
+             OID1.glade \
+             OID2.glade \
              P014.glade \
              P02.glade \
              P0201.glade \
@@ -156,6 +183,14 @@ EXTRA_DIST = \
              W12.glade \
              W13.glade \
              W14.glade \
+             W20.glade \
+             W21.glade \
+             W22.glade \
+             W23.glade \
+             W24.glade \
+             W25.glade \
+             W26.glade \
+             W27.glade \
              WERR.glade \
              WID1.glade \
              X01.glade \
@@ -187,7 +222,10 @@ EXTRA_DIST = \
              Z99.glade \
              ZERR.glade \
              ZID1.glade \
-             ZID2.glade 
+             ZID2.glade \
+             P02X.glade \
+             U02X.glade
+
 
 all:   
 	touch build-stamp

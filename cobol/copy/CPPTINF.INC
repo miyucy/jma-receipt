@@ -127,6 +127,10 @@
            03  PTINF-TSTPTNUMKBN             PIC  X(01).
       *最大剤番号
            03  PTINF-MAXZAINUM               PIC  9(08).
+      *入院履歴番号
+           03  PTINF-RRKNUM                  PIC  9(03).
+      *入院履歴枝番号
+           03  PTINF-RRKEDANUM               PIC  9(03).
       *端末ＩＤ
            03  PTINF-TERMID                  PIC  X(16).
       *オペーレータＩＤ

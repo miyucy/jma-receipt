@@ -230,5 +230,8 @@ S03	{
 		RSIETC		{
 			value	number(10);
 		};
+		NYUGAIKBN	{
+			value	varchar(6);
+		};
 	};
 };

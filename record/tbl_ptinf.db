@@ -50,6 +50,8 @@ tbl_ptinf {
 	KISEI_TEL  			varchar(15);
 	TSTPTNUMKBN			char(1);
 	MAXZAINUM   			number(8,0);
+	RRKNUM					number(3,0);
+	RRKEDANUM				number(3,0);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);

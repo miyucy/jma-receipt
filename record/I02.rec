@@ -1,0 +1,70 @@
+I02	{
+	fixed4	{
+		SHOKAI	{
+			value	varchar(4);
+		};
+		JYOTAI	{
+			value	varchar(20);
+		};
+		BTUNAME	{
+			value	varchar(20);
+		};
+		BRMNUM	{
+			value	varchar(6);
+		};
+		NYUINYMD	{
+			value	varchar(9);
+		};
+		TAIINYMD	{
+			value	varchar(9);
+		};
+		NYUINKA	{
+			value	varchar(20);
+		};
+		DR	{
+			value	varchar(24);
+		};
+		SANTEI	{
+			value	varchar(60);
+		};
+		scrolledwindow2	{
+			TENKALST	{
+				count	int;
+				item	{
+					value0	varchar(20);
+					value1	varchar(20);
+					value2	varchar(6);
+					value3	varchar(9);
+					value4	varchar(9);
+					value5	varchar(5);
+					value6	varchar(5);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		CMB_NYUGAI	{
+			NYUGAI	{
+				value	varchar(8);
+				state	int;
+			};
+			count	int;
+			item	varchar(8)[5];
+			state	int;
+		};
+		scrolledwindow1	{
+			BYOMEILST	{
+				count	int;
+				item	{
+					value0	varchar(2);
+					value1	varchar(4);
+					value2	varchar(20);
+					value3	varchar(50);
+					value4	varchar(9);
+					value5	varchar(9);
+					value6	varchar(4);
+				}	[500];
+				select	bool[500];
+			};
+		};
+	};
+};

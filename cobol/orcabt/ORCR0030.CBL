@@ -94,7 +94,7 @@
       *  01.02.08   NACL-ÌçÏÆ     02.10.07  ºßÂðÁí¹ç¡¦Ëö´ü¥Õ¥é¥°¤Î¥»¥Ã¥È¤ò¹Ô¤¦
       *                                     °ìÉôÉéÃ´¶âºÆ·Ç¤Î¥»¥Ã¥È¤ò¹Ô¤¦
       *  01.02.09   MCC-¾®Æ¦Âô    02.10.16  ÆÃÄê´ïºàÅÀ¿ô¤Î½¸·×Àè¤ò½¤Àµ
-      *  01.02.10   MCC-¾®Æ¦Âô    02.11.06  ÌóÂ«½èÊý»þ¤ÎÅÀ¿ôÍóÉ½¼¨½¤Àµ
+      *  01.02.10   MCC-¾®Æ¦Âô    02.11.06  ÌóÂ«½èÊý¤ÎÅÀ¿ôÍóÊÔ½¸¤ò½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -629,6 +629,11 @@
                PERFORM     210-HENSYU-SEC
       *
                PERFORM     RECE02-READ-SEC
+	       IF  CNT-IN              =       300
+	           MOVE  ZERO          TO      CNT-IN
+                   PERFORM 900-DBCOMMIT-SEC
+                   PERFORM 900-DBSTART-SEC
+               END-IF
            END-PERFORM
       *
            CLOSE   RECE02-FILE
@@ -966,7 +971,7 @@
                PERFORM    TENSU-TBL-SEC
                IF      TNS-SRYKBN         =     "80"
                    IF  TNS-GAITENTTLKBN   =     130
-                       MOVE   "13"        TO    RECE04-SRYKBN
+                       MOVE   '13'        TO    RECE04-SRYKBN
                                                 RECE05-SRYKBN
                    END-IF
                END-IF
@@ -2561,17 +2566,6 @@
                 COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
                 COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
                 COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
-                IF   ( SYU-KOH-FTN         =   ZERO   )
-                AND  ( SYU-KOH-HKNNUM(1)   =   SPACE OR "027"  ) 
-                AND  ( SYU-KOH-HKNNUM(2)   =   SPACE  )
-                AND  ( SYU-KOH-HKNNUM(3)   =   SPACE  )
-                AND  ( SYU-KOH-HKNNUM(4)   =   SPACE  )
-                    CONTINUE
-                ELSE            
-                    IF   WRK-FTNKEI   >   12000
-                       MOVE   12000   TO   WRK-FTNKEI
-                    END-IF 
-                END-IF
                 IF  RECE02-TEISYOTOKU = SPACE
                     IF  RECE02-KYURATE = 10
                        MOVE  12000   TO  WRK-GENDO
@@ -3708,3 +3702,32 @@
            EXIT.
       *
       
+      *****************************************************************
+      *    £Ä£Â¡¡£Ã£Ï£Í£Í£É£Ô½èÍý
+      *****************************************************************
+       900-DBCOMMIT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "MCPSUB"          USING
+                                        MCPAREA
+                                        MCPDATA-REC.
+      *
+           .
+       900-DBCOMMIT-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    £Ä£Â¡¡£Ó£Ô£Á£Ò£Ô½èÍý
+      *****************************************************************
+       900-DBSTART-SEC                SECTION.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       900-DBSTART-EXT.
+           EXIT.
+      *      
+      *****************************************************************

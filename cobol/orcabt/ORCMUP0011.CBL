@@ -156,7 +156,7 @@
                03  FILLER              PIC X(01)   VALUE   ",".
                03  WRK-TEKEDYMD2       PIC X(08).
                03  FILLER              PIC X(01)   VALUE   ",".
-               03  WRK-NAME            PIC X(100).
+               05  WRK-NAME            PIC X(100).
       *
       *****************************************************************
       *    ファイル定義

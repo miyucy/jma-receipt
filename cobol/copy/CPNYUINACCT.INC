@@ -38,8 +38,8 @@
                05  NACCT-SRYKBN          PIC  X(02).
       *剤番号
                05  NACCT-ZAINUM          PIC  9(08).
-      *剤識別区分（１：入院料　２：外泊　３：室料差額
-      *            ４：保険組合せ　５：入院料加算）
+      *剤識別区分（１：入院料　２：外泊　３：室料差額　４：食事
+      *            ５：保険組合せ　６：入院料加算）
            03  NACCT-ZAISKBKBN           PIC  X(01).           
       *保険組合せ
            03  NACCT-HKNCOMBI            PIC  9(04).

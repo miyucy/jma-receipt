@@ -39,7 +39,7 @@ done
 #
 echo
 echo "£Ï£Ò£Ã£Á£Ä£Â¥Æ¡¼¥Ö¥ë¤Î°åÎÅµ¡´Ø£É£Ä¤ò¥»¥Ã¥È¤·¤Þ¤¹"
-for f in `echo "SELECT pg_class.relname FROM pg_class, pg_attribute WHERE  pg_class.relkind = 'r'  and pg_attribute.attnum > 0 and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = 'hospid';" | psql  orca | grep 'tbl'` ; do
+for f in `echo "SELECT pg_class.relname FROM pg_class, pg_attribute WHERE  pg_class.relkind = 'r'  and pg_attribute.attnum > 0 and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = 'hospid';" | psql orca | grep 'tbl'` ; do
 	echo "$f ------------"
 	echo "update $f set hospid = '$LASTHOSPID';" | psql orca
 	echo "---------------------"

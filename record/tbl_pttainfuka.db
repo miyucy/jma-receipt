@@ -1,0 +1,63 @@
+tbl_pttainfuka	{
+	HOSPID			char(24);
+	PTID			number(10,0);
+	RRKNUM			number(3,0);
+	BYOMEI1			varchar(80);
+	BYOMEI2			varchar(80);
+	BYOMEI3			varchar(80);
+	BYOMEI4			varchar(80);
+	BYOMEI5			varchar(80);
+	KHNRYO			varchar(80);
+	TERMID		varchar(16);
+	OPID		varchar(16);
+	CREYMD		char(8);
+	UPYMD		char(8);
+	UPHMS		char(6);
+};
+
+primary	{
+	HOSPID,PTID,RRKNUM;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_pttainfuka_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pttainfuka
+			WHERE   HOSPID      =   :HOSPID
+			AND		  PTID        =   :PTID
+			AND		  RRKNUM      =   :RRKNUM
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_pttainfuka_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pttainfuka
+      		;
+	};
+};
+
+path	del1	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_pttainfuka
+			WHERE   HOSPID        =   :HOSPID 
+			AND		PTID          =   :PTID
+			AND		RRKNUM        =   :RRKNUM
+		;
+	};
+};
+
+path	del2	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_pttainfuka
+			WHERE   HOSPID        =   :HOSPID 
+			AND		PTID          =   :PTID
+		;
+	};
+};
+

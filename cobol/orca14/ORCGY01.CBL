@@ -28,7 +28,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     01/05/24  患者番号ゼロ詰め処理
       *  01.00.02    NACL-多々納  02/08/02  画面のＳＰＡを保存領域へ編集
-      *  01.00.03    NACL-多々納  02/10/15  予約時間のオーバー分を修正
+      *  01.00.03    NACL-多々納  02/11/20  GO TO 先修正他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -65,7 +65,7 @@
                        09  SPA-GMN-SRYNAIYOCD  PIC X(02).
                        09  SPA-GMN-SK1         PIC X(01).
                        09  SPA-GMN-SRYNAIYOMEI PIC X(18).
-                   07  SPA-GMN-SRYNAIYOLST     PIC X(20)
+                   07  SPA-GMN-SRYNAIYOLST     PIC X(21)
                                            OCCURS  10.
                    07  SPA-GMN-DRNAME.
                        09  SPA-GMN-DRCD        PIC X(04).
@@ -113,8 +113,8 @@
       *
       *        表示リスト等
                05  SPA-GMN-HYOU-AERA.
-                   07  SPA-GMN-SRYKALST    PIC X(16)   OCCURS   10.
-                   07  SPA-GMN-YYKKBNLST   PIC X(28)   OCCURS   10.
+                   07  SPA-GMN-SRYKALST    PIC X(17)   OCCURS   10.
+                   07  SPA-GMN-YYKKBNLST   PIC X(29)   OCCURS   10.
                    07  SPA-GMN-KAKRENLST   PIC X(23)   OCCURS  10.
       *
                    07  SPA-GMN-HYOJHI      PIC X(02).
@@ -331,7 +331,7 @@
                05  WRK-HDD         PIC Z9.
       *
        01  WRK-GMN-KENSUU.
-           03  WRK-TBL-KENSUU      PIC X(06)   OCCURS 98.
+           03  WRK-TBL-KENSUU      PIC X(05)   OCCURS 98.
       *
        01  WRK-CAL-YMD.
            03  WRK-CAL-YEAR        PIC 9(04).
@@ -410,11 +410,6 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
-      *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  CNT-AREA
-           INITIALIZE                  WRK-AREA
-           INITIALIZE                  IDX-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-Y01
@@ -495,6 +490,12 @@
                MOVE    SPA-WORK            TO  SPA-Y01KYOUTU
            ELSE
                INITIALIZE                  SPA-Y01KYOUTU
+               IF      SPA-MOTOPG         =   "I41"
+                   MOVE    SPA-PTID            TO  SPA-Y01-PTID
+                   MOVE    SPA-PTNUM           TO  SPA-Y01-PTNUM
+                   MOVE    SPA-SEX             TO  SPA-Y01-SEX
+                   MOVE    SPA-BIRTHDAY        TO  SPA-Y01-BIRTHDAY
+               END-IF
            END-IF
       *
            PERFORM 310-SPASET-SEC
@@ -514,6 +515,14 @@
       *****************CONTINUE
       **************** MOVE    SPA-NAME       TO  SPA-GMN-YYKNAME
       *************ELSE
+                       MOVE    SPA-PTID       TO  SPA-GMN-PTID
+                       MOVE    SPA-PTNUM      TO  SPA-GMN-PTNUM
+                       MOVE    SPA-NAME       TO  SPA-GMN-NAME
+                       MOVE    SPA-SEX        TO  SPA-GMN-SEX
+                       MOVE    SPA-BIRTHDAYW  TO  SPA-GMN-BIRTHDAYH
+                       MOVE    SPA-NAME       TO  SPA-GMN-YYKNAME
+                   END-IF
+                   IF      SPA-MOTOPG         =   "I41"
                        MOVE    SPA-PTID       TO  SPA-GMN-PTID
                        MOVE    SPA-PTNUM      TO  SPA-GMN-PTNUM
                        MOVE    SPA-NAME       TO  SPA-GMN-NAME
@@ -1589,15 +1598,15 @@
            END-IF
       *    予約時間
            MOVE    WRK-TIME            TO  SPA-NAI-YYKTIME
-      *    キー予約時間
-           MOVE    SPA-NAI-YYKTIME     TO  SPA-NAI-KYYKTIME
-           MOVE    ZERO                TO  SPA-NAI-KYYKTIME(3:2)
            IF      SPA-NAI-YYKTIME(1:2)    <=  "08"
-               MOVE    "08"                TO  SPA-NAI-KYYKTIME(1:2)
+               MOVE    08                  TO  SPA-NAI-YYKTIME(1:2)
            END-IF
            IF      SPA-NAI-YYKTIME(1:2)    >=  "21"
-               MOVE    "21"                TO  SPA-NAI-KYYKTIME(1:2)
+               MOVE    "21"                TO  SPA-NAI-YYKTIME(1:2)
            END-IF
+      *    キー予約時間
+           MOVE    SPA-NAI-YYKTIME         TO  SPA-NAI-KYYKTIME(1:2)
+           MOVE    ZERO                    TO  SPA-NAI-KYYKTIME(3:2)
       *
            IF      (SPA-NAI-YYKYMD     =   SPA-Y01-YYKYMDS )  AND
                    (SPA-NAI-KYYKTIME   =   SPA-Y01-YYKTIME )
@@ -2091,7 +2100,6 @@
                MOVE    SPA-GMN-PTID        TO  PTINF-PTID
                PERFORM 920-PTINF-READ-SEC
                IF      FLG-PTINF           =   ZERO
-                   MOVE    ZERO                TO  IDZ
                    PERFORM 410141-PTINF-HENSYU-SEC
                    MOVE    PTINF-NAME          TO  SPA-GMN-NAME
                    MOVE    WRK-SEX             TO  SPA-GMN-SEX
@@ -2415,7 +2423,7 @@
                                        /   7    +    1
            ELSE
                MOVE    "0003"          TO  SPA-ERRCD
-               GO      TO      410151-HYOJI-HEN-EXT
+               GO      TO      420-YYKDEL-EXT
            END-IF
       *    予約テーブル編集
            INITIALIZE                  SPA-SEL-AREA
@@ -2729,7 +2737,7 @@
                                         MCPDATA-REC
                IF      MCP-RC          NOT  =  ZERO
                    MOVE    "1010"      TO  SPA-ERRCD
-                   GO                  TO  4901-YYKADD-EXT
+                   GO                  TO  4903-YYKDEL-EXT
                END-IF
            END-IF
       *
@@ -2753,7 +2761,7 @@
                IF      MCP-RC          NOT  =  ZERO
                    MOVE    "1012"      TO  SPA-ERRCD
                    DISPLAY "Y01 YYK MEI DEL ERR:" MCP-RC "."
-                   GO                  TO  4901-YYKADD-EXT
+                   GO                  TO  4903-YYKDEL-EXT
                END-IF
       *****END-IF
           .

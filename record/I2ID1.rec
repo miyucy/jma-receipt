@@ -1,0 +1,10 @@
+I2ID1	{
+	fixed1	{
+		ID1CODE	{
+			value	varchar(10);
+		};
+		ID1MSG	{
+			value	varchar(70);
+		};
+	};
+};

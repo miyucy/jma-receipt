@@ -1,0 +1,36 @@
+view_I001 {
+	HOSPID				char(24);
+	PTID				number(10,0);
+	RRKNUM			number(3,0);
+	RRKEDANUM		number(3,0);
+	KANANAME			varchar(100);
+	NAME 				varchar(100);
+	SEX        			char(1);
+	BIRTHDAY 			char(8);
+	HOME_ADRS			varchar(200);
+	HOME_BANTI 			varchar(200);
+	BTUNUM			char(2);
+	BRMNUM			char(8);
+	NYUINKA			char(2);
+	NYUINYMD		char(8);
+	TAIINYMD		char(8);
+	TSTPTNUMKBN			char(1);
+  SQL		dbcode(15000),virtual;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE view_I001_key_csr CURSOR FOR
+		SELECT * FROM  view_I001 where :SQL
+		;
+	};
+};
+
+path	all 	{
+	DBSELECT	{
+		DECLARE view_I001_all_csr CURSOR FOR
+		SELECT *
+		FROM view_I001
+ 		;
+	};
+};

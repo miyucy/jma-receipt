@@ -130,9 +130,9 @@
       *´µ¼ÔÉéÃ´Î¨
            03  SYU-PTFTNRATE           PIC  9(03).
       *Éô²°£Î£Ï
-           03  SYU-ROOMNUM             PIC  X(05).
+           03  SYU-ROOMNUM             PIC  X(08).
       *ÉÂÅï¥³¡¼¥É
-           03  SYU-BYOTONUM            PIC  X(03).
+           03  SYU-BYOTONUM            PIC  X(02).
       *ÀÁµá½ñºîÀ®¶èÊ¬
            03  SYU-SKYKUKBN            PIC  X(01).
       *¾ÃÈñÀÇÂÐ¾Ý¶â³Û
@@ -296,17 +296,55 @@
            03  SYU-NYNSHOKAISU         PIC  9(02).
       *ÌôºÞÈ¯·ôÈÖ¹æ
            03  SYU-YKZKENNUM           PIC  9(05).
+      *¼¼ÎÁº¹³Û
+           03  SYU-RMSAGAKU            PIC  9(07).
       *¿©»ö£±¤«¤é¿©»ö£·
            03  SYU-SHOKUJI-NAIYOU.
+               05  SYU-SHOKUJI1-NISSU  PIC  9(02).
                05  SYU-SHOKUJI1        PIC  9(07).
+               05  SYU-SHOKUJI2-NISSU  PIC  9(02).
                05  SYU-SHOKUJI2        PIC  9(07).
+               05  SYU-SHOKUJI3-NISSU  PIC  9(02).
                05  SYU-SHOKUJI3        PIC  9(07).
+               05  SYU-SHOKUJI4-NISSU  PIC  9(02).
                05  SYU-SHOKUJI4        PIC  9(07).
+               05  SYU-SHOKUJI5-NISSU  PIC  9(02).
                05  SYU-SHOKUJI5        PIC  9(07).
+               05  SYU-SHOKUJI6-NISSU  PIC  9(02).
                05  SYU-SHOKUJI6        PIC  9(07).
+               05  SYU-SHOKUJI7-NISSU  PIC  9(02).
                05  SYU-SHOKUJI7        PIC  9(07).
            03  SYU-SYOKUJI-NAIYOUR     REDEFINES   SYU-SHOKUJI-NAIYOU.
-               05  SYU-SHOKUJI         PIC  9(07)  OCCURS   7.
+               05  SYU-SYOKUJI-TBL     OCCURS   7.
+                 07  SYU-SHOKUJI-NISSU   PIC  9(02).
+                 07  SYU-SHOKUJI         PIC  9(07).
+      *¿©»öÎÅÍÜÈñ¾ðÊó¡Ê¿©»öÆü¿ô¡¦¿©»öÎÅÍÜÈñ¡¦É¸½àÉéÃ´³Û¡Ë
+           03  SYU-SKJ-AREA.
+               05  SYU-SYUSKJ-NISSU    PIC  9(02).
+               05  SYU-SYUSKJ-RYOYOHI  PIC  9(07).
+               05  SYU-SYUSKJ-FTN      PIC  9(07).
+           03  SYU-SKJ-AREA2.
+               05  SYU-KOH1SKJ-NISSU   PIC  9(02).
+               05  SYU-KOH1SKJ-RYOYOHI PIC  9(07).
+               05  SYU-KOH1SKJ-FTN     PIC  9(07).
+               05  SYU-KOH2SKJ-NISSU   PIC  9(02).
+               05  SYU-KOH2SKJ-RYOYOHI PIC  9(07).
+               05  SYU-KOH2SKJ-FTN     PIC  9(07).
+               05  SYU-KOH3SKJ-NISSU   PIC  9(02).
+               05  SYU-KOH3SKJ-RYOYOHI PIC  9(07).
+               05  SYU-KOH3SKJ-FTN     PIC  9(07).
+               05  SYU-KOH4SKJ-NISSU   PIC  9(02).
+               05  SYU-KOH4SKJ-RYOYOHI PIC  9(07).
+               05  SYU-KOH4SKJ-FTN     PIC  9(07).
+           03  SYU-SKJ-AREA2R          REDEFINES   SYU-SKJ-AREA2.
+               05  SYU-SKJ-TBL         OCCURS   4.
+                 07  SYU-SKJ-NISSU       PIC  9(02).
+                 07  SYU-SKJ-RYOYOHI     PIC  9(07).
+                 07  SYU-SKJ-FTN         PIC  9(07).
+      *¿©»öÎÅÍÜÈñ
+           03  SYU-RYOYOHI-SKJ         PIC  9(07).
+      *¿©»öÉéÃ´³Û
+           03  SYU-SKYMONEY-SKJ        PIC  9(07).
       *ºÆ·×»»¶èÊ¬
            03  SYU-SAIKEISANKBN        PIC  X(01).
       *±¡³°½èÊý¶èÊ¬
@@ -315,6 +353,47 @@
            03  SYU-DOUJI-DENPNUM       PIC  9(07).
       *·ÑÂ³¶èÊ¬
            03  SYU-CONTKBN             PIC  X(01).
+      *¿ÇÎÅ¥Õ¥é¥°¥Æ¡¼¥Ö¥ë
+           03  SYU-DAY-AREA.
+      *        ¿ÇÎÅ¥Õ¥é¥°¥Æ¡¼¥Ö¥ë
+             04  SYU-DAY-TBL.
+      *        ¿ÇÎÅ¥Õ¥é¥°¡Ê£±Æü¤«¤é£³£±Æü¡Ë
+               05  SYU-DAY-1           PIC  X(01).
+               05  SYU-DAY-2           PIC  X(01).
+               05  SYU-DAY-3           PIC  X(01).
+               05  SYU-DAY-4           PIC  X(01).
+               05  SYU-DAY-5           PIC  X(01).
+               05  SYU-DAY-6           PIC  X(01).
+               05  SYU-DAY-7           PIC  X(01).
+               05  SYU-DAY-8           PIC  X(01).
+               05  SYU-DAY-9           PIC  X(01).
+               05  SYU-DAY-10          PIC  X(01).
+               05  SYU-DAY-11          PIC  X(01).
+               05  SYU-DAY-12          PIC  X(01).
+               05  SYU-DAY-13          PIC  X(01).
+               05  SYU-DAY-14          PIC  X(01).
+               05  SYU-DAY-15          PIC  X(01).
+               05  SYU-DAY-16          PIC  X(01).
+               05  SYU-DAY-17          PIC  X(01).
+               05  SYU-DAY-18          PIC  X(01).
+               05  SYU-DAY-19          PIC  X(01).
+               05  SYU-DAY-20          PIC  X(01).
+               05  SYU-DAY-21          PIC  X(01).
+               05  SYU-DAY-22          PIC  X(01).
+               05  SYU-DAY-23          PIC  X(01).
+               05  SYU-DAY-24          PIC  X(01).
+               05  SYU-DAY-25          PIC  X(01).
+               05  SYU-DAY-26          PIC  X(01).
+               05  SYU-DAY-27          PIC  X(01).
+               05  SYU-DAY-28          PIC  X(01).
+               05  SYU-DAY-29          PIC  X(01).
+               05  SYU-DAY-30          PIC  X(01).
+               05  SYU-DAY-31          PIC  X(01).
+           03  SYU-DAY-AREA-R          REDEFINES   SYU-DAY-AREA.
+      *        ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+               05  SYU-DAY-TBL2.
+                   07  SYU-DAY         PIC  X(01)
+                                         OCCURS   31.
       *Ã¼Ëö£É£Ä
            03  SYU-TERMID              PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

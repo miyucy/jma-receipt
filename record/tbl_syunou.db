@@ -42,8 +42,8 @@ tbl_syunou {
 	KOH4COMPTOTAL                   number(7,0);
 	KOH4YKZFTNKBN			char(1);
 	PTFTNRATE			number(3,0);
-	ROOMNUM 			char(5);
-	BYOTONUM			char(3);
+	ROOMNUM 			char(8);
+	BYOTONUM			char(2);
 	SKYKUKBN			char(1);
 	TAX_TAISHOU			number(7,0);
 	TAX_MONEY			number(7,0);
@@ -122,10 +122,10 @@ tbl_syunou {
 	DISCOUNT_RATEKBN		char(2);
 	DISCOUNT_TEIRITU		char(1);
 	DISCOUNT_RATE			number(7,0);
-        RSI_SHOSHIN_MONEY		number(7,0);
-        RSI_SAISHIN_MONEY		number(7,0);
-        RSI_SDO_MONEY	    	number(7,0);
-        RSI_ETC_MONEY		    number(7,0);
+        RSISHOSHIN_MONEY		number(7,0);
+        RSISAISHIN_MONEY		number(7,0);
+        RSISDO_MONEY	    	number(7,0);
+        RSIETC_MONEY		    number(7,0);
 	SKYMONEY			number(7,0);
 	NYUKIN_TOTAL   			number(7,0);
 	NYUKIN_KAISU   			number(7,0);
@@ -133,17 +133,73 @@ tbl_syunou {
 	DRCD    			char(4);
 	NYNSHOKAISU  			number(2,0);
 	YKZKENNUM  			number(5,0);
+        RMSAGAKU  			number(7,0);
+        SHOKUJI1_NISSU                  number(2,0);
 	SHOKUJI1  			number(7,0);
+        SHOKUJI2_NISSU                  number(2,0);
 	SHOKUJI2  			number(7,0);
+        SHOKUJI3_NISSU                  number(2,0);
 	SHOKUJI3  			number(7,0);
+        SHOKUJI4_NISSU                  number(2,0);
 	SHOKUJI4  			number(7,0);
+        SHOKUJI5_NISSU                  number(2,0);
 	SHOKUJI5  			number(7,0);
+        SHOKUJI6_NISSU                  number(2,0);
 	SHOKUJI6  			number(7,0);
+        SHOKUJI7_NISSU                  number(2,0);
 	SHOKUJI7  			number(7,0);
+        SYUSKJ_NISSU                    number(2,0);
+        SYUSKJ_RYOYOHI                  number(7,0);
+        SYUSKJ_FTN                      number(7,0);
+        KOH1SKJ_NISSU                   number(2,0);
+        KOH1SKJ_RYOYOHI                 number(7,0);
+        KOH1SKJ_FTN                     number(7,0);
+        KOH2SKJ_NISSU                   number(2,0);
+        KOH2SKJ_RYOYOHI                 number(7,0);
+        KOH2SKJ_FTN                     number(7,0);
+        KOH3SKJ_NISSU                   number(2,0);
+        KOH3SKJ_RYOYOHI                 number(7,0);
+        KOH3SKJ_FTN                     number(7,0);
+        KOH4SKJ_NISSU                   number(2,0);
+        KOH4SKJ_RYOYOHI                 number(7,0);
+        KOH4SKJ_FTN                     number(7,0);
+        RYOYOHI_SKJ                     number(7,0);
+        SKYMONEY_SKJ                    number(7,0);
 	SAIKEISANKBN  			char(1);
 	INGAISHOHOKBN  			char(1);
 	DOUJI_DENPNUM			number(7,0);
 	CONTKBN  			char(1);
+        DAY_1                           char(1);
+        DAY_2                           char(1);
+        DAY_3                           char(1);
+        DAY_4                           char(1);
+        DAY_5                           char(1);
+        DAY_6                           char(1);
+	DAY_7                           char(1);
+        DAY_8                           char(1);
+        DAY_9                           char(1);
+        DAY_10                          char(1);
+        DAY_11                          char(1);
+        DAY_12                          char(1);
+	DAY_13                          char(1);
+        DAY_14                          char(1);
+        DAY_15                          char(1);
+        DAY_16                          char(1);
+        DAY_17                          char(1);
+        DAY_18                          char(1);
+        DAY_19                          char(1);
+        DAY_20                          char(1);
+        DAY_21                          char(1);
+        DAY_22                          char(1);
+        DAY_23                          char(1);
+        DAY_24                          char(1);
+        DAY_25                          char(1);
+        DAY_26                          char(1);
+        DAY_27                          char(1);
+        DAY_28                          char(1);
+        DAY_29                          char(1);
+        DAY_30                          char(1);
+        DAY_31                          char(1);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
@@ -220,6 +276,18 @@ path	del1 	{
 		FROM tbl_syunou
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
+		;
+	};
+};
+
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SKYSTYMD    >=  :SKYSTYMD
+			AND   SKYEDYMD    <=  :SKYEDYMD
 		;
 	};
 };

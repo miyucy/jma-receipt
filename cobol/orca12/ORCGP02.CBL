@@ -2438,10 +2438,6 @@
                    END-IF
                END-IF
            END-IF
-      *TEST!!!
-           MOVE    2             TO  FLG-CLAIM
-           MOVE    "1"           TO  SPA-P02X-CODE
-      *TEST!!!
       *
            IF      FLG-CLAIM           =   2
                CONTINUE

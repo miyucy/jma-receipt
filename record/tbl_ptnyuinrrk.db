@@ -1,0 +1,188 @@
+tbl_ptnyuinrrk	{
+	HOSPID			char(24);
+	PTID			number(10,0);
+	RRKNUM			number(3,0);
+	RRKEDANUM		number(3,0);
+	BTUNUM			char(2);
+	BTUNAME			varchar(20);
+	BRMNUM			char(8);
+	NYUINKA			char(2);
+	HKNCOMBINUM		char(4);
+	NYUINYMD		char(8);
+	TAIINYMD		char(8);
+	TOKUTEI_KBN	char(1);
+	TOKUTEI_NYUIN	char(2);
+	RM_SAGAKU		char(2);
+	TEIKI_SEIKYUKBN	char(1);
+	KENSAKU_DISPKBN	char(1);
+	SHOKAIKBN		char(1);
+	SHONUM			number(3,0);
+	DRCD1			char(5);
+	DRCD2			char(5);
+	DRCD3			char(5);
+	JTIKBN			char(1);
+	SANTEI_BTUNUM		char(2);
+	SANTEI_BRMNUM		char(2);
+	TENNYUYMD		char(8);
+	TENSTUYMD		char(8);
+	TAISYONISSU		number(4,0);
+	TUSANNISSU1		number(4,0);
+	TUSANNISSU2		number(4,0);
+	TERMID		varchar(16);
+	OPID		varchar(16);
+	CREYMD		char(8);
+	UPYMD		char(8);
+	UPHMS		char(6);
+};
+
+primary	{
+	HOSPID,PTID,RRKNUM,RRKEDANUM;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE   HOSPID        =   :HOSPID 
+			AND		PTID          =   :PTID
+			AND		RRKNUM        =   :RRKNUM
+			AND		RRKEDANUM     =   :RRKEDANUM
+		;
+	};
+};
+
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE   HOSPID      =   :HOSPID 
+			AND		PTID          =   :PTID
+			AND		RRKEDANUM     =   1
+			ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC
+		;
+	};
+};
+
+path	key3		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND		PTID        =   :PTID
+			ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC,RRKEDANUM DESC
+		;
+	};
+};
+
+path	key4		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND		PTID        =   :PTID
+			AND		RRKNUM        =   :RRKNUM
+			ORDER BY RRKEDANUM DESC
+		;
+	};
+};
+
+path	key5		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND		PTID        =   :PTID
+			AND		RRKNUM      =   :RRKNUM
+			ORDER BY RRKEDANUM ASC
+		;
+	};
+};
+path	key6		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND		PTID        =   :PTID
+			AND		SHOKAIKBN   =   1
+			ORDER BY SHONUM DESC
+		;
+	};
+};
+
+path	key7		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND		PTID        =   :PTID
+			AND		RRKNUM      <>  :RRKNUM
+			AND		NYUINYMD   <=   :TAIINYMD
+			AND		TAIINYMD   >=   :NYUINYMD
+		;
+	};
+};
+
+
+path	key8		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND	PTID        =   :PTID
+			ORDER BY RRKNUM,
+                                 RRKEDANUM
+		;
+	};
+};
+
+path	key9		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND		PTID        =   :PTID
+			ORDER BY RRKNUM DESC,RRKEDANUM DESC
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+      		;
+	};
+};
+
+path	del1	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptnyuinrrk
+			WHERE   HOSPID        =   :HOSPID 
+			AND		PTID          =   :PTID
+			AND		RRKNUM        =   :RRKNUM
+		;
+	};
+};
+
+path	del2	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptnyuinrrk
+			WHERE   HOSPID        =   :HOSPID 
+			AND		PTID          =   :PTID
+		;
+	};
+};
+
+

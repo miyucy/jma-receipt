@@ -1,0 +1,75 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+        02  I41.
+          03  I41-PTNUM.
+            04  I41-VALUE       PIC X(21).
+          03  I41-SRYYM.
+            04  I41-VALUE       PIC X(7).
+          03  I41-KANANAME.
+            04  I41-VALUE       PIC X(51).
+          03  I41-NAME.
+            04  I41-VALUE       PIC X(51).
+          03  I41-BIRTHDAY.
+            04  I41-VALUE       PIC X(10).
+          03  I41-SEX.
+            04  I41-VALUE       PIC X(3).
+          03  I41-IJYOU91.
+            04  I41-VALUE       PIC X(10).
+          03  I41-IJYOU180.
+            04  I41-VALUE       PIC X(10).
+          03  I41-NYUINBI.
+            04  I41-VALUE       PIC X(10).
+          03  I41-TAINBI.
+            04  I41-VALUE       PIC X(10).
+          03  I41-NUM.
+            04  I41-VALUE       PIC X(4).
+          03  I41-MEISYO.
+            04  I41-VALUE       PIC X(51).
+          03  I41-KOMENTO.
+            04  I41-VALUE       PIC X(51).
+          03  I41-DAY           OCCURS 31.
+            04  I41-VALUE       PIC X(2).
+          03  I41-NYUINKACOMB.
+            04  I41-NYUINKA.
+              05  I41-VALUE            PIC X(17).
+            04  I41-NYUINKA-COUNT      PIC S9(9)   BINARY.
+            04  I41-NYUINKA-ITEM       PIC X(16)   OCCURS  30 TIMES.
+          03  I41-SCROLLEDWINDOW1.
+            04  I41-DATELIST.
+              05  I41-DATELIST-COUNT   PIC S9(9)   BINARY.
+              05  I41-DATELIST-ITEM    OCCURS  400 TIMES.
+                06  I41-TNO            PIC X(3).
+                06  I41-TMEISYO        PIC X(60).
+                06  I41-TTENSU         PIC X(5).
+                06  I41-TDAY-G.
+                  08  I41-TDAY         PIC X(2)  OCCURS  31.
+              05  I41-DATELIST-SELECT  PIC X     OCCURS  400 TIMES.
+          03  I41-SCROLLEDWINDOW2.
+            04  I41-KUMILIST.
+              05  I41-KUMILIST-COUNT   PIC S9(9)   BINARY.
+              05  I41-KUMI-ITEM        OCCURS  30 TIMES.
+                06  I41-KUMINO         PIC X(8).
+                06  I41-KUMI           PIC X(32).
+              05  I41-HEYALIST-SELECT  PIC X      OCCURS  30 TIMES.
+          03  I41-SCROLLEDWINDOW3.
+            04  I41-SAGAKULIST.
+              05  I41-SAGAKULIST-COUNT PIC S9(9)   BINARY.
+              05  I41-SAGAKU-ITEM      OCCURS  30 TIMES.
+                06  I41-SAGAKUNO       PIC X(4).
+                06  I41-SAGAKU         PIC X(12).
+              05  I41-SAGAKULIST-SELECT  PIC X      OCCURS  30 TIMES.

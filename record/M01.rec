@@ -24,6 +24,24 @@ M01	{
 	 	                 G24	{
 			               state	int;
 		                 };
+	 	                 G31	{
+			               state	int;
+		                 };
+	 	                 G32	{
+			               state	int;
+		                 };
+	 	                 G33	{
+			               state	int;
+		                 };
+	 	                 G34	{
+			               state	int;
+		                 };
+	 	                 G35	{
+			               state	int;
+		                 };
+	 	                 G36	{
+			               state	int;
+		                 };
 		                 G41	{
 		                	state	int;
 	                          };

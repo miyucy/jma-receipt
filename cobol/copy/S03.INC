@@ -162,3 +162,5 @@
                 04  S03-VALUE   PIC S9(10).
               03  S03-RSIETC.
                 04  S03-VALUE   PIC S9(10).
+              03  S03-NYUGAIKBN.
+                04  S03-VALUE   PIC X(06).

@@ -349,4 +349,32 @@ path	key11	{
 	};
 };
 
+path	key12	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key12_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYM       =   :SRYYM
+			ORDER   BY      SRYKBN,
+                                        ZAINUM
+		;
+	};
+};
 
+path	key13 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key13_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			ORDER  BY   SRYKA,
+                                    SRYKBN,
+                                    ZAINUM
+		;
+	};
+};

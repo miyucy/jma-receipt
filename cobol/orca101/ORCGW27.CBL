@@ -111,6 +111,8 @@
            03  WRK-BTU-NYUKSNKBN           PIC X(03).
            03  WRK-BRM-NYUKSNKBN           PIC X(03).
            03  WRK-KSN-NYUKSNKBN           PIC X(03).
+           03  WRK-BTU-NAME                PIC X(20).
+           03  WRK-SELNUM                  PIC 9(03).
            03  WRK-SRYCD                   PIC X(09).
       *
       *    固定値領域
@@ -369,6 +371,9 @@
            INITIALIZE                  SPA-W27
                                            W27
       *
+           MOVE    SPA-SYSYMD      TO  SPA-GMN-W27-KJNYMD-S
+           MOVE    SPA-SYSYMDWH    TO  SPA-GMN-W27-KJNYMD
+      *
       *    コンボボックス初期化
            PERFORM 310-CMB-SYOKI-SEC
       *
@@ -401,7 +406,7 @@
       *    病棟情報検索処理
            INITIALIZE  SYSKANRI-REC
            MOVE    "5001"          TO  SYS-KANRICD
-           MOVE    SPA-SYSYMD
+           MOVE    SPA-GMN-W27-KJNYMD-S
                                    TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY2" TO  WRK-DBPATH
@@ -431,7 +436,7 @@
                MOVE    "5101"      TO  WRK-KANRICD
                MOVE    SYS-5001-BTU-SBT
                                    TO  WRK-KBNCD
-               MOVE    SPA-SYSYMD
+               MOVE    SPA-GMN-W27-KJNYMD-S
                                    TO  WRK-KJNYMD
                PERFORM 3101-SYSKANRI-SEL-SEC
                IF    ( FLG-SYSKANRI    =   ZERO )
@@ -455,7 +460,8 @@
                    MOVE    "5110"          TO  WRK-KANRICD
                    MOVE    SYS-5001-BTU-TOKTEI-NYUIN
                                            TO  WRK-KBNCD
-                   MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
+                   MOVE    SPA-GMN-W27-KJNYMD-S
+                                           TO  WRK-KJNYMD
                    PERFORM 3101-SYSKANRI-SEL-SEC
                    IF    ( FLG-SYSKANRI    =   ZERO )
                        MOVE    MCPDATA-REC TO  SYS-5110-REC
@@ -516,7 +522,7 @@
       *
            MOVE    SYS-5001-BTU-KHNSRYCD
                                    TO  TNS-SRYCD
-           MOVE    SPA-SYSYMD
+           MOVE    SPA-GMN-W27-KJNYMD-S
                                    TO  ORC-DBYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
@@ -558,15 +564,6 @@
       *****************************************************************
        200-GMNSENI                           SECTION.
       *
-           IF    ( MCP-WIDGET      NOT =   "B01" )
-            AND  ( MCP-WIDGET      NOT =   "B02" )
-      *        病棟名称チェック処理
-               PERFORM 4102-BTU-NAME-CHK-SEC
-               IF    ( SPA-ERRCD       NOT =   SPACE )
-                   GO  TO  200-GMNSENI-EXT
-               END-IF
-           END-IF
-      *
            EVALUATE    MCP-EVENT       ALSO      MCP-WIDGET
       *    戻る
            WHEN    "CLICKED"       ALSO    "B01"
@@ -577,6 +574,11 @@
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
       *        PERFORM 420-CLEAR-SEC
                PERFORM 4201-INPUT-AREA-CLEAR-SEC
+      *    基準日
+           WHEN    "CLICKED"       ALSO    "B03"
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               PERFORM 4101-GMN-SPA-SET-SEC
+               MOVE    100                 TO  SPA-GMN-W27-CUR
       *    登録
            WHEN    "CLICKED"       ALSO    "B12"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -604,18 +606,14 @@
       *****************************************************************
        200-ENTRY                             SECTION.
       *
-           IF    ( MCP-WIDGET      NOT =   "BTU_NAME" )
-      *        病棟名称チェック処理
-               PERFORM 4102-BTU-NAME-CHK-SEC
-               IF    ( SPA-ERRCD       NOT =   SPACE )
-                   GO  TO  200-ENTRY-EXT
-               END-IF
-           END-IF
-      *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
       *    病棟名称
            WHEN    "ACTIVATE"      ALSO    "BTU_NAME"
                PERFORM 4100-BTU-NAME-CHK-SEC
+      *
+      *    基準日
+           WHEN    "ACTIVATE"      ALSO    "KJNYMD"
+               PERFORM 4100-KJNYMD-CHK-SEC
       *
       *    開始選択番号
            WHEN    "ACTIVATE"      ALSO    "STSELNUM"
@@ -701,19 +699,47 @@
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
-      *    開始選択番号
-           IF    ( SPA-GMN-W27-STSELNUM    =   ZERO )
+           MOVE    SPACE           TO  WRK-TOKNYUIN-CD
+      *
+      *    病棟名称チェック処理
+           PERFORM 4101-BTU-NAME-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               MOVE    SPA-GMN-W27-BTU-NAME
+                                       TO  WRK-BTU-NAME
+               PERFORM 420-CLEAR-SEC
+               MOVE    WRK-BTU-NAME    TO  SPA-GMN-W27-BTU-NAME
+               MOVE    SPA-SYSYMD      TO  SPA-GMN-W27-KJNYMD-S
+               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-W27-KJNYMD
+               MOVE    1               TO  SPA-GMN-W27-CUR
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    基準日チェック処理
+           PERFORM 4101-KJNYMD-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
                PERFORM 4201-INPUT-AREA-CLEAR-SEC
-               MOVE    "1001"          TO  SPA-ERRCD
-               MOVE    2               TO  SPA-GMN-W27-CUR
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   SPA-GMN-W27-BRMLST-CNT )
+                   MOVE    ZERO    TO  SPA-GMN-W27-TYUKO-FLG (IDX1)
+               END-PERFORM
+      *
+               MOVE    100         TO  SPA-GMN-W27-CUR
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
       *    開始選択番号
-           IF    ( SPA-GMN-W27-STSELNUM-ERR    NOT =   SPACE )
-               MOVE    SPA-GMN-W27-STSELNUM-ERR
-                                       TO  SPA-ERRCD
-               MOVE    2               TO  SPA-GMN-W27-CUR
+           PERFORM 4101-STSELNUM-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               MOVE    2      TO   SPA-GMN-W27-CUR
+               PERFORM 4201-INPUT-AREA-CLEAR2-SEC
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    開始選択番号
+           IF    ( SPA-GMN-W27-TYUKO-FLG (SPA-GMN-W27-STSELNUM)
+                                           NOT =  1 )
+               MOVE    "0009"      TO  SPA-ERRCD
+               MOVE   2            TO   SPA-GMN-W27-CUR
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
@@ -732,32 +758,6 @@
            .
       *
        4102-KIHON-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    病棟名称チェック処理
-      *****************************************************************
-       4102-BTU-NAME-CHK-SEC       SECTION.
-      *
-      *    病棟名称が空白でないこと
-           IF    ( SPA-GMN-W27-BTU-NAME
-                                   =   SPACE )
-               PERFORM 420-CLEAR-SEC
-               MOVE    "0002"      TO  SPA-ERRCD
-               GO  TO  4102-BTU-NAME-CHK-EXT
-           END-IF
-      *
-      *    病棟名称がエラーになっていないこと
-           IF    ( SPA-GMN-W27-BTU-NAME-ERR
-                                   NOT =   SPACE )
-               PERFORM 420-CLEAR-SEC
-                MOVE   SPA-GMN-W27-BTU-NAME-ERR
-                                   TO  SPA-ERRCD 
-               GO  TO  4102-BTU-NAME-CHK-EXT
-           END-IF
-      *
-           .
-      *
-       4102-BTU-NAME-CHK-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
@@ -786,6 +786,7 @@
            INITIALIZE  SPA-GMN-W27-HEAD-AREA
                        SPA-GMN-W27-BRMLST-AREA
                        SPA-GMN-W27-INPUT-AREA
+                       SPA-GMN-W27-KJNYMD-AREA
            PERFORM 4201-CHK-BTN-CLEAR-SEC
       *
            MOVE    1               TO  SPA-GMN-W27-CUR
@@ -862,12 +863,15 @@
                END-IF
            END-PERFORM
       *
+      *    病室リスト編集処理
+           PERFORM 4100-BRMLST-EDIT-SEC
+      *
       *    画面処理化
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *    PERFORM 420-CLEAR-SEC
       *
       *    病棟名称を再表示
-           PERFORM 4100-BTU-NAME-CHK-SEC
+      *    PERFORM 4100-BTU-NAME-CHK-SEC
       *
            .
        481-TOUROKU-EXT.
@@ -927,38 +931,19 @@
       *****************************************************************
        4100-BTU-NAME-CHK-SEC           SECTION.
       *
-           PERFORM 4201-INPUT-AREA-CLEAR-SEC
-           INITIALIZE  SPA-GMN-W27-BRMLST-AREA
+           PERFORM 420-CLEAR-SEC
+      *
+           MOVE    SPA-SYSYMD      TO  SPA-GMN-W27-KJNYMD-S
+           MOVE    SPA-SYSYMDWH    TO  SPA-GMN-W27-KJNYMD
       *
            MOVE    1               TO  SPA-GMN-W27-CUR
       *
-           MOVE    SPACE           TO  SPA-GMN-W27-BTU-NAME-ERR
-                                       SPA-GMN-W27-BTU-SBT
-                                       SPA-GMN-W27-BTU-KHNRYO
-      *
            MOVE    W27-BTU-NAME    TO  SPA-GMN-W27-BTU-NAME
       *
-           IF    ( SPA-GMN-W27-BTU-NAME    =   SPACE )
-               PERFORM 420-CLEAR-SEC
-               MOVE    "0002"      TO  SPA-ERRCD
-                                       SPA-GMN-W27-BTU-NAME-ERR
+           PERFORM 4101-BTU-NAME-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4100-BTU-NAME-CHK-EXT
            END-IF
-      *
-      *    該当コードのデータが存在するかチェック
-           MOVE    SPA-GMN-W27-BTU-NAME-CD
-                                       TO  WRK-CMB-CD
-           PERFORM 4103-CMB-BTU-NAME-SRH-SEC
-           IF   (  WRK-CMB-ITM     =   SPACE )
-               PERFORM 420-CLEAR-SEC
-               MOVE    "0005"      TO  SPA-ERRCD
-                                       SPA-GMN-W27-BTU-NAME-ERR
-               GO  TO  4100-BTU-NAME-CHK-EXT
-           END-IF
-      *
-           MOVE    WRK-CMB-ITM     TO  SPA-GMN-W27-BTU-NAME
-           MOVE    WRK-CMB-ITM2    TO  SPA-GMN-W27-BTU-SBT
-           MOVE    WRK-CMB-ITM3    TO  SPA-GMN-W27-BTU-KHNRYO
       *
       *    病室リスト編集処理
            PERFORM 4100-BRMLST-EDIT-SEC
@@ -970,43 +955,142 @@
        4100-BTU-NAME-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    病棟名称チェック処理
+      *****************************************************************
+       4101-BTU-NAME-CHK-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-W27-BTU-NAME    =   SPACE )
+               MOVE    "0002"      TO  SPA-ERRCD
+               GO  TO  4101-BTU-NAME-CHK-EXT
+           END-IF
+      *
+      *    該当コードのデータが存在するかチェック
+           MOVE    SPA-GMN-W27-BTU-NAME-CD
+                                       TO  WRK-CMB-CD
+           PERFORM 4103-CMB-BTU-NAME-SRH-SEC
+           IF   (  WRK-CMB-ITM     =   SPACE )
+               MOVE    "0005"      TO  SPA-ERRCD
+               GO  TO  4101-BTU-NAME-CHK-EXT
+           END-IF
+      *
+           MOVE    WRK-CMB-ITM     TO  SPA-GMN-W27-BTU-NAME
+           MOVE    WRK-CMB-ITM2    TO  SPA-GMN-W27-BTU-SBT
+           MOVE    WRK-CMB-ITM3    TO  SPA-GMN-W27-BTU-KHNRYO
+      *
+           .
+      *
+       4101-BTU-NAME-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    基準日チェック処理
+      *****************************************************************
+       4100-KJNYMD-CHK-SEC             SECTION.
+      *
+           PERFORM 4201-INPUT-AREA-CLEAR-SEC
+      *
+           MOVE    SPACE           TO  SPA-GMN-W27-KJNYMD-S
+      *
+           MOVE    W27-KJNYMD      TO  SPA-GMN-W27-KJNYMD
+      *
+           PERFORM 4101-KJNYMD-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   SPA-GMN-W27-BRMLST-CNT )
+                   MOVE    ZERO    TO  SPA-GMN-W27-TYUKO-FLG (IDX1)
+               END-PERFORM
+      *
+               MOVE    100         TO  SPA-GMN-W27-CUR
+               GO  TO  4100-KJNYMD-CHK-EXT
+           END-IF
+      *
+           PERFORM 4100-BRMLST-EDIT-SEC
+      *
+           MOVE    2               TO  SPA-GMN-W27-CUR
+      *
+           .
+      *
+       4100-KJNYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    基準日チェック処理
+      *****************************************************************
+       4101-KJNYMD-CHK-SEC             SECTION.
+      *
+           IF    ( SPA-GMN-W27-KJNYMD  =   SPACE )
+               MOVE    SPA-SYSYMD      TO  SPA-GMN-W27-KJNYMD-S
+               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-W27-KJNYMD
+               GO  TO  4101-KJNYMD-CHK-EXT
+           END-IF
+      *
+           MOVE    SPA-GMN-W27-KJNYMD
+                                   TO   WRK-YMD
+           PERFORM 5002-HIZUKE-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =    SPACE )
+               GO  TO  4101-KJNYMD-CHK-EXT
+           END-IF
+      *
+           MOVE    WRK-HENYMDG     TO  SPA-GMN-W27-KJNYMD
+           MOVE    WRK-SYMD        TO  SPA-GMN-W27-KJNYMD-S
+      *
+           .
+      *
+       4101-KJNYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    開始選択番号チェック処理
       *****************************************************************
        4100-STSELNUM-CHK-SEC           SECTION.
       *
-           MOVE   2            TO   SPA-GMN-W27-CUR
-           MOVE   SPACE        TO   SPA-GMN-W27-STBRMNUM
-                                    SPA-GMN-W27-STSELNUM-ERR
+           MOVE   SPACE        TO  SPA-GMN-W27-STBRMNUM
       *
-           MOVE   W27-STSELNUM TO   SPA-GMN-W27-STSELNUM
+           MOVE   W27-STSELNUM TO  SPA-GMN-W27-STSELNUM
       *
-           IF    ( SPA-GMN-W27-STSELNUM    =   ZERO )
-               MOVE    "1001" TO   SPA-ERRCD
+           PERFORM 4101-STSELNUM-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
                MOVE    2      TO   SPA-GMN-W27-CUR
                PERFORM 4201-INPUT-AREA-CLEAR2-SEC
                GO  TO  4100-STSELNUM-CHK-EXT
            END-IF
-      *
-      *    範囲内の選択番号が入力されていること
-           IF    ( SPA-GMN-W27-STSELNUM   <=  SPA-GMN-W27-BRMLST-CNT )
-               CONTINUE
-           ELSE
-               PERFORM 4201-INPUT-AREA-CLEAR2-SEC
-               MOVE    "0006"      TO  SPA-ERRCD
-                                       SPA-GMN-W27-STSELNUM-ERR
-               GO  TO  4100-STSELNUM-CHK-EXT
-           END-IF
-      *
       *
       *    入力領域編集処理
            PERFORM 4100-INPUT-AREA-EDIT-SEC
            MOVE    SPA-GMN-W27-STSELNUM
                                    TO  SPA-GMN-W27-BRMLST-SEL
       *
+      *
+      *    現在有効な病室が選択されていること
+           IF    ( SPA-GMN-W27-TYUKO-FLG (SPA-GMN-W27-STSELNUM)
+                                           NOT =  1 )
+               MOVE    "0009"      TO  SPA-ERRCD
+               MOVE   2            TO   SPA-GMN-W27-CUR
+               GO  TO  4100-STSELNUM-CHK-EXT
+           END-IF
+      *
            MOVE    3               TO   SPA-GMN-W27-CUR
       *
            .
        4100-STSELNUM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    開始選択番号チェック処理
+      *****************************************************************
+       4101-STSELNUM-CHK-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-W27-STSELNUM    =   ZERO )
+               MOVE    "1001" TO   SPA-ERRCD
+               GO  TO  4101-STSELNUM-CHK-EXT
+           END-IF
+      *
+      *    範囲内の選択番号が入力されていること
+           IF    ( SPA-GMN-W27-STSELNUM   <=  SPA-GMN-W27-BRMLST-CNT )
+               CONTINUE
+           ELSE
+               MOVE    "0006"      TO  SPA-ERRCD
+               GO  TO  4101-STSELNUM-CHK-EXT
+           END-IF
+      *
+           .
+       4101-STSELNUM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    終了選択番号チェック処理
@@ -1016,6 +1100,8 @@
            MOVE    SPACE       TO  SPA-GMN-W27-EDBRMNUM
       *
            IF    ( SPA-GMN-W27-EDSELNUM    =   ZERO )
+               MOVE    SPA-GMN-W27-TTOKNYUIN-CD (SPA-GMN-W27-STSELNUM)
+                               TO  WRK-TOKNYUIN-CD
                GO  TO  4100-EDSELNUM-CHK-EXT
            END-IF
       *
@@ -1028,13 +1114,23 @@
                GO  TO  4100-EDSELNUM-CHK-EXT
            END-IF
       *
+      *    終了選択番号が入力されてる場合、
+      *    開始選択番号≦終了選択番号であること
+           IF    ( SPA-GMN-W27-STSELNUM
+                                       <=  SPA-GMN-W27-EDSELNUM )
+               CONTINUE
+           ELSE
+               MOVE    "1003"  TO  SPA-ERRCD
+               MOVE    3       TO  SPA-GMN-W27-CUR
+               GO  TO  4100-EDSELNUM-CHK-EXT
+           END-IF
+      *
            MOVE   SPA-GMN-W27-EDSELNUM
                                    TO  IDX1
            MOVE   SPA-GMN-W27-TBRMNUM2 (IDX1)
                                    TO  SPA-GMN-W27-EDBRMNUM
       *
            MOVE    ZERO            TO  FLG-TOKNYUIN-CD
-           MOVE    SPACE           TO  WRK-TOKNYUIN-CD
            PERFORM VARYING IDX2    FROM    SPA-GMN-W27-STSELNUM    BY  1
                    UNTIL ( IDX2    >       SPA-GMN-W27-EDSELNUM )
       *
@@ -1134,6 +1230,14 @@
                    PERFORM 4100-INPUT-AREA-EDIT-SEC
                    MOVE    SPA-GMN-W27-STSELNUM
                                        TO  SPA-GMN-W27-BRMLST-SEL
+      *
+      *            現在有効な病室が選択されていること
+                   IF    ( SPA-GMN-W27-TYUKO-FLG (IDX1)    NOT =  1 )
+                       MOVE    "0009"      TO  SPA-ERRCD
+                       MOVE    2           TO  SPA-GMN-W27-CUR
+                       GO  TO  4100-BRMLST-CHK-EXT
+                   END-IF
+      *
                    MOVE    3           TO  SPA-GMN-W27-CUR
                    MOVE    SPA-GMN-W27-BRMLST-CNT
                                        TO  IDX1
@@ -1173,8 +1277,9 @@
                                    TO  IDX1
       *
       *        有効
-               IF    ( SYS-5002-STYUKYMD    <= SPA-SYSYMD )
-                AND  ( SYS-5002-EDYUKYMD    >= SPA-SYSYMD )
+               IF    ( SYS-5002-EDYUKYMD    >= SPA-SYSYMD )
+                AND  ( SYS-5002-STYUKYMD    <= SPA-GMN-W27-KJNYMD-S )
+                AND  ( SYS-5002-EDYUKYMD    >= SPA-GMN-W27-KJNYMD-S )
                    MOVE    1       TO  SPA-GMN-W27-TYUKO-FLG (IDX1)
                ELSE
                    MOVE    ZERO    TO  SPA-GMN-W27-TYUKO-FLG (IDX1)
@@ -1196,7 +1301,8 @@
                MOVE    "5111"          TO  WRK-KANRICD
                MOVE    SYS-5002-BRM-TOKTEI-NYUIN
                                        TO  WRK-KBNCD
-               MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
+               MOVE    SPA-GMN-W27-KJNYMD-S
+                                       TO  WRK-KJNYMD
                PERFORM 3101-SYSKANRI-SEL-SEC
                IF  (   FLG-SYSKANRI    =   ZERO )
                    MOVE    MCPDATA-REC TO  SYS-5111-REC
@@ -1208,7 +1314,8 @@
                MOVE    "5108"          TO  WRK-KANRICD
                MOVE    SYS-5002-BRM-SBT
                                        TO  WRK-KBNCD
-               MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
+               MOVE    SPA-GMN-W27-KJNYMD-S
+                                       TO  WRK-KJNYMD
                PERFORM 3101-SYSKANRI-SEL-SEC
                IF  (   FLG-SYSKANRI    =   ZERO )
                    MOVE    MCPDATA-REC TO  SYS-5108-REC
@@ -1220,7 +1327,8 @@
                MOVE    "5113"          TO  WRK-KANRICD
                MOVE    SYS-5002-BRM-SAGAKU
                                        TO  WRK-KBNCD
-               MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
+               MOVE    SPA-GMN-W27-KJNYMD-S
+                                       TO  WRK-KJNYMD
                PERFORM 3101-SYSKANRI-SEL-SEC
                IF  (   FLG-SYSKANRI    =   ZERO )
                    MOVE    MCPDATA-REC TO  SYS-5113-REC
@@ -1350,7 +1458,8 @@
       *
            MOVE    WRK-KSN-NYUKSNKBN
                                    TO  NYUKSNCHK-KSNKBN
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SPA-GMN-W27-KJNYMD-S
+                                   TO  ORC-DBYMD
       *
            MOVE    "NYUKSNCHK-KEY" TO  WRK-DBPATH
            MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
@@ -1387,6 +1496,8 @@
       *
                PERFORM 4100-NYUKSN-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    4       TO  SPA-GMN-W27-CUR
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-SINSEIJI
                    GO  TO  4100-A212-CHK-EXT
                END-IF
       *
@@ -1396,6 +1507,7 @@
                ELSE
                    MOVE    4       TO  SPA-GMN-W27-CUR
                    MOVE    "0003"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-SINSEIJI
                    GO  TO  4100-A212-CHK-EXT
                END-IF
            END-IF
@@ -1419,6 +1531,8 @@
       *
                PERFORM 4100-NYUKSN-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    5       TO  SPA-GMN-W27-CUR
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-SNR-RYOYO (1)
                    GO  TO  4100-A223-CHK-EXT
                END-IF
       *
@@ -1428,6 +1542,7 @@
                ELSE
                    MOVE    5       TO  SPA-GMN-W27-CUR
                    MOVE    "0003"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-SNR-RYOYO (1)
                    GO  TO  4100-A223-CHK-EXT
                END-IF
            END-IF
@@ -1443,6 +1558,8 @@
       *
                PERFORM 4100-NYUKSN-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    6       TO  SPA-GMN-W27-CUR
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-SNR-RYOYO (2)
                    GO  TO  4100-A223-CHK-EXT
                END-IF
       *
@@ -1452,6 +1569,7 @@
                ELSE
                    MOVE    6       TO  SPA-GMN-W27-CUR
                    MOVE    "0003"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-SNR-RYOYO (2)
                    GO  TO  4100-A223-CHK-EXT
                END-IF
            END-IF
@@ -1475,6 +1593,8 @@
       *
                PERFORM 4100-NYUKSN-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    7       TO  SPA-GMN-W27-CUR
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-HOSYASEN
                    GO  TO  4100-A225-CHK-EXT
                END-IF
            END-IF
@@ -1498,6 +1618,8 @@
       *
                PERFORM 4100-NYUKSN-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    8       TO  SPA-GMN-W27-CUR
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-RYOYO
                    GO  TO  4100-A219-CHK-EXT
                END-IF
       *
@@ -1507,6 +1629,7 @@
                ELSE
                    MOVE    8       TO  SPA-GMN-W27-CUR
                    MOVE    "0003"  TO  SPA-ERRCD
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-RYOYO
                    GO  TO  4100-A219-CHK-EXT
                END-IF
            END-IF
@@ -1524,7 +1647,8 @@
            MOVE    "5001"          TO  WRK-KANRICD
            MOVE    SPA-GMN-W27-BTU-NAME-CD
                                    TO  WRK-KBNCD
-           MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
+           MOVE    SPA-GMN-W27-KJNYMD-S
+                                   TO  WRK-KJNYMD
            PERFORM 3101-SYSKANRI-SEL-SEC
            IF    ( FLG-SYSKANRI    =   ZERO )
                MOVE    MCPDATA-REC TO  SYS-5001-REC
@@ -1609,7 +1733,8 @@
            INITIALIZE              TNS-TENSU-REC
       *
            MOVE    WRK-SRYCD       TO  TNS-SRYCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SPA-GMN-W27-KJNYMD-S
+                                   TO  ORC-DBYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
            MOVE    "TENSU-KEY"     TO  WRK-DBPATH
@@ -1645,7 +1770,7 @@
            INITIALIZE  SYSKANRI-REC
            MOVE    "1006"          TO  SYS-KANRICD
            MOVE    "1"             TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD
+           MOVE    SPA-GMN-W27-KJNYMD-S
                                    TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
@@ -1752,6 +1877,13 @@
       *****************************************************************
        4900-KANRENCHK-SEC              SECTION.
       *
+      *    基準日が入力されていること
+           IF    ( SPA-GMN-W27-KJNYMD  =   SPACE )
+               MOVE    "0010"      TO  SPA-ERRCD
+               MOVE    100         TO  SPA-GMN-W27-CUR
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+           
       *    開始選択番号が入力されていること
            IF    ( SPA-GMN-W27-STSELNUM    =   ZERO )
                MOVE    "1001"      TO  SPA-ERRCD
@@ -1769,21 +1901,6 @@
                    CONTINUE
                ELSE
                    MOVE    "1002"  TO  SPA-ERRCD
-                   MOVE    2       TO  SPA-GMN-W27-CUR
-                   GO  TO  4900-KANRENCHK-EXT
-               END-IF
-           END-IF
-      *
-      *    終了選択番号が入力されてる場合、
-      *    開始選択番号≦終了選択番号であること
-           IF    ( SPA-GMN-W27-EDSELNUM    >   ZERO )
-               MOVE    SPA-GMN-W27-STSELNUM
-                                   TO  IDX1
-               IF    ( SPA-GMN-W27-STSELNUM
-                                           <=  SPA-GMN-W27-EDSELNUM )
-                   CONTINUE
-               ELSE
-                   MOVE    "1003"  TO  SPA-ERRCD
                    MOVE    2       TO  SPA-GMN-W27-CUR
                    GO  TO  4900-KANRENCHK-EXT
                END-IF
@@ -1876,6 +1993,8 @@
            MOVE    SPA-GMN-W27-STBRMNUM    TO  W27-STBRMNUM
       *    終了病室番号
            MOVE    SPA-GMN-W27-EDBRMNUM    TO  W27-EDBRMNUM
+      *    基準日
+           MOVE    SPA-GMN-W27-KJNYMD      TO  W27-KJNYMD
       *    新生児入院医療管理加算
            MOVE    SPA-GMN-W27-CHK-SINSEIJI
                                            TO  W27-CHK-SINSEIJI
@@ -1893,12 +2012,14 @@
       *    病室情報リスト領域
            MOVE    SPA-GMN-W27-BRMLST-CNT  TO  W27-BRMLST-CNT
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   400 )
+                   UNTIL ( IDX1    >   SPA-GMN-W27-BRMLST-CNT )
       *
       *        有効マーク
                IF    ( SPA-GMN-W27-TYUKO-FLG (IDX1)
                                            =   1 )
                    MOVE    "  ◎"          TO  W27-TYUKO (IDX1)
+               ELSE
+                   MOVE    SPACE           TO  W27-TYUKO (IDX1)
                END-IF
       *
       *        選択番号
@@ -1994,6 +2115,8 @@
                MOVE    "CHK_HOSYASEN"      TO  MCP-WIDGET
            WHEN    008
                MOVE    "CHK_RYOYO"         TO  MCP-WIDGET
+           WHEN    100
+               MOVE    "KJNYMD"            TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
@@ -2073,6 +2196,12 @@
                                        TO  SPA-ERRMSG (41 : )
            WHEN    "0008"
                MOVE    "当該入院料において、この加算は算定できません"
+                                       TO  SPA-ERRMSG
+           WHEN    "0009"
+               MOVE    "選択された病室は現在有効な病室ではありません"
+                                       TO  SPA-ERRMSG
+           WHEN    "0010"
+               MOVE    "基準日を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "選択番号を入力してください"

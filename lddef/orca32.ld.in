@@ -1,0 +1,24 @@
+name	orca32;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGI41";
+bind	"I41"		"OpenCOBOL"	"ORCGI41";
+bind	"I4ERR"		"OpenCOBOL"	"ORCGI4ERR";
+bind	"I4ID1"		"OpenCOBOL"	"ORCGI4ID1";
+
+multiplex_group	orca32;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		I41;
+		I4ERR;
+		I4ID1;
+	};
+};
+
+#include "orcadb.inc"

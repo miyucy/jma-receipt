@@ -5,13 +5,9 @@
   <name>W27</name>
   <program_name>W27</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -62,8 +58,8 @@
       </signal>
       <label>Ìá¤ë</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B02</name>
@@ -85,8 +81,8 @@
       </signal>
       <label>¥¯¥ê¥¢</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B03</name>
@@ -99,10 +95,16 @@
 	<key>GDK_F3</key>
 	<signal>clicked</signal>
       </accelerator>
-      <label></label>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:42:45 GMT</last_modification_time>
+      </signal>
+      <label>´ð½àÆü</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B04</name>
@@ -117,8 +119,8 @@
       </accelerator>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B05</name>
@@ -133,8 +135,8 @@
       </accelerator>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B06</name>
@@ -144,8 +146,8 @@
       <height>24</height>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B07</name>
@@ -155,8 +157,8 @@
       <height>24</height>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B08</name>
@@ -172,8 +174,8 @@
       </signal>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B09</name>
@@ -194,8 +196,8 @@
       </signal>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B10</name>
@@ -210,8 +212,8 @@
       </accelerator>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B11</name>
@@ -226,8 +228,8 @@
       </accelerator>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
@@ -249,8 +251,8 @@
       </signal>
       <label>ÅÐÏ¿</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_BTU_NAME</name>
@@ -288,9 +290,9 @@
 	<text></text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
-
       </widget>
     </widget>
+
     <widget>
       <class>GtkPandaEntry</class>
       <name>BTU_SBT</name>
@@ -304,8 +306,8 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-
     </widget>
+
     <widget>
       <class>GtkPandaEntry</class>
       <name>BTU_KHNRYO</name>
@@ -319,8 +321,8 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-
     </widget>
+
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
@@ -373,8 +375,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -386,8 +388,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -399,8 +401,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -412,8 +414,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -425,8 +427,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -438,8 +440,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -451,8 +453,8 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
 
-        </widget>
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
@@ -464,10 +466,10 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
-
-        </widget>
+	</widget>
       </widget>
     </widget>
+
     <widget>
       <class>GtkNumberEntry</class>
       <name>STSELNUM</name>
@@ -490,8 +492,8 @@
       </signal>
       <editable>True</editable>
       <format>ZZZ</format>
-
     </widget>
+
     <widget>
       <class>GtkNumberEntry</class>
       <name>EDSELNUM</name>
@@ -514,8 +516,8 @@
       </signal>
       <editable>True</editable>
       <format>ZZZ</format>
-
     </widget>
+
     <widget>
       <class>GtkPandaEntry</class>
       <name>STBRMNUM</name>
@@ -529,8 +531,8 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-
     </widget>
+
     <widget>
       <class>GtkPandaEntry</class>
       <name>EDBRMNUM</name>
@@ -544,24 +546,36 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-
     </widget>
+
     <widget>
-      <class>GtkLabel</class>
-      <name>label1010</name>
-      <x>15</x>
-      <y>15</y>
-      <width>56</width>
+      <class>GtkPandaEntry</class>
+      <name>KJNYMD</name>
+      <x>335</x>
+      <y>455</y>
+      <width>90</width>
       <height>25</height>
-      <label>ÉÂÅïÌ¾¾Î</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>9</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label1104</name>
@@ -576,8 +590,8 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-
     </widget>
+
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK_SINSEIJI</name>
@@ -600,8 +614,8 @@
       <label>¿·À¸»ùÆþ±¡°åÎÅ´ÉÍý²Ã»»</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
-
     </widget>
+
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK_SNR_RYOYO1</name>
@@ -624,8 +638,8 @@
       <label>¿ÇÎÅ½êÎÅÍÜÉÂ¾²ÎÅÍÜ´Ä¶­²Ã»»£±</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
-
     </widget>
+
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK_SNR_RYOYO2</name>
@@ -648,8 +662,8 @@
       <label>¿ÇÎÅ½êÎÅÍÜÉÂ¾²ÎÅÍÜ´Ä¶­²Ã»»£²</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
-
     </widget>
+
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK_HOSYASEN</name>
@@ -672,8 +686,8 @@
       <label>Êü¼ÍÀþ¼£ÎÅÉÂ¼¼´ÉÍý²Ã»»</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
-
     </widget>
+
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK_RYOYO</name>
@@ -696,8 +710,8 @@
       <label>ÎÅÍÜ´Ä¶­²Ã»»</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
-
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label1018</name>
@@ -712,8 +726,8 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label1105</name>
@@ -728,8 +742,8 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label1020</name>
@@ -744,8 +758,8 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label1106</name>
@@ -760,8 +774,40 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
 
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1010</name>
+      <x>15</x>
+      <y>15</y>
+      <width>56</width>
+      <height>25</height>
+      <label>ÉÂÅïÌ¾¾Î</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1107</name>
+      <x>275</x>
+      <y>455</y>
+      <width>56</width>
+      <height>25</height>
+      <label>´ð½àÆü</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
+
 </GTK-Interface>

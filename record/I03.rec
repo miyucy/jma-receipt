@@ -1,0 +1,50 @@
+I03	{
+	fixed4	{
+		B04	{
+			state	int;
+		};
+		CMB_SHOKAI	{
+			SHOKAI	{
+				value	varchar(8);
+				state	int;
+			};
+			count	int;
+			item	varchar(8)[02];
+			state	int;
+		};
+		SHONUM	{
+			value	number(3);
+			state	int;
+		};
+		COMMENT	{
+			value	varchar(20);
+		};
+		NYUINYMD	{
+			value	varchar(9);
+		};
+		TAIINYMD	{
+			value	varchar(9);
+		};
+		TAISYONISSU	{
+			value	number(4);
+		};
+		BYOMEI1	{
+			value	varchar(50);
+		};
+		BYOMEI2	{
+			value	varchar(50);
+		};
+		BYOMEI3	{
+			value	varchar(50);
+		};
+		BYOMEI4	{
+			value	varchar(50);
+		};
+		BYOMEI5	{
+			value	varchar(50);
+		};
+		KHNRYO	{
+			value	varchar(50);
+		};
+	};
+};

@@ -1,0 +1,205 @@
+I41	{
+	fixed1	{
+		PTNUM	{
+			value	varchar(21);
+		};
+		SRYYM	{
+			value	varchar(7);
+		};
+		KANANAME	{
+			value	varchar(51);
+		};
+		NAME	{
+			value	varchar(51);
+		};
+		BIRTHDAY	{
+			value	varchar(10);
+		};
+		SEX	{
+			value	varchar(3);
+		};
+		IJYOU91	{
+			value	varchar(10);
+		};
+		IJYOU180	{
+			value	varchar(10);
+		};
+		NYUINBI	{
+			value	varchar(10);
+		};
+		TAINBI	{
+			value	varchar(10);
+		};
+		NUM	{
+			value	varchar(4);
+		};
+		MEISYO	{
+			value	varchar(51);
+		};
+		KOMENTO	{
+			value	varchar(51);
+		};
+		DAY01	{
+			value	varchar(2);
+		};
+		DAY02	{
+			value	varchar(2);
+		};
+		DAY03	{
+			value	varchar(2);
+		};
+		DAY04	{
+			value	varchar(2);
+		};
+		DAY05	{
+			value	varchar(2);
+		};
+		DAY06	{
+			value	varchar(2);
+		};
+		DAY07	{
+			value	varchar(2);
+		};
+		DAY08	{
+			value	varchar(2);
+		};
+		DAY09	{
+			value	varchar(2);
+		};
+		DAY10	{
+			value	varchar(2);
+		};
+		DAY11	{
+			value	varchar(2);
+		};
+		DAY12	{
+			value	varchar(2);
+		};
+		DAY13	{
+			value	varchar(2);
+		};
+		DAY14	{
+			value	varchar(2);
+		};
+		DAY15	{
+			value	varchar(2);
+		};
+		DAY16	{
+			value	varchar(2);
+		};
+		DAY17	{
+			value	varchar(2);
+		};
+		DAY18	{
+			value	varchar(2);
+		};
+		DAY19	{
+			value	varchar(2);
+		};
+		DAY20	{
+			value	varchar(2);
+		};
+		DAY21	{
+			value	varchar(2);
+		};
+		DAY22	{
+			value	varchar(2);
+		};
+		DAY23	{
+			value	varchar(2);
+		};
+		DAY24	{
+			value	varchar(2);
+		};
+		DAY25	{
+			value	varchar(2);
+		};
+		DAY26	{
+			value	varchar(2);
+		};
+		DAY27	{
+			value	varchar(2);
+		};
+		DAY28	{
+			value	varchar(2);
+		};
+		DAY29	{
+			value	varchar(2);
+		};
+		DAY30	{
+			value	varchar(2);
+		};
+		DAY31	{
+			value	varchar(2);
+		};
+		NYUINKACOMB	{
+			NYUINKA	{
+				value	varchar(17);
+			};
+			count	int;
+			item	varchar(16)[30];
+		};
+		scrolledwindow1	{
+			DATELIST	{
+				count	int;
+				item	{
+					value1	varchar(3);
+					value2	varchar(60);
+					value3	varchar(5);
+					value4	varchar(2);
+					value5	varchar(2);
+					value6	varchar(2);
+					value7	varchar(2);
+					value8 	varchar(2);
+					value9	varchar(2);
+					value10	varchar(2);
+					value11	varchar(2);
+					value12	varchar(2);
+					value13	varchar(2);
+					value14	varchar(2);
+					value15	varchar(2);
+					value16	varchar(2);
+					value17	varchar(2);
+					value18	varchar(2);
+					value19	varchar(2);
+					value20	varchar(2);
+					value21	varchar(2);
+					value22	varchar(2);
+					value23	varchar(2);
+					value24	varchar(2);
+					value25	varchar(2);
+					value26	varchar(2);
+					value27	varchar(2);
+					value28	varchar(2);
+					value29	varchar(2);
+					value30	varchar(2);
+					value31	varchar(2);
+					value32	varchar(2);
+					value33	varchar(2);
+					value34	varchar(2);
+				}	[400];
+				select	bool[400];
+			};
+		};
+		scrolledwindow2	{
+			KUMILIST	{
+				count	int;
+				item	{
+					value1	varchar(8);
+					value2	varchar(32);
+				}	[30];
+				select	bool[30];
+			};
+		};
+		scrolledwindow3	{
+			SAGAKULIST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(12);
+				}	[30];
+				select	bool[30];
+			};
+		};
+	};
+};
