@@ -101,12 +101,15 @@ path	key4 	{
 	DBSELECT	{
 		DECLARE tbl_syumei_key4_csr CURSOR FOR
 		SELECT a.*
-		FROM tbl_syumei a,tbl_ptnum b
+		FROM tbl_syumei a,tbl_ptnum b,tbl_ptinf c
 			WHERE   a.HOSPID        =  :HOSPID
 			AND     a.NYUGAIKBN     =  :NYUGAIKBN
 			AND     a.NYUHEN_YMD    =  :NYUHEN_YMD
 			AND     a.HOSPID        =  b.HOSPID
 			AND     a.PTID          =  b.PTID
+			AND     a.HOSPID        =  c.HOSPID
+			AND     a.PTID          =  c.PTID
+			AND     c.TSTPTNUMKBN  <> '1'
 			ORDER   BY a.SRYKA,b.PTNUM,a.DENPNUM,a.DENPEDANUM
 		;
 	};
