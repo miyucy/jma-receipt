@@ -115,6 +115,7 @@
            03  SPA-I40SET-AREA.
                05  SPA-I40-SRYKA               PIC X(02).
                05  SPA-I40-SRYKAMEI            PIC X(12).
+               05  SPA-I40-SRYKA-READ          PIC X(02).
       *
       *£É£´£°ÍÑÊÝÂ¸
            03  SPA-MAE-SRYYMD                  PIC X(08).
