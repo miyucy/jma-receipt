@@ -1906,7 +1906,9 @@
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    SPA-C07-COMMENT    TO  KANACHK-MAE-INPUT
+      *    ╫пно╥Е©Т
+           MOVE    400                 TO  KANACHK-MAX-CNT
+           MOVE    SPA-C07-COMMENT     TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
