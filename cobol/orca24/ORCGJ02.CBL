@@ -216,7 +216,6 @@
            03  WRK-NAI-SRYYM       PIC X(06).
            03  WRK-ENDDD           PIC 9(02).
            03  WRK-DD              PIC 9(02).
-           03  WRK-SRYKA           PIC X(02).
       *    連番
            03  WRK-BANGO           PIC 9(04).
       *    年齢計算用
