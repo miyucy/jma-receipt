@@ -100,6 +100,7 @@
       *  02.07.10    NACL-藤原    03/03/05  排他制御処理追加
       *  02.07.11    NACL-多々納  03/03/14  ファイル削除追加
       *  02.07.12    NACL-藤原    03/03/14  同一開始日の病名の表示順の修正
+      *  02.07.13    NACL-藤原    03/03/26  選択番号がエラーのときクリアする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1759,6 +1760,7 @@
            END-IF
       *
            IF      SPA-GMN-C02-BANGO      >   SPA-GMN-C02-MAX
+               MOVE    ZERO            TO  SPA-GMN-C02-BANGO
                MOVE    "0012"          TO  SPA-ERRCD
                GO      TO      41011-BANGO-HEN-EXT
            END-IF
