@@ -3110,6 +3110,7 @@
                    INITIALIZE                  SYU-SKYMONEY-TAX-SAI
                    INITIALIZE                  SYU-SKYMONEY
                    INITIALIZE                  SYU-NYUKIN-TOTAL
+                   INITIALIZE                  SYU-HKNTEKMONEY
                    PERFORM VARYING     IDS2    FROM    1   BY  1
                            UNTIL       IDS2    >   LNK-SYUNOU2-MAX
                        IF     (LNK-SYU2-HKNCOMBINUM(IDS2)
@@ -3124,6 +3125,9 @@
                                                TO  SYU-SKYMONEY
                            ADD     LNK-SYU2-NYUKIN-TOTAL(IDS2)
                                                TO  SYU-NYUKIN-TOTAL
+      *                    ÊÝ¸±Å¬ÍÑ¶â³Û
+                           ADD     LNK-SYU2-HKNTEKMONEY(IDS2)
+                                               TO  SYU-HKNTEKMONEY
                        END-IF
                    END-PERFORM
                    MOVE    SYUNOU-REC      TO  LNK-SYUNOU2-REC (IDS1)

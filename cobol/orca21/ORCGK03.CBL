@@ -1317,7 +1317,13 @@
                        UNTIL      (IDX     >   15  )  OR
                                   (SPA-TBL-HKNCOMBI (IDX)  =   SPACE )
                    IF      SPA-TBL-SRYKA (IDX 2)   =   SPACE
-                       MOVE    SPA-TBL-HKNCOMBI(IDX)   TO  WRK-HKNCOMBI
+                       IF      SPA-GMN-HKNCOMBI    =   "0000"
+                           MOVE    SPA-TBL-HKNCOMBI(IDX)
+                                                   TO  WRK-HKNCOMBI
+                       ELSE
+                           MOVE    SPA-GMN-HKNCOMBI
+                                                   TO  WRK-HKNCOMBI
+                       END-IF
                        PERFORM 31001-ZENNKA-HEN-SEC
                    END-IF
                END-PERFORM
@@ -1357,7 +1363,7 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
-               MOVE    SPA-SYUNOU-REC (IDX)    TO  WRK-SYUNOU-REC
+               MOVE    SPA-SYUNOU-REC(IDX)     TO  WRK-SYUNOU-REC
                IF      WRK-HKNCOMBI        =   WRK-SYU-HKNCOMBINUM
                    PERFORM 31000-SYUNOU-ADD-SEC
                    MOVE    1               TO  FLG-FUKU
