@@ -40,6 +40,7 @@
       *  01.01.03    NACL-°ËÆ£    03.03.28  °õºþÍÑ¥Ç¡¼¥¿¥µ¥¤¥ºÊÑ¹¹
       *  01.01.04    NACL-¿¹ÏÆ    03/07/14  ½ÐÎÏÀè¥×¥ê¥ó¥¿¥µ¥ÖÄÉ²Ã
       *  02.01.01    NACL-¿¹ÏÆ    03/11/19  ´µ¼Ô»áÌ¾£²ÄÉ²Ã
+      *  02.01.02    NACL-¿¹ÏÆ    04/01/26  ´µ¼Ô»áÌ¾·É¾ÎÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -166,9 +167,11 @@
            03  WRK-YKJ-SYURUI        PIC  X(12).
            03  WRK-YKJ-PTNUM         PIC  X(20).
            03  WRK-YKJ-KANANAME      PIC  X(44).
-      *----(02.01.01)--UPD-STTART---
-           03  WRK-YKJ-NAME          PIC  X(50).
-      *----(02.01.01)--UPD-STTART---
+      *----(02.01.02)--UPD-START---
+      *----(02.01.01)--UPD-START---
+           03  WRK-YKJ-NAME          PIC  X(88).
+      *----(02.01.01)--UPD-END-----
+      *----(02.01.02)--UPD-END-----
            03  WRK-YKJ-JYUSYO        PIC  X(56).
            03  WRK-YKJ-HSPNAME       PIC  X(56).
            03  WRK-YKJ-TEL           PIC  X(15).
@@ -911,7 +914,10 @@
            MOVE    SPA-KANANAME        TO  WRK-YKJ-KANANAME
       *
       *    ´µ¼Ô»áÌ¾
-           MOVE    SPA-NAME            TO  WRK-YKJ-NAME
+      *----(02.01.02)--UPD-START---
+      *     MOVE    SPA-NAME            TO  WRK-YKJ-NAME
+           PERFORM 265-NAMEHEN-SET-SEC
+      *----(02.01.02)--UPD-END-----
       *
       *    ½êºßÃÏ
            MOVE    SYS-1002-ADRS       TO  WRK-YKJ-JYUSYO
@@ -931,6 +937,53 @@
        260-PRT-PAGE-EXT.
            EXIT.
       *
+      *----(02.01.02)--ADD-START---
+      *****************************************************************
+      *   ´µ¼Ô»áÌ¾ÊÔ½¸½èÍý
+      *****************************************************************
+       265-NAMEHEN-SET-SEC           SECTION.
+      *
+           MOVE    1                   TO  STR-KET
+           MOVE    1                   TO  END-KET
+           MOVE    ZERO                TO  NUM-KET
+      *
+           PERFORM VARYING END-KET     FROM    1   BY  1
+                   UNTIL   SPA-NAME(END-KET:)      =   SPACE
+                   OR      END-KET     =  50
+               COMPUTE NUM-KET    =    NUM-KET     +   1
+           END-PERFORM
+      *
+           IF      END-KET    =    50
+               MOVE    END-KET     TO  NUM-KET
+           END-IF
+      *
+           EVALUATE    NUM-KET
+           WHEN    0
+               GO  TO  265-NAMEHEN-SET-EXT
+           WHEN    1   THRU    30
+               MOVE    SPA-NAME(1:NUM-KET) TO  WRK-YKJ-NAME(1:NUM-KET)
+           WHEN    31  THRU    40
+               COMPUTE END-KET =   END-KET +   44
+               MOVE    SPA-NAME(1:NUM-KET) TO  WRK-YKJ-NAME(45:NUM-KET)
+           WHEN    41  THRU    50
+               COMPUTE END-KET =   END-KET +   1
+               COMPUTE NUM-KET =   NUM-KET -   40
+               MOVE    SPA-NAME(1:40)      TO  WRK-YKJ-NAME(1:40)
+               MOVE    SPA-NAME(41:NUM-KET)
+                                           TO  WRK-YKJ-NAME(45:NUM-KET)
+               PERFORM UNTIL   END-KET     >=  85
+                   MOVE    "¡¡"            TO  WRK-YKJ-NAME(END-KET:2)
+                   COMPUTE END-KET =   END-KET +   2
+               END-PERFORM
+           END-EVALUATE
+      *
+           MOVE    "¡¡ÍÍ"         TO  WRK-YKJ-NAME(END-KET:4)
+      *
+           .
+       265-NAMEHEN-SET-EXT.
+           EXIT.
+      *
+      *----(02.01.02)--ADD-END-----
       *****************************************************************
       *    Ä¢É¼½ÐÎÏ½èÍý
       *****************************************************************
@@ -985,11 +1038,13 @@
            MOVE    WRK-YKJ-PTNUM            TO  HCM301-ID
            MOVE    WRK-YKJ-KANANAME         TO  HCM301-KANANAME
       *----(02.01.01)--UPD-STTART---
-           IF      WRK-YKJ-NAME(31:)    =   SPACE
-               MOVE    WRK-YKJ-NAME             TO  HCM301-NAME
+      *----(02.01.02)--UPD-STTART---
+           IF      WRK-YKJ-NAME(35:)    =   SPACE
+               MOVE    WRK-YKJ-NAME(1:34)       TO  HCM301-NAME
            ELSE
                MOVE    WRK-YKJ-NAME             TO  HCM301-NAME2
            END-IF
+      *----(02.01.02)--UPD-END------
       *----(02.01.01)--UPD-END------
            MOVE    WRK-YKJ-JYUSYO           TO  HCM301-JYUSYO
            MOVE    WRK-YKJ-HSPNAME          TO  HCM301-HSPNAME
@@ -1063,11 +1118,13 @@
            MOVE    WRK-YKJ-PTNUM            TO  HCM302-ID
            MOVE    WRK-YKJ-KANANAME         TO  HCM302-KANANAME
       *----(02.01.01)--UPD-STTART---
-           IF      WRK-YKJ-NAME(31:)    =   SPACE
-               MOVE    WRK-YKJ-NAME             TO  HCM302-NAME
+      *----(02.01.02)--UPD-STTART---
+           IF      WRK-YKJ-NAME(35:)    =   SPACE
+               MOVE    WRK-YKJ-NAME(1:34)       TO  HCM302-NAME
            ELSE
                MOVE    WRK-YKJ-NAME             TO  HCM302-NAME2
            END-IF
+      *----(02.01.02)--UPD-END------
       *----(02.01.01)--UPD-END------
            MOVE    WRK-YKJ-JYUSYO           TO  HCM302-JYUSYO
            MOVE    WRK-YKJ-HSPNAME          TO  HCM302-HSPNAME
@@ -1141,11 +1198,13 @@
            MOVE    WRK-YKJ-PTNUM            TO  HCM303-ID
            MOVE    WRK-YKJ-KANANAME         TO  HCM303-KANANAME
       *----(02.01.01)--UPD-STTART---
-           IF      WRK-YKJ-NAME(31:)    =   SPACE
-               MOVE    WRK-YKJ-NAME             TO  HCM303-NAME
+      *----(02.01.02)--UPD-STTART---
+           IF      WRK-YKJ-NAME(35:)    =   SPACE
+               MOVE    WRK-YKJ-NAME(1:34)       TO  HCM303-NAME
            ELSE
                MOVE    WRK-YKJ-NAME             TO  HCM303-NAME2
            END-IF
+      *----(02.01.02)--UPD-END------
       *----(02.01.01)--UPD-END------
            MOVE    WRK-YKJ-JYUSYO           TO  HCM303-JYUSYO
            MOVE    WRK-YKJ-HSPNAME          TO  HCM303-HSPNAME
@@ -1219,11 +1278,13 @@
            MOVE    WRK-YKJ-PTNUM            TO  HCM304-ID
            MOVE    WRK-YKJ-KANANAME         TO  HCM304-KANANAME
       *----(02.01.01)--UPD-STTART---
-           IF      WRK-YKJ-NAME(31:)    =   SPACE
-               MOVE    WRK-YKJ-NAME             TO  HCM304-NAME
+      *----(02.01.02)--UPD-STTART---
+           IF      WRK-YKJ-NAME(35:)    =   SPACE
+               MOVE    WRK-YKJ-NAME(1:34)       TO  HCM304-NAME
            ELSE
                MOVE    WRK-YKJ-NAME             TO  HCM304-NAME2
            END-IF
+      *----(02.01.02)--UPD-END------
       *----(02.01.01)--UPD-END------
            MOVE    WRK-YKJ-JYUSYO           TO  HCM304-JYUSYO
            MOVE    WRK-YKJ-HSPNAME          TO  HCM304-HSPNAME
@@ -1297,11 +1358,13 @@
            MOVE    WRK-YKJ-PTNUM            TO  HCM305-ID
            MOVE    WRK-YKJ-KANANAME         TO  HCM305-KANANAME
       *----(02.01.01)--UPD-STTART---
-           IF      WRK-YKJ-NAME(31:)    =   SPACE
-               MOVE    WRK-YKJ-NAME             TO  HCM305-NAME
+      *----(02.01.02)--UPD-STTART---
+           IF      WRK-YKJ-NAME(35:)    =   SPACE
+               MOVE    WRK-YKJ-NAME(1:34)       TO  HCM305-NAME
            ELSE
                MOVE    WRK-YKJ-NAME             TO  HCM305-NAME2
            END-IF
+      *----(02.01.02)--UPD-END------
       *----(02.01.01)--UPD-END------
            MOVE    WRK-YKJ-JYUSYO           TO  HCM305-JYUSYO
            MOVE    WRK-YKJ-HSPNAME          TO  HCM305-HSPNAME
@@ -1375,11 +1438,13 @@
            MOVE    WRK-YKJ-PTNUM            TO  HCM306-ID
            MOVE    WRK-YKJ-KANANAME         TO  HCM306-KANANAME
       *----(02.01.01)--UPD-STTART---
-           IF      WRK-YKJ-NAME(31:)    =   SPACE
-               MOVE    WRK-YKJ-NAME             TO  HCM306-NAME
+      *----(02.01.02)--UPD-STTART---
+           IF      WRK-YKJ-NAME(35:)    =   SPACE
+               MOVE    WRK-YKJ-NAME(1:34)       TO  HCM306-NAME
            ELSE
                MOVE    WRK-YKJ-NAME             TO  HCM306-NAME2
            END-IF
+      *----(02.01.02)--UPD-END------
       *----(02.01.01)--UPD-END------
            MOVE    WRK-YKJ-JYUSYO           TO  HCM306-JYUSYO
            MOVE    WRK-YKJ-HSPNAME          TO  HCM306-HSPNAME
