@@ -31,6 +31,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Æ£¸¶    03/06/10  Ï·¿ÍÊÝ¸±¤Î°ìÉôÉéÃ´¶â¤ÎÊÔ½¸
       *  01.00.02    NACL-Æ£¸¶    03/07/21  ¸øÈñÍó¤ÎÆÃÄê¼À´µ¤ÎÌ¾¾Î¤ÎÊÑ¹¹
+      *  01.01.03    NACL-Æ£¸¶    03/10/30  È÷¹ÍÍó¤ËÏ·¿ÍºÆ·Ç¤òÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -58,7 +59,9 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCM2K.INC".
-           COPY    "HCM2L.INC".
+      *****COPY    "HCM2L.INC".
+           COPY    "HCM2LV01.INC"  REPLACING  //HCM2LV01//
+                                   BY         //HCM2L//.
       *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
@@ -230,6 +233,17 @@
                        09  SUM-KOH-SHOKUJIKENSU   PIC  9(06).
                        09  SUM-KOH-SHOKUJIRYOYOHI PIC  9(10).
                        09  SUM-KOH-SHOKUJIFTN     PIC  9(10).
+      *        Ï·¿ÍÊÝ·ò¡ÊºÆ·Ç¡Ë      
+               05  SUM-ROU-KOH-TABLE           OCCURS  10. 
+                   07  SUM-ROU-KOH-TBL.
+                       09  SUM-ROU-KOH-KENSU          PIC  9(06).
+                       09  SUM-ROU-KOH-NISSU          PIC  9(06).
+                       09  SUM-ROU-KOH-YKZFTN         PIC  9(08).
+                       09  SUM-ROU-KOH-FTNMONEY       PIC  9(09).
+                       09  SUM-ROU-KOH-SHOKUJIKENSU   PIC  9(06).
+                       09  SUM-ROU-KOH-SHOKUJINISSU   PIC  9(06).
+                       09  SUM-ROU-KOH-SHOKUJIRYOYOHI PIC  9(10).
+                       09  SUM-ROU-KOH-SHOKUJIFTN     PIC  9(10).
       *        ¹ç·×         
                05  SUM-GOK-TBL         OCCURS  4.
                    07  SUM-GOK-KENSU      PIC 9(06).    
@@ -571,6 +585,25 @@
       *     
            MOVE    SUM-GOK-KENSU (IDX1 2)  TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM2L-KENSUG (1)    
+      *
+      *    ¸øÈñºÆ·ÇÊÔ½¸½èÍý
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       10
+               IF      SUM-ROU-KOH-KENSU (IDX1 IDX)    >   ZERO
+                   MOVE    SUM-ROU-KOH-KENSU    (IDX1 IDX) 
+                                           TO  WRK-KENSUZ
+                   MOVE    WRK-KENSUZ      TO  HCM2L-BKO-KENSU (IDX) 
+      *************IF      IDX             =   1
+                       MOVE    SUM-ROU-KOH-NISSU    (IDX1 IDX)
+                                           TO  WRK-NISSUZ 
+                       MOVE    WRK-NISSUZ  TO  HCM2L-BKO-NISSU (IDX) 
+                       MOVE    SUM-ROU-KOH-FTNMONEY (IDX1 IDX)
+                                           TO  WRK-FTNMONEYZ
+      *                 MOVE    WRK-FTNMONEYZ
+      *                                     TO  HCM2L-BKO-ITBFTN(IDX)
+      *************END-IF                        
+               END-IF
+           END-PERFORM    
       *     
       *    Ä¢É¼°õºþ½èÍý¡Ê£±ÊÇÌÜ¡Ë
            MOVE    ZERO                TO  FLG-PRTKBN
@@ -766,7 +799,8 @@
                MOVE    "HCM2K.red"         TO  SPRT-PRTID
                MOVE    HCM2K               TO  SPRT-PRTDATA
            ELSE                          
-               MOVE    "HCM2L.red"         TO  SPRT-PRTID
+      *********MOVE    "HCM2L.red"         TO  SPRT-PRTID
+               MOVE    "HCM2LV01.red"      TO  SPRT-PRTID
                MOVE    HCM2L               TO  SPRT-PRTDATA
            END-IF    
            EVALUATE    IDX1
