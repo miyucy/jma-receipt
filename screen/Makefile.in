@@ -192,6 +192,7 @@ EXTRA_DIST = \
         W25.glade \
         W26.glade \
         W27.glade \
+        W99.glade \
         WERR.glade \
         WID1.glade \
         X01.glade \
