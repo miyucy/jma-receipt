@@ -3610,14 +3610,21 @@
            END-EVALUATE
       *
            EVALUATE    SPA-GMN-CUR
-               WHEN    2   THRU    13
+               WHEN    2   THRU    19
+               WHEN    50  THRU    69
                    MOVE    0               TO  W07-PAGENO
-               WHEN    20  THRU    23
+                   MOVE    0               TO  SPA-GMN-PAGENO
+               WHEN    20  THRU    29
                    MOVE    1               TO  W07-PAGENO
-               WHEN    30  THRU    31
+                   MOVE    1               TO  SPA-GMN-PAGENO
+               WHEN    30  THRU    39
                    MOVE    2               TO  W07-PAGENO
-               WHEN    40  THRU    41
+                   MOVE    2               TO  SPA-GMN-PAGENO
+               WHEN    40  THRU    49
                    MOVE    3               TO  W07-PAGENO
+                   MOVE    3               TO  SPA-GMN-PAGENO
+               WHEN    OTHER
+                   MOVE    SPA-GMN-PAGENO  TO  W07-PAGENO
            END-EVALUATE
       *
            .
