@@ -675,9 +675,9 @@
                WHEN    "9101"
                WHEN    "9102"
                    IF      SPA-PID1-FLG        =   "OK"
-                       PERFORM  4902-KOUSIN-SYORI-SEC
+                       PERFORM  49021-KOUSIN-AFTER-SEC
                    ELSE
-                       PERFORM  4902-KOUSIN-SYORI-SEC
+                       PERFORM  49021-KOUSIN-AFTER-SEC
                    END-IF
       *        保険重複確認
                WHEN    "0105"
@@ -2212,8 +2212,6 @@
       *****************************************************************
        4902-KOUSIN-SYORI-SEC           SECTION.
       *
-           IF      SPA-KEI-FLG         =   ZERO
-      *
       *    更新サブへ
            CALL    "ORCGP029"      USING   MCPAREA
                                            SPAAREA
@@ -2231,9 +2229,19 @@
                GO      TO      4902-KOUSIN-SYORI-EXT
            END-IF
       *
-           END-IF
+      *    登録後、処理
+           PERFORM  49021-KOUSIN-AFTER-SEC
+           .
+       4902-KOUSIN-SYORI-EXT.
+           EXIT.
+      *----(01.00.05) LINE UPD START ----------------------------------
+      *
+      *****************************************************************
+      *    登録後、処理
+      *****************************************************************
+       49021-KOUSIN-AFTER-SEC          SECTION.
+      *
            MOVE    SPACE               TO  SPA-KEI-ERRCD
-           MOVE    ZERO                TO  SPA-KEI-FLG
       *
       *    更新済
            MOVE    SPACE               TO  SPA-UPDFLG
@@ -2258,14 +2266,17 @@
                    MOVE    SPA-GMN-PTID        TO  SPA-PTID
                    MOVE    SPACE               TO  SPA-ERRMSG
       *            更新後、元の画面へ
-                   IF      FLG-CLAIM-OK        =   ZERO
+                   IF     (FLG-CLAIM-OK        =   ZERO )  AND
+                          (SPA-KEI-FLG         =   ZERO )
                        PERFORM 210-BACK
                    ELSE
                        PERFORM 210-BACK-SYORI-SEC
                    END-IF
-                   GO      TO      4902-KOUSIN-SYORI-EXT
+                   MOVE    ZERO                TO  SPA-KEI-FLG
+                   GO      TO      49021-KOUSIN-AFTER-EXT
                END-IF
            END-IF
+           MOVE    ZERO                TO  SPA-KEI-FLG
       *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
@@ -2281,10 +2292,10 @@
            MOVE    "P02"               TO  SPA-P02-GAMEN
            MOVE    ZERO                TO  SPA-GMN-CUR
            PERFORM 310-SPA-SET-SEC
+      *
            .
-       4902-KOUSIN-SYORI-EXT.
+       49021-KOUSIN-AFTER-EXT.
            EXIT.
-      *----(01.00.05) LINE UPD START ----------------------------------
       *
       *****************************************************************
       *    登録処理
