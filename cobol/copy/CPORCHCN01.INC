@@ -26,7 +26,7 @@
       *    処理区分 (1:頭書きのみ印字/ 2:すべて印字） ... 必須
            03  ORCHCN01-SYORIKBN           PIC X(01).
       *    帳票区分 (1:カルテ 2:続紙 3:両方)<- 処理区分=１のときのみ設定
-           03  ORCHCN01-TYOHOKBN           PIC X(01).
+           03  ORCHCN01-PRTKBN             PIC X(01).
       *    主治医 ... 任意
            03  ORCHCN01-DR-TBL.
                05  ORCHCN01-DR-OCC         OCCURS  3.
