@@ -5,6 +5,8 @@ prefix = @prefix@
 exec_prefix= @exec_prefix@
 sysconfdir = @sysconfdir@
 
+top_srcdir = @top_srcdir@
+
 docdir = ${prefix}/doc
 
 datadir = ${exec_prefix}/data
@@ -26,5 +28,5 @@ distclean:
 	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
 	-rm -f Makefile
 
-install: all
+install: 
 	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i install; done
