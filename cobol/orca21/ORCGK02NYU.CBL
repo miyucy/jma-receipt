@@ -2230,6 +2230,8 @@
       *            MOVE    "K008"              TO  SPA-ERRCD
       *****    END-IF
                MOVE    1                   TO  SPA-NAI-ROUFLG
+           ELSE
+               MOVE    ZERO                TO  SPA-NAI-ROUFLG
            END-IF
       *
            .
@@ -4664,7 +4666,8 @@
            END-IF
       *
       *    空白行入力時、前の行へ
-           IF      FLG-KUHAKU          =   1
+           IF     (FLG-KUHAKU          =   1  )  AND
+                  (SPA-GMN-IDX         >   ZERO)
                IF     (SPA-GMN-INPUTCD (SPA-GMN-IDX)(1:1)
                                                NOT =   "."  )  AND
                       (SPA-COM-KAIFLG (SPA-GMN-IDX)    =   SPACE )
