@@ -20,9 +20,6 @@
                 04  R04-B09-STATE   PIC S9(9)   BINARY.
               03  R04-B10.
                 04  R04-B10-STATE   PIC S9(9)   BINARY.
-              04  R04-SYOKBN.
-                05  R04-SYOKBN-VALUE   PIC X.
-                05  R04-SYOKBN-LABEL   PIC X(9).
               04  R04-TSTDATA-G    OCCURS  25.
                 05  R04-TSTDATA-STATE   PIC S9(09) BINARY.
                 05  R04-TSTDATA.
