@@ -540,6 +540,8 @@
                PERFORM 2001-HENSYU-SYORI-SEC
       *        Ä¢É¼°õºþ
                PERFORM 300-PRINT-SYORI-SEC
+      *        £Ä£Âºï½ü½èÍý
+               PERFORM 500-DELETE-SEC
            END-PERFORM
       *
            .
@@ -1240,6 +1242,43 @@
       *
            .
        400-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Âºï½ü½èÍý
+      *****************************************************************
+       500-DELETE-SEC                   SECTION.
+      *
+      *    Æþ±¡Ä¢É¼¥ª¡¼¥À¡¼¸¡º÷
+           INITIALIZE                  ORDERPRT-REC
+           MOVE    SPA-HOSPID          TO  ORDERPRT-HOSPID
+           MOVE    SPA-PTID            TO  ORDERPRT-PTID
+           MOVE    ORCHC501-PTNUM      TO  ORDERPRT-PTNUM
+           MOVE    SPA-NYUGAIKBN       TO  ORDERPRT-NYUGAIKBN
+           MOVE    ORCHC501-SRYKA      TO  ORDERPRT-SRYKA
+           MOVE    ORCHC501-HKNCOMBI   TO  ORDERPRT-HKNCOMBI
+      *    ¥·¥¹¥Æ¥àÆüÉÕ
+           MOVE    ORCHC501-SYSYMD     TO  ORDERPRT-SYSYMD
+      *    È¯¹ÔÆü
+           MOVE    ORCHC501-PRINTYMD   TO  ORDERPRT-PRINTYMD
+      *    È¯¹Ô»þ´Ö
+           MOVE    ORCHC501-PRINTHMS   TO  ORDERPRT-PRINTHMS
+      *    Ä¢É¼¶èÊ¬
+           MOVE    WRK-PRTKBN          TO  ORDERPRT-PRTKBN
+      *
+           MOVE    ORDERPRT-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-ORDERPRT-DEL1
+                                       TO  MCP-PATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCHC501 ORDERPRT DEL ERR:"  MCP-RC
+                       ",KEY:" ORDERPRT-KEY
+               MOVE    1               TO  ORCHC501-RC
+           END-IF
+           .
+       500-DELETE-EXT.
            EXIT.
       *
       *****************************************************************

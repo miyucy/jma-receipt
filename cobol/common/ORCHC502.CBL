@@ -512,6 +512,8 @@
                        MOVE    "5"             TO  WRK-PRTKBN
                END-EVALUATE
                PERFORM 2001-HENSYU-SYORI-SEC
+      *        £Ä£Âºï½ü½èÍý
+               PERFORM 500-DELETE-SEC
            END-PERFORM
       *
            .
@@ -1175,6 +1177,40 @@
            .
        400-PRINT-EXT.
            EXIT.
+      *****************************************************************
+      *    £Ä£Âºï½ü½èÍý
+      *****************************************************************
+       500-DELETE-SEC                   SECTION.
+      *
+      *    Æþ±¡Ä¢É¼¥ª¡¼¥À¡¼¸¡º÷
+           INITIALIZE                  ORDERPRT-REC
+           MOVE    SPA-HOSPID          TO  ORDERPRT-HOSPID
+           MOVE    SPA-PTID            TO  ORDERPRT-PTID
+           MOVE    ORCHC502-PTNUM      TO  ORDERPRT-PTNUM
+           MOVE    SPA-NYUGAIKBN       TO  ORDERPRT-NYUGAIKBN
+           MOVE    ORCHC502-SRYKA      TO  ORDERPRT-SRYKA
+           MOVE    ORCHC502-HKNCOMBI   TO  ORDERPRT-HKNCOMBI
+           MOVE    ORCHC502-SYSYMD     TO  ORDERPRT-SYSYMD
+           MOVE    ORCHC502-PRINTYMD   TO  ORDERPRT-PRINTYMD
+           MOVE    ORCHC502-PRINTHMS   TO  ORDERPRT-PRINTHMS
+           MOVE    WRK-PRTKBN          TO  ORDERPRT-PRTKBN
+      *
+           MOVE    ORDERPRT-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-ORDERPRT-DEL1
+                                       TO  MCP-PATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCHC502 ORDERPRT DEL ERR:"  MCP-RC
+                       ",KEY:" ORDERPRT-KEY
+               MOVE    1               TO  ORCHC502-RC
+           END-IF
+           .
+       500-DELETE-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    Á´³ÑÊÑ´¹½èÍý
