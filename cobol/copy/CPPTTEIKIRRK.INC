@@ -40,12 +40,16 @@
            03  PTTEIKIRRK-SKYEDYMD         PIC  X(08).
       *請求点数
            03  PTTEIKIRRK-SKYTEN           PIC  S9(09).
+      *請求金額−消費税（再掲）
+           03  PTTEIKIRRK-SKYMONEY-TAX-SAI PIC  S9(07).
       *請求金額
            03  PTTEIKIRRK-SKYMONEY         PIC  S9(09).
       *入院履歴−履歴連番
            03  PTTEIKIRRK-RRKNUM           PIC  9(03).
       *入院履歴−伝票番号
            03  PTTEIKIRRK-DENPNUM          PIC  9(07).
+      *請求データ更新フラグ（０：新規／１：訂正）
+           03  PTTEIKIRRK-SKYUPDFLG        PIC  9(01).
       *端末ＩＤ
            03  PTTEIKIRRK-TERMID           PIC  X(16).
       *オペーレータＩＤ

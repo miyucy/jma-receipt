@@ -151,6 +151,10 @@
                            11  SPA-NAI-THAKYMD     PIC  X(08).
                            11  SPA-NAI-TNYUGAIKBN  PIC  X(01).
                            11  SPA-NAI-TDENPJTIKBN PIC  X(01).
+                           11  SPA-NAI-TSKYMONEY-TAX-SAI
+                                                   PIC  S9(10).
+                           11  SPA-NAI-TNYUKIN-TOTAL
+                                                   PIC  S9(10).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-HEAD.
                        09  SPA-NAI-MISYUFLG        PIC  9(01).
@@ -748,6 +752,11 @@
                MOVE    "%"             TO  WK-GMN-PA
                MOVE    WK-GMN-RITU     TO  SPA-GMN-TFTNRATE (IDX-LST)
            END-IF
+      *
+      *    ¿¡µ·≥€°›æ√»Ò¿«° ∫∆∑«°À
+           MOVE    SYU-SKYMONEY-TAX-SAI
+                                       TO  SPA-NAI-TSKYMONEY-TAX-SAI
+                                                            (IDX-LST)
       *
            .
        31011-SYULIST-HEN-EXT.
@@ -1883,7 +1892,6 @@
       *                MOVE    WRK-SPA-STAFFCD TO  ORCHCN03-STAFFCD
       *                MOVE    WRK-SPA-SYSYMD  TO  ORCHCN03-SYSYMD
       *                MOVE    WRK-SPA-TERMID  TO  ORCHCN03-TERMID
-      *                MOVE    1               TO  ORCHCN03-HAKKOFLG
       *                MOVE    1               TO  ORCHCN03-CNT
       *
       *                MOVE    WRK-SPA-HOSPID  TO  ORCHCN03-HOSPID (1)
@@ -1896,12 +1904,18 @@
       *                MOVE    SPA-GMN-TDENPNUM (IDX0)
       *                                    TO  ORCHCN03-DENPNUM (1)
       *
-      *                COMPUTE ORCHCN03-SEIKYU  (1)
-      *                    =   SPA-GMN-TMISYU (IDX0)
+      *                MOVE    SPA-NAI-TSKYMONEY-TAX-SAI (IDX0)
+      *                                    TO  ORCHCN03-SEIKYU-TAX-SAI
+      *                                                         (1)
+      *
+      *                MOVE    SPA-GMN-TSEIKYU (IDX0)
+      *                                    TO  ORCHCN03-SEIKYU  (1)
+      *
+      *                COMPUTE ORCHCN03-NYUKIN  (1)
+      *                    =   SPA-NAI-TNYUKIN-TOTAL
       *                    +   SPA-GMN-TNYUKIN (IDX0)
       *
-      *                MOVE    SPA-GMN-TNYUKIN (IDX0)
-      *                                    TO  ORCHCN03-NYUKIN  (1)
+      *                MOVE    1           TO  ORCHCN03-HAKKOFLG(1)
       *
       *                CALL    WRK-NYU-SEIKYU-PG
       *                                    USING   ORCHCN03AREA
@@ -1911,12 +1925,17 @@
       *                MOVE    SPA-GMN-TDENPNUM (IDX0)
       *                                    TO  ORCHC03-DENPNUM
       *
-      *                COMPUTE ORCHC03-SEIKYU
-      *                    =   SPA-GMN-TMISYU (IDX0)
+      *                MOVE    SPA-NAI-TSKYMONEY-TAX-SAI (IDX0)
+      *                                    TO  ORCHC03-SEIKYU-TAX-SAI
+      *                                                       (1)
+      *
+      *                MOVE    SPA-GMN-TSEIKYU (IDX0)
+      *                                    TO  ORCHC03-SEIKYU (1)
+      *
+      *                COMPUTE ORCHC03-NYUKIN  (1)
+      *                    =   SPA-NAI-TNYUKIN-TOTAL
       *                    +   SPA-GMN-TNYUKIN (IDX0)
       *
-      *                MOVE    SPA-GMN-TNYUKIN (IDX0)
-      *                                    TO  ORCHC03-NYUKIN
       *                MOVE   1            TO  ORCHC03-HAKKOFLG
       *                CALL  WRK-GAI-SEIKYU-PG USING
       *                                        WRK-SPA-AREA

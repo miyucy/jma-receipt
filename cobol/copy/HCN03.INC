@@ -9,11 +9,14 @@
             02  HCN03-HOKEN PIC X(20).
             02  HCN03-FUTAN PIC X(6).
             02  HCN03-MIDASI    PIC X(20).
-            02  HCN03-HKNRYO    PIC X(24)       OCCURS  12 TIMES.
+            02  HCN03-HKNRYO
+                    PIC X(24)   OCCURS  12 TIMES.
             02  HCN03-HOKENBUN  PIC X(24).
             02  HCN03-HOKENGAI  PIC X(24).
-            02  HCN03-JIHI  PIC X(24)   OCCURS  8 TIMES.
-            02  HCN03-JIHIMSG   PIC X(20)       OCCURS  5 TIMES.
+            02  HCN03-JIHI
+                    PIC X(24)   OCCURS  8 TIMES.
+            02  HCN03-JIHIMSG
+                    PIC X(20)   OCCURS  5 TIMES.
             02  HCN03-SYOKUJI   PIC X(24).
             02  HCN03-ROUJIN    PIC X(24).
             02  HCN03-KOUHI PIC X(24).
@@ -30,3 +33,4 @@
             02  HCN03-LBL-N-MISYU   PIC X(20).
             02  HCN03-LBL-N-MISYU-EN    PIC X(2).
             02  HCN03-NYU-MISYUKIN  PIC X(24).
+            02  HCN03-MIDASHI   PIC X(10).

@@ -34,6 +34,7 @@
       *                           03/02/25  再請求区分を削除
       *  01.00.03    NACL-太田    03/10/14  入金区分を追加
       *  01.00.04    NACL-太田    03/11/18  更新日付編集対応
+      *  01.00.05    NACL-太田    04/04/12  再処理の取り扱いを追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -80,6 +81,11 @@
                        09                     PIC   X(01).
                        09  SPA-GMN-NYUKINKBNMEI
                                               PIC   X(58).
+                   07  SPA-GMN-SAISYORIKBN-G.
+                       09  SPA-GMN-SAISYORIKBN  PIC   X(01).
+                       09                     PIC   X(01).
+                       09  SPA-GMN-SAISYORIKBNMEI
+                                              PIC   X(58).
                    07  SPA-GMN-NYUKINKBNLST-G.
                        09  SPA-GMN-NYUKINKBN-MAX   PIC   9(03).
                        09  SPA-GMN-NYUKINKBNLST    OCCURS  2.
@@ -87,6 +93,13 @@
                            11                      PIC   X(01).
                            11  SPA-GMN-NYUKINKBNMEIL
                                                    PIC   X(58).
+                   07  SPA-GMN-SAISYORIKBNLST-G.
+                       09  SPA-GMN-SAISYORIKBN-MAX   PIC   9(03).
+                       09  SPA-GMN-SAISYORIKBNLST    OCCURS  2.
+                           11  SPA-GMN-SAISYORIKBNL  PIC   X(01).
+                           11                        PIC   X(01).
+                           11  SPA-GMN-SAISYORIKBNMEIL
+                                                     PIC   X(58).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SEIKYU-VAL.
                        09  SPA-NAI-SEIKYU01   PIC 9(02).
@@ -333,6 +346,16 @@
            MOVE    SPA-GMN-NYUKINKBNLST(1)
                                        TO  SPA-GMN-NYUKINKBN-G
       *
+           MOVE    2                   TO  SPA-GMN-SAISYORIKBN-MAX
+           MOVE    "1"                 TO  SPA-GMN-SAISYORIKBNL(1)
+           MOVE    "請求取消後、再作成"
+                                       TO  SPA-GMN-SAISYORIKBNMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-SAISYORIKBNL(2)
+           MOVE    "元の請求を訂正更新"
+                                       TO  SPA-GMN-SAISYORIKBNMEIL(2)
+           MOVE    SPA-GMN-SAISYORIKBNLST(1)
+                                       TO  SPA-GMN-SAISYORIKBN-G
+      *
            MOVE    SPACE               TO  SYS-5010-REC.
            INITIALIZE                      SYS-5010-REC.
            MOVE    "5010"              TO  SYS-5010-KANRICD.
@@ -359,6 +382,17 @@
                                    =   SPA-GMN-NYUKINKBNL (IDX1))
                        MOVE    SPA-GMN-NYUKINKBNLST (IDX1)
                                        TO  SPA-GMN-NYUKINKBN-G
+                   END-IF
+      *
+               END-PERFORM
+      *
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-SAISYORIKBN-MAX )
+      *
+                   IF    ( SYS-5010-SAISYORIKBN
+                                   =   SPA-GMN-SAISYORIKBNL (IDX1))
+                       MOVE    SPA-GMN-SAISYORIKBNLST (IDX1)
+                                       TO  SPA-GMN-SAISYORIKBN-G
                    END-IF
       *
                END-PERFORM
@@ -429,6 +463,7 @@
            MOVE    W23-SEIKYU02    TO  SPA-GMN-SEIKYU02
            MOVE    W23-SEIKYU03    TO  SPA-GMN-SEIKYU03
            MOVE    W23-NYUKINKBN   TO  SPA-GMN-NYUKINKBN-G
+           MOVE    W23-SAISYORIKBN TO  SPA-GMN-SAISYORIKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -459,6 +494,12 @@
       *
       *    入金区分チェック
            PERFORM 4100-NYUKINKBN-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    再処理区分区分チェック
+           PERFORM 4100-SAISYORIKBN-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -619,6 +660,36 @@
       *
        4100-NYUKINKBN-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    再処理区分チェック処理
+      *****************************************************************
+       4100-SAISYORIKBN-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-SAISYORIKBN-G =   SPACE )
+               MOVE    SPA-GMN-SAISYORIKBNLST(1)
+                                       TO  SPA-GMN-SAISYORIKBN-G
+               GO  TO  4100-SAISYORIKBN-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   SPA-GMN-SAISYORIKBN-MAX )
+                     OR  ( SPA-GMN-SAISYORIKBN
+                                   =   SPA-GMN-SAISYORIKBNL (IDXA))
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDXA    >   SPA-GMN-SAISYORIKBN-MAX )
+               MOVE    SPA-GMN-SAISYORIKBNLST(1)
+                                       TO  SPA-GMN-SAISYORIKBN-G
+           ELSE
+               MOVE    SPA-GMN-SAISYORIKBNLST(IDXA)
+                                       TO  SPA-GMN-SAISYORIKBN-G
+           END-IF
+      *
+           .
+      *
+       4100-SAISYORIKBN-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
@@ -670,6 +741,7 @@
            MOVE    SPA-NAI-SEIKYU02        TO  SYS-5010-SEIKYU-DAY2
            MOVE    SPA-NAI-SEIKYU03        TO  SYS-5010-SEIKYU-DAY3
            MOVE    SPA-GMN-NYUKINKBN       TO  SYS-5010-NYUKINKBN
+           MOVE    SPA-GMN-SAISYORIKBN     TO  SYS-5010-SAISYORIKBN
            MOVE    SPA-TERMID              TO  SYS-5010-TERMID
            MOVE    SPA-OPID                TO  SYS-5010-OPID
            MOVE    SYS-5010-REC            TO  SYSKANRI-REC
@@ -758,6 +830,13 @@
                    UNTIL ( IDX1    >   SPA-GMN-NYUKINKBN-MAX )
                MOVE    SPA-GMN-NYUKINKBNLST(IDX1)
                                            TO  W23-NYUKINKBNLST(IDX1)
+           END-PERFORM
+           MOVE    SPA-GMN-SAISYORIKBN-G     TO  W23-SAISYORIKBN
+           MOVE    SPA-GMN-SAISYORIKBN-MAX   TO  W23-SAISYORIKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-SAISYORIKBN-MAX )
+               MOVE    SPA-GMN-SAISYORIKBNLST(IDX1)
+                                           TO  W23-SAISYORIKBNLST(IDX1)
            END-PERFORM
       *
            PERFORM 5001-MAPCUR-SEC.
@@ -862,6 +941,8 @@
                    MOVE    "SEIKYU03"      TO  MCP-WIDGET
            WHEN    04
                    MOVE    "NYUKINKBN"     TO  MCP-WIDGET
+           WHEN    05
+                   MOVE    "SAISYORIKBN"   TO  MCP-WIDGET
            WHEN    101
                    MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE.
@@ -883,10 +964,12 @@
                    MOVE    3           TO  SPA-GMN-CUR
            WHEN    "NYUKINKBN"
                    MOVE    4           TO  SPA-GMN-CUR
+           WHEN    "SAISYORIKBN"
+                   MOVE    5           TO  SPA-GMN-CUR
            END-EVALUATE
       *
            EVALUATE    WRK-MCP-WIDGET
-           WHEN    "NYUKINKBN"
+           WHEN    "SAISYORIKBN"
                MOVE    101             TO  SPA-GMN-CUR
            WHEN    OTHER
                COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR +   1

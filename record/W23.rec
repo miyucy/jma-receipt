@@ -22,5 +22,12 @@ W23	{
 			count	int;
 			item	varchar(60)[5];
 		};
+		CMB_SAISYORIKBN	{
+			SAISYORIKBN {
+				value	varchar(60);
+			};
+			count	int;
+			item	varchar(60)[5];
+		};
 	};
 };

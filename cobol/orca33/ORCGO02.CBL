@@ -1913,8 +1913,9 @@
                                    TO  SHELLTBL-ARG6
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG7
+           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG8
            MOVE    TEIKIERR
-                                   TO  SHELLTBL-ARG8
+                                   TO  SHELLTBL-ARG9
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL

@@ -42,68 +42,42 @@
       *
       *    エラーファイル
        FD  TEIKIERR-FILE.
-       01  TEIKIERR-REC             PIC X(200). 
+       01  TEIKIERR-REC                PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT5.INC"
-                                   REPLACING  //TEIKI01PARA//
-                                   BY         //TEIKIERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+           COPY    "CPCOMMONDAT5.INC"  REPLACING  //TEIKI01PARA//
+                                       BY         //TEIKIERR//.
+           03  FILLER                  PIC X(04)   VALUE   ".dat".
       *
       *    フラグ領域
        01  STS-AREA.
-           03  STS-TEIKIERR                            PIC X(02).
+           03  STS-TEIKIERR            PIC X(02).
       *
        01  FLG-AREA.
-           03  FLG-END                                 PIC 9(01).
-           03  FLG-ERR                                 PIC 9(01).
+           03  FLG-END                 PIC 9(01).
+           03  FLG-ERR                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
-           03  CNT-OUT1                                PIC 9(06).
+           03  CNT-OUT1                PIC 9(06).
       *
        01  INDEX-AREA.
-           03  IDX1                                    PIC 9(04). 
-           03  IDX2                                    PIC 9(04). 
-           03  IDX3                                    PIC 9(04). 
-      *
-      *    システム領域
-       01  SYS-AREA.
-           03  SYS-TIME.
-               05  SYS-THH         PIC 9(02).
-               05  SYS-TMM         PIC 9(02).
-               05  SYS-TSS         PIC 9(02).
-               05  SYS-TDD         PIC 9(02).
-           03  SYS-YMD.
-               05  SYS-YY          PIC 9(04).
-               05  SYS-MM          PIC 9(02).
-               05  SYS-DD          PIC 9(02).
-           03  SYS-WKYMD.
-               05  SYS-WKYY        PIC 9(02).
-               05  SYS-WKMM        PIC 9(02).
-               05  SYS-WKDD        PIC 9(02).
+           03  IDX1                    PIC 9(04). 
+           03  IDX2                    PIC 9(04). 
+           03  IDX3                    PIC 9(04). 
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-DBPATH                          PIC  X(100).
-           03  WRK-PARA.
-               05  WRK-PARA-ARG1.
-                   07   WRK-PARA-SRYYM             PIC  X(06).
-                   07   WRK-PARA-TERMID            PIC  X(64).
-                   07   WRK-PARA-SYSYMD            PIC  X(08).
-               05  WRK-PARA-SYOKBN                 PIC  X(01).
-               05  WRK-PARA-KIKAN-OCC  OCCURS 3.
-                   07  WRK-PARA-KIKAN-ST       PIC  X(08).
-                   07  WRK-PARA-KIKAN-ED       PIC  X(08).
-                   07  WRK-PARA-KIKAN-KBN      PIC  X(01).
-               05  WRK-PARA-JOBID              PIC  9(07).
-               05  WRK-PARA-SHELLID            PIC  X(08).
+           03  WRK-DBPATH              PIC  X(100).
       *
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
+      *
+      *    定期請求一括処理パラメータ
+           COPY    "CPTEIKI1PARA.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -128,8 +102,9 @@
       *
       ****************************************************************
        LINKAGE                 SECTION.
-       01  COMMAND-PARAM.
-           02  FILLER      PIC X(2000).
+      *
+           COPY    "CPCOMMAND-PARAM.INC".
+      *
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -155,24 +130,18 @@
       *
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
-                                       SYS-AREA
                                        SPA-AREA
       *
-           ACCEPT  SYS-TIME    FROM    TIME
-      *
-           ACCEPT  SYS-WKYMD   FROM    DATE
-           COMPUTE SYS-YY  =   SYS-WKYY    +   2000
-           COMPUTE SYS-MM  =   SYS-WKMM
-           COMPUTE SYS-DD  =   SYS-WKDD
-      *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
-                                       INTO    WRK-PARA-ARG1
-                                               WRK-PARA-SYOKBN
-                                               WRK-PARA-KIKAN-OCC (1)
-                                               WRK-PARA-KIKAN-OCC (2)
-                                               WRK-PARA-KIKAN-OCC (3)
-                                               WRK-PARA-JOBID
-                                               WRK-PARA-SHELLID
+                                       INTO    TEIKI1P-ARG1
+                                               TEIKI1P-SYOKBN
+                                               TEIKI1P-KIKAN-OCC (1)
+                                               TEIKI1P-KIKAN-OCC (2)
+                                               TEIKI1P-KIKAN-OCC (3)
+                                               TEIKI1P-JOBID
+                                               TEIKI1P-SHELLID
+                                               TEIKI1P-HOSPID
+                                               TEIKI1P-ERRFILE
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -180,8 +149,7 @@
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
-           MOVE    "TEIKIERR"          TO  TEIKIERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TEIKIERR-TERMID
+           MOVE    TEIKI1P-ERRFILE     TO  TEIKIERR
       *
            .
        100-INIT-EXT.
@@ -199,8 +167,8 @@
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
+               MOVE    TEIKI1P-JOBID   TO  JOB-JOBID
+               MOVE    TEIKI1P-SHELLID
                                        TO  JOB-SHELLID
                MOVE    TEIKIERR-REC    TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD

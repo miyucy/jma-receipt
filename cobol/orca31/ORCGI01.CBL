@@ -6783,11 +6783,6 @@
                                        TO  WRK-SKYSTYMD
                    MOVE    WRK-MAE-SKYEDYMD
                                        TO  WRK-SKYEDYMD
-      *            収納データを更新する
-                   PERFORM 4801-SYUNOU-UPD-SEC
-                   IF    ( SPA-ERRCD       NOT =   SPACE )
-                       GO  TO  4801-PTNYUINRRK-EDIT-MAE-EXT
-                   END-IF
       *
       *            患者定期請求履歴を削除する
                    PERFORM 4801-PTTEIKIRRK-DEL-SEC
@@ -6797,6 +6792,12 @@
       *
       *            定期請求履歴を更新する
                    PERFORM 4801-TEIKIRRK-UPD-SEC
+                   IF    ( SPA-ERRCD       NOT =   SPACE )
+                       GO  TO  4801-PTNYUINRRK-EDIT-MAE-EXT
+                   END-IF
+      *
+      *            収納データを更新する
+                   PERFORM 4801-SYUNOU-UPD-SEC
                    IF    ( SPA-ERRCD       NOT =   SPACE )
                        GO  TO  4801-PTNYUINRRK-EDIT-MAE-EXT
                    END-IF
@@ -7216,6 +7217,24 @@
       *****************************************************************
        4801-TEIKIRRK-SUM-SEC           SECTION.
       *
+           INITIALIZE  SYUNOU-REC
+      *
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-NAI-I01-PTID    TO  SYU-PTID
+           MOVE    "1"                 TO  SYU-NYUGAIKBN
+           MOVE    PTTEIKIRRK-DENPNUM  TO  SYU-DENPNUM
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "SYUNOU-KEY"        TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC            =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+           END-IF
+      *
+           MOVE    "SYUNOU-KEY"        TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    定期請求管理情報集計（マイナス分）
            PERFORM VARYING IDX13   FROM    1   BY  1
                    UNTIL ( IDX13   >   100 )
@@ -7231,9 +7250,9 @@
                    MOVE    PTTEIKIRRK-SKYEDYMD
                                    TO  SUMTEIKIRRK-SKYEDYMD(IDX13)
                    COMPUTE SUMTEIKIRRK-SKYTEN (IDX13)
-                       =   PTTEIKIRRK-SKYTEN     *   -1
+                       =   SYU-TOTAL-HKNTEN    *   -1
                    COMPUTE SUMTEIKIRRK-SKYMONEY (IDX13)
-                       =   PTTEIKIRRK-SKYMONEY   *   -1
+                       =   SYU-SKYMONEY        *   -1
                    COMPUTE SUMTEIKIRRK-MAX
                        =   SUMTEIKIRRK-MAX     +   1
                    MOVE    100         TO  IDX13
@@ -7241,10 +7260,10 @@
                                    ALSO    PTTEIKIRRK-SAKKBN
                    COMPUTE SUMTEIKIRRK-SKYTEN (IDX13)
                        =   SUMTEIKIRRK-SKYTEN (IDX13)
-                       + ( PTTEIKIRRK-SKYTEN     *   -1 )
+                       + ( SYU-TOTAL-HKNTEN    *   -1 )
                    COMPUTE SUMTEIKIRRK-SKYMONEY (IDX13)
                        =   SUMTEIKIRRK-SKYMONEY (IDX13)
-                       + ( PTTEIKIRRK-SKYMONEY   *   -1 )
+                       + ( SYU-SKYMONEY        *   -1 )
                    MOVE    100         TO  IDX13
                END-EVALUATE
            END-PERFORM

@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    04/03/29  請求金額を収納より取得する
+      *                                     よう変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -552,43 +554,22 @@
            MOVE    SYS-1001-HOSPID TO  SYU-HOSPID
            MOVE    "1"             TO  SYU-NYUGAIKBN
            MOVE    PTTEIKIRRK-PTID TO  SYU-PTID
-           MOVE    WRK-PARA-SRYYM  TO  SYU-SRYYMD
-           MOVE    "__"            TO  SYU-SRYYMD (7 : )
-           MOVE    PTTEIKIRRK-SKYSTYMD
-                                   TO  SYU-SKYSTYMD
-           MOVE    PTTEIKIRRK-SKYEDYMD
-                                   TO  SYU-SKYEDYMD
-           MOVE    PTTEIKIRRK-HKNCOMBINUM
-                                   TO  SYU-HKNCOMBINUM
+           MOVE    PTTEIKIRRK-DENPNUM
+                                   TO  SYU-DENPNUM
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
-           MOVE    "SYUNOU-KEY18"  TO  WRK-DBPATH
+           MOVE    "SYUNOU-KEY"    TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    NOT =   ZERO )
+           IF    ( FLG-DBRC        =   ZERO )
+               MOVE    MCPDATA-REC TO  SYUNOU-REC
+           ELSE
                MOVE    1           TO  FLG-SYUNOU
+               INITIALIZE              SYUNOU-REC
            END-IF
       *
-           MOVE    ZERO            TO  FLG-HIT
-           PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
-                   OR    ( FLG-HIT =   1 )
-      *
-               MOVE    MCPDATA-REC TO  SYUNOU-REC
-      *
-               IF    ( SYU-DENPJTIKBN  NOT =   "3" )
-                   MOVE    1       TO  FLG-HIT
-               END-IF
-      *
-               MOVE    "SYUNOU-KEY18"  TO  WRK-DBPATH
-               PERFORM 900-TBL-READ-SEC
-               IF    ( FLG-DBRC    NOT =   ZERO )
-                   MOVE    1           TO  FLG-SYUNOU
-               END-IF
-      *
-           END-PERFORM
-      *
-           MOVE    "SYUNOU-KEY18"  TO  WRK-DBPATH
+           MOVE    "SYUNOU-KEY"    TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
-           IF    ( FLG-HIT         =   ZERO )
+           IF    ( FLG-SYUNOU      =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
                MOVE    "収納データの取得に失敗しました"
                                        TO  ERR-ERRMSG
@@ -791,7 +772,7 @@
            MOVE    SYU-DENPNUM             TO  HCMG002-DENPNUM
                                                            (CNT-LINE)
       *
-           MOVE    PTTEIKIRRK-SKYMONEY     TO  WRK-Z9
+           MOVE    SYU-SKYMONEY            TO  WRK-Z9
            MOVE    WRK-Z9                  TO  HCMG002-SEIKYU
                                                            (CNT-LINE)
       *
@@ -810,7 +791,7 @@
                                                            (CNT-LINE)
       *
            COMPUTE WRK-SKYMONEY-PAGE
-               =   WRK-SKYMONEY-PAGE   +   PTTEIKIRRK-SKYMONEY
+               =   WRK-SKYMONEY-PAGE   +   SYU-SKYMONEY
       *
            PERFORM 900-BG00201-READ-SEC
       *

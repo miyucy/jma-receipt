@@ -52,8 +52,10 @@
                05                           PIC  X(10).
       *        入金区分
                05  SYS-5010-NYUKINKBN       PIC  X(01).
+      *        再処理区分
+               05  SYS-5010-SAISYORIKBN     PIC  X(01).
       *        予備
-               05                           PIC  X(483).
+               05                           PIC  X(481).
       *端末ＩＤ
            03  SYS-5010-TERMID          PIC  X(16).
       *オペーレータＩＤ

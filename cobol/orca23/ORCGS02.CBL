@@ -231,7 +231,6 @@
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-CHK             PIC 9(01).
-           03  FLG-HIT             PIC 9(01).
            03  FLG-DBRC            PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-SYULIST-ROW     PIC 9(01).
@@ -2181,7 +2180,6 @@
                        MOVE    WRK-SPA-STAFFCD TO  ORCHCN03-STAFFCD
                        MOVE    WRK-SPA-SYSYMD  TO  ORCHCN03-SYSYMD
                        MOVE    WRK-SPA-TERMID  TO  ORCHCN03-TERMID
-                       MOVE    1               TO  ORCHCN03-HAKKOFLG
                        MOVE    1               TO  ORCHCN03-CNT
       *
                        MOVE    WRK-SPA-HOSPID  TO  ORCHCN03-HOSPID (1)
@@ -2193,10 +2191,14 @@
                                            TO  ORCHCN03-KJNYMD  (1)
                        MOVE    SYU-DENPNUM
                                            TO  ORCHCN03-DENPNUM (1)
+                       MOVE    SYU-SKYMONEY-TAX-SAI
+                                           TO  ORCHCN03-SEIKYU-TAX-SAI
+                                                                (1)
                        MOVE    SYU-SKYMONEY
                                            TO  ORCHCN03-SEIKYU  (1)
                        MOVE    SYU-NYUKIN-TOTAL
                                            TO  ORCHCN03-NYUKIN  (1)
+                       MOVE    1           TO  ORCHCN03-HAKKOFLG(1)
       *
                        CALL    WRK-SEIKYU-PG
                                            USING   ORCHCN03AREA
@@ -2351,6 +2353,21 @@
                GO  TO  430-TORIKESI-KOUSHIN-EXT
            END-IF
       *
+           IF    ( SYU-CREATEKBN   =   2 )
+      *
+      *        ´µ¼ÔÄê´üÀÁµáÍúÎòºï½ü½èÍý
+               PERFORM 4301-PTTEIKIRRK-DEL-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  430-TORIKESI-KOUSHIN-EXT
+               END-IF
+      *
+      *        Äê´üÀÁµáÍúÎòºï½ü½èÍý
+               PERFORM 4301-TEIKIRRK-UPD-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  430-TORIKESI-KOUSHIN-EXT
+               END-IF
+           END-IF
+      *
            MOVE    "3"             TO  SYU-DENPJTIKBN
            MOVE    ZERO            TO  SYU-SKYMONEY
       *
@@ -2374,21 +2391,6 @@
            PERFORM    4301-SMEI-SAKUSEI-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  430-TORIKESI-KOUSHIN-EXT
-           END-IF
-      *
-           IF    ( SYU-CREATEKBN   =   2 )
-      *
-      *        ´µ¼ÔÄê´üÀÁµáÍúÎòºï½ü½èÍý
-               PERFORM 4301-PTTEIKIRRK-DEL-SEC
-               IF    ( SPA-ERRCD       NOT =   SPACE )
-                   GO  TO  430-TORIKESI-KOUSHIN-EXT
-               END-IF
-      *
-      *        Äê´üÀÁµáÍúÎòºï½ü½èÍý
-               PERFORM 4301-TEIKIRRK-UPD-SEC
-               IF    ( SPA-ERRCD       NOT =   SPACE )
-                   GO  TO  430-TORIKESI-KOUSHIN-EXT
-               END-IF
            END-IF
       *
       *
@@ -2543,14 +2545,13 @@
       **************************************************************
        4301-PTTEIKIRRK-DEL-SEC         SECTION.
       *
-           MOVE    ZERO                TO  FLG-HIT
-      *
            INITIALIZE  PTTEIKIRRK-REC
            MOVE    SPA-NAI-SRYYM       TO  PTTEIKIRRK-SRYYM
            MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTTEIKIRRK-PTID
+           MOVE    SYU-DENPNUM         TO  PTTEIKIRRK-DENPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTTEIKIRRK-KEY2"   TO  ORC-DBPATH
+           MOVE    "PTTEIKIRRK-KEY6"   TO  ORC-DBPATH
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL "ORCMCPSUB"            USING
                                            MCPAREA
@@ -2558,30 +2559,12 @@
                                            MCPDATA-REC
       *
            IF    ( MCP-RC              =   ZERO )
-               MOVE    "PTTEIKIRRK-KEY2"
+               MOVE    "PTTEIKIRRK-KEY6"
                                        TO  ORC-DBPATH
                PERFORM 980-PTTEIKIRRK-READ-SEC
            ELSE
                MOVE    1               TO  FLG-PTTEIKIRRK
            END-IF
-      *
-      *    ºï½üÂÐ¾Ý¤ÎÍúÎò¤¬Â¸ºß¤·¤Ê¤¤¾ì¹ç¤Ï¥¨¥é¡¼
-           PERFORM UNTIL ( FLG-HIT         NOT =   ZERO )
-                    OR   ( FLG-PTTEIKIRRK  NOT =   ZERO )
-      *
-               IF    ( PTTEIKIRRK-HKNCOMBINUM  =   SYU-HKNCOMBINUM )
-                 AND ( PTTEIKIRRK-SKYSTYMD     <=  SYU-SKYSTYMD )
-                 AND ( PTTEIKIRRK-SKYEDYMD     >=  SYU-SKYEDYMD )
-                       MOVE    1       TO  FLG-HIT
-               END-IF
-      *
-               IF    ( FLG-HIT     =   ZERO )
-                   MOVE    "PTTEIKIRRK-KEY2"
-                                       TO  ORC-DBPATH
-                   PERFORM 980-PTTEIKIRRK-READ-SEC
-               END-IF
-      *
-           END-PERFORM
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "PTTEIKIRRK-KEY2"   TO  ORC-DBPATH
@@ -2590,7 +2573,7 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
       *
-           IF    ( FLG-HIT         =    ZERO )
+           IF    ( FLG-PTTEIKIRRK  =    1 )
                MOVE    "1004"      TO   SPA-ERRCD
                GO  TO  4301-PTTEIKIRRK-DEL-EXT
            END-IF
@@ -2651,10 +2634,10 @@
       *
                COMPUTE TEIKIRRK-SKYTEN
                    =   TEIKIRRK-SKYTEN
-                   + ( PTTEIKIRRK-SKYTEN     *   -1 )
+                   + ( SYU-TOTAL-HKNTEN      *   -1 )
                COMPUTE TEIKIRRK-SKYMONEY
                    =   TEIKIRRK-SKYMONEY
-                   + ( PTTEIKIRRK-SKYMONEY   *   -1 )
+                   + ( SYU-SKYMONEY          *   -1 )
       *
                MOVE    SPA-TERMID      TO  TEIKIRRK-TERMID
                PERFORM 800-MCNDATE-SEC
@@ -2682,9 +2665,9 @@
                MOVE    PTTEIKIRRK-SKYSTYMD TO  TEIKIRRK-SKYSTYMD
                MOVE    PTTEIKIRRK-SKYEDYMD TO  TEIKIRRK-SKYEDYMD
                COMPUTE TEIKIRRK-SKYTEN
-                   =   PTTEIKIRRK-SKYTEN     *   -1
+                   =   SYU-TOTAL-HKNTEN    *   -1
                COMPUTE TEIKIRRK-SKYMONEY
-                   =   PTTEIKIRRK-SKYMONEY   *   -1
+                   =   SYU-SKYMONEY        *   -1
                MOVE    SPA-TERMID      TO  TEIKIRRK-TERMID
       *
                PERFORM 800-MCNDATE-SEC

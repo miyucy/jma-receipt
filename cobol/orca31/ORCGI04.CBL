@@ -2235,12 +2235,6 @@
       **************************************************************
        4701-TORIKESI-KOUSHIN-SEC       SECTION.
       *
-      *    収納データを更新する
-           PERFORM 4701-SYUNOU-UPD-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4701-TORIKESI-KOUSHIN-EXT
-           END-IF
-      *
       *    患者定期請求履歴を削除する
            PERFORM 4701-PTTEIKIRRK-DEL-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
@@ -2249,6 +2243,12 @@
       *
       *    定期請求履歴を更新する
            PERFORM 4701-TEIKIRRK-UPD-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4701-TORIKESI-KOUSHIN-EXT
+           END-IF
+      *
+      *    収納データを更新する
+           PERFORM 4701-SYUNOU-UPD-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4701-TORIKESI-KOUSHIN-EXT
            END-IF
@@ -2488,6 +2488,24 @@
       *****************************************************************
        4701-TEIKIRRK-SUM-SEC           SECTION.
       *
+           INITIALIZE  SYUNOU-REC
+      *
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-NAI-I04-PTID    TO  SYU-PTID
+           MOVE    "1"                 TO  SYU-NYUGAIKBN
+           MOVE    PTTEIKIRRK-DENPNUM  TO  SYU-DENPNUM
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "SYUNOU-KEY"        TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC            =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+           END-IF
+      *
+           MOVE    "SYUNOU-KEY"        TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    定期請求管理情報集計（マイナス分）
            PERFORM VARYING IDX6   FROM    1   BY  1
                    UNTIL ( IDX6   >   100 )
@@ -2503,9 +2521,9 @@
                    MOVE    PTTEIKIRRK-SKYEDYMD
                                    TO  SUMTEIKIRRK-SKYEDYMD(IDX6)
                    COMPUTE SUMTEIKIRRK-SKYTEN (IDX6)
-                       =   PTTEIKIRRK-SKYTEN     *   -1
+                       =   SYU-TOTAL-HKNTEN    *   -1
                    COMPUTE SUMTEIKIRRK-SKYMONEY (IDX6)
-                       =   PTTEIKIRRK-SKYMONEY   *   -1
+                       =   SYU-SKYMONEY        *   -1
                    COMPUTE SUMTEIKIRRK-MAX
                        =   SUMTEIKIRRK-MAX     +   1
                    MOVE    100         TO  IDX6
@@ -2513,10 +2531,10 @@
                                    ALSO    PTTEIKIRRK-SAKKBN
                    COMPUTE SUMTEIKIRRK-SKYTEN (IDX6)
                        =   SUMTEIKIRRK-SKYTEN (IDX6)
-                       + ( PTTEIKIRRK-SKYTEN     *   -1 )
+                       + ( SYU-TOTAL-HKNTEN    *  -1 )
                    COMPUTE SUMTEIKIRRK-SKYMONEY (IDX6)
                        =   SUMTEIKIRRK-SKYMONEY (IDX6)
-                       + ( PTTEIKIRRK-SKYMONEY   *   -1 )
+                       + ( SYU-SKYMONEY        *  -1 )
                    MOVE    100         TO  IDX6
                END-EVALUATE
            END-PERFORM
@@ -3237,7 +3255,6 @@
            MOVE    WRK-SPA-STAFFCD TO  ORCHCN03-STAFFCD
            MOVE    WRK-SPA-SYSYMD  TO  ORCHCN03-SYSYMD
            MOVE    WRK-SPA-TERMID  TO  ORCHCN03-TERMID
-           MOVE    ZERO            TO  ORCHCN03-HAKKOFLG
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1        >   SPA-I0-SYUNOU-CNT )
@@ -3263,10 +3280,14 @@
                                        TO  ORCHCN03-KJNYMD  (IDX2)
                    MOVE    WKSYU-DENPNUM
                                        TO  ORCHCN03-DENPNUM (IDX2)
+                   MOVE    WKSYU-SKYMONEY-TAX-SAI
+                                       TO  ORCHCN03-SEIKYU-TAX-SAI
+                                                            (IDX2)
                    MOVE    WKSYU-SKYMONEY
                                        TO  ORCHCN03-SEIKYU  (IDX2)
                    MOVE    WKSYU-NYUKIN-TOTAL
                                        TO  ORCHCN03-NYUKIN  (IDX2)
+                   MOVE    ZERO        TO  ORCHCN03-HAKKOFLG (IDX2)
       *
                END-IF
            END-PERFORM

@@ -760,6 +760,14 @@
                MOVE    WRK-ZHENSYU24   TO  HCN03-NYU-MISYUKIN
            END-IF
       *
+      *    発行区分
+           EVALUATE    ORCHCN03-HAKKOFLG  (IDX-M)
+      *        WHEN    1
+      *            MOVE    "（再）"        TO  HC03-MIDASHI
+               WHEN    2
+                   MOVE    "（訂正）"      TO  HCN03-MIDASHI
+           END-EVALUATE
+      *
       *    印刷用データ出力
            MOVE    SPACE               TO  PRT-REC
            MOVE    "HCN03.red"         TO  PRT-PRTID

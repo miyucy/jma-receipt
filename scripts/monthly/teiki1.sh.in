@@ -22,48 +22,46 @@ fi
 #        $5 KIKANST KIKANED KBN (3)
 #        $6 JOBID 
 #        $7 SHELLID
-#        $8 エラーファイル
+#        $8 HOSPID
+#        $9 エラーファイル
 #-------------------------------------------#
+
+ERR_FILE=$9
+
 ##      エラーファイル削除
 	echo $#
-	echo "echo " $8
-        if  [ -e $8 ]; then
-            rm  $8
+	echo "echo " $ERR_FILE
+        if  [ -e $ERR_FILE ]; then
+            rm  $ERR_FILE
         fi
     
         rm  /var/tmp/TEIKI*
 
 ##   -- ORCT0010 START --  
-            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0010 -parameter $1,$2,$3,$4,$5,$6,$7,
-
-        if  [ -e $8 ]; then
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0010 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9"
+        if  [ -e $ERR_FILE ]; then
             exit  
-        else
+        fi
+
 ##   -- ORCT0030 START --  
-            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0030 -parameter $1,$2,$3,$4,$5,$6,$7,
-        fi 
-        
-	if  [ -e $8 ]; then
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0030 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9"
+        if  [ -e $ERR_FILE ]; then
             exit  
-        else
+        fi 
+
 ##   -- ORCT0060 START --  
-            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0060 -parameter $1,$2,$3,$4,$5,$6,$7,
-        fi 
-
-        if  [ -e $8 ]; then
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0060 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9"
+        if  [ -e $ERR_FILE ]; then
             exit  
-        else
-##   -- ORCT0040 START --  
-            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0040 -parameter $1,$2,$3,$4,$5,$6,$7,
         fi 
 
-        if  [ -e $8 ]; then
-            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0050 -parameter $1,$2,$3,$4,$5,$6,$7,
-        else
-            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$6$7
+##   -- ORCT0040 START --  
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0040 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9"
+        if  [ -e $ERR_FILE ]; then
+            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0050 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9"
+            exit  
         fi 
+
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$6$7
 
         exit
-
-
-

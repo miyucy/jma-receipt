@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-小豆沢  04/01/29  保険適用外の記載と消費税対応
+      *  01.00.02    NACL-太田    04/04/13  今回請求額消費税（再掲）を
+      *                                     パラメータ渡しに変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -752,7 +754,8 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-KONSEIKYU
       *    今回請求額消費税（再掲）
-           MOVE    SYU-SKYMONEY-TAX-SAI TO WRK-KINGAKU-Z
+           MOVE    ORCHCN03-SEIKYU-TAX-SAI (IDX-M)
+                                       TO WRK-KINGAKU-Z
            MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-KONZEI
@@ -782,6 +785,14 @@
                PERFORM 800-HENKAN-SEC
                MOVE    WRK-ZHENSYU24   TO  HCN03-NYU-MISYUKIN
            END-IF
+      *
+      *    発行区分
+           EVALUATE    ORCHCN03-HAKKOFLG (IDX-M)
+      *        WHEN    1
+      *            MOVE    "（再）"        TO  HC03-MIDASHI
+               WHEN    2
+                   MOVE    "（訂正）"      TO  HCN03-MIDASHI
+           END-EVALUATE
       *
       *    印刷用データ出力
            MOVE    SPACE               TO  PRT-REC

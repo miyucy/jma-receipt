@@ -16,27 +16,23 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    患者定期請求収納データ
-      *　  COPY  (CPTEIKI01.INC)                                 *
+      *    患者定期請求一括処理パラメータ
+      *　  COPY  (CPTEIKI1PARA.INC)                              *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-      *01  TEIKI01-REC.
-           03  TEIKI01-KEY.
-               05  TEIKI01-HOSPID          PIC X(24).
-               05  TEIKI01-PTID            PIC 9(10).
-               05  TEIKI01-SKYSTYMD        PIC X(08).
-               05  TEIKI01-SKYEDYMD        PIC X(08).
-               05  TEIKI01-SAKKBN          PIC X(01).
-               05  TEIKI01-HKNCOMBINUM     PIC 9(04).
-           03  TEIKI01-SYU-DAT             PIC X(5000).
-           03  TEIKI01-TSI-SKYTEN          PIC S9(09).
-           03  TEIKI01-TSI-SKYMONEY-TAX-SAI
-                                           PIC S9(07).
-           03  TEIKI01-TSI-SKYMONEY        PIC S9(09).
-           03  TEIKI01-SYUDAY.
-               05  TEIKI01-SYUDAY-EXIST-FLG
-                                           PIC 9(01).
-               05  TEIKI01-SYUDAY-DAT      PIC X(5000).
+       01  TEIKI2PARA-AREA.
+           03  TEIKI2P-PRTJYUN             PIC X(02).
+           03  TEIKI2P-BTUNUM-MAX          PIC 9(04).
+           03  TEIKI2P-BTUNUM-TBL.
+               05  TEIKI2P-BTUNUM-OCC      OCCURS 50.
+                   07  TEIKI2P-BTUNUM      PIC X(02).
+           03  TEIKI2P-SYSYMD              PIC X(08).
+           03  TEIKI2P-TERMID              PIC X(64).
+           03  TEIKI2P-JOBID               PIC 9(07).
+           03  TEIKI2P-SHELLID             PIC X(08).
+           03  TEIKI2P-HOSPID              PIC X(24).
+           03  TEIKI2P-STAFFCD             PIC X(05).
+           03  TEIKI2P-ERRFILE             PIC X(200).
