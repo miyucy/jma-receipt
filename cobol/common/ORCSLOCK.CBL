@@ -418,8 +418,8 @@
                MOVE  WRK-LD            TO  LOCK-LDNAME(01)
                MOVE  SLOCK-PTID        TO  LOCK-PTID(01)
                MOVE  1                 TO  LOCK-FLG(01)
-               ACCEPT LOCK-STARTDATE(IDZ)   FROM  DATE
-               ACCEPT LOCK-STARTTIME(IDZ)   FROM  TIME
+               ACCEPT LOCK-STARTDATE(01)   FROM  DATE
+               ACCEPT LOCK-STARTTIME(01)   FROM  TIME
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 910-LOCK-INS-SEC
            ELSE
