@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-森脇    03/05/13  カナ入力のチェック中止
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -706,9 +707,12 @@
                                MOVE    "1002"   TO  SPA-ERRCD
                            END-IF
                        WHEN  2
-                           IF  SPA-NAIYO-KBN  NOT  =  1
-                               MOVE    "1003"   TO  SPA-ERRCD
-                           END-IF
+      *----(00.00.01)--UPD-START---
+      *                     IF  SPA-NAIYO-KBN  NOT  =  1
+      *                         MOVE    "1003"   TO  SPA-ERRCD
+      *                     END-IF
+                           CONTINUE
+      *----(00.00.01)--UPD-END-----
                    END-EVALUATE
                END-IF
            ELSE
