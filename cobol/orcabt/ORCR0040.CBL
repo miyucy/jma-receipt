@@ -114,6 +114,28 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE0551-KEY
                                    FILE    STATUS  IS  STS-RECE051.
+      *    ¥ì¥»¥×¥È£°£´¥Ç¡¼¥¿¡Ê£Ï£Õ£Ô¡Ë¡Ê¥ï¡¼¥¯¡Ë
+           SELECT  RECE049-FILE    ASSIGN  RECE049PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE049-KEY
+                                   FILE    STATUS  IS  STS-RECE049.
+           SELECT  RECE0449-FILE   ASSIGN  RECE049PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE0449-KEY
+                                   FILE    STATUS  IS  STS-RECE049.
+      *    ¥ì¥»¥×¥È£°£µ¥Ç¡¼¥¿¡Ê£Ï£Õ£Ô¡Ë¡Ê¥ï¡¼¥¯¡Ë
+           SELECT  RECE059-FILE    ASSIGN  RECE059PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE059-KEY
+                                   FILE    STATUS  IS  STS-RECE059.
+           SELECT  RECE0559-FILE   ASSIGN  RECE059PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE0559-KEY
+                                   FILE    STATUS  IS  STS-RECE059.
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -155,6 +177,26 @@
        01  RECE0551-REC. 
            COPY    "CPRCF005.INC"  REPLACING   //RECE05//
                                    BY          //RECE0551//.
+      *¥ï¡¼¥¯
+       FD  RECE049-FILE.
+       01  RECE049-REC. 
+           COPY    "CPRCF004.INC"  REPLACING   //RECE04//
+                                   BY          //RECE049//.
+      *
+       FD  RECE059-FILE.
+       01  RECE059-REC. 
+           COPY    "CPRCF005.INC"  REPLACING   //RECE05//
+                                   BY          //RECE059//.
+      *
+       FD  RECE0449-FILE.
+       01  RECE0449-REC. 
+           COPY    "CPRCF004.INC"  REPLACING   //RECE04//
+                                   BY          //RECE0449//.
+      *
+       FD  RECE0559-FILE.
+       01  RECE0559-REC. 
+           COPY    "CPRCF005.INC"  REPLACING   //RECE05//
+                                   BY          //RECE0559//.
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
        FD  RECEERR-FILE.
@@ -181,6 +223,14 @@
                                    REPLACING  //RECE01//
                                    BY         //RECE051//.
       *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE049//.
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE059//.
+      *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
@@ -194,6 +244,8 @@
            03  STS-RECE041         PIC X(02).
            03  STS-RECE05          PIC X(02).
            03  STS-RECE051         PIC X(02).
+           03  STS-RECE049         PIC X(02).
+           03  STS-RECE059         PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
       *    ¥Õ¥é¥°ÎÎ°è
@@ -201,7 +253,9 @@
            03  FLG-END             PIC 9(01).
            03  FLG-RECE02          PIC 9(01).
            03  FLG-RECE04          PIC 9(01).
+           03  FLG-RECE049         PIC 9(01).
            03  FLG-RECE05          PIC 9(01).
+           03  FLG-RECE059         PIC 9(01).
            03  FLG-WRKRECE05       PIC 9(01).
            03  FLG-SHIDOU-COMMENT  PIC 9(01).
            03  FLG-HINKAI-COMMENT  PIC 9(01).
@@ -213,13 +267,14 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-FIRST           PIC 9(01).
            03  FLG-ARI             PIC 9(01).
-           03  FLG-DABURU          PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
            03  CNT-RECE02          PIC 9(06).
            03  CNT-RECE04          PIC 9(06).
            03  CNT-RECE05          PIC 9(06).
+           03  CNT-RECE049         PIC 9(06).
+           03  CNT-RECE059         PIC 9(06).
            03  CNT-JINZOU          PIC 9(06).
            03  CNT-RIHA            PIC 9(06).
            03  CNT-JUSHIN          PIC 9(06).
@@ -626,6 +681,12 @@
            MOVE    "RECE051"           TO  RECE051PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE051PARA-TERMID
       *
+           MOVE    "RECE049"           TO  RECE049PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE049PARA-TERMID
+      *
+           MOVE    "RECE059"           TO  RECE059PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE059PARA-TERMID
+      *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
@@ -641,9 +702,19 @@
            OPEN    OUTPUT              RECE0551-FILE
            CLOSE                       RECE0551-FILE
       *
+           OPEN    OUTPUT              RECE0449-FILE
+           CLOSE                       RECE0449-FILE
+      *
+           OPEN    OUTPUT              RECE0559-FILE
+           CLOSE                       RECE0559-FILE
+      *
            OPEN    OUTPUT              RECE041-FILE
       *
            OPEN    OUTPUT              RECE051-FILE
+      *
+           OPEN    I-O                 RECE049-FILE
+      *
+           OPEN    I-O                 RECE059-FILE
       *
            .
        110-FILE-OPEN-EXT.
@@ -922,8 +993,6 @@
                                          NOT =   RECE04-HOJOKBN      )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE04-TEKSTYMD     )
       *
-               MOVE     ZERO    TO    FLG-DABURU
-      *
                EVALUATE      RECE04-SRYKBN
                    WHEN      "13"
                       MOVE   ZERO   TO  FLG-COMMENT
@@ -960,32 +1029,9 @@
       *            ¡ÊºßÂð´µ¼ÔË¬ÌäÅÀÅ©Ãí¼Í´ÉÍý»ØÆ³ÎÁ»»Äê»þ¤ÎÅÀÅ©Ãí¼Í¤Î
       *              ¥³¥á¥ó¥È¤Î¥»¥Ã¥È¡Ë
                       PERFORM    2001-HOUTEN-HANTEI-SEC
-                   WHEN      "40"
-                   WHEN      "54"
-                   WHEN      "60"
-                      MOVE   ZERO   TO  FLG-COMMENT
-      *            ¡Ê»ÀÁÇ·×»»¼°¤Î¥³¥á¥ó¥È¤Î¥»¥Ã¥È¡Ë
-                      IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-SANSO-HANTEI-SEC
-                      END-IF
-                      IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2099-RECE04-TENSOU-SEC
-                      END-IF
                    WHEN      "50"
-                      EVALUATE  RECE04-FLG-SHUJUTU-COMMENT  ALSO
-                                              RECE04-FLG-SANSO-COMMENT
-      *                 ¡Ê¼ê½ÑÆü¤Î¥»¥Ã¥È¡Ë¡Ê»ÀÁÇ·×»»¼°¤Î¥³¥á¥ó¥È¤Î¥»¥Ã¥È¡Ë
-                        WHEN    SPACE      ALSO     "1"
-                            PERFORM    2001-SHUJUTSU-SANSO-SEC
-      *                 ¡Ê¼ê½ÑÆü¤Î¥»¥Ã¥È¡Ë
-                        WHEN    SPACE      ALSO     SPACE
-                            PERFORM    2001-SHUJUTSU-HANTEI-SEC
-      *                 ¡Ê»ÀÁÇ·×»»¼°¤Î¥³¥á¥ó¥È¤Î¥»¥Ã¥È¡Ë
-                        WHEN    "1"        ALSO     "1"
-                            PERFORM    2001-SANSO-HANTEI-SEC
-                        WHEN    "1"        ALSO     SPACE
-                            PERFORM    2099-RECE04-TENSOU-SEC
-                      END-EVALUATE
+      *            ¡Ê¼ê½ÑÆü¤Î¥»¥Ã¥È¡Ë
+                      PERFORM    2001-SHUJUTSU-HANTEI-SEC
                    WHEN      "70"
       *            ¡Ê£Ã£Ô¡¦£Í£Ò£É¼Â»ÜÆü¤Î¥»¥Ã¥È¡Ë
                       PERFORM    2001-CTMRI-HANTEI-SEC
@@ -1015,6 +1061,9 @@
       *
            END-PERFORM
       *
+      *****º¹¹þÊÔ½¸£²********************
+           PERFORM     250-SASHIKOMI2-SEC
+      ***********************************
       *
            PERFORM 990-RECE02-READ-SEC
       *
@@ -1301,23 +1350,23 @@
            MOVE       ZERO             TO      WRK-RENNUM
            MOVE       ZERO             TO      WRK-CNT-MEISAI
            PERFORM    UNTIL     FLG-WRKRECE05  =    1
-                INITIALIZE                       RECE051-REC
-                MOVE    RECE02-HOSPID        TO  RECE051-HOSPID
-                MOVE    RECE02-SRYYM         TO  RECE051-SRYYM
-                MOVE    RECE02-NYUGAIKBN     TO  RECE051-NYUGAIKBN
-                MOVE    RECE02-PTID          TO  RECE051-PTID
-                MOVE    RECE02-RECEKA        TO  RECE051-RECEKA
-                MOVE    RECE02-TEISYUTUSAKI  TO  RECE051-TEISYUTUSAKI
-                MOVE    RECE02-RECESYUBETU   TO  RECE051-RECESYUBETU
-                MOVE    RECE02-HKNJANUM-KEY  TO  RECE051-HKNJANUM
-                MOVE    RECE02-HOJOKBN-KEY   TO  RECE051-HOJOKBN
-                MOVE    RECE02-TEKSTYMD      TO  RECE051-TEKSTYMD
-      *         MOVE    ZERO                 TO  RECE051-ZAINUM
-                MOVE    99999999             TO  RECE051-ZAINUM
-                MOVE    WRK-KOHBUNRI-JIDO    TO  RECE051-KOHBUNRI
-                MOVE    "99"                 TO  RECE051-SRYKBN
+                INITIALIZE                       RECE059-REC
+                MOVE    RECE02-HOSPID        TO  RECE059-HOSPID
+                MOVE    RECE02-SRYYM         TO  RECE059-SRYYM
+                MOVE    RECE02-NYUGAIKBN     TO  RECE059-NYUGAIKBN
+                MOVE    RECE02-PTID          TO  RECE059-PTID
+                MOVE    RECE02-RECEKA        TO  RECE059-RECEKA
+                MOVE    RECE02-TEISYUTUSAKI  TO  RECE059-TEISYUTUSAKI
+                MOVE    RECE02-RECESYUBETU   TO  RECE059-RECESYUBETU
+                MOVE    RECE02-HKNJANUM-KEY  TO  RECE059-HKNJANUM
+                MOVE    RECE02-HOJOKBN-KEY   TO  RECE059-HOJOKBN
+                MOVE    RECE02-TEKSTYMD      TO  RECE059-TEKSTYMD
+      *         MOVE    ZERO                 TO  RECE059-ZAINUM
+                MOVE    99999999             TO  RECE059-ZAINUM
+                MOVE    WRK-KOHBUNRI-JIDO    TO  RECE059-KOHBUNRI
+                MOVE    "99"                 TO  RECE059-SRYKBN
                 ADD     1                    TO  WRK-RENNUM
-                MOVE    WRK-RENNUM           TO  RECE051-RENNUM
+                MOVE    WRK-RENNUM           TO  RECE059-RENNUM
                 PERFORM  VARYING   IDX   FROM   1   BY   1
                          UNTIL   (IDX       >    5)   OR
                                  (FLG-WRKRECE05   =   1)
@@ -1326,35 +1375,37 @@
                        MOVE    1             TO    FLG-WRKRECE05
                    ELSE
                        MOVE  WRK-RECE05XX-SRYACT-TBL (IDX-RECE05 1)
-                                        TO   RECE051-SRYACT-TBL (IDX)
+                                        TO   RECE059-SRYACT-TBL (IDX)
                        ADD   1          TO   WRK-CNT-MEISAI
                    END-IF  
                 END-PERFORM
-                WRITE   RECE051-REC
-                ADD     1                    TO  CNT-RECE05
+                IF   RECE059-SRYCD(1)  NOT =  SPACE
+                   WRITE   RECE059-REC
+                   ADD     1            TO   CNT-RECE059
+                END-IF
            END-PERFORM     
       *
       *
-           INITIALIZE                      RECE041-REC
-           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE041-PTID
-           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE041-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
-      *    MOVE    ZERO                TO  RECE041-ZAINUM
-           MOVE    99999999            TO  RECE041-ZAINUM
-           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE041-KOHBUNRI
-           MOVE    "99"                TO  RECE041-SRYKBN
+           INITIALIZE                      RECE049-REC
+           MOVE    RECE02-HOSPID       TO  RECE049-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE049-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE049-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE049-PTID
+           MOVE    RECE02-RECEKA       TO  RECE049-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE049-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE049-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE049-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE049-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE049-TEKSTYMD
+      *    MOVE    ZERO                TO  RECE049-ZAINUM
+           MOVE    99999999            TO  RECE049-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE049-KOHBUNRI
+           MOVE    "99"                TO  RECE049-SRYKBN
       *
-           MOVE    WRK-CNT-MEISAI      TO  RECE041-MEISAISU
+           MOVE    WRK-CNT-MEISAI      TO  RECE049-MEISAISU
       *
-           WRITE   RECE041-REC
-           ADD     1                   TO  CNT-RECE04
+           WRITE   RECE049-REC
+           ADD     1                   TO  CNT-RECE049
       *
            .
        2001-JUSHIN-COMMENT-EXT.
@@ -1365,49 +1416,49 @@
       *****************************************************************
        2001-DENWA-DOUJITU-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE041-REC
-           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE041-PTID
-           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE041-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
+           INITIALIZE                      RECE049-REC
+           MOVE    RECE02-HOSPID       TO  RECE049-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE049-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE049-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE049-PTID
+           MOVE    RECE02-RECEKA       TO  RECE049-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE049-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE049-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE049-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE049-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE049-TEKSTYMD
            COMPUTE WRK-ZAINUM    =  99999990  +  IDX
-           MOVE    WRK-ZAINUM          TO  RECE041-ZAINUM
-      *    MOVE    99999999            TO  RECE041-ZAINUM
+           MOVE    WRK-ZAINUM          TO  RECE049-ZAINUM
+      *    MOVE    99999999            TO  RECE049-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
-           MOVE    WRK-KOHBUNRI        TO  RECE041-KOHBUNRI
-           MOVE    "99"                TO  RECE041-SRYKBN
+           MOVE    WRK-KOHBUNRI        TO  RECE049-KOHBUNRI
+           MOVE    "99"                TO  RECE049-SRYKBN
       *
-           MOVE    2                   TO  RECE041-MEISAISU
+           MOVE    2                   TO  RECE049-MEISAISU
       *
            MOVE    TBL-COUNT-HKNCOMBI(IDX)
-                                       TO  RECE041-HKNCOMBI
+                                       TO  RECE049-HKNCOMBI
       *
-           WRITE   RECE041-REC
-           ADD     1                   TO  CNT-RECE04
+           WRITE   RECE049-REC
+           ADD     1                   TO  CNT-RECE049
       *
-           INITIALIZE                      RECE051-REC
-           MOVE    RECE02-HOSPID       TO  RECE051-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE051-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE051-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE051-PTID
-           MOVE    RECE02-RECEKA       TO  RECE051-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE051-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE051-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE051-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE051-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
+           INITIALIZE                      RECE059-REC
+           MOVE    RECE02-HOSPID       TO  RECE059-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE059-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE059-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE059-PTID
+           MOVE    RECE02-RECEKA       TO  RECE059-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE059-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE059-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE059-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE059-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE059-TEKSTYMD
            COMPUTE WRK-ZAINUM    =  99999990  +  IDX
-           MOVE    WRK-ZAINUM          TO  RECE051-ZAINUM
-      *    MOVE    99999999            TO  RECE051-ZAINUM
+           MOVE    WRK-ZAINUM          TO  RECE059-ZAINUM
+      *    MOVE    99999999            TO  RECE059-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
-           MOVE    WRK-KOHBUNRI        TO  RECE051-KOHBUNRI
-           MOVE    "99"                TO  RECE051-SRYKBN
+           MOVE    WRK-KOHBUNRI        TO  RECE059-KOHBUNRI
+           MOVE    "99"                TO  RECE059-SRYKBN
       *    ÅÅÏÃºÆ¿Ç¤Î¥³¥á¥ó¥È¤ÎÁÞÆþ
            MOVE    SPACE                TO  WRK-RECE05XX-REC
            INITIALIZE                       WRK-RECE05XX-REC
@@ -1423,7 +1474,7 @@
            MOVE    WRK-HENSYU-KAISU2    TO  WRK-RECE05XX-NAME(1 1)(11:4)
       *
            MOVE    WRK-RECE05XX-SRYACT-TBL (1 1)
-                                        TO  RECE051-SRYACT-TBL(1)
+                                        TO  RECE059-SRYACT-TBL(1)
       *    Æ±ÆüÊ£¿ôºÆ¿Ç¤Î¥³¥á¥ó¥È¤ÎÁÞÆþ
            MOVE    "810000001"          TO  WRK-RECE05XX-SRYCD(2 1)
            MOVE    ZERO                 TO  WRK-RECE05XX-SRYSURYO(2 1)
@@ -1438,10 +1489,10 @@
            MOVE    WRK-HENSYU-KAISU2    TO  WRK-RECE05XX-NAME(2 1)(15:4)
       *
            MOVE    WRK-RECE05XX-SRYACT-TBL(2 1)
-                                        TO  RECE051-SRYACT-TBL (2)
+                                        TO  RECE059-SRYACT-TBL (2)
       *
-           WRITE   RECE051-REC
-           ADD     1                    TO  CNT-RECE05
+           WRITE   RECE059-REC
+           ADD     1                    TO  CNT-RECE059
       *
            .
        2001-DENWA-DOUJITU-COMMENT-EXT.
@@ -1452,49 +1503,49 @@
       *****************************************************************
        2001-DENWA-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE041-REC
-           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE041-PTID
-           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE041-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
+           INITIALIZE                      RECE049-REC
+           MOVE    RECE02-HOSPID       TO  RECE049-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE049-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE049-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE049-PTID
+           MOVE    RECE02-RECEKA       TO  RECE049-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE049-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE049-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE049-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE049-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE049-TEKSTYMD
            COMPUTE WRK-ZAINUM    =  99999990  +  IDX
-           MOVE    WRK-ZAINUM          TO  RECE041-ZAINUM
-      *    MOVE    99999999            TO  RECE041-ZAINUM
+           MOVE    WRK-ZAINUM          TO  RECE049-ZAINUM
+      *    MOVE    99999999            TO  RECE049-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
-           MOVE    WRK-KOHBUNRI        TO  RECE041-KOHBUNRI
-           MOVE    "99"                TO  RECE041-SRYKBN
+           MOVE    WRK-KOHBUNRI        TO  RECE049-KOHBUNRI
+           MOVE    "99"                TO  RECE049-SRYKBN
       *
-           MOVE    1                   TO  RECE041-MEISAISU
+           MOVE    1                   TO  RECE049-MEISAISU
       *
            MOVE    TBL-COUNT-HKNCOMBI(IDX)
-                                       TO  RECE041-HKNCOMBI
+                                       TO  RECE049-HKNCOMBI
       *
-           WRITE   RECE041-REC
-           ADD     1                   TO  CNT-RECE04
+           WRITE   RECE049-REC
+           ADD     1                   TO  CNT-RECE049
       *
-           INITIALIZE                      RECE051-REC
-           MOVE    RECE02-HOSPID       TO  RECE051-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE051-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE051-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE051-PTID
-           MOVE    RECE02-RECEKA       TO  RECE051-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE051-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE051-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE051-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE051-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
+           INITIALIZE                      RECE059-REC
+           MOVE    RECE02-HOSPID       TO  RECE059-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE059-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE059-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE059-PTID
+           MOVE    RECE02-RECEKA       TO  RECE059-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE059-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE059-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE059-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE059-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE059-TEKSTYMD
            COMPUTE WRK-ZAINUM    =  99999990  +  IDX
-           MOVE    WRK-ZAINUM          TO  RECE051-ZAINUM
-      *    MOVE    99999999            TO  RECE051-ZAINUM
+           MOVE    WRK-ZAINUM          TO  RECE059-ZAINUM
+      *    MOVE    99999999            TO  RECE059-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
-           MOVE    WRK-KOHBUNRI        TO  RECE051-KOHBUNRI
-           MOVE    "99"                TO  RECE051-SRYKBN
+           MOVE    WRK-KOHBUNRI        TO  RECE059-KOHBUNRI
+           MOVE    "99"                TO  RECE059-SRYKBN
       *    ÅÅÏÃºÆ¿Ç¤Î¥³¥á¥ó¥È¤ÎÁÞÆþ
            MOVE    SPACE                TO  WRK-RECE05XX-REC
            INITIALIZE                       WRK-RECE05XX-REC
@@ -1510,9 +1561,9 @@
            MOVE    WRK-HENSYU-KAISU2    TO  WRK-RECE05XX-NAME(1 1)(11:4)
       *
            MOVE    WRK-RECE05XX-SRYACT-TBL(1 1)
-                                        TO  RECE051-SRYACT-TBL(1)
-           WRITE   RECE051-REC
-           ADD     1                    TO  CNT-RECE05
+                                        TO  RECE059-SRYACT-TBL(1)
+           WRITE   RECE059-REC
+           ADD     1                    TO  CNT-RECE059
       *
            .
        2001-DENWA-COMMENT-EXT.
@@ -1523,49 +1574,49 @@
       *****************************************************************
        2001-DOUJITU-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE041-REC
-           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE041-PTID
-           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE041-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
+           INITIALIZE                      RECE049-REC
+           MOVE    RECE02-HOSPID       TO  RECE049-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE049-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE049-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE049-PTID
+           MOVE    RECE02-RECEKA       TO  RECE049-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE049-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE049-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE049-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE049-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE049-TEKSTYMD
            COMPUTE WRK-ZAINUM    =  99999990  +  IDX
-           MOVE    WRK-ZAINUM          TO  RECE041-ZAINUM
-      *    MOVE    99999999            TO  RECE041-ZAINUM
+           MOVE    WRK-ZAINUM          TO  RECE049-ZAINUM
+      *    MOVE    99999999            TO  RECE049-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
-           MOVE    WRK-KOHBUNRI        TO  RECE041-KOHBUNRI
-           MOVE    "99"                TO  RECE041-SRYKBN
+           MOVE    WRK-KOHBUNRI        TO  RECE049-KOHBUNRI
+           MOVE    "99"                TO  RECE049-SRYKBN
       *
-           MOVE    1                   TO  RECE041-MEISAISU
+           MOVE    1                   TO  RECE049-MEISAISU
       *
            MOVE    TBL-COUNT-HKNCOMBI(IDX)
-                                       TO  RECE041-HKNCOMBI
+                                       TO  RECE049-HKNCOMBI
       *
-           WRITE   RECE041-REC
-           ADD     1                   TO  CNT-RECE04
+           WRITE   RECE049-REC
+           ADD     1                   TO  CNT-RECE049
       *
-           INITIALIZE                      RECE051-REC
-           MOVE    RECE02-HOSPID       TO  RECE051-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE051-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE051-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE051-PTID
-           MOVE    RECE02-RECEKA       TO  RECE051-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE051-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE051-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE051-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE051-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
+           INITIALIZE                      RECE059-REC
+           MOVE    RECE02-HOSPID       TO  RECE059-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE059-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE059-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE059-PTID
+           MOVE    RECE02-RECEKA       TO  RECE059-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE059-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE059-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE059-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE059-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE059-TEKSTYMD
            COMPUTE WRK-ZAINUM    =  99999990  +  IDX
-           MOVE    WRK-ZAINUM          TO  RECE051-ZAINUM
-      *    MOVE    99999999            TO  RECE051-ZAINUM
+           MOVE    WRK-ZAINUM          TO  RECE059-ZAINUM
+      *    MOVE    99999999            TO  RECE059-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
-           MOVE    WRK-KOHBUNRI        TO  RECE051-KOHBUNRI
-           MOVE    "99"                TO  RECE051-SRYKBN
+           MOVE    WRK-KOHBUNRI        TO  RECE059-KOHBUNRI
+           MOVE    "99"                TO  RECE059-SRYKBN
       *    Æ±ÆüÊ£¿ôºÆ¿Ç¤Î¥³¥á¥ó¥È¤ÎÁÞÆþ
            MOVE    SPACE                TO  WRK-RECE05XX-REC
            INITIALIZE                       WRK-RECE05XX-REC
@@ -1582,9 +1633,9 @@
            MOVE    WRK-HENSYU-KAISU2    TO  WRK-RECE05XX-NAME(1 1)(15:4)
       *
            MOVE    WRK-RECE05XX-SRYACT-TBL(1 1)
-                                        TO  RECE051-SRYACT-TBL(1)
-           WRITE   RECE051-REC
-           ADD     1                    TO  CNT-RECE05
+                                        TO  RECE059-SRYACT-TBL(1)
+           WRITE   RECE059-REC
+           ADD     1                    TO  CNT-RECE059
       *
            .
        2001-DOUJITU-COMMENT-EXT.
@@ -1767,47 +1818,47 @@
       *****************************************************************
        20011-JINZOU-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE041-REC
-           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE041-PTID
-           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE041-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
+           INITIALIZE                      RECE049-REC
+           MOVE    RECE02-HOSPID       TO  RECE049-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE049-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE049-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE049-PTID
+           MOVE    RECE02-RECEKA       TO  RECE049-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE049-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE049-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE049-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE049-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE049-TEKSTYMD
            COMPUTE WRK-ZAINUM    =  99999980  +  IDX
-           MOVE    WRK-ZAINUM          TO  RECE041-ZAINUM
+           MOVE    WRK-ZAINUM          TO  RECE049-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
-           MOVE    WRK-KOHBUNRI        TO  RECE041-KOHBUNRI
-           MOVE    WRK-RECE04-SRYKBN   TO  RECE041-SRYKBN
+           MOVE    WRK-KOHBUNRI        TO  RECE049-KOHBUNRI
+           MOVE    WRK-RECE04-SRYKBN   TO  RECE049-SRYKBN
       *
-           MOVE    1                   TO  RECE041-MEISAISU
+           MOVE    1                   TO  RECE049-MEISAISU
       *
            MOVE    WRK-JINZOU-HKNCOMBI(IDX)
-                                       TO  RECE041-HKNCOMBI
+                                       TO  RECE049-HKNCOMBI
       *
-           WRITE   RECE041-REC
-           ADD     1                   TO  CNT-RECE04
+           WRITE   RECE049-REC
+           ADD     1                   TO  CNT-RECE049
       *
-           INITIALIZE                      RECE051-REC
-           MOVE    RECE02-HOSPID       TO  RECE051-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE051-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE051-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE051-PTID
-           MOVE    RECE02-RECEKA       TO  RECE051-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE051-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE051-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE051-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE051-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
+           INITIALIZE                      RECE059-REC
+           MOVE    RECE02-HOSPID       TO  RECE059-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE059-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE059-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE059-PTID
+           MOVE    RECE02-RECEKA       TO  RECE059-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE059-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE059-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE059-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE059-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE059-TEKSTYMD
            COMPUTE WRK-ZAINUM    =  99999980  +  IDX
-           MOVE    WRK-ZAINUM          TO  RECE051-ZAINUM
+           MOVE    WRK-ZAINUM          TO  RECE059-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
-           MOVE    WRK-KOHBUNRI        TO  RECE051-KOHBUNRI
-           MOVE    WRK-RECE04-SRYKBN   TO  RECE051-SRYKBN
+           MOVE    WRK-KOHBUNRI        TO  RECE059-KOHBUNRI
+           MOVE    WRK-RECE04-SRYKBN   TO  RECE059-SRYKBN
       *    ¿Í¹©¿ÕÂ¡¥³¥á¥ó¥È¤ÎÁÞÆþ
            MOVE    SPACE                TO  WRK-RECE05XX-REC
            INITIALIZE                       WRK-RECE05XX-REC
@@ -1819,9 +1870,9 @@
            MOVE    CNT-JINZOU           TO  DAY-IDX
            MOVE    TBL-DAY(DAY-IDX)     TO  WRK-RECE05XX-NAME(1 1)(23:4)
            MOVE    WRK-RECE05XX-SRYACT-TBL(1 1)
-                                        TO  RECE051-SRYACT-TBL(1)
-           WRITE   RECE051-REC
-           ADD     1                    TO  CNT-RECE05
+                                        TO  RECE059-SRYACT-TBL(1)
+           WRITE   RECE059-REC
+           ADD     1                    TO  CNT-RECE059
       *
            .
        20011-JINZOU-COMMENT-EXT.
@@ -1832,40 +1883,40 @@
       *****************************************************************
        2001-NYUYOJI-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE041-REC
-           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE041-PTID
-           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE041-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
-           MOVE    99999990            TO  RECE041-ZAINUM
-           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE041-KOHBUNRI
-           MOVE    "99"                TO  RECE041-SRYKBN
+           INITIALIZE                      RECE049-REC
+           MOVE    RECE02-HOSPID       TO  RECE049-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE049-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE049-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE049-PTID
+           MOVE    RECE02-RECEKA       TO  RECE049-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE049-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE049-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE049-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE049-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE049-TEKSTYMD
+           MOVE    99999990            TO  RECE049-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE049-KOHBUNRI
+           MOVE    "99"                TO  RECE049-SRYKBN
       *
-           MOVE    1                   TO  RECE041-MEISAISU
+           MOVE    1                   TO  RECE049-MEISAISU
       *
-           WRITE   RECE041-REC
-           ADD     1                   TO  CNT-RECE04
+           WRITE   RECE049-REC
+           ADD     1                   TO  CNT-RECE049
       *
-           INITIALIZE                      RECE051-REC
-           MOVE    RECE02-HOSPID       TO  RECE051-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE051-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE051-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE051-PTID
-           MOVE    RECE02-RECEKA       TO  RECE051-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE051-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE051-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE051-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE051-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
-           MOVE    99999990            TO  RECE051-ZAINUM
-           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE051-KOHBUNRI
-           MOVE    "99"                TO  RECE051-SRYKBN
+           INITIALIZE                      RECE059-REC
+           MOVE    RECE02-HOSPID       TO  RECE059-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE059-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE059-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE059-PTID
+           MOVE    RECE02-RECEKA       TO  RECE059-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE059-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE059-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE059-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE059-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE059-TEKSTYMD
+           MOVE    99999990            TO  RECE059-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE059-KOHBUNRI
+           MOVE    "99"                TO  RECE059-SRYKBN
       *    ¥³¥á¥ó¥È¤ÎÁÞÆþ
            MOVE    SPACE               TO  WRK-RECE05XX-REC
            INITIALIZE                      WRK-RECE05XX-REC
@@ -1891,9 +1942,9 @@
            MOVE    TBL-DAY(DAY-IDX2)    TO  WRK-RECE05XX-NAME(1 1)(7:4)
       *
            MOVE    WRK-RECE05XX-SRYACT-TBL(1 1)
-                                        TO  RECE051-SRYACT-TBL(1)
-           WRITE   RECE051-REC
-           ADD     1                    TO  CNT-RECE05
+                                        TO  RECE059-SRYACT-TBL(1)
+           WRITE   RECE059-REC
+           ADD     1                    TO  CNT-RECE059
       *
            .
        2001-NYUYOJI-COMMENT-EXT.
@@ -1948,22 +1999,22 @@
            MOVE       ZERO             TO      WRK-RENNUM
            MOVE       ZERO             TO      WRK-CNT-MEISAI
            PERFORM    UNTIL     FLG-WRKRECE05  =    1
-                INITIALIZE                       RECE051-REC
-                MOVE    RECE02-HOSPID        TO  RECE051-HOSPID
-                MOVE    RECE02-SRYYM         TO  RECE051-SRYYM
-                MOVE    RECE02-NYUGAIKBN     TO  RECE051-NYUGAIKBN
-                MOVE    RECE02-PTID          TO  RECE051-PTID
-                MOVE    RECE02-RECEKA        TO  RECE051-RECEKA
-                MOVE    RECE02-TEISYUTUSAKI  TO  RECE051-TEISYUTUSAKI
-                MOVE    RECE02-RECESYUBETU   TO  RECE051-RECESYUBETU
-                MOVE    RECE02-HKNJANUM-KEY  TO  RECE051-HKNJANUM
-                MOVE    RECE02-HOJOKBN-KEY   TO  RECE051-HOJOKBN
-                MOVE    RECE02-TEKSTYMD      TO  RECE051-TEKSTYMD
-                MOVE    99999980             TO  RECE051-ZAINUM
-                MOVE    WRK-KOHBUNRI-JIDO    TO  RECE051-KOHBUNRI
-                MOVE    "99"                 TO  RECE051-SRYKBN
+                INITIALIZE                       RECE059-REC
+                MOVE    RECE02-HOSPID        TO  RECE059-HOSPID
+                MOVE    RECE02-SRYYM         TO  RECE059-SRYYM
+                MOVE    RECE02-NYUGAIKBN     TO  RECE059-NYUGAIKBN
+                MOVE    RECE02-PTID          TO  RECE059-PTID
+                MOVE    RECE02-RECEKA        TO  RECE059-RECEKA
+                MOVE    RECE02-TEISYUTUSAKI  TO  RECE059-TEISYUTUSAKI
+                MOVE    RECE02-RECESYUBETU   TO  RECE059-RECESYUBETU
+                MOVE    RECE02-HKNJANUM-KEY  TO  RECE059-HKNJANUM
+                MOVE    RECE02-HOJOKBN-KEY   TO  RECE059-HOJOKBN
+                MOVE    RECE02-TEKSTYMD      TO  RECE059-TEKSTYMD
+                MOVE    99999980             TO  RECE059-ZAINUM
+                MOVE    WRK-KOHBUNRI-JIDO    TO  RECE059-KOHBUNRI
+                MOVE    "99"                 TO  RECE059-SRYKBN
                 ADD     1                    TO  WRK-RENNUM
-                MOVE    WRK-RENNUM           TO  RECE051-RENNUM
+                MOVE    WRK-RENNUM           TO  RECE059-RENNUM
                 PERFORM  VARYING   IDX   FROM   1   BY   1
                          UNTIL   (IDX       >    5)   OR
                                  (FLG-WRKRECE05   =   1)
@@ -1972,34 +2023,36 @@
                        MOVE    1             TO    FLG-WRKRECE05
                    ELSE
                        MOVE  WRK-RECE05XX-SRYACT-TBL(IDX-RECE05 1)
-                                        TO   RECE051-SRYACT-TBL(IDX)
+                                        TO   RECE059-SRYACT-TBL(IDX)
                        ADD   1          TO   WRK-CNT-MEISAI
                    END-IF  
                 END-PERFORM
-                WRITE   RECE051-REC
-                ADD     1                    TO  CNT-RECE05
+                IF   RECE059-SRYCD(1)  NOT =  SPACE
+                   WRITE   RECE059-REC
+                   ADD     1            TO   CNT-RECE059
+                END-IF
            END-PERFORM
       *
       *
-           INITIALIZE                      RECE041-REC
-           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE041-PTID
-           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE041-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
-           MOVE    99999980            TO  RECE041-ZAINUM
-           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE041-KOHBUNRI
-           MOVE    "99"                TO  RECE041-SRYKBN
+           INITIALIZE                      RECE049-REC
+           MOVE    RECE02-HOSPID       TO  RECE049-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE049-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE049-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE049-PTID
+           MOVE    RECE02-RECEKA       TO  RECE049-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE049-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE049-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE049-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE049-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE049-TEKSTYMD
+           MOVE    99999980            TO  RECE049-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE049-KOHBUNRI
+           MOVE    "99"                TO  RECE049-SRYKBN
       *
-           MOVE    WRK-CNT-MEISAI      TO  RECE041-MEISAISU
+           MOVE    WRK-CNT-MEISAI      TO  RECE049-MEISAISU
       *
-           WRITE   RECE041-REC
-           ADD     1                   TO  CNT-RECE04
+           WRITE   RECE049-REC
+           ADD     1                   TO  CNT-RECE049
       *
            .
        2001-KOHJYUSIN-COMMENT-EXT.
@@ -2158,40 +2211,40 @@
       *****************************************************************
        20011-KYUSEIHASSYO-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE041-REC
-           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE041-PTID
-           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE041-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
-           MOVE    99999998            TO  RECE041-ZAINUM
-           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE041-KOHBUNRI
-           MOVE    "99"                TO  RECE041-SRYKBN
+           INITIALIZE                      RECE049-REC
+           MOVE    RECE02-HOSPID       TO  RECE049-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE049-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE049-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE049-PTID
+           MOVE    RECE02-RECEKA       TO  RECE049-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE049-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE049-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE049-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE049-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE049-TEKSTYMD
+           MOVE    99999998            TO  RECE049-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE049-KOHBUNRI
+           MOVE    "99"                TO  RECE049-SRYKBN
       *
-           MOVE    1                   TO  RECE041-MEISAISU
+           MOVE    1                   TO  RECE049-MEISAISU
       *
-           WRITE   RECE041-REC
-           ADD     1                   TO  CNT-RECE04
+           WRITE   RECE049-REC
+           ADD     1                   TO  CNT-RECE049
       *
-           INITIALIZE                      RECE051-REC
-           MOVE    RECE02-HOSPID       TO  RECE051-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE051-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE051-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE051-PTID
-           MOVE    RECE02-RECEKA       TO  RECE051-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE051-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE051-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE051-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE051-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
-           MOVE    99999998            TO  RECE051-ZAINUM
-           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE051-KOHBUNRI
-           MOVE    "99"                TO  RECE051-SRYKBN
+           INITIALIZE                      RECE059-REC
+           MOVE    RECE02-HOSPID       TO  RECE059-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE059-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE059-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE059-PTID
+           MOVE    RECE02-RECEKA       TO  RECE059-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE059-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE059-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE059-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE059-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE059-TEKSTYMD
+           MOVE    99999998            TO  RECE059-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE059-KOHBUNRI
+           MOVE    "99"                TO  RECE059-SRYKBN
       *    ¥³¥á¥ó¥È¤ÎÁÞÆþ
            MOVE    SPACE                TO  WRK-RECE05XX-REC
            INITIALIZE                       WRK-RECE05XX-REC
@@ -2205,9 +2258,9 @@
            MOVE    TBL-DAY(DAY-IDX2)    TO  WRK-RECE05XX-NAME(1 1)(13:4)
       *
            MOVE    WRK-RECE05XX-SRYACT-TBL(1 1)
-                                        TO  RECE051-SRYACT-TBL(1)
-           WRITE   RECE051-REC
-           ADD     1                    TO  CNT-RECE05
+                                        TO  RECE059-SRYACT-TBL(1)
+           WRITE   RECE059-REC
+           ADD     1                    TO  CNT-RECE059
       *
            .
        20011-KYUSEIHASSYO-COMMENT-EXT.
@@ -2277,10 +2330,10 @@
       *
            PERFORM   200111-SANTEI-DAY-SEC
       *
-           MOVE       RECE04-REC    TO   RECE041-REC
-           ADD     1                TO   RECE041-MEISAISU
-           WRITE      RECE041-REC
-           ADD     1                TO   CNT-RECE04
+           MOVE       RECE04-REC    TO   RECE049-REC
+           ADD     1                TO   RECE049-MEISAISU
+           WRITE      RECE049-REC
+           ADD     1                TO   CNT-RECE049
       *
            INITIALIZE                      RECE05-REC
            MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
@@ -2302,23 +2355,23 @@
                      PERFORM 990-RECE05-NEXT-SEC
            END-START
       *
-           MOVE    RECE05-REC           TO  RECE051-REC
-           MOVE    RECE05-SRYACT-TBL(1)  TO  RECE051-SRYACT-TBL(1)
-           MOVE    RECE05-SRYACT-TBL(2)  TO  RECE051-SRYACT-TBL(3)
-           MOVE    RECE05-SRYACT-TBL(3)  TO  RECE051-SRYACT-TBL(4)
-           MOVE    RECE05-SRYACT-TBL(4)  TO  RECE051-SRYACT-TBL(5)
+           MOVE    RECE05-REC           TO  RECE059-REC
+           MOVE    RECE05-SRYACT-TBL(1)  TO  RECE059-SRYACT-TBL(1)
+           MOVE    RECE05-SRYACT-TBL(2)  TO  RECE059-SRYACT-TBL(3)
+           MOVE    RECE05-SRYACT-TBL(3)  TO  RECE059-SRYACT-TBL(4)
+           MOVE    RECE05-SRYACT-TBL(4)  TO  RECE059-SRYACT-TBL(5)
       *
-           MOVE    SPACE                TO  RECE051-SRYACT-TBL(2)
-           INITIALIZE                       RECE051-SRYACT-TBL(2)
-           MOVE    "810000001"          TO  RECE051-SRYCD(2)
-           MOVE    ZERO                 TO  RECE051-SRYSURYO(2)
-           MOVE    15                   TO  RECE051-YUKOKETA(2)
+           MOVE    SPACE                TO  RECE059-SRYACT-TBL(2)
+           INITIALIZE                       RECE059-SRYACT-TBL(2)
+           MOVE    "810000001"          TO  RECE059-SRYCD(2)
+           MOVE    ZERO                 TO  RECE059-SRYSURYO(2)
+           MOVE    15                   TO  RECE059-YUKOKETA(2)
            MOVE    "ËýÀ­áÖÄË¼À´µ´ÉÍý»»ÄêÆü¡¡¡¡¡¡Æü"
-                                        TO  RECE051-NAME(2)
+                                        TO  RECE059-NAME(2)
            MOVE     TB-SANTEI-DAY(1)    TO  DAY-IDX
-           MOVE     TBL-DAY(DAY-IDX)    TO  RECE051-NAME(2)(25:4)
-           WRITE    RECE051-REC
-           ADD      1                    TO  CNT-RECE05
+           MOVE     TBL-DAY(DAY-IDX)    TO  RECE059-NAME(2)(25:4)
+           WRITE    RECE059-REC
+           ADD      1                    TO  CNT-RECE059
       *
            .
        20011-SHIDOU-COMMENT-EXT.
@@ -2536,53 +2589,12 @@
            IF     RECE04-FLG-SHUJUTU-COMMENT   =    SPACE
                MOVE       1       TO     FLG-COMMENT
                PERFORM    20011-SHUJUTSU-ETC-COMMENT-SEC
+           ELSE
+               PERFORM    2099-RECE04-TENSOU-SEC
            END-IF
       *
            .
        2001-SHUJUTSU-HANTEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    »ÀÁÇ¤¬¤¢¤ë¤«È½Äê
-      *****************************************************************
-       2001-SANSO-HANTEI-SEC          SECTION.
-      *
-           IF     RECE04-FLG-SANSO-COMMENT   =    "1"
-               MOVE       99      TO     FLG-COMMENT
-      *
-               PERFORM     20011-SANSO-TAIHI-SEC
-      *
-               PERFORM     20011-SANSO-COMMENT-SEC
-      *
-           END-IF
-      *
-           .
-       2001-SANSO-HANTEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¼ê½ÑÆü¤Î¥³¥á¥ó¥È¤¬¤¢¤ë¤«È½Äê¡¦»ÀÁÇ¤¬¤¢¤ë¤«È½Äê
-      *****************************************************************
-       2001-SHUJUTSU-SANSO-SEC          SECTION.
-      *
-           MOVE      1      TO      FLG-DABURU
-      *
-           IF     RECE04-FLG-SHUJUTU-COMMENT   =    SPACE
-               MOVE       1       TO     FLG-COMMENT
-               PERFORM    20011-SHUJUTSU-ETC-COMMENT-SEC
-           END-IF
-      *
-           IF     RECE04-FLG-SANSO-COMMENT   =    "1"
-               MOVE       99      TO     FLG-COMMENT
-      *
-               PERFORM     20011-SANSO-TAIHI-SEC
-      *
-               PERFORM     20011-SANSO-COMMENT-SEC
-      *
-           END-IF
-      *
-           .
-       2001-SHUJUTSU-SANSO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2633,9 +2645,7 @@
                               TO  WRK-RECE05XX-NAME(IDX-RECE05 1)
            END-PERFORM 
       *
-           IF     FLG-DABURU    =     ZERO
-                 PERFORM    200111-SRYACTINF-HENSYU-SEC
-           END-IF
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
        20011-SHUJUTSU-ETC-COMMENT-EXT.
@@ -2679,133 +2689,6 @@
       *
            .
        20011-SHUJUTSU-ETC2-COMMENT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    »ÀÁÇ¤Î¥³¥á¥ó¥ÈÊÔ½¸¡Êº¹¹þ¡§²¼¡Ë
-      *****************************************************************
-       20011-SANSO-COMMENT-SEC          SECTION.
-      *
-           MOVE       ZERO       TO   IDZ                               
-           INITIALIZE            WRK-FREE-AREA2                         
-           INITIALIZE            WRK-FREE-AREA3
-      *
-           PERFORM  200111-FREE-COMMENT3-SEC                            
-      *
-           PERFORM  200111-RECE05-TAIHI-SEC
-      *
-      *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
-           IF     FLG-DABURU    =     ZERO
-              MOVE    ZERO                 TO  IDX-RECE05
-              MOVE    SPACE                TO  WRK-RECE05XX-REC
-              INITIALIZE                       WRK-RECE05XX-REC
-      *
-              MOVE    RECE04-MEISAISU      TO  MAX-MEISAISU
-           ELSE
-              COMPUTE   MAX-MEISAISU  =  RECE04-MEISAISU + IDX-RECE05
-           END-IF
-      *
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                         UNTIL   ( IDX                >   50    )
-                         OR      ( WK-FREE-NAME2(IDX) =   SPACE )
-                COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
-                MOVE   "810000001"
-                             TO  WRK-RECE05XX-SRYCD(MAX-MEISAISU 1)
-                MOVE   ZERO  TO  WRK-RECE05XX-SRYSURYO(MAX-MEISAISU 1)
-                MOVE   WK-FREE-YUKOKETA2(IDX)
-                             TO  WRK-RECE05XX-YUKOKETA(MAX-MEISAISU 1)
-                MOVE   WK-FREE-NAME2(IDX)
-                             TO  WRK-RECE05XX-NAME(MAX-MEISAISU 1)
-                MOVE   "1"   TO  WRK-RECE05XX-RECEDENFLG(MAX-MEISAISU 1)
-           END-PERFORM
-      *
-           PERFORM    200111-SRYACTINF-HENSYU-SEC
-      *
-           .
-       20011-SANSO-COMMENT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    »ÀÁÇ¤Î¿ôÎÌ¡¦Ã±²ÁÂàÈò
-      *****************************************************************
-       20011-SANSO-TAIHI-SEC          SECTION.
-      *
-           MOVE       ZERO    TO     IDX4
-           INITIALIZE                TBL-SANSO-INF
-      *
-           INITIALIZE                      RECE05-REC
-           MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
-           MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
-           MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
-           MOVE    RECE04-PTID         TO  RECE05-PTID
-           MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
-           MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
-           MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
-           MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
-           MOVE    RECE04-HOJOKBN      TO  RECE05-HOJOKBN
-           MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
-           MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
-           START   RECE05-FILE
-               KEY IS    >=   RECE05-KEY
-               INVALID
-                   MOVE    1           TO  FLG-RECE05
-               NOT INVALID
-                   PERFORM 990-RECE05-NEXT-SEC
-           END-START
-           PERFORM
-               UNTIL ( FLG-RECE05           =  1                   )
-               OR    ( RECE04-HOSPID    NOT =  RECE05-HOSPID       )
-               OR    ( RECE04-SRYYM     NOT =  RECE05-SRYYM        )
-               OR    ( RECE04-NYUGAIKBN NOT =  RECE05-NYUGAIKBN    )
-               OR    ( RECE04-PTID      NOT =  RECE05-PTID         )
-               OR    ( RECE04-RECEKA    NOT =  RECE05-RECEKA       )
-               OR    ( RECE04-TEISYUTUSAKI
-                                        NOT =  RECE05-TEISYUTUSAKI )
-               OR    ( RECE04-RECESYUBETU
-                                        NOT =  RECE05-RECESYUBETU  )
-               OR    ( RECE04-HKNJANUM  NOT =  RECE05-HKNJANUM     )
-               OR    ( RECE04-HOJOKBN   NOT =  RECE05-HOJOKBN      )
-               OR    ( RECE04-TEKSTYMD  NOT =  RECE05-TEKSTYMD     )
-               OR    ( RECE04-ZAINUM    NOT =  RECE05-ZAINUM       )
-      *
-               PERFORM   VARYING   IDX   FROM    1   BY  1
-                          UNTIL  ( IDX               >   5     )
-                           OR    ( RECE05-SRYCD(IDX) =   SPACE )
-      *
-                  SET     TBL-SANSO    TO     1
-                  SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
-                       AT  END
-                           MOVE    ZERO    TO   FLG-SANSO-OK
-                       WHEN   RECE05-SRYCD(IDX) = TBL-SANSO-SRYCD
-                                                       (TBL-SANSO)
-                           MOVE    1       TO   FLG-SANSO-OK
-                  END-SEARCH
-                  IF      FLG-SANSO-OK        =    1
-                     ADD      1            TO  IDX4
-                     MOVE  RECE05-TEN(IDX) TO  TBL-SANSO-TEN(IDX4)
-                     MOVE  RECE05-SRYSURYO(IDX)
-                                           TO  TBL-SANSO-SRYSURYO
-                                                            (IDX4)
-                  END-IF
-                  IF    RECE05-SRYCD(IDX) = "770030070"
-                     IF   TBL-KASAN-SRYSURYO  =  ZERO
-                        MOVE   RECE05-SRYSURYO(IDX)
-                                     TO  TBL-KASAN-SRYSURYO
-                     ELSE
-                        COMPUTE   TBL-KASAN-SRYSURYO  =  
-                                  TBL-KASAN-SRYSURYO  *  
-                                  RECE05-SRYSURYO(IDX)   
-                     END-IF
-                  END-IF
-      *
-               END-PERFORM 
-      *
-               PERFORM 990-RECE05-NEXT-SEC
-      *
-           END-PERFORM
-      *
-           .
-       20011-SANSO-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3000,200 +2883,6 @@
            END-PERFORM
            .
        20011-FREE-COMMENT2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    »ÀÁÇ·×»»¼°ÊÔ½¸
-      *****************************************************************
-       200111-FREE-COMMENT3-SEC          SECTION.                      
-      *
-           MOVE     1          TO    WRK-KETA
-           MOVE    ZERO        TO    WRK-KEISAN3
-      *
-           PERFORM   VARYING   IDX    FROM   1   BY   1
-                      UNTIL   (IDX                 >    10)
-                       OR     (TBL-SANSO-TEN(IDX)  =  ZERO)
-      *
-             IF   IDX  >  1
-                MOVE    "¡Ü"   TO  WK-FREE-NAME3(WRK-KETA:2)
-                COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-             END-IF
-      *
-             MOVE    "¡Ê"   TO  WK-FREE-NAME3(WRK-KETA:2)
-             COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-      *Ã±²Á
-             MOVE     TBL-SANSO-TEN(IDX)   TO   WRK-KEISAN
-             COMPUTE  WRK-KEISAN2  = (TBL-SANSO-TEN(IDX) -  WRK-KEISAN)
-                                   *   1000
-      *
-             PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
-      *
-             MOVE    "±ß¡ß" TO  WK-FREE-NAME3(WRK-KETA:4)
-             COMPUTE  WRK-KETA   =  WRK-KETA   +  4
-      *¿ôÎÌ
-             MOVE     TBL-SANSO-SRYSURYO(IDX)  TO  WRK-KEISAN
-             COMPUTE  WRK-KEISAN2  
-                             = (TBL-SANSO-SRYSURYO(IDX) -  WRK-KEISAN)
-                             *   1000
-      *
-             PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
-      *
-             IF    TBL-KASAN-SRYSURYO  =  ZERO
-                MOVE    "£Ì¡ß£±¡¥£³¡Ë" TO  WK-FREE-NAME3(WRK-KETA:12)
-                COMPUTE  WRK-KETA   =  WRK-KETA   +  12
-      *
-                COMPUTE  WRK-KEISAN3   =   WRK-KEISAN3  +
-                  (TBL-SANSO-TEN(IDX) * TBL-SANSO-SRYSURYO(IDX) * 1.3)
-             ELSE
-                MOVE    "£Ì¡ß£±¡¥£³¡ß" TO  WK-FREE-NAME3(WRK-KETA:12)
-                COMPUTE  WRK-KETA   =  WRK-KETA   +  12
-      *
-                MOVE     TBL-KASAN-SRYSURYO  TO  WRK-KEISAN
-                COMPUTE  WRK-KEISAN2  
-                             = (TBL-KASAN-SRYSURYO -  WRK-KEISAN)
-                             *   1000
-      *
-                PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
-      *
-                MOVE    "¡Ë" TO  WK-FREE-NAME3(WRK-KETA:2)
-                COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-      *
-                COMPUTE  WRK-KEISAN3   =   WRK-KEISAN3  +
-                  (TBL-SANSO-TEN(IDX) * TBL-SANSO-SRYSURYO(IDX) * 1.3
-                                      * TBL-KASAN-SRYSURYO)
-             END-IF
-      *
-           END-PERFORM
-      *
-           IF   IDX  =  2
-              MOVE    "¡à£±£°¡á"  TO  WK-FREE-NAME3(WRK-KETA:8)
-              COMPUTE  WRK-KETA   =  WRK-KETA   +  8
-      *
-              COMPUTE  WRK-KEISAN =   WRK-KEISAN3  +  0.5
-              COMPUTE  WRK-KEISAN =  (WRK-KEISAN   /  10)  +  0.5
-              MOVE     ZERO       TO   WRK-KEISAN2
-      *
-              PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
-      *
-              MOVE    "ÅÀ"   TO  WK-FREE-NAME3(WRK-KETA:2)
-              COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-           ELSE
-              IF   IDX  >  2
-                  MOVE   WK-FREE-NAME3  TO  WK-FREE-NAME3-TAIHI
-                  MOVE    "¡Ê"    TO   WK-FREE-NAME3(1:2)
-                  MOVE   WK-FREE-NAME3-TAIHI
-                                  TO   WK-FREE-NAME3(3:)
-                  COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                  MOVE    "¡Ë¡à£±£°¡á"  TO  WK-FREE-NAME3(WRK-KETA:10)
-                  COMPUTE  WRK-KETA   =  WRK-KETA   +  10
-      *
-                  COMPUTE  WRK-KEISAN =   WRK-KEISAN3  +  0.5
-                  COMPUTE  WRK-KEISAN =  (WRK-KEISAN   /  10)  +  0.5
-                  MOVE     ZERO       TO   WRK-KEISAN2
-      *
-                  PERFORM  2001111-FREE-COMMENT3-SUCHI-SEC
-      *
-                  MOVE    "ÅÀ"   TO  WK-FREE-NAME3(WRK-KETA:2)
-                  COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-              END-IF
-           END-IF
-      *
-           IF     WRK-KETA    >   1
-               PERFORM   VARYING   IDX4    FROM   1   BY   50
-                          UNTIL   (IDX4     >    1000)
-                            OR    (WK-FREE-NAME3(IDX4:1) = SPACE)
-                   ADD     1      TO    IDZ
-                   MOVE    ZERO   TO    WRK-KETA2
-                   PERFORM   VARYING   IDX5    FROM   1   BY   2
-                              UNTIL   (IDX5     >    50)
-                      IF   WK-FREE-NAME3(IDX4:IDX5) = SPACE
-                          MOVE   IDX5   TO   WRK-KETA2
-                          MOVE   50     TO   IDX5
-                      END-IF
-                   END-PERFORM
-                   IF   WRK-KETA2 =  ZERO
-                        MOVE   25   TO  WK-FREE-YUKOKETA2(IDZ)
-                   ELSE
-                        COMPUTE   WK-FREE-YUKOKETA2(IDZ)  =
-                                       ( WRK-KETA2 - 1 )  /  2
-                   END-IF
-                   MOVE   WK-FREE-NAME3(IDX4:50)
-                                   TO    WK-FREE-NAME2(IDZ)
-               END-PERFORM
-           END-IF
-      *
-           .
-       200111-FREE-COMMENT3-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    »ÀÁÇ·×»»¼°¡¦¿ôÃÍÊÔ½¸
-      *****************************************************************
-       2001111-FREE-COMMENT3-SUCHI-SEC          SECTION.                      
-      *
-           IF    WRK-KEISAN  NOT  =  ZERO
-               PERFORM   VARYING   IDX4    FROM   1   BY   1
-                          UNTIL   (IDX4               >    9)
-                     IF   WRK-KEISAN(IDX4:1) =   "0"
-                        CONTINUE
-                     ELSE
-                        MOVE  IDX4   TO  IDX5
-                        MOVE   9     TO  IDX4
-                     END-IF
-               END-PERFORM
-               MOVE  SPACE             TO  WRK-KEISAN-TAIHI
-               MOVE  WRK-KEISAN(IDX5:) TO  WRK-KEISAN-TAIHI
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "2"             TO  KANACHK-SYORI
-               MOVE  WRK-KEISAN-TAIHI  TO  KANACHK-MAE-INPUT
-               CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
-               IF      KANACHK-RC      =   ZERO
-                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                               TO  WK-FREE-NAME3(WRK-KETA:KANACHK-MAX)
-                   COMPUTE  WRK-KETA   =  WRK-KETA   +  KANACHK-MAX
-               END-IF
-           END-IF
-      *
-           IF    WRK-KEISAN2  NOT  =  ZERO
-                PERFORM   VARYING   IDX4    FROM   3   BY  -1
-                           UNTIL   (IDX4               <    1)
-                      IF   WRK-KEISAN2(IDX4:1) =   "0"
-                         CONTINUE
-                      ELSE
-                         MOVE  IDX4   TO  IDX5
-                         MOVE   1     TO  IDX4
-                      END-IF
-                END-PERFORM
-                MOVE  SPACE               TO  WRK-KEISAN-TAIHI
-                MOVE  WRK-KEISAN2(1:IDX5) TO  WRK-KEISAN-TAIHI
-      *
-                IF    WRK-KEISAN  NOT  =  ZERO
-                   MOVE    "¡¥"     TO  WK-FREE-NAME3(WRK-KETA:2)
-                   COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                ELSE
-                   MOVE    "£°¡¥"   TO  WK-FREE-NAME3(WRK-KETA:4)
-                   COMPUTE  WRK-KETA   =  WRK-KETA   +  4
-                END-IF
-      *
-                INITIALIZE                  ORCSKANACHKAREA
-                MOVE    "2"             TO  KANACHK-SYORI
-                MOVE  WRK-KEISAN-TAIHI  TO  KANACHK-MAE-INPUT
-                CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                IF      KANACHK-RC      =   ZERO
-                    MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                TO  WK-FREE-NAME3(WRK-KETA:KANACHK-MAX)
-                    COMPUTE  WRK-KETA   =  WRK-KETA   +  KANACHK-MAX
-                END-IF
-           END-IF
-      *
-           IF    WRK-KEISAN    =  ZERO
-           AND   WRK-KEISAN2   =  ZERO
-               MOVE    "£°"   TO  WK-FREE-NAME3(WRK-KETA:2)
-               COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-           END-IF
-      *
-           .
-       2001111-FREE-COMMENT3-SUCHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3397,9 +3086,9 @@
       *****************************************************************
        2099-RECE04-TENSOU-SEC     SECTION.
       *
-           MOVE       RECE04-REC    TO   RECE041-REC
-           WRITE      RECE041-REC
-           ADD        1             TO   CNT-RECE04
+           MOVE       RECE04-REC    TO   RECE049-REC
+           WRITE      RECE049-REC
+           ADD        1             TO   CNT-RECE049
            PERFORM    20991-RECE05-TENSOU-SEC
       *
            .
@@ -3447,9 +3136,9 @@
                OR     ( RECE04-ZAINUM    NOT =   RECE05-ZAINUM       )
       *
       *
-               MOVE          RECE05-REC       TO      RECE051-REC
-               WRITE         RECE051-REC
-               ADD     1                 TO  CNT-RECE05
+               MOVE          RECE05-REC       TO      RECE059-REC
+               WRITE         RECE059-REC
+               ADD     1                 TO  CNT-RECE059
       *
                PERFORM 990-RECE05-NEXT-SEC
       *
@@ -3528,6 +3217,507 @@
            MOVE       ZERO             TO      WRK-RENNUM
            MOVE       ZERO             TO      WRK-CNT-MEISAI
            PERFORM    UNTIL     FLG-WRKRECE05  =    1
+                    INITIALIZE                        RECE059-REC
+                    MOVE    WRK-RECE05-KEY       TO   RECE059-KEY
+                    ADD     1                    TO   WRK-RENNUM
+                    MOVE    WRK-RENNUM           TO   RECE059-RENNUM
+                    MOVE    WRK-RECE05-KOHBUNRI  TO   RECE059-KOHBUNRI
+                    MOVE    WRK-RECE05-PTNUM     TO   RECE059-PTNUM
+                    MOVE    WRK-RECE05-SRYKA     TO   RECE059-SRYKA
+                    MOVE    WRK-RECE05-SRYKBN    TO   RECE059-SRYKBN
+                    MOVE    WRK-RECE05-SRYSYUKBN TO   RECE059-SRYSYUKBN
+                    MOVE    WRK-RECE05-JIHIMONEY TO   RECE059-JIHIMONEY
+                    PERFORM  VARYING   IDX   FROM   1   BY   1
+                             UNTIL   (IDX       >    5)   OR
+                                     (FLG-WRKRECE05   =   1)
+                       ADD         1             TO    IDX-RECE05
+                       IF  WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE
+                           MOVE    1             TO    FLG-WRKRECE05
+                       ELSE
+                           MOVE  WRK-RECE05XX-SRYACT-TBL(IDX-RECE05 1)
+                                            TO   RECE059-SRYACT-TBL(IDX)
+                           ADD   1          TO   WRK-CNT-MEISAI
+                       END-IF  
+                    END-PERFORM
+                    IF   RECE059-SRYCD(1)  NOT =  SPACE
+                       WRITE   RECE059-REC
+                       ADD     1            TO   CNT-RECE059
+                    END-IF
+           END-PERFORM
+      *
+           MOVE    RECE04-REC        TO      RECE049-REC
+           MOVE    WRK-CNT-MEISAI    TO      RECE049-MEISAISU
+           WRITE   RECE049-REC
+           ADD     1                 TO      CNT-RECE049
+      *
+           .
+       200111-SRYACTINF-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    º¹¹þÊÔ½¸£²
+      *****************************************************************
+       250-SASHIKOMI2-SEC     SECTION.
+      *
+      *    ¥Ñ¥é¥á¡¼¥¿£°£´£¹¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸
+           INITIALIZE                      RECE049-REC
+           MOVE    RECE02-HOSPID       TO  RECE049-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE049-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE049-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE049-PTID
+           MOVE    RECE02-RECEKA       TO  RECE049-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE049-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE049-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE049-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE049-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE049-TEKSTYMD
+           MOVE    ZERO                TO  RECE049-ZAINUM
+      *
+           START   RECE049-FILE
+               KEY IS    >=   RECE049-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE049
+               NOT INVALID
+                   PERFORM 990-RECE049-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE049          =   1                    )
+               OR     ( RECE02-HOSPID    NOT =   RECE049-HOSPID       )
+               OR     ( RECE02-SRYYM     NOT =   RECE049-SRYYM        )
+               OR     ( RECE02-NYUGAIKBN NOT =   RECE049-NYUGAIKBN    )
+               OR     ( RECE02-PTID      NOT =   RECE049-PTID         )
+               OR     ( RECE02-RECEKA    NOT =   RECE049-RECEKA       )
+               OR     ( RECE02-TEISYUTUSAKI
+                                         NOT =   RECE049-TEISYUTUSAKI )
+               OR     ( RECE02-RECESYUBETU
+                                         NOT =   RECE049-RECESYUBETU  )
+               OR     ( RECE02-HKNJANUM-KEY
+                                         NOT =   RECE049-HKNJANUM     )
+               OR     ( RECE02-HOJOKBN-KEY
+                                         NOT =   RECE049-HOJOKBN      )
+               OR     ( RECE02-TEKSTYMD  NOT =   RECE049-TEKSTYMD     )
+      *
+               MOVE   ZERO   TO  FLG-COMMENT
+      *        ¡Ê»ÀÁÇ·×»»¼°¤Î¥³¥á¥ó¥È¤Î¥»¥Ã¥È¡Ë
+               IF   FLG-COMMENT  =  ZERO
+                 PERFORM    2501-SANSO-HANTEI-SEC
+               END-IF
+               IF   FLG-COMMENT  =  ZERO
+                 PERFORM    2599-RECE049-TENSOU-SEC
+               END-IF
+      *
+               PERFORM 990-RECE049-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       250-SASHIKOMI2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »ÀÁÇ¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2501-SANSO-HANTEI-SEC          SECTION.
+      *
+           IF     RECE049-FLG-SANSO-COMMENT   =    "1"
+               MOVE       99      TO     FLG-COMMENT
+      *
+               PERFORM    25011-SANSO-TAIHI-SEC
+      *
+               PERFORM    25011-SANSO-COMMENT-SEC
+      *
+           END-IF
+      *
+           .
+       2501-SANSO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »ÀÁÇ¤Î¿ôÎÌ¡¦Ã±²ÁÂàÈò
+      *****************************************************************
+       25011-SANSO-TAIHI-SEC          SECTION.
+      *
+           MOVE       ZERO    TO     IDX4
+           INITIALIZE                TBL-SANSO-INF
+      *
+           INITIALIZE                       RECE059-REC
+           MOVE    RECE049-HOSPID       TO  RECE059-HOSPID
+           MOVE    RECE049-SRYYM        TO  RECE059-SRYYM
+           MOVE    RECE049-NYUGAIKBN    TO  RECE059-NYUGAIKBN
+           MOVE    RECE049-PTID         TO  RECE059-PTID
+           MOVE    RECE049-RECEKA       TO  RECE059-RECEKA
+           MOVE    RECE049-TEISYUTUSAKI TO  RECE059-TEISYUTUSAKI
+           MOVE    RECE049-RECESYUBETU  TO  RECE059-RECESYUBETU
+           MOVE    RECE049-HKNJANUM     TO  RECE059-HKNJANUM
+           MOVE    RECE049-HOJOKBN      TO  RECE059-HOJOKBN
+           MOVE    RECE049-TEKSTYMD     TO  RECE059-TEKSTYMD
+           MOVE    RECE049-ZAINUM       TO  RECE059-ZAINUM
+           START   RECE059-FILE
+               KEY IS    >=   RECE059-KEY
+               INVALID
+                   MOVE    1            TO  FLG-RECE059
+               NOT INVALID
+                   PERFORM 990-RECE059-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL ( FLG-RECE059           =  1                    )
+               OR    ( RECE049-HOSPID    NOT =  RECE059-HOSPID       )
+               OR    ( RECE049-SRYYM     NOT =  RECE059-SRYYM        )
+               OR    ( RECE049-NYUGAIKBN NOT =  RECE059-NYUGAIKBN    )
+               OR    ( RECE049-PTID      NOT =  RECE059-PTID         )
+               OR    ( RECE049-RECEKA    NOT =  RECE059-RECEKA       )
+               OR    ( RECE049-TEISYUTUSAKI
+                                         NOT =  RECE059-TEISYUTUSAKI )
+               OR    ( RECE049-RECESYUBETU
+                                         NOT =  RECE059-RECESYUBETU  )
+               OR    ( RECE049-HKNJANUM  NOT =  RECE059-HKNJANUM     )
+               OR    ( RECE049-HOJOKBN   NOT =  RECE059-HOJOKBN      )
+               OR    ( RECE049-TEKSTYMD  NOT =  RECE059-TEKSTYMD     )
+               OR    ( RECE049-ZAINUM    NOT =  RECE059-ZAINUM       )
+      *
+               PERFORM   VARYING   IDX   FROM    1   BY  1
+                          UNTIL  ( IDX                >   5     )
+                           OR    ( RECE059-SRYCD(IDX) =   SPACE )
+      *
+                  SET     TBL-SANSO    TO     1
+                  SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
+                       AT  END
+                           MOVE    ZERO    TO   FLG-SANSO-OK
+                       WHEN   RECE059-SRYCD(IDX) = TBL-SANSO-SRYCD
+                                                       (TBL-SANSO)
+                           MOVE    1       TO   FLG-SANSO-OK
+                  END-SEARCH
+                  IF      FLG-SANSO-OK        =    1
+                     ADD      1             TO  IDX4
+                     MOVE  RECE059-TEN(IDX) TO  TBL-SANSO-TEN(IDX4)
+                     MOVE  RECE059-SRYSURYO(IDX)
+                                            TO  TBL-SANSO-SRYSURYO
+                                                             (IDX4)
+                  END-IF
+                  IF    RECE059-SRYCD(IDX) = "770030070"
+                     IF   TBL-KASAN-SRYSURYO  =  ZERO
+                        MOVE   RECE059-SRYSURYO(IDX)
+                                     TO  TBL-KASAN-SRYSURYO
+                     ELSE
+                        COMPUTE   TBL-KASAN-SRYSURYO  =  
+                                  TBL-KASAN-SRYSURYO  *  
+                                  RECE059-SRYSURYO(IDX)  
+                     END-IF
+                  END-IF
+      *
+               END-PERFORM 
+      *
+               PERFORM 990-RECE059-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       25011-SANSO-TAIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »ÀÁÇ¤Î¥³¥á¥ó¥ÈÊÔ½¸¡Êº¹¹þ¡§²¼¡Ë
+      *****************************************************************
+       25011-SANSO-COMMENT-SEC          SECTION.
+      *
+           MOVE       ZERO       TO   IDZ                               
+           INITIALIZE            WRK-FREE-AREA2                         
+           INITIALIZE            WRK-FREE-AREA3
+      *
+           PERFORM  250111-SANSO-FREE-COMMENT-SEC
+      *
+           PERFORM  250111-RECE059-TAIHI-SEC
+      *
+      *    £Ò£Å£Ã£Å£°£µ£¹¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+           MOVE    ZERO                 TO  IDX-RECE05
+           MOVE    SPACE                TO  WRK-RECE05XX-REC
+           INITIALIZE                       WRK-RECE05XX-REC
+      *
+           MOVE    RECE049-MEISAISU     TO  MAX-MEISAISU
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   50    )
+                         OR      ( WK-FREE-NAME2(IDX) =   SPACE )
+                COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
+                MOVE   "810000001"
+                             TO  WRK-RECE05XX-SRYCD(MAX-MEISAISU 1)
+                MOVE   ZERO  TO  WRK-RECE05XX-SRYSURYO(MAX-MEISAISU 1)
+                MOVE   WK-FREE-YUKOKETA2(IDX)
+                             TO  WRK-RECE05XX-YUKOKETA(MAX-MEISAISU 1)
+                MOVE   WK-FREE-NAME2(IDX)
+                             TO  WRK-RECE05XX-NAME(MAX-MEISAISU 1)
+                MOVE   "1"   TO  WRK-RECE05XX-RECEDENFLG(MAX-MEISAISU 1)
+           END-PERFORM
+      *
+           PERFORM    250111-SRYACTINF2-HENSYU-SEC
+      *
+           .
+       25011-SANSO-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »ÀÁÇ·×»»¼°ÊÔ½¸
+      *****************************************************************
+       250111-SANSO-FREE-COMMENT-SEC          SECTION.                      
+      *
+           MOVE     1          TO    WRK-KETA
+           MOVE    ZERO        TO    WRK-KEISAN3
+      *
+           PERFORM   VARYING   IDX    FROM   1   BY   1
+                      UNTIL   (IDX                 >    10)
+                       OR     (TBL-SANSO-TEN(IDX)  =  ZERO)
+      *
+             IF   IDX  >  1
+                MOVE    "¡Ü"   TO  WK-FREE-NAME3(WRK-KETA:2)
+                COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+             END-IF
+      *
+             MOVE    "¡Ê"   TO  WK-FREE-NAME3(WRK-KETA:2)
+             COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+      *Ã±²Á
+             MOVE     TBL-SANSO-TEN(IDX)   TO   WRK-KEISAN
+             COMPUTE  WRK-KEISAN2  = (TBL-SANSO-TEN(IDX) -  WRK-KEISAN)
+                                   *   1000
+      *
+             PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+      *
+             MOVE    "±ß¡ß" TO  WK-FREE-NAME3(WRK-KETA:4)
+             COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+      *¿ôÎÌ
+             MOVE     TBL-SANSO-SRYSURYO(IDX)  TO  WRK-KEISAN
+             COMPUTE  WRK-KEISAN2  
+                             = (TBL-SANSO-SRYSURYO(IDX) -  WRK-KEISAN)
+                             *   1000
+      *
+             PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+      *
+             IF    TBL-KASAN-SRYSURYO  =  ZERO
+                MOVE    "£Ì¡ß£±¡¥£³¡Ë" TO  WK-FREE-NAME3(WRK-KETA:12)
+                COMPUTE  WRK-KETA   =  WRK-KETA   +  12
+      *
+                COMPUTE  WRK-KEISAN3   =   WRK-KEISAN3  +
+                  (TBL-SANSO-TEN(IDX) * TBL-SANSO-SRYSURYO(IDX) * 1.3)
+             ELSE
+                MOVE    "£Ì¡ß£±¡¥£³¡ß" TO  WK-FREE-NAME3(WRK-KETA:12)
+                COMPUTE  WRK-KETA   =  WRK-KETA   +  12
+      *
+                MOVE     TBL-KASAN-SRYSURYO  TO  WRK-KEISAN
+                COMPUTE  WRK-KEISAN2  
+                             = (TBL-KASAN-SRYSURYO -  WRK-KEISAN)
+                             *   1000
+      *
+                PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+      *
+                MOVE    "¡Ë" TO  WK-FREE-NAME3(WRK-KETA:2)
+                COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+      *
+                COMPUTE  WRK-KEISAN3   =   WRK-KEISAN3  +
+                  (TBL-SANSO-TEN(IDX) * TBL-SANSO-SRYSURYO(IDX) * 1.3
+                                      * TBL-KASAN-SRYSURYO)
+             END-IF
+      *
+           END-PERFORM
+      *
+           IF   IDX  =  2
+              MOVE    "¡à£±£°¡á"  TO  WK-FREE-NAME3(WRK-KETA:8)
+              COMPUTE  WRK-KETA   =  WRK-KETA   +  8
+      *
+              COMPUTE  WRK-KEISAN =   WRK-KEISAN3  +  0.5
+              COMPUTE  WRK-KEISAN =  (WRK-KEISAN   /  10)  +  0.5
+              MOVE     ZERO       TO   WRK-KEISAN2
+      *
+              PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+      *
+              MOVE    "ÅÀ"   TO  WK-FREE-NAME3(WRK-KETA:2)
+              COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+           ELSE
+              IF   IDX  >  2
+                  MOVE   WK-FREE-NAME3  TO  WK-FREE-NAME3-TAIHI
+                  MOVE    "¡Ê"    TO   WK-FREE-NAME3(1:2)
+                  MOVE   WK-FREE-NAME3-TAIHI
+                                  TO   WK-FREE-NAME3(3:)
+                  COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                  MOVE    "¡Ë¡à£±£°¡á"  TO  WK-FREE-NAME3(WRK-KETA:10)
+                  COMPUTE  WRK-KETA   =  WRK-KETA   +  10
+      *
+                  COMPUTE  WRK-KEISAN =   WRK-KEISAN3  +  0.5
+                  COMPUTE  WRK-KEISAN =  (WRK-KEISAN   /  10)  +  0.5
+                  MOVE     ZERO       TO   WRK-KEISAN2
+      *
+                  PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+      *
+                  MOVE    "ÅÀ"   TO  WK-FREE-NAME3(WRK-KETA:2)
+                  COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+              END-IF
+           END-IF
+      *
+           IF     WRK-KETA    >   1
+               PERFORM   VARYING   IDX4    FROM   1   BY   50
+                          UNTIL   (IDX4     >    1000)
+                            OR    (WK-FREE-NAME3(IDX4:1) = SPACE)
+                   ADD     1      TO    IDZ
+                   MOVE    ZERO   TO    WRK-KETA2
+                   PERFORM   VARYING   IDX5    FROM   1   BY   2
+                              UNTIL   (IDX5     >    50)
+                      IF   WK-FREE-NAME3(IDX4:IDX5) = SPACE
+                          MOVE   IDX5   TO   WRK-KETA2
+                          MOVE   50     TO   IDX5
+                      END-IF
+                   END-PERFORM
+                   IF   WRK-KETA2 =  ZERO
+                        MOVE   25   TO  WK-FREE-YUKOKETA2(IDZ)
+                   ELSE
+                        COMPUTE   WK-FREE-YUKOKETA2(IDZ)  =
+                                       ( WRK-KETA2 - 1 )  /  2
+                   END-IF
+                   MOVE   WK-FREE-NAME3(IDX4:50)
+                                   TO    WK-FREE-NAME2(IDZ)
+               END-PERFORM
+           END-IF
+      *
+           .
+       250111-SANSO-FREE-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »ÀÁÇ·×»»¼°¡¦¿ôÃÍÊÔ½¸
+      *****************************************************************
+       2501111-SANSO-FREE-COMMENT-SUCHI-SEC          SECTION.
+      *
+           IF    WRK-KEISAN  NOT  =  ZERO
+               PERFORM   VARYING   IDX4    FROM   1   BY   1
+                          UNTIL   (IDX4               >    9)
+                     IF   WRK-KEISAN(IDX4:1) =   "0"
+                        CONTINUE
+                     ELSE
+                        MOVE  IDX4   TO  IDX5
+                        MOVE   9     TO  IDX4
+                     END-IF
+               END-PERFORM
+               MOVE  SPACE             TO  WRK-KEISAN-TAIHI
+               MOVE  WRK-KEISAN(IDX5:) TO  WRK-KEISAN-TAIHI
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"             TO  KANACHK-SYORI
+               MOVE  WRK-KEISAN-TAIHI  TO  KANACHK-MAE-INPUT
+               CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF      KANACHK-RC      =   ZERO
+                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                               TO  WK-FREE-NAME3(WRK-KETA:KANACHK-MAX)
+                   COMPUTE  WRK-KETA   =  WRK-KETA   +  KANACHK-MAX
+               END-IF
+           END-IF
+      *
+           IF    WRK-KEISAN2  NOT  =  ZERO
+                PERFORM   VARYING   IDX4    FROM   3   BY  -1
+                           UNTIL   (IDX4               <    1)
+                      IF   WRK-KEISAN2(IDX4:1) =   "0"
+                         CONTINUE
+                      ELSE
+                         MOVE  IDX4   TO  IDX5
+                         MOVE   1     TO  IDX4
+                      END-IF
+                END-PERFORM
+                MOVE  SPACE               TO  WRK-KEISAN-TAIHI
+                MOVE  WRK-KEISAN2(1:IDX5) TO  WRK-KEISAN-TAIHI
+      *
+                IF    WRK-KEISAN  NOT  =  ZERO
+                   MOVE    "¡¥"     TO  WK-FREE-NAME3(WRK-KETA:2)
+                   COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                ELSE
+                   MOVE    "£°¡¥"   TO  WK-FREE-NAME3(WRK-KETA:4)
+                   COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                END-IF
+      *
+                INITIALIZE                  ORCSKANACHKAREA
+                MOVE    "2"             TO  KANACHK-SYORI
+                MOVE  WRK-KEISAN-TAIHI  TO  KANACHK-MAE-INPUT
+                CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                IF      KANACHK-RC      =   ZERO
+                    MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                TO  WK-FREE-NAME3(WRK-KETA:KANACHK-MAX)
+                    COMPUTE  WRK-KETA   =  WRK-KETA   +  KANACHK-MAX
+                END-IF
+           END-IF
+      *
+           IF    WRK-KEISAN    =  ZERO
+           AND   WRK-KEISAN2   =  ZERO
+               MOVE    "£°"   TO  WK-FREE-NAME3(WRK-KETA:2)
+               COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+           END-IF
+      *
+           .
+       2501111-SANSO-FREE-COMMENT-SUCHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £°£µ£¹¡¡ÂàÈò½èÍý
+      *****************************************************************
+       250111-RECE059-TAIHI-SEC     SECTION.
+      *
+           INITIALIZE                       RECE059-REC
+           MOVE    RECE049-HOSPID       TO  RECE059-HOSPID
+           MOVE    RECE049-SRYYM        TO  RECE059-SRYYM
+           MOVE    RECE049-NYUGAIKBN    TO  RECE059-NYUGAIKBN
+           MOVE    RECE049-PTID         TO  RECE059-PTID
+           MOVE    RECE049-RECEKA       TO  RECE059-RECEKA
+           MOVE    RECE049-TEISYUTUSAKI TO  RECE059-TEISYUTUSAKI
+           MOVE    RECE049-RECESYUBETU  TO  RECE059-RECESYUBETU
+           MOVE    RECE049-HKNJANUM     TO  RECE059-HKNJANUM
+           MOVE    RECE049-HOJOKBN      TO  RECE059-HOJOKBN
+           MOVE    RECE049-TEKSTYMD     TO  RECE059-TEKSTYMD
+           MOVE    RECE049-ZAINUM       TO  RECE059-ZAINUM
+           START   RECE059-FILE
+                 KEY IS    >=   RECE059-KEY
+                 INVALID
+                     MOVE    1          TO  FLG-RECE059
+                 NOT INVALID
+                     PERFORM 990-RECE059-NEXT-SEC
+                     MOVE   RECE059-REC TO  WRK-RECE05-REC
+           END-START
+      *
+           .
+       250111-RECE059-TAIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £°£µ£¹¡¡£Ó£Ò£Ù£Á£Ã£Ô£É£Î£ÆÊÔ½¸½èÍý
+      *****************************************************************
+       250111-SRYACTINF2-HENSYU-SEC     SECTION.
+      *
+           PERFORM
+               UNTIL  ( FLG-RECE059           =   1                    )
+               OR     ( RECE049-HOSPID    NOT =   RECE059-HOSPID       )
+               OR     ( RECE049-SRYYM     NOT =   RECE059-SRYYM        )
+               OR     ( RECE049-NYUGAIKBN NOT =   RECE059-NYUGAIKBN    )
+               OR     ( RECE049-PTID      NOT =   RECE059-PTID         )
+               OR     ( RECE049-RECEKA    NOT =   RECE059-RECEKA       )
+               OR     ( RECE049-TEISYUTUSAKI
+                                          NOT =   RECE059-TEISYUTUSAKI )
+               OR     ( RECE049-RECESYUBETU
+                                          NOT =   RECE059-RECESYUBETU  )
+               OR     ( RECE049-HKNJANUM  NOT =   RECE059-HKNJANUM     )
+               OR     ( RECE049-HOJOKBN   NOT =   RECE059-HOJOKBN      )
+               OR     ( RECE049-TEKSTYMD  NOT =   RECE059-TEKSTYMD     )
+               OR     ( RECE049-ZAINUM    NOT =   RECE059-ZAINUM       )
+      *
+               PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   5     )
+                         OR      ( RECE059-SRYCD(IDX) =   SPACE )
+                    ADD    1             TO      IDX-RECE05
+                    MOVE   RECE059-SRYACT-TBL(IDX)
+                             TO   WRK-RECE05XX-SRYACT-TBL(IDX-RECE05 1)
+               END-PERFORM 
+      *
+               PERFORM 990-RECE059-NEXT-SEC
+      *
+           END-PERFORM
+      *    ¥³¥á¥ó¥È¤ò´Þ¤ó¤ÀÆâÍÆ¤ÇÃæ´Ö¥Õ¥¡¥¤¥ë¤ÎºÆºîÀ®
+           MOVE       ZERO             TO      FLG-WRKRECE05
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE05
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE05  =    1
                     INITIALIZE                        RECE051-REC
                     MOVE    WRK-RECE05-KEY       TO   RECE051-KEY
                     ADD     1                    TO   WRK-RENNUM
@@ -3550,17 +3740,85 @@
                            ADD   1          TO   WRK-CNT-MEISAI
                        END-IF  
                     END-PERFORM
-                    WRITE   RECE051-REC
-                    ADD     1                    TO  CNT-RECE05
+                    IF   RECE051-SRYCD(1)  NOT =  SPACE
+                       WRITE   RECE051-REC
+                       ADD     1            TO   CNT-RECE05
+                    END-IF
            END-PERFORM
       *
-           MOVE    RECE04-REC        TO      RECE041-REC
+           MOVE    RECE049-REC       TO      RECE041-REC
            MOVE    WRK-CNT-MEISAI    TO      RECE041-MEISAISU
            WRITE   RECE041-REC
            ADD     1                 TO      CNT-RECE04
       *
            .
-       200111-SRYACTINF-HENSYU-EXT.
+       250111-SRYACTINF2-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥È£°£´£¹Å¾Á÷½èÍý
+      *****************************************************************
+       2599-RECE049-TENSOU-SEC     SECTION.
+      *
+           MOVE       RECE049-REC    TO   RECE041-REC
+           WRITE      RECE041-REC
+           ADD        1              TO   CNT-RECE04
+           PERFORM    25991-RECE059-TENSOU-SEC
+      *
+           .
+       2599-RECE049-TENSOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥È£°£µ£¹Å¾Á÷½èÍý
+      *****************************************************************
+       25991-RECE059-TENSOU-SEC     SECTION.
+      *
+           INITIALIZE                       RECE059-REC
+           MOVE    RECE049-HOSPID       TO  RECE059-HOSPID
+           MOVE    RECE049-SRYYM        TO  RECE059-SRYYM
+           MOVE    RECE049-NYUGAIKBN    TO  RECE059-NYUGAIKBN
+           MOVE    RECE049-PTID         TO  RECE059-PTID
+           MOVE    RECE049-RECEKA       TO  RECE059-RECEKA
+           MOVE    RECE049-TEISYUTUSAKI TO  RECE059-TEISYUTUSAKI
+           MOVE    RECE049-RECESYUBETU  TO  RECE059-RECESYUBETU
+           MOVE    RECE049-HKNJANUM     TO  RECE059-HKNJANUM
+           MOVE    RECE049-HOJOKBN      TO  RECE059-HOJOKBN
+           MOVE    RECE049-TEKSTYMD     TO  RECE059-TEKSTYMD
+           MOVE    RECE049-ZAINUM       TO  RECE059-ZAINUM
+           START   RECE059-FILE
+               KEY IS    >=   RECE059-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE059
+               NOT INVALID
+                   PERFORM 990-RECE059-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE059           =   1                    )
+               OR     ( RECE049-HOSPID    NOT =   RECE059-HOSPID       )
+               OR     ( RECE049-SRYYM     NOT =   RECE059-SRYYM        )
+               OR     ( RECE049-NYUGAIKBN NOT =   RECE059-NYUGAIKBN    )
+               OR     ( RECE049-PTID      NOT =   RECE059-PTID         )
+               OR     ( RECE049-RECEKA    NOT =   RECE059-RECEKA       )
+               OR     ( RECE049-TEISYUTUSAKI
+                                          NOT =   RECE059-TEISYUTUSAKI )
+               OR     ( RECE049-RECESYUBETU
+                                          NOT =   RECE059-RECESYUBETU  )
+               OR     ( RECE049-HKNJANUM  NOT =   RECE059-HKNJANUM     )
+               OR     ( RECE049-HOJOKBN   NOT =   RECE059-HOJOKBN      )
+               OR     ( RECE049-TEKSTYMD  NOT =   RECE059-TEKSTYMD     )
+               OR     ( RECE049-ZAINUM    NOT =   RECE059-ZAINUM       )
+      *
+               MOVE    RECE059-REC       TO      RECE051-REC
+               WRITE   RECE051-REC
+               ADD     1                 TO      CNT-RECE05
+      *
+               PERFORM 990-RECE059-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       25991-RECE059-TENSOU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3666,7 +3924,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "RECE02  CNT-IN  :" CNT-RECE02
+           DISPLAY "RECE02  CNT-IN  :" CNT-RECE02 
+           DISPLAY "RECE049 CNT-WK  :" CNT-RECE049
+           DISPLAY "RECE059 CNT-WK  :" CNT-RECE059
            DISPLAY "RECE04  CNT-OUT :" CNT-RECE04 
            DISPLAY "RECE05  CNT-OUT :" CNT-RECE05 
            DISPLAY "*** ORCR0040 END ***"
@@ -3688,6 +3948,9 @@
       *
            CLOSE                       RECE041-FILE     
            CLOSE                       RECE051-FILE     
+      *
+           CLOSE                       RECE049-FILE
+           CLOSE                       RECE059-FILE
       *
            .
        310-FILE-CLOSE-EXT.
@@ -3730,6 +3993,22 @@
            EXIT.
       *
       ****************************************************************
+      *    ¥ì¥»¥×¥È£°£´£¹¥Ç¡¼¥¿ÆÉ¤ß
+      ****************************************************************
+       990-RECE049-NEXT-SEC           SECTION.
+      *
+           READ    RECE049-FILE       NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE049
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE049
+           END-READ
+      *
+           .
+       990-RECE049-NEXT-EXT.
+           EXIT.
+      *
+      ****************************************************************
       *    ¥ì¥»¥×¥È£°£µ¥Ç¡¼¥¿ÆÉ¤ß
       ****************************************************************
        990-RECE05-NEXT-SEC           SECTION.
@@ -3743,6 +4022,22 @@
       *
            .
        990-RECE05-NEXT-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    ¥ì¥»¥×¥È£°£µ£¹¥Ç¡¼¥¿ÆÉ¤ß
+      ****************************************************************
+       990-RECE059-NEXT-SEC           SECTION.
+      *
+           READ    RECE059-FILE       NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE059
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE059
+           END-READ
+      *
+           .
+       990-RECE059-NEXT-EXT.
            EXIT.
       *
       *****************************************************************

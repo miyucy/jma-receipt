@@ -2948,7 +2948,8 @@
               END-IF
            END-IF
       *
-           IF      RECE84-SRYKBN      =     "40" OR "50" OR "54" OR "60"
+           IF      RECE84-SRYKBN   =  "14" OR "40" OR "50" OR "54"
+                                           OR "60" OR "70" OR "80"
               SET     TBL-SANSO    TO      1
               SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
                    AT  END
