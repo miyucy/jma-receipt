@@ -43,11 +43,6 @@
            03  FLG-SYUNOU          PIC 9(01).
            03  FLG-SYUMEI          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
-           03  FLG-OK              PIC 9(01).
-      *
-           03  FLG-JYURRK-ARI      PIC 9(01).
-           03  FLG-JYURRK-CHK      PIC 9(01).
-           03  FLG-SRYACCT-CHK     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -66,9 +61,6 @@
       *
       *    共通領域
            COPY    "MCPAREA".
-      *
-      *    点数マスタ−
-           COPY    "CPTENSU.INC".
       *
       *    患者情報
        01  PTINF-REC.
@@ -119,7 +111,6 @@
       *
       *    パラメータチェック
            PERFORM   100-PRM-CHK-SEC
-           DISPLAY "LNK-SCNYUKIN-RC1 = " LNK-SCNYUKIN-RC.
            IF       (LNK-SCNYUKIN-RC   NOT =   ZERO)
                GO   TO   000-PROC-EXT
            END-IF
@@ -128,7 +119,6 @@
                PERFORM   200-MAIN-SEC
            END-IF
            .
-           DISPLAY "LNK-SCNYUKIN-RC2 = " LNK-SCNYUKIN-RC.
        000-PROC-EXT.
       *
            EXIT PROGRAM
@@ -139,13 +129,6 @@
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-           DISPLAY "LNK-SCNYUKIN-SYORIKBN = " LNK-SCNYUKIN-SYORIKBN.
-           DISPLAY "LNK-SCNYUKIN-KOUSHINKBN = "
-                    LNK-SCNYUKIN-KOUSHINKBN. 
-           DISPLAY "LNK-SCNYUKIN-NYKNKNRKBN = " 
-                    LNK-SCNYUKIN-NYKNKNRKBN.
-           DISPLAY "LNK-SCNYUKIN-NYUKIN-MONEY = " 
-                    LNK-SCNYUKIN-NYUKIN-MONEY.
            IF    LNK-SCNYUKIN-SYORIKBN    =   "1"   OR   "2"
                CONTINUE
            ELSE
@@ -383,11 +366,6 @@
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
       *伝票番号枝番
            MOVE    IDX1                TO  SMEI-DENPEDANUM
-           DISPLAY "SMEI-HOSPID =" SMEI-HOSPID
-           DISPLAY "SMEI-NYUGAIKBN =" SMEI-NYUGAIKBN
-           DISPLAY "SMEI-PTID =" SMEI-PTID
-           DISPLAY "SMEI-DENPNUM =" SMEI-DENPNUM
-           DISPLAY "SMEI-DENPEDANUM =" SMEI-DENPEDANUM
       *入金連番
            MOVE    ZERO                TO  SMEI-NYUKINRENNUM
       *診療科
