@@ -347,8 +347,6 @@
                MOVE    WRK-PATH        TO  MCP-PATH
            END-EVALUATE.
       *
-           DISPLAY "MCP-FUNC = " MCP-FUNC
-      *
            EVALUATE    MCP-FUNC
              WHEN     'DBCLOSE'
                  CONTINUE
