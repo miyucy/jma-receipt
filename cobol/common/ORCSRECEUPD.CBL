@@ -21,7 +21,7 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 
       *  コンポーネント名  : 
-      *  管理者            : 
+      *  管理者            : レセプト管理更新処理
       *  05/02/08    NACL−藤原    新規作成
       *****************************************************************
       *  プログラム修正履歴
@@ -151,7 +151,7 @@
                    MOVE    LNK-UPD-SRYYM   TO  JYURRK-SRYYMD (1:6)
                    MOVE    "__"            TO  JYURRK-SRYYMD (7:2)
                    MOVE    LNK-UPD-HKNKBN  TO  JYURRK-HKNKBN
-                   MOVE    PATH-TBL-JYURRK-KEY27
+                   MOVE    PATH-TBL-JYURRK-KEY28
                                            TO  WRK-DBPATH
                    PERFORM 200-HENSYU-SEC
                WHEN    OTHER
