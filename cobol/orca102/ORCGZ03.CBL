@@ -1069,8 +1069,7 @@
            END-PERFORM
       *
       *    ¥Ç¡¼¥¿µ¬³Ê
-           MOVE    1               TO  IDX-1
-           MOVE    "000 "          TO  SPA-GMN-TANICDCOB(IDX-1)
+           MOVE    ZERO            TO  IDX-1
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       MTANI-MAX
                ADD     1               TO  IDX-1
@@ -1207,9 +1206,9 @@
                                        TO  SPA-GMN-OSINKBNCOB (2)
            MOVE    "2 ¿ÇÎÅ»þ´Ö²Ã»»"
                                        TO  SPA-GMN-OSINKBNCOB (3)
-           MOVE    "3 Ìë´Ö²Ã»»¡¦¿¼Ìë²Ã»»"
+           MOVE    "4 Ìë´Ö²Ã»»¡¦¿¼Ìë²Ã»»"
                                        TO  SPA-GMN-OSINKBNCOB (4)
-           MOVE    "4 ÆÃÊÌ±ý¿Ç²Ã»»"
+           MOVE    "5 ÆÃÊÌ±ý¿Ç²Ã»»"
                                        TO  SPA-GMN-OSINKBNCOB (5)
            MOVE    "6 ÆÃÊÌ±ý¿ÇÎÁ"
                                        TO  SPA-GMN-OSINKBNCOB (6)

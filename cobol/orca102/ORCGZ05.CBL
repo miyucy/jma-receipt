@@ -231,6 +231,8 @@
       *    単位の項目順テーブル
            COPY    "CMTANICD.INC".
       *
+      *    ワーク点数マスタ
+       01  WRK-TNS-TENSU-REC           PIC X(1290).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -562,9 +564,10 @@
                END-IF
            END-PERFORM
       *    データ規格
-           MOVE    1               TO  IDX-1
-           MOVE    "000 "          TO  SPA-GMN-TANICDCOB(IDX-1)
-           MOVE    IDX-1           TO  SPA-TANICD-MAX
+      **** MOVE    1               TO  IDX-1
+      **** MOVE    "000 "          TO  SPA-GMN-TANICDCOB(IDX-1)
+           MOVE    ZERO            TO  SPA-TANICD-MAX
+           MOVE    ZERO            TO  IDX-1
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       MTANI-MAX
                ADD     1               TO  IDX-1
@@ -767,15 +770,18 @@
       *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      410-INPUT-CHK-EXT
+      *        登録時、内容変更の無い場合、エラーとしない
+               IF     (FLG-TOUROKU         =   1  )   AND
+                      (SPA-Z01-SYORIKBN    =   2  )
+      *            更新処理の時のみ
+                   PERFORM 4103-HENKOU-CHK-SEC
+               END-IF
            END-IF
       *
       *    登録時、必須入力チェック
-           IF      FLG-TOUROKU         =   1
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (FLG-TOUROKU         =   1     )
                PERFORM 4109-TOUROKU-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      410-INPUT-CHK-EXT
-               END-IF
            END-IF
       *
            .
@@ -898,9 +904,6 @@
            END-IF
       *    特定器材種別２
            PERFORM 5003-TOKUKIZAISBT2-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
            .
       *
        4102-KIHON-CHK-EXT.
@@ -923,7 +926,6 @@
            ELSE
                MOVE    "0001"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
-               GO      TO      501-YUKOSTYMDCHK-EXT
            END-IF
       *
            .
@@ -948,7 +950,6 @@
            ELSE
                MOVE    "0002"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-GMN-CUR
-               GO      TO      502-YUKOEDYMDCHK-EXT
            END-IF
       *
            .
@@ -1549,6 +1550,56 @@
            MOVE    "0002"              TO  SPA-ZIDCD
            .    
        412-TOUROKU-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    登録前、内容変更チェック処理
+      ****************************************************************
+       4103-HENKOU-CHK-SEC      SECTION.
+      *
+           INITIALIZE                      TNS-TENSU-REC
+      *
+           MOVE    SPA-Z01-SRYCD       TO  TNS-SRYCD
+           MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
+                                       TO  TNS-YUKOSTYMD
+           MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
+                                       TO  TNS-YUKOEDYMD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    TNS-YUKOSTYMD       TO  ORC-DBYMD
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC              =   ZERO
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               PERFORM 900-TENSU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSU
+               INITIALIZE                      TNS-TENSU-REC
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           IF      FLG-TENSU           =   ZERO
+               MOVE    TNS-TENSU-REC(1:1290)   TO  WRK-TNS-TENSU-REC
+      *        更新項目編集
+               PERFORM 4121-KOUMOKUISO-SEC
+               IF      TNS-TENSU-REC(1:1290)   =   WRK-TNS-TENSU-REC
+                   MOVE    SPACE           TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       4103-HENKOU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
