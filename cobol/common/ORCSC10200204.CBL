@@ -3486,10 +3486,12 @@
        20013-SAISIN-SYORI-SEC                SECTION.
       *
       *    再診の４回目以降の時、人工腎臓があれば変更する
-           IF     (WRK-SINSATU-KAISU       =   4   )  AND
-                 ( LNK-ORCSC-SAISIN-CHK    =   ZERO  )  OR
-                 ((LNK-ORCSC-TOKUTEI-JNZ   NOT =  WRK-TOKUTEI-JNZ OR
-                   LNK-ORCSC-TOKUTEI-KNJ   NOT =  WRK-TOKUTEI-KNJ))
+           IF      WRK-SINSATU-KAISU   =   4
+             IF    ( LNK-ORCSC-SAISIN-CHK    =   ZERO  )  OR
+                   ((LNK-ORCSC-TOKUTEI-JNZ
+                                           NOT =  WRK-TOKUTEI-JNZ ) OR
+                    (LNK-ORCSC-TOKUTEI-KNJ
+                                           NOT =  WRK-TOKUTEI-KNJ ))
       *        診察料の決定
                MOVE    WRK-SINSATU-KAISU   TO  WRK-SAN-KAISU
                MOVE    WRK-SINSATU-KBN     TO  WRK-KBN
@@ -3521,6 +3523,7 @@
                    MOVE    SPACE               TO  WRK-COM-AUTOKBN
                                                           (IDX-SINSATU)
                END-IF
+             END-IF
            END-IF
       *
       *    外来管理加算の４回目以降の変更
@@ -3549,10 +3552,10 @@
        20014-RSISAISIN-SYORI-SEC                SECTION.
       *
       *    ３ヶ月超で５回目以降の時、人工腎臓があれば変更する
-           IF     (WRK-SINSATU-KAISU       =   5     )  AND
-                 ( LNK-ORCSC-SAISIN-CHK    =   ZERO  )  OR
-                 ((LNK-ORCSC-TOKUTEI-JNZ   NOT =  WRK-TOKUTEI-JNZ OR
-                   LNK-ORCSC-TOKUTEI-KNJ   NOT =  WRK-TOKUTEI-KNJ))
+           IF      WRK-SINSATU-KAISU       =   5
+             IF  ( LNK-ORCSC-SAISIN-CHK    =   ZERO  )  OR
+                 ((LNK-ORCSC-TOKUTEI-JNZ   NOT =  WRK-TOKUTEI-JNZ ) OR
+                  (LNK-ORCSC-TOKUTEI-KNJ   NOT =  WRK-TOKUTEI-KNJ ) )
       *        人工腎臓・慢性疼痛
                IF     (LNK-ORCSC-TOKUTEI-JNZ   =   1   )  OR
                       (LNK-ORCSC-TOKUTEI-KNJ   =   1   )  OR
@@ -3562,6 +3565,7 @@
                END-IF
       *
                MOVE    ZERO            TO  LNK-ORCSC-SAISIN-CHK
+             END-IF
            END-IF
       *
            .

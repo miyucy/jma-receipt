@@ -301,8 +301,8 @@
                END-IF
                IF      FLG-PTHKNINF        =   ZERO
                    IF     (PTHKN-HOJOKBN       =   "8"  OR  "9") OR
-                          (COMB-HKNNUM         =   "060"  AND
-                           PTHKN-HOJOKBN       =   "1"  OR  "2")
+                          ((COMB-HKNNUM        =   "060"   )  AND
+                           (PTHKN-HOJOKBN      =   "1"  OR  "2"))
                        MOVE    1               TO  FLG-OK
                    END-IF
       *            Á¥°÷¤ÇÊä½õ¶èÊ¬¤Î¤¢¤ë»þ£Ï£Ë¤È¤¹¤ë
