@@ -37,12 +37,13 @@
     <last_modification_time>Thu, 05 Dec 2002 02:02:36 GMT</last_modification_time>
   </signal>
   <title>(I48)壳闻乖百办枉联买サブ</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
+  <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>False</allow_grow>
   <auto_shrink>False</auto_shrink>
+  <wmclass_class>jma-receipt.dialog</wmclass_class>
 
   <widget>
     <class>GtkFixed</class>
