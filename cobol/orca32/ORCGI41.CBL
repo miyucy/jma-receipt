@@ -1968,7 +1968,7 @@
                PERFORM   VARYING   IDY     FROM    1   BY  1
                          UNTIL     IDY         >  31
                    MOVE    SPACE                    TO  WRK-CHK-SKB
-      *             IF     I41-KUMILIST-COUNT  NOT = ZERO
+                   IF     I41-KUMILIST-COUNT  NOT = ZERO
                        PERFORM   VARYING   IDX     FROM    1   BY  1
                                  UNTIL     IDX     >  I41-KUMILIST-COUNT
                            IF  (SPA-GMN-TDAY-41 (IDW IDY)  =
@@ -1977,11 +1977,11 @@
                                MOVE    "*"               TO  WRK-CHK-SKB
                            END-IF
                        END-PERFORM
-      *             ELSE
-      *                 IF     SPA-GMN-TDAY-41 (IDW IDY)  =  ALL SPACE
-      *                     MOVE    "*"               TO  WRK-CHK-SKB
-      *                 END-IF
-      *             END-IF
+                   ELSE
+                       IF     SPA-GMN-TDAY-41 (IDW IDY)  =  ALL SPACE
+                           MOVE    "*"               TO  WRK-CHK-SKB
+                       END-IF
+                   END-IF
                    IF     WRK-CHK-SKB   =   SPACE
                        IF     WRK-TEKSTYMD(7:2)   >   IDY(3:2)
                            MOVE    IDY(3:2)    TO  WRK-TEKSTYMD(7:2)
@@ -1995,25 +1995,6 @@
                          UNTIL     IDY         >  31
                    PERFORM   VARYING   IDX     FROM    1   BY  1
                              UNTIL     IDX         >  I41-KUMILIST-COUNT
-                     IF  SPA-GMN-TDAY-41 (IDW IDY)  =  WRK-KUMINO (IDX)
-                       IF  WRK-TEKEDYMD(1:6) = WRK-KUMISTYMD (IDX)(1:6)
-                         MOVE    WRK-KUMISTYMD    TO  WRK-TEKEDYMD
-                         IF  WRK-TEKEDYMD(7:2)  =  "01"
-                           MOVE    "00"         TO  WRK-TEKEDYMD
-                         ELSE
-                           MOVE    WRK-TEKEDYMD(7:2) TO   WRK-COP-G
-                           COMPUTE WRK-COP   =   WRK-COP   -   1
-                           MOVE    WRK-COP-G       TO  WRK-TEKEDYMD(7:2)
-                           PERFORM   VARYING   IDW1   FROM   1  BY 1
-                                     UNTIL     IDW1      >  31
-                             IF  SPA-GMN-TDAY-41 (IDW IDW1)
-                                                         NOT = ALL SPACE
-                               MOVE    IDW1(3:2)   TO  WRK-TEKSTYMD(7:2)
-                               MOVE    40          TO  IDW1
-                             END-IF
-                           END-PERFORM
-                         END-IF
-                       END-IF
                        IF  WRK-TEKSTYMD(1:6) = WRK-KUMIEDYMD (IDX)(1:6)
                          MOVE    WRK-KUMIEDYMD    TO  WRK-TEKSTYMD
                          IF  WRK-TEKSTYMD(7:2)  =  "31"
@@ -2031,7 +2012,6 @@
                            END-PERFORM
                          END-IF
                        END-IF
-                     END-IF
                    END-PERFORM
                END-PERFORM
                IF     WRK-TEKSTYMD  >   WRK-TEKEDYMD
