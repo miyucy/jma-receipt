@@ -241,6 +241,7 @@ else
   ps_file.close
   system(DIA, "-p", $psdata, xml_file.path)
   if $printer != "@@@@@@@@@@"
-  	system(LPR, "-P", $printer, ps_file.path)
+  	system(LPR, "-P", $printer, $psdata)
+#  	system(LPR, "-P", $printer, ps_file.path)
   end
 end
