@@ -1810,9 +1810,12 @@
       *****************************************************************
        4101-CHENGE-CHK-SEC               SECTION.
       *
+           IF      WRK-STR             =   ZERO
+               MOVE    1               TO  WRK-STR
+           END-IF
            PERFORM VARYING IDX         FROM    WRK-STR  BY  1
                    UNTIL   IDX         >   200
-               MOVE    SPACE           TO  SPA-MAE-INPUTCD (SPA-GMN-IDX)
+               MOVE    SPACE           TO  SPA-MAE-INPUTCD (IDX)
            END-PERFORM
       *
            MOVE    ZERO                   TO  WRK-STR
