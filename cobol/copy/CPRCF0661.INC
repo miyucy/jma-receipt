@@ -48,6 +48,8 @@
                05  RECE661-KOHBUNRI        PIC  9(01).
       *ø«Œ≈∂Ë ¨
                05  RECE661-SRYKBN          PIC  X(02).
+      *∫ﬁº± Ã∂Ë ¨
+               05  RECE661-ZAISKBKBN       PIC  X(01).
       *∏°∫∫º¬ª‹∂Ë ¨
                05  RECE661-KNSJISKBN       PIC  9(01).
       *…ΩÕ—»÷πÊ
