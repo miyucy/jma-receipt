@@ -1065,9 +1065,8 @@
                             MOVE    FIF00-REC(62:128)
                                    TO  SPA-GMN-FILE-ID
                END-READ
+               CLOSE                           FIF00-FILE
            END-IF.
-      *
-           CLOSE                           FIF00-FILE.
       *
        T-000-READCHEK-EXT.
            EXIT.
