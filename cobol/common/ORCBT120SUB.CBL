@@ -45,39 +45,17 @@
        01  FLG-AREA.
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
-           03  FLG-SRYACCT                 PIC 9(01).
-           03  FLG-SRYACT                  PIC 9(01).
-           03  FLG-TENSU                   PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
-           03  FLG-RJN                     PIC 9(01).
-           03  FLG-ROUSAI                  PIC 9(01).
-           03  FLG-RYAKU                   PIC 9(01).
-           03  FLG-OK                      PIC 9(01).
-           03  FLG-KSN                     PIC 9(01).
-           03  FLG-SENTEI-SET              PIC 9(01).
-           03  FLG-SENTEICDCHG             PIC 9(01).
-           03  FLG-TENSUWRK                PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
+           03  FLG-SYUNOU                  PIC 9(01).
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
            03  IDX1                        PIC 9(04).
            03  IDX2                        PIC 9(04).
-           03  IDX3                        PIC 9(04).
-           03  IDX4                        PIC 9(04).
-           03  IDX5                        PIC 9(04).
-           03  IDX6                        PIC 9(04).
-           03  IDX7                        PIC 9(04).
-           03  KSN-IDX                     PIC 9(04).
-           03  GENSAN-IDX                  PIC 9(04).
-           03  GENSAN-IDX2                 PIC 9(04).
-           03  IDV                         PIC 9(02).
-           03  TSY90-IDX                   PIC 9(02).
-           03  ETC-IDX                     PIC 9(02).
-           03  IDX-ST                      PIC 9(02).
-           03  IDX-ED                      PIC 9(02).
+           03  SYU-IDX                     PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -114,9 +92,6 @@
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
-           COPY    "CPTENSU.INC".
-      *
       *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
@@ -128,6 +103,10 @@
       *    ´µ¼ÔÆþ±¡ÍúÎò
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
+      *
+      *    ¼ýÇ¼
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
       *
       *
       *    £Ä£Â¸¡º÷
@@ -470,8 +449,86 @@
                                  TO  LNK-ORCBT120SUB-SKJ-KBN
            END-IF
       *
+      *    ¼ýÇ¼¾ðÊó¤Î¼èÆÀ
+           MOVE    ZERO                     TO  SYU-IDX
+           INITIALIZE                           SYUNOU-REC
+           MOVE    LNK-ORCBT120SUB-HOSPID   TO  SYU-HOSPID
+           MOVE    "1"                      TO  SYU-NYUGAIKBN
+           MOVE    LNK-ORCBT120SUB-PTID     TO  SYU-PTID
+           MOVE    "SYUNOU-KEY2"            TO  ORC-DBPATH
+           PERFORM 910-SYUNOU-SELECT-SEC
+           IF      FLG-SYUNOU                =  ZERO
+               MOVE     "SYUNOU-KEY2"       TO  ORC-DBPATH
+               PERFORM   910-SYUNOU-READ-SEC
+               PERFORM   UNTIL   (FLG-SYUNOU    =   1)
+                   IF   SYU-DENPJTIKBN    =    "3"
+                       CONTINUE
+                   ELSE
+                       IF   SYU-DENPPRTYMD = LNK-ORCBT120SUB-SANTEIYMD
+                           PERFORM   210-SYUNOU-SET-SEC
+                       END-IF
+                   END-IF
+                   MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+                   PERFORM 910-SYUNOU-READ-SEC
+               END-PERFORM
+           END-IF
+      *    ¼ýÇ¼¥¯¥í¡¼¥º
+           MOVE    "SYUNOU-KEY2"           TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
            .
        200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ýÇ¼¥»¥Ã¥È½èÍý
+      *****************************************************************
+       210-SYUNOU-SET-SEC         SECTION.
+      *
+           ADD    1     TO   SYU-IDX
+      *    ÅÁÉ¼ÈÖ¹æ
+           MOVE    SYU-DENPNUM         TO  LNK-ORCBT120SUB-DENPNUM
+                                                           (SYU-IDX)
+      *    ÅÁÉ¼¾õÂÖ¶èÊ¬
+           MOVE    SYU-DENPJTIKBN      TO  LNK-ORCBT120SUB-DENPJTIKBN
+                                                           (SYU-IDX)
+      *    ÅÁÉ¼ºîÀ®¶èÊ¬
+           MOVE    SYU-CREATEKBN       TO  LNK-ORCBT120SUB-CREATEKBN
+                                                           (SYU-IDX)
+      *    ÊÝ¸±ÅÀ¿ô
+           MOVE    SYU-TOTAL-HKNTEN    TO  LNK-ORCBT120SUB-HKNTEN
+                                                           (SYU-IDX)
+      *    ÊÝ¸±ÉéÃ´¶â³Û
+           MOVE    SYU-TOTAL-MONEY     TO  LNK-ORCBT120SUB-HKNMONEY
+                                                           (SYU-IDX)
+      *    ÊÝ¸±Å¬ÍÑ³°¶â³Û
+           COMPUTE    LNK-ORCBT120SUB-TGMONEY (SYU-IDX)
+                                       =   SYU-TOTAL-TGMONEY
+                                       +   SYU-TOTAL-TGMONEY-TAX
+                                       -   SYU-TGMONEY-TAX-SAI
+      *    ÊÝ¸±Å¬ÍÑ³°ÀÇ³Û
+           MOVE    SYU-TGMONEY-TAX-SAI
+                                       TO  LNK-ORCBT120SUB-TGMONEY-TAX
+                                                           (SYU-IDX)
+      *    ¼«Èñ¶â³Û 
+           COMPUTE LNK-ORCBT120SUB-JIHI (SYU-IDX)
+                                       =  SYU-JIHI-TOTAL
+                                       +  SYU-JIHI-TOTAL-TAX
+      *    ¼«ÈñÀÇ³Û
+           MOVE    SYU-JIHI-TAX        TO  LNK-ORCBT120SUB-JIHI-TAX
+                                                           (SYU-IDX)
+      *    ¿©»öÉéÃ´¶â³Û
+      ***     MOVE    SYU-JIHI-TAX     TO  LNK-ORCBT120SUB-SKJ
+      *                                                    (SYU-IDX)
+      *    ¾ÃÈñÀÇ³Û
+      ***     MOVE    SYU-JIHI-TAX     TO  LNK-ORCBT120SUB-SKJ-TAX
+      *                                                    (SYU-IDX)
+      *    ÀÁµá¶â³Û
+           MOVE    SYU-SKYMONEY        TO  LNK-ORCBT120SUB-SKYMONEY
+                                                           (SYU-IDX)
+      *
+           .
+       210-SYUNOU-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -704,6 +761,49 @@
       *
            .
        910-PTNYUINRRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ýÇ¼¥Þ¥¹¥¿¡¼¸¡º÷
+      *****************************************************************
+       910-SYUNOU-SELECT-SEC        SECTION.
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-SYUNOU
+           ELSE
+               MOVE    1                  TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       910-SYUNOU-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ýÇ¼¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       910-SYUNOU-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC        TO  SYUNOU-REC
+               MOVE    ZERO               TO  FLG-SYUNOU
+           ELSE
+               INITIALIZE                     SYUNOU-REC
+               MOVE    1                  TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       910-SYUNOU-READ-EXT.
            EXIT.
       *
       *****************************************************************
