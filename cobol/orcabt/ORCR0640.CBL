@@ -661,9 +661,9 @@
                                    PERFORM   RECE64-TENSOU2-SEC
                                    PERFORM   RECE65-HENSYU2-SEC
                                    PERFORM   RECE64-WRITE-SEC
+                                   MOVE    31     TO    IDY
                               END-IF
                               MOVE    10     TO    IDX1
-                              MOVE    31     TO    IDY
                          END-IF
       *
                       END-PERFORM
@@ -2046,14 +2046,13 @@
       *****************************************************************
        RECE62-HENSYU-SEC3               SECTION.
       *
-      *
            PERFORM  VARYING  ID1  FROM   1  BY   1
                       UNTIL  ID1  >   4
       *
       **>     IF      SYU-SHOKUJI-NISSU(ID1)  NOT =  ZERO
                    ADD   SYU-SHOKUJI-NISSU(ID1)  TO  
                                        RECE62-SHOKUJIKHNNISSU(ID1)
-                   ADD   SYU-SHOKUJI(ID1)        TO  
+                   MOVE  SYU-SHOKUJI(ID1)        TO  
                                        RECE62-SHOKUJIKHNRYO(ID1)
       **>     END-IF
       *
