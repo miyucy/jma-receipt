@@ -29,6 +29,10 @@
                 04  I20-VALUE   PIC X(30).
               03  I20-EDNYUINYMD.
                 04  I20-VALUE   PIC X(10).
+              03  I20-STTAIINYMD.
+                04  I20-VALUE   PIC X(10).
+              03  I20-EDTAIINYMD.
+                04  I20-VALUE   PIC X(10).
               03  I20-ADRS.
                 04  I20-VALUE   PIC X(100).
               03  I20-SELNUM.

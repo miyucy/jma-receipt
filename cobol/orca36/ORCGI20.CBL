@@ -29,7 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    02/12/05  診療科９９件対応等
       *  01.00.02    NACL-太田    02/01/14  COPY句の重複定義を修正
-      *  01.00.03    NACL-太田    02/10/14  CSV出力、印刷機能追加
+      *  01.00.03    NACL-太田    03/10/14  CSV出力、印刷機能追加
+      *  01.00.04    NACL-太田    04/01/14  退院日入力機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -939,6 +940,8 @@
            MOVE    I20-ADRS            TO  SPA-GMN-ADRS
            MOVE    I20-STNYUINYMD      TO  SPA-GMN-STNYUINYMD
            MOVE    I20-EDNYUINYMD      TO  SPA-GMN-EDNYUINYMD
+           MOVE    I20-STTAIINYMD      TO  SPA-GMN-STTAIINYMD
+           MOVE    I20-EDTAIINYMD      TO  SPA-GMN-EDTAIINYMD
            MOVE    I20-SRYKA           TO  SPA-GMN-SRYKA-G
            MOVE    I20-BTUNUM          TO  SPA-GMN-BTUNUM-G
            MOVE    I20-JOTAI           TO  SPA-GMN-JOTAI-G
@@ -987,6 +990,16 @@
            END-IF
       *    終了入院日
            PERFORM 41026-EDNYUINYMD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE 
+              GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *    開始退院日
+           PERFORM 41025-STTAIINYMD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE 
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *    終了退院日
+           PERFORM 41026-EDTAIINYMD-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE 
               GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1181,7 +1194,7 @@
            MOVE    6                    TO  SPA-GMN-CUR
       *
            IF     SPA-GMN-STNYUINYMD    =   SPACE
-               MOVE    SPACE                TO  SPA-NAI-STNYUINYMD
+               MOVE    "00000000"       TO  SPA-NAI-STNYUINYMD
            ELSE    
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
@@ -1223,6 +1236,57 @@
            END-IF    
            .
        41026-EDNYUINYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    開始退院日チェック処理
+      *****************************************************************
+       41025-STTAIINYMD-CHK-SEC         SECTION.
+      *
+           MOVE    13                   TO  SPA-GMN-CUR
+      *
+           IF     SPA-GMN-STTAIINYMD    =   SPACE
+               MOVE    "00000000"       TO  SPA-NAI-STTAIINYMD
+           ELSE    
+      *        日付画面チェックサブ
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN-STTAIINYMD  TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY         TO  SPA-GMN-STTAIINYMD
+                   MOVE    SGDAY-SDAY          TO  SPA-NAI-STTAIINYMD
+               ELSE
+                   MOVE    "0011"          TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       41025-STTAIINYMD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    終了退院日チェック処理
+      *****************************************************************
+       41026-EDTAIINYMD-CHK-SEC         SECTION.
+      *
+           MOVE    14                   TO  SPA-GMN-CUR
+      *
+           IF     SPA-GMN-EDTAIINYMD    =   SPACE
+               MOVE    "99999999"           TO  SPA-NAI-EDTAIINYMD
+           ELSE    
+      *        日付画面チェックサブ
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN-EDTAIINYMD  TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY         TO  SPA-GMN-EDTAIINYMD
+                   MOVE    SGDAY-SDAY          TO  SPA-NAI-EDTAIINYMD
+               ELSE
+                   MOVE    "0012"          TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       41026-EDTAIINYMD-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1330,6 +1394,12 @@
            IF      SPA-ERRCD       NOT =   SPACE 
                GO      TO      4103-KANREN-CHK-EXT
            END-IF
+      *
+      *    退院日の関連チェック
+           PERFORM 41032-KANREN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE 
+               GO      TO      4103-KANREN-CHK-EXT
+           END-IF
            .
       *
        4103-KANREN-CHK-EXT.
@@ -1347,11 +1417,29 @@
                IF      SPA-NAI-STNYUINYMD    <=   SPA-NAI-EDNYUINYMD
                    CONTINUE
                ELSE
-                   MOVE    "0000"          TO  SPA-ERRCD    
+                   MOVE    "0101"        TO  SPA-ERRCD
                END-IF   
            END-IF
            .
        41031-KANREN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院日の関連チェック
+      *****************************************************************
+       41032-KANREN-CHK-SEC           SECTION.
+      * 
+           IF      SPA-NAI-STTAIINYMD    =   ZERO
+           OR      SPA-NAI-EDTAIINYMD    =   ZERO
+               CONTINUE
+           ELSE
+               IF      SPA-NAI-STTAIINYMD    <=   SPA-NAI-EDTAIINYMD
+                   CONTINUE
+               ELSE
+                   MOVE    "0102"        TO  SPA-ERRCD
+               END-IF   
+           END-IF
+           .
+       41032-KANREN-CHK-EXT.
            EXIT.
       *
       ****************************************************************
@@ -2169,6 +2257,18 @@
            END-STRING
            MOVE    1                   TO  FLG-JYOKEN
       *
+      *    退院日
+           PERFORM 45011-JYOKEN-HENSYU-SEC
+           STRING  "(taiinymd >= '"        DELIMITED  BY  SIZE
+                   SPA-NAI-STTAIINYMD      DELIMITED  BY  SIZE
+                   "' and taiinymd <= '"   DELIMITED  BY  SIZE
+                   SPA-NAI-EDTAIINYMD      DELIMITED  BY  SIZE
+                   "')"                    DELIMITED  BY  SIZE                        
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+           END-STRING
+           MOVE    1                   TO  FLG-JYOKEN
+      *
       *    診療科
            IF      SPA-GMN-SRYKA       =   SPACE
                CONTINUE
@@ -2615,6 +2715,8 @@
            MOVE    SPA-GMN-ADRS        TO  I20-ADRS
            MOVE    SPA-GMN-STNYUINYMD  TO  I20-STNYUINYMD
            MOVE    SPA-GMN-EDNYUINYMD  TO  I20-EDNYUINYMD
+           MOVE    SPA-GMN-STTAIINYMD  TO  I20-STTAIINYMD
+           MOVE    SPA-GMN-EDTAIINYMD  TO  I20-EDTAIINYMD
            MOVE    SPA-GMN-SRYKA-G     TO  I20-SRYKA
            MOVE    SPA-GMN-BTUNUM-G    TO  I20-BTUNUM
            MOVE    SPA-GMN-JOTAI-G     TO  I20-JOTAI
@@ -2719,7 +2821,6 @@
       *    カーソル指定のない時、入力した項目の次へ
            IF      SPA-GMN-CUR         =   ZERO
                PERFORM 50011-INPUT-CUR-SEC
-               ADD     1               TO  SPA-GMN-CUR
            END-IF
       *
            EVALUATE    SPA-GMN-CUR
@@ -2747,6 +2848,10 @@
                    MOVE  "CHKTESTPT"       TO  MCP-WIDGET 
                WHEN    12
                    MOVE  "SELNUM"          TO  MCP-WIDGET 
+               WHEN    13
+                   MOVE  "STTAIINYMD"      TO  MCP-WIDGET 
+               WHEN    14
+                   MOVE  "EDTAIINYMD"      TO  MCP-WIDGET 
            END-EVALUATE
       *
            .
@@ -2758,7 +2863,7 @@
       *****************************************************************
        50011-INPUT-CUR-SEC          SECTION.
       *
-           EVALUATE    	SPA-MCP-WIDGET
+           EVALUATE    SPA-MCP-WIDGET
                WHEN    "PTNUM"
                    MOVE    1                   TO  SPA-GMN-CUR
                WHEN    "NAME"
@@ -2781,7 +2886,21 @@
                    MOVE    11                  TO  SPA-GMN-CUR
                WHEN    "CHKTESTPT"
                    MOVE    11                  TO  SPA-GMN-CUR
+               WHEN    "STTAIINYMD"
+                   MOVE    13                  TO  SPA-GMN-CUR
+               WHEN    "EDTAIINYMD"
+                   MOVE    14                  TO  SPA-GMN-CUR
            END-EVALUATE
+      *
+           EVALUATE SPA-MCP-WIDGET
+           WHEN    "EDNYUINYMD"
+               MOVE    13                      TO  SPA-GMN-CUR
+           WHEN    "EDTAIINYMD"
+               MOVE    8                       TO  SPA-GMN-CUR
+           WHEN    OTHER
+               COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR +   1
+           END-EVALUATE
+
            .
       *
        50011-INPUT-CUR-EXT.
@@ -2815,8 +2934,15 @@
                WHEN    "0010"
                    MOVE    "該当の番号はありません"    TO  SPA-ERRMSG
       *             
+               WHEN    "0011"
+                   MOVE    "開始退院日入力エラー"      TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "終了退院日入力エラー"      TO  SPA-ERRMSG
                WHEN    "0101"
                    MOVE    "開始入院日が終了年月日より大きいです" 
+                                                       TO  SPA-ERRMSG
+               WHEN    "0102"
+                   MOVE    "開始退院日が終了年月日より大きいです" 
                                                        TO  SPA-ERRMSG
       *             
                WHEN    "0201"

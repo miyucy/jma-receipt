@@ -64,6 +64,8 @@
                        09  SPA-GMN-ADRS        PIC X(100).
                        09  SPA-GMN-STNYUINYMD  PIC X(09).
                        09  SPA-GMN-EDNYUINYMD  PIC X(09).
+                       09  SPA-GMN-STTAIINYMD  PIC X(09).
+                       09  SPA-GMN-EDTAIINYMD  PIC X(09).
                        09  SPA-GMN-SELNUM      PIC 9(03).
                        09  SPA-GMN-TOTAL       PIC X(22).
       *
@@ -112,6 +114,8 @@
                    07  SPA-NAI-KOUMOKU.   
                        09  SPA-NAI-STNYUINYMD      PIC X(08).
                        09  SPA-NAI-EDNYUINYMD      PIC X(08).
+                       09  SPA-NAI-STTAIINYMD      PIC X(08).
+                       09  SPA-NAI-EDTAIINYMD      PIC X(08).
                        09  SPA-NAI-STAGE           PIC 9(03).
                        09  SPA-NAI-EDAGE           PIC 9(03).
                        09  SPA-NAI-PTID            PIC 9(05).

@@ -27,6 +27,12 @@ I20	{
 		EDNYUINYMD	{
 			value	varchar(10);
 		};
+		STTAIINYMD	{
+			value	varchar(10);
+		};
+		EDTAIINYMD	{
+			value	varchar(10);
+		};
 		ADRS	{
 			value	varchar(100);
 		};

@@ -508,7 +508,7 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>EDAGECOMBO</name>
-      <x>856</x>
+      <x>880</x>
       <y>16</y>
       <width>120</width>
       <height>24</height>
@@ -549,7 +549,7 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>STAGECOMBO</name>
-      <x>710</x>
+      <x>728</x>
       <y>16</y>
       <width>120</width>
       <height>24</height>
@@ -672,7 +672,7 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>JOTAICOMBO</name>
-      <x>710</x>
+      <x>728</x>
       <y>64</y>
       <width>120</width>
       <height>24</height>
@@ -3133,7 +3133,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHKTESTPT</name>
-      <x>856</x>
+      <x>880</x>
       <y>64</y>
       <width>136</width>
       <height>24</height>
@@ -3423,6 +3423,22 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>label504</name>
+      <x>672</x>
+      <y>40</y>
+      <width>42</width>
+      <height>24</height>
+      <label>Âà±¡Æü</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>label526</name>
       <x>356</x>
       <y>16</y>
@@ -3472,10 +3488,10 @@
     <widget>
       <class>GtkLabel</class>
       <name>label502</name>
-      <x>670</x>
-      <y>20</y>
-      <width>40</width>
-      <height>16</height>
+      <x>672</x>
+      <y>16</y>
+      <width>28</width>
+      <height>24</height>
       <label>Ç¯Îð</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
@@ -3488,10 +3504,10 @@
     <widget>
       <class>GtkLabel</class>
       <name>label1503</name>
-      <x>670</x>
-      <y>68</y>
-      <width>40</width>
-      <height>18</height>
+      <x>672</x>
+      <y>64</y>
+      <width>28</width>
+      <height>24</height>
       <label>¾õÂÖ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
@@ -3504,10 +3520,10 @@
     <widget>
       <class>GtkLabel</class>
       <name>label902</name>
-      <x>836</x>
-      <y>20</y>
+      <x>856</x>
+      <y>16</y>
       <width>16</width>
-      <height>16</height>
+      <height>24</height>
       <label>¡Á</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
@@ -3515,6 +3531,78 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1505</name>
+      <x>832</x>
+      <y>40</y>
+      <width>30</width>
+      <height>24</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>STTAIINYMD</name>
+      <x>728</x>
+      <y>40</y>
+      <width>104</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text>414.10.01</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>EDTAIINYMD</name>
+      <x>860</x>
+      <y>40</y>
+      <width>104</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text>414.10.01</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
     </widget>
   </widget>
 </widget>
