@@ -512,6 +512,7 @@
                05  SPA-Q96-GMN-AREA.
                    07  SPA-Q96-GMN-MAX               PIC 9(03).
                    07  SPA-Q96-NEXT                  PIC 9(04).
+                   07  SPA-Q96-PAGE                  PIC 9(04).
                    07  SPA-Q96-GMN-CUR               PIC 9(03).
       *
                    07  SPA-Q96-GMN-SELNUM-G.

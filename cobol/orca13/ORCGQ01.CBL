@@ -3658,7 +3658,16 @@
            END-IF
       *
            MOVE    TNS-SRYCD           TO  SPA-NAI-Q01-SRYCD  (IDX1)
-           MOVE    TNS-NAME            TO  SPA-GMN-Q01-SRYACT (IDX1)
+      *
+           IF     (TNS-ROUTEKKBN       =   2   )
+               MOVE    SPACE           TO  SPA-GMN-Q01-SRYACT (IDX1)
+               STRING  "¡ÎÏ·¡Ï"
+                    TNS-NAME               DELIMITED   BY  SIZE
+               INTO                        SPA-GMN-Q01-SRYACT (IDX1)
+               END-STRING
+           ELSE
+               MOVE    TNS-NAME        TO  SPA-GMN-Q01-SRYACT (IDX1)
+           END-IF
       *
            .
        4121-SRYCD-CHK-EXT.

@@ -5,20 +5,16 @@
   <name>Q96</name>
   <program_name>Q96</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
   <class>GtkWindow</class>
   <name>Q96</name>
   <width>700</width>
-  <height>560</height>
+  <height>570</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -29,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Mon, 25 Dec 2000 09:10:52 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -51,7 +47,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>12</x>
-      <y>524</y>
+      <y>536</y>
       <width>62</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -102,7 +98,7 @@
       <class>GtkButton</class>
       <name>B02</name>
       <x>100</x>
-      <y>524</y>
+      <y>536</y>
       <width>72</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -125,7 +121,7 @@
       <class>GtkButton</class>
       <name>B06</name>
       <x>396</x>
-      <y>524</y>
+      <y>536</y>
       <width>90</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -248,7 +244,7 @@
       <class>GtkButton</class>
       <name>B04</name>
       <x>244</x>
-      <y>524</y>
+      <y>536</y>
       <width>72</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -271,7 +267,7 @@
       <class>GtkButton</class>
       <name>B03</name>
       <x>172</x>
-      <y>524</y>
+      <y>536</y>
       <width>72</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -294,7 +290,7 @@
       <class>GtkButton</class>
       <name>B05</name>
       <x>324</x>
-      <y>524</y>
+      <y>536</y>
       <width>72</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -317,7 +313,7 @@
       <class>GtkButton</class>
       <name>B08</name>
       <x>608</x>
-      <y>524</y>
+      <y>536</y>
       <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -360,7 +356,7 @@
       <text_visible>True</text_visible>
       <text_max_length>3</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -388,7 +384,7 @@
       <text_visible>True</text_visible>
       <text_max_length>3</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -416,7 +412,7 @@
       <text_visible>True</text_visible>
       <text_max_length>3</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -444,7 +440,7 @@
       <text_visible>True</text_visible>
       <text_max_length>3</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -472,20 +468,20 @@
       <text_visible>True</text_visible>
       <text_max_length>3</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
     <widget>
       <class>GtkButton</class>
-      <name>B07</name>
-      <x>512</x>
-      <y>524</y>
-      <width>66</width>
+      <name>B07S</name>
+      <x>496</x>
+      <y>512</y>
+      <width>90</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
-	<modifiers>0</modifiers>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
 	<key>GDK_F7</key>
 	<signal>clicked</signal>
       </accelerator>
@@ -495,7 +491,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F7 ¼¡ÊÇ</label>
+      <label>Shift+F7 Á°ÊÇ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -634,24 +630,6 @@
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>596</x>
-      <y>508</y>
-      <width>104</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator2</name>
-      <x>588</x>
-      <y>516</y>
-      <width>16</width>
-      <height>36</height>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>JIINCOB</name>
       <x>352</x>
@@ -729,6 +707,47 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B07</name>
+      <x>512</x>
+      <y>536</y>
+      <width>66</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F7</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
+      </signal>
+      <label>F7 ¼¡ÊÇ</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator2</name>
+      <x>590</x>
+      <y>532</y>
+      <width>16</width>
+      <height>36</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>596</x>
+      <y>524</y>
+      <width>104</width>
+      <height>16</height>
     </widget>
   </widget>
 </widget>
