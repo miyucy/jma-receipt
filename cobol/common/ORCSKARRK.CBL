@@ -25,6 +25,7 @@
       *  管理者            : 
       *  作成日付    作業者        記述
       *  01.00.01    MCC-多々納   02/05/15  労災用追加
+      *  01.00.02    NACL-多々納  02/12/15  初診算定日判定修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -59,6 +60,9 @@
            03  WRK-SYOSINYMD2          PIC X(08). 
            03  WRK-LST-SRYYMD          PIC X(08). 
            03  WRK-LST-SRYYMD2         PIC X(08). 
+      *
+           03  WRK-SANTEIYMD           PIC X(08). 
+           03  WRK-DAY                 PIC 9(02).
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
@@ -264,12 +268,23 @@
            PERFORM UNTIL       FLG-SANTEI          =   1
       *
                IF      SANTEI-MSANTEICNT   >   ZERO
+                   MOVE    ZERO            TO  WRK-DAY
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   31
+                       IF      SANTEI-DAY (IDY)    NOT =   ZERO
+                           MOVE    IDY             TO  WRK-DAY
+                       END-IF
+                   END-PERFORM
+                   MOVE    SANTEI-SRYYM            TO  WRK-SANTEIYMD
+                                                               (1:6)
+                   MOVE    WRK-DAY                 TO  WRK-SANTEIYMD
+                                                               (7:2)
                    IF     (WRK-SYOSINYMD1          =   SPACE  )  OR
-                          (SANTEI-FSANTEIYMD       <   WRK-SYOSINYMD1)
-                       MOVE    SANTEI-FSANTEIYMD   TO  WRK-SYOSINYMD1
+                          (WRK-SANTEIYMD           <   WRK-SYOSINYMD1)
+                       MOVE    WRK-SANTEIYMD       TO  WRK-SYOSINYMD1
                    END-IF
-                   IF      SANTEI-FSANTEIYMD       >   WRK-SYOSINYMD2
-                       MOVE    SANTEI-FSANTEIYMD   TO  WRK-SYOSINYMD2
+                   IF      WRK-SANTEIYMD           >   WRK-SYOSINYMD2
+                       MOVE    WRK-SANTEIYMD       TO  WRK-SYOSINYMD2
                    END-IF
                END-IF
       *
@@ -368,7 +383,7 @@
       *    END-IF
       *
       *
-      *        すべての日付が空白の時、削除する
+      *    すべての日付が空白の時、削除する
            IF     (KARRK-SYOSINYMD1        =   SPACE )  AND
                   (KARRK-SYOSINYMD2        =   SPACE )  AND
                   (KARRK-LASTYMD           =   SPACE )
