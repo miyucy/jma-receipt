@@ -1743,6 +1743,7 @@
            EVALUATE    SPA-KIDCD
                WHEN    "0101"
                    MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
       *            診療料　自動修正
                    MOVE    SPA-CHK-IDX         TO  SPA-GMN-IDX
       *            入力分変換処理
@@ -1762,6 +1763,7 @@
                    MOVE    "1"             TO  FLG-TOROKU
                    PERFORM 510-TBLHEN-SEC
                    MOVE    SPACE           TO  FLG-TOROKU
+                   END-IF
       *
                WHEN    "0102"
                    MOVE    SPACE               TO  SPA-KIDCD
@@ -2947,7 +2949,7 @@
                        MOVE    SPA-GMN-INPUTCD(IDX)
                                           TO  SPA-MAE-INPUTCD (IDX)
                    ELSE
-                   MOVE    SPACE           TO  SPA-MAE-INPUTCD (IDX)
+                       MOVE    SPACE      TO  SPA-MAE-INPUTCD (IDX)
                    END-IF
                END-IF
            END-PERFORM

@@ -3097,6 +3097,7 @@
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  SPA-GMN-IDX
            MOVE    ZERO                TO  SPA-FUKU-SRYKA
+           MOVE    ZERO                TO  SPA-SYOSIN
            PERFORM 100-SANTEI-CHK-SEC
            PERFORM 200-SYOSIN-SET-SEC
       *
