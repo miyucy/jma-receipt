@@ -41,7 +41,7 @@
       *
                05  RECE461-GAITENTTLKBN    PIC  9(03).
       *診療コード（剤の先頭の診療コード）
-               05  RECE461-SRYCD1          PIC  X(08).                    
+               05  RECE461-SRYCD1          PIC  X(09).                    
       *剤番号
                05  RECE461-ZAINUM          PIC  9(05).
       *連番号
