@@ -194,8 +194,8 @@
       *入院年月日
            03  RECE62-NYUINYMD            PIC  X(08).
       *
-      *病院・診療所区分
-           03  RECE62-BYOSINKBN           PIC  X(01).
+      *医療機関種別
+           03  RECE62-HOSPSBT             PIC  X(01).
       *
       *入院基本料種別情報
            03  RECE62-NYUSYUINF           OCCURS  20.
