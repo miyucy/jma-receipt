@@ -45,4 +45,4 @@ DRCD,ORDERID,ORDERNUM,ITEMNUM,UKEYMD,UKEHMS));
 
 create index idx_order_ukeymd ON tbl_order USING btree (ukeymd);
 create index idx_order_sryymd ON tbl_order USING btree (sryymd);
-create index idx_order_ptid   ON tbl_order USING btree (ptid);
+create index idx_order_ptnum  ON tbl_order USING btree (ptnum);
