@@ -1853,7 +1853,8 @@
                        AND   ( KANACHK-SYUBETU =   "2"  )
                        MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
                                                    TO  WRK-KENSU-X
-                       MOVE    "1006"              TO  SPA-RIDCD
+                           MOVE    "1006"              TO  SPA-RIDCD
+                       END-IF 
                    END-IF
            END-EVALUATE
            .

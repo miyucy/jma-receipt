@@ -568,7 +568,7 @@
                            MOVE    "入院外"      TO  WRK-NYUGAIKBN
                    END-EVALUATE  
                    EVALUATE    SPA-R01-RECE07-SYORISBT
-                       WHEN    "01"
+                       WHEN    ZERO
                            STRING  WRK-NYUGAIKBN  DELIMITED  BY  SPACE 
                                    "個別作成分"   DELIMITED  BY  SIZE
                                    INTO    SPA-GMN-FILEKBN
@@ -582,7 +582,7 @@
                                                       TO  WRK-SYMD
                            PERFORM 5002-HIZUKE-HEN-SEC
                            MOVE    WRK-HENYMDG3       TO  WRK-EDYMD
-                           IF      SPA-R01-RECE07-SYORISBT     =   "02" 
+                           IF      SPA-R01-RECE07-SYORISBT     =   "1" 
                                STRING  "訂正日指定　" DELIMITED  BY SIZE
                                        WRK-STYMD      DELIMITED  BY SIZE
                                        "〜"           DELIMITED  BY SIZE
@@ -627,7 +627,9 @@
            MOVE    "カナ氏名順"          TO  SPA-GMN-PRTJYUNMEIL (3)
            MOVE    "04"                  TO  SPA-GMN-PRTJYUNL    (4)
            MOVE    "患者番号順"          TO  SPA-GMN-PRTJYUNMEIL (4)
-           IF      SPA-R01-FILEKBN       =   "2" 
+           IF    ( SPA-R01-FILEKBN       =   "2"  )
+           AND   ( SPA-R01-RECE07-SYORISBT
+                                         =   ZERO ) 
                MOVE    "05"                  TO  SPA-GMN-PRTJYUNL    (5)
                MOVE    "入力順"              TO  SPA-GMN-PRTJYUNMEIL (5)
            END-IF
