@@ -250,6 +250,7 @@
            COPY    "CPSHELLTBL.INC".
       *     
            COPY    "ORCA-DBPATH".
+           COPY    "ORCA-DBMETA".
       *
       *    県単独事業用シェル
        01  WRK-SHELL-KENTAN.
@@ -2017,6 +2018,9 @@
                WHEN    "B07"
                    MOVE    "2"         TO  SHELLTBL-ARG12
            END-EVALUATE
+           IF      SPA-GMN-DATAKBN  =  "1"  OR  "2"
+               MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
+           END-IF
            STRING  SYS-2005-RECEDENOUT DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                                INTO    SHELLTBL-ARG13
@@ -2027,6 +2031,14 @@
                                    TO  SHELLTBL-ARG15         
            MOVE    RECEERR         TO  SHELLTBL-ARG16
            MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG17
+      *ipアドレス取得
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           MOVE    PATH-METADB-PRIMARY
+                                   TO  MCP-PATH
+           CALL    "MCPSUB"        USING
+                                   MCPAREA
+                                   DBMETA
+           MOVE    DBMETA-HOST     TO  SHELLTBL-ARG18
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
