@@ -148,6 +148,7 @@
                    07  WRK-TBL-SRYCD           PIC X(09).
                    07  WRK-TBL-SRYYYMM         PIC X(06).
                    07  WRK-TBL-MEISYO          PIC X(50).
+                   07  WRK-TBL-SRYKBN          PIC X(02).
       *        コード表記 
                    07  WRK-TBL-KNO.
                        09  WRK-TBL-KNOKBN          PIC  X(01).
@@ -169,6 +170,7 @@
                    07  WRK-STBL-SRYCD           PIC X(09).
                    07  WRK-STBL-SRYYYMM         PIC X(06).
                    07  WRK-STBL-MEISYO          PIC X(50).
+                   07  WRK-STBL-SRYKBN          PIC X(02).
       *            コード表記 
                    07  WRK-STBL-KNO.
                        09  WRK-STBL-KNOKBN      PIC  X(01).
@@ -482,6 +484,7 @@
       *        診療
                    WHEN    "11"
                    WHEN    "12"
+                   WHEN    "90"
                        MOVE    1               TO  IDX
       *        処方
                    WHEN    "21"
@@ -605,8 +608,8 @@
       *****************************************************************
        31011-NYUKOUI-SPA-SEC           SECTION.
       *
-           IF      IDX             =   1   OR  2
-      *        入院行為別編集
+           IF     IDX               =   1   OR  2
+      *        行為別編集
                PERFORM 310111-NYUKOUI-01-SEC 
            ELSE
       *        コード表別編集
@@ -617,34 +620,36 @@
            EXIT.
       *
       *****************************************************************
-      *   入院行為ごとの編集処理
+      *   行為ごとの編集処理
       *****************************************************************
        310111-NYUKOUI-01-SEC           SECTION.
       *
            MOVE    ZERO                TO  TBL-IDX2.
-      *    入院行為より、対象チェック
+      *    行為より、対象チェック
            PERFORM VARYING     TBL-IDX1    FROM    1   BY  1
                    UNTIL       TBL-IDX1       >    200
                EVALUATE    TRUE
-                   WHEN    WRK-TBL-SRYCD (IDX TBL-IDX1)    =   SPACE
-                       MOVE    NSRY-SRYCD (IDZ)    TO  WRK-TBL-SRYCD
-                                                        (IDX TBL-IDX1)
-                       MOVE    NACCT-SRYYM         TO  WRK-TBL-SRYYYMM
-                                                        (IDX TBL-IDX1)
-                       MOVE    TNS-NAME            TO  WRK-TBL-MEISYO
-                                                        (IDX TBL-IDX1)
-                       MOVE    TNS-CDKBN-KBN       TO  WRK-TBL-KNOKBN
-                                                        (IDX TBL-IDX1)
-                       MOVE    TNS-CDKBN-KBNNUM    TO  WRK-TBL-KNONO
-                                                        (IDX TBL-IDX1)
-                       MOVE    TNS-CDKBN-KBNNUM-EDA  TO  WRK-TBL-KNONO2
-                                                        (IDX TBL-IDX1)
+                   WHEN    WRK-TBL-SRYCD (IDX TBL-IDX1)   =   SPACE
+                       MOVE    NSRY-SRYCD (IDZ)    TO
+                                        WRK-TBL-SRYCD (IDX TBL-IDX1)
+                       MOVE    NACCT-SRYKBN        TO
+                                        WRK-TBL-SRYKBN (IDX TBL-IDX1)
+                       MOVE    NACCT-SRYYM         TO
+                                        WRK-TBL-SRYYYMM (IDX TBL-IDX1)
+                       MOVE    TNS-NAME            TO
+                                        WRK-TBL-MEISYO (IDX TBL-IDX1)
+                       MOVE    TNS-CDKBN-KBN       TO
+                                        WRK-TBL-KNOKBN (IDX TBL-IDX1)
+                       MOVE    TNS-CDKBN-KBNNUM    TO
+                                        WRK-TBL-KNONO (IDX TBL-IDX1)
+                       MOVE    TNS-CDKBN-KBNNUM-EDA  TO
+                                        WRK-TBL-KNONO2 (IDX TBL-IDX1)
                        MOVE    TBL-IDX1            TO  TBL-IDX2
                        MOVE    200                 TO  TBL-IDX1
-                   WHEN    (NSRY-SRYCD (IDZ)   =   WRK-TBL-SRYCD
-                                                       (IDX TBL-IDX1))
-                       AND (NACCT-SRYYM        =   WRK-TBL-SRYYYMM
-                                                       (IDX TBL-IDX1))
+                   WHEN    (NSRY-SRYCD (IDZ)   =
+                                        WRK-TBL-SRYCD (IDX TBL-IDX1))
+                       AND (NACCT-SRYYM        =
+                                        WRK-TBL-SRYYYMM (IDX TBL-IDX1))
                        MOVE    TBL-IDX1            TO  TBL-IDX2
                        MOVE    200                 TO  TBL-IDX1
                END-EVALUATE
@@ -787,27 +792,30 @@
                                   (IDX2           =    200     )
                    IF      WRK-TBL-KAISU (IDX TBL-IDX2 TBL-IDX3)
                                                   >    ZERO
-                       ADD     1                  TO  IDX2
-                       MOVE    SPA-NAI-SRYYYMM (IDX IDX1)
-                                                  TO  SPA-NAI-SRYYMD
+                       IF      WRK-TBL-SRYKBN (IDX TBL-IDX2)
+                                                  NOT =   "90"
+                           ADD     1                TO  IDX2
+                           MOVE    SPA-NAI-SRYYYMM (IDX IDX1)
+                                                    TO  SPA-NAI-SRYYMD
                                                       (IDX IDX2)(1:6)
-                       MOVE    TBL-IDX3           TO  SPA-NAI-SRYYMD
+                           MOVE    TBL-IDX3         TO  SPA-NAI-SRYYMD
                                                       (IDX IDX2)(7:2)
       *
-                       MOVE    SPA-NAI-SRYYMD (IDX IDX2)
-                                                  TO  WRK-SYMD
-                       PERFORM 41012-SEIWA-HEN-SEC
-                       MOVE    WRK-HENYMDG        TO  SPA-GMN-TSRYYMD
+                           MOVE    SPA-NAI-SRYYMD (IDX IDX2)
+                                                    TO  WRK-SYMD
+                           PERFORM 41012-SEIWA-HEN-SEC
+                           MOVE    WRK-HENYMDG      TO  SPA-GMN-TSRYYMD
                                                            (IDX IDX2)
       *
-                       MOVE    WRK-TBL-MEISYO  (IDX TBL-IDX2)
-                                                 TO  SPA-GMN-TNAIYOU1
+                           MOVE    WRK-TBL-MEISYO  (IDX TBL-IDX2)
+                                                    TO  SPA-GMN-TNAIYOU1
                                                             (IDX IDX2)
-                       MOVE    WRK-TBL-SRYCD   (IDX TBL-IDX2)
-                                                  TO  SPA-NAI-SRYCD1
+                           MOVE    WRK-TBL-SRYCD   (IDX TBL-IDX2)
+                                                    TO  SPA-NAI-SRYCD1
                                                             (IDX IDX2)
-                       ADD     1                  TO  SPA-GMN-TKAISU1
+                           ADD     1                TO  SPA-GMN-TKAISU1
                                                             (IDX IDX2)
+                       END-IF
       *
                        ADD     1                  TO  SPA-GMN-TKAISU2
                                                             (IDX IDX1)
