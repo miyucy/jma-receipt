@@ -544,6 +544,8 @@
                                                LNK-TIME
                                                LNK-HOSPID
                                                LNK-SYSYMD
+                                               LNK-DRCD
+                                               LNK-HKNCOMBI
                                                WRK-LF01-REC.
       *
       *****************************************************************
