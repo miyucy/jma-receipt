@@ -793,7 +793,8 @@
                IF      WRK-CD(1:1)         =   "P"  OR  "S"
                    MOVE    "6"             TO  WRK-ICD-CDSYU
                ELSE
-                   IF      WRK-CD(1:WRK-CD-MCNT)   NUMERIC
+                   IF     (WRK-CD-MCNT     >   1   AND  <=  9 )  AND
+                          (WRK-CD(1:WRK-CD-MCNT)   NUMERIC    )
                        EVALUATE    WRK-CD-MCNT
                            WHEN    9
       *                    ¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÆþÎÏ

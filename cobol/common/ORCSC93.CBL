@@ -937,7 +937,9 @@
                    MOVE    ZERO            TO  FLG-SYUGI
                END-IF
                IF      FLG-SYORI           =   2
-                   MOVE    "1"             TO  SPA-COM-ZAIEND (IDX - 1)
+                   IF      IDX             >   1
+                       MOVE    "1"         TO  SPA-COM-ZAIEND (IDX - 1)
+                   END-IF
                    MOVE    SPACE           TO  WRK-SRYSYUKBN
                    MOVE    ZERO            TO  IDX-SET
                ELSE

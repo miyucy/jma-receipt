@@ -572,6 +572,7 @@
            ELSE
       *    レコードが存在した場合は、該当のＬＤをクリア
                DISPLAY  "WRK-LD = " WRK-LD
+               MOVE    ZERO             TO  IDZ
                PERFORM VARYING      IDX FROM  1   BY   1
                        UNTIL       (IDX     >     50)
                DISPLAY  "LOCK-LDNAME (" IDX ") = " LOCK-LDNAME(IDX)
@@ -580,6 +581,12 @@
                      MOVE  99               TO    IDX
                  END-IF
                END-PERFORM
+      *        該当のＬＤがない時
+               IF    IDZ                    =   ZERO
+                   MOVE  ZERO              TO  SLOCK-RETURN
+                   GO    TO                120-RESET-EXT
+               END-IF
+      *
                MOVE  SPACE                  TO  LOCK-LDNAME(IDZ)
                MOVE  SPACE                  TO  LOCK-PTID(IDZ)
                MOVE  SPACE                  TO  LOCK-STARTDATE(IDZ)
