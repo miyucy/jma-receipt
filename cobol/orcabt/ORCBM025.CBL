@@ -914,7 +914,9 @@
                END-IF        
            END-PERFORM
       *
-           IF      FLG-KOH-END             =   ZERO
+           IF      SUM-KOH-KOHNUM (IDX2)   =   SPACE
+               MOVE    1                   TO  FLG-KOH-END
+           ELSE    
       *        Ä¢É¼°õºþ½èÍý¡Ê£²ÊÇ°Ê¹ß¡Ë
                PERFORM 20024-PRINT-OUT-SEC
       *        Ä¢É¼ÊÔ½¸<¸«½Ð¤·>½èÍý
