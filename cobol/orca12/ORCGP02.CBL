@@ -49,6 +49,7 @@
       *  02.00.06    NACL-多々納  03/01/28  一括削除に患者定期請求追加
       *  02.00.07    NACL-多々納  03/03/05  排他制御処理追加
       *  02.00.08    NACL-多々納  03/03/24  公費負担額追加
+      *  02.00.07    NACL-多々納  03/04/22  保険組合変更時メッセージ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -668,6 +669,13 @@
                WHEN    "0103"
                    IF      SPA-PID1-FLG        =   "OK"
                        PERFORM 4991-DELETE-SYORI-SEC
+                   END-IF
+      *        保険変更確認
+               WHEN    "9100"
+                   IF      SPA-PID1-FLG        =   "OK"
+                       PERFORM  4902-KOUSIN-SYORI-SEC
+                   ELSE
+                       PERFORM  4902-KOUSIN-SYORI-SEC
                    END-IF
       *        保険重複確認
                WHEN    "0105"
@@ -2202,10 +2210,29 @@
       *****************************************************************
        4902-KOUSIN-SYORI-SEC           SECTION.
       *
+           IF      SPA-KEI-FLG         =   ZERO
+      *
       *    更新サブへ
            CALL    "ORCGP029"      USING   MCPAREA
                                            SPAAREA
                                            LINKAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4902-KOUSIN-SYORI-EXT
+           END-IF
+      *
+           IF      SPA-KEI-ERRCD   NOT =   SPACE
+               MOVE    SPA-KEI-ERRCD       TO  SPA-PIDCD
+               MOVE    1                   TO  SPA-KEI-FLG
+               GO      TO      4902-KOUSIN-SYORI-EXT
+           END-IF
+      *
+           END-IF
+           MOVE    SPACE               TO  SPA-KEI-ERRCD
+           MOVE    ZERO                TO  SPA-KEI-FLG
+      *
       *    更新済
            MOVE    SPACE               TO  SPA-UPDFLG
       *    前回患者へ
@@ -2216,8 +2243,6 @@
            IF      FLG-CLAIM           =   1
                PERFORM 4906-CLAIM-SOUSIN-SEC
            END-IF
-      *
-      *
       *
       **** IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
            IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
@@ -3500,6 +3525,12 @@
                    MOVE
                         "確認して下さい。"
                                        TO  WRK-PIDMSG(41:)
+      *
+               WHEN    "9100"
+                   MOVE    "保険組合の変更で保険期間外の診療が"
+                                               TO  WRK-PIDMSG
+                   MOVE    "存在します。診療を保険変更して下さい"
+                                               TO  WRK-PIDMSG(35:)
                WHEN    OTHER
                    MOVE    SPA-PIDCD
                                        TO  WRK-PIDMSG

@@ -36,6 +36,7 @@
       *                                     をパラメタからＳＰＡで更新へ
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
       *  02.00.02    NACL-多々納  03/03/24  公費負担額追加
+      *  02.00.03    NACL-多々納  03/04/22  保険組合変更時メッセージ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -106,6 +107,7 @@
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-MONTHLYNUM      PIC 9(01).
            03  FLG-PTKOHFTN        PIC 9(01).
+           03  FLG-JYURRK          PIC 9(01).
       *
            03  FLG-SYORI           PIC X(01).
            03  FLG-SYORI2          PIC X(01).
@@ -240,6 +242,15 @@
       *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
+      *
+      *    受診履歴
+       01  JYURRK-REC.
+           COPY    "CPJYURRK.INC".
+      *    受診履歴
+      *    保険組合せ
+       01  HZN-HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC"  REPLACING
+                                     //COMB-// BY //HZN-COMB-//.
       *
       *
       *****************************************************************
@@ -847,6 +858,16 @@
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            PERFORM 940-HKNCOMBI-READ-SEC
+      *    保険変更による受診履歴修正の有無チェック
+           IF      FLG-HKNCOMBI        =   ZERO
+               MOVE    MCPDATA-REC         TO  HZN-HKNCOMBI-REC
+               IF     (HZN-COMB-TEKSTYMD   NOT =   COMB-TEKSTYMD) OR
+                      (HZN-COMB-TEKEDYMD   NOT =   COMB-TEKEDYMD) OR
+                      (HZN-COMB-DELKBN     NOT =   COMB-DELKBN  )
+                   PERFORM 2501-HKNCOMBI-CHK-SEC
+               END-IF
+           END-IF
+      *
            IF      FLG-HKNCOMBI        =   1
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -873,6 +894,50 @@
            END-IF
            .
        250-HKNCOMBI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険変更による受診履歴修正の有無チェック処理
+      *****************************************************************
+       2501-HKNCOMBI-CHK-SEC             SECTION.
+      *
+      *
+           MOVE    SPACE               TO  JYURRK-REC
+           INITIALIZE                  JYURRK-REC
+           MOVE    HZN-COMB-HOSPID     TO  JYURRK-HOSPID
+           MOVE    HZN-COMB-PTID       TO  JYURRK-PTID
+           MOVE    HZN-COMB-HKNCOMBINUM
+                                       TO  JYURRK-HKNCOMBINUM
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY21"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY21"      TO  ORC-DBPATH
+               PERFORM 970-JYURRK-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  JYURRK-REC
+               INITIALIZE                  JYURRK-REC
+               MOVE    1                   TO  FLG-JYURRK
+           END-IF
+      *
+           IF      FLG-JYURRK          =   ZERO
+               IF      COMB-DELKBN         =   SPACE
+                   IF     (JYURRK-SRYYMD       <   COMB-TEKSTYMD)  OR
+                          (JYURRK-SRYYMD       >   COMB-TEKEDYMD)
+                       MOVE    "9100"          TO  SPA-KEI-ERRCD
+                   END-IF
+               ELSE
+      *            削除の時
+                   MOVE    "9100"          TO  SPA-KEI-ERRCD
+               END-IF
+           END-IF
+           .
+       2501-HKNCOMBI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1739,6 +1804,28 @@
            .
        991-PTKOHFTN-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    受診履歴マスター読込
+      *****************************************************************
+       970-JYURRK-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  JYURRK-REC
+               MOVE    ZERO            TO  FLG-JYURRK
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           .
+       970-JYURRK-READ-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    システム管理マスタ読込
