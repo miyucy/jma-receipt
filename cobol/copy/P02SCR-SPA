@@ -592,6 +592,8 @@
                         11  SPA-GMN27-KOHSEIDO4 PIC X(10).
                         11  SPA-GMN27-TEKSTYMD  PIC X(10).
                         11  SPA-GMN27-TEKEDYMD  PIC X(10).
+      *                 特定の受給者番号
+                        11  SPA-GMN27-TJKYSNUM  PIC X(20).
                    07  SPA-GMN27-MEISAI-AREA.
                        09  SPA-GMN27-HKNNUM                 PIC X(03).
                        09  SPA-GMN27-HKNSEIDON              PIC X(10).
@@ -753,7 +755,11 @@
                            11  SPA-NAI24-KOHID           PIC 9(10).
                            11  SPA-NAI24-TKOHSTYMD       PIC X(08).
                            11  SPA-NAI24-TKOHEDYMD       PIC X(08).
+                           11  SPA-NAI24-TJKYSNUM        PIC X(20).
                        09  SPA-FTN1-MAX                      PIC 9(03).
+      *            特定の受給者番号
+                   07  SPA-GMN24-JKYSNUM                 PIC X(20).
+      *
                    07  SPA-GMN24-KOHFTNTBL2.
                        09  SPA-GMN24-FTNTBL2-OCC         OCCURS  50.
                            11  SPA-GMN24-TGMNNUM2        PIC 9(03).

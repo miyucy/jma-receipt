@@ -433,6 +433,7 @@
                         08  P02-P027-KOHSEIDO4 PIC X(10).
                         08  P02-P027-TEKSTYMD  PIC X(10).
                         08  P02-P027-TEKEDYMD  PIC X(10).
+                        08  P02-P027-TJKYSNUM  PIC X(20).
                       07  P02-P027-HKNKUMI-SELECT PIC X
                                                  OCCURS 50 TIMES.
                   05  P02-P027-NYUGAIKBN.
@@ -589,6 +590,8 @@
                     06  P02-VALUE   PIC S9(3).
                   05  P02-P024-FTNSELNUM2.
                     06  P02-VALUE   PIC S9(3).
+                  05  P02-P024-JKYSNUM.
+                    06  P02-VALUE   PIC X(40).
                 04  P02-FIXPAGE8.
                   05  P02-P025-SELNUM1.
                     06  P02-VALUE   PIC X(4).
