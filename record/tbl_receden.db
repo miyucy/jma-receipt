@@ -65,11 +65,10 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_receden
-                WHERE   HOSPID      =   :HOSPID
-                  AND   SRYYM       =   :SRYYM
-                  AND   NYUGAIKBN   =   :NYUGAIKBN
-                  AND   RECESYUBETU =   '0000' 
-                  AND   SKYKBN      <>  '0' 
+                WHERE   HOSPID       =   :HOSPID
+                  AND   SRYYM        =   :SRYYM
+                  AND   NYUGAIKBN    =   :NYUGAIKBN
+                  AND   TEISYUTUSAKI =   :TEISYUTUSAKI
 		;
 	};
 };
@@ -79,11 +78,10 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_receden
-                WHERE   HOSPID       =   :HOSPID
-                  AND   SRYYM        =   :SRYYM
-                  AND   NYUGAIKBN    =   :NYUGAIKBN
-                  AND   TEISYUTUSAKI =   :TEISYUTUSAKI
-                  AND   SKYKBN       <>  '0' 
+                WHERE   HOSPID      =   :HOSPID
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   PTID        =   :PTID
 		;
 	};
 };
