@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    NACL-森脇    03/03/10  TERMIDの領域指定なし
+      *  01.01.02    NACL-森脇    04/08/03  自院コメント追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -221,7 +222,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORHCML01"      TO  JOB-PGID
+           MOVE    "ORHCML05"      TO  JOB-PGID
            MOVE    "入力コード一覧表・診療行為コメント" 
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
@@ -285,6 +286,12 @@
                            MOVE    "002000000"    TO  WRK-SRYCDSTR
                            MOVE    "002999999"    TO  WRK-SRYCDEND
                        WHEN    3
+      *----(01.01.02)--ADD-START---
+                           MOVE    "008200000"    TO  WRK-SRYCDSTR
+                           MOVE    "008499999"    TO  WRK-SRYCDEND
+      *                    帳票編集処理
+                           PERFORM 2001-PRINT-SEC
+      *----(01.01.02)--ADD-END-----
                            MOVE    "800000000"    TO  WRK-SRYCDSTR
                            MOVE    "899999999"    TO  WRK-SRYCDEND
                    END-EVALUATE
@@ -422,7 +429,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCML06"            TO  SPRT-PRTID
-           MOVE    "入力コード一覧表・診療行為"
+           MOVE    "入力コード一覧表・コメント"
                                        TO  SPRT-TITLE
            MOVE    HCML06              TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID

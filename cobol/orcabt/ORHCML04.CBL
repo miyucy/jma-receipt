@@ -30,6 +30,7 @@
       *  01.01.01    NACL-森脇    03/03/10  TERMIDの領域指定なし
       *  01.01.02    NACL-森脇    03/07/14  帳票をHCML03→HCML04に変更
       *  01.01.03    NACL-森脇    04/03/16  点数の桁修正
+      *  01.01.04    NACL-森脇    04/08/03  自院コメント追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -245,7 +246,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORHCML01"      TO  JOB-PGID
+           MOVE    "ORHCML04"      TO  JOB-PGID
            MOVE    "点数マスタ一覧表・コメント" 
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
@@ -317,6 +318,12 @@
                            MOVE    "002000000"    TO  WRK-SRYCDSTR
                            MOVE    "002999999"    TO  WRK-SRYCDEND
                        WHEN    3
+      *----(01.01.04)--ADD-START---
+                           MOVE    "008200000"    TO  WRK-SRYCDSTR
+                           MOVE    "008499999"    TO  WRK-SRYCDEND
+      *                    帳票編集処理
+                           PERFORM 2001-PRINT-SEC
+      *----(01.01.04)--ADD-END-----
                            MOVE    "800000000"    TO  WRK-SRYCDSTR
                            MOVE    "899999999"    TO  WRK-SRYCDEND
                    END-EVALUATE
