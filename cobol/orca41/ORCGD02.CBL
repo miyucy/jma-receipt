@@ -73,6 +73,8 @@
       *                                     無効処理を修正
       *  01.00.26    ひさなが     03/08/06  チェック内容全件印刷の終了
       *                                     警告データが有る場合を修正
+      *  01.00.27    ひさなが     03/08/08  禁忌チェックにチェック４の
+      *                                     チェックを追加
       *
       *****************************************************************
       *
@@ -219,7 +221,7 @@
            03  IDY3                PIC 9(03).
            03  IDY4                PIC 9(03).
            03  IDY5                PIC 9(05).
-           03  IDY6                PIC 9(03).
+           03  IDY6                PIC 9(05).
            03  IDY7                PIC 9(03).
       *
       *    生年月日、適用開始年月日、診療開始日領域
@@ -304,6 +306,8 @@
       *    （設定コード判定用）
            03  W-TABLE-S3.
                05  W-SRYCD-S3-KBN      PIC X(01).
+               05  W-SRYCD-S3-KBN2     PIC X(01).
+               05  W-SRYCD-S3-KBN3     PIC X(01).
                05  W-SRYCD-S3-TABLE    OCCURS  3000.
                    07  W-SRYCD-31      PIC X(09).
                    07  W-SRYCD-32      PIC X(01).
@@ -311,6 +315,8 @@
                    07  W-SRYCD-42      PIC X(01).
                    07  W-SRYCD-51      PIC X(09).
                    07  W-SRYCD-52      PIC X(01).
+                   07  W-SRYCD-53      PIC X(09).
+                   07  W-SRYCD-54      PIC X(01).
                    07  W-SRYCD-61      PIC X(09).
                    07  W-SRYCD-62      PIC X(01).
                    07  W-SRYCD-71      PIC X(09).
@@ -359,12 +365,14 @@
                05  W-PTBYO-KB1         PIC X(01).
                05  W-PTBYO-MEI1        PIC X(60).
                05  W-PTBYO-SRYCD1      PIC X(09).
+               05  W-PTBYO-CHKCD1      PIC X(09).
        01  W-PTBYO-BYOMEI-AREA2.
            03  W-PTBYO-MAX2            PIC 9(03).
            03  W-BYOMEI-LIST2                 OCCURS  100.
                05  W-PTBYO-KB2         PIC X(01).
                05  W-PTBYO-MEI2        PIC X(60).
                05  W-PTBYO-SRYCD2      PIC X(09).
+               05  W-PTBYO-CHKCD2      PIC X(09).
       *    実日数判定の診療行為作業
        01  W-J-SRYCD-AREA.
            03  W-HANNTEI-J-SRYCD-LIST         OCCURS  100.
@@ -3061,8 +3069,27 @@
                                    END-IF
                                END-IF
                            END-PERFORM
+      *修正/*開始*03.08.08*********************************************
+                           MOVE    SPACE             TO  W-SRYCD-S3-KBN2
+                           MOVE    ZERO              TO  IDY6
+                           PERFORM VARYING IDY1  FROM  1  BY 1
+                                   UNTIL   IDY1  >  3000
+                               IF  W-SRYCD-51 (IDY1)   =   SPACE
+                                   MOVE    IDY1               TO  IDY6
+                                   MOVE    4000               TO  IDY1
+                               ELSE
+                                   IF  W-SRYCD-53 (IDY1)   =
+                                                        SRY-SRYCD (IDX3)
+                                       MOVE    W-SRYCD-54 (IDY1)
+                                                     TO  W-SRYCD-S3-KBN2
+                                       MOVE    4000  TO  IDY1
+                                   END-IF
+                               END-IF
+                           END-PERFORM
+      *修正/*終了*03.08.08*********************************************
                            IF  (SPA-GMN-CNV (10)  NOT =  SPACE)  AND
-                               (W-SRYCD-S3-KBN    NOT =  "*")    AND
+                               ((W-SRYCD-S3-KBN    NOT =  "*")    OR
+                                (W-SRYCD-S3-KBN2   NOT =  "*"))  AND
                                (T-ERR-10              =  SPACE)
                                PERFORM T-530-RECECHEK-CHK4-1-SEC
                            END-IF
@@ -3371,6 +3398,90 @@
       *
       *******************
       *
+      *修正/*開始*03.08.08*********************************************
+       T-530-RECECHEK-CHK2-3-SEC         SECTION.
+      *
+           INITIALIZE                CHK-REC.
+           MOVE    "4"               TO  CHK-CHKKBN.
+           MOVE    "2"               TO  CHK-CDKBN.
+           MOVE    SRY-SRYCD (IDX3)  TO  CHK-SRYCD.
+           MOVE    CHK-REC           TO  MCPDATA-REC.
+           MOVE    "DBSELECT"        TO  MCP-FUNC.
+           MOVE    "CHK-KEY3"        TO  ORC-DBPATH.
+           MOVE    ACCT-SRYYM        TO  ORC-DBYMD(1:6).
+           MOVE    "01"              TO  ORC-DBYMD(7:2).
+      *
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           IF  MCP-RC   NOT =   ZERO
+               MOVE    ZERO                    TO  FLG-CHK
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    ACCT-HOSPID             TO  DID2-REC(1:24)
+                   MOVE    "-"                     TO  DID2-REC(25:1)
+                   MOVE    ACCT-PTID               TO  DID2-REC(26:10)
+                   MOVE    T-MESSAGE-530-01        TO  DID2-REC(71:90)
+                   WRITE   DID2-REC
+               END-IF
+               MOVE    SPACE                   TO  DID3-REC
+               MOVE    T-MESSAGE-530-01(1:60)  TO  DID3-REC(1:60)
+               WRITE   DID3-REC
+           ELSE
+               PERFORM T-530-RECECHEK-READ2-SEC
+               IF  IDY5   NOT =   ZERO
+                   MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-53 (IDY5)
+                   IF  MCP-RC   NOT =   ZERO
+                       MOVE    "*"                 TO  W-SRYCD-54 (IDY5)
+                   ELSE
+                       MOVE    "+"                 TO  W-SRYCD-54 (IDY5)
+                   END-IF
+               END-IF
+               PERFORM UNTIL   MCP-RC    NOT =   ZERO
+                   MOVE    MCPDATA-REC         TO  CHK-REC
+                   PERFORM VARYING IDY2  FROM  1  BY 1
+                           UNTIL   IDY2  >    10
+                       IF  CHK-CD (IDY2)   NOT =   SPACE
+                           MOVE    SPACE         TO  W-SRYCD-S3-KBN3
+                           PERFORM VARYING IDY7  FROM  1  BY 1
+                                   UNTIL   IDY7  >    IDY1
+                               IF  (SRY-SRYCD (IDX3)   =  CHK-SRYCD) AND
+                                   (W-SRYCD-22 (IDY7)  =  CHK-CD (IDY2))
+                                   MOVE    "1"       TO  W-SRYCD-S3-KBN3
+                               END-IF
+                           END-PERFORM
+                           IF  W-SRYCD-S3-KBN3   =   SPACE
+                               MOVE    SRY-SRYCD (IDX3)
+                                       TO  W-SRYCD-21 (IDY1)
+                               MOVE    CHK-CD (IDY2)
+                                       TO  W-SRYCD-22 (IDY1)
+                               MOVE    SRY-ZAINUM
+                                       TO  W-ZAINUM-21 (IDY1)
+                               COMPUTE IDY1 = IDY1 + 1
+                           END-IF
+                       END-IF
+                   END-PERFORM
+                   PERFORM T-530-RECECHEK-READ2-SEC
+               END-PERFORM
+           END-IF.
+      *
+           INITIALIZE                  MCPAREA.
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "CHK-KEY3"          TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+       T-530-RECECHEK-CHK2-3-EXT.
+           EXIT.
+      *修正/*終了*03.08.08*********************************************
+      *
+      *******************
+      *
        T-530-RECECHEK-READ2-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC.
@@ -3560,17 +3671,9 @@
       *
        T-530-RECECHEK-CHK4-1-SEC         SECTION.
       *
-           DISPLAY " ******ACCT-PTID       " ACCT-PTID
-           DISPLAY "      SRY-ZAINUM       " SRY-ZAINUM
-           DISPLAY "      ACCT-SRYKA       " ACCT-SRYKA
-           DISPLAY "      SRY-SRYCD (IDX3) " SRY-SRYCD (IDX3)
            PERFORM VARYING IDX4  FROM  1  BY 1
                    UNTIL   IDX4  >  1000
-           DISPLAY "     W-SRYCD-21 22 " W-SRYCD-21 (IDX4)
-                                    "  " W-SRYCD-22 (IDX4)
                IF  W-SRYCD-22 (IDX4)   =   SRY-SRYCD (IDX3)
-           DISPLAY "    ACCT-NYUGAIKBN " ACCT-NYUGAIKBN
-
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                    MOVE    SPACE               TO  DID2-REC
                    MOVE    ACCT-HOSPID         TO  DID2-REC(1:24)
@@ -3597,10 +3700,14 @@
                    IF  (W-SRYCD-21 (IDX4)   =   SPACE)  AND
                        (W-SRYCD-22 (IDX4)   =   SPACE)
                        MOVE    IDX4                TO  IDY1
-                       MOVE    SRY-SRYCD (IDX3)    TO  W-SRYCD-21 (IDX4)
                        IF  W-SRYCD-S3-KBN  =  SPACE
                            PERFORM T-530-RECECHEK-CHK4-SEC
                        END-IF
+      *修正/*開始*03.08.08*********************************************
+                       IF  W-SRYCD-S3-KBN2  =  SPACE
+                           PERFORM T-530-RECECHEK-CHK2-3-SEC
+                       END-IF
+      *修正/*終了*03.08.08*********************************************
                        MOVE    2000                TO  IDX4
                    ELSE
                        IF  W-SRYCD-21 (IDX4)   =   SRY-SRYCD (IDX3)
@@ -3644,6 +3751,8 @@
                        MOVE    "1"            TO  W-PTBYO-KB1 (IDW4)
                        MOVE    SRY-SRYCD (IDX3)
                                               TO  W-PTBYO-SRYCD1 (IDW4)
+                       MOVE    SRY-SRYCD (IDX3)
+                                              TO  W-PTBYO-CHKCD1 (IDW4)
                        MOVE    IDW4           TO  W-PTBYO-MAX1
                        MOVE    200            TO  IDW4
                    ELSE
@@ -3663,6 +3772,8 @@
                            MOVE    "1"         TO  W-PTBYO-KB1 (IDW4)
                            MOVE    SRY-SRYCD (IDX3)
                                                TO  W-PTBYO-SRYCD1 (IDW4)
+                           MOVE    SRY-SRYCD (IDX3)
+                                               TO  W-PTBYO-CHKCD1 (IDW4)
                            MOVE    IDW4        TO  W-PTBYO-MAX1
                            MOVE    200         TO  IDW4
                        ELSE
@@ -3686,20 +3797,22 @@
                        IF  W-PTBYO-KB1 (1)   =   "2"  OR  SPACE
                            PERFORM VARYING IDW4  FROM  1  BY 1
                                    UNTIL   IDW4  >  100
-                               IF  W-PTBYO-SRYCD1 (IDW4)   =   SPACE
-                                   MOVE    "2"   TO  W-PTBYO-KB1 (IDW4)
-                                   MOVE    SRY-SRYCD (IDX3)
+                             IF  W-PTBYO-CHKCD1 (IDW4)   =   SPACE
+                                 MOVE    "2"   TO  W-PTBYO-KB1 (IDW4)
+                                 MOVE    SRY-SRYCD (IDX3)
                                                TO  W-PTBYO-SRYCD1 (IDW4)
-                                   MOVE    PTBYO-BYOMEI(1:60)
-                                                 TO  W-PTBYO-MEI1 (IDW4)
-                                   MOVE    IDW4  TO  W-PTBYO-MAX1
-                                   MOVE    200   TO  IDW4
-                               ELSE
-                                   IF  W-PTBYO-SRYCD1 (IDW4)   =
-                                                        SRY-SRYCD (IDX3)
-                                       MOVE    200        TO  IDW4
-                                   END-IF
-                               END-IF
+                                 MOVE    CHK-CD (IDY2)
+                                               TO  W-PTBYO-CHKCD1 (IDW4)
+                                 MOVE    PTBYO-BYOMEI(1:60)
+                                               TO  W-PTBYO-MEI1 (IDW4)
+                                 MOVE    IDW4  TO  W-PTBYO-MAX1
+                                 MOVE    200   TO  IDW4
+                             ELSE
+                                 IF  W-PTBYO-CHKCD1 (IDW4)   =
+                                                           CHK-CD (IDY2)
+                                     MOVE    200        TO  IDW4
+                                 END-IF
+                             END-IF
                            END-PERFORM
                        END-IF
                    ELSE
@@ -3710,53 +3823,60 @@
                            END-IF
                            PERFORM VARYING IDW4  FROM  1  BY 1
                                    UNTIL   IDW4  >  100
-                               IF  W-PTBYO-SRYCD1 (IDW4)   =   SPACE
-                                   MOVE    "4"   TO  W-PTBYO-KB1 (IDW4)
-                                   MOVE    SRY-SRYCD (IDX3)
+                             IF  W-PTBYO-CHKCD1 (IDW4)   =   SPACE
+                                 MOVE    "4"   TO  W-PTBYO-KB1 (IDW4)
+                                 MOVE    SRY-SRYCD (IDX3)
                                                TO  W-PTBYO-SRYCD1 (IDW4)
-                                   MOVE    PTBYO-BYOMEI(1:60)
-                                                 TO  W-PTBYO-MEI1 (IDW4)
-                                   MOVE    IDW4  TO  W-PTBYO-MAX1
-                                   MOVE    200   TO  IDW4
-                               ELSE
-                                   IF  W-PTBYO-SRYCD1 (IDW4)   =
-                                                        SRY-SRYCD (IDX3)
-                                       MOVE    200        TO  IDW4
-                                   END-IF
-                               END-IF
+                                 MOVE    CHK-CD (IDY2)
+                                               TO  W-PTBYO-CHKCD1 (IDW4)
+                                 MOVE    PTBYO-BYOMEI(1:60)
+                                               TO  W-PTBYO-MEI1 (IDW4)
+                                 MOVE    IDW4  TO  W-PTBYO-MAX1
+                                 MOVE    200   TO  IDW4
+                             ELSE
+                                 IF  W-PTBYO-CHKCD1 (IDW4)   =
+                                                           CHK-CD (IDY2)
+                                     MOVE    200        TO  IDW4
+                                 END-IF
+                             END-IF
                            END-PERFORM
                        ELSE
-                           MOVE    1            TO  FLG-RED1
-                           IF  W-PTBYO-MAX1   >   ZERO
-                               INITIALIZE  W-BYOMEI-LIST1 (W-PTBYO-MAX1)
-                               COMPUTE W-PTBYO-MAX1 = W-PTBYO-MAX1 - 1
-                           END-IF
-                       END-IF
-                   END-IF
-                   IF  (PTBYO-SRYYMD   NOT  =   SPACE)      AND
-                       (PTBYO-SRYYMD   NOT  =   ZERO)       AND
-                       (PTBYO-SRYYMD(1:6)   >   T-SINRYOU-AREA)
-                        MOVE    ZERO               TO  FLG-RED1
-                       IF  W-PTBYO-KB1 (1)   =   "2"
-                           INITIALIZE           W-PTBYO-BYOMEI-AREA1
-                       END-IF
-                       PERFORM VARYING IDW4  FROM  1  BY 1
-                               UNTIL   IDW4  >  100
-                           IF  W-PTBYO-SRYCD1 (IDW4)   =   SPACE
-                               MOVE    "3"       TO  W-PTBYO-KB1 (IDW4)
-                               MOVE    SRY-SRYCD (IDX3)
+                           IF  (PTBYO-SRYYMD   NOT  =   SPACE)      AND
+                               (PTBYO-SRYYMD   NOT  =   ZERO)       AND
+                               (PTBYO-SRYYMD(1:6)   >   T-SINRYOU-AREA)
+                                MOVE    ZERO               TO  FLG-RED1
+                               IF  W-PTBYO-KB1 (1)   =   "2"
+                                   INITIALIZE       W-PTBYO-BYOMEI-AREA1
+                               END-IF
+                               PERFORM VARYING IDW4  FROM  1  BY 1
+                                       UNTIL   IDW4  >  100
+                                 IF  W-PTBYO-CHKCD1 (IDW4)   =   SPACE
+                                     MOVE    "3"  TO  W-PTBYO-KB1 (IDW4)
+                                     MOVE    SRY-SRYCD (IDX3)
                                                TO  W-PTBYO-SRYCD1 (IDW4)
-                               MOVE    PTBYO-BYOMEI(1:60)
+                                     MOVE    CHK-CD (IDY2)
+                                               TO  W-PTBYO-CHKCD1 (IDW4)
+                                     MOVE    PTBYO-BYOMEI(1:60)
                                                  TO  W-PTBYO-MEI1 (IDW4)
-                               MOVE    IDW4      TO  W-PTBYO-MAX1
-                               MOVE    200       TO  IDW4
+                                     MOVE    IDW4      TO  W-PTBYO-MAX1
+                                     MOVE    200       TO  IDW4
+                                 ELSE
+                                     IF  W-PTBYO-CHKCD1 (IDW4)   =
+                                                           CHK-CD (IDY2)
+                                         MOVE    200        TO  IDW4
+                                     END-IF
+                                 END-IF
+                               END-PERFORM
                            ELSE
-                               IF  W-PTBYO-SRYCD1 (IDW4)   =
-                                                        SRY-SRYCD (IDX3)
-                                   MOVE    200        TO  IDW4
+                               MOVE    1            TO  FLG-RED1
+                               IF  W-PTBYO-MAX1   >   ZERO
+                                   INITIALIZE
+                                           W-BYOMEI-LIST1 (W-PTBYO-MAX1)
+                                   COMPUTE W-PTBYO-MAX1 = W-PTBYO-MAX1
+                                                                     - 1
                                END-IF
                            END-IF
-                       END-PERFORM
+                       END-IF
                    END-IF
                    IF  FLG-RED1   =   ZERO
                        PERFORM T-530-RECECHEK-READ5-SEC
@@ -3805,6 +3925,8 @@
                        MOVE    "1"            TO  W-PTBYO-KB2 (IDW4)
                        MOVE    SRY-SRYCD (IDX3)
                                               TO  W-PTBYO-SRYCD2 (IDW4)
+                       MOVE    SRY-SRYCD (IDX3)
+                                              TO  W-PTBYO-CHKCD2 (IDW4)
                        MOVE    IDW4           TO  W-PTBYO-MAX2
                        MOVE    200            TO  IDW4
                    ELSE
@@ -3824,6 +3946,8 @@
                            MOVE    "1"         TO  W-PTBYO-KB2 (IDW4)
                            MOVE    SRY-SRYCD (IDX3)
                                                TO  W-PTBYO-SRYCD2 (IDW4)
+                           MOVE    SRY-SRYCD (IDX3)
+                                               TO  W-PTBYO-CHKCD2 (IDW4)
                            MOVE    IDW4        TO  W-PTBYO-MAX2
                            MOVE    200         TO  IDW4
                        ELSE
@@ -3847,20 +3971,22 @@
                        IF  W-PTBYO-KB2 (1)   =   "2"  OR  SPACE
                            PERFORM VARYING IDW4  FROM  1  BY 1
                                    UNTIL   IDW4  >  100
-                               IF  W-PTBYO-SRYCD2 (IDW4)   =   SPACE
-                                   MOVE    "2"   TO  W-PTBYO-KB2 (IDW4)
-                                   MOVE    SRY-SRYCD (IDX3)
+                             IF  W-PTBYO-CHKCD2 (IDW4)   =   SPACE
+                                 MOVE    "2"   TO  W-PTBYO-KB2 (IDW4)
+                                 MOVE    SRY-SRYCD (IDX3)
                                                TO  W-PTBYO-SRYCD2 (IDW4)
-                                   MOVE    PTBYO-BYOMEI(1:60)
-                                                 TO  W-PTBYO-MEI2 (IDW4)
-                                   MOVE    IDW4  TO  W-PTBYO-MAX2
-                                   MOVE    200   TO  IDW4
-                               ELSE
-                                   IF  W-PTBYO-SRYCD2 (IDW4)   =
-                                                        SRY-SRYCD (IDX3)
-                                       MOVE    200        TO  IDW4
-                                   END-IF
-                               END-IF
+                                 MOVE    CHK-CD (IDY2)
+                                               TO  W-PTBYO-CHKCD2 (IDW4)
+                                 MOVE    PTBYO-BYOMEI(1:60)
+                                               TO  W-PTBYO-MEI2 (IDW4)
+                                 MOVE    IDW4  TO  W-PTBYO-MAX2
+                                 MOVE    200   TO  IDW4
+                             ELSE
+                                 IF  W-PTBYO-CHKCD2 (IDW4)   =
+                                                           CHK-CD (IDY2)
+                                     MOVE    200        TO  IDW4
+                                 END-IF
+                             END-IF
                            END-PERFORM
                        END-IF
                    ELSE
@@ -3871,53 +3997,60 @@
                            END-IF
                            PERFORM VARYING IDW4  FROM  1  BY 1
                                    UNTIL   IDW4  >  100
-                               IF  W-PTBYO-SRYCD2 (IDW4)   =   SPACE
-                                   MOVE    "4"   TO  W-PTBYO-KB2 (IDW4)
-                                   MOVE    SRY-SRYCD (IDX3)
+                             IF  W-PTBYO-CHKCD2 (IDW4)   =   SPACE
+                                 MOVE    "4"   TO  W-PTBYO-KB2 (IDW4)
+                                 MOVE    SRY-SRYCD (IDX3)
                                                TO  W-PTBYO-SRYCD2 (IDW4)
-                                   MOVE    PTBYO-BYOMEI(1:60)
-                                                 TO  W-PTBYO-MEI2 (IDW4)
-                                   MOVE    IDW4  TO  W-PTBYO-MAX2
-                                   MOVE    200   TO  IDW4
-                               ELSE
-                                   IF  W-PTBYO-SRYCD2 (IDW4)   =
-                                                        SRY-SRYCD (IDX3)
-                                       MOVE    200        TO  IDW4
-                                   END-IF
-                               END-IF
+                                 MOVE    CHK-CD (IDY2)
+                                               TO  W-PTBYO-CHKCD2 (IDW4)
+                                 MOVE    PTBYO-BYOMEI(1:60)
+                                               TO  W-PTBYO-MEI2 (IDW4)
+                                 MOVE    IDW4  TO  W-PTBYO-MAX2
+                                 MOVE    200   TO  IDW4
+                             ELSE
+                                 IF  W-PTBYO-CHKCD2 (IDW4)   =
+                                                           CHK-CD (IDY2)
+                                     MOVE    200        TO  IDW4
+                                 END-IF
+                             END-IF
                            END-PERFORM
                        ELSE
-                           MOVE    1            TO  FLG-RED2
-                           IF  W-PTBYO-MAX2   >   ZERO
-                               INITIALIZE  W-BYOMEI-LIST2 (W-PTBYO-MAX2)
-                               COMPUTE W-PTBYO-MAX2 = W-PTBYO-MAX2 - 1
-                           END-IF
-                       END-IF
-                   END-IF
-                   IF  (PTBYO-SRYYMD   NOT  =   SPACE)      AND
-                       (PTBYO-SRYYMD   NOT  =   ZERO)       AND
-                       (PTBYO-SRYYMD(1:6)   >   T-SINRYOU-AREA)
-                        MOVE    ZERO               TO  FLG-RED2
-                       IF  W-PTBYO-KB2 (1)   =   "2"
-                           INITIALIZE           W-PTBYO-BYOMEI-AREA2
-                       END-IF
-                       PERFORM VARYING IDW4  FROM  1  BY 1
-                               UNTIL   IDW4  >  100
-                           IF  W-PTBYO-SRYCD2 (IDW4)   =   SPACE
-                               MOVE    "3"       TO  W-PTBYO-KB2 (IDW4)
-                               MOVE    SRY-SRYCD (IDX3)
+                           IF  (PTBYO-SRYYMD   NOT  =   SPACE)      AND
+                               (PTBYO-SRYYMD   NOT  =   ZERO)       AND
+                               (PTBYO-SRYYMD(1:6)   >   T-SINRYOU-AREA)
+                               MOVE    ZERO               TO  FLG-RED2
+                               IF  W-PTBYO-KB2 (1)   =   "2"
+                                   INITIALIZE      W-PTBYO-BYOMEI-AREA2
+                               END-IF
+                               PERFORM VARYING IDW4  FROM  1  BY 1
+                                       UNTIL   IDW4  >  100
+                                 IF  W-PTBYO-CHKCD2 (IDW4)   =   SPACE
+                                     MOVE    "3"  TO  W-PTBYO-KB2 (IDW4)
+                                     MOVE    SRY-SRYCD (IDX3)
                                                TO  W-PTBYO-SRYCD2 (IDW4)
-                               MOVE    PTBYO-BYOMEI(1:60)
+                                     MOVE    CHK-CD (IDY2)
+                                               TO  W-PTBYO-CHKCD2 (IDW4)
+                                     MOVE    PTBYO-BYOMEI(1:60)
                                                  TO  W-PTBYO-MEI2 (IDW4)
-                               MOVE    IDW4      TO  W-PTBYO-MAX2
-                               MOVE    200       TO  IDW4
+                                     MOVE    IDW4      TO  W-PTBYO-MAX2
+                                     MOVE    200       TO  IDW4
+                                 ELSE
+                                     IF  W-PTBYO-CHKCD2 (IDW4)   =
+                                                           CHK-CD (IDY2)
+                                         MOVE    200        TO  IDW4
+                                     END-IF
+                                 END-IF
+                               END-PERFORM
                            ELSE
-                               IF  W-PTBYO-SRYCD2 (IDW4)   =
-                                                        SRY-SRYCD (IDX3)
-                                   MOVE    200        TO  IDW4
+                               MOVE    1            TO  FLG-RED2
+                               IF  W-PTBYO-MAX2   >   ZERO
+                                   INITIALIZE
+                                           W-BYOMEI-LIST2 (W-PTBYO-MAX2)
+                                   COMPUTE W-PTBYO-MAX2 = W-PTBYO-MAX2
+                                                                     - 1
                                END-IF
                            END-IF
-                       END-PERFORM
+                       END-IF
                    END-IF
                    IF  FLG-RED2   =   ZERO
                        PERFORM T-530-RECECHEK-READ5-SEC
@@ -4149,7 +4282,7 @@
            END-IF.
            PERFORM VARYING IDW4  FROM  1  BY 1
                    UNTIL   IDW4  >  W-PTBYO-MAX2
-               MOVE     W-PTBYO-SRYCD2 (IDW4)  TO   DID2-REC(37:9)
+               MOVE     W-PTBYO-CHKCD2 (IDW4)  TO   DID2-REC(37:9)
                EVALUATE    W-PTBYO-KB2 (IDW4)
                    WHEN    "1"
                        MOVE    W1-SRY-SRYKA          TO  DID2-REC(191:2)
@@ -4231,7 +4364,7 @@
            END-IF.
            PERFORM VARYING IDW4  FROM  1  BY 1
                    UNTIL   IDW4  >  W-PTBYO-MAX1
-               MOVE     W-PTBYO-SRYCD1 (IDW4)  TO   DID2-REC(37:9)
+               MOVE     W-PTBYO-CHKCD1 (IDW4)  TO   DID2-REC(37:9)
                EVALUATE    W-PTBYO-KB1 (IDW4)
                    WHEN    "1"
                        MOVE    W1-SRY-SRYKA          TO  DID2-REC(191:2)
