@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    04/02/01  病名コード２１に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1032,10 +1033,8 @@
       *    病名コード
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       21
-               IF      IDX1                <   7
-                   MOVE    TOUKEI03-BYOMEICD  (IDX1)   TO  WRK-DATA
-                   MOVE    7                           TO  WRK-NAGASA
-               END-IF
+               MOVE    TOUKEI03-BYOMEICD  (IDX1)   TO  WRK-DATA
+               MOVE    7                           TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
            END-PERFORM
       *

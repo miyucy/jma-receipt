@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    04/02/01  病名コード２１に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2079,15 +2080,15 @@
                        INTO                WRK-BYOMEI
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
-               IF      PTBYO-BYOMEICD (6)  NOT =   SPACE             
+               IF      PTBYO-BYOMEICD (21)  NOT =   SPACE             
                    MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
                ELSE
                    PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       6
+                           UNTIL   IDX >       21
                        IF      PTBYO-BYOMEICD (IDX)    =   SPACE
                            MOVE    WRK-CONS-BYOMEICD-UTAGAI
                                                TO  PTBYO-BYOMEICD (IDX)
-                           MOVE    6           TO  IDX
+                           MOVE    21           TO  IDX
                        END-IF
                    END-PERFORM
                END-IF
@@ -2101,15 +2102,15 @@
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
                MOVE    WRK-BYOMEIW         TO  WRK-BYOMEI  
-               IF      PTBYO-BYOMEICD (6)  NOT =   SPACE             
+               IF      PTBYO-BYOMEICD (21)  NOT =   SPACE             
                    MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
                ELSE
                    PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       6
+                           UNTIL   IDX >       21
                        IF      PTBYO-BYOMEICD (IDX)    =   SPACE
                            MOVE    WRK-CONS-BYOMEICD-KYUSEI
                                                TO  PTBYO-BYOMEICD (IDX)
-                           MOVE    6           TO  IDX
+                           MOVE    21           TO  IDX
                        END-IF
                    END-PERFORM
                END-IF
