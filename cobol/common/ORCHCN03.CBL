@@ -632,13 +632,19 @@
            END-IF
       *
       *    保険適用分
-      *    （労災・自賠の時、点数表示なし）
-           EVALUATE    COMB-HKNNUM
-           WHEN    "971"
-           WHEN    "973"
-               IF    ((PTRSI-HKNKBN        =    "4" )
-                 AND  (SYU-PTFTNRATE     NOT =   ZERO  ))
-                  OR(SYS-4001-RSIIRYOKBN NOT =   "1")
+           MOVE    SYU-HKNTEKMONEY         TO  WRK-Z7
+           MOVE    WRK-Z7                  TO  WRK-ZHENSYU9
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-ZHENSYU18           TO  HCN03-HOKENBUN
+      *
+      *    労災・自賠の時、点数表示なし
+           EVALUATE    TRUE
+           WHEN      ( COMB-HKNNUM             =    "971" )
+               AND   ( SYS-4001-RSIIRYOKBN NOT =   "1" )
+      *
+           WHEN      ( COMB-HKNNUM             =    "973" )
+               AND   ( PTRSI-HKNKBN        =    "4" ) 
+               AND   ( SYU-PTFTNRATE   NOT =   ZERO  )
                    COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
                                            +    SYU-RSISHOSHIN-MONEY
                                            +    SYU-RSISAISHIN-MONEY
@@ -648,14 +654,8 @@
                    MOVE    WRK-Z7          TO  WRK-ZHENSYU9
                    PERFORM 800-HENKAN-SEC
                    MOVE    WRK-ZHENSYU18   TO  HCN03-HOKENBUN
-               ELSE
-                   MOVE    SPACE           TO  HCN03-HOKENBUN
-               END-IF
            WHEN    OTHER
-               MOVE    SYU-HKNTEKMONEY     TO  WRK-Z7
-               MOVE    WRK-Z7              TO  WRK-ZHENSYU9
-               PERFORM 800-HENKAN-SEC
-               MOVE    WRK-ZHENSYU18       TO  HCN03-HOKENBUN
+               MOVE    SPACE           TO  HCN03-HOKENBUN
            END-EVALUATE
       *
       *    保険適用外分

@@ -572,6 +572,7 @@
                INITIALIZE                      PTRSIINF-REC
            END-IF
       *
+      *
            .
        100-SYORI-EXT.
            EXIT.
@@ -890,23 +891,24 @@
            MOVE    SYU-HKNTEKMONEY     TO  WRK-Z7
            MOVE    WRK-Z7-G            TO  HC03-HOKENBUN
       *    労災・自賠の時、点数表示なし
-           IF    ( COMB-HKNNUM             =    "971"  OR  "973" )
-      *        自賠・労災非指定医療機関
-      ******** IF     (SPA-RSI-HKNKBN      =    "4" )  OR
-               IF    ((PTRSI-HKNKBN        =    "4" )  AND
-                      (SYU-PTFTNRATE   NOT =   ZERO  ))  OR
-                      (SYS-4001-RSIIRYOKBN NOT =   "1" )
-                   COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
+           EVALUATE    TRUE
+           WHEN      ( COMB-HKNNUM             =    "971" )
+               AND   ( SYS-4001-RSIIRYOKBN NOT =   "1" )
+      *
+           WHEN      ( COMB-HKNNUM             =    "973" )
+               AND   ( PTRSI-HKNKBN        =    "4" ) 
+               AND   ( SYU-PTFTNRATE   NOT =   ZERO  )
+      *
+               COMPUTE WRK-GOKTEN          =    SYU-HKNTEKMONEY
                                            +    SYU-RSISHOSHIN-MONEY
                                            +    SYU-RSISAISHIN-MONEY
                                            +    SYU-RSISDO-MONEY
                                            +    SYU-RSIETC-MONEY
-                   MOVE    WRK-GOKTEN          TO  WRK-Z7
-                   MOVE    WRK-Z7-G            TO  HC03-HOKENBUN
-               ELSE
-                   MOVE    SPACE               TO  HC03-HOKENBUN
-               END-IF
-           END-IF
+               MOVE    WRK-GOKTEN      TO  WRK-Z7
+               MOVE    WRK-Z7-G        TO  HC03-HOKENBUN
+           WHEN    OTHER
+               MOVE    SPACE               TO  HC03-HOKENBUN
+           END-EVALUATE
       *
       *    保険適用外分
            MOVE    ZERO                TO  WRK-GOKTEN
