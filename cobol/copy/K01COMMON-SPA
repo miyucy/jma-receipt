@@ -89,6 +89,8 @@
                05  SPA-JIKANCHK-ERR        PIC X(01).
       *複数科まとめ集計
                05  SPA-KAGRPFLG            PIC X(01).
+      *患者取消確認チェック
+               05  SPA-CLEARCHK-FLG        PIC X(01).
       *
            03  SPA-K01SET-AREA.
       *処理フラグ（０：通常、１：訂正）

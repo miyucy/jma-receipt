@@ -2436,7 +2436,15 @@
       *            画面制御
                    MOVE    "JOIN"              TO  WRK-PUTTYPE
                    PERFORM 41002-KOUSIN-SYORI-SEC
-      *
+      *        クリア確認チェック
+               WHEN    "0125"
+                   IF      SPA-KID1-FLG        =   "OK"
+                       PERFORM 2221-PTNUMCLEAR-SYORI-SEC
+                   ELSE
+                        MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   MOVE    SPACE               TO  SPA-KID1-FLG
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KID1-FLG
       *****MOVE    SPACE               TO  SPA-KIDCD
@@ -10138,6 +10146,24 @@
       *****************************************************************
        222-PTNUMCLEAR-SEC             SECTION.
       *
+      *     クリア確認チェック
+           IF      (SPA-CLEARCHK-FLG   =   "1"   )  AND
+                   (SPA-GMN-PTID   NOT =   ZERO  )
+               AND (SPA-GMN-MAX        >   ZERO  )
+               MOVE    "0125"              TO  SPA-KIDCD
+           ELSE
+               PERFORM 2221-PTNUMCLEAR-SYORI-SEC
+           END-IF
+      *
+           .
+       222-PTNUMCLEAR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者取消処理
+      *****************************************************************
+       2221-PTNUMCLEAR-SYORI-SEC             SECTION.
+      *
            IF      SPA-GMN-PTID    NOT =   ZERO
       *        排他制御解除処理
                PERFORM 990-LOCK-OUT-SEC
@@ -10163,7 +10189,7 @@
            MOVE    0               TO  SPA-GMN-CUR
       *
            .
-       222-PTNUMCLEAR-EXT.
+       2221-PTNUMCLEAR-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -14683,6 +14709,11 @@
                WHEN    "0124"
                    MOVE    "この科の前回内容へＯＫで置換えます。"
                                        TO  WRK-KIDMSG
+               WHEN    "0125"
+                   MOVE    "患者取消が選択されました。"
+                                       TO  WRK-KIDMSG
+                   MOVE    "表示内容をクリアします。よろしいですか？"
+                                       TO  WRK-KIDMSG(27:)
                WHEN    "0160"
                    MOVE    "包括検査で同じ検査があります。"
                                        TO  WRK-KIDMSG
