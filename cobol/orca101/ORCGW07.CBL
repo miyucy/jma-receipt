@@ -54,6 +54,7 @@
       *  02.01.13    NACL-藤原    04/07/08  生保受給者番号を削除
       *  02.01.14    NACL-多々納  04/10/06  同姓同名者、二重登録疑い追加
       *  02.01.15    NACL-藤原    04/11/15  病名機能情報を追加
+      *  02.01.16    NACL-多々納  04/12/06  診療行為クリア確認追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -181,6 +182,14 @@
                                                            OCCURS  2.
       *                相互作用チェック期間
                        09  SPA-GMN-LAST-KIKAN              PIC 9(02).
+      *                診療行為クリア確認チェック
+                       09  SPA-GMN-CLEARCHK-G.
+                           11  SPA-GMN-CLEARCHK            PIC X(01).
+                           11  SPA-GMN-CLEARCHK-F1         PIC X(01).
+                           11  SPA-GMN-CLEARCHK-MEI        PIC X(20).
+                       09  SPA-GMN-CLEARCHK-COMB.
+                           11  SPA-GMN-CLEARCHK-LIST       PIC X(20)
+                                                           OCCURS  2.
       *
                    07  SPA-GMN-PAGE2-AREA.
       *                カルテの病名対象
@@ -676,6 +685,11 @@
                                        TO  SPA-GMN-CHOKICHK-LIST(1)
            MOVE    "1 チェックする"
                                        TO  SPA-GMN-CHOKICHK-LIST(2)
+      *    クリア確認
+           MOVE    "0 チェックしない"
+                                       TO  SPA-GMN-CLEARCHK-LIST(1)
+           MOVE    "1 チェックする"
+                                       TO  SPA-GMN-CLEARCHK-LIST(2)
       *
            MOVE    "0 すべての病名"    TO  SPA-GMN-BYOMEIKBN-LIST(1)
            MOVE    "1 継続病名のみ"    TO  SPA-GMN-BYOMEIKBN-LIST(2)
@@ -851,6 +865,9 @@
       *        包括まとめ
                MOVE    SYS-1008-HOUKATU-FLG
                                        TO  SPA-GMN-HOUKATU
+      *        クリア確認
+               MOVE    SYS-1008-CLEARCHK-FLG
+                                       TO  SPA-GMN-CLEARCHK
       *        最終受診日からの期間
                IF      SYS-1008-LAST-KIKAN-X =   SPACE
                    MOVE    ZERO            TO  SYS-1008-LAST-KIKAN
@@ -1065,6 +1082,21 @@
                 WHEN    OTHER
                     MOVE    SPA-GMN-JIKANTOKU-CHK-LIST(1)
                                            TO  SPA-GMN-JIKANTOKU-CHK-G
+           END-EVALUATE
+      *    クリア確認
+           IF      SPA-GMN-CLEARCHK   =   SPACE
+               MOVE    "0"            TO  SPA-GMN-CLEARCHK
+           END-IF
+           EVALUATE    SPA-GMN-CLEARCHK
+                WHEN    "0"
+                    MOVE    SPA-GMN-CLEARCHK-LIST(1)
+                                               TO  SPA-GMN-CLEARCHK-G
+                WHEN    "1"
+                    MOVE    SPA-GMN-CLEARCHK-LIST(2)
+                                               TO  SPA-GMN-CLEARCHK-G
+                WHEN    OTHER
+                    MOVE    SPA-GMN-CLEARCHK-LIST(1)
+                                               TO  SPA-GMN-CLEARCHK-G
             END-EVALUATE
       *
       *     診療科コードセット
@@ -1463,6 +1495,7 @@
            MOVE    W07-GAIMOVE         TO  SPA-GMN-GAIMOVE-G
            MOVE    W07-SURYOZERO       TO  SPA-GMN-SURYOZERO-G
            MOVE    W07-CHOKICHK        TO  SPA-GMN-CHOKICHK-G
+           MOVE    W07-CLEARCHK        TO  SPA-GMN-CLEARCHK-G
       *
            MOVE    W07-HOUKATU         TO  SPA-GMN-HOUKATU-G
       *
@@ -1544,6 +1577,10 @@
       *            チェック除外時間
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-JIKANCHK-TIME-SEC
+                   END-IF
+      *            クリア確認チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-CLERACHK-CHK-SEC
                    END-IF
       *            包括入力チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -1870,6 +1907,31 @@
       *
           .
        4103-CHOKICHK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クリア確認チェック処理
+      *****************************************************************
+       4103-CLERACHK-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-CLEARCHK
+                                      =   SPA-GMN-CLEARCHK-LIST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-CLEARCHK-LIST(IDX)
+                                          TO  SPA-GMN-CLEARCHK-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    67              TO  SPA-GMN-CUR
+               MOVE    "0034"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4103-CLERACHK-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2874,6 +2936,8 @@
            MOVE    SPA-GMN-SURYOZERO       TO  SYS-1008-SURYOZERO-FLG
       *    入院調基チェック
            MOVE    SPA-GMN-CHOKICHK        TO  SYS-1008-CHOKICHK-FLG
+      *    入院調基チェック
+           MOVE    SPA-GMN-CLEARCHK        TO  SYS-1008-CLEARCHK-FLG
       *
       *    時間外加算特例乳幼児
            MOVE    SPA-GMN-JIKANTOKU-NYU   TO
@@ -3400,6 +3464,15 @@
            END-PERFORM
            MOVE    2                   TO  W07-CHOKICHK-COUNT
       *
+      *    入院調基チェック
+           MOVE    SPA-GMN-CLEARCHK-G  TO  W07-CLEARCHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-CLEARCHK-LIST (IDX)
+                                       TO  W07-CLEARCHK-ITEM(IDX)
+           END-PERFORM
+           MOVE    2                   TO  W07-CLEARCHK-COUNT
+      *
       *    包括入力
            MOVE    SPA-GMN-HOUKATU-G       TO  W07-HOUKATU
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3714,6 +3787,9 @@
                                                        TO  SPA-ERRMSG
                    MOVE    "入力して下さい"
                                                TO  SPA-ERRMSG(39:)
+               WHEN    "0034"
+                   MOVE    "診療行為クリア確認チェックエラー"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "0020"
                    MOVE    "カルテの病名対象区分がありません。"
@@ -3886,6 +3962,8 @@
                    MOVE  "GAZOUKSN1"       TO   MCP-WIDGET
                WHEN    19
                    MOVE  "LASTKIKAN"       TO   MCP-WIDGET
+               WHEN    67
+                   MOVE  "CLEARCHK"        TO   MCP-WIDGET
       *        時間外加算チェック
                WHEN    50
                    MOVE  "JIKANTOKU_CHK"   TO   MCP-WIDGET
@@ -4025,12 +4103,15 @@
                WHEN    "CHOKICHK"
       ************ MOVE    16              TO  SPA-GMN-CUR
                    MOVE    50              TO  SPA-GMN-CUR
+               WHEN    "CLEARCHK"
+                   MOVE    16              TO  SPA-GMN-CUR
       *        時間外加算チェック
                WHEN    "JIKANTOKU_CHK"
                    IF      SPA-GMN-JIKANTOKU-CHK   =   "1"
                        MOVE    51          TO  SPA-GMN-CUR
                    ELSE
-                       MOVE    16          TO  SPA-GMN-CUR
+      *****************MOVE    16          TO  SPA-GMN-CUR
+                       MOVE    67          TO  SPA-GMN-CUR
                    END-IF
                WHEN    "JIKANW1_HH1"
                    MOVE    52              TO  SPA-GMN-CUR
@@ -4063,8 +4144,11 @@
                WHEN    "JIKANS2_HH2"
                    MOVE    66              TO  SPA-GMN-CUR
                WHEN    "JIKANS2_MM2"
-                   MOVE    16              TO  SPA-GMN-CUR
+      ************ MOVE    16              TO  SPA-GMN-CUR
+                   MOVE    67              TO  SPA-GMN-CUR
       *
+               WHEN    "CLEARCHK"
+                   MOVE    17              TO  SPA-GMN-CUR
                WHEN    "HOUKATU"
                    MOVE    99              TO  SPA-GMN-CUR
       *        患者登録情報
