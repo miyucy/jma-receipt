@@ -77,6 +77,7 @@
            03  IDX-N2              PIC 9(04).
            03  IDX-SIN             PIC 9(04).
            03  IDX-ATO             PIC 9(04).
+           03  IDX-SYU             PIC 9(04).
       *
            03  IDX1                PIC 9(02).
            03  IDX2                PIC 9(02).
@@ -169,6 +170,7 @@
                05  TBL-SRYCD           PIC X(09).
                05  TBL-TENSU           PIC S9(07)V9(03).
                05  TBL-TENSIKIBETU     PIC 9(01).
+               05  TBL-DATAKBN         PIC X(01).
                05  TBL-KGN-YMD         PIC X(08).
                05  TBL-JGN-YMD         PIC X(08).
       *
@@ -177,6 +179,7 @@
                05  HZN-SRYCD           PIC X(09).
                05  HZN-TENSU           PIC S9(07)V9(03).
                05  HZN-TENSIKIBETU     PIC 9(01).
+               05  HZN-DATAKBN         PIC X(01).
                05  HZN-KGN-YMD         PIC X(08).
                05  HZN-JGN-YMD         PIC X(08).
       *
@@ -754,6 +757,7 @@
       *
            MOVE    TNS-TENSIKIBETU     TO  TBL-TENSIKIBETU (IDX)
            MOVE    TNS-TEN             TO  TBL-TENSU       (IDX)
+           MOVE    TNS-DATAKBN         TO  TBL-DATAKBN     (IDX)
       *
       *    Ï«ºÒ¤Î¥³¡¼¥É
            IF      TNS-SRYCD           =   "101"
@@ -950,6 +954,7 @@
       *
            INITIALIZE                  WRK-SRYACCT-AREA
            MOVE    ZERO                TO  IDX-ATO
+           MOVE    ZERO                TO  IDX-SYU
       *    ÅÀ¿ô»»Äê
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   10  )  OR
@@ -969,6 +974,13 @@
                        COMPUTE WRK-ZAITEN      =   WRK-ZAITEN
                                                +   TBL-TENSU (IDX)
                END-EVALUATE
+      *        ¼êµ»ÎÁ
+               IF      TBL-DATAKBN (IDX)   =   "1"
+                   IF      IDX-SYU             =   ZERO
+                       MOVE    IDX             TO  IDX-SYU
+                   END-IF
+               END-IF
+      *
       *        ³Æ½¸·×
                MOVE    TBL-SRYCD (IDX)     TO  WRK-SRYCD-9
                COMPUTE WRK-SRYCDTOTAL      =   WRK-SRYCDTOTAL
@@ -990,18 +1002,21 @@
                EVALUATE    TBL-TENSIKIBETU (IDX)
       *            ¡ó²Ã»»
                    WHEN    5
-                       COMPUTE WRK-KASAN       =   WRK-ZAITEN
+                       IF      IDX-SYU         >   ZERO
+                           COMPUTE WRK-KASAN   =   TBL-TENSU  (IDX-SYU)
                                                *   TBL-TENSU  (IDX)
                                                /   100
                                                +   0.5
-                       ADD     WRK-KASAN       TO  WRK-KASAN-ALL
+                           ADD     WRK-KASAN       TO  WRK-KASAN-ALL
+                       END-IF
       *            ¡ó¸º»»
                    WHEN    6
-                       COMPUTE WRK-GENZAN      =   WRK-ZAITEN
+                       IF      IDX-SYU         >   ZERO
+                           COMPUTE WRK-GENZAN  =   TBL-TENSU  (IDX-SYU)
                                                *   TBL-TENSU  (IDX)
                                                /   100
-                                               +   0.5
-                       ADD     WRK-GENZAN     TO  WRK-GENZAN-ALL
+                           ADD     WRK-GENZAN     TO  WRK-GENZAN-ALL
+                       END-IF
                END-EVALUATE
            END-PERFORM
       *
