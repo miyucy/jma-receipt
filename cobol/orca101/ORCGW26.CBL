@@ -128,7 +128,7 @@
                    07                  PIC X(01).
                    07  CONST-BTU-TOKNYUIN-CD
                                        PIC X(09).
-           03  CONST-BRM-TOKNYUIN-MAX  PIC 9(05) VALUE 13.
+           03  CONST-BRM-TOKNYUIN-MAX  PIC 9(05) VALUE 18.
            03  CONST-BRM-TOKNYUIN-VAL.
                05                      PIC X(12) VALUE "01 190075710".
                05                      PIC X(12) VALUE "02 190774110".
@@ -140,12 +140,17 @@
                05                      PIC X(12) VALUE "08 190066810".
                05                      PIC X(12) VALUE "09 190024810".
                05                      PIC X(12) VALUE "10 190075510".
-               05                      PIC X(12) VALUE "11 190788810".
+               05                      PIC X(12) VALUE "11 190066710".
+               05                      PIC X(12) VALUE "12 190066810".
+               05                      PIC X(12) VALUE "13 190024810".
+               05                      PIC X(12) VALUE "14 190075510".
+               05                      PIC X(12) VALUE "15 190788810".
+               05                      PIC X(12) VALUE "16 190116310".
                05                      PIC X(12) VALUE "20 190076710".
                05                      PIC X(12) VALUE "21 190076810".
            03  CONST-BRM-TOKNYUIN-R
                                    REDEFINES   CONST-BRM-TOKNYUIN-VAL.
-               05   CONST-BRM-TOKNYUIN-OCC       OCCURS 13.
+               05   CONST-BRM-TOKNYUIN-OCC       OCCURS 18.
                    07  CONST-BRM-TOKNYUIN-KBN
                                        PIC X(02).
                    07                  PIC X(01).
