@@ -22,4 +22,9 @@ distclean:
 
 install: all
 	$(INSTALL) -d $(sysconfdir)
-	$(INSTALL_DATA) $(EXTRA_DIST) $(sysconfdir)
+	for f in $(EXTRA_DIST); do \
+	  $(INSTALL_DATA) $${f} $(sysconfdir)/$${f}-dist ;\
+	  if [ ! -f $(sysconfdir)/$${f} ]; then \
+		$(INSTALL_DATA) $${f} $(sysconfdir)/$${f};  \
+	  fi ; \
+	done 
