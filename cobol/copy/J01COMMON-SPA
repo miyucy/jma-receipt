@@ -123,6 +123,11 @@
       *警告画面より
                05  SPA-JID1-AREA.
                    07  SPA-JID1-FLG        PIC  X(02).
+      *警告メッセージ２
+           03  SPA-JID2-AREA.
+               05  SPA-JIDCD2              PIC  X(04).
+               05  SPA-JID2-AREA.
+                   07  SPA-JID2-FLG        PIC  9(01).
       *
       *Ｐ入力画面より
                05  SPA-J99-DATA            PIC  X(25).
