@@ -41,3 +41,8 @@
                 04  R03-VALUE   PIC X.
               03  R03-DATAKBN11.
                 04  R03-VALUE   PIC X.
+              03  R03-NYUGAIKBNCOMBO.
+                04  R03-NYUGAIKBN.
+                  05  R03-VALUE   PIC X(8).
+                04  R03-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
+                04  R03-NYUGAIKBN-ITEM    PIC X(8)    OCCURS  2 TIMES.

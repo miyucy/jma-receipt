@@ -84,7 +84,7 @@ path	key5		{
 		SELECT *
 		FROM tbl_recekanri
                     WHERE   PRTID        =   :PRTID
-                    AND     SRYYM        =   :SRYYM
+                    AND     SYOKBN       =   :SYOKBN
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     ORDER BY  CREYMD DESC,CREHMS DESC,TEISYUTUSAKI,RECESYUBETU
 		;

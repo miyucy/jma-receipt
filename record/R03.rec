@@ -37,5 +37,12 @@ R03	{
 		DATAKBN11	{
 			value	bool;
 		};
+		NYUGAIKBNCOMBO	{
+			NYUGAIKBN	{
+				value	varchar(8);
+			};
+			count	int;
+			item	varchar(8)[2];
+		};
 	};
 };
