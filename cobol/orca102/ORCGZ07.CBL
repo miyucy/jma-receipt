@@ -1020,7 +1020,7 @@
                MOVE    "J"                 TO  ICD-CDSYU
            ELSE
       *        全桁数字は、コード種別を桁数で決定
-               IF      SPA-GMN-INPUTCD(IDX)(1:1)
+               IF      SPA-GMN-INPUTCD(IDX)(1:KANACHK-MAX)
                                            NUMERIC
                    EVALUATE    KANACHK-MAX
                        WHEN    4
@@ -1029,6 +1029,8 @@
                            MOVE    "5"                 TO  ICD-CDSYU
                        WHEN    6
                            MOVE    "6"                 TO  ICD-CDSYU
+                       WHEN    OTHER
+                           MOVE    "A"                 TO  ICD-CDSYU
                    END-EVALUATE
                ELSE
                    MOVE    "A"                 TO  ICD-CDSYU
