@@ -1000,8 +1000,8 @@
            END-IF.
       *
       *    特別計算対応
-           CALL   "ORCSDOKUJI"      USING   MCPAREA
-                                            LNK-SYU-SYUNOU-REC.
+      *     CALL   "ORCSDOKUJI"      USING   MCPAREA
+      *                                      LNK-SYU-SYUNOU-REC.
       *
       *
       *    請求金額の計算（調整金の加減算）
