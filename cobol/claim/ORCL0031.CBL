@@ -183,7 +183,7 @@
            COPY    "CPJIDO.INC".
       *    対象外レセ電コードの最大テーブル数
       *01  JIDO-MAX                PIC 9(04)   VALUE   38.
-       01  JIDO-MAX                PIC 9(04)   VALUE   42.
+      *01  JIDO-MAX                PIC 9(04)   VALUE   42.
       *
       *    診療種別名テーブル
       *01  MSYU-DATA-REC.
