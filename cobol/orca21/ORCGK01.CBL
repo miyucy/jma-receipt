@@ -211,6 +211,7 @@
                        09  SPA-MAE-F1          PIC X(01).
                        09  SPA-MAE-SRYKAMEI    PIC X(18).
                    07  SPA-MAE-SRYYMD          PIC X(10).
+                   07  SPA-MAE-HKNCOMBINUM     PIC X(04).
       *************07  SPA-MAE-CONTKBN-G.
       *                09  SPA-MAE-CONTKBN         PIC X(01).
       *                09  SPA-MAE-CONTKBNH        PIC X(01).
@@ -707,6 +708,7 @@
       *
            IF      SPA-HKNCOMBINUM     NOT =   SPACE
                MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
+               MOVE    SPA-HKNCOMBINUM     TO  SPA-MAE-HKNCOMBINUM
                PERFORM 41041-HKNCOMBI-TBLCHK-SEC
           END-IF
       *
@@ -886,10 +888,11 @@
       *    入力チェック用
            MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
            MOVE    SPA-GMN-SRYYMD      TO  SPA-MAE-SRYYMD
+           MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-MAE-HKNCOMBINUM
       *****MOVE    SPA-GMN-CONTKBN-G   TO  SPA-MAE-CONTKBN-G
       *
            .
-       31O-SPASET-EXT.
+       310-SPASET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -997,6 +1000,7 @@
       *    入力チェック用
            MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
            MOVE    SPA-GMN-SRYYMD      TO  SPA-MAE-SRYYMD
+           MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-MAE-HKNCOMBINUM
       *****MOVE    SPA-GMN-CONTKBN-G   TO  SPA-MAE-CONTKBN-G
            .
        310-K02SPASET-EXT.
@@ -1185,14 +1189,16 @@
                WHEN    "ACTIVATE"      ALSO    "PTNUM"
                    MOVE    1               TO  FLG-SYORI
                    PERFORM 4101-PTNUM-CHK-SEC
-                   GO      TO      200-ENTRY-EXT
       *        保険組合せ選択
                WHEN    ANY             ALSO    "HKNKUMILST"
                    PERFORM 4104-HKNCOMBI-LST-SEC
+      *            入力チェック処理
+                   PERFORM 410-INPUT-CHK-SEC
+               WHEN    OTHER
+      *            入力チェック処理
+                   PERFORM 410-INPUT-CHK-SEC
            END-EVALUATE
       *
-      *    入力チェック処理
-           PERFORM 410-INPUT-CHK-SEC
            .
        200-ENTRY-EXT.
            EXIT.
@@ -1206,9 +1212,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      410-INPUT-CHK-EXT
-           END-IF
       *
            .
        410-INPUT-CHK-EXT.
@@ -1605,7 +1608,9 @@
                MOVE    "1"             TO  SPA-NYUGAIKBN
       *        ドクター編集
                PERFORM 3101-DRCD-SET-SEC
-          END-IF
+           ELSE
+               MOVE    "2"             TO  SPA-NYUGAIKBN
+           END-IF
       *
            .
        41015-PTNYUINRRK-CHK-EXT.
@@ -2116,9 +2121,9 @@
            IF      SPA-SYORIFLG        =   1
                IF      SPA-MAE-SRYYMD  NOT =   SPA-GMN-SRYYMD
                    MOVE    "0009"          TO  SPA-ERRCD
+                   MOVE    SPA-MAE-SRYYMD      TO  SPA-GMN-SRYYMD
+                   MOVE    4                   TO  SPA-GMN-CUR
                END-IF
-               MOVE    SPA-MAE-SRYYMD      TO  SPA-GMN-SRYYMD
-               MOVE    4                   TO  SPA-GMN-CUR
                GO      TO      4103-SRYYMD-CHK-EXT
            END-IF
       *
@@ -2300,7 +2305,7 @@
                 CONTINUE
             ELSE
                 MOVE    "0022"         TO  SPA-ERRCD
-               MOVE    4                   TO  SPA-GMN-CUR
+                MOVE    4                   TO  SPA-GMN-CUR
            END-IF
            .
        4104-ZENKAI-CHK-EXT.
@@ -2382,6 +2387,14 @@
       *****************************************************************
        4104-HKNCOMBI-CHK-SEC             SECTION.
       *
+           IF      SPA-SYORIFLG        =   1
+               IF      SPA-GMN-HKNCOMBINUM NOT =   SPA-MAE-HKNCOMBINUM
+                   MOVE    "0009"              TO  SPA-ERRCD
+                   MOVE    9                   TO  SPA-GMN-CUR
+                   MOVE    SPA-MAE-HKNCOMBINUM TO  SPA-GMN-HKNCOMBINUM
+               END-IF
+               GO      TO      4104-HKNCOMBI-CHK-EXT
+           END-IF
            IF     (SPA-GMN-HKNCOMBINUM     NOT =   SPACE )  AND
                   (SPA-GMN-HKNCOMBINUM     NOT NUMERIC   )
                INITIALIZE                      ORCSNUMAREA
@@ -2407,6 +2420,8 @@
            PERFORM 41041-HKNCOMBI-TBLCHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    9                   TO  SPA-GMN-CUR
+           ELSE
+               MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-MAE-HKNCOMBINUM
            END-IF
       *
            .
@@ -3300,7 +3315,7 @@
                    MOVE    "保険組合せがありません。"
                                                TO  SPA-ERRMSG
                WHEN    "0009"
-               MOVE    "訂正時は、保険組合せ・継続のみ変更可能です"
+               MOVE    "訂正時は変更できません。"
                                                TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "既に継続中の保険組合せです。変更して下さい"
