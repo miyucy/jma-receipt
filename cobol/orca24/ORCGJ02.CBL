@@ -1988,14 +1988,6 @@
                        END-IF
                    END-IF
                END-PERFORM
-      *!       IF     (IDX                 >   1           )  AND
-      *               (SPA-RRK-RRKYMD(IDX)
-      *                                    =   SPA-RRK-RRKYMD
-      *                                                (IDX - 1)) AND
-      *               (SPA-RRK-SRYKA(IDX)  =   SPA-RRK-SRYKA
-      *                                                (IDX - 1))
-      *            MOVE    1                   TO  FLG-HEN
-      *!       END-IF
                IF     (SPA-RRK-RENNUM (IDX)    >   1 ) OR
                       (SPA-RRK-DOUJI-RENNUM (IDX)  >  ZERO )
                    MOVE    1                   TO  FLG-HEN
@@ -4678,6 +4670,10 @@
       *
                MOVE    SPA-NAI-HENSRYYMD   TO  JYURRK-SRYYMD
                MOVE    1                   TO  JYURRK-RENNUM
+      *        同時連番
+               IF      JYURRK-NYUGAIKBN    =   "1"
+                   MOVE    ZERO            TO  JYURRK-DOUJI-RENNUM
+               END-IF
       *
                MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
@@ -4904,10 +4900,67 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+      *
+      *        収納合計
+               IF     (SYU-GRP-DENPNUM     >   ZERO )  AND
+                      (SYU-FUKU-DENPNUM    >   ZERO )  AND
+                      (SYU-FUKU-KBN        =   "1"  )
+                   PERFORM 410161312-SYUTOTAL-UPD-SEC
+               END-IF
            END-IF
       *
            .
        41016131-SYUNOU-UPDSYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納合計更新処理
+      *****************************************************************
+       410161312-SYUTOTAL-UPD-SEC      SECTION.
+      *
+           INITIALIZE                  SYUTTL-REC
+           MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SYUTTL-PTID
+           MOVE    SYU-FUKU-DENPNUM    TO  SYUTTL-DENPNUM
+      *
+           MOVE    SYUTTL-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUTOTAL-KEY"        TO  ORC-DBPATH
+               PERFORM 981-SYUTTL-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYUTTL
+               INITIALIZE              SYUTTL-REC
+           END-IF
+      *
+           IF      FLG-SYUTTL          =   ZERO
+               MOVE    SYU-SRYYMD          TO  SYUTTL-SRYYMD
+      *
+               MOVE    SMCNDATE-YMD        TO  SYUTTL-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYUTTL-UPHMS
+      *
+               MOVE    SYUTTL-REC          TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J02 SYUTTL UPD ERR:" SYUTTL-KEY
+                       ",MCP-RC:"  MCP-RC
+                   MOVE    "2003"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       410161312-SYUTOTAL-UPD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5140,6 +5193,10 @@
                END-PERFORM
       *        受診履歴追加
                MOVE    1                   TO  JYURRK-RENNUM
+      *        同時連番
+               IF      JYURRK-NYUGAIKBN    =   "1"
+                   MOVE    ZERO            TO  JYURRK-DOUJI-RENNUM
+               END-IF
       *
                MOVE    SMCNDATE-YMD        TO  JYURRK-CREYMD
                MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
@@ -5326,7 +5383,9 @@
                    MOVE    "2003"              TO  SPA-ERRCD
                END-IF
       *        収納合計レコード
-               IF         SYU-GRP-DENPNUM      >   ZERO
+               IF      (WRK-SYU-GRP-DENPNUM    >   ZERO) AND
+                       (WRK-SYU-FUKU-DENPNUM   >   ZERO) AND
+                       (WRK-SYU-FUKU-KBN       =   "1" )
                   PERFORM 41016211-SYUTTL-INS-SEC
                END-IF
       *
@@ -5339,11 +5398,13 @@
       *    収納合計レコード作成処理
       *****************************************************************
        41016211-SYUTTL-INS-SEC             SECTION.
+      *
            INITIALIZE                  SYUTTL-REC
            MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
            MOVE    SYU-PTID            TO  SYUTTL-PTID
-           MOVE    WRK-SYU-DENPNUM     TO  SYUTTL-DENPNUM
+           MOVE    WRK-SYU-FUKU-DENPNUM
+                                       TO  SYUTTL-DENPNUM
       *
            MOVE    SYUTTL-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -5361,7 +5422,7 @@
            END-IF
       *
            IF      FLG-SYUTTL          =   ZERO
-               MOVE    SYU-DENPNUM         TO  SYUTTL-DENPNUM
+               MOVE    SYU-FUKU-DENPNUM    TO  SYUTTL-DENPNUM
                MOVE    SYU-SRYYMD          TO  SYUTTL-SRYYMD
       *        伝票発行日
                MOVE    SYU-DENPPRTYMD      TO  SYUTTL-DENPPRTYMD
