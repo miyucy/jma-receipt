@@ -1511,9 +1511,9 @@
       *    全角文字の場合、間に半角スペースがなかったかチェック
            IF    ( KANACHK-SYUBETU     =   2  )
             AND  ( KANACHK-RC2         =   8  )
-               MOVE    9               TO  FLG-KANACHK
+               MOVE    9               TO  FLG-ENTRYCHK
            ELSE
-               MOVE    KANACHK-SYUBETU TO  FLG-KANACHK
+               MOVE    KANACHK-SYUBETU TO  FLG-ENTRYCHK
            END-IF
       *
            .
