@@ -6022,7 +6022,7 @@
            MOVE   WRK-HKNCOMBINUM9 
                                 TO  LNK-SCNYUACCT-HKNCOMBINUM
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
-           MOVE   "00"          TO  SPA-SRYKA
+      *    MOVE   "00"          TO  SPA-SRYKA
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
@@ -6149,7 +6149,7 @@
                                         TO  WRK-HKNCOMBINUM
            MOVE   WRK-HKNCOMBINUM9      TO  LNK-SCNYUACCT-HKNCOMBINUM
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
-           MOVE   "00"          TO  SPA-SRYKA
+      *    MOVE   "00"          TO  SPA-SRYKA
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
@@ -6254,7 +6254,7 @@
            MOVE   WRK-HKNCOMBINUM9
                                 TO  LNK-SCNYUACCT-HKNCOMBINUM
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
-           MOVE   "00"          TO  SPA-SRYKA
+      *    MOVE   "00"          TO  SPA-SRYKA
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
@@ -6358,7 +6358,7 @@
       **     MOVE   SPA-GMN-I01-NYUINKA-MOT (1 : 2)
       **                          TO  LNK-SCNYUACCT-MOTO-NYUINKA
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
-           MOVE   "00"          TO  SPA-SRYKA
+      *    MOVE   "00"          TO  SPA-SRYKA
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
