@@ -4713,8 +4713,10 @@
                END-IF
            END-IF.
       *
-           IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"   
-           AND  COMB-KOH1HKNNUM        NOT   =   "027" 
+      ***  IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"   
+      ***  AND  COMB-KOH1HKNNUM        NOT   =   "027" 
+      ***  AND  COMB-HKNNUM            NOT   =   SPACE
+           IF   COMB-KOH1HKNNUM        NOT   =   "027" 
            AND  COMB-HKNNUM            NOT   =   SPACE
                MOVE    LNK-SYU-SYUCOMPFTN     TO  WK-KNJFTNKIN
                IF   LNK-SYU-KOH1HKNNUM   NOT =  SPACE
