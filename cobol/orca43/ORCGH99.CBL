@@ -35,6 +35,7 @@
       *  01.02.01    NACL-藤原    02/10/10  レセプト種別の出力の修正
       *  01.02.02    NACL-藤原    02/12/10  エラーメッセージの修正
       *  01.02.03    NACL-藤原    03/02/17  補助区分の追加
+      *  01.02.04    NACL-藤原    03/05/28  補助区分の判定の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -621,7 +622,7 @@
                                        SPA-H99GMN-TRECESYUBETU (IDX)
                MOVE    RECE10-HKNJANUM     TO
                                        SPA-H99GMN-THKNJANUM    (IDX)
-               EVALUATE    RECE10-HOJOKBN
+               EVALUATE    RECE10-HOJOKBN-KEY
                    WHEN    "1"
                    WHEN    "A"
                    WHEN    "D"
