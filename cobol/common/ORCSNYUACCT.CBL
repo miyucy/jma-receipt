@@ -30,6 +30,7 @@
       * 01.00.01     NACL-多々納  02/12/19  食堂加算追加
       * 01.00.02     NACL-多々納  02/12/26  転科時、会計削除の中止
       * 01.00.03     NACL-多々納  02/12/26  年齢チェック追加
+      * 01.00.04     NACL-多々納  03/01/28  次月分作成追加
       *****************************************************************
       *
       *
@@ -270,6 +271,9 @@
       *        転出
                WHEN    "8"
                    PERFORM 800-TENSYUTU-SYORI-SEC
+      *        次月作成
+               WHEN    "9"
+                   PERFORM 900-NEXTTUKI-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -1886,6 +1890,53 @@
            .
       *
        800-TENSYUTU-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    次月分作成処理
+      *****************************************************************
+       900-NEXTTUKI-SYORI-SEC            SECTION.
+      *
+      *    チェック
+           IF      LNK-SCNYUACCT-STSRYYMD  =   SPACE  OR  ZERO
+               GO      TO     900-NEXTTUKI-SYORI-EXT
+           END-IF
+      *
+      *    開始日の末日を求める
+           MOVE    LNK-SCNYUACCT-STSRYYMD
+                                       TO  WRK-STYMD
+           MOVE    WRK-STYMD           TO  WRK-EDYMD
+      *    月末算定
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    WRK-EDYYMM          TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY7-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
+           END-IF
+      *
+      *    入院基本料作成
+           PERFORM 200-NYUKHN-SYORI-SEC
+           IF      LNK-SCNYUACCT-RC    NOT =   ZERO
+               GO      TO     900-NEXTTUKI-SYORI-EXT
+           END-IF
+      *
+      *    入院料加算作成
+           MOVE    ZERO                TO  WRK-NISUU
+           PERFORM 210-NYUKHNKSN-SYORI-SEC
+           IF      LNK-SCNYUACCT-RC    NOT =   ZERO
+               GO      TO     900-NEXTTUKI-SYORI-EXT
+           END-IF
+      *
+      *    その他料作成
+           PERFORM 220-SONOTA-SYORI-SEC
+           IF      LNK-SCNYUACCT-RC    NOT =   ZERO
+               GO      TO     900-NEXTTUKI-SYORI-EXT
+           END-IF
+           .
+      *
+       900-NEXTTUKI-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    日付変換処理
