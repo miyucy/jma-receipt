@@ -40,6 +40,7 @@
       *  02.00.05    NACL-多々納  02/11/11  ＤＵＭＭＹ診察料追加
       *  02.00.06    NACL-多々納  02/11/15  自費消費税対応修正
       *  02.00.07    NACL-多々納  02/12/05  初診料算定日追加
+      *  02.00.08    NACL-多々納  02/12/11  ドクターエラーカーソル位置修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1584,6 +1585,7 @@
                    CONTINUE
                WHEN    OTHER
                    MOVE    "0009"            TO  SPA-ERRCD
+                   MOVE    3                 TO  SPA-GMN-CUR
            END-EVALUATE
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1621,7 +1623,7 @@
                MOVE    SPA-GMN-DRCD      TO  SPA-DRCD(2:)
            ELSE
                MOVE    "0011"            TO  SPA-ERRCD
-               MOVE    4                     TO  SPA-GMN-CUR
+               MOVE    5                     TO  SPA-GMN-CUR
            END-IF
       *
            .
