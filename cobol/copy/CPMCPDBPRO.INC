@@ -1656,10 +1656,10 @@
                                        TO  WRK-PATH
       *----(01.01.112)-ADD-END-----
                WHEN    ANY             ALSO   "SRYACCT-KEY27"
-                   MOVE    PATH-TBL-SRYACCT-KEY26
+                   MOVE    PATH-TBL-SRYACCT-KEY27
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-KEY28"
-                   MOVE    PATH-TBL-SRYACCT-KEY27
+                   MOVE    PATH-TBL-SRYACCT-KEY28
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL
