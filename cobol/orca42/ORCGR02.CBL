@@ -1794,6 +1794,10 @@
                MOVE    "0010"             TO  SPA-ERRCD
                GO  TO  470-ATOGMN-EXT
            END-IF
+           IF      SPA-GMN-PRTJYUN    =   "03"    OR  "04"
+               MOVE    "0010"             TO  SPA-ERRCD
+               GO  TO  470-ATOGMN-EXT
+           END-IF
            COMPUTE SPA-GMN-PAGE   =   SPA-GMN-PAGE    +   1       
       *
       *
