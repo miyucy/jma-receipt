@@ -4116,6 +4116,7 @@
       *    画面用スパ編集処理
            PERFORM                 310-SPA-GMNSET-SEC
       *
+      *
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-MAP-IDX
@@ -4436,6 +4437,8 @@
       *
       *    画面用スパ編集処理
            PERFORM                 310-SPA-GMNSET-SEC
+      *
+           MOVE    ZERO            TO  SPA-SAISIN-CHK
       *
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR

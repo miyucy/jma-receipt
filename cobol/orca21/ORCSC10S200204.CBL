@@ -198,6 +198,9 @@
                05  WRK-HAS-MM         PIC 9(02).
                05  WRK-HAS-DD         PIC 9(02).
       *
+      *    初回算定日
+           03  WRK-FSANTEIYMD          PIC X(08).
+      *
       *    パス名
            03  WRK-PATH                PIC X(64).
       *
@@ -1346,6 +1349,8 @@
       *    厚生省が定める患者である
            IF      FLG-TOUG-SANTEI     >   ZERO
                MOVE    1               TO  SPA-TOKUTEI-KNJ2
+           ELSE
+               MOVE    ZERO            TO  SPA-TOKUTEI-KNJ2
            END-IF
       *
            .
@@ -2525,6 +2530,7 @@
                MOVE    1                   TO  FLG-SANTEI
            END-IF
       *
+           MOVE    SPACE               TO  WRK-FSANTEIYMD
            PERFORM
                UNTIL       FLG-SANTEI      =   1
       *
@@ -2539,7 +2545,9 @@
                        IF     (WRK-SRYCD       =   "113006510" ) AND
                               (SANTEI-FSANTEIYMD(1:6)
                                                =   SANTEI-SRYYM ) AND
-                              (SPA-SRYYMD(7:2) <   SANTEI-MSANTEID)
+                              (SPA-SRYYMD(7:2) <   SANTEI-MSANTEID) AND
+                              (WRK-FSANTEIYMD  NOT =
+                                                   SANTEI-FSANTEIYMD)
                            MOVE    ZERO        TO  FLG-TOUG-SANTEI
                        END-IF
                    END-IF
@@ -2547,6 +2555,7 @@
                        MOVE    SANTEI-SRYYM        TO  WRK-SANTEI-YM
                        MOVE    1                   TO  FLG-SANTEI
                    END-IF
+                   MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD
       *
       *            訂正の時、訂正分はカウントしない
                    IF     (SPA-SYORIFLG        =   1     )  AND
