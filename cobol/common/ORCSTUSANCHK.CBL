@@ -201,6 +201,8 @@
            MOVE    STUSANCHK-HOSPID    TO  STUSAN-HOSPID
            MOVE    STUSANCHK-PTID      TO  STUSAN-PTID
            MOVE    STUSANCHK-NYUINYMD  TO  STUSAN-KJNYMD
+           MOVE    "1"                 TO  STUSAN-RRKNUMKBN
+           MOVE    STUSANCHK-RRKNUM    TO  STUSAN-RRKNUM
            CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
            IF    ( STUSAN-RC           NOT =   ZERO )
                MOVE    99              TO  STUSANCHK-RC

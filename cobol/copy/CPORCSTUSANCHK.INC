@@ -31,6 +31,8 @@
            03  STUSANCHK-NYUINYMD          PIC X(08).
       *    基準日
            03  STUSANCHK-KJNYMD            PIC X(08).
+      *    履歴番号
+           03  STUSANCHK-RRKNUM            PIC 9(03).
       *  出力領域
            03  STUSANCHK-OUT-AREA.
       *        自院入院通算日数
