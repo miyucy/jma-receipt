@@ -110,6 +110,44 @@
                05  WRK-CMB-CD              PIC X(05).
                05  WRK-CMB-IDX             PIC 9(03).
                05  WRK-CMB-ITM             PIC X(100).
+           03  WRK-KEY-AREA.
+               05  WRK-KEY-BTUNUM          PIC X(02).
+               05  WRK-KEY-BRMNUM          PIC X(08).
+               05  WRK-KEY-NYUINKA         PIC X(02).
+               05  WRK-KEY-TOKUTEI-KBN     PIC X(01).
+               05  WRK-KEY-TOKUTEI-NYUIN   PIC X(02).
+               05  WRK-KEY-HKNCOMBINUM     PIC X(04).
+           03  WRK-BIKO-ITEM-AREA.
+               05  WRK-BIKO-YMD            PIC X(10).
+               05  WRK-BIKO-ITEM-CNT       PIC 9(03).
+               05  WRK-BIKO-ITEM-OCC       OCCURS  4.
+                   07  WRK-BIKO-ITEM-KBN   PIC 9(01).
+                   07  WRK-BIKO-ITEM       PIC X(10).
+               05  WRK-BIKO-NAIYO          PIC X(100).
+               05  WRK-BIKO-PNT            PIC 9(03).
+               05  WRK-BIKO-IDX            PIC 9(03).
+           03  WRK-NYUINRRK-EDIT-MAX       PIC 9(05).
+           03  WRK-IDO-CNT                 PIC 9(05).
+           03  WRK-ST-IDX                  PIC 9(05).
+      *
+       01  CONST-AREA.
+           03  CONST-BIKO-VAL.
+               05                  PIC X(20)   VALUE "入院科".
+               05                  PIC X(20)   VALUE "科".
+      *
+               05                  PIC X(20)   VALUE "病室".
+               05                  PIC X(20)   VALUE "室".
+      *
+               05                  PIC X(20)   VALUE "入院料".
+               05                  PIC X(20)   VALUE "入".
+      *
+               05                  PIC X(20)   VALUE "保険組合せ".
+               05                  PIC X(20)   VALUE "保".
+      *
+           03  CONST-BIKO-R  REDEFINES CONST-BIKO-VAL.
+               05    CONST-BIKO-OCC1        OCCURS  4.
+                   07    CONST-BIKO-OCC2    OCCURS  2.
+                       09  CONST-BIKO      PIC  X(20).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -607,6 +645,8 @@
       *****************************************************************
        3101-NYUINRRKLST-EDIT-SEC       SECTION.
       *
+           MOVE    ZERO            TO  WRK-NYUINRRK-EDIT-MAX
+      *
       *    入院履歴検索
            INITIALIZE  PTNYUINRRK-REC
       *
@@ -621,6 +661,8 @@
                                    TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
       *
+           PERFORM 3101-NYUINRRK-KEY-EDIT-SEC
+      *
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >       100 )
                 OR       ( FLG-DBRC    NOT =   ZERO )
@@ -629,44 +671,29 @@
       *
                MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
       *
-      *        入院科
-               MOVE    PTNYUINRRK-NYUINKA
-                                   TO  WRK-KBNCD
-               PERFORM 3101-S1005-SEL-SEC
-               MOVE    WRK-SRYKANAME
-                                   TO  SPA-GMN-I02-TNYUINKA (IDX1)
-      *
-      *        病棟名
-               IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
-                   MOVE    PTNYUINRRK-BTUNAME
-                                       TO  SPA-GMN-I02-TBTUNAME (IDX1)
-               ELSE
-                   PERFORM 3101-S5001-SEL-SEC
-                   MOVE    WRK-BTUNAME TO  SPA-GMN-I02-TBTUNAME (IDX1)
+      *        病棟／病室／入院科が変わっているかチェック
+               IF    ( PTNYUINRRK-BTUNUM   NOT =   WRK-KEY-BTUNUM  )
+                 OR  ( PTNYUINRRK-BRMNUM   NOT =   WRK-KEY-BRMNUM  )
+                 OR  ( PTNYUINRRK-NYUINKA  NOT =   WRK-KEY-NYUINKA )
+                   PERFORM 3101-NYUINRRK-EDIT-SEC
                END-IF
       *
-      *        病室番号
-               PERFORM 3101-BRMNUM-EDIT-SEC
-               MOVE    WRK-BRMNUM  TO  SPA-GMN-I02-TBRMNUM (IDX1)
+      *        備考内容
+               IF    ( IDX1        >   1 )
+                   PERFORM 3101-NYUINRRKLST-BIKO-EDIT-SEC
+                   MOVE    WRK-BIKO-NAIYO 
+                                       TO  SPA-GMN-I02-TIDONAIYO (IDX1)
+               END-IF
       *
       *        転入日
                MOVE    PTNYUINRRK-TENNYUYMD
-                                   TO  WRK-YMD
-               PERFORM 5002-HIZUKE-CHK-SEC
-               MOVE    WRK-HENYMDG TO  SPA-GMN-I02-TTENNYUYMD (IDX1)
-               MOVE    WRK-SYMD    TO  SPA-NAI-I02-TTENNYUYMD (IDX1)
+                                       TO  SPA-NAI-I02-TTENNYUYMD (IDX1)
       *
       *        転出日
-               IF    ( PTNYUINRRK-TENSTUYMD    =   "99999999" )
-                   MOVE    SPACE       TO  SPA-GMN-I02-TTENSTUYMD (IDX1)
-                                           SPA-NAI-I02-TTENSTUYMD (IDX1)
-               ELSE
-                   MOVE    PTNYUINRRK-TENSTUYMD
-                                   TO  WRK-YMD
-                   PERFORM 5002-HIZUKE-CHK-SEC
-                   MOVE    WRK-HENYMDG TO  SPA-GMN-I02-TTENSTUYMD (IDX1)
-                   MOVE    WRK-SYMD    TO  SPA-NAI-I02-TTENSTUYMD (IDX1)
-               END-IF
+               MOVE    PTNYUINRRK-TENSTUYMD
+                                       TO  SPA-NAI-I02-TTENSTUYMD (IDX1)
+      *
+               PERFORM 3101-NYUINRRK-KEY-EDIT-SEC
       *
       *        入院履歴読み込み
                MOVE    "PTNYUINRRK-KEY5"
@@ -680,50 +707,287 @@
                                    TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
-      *    日数・通算日数を編集
-           MOVE    ZERO            TO  WRK-TUSAN
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   SPA-GMN-I02-TENKALST-CNT )
+      *    転出日を再編集
+           MOVE    1               TO  IDX1
+           PERFORM UNTIL ( IDX1    >   SPA-GMN-I02-TENKALST-CNT )
       *
-                MOVE    SPA-NAI-I02-TTENNYUYMD (IDX1)
-                                           TO  WRK-STYMD
-                MOVE    SPA-NAI-I02-TTENSTUYMD (IDX1)
-                                           TO  WRK-EDYMD
+               IF    ( SPA-NAI-I02-TLSTEDIT-FLG (IDX1)     =   1 )
+                   COMPUTE WRK-ST-IDX  =   IDX1    +   1
+                   PERFORM VARYING IDX2    FROM    WRK-ST-IDX  BY  1
+                           UNTIL ( IDX2    >   SPA-GMN-I02-TENKALST-CNT)
+                             OR  ( SPA-NAI-I02-TLSTEDIT-FLG (IDX2)
+                                           =   1 )
+                       MOVE    SPA-NAI-I02-TTENSTUYMD (IDX2)
+                           TO  SPA-NAI-I02-TTENSTUYMD (IDX1)
+                   END-PERFORM
       *
-      *        日数の算出について
-      *        １．最新歴の場合
-      *           ・入院中の場合は空白
-      *           ・退院済みの場合は転入日から転出日の間の日数
-      *             （転出日を含める）
-      *        ２．最新歴で無い場合
-      *           ・転入日から転出日の間の日数
-      *             （転出日を含めない）
-               IF    ( IDX1        =   SPA-GMN-I02-TENKALST-CNT )
-                   IF     ( SPA-GMN-I02-TTENSTUYMD (IDX1)
-                                   =   SPACE )
-                       MOVE    SPACE       TO  SPA-GMN-I02-TNISSU (IDX1)
-                                               SPA-GMN-I02-TTUSAN (IDX1)
-                   ELSE
-                       PERFORM 5002-KIKAN-CALC-SEC
-                       MOVE    WRK-NISSU2  TO  WRK-ZZZZ9
-                       MOVE    WRK-ZZZZ9   TO  SPA-GMN-I02-TNISSU (IDX1)
-                       COMPUTE WRK-TUSAN   =  WRK-TUSAN  + WRK-NISSU2
-                       MOVE    WRK-TUSAN   TO  WRK-ZZZZ9
-                       MOVE    WRK-ZZZZ9   TO  SPA-GMN-I02-TTUSAN (IDX1)
+                   MOVE    IDX2        TO  IDX1
+      *
                ELSE
-                   PERFORM 5002-KIKAN-CALC-SEC
-                   MOVE    WRK-NISSU1  TO  WRK-ZZZZ9
-                   MOVE    WRK-ZZZZ9   TO  SPA-GMN-I02-TNISSU (IDX1)
-                   COMPUTE WRK-TUSAN   =   WRK-TUSAN  + WRK-NISSU1
-                   MOVE    WRK-TUSAN   TO  WRK-ZZZZ9
-                   MOVE    WRK-ZZZZ9   TO  SPA-GMN-I02-TTUSAN (IDX1)
+                   COMPUTE IDX1    =   IDX1    +   1
                END-IF
       *
            END-PERFORM
       *
+      *    転入日・転出日・日数・通算日数を編集
+           MOVE    ZERO            TO  WRK-TUSAN
+                                       WRK-IDO-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   SPA-GMN-I02-TENKALST-CNT )
+      *
+               IF    ( SPA-NAI-I02-TLSTEDIT-FLG (IDX1) =   1 )
+                   PERFORM 3101-IDOYMD-NISSU-EDIT-SEC
+               END-IF
+      *
+           END-PERFORM
+      *
+      *    不要な行を削除する
+           IF    ( SPA-GMN-I02-TNYUINKA (2)        =   SPACE )
+             AND ( SPA-GMN-I02-TIDONAIYO(2)    NOT =   SPACE )
+               MOVE    SPA-GMN-I02-TIDONAIYO(2)
+                                           TO  SPA-GMN-I02-TIDONAIYO(1)
+               PERFORM VARYING IDX1    FROM    2   BY  1
+                       UNTIL ( IDX1    >=  SPA-GMN-I02-TENKALST-CNT )
+      *
+                   COMPUTE IDX2    =   IDX1    +   1
+                   MOVE    SPA-GMN-I02-TENKALST-ITM (IDX2)
+                                   TO  SPA-GMN-I02-TENKALST-ITM (IDX1)
+                   MOVE    SPA-GMN-I02-TENKALST-ITM (IDX2)
+                                   TO  SPA-GMN-I02-TENKALST-ITM (IDX1)
+                   MOVE    SPA-NAI-I02-TENKALST-ITM (IDX2)
+                                   TO  SPA-NAI-I02-TENKALST-ITM (IDX1)
+      *
+               END-PERFORM
+      *
+               MOVE    SPA-GMN-I02-TENKALST-CNT    TO  IDX1
+      *
+               INITIALIZE  SPA-NAI-I02-TENKALST-ITM (IDX1)
+                           SPA-NAI-I02-TENKALST-ITM (IDX1)
+               COMPUTE SPA-GMN-I02-TENKALST-CNT
+                   =   SPA-GMN-I02-TENKALST-CNT    -   1
+           END-IF
+      *
+      *
            .
       *
        3101-NYUINRRKLST-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院歴ＫＥＹ項目編集処理
+      *****************************************************************
+       3101-NYUINRRK-KEY-EDIT-SEC      SECTION.
+      *
+           MOVE    PTNYUINRRK-BTUNUM   TO  WRK-KEY-BTUNUM
+           MOVE    PTNYUINRRK-BRMNUM   TO  WRK-KEY-BRMNUM
+           MOVE    PTNYUINRRK-NYUINKA  TO  WRK-KEY-NYUINKA
+           MOVE    PTNYUINRRK-TOKUTEI-KBN
+                                       TO  WRK-KEY-TOKUTEI-KBN
+           MOVE    PTNYUINRRK-TOKUTEI-NYUIN
+                                       TO  WRK-KEY-TOKUTEI-NYUIN
+           MOVE    PTNYUINRRK-HKNCOMBINUM
+                                       TO  WRK-KEY-HKNCOMBINUM
+      *
+           .
+       3101-NYUINRRK-KEY-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院歴編集処理
+      *****************************************************************
+       3101-NYUINRRK-EDIT-SEC          SECTION.
+      *
+           COMPUTE WRK-NYUINRRK-EDIT-MAX
+               =   WRK-NYUINRRK-EDIT-MAX   +   1
+      *
+      *    入院科
+           MOVE    PTNYUINRRK-NYUINKA
+                                       TO  WRK-KBNCD
+           PERFORM 3101-S1005-SEL-SEC
+           MOVE    WRK-SRYKANAME
+                                       TO  SPA-GMN-I02-TNYUINKA (IDX1)
+      *
+      *    病棟名
+           IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
+               MOVE    PTNYUINRRK-BTUNAME
+                                       TO  SPA-GMN-I02-TBTUNAME (IDX1)
+           ELSE
+               PERFORM 3101-S5001-SEL-SEC
+               MOVE    WRK-BTUNAME     TO  SPA-GMN-I02-TBTUNAME (IDX1)
+           END-IF
+      *
+      *    病室番号
+           PERFORM 3101-BRMNUM-EDIT-SEC
+           MOVE    WRK-BRMNUM      TO  SPA-GMN-I02-TBRMNUM (IDX1)
+      *
+      *    リスト編集フラグ
+           MOVE    1               TO  SPA-NAI-I02-TLSTEDIT-FLG (IDX1)
+      *
+           .
+      *
+       3101-NYUINRRK-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院歴リスト備考編集処理
+      *****************************************************************
+       3101-NYUINRRKLST-BIKO-EDIT-SEC  SECTION.
+      *
+           INITIALIZE   WRK-BIKO-ITEM-AREA
+      *
+           MOVE    PTNYUINRRK-TENNYUYMD    TO  WRK-YMD
+           PERFORM 5002-HIZUKE-CHK-SEC
+           MOVE    WRK-HENYMDG             TO  WRK-BIKO-YMD
+      *
+           MOVE    ZERO                    TO  IDX3
+           MOVE    "--"                    TO  WRK-BIKO-ITEM (1)
+      *
+      *    入院科
+           IF    ( PTNYUINRRK-NYUINKA  NOT =   WRK-KEY-NYUINKA )
+               COMPUTE IDX3    =   IDX3    +   1
+               MOVE    1                   TO  WRK-BIKO-ITEM-KBN (IDX3)
+           END-IF
+      *
+      *    病室
+           IF    ( PTNYUINRRK-BTUNUM   NOT =   WRK-KEY-BTUNUM )
+             OR  ( PTNYUINRRK-BRMNUM   NOT =   WRK-KEY-BRMNUM )
+               COMPUTE IDX3    =   IDX3    +   1
+               MOVE    2                   TO  WRK-BIKO-ITEM-KBN (IDX3)
+           END-IF
+      *
+      *    入院料
+           IF    ( PTNYUINRRK-TOKUTEI-KBN
+                                       NOT =   WRK-KEY-TOKUTEI-KBN )
+             OR  ( PTNYUINRRK-TOKUTEI-NYUIN
+                                       NOT =   WRK-KEY-TOKUTEI-NYUIN )
+               COMPUTE IDX3    =   IDX3    +   1
+               MOVE    3                   TO  WRK-BIKO-ITEM-KBN (IDX3)
+           END-IF
+      *
+      *    保険組合せ
+           IF    ( PTNYUINRRK-HKNCOMBINUM
+                                       NOT =   WRK-KEY-HKNCOMBINUM )
+               COMPUTE IDX3    =   IDX3    +   1
+               MOVE    4                   TO  WRK-BIKO-ITEM-KBN (IDX3)
+           END-IF
+      *
+           MOVE    IDX3                    TO  WRK-BIKO-ITEM-CNT
+           MOVE    1                       TO  WRK-BIKO-IDX
+      *    長い名称で編集
+           PERFORM 3101-BIKO-EDIT-SEC
+           IF    ( WRK-BIKO-PNT    >   34 )
+      *        短い名称で編集
+               MOVE    2                   TO  WRK-BIKO-IDX
+               PERFORM 3101-BIKO-EDIT-SEC
+           END-IF
+      *
+           .
+      3101-NYUINRRKLST-BIKO-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    備考編集処理
+      *****************************************************************
+       3101-BIKO-EDIT-SEC              SECTION.
+      *
+           MOVE    SPACE                   TO  WRK-BIKO-NAIYO
+      *
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL ( IDX3        >   WRK-BIKO-ITEM-CNT )
+               MOVE    WRK-BIKO-ITEM-KBN (IDX3)
+                                           TO  IDX4
+               MOVE    CONST-BIKO (IDX4 WRK-BIKO-IDX)
+                                           TO  WRK-BIKO-ITEM (IDX3)
+           END-PERFORM
+      *
+           MOVE    1                       TO  WRK-BIKO-PNT
+           STRING  WRK-BIKO-YMD        DELIMITED   BY  SIZE
+                   "［"                DELIMITED   BY  SIZE
+                   WRK-BIKO-ITEM (1)
+                                       DELIMITED   BY  SPACE
+           INTO    WRK-BIKO-NAIYO
+           WITH    POINTER WRK-BIKO-PNT
+           END-STRING
+      *
+           PERFORM VARYING IDX3    FROM    2   BY  1
+                   UNTIL ( IDX3        >   WRK-BIKO-ITEM-CNT )
+      *
+               STRING  "／"                    DELIMITED   BY  SIZE
+                   WRK-BIKO-ITEM (IDX3)
+                                               DELIMITED   BY  SPACE
+               INTO    WRK-BIKO-NAIYO
+               WITH    POINTER WRK-BIKO-PNT
+               END-STRING
+      *
+           END-PERFORM
+      *
+           STRING "］"             DELIMITED   BY  SIZE
+           INTO    WRK-BIKO-NAIYO
+           WITH    POINTER WRK-BIKO-PNT
+           END-STRING
+      *
+           COMPUTE WRK-BIKO-PNT    =   WRK-BIKO-PNT    -   1
+      *
+           .
+       3101-BIKO-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    異動日・日数編集処理
+      *****************************************************************
+       3101-IDOYMD-NISSU-EDIT-SEC      SECTION.
+      *
+           COMPUTE WRK-IDO-CNT =   WRK-IDO-CNT +   1
+      *
+      *    転入日
+           MOVE    SPA-NAI-I02-TTENNYUYMD (IDX1)
+                                       TO  WRK-YMD
+           PERFORM 5002-HIZUKE-CHK-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-I02-TTENNYUYMD (IDX1)
+      *
+      *    転出日
+           IF    ( SPA-NAI-I02-TTENSTUYMD (IDX1)
+                                       =   "99999999" )
+               MOVE    SPACE           TO  SPA-GMN-I02-TTENSTUYMD (IDX1)
+           ELSE
+               MOVE    SPA-NAI-I02-TTENSTUYMD (IDX1)
+                                       TO  WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-I02-TTENSTUYMD (IDX1)
+           END-IF
+      *
+           MOVE    SPA-NAI-I02-TTENNYUYMD (IDX1)
+                                       TO  WRK-STYMD
+           MOVE    SPA-NAI-I02-TTENSTUYMD (IDX1)
+                                       TO  WRK-EDYMD
+      *
+      *    日数の算出について
+      *    １．最新歴の場合
+      *       ・入院中の場合は空白
+      *       ・退院済みの場合は転入日から転出日の間の日数
+      *         （転出日を含める）
+      *    ２．最新歴で無い場合
+      *       ・転入日から転出日の間の日数
+      *         （転出日を含めない）
+           IF    ( WRK-IDO-CNT         =   WRK-NYUINRRK-EDIT-MAX )
+               IF     ( SPA-GMN-I02-TTENSTUYMD (IDX1)
+                                   =   SPACE )
+                   MOVE    SPACE       TO  SPA-GMN-I02-TNISSU (IDX1)
+                                           SPA-GMN-I02-TTUSAN (IDX1)
+               ELSE
+                   PERFORM 5002-KIKAN-CALC-SEC
+                   MOVE    WRK-NISSU2  TO  WRK-ZZZZ9
+                   MOVE    WRK-ZZZZ9   TO  SPA-GMN-I02-TNISSU (IDX1)
+                   COMPUTE WRK-TUSAN   =  WRK-TUSAN  + WRK-NISSU2
+                   MOVE    WRK-TUSAN   TO  WRK-ZZZZ9
+                   MOVE    WRK-ZZZZ9   TO  SPA-GMN-I02-TTUSAN (IDX1)
+               END-IF
+           ELSE
+               PERFORM 5002-KIKAN-CALC-SEC
+               MOVE    WRK-NISSU1  TO  WRK-ZZZZ9
+               MOVE    WRK-ZZZZ9   TO  SPA-GMN-I02-TNISSU (IDX1)
+               COMPUTE WRK-TUSAN   =   WRK-TUSAN  + WRK-NISSU1
+               MOVE    WRK-TUSAN   TO  WRK-ZZZZ9
+               MOVE    WRK-ZZZZ9   TO  SPA-GMN-I02-TTUSAN (IDX1)
+           END-IF
+      *
+           .
+       3101-IDOYMD-NISSU-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    病名リスト編集処理
@@ -1079,6 +1343,8 @@
                ELSE
                    MOVE    "F"        TO  I02-TENKALST-SELECT(IDX1)
                END-IF
+               MOVE    SPA-GMN-I02-TIDONAIYO (IDX1)
+                                      TO  I02-TIDONAIYO (IDX1)
            END-PERFORM
       *
       *    入外区分

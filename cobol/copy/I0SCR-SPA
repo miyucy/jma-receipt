@@ -379,6 +379,8 @@
                    13  SPA-GMN-I02-TNISSU          PIC X(5).
       *            通算日数
                    13  SPA-GMN-I02-TTUSAN          PIC X(5).
+      *            異動内容
+                   13  SPA-GMN-I02-TIDONAIYO       PIC X(40).
                  11  SPA-GMN-I02-TENKALST-SEL      PIC 9(05).
       *
       *        病名情報
@@ -412,6 +414,9 @@
       *        転科（転棟・転室）履歴内部領域
                09  SPA-NAI-I02-TENKALST-AREA.
                  11  SPA-NAI-I02-TENKALST-ITM      OCCURS  100.
+      *
+      *            リスト編集フラグ
+                   13  SPA-NAI-I02-TLSTEDIT-FLG    PIC 9(1).
       *            転入日
                    13  SPA-NAI-I02-TTENNYUYMD      PIC X(8).
       *            転出日

@@ -37,6 +37,7 @@
                     07  I02-TTENSTUYMD     PIC X(9).
                     07  I02-TNISSU         PIC X(5).
                     07  I02-TTUSAN         PIC X(5).
+                    07  I02-TIDONAIYO      PIC X(40).
                   06  I02-TENKALST-SELECT  PIC X
                                            OCCURS  100.
               04  I02-CMB-NYUGAI.
