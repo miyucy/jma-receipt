@@ -1758,21 +1758,25 @@
            END-IF
       *
       *    病名種別のセット
-           IF      WRK-RECECD (2)    NOT =   SPACE
-               MOVE    ZERO              TO  SPA-GMN-BYOMEISBT
+           IF      WRK-RECECD-TBL        =   SPACE
+               MOVE    SPACE                 TO  SPA-GMN-BYOMEISBT-G
            ELSE
-               IF      WRK-RECECD (1)    NOT =   SPACE
-                   EVALUATE    WRK-RECECD (1)
-                       WHEN    "1"
-                           MOVE    "1"         TO  SPA-GMN-BYOMEISBT
-                       WHEN    OTHER 
-                           MOVE    "7"         TO  SPA-GMN-BYOMEISBT
-                   END-EVALUATE    
+               IF      WRK-RECECD (2)    NOT =   SPACE
+                   MOVE    ZERO              TO  SPA-GMN-BYOMEISBT
                ELSE
-                   MOVE    "8"               TO  SPA-GMN-BYOMEISBT
+                   IF      WRK-RECECD (1)    NOT =   SPACE
+                       EVALUATE    WRK-RECECD (1)
+                           WHEN    "1"
+                               MOVE    "1"         TO  SPA-GMN-BYOMEISBT
+                           WHEN    OTHER 
+                               MOVE    "7"         TO  SPA-GMN-BYOMEISBT
+                       END-EVALUATE    
+                   ELSE
+                       MOVE    "8"               TO  SPA-GMN-BYOMEISBT
+                   END-IF
                END-IF
+               PERFORM 5001-BYOMEISBT-HENSYU-SEC
            END-IF
-           PERFORM 5001-BYOMEISBT-HENSYU-SEC
       *
       *   入力病名コード数カウント
            MOVE    ZERO                TO  IDX1
