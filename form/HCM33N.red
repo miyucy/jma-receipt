@@ -52,12 +52,7 @@
           <embed object="string" length="5"/>
         </appinfo>
       </element>
-      <element name="NAIYO" occurs="10">
-        <appinfo>
-          <embed object="string" length="8"/>
-        </appinfo>
-      </element>
-      <element name="BIKOU" occurs="1">
+      <element name="NAIYO" occurs="11">
         <appinfo>
           <embed object="string" length="8"/>
         </appinfo>
@@ -1076,48 +1071,6 @@
     </object>
     <object type="Standard - Line" version="0" id="O45">
       <attribute name="obj_pos">
-        <point val="15.2,4.1"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="15.195,4.095;15.205,28.705"/>
-      </attribute>
-      <attribute name="conn_endpoints">
-        <point val="15.2,4.1"/>
-        <point val="15.2,28.7"/>
-      </attribute>
-      <attribute name="numcp">
-        <int val="40"/>
-      </attribute>
-      <attribute name="line_width">
-        <real val="0.01"/>
-      </attribute>
-      <connections>
-        <connection handle="0" to="O46" connection="0"/>
-      </connections>
-    </object>
-    <object type="Standard - Line" version="0" id="O46">
-      <attribute name="obj_pos">
-        <point val="13.6,4.1"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="13.595,4.095;16.805,4.105"/>
-      </attribute>
-      <attribute name="conn_endpoints">
-        <point val="13.6,4.1"/>
-        <point val="16.8,4.1"/>
-      </attribute>
-      <attribute name="numcp">
-        <int val="1"/>
-      </attribute>
-      <attribute name="line_width">
-        <real val="0.01"/>
-      </attribute>
-      <connections>
-        <connection handle="0" to="O53" connection="0"/>
-      </connections>
-    </object>
-    <object type="Standard - Line" version="0" id="O47">
-      <attribute name="obj_pos">
         <point val="1.4,3.5"/>
       </attribute>
       <attribute name="obj_bb">
@@ -1137,7 +1090,7 @@
         <connection handle="1" to="O44" connection="1"/>
       </connections>
     </object>
-    <object type="Standard - Line" version="0" id="O48">
+    <object type="Standard - Line" version="0" id="O46">
       <attribute name="obj_pos">
         <point val="5.6,3.5"/>
       </attribute>
@@ -1155,7 +1108,7 @@
         <real val="0.01"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O49">
+    <object type="Standard - Line" version="0" id="O47">
       <attribute name="obj_pos">
         <point val="7.2,3.5"/>
       </attribute>
@@ -1173,7 +1126,7 @@
         <real val="0.01"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O50">
+    <object type="Standard - Line" version="0" id="O48">
       <attribute name="obj_pos">
         <point val="8.8,3.5"/>
       </attribute>
@@ -1191,7 +1144,7 @@
         <real val="0.01"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O51">
+    <object type="Standard - Line" version="0" id="O49">
       <attribute name="obj_pos">
         <point val="10.4,3.5"/>
       </attribute>
@@ -1209,7 +1162,7 @@
         <real val="0.01"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O52">
+    <object type="Standard - Line" version="0" id="O50">
       <attribute name="obj_pos">
         <point val="12,3.5"/>
       </attribute>
@@ -1227,7 +1180,7 @@
         <real val="0.01"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O53">
+    <object type="Standard - Line" version="0" id="O51">
       <attribute name="obj_pos">
         <point val="13.6,3.5"/>
       </attribute>
@@ -1245,16 +1198,16 @@
         <real val="0.01"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O54">
+    <object type="Standard - Line" version="0" id="O52">
       <attribute name="obj_pos">
-        <point val="16.8,3.5"/>
+        <point val="15.2,3.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.795,3.495;16.805,28.705"/>
+        <rectangle val="15.195,3.495;15.205,28.705"/>
       </attribute>
       <attribute name="conn_endpoints">
-        <point val="16.8,3.5"/>
-        <point val="16.8,28.7"/>
+        <point val="15.2,3.5"/>
+        <point val="15.2,28.7"/>
       </attribute>
       <attribute name="numcp">
         <int val="41"/>
@@ -1263,7 +1216,7 @@
         <real val="0.01"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O55">
+    <object type="Standard - Line" version="0" id="O53">
       <attribute name="obj_pos">
         <point val="18.4,3.5"/>
       </attribute>
@@ -1281,7 +1234,7 @@
         <real val="0.01"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O56">
+    <object type="Standard - Line" version="0" id="O54">
       <attribute name="obj_pos">
         <point val="4,3.5"/>
       </attribute>
@@ -1299,9 +1252,27 @@
         <real val="0.01"/>
       </attribute>
     </object>
+    <object type="Standard - Line" version="0" id="O55">
+      <attribute name="obj_pos">
+        <point val="16.8,3.5"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="16.795,3.495;16.805,28.705"/>
+      </attribute>
+      <attribute name="conn_endpoints">
+        <point val="16.8,3.5"/>
+        <point val="16.8,28.7"/>
+      </attribute>
+      <attribute name="numcp">
+        <int val="41"/>
+      </attribute>
+      <attribute name="line_width">
+        <real val="0.01"/>
+      </attribute>
+    </object>
   </layer>
   <layer name="&#202;&#184;&#187;&#250;" visible="true">
-    <object type="Standard - Text" version="0" id="O57">
+    <object type="Standard - Text" version="0" id="O56">
       <attribute name="obj_pos">
         <point val="10.5,1.4"/>
       </attribute>
@@ -1337,7 +1308,7 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O58">
+    <object type="Standard - Text" version="0" id="O57">
       <attribute name="obj_pos">
         <point val="19.2,1.5"/>
       </attribute>
@@ -1373,7 +1344,7 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O59">
+    <object type="Standard - Text" version="0" id="O58">
       <attribute name="obj_pos">
         <point val="2.1,3.8"/>
       </attribute>
@@ -1410,7 +1381,7 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O60">
+    <object type="Standard - Text" version="0" id="O59">
       <attribute name="obj_pos">
         <point val="1.7,4.3"/>
       </attribute>
@@ -1447,7 +1418,7 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O61">
+    <object type="Standard - Text" version="0" id="O60">
       <attribute name="obj_pos">
         <point val="3.2,3.9"/>
       </attribute>
@@ -1485,7 +1456,7 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O62">
+    <object type="Standard - Text" version="0" id="O61">
       <attribute name="obj_pos">
         <point val="4.8,3.9"/>
       </attribute>
@@ -1523,7 +1494,7 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O63">
+    <object type="Standard - Text" version="0" id="O62">
       <attribute name="obj_pos">
         <point val="6.4,3.9"/>
       </attribute>
@@ -1561,7 +1532,7 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O64">
+    <object type="Standard - Text" version="0" id="O63">
       <attribute name="obj_pos">
         <point val="8.4,3.9"/>
       </attribute>
@@ -1599,7 +1570,7 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O65">
+    <object type="Standard - Text" version="0" id="O64">
       <attribute name="obj_pos">
         <point val="9.6,3.9"/>
       </attribute>
@@ -1637,7 +1608,7 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O66">
+    <object type="Standard - Text" version="0" id="O65">
       <attribute name="obj_pos">
         <point val="11,3.9"/>
       </attribute>
@@ -1675,7 +1646,7 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O67">
+    <object type="Standard - Text" version="0" id="O66">
       <attribute name="obj_pos">
         <point val="12.8,3.9"/>
       </attribute>
@@ -1713,17 +1684,19 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O68">
+    <object type="Standard - Text" version="0" id="O67">
       <attribute name="obj_pos">
-        <point val="14.4,4.5"/>
+        <point val="16.2,3.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="14.097,4.242;14.703,4.542"/>
+        <rectangle val="16.0485,3.642;16.3515,4.542"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#197;&#192;&#191;&#244;#</string>
+            <string>#&#197;&#192;
+
+&#191;&#244;#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
@@ -1732,7 +1705,45 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="14.4,4.5"/>
+            <point val="16.2,3.9"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="1"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1515"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.1515"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Standard - Text" version="0" id="O68">
+      <attribute name="obj_pos">
+        <point val="15.8,3.9"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="15.497,3.642;16.103,4.542"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#185;&#231;
+&#161;&#161;&#161;&#161;
+&#183;&#215;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Mincho"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="15.8,3.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -1750,78 +1761,6 @@
       </attribute>
     </object>
     <object type="Standard - Text" version="0" id="O69">
-      <attribute name="obj_pos">
-        <point val="16,4.5"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="15.5455,4.242;16.4545,4.542"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#&#201;&#233;&#195;&#180;&#182;&#226;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Mincho"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.3"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="16,4.5"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="1"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.1515"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.1515"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Standard - Text" version="0" id="O70">
-      <attribute name="obj_pos">
-        <point val="15.2,3.9"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="14.594,3.642;15.806,3.942"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#&#185;&#231;&#161;&#161;&#161;&#161;&#183;&#215;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Mincho"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.3"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="15.2,3.9"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="1"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.1515"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.1515"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Standard - Text" version="0" id="O71">
       <attribute name="obj_pos">
         <point val="7.6,3.9"/>
       </attribute>
@@ -1859,7 +1798,7 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O72">
+    <object type="Standard - Text" version="0" id="O70">
       <attribute name="obj_pos">
         <point val="11.4,3.9"/>
       </attribute>
@@ -1897,7 +1836,7 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O73">
+    <object type="Standard - Text" version="0" id="O71">
       <attribute name="obj_pos">
         <point val="8,3.9"/>
       </attribute>
@@ -1934,7 +1873,45 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O74">
+    <object type="Standard - Text" version="0" id="O72">
+      <attribute name="obj_pos">
+        <point val="14.4,3.9"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="14.2485,3.642;14.5515,4.542"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#198;&#254;
+&#177;&#161;
+&#206;&#193;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Mincho"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="14.4,3.9"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="1"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1515"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.1515"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Standard - Text" version="0" id="O73">
       <attribute name="obj_pos">
         <point val="19.2,3.9"/>
       </attribute>
@@ -1944,9 +1921,9 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#200;&#247;
-
-&#185;&#205;#</string>
+            <string>#&#202;&#221;
+&#184;&#177;
+&#179;&#176;#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
@@ -1972,19 +1949,17 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O75">
+    <object type="Standard - Text" version="0" id="O74">
       <attribute name="obj_pos">
-        <point val="17.6,3.9"/>
+        <point val="14.9,1.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="17.4485,3.642;17.7515,4.542"/>
+        <rectangle val="14.9,1.042;16.415,1.342"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#202;&#221;
-&#184;&#177;
-&#179;&#176;#</string>
+            <string>#&#161;&#227;&#198;&#254;&#161;&#161;&#177;&#161;&#161;&#228;#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
@@ -1993,7 +1968,45 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="17.6,3.9"/>
+            <point val="14.9,1.3"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1515"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.1515"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Standard - Text" version="0" id="O75">
+      <attribute name="obj_pos">
+        <point val="17.8,3.9"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="17.6485,3.642;17.9515,4.542"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#206;&#197;
+&#205;&#220;
+&#200;&#241;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Mincho"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="17.8,3.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2012,15 +2025,17 @@
     </object>
     <object type="Standard - Text" version="0" id="O76">
       <attribute name="obj_pos">
-        <point val="14.9,1.3"/>
+        <point val="17.4,3.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="14.9,1.042;16.415,1.342"/>
+        <rectangle val="17.2485,3.642;17.5515,4.542"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#161;&#227;&#179;&#176;&#161;&#161;&#205;&#232;&#161;&#228;#</string>
+            <string>#&#191;&#169;
+
+&#187;&#246;#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
@@ -2029,13 +2044,13 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="14.9,1.3"/>
+            <point val="17.4,3.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="1"/>
           </attribute>
           <attribute name="single">
             <real val="0.1515"/>
@@ -2890,42 +2905,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O97">
       <attribute name="obj_pos">
-        <point val="18.5,5.1"/>
+        <point val="19.9,5.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,4.842;19.712,5.142"/>
+        <rectangle val="18.486,4.799;19.9,5.149"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[0].BIKOU#</string>
+        <string>#A-TBL[0].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,5.1"/>
+            <point val="19.9,5.1"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3436,42 +3451,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O110">
       <attribute name="obj_pos">
-        <point val="18.5,5.7"/>
+        <point val="19.9,5.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,5.442;19.712,5.742"/>
+        <rectangle val="18.486,5.399;19.9,5.749"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[1].BIKOU#</string>
+        <string>#A-TBL[1].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,5.7"/>
+            <point val="19.9,5.7"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3982,42 +3997,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O123">
       <attribute name="obj_pos">
-        <point val="18.5,6.3"/>
+        <point val="19.9,6.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,6.042;19.712,6.342"/>
+        <rectangle val="18.486,5.999;19.9,6.349"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[2].BIKOU#</string>
+        <string>#A-TBL[2].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,6.3"/>
+            <point val="19.9,6.3"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4528,42 +4543,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O136">
       <attribute name="obj_pos">
-        <point val="18.5,6.9"/>
+        <point val="19.9,6.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,6.642;19.712,6.942"/>
+        <rectangle val="18.486,6.599;19.9,6.949"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[3].BIKOU#</string>
+        <string>#A-TBL[3].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,6.9"/>
+            <point val="19.9,6.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5074,42 +5089,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O149">
       <attribute name="obj_pos">
-        <point val="18.5,7.5"/>
+        <point val="19.9,7.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,7.242;19.712,7.542"/>
+        <rectangle val="18.486,7.199;19.9,7.549"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[4].BIKOU#</string>
+        <string>#A-TBL[4].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,7.5"/>
+            <point val="19.9,7.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5620,42 +5635,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O162">
       <attribute name="obj_pos">
-        <point val="18.5,8.1"/>
+        <point val="19.9,8.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,7.842;19.712,8.142"/>
+        <rectangle val="18.486,7.799;19.9,8.149"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[5].BIKOU#</string>
+        <string>#A-TBL[5].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,8.1"/>
+            <point val="19.9,8.1"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -6166,42 +6181,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O175">
       <attribute name="obj_pos">
-        <point val="18.5,8.7"/>
+        <point val="19.9,8.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,8.442;19.712,8.742"/>
+        <rectangle val="18.486,8.399;19.9,8.749"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[6].BIKOU#</string>
+        <string>#A-TBL[6].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,8.7"/>
+            <point val="19.9,8.7"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -6712,42 +6727,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O188">
       <attribute name="obj_pos">
-        <point val="18.5,9.3"/>
+        <point val="19.9,9.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,9.042;19.712,9.342"/>
+        <rectangle val="18.486,8.999;19.9,9.349"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[7].BIKOU#</string>
+        <string>#A-TBL[7].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,9.3"/>
+            <point val="19.9,9.3"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -7258,42 +7273,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O201">
       <attribute name="obj_pos">
-        <point val="18.5,9.9"/>
+        <point val="19.9,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,9.642;19.712,9.942"/>
+        <rectangle val="18.486,9.599;19.9,9.949"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[8].BIKOU#</string>
+        <string>#A-TBL[8].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,9.9"/>
+            <point val="19.9,9.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -7804,42 +7819,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O214">
       <attribute name="obj_pos">
-        <point val="18.5,10.5"/>
+        <point val="19.9,10.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,10.242;19.712,10.542"/>
+        <rectangle val="18.486,10.199;19.9,10.549"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[9].BIKOU#</string>
+        <string>#A-TBL[9].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,10.5"/>
+            <point val="19.9,10.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -8350,42 +8365,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O227">
       <attribute name="obj_pos">
-        <point val="18.5,11.1"/>
+        <point val="19.9,11.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,10.842;19.712,11.142"/>
+        <rectangle val="18.486,10.799;19.9,11.149"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[10].BIKOU#</string>
+        <string>#A-TBL[10].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,11.1"/>
+            <point val="19.9,11.1"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -8896,42 +8911,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O240">
       <attribute name="obj_pos">
-        <point val="18.5,11.7"/>
+        <point val="19.9,11.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,11.442;19.712,11.742"/>
+        <rectangle val="18.486,11.399;19.9,11.749"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[11].BIKOU#</string>
+        <string>#A-TBL[11].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,11.7"/>
+            <point val="19.9,11.7"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -9442,42 +9457,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O253">
       <attribute name="obj_pos">
-        <point val="18.5,12.3"/>
+        <point val="19.9,12.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,12.042;19.712,12.342"/>
+        <rectangle val="18.486,11.999;19.9,12.349"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[12].BIKOU#</string>
+        <string>#A-TBL[12].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,12.3"/>
+            <point val="19.9,12.3"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -9988,42 +10003,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O266">
       <attribute name="obj_pos">
-        <point val="18.5,12.9"/>
+        <point val="19.9,12.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,12.642;19.712,12.942"/>
+        <rectangle val="18.486,12.599;19.9,12.949"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[13].BIKOU#</string>
+        <string>#A-TBL[13].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,12.9"/>
+            <point val="19.9,12.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -10534,42 +10549,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O279">
       <attribute name="obj_pos">
-        <point val="18.5,13.5"/>
+        <point val="19.9,13.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,13.242;19.712,13.542"/>
+        <rectangle val="18.486,13.199;19.9,13.549"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[14].BIKOU#</string>
+        <string>#A-TBL[14].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,13.5"/>
+            <point val="19.9,13.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -11080,42 +11095,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O292">
       <attribute name="obj_pos">
-        <point val="18.5,14.1"/>
+        <point val="19.9,14.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,13.842;19.712,14.142"/>
+        <rectangle val="18.486,13.799;19.9,14.149"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[15].BIKOU#</string>
+        <string>#A-TBL[15].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,14.1"/>
+            <point val="19.9,14.1"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -11626,42 +11641,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O305">
       <attribute name="obj_pos">
-        <point val="18.5,14.7"/>
+        <point val="19.9,14.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,14.442;19.712,14.742"/>
+        <rectangle val="18.486,14.399;19.9,14.749"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[16].BIKOU#</string>
+        <string>#A-TBL[16].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,14.7"/>
+            <point val="19.9,14.7"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -12172,42 +12187,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O318">
       <attribute name="obj_pos">
-        <point val="18.5,15.3"/>
+        <point val="19.9,15.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,15.042;19.712,15.342"/>
+        <rectangle val="18.486,14.999;19.9,15.349"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[17].BIKOU#</string>
+        <string>#A-TBL[17].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,15.3"/>
+            <point val="19.9,15.3"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -12718,42 +12733,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O331">
       <attribute name="obj_pos">
-        <point val="18.5,15.9"/>
+        <point val="19.9,15.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,15.642;19.712,15.942"/>
+        <rectangle val="18.486,15.599;19.9,15.949"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[18].BIKOU#</string>
+        <string>#A-TBL[18].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,15.9"/>
+            <point val="19.9,15.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -13264,42 +13279,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O344">
       <attribute name="obj_pos">
-        <point val="18.5,16.5"/>
+        <point val="19.9,16.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,16.242;19.712,16.542"/>
+        <rectangle val="18.486,16.199;19.9,16.549"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[19].BIKOU#</string>
+        <string>#A-TBL[19].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,16.5"/>
+            <point val="19.9,16.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -13810,42 +13825,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O357">
       <attribute name="obj_pos">
-        <point val="18.5,17.1"/>
+        <point val="19.9,17.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,16.842;19.712,17.142"/>
+        <rectangle val="18.486,16.799;19.9,17.149"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[20].BIKOU#</string>
+        <string>#A-TBL[20].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,17.1"/>
+            <point val="19.9,17.1"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -14356,42 +14371,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O370">
       <attribute name="obj_pos">
-        <point val="18.5,17.7"/>
+        <point val="19.9,17.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,17.442;19.712,17.742"/>
+        <rectangle val="18.486,17.399;19.9,17.749"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[21].BIKOU#</string>
+        <string>#A-TBL[21].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,17.7"/>
+            <point val="19.9,17.7"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -14902,42 +14917,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O383">
       <attribute name="obj_pos">
-        <point val="18.5,18.3"/>
+        <point val="19.9,18.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,18.042;19.712,18.342"/>
+        <rectangle val="18.486,17.999;19.9,18.349"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[22].BIKOU#</string>
+        <string>#A-TBL[22].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,18.3"/>
+            <point val="19.9,18.3"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -15448,42 +15463,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O396">
       <attribute name="obj_pos">
-        <point val="18.5,18.9"/>
+        <point val="19.9,18.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,18.642;19.712,18.942"/>
+        <rectangle val="18.486,18.599;19.9,18.949"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[23].BIKOU#</string>
+        <string>#A-TBL[23].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,18.9"/>
+            <point val="19.9,18.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -15994,42 +16009,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O409">
       <attribute name="obj_pos">
-        <point val="18.5,19.5"/>
+        <point val="19.9,19.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,19.242;19.712,19.542"/>
+        <rectangle val="18.486,19.199;19.9,19.549"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[24].BIKOU#</string>
+        <string>#A-TBL[24].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,19.5"/>
+            <point val="19.9,19.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -16540,42 +16555,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O422">
       <attribute name="obj_pos">
-        <point val="18.5,20.1"/>
+        <point val="19.9,20.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,19.842;19.712,20.142"/>
+        <rectangle val="18.486,19.799;19.9,20.149"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[25].BIKOU#</string>
+        <string>#A-TBL[25].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,20.1"/>
+            <point val="19.9,20.1"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -17086,42 +17101,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O435">
       <attribute name="obj_pos">
-        <point val="18.5,20.7"/>
+        <point val="19.9,20.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,20.442;19.712,20.742"/>
+        <rectangle val="18.486,20.399;19.9,20.749"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[26].BIKOU#</string>
+        <string>#A-TBL[26].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,20.7"/>
+            <point val="19.9,20.7"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -17632,42 +17647,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O448">
       <attribute name="obj_pos">
-        <point val="18.5,21.3"/>
+        <point val="19.9,21.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,21.042;19.712,21.342"/>
+        <rectangle val="18.486,20.999;19.9,21.349"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[27].BIKOU#</string>
+        <string>#A-TBL[27].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,21.3"/>
+            <point val="19.9,21.3"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -18178,42 +18193,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O461">
       <attribute name="obj_pos">
-        <point val="18.5,21.9"/>
+        <point val="19.9,21.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,21.642;19.712,21.942"/>
+        <rectangle val="18.486,21.599;19.9,21.949"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[28].BIKOU#</string>
+        <string>#A-TBL[28].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,21.9"/>
+            <point val="19.9,21.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -18724,42 +18739,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O474">
       <attribute name="obj_pos">
-        <point val="18.5,22.5"/>
+        <point val="19.9,22.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,22.242;19.712,22.542"/>
+        <rectangle val="18.486,22.199;19.9,22.549"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[29].BIKOU#</string>
+        <string>#A-TBL[29].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,22.5"/>
+            <point val="19.9,22.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -19270,42 +19285,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O487">
       <attribute name="obj_pos">
-        <point val="18.5,23.1"/>
+        <point val="19.9,23.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,22.842;19.712,23.142"/>
+        <rectangle val="18.486,22.799;19.9,23.149"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[30].BIKOU#</string>
+        <string>#A-TBL[30].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,23.1"/>
+            <point val="19.9,23.1"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -19816,42 +19831,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O500">
       <attribute name="obj_pos">
-        <point val="18.5,23.7"/>
+        <point val="19.9,23.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,23.442;19.712,23.742"/>
+        <rectangle val="18.486,23.399;19.9,23.749"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[31].BIKOU#</string>
+        <string>#A-TBL[31].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,23.7"/>
+            <point val="19.9,23.7"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -20362,42 +20377,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O513">
       <attribute name="obj_pos">
-        <point val="18.5,24.3"/>
+        <point val="19.9,24.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,24.042;19.712,24.342"/>
+        <rectangle val="18.486,23.999;19.9,24.349"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[32].BIKOU#</string>
+        <string>#A-TBL[32].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,24.3"/>
+            <point val="19.9,24.3"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -20908,42 +20923,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O526">
       <attribute name="obj_pos">
-        <point val="18.5,24.9"/>
+        <point val="19.9,24.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,24.642;19.712,24.942"/>
+        <rectangle val="18.486,24.599;19.9,24.949"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[33].BIKOU#</string>
+        <string>#A-TBL[33].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,24.9"/>
+            <point val="19.9,24.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -21454,42 +21469,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O539">
       <attribute name="obj_pos">
-        <point val="18.5,25.5"/>
+        <point val="19.9,25.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,25.242;19.712,25.542"/>
+        <rectangle val="18.486,25.199;19.9,25.549"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[34].BIKOU#</string>
+        <string>#A-TBL[34].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,25.5"/>
+            <point val="19.9,25.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -22000,42 +22015,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O552">
       <attribute name="obj_pos">
-        <point val="18.5,26.1"/>
+        <point val="19.9,26.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,25.842;19.712,26.142"/>
+        <rectangle val="18.486,25.799;19.9,26.149"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[35].BIKOU#</string>
+        <string>#A-TBL[35].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,26.1"/>
+            <point val="19.9,26.1"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -22546,42 +22561,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O565">
       <attribute name="obj_pos">
-        <point val="18.5,26.7"/>
+        <point val="19.9,26.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,26.442;19.712,26.742"/>
+        <rectangle val="18.486,26.399;19.9,26.749"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[36].BIKOU#</string>
+        <string>#A-TBL[36].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,26.7"/>
+            <point val="19.9,26.7"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -23092,42 +23107,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O578">
       <attribute name="obj_pos">
-        <point val="18.5,27.3"/>
+        <point val="19.9,27.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,27.042;19.712,27.342"/>
+        <rectangle val="18.486,26.999;19.9,27.349"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[37].BIKOU#</string>
+        <string>#A-TBL[37].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,27.3"/>
+            <point val="19.9,27.3"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -23638,42 +23653,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O591">
       <attribute name="obj_pos">
-        <point val="18.5,27.9"/>
+        <point val="19.9,27.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,27.642;19.712,27.942"/>
+        <rectangle val="18.486,27.599;19.9,27.949"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[38].BIKOU#</string>
+        <string>#A-TBL[38].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,27.9"/>
+            <point val="19.9,27.9"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -24184,42 +24199,42 @@
     </object>
     <object type="Embed - Text" version="0" id="O604">
       <attribute name="obj_pos">
-        <point val="18.5,28.5"/>
+        <point val="19.9,28.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.5,28.242;19.712,28.542"/>
+        <rectangle val="18.486,28.199;19.9,28.549"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#A-TBL[39].BIKOU#</string>
+        <string>#A-TBL[39].NAIYO[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="0"/>
+        <enum val="1"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;#</string>
+            <string>#99999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Mincho"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.5,28.5"/>
+            <point val="19.9,28.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
