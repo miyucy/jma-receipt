@@ -869,7 +869,7 @@ path	key12k1 	{
 path	key42k	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key42k_csr CURSOR FOR
-		SELECT distinct a.*
+		SELECT a.*
 		FROM tbl_tensu a,tbl_kensasort b
 			WHERE a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
