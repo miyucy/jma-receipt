@@ -4105,7 +4105,7 @@
                    GO      TO       41019-JIGETU-SYORI-EXT
                ELSE
                    IF     (SPA-NAI-TAINBI      =   ALL "9") AND
-                          (SPA-NAI-TBANGO      NOT = ZERO )
+                          (SPA-NAI-TBANGO(1)   NOT = ZERO )
       *                翌月の会計を作成する
                        MOVE    SPA-NAI-SRYYM       TO  WRK-SRYYM
                        PERFORM 410191-KAIKEI-SAKUSEI-SEC
