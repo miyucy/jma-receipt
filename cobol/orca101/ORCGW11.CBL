@@ -591,6 +591,11 @@
            MOVE    ZERO                TO  SPA-GMN-SELNUM
       *
            MOVE    ZERO                TO  WRK-KBNCD-G
+      *
+      *    Ä¢É¼Ì¾½é´ü½èÍý
+           PERFORM 3101-PRTNAME-SYOKI-SEC
+           PERFORM 3101-NYU-PRTNAME-SYOKI-SEC
+      *
            .
        3101-USERKBN-SYOKI-EXT.
            EXIT.
@@ -600,7 +605,7 @@
        3101-SYS1031-SYOKI-SEC          SECTION.
       *
       *    Ä¢É¼Ì¾½é´ü½èÍý
-           PERFORM 3101-PRTNAME-SYOKI-SEC
+      *****PERFORM 3101-PRTNAME-SYOKI-SEC
       *
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
@@ -637,7 +642,7 @@
       *    -- Æþ±¡Ä¢É¼ --
       *
       *    Ä¢É¼Ì¾½é´ü½èÍý
-           PERFORM 3101-NYU-PRTNAME-SYOKI-SEC
+      *****PERFORM 3101-NYU-PRTNAME-SYOKI-SEC
       *
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
@@ -692,28 +697,6 @@
                                        TO  SPA-GMN-TNAME (10)
       *----(02.00.03)--ADD-END-----
       *
-           .
-       3101-PRTNAME-SYOKI-EXT.
-           EXIT.
-      *****************************************************************
-      *    Ä¢É¼Ì¾½é´ü½èÍý
-      *****************************************************************
-       3101-NYU-PRTNAME-SYOKI-SEC      SECTION.
-      *
-      **   Æþ±¡Ä¢É¼
-           MOVE    "¿ÇÎÅÏ¿¡Ê¥«¥ë¥Æ£±¹æ»æ¡Ë"
-                                       TO  SPA-GMN-TNAME-N (1)
-           MOVE    "Âà±¡¾ÚÌÀ½ñ"        TO  SPA-GMN-TNAME-N (2)
-           MOVE    "ÀÁµá½ñ·óÎÎ¼ý½ñ"    TO  SPA-GMN-TNAME-N (3)
-      *
-           .
-       3101-NYU-PRTNAME-SYOKI-EXT.
-           EXIT.
-      *****************************************************************
-      *    Ä¢É¼¥×¥í¥°¥é¥àÌ¾½é´ü½èÍý
-      *****************************************************************
-       3103-PRGNAME-SYOKI-SEC          SECTION.
-      *
       *    ¥«¥ë¥Æ£±¹æ»æ
            MOVE    "ORCHC01"       TO  SPA-GMN-TORGPGNM (1)
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(1)
@@ -736,6 +719,43 @@
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(5)
       *    ¥«¥¹¥¿¥Þ¥¤¥ºÄ¢É¼ºÇÂç
            MOVE    5                   TO  SPA-GPGNM-MAX
+      *
+      *
+           .
+       3101-PRTNAME-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ä¢É¼Ì¾½é´ü½èÍý
+      *****************************************************************
+       3101-NYU-PRTNAME-SYOKI-SEC      SECTION.
+      *
+      **   Æþ±¡Ä¢É¼
+           MOVE    "¿ÇÎÅÏ¿¡Ê¥«¥ë¥Æ£±¹æ»æ¡Ë"
+                                       TO  SPA-GMN-TNAME-N (1)
+           MOVE    "Âà±¡¾ÚÌÀ½ñ"        TO  SPA-GMN-TNAME-N (2)
+           MOVE    "ÀÁµá½ñ·óÎÎ¼ý½ñ"    TO  SPA-GMN-TNAME-N (3)
+      *    ¥«¥ë¥Æ£±¹æ»æ
+           MOVE    "ORCHCN01"          TO  SPA-GMN-TORGPGNM-N (1)
+           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(1)
+           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(1)
+      *    Âà±¡¾ÚÌÀ½ñ
+           MOVE    "ORCHCN02"          TO  SPA-GMN-TORGPGNM-N (2)
+           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(2)
+           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(2)
+      *    ÀÁµá½ñ·óÎÎ¼ý½ñ
+           MOVE    "ORCHCN03"          TO  SPA-GMN-TORGPGNM-N (3)
+           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(3)
+           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(3)
+      *    Æþ±¡Ä¢É¼
+           MOVE    3                   TO  SPA-NPGNM-MAX
+      *
+           .
+       3101-NYU-PRTNAME-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ä¢É¼¥×¥í¥°¥é¥àÌ¾½é´ü½èÍý
+      *****************************************************************
+       3103-PRGNAME-SYOKI-SEC          SECTION.
       *
       *    Ä¢É¼¥×¥í¥°¥é¥àÁªÂò¾ðÊó
            MOVE    SPACE               TO  SYSKANRI-REC
@@ -788,21 +808,6 @@
       *    Æþ±¡Ä¢É¼¥×¥í¥°¥é¥àÌ¾½é´ü½èÍý
       *****************************************************************
        3103-NYU-PRGNAME-SYOKI-SEC      SECTION.
-      *
-      *    ¥«¥ë¥Æ£±¹æ»æ
-           MOVE    "ORCHCN01"          TO  SPA-GMN-TORGPGNM-N (1)
-           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(1)
-           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(1)
-      *    Âà±¡¾ÚÌÀ½ñ
-           MOVE    "ORCHCN02"          TO  SPA-GMN-TORGPGNM-N (2)
-           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(2)
-           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(2)
-      *    ÀÁµá½ñ·óÎÎ¼ý½ñ
-           MOVE    "ORCHCN03"          TO  SPA-GMN-TORGPGNM-N (3)
-           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(3)
-           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(3)
-      *    Æþ±¡Ä¢É¼
-           MOVE    3                   TO  SPA-NPGNM-MAX
       *
       *    Ä¢É¼¥×¥í¥°¥é¥àÁªÂò¾ðÊó
            MOVE    SPACE               TO  SYSKANRI-REC
