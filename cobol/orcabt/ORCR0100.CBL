@@ -111,7 +111,7 @@
       *  01.00.07    NACL-Æ£¸¶    02/11/28  ¹ñÊÝ¤Î¸©Æâ°·¤¤ÊÝ¸±¼ÔÈÖ¹æ¤ò¥·¥¹´É¤è¤ê
       *                                     ÊÔ½¸¤¹¤ë¤è¤¦¤Ë½¤Àµ
       *  01.00.08    NACL-Æ£¸¶    03/01/27  ¸øÈñÀÁµá½ñ£Ä£Â¤òÄÉ²Ã
-      *  01.00.09    NACL-Æ£¸¶    03.03.12  Êä½õ¶èÊ¬¤ÎÄÉ²Ã
+      *  01.00.09    NACL-Æ£¸¶    03.02.12  Êä½õ¶èÊ¬¤ÎÄÉ²Ã
       *  01.00.10    NACL-ÌçÏÆ    03.03.03  ºÞÈÖ¹æ·å½¤ÀµÂÐ±þ
       *****************************************************************
       *
@@ -1036,22 +1036,28 @@
                    STRING  WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
                            RECE09-TANSEIDONAME    DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI (WRK-RIREKI-MAX)
-               ELSE               
-                   INITIALIZE              ORCSKANACHKAREA
-                   MOVE    "2"             TO  KANACHK-SYORI 
-                   MOVE    RECE09-KIGO     TO  KANACHK-MAE-INPUT
-                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                   IF      KANACHK-RC      =   ZERO
-                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                           TO  WRK-HKN-KIGO
-                   END-IF    
-                   INITIALIZE              ORCSKANACHKAREA
-                   MOVE    "2"             TO  KANACHK-SYORI 
-                   MOVE    RECE09-NUM      TO  KANACHK-MAE-INPUT
-                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                   IF      KANACHK-RC      =   ZERO
-                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                               TO  WRK-HKN-NUM
+               ELSE
+                   MOVE    SPACE               TO  WRK-HKN-KIGO  
+                   IF      RECE09-KIGO     NOT =   SPACE
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "2"             TO  KANACHK-SYORI 
+                       MOVE    RECE09-KIGO     TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  WRK-HKN-KIGO
+                       END-IF
+                   END-IF      
+                   MOVE    SPACE               TO  WRK-HKN-NUM 
+                   IF      RECE09-NUM    NOT =   SPACE
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "2"             TO  KANACHK-SYORI 
+                       MOVE    RECE09-NUM      TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                                   TO  WRK-HKN-NUM
+                       END-IF
                    END-IF    
                    STRING  WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
                            RECE09-TANSEIDONAME    DELIMITED  BY  SPACE
@@ -1828,32 +1834,39 @@
            IF  WRK-3SYU-KBN           =   ALL "1" AND 
                RECE02-HKNNUM          =   SPACE            
       *        £³¼ï¤Î¾ì¹ç¡Ê£¸·å¡Ë
-               INITIALIZE              ORCSKANACHKAREA
-               MOVE    "2"             TO  KANACHK-SYORI 
-               MOVE    RECE02-KOHJKYSNUM(SEIHIDX)
-                                       TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-               IF      KANACHK-RC      =   ZERO
-                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+               IF      RECE02-KOHJKYSNUM(SEIHIDX)
+                                      NOT =   SPACE
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-KOHJKYSNUM(SEIHIDX)
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                            TO  HC06-KIGO
-               END-IF    
-           ELSE 
-               INITIALIZE              ORCSKANACHKAREA
-               MOVE    "2"             TO  KANACHK-SYORI 
-               MOVE    RECE02-KIGO       TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-               IF      KANACHK-RC      =   ZERO
-                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                           TO  HC06-KIGO
-               END-IF    
-               INITIALIZE              ORCSKANACHKAREA
-               MOVE    "2"             TO  KANACHK-SYORI 
-               MOVE    RECE02-NUM      TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-               IF      KANACHK-RC      =   ZERO
-                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                           TO  HC06-NUM
-               END-IF    
+                   END-IF
+               END-IF        
+           ELSE
+               IF      RECE02-KIGO     NOT =   SPACE 
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-KIGO       TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  HC06-KIGO
+                   END-IF
+               END-IF
+               IF      RECE02-NUM      NOT =   SPACE     
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-NUM      TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  HC06-NUM
+                   END-IF
+               END-IF        
            END-IF
       *
       *    <¸øÈñÉéÃ´¼ÔÈÖ¹æ¡¦¸øÈñ¼õµë¼ÔÈÖ¹æ>
