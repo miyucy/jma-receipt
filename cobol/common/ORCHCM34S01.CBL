@@ -100,8 +100,8 @@
            03  WRK-NYUKHNKSNKBN                PIC 9(03).
            03  WRK-NACCT-ZAISKBKBN             PIC X(01).
            03  WRK-GAIHAKU-TEN                 PIC 9(08).
-           03  WRK-KHNTEN                      PIC 9(08).
-           03  WRK-KSNTEN                      PIC 9(08).
+           03  WRK-KHNTEN                      PIC S9(08).
+           03  WRK-KSNTEN                      PIC S9(08).
            03  WRK-SENTEI-KHNTEN               PIC 9(08).
            03  WRK-SENTEISRYCD                 PIC X(09).
            03  WRK-SRYCDTOTAL                  PIC 9(09).
