@@ -77,6 +77,7 @@
       *                                     £²¤Ä°Ê¾å¤¢¤Ã¤¿¾ì¹ç¤Îµ­ºÜÂÐ±þ
       *  01.01.07    NACL-Æ£¸¶    04/07/08  °õºþ½ç¤ÎÄÉ²Ã¡Ê¸ÄÊÌºîÀ®»þ¤Î¤ß¡Ë
       *  01.01.08    NACL-Æ£¸¶    04/07/12  µëÉÕ³ä¹ç¤ÎÊÔ½¸¾ò·ï¤òÊÑ¹¹
+      *  01.01.09    NACL-Æ£¸¶    04/08/18  ¸øÈñ£²¤ÎÀÁµáÅÀ¤ÎÊÔ½¸¾ò·ï¤ò½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3688,15 +3689,15 @@
            END-IF
            IF      RECE62-TOTALTEN (IDX3) >   ZERO                      
            AND     RECE62-TOTALTEN (IDX3)
-                                      NOT =   RECE62-TOTALTEN (IDX1)
+                                      NOT =   RECE62-TOTALTEN (IDX2)
                MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK10
                MOVE    WRK-KGK10              TO  HC06-TOTALTEN(3)
            ELSE
-             IF      RECE62-FUKUSHIFLG      =   "1"
-             AND     RECE62-TOTALTEN (IDX3) =   ZERO
-               MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK10
-               MOVE    WRK-KGK10              TO  HC06-TOTALTEN(3)
-             END-IF
+               IF      RECE62-FUKUSHIFLG      =   "1"
+               AND     RECE62-TOTALTEN (IDX3) =   ZERO
+                   MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK10
+                   MOVE    WRK-KGK10              TO  HC06-TOTALTEN(3)
+               END-IF
            END-IF
       *         
            IF    ( RECE62-SHOKUJINISSU (IDX3) >   ZERO                 )

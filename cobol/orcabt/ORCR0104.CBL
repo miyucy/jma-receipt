@@ -71,6 +71,7 @@
       *  01.01.06    NACL-æÆ∆¶¬Ù  04/05/19  £ƒ£¬ΩÒ§≠π˛§ﬂª˛§Œ•≥•ﬂ•√•»ƒ…≤√
       *  01.01.07    NACL-∆£∏∂    04/06/20  ∞ı∫˛ΩÁ§Œƒ…≤√° ∏ƒ Ã∫Ó¿Æª˛§Œ§ﬂ°À
       *  01.01.08    NACL-∆£∏∂    04/07/12  µÎ…’≥‰πÁ§Œ ‘Ω∏æÚ∑Ô§Ú —ππ
+      *  01.01.09    NACL-∆£∏∂    04/08/18  ∏¯»Ò£≤§Œ¿¡µ·≈¿§Œ ‘Ω∏æÚ∑Ô§ÚΩ§¿µ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3353,15 +3354,15 @@
            END-IF
            IF      RECE02-TOTALTEN (IDX3) >   ZERO                      
            AND     RECE02-TOTALTEN (IDX3)
-                                      NOT =   RECE02-TOTALTEN (IDX1)
+                                      NOT =   RECE02-TOTALTEN (IDX2)
                MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
            ELSE
-             IF      RECE02-FUKUSHIFLG      =   "1"
-             AND     RECE02-TOTALTEN (IDX3) =   ZERO
-               MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
-               MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
-             END-IF
+               IF      RECE02-FUKUSHIFLG      =   "1"
+               AND     RECE02-TOTALTEN (IDX3) =   ZERO
+                   MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
+                   MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
+               END-IF
            END-IF
       *
       *    ∏©√±Õ—π‡Ã‹
