@@ -131,6 +131,10 @@
       *
            03  TBL-MAX             PIC 9(04).
       *
+           03  IDX-I                   PIC 9(04).
+           03  IDX-I1                  PIC 9(04).
+           03  IDX-I2                  PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
       *
@@ -217,6 +221,10 @@
                05  WRK-SYSDD       PIC 9(02).
       *                             
            03  WRK-DBPATH          PIC X(64).
+      *
+      *    コメント入力値編集
+           03  WRK-INPUTCHI-G.
+               05  WRK-INPUTCHI        PIC X(12)   OCCURS  4.
       *
            03  SYS-YMD.
                05  SYS-SYSYY1      PIC 9(02) VALUE  20.
@@ -1491,6 +1499,13 @@
                                        TO  TBL-WKSRY-INPUTCD
                                              (TBL-MAX IDX-S)
            END-IF
+      *    コメント値
+           IF     (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:2)
+                                       =   "84"   )  AND
+                  (LF04-SURYO (IDX1 IDX2)  NOT =   SPACE )
+               PERFORM 200321-INPUTCHI-HEN-SEC
+           ELSE
+      *
       *    数量
            MOVE    ZERO                TO  WRK-SURYO
            INITIALIZE                      ORCSNUMAREA
@@ -1509,9 +1524,13 @@
            END-IF
            MOVE    WRK-SURYO           TO  TBL-WKSRY-SRYSURYO
                                                      (TBL-MAX IDX-S)
+      *
+           END-IF
       *    フリーコメントの内容
-           IF      (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)
-                                       =   "810000001")  AND
+           IF     ((TBL-WKSRY-SRYCD (TBL-MAX IDX-S)
+                                       =   "810000001")  OR
+                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:2)
+                                       =   "83"      ))  AND
                    (LF04-ALSNAME (IDX1 IDX2)
                                    NOT =   SPACE )
       *        コメント
@@ -1530,6 +1549,55 @@
       *
            .
        20032-ZAITBLSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    コメント値編集処理
+      *****************************************************************
+       200321-INPUTCHI-HEN-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  WRK-INPUTCHI-G
+           MOVE    1                   TO  IDX-I1
+           MOVE    ZERO                TO  IDX-I2
+           PERFORM VARYING     IDX-I   FROM    1   BY  1
+                   UNTIL      (IDX-I   >   12  )   OR
+                              (IDX-I1  >   4   )
+               IF      LF04-SURYO (IDX1 IDX2)(IDX-I:1) =   "-"
+                   ADD     1               TO  IDX-I1
+                   MOVE    ZERO            TO  IDX-I2
+               ELSE
+                   ADD     1               TO  IDX-I2
+                   MOVE    LF04-SURYO (IDX1 IDX2)(IDX-I:1)
+                                           TO  WRK-INPUTCHI
+                                                 (IDX-I1)(IDX-I2:1)
+               END-IF
+           END-PERFORM
+           PERFORM VARYING     IDX-I   FROM    1   BY  1
+                   UNTIL       IDX-I   >   4
+               IF      WRK-INPUTCHI(IDX-I) NOT =   SPACE
+                   INITIALIZE                      ORCSNUMAREA
+                   MOVE    WRK-INPUTCHI(IDX-I)
+                                               TO  SNUM-INX
+                   CALL    "ORCSNUM"           USING
+                                               ORCSNUMAREA
+      *            整数のみ対象
+                   IF     (SNUM-RC         NOT =   ZERO  )   OR
+                          (SNUM-MINKBN         =   "1"   )   OR
+                          (SNUM-SEISUU         >   12    )   OR
+                          (SNUM-SYOSUU         >   3     )
+                        CONTINUE
+                   ELSE
+                       COMPUTE IDX-I2          =   15  -   SNUM-SEISUU
+                                               +   1
+                       MOVE    SNUM-OUTEDT(IDX-I2:SNUM-SEISUU)
+                                               TO  TBL-WKSRY-INPUTCHI
+                                                  (TBL-MAX IDX-S IDX-I)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       200321-INPUTCHI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
