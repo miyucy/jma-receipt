@@ -3287,6 +3287,10 @@
                MOVE    ZERO            TO  SPA-GMN-KGNAGE
            END-IF
       *
+           IF      SPA-GMN-KGNAGE      =   "AA"
+               CONTINUE
+           ELSE
+      *
            INITIALIZE                      ORCSNUMAREA
            MOVE    SPA-GMN-KGNAGE      TO  SNUM-INX
            CALL    "ORCSNUM"           USING
@@ -3297,6 +3301,8 @@
                MOVE    "0002"              TO  SPA-ERRCD
            ELSE
                MOVE    SNUM-OUTEDT(14:2)       TO  SPA-GMN-KGNAGE
+           END-IF
+      *
            END-IF
            .
       *
