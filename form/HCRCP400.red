@@ -363,6 +363,11 @@
         <embed object="string" length="5"/>
       </appinfo>
     </element>
+    <element name="KYUFUGAI4" occurs="1">
+      <appinfo>
+        <embed object="string" length="2"/>
+      </appinfo>
+    </element>
   </dictionarydata>
   <diagramdata>
     <attribute name="background">
@@ -19435,6 +19440,48 @@
           </attribute>
           <attribute name="multi">
             <real val="0.202"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O521">
+      <attribute name="obj_pos">
+        <point val="18.8,28.2"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="18.8,27.9264;19.1535,28.2764"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#KYUFUGAI4#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.35"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="18.8,28.2"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
