@@ -96,7 +96,7 @@
                    07  SPA-MIKAKU-MAX                  PIC 9(04).
       *
                    07  SPA-GMN-TBL.
-                       09  SPA-GMN-TBLO                OCCURS   100.
+                       09  SPA-GMN-TBLO                OCCURS   200.
                            11  SPA-GMN-TNUM            PIC 9(04).
                            11  SPA-GMN-TUKEID          PIC 9(05).
                            11  SPA-GMN-TYYKTIME        PIC X(04).
