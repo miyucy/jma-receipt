@@ -170,6 +170,7 @@
            03  WRK-RRKNUM                  PIC 9(03).
            03  WRK-RRKEDANUM               PIC 9(03).
            03  WRK-KJNYMD                  PIC X(08).
+           03  WRK-KIHON-KJNYMD            PIC X(08).
            03  WRK-UPDKBN                  PIC X(3).
            03  WRK-TENNYUYMD               PIC X(08).
            03  WRK-TENSTUYMD               PIC X(08).
@@ -239,6 +240,7 @@
       *
            03  WRK-MCP-WIDGET      PIC X(64).
            03  WRK-IDOYMD                  PIC X(08).
+           03  WRK-NYUINYMD                PIC X(08).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -255,12 +257,6 @@
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
                                //SPA-// BY //WRK-SPA-//.
-      *
-      *    患者入院履歴ワーク
-       01  WKPTNYUINRRK-REC.
-           COPY    "CPPTNYUINRRK.INC"
-                                     REPLACING
-                               //PTNYUINRRK-// BY //WKPTNYUINRRK-//.
       *
       *    収納ワーク
        01  SUMSYUNOU-REC.
@@ -586,6 +582,7 @@
                                    SPA-I0KYOUTU
       *
       *    コンボボックス初期化
+           MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
            PERFORM 310-CMB-SYOKI-SEC
       *
       *    画面初期化
@@ -601,7 +598,7 @@
       *****************************************************************
        310-CMB-SYOKI-SEC               SECTION.
       *
-           INITIALIZE              SPA-GMN-I01-CMB-DAT-AREA
+      *    INITIALIZE              SPA-GMN-I01-CMB-DAT-AREA
       *
       *    処理区分コンボ（全て表示）
            PERFORM 310-CMB-SYORIKBN-SET1-SEC
@@ -723,10 +720,11 @@
       *****************************************************************
        310-CMB-SAGAKU-SET-SEC          SECTION.
       *
+           INITIALIZE              SPA-GMN-I01-CMB-SAGAKU
+      *
            INITIALIZE                  SYSKANRI-REC
            MOVE    "5113"          TO  SYS-KANRICD
-           MOVE    SPA-SYSYMD
-                                   TO  ORC-DBYMD
+           MOVE    WRK-KJNYMD      TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタ検索処理
@@ -768,10 +766,11 @@
       *****************************************************************
        310-CMB-NYUINKA-SET-SEC         SECTION.
       *
+           INITIALIZE                  SPA-GMN-I01-CMB-NYUINKA
+      *
            INITIALIZE                  SYSKANRI-REC
            MOVE    "1005"          TO  SYS-KANRICD
-           MOVE    SPA-SYSYMD
-                                   TO  ORC-DBYMD
+           MOVE    WRK-KJNYMD      TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタ検索処理
@@ -808,6 +807,8 @@
       *****************************************************************
        310-CMB-SHOKAI-SET-SEC          SECTION.
       *
+           INITIALIZE                  SPA-GMN-I01-CMB-SHOKAI
+      *
            MOVE    2                   TO  SPA-GMN-I01-SHOKAI-CNT
       *
            MOVE    "1 初回"            TO  SPA-GMN-I01-SHOKAI-ITM (01)
@@ -821,11 +822,12 @@
       *****************************************************************
        310-CMB-DR-SET-SEC              SECTION.
       *
+           INITIALIZE                  SPA-GMN-I01-CMB-DR
+      *
            INITIALIZE                  SYSKANRI-REC
            MOVE    "1010"          TO  SYS-KANRICD
            MOVE    "1"             TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD
-                                   TO  ORC-DBYMD
+           MOVE    WRK-KJNYMD      TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタ検索処理
@@ -866,6 +868,8 @@
       *****************************************************************
        310-CMB-SEIKYU-SET-SEC          SECTION.
       *
+           INITIALIZE                  SPA-GMN-I01-CMB-SEIKYU
+      *
            MOVE    2               TO  SPA-GMN-I01-SEIKYU-CNT
       *
            MOVE    "1 医療機関での設定"
@@ -881,6 +885,8 @@
       *    検索時患者表示コンボ初期処理
       *****************************************************************
        310-CMB-DISPKBN-SET-SEC         SECTION.
+      *
+           INITIALIZE                  SPA-GMN-I01-CMB-DISPKBN
       *
            MOVE    2               TO  SPA-GMN-I01-DISPKBN-CNT
       *
@@ -1016,6 +1022,8 @@
            ELSE
       *        入院歴なし（初入院）
                IF  (   FLG-PTNYUINRRK  NOT =   ZERO )
+                   MOVE    SPA-SYSYMD  TO  WRK-KJNYMD
+                   PERFORM 310-CMB-SYOKI-SEC
                    PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *            MOVE    WIDGET-INSENSITIVE
       *                                TO  SPA-GMN-I01-B08-STT
@@ -1249,14 +1257,33 @@
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
-      *    異動日チェック処理
-           PERFORM 4101-IDOYMD-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
+           EVALUATE    SPA-GMN-I01-SYORIKBN-CD
+           WHEN    "01"
+      *
+      *        入院日チェック処理
+               PERFORM 4101-NYUINYMD-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                   TO  WRK-KIHON-KJNYMD
+           WHEN    "08"
+      *
+      *        異動日チェック処理
+               PERFORM 4101-IDOYMD-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+               MOVE    SPA-NAI-I01-IDOYMD
+                                   TO  WRK-KIHON-KJNYMD
+           WHEN    OTHER
+               MOVE    SPA-NAI-I01-MAEIDOYMD
+                                   TO  WRK-KIHON-KJNYMD
+           END-EVALUATE
       *
       *    病室番号チェック処理
            IF    ( SPA-GMN-I01-BRMNUM  NOT =   SPA-NAI-I01-BRMNUM-MAE )
+            OR   ( SPA-GMN-I01-BTUNAME-CNT =   ZERO )
                PERFORM 4101-BRMNUM-CHK-SEC
                MOVE    SPA-GMN-I01-BRMNUM
                                        TO  SPA-NAI-I01-BRMNUM-MAE
@@ -1301,12 +1328,6 @@
       *
       *    室料差額チェック処理
            PERFORM 4101-SAGAKU-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
-      *
-      *    入院日チェック処理
-           PERFORM 4101-NYUINYMD-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1530,6 +1551,10 @@
       *****************************************************************
        4101-INPUT-AREA-EDIT-SEC        SECTION.
       *
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                   TO  WRK-KJNYMD
+           PERFORM 310-CMB-SYOKI-SEC
+      *
       *    入力領域初期化
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *
@@ -1561,6 +1586,8 @@
                                        SPA-NAI-I01-BRMNUM-MOT
       *
       *    病室情報より病棟コンボ編集
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                   TO  WRK-KJNYMD
            PERFORM 4101-BRMNUM-SEL-SEC
       *
       *    病棟番号
@@ -1591,6 +1618,7 @@
            PERFORM 5002-HIZUKE-CHK-SEC
            MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-NYUINYMD
            MOVE    WRK-SYMD        TO  SPA-NAI-I01-NYUINYMD
+                                       SPA-NAI-I01-NYUINYMD-MAE
       *
       *    退院日
            IF    ( PTNYUINRRK-TAIINYMD     =   "99999999" )
@@ -1605,6 +1633,8 @@
            END-IF
       *
       *    特定入院料コンボ設定処理
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                   TO  WRK-KJNYMD
            PERFORM 4101-CMB-TOKNYUIN-SET-SEC
       *
       *    特定入院料
@@ -1718,6 +1748,7 @@
            PERFORM 5002-HIZUKE-CHK-SEC
            MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-NYUINYMD
            MOVE    WRK-SYMD        TO  SPA-NAI-I01-NYUINYMD
+                                       SPA-NAI-I01-NYUINYMD-MAE
       *
       *    退院日
            IF    ( PTNYUINRRK-TAIINYMD     =   "99999999" )
@@ -1960,6 +1991,8 @@
            EVALUATE    FLG-SYORIPTN
            WHEN    1
                MOVE    3           TO  SPA-GMN-I01-CUR
+               MOVE    SPA-SYSYMD  TO  WRK-KJNYMD
+               PERFORM 310-CMB-SYOKI-SEC
                PERFORM 4201-INPUT-AREA-CLEAR-SEC
                PERFORM 4101-WIDGET-NYUIN-STT-SEC
       *        保険組み合わせコンボ設定処理
@@ -2109,7 +2142,8 @@
            MOVE    "5001"          TO  SYS-KANRICD
            MOVE    PTNYUINRRK-BTUNUM
                                    TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                   TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -2143,41 +2177,26 @@
            MOVE    PTNYUINRRK-NYUINYMD
                                    TO  SPA-NAI-I01-TNYUINYMD (IDX1)
       *
-      *    退院日（最新の情報を取得）
-           INITIALIZE              WKPTNYUINRRK-REC
-           MOVE    PTNYUINRRK-KEY
-                               TO  WKPTNYUINRRK-KEY
-           MOVE    WKPTNYUINRRK-REC
-                               TO  MCPDATA-REC
-      *
-           MOVE    "PTNYUINRRK-KEY4"
-                               TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    =   ZERO )
-               MOVE    MCPDATA-REC TO  WKPTNYUINRRK-REC
-               IF    ( WKPTNYUINRRK-TAIINYMD   =   "99999999" )
-                   MOVE    SPACE   TO  SPA-GMN-I01-TTAIINYMD (IDX1)
-                                       SPA-NAI-I01-TTAIINYMD (IDX1)
-               ELSE
-                   MOVE    WKPTNYUINRRK-TAIINYMD
-                                       TO  WRK-YMD
-                   PERFORM 5002-HIZUKE-CHK-SEC
-                   MOVE    WRK-HENYMDG TO  SPA-GMN-I01-TTAIINYMD (IDX1)
-                   MOVE    WKPTNYUINRRK-TAIINYMD
-                                       TO  SPA-NAI-I01-TTAIINYMD (IDX1)
-               END-IF
+      *    退院日
+           IF    ( PTNYUINRRK-TAIINYMD   =   "99999999" )
+               MOVE    SPACE   TO  SPA-GMN-I01-TTAIINYMD (IDX1)
+                                   SPA-NAI-I01-TTAIINYMD (IDX1)
+           ELSE
+               MOVE    PTNYUINRRK-TAIINYMD
+                                   TO  WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               MOVE    WRK-HENYMDG TO  SPA-GMN-I01-TTAIINYMD (IDX1)
+               MOVE    PTNYUINRRK-TAIINYMD
+                                   TO  SPA-NAI-I01-TTAIINYMD (IDX1)
            END-IF
-      *
-           MOVE    "PTNYUINRRK-KEY4"
-                               TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
       *
       *    診療科
            INITIALIZE  SYSKANRI-REC
            MOVE    "1005"          TO  SYS-KANRICD
            MOVE    PTNYUINRRK-NYUINKA
                                    TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                   TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -2194,11 +2213,11 @@
            MOVE    PTNYUINRRK-NYUINYMD
                                    TO  WRK-REKI-BYO-NYUINYMD  (IDX1)
       *
-           IF    ( WKPTNYUINRRK-TAIINYMD   =   "99999999" )
+           IF    ( PTNYUINRRK-TAIINYMD   =   "99999999" )
                MOVE    "99999999"
                                    TO  WRK-REKI-BYO-TAIINYMD (IDX1)
            ELSE
-               MOVE    WKPTNYUINRRK-TAIINYMD
+               MOVE    PTNYUINRRK-TAIINYMD
                                    TO  WRK-REKI-BYO-TAIINYMD (IDX1)
            END-IF
       *
@@ -2859,6 +2878,7 @@
       *
            MOVE    SPACE           TO  SPA-GMN-I01-IDOYMD
                                        SPA-NAI-I01-IDOYMD
+                                       SPA-NAI-I01-IDOYMD-MAE
       *
       *    他院歴ボタンの状態を退避
            MOVE    SPA-GMN-I01-B07-STT
@@ -2893,8 +2913,10 @@
       *    入院登録
            WHEN    "01"
       *        受付マスタより入院科等を確定する
+               MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
                PERFORM 4101-UKETUKE-SEL-SEC
       *        受診履歴検索処理
+               MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
                PERFORM 4101-JYURRK-SEL-SEC
                PERFORM 4101-WIDGET-NYUIN-STT-SEC
       *    退院登録
@@ -2931,6 +2953,25 @@
                PERFORM 5002-HIZUKE-CHK-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-IDOYMD
                MOVE    WRK-SYMD        TO  SPA-NAI-I01-IDOYMD
+                                           SPA-NAI-I01-IDOYMD-MAE
+      *
+      *        コンボボックス初期処理
+               MOVE    SPA-NAI-I01-IDOYMD
+                                       TO  WRK-KJNYMD
+               PERFORM 310-CMB-SYOKI-SEC
+      *
+      *        保険組み合わせコンボ設定処理
+               MOVE    SPA-NAI-I01-IDOYMD
+                                       TO  WRK-KJNYMD
+               PERFORM 4101-CMB-HKNCOMBI-SET-SEC
+      *
+      *        受付マスタより入院科等を確定する
+               MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
+               PERFORM 4101-UKETUKE-SEL-SEC
+      *        受診履歴検索処理
+               MOVE    SPA-NAI-I01-IDOYMD
+                                       TO  WRK-KJNYMD
+               PERFORM 4101-JYURRK-SEL-SEC
       *
       *    その他
            WHEN    OTHER
@@ -3091,16 +3132,19 @@
       *****************************************************************
        4101-IDOYMD-CHK-SEC             SECTION.
       *
-           IF  ( SPA-GMN-I01-SYORIKBN-CD   NOT =   "08" )
-               GO  TO  4101-IDOYMD-CHK-EXT
-           END-IF
-      *
            MOVE    SPA-NAI-I01-IDOYMD
                                        TO  WRK-IDOYMD
       *
            IF    ( SPA-GMN-I01-IDOYMD  =   SPACE )
-               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-I01-IDOYMD
-               MOVE    SPA-SYSYMD      TO  SPA-NAI-I01-IDOYMD
+               IF    ( SPA-SYSYMD      >   SPA-NAI-I01-MAEIDOYMD )
+                   MOVE    SPA-SYSYMD      TO  WRK-YMD
+               ELSE
+                   MOVE    SPA-NAI-I01-MAEIDOYMD
+                                           TO  WRK-YMD
+               END-IF
+               PERFORM 5002-HIZUKE-CHK-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-IDOYMD
+               MOVE    WRK-SYMD        TO  SPA-NAI-I01-IDOYMD
            ELSE
                MOVE    SPA-GMN-I01-IDOYMD
                                        TO  WRK-YMD
@@ -3118,9 +3162,13 @@
                MOVE    WRK-SYMD        TO  SPA-NAI-I01-IDOYMD
            END-IF
       *
-           IF  ( SPA-GMN-I01-SYORIKBN-CD   =   "08" )
+           IF    (  SPA-NAI-I01-IDOYMD NOT =   SPA-NAI-I01-IDOYMD-MAE )
+               MOVE    SPA-NAI-I01-IDOYMD  TO  SPA-NAI-I01-IDOYMD-MAE
+      *        コンボ初期処理
                MOVE    SPA-NAI-I01-IDOYMD
                                    TO  WRK-KJNYMD
+               PERFORM 310-CMB-SYOKI-SEC
+      *
       *        保険組み合わせコンボ初期処理
                PERFORM 4101-CMB-HKNCOMBI-SET-SEC
       *        受付マスタ検索処理
@@ -3137,6 +3185,90 @@
            .
       *
        4101-IDOYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院日チェック処理
+      *****************************************************************
+       4101-NYUINYMD-CHK-SEC           SECTION.
+      *
+           MOVE    SPA-NAI-I01-NYUINYMD    TO  WRK-NYUINYMD
+      *
+           IF    ( SPA-GMN-I01-NYUINYMD    =   SPACE )
+      *
+      *        入力がない場合、システム日付を設定
+               MOVE    SPA-SYSYMD  TO  WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               MOVE    WRK-HENYMDG TO  SPA-GMN-I01-NYUINYMD
+               MOVE    WRK-SYMD    TO  SPA-NAI-I01-NYUINYMD
+           ELSE
+               MOVE    SPA-GMN-I01-NYUINYMD
+                                   TO  WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+      *            エラーコードを設定（後続の処理は続行）
+                   MOVE    "0001"      TO  SPA-ERRCD
+                   MOVE    7           TO  SPA-GMN-I01-CUR
+                   MOVE    WRK-NYUINYMD
+                                       TO  WRK-YMD
+                   PERFORM 5002-HIZUKE-CHK-SEC
+               END-IF
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-NYUINYMD
+               MOVE    WRK-SYMD        TO  SPA-NAI-I01-NYUINYMD
+           END-IF
+      *
+      *
+           IF    (  SPA-NAI-I01-NYUINYMD
+                                   NOT =   SPA-NAI-I01-NYUINYMD-MAE )
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                       TO  SPA-NAI-I01-NYUINYMD-MAE
+      *        コンボ初期処理
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                   TO  WRK-KJNYMD
+               PERFORM 310-CMB-SYOKI-SEC
+      *
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                   TO  WRK-KJNYMD
+      *        保険組み合わせコンボ初期処理
+               PERFORM 4101-CMB-HKNCOMBI-SET-SEC
+      *        受付マスタ検索処理
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                   TO  WRK-KJNYMD
+               PERFORM 4101-UKETUKE-SEL-SEC
+      *        受診履歴検索処理
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                   TO  WRK-KJNYMD
+               PERFORM 4101-JYURRK-SEL-SEC
+           END-IF
+      *
+           .
+      *
+       4101-NYUINYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院日チェック処理
+      *****************************************************************
+       4101-TAIINYMD-CHK-SEC           SECTION.
+      *
+           MOVE    SPACE           TO  SPA-NAI-I01-TAIINYMD
+      *
+           IF    ( SPA-GMN-I01-TAIINYMD    =   SPACE )
+               GO  TO  4101-TAIINYMD-CHK-EXT
+           END-IF
+      *
+           MOVE    SPA-GMN-I01-TAIINYMD
+                                   TO  WRK-YMD
+           PERFORM 5002-HIZUKE-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               MOVE    11          TO  SPA-GMN-I01-CUR
+               GO  TO  4101-TAIINYMD-CHK-EXT
+           END-IF
+      *
+           MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-TAIINYMD
+           MOVE    WRK-SYMD        TO  SPA-NAI-I01-TAIINYMD
+      *
+           .
+      *
+       4101-TAIINYMD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    病室番号チェック処理
@@ -3183,6 +3315,7 @@
            END-IF
       *
       *    病室番号存在チェック
+           MOVE    WRK-KIHON-KJNYMD    TO  WRK-KJNYMD
            PERFORM 4101-BRMNUM-SEL-SEC
       *
            EVALUATE    SPA-GMN-I01-BTUNAME-CNT
@@ -3257,6 +3390,7 @@
            END-IF
       *
       *    特定入院料コンボ設定処理
+           MOVE    WRK-KIHON-KJNYMD    TO  WRK-KJNYMD
            PERFORM 4101-CMB-TOKNYUIN-SET-SEC
       *
       *    特定入院料の初期値を設定
@@ -3275,7 +3409,7 @@
                                    WRK-BTUJYOHO-TBL
       *
            MOVE    "5002"          TO  SYS-KANRICD
-           MOVE    SPA-SYSYMD
+           MOVE    WRK-KJNYMD
                                    TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
@@ -3330,7 +3464,7 @@
                                    SPA-GMN-I01-CMB-BTUNAME
       *
            MOVE    "5001"          TO  SYS-KANRICD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    WRK-KJNYMD      TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタ検索
@@ -3472,7 +3606,7 @@
       *
            MOVE    WRK-KANRICD     TO  SYS-KANRICD
            MOVE    WRK-KBNCD       TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    WRK-KJNYMD      TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
@@ -3589,6 +3723,7 @@
            END-IF
       *
       *    特定入院料コンボ設定処理
+           MOVE    WRK-KIHON-KJNYMD    TO  WRK-KJNYMD
            PERFORM 4101-CMB-TOKNYUIN-SET-SEC
       *
       *    特定入院料の初期値を設定
@@ -3621,53 +3756,6 @@
            .
       *
        4101-SAGAKU-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院日チェック処理
-      *****************************************************************
-       4101-NYUINYMD-CHK-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SPA-NAI-I01-NYUINYMD
-      *
-           IF    ( SPA-GMN-I01-NYUINYMD    =   SPACE )
-      *
-      *        入力がない場合、システム日付を設定
-               MOVE    SPA-SYSYMD  TO  WRK-YMD
-               PERFORM 5002-HIZUKE-CHK-SEC
-               MOVE    WRK-HENYMDG TO  SPA-GMN-I01-NYUINYMD
-               MOVE    WRK-SYMD    TO  SPA-NAI-I01-NYUINYMD
-               GO  TO  4101-NYUINYMD-CHK-EXT
-           END-IF
-      *
-           MOVE    SPA-GMN-I01-NYUINYMD
-                                   TO  WRK-YMD
-           PERFORM 5002-HIZUKE-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               MOVE    7           TO  SPA-GMN-I01-CUR
-               GO  TO  4101-NYUINYMD-CHK-EXT
-           END-IF
-      *
-           MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-NYUINYMD
-           MOVE    WRK-SYMD        TO  SPA-NAI-I01-NYUINYMD
-      *
-           IF  ( SPA-GMN-I01-SYORIKBN-CD   =   "01" )
-               MOVE    SPA-NAI-I01-NYUINYMD
-                                   TO  WRK-KJNYMD
-      *        保険組み合わせコンボ初期処理
-               PERFORM 4101-CMB-HKNCOMBI-SET-SEC
-      *        受付マスタ検索処理
-               MOVE    SPA-NAI-I01-NYUINYMD
-                                   TO  WRK-KJNYMD
-               PERFORM 4101-UKETUKE-SEL-SEC
-      *        受診履歴検索処理
-               MOVE    SPA-NAI-I01-NYUINYMD
-                                   TO  WRK-KJNYMD
-               PERFORM 4101-JYURRK-SEL-SEC
-           END-IF
-      *
-           .
-      *
-       4101-NYUINYMD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院科チェック処理
@@ -3765,32 +3853,6 @@
       *
            .
        4101-SHONUM-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    退院日チェック処理
-      *****************************************************************
-       4101-TAIINYMD-CHK-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SPA-NAI-I01-TAIINYMD
-      *
-           IF    ( SPA-GMN-I01-TAIINYMD    =   SPACE )
-               GO  TO  4101-TAIINYMD-CHK-EXT
-           END-IF
-      *
-           MOVE    SPA-GMN-I01-TAIINYMD
-                                   TO  WRK-YMD
-           PERFORM 5002-HIZUKE-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               MOVE    11          TO  SPA-GMN-I01-CUR
-               GO  TO  4101-TAIINYMD-CHK-EXT
-           END-IF
-      *
-           MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-TAIINYMD
-           MOVE    WRK-SYMD        TO  SPA-NAI-I01-TAIINYMD
-      *
-           .
-      *
-       4101-TAIINYMD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    担当医チェック処理
@@ -4432,6 +4494,7 @@
                                    SPA-NAI-I01-INPUT-AREA
                                    SPA-GMN-I01-CMB-BTUNAME
                                    SPA-GMN-I01-CMB-HKNCOMBI
+                                   SPA-GMN-I01-CMB-TOKNYUIN
       *
            MOVE    SPA-GMN-I01-SHOKAI-ITM (01)
                                        TO  SPA-GMN-I01-SHOKAI
@@ -4445,6 +4508,7 @@
            PERFORM 5002-HIZUKE-CHK-SEC
            MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-NYUINYMD
            MOVE    WRK-SYMD        TO  SPA-NAI-I01-NYUINYMD
+                                       SPA-NAI-I01-NYUINYMD-MAE
       *
            MOVE    ZERO            TO  SPA-GMN-I01-NYUREKILST-SEL
       *

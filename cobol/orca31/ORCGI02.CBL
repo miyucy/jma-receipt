@@ -458,7 +458,8 @@
            MOVE    "5001"          TO  SYS-KANRICD
            MOVE    PTNYUINRRK-BTUNUM
                                    TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                   TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタ検索処理
@@ -543,7 +544,8 @@
            MOVE    "1"             TO  SYS-KBNCD (1 : 1)
            MOVE    PTNYUINRRK-DRCD1 ( 2 : 4 )
                                    TO  SYS-KBNCD (2 : )
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                   TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタ検索処理

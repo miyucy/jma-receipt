@@ -177,6 +177,7 @@
                  11  SPA-NAI-I01-BIRTHDAY          PIC X(08).
       *          異動日（西暦）
                  11  SPA-NAI-I01-IDOYMD            PIC X(08).
+                 11  SPA-NAI-I01-IDOYMD-MAE        PIC X(08).
       *          前回異動日（西暦）
                  11  SPA-NAI-I01-MAEIDOYMD         PIC X(08).
       *          入力データ入院履歴番号
@@ -197,6 +198,7 @@
                  11  SPA-NAI-I01-BTUNAME-MOT       PIC X(23).
       *          入院日（西暦）
                  11  SPA-NAI-I01-NYUINYMD          PIC X(08).
+                 11  SPA-NAI-I01-NYUINYMD-MAE      PIC X(08).
       *          入院科
                  11  SPA-NAI-I01-NYUINKA-MOT       PIC X(27).
       *          退院日（西暦）
