@@ -283,15 +283,6 @@
            MOVE    SPA-I48-INPUTCD     TO  WRK-INPUTCD.
            MOVE    ZERO                TO  SPA-I48-NEXT.
       *
-      *    リストボックス
-           MOVE    "1:処置"            TO  SPA-I48-JIINLST (1).
-           MOVE    "2:診察"            TO  SPA-I48-JIINLST (2).
-           MOVE    "3:注射"            TO  SPA-I48-JIINLST (3).
-           MOVE    "4:手術・麻酔"      TO  SPA-I48-JIINLST (4).
-           MOVE    "5:画像診断"        TO  SPA-I48-JIINLST (5).
-           MOVE    "6:その他"          TO  SPA-I48-JIINLST (6).
-           MOVE    SPACE               TO  SPA-I48-JIIN-G.
-      *
       *    ユーザー登録他
            MOVE    "1:コメント"        TO  SPA-I48-USERLST (1).
            MOVE    "2:労災"            TO  SPA-I48-USERLST (2).
@@ -622,47 +613,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ユーザー登録、自院採用分処理
+      *    ユーザー登録分処理
       *****************************************************************
        31021-ETC-PATH-SET-SEC          SECTION.
       *
            EVALUATE    SPA-I48-GMN-SYORI3
-               WHEN    "J1"
-      *            自院・処置
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
-                   MOVE    "140000000"          TO  TNS-SRYCD
-                   MOVE    "149999999"          TO  TNSUP-SRYCD
-                   MOVE    "1"                  TO  SPA-I48-GMN-ALL
-               WHEN    "J2"
-      *            自院・診察
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
-                   MOVE    "1"                  TO  SPA-I48-GMN-ALL
-                   MOVE    "110000000"          TO  TNS-SRYCD
-                   MOVE    "119999999"          TO  TNSUP-SRYCD
-               WHEN    "J3"
-      *            自院・注射
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
-                   MOVE    "1"                  TO  SPA-I48-GMN-ALL
-                   MOVE    "130000000"          TO  TNS-SRYCD
-                   MOVE    "139999999"          TO  TNSUP-SRYCD
-               WHEN    "J4"
-      *            自院・手術
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
-                   MOVE    "1"                  TO  SPA-I48-GMN-ALL
-                   MOVE    "150000000"          TO  TNS-SRYCD
-                   MOVE    "159999999"          TO  TNSUP-SRYCD
-               WHEN    "J5"
-      *            自院・画像診断
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
-                   MOVE    "1"                  TO  SPA-I48-GMN-ALL
-                   MOVE    "170000000"          TO  TNS-SRYCD
-                   MOVE    "179999999"          TO  TNSUP-SRYCD
-               WHEN    "J6"
-      *            自院・その他
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
-                   MOVE    "1"                  TO  SPA-I48-GMN-ALL
-                   MOVE    "180000000"          TO  TNS-SRYCD
-                   MOVE    "199999999"          TO  TNSUP-SRYCD
                WHEN    "U1"
       *            自院・コメント
                    MOVE    "TENSU-KEY12S"       TO  WRK-PATH
@@ -766,26 +721,26 @@
            MOVE    ZERO                TO  FLG-CHK.
       *
       *    病院診療所区分判定
-           IF      (TNS-HOSPSRYKBN     =   ZERO        )  OR
-                   (TNS-HOSPSRYKBN     =   SPA-HOSPSBT )
+           IF      (TNS-HOSPSRYKBN     =   ZERO)        OR
+                   (TNS-HOSPSRYKBN     =   SPA-HOSPSBT)
                CONTINUE
            ELSE
                MOVE   1                TO  FLG-CHK
            END-IF.
       *
       *    老人区分判定
-           IF      (TNS-ROUTEKKBN      =   ZERO        )   OR
-                   ((TNS-ROUTEKKBN      =   1          )  AND
-                    (SPA-ROUJIN         =   ZERO       ))  OR
-                   ((TNS-ROUTEKKBN      =   2          )  AND
-                    (SPA-ROUJIN         =   1          ))
+           IF      (TNS-ROUTEKKBN      =   ZERO)   OR
+                   ((TNS-ROUTEKKBN      =   1  )  AND
+                    (SPA-ROUJIN         =   ZERO))  OR
+                   ((TNS-ROUTEKKBN      =   2  )  AND
+                    (SPA-ROUJIN         =   1  ))
                CONTINUE
            ELSE
                MOVE   1                TO  FLG-CHK
            END-IF.
       *
       *    入外区分
-           IF      (TNS-NYUGAITEKKBN      =   ZERO        )  OR
+           IF      (TNS-NYUGAITEKKBN      =   ZERO)          OR
                    (TNS-NYUGAITEKKBN      =   SPA-NYUGAIKBN)
                CONTINUE
            ELSE
@@ -793,11 +748,20 @@
            END-IF.
       *
       *    診療区分
-           IF      (TNS-SRYKBN            =   "90" )  OR
-                   (TNS-SRYKBN            =   "99" )
+           IF      (TNS-SRYKBN            =   "90")  OR
+                   (TNS-SRYKBN            =   "99")
                CONTINUE
            ELSE
-               MOVE   1                TO  FLG-CHK
+               IF      SPA-I48-GMN-SYORI3    =   "U2"
+                   CONTINUE
+               ELSE
+                   IF      (SPA-I48-GMN-SYORI3    =   "U1")  AND
+                           (TNS-SRYCD (4:1)   NOT =   "8")
+                       CONTINUE
+                   ELSE
+                       MOVE   1                TO  FLG-CHK
+                   END-IF
+               END-IF
            END-IF.
       *
        31021-TENSU-CHK-EXT.
@@ -880,24 +844,6 @@
       *        ユーザー登録
                WHEN    "U"
                    EVALUATE    SPA-I48-GMN-SYORI3
-                       WHEN    "J1"
-                           MOVE    "自院採用（処置）"
-                                               TO  I48-SENTAKU
-                       WHEN    "J2"
-                           MOVE    "自院採用（診察）"
-                                               TO  I48-SENTAKU
-                       WHEN    "J3"
-                           MOVE    "自院採用（注射）"
-                                               TO  I48-SENTAKU
-                       WHEN    "J4"
-                           MOVE    "自院採用（手術・麻酔）"
-                                               TO  I48-SENTAKU
-                       WHEN    "J5"
-                           MOVE    "自院採用（画像診断）"
-                                               TO  I48-SENTAKU
-                       WHEN    "J6"
-                           MOVE    "自院採用（その他）"
-                                               TO  I48-SENTAKU
                        WHEN    "U1"
                            MOVE    "コメント（全体）"
                                                TO  I48-SENTAKU
@@ -971,20 +917,6 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   10
-               IF      SPA-I48-JIINLST (IDX)   NOT =   SPACE
-                   MOVE    SPA-I48-JIINLST(IDX) TO  I48-JIIN-ITEM(IDX)
-                   MOVE    IDX                  TO  I48-JIIN-COUNT
-               END-IF
-           END-PERFORM.
-           IF     (SPA-I48-GMN-SYORI   =   "U"  )  AND
-                  (SPA-I48-GMN-SYORI3(1:1)  =   "J")
-               MOVE    SPA-I48-JIIN-G      TO  I48-JIIN
-           ELSE
-               MOVE    SPACE               TO  SPA-I48-JIIN-G
-           END-IF.
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
                IF      SPA-I48-USERLST (IDX)   NOT =   SPACE
                    MOVE    SPA-I48-USERLST(IDX) TO  I48-USER-ITEM(IDX)
                    MOVE    IDX                  TO  I48-USER-COUNT
@@ -1021,8 +953,6 @@
                WHEN    06
                    MOVE    "INPUT"         TO  MCP-WIDGET
                WHEN    07
-                   MOVE    "JIIN"          TO  MCP-WIDGET
-               WHEN    08
                    MOVE    "USER"          TO  MCP-WIDGET
            END-EVALUATE.
       *
@@ -1078,9 +1008,6 @@
       *        行選択
                WHEN    ANY             ALSO    "LIST"
                    PERFORM 41012-LISTSEL-SEC
-      *        自院入力
-               WHEN    "ACTIVATE"      ALSO    "JIIN"
-                   PERFORM 41014-JIIN-CHK-SEC
       *        ユーザー
                WHEN    "ACTIVATE"      ALSO    "USER"
                    PERFORM 41014-USER-CHK-SEC
@@ -1097,6 +1024,7 @@
            MOVE    6                   TO  SPA-GMN-CUR4.
       *
            MOVE    I48-INPUT           TO  SPA-I48-GMN-INPUT.
+           MOVE    I48-INPUT           TO  WRK-INPUTCD.
            MOVE    ZERO                TO  FLG-KANJI.
            MOVE    ZERO                TO  FLG-KANA.
            MOVE    ZERO                TO  WRK-MOJI.
@@ -1272,80 +1200,6 @@
            EXIT.
       *
       *****************************************************************
-      *    検査選択処理
-      *****************************************************************
-       41014-KENSA-SEL-SEC             SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SYURYOU.
-           IF      SPA-I48-NAI-SELNUM(IDX-1)   =   ZERO
-               IF     (IDX-1               =   5   )  OR
-                     ((IDX-1               <   5   )  AND
-                      (SPA-I48-NAI-SELNUM(IDX-1 + 1)  =   ZERO))
-                   IF      IDX-1           >   1
-                       MOVE    1               TO  FLG-SYURYOU
-                   END-IF
-               END-IF
-               PERFORM 410141-TBL-SAIHEN-SEC
-           ELSE
-               PERFORM 41011-SELNO-SEC
-               IF      SPA-ERRCD           =  SPACE
-                   IF     (IDX-1           =   5   )  OR
-                          (IDX-1           =   SPA-I48-GMN-MAX)
-                       MOVE    1               TO  FLG-SYURYOU
-                   ELSE
-                       COMPUTE SPA-GMN-CUR4    =   IDX-1   +   1
-                   END-IF
-               ELSE
-                   MOVE    IDX-1               TO  SPA-GMN-CUR4
-               END-IF
-           END-IF.
-      *
-           IF      SPA-ERRCD           =   SPACE
-               IF      FLG-SYURYOU         =   1
-      *             戻るへ
-                    PERFORM 210-BACK
-               END-IF
-           END-IF.
-      *
-       41014-KENSA-SEL-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    行選択空白削除処理
-      *****************************************************************
-       410141-TBL-SAIHEN-SEC       SECTION.
-      *
-           MOVE    ZERO                    TO  IDX1.
-           MOVE    SPA-I48-NAI-SELNUM-G    TO  WRK-NAI-SELNUM-G.
-           MOVE    SPA-I48-GMN-SELNUM-G    TO  WRK-GMN-SELNUM-G.
-           MOVE    SPA-I48-SRYCD-G         TO  WRK-I48-SRYCD-G.
-      *
-           INITIALIZE                  SPA-I48-GMN-SELNUM-G.
-           INITIALIZE                  SPA-I48-NAI-SELNUM-G.
-           INITIALIZE                  SPA-I48-SRYCD-G.
-      *
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL       IDX2    >   5
-               IF      WRK-NAI-SELNUM (IDX2)   =   ZERO
-                   CONTINUE
-               ELSE
-                   ADD     1               TO  IDX1
-                   MOVE    WRK-GMN-SELNUM (IDX2)
-                                           TO  SPA-I48-GMN-SELNUM(IDX1)
-                   MOVE    WRK-NAI-SELNUM (IDX2)
-                                           TO  SPA-I48-NAI-SELNUM(IDX1)
-                   MOVE    WRK-I48-SRYCD (IDX2)
-                                           TO  SPA-I48-SRYCD   (IDX1)
-                   MOVE    IDX1            TO  IDX
-               END-IF
-           END-PERFORM.
-      *
-           COMPUTE SPA-GMN-CUR4        =   IDX1    +   1.
-      *
-       410141-TBL-SAIHEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    行選択処理
       *****************************************************************
        41012-LISTSEL-SEC       SECTION.
@@ -1414,6 +1268,7 @@
        280-SINRYOU-SEC                   SECTION.
       *
            MOVE    "8"                 TO  SPA-I48-GMN-SYORI.
+           MOVE    SPACE               TO  SPA-I48-GMN-SYORI3.
            MOVE    "2"                 TO  SPA-I48-TYPE.
       *
            INITIALIZE                      SPA-I48-NAI-SELNUM-G.
@@ -1428,52 +1283,11 @@
            EXIT.
       *
       *****************************************************************
-      *    自院入力分処理
-      *****************************************************************
-       41014-JIIN-CHK-SEC              SECTION.
-      *
-           MOVE    7                   TO  SPA-GMN-CUR4.
-      *
-           MOVE    I48-JIIN            TO  SPA-I48-JIIN-G.
-      *
-           EVALUATE    SPA-I48-JIIN
-               WHEN    "1"
-                   MOVE    "J1"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "2"
-                   MOVE    "J2"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "3"
-                   MOVE    "J3"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "4"
-                   MOVE    "J4"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "5"
-                   MOVE    "J5"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "6"
-                   MOVE    "J6"            TO  SPA-I48-GMN-SYORI3
-               WHEN    OTHER
-                   MOVE    "0010"          TO  SPA-ERRCD
-                   GO      TO      41014-JIIN-CHK-EXT
-           END-EVALUATE.
-      *
-           MOVE    "U"                 TO  SPA-I48-GMN-SYORI.
-           MOVE    "2"                 TO  SPA-I48-TYPE.
-      *
-           INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-           INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-           MOVE    SPACE               TO  SPA-I48-SRYCD-G.
-           MOVE    SPACE               TO  SPA-I48-GMN-ALL.
-      *    ＳＰＡセット
-           MOVE    ZERO                TO  SPA-I48-NEXT.
-           PERFORM                     310-SPA-SET-SEC.
-      *
-       41014-JIIN-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ユーザー登録分処理
       *****************************************************************
        41014-USER-CHK-SEC              SECTION.
       *
-           MOVE    8                   TO  SPA-GMN-CUR4.
+           MOVE    7                   TO  SPA-GMN-CUR4.
       *
            MOVE    I48-USER            TO  SPA-I48-USER-G.
       *
@@ -1700,10 +1514,6 @@
                WHEN    "0006"
                    MOVE
                    "次ページはありません。"
-                                       TO  SPA-ERRMSG
-               WHEN    "0010"
-                   MOVE
-                   "自院採用区分がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0011"
                    MOVE
