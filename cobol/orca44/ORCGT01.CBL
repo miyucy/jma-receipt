@@ -681,9 +681,11 @@
                                                SPA-DATAKBN3-STATE
            END-IF
       *
-           MOVE    "1"             TO  SPA-GMN-T02-SYORIFLGL   (1)
-           MOVE    "処理を行う"    TO  SPA-GMN-T02-SYORIFLGMEIL(1)
-           MOVE    1               TO  SPA-GMN-T02-SYORIFLG-MAX
+           MOVE    "0"             TO  SPA-GMN-T02-SYORIFLGL   (1)
+           MOVE    "処理しない"    TO  SPA-GMN-T02-SYORIFLGMEIL(1)
+           MOVE    "1"             TO  SPA-GMN-T02-SYORIFLGL   (2)
+           MOVE    "処理する"      TO  SPA-GMN-T02-SYORIFLGMEIL(2)
+           MOVE    2               TO  SPA-GMN-T02-SYORIFLG-MAX
       *
       *     
       *    出力先プリンタ名割り当て情報編集

@@ -226,6 +226,9 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+                                       WRK-AREA
+      *                                 
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-T01FREE
            MOVE    SPA-WORK        TO  SPA-T01KYOUTU
@@ -529,9 +532,11 @@
                WHEN    SPACE
                    MOVE    SPACE           TO  SPA-GMN-T02-SYORIFLG-G
                WHEN    "1"
-                   MOVE    SPA-GMN-T02-SYORIFLGLST (1)
+                   MOVE    SPA-GMN-T02-SYORIFLGLST (2)
                                            TO  SPA-GMN-T02-SYORIFLG-G
            END-EVALUATE            
+           MOVE    SPA-GMN-T02-SYORIFLGLST (2)
+                                   TO  SPA-GMN-T02-SYORIFLG-G
       *
            MOVE    SPA-GMN-T02-TSHORIMSG (SPA-NAI-T02-SELNUM1)
                                        TO  SPA-GMN-T02-SHORIMSG
@@ -807,11 +812,13 @@
       *
                EVALUATE    SPA-GMN-T02-SYORIFLG
                    WHEN    SPACE
-                       MOVE    SPACE       TO  SPA-GMN-T02-SYORIFLG-G
-                                               SPA-GMN-T02-TSYORIFLG
+                   WHEN    ZERO
+                       MOVE    SPA-GMN-T02-SYORIFLGLST (1)
+                                           TO  SPA-GMN-T02-SYORIFLG-G
+                       MOVE    SPACE       TO  SPA-GMN-T02-TSYORIFLG
                                                    (SPA-NAI-T02-SELNUM1)
                    WHEN    "1"
-                       MOVE    SPA-GMN-T02-SYORIFLGLST (1)
+                       MOVE    SPA-GMN-T02-SYORIFLGLST (2)
                                            TO  SPA-GMN-T02-SYORIFLG-G
                                                SPA-GMN-T02-TSYORIFLG
                                                    (SPA-NAI-T02-SELNUM1)
@@ -820,8 +827,8 @@
                END-EVALUATE            
       *
                IF      SPA-ERRCD          =   SPACE
-                   IF    ( SPA-GMN-T02-SYORIFLG   =   SPACE )
-                   OR    ( SPA-GMN-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
+                   IF    ( SPA-GMN-T02-SYORIFLG   =   SPACE   OR  ZERO )
+                   OR    ( SPA-GMN-T02-TPARAKBN (SPA-NAI-T02-SELNUM1   )
                                                   =   SPACE )       
                        INITIALIZE                 SPA-GMN-T02-KOUMOKU
                                                   SPA-NAI-T02-KOUMOKU
@@ -968,6 +975,11 @@
                GO  TO  420-TUIKA-EXT
            END-IF
       *
+           IF      SPA-GMN-T02-PARA    =  SPACE
+               MOVE    "0015"              TO  SPA-ERRCD
+               GO  TO  420-TUIKA-EXT
+           END-IF
+      *
       *    最大登録数チェック
            IF      SPA-GMN-T02-PARA-MAX
                                        =   100
@@ -1066,6 +1078,11 @@
       *
            IF      SPA-GMN-T02-SELNUM2 =   ZERO
                MOVE    "0008"              TO  SPA-ERRCD
+               GO  TO  430-HENKOU-EXT
+           END-IF
+      *
+           IF      SPA-GMN-T02-PARA    =  SPACE
+               MOVE    "0015"              TO  SPA-ERRCD
                GO  TO  430-HENKOU-EXT
            END-IF
       *   
