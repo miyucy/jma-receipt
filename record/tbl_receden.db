@@ -4,7 +4,7 @@ SRYYM				number(6);
 NYUGAIKBN			char(1);
 PTID				number(10);
 RECEKA				char(2);
-TEISYUTUSAKI			number(1,0);
+TEISYUTUSAKI		number(1,0);
 RECESYUBETU			char(4);
 HKNJANUM			char(8);
 HOJOKBN_KEY			char(1);
@@ -13,13 +13,6 @@ RECKBN				char(1);
 RENNUM				number(4);
 CREYMD				char(8);
 RECEDATA			char(250);
-#-----> 主キー更新用項目
-UPHKNJANUM			char(10),virtual;
-#-----> 検索用項目
-XXPREFNUM 			char(2),virtual;
-XXSRYYM 			number(6),virtual;
-XXSTHKNJANUM			char(8),virtual;
-XXEDHKNJANUM			char(8),virtual;
 };
 
 primary	{
@@ -54,486 +47,21 @@ path	key2	{
 		FROM tbl_receden
 		WHERE	HOSPID		=	:HOSPID
 		  AND	SRYYM		=	:SRYYM
+		  AND	NYUGAIKBN	=	:NYUGAIKBN
 		  AND	PTID		=	:PTID
 		  AND	RECEKA		=	:RECEKA
+		  AND	TEISYUTUSAKI	=	:TEISYUTUSAKI
+		  AND	RECESYUBETU	=	:RECESYUBETU
+		  AND	HKNJANUM	=	:HKNJANUM
+		  AND	HOJOKBN_KEY	=	:HOJOKBN_KEY
+		  AND	TEKSTYMD	=	:TEKSTYMD
+		  AND	RECKBN		=	:RECKBN
 		;
 	};
 };
 
-path	key3	{
-	DBSELECT	{
-		DECLARE tbl_receden_key3_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    <>  '060'       )
-                  AND (      HKNNUM_S    <>  '067'       ) 
-                  AND (      RECESYUBETU <>  '0000'      )
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-		;
-	};
-};
-
-path	key4	{
-	DBSELECT	{
-		DECLARE tbl_receden_key4_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    =  '060'                   
-                        OR   HKNNUM_S    =  '067'        ) 
-                  AND (      RECESYUBETU <>  '0000'      ) 
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )) )
-                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
-                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
-                ORDER  BY  HKNJANUM_S   
-		;
-	};
-};
-
-path	key5	{
-	DBSELECT	{
-		DECLARE tbl_receden_key5_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE   HOSPID              =   :HOSPID
-                AND     RECESYUBETU         <>  '0000'  
-                AND     SRYYM               <=  :SKYYM
-                AND   (     ( SKYKBN        <>  '2'       )
-                         OR (      SKYYM     =   :SKYYM  
-                              AND  SRYYM     <>  :SKYYM   ) )
-                ORDER   BY  NYUGAIKBN,TEISYUTUSAKI,SRYYM,SKYYM,HKNJANUM,PTNUM     
-		;
-	};
-};
-
-path	key6	{
-	DBSELECT	{
-		DECLARE tbl_receden_key6_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID              )
-                  AND (      HKNNUM_S    =  '060'                   
-                        OR   HKNNUM_S    =  '067'                 ) 
-                  AND (      RECESYUBETU <>  '0000'               ) 
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      ))          )
-                  AND (      PREFKBN     =   '1'                  ) 
-                  AND (      PREFNUM     =   :XXPREFNUM           ) 
-                ORDER  BY  HKNJANUM_S   
-		;
-	};
-};
-
-
-path	key7	{
-	DBSELECT	{
-		DECLARE tbl_receden_key7_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID              )
-                  AND (      HKNNUM_S    =  '060'                   
-                        OR   HKNNUM_S    =  '067'                 ) 
-                  AND (      RECESYUBETU <>  '0000'               ) 
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      ))          )
-                  AND (      PREFKBN     =   '2'                  ) 
-                ORDER  BY  HKNJANUM_S   
-		;
-	};
-};
-
-path	key8	{
-	DBSELECT	{
-		DECLARE tbl_receden_key8_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    <>  '060'       )
-                  AND (      HKNNUM_S    <>  '067'       ) 
-                  AND (      RECESYUBETU <>  '0000'      )
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-                  AND (      SRYYM       <   :SRYYM      )
-		;
-	};
-};
-
-
-path	key9	{
-	DBSELECT	{
-		DECLARE tbl_receden_key9_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    <>  '060'       )
-                  AND (      HKNNUM_S    <>  '067'       ) 
-                  AND (      RECESYUBETU <>  '0000'      )
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-                  AND (      SRYYM       >=  :SRYYM      )
-                  AND (      SRYYM       <   :XXSRYYM    )
-                  AND (      ZAITAKU     <>  '1'         )
-		;
-	};
-};
-
-path	key10	{
-	DBSELECT	{
-		DECLARE tbl_receden_key10_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    <>  '060'       )
-                  AND (      HKNNUM_S    <>  '067'       ) 
-                  AND (      RECESYUBETU <>  '0000'      )
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-                  AND (      SRYYM       >=  :SRYYM      )
-                  AND (      SRYYM       <   :XXSRYYM    )
-                  AND (      ZAITAKU     =   '1'         )
-		;
-	};
-};
-
-path	key11 {
-	DBSELECT	{
-		DECLARE tbl_receden_key11_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    =  '060'                   
-                        OR   HKNNUM_S    =  '067'        ) 
-                  AND (      RECESYUBETU <>  '0000'      ) 
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-                  AND (      SRYYM       <   :SRYYM      )
-                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
-                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
-                ORDER  BY  HKNJANUM_S   
-		;
-	};
-};
-
-path	key12	{
-	DBSELECT	{
-		DECLARE tbl_receden_key12_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    =  '060'                   
-                        OR   HKNNUM_S    =  '067'        ) 
-                  AND (      RECESYUBETU <>  '0000'      ) 
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-                  AND (      SRYYM       >=  :SRYYM      )
-                  AND (      ZAITAKU     <>  '1'         )
-                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
-                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
-                ORDER  BY  HKNJANUM_S   
-		;
-	};
-};
-
-path	key13	{
-	DBSELECT	{
-		DECLARE tbl_receden_key13_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    =  '060'                   
-                        OR   HKNNUM_S    =  '067'        ) 
-                  AND (      RECESYUBETU <>  '0000'      ) 
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-                  AND (      SRYYM       >=  :SRYYM      )
-                  AND (      ZAITAKU     =   '1'         )
-                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
-                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
-                ORDER  BY  HKNJANUM_S   
-		;
-	};
-};
-
-path	key14	{
-	DBSELECT	{
-		DECLARE tbl_receden_key14_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    =  '060'                   
-                        OR   HKNNUM_S    =  '067'        ) 
-                  AND (      RECESYUBETU <>  '0000'      ) 
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-                  AND (      ZAITAKU     <>  '1'        )
-                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
-                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
-                ORDER  BY  HKNJANUM_S   
-		;
-	};
-};
-
-path	key15		{ 	
-	DBSELECT	{
-		DECLARE tbl_receden_key15_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE   HOSPID      =   :HOSPID
-                  AND   SRYYM       =   :SRYYM
-                  AND   NYUGAIKBN   =   :NYUGAIKBN
-                  AND   PTID        =   :PTID
-                  AND   RECEKA      =   :RECEKA 
-                  AND   TEISYUTUSAKI =  :TEISYUTUSAKI
-                  AND   HKNJANUM    =   :HKNJANUM
-                  AND   HOJOKBN_KEY =   :HOJOKBN_KEY
-                  AND   TEKSTYMD    =   :TEKSTYMD
-		;
-	};
-};
-
-
-path	key16	{
-	DBSELECT	{
-		DECLARE tbl_receden_key16_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    =  '060'                   
-                        OR   HKNNUM_S    =  '067'        ) 
-                  AND (      RECESYUBETU <>  '0000'      ) 
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-                  AND (      SRYYM       >=  :SRYYM   )
-                  AND (   (  NYUGAIKBN   =   '1'      )
-                       OR (( NYUGAIKBN   =   '2'      ) AND (  ZAITAKU     <>  '1' )))
-                ORDER  BY  HKNJANUM_S   
-		;
-	};
-};
-
-path	key17	{
-	DBSELECT	{
-		DECLARE tbl_receden_key17_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    =  '060'                   
-                        OR   HKNNUM_S    =  '067'        ) 
-                  AND (      RECESYUBETU <>  '0000'      ) 
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-                  AND (      SRYYM       >=  :SRYYM      )
-                  AND (      ZAITAKU     =   '1'         )
-                  AND (      NYUGAIKBN   =   '2'         )
-                ORDER  BY  HKNJANUM_S   
-		;
-	};
-};
-
-path	key18	{
-	DBSELECT	{
-		DECLARE tbl_receden_key18_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    <>  '060'       )
-                  AND (      HKNNUM_S    <>  '067'       ) 
-                  AND (      RECESYUBETU <>  '0000'      )
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-                  AND (      SRYYM       >=  :SRYYM      )
-                  AND (      SRYYM       <   :XXSRYYM    )
-                  AND (      NYUGAIKBN   =   '1'         )
-		;
-	};
-};
-
-path	key19	{
-	DBSELECT	{
-		DECLARE tbl_receden_key19_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE   HOSPID      =   :HOSPID
-                  AND   SRYYM       =   :SRYYM
-                  AND   NYUGAIKBN   =   :NYUGAIKBN
-		;
-	};
-};
-
-
-path	key20	{
-	DBSELECT	{
-		DECLARE tbl_receden_key20_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID              )
-                  AND (      HKNNUM_S    =  '060'                   
-                        OR   HKNNUM_S    =  '067'                 ) 
-                  AND (      RECESYUBETU <>  '0000'               ) 
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      ))          )
-                  AND (      PREFKBN     =   '1'                  ) 
-                  AND (      PREFNUM     <>  :XXPREFNUM           ) 
-                ORDER  BY  HKNJANUM_S   
-		;
-	};
-};
-
-path	key21	{
-	DBSELECT	{
-		DECLARE tbl_receden_key21_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    =  '060'                   
-                        OR   HKNNUM_S    =  '067'        ) 
-                  AND (      RECESYUBETU <>  '0000'      ) 
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-                  AND (      SRYYM       >=  :SRYYM      )
-                  AND (      SRYYM       <   :XXSRYYM    )
-                  AND (      ZAITAKU     <>  '1'         )
-                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
-                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
-                ORDER  BY  HKNJANUM_S   
-		;
-	};
-};
-
-path	key22	{
-	DBSELECT	{
-		DECLARE tbl_receden_key22_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-                WHERE (      HOSPID      =   :HOSPID     )
-                  AND (      HKNNUM_S    =  '060'                   
-                        OR   HKNNUM_S    =  '067'        ) 
-                  AND (      RECESYUBETU <>  '0000'      ) 
-                  AND (   (( SRYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )
-                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
-                       OR (( SKYYM       =   :SKYYM   )
-                       AND ( SKYKBN      <>  '0'      )))
-                  AND (      SRYYM       >=  :SRYYM      )
-                  AND (      SRYYM       <   :XXSRYYM    )
-                  AND (      ZAITAKU     =   '1'         )
-                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
-                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
-                ORDER  BY  HKNJANUM_S   
-		;
-	};
-};
-
-path	all	{
-	DBSELECT	{
-		DECLARE tbl_receden_all_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receden
-		;
-	};
-};
 
 path	del1 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_receden
-		WHERE   HOSPID	=	:HOSPID
-		  AND   PTID	=	:PTID
-		;
-	};
-};
-
-path	del2 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_receden
-		WHERE	HOSPID		=	:HOSPID
-		  AND	SRYYM		=	:SRYYM
-		  AND	RECESYUBETU	=	'0000'
-		  AND	SKYKBN		<>	'0'
-		;
-	};
-};
-
-
-path	del3 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_receden
-                WHERE   HOSPID       =   :HOSPID
-                  AND   SRYYM        =   :SRYYM
-                  AND   TEISYUTUSAKI =   :TEISYUTUSAKI
-                  AND   SKYKBN       <>  '0' 
-		;
-	};
-};
-
-path	del4 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_receden
-                WHERE   HOSPID      =   :HOSPID
-                  AND   SRYYM       =   :SRYYM
-                  AND   NYUGAIKBN   =   :NYUGAIKBN
-                  AND   PTID        =   :PTID
-                  AND   SKYKBN      <>  '0' 
-		;
-	};
-};
-
-
-path	del5 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_receden
@@ -547,7 +75,7 @@ path	del5 	{
 };
 
 
-path	del6 	{
+path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_receden
@@ -556,6 +84,15 @@ path	del6 	{
                   AND   NYUGAIKBN    =   :NYUGAIKBN
                   AND   TEISYUTUSAKI =   :TEISYUTUSAKI
                   AND   SKYKBN       <>  '0' 
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_receden_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receden
 		;
 	};
 };
