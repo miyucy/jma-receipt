@@ -1,5 +1,11 @@
 W99	{
 	fixed1	{
+	        B06	{
+	           	state	int;
+	        };
+	        B07	{
+	           	state	int;
+	        };
 		YUKOSTYMD	{
 			value	varchar(9);
 		};
@@ -157,6 +163,36 @@ W99	{
 		};
 		SYNBUTTON2	{
 			value	bool;
+		};
+		LBLNO01	{
+			value	varchar(4);
+		};
+		LBLNO02	{
+			value	varchar(4);
+		};
+		LBLNO03	{
+			value	varchar(4);
+		};
+		LBLNO04	{
+			value	varchar(4);
+		};
+		LBLNO05	{
+			value	varchar(4);
+		};
+		LBLNO06	{
+			value	varchar(4);
+		};
+		LBLNO07	{
+			value	varchar(4);
+		};
+		LBLNO08	{
+			value	varchar(4);
+		};
+		LBLNO09	{
+			value	varchar(4);
+		};
+		LBLNO10	{
+			value	varchar(4);
 		};
 	};
 };

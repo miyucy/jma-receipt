@@ -1,4 +1,8 @@
             02  W99.
+              03  W99-B06.
+                04  W99-B06-STATE     PIC S9(9)   BINARY.
+              03  W99-B07.
+                04  W99-B07-STATE     PIC S9(9)   BINARY.
               03  W99-YUKOSTYMD.
                 04  W99-VALUE   PIC X(9).
               03  W99-YUKOEDYMD.
@@ -30,3 +34,5 @@
                 04  W99-VALUE   PIC X.
               03  W99-SYNBUTTON2.
                 04  W99-VALUE   PIC X.
+              03  W99-LBLNO-G.
+                04 W99-LBLNO    PIC X(04)  OCCURS  10.
