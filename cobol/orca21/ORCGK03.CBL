@@ -2060,7 +2060,7 @@
            ELSE
       *        ¿ÇÎÅ¹Ô°Ù¤¬Ìµ¤«¤Ã¤¿»þ¡¢½ªÎ»¤È¤¹¤ë
                IF      IDX-KOUI         =   ZERO
-                   PERFORM 4900-END-SYORI-SEC
+                   PERFORM 4909-NASI-SYORI-SEC
                    GO      TO      450-TOROKU-EXT
                END-IF
            END-IF
@@ -2075,6 +2075,83 @@
            PERFORM 4500-TOROKU-SYORI-SEC
            .
        450-TOROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÅÐÏ¿¡¦¹¹¿·½èÍý
+      *****************************************************************
+       4909-NASI-SYORI-SEC             SECTION.
+      *
+      *    ½é¿ÇÎÁ»»Äê¤¬¤¢¤ë»þ¤Ï¡¢»»ÄêÍúÎò¤È¿ÇÎÅ²ÊÍúÎò¤òºîÀ®¤¹¤ë
+           IF      SPA-SYOSIN-YMD  NOT =   SPACE
+      *
+      *        »»ÄêÍúÎòºîÀ®
+               MOVE    SPA-SYOSIN-YMD      TO  WRK-SRYYMD
+               MOVE    SPA-SYOSIN-SRYCD    TO  WRK-SRYCD
+               MOVE    WRK-SRYCD           TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      TNS-SANTEIRRKKBN    NOT =   ZERO
+                   MOVE    ZERO            TO  FLG-TOKTEI
+                   MOVE    1               TO  WRK-KAISU
+                   PERFORM 45021-SANTEI-UPD-SEC
+      *            ¿ÇÎÅ²ÊÍúÎò½èÍý
+                   PERFORM 45099-SRYKARRK-ADD-SEC
+               END-IF
+           END-IF
+      *
+           PERFORM 4900-END-SYORI-SEC
+      *
+           .
+       4909-NASI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÍúÎò¤Î¤ßÅÐÏ¿½èÍý
+      *****************************************************************
+       45099-SRYKARRK-ADD-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  SRYKARRK-REC
+           INITIALIZE                      SRYKARRK-REC
+           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-PTID            TO  KARRK-PTID
+           MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+      *
+           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+               PERFORM 975-SRYKARRK-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    ¿·µ¬¤Ç¤¢¤ë¤³¤È
+           IF      FLG-SRYKARRK           =   1
+               MOVE    SPACE               TO  SRYKARRK-REC
+               INITIALIZE                      SRYKARRK-REC
+               MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+               MOVE    SPA-PTID            TO  KARRK-PTID
+               MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+               MOVE    SPA-SYOSIN-YMD      TO  KARRK-SYOSINYMD1
+               MOVE    SPA-SYOSIN-YMD      TO  KARRK-SYOSINYMD2
+               MOVE    SPA-SYOSIN-YMD      TO  KARRK-LASTYMD
+           END-IF
+      *    ¿ÇÎÅ²ÊÍúÎòºîÀ®½ªÎ»½èÍý
+           PERFORM 45009-SRYKARRK-OUT-SEC
+      *
+           .
+       45099-SRYKARRK-ADD-EXT.
            EXIT.
       *
       *****************************************************************
