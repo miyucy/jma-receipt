@@ -32,6 +32,7 @@
       *  00.01.02    NACL-森脇    02.09.12  ファイルディレクトリ位置指定
       *  00.01.03    NACL-多々納  02.09.17  印刷サプの追加
       *  00.01.04    NACL-森脇    02.09.27  内容の変更
+      *  00.01.05    NACL-森脇    02.10.01  マスタ読み込みの修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -580,6 +581,11 @@
                END-IF
            END-PERFORM
       *
+      *----(00.01.05)--UPD-START----
+      *    点数マスタ薬剤検索
+           MOVE    ORCHC30-SRYCD(CNT-PARA)     TO  WRK-SRYCD
+           PERFORM 900-TENSU-READ-SEC
+      *
            IF  CNT-KAISU   =   ZERO
                GO  TO  240-NAIYO-SET-EXT
            END-IF
@@ -589,8 +595,9 @@
            PERFORM 241-HENNAIYO-SET-SEC
       *
       *    点数マスタ薬剤検索
-           MOVE    ORCHC30-SRYCD(CNT-PARA)     TO  WRK-SRYCD
-           PERFORM 900-TENSU-READ-SEC
+      *     MOVE    ORCHC30-SRYCD(CNT-PARA)     TO  WRK-SRYCD
+      *     PERFORM 900-TENSU-READ-SEC
+      *----(00.01.05)--UPD-END------
       *
       *    数量編集
            IF          TNS-TANICD  =   "015"
