@@ -89,7 +89,7 @@
                   05  K02-ROW     PIC S9(9)   BINARY.
                   05  K02-ROWATTR PIC S9(9)   BINARY.
                   05  K02-ITEM        OCCURS  150 TIMES.
-                    06  K02-NO      PIC X(3).
+                    06  K02-NO      PIC X(4).
                     06  K02-RRKYMD  PIC X(13).
                     06  K02-RRKSRYKA  PIC X(2).
                     06  K02-RRKHKNCOMBI  PIC X(04).

@@ -120,6 +120,7 @@
       *                Ê£¿ô¿ÇÎÅ²Ê¡¦ÊÝ¸±
                            11  SPA-NAI-GRP-DENPNUM   PIC  9(07).
                            11  SPA-NAI-GRP-RENNUM    PIC  9(02).
+                           11  SPA-NAI-SYU-UPDKBN    PIC  X(01).
                    07  SPA-NAI-DOSELNUM              PIC  9(03).
       *
                    07  SPA-NAI-TESELNUM              PIC  9(03).
