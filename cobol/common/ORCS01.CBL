@@ -3335,10 +3335,10 @@
                        EVALUATE  SYS-4001-TENKBN
                            WHEN  "1"
                                COMPUTE  WK-ZENGAKU  =  
-                                       (WK-ZENGAKU  / 10 * 11.5) + 0.5  
+                                       (WK-ZENGAKU  / 10 * 11.5)
                            WHEN  "2"
                                COMPUTE  WK-ZENGAKU  =  
-                                       (WK-ZENGAKU  / 10 * 12.0) + 0.5  
+                                       (WK-ZENGAKU  / 10 * 12.0)
                        END-EVALUATE
                      ELSE
       *----(01.00.19) LINE ADD START --------------------------

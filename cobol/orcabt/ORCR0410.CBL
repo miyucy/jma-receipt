@@ -1755,10 +1755,10 @@
            IF    RECE41-HKNKBN   =   "4"                                
                CONTINUE                                                 
            ELSE                                                         
-      ****     COMPUTE  RECE41-TOTALKIN   =   RECE41-TOTALTEN   *
-      ****                                    WRK-TANKA    
-               COMPUTE  RECE41-TOTALKIN   =   
-                       (RECE41-TOTALTEN   *   WRK-TANKA)   +   0.5      
+               COMPUTE  RECE41-TOTALKIN   =   RECE41-TOTALTEN   *
+                                              WRK-TANKA    
+      ****     COMPUTE  RECE41-TOTALKIN   =   
+      ****             (RECE41-TOTALTEN   *   WRK-TANKA)   +   0.5      
            END-IF                                                       
       *
            .
