@@ -295,6 +295,9 @@
                05  WRK-PARA-JOBID              PIC  9(07).
                05  WRK-PARA-SHELLID            PIC  X(08).
       *
+           03  WRK-JYUNBAN         PIC 9(04).
+           03  WRK-GYOSUU          PIC 9(04).
+           03  WRK-GYOSUU2         PIC 9(04).
            03  WRK-RENNUM          PIC 9(02).
            03  WRK-CNT-MEISAI      PIC 9(04).
            03  WRK-KETA            PIC 9(04).
@@ -3082,21 +3085,16 @@
            MOVE    ZERO                 TO  IDX-RECE65
            MOVE    SPACE                TO  WRK-RECE65XX-REC
            INITIALIZE                       WRK-RECE65XX-REC
-      *
-           MOVE    RECE649-MEISAISU     TO  MAX-MEISAISU
+           MOVE    ZERO                 TO  WRK-JYUNBAN
+                                            WRK-GYOSUU
+                                            WRK-GYOSUU2
       *
            PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX                >   50    )
                          OR      ( WK-FREE-NAME2(IDX) =   SPACE )
-                COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
-                MOVE   "810000001"
-                              TO  WRK-RECE65XX-SRYCD(MAX-MEISAISU 1)
-                MOVE   ZERO   TO  WRK-RECE65XX-SRYSURYO(MAX-MEISAISU 1)
-                MOVE   WK-FREE-YUKOKETA2(IDX)
-                             TO  WRK-RECE65XX-YUKOKETA(MAX-MEISAISU 1)
-                MOVE   WK-FREE-NAME2(IDX)
-                             TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)
-                MOVE   "1"   TO  WRK-RECE65XX-RECEDENFLG(MAX-MEISAISU 1)
+      *
+                ADD       1      TO     WRK-GYOSUU
+      *
            END-PERFORM 
       *
            PERFORM    250111-SRYACTINF2-HENSYU-SEC
@@ -3358,11 +3356,58 @@
                     ADD    1             TO      IDX-RECE65
                     MOVE   RECE659-SRYACT-TBL(IDX)
                              TO   WRK-RECE65XX-SRYACT-TBL(IDX-RECE65 1)
+      *
+                    IF   RECE659-SRYCD(IDX) = "770020070" OR "770030070"
+                         MOVE   IDX-RECE65   TO   WRK-JYUNBAN
+                    END-IF
+      *
                END-PERFORM
       *
                PERFORM 990-RECE659-NEXT-SEC
       *
            END-PERFORM
+      *
+           IF     WRK-GYOSUU   NOT =  ZERO
+      *
+      *      補正率又は高気圧酸素加算以降の明細をずらす
+             IF   WRK-JYUNBAN  NOT =  ZERO
+      *
+               PERFORM   VARYING   IDX   FROM   IDX-RECE65   BY  -1
+                          UNTIL  ( IDX    <    1           )
+                           OR    ( IDX    <=   WRK-JYUNBAN )
+      *
+                   COMPUTE   WRK-GYOSUU2  =  IDX  +  WRK-GYOSUU
+                   MOVE   WRK-RECE65XX-SRYACT-TBL(IDX 1)  TO
+                          WRK-RECE65XX-SRYACT-TBL(WRK-GYOSUU2 1)
+                   INITIALIZE   WRK-RECE65XX-SRYACT-TBL(IDX 1)
+      *
+               END-PERFORM
+      *
+             END-IF
+      *
+      *      計算式の差し込み
+             IF   WRK-JYUNBAN  NOT =  ZERO
+                 MOVE      WRK-JYUNBAN    TO     MAX-MEISAISU
+             ELSE
+                 MOVE      IDX-RECE65     TO     MAX-MEISAISU
+             END-IF
+             PERFORM   VARYING   IDX   FROM    1   BY  1
+                        UNTIL  ( IDX                >   50    )
+                         OR    ( WK-FREE-NAME2(IDX) =   SPACE )
+      *
+                ADD    1     TO  MAX-MEISAISU
+                MOVE   "810000001"
+                             TO  WRK-RECE65XX-SRYCD(MAX-MEISAISU 1)
+                MOVE   ZERO  TO  WRK-RECE65XX-SRYSURYO(MAX-MEISAISU 1)
+                MOVE   WK-FREE-YUKOKETA2(IDX)
+                             TO  WRK-RECE65XX-YUKOKETA(MAX-MEISAISU 1)
+                MOVE   WK-FREE-NAME2(IDX)
+                             TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)
+                MOVE   "1"   TO  WRK-RECE65XX-RECEDENFLG(MAX-MEISAISU 1)
+      *
+             END-PERFORM
+      *
+           END-IF
       *
       *    コメントを含んだ内容で中間ファイルの再作成
            MOVE       ZERO             TO      FLG-WRKRECE65
