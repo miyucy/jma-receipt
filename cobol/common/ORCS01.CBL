@@ -6468,7 +6468,7 @@
            INITIALIZE               WK-TAIHI-RECEFTNDSPKBN-OCC.
       *
            MOVE    ZERO      TO     WK-TOKUSYU-COMPFTN.
-           MOVE    ALL"9"    TO     WK-TOKUSYU-COMPFTN2.
+           MOVE    9999999   TO     WK-TOKUSYU-COMPFTN2.
            MOVE    ZERO      TO     WK-TOKUSYU-ENTANI.
       *
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
@@ -9290,7 +9290,7 @@
                                     LNK-SYU-SHOKUJI5       *   10
       *
                     MOVE  WK-TOKUSYU-COMPFTN   TO   LNK-SYU-SHOKUJI6
-                    IF    WK-TOKUSYU-COMPFTN2  =  ALL"9"
+                    IF    WK-TOKUSYU-COMPFTN2  =  9999999
                        IF ((LNK-SYU-KOH1HKNNUM        = "245") AND
                            (WK-TAIHI-RECEFTNDSPKBN(1) = SPACE))
                        OR ((LNK-SYU-KOH2HKNNUM        = "245") AND
@@ -9311,7 +9311,8 @@
                     END-IF
       *
       *****         MOVE     WK-TOKUSYU-ENTANI    TO   LNK-SYU-SHOKUJI7
-                    COMPUTE  LNK-SYU-SHOKUJI7  =  WK-TOKUSYU-ENTANI  + 0.9
+                    COMPUTE  LNK-SYU-SHOKUJI7  =
+                                            WK-TOKUSYU-ENTANI  + 0.9
       *
            END-IF
       *
