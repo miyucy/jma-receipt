@@ -31,6 +31,7 @@
       *  01.00.01    NACL-太田    02.12.10  収納明細削除処理追加
       *  01.00.02    NACL-太田    02.12.26  入院科の初期表示を修正
       *  01.01.03    NACL-太田    03.01.24  食事の集計方法修正
+      *  01.01.04    NACL-太田    03.02.03  退院時診療行為チェック追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -83,6 +84,7 @@
            03  FLG-SYUMEI                  PIC 9(01).
            03  FLG-PTTEIKIRRK              PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
+           03  FLG-SRYACCT                 PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -99,6 +101,7 @@
            03  IDX11                       PIC 9(05).
            03  IDX12                       PIC 9(05).
            03  IDX13                       PIC 9(05).
+           03  IDX14                       PIC 9(05).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -259,7 +262,10 @@
            03  WRK-KSN-NYUKSNKBN           PIC X(03).
            03  WRK-SRYCD                   PIC X(09).
            03  WRK-STYUKYMD                PIC X(08).
-
+           03  WRK-TAIINYMD.
+               05  WRK-TAIINYM             PIC X(06).
+               05  WRK-TAIINDD             PIC 9(02).
+           03  WRK-MCP-PUTTYPE             PIC X(08).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -380,6 +386,10 @@
       *    入院料加算チェック
        01  NYUKSNCHK-REC.
            COPY    "CPNYUKSNCHK.INC".
+      *
+      *    診療会計
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
       *
       *
       *****************************************************************
@@ -571,7 +581,9 @@
                IF    ( SPA-I01-I04-BTN     =   "B12" )
       *            画面を更新後の内容で再表示
                    PERFORM 4101-PTNUM-CHK-SEC
-                   DISPLAY "SPA-ERRCD = " SPA-ERRCD
+               ELSE
+      *            カーソルを退院日に設定
+                   MOVE    11          TO  SPA-GMN-I01-CUR
                END-IF
       *
                GO  TO      300-SCREEN-EXT
@@ -1016,6 +1028,30 @@
                    IF    ( SPA-ERRCD       NOT =   SPACE )
                        GO  TO  330-I0ID1-SET-EXT
                    END-IF
+      *        退院登録
+               WHEN "3004"
+      *            請求開始日取得処理
+                   PERFORM 4801-SKYSTYMD-GET-SEC
+      *            請求確認画面遷移処理
+                   MOVE    "JOIN"      TO  WRK-MCP-PUTTYPE
+                   PERFORM 490-TAIIN-SYORI-SEC
+                   IF    ( SPA-ERRCD   NOT =   SPACE )
+                       GO  TO  330-I0ID1-SET-EXT
+                   END-IF
+               END-EVALUATE
+      *
+           ELSE
+               EVALUATE    SPA-I0IDCD
+      *        入院取消
+               WHEN "3001"
+      *        入院取消（会計含む）
+               WHEN "3002"
+      *        退院取消
+               WHEN "3003"
+                   MOVE    02      TO  SPA-GMN-I01-CUR
+      *        退院登録
+               WHEN "3004"
+                   MOVE    11      TO  SPA-GMN-I01-CUR
                END-EVALUATE
            END-IF
       *
@@ -5109,13 +5145,19 @@
       *    退院登録
            WHEN    "02"
       *
-      *        負担金計算処理
-               PERFORM 490-FTNKIN-CALC-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
+      *        診療会計テーブルチェック処理
+               PERFORM 490-SRYACCT-CHK-SEC
+               IF    ( SPA-I0IDCD  NOT =   SPACE )
+                 OR  ( SPA-ERRCD   NOT =   SPACE )
                    GO  TO  480-TOUROKU-EXT
                END-IF
-      *        請求確認画面遷移処理
-               PERFORM 490-I04-SENI-SEC
+      *
+      *        退院処理
+               MOVE    "CHANGE"    TO  WRK-MCP-PUTTYPE
+               PERFORM 490-TAIIN-SYORI-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  480-TOUROKU-EXT
+               END-IF
                GO  TO  480-TOUROKU-EXT
       *    転科・転棟・転室
            WHEN    "08"
@@ -7701,6 +7743,66 @@
        4801-PTINF-UPD-EXT.
            EXIT.
       *****************************************************************
+      *    診療会計テーブルチェック処理
+      *****************************************************************
+       490-SRYACCT-CHK-SEC             SECTION.
+      *
+           MOVE    SPA-NAI-I01-TAIINYMD
+                                       TO  WRK-TAIINYMD
+      *
+           MOVE    ZERO                TO  FLG-SRYACCT
+      *
+           INITIALIZE                      SRYACCT-REC
+      *
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    "1"                 TO  ACCT-NYUGAIKBN
+           MOVE    SPA-NAI-I01-PTID    TO  ACCT-PTID
+           MOVE    WRK-TAIINYM         TO  ACCT-SRYYM
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "SRYACCT-KEY15"     TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC 
+           IF    ( FLG-DBRC            NOT =   ZERO )
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-SRYACCT     NOT =   ZERO )
+                   OR    ( SPA-I0IDCD      NOT =   SPACE )
+      *
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+      *
+               IF    ( WRK-TAIINYM     =   ACCT-SRYYM )
+                   MOVE    WRK-TAIINDD TO  IDX14
+               ELSE
+                   MOVE    ZERO        TO  IDX14
+               END-IF
+      *
+               PERFORM UNTIL ( IDX14               >   31 )
+                       OR    ( SPA-I0IDCD      NOT =   SPACE )
+      *
+                   COMPUTE IDX14       =   IDX14   +   1
+      *
+                   IF    ( ACCT-DAY (1 IDX14)      >   ZERO )
+                       MOVE    "3004"          TO  SPA-I0IDCD
+                   END-IF
+      *
+               END-PERFORM
+      *
+               IF    ( SPA-I0IDCD      =   SPACE )
+                   MOVE    "SRYACCT-KEY15"     TO  WRK-DBPATH
+                   PERFORM 900-TBL-READ-SEC 
+                   IF    ( FLG-DBRC            NOT =   ZERO )
+                       MOVE    1               TO  FLG-SRYACCT
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "SRYACCT-KEY15"     TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC 
+      *
+           .
+       490-SRYACCT-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    負担金計算処理
       *****************************************************************
        490-FTNKIN-CALC-SEC             SECTION.
@@ -7748,9 +7850,15 @@
                                    LNK-ORCS02-REC
                                    LNK-SYUNOU-REC-T
            DISPLAY "LNK-S02-RC = " LNK-S02-RC
-           IF    ( LNK-S02-RC      NOT =   ZERO )
-               MOVE    "2008"      TO  SPA-ERRCD
-               GO  TO  490-FTNKIN-CALC-EXT
+           IF    ( LNK-S02-RC      NOT = ZERO )
+               EVALUATE LNK-S02-RC
+               WHEN    13
+                   MOVE    "2012"      TO  SPA-ERRCD
+                   GO  TO  490-FTNKIN-CALC-EXT
+               WHEN    OTHER
+                   MOVE    "2008"      TO  SPA-ERRCD
+                   GO  TO  490-FTNKIN-CALC-EXT
+               END-EVALUATE
            END-IF
       *
            PERFORM VARYING IDX11   FROM    1   BY  1
@@ -7774,6 +7882,7 @@
       *****************************************************************
        490-SYUNOU-TAIHI-SEC            SECTION.
       *
+           INITIALIZE  SPA-I0-SYUNOU-TBL
            MOVE    LOW-VALUE       TO  WRK-SKYSTYM
            MOVE    SPACE           TO  SUMSYUNOU-REC
                                        TTLSYUNOU-REC
@@ -8174,15 +8283,31 @@
        490-SYUNOU-SUM-EXT.
            EXIT.
       *****************************************************************
+      *    退院処理
+      *****************************************************************
+       490-TAIIN-SYORI-SEC             SECTION.
+      *
+      *    負担金計算処理
+           PERFORM 490-FTNKIN-CALC-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  480-TOUROKU-EXT
+           END-IF
+      *
+      *    請求確認画面遷移処理
+           PERFORM 490-I04-SENI-SEC
+           .
+      *
+       490-TAIIN-SYORI-EXT.
+           EXIT.
+      *****************************************************************
       *    請求確認画面遷移処理
       *****************************************************************
        490-I04-SENI-SEC                SECTION.
       *
-      *
            MOVE    "I01"               TO  SPA-MOTOPG
            MOVE    "I04"               TO  SPA-SAKIPG
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   WRK-MCP-PUTTYPE      TO  MCP-PUTTYPE
            MOVE   SPA-SAKIPG           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -8892,6 +9017,9 @@
            WHEN    "2011"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
+           WHEN    "2012"
+               MOVE    "会計情報の取得に失敗しました"
+                                       TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  I0ERR
@@ -8940,6 +9068,13 @@
            WHEN    "3003"
                MOVE    "退院取消を行います"
                                        TO  WRK-I0IDMSG
+           WHEN    "3004"
+               MOVE    SPACE           TO  WRK-I0IDMSG
+               STRING  "退院後の診療日で入力された診療行為は"
+                       "削除されます。確認してください"
+               DELIMITED BY SIZE
+               INTO  WRK-I0IDMSG
+               END-STRING
            END-EVALUATE
       *
       *
