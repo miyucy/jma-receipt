@@ -441,7 +441,7 @@
            MOVE    "すべて発行"
                                      TO  SPA-GMN-SKYPRTKBNMEIL (1)
            MOVE    "2"               TO  SPA-GMN-SKYPRTKBNL    (2)
-           MOVE    "請求額があるもののみ"
+           MOVE    "請求があるもののみ"
                                      TO  SPA-GMN-SKYPRTKBNMEIL (2)
       *
            MOVE    2                 TO  SPA-GMN-SKYPRTKBN-MAX

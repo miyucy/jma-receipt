@@ -658,7 +658,7 @@
            MOVE    "1 発行する"
                                    TO  SPA-GMN-W24-SKYPRTKBN-ITM (2)
       *
-           MOVE    "2 発行する（請求額あり）"
+           MOVE    "2 発行する（請求あり）"
                                    TO  SPA-GMN-W24-SKYPRTKBN-ITM (3)
       *
            .
