@@ -2183,6 +2183,7 @@
                END-IF
            END-IF
       *
+           .
       *
        4901-RRKSYU-CHK-EXT.
            EXIT.
