@@ -237,6 +237,7 @@
                05  WRK-PARA-SRYYM                      PIC  X(06).
                05  WRK-PARA-TERMID                     PIC  X(16).
                05  WRK-PARA-SYSYMD                     PIC  X(08).
+               05  WRK-PARA-RECEKBN                    PIC  X(01).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
       *
@@ -545,15 +546,25 @@
            PERFORM     RECE61-READ-SEC
       *
            PERFORM                     UNTIL   FLG-RECE61  =   1
-      *            
-               PERFORM     210-HENSYU-SEC
       *
                IF      IDZ             =   1               
                    PERFORM 230-RECE69-HENSYU-SEC
-                   PERFORM 240-PTNYUINRRK-SYORI-SEC
                END-IF
       *
-               PERFORM     220-DATA-WRITE-SEC
+      *        編集処理
+      *        処理区分（社保・国保）により読み飛ばす
+               EVALUATE    WRK-PARA-RECEKBN
+                   WHEN    "0"
+                       PERFORM 210-HENSYU-SEC
+                   WHEN    "1"
+                       IF      RECE61-HKNNUM   NOT =   "060" AND "067"
+                           PERFORM 210-HENSYU-SEC
+                       END-IF
+                   WHEN    "2"
+                       IF      RECE61-HKNNUM       =   "060" OR  "067"
+                           PERFORM 210-HENSYU-SEC
+                       END-IF
+               END-EVALUATE
       *
                PERFORM     RECE61-READ-SEC
            END-PERFORM
@@ -1029,6 +1040,13 @@
                MOVE    RECE61-ERR-TEKSTYMD   TO  RECE62-ERR-TEKSTYMD
                MOVE    RECE61-ERR-TEKEDYMD   TO  RECE62-ERR-TEKEDYMD
            END-IF 
+      *
+           IF      IDZ             =   1               
+               PERFORM 240-PTNYUINRRK-SYORI-SEC
+           END-IF
+      *
+           PERFORM     220-DATA-WRITE-SEC
+      *
            .
        210-HENSYU-EXT.
            EXIT.
