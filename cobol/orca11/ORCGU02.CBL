@@ -363,6 +363,8 @@
       *
            MOVE    SPA-AREA                      TO  SPA-COMMON
            MOVE    SPA-U02                       TO  SPA-FREE
+           .
+       000-PROC-EXIT.
       *
            EXIT    PROGRAM
            .
@@ -1044,7 +1046,19 @@
        200-ENTRY                   SECTION.
       *
       *    入力個所のセット
-           PERFORM 400-GMN-INPUT-SEC
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *            保険組合せ選択
+               WHEN    ANY             ALSO    "HKNCOMBI_LIST"
+                   PERFORM 4109-HKNCOMBI-LIST-SEC
+                   GO      TO      200-ENTRY-EXT
+      *            受付一覧選択
+               WHEN    ANY             ALSO    "UKETUKE_LIST"
+                   PERFORM 4110-UKETUKE-LIST-SEC
+                   GO      TO      200-ENTRY-EXT
+           END-EVALUATE
       *
            MOVE    ZERO                TO  FLG-TOUROKU
       *    入力チェック処理
@@ -1053,27 +1067,6 @@
            .
       *
        200-ENTRY-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入力個所のセット処理
-      *****************************************************************
-       400-GMN-INPUT-SEC          SECTION.
-      *
-           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
-           MOVE    ZERO                TO  SPA-GMN-CUR
-      *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *            保険組合せ選択
-               WHEN    ANY             ALSO    "HKNCOMBI_LIST"
-                   PERFORM 4109-HKNCOMBI-LIST-SEC
-      *            受付一覧選択
-               WHEN    ANY             ALSO    "UKETUKE_LIST"
-                   PERFORM 4110-UKETUKE-LIST-SEC
-           END-EVALUATE
-           .
-      *
-       400-GMN-INPUT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1671,8 +1664,8 @@
            END-IF
       *
            IF      SPA-GMN-COMBINUM    NOT =   ZERO
-               MOVE    SPA-GMN-COMBINUM    TO  U02-HKNCOMBI
-               MOVE    "HKNCOMBI"          TO  WRK-MCP-WIDGET
+      *        組合せ
+               PERFORM 4109-HKNCOMBI-CHK-SEC
            END-IF
       *
            .
@@ -1798,8 +1791,9 @@
            END-IF
       *
            IF      SPA-GMN-SELNUM      NOT =   ZERO
-               MOVE    SPA-GMN-SELNUM      TO  U02-SELNUM
-               MOVE    "SELNUM"            TO  WRK-MCP-WIDGET
+      *******  MOVE    SPA-GMN-SELNUM      TO  U02-SELNUM
+      ******   MOVE    "SELNUM"            TO  WRK-MCP-WIDGET
+               PERFORM 4104-SELNUM-CHK-SEC
            END-IF
       *
            .
@@ -3144,15 +3138,15 @@
            END-IF
       *
            IF  SPA-GMN-TUKETIME(SPA-GMN-SELNUM) =  SPACE
-118500         MOVE    "0017"              TO  SPA-ERRCD
-118600         GO  TO  491-SAKUJO-EXT
-118700     END-IF
-118800*
+               MOVE    "0017"              TO  SPA-ERRCD
+               GO  TO  491-SAKUJO-EXT
+           END-IF
+      *
       *    受付マスタ削除
            MOVE    SPA-GMN-SELNUM          TO  IDX
       *
-061500     INITIALIZE                      UKETUKE-REC
-119100     MOVE    SPA-HOSPID              TO  UKE-HOSPID
+           INITIALIZE                      UKETUKE-REC
+           MOVE    SPA-HOSPID              TO  UKE-HOSPID
            MOVE    SPA-SYSYMD              TO  UKE-UKEYMD
            MOVE    SPA-GMN-TUKEID(IDX)     TO  UKE-UKEID
       *
@@ -3384,6 +3378,9 @@
       *
            PERFORM 4921-SPA-SET-SEC
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            MOVE    "U02"               TO  SPA-MOTOPG
            MOVE    "K02"               TO  SPA-SAKIPG
       *
@@ -3414,6 +3411,9 @@
                GO       TO      494-ORCGC02-EXT
            END-IF
            PERFORM 4921-SPA-SET-SEC
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
            MOVE    "U02"               TO  SPA-MOTOPG
            MOVE    "C02"               TO  SPA-SAKIPG
@@ -3446,6 +3446,9 @@
            END-IF
            PERFORM 4921-SPA-SET-SEC
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            MOVE    "U02"               TO  SPA-MOTOPG
            MOVE    "S02"               TO  SPA-SAKIPG
       *
@@ -3477,6 +3480,9 @@
            END-IF
       *
            PERFORM 4921-SPA-SET-SEC
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
            MOVE    "U02"               TO  SPA-MOTOPG
            MOVE    "J02"               TO  SPA-SAKIPG
