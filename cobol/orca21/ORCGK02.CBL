@@ -9741,8 +9741,14 @@
                       (SPA-COM-ZAIEND(IDX)     =   "1"    )  AND
                       (SPA-COM-TENSU (IDX)     =   ZERO   ))  OR
                      ((SPA-COM-SRYKBN(IDX)     =   "14"   )  AND
-                      (SPA-COM-YKZTEN (IDX)    >   ZERO   ))
+                      (SPA-COM-YKZTEN(IDX)     >   ZERO   ))
                    MOVE    1                   TO  FLG-SYOHOU-ARI
+               END-IF
+      *        薬剤のみの時、院内分とする
+               IF      SPA-COM-SRYSYUKBN(IDX)  =  "213"  OR
+                                                  "223"  OR
+                                                  "233"
+                   MOVE    ZERO            TO  FLG-SYOHOU-ARI
                END-IF
            END-PERFORM
       *
