@@ -60,6 +60,8 @@
       *                                     国保退職者の給付割合セット
       *  01.00.17   NACL-藤原     02.11.06  主保険が自費のとき保険履歴を作成
       *                                     しないようにする 
+      *  01.00.18   NACL-藤原     02.11.25  前期高齢者の船員保険のときの
+      *                                     レセプト種別の編集を修正 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1138,7 +1140,21 @@
                        MOVE    "HKNCOMBI-KEY"   TO   ORC-DBPATH
                        PERFORM  HKNCOMBI-READ-SEC
                        IF       FLG-HKNCOMBI    =    ZERO
-                           IF   COMB-HKNNUM     =    "060"
+                           EVALUATE    COMB-HKNNUM
+                             WHEN    "002" 
+                                 EVALUATE   COMB-HOJOKBN
+                                     WHEN   "A"
+                                     WHEN   "B"
+                                     WHEN   "C"
+                                     WHEN   "9"
+                                       MOVE   "9"   TO   WK-HONKZKKBN
+                                     WHEN   "D"
+                                     WHEN   "E"
+                                     WHEN   "F"
+                                     WHEN   "8"
+                                       MOVE   "8"   TO   WK-HONKZKKBN
+                               END-EVALUATE
+                             WHEN    "060" 
                                IF  (WRK-NENREI  >=   70)  AND
                                    (WRK-NENREI  <=   74)
                                  EVALUATE   COMB-HOJOKBN
@@ -1148,14 +1164,14 @@
                                        MOVE   "8"   TO   WK-HONKZKKBN
                                  END-EVALUATE
                                END-IF     
-                           ELSE
+                             WHEN    OTHER 
                                EVALUATE   COMB-HOJOKBN
                                    WHEN   "9"
                                        MOVE   "9"   TO   WK-HONKZKKBN
                                    WHEN   "8"
                                        MOVE   "8"   TO   WK-HONKZKKBN
                                END-EVALUATE
-                           END-IF
+                           END-EVALUATE
                            IF  COMB-KOH1HKNNUM  =    "027"
                                EVALUATE   COMB-KOH1PAYKBN
                                    WHEN   "01"
@@ -1177,12 +1193,12 @@
       *          
       *----(01.00.13) LINE ADD END   --------------------------
       *
-      *      DISPLAY "WK-HONKZKKBN: " WK-HONKZKKBN 
-      *      DISPLAY "RECE01-NYUGAIKBN: " RECE01-NYUGAIKBN 
-      *      DISPLAY "WK-IHO: " WK-IHO 
-      *      DISPLAY "WK-KOKUHO: " WK-KOKUHO 
-      *      DISPLAY "WK-RJN: " WK-RJN 
-      *      DISPLAY "WK-KOHI-CNT: " WK-KOHI-CNT 
+            DISPLAY "WK-HONKZKKBN: " WK-HONKZKKBN 
+            DISPLAY "RECE01-NYUGAIKBN: " RECE01-NYUGAIKBN 
+            DISPLAY "WK-IHO: " WK-IHO 
+            DISPLAY "WK-KOKUHO: " WK-KOKUHO 
+            DISPLAY "WK-RJN: " WK-RJN 
+            DISPLAY "WK-KOHI-CNT: " WK-KOHI-CNT 
       *      ACCEPT     WRK-IN FROM CONSOLE
       *
       *----(01.00.13) LINE MOD START --------------------------
