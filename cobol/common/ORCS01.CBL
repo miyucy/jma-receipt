@@ -109,6 +109,8 @@
       *                                     ¡Ü½é¿Ç»þ¡¡ÂÐ±þ
       *  01.00.35    NACL-ÌçÏÆ    03/05/07  ÃÏÊýÏ·¿Í¤ÎÉéÃ´³Û¤Î»Í¼Î¸ÞÆþ¤ÎÀßÄê
       *                                     ¤òÊÝ¸±ÈÖ¹æ¥Þ¥¹¥¿¤ÎÀßÄê¤Ç¹Ô¤¦¡£
+      *  01.00.36    NACL-ÌçÏÆ    03/05/12  ¼«ÇåÀÕ¤Î´µ¼ÔÀÁµá¤·¤Ê¤¤¡ã£°¡ó¡ä
+      *                                     ¾ì¹ç¤ÎÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -124,7 +126,6 @@
        01  WK-END                      PIC 9(08).
        01  WK-KSNRATE9                 PIC 9(03).
        01  WK-KSNRATE                  PIC 9V99.
-       01  WK-RSIIRYOKBN               PIC X(01).                       
        01  WK-TAXKBN                   PIC X(01).                       
        01  STS-AREA.
            03  STS-SYUNOU              PIC X(02).
@@ -798,10 +799,10 @@
            END-IF.
       *
       *    ÀÁµá¶â³Û¤Î·×»»¡ÊÏ«ºÒÊÝ¸±Å¬ÍÑ»þ¤Î±ß·ú¤Æ¹àÌÜ²Ã»»¡Ë
-      *    ¡ãÏ«ºÒ»ØÄê¡ä                                                 
+      *    ¡ãÏ«ºÒ»ØÄê¡Ê£°¡ó¡Ë¡ä                                         
            IF   (WK-HKNKBN               =    "1"  ) AND                
                 (LNK-SYU-SYUHKNNUM       =    "971") AND                
-                (WK-RSIIRYOKBN           =    "1"  )                    
+                (LNK-SYU-PTFTNRATE       =    ZERO )
                  MOVE    ZERO      TO       LNK-SYU-SKYMONEY
            COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
                                             LNK-SYU-TGMONEY(12) +
@@ -811,10 +812,10 @@
                                             LNK-SYU-JIHI-TAX
            END-IF.
       *
-      *    ¡ãÈóÏ«ºÒ»ØÄê¡ä                                               
+      *    ¡ãÈóÏ«ºÒ»ØÄê¡Ê£±£°£°¡ó¡Ë¡ä                                   
            IF   (WK-HKNKBN               =    "1"  ) AND                
                 (LNK-SYU-SYUHKNNUM       =    "971") AND                
-                (WK-RSIIRYOKBN           =    "0"  )                    
+                (LNK-SYU-PTFTNRATE       =     100 )
                  COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY   +  
                                             LNK-SYU-RSISHOSHIN-MONEY +  
                                             LNK-SYU-RSISAISHIN-MONEY +  
@@ -823,8 +824,10 @@
            END-IF.                                                      
       *
       *    ¼«ÇåÀÕÊÝ¸±¤Î¾ì¹ç¡¢Ï«ºÒ±ß·ú¤Æ¹àÌÜ¤Ø¤Î²Ã»»Î¨·×»»ÄÉ²Ã
+      *    ¡ã´µ¼ÔÀÁµá¤¹¤ë¡Ê£±£°£°¡ó¡Ë¤Î¾ì¹ç¡ä
            IF   (WK-HKNKBN               =    "1")   AND
-                (LNK-SYU-SYUHKNNUM       =    "973")
+                (LNK-SYU-SYUHKNNUM       =    "973") AND
+                (LNK-SYU-PTFTNRATE       =     100 )
                  COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
                          (LNK-SYU-RSISHOSHIN-MONEY  *  WK-KSNRATE) 
                                                     +  0.5      
@@ -844,6 +847,18 @@
                                             LNK-SYU-RSISAISHIN-MONEY +
                                             LNK-SYU-RSISDO-MONEY     +
                                             LNK-SYU-RSIETC-MONEY
+           END-IF.
+      *    ¡ã´µ¼ÔÀÁµá¤·¤Ê¤¤¡Ê£°¡ó¡Ë¤Î¾ì¹ç¡ä
+           IF   (WK-HKNKBN               =    "1")   AND
+                (LNK-SYU-SYUHKNNUM       =    "973") AND
+                (LNK-SYU-PTFTNRATE       =    ZERO )
+                 MOVE    ZERO      TO       LNK-SYU-SKYMONEY
+           COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
+                                            LNK-SYU-TGMONEY(12) +
+                                            LNK-SYU-TGMONEY-TAX(12) +
+                                            LNK-SYU-JIHI-TOTAL  +
+                                            LNK-SYU-JIHI-TOTAL-TAX  +
+                                            LNK-SYU-JIHI-TAX
            END-IF.
       *
       *    ÀÁµá¶â³Û¤Î·×»»¡ÊÄ´À°¶â¤Î²Ã¸º»»¡Ë
@@ -3255,9 +3270,8 @@
                             COMPUTE  WK-KSNRATE   =  WK-KSNRATE9  /  100
                      END-IF  
                      MOVE   SYS-4001-TAXKBN     TO   WK-TAXKBN          
-                     IF     LNK-SYU-SYUHKNNUM       =  "971"            
-                       MOVE  SYS-4001-RSIIRYOKBN  TO   WK-RSIIRYOKBN    
-                       IF    WK-RSIIRYOKBN          =  "0"              
+                     IF     LNK-SYU-SYUHKNNUM       =  "971" OR "973"   
+                       IF   LNK-SYU-PTFTNRATE       =   100             
                          MOVE     100      TO   HKN-HON-GAIKFTNRATE     
                                                 HKN-KZK-GAIKFTNRATE     
                                                 HKN-TSY-GAIKFTNRATE     
