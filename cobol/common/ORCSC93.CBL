@@ -251,7 +251,13 @@
                MOVE    WRK-H-SRYSYUKBN     TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    WRK-H-SRYKBN        TO  SPA-COM-SRYKBN (IDX)
                MOVE    WRK-ZAINUM          TO  SPA-COM-ZAINUM (IDX)
-               ADD     1                   TO  WRK-ZAI-CNT
+      *        診療種別は剤明細としない
+               IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "."
+                                                   OR  "*"
+                   CONTINUE
+               ELSE
+                   ADD     1                   TO  WRK-ZAI-CNT
+               END-IF
                IF      WRK-ZAI-CNT         >   50
                    MOVE    "7006"          TO  SPA-ERRCD
                    MOVE    "1"             TO  SPA-COM-CUR(IDX)
