@@ -36,6 +36,7 @@
       * 01.01.01     NACL-森脇     20021209  検索文字変更
       * 01.01.02     NACL-森脇     20021212  検索文字引数クリア
       * 01.01.03     NACL-森脇     20030108  画面入力文字数変更
+      * 01.01.04     NACL-森脇     20030530  初期値変更
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -1608,10 +1609,13 @@
            MOVE    YAKUJYO-MARK        TO  SPA-GMN-MARK
       *
       *----(00.01.02)--ADD-START----
+      *----(00.01.04)--ADD-START----
            IF          FLG-YAKUJYO     =   1
-               MOVE    MSG-CAUTION     TO  SPA-GMN-CAUTION
+               MOVE    SPA-GMN-KENNAME     TO  SPA-GMN-NAME
+               MOVE    MSG-CAUTION         TO  SPA-GMN-CAUTION
                GO  TO  800-YAKUJYO-SET-EXT
            END-IF
+      *----(00.01.04)--ADD-END------
       *----(00.01.02)--ADD-END------
            .
        800-YAKUJYO-SET-EXT.
