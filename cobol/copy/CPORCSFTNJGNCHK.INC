@@ -35,6 +35,8 @@
            03  LNK-FTNJGNCHK-SRYYM           PIC X(06).
       *    给锐戎规
            03  LNK-FTNJGNCHK-KOHNUM          PIC X(03).
+      *    给锐ＩＤ
+           03  LNK-FTNJGNCHK-KOHID           PIC 9(10).
       *牲耽コ〖ド
       *    00:レセプト淡很あり
       *    01:レセプト淡很なし
