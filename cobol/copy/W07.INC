@@ -96,6 +96,8 @@
                      06  W07-JIKANS2-MM-G.
                         07  W07-JIKANS2-MM-STATE   PIC S9(9)   BINARY.
                         07  W07-JIKANS2-MM     PIC X(2).
+                  05  W07-LASTKIKAN.
+                    06  W07-VALUE   PIC S9(2).
                 04  W07-TAGNAME1.
                   05  W07-TAGNAME1-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG2.
@@ -132,6 +134,12 @@
                       07  W07-VALUE   PIC X(40).
                     06  W07-SRYNYKNKNRKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-SRYNYKNKNRKBN-ITEM    PIC X(40)   OCCURS  5.
+                  05  W07-HAKHOUFLG-COMB.
+                    06  W07-HAKHOUFLG.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-HAKHOUFLG-COUNT   PIC S9(9)   BINARY.
+                    06  W07-HAKHOUFLG-ITEM
+                            PIC X(40)   OCCURS  5 TIMES.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.
