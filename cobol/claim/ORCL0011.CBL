@@ -1151,6 +1151,9 @@
       *    Ｈ１５年６月よりすべて１回目とする
            IF      LNK-SYSYMD          >=  "20030601"
                MOVE    ZERO                TO  WRK-KAISU
+               MOVE    ZERO                TO  WRK-SINSATU-CNT
+               MOVE    ZERO                TO  FLG-15MIMAN
+               MOVE    ZERO                TO  WRK-15MIMAN-ARI
            ELSE
       *        受診履歴より診察回数を求める
                PERFORM 1000-SINSATU-KAISU-SEC
