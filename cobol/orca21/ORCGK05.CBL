@@ -4910,8 +4910,8 @@
            MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K05"               TO  SPA-MOTOPG
       *
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE
-      **** MOVE    "JOIN"              TO  MCP-PUTTYPE.
+      *****MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "JOIN"              TO  MCP-PUTTYPE.
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
