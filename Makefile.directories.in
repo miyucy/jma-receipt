@@ -16,6 +16,7 @@ lddefdir = ${ORCA_DIR}/lddef
 recorddir = ${ORCA_DIR}/record
 screendir = ${ORCA_DIR}/screen
 scriptsdir = ${ORCA_DIR}/scripts
+copydir = ${ORCA_DIR}/cobol/copy
 
 COPYGEN = @COPYGEN@
 
