@@ -61,6 +61,8 @@
       *  01.00.22    NACL-ÌçÏÆ    04/07/27  ¹ñÊÝÉéÃ´³ä¹çÊÔ½¸½¤Àµ
       *  01.00.23    NACL-ÌçÏÆ    04/08/04  Æ±°ìÊÝ¸±ÈÖ¹æÂÐ±þ
       *  01.00.24    NACL-ÌçÏÆ    04/08/20  Ê¼¸Ë¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  01.00.25    NACL-ÌçÏÆ    04/09/07  £±£°±ßÌ¤Ëþ»Í¼Î¸ÞÆþ¤·¤Ê¤¤¾ì¹ç
+      *                                     ¤Î½¤Àµ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -5435,7 +5437,15 @@
                   ( HKN-RECEFTNDSPKBN            =  "2"           ) OR
                   ( (LNK-SYU-SRYYMD(1:6)        >=  "200404"      ) AND
                     (LNK-SYU-KOH-HKNNUM(KOH-IDX) =  "015" OR "016") )
-                   CONTINUE
+                   IF    WK-TOKUTEI-COMPFTN   NOT =    ZERO
+                       MOVE  WK-TOKUTEI-COMPFTN  TO  LNK-SYU-SYUCOMPFTN
+                   END-IF
+                   IF    LNK-SYU-KOH-HKNNUM(1)    =    "027"
+                     IF  WK-TOKUTEI-COMPFTN3  NOT =    ZERO
+                       MOVE  WK-TOKUTEI-COMPFTN3 TO  LNK-SYU-KOH-COMPFTN(1)
+                     END-IF
+                   END-IF
+      *********    CONTINUE
                ELSE
                    COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                              LNK-SYU-KOH-COMPFTN(KOH-IDX)  +  5
@@ -6057,7 +6067,15 @@
                   ( HKN-RECEFTNDSPKBN            =  "2"           ) OR
                   ( (LNK-SYU-SRYYMD(1:6)        >=  "200404"      ) AND
                     (LNK-SYU-KOH-HKNNUM(KOH-IDX) =  "015" OR "016") )
-                   CONTINUE
+                   IF    WK-TOKUTEI-COMPFTN   NOT =    ZERO
+                       MOVE  WK-TOKUTEI-COMPFTN  TO  LNK-SYU-SYUCOMPFTN
+                   END-IF
+                   IF    LNK-SYU-KOH-HKNNUM(1)    =    "027"
+                     IF  WK-TOKUTEI-COMPFTN3  NOT =    ZERO
+                       MOVE  WK-TOKUTEI-COMPFTN3 TO  LNK-SYU-KOH-COMPFTN(1)
+                     END-IF
+                   END-IF
+      *********    CONTINUE
                ELSE
                    COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX) =
                              LNK-SYU-KOH-COMPFTN(KOH-IDX)  +  5
@@ -6419,7 +6437,17 @@
                     ( (LNK-SYU-SRYYMD(1:6)        >=  "200404"    ) AND
                       (LNK-SYU-KOH-HKNNUM(KOH-IDX) =  
                                                   "015" OR "016"  ) )
-                     CONTINUE
+                     IF    WK-TOKUTEI-COMPFTN   NOT =    ZERO
+                         MOVE  WK-TOKUTEI-COMPFTN
+                                           TO  LNK-SYU-SYUCOMPFTN
+                     END-IF
+                     IF    LNK-SYU-KOH-HKNNUM(1)    =    "027"
+                       IF  WK-TOKUTEI-COMPFTN3  NOT =    ZERO
+                         MOVE  WK-TOKUTEI-COMPFTN3
+                                           TO  LNK-SYU-KOH-COMPFTN(1)
+                       END-IF
+                     END-IF
+      ***********    CONTINUE
                  ELSE
                      COMPUTE   LNK-SDAY-COMPFTN(IDX2 KOH-IDX)  =
                                LNK-SDAY-COMPFTN(IDX2 KOH-IDX)  +  5
