@@ -199,6 +199,8 @@
                    07  SPA-GOK-NYUKIN            PIC S9(07).
                    07  SPA-GOK-SKYMONEY          PIC S9(07).
                    07  SPA-GOK-CHOSEI            PIC S9(07).
+                   07  SPA-OLD-SKYMONEY          PIC S9(07).
+                   07  SPA-OLD-SEIKYU            PIC S9(07).
       *
                    07  SPA-GOK-SRYKA             PIC X(02).
                    07  SPA-GOK-HKNCOMBI          PIC X(04).
@@ -242,7 +244,9 @@
       *            訂正前入金合計額
                    07  SPA-MAE-NYUKIN-TOTAL    PIC  9(07).
       *            訂正前調整金
-                   07  SPA-TEI-CHOSEI          PIC S9(07).
+                   07  SPA-TMAE-CHOSEI       PIC S9(07).
+      *            訂正今回請求額
+                   07  SPA-TEIKEI-SKYMONEY     PIC  9(07).
       *            今回入金額
                    07  SPA-TEI-NYUKIN-TOTAL    PIC S9(07).
       *
