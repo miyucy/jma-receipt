@@ -821,11 +821,13 @@
            MOVE    SPA-S01-HNYUGAIKBN  TO  SPA-GMN-NYUGAIKBN 
       *     
            PERFORM 300-SYUNOU-HENSYU-SEC
-      *        
+      *
            PERFORM 3101-SRYKA-SPA-SEC
-      *        
+      *
            PERFORM 3102-NYUGAIKBN-SPA-SEC
-      *     
+      *
+           PERFORM 3101-COMBO-SYOKI-SET-SEC
+      *
            IF    ( SPA-MOTOPG2         =   "K02" OR "K02N" )
            AND   ( SPA-PTNUM       NOT =   SPACE )
                MOVE    2                   TO  SPA-GMN-CUR
