@@ -3373,7 +3373,8 @@
       *            数量ゼロフラグ
                    IF     (SPA-SURYOZERO-FLG   =   1      )  AND
                           (ISET-INPUTCD(1:1)   =   "7"  OR  "6") AND
-                          (ISET-INPUTCD    NOT =   "799990070" )
+                          (ISET-INPUTCD    NOT =   "799990070"
+                                               AND "770020070" )
                        MOVE    ZERO        TO  SPA-COM-SURYO
                                                          (SPA-GMN-IDX)
                    ELSE
