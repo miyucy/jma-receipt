@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Æ£¸¶    04/04/09  ÅÐÏ¿¸å¤Î°ìÍ÷¤ÎÊÝ¸±Ì¾¾Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -879,14 +880,17 @@
                        WHEN    "3"
                            MOVE    "¥¢"        TO  WRK-HKNKBNMEI
                    END-EVALUATE
-                   STRING  COMB-SYU-TANSEIDONAME
-                                               DELIMITED  BY  SPACE
+                   EVALUATE    OPECOM-HKNNUM
+                       WHEN    "971"
+                          MOVE    "Ï«ºÒÊÝ¸±"   TO  WRK-HKNCOMBIMEI
+                       WHEN    "973"
+                          MOVE    "¼«ÇæÀÕ"     TO  WRK-HKNCOMBIMEI
+                   END-EVALUATE
+                   STRING  WRK-HKNCOMBIMEI     DELIMITED  BY  SPACE
                            " "                 DELIMITED  BY  SIZE
                            WRK-HKNKBNMEI       DELIMITED  BY  SPACE
-                           INTO                WRK-HKNCOMBIMEI
+                           INTO            SPA-GMN-C11-COM-THKNNUM (IDX)
                    END-STRING
-                   MOVE    WRK-HKNCOMBIMEI     TO
-                                           SPA-GMN-C11-COM-THKNNUM (IDX)
                ELSE
                    INITIALIZE                  HKNNUM-REC
                    MOVE    SPA-HOSPID          TO  HKN-HOSPID
