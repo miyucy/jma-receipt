@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 会計カード
-      *  コンポーネント名  : カルテメッセージ（Ｊ０２３）
+      *  コンポーネント名  : レセコメント（Ｊ０２３）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  02/02/05    MCC−多々納   新規作成
@@ -71,6 +71,7 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDH                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -157,6 +158,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    保険組合せセット領域
+           COPY    "CPORCSHKNSET.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -380,59 +384,36 @@
            MOVE    ZERO                TO  SPA-J023-HKNMAX
            MOVE    ZERO                TO  FLG-HKNCOMBICHK
       *
-      *    保険組合マスター編集
-           MOVE    SPACE               TO  HKNCOMBI-REC
-           INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID
-           MOVE    SPA-GMN-PTID        TO  COMB-PTID
+           MOVE    SPA-J023-SRYYMS     TO  SPA-SRYYMD(1:6)
+           MOVE    "00"                TO  SPA-SRYYMD(7:2)
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
       *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-               PERFORM 910-HKNCOMBI-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-HKNCOMBI
-               INITIALIZE                  HKNCOMBI-REC
-           END-IF
-           PERFORM
-                   UNTIL      (FLG-HKNCOMBI        =   1      )
-                         OR   (SPA-J023-HKNMAX     >=  10     )
+           INITIALIZE                  ORCSHKNSETAREA
+           MOVE    "1"                 TO  ORCSHKN-KBN
+           MOVE    SPACE               TO  ORCSHKN-KBN2
+           CALL    "ORCSHKNSET"        USING
+                                       SPA-AREA
+                                       ORCSHKNSETAREA
       *
-      *        対象の保険組合せのみ編集
-               MOVE    ZERO                TO  FLG-HKNCOMBICHK
-               IF      COMB-DELKBN         =   "1"
-                   CONTINUE
-               ELSE
-                   IF      (SPA-J023-SRYYMS >=  COMB-TEKSTYMD(1:6)) AND
-                           (SPA-J023-SRYYMS <=  COMB-TEKEDYMD(1:6))
-                       MOVE    1                   TO  FLG-HKNCOMBICHK
-                   END-IF
-               END-IF
+           MOVE    ORCSHKN-HKN-MAX     TO  SPA-J023-HKNMAX
       *
-               IF      FLG-HKNCOMBICHK    =    1
-                   ADD     1                   TO  SPA-J023-HKNMAX
-                   MOVE    COMB-HKNCOMBINUM    TO  SPA-J023-THKNCOMBINUM
-                                                  (SPA-J023-HKNMAX)
-                   PERFORM 31011-HKNCOMBI-HEN-SEC
-                   MOVE    WRK-HKNCOMBIMEI     TO  SPA-J023-THKNCOMBIMEI
-                                                  (SPA-J023-HKNMAX)
-               END-IF
+           MOVE    ZERO                TO  IDH
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL      (IDX     >   ORCSHKN-HKN-MAX )  OR
+                              (IDH     >=  30              )
+               ADD     1                   TO  IDH
+               MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
+                                           TO  SPA-J023-THKNCOMBINUM
+                                                                (IDH)
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                                           TO  SPA-J023-THKNCOMBIMEI
+                                                               (IDH)
+               MOVE    ORCSHKN-NAI-RSI-HKNKBN  (IDX)
+                                           TO  SPA-J023-RSI-THKNKBN
+                                                               (IDH)
       *
-               MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-               PERFORM 910-HKNCOMBI-READ-SEC
+               MOVE    IDH             TO  SPA-J023-HKNMAX
            END-PERFORM
-      *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
       *
       *
            .
@@ -521,8 +502,8 @@
                    END-STRING
                END-IF
       *
-               MOVE    PTRSI-HKNKBN        TO  SPA-J023-RSI-THKNKBN
-                                                      (SPA-J023-HKNMAX)
+      *******  MOVE    PTRSI-HKNKBN        TO  SPA-J023-RSI-THKNKBN
+      *******                                         (SPA-J023-HKNMAX)
            END-IF
       *
            .
@@ -706,7 +687,7 @@
            INITIALIZE                  SPA-J023-HKNCOMB-COMB
            MOVE    ZERO                TO  SPA-J023-HKNMAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >    10
+                   UNTIL       IDX     >    WRK-J023-HKNMAX
                IF      WRK-J023-FLG  (IDX)  =   "1"
                    ADD     1                TO  SPA-J023-HKNMAX
                    MOVE    WRK-J023-THKNCOMBINUM(IDX)
@@ -748,6 +729,7 @@
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-J023-SRYKA      TO  JYURRK-SRYKA
            MOVE    SPA-J023-SRYYMS     TO  JYURRK-SRYYMD(1:6)
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
            MOVE    SPA-J023-SRYYMS     TO  JYURRK-UPSRYYMD(1:6)
@@ -1260,7 +1242,23 @@
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0001"              TO  SPA-ERRCD
+               GO      TO      400-SRYKA-EXT
            ELSE
+               MOVE    3                   TO  SPA-J023-CUR
+           END-IF
+      *
+      *    労災保険区分がアフターケアの時、履歴日を表示する
+           IF      SPA-J023-RSI-HKNKBN =   "3"
+               PERFORM 31401-AFTER-JYURRK-SEC
+               IF      SPA-J023-RRKMAX     =   ZERO
+                   MOVE    "0012"              TO  SPA-ERRCD
+                   GO      TO      400-SRYKA-EXT
+               END-IF
+               MOVE    9                   TO  SPA-J023-CUR
+           ELSE
+               INITIALIZE                  SPA-J023-JYURRK-LIST
+               MOVE    ZERO                TO  SPA-J023-RRKMAX
+               MOVE    ZERO                TO  SPA-J023-JYURRKNUM
                MOVE    3                   TO  SPA-J023-CUR
            END-IF
       *
