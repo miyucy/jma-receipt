@@ -2387,29 +2387,33 @@
                                        TO  WRK-BTUDEF-NYUINKA
       *
       *    ººŒ¡∫π≥€°¢ø«Œ≈≤ §ŒΩÈ¥¸√Õ§Ú¿ﬂƒÍ
-           IF    ( SPA-GMN-BRMNUM      =  SPA-GMN-BRMNUM-ORG )
-            AND  ( SPA-GMN-BTUNAME     =  SPA-GMN-BTUNAME-ORG )
-               MOVE    SPA-GMN-SAGAKU      TO  WRK-CMB-CD
-               PERFORM 4200-SAGAKULST-CHK-SEC
-               MOVE    WRK-CMB-ITM         TO  SPA-GMN-SAGAKU-G
+           IF    ( WRK-MCP-WIDGET      NOT =  "B12" ) 
+               IF    ( SPA-GMN-BRMNUM      =  SPA-GMN-BRMNUM-ORG )
+                AND  ( SPA-GMN-BTUNAME     =  SPA-GMN-BTUNAME-ORG )
+                    MOVE    SPA-GMN-SAGAKU      TO  WRK-CMB-CD
+                    PERFORM 4200-SAGAKULST-CHK-SEC
+                    MOVE    WRK-CMB-ITM         TO  SPA-GMN-SAGAKU-G
       *
-               MOVE    SPA-GMN-NYUINKA     TO  WRK-CMB-CD
-               PERFORM 4200-NYUINKALST-CHK-SEC
-               MOVE    WRK-CMB-ITM         TO  SPA-GMN-NYUINKA-G
+                    MOVE    SPA-GMN-NYUINKA     TO  WRK-CMB-CD
+                    PERFORM 4200-NYUINKALST-CHK-SEC
+                    MOVE    WRK-CMB-ITM         TO  SPA-GMN-NYUINKA-G
       *
-           ELSE
-               MOVE    WRK-BTUDEF-SAGAKU   TO  WRK-CMB-CD
-               PERFORM 4200-SAGAKULST-CHK-SEC
-               MOVE    WRK-CMB-ITM         TO  SPA-GMN-SAGAKU-G
+                ELSE
+                    MOVE    WRK-BTUDEF-SAGAKU   TO  WRK-CMB-CD
+                    PERFORM 4200-SAGAKULST-CHK-SEC
+                    MOVE    WRK-CMB-ITM         TO  SPA-GMN-SAGAKU-G
       *
-               MOVE    WRK-BTUDEF-SAGAKU   TO  WRK-CMB-CD
-               PERFORM 4200-NYUINKALST-CHK-SEC
-               MOVE    WRK-CMB-ITM         TO  SPA-GMN-NYUINKA-G
+                    MOVE    WRK-BTUDEF-SAGAKU   TO  WRK-CMB-CD
+                    PERFORM 4200-NYUINKALST-CHK-SEC
+                    MOVE    WRK-CMB-ITM         TO  SPA-GMN-NYUINKA-G
+                END-IF
            END-IF
       *
            PERFORM 3101-TOKNYUINLST-SET-SEC
-           IF    ( SPA-NAI-NYUKBN      =   "02" )
-               PERFORM 4101-TOKNYUIN-SYOKI-SEC
+           IF    ( WRK-MCP-WIDGET      NOT =  "B12" ) 
+               IF    ( SPA-NAI-NYUKBN      =   "02" )
+                   PERFORM 4101-TOKNYUIN-SYOKI-SEC
+               END-IF
            END-IF
       *
            MOVE    SPA-GMN-BRMNUM      TO  SPA-GMN-BRMNUM-ORG
