@@ -54,10 +54,14 @@ START_PORT=9100
 # 起動する時にコンパイル済かチェックする *soファイル
 COB_SO=ORCGM00.so
 
-COB_LIBRARY_PATH=/usr/lib:"$ORCA_DIR"/cobol/common:"$ORCA_DIR"/cobol/orcabt:"$ORCA_DIR"/cobol/claim
-
+# MCPSUB lib
+COB_LIBRARY_PATH=/usr/lib
 # site-libの取り込み
 COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$SITELIBDIR"
+# orca lib
+COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$ORCA_DIR"/cobol/common:"$ORCA_DIR"/cobol/orcabt:"$ORCA_DIR"/cobol/claim
+
+
 
 
 ####################################################################
