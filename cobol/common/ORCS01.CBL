@@ -2455,15 +2455,63 @@
                       WHEN  1
                         MOVE   PTKOHFTN-GAIJGNGAK  TO   MAX-KIN-KOHI1-M
                         MOVE     "1"   TO    COMB-KOH1-GAIJGNKBN
+                        IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
+                            (FLG-KOUREI-KBN               =   "1" )
+                          IF  ( WK-1001-PREFNUM        =     20)
+                          AND ( COMB-KOH1HKNNUM(1:1)   >=   "1")
+                          AND ( COMB-KOH1HKNNUM(1:1)   <=   "8")
+                            CONTINUE
+                          ELSE
+                            IF    MAX-KIN-KOHI1-M    >  12000
+                              MOVE    12000    TO   MAX-KIN-KOHI1-M
+                            END-IF
+                          END-IF
+                        END-IF
                       WHEN  2
                         MOVE   PTKOHFTN-GAIJGNGAK  TO   MAX-KIN-KOHI2-M
                         MOVE     "1"   TO    COMB-KOH2-GAIJGNKBN
+                        IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
+                            (FLG-KOUREI-KBN               =   "1" )
+                          IF  ( WK-1001-PREFNUM        =     20)
+                          AND ( COMB-KOH2HKNNUM(1:1)   >=   "1")
+                          AND ( COMB-KOH2HKNNUM(1:1)   <=   "8")
+                            CONTINUE
+                          ELSE
+                            IF    MAX-KIN-KOHI2-M    >  12000
+                              MOVE    12000    TO   MAX-KIN-KOHI2-M
+                            END-IF
+                          END-IF
+                        END-IF
                       WHEN  3
                         MOVE   PTKOHFTN-GAIJGNGAK  TO   MAX-KIN-KOHI3-M
                         MOVE     "1"   TO    COMB-KOH3-GAIJGNKBN
+                        IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
+                            (FLG-KOUREI-KBN               =   "1" )
+                          IF  ( WK-1001-PREFNUM        =     20)
+                          AND ( COMB-KOH3HKNNUM(1:1)   >=   "1")
+                          AND ( COMB-KOH3HKNNUM(1:1)   <=   "8")
+                            CONTINUE
+                          ELSE
+                            IF    MAX-KIN-KOHI3-M    >  12000
+                              MOVE    12000    TO   MAX-KIN-KOHI3-M
+                            END-IF
+                          END-IF
+                        END-IF
                       WHEN  4
                         MOVE   PTKOHFTN-GAIJGNGAK  TO   MAX-KIN-KOHI4-M
                         MOVE     "1"   TO    COMB-KOH4-GAIJGNKBN
+                        IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
+                            (FLG-KOUREI-KBN               =   "1" )
+                          IF  ( WK-1001-PREFNUM        =     20)
+                          AND ( COMB-KOH4HKNNUM(1:1)   >=   "1")
+                          AND ( COMB-KOH4HKNNUM(1:1)   <=   "8")
+                            CONTINUE
+                          ELSE
+                            IF    MAX-KIN-KOHI4-M    >  12000
+                              MOVE    12000    TO   MAX-KIN-KOHI4-M
+                            END-IF
+                          END-IF
+                        END-IF
                    END-EVALUATE
                 END-IF
       *
