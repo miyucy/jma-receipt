@@ -51,7 +51,7 @@
                                 PIC S9(9)   BINARY.
               03  C02-B21-LABEL PIC X(4).
               03  C02-BANGO.
-                04  C02-VALUE   PIC X(40).
+                04  C02-VALUE   PIC X(50).
               03  C02-SRYYMD.
                 04  C02-VALUE   PIC X(10).
               03  C02-REZEMM.

@@ -49,7 +49,7 @@ C02	{
 			label	varchar(4);
 		};
 		BANGO	{
-			value	varchar(40);
+			value	varchar(50);
 		};
 		SRYYMD	{
 			value	varchar(10);

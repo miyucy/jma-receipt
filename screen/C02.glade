@@ -599,8 +599,8 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>40</text_max_length>
-      <text>1234567890123456789012345678901234567890</text>
+      <text_max_length>50</text_max_length>
+      <text>12345678901234567890123456789012345678901234567890</text>
       <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>

@@ -105,7 +105,7 @@
       *                 
                        09  SPA-GMN-C02-KOUMOKU.
                            11  SPA-GMN-C02-BANGO           PIC 9(05).
-                           11  SPA-GMN-C02-BANGO-X         PIC X(40).
+                           11  SPA-GMN-C02-BANGO-X         PIC X(50).
                            11  SPA-GMN-C02-SRYYMD          PIC X(10).
                            11  SPA-GMN-C02-BYOMEICD-G.
                                13  SPA-GMN-C02-BYOMEICD    OCCURS  6
