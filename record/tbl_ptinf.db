@@ -125,3 +125,54 @@ path	all	{
  		;
 	};
 };
+path	key6	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptinf
+			WHERE ( HOSPID    =   :HOSPID )  AND
+                              ( SEX       =   :SEX    )  AND
+                              ( BIRTHDAY  LIKE  :BIRTHDAY )  AND
+			((NAME   LIKE :NAME  ) OR
+			(KANANAME  LIKE :KANANAME))
+			ORDER BY   BIRTHDAY,
+                                   KANANAME
+		;
+	};
+};
+path	key7	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptinf
+			WHERE ( HOSPID    =   :HOSPID )  AND
+                              ( SEX       =   :SEX    )  AND
+                              ( BIRTHDAY  LIKE  :BIRTHDAY )
+			ORDER BY   BIRTHDAY,
+                                   KANANAME
+		;
+	};
+};
+path	key8	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptinf
+			WHERE ( HOSPID    =   :HOSPID )  AND
+                              ( SEX       =   :SEX    )
+			ORDER BY  KANANAME
+		;
+	};
+};
+path	key9	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptinf
+			WHERE ( HOSPID    =   :HOSPID )  AND
+                              ( BIRTHDAY  LIKE  :BIRTHDAY )
+			ORDER BY   BIRTHDAY,
+                                   KANANAME
+		;
+	};
+};
