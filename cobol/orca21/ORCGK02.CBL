@@ -2649,6 +2649,11 @@
            MOVE    ZERO                TO  WRK-IN-MAP-IDX
            MOVE    1                   TO  WRK-STR
            PERFORM 410112-KOUI-SPACHK-SEC
+      *    再診料振替えは入力後に行う
+           IF      SPA-KIDCD           =   "0114"  OR
+                                           "0115"
+               MOVE    SPACE               TO  SPA-KIDCD
+           END-IF
       *??  診療行為、計計算処理、編集
       *    MOVE    SPACE           TO  FLG-TOROKU
       *    PERFORM 510-TBLHEN-SEC

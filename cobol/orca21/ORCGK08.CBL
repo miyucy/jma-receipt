@@ -1795,7 +1795,13 @@
                        MOVE    10              TO  IDX
                    ELSE
                        IF      K08-SELNUM (IDX)    =   ZERO
-                           MOVE    WRK-SELNUM      TO  K08-SELNUM (IDX)
+                           MOVE    WRK-SELNUM      TO  SPA-GMN-SELNUM
+                                                                  (IDX)
+                           PERFORM 41021-SELNUM-CHK-SEC
+                           IF      SPA-ERRCD       =   SPACE
+                               MOVE    WRK-SELNUM      TO  K08-SELNUM
+                                                                   (IDX)
+                           END-IF
                            MOVE    IDX             TO  IDX-Y2
                            MOVE    10              TO  IDX
                            MOVE    "SELNUM"        TO  WRK-MCP-WIDGET
@@ -2206,6 +2212,7 @@
                    WRITE                   PARA-REC
                ELSE
                    MOVE    SPACE               TO  LNK-WKSRYACT-REC(IDX)
+                   INITIALIZE                      LNK-WKSRYACT-REC(IDX)
                END-IF
            END-PERFORM
       *
