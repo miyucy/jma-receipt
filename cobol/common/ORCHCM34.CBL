@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.09.19  自院歴より継続して入院している
       *                                     場合の入院日を修正
+      *  01.00.02    NACL-太田    04.01.16  包括分の考慮を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -92,6 +93,7 @@
            03  FLG-COMMENT-CHK                     PIC 9(01).
            03  FLG-PTCOM                           PIC 9(01).
            03  FLG-YAKUSOKU                        PIC 9(01).
+           03  FLG-HOUKATU                         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1349,6 +1351,9 @@
       *
            END-PERFORM
       *
+      *    保険組み合わせ包括分編集処理
+           PERFORM 20011-HOUKATU-HEN-SEC
+      *
            .
        2001-HKNCOMBI-HEN-EXT.
            EXIT.
@@ -1396,6 +1401,93 @@
       *
            .
        20011-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組み合わせ包括分編集処理
+      *****************************************************************
+       20011-HOUKATU-HEN-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HOUKATU
+      *
+           MOVE    ZERO                TO  FLG-SRYACCT
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    ORCHCM34-NYUGAIKBN  TO  ACCT-NYUGAIKBN
+           MOVE    ORCHCM34-SRYYM      TO  ACCT-SRYYM
+           MOVE    9999                TO  ACCT-HKNCOMBI
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "SRYACCT-KEY22"     TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-SRYACCT
+           ELSE
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-SRYACCT NOT = ZERO )
+                    OR   ( FLG-HOUKATU NOT = ZERO )
+      *
+               IF    ( ACCT-ZAITEN     NOT =   ZERO )
+                AND  ( ACCT-ZAIKAISU   NOT =   ZERO )
+                    MOVE   1           TO  FLG-HOUKATU
+               END-IF
+      *
+               MOVE    "SRYACCT-KEY22" TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC        NOT =   ZERO )
+                   MOVE    1           TO  FLG-SRYACCT
+               ELSE
+                   MOVE    MCPDATA-REC TO  SRYACCT-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SRYACCT-KEY22"     TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-HOUKATU         =   1 )
+               IF    ( CNT-HKNCOMBI-LINE
+                                       <    CONST-HKNCOMBI-LINE-MAX )
+      *
+                   COMPUTE CNT-HKNCOMBI-LINE
+                       =   CNT-HKNCOMBI-LINE   +   1
+      *
+                   MOVE    CNT-HKNCOMBI-LINE
+                                       TO  IDXA
+                   MOVE    "9999"      TO  HCM341-HKNCOMBINUM(IDXA)
+                   MOVE    "包括分"    TO  HCM341-HKNCOMBIMEI(IDXA)
+                   MOVE    " 00.00.00" TO  HCM341-TEKSTYMD (IDXA)
+                   MOVE    " 99.99.99" TO  HCM341-TEKEDYMD (IDXA)
+               ELSE
+      *
+      *            保険組合せ欄に収まりきらない場合、
+      *            ワークエリアに退避する
+                   IF    ( WKHKNCOMBI-MAX  <   50 )
+                       COMPUTE WKHKNCOMBI-MAX  =   WKHKNCOMBI-MAX
+                                               +   1
+      *
+                       MOVE    WKHKNCOMBI-MAX  TO  IDXA
+      *
+                       MOVE    "9999"
+                                       TO  WKHKNCOMBI-HKNCOMBINUM(IDXA)
+                       MOVE    "包括分"
+                                       TO  WKHKNCOMBI-HKNCOMBIMEI(IDXA)
+                       MOVE    "00000000"
+                                       TO  WKHKNCOMBI-TEKSTYMDS (IDXA)
+                       MOVE    "99999999"
+                                       TO  WKHKNCOMBI-TEKEDYMDS (IDXA)
+                       MOVE    " 00.00.00"
+                                       TO  WKHKNCOMBI-TEKSTYMDW (IDXA)
+                       MOVE    " 99.99.99"
+                                       TO  WKHKNCOMBI-TEKEDYMDW (IDXA)
+      *
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       20011-HOUKATU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    保険編集処理

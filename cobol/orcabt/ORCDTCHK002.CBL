@@ -5594,12 +5594,19 @@
       *
                    MOVE    MCPDATA-REC TO  SRYACCT-REC
       *
-                   IF    ( ACCT-ZAITEN     NOT =   ZERO )
-                    OR   ( ACCT-ZAIKAISU   NOT =   ZERO )
+                   MOVE    1           TO  FLG-LOOP-END
       *
-                        MOVE   1       TO  FLG-LOOP-END
+                   IF    ( ACCT-ZAITEN     =   ZERO )
+                    AND  ( ACCT-ZAIKAISU   =   ZERO )
+      *
+                        MOVE   ZERO    TO  FLG-LOOP-END
       *
                    END-IF
+      *
+                   IF    ( ACCT-HKNCOMBI       =   9999 )
+                        MOVE   ZERO    TO  FLG-LOOP-END
+                   END-IF
+      *
                ELSE
                    MOVE    1           TO  FLG-SRYACCT
                END-IF
