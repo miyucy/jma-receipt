@@ -97,8 +97,9 @@
       *  01.07.08    NACL-藤原    03/02/14  入力ＣＤ検索から戻ったときの
       *                                     カルテ病名の編集を追加
       *  01.07.09    NACL-藤原    03/02/28  診療科４０に変更
-      *  02.00.06    NACL-藤原    03/03/05  排他制御処理追加
-      *  02.00.07    NACL-多々納  03/03/14  ファイル削除追加
+      *  02.07.10    NACL-藤原    03/03/05  排他制御処理追加
+      *  02.07.11    NACL-多々納  03/03/14  ファイル削除追加
+      *  02.07.12    NACL-藤原    03/03/14  同一開始日の病名の表示順の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5242,31 +5243,6 @@
       *
            IF      SPA-GMN-C02-MAX             >   ZERO 
       *
-      *        診療開始日別に並び替え
-               COMPUTE IDX1    =   SPA-GMN-C02-MAX -   1
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       IDX1
-                   COMPUTE IDX2    =   IDX     +   1
-                   PERFORM VARYING IDY FROM    IDX2    BY  1
-                           UNTIL   IDY >       SPA-GMN-C02-MAX 
-                       IF      SPA-NAI-C02-TKEY (IDX)
-                                       <   SPA-NAI-C02-TKEY (IDY)
-                           MOVE    SPA-GMN-C02-TBLO (IDX)
-                                           TO  WRK-GMN-TBL
-                           MOVE    SPA-GMN-C02-TBLO (IDY)
-                                           TO  SPA-GMN-C02-TBLO (IDX)
-                           MOVE    WRK-GMN-TBL
-                                           TO  SPA-GMN-C02-TBLO (IDY)
-                           MOVE    SPA-NAI-C02-TBLO (IDX)
-                                           TO  WRK-NAI-TBL
-                           MOVE    SPA-NAI-C02-TBLO (IDY)
-                                           TO  SPA-NAI-C02-TBLO (IDX)
-                           MOVE    WRK-NAI-TBL
-                                           TO  SPA-NAI-C02-TBLO (IDY)
-                       END-IF
-                   END-PERFORM    
-               END-PERFORM
-      *
       *        診療開始日別に連番セット
                MOVE    1                       TO  IDX
                MOVE    ZERO                    TO  WRK-SRYYMD
@@ -5276,8 +5252,22 @@
                                            NOT =   WRK-SRYYMD
                        MOVE    SPA-NAI-C02-TSRYYMD (IDX)
                                                TO  WRK-SRYYMD   
-                       MOVE    SPA-NAI-C02-TRENNUM (IDX)
-                                               TO  WRK-RENNUM
+                       MOVE    ZERO            TO  WRK-RENNUM
+                       IF      SPA-NAI-C02-TRENNUM (IDX)
+                                                       =   ZERO 
+                           INITIALIZE                  PTBYO-KEY
+                           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+                           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+                           MOVE    SPA-GMN-C02-SRYKA   TO  PTBYO-SRYKA
+                           MOVE    SPA-NAI-C02-TSRYYMD (IDX)
+                                                       TO  PTBYO-SRYYMD
+                           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+                           MOVE    "PTBYOMEI-KEY7"     TO  WRK-DBPATH
+                           PERFORM 900-PTBYO-INV-SEC
+                           IF      FLG-PTBYOMEI        =   ZERO
+                               MOVE    PTBYO-RENNUM    TO  WRK-RENNUM
+                           END-IF
+                       END-IF
                    END-IF
                    IF      SPA-NAI-C02-TRENNUM (IDX)
                                                    =   ZERO 
@@ -5332,6 +5322,7 @@
                                                    TO  PTBYO-SRYYMD
                        MOVE    SPA-NAI-C02-TRENNUM (IDX)
                                                    TO  PTBYO-RENNUM 
+                       MOVE    "PTBYOMEI-KEY"      TO  WRK-DBPATH
                        PERFORM 900-PTBYO-INV-SEC
                        IF      FLG-PTBYOMEI        =   1
                            MOVE    "1003"          TO  SPA-ERRCD
@@ -6715,13 +6706,13 @@
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY"         TO  ORC-DBPATH
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTBYOMEI-KEY"         TO  ORC-DBPATH
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 900-PTBYO-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
@@ -6729,7 +6720,7 @@
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY"      TO  ORC-DBPATH
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
                                        ORCMCPAREA
