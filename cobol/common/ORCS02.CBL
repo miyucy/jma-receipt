@@ -2748,17 +2748,17 @@
                                                        WK-NYUKFTNRATE2
                        END-EVALUATE
                        EVALUATE     WK-NYUKFTNRATE2
-                          WHEN   010
-                              MOVE  "1"   TO   COMB-KOH1-NYUJGNKBN
-                              IF  FLG-SANSHOU3     =   SPACE
-                                  MOVE   40200   TO   MAX-KIN-KOHI1-M
-                              ELSE
-                                IF  FLG-SANSHOU3     =   "1"
-                                  MOVE   15000   TO   MAX-KIN-KOHI1-M
-                                ELSE
-                                  MOVE   24600   TO   MAX-KIN-KOHI1-M
-                                END-IF
-                              END-IF
+      ***                 WHEN   010
+      ***                     MOVE  "1"   TO   COMB-KOH1-NYUJGNKBN
+      ***                     IF  FLG-SANSHOU3     =   SPACE
+      ***                         MOVE   40200   TO   MAX-KIN-KOHI1-M
+      ***                     ELSE
+      ***                       IF  FLG-SANSHOU3     =   "1"
+      ***                         MOVE   15000   TO   MAX-KIN-KOHI1-M
+      ***                       ELSE
+      ***                         MOVE   24600   TO   MAX-KIN-KOHI1-M
+      ***                       END-IF
+      ***                     END-IF
                           WHEN   020
                               MOVE  "1"   TO   COMB-KOH1-NYUJGNKBN
                               MOVE   72300       TO   MAX-KIN-KOHI1-M
@@ -2810,17 +2810,17 @@
                                                        WK-NYUKFTNRATE2
                        END-EVALUATE
                        EVALUATE     WK-NYUKFTNRATE2
-                          WHEN   010
-                              MOVE  "1"   TO   COMB-KOH2-NYUJGNKBN
-                              IF  FLG-SANSHOU3     =   SPACE
-                                  MOVE   40200   TO   MAX-KIN-KOHI2-M
-                              ELSE
-                                IF  FLG-SANSHOU3     =   "1"
-                                  MOVE   15000   TO   MAX-KIN-KOHI2-M
-                                ELSE
-                                  MOVE   24600   TO   MAX-KIN-KOHI2-M
-                                END-IF
-                              END-IF
+      ***                 WHEN   010
+      ***                     MOVE  "1"   TO   COMB-KOH2-NYUJGNKBN
+      ***                     IF  FLG-SANSHOU3     =   SPACE
+      ***                         MOVE   40200   TO   MAX-KIN-KOHI2-M
+      ***                     ELSE
+      ***                       IF  FLG-SANSHOU3     =   "1"
+      ***                         MOVE   15000   TO   MAX-KIN-KOHI2-M
+      ***                       ELSE
+      ***                         MOVE   24600   TO   MAX-KIN-KOHI2-M
+      ***                       END-IF
+      ***                     END-IF
                           WHEN   020
                               MOVE  "1"   TO   COMB-KOH2-NYUJGNKBN
                               MOVE   72300       TO   MAX-KIN-KOHI2-M
@@ -2872,17 +2872,17 @@
                                                        WK-NYUKFTNRATE2
                        END-EVALUATE
                        EVALUATE     WK-NYUKFTNRATE2
-                          WHEN   010
-                              MOVE  "1"   TO   COMB-KOH3-NYUJGNKBN
-                              IF  FLG-SANSHOU3     =   SPACE
-                                  MOVE   40200   TO   MAX-KIN-KOHI3-M
-                              ELSE
-                                IF  FLG-SANSHOU3     =   "1"
-                                  MOVE   15000   TO   MAX-KIN-KOHI3-M
-                                ELSE
-                                  MOVE   24600   TO   MAX-KIN-KOHI3-M
-                                END-IF
-                              END-IF
+      ***                 WHEN   010
+      ***                     MOVE  "1"   TO   COMB-KOH3-NYUJGNKBN
+      ***                     IF  FLG-SANSHOU3     =   SPACE
+      ***                         MOVE   40200   TO   MAX-KIN-KOHI3-M
+      ***                     ELSE
+      ***                       IF  FLG-SANSHOU3     =   "1"
+      ***                         MOVE   15000   TO   MAX-KIN-KOHI3-M
+      ***                       ELSE
+      ***                         MOVE   24600   TO   MAX-KIN-KOHI3-M
+      ***                       END-IF
+      ***                     END-IF
                           WHEN   020
                               MOVE  "1"   TO   COMB-KOH3-NYUJGNKBN
                               MOVE   72300       TO   MAX-KIN-KOHI3-M
@@ -2934,17 +2934,17 @@
                                                        WK-NYUKFTNRATE2
                        END-EVALUATE
                        EVALUATE     WK-NYUKFTNRATE2
-                          WHEN   010
-                              MOVE  "1"   TO   COMB-KOH4-NYUJGNKBN
-                              IF  FLG-SANSHOU3     =   SPACE
-                                  MOVE   40200   TO   MAX-KIN-KOHI4-M
-                              ELSE
-                                IF  FLG-SANSHOU3     =   "1"
-                                  MOVE   15000   TO   MAX-KIN-KOHI4-M
-                                ELSE
-                                  MOVE   24600   TO   MAX-KIN-KOHI4-M
-                                END-IF
-                              END-IF
+      ***                 WHEN   010
+      ***                     MOVE  "1"   TO   COMB-KOH4-NYUJGNKBN
+      ***                     IF  FLG-SANSHOU3     =   SPACE
+      ***                         MOVE   40200   TO   MAX-KIN-KOHI4-M
+      ***                     ELSE
+      ***                       IF  FLG-SANSHOU3     =   "1"
+      ***                         MOVE   15000   TO   MAX-KIN-KOHI4-M
+      ***                       ELSE
+      ***                         MOVE   24600   TO   MAX-KIN-KOHI4-M
+      ***                       END-IF
+      ***                     END-IF
                           WHEN   020
                               MOVE  "1"   TO   COMB-KOH4-NYUJGNKBN
                               MOVE   72300       TO   MAX-KIN-KOHI4-M
