@@ -342,6 +342,9 @@
                MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG
       *        病床数
                MOVE    SYS-1001-BEDSU      TO  SPA-BEDSU
+      *TEST    すべて外来とする
+               MOVE    ZERO                TO  SPA-BEDSU
+      *TEST
            ELSE
                MOVE    "1002"              TO  SPA-ERRCD
                GO  TO  310-SPASET-EXT
