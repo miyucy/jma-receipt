@@ -610,7 +610,7 @@
            PERFORM 900-ADRS-SELECT-SEC
       *
            IF      FLG-ADRS        =   ZERO
-               MOVE    ADRS-POST       TO  SPA-NAI-POST
+      *         MOVE    ADRS-POST       TO  SPA-NAI-POST
                MOVE    ADRS-POST       TO  SPA-GMN-POST
                MOVE    ADRS-CITYKANA   TO  SPA-GMN-CITYKANA
                MOVE    ADRS-TOWNKANA   TO  SPA-GMN-TOWNKANA
@@ -1038,6 +1038,7 @@
       *    追加処理
            PERFORM 490-INSERT-SEC
       *
+           MOVE    SPA-NAI-POST    TO  SPA-GMN-POST
            MOVE    SPACE           TO  SPA-NAI-POST
            PERFORM 4100-POST-CHK-SEC
            .
