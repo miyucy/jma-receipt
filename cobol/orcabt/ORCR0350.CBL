@@ -3400,9 +3400,9 @@
       *                        数量
                                PERFORM 5005-NUM-HENSYU-SEC  
       *                        点数
-                               IF      IDXZ         =
-                                               LNK-NYURECEDEN-MEISAISU
-                                                           (IDXX IDXY)
+                               IF      LNK-NYURECEDEN-TEN
+                                                    (IDXX IDXY IDXZ)
+                                                        >   ZERO
                                    MOVE    LNK-NYURECEDEN-TEN
                                                        (IDXX IDXY IDXZ)
                                                        TO  WRK-TENSU
@@ -3411,9 +3411,9 @@
                                END-IF
                                PERFORM 5005-NUM-HENSYU-SEC  
       *                        回数
-                               IF      IDXZ         =
-                                               LNK-NYURECEDEN-MEISAISU
-                                                           (IDXX IDXY)
+                               IF      LNK-NYURECEDEN-KAISU
+                                                   (IDXX IDXY IDXZ)
+                                                       >   ZERO 
                                    MOVE    LNK-NYURECEDEN-KAISU
                                                        (IDXX IDXY IDXZ)
                                                        TO  WRK-KAISU
