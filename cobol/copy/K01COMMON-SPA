@@ -267,12 +267,16 @@
       *
       *消炎鎮痛等処置当月内算定
                05  SPA-SYOEN-CNT           PIC  9(03).
-      *急性発生１８０日以内
+      *急性発症１８０日以内
                05  SPA-KYUSEI-180          PIC  X(08).
-      *急性発生９０日以内
+      *急性発症９０日以内
                05  SPA-KYUSEI-90           PIC  X(08).
-      *急性発生（当日）
+      *急性発症日
+               05  SPA-KYUSEI-YMD          PIC  X(08).
+      *急性発症（当日）
                05  SPA-KYUSEI-FLG          PIC  9(01).
+      *急性発症編集日
+               05  SPA-GMN-KYUSEI                PIC X(62).
       *当月外来管理加算の取れない患者
                05  SPA-GAIRAI-NASI         PIC  9(01).
       *労災外来管理加算点数

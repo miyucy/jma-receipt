@@ -12780,14 +12780,23 @@
                    MOVE    "¡Î³Î¡Ï"        TO  K02-CONTKBN-VALUE
            END-EVALUATE
       *
+           IF      SPA-GMN-KYUSEI     NOT =   SPACE
+               MOVE    SPA-GMN-KYUSEI     TO  K02-TABOO
+               MOVE    SPA-GMN-KYUSEI     TO  K02-TABOO-ITEM(1)
+               MOVE    1                  TO  IDY
+           ELSE
       *    ¶Ø´÷
-           MOVE    SPA-GMN-TABOO (1)  TO  K02-TABOO
+               MOVE    SPA-GMN-TABOO (1)  TO  K02-TABOO
+               MOVE    ZERO               TO  IDY
+           END-IF
            PERFORM  VARYING   IDX     FROM    1   BY  1
                     UNTIL     IDX         >   SPA-TABOO-MAX
+               ADD     1                      TO  IDY
                MOVE    SPA-GMN-TABOO (IDX)    TO  K02-TABOO-ITEM
-                                                             (IDX)
+                                                             (IDY)
            END-PERFORM
-           MOVE    SPA-TABOO-MAX       TO  K02-TABOO-COUNT
+      **** MOVE    SPA-TABOO-MAX       TO  K02-TABOO-COUNT
+           MOVE    IDY                 TO  K02-TABOO-COUNT
       *
       *    ¾®»ù²Ê»þ´Ö³°
            IF      SPA-GMN-JIKANMSG    =   SPACE

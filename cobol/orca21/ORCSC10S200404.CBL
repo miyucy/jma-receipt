@@ -250,6 +250,13 @@
       *    £²£´»þ´ÖÏ¢ÂÓ²Ã»»
            03  WRK-24KSAN-SRYCD        PIC X(09).
       *
+      *    È¯À¸ÆüÊÔ½¸
+           03  WRK-HENSYU-AREA.
+               05  WRK-KYUSEI-YMD      PIC X(09).
+               05  WRK-KYUSEI-90       PIC X(09).
+               05  WRK-KYUSEI-180      PIC X(09).
+               05  WRK-HENSYU          PIC X(80).
+      *
       *    ¿Ç»¡ÎÁ¥Æ¡¼¥Ö¥ë
        01  TBL-SINSATU-AREA.
       *    ½é¿ÇÎÁ¡Ê°ìÈÌ ÉÂ±¡¡Ë
@@ -1316,6 +1323,8 @@
            MOVE    ZERO                TO  SPA-KYUSEI-FLG
            MOVE    SPACE               TO  SPA-KYUSEI-180
            MOVE    SPACE               TO  SPA-KYUSEI-90
+           MOVE    SPACE               TO  SPA-KYUSEI-YMD
+           MOVE    SPACE               TO  SPA-GMN-KYUSEI
       *
            MOVE    "099800101"         TO  WRK-SRYCD
       *
@@ -1378,8 +1387,9 @@
                END-IF
            END-PERFORM
       *
+           MOVE    WRK-YMD             TO  SPA-KYUSEI-YMD
       *    180Æü¸å·×»»
-           IF      WRK-YMD             =   ZERO
+           IF      WRK-YMD             =   SPACE
                GO      TO      10019-KYUSEI-CHK-EXT
            END-IF
       *
@@ -1415,6 +1425,44 @@
                    ",SPA-SRYYMD:" SPA-SRYYMD
       *TEST
            MOVE    LNK-DAY6-KEISAN     TO  SPA-KYUSEI-90
+      *
+      *    ²èÌÌÉ½¼¨ÍÑ
+           MOVE    SPACE               TO  WRK-HENSYU-AREA
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    SPA-KYUSEI-YMD      TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-KYUSEI-YMD
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    SPA-KYUSEI-90       TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-KYUSEI-90
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    SPA-KYUSEI-180      TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-KYUSEI-180
+      *
+           STRING   "µÞÀ­È¯¾ÉÆü¡§"     DELIMITED  BY  SIZE
+                   WRK-KYUSEI-YMD      DELIMITED  BY  SIZE
+                   "¡¡£¹£°±Û¡§"        DELIMITED  BY  SIZE
+                   WRK-KYUSEI-90       DELIMITED  BY  SIZE
+                   "¡¡£±£¸£°±Û¡§"      DELIMITED  BY  SIZE
+                   WRK-KYUSEI-180      DELIMITED  BY  SIZE
+                   INTO                SPA-GMN-KYUSEI
+           END-STRING
+      *
+      *
+             
            .
        10019-KYUSEI-CHK-EXT.
            EXIT.
