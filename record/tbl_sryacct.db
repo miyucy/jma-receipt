@@ -483,6 +483,29 @@ path	key19	{
 	};
 };
 
+path	key20	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key20_csr CURSOR FOR
+		SELECT A.*
+		FROM tbl_sryacct A,tbl_sryact B
+			WHERE   A.HOSPID    =   :HOSPID
+			AND   A.NYUGAIKBN   =   :NYUGAIKBN
+			AND   A.PTID        =   :PTID
+			AND   A.SRYYM       =   :SRYYM
+                        AND   A.HOSPID    = B.HOSPID
+                        AND   A.NYUGAIKBN = B.NYUGAIKBN
+                        AND   A.PTID      = B.PTID
+                        AND   A.SRYYM     = B.SRYYM
+                        AND   A.ZAINUM    = B.ZAINUM
+                        AND   1           = B.RENNUM
+			ORDER  BY   A.HKNCOMBI,
+                        A.SRYKBN,
+                        B.SRYSYUKBN,
+                        A.ZAINUM
+		;
+	};
+};
+
 path	all2	{
 	DBSELECT	{
 		DECLARE tbl_sryacct_all2_csr CURSOR FOR
