@@ -8882,9 +8882,9 @@
                    CONTINUE
                ELSE
                    IF    ( WRK-TAIINYM     =   ACCT-SRYYM )
-                       MOVE    WRK-TAIINDD TO  IDX14
+                       COMPUTE IDX14       =   WRK-TAIINDD +   1
                    ELSE
-                       MOVE    1           TO  IDX14
+                       COMPUTE IDX14       =   1
                    END-IF
       *
                    PERFORM UNTIL ( IDX14               >   31 )
