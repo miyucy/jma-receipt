@@ -193,11 +193,13 @@
                IF      WRK-RIGAKU-RYO      =   "K"  OR  "S"
       *            Ï«ºÒ¤Î»þ¡¢ÊÝ¸±Ëè
                    IF      SPA-HKNKBN      NOT =   ZERO
-                      IF      SPA-HKNCOMBINUM     =  SANTEI-HKNCOMBINUM
+                      IF      SPA-HKNCOMBINUM  =   SANTEI-HKNCOMBINUM
                            MOVE    1               TO  FLG-SANTEI-ARI
                        END-IF
                    ELSE
-                       MOVE    1               TO  FLG-SANTEI-ARI
+                      IF       SANTEI-HKNCOMBINUM  =   SPACE OR  ZERO
+                           MOVE    1               TO  FLG-SANTEI-ARI
+                       END-IF
                    END-IF
                END-IF
       *
