@@ -74,3 +74,5 @@
                05  CHKUP-CDKBN         PIC  X(01).
                05  CHKUP-RENNUM        PIC  9(02).
       *
+      *¸¡º÷ÍÑ¹àÌÜ
+           03  CHK-SELNAME             PIC  X(200).

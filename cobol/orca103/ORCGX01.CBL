@@ -110,6 +110,8 @@
       *
            03  FLG-OK                             PIC 9(01).
            03  FLG-TOUROKU                        PIC 9(01).
+           03  FLG-KANJI                          PIC 9(01).
+           03  FLG-KENSAKU                        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -135,8 +137,7 @@
       *
            03  WRK-INPUTCD             PIC X(09).
            03  WRK-CD-MCNT             PIC 9(02).
-           03  FLG-KANJI               PIC 9(01).
-           03  FLG-KENSAKU             PIC 9(01).
+           03  WRK-CHKKBN              PIC X(01).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -199,6 +200,7 @@
        01  SCRAREA.
            COPY    "X01.INC".
            COPY    "X02.INC".
+           COPY    "X03.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC". 
@@ -297,10 +299,19 @@
            END-IF
       *
            EVALUATE    SPA-MOTOPG(1:3)
-               WHEN    "X98"
-      *    病名セット処理
-                   PERFORM 320-X98SPASET-SEC
-                   GO      TO      300-SCREEN-EXT
+           WHEN    "X02"
+               MOVE    SPA-X01-CHKKBN
+                                   TO  WRK-CHKKBN
+               PERFORM 310-SPASET-SEC
+               MOVE    WRK-CHKKBN  TO  SPA-GMN-CHKKBN
+               PERFORM 4105-CHKKBN-CHK-SEC
+               MOVE    1           TO  SPA-GMN-PAGE
+               MOVE    2           TO  SPA-GMN-CUR 
+               GO      TO      300-SCREEN-EXT
+           WHEN    "X98"
+      *    診療行為コード処理
+               PERFORM 320-X98SPASET-SEC
+               GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -340,6 +351,7 @@
       *    診療行為コードセット処理
       *****************************************************************
        320-X98SPASET-SEC          SECTION.
+      *
       *
            IF      SPA-X98-SRYCD   NOT =   SPACE    
       ******** MOVE    SPA-X98-SRYCD       TO  X01-SRYCD
@@ -785,7 +797,17 @@
            ELSE
       *        最終履歴の名称をセットする
                PERFORM UNTIL       FLG-TENSU       =   1
-                   MOVE    TNS-NAME            TO  SPA-GMN-NAME
+      *
+                   IF     (TNS-SRYCD(1:1)      =   "1") AND
+                          (TNS-ROUTEKKBN       =   2  )
+                       MOVE    SPACE       TO  SPA-GMN-NAME
+                       STRING  "［老］"        DELIMITED   BY  SIZE
+                               TNS-NAME        DELIMITED   BY  SIZE
+                       INTO    SPA-GMN-NAME
+                       END-STRING
+                   ELSE
+                       MOVE    TNS-NAME    TO  SPA-GMN-NAME
+                   END-IF
       *
                    MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
                    PERFORM 900-TENSU-READ-SEC
@@ -872,8 +894,16 @@
                        MOVE    1                   TO  FLG-TENSU
                    END-IF
                    IF      FLG-TENSU           =   ZERO
-                       MOVE    TNS-NAME            TO  SPA-NAI-NAME
-                                                             (IDX)
+                       IF     (TNS-SRYCD(1:1)      =   "1") AND
+                              (TNS-ROUTEKKBN       =   2  )
+                           MOVE    SPACE       TO  SPA-NAI-NAME (IDX)
+                           STRING  "［老］"        DELIMITED   BY  SIZE
+                                   TNS-NAME        DELIMITED   BY  SIZE
+                           INTO    SPA-NAI-NAME (IDX)
+                           END-STRING
+                       ELSE
+                           MOVE    TNS-NAME    TO  SPA-NAI-NAME (IDX)
+                       END-IF
                    END-IF
                    MOVE    IDX                  TO  SPA-GMN-MAX 
                END-IF
@@ -1026,7 +1056,7 @@
                    WHEN    "3"
                    WHEN    "4"
       *                薬剤
-                       MOVE    "4"             TO  SPA-X98-GMN-SYORI
+                       MOVE    "3"             TO  SPA-X98-GMN-SYORI
                    WHEN    "2"
                    WHEN    "5"
       *                診療行為
@@ -1054,6 +1084,14 @@
                MOVE    "2"                 TO  SPA-X98-GMN-KBN
       *        画面編集
                PERFORM 41011-X98-SET-SEC
+      *        対象データなしの時、診療行為で検索する
+               IF     (SPA-X98-GMN-MAX     =   ZERO )  AND
+                      (SPA-X98-CDSYUBETU   =   "J"  )
+                   INITIALIZE                  SPA-X98GMN-AREA
+                   MOVE    "8"                 TO  SPA-X98-GMN-SYORI
+      *            画面編集
+                   PERFORM 41011-X98-SET-SEC
+               END-IF
            ELSE
       *        画面編集
                MOVE    "2"                 TO  SPA-X98-GMN-KBN

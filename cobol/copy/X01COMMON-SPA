@@ -54,15 +54,18 @@
            05  SPA-XID1-AREA. 
                07  SPA-XID1-FLG            PIC X(02).
       *£Ø£¹£¸²èÌÌ¤è¤ê
-               05  SPA-X98-AREA.
-                   07  SPA-X98-CDSYUBETU       PIC X(01).
-                   07  SPA-X98-INPUTCD         PIC X(22).
-                   07  SPA-X98-NAIYOU          PIC X(07).
-                   07  SPA-X98-MOJI            PIC 9(02).
-                   07  SPA-X98-TYPE            PIC X(01).
+           05  SPA-X98-AREA.
+               07  SPA-X98-CDSYUBETU       PIC X(01).
+               07  SPA-X98-INPUTCD         PIC X(22).
+               07  SPA-X98-NAIYOU          PIC X(07).
+               07  SPA-X98-MOJI            PIC 9(02).
+               07  SPA-X98-TYPE            PIC X(01).
       *
-                   07  SPA-X98-SRYCD           PIC X(09).
-                   07  SPA-X98-NAME            PIC X(60).
+               07  SPA-X98-GMN-ALL         PIC X(01).
       *
-                   07  SPA-X98-RC              PIC 9(04).
+               07  SPA-X98-SRYCD           PIC X(09).
+               07  SPA-X98-NAME            PIC X(60).
+      *
+               07  SPA-X98-RC              PIC 9(04).
+      *
       *

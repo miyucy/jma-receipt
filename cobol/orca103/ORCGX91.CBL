@@ -232,6 +232,7 @@
        01  SCRAREA.
            COPY    "X01.INC".
            COPY    "X02.INC".
+           COPY    "X03.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC". 
@@ -670,7 +671,16 @@
            MOVE    "TENSU-KEY24"       TO  ORC-DBPATH
            PERFORM 910-DBCLOSE-SEC
       *
-           MOVE    TNS-NAME            TO  SPA-GMN-STSRYNAME
+           IF     (TNS-SRYCD(1:1)      =   "1") AND
+                  (TNS-ROUTEKKBN       =   2  )
+                MOVE    SPACE       TO  SPA-GMN-STSRYNAME
+                STRING  "［老］"        DELIMITED   BY  SIZE
+                        TNS-NAME        DELIMITED   BY  SIZE
+                INTO    SPA-GMN-STSRYNAME
+                END-STRING
+            ELSE
+                MOVE    TNS-NAME    TO  SPA-GMN-STSRYNAME
+            END-IF
       *
       *    チェックマスタチェック
            PERFORM 41011-CHKMST-CHK-SEC
@@ -981,7 +991,7 @@
            MOVE    1                   TO  FLG-END
       *
            .
-       490-JYOUHOU-DEL-EXT.
+       490-KENSAKU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -990,6 +1000,7 @@
        41011-X98-SET-SEC               SECTION.
       *
            MOVE    SPA-SYSYMD      TO  SPA-X01-KJNYMD
+           MOVE    SPACE           TO  SPA-X01-CHKKBN
       *
            MOVE    SPA-X01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON

@@ -5,13 +5,9 @@
   <name>X02</name>
   <program_name>X02</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -29,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 04 Jan 2001 03:26:09 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -226,7 +222,18 @@
       <y>720</y>
       <width>80</width>
       <height>24</height>
-      <label></label>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F8</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 28 Feb 2001 04:20:29 GMT</last_modification_time>
+      </signal>
+      <label>複写</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -316,9 +323,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD01</name>
-      <x>7</x>
+      <x>45</x>
       <y>155</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -335,7 +342,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -344,9 +351,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD02</name>
-      <x>7</x>
+      <x>45</x>
       <y>175</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -363,7 +370,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -372,9 +379,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD03</name>
-      <x>7</x>
+      <x>45</x>
       <y>195</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -391,7 +398,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -400,9 +407,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD04</name>
-      <x>7</x>
+      <x>45</x>
       <y>215</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -419,7 +426,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -428,9 +435,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD05</name>
-      <x>7</x>
+      <x>45</x>
       <y>235</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -447,7 +454,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -456,9 +463,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD06</name>
-      <x>7</x>
+      <x>45</x>
       <y>255</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -475,7 +482,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -484,9 +491,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD07</name>
-      <x>7</x>
+      <x>45</x>
       <y>275</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -503,7 +510,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -512,9 +519,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD08</name>
-      <x>7</x>
+      <x>45</x>
       <y>295</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -531,7 +538,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -540,9 +547,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD09</name>
-      <x>7</x>
+      <x>45</x>
       <y>315</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -559,7 +566,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -568,9 +575,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD10</name>
-      <x>7</x>
+      <x>45</x>
       <y>335</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -587,7 +594,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -596,9 +603,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD11</name>
-      <x>7</x>
+      <x>45</x>
       <y>355</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -615,7 +622,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -624,9 +631,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD12</name>
-      <x>7</x>
+      <x>45</x>
       <y>375</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -643,7 +650,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -652,9 +659,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD13</name>
-      <x>7</x>
+      <x>45</x>
       <y>395</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -671,7 +678,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -680,9 +687,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD14</name>
-      <x>7</x>
+      <x>45</x>
       <y>415</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -699,7 +706,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -708,9 +715,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD15</name>
-      <x>7</x>
+      <x>45</x>
       <y>435</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -727,7 +734,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -736,9 +743,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD16</name>
-      <x>7</x>
+      <x>45</x>
       <y>455</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -755,7 +762,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -764,9 +771,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD17</name>
-      <x>7</x>
+      <x>45</x>
       <y>475</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -783,7 +790,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -792,9 +799,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD18</name>
-      <x>7</x>
+      <x>45</x>
       <y>495</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -811,7 +818,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -820,9 +827,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD19</name>
-      <x>7</x>
+      <x>45</x>
       <y>515</y>
-      <width>212</width>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -839,7 +846,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -848,9 +855,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TEKCD20</name>
-      <x>7</x>
-      <y>536</y>
-      <width>212</width>
+      <x>45</x>
+      <y>535</y>
+      <width>213</width>
       <height>20</height>
       <can_focus>True</can_focus>
       <signal>
@@ -867,7 +874,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -876,7 +883,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME01</name>
-      <x>220</x>
+      <x>260</x>
       <y>155</y>
       <width>573</width>
       <height>20</height>
@@ -904,7 +911,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME02</name>
-      <x>220</x>
+      <x>260</x>
       <y>175</y>
       <width>573</width>
       <height>20</height>
@@ -932,7 +939,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME03</name>
-      <x>220</x>
+      <x>260</x>
       <y>195</y>
       <width>573</width>
       <height>20</height>
@@ -960,7 +967,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME04</name>
-      <x>220</x>
+      <x>260</x>
       <y>215</y>
       <width>573</width>
       <height>20</height>
@@ -988,7 +995,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME05</name>
-      <x>220</x>
+      <x>260</x>
       <y>235</y>
       <width>573</width>
       <height>20</height>
@@ -1016,7 +1023,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME06</name>
-      <x>220</x>
+      <x>260</x>
       <y>255</y>
       <width>573</width>
       <height>20</height>
@@ -1044,7 +1051,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME07</name>
-      <x>220</x>
+      <x>260</x>
       <y>275</y>
       <width>573</width>
       <height>20</height>
@@ -1072,7 +1079,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME08</name>
-      <x>220</x>
+      <x>260</x>
       <y>295</y>
       <width>573</width>
       <height>20</height>
@@ -1100,7 +1107,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME09</name>
-      <x>220</x>
+      <x>260</x>
       <y>315</y>
       <width>573</width>
       <height>20</height>
@@ -1128,7 +1135,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME10</name>
-      <x>219</x>
+      <x>260</x>
       <y>335</y>
       <width>573</width>
       <height>20</height>
@@ -1156,7 +1163,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME11</name>
-      <x>220</x>
+      <x>260</x>
       <y>355</y>
       <width>573</width>
       <height>20</height>
@@ -1184,7 +1191,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME12</name>
-      <x>220</x>
+      <x>260</x>
       <y>375</y>
       <width>573</width>
       <height>20</height>
@@ -1212,7 +1219,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME13</name>
-      <x>220</x>
+      <x>260</x>
       <y>395</y>
       <width>573</width>
       <height>20</height>
@@ -1240,7 +1247,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME14</name>
-      <x>220</x>
+      <x>260</x>
       <y>415</y>
       <width>573</width>
       <height>20</height>
@@ -1268,7 +1275,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME15</name>
-      <x>220</x>
+      <x>260</x>
       <y>435</y>
       <width>573</width>
       <height>20</height>
@@ -1296,7 +1303,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME16</name>
-      <x>220</x>
+      <x>260</x>
       <y>455</y>
       <width>573</width>
       <height>20</height>
@@ -1324,7 +1331,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME17</name>
-      <x>220</x>
+      <x>260</x>
       <y>475</y>
       <width>573</width>
       <height>20</height>
@@ -1352,7 +1359,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME18</name>
-      <x>220</x>
+      <x>260</x>
       <y>495</y>
       <width>573</width>
       <height>20</height>
@@ -1380,8 +1387,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME19</name>
-      <x>220</x>
-      <y>516</y>
+      <x>260</x>
+      <y>515</y>
       <width>573</width>
       <height>20</height>
       <can_focus>True</can_focus>
@@ -1408,8 +1415,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DSPNAME20</name>
-      <x>220</x>
-      <y>536</y>
+      <x>260</x>
+      <y>535</y>
       <width>573</width>
       <height>20</height>
       <can_focus>True</can_focus>
@@ -1436,7 +1443,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYCD</name>
-      <x>368</x>
+      <x>400</x>
       <y>16</y>
       <width>120</width>
       <height>24</height>
@@ -1459,7 +1466,7 @@
       <label>漢字名称</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1475,7 +1482,7 @@
       <label>有効期間</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1555,7 +1562,46 @@
       <label>チェック区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO01</name>
+      <x>10</x>
+      <y>155</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label153</name>
+      <x>40</x>
+      <y>130</y>
+      <width>155</width>
+      <height>20</height>
+      <label>適用コード</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1578,19 +1624,440 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label153</name>
-      <x>40</x>
-      <y>130</y>
-      <width>155</width>
+      <class>GtkNumberEntry</class>
+      <name>NO02</name>
+      <x>10</x>
+      <y>175</y>
+      <width>33</width>
       <height>20</height>
-      <label>適用コード</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO03</name>
+      <x>10</x>
+      <y>195</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO04</name>
+      <x>10</x>
+      <y>215</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO05</name>
+      <x>10</x>
+      <y>235</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO06</name>
+      <x>10</x>
+      <y>255</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO07</name>
+      <x>10</x>
+      <y>275</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO08</name>
+      <x>10</x>
+      <y>295</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO09</name>
+      <x>10</x>
+      <y>315</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO10</name>
+      <x>10</x>
+      <y>335</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO11</name>
+      <x>10</x>
+      <y>355</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO12</name>
+      <x>10</x>
+      <y>375</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO13</name>
+      <x>10</x>
+      <y>395</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO14</name>
+      <x>10</x>
+      <y>415</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO15</name>
+      <x>10</x>
+      <y>435</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO16</name>
+      <x>10</x>
+      <y>455</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO17</name>
+      <x>10</x>
+      <y>475</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO18</name>
+      <x>10</x>
+      <y>495</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO19</name>
+      <x>10</x>
+      <y>515</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>NO20</name>
+      <x>10</x>
+      <y>535</y>
+      <width>33</width>
+      <height>20</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ9</format>
     </widget>
 
     <widget>
@@ -1598,12 +2065,12 @@
       <name>label159</name>
       <x>280</x>
       <y>16</y>
-      <width>80</width>
+      <width>105</width>
       <height>24</height>
-      <label>診療コード</label>
+      <label>診療行為コード</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <wrap>True</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

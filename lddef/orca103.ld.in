@@ -6,6 +6,7 @@ textsize	400;
 bind	""		"OpenCOBOL"	"ORCGX01";
 bind	"X01"		"OpenCOBOL"	"ORCGX01";
 bind	"X02"		"OpenCOBOL"	"ORCGX02";
+bind	"X03"		"OpenCOBOL"	"ORCGX03";
 bind	"X91"		"OpenCOBOL"	"ORCGX91";
 bind	"X97"		"OpenCOBOL"	"ORCGX97";
 bind	"X98"		"OpenCOBOL"	"ORCGX98";
@@ -21,6 +22,7 @@ data	{
 	window	{
 		X01;
 		X02;
+		X03;
                 X91;
                 X97;
                 X98;

@@ -630,7 +630,16 @@
            MOVE    ZERO                TO  FLG-OK
            PERFORM UNTIL    (FLG-TENSU     =   1  )  OR
                             (FLG-OK        =   1  )
-               MOVE    TNS-NAME            TO  WRK-NAME
+               IF     (TNS-SRYCD(1:1)      =   "1") AND
+                      (TNS-ROUTEKKBN       =   2  )
+                   MOVE    SPACE       TO  WRK-NAME
+                   STRING  "¡ÎÏ·¡Ï"        DELIMITED   BY  SIZE
+                           TNS-NAME        DELIMITED   BY  SIZE
+                   INTO    WRK-NAME
+                   END-STRING
+               ELSE
+                   MOVE    TNS-NAME    TO  WRK-NAME
+               END-IF
                IF     (TNS-YUKOSTYMD       <=  SPA-SYSYMD )  AND
                       (TNS-YUKOEDYMD       >=  SPA-SYSYMD )
       *            ¿ÇÎÅÆüÂÐ¾ÝÊ¬

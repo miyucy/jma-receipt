@@ -25,9 +25,10 @@
                 05  X02-VALUE   PIC X(100).
               04  X02-B03.
                 05  X02-B03-STATE   PIC S9(9)   BINARY.
+              04  X02-NO        PIC S9(3)  OCCURS  20.
               04  X02-TEKCD-G   OCCURS  20.
                 05  X02-TEKCD.   
-                  06  X02-VALUE PIC X(9).
+                  06  X02-VALUE PIC X(20).
               04  X02-DSPNAME-G OCCURS  20.
                 05  X02-DSPNAME. 
                   06  X02-VALUE PIC X(100).
