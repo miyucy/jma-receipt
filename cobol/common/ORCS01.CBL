@@ -117,7 +117,7 @@
       *  01.00.40    NACL-ÌçÏÆ    03/07/01  ¥ì¥»µ­ºÜÍÑ°ìÉôÉéÃ´¶âÊÔ½¸½¤Àµ
       *  01.00.41    NACL-ÌçÏÆ    03/08/27  ÆÃÄê¼À´µ²þÀµÂÐ±þ
       *  01.00.42    NACL-¾®Æ¦Âô  03/09/02  Ê¡²¬¸©ÃÏÊý¸øÈñÂÐ±þ
-      *
+      *  01.00.43    NACL-ÌçÏÆ    03/10/02  ÅìµþÅÔÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2502,9 +2502,13 @@
              OR ((COMB-KOHHKNNUM(KOH-IDX)      = "051"   )  AND
                  (LNK-SYU-SRYYMD(1:6)         >= "200310")           )
       *
-             OR ( COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
-                                                 "4" OR "5" OR "6" OR
-                                                 "7" OR "8"          )
+             OR ((WK-1001-PREFNUM              =  13     )  AND
+                 (COMB-KOHHKNNUM(KOH-IDX)      = "151"   )  AND
+                 (LNK-SYU-SRYYMD(1:6)         >= "200310")           )
+      *
+      ***    OR ( COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
+      ***                                        "4" OR "5" OR "6" OR
+      ***                                        "7" OR "8"          )
       *
                 INITIALIZE                           PTKOHFTN-REC
                 MOVE    LNK-SYU-HOSPID       TO      PTKOHFTN-HOSPID
