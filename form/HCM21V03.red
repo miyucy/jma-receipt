@@ -201,6 +201,11 @@
         <embed object="string" length="7"/>
       </appinfo>
     </element>
+    <element name="KAI" occurs="1">
+      <appinfo>
+        <embed object="string" length="3"/>
+      </appinfo>
+    </element>
   </dictionarydata>
   <diagramdata>
     <attribute name="background">
@@ -10095,6 +10100,48 @@
           </attribute>
           <attribute name="multi">
             <real val="0.3535"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O234">
+      <attribute name="obj_pos">
+        <point val="3.75,1.2"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="3.1137,0.926364;3.75,1.27636"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#KAI#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="1"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#999#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.35"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="3.75,1.2"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="2"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
