@@ -440,7 +440,7 @@
       <y>105</y>
       <width>70</width>
       <height>24</height>
-      <label>Æþ±¡ÎÁ»»Äê</label>
+      <label>»»ÄêÆþ±¡ÎÁ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
