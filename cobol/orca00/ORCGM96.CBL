@@ -50,43 +50,8 @@
            COPY    "COMMON-SPA".
       *    スパ領域
            COPY    "M00COMMON-SPA".
-      *
-       01  SPA-M96.
-           03  SPA-M96-AREA.
-               05  SPA-GMN-KBN         PIC X(03).
-               05  SPA-GMN-MAX         PIC 9(04).
-               05  SPA-GMN-CUR         PIC 9(02).
-      *
-               05  SPA-GMN-AREA.
-                   07  SPA-GMN-TBLG1.
-                       09  SPA-GMN-TBL1    OCCURS  2.
-                           11  SPA-GMN-VERSION        PIC  X(64).
-                           11  SPA-GMN-DBSVERSION1    PIC  X(64).
-                           11  SPA-GMN-DBSVERSION2    PIC  X(64).
-                           11  SPA-GMN-CREYMD         PIC  X(09).
-                   07  SPA-GMN-TBLG3.
-                       09  SPA-GMN-TBL3    OCCURS  99.
-                           11  SPA-GMN-MASTNAME       PIC  X(30).
-                           11  SPA-GMN-DBRVERSION1    PIC  X(64).
-                           11  SPA-GMN-DBRVERSION2    PIC  X(64).
-                       09  SPA-GMN-MAX3               PIC 9(04).
-                   07  SPA-GMN-TBLG2.
-                       09  SPA-GMN-TBL2    OCCURS  2.
-                           11  SPA-GMN-STARTYMD       PIC  X(09).
-                           11  SPA-GMN-STARTTIME      PIC  X(08).
-                           11  SPA-GMN-ENDYMD         PIC  X(09).
-                           11  SPA-GMN-ENDTIME        PIC  X(08).
-                           11  SPA-GMN-STEPSTARTTIME  PIC  X(08).
-                           11  SPA-GMN-STEPENDTIME    PIC  X(08).
-      *
-                           11  SPA-NAI-ENDYMD         PIC  X(08).
-                           11  SPA-NAI-ENDTIME        PIC  X(08).
-                   07  SPA-GMN-SELNO2         PIC 9(04).
-                   07  SPA-GMN-MSG1-STYLE     PIC X(05).
-                   07  SPA-GMN-MSG1           PIC X(62).
-      *
-               05  SPA-NAI-AREA.
-                   07  SPA-NAI-MOTOPG         PIC X(08).
+      *    スパ領域
+           COPY    "M01SCR-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -175,10 +140,11 @@
       *
       *
        PROCEDURE                   DIVISION    USING
-                                               MCPAREA
-                                               SPAAREA
-                                               LINKAREA
-                                               SCRAREA.
+           MCPAREA
+           SPAAREA
+           LINKAREA
+           SCRAREA.
+      *
       *****************************************************************
       *    主　　処理
       *****************************************************************
@@ -190,7 +156,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-M00KYOUTU
-           MOVE    SPA-FREE        TO  SPA-M96
+           MOVE    SPA-FREE        TO  SPA-M01
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -209,7 +175,7 @@
            END-IF
            MOVE    SPA-M00KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    SPA-M96             TO  SPA-FREE
+           MOVE    SPA-M01             TO  SPA-FREE
            .
       *
            EXIT    PROGRAM.
@@ -300,7 +266,7 @@
        310-SPASET-SEC              SECTION.
       *
            MOVE    1                   TO  FLG-INIT
-           INITIALIZE                  SPA-GMN-AREA
+           INITIALIZE                  SPA-GMN-M96-AREA
       *    最新情報編集
            PERFORM 310-DBHENSYU-SEC
       *
@@ -330,7 +296,7 @@
            MOVE    SPA-NAI-ENDYMD (2)  TO  SPA-NAI-ENDYMD  (1)
            MOVE    SPA-NAI-ENDTIME(2)  TO  SPA-NAI-ENDTIME (1)
       *
-           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    1                   TO  SPA-M96-CUR
            .
        310-SPASET-EXT.
            EXIT.
@@ -597,7 +563,7 @@
            MOVE    ZERO                TO  FLG-INIT
       *    最新情報編集
            PERFORM 310-DBHENSYU-SEC
-           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    1                   TO  SPA-M96-CUR
            .
        211-JYOUKYOU-EXT.
            EXIT.
@@ -663,7 +629,7 @@
       *    最新情報編集
            MOVE    ZERO                TO  FLG-INIT
            PERFORM 310-DBHENSYU-SEC
-           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    1                   TO  SPA-M96-CUR
       *    マスタ更新処理
            MOVE    SPACE                TO  SHELLTBL
            INITIALIZE                   ORCSMKPASSAREA
@@ -815,7 +781,8 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           INITIALIZE              M96.
+           MOVE    SPACE               TO  M96
+           INITIALIZE              M96
       *
            PERFORM VARYING   IDX   FROM   1   BY   1
                    UNTIL     IDX      >   2
@@ -863,7 +830,7 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-           EVALUATE    SPA-GMN-CUR
+           EVALUATE    SPA-M96-CUR
                WHEN    1
                    MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE

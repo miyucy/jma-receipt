@@ -64,7 +64,9 @@
            COPY    "COMMON-SPA".
       *    スパ領域
            COPY    "M00COMMON-SPA".
-      *   
+      *    スパ領域
+           COPY    "M01SCR-SPA".
+      *
            COPY    "ENUM-VALUE".
       *
       *    マスタ更新シェル領域 
@@ -73,17 +75,6 @@
            COPY    "CPSHELLTBL.INC".
       *
            COPY    "ORCA-DBPATH".
-      *
-      *
-       01  SPA-M01N.
-           03  SPA-M01N-AREA.
-               05  SPA-CTLSEQ          PIC 9(02).
-               05  SPA-GMN-PAGE        PIC 9(02).
-               05  SPA-GMN-MAX         PIC 9(02).
-               05  SPA-GMN-CUR         PIC 9(02).
-      *
-               05  SPA-GMN-AREA.
-                   07  SPA-GMN-GSEL    PIC 9(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -211,7 +202,7 @@
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-M00KYOUTU
            MOVE    SPA-SYS-1010-REC    TO  SYS-1010-REC
-           MOVE    SPA-FREE        TO  SPA-M01N
+           MOVE    SPA-FREE        TO  SPA-M01
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -235,7 +226,7 @@
            MOVE    SYS-1010-REC    TO  SPA-SYS-1010-REC
            MOVE    SPA-M00KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-M01N        TO  SPA-FREE
+           MOVE    SPA-M01        TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
@@ -287,7 +278,7 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-           INITIALIZE              SPA-M01N-AREA
+           INITIALIZE              SPA-M01-AREA
       *
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
@@ -800,6 +791,7 @@
                                                    SPAAREA
                                                    LINKAREA
                                                    SCRAREA
+                       MOVE    SPA-FREE        TO  SPA-M01
                        MOVE    "M96"               TO  SPA-MOTOPG2
                        MOVE     "NEW"              TO  MCP-PUTTYPE
                    ELSE
@@ -891,7 +883,7 @@
            INITIALIZE                  SPA-KYOTUKEY
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *    戻り時、画面を元へ戻す
-           MOVE    SPA-M01N            TO  LNK-FREE
+           MOVE    SPA-M01             TO  LNK-FREE
       *
            MOVE   "CHANGE"             TO  MCP-PUTTYPE.
            MOVE   "Y01    "            TO  MCP-WINDOW.

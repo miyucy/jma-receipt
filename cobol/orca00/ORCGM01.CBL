@@ -62,6 +62,8 @@
            COPY    "COMMON-SPA".
       *    ¥¹¥ÑÎÎ°è
            COPY    "M00COMMON-SPA".
+      *    ¥¹¥ÑÎÎ°è
+           COPY    "M01SCR-SPA".
       *   
            COPY    "ENUM-VALUE".
       *
@@ -71,17 +73,6 @@
            COPY    "CPSHELLTBL.INC".
       *
            COPY    "ORCA-DBPATH".
-      *
-      *
-       01  SPA-M01.
-           03  SPA-M01-AREA.
-               05  SPA-CTLSEQ          PIC 9(02).
-               05  SPA-GMN-PAGE        PIC 9(02).
-               05  SPA-GMN-MAX         PIC 9(02).
-               05  SPA-GMN-CUR         PIC 9(02).
-      *
-               05  SPA-GMN-AREA.
-                   07  SPA-GMN-GSEL    PIC 9(02).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -765,6 +756,7 @@
                                                    SPAAREA
                                                    LINKAREA
                                                    SCRAREA
+                       MOVE    SPA-FREE            TO  SPA-M01
                        MOVE    "M96"               TO  SPA-MOTOPG2
                        MOVE     "NEW"              TO  MCP-PUTTYPE
                    ELSE
