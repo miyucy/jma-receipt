@@ -130,7 +130,6 @@
            03  WRK-KANACHK-MAE-INPUT               PIC X(400).
       *
       *    入院会計作成用ワーク
-       01  WRK-KAIKEI-AREA.
            03  WRK-YMD             PIC X(10). 
            03  WRK-NAI-SRYYM-41.
                05  WRK-NAI-SRYYM-41-YY  PIC 9(04).
@@ -164,7 +163,8 @@
       **** 03  WRK-TAIHI-SRYYM-41  PIC X(06).
       *    医療機関設定の入院料加算チェック用
       *****03  WRK-NYUKHNKSN-SRYCD PIC X(09)  OCCURS 20.
-           03  WRK-NYUKHNKSN-SRYCD PIC X(09)  OCCURS 60.
+           03  WRK-NYUKHNKSN-AREA.
+               05  WRK-NYUKHNKSN-SRYCD PIC X(09)  OCCURS 60.
            03  WRK-NYUKSNKBN       PIC X(03).
            03  WRK-BTU-NYUKSNKBN   PIC X(03).
            03  WRK-KSN-NYUKSNKBN   PIC X(03).
@@ -518,7 +518,6 @@
       *                入院会計存在チェック
                        PERFORM    2001-NYUINACCT-CHK-SEC
                        IF         FLG-NYUINACCTARI   =    ZERO
-                            INITIALIZE  WRK-KAIKEI-AREA
       *                     前月分入院会計の存在チェック
       *                     （併せて保険組合せと食事の情報を退避）
                             PERFORM     2001-NYUINACCT-MAECHK-SEC
@@ -2126,6 +2125,7 @@
        410191-NYUKSN-GET-SEC         SECTION.
       *
            DISPLAY "410191-NYUKSN-GET-SEC"
+           INITIALIZE                       WRK-NYUKHNKSN-AREA
            MOVE    ZERO                TO   IDX8
       *
       *医療機関加算（減算）情報
