@@ -1012,7 +1012,7 @@
                            "¡Û"              DELIMITED  BY  SIZE      
                                              INTO  WRK-RECEERR
                    END-STRING                          
-                   GO  TO  450-TOUROKU-EXT
+                   GO  TO  460-SEH-ENTRY-EXT
                END-IF
            END-IF    
       * 
