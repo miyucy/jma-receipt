@@ -333,8 +333,10 @@
       *
       *    ¿ÇÎÅ¹Ô°Ù£Ó£Ï£Ò£Ô
            03  WRK-SORT-KEY.
-               05  WRK-ZAINUM          PIC  9(08).
-               05  WRK-RENNUM          PIC  9(02).
+               05  WRK-ZAINUM-X.
+                   07  WRK-ZAINUM          PIC  9(08).
+               05  WRK-RENNUM-X.
+                   07  WRK-RENNUM          PIC  9(02).
                05  WRK-SRYKBN          PIC  X(02).
            03  WRK-MAX                 PIC  9(04).
       *    Æü¿ô
@@ -838,8 +840,8 @@
       *
            PERFORM VARYING   IDX       FROM   1   BY  1
                    UNTIL     IDX       >   WRK-MAX
-               MOVE    ALL "9"             TO  WRK-ZAINUM
-               MOVE    ALL "9"             TO  WRK-RENNUM
+               MOVE    ALL "9"             TO  WRK-ZAINUM-X
+               MOVE    ALL "9"             TO  WRK-RENNUM-X
                MOVE    ALL "9"             TO  WRK-SRYKBN
                MOVE    ZERO                TO  IDX2
                PERFORM VARYING   IDX1      FROM   1   BY  1

@@ -1631,7 +1631,7 @@
                           (SPA-P02-UKEID   NOT =   UKE-UKEID)
                        CONTINUE
                    ELSE
-                       MOVE    ALL "9"         TO  UKE-UPYMD
+                       MOVE    99999           TO  UKE-UPYMD
                        PERFORM 5002-UKE-PARA-SEC
                    END-IF
                END-IF
@@ -1667,7 +1667,7 @@
                        INITIALIZE                      UKETUKE-REC
                        MOVE    SPA-HOSPID          TO  UKE-HOSPID
                        MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
-                       MOVE    ALL "9"             TO  UKE-UKEID
+                       MOVE    99999               TO  UKE-UKEID
                        MOVE    SPA-GMN-NAME        TO  UKE-NAME
                    END-IF 
                    PERFORM 5001-UKETUKE-HEN-SEC

@@ -1149,13 +1149,13 @@
                    IF    SPA-Z91-SRYSTRL   <=  SPA-Z91-SRYENDL
                        MOVE  SPA-Z91-SRYSTRL   TO  SHELL-SRYSTR
                        MOVE  SPA-Z91-SRYENDL   TO  SHELL-SRYEND
-                   ELSE    
+                   ELSE
                        MOVE  SPA-Z91-SRYENDL   TO  SHELL-SRYSTR
                        MOVE  SPA-Z91-SRYSTRL   TO  SHELL-SRYEND
                    END-IF
       *----(01.01.01)--ADD-START---
                    IF      SHELL-SRYEND    =  "90"
-                       MOVE  "97"          TO  SHELL-SRYEND
+                       MOVE    97          TO  SHELL-SRYEND
                    END-IF
       *----(01.01.01)--ADD-END-----
                ELSE
@@ -1173,20 +1173,20 @@
                IF      SPA-GMN-IYKCHK(IDX)     =  "T"
                    EVALUATE    IDX
                        WHEN    1
-                           MOVE    "1"         TO  SHELL-IYKCHK (IDX)
+                           MOVE    1           TO  SHELL-IYKCHK (IDX)
                        WHEN    2
-                           MOVE    "6"         TO  SHELL-IYKCHK (IDX)
+                           MOVE    6           TO  SHELL-IYKCHK (IDX)
                        WHEN    3
-                           MOVE    "4"         TO  SHELL-IYKCHK (IDX)
+                           MOVE    4           TO  SHELL-IYKCHK (IDX)
                        WHEN    4
-                           MOVE    "8"         TO  SHELL-IYKCHK (IDX)
+                           MOVE    8           TO  SHELL-IYKCHK (IDX)
                        WHEN    5    
-                           MOVE    "9"         TO  SHELL-IYKCHK (IDX)
+                           MOVE    9           TO  SHELL-IYKCHK (IDX)
                        WHEN    6
-                           MOVE    "3"         TO  SHELL-IYKCHK (IDX)
+                           MOVE    3           TO  SHELL-IYKCHK (IDX)
       *----(01.01.05)--ADD-START---
                        WHEN    7
-                           MOVE    "1"         TO  SHELL-IYKCHK (IDX)
+                           MOVE    1           TO  SHELL-IYKCHK (IDX)
       *----(01.01.05)--ADD-END-----
                    END-EVALUATE        
                END-IF
@@ -1254,16 +1254,16 @@
            MOVE    SYS-DD              TO  WRK-SYSDD
            ACCEPT  SYS-TIME            FROM    TIME
       *
-           MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
+           MOVE    ZERO                TO  WRK-CONS-JOB-JOBID
                                            WRK-PRTKANRI-RENNUM
-           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
+           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP
            MOVE    WRK-SYSYMD          TO
                                        WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
            MOVE    SYS-TIME            TO
                                        WRK-CONS-PRTKANRI-TBL-GROUP (9:)
-      *     
-           MOVE    "TENSUERR"           TO  TENSUERR-FILE-ID
-           MOVE    SPA-TERMID           TO  TENSUERR-TERMID
+      *
+           MOVE    "TENSUER"           TO  TENSUERR-FILE-ID
+           MOVE    SPA-TERMID          TO  TENSUERR-TERMID
       *   
            IF      SPA-GMN-KEI(1)        =   "T"
                IF      SHELL-SRYCHK          =   1
@@ -1313,7 +1313,7 @@
       *----(01.01.01)--ADD-START---
                IF      SHELL-COMCHK-G        =   ALL "0"
                    CONTINUE
-               ELSE    
+               ELSE
                    MOVE    "ORHCML04"        TO  WRK-PGID
                    PERFORM 4901-PRINT-SYORI-SEC
                END-IF
@@ -1471,7 +1471,7 @@
                                    TO  LNK-PRTKANRI-TBL-KEY 
            MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
                                    TO  LNK-PRTKANRI-TBL-GROUP
-           MOVE    "000000"        TO  LNK-PRTKANRI-SRYYM                        
+           MOVE    "000000"        TO  LNK-PRTKANRI-SRYYM 
            MOVE    SPA-NAI-MSTYMD  TO  LNK-PRTKANRI-SKYYMD
            MOVE    "tensu.sh"      TO  LNK-PRTKANRI-SHELLID
            MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY

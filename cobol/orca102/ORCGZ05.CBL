@@ -395,7 +395,7 @@
                    GO      TO      300-SCREEN-EXT
       *    入力ＣＤより
                WHEN    "Z99"
-                   MOVE  "YUKOSTYMD"             TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-GMN-CUR
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
