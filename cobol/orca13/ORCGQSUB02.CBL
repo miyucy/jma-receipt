@@ -332,8 +332,7 @@
       *
       *    ¿Ç»¡Ç¯·îÆü
            IF   ( SPA-Q01-GTBL (8)  =   "1" )
-               IF    ( SPA-Q01-GTBL (4)  =   "1" )
-                OR   ( SPA-Q01-GTBL (5)  =   "1" )
+               IF    ( SPA-Q01-GTBL (5)  =   "1" )
                 OR   ( SPA-Q01-GTBL (6)  =   "1" )
                 OR   ( SPA-Q01-GTBL (9)  =   "1" )
                    CONTINUE
