@@ -7607,7 +7607,7 @@
       *場合の診療コードを取得
       *
            MOVE      SPACE        TO    IPN-NYUKAIKEI-SAKUSEI-FLG
-           MOVE      SPACE        TO    WRK-TOKUTEI-SRYCD1
+           MOVE      "999999999"  TO    WRK-TOKUTEI-SRYCD1
                                         WRK-TOKUTEI-SRYCD2
            EVALUATE   SYOKIKSN-IN-KHNSRYCD
       *    特定集中治療室管理料
