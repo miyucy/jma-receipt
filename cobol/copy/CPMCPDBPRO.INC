@@ -1796,6 +1796,12 @@
                WHEN    ANY             ALSO   "SRYACCT-KEY35"
                    MOVE    PATH-TBL-SRYACCT-KEY35
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY36"
+                   MOVE    PATH-TBL-SRYACCT-KEY36
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY37"
+                   MOVE    PATH-TBL-SRYACCT-KEY37
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL
                                        TO  WRK-PATH
