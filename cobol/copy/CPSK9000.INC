@@ -53,8 +53,13 @@
            03  SYS-9000-PT-FLG          PIC  X(01).
       *レセ電変換フラグ
            03  SYS-9000-RECEDEN-FLG     PIC  X(01).
+      *病名集約フラグ
+           03  SYS-9000-BYOMEI-SYU-FLG  PIC  X(01).
+      *病名同期フラグ
+           03  SYS-9000-BYOMEI-DOUKI-FLG
+                                        PIC  X(01).
       *予備
-           03                           PIC  X(490).
+           03                           PIC  X(488).
       *端末ＩＤ
            03  SYS-9000-TERMID          PIC  X(16).
       *オペーレータＩＤ
