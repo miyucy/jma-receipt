@@ -47,6 +47,11 @@
                       07  W07-VALUE   PIC X(22).
                     06  W07-SURYOZERO-COUNT   PIC S9(9)   BINARY.
                     06  W07-SURYOZERO-ITEM    PIC X(22)   OCCURS  2.
+                  05  W07-CHOKICHK-COMB.
+                    06  W07-CHOKICHK.
+                      07  W07-VALUE   PIC X(22).
+                    06  W07-CHOKICHK-COUNT   PIC S9(9)   BINARY.
+                    06  W07-CHOKICHK-ITEM    PIC X(22)   OCCURS  2.
                 04  W07-TAGNAME1.
                   05  W07-TAGNAME1-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG2.

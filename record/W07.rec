@@ -106,6 +106,13 @@ W07	{
 					count	int;
 					item	varchar(22)[2];
 				};
+				CHOKICHK_COMB	{
+					CHOKICHK	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
 			};
 			TAGNAME1    {
 			    state   int;

@@ -59,9 +59,11 @@
       *
       *数量ゼロ入力
            03  SYS-1008-SURYOZERO-FLG   PIC X(01).
+      *入院調剤技術基本料チェック
+           03  SYS-1008-CHOKICHK-FLG   PIC X(01).
       *予備
       *****03  FILLER                   PIC X(489).
-           03  FILLER                   PIC X(487).
+           03  FILLER                   PIC X(486).
       *端末ＩＤ
            03  SYS-1008-TERMID          PIC  X(16).
       *オペーレータＩＤ

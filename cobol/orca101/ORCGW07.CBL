@@ -43,6 +43,7 @@
       *  02.01.03    NACL-多々納  04/01/09  包括登録追加
       *  02.01.04    NACL-多々納  04/01/15  数量ゼロ入力追加
       *  02.01.05    NACL-太田    04/01/16  診療行為機能情報タグ追加
+      *  02.01.06    NACL-多々納  04/01/23  入院調基チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -124,6 +125,14 @@
                            11  SPA-GMN-SURYOZEROMEI        PIC X(20).
                        09  SPA-GMN-SURYOZERO-COMB.
                            11  SPA-GMN-SURYOZERO-LIST      PIC X(20)
+                                                           OCCURS  2.
+      *                入院調基チェック
+                       09  SPA-GMN-CHOKICHK-G.
+                           11  SPA-GMN-CHOKICHK            PIC X(01).
+                           11  SPA-GMN-CHOKICHK-F1         PIC X(01).
+                           11  SPA-GMN-CHOKICHKMEI         PIC X(20).
+                       09  SPA-GMN-CHOKICHK-COMB.
+                           11  SPA-GMN-CHOKICHK-LIST       PIC X(20)
                                                            OCCURS  2.
                    07  SPA-GMN-PAGE2-AREA.
       *                カルテの病名対象
@@ -487,6 +496,11 @@
            MOVE    "1 入力エラーとする"
                                        TO  SPA-GMN-SURYOZERO-LIST(2)
       *
+      *    入院調基チェック
+           MOVE    "0 チェックしない"
+                                       TO  SPA-GMN-CHOKICHK-LIST(1)
+           MOVE    "1 チェックする"
+                                       TO  SPA-GMN-CHOKICHK-LIST(2)
       *
            MOVE    "0 すべての病名"    TO  SPA-GMN-BYOMEIKBN-LIST(1)
            MOVE    "1 継続病名のみ"    TO  SPA-GMN-BYOMEIKBN-LIST(2)
@@ -603,6 +617,9 @@
       *        数量ゼロ入力
                MOVE    SYS-1008-SURYOZERO-FLG
                                            TO  SPA-GMN-SURYOZERO
+      *        入院調基チェック
+               MOVE    SYS-1008-CHOKICHK-FLG
+                                           TO  SPA-GMN-CHOKICHK
       *
       *        入院初診料自動発生
                MOVE    SYS-1008-NYU-SYOSIN
@@ -697,6 +714,22 @@
                 WHEN    OTHER
                     MOVE    SPA-GMN-SURYOZERO-LIST(1)
                                                TO  SPA-GMN-SURYOZERO-G
+            END-EVALUATE
+      *
+      *    入院調基チェック
+           IF      SPA-GMN-CHOKICHK   =   SPACE
+               MOVE    "0"            TO  SPA-GMN-CHOKICHK
+           END-IF
+           EVALUATE    SPA-GMN-CHOKICHK
+                WHEN    "0"
+                    MOVE    SPA-GMN-CHOKICHK-LIST(1)
+                                               TO  SPA-GMN-CHOKICHK-G
+                WHEN    "1"
+                    MOVE    SPA-GMN-CHOKICHK-LIST(2)
+                                               TO  SPA-GMN-CHOKICHK-G
+                WHEN    OTHER
+                    MOVE    SPA-GMN-CHOKICHK-LIST(1)
+                                               TO  SPA-GMN-CHOKICHK-G
             END-EVALUATE
       *
       *     診療科コードセット
@@ -900,6 +933,7 @@
            MOVE    W07-GAIKANKBN       TO  SPA-GMN-GAIKANRIKBN-G
            MOVE    W07-GAIMOVE         TO  SPA-GMN-GAIMOVE-G
            MOVE    W07-SURYOZERO       TO  SPA-GMN-SURYOZERO-G
+           MOVE    W07-CHOKICHK        TO  SPA-GMN-CHOKICHK-G
       *
            MOVE    W07-HOUKATU         TO  SPA-GMN-HOUKATU-G
       *
@@ -955,6 +989,11 @@
                    END-IF
       *            数量ゼロチェック
                    PERFORM 4103-SURYOZERO-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+      *            入院調基チェック
+                   PERFORM 4103-CHOKICHK-CHK-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
@@ -1192,6 +1231,32 @@
            EXIT.
       *
       *****************************************************************
+      *    入院調基チェック入力チェック処理
+      *****************************************************************
+       4103-CHOKICHK-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-CHOKICHK
+                                      =   SPA-GMN-CHOKICHK-LIST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-CHOKICHK-LIST(IDX)
+                                          TO  SPA-GMN-CHOKICHK-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    15              TO  SPA-GMN-CUR
+               MOVE    "0016"          TO  SPA-ERRCD
+               GO      TO      4103-CHOKICHK-CHK-EXT
+           END-IF
+      *
+          .
+       4103-CHOKICHK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    包括まとめ入力チェック処理
       *****************************************************************
        4103-HOUKATU-CHK-SEC       SECTION.
@@ -1208,7 +1273,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    15              TO  SPA-GMN-CUR
+               MOVE    16              TO  SPA-GMN-CUR
                MOVE    "0014"          TO  SPA-ERRCD
                GO      TO      4103-HOUKATU-CHK-EXT
            END-IF
@@ -1645,6 +1710,8 @@
            MOVE    SPA-GMN-HOUKATU         TO  SYS-1008-HOUKATU-FLG
       *    数量ゼロ入力
            MOVE    SPA-GMN-SURYOZERO       TO  SYS-1008-SURYOZERO-FLG
+      *    入院調基チェック
+           MOVE    SPA-GMN-CHOKICHK        TO  SYS-1008-CHOKICHK-FLG
       *
            MOVE    SYS-1008-REC            TO  SYSKANRI-REC
       *     
@@ -1938,6 +2005,15 @@
            END-PERFORM
            MOVE    2                   TO  W07-SURYOZERO-COUNT
       *
+      *    入院調基チェック
+           MOVE    SPA-GMN-CHOKICHK-G  TO  W07-CHOKICHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-CHOKICHK-LIST (IDX)
+                                       TO  W07-CHOKICHK-ITEM(IDX)
+           END-PERFORM
+           MOVE    2                   TO  W07-CHOKICHK-COUNT
+      *
       *    包括入力
            MOVE    SPA-GMN-HOUKATU-G       TO  W07-HOUKATU
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2085,6 +2161,9 @@
                WHEN    "0015"
                    MOVE    "数量ゼロ入力エラー"
                                                        TO  SPA-ERRMSG
+               WHEN    "0016"
+                   MOVE    "入院調剤技術基本料チェックエラー"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "0020"
                    MOVE    "カルテの病名対象区分がありません。"
@@ -2216,6 +2295,8 @@
                WHEN    14
                    MOVE  "SURYOZERO"       TO   MCP-WIDGET
                WHEN    15
+                   MOVE  "CHOKICHK"       TO   MCP-WIDGET
+               WHEN    16
                    MOVE  "HOUKATU"         TO   MCP-WIDGET
       *
                WHEN    20
@@ -2282,6 +2363,8 @@
                    MOVE    14              TO  SPA-GMN-CUR
                WHEN    "SURYOZERO"
                    MOVE    15              TO  SPA-GMN-CUR
+               WHEN    "CHOKICHK"
+                   MOVE    16              TO  SPA-GMN-CUR
                WHEN    "HOUKATU"
                    MOVE    99              TO  SPA-GMN-CUR
       *        患者登録情報
