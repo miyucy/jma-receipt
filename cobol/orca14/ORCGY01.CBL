@@ -28,6 +28,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     01/05/24  患者番号ゼロ詰め処理
       *  01.00.02    NACL-多々納  02/08/02  画面のＳＰＡを保存領域へ編集
+      *  01.00.03    NACL-多々納  02/10/15  予約時間のオーバー分を修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -409,6 +410,11 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-Y01
@@ -1583,15 +1589,15 @@
            END-IF
       *    予約時間
            MOVE    WRK-TIME            TO  SPA-NAI-YYKTIME
+      *    キー予約時間
+           MOVE    SPA-NAI-YYKTIME     TO  SPA-NAI-KYYKTIME
+           MOVE    ZERO                TO  SPA-NAI-KYYKTIME(3:2)
            IF      SPA-NAI-YYKTIME(1:2)    <=  "08"
-               MOVE    08                  TO  SPA-NAI-YYKTIME(1:2)
+               MOVE    "08"                TO  SPA-NAI-KYYKTIME(1:2)
            END-IF
            IF      SPA-NAI-YYKTIME(1:2)    >=  "21"
-               MOVE    "21"                TO  SPA-NAI-YYKTIME(1:2)
+               MOVE    "21"                TO  SPA-NAI-KYYKTIME(1:2)
            END-IF
-      *    キー予約時間
-           MOVE    SPA-NAI-YYKTIME         TO  SPA-NAI-KYYKTIME(1:2)
-           MOVE    ZERO                    TO  SPA-NAI-KYYKTIME(3:2)
       *
            IF      (SPA-NAI-YYKYMD     =   SPA-Y01-YYKYMDS )  AND
                    (SPA-NAI-KYYKTIME   =   SPA-Y01-YYKTIME )
@@ -2085,6 +2091,7 @@
                MOVE    SPA-GMN-PTID        TO  PTINF-PTID
                PERFORM 920-PTINF-READ-SEC
                IF      FLG-PTINF           =   ZERO
+                   MOVE    ZERO                TO  IDZ
                    PERFORM 410141-PTINF-HENSYU-SEC
                    MOVE    PTINF-NAME          TO  SPA-GMN-NAME
                    MOVE    WRK-SEX             TO  SPA-GMN-SEX
