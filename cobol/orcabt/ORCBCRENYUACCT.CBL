@@ -123,7 +123,6 @@
            03  WRK-RECEERR                         PIC X(200).
            03  WRK-HOSPID                          PIC X(24).
            03  WRK-PTID                            PIC 9(10).
-           03  WRK-SRYCD                           PIC 9(09).
            03  WRK-SRYYM                           PIC X(06).
            03  WRK-TNS-YMD                         PIC X(08).
            03  WRK-NAIYO                           PIC X(100).
