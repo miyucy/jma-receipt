@@ -365,14 +365,14 @@
            EVALUATE    SPA-X01-CHKKBN
            WHEN    "1"
       *
-               MOVE    3                   TO  SPA-X03-GMN-CHKKBN-MAX
+      *?       MOVE    3                   TO  SPA-X03-GMN-CHKKBN-MAX
       *
-               MOVE    "1"                 TO  SPA-X03-GMN-CHKKBNL   (1)
-               MOVE    "лТ╨ч╓хибл╬"        TO  SPA-X03-GMN-CHKKBNMEIL(1)
-               MOVE    "2"                 TO  SPA-X03-GMN-CHKKBNL   (2)
-               MOVE    "©гне╧т╟ы╓хибл╬"    TO  SPA-X03-GMN-CHKKBNMEIL(2)
-               MOVE    "M"                 TO  SPA-X03-GMN-CHKKBNL   (3)
-               MOVE    "лТ╦З"              TO  SPA-X03-GMN-CHKKBNMEIL(3)
+      *?       MOVE    "1"                 TO  SPA-X03-GMN-CHKKBNL   (1)
+      *?       MOVE    "лТ╨ч╓хибл╬"        TO  SPA-X03-GMN-CHKKBNMEIL(1)
+      *?       MOVE    "2"                 TO  SPA-X03-GMN-CHKKBNL   (2)
+      *?       MOVE    "©гне╧т╟ы╓хибл╬"    TO  SPA-X03-GMN-CHKKBNMEIL(2)
+      *?       MOVE    "M"                 TO  SPA-X03-GMN-CHKKBNL   (3)
+      *?       MOVE    "лТ╦З"              TO  SPA-X03-GMN-CHKKBNMEIL(3)
            WHEN    "2"
       *
                MOVE    2                   TO  SPA-X03-GMN-CHKKBN-MAX
@@ -409,7 +409,13 @@
            WHEN    "2"
                PERFORM 3101-SELCHKLST-CHKSND-SEC
            WHEN    "M"
-               PERFORM 3101-SELCHKLST-MEDYAK-SEC
+               IF    ( SPA-X03-GMN-SELNAME =   SPACE )
+                   INITIALIZE              SPA-X03-GMN-SELCHKLST
+                                           SPA-X03-NAI-SELCHKLST
+                                           SPA-X03-GMN-NEXT
+               ELSE
+                   PERFORM 3101-SELCHKLST-MEDYAK-SEC
+               END-IF
            WHEN    OTHER
                PERFORM 3101-SELCHKLST-CHKMST-SEC
            END-EVALUATE
@@ -977,7 +983,6 @@
            END-IF
       *
            IF    ( WRK-MCP-WIDGET      =   "CHKKBN" )
-               MOVE    SPACE           TO  SPA-X03-GMN-SELNAME
                MOVE    1               TO  SPA-X03-GMN-PAGE
                PERFORM 3101-SELCHKLST-HEN-SEC
            END-IF
