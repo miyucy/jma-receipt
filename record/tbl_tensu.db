@@ -962,7 +962,11 @@ path	key20   	{
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
 			WHERE a.SRYCD    =   b.SRYCD
-			AND   YUKOEDYMD  =  :YUKOEDYMD
+			AND   a.YUKOEDYMD  =
+                           (SELECT MAX(YUKOEDYMD)
+                                   FROM tbl_tensu
+				WHERE	a.SRYCD   =  SRYCD)
+			AND   a.YUKOEDYMD  =  :YUKOEDYMD
 			ORDER  BY  a.SRYCD
 		;
 	};
