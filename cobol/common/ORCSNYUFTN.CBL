@@ -1378,10 +1378,17 @@
                                                 SINRYO-COUNT)
                                    WHEN   OTHER
                                      IF   TNS-SRYCD(1:1)    =   "6"
-                                       COMPUTE  TBL-TGMONEY(4)  =
-                                                TBL-TGMONEY(4)  +
-                                               (SRY-JIHIMONEY(IDZ) *
-                                                SINRYO-COUNT)
+                                       IF    TNS-YKZKBN     =    4
+                                         COMPUTE  TBL-TGMONEY(5)  =
+                                                  TBL-TGMONEY(5)  +
+                                                 (SRY-JIHIMONEY(IDZ) *
+                                                  SINRYO-COUNT)
+                                       ELSE
+                                         COMPUTE  TBL-TGMONEY(4)  =
+                                                  TBL-TGMONEY(4)  +
+                                                 (SRY-JIHIMONEY(IDZ) *
+                                                  SINRYO-COUNT)
+                                       END-IF
                                      END-IF
                                      IF   TNS-SRYCD(1:1)    =   "7"
                                        COMPUTE  TBL-TGMONEY(10)  =
@@ -1562,10 +1569,17 @@
                                                 SINRYO-COUNT)
                                    WHEN   OTHER
                                      IF   TNS-SRYCD(1:1)    =   "6"
-                                       COMPUTE  TBL-TGMONEY-TAX(4)  =
-                                                TBL-TGMONEY-TAX(4)  +
-                                               (SRY-JIHIMONEY(IDZ) *
-                                                SINRYO-COUNT)
+                                       IF    TNS-YKZKBN     =    4
+                                         COMPUTE  TBL-TGMONEY-TAX(5) =
+                                                  TBL-TGMONEY-TAX(5) +
+                                                 (SRY-JIHIMONEY(IDZ) *
+                                                  SINRYO-COUNT)
+                                       ELSE
+                                         COMPUTE  TBL-TGMONEY-TAX(4) =
+                                                  TBL-TGMONEY-TAX(4) +
+                                                 (SRY-JIHIMONEY(IDZ) *
+                                                  SINRYO-COUNT)
+                                       END-IF
                                      END-IF
                                      IF   TNS-SRYCD(1:1)    =   "7"
                                        COMPUTE  TBL-TGMONEY-TAX(10)  =
