@@ -551,9 +551,9 @@
            END-IF
       *
       *    ¿©Æ²²Ã»»
-           IF      LNK-SCNYUACCT-SHOKUDO   NOT =   SPACE
+           IF      LNK-SCNYUACCT-SHOKUDO-SRYCD NOT =   SPACE
                INITIALIZE                  TBL-NYUIN-AREA
-               MOVE    LNK-SCNYUACCT-SHOKUDO
+               MOVE    LNK-SCNYUACCT-SHOKUDO-SRYCD
                                            TO  TBL-SRYCD (1)
                MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
                MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
