@@ -55,12 +55,14 @@
       *                                     診療科情報が未編集のとき
       *                                     最終入院科を編集する
       *  01.00.18    NACL-藤原    04/06/08  適用終了日の追加
-      *  01.00.41    NACL-藤原    04/06/15  印刷順の追加（個別作成時のみ）
-      *  01.00.42    NACL-藤原    04/07/12  生保の受給者番号を月代わり受給者DBに
+      *  01.00.19    NACL-藤原    04/06/15  印刷順の追加（個別作成時のみ）
+      *  01.00.20    NACL-藤原    04/07/12  生保の受給者番号を月代わり受給者DBに
       *                                     無い場合は公費DBより編集する
       *                                     保険組合せの公費ＩＤを追加
-      *  01.00.43    NACL-藤原    04/07/20  特例退職者＋老人のとき不明分
+      *  01.00.21    NACL-藤原    04/07/20  特例退職者＋老人のとき不明分
       *                                     とする
+      *  01.00.22    NACL-藤原    04/07/23  補助区分の追加に伴うレセプト
+      *                                     種別・給付割合の編集を変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1455,8 +1457,10 @@
                                    (WRK-NENREI  <=   74)
                                  EVALUATE   COMB-HOJOKBN
                                      WHEN   "1"
+                                     WHEN   "4"
                                        MOVE   "9"   TO   WK-HONKZKKBN
                                      WHEN   "2"
+                                     WHEN   "5"
                                        MOVE   "8"   TO   WK-HONKZKKBN
                                  END-EVALUATE
                                END-IF     
@@ -1936,11 +1940,16 @@
               EVALUATE    RECE61-HKNNUM       
                   WHEN    "060"
                       IF       WRK-NENREI           <     3
-                          IF    COMB-HOJOKBN    =    "0"  OR   "1"
+                          IF    COMB-HOJOKBN    =    "0"  OR   "1" OR
+                                                     "4"  OR   "5"
                               EVALUATE   COMB-HOJOKBN
                                   WHEN   "0"
                                       MOVE   ZERO    TO   RECE62-KYURATE
                                   WHEN   "1"
+                                      MOVE   10      TO   RECE62-KYURATE
+                                  WHEN   "4"
+                                      MOVE   ZERO    TO   RECE62-KYURATE
+                                  WHEN   "5"
                                       MOVE   10      TO   RECE62-KYURATE
                               END-EVALUATE
                           ELSE
@@ -1956,6 +1965,12 @@
                                   MOVE   20        TO   RECE62-KYURATE
                               WHEN   "3"
                                   MOVE   30        TO   RECE62-KYURATE
+                              WHEN   "4"
+                                  MOVE   ZERO      TO   RECE62-KYURATE
+                              WHEN   "5"
+                                  MOVE   10        TO   RECE62-KYURATE
+                              WHEN   "6"
+                                  MOVE   20        TO   RECE62-KYURATE
                               WHEN   "8"
                                   MOVE   20        TO   RECE62-KYURATE
                               WHEN   "9"

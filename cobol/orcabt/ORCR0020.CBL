@@ -106,6 +106,8 @@
       *                                     保険組合せの公費ＩＤを追加
       *  01.00.43    NACL-藤原    04/07/20  特例退職者＋老人のとき不明分
       *                                     とする
+      *  01.00.44    NACL-藤原    04/07/23  補助区分の追加に伴うレセプト
+      *                                     種別・給付割合の編集を変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1332,7 +1334,7 @@
       *    老人保険の場合はＷＫ−ＲＪＮにセットする	
            IF  RECE01-HKNID             NOT =   ZERO
                IF      RECE02-SRYYM     >=      "200210"
-      *    保険組合せテーブルの検索
+      *            保険組合せテーブルの検索
                    INITIALIZE                        HKNCOMBI-REC
                    MOVE    RECE01-HOSPID        TO   COMB-HOSPID
                    MOVE    RECE01-PTID          TO   COMB-PTID
@@ -1376,8 +1378,10 @@
                                    (WRK-NENREI  <=   74)
                                  EVALUATE   COMB-HOJOKBN
                                      WHEN   "1"
+                                     WHEN   "4"
                                        MOVE   "9"   TO   WK-HONKZKKBN
                                      WHEN   "2"
+                                     WHEN   "5"
                                        MOVE   "8"   TO   WK-HONKZKKBN
                                  END-EVALUATE
                                END-IF     
@@ -2024,6 +2028,12 @@
                           MOVE   20        TO   RECE02-KYURATE
                    WHEN   "3"
                           MOVE   30        TO   RECE02-KYURATE
+                   WHEN   "4"
+                          MOVE   10        TO   RECE02-KYURATE
+                   WHEN   "5"
+                          MOVE   20        TO   RECE02-KYURATE
+                   WHEN   "6"
+                          MOVE   30        TO   RECE02-KYURATE
                END-EVALUATE
              ELSE
                IF    COMB-HONKZKKBN        =    "1"
@@ -2043,11 +2053,14 @@
               EVALUATE    RECE01-HKNNUM       
                   WHEN    "060"
                       IF       WRK-NENREI           <     3
-                          IF    COMB-HOJOKBN    =    "0"  OR   "1"
+                          IF    COMB-HOJOKBN    =    "0"  OR   "1" OR
+                                                     "4"
                               EVALUATE   COMB-HOJOKBN
                                   WHEN   "0"
                                       MOVE   ZERO    TO   RECE02-KYURATE
                                   WHEN   "1"
+                                      MOVE   10      TO   RECE02-KYURATE
+                                  WHEN   "4"
                                       MOVE   10      TO   RECE02-KYURATE
                               END-EVALUATE
                           ELSE
@@ -2062,6 +2075,12 @@
                               WHEN   "2"
                                   MOVE   20        TO   RECE02-KYURATE
                               WHEN   "3"
+                                  MOVE   30        TO   RECE02-KYURATE
+                              WHEN   "4"
+                                  MOVE   10        TO   RECE02-KYURATE
+                              WHEN   "5"
+                                  MOVE   20        TO   RECE02-KYURATE
+                              WHEN   "6"
                                   MOVE   30        TO   RECE02-KYURATE
                               WHEN   "8"
                                   MOVE   20        TO   RECE02-KYURATE
