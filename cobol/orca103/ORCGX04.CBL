@@ -1724,7 +1724,7 @@
       *
                COMPUTE CNT-SRCBYOLST   =   CNT-SRCBYOLST   +   1
       *
-               PERFORM 900-USERBYOMEI-KEY10-SEL-SEC
+               PERFORM 900-USERBYOMEI-KEY10-FET-SEC
       *
            END-PERFORM
       *
