@@ -3509,6 +3509,10 @@
                    MOVE    SPA-NAI-I01-MAEIDOYMD
                                            TO  WRK-YMD
                END-IF
+      *
+      *        コンボボックス初期処理
+               MOVE    WRK-YMD             TO  WRK-KJNYMD
+               PERFORM 310-CMB-SYOKI-SEC
                PERFORM 5002-HIZUKE-CHK-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-TAIINYMD
                MOVE    WRK-SYMD        TO  SPA-NAI-I01-TAIINYMD
@@ -3893,6 +3897,12 @@
       *
            MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-TAIINYMD
            MOVE    WRK-SYMD        TO  SPA-NAI-I01-TAIINYMD
+      *
+           IF    ( WRK-MCP-WIDGET  =   "TAIINYMD" )
+               MOVE    SPA-NAI-I01-TAIINYMD
+                                   TO  WRK-KJNYMD
+               PERFORM 310-CMB-SYOKI-SEC
+           END-IF
       *
            .
       *
