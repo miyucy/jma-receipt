@@ -35,6 +35,7 @@
       * 01.00.06     NACL-多々納  03/03/18  中途終了時修正
       * 01.00.07     NACL-多々納  03/04/11  科変更追加、履歴に科表示他
       * 01.00.08     NACL-多々納  03/05/29  入院アフターケアエラー
+      * 01.00.09     NACL-多々納  03/06/09  入院日指定修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6047,6 +6048,7 @@
       *
       *    剤ごとに回数を入れ直す（リハビリ等同時回数チェックのため）
            MOVE    ZERO                TO  WRK-KAISU
+           INITIALIZE                      WRK-NYUIN-AREA
            PERFORM VARYING     IDX     FROM    WRK-GYO-MAX BY  -1
                    UNTIL       IDX     <   1
                IF     (SPA-GMN-INPUTCD (IDX)   =   SPACE )  AND
@@ -6056,7 +6058,14 @@
                    IF     (WRK-KAISU               =   ZERO   )  OR
                           (SPA-COM-KAIFLG (IDX)    =   "1"    )  OR
                           (SPA-COM-ZAIEND (IDX)    =   "1"    )  OR
-                          (SPA-GMN-INPUTCD(IDX)(1:1)   =   "*")
+                          (IDX                     =   WRK-GYO-MAX)
+      *                ’＊’の数だけ更新する
+                     IF      (SPA-GMN-INPUTCD(IDX)(1:1)   =   "*" )
+                        AND  (IDX                <   WRK-GYO-MAX)
+                        AND  (SPA-GMN-INPUTCD(IDX + 1)(1:1)
+                                                 =   "*"    )
+                         CONTINUE
+                     ELSE
                        MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
                        INITIALIZE                      WRK-NYUIN-AREA
       *
@@ -6068,11 +6077,23 @@
                        IF      WRK-KAISU      =   ZERO
                            MOVE    1              TO  WRK-KAISU
                        END-IF
+                     END-IF
                    END-IF
       *            入院回数・日数
                    IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "*"
-                       MOVE    SPA-COM-NYUIN-AREA (IDX)
-                                               TO  WRK-NYUIN-AREA
+      *************    MOVE    SPA-COM-NYUIN-AREA (IDX)
+      *************                            TO  WRK-NYUIN-AREA
+                       PERFORM VARYING     IDX-N2  FROM    1   BY  1
+                               UNTIL       IDX-N2  >   31
+                           IF      SPA-COM-NYUINDAY  (IDX IDX-N2)
+                                               NOT =   ZERO
+                               MOVE    SPA-COM-NYUINDAY  (IDX IDX-N2)
+                                                   TO  WRK-NYUINDAY
+                                                           (IDX-N2)
+                           END-IF
+                       END-PERFORM
+                       ADD     SPA-COM-NYU-KAI (IDX)
+                                                   TO  WRK-NYU-KAI
                    END-IF
                    IF     (WRK-NYU-KAI         =   ZERO )
       ************** AND  (SPA-SYORIFLG        =   ZERO )
@@ -6081,10 +6102,12 @@
                                                            (IDX-N2)
                        MOVE    WRK-KAISU           TO  WRK-NYU-KAI
                    END-IF
-      *
-                   MOVE    WRK-KAISU           TO  SPA-COM-KAISU (IDX)
-                   MOVE    WRK-NYUIN-AREA      TO  SPA-COM-NYUIN-AREA
+      *            入院回数入力分以外
+                   IF      SPA-GMN-INPUTCD(IDX)(1:1)   NOT =   "*"
+                       MOVE    WRK-KAISU       TO  SPA-COM-KAISU (IDX)
+                       MOVE    WRK-NYUIN-AREA  TO  SPA-COM-NYUIN-AREA
                                                                  (IDX)
+                   END-IF
                END-IF
            END-PERFORM
       *
