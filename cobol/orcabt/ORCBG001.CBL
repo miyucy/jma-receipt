@@ -30,6 +30,7 @@
       * 00.00.01     NACL-øπœ∆    03/04/25  Ω–ŒœæÚ∑ÔΩ§¿µ°¢≤ Ãæ•ª•√•» —ππ
       * 02.01.01     Nacl-øπœ∆    03/11/25  ±°≥∞∂Ë ¨§Ú•—•È•·•ø§Àƒ…≤√
       * 02.01.02     NACL-øπœ∆    04/08/31  æÚ∑ÔΩ§¿µ
+      * 02.01.03     NACL-øπœ∆    04/10/22  CLOSEΩËÕ˝
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -493,6 +494,10 @@
       *        ø«Œ≈≤ Ã‹ ‘Ω∏
                PERFORM 900-SYS1005-DBFETCH-SEC
            END-PERFORM
+      *
+      *----(02.01.03)--ADD-START---
+           PERFORM 900-SYS1005-DBCLOSE-SEC
+      *----(02.01.03)--ADD-END-----
       *
            EVALUATE    CNT-SRYKA
                WHEN    1   THRU    6
@@ -1348,6 +1353,14 @@
                INITIALIZE                  TNS-TENSU-REC
                MOVE    1               TO  FLG-TENSU
            END-IF
+      *----(02.01.03)--ADD-START---
+           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "TENSU-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *----(02.01.03)--ADD-END-----
            .
        900-TNS-READ-EXT.
            EXIT.

@@ -39,6 +39,7 @@
       * 01.01.04     NACL-¿¹ÏÆ     03/05/30  ½é´üÃÍÊÑ¹¹
       * 02.01.01     NACL-¿¹ÏÆ     03/06/13  °ì³ç¹¹¿·
       * 02.01.02     NACL-¿¹ÏÆ     04/10/05  È¾³ÑÁ´³Ñ¥Á¥§¥Ã¥¯ÄÉ²Ã
+      * 02.01.03     NACL-¿¹ÏÆ     04/10/22  CLOSE½èÍý
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -652,6 +653,9 @@
       *----(00.01.01)--ADD-END------
                END-IF
            END-IF
+      *----(02.01.03)--ADD-START---
+           PERFORM 900-INPUTCD-CLOSE-SEC
+      *----(02.01.03)--ADD-END-----
            .
       *
        4121-INPUTCD-JYOKEN-HAN-EXT.
@@ -702,7 +706,9 @@
       *----(00.01.01)--ADD-END------
            END-IF
       *
-           PERFORM 900-INPUTCD-CLOSE-SEC
+      *----(02.01.03)--UPD-START---
+      *     PERFORM 900-INPUTCD-CLOSE-SEC
+      *----(02.01.03)--UPD-END-----
            .
       *
        4122-INPUTCDLIST-SET-EXT.

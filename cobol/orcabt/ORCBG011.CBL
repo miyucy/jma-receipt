@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者        日付      内容
       * 01.00.01     NACL-森脇     04/01/05  番号を患者ごとにカウント
       * 01.00.02     NACL-森脇     04/01/06  期間表示変更
+      * 01.00.03     NACL-森脇     04/10/22  CLOSE追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -606,6 +607,11 @@
                                        TO  SPA-1009-KKCKSIATOKETA
            END-IF
       *
+      *----(01.00.03)--ADD-START---
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *----(01.00.03)--ADD-END-----
+      *
            .
        1001-PTNUMINF-HEN-EXT.
            EXIT.
@@ -657,8 +663,11 @@
       *
            END-PERFORM
       *
-           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+      *----(01.00.03)--UPD-START---
+      *     MOVE    SYS-1005-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY5"     TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
+      *----(01.00.03)--UPD-END-----
       *
            .
        1001-SRYKALST-HEN-EXT.
