@@ -3597,6 +3597,7 @@
                       MOVE WRK-CMB-ITM4
                                        TO  WRK-BRM-KA-CD
                    END-IF
+               END-IF
            END-EVALUATE
       *
       *    室料差額の初期値を設定
