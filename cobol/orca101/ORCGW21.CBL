@@ -323,6 +323,24 @@
                    MOVE    "W01"       TO  SPA-MOTOPG
                    MOVE    SPACE       TO  SPA-MOTOPG2
                                            SPA-MOTOPG3
+      *
+      *            病棟情報取得処理
+                   PERFORM 3101-SYS-5001-GET-SEC
+                   MOVE    SPA-GMN-W21-BTU-NUM
+                                       TO  WRK-KBNCD
+                   PERFORM 800-BTU-JOHO-SRH-SEC
+                   IF    ( WRK-KANRIDAT1   =   SPACE )
+                       GO  TO  300-SCREEN-EXT
+                   END-IF
+      *
+                   MOVE    WRK-KANRIDAT1   TO  SPA-GMN-W21-BTU-NAME
+                   MOVE    WRK-KANRIDAT2   TO  WRK-TOKTEI-NYUIN
+                   MOVE    WRK-KANRIDAT3   TO  WRK-KHNSRYCD
+                   MOVE    WRK-KANRIDAT4   TO  WRK-BTU-YUKSTYMD
+      *
+      *            入院基本料編集処理
+                   PERFORM 3101-BTU-KHNRYO-EDIT-SEC
+      *
                    GO  TO  300-SCREEN-EXT
                ELSE
                    PERFORM 310-SPASET-SEC
