@@ -629,6 +629,9 @@
            MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
            PERFORM 310-CMB-SYOKI-SEC
       *
+      *    処理区分コンボ（全て表示）
+           PERFORM 310-CMB-SYORIKBN-SET1-SEC
+      *
       *    画面初期化
            PERFORM 420-CLEAR-SEC
       *
@@ -643,9 +646,6 @@
        310-CMB-SYOKI-SEC               SECTION.
       *
       *    INITIALIZE              SPA-GMN-I01-CMB-DAT-AREA
-      *
-      *    処理区分コンボ（全て表示）
-           PERFORM 310-CMB-SYORIKBN-SET1-SEC
       *
       *    室料差額コンボ
            PERFORM 310-CMB-SAGAKU-SET-SEC
