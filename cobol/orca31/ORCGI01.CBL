@@ -5915,10 +5915,12 @@
                GO  TO  4801-KANREN-CHK-EXT
            END-IF
       *    Ï«ºÒÊÝ¸±¡Ê¥¢¥Õ¥¿¡¼¡Ë
-           IF    ( SPA-NAI-I01-RSI-HKNKBN    =   "3" )
+           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" OR "08" )
+             IF    ( SPA-NAI-I01-RSI-HKNKBN    =   "3" )
                MOVE    "1033"      TO  SPA-ERRCD
                MOVE    15          TO  SPA-GMN-I01-CUR
                GO  TO  4801-KANREN-CHK-EXT
+             END-IF
            END-IF
       *
       *    Äê´üÀÁµá
