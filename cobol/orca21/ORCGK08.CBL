@@ -1683,8 +1683,15 @@
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (08)
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (09)
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (10)
+      *???
+           DISPLAY "MAX=" SPA-GMN-MAX "##"
+      *???          
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
+      *???
+           DISPLAY "SPA-GMN-NAIIDX=" SPA-GMN-NAIIDX  (IDX)  "##"
+      *???          
+             IF     SPA-GMN-NAIIDX  (IDX)  >  ZERO
                MOVE    SPA-GMN-NAIIDX  (IDX)   TO  IDX-NAI
                IF      SPA-GMN-TDELFLG (IDX)   =   2
                    CONTINUE
@@ -1727,6 +1734,7 @@
                                                TO  SPA-GMN-HKNTEN (10)
                    END-EVALUATE
                END-IF
+             END-IF
            END-PERFORM
       *    ³ÆÅÀ¿ô
            MOVE    ZERO                TO  SPA-GMN-GOKEI
