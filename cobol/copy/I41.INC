@@ -65,7 +65,7 @@
               05  I41-DATELIST-ITEM    OCCURS  400 TIMES.
                 06  I41-TNO            PIC X(3).
                 06  I41-TMEISYO        PIC X(60).
-                06  I41-TTENSU         PIC X(5).
+                06  I41-TTENSU         PIC X(7).
                 06  I41-TDAY-G.
                   08  I41-TDAY         PIC X(2)  OCCURS  31.
               05  I41-DATELIST-SELECT  PIC X     OCCURS  400 TIMES.
@@ -75,8 +75,8 @@
               05  I41-KUMILIST-ROW     PIC S9(9)   BINARY.
               05  I41-KUMILIST-ROWATTR PIC S9(9)   BINARY.
               05  I41-KUMI-ITEM        OCCURS  30 TIMES.
-                06  I41-KUMINO         PIC X(8).
-                06  I41-KUMI           PIC X(32).
+                06  I41-KUMINO         PIC X(4).
+                06  I41-KUMI           PIC X(50).
               05  I41-HEYALIST-SELECT  PIC X      OCCURS  30 TIMES.
           03  I41-SCROLLEDWINDOW3.
             04  I41-SAGAKULIST.

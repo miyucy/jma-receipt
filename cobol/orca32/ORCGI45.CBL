@@ -27,7 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *
+      *  01.00.00    NACL-多々納  04/05/06  会計照会と同じ機能とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -48,8 +48,6 @@
       *
       *    画面スパ領域
            COPY    "I4SCR-SPA".
-      *
-           COPY    "I4SCR-SPA5".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -86,7 +84,10 @@
            03  WRK-JIDMSG          PIC X(80).
       *
            03  WRK-COMMENT         PIC X(400).
-      *
+      *    コラムリスト位置
+           03  WRK-I45-BUNREI-ROW      PIC S9(09).
+           03  FLG-GMN-INIT            PIC  9(01).
+     *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -125,6 +126,7 @@
            COPY    "CPORCSNUM.INC".
       *
       *    ＤＢ検索
+      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
@@ -144,8 +146,6 @@
            COPY    "I43.INC".
            COPY    "I44.INC".
            COPY    "I45.INC".
-           COPY    "I46.INC".
-           COPY    "I47.INC".
            COPY    "I48.INC".
            COPY    "I49.INC".
            COPY    "I4ERR.INC".
@@ -162,12 +162,17 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA.
-           MOVE    SPA-FREE        TO  SPA-I45.
-           MOVE    SPA-WORK        TO  SPA-I4KYOUTU.
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
       *
-           MOVE    SPACE           TO  SPA-ERRCD.
-           MOVE    ZERO            TO  FLG-END.
+           MOVE    SPA-COMMON      TO  SPA-AREA.
+           MOVE    SPA-FREE        TO  SPA-I41
+           MOVE    SPA-WORK        TO  SPA-I4KYOUTU
+      *
+           MOVE    SPACE           TO  SPA-ERRCD
+           MOVE    ZERO            TO  FLG-END
       *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -183,13 +188,15 @@
       *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
-           END-IF.
+           END-IF
       *
-           MOVE    SPA-I4KYOUTU    TO  SPA-WORK.
-           MOVE    SPA-AREA        TO  SPA-COMMON.
-           MOVE    SPA-I45         TO  SPA-FREE.
+           MOVE    SPA-I4KYOUTU    TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-I41         TO  SPA-FREE
       *
-           EXIT    PROGRAM.
+           .
+           EXIT    PROGRAM
+           .
       *
       *****************************************************************
       *    初期　処理
@@ -197,28 +204,36 @@
        100-INIT-SEC                SECTION.
       *
       *
-           INITIALIZE                  FLG-AREA.
-           INITIALIZE                  STS-AREA.
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+      *    INITIALIZE                  CNT-AREA
+      *    INITIALIZE                  WRK-AREA
+      *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "I4ERR"
                MOVE    SPACE               TO  SPA-MOTOPG
-           END-IF.
-      *        初期画面編集
-           PERFORM 300-SCREEN-SEC.
-           IF      FLG-END         =   1
-               GO      TO      100-INIT-EXT
-           END-IF.
-      *        画面編集
-           PERFORM 500-GMNHEN-SEC.
+               PERFORM 5001-MAPCUR-SEC
+           ELSE
       *
-           MOVE    SPACE               TO  LNK-KYOUTU.
+      *        初期画面編集
+               PERFORM 300-SCREEN-SEC
+               IF      FLG-END         =   1
+                   GO      TO      100-INIT-EXT
+               END-IF
+      *
+      *        画面編集
+               PERFORM 500-GMNHEN-SEC
+           END-IF
+      *
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE   "NEW"                TO  MCP-PUTTYPE.
-           MOVE   "I45"                TO  MCP-WINDOW.
+           MOVE   "I45"               TO  MCP-WINDOW.
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END.
+           MOVE    1                   TO  FLG-END
+           .
       *
        100-INIT-EXT.
            EXIT.
@@ -228,29 +243,26 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-           EVALUATE    SPA-MOTOPG(1:5)
+           EVALUATE    SPA-MOTOPG
       *            確認画面より
                WHEN    "I4ID1"
-                   PERFORM 3003-JID1-SET-SEC
+                   PERFORM 3003-I4ID1-SET-SEC
                    MOVE    SPACE           TO  SPA-IIDCD
                    GO      TO      300-SCREEN-EXT
-           END-EVALUATE.
+           END-EVALUATE
       *
-           MOVE    LNK-COMMON      TO  SPA-KYOUTU.
-           MOVE    LNK-SCRSPA      TO  SPA-I4.
-           MOVE    SPA-WORK        TO  SPA-I4KYOUTU.
+           PERFORM                     310-SPA-SET-SEC
       *
-           PERFORM                     310-SPA-SET-SEC.
+           MOVE    1                   TO  SPA-I45-CUR
       *
-           MOVE    1                   TO  SPA-I45-CUR.
-      *
+           .
        300-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
       *     確認画面よりの処理
       *****************************************************************
-       3003-JID1-SET-SEC                  SECTION.
+       3003-I4ID1-SET-SEC                  SECTION.
       *
            EVALUATE    SPA-IIDCD
                WHEN    "0104"
@@ -261,9 +273,9 @@
                        MOVE    1                   TO  SPA-I45-CUR
                    END-IF
       *
-           END-EVALUATE.
-      *
-       3003-JID1-SET-EXT.
+           END-EVALUATE
+           .
+       3003-I4ID1-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -271,11 +283,13 @@
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
       *
-           INITIALIZE                  SPA-I45-AREA.
+           INITIALIZE                  SPA-I45-AREA
       *
       *     文例編集
-            PERFORM 3101-BUNREI-HEN-SEC.
+            PERFORM 3101-BUNREI-HEN-SEC
       *
+      *
+           .
        310-SPA-SET-EXT.
            EXIT.
       *****************************************************************
@@ -283,30 +297,33 @@
       *****************************************************************
        3101-BUNREI-HEN-SEC        SECTION.
       *
-           INITIALIZE                  SPA-I45-BUNNREI-G.
-           MOVE    ZERO                TO  SPA-I45-BUNREIMAX.
+           MOVE    ZERO                TO  FLG-GMN-INIT
       *
-           MOVE    SPACE               TO  EXAMPLE-REC.
-           INITIALIZE                  EXAMPLE-REC.
-           MOVE    SPA-HOSPID          TO  EXAMPLE-HOSPID.
-           MOVE    "1"                 TO  EXAMPLE-KUBUN.
+           INITIALIZE                  SPA-I45-BUNNREI-G
+           MOVE    ZERO                TO  SPA-I45-BUNREIMAX
       *
-           MOVE    EXAMPLE-REC         TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "EXAMPLE-KEY1"      TO  ORC-DBPATH.
+           MOVE    SPACE               TO  EXAMPLE-REC
+           INITIALIZE                  EXAMPLE-REC
+           MOVE    SPA-HOSPID          TO  EXAMPLE-HOSPID
+           MOVE    "1"                 TO  EXAMPLE-KUBUN
+      *
+           MOVE    EXAMPLE-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "EXAMPLE-KEY1"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "EXAMPLE-KEY1"     TO  ORC-DBPATH
                PERFORM 930-EXAMPLE-READ-SEC
            ELSE
                MOVE    1               TO  FLG-EXAMPLE
                INITIALIZE                  EXAMPLE-REC
-           END-IF.
-           MOVE    ZERO                TO  IDX.
-           PERFORM UNTIL       FLG-EXAMPLE        =   1
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM
+                   UNTIL       FLG-EXAMPLE        =   1
                ADD     1                   TO  IDX
                MOVE    IDX                 TO  SPA-I45-BUNREIMAX
                MOVE    EXAMPLE-RENNUM      TO  SPA-I45-TRENNUM  (IDX)
@@ -314,10 +331,11 @@
       *
                MOVE    "EXAMPLE-KEY1"      TO  ORC-DBPATH
                PERFORM 930-EXAMPLE-READ-SEC
-           END-PERFORM.
+           END-PERFORM
       *
-           MOVE    ZERO                TO  SPA-I45-SELNUM.
+           MOVE    ZERO                TO  SPA-I45-SELNUM
       *
+           .
        3101-BUNREI-HEN-EXT.
            EXIT.
       *
@@ -326,7 +344,22 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
-           INITIALIZE                  I45.
+      *    コラムリスト位置保存
+           IF      FLG-GMN-INIT        =   1
+               MOVE    ZERO                TO  WRK-I45-BUNREI-ROW
+           ELSE
+               MOVE    I45-BUNREI-ROW     TO  WRK-I45-BUNREI-ROW
+           END-IF
+      *
+      *
+           MOVE    SPACE               TO  I45
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  I45-BUNREI-ROW
+           MOVE    ZERO                TO  I45-BUNREI-ROWATTR
+           IF      WRK-I45-BUNREI-ROW NOT =   ZERO
+               MOVE    WRK-I45-BUNREI-ROW TO  I45-BUNREI-ROW
+           END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-I45-BUNREIMAX
@@ -339,13 +372,13 @@
                ELSE
                    MOVE    "F"             TO  I45-BUNREI-SELECT (IDX)
                END-IF
-           END-PERFORM.
-           MOVE    SPA-I45-BUNREIMAX  TO  I45-BUNREI-COUNT.
+           END-PERFORM
+           MOVE    SPA-I45-BUNREIMAX  TO  I45-BUNREI-COUNT
       *
-           MOVE    SPA-I45-SELNUM     TO  I45-SELNUM.
+           MOVE    SPA-I45-SELNUM     TO  I45-SELNUM
       *
-           PERFORM 5001-MAPCUR-SEC.
-      *
+           PERFORM 5001-MAPCUR-SEC
+           .
        500-GMNHEN-EXT.
            EXIT.
       *
@@ -354,19 +387,22 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+      *
            EVALUATE    SPA-I45-CUR
                WHEN    1
                    MOVE    "SELNUM"            TO  MCP-WIDGET
                WHEN    2
                    MOVE    "B12"               TO  MCP-WIDGET
-           END-EVALUATE.
+           END-EVALUATE
       *
+           .
        5001-MAPCUR-EXT.
            EXIT.
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
+      *
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        戻る
@@ -383,8 +419,9 @@
                WHEN    "CLICKED"       ALSO    "B12"
                    MOVE    2               TO  FLG-OK
                    PERFORM 212-TOUROKU-SEC
-           END-EVALUATE.
+           END-EVALUATE
       *
+           .
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
@@ -399,8 +436,9 @@
       *        明細選択
                WHEN    ANY             ALSO    "BUNREILIST"
                    PERFORM 440-BUNREILIST-SEC
-           END-EVALUATE.
+           END-EVALUATE
       *
+           .
        200-ENTRY-EXT.
            EXIT.
       *
@@ -409,37 +447,39 @@
       *****************************************************************
        420-SELNUM-SEC                 SECTION.
       *
-           MOVE    1                   TO  SPA-I45-CUR.
+           MOVE    1                   TO  SPA-I45-CUR
       *
-           MOVE    I45-SELNUM          TO  SPA-I45-SELNUM.
-           MOVE    ZERO                TO  SPA-I45-TBL.
+           MOVE    I45-SELNUM         TO  SPA-I45-SELNUM
+           MOVE    ZERO                TO  SPA-I45-TBL
       *
            IF      SPA-I45-SELNUM     =   ZERO
                GO      TO      420-SELNUM-EXT
-           END-IF.
+           END-IF
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   SPA-I45-BUNREIMAX
               IF      SPA-I45-TRENNUM  (IDX)  =   SPA-I45-SELNUM
                   MOVE    IDX                      TO  SPA-I45-TBL
               END-IF
-           END-PERFORM.
+           END-PERFORM
            IF      SPA-I45-TBL        =   ZERO
                MOVE    "0001"              TO  SPA-ERRCD
                GO      TO      420-SELNUM-EXT
-           END-IF.
+           END-IF
       *
-           MOVE    2                   TO  SPA-I45-CUR.
+           MOVE    2                   TO  SPA-I45-CUR
       *
+           .
        420-SELNUM-EXT.
            EXIT.
+      *
       *
       *****************************************************************
       *    明細選択処理
       *****************************************************************
        440-BUNREILIST-SEC                 SECTION.
       *
-           MOVE    ZERO                TO  WRK-SELNUM.
-           MOVE    ZERO                TO  WRK-SELNUM2.
+           MOVE    ZERO                TO  WRK-SELNUM
+           MOVE    ZERO                TO  WRK-SELNUM2
       *
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   SPA-I45-BUNREIMAX
@@ -450,17 +490,18 @@
                       MOVE    SPA-I45-TRENNUM  (IDX)  TO  WRK-SELNUM2
                   END-IF
               END-IF
-           END-PERFORM.
+           END-PERFORM
       *
            IF      WRK-SELNUM2     NOT =   ZERO
                MOVE    WRK-SELNUM2         TO  SPA-I45-SELNUM
            ELSE
                MOVE    WRK-SELNUM          TO  SPA-I45-SELNUM
-           END-IF.
+           END-IF
       *
-           MOVE    SPA-I45-SELNUM     TO  I45-SELNUM.
-           PERFORM 420-SELNUM-SEC.
+           MOVE    SPA-I45-SELNUM     TO  I45-SELNUM
+           PERFORM 420-SELNUM-SEC
       *
+           .
        440-BUNREILIST-EXT.
            EXIT.
       *
@@ -471,35 +512,37 @@
       *
            IF      SPA-I45-SELNUM     =   ZERO
                GO      TO      212-TOUROKU-EXT
-           END-IF.
+           END-IF
       *
-           MOVE    SPA-I45-SELNUM     TO  I45-SELNUM.
-           PERFORM 420-SELNUM-SEC.
+      *
+           MOVE    SPA-I45-SELNUM     TO  I45-SELNUM
+           PERFORM 420-SELNUM-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      212-TOUROKU-EXT
-           END-IF.
-      *    雛形有無
-           MOVE    SPACE               TO  EXAMPLE-REC.
-           INITIALIZE                  EXAMPLE-REC.
-           MOVE    SPA-HOSPID          TO  EXAMPLE-HOSPID.
-           MOVE    "1"                 TO  EXAMPLE-KUBUN.
-           MOVE    SPA-I45-TRENNUM (SPA-I45-TBL)
-                                       TO  EXAMPLE-RENNUM.
+           END-IF
       *
-           MOVE    EXAMPLE-REC         TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH.
+      *    雛形有無
+           MOVE    SPACE               TO  EXAMPLE-REC
+           INITIALIZE                  EXAMPLE-REC
+           MOVE    SPA-HOSPID          TO  EXAMPLE-HOSPID
+           MOVE    "1"                 TO  EXAMPLE-KUBUN
+           MOVE    SPA-I45-TRENNUM (SPA-I45-TBL)
+                                       TO  EXAMPLE-RENNUM
+      *
+           MOVE    EXAMPLE-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
                PERFORM 930-EXAMPLE-READ-SEC
            ELSE
                MOVE    1               TO  FLG-EXAMPLE
                INITIALIZE                  EXAMPLE-REC
-           END-IF.
+           END-IF
            IF      FLG-EXAMPLE         =   ZERO
                IF      FLG-OK              =   1
       *            コメント追加
@@ -518,8 +561,9 @@
                PERFORM 210-BACK
            ELSE
                MOVE    "0002"              TO  SPA-ERRCD
-           END-IF.
+           END-IF
       *
+           .
        212-TOUROKU-EXT.
            EXIT.
       *
@@ -531,10 +575,10 @@
            IF      SPA-I45-TBL        =   ZERO
                MOVE    "0003"              TO  SPA-ERRCD
                GO      TO      240-COMMENT-DEL-EXT
-           END-IF.
+           END-IF
       *
-           MOVE    "0104"              TO  SPA-IIDCD.
-      *
+           MOVE    "0104"              TO  SPA-IIDCD
+           .
        240-COMMENT-DEL-EXT.
            EXIT.
       *
@@ -543,29 +587,29 @@
       *****************************************************************
        2401-COMMENT-DELSYORI-SEC       SECTION.
       *
-           MOVE    SPACE               TO  EXAMPLE-REC.
-           INITIALIZE                  EXAMPLE-REC.
-           MOVE    SPA-HOSPID          TO  EXAMPLE-HOSPID.
-           MOVE    "1"                 TO  EXAMPLE-KUBUN.
+           MOVE    SPACE               TO  EXAMPLE-REC
+           INITIALIZE                  EXAMPLE-REC
+           MOVE    SPA-HOSPID          TO  EXAMPLE-HOSPID
+           MOVE    "1"                 TO  EXAMPLE-KUBUN
            MOVE    SPA-I45-TRENNUM (SPA-I45-TBL)
-                                       TO  EXAMPLE-RENNUM.
+                                       TO  EXAMPLE-RENNUM
       *
-           MOVE    EXAMPLE-REC         TO  MCPDATA-REC.
-           MOVE    "DBDELETE"          TO  MCP-FUNC.
-           MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH.
+           MOVE    EXAMPLE-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "I45 EXAMPLE DEL ERR:" MCP-RC "."
-           END-IF.
+           END-IF
       *
       *     文例編集
-            PERFORM 3101-BUNREI-HEN-SEC.
+            PERFORM 3101-BUNREI-HEN-SEC
       *
-            MOVE    1                  TO  SPA-I45-CUR.
-      *
+            MOVE    1                  TO  SPA-I45-CUR
+           .
        2401-COMMENT-DELSYORI-EXT.
            EXIT.
       *
@@ -574,24 +618,18 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "I43"               TO  SPA-SAKIPG.
-           MOVE    "I45"               TO  SPA-MOTOPG.
+           MOVE    "I43"               TO  SPA-SAKIPG
+           MOVE    "I45"               TO  SPA-MOTOPG
       *
-           MOVE    "JOIN"              TO  MCP-PUTTYPE.
-           MOVE    "I43"               TO  MCP-WINDOW.
+      *****MOVE   "BACK"               TO  MCP-PUTTYPE
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE   "I43"                TO  MCP-WINDOW
       *
-           MOVE    SPA-I4KYOUTU        TO  SPA-WORK.
-           MOVE    SPA-AREA            TO  SPA-COMMON.
+           PERFORM 900-PUT-WINDOW
       *
-           MOVE    SPACE               TO  LINKAREA.
-           MOVE    SPA-KYOUTU          TO  LNK-COMMON.
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
-           MOVE    SPA-I4              TO  LNK-SCRSPA.
+           MOVE    1                   TO  FLG-END
       *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END.
-      *
+           .
        210-BACK-EXT.
            EXIT.
       *
@@ -600,25 +638,25 @@
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
+            PERFORM 500-GMNHEN-SEC
+      *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
                GO      TO      500-SET-SCREEN-EXT
-           END-IF.
+           END-IF
       *
            IF      SPA-IIDCD       NOT =   SPACE
                PERFORM 520-JIDSET-SEC
                GO      TO      500-SET-SCREEN-EXT
-           END-IF.
+           END-IF
       *
-            PERFORM 500-GMNHEN-SEC.
-      *
-           MOVE    SPACE               TO  LNK-KYOUTU.
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "I45"               TO  MCP-WINDOW.
+           MOVE    "I45"              TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
-      *
+           .
        500-SET-SCREEN-EXT.
            EXIT.
       *
@@ -626,8 +664,7 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
-      *
-           MOVE    SPACE               TO  SPA-ERRMSG.
+           MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
@@ -637,25 +674,25 @@
                    MOVE    "保険組合せ選択エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "選択番号未入力"
+                   MOVE    "選択番号を選択して下さい"
                                        TO  SPA-ERRMSG
-           END-EVALUATE.
+           END-EVALUATE
       *
-           MOVE    SPACE               TO  I4ERR.
-           MOVE    SPA-ERRCD           TO  I4ERR-ERRCODE.
-           MOVE    SPA-ERRMSG          TO  I4ERR-ERRMSG.
-           MOVE    "B01"               TO  MCP-WIDGET.
+           MOVE    SPACE               TO  I4ERR
+           MOVE    SPA-ERRCD           TO  I4ERR-ERRCODE
+           MOVE    SPA-ERRMSG          TO  I4ERR-ERRMSG
+           MOVE    "B01"               TO  MCP-WIDGET
       *
-           MOVE    "I45"               TO  SPA-MOTOPG.
-           MOVE    "I4ERR"             TO  SPA-SAKIPG.
+           MOVE    "I45"               TO  SPA-MOTOPG
+           MOVE    "I4ERR"             TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE.
            MOVE    "I4ERR"             TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
-           MOVE    1                   TO  FLG-END.
-      *
+           MOVE    1                   TO  FLG-END
+           .
        510-ERRSET-EXT.
            EXIT.
       *
@@ -673,25 +710,26 @@
                WHEN    OTHER
                    MOVE    SPA-IIDCD
                                        TO  WRK-JIDMSG
-           END-EVALUATE.
+           END-EVALUATE
       *
-           MOVE    SPACE               TO  SPA-I4ID-FLG.
+           MOVE    SPACE               TO  SPA-I4ID-FLG
       *
-           MOVE    SPACE               TO  I4ID1.
-           MOVE    SPA-IIDCD           TO  I4ID1-ID1CODE.
-           MOVE    WRK-JIDMSG          TO  I4ID1-ID1MSG.
-           MOVE    "B12"               TO  MCP-WIDGET.
+           MOVE    SPACE               TO  I4ID1
+           MOVE    SPA-IIDCD           TO  I4ID1-ID1CODE
+           MOVE    WRK-JIDMSG          TO  I4ID1-ID1MSG
+           MOVE    "B12"               TO  MCP-WIDGET
       *
-           MOVE    "I45"               TO  SPA-MOTOPG.
-           MOVE    "I4ID1"             TO  SPA-SAKIPG.
+           MOVE    "I45"               TO  SPA-MOTOPG
+           MOVE    "I4ID1"             TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE.
            MOVE    "I4ID1"             TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
-           MOVE    1                   TO  FLG-END.
+           MOVE    1                   TO  FLG-END
       *
+           .
        520-JIDSET-EXT.
            EXIT.
       *
@@ -700,19 +738,20 @@
       *****************************************************************
        930-EXAMPLE-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  EXAMPLE-REC
                MOVE    ZERO                TO  FLG-EXAMPLE
            ELSE
                INITIALIZE                      EXAMPLE-REC
                MOVE    1                   TO  FLG-EXAMPLE
-           END-IF.
+           END-IF
       *
+           .
        930-EXAMPLE-READ-EXT.
            EXIT.
       *****************************************************************
@@ -726,6 +765,8 @@
                                 ORCMCPAREA
                                 MCPDATA-REC.
       *
+           .
        900-PUT-WINDOW-EXT.
            EXIT.
+      *
       *

@@ -27,7 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *
+      *  01.00.00    NACL-多々納  04.05.06  選択内容変更他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -48,7 +48,7 @@
            COPY    "I4COMMON-SPA".
       *
       *    画面スパ領域
-           COPY    "I4SCR-SPA4".
+           COPY    "I44SCR-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -122,19 +122,16 @@
            03  WRK-GRP-MEI         PIC X(40).
            03  WRK-GRP-MEI-X       PIC X(40).
       *
-           03  WRK-NAI-SELNUM-G.
-               05  WRK-NAI-SELNUM  PIC 9(03)   OCCURS   5.
-           03  WRK-GMN-SELNUM-G.
-               05  WRK-GMN-SELNUM  PIC X(03)   OCCURS   5.
-           03  WRK-I48-SRYCD-G.
-               05  WRK-I48-SRYCD   PIC X(09)   OCCURS   5.
-      *
            03  WRK-PATH            PIC X(64).
       *
            03  WRK-KETA            PIC 9(04).
       *
            03  WRK-HEN-NAME        PIC X(70).
            03  WRK-KENSA-HEN       PIC X(02).
+      *
+           03  WRK-I48-ROW         PIC S9(09).
+           03  FLG-GMN-INIT        PIC  9(01).
+      *
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -144,9 +141,6 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
-           03  WRK-WIDGET          PIC X(03).
-           03  WRK-WIDGET-SW       PIC X(01).
-           03  WRK-INPUTCD-W       PIC X(22).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -194,8 +188,6 @@
            COPY    "I43.INC".
            COPY    "I44.INC".
            COPY    "I45.INC".
-           COPY    "I46.INC".
-           COPY    "I47.INC".
            COPY    "I48.INC".
            COPY    "I49.INC".
            COPY    "I4ERR.INC".
@@ -212,12 +204,17 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA.
-           MOVE    SPA-FREE        TO  SPA-I44-I48.
-           MOVE    SPA-WORK        TO  SPA-I4KYOUTU.
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  WRK-AREA
       *
-           MOVE    SPACE           TO  SPA-ERRCD.
-           MOVE    ZERO            TO  FLG-END.
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-I44
+           MOVE    SPA-WORK            TO  SPA-I4KYOUTU
+      *
+           MOVE    SPACE               TO  SPA-ERRCD.
+           MOVE    ZERO                TO  FLG-END.
       *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -235,9 +232,9 @@
                PERFORM 500-SET-SCREEN
            END-IF.
       *
-           MOVE    SPA-I4KYOUTU       TO  SPA-WORK.
-           MOVE    SPA-AREA           TO  SPA-COMMON.
-           MOVE    SPA-I44-I48        TO  SPA-FREE.
+           MOVE    SPA-I4KYOUTU        TO  SPA-WORK.
+           MOVE    SPA-AREA            TO  SPA-COMMON.
+           MOVE    SPA-I44             TO  SPA-FREE.
       *
            EXIT    PROGRAM.
       *
@@ -252,7 +249,7 @@
       *    エラー画面より
            IF      SPA-MOTOPG          =   "I4ERR"
                MOVE    SPACE               TO  SPA-MOTOPG
-               MOVE    WRK-INPUTCD-W       TO  WRK-INPUTCD
+               PERFORM 5001-MAPCUR-SEC
            ELSE
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
@@ -260,17 +257,16 @@
                PERFORM 500-GMNHEN-SEC
            END-IF.
       *
-           MOVE    SPACE               TO  LNK-KYOUTU.
-      *
-           PERFORM 5001-MAPCUR-SEC.
+           MOVE    SPACE               TO  LNK-KYOUTU
       *
            MOVE   "NEW"                TO  MCP-PUTTYPE.
            MOVE   "I48"                TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
-           MOVE    1                   TO  FLG-END.
+           MOVE    1                   TO  FLG-END
       *
+           .
        100-INIT-EXT.
            EXIT.
       *
@@ -278,27 +274,18 @@
       *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC             SECTION.
-      *    J04 で初期化する
+      *
            MOVE    SPA-I48-INPUTCD     TO  SPA-I48-GMN-INPUT.
            MOVE    SPA-I48-INPUTCD     TO  WRK-INPUTCD.
            MOVE    ZERO                TO  SPA-I48-NEXT.
-      *
-      *    ユーザー登録他
-           MOVE    "1:コメント"        TO  SPA-I48-USERLST (1).
-           MOVE    "2:労災"            TO  SPA-I48-USERLST (2).
-           MOVE    SPACE               TO  SPA-I48-USER-G.
       *
            IF      (SPA-I48-GMN-INPUT  =   SPACE )  AND
                    (SPA-I48-GMN-SYORI  =   SPACE )
                CONTINUE
            ELSE
-               MOVE    SPACE               TO  WRK-WIDGET
                PERFORM                     310-SPA-SET-SEC
-               IF       WRK-WIDGET-SW         =   "1"
-                   MOVE   "B09"                TO  WRK-WIDGET
-               END-IF
-               MOVE    SPACE               TO  SPA-ERRCD
-           END-IF.
+           END-IF
+           .
       *
        300-SCREEN-EXT.
            EXIT.
@@ -308,23 +295,22 @@
       *****************************************************************
        310-SPA-SET-SEC                 SECTION.
       *
+           MOVE    1                   TO  FLG-GMN-INIT
+      *
            INITIALIZE                  SPA-I48-GMN-TBL.
            MOVE    ZERO                TO  SPA-I48-GMN-MAX.
-           MOVE    ZERO                TO  FLG-MAX.
-           MOVE    SPACE               TO  WRK-WIDGET-SW.
+           MOVE    ZERO                TO  FLG-MAX
       *
            IF       SPA-I48-TYPE         =   "1"
                IF      SPA-I48-GMN-INPUT(1:1)  =   "P"  OR  "S"
-                   MOVE    1                   TO  SPA-GMN-CUR4
+                   MOVE    6                   TO  SPA-I48-GMN-CUR
                    MOVE    "0001"              TO  SPA-ERRCD
+                   GO      TO      310-SPA-SET-EXT
                ELSE
                    PERFORM 3101-INPUTCD-SET-SEC
                END-IF
            END-IF.
-           IF     (SPA-I48-GMN-MAX     =   ZERO  )  AND
-                  ((SPA-I48-CDSYUBETU   =   "J"   )  OR
-                   (SPA-I48-GMN-SYORI   =   "8"  OR  "9"  OR  "U"))
-               MOVE    "1"                 TO  WRK-WIDGET-SW
+           IF     ( SPA-I48-GMN-MAX    =   ZERO  )
                PERFORM 3102-TENSU-SET-SEC
       *        点数マスタ検索時、自院がゼロ件の時、全体を検索
                IF     (SPA-I48-GMN-ALL     =   SPACE)  AND
@@ -335,10 +321,10 @@
            END-IF.
       *
            IF      SPA-I48-GMN-MAX     =   ZERO
-               MOVE    6                   TO  SPA-GMN-CUR4
+               MOVE    6                   TO  SPA-I48-GMN-CUR
                MOVE    "0004"              TO  SPA-ERRCD
            ELSE
-               MOVE    1                   TO  SPA-GMN-CUR4
+               MOVE    1                   TO  SPA-I48-GMN-CUR
                IF      FLG-MAX         NOT =   ZERO
                    MOVE    "0005"              TO  SPA-ERRCD
                ELSE
@@ -406,7 +392,7 @@
                        MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
                        MOVE    "DBSELECT"      TO  MCP-FUNC
                        MOVE    "TENSU-KEY"     TO  ORC-DBPATH
-                       MOVE    SPA-SRYYMD      TO  ORC-DBYMD
+                       MOVE    SPA-I40-SRYYMD  TO  ORC-DBYMD
                        CALL    "ORCMCPSUB"     USING
                                                MCPAREA
                                                ORCMCPAREA
@@ -531,21 +517,21 @@
            END-IF.
       *
            INITIALIZE                      TNS-TENSU-REC.
-           MOVE    WRK-INPUTCD         TO  TNS-NAME.
-           MOVE    WRK-INPUTCD         TO  TNS-KANANAME.
+           MOVE    SPA-I48-GMN-INPUT   TO  TNS-NAME.
+           MOVE    SPA-I48-GMN-INPUT   TO  TNS-KANANAME.
       *
       *    ユーザー登録分
            IF      SPA-I48-GMN-SYORI   =   "U"
                PERFORM 31021-ETC-PATH-SET-SEC
            ELSE
-               IF     (SPA-I48-GMN-SYORI   NOT =   "9"  )  AND
-                      (WRK-INPUTCD             =   SPACE)
+               IF     (SPA-I48-GMN-SYORI       =   "8"  )  AND
+                      (SPA-I48-GMN-INPUT       =   SPACE)
                    MOVE    ZERO                TO  SPA-I48-GMN-MAX
                    GO      TO      3102-TENSU-SET-EXT
                END-IF
            END-IF.
       *
-           IF      WRK-INPUTCD(1:2)   =   "//"
+           IF      SPA-I48-GMN-INPUT(1:2)   =   "//"
                MOVE    "TENSU-KEY10M"       TO  WRK-PATH
                MOVE    "100000000"          TO  TNS-SRYCD
                MOVE    "899999999"          TO  TNSUP-SRYCD
@@ -556,7 +542,7 @@
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC.
            MOVE    "DBSELECT"          TO  MCP-FUNC.
            MOVE    WRK-PATH            TO  ORC-DBPATH.
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD.
+           MOVE    SPA-I40-SRYYMD      TO  ORC-DBYMD.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -668,7 +654,7 @@
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    WRK-PATH            TO  ORC-DBPATH
-               MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+               MOVE    SPA-I40-SRYYMD      TO  ORC-DBYMD
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -801,8 +787,9 @@
                        TNS-NAME            DELIMITED   BY  SIZE
                        INTO                    SPA-I48-GMN-NAME(IDX)
                END-STRING
-           END-IF.
+           END-IF
       *
+           .
        31021-TENSU-HEN-EXT.
            EXIT.
       *
@@ -811,8 +798,21 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           IF     (FLG-GMN-INIT        =   1   )  OR
+                  (SPA-I48-GMN-MAX     =   ZERO )
+               MOVE    ZERO                TO  WRK-I48-ROW
+           ELSE
+               MOVE    I48-ROW             TO  WRK-I48-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  I48.
            INITIALIZE                      I48.
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  I48-ROW
+           MOVE    ZERO                TO  I48-ROWATTR
+           IF      WRK-I48-ROW     NOT =   ZERO
+               MOVE    WRK-I48-ROW         TO  I48-ROW
+           END-IF
       *
            MOVE    SPA-I48-GMN-INPUT   TO  I48-INPUT.
       *
@@ -863,53 +863,21 @@
                MOVE    IDX                 TO  WRK-NOZ
                MOVE    WRK-NOZ             TO  I48-NO  (IDX)
                MOVE    IDX                 TO  SPA-I48-NAI-NO(IDX)
-      *        検査判断の時、区分を編集
-               IF     (SPA-I48-GMN-SYORI       =   "9" )  AND
-                      (SPA-I48-GMN-SYORI2      =   SPACE)
-                   MOVE    SPA-I48-GMN-NO-X (IDX)
-                                               TO  I48-NO (IDX)
-                   IF      SPA-I48-GMN-NO-X (IDX)(3:1)   =   SPACE
-                       MOVE    ZERO            TO  SPA-I48-NAI-NO(IDX)
-                       MOVE    SPA-I48-GMN-NO-X (IDX)(1:2)
-                                               TO  SPA-I48-NAI-NO(IDX)
-                                                                (2:2)
-                   ELSE
-                       MOVE    SPA-I48-GMN-NO-X (IDX)
-                                               TO  SPA-I48-NAI-NO(IDX)
-                   END-IF
-               END-IF
       *
                MOVE    SPA-I48-GMN-NAME (IDX)  TO  I48-NAME (IDX)
                MOVE    SPA-I48-GMN-KISOTEN(IDX)
-                                               TO  WRK-TENSUS
-               MOVE    WRK-TENSUS              TO  I48-KISOTEN (IDX)
+                                           TO  WRK-TENSUS
+               MOVE    WRK-TENSUS          TO  I48-KISOTEN (IDX)
       *
                MOVE    SPA-I48-GMN-TANI (IDX)  TO  I48-TANI (IDX)
-           END-PERFORM.
+           END-PERFORM
+           MOVE    SPA-I48-GMN-MAX      TO  I48-COUNT
       *
-           MOVE    SPA-I48-GMN-MAX     TO  I48-COUNT.
+           IF      SPA-I48-NAI-SELNUM  NOT =   ZERO
+               MOVE    SPA-I48-NAI-SELNUM  TO  WRK-NOZ
+               MOVE    WRK-NOZ             TO  I48-SELNUM
+           END-IF
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   5
-               IF      SPA-I48-NAI-SELNUM(IDX) NOT =   ZERO
-                   MOVE    SPA-I48-NAI-SELNUM(IDX)     TO  WRK-NOZ
-                   MOVE    WRK-NOZ                 TO  I48-SELNUM (IDX)
-               END-IF
-           END-PERFORM.
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
-               IF      SPA-I48-USERLST (IDX)   NOT =   SPACE
-                   MOVE    SPA-I48-USERLST(IDX) TO  I48-USER-ITEM(IDX)
-                   MOVE    IDX                  TO  I48-USER-COUNT
-               END-IF
-           END-PERFORM.
-           IF     (SPA-I48-GMN-SYORI   =   "U"  )  AND
-                  (SPA-I48-GMN-SYORI3(1:1)  =   "U")
-               MOVE    SPA-I48-USER-G      TO  I48-USER
-           ELSE
-               MOVE    SPACE               TO  SPA-I48-USER-G
-           END-IF.
       *
            PERFORM 5001-MAPCUR-SEC.
       *
@@ -921,21 +889,11 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-           EVALUATE    SPA-GMN-CUR4
+           EVALUATE    SPA-I48-GMN-CUR
                WHEN    01
-                   MOVE    "SELNUM1"       TO  MCP-WIDGET
-               WHEN    02
-                   MOVE    "SELNUM2"       TO  MCP-WIDGET
-               WHEN    03
-                   MOVE    "SELNUM3"       TO  MCP-WIDGET
-               WHEN    04
-                   MOVE    "SELNUM4"       TO  MCP-WIDGET
-               WHEN    05
-                   MOVE    "SELNUM5"       TO  MCP-WIDGET
+                   MOVE    "SELNUM"        TO  MCP-WIDGET
                WHEN    06
                    MOVE    "INPUT"         TO  MCP-WIDGET
-               WHEN    07
-                   MOVE    "USER"          TO  MCP-WIDGET
            END-EVALUATE.
       *
        5001-MAPCUR-EXT.
@@ -980,19 +938,11 @@
                WHEN    "ACTIVATE"      ALSO    "INPUT"
                    PERFORM 41013-INPUT-CHK-SEC
       *        番号入力
-               WHEN    "ACTIVATE"      ALSO    "SELNUM1"
-               WHEN    "ACTIVATE"      ALSO    "SELNUM2"
-               WHEN    "ACTIVATE"      ALSO    "SELNUM3"
-               WHEN    "ACTIVATE"      ALSO    "SELNUM4"
-               WHEN    "ACTIVATE"      ALSO    "SELNUM5"
-                   MOVE    MCP-WIDGET(7:1)     TO  IDX-1
+               WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 41011-SELNUM-ALLCHK-SEC
       *        行選択
                WHEN    ANY             ALSO    "LIST"
                    PERFORM 41012-LISTSEL-SEC
-      *        ユーザー
-               WHEN    "ACTIVATE"      ALSO    "USER"
-                   PERFORM 41014-USER-CHK-SEC
            END-EVALUATE.
       *
        200-ENTRY-EXT.
@@ -1003,10 +953,9 @@
       *****************************************************************
        41013-INPUT-CHK-SEC                SECTION.
       *
-           MOVE    6                   TO  SPA-GMN-CUR4.
+           MOVE    6                   TO  SPA-I48-GMN-CUR.
       *
            MOVE    I48-INPUT           TO  SPA-I48-GMN-INPUT.
-           MOVE    I48-INPUT           TO  WRK-INPUTCD.
            MOVE    ZERO                TO  FLG-KANJI.
            MOVE    ZERO                TO  FLG-KANA.
            MOVE    ZERO                TO  WRK-MOJI.
@@ -1063,7 +1012,7 @@
                    MOVE    "A"             TO  SPA-I48-CDSYUBETU
                END-IF
            END-IF.
-           MOVE    1                   TO  SPA-GMN-CUR4.
+           MOVE    1                   TO  SPA-I48-GMN-CUR.
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-I48-NEXT.
            PERFORM                     310-SPA-SET-SEC.
@@ -1077,20 +1026,8 @@
        41011-SELNUM-ALLCHK-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-HENSYU.
-      *
-           IF     (I48-SELNUM (2)   NOT =   SPACE)  OR
-                  (I48-SELNUM (3)   NOT =   SPACE)  OR
-                  (I48-SELNUM (4)   NOT =   SPACE)  OR
-                  (I48-SELNUM (5)   NOT =   SPACE)
-               MOVE    "0003"          TO  SPA-ERRCD
-               GO      TO      41011-SELNUM-ALLCHK-EXT
-           END-IF.
-      *
-           PERFORM VARYING     IDX-1   FROM   1   BY   1
-                   UNTIL      (IDX-1       >   5  )  OR
-                              (FLG-HENSYU  =   1  )
-               PERFORM 41011-SELNUM-CHK-SEC
-           END-PERFORM.
+           PERFORM 41011-SELNUM-CHK-SEC
+           .
       *
        41011-SELNUM-ALLCHK-EXT.
            EXIT.
@@ -1100,54 +1037,48 @@
       *****************************************************************
        41011-SELNUM-CHK-SEC                SECTION.
       *
-           MOVE    1                   TO  SPA-GMN-CUR4.
+           MOVE    1                   TO  SPA-I48-GMN-CUR.
       *
       *    ＊ 入力時、全対象とする
-           IF      I48-SELNUM(IDX-1)   =   "*  "  OR
+           IF      I48-SELNUM          =   "*  "  OR
                                            " * "  OR
                                            "  *" 
-               IF     (SPA-I48-GMN-SYORI   =   "9")   AND
-                      (SPA-I48-GMN-SYORI2  =   SPACE)
-                   CONTINUE
-               ELSE
-                   MOVE    "1"                 TO  SPA-I48-GMN-ALL
-                   INITIALIZE              SPA-I48-NAI-SELNUM-G
-                   INITIALIZE              SPA-I48-GMN-SELNUM-G
-                   MOVE    SPACE           TO  SPA-I48-SRYCD-G
-      *            ＳＰＡセット
-                   MOVE    ZERO                TO  SPA-I48-NEXT
-                   PERFORM                     310-SPA-SET-SEC
-                   GO      TO      41011-SELNUM-CHK-EXT
-               END-IF
+               MOVE    "1"                 TO  SPA-I48-GMN-ALL
+               INITIALIZE                  SPA-I48-NAI-SELNUM-G
+               INITIALIZE                  SPA-I48-GMN-SELNUM-G
+               MOVE    SPACE               TO  SPA-I48-SRYCD-G
+      *        ＳＰＡセット
+               MOVE    ZERO                TO  SPA-I48-NEXT
+               PERFORM                     310-SPA-SET-SEC
+               GO      TO      41011-SELNUM-CHK-EXT
            END-IF.
       *
-           MOVE    I48-SELNUM(IDX-1)   TO  SPA-I48-GMN-SELNUM (IDX-1).
+           MOVE    I48-SELNUM          TO  SPA-I48-GMN-SELNUM
       *    選択番号入力
            INITIALIZE                      ORCSNUMAREA.
-           MOVE    I48-SELNUM(IDX-1)   TO  SNUM-INX.
+           MOVE    I48-SELNUM          TO  SNUM-INX.
            CALL    "ORCSNUM"           USING
                                        ORCSNUMAREA.
            IF     (SNUM-RC         NOT =   ZERO  )   OR
                   (SNUM-MINKBN         =   "1"   )   OR
                   (SNUM-SYOKBN         =   "1"   )
                MOVE    "0001"              TO  SPA-ERRCD
-               MOVE    IDX-1               TO  SPA-GMN-CUR4
+               MOVE    1                   TO  SPA-I48-GMN-CUR
                GO      TO      41011-SELNUM-CHK-EXT
            ELSE
-               MOVE    SNUM-OUTNUM     TO  SPA-I48-NAI-SELNUM(IDX-1)
+               MOVE    SNUM-OUTNUM     TO  SPA-I48-NAI-SELNUM
            END-IF.
       *    １件のみとき、１とする
            IF     (SPA-I48-GMN-MAX     =   1  )  AND
                   (IDX-1               =   1  )  AND
-                  (SPA-I48-NAI-SELNUM(IDX-1)   =  ZERO)
-               MOVE    1               TO  SPA-I48-NAI-SELNUM(IDX-1)
+                  (SPA-I48-NAI-SELNUM  =  ZERO)
+               MOVE    1               TO  SPA-I48-NAI-SELNUM
            END-IF.
       *
            MOVE    ZERO                TO  WRK-SELNO.
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-I48-GMN-MAX
-               IF      SPA-I48-NAI-NO (IDX)    =   SPA-I48-NAI-SELNUM
-                                                            (IDX-1)
+               IF      SPA-I48-NAI-NO(IDX) =   SPA-I48-NAI-SELNUM
                    MOVE    IDX             TO  WRK-SELNO
                    MOVE    200             TO  IDX
                END-IF
@@ -1163,14 +1094,9 @@
       *****************************************************************
        41012-SRYCD-SEL-SEC       SECTION.
       *
-           MOVE    1                   TO  SPA-GMN-CUR4.
-           IF     (SPA-I48-NAI-SELNUM(IDX-1)
-                                       NOT =   ZERO ) AND
-                  (IDX-1               NOT =   1    ) 
-               MOVE    "0003"          TO  SPA-ERRCD
-           ELSE
-               PERFORM 41011-SELNO-SEC
-           END-IF.
+           MOVE    1                   TO  SPA-I48-GMN-CUR.
+      *
+           PERFORM 41011-SELNO-SEC
       *
            IF      SPA-ERRCD           =   SPACE
       *         戻るへ
@@ -1202,22 +1128,10 @@
                GO      TO              41012-LISTSEL-EXT
            END-IF.
       *
-           MOVE    ZERO                TO  IDX-1.
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL       IDX2    >   5
-               IF      SPA-I48-NAI-SELNUM(IDX2)    =   ZERO
-                   MOVE    IDX2                TO  IDX-1
-                   MOVE    WRK-SELNO           TO  SPA-I48-NAI-SELNUM
-                                                                (IDX-1)
-                   MOVE    WRK-GMN-SELNO       TO  SPA-I48-GMN-SELNUM
-                                                                (IDX-1)
-                   MOVE    5                   TO  IDX2
-               END-IF
-           END-PERFORM.
-           IF      IDX-1               =  ZERO
-               MOVE    "0002"          TO  SPA-ERRCD
-               GO      TO              41012-LISTSEL-EXT
-           END-IF.
+           IF      SPA-I48-NAI-SELNUM  =   ZERO
+               MOVE    WRK-SELNO           TO  SPA-I48-NAI-SELNUM
+               MOVE    WRK-GMN-SELNO       TO  SPA-I48-GMN-SELNUM
+           END-IF
       *
            PERFORM 41012-SRYCD-SEL-SEC.
       *
@@ -1238,7 +1152,8 @@
            MOVE    WRK-SELNO           TO  IDX.
       *
            MOVE    SPA-I48-GMN-SRYCD (IDX)
-                                       TO  SPA-I48-SRYCD (IDX-1).
+                                       TO  SPA-I48-SRYCD
+           .
       *
        41011-SELNO-EXT.
            EXIT.
@@ -1264,64 +1179,30 @@
            EXIT.
       *
       *****************************************************************
-      *    ユーザー登録分処理
-      *****************************************************************
-       41014-USER-CHK-SEC              SECTION.
-      *
-           MOVE    7                   TO  SPA-GMN-CUR4.
-      *
-           MOVE    I48-USER            TO  SPA-I48-USER-G.
-      *
-           EVALUATE    SPA-I48-USER
-               WHEN    "1"
-                   MOVE    "U1"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "2"
-                   MOVE    "U2"            TO  SPA-I48-GMN-SYORI3
-               WHEN    OTHER
-                   MOVE    "0011"          TO  SPA-ERRCD
-                   GO      TO      41014-USER-CHK-EXT
-           END-EVALUATE.
-      *
-           MOVE    "U"                 TO  SPA-I48-GMN-SYORI.
-           MOVE    "2"                 TO  SPA-I48-TYPE.
-      *
-           INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-           INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-           MOVE    SPACE               TO  SPA-I48-SRYCD-G.
-           MOVE    SPACE               TO  SPA-I48-GMN-ALL.
-      *    ＳＰＡセット
-           MOVE    ZERO                TO  SPA-I48-NEXT.
-           PERFORM                     310-SPA-SET-SEC.
-      *
-       41014-USER-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    全体一致処理
       *****************************************************************
        290-ALL-SEL-SEC                   SECTION.
       *
-           MOVE    SPA-I48-GMN-INPUT   TO  WRK-INPUTCD.
-           IF     (SPA-I48-GMN-SYORI   =   "9"   )   AND
-                  (SPA-I48-GMN-SYORI2  =   SPACE )
-               CONTINUE
-           ELSE
-               IF      WRK-WIDGET        =   MCP-WIDGET
-                   MOVE    "1"                 TO  SPA-I48-GMN-ALL
-               ELSE
-                   MOVE    SPACE               TO  SPA-I48-GMN-ALL
-               END-IF
+      *    入力コードより編集の時、
+           IF      SPA-I48-TYPE        =   "1"
+               MOVE    SPACE               TO  SPA-I48-GMN-ALL
+      *
                INITIALIZE                  SPA-I48-NAI-SELNUM-G
                INITIALIZE                  SPA-I48-GMN-SELNUM-G
                MOVE    SPACE               TO  SPA-I48-SRYCD-G
                MOVE    ZERO                TO  SPA-I48-NEXT
-               MOVE    SPACE               TO  SPA-I48-TYPE
+               MOVE    "2"                 TO  SPA-I48-TYPE
       *        ＳＰＡセット
                PERFORM                     310-SPA-SET-SEC
+           ELSE
+               MOVE    "1"                 TO  SPA-I48-GMN-ALL
       *
-               IF       WRK-WIDGET-SW         =   "1"
-                   MOVE   MCP-WIDGET           TO  WRK-WIDGET
-               END-IF
+               INITIALIZE                  SPA-I48-NAI-SELNUM-G
+               INITIALIZE                  SPA-I48-GMN-SELNUM-G
+               MOVE    SPACE               TO  SPA-I48-SRYCD-G
+               MOVE    ZERO                TO  SPA-I48-NEXT
+      *        ＳＰＡセット
+               PERFORM                     310-SPA-SET-SEC
            END-IF.
       *
        290-ALL-SEL-EXT.
@@ -1351,10 +1232,6 @@
            IF      SPA-I48-CDSYUBETU   NOT =   "J"
                GO      TO      291-BUB-EXT
            END-IF.
-      *    検査以外の時のみ
-           IF      SPA-I48-GMN-SYORI   =   "9"
-               GO      TO      291-BUB-EXT
-           END-IF.
       *
            MOVE    SPACE               TO  WRK-INPUTCD.
            STRING  "＊"                DELIMITED  BY  SIZE
@@ -1362,12 +1239,8 @@
                    "＊"                DELIMITED  BY  SIZE
                                        INTO    WRK-INPUTCD
            END-STRING.
+           MOVE    WRK-INPUTCD         TO  SPA-I48-GMN-INPUT
       *
-           IF      WRK-WIDGET        =   MCP-WIDGET
-               MOVE    "1"                 TO  SPA-I48-GMN-ALL
-           ELSE
-               MOVE    SPACE               TO  SPA-I48-GMN-ALL
-           END-IF.
            INITIALIZE                  SPA-I48-NAI-SELNUM-G.
            INITIALIZE                  SPA-I48-GMN-SELNUM-G.
            MOVE    SPACE               TO  SPA-I48-SRYCD-G.
@@ -1376,9 +1249,6 @@
       *    ＳＰＡセット
            PERFORM                     310-SPA-SET-SEC.
       *
-           IF       WRK-WIDGET-SW         =   "1"
-               MOVE   MCP-WIDGET           TO  WRK-WIDGET
-           END-IF.
       *
        291-BUB-EXT.
            EXIT.
@@ -1400,13 +1270,9 @@
            STRING  "＊"                DELIMITED  BY  SIZE
                    SPA-I48-GMN-INPUT   DELIMITED  BY  SPACE
                                        INTO    WRK-INPUTCD
-           END-STRING.
+           END-STRING
+           MOVE    WRK-INPUTCD         TO  SPA-I48-GMN-INPUT
       *
-           IF      WRK-WIDGET        =   MCP-WIDGET
-               MOVE    "1"                 TO  SPA-I48-GMN-ALL
-           ELSE
-               MOVE    SPACE               TO  SPA-I48-GMN-ALL
-           END-IF.
            INITIALIZE                  SPA-I48-NAI-SELNUM-G.
            INITIALIZE                  SPA-I48-GMN-SELNUM-G.
            MOVE    SPACE               TO  SPA-I48-SRYCD-G.
@@ -1415,10 +1281,7 @@
       *    ＳＰＡセット
            PERFORM                     310-SPA-SET-SEC.
       *
-           IF       WRK-WIDGET-SW         =   "1"
-               MOVE   MCP-WIDGET           TO  WRK-WIDGET
-           END-IF.
-      *
+           .
        292-ATO-EXT.
            EXIT.
       *****************************************************************
@@ -1431,11 +1294,6 @@
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE.
            MOVE    "I44"               TO  MCP-WINDOW.
-      *
-           MOVE    SPA-I4KYOUTU        TO  SPA-WORK.
-      *
-           MOVE    SPA-KYOUTU          TO  LNK-COMMON.
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -1469,8 +1327,6 @@
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
-           MOVE    WRK-INPUTCD         TO  WRK-INPUTCD-W.
-      *
            MOVE    SPACE               TO  SPA-ERRMSG.
       *
            EVALUATE    SPA-ERRCD
@@ -1479,10 +1335,6 @@
                                        TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "選択番号入力エラー"
-                                       TO  SPA-ERRMSG
-               WHEN    "0003"
-                   MOVE
-                   "検査以外の時、最初の選択番号位置のみの入力可能です"
                                        TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE
