@@ -96,12 +96,6 @@
                        09  SPA-GMN-KOJINKBN1-VALUE PIC X(01).
                        09  SPA-GMN-KOJINKBN2-VALUE PIC X(01).
       *
-                   07  SPA-GMN-HOUKATUKBN.         
-                       09  SPA-GMN-HOUKATUKBN1-VALUE
-                                                   PIC X(01).
-                       09  SPA-GMN-HOUKATUKBN2-VALUE
-                                                   PIC X(01).
-      *
                    07  SPA-GMN-CDKBN.         
                        09  SPA-GMN-CDKBN1-VALUE    PIC X(01).
                        09  SPA-GMN-CDKBN2-VALUE    PIC X(01).
@@ -433,8 +427,6 @@
            MOVE    SPA-GMN-FILE1LST (1)
                                    TO  SPA-GMN-FILE1-G
       *
-           MOVE    "T"             TO  SPA-GMN-HOUKATUKBN1-VALUE
-           MOVE    "F"             TO  SPA-GMN-HOUKATUKBN2-VALUE
            MOVE    "T"             TO  SPA-GMN-KOJINKBN1-VALUE
            MOVE    "F"             TO  SPA-GMN-KOJINKBN2-VALUE
            MOVE    "T"             TO  SPA-GMN-CDKBN1-VALUE
@@ -496,10 +488,6 @@
       *    処理確認
                WHEN    "CLICKED"       ALSO    "B13"
                    PERFORM 490-KAKUNIN-SEC
-      *    作成内容区分
-               WHEN    "CLICKED"       ALSO    "HOUKATUKBN1"
-               WHEN    "CLICKED"       ALSO    "HOUKATUKBN2"
-                   PERFORM 400-HOUKATUKBN-SEC
       *    個人情報
                WHEN    "CLICKED"       ALSO    "KOJINKBN1"
                WHEN    "CLICKED"       ALSO    "KOJINKBN2"
@@ -754,22 +742,6 @@
            EXIT.
       *
       *****************************************************************
-      *    作成内容区分選択処理
-      *****************************************************************
-       400-HOUKATUKBN-SEC          SECTION.
-      *
-      *    画面をＳＰＡセット
-           PERFORM 4101-GMN-SPA-SET-SEC
-      *
-           MOVE    L02-HOUKATUKBN1  TO  SPA-GMN-HOUKATUKBN1-VALUE
-           MOVE    L02-HOUKATUKBN2  TO  SPA-GMN-HOUKATUKBN2-VALUE
-      *
-           MOVE    2             TO  SPA-GMN-CUR     
-           .
-       400-HOUKATUKBN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    個人情報有無選択処理
       *****************************************************************
        400-KOJINKBN-SEC          SECTION.
@@ -914,21 +886,6 @@
            MOVE    SPA-GMN-NYUGAIKBN 
                                    TO  SHELLTBL-ARG6
            MOVE    SPA-GMN-FILENM1 TO  SHELLTBL-ARG7
-      *****MOVE    SPA-GMN-FILENM2 TO  SHELLTBL-ARG8
-      *****EVALUATE    TRUE
-      *****    WHEN    SPA-GMN-DATAKBN1-VALUE  =   "T"
-      *****        MOVE    "0"         TO  SHELLTBL-ARG9
-      *****    WHEN    SPA-GMN-DATAKBN2-VALUE  =   "T"
-      *****        MOVE    "1"         TO  SHELLTBL-ARG9
-      *****    WHEN    SPA-GMN-DATAKBN3-VALUE  =   "T"
-      *****        MOVE    "2"         TO  SHELLTBL-ARG9
-      *****END-EVALUATE
-           EVALUATE    TRUE
-               WHEN    SPA-GMN-HOUKATUKBN1-VALUE   =   "T"
-                   MOVE    "1"         TO  SHELLTBL-ARG10
-               WHEN    SPA-GMN-HOUKATUKBN2-VALUE   =   "T"
-                   MOVE    "2"         TO  SHELLTBL-ARG10
-           END-EVALUATE
            EVALUATE    TRUE
                WHEN    SPA-GMN-KOJINKBN1-VALUE =   "T"
                    MOVE    "1"         TO  SHELLTBL-ARG11
@@ -1185,8 +1142,6 @@
       *
            MOVE    SPA-GMN-KOJINKBN1-VALUE    TO  L02-KOJINKBN1
            MOVE    SPA-GMN-KOJINKBN2-VALUE    TO  L02-KOJINKBN2
-           MOVE    SPA-GMN-HOUKATUKBN1-VALUE  TO  L02-HOUKATUKBN1
-           MOVE    SPA-GMN-HOUKATUKBN2-VALUE  TO  L02-HOUKATUKBN2
            MOVE    SPA-GMN-CDKBN1-VALUE       TO  L02-CDKBN1
            MOVE    SPA-GMN-CDKBN2-VALUE       TO  L02-CDKBN2
       *

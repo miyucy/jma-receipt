@@ -534,122 +534,6 @@
     </widget>
 
     <widget>
-      <class>GtkRadioButton</class>
-      <name>HOUKATUKBN1</name>
-      <x>128</x>
-      <y>350</y>
-      <width>120</width>
-      <height>26</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Fri, 15 Jun 2001 02:31:48 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
-      </signal>
-      <label> Ò≥Á§Ú¥ﬁ§ﬁ§ §§</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-      <group>HOUKATU</group>
-    </widget>
-
-    <widget>
-      <class>GtkRadioButton</class>
-      <name>HOUKATUKBN2</name>
-      <x>256</x>
-      <y>350</y>
-      <width>120</width>
-      <height>26</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Fri, 15 Jun 2001 02:31:48 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
-      </signal>
-      <label> Ò≥Á§Ú¥ﬁ§‡</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-      <group>HOUKATU</group>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label512</name>
-      <x>360</x>
-      <y>355</y>
-      <width>250</width>
-      <height>18</height>
-      <label>° ±°≥∞ΩË ˝ ¨°¶ Ò≥Áø«Œ≈∆˛Œœ ¨§Œ∞∑§§°À</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkRadioButton</class>
-      <name>CDKBN1</name>
-      <x>128</x>
-      <y>450</y>
-      <width>120</width>
-      <height>26</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Fri, 15 Jun 2001 02:31:48 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
-      </signal>
-      <label>£≈£’£√</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-      <group>CDKBN</group>
-    </widget>
-
-    <widget>
-      <class>GtkRadioButton</class>
-      <name>CDKBN2</name>
-      <x>256</x>
-      <y>450</y>
-      <width>120</width>
-      <height>26</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Fri, 15 Jun 2001 02:31:48 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
-      </signal>
-      <label>£”°›£Í£È£Û</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-      <group>CDKBN</group>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label505</name>
       <x>90</x>
@@ -683,25 +567,9 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label510</name>
-      <x>90</x>
-      <y>300</y>
-      <width>100</width>
-      <height>18</height>
-      <label>∫Ó¿Æ∆‚Õ∆∂Ë ¨</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label511</name>
       <x>90</x>
-      <y>400</y>
+      <y>300</y>
       <width>100</width>
       <height>18</height>
       <label> ∏ª˙•≥°º•…    </label>
@@ -711,6 +579,56 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>CDKBN1</name>
+      <x>128</x>
+      <y>350</y>
+      <width>120</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 15 Jun 2001 02:31:48 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
+      </signal>
+      <label>£≈£’£√</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>CDKBN</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>CDKBN2</name>
+      <x>256</x>
+      <y>350</y>
+      <width>120</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 15 Jun 2001 02:31:48 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
+      </signal>
+      <label>£”°›£Í£È£Û</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>CDKBN</group>
     </widget>
   </widget>
 </widget>

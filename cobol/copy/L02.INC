@@ -7,10 +7,6 @@
                 04  L02-FILE1-COUNT PIC S9(9)   BINARY.
                 04  L02-FILE1-ITEM
                         PIC X(22)   OCCURS  5 TIMES.
-              03  L02-HOUKATUKBN1.
-                04  L02-VALUE   PIC X.
-              03  L02-HOUKATUKBN2.
-                04  L02-VALUE   PIC X.
               03  L02-KOJINKBN1.
                 04  L02-VALUE   PIC X.
               03  L02-KOJINKBN2.
