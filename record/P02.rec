@@ -41,7 +41,7 @@ P02	{
 							value6	varchar(20);
 							value7	varchar(2);
 							value8	varchar(2);
-							value9	varchar(4);
+							value9	varchar(60);
 						}	[10];
 						select	bool[10];
 					};
