@@ -32,6 +32,7 @@
       *  01.01.01    MCC-藤原     01/09/21  JOINの修正      
       *  01.01.02    MCC-藤原     01/11/26  項目をコンボボックスに変更
       *  01.02.01    MCC-森脇     02/05/23  チェック機能制御情報の追加
+      *  01.02.02    NACL-多々納  02/10/10  外来管理加算チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -74,8 +75,18 @@
                                13  SPA-GMN-F1         PIC X(01).
                                13  SPA-GMN-DATAMEI    PIC X(10).
       *
-                   07  SPA-GMN-1008-AREA.  
-                       09  SPA-GMN-KIKAN      PIC 9(02). 
+                   07  SPA-GMN-1008-AREA.
+      *                相互作用チェック期間
+                       09  SPA-GMN-KIKAN               PIC 9(02).
+      *                外来管理加算チェック
+                       09  SPA-GMN-GAIKANRIKBN-G.
+                           11  SPA-GMN-GAIKANRIKBN-CHK   PIC X(01).
+                           11  SPA-GMN-GAIKANRIKBN-H     PIC X(01).
+                           11  SPA-GMN-GAIKANRIKBN-MEI   PIC X(20).
+                       09  SPA-GMN-GAIKANRIKBN-COMB.
+                           11  SPA-GMN-GAIKANRIKBN-LIST  PIC X(22)
+                                                         OCCURS  2.
+      *
       *---- (01.02.01) LINE MOD END ----------------------------------
                    07  SPA-GMN-DATALST                    OCCURS  2.
                        09  SPA-GMN-DATAL      PIC X(01).
@@ -93,6 +104,8 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+      *
+           03  FLG-OK              PIC 9(01).
       *
       *    カウント領域
       *
@@ -328,11 +341,11 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           INITIALIZE   SPA-W07-AREA
+           INITIALIZE   SPA-W07
       *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
-      *     
+      *
            MOVE    "0"                 TO  SPA-GMN-DATAL    (1)
            MOVE    "算定しない"        TO  SPA-GMN-DATAMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-DATAL    (2)
@@ -372,9 +385,28 @@
       *---- (01.00.01) LINE MOD END   --------------------------------
       *            チェック機能制御割り当て情報
                    WHEN    "1008"
-                       MOVE    MCPDATA-REC    TO  SYS-1008-REC
+                       MOVE    MCPDATA-REC     TO  SYS-1008-REC
                        MOVE    SYS-1008-INTERACT-KIKAN 
-                                              TO  SPA-GMN-KIKAN
+                                               TO  SPA-GMN-KIKAN
+      *                外来管理加算チェック
+                       MOVE    SYS-1008-GAIKANRIKBN-CHK
+                                           TO  SPA-GMN-GAIKANRIKBN-CHK
+                       IF      SPA-GMN-GAIKANRIKBN-CHK   =   SPACE
+                           MOVE    "1"     TO  SPA-GMN-GAIKANRIKBN-CHK
+                       END-IF
+                       MOVE    "0:チェックなし"
+                                           TO  SPA-GMN-GAIKANRIKBN-LIST
+                                                                    (1)
+                       MOVE    "1:チェックあり"
+                                           TO  SPA-GMN-GAIKANRIKBN-LIST
+                                                                    (2)
+                       IF      SPA-GMN-GAIKANRIKBN-CHK =  "1"
+                           MOVE    SPA-GMN-GAIKANRIKBN-LIST (2)
+                                           TO  SPA-GMN-GAIKANRIKBN-G
+                       ELSE
+                           MOVE    SPA-GMN-GAIKANRIKBN-LIST (1)
+                                           TO  SPA-GMN-GAIKANRIKBN-G
+                       END-IF
                END-EVALUATE
            END-IF     
       *
@@ -428,7 +460,9 @@
       *---- (01.00.01) LINE MOD END   --------------------------------
       *---- (01.05.01) LINE MOD START   --------------------------------
                WHEN    "ACTIVATE"      ALSO    "KIKAN"
-                   PERFORM 4100-DATA-CHK2-SEC
+                   PERFORM 4100-KIKAN-CHK2-SEC
+               WHEN    "ACTIVATE"      ALSO    "GAIKANRIKBN"
+                   PERFORM 4101-GAIKANRIKBN-CHK2-SEC
            END-EVALUATE
       *
            .
@@ -481,21 +515,50 @@
       *
       *---- (01.05.01) LINE MOD START  --------------------------------
       *****************************************************************
-      *    チェック機能制御チェック
+      *    相互作用チェック期間チェック処理
       *****************************************************************
-       4100-DATA-CHK2-SEC       SECTION.
+       4100-KIKAN-CHK2-SEC       SECTION.
       *
            MOVE    6                      TO  SPA-GMN-CUR
       *
            MOVE    W07-KIKAN              TO  SPA-GMN-KIKAN
       *
-           MOVE    99                     TO  SPA-GMN-CUR
+           MOVE    7                      TO  SPA-GMN-CUR
       *
           .
-       4100-DATA-CHK2-EXT.
+       4100-KIKAN-CHK2-EXT.
            EXIT.
       *
       *---- (01.05.01) LINE MOD END  ----------------------------------
+      *****************************************************************
+      *    外来管理加算チェック処理
+      *****************************************************************
+       4101-GAIKANRIKBN-CHK2-SEC       SECTION.
+      *
+           MOVE    7                   TO  SPA-GMN-CUR
+      *
+           MOVE    W07-GAIKANRIKBN     TO  SPA-GMN-GAIKANRIKBN-G
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-GAIKANRIKBN-CHK
+                                      =   SPA-GMN-GAIKANRIKBN-LIST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-GAIKANRIKBN-LIST(IDX)
+                                          TO  SPA-GMN-GAIKANRIKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0006"          TO  SPA-ERRCD
+               GO      TO      4101-GAIKANRIKBN-CHK2-EXT
+           END-IF
+      *
+           MOVE    99                     TO  SPA-GMN-CUR
+      *
+          .
+       4101-GAIKANRIKBN-CHK2-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
@@ -701,6 +764,7 @@
            MOVE    SPA-W01-STYUKYMD        TO  SYS-1008-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-1008-EDYUKYMD
            MOVE    SPA-GMN-KIKAN           TO  SYS-1008-INTERACT-KIKAN
+           MOVE    SPA-GMN-GAIKANRIKBN-CHK TO  SYS-1008-GAIKANRIKBN-CHK
       *
            MOVE    SYS-1008-REC            TO  SYSKANRI-REC
       *     
@@ -794,6 +858,8 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           MOVE    SPACE               TO  W07
+      *
            MOVE    SPA-GMN-STYUKYMD         TO  W07-YUKOSTYMD
            MOVE    SPA-GMN-EDYUKYMD         TO  W07-YUKOEDYMD
       *
@@ -816,7 +882,15 @@
            END-PERFORM    
       *
            MOVE  SPA-GMN-KIKAN  TO  W07-KIKAN
-      *    
+      *    外来管理加算チェック
+           MOVE    SPA-GMN-GAIKANRIKBN-G   TO  W07-GAIKANRIKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-GAIKANRIKBN-LIST (IDX)
+                                       TO  W07-GAIKANRIKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    2                   TO  W07-GAIKANRIKBN-COUNT
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -872,6 +946,9 @@
                WHEN    "0005"
                    MOVE
                  "薬剤情報提供料（老人手帳記載）は両方の選択できません"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "外来管理加算チェック区分がありません。"
                                                          TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
@@ -960,6 +1037,8 @@
       *---- (01.05.01) LINE MOD START   --------------------------------
                 WHEN    6
                     MOVE  "KIKAN"            TO   MCP-WIDGET
+                WHEN    7
+                    MOVE  "GAIKANRIKBN"      TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE

@@ -48,6 +48,13 @@ W07	{
 				KIKAN	{
 					value   number(2);
 				};
+				GAIKANRIKBNCOMB	{
+					GAIKANRIKBN	{
+						value	varchar(23);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
 			};
 			TAGNAME2    {
 			    state   int;
