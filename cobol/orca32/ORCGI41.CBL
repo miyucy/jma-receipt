@@ -2907,8 +2907,8 @@
       *         GO      TO      41017-KOMENTO-CHK-EXT
       *     END-IF.
            IF     SPA-WRK-KOMENTO-E   NOT =  99
-               PERFORM   VARYING   IDX   FROM   SPA-WRK-KOMENTO-S  BY  1
-                         UNTIL     IDX       >    SPA-WRK-KOMENTO-E
+               PERFORM   VARYING  IDX  FROM  SPA-WRK-KOMENTO-S  BY  1
+                         UNTIL    IDX       >    SPA-WRK-KOMENTO-E
                   IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)      =  "1")  AND
                         (WRK-GMN-DAY (IDX)                 = ZERO)  AND
                         (WRK-CHK-DAY (IDX)             NOT = ZERO)
@@ -2921,9 +2921,15 @@
                      MOVE    "0026"        TO  SPA-ERRCD
                   END-IF
                END-PERFORM
+               IF   SPA-ERRCD   =  SPACE
+                  PERFORM   VARYING  IDX  FROM  SPA-WRK-KOMENTO-S  BY  1
+                            UNTIL    IDX       >    SPA-WRK-KOMENTO-E
+                      MOVE   SPA-WRK-KOMENTO-D TO  SPA-GMN-DAY-41 (IDX)
+                  END-PERFORM
+               END-IF
            ELSE
-               PERFORM   VARYING   IDX   FROM   SPA-WRK-KOMENTO-S  BY  1
-                         UNTIL     IDX       >    IDV
+               PERFORM   VARYING  IDX  FROM  SPA-WRK-KOMENTO-S  BY  1
+                         UNTIL    IDX      >    IDV
                   IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)      =  "1")  AND
                         (WRK-GMN-DAY (IDX)                 = ZERO)  AND
                         (WRK-CHK-DAY (IDX)             NOT = ZERO)
@@ -2936,6 +2942,12 @@
                      MOVE    "0026"        TO  SPA-ERRCD
                   END-IF
                END-PERFORM
+               IF   SPA-ERRCD   =  SPACE
+                  PERFORM   VARYING  IDX  FROM  SPA-WRK-KOMENTO-S  BY  1
+                            UNTIL    IDX      >    IDV
+                      MOVE   SPA-WRK-KOMENTO-D TO  SPA-GMN-DAY-41 (IDX)
+                  END-PERFORM
+               END-IF
            END-IF.
       *
        41017-KOMENTO-CHK-EXT.
@@ -3933,20 +3945,6 @@
            IF      SPA-GMN-NUM-41       =   ZERO
                GO      TO      470-KAKUTEI-EXT
            END-IF.
-      *    °ì³ç½¤Àµ¤ÎÈ¿±Ç
-           IF      SPA-GMN-KOMENTO-41   NOT =   SPACE
-               IF     SPA-WRK-KOMENTO-E   NOT =  99
-                   PERFORM   VARYING  IDX  FROM  SPA-WRK-KOMENTO-S  BY 1
-                             UNTIL    IDX    >   SPA-WRK-KOMENTO-E
-                       MOVE   SPA-WRK-KOMENTO-D TO  SPA-GMN-DAY-41 (IDX)
-                   END-PERFORM
-               ELSE
-                   PERFORM   VARYING  IDX  FROM  SPA-WRK-KOMENTO-S  BY 1
-                             UNTIL    IDX    >   IDV
-                       MOVE   SPA-WRK-KOMENTO-D TO  SPA-GMN-DAY-41 (IDX)
-                   END-PERFORM
-               END-IF
-           END-IF.
       *
            MOVE   SPA-GMN-NUM-41          TO  IDX.
            MOVE   SPA-NAI-TBANGO-41 (IDX) TO  IDG.
@@ -3971,9 +3969,43 @@
                                        TO  IDG. 
            MOVE    WRK-TENSU-X         TO  SPA-GMN-TTENSU-41  (IDG).
       *
-           IF      SPA-GMN-TZAISKBKBN-41 (IDX)   =  "1"
-               PERFORM 470-KAKUTEI-DAY-SEC
-           END-IF.
+           MOVE   ALL SPACE            TO  SPA-WRK-CHK-KBN-TBL.
+           PERFORM   VARYING  IDX  FROM  1  BY 1
+                     UNTIL    IDX    >   SPA-GMN-MAX-41
+               IF      SPA-GMN-TZAISKBKBN-41 (IDX)   =  "1"
+                   PERFORM VARYING    IDK      FROM    1   BY  1
+                           UNTIL      IDK      >   31
+                       IF    SPA-GMN-TDAY-41   (IDX IDK)   NOT =  
+                                                               ALL SPACE
+                           MOVE    "1"     TO  SPA-WRK-CHK-KBN   (IDK)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM.
+      *
+           PERFORM   VARYING  IDX  FROM  1  BY 1
+                     UNTIL    IDX    >   SPA-GMN-MAX-41
+               IF      SPA-GMN-TZAISKBKBN-41 (IDX)   NOT =  "1"
+                   PERFORM VARYING    IDK      FROM    1   BY  1
+                           UNTIL      IDK      >   31
+                       IF    SPA-WRK-CHK-KBN   (IDK)   =    SPACE
+                           MOVE    SPACE   TO  SPA-GMN-TDAY-41 (IDX IDK)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM.
+      *
+           PERFORM   VARYING  IDX  FROM  1  BY 1
+                     UNTIL    IDX    >   SPA-GENSAN-ST4-41
+               IF      SPA-NAI-TZAISKBKBN-41 (IDX)   NOT =  "1"
+                   PERFORM VARYING    IDK      FROM    1   BY  1
+                           UNTIL      IDK      >   31
+                       IF    SPA-WRK-CHK-KBN   (IDK)   =    SPACE
+                           MOVE    ZERO    TO  SPA-NAI-DAY-41 (IDX IDK)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM.
       *
       *    ÊÑ¹¹¹àÌÜ¥¯¥ê¥¢
            INITIALIZE                  SPA-GMN-INPUT-41.
@@ -3987,57 +4019,6 @@
            MOVE    "1"                 TO  SPA-UPDFLG-41.
       *
        470-KAKUTEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *
-       470-KAKUTEI-DAY-SEC          SECTION.
-      *
-           MOVE   ALL SPACE            TO  SPA-WRK-CHK-KBN-TBL.
-           PERFORM   VARYING  IDX  FROM  1  BY 1
-                     UNTIL    IDX    >   SPA-GMN-MAX-41
-               IF      SPA-GMN-TZAISKBKBN-41 (IDX)   =  "1"
-                   PERFORM VARYING    IDK      FROM    1   BY  1
-                           UNTIL      IDK      >   31
-                       IF     SPA-GMN-TDAY-41   (IDX IDK)   NOT =  
-                                                               ALL SPACE
-                           MOVE    "1"     TO  SPA-WRK-CHK-KBN   (IDK)
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM.
-      *
-           PERFORM   VARYING  IDX  FROM  1  BY 1
-                     UNTIL    IDX    >   SPA-GMN-MAX-41
-               IF      SPA-GMN-TZAISKBKBN-41 (IDX)   NOT =  "1"
-                   PERFORM VARYING    IDK      FROM    1   BY  1
-                           UNTIL      IDK      >   31
-                       IF    (SPA-GMN-TDAY-41   (IDX IDK)   NOT =  
-                                                         ALL SPACE) AND
-                             (SPA-WRK-CHK-KBN   (IDK)   =  
-                                                             SPACE)
-                           MOVE    SPACE   TO  SPA-GMN-TDAY-41 (IDX IDK)
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM.
-      *
-           PERFORM   VARYING  IDX  FROM  1  BY 1
-                     UNTIL    IDX    >   SPA-GENSAN-ST4-41
-               IF      SPA-NAI-TZAISKBKBN-41 (IDX)   NOT =  "1"
-                   PERFORM VARYING    IDK      FROM    1   BY  1
-                           UNTIL      IDK      >   31
-                       IF    (SPA-NAI-DAY-41   (IDX IDK)   NOT =  
-                                                         ALL SPACE) AND
-                             (SPA-WRK-CHK-KBN   (IDK)   =  
-                                                             SPACE)
-                           MOVE    SPACE   TO  SPA-NAI-DAY-41 (IDX IDK)
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM.
-      *
-       470-KAKUTEI-DAY-EXT.
            EXIT.
       *
       *****************************************************************
