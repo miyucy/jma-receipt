@@ -3959,14 +3959,14 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>FILEKBN</name>
-      <x>400</x>
+      <x>350</x>
       <y>8</y>
-      <width>250</width>
+      <width>300</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>34</text_max_length>
+      <text_max_length>40</text_max_length>
       <text>平成１０年１０月・社保一括作成分</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -4142,7 +4142,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>21</text_max_length>
+	<text_max_length>26</text_max_length>
 	<text></text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
