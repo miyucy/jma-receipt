@@ -689,7 +689,7 @@
       *                ÉÂÅïÌ¾¾Î
                        09  SPA-W21-5001-CNT                PIC  9(05).
                        09  SPA-W21-5001-OCC                OCCURS  50
-                                                   INDEXED BY S5001-IDX.
+                                                 INDEXED BY S5001-IDX.
                            11  SPA-W21-5001-KBNCD          PIC  X(08).
                            11  SPA-W21-5001-BTU-NAME       PIC  X(20).
                            11  SPA-W21-5001-BTU-TOKTEI-NYUIN
@@ -698,7 +698,7 @@
       *                ¿ÇÎÅ²Ê¥³¡¼¥É
                        09  SPA-W21-1005-CNT                PIC  9(05).
                        09  SPA-W21-1005-OCC                OCCURS  10
-                                                   INDEXED BY S1005-IDX.
+                                              INDEXED BY S21-1005-IDX.
                            11  SPA-W21-1005-KBNCD          PIC  X(08).
                            11  SPA-W21-1005-SRYKANAME      PIC  X(20).
       *                ÉÂ¼¼¼ïÊÌ
