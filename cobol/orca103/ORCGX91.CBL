@@ -608,6 +608,8 @@
            MOVE    ZERO                TO  WRK-CD-MCNT
            MOVE    SPACE               TO  WRK-INPUTCD
       *
+           MOVE    SPACE               TO  SPA-GMN-STSRYNAME
+      *
            MOVE    ZERO                TO  SPA-NAI-SRYCD-EXSIT-FLG
       *
            IF    ( SPA-GMN-STSRYCD     =   SPACE )
@@ -661,8 +663,6 @@
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
       *
-      *        チェックマスタチェック
-               PERFORM 41011-CHKMST-CHK-SEC
            ELSE
                INITIALIZE                  TNS-TENSU-REC
            END-IF
@@ -671,6 +671,9 @@
            PERFORM 910-DBCLOSE-SEC
       *
            MOVE    TNS-NAME            TO  SPA-GMN-STSRYNAME
+      *
+      *    チェックマスタチェック
+           PERFORM 41011-CHKMST-CHK-SEC
       *
            .
        4101-STSRYCD-CHK-EXT.
