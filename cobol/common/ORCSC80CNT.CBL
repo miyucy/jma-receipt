@@ -284,6 +284,12 @@
                                                -   WRK-TEI-CNT
                END-IF
            END-IF
+      *
+      *    入院の時、当月
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    31                  TO  IDD
+           END-IF
+      *
       *    当日までの回数
            MOVE    ZERO                TO  WRK-MCNT
            PERFORM VARYING     IDX2    FROM    1   BY  1
@@ -503,6 +509,11 @@
                ELSE
                    MOVE    ZERO                TO  ACCT-DAY (1 IDD)
                END-IF
+           END-IF
+      *
+      *    入院の時、当月
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    31                  TO  IDD
            END-IF
       *
       *    早期あり

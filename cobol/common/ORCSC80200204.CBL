@@ -1268,13 +1268,20 @@
            EVALUATE    WRK-RIGAKU-RYO
       *        集団
                WHEN    "S"
+                   MOVE    ZERO                TO  WRK-TUKI-CNT
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   IDD
+                       COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
+                                               +   WRK-DCNT-SN
+                                                          (IDX-R1 IDY)
+                   END-PERFORM
       *            １月８単位まで
-                   IF     (WRK-TCNT-S (IDX-R1) +   WRK-KAISU)
+                   IF     (WRK-TUKI-CNT    +   WRK-KAISU)
                                            >   8
                        MOVE    "0084"          TO  SPA-ERRCD
                        MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
                        STRING  "既に"          DELIMITED  BY  SIZE
-                                WRK-TCNT-S (IDX-R1)
+                                WRK-TUKI-CNT
                                                DELIMITED  BY  SIZE
                                 "単位算定済です。"
                                                DELIMITED  BY  SIZE
@@ -1624,8 +1631,15 @@
            EVALUATE    WRK-RIGAKU-RYO
       *        集団
                WHEN    "S"
+                   MOVE    ZERO                TO  WRK-TUKI-CNT
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   IDD
+                       COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
+                                               +   WRK-DCNT-SN
+                                                          (IDX-R1 IDY)
+                   END-PERFORM
       *            １月８単位まで
-                   IF     (WRK-TCNT-S (IDX-R1) +   WRK-KAISU )
+                   IF     (WRK-TUKI-CNT    +   WRK-KAISU )
                                                >   8
                        MOVE    "0084"          TO  SPA-ERRCD
                        MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
@@ -1633,7 +1647,7 @@
                                IDD             DELIMITED  BY  SIZE
                                "日までに"
                                                DELIMITED  BY  SIZE
-                                WRK-TCNT-S (IDX-R1)
+                                WRK-TUKI-CNT
                                                DELIMITED  BY  SIZE
                                 "単位算定済です。"
                                                DELIMITED  BY  SIZE
@@ -1644,10 +1658,6 @@
                    END-IF
       *        個別
                WHEN    "K"
-      *test
-                   DISPLAY "FLG-SOUKI-ARI:" FLG-SOUKI-ARI
-                          ",IDD:" IDD
-      *TEST
       *            早期リハ加算等がある場合
                    IF      FLG-SOUKI-ARI       =   1
       *                今回分集計
