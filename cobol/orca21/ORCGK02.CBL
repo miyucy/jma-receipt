@@ -61,6 +61,7 @@
       *  03.00.13    NACL-多々納  03/03/05  排他制御処理追加
       *  03.00.14    NACL-多々納  03/04/07  入院日のチェック追加
       *  03.00.15    NACL-多々納  03/05/26  最終退院日編集追加
+      *  03.00.16    NACL-多々納  03/06/27  カスタマイズ帳票名取得サブ追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -354,6 +355,8 @@
                05  WRK-SYUTEN2             PIC  9(07).
                05  WRK-YKZTEN              PIC  9(07).
                05  WRK-KIZAITEN            PIC  9(07).
+      *
+               05  WRK-SYUTEN2-R           PIC  9(07).
       *
            03  WRK-DOSELNUM            PIC 9(03).
            03  WRK-DOSELNUM2           PIC 9(03).
@@ -4803,8 +4806,8 @@
                                        SPA-GMN-MEISYO-G (SPA-GMN-IDX))
                    MOVE    "1"                 TO  SPA-COM-IN2
                                                            (SPA-GMN-IDX)
-                   MOVE    "1"                 TO  SPA-COM-IN
-                                                          (SPA-GMN-IDX)
+      *************MOVE    "1"                 TO  SPA-COM-IN
+      ************                                        (SPA-GMN-IDX)
                    MOVE    ZERO                TO  FLG-INPUT-NASI
                END-IF
       *
@@ -4815,10 +4818,10 @@
       *        入力行の保存
                IF     (WRK-IN-MAP-IDX  NOT =   ZERO )  AND
                       (WRK-IDX2            =   WRK-IN-MAP-IDX)
-      *!           MOVE    "1"                 TO  SPA-COM-IN
-      *!                                                  (SPA-GMN-IDX)
-      *!           MOVE    "1"                 TO  SPA-COM-IN2
-      *!                                                   (SPA-GMN-IDX)
+                   MOVE    "1"                 TO  SPA-COM-IN
+                                                          (SPA-GMN-IDX)
+                   MOVE    "1"                 TO  SPA-COM-IN2
+                                                           (SPA-GMN-IDX)
                    IF     (K02-INPUTCD (WRK-IDX2)  =   SPACE )  AND
                           (SPA-MAE-INPUTCD (SPA-GMN-IDX)
                                                    =   SPACE )  AND
@@ -5377,7 +5380,7 @@
                MOVE    ZERO                TO  WRK-IN-IDX
            END-IF
            IF      WRK-IN-IDX          =   ZERO
-               MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
+      *******  MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
                MOVE    WRK-MAX-IDX         TO  SPA-GMN-IDX
            ELSE
                MOVE    WRK-IN-IDX          TO  SPA-GMN-IDX
@@ -10369,7 +10372,7 @@
                        ELSE
                            IF     (SPA-COM-INPUTCD (IDX)(1:1)
                                                        =  "8" )
-      ******************     AND  (SPA-COM-INPUTCHI-G(IDX)
+      *****************      AND  (SPA-COM-INPUTCHI-G(IDX)
       *****************                            NOT =  SPACE)
                                MOVE    SPA-GMN-MEISYO(IDX)
                                                  TO  WKSRY-INPUTCOMENT
@@ -10387,6 +10390,7 @@
                        MOVE    SPA-COM-YKZTEN  (IDX)  TO  WRK-YKZTEN
                        MOVE    SPA-COM-KIZAITEN(IDX)  TO  WRK-KIZAITEN
                    END-IF
+      *
                    IF      SPA-COM-KEIFLG (IDX)   =   "1"  OR  "2"
       *****************MOVE     SPA-GMN-KEI    (IDX)   TO  WRK-KINGAK
       ***************  ADD      SPA-GMN-KEI    (IDX)   TO  WRK-KINGAK
