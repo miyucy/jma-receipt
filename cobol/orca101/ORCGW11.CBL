@@ -49,6 +49,7 @@
       * 02.00.07     NACL-多々納  04/08/11  処方せんの標準プログラム名を変更する
       * 02.00.08     NACL-森脇    04/11/05  支払証明書プログラム選択
       * 02.00.09     NACL-多々納  04/12/15  カルテ３号紙（続紙）、入院追加他
+      * 02.00.10     NACL-多々納  05/02/16  入院指示せん追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -154,7 +155,7 @@
                                13  SPA-GMN-TNAME-N     PIC X(30).
                                13  SPA-GMN-TPRTNM-N    PIC X(16).
       *                    入院・プログラム名
-                           11  SPA-GMN-TBL02-N         OCCURS  4.
+                           11  SPA-GMN-TBL02-N         OCCURS  7.
                                13  SPA-GMN-TORGPGNM-N
                                                        PIC X(20).
                                13  SPA-GMN-TORGPGCHK-N
@@ -164,6 +165,7 @@
                                13  SPA-GMN-TCSTPGCHK-N
                                                        PIC X(01).
                            11  SPA-NPGNM-MAX           PIC 9(04).
+                           11  SPA-NPGNM-MAX2          PIC 9(04).
       *
                        09  SPA-GMN-ORGPGNM03NLST-G.
                            11  SPA-GMN-ORGPGNM03NMEIL PIC X(20)
@@ -226,7 +228,7 @@
                        09  SPA-NAI-TNAME-N     PIC X(30).
                        09  SPA-NAI-TPRTNM-N    PIC X(16).
       *
-                   07  SPA-NAI-TBL02-N         OCCURS  4.
+                   07  SPA-NAI-TBL02-N         OCCURS  7.
                        09  SPA-NAI-TORGPGNM-N  PIC X(20).
                        09  SPA-NAI-TORGPGCHK-N PIC X(01).
                        09  SPA-NAI-TCSTPGNM-N  PIC X(20).
@@ -840,6 +842,11 @@
                                        TO  SPA-GMN-TNAME-N (4)
            MOVE    "診療録（カルテ３号紙）追記"
                                        TO  SPA-GMN-TNAME-N (5)
+      *
+           MOVE    "入院処方箋"        TO  SPA-GMN-TNAME-N (6)
+           MOVE    "注射処方箋"        TO  SPA-GMN-TNAME-N (7)
+           MOVE    "指示箋"            TO  SPA-GMN-TNAME-N (8)
+      *
       *    カルテ１号紙
            MOVE    "ORCHCN01"          TO  SPA-GMN-TORGPGNM-N (1)
            MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(1)
@@ -856,8 +863,22 @@
            MOVE    "ORCHCN33"          TO  SPA-GMN-TORGPGNM-N (4)
            MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(4)
            MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(4)
+      *    入院処方箋
+           MOVE    "ORCHC501"          TO  SPA-GMN-TORGPGNM-N (5)
+           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(5)
+           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(5)
+      *    注射処方箋
+           MOVE    "ORCHC510"          TO  SPA-GMN-TORGPGNM-N (6)
+           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(6)
+           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(6)
+      *    指示箋
+           MOVE    "ORCHC520"          TO  SPA-GMN-TORGPGNM-N (7)
+           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(7)
+           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(7)
       *    入院帳票
-           MOVE    4                   TO  SPA-NPGNM-MAX
+           MOVE    7                   TO  SPA-NPGNM-MAX
+      *
+           MOVE    4                   TO  SPA-NPGNM-MAX2
       *
            .
        3101-NYU-PRTNAME-SYOKI-EXT.
@@ -1339,6 +1360,9 @@
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK02N"
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK03N"
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK04N"
+           WHEN    "CLICKED"       ALSO    "ORCAORGCHK05N"
+           WHEN    "CLICKED"       ALSO    "ORCAORGCHK06N"
+           WHEN    "CLICKED"       ALSO    "ORCAORGCHK07N"
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-NYU-ORCAORGCHK-CHK-SEC
       *    カスタマイズプログラム選択時 ＝ 入院 ＝
@@ -1346,6 +1370,9 @@
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK02N"
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK03N"
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK04N"
+           WHEN    "CLICKED"       ALSO    "ORCACSTCHK05N"
+           WHEN    "CLICKED"       ALSO    "ORCACSTCHK06N"
+           WHEN    "CLICKED"       ALSO    "ORCACSTCHK07N"
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-NYU-ORCACSTCHK-CHK-SEC
       *    確定
@@ -1437,10 +1464,13 @@
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-NPGNM-MAX
+                   UNTIL       IDX     >   SPA-NPGNM-MAX2
                MOVE    W11-ORCACSTNM-N (IDX)
                                            TO  SPA-GMN-TCSTPGNM-N (IDX)
            END-PERFORM
+           MOVE    W11-ORCACSTNM05N    TO  SPA-GMN-TCSTPGNM-N (5)
+           MOVE    W11-ORCACSTNM06N    TO  SPA-GMN-TCSTPGNM-N (6)
+           MOVE    W11-ORCACSTNM07N    TO  SPA-GMN-TCSTPGNM-N (7)
       *
            MOVE    W11-ORCAORGNM03     TO  SPA-GMN-TORGPGNM (03)
            MOVE    W11-ORCAORGNM-N03   TO  SPA-GMN-TORGPGNM-N (03)
@@ -1955,12 +1985,23 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    WRK-WIDGET10    TO  IDX1
-      **** IF    ( SPA-GMN-TNAME-N (IDX1)    =   SPACE )
            IF    ( SPA-GMN-TCSTPGNM-N (IDX1)    =   SPACE )
                MOVE    "T"         TO  SPA-GMN-TORGPGCHK-N (IDX1)
            ELSE
-               MOVE    W11-ORCAORGCHK-N (IDX1)
+               EVALUATE    IDX1
+                   WHEN    1   THRU   4
+                       MOVE    W11-ORCAORGCHK-N (IDX1)
                                    TO  SPA-GMN-TORGPGCHK-N (IDX1)
+                   WHEN    5
+                       MOVE    W11-ORCAORGCHK05N
+                                   TO  SPA-GMN-TORGPGCHK-N (5)
+                   WHEN    6
+                       MOVE    W11-ORCAORGCHK06N
+                                   TO  SPA-GMN-TORGPGCHK-N (6)
+                   WHEN    7
+                       MOVE    W11-ORCAORGCHK07N
+                                   TO  SPA-GMN-TORGPGCHK-N (7)
+               END-EVALUATE
            END-IF
       *
            .
@@ -1979,8 +2020,20 @@
            IF    ( SPA-GMN-TCSTPGNM-N (IDX1)    =   SPACE )
                MOVE    "F"         TO  SPA-GMN-TCSTPGCHK-N (IDX1)
            ELSE
-               MOVE    W11-ORCACSTCHK-N (IDX1)
+               EVALUATE    IDX1
+                   WHEN    1   THRU   4
+                       MOVE    W11-ORCACSTCHK-N (IDX1)
                                    TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+                   WHEN    5
+                       MOVE    W11-ORCACSTCHK05N
+                                   TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+                   WHEN    6
+                       MOVE    W11-ORCACSTCHK06N
+                                   TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+                   WHEN    7
+                       MOVE    W11-ORCACSTCHK07N
+                                   TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+               END-EVALUATE
            END-IF
       *
            .
@@ -2725,7 +2778,7 @@
            END-PERFORM
       *
            PERFORM VARYING IDZ2    FROM    1   BY  1
-                   UNTIL   ( IDZ2  >   SPA-NPGNM-MAX )
+                   UNTIL   ( IDZ2  >   SPA-NPGNM-MAX2 )
       *
                IF  ( SPA-GMN-TCSTPGNM-N  (IDZ2)    =   SPACE )
                    IF  ( W11-ORCACSTCHK-N (IDZ2)   =   "F" )
@@ -2733,11 +2786,40 @@
                    ELSE
                        MOVE    "0004"          TO  SPA-ERRCD
                        COMPUTE SPA-GMN-CUR =   IDZ2    +   60
-                       MOVE    SPA-GPGNM-MAX   TO  IDZ2
+                       MOVE    SPA-NPGNM-MAX2  TO  IDZ2
                    END-IF
                END-IF
       *
            END-PERFORM
+      *
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-GMN-TCSTPGNM-N (5)  =   SPACE )
+               IF  ( W11-ORCACSTCHK05N     =   "F" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   5       +   60
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-GMN-TCSTPGNM-N (6)  =   SPACE )
+               IF  ( W11-ORCACSTCHK06N     =   "F" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   6       +   60
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-GMN-TCSTPGNM-N (7)  =   SPACE )
+               IF  ( W11-ORCACSTCHK07N     =   "F" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   7       +   60
+               END-IF
+           END-IF
+      *
       *
            .
       *
@@ -2941,6 +3023,12 @@
                                         TO  W11-ORCAORGNM-N03
            MOVE    SPA-GMN-TORGPGNM-N  (4)
                                         TO  W11-ORCAORGNM-N04
+           MOVE    SPA-GMN-TORGPGNM-N  (5)
+                                        TO  W11-ORCAORGNM05N
+           MOVE    SPA-GMN-TORGPGNM-N  (6)
+                                        TO  W11-ORCAORGNM06N
+           MOVE    SPA-GMN-TORGPGNM-N  (7)
+                                        TO  W11-ORCAORGNM07N
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL   IDX2    >       SPA-GMN-ORGPGNM03N-MAX
@@ -2951,7 +3039,7 @@
                                        TO  W11-ORCAORGNM-N03-COUNT
       *
            PERFORM VARYING     IDZ2     FROM    1   BY  1
-                   UNTIL       IDZ2     >       SPA-NPGNM-MAX
+                   UNTIL       IDZ2     >       SPA-NPGNM-MAX2
                MOVE    SPA-GMN-TCSTPGNM-N  (IDZ2)
                                         TO  W11-ORCACSTNM-N  (IDZ2)
       *
@@ -2961,6 +3049,17 @@
                MOVE    SPA-GMN-TCSTPGCHK-N (IDZ2)
                                         TO  W11-ORCACSTCHK-N (IDZ2)
            END-PERFORM
+           MOVE    SPA-GMN-TCSTPGNM-N (5)  TO  W11-ORCACSTNM05N
+           MOVE    SPA-GMN-TCSTPGNM-N (6)  TO  W11-ORCACSTNM06N
+           MOVE    SPA-GMN-TCSTPGNM-N (7)  TO  W11-ORCACSTNM07N
+      *
+           MOVE    SPA-GMN-TORGPGCHK-N (5) TO  W11-ORCAORGCHK05N
+           MOVE    SPA-GMN-TORGPGCHK-N (6) TO  W11-ORCAORGCHK06N
+           MOVE    SPA-GMN-TORGPGCHK-N (7) TO  W11-ORCAORGCHK07N
+      *
+           MOVE    SPA-GMN-TCSTPGCHK-N (5) TO  W11-ORCACSTCHK05N
+           MOVE    SPA-GMN-TCSTPGCHK-N (6) TO  W11-ORCACSTCHK06N
+           MOVE    SPA-GMN-TCSTPGCHK-N (7) TO  W11-ORCACSTCHK07N
       *
            MOVE    SPA-GMN-SYOHOGEPRTFLG-G   TO  W11-SYOHOGEPRTFLG
       *
@@ -3215,6 +3314,14 @@
                WHEN    "ORCACSTNM03N"
                    MOVE    74           TO  SPA-GMN-CUR
                WHEN    "ORCACSTNM04N"
+      *            入院最終、確定へ
+      *********    MOVE    999          TO  SPA-GMN-CUR
+                   MOVE    75           TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM05N"
+                   MOVE    76           TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM06N"
+                   MOVE    77           TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM07N"
       *            入院最終、確定へ
                    MOVE    999          TO  SPA-GMN-CUR
       *
