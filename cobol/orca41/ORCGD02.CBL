@@ -39,6 +39,7 @@
       *  01.00.08    ひさなが     02/08/22  保険番号チェックの修正
       *  01.00.08    ひさなが     02/08/27  適応病名チェックの修正
       *  01.00.09    ひさなが     02/09/06  ５２０ー０３メッセージ修正
+      *  01.00.10    ひさなが     02/11/28  保険番号記号チェックの修正
       *
       *****************************************************************
       *
@@ -179,6 +180,7 @@
            03  IDY1                PIC 9(05).
            03  IDY2                PIC 9(03).
            03  IDY3                PIC 9(03).
+           03  IDY4                PIC 9(03).
       *
       *    生年月日、適用開始年月日、診療開始日領域
        01  W-YM1.
@@ -301,6 +303,9 @@
            03  T-MESSAGE-300-04    PIC X(90)   VALUE
                "300-04該当患者の保険情報に記号又は番号が未入力です      
       -        "                                  ".
+           03  T-MESSAGE-300-05    PIC X(90)   VALUE
+               "300-05該当患者の保険情報の記号又は番号に全角文字以外が入
+      -        "力されています                    ".
            03  T-MESSAGE-400-01    PIC X(90)   VALUE
                "400-01患者公費情報テーブル異常１                        
       -        "                                  ".
@@ -371,10 +376,10 @@
                "530-04診療行為の適応病名未入力です                      
       -        "                                  ".
            03  T-MESSAGE-530-05    PIC X(90)   VALUE
-               "530-05薬剤と禁忌の誤りです                               
+               "530-05薬剤と禁忌の誤りです                              
       -        "                                  ".
            03  T-MESSAGE-530-06    PIC X(90)   VALUE
-               "530-06禁忌の薬剤が入力されています                       
+               "530-06禁忌の薬剤が入力されています                      
       -        "                                  ".
            03  T-MESSAGE-530-07    PIC X(90)   VALUE
                "530-07診療行為が併用算定の誤りです                      
@@ -956,9 +961,7 @@
                 ((ACCT-PTID         =   PTHKN-PTID)  AND
                  (COMB-HKNID    NOT =   PTHKN-HKNID) AND
                  (COMB-HKNID    NOT =   ZERO)))      AND
-      *修正/*開始*02.08.22*********************************************
                (COMB-HKNNUM   NOT =   "971"  AND  "980")
-      *修正/*終了*02.08.22*********************************************
                PERFORM T-300-RECECHEK-SEC
            END-IF.
            IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
@@ -1069,6 +1072,54 @@
                        WRITE   DID2-REC
                        MOVE    "*"               TO  T-ERR-02
                    END-IF
+      *修正/*開始*02.11.28*********************************************
+                   IF  (T-ERR-02           =   SPACE)  AND
+                       (PTHKN-KIGO     NOT =   SPACE)  AND
+                       (SPA-GMN-CNV (2)    =   "1")
+                       PERFORM VARYING     IDY4     FROM    1   BY  1
+                               UNTIL       IDY4             >   80
+                           IF  (PTHKN-KIGO(IDY4:1) NOT = X"0A") AND
+                               (PTHKN-KIGO(IDY4:1) NOT = X"00") AND
+                               (PTHKN-KIGO(IDY4:1)     < X"A1")
+                               COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                               MOVE    SPACE         TO  DID2-REC
+                               MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
+                               MOVE    "-"           TO  DID2-REC(25:1)
+                               MOVE    ACCT-PTID     TO  DID2-REC(26:10)
+                               MOVE    "-"           TO  DID2-REC(36:1)
+                               MOVE    COMB-HKNID    TO  DID2-REC(37:10)
+                               MOVE    T-MESSAGE-300-05
+                                                     TO  DID2-REC(71:90)
+                               WRITE   DID2-REC
+                               MOVE    "*"           TO  T-ERR-02
+                               MOVE    99            TO  IDY4
+                           END-IF
+                       END-PERFORM
+                   END-IF
+                   IF  (T-ERR-02           =   SPACE)  AND
+                       (PTHKN-NUM      NOT =   SPACE)  AND
+                       (SPA-GMN-CNV (2)    =   "1")
+                       PERFORM VARYING     IDY4     FROM    1   BY  1
+                               UNTIL       IDY4             >   80
+                           IF  (PTHKN-NUM(IDY4:1) NOT = X"0A") AND
+                               (PTHKN-NUM(IDY4:1) NOT = X"00") AND
+                               (PTHKN-NUM(IDY4:1)     < X"A1")
+                               COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                               MOVE    SPACE         TO  DID2-REC
+                               MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
+                               MOVE    "-"           TO  DID2-REC(25:1)
+                               MOVE    ACCT-PTID     TO  DID2-REC(26:10)
+                               MOVE    "-"           TO  DID2-REC(36:1)
+                               MOVE    COMB-HKNID    TO  DID2-REC(37:10)
+                               MOVE    T-MESSAGE-300-05
+                                                     TO  DID2-REC(71:90)
+                               WRITE   DID2-REC
+                               MOVE    "*"           TO  T-ERR-02
+                               MOVE    99            TO  IDY4
+                           END-IF
+                       END-PERFORM
+                   END-IF
+      *修正/*終了*02.11.28*********************************************
                    IF  (T-ERR-13-2         =   SPACE)  AND
                        (SPA-GMN-CNV (13)   =   "1")
                        INITIALIZE                ORCSKANACHKAREA
@@ -1516,7 +1567,6 @@
                            WRITE   DID2-REC
                            MOVE    "*"               TO  T-ERR-04
                        END-IF
-      *修正/*開始*02.07.03*********************************************
                        IF  (W-COMB-HANNTEI1      =   "---")  AND
                            (T-SINRYOU-AREA   NOT <   W-YM3)
                            COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
@@ -1528,7 +1578,6 @@
                            WRITE   DID2-REC
                            MOVE    "*"               TO  T-ERR-04
                        END-IF
-      *修正/*終了*02.07.03*********************************************
                    END-IF
                    IF  (T-ERR-13           =   SPACE)  AND
                        (SPA-GMN-CNV (13)   =   "1")
@@ -2400,11 +2449,6 @@
       *****************************************************************
        T-530-RECECHEK-CHK5-SEC           SECTION.
       *
-      *修正/*開始*02.08.27*********************************************
-      *     MOVE    ZERO                TO  FLG-TBL.
-      *     MOVE    ZERO                TO  FLG-TENKIYMD-ER.
-      *修正/*終了*02.08.27*********************************************
-      *
            INITIALIZE                  PTBYOMEI-REC.
            MOVE    ACCT-HOSPID         TO  PTBYO-HOSPID.
            MOVE    ACCT-PTID           TO  PTBYO-PTID.
@@ -2431,12 +2475,10 @@
                IF  MCP-RC   NOT =   ZERO
                    MOVE    1                    TO  FLG-TBL
                ELSE
-      *修正/*開始*02.08.27*********************************************
                    MOVE    2                    TO  FLG-TBL
                    MOVE    2                    TO  FLG-TENKIYMD-ER
                    MOVE    1                    TO  FLG-END
                    MOVE   20                    TO  IDY2
-      *修正/*終了*02.08.27*********************************************
                    MOVE    MCPDATA-REC          TO  PTBYOMEI-REC
                    IF  (PTBYO-TENKIYMD   NOT  =   SPACE)      AND
                        (PTBYO-TENKIYMD   NOT  =   ZERO)       AND
@@ -2501,10 +2543,8 @@
                WRITE   DID3-REC
            ELSE
                MOVE    ZERO                    TO  FLG-END
-      *修正/*開始*02.08.27*********************************************
                MOVE    ZERO                    TO  FLG-TBL
                MOVE    ZERO                    TO  FLG-TENKIYMD-ER
-      *修正/*終了*02.08.27*********************************************
                PERFORM T-530-RECECHEK-READ2-SEC
                PERFORM UNTIL   (MCP-RC    NOT =   ZERO)  OR
                                (FLG-END   NOT =   ZERO)
@@ -2513,26 +2553,14 @@
                            UNTIL   IDY2  >    10
                        IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
                            (CHK-CD (IDY2)   NOT =   ZERO)
-      *修正/*開始*02.08.27*********************************************
-      *                     PERFORM T-530-RECECHEK-CHK8-1-SEC
                            PERFORM T-530-RECECHEK-CHK5-SEC
-      *修正/*終了*02.08.27*********************************************
                        END-IF
-      *修正/*開始*02.08.27*********************************************
-      *                 IF  T-ERR-09   =   "*"
-      *                     MOVE    1                    TO  FLG-END
-      *                     MOVE   20                    TO  IDY2
-      *                     MOVE   10                    TO  IDX3
-      *                 END-IF
-      *修正/*終了*02.08.27*********************************************
                    END-PERFORM
                    IF  FLG-END   =   ZERO
                        PERFORM T-530-RECECHEK-READ2-SEC
                    END-IF
                END-PERFORM
-      *修正/*開始*02.08.27*********************************************
                PERFORM T-530-RECECHEK-CHK8-1-SEC
-      *修正/*終了*02.08.27*********************************************
            END-IF.
       *
            INITIALIZE                  MCPAREA.
@@ -2575,10 +2603,8 @@
                WRITE   DID3-REC
            ELSE
                MOVE    ZERO                    TO  FLG-END
-      *修正/*開始*02.08.27*********************************************
                MOVE    ZERO                    TO  FLG-TBL
                MOVE    ZERO                    TO  FLG-TENKIYMD-ER
-      *修正/*終了*02.08.27*********************************************
                PERFORM T-530-RECECHEK-READ2-SEC
                PERFORM UNTIL   (MCP-RC    NOT =   ZERO)  OR
                                (FLG-END   NOT =   ZERO)
@@ -2587,26 +2613,14 @@
                            UNTIL   IDY2  >    10
                        IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
                            (CHK-CD (IDY2)   NOT =   ZERO)
-      *修正/*開始*02.08.27*********************************************
-      *                     PERFORM T-530-RECECHEK-CHK9-1-SEC
                            PERFORM T-530-RECECHEK-CHK5-SEC
-      *修正/*終了*02.08.27*********************************************
                        END-IF
-      *修正/*開始*02.08.27*********************************************
-      *                 IF  T-ERR-08   =   "*"
-      *                     MOVE    1                    TO  FLG-END
-      *                     MOVE   20                    TO  IDY2
-      *                     MOVE   10                    TO  IDX3
-      *                 END-IF
-      *修正/*終了*02.08.27*********************************************
                    END-PERFORM
                    IF  FLG-END   =   ZERO
                        PERFORM T-530-RECECHEK-READ2-SEC
                    END-IF
                END-PERFORM
-      *修正/*開始*02.08.27*********************************************
                PERFORM T-530-RECECHEK-CHK9-1-SEC
-      *修正/*終了*02.08.27*********************************************
            END-IF.
       *
            INITIALIZE                  MCPAREA.
@@ -2624,9 +2638,6 @@
       *
        T-530-RECECHEK-CHK8-1-SEC         SECTION.
       *
-      *修正/*開始*02.08.27*********************************************
-      *     PERFORM T-530-RECECHEK-CHK5-SEC.
-      *修正/*終了*02.08.27*********************************************
            IF  (FLG-TBL           =   1)  OR
                (FLG-TENKIYMD-ER   =   1)
                COMPUTE T-CNT-OUT = T-CNT-OUT + 1
@@ -2653,9 +2664,6 @@
       *
        T-530-RECECHEK-CHK9-1-SEC         SECTION.
       *
-      *修正/*開始*02.08.27*********************************************
-      *     PERFORM T-530-RECECHEK-CHK5-SEC.
-      *修正/*終了*02.08.27*********************************************
            IF  (FLG-TBL           =   1)  OR
                (FLG-TENKIYMD-ER   =   1)
                COMPUTE T-CNT-OUT = T-CNT-OUT + 1
@@ -2813,13 +2821,12 @@
       *
            OPEN    INPUT   DID3-FILE.
       *
-           READ    DID3-FILE
-                   NOT  AT  END
-                        OPEN    OUTPUT              DID4-FILE
-                        MOVE    "処理中止"          TO  DID4-REC
-                        WRITE   DID4-REC
-                        CLOSE   DID4-FILE
-           END-READ.
+           IF  STS-DID3    =   ZERO
+               OPEN    OUTPUT              DID4-FILE
+               MOVE    "処理中止"          TO  DID4-REC
+               WRITE   DID4-REC
+               CLOSE   DID4-FILE
+           END-IF.
       *
            CLOSE   DID3-FILE.
       *
