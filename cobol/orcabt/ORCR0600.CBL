@@ -761,7 +761,6 @@
       *
            CALL    "ORCSTEIKI"     USING
                                    MCPAREA
-                                   SPA-AREA
                                    LNK-ORCS02-REC
                                    LNK-SYUNOU-REC-T
       *
