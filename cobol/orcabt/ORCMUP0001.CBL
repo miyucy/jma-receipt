@@ -176,7 +176,7 @@
                03  FILLER              PIC X(01)   VALUE   ",".
                03  WRK-YUKOEDYMD2      PIC X(08).
                03  FILLER              PIC X(01)   VALUE   ",".
-               05  WRK-NAME            PIC X(100).
+               03  WRK-NAME            PIC X(100).
       *
       *---(01.00.01) LINE ADD START -------------------------------------
       *    µÏ•ﬁ•π•ø•«°º•ø¬‡»ÚŒŒ∞Ë

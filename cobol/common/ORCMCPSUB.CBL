@@ -95,7 +95,7 @@
       *
        LINKAGE                     SECTION.
            COPY    'MCPAREA'.
-           COPY    'CPORCMCP.INC'.
-           COPY    'MCPDATA.INC'.
+           COPY    "CPORCMCP.INC".
+           COPY    "MCPDATA.INC".
       *
            COPY    "CPMCPDBPRO.INC". 
