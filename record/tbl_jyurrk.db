@@ -5,14 +5,15 @@ tbl_jyurrk {
 	SRYKA				char(2);
 	SRYYMD				char(8);
 	RENNUM				number(1);
-	DOUJI_RENNUM		number(1);
-	KAIKEI_RENNUM		number(3);
-	EDANUM              number(1);
-	LASTKBN				char(1);
+	DOUJI_RENNUM			number(1);
+	KAIKEI_RENNUM			number(3);
+	EDANUM				number(1);
 	DRCD				char(5);
 	HKNCOMBINUM			char(4);
 	HKNKBN  			char(1);
 	DENPNUM				number(7);
+	GRP_DENPNUM			number(7);
+	GRP_RENNUM			number(2);
 	SRYKBN1				char(2);
 	SRYKBN2				char(2);
 	SRYKBN3				char(2);
@@ -87,8 +88,10 @@ path	key2 	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD DESC,
+			                  DENPNUM,
+			                  GRP_DENPNUM,
+			                  GRP_RENNUM,
                                           SRYKA,
 			                  RENNUM,
 			                  DOUJI_RENNUM,
@@ -106,7 +109,6 @@ path	key3 	{
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SRYKA       =   :SRYKA
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD,
 			                  RENNUM,
 			                  DOUJI_RENNUM,
@@ -125,7 +127,6 @@ path	key4 	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SRYKA       =   :SRYKA 
 			AND   SRYYMD      =   :SRYYMD
-			AND   LASTKBN     =   '1'
 			ORDER   BY        RENNUM,
 			                  DOUJI_RENNUM,
 			                  EDANUM
@@ -144,7 +145,6 @@ path	key5 	{
 			AND   SRYKA       =   :SRYKA 
 			AND   SRYYMD      =   :SRYYMD
 			AND   RENNUM      =   :RENNUM
-			AND   LASTKBN     =   '1'
 			ORDER   BY        DOUJI_RENNUM,
                                           KAIKEI_RENNUM,
                                           EDANUM
@@ -161,7 +161,6 @@ path	key6 	{
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   DENPNUM     =   :DENPNUM
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYKA,
 			                  SRYYMD,
 			                  RENNUM,
@@ -180,7 +179,6 @@ path	key7 	{
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SRYKA       =   :SRYKA
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD  DESC,
 			                  RENNUM,
 			                  DOUJI_RENNUM,
@@ -201,10 +199,12 @@ path	upd1	{
                    DOUJI_RENNUM        = :DOUJI_RENNUM,
                    KAIKEI_RENNUM       = :KAIKEI_RENNUM,
                    EDANUM              = :EDANUM,
-                   LASTKBN             = :LASTKBN,
                    DRCD                = :DRCD,
                    HKNCOMBINUM         = :HKNCOMBINUM,
+                   HKNKBN              = :HKNKBN,
                    DENPNUM             = :DENPNUM,
+                   GRP_DENPNUM         = :GRP_DENPNUM,
+                   GRP_RENNUM          = :GRP_RENNUM,
                    SRYKBN1             = :SRYKBN1,
                    SRYKBN2             = :SRYKBN2,
                    SRYKBN3             = :SRYKBN3,
@@ -275,7 +275,6 @@ path	key8 	{
 		FROM tbl_jyurrk
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD  DESC,
                                           SRYKA,
 			                  RENNUM,
@@ -310,14 +309,12 @@ path	key10 	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   HKNCOMBINUM <>  '9999'
-			AND   LASTKBN     =   '1'
 			AND   SRYYMD      =
                            (SELECT MAX(SRYYMD)
                                    FROM tbl_jyurrk 
                                	WHERE   HOSPID    =   :HOSPID
 		        	AND   PTID        =   :PTID
 		        	AND   HKNCOMBINUM <>  '9999'
-	         		AND   LASTKBN     =   '1'
                                 AND   SRYYMD      <=  :SRYYMD )
 			ORDER   BY        RENNUM,
 			                  DOUJI_RENNUM,
@@ -334,7 +331,6 @@ path	key10 	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SRYKA       =   :SRYKA
 			AND   HKNCOMBINUM <>  '9999'
-			AND   LASTKBN     =   '1'
 			AND   SRYYMD      =
                            (SELECT MAX(SRYYMD)
                                    FROM tbl_jyurrk 
@@ -342,7 +338,6 @@ path	key10 	{
 		        	AND   PTID        =   :PTID
               			AND   SRYKA       =   :SRYKA
 		        	AND   HKNCOMBINUM <>  '9999'
-	         		AND   LASTKBN     =   '1'
                                 AND   SRYYMD      <=  :SRYYMD )
 			ORDER   BY        RENNUM,
 			                  DOUJI_RENNUM,
@@ -362,7 +357,6 @@ path	key12	{
 			AND   SRYKA       =   :SRYKA
                         AND  (SRYYMD      >=  :SRYYMD
                         AND   SRYYMD      <=  :UPSRYYMD)
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD  DESC,
 			                  RENNUM,
 			                  DOUJI_RENNUM,
@@ -380,8 +374,8 @@ path	key13	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
                         AND  (SRYYMD      >=  :SRYYMD
                         AND   SRYYMD      <=  :UPSRYYMD)
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD  DESC,
+                                          DENPNUM,
 			                  RENNUM,
 			                  DOUJI_RENNUM,
 			                  EDANUM
@@ -398,7 +392,6 @@ path	key14	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
                         AND  (SRYYMD      >=  :SRYYMD
                         AND   SRYYMD      <=  :UPSRYYMD)
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD,
 			                  RENNUM,
 			                  DOUJI_RENNUM,
@@ -415,7 +408,6 @@ path	key15	{
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   HKNCOMBINUM =   :HKNCOMBINUM
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD,
                                           SRYKA,
 			                  RENNUM,
@@ -434,7 +426,6 @@ path	key16	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SRYKA       =   :SRYKA
 			AND   HKNCOMBINUM =   :HKNCOMBINUM
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD,
 			                  RENNUM,
 			                  DOUJI_RENNUM,
@@ -452,7 +443,6 @@ path	key16	{
                         AND  (SRYYMD      >=  :SRYYMD
                         AND   SRYYMD      <=  :UPSRYYMD)
 			AND   HKNCOMBINUM =   :HKNCOMBINUM
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD  DESC,
 			                  RENNUM,
 			                  DOUJI_RENNUM,
@@ -472,7 +462,6 @@ path	key18	{
                         AND  (SRYYMD      >=  :SRYYMD
                         AND   SRYYMD      <=  :UPSRYYMD)
 			AND   HKNCOMBINUM =   :HKNCOMBINUM
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD  DESC,
 			                  RENNUM,
 			                  DOUJI_RENNUM,
@@ -492,7 +481,6 @@ path	key19	{
                         AND   SRYYMD      =   :SRYYMD
 			AND   RENNUM      =   :RENNUM
 			AND   HKNCOMBINUM =   :HKNCOMBINUM
-			AND   LASTKBN     =   '1'
 			ORDER   BY        DOUJI_RENNUM,
 			                  EDANUM
 		;
@@ -508,7 +496,6 @@ path	key20	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SRYKA       =   :SRYKA
 			AND   HKNCOMBINUM =   :HKNCOMBINUM
-			AND   LASTKBN     =   '1'
                         AND ((ZAINUM1     =   :ZAINUM1 )
                         OR   (ZAINUM2     =   :ZAINUM2 )
                         OR   (ZAINUM3     =   :ZAINUM3 )
@@ -541,7 +528,6 @@ path	key21	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
                         AND  (SRYYMD      >=  :SRYYMD
                         AND   SRYYMD      <=  :UPSRYYMD)
-			AND   LASTKBN     =   '1'
 			ORDER   BY        PTID,
                                           SRYYMD,
                                           RENNUM,
@@ -563,7 +549,6 @@ path	key22	{
 			AND   RENNUM      =   :RENNUM
 			AND   DOUJI_RENNUM =  :DOUJI_RENNUM
 			AND   EDANUM      =   :EDANUM
-			AND   LASTKBN     =   '1'
 		;
 	};
 };
@@ -575,7 +560,6 @@ path	key23	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   HKNCOMBINUM =   :HKNCOMBINUM
-			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD
 		;
 	};
@@ -591,7 +575,6 @@ path	key24	{
 			AND   SRYKA       =   :SRYKA
                         AND  (SRYYMD      >=  :SRYYMD
                         AND   SRYYMD      <=  :UPSRYYMD)
-			AND   LASTKBN     =   '1'
                         AND  (SRYKBN1     <>  '  '
                         OR    SRYKBN2     <>  '  '
                         OR    SRYKBN3     <>  '  '
@@ -631,10 +614,23 @@ path	key25 	{
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   HKNCOMBINUM <>  '9999'
-			AND   LASTKBN     =   '1'
-            AND   SRYYMD      <=  :SRYYMD
+			AND   SRYYMD      <=  :SRYYMD
 			ORDER   BY        SRYYMD DESC,
 			                  DENPNUM DESC
+		;
+	};
+};
+path	key26 	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key26_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   GRP_DENPNUM =   :GRP_DENPNUM
+			ORDER   BY        GRP_RENNUM,
+                                          EDANUM
 		;
 	};
 };

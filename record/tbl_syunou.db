@@ -123,6 +123,9 @@ tbl_syunou {
 	RESE_YKZ_FTN        number(7,0);
 	KOHTAIYKZKBN		char(1);
 	CHOSEI  			number(7,0);
+	GRP_DENPNUM			number(7,0);
+	GRP_RENNUM			number(2,0);
+	GRP_SGKMONEY			number(7,0);
 	SECMONEY			number(7,0);
 	HKNTEKMONEY			number(7,0);
 	DISCOUNT_KBN			char(2);
@@ -142,7 +145,7 @@ tbl_syunou {
 	NYUKIN_TOTAL   			number(7,0);
 	NYUKIN_KAISU   			number(7,0);
 	MISYURIYU    			char(2);
-	DRCD    			char(4);
+	DRCD    			char(5);
 	NYNSHOKAISU  			number(2,0);
 	YKZKENNUM  			number(5,0);
         RMSAGAKU  			number(7,0);
@@ -674,3 +677,51 @@ path	key25 	{
 		;
 	};
 };
+
+path	key26 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key26_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYMD      LIKE :SRYYMD
+			AND   CREATEKBN   <>  '3'
+			ORDER   BY    GRP_DENPNUM,
+                                      GRP_RENNUM,
+                                      FUKU_DENPNUM,
+                                      DOUJI_DENPNUM,
+                                      DENPNUM
+		;
+	};
+};
+
+path	key27 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key27_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   GRP_DENPNUM =   :GRP_DENPNUM
+			ORDER   BY    GRP_RENNUM
+		;
+	};
+};
+
+path	key28 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key28_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYMD      LIKE :SRYYMD
+			ORDER   BY    DENPNUM
+		;
+	};
+};
+

@@ -333,6 +333,10 @@
       *  01.01.146   NACL-小豆沢  04/07/26  NYUINACCT-KEY23追加
       *  01.01.147   NACL-小豆沢  04/08/05  HKNCOMBI-KEY4追加
       *  01.01.148   NACL-太田    04/08/05  SRYKARRK-KEY3追加
+      *  01.01.149   NACL-多々納  04/08/06  JYURRK-KEY26追加
+      *                                     SYUTOTAL-KEY追加
+      *                                     SYUTOTAL-DEL1追加
+      *                                     SYUNOU-KEY26,KEY27,KEY28追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1157,6 +1161,17 @@
                                        TO  WRK-PATH
       *
       *---- (NYUIN.08) LINE ADD END      ------------------------------
+      *
+               WHEN    "DBUPDATE"      ALSO   "SYUTOTAL-KEY"
+                   MOVE    PATH-TBL-SYUTOTAL-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUTOTAL-KEY"
+                   MOVE    PATH-TBL-SYUTOTAL-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUTOTAL-DEL1"
+                   MOVE    PATH-TBL-SYUTOTAL-DEL1
+                                       TO  WRK-PATH
+      *
                WHEN    ANY             ALSO   "SYSKANRI-KEY"
                    MOVE    PATH-TBL-SYSKANRI-KEY
                                        TO  WRK-PATH
@@ -1463,6 +1478,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "JYURRK-KEY25"
                    MOVE    PATH-TBL-JYURRK-KEY25
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY26"
+                   MOVE    PATH-TBL-JYURRK-KEY26
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "JYURRK-ALL"
                    MOVE    PATH-TBL-JYURRK-ALL
@@ -1967,6 +1985,15 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY25"
                    MOVE    PATH-TBL-SYUNOU-KEY25
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY26"
+                   MOVE    PATH-TBL-SYUNOU-KEY26
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY27"
+                   MOVE    PATH-TBL-SYUNOU-KEY27
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY28"
+                   MOVE    PATH-TBL-SYUNOU-KEY28
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"
@@ -3248,6 +3275,13 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "OPECOM-ALL"
                    MOVE    PATH-TBL-OPECOM-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "SYUTOTAL-KEY"
+                   MOVE    PATH-TBL-SYUTOTAL-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUTOTAL-ALL"
+                   MOVE    PATH-TBL-SYUTOTAL-ALL
                                        TO  WRK-PATH
       *
                WHEN    OTHER
