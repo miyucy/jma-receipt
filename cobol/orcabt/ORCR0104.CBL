@@ -53,7 +53,8 @@
       *  01.00.16    NACL-Æ£¸¶    04/01/19  ÉÂ¾²¿ô¤Îµ­ºÜ¤Î½¤Àµ
       *  01.00.17    NACL-ÌçÏÆ    04/01/20  ¼«Èñ¥ì¥»Å¦Í×ÍóÊÔ½¸½¤Àµ
       *  01.00.18    NACL-ÌçÏÆ    04/01/26  ¥«¥Ê»áÌ¾¤ÎÄ¹¤µÅù½¤Àµ
-      *  01.00.19    NACL-Æ£¸¶    02/02/18  ¼ÒÊÝ£Ï£Ã£Ò¶èÊ¬¤ÎÄÉ²Ã
+      *  01.00.19    NACL-Æ£¸¶    04/02/18  ¼ÒÊÝ£Ï£Ã£Ò¶èÊ¬¤ÎÄÉ²Ã
+      *  01.00.20    NACL-Æ£¸¶    04/03/05  ÊÝ¸±ÍúÎò¤ËÊÝ¸±¼ÔÈÖ¹æ¤òÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -430,6 +431,7 @@
                                                PIC X(12).
                            11  WRK-HKN-FL2     PIC X(04).
            03  WRK-RIREKI-MAX                  PIC 9(02).                
+           03  WRK-HKN-HKNJANUM                PIC X(16).
            03  WRK-HKN-NUM                     PIC X(50).
            03  WRK-HKN-KIGO                    PIC X(50).
            03  WRK-HKN-TEISYUTUSAKI            PIC X(04).    
@@ -1197,12 +1199,25 @@
                    WHEN    OTHER
                        MOVE    SPACE      TO  WRK-HKN-TEISYUTUSAKI   
                END-EVALUATE          
-               IF      RECE09-NUM         =   SPACE
-               AND     RECE09-KIGO        =   SPACE        
+               IF    ( RECE09-NUM         =   SPACE )
+               AND   ( RECE09-KIGO        =   SPACE )        
+               AND   ( RECE09-HKNJANUM    =   SPACE )        
                    STRING  WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
                            RECE09-TANSEIDONAME    DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI (WRK-RIREKI-MAX)
+                   END-STRING
                ELSE
+                   MOVE    SPACE           TO  WRK-HKN-HKNJANUM
+                   IF      RECE09-HKNJANUM     NOT =   SPACE
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "2"             TO  KANACHK-SYORI 
+                       MOVE    RECE09-HKNJANUM TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  WRK-HKN-HKNJANUM
+                       END-IF
+                   END-IF
                    MOVE    SPACE           TO  WRK-HKN-KIGO
                    IF      RECE09-KIGO     NOT =   SPACE
                        INITIALIZE              ORCSKANACHKAREA
@@ -1227,6 +1242,8 @@
                    END-IF
                    STRING  WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
                            RECE09-TANSEIDONAME    DELIMITED  BY  SPACE
+                           "¡¡"                   DELIMITED  BY  SIZE
+                           WRK-HKN-HKNJANUM       DELIMITED  BY  SPACE
                            "¡¡"                   DELIMITED  BY  SIZE
                            WRK-HKN-KIGO           DELIMITED  BY  SPACE
                            "¡Ý"                   DELIMITED  BY  SIZE

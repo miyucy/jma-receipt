@@ -33,7 +33,8 @@
       *  01.00.02    NACL-藤原    04/01/07  その他の点数欄表示
       *  01.00.03    NACL-藤原    04/01/19  病床数の記載の修正
       *  01.00.04    NACL-門脇    04/01/26  カナ氏名の長さ等修正
-      *  01.00.05    NACL-藤原    02/02/18  社保ＯＣＲ区分の追加
+      *  01.00.05    NACL-藤原    04/02/18  社保ＯＣＲ区分の追加
+      *  01.00.06    NACL-藤原    04/03/05  保険履歴に保険者番号を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -413,6 +414,7 @@
                                                PIC X(12).
                            11  WRK-HKN-FL2     PIC X(04).
            03  WRK-RIREKI-MAX                  PIC 9(02).                
+           03  WRK-HKN-HKNJANUM                PIC X(16).
            03  WRK-HKN-NUM                     PIC X(50).
            03  WRK-HKN-KIGO                    PIC X(50).
            03  WRK-HKN-TEISYUTUSAKI            PIC X(04).    
@@ -1207,12 +1209,25 @@
                    WHEN    OTHER
                        MOVE    SPACE      TO  WRK-HKN-TEISYUTUSAKI   
                END-EVALUATE          
-               IF      RECE09-NUM         =   SPACE
-               AND     RECE09-KIGO        =   SPACE        
+               IF    ( RECE09-NUM         =   SPACE )
+               AND   ( RECE09-KIGO        =   SPACE )        
+               AND   ( RECE09-HKNJANUM    =   SPACE )        
                    STRING  WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
                            RECE09-TANSEIDONAME    DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI (WRK-RIREKI-MAX)
+                   END-STRING
                ELSE
+                   MOVE    SPACE           TO  WRK-HKN-HKNJANUM
+                   IF      RECE09-HKNJANUM     NOT =   SPACE
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "2"             TO  KANACHK-SYORI 
+                       MOVE    RECE09-HKNJANUM TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  WRK-HKN-HKNJANUM
+                       END-IF
+                   END-IF
                    MOVE    SPACE           TO  WRK-HKN-KIGO
                    IF      RECE09-KIGO     NOT =   SPACE
                        INITIALIZE              ORCSKANACHKAREA
@@ -1237,6 +1252,8 @@
                    END-IF
                    STRING  WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
                            RECE09-TANSEIDONAME    DELIMITED  BY  SPACE
+                           "　"                   DELIMITED  BY  SIZE
+                           WRK-HKN-HKNJANUM       DELIMITED  BY  SPACE
                            "　"                   DELIMITED  BY  SIZE
                            WRK-HKN-KIGO           DELIMITED  BY  SPACE
                            "−"                   DELIMITED  BY  SIZE
