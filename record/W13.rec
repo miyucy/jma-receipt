@@ -1,5 +1,8 @@
 W13	{
 	fixed1	{
+	        B03	{
+	           	state	int;
+	        };
 		YUKOSTYMD	{
 			value	varchar(9);
 		};
