@@ -34,7 +34,7 @@ path	key2		{
 	    WHERE	HOSPID    =    :HOSPID
 		AND     NYUINYMD  <=   :NYUINYMD
 		AND     TAIINYMD  =   '99999999'
-		ORDER BY PTNUM
+		ORDER BY BRMNUM,PTNUM
 		;
 	};
 };
