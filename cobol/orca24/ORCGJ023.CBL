@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/08/06  アフターケア対応追加
       * 01.00.02     NACL-多々納  02/08/18  自賠責追加
+      * 01.00.03     NACL-多々納  03/03/06  入外区分追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -567,6 +568,7 @@
            INITIALIZE                  RECECOM-REC
            MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
            MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+           MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1577,6 +1579,7 @@
            INITIALIZE                  RECECOM-REC
            MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
            MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+           MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
            MOVE    SPA-J023-SRYKA      TO  RECECOM-SRYKA
            MOVE    SPA-J023-SRYYMS     TO  RECECOM-SRYYM
            MOVE    SPA-J023-HKNCOMBINUM
@@ -1633,6 +1636,7 @@
                INITIALIZE                  RECECOM-REC
                MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
                MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+               MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
                MOVE    SPA-J023-SRYKA      TO  RECECOM-SRYKA
                MOVE    SPA-J023-SRYYMS     TO  RECECOM-SRYYM
                MOVE    SPA-J023-HKNCOMBINUM
@@ -1913,6 +1917,7 @@
            INITIALIZE                  RECECOM-REC
            MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
            MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+           MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
            MOVE    SPA-J023-NSRYKA (IDX)
                                       TO  RECECOM-SRYKA
            MOVE    SPA-J023-NSRYYM (IDX)

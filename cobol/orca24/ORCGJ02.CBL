@@ -2440,6 +2440,12 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+      *
+      *    排他エラーの時、患者番号へ
+           IF      SPA-ERRCD           =   "9999"
+               MOVE    00              TO  SPA-GMN-CUR
+           END-IF
+      *
            EVALUATE    SPA-GMN-CUR
                WHEN    00
                    MOVE    "PTNUM"         TO  MCP-WIDGET
