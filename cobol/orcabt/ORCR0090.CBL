@@ -83,6 +83,7 @@
       *  01.02.10    NACL-藤原    02.09.26  皮下筋肉注射以外で手技がないとき
       *                                     ＊を印刷する
       *  01.02.11    NACL-藤原    02.09.30  初診加算のとき編集を修正
+      *  01.02.12    NACL-藤原    02.10.09  電話再診を出力するように修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -533,7 +534,7 @@
       *    同日再診（１回目）
       ***     03  FILLER          PIC X(09)   VALUE   "112010150".
       *    電話等再診（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112009750".
+      ***     03  FILLER          PIC X(09)   VALUE   "112009750".
       *    同日電話等再診（１回目）
       ***     03  FILLER          PIC X(09)   VALUE   "112010650".
       *    老人再診（１回目）
@@ -541,7 +542,7 @@
       *    老人同日再診（１回目）
       ***     03  FILLER          PIC X(09)   VALUE   "112704450".
       *    老人電話等再診（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112704150".
+      ***     03  FILLER          PIC X(09)   VALUE   "112704150".
       *    老人同日電話等再診（１回目）
       ***     03  FILLER          PIC X(09)   VALUE   "112704850".
       *    外来管理加算（３回目まで）
@@ -551,9 +552,11 @@
       *    実日数算定
            03  FILLER          PIC X(09)   VALUE   "099409901".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   22.
+      ******03  TBL-NOSRYCD     PIC X(09)   OCCURS   22.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   20.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   22.
+      *01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   22.
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   20.
       *
       *    固定値
        01  CONST-AREA.
