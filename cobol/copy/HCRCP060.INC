@@ -79,8 +79,8 @@
               03  HCRCP060-SICYOSON-S PIC X(1)    OCCURS  6 TIMES.
             02  HCRCP060-SICYOSONN.
               03  HCRCP060-SICYOSONN-S    PIC X(2)    OCCURS  6 TIMES.
-            02  HCRCP060-SYONUM PIC X(7).
-            02  HCRCP060-SYONUMN    PIC X(14).
+            02  HCRCP060-SYONUM PIC X(9).
+            02  HCRCP060-SYONUMN    PIC X(20).
             02  HCRCP060-ITBKBN PIC X(2)        OCCURS  2 TIMES.
             02  HCRCP060-ITBKINGAK  PIC X(8).
             02  HCRCP060-SAKUJYOSEN PIC X(52).
