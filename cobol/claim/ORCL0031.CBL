@@ -1748,6 +1748,7 @@
                INITIALIZE                  WRK-BYOMEI-TBL
                                            FLG-BYOMEI-CHK
                                            WRK-TOKSKNCD
+                                           WRK-BYOMEI
       *
                IF    ( LF04-SNDSPITBL-SPICOD2 (IDX 1)  =   SPACE )
                AND   ( LF04-SNDSPITBL-SPINAME2(IDX 1)  =   SPACE )
