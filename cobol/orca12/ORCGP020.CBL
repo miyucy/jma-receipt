@@ -499,6 +499,10 @@
       *
            MOVE    SPA-NAI20-UKEMAX    TO  IDX
       *
+           IF      SPA-GMN-PTID        =   ZERO
+               GO      TO      3101-YYKSPA-HEN-EXT
+           END-IF
+      *
       *    予約マスターより
            MOVE    SPACE               TO  YYK-REC
            MOVE    SPA-HOSPID          TO  YYK-HOSPID
