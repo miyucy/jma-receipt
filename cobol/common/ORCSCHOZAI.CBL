@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Â¿¡¹Ç¼  03/07/10  Æþ±¡Ä´ºÞÎÁ»»Äê¤Ê¤·ÄÉ²Ã
       *****************************************************************
       *
       *
@@ -63,6 +64,8 @@
            03  FLG-CHK             PIC 9(01).
       *
            03  FLG-SRYACCT-DEL     PIC 9(01).
+      *
+           03  FLG-NASI            PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -361,6 +364,9 @@
                END-PERFORM
       *        ¿ÇÎÅ¹Ô°Ù¤è¤êËãÆÇÈ½Äê
                PERFORM 600111-SRYACT-HEN-SEC
+      *
+               IF      FLG-NASI            =   ZERO
+      *
       *        ²ó¿ô¤Ë¤è¤êÊÝÂ¸
                PERFORM VARYING     IDY2    FROM    1   BY  1
                        UNTIL       IDY2    >   31
@@ -401,6 +407,8 @@
                        END-PERFORM
                    END-IF
                END-PERFORM
+      *
+             END-IF
       *
              END-IF
       *
@@ -506,6 +514,8 @@
                    END-PERFORM
       *            ¿ÇÎÅ¹Ô°Ù¤è¤êËãÆÇÈ½Äê
                    PERFORM 600111-SRYACT-HEN-SEC
+                 IF      FLG-NASI            =   ZERO
+      *
       *            ²ó¿ô¤Ë¤è¤êÊÝÂ¸
                    PERFORM VARYING     IDX3    FROM    1   BY  1
                            UNTIL       IDX3    >   31
@@ -521,6 +531,8 @@
                            END-IF
                        END-IF
                    END-PERFORM
+                 END-IF
+      *
                END-IF
       *
                MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
@@ -567,6 +579,17 @@
            ELSE
                MOVE    1                   TO  FLG-SRYACT
            END-IF
+      *    Æþ±¡Ä´ºÞÎÁ¤Ê¤·¤òÂÐ¾Ý³°¤È¤¹¤ë
+           IF     (FLG-SRYACT          =   ZERO )  AND
+                  (SRY-SRYSYUKBN       =   "214"
+                                       OR  "224"
+                                       OR  "234" )
+               MOVE    1                   TO  FLG-SRYACT
+               MOVE    1                   TO  FLG-NASI
+           ELSE
+               MOVE    ZERO                TO  FLG-NASI
+           END-IF
+      *
            PERFORM UNTIL      FLG-SRYACT   =   1
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2            >   5   )  OR

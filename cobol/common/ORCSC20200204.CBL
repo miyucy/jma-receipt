@@ -36,6 +36,7 @@
       *  02.00.02    多々納       02/04/19  生活習慣病指導算定時の追加
       *  02.00.03    NACL-多々納  02/09/04  臨時投薬の１４日以内を修正
       *  02.00.04    NACL-多々納  02/12/03  他科受診メッセージ削除
+      *  02.00.05    NACL-多々納  03/07/10  入院調剤料算定なし追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -380,6 +381,24 @@
                            (LNK-ORCSC-SEIKATU-ARI2     =   ZERO) AND
                            (LNK-ORCSC-SEIKATU-ARI      =   ZERO)
                        MOVE    "0074"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                             (IDX-Z)
+                   END-IF
+               WHEN    "212"
+               WHEN    "222"
+               WHEN    "232"
+      *            院外処方は外来のみ
+                   IF      SPA-NYUGAIKBN   =   "1"
+                       MOVE    "9028"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                             (IDX-Z)
+                   END-IF
+               WHEN    "214"
+               WHEN    "224"
+               WHEN    "234"
+      *            入院調剤料なしは入院のみ
+                   IF      SPA-NYUGAIKBN   =   "2"
+                       MOVE    "9024"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR
                                                              (IDX-Z)
                    END-IF
@@ -988,6 +1007,13 @@
       *    院外　算定処理
       *****************************************************************
        3009-NYUINKAISU-SEC              SECTION.
+      *
+      *    調剤料算定なしの時、対象外
+           IF      WRK-COM-SRYSYUKBN(IDX) =   "214"
+                                          OR  "224"
+                                          OR  "234"
+               GO      TO      3009-NYUINKAISU-EXT
+           END-IF
       *
            MOVE    1                   TO  WRK-KAISU
       *    内服は日数分作成する
@@ -2095,7 +2121,8 @@
            MOVE    "2"                 TO  LNK-SC91-KBN
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
            MOVE    WRK-SRYCD           TO  LNK-SC91-SRYCD
-           MOVE    LNK-ORCSC-TEISEI-AREA TO  LNK-SC91-TEISEI-AREA
+           MOVE    LNK-ORCSC-TEISEI-AREA
+                                       TO  LNK-SC91-TEISEI-AREA
            CALL    "ORCSC91"           USING
                                        MCPAREA
                                        ORCSC91AREA
