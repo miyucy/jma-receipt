@@ -502,3 +502,36 @@ path	key29		{
 	};
 };
 
+path	key30		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key30_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND		PTID        =   :PTID
+			AND		RRKEDANUM   =   1
+			AND		SHOKAIKBN   =   '1'
+			AND		SHONUM      =   :SHONUM
+		;
+	};
+};
+
+path	key31		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key31_csr CURSOR FOR
+		SELECT * FROM TBL_PTNYUINRRK a,
+		( SELECT SHONUM FROM TBL_PTNYUINRRK 
+			WHERE HOSPID    = :HOSPID
+			AND   PTID      = :PTID
+			AND   RRKEDANUM = 1
+			AND   NYUINYMD  < :NYUINYMD
+			AND   SHOKAIKBN = '1'  ) b
+		WHERE a.HOSPID    = :HOSPID
+		AND   a.PTID      = :PTID
+		AND   a.RRKEDANUM = 1
+		AND   a.NYUINYMD  < :NYUINYMD
+		AND   a.SHONUM    = b.SHONUM
+		ORDER BY a.SHONUM,a.NYUINYMD
+		;
+	};
+};

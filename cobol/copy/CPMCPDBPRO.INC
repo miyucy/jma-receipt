@@ -323,6 +323,7 @@
       *                                     SYUDAY-DEL2 追加
       *  01.01.137   NACL-太田    04/03/29  PTTEIKIRRK-KEY6追加
       *  01.01.138   NACL-太田    04/04/08  SYUMEI-KEY7追加
+      *  01.01.139   NACL-太田    04/05/06  PTNYUINRRK-KEY30,KEY31追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -346,6 +347,7 @@
                MOVE    WRK-PATH        TO  MCP-PATH
            END-EVALUATE.
       *
+           DISPLAY "MCP-FUNC = " MCP-FUNC
       *
            EVALUATE    MCP-FUNC
              WHEN     'DBCLOSE'
@@ -2863,6 +2865,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY29"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY29
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY30"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY30
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY31"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY31
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-ALL"
                    MOVE    PATH-TBL-PTNYUINRRK-ALL

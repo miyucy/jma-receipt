@@ -112,13 +112,13 @@
                 05  I01-DISPKBN-ITM                PIC X(11)
                                                    OCCURS  5.
                 05  I01-DISPKBN-ITM-STT            PIC S9(9)   BINARY.
-              04  I01-SELNUM                       PIC S9(2).
+              04  I01-SELNUM                       PIC S9(3).
               04  I01-SCROLLEDWINDOW1.
                 05  I01-NYUREKILST.
                   06  I01-NYUREKILST-CNT           PIC S9(9)   BINARY.
                   06  I01-NYUREKILST-ROW           PIC S9(9)   BINARY.
                   06  I01-NYUREKILST-ROWATTR       PIC S9(9)   BINARY.
-                  06  I01-NYUREKILST-ITM           OCCURS  50.
+                  06  I01-NYUREKILST-ITM           OCCURS  100.
                     07  I01-TSELNUM                PIC X(4).
                     07  I01-TSHOKAI                PIC X(2).
                     07  I01-TSHONUM                PIC X(4).
@@ -132,4 +132,4 @@
                     07  I01-TNISSU                 PIC X(5).
                     07  I01-TTUSAN                 PIC X(5).
                   06  I01-NYUREKILST-SELECT        PIC X
-                                                   OCCURS  50.
+                                                   OCCURS  100.
