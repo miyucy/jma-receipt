@@ -470,7 +470,7 @@
       <y>92</y>
       <width>25</width>
       <height>24</height>
-      <editable>True</editable>
+      <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>2</text_max_length>
       <text></text>
