@@ -17,7 +17,7 @@
       ********************************************************************
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGI48.
-      *****************************************************************
+      ********************************************************************
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Æþ±¡²ñ·×¾È²ñ 
       *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¿ÇÎÅ¹Ô°Ù°ìÍ÷ÁªÂò¥µ¥Ö¡Ê£É£´£¸¡Ë
@@ -391,9 +391,6 @@
            MOVE    ZERO                TO  SPA-I48-NEXT.
       *
       *    ¥ê¥¹¥È¥Ü¥Ã¥¯¥¹
-      **     MOVE    "1:ÆâÉþÌô"          TO  SPA-I48-JIINLST (1).
-      **     MOVE    "2:³°ÍÑÌô"          TO  SPA-I48-JIINLST (2).
-      **     MOVE    "3:Ãí¼ÍÌô"          TO  SPA-I48-JIINLST (3).
            MOVE    "1:½èÃÖ"            TO  SPA-I48-JIINLST (1).
            MOVE    "2:¿Ç»¡"            TO  SPA-I48-JIINLST (2).
            MOVE    "3:Ãí¼Í"            TO  SPA-I48-JIINLST (3).
@@ -403,9 +400,6 @@
            MOVE    SPACE               TO  SPA-I48-JIIN-G.
       *
       *    ¥æ¡¼¥¶¡¼ÅÐÏ¿Â¾
-      **     MOVE    "1:ÍÑË¡"            TO  SPA-I48-USERLST (1).
-      **     MOVE    "2:Éô°Ì"            TO  SPA-I48-USERLST (2).
-      **     MOVE    "3:¤½¤ÎÂ¾"          TO  SPA-I48-USERLST (3).
            MOVE    "1:¥³¥á¥ó¥È"        TO  SPA-I48-USERLST (1).
            MOVE    "2:Ï«ºÒ"            TO  SPA-I48-USERLST (2).
            MOVE    SPACE               TO  SPA-I48-USER-G.
@@ -654,56 +648,9 @@
       *
                IF      SPA-I48-GMN-ALL     =   SPACE
       *        ¼«±¡Ê¬¤Î¤ß
-      **             EVALUATE    SPA-I48-GMN-SYORI
-      *            ÆâÉþ
-      **                 WHEN    "3"
-      **                     MOVE    "TENSU-KEY51J"       TO  WRK-PATH
-      *            ³°ÍÑ
-      **                 WHEN    "4"
-      **                     MOVE    "TENSU-KEY52J"       TO  WRK-PATH
-      *            Ãí¼Í
-      **                 WHEN    "5"
-      **                     MOVE    "TENSU-KEY53J"       TO  WRK-PATH
-      *            ´ïºà
-      **                 WHEN    "7"
-      **                     MOVE    "TENSU-KEY6J"        TO  WRK-PATH
-      *            ¿ÇÎÅ¹Ô°Ù
-      **                 WHEN    "8"
-                           MOVE    "TENSU-KEY7J"        TO  WRK-PATH
-      *            ¸¡ºº
-      **                 WHEN    "9"
-      **                     MOVE    "TENSU-KEY42JK"      TO  WRK-PATH
-      *            ÆâÉþ
-      **                 WHEN    OTHER
-      **                     MOVE    "3"             TO  SPA-I48-GMN-SYORI
-      **                     MOVE    "TENSU-KEY51J"  TO  WRK-PATH
-      **             END-EVALUATE
+                   MOVE    "TENSU-KEY7J"        TO  WRK-PATH
                ELSE
-      *        Á´ÂÎÊ¬
-      **             EVALUATE    SPA-I48-GMN-SYORI
-      *            ÆâÉþ
-      **                 WHEN    "3"
-      **                     MOVE    "TENSU-KEY51"       TO  WRK-PATH
-      *            ³°ÍÑ
-      **                 WHEN    "4"
-      **                     MOVE    "TENSU-KEY52"       TO  WRK-PATH
-      *            Ãí¼Í
-      **                 WHEN    "5"
-      **                     MOVE    "TENSU-KEY53"       TO  WRK-PATH
-      *            ´ïºà
-      **                 WHEN    "7"
-      **                     MOVE    "TENSU-KEY6"        TO  WRK-PATH
-      *            ¿ÇÎÅ¹Ô°Ù
-      **                 WHEN    "8"
-                           MOVE    "TENSU-KEY7"        TO  WRK-PATH
-      *            ¸¡ºº
-      **                 WHEN    "9"
-      **                     MOVE    "TENSU-KEY42K"      TO  WRK-PATH
-      *            ÆâÉþ
-      **                 WHEN    OTHER
-      **                     MOVE    "3"             TO  SPA-I48-GMN-SYORI
-      **                     MOVE    "TENSU-KEY51"   TO  WRK-PATH
-      **             END-EVALUATE
+                   MOVE    "TENSU-KEY7"        TO  WRK-PATH
                END-IF
            END-IF.
       *
@@ -749,21 +696,6 @@
       *
       *        ÅÀ¿ô¥Þ¥¹¥¿¥Á¥§¥Ã¥¯
                PERFORM 31021-TENSU-CHK-SEC
-      *        ¸¡ºº¤ÇÊñ³çÈ½Äê¤¬¤¢¤ë»þ¤ÎÈ½Äê
-      **         IF      SPA-I48-GMN-SYORI   =   "9"
-      **             EVALUATE    SPA-I48-NAI-HOUKATU
-      **                 WHEN    "1"
-      *                    Êñ³ç¤¢¤ê
-      **                     IF      TNS-HOUKNSKBN       =   ZERO
-      **                         MOVE    1               TO  FLG-CHK
-      **                     END-IF
-      **                 WHEN    "2"
-      *                    Êñ³ç¤Ê¤·
-      **                     IF      TNS-HOUKNSKBN   NOT =   ZERO
-      **                         MOVE    1               TO  FLG-CHK
-      **                     END-IF
-      **             END-EVALUATE
-      **         END-IF
       *
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
@@ -807,27 +739,6 @@
       *
            EVALUATE    SPA-I48-GMN-SYORI3
                WHEN    "J1"
-      *            ¼«±¡¡¦ÆâÉþ
-      **             MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
-      **             MOVE    "600000000"          TO  TNS-SRYCD
-      **             MOVE    "699999999"          TO  TNSUP-SRYCD
-      **             MOVE    "1"                  TO  TNS-YKZKBN
-      **             MOVE    "1"                  TO  SPA-I48-GMN-ALL
-      **         WHEN    "J2"
-      *            ¼«±¡¡¦³°ÍÑ
-      **             MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
-      **             MOVE    "600000000"          TO  TNS-SRYCD
-      **             MOVE    "699999999"          TO  TNSUP-SRYCD
-      **             MOVE    "6"                  TO  TNS-YKZKBN
-      **             MOVE    "1"                  TO  SPA-I48-GMN-ALL
-      **         WHEN    "J3"
-      *            ¼«±¡¡¦Ãí¼Í
-      **             MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
-      **             MOVE    "600000000"          TO  TNS-SRYCD
-      **             MOVE    "699999999"          TO  TNSUP-SRYCD
-      **             MOVE    "4"                  TO  TNS-YKZKBN
-      **             MOVE    "1"                  TO  SPA-I48-GMN-ALL
-               WHEN    "J1"
       *            ¼«±¡¡¦½èÃÖ
                    MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
                    MOVE    "140000000"          TO  TNS-SRYCD
@@ -869,24 +780,6 @@
                    MOVE    "1"                  TO  SPA-I48-GMN-ALL
                    MOVE    "800000000"          TO  TNS-SRYCD
                    MOVE    "899999999"          TO  TNSUP-SRYCD
-      **         WHEN    "U1"
-      *            ÍÑË¡
-      **             MOVE    "TENSU-KEY12S"       TO  WRK-PATH
-      **             MOVE    "001000000"          TO  TNS-SRYCD
-      **             MOVE    "001999999"          TO  TNSUP-SRYCD
-      **             MOVE    "1"                  TO  SPA-I48-GMN-ALL
-      **         WHEN    "U2"
-      *            Éô°Ì
-      **             MOVE    "TENSU-KEY12S"       TO  WRK-PATH
-      **             MOVE    "002000000"          TO  TNS-SRYCD
-      **             MOVE    "002999999"          TO  TNSUP-SRYCD
-      **             MOVE    "1"                  TO  SPA-I48-GMN-ALL
-      **         WHEN    "U3"
-      *            ¤½¤ÎÂ¾
-      **             MOVE    "TENSU-KEY12S"       TO  WRK-PATH
-      **             MOVE    "003000000"          TO  TNS-SRYCD
-      **             MOVE    "098999999"          TO  TNSUP-SRYCD
-      **             MOVE    "1"                  TO  SPA-I48-GMN-ALL
                WHEN    "U2"
       *            Ï«ºÒ¿Ç»¡
                    MOVE    "TENSU-KEY12S"       TO  WRK-PATH
@@ -975,6 +868,7 @@
       *
        31022-RSI-HENSYU-EXT.
            EXIT.
+      *
       *****************************************************************
       *    ÅÀ¿ô¥Þ¥¹¥¿¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
@@ -1056,41 +950,6 @@
                END-STRING
            END-IF.
       *
-      *    ¸¡ºº¤Î»þ¡¢Êñ³ç¤ÎÊÔ½¸
-      **     IF      SPA-I48-GMN-SYORI   =   "9"
-      **         EVALUATE    TNS-HOUKNSKBN
-      **             WHEN    01
-      *                ·ì±Õ²½³Ø¸¡ºº¤ÎÊñ³ç
-      **                 MOVE    "¡ú"            TO  WRK-KENSA-HEN
-      **             WHEN    02
-      *                ÆâÊ¬Èç³Ø¸¡ºº¤ÎÊñ³ç
-      **                 MOVE    "¡ú"            TO  WRK-KENSA-HEN
-      **             WHEN    03
-      *                ´Î±ê¥¦¥¤¥ë¥¹´ØÏ¢¸¡ºº¤ÎÊñ³ç
-      **                 MOVE    "¡ú"            TO  WRK-KENSA-HEN
-      **             WHEN    04
-      *                ¼ðáç¥Þ¡¼¥«¡¼¤ÎÊñ³ç
-      **                 MOVE    "¡ü"            TO  WRK-KENSA-HEN
-      **             WHEN    05
-      *                £´°Ê³°¤Î¼ðáç¥Þ¡¼¥«¡¼¤ÎÊñ³ç
-      **                 MOVE    "¢¡"            TO  WRK-KENSA-HEN
-      **             WHEN    06
-      *                ½Ð·ì¡¦¶Å¸Ç¸¡ºº¤ÎÊñ³ç
-      **                 MOVE    "¡ú"            TO  WRK-KENSA-HEN
-      **             WHEN    07
-      *                ¼«¸Ê¹³ÂÎ¸¡ºº¤ÎÊñ³ç
-      **                 MOVE    "¢¡"            TO  WRK-KENSA-HEN
-      **             WHEN    OTHER
-      **                 MOVE    SPACE           TO  WRK-KENSA-HEN
-      **         END-EVALUATE
-      **         MOVE    SPA-I48-GMN-NAME(IDX)   TO  WRK-HEN-NAME
-      **         MOVE    SPACE               TO  SPA-I48-GMN-NAME(IDX)
-      **         STRING  WRK-KENSA-HEN       DELIMITED   BY  SIZE
-      **                 WRK-HEN-NAME        DELIMITED   BY  SIZE
-      **                 INTO                    SPA-I48-GMN-NAME(IDX)
-      **         END-STRING
-      **     END-IF.
-      *
        31021-TENSU-HEN-EXT.
            EXIT.
       *
@@ -1117,42 +976,6 @@
            END-IF.
       *
            EVALUATE    SPA-I48-GMN-SYORI
-      *        ÆâÉþ
-      **         WHEN    "3"
-      **             IF      SPA-I48-GMN-ALL     =   SPACE
-      **                 MOVE    "ÆâÉþ¡Ê¼«±¡¡Ë" 
-      **                                         TO  I48-SENTAKU
-      **             ELSE
-      **                 MOVE    "ÆâÉþ¡ÊÁ´ÂÎ¡Ë" 
-      **                                         TO  I48-SENTAKU
-      **             END-IF
-      *        ³°ÍÑ
-      **         WHEN    "4"
-      **             IF      SPA-I48-GMN-ALL     =   SPACE
-      **                 MOVE    "³°ÍÑ¡Ê¼«±¡¡Ë" 
-      **                                         TO  I48-SENTAKU
-      **             ELSE
-      **                 MOVE    "³°ÍÑ¡ÊÁ´ÂÎ¡Ë" 
-      **                                         TO  I48-SENTAKU
-      **             END-IF
-      *        Ãí¼Í
-      **         WHEN    "5"
-      **             IF      SPA-I48-GMN-ALL     =   SPACE
-      **                 MOVE    "Ãí¼Í¡Ê¼«±¡¡Ë" 
-      **                                         TO  I48-SENTAKU
-      **             ELSE
-      **                 MOVE    "Ãí¼Í¡ÊÁ´ÂÎ¡Ë" 
-      **                                         TO  I48-SENTAKU
-      **             END-IF
-      *        ´ïºà
-      **         WHEN    "7"
-      **             IF      SPA-I48-GMN-ALL     =   SPACE
-      **                 MOVE    "´ïºà¡Ê¼«±¡¡Ë" 
-      **                                         TO  I48-SENTAKU
-      **             ELSE
-      **                 MOVE    "´ïºà¡ÊÁ´ÂÎ¡Ë" 
-      **                                         TO  I48-SENTAKU
-      **             END-IF
       *        ¿ÇÎÅ¹Ô°Ù
                WHEN    "8"
                    IF      SPA-I48-GMN-ALL     =   SPACE
@@ -1162,28 +985,12 @@
                        MOVE    "¿ÇÎÅ¹Ô°Ù¡ÊÁ´ÂÎ¡Ë" 
                                                TO  I48-SENTAKU
                    END-IF
-      *        ¸¡ºº
-      **         WHEN    "9"
-      **             MOVE    "¸¡ºº"              TO  I48-SENTAKU
-      **             IF      SPA-I48-NAI-KENSANO     NOT =   ZERO
-      **                 PERFORM 5010-GRPMEI-SET-SEC
-      **                 MOVE    WRK-GRP-MEI-X       TO  I48-SENTAKU
-      **             END-IF
       *        ¥»¥Ã¥È
                WHEN    "P"
                    MOVE    "¥»¥Ã¥È"            TO  I48-SENTAKU
       *        ¥æ¡¼¥¶¡¼ÅÐÏ¿
                WHEN    "U"
                    EVALUATE    SPA-I48-GMN-SYORI3
-      **                 WHEN    "J1"
-      **                     MOVE    "¼«±¡ºÎÍÑ¡ÊÆâÉþ¡Ë"
-      **                                         TO  I48-SENTAKU
-      **                 WHEN    "J2"
-      **                     MOVE    "¼«±¡ºÎÍÑ¡Ê³°ÍÑ¡Ë"
-      **                                         TO  I48-SENTAKU
-      **                 WHEN    "J3"
-      **                     MOVE    "¼«±¡ºÎÍÑ¡ÊÃí¼Í¡Ë"
-      **                                         TO  I48-SENTAKU
                        WHEN    "J1"
                            MOVE    "¼«±¡ºÎÍÑ¡Ê½èÃÖ¡Ë"
                                                TO  I48-SENTAKU
@@ -1202,15 +1009,6 @@
                        WHEN    "J6"
                            MOVE    "¼«±¡ºÎÍÑ¡Ê¤½¤ÎÂ¾¡Ë"
                                                TO  I48-SENTAKU
-      **                 WHEN    "U1"
-      **                     MOVE    "ÍÑË¡¡ÊÁ´ÂÎ¡Ë"
-      **                                         TO  I48-SENTAKU
-      **                 WHEN    "U2"
-      **                     MOVE    "»£±ÆÉô°Ì¡ÊÁ´ÂÎ¡Ë"
-      **                                         TO  I48-SENTAKU
-      **                 WHEN    "U3"
-      **                     MOVE    "¥æ¡¼¥¶¡¼ÅÐÏ¿¡Ê¤½¤ÎÂ¾¡Ë"
-      **                                         TO  I48-SENTAKU
                        WHEN    "U1"
                            MOVE    "¥³¥á¥ó¥È¡ÊÁ´ÂÎ¡Ë"
                                                TO  I48-SENTAKU
@@ -1381,24 +1179,9 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    SPACE               TO  SPA-I48-SRYCD-G
                    PERFORM 210-BACK
-      *        ÆâÉþ
-      **         WHEN    "CLICKED"       ALSO    "B02"
-      **             PERFORM 230-NAIFUKU-SEC
-      *        ³°ÍÑ
-      **         WHEN    "CLICKED"       ALSO    "B03"
-      **             PERFORM 240-GAIYOU-SEC
-      *        Ãí¼Í
-      **         WHEN    "CLICKED"       ALSO    "B04"
-      **             PERFORM 250-CHUUSYA-SEC
-      *        ´ïºà
-      **         WHEN    "CLICKED"       ALSO    "B05"
-      **             PERFORM 270-KIZAI-SEC
       *        ¿ÇÎÅ¹Ô°Ù
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 280-SINRYOU-SEC
-      *        ¸¡ºº
-      **         WHEN    "CLICKED"       ALSO    "B08"
-      **             PERFORM 290-KENSA-SEC
       *        Á´ÂÎ
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 290-ALL-SEL-SEC
@@ -1558,18 +1341,13 @@
                        SPA-I48-GMN-SYORI2  =   SPACE )
                    CONTINUE
                ELSE
-      *            ÆþÎÏ¥³¡¼¥É¤è¤êÊÔ½¸¤Î»þ¡¢ÆâÉþ¡Ê£Æ£²¡Ë¤È¤¹¤ë
-      **             IF      SPA-I48-TYPE        =   "1" 
-      **                 PERFORM 230-NAIFUKU-SEC
-      **             ELSE
-                       MOVE    "1"                 TO  SPA-I48-GMN-ALL
-                       INITIALIZE              SPA-I48-NAI-SELNUM-G
-                       INITIALIZE              SPA-I48-GMN-SELNUM-G
-                       MOVE    SPACE           TO  SPA-I48-SRYCD-G
-      *                £Ó£Ð£Á¥»¥Ã¥È
-                       MOVE    ZERO                TO  SPA-I48-NEXT
-                       PERFORM                     310-SPA-SET-SEC
-      **             END-IF
+                   MOVE    "1"                 TO  SPA-I48-GMN-ALL
+                   INITIALIZE              SPA-I48-NAI-SELNUM-G
+                   INITIALIZE              SPA-I48-GMN-SELNUM-G
+                   MOVE    SPACE           TO  SPA-I48-SRYCD-G
+      *            £Ó£Ð£Á¥»¥Ã¥È
+                   MOVE    ZERO                TO  SPA-I48-NEXT
+                   PERFORM                     310-SPA-SET-SEC
                    GO      TO      41011-SELNUM-CHK-EXT
                END-IF
            END-IF.
@@ -1606,16 +1384,7 @@
                END-IF
            END-PERFORM.
       *
-      *    ¸¡ºº¥Á¥§¥Ã¥¯
-      **     IF      SPA-I48-GMN-SYORI   =   "9"
-      **         IF      SPA-I48-GMN-SYORI2  =   SPACE
-      **             PERFORM 41013-KENSA-GRP-SEC
-      **         ELSE
-      **             PERFORM 41014-KENSA-SEL-SEC
-      **         END-IF
-      **     ELSE
-               PERFORM 41012-SRYCD-SEL-SEC.
-      **     END-IF.
+           PERFORM 41012-SRYCD-SEL-SEC.
       *
        41011-SELNUM-CHK-EXT.
            EXIT.
@@ -1665,19 +1434,6 @@
                GO      TO      41013-KENSA-GRP-EXT
            END-IF.
            MOVE    SPA-I48-GMN-NO-X(WRK-SELNO)  TO  SPA-I48-NAI-KENSA.
-           EVALUATE    SPA-I48-NAI-KENSANO
-               WHEN    31
-               WHEN    41
-      *            Êñ³ç
-                   MOVE    "1"                 TO  SPA-I48-NAI-HOUKATU
-               WHEN    32
-               WHEN    42
-      *            Êñ³ç³°
-                   MOVE    "2"                 TO  SPA-I48-NAI-HOUKATU
-               WHEN    OTHER
-      *            ¤½¤ÎÂ¾
-                   MOVE    SPACE               TO  SPA-I48-NAI-HOUKATU
-           END-EVALUATE.
       *
            PERFORM 5010-GRPMEI-SET-SEC.
            IF      WRK-GRP-MEI         =   SPACE
@@ -1740,10 +1496,10 @@
       *****************************************************************
        410141-TBL-SAIHEN-SEC       SECTION.
       *
-           MOVE    ZERO                TO  IDX1.
+           MOVE    ZERO                    TO  IDX1.
            MOVE    SPA-I48-NAI-SELNUM-G    TO  WRK-NAI-SELNUM-G.
            MOVE    SPA-I48-GMN-SELNUM-G    TO  WRK-GMN-SELNUM-G.
-           MOVE    SPA-I48-SRYCD-G     TO  WRK-I48-SRYCD-G.
+           MOVE    SPA-I48-SRYCD-G         TO  WRK-I48-SRYCD-G.
       *
            INITIALIZE                  SPA-I48-GMN-SELNUM-G.
            INITIALIZE                  SPA-I48-NAI-SELNUM-G.
@@ -1809,16 +1565,7 @@
                GO      TO              41012-LISTSEL-EXT
            END-IF.
       *
-      *    ¸¡ºº¥Á¥§¥Ã¥¯
-      **     IF      SPA-I48-GMN-SYORI   =   "9"
-      **         IF      SPA-I48-GMN-SYORI2  =   SPACE
-      **             PERFORM 41013-KENSA-GRP-SEC
-      **         ELSE
-      **             PERFORM 41014-KENSA-SEL-SEC
-      **         END-IF
-      **     ELSE
-               PERFORM 41012-SRYCD-SEL-SEC
-      **     END-IF.
+           PERFORM 41012-SRYCD-SEL-SEC.
       *
        41012-LISTSEL-EXT.
            EXIT.
@@ -1841,82 +1588,6 @@
       *
        41011-SELNO-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    ÆâÉþÌôºÞÁªÂò½èÍý
-      *****************************************************************
-      ** 230-NAIFUKU-SEC                   SECTION.
-      *
-      **     MOVE    "3"                 TO  SPA-I48-GMN-SYORI.
-      **     MOVE    "2"                 TO  SPA-I48-TYPE.
-      *
-      **     INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-      **     INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-      **     MOVE    SPACE               TO  SPA-I48-SRYCD-G.
-      **     MOVE    SPACE               TO  SPA-I48-GMN-ALL.
-      **     MOVE    ZERO                TO  SPA-I48-NEXT.
-      *    £Ó£Ð£Á¥»¥Ã¥È
-      **     PERFORM                     310-SPA-SET-SEC.
-      *
-      ** 230-NAIFUKU-EXT.
-      **     EXIT.
-      *
-      *****************************************************************
-      *    ³°ÍÑÌôÁªÂò½èÍý
-      *****************************************************************
-      ** 240-GAIYOU-SEC                   SECTION.
-      *
-      **     MOVE    "4"                 TO  SPA-I48-GMN-SYORI.
-      **     MOVE    "2"                 TO  SPA-I48-TYPE.
-      *
-      **     INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-      **     INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-      **     MOVE    SPACE               TO  SPA-I48-SRYCD-G.
-      **     MOVE    SPACE               TO  SPA-I48-GMN-ALL.
-      *    £Ó£Ð£Á¥»¥Ã¥È
-      **     MOVE    ZERO                TO  SPA-I48-NEXT.
-      **     PERFORM                     310-SPA-SET-SEC.
-      *
-      ** 240-GAIYOU-EXT.
-      **     EXIT.
-      *
-      *****************************************************************
-      *    Ãí¼ÍÌôÁªÂò½èÍý
-      *****************************************************************
-      ** 250-CHUUSYA-SEC                   SECTION.
-      *
-      **     MOVE    "5"                 TO  SPA-I48-GMN-SYORI.
-      **     MOVE    "2"                 TO  SPA-I48-TYPE.
-      *
-      **     INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-      **     INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-      **     MOVE    SPACE               TO  SPA-I48-SRYCD-G.
-      **     MOVE    SPACE               TO  SPA-I48-GMN-ALL.
-      *    £Ó£Ð£Á¥»¥Ã¥È
-      **     MOVE    ZERO                TO  SPA-I48-NEXT.
-      **     PERFORM                     310-SPA-SET-SEC.
-      *
-      ** 250-CHUUSYA-EXT.
-      **     EXIT.
-      *
-      *****************************************************************
-      *    ´ïºàÁªÂò½èÍý
-      *****************************************************************
-      ** 270-KIZAI-SEC                   SECTION.
-      *
-      **     MOVE    "7"                 TO  SPA-I48-GMN-SYORI.
-      **     MOVE    "2"                 TO  SPA-I48-TYPE.
-      *
-      **     INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-      **     INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-      **     MOVE    SPACE               TO  SPA-I48-SRYCD-G.
-      **     MOVE    SPACE               TO  SPA-I48-GMN-ALL.
-      *    £Ó£Ð£Á¥»¥Ã¥È
-      **     MOVE    ZERO                TO  SPA-I48-NEXT.
-      **     PERFORM                     310-SPA-SET-SEC.
-      *
-      ** 270-KIZAI-EXT.
-      **     EXIT.
       *
       *****************************************************************
       *    ¿ÇÎÅ¹Ô°ÙÁªÂò½èÍý
@@ -1959,12 +1630,6 @@
                    MOVE    "J5"            TO  SPA-I48-GMN-SYORI3
                WHEN    "6"
                    MOVE    "J6"            TO  SPA-I48-GMN-SYORI3
-      **         WHEN    "7"
-      **             MOVE    "J7"            TO  SPA-I48-GMN-SYORI3
-      **         WHEN    "8"
-      **             MOVE    "J8"            TO  SPA-I48-GMN-SYORI3
-      **         WHEN    "9"
-      **             MOVE    "J9"            TO  SPA-I48-GMN-SYORI3
                WHEN    OTHER
                    MOVE    "0010"          TO  SPA-ERRCD
                    GO      TO      41014-JIIN-CHK-EXT
@@ -1998,12 +1663,6 @@
                    MOVE    "U1"            TO  SPA-I48-GMN-SYORI3
                WHEN    "2"
                    MOVE    "U2"            TO  SPA-I48-GMN-SYORI3
-      **         WHEN    "3"
-      **             MOVE    "U3"            TO  SPA-I48-GMN-SYORI3
-      **         WHEN    "4"
-      **             MOVE    "U4"            TO  SPA-I48-GMN-SYORI3
-      **         WHEN    "5"
-      **             MOVE    "U5"            TO  SPA-I48-GMN-SYORI3
                WHEN    OTHER
                    MOVE    "0011"          TO  SPA-ERRCD
                    GO      TO      41014-USER-CHK-EXT
@@ -2024,41 +1683,6 @@
            EXIT.
       *
       *****************************************************************
-      *    ¸¡ººÁªÂò½èÍý
-      *****************************************************************
-      ** 290-KENSA-SEC                   SECTION.
-      *
-      **     MOVE    "9"                 TO  SPA-I48-GMN-SYORI.
-      **     MOVE    SPACE               TO  SPA-I48-GMN-SYORI2.
-      **     MOVE    SPACE               TO  SPA-I48-GMN-SYORI3.
-      **     MOVE    "2"                 TO  SPA-I48-TYPE.
-      **     MOVE    SPACE               TO  SPA-I48-GMN-ALL.
-      *
-      *    £Ó£Ð£Á¥»¥Ã¥È
-      **     INITIALIZE                  SPA-I48-GMN-TBL.
-      **     MOVE    ZERO                TO  SPA-I48-GMN-MAX.
-      **     INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-      **     INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-      **     MOVE    SPACE               TO  SPA-I48-SRYCD-G.
-      *
-      **     PERFORM VARYING     IDX     FROM    1   BY  1
-      **             UNTIL       IDX     >   24
-      *
-      **         SET     TBL-IDX                 TO  IDX
-      **         MOVE    TBL-GRP-KBN (TBL-IDX)   TO  SPA-I48-GMN-NO-X
-      **                                                         (IDX)
-      **         MOVE    TBL-GRP-MEI (TBL-IDX)   TO  SPA-I48-GMN-NAME
-      **                                                         (IDX)
-      **     END-PERFORM.
-      *
-      **     MOVE    24                  TO  SPA-I48-GMN-MAX.
-      *
-      **     MOVE    1                   TO  SPA-GMN-CUR4.
-      *
-      ** 290-KENSAU-EXT.
-      **     EXIT.
-      *
-      *****************************************************************
       *    Á´ÂÎ°ìÃ×½èÍý
       *****************************************************************
        290-ALL-SEL-SEC                   SECTION.
@@ -2073,20 +1697,13 @@
                ELSE
                    MOVE    SPACE               TO  SPA-I48-GMN-ALL
                END-IF
-      *        ÆþÎÏ¥³¡¼¥É¤è¤êÊÔ½¸¤Î»þ¡¢ÆâÉþ¡Ê£Æ£²¡Ë¤È¤¹¤ë
-      **         IF      SPA-I48-TYPE        =   "1" 
-      **             PERFORM 230-NAIFUKU-SEC
-      **         ELSE
-                   INITIALIZE                  SPA-I48-NAI-SELNUM-G
-                   INITIALIZE                  SPA-I48-GMN-SELNUM-G
-                   MOVE    SPACE               TO  SPA-I48-SRYCD-G
-                   MOVE    ZERO                TO  SPA-I48-NEXT
-      ***             
+               INITIALIZE                  SPA-I48-NAI-SELNUM-G
+               INITIALIZE                  SPA-I48-GMN-SELNUM-G
+               MOVE    SPACE               TO  SPA-I48-SRYCD-G
+               MOVE    ZERO                TO  SPA-I48-NEXT
                MOVE    SPACE               TO  SPA-I48-TYPE
-      ***             
-      *            £Ó£Ð£Á¥»¥Ã¥È
-                   PERFORM                     310-SPA-SET-SEC
-      **         END-IF
+      *        £Ó£Ð£Á¥»¥Ã¥È
+               PERFORM                     310-SPA-SET-SEC
       *
                IF       WRK-WIDGET-SW         =   "1"
                    MOVE   MCP-WIDGET           TO  WRK-WIDGET
@@ -2137,20 +1754,13 @@
            ELSE
                MOVE    SPACE               TO  SPA-I48-GMN-ALL
            END-IF.
-      *    ÆþÎÏ¥³¡¼¥É¤è¤êÊÔ½¸¤Î»þ¡¢ÆâÉþ¡Ê£Æ£²¡Ë¤È¤¹¤ë
-      **     IF      SPA-I48-TYPE        =   "1" 
-      **         PERFORM 230-NAIFUKU-SEC
-      **     ELSE
-               INITIALIZE                  SPA-I48-NAI-SELNUM-G
-               INITIALIZE                  SPA-I48-GMN-SELNUM-G
-               MOVE    SPACE               TO  SPA-I48-SRYCD-G
-               MOVE    ZERO                TO  SPA-I48-NEXT
-      ***             
-               MOVE    SPACE               TO  SPA-I48-TYPE
-      ***
-      *        £Ó£Ð£Á¥»¥Ã¥È
-               PERFORM                     310-SPA-SET-SEC
-      **     END-IF.
+           INITIALIZE                  SPA-I48-NAI-SELNUM-G.
+           INITIALIZE                  SPA-I48-GMN-SELNUM-G.
+           MOVE    SPACE               TO  SPA-I48-SRYCD-G.
+           MOVE    ZERO                TO  SPA-I48-NEXT.
+           MOVE    SPACE               TO  SPA-I48-TYPE.
+      *    £Ó£Ð£Á¥»¥Ã¥È
+           PERFORM                     310-SPA-SET-SEC.
       *
            IF       WRK-WIDGET-SW         =   "1"
                MOVE   MCP-WIDGET           TO  WRK-WIDGET
@@ -2183,20 +1793,13 @@
            ELSE
                MOVE    SPACE               TO  SPA-I48-GMN-ALL
            END-IF.
-      *    ÆþÎÏ¥³¡¼¥É¤è¤êÊÔ½¸¤Î»þ¡¢ÆâÉþ¡Ê£Æ£²¡Ë¤È¤¹¤ë
-      **     IF      SPA-I48-TYPE        =   "1" 
-      **         PERFORM 230-NAIFUKU-SEC
-      **     ELSE
-               INITIALIZE                  SPA-I48-NAI-SELNUM-G
-               INITIALIZE                  SPA-I48-GMN-SELNUM-G
-               MOVE    SPACE               TO  SPA-I48-SRYCD-G
-               MOVE    ZERO                TO  SPA-I48-NEXT
-      ***             
-               MOVE    SPACE               TO  SPA-I48-TYPE
-      ***
-      *        £Ó£Ð£Á¥»¥Ã¥È
-               PERFORM                     310-SPA-SET-SEC
-      **     END-IF.
+           INITIALIZE                  SPA-I48-NAI-SELNUM-G.
+           INITIALIZE                  SPA-I48-GMN-SELNUM-G.
+           MOVE    SPACE               TO  SPA-I48-SRYCD-G.
+           MOVE    ZERO                TO  SPA-I48-NEXT.
+           MOVE    SPACE               TO  SPA-I48-TYPE.
+      *    £Ó£Ð£Á¥»¥Ã¥È
+           PERFORM                     310-SPA-SET-SEC.
       *
            IF       WRK-WIDGET-SW         =   "1"
                MOVE   MCP-WIDGET           TO  WRK-WIDGET
