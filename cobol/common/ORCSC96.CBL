@@ -481,6 +481,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "２００行までを対象とします。"
                                        TO  SPA-ERRMSG(27:)
+               WHEN    "7006"
+                   MOVE    "剤の明細数は３０明細までです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "剤を分けて下さい。"
+                                       TO  SPA-ERRMSG(31:)
                WHEN    "8000"
                    MOVE    "労災保険の診療コードです。入力できません。"
                                        TO  SPA-ERRMSG

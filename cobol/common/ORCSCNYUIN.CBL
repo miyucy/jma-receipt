@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  02/12/17  診療種別の判定追加
       *  01.00.02    NACL-多々納  03/04/01  翌月調剤料の算定修正
+      *  01.00.03    NACL-多々納  03/05/12  剤チェックをサブへ
       *****************************************************************
       *
       *
@@ -308,6 +309,9 @@
       *
       *    入院調剤料更新サブ（退院時）
            COPY    "CPORCSCHOZAI.INC".
+      *
+      *    診療会計剤チェックパラメタ
+           COPY    "CPORCSCZAICHK.INC".
       *
       *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
        01  SPA-SCR-REC.
@@ -861,77 +865,49 @@
            IF      WRK-MEISAISU        =   ZERO
                GO      TO      1002-SRYACCT-SYORI-EXT
            END-IF 
-      *    診療種別により判定を追加する
-           IF     (LNK-WKSRY-SRYSYUKBN (01)    =   SPACE )  OR
-                  (LNK-WKSRY-SRYSYUKBN (01)    =   "210"  OR
-                                                   "230" )
-               MOVE    SPACE                   TO  WRK-SRYSYUKBN
-           ELSE
-               MOVE    LNK-WKSRY-SRYSYUKBN(01) TO  WRK-SRYSYUKBN
-           END-IF
       *
-           MOVE    ZERO                TO  WRK-ZAINUM
-           MOVE    ZERO                TO  FLG-OK
-      *    診療会計マスターを特定する
-           INITIALIZE                          SRYACCT-REC
-           MOVE    LNK-WKSRY-HOSPID (01)   TO  ACCT-HOSPID
-           MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCT-NYUGAIKBN
-           MOVE    LNK-WKSRY-PTID   (01)   TO  ACCT-PTID
-           MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCT-SRYKA
-      *****MOVE    LNK-WKSRY-SRYYMD (01)(1:6)
-           MOVE    SPA-SRYYMD(1:6)
-                                           TO  ACCT-SRYYM
-           MOVE    LNK-WKSRY-SRYKBN (01)   TO  ACCT-SRYKBN
-      *
-           MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY3"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY3"      TO  ORC-DBPATH
-               PERFORM 930-SRYACCT-NEXT-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYACCT
-           END-IF
-           PERFORM
-               UNTIL   (FLG-SRYACCT        =   1    ) OR
-                       (FLG-OK             =   1    )
-      *
-      *        診療コード計を比較する
-               IF     (ACCT-HKNCOMBI        =   SPA-HKNCOMBINUM) AND
-                      (ACCT-SRYCDTOTAL      =   WRK-SRYCDKEI   ) AND
-                      (ACCT-ZAITEN          =   WRK-ZAITEN     ) AND
-                      (ACCT-MEISAISU        =   WRK-MEISAISU   )
-      *            数量計をゼロで作成していたものがあったので、
-      *            ゼロを１で判定する
-                 IF     (ACCT-SURYOUTOTAL     =   WRK-SRYSURYOKEI)  OR
-                        ((WRK-SRYSURYOKEI     =   1     ) AND
-                        (ACCT-SURYOUTOTAL     =   ZERO OR 1 ))
-                   MOVE    ACCT-ZAINUM      TO  WRK-H-ZAINUM
-      *            診療行為内容の比較処理
-                   PERFORM 45012-SRYACCT-CHK-SEC
-      *
-      *            同一診療会計マスターあり
-                   IF      FLG-OK          =   1
-      *                新規追加
-                       MOVE    WRK-H-ZAINUM        TO  WRK-ZAINUM
-                   END-IF
-                 END-IF
-               END-IF
-               IF      FLG-OK              =   ZERO
-                   MOVE    "SRYACCT-KEY3"      TO  ORC-DBPATH
-                   PERFORM 930-SRYACCT-NEXT-SEC
-               END-IF
+      *    診療会計剤チェックサブ
+           INITIALIZE                      ORCSCZAICHKAREA
+           MOVE    "1"                     TO  ORCSCZAICHK-KBN
+           MOVE    LNK-WKSRY-SRYKA(01)     TO  ORCSCZAICHK-SRYKA
+           MOVE    SPA-SRYYMD(1:6)         TO  ORCSCZAICHK-SRYYM
+           MOVE    LNK-WKSRY-SRYKBN(01)    TO  ORCSCZAICHK-SRYKBN
+           MOVE    LNK-WKSRY-SRYSYUKBN(01) TO  ORCSCZAICHK-SRYSYUKBN
+           MOVE    SPA-HKNCOMBINUM         TO  ORCSCZAICHK-HKNCOMBI
+           MOVE    WRK-SRYCDKEI            TO  ORCSCZAICHK-SRYCDTOTAL
+           MOVE    WRK-ZAITEN              TO  ORCSCZAICHK-ZAITEN
+           MOVE    WRK-MEISAISU            TO  ORCSCZAICHK-MEISAISU
+           MOVE    WRK-SRYSURYOKEI         TO  ORCSCZAICHK-SURYOUTOTAL
+           MOVE    WRK-SRYKAISUKEI         TO  ORCSCZAICHK-ZAIKAISU
+           MOVE    ZERO                    TO  IDX-ATO
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL       IDX1        >   IDX-KOUI
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2        >   5          )  OR
+                                  (IDX-ATO     >=  30         )  OR
+                                  (LNK-WKSRY-SRYCD(IDX1 IDX2) =  SPACE)
+                   ADD     1                   TO  IDX-ATO
+                   MOVE    LNK-WKSRY-SRYCD (IDX1 IDX2)
+                                               TO  ORCSCZAICHK-SRYCD
+                                                             (IDX-ATO)
+                   MOVE    LNK-WKSRY-SRYSURYO(IDX1 IDX2)
+                                               TO  ORCSCZAICHK-SRYSURYO
+                                                             (IDX-ATO)
+                   MOVE    LNK-WKSRY-SRYKAISU(IDX1 IDX2)
+                                               TO  ORCSCZAICHK-SRYKAISU
+                                                             (IDX-ATO)
+                   MOVE    LNK-WKSRY-INPUTCOMENT(IDX1 IDX2)
+                                           TO  ORCSCZAICHK-INPUTCOMENT
+                                                             (IDX-ATO)
+                   MOVE    LNK-WKSRY-INPUTCHI-G(IDX1 IDX2)
+                                           TO  ORCSCZAICHK-INPUTCHI-G
+                                                             (IDX-ATO)
+               END-PERFORM
            END-PERFORM
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY3"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+      *
+           CALL    "ORCSCZAICHK"       USING   SPA-AREA
+                                               ORCSCZAICHKAREA
+           MOVE    ORCSCZAICHK-ZAINUM  TO  WRK-ZAINUM
       *
            IF      WRK-ZAINUM          =   ZERO
       *        剤番号取得処理
@@ -1013,146 +989,6 @@
        1002-SRYACCT-SYORI-EXT.
            EXIT.
       *
-      *****************************************************************
-      *   診療行為内容の比較処理
-      *****************************************************************
-       45012-SRYACCT-CHK-SEC          SECTION.
-      *
-           MOVE    ZERO                TO  IDX-SIN
-           INITIALIZE                      TBL-MAE-AREA 
-      *    診療会計マスターから診療行為マスターを検索する
-           INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
-           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
-           MOVE    ACCT-PTID           TO  SRY-PTID
-           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
-           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
-           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
-      *
-           MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-               PERFORM 915-SRYACT-NEXT-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYACT
-           END-IF
-           PERFORM UNTIL     (FLG-SRYACT       =   1  )
-      *        診療種別により判定を追加する
-               IF     (SRY-SRYSYUKBN       =   SPACE )  OR
-                      (SRY-SRYSYUKBN       =   "210"  OR
-                                               "230" )
-                   MOVE    SPACE           TO  WRK-MAE-SRYSYUKBN
-               ELSE
-                   MOVE    SRY-SRYSYUKBN   TO  WRK-MAE-SRYSYUKBN
-               END-IF
-      *        診療種別区分判定
-               IF      WRK-SRYSYUKBN        =   WRK-MAE-SRYSYUKBN
-                   MOVE     1               TO  FLG-CHK-OK
-               ELSE
-                   MOVE     ZERO            TO  FLG-CHK-OK
-               END-IF
-               IF      FLG-CHK-OK          =   1
-      *
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL      (IDX2        >   5   )  OR
-                                  (SRY-SRYCD(IDX2)     =   SPACE )
-                   ADD     1                   TO  IDX-SIN
-                   MOVE    SRY-SRYCD   (IDX2)  TO  TBL-MAE-SRYCD
-                                                             (IDX-SIN)
-                   MOVE    SRY-SRYSURYO(IDX2)  TO  TBL-MAE-SRYSURYO
-                                                             (IDX-SIN)
-                   MOVE    SRY-SRYKAISU(IDX2)  TO  TBL-MAE-SRYKAISU
-                                                             (IDX-SIN)
-                   IF      SRY-SRYCD (IDX2)(1:1)   =   "8"
-                       MOVE    SRY-HOSPID          TO  PTCOM-HOSPID
-                       MOVE    SRY-PTID            TO  PTCOM-PTID
-                       MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
-                       MOVE    SRY-SRYCD (IDX2)    TO  PTCOM-SRYCD
-                       MOVE    SRY-INPUTNUM(IDX2)  TO  PTCOM-RENNUM
-                       PERFORM 950-PTCOM-READ-SEC
-                       IF      FLG-PTCOM           =   ZERO
-                           MOVE    PTCOM-INPUTCOMENT   TO
-                                               TBL-MAE-INPUTCOMENT
-                                                            (IDX-SIN)
-                           MOVE    PTCOM-INPUTCHI-AREA TO
-                                               TBL-MAE-ATAI-G
-                                                            (IDX-SIN)
-                       END-IF
-                   END-IF
-               END-PERFORM
-      *
-               END-IF
-               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-               PERFORM 915-SRYACT-NEXT-SEC
-           END-PERFORM
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-      *    診療行為内容のみテーブルに保存する
-           MOVE    ZERO                TO  IDX-ATO
-           INITIALIZE                      TBL-ATO-AREA 
-           PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL       IDX1        >   IDX-KOUI
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL      (IDX2        >   5          )  OR
-                                  (LNK-WKSRY-SRYCD(IDX1 IDX2) =  SPACE)
-                   ADD     1                   TO  IDX-ATO
-                   MOVE    LNK-WKSRY-SRYCD (IDX1 IDX2)
-                                               TO  TBL-ATO-SRYCD
-                                                             (IDX-ATO)
-                   MOVE    LNK-WKSRY-SRYSURYO(IDX1 IDX2)
-                                               TO  TBL-ATO-SRYSURYO
-                                                             (IDX-ATO)
-                   MOVE    LNK-WKSRY-SRYKAISU(IDX1 IDX2)
-                                               TO  TBL-ATO-SRYKAISU
-                                                             (IDX-ATO)
-                   MOVE    LNK-WKSRY-INPUTCOMENT(IDX1 IDX2)
-                                               TO  TBL-ATO-INPUTCOMENT
-                                                             (IDX-ATO)
-                   MOVE    LNK-WKSRY-INPUTCHI-G(IDX1 IDX2)
-                                               TO  TBL-ATO-ATAI-G
-                                                             (IDX-ATO)
-               END-PERFORM
-           END-PERFORM
-      *
-      *    診療行為数が違う
-           IF      IDX-SIN         NOT =   IDX-ATO
-               GO      TO      45012-SRYACCT-CHK-EXT
-           END-IF
-      *
-           MOVE    ZERO                TO  FLG-ERR
-           PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   IDX-ATO  )  OR
-                              (FLG-ERR     =   1        )
-               MOVE    ZERO                TO  FLG-ARI
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL      (IDX2        >   IDX-SIN  )  OR
-                                  (FLG-ARI     =   1        )
-                   IF      TBL-ATO-REC (IDX1)  =   TBL-MAE-REC(IDX2)
-                        MOVE    1                  TO  FLG-ARI
-                   END-IF
-               END-PERFORM
-               IF      FLG-ARI             =   ZERO
-                    MOVE    1                  TO  FLG-ERR
-               END-IF
-           END-PERFORM
-           IF      FLG-ERR             =   ZERO
-               MOVE    1               TO  FLG-OK
-           END-IF
-           .
-      *
-       45012-SRYACCT-CHK-EXT.
-           EXIT.
       *
       *****************************************************************
       *   剤番号取得処理

@@ -39,6 +39,7 @@
       * 01.00.10     NACL-Â¿¡¹Ç¼  03/01/30  Æþ±¡»þ¸¡ºº¤Þ¤È¤á¤ò¤ä¤á¤ë
       * 01.00.11     NACL-Â¿¡¹Ç¼  03/02/12  ¼«Èñ¤ÎºÞÊ¬Î¥¤Î½¤Àµ
       * 01.00.12     NACL-Â¿¡¹Ç¼  03/02/21  Æþ±¡ÎÁ¤Î²Ã»»¤Î¤ß½¤Àµ
+      * 01.00.13     NACL-Â¿¡¹Ç¼  03/05/09  ºÞÌÀºÙ¤ò£³£°¤Þ¤Ç¤È¤¹¤ë
       *****************************************************************
       *
       *
@@ -107,6 +108,8 @@
            03  WRK-HOUKNSKBN       PIC X(02).
       *
            03  WRK-INPUTCD         PIC X(22).
+      *
+           03  WRK-ZAI-CNT         PIC 9(04).
       *
       *
       *    ²èÌÌ£Ó£Ð£ÁÎÎ°è¥ï¡¼¥¯
@@ -224,6 +227,7 @@
       *
       *
            MOVE    ZERO                TO  WRK-ZAINUM
+           MOVE    ZERO                TO  WRK-ZAI-CNT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX             >   200        )  OR
                               (SPA-GMN-INPUTCD(IDX) =   SPACE )  OR
@@ -236,6 +240,7 @@
                    MOVE    SPA-COM-SRYSYUKBN (IDX) TO  WRK-H-SRYSYUKBN
                    MOVE    SPA-COM-SRYKBN (IDX)    TO  WRK-H-SRYKBN
                    ADD     1                       TO  WRK-ZAINUM
+                   MOVE    ZERO                    TO  WRK-ZAI-CNT
                END-IF
       *        ºÞ²ó¿ô¥Á¥§¥Ã¥¯
                EVALUATE    LNK-SC93-PG
@@ -246,6 +251,11 @@
                MOVE    WRK-H-SRYSYUKBN     TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    WRK-H-SRYKBN        TO  SPA-COM-SRYKBN (IDX)
                MOVE    WRK-ZAINUM          TO  SPA-COM-ZAINUM (IDX)
+               ADD     1                   TO  WRK-ZAI-CNT
+               IF      WRK-ZAI-CNT         >   30
+                   MOVE    "7006"         TO  SPA-ERRCD
+                   MOVE    "1"             TO  SPA-COM-CUR(IDX)
+               END-IF
       *
            END-PERFORM
            .

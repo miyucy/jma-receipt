@@ -95,9 +95,9 @@
       *    単位名称
            03  WRK-TANINAME        PIC X(04).
       *
-           03  WRK-MEISYO          PIC X(44).
-           03  WRK-MEISYO-N        REDEFINES   WRK-MEISYO
-                                   PIC N(22).
+           03  WRK-MEISYO          PIC X(80).
+      *****03  WRK-MEISYO-N        REDEFINES   WRK-MEISYO
+      *****                        PIC N(22).
       *   きざみ値行為再計算用
            03  WRK-KEI-TEN         PIC 9(08)V9(03).
            03  WRK-KEI-TEN1        PIC 9(08)V9(03).
