@@ -3483,7 +3483,7 @@
                    MOVE
                         "終了日を変更します。よろしいですか？"
                                        TO  WRK-PIDMSG(41:)
-               WHEN    "0203"
+               WHEN    "0204"
                    MOVE
                    "任継を切り替えます。切り替え後の終了日を"
                                        TO  WRK-PIDMSG
