@@ -394,5 +394,12 @@ V02	{
 			count	int;
 			item	varchar(16)[2];
 		};
+		RECEFTNJGNDSPKBN_CMB	{
+			RECEFTNJGNDSPKBN	{
+				value	varchar(24);
+			};
+			count	int;
+			item	varchar(24)[2];
+		};
 	};
 };

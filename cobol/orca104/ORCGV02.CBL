@@ -136,6 +136,11 @@
                        09  SPA-GMN-RECEFTNDSPKBNMEIL
                                                   PIC X(28).
                    07  SPA-GMN-RECEFTNDSPKBN-MAX  PIC 9(01).
+                   07  SPA-GMN-RECEFTNJGNDSPKBNLST  OCCURS  2.
+                       09  SPA-GMN-RECEFTNJGNDSPKBNL PIC X(01).
+                       09  SPA-GMN-F1L            PIC X(01).
+                       09  SPA-GMN-RECEFTNJGNDSPKBNMEIL PIC X(22).
+                   07  SPA-GMN-RECEFTNJGNDSPKBN-MAX     PIC 9(01).
       *
                    07  SPA-GMN-HBTNUM         PIC X(02).
                    07  SPA-GMN-SEIDONAME      PIC X(100).
@@ -174,6 +179,10 @@
                        09  SPA-GMN-F1             PIC X(01).
                        09  SPA-GMN-RECEFTNDSPKBNMEI
                                                   PIC X(28).
+                   07  SPA-GMN-RECEFTNJGNDSPKBN-G.
+                       09  SPA-GMN-RECEFTNJGNDSPKBN     PIC X(01).
+                       09  SPA-GMN-F1             PIC X(01).
+                       09  SPA-GMN-RECEFTNJGNDSPKBNMEI  PIC X(22).
       *            法別番号チェック
                    07  SPA-GMN-HBTNUMCHKKBN-G.
                        09  SPA-GMN-HBTNUMCHKKBN   PIC X(01).
@@ -522,6 +531,16 @@
            MOVE    SPA-GMN-RECEFTNDSPKBNLST (1)
                                        TO  SPA-GMN-RECEFTNDSPKBN-G
       *
+           MOVE    "0"              TO  SPA-GMN-RECEFTNJGNDSPKBNL(1)
+           MOVE    "負担上限未満記載あり"
+                                    TO SPA-GMN-RECEFTNJGNDSPKBNMEIL(1)
+           MOVE    "1"              TO  SPA-GMN-RECEFTNJGNDSPKBNL(2)
+           MOVE    "負担上限未満記載なし"
+                                    TO SPA-GMN-RECEFTNJGNDSPKBNMEIL(2)
+           MOVE    SPA-GMN-RECEFTNJGNDSPKBNLST (1)
+                                       TO  SPA-GMN-RECEFTNJGNDSPKBN-G
+           MOVE    2                TO  SPA-GMN-RECEFTNJGNDSPKBN-MAX
+      *
            MOVE    "0"                 TO  SPA-GMN-GAIFTNKBNL    (1)
            MOVE    "使用しない"        TO  SPA-GMN-GAIFTNKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-GAIFTNKBNL    (2)
@@ -672,6 +691,18 @@
                        MOVE    SPA-GMN-RECEFTNDSPKBNMEIL (IDY)
                                           TO  SPA-GMN-RECEFTNDSPKBNMEI
                        MOVE    SPA-GMN-RECEFTNDSPKBN-MAX
+                                          TO  IDY
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    HKN-RECEJGNDSPKBN  TO  SPA-GMN-RECEFTNJGNDSPKBN
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL   IDY >      SPA-GMN-RECEFTNJGNDSPKBN-MAX
+                   IF      SPA-GMN-RECEFTNJGNDSPKBN
+                                   =   SPA-GMN-RECEFTNJGNDSPKBNL (IDY)
+                       MOVE    SPA-GMN-RECEFTNJGNDSPKBNMEIL (IDY)
+                                       TO  SPA-GMN-RECEFTNJGNDSPKBNMEI
+                       MOVE    SPA-GMN-RECEFTNJGNDSPKBN-MAX
                                           TO  IDY
                    END-IF
                END-PERFORM
@@ -887,6 +918,8 @@
            MOVE    V02-TENTNK          TO  SPA-GMN-TENTNK
            MOVE    V02-RECESKYKBN      TO  SPA-GMN-RECESKYKBN-G
            MOVE    V02-RECEFTNDSPKBN   TO  SPA-GMN-RECEFTNDSPKBN-G
+           MOVE    V02-RECEFTNJGNDSPKBN
+                                       TO  SPA-GMN-RECEFTNJGNDSPKBN-G
       *
       *    タグ別
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -989,6 +1022,11 @@
            END-IF
       *
            PERFORM 4140-RECEFTNDSPKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4150-RECEFTNJGNDSPKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1380,6 +1418,41 @@
       *
            .
        4140-RECEFTNDSPKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセ記載チェック
+      *****************************************************************
+       4150-RECEFTNJGNDSPKBN-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-RECEFTNJGNDSPKBN    =   SPACE
+               IF      FLG-KOUSIN      NOT =   2
+                   GO      TO  4150-RECEFTNJGNDSPKBN-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >  SPA-GMN-RECEFTNJGNDSPKBN-MAX
+               IF      SPA-GMN-RECEFTNJGNDSPKBN
+                                  =   SPA-GMN-RECEFTNJGNDSPKBNL (IDX)
+                   MOVE    SPA-GMN-RECEFTNJGNDSPKBNMEIL (IDX)
+                                      TO  SPA-GMN-RECEFTNJGNDSPKBNMEI
+                   MOVE    SPA-GMN-RECEFTNJGNDSPKBN-MAX
+                                           TO  IDX
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF     (FLG-CHK              =   ZERO )  AND
+                  (SPA-GMN-RECEFTNJGNDSPKBN   NOT =   SPACE )
+               MOVE    17                  TO  SPA-GMN-CUR
+               MOVE    "0012"              TO  SPA-ERRCD
+               GO      TO      4150-RECEFTNJGNDSPKBN-CHK-EXT
+           END-IF
+      *
+           .
+       4150-RECEFTNJGNDSPKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1911,6 +1984,8 @@
            MOVE    SPA-GMN-TENTNK          TO  HKN-TENTNK
            MOVE    SPA-GMN-RECESKYKBN      TO  HKN-RECESKYKBN
            MOVE    SPA-GMN-RECEFTNDSPKBN   TO  HKN-RECEFTNDSPKBN
+           MOVE    SPA-GMN-RECEFTNJGNDSPKBN
+                                           TO  HKN-RECEJGNDSPKBN
       *        
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4  
@@ -2065,6 +2140,8 @@
            MOVE    SPA-GMN-RECESKYKBN-G TO  V02-RECESKYKBN
            MOVE    SPA-GMN-RECEFTNDSPKBN-G
                                         TO  V02-RECEFTNDSPKBN
+           MOVE    SPA-GMN-RECEFTNJGNDSPKBN-G
+                                        TO  V02-RECEFTNJGNDSPKBN
       *
            PERFORM VARYING IDX FROM     1  BY  1
                    UNTIL   IDX >        4  
@@ -2150,6 +2227,13 @@
            END-PERFORM
            MOVE    SPA-GMN-RECEFTNDSPKBN-MAX
                                        TO  V02-RECEFTNDSPKBN-COUNT
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX     >   SPA-GMN-RECEFTNJGNDSPKBN-MAX
+               MOVE    SPA-GMN-RECEFTNJGNDSPKBNLST (IDX)
+                                    TO  V02-RECEFTNJGNDSPKBNLST (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-RECEFTNJGNDSPKBN-MAX
+                                       TO  V02-RECEFTNJGNDSPKBN-COUNT
       *
       *    法別番号チェック区分
            MOVE    SPA-GMN-HBTNUMCHKKBN-G  TO  V02-HBTNUMCHKKBN
@@ -2249,6 +2333,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0011"
                    MOVE    "レセプト負担金額入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "レセプト記載入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "制度名入力エラー"
@@ -2367,6 +2454,8 @@
                     MOVE  "RECEFTNDSPKBN"   TO   MCP-WIDGET
                 WHEN    16
                     MOVE  "HBTNUMCHKKBN"    TO   MCP-WIDGET
+                WHEN    17
+                    MOVE  "RECEFTNJGNDSPKBN" TO  MCP-WIDGET
       * 
                 WHEN    20
                     MOVE  "GAIFTNKBN1"      TO   MCP-WIDGET
@@ -2577,6 +2666,8 @@
                WHEN    "RECESKYKBN"
                    MOVE    15              TO  SPA-GMN-CUR
                WHEN    "RECEFTNDSPKBN"
+                   MOVE    17              TO  SPA-GMN-CUR
+               WHEN    "RECEFTNJGNDSPKBN"
                    MOVE    20              TO  SPA-GMN-CUR
       *
       *

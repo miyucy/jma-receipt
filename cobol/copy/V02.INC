@@ -130,3 +130,8 @@
                   05  V02-VALUE   PIC X(16).
                 04  V02-KENSNUMCHKKBN-COUNT   PIC S9(9)   BINARY.
                 04  V02-KENSNUMCHKKBNLST   PIC X(16)   OCCURS  2 TIMES.
+              03  V02-RECEFTNJGNDSPKBN-CMB.
+                04  V02-RECEFTNJGNDSPKBN.
+                  05  V02-VALUE   PIC X(24).
+                04  V02-RECEFTNJGNDSPKBN-COUNT   PIC S9(9)   BINARY.
+                04  V02-RECEFTNJGNDSPKBNLST PIC X(24)   OCCURS  2 TIMES.
