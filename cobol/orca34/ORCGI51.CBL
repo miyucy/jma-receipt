@@ -1741,6 +1741,7 @@
            DISPLAY "LNK-S02-SKYEDYMD           = " LNK-S02-SKYEDYMD
            CALL    "ORCSNYUFTN"    USING
                                    MCPAREA
+                                   SPA-AREA
                                    LNK-ORCS02-REC
                                    LNK-SYUNOU-REC-T
            DISPLAY "LNK-S02-RC = " LNK-S02-RC
