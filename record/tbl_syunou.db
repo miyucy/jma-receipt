@@ -322,6 +322,20 @@ path	key8 	{
 	};
 };
 
+path	key9 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SKYSTYMD    >=  :SKYSTYMD
+			AND   SKYEDYMD    <=  :SKYEDYMD
+			ORDER   BY        SRYYMD
+		;
+	};
+};
+
 path	all 	{
 	DBSELECT	{
 		DECLARE tbl_syunou_all_csr CURSOR FOR
