@@ -2287,7 +2287,20 @@
            CALL    "ORCSCHOZAI"        USING
                                        SPA-AREA
                                        ORCSCHOZAIAREA
-      *
+      *    翌月の削除もおこなう
+           MOVE    ORCSCNYUIN-YMD      TO  WRK-SRYYMD
+           COMPUTE WRK-SRYMM           =   WRK-SRYMM   +   1
+           IF      WRK-SRYMM           >   12
+               COMPUTE WRK-SRYYY           =   WRK-SRYYY   +   1
+               MOVE    1                   TO  WRK-SRYMM
+           END-IF
+           INITIALIZE                  ORCSCHOZAIAREA
+           MOVE    "2"                 TO  ORCSCHO-KBN
+           MOVE    SPA-PTID            TO  ORCSCHO-PTID
+           MOVE    WRK-SRYYMD(1:6)     TO  ORCSCHO-SRYYM
+           CALL    "ORCSCHOZAI"        USING
+                                       SPA-AREA
+                                       ORCSCHOZAIAREA
       *
            .
        200-TAIIN-SYORI-EXT.
