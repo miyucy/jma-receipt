@@ -31,12 +31,6 @@
       *  01.00.01    NACL−多々納 02/10/18  入院追加
       *  01.00.02    NACL−多々納 03/01/12  半角記号入力可能追加
       *  01.00.03    NACL−多々納 03/04/14  全角判定修正、約束処方修正
-      *  01.00.04    NACL-多々納  05/11/22  MONFUNC 対応 他
-      *  01.00.05    NACL-多々納  06/01/19  コメント８４対応
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
-      *  04.05.00    NACL-多々納  09/10/XX  多剤投与・換算値等対応
-      *  04.06.00    NACL-多々納  11/02/14  用法コメント対応
-      *  04.07.00    NACL-多々納  13/12/20  行挿入対応
       *****************************************************************
       *
       *
@@ -63,21 +57,14 @@
            03  FLG-HI              PIC 9(01).
            03  FLG-ALLSUJI         PIC 9(01).
       *
-           03  FLG-ZENKAKU         PIC 9(01).
-           03  FLG-HANKAKU         PIC 9(01).
-           03  FLG-ERR             PIC 9(01).
-      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
-           03  IDX4                PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDH1                PIC 9(04).
            03  IDH2                PIC 9(04).
-      *
-           03  IDX-1               PIC 9(04).
       *
            03  IDX-ZAI             PIC 9(02).
            03  IDX-D1              PIC 9(02).
@@ -87,18 +74,13 @@
            03  MAP-IDX             PIC 9(04).
            03  GMN-IDX             PIC 9(04).
       *
-           03  IDK                 PIC 9(04).
-      *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-INPUTCD         PIC X(54).
-           03  WRK-INPUTCD2        PIC X(54).
-           03  WRK-INPUTCD3        PIC X(54).
+           03  WRK-INPUTCD         PIC X(22).
+           03  WRK-INPUTCD2        PIC X(22).
+           03  WRK-INPUTCD3        PIC X(22).
       *
            03  WRK-CHK-FLG         PIC X(01).
-      *
-           03  WRK-KOUMOKU         PIC X(40).
-           03  WRK-LEN             PIC 9(04).
       *
            03  WRK-STR             PIC 9(02).
            03  WRK-END             PIC 9(02).
@@ -114,19 +96,12 @@
       *
        01  WRK-NYUMOJI-AREA.
            03  WRK-HI              PIC 9(02).
-           03  WRK-NISUU           PIC X(54).
+           03  WRK-NISUU           PIC X(22).
            03  WRK-MAE-CD          PIC X(01).
       *
        01  WRK-MOJI-AREA.
            03  FLG-SP              PIC 9(02).
            03  FLG-AST             PIC 9(02).
-           03  FLG-AUTO            PIC 9(02).
-      *ver.4.5
-           03  FLG-AINPUT          PIC 9(01).
-           03  FLG-BINPUT          PIC 9(01).
-           03  FLG-CINPUT          PIC 9(01).
-           03  FLG-SEND            PIC 9(01).
-      *
            03  FLG-JKNKSN          PIC 9(01).
            03  WRK-IDX-FT          PIC 9(02).
            03  WRK-CD-MCNT         PIC 9(02).
@@ -136,34 +111,28 @@
            03  WRK-MCNT2           PIC 9(02).
            03  WRK-MCNT3           PIC 9(02).
            03  WRK-MCNT4           PIC 9(02).
-           03  WRK-MCNT5           PIC 9(02).
-           03  WRK-CD              PIC X(54).
-           03  WRK-KAI             PIC X(54).
-           03  WRK-SUR             PIC X(54).
+           03  WRK-CD              PIC X(22).
+           03  WRK-KAI             PIC X(22).
+           03  WRK-SUR             PIC X(22).
            03  WRK-MOJI1           PIC X(10).
            03  WRK-MOJI2           PIC X(10).
            03  WRK-MOJI3           PIC X(10).
            03  WRK-MOJI4           PIC X(10).
-           03  WRK-MOJI5           PIC X(10).
            03  IDM                 PIC 9(04).
            03  IDMS                PIC 9(04).
-           03  WRK-HENKAN-MAE      PIC X(54).
-           03  WRK-HENKAN-ATO      PIC X(54).
+           03  WRK-HENKAN-MAE      PIC X(22).
+           03  WRK-HENKAN-ATO      PIC X(22).
            03  IDX-D               PIC 9(04).
            03  WRK-BUNGSU          PIC 9(08).
-           03  WRK-SURYO           PIC 9(07)V9(05).
+           03  WRK-SURYO           PIC 9(07)V9(03).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(07).
-               05  WRK-SURYO-S2    PIC 9(05).
+               05  WRK-SURYO-S2    PIC 9(03).
       *    入院期間
        01  TBL-NYUIN-KAISU-AREA.
            03  TBL-NYUIN-OCC           OCCURS   10.
                05  TBL-HI              PIC 9(02).
                05  TBL-SEL             PIC X(01).
-      *
-      *    入力コード項目桁数
-       01  CONS-INPUT              PIC 9(02)   VALUE   54.
-      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -178,8 +147,6 @@
       *
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *    全角・半角チェック
-           COPY    "CPORCXKANACONV.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -191,9 +158,6 @@
       *    入力コードマスタ−
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
-      *
-      *    一括日変換パラメタ
-           COPY    "CPORCSNDAYCHG.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -225,20 +189,8 @@
            INITIALIZE                      WRK-AREA
            INITIALIZE                      FLG-AREA
            INITIALIZE                      IDX-AREA
-           INITIALIZE                      LNK-SC97-OUTAREA
       *
            PERFORM 100-INPUTCD-SYORI-SEC
-      *
-           IF     (SPA-ERRCD           =   SPACE ) AND
-                  (FLG-END             =   ZERO  )
-               IF      LNK-SC97-KBN        =   "1"
-      *            半角変換のみの時
-                   PERFORM 1001-SYORI-KBN1-SEC
-               ELSE
-      *            内容変換
-                   PERFORM 1002-SYORI-KBN2-SEC
-               END-IF
-           END-IF
       *
            . 
        000-PROC-EXT.
@@ -251,15 +203,8 @@
       *****************************************************************
        100-INPUTCD-SYORI-SEC            SECTION.
       *
-      *    半角カナの全角変換
-           INITIALIZE                  ORCXKANACONVAREA
-           MOVE    CONS-INPUT          TO  KANACONV-LEN
-           MOVE    1000                TO  KANACONV-STLEN
-           MOVE    0                   TO  KANACONV-CONV-FLAG
-           MOVE    0                   TO  KANACONV-CHAR-TYPE
-           MOVE    LNK-SC97-INPUTCD    TO  KANACONV-INDATA
-           CALL    "kanaconv"          USING ORCXKANACONVAREA
-           MOVE    KANACONV-OUTDATA    TO  LNK-SC97-INPUTCD
+      *
+           INITIALIZE                      LNK-SC97-OUTAREA
       *
       *    '_'をなくす
            INSPECT LNK-SC97-INPUTCD
@@ -270,61 +215,45 @@
            PERFORM 100-MAE-HANKAKU-SEC
            IF      WRK-INPUTCD     NOT =   SPACE
                MOVE    WRK-INPUTCD         TO  LNK-SC97-INPUTCD
-               MOVE    1                   TO  FLG-END
+               GO      TO          100-INPUTCD-SYORI-EXT
            END-IF
-      *    保険・診療科
-           IF      LNK-SC97-INPUTCD(1:1)   =   "#"
-                                           OR  "$"
-      *        外来でＨ１６．４月からとする
-               IF     (LNK-SC97-PG         =   "K02 " )  AND
-                      (SPA-SRYYMD          >=  "20040401")
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO          100-INPUTCD-SYORI-EXT
+           END-IF
+      *
+      *    半角変換のみの時
+           IF      LNK-SC97-KBN        =   "1"
+      *        数量ゼロの判定
+               IF      (LNK-SC97-PG        =   "K02N" )  AND
+                       (LNK-SC97-INPUTCD(1:1)  =   "*" )
                    CONTINUE
                ELSE
-                   IF      SPA-ERRCD       =   SPACE
-                       MOVE    "1055"          TO  SPA-ERRCD
-                   END-IF
+                   PERFORM 1003-SURYOU-CHK-SEC
                END-IF
+               GO      TO          100-INPUTCD-SYORI-EXT
            END-IF
-      *
-           .
-       100-INPUTCD-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    半角変換のみの時処理
-      *****************************************************************
-       1001-SYORI-KBN1-SEC            SECTION.
-      * 
-      *    数量ゼロの判定
-           IF      (LNK-SC97-PG        =   "K02N"
-                                       OR  "KT01" )  AND
-                   (LNK-SC97-INPUTCD(1:1)  =   "*" )
-               CONTINUE
-           ELSE
-               PERFORM 1003-SURYOU-CHK-SEC
-           END-IF
-      *
-           .
-       100-INPUTCD-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    内容変換・チェック処理
-      *****************************************************************
-       1002-SYORI-KBN2-SEC            SECTION.
       *
       *    入院の回数
-           IF      (LNK-SC97-PG        =   "K02N"
-                                       OR  "KT01" )  AND
+           IF      (LNK-SC97-PG        =   "K02N" )  AND
                    (LNK-SC97-INPUTCD(1:1)  =   "*"    )
                PERFORM 1002-NYUINKAISU-SEC
-           ELSE
-      *        入力コードの判定
-               PERFORM 200-INPUTCD-CHK-SEC
+               GO      TO          100-INPUTCD-SYORI-EXT
+           END-IF
+      *
+      *    入力コードの判定
+           PERFORM 200-INPUTCD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO          100-INPUTCD-SYORI-EXT
+           END-IF
+      *    診療種別入力は、以下の処理なし
+           IF     (LNK-SC97-INPUTCD(1:1)   =   "." ) AND
+                  (LNK-SC97-INPUTCD(2:3)   NUMERIC ) AND
+                  (LNK-SC97-INPUTCD(5:)    =   SPACE)
+               GO      TO          100-INPUTCD-SYORI-EXT
            END-IF
       *
            .
-       1002-SYORI-KBN2-EXT.
+       100-INPUTCD-SYORI-EXT.
            EXIT
            .
       *
@@ -339,19 +268,9 @@
            MOVE    1                   TO  IDH1
            MOVE    ZERO                TO  IDH2
            PERFORM
-      *****        UNTIL       IDH1    >   22
-                   UNTIL       IDH1    >   CONS-INPUT
-      *      全角判定
-             IF      IDH1             =    CONS-INPUT
-                 MOVE    ZERO              TO  FLG-ZENKAKU
-             ELSE
-                 MOVE    LNK-SC97-INPUTCD(IDH1:2) TO  WRK-KOUMOKU
-                 MOVE    2                        TO  WRK-LEN
-                 PERFORM 1009-KANACONV-SEC
-             END-IF
-             IF      FLG-ZENKAKU         =   1
-      *****  IF      LNK-SC97-INPUTCD(IDH1:1)
-      *****                               >=  X"A1"
+                   UNTIL       IDH1    >   22
+             IF      LNK-SC97-INPUTCD(IDH1:1)
+                                          >=  X"A1"
                EVALUATE    LNK-SC97-INPUTCD(IDH1:2)
                    WHEN    "−"
                        ADD     1           TO  IDH2
@@ -388,7 +307,7 @@
            MOVE    SPACE               TO  WRK-INPUTCD3
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX    >   CONS-INPUT
+                   UNTIL       IDX    >   22
                IF      WRK-INPUTCD2(IDX:1)     =   "+"  OR  "-"
                    COMPUTE IDX3                =   IDX  +  1
       *            入院の回数指定はそのまま
@@ -398,42 +317,12 @@
                        MOVE    WRK-INPUTCD2(IDX:1) TO  WRK-INPUTCD3
                                                              (IDX2:1)
                    ELSE
-                       IF    ( WRK-CHK-FLG         =   SPACE )  AND
-                             ((IDX2                =   ZERO      ) OR
-                              (IDX                 =   CONS-INPUT) OR
-                              (WRK-INPUTCD2(IDX3:) =   SPACE     ))
+                       IF     (WRK-CHK-FLG         =   SPACE)  AND
+                              (IDX2                =   ZERO   OR
+                               IDX                 =   22     OR
+                               WRK-INPUTCD2(IDX3:) =   SPACE )
                            MOVE    WRK-INPUTCD2(IDX:1) TO  WRK-CHK-FLG
-      *!!!!!!!!!!!!!!!!!!
-      *    連続挿入
-                           IF     (WRK-INPUTCD2(IDX:2)  =   "++")
-                               MOVE    1           TO  LNK-SC97-INSREN
-                               ADD     1               TO  IDX
-                           END-IF
-      *!!!!!!!!!!!!!!!!!!
                        END-IF
-      *!!!!!!!!!!!!!!!!!!
-      *    連続挿入
-                       COMPUTE IDX4                =   IDX  +  2
-                       IF    ( WRK-CHK-FLG         =   SPACE )
-                           IF     (WRK-INPUTCD2(IDX:2)  =   "++")
-                            AND   (WRK-INPUTCD2(IDX4:)  =   SPACE)
-                               MOVE    WRK-INPUTCD2(IDX:1)
-                                                   TO  WRK-CHK-FLG
-                               MOVE    1           TO  LNK-SC97-INSREN
-                               ADD     1               TO  IDX
-                           END-IF
-                       END-IF
-                       IF    ( WRK-CHK-FLG         =   SPACE )
-                           IF     (WRK-INPUTCD2(IDX3:1)  NUMERIC )
-                              AND (WRK-INPUTCD2(IDX4:) =   SPACE )
-                               MOVE    WRK-INPUTCD2(IDX:1)
-                                                   TO  WRK-CHK-FLG
-                               MOVE    WRK-INPUTCD2(IDX3:1)
-                                                   TO  LNK-SC97-INSCNT
-                               ADD     2           TO  IDX
-                           END-IF
-                       END-IF
-      *!!!!!!!!!!!!!!!!!!
                    END-IF
                ELSE
                    ADD     1                   TO  IDX2
@@ -442,10 +331,7 @@
       *            １，２桁目以外の '/'は、空白とする
                    IF     (WRK-INPUTCD2(IDX:1)     =   "/" )  AND
                           (IDX                 NOT =   1  AND   2)
-                       IF     (WRK-INPUTCD2(1:1)   =   "*" )  OR
-                              (WRK-INPUTCD2(1:3)   =   "///")
-      *                    区分＋点数検索
-                       OR     (WRK-INPUTCD2(1:3)   =   "//*")
+                       IF      WRK-INPUTCD2(1:1)   =   "*"
                            CONTINUE
                        ELSE
                            MOVE    SPACE       TO  WRK-INPUTCD2(IDX:1)
@@ -461,70 +347,31 @@
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    LNK-SC97-INPUTCD
                                        TO  WRK-INPUTCD
-           ELSE
+               GO      TO      100-MAE-HANKAKU-EXT
+           END-IF
       *
-      *        １桁目へ−，＋編集
-               IF      WRK-CHK-FLG     NOT =   SPACE
-                   MOVE    WRK-CHK-FLG         TO  WRK-INPUTCD(1:1)
-                   MOVE    WRK-INPUTCD3        TO  WRK-INPUTCD(2:)
-               END-IF
-               IF      LNK-SC97-INPUTCD(1:2)   =   "!!"
-                   MOVE    LNK-SC97-INPUTCD
+      *    １桁目へ−，＋編集
+           IF      WRK-CHK-FLG     NOT =   SPACE
+               MOVE    WRK-CHK-FLG         TO  WRK-INPUTCD(1:1)
+               MOVE    WRK-INPUTCD3        TO  WRK-INPUTCD(2:)
+           END-IF
+      *
+      *
+           IF      LNK-SC97-INPUTCD(1:2)   =   "!!"
+               MOVE    LNK-SC97-INPUTCD
                                        TO  WRK-INPUTCD
-               END-IF
-               IF      LNK-SC97-INPUTCD(1:1)   =   "!"  OR
-                                                   " "  OR
-                                                   "/"  OR
-                                                   "-"  OR
-                                                   "+"
-                   MOVE    LNK-SC97-INPUTCD
-                                           TO  WRK-INPUTCD
-               END-IF
+           END-IF
+           IF      LNK-SC97-INPUTCD(1:1)   =   "!"  OR
+                                               " "  OR
+                                               "/"  OR
+                                               "-"  OR
+                                               "+"
+               MOVE    LNK-SC97-INPUTCD
+                                       TO  WRK-INPUTCD
            END-IF
       *
            .
        100-MAE-HANKAKU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    全角判定処理
-      *****************************************************************
-       1009-KANACONV-SEC               SECTION.
-      *
-           MOVE    ZERO                TO  FLG-ZENKAKU
-           MOVE    ZERO                TO  FLG-HANKAKU
-           MOVE    ZERO                TO  FLG-ERR
-           IF      WRK-KOUMOKU     NOT =   SPACE
-      *        半角カナの全角変換
-               INITIALIZE                  ORCXKANACONVAREA
-               MOVE    WRK-LEN             TO  KANACONV-LEN
-               MOVE    1000                TO  KANACONV-STLEN
-               MOVE    0                   TO  KANACONV-CONV-FLAG
-               MOVE    15                  TO  KANACONV-CHAR-TYPE
-               MOVE    WRK-KOUMOKU         TO  KANACONV-INDATA
-               CALL    "kanaconv"          USING ORCXKANACONVAREA
-               IF      KANACONV-RETURN     =   ZERO
-      *            全角
-                   MOVE    1                   TO  FLG-ZENKAKU
-               ELSE
-      *            半角のみの判定
-                   INITIALIZE                  ORCXKANACONVAREA
-                   MOVE    WRK-LEN             TO  KANACONV-LEN
-                   MOVE    1000                TO  KANACONV-STLEN
-                   MOVE    0                   TO  KANACONV-CONV-FLAG
-                   MOVE    112                 TO  KANACONV-CHAR-TYPE
-                   MOVE    WRK-KOUMOKU         TO  KANACONV-INDATA
-                   CALL    "kanaconv"          USING
-                                               ORCXKANACONVAREA
-                   IF      KANACONV-RETURN     =   ZERO
-                       MOVE    1                   TO  FLG-HANKAKU
-                   ELSE
-                       MOVE    1                   TO  FLG-ERR
-                   END-IF
-               END-IF
-           END-IF
-           .
-       1009-KANACONV-EXT.
            EXIT.
       *
       *****************************************************************
@@ -543,23 +390,9 @@
            ELSE
                MOVE    1                   TO  WRK-IDX-FT
            END-IF
-           IF      LNK-SC97-INPUTCD(1:1)   =   " "
-      *        削除行
-               CONTINUE
-           ELSE
-      *        数量以下の変換
-               MOVE    LNK-SC97-GMN-IDX    TO  GMN-IDX
-               PERFORM 300-SURYOU-SYORI-SEC
-           END-IF
-           IF      LNK-SC97-INPUTCD(1:1)   =   " "
-      *        削除行
-               CONTINUE
-           ELSE
-      *        入力コード文字列調査処理
-               PERFORM 2020-INPUTCD-CHOSA-SEC
-               MOVE    WRK-INPUTCD         TO  LNK-SC97-INPUTCD
-               MOVE    WRK-CD              TO  LNK-SC97-INCD
-           END-IF
+      *    数量以下の変換
+           MOVE    LNK-SC97-GMN-IDX    TO  GMN-IDX
+           PERFORM 300-SURYOU-SYORI-SEC
       *
            .
        1003-SURYOU-CHK-EXT.
@@ -575,26 +408,177 @@
       *    全角半角変換
            MOVE    LNK-SC97-INPUTCD    TO  WRK-HENKAN-MAE
            MOVE    1                   TO  WRK-STR
-           MOVE    CONS-INPUT          TO  WRK-END
+           MOVE    22                  TO  WRK-END
            PERFORM 2010-MOJI-HENKAN-SEC
            MOVE    WRK-HENKAN-ATO      TO  LNK-SC97-INPUTCD
       *
-           INITIALIZE                      ORCSNDAYCHGAREA
-           MOVE    SPA-SRYYMD          TO  ORCSNDAYCHG-SRYYMD
-           MOVE    LNK-SC97-INPUTCD    TO  ORCSNDAYCHG-INPUTCD
-           MOVE    CONS-INPUT          TO  ORCSNDAYCHG-KETA
-           CALL    "ORCSNDAYCHG"       USING   SPA-AREA
-                                               ORCSNDAYCHGAREA
-           MOVE    ORCSNDAYCHG-ERRCD   TO  SPA-ERRCD
-           MOVE    ORCSNDAYCHG-INPUTCD TO  LNK-SC97-INPUTCD
-           MOVE    ORCSNDAYCHG-KAISUCNT
-                                       TO  LNK-SC97-KAISUCNT
-           MOVE    ORCSNDAYCHG-KAISU   TO  LNK-SC97-KAISU
-           MOVE    ORCSNDAYCHG-NYUIN-KAISU
-                                       TO  LNK-SC97-NYUIN-KAISU
+      *    回数
+           INITIALIZE                      WRK-NYUMOJI-AREA
+           MOVE    SPACE               TO  WRK-KAI
+           MOVE    SPACE               TO  WRK-NISUU
+           MOVE    ZERO                TO  WRK-ACCT-MCNT
+           MOVE    ZERO                TO  WRK-MCNT1
+           MOVE    ZERO                TO  FLG-AST
+           MOVE    ZERO                TO  FLG-KAI
+           MOVE    ZERO                TO  FLG-HI
+           MOVE    ZERO                TO  IDX-D1
+           MOVE    ZERO                TO  IDX-D2
+           INITIALIZE                  TBL-NYUIN-KAISU-AREA
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX         >   22
+      *
+               EVALUATE    LNK-SC97-INPUTCD(IDX:1)
+                   WHEN    "*"
+                       MOVE    1               TO  FLG-AST
+                   WHEN    "/"
+                       ADD     1               TO  FLG-KAI
+                   WHEN    "."
+                   WHEN    ","
+                   WHEN    "-"
+      *                数字チェック
+                       MOVE    LNK-SC97-INPUTCD(IDX:1)
+                                               TO  WRK-MAE-CD
+                       PERFORM 2001-NISUUSNUM-CHK-SEC
+                       MOVE    SPACE           TO  WRK-NISUU
+                       MOVE    ZERO            TO  WRK-MCNT1
+                       MOVE    1               TO  FLG-HI
+                   WHEN    OTHER
+      *                回数
+                       IF      (FLG-AST        =   1   )  AND
+                               (FLG-KAI        =   ZERO)
+                           ADD     1               TO  WRK-ACCT-MCNT
+                           MOVE    LNK-SC97-INPUTCD (IDX:1)
+                                                   TO  WRK-KAI
+                                                      (WRK-ACCT-MCNT:1)
+                       END-IF
+      *                日数・回数の数値チェック
+                       IF      (FLG-AST        =   1   )  AND
+                               (FLG-KAI        =   1   )
+                           ADD     1               TO  WRK-MCNT1
+                           MOVE    LNK-SC97-INPUTCD (IDX:1)
+                                                   TO  WRK-NISUU
+                                                      (WRK-MCNT1:1)
+                       END-IF
+                   END-EVALUATE
+           END-PERFORM
+      *
+           IF     (FLG-KAI             =   ZERO   AND
+                   FLG-HI              =   1    )
+               MOVE    "9009"              TO  SPA-ERRCD
+           END-IF
+           IF      FLG-KAI             >   1
+               MOVE    "9010"              TO  SPA-ERRCD
+           END-IF
+      *
+      *    数字チェック
+           IF      WRK-NISUU       NOT =   SPACE
+                MOVE    SPACE              TO  WRK-MAE-CD
+                PERFORM 2001-NISUUSNUM-CHK-SEC
+           END-IF
+      *
+      *    回数
+           MOVE    WRK-ACCT-MCNT       TO  LNK-SC97-KAISUCNT
+      *    回数　数字変換
+           MOVE    ZERO                TO  LNK-SC97-KAISU
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    WRK-KAI             TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN         =   "1"   )   OR
+                  (SNUM-SEISUU         >   4     )   OR
+                  (SNUM-SYOSUU         >   ZERO  )
+               MOVE    "0012"              TO  SPA-ERRCD
+           ELSE
+               MOVE    SNUM-OUTNUM         TO  LNK-SC97-KAISU
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      1002-NYUINKAISU-EXT
+           END-IF
+      *
+      *    期間編集
+           INITIALIZE                      LNK-SC97-NYUIN-KAISU
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     IDX-D2      FROM    1   BY  1
+                   UNTIL      (IDX-D2      >   10       )  OR
+                              (TBL-HI(IDX-D2)  =   ZERO )
+               IF     (IDX-D2                  >   1   )  AND
+                      (TBL-SEL (IDX-D2 - 1)    =   "-" )  AND
+                      (TBL-HI  (IDX-D2 - 1)    <   TBL-HI (IDX-D2))
+                   COMPUTE IDX-Z           =   TBL-HI (IDX-D2 - 1)
+                                           +   1
+                   PERFORM VARYING     IDX2    FROM    IDX-Z  BY  1
+                           UNTIL       IDX2    >=  TBL-HI (IDX-D2)
+                       MOVE    IDX2            TO  IDX-ZAI
+                       MOVE    IDX-ZAI         TO  LNK-SC97-NYU-DAY
+                                                           (IDX-ZAI)
+                   END-PERFORM
+               END-IF
+               MOVE    TBL-HI (IDX-D2)     TO  IDX-ZAI
+               MOVE    TBL-HI (IDX-D2)     TO  LNK-SC97-NYU-DAY
+                                                          (IDX-ZAI)
+           END-PERFORM
       *
            .
        1002-NYUINKAISU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    数字チェック処理
+      *****************************************************************
+       2001-NISUUSNUM-CHK-SEC    SECTION.
+      *
+      *    回数　数字変換
+           IF      WRK-NISUU           =   SPACE
+               MOVE    ZERO            TO  WRK-HI
+           ELSE
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    WRK-NISUU           TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN         =   "1"   )   OR
+                      (SNUM-SEISUU         >   2     )   OR
+                      (SNUM-SYOSUU         >   ZERO  )
+                   MOVE    "9012"              TO  SPA-ERRCD
+                   GO      TO      2001-NISUUSNUM-CHK-EXT
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  WRK-HI
+               END-IF
+           END-IF
+      *
+           IF      WRK-HI              >   31
+               MOVE    "9006"              TO  SPA-ERRCD
+               GO      TO      2001-NISUUSNUM-CHK-EXT
+           END-IF
+      *
+           EVALUATE    WRK-MAE-CD
+               WHEN    SPACE
+               WHEN    "."
+               WHEN    ","
+                   IF      WRK-HI          =   ZERO
+                      MOVE    WRK-SRYDD        TO  WRK-HI
+                   END-IF
+                   IF      IDX-D1              >   ZERO
+                       IF     (TBL-SEL(IDX-D1) =   "-"  ) AND
+                              (WRK-HI          <   TBL-HI (IDX-D1))
+                           MOVE    "9013"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+                   ADD     1                   TO  IDX-D1
+                   MOVE    WRK-HI              TO  TBL-HI (IDX-D1)
+               WHEN    "-"
+                   IF      WRK-HI          =   ZERO
+                      MOVE    WRK-SRYDD        TO  WRK-HI
+                   END-IF
+                   ADD     1                   TO  IDX-D1
+                   MOVE    WRK-HI              TO  TBL-HI (IDX-D1)
+                   MOVE    "-"                 TO  TBL-SEL(IDX-D1)
+           END-EVALUATE
+      *
+           .
+       2001-NISUUSNUM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入力コードの判定処理
@@ -605,51 +589,36 @@
       *    １桁目の変換
            PERFORM 2001-JIKANGAI-CHK-SEC
       *
-           EVALUATE    LNK-SC97-INPUTCD(1:1)
-               WHEN    "."
-      *        診療種別
-                   MOVE    4                   TO  WRK-CD-MCNT
-                   MOVE    1                   TO  WRK-IDX-FT
-      *            数量以下の変換
-                   PERFORM 300-SURYOU-SYORI-SEC
-               WHEN    "#"
-               WHEN    "$"
-      *        保険・診療科
-                   MOVE    4                   TO  WRK-CD-MCNT
-                   MOVE    1                   TO  WRK-IDX-FT
-      *            数量以下の変換
-                   PERFORM 300-SURYOU-SYORI-SEC
-               WHEN    OTHER
-      *            その他
-                   PERFORM 2001-INPUTCHK-SYORI-SEC
-           END-EVALUATE
-           .
-       200-INPUTCD-CHK-EXT.
-           EXIT.
+      *    診療種別
+           IF      LNK-SC97-INPUTCD(1:1)   =   "."
+               MOVE    4                   TO  WRK-CD-MCNT
+               MOVE    1                   TO  WRK-IDX-FT
       *
-      *****************************************************************
-      *    入力コードの判定処理
-      *****************************************************************
-       2001-INPUTCHK-SYORI-SEC       SECTION.
+      *        数量以下の変換
+               PERFORM 300-SURYOU-SYORI-SEC
+               GO      TO      200-INPUTCD-CHK-EXT
+           END-IF
       *
       *    入力コード文字列調査処理
            PERFORM 2020-INPUTCD-CHOSA-SEC
            MOVE    WRK-INPUTCD         TO  LNK-SC97-INPUTCD
            MOVE    WRK-CD              TO  LNK-SC97-INCD
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      200-INPUTCD-CHK-EXT
+           END-IF
       *
       *    入力コード変更時、点数マスタの決定
-           IF     (LNK-SC97-NYURYOKU   =   1      )  AND
-                  (SPA-ERRCD           =   SPACE  )
+           IF      LNK-SC97-NYURYOKU   =   1
                PERFORM 2030-INPUTCD-KENSAKU-SEC
-           END-IF
-           IF     (LNK-SC97-KENSAKU    NOT =   SPACE )  OR
-                  (SPA-ERRCD           NOT =   SPACE )
-               CONTINUE
-           ELSE
-      *        数量以下の変換
-               PERFORM 300-SURYOU-SYORI-SEC
+      *********IF     (LNK-SC97-CDSYU      NOT =   SPACE )  OR
+               IF     (LNK-SC97-KENSAKU    NOT =   SPACE )  OR
+                      (SPA-ERRCD           NOT =   SPACE )
+                   GO      TO      200-INPUTCD-CHK-EXT
+               END-IF
            END-IF
       *
+      *    数量以下の変換
+           PERFORM 300-SURYOU-SYORI-SEC
            .
        200-INPUTCD-CHK-EXT.
            EXIT.
@@ -660,11 +629,7 @@
        2001-JIKANGAI-CHK-SEC       SECTION.
       *
       *    １桁が数字で２桁目が空白の判定を全角チェック
-      *****IF     (LNK-SC97-INPUTCD(1:1)   >=  X"A1"  )  AND
-           MOVE    LNK-SC97-INPUTCD(1:2)   TO  WRK-KOUMOKU
-           MOVE    2                       TO  WRK-LEN
-           PERFORM 1009-KANACONV-SEC
-           IF     (FLG-ZENKAKU         =   1          )  AND
+           IF     (LNK-SC97-INPUTCD(1:1)   >=  X"A1"  )  AND
                   (LNK-SC97-INPUTCD(3:1)   =   " "    )  AND
                   (LNK-SC97-INPUTCD(4:)    NOT =   SPACE)
                MOVE    LNK-SC97-INPUTCD    TO  WRK-HENKAN-MAE
@@ -686,7 +651,7 @@
            IF      LNK-SC97-INPUTCD(1:2)   =   "．" 
                MOVE    LNK-SC97-INPUTCD    TO  WRK-HENKAN-MAE
                MOVE    1                   TO  WRK-STR
-               MOVE    CONS-INPUT          TO  WRK-END
+               MOVE    22                  TO  WRK-END
                PERFORM 2010-MOJI-HENKAN-SEC
                MOVE    WRK-HENKAN-ATO      TO  LNK-SC97-INPUTCD
            END-IF
@@ -707,35 +672,12 @@
       *---     時間加算
                MOVE    WRK-INPUTCD(1:1)
                                        TO  LNK-SC97-JIKAN
-      *
-               IF      LNK-SC97-JIKAN      =   1
-                                           OR  2
-                                           OR  3
-                                           OR  4
-                                           OR  5
-                                           OR  6
-                                           OR  7
-                                           OR  8
-                                           OR  0
-                   CONTINUE
-               ELSE
-                   MOVE    "9002"          TO  SPA-ERRCD
-                   GO      TO      2020-INPUTCD-CHOSA-EXT
-               END-IF
       *---     時間特例チェック
                IF      LNK-SC97-JIKAN      =   4
                    IF      LNK-SC97-JIKANTOKU  =   1
                        CONTINUE
                    ELSE
                        MOVE    "0069"          TO  SPA-ERRCD
-                       GO      TO      2020-INPUTCD-CHOSA-EXT
-                   END-IF
-               END-IF
-      *        夜間・早朝加算は診療所でＨ２０．４から
-               IF     (LNK-SC97-JIKAN      =   8 )
-                   IF     (SPA-SRYYMD          <   "20080401" )
-                      OR  (SPA-HOSPSBT         =   1   )
-                       MOVE    "9002"          TO  SPA-ERRCD
                        GO      TO      2020-INPUTCD-CHOSA-EXT
                    END-IF
                END-IF
@@ -752,72 +694,43 @@
            MOVE    ZERO                TO  FLG-SUJI
            MOVE    ZERO                TO  WRK-CD-MCNT
            MOVE    SPACE               TO  WRK-CD
-           MOVE    WRK-IDX-FT          TO  IDX
-           MOVE    1                   TO  IDX4
-           PERFORM
-                   UNTIL  (IDX         >   CONS-INPUT  )
+           PERFORM VARYING IDX     FROM    WRK-IDX-FT   BY  1
+                   UNTIL  (IDX         >   22     )
                     OR    (WRK-INPUTCD(IDX:1)
                                        =   SPACE  OR  "*" )
       *      全角の＊を半角の*とする
              IF      WRK-INPUTCD(IDX:2)    =  "＊" OR "　"
-                 MOVE    CONS-INPUT           TO  IDX
+                 MOVE    22                TO  IDX
              ELSE
-      *          全角判定
-                 MOVE    WRK-INPUTCD(IDX:2)    TO  WRK-KOUMOKU
-                 MOVE    2                     TO  WRK-LEN
-                 PERFORM 1009-KANACONV-SEC
-                 IF      FLG-ZENKAKU         =   1
-                     MOVE    WRK-INPUTCD(IDX:2)
-                                           TO  WRK-CD (IDX4:2)
-                     ADD     2             TO  WRK-CD-MCNT
-                     ADD     2             TO  IDX4
-                     ADD     2             TO  IDX
-                 ELSE
-                     MOVE    WRK-INPUTCD(IDX:1)
-                                           TO  WRK-CD (IDX4:1)
-                     ADD     1             TO  WRK-CD-MCNT
-                     ADD     1             TO  IDX4
-                     ADD     1             TO  IDX
-                 END-IF
-             END-IF
-      ******** IF      WRK-INPUTCD (IDX:1)
-      **********                      >=  X"A1"
-      *            全角の時、２桁編集
-      *            MOVE    1               TO  FLG-KANJI
-      *            ADD     1               TO  IDX
-      *            ADD     1               TO  WRK-CD-MCNT
-      *            MOVE    WRK-INPUTCD(IDX:1)
-      *                                    TO  WRK-CD (WRK-CD-MCNT:1)
-      *        ELSE
-      *            IF     (WRK-INPUTCD (IDX:1)
-      *                                   IS  ALPHABETIC )  OR
-      *                   (WRK-INPUTCD (IDX:1)
-      *                                   IS  NUMERIC    )  OR
-      *                   (WRK-INPUTCD (IDX:1)
-      *                                   =   "."  OR  "/" ) OR
-      *                   (WRK-INPUTCD (IDX:1)
-      *                                   >   SPACE  AND  <= "z")
-      *                MOVE    1              TO  FLG-SUJI
-      *            ELSE
-      *                MOVE    1              TO  FLG-KANA
-      *            END-IF
-      *        END-IF
-      *******END-IF
-           END-PERFORM
       *
-      *    混在エラー
-           MOVE    WRK-CD              TO  WRK-KOUMOKU
-           MOVE    WRK-CD-MCNT         TO  WRK-LEN
-           PERFORM 1009-KANACONV-SEC
-           IF      FLG-ERR             =   1
-               MOVE    "0005"          TO  SPA-ERRCD
-           END-IF
-           IF      FLG-ZENKAKU         =   1
-               MOVE    1               TO  FLG-KANJI
-           END-IF
-           IF      FLG-HANKAKU         =   1
-               MOVE    1               TO  FLG-SUJI
-           END-IF
+               ADD     1                   TO  WRK-CD-MCNT
+               MOVE    WRK-INPUTCD(IDX:1)
+                                           TO  WRK-CD (WRK-CD-MCNT:1)
+      *
+               IF      WRK-INPUTCD (IDX:1)
+                                      >=  X"A1"
+      *            全角の時、２桁編集
+                   MOVE    1               TO  FLG-KANJI
+                   ADD     1               TO  IDX
+                   ADD     1               TO  WRK-CD-MCNT
+                   MOVE    WRK-INPUTCD(IDX:1)
+                                           TO  WRK-CD (WRK-CD-MCNT:1)
+               ELSE
+                   IF     (WRK-INPUTCD (IDX:1)
+                                          IS  ALPHABETIC )  OR
+                          (WRK-INPUTCD (IDX:1)
+                                          IS  NUMERIC    )  OR
+                          (WRK-INPUTCD (IDX:1)
+                                          =   "."  OR  "/" ) OR
+                          (WRK-INPUTCD (IDX:1)
+                                          >   SPACE  AND  <= "z")
+                       MOVE    1              TO  FLG-SUJI
+                   ELSE
+                       MOVE    1              TO  FLG-KANA
+                   END-IF
+               END-IF
+             END-IF
+           END-PERFORM
       *
       *    コード変更の有無
            MOVE    LNK-SC97-GMN-IDX    TO  GMN-IDX
@@ -843,14 +756,14 @@
            END-IF
       *
       *    半角カナは入力不可
-      **** IF      FLG-KANA            =   1
-      *        MOVE    "0005"          TO  SPA-ERRCD
-      **** END-IF
+           IF      FLG-KANA            =   1
+               MOVE    "0005"          TO  SPA-ERRCD
+           END-IF
       *    半角、全角混在は入力不可
-      *    IF     (FLG-KANJI           =   1  )  AND
-      *           (FLG-SUJI            =   1  )
-      *        MOVE    "0005"          TO  SPA-ERRCD
-      *****END-IF
+           IF     (FLG-KANJI           =   1  )  AND
+                  (FLG-SUJI            =   1  )
+               MOVE    "0005"          TO  SPA-ERRCD
+           END-IF
            MOVE    WRK-CD-MCNT         TO  LNK-SC97-INCDCNT
            .
        2020-INPUTCD-CHOSA-EXT.
@@ -860,7 +773,6 @@
       *    漢字変換処理
       *****************************************************************
        2010-MOJI-HENKAN-SEC    SECTION.
-      *
       *    漢字変換
            MOVE    SPACE               TO  WRK-HENKAN-ATO
            MOVE    WRK-STR             TO  IDH1
@@ -868,16 +780,8 @@
            MOVE    ZERO                TO  FLG-ALLSUJI
            PERFORM
                    UNTIL       IDH1    >   WRK-END
-      *      全角判定
-             IF      IDH1              =   WRK-END
-                 MOVE    ZERO              TO  FLG-ZENKAKU
-             ELSE
-                 MOVE    WRK-HENKAN-MAE(IDH1:2)    TO  WRK-KOUMOKU
-                 PERFORM 1009-KANACONV-SEC
-             END-IF
-             IF      FLG-ZENKAKU         =   1
-      ****** IF      WRK-HENKAN-MAE(IDH1:1)
-      *******                             >=  X"A1"
+             IF      WRK-HENKAN-MAE(IDH1:1)
+                                          >=  X"A1"
                EVALUATE    WRK-HENKAN-MAE(IDH1:2)
                    WHEN    "０"
                        ADD     1           TO  IDH2
@@ -989,7 +893,7 @@
       *                    ６桁
                            WHEN    6
                                MOVE    "6"         TO  WRK-ICD-CDSYU
-      *
+      * 
                            WHEN    OTHER
                                MOVE    "A"         TO  WRK-ICD-CDSYU
                        END-EVALUATE
@@ -1003,7 +907,7 @@
            IF     WRK-ICD-CDSYU    NOT =   SPACE
       *
                MOVE    SPACE               TO  INPUTCD-REC
-               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
+               MOVE    SPA-HOSPID          TO  ICD-HOSPID
                MOVE    WRK-ICD-CDSYU       TO  ICD-CDSYU
                MOVE    WRK-CD              TO  ICD-INPUTCD
       *
@@ -1045,16 +949,6 @@
                        IF      SPA-COM-INPUTCD(GMN-IDX)
                                                =   LNK-SC97-INCD
                            MOVE    ZERO            TO  LNK-SC97-NYURYOKU
-      *!!!!
-      *H24.5 入力ＣＤが違う時、編集未とする
-                           IF     (SPA-COM-ICD-INPUTCD (GMN-IDX)
-                                                   NOT =   SPACE )
-                           AND    (SPA-COM-ICD-INPUTCD (GMN-IDX)
-                                                   NOT =   WRK-CD )
-                               MOVE    SPACE       TO  SPA-COM-GMNFLG
-                                                           (GMN-IDX)
-                           END-IF
-      *!!!!
                        END-IF
                    ELSE
       *                一覧表示へ
@@ -1097,7 +991,6 @@
            MOVE    ZERO                TO  WRK-MCNT2
            MOVE    ZERO                TO  WRK-MCNT3
            MOVE    ZERO                TO  WRK-MCNT4
-           MOVE    ZERO                TO  WRK-MCNT5
            MOVE    SPACE               TO  WRK-CD
            MOVE    SPACE               TO  WRK-SUR
            MOVE    SPACE               TO  WRK-KAI
@@ -1105,12 +998,6 @@
            MOVE    SPACE               TO  WRK-MOJI2
            MOVE    SPACE               TO  WRK-MOJI3
            MOVE    SPACE               TO  WRK-MOJI4
-           MOVE    SPACE               TO  WRK-MOJI5
-           MOVE    ZERO                TO  FLG-AUTO
-      *    換算値入力
-           MOVE    ZERO                TO  FLG-AINPUT
-           MOVE    ZERO                TO  FLG-BINPUT
-           MOVE    ZERO                TO  FLG-CINPUT
       *
       *    コード以外の全角数字を半角とする
            COMPUTE IDX-D               =   WRK-CD-MCNT
@@ -1118,35 +1005,21 @@
            MOVE    LNK-SC97-INPUTCD(IDX-D:)
                                        TO  WRK-HENKAN-MAE
            MOVE    1                   TO  WRK-STR
-           MOVE    CONS-INPUT          TO  WRK-END
+           MOVE    20                  TO  WRK-END
            PERFORM 2010-MOJI-HENKAN-SEC
            MOVE    WRK-HENKAN-ATO      TO  LNK-SC97-INPUTCD(IDX-D:)
       *
            MOVE    ZERO                TO  WRK-CD-MCNT
            PERFORM VARYING     IDX     FROM    WRK-IDX-FT   BY  1
-                   UNTIL       IDX         >   CONS-INPUT
+                   UNTIL       IDX         >   22
+      *
       ****     MOVE    LNK-SC97-INPUTCD(IDX:1)
       *****                                TO  WRK-MOJI
                EVALUATE    LNK-SC97-INPUTCD(IDX:1)
                    WHEN    "*"
                        MOVE    1               TO  FLG-AST
-                   WHEN    "@"
-      *                数量の直後であること
-                       IF     (FLG-SP          =   1    )  AND
-                              (FLG-AST         =   ZERO )  AND
-                              (WRK-SUR     NOT =   SPACE )
-                           MOVE    1               TO  FLG-AUTO
-                       END-IF
                    WHEN    SPACE
                        ADD     1               TO  FLG-SP
-      *                空白は１つとする
-                       IF     (IDX             >   1   )
-                           COMPUTE IDX-1       =   IDX     -  1
-                           IF      LNK-SC97-INPUTCD(IDX-1:1) =   SPACE
-                               COMPUTE FLG-SP      =   FLG-SP    -  1
-                           END-IF
-                       END-IF
-      *
                    WHEN    OTHER
       *---             診療行為コード編集
                        IF     (FLG-SP          =   ZERO )  AND
@@ -1156,39 +1029,50 @@
                                                    TO  WRK-CD
                                                        (WRK-CD-MCNT:1)
                        END-IF
-      *ver.4.5
-      *                換算値・多剤入力区分
-                       MOVE    ZERO                TO  FLG-SEND
-                       IF     (FLG-SP          >=  1    )
-                         AND  (FLG-AST         =   ZERO )
-      *****              AND  (WRK-SUR-MCNT    >   ZERO )
-      *                    多剤入力区分
-                           IF       (LNK-SC97-INPUTCD(IDX:1)
-                                                   =   "A"
-                                                   OR  "a"  )
-                               MOVE    1               TO  FLG-AINPUT
-                               MOVE    1               TO  FLG-SEND
-                           END-IF
-      *                    １種類入力区分
-                           IF       (LNK-SC97-INPUTCD(IDX:1)
-                                                   =   "I"
-                                                   OR  "i"  )
-                               MOVE    1               TO  FLG-BINPUT
-                               MOVE    1               TO  FLG-SEND
-                           END-IF
-      *                    継続コメント
-                           IF       (LNK-SC97-INPUTCD(IDX:1)
-                                                   =   "C"
-                                                   OR  "c"  )
-                               MOVE    1               TO  FLG-CINPUT
-                               MOVE    1               TO  FLG-SEND
-                           END-IF
+      *---             数量編集
+                       IF     (FLG-SP          =   1    )  AND
+                              (FLG-AST         =   ZERO )
+                           ADD     1               TO  WRK-SUR-MCNT
+                           MOVE    LNK-SC97-INPUTCD(IDX:1)
+                                                   TO  WRK-SUR
+                                                       (WRK-SUR-MCNT:1)
                        END-IF
-                       IF      FLG-SEND        =   ZERO
-      *---             数量以下編集
-                           PERFORM 4101121-MOJI-SURYO-SET-SEC
+      *---             回数編集
+                       IF      FLG-AST         =   1
+                           ADD     1               TO  WRK-ACCT-MCNT
+                           MOVE    LNK-SC97-INPUTCD (IDX:1)
+                                                   TO  WRK-KAI
+                                                      (WRK-ACCT-MCNT:1)
                        END-IF
-      *ver.4.5
+      *---             その他値
+                       IF     (FLG-SP          =   1    )  AND
+                              (FLG-AST         =   0    )
+                           ADD     1               TO  WRK-MCNT1
+                           MOVE    LNK-SC97-INPUTCD(IDX:1)
+                                                   TO  WRK-MOJI1
+                                                          (WRK-MCNT1:1)
+                       END-IF
+                       IF     (FLG-SP          =   2    )  AND
+                              (FLG-AST         =   0    )
+                           ADD     1               TO  WRK-MCNT2
+                           MOVE    LNK-SC97-INPUTCD(IDX:1)
+                                                   TO  WRK-MOJI2
+                                                          (WRK-MCNT2:1)
+                       END-IF
+                       IF     (FLG-SP          =   3    )  AND
+                              (FLG-AST         =   0    )
+                           ADD     1               TO  WRK-MCNT3
+                           MOVE    LNK-SC97-INPUTCD(IDX:1)
+                                                   TO  WRK-MOJI3
+                                                          (WRK-MCNT3:1)
+                       END-IF
+                       IF     (FLG-SP          =   4    )  AND
+                              (FLG-AST         =   0    )
+                           ADD     1               TO  WRK-MCNT4
+                           MOVE    LNK-SC97-INPUTCD(IDX:1)
+                                                   TO  WRK-MOJI4
+                                                          (WRK-MCNT4:1)
+                       END-IF
                    END-EVALUATE
            END-PERFORM
       *
@@ -1202,92 +1086,21 @@
            IF     (SNUM-RC         NOT =   ZERO  )   OR
                   (SNUM-MINKBN         =   "1"   )   OR
                   (SNUM-SEISUU         >   7     )   OR
-      *****       (SNUM-SYOSUU         >   3     )
-                  (SNUM-SYOSUU         >   5     )
+                  (SNUM-SYOSUU         >   3     )
                MOVE    "0012"              TO  SPA-ERRCD
            ELSE
                MOVE    SNUM-SEISUU         TO  LNK-SC97-SURYOFLG
                MOVE    WRK-SUR-MCNT        TO  LNK-SC97-SURYOCNT
                MOVE    SNUM-OUTNUM         TO  LNK-SC97-SURYO
-      *        器材は小数点以下３桁
-               IF     (SPA-COM-INPUTCD(GMN-IDX)(1:1)
-                                           =   "7"  )  AND
-                      (SNUM-SYOSUU         >   3    )
-                  MOVE    "0312"              TO  SPA-ERRCD
+      *
+      *        数量にゼロ入力した時、行削除とする
+               IF     (WRK-SUR-MCNT        >   ZERO  )  AND
+                      (LNK-SC97-SURYO      =   ZERO  )
+                   MOVE    " "             TO  LNK-SC97-INPUTCD
+                   MOVE    ZERO            TO  LNK-SC97-SURYOCNT
+                   MOVE    ZERO            TO  LNK-SC97-SURYO
+                   MOVE    ZERO            TO  LNK-SC97-SURYOFLG
                END-IF
-      *
-      *        入力値がないもの
-               IF     ((SPA-COM-INPUTCD(GMN-IDX)(1:2)   =   "84"  ) OR
-                       (SPA-COM-INPUTCD(GMN-IDX)(1:4)   =   "0084") OR
-                       (SPA-COM-INPUTCD(GMN-IDX)(1:3)   =   "001"  AND
-                        SPA-COM-YCOMKBN(GMN-IDX)        =   1    )
-                   OR  (SPA-COM-INPUTCD(GMN-IDX)(1:7)   =   "0992081"))
-                  AND ( WRK-MCNT2          >   ZERO )
-                   CONTINUE
-               ELSE
-      *
-      *        ゼロ入力不可
-               IF      SPA-SURYOZERO-FLG   =   ZERO
-      *
-      *           数量にゼロ入力した時、行削除とする
-                   IF     (WRK-SUR-MCNT        >   ZERO  )  AND
-                          (LNK-SC97-SURYO      =   ZERO  )
-                       MOVE    "  "            TO  LNK-SC97-INPUTCD
-                       MOVE    ZERO            TO  LNK-SC97-SURYOCNT
-                       MOVE    ZERO            TO  LNK-SC97-SURYO
-                       MOVE    ZERO            TO  LNK-SC97-SURYOFLG
-                   END-IF
-               ELSE
-      *            ’０’以外の時、行削除とする
-                   IF     (WRK-SUR-MCNT        >   1     )  AND
-                          (LNK-SC97-SURYO      =   ZERO  )
-                       MOVE    "  "            TO  LNK-SC97-INPUTCD
-                       MOVE    ZERO            TO  LNK-SC97-SURYOCNT
-                       MOVE    ZERO            TO  LNK-SC97-SURYO
-                       MOVE    ZERO            TO  LNK-SC97-SURYOFLG
-                   END-IF
-               END-IF
-           END-IF
-      *
-           END-IF
-      *
-      *    コメント入力値はゼロ以外は数量なしとする
-      *    IF    ((SPA-COM-INPUTCD(GMN-IDX)(1:2)   =   "84") OR
-      *           (SPA-COM-INPUTCD(GMN-IDX)(1:4)   =   "0084")  OR
-      *           (SPA-COM-INPUTCD(GMN-IDX)(1:3)   =   "001"  AND
-      *            SPA-COM-YCOMKBN(GMN-IDX)        =   1    ))
-      *       AND (SNUM-RC             =   ZERO    )
-      *       AND (SNUM-OUTNUM     NOT =   ZERO    )
-      *        MOVE    SPACE               TO  SPA-ERRCD
-      *        MOVE    ZERO                TO  LNK-SC97-SURYOFLG
-      *        MOVE    ZERO                TO  LNK-SC97-SURYOCNT
-      *        MOVE    ZERO                TO  LNK-SC97-SURYO
-      *    END-IF
-      *
-           IF      LNK-SC97-SURYO   >   ZERO
-               IF      FLG-AUTO         =   1
-                   MOVE    "1"          TO  LNK-SC97-AUTOFLG2
-               END-IF
-           END-IF
-      *ver.4.5
-      *    換算値入力数量
-           IF      LNK-SC97-SURYO   >   ZERO
-               IF      FLG-AINPUT       =   1
-                   MOVE    "1"          TO  LNK-SC97-INKBNFLG1
-               END-IF
-           ELSE
-               IF      FLG-AINPUT       =   1
-                   MOVE    "0205"           TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *
-      *    数量指示区分
-           IF      FLG-BINPUT       =   1
-               MOVE    "1"          TO  LNK-SC97-INKBNFLG2
-           END-IF
-      *    継続コメント指示区分
-           IF      FLG-CINPUT       =   1
-               MOVE    "1"          TO  LNK-SC97-CONTFLG
            END-IF
       *
       *    回数（＊があるが、回数が入力されてない時、＊削除する）
@@ -1310,7 +1123,7 @@
                                        ORCSNUMAREA
            IF     (SNUM-RC         NOT =   ZERO  )   OR
                   (SNUM-MINKBN         =   "1"   )   OR
-                  (SNUM-SEISUU         >   3     )   OR
+                  (SNUM-SEISUU         >   4     )   OR
                   (SNUM-SYOSUU         >   ZERO  )
                MOVE    "0012"              TO  SPA-ERRCD
            ELSE
@@ -1319,8 +1132,8 @@
       *
       *    フィルムの時、分画数
            MOVE    ZERO                TO  WRK-BUNGSU
-           IF     (WRK-MCNT2           >   ZERO  ) AND
-                  (SPA-COM-INPUTCD(GMN-IDX)(1:1)   =   "7") 
+           IF     (WRK-MCNT2           >   ZERO  )  AND
+                  (SPA-COM-INPUTCD(GMN-IDX)(1:1)    NOT =   "8")
       *
                MOVE    ZERO                TO  WRK-BUNGSU
                INITIALIZE                      ORCSNUMAREA
@@ -1336,67 +1149,6 @@
                END-IF
                MOVE    SPACE              TO  WRK-MOJI2
                MOVE    ZERO               TO  WRK-MCNT2
-           END-IF
-      *
-      *    入力値があるものの、行削除（コメント）
-      *        入力値がないもの
-           IF     ((SPA-COM-INPUTCD(GMN-IDX)(1:2)   =   "84") OR
-                   (SPA-COM-INPUTCD(GMN-IDX)(1:4)   =   "0084") OR
-      *H30.4
-                   (SPA-COM-INPUTCD(GMN-IDX)(1:7)   =   "0992081"))
-             AND  ( WRK-MCNT2         >   ZERO )
-               IF     ((WRK-MCNT2              >   ZERO )  AND
-                       (WRK-MOJI2(1:WRK-MCNT2) NOT =   ZERO ))
-                 OR   ((WRK-MCNT3              >   ZERO )  AND
-                       (WRK-MOJI3(1:WRK-MCNT3) NOT =   ZERO ))
-                 OR   ((WRK-MCNT4              >   ZERO )  AND
-                       (WRK-MOJI4(1:WRK-MCNT4) NOT =   ZERO ))
-                   IF     (WRK-SUR-MCNT        =   ZERO  )  OR
-                          (LNK-SC97-SURYO      =   ZERO  )
-                       MOVE    1               TO  LNK-SC97-SURYO
-                   END-IF
-                   MOVE    ZERO            TO  LNK-SC97-SURYOCNT
-                   MOVE    ZERO            TO  LNK-SC97-SURYOFLG
-               ELSE
-      *            行削除とする
-                   IF     (WRK-SUR-MCNT        >   ZERO  )  AND
-                          (LNK-SC97-SURYO      =   ZERO  )
-                       MOVE    "  "            TO  LNK-SC97-INPUTCD
-                       MOVE    ZERO            TO  LNK-SC97-SURYOCNT
-                       MOVE    ZERO            TO  LNK-SC97-SURYO
-                       MOVE    ZERO            TO  LNK-SC97-SURYOFLG
-                   END-IF
-               END-IF
-           END-IF
-      *    入力値があるものの、行削除（用法コメント）
-      *        入力値がないもの
-           IF     ((SPA-COM-INPUTCD(GMN-IDX)(1:3)   =   "001" )  AND
-                   (SPA-COM-YCOMKBN(GMN-IDX)        =   1     ))  AND
-                  ( WRK-MCNT2         >   ZERO )
-               IF     ((WRK-MCNT2              >   ZERO )  AND
-                       (WRK-MOJI2(1:WRK-MCNT2) NOT =   ZERO ))
-                 OR   ((WRK-MCNT3              >   ZERO )  AND
-                       (WRK-MOJI3(1:WRK-MCNT3) NOT =   ZERO ))
-                 OR   ((WRK-MCNT4              >   ZERO )  AND
-                       (WRK-MOJI4(1:WRK-MCNT4) NOT =   ZERO ))
-                 OR   ((WRK-MCNT5              >   ZERO )  AND
-                       (WRK-MOJI5(1:WRK-MCNT5) NOT =   ZERO ))
-                   IF     (WRK-SUR-MCNT        =   ZERO  )  OR
-                          (LNK-SC97-SURYO      =   ZERO  )
-                       MOVE    1               TO  LNK-SC97-SURYO
-                   END-IF
-                   MOVE    ZERO            TO  LNK-SC97-SURYOCNT
-                   MOVE    ZERO            TO  LNK-SC97-SURYOFLG
-               ELSE
-      *            行削除とする
-                   IF     (WRK-SUR-MCNT        >   ZERO  )  AND
-                          (LNK-SC97-SURYO      =   ZERO  )
-                       MOVE    "  "            TO  LNK-SC97-INPUTCD
-                       MOVE    ZERO            TO  LNK-SC97-SURYOCNT
-                       MOVE    ZERO            TO  LNK-SC97-SURYO
-                       MOVE    ZERO            TO  LNK-SC97-SURYOFLG
-                   END-IF
-               END-IF
            END-IF
       *
       *    コメント値
@@ -1418,108 +1170,48 @@
                MOVE    SPACE              TO  WRK-MOJI4
                MOVE    ZERO               TO  WRK-MCNT4
            END-IF
-           IF      WRK-MCNT4          =   ZERO   AND
-                   WRK-MCNT5          >   ZERO
-               MOVE    WRK-MOJI5          TO  WRK-MOJI4
-               MOVE    SPACE              TO  WRK-MOJI5
-               MOVE    ZERO               TO  WRK-MCNT5
-           END-IF
       *
            MOVE    WRK-MOJI1           TO  LNK-SC97-MOJI1
            MOVE    WRK-MOJI2           TO  LNK-SC97-MOJI2
            MOVE    WRK-MOJI3           TO  LNK-SC97-MOJI3
            MOVE    WRK-MOJI4           TO  LNK-SC97-MOJI4
-           MOVE    WRK-MOJI5           TO  LNK-SC97-MOJI5
            MOVE    WRK-MCNT1           TO  LNK-SC97-MCNT1
            MOVE    WRK-MCNT2           TO  LNK-SC97-MCNT2
            MOVE    WRK-MCNT3           TO  LNK-SC97-MCNT3
            MOVE    WRK-MCNT4           TO  LNK-SC97-MCNT4
-           MOVE    WRK-MCNT5           TO  LNK-SC97-MCNT5
            .
        4101121-MOJI-SET-EXT.
-           EXIT.
-      *
-      *ver.4.5
-      *****************************************************************
-      *    数量以下変換処理
-      *****************************************************************
-       4101121-MOJI-SURYO-SET-SEC       SECTION.
-      *
-      *--- 数量編集
-           IF     (FLG-SP          =   1    )  AND
-                  (FLG-AST         =   ZERO )
-                ADD     1              TO  WRK-SUR-MCNT
-                MOVE    LNK-SC97-INPUTCD(IDX:1)
-                                       TO  WRK-SUR (WRK-SUR-MCNT:1)
-           END-IF
-      *--- 回数編集
-           IF      FLG-AST         =   1
-               ADD     1               TO  WRK-ACCT-MCNT
-               MOVE    LNK-SC97-INPUTCD (IDX:1)
-                                       TO  WRK-KAI  (WRK-ACCT-MCNT:1)
-           END-IF
-      *--- その他値
-           IF     (FLG-SP          =   1    )  AND
-                  (FLG-AST         =   0    )
-               ADD     1               TO  WRK-MCNT1
-               MOVE    LNK-SC97-INPUTCD(IDX:1)
-                                       TO  WRK-MOJI1  (WRK-MCNT1:1)
-           END-IF
-           IF     (FLG-SP          =   2    )  AND
-                  (FLG-AST         =   0    )
-               ADD     1               TO  WRK-MCNT2
-               MOVE    LNK-SC97-INPUTCD(IDX:1)
-                                       TO  WRK-MOJI2  (WRK-MCNT2:1)
-           END-IF
-           IF     (FLG-SP          =   3    )  AND
-                  (FLG-AST         =   0    )
-               ADD     1               TO  WRK-MCNT3
-               MOVE    LNK-SC97-INPUTCD(IDX:1)
-                                       TO  WRK-MOJI3  (WRK-MCNT3:1)
-           END-IF
-           IF     (FLG-SP          =   4    )  AND
-                  (FLG-AST         =   0    )
-               ADD     1               TO  WRK-MCNT4
-               MOVE    LNK-SC97-INPUTCD(IDX:1)
-                                       TO  WRK-MOJI4   (WRK-MCNT4:1)
-           END-IF
-           IF     (FLG-SP          =   5    )  AND
-                  (FLG-AST         =   0    )
-               ADD     1               TO  WRK-MCNT5
-               MOVE    LNK-SC97-INPUTCD(IDX:1)
-                                       TO  WRK-MOJI5   (WRK-MCNT5:1)
-           END-IF
-           .
-       4101121-MOJI-SURYO-SET-EXT.
            EXIT.
       *
       *****************************************************************
       *    入力コードマスター読込
       *****************************************************************
        930-INPUTCD-READ-SEC         SECTION.
+      *TEST
+           DISPLAY "C97 INPUTCD-READ:" ICD-INPUTCD
+      *TEST
       *
-           IF      WRK-CD-MCNT         >=   20
-               MOVE    "key2"          TO  WRK-PATH
+           IF      WRK-CD-MCNT         =   20
+               MOVE    "INPUTCD-KEY2"      TO  WRK-PATH
            ELSE
-               MOVE    "key"           TO  WRK-PATH
-               COMPUTE IDK             =   WRK-CD-MCNT  +  1
-               MOVE    "%"             TO  ICD-INPUTCD(IDK:1)
+               MOVE    "INPUTCD-KEY"       TO  WRK-PATH
            END-IF
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "tbl_inputcd"       TO  MCP-TABLE
-           MOVE    WRK-PATH            TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+      *****MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_inputcd"       TO  MCP-TABLE
-               MOVE    WRK-PATH            TO  MCP-PATHNAME
                MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               MOVE    WRK-PATH            TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  INPUTCD-REC
                    MOVE    ZERO                TO  FLG-INPUTCD
@@ -1532,15 +1224,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
       *
-           MOVE    "tbl_inputcd"       TO  MCP-TABLE
-           MOVE    WRK-PATH            TO  MCP-PATHNAME
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
-       930-INPUTCD-READ-EXT.
+       920-INPUTCD-NEXT-EXT.
            EXIT.
       *
       *

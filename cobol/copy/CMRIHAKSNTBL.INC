@@ -21,74 +21,47 @@
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 01.00.01     NACL-多々納  04/03/17  Ｈ１６．４改正対応
       *****************************************************************
       *
        01  TBL-RIHABIRI-AREA.
       *    理学早期リハ加算
-           03  FILLER              PIC X(11)   VALUE   "180022970 1".
-           03  FILLER              PIC X(11)   VALUE   "180023070 2".
-           03  FILLER              PIC X(11)   VALUE   "180023170 3".
-           03  FILLER              PIC X(11)   VALUE   "180023270 1".
-           03  FILLER              PIC X(11)   VALUE   "180023370 2".
-           03  FILLER              PIC X(11)   VALUE   "180023470 3".
-           03  FILLER              PIC X(11)   VALUE   "180023570  ".
+           03  FILLER              PIC X(09)   VALUE   "180022970".
+           03  FILLER              PIC X(09)   VALUE   "180023070".
+           03  FILLER              PIC X(09)   VALUE   "180023170".
+           03  FILLER              PIC X(09)   VALUE   "180023270".
+           03  FILLER              PIC X(09)   VALUE   "180023370".
+           03  FILLER              PIC X(09)   VALUE   "180023470".
+           03  FILLER              PIC X(09)   VALUE   "180023570".
       *    作業早期リハ加算
-           03  FILLER              PIC X(11)   VALUE   "180024070 1".
-           03  FILLER              PIC X(11)   VALUE   "180024170 2".
-           03  FILLER              PIC X(11)   VALUE   "180024270 3".
-           03  FILLER              PIC X(11)   VALUE   "180024370 1".
-           03  FILLER              PIC X(11)   VALUE   "180024470 2".
-           03  FILLER              PIC X(11)   VALUE   "180024570 3".
-           03  FILLER              PIC X(11)   VALUE   "180024670  ".
+           03  FILLER              PIC X(09)   VALUE   "180024070".
+           03  FILLER              PIC X(09)   VALUE   "180024170".
+           03  FILLER              PIC X(09)   VALUE   "180024270".
+           03  FILLER              PIC X(09)   VALUE   "180024370".
+           03  FILLER              PIC X(09)   VALUE   "180024470".
+           03  FILLER              PIC X(09)   VALUE   "180024570".
+           03  FILLER              PIC X(09)   VALUE   "180024670".
       *    理学早期リハ加算(老人）
-           03  FILLER              PIC X(11)   VALUE   "180707670 1".
-           03  FILLER              PIC X(11)   VALUE   "180707770 2".
-           03  FILLER              PIC X(11)   VALUE   "180707870 3".
-           03  FILLER              PIC X(11)   VALUE   "180707970  ".
-           03  FILLER              PIC X(11)   VALUE   "180708570 1".
-           03  FILLER              PIC X(11)   VALUE   "180708670 2".
-           03  FILLER              PIC X(11)   VALUE   "180708770 3".
-           03  FILLER              PIC X(11)   VALUE   "180708870  ".
+           03  FILLER              PIC X(09)   VALUE   "180707670".
+           03  FILLER              PIC X(09)   VALUE   "180707770".
+           03  FILLER              PIC X(09)   VALUE   "180707870".
+           03  FILLER              PIC X(09)   VALUE   "180707970".
+           03  FILLER              PIC X(09)   VALUE   "180708570".
+           03  FILLER              PIC X(09)   VALUE   "180708670".
+           03  FILLER              PIC X(09)   VALUE   "180708770".
+           03  FILLER              PIC X(09)   VALUE   "180708870".
       *    早期リハビリ加算（労災）
-           03  FILLER              PIC X(11)   VALUE   "101800040 1".
-           03  FILLER              PIC X(11)   VALUE   "101800050 2".
-           03  FILLER              PIC X(11)   VALUE   "101800060 3".
-           03  FILLER              PIC X(11)   VALUE   "101800070  ".
-      *    理学療法外来移行加算(老人）
-           03  FILLER              PIC X(11)   VALUE   "180708070".
-      *    作業療法外来移行加算(老人）
-           03  FILLER              PIC X(11)   VALUE   "180708970".
-      *
-      *    言語早期リハ加算
-           03  FILLER              PIC X(11)   VALUE   "180025670 1".
-           03  FILLER              PIC X(11)   VALUE   "180025770 2".
-           03  FILLER              PIC X(11)   VALUE   "180025870 3".
-      *    言語早期リハ加算（１５歳未満）
-           03  FILLER              PIC X(11)   VALUE   "180025970 1".
-           03  FILLER              PIC X(11)   VALUE   "180026070 2".
-           03  FILLER              PIC X(11)   VALUE   "180026170 3".
-      *
-       01  TBL-RIHABIRI-AREA-R       REDEFINES   TBL-RIHABIRI-AREA.
-      *****03  TBL-RIHABIRI-OCC      OCCURS   28  INDEXED   TBL-RIDX.
-           03  TBL-RIHABIRI-OCC      OCCURS   34  INDEXED   TBL-RIDX.
-               05  TBL-RIHA-SRYCD      PIC X(09).
-               05  TBL-RIHA-F1         PIC X(01).
-      *        1:１４日まで（イ）、2:１５日から３０日（ロ）
-      *        3:３０日から９０日（ハ）
-               05  TBL-RIHA-KBN        PIC X(01).
-      *
-      *平成１６年４月から
-       01  TBL-RIHABIRI-AREA02.
+           03  FILLER              PIC X(09)   VALUE   "101800040".
+           03  FILLER              PIC X(09)   VALUE   "101800050".
+           03  FILLER              PIC X(09)   VALUE   "101800060".
+           03  FILLER              PIC X(09)   VALUE   "101800070".
       *    理学療法外来移行加算(老人）
            03  FILLER              PIC X(09)   VALUE   "180708070".
       *    作業療法外来移行加算(老人）
            03  FILLER              PIC X(09)   VALUE   "180708970".
       *
-       01  TBL-RIHABIRI-AREA02-R     REDEFINES   TBL-RIHABIRI-AREA02.
-           03  TBL-RIHABIRI2-OCC     OCCURS   2  INDEXED   TBL-RIDX2.
-               05  TBL-RIHA2-SRYCD     PIC X(09).
-      *
+       01  TBL-RIHABIRI-AREA-R       REDEFINES   TBL-RIHABIRI-AREA.
+           03  TBL-RIHABIRI-OCC      OCCURS   28  INDEXED   TBL-RIDX.
+               05  TBL-RIHA-SRYCD      PIC X(09).
       *
       *    早期リハビリあり
        01  FLG-SOUKI                   PIC 9(01).

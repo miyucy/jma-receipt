@@ -285,6 +285,8 @@
       *  01.01.105   NACL-藤原    03/10/03  PTBYOMEI-KEY13追加
       *  01.01.106   NACL-藤原    03/10/07  PTBYOMEI-KEYKEY14,KEY15追加
       *  01.01.109   NACL-藤原    03/10/16  SYUNOU-KEY21追加
+      *  01.01.110   NACL-多々納　03/11/11  RECECOM-KEY4
+      *                                     PTKOHINF-KEY6追加 
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -880,10 +882,12 @@
                WHEN    "DBUPDATE"      ALSO   "RECECOM-KEY1"
                WHEN    "DBUPDATE"      ALSO   "RECECOM-KEY2"
                WHEN    "DBUPDATE"      ALSO   "RECECOM-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "RECECOM-KEY4"
                WHEN    "DBDELETE"      ALSO   "RECECOM-KEY"
                WHEN    "DBDELETE"      ALSO   "RECECOM-KEY1"
                WHEN    "DBDELETE"      ALSO   "RECECOM-KEY2"
                WHEN    "DBDELETE"      ALSO   "RECECOM-KEY3"
+               WHEN    "DBDELETE"      ALSO   "RECECOM-KEY4"
                    MOVE    PATH-TBL-RECECOM-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "RECECOM-DEL1"
@@ -1481,6 +1485,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTKOHINF-KEY5"
                    MOVE    PATH-TBL-PTKOHINF-KEY5 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTKOHINF-KEY6"
+                   MOVE    PATH-TBL-PTKOHINF-KEY6 
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "PTKOHINF-ALL"
@@ -2411,6 +2418,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "RECECOM-KEY3"
                    MOVE    PATH-TBL-RECECOM-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECECOM-KEY4"
+                   MOVE    PATH-TBL-RECECOM-KEY4
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "RECECOM-ALL"
                    MOVE    PATH-TBL-RECECOM-ALL

@@ -27,11 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-多々納  05/11/30  MONFUNC 対応
-      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
-      *  04.05.00    NACL-多々納  09/06/29  一括入力対応
-      *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
-      *  04.08.00    NACL-多々納  13/01/15  診療回数テーブル１０対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -52,8 +47,6 @@
       *
       *    画面スパ領域
            COPY    "J02SCR-SPA".
-      *    画面色等
-           COPY    "ENUM-VALUE".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -79,8 +72,6 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
-           03  IDZ                 PIC 9(04).
-           03  IDZ2                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -99,7 +90,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-ENDDD           PIC 9(02).
       *
-           03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-ZZ              PIC ZZZ.
       *
       *
       *****************************************************************
@@ -120,7 +111,7 @@
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-      *****COPY    "CPORCMCP.INC".
+           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -133,7 +124,19 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA24SCRAREA.INC".
+           COPY    "J02.INC".
+           COPY    "J021.INC".
+           COPY    "J022.INC".
+           COPY    "J023.INC".
+           COPY    "J024.INC".
+           COPY    "J03.INC".
+           COPY    "J04.INC".
+           COPY    "J041.INC".
+           COPY    "J042.INC".
+           COPY    "J98.INC".
+           COPY    "J99.INC".
+           COPY    "JERR.INC".
+           COPY    "JID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -145,11 +148,6 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
-      *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
-           INITIALIZE                  CNT-AREA
-           INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-J02
@@ -187,6 +185,12 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
+      *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "JERR"
                MOVE    SPACE               TO  SPA-MOTOPG
@@ -194,7 +198,7 @@
            ELSE
       *
       *        初期画面編集
-               PERFORM 300-SCREEN-SEC
+      *D       PERFORM 300-SCREEN-SEC
       *
       *        画面編集
                PERFORM 500-GMNHEN-SEC
@@ -219,9 +223,11 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
+           INITIALIZE                  SPA-J021-AREA
       *
            PERFORM                     310-SPA-SET-SEC
       *
+           MOVE    1                   TO  SPA-GMN-CUR
       *
            .
        3OO-SCREEN-EXT.
@@ -232,67 +238,6 @@
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
       *
-           MOVE    SPA-J022-MAX        TO  IDY
-           INITIALIZE                  SPA-J022-AREA
-      *
-           MOVE    IDY                 TO  SPA-J022-MAX
-      *
-           MOVE    SPA-DAY-IDX         TO  SPA-J022-IDX
-           MOVE    1                   TO  SPA-J022NAI-DAYCHK
-                                                        (SPA-DAY-IDX)
-     **    MOVE    SPA-GNAI-DAY (2 SPA-DAY-IDX)
-      *                                TO  SPA-NAI-DAY1 (SPA-DAY-IDX)
-      *    MOVE    SPA-GNAI-DAY (3 SPA-DAY-IDX)
-      *                                TO  SPA-NAI-DAY2 (SPA-DAY-IDX)
-      *    MOVE    SPA-GNAI-DAY (4 SPA-DAY-IDX)
-      *                                TO  SPA-NAI-DAY3 (SPA-DAY-IDX)
-      *
-      *    MOVE    SPA-GNAI-DAY (2 SPA-J022-IDX) 
-      *                                TO  SPA-J022-DAY1
-      *    MOVE    SPA-GNAI-DAY (3 SPA-J022-IDX) 
-      *                                TO  SPA-J022-DAY2
-      *    MOVE    SPA-GNAI-DAY (4 SPA-J022-IDX) 
-      *                                TO  SPA-J022-DAY3
-      *    IF     (SPA-J022-DAY1   >   ZERO )  AND
-      *           (SPA-J022-MAX    <   1    )
-      *        MOVE    1               TO  SPA-J022-MAX
-      *    END-IF
-      *    IF     (SPA-J022-DAY2   >   ZERO )  AND
-      *           (SPA-J022-MAX    <   2    )
-      *        MOVE    2               TO  SPA-J022-MAX
-      *    END-IF
-      *    IF     (SPA-J022-DAY3   >   ZERO )  AND
-      *           (SPA-J022-MAX    <   3    )
-      *        MOVE    3               TO  SPA-J022-MAX
-      **** END-IF
-      *ver.4.8
-      *    テーブル９回対応
-           MOVE    ZERO                TO  IDZ
-           PERFORM VARYING    IDX      FROM    2   BY  1
-                   UNTIL      IDX      >   10
-               ADD     1               TO  IDZ
-               MOVE    SPA-GNAI-DAY (IDX SPA-DAY-IDX)
-                                       TO  SPA-J022NAI-DAY
-                                                   (SPA-DAY-IDX IDZ)
-               MOVE    SPA-GNAI-DAY (IDX SPA-J022-IDX) 
-                                       TO  SPA-J022-DAY (IDZ)
-               IF      SPA-J022-DAY (IDZ)
-                                       >   ZERO
-                   MOVE    IDZ             TO  SPA-J022-MAX
-               END-IF
-           END-PERFORM
-      *
-      *    日付変換
-           MOVE    SPA-NAI-SRYYM       TO  WRK-SYMD(1:6)
-           MOVE    SPA-J022-IDX        TO  WRK-SDD
-           INITIALIZE                  LNK-DAY2-AREA
-           MOVE    "21"                TO  LNK-DAY2-IRAI
-           MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"           USING  STS-AREA-DAY
-                                              LNK-DAY2-AREA
-           IF      STS-DAY-RC1         =   ZERO
-               MOVE  LNK-DAY2-EDTYMD3      TO  SPA-HENNYMD
-           END-IF
       *
            .
        310-SPA-SET-EXT.
@@ -303,41 +248,18 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
-           MOVE    SPACE               TO  J022
-           INITIALIZE                      J022
+           MOVE    SPACE               TO  J021
       *
       *    画面編集
            MOVE    SPA-HENNYMD(11:)    TO  J022-SRYYMD
+           MOVE    SPA-J022-DAY1       TO  WRK-ZZ
       *
-           PERFORM VARYING    IDZ      FROM    1   BY  1
-                   UNTIL      IDZ      >   9
-               MOVE    SPA-J022-DAY (IDZ)  TO  J022-DAY (IDZ)
-               MOVE    WIDGET-NORMAL       TO  J022-DAY-STATE (IDZ)
-           END-PERFORM
-      *    MOVE    SPA-J022-DAY2       TO  J022-DAY2
-      *    MOVE    SPA-J022-DAY3       TO  J022-DAY3
-      *
-      *    MOVE    WIDGET-NORMAL       TO  J022-DAY1-STATE
-      *    MOVE    WIDGET-NORMAL       TO  J022-DAY2-STATE
-      *    MOVE    WIDGET-NORMAL       TO  J022-DAY3-STATE
-           IF      SPA-NYUGAIKBN       =   "1"
-      ******   MOVE    WIDGET-INSENSITIVE  TO  J022-DAY3-STATE
-               MOVE    "（退院分）"        TO  J022-MSG1
-               MOVE    "（入院分）"        TO  J022-MSG2
-               PERFORM VARYING    IDZ      FROM    3   BY  1
-                       UNTIL      IDZ      >   9
-                   MOVE    WIDGET-INSENSITIVE  TO  J022-DAY-STATE (IDZ)
-               END-PERFORM
-           ELSE
-      **       IF      SPA-J022-MAX        =   2
-      *            MOVE    WIDGET-INSENSITIVE  TO  J022-DAY3-STATE
-      ***      END-IF
-               COMPUTE IDZ2                =   SPA-J022-MAX  +  1
-               PERFORM VARYING    IDZ      FROM    IDZ2   BY  1
-                       UNTIL      IDZ      >   9
-                   MOVE    WIDGET-INSENSITIVE  TO  J022-DAY-STATE (IDZ)
-               END-PERFORM
-           END-IF
+           MOVE    SPA-J022-DAY1       TO  WRK-ZZ
+           MOVE    WRK-ZZ              TO  J022-DAY1
+           MOVE    SPA-J022-DAY2       TO  WRK-ZZ
+           MOVE    WRK-ZZ              TO  J022-DAY2
+           MOVE    SPA-J022-DAY3       TO  WRK-ZZ
+           MOVE    WRK-ZZ              TO  J022-DAY3
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -349,52 +271,6 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-           IF      SPA-J022-CUR        =   ZERO
-               EVALUATE    WRK-MCP-WIDGET
-                   WHEN    "DAY1"
-                       MOVE    2                   TO  SPA-J022-CUR
-                   WHEN    "DAY2"
-                       MOVE    3                   TO  SPA-J022-CUR
-                       IF     (SPA-NYUGAIKBN       =   "1"  )
-                       OR     (SPA-J022-MAX        =   2    )
-                           MOVE    10                  TO  SPA-J022-CUR
-                       END-IF
-                   WHEN    "DAY3"
-                       MOVE    4                   TO  SPA-J022-CUR
-                       IF     (SPA-J022-MAX        =   3    )
-                           MOVE    10                  TO  SPA-J022-CUR
-                       END-IF
-                   WHEN    "DAY4"
-                       MOVE    5                   TO  SPA-J022-CUR
-                       IF     (SPA-J022-MAX        =   4    )
-                           MOVE    10                  TO  SPA-J022-CUR
-                       END-IF
-                   WHEN    "DAY5"
-                       MOVE    6                   TO  SPA-J022-CUR
-                       IF     (SPA-J022-MAX        =   5    )
-                           MOVE    10                  TO  SPA-J022-CUR
-                       END-IF
-                   WHEN    "DAY6"
-                       MOVE    7                   TO  SPA-J022-CUR
-                       IF     (SPA-J022-MAX        =   6    )
-                           MOVE    10                  TO  SPA-J022-CUR
-                       END-IF
-                   WHEN    "DAY7"
-                       MOVE    8                   TO  SPA-J022-CUR
-                       IF     (SPA-J022-MAX        =   7    )
-                           MOVE    10                  TO  SPA-J022-CUR
-                       END-IF
-                   WHEN    "DAY8"
-                       MOVE    9                   TO  SPA-J022-CUR
-                       IF     (SPA-J022-MAX        =   8    )
-                           MOVE    10                  TO  SPA-J022-CUR
-                       END-IF
-                   WHEN    "DAY9"
-                       MOVE    10                  TO  SPA-J022-CUR
-                   WHEN    OTHER
-                       MOVE    1                   TO  SPA-J022-CUR
-               END-EVALUATE
-           END-IF
       *
            EVALUATE    SPA-J022-CUR
                WHEN    1
@@ -404,18 +280,6 @@
                WHEN    3
                    MOVE    "DAY3"              TO  MCP-WIDGET
                WHEN    4
-                   MOVE    "DAY4"              TO  MCP-WIDGET
-               WHEN    5
-                   MOVE    "DAY5"              TO  MCP-WIDGET
-               WHEN    6
-                   MOVE    "DAY6"              TO  MCP-WIDGET
-               WHEN    7
-                   MOVE    "DAY7"              TO  MCP-WIDGET
-               WHEN    8
-                   MOVE    "DAY8"              TO  MCP-WIDGET
-               WHEN    9
-                   MOVE    "DAY9"              TO  MCP-WIDGET
-               WHEN    10
                    MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -445,51 +309,99 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
-           MOVE    ZERO                TO  SPA-J022-CUR
-      *
-           PERFORM 410-INPUT-CHK-SEC
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        回数１  
+               WHEN    "ACTIVATE"      ALSO    "DAY1"
+                   PERFORM 2001-DAY1-SEC
+      *        回数２  
+               WHEN    "ACTIVATE"      ALSO    "DAY2"
+                   PERFORM 2002-DAY2-SEC
+      *        回数３  
+               WHEN    "ACTIVATE"      ALSO    "DAY3"
+                   PERFORM 2003-DAY3-SEC
+           END-EVALUATE
       *
            .
        200-ENTRY-EXT.
            EXIT.
       *
       *****************************************************************
-      *    入力チェック処理
+      *    １回目入力処理
       *****************************************************************
-       410-INPUT-CHK-SEC          SECTION.
+       2001-DAY1-SEC                SECTION.
       *
-      *    画面をＳＰＡセット
-           PERFORM 4101-GMN-SPA-SET-SEC
-      *    基本チェックと別画面処理
-           PERFORM 4102-KIHON-CHK-SEC
+           MOVE    1                   TO  SPA-J022-CUR
+      *
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    J022-DAY1           TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN         =   "1"   )   OR
+                  (SNUM-SYOKBN         =   "1"   )
+               MOVE    "0001"              TO  SPA-ERRCD
+               GO      TO      2001-DAY1-EXT
+           ELSE
+               MOVE    SNUM-OUTNUM         TO  SPA-J022-DAY1
+           END-IF
+      *
+           ADD     1                   TO  SPA-J022-CUR
       *
            .
-       410-INPUT-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    画面ＳＰＡ編集処理
-      *****************************************************************
-       4101-GMN-SPA-SET-SEC          SECTION.
-      *
-      ***  MOVE    J022-DAY1           TO  SPA-J022-DAY1
-      *    MOVE    J022-DAY2           TO  SPA-J022-DAY2
-      ***  MOVE    J022-DAY3           TO  SPA-J022-DAY3
-           PERFORM VARYING    IDZ      FROM    1   BY  1
-                   UNTIL      IDZ      >   9
-               MOVE    J022-DAY (IDZ)      TO  SPA-J022-DAY (IDZ)
-           END-PERFORM
-           .
-       4101-GMN-SPA-SET-EXT.
+       2001-DAY1-EXT.
            EXIT.
       *
       *****************************************************************
-      *    基本チェック処理
+      *    ２回目入力処理
       *****************************************************************
-       4102-KIHON-CHK-SEC                   SECTION.
+       2002-DAY2-SEC                SECTION.
+      *
+           MOVE    2                   TO  SPA-J022-CUR
+      *
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    J022-DAY2           TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN         =   "1"   )   OR
+                  (SNUM-SYOKBN         =   "1"   )
+               MOVE    "0001"              TO  SPA-ERRCD
+               GO      TO      2002-DAY2-EXT
+           ELSE
+               MOVE    SNUM-OUTNUM         TO  SPA-J022-DAY2
+           END-IF
+      *
+           ADD     1                   TO  SPA-J022-CUR
       *
            .
-       4102-KIHON-CHK-EXT.
+       2002-DAY2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ３回目入力処理
+      *****************************************************************
+       2003-DAY3-SEC                SECTION.
+      *
+           MOVE    3                   TO  SPA-J022-CUR
+      *
+      *
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    J022-DAY3           TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN         =   "1"   )   OR
+                  (SNUM-SYOKBN         =   "1"   )
+               MOVE    "0001"              TO  SPA-ERRCD
+               GO      TO      2003-DAY3-EXT
+           ELSE
+               MOVE    SNUM-OUTNUM         TO  SPA-J022-DAY3
+           END-IF
+      *
+           ADD     1                   TO  SPA-J022-CUR
+      *
+           .
+       2003-DAY3-EXT.
            EXIT.
       *
       *****************************************************************
@@ -497,23 +409,15 @@
       *****************************************************************
        220-KAKUTEI-SEC                   SECTION.
       *
-      *    入力チェック処理
-           PERFORM 410-INPUT-CHK-SEC
-      *
-      ***  MOVE    SPA-J022-DAY1       TO  SPA-NAI-DAY1 (SPA-J022-IDX)
-      *    MOVE    SPA-J022-DAY2       TO  SPA-NAI-DAY2 (SPA-J022-IDX)
-      **** MOVE    SPA-J022-DAY3       TO  SPA-NAI-DAY3 (SPA-J022-IDX)
-           PERFORM VARYING    IDZ      FROM    1   BY  1
-                   UNTIL      IDZ      >   9
-               MOVE    SPA-J022-DAY (IDZ)  TO  SPA-J022NAI-DAY
-                                                     (SPA-J022-IDX IDZ)
-           END-PERFORM
+           MOVE    SPA-J022-DAY1       TO  SPA-NAI-DAY1 (SPA-J022-IDX)
+           MOVE    SPA-J022-DAY2       TO  SPA-NAI-DAY2 (SPA-J022-IDX)
+           MOVE    SPA-J022-DAY3       TO  SPA-NAI-DAY3 (SPA-J022-IDX)
       *
            COMPUTE IDY                 =   SPA-J022-IDX  +  1
            MOVE    ZERO                TO  SPA-J022-IDX
            PERFORM VARYING     IDX     FROM    IDY BY 1
                    UNTIL       IDX     >   31
-               IF      SPA-J022NAI-DAYCHK (IDX)    =   1
+               IF      SPA-NAI-DAYCHK (IDX)    =   1
                    MOVE    IDX             TO  SPA-J022-IDX
                END-IF
            END-PERFORM
@@ -521,18 +425,12 @@
            IF      SPA-J022-IDX        =   ZERO
                PERFORM 210-BACK
            ELSE
-      ***      MOVE    SPA-GNAI-DAY (2 SPA-J022-IDX)
-      *                                TO  SPA-J022-DAY1
-      *        MOVE    SPA-GNAI-DAY (3 SPA-J022-IDX)
-      *                                TO  SPA-J022-DAY2
-      *        MOVE    SPA-GNAI-DAY (4 SPA-J022-IDX)
-      ****                             TO  SPA-J022-DAY3
-               PERFORM VARYING    IDZ      FROM    1   BY  1
-                       UNTIL      IDZ      >   9
-                   COMPUTE IDX             =   IDZ     +   1
-                   MOVE    SPA-GNAI-DAY (IDX SPA-J022-IDX)
-                                           TO  SPA-J022-DAY (IDZ)
-               END-PERFORM
+               MOVE    SPA-GNAI-DAY (2 SPA-J022-IDX)
+                                       TO  SPA-J022-DAY1
+               MOVE    SPA-GNAI-DAY (3 SPA-J022-IDX)
+                                       TO  SPA-J022-DAY2
+               MOVE    SPA-GNAI-DAY (4 SPA-J022-IDX)
+                                       TO  SPA-J022-DAY3
       *
       *        日付変換
                MOVE    SPA-NAI-SRYYM       TO  WRK-SYMD(1:6)
@@ -612,7 +510,6 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
-      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -644,9 +541,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL   "ORCMCPSUB"   USING
+                                MCPAREA
+                                ORCMCPAREA
+                                MCPDATA-REC.
       *
            .
        900-PUT-WINDOW-EXT.

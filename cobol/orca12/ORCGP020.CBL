@@ -33,10 +33,6 @@
       *  02.00.00    MCC-多々納   02/07/04  インタフェース変更
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
       *  02.00.02    NACL-多々納  02/11/26  診療科・ドクター件数修正
-      *  02.00.03    NACL-多々納  05/11/11  MONFUNC 対応 他
-      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
-      *  03.05.01    NACL-多々納  07/06/11  氏名変更の予約・受付対応
-      *  04.08.00    NACL-多々納  17/04/20  受付取消の表示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -74,7 +70,6 @@
            03  FLG-IN-SELNUM       PIC 9(01).
            03  FLG-IN-HKNKUMI      PIC 9(01).
       *
-           03  FLG-ARI             PIC 9(01).
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -128,12 +123,10 @@
            03  WRK-ST              PIC 9(04).
            03  WRK-ED              PIC 9(04).
       *
-           03  WRK-EDANUM          PIC 9(04).
            03  WRK-SELNUM          PIC 9(04).
       *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
       *
-      *P02SCR-SPAのP020(受付）と同じレイアウトとする
        01  WRK-SORT-AREA.
            03  WRK-GMN-TBL.
                05  WRK-GMN-TBLO            OCCURS   10.
@@ -146,7 +139,6 @@
                    07  WRK-GMN-TKARUTE     PIC X(02).
                    07  WRK-GMN-TSYOHOU     PIC X(02).
                    07  WRK-GMN-TKOHBAN     PIC X(04).
-                   07  WRK-GMN-THKNCOMBIMEI    PIC X(60).
            03  WRK-NAI-TBL.
                05  WRK-NAI-TBLO            OCCURS   10.
                    07  WRK-NAI-KEYYYKTIME  PIC 9(04).
@@ -157,8 +149,6 @@
                    07  WRK-NAI-SRYNAI      PIC X(02).
                    07  WRK-NAI-YYKID       PIC 9(02).
                    07  WRK-NAI-YYKTIME     PIC 9(04).
-      *H29.4
-                   07  WRK-NAI20-DELKBN      PIC 9(01).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -228,7 +218,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      **** COPY    "CPORCMCP.INC".
+           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -241,34 +231,21 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+           COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -377,22 +354,21 @@
       *
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  SPA-NAI20-UKEMAX
-           INITIALIZE                      SPA-GMN20-TBL
-           INITIALIZE                      SPA-NAI20-TBL
       *
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "UKETUKE"           TO  PARA-FILEMEI
       *
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
+               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
                PERFORM 990-PARA-READ-SEC
            ELSE
                INITIALIZE                  PARA-REC
@@ -407,13 +383,9 @@
                PERFORM 3101-UKETU-HEN-SEC
                MOVE    PARA-EDANUM         TO  SPA-NAI20-UKEMAX
       *
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
+               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
            .
        314-PARAFILE-KENSAKU-SPASET-EXT.
@@ -431,12 +403,6 @@
            MOVE    UKE-SRYKA           TO  SPA-NAI20-SRYKA   (IDX)
            MOVE    UKE-SRYNAIYO        TO  SPA-NAI20-SRYNAI  (IDX)
            MOVE    UKE-DRCD     (2:4)  TO  SPA-NAI20-DRCD    (IDX)
-      *    保険組合せ
-           IF      UKE-HKNCOMBI        =   ZERO
-              MOVE    SPACE            TO  SPA-GMN20-THKNCOMBI(IDX)
-           ELSE
-              MOVE    UKE-HKNCOMBI     TO  SPA-GMN20-THKNCOMBI(IDX)
-           END-IF
            MOVE    UKE-KEYYYKTIME      TO  SPA-NAI20-KEYYYKTIME(IDX)
            MOVE    UKE-YYKTIME         TO  SPA-NAI20-YYKTIME (IDX)
            MOVE    UKE-YYKID           TO  SPA-NAI20-YYKID   (IDX)
@@ -476,27 +442,6 @@
                                              TO  SPA-GMN20-TSRYNAI(IDX)
                    END-IF
                END-PERFORM
-           END-IF
-      *    保険組合せ編集
-           IF  SPA-GMN20-THKNCOMBI(IDX)    NOT =   SPACE
-               MOVE    SPA-GMN20-THKNCOMBI(IDX)
-                                         TO  SPA-GMN20-THKNCOMBIMEI
-                                                                (IDX)
-               PERFORM     VARYING   IDY   FROM    1   BY  1
-                           UNTIL    (IDY    >   SPA-HKNCOMBI-MAX)
-                   IF      SPA-GMN20-THKNCOMBI(IDX)
-                                       =   SPA-GMN-THKNCOMBINUM(IDY)
-                       MOVE    SPA-GMN-THKNCOMBIMEI (IDY)
-                                           TO  SPA-GMN20-THKNCOMBIMEI
-                                                                (IDX)
-                       MOVE    SPA-HKNCOMBI-MAX    TO  IDY
-                   END-IF
-               END-PERFORM
-           END-IF
-      *H29.4
-      *    削除分
-           IF      UKE-UPYMD       =   "99999999"
-               MOVE    1                TO  SPA-NAI20-DELKBN (IDX)
            END-IF
       *
            .
@@ -560,16 +505,18 @@
       *
       *    予約マスターより
            MOVE    SPACE               TO  YYK-REC
-           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  YYK-PTID
+           MOVE    SPA-HOSPID          TO  YYK-HOSPID
+           MOVE    SPA-GMN-PTID            TO  YYK-PTID
            MOVE    SPA-SYSYMD          TO  YYK-YYKYMD
            MOVE    YYK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_yyk"           TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "YYK-KEY4"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_yyk"           TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
+               MOVE    "YYK-KEY4"          TO  ORC-DBPATH
                PERFORM 910-YYK-READ-SEC
            ELSE
                MOVE    1               TO  FLG-YYK
@@ -579,81 +526,59 @@
                    OR        (IDX          >=  10   )
                IF     (YYK-YYKID       NOT =   ZERO       ) AND
                       (YYK-RAIINZUMI       =   SPACE      )
-      *            受付済みでないもの
-                   MOVE    ZERO                TO  FLG-ARI
-                   PERFORM VARYING     IDY     FROM    1   BY  1
-                           UNTIL       IDY     >   IDX
-                       IF     (YYK-YYKID       =   SPA-NAI20-YYKID(IDY))
-                       AND    (YYK-SRYNAIYO    =   SPA-NAI20-SRYNAI
-                                                                  (IDY))
-                       AND    (YYK-DRCD (2:4)  =   SPA-NAI20-DRCD (IDY))
-                       AND    (YYK-SRYKA       =   SPA-NAI20-SRYKA(IDY))
-                       AND    (YYK-KEYYYKTIME  =   SPA-NAI20-KEYYYKTIME
-                                                                  (IDY))
-                           MOVE    1               TO  FLG-ARI
-                           MOVE    IDX             TO  IDY
+                   ADD     1               TO  IDX
+                   MOVE    IDX             TO  SPA-GMN20-YBANGOU (IDX)
+                   MOVE    YYK-SRYNAIYO    TO  SPA-NAI20-SRYNAI  (IDX)
+                   MOVE    YYK-DRCD (2:4)  TO  SPA-NAI20-DRCD    (IDX)
+                   MOVE    YYK-SRYKA       TO  SPA-NAI20-SRYKA   (IDX)
+                   MOVE    YYK-KEYYYKTIME  TO  SPA-NAI20-KEYYYKTIME
+                                                                 (IDX)
+                   MOVE    YYK-YYKID       TO  SPA-NAI20-YYKID   (IDX)
+                   MOVE    YYK-YYKTIME     TO  SPA-NAI20-YYKTIME (IDX)
+                   MOVE    YYK-YYKTIME(1:2)
+                                           TO  SPA-GMN20-TYYKTIME(IDX)
+                                                                (1:2)
+                   MOVE    ":"             TO  SPA-GMN20-TYYKTIME(IDX)
+                                                                (3:1)
+                   MOVE    YYK-YYKTIME(3:2)
+                                           TO  SPA-GMN20-TYYKTIME(IDX)
+                                                                (4:2)
+      *            診療科
+                   IF      YYK-SRYKA       NOT =   SPACE
+                       PERFORM 31012-SRYKA-HEN-SEC
+                   END-IF
+      *            担当ドクター名編集
+                   IF      YYK-DRCD           NOT =   SPACE
+                       PERFORM 31013-DRCD-HEN-SEC
+                   END-IF
+      *            診療行為内容編集
+                   IF  YYK-SRYNAIYO       NOT =   SPACE
+                       PERFORM     VARYING   IDY   FROM    1   BY  1
+                                   UNTIL    (IDY           >   10)
+                                   OR       (SPA-SRYNAI-CD(IDY)
+                                                           =   SPACE)
+                       IF  YYK-SRYNAIYO      =   SPA-SRYNAI-CD(IDY)
+                           MOVE    SPA-SRYNAI-MEI (IDY)
+                                             TO  SPA-GMN20-TSRYNAI(IDX)
                        END-IF
-                   END-PERFORM
-                   IF      FLG-ARI         =   ZERO
-                        PERFORM 31011-YYKUKE-HENSYU-SEC
+                       END-PERFORM
                    END-IF
                END-IF
       *
-               MOVE    "tbl_yyk"           TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
+               MOVE    "YYK-KEY4"          TO  ORC-DBPATH
                PERFORM 910-YYK-READ-SEC
            END-PERFORM
       *
-           MOVE    "tbl_yyk"           TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "YYK-KEY4"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    IDX                 TO  SPA-NAI20-UKEMAX
            .
        3101-YYKSPA-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    予約受付一覧表示編集理
-      *****************************************************************
-       31011-YYKUKE-HENSYU-SEC             SECTION.
-      *
-           ADD     1               TO  IDX
-           MOVE    IDX             TO  SPA-GMN20-YBANGOU (IDX)
-           MOVE    YYK-SRYNAIYO    TO  SPA-NAI20-SRYNAI  (IDX)
-           MOVE    YYK-DRCD (2:4)  TO  SPA-NAI20-DRCD    (IDX)
-           MOVE    YYK-SRYKA       TO  SPA-NAI20-SRYKA   (IDX)
-           MOVE    YYK-KEYYYKTIME  TO  SPA-NAI20-KEYYYKTIME
-                                                         (IDX)
-           MOVE    YYK-YYKID       TO  SPA-NAI20-YYKID   (IDX)
-           MOVE    YYK-YYKTIME     TO  SPA-NAI20-YYKTIME (IDX)
-           MOVE    YYK-YYKTIME(1:2)
-                                    TO  SPA-GMN20-TYYKTIME(IDX)(1:2)
-           MOVE    ":"              TO  SPA-GMN20-TYYKTIME(IDX)(3:1)
-           MOVE    YYK-YYKTIME(3:2)
-                                    TO  SPA-GMN20-TYYKTIME(IDX)(4:2)
-      *    診療科
-           IF      YYK-SRYKA       NOT =   SPACE
-               PERFORM 31012-SRYKA-HEN-SEC
-           END-IF
-      *    担当ドクター名編集
-           IF      YYK-DRCD           NOT =   SPACE
-               PERFORM 31013-DRCD-HEN-SEC
-           END-IF
-      *    診療行為内容編集
-           IF      YYK-SRYNAIYO       NOT =   SPACE
-               PERFORM     VARYING   IDY   FROM    1   BY  1
-                           UNTIL    (IDY           >   10)
-                           OR       (SPA-SRYNAI-CD(IDY)
-                                                   =   SPACE)
-                   IF      YYK-SRYNAIYO      =   SPA-SRYNAI-CD(IDY)
-                       MOVE    SPA-SRYNAI-MEI (IDY)
-                                             TO  SPA-GMN20-TSRYNAI(IDX)
-                   END-IF
-               END-PERFORM
-           END-IF
-           .
-       31011-YYKUKE-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -936,6 +861,10 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-FLG-END     NOT =   ZERO  )
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
       *
            .
       *
@@ -977,35 +906,42 @@
        4102-KIHON-CHK-SEC          SECTION.
       *
       *    予約番号
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4101-YSELNUM-CHK-SEC
+           PERFORM 4101-YSELNUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    診療科
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4101-SRYKA-CHK-SEC
+           PERFORM 4101-SRYKA-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    ドクター
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4101-DRNAME-CHK-SEC
+      *    診療科
+           PERFORM 4101-DRNAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    診療内容
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4101-SRYNAIYO-CHK-SEC
+      *    診療科
+           PERFORM 4101-SRYNAIYO-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    カルテ発行
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4101-KARUTE-CHK-SEC
+           PERFORM 4101-KARUTE-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    処方発行
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4101-SYOHOU-CHK-SEC
+           PERFORM 4101-SYOHOU-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    保険組合せ
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4101-HKNKUMI-CHK-SEC
+           PERFORM 4101-HKNKUMI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
            .
       *
@@ -1039,16 +975,18 @@
       *
            IF      SPA-NAI20-YSELNUM       >=  01
                                       AND  <=  SPA-NAI20-UKEMAX
-               CONTINUE
+      *        入力なし
+               IF      FLG-IN-SELNUM       =   ZERO
+                   GO      TO      4101-YSELNUM-CHK-EXT
+               END-IF
            ELSE
       *        対象外
                MOVE    "2001"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN20-CUR
+               GO      TO      4101-YSELNUM-CHK-EXT
            END-IF
       *
-           IF      (SPA-ERRCD          =   SPACE )  AND
-                   (FLG-IN-SELNUM      =   1     )
-      *        入力ありで、対象あり
+      *    対象あり
                MOVE    SPA-NAI20-YSELNUM       TO  IDX
                MOVE    SPA-NAI20-SRYKA   (IDX) TO  SPA-GMN20-SRYKA
                MOVE    SPACE                   TO  SPA-GMN20-SRYKA1
@@ -1061,7 +999,7 @@
                MOVE    SPA-GMN20-TSRYNAI (IDX) TO  SPA-GMN20-SRYNAIMEI
                MOVE    SPA-GMN20-TKARUTE (IDX) TO  SPA-GMN20-KARUTE
                MOVE    SPA-GMN20-TSYOHOU (IDX) TO  SPA-GMN20-SYOHOU
-               MOVE    SPA-GMN20-THKNCOMBI(IDX) TO  SPA-GMN20-HKNKUMI
+               MOVE    SPA-GMN20-THKNKUMI(IDX) TO  SPA-GMN20-HKNKUMI
                IF      SPA-GMN20-SYOHOU        =   SPACE
                    MOVE    SPA-GMN20-SYOHOU-LST(1)
                                        TO  SPA-GMN20-SYOHOU-G
@@ -1070,26 +1008,6 @@
                    MOVE    SPA-GMN20-KARUTE-LST(1)
                                        TO  SPA-GMN20-KARUTE-G
                END-IF
-               MOVE    SPA-GMN20-SRYKA     TO  SPA-GMN20-MAE-SRYKA
-      *        ドクター一覧
-               INITIALIZE                  ORCSDRSETAREA
-               MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
-               MOVE    "1"                 TO  ORCSDR-KBN
-               MOVE    SPA-GMN20-SRYKA     TO  ORCSDR-SRYKA
-               MOVE    SPA-GMN20-DRCD      TO  ORCSDR-IN-DRCD-G
-               CALL    "ORCSDRSET"         USING
-                                           SPA-AREA
-                                           ORCSDRSETAREA
-               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN20-DRCDLST-G
-               MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
-      *
-      *        選択分が受付無しの時
-               IF      SPA-NAI20-UKETIME(IDX)  =   SPACE
-                   MOVE     8                  TO  SPA-GMN20-CUR
-               ELSE
-                   MOVE     9                  TO  SPA-GMN20-CUR
-               END-IF
-           END-IF
       *
            .
        4101-YSELNUM-CHK-EXT.
@@ -1122,7 +1040,7 @@
       *        診療科が変わった時、ドクターを再編集する
                INITIALIZE                  ORCSDRSETAREA
                MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
-               MOVE    "3"                 TO  ORCSDR-KBN
+               MOVE    "1"                 TO  ORCSDR-KBN
                MOVE    SPA-GMN20-SRYKA     TO  ORCSDR-SRYKA
                CALL    "ORCSDRSET"         USING
                                            SPA-AREA
@@ -1140,12 +1058,8 @@
                    END-IF
                END-PERFORM
                IF      FLG-CHK             =   ZERO
-                   IF      ORCSDR-IN-DRCD  NOT =   SPACE
-                       MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN20-DRCD
-                   ELSE
-                       MOVE    SPA-GMN20-DRCDLST(1)
-                                                   TO  SPA-GMN20-DRCD
-                   END-IF
+                   MOVE    SPA-GMN20-DRCDLST(1)
+                                           TO  SPA-GMN20-DRCD
                END-IF
            END-IF
       *
@@ -1233,14 +1147,11 @@
       *
            IF      SPA-GMN20-KARUTE      =   "0"    OR  "1"
                                          OR  "2"
-                                         OR  "3"
       *        保険組合せが１件の時、１へ
                IF     (SPA-GMN20-KARUTE      =   "1"  )  AND
                       (SPA-HKNCOMBI-MAX      =   1    )
                    MOVE    SPA-GMN-THKNCOMBINUM (1)
                                              TO  SPA-NAI20-HKNKUMI
-                   MOVE    SPA-GMN-THKNCOMBIMEI (1)
-                                             TO  SPA-NAI20-HKNCOMBIMEI
                    MOVE    SPA-GMN-THKNCOMBINUM (1)
                                              TO  SPA-GMN20-HKNKUMI
                END-IF
@@ -1282,7 +1193,6 @@
       *
            IF      SPA-GMN20-HKNKUMI   =   SPACE
                MOVE    ZERO            TO  SPA-NAI20-HKNKUMI
-               MOVE    SPACE           TO  SPA-NAI20-HKNCOMBIMEI
                GO      TO                  4101-HKNKUMI-CHK-EXT
            END-IF
       *
@@ -1295,38 +1205,35 @@
                   (SNUM-SYOKBN     NOT =   SPACE )
                MOVE    "2002"          TO  SPA-ERRCD
                MOVE    7               TO  SPA-GMN20-CUR
+               GO      TO              4101-HKNKUMI-CHK-EXT
            ELSE
                MOVE    SNUM-OUTNUM     TO  SPA-NAI20-HKNKUMI
                IF      SPA-NAI20-HKNKUMI   =   ZERO
-                   MOVE    SPACE           TO  SPA-NAI20-HKNCOMBIMEI
-                   MOVE    SPA-NAI20-HKNKUMI   TO  SPA-GMN20-HKNKUMI
+                   MOVE    SPA-NAI20-HKNKUMI   TO  WRK-RENNUMZ
+                   MOVE    WRK-RENNUMZ         TO  SPA-GMN20-HKNKUMI
                    MOVE    8                   TO  SPA-GMN20-CUR
+                   GO      TO                  4101-HKNKUMI-CHK-EXT
                ELSE
                    MOVE    SPA-NAI20-HKNKUMI   TO  SPA-GMN20-HKNKUMI
                END-IF
            END-IF
       *
-           IF      (SPA-ERRCD          =   SPACE )  AND
-                   (SPA-NAI20-HKNKUMI  NOT =   ZERO)
-                MOVE    ZERO               TO  FLG-OK
-                PERFORM VARYING     IDX    FROM    1   BY  1
-                    UNTIL      (IDX    >   30         )
+            MOVE    ZERO               TO  FLG-OK
+            PERFORM VARYING     IDX    FROM    1   BY  1
+                    UNTIL      (IDX    >   15         )
                     OR         (IDX    >   SPA-HKNCOMBI-MAX)
-                   IF      SPA-NAI20-HKNKUMI
-                                       =   SPA-GMN-THKNCOMBINUM(IDX)
-                       MOVE    SPA-GMN-THKNCOMBIMEI (IDX)
-                                           TO  SPA-NAI20-HKNCOMBIMEI
-                       MOVE    1           TO  FLG-OK
-                   END-IF
-               END-PERFORM
+               IF      SPA-NAI20-HKNKUMI   =   SPA-GMN-THKNCOMBINUM(IDX)
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
       *
-               IF      FLG-OK              =   ZERO
-                   MOVE    "2002"          TO  SPA-ERRCD
-                   MOVE    7               TO  SPA-GMN20-CUR
-              END-IF
+           IF      FLG-OK              =   ZERO
+               MOVE    "2002"          TO  SPA-ERRCD
+               MOVE    7               TO  SPA-GMN20-CUR
           END-IF
       *
            .
+      *
        4101-HKNKUMI-CHK-EXT.
            EXIT.
       *****************************************************************
@@ -1368,8 +1275,7 @@
            MOVE    ZERO                TO  WRK-SELNUM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-      ************ UNTIL       IDX     >   10
-                   UNTIL       IDX     >   30
+                   UNTIL       IDX     >   10
                IF      P02-P020-HKNCOMBI-SELECT(IDX)  =   "T"
                    IF      SPA-GMN-THKNCOMBINUM (IDX)
                                                 =   SPA-NAI20-HKNKUMI
@@ -1453,12 +1359,7 @@
            MOVE    SPA-GMN20-SRYNAIMEI TO  SPA-GMN20-TSRYNAI (IDX)
            MOVE    SPA-GMN20-KARUTE    TO  SPA-GMN20-TKARUTE (IDX)
            MOVE    SPA-GMN20-SYOHOU    TO  SPA-GMN20-TSYOHOU (IDX)
-           MOVE    SPA-GMN20-HKNKUMI   TO  SPA-GMN20-THKNCOMBI(IDX)
-           MOVE    SPA-NAI20-HKNCOMBIMEI
-                                       TO  SPA-GMN20-THKNCOMBIMEI(IDX)
-      *H29.4
-      *    削除解除
-           MOVE    ZERO                TO  SPA-NAI20-DELKBN (IDX)
+           MOVE    SPA-GMN20-HKNKUMI   TO  SPA-GMN20-THKNKUMI(IDX)
       *
            MOVE    SPACE               TO  SPA-GMN20-YSELNUM
            MOVE    ZERO                TO  SPA-NAI20-YSELNUM
@@ -1504,32 +1405,14 @@
                                                    (SPA-NAI20-YSELNUM)
                MOVE    SPACE           TO  SPA-NAI20-UKETIME
                                                    (SPA-NAI20-YSELNUM)
-      *H29.4
-      *        受付済みは削除区分設定
-               IF      SPA-NAI20-UKEID(SPA-NAI20-YSELNUM)
-                                                   =    ZERO
-                                                   OR   99999
-                   CONTINUE
-               ELSE
-                   MOVE    1           TO  SPA-NAI20-DELKBN
-                                                   (SPA-NAI20-YSELNUM)
-               END-IF
-      *
                MOVE    SPACE           TO  SPA-GMN20-YSELNUM
                MOVE    ZERO            TO  SPA-NAI20-YSELNUM
-               MOVE    SPA-GMN20-KARUTE-LST(1)
-                                       TO  SPA-GMN20-KARUTE-G
-               MOVE    SPA-GMN20-SYOHOU-LST(1)
-                                       TO  SPA-GMN20-SYOHOU-G
+               MOVE    SPACE           TO  SPA-GMN20-KARUTE-G
+               MOVE    SPACE           TO  SPA-GMN20-SYOHOU-G
                MOVE    SPACE           TO  SPA-GMN20-HKNKUMI 
                MOVE    ZERO            TO  SPA-NAI20-HKNKUMI 
                GO      TO                  422-UKETUDEL-EXT
            END-IF
-      *
-      *H29.4
-           IF      SPA-NAI20-UKEID(SPA-NAI20-YSELNUM)  =    ZERO
-                                                       OR   99999
-      *新規登録分
       *
       *    １行取り消し
            INITIALIZE                SPA-GMN20-TBLO(SPA-NAI20-YSELNUM)
@@ -1551,15 +1434,6 @@
            END-PERFORM
       *
            COMPUTE SPA-NAI20-UKEMAX    =   SPA-NAI20-UKEMAX   -   1
-      *
-      *H29.4
-           ELSE
-      *        受付済みは削除区分設定
-               MOVE    1               TO  SPA-NAI20-DELKBN
-                                                   (SPA-NAI20-YSELNUM)
-           END-IF
-      *
-      *
            MOVE    SPACE               TO  SPA-GMN20-YSELNUM
            MOVE    ZERO                TO  SPA-NAI20-YSELNUM
            MOVE    SPACE               TO  SPA-GMN20-KARUTE-G
@@ -1593,19 +1467,25 @@
            INITIALIZE                       P0201
            INITIALIZE                       SPA-NAI201-AREA
       *
-           MOVE  SPA-HOSPNUM                TO  UKE-HOSPNUM.
+           MOVE  SPA-HOSPID                 TO  UKE-HOSPID.
            MOVE  SPA-SYSYMD                 TO  UKE-UKEYMD.
            MOVE  ZERO                       TO  UKE-PTID.
            MOVE  UKETUKE-REC                TO  MCPDATA-REC.
       *
-           MOVE    "tbl_uketuke"       TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE  "DBSELECT"                 TO  MCP-FUNC.
+           MOVE  "UKETUKE-KEY2"             TO  ORC-DBPATH.
+           CALL  "ORCMCPSUB"                 USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC.
            IF  MCP-RC                       =  ZERO
                MOVE  ZERO                   TO  IDX
-               MOVE    "tbl_uketuke"       TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
+               MOVE  "DBFETCH"              TO  MCP-FUNC
+               MOVE  "UKETUKE-KEY2"         TO  ORC-DBPATH
+               CALL  "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
                PERFORM  UNTIL    ( IDX          >   19   )
                         OR       ( MCP-RC   NOT =   ZERO )
                    MOVE  MCPDATA-REC        TO  UKETUKE-REC
@@ -1629,14 +1509,20 @@
                      END-IF
                    END-PERFORM
       *
-                   MOVE    "tbl_uketuke"       TO  MCP-TABLE
-                   MOVE    "key2"              TO  MCP-PATHNAME
-                   PERFORM 920-DBFETCH-SEC
+                   MOVE  "DBFETCH"          TO  MCP-FUNC
+                   MOVE  "UKETUKE-KEY2"     TO  ORC-DBPATH
+                   CALL  "ORCMCPSUB"         USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
                END-PERFORM
       *
-               MOVE    "tbl_uketuke"       TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
+               MOVE  "UKETUKE-KEY2"         TO  ORC-DBPATH
+               MOVE  "DBCLOSE"              TO  MCP-FUNC
+               CALL  "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
       *
                MOVE  IDX                    TO  SPA-GMN201-MAX
       *
@@ -1687,48 +1573,40 @@
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "UKETUKE"           TO  PARA-FILEMEI
       *
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "del3"              TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "PARA-DEL11"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            INITIALIZE                  UKETUKE-REC
-           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
+           MOVE    SPA-HOSPID          TO  UKE-HOSPID
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-GMN-PTID        TO  UKE-PTID
       *
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
-           MOVE    "tbl_uketuke"       TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
                PERFORM 900-UKETUKE-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-UKETUKE
            END-IF
-      *    新規で受付指定が無い場合、対象としない）
-           IF     (SPA-GMN-PTID        =   ZERO )  AND
-                  (SPA-P02-UKEID       =   ZERO )
-               MOVE    1               TO  FLG-UKETUKE
-           END-IF
-      *
-           MOVE    ZERO                TO  WRK-EDANUM
            PERFORM
                UNTIL   FLG-UKETUKE     =   1
-             IF        UKE-UKEID           =   ZERO
-                   CONTINUE
-             ELSE
                MOVE    ZERO            TO  FLG-OK
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   10  )
+               PERFORM  VARYING     IDX     FROM    1   BY  1
+                        UNTIL     (IDX     >   10  )
                         OR        (SPA-GMN20-YBANGOU(IDX)  =   ZERO)
                         OR        (FLG-OK                  =   1   )
-                   IF     (SPA-NAI20-UKETIME(IDX)  =   SPACE   OR  ZERO)
+                   IF      SPA-NAI20-UKETIME(IDX)  =   SPACE   OR  ZERO
                        CONTINUE
                    ELSE
                        IF      SPA-NAI20-UKEID (IDX) =   UKE-UKEID
@@ -1738,30 +1616,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
                END-PERFORM
-      *H29.4
-      *        存在なしデータ
+      *        削除データ
                IF      FLG-OK          =   ZERO
-                   IF     (SPA-GMN-PTID        =   ZERO )  AND
-                          (SPA-P02-UKEID   NOT =   UKE-UKEID)
-                       CONTINUE
-                   ELSE
-      *H29.4
-      ******           MOVE    "99999999"         TO  UKE-UPYMD
-      *                他で登録？
-                       PERFORM 5002-UKE-PARA-SEC
-                   END-IF
+                   MOVE    ALL "9"         TO  UKE-UPYMD
+                   PERFORM 5002-UKE-PARA-SEC
                END-IF
-      *
-              END-IF
-      *
-               MOVE    "tbl_uketuke"       TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
                PERFORM 900-UKETUKE-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "tbl_uketuke"       TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    新規分出力
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1772,16 +1641,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                ELSE
                    IF      SPA-NAI20-UKEID (IDX)  NOT =   ZERO
                        INITIALIZE                      UKETUKE-REC
-                       MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
+                       MOVE    SPA-HOSPID          TO  UKE-HOSPID
                        MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
                        MOVE    SPA-GMN-NAME        TO  UKE-NAME
                        MOVE    SPA-NAI20-UKEID(IDX)
                                                    TO  UKE-UKEID
                    ELSE
                        INITIALIZE                      UKETUKE-REC
-                       MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
+                       MOVE    SPA-HOSPID          TO  UKE-HOSPID
                        MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
-                       MOVE    99999               TO  UKE-UKEID
+                       MOVE    ALL "9"             TO  UKE-UKEID
                        MOVE    SPA-GMN-NAME        TO  UKE-NAME
                    END-IF 
                    PERFORM 5001-UKETUKE-HEN-SEC
@@ -1811,26 +1680,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI20-KEYYYKTIME(IDX) TO  UKE-KEYYYKTIME
            MOVE    SPA-NAI20-YYKTIME(IDX)    TO  UKE-YYKTIME
            MOVE    SPA-NAI20-YYKID  (IDX)    TO  UKE-YYKID
-      *    保険組合せ
-           IF      SPA-GMN20-THKNCOMBI(IDX)  =   SPACE
-               MOVE    ZERO                      TO  UKE-HKNCOMBI
-           ELSE
-               MOVE    SPA-GMN20-THKNCOMBI(IDX)  TO  UKE-HKNCOMBI
-           END-IF
       *
       *    受付氏名は患者氏名を編集する
-      *D   IF      SPA-P02-UKEID   NOT =   UKE-UKEID
+           IF      SPA-P02-UKEID   NOT =   UKE-UKEID
                MOVE    SPA-GMN-NAME        TO  UKE-NAME
-      *D   END-IF
-      *H29.4
-      *    削除分
-           IF      SPA-NAI20-DELKBN (IDX)  =   1
-               MOVE    "99999999"          TO  UKE-UPYMD
-           ELSE
-               MOVE    SPACE               TO  UKE-UPYMD
            END-IF
       *
-      *    パラメタ編集済み
+      *    パラメタ編集済み 
            MOVE    SPACE               TO  SPA-NAI20-UKETIME(IDX)
            .
       *
@@ -1842,22 +1698,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        5002-UKE-PARA-SEC              SECTION.
       *
-           ADD     1                   TO  WRK-EDANUM
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "UKETUKE"           TO  PARA-FILEMEI
-           MOVE    WRK-EDANUM          TO  PARA-EDANUM
+           MOVE    IDX                 TO  PARA-EDANUM
            MOVE    UKETUKE-REC         TO  PARA-DATA-REC
       *
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "PARA-KEY"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
           IF      MCP-RC          NOT =   ZERO
                DISPLAY "P02 PARA INSERT ERR:"  MCP-RC
                            ",KEY2:" PARA-KEY
@@ -1874,15 +1728,37 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        510-ERRMSG-EXT.
            EXIT.
+      *****************************************************************
+      *    システム管理マスタ　ＲＥＡＤ
+      *****************************************************************
+       900-SYSTEM-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSTEM-READ-EXT.
+           EXIT.
       *
       *****************************************************************
       *    受診内容マスター読み込み
       *****************************************************************
        900-UKETUKE-NEXT-SEC         SECTION.
       *
-           MOVE    "tbl_uketuke"       TO  MCP-TABLE
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  UKETUKE-REC
                MOVE    ZERO            TO  FLG-UKETUKE
@@ -1900,9 +1776,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        910-YYK-READ-SEC         SECTION.
       *
-           MOVE    "tbl_yyk"           TO  MCP-TABLE
-      *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  YYK-REC
                MOVE    ZERO            TO  FLG-YYK
@@ -1919,9 +1797,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        990-PARA-READ-SEC        SECTION.
       *
-           MOVE    "tbl_para"          TO  MCP-TABLE
-      *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PARA-REC
                MOVE    ZERO            TO  FLG-PARA
@@ -1933,47 +1813,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        990-PARA-READ-EXT.
            EXIT.
-      *****************************************************************
-      *    テーブル検索処理
-      *****************************************************************
-       910-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢクローズ処理
-      *****************************************************************
-       990-DBCLOSE-SEC         SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       990-DBCLOSE-EXT.
-           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -1981,9 +1820,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL   "ORCMCPSUB"   USING
+                                MCPAREA
+                                ORCMCPAREA
+                                MCPDATA-REC.
       *
            .
        900-PUT-WINDOW-EXT.

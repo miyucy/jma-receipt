@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <GTK-Interface>
 
 <project>
@@ -30,12 +30,12 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(J04)‰ºöË®àÁÖß‰ºö‚àíÂâ§ÂÜÖÂÆπÂ§âÊõ¥</title>
+  <title>(J04)≤Ò∑◊æ»≤Ò°›∫ﬁ∆‚Õ∆ —ππ</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
   <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
+  <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
 
   <widget>
@@ -46,7 +46,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>8</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
       </signal>
-      <label>Êàª„Çã</label>
+      <label>Ã·§Î</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -69,10 +69,10 @@
       <class>GtkButton</class>
       <name>B02</name>
       <x>88</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
-      <can_focus>True</can_focus>
+      <sensitive>False</sensitive>
       <accelerator>
 	<modifiers>0</modifiers>
 	<key>GDK_F2</key>
@@ -84,7 +84,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 22 Feb 2001 06:17:27 GMT</last_modification_time>
       </signal>
-      <label>„ÇØ„É™„Ç¢</label>
+      <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -92,7 +92,7 @@
       <class>GtkButton</class>
       <name>B03</name>
       <x>168</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <sensitive>False</sensitive>
@@ -115,7 +115,7 @@
       <class>GtkButton</class>
       <name>B04</name>
       <x>248</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <sensitive>False</sensitive>
@@ -138,7 +138,7 @@
       <class>GtkButton</class>
       <name>B05</name>
       <x>344</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <sensitive>False</sensitive>
@@ -161,7 +161,7 @@
       <class>GtkButton</class>
       <name>B06</name>
       <x>424</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -176,7 +176,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 23:57:24 GMT</last_modification_time>
       </signal>
-      <label>ÂâçÈ†Å</label>
+      <label>¡∞ «</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -184,7 +184,7 @@
       <class>GtkButton</class>
       <name>B07</name>
       <x>504</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -199,7 +199,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 23:57:06 GMT</last_modification_time>
       </signal>
-      <label>Ê¨°È†Å</label>
+      <label>º° «</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -207,7 +207,7 @@
       <class>GtkButton</class>
       <name>B08</name>
       <x>584</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <sensitive>False</sensitive>
@@ -219,7 +219,7 @@
       <class>GtkButton</class>
       <name>B09</name>
       <x>680</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <sensitive>False</sensitive>
@@ -236,7 +236,7 @@
       <class>GtkButton</class>
       <name>B10</name>
       <x>760</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <accelerator>
@@ -252,7 +252,7 @@
       <class>GtkButton</class>
       <name>B11</name>
       <x>840</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <accelerator>
@@ -268,7 +268,7 @@
       <class>GtkButton</class>
       <name>B12</name>
       <x>920</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -283,16 +283,16 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:01:47 GMT</last_modification_time>
       </signal>
-      <label>ÁôªÈå≤</label>
+      <label>≈–œø</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN01</name>
-      <x>116</x>
+      <x>120</x>
       <y>100</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -305,9 +305,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN02</name>
-      <x>116</x>
+      <x>120</x>
       <y>124</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -320,9 +320,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN03</name>
-      <x>116</x>
+      <x>120</x>
       <y>148</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -335,9 +335,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN04</name>
-      <x>116</x>
+      <x>120</x>
       <y>172</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -350,9 +350,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN05</name>
-      <x>116</x>
+      <x>120</x>
       <y>196</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -365,9 +365,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN06</name>
-      <x>116</x>
+      <x>120</x>
       <y>220</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -380,9 +380,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN07</name>
-      <x>116</x>
+      <x>120</x>
       <y>244</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -395,9 +395,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN08</name>
-      <x>116</x>
+      <x>120</x>
       <y>268</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -410,9 +410,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN09</name>
-      <x>116</x>
+      <x>120</x>
       <y>292</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -425,9 +425,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN10</name>
-      <x>116</x>
+      <x>120</x>
       <y>316</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -440,9 +440,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN11</name>
-      <x>116</x>
+      <x>120</x>
       <y>340</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -455,9 +455,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN12</name>
-      <x>116</x>
+      <x>120</x>
       <y>364</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -470,9 +470,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN13</name>
-      <x>116</x>
+      <x>120</x>
       <y>388</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -485,9 +485,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN14</name>
-      <x>116</x>
+      <x>120</x>
       <y>412</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -500,9 +500,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN15</name>
-      <x>116</x>
+      <x>120</x>
       <y>436</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -515,9 +515,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN16</name>
-      <x>116</x>
+      <x>120</x>
       <y>460</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -530,9 +530,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN17</name>
-      <x>116</x>
+      <x>120</x>
       <y>484</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -545,9 +545,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN18</name>
-      <x>116</x>
+      <x>120</x>
       <y>508</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -560,9 +560,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN19</name>
-      <x>116</x>
+      <x>120</x>
       <y>532</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -575,9 +575,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN20</name>
-      <x>116</x>
+      <x>120</x>
       <y>556</y>
-      <width>28</width>
+      <width>25</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -609,7 +609,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -637,7 +637,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -665,7 +665,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -693,7 +693,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -721,7 +721,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -749,7 +749,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -777,7 +777,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -805,7 +805,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -833,7 +833,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -861,7 +861,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -889,7 +889,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -917,7 +917,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -945,7 +945,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -973,7 +973,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -1001,7 +1001,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -1029,7 +1029,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -1057,7 +1057,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -1085,7 +1085,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -1113,7 +1113,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -1141,7 +1141,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>54</text_max_length>
+      <text_max_length>22</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2009,12 +2009,44 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>label152</name>
+      <x>116</x>
+      <y>80</y>
+      <width>32</width>
+      <height>16</height>
+      <label>ø«∂Ë</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label153</name>
+      <x>148</x>
+      <y>76</y>
+      <width>155</width>
+      <height>24</height>
+      <label>∆˛Œœ•≥°º•…</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>label154</name>
       <x>328</x>
       <y>80</y>
       <width>405</width>
       <height>20</height>
-      <label>Âêç                                Áß∞</label>
+      <label>Ãæ                                æŒ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -2115,6 +2147,36 @@
 
     <widget>
       <class>GtkPandaEntry</class>
+      <name>HKNCOMBI</name>
+      <x>568</x>
+      <y>8</y>
+      <width>204</width>
+      <height>24</height>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>40</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>SRYKA</name>
+      <x>716</x>
+      <y>36</y>
+      <width>124</width>
+      <height>24</height>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
       <name>RATE</name>
       <x>776</x>
       <y>8</y>
@@ -2150,7 +2212,7 @@
       <y>12</y>
       <width>92</width>
       <height>20</height>
-      <label>ÈÅ∏ÊäûÂèóË®∫Êó•</label>
+      <label>¡™¬Úºıø«∆¸</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -2267,7 +2329,7 @@
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>3</text_max_length>
+      <text_max_length>0</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2643,13 +2705,22 @@
     </widget>
 
     <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>8</x>
+      <y>64</y>
+      <width>1004</width>
+      <height>20</height>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
       <name>label155</name>
       <x>808</x>
       <y>80</y>
       <width>44</width>
       <height>20</height>
-      <label>Êï∞Èáè</label>
+      <label>øÙŒÃ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -2665,7 +2736,7 @@
       <y>80</y>
       <width>44</width>
       <height>20</height>
-      <label>ÁÇπÊï∞</label>
+      <label>≈¿øÙ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -2681,7 +2752,7 @@
       <y>640</y>
       <width>96</width>
       <height>24</height>
-      <label>ÂØæË±°Ë®∫ÁôÇÂõûÊï∞</label>
+      <label>¬–æ›ø«Œ≈≤ÛøÙ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -2800,142 +2871,6 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYKA</name>
-      <x>552</x>
-      <y>36</y>
-      <width>140</width>
-      <height>24</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label153</name>
-      <x>148</x>
-      <y>76</y>
-      <width>155</width>
-      <height>24</height>
-      <label>ÂÖ•Âäõ„Ç≥„Éº„Éâ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label152</name>
-      <x>116</x>
-      <y>80</y>
-      <width>32</width>
-      <height>20</height>
-      <label>Ë®∫Âå∫</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>8</x>
-      <y>64</y>
-      <width>1004</width>
-      <height>20</height>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>HKNCOMBI_COMB</name>
-      <x>552</x>
-      <y>8</y>
-      <width>220</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>HKNCOMBI</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Tue, 31 Oct 2006 04:30:27 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Tue, 31 Oct 2006 04:30:48 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>55</text_max_length>
-	<text></text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>HKTKBN_COMB</name>
-      <x>712</x>
-      <y>36</y>
-      <width>168</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>HKTKBN</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Tue, 31 Oct 2006 04:30:27 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Tue, 31 Oct 2006 04:30:48 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>30</text_max_length>
-	<text></text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
     </widget>
   </widget>
 </widget>

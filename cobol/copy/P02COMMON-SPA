@@ -28,8 +28,6 @@
       *  01.00.02    MCC-太田     01/04/25  終了時の更新確認等
       *  01.00.03    MCC-多々納   02/04/05  労災保険の追加
       *  01.00.04    NACL-多々納  03/03/19  Ｈ１５年４月改正対応追加
-      *  03.00.01    NACL-多々納  06/08/25  平成１８年１０月改正対応
-      *                                     （老人割合変更）
       *****************************************************************
        01  SPA-P02KYOUTU.
       *
@@ -51,10 +49,6 @@
            03  SPA-P02-WIDGET             PIC X(20).
       *    都道府県区分
            03  SPA-NAI-PREFNUM            PIC 9(02).
-      *    病院種別
-           03  SPA-NAI-HOSPSBT           PIC 9(01).
-      *    老人支払区分
-           03  SPA-NAI-ROUPAYKBN         PIC X(01).
       *    入力個所
            03  SPA-MCP-WIDGET             PIC X(64).
       *
@@ -65,44 +59,10 @@
            03  SPA-NAI-KARUTE-HAKKO       PIC X(01).
       *    自費保険の補助区分
            03  SPA-NAI-JIHIHKN-TAX        PIC X(01).
-      *    同姓同名チェック
-           03  SPA-NAI-DOUMEI-CHKFLG      PIC X(01).
-      *    二重登録疑いチェック区分
-           03  SPA-NAI-JYUFUKU-CHKKBN     PIC X(01).
-      *    地方公費単独チェック
-           03  SPA-NAI-KOHONLY-CHKFLG     PIC X(01).
-      *    患者削除機能
-           03  SPA-NAI-PTNUMDEL-FLG       PIC X(01).
-      *    本人家族選択区分
-           03  SPA-NAI-HONKZKKBN-FLG      PIC X(01).
-      *    家族年齢区分
-           03  SPA-NAI-KZKNEN             PIC 9(02).
-      *    被保険者名設定区分
-           03  SPA-NAI-HIHKNJAKBN-FLG      PIC X(01).
-      *    世帯主名自動記載区分
-           03  SPA-NAI-SETAIKBN-FLG       PIC X(01).
-      *    グループ医療機関患者リスト
-           03  SPA-NAI-GRPPTLST-FLG       PIC X(01).
-      *    公費上限額履歴チェック
-           03  SPA-NAI-KOHRRKKBN-FLG      PIC X(01).
-      *    郵便番号自動記載区分
-           03  SPA-NAI-POSTKBN-FLG        PIC X(01).
-      *    都道府県名記載区分
-           03  SPA-NAI-KENMEIKBN-FLG      PIC X(01).
-      *    京都府通り名称編集区分
-           03  SPA-NAI-TOWNNAME2KBN-FLG   PIC X(01).
-      *    公費法別一覧編集区分
-           03  SPA-NAI-KOHHBTKBN-FLG      PIC X(01).
-      *    保険初期表示区分
-           03  SPA-NAI-HKNINITKBN-FLG     PIC X(01).
       *
       *    更新時警告あり
-           03  SPA-KEI2-FLG               PIC 9(01).
            03  SPA-KEI-FLG                PIC 9(01).
            03  SPA-KEI-ERRCD              PIC X(04).
-      *
-      *    ＣＬＡＩＭ処理区分
-           03  SPA-FLG-CLAIM              PIC 9(01).
       *
       *     患者別クリア
            03  SPA-P02GMNAREA.
@@ -131,8 +91,6 @@
       *        二重登録表示有無
                05  SPA-P02A-FLG1              PIC 9(01).
                05  SPA-P02A-FLG2              PIC 9(01).
-      *        グループ医療機関
-               05  SPA-P02G-FLG               PIC 9(01).
       *
       * 組合せ表示　総件数（既削除データ除く）
                05  SPA-P02-COMBMAX            PIC 9(04).
@@ -155,12 +113,11 @@
       *    住所パラメタデータ
            03  JPARA-REC.
                05  JPAR-POST               PIC X(07).
-               05  JPAR-EDITADRS-NAME      PIC X(100).
-               05  JPAR-CITYNAME-NAME      PIC X(100).
-      ***      05  JPAR-CNT                PIC 9(02).
-      *****    05  JPAR-ERRCD              PIC X(01).
-      *        05  JPAR-KBN                PIC X(01).
-      ******** 05  JPAR-FREE               PIC X(438).
+               05  JPAR-EDITADRS-NAME      PIC X(060).
+               05  JPAR-CNT                PIC 9(02).
+               05  JPAR-ERRCD              PIC X(01).
+               05  JPAR-KBN                PIC X(01).
+               05  JPAR-FREE               PIC X(438).
       *
       *    保険期間変換用
            03  SPA-HKN-KENKAN-AREA.
@@ -173,41 +130,55 @@
                05  SPA-KOH-IDX2             PIC 9(04).
                05  SPA-KOH-FLG              PIC 9(01).
                05  SPA-KOH-ADD              PIC 9(01).
-      *        Ｈ１８．１０改正対応
-               05  SPA-KOH-GMN1             PIC 9(04).
-               05  SPA-KOH-GMN2             PIC 9(04).
       *
                05  SPA-HKN-TEKEDYMD         PIC X(08).
                05  SPA-HKN2-KOHNUM          PIC X(03).
-               05  SPA-HKN2-KOHID           PIC 9(10).
-               05  SPA-HKN2-JKYSNUM         PIC X(20).
                05  SPA-HKN2-TEKSTYMD        PIC X(08).
                05  SPA-HKN2-TEKEDYMD        PIC X(08).
       *
       *    労災・自賠責保険登録有無
            03  SPA-ROSAI-FLG                PIC 9(01).
            03  SPA-JIBAI-FLG                PIC 9(01).
-           03  SPA-DAISAN-FLG               PIC 9(01).
+      *
+      *    患者パラメタデータ
+      *   03  KPARA-REC                 REDEFINES   JPARA-REC.
+      *     05  KPARA-HOSPID            PIC X(10).
+      *     05  KPARA-KANANAME          PIC X(50).
+      *     05  KPARA-SEX               PIC X(01).
+      *     05  KPARA-BIRTHDAY          PIC X(08).
+      *     05  KPARA-PTID              PIC X(10).
+      *     05  KPARA-NAME              PIC X(50).
+      *     05  KPARA-ADRS              PIC X(50).
+      *
+      *    保険パラメタデータ
+      *    03  HPARA-REC                  REDEFINES   JPARA-REC.
+      *        05  HPAR-REC                PIC X(400).
+      *        05  HPAR-SBT                PIC X(01).
+      *        05  HPAR-SEIDO              PIC X(10).
+      *        05  HPAR-FLG                PIC X(02).
+      *
+      *    公費パラメタデータ
+      *    03  HKPARA-REC                 REDEFINES   JPARA-REC.
+      *        05  KPAR-REC                PIC X(200).
+      *        05  KPAR-SBT                PIC X(01).
+      *        05  KPAR-SEIDO              PIC X(10).
+      *        05  KPAR-HKNKOHKBN          PIC X(01).
+      *        05  KPAR-GENHKNNUM1         PIC X(03).
+      *        05  KPAR-GENHKNNUM2         PIC X(03).
+      *        05  KPAR-GENHKNNUM3         PIC X(03).
+      *        05  KPAR-HOSPSBT            PIC X(01).
+      *        05  KPAR-ROUPAYKBN          PIC X(01).
+      *        05  KPAR-FLG                PIC X(02).
       *
       *    未登録受付パラメタデータ
+      *****03  UKEPARA-REC               REDEFINES   JPARA-REC.
            03  UKEPARA-REC.
                05  UKEPAR-REC              PIC X(200).
       *
       *    労災保険パラメタデータ
+      *****03  RSPARA-REC.
+      ******** 05  RSPAR-REC                PIC X(500).
+      *        05  RSPAR-SBT                PIC X(01).
+      ******** 05  RSPAR-SEIDO              PIC X(10).
            03  SPA-RSPAR-FLG                PIC X(01).
-      *API 労災保険処理
-           03  SPA-RSIAPI-FLG               PIC X(01).
-      *
-      *    ＱＲ情報有無
-           03  SPA-QRFLG                    PIC 9(01).
-      *
-      *    ＱＲ選択情報
-           03  SPA-QRDATA-AREA.
-               05  SPA-QR-FLG                  PIC 9(01).
-               05  SPA-QR-SYORI                PIC X(01).
-               05  SPA-QR-REGISTID             PIC 9(05).
-               05  SPA-QR-REGISTYMD            PIC X(08).
-               05  SPA-QR-PTID                 PIC 9(10).
-               05  SPA-QR-PTNUM                PIC X(20).
-               05  SPA-QR-HKNID                PIC 9(10).
       *

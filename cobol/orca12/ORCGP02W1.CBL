@@ -59,6 +59,9 @@
       *  02.00.11    NACL-多々納  03/10/04  公費負担額に
       *                                     東京の特定疾患公費追加
       *  02.00.12    NACL-多々納  03/10/09  公費負担額に東京の'451'追加
+      *  02.00.13    NACL-多々納  03/10/27  人名辞書使用区分追加
+      *                                     自費保険の初期区分追加
+      *                                     カルテ発行初期区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -306,6 +309,11 @@
            03  WRK-NAI-HKNSTR       PIC 9(04).
            03  WRK-NAI-KOHSTR       PIC 9(04).
       *
+      *    表示用保険
+           03  WRK-IDXH                PIC 9(04).
+           03  WRK-CNT-HKN             PIC 9(04).
+           03  WRK-CNT-HKN2            PIC 9(04).
+      *
       *    公費ＳＯＲＴ用（ＳＰＡと同じ領域）
        01  WRK-KOUHI-AREA.
       *    公費情報
@@ -362,6 +370,10 @@
       *
                        09  WRK-NAI-TTEKSTYMD       PIC X(08).
                        09  WRK-NAI-TTEKEDYMD       PIC X(08).
+                       09  WRK-NAI-TKOH1HKNNUM     PIC X(03).
+                       09  WRK-NAI-TKOH2HKNNUM     PIC X(03).
+                       09  WRK-NAI-TKOH3HKNNUM     PIC X(03).
+                       09  WRK-NAI-TKOH4HKNNUM     PIC X(03).
             05  WRK-SORT-KEY.
                 09  WRK-SRT-TEKISTYMD      PIC X(08).
                 09  WRK-SRT-HKNCOMBINUM    PIC X(04).
@@ -1614,6 +1626,15 @@
                    MOVE    COMB-TEKSTYMD       TO  SPA-NAI-TTEKSTYMD
                                                               (IDX)
                    MOVE    COMB-TEKEDYMD       TO  SPA-NAI-TTEKEDYMD
+                                                              (IDX)
+      *            カルテ用保険指定
+                   MOVE    COMB-KOH1HKNNUM     TO  SPA-NAI-TKOH1HKNNUM
+                                                              (IDX)
+                   MOVE    COMB-KOH2HKNNUM     TO  SPA-NAI-TKOH2HKNNUM
+                                                              (IDX)
+                   MOVE    COMB-KOH3HKNNUM     TO  SPA-NAI-TKOH3HKNNUM
+                                                              (IDX)
+                   MOVE    COMB-KOH4HKNNUM     TO  SPA-NAI-TKOH4HKNNUM
                                                               (IDX)
                END-IF
       *
@@ -3285,6 +3306,7 @@
       *
       *    旧姓履歴の更新
            PERFORM 41091-KYUSEI-KOU-SEC
+      *
            .
       *
        4109-TOUROKU-CHK-EXT.
@@ -3829,6 +3851,11 @@
                                    TO  SPA-GMN-OLD-KANANAME
            MOVE    SPA-GMN-NAME
                                    TO  SPA-GMN-OLD-NAME
+      *
+      *    人名辞書不使用の場合
+           IF      SPA-NAI-JINMEI-USE  =   "1"
+               GO      TO      4101-KANJI-NAME-EDIT-EXT
+           END-IF
       *
            MOVE    SPACE           TO  WRK-NAME-AREA
       *
@@ -5150,8 +5177,68 @@
                GO      TO      490-TOUROKU-EXT
            END-IF
       *
+      *    カルテ発行ありの時、保険組合せのチェック
+           IF      SPA-GMN-HAKKO       =   "1"
+               IF      SPA-NAI-KARUTE-HAKKO    =   "2"
+                   IF      SPA-GMN-SELNUM      =   ZERO
+                       PERFORM 4901-KARUTE-CHEK-SEC
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *
            .
        490-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カルテ発行の保険組合決定処理
+      *****************************************************************
+       4901-KARUTE-CHEK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  WRK-CNT-HKN
+           MOVE    ZERO                TO  WRK-CNT-HKN2
+           MOVE    ZERO                TO  WRK-IDXH
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-HKNCOMBI-MAX
+               MOVE    ZERO                TO  WRK-CNT-HKN2
+      *
+               IF      SPA-GMN-THKNNUM (IDX)       NOT =   SPACE
+                   ADD     1                   TO  WRK-CNT-HKN2
+               END-IF
+               IF      SPA-NAI-TKOH1HKNNUM(IDX)    NOT =   SPACE
+                   ADD     1                   TO  WRK-CNT-HKN2
+               END-IF
+               IF      SPA-NAI-TKOH2HKNNUM(IDX)    NOT =   SPACE
+                   ADD     1                   TO  WRK-CNT-HKN2
+               END-IF
+               IF      SPA-NAI-TKOH3HKNNUM(IDX)    NOT =   SPACE
+                   ADD     1                   TO  WRK-CNT-HKN2
+               END-IF
+               IF      SPA-NAI-TKOH4HKNNUM(IDX)    NOT =   SPACE
+                   ADD     1                   TO  WRK-CNT-HKN2
+               END-IF
+               IF      WRK-CNT-HKN         <=  WRK-CNT-HKN2
+                   MOVE    IDX                 TO  WRK-IDXH
+                   MOVE    WRK-CNT-HKN2        TO  WRK-CNT-HKN
+               END-IF
+      *        労災・自賠責があれば対象とする
+               IF      SPA-GMN-THKNNUM (IDX)       =   "971"
+                                                   OR  "973"
+                   MOVE    IDX                 TO  WRK-IDXH
+                   MOVE    SPA-HKNCOMBI-MAX    TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-IDXH            =   ZERO
+               MOVE    1               TO  WRK-IDXH
+           END-IF
+           MOVE    SPA-GMN-THKNCOMBINUM (WRK-IDXH)
+                                       TO  SPA-GMN-SELNUM
+      *
+           .
+       4901-KARUTE-CHEK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5325,10 +5412,14 @@
       *    生年月日
                WHEN    "P02_BIRTHDAY"
       *            カルテ発行へ
-                   MOVE    5           TO  SPA-GMN-CUR
+      ***********  MOVE    5           TO  SPA-GMN-CUR
+      *            保険情報へ
+                   MOVE    7           TO  SPA-GMN-CUR
       *    通称
                WHEN    "P02_NICKNAME"
-                   MOVE    5           TO  SPA-GMN-CUR
+      *************MOVE    5           TO  SPA-GMN-CUR
+      *            保険情報へ
+                   MOVE    7           TO  SPA-GMN-CUR
       *    カルテ発行
                WHEN    "P02_HAKKO"
       *            保険情報へ

@@ -843,7 +843,14 @@
                            MOVE    IDT         TO  SPA-GMN-HOJO-MAX
                        END-PERFORM
                        IF      SPA-GMN-HOJOKBN     =   SPACE
-                           MOVE    "1"             TO SPA-GMN-HOJOKBN
+      *                    ¿·µ¬¤Î»þ¡¢¥·¥¹¥Æ¥à´ÉÍý¤è¤ê
+                           IF      SPA-NAI-JIHIHKN-TAX     =   "1"
+      *                        Èó²ÝÀÇ
+                               MOVE    "2"         TO SPA-GMN-HOJOKBN
+                           ELSE
+      *                        ²ÝÀÇ
+                               MOVE    "1"         TO SPA-GMN-HOJOKBN
+                           END-IF
                        END-IF
                    ELSE
                        MOVE    ZERO        TO  SPA-GMN-HOJO-MAX
