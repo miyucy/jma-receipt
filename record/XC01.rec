@@ -15,7 +15,7 @@ XC01	{
                         value   varchar(40);
                 };
 		PSAREA	{
-			psdata	object;
+			objectdata	object;
 		};
 		scrolledwindow26	{
 			CLIST	{
