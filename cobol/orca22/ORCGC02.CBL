@@ -1472,12 +1472,12 @@
                                        MCPDATA-REC
       *
       *    １診療科のとき全科の表示はなし
-           IF      SPA-GMN-C02-SRYKA-MAX    =   2
-               MOVE    SPA-GMN-C02-SRYKALST (2) TO 
-                                            SPA-GMN-C02-SRYKALST (1)
-               MOVE    SPACE                    TO
-                                            SPA-GMN-C02-SRYKALST (2)
-               MOVE    1                        TO  SPA-GMN-C02-MAX
+           IF      SPA-GMN-C02-SRYKA-MAX
+                                   =   2
+               MOVE    SPA-GMN-C02-SRYKALST (2)
+                                       TO  SPA-GMN-C02-SRYKALST (1)
+               MOVE    SPACE           TO   SPA-GMN-C02-SRYKALST (2)
+               MOVE    1               TO  SPA-GMN-C02-SRYKA-MAX
            END-IF
       * 
            IF      SPA-GMN-C02-SRYKA-MAX    =   1
@@ -1733,6 +1733,9 @@
       *
            IF      SPA-GMN-C02-SRYKA-MAX   >   1
                INITIALIZE              SPA-GMN-C02-SRYKA-G
+           ELSE
+               MOVE    SPA-GMN-C02-SRYKALST (1)
+                                       TO  SPA-GMN-C02-SRYKA-G
            END-IF                                      
       *
            MOVE    C02-PTNUM           TO  SPA-GMN-C02-PTNUM
@@ -1804,8 +1807,12 @@
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 310-SPASET-HKNCOMBI-HENSYU-SEC
-               PERFORM 330-SPASET-JYURRK-HENSYU-SEC     
-               MOVE    27                  TO  SPA-GMN-C02-CUR
+               IF      SPA-GMN-C02-SRYKA-MAX   =   1
+                   MOVE    1                   TO  SPA-GMN-C02-CUR
+               ELSE      
+                   PERFORM 330-SPASET-JYURRK-HENSYU-SEC
+                   MOVE    27                  TO  SPA-GMN-C02-CUR
+               END-IF 
       *
                IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
                    MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
@@ -1814,15 +1821,13 @@
                IF      SPA-GMN-C02-SRYKA
                                        NOT =   SPACE 
       *            病名一覧
-                   MOVE    1               TO  SPA-GMN-C02-PAGE
+                   MOVE    1                   TO  SPA-GMN-C02-PAGE
       *
-                   MOVE    "PTBYOMEI-KEY16" TO  WRK-DBPATH
-                   INITIALIZE                  PTBYOMEI-REC
-                   MOVE    SPA-HOSPID      TO  PTBYO-HOSPID
-                   MOVE    SPA-NAI-C02-PTID
-                                           TO  PTBYO-PTID
-                   MOVE    SPA-GMN-C02-SRYKA
-                                           TO  PTBYO-SRYKA
+                   MOVE    "PTBYOMEI-KEY16"    TO  WRK-DBPATH
+                   INITIALIZE                      PTBYOMEI-REC
+                   MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+                   MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+                   MOVE    SPA-GMN-C02-SRYKA   TO  PTBYO-SRYKA
                    PERFORM 310-SPASET-PTBYO-HENSYU-SEC
                END-IF
            END-IF    
@@ -2007,6 +2012,7 @@
                                        SPA-NAI-C02-BYOMEICD-O (IDZ 1)
                                        BYO-BYOMEICD
                PERFORM 410111-BYOMEI-HENSYU-SEC
+               MOVE    SPACE       TO  SPA-NAI-C02-BYOMEITOP (IDZ) 
                IF      SPA-NAI-C02-BYOMEICD-O (IDZ 1)
                                    =   WRK-CONS-BYOMEICD
                    MOVE    PTBYO-BYOMEI
@@ -2014,6 +2020,7 @@
                                        SPA-NAI-C02-BYOMEI   (IDZ)
                END-IF
            END-PERFORM
+           MOVE    "1"             TO  SPA-NAI-C02-BYOMEITOP (1)
       *
            PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC              
            .
