@@ -49,6 +49,8 @@
            03  LNK-S01-SAIKEISAN-DENPYO    PIC  9(07).
       *自賠責手技点合計
            03  LNK-S01-SYUTEN              PIC  9(07).
+      *高齢者（在宅総合・在宅末期）算定患者区分
+           03  LNK-S01-KOUREI-ZAITAKU-KBN  PIC  X(01).
       *復帰コード
            03  LNK-S01-RC                  PIC S9(9)   BINARY.
       *
