@@ -41,6 +41,9 @@
       *                                     年齢・給付割合の追加
       *  01.02.02    NACL-藤原    02/10/10  レセプト種別の出力の修正
       *                                     在宅寝たきり等の表示の追加       
+      *  01.02.03    NACL-藤原    03/02/05  公費請求書ＤＢを追加
+      *                                     入院対応
+      *                                     一括入力へ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,6 +74,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-SEIKYU          PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
+           03  FLG-KOHSKY          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -140,6 +144,9 @@
       *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
+      *
+      *    公費請求書
+           COPY    "CPKOHSKY.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -359,7 +366,7 @@
            INITIALIZE              SPA-H01-AREA
                                    SPA-H01KYOUTU 
       *
-      *    医療機関ＩＤ編集
+      *    医療機関情報取得
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -372,46 +379,9 @@
            MOVE    SYS-1001-HOSPSBT1   TO  SPA-SYS-1001-HOSPSBT1
       *
       *    見出し編集
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       35
-               MOVE    "blue"      TO  SPA-H01GMN-MIDASI-STYLE (IDX)
-           END-PERFORM
-      *
-           MOVE    "        初    診"  TO SPA-H01GMN-MIDASI(01)
-           MOVE    "        再    診"  TO SPA-H01GMN-MIDASI(02)
-           MOVE    "    外来管理加算"  TO SPA-H01GMN-MIDASI(03)
-           MOVE    "          時間外"  TO SPA-H01GMN-MIDASI(04)
-           MOVE    "        休    日"  TO SPA-H01GMN-MIDASI(05)
-           MOVE    "　　　　深　　夜"  TO SPA-H01GMN-MIDASI(06)
-           MOVE    "　　　　指　　導"  TO SPA-H01GMN-MIDASI(07)
-           MOVE    "　　　　往　　診"  TO SPA-H01GMN-MIDASI(08)
-           MOVE    "　　　　夜　　間"  TO SPA-H01GMN-MIDASI(09)
-           MOVE    "　　　深夜・緊急"  TO SPA-H01GMN-MIDASI(10)
-           MOVE    "在宅患者訪問診療"  TO SPA-H01GMN-MIDASI(11)
-           MOVE    "　　　　　その他"  TO SPA-H01GMN-MIDASI(12)
-           MOVE    "　　　　　薬　剤"  TO SPA-H01GMN-MIDASI(13)
-           MOVE    "　　　　内服薬剤"  TO SPA-H01GMN-MIDASI(14)
-           MOVE    "　　　　内服調剤"  TO SPA-H01GMN-MIDASI(15)
-           MOVE    "　　　　頓服薬剤"  TO SPA-H01GMN-MIDASI(16)
-           MOVE    "　　　　外用薬剤"  TO SPA-H01GMN-MIDASI(17)
-           MOVE    "　　　　外用調剤"  TO SPA-H01GMN-MIDASI(18)
-           MOVE    "　　　　処　　方"  TO SPA-H01GMN-MIDASI(19)
-           MOVE    "　　　　麻　　薬"  TO SPA-H01GMN-MIDASI(20)
-           MOVE    "　　　　調　　基"  TO SPA-H01GMN-MIDASI(21)
-           MOVE    "　　　皮下筋肉内"  TO SPA-H01GMN-MIDASI(22)
-           MOVE    "　　　　　静脈内"  TO SPA-H01GMN-MIDASI(23)
-           MOVE    "　　　　　その他"  TO SPA-H01GMN-MIDASI(24)
-           MOVE    "　　　　　処　置"  TO SPA-H01GMN-MIDASI(25)
-           MOVE    "　　　　　薬　剤"  TO SPA-H01GMN-MIDASI(26)
-           MOVE    "　　　手術・麻酔"  TO SPA-H01GMN-MIDASI(27)
-           MOVE    "　　　　　薬　剤"  TO SPA-H01GMN-MIDASI(28)
-           MOVE    "　　　　　検　査"  TO SPA-H01GMN-MIDASI(29)
-           MOVE    "　　　　　薬　剤"  TO SPA-H01GMN-MIDASI(30)
-           MOVE    "　　　　画像診断"  TO SPA-H01GMN-MIDASI(31)
-           MOVE    "　　　　　薬　剤"  TO SPA-H01GMN-MIDASI(32)
-           MOVE    "　　　　処方せん"  TO SPA-H01GMN-MIDASI(33)
-           MOVE    "　　　　　その他"  TO SPA-H01GMN-MIDASI(34)
-           MOVE    "　　　　薬　　剤"  TO SPA-H01GMN-MIDASI(35)
+           MOVE    "2"                 TO  SPA-RECE10-NYUGAIKBN
+           PERFORM 3101-MIDASI-HENSYU-SEC
+           MOVE    SPACE               TO  SPA-RECE10-NYUGAIKBN
       *
            MOVE    "0"                 TO  SPA-H01GMN-SKYKBNL    (1)
            MOVE    "請求しない"        TO  SPA-H01GMN-SKYKBNMEIL (1)
@@ -423,6 +393,108 @@
            MOVE    1                   TO  SPA-H01GMN-CUR
            .
        310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    見出し編集処理
+      *****************************************************************
+       3101-MIDASI-HENSYU-SEC          SECTION.
+      *
+           EVALUATE    SPA-RECE10-NYUGAIKBN
+               WHEN    "1"
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       35
+                       MOVE    "blue"  TO  SPA-H01GMN-MIDASI-STYLE (IDX)
+                   END-PERFORM
+                   MOVE  "          初    診"  TO SPA-H01GMN-MIDASI(01)
+                   MOVE  "          指    導"  TO SPA-H01GMN-MIDASI(02)
+                   MOVE  "          在    宅"  TO SPA-H01GMN-MIDASI(03)
+                   MOVE  "          内    服"  TO SPA-H01GMN-MIDASI(04)
+                   MOVE  "          屯    服"  TO SPA-H01GMN-MIDASI(05)
+                   MOVE  "          外    用"  TO SPA-H01GMN-MIDASI(06)
+                   MOVE  "          調    剤"  TO SPA-H01GMN-MIDASI(07)
+                   MOVE  "          麻    薬"  TO SPA-H01GMN-MIDASI(08)
+                   MOVE  "          調    基"  TO SPA-H01GMN-MIDASI(09)
+                   MOVE  "        皮下筋肉内"  TO SPA-H01GMN-MIDASI(10)
+                   MOVE  "            静脈内"  TO SPA-H01GMN-MIDASI(11)
+                   MOVE  "            その他"  TO SPA-H01GMN-MIDASI(12)
+                   MOVE  "            処  置"  TO SPA-H01GMN-MIDASI(13)
+                   MOVE  "            薬  剤"  TO SPA-H01GMN-MIDASI(14)
+                   MOVE  "        手術・麻酔"  TO SPA-H01GMN-MIDASI(15)
+                   MOVE  "            薬  剤"  TO SPA-H01GMN-MIDASI(16)
+                   MOVE  "            検  査"  TO SPA-H01GMN-MIDASI(17)
+                   MOVE  "            薬  剤"  TO SPA-H01GMN-MIDASI(18)
+                   MOVE  "          画像診断"  TO SPA-H01GMN-MIDASI(19)
+                   MOVE  "            薬  剤"  TO SPA-H01GMN-MIDASI(20)
+                   MOVE  "            その他"  TO SPA-H01GMN-MIDASI(21)
+                   MOVE  "          薬    剤"  TO SPA-H01GMN-MIDASI(22)
+                   MOVE  "  入院基本料・加算"  TO SPA-H01GMN-MIDASI(23)
+                   MOVE  "特定入院料・その他"
+                                               TO SPA-H01GMN-MIDASI(28)
+                   MOVE  "        〃        "  TO SPA-H01GMN-MIDASI(24)
+                                                  SPA-H01GMN-MIDASI(25)
+                                                  SPA-H01GMN-MIDASI(26)
+                                                  SPA-H01GMN-MIDASI(27)
+                                                  SPA-H01GMN-MIDASI(29)
+                                                  SPA-H01GMN-MIDASI(30)
+                                                  SPA-H01GMN-MIDASI(31)
+                                                  SPA-H01GMN-MIDASI(32)
+                   MOVE  SPACE              TO    SPA-H01GMN-MIDASI(33)
+                                                  SPA-H01GMN-MIDASI(34)
+                                                  SPA-H01GMN-MIDASI(35)
+                   MOVE  "    食事療養費"   TO SPA-H01GMN-SHOMIDASI (1)
+                   MOVE  "食事標準負担額"   TO SPA-H01GMN-SHOMIDASI (2) 
+                   MOVE  "      食事日数"   TO SPA-H01GMN-SHOMIDASI (3) 
+                   MOVE  WIDGET-NORMAL      TO SPA-H01GMN-SHO-STATE 
+               WHEN    "2"
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       35
+                       MOVE    "blue"  TO  SPA-H01GMN-MIDASI-STYLE (IDX)
+                   END-PERFORM
+                   MOVE    "        初    診"  TO SPA-H01GMN-MIDASI(01)
+                   MOVE    "        再    診"  TO SPA-H01GMN-MIDASI(02)
+                   MOVE    "    外来管理加算"  TO SPA-H01GMN-MIDASI(03)
+                   MOVE    "          時間外"  TO SPA-H01GMN-MIDASI(04)
+                   MOVE    "        休    日"  TO SPA-H01GMN-MIDASI(05)
+                   MOVE    "        深    夜"  TO SPA-H01GMN-MIDASI(06)
+                   MOVE    "        指    導"  TO SPA-H01GMN-MIDASI(07)
+                   MOVE    "        往    診"  TO SPA-H01GMN-MIDASI(08)
+                   MOVE    "        夜    間"  TO SPA-H01GMN-MIDASI(09)
+                   MOVE    "      深夜・緊急"  TO SPA-H01GMN-MIDASI(10)
+                   MOVE    "在宅患者訪問診療"  TO SPA-H01GMN-MIDASI(11)
+                   MOVE    "          その他"  TO SPA-H01GMN-MIDASI(12)
+                   MOVE    "          薬  剤"  TO SPA-H01GMN-MIDASI(13)
+                   MOVE    "        内服薬剤"  TO SPA-H01GMN-MIDASI(14)
+                   MOVE    "        内服調剤"  TO SPA-H01GMN-MIDASI(15)
+                   MOVE    "        屯服薬剤"  TO SPA-H01GMN-MIDASI(16)
+                   MOVE    "        外用薬剤"  TO SPA-H01GMN-MIDASI(17)
+                   MOVE    "        外用調剤"  TO SPA-H01GMN-MIDASI(18)
+                   MOVE    "        処    方"  TO SPA-H01GMN-MIDASI(19)
+                   MOVE    "        麻    薬"  TO SPA-H01GMN-MIDASI(20)
+                   MOVE    "        調    基"  TO SPA-H01GMN-MIDASI(21)
+                   MOVE    "      皮下筋肉内"  TO SPA-H01GMN-MIDASI(22)
+                   MOVE    "          静脈内"  TO SPA-H01GMN-MIDASI(23)
+                   MOVE    "          その他"  TO SPA-H01GMN-MIDASI(24)
+                   MOVE    "          処  置"  TO SPA-H01GMN-MIDASI(25)
+                   MOVE    "          薬  剤"  TO SPA-H01GMN-MIDASI(26)
+                   MOVE    "      手術・麻酔"  TO SPA-H01GMN-MIDASI(27)
+                   MOVE    "          薬  剤"  TO SPA-H01GMN-MIDASI(28)
+                   MOVE    "          検  査"  TO SPA-H01GMN-MIDASI(29)
+                   MOVE    "          薬  剤"  TO SPA-H01GMN-MIDASI(30)
+                   MOVE    "        画像診断"  TO SPA-H01GMN-MIDASI(31)
+                   MOVE    "          薬  剤"  TO SPA-H01GMN-MIDASI(32)
+                   MOVE    "        処方せん"  TO SPA-H01GMN-MIDASI(33)
+                   MOVE    "          その他"  TO SPA-H01GMN-MIDASI(34)
+                   MOVE    "        薬    剤"  TO SPA-H01GMN-MIDASI(35)
+                   MOVE    SPACE               TO
+                                               SPA-H01GMN-SHOMIDASI (1)
+                                               SPA-H01GMN-SHOMIDASI (2)
+                                               SPA-H01GMN-SHOMIDASI (3)
+                   MOVE  WIDGET-INSENSITIVE TO SPA-H01GMN-SHO-STATE 
+           END-EVALUATE
+      *
+           .
+       3101-MIDASI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -721,6 +793,24 @@
                    MOVE    MCP-WIDGET (8:1)    TO  WRK-WIDGET1 
                    MOVE    WRK-WIDGET1         TO  IDX 
                    PERFORM 4113-JNISSU-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "NSHORYOYOHI1"
+               WHEN    "ACTIVATE"      ALSO    "NSHORYOYOHI2"
+               WHEN    "ACTIVATE"      ALSO    "NSHORYOYOHI3"
+                   MOVE    MCP-WIDGET (12:1)   TO  WRK-WIDGET1 
+                   MOVE    WRK-WIDGET1         TO  IDX 
+                   PERFORM 4114-SHORYOYOHI-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "NSHOFTN1"
+               WHEN    "ACTIVATE"      ALSO    "NSHOFTN2"
+               WHEN    "ACTIVATE"      ALSO    "NSHOFTN3"
+                   MOVE    MCP-WIDGET (8:1)    TO  WRK-WIDGET1 
+                   MOVE    WRK-WIDGET1         TO  IDX 
+                   PERFORM 4115-SHOFTN-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "NSHONISSU1"
+               WHEN    "ACTIVATE"      ALSO    "NSHONISSU2"
+               WHEN    "ACTIVATE"      ALSO    "NSHONISSU3"
+                   MOVE    MCP-WIDGET (10:1)    TO  WRK-WIDGET1 
+                   MOVE    WRK-WIDGET1         TO  IDX 
+                   PERFORM 4116-SHONISSU-CHK-SEC
            END-EVALUATE
       *
            .
@@ -890,6 +980,9 @@
       *
            MOVE    RECE10-KEY         TO  SPA-RECE10-KEY
       *
+      *    見出し編集
+           PERFORM 3101-MIDASI-HENSYU-SEC
+      *
            IF      RECE10-NYUGAIKBN   =   "1"
                MOVE    "入　院"       TO  SPA-H01GMN-HNYUGAIKBN
            ELSE    
@@ -906,10 +999,26 @@
       *
            MOVE    RECE10-HKNJANUM     TO  SPA-H01GMN-HHKNJANUM
       *
-               STRING  RECE10-KIGO     DELIMITED   BY  SPACE
-                       "　"            DELIMITED   BY  SIZE
-                       RECE10-NUM      DELIMITED   BY  SPACE
-                                       INTO    SPA-H01GMN-HKIGO
+           STRING  RECE10-KIGO     DELIMITED   BY  SPACE
+                   "　"            DELIMITED   BY  SIZE
+                   RECE10-NUM      DELIMITED   BY  SPACE
+                                   INTO    SPA-H01GMN-HKIGO
+           END-STRING
+      *
+           EVALUATE    RECE10-HOJOKBN-KEY
+               WHEN    "1"
+               WHEN    "A"
+               WHEN    "D"
+                   MOVE    "職務上"    TO  SPA-H01GMN-HHOJOKBN
+               WHEN    "2"
+               WHEN    "B"
+               WHEN    "E"
+                   MOVE    "下船３月"  TO  SPA-H01GMN-HHOJOKBN
+               WHEN    "3"
+               WHEN    "C"
+               WHEN    "F"
+                   MOVE    "通勤災害"  TO  SPA-H01GMN-HHOJOKBN
+           END-EVALUATE
       *
            MOVE    RECE10-SKYYM        TO  SPA-H01NAI-SKYYM
                                            WRK-SYMD (1:6)
@@ -946,21 +1055,40 @@
                                        TO  SPA-H01GMN-TEISEIKBNNM
            END-EVALUATE   
       *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       35
-               MOVE    RECE10-KHNTEN (IDX)
+           EVALUATE    RECE10-NYUGAIKBN
+               WHEN    "1"
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       32
+                       MOVE    RECE10-KHNTEN (IDX)
                                        TO  SPA-H01GMN-KHNTEN (IDX)
                                            SPA-H01GMN-NKHNTEN(IDX)
-               MOVE    RECE10-KAISU  (IDX)
+                       MOVE    RECE10-KAISU  (IDX)
                                        TO  SPA-H01GMN-KAISU  (IDX)
                                            SPA-H01GMN-NKAISU (IDX)
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       3
-                   MOVE    RECE10-TENSU  (IDX IDY)
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       3
+                           MOVE    RECE10-TENSU  (IDX IDY)
                                    TO  SPA-H01GMN-TENSU  (IDY IDX)
                                        SPA-H01GMN-NTENSU (IDY IDX)
-               END-PERFORM        
-           END-PERFORM
+                       END-PERFORM 
+                   END-PERFORM       
+               WHEN    "2"
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       35
+                       MOVE    RECE10-KHNTEN (IDX)
+                                       TO  SPA-H01GMN-KHNTEN (IDX)
+                                           SPA-H01GMN-NKHNTEN(IDX)
+                       MOVE    RECE10-KAISU  (IDX)
+                                       TO  SPA-H01GMN-KAISU  (IDX)
+                                           SPA-H01GMN-NKAISU (IDX)
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       3
+                           MOVE    RECE10-TENSU  (IDX IDY)
+                                   TO  SPA-H01GMN-TENSU  (IDY IDX)
+                                       SPA-H01GMN-NTENSU (IDY IDX)
+                       END-PERFORM        
+                   END-PERFORM
+           END-EVALUATE 
       *    
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       3
@@ -977,6 +1105,21 @@
                                    TO  SPA-H01GMN-JNISSU   (IDY)
                                        SPA-H01GMN-NJNISSU  (IDY)
            END-PERFORM
+      *
+           IF     RECE10-NYUGAIKBN     =   "1"
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       3
+                   MOVE    RECE10-SHOKUJIRYOYOHI (IDY)
+                                   TO  SPA-H01GMN-SHORYOYOHI (IDY)
+                                       SPA-H01GMN-NSHORYOYOHI(IDY)
+                   MOVE    RECE10-SHOKUJIFTN   (IDY)
+                                   TO  SPA-H01GMN-SHOFTN     (IDY)
+                                       SPA-H01GMN-NSHOFTN    (IDY)
+                   MOVE    RECE10-SHOKUJINISSU   (IDY)
+                                   TO  SPA-H01GMN-SHONISSU   (IDY)
+                                       SPA-H01GMN-NSHONISSU  (IDY)
+               END-PERFORM
+           END-IF
       *
            MOVE    RECE10-AGE      TO  SPA-H01GMN-AGE
            MOVE    RECE10-KYURATE  TO  SPA-H01GMN-KYURATE         
@@ -1006,132 +1149,27 @@
            MOVE    SPA-H01GMN-SRYKA    TO  SPA-H99GMN-SRYKA
            MOVE    SPA-H01GMN-SRYKANAME
                                        TO  SPA-H99GMN-SRYKANAME
+           MOVE    SPA-H01NAI-PTID     TO  SPA-H99NAI-PTID
+           MOVE    SPA-H01NAI-SRYYM    TO  SPA-H99NAI-SRYYM
       *
-      *    請求管理ＤＢ検索
-           INITIALIZE                  RECE10-REC
-           MOVE    SPA-HOSPID          TO  RECE10-HOSPID
-           MOVE    SPA-H01NAI-PTID     TO  RECE10-PTID
-           IF      SPA-H01GMN-SRYKA    =   SPACE
-               MOVE    ZERO                TO  RECE10-RECEKA
-           ELSE
-               MOVE    SPA-H01GMN-SRYKA    TO  RECE10-RECEKA
-           END-IF
-           MOVE    SPA-H01NAI-SRYYM    TO  RECE10-SRYYM
-           MOVE    RECE10-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SEIKYU-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SEIKYU-KEY2"       TO  ORC-DBPATH
-               PERFORM 900-SEIKYU-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SEIKYU
-           END-IF
+           MOVE    SPA-H01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-H01FREE         TO  SPA-FREE
       *
-           MOVE    ZERO                TO  IDX 
-           PERFORM     UNTIL       FLG-SEIKYU     =   1
-                       OR          IDX            =   10
-               ADD     1                   TO  IDX
-               MOVE    MCPDATA-REC     TO  RECE10-REC
-               MOVE    RECE10-KEY      TO  SPA-H99NAI-RECE10-KEY (IDX)
-               MOVE    IDX             TO  WRK-Z9
-               MOVE    WRK-Z9          TO  SPA-H99GMN-TRENNUM    (IDX)
-               IF      RECE10-NYUGAIKBN    =   "1"
-                   MOVE    "入　院"    TO  SPA-H99GMN-TNYUGAIKBN (IDX)
-               ELSE    
-                   MOVE    "入院外"    TO  SPA-H99GMN-TNYUGAIKBN (IDX)
-               END-IF
-               IF      RECE10-RECEKA   =   ZERO
-                   CONTINUE
-               ELSE
-                   INITIALIZE              SYS-1005-REC
-                   MOVE    "1005"          TO  SYS-1005-KANRICD
-                   MOVE    RECE10-RECEKA   TO  SYS-1005-KBNCD
-                   MOVE    SPA-SYSYMD      TO  ORC-DBYMD
-                   MOVE    SYS-1005-REC    TO  MCPDATA-REC
-                   PERFORM 910-SYSKANRI-INV-SEC
-                   IF      FLG-SYSKANRI    =   ZERO
-                       MOVE    MCPDATA-REC     TO  SYS-1005-REC
-                   ELSE
-                       INITIALIZE              SYS-1005-REC 
-                   END-IF
-                   MOVE    SYS-1005-SRYKANAME  TO
-                                       SPA-H99GMN-TSRYKA(IDX)
-               END-IF
-               IF      RECE10-TEISYUTUSAKI     =   "1"
-                   MOVE    "支払基金"      TO
-                                   SPA-H99GMN-TTEISYUTUSAKI(IDX)
-               ELSE    
-                   MOVE    "国保連合会"    TO
-                                   SPA-H99GMN-TTEISYUTUSAKI(IDX)
-               END-IF
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
       *
-               PERFORM 530-RECESYUBETU-HENSYU-SEC
-               MOVE    WRK-RECESYUBETU  TO
-                                   SPA-H99GMN-TRECESYUBETU (IDX)
-               MOVE    RECE10-HKNJANUM     TO
-                                   SPA-H99GMN-THKNJANUM    (IDX)
-               STRING  RECE10-KIGO     DELIMITED   BY  SPACE
-                       " "             DELIMITED   BY  SIZE
-                       RECE10-NUM      DELIMITED   BY  SPACE
-                                   INTO    SPA-H99GMN-TKIGO(IDX)
+           CALL    "ORCGH99"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
       *
-               MOVE    "SEIKYU-KEY2"       TO  ORC-DBPATH
-               PERFORM 900-SEIKYU-READ-SEC
-           END-PERFORM
-      *   
-      *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SEIKYU-KEY2"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-H01FREE
+           MOVE    SPA-WORK            TO  SPA-H01KYOUTU
       *
-           MOVE    IDX                 TO  SPA-H99GMN-MAX
-      *
-      *
-           INITIALIZE                   H99
-      *     
-           MOVE    SPA-H99GMN-PTNUM     TO  H99-PTNUM
-           MOVE    SPA-H99GMN-NAME      TO  H99-NAME-VALUE
-           MOVE    SPA-H99GMN-SRYYM     TO  H99-SRYYM
-           MOVE    SPA-H99GMN-SRYKA     TO  H99-SRYKA
-           MOVE    SPA-H99GMN-SRYKANAME TO
-                                        H99-SRYKANAME-VALUE
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       5
-                   OR      SPA-H99GMN-TNYUGAIKBN (IDX)
-                                               =   SPACE
-               MOVE    SPA-H99GMN-TRENNUM      (IDX)
-                                   TO  H99-TRENNUM      (IDX)
-               MOVE    SPA-H99GMN-TNYUGAIKBN   (IDX)
-                                   TO  H99-TNYUGAIKBN   (IDX)
-               MOVE    SPA-H99GMN-TSRYKA       (IDX)
-                                   TO  H99-TSRYKA       (IDX)
-               MOVE    SPA-H99GMN-TTEISYUTUSAKI(IDX)
-                                   TO  H99-TTEISYUTUSAKI(IDX)
-               MOVE    SPA-H99GMN-TRECESYUBETU (IDX)
-                                   TO  H99-TRECESYUBETU (IDX)
-               MOVE    SPA-H99GMN-THKNJANUM    (IDX)
-                                   TO  H99-THKNJANUM    (IDX)
-               MOVE    SPA-H99GMN-TKIGO        (IDX)
-                                   TO  H99-TKIGO        (IDX)
-               MOVE    IDX         TO  H99-COUNT
-          END-PERFORM
-      *** MOVE    "T"              TO  H99-SELECT (1)
-      *            
-           MOVE    "blue"              TO  H99-NAME-STYLE
-                                           H99-SRYKANAME-STYLE
-      *
-           IF      SPA-SYS-1001-HOSPSBT1   =   0
-               MOVE    WIDGET-INSENSITIVE  TO  H99-SRYKA-STATE
-           ELSE
-               MOVE    WIDGET-NORMAL       TO  H99-SRYKA-STATE
-           END-IF  
+           MOVE    SPA-H01KYOUTU       TO  SPA-WORK
       *
            MOVE    "SELNUM"             TO  MCP-WIDGET
       *
@@ -1388,7 +1426,6 @@
       *****************************************************************
        4111-FTNMONEY-CHK-SEC          SECTION.
       *
-      *
            MOVE    182                TO  SPA-H01GMN-CUR
       *
            COMPUTE SPA-H01GMN-CUR        =   SPA-H01GMN-CUR     +
@@ -1410,7 +1447,6 @@
       *    薬剤一部負担金チェック処理
       *****************************************************************
        4112-YKZFTN-CHK-SEC          SECTION.
-      *
       *
            MOVE    185                TO  SPA-H01GMN-CUR
       *
@@ -1434,7 +1470,6 @@
       *****************************************************************
        4113-JNISSU-CHK-SEC          SECTION.
       *
-      *
            MOVE    188                TO  SPA-H01GMN-CUR
       *
            COMPUTE SPA-H01GMN-CUR        =   SPA-H01GMN-CUR     +
@@ -1447,6 +1482,7 @@
       *
            IF      SPA-ERRCD          =   SPACE
                IF      SPA-H01GMN-CUR        =   191
+               AND     SPA-RECE10-NYUGAIKBN  =   "2"
                    MOVE    8                  TO  SPA-H01GMN-CUR
                ELSE 
                    ADD     1                  TO  SPA-H01GMN-CUR
@@ -1454,6 +1490,79 @@
            END-IF 
            .
        4113-JNISSU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    食事療養費チェック処理
+      *****************************************************************
+       4114-SHORYOYOHI-CHK-SEC          SECTION.
+      *
+           MOVE    191                TO  SPA-H01GMN-CUR
+      *
+           COMPUTE SPA-H01GMN-CUR     =   SPA-H01GMN-CUR     +
+                                          IDX
+      *
+           MOVE    H01-NSHORYOYOHI (IDX)
+                                      TO  SPA-H01GMN-NSHORYOYOHI (IDX)
+      *
+      *    更新フラグセット
+           MOVE    "1"                TO  SPA-UPDFLG
+      *
+           IF      SPA-ERRCD          =   SPACE
+               ADD     1                  TO  SPA-H01GMN-CUR
+           END-IF 
+           .
+       4114-SHORYOYOHI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    食事標準負担額チェック処理
+      *****************************************************************
+       4115-SHOFTN-CHK-SEC          SECTION.
+      *
+           MOVE    194                TO  SPA-H01GMN-CUR
+      *
+           COMPUTE SPA-H01GMN-CUR        =   SPA-H01GMN-CUR     +
+                                          IDX
+      *
+           MOVE    H01-NSHOFTN (IDX)      TO  SPA-H01GMN-NSHOFTN (IDX)
+      *
+      *    更新フラグセット
+           MOVE    "1"                 TO  SPA-UPDFLG
+      *
+           IF      SPA-ERRCD           =   SPACE
+               ADD     1                   TO  SPA-H01GMN-CUR
+           END-IF 
+           .
+       4115-SHOFTN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     食事日数チェック処理
+      *****************************************************************
+       4116-SHONISSU-CHK-SEC          SECTION.
+      *
+      *
+           MOVE    197                TO  SPA-H01GMN-CUR
+      *
+           COMPUTE SPA-H01GMN-CUR     =   SPA-H01GMN-CUR     +
+                                          IDX
+      *
+           MOVE    H01-NSHONISSU (IDX)
+                                      TO  SPA-H01GMN-NSHONISSU (IDX)
+      *
+      *    更新フラグセット
+           MOVE    "1"                TO  SPA-UPDFLG
+      *
+           IF      SPA-ERRCD          =   SPACE
+               IF      SPA-H01GMN-CUR     =   200
+                   MOVE    8                  TO  SPA-H01GMN-CUR
+               ELSE 
+                   ADD     1                  TO  SPA-H01GMN-CUR
+               END-IF
+           END-IF 
+           .
+       4116-SHONISSU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1563,19 +1672,43 @@
                                        RECE10-FTNMONEY (IDX)
                MOVE    SPA-H01GMN-NYKZFTN  (IDX) TO
                                        RECE10-YKZFTN   (IDX)
+               IF      SPA-RECE10-NYUGAIKBN      =   "1"
+                   MOVE    SPA-H01GMN-NSHONISSU (IDX)  TO
+                                       RECE10-SHOKUJINISSU   (IDX)
+                   MOVE    SPA-H01GMN-NSHORYOYOHI (IDX)    TO 
+                                       RECE10-SHOKUJIRYOYOHI (IDX)
+                   MOVE    SPA-H01GMN-NSHOFTN(IDX) TO
+                                       RECE10-SHOKUJIFTN (IDX)
+               END-IF
            END-PERFORM
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       35
-               MOVE    SPA-H01GMN-NKHNTEN  (IDX)  TO
-                                       RECE10-KHNTEN (IDX)
-               MOVE    SPA-H01GMN-NKAISU   (IDX)  TO
-                                       RECE10-KAISU  (IDX)
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       3
-                   MOVE    SPA-H01GMN-NTENSU (IDY IDX)  TO
-                                           RECE10-TENSU (IDX IDY)
-               END-PERFORM 
-           END-PERFORM
+           EVALUATE    SPA-RECE10-NYUGAIKBN
+               WHEN    "1"
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       32
+                       MOVE    SPA-H01GMN-NKHNTEN  (IDX)  TO
+                                           RECE10-KHNTEN (IDX)
+                       MOVE    SPA-H01GMN-NKAISU   (IDX)  TO
+                                           RECE10-KAISU  (IDX)
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       3
+                           MOVE    SPA-H01GMN-NTENSU (IDY IDX)  TO
+                                               RECE10-TENSU (IDX IDY)
+                       END-PERFORM 
+                   END-PERFORM
+               WHEN    "2"
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       35
+                       MOVE    SPA-H01GMN-NKHNTEN  (IDX)  TO
+                                           RECE10-KHNTEN (IDX)
+                       MOVE    SPA-H01GMN-NKAISU   (IDX)  TO
+                                           RECE10-KAISU  (IDX)
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       3
+                           MOVE    SPA-H01GMN-NTENSU (IDY IDX)  TO
+                                               RECE10-TENSU (IDX IDY)
+                       END-PERFORM 
+                   END-PERFORM
+           END-EVALUATE 
       *     
            MOVE    SPA-SYSYMD          TO  RECE10-UPDYMD
       *
@@ -1587,17 +1720,46 @@
                                             ORCMCPAREA
                                             MCPDATA-REC      
       *
+      *    公費請求書があれば更新する
            IF      MCP-RC     =   ZERO
-               MOVE    2               TO  SPA-H01GMN-CUR
-               INITIALIZE                  SPA-H01GMN-TABLE
-                                           SPA-H01GMN-KOUMOKU
-                                           SPA-H01GMN-KOUMOKU1
-                                           SPA-H01NAI-KOUMOKU
-                                           SPA-H01NAI-KOUMOKU1
-                                           SPA-RECE10-KEY
-           ELSE
+               MOVE    SPACE           TO  KOHSKY-REC   
+               INITIALIZE                  KOHSKY-REC
+               MOVE    SPA-RECE10-KEY      TO  KOHSKY-KEY
+      *
+               PERFORM 900-KOHSKY-INV-SEC
+               IF      FLG-KOHSKY          =   ZERO
+                   MOVE    MCPDATA-REC         TO  KOHSKY-REC
+                   MOVE    SPA-H01NAI-SKYYM    TO  KOHSKY-SKYYM
+                   MOVE    SPA-H01NAI-HENREIYM TO  KOHSKY-HENREIYM
+                   MOVE    SPA-H01GMN-SKYKBN   TO  KOHSKY-SKYKBN
+                   MOVE    "1"                 TO  KOHSKY-TEISEIKBN
+                   MOVE    SPA-SYSYMD          TO  KOHSKY-UPDYMD
+      *
+                   MOVE    KOHSKY-REC          TO  MCPDATA-REC
+                   MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   CALL    "ORCMCPSUB"              USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC      
+      *
+                   IF      MCP-RC     NOT =   ZERO
+                       MOVE    "1002"          TO  SPA-ERRCD
+                       GO  TO  450-KOUSIN-EXT
+                   END-IF
+               END-IF
+           ELSE    
                MOVE    "1001"          TO  SPA-ERRCD
+               GO  TO  450-KOUSIN-EXT
            END-IF
+      *
+           MOVE    2               TO  SPA-H01GMN-CUR
+           INITIALIZE                  SPA-H01GMN-TABLE
+                                       SPA-H01GMN-KOUMOKU
+                                       SPA-H01GMN-KOUMOKU1
+                                       SPA-H01NAI-KOUMOKU
+                                       SPA-H01NAI-KOUMOKU1
+                                       SPA-RECE10-KEY
            .
        450-KOUSIN-EXT.
            EXIT.
@@ -1690,11 +1852,12 @@
            MOVE    SPA-H01GMN-HRECESYUBETU
                                           TO  H01-HRECESYUBETU-VALUE
            MOVE    SPA-H01GMN-HHKNJANUM   TO  H01-HHKNJANUM-VALUE
+           MOVE    SPA-H01GMN-HHOJOKBN    TO  H01-HHOJOKBN-VALUE
            MOVE    SPA-H01GMN-HKIGO       TO  H01-HKIGO-VALUE   
       *
            PERFORM VARYING IDX FROM    1       BY  1
                    UNTIL   IDX     >   35
-                   OR          SPA-H01GMN-MIDASI (IDX)    =   SPACE
+      *****        OR          SPA-H01GMN-MIDASI (IDX)    =   SPACE
                MOVE    SPA-H01GMN-MIDASI (IDX)    TO  H01-MIDASI (IDX)
                MOVE    SPA-H01GMN-KHNTEN (IDX)    TO  H01-KHNTEN (IDX)
                MOVE    SPA-H01GMN-KAISU  (IDX)    TO  H01-KAISU  (IDX)
@@ -1725,6 +1888,12 @@
                                                TO  H01-YKZFTN   (IDX)
                MOVE    SPA-H01GMN-JNISSU   (IDX)
                                                TO  H01-JNISSU   (IDX)
+               MOVE    SPA-H01GMN-SHORYOYOHI (IDX)
+                                               TO  H01-SHORYOYOHI (IDX)
+               MOVE    SPA-H01GMN-SHOFTN   (IDX)
+                                               TO  H01-SHOFTN   (IDX)
+               MOVE    SPA-H01GMN-SHONISSU (IDX)
+                                               TO  H01-SHONISSU (IDX)
       *
                MOVE    SPA-H01GMN-NTOTALTEN(IDX)
                                                TO  H01-NTOTALTEN(IDX)
@@ -1734,8 +1903,20 @@
                                                TO  H01-NYKZFTN  (IDX)
                MOVE    SPA-H01GMN-NJNISSU  (IDX)
                                                TO  H01-NJNISSU  (IDX)
+               MOVE    SPA-H01GMN-NSHORYOYOHI (IDX)
+                                               TO  H01-NSHORYOYOHI (IDX)
+               MOVE    SPA-H01GMN-NSHOFTN   (IDX)
+                                               TO  H01-NSHOFTN   (IDX)
+               MOVE    SPA-H01GMN-NSHONISSU (IDX)
+                                               TO  H01-NSHONISSU (IDX)
            END-PERFORM
       *
+           MOVE    SPA-H01GMN-SHOMIDASI (1)    TO  H01-SHOMIDASI (1)
+                                                   H01-SHOMIDASI (4) 
+           MOVE    SPA-H01GMN-SHOMIDASI (2)    TO  H01-SHOMIDASI (2)
+                                                   H01-SHOMIDASI (5) 
+           MOVE    SPA-H01GMN-SHOMIDASI (3)    TO  H01-SHOMIDASI (3)
+                                                   H01-SHOMIDASI (6) 
       *    色の設定
            PERFORM VARYING IDX FROM    1       BY  1
                    UNTIL   IDX     >   35
@@ -1750,6 +1931,7 @@
                                            H01-HRECESYUBETU-STYLE
                                            H01-HHKNJANUM-STYLE
                                            H01-HKIGO-STYLE
+                                           H01-HHOJOKBN-STYLE
       *
       *    入力の設定
            IF      SPA-SYS-1001-HOSPSBT1   =   0
@@ -1770,11 +1952,18 @@
            PERFORM VARYING IDX FROM    1       BY  1
                    UNTIL   IDX     >   3
                MOVE    WIDGET-INSENSITIVE
-                                   TO  H01-TOTALTEN-STATE (IDX)
-                                       H01-FTNMONEY-STATE (IDX)
-                                       H01-YKZFTN-STATE   (IDX)
-                                       H01-JNISSU-STATE   (IDX)
+                                   TO  H01-TOTALTEN-STATE  (IDX)
+                                       H01-FTNMONEY-STATE  (IDX)
+                                       H01-YKZFTN-STATE    (IDX)
+                                       H01-JNISSU-STATE    (IDX)
                                        H01-NTOTALTEN-STATE (IDX)
+                                       H01-SHORYOYOHI-STATE(IDX)
+                                       H01-SHOFTN-STATE    (IDX)
+                                       H01-SHONISSU-STATE  (IDX)
+               MOVE    SPA-H01GMN-SHO-STATE
+                                   TO  H01-NSHORYOYOHI-STATE(IDX)
+                                       H01-NSHOFTN-STATE    (IDX)
+                                       H01-NSHONISSU-STATE  (IDX)
            END-PERFORM
       *
            MOVE    SPA-H01GMN-AGE     TO  H01-AGE
@@ -1846,7 +2035,25 @@
                     MOVE  "NJNISSU2"     TO  MCP-WIDGET
              WHEN    191
                     MOVE  "NJNISSU3"     TO  MCP-WIDGET
+             WHEN    192
+                    MOVE  "NSHORYOYOHI1"   TO  MCP-WIDGET
+             WHEN    193
+                    MOVE  "NSHORYOYOHI2"   TO  MCP-WIDGET
+             WHEN    194
+                    MOVE  "NSHORYOYOHI3"   TO  MCP-WIDGET
+             WHEN    195
+                    MOVE  "NSHOFTN1"     TO  MCP-WIDGET
+             WHEN    196
+                    MOVE  "NSHOFTN2"     TO  MCP-WIDGET
+             WHEN    197
+                    MOVE  "NSHOFTN3"     TO  MCP-WIDGET
+             WHEN    198
+                    MOVE  "NSHONISSU1"     TO  MCP-WIDGET
+             WHEN    199
+                    MOVE  "NSHONISSU2"     TO  MCP-WIDGET
              WHEN    200
+                    MOVE  "NSHONISSU3"     TO  MCP-WIDGET
+             WHEN    300
                     MOVE  "B12"        TO  MCP-WIDGET   
          END-EVALUATE
       *
@@ -2225,6 +2432,56 @@
       *
            .
        900-SEIKYU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費請求マスター読込（主キー）
+      *****************************************************************
+       900-KOHSKY-INV-SEC         SECTION.
+      *
+           MOVE    KOHSKY-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
+               PERFORM 900-KOHSKY-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-KOHSKY
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       900-KOHSKY-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費請求マスター読込
+      *****************************************************************
+       900-KOHSKY-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-KOHSKY
+           ELSE
+               MOVE    1               TO  FLG-KOHSKY
+           END-IF
+      *
+           .
+       900-KOHSKY-READ-EXT.
            EXIT.
       *
       *****************************************************************

@@ -34,6 +34,7 @@
       *  £²£°£°£²¡¥£±£°²þÀµÂÐ±þ 
       *  01.02.01    NACL-Æ£¸¶    02/10/10  ¥ì¥»¥×¥È¼ïÊÌ¤Î½ÐÎÏ¤Î½¤Àµ
       *  01.02.02    NACL-Æ£¸¶    02/12/10  ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸¤Î½¤Àµ
+      *  01.02.03    NACL-Æ£¸¶    03/02/17  Êä½õ¶èÊ¬¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -232,6 +233,8 @@
        300-SCREEN-SEC              SECTION.
       *
            MOVE    4                   TO  SPA-H99GMN-CUR
+      *
+           PERFORM 41021-H99-HENSYU-SEC
            .
        300-SCREEN-EXT.
            EXIT.
@@ -618,10 +621,25 @@
                                        SPA-H99GMN-TRECESYUBETU (IDX)
                MOVE    RECE10-HKNJANUM     TO
                                        SPA-H99GMN-THKNJANUM    (IDX)
+               EVALUATE    RECE10-HOJOKBN
+                   WHEN    "1"
+                   WHEN    "A"
+                   WHEN    "D"
+                       MOVE    "¿¦Ì³¾å"    TO  SPA-H99GMN-THOJOKBN(IDX)
+                   WHEN    "2"
+                   WHEN    "B"
+                   WHEN    "E"
+                       MOVE    "²¼Á¥£³·î"  TO  SPA-H99GMN-THOJOKBN(IDX)
+                   WHEN    "3"
+                   WHEN    "C"
+                   WHEN    "F"
+                       MOVE    "ÄÌ¶ÐºÒ³²"  TO  SPA-H99GMN-THOJOKBN(IDX)
+               END-EVALUATE
                STRING  RECE10-KIGO     DELIMITED   BY  SPACE
                        "¡¡"            DELIMITED   BY  SIZE
                        RECE10-NUM      DELIMITED   BY  SPACE
                                        INTO    SPA-H99GMN-TKIGO(IDX)
+               END-STRING
       *
                MOVE    "SEIKYU-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SEIKYU-READ-SEC
@@ -815,6 +833,8 @@
                                    TO  H99-TRECESYUBETU (IDX)
                MOVE    SPA-H99GMN-THKNJANUM    (IDX)
                                    TO  H99-THKNJANUM    (IDX)
+               MOVE    SPA-H99GMN-THOJOKBN     (IDX)
+                                   TO  H99-THOJOKBN     (IDX)
                MOVE    SPA-H99GMN-TKIGO        (IDX)
                                    TO  H99-TKIGO        (IDX)
                MOVE    IDX         TO  H99-COUNT
