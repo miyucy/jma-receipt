@@ -76,11 +76,11 @@
                   05  K08-COUNT   PIC S9(9)   BINARY.
                   05  K08-ROW     PIC S9(9)   BINARY.
                   05  K08-ROWATTR PIC S9(9)   BINARY.
-                  05  K08-ITEM        OCCURS  500 TIMES.
+                  05  K08-ITEM        OCCURS  600 TIMES.
                     06  K08-BANGO  PIC X(4).
                     06  K08-DELFLG  PIC X(2).
                     06  K08-MEISAI  PIC X(150).
-                  05  K08-SELECT  PIC X       OCCURS  500 TIMES.
+                  05  K08-SELECT  PIC X       OCCURS  600 TIMES.
                   05  K08-MEI-STYLE   PIC X(20).
               03  K08-MSGDATA.
                 04  K08-MSGDATA-STYLE   PIC X(20).
