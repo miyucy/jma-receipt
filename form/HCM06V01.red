@@ -11090,10 +11090,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O323">
       <attribute name="obj_pos">
-        <point val="10.35,24.475"/>
+        <point val="10.45,24.475"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.2895,24.2148;10.35,24.5648"/>
+        <rectangle val="9.3895,24.2148;10.45,24.5648"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#KOUTEN[34]#</string>
@@ -11113,7 +11113,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="10.35,24.475"/>
+            <point val="10.45,24.475"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
