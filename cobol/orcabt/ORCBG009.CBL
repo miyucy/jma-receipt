@@ -641,6 +641,14 @@
                MOVE    WRK-NAIYO           TO  ACCT-PTID
       *        統計ファイルセット
                PERFORM 220-MAIN-ACCT-SEC
+      *
+               INITIALIZE                  SRYACCT-REC
+               MOVE    PARA-HOSPID         TO  ACCT-HOSPID
+               MOVE    PARA-DENPPRTYM      TO  ACCT-SRYYM
+               MOVE    "2"                 TO  ACCT-NYUGAIKBN
+               MOVE    WRK-NAIYO           TO  ACCT-PTID
+      *        統計ファイルセット
+               PERFORM 220-MAIN-ACCT-SEC
            END-EVALUATE
       *
            .
