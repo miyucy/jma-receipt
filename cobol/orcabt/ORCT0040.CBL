@@ -193,6 +193,13 @@
            03  WRK-DENPNUM                     PIC 9(07).
            03  WRK-DENPNUM-X                   PIC X(08).
       *
+       01  ERR-EDIT-AREA.
+           03  ERR-PTID                PIC 9(10).
+           03  ERR-PTNUM               PIC X(20).
+           03  ERR-ERRMSG              PIC X(80).
+           03  ERR-HEN-ERRMSG          PIC X(80).
+      *
+      *
       *    定期請求管理集計用ワーク
        01  SUMTEIKIKANRI-REC.
          02    SUMTEIKIKANRI-MAX       PIC 9(05).
@@ -639,7 +646,11 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
            IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    SYU-PTID        TO  ERR-PTID
                MOVE    "収納マスタの更新に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG
                                        TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20021-SYUNOU-KOUSIN-EXT
@@ -730,8 +741,12 @@
            PERFORM 900-SYUMEI-READ-SEC
       *
            IF    ( FLG-SYUMEI          =   ZERO )
+               MOVE    SMEI-PTID       TO  ERR-PTID
                MOVE    "収納明細マスタの更新に失敗しました"
-                                           TO  WRK-TEIKIERR
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG
+                                       TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20021-SYUMEI-SAKUSEI-EXT
            END-IF
@@ -746,8 +761,12 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    SMEI-PTID       TO  ERR-PTID
                MOVE    "収納明細マスタの更新に失敗しました"
-                                           TO  WRK-TEIKIERR
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG
+                                       TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20021-SYUMEI-SAKUSEI-EXT
            END-IF
@@ -770,7 +789,11 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
            IF  (   MCP-RC          NOT =   ZERO )
-               MOVE  "患者定期請求履歴データの削除に失敗しました"
+               MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
+               MOVE    "患者定期請求履歴データの削除に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG
                                        TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20021-PTTEIKIRRK-KOUSIN-EXT
@@ -846,7 +869,11 @@
                MOVE   ZERO                 TO  FLG-SYUNOU
                PERFORM 900-SYUNOU-READ-SEC
                IF    ( FLG-SYUNOU          =   ZERO )
+                   MOVE    SYU-PTID        TO  ERR-PTID
                    MOVE    "収納データの更新に失敗しました"
+                                           TO  ERR-ERRMSG
+                   PERFORM 800-ERRMSG-EDIT-SEC
+                   MOVE    ERR-HEN-ERRMSG
                                            TO  WRK-TEIKIERR
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  2003-SEIKYU-KOUSIN-EXT
@@ -861,7 +888,11 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
                IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    SYU-PTID        TO  ERR-PTID
                    MOVE    "収納データの更新に失敗しました"
+                                           TO  ERR-ERRMSG
+                   PERFORM 800-ERRMSG-EDIT-SEC
+                   MOVE    ERR-HEN-ERRMSG
                                            TO  WRK-TEIKIERR
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  2003-SEIKYU-KOUSIN-EXT
@@ -903,7 +934,11 @@
                MOVE   ZERO                 TO  FLG-PTTEIKIRRK
                PERFORM 900-PTTEIKIRRK-READ-SEC
                IF    ( FLG-PTTEIKIRRK  =   ZERO )
+                   MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
                    MOVE    "患者請求履歴データの更新に失敗しました"
+                                           TO  ERR-ERRMSG
+                   PERFORM 800-ERRMSG-EDIT-SEC
+                   MOVE    ERR-HEN-ERRMSG
                                            TO  WRK-TEIKIERR
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  2003-SEIKYU-KOUSIN-EXT
@@ -918,7 +953,11 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
                IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
                    MOVE    "患者請求履歴データの更新に失敗しました"
+                                           TO  ERR-ERRMSG
+                   PERFORM 800-ERRMSG-EDIT-SEC
+                   MOVE    ERR-HEN-ERRMSG
                                            TO  WRK-TEIKIERR
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  2003-SEIKYU-KOUSIN-EXT
@@ -992,14 +1031,28 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
                IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    "伝票番号の更新に失敗しました"
-                                       TO  WRK-TEIKIERR
+                   MOVE    SPACE       TO  WRK-TEIKIERR
+                   STRING  "伝票番号の更新に失敗しました"
+                                          DELIMITED    BY  SIZE
+                           "[伝票番号:"   DELIMITED    BY  SIZE
+                           SYS-0041-DENPNUMMAX-NYU
+                                          DELIMITED    BY  SIZE
+                           "]"            DELIMITED    BY  SIZE
+                   INTO    WRK-TEIKIERR
+                   END-STRING
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  20031-DENPNUM-GET-EXT
                END-IF
            ELSE
-               MOVE    "伝票番号の取得に失敗しました"
-                                       TO  WRK-TEIKIERR
+               MOVE    SPACE       TO  WRK-TEIKIERR
+               STRING  "伝票番号の更新に失敗しました"
+                                      DELIMITED    BY  SIZE
+                       "[伝票番号:"   DELIMITED    BY  SIZE
+                       SYS-0041-DENPNUMMAX-NYU
+                                      DELIMITED    BY  SIZE
+                       "]"            DELIMITED    BY  SIZE
+               INTO    WRK-TEIKIERR
+               END-STRING
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20031-DENPNUM-GET-EXT
            END-IF
@@ -1052,7 +1105,11 @@
            MOVE   ZERO                 TO  FLG-SYUMEI
            PERFORM 900-SYUMEI-READ-SEC
            IF    ( FLG-SYUMEI  =   ZERO )
+               MOVE    SMEI-PTID       TO  ERR-PTID
                MOVE    "収納明細マスタの更新に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG
                                        TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20031-SYUMEI-SAKUSEI-EXT
@@ -1067,7 +1124,11 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    "収納明細データの更新に失敗しました"
+               MOVE    SMEI-PTID       TO  ERR-PTID
+               MOVE    "収納明細マスタの更新に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG
                                        TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20031-SYUMEI-SAKUSEI-EXT
@@ -1086,7 +1147,11 @@
            MOVE    SYU-PTID            TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF    ( FLG-PTINF       NOT =   ZERO )
+               MOVE    PTINF-PTID      TO  ERR-PTID
                MOVE    "患者情報の取得に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG
                                        TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20031-NOW-BTUNUM-SUM-EXT
@@ -1100,7 +1165,11 @@
            MOVE    PTINF-RRKEDANUM     TO  PTNYUINRRK-RRKEDANUM
            PERFORM 900-PTNYUINRRK-READ-SEC
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
+               MOVE    PTNYUINRRK-PTID TO  ERR-PTID
                MOVE    "最新入院履歴の取得に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG
                                        TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20031-NOW-BTUNUM-SUM-EXT
@@ -1143,8 +1212,12 @@
            CALL    "ORCSPTID"      USING   ORCSPTIDAREA
                                            SPA-1009-TBL
            IF    ( SPTID-RC        NOT =   ZERO )
+               MOVE    PTINF-PTID      TO  ERR-PTID
                MOVE    "患者番号の取得に失敗しました"
-                                           TO  WRK-TEIKIERR
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG
+                                       TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20031-TEIKIPRT-SAKUSEI-EXT
            END-IF
@@ -1158,7 +1231,11 @@
       *    更新対象のデータがすでに存在する場合はエラー
            PERFORM 900-TEIKIPRT-READ-SEC
            IF    ( FLG-TEIKIPRT    =   ZERO )
-               MOVE  "定期請求印刷情報データの作成に失敗しました"
+               MOVE    TEIKIPRT-PTID   TO  ERR-PTID
+               MOVE    "定期請求印刷情報データの作成に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG
                                        TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20031-TEIKIPRT-SAKUSEI-EXT
@@ -1175,7 +1252,11 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
            IF  (   MCP-RC          NOT =   ZERO )
-               MOVE  "定期請求印刷情報データの作成に失敗しました"
+               MOVE    TEIKIPRT-PTID   TO  ERR-PTID
+               MOVE    "定期請求印刷情報データの作成に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG
                                        TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20031-TEIKIPRT-SAKUSEI-EXT
@@ -1427,6 +1508,41 @@
       ***  ACCEPT  WRK-IN FROM CONSOLE 
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ編集処理
+      *****************************************************************
+       800-ERRMSG-EDIT-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  ERR-HEN-ERRMSG
+                                           ERR-PTNUM
+      *
+      *    患者番号を取得
+           INITIALIZE                      ORCSPTIDAREA
+           MOVE    SYS-1001-HOSPID     TO  SPTID-HOSPID
+           MOVE    ERR-PTID            TO  SPTID-PTID
+           CALL    "ORCSPTID"      USING   ORCSPTIDAREA
+                                           SPA-1009-TBL
+           IF    ( SPTID-RC            =   ZERO )
+               MOVE    SPTID-PTNUM     TO  ERR-PTNUM
+           ELSE
+               STRING "?(ID:"          DELIMITED   BY  SIZE
+                      ERR-PTID         DELIMITED   BY  SIZE
+                      ")"              DELIMITED   BY  SIZE
+               INTO   ERR-PTNUM
+               END-STRING
+           END-IF
+      *
+           STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
+                   "[患者番号:"        DELIMITED   BY  SIZE
+                   ERR-PTNUM           DELIMITED   BY  SPACE
+                   "]"                 DELIMITED   BY  SIZE
+           INTO    ERR-HEN-ERRMSG
+           END-STRING
+      *
+           .
+       800-ERRMSG-EDIT-EXT.
            EXIT.
       *
       *****************************************************************

@@ -198,6 +198,12 @@
            03  WRK-CNT                 PIC 9(05).
            03  WRK-SAKKBN              PIC X(01).
       *
+       01  ERR-EDIT-AREA.
+           03  ERR-PTID                PIC 9(10).
+           03  ERR-PTNUM               PIC X(20).
+           03  ERR-ERRMSG              PIC X(80).
+           03  ERR-HEN-ERRMSG          PIC X(80).
+      *
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
@@ -220,6 +226,8 @@
            COPY    "CPSYSKANRI.INC".
       *    医療機関情報
            COPY    "CPSK1001.INC".
+      *    患者番号構成情報
+           COPY    "CPSK1009.INC".
       *
       *    請求管理
            COPY    "CPSK5010.INC".
@@ -370,6 +378,33 @@
                MOVE    "医療機関情報が取得できませんでした。"
                                            TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  100-INIT-EXT
+           END-IF
+      *
+      *    患者番号構成管理情報編集
+           INITIALIZE                  SYS-1009-REC
+           MOVE    "1009"              TO  SYS-1009-KANRICD
+           MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-1009-REC        TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1009-REC
+               MOVE    SYS-1009-PTNUMKSIKBN
+                                           TO  SPA-1009-PTNUMKSIKBN
+               MOVE    SYS-1009-HJNKSIKBN  TO  SPA-1009-HJNKSIKBN
+               MOVE    SYS-1009-HJNKSINENKBN 
+                                           TO  SPA-1009-HJNKSINENKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKBN
+                                           TO  SPA-1009-HJNKSIRENNUMKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKETA
+                                           TO  SPA-1009-HJNKSIRENNUMKETA
+           ELSE
+               MOVE    "患者番号構成管理情報が取得できませんでした"
+                                           TO  WRK-TEIKIERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  100-INIT-EXT
            END-IF
       *
            .
@@ -460,7 +495,12 @@
                                            TO  WRK-DBPATH
                    PERFORM 920-PTNYUINRRK-READ-SEC
                    IF    ( FLG-PTNYUINRRK2     NOT =   ZERO )
+                       MOVE    PTNYUINRRK-PTID
+                                       TO  ERR-PTID
                        MOVE    "入院履歴の取得に失敗しました"
+                                       TO  ERR-ERRMSG
+                       PERFORM 800-ERRMSG-EDIT-SEC
+                       MOVE    ERR-HEN-ERRMSG
                                        TO  WRK-TEIKIERR
                        PERFORM 500-ERR-HENSYU-SEC
                        GO  TO  2001-IKKATU-SYORI-EXT
@@ -556,8 +596,12 @@
            MOVE    PTNYUINRRK-PTID     TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF    ( FLG-PTINF       NOT =   ZERO )
+               MOVE    PTNYUINRRK-PTID
+                                       TO  ERR-PTID
                MOVE    "患者情報の取得に失敗しました"
-                                       TO  WRK-TEIKIERR
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG  TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20011-HENSYU-EXT
            END-IF
@@ -640,8 +684,12 @@
                                    TO  WRK-EDYMD
            PERFORM 5002-KIKAN-CALC-SEC
            IF    ( FLG-ORCSDAY     NOT =   ZERO )
+               MOVE    PTNYUINRRK-PTID
+                                       TO  ERR-PTID
                MOVE    "通算日数の取得に失敗しました"
-                                       TO  WRK-TEIKIERR
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG  TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20011-SYUNOU-GET-EXT
            END-IF
@@ -667,9 +715,19 @@
                                    MCPAREA
                                    LNK-ORCS02-REC
                                    LNK-SYUNOU-REC-T
-           IF    ( LNK-S02-RC      NOT =   ZERO )
-               MOVE    "収納データの取得に失敗しました"
-                                       TO  WRK-TEIKIERR
+           IF    ( LNK-S02-RC      NOT = ZERO )
+               MOVE    PTNYUINRRK-PTID
+                                       TO  ERR-PTID
+               EVALUATE LNK-S02-RC
+               WHEN    13
+                   MOVE    "会計情報の取得に失敗しました"
+                                       TO  ERR-ERRMSG
+               WHEN    OTHER
+                   MOVE    "収納データの取得に失敗しました"
+                                       TO  ERR-ERRMSG
+               END-EVALUATE
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG  TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20011-SYUNOU-GET-EXT
            END-IF
@@ -834,7 +892,12 @@
                                            MCPDATA-REC
       *
            IF    ( FLG-NYUINKA         =   ZERO )
+               MOVE    PTNYUINRRK-PTID
+                                       TO  ERR-PTID
                MOVE    "入院履歴の取得に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG
                                        TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  20011-SEILASTRRK-SET-EXT
@@ -1184,6 +1247,40 @@
            .
        5002-KIKAN-CALC-EXT.
            EXIT.
+      *****************************************************************
+      *    エラーメッセージ編集処理
+      *****************************************************************
+       800-ERRMSG-EDIT-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  ERR-HEN-ERRMSG
+      *
+      *    患者番号を取得
+           INITIALIZE                      ORCSPTIDAREA
+           MOVE    SYS-1001-HOSPID     TO  SPTID-HOSPID
+           MOVE    ERR-PTID            TO  SPTID-PTID
+           CALL    "ORCSPTID"      USING   ORCSPTIDAREA
+                                           SPA-1009-TBL
+           IF    ( SPTID-RC            =   ZERO )
+               MOVE    SPTID-PTNUM     TO  ERR-PTNUM
+           ELSE
+               STRING "?(ID:"          DELIMITED   BY  SIZE
+                      ERR-PTID         DELIMITED   BY  SIZE
+                      ")"              DELIMITED   BY  SIZE
+               INTO   ERR-PTNUM
+               END-STRING
+           END-IF
+      *
+           STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
+                   "[患者番号:"        DELIMITED   BY  SIZE
+                   ERR-PTNUM           DELIMITED   BY  SPACE
+                   "]"                 DELIMITED   BY  SIZE
+           INTO    ERR-HEN-ERRMSG
+           END-STRING
+      *
+           .
+       800-ERRMSG-EDIT-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    システム管理マスタ　ＲＥＡＤ
       *****************************************************************
