@@ -4701,6 +4701,10 @@
            END-PERFORM
            MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
            PERFORM 980-DBCLOSE-SEC
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    SPACE           TO  SPA-JIDCD
+           END-IF
            .
        4101610-HENSRYYMD-CHK-EXT.
            EXIT.
@@ -4733,9 +4737,6 @@
            END-IF
            PERFORM
                UNTIL   FLG-SRYACCT          =   1
-      *TEST
-              DISPLAY "J02 ACCT-SRYKBN:" ACCT-SRYKBN
-      *TEST
       *        º´»Ò§Œª˛¬–æ›≥∞
                IF      ACCT-SRYKBN          =   "95"  OR  "96"
                    CONTINUE
@@ -4808,9 +4809,6 @@
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5        )  OR
                                   (SRY-SRYCD (IDZ) =   SPACE)
-      *TEST
-              DISPLAY "J02 SRYCD:" SRY-SRYCD (IDZ)
-      *TEST
       *            ºÍµªŒ¡§Œª˛°¢ªªƒÍŒÚ§Ú»ΩƒÍ§π§Î
                    IF     (SRY-SRYCD (IDZ)(1:1)    =   "1" )
       *                •∑•π•∆•‡ÕΩÃÛ•≥°º•…
@@ -4826,13 +4824,6 @@
                            MOVE    WRK-SRYCD           TO  TNS-SRYCD
                            PERFORM 910-TENSU-READ-SEC
                        END-IF
-      *TEST
-              DISPLAY "J02 TNS-SANTEIRRKKBN:" TNS-SANTEIRRKKBN
-               ",TNS-JGNCNTERR:" TNS-JGNCNTERR
-               ",TNS-JGNCNT:" TNS-JGNCNT
-               ",WRK-CNT-TUKI:" WRK-CNT-TUKI
-               ",TNS-HOUKNSKBN:" TNS-HOUKNSKBN
-      *TEST
                        IF     (TNS-SANTEIRRKKBN    NOT =   ZERO ) AND
                               (TNS-JGNCNTERR       NOT =   9    )  AND
                               (TNS-JGNCNT          >   ZERO     )  AND
@@ -8098,9 +8089,6 @@
       *
            END-PERFORM
       *
-      *TEST
-               DISPLAY "J02 FLG-NAIBUN:" FLG-NAIBUN
-      *TEST
            IF     (FLG-NAIBUN          =   1   ) AND
                   (SPA-ERRCD           =   SPACE)
       *        ∆‚ ¨»Á…È≤ŸªÓ∏≥ Ò≥Á≈¿øÙ•¡•ß•√•Ø
@@ -8117,9 +8105,6 @@
                IF      LNK-SANFUKA-ERRMSG  NOT =   SPACE
                    MOVE    LNK-SANFUKA-ERRMSG  TO  SPA-NAI-NAIBUNERR
                END-IF
-      *TEST
-               DISPLAY "J02 LNK-SANFUKA-ERRMSG:" LNK-SANFUKA-ERRMSG
-      *TEST
            END-IF
       *
       *
@@ -8190,11 +8175,6 @@
                    MOVE    "0120"          TO  SPA-JIDCD
                END-IF
            END-IF
-      *TEST
-               DISPLAY "J02 49010-KOUSIN-SYORI-EXT"
-                    ",SPA-NAI-NAIBUNERR:" SPA-NAI-NAIBUNERR
-                     ",SPA-JIDCD:" SPA-JIDCD
-      *TEST
       *
            .
        49010-KOUSIN-SYORI-EXT.
