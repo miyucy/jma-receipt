@@ -399,9 +399,6 @@
                MOVE    MCPDATA-REC     TO  SYS-1005-REC
            END-IF
       *
-           MOVE    SYS-1005-REC        TO  MCPDATA-REC
-           PERFORM 900-TBL-SELECT-SEC
-      *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
                     OR   ( WRK-SRYKALST-MAX   >=   50   )
       *
