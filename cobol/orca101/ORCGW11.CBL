@@ -47,6 +47,7 @@
       * 02.00.06     NACL-太田    04/01/29  標準提供請求書をコンボで選択
       *                                     可能とする
       * 02.00.07     NACL-多々納  04/08/11  処方せんの標準プログラム名を変更する
+      * 02.00.08     NACL-森脇    04/11/05  支払証明書プログラム選択
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -123,8 +124,11 @@
                                13  SPA-GMN-TNAME   PIC X(30).
                                13  SPA-GMN-TPRTNM  PIC X(16).
       *----(02.00.03)--UPD-START---
+      *----(02.00.08)--UPD-START---
       *                    外来・プログラム名
-                           11  SPA-GMN-TBL02       OCCURS  5.
+      *                     11  SPA-GMN-TBL02       OCCURS  5.
+                           11  SPA-GMN-TBL02       OCCURS  7.
+      *----(02.00.08)--UPD-END-----
                                13  SPA-GMN-TORGPGNM
                                                    PIC X(20).
                                13  SPA-GMN-TORGPGCHK
@@ -198,7 +202,10 @@
                        09  SPA-NAI-TNAME       PIC X(30).
                        09  SPA-NAI-TPRTNM      PIC X(16).
       *
-                   07  SPA-NAI-TBL02           OCCURS  5.
+      *----(02.00.08)--UPD-START---
+      *             07  SPA-NAI-TBL02           OCCURS  5.
+                   07  SPA-NAI-TBL02           OCCURS  7.
+      *----(02.00.08)--UPD-END-----
                        09  SPA-NAI-TORGPGNM    PIC X(20).
                        09  SPA-NAI-TORGPGCHK   PIC X(01).
                        09  SPA-NAI-TCSTPGNM    PIC X(20).
@@ -270,13 +277,17 @@
       *----(01.00.03) LINE ADD START --------------------------
       *----(01.00.05) LINE UPD START --------------------------
       *----(02.00.03)--UPD-START---
+      *----(02.00.08)--UPD-START---
       *     03  WRK-ORCAORGCHK-G  OCCURS   4.
-           03  WRK-ORCAORGCHK-G  OCCURS   5.
+      *     03  WRK-ORCAORGCHK-G  OCCURS   5.
+           03  WRK-ORCAORGCHK-G  OCCURS   7.
                05  WRK-ORCAORGCHK  PIC X(01).
       *     03  WRK-ORCACSTCHK-G  OCCURS   4.
-           03  WRK-ORCACSTCHK-G  OCCURS   5.
+      *     03  WRK-ORCACSTCHK-G  OCCURS   5.
+           03  WRK-ORCACSTCHK-G  OCCURS   7.
                05  WRK-ORCACSTCHK  PIC X(01).
            03  FLG-HENFLG          PIC 9(01).
+      *----(02.00.08)--UPD-END-----
       *----(02.00.03)--UPD-END-----
       *----(01.00.05) LINE UPD END   --------------------------
       *----(01.00.03) LINE ADD END   --------------------------
@@ -661,6 +672,12 @@
                    MOVE    SYS-1031-PRTNM (IDX)
                                                TO  SPA-GMN-TPRTNM (IDX)
                END-PERFORM
+      *
+               IF   ( SYS-1031-PRTNM (12)  =   SPACE )
+                   MOVE    SYS-1031-PRTNM (9)
+                                           TO  SPA-GMN-TPRTNM (12)
+               END-IF
+      *
            END-IF
       *
       *    外来プログラム名編集
@@ -724,13 +741,20 @@
            MOVE    "予約一覧／予約患者一覧"
                                        TO  SPA-GMN-TNAME (7)
            MOVE    "薬剤情報提供書"    TO  SPA-GMN-TNAME (8)
-           MOVE    "支払証明書"        TO  SPA-GMN-TNAME (9)
+      *----(02.00.08)--UPD-START---
+           MOVE    "支払証明書（日別）"
+                                       TO  SPA-GMN-TNAME (9)
+      *----(02.00.08)--UPD-END-----
       *----(02.00.03)--ADD-START---
            MOVE    "診療録（カルテ３号紙）"
                                        TO  SPA-GMN-TNAME (10)
       *----(02.00.03)--ADD-END-----
            MOVE    "データチェック"
                                        TO  SPA-GMN-TNAME (11)
+      *----(02.00.08)--ADD-START---
+           MOVE    "支払証明書（月別）"
+                                       TO  SPA-GMN-TNAME (12)
+      *----(02.00.08)--ADD-END-----
       *
       *    カルテ１号紙
            MOVE    "ORCHC01"       TO  SPA-GMN-TORGPGNM (1)
@@ -748,12 +772,23 @@
            MOVE    "ORCHC30"       TO  SPA-GMN-TORGPGNM (4)
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(4)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(4)
-      *    カルテ３号紙
-           MOVE    "ORCHC33"       TO  SPA-GMN-TORGPGNM (5)
+      *----(02.00.08)--UPD-START---
+      *    支払証明書（日別）
+           MOVE    "ORCHCM31"      TO  SPA-GMN-TORGPGNM (5)
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(5)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(5)
+      *    カルテ３号紙
+           MOVE    "ORCHC33"       TO  SPA-GMN-TORGPGNM (6)
+           MOVE    "T"             TO  SPA-GMN-TORGPGCHK(6)
+           MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(6)
+      *    支払証明書（月別）
+           MOVE    "ORCHCM32"      TO  SPA-GMN-TORGPGNM (7)
+           MOVE    "T"             TO  SPA-GMN-TORGPGCHK(7)
+           MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(7)
       *    カスタマイズ帳票最大
-           MOVE    5                   TO  SPA-GPGNM-MAX
+      *     MOVE    5                   TO  SPA-GPGNM-MAX
+           MOVE    7                   TO  SPA-GPGNM-MAX
+      *----(02.00.08)--UPD-END-----
       *
       *
            .
@@ -818,15 +853,30 @@
                MOVE    MCPDATA-REC     TO  SYS-1032-REC
                MOVE    IDZ2            TO  WRK-KBNCD2
                IF      SYS-1032-KBNCD      =   WRK-KBNCD-G
-      *            処方せんの標準を変更する
-                   IF      (IDZ2           =   2   )  AND
-                           (SYS-1032-ORCAORGNM
-                                       NOT =  SPA-GMN-TORGPGNM  (IDZ2))
-                       MOVE    "ORCHCM19"      TO  SPA-GMN-TORGPGNM (2)
-                   ELSE
-                       MOVE    SYS-1032-ORCAORGNM
-                                       TO  SPA-GMN-TORGPGNM  (IDZ2)
-                   END-IF
+      *
+                   EVALUATE    IDZ2
+                   WHEN    2
+                       IF  (SYS-1032-ORCAORGNM
+                                       NOT =  SPA-GMN-TORGPGNM  (2))
+                           MOVE    "ORCHCM19"  TO  SPA-GMN-TORGPGNM (2)
+                       END-IF
+                   WHEN    6
+                       IF  (SYS-1032-ORCAORGNM
+                                       NOT =  SPA-GMN-TORGPGNM  (6))
+                           MOVE    "ORCHCM31"
+                                           TO  SPA-GMN-TORGPGNM (6)
+                       END-IF
+                   WHEN    7
+                       IF  (SYS-1032-ORCAORGNM
+                                       NOT =  SPA-GMN-TORGPGNM  (7))
+                           MOVE    "ORCHCM32"
+                                           TO  SPA-GMN-TORGPGNM (7)
+                       END-IF
+                   WHEN    OTHER
+                           MOVE    SYS-1032-ORCAORGNM
+                                           TO  SPA-GMN-TORGPGNM  (IDZ2)
+                   END-EVALUATE
+      *
                    MOVE    SYS-1032-ORCAORGCHK
                                        TO  SPA-GMN-TORGPGCHK (IDZ2)
                    MOVE    SYS-1032-ORCACSTNM
@@ -839,6 +889,7 @@
                END-IF
       *
            END-PERFORM
+      *
       *----(02.00.03)--UPD-END-----
       *
            PERFORM 900-SYSKANRI-CLOSE-SEC
@@ -1225,6 +1276,10 @@
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK03"
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK04"
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK05"
+      *----(02.00.08)--ADD-START---
+           WHEN    "CLICKED"       ALSO    "ORCAORGCHK06"
+           WHEN    "CLICKED"       ALSO    "ORCAORGCHK07"
+      *----(02.00.08)--ADD-START---
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-ORCAORGCHK-CHK-SEC
       *    カスタマイズプログラム選択時
@@ -1233,6 +1288,10 @@
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK03"
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK04"
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK05"
+      *----(02.00.08)--ADD-START---
+           WHEN    "CLICKED"       ALSO    "ORCACSTCHK06"
+           WHEN    "CLICKED"       ALSO    "ORCACSTCHK07"
+      *----(02.00.08)--ADD-START---
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-ORCACSTCHK-CHK-SEC
       *    標準プログラム選択時 ＝ 入院 ＝
@@ -2007,7 +2066,7 @@
                END-IF
       *
                PERFORM VARYING IDZ2    FROM    1   BY  1
-                       UNTIL   ( IDZ2  >   5 )
+                       UNTIL   ( IDZ2  >   SPA-GPGNM-MAX )
                    PERFORM 490-SYS-1032-SAKUJYO-SEC
                    IF    ( SPA-ERRCD   NOT =   SPACE )
                        GO  TO  490-SAKUJYO-EXT
@@ -2245,7 +2304,6 @@
        490-SYS-1032-KOUSHIN-SEC        SECTION.
       *
       *----(02.00.03)--UPD-START---
-      *     MOVE    IDZ2                TO  WRK-KBNCD
            MOVE    IDZ2                TO  WRK-KBNCD2
       *
            MOVE    SPACE               TO  SYS-1032-REC
@@ -2812,6 +2870,12 @@
                                         TO  W11-ORCAORGNM04
            MOVE    SPA-GMN-TORGPGNM  (5)
                                         TO  W11-ORCAORGNM05
+      *----(02.00.08)--ADD-START---
+           MOVE    SPA-GMN-TORGPGNM  (6)
+                                        TO  W11-ORCAORGNM06
+           MOVE    SPA-GMN-TORGPGNM  (7)
+                                        TO  W11-ORCAORGNM07
+      *----(02.00.08)--ADD-END-----
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL   IDX2    >       SPA-GMN-ORGPGNM03-MAX
@@ -3044,6 +3108,12 @@
                    MOVE    25          TO  SPA-GMN-CUR
       *----(02.00.03)--ADD-START---
                WHEN    "ORCACSTNM05"
+                   MOVE    26          TO  SPA-GMN-CUR
+      *----(02.00.08)--ADD-START---
+               WHEN    "ORCACSTNM06"
+                   MOVE    27          TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM07"
+      *----(02.00.08)--ADD-END-----
       *            外来最終
                    IF    ( SPA-BEDSU       >   ZERO )
                        MOVE    51          TO  SPA-GMN-CUR

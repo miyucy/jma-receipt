@@ -63,11 +63,13 @@
                                                OCCURS  2 TIMES.
                       07  W11-ORCAORGNM04      PIC X(20).
                       07  W11-ORCAORGNM05      PIC X(20).
-                      07  W11-ORCAORGCHK-G     OCCURS   5.
+                      07  W11-ORCAORGNM06      PIC X(20).
+                      07  W11-ORCAORGNM07      PIC X(20).
+                      07  W11-ORCAORGCHK-G     OCCURS   7.
                         08  W11-ORCAORGCHK     PIC X.
-                      07  W11-ORCACSTNM-G      OCCURS   5.
+                      07  W11-ORCACSTNM-G      OCCURS   7.
                         08  W11-ORCACSTNM      PIC X(20).
-                      07  W11-ORCACSTCHK-G     OCCURS   5.
+                      07  W11-ORCACSTCHK-G     OCCURS   7.
                         08  W11-ORCACSTCHK     PIC X.
                     06  W11-N0101-STATE        PIC S9(9)   BINARY.
                     06  W11-FIXED4.
