@@ -1282,7 +1282,6 @@
                                                S03-B12-STATE
                                                S03-NAIYO-STATE
                                                S03-NAIYOLST-STATE
-                                               S03-B12S-STATE
       *
                MOVE    SPACE               TO  S03-B03-LABEL
       *
