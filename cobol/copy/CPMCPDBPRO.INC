@@ -311,6 +311,7 @@
       *  01.01.129   NACL-太田    04/03/01  CHK-KEY8,CHK-KEY9,CHK-KEY10追加
       *  01.01.130   NACL-太田    04/03/02  TENSU-KEY24追加
       *  01.01.131   NACL-多々納　04/03/02  TENSUPLUS-KEY2追加
+      *  01.01.132   NACL-太田    04/03/05  NYUINACCT-KEY21追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1030,6 +1031,7 @@
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY18"
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY19"
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY20"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY21"
                    MOVE    PATH-TBL-NYUINACCT-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "NYUINACCT-DEL1"
@@ -2877,6 +2879,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACCT-KEY20"
                    MOVE    PATH-TBL-NYUINACCT-KEY20
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY21"
+                   MOVE    PATH-TBL-NYUINACCT-KEY21
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACCT-ALL"
                    MOVE    PATH-TBL-NYUINACCT-ALL

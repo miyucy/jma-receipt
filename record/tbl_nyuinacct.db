@@ -473,3 +473,16 @@ path	key20 	{
 		;
 	};
 };
+
+path	key21 	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key21_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_nyuinacct a join tbl_ptnum b using (hospid,ptid) 
+			WHERE a.HOSPID    =   :HOSPID
+			AND   a.NYUGAIKBN   =   :NYUGAIKBN
+			AND   a.SRYYM       >=  :SRYYM
+			ORDER BY b.PTNUM,A.SRYYM
+		;
+	};
+};
