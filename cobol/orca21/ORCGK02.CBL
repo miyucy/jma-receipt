@@ -2545,6 +2545,8 @@
       *    Ï«ºÒ ½ýÉÂÇ¯·îÆü
            MOVE    SPA-NAI-RSI-SHOBYOYMD (IDX)
                                        TO  SPA-RSI-SHOBYOYMD
+           MOVE    SPA-NAI-RSI-HKNKBN (IDX)
+                                       TO  SPA-RSI-HKNKBN
       *    Ï«ºÒÈ½Äê
            IF      SPA-HKNNUM          =   "971"
                                        OR  "973"
