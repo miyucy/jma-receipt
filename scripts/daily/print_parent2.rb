@@ -56,6 +56,14 @@ end
 # 定数の指定(最後に、かならず「/」を付けた形にしてください)
 DIA_DIR = '/usr/local/orca/form/'
 DEF_DIR = '/usr/local/orca/record/'
+# 追加開始 (2002/09/17)
+RED_DIR = '/usr/local/orca/form/'
+
+# .redからpsファイルに変換する際に使用するプログラム
+RED_EXEC = 'red2ps'
+# .redファイルで、LP名を省略された際に使用するプリンタ名
+DEFAULT_LP = 'lp1'
+# 追加終了 (2002/09/17)
 
 
 
@@ -218,58 +226,116 @@ word2.each do |d2|
 
 
 	# 先頭30バイトは、.diaと.defファイルのファイル名部分
+	# あるいは、.redファイルの拡張子を含むファイル名 (2002/09/17追加仕様)
 	dia_file = ''
 	def_file = ''
+# 追加開始 (2002/09/17)
+	red_file = ''
+# 追加終了 (2002/09/17)
 	ls_w1 = ''	# 一時用文字列領域
 	ls_w1 = d2[0, 30].strip	# ファイル名を後ろの空白を除いて取得
-	dia_file = DIA_DIR + ls_w1 + '.dia'		# Diaファイル名のセット
-	def_file = DEF_DIR + ls_w1 + '.def'		# Defファイル名のセット
-	lp_name = d2[30, 20].strip	# LP名のセット
-	word3 = d2[50, (d2_len - 50)]	# 一時ファイルへ出力する内容のセット
+# 追加開始 (2002/09/17)
+	if ls_w1 =~ /.red$/
+		# .redファイルである
+		red_file = RED_DIR + ls_w1		# Redファイル名のセット
+		lp_name = d2[30, 20].strip	# LP名のセット
+		word3 = d2[50, (d2_len - 50)]	# 一時ファイルへ出力する内容のセット
 
-
-
-
-
-
-
-
-	# 一時ファイルへの書き込み
-	open(temp_file, "w") do |fp|
-		fp.print word3
-		fp.print ' ' * 10000		# 2002/03/07 竹田氏対応依頼
-	end
-# デバッグ用の表示
-	case	word3
-	when	nil
-		puts	'改行のみです' + '[' + String(li_cnt1) + ']'
-	when	''
-		puts	'改行のみです' + '[' + String(li_cnt1) + ']'
-	else
-		if d2 =~ /\A\s*\z/
-			puts	'空白・改行です' + '[' + String(li_cnt1) + ']'
-#		else
-#			puts	'OK [' + String(li_cnt1) + ']'
+		# 一時ファイルへの書き込み
+		open(temp_file, "w") do |fp|
+			fp.print word3
+			fp.print ' ' * 10000		# 2002/03/07 竹田氏対応依頼
 		end
-	end
-	w_exec = exec_file + ' ' + dia_file + ' ' + def_file + ' ' + temp_file
-#	w_exec = exec_file + ' ' + dia_file2 + ' ' + def_file2 + ' ' + temp_file2
-	# LP名が指定されていたら、引数に追加(2002/03/07 竹田氏作成依頼)
-	if lp_name != ''
-		w_exec = w_exec + ' ' + lp_name
-	end
+
 # デバッグ用の表示
-#	puts w_exec
+		case	word3
+		when	nil
+			puts	'改行のみです' + '[' + String(li_cnt1) + ']'
+		when	''
+			puts	'改行のみです' + '[' + String(li_cnt1) + ']'
+		else
+			if d2 =~ /\A\s*\z/
+				puts	'空白・改行です' + '[' + String(li_cnt1) + ']'
+#			else
+#				puts	'OK [' + String(li_cnt1) + ']'
+			end
+		end
+		# LP名が指定されていなかったら、LP名をlp1にする
+		if lp_name == ''
+			lp_name = DEFAULT_LP
+		end
+
+		w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name
+
+# デバッグ用の表示
+#		puts w_exec
 # **
-	# 実行前メッセージ出力(2002/03/07 竹田氏作成依頼)
-	puts	'Print Start [' + String(li_cnt1) + ']'
-	# プログラムの実行
-	pid = fork do
-		exec w_exec
+		# 実行前メッセージ出力
+		puts	'Print Start [' + String(li_cnt1) + ']'
+		# プログラムの実行
+		pid = fork do
+			exec w_exec
+		end
+		sleep 0.01	# 予期せぬエラーの回避のため、待つ(これを行わないと、ruby ver1.4上で呼び出されたスクリプトにエラーが発生する)
+		# 実行したプログラムが終わるまで待つ(引数の２番目は、1.4でのエラー回避のため)
+		Process.waitpid(pid, 0)
+
+
+	else
+		# .redファイル以外である
+# 追加終了(対応するendまで、インデントを追加している) (2002/09/17)
+		dia_file = DIA_DIR + ls_w1 + '.dia'		# Diaファイル名のセット
+		def_file = DEF_DIR + ls_w1 + '.def'		# Defファイル名のセット
+		lp_name = d2[30, 20].strip	# LP名のセット
+		word3 = d2[50, (d2_len - 50)]	# 一時ファイルへ出力する内容のセット
+
+
+
+
+
+
+
+
+		# 一時ファイルへの書き込み
+		open(temp_file, "w") do |fp|
+			fp.print word3
+			fp.print ' ' * 10000		# 2002/03/07 竹田氏対応依頼
+		end
+# デバッグ用の表示
+		case	word3
+		when	nil
+			puts	'改行のみです' + '[' + String(li_cnt1) + ']'
+		when	''
+			puts	'改行のみです' + '[' + String(li_cnt1) + ']'
+		else
+			if d2 =~ /\A\s*\z/
+				puts	'空白・改行です' + '[' + String(li_cnt1) + ']'
+#			else
+#				puts	'OK [' + String(li_cnt1) + ']'
+			end
+		end
+		w_exec = exec_file + ' ' + dia_file + ' ' + def_file + ' ' + temp_file
+#		w_exec = exec_file + ' ' + dia_file2 + ' ' + def_file2 + ' ' + temp_file2
+		# LP名が指定されていたら、引数に追加(2002/03/07 竹田氏作成依頼)
+		if lp_name != ''
+			w_exec = w_exec + ' ' + lp_name
+		end
+# デバッグ用の表示
+#		puts w_exec
+# **
+		# 実行前メッセージ出力(2002/03/07 竹田氏作成依頼)
+		puts	'Print Start [' + String(li_cnt1) + ']'
+		# プログラムの実行
+		pid = fork do
+			exec w_exec
+		end
+		sleep 0.01	# 予期せぬエラーの回避のため、待つ(これを行わないと、ruby ver1.4上で呼び出されたスクリプトにエラーが発生する)
+		# 実行したプログラムが終わるまで待つ(引数の２番目は、1.4でのエラー回避のため)
+		Process.waitpid(pid, 0)
+
+# 追加開始 (2002/09/17)
 	end
-	sleep 0.01	# 予期せぬエラーの回避のため、待つ(これを行わないと、ruby ver1.4上で呼び出されたスクリプトにエラーが発生する)
-	# 実行したプログラムが終わるまで待つ(引数の２番目は、1.4でのエラー回避のため)
-	Process.waitpid(pid, 0)
+# 追加終了 (2002/09/17)
 end
 
 
