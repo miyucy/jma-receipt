@@ -6419,8 +6419,8 @@
                                                 "7" OR "8"
                   PERFORM    VARYING   IDX7    FROM   1   BY   1
                                UNTIL   IDX7      >      31
-                    IF   SYU-DAY(IDX7)           =   "1"  OR  "2"
-                    AND  RECE62-JNISSUTBL(IDX7)  =   "1"
+                    IF   (SYU-DAY(IDX7)           =   "1"  OR  "2")
+                    AND  (RECE62-JNISSUTBL(IDX7)  =   "1"         )
                        MOVE   "1"   TO   RECE62-KOHJNISSUTBL(IDX7)
                     END-IF
                   END-PERFORM
