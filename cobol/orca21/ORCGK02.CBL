@@ -2864,6 +2864,7 @@
            ELSE
                MOVE   IDY              TO  IDX
            END-IF
+           MOVE    ZERO                TO  SPA-HKN-ERR
       *
            MOVE    SPA-GMN-HKN-LIST (IDX)
                                        TO  SPA-GMN-HKNCOMBI-G
@@ -4856,6 +4857,9 @@
       *
       *     ›∏±¡»πÁ
            PERFORM 3101-HKNCOMBI-HEN-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41012-HKNCOMBI-CHANGE-EXT
+           END-IF
       *
            MOVE    1                   TO  SPA-GMN-PAGE
            MOVE    1                   TO  SPA-GMN-CUR

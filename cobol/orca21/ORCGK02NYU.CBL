@@ -2295,6 +2295,7 @@
                MOVE    "9029"              TO  SPA-ERRCD
                GO      TO      3101-HKNCOMBI-HEN-EXT
            END-IF
+           MOVE    ZERO                TO  SPA-HKN-ERR
       *
            MOVE    SPA-GMN-HKN-LIST (IDX)
                                        TO  SPA-GMN-HKNCOMBI-G

@@ -1823,7 +1823,7 @@
       *    入金額
            MOVE    K03-NYUKIN          TO  SPA-GMN-NYUKIN-X
       *    入金の取扱い
-           MOVE    K03-NYUKINKBN       TO  SPA-GMN-NYUKINKBN
+           MOVE    K03-NYUKINKBN       TO  SPA-GMN-NYUKINKBN-G
       *
            MOVE    K03-HAKFLG          TO  SPA-GMN-HAKFLG-G
            MOVE    K03-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
@@ -1953,7 +1953,7 @@
            END-PERFORM
       *
            IF      FLG-CHK               =   ZERO
-               MOVE    "0022"            TO  SPA-ERRCD
+               MOVE    "0012"            TO  SPA-ERRCD
                MOVE    10                TO  SPA-GMN-CUR
                GO      TO      450-NYUKINKBN-CHK-EXT
            END-IF
