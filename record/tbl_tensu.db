@@ -956,3 +956,16 @@ path	key15	{
 	};
 };
 
+path	key20   	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key20_csr CURSOR FOR
+		SELECT distinct a.*
+		FROM tbl_tensu a,tbl_inputcd b
+			WHERE a.SRYCD    =   b.SRYCD
+			AND   YUKOEDYMD  =   :YUKOEDYMD
+			ORDER  BY  SRYCD
+
+		;
+	};
+};
+
