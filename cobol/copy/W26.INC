@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ﾆ�ｰ衙ｸｽ爭�･ｻ･ﾗ･ﾈ･ｽ･ﾕ･ﾈ｡ﾊJMA standard receipt software｡ﾋ
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,9 +15,19 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  WID1.
-      *D      02  WID1-FIXED1.
-              03  WID1-ID1CODE.
-                04  WID1-VALUE  PIC X(10).
-              03  WID1-ID1MSG.
-                04  WID1-VALUE  PIC X(80).
+        02  W26.
+            03  W26-FIXED6.
+              04  W26-CMB-BTU-NAME.
+                05  W26-BTU-NAME       PIC X(23).
+                05  W26-BTU-NAME-CNT   PIC S9(9)   BINARY.
+                05  W26-BTU-NAME-ITM   PIC X(23)   OCCURS  50 TIMES.
+              04  W26-BTU-SBT          PIC X(20).
+              04  W26-BTU-KHNRYO       PIC X(60).
+              04  W26-STYUKYMD         PIC X(10).
+              04  W26-EDYUKYMD         PIC X(10).
+              04  W26-CHK-NANBYO       PIC X.
+              04  W26-CHK-TOKUSYU      PIC X.
+              04  W26-CHK-YORYO        PIC X       OCCURS 3.
+              04  W26-CHK-JIDO         PIC X.
+              04  W26-CHK-SEISIN       PIC X.
+              04  W26-CHK-KANGO        PIC X       OCCURS 5.

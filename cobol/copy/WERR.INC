@@ -17,5 +17,5 @@
       ********************************************************************
          02  WERR.
             03  WERR-FIXED1.
-              04  WERR-ERRCODE    PIC X(11).
-              04  WERR-ERRMSG PIC X(61).
+              04  WERR-ERRCODE    PIC X(10).
+              04  WERR-ERRMSG PIC X(80).

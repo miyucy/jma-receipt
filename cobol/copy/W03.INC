@@ -16,17 +16,15 @@
       * 113-8621, Japan.
       ********************************************************************
         02  W03.
-            03  W03-FIXED2.
-              04  W03-CD01-G      OCCURS  25.
-                05  W03-CD.
-                  06  W03-VALUE   PIC X(5).
-              04  W03-DSPNAME-G   OCCURS 25.
-                05  W03-DSPNAME.
-                  06  W03-VALUE   PIC X(101).
-              04  W03-STYUKYMD.
-                05  W03-VALUE     PIC X(10).
-              04  W03-EDYUKYMD.
-                05  W03-VALUE     PIC X(10).
-              04  W03-SSTKIJUN-G  OCCURS  25.
-                05  W03-SSTKIJUN.
-                  06  W03-VALUE   PIC 9(1).
+      ***  02  W03-FIXED2.
+              03  W03-CD01-G      OCCURS  25.
+                04  W03-CD.
+                  06  W03-VALUE   PIC X(4).
+              03  W03-DSPNAME     OCCURS  25.
+                04  W03-VALUE   PIC X(100).
+              03  W03-STYUKYMD.
+                04  W03-VALUE   PIC X(9).
+              03  W03-EDYUKYMD.
+                04  W03-VALUE   PIC X(9).
+              03  W03-SSTKIJUN-G  OCCURS  25.
+                04  W03-SSTKIJUN   PIC S9(1).

@@ -18,20 +18,20 @@
         02  W05.
             03  W05-FIXED1.
               04  W05-YUKOSTYMD.
-                05  W05-VALUE   PIC X(10).
+                05  W05-VALUE   PIC X(9).
               04  W05-YUKOEDYMD.
-                05  W05-VALUE   PIC X(10).
+                05  W05-VALUE   PIC X(9).
               04  W05-B03.
                 05  W05-B03-STATE   PIC S9(9)   BINARY.
               04  W05-SRYKANAME1.
-                05  W05-VALUE   PIC X(11).
+                05  W05-VALUE   PIC X(10).
               04  W05-SRYKANAME.
-                05  W05-VALUE   PIC X(41).
+                05  W05-VALUE   PIC X(40).
               04  W05-SRYCD.
-                05  W05-VALUE   PIC X(3).
+                05  W05-VALUE   PIC X(2).
               04  W05-SRYKANAME2.
-                05  W05-VALUE   PIC X(7).
+                05  W05-VALUE   PIC X(6).
               04  W05-SRYKANAME3.
-                05  W05-VALUE   PIC X(3).
+                05  W05-VALUE   PIC X(2).
               04  W05-RECESRYKA.
-                05  W05-VALUE   PIC X(3).
+                05  W05-VALUE   PIC X(2).

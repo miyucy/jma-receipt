@@ -18,36 +18,36 @@
         02  W04.
             03  W04-FIXED2.
               04  W04-NEN.
-                05  W04-VALUE   PIC X(5).
+                05  W04-VALUE   PIC X(4).
               04  W04-RENNUM.
-                05  W04-VALUE   PIC X(11).
+                05  W04-VALUE   PIC X(10).
               04  W04-PTID.
-                05  W04-VALUE   PIC X(11).
+                05  W04-VALUE   PIC X(10).
               04  W04-STYUKYMD.
-                05  W04-VALUE   PIC X(10).
+                05  W04-VALUE   PIC X(9).
               04  W04-EDYUKYMD.
-                05  W04-VALUE   PIC X(10).
+                05  W04-VALUE   PIC X(9).
               04  W04-PTNUMKSIKBN.
-                05  W04-VALUE   PIC X(2).
+                05  W04-VALUE   PIC X(1).
               04  W04-NOTEBOOK1.
                 05  W04-PAGENO  PIC S9(9)   BINARY.
                 05  W04-FIXED5.
                   06  W04-JIYKSIKBN.
-                    07  W04-VALUE   PIC X(2).
+                    07  W04-VALUE   PIC X(1).
                   06  W04-JIYKSIKETA.
                     07  W04-VALUE   PIC 9(2).
                 05  W04-FIXED4.
                   06  W04-HJNKSIKBN.
-                    07  W04-VALUE   PIC X(2).
+                    07  W04-VALUE   PIC X(1).
                   06  W04-HJNKSINENKBN.
-                    07  W04-VALUE   PIC X(2).
+                    07  W04-VALUE   PIC X(1).
                   06  W04-HJNKSIRENNUMKBN.
-                    07  W04-VALUE   PIC X(2).
+                    07  W04-VALUE   PIC X(1).
                   06  W04-HJNKSIRENNUMKETA.
                     07  W04-VALUE   PIC 9(2).
                 05  W04-FIXED3.
                   06  W04-KKCKSIKBN.
-                    07  W04-VALUE   PIC X(2).
+                    07  W04-VALUE   PIC X(1).
                   06  W04-KKCKSIMAEKETA.
                     07  W04-VALUE   PIC 9(2).
                   06  W04-KKCKSIRENNUMKETA.

@@ -17,8 +17,8 @@
       ********************************************************************
             02  W07.
                 03  W07-FIXED1.
-                    04  W07-YUKOSTYMD           PIC X(10).
-                    04  W07-YUKOEDYMD           PIC X(10).
+                    04  W07-YUKOSTYMD           PIC X(9).
+                    04  W07-YUKOEDYMD           PIC X(9).
                     04  W07-B03.
                       05  W07-B03-STATE         PIC S9(9)   BINARY.
                     04  W07-NOTEBOOK1.
@@ -27,7 +27,7 @@
                         06  W07-DATA-TBL        OCCURS  4.
                           07  W07-DATA-COMBO.
                             08  W07-DATA.   
-                              09  W07-VALUE     PIC X(13).
+                              09  W07-VALUE     PIC X(12).
                             08  W07-COUNT       PIC S9(9)   BINARY.
                             08  W07-DATALST     PIC X(12)   OCCURS  2.
                       05  W07-TAGNAME1.
@@ -36,7 +36,7 @@
                         06  W07-KIKAN           PIC S9(2).
                   05  W07-GAIKANRIKBNCOMB.
                     06  W07-GAIKANRIKBN.
-                      07  W07-VALUE   PIC X(23).
+                      07  W07-VALUE   PIC X(22).
                     06  W07-GAIKANRIKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-GAIKANRIKBN-ITEM    PIC X(22)   OCCURS  3.
                       05  W07-TAGNAME2.

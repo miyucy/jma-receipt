@@ -1,0 +1,169 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      *    病棟・病室入院基本料加算設定画面ＳＰＡ  (SPA-FREE の内容)
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *
+       01  SPA-W26FREE.
+      *  病棟入院基本料加算情報設定画面ＳＰＡ
+         03  SPA-W26.
+           05  SPA-W26-AREA.
+             07  SPA-GMN-W26-PAGE                      PIC 9(02).
+             07  SPA-GMN-W26-LINE                      PIC 9(02).
+             07  SPA-GMN-W26-MAX                       PIC 9(04).
+             07  SPA-GMN-W26-CUR                       PIC 9(03).
+             07  SPA-GMN-W26-AREA.
+      *        ヘッダ項目領域
+               09  SPA-GMN-W26-HEAD-AREA.
+      *          病棟名称
+                 11  SPA-GMN-W26-BTU-NAME.
+                   13  SPA-GMN-W26-BTU-NAME-CD         PIC X(02).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W26-BTU-NAME-NM         PIC X(20).
+                 11  SPA-GMN-W26-BTU-NAME-ERR          PIC X(04).
+      *          病棟種別
+                 11  SPA-GMN-W26-BTU-SBT               PIC X(20).
+      *          入院基本料
+                 11  SPA-GMN-W26-BTU-KHNRYO            PIC X(60).
+      *          有効開始日
+                 11  SPA-GMN-W26-STYUKYMD              PIC X(10).
+                 11  SPA-GMN-W26-STYUKYMD-S            PIC X(08).
+      *          有効終了日
+                 11  SPA-GMN-W26-EDYUKYMD              PIC X(10).
+                 11  SPA-GMN-W26-EDYUKYMD-S            PIC X(08).
+      *        入力項目領域
+               09  SPA-GMN-W26-INPUT-AREA.
+      *          難病患者等特別入院診療加算
+                 11  SPA-GMN-W26-CHK-NANBYO            PIC X.
+      *          特殊疾患入院施設管理加算
+                 11  SPA-GMN-W26-CHK-TOKUSYU           PIC X.
+      *          療養病棟療養環境加算
+                 11  SPA-GMN-W26-CHK-YORYO             PIC X
+                                                       OCCURS 3.
+      *          児童・思春期精神科入院医療管理加算
+                 11  SPA-GMN-W26-CHK-JIDO              PIC X.
+      *          精神科応急入院施設管理加算
+                 11  SPA-GMN-W26-CHK-SEISIN            PIC X.
+      *          看護配置加算
+                 11  SPA-GMN-W26-CHK-KANGO             PIC X
+                                                       OCCURS 5.
+      *
+      *        コンボ項目領域
+               09  SPA-GMN-W26-CMB-DAT-AREA.
+      *          病棟名称コンボ
+                 11  SPA-GMN-W26-CMB-BTU-NAME.
+                   13  SPA-GMN-W26-BTU-NAME-CNT        PIC S9(9)
+                                                       BINARY.
+                   13  SPA-GMN-W26-BTU-NAME-ITM-OCC    OCCURS  50 TIMES
+                                               INDEXED BY  CMB-IDX01.
+                     15  SPA-GMN-W26-BTU-NAME-ITM      PIC X(23).
+      *                ITM2には病棟種別をセット
+                     15  SPA-GMN-W26-BTU-NAME-ITM2     PIC X(20).
+      *                ITM3には入院料をセット
+                     15  SPA-GMN-W26-BTU-NAME-ITM3     PIC X(60).
+      *  病室入院基本料加算情報設定画面ＳＰＡ
+         03  SPA-W27.
+           05  SPA-W27-AREA.
+             07  SPA-GMN-W27-PAGE                      PIC 9(02).
+             07  SPA-GMN-W27-LINE                      PIC 9(02).
+             07  SPA-GMN-W27-MAX                       PIC 9(04).
+             07  SPA-GMN-W27-CUR                       PIC 9(03).
+             07  SPA-GMN-W27-AREA.
+      *        ヘッダ項目領域
+               09  SPA-GMN-W27-HEAD-AREA.
+      *          病棟名称
+                 11  SPA-GMN-W27-BTU-NAME.
+                   13  SPA-GMN-W27-BTU-NAME-CD         PIC X(02).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W27-BTU-NAME-NM         PIC X(20).
+                 11  SPA-GMN-W27-BTU-NAME-ERR          PIC X(04).
+      *          病棟種別
+                 11  SPA-GMN-W27-BTU-SBT               PIC X(20).
+      *          入院基本料
+                 11  SPA-GMN-W27-BTU-KHNRYO            PIC X(60).
+      *        入力項目領域
+               09  SPA-GMN-W27-INPUT-AREA.
+      *              開始選択番号
+                 11  SPA-GMN-W27-STSELNUM              PIC S9(3).
+                 11  SPA-GMN-W27-STSELNUM-ERR          PIC X(04).
+      *              終了選択番号
+                 11  SPA-GMN-W27-EDSELNUM              PIC S9(3).
+      *              開始病室番号
+                 11  SPA-GMN-W27-STBRMNUM              PIC X(6).
+      *              終了病室番号
+                 11  SPA-GMN-W27-EDBRMNUM              PIC X(6).
+      *              新生児入院医療管理加算
+                 11  SPA-GMN-W27-CHK-SINSEIJI          PIC X.
+      *              診療所療養病床療養環境加算
+                 11  SPA-GMN-W27-CHK-SNR-RYOYO         PIC X
+                                                       OCCURS 2.
+      *              放射線治療病室管理加算
+                 11  SPA-GMN-W27-CHK-HOSYASEN          PIC X.
+      *              療養環境加算
+                 11  SPA-GMN-W27-CHK-RYOYO             PIC X.
+      *        病室情報リスト領域
+               09  SPA-GMN-W27-BRMLST-AREA.
+                 11  SPA-GMN-W27-BRMLST-CNT            PIC S9(9).
+                 11  SPA-GMN-W27-BRMLST-ITM            OCCURS  400.
+      *                有効（０：無効／１：有効）
+                   13  SPA-GMN-W27-TYUKO-FLG           PIC 9(1).
+      *                選択番号
+                   13  SPA-GMN-W27-TSELNUM             PIC 9(3).
+      *                病室番号
+                   13  SPA-GMN-W27-TBRMNUM             PIC X(08).
+                   13  SPA-GMN-W27-TBRMNUM2            PIC X(06).
+      *                特定入院料
+                   13  SPA-GMN-W27-TTOKNYUIN-CD        PIC X(02).
+                   13  SPA-GMN-W27-TTOKNYUIN           PIC X(10).
+      *                病室種別
+                   13  SPA-GMN-W27-TBRMSBT             PIC X(20).
+      *                室料差額
+                   13  SPA-GMN-W27-TSAGAKU             PIC 9(10).
+      *                開始有効年月日
+                   13  SPA-GMN-W27-TSTYUKYMD           PIC X(9).
+                   13  SPA-GMN-W27-TSTYUKYMD-S         PIC X(8).
+      *                終了有効年月日
+                   13  SPA-GMN-W27-TEDYUKYMD           PIC X(9).
+                   13  SPA-GMN-W27-TEDYUKYMD-S         PIC X(8).
+      *
+      *                新生児入院医療管理加算
+                   13  SPA-GMN-W27-TSINSEIJI-KBN       PIC X(01).
+      *                診療所療養病床療養環境加算
+                   13  SPA-GMN-W27-TSNR-RYOYO-KBN      PIC X(01)
+                                                       OCCURS 2.
+      *                放射線治療病室管理加算
+                   13  SPA-GMN-W27-THOSYASEN-KBN       PIC X(01).
+      *                療養環境加算
+                   13  SPA-GMN-W27-TRYOYO-KBN          PIC X(01).
+      *
+                 11  SPA-GMN-W27-BRMLST-SEL            PIC 9(05).
+      *
+      *        コンボ項目領域
+               09  SPA-GMN-W27-CMB-DAT-AREA.
+      *          病棟名称コンボ
+                 11  SPA-GMN-W27-CMB-BTU-NAME.
+                   13  SPA-GMN-W27-BTU-NAME-CNT        PIC S9(9)
+                                                       BINARY.
+                   13  SPA-GMN-W27-BTU-NAME-ITM-OCC    OCCURS  50 TIMES
+                                               INDEXED BY  CMB-IDX01.
+                     15  SPA-GMN-W27-BTU-NAME-ITM      PIC X(23).
+      *                ITM2には病棟種別をセット
+                     15  SPA-GMN-W27-BTU-NAME-ITM2     PIC X(20).
+      *                ITM3には入院料をセット
+                     15  SPA-GMN-W27-BTU-NAME-ITM3     PIC X(60).

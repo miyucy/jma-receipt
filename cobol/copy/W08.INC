@@ -18,14 +18,14 @@
         02  W08.
             03  W08-FIXED1.
               04  W08-YUKOSTYMD.
-                05  W08-VALUE   PIC X(10).
+                05  W08-VALUE   PIC X(9).
               04  W08-YUKOEDYMD.
-                05  W08-VALUE   PIC X(10).
+                05  W08-VALUE   PIC X(9).
               04  W08-B03.
                 05  W08-B03-STATE   PIC S9(9)   BINARY.
               04  W08-SYUBETUNAME.
-                05  W08-VALUE   PIC X(41).
+                05  W08-VALUE   PIC X(40).
               04  W08-SYUBETU.
-                05  W08-VALUE   PIC X(5).
+                05  W08-VALUE   PIC X(4).
               04  W08-PRTJYUNI.
-                05  W08-VALUE   PIC X(3).
+                05  W08-VALUE   PIC X(2).

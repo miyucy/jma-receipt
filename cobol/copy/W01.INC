@@ -16,28 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
         02  W01.
-            03  W01-FIXED1.
-              04  W01-SCROLLEDWINDOW1.
-                05  W01-TENSU-LIST.
-                  06  W01-COUNT   PIC S9(9)   BINARY.
-                  06  W01-ITEM        OCCURS  100 TIMES.
-                    07  W01-TSELNUM     PIC X(4).
-                    07  W01-TSTYUKYMD   PIC X(10).
-                    07  W01-TEDYUKYMD   PIC X(10).
-                  06  W01-SELECT  PIC X       OCCURS  100 TIMES.
-              04  W01-STYUKYMD.
-                05  W01-VALUE   PIC X(11).
-              04  W01-EDYUKYMD.
-                05  W01-VALUE   PIC X(11).
-              04  W01-KANRICD-COMBO.
-                05  W01-KANRICD   PIC X(36).
-                05  W01-KANRICD-COUNT   PIC S9(9)   BINARY.
-                05  W01-KANRICDLST  PIC X(35)   OCCURS  30 TIMES.
-              04  W01-SELNUM.
-                05  W01-VALUE   PIC 9(3).
-              04  W01-KBNCD-COMBO.
-                05  W01-KBNCD       PIC X(36).
-                05  W01-KBNCD-COUNT PIC S9(9)   BINARY.
-                05  W01-KBNCDLST    PIC X(35)   OCCURS  200 TIMES.
-              04  W01-MIDASI.
-                05  W01-VALUE   PIC X(20).
+      ***   02  W01-FIXED1.
+              03  W01-SCROLLEDWINDOW1.
+                04  W01-TENSU-LIST.
+                  05  W01-COUNT   PIC S9(9)   BINARY.
+                  05  W01-ITEM        OCCURS  100 TIMES.
+                    07  W01-TSELNUM     PIC X(3).
+                    07  W01-TSTYUKYMD   PIC X(9).
+                    07  W01-TEDYUKYMD   PIC X(9).
+                  05  W01-SELECT  PIC X       OCCURS  100 TIMES.
+              03  W01-STYUKYMD.
+                04  W01-VALUE   PIC X(10).
+              03  W01-EDYUKYMD.
+                04  W01-VALUE   PIC X(10).
+              03  W01-SELNUM.
+                04  W01-VALUE   PIC S9(3).
+              03  W01-MIDASI.
+                04  W01-VALUE   PIC X(20).
+              03  W01-KBNCD-COMBO.
+                04  W01-KBNCD.
+                  05  W01-VALUE   PIC X(35).
+                04  W01-KBNCD-COUNT   PIC S9(9)   BINARY.
+                04  W01-KBNCD-ITEM    PIC X(35)   OCCURS  200 TIMES.
+              03  W01-KANRICD-COMBO.
+                04  W01-KANRICD.
+                  05  W01-VALUE   PIC X(35).
+                04  W01-KANRICD-COUNT   PIC S9(9)   BINARY.
+                04  W01-KANRICD-ITEM    PIC X(35)   OCCURS  50 TIMES.

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * 日医標準レセプトソフト（JMA standard receipt software）
+      * ﾆ�ｰ衙ｸｽ爭�･ｻ･ﾗ･ﾈ･ｽ･ﾕ･ﾈ｡ﾊJMA standard receipt software｡ﾋ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,33 +15,39 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-            02  W06.
+         02  W06.
                 03  W06-FIXED1.
-                  04  W06-YUKOSTYMD       PIC X(10).
-                  04  W06-YUKOEDYMD       PIC X(10).
-                  04  W06-KBNCD           PIC X(6).
-                  04  W06-KBNNAME         PIC X(21).
-                  04  W06-USERID          PIC X(17).
-                  04  W06-KANANAME        PIC X(81).
-                  04  W06-NAME            PIC X(81).
-                  04  W06-ISEKINUM        PIC X(9).
-                  04  W06-HKNDRNUMS       PIC X(9).
-                  04  W06-HKNDRNUMK       PIC X(13).
-                  04  W06-MAYAKULICENSE   PIC X(41).
-                  04  W06-SEMONKACOMBO    OCCURS  5.
+                  04  W06-YUKOSTYMD       PIC X(9).
+                  04  W06-YUKOEDYMD       PIC X(9).
+                  04  W06-KBNCD           PIC X(5).
+                  04  W06-KBNNAME         PIC X(20).
+                  04  W06-USERID          PIC X(16).
+                  04  W06-KANANAME        PIC X(80).
+                  04  W06-NAME            PIC X(80).
+                  04  W06-ISEKINUM        PIC X(8).
+                  04  W06-HKNDRNUMS       PIC X(8).
+                  04  W06-HKNDRNUMK       PIC X(12).
+                  04  W06-MAYAKULICENSE   PIC X(40).
+                  04  W06-SEMONKACOMBO        OCCURS  5.
                     05  W06-SEMONKACD.
-                      06  W06-CD-VALUE    PIC X(18).
+                      06  W06-CD-VALUE    PIC X(17).
                     05  W06-CD-COUNT      PIC S9(9)   BINARY.
                     05  W06-CD-ITEM       PIC X(17)   OCCURS  10.
-                  04  W06-CHK1            PIC X.
-                  04  W06-CHK2            PIC X.
-                  04  W06-CHK3            PIC X.
-                  04  W06-CHK4            PIC X.
-                  04  W06-CHK5            PIC X.
-                  04  W06-CHK6            PIC X.
-                  04  W06-CHK7            PIC X.
-                  04  W06-CHK8            PIC X.
-                  04  W06-CHK9            PIC X.
+                  04  W06-CHK01            PIC X.
+                  04  W06-CHK02            PIC X.
+                  04  W06-CHK03            PIC X.
+                  04  W06-CHK04            PIC X.
+                  04  W06-CHK05            PIC X.
+                  04  W06-CHK06            PIC X.
+                  04  W06-CHK07            PIC X.
+                  04  W06-CHK08            PIC X.
+                  04  W06-CHK09            PIC X.
+                  04  W06-CHK27           PIC X.
+                  04  W06-CHK28           PIC X.
+                  04  W06-CHK29           PIC X.
+                  04  W06-CHK30           PIC X.
+                  04  W06-CHK31           PIC X.
+                  04  W06-CHK32           PIC X.
                   04  W06-CHK10           PIC X.
                   04  W06-CHK11           PIC X.
                   04  W06-CHK12           PIC X.
@@ -63,7 +69,7 @@
                   04  W06-CHK26           PIC X.
                   04  W06-KANRIAUTHCOMBO.
                     05  W06-KANRIAUTHFLG.
-                      06  W06-FLG-VALUE   PIC X(13).
+                      06  W06-FLG-VALUE   PIC X(12).
                     05  W06-FLG-COUNT     PIC S9(9)   BINARY.
                     05  W06-FLG-ITEM      PIC X(12)   OCCURS  2.
                   04  W06-B03.

@@ -15,9 +15,13 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  WID1.
-      *D      02  WID1-FIXED1.
-              03  WID1-ID1CODE.
-                04  WID1-VALUE  PIC X(10).
-              03  WID1-ID1MSG.
-                04  WID1-VALUE  PIC X(80).
+        02  W23.
+            03  W23-FIXED6.
+              04  W23-SEIKYU01.
+                05  W23-VALUE   PIC X(3).
+              04  W23-SEIKYU02.
+                05  W23-VALUE   PIC X(3).
+              04  W23-SEIKYU03.
+                05  W23-VALUE   PIC X(3).
+              04  W23-RESEIKYUKBN.
+                05  W23-VALUE   PIC X(2).

@@ -19,32 +19,32 @@
               03  W10-B03.
                 04  W10-B03-STATE       PIC S9(9)   BINARY.
               03  W10-STYUKYMD.
-                04  W10-VALUE           PIC X(10).
+                04  W10-VALUE           PIC X(9).
               03  W10-EDYUKYMD.
-                04  W10-VALUE           PIC X(10).
+                04  W10-VALUE           PIC X(9).
               03  W10-NOTEBOOK.
                 04  W10-PAGENO          PIC S9(9)   BINARY.
                 04  W10-FIXED.
                   05  W10-PROGNAME.
-                    06  W10-VALUE       PIC X(25).
+                    06  W10-VALUE       PIC X(24).
                   05  W10-HCNAME.
-                    06  W10-VALUE       PIC X(81).
+                    06  W10-VALUE       PIC X(80).
                   05  W10-HCNUM.
                     06  W10-VALUE       PIC S9(3).
                   05  W10-PARA-G        OCCURS  3.
-                      06  W10-PARAHYOJI PIC X(21).
-                      06  W10-PARA      PIC X(11).
+                      06  W10-PARAHYOJI PIC X(20).
+                      06  W10-PARA      PIC X(10).
                 04  W10-N01.
                   05  W10-N01-STATE     PIC S9(9)   BINARY.
                 04  W10-FIXED1.
                   05  W10-PROGNAME1.
-                    06  W10-VALUE       PIC X(25).
+                    06  W10-VALUE       PIC X(24).
                   05  W10-HCNAME1.
-                    06  W10-VALUE       PIC X(81).
+                    06  W10-VALUE       PIC X(80).
                   05  W10-HCNUM1.
                     06  W10-VALUE       PIC S9(3).
                   05  W10-PARA1-G        OCCURS  3.
-                      06  W10-PARAHYOJI1 PIC X(21).
-                      06  W10-PARA1      PIC X(11).
+                      06  W10-PARAHYOJI1 PIC X(20).
+                      06  W10-PARA1      PIC X(10).
                 04  W10-N02.
                   05  W10-N02-STATE     PIC S9(9)   BINARY.

@@ -17,43 +17,43 @@
       ********************************************************************
             02  W12.
               03  W12-YUKOSTYMD.
-                04  W12-VALUE   PIC X(10).
+                04  W12-VALUE   PIC X(9).
               03  W12-YUKOEDYMD.
-                04  W12-VALUE   PIC X(10).
+                04  W12-VALUE   PIC X(9).
               03  W12-BYOMEIHENKBN-COMBO.
-                04  W12-BYOMEIHENKBN       PIC X(21).
+                04  W12-BYOMEIHENKBN       PIC X(20).
                 04  W12-BYOMEIHENKBN-COUNT PIC S9(9)   BINARY.
                 04  W12-BYOMEIHENKBNLST    PIC X(20)   OCCURS  2 TIMES.
               03  W12-BYOMEIHENKBN1-COMBO.
-                04  W12-BYOMEIHENKBN1      PIC X(23).
+                04  W12-BYOMEIHENKBN1      PIC X(22).
                 04  W12-BYOMEIHENKBN1-COUNT
                                            PIC S9(9)   BINARY.
                 04  W12-BYOMEIHENKBN1LST   PIC X(22)   OCCURS  2 TIMES.
               03  W12-TENKIHENKBN-COMBO.
-                04  W12-TENKIHENKBN        PIC X(21).
+                04  W12-TENKIHENKBN        PIC X(20).
                 04  W12-TENKIHENKBN-COUNT  PIC S9(9)   BINARY.
                 04  W12-TENKIHENKBNLST     PIC X(20)   OCCURS  2 TIMES.
               03  W12-KKHRECEKBN-COMBO.
-                04  W12-KKHRECEKBN         PIC X(21).
+                04  W12-KKHRECEKBN         PIC X(20).
                 04  W12-KKHRECEKBN-COUNT   PIC S9(9)   BINARY.
                 04  W12-KKHRECEKBNLST      PIC X(20)   OCCURS  3 TIMES.
               03  W12-SYARECEKBN-COMBO.
-                04  W12-SYARECEKBN         PIC X(21).
+                04  W12-SYARECEKBN         PIC X(20).
                 04  W12-SYARECEKBN-COUNT   PIC S9(9)   BINARY.
                 04  W12-SYARECEKBNLST      PIC X(20)   OCCURS  3 TIMES.
               03  W12-RECEDENOUT.
-                04  W12-VALUE   PIC X(31).
+                04  W12-VALUE   PIC X(30).
               03  W12-KKHOCRKBN-COMBO.
-                04  W12-KKHOCRKBN       PIC X(21).
+                04  W12-KKHOCRKBN       PIC X(20).
                 04  W12-KKHOCRKBN-COUNT PIC S9(9)   BINARY.
                 04  W12-KKHOCRKBNLST    PIC X(20)   OCCURS  2 TIMES.
               03  W12-PREFPRGID.
-                04  W12-VALUE   PIC X(16).
+                04  W12-VALUE   PIC X(15).
               03  W12-SYAPRTNM.
-                04  W12-VALUE   PIC X(17).
+                04  W12-VALUE   PIC X(16).
               03  W12-KKHPRTNM.
-                04  W12-VALUE   PIC X(17).
+                04  W12-VALUE   PIC X(16).
               03  W12-KKHPRTKBN-COMBO.
-                04  W12-KKHPRTKBN       PIC X(21).
+                04  W12-KKHPRTKBN       PIC X(20).
                 04  W12-KKHPRTKBN-COUNT PIC S9(9)   BINARY.
                 04  W12-KKHPRTKBNLST    PIC X(20)   OCCURS  2 TIMES.

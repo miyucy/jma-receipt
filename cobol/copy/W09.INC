@@ -18,27 +18,27 @@
         02  W09.
             03  W09-FIXED1.
               04  W09-YUKOSTYMD.
-                05  W09-VALUE   PIC X(10).
+                05  W09-VALUE   PIC X(9).
               04  W09-YUKOEDYMD.
-                05  W09-VALUE   PIC X(10).
+                05  W09-VALUE   PIC X(9).
               04  W09-B03.
                 05  W09-B03-STATE   PIC S9(9)   BINARY.
               04  W09-SYURUINAME.
-                05  W09-VALUE   PIC X(41).
+                05  W09-VALUE   PIC X(40).
               04  W09-PRTJYUNI.
-                05  W09-VALUE   PIC X(4).
+                05  W09-VALUE   PIC X(3).
               04  W09-SYUBETU-G     OCCURS  10.
                   05  W09-SYUBETU.
-                    06  W09-VALUE   PIC X(5).
+                    06  W09-VALUE   PIC X(4).
               04  W09-SYUBETUNAME-G OCCURS  10.
                   05  W09-SYUBETUNAME.
-                    06  W09-VALUE   PIC X(41).
+                    06  W09-VALUE   PIC X(40).
               04  W09-TEISYUTUSAKI-COMBO.
-                  05  W09-TEISYUTUSAKI   PIC X(27).
+                  05  W09-TEISYUTUSAKI   PIC X(26).
                   05  W09-TEISYUTUSAKI-COUNT   PIC S9(9)   BINARY.
                   05  W09-TEISYUTUSAKILST  PIC X(26)   OCCURS  5 TIMES.
               04  W09-NYUGAIKBN-COMBO.
-                  05  W09-NYUGAIKBN   PIC X(11).
+                  05  W09-NYUGAIKBN   PIC X(10).
                   05  W09-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
                   05  W09-NYUGAIKBNLST  PIC X(10)   OCCURS  2 TIMES.
               04  W09-DSPSEQ          PIC 9(03).    
