@@ -380,5 +380,12 @@ V02	{
 			count	int;
 			item	varchar(24)[4];
 		};
+		RECEFTNDSPKBN_CMB	{
+			RECEFTNDSPKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[2];
+		};
 	};
 };
