@@ -1210,7 +1210,9 @@
                                    CONTINUE
                                ELSE
                                    MOVE    1       TO  SPA-GMN-CUR
-                                   MOVE    ZERO    TO  SPA-IDX
+                                   INITIALIZE          SPA-IDX
+                                                       SPA-GMN-RIREKIIN
+                                                       SPA-GMN-RIREKIIN9
                                    MOVE    "0009"  TO  SPA-ERRCD
                                    GO  TO  200-ENTRY-EXT
                                END-IF
@@ -1238,6 +1240,7 @@
                WHEN    "ACTIVATE"      ALSO    "RIREKIIN"
                    MOVE    1                  TO  SPA-GMN-CUR
                    MOVE    ZERO            TO  SPA-GMN-RIREKIIN
+                                               SPA-GMN-RIREKIIN9
                    MOVE S03-RIREKIIN       TO  SPA-IDX
                    IF      SPA-IDX    <  1   OR  >  SPA-GMN-MISYU-MAX
                        MOVE    "0005"         TO  SPA-ERRCD
@@ -1248,7 +1251,9 @@
                                CONTINUE
                            ELSE
                                MOVE    1       TO  SPA-GMN-CUR
-                               MOVE    ZERO    TO  SPA-IDX
+                               INITIALIZE          SPA-IDX
+                                                   SPA-GMN-RIREKIIN
+                                                   SPA-GMN-RIREKIIN9
                                MOVE    "0009"  TO  SPA-ERRCD
                                GO  TO  200-ENTRY-EXT
                            END-IF
