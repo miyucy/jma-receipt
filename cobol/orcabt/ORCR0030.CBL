@@ -143,6 +143,7 @@
       *  01.02.38   NACL-門脇     04/01/19  病床数編集フラグの編集
       *  01.02.39   NACL-門脇     04/01/20  自費レセ摘要欄編集レコード
       *                                     フラグの編集
+      *  01.02.40   NACL-門脇     04/02/05  診療コード＊数量の累計編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1457,6 +1458,13 @@
                                                 CONS-SIDORYO6
                         MOVE   "1"        TO    RECE02-BEDSUFLG
                    END-IF
+               END-IF
+      *
+               IF     SRY-SRYCD(IDX2)  IS  NUMERIC
+                  MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
+                  COMPUTE  RECE04-RUIKEITOTAL  =
+                           RECE04-RUIKEITOTAL  +
+                          (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
                END-IF
       *
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE05-SRYSURYO(IDX4)

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    04.02.05  診療コード＊数量の累計編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -318,6 +319,7 @@
                    MOVE    RECE84-ZAITEN       TO  RECE843-ZAITEN
                    MOVE    RECE84-SRYCDTOTAL   TO  RECE843-SRYCDTOTAL
                    MOVE    RECE84-SURYOUTOTAL  TO  RECE843-SURYOUTOTAL
+                   MOVE    RECE84-RUIKEITOTAL  TO  RECE843-RUIKEITOTAL
                    MOVE    RECE84-MEISAISU     TO  RECE843-MEISAISU 
                    ADD     1                   TO  WRK-COMRENNUM
                    MOVE    WRK-COMRENNUM       TO  RECE843-COMRENNUM
@@ -349,6 +351,7 @@
                    MOVE    RECE84-ZAITEN       TO  RECE843-ZAITEN
                    MOVE    RECE84-SRYCDTOTAL   TO  RECE843-SRYCDTOTAL
                    MOVE    RECE84-SURYOUTOTAL  TO  RECE843-SURYOUTOTAL
+                   MOVE    RECE84-RUIKEITOTAL  TO  RECE843-RUIKEITOTAL
                    MOVE    RECE84-MEISAISU     TO  RECE843-MEISAISU 
                    MOVE    RECE843-REC         TO  WRK-RECE843-REC
                    PERFORM 900-RECE843-INV-SEC

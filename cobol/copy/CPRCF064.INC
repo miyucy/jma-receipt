@@ -22,6 +22,8 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    03.09.24  コメント編集フラグ追加
+      *  01.00.02    NACL-門脇    04.02.05  診療コード＊数量の累計
+      *                                     追加
       ************************************************************
       *01  RECE64-REC.
            03  RECE64-KEY.
@@ -44,7 +46,7 @@
       *補助区分
                05  RECE64-HOJOKBN         PIC  X(01).
       *適用開始年月日
-               05  RECE64-TEKSTYMD        PIC  X(08). 
+               05  RECE64-TEKSTYMD        PIC  X(08).
       *剤番号
                05  RECE64-ZAINUM          PIC  9(08).
       *剤連番
@@ -69,6 +71,8 @@
            03  RECE64-SRYCDTOTAL          PIC  9(14).
       *数量計
            03  RECE64-SURYOUTOTAL         PIC  9(07)V9(03).
+      *診療コード＊数量の累計
+           03  RECE64-RUIKEITOTAL         PIC  9(21)V9(03).
       *明細数
            03  RECE64-MEISAISU            PIC  9(04).
       *剤回数

@@ -34,6 +34,7 @@
       *                                     (09594)ÂÐ±þ
       *  01.00.04    NACL-ÌçÏÆ    04/01/28  ¿ÇÎÅ¶èÊ¬£¹£°¡¢£¹£²¤Î¥³¥á¥ó¥È
       *                                     ¤Î¤ß¤ÎºÞ¤â¥ì¥»µ­ºÜ¤ÎÂÐ¾Ý¤Ë¤¹¤ë
+      *  01.00.05    NACL-ÌçÏÆ    04/02/05  ¿ÇÎÅ¥³¡¼¥É¡ö¿ôÎÌ¤ÎÎß·×ÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2259,6 +2260,13 @@
                      WHEN     "2"
                           MOVE     "4"    TO    RECE82-HOSPSBT
                   END-EVALUATE
+               END-IF
+      *
+               IF     SRY-SRYCD(IDX2)  IS  NUMERIC
+                  MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
+                  COMPUTE  RECE84-RUIKEITOTAL  =
+                           RECE84-RUIKEITOTAL  +
+                          (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
                END-IF
       *
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE85-SRYSURYO(IDX4)

@@ -65,6 +65,7 @@
       *                                     フラグの編集
       *  01.00.26    NACL-門脇    04/01/28  診療区分９０、９２のコメント
       *                                     のみの剤もレセ記載の対象にする
+      *  01.00.27    NACL-門脇    04/02/05  診療コード＊数量の累計編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3475,6 +3476,13 @@
                                                 CONS-SIDORYO6
                         MOVE   "1"        TO    RECE62-BEDSUFLG
                    END-IF
+               END-IF
+      *
+               IF     SRY-SRYCD(IDX2)  IS  NUMERIC
+                  MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
+                  COMPUTE  RECE64-RUIKEITOTAL  =
+                           RECE64-RUIKEITOTAL  +
+                          (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
                END-IF
       *
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE65-SRYSURYO(IDX4)

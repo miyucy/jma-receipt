@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    03.03.13  剤点数をキーに追加対応
+      *  01.00.02    NACL-門脇    04.02.05  診療コード＊数量の累計編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -322,6 +323,7 @@
                    MOVE    RECE44-ZAITEN       TO  RECE443-ZAITEN
                    MOVE    RECE44-SRYCDTOTAL   TO  RECE443-SRYCDTOTAL
                    MOVE    RECE44-SURYOUTOTAL  TO  RECE443-SURYOUTOTAL
+                   MOVE    RECE44-RUIKEITOTAL  TO  RECE443-RUIKEITOTAL
                    MOVE    RECE44-MEISAISU     TO  RECE443-MEISAISU 
                    IF   RECE44-COMCDFLG     =   "2"
                         ADD       1            TO  WRK-COMRENNUM
@@ -355,6 +357,7 @@
                    MOVE    RECE44-ZAITEN       TO  RECE443-ZAITEN
                    MOVE    RECE44-SRYCDTOTAL   TO  RECE443-SRYCDTOTAL
                    MOVE    RECE44-SURYOUTOTAL  TO  RECE443-SURYOUTOTAL
+                   MOVE    RECE44-RUIKEITOTAL  TO  RECE443-RUIKEITOTAL
                    MOVE    RECE44-MEISAISU     TO  RECE443-MEISAISU 
                    MOVE    RECE443-REC         TO  WRK-RECE443-REC
                    PERFORM 900-RECE443-INV-SEC

@@ -58,6 +58,7 @@
       *  01.00.21    NACL-ÌçÏÆ    04.01.06  ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤Î£±·åÌÜ¤ÎÈ½Äê
       *                                     ½¤Àµ
       *  01.00.22    NACL-ÌçÏÆ    04.01.21  Ï«ºÒ¤ÎÆÃÄê´ïºà(09593)ÂÐ±þ
+      *  01.00.23    NACL-ÌçÏÆ    04.02.05  ¿ÇÎÅ¥³¡¼¥É¡ö¿ôÎÌ¤ÎÎß·×ÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1198,6 +1199,14 @@
                         MOVE   "1"      TO    RECE41-GAIRAIKSN-PRTKBN
                    END-IF
                END-IF
+      *
+               IF     SRY-SRYCD(IDX2)  IS  NUMERIC
+                  MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
+                  COMPUTE  RECE44-RUIKEITOTAL  =
+                           RECE44-RUIKEITOTAL  +
+                          (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
+               END-IF
+      *
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE45-SRYSURYO(IDX4)
                MOVE    SRY-SRYKAISU(IDX2) TO    RECE45-SRYKAISU(IDX4)
                MOVE    SRY-MEISKYFLG(IDX2) TO   RECE45-MEISKYFLG(IDX4)
