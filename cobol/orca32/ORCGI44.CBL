@@ -827,6 +827,7 @@
                WHEN    "0101"
       *            戻るの確認
                    IF      SPA-I4ID-FLG        =   "OK"
+                       MOVE    SPACE           TO  SPA-IIDCD
       *                画面制御
                        MOVE    "JOIN"          TO  WRK-PUTTYPE
       *                更新処理
