@@ -53,6 +53,7 @@
       *  01.00.13    NACL-∆£∏∂    03/10/15  ø«Œ≈«Ø∑Ó§Œ ‘Ω∏§ŒΩ§¿µ
       *  01.00.14    NACL-∆£∏∂    03/10/22  ≈¶Õ◊æ Û§Œ ‘Ω∏§ŒΩ§¿µ
       *  01.00.15    NACL-∆£∏∂    03/10/27  •∆•π•»¥µº‘§Ú¬–æ›§»§∑§ §§
+      *  01.00.16    NACL-∆£∏∂    03/11/12  ª˛¥÷≤√ªª§Œƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -202,7 +203,7 @@
            03  FLG-YKZ20               PIC 9(01).
            03  FLG-TOTALTEN            PIC 9(01).
            03  FLG-KOKUJISKBKBN1       PIC 9(01).
-           03  FLG-GAITENTTLKBN        PIC 9(01).
+           03  FLG-GAITENTTLKBN        PIC 9(03).
            03  FLG-TBLMAX              PIC 9(01).
            03  FLG-SRYSYUKBN721        PIC 9(01).
            03  FLG-SET                 PIC 9(01).
@@ -459,20 +460,55 @@
       *****03  WRK-CONS-CHU205        PIC X(09)   VALUE   "640010002".
       *    ≥∞…˛ÃÙ£≤£∞£µ±ﬂ∞ ≤º
       *****03  WRK-CONS-GAI205        PIC X(09)   VALUE   "660010002".
-      *    ª˛¥÷≥∞° ∫∆ø«°À
-           03  WRK-CONS-JIKANGAI-SAISIN
-                                      PIC X(09)   VALUE   "112001110".
-           03  WRK-CONS-JIKANGAI-SAISIN-TEN
-                                      PIC 9(07)   VALUE   65.
-      *    µŸ∆¸° ∫∆ø«°À
-           03  WRK-CONS-HOLIDAY-SAISIN
-                                      PIC X(09)   VALUE   "112001210".
-           03  WRK-CONS-HOLIDAY-SAISIN-TEN
-                                      PIC 9(07)   VALUE   190.
-      *    øºÃÎ° ∫∆ø«°À
-           03  WRK-CONS-NIGHT-SAISIN  PIC X(09)   VALUE   "112001310".
-           03  WRK-CONS-NIGHT-SAISIN-TEN
-                                      PIC 9(07)   VALUE   420.
+      *
+      *    ∫∆ø«§Œª˛¥÷≤√ªª
+           03  WRK-CONS-JIKANGAI-TABLE. 
+      *    ∞Ï»Ã
+      *        ª˛¥÷≥∞° ∫∆ø«°À
+               05  FILLER             PIC X(09)    VALUE   "112001110".
+      *        µŸ∆¸° ∫∆ø«°À
+               05  FILLER             PIC X(09)    VALUE   "112001210".
+      *        øºÃÎ° ∫∆ø«°À
+               05  FILLER             PIC X(09)    VALUE   "112001310".
+      *        ª˛¥÷≥∞∆√Œ„° ∫∆ø«°À
+               05  FILLER             PIC X(09)    VALUE   "112001410".
+      *        ª˛¥÷≥∞° ≥∞ÕËø«Œ≈≤ °À
+               05  FILLER             PIC X(09)    VALUE   "112006470".
+      *        µŸ∆¸° ≥∞ÕËø«Œ≈≤ °À
+               05  FILLER             PIC X(09)    VALUE   "112006570".
+      *        øºÃÎ° ≥∞ÕËø«Œ≈≤ °À
+               05  FILLER             PIC X(09)    VALUE   "112006670".
+      *        ª˛¥÷≥∞∆√Œ„° ≥∞ÕËø«Œ≈≤ °À
+               05  FILLER             PIC X(09)    VALUE   "112006770".
+      *    œ∑øÕ
+      *        ª˛¥÷≥∞° ∫∆ø«°À
+               05  FILLER             PIC X(09)    VALUE   "112701010".
+      *        µŸ∆¸° ∫∆ø«°À
+               05  FILLER             PIC X(09)    VALUE   "112701110".
+      *        øºÃÎ° ∫∆ø«°À
+               05  FILLER             PIC X(09)    VALUE   "112701210".
+      *        ª˛¥÷≥∞∆√Œ„° ∫∆ø«°À
+               05  FILLER             PIC X(09)    VALUE   "112701310".
+      *        ª˛¥÷≥∞° ≥∞ÕËø«Œ≈≤ °À
+               05  FILLER             PIC X(09)    VALUE   "112701710".
+      *        µŸ∆¸° ≥∞ÕËø«Œ≈≤ °À
+               05  FILLER             PIC X(09)    VALUE   "112701810".
+      *        øºÃÎ° ≥∞ÕËø«Œ≈≤ °À
+               05  FILLER             PIC X(09)    VALUE   "112701910".
+      *        ª˛¥÷≥∞∆√Œ„° ≥∞ÕËø«Œ≈≤ °À
+               05  FILLER             PIC X(09)    VALUE   "112702010".
+      *
+           03  WRK-CONS-JIKANGAI-TABLE-R  REDEFINES   
+                                      WRK-CONS-JIKANGAI-TABLE.
+               05  WRK-CONS-JIKANGAI-SRYCD-G       OCCURS  16.
+                   07  WRK-CONS-JIKANGAI-SRYCD
+                                      PIC X(09).
+           03  WRK-CONS-JIKANGAI-TEN-TABLE.
+               05  WRK-CONS-JIKANGAI-TEN-G         OCCURS  16.
+                   07  WRK-CONS-JIKANGAI-TEN
+                                      PIC 9(09).
+           03  WRK-CONS-JIKANGAI-MAX  PIC 9(02)    VALUE   16.    
+      *
       *    ±’¬Œª¿¡«°¶≤ƒ»¬º∞±’¬Œª¿¡«Õ∆¥Ô° £Ã£«£√°À
            03  WRK-CONS-SANSO1        PIC X(09)   VALUE   "739210000".
       *    ±’¬Œª¿¡«°¶≤ƒ»¬º∞±’¬Œª¿¡«Õ∆¥Ô° £Ã£«£√°À° Œ•≈Á°À
@@ -640,9 +676,23 @@
            OPEN    I-O                RECE05-FILE  
       *
            OPEN    INPUT               RECE09-FILE
-      *
+      * 
            IF      FLG-END             =   ZERO
+      *
+      *        •’•°•§•Î∆…§ﬂπ˛§ﬂ
                PERFORM 900-RECE02-READ-SEC
+      *
+      *        ª˛¥÷≥∞≤√ªª≈¿øÙºË∆¿
+               INITIALIZE                  WRK-CONS-JIKANGAI-TEN-TABLE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       WRK-CONS-JIKANGAI-MAX
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    WRK-CONS-JIKANGAI-SRYCD (IDX)
+                                           TO  TNS-SRYCD
+                   PERFORM 900-TENSU-READ-SEC
+                   MOVE    TNS-TEN         TO
+                                           WRK-CONS-JIKANGAI-TEN (IDX)
+               END-PERFORM
            END-IF    
            .
        100-INIT-EXT.
@@ -1835,18 +1885,14 @@
        200711-KOUI-TAIHI-SEC          SECTION.
       *      
            IF      RECE041-SRYKBN      =   "12"
-               IF      RECE05-SRYCD (IDX)  =   WRK-CONS-JIKANGAI-SAISIN
-                   MOVE    1           TO  FLG-GAITENTTLKBN
-                   GO  TO  200711-KOUI-TAIHI-EXT
-               END-IF
-               IF      RECE05-SRYCD (IDX)   =   WRK-CONS-HOLIDAY-SAISIN
-                   MOVE    2           TO  FLG-GAITENTTLKBN
-                   GO  TO  200711-KOUI-TAIHI-EXT
-               END-IF
-               IF      RECE05-SRYCD (IDX)   =   WRK-CONS-NIGHT-SAISIN
-                   MOVE    3           TO  FLG-GAITENTTLKBN
-                   GO  TO  200711-KOUI-TAIHI-EXT
-               END-IF
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       WRK-CONS-JIKANGAI-MAX
+                   IF      RECE05-SRYCD (IDX)
+                                   =   WRK-CONS-JIKANGAI-SRYCD (IDY)
+                       MOVE    IDY           TO  FLG-GAITENTTLKBN
+                       GO  TO  200711-KOUI-TAIHI-EXT
+                   END-IF
+               END-PERFORM
            END-IF
       *
       *    ≤Ë¡¸ø«√«§Œ§»§≠ΩÁ»÷§Ú —§®§Î
@@ -2173,47 +2219,26 @@
                                  COMPUTE WRK-TENSU =   RECE041-SYUTEN1
                                                    -   RECE041-SYUTEN2
                                ELSE
-                                 EVALUATE    FLG-GAITENTTLKBN
-                                   WHEN    ZERO
+                                   IF      FLG-GAITENTTLKBN    =   ZERO
                                        MOVE    RECE041-SYUTEN1
-                                                     TO  WRK-TENSU
-                                   WHEN    1
+                                                           TO  WRK-TENSU
+                                   ELSE
+                                       MOVE    FLG-GAITENTTLKBN
+                                                           TO  IDY
                                        COMPUTE WRK-TENSU =   
                                            RECE041-SYUTEN1     -
-                                           WRK-CONS-JIKANGAI-SAISIN-TEN
-                                       ADD RECE041-ZAIKAISU    TO
-                                             TBL-KOUI-SRYKBN12-KAISU (1)
-                                       MOVE    WRK-CONS-JIKANGAI-SAISIN
+                                           WRK-CONS-JIKANGAI-TEN (IDY)
+                                       ADD RECE041-ZAIKAISU
                                                            TO
-                                             TBL-KOUI-SRYKBN12-SRYCD (1)    
-                                       MOVE WRK-CONS-JIKANGAI-SAISIN-TEN
+                                           TBL-KOUI-SRYKBN12-KAISU (1)
+                                       MOVE
+                                           WRK-CONS-JIKANGAI-SRYCD (IDY)
                                                            TO
-                                             TBL-KOUI-SRYKBN12-TEN   (1)    
-                                   WHEN    2
-                                       COMPUTE WRK-TENSU =
-                                           RECE041-SYUTEN1     -
-                                           WRK-CONS-HOLIDAY-SAISIN-TEN
-                                       ADD RECE041-ZAIKAISU    TO
-                                             TBL-KOUI-SRYKBN12-KAISU (2)      
-                                       MOVE    WRK-CONS-HOLIDAY-SAISIN
+                                           TBL-KOUI-SRYKBN12-SRYCD (1)    
+                                       MOVE WRK-CONS-JIKANGAI-TEN (IDY)
                                                            TO
-                                             TBL-KOUI-SRYKBN12-SRYCD (2)    
-                                       MOVE  WRK-CONS-HOLIDAY-SAISIN-TEN
-                                                           TO
-                                             TBL-KOUI-SRYKBN12-TEN   (2)    
-                                   WHEN    3
-                                       COMPUTE WRK-TENSU =
-                                           RECE041-SYUTEN1     -
-                                           WRK-CONS-NIGHT-SAISIN-TEN
-                                       ADD RECE041-ZAIKAISU    TO
-                                             TBL-KOUI-SRYKBN12-KAISU (3)     
-                                       MOVE    WRK-CONS-NIGHT-SAISIN
-                                                           TO
-                                             TBL-KOUI-SRYKBN12-SRYCD (3)    
-                                       MOVE    WRK-CONS-NIGHT-SAISIN-TEN
-                                                           TO
-                                             TBL-KOUI-SRYKBN12-TEN   (3)    
-                                 END-EVALUATE
+                                           TBL-KOUI-SRYKBN12-TEN   (1)    
+                                   END-IF
                                END-IF
                                MOVE    WRK-TENSU         TO  WRK-NUM
                                MOVE    7                 TO  WRK-NAGASA
