@@ -507,6 +507,11 @@
                                            LNK-SCNYUACCT-NYUKHN-NISUU
                                            -   WRK-NISUU
                END-IF
+      *?
+               MOVE    ZERO                TO  FLG-SYORI
+               MOVE    LNK-SCNYUACCT-NYUKHN-NISUU
+                                           TO  WRK-NISUU-KEI
+      *?
                IF      WRK-MAXCNT          >   ZERO
                    IF      WRK-NISUU-KEI       >=  WRK-MAXCNT
                        MOVE    1               TO  FLG-SYORI
@@ -526,6 +531,7 @@
                         ", WRK-NISUU-KEI:"  WRK-NISUU-KEI
                         ",WRK-NISUU:"  WRK-NISUU
                         ",WRK-ZOGEN:"  WRK-ZOGEN
+                        ",FLG-SYORI:"  FLG-SYORI
       *
                IF      FLG-SYORI           =   ZERO
       *            通院済み日数より終了日算定
@@ -546,6 +552,11 @@
                    END-IF
                    MOVE    "6"                 TO  WRK-ACT-ZAISKBKBN
                    MOVE    1                   TO  WRK-ACT-DAY
+      *TEST
+               DISPLAY "NYUKHNKSN-SRYCD:" TBL-SRYCD (1)
+                       ",WRK-KHN-STYMD:" WRK-KHN-STYMD
+                       ",WRK-KHN-EDYMD:" WRK-KHN-EDYMD
+      *TEST
                    PERFORM 400-NYUACT-SYORI-SEC
                END-IF
            END-PERFORM
