@@ -111,7 +111,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
       *
-           INITIALIZE                  SDNTCHK-AREA
+           INITIALIZE                  SDNTCHK-OT
       *
            .
        100-INIT-EXT.
