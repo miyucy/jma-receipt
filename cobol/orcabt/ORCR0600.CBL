@@ -734,23 +734,21 @@
            MOVE    KEY-O-PTID          TO  PTNYUINRRK-PTID
            MOVE    WRK-STYMD (1:6)     TO  PTNYUINRRK-NYUINYMD (1:6)
            MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
+           MOVE    WRK-STYMD (1:6)     TO  PTNYUINRRK-TAIINYMD (1:6)
+           MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+           MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING   MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+               MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
                PERFORM 900-PTNYUINRRK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTNYUINRRK    
            END-IF
            PERFORM     UNTIL   FLG-PTNYUINRRK    =   1
-                       OR      PTNYUINRRK-TAIINYMD (1:6)
-                                                   <   WRK-STYMD (1:6)
-               IF      PTNYUINRRK-NYUINYMD (1:6)
-                                           <=   WRK-STYMD (1:6)
                    IF    ( WRK-SEIKYUSTYMD =   ZERO                )   
                    OR    ( WRK-SEIKYUSTYMD >   PTNYUINRRK-NYUINYMD )
                        IF  WRK-SEIKYUSTYMD =   WRK-STYMD
@@ -767,12 +765,11 @@
                    IF      WRK-SEIKYUEDYMD =   ZERO
                        MOVE  PTNYUINRRK-TAIINYMD TO  WRK-SEIKYUEDYMD
                    END-IF             
-               END-IF        
-               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
-               PERFORM 900-PTNYUINRRK-READ-SEC
+                   MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
+                   PERFORM 900-PTNYUINRRK-READ-SEC
            END-PERFORM        
       *                 
-           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+           MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING   MCPAREA
                                                ORCMCPAREA
