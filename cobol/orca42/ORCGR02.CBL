@@ -53,6 +53,9 @@
       *  01.03.01    NACL-Æ£¸¶    02/09/12  ¥Ç¥£¥ì¥¯¥È¥ê¤ò¥µ¥Ö¥×¥í¤Ø
       *  01.03.02    NACL-Æ£¸¶    02/09/24  £²£°£°£²¡¥£±£°²þÀµÂÐ±þ
       *  01.03.03    NACL-Æ£¸¶    02/10/28  °õºþ½ç¤¬£°£³¡¢£°£´¤Î¤È¤­¤Î°õºþ½¤Àµ
+      *                                     ½¤Àµ
+      *¡¡Æþ±¡µ¡Ç½ÄÉ²Ã¡¡
+      *  01.04.01    NACL-Æ£¸¶    02/12/11  Æþ³°¶èÊ¬ÄÉ²Ã 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -213,6 +216,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-RECEERR         PIC X(200).
            03  WRK-RECEKBN         PIC X(06).
+           03  WRK-NYUGAIKBN       PIC X(06).
            03  WRK-PREFKBN         PIC X(01).
            03  WRK-TEISYUTUSAKI    PIC X(01).
            03  WRK-HENFLG          PIC 9(01).
@@ -458,7 +462,14 @@
                        WHEN    "2"
                            MOVE    "¡¦¹ñÊÝ"        TO  WRK-RECEKBN
                    END-EVALUATE  
+                   EVALUATE    SPA-R01-RECE07-NYUGAIKBN
+                       WHEN    "1"
+                           MOVE    "Æþ±¡"        TO  WRK-NYUGAIKBN
+                       WHEN    "2"
+                           MOVE    "Æþ±¡³°"      TO  WRK-NYUGAIKBN
+                   END-EVALUATE  
                    STRING  WRK-HENYMDG3(1:16) DELIMITED  BY  SIZE
+                           WRK-NYUGAIKBN      DELIMITED  BY  SPACE 
                            WRK-RECEKBN        DELIMITED  BY  SPACE 
                            "°ì³çºîÀ®Ê¬"       DELIMITED  BY  SIZE
                            INTO    SPA-GMN-FILEKBN

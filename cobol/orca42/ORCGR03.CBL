@@ -52,6 +52,8 @@
       *  01.04.02    NACL-藤原    02/09/24  ２００２．１０改正対応
       *  01.04.03    NACL-藤原    02/11/25  自賠責処理後の初画面の表示を
       *                                     修正
+      *　入院機能追加　
+      *  01.05.01    NACL-藤原    02/12/11  入外区分追加 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -68,18 +70,15 @@
 006900*    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
-
       *
        WORKING-STORAGE             SECTION.
       *
-      *     レセプト明細ファイル シェル領域 
-      *****COPY    "CPCOMMONSHELL1.INC".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEERR//.
-           03                      PIC X(04)   VALUE   ".dat".
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -105,6 +104,17 @@
       *----(01.00.01) LINE UPD END   ----------------------------------
                    07  SPA-GMN-IKKATU              PIC X(01).
                    07  SPA-GMN-KOBETU              PIC X(01).
+      *                         
+                   07  SPA-GMN-NYUGAIKBNLST        OCCURS  2.
+                       09  SPA-GMN-NYUGAIKBNL      PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-NYUGAIKBNMEIL   PIC X(06).    
+                   07  SPA-GMN-NYUGAIKBN-MAX       PIC 9(02).
+      *             
+                   07  SPA-GMN-NYUGAIKBN-G.
+                       09  SPA-GMN-NYUGAIKBN       PIC X(01).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-NYUGAIKBNMEI    PIC X(06).
       *
                    07  SPA-DATAKBN.         
                        09  SPA-DATAKBN1-VALUE      PIC X(01).
@@ -119,6 +129,7 @@
                05  SPA-NAIB-R03-AREA.
                    07  SPA-NAI-SRYYM               PIC 9(06).
                    07  SPA-NAI-SRYYMH              PIC X(16).
+                   07  SPA-NAI-NYUGAIKBN           PIC X(06).
       *
        01  SPA-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -165,6 +176,7 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+           03  WRK-HENFLG          PIC 9(01).    
       *     
            03  WRK-SHELL-ARG1.
              05  WRK-SHELL-SRYYM   PIC  X(06).
@@ -399,7 +411,20 @@
       *
       *
            INITIALIZE              SPA-R03-AREA
-      ***                          SPA-R01KYOUTU
+      *
+           IF      SPA-BEDSU       >   ZERO
+               MOVE    "1"             TO  SPA-GMN-NYUGAIKBNL       (1)
+               MOVE    "入院"          TO  SPA-GMN-NYUGAIKBNMEIL    (1)
+               MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL       (2)
+               MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL    (2)
+               MOVE    2               TO  SPA-GMN-NYUGAIKBN-MAX
+           ELSE
+               MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL       (1)
+               MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL    (1)
+               MOVE    1               TO  SPA-GMN-NYUGAIKBN-MAX
+           END-IF
+           MOVE    SPA-GMN-NYUGAIKBNLST (1)
+                                       TO  SPA-GMN-NYUGAIKBN-G
       *
            MOVE    "F"                 TO  SPA-GMN-IKKATU
            MOVE    "F"                 TO  SPA-GMN-KOBETU
@@ -531,6 +556,28 @@
            IF      SPA-R01KYOUTU       =   SPACE
                GO  TO  350-R02SPASET-EXT
            END-IF
+      *
+           INITIALIZE              SPA-R03-AREA
+      *
+           IF      SPA-BEDSU       >   ZERO
+               MOVE    "1"             TO  SPA-GMN-NYUGAIKBNL       (1)
+               MOVE    "入院"          TO  SPA-GMN-NYUGAIKBNMEIL    (1)
+               MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL       (2)
+               MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL    (2)
+               MOVE    2               TO  SPA-GMN-NYUGAIKBN-MAX
+           ELSE
+               MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL       (1)
+               MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL    (1)
+               MOVE    1               TO  SPA-GMN-NYUGAIKBN-MAX
+           END-IF
+           EVALUATE    SPA-R01-RECE07-NYUGAIKBN 
+               WHEN    "1"
+                   MOVE    "1"             TO  SPA-GMN-NYUGAIKBN
+                   MOVE    "入院"          TO  SPA-GMN-NYUGAIKBNMEI
+               WHEN    "2"    
+                   MOVE    "2"             TO  SPA-GMN-NYUGAIKBN
+                   MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEI
+           END-EVALUATE        
       *   
            EVALUATE    SPA-R01-FILEKBN
                WHEN    "1"
@@ -702,6 +749,8 @@
       *
                WHEN    "ACTIVATE"      ALSO    "SRYYM"
                    PERFORM 4101-SRYYM-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
+                   PERFORM 4102-NYUGAIKBN-CHK-SEC
            END-EVALUATE
       *
            .
@@ -747,6 +796,36 @@
       *
            .
        4101-SRYYM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入外区分  入力処理
+      *****************************************************************
+       4102-NYUGAIKBN-CHK-SEC                SECTION.
+      *   
+           MOVE    3                    TO  SPA-GMN-CUR
+      *
+           MOVE    R03-NYUGAIKBN        TO  SPA-GMN-NYUGAIKBN-G
+      *
+           MOVE    ZERO               TO  WRK-HENFLG
+           PERFORM VARYING IDY FROM   1   BY  1
+                   UNTIL   IDY >      SPA-GMN-NYUGAIKBN-MAX
+                   OR      WRK-HENFLG =   1
+               IF      SPA-GMN-NYUGAIKBN 
+                               =   SPA-GMN-NYUGAIKBNL (IDY)
+                   MOVE    SPA-GMN-NYUGAIKBNLST (IDY)
+                                      TO  SPA-GMN-NYUGAIKBN-G
+                   MOVE    1          TO  WRK-HENFLG
+               END-IF
+           END-PERFORM
+           IF      WRK-HENFLG         =   ZERO
+               MOVE    "0006"               TO  SPA-ERRCD
+               GO  TO  4102-NYUGAIKBN-CHK-EXT
+           END-IF
+      *             
+           MOVE    7                  TO  SPA-GMN-CUR
+           .
+       4102-NYUGAIKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1103,6 +1182,20 @@
                        GO  TO  450-TOUROKU-EXT
                    END-IF
            END-EVALUATE
+      *
+      *    入外区分チェック     
+           IF      SPA-GMN-NYUGAIKBN          =   SPACE
+               MOVE    "0003"              TO  SPA-ERRCD
+               GO  TO  450-TOUROKU-EXT
+           END-IF
+      *
+      *    入院のときの労災・自賠責チェック     
+           IF      SPA-GMN-NYUGAIKBN          =   "1"
+               IF      SPA-R01-RECEKBN            =   "4" OR  "3" 
+                   MOVE    "0008"              TO  SPA-ERRCD
+                   GO  TO  450-TOUROKU-EXT
+               END-IF    
+           END-IF
       *   
       *    再印刷のときのチェック
            EVALUATE    SPA-GMN-SYOKBN     
@@ -1189,12 +1282,15 @@
            IF      SPA-R01-FILEKBN         =   "1"
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
                MOVE    "1"                 TO  RECE07-SYOKBN
-               MOVE    "2"                 TO  RECE07-NYUGAIKBN
+      *********MOVE    "2"                 TO  RECE07-NYUGAIKBN
+               MOVE    SPA-GMN-NYUGAIKBN   TO  RECE07-NYUGAIKBN
                MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
            ELSE
-      *****    MOVE    ZERO                TO  RECE07-SRYYM
+      *********MOVE    ZERO                TO  RECE07-SRYYM
                MOVE    "2"                 TO  RECE07-SYOKBN
-               MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
+               MOVE    SPA-GMN-NYUGAIKBN   TO  RECE07-NYUGAIKBN
+      *********MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
+               MOVE    "RECEKANRI-KEY5"    TO  WRK-PATH
            END-IF
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
@@ -1235,6 +1331,7 @@
                    END-IF 
                    MOVE    "1"                 TO  SYS-2001-SYOKBN
                    MOVE    SPA-R01-RECEKBN     TO  SYS-2001-RECEKBN
+                   MOVE    SPA-GMN-NYUGAIKBN   TO  SYS-2001-NYUGAIKBN
                    MOVE    SPA-NAI-SRYYM       TO  SYS-2001-SRYYM
                    MOVE    SYS-2001-REC        TO  MCPDATA-REC
                    IF      FLG-SYSKANRI        =   1
@@ -1331,7 +1428,13 @@
                        WHEN    "0"
                        WHEN    "1"
                        WHEN    "2"
-                           MOVE    "recept1.sh"    TO  WRK-SHELL-SHELL
+                           IF      SPA-GMN-NYUGAIKBN   =   "1"
+                               MOVE    "recept9.sh"
+                                                   TO  WRK-SHELL-SHELL
+                           ELSE
+                               MOVE    "recept1.sh"
+                                                   TO  WRK-SHELL-SHELL
+                           END-IF                        
                        WHEN    "3"
                            MOVE    "recept6.sh"    TO  WRK-SHELL-SHELL
                        WHEN    "4"
@@ -1701,6 +1804,14 @@
            MOVE    SPA-DATAKBN22-VALUE    TO  R03-DATAKBN22
            MOVE    SPA-DATAKBN23-VALUE    TO  R03-DATAKBN23
       *
+           MOVE    SPA-GMN-NYUGAIKBN-G    TO  R03-NYUGAIKBN
+           PERFORM VARYING IDX FROM    1       BY  1
+                   UNTIL       IDX             >   SPA-GMN-NYUGAIKBN-MAX
+               MOVE    SPA-GMN-NYUGAIKBNLST (IDX)
+                                           TO  R03-NYUGAIKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-NYUGAIKBN-MAX   TO  R03-NYUGAIKBN-COUNT
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -1717,6 +1828,8 @@
                     MOVE  "SYOKBN"     TO  MCP-WIDGET
              WHEN    2
                     MOVE  "SRYYM"      TO  MCP-WIDGET
+             WHEN    3
+                    MOVE  "NYUGAIKBN"  TO  MCP-WIDGET
              WHEN    7
                     MOVE  "B12"        TO  MCP-WIDGET   
          END-EVALUATE
@@ -1738,14 +1851,22 @@
                    MOVE
                        "作成済のデータがないので再印刷は指定できません"
                                                        TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE    "入外区分が選択してありません"
+                                                       TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE    "対象のデータを選択してありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0005"
                    MOVE    "対象のデータが選択してあります"
                                                        TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "入外区分入力エラー"       TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "個別作成のとき入力できません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0008"
+                   MOVE    "入院のとき労災・自賠責は選択できません"
                                                        TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "レセプト指示コードが更新できません"
@@ -1779,7 +1900,7 @@
            EXIT.
       *
       *****************************************************************
-      *    エラーメッセージ表示理
+      *    ガイドメッセージ表示理
       *****************************************************************
        520-RIDSET-SEC              SECTION.
       *
@@ -1787,19 +1908,33 @@
       *
            EVALUATE    SPA-RIDCD
                WHEN    "1001"
-                   MOVE    SPA-NAI-SRYYMH   TO  WRK-RIDMSG
-                   MOVE    "分新規作成処理を行います"
-                                            TO  WRK-RIDMSG (17:)
+                   STRING  SPA-NAI-SRYYMH           DELIMITED  BY  SIZE
+                           "　"                     DELIMITED  BY  SIZE
+                           SPA-GMN-NYUGAIKBNMEI     DELIMITED  BY  SPACE
+                           "分新規作成処理を行います"
+                                                    DELIMITED  BY  SIZE 
+                                                    INTO  WRK-RIDMSG
+                   END-STRING
                WHEN    "1002"
-                   MOVE    SPA-NAI-SRYYMH   TO  WRK-RIDMSG
-                   MOVE    "分再印刷処理を行います"
-                                            TO  WRK-RIDMSG (17:)
+                   STRING  SPA-NAI-SRYYMH           DELIMITED  BY  SIZE
+                           "　"                     DELIMITED  BY  SIZE
+                           SPA-GMN-NYUGAIKBNMEI     DELIMITED  BY  SPACE
+                           "分再印刷処理を行います"
+                                                    DELIMITED  BY  SIZE 
+                                                    INTO  WRK-RIDMSG
+                   END-STRING
                WHEN    "1003"
-                   MOVE    "個別作成分の新規作成処理を行います" 
-                                            TO  WRK-RIDMSG
+                   STRING  SPA-GMN-NYUGAIKBNMEI     DELIMITED  BY  SPACE
+                           "個別作成分の新規作成処理を行います" 
+                                                    DELIMITED  BY  SIZE 
+                                                    INTO  WRK-RIDMSG
+                   END-STRING
                WHEN    "1004"
-                   MOVE    "個別作成分の再印刷処理を行います"
-                                            TO  WRK-RIDMSG
+                   STRING  SPA-GMN-NYUGAIKBNMEI     DELIMITED  BY  SPACE
+                           "個別作成分の再印刷処理を行います"
+                                                    DELIMITED  BY  SIZE 
+                                                    INTO  WRK-RIDMSG
+                   END-STRING
                WHEN    "1005"
                    MOVE    SPA-NAI-SRYYMH   TO  WRK-RIDMSG
                    MOVE    "分新規作成処理（労災）を行います"
