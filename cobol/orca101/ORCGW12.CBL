@@ -1511,7 +1511,7 @@
                                           TO  SPA-GMN-JIHITEKKSIKBN-G
                ELSE
                    MOVE    20             TO  SPA-GMN-CUR
-                   MOVE    "0011"         TO  SPA-ERRCD
+                   MOVE    "0012"         TO  SPA-ERRCD
                END-IF
            END-IF    
       *
