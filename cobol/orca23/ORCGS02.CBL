@@ -64,6 +64,7 @@
       *                                     集計を追加
       *  01.01.12    NACL-門脇    02/09/17  自賠責対応
       *  01.01.13    NACL-多々納  02/09/18  保険表示修正
+      *  01.01.14    NACL-門脇    02.11.21  自賠責（ポリネック等の対応）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2219,6 +2220,7 @@
                            IF    SRY-SRYCD (IDZ) (4:2)    =   "00"
                                                      OR       "91"      010112
                                                      OR       "92"      010112
+                                                     OR       "93"      
                                MOVE    SPACE         TO   TNS-TENSU-REC
                                INITIALIZE                 TNS-TENSU-REC
                                MOVE    SRY-SRYCD(IDZ) TO   TNS-SRYCD
@@ -2345,6 +2347,7 @@
                            IF    SRY-SRYCD (IDZ) (4:2)    =   "00"
                                                      OR       "91"      010112
                                                      OR       "92"      010112
+                                                     OR       "93"
                                MOVE    SPACE         TO   TNS-TENSU-REC
                                INITIALIZE                 TNS-TENSU-REC
                                MOVE    SRY-SRYCD(IDZ) TO   TNS-SRYCD
@@ -2541,6 +2544,7 @@
                          END-IF                                         010112
                          IF    SRY-SRYCD (IDXA)(1:5)   =   "09591"      010112
                                                      OR    "09592"      010112
+                                                     OR    "09593"
                            COMPUTE WK-RSIETC = WK-RSIETC +              010112
                                   (WRK-TEN  *   TBL-ZAIKAISU (IDX))     010112
                          END-IF                                         010112
