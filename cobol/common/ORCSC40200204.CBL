@@ -35,8 +35,6 @@
       * 01.00.05     NACL-多々納  02/08/20  労災チェック追加
       * 01.00.06     NACL-多々納  02/10/03  労災加算なしの追加
       * 01.00.07     NACL-多々納  03/05/21  注射液残量廃棄追加
-      * 01.00.08     NACL-多々納  05/12/14  MONFUNC 対応
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -143,6 +141,11 @@
                                    OCCURS   31.
       *
       *
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
+      *
            03  WRK-INPUTCD         PIC X(22).
       *
       *    保存用
@@ -196,7 +199,7 @@
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-      *****COPY    "CPORCMCP.INC".
+           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -279,7 +282,7 @@
            INITIALIZE                  WRK-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) OR
                               (WRK-ERRCD       NOT =   SPACE)
       *
@@ -489,24 +492,23 @@
            MOVE    SPACE               TO  SYS-1006-REC
            MOVE    "1006"              TO  SYS-1006-KANRICD
            MOVE    "1"                 TO  SYS-1006-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
+           MOVE    ZERO                TO  SYS-1006-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1006-EDYUKYMD
       *    システム管理検索
-           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
                PERFORM 900-KANRIMST-READ-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
            ELSE
@@ -669,7 +671,7 @@
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
@@ -678,12 +680,14 @@
            MOVE    ZERO                TO  SANTEI-SRYKA
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY5"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
+               MOVE    "SANTEI-KEY5"       TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
@@ -698,18 +702,14 @@
                                            +   SANTEI-DAY (IDX2)
                END-PERFORM
       *
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
+               MOVE    "SANTEI-KEY5"       TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
       *    訂正の時、訂正分はカウントしない
            MOVE    ZERO                TO  WRK-TEI-CNT
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE )  OR
+                   UNTIL      (IDX     >   100 )  OR
                               (LNK-ORCSC-TEI-SRYCD(IDX)
                                            =   SPACE )
                IF      WRK-SRYCD           =   LNK-ORCSC-TEI-SRYCD(IDX)
@@ -755,7 +755,7 @@
            MOVE    "770020070"         TO  WRK-SRYCD
            MOVE    ZERO                TO  FLG-ARI
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX1    >   200  )  OR
                               (WRK-COM-INPUTCD(IDX1)   =   SPACE AND
                                WRK-GMN-INPUTCD(IDX1)   =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -878,7 +878,7 @@
            MOVE    ZERO                TO  FLG-ROU-ARI
            COMPUTE IDX-Z2              =   IDX-ZS      +   1
            PERFORM VARYING     IDX1    FROM    IDX-Z2    BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (FLG-ROU-ARI             =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   "101400020"  OR
@@ -890,7 +890,7 @@
                END-IF
                IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
                       (WRK-COM-DATAKBN (IDX1)      =  "1" )
-                  MOVE    SPA-MAX-LINE             TO  IDX1
+                  MOVE    200              TO  IDX1
                END-IF
            END-PERFORM
            IF      FLG-ROU-ARI         =   1
@@ -922,7 +922,7 @@
            MOVE    ZERO                TO  IDX-T
            COMPUTE IDX-Z2              =   IDX-ZS    +   1
            PERFORM VARYING     IDX1    FROM    IDX-Z2    BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -935,7 +935,7 @@
                    END-IF
                    IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
                           (WRK-COM-DATAKBN (IDX1)      =  "1" )
-                      MOVE    SPA-MAX-LINE            TO  IDX1
+                      MOVE    200              TO  IDX1
                    END-IF
                END-IF
            END-PERFORM
@@ -1071,7 +1071,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF     (WRK-COM-DATAKBN    (IDX1)       =   "2"  )  AND
@@ -1104,7 +1104,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -1261,7 +1261,7 @@
            INITIALIZE                  ORCSC90AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -1660,11 +1660,61 @@
            EXIT.
       *
       *****************************************************************
+      *    点数マスター読込
+      *****************************************************************
+       910-TENSU-READ-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  TNS-YUKOSTYMD
+           MOVE    ALL "9"             TO  TNS-YUKOEDYMD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+                   MOVE    ZERO                TO  FLG-TENSU
+               ELSE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1                   TO  FLG-TENSU
+               END-IF
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       910-TENSU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************
        900-KANRIMST-READ-SEC         SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1680,7 +1730,11 @@
       *****************************************************************
        920-SANTEI-READ-SEC         SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SANTEI-REC
                MOVE    ZERO                TO  FLG-SANTEI
@@ -1693,45 +1747,4 @@
        920-SANTEI-READ-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    テーブル検索処理
-      *****************************************************************
-       910-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢクロース処理
-      *****************************************************************
-       990-DBCLOSE-SEC           SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       990-DBCLOSE-EXT.
-           EXIT.
       *
