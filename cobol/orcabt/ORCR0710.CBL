@@ -77,8 +77,6 @@
       *                                     ２つ以上あった場合の記載対応
       *  01.01.07    NACL-藤原    04/07/08  印刷順の追加（個別作成時のみ）
       *  01.01.08    NACL-藤原    04/07/12  給付割合の編集条件を変更
-      *  01.01.09    NACL-藤原    04/08/02  会計を残して入院取消を行った
-      *                                     ままの入院会計のエラー対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -723,9 +721,6 @@
       *
            03  WRK-ERR-MSG-5           PIC X(48)  VALUE
                "地方公費のみ選択されています。主保険がありません".
-      *
-           03  WRK-ERR-MSG-6           PIC X(48)  VALUE
-               "入院基本情報データがありません".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -2008,8 +2003,6 @@
                    MOVE    WRK-ERR-MSG-4   TO   HC06-HEAD1-G
                WHEN    7
                    MOVE    WRK-ERR-MSG-5   TO   HC06-HEAD1-G
-               WHEN    8
-                   MOVE    WRK-ERR-MSG-6   TO   HC06-HEAD1-G
            END-EVALUATE        
            INSPECT HC06-HEAD1-G  REPLACING ALL "  "    BY  "　"
       *
@@ -2649,7 +2642,8 @@
       *
            MOVE   SPACE              TO  HC06-KYURATE
       *    国保のみ印字
-           IF      RECE62-TEISYUTUSAKI =   "2"
+           IF    ( RECE62-TEISYUTUSAKI =   "2"   )
+           AND   ( RECE62-RJNHKNNUM    =   SPACE )
                COMPUTE WRK-KYURATE-9   = 
                                   (100 -   RECE62-KYURATE)
                                            / 10 

@@ -2671,7 +2671,8 @@
            MOVE   SPACE              TO  HC06-KYURATE
       *          
       *    国保のみ印字
-           IF      RECE02-TEISYUTUSAKI =   "2"
+           IF    ( RECE02-TEISYUTUSAKI =   "2"   )
+           AND   ( RECE02-RJNHKNNUM    =   SPACE )
                COMPUTE WRK-KYURATE-9   =   (100 -   RECE02-KYURATE)
                                            / 10 
                IF      WRK-KYURATE-9       >   ZERO
