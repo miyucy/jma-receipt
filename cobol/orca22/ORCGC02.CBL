@@ -948,12 +948,34 @@
            END-IF
            MOVE    SYS-1001-HOSPSBT1   TO  SPA-C02-1001-HOSPSBT1
       *      
+      *    システム日付
+           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
+                                                   OR  "K02N")
+               MOVE    SPA-SRYYMDW     TO  SPA-GMN-C02-SYSYMD
+               MOVE    SPA-SRYYMD      TO  SPA-NAI-C02-SYSYMD
+           ELSE    
+               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-C02-SYSYMD
+               MOVE    SPA-SYSYMD      TO  SPA-NAI-C02-SYSYMD
+           END-IF   
+      *
+      *    システム日付の前月
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-NAI-C02-SYSYMD  TO  LNK-DAY6-KIJUN 
+           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    -1                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  SPA-NAI-C02-SYSYMD-BACK
+      *
+      *    診療科編集
+           PERFORM 3104-SRYKA-SPA-SEC
+      *
       *    患者情報（診療行為等で患者番号を入力したとき） 
            IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
                                                    OR  "K02N")
            AND   ( SPA-PTNUM       NOT =   SPACE             )
-               MOVE    SPA-SRYYMDW     TO  SPA-GMN-C02-SYSYMD
-               MOVE    SPA-SRYYMD      TO  SPA-NAI-C02-SYSYMD
                MOVE    SPA-PTNUM       TO  C02-PTNUM
                PERFORM 41015-PTNUM-CHK-SEC
                MOVE    SPA-HKNCOMBIMEI TO  SPA-GMN-C02-HKNCOMBIMEIH
@@ -964,9 +986,11 @@
                ELSE
                    IF      SPA-SRYKA   NOT =   SPACE
                        IF      SPA-SRYKA   NOT =   SPA-GMN-C02-SRYKA    
-                           MOVE    SPA-SRYKAMEI
-                                               TO  SPA-GMN-C02-SRYKAMEI
                            MOVE    SPA-SRYKA   TO  SPA-GMN-C02-SRYKA
+                           MOVE    SPA-GMN-C02-SRYKA
+                                               TO  WRK-KBN
+                           PERFORM 5001-SRYKA-HENSYU-SEC
+                           MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-SRYKAMEI
                            MOVE    SPA-GMN-C02-SRYKA-G
                                                TO  SPA-GMN-C02-BSRYKA-G
       *                    病名一覧
@@ -987,24 +1011,8 @@
                    MOVE    1               TO  SPA-GMN-C02-CUR
                END-IF
            ELSE    
-               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-C02-SYSYMD
-               MOVE    SPA-SYSYMD      TO  SPA-NAI-C02-SYSYMD
                MOVE    26              TO  SPA-GMN-C02-CUR
            END-IF   
-      *
-      *    システム日付の前月
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY6-AREA
-           MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    SPA-NAI-C02-SYSYMD  TO  LNK-DAY6-KIJUN 
-           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
-           MOVE    -1                  TO  LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KEISAN     TO  SPA-NAI-C02-SYSYMD-BACK
-      *
-      *    診療科編集
-           PERFORM 3104-SRYKA-SPA-SEC
       *
            IF    ( SPA-GMN-C02-SRYKA   NOT =   ZERO  )
            AND   ( SPA-GMN-C02-BSRYKA      =   SPACE )
