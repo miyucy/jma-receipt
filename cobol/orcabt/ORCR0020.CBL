@@ -1730,13 +1730,30 @@
                                 MOVE   20        TO   RECE02-KYURATE
                          WHEN   "3"
                                 MOVE   30        TO   RECE02-KYURATE
+                         WHEN   "8"
+                                MOVE   20        TO   RECE02-KYURATE
+                         WHEN   "9"
+                                MOVE   10        TO   RECE02-KYURATE
                      END-EVALUATE
                  END-IF
               ELSE
-                 IF  COMB-HONKZKKBN      =     "1"
-                     MOVE   HKN-HON-GAIKFTNRATE  TO   RECE02-KYURATE
+                 IF   WRK-NENREI           <     3
+                      MOVE  20      TO    RECE02-KYURATE
                  ELSE
-                     MOVE   HKN-KZK-GAIKFTNRATE  TO   RECE02-KYURATE
+                   IF  COMB-HOJOKBN        =     SPACE
+                       IF  COMB-HONKZKKBN      =     "1"
+                           MOVE HKN-HON-GAIKFTNRATE  TO  RECE02-KYURATE
+                       ELSE
+                           MOVE HKN-KZK-GAIKFTNRATE  TO  RECE02-KYURATE
+                       END-IF
+                   ELSE
+                       EVALUATE   COMB-HOJOKBN
+                           WHEN   "8"
+                                  MOVE   20        TO   RECE02-KYURATE
+                           WHEN   "9"
+                                  MOVE   10        TO   RECE02-KYURATE
+                       END-EVALUATE
+                   END-IF
                  END-IF
               END-IF
       *
