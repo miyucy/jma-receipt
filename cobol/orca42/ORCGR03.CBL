@@ -1124,7 +1124,7 @@
       *****************************************************************
        400-IKKATU-SEC          SECTION.
       *
-           MOVE    R03-IKKATU  TO  SPA-GMN-IKKATU
+           MOVE    R03-IKKATU          TO  SPA-GMN-IKKATU
       *     
            MOVE    "T"                 TO  SPA-DATAKBN1-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
@@ -1135,7 +1135,7 @@
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
       *
-           MOVE    2             TO  SPA-GMN-CUR     
+           MOVE    2                   TO  SPA-GMN-CUR     
            .
        400-IKKATU-EXT.
            EXIT.
@@ -1145,7 +1145,7 @@
       *****************************************************************
        400-KOBETU-SEC          SECTION.
       *
-           MOVE    R03-KOBETU  TO  SPA-GMN-KOBETU
+           MOVE    R03-KOBETU          TO  SPA-GMN-KOBETU
       *     
            MOVE    "F"                 TO  SPA-DATAKBN1-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
@@ -1155,6 +1155,8 @@
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
+      *
+           MOVE    7                   TO  SPA-GMN-CUR     
            .
        400-KOBETU-EXT.
            EXIT.

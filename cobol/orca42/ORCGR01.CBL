@@ -1315,7 +1315,12 @@
                                        NOT =   SPA-NAI-EDJYUSINYMD (1:6)
                    MOVE    "0018"              TO  SPA-ERRCD
                ELSE
-                   MOVE    7                   TO  SPA-GMN-CUR
+                   IF      SPA-NAI-STJYUSINYMD
+                                           >   SPA-NAI-EDJYUSINYMD
+                       MOVE    "0021"              TO  SPA-ERRCD
+                   ELSE
+                       MOVE    7                   TO  SPA-GMN-CUR
+                   END-IF
                END-IF 
            END-IF
       *
@@ -1670,14 +1675,21 @@
       *****************************************************************
        460-CLEAR-SEC             SECTION.
       *
-           MOVE    ZERO                  TO  SPA-GMN-MAX
-           INITIALIZE                    SPA-GMN-TBL
-                                         SPA-NAI-TBL
-                                         SPA-GMN-KOUMOKU
-                                         SPA-NAI-KOUMOKU
-           MOVE    ZERO                  TO  SPA-NAI-SELNO                              
+           MOVE    ZERO                TO  SPA-GMN-MAX
+           INITIALIZE                      SPA-GMN-TBL
+                                           SPA-NAI-TBL
+                                           SPA-GMN-KOUMOKU
+                                           SPA-NAI-KOUMOKU
+           MOVE    ZERO                TO  SPA-NAI-SELNO                              
       *
-           MOVE    3                     TO  SPA-GMN-CUR  
+           EVALUATE    SPA-GMN-SYORI
+               WHEN    "1"
+                   MOVE    4               TO  SPA-GMN-CUR
+               WHEN    "2"
+                   MOVE    9               TO  SPA-GMN-CUR
+               WHEN    "3"
+                   MOVE    9               TO  SPA-GMN-CUR
+           END-EVALUATE                
       *
           .
        460-CLEAR-EXT.
@@ -2796,6 +2808,9 @@
                                                        TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "個別指定の時のみ選択できます"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0021"
+                   MOVE    "開始日≦終了日で入力して下さい"
                                                        TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "レセプト指示コード（個別）が削除できません"
