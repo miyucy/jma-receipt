@@ -1554,13 +1554,13 @@
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+           MOVE    "PTNYUINRRK-KEY34"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+               MOVE    "PTNYUINRRK-KEY34"  TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            ELSE
                MOVE    1               TO  FLG-PTNYUINRRK
@@ -1597,7 +1597,7 @@
                    END-IF
                END-IF
       *
-               MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+               MOVE    "PTNYUINRRK-KEY34"  TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            END-PERFORM
       *    入院中の時、エラーとする

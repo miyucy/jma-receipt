@@ -3828,6 +3828,12 @@
                                        =   SPA-COM-SURYO2  (IDX2)
                                        /   SPA-COM-KAISU2(IDX2)
                END-IF
+               IF      LNK-WKSRY-ZAIKAIKEI(IDX) >   1
+                   COMPUTE SPA-COM-KAISU2  (IDX2)
+                                       =   SPA-COM-KAISU2  (IDX2)
+                                       *   LNK-WKSRY-ZAIKAIKEI
+                                                           (IDX)
+               END-IF
                MOVE    SPA-COM-KAISU2  (IDX2)
                                        TO  SPA-COM-KAISU (IDX2)
                MOVE    SPA-COM-SURYO2  (IDX2)
@@ -4140,13 +4146,13 @@
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+           MOVE    "PTNYUINRRK-KEY34"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+               MOVE    "PTNYUINRRK-KEY34"  TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            ELSE
                MOVE    1               TO  FLG-PTNYUINRRK
@@ -4196,7 +4202,7 @@
                    MOVE    1                   TO  SPA-K02N-NYUINFLG
                END-IF
       *
-               MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+               MOVE    "PTNYUINRRK-KEY34"   TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            END-PERFORM
       *    入院中の時、エラーとする
