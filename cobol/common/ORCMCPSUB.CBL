@@ -96,6 +96,11 @@
            COPY    "CPNYUKSNCHK.INC".
       *---- (NYUIN.15) LINE ADD END      -----------------------------
       *
+      *    Æþ±¡Î¬¾Î
+       01  NYURYAKUSHO-REC.
+           COPY    "CPNYUINRYAKUSHO.INC".
+      *
+      *
            COPY    'ORCA-DBCOMM'.
            COPY    'ORCA-DBPATH'.
       *
