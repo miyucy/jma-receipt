@@ -168,7 +168,7 @@ P02	{
 						value	varchar(6);
 					};
 					count	int;
-					item	varchar(6)[02];
+					item	varchar(6)[03];
 				};
 				P02_KIGO	{
 					value	varchar(40);

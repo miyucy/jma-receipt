@@ -146,7 +146,7 @@
                     06  P02-P02-CONTKBN.
                       07  P02-VALUE   PIC X(6).
                     06  P02-CONTKBN-COUNT   PIC S9(9)   BINARY.
-                    06  P02-CONTKBN-ITEM    PIC X(6)    OCCURS  2.
+                    06  P02-CONTKBN-ITEM    PIC X(6)    OCCURS  3.
                   05  P02-P02-KIGO.
                     06  P02-VALUE   PIC X(40).
                   05  P02-P02-NUM.
