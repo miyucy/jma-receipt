@@ -413,8 +413,10 @@
            03  RSIJBI-IDX1                         PIC 9(05).
            03  RSIJBI-IDX2                         PIC 9(05).
            03  RSIJBI-MAX                          PIC 9(05).
-           03  RSIJBI-TEN-MAX                      PIC 9(05).
-           03  RSIJBI-KIN-MAX                      PIC 9(05).
+           03  RSIJBI-TEN-MAX                      PIC S9(05).
+           03  RSIJBI-TEN-COM-MAX                  PIC S9(05).
+           03  RSIJBI-KIN-MAX                      PIC S9(05).
+           03  RSIJBI-KIN-COM-MAX                  PIC S9(05).
            03  RSIJBI-TEN                          PIC 9(08).
            03  RSIJBI-KINGAKU                      PIC 9(08).
            03  RSIJBI-ZAIKAISU                     PIC 9(07).
@@ -423,6 +425,7 @@
                    07  RSIJBI-TEN-FLG              PIC 9(1).
                    07  RSIJBI-GRP-CNT              PIC 9(3).
                05  RSIJBI-SRYCD                    PIC X(09).
+               05  RSIJBI-INPUTNUM                 PIC 9(3).
                05  RSIJBI-NAME                     PIC X(200).
       *
        01  CONST-AREA.
@@ -3118,6 +3121,8 @@
            END-IF
       *
            MOVE    TNS-SRYCD               TO  RSIJBI-SRYCD(RSIJBI-MAX)
+           MOVE    SRY-INPUTNUM (IDX9)     TO  RSIJBI-INPUTNUM
+                                                           (RSIJBI-MAX)
            MOVE    TNS-NAME                TO  RSIJBI-NAME (RSIJBI-MAX)
       *
            IF    ( TNS-TENSIKIBETU     =   1 )
@@ -3126,10 +3131,25 @@
       *
                COMPUTE RSIJBI-KIN-MAX  =   RSIJBI-KIN-MAX  +   1
       *
+               IF   (( TNS-SRYCD   (1:1)       =   "8"  )
+                 OR  ( TNS-SRYCD   (1:3)       =   "008"  ))
+                AND  ( SRY-INPUTNUM(IDX9)  NOT =   ZERO )
+                   COMPUTE RSIJBI-KIN-COM-MAX
+                       =   RSIJBI-KIN-COM-MAX  +   1
+               END-IF
+      *
+      *
                MOVE    ZERO            TO  RSIJBI-TEN-FLG  (RSIJBI-MAX)
                MOVE    RSIJBI-KIN-MAX  TO  RSIJBI-GRP-CNT  (RSIJBI-MAX)
            ELSE
                COMPUTE RSIJBI-TEN-MAX  =   RSIJBI-TEN-MAX  +   1
+      *
+               IF   (( TNS-SRYCD   (1:1)       =   "8"  )
+                 OR  ( TNS-SRYCD   (1:3)       =   "008"  ))
+                AND  ( SRY-INPUTNUM(IDX9)  NOT =   ZERO )
+                   COMPUTE RSIJBI-TEN-COM-MAX
+                       =   RSIJBI-TEN-COM-MAX  +   1
+               END-IF
       *
                MOVE    1               TO  RSIJBI-TEN-FLG  (RSIJBI-MAX)
                MOVE    RSIJBI-TEN-MAX  TO  RSIJBI-GRP-CNT  (RSIJBI-MAX)
@@ -3165,21 +3185,56 @@
       *
            PERFORM VARYING IDX19   FROM    1   BY  1
                    UNTIL ( IDX19   >   RSIJBI-MAX )
-               MOVE    RSIJBI-NAME (IDX19)     TO  WRK-SRYACT-STR
-               PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
-               IF    ( RSIJBI-TEN-FLG (IDX19)  =   ZERO )
-                   COMPUTE CNT-RSIJBI-KIN  =   CNT-RSIJBI-KIN  +   1
-                   IF    ( RSIJBI-KIN-MAX  =   CNT-RSIJBI-KIN )
-                       MOVE    RSIJBI-KINGAKU  TO  WRK-ZAITEN
-                       MOVE    RSIJBI-ZAIKAISU TO  WRK-ZAIKAISU
-                       PERFORM 205-KINGAKUKAISU-HEN-SEC
+      *
+      *        コメントの時、内容設定
+               IF   (( RSIJBI-SRYCD  (IDX19)(1:1)  =   "8"  )
+                 OR  ( RSIJBI-SRYCD  (IDX19)(1:3)  =   "008"  ))
+                AND  ( RSIJBI-INPUTNUM(IDX19)  NOT =   ZERO )
+      *
+                   INITIALIZE                          PTCOM-REC
+                   MOVE    ACCT-HOSPID             TO  PTCOM-HOSPID
+                   MOVE    ACCT-PTID               TO  PTCOM-PTID
+                   MOVE    ACCT-ZAINUM             TO  PTCOM-ZAINUM
+                   MOVE    RSIJBI-SRYCD   (IDX19)  TO  PTCOM-SRYCD
+                   MOVE    RSIJBI-INPUTNUM(IDX19)  TO  PTCOM-RENNUM
+                   MOVE    PTCOM-REC               TO  MCPDATA-REC
+                   MOVE    "PTCOM-KEY"             TO  ORC-DBPATH
+                   PERFORM 910-DBSELECT-SEC
+                   IF    ( MCP-RC        NOT =   ZERO )
+                       CONTINUE
+                   ELSE
+                       MOVE    MCPDATA-REC     TO  PTCOM-REC
+                       IF    ( PTCOM-INPUTCOMENT   NOT =   SPACE )
+                           MOVE    PTCOM-INPUTCOMENT
+                                               TO  WRK-SRYACT-STR
+                       END-IF
                    END-IF
+      *
+                   MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
+                   PERFORM 910-DBCLOSE-SEC
+      *
+                   PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
+      *
                ELSE
-                   COMPUTE CNT-RSIJBI-TEN  =   CNT-RSIJBI-TEN  +   1
-                   IF    ( RSIJBI-TEN-MAX  =   CNT-RSIJBI-TEN )
-                       MOVE    RSIJBI-TEN      TO  WRK-ZAITEN
-                       MOVE    RSIJBI-ZAIKAISU TO  WRK-ZAIKAISU
-                       PERFORM 205-TENSUKAISU-HEN-SEC
+      *
+                   MOVE    RSIJBI-NAME (IDX19)     TO  WRK-SRYACT-STR
+                   PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
+                   IF    ( RSIJBI-TEN-FLG (IDX19)  =   ZERO )
+                       COMPUTE CNT-RSIJBI-KIN  =   CNT-RSIJBI-KIN  +   1
+                       IF    ( RSIJBI-KIN-MAX  -   RSIJBI-KIN-COM-MAX
+                                               =   CNT-RSIJBI-KIN )
+                           MOVE    RSIJBI-KINGAKU  TO  WRK-ZAITEN
+                           MOVE    RSIJBI-ZAIKAISU TO  WRK-ZAIKAISU
+                           PERFORM 205-KINGAKUKAISU-HEN-SEC
+                       END-IF
+                   ELSE
+                       COMPUTE CNT-RSIJBI-TEN  =   CNT-RSIJBI-TEN  +   1
+                       IF    ( RSIJBI-TEN-MAX  -   RSIJBI-TEN-COM-MAX
+                                               =   CNT-RSIJBI-TEN )
+                           MOVE    RSIJBI-TEN      TO  WRK-ZAITEN
+                           MOVE    RSIJBI-ZAIKAISU TO  WRK-ZAIKAISU
+                           PERFORM 205-TENSUKAISU-HEN-SEC
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
