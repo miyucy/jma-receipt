@@ -191,24 +191,24 @@
 027800*
 027900 01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG                  PIC X(09).
-028000     03  WRK-HENYMD.
-028100         05  WRK-HGO                  PIC X(01).
-028200         05  WRK-HYY                  PIC Z9.
-028300         05  FILLER                   PIC X(01)   VALUE  ".".
-028400         05  WRK-HMM                  PIC Z9.
-028500         05  FILLER                   PIC X(01)   VALUE  ".".
-028600         05  WRK-HDD                  PIC Z9.
-028700*
-028800     03  WRK-HENYMDN.
-028900         05  WRK-HENNYMD              PIC X(22).
-029000         05  FILLER                   PIC X(02)   VALUE  "（".
-029100         05  WRK-HENNYOBI             PIC X(02).
-029200         05  FILLER                   PIC X(02)   VALUE  "）".
-029300*
-029400     03  WRK-HENTIME.
-029500         05  WRK-THH                  PIC 99.
-029600         05  FILLER                   PIC X(01)   VALUE  ":".
-029700         05  WRK-TMM                  PIC 99.
+           03  WRK-HENYMD.
+               05  WRK-HGO                  PIC X(01).
+               05  WRK-HYY                  PIC Z9.
+               05  FILLER                   PIC X(01)   VALUE  ".".
+               05  WRK-HMM                  PIC Z9.
+               05  FILLER                   PIC X(01)   VALUE  ".".
+               05  WRK-HDD                  PIC Z9.
+      *
+           03  WRK-HENYMDN.
+               05  WRK-HENNYMD              PIC X(22).
+               05  FILLER                   PIC X(02)   VALUE  "（".
+               05  WRK-HENNYOBI             PIC X(02).
+               05  FILLER                   PIC X(02)   VALUE  "）".
+      *
+           03  WRK-HENTIME.
+               05  WRK-THH                  PIC 99.
+               05  FILLER                   PIC X(01)   VALUE  ":".
+               05  WRK-TMM                  PIC 99.
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
@@ -2767,6 +2767,7 @@
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1001"              TO  SPA-ERRCD
                DISPLAY "U02 UKETUKE KEY INS ERR:"  MCP-RC
+                       ",KEY:" UKE-KEY
                GO  TO  4901-UKEADD-EXT
            END-IF
       *
@@ -2801,6 +2802,8 @@
            MOVE    UKETUKE-REC              TO  WRK-UKETUKE-REC
            PERFORM 900-UKETUKE-READ-SEC
            IF      FLG-UKETUKE         =   ZERO
+               MOVE    "1002"              TO  SPA-ERRCD
+               DISPLAY "U02 UKETUKE INS ERR KEY:"  UKE-KEY
                GO      TO      4901-UKEADD-EXT
            END-IF
       *
@@ -2815,6 +2818,7 @@
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1002"              TO  SPA-ERRCD
                DISPLAY "U02 UKETUKE INS ERR:"  MCP-RC
+                       ",KEY:" UKE-KEY
            END-IF
            .
        4901-UKEADD-EXT.
@@ -2846,6 +2850,8 @@
       *
            PERFORM  900-UKETUKE-READ-SEC
            IF      FLG-UKETUKE         NOT =   ZERO
+               MOVE    "1003"              TO  SPA-ERRCD
+               DISPLAY "U02 UKETUKE UPD ERR KEY:" UKE-KEY
                GO      TO      4902-UKEUPD-EXT
            END-IF
       *
@@ -2860,6 +2866,7 @@
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1003"              TO  SPA-ERRCD
                DISPLAY "U02 UKETUKE UPD ERR:"  MCP-RC
+                       ",KEY:" UKE-KEY
            END-IF
            .
        4902-UKEUPD-EXT.
@@ -2892,6 +2899,8 @@
       *
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1004"              TO  SPA-ERRCD
+                   DISPLAY "U02 YYK    UPD ERR:"  MCP-RC
+                       ",KEY:" YYK-KEY
                END-IF
            END-IF
            .
@@ -3831,11 +3840,11 @@
        50011-INPUT-CUR-EXT.
            EXIT.
       *
-122000*****************************************************************
-122100*    エラーメッセージ表示理
-122200*****************************************************************
-122300 510-ERRSET-SEC              SECTION.
-122500*
+      *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE           TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
