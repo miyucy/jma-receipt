@@ -69,8 +69,12 @@
            03  FLG-SRYCDCHG        PIC 9(01).
            03  FLG-TENSUPLUS       PIC 9(01).
            03  FLG-CHKMST          PIC 9(01).
+           03  FLG-PTNYUINRRK        PIC 9(01).
       *
            03  FLG-SST             PIC 9(01).
+      *
+           03  FLG-CHK             PIC 9(01).
+           03  FLG-NYUIN           PIC 9(01).
       *
            03  FLG-MANSEI-ARI      PIC 9(01).
       *
@@ -92,6 +96,10 @@
            03  IDZ                 PIC 9(02).
            03  IDX-ICD1            PIC 9(01).
            03  IDX-ICD             PIC 9(02).
+      *
+           03  IDX-STR             PIC 9(02).
+           03  IDX-END             PIC 9(02).
+           03  IDX-Y3              PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -211,6 +219,9 @@
       *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
+      *    患者入院履歴
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1064,6 +1075,13 @@
                END-IF
            END-IF
       *
+      *    在宅寝たきり患者処置指導管理料チェック
+           IF     (WRK-SANTEI-CNT      >   ZERO    )  AND
+                 ((LNK-SC92-SRYCD      =   "114005810" ) OR
+                  (CHK-CD (IDX-C)      =   "114005810" ))
+               PERFORM 20054-NETAKIRI-CHK-SEC
+           END-IF
+      *
       *    算定歴の回数をチェックする
            IF      WRK-SANTEI-CNT      >   ZERO
                MOVE    "0033"              TO  LNK-SC92-ERRCD6
@@ -1200,6 +1218,127 @@
            END-IF
            .
        20053-MANSEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     在宅寝たきり患者処置指導管理料のチェック処理
+      *****************************************************************
+       20054-NETAKIRI-CHK-SEC        SECTION.
+      *
+      *    消炎鎮痛等処置との時チェック
+           IF      (CHK-CD (IDX-C)     =   "140029610"
+                                       OR  "140040310"
+                                       OR  "140002210"
+                                       OR  "140002310"
+                                       OR  "114005810")  OR
+                   (LNK-SC92-SRYCD     =   "140029610"
+                                       OR  "140040310"
+                                       OR  "140002210"
+                                       OR  "140002310"
+                                       OR  "114005810")
+               CONTINUE
+           ELSE
+               GO      TO      20054-NETAKIRI-CHK-EXT
+           END-IF
+      *
+      *    入院中の場合対象外
+           IF     (SPA-NYUGAIKBN       =   "1"     )  AND
+                  (CHK-CD (IDX-C)      =   "114005810" )
+               MOVE    ZERO                TO  WRK-SANTEI-CNT
+               GO      TO      20054-NETAKIRI-CHK-EXT
+           END-IF
+      *
+      *    外来で当月入院が有り消炎鎮痛の場合のみ対象とする
+           IF     (LNK-SC92-NYUINFLG   =   1       )  AND
+                  (SPA-NYUGAIKBN       =   "2"     )  AND
+                  (CHK-CD (IDX-C)      =   "140029610"
+                                       OR  "140040310"
+                                       OR  "140002210"
+                                       OR  "140002310" )
+               CONTINUE
+           ELSE
+               GO      TO      20054-NETAKIRI-CHK-EXT
+           END-IF
+      *
+      *    入院中の場合、算定なしとする
+      *    入院履歴判定
+           MOVE    SPACE               TO  PTNYUINRRK-REC
+           INITIALIZE                  PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
+               PERFORM 910-PTNYUINRRK-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  PTNYUINRRK-REC
+           END-IF
+      *
+           MOVE    ZERO            TO  FLG-NYUIN
+           PERFORM
+                   UNTIL      (FLG-PTNYUINRRK      =   1 )  OR
+                              (FLG-NYUIN           =   1 )
+      *        対象外
+               IF     (PTNYUINRRK-NYUINYMD(1:6)   >   SPA-SRYYMD
+                                                             (1:6) ) OR
+                      (PTNYUINRRK-TAIINYMD(1:6)   <   SPA-SRYYMD
+                                                             (1:6) )
+                   MOVE    1               TO  FLG-CHK
+               ELSE
+                   MOVE    ZERO            TO  FLG-CHK
+               END-IF
+               IF     (PTNYUINRRK-TAIINYMD(1:6)   <   SPA-SRYYMD (1:6) )
+                   MOVE    1               TO  FLG-NYUIN
+               END-IF
+      *        入院中
+               IF      FLG-CHK             =   ZERO
+                   IF      PTNYUINRRK-TAIINYMD     =   ALL "9"
+                       MOVE    31                  TO  IDX-END
+                   ELSE
+                       MOVE    PTNYUINRRK-TAIINYMD(7:2)
+                                                   TO  IDX-END
+                   END-IF
+                   IF      PTNYUINRRK-NYUINYMD(1:6)   =  SPA-SRYYMD
+                                                             (1:6)
+                       MOVE    PTNYUINRRK-NYUINYMD(7:2)
+                                                   TO  IDX-STR
+                   ELSE
+                       MOVE    1                   TO  IDX-STR
+                   END-IF
+      *TEST
+             DISPLAY "C92 PTNYUINRRK-NYUINNYMD:" PTNYUINRRK-NYUINYMD
+                      ",PTNYUINRRK-TAIINNYMD:"  PTNYUINRRK-TAIINYMD
+                      ",IDX-STR:" IDX-STR
+                      ",IDX-END:" IDX-END
+                      ",WRK-SANTEI-CNT:" WRK-SANTEI-CNT
+      *TEST
+      *            算定回数の削除
+                   PERFORM VARYING     IDX-Y3  FROM    IDX-STR   BY   1
+                           UNTIL      (IDX-Y3  >   IDX-END      )  OR
+                                      (WRK-SANTEI-CNT  =   ZERO )
+                       COMPUTE WRK-SANTEI-CNT  =   WRK-SANTEI-CNT
+                                           -   SANTEI-DAY (IDX-Y3)
+                   END-PERFORM
+      *TEST
+             DISPLAY "C92 WRK-SANTEI-CNT:" WRK-SANTEI-CNT
+      *TEST
+               END-IF
+      *
+               MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
+               PERFORM 910-PTNYUINRRK-READ-SEC
+      *
+           END-PERFORM
+      *
+           .
+       20054-NETAKIRI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1501,7 +1640,7 @@
       *    検査用　区分番号
            MOVE    TNS-CDKBN-KBN       TO  SPA-COM-CDKBN-KBN (IDX-T)
            MOVE    TNS-CDKBN-SYO       TO  SPA-COM-CDKBN-SYO (IDX-T)
-           MOVE    TNS-CDKBN-BU        TO  SPA-COM-CDKBN-BU (IDX-T)
+           MOVE    TNS-CDKBN-BU        TO  SPA-COM-CDKBN-BU  (IDX-T)
       *    労災用　区分番号
            MOVE    TNS-CDKBN-KBNNUM    TO  SPA-COM-CDKBN-KBNNUM (IDX-T)
       *    検査用　包括対象検査
@@ -2271,6 +2410,28 @@
       *
            .
        990-SRYCDCHG-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院履歴マスター読込
+      *****************************************************************
+       910-PTNYUINRRK-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+               MOVE    ZERO            TO  FLG-PTNYUINRRK
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           .
+       910-PTNYUINRRK-READ-EXT.
            EXIT.
       *****************************************************************
       *
