@@ -44,6 +44,7 @@
            03  IDX1                        PIC 9(03).
            03  IDX2                        PIC 9(03).
            03  IDX3                        PIC 9(03).
+           03  IDX4                        PIC 9(03).
            03  IDY                         PIC 9(03).
            03  IDZ                         PIC 9(03).
            03  IDW                         PIC 9(03).
@@ -144,6 +145,20 @@
                05  WRK-SYSYY               PIC 9(04).
                05  WRK-SYSMM               PIC 9(02).
                05  WRK-SYSDD               PIC 9(02).
+      *
+      *    初診料算定フラグ用テーブル
+       01  TBL-SYOSIN-AREA.
+           03  FILLER          PIC X(09)   VALUE    "111003610".
+           03  FILLER          PIC X(09)   VALUE    "111700210".
+           03  FILLER          PIC X(09)   VALUE    "111000110".
+           03  FILLER          PIC X(09)   VALUE    "111700110".
+           03  FILLER          PIC X(09)   VALUE    "113003510".
+           03  FILLER          PIC X(09)   VALUE    "113003710".
+      *
+       01  TBL-SYOSIN-R        REDEFINES   TBL-SYOSIN-AREA.
+           03  TBL-SYOSIN      PIC X(09)   OCCURS    6.
+      *
+       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     6.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1062,6 +1077,15 @@
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
                END-EVALUATE
       *
+               IF    (IDY                 =     1  )
+               AND   (LNK-S01-SYOSINFLG   =   SPACE)
+                   IF  LNK-SYU-SYUHKNNUM(IDY)   =   "971"  OR  "973"
+                      CONTINUE
+                   ELSE
+                      PERFORM  44025-SYOSINFLG-SET-SEC
+                   END-IF
+               END-IF
+      *
                IF    FLG-NOGRP          =     1
       *
                  IF  TBL-SRYKBN(IDX1)   =   "21"   OR  "22"  OR  "23"
@@ -1807,6 +1831,62 @@
            .
       *
        44024-HKNTEKGAI-SET-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    初診料算定フラグ（地方公費用）のセット
+      **************************************************************
+       44025-SYOSINFLG-SET-SEC          SECTION.
+      *
+           IF  TBL-SRYKBN(IDX1)   =   "11"  OR  "13"
+      *
+               PERFORM   VARYING   IDX4   FROM    1   BY  1
+                          UNTIL  ( IDX4    >   TBL-SYOSIN-MAX  )
+                           OR    ( LNK-S01-SYOSINFLG   =   "1" )
+      *
+                   INITIALIZE                        SRYACT-REC
+                   MOVE    LNK-SYU-HOSPID(IDY)  TO   SRY-HOSPID
+                   MOVE    LNK-SYU-NYUGAIKBN(IDY)
+                                                TO   SRY-NYUGAIKBN
+                   MOVE    LNK-SYU-PTID(IDY)    TO   SRY-PTID
+                   MOVE    LNK-SYU-SRYYMD(IDY)(1:6)
+                                                TO   SRY-SRYYM
+                   MOVE    TBL-ZAIBAN(IDX1)     TO   SRY-ZAINUM
+      *
+                   MOVE    TBL-SYOSIN(IDX4)     TO   SRY-SRYCD (1)
+                   MOVE    TBL-SYOSIN(IDX4)     TO   SRY-SRYCD (2)
+                   MOVE    TBL-SYOSIN(IDX4)     TO   SRY-SRYCD (3)
+                   MOVE    TBL-SYOSIN(IDX4)     TO   SRY-SRYCD (4)
+                   MOVE    TBL-SYOSIN(IDX4)     TO   SRY-SRYCD (5)
+                   MOVE    SRYACT-REC           TO   MCPDATA-REC
+                   MOVE    "DBSELECT"           TO   MCP-FUNC
+                   MOVE    "SRYACT-KEY8"        TO   ORC-DBPATH
+                   CALL    "ORCMCPSUB"           USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+                   IF      MCP-RC             =       ZERO
+                     MOVE     "SRYACT-KEY8"     TO   ORC-DBPATH
+                     PERFORM   900-SRYACT-READ-SEC
+                     IF     FLG-SRYACT   =    ZERO
+                           MOVE    "1"          TO   LNK-S01-SYOSINFLG
+                     END-IF
+                   END-IF
+      *
+                   MOVE    "DBCLOSE"            TO  MCP-FUNC
+                   MOVE    "SRYACT-KEY8"        TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"           USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+      *
+               END-PERFORM
+      *
+           END-IF
+      *
+           .
+      *
+       44025-SYOSINFLG-SET-EXT.
            EXIT.
       *
       ******************************************************************

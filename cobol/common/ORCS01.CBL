@@ -132,6 +132,7 @@
       *
       *  01.01.01    NACL-ÌçÏÆ    04/08/10  Ê£¿ôÊÝ¸±¡¦Ê£¿ô²ÊÆþÎÏÂÐ±þ
       *  01.01.02    NACL-ÌçÏÆ    04/08/20  Ê¼¸Ë¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  01.01.03    NACL-ÌçÏÆ    04/08/23  ¹­Åç¸©ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -6769,6 +6770,17 @@
            IF   FLG-CHIHOU(KOH-IDX)  =  "1"
                IF    WK-GAIKFTNRATE  =  ZERO
                     MOVE    SPACE   TO  COMB-KOH-GAIJGNKBN(KOH-IDX)
+               END-IF
+           END-IF.
+      *
+           IF     (WK-1001-PREFNUM              =  34     )  AND
+                  (COMB-KOHHKNNUM(KOH-IDX)      = "390"   )  AND
+                  (LNK-SYU-SRYYMD(1:6)         >= "200410")
+               IF    LNK-S01-SYOSINFLG  =  SPACE
+                    MOVE    SPACE   TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
+                    MOVE    ZERO    TO   WK-GAIKFTNRATE
+                    MOVE    "0"     TO   WK-GAIYKZFTNKBN
+                    MOVE    ZERO    TO   WK-GAIKKOTGAK
                END-IF
            END-IF.
       *
