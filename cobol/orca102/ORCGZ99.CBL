@@ -80,7 +80,7 @@
            03  FLG-SUJI                          PIC 9(01).
       *
            03  FLG-TOUROKU                       PIC 9(01).
-           03  FLG-SYORI                         PIC 9(01).
+      *****03  FLG-SYORI                         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
