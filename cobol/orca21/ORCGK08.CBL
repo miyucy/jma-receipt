@@ -3043,7 +3043,6 @@
                IF      LNK-SYU2-SRYKA (IDS1)   =   ZERO
                    MOVE    LNK-SYU2-HKNCOMBINUM(IDS1)
                                                TO  WRK-HKNCOMBI
-                   MOVE    ZERO                TO  IDS3
                    MOVE    ZERO                TO  WRK-SKYMONEY
                    MOVE    LNK-SYUNOU2-REC (IDS1)  TO  SYUNOU-REC
                    PERFORM VARYING     IDS2    FROM    1   BY  1
@@ -3054,13 +3053,28 @@
                                            NOT =   ZERO  )
                            ADD     LNK-SYU2-SKYMONEY(IDS2)
                                                TO  WRK-SKYMONEY
-                           MOVE    IDS2        TO  IDS3
                        END-IF
                    END-PERFORM
                    COMPUTE SYU-GRP-SGKMONEY    =   SYU-SKYMONEY
                                                -   WRK-SKYMONEY
                    MOVE    SYUNOU-REC          TO  LNK-SYUNOU2-REC(IDS1)
-      *            ∫«∏Â§Œº˝«º§À∫π≥€ ‘Ω∏°¢¿¡µ·≥€ —ππ
+      *            º˝«º§À∫π≥€ ‘Ω∏°¢¿¡µ·≥€ —ππ
+                   MOVE    ZERO                TO  IDS3
+                   PERFORM VARYING     IDS2    FROM    LNK-SYUNOU2-MAX
+                                                       BY  -1
+                           UNTIL      (IDS2    <   1   )  OR
+                                      (IDS3    >   ZERO )
+                       IF     (LNK-SYU2-HKNCOMBINUM(IDS2) 
+                                               =   WRK-HKNCOMBI ) AND
+                              (LNK-SYU2-SRYKA (IDS2)
+                                           NOT =   ZERO  )
+                           IF     (SYU-GRP-SGKMONEY    >   ZERO ) OR
+                                  (LNK-SYU2-SKYMONEY(IDS2)
+                                               >   SYU-GRP-SGKMONEY)
+                               MOVE    IDS2        TO  IDS3
+                           END-IF
+                       END-IF
+                   END-PERFORM
                    MOVE    SYU-GRP-SGKMONEY    TO  LNK-SYU2-GRP-SGKMONEY
                                                                 (IDS3)
                    COMPUTE LNK-SYU2-SKYMONEY(IDS3)
