@@ -433,6 +433,11 @@
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
       *
+      *    画面ＳＰＡ領域ワーク
+       01  WRK-SCR-REC2.
+           COPY    "CPK02SPASCR.INC"  REPLACING
+                                       //SPA-// BY //WRK2-//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -2850,6 +2855,9 @@
       *    指導料編集・チェック処理
       *****************************************************************
        33012113-SIDOU-INS-SEC               SECTION.
+      *
+           MOVE    SPA-SCR-REC         TO  WRK-SCR-REC2
+      *
       *    点数マスタ編集・基本チェック
            COMPUTE SPA-GMN-IDX         =   SPA-GMN-IDX   +   1
            INITIALIZE                  ORCSC92AREA
@@ -2883,11 +2891,8 @@
       *    エラー時、追加しない
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
-               MOVE    SPACE           TO  SPA-ERRCD
-               INITIALIZE              SPA-GMN-TBLREC (SPA-GMN-IDX)
-               INITIALIZE              SPA-COM-TBLREC (SPA-GMN-IDX)
-               COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX
-                                       -   1
+               MOVE    SPACE               TO  SPA-ERRCD
+               MOVE    WRK-SCR-REC2        TO  SPA-SCR-REC 
            ELSE
       *        再編集処理
                MOVE    SPA-GMN-IDX         TO  IDX
@@ -4947,31 +4952,27 @@
            ELSE
                MOVE    ".120"              TO  WRK-SRYCD
            END-IF
-               IF      IDX-KA              =   ZERO
-                   ADD     1               TO  IDX-A
-                   PERFORM 1015119-GYOINSN-SEC
-               ELSE
-                   COMPUTE IDX-A           =   IDX-KA   -  1
-               END-IF
-               IF      SPA-ERRCD       =   SPACE
-                   INITIALIZE                  SPA-GMN-TBLREC
-                                                        (IDX-A)
-                   INITIALIZE                  SPA-COM-TBLREC
-                                                        (IDX-A)
-                   MOVE    WRK-SRYCD       TO  SPA-GMN-INPUTCD
-                                                       (IDX-A)
-                   MOVE    WRK-SRYCD       TO  SPA-MAE-INPUTCD
-                                                       (IDX-A)
-                   MOVE    WRK-SRYKA       TO  SPA-COM-SRYKA
-                                                       (IDX-A)
-                   MOVE    1               TO  FLG-FUKU
-               END-IF
+           IF      IDX-KA              =   ZERO
+               ADD     1               TO  IDX-A
+               PERFORM 1015119-GYOINSN-SEC
+           ELSE
+               COMPUTE IDX-A           =   IDX-KA   -  1
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               INITIALIZE                  SPA-GMN-TBLREC  (IDX-A)
+               INITIALIZE                  SPA-COM-TBLREC  (IDX-A)
+               MOVE    WRK-SRYCD       TO  SPA-GMN-INPUTCD (IDX-A)
+               MOVE    WRK-SRYCD       TO  SPA-MAE-INPUTCD (IDX-A)
+               MOVE    WRK-SRYKA       TO  SPA-COM-SRYKA   (IDX-A)
+               MOVE    1               TO  FLG-FUKU
+           END-IF
       *
-               IF      FLG-SRYKBN          =   1
-                   MOVE    "830000020"         TO  WRK-SRYCD
-               ELSE
-                   MOVE    "830000021"         TO  WRK-SRYCD
-               END-IF
+           IF      FLG-SRYKBN          =   1
+               MOVE    "830000020"         TO  WRK-SRYCD
+           ELSE
+               MOVE    "830000021"         TO  WRK-SRYCD
+           END-IF
+           IF      IDX-A               <   200
                IF      SPA-COM-INPUTCD(IDX-A + 1)
                                            =   "830000020"  OR
                                                "830000021"
@@ -4980,28 +4981,24 @@
                    ADD     1               TO  IDX-A
                    PERFORM 1015119-GYOINSN-SEC
                END-IF
-               IF      SPA-ERRCD       =   SPACE
-                   INITIALIZE                  SPA-GMN-TBLREC
-                                                        (IDX-A)
-                   INITIALIZE                  SPA-COM-TBLREC
-                                                        (IDX-A)
-                   MOVE    WRK-SRYCD       TO  SPA-GMN-INPUTCD
-                                                        (IDX-A)
-                   MOVE    SPA-SRYKA       TO  SPA-GMN-INPUTCD
-                                                        (IDX-A)
-                                                       (11:2)
-                   MOVE    WRK-SRYCD       TO  SPA-COM-INPUTCD
-                                                        (IDX-A)
-                   MOVE    SPA-SRYKA       TO  SPA-COM-ATAI1
-                                                        (IDX-A)
-                   PERFORM 10151121-INPUCD-HENSYU-SEC
-                   MOVE    WRK-SRYKA       TO  SPA-COM-SRYKA
-                                                       (IDX-A)
-               END-IF
-               IF      SPA-ERRCD       =   SPACE
-      *            特定疾患療養指導料の発生
-                   PERFORM 10151122-TOKUTEI-HENSYU-SEC
-               END-IF
+           ELSE
+               MOVE    "0007"              TO  SPA-ERRCD
+           END-IF
+           IF      SPA-ERRCD       =   SPACE
+               INITIALIZE                  SPA-GMN-TBLREC  (IDX-A)
+               INITIALIZE                  SPA-COM-TBLREC  (IDX-A)
+               MOVE    WRK-SRYCD       TO  SPA-GMN-INPUTCD (IDX-A)
+               MOVE    SPA-SRYKA       TO  SPA-GMN-INPUTCD (IDX-A)
+                                                           (11:2)
+               MOVE    WRK-SRYCD       TO  SPA-COM-INPUTCD (IDX-A)
+               MOVE    SPA-SRYKA       TO  SPA-COM-ATAI1   (IDX-A)
+               PERFORM 10151121-INPUCD-HENSYU-SEC
+               MOVE    WRK-SRYKA       TO  SPA-COM-SRYKA   (IDX-A)
+           END-IF
+           IF      SPA-ERRCD       =   SPACE
+      *        特定疾患療養指導料の発生
+               PERFORM 10151122-TOKUTEI-HENSYU-SEC
+           END-IF
            .
        1015112-TAKA-HEN-EXT.
            EXIT.
@@ -5260,7 +5257,7 @@
                GO      TO      1015119-GYOINSN-EXT
            END-IF
       *
-           MOVE    SPA-GMN-REC         TO  HZN-GMN-REC
+           MOVE    SPA-SCR-REC         TO  HZN-SCR-REC
            INITIALIZE                      SPA-GMN-REC
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -5274,7 +5271,8 @@
                    MOVE    HZN-GMN-TBLREC (IDX2) 
                                            TO  SPA-GMN-TBLREC(IDX)
                END-IF
-               IF      SPA-GMN-INPUTCD (IDX)   NOT =   SPACE
+               IF     (SPA-GMN-INPUTCD (IDX)   NOT =   SPACE ) OR
+                      (SPA-COM-INPUTCD (IDX)   NOT =   SPACE )
                    MOVE    IDX                 TO  SPA-GMN-MAX
                END-IF
            END-PERFORM
