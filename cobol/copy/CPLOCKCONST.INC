@@ -135,7 +135,7 @@
                    VALUE   "Æü¼¡Åý·×" .
              03  ORC-LOCKCONST-T19.
                05  ORC-LOCKCONST-WINDOW-T19   PIC  X(10)
-                   VALUE   "L" .
+                   VALUE   "G" .
                05  ORC-LOCKCONST-LD-T19  PIC  X(20)
                    VALUE   "ORCA71" .
                05  ORC-LOCKCONST-NAME-T19   PIC  X(40)  
