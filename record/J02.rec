@@ -207,5 +207,16 @@ J02	{
 			count	int;
 			item	varchar(10)[2];
 		};
+		NYUINMSG2	{
+		    style   varchar(20);
+			value	varchar(50);
+		};
+		NYUINMSG1	{
+		    style   varchar(20);
+			value	varchar(50);
+		};
+		NYUINKIKAN	{
+			value	varchar(30);
+		};
 	};
 };
