@@ -2189,15 +2189,12 @@
       *
            MOVE    ZERO                TO  WRK-JRK-HKNCOMBI
            INITIALIZE                  WRK-JYURRK-AREA
-           PERFORM     UNTIL           FLG-JYURRK   =   1
+           IF      FLG-JYURRK          =   ZERO
                MOVE    JYURRK-SRYKA        TO  WRK-JRK-SRYKA
                MOVE    JYURRK-DRCD         TO  WRK-JRK-DRCD
       *        保険組合番号
                MOVE    JYURRK-HKNCOMBINUM  TO  WRK-JRK-HKNCOMBI
-      *
-               MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
-               PERFORM 900-JYURRK-READ-SEC
-           END-PERFORM
+           END-IF
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH

@@ -876,100 +876,46 @@
       *****************************************************************
        20121-JYURRK-HEN-SEC               SECTION.
       *
-      *    診療科歴を検索
-           MOVE    SPACE               TO  SRYKARRK-REC
-           INITIALIZE                  SRYKARRK-REC
-           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
-           MOVE    PTINF-PTID          TO  KARRK-PTID
-      *
-           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
-               PERFORM 975-SRYKARRK-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYKARRK
-               MOVE    SPACE               TO  SRYKARRK-REC
-               INITIALIZE                  SRYKARRK-REC
-           END-IF
-           MOVE   SPACE                TO  WRK-LSTYMD
-           MOVE   SPACE                TO  WRK-SRYKA
-           PERFORM UNTIL       FLG-SRYKARRK    =   1
-      *        最終受診日
-               IF     (KARRK-LASTYMD   NOT =   SPACE      ) AND
-                      (KARRK-LASTYMD       >=  WRK-LSTYMD )
-                   MOVE    KARRK-LASTYMD       TO  WRK-LSTYMD
-                   MOVE    KARRK-SRYKA         TO  WRK-SRYKA
-               END-IF
-      *
-               MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
-               PERFORM 975-SRYKARRK-READ-SEC
-           END-PERFORM
-      *
-           IF      WRK-LSTYMD      NOT =   SPACE
-               MOVE    WRK-LSTYMD          TO  WRK-SYMD
-               PERFORM 700-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG         TO  SPA-GMN-RRKYMD (IDX)
-      *        保険の判定
-               PERFORM 201211-JYURRK-HKN-HEN-SEC
-           END-IF
-      *
-      *    カーソルクロース
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *
-           .
-       20121-JYURRK-HEN-EXT.
-           EXIT.
-           .
-      *
-      *****************************************************************
-      *    保険編集処理（外来）
-      *****************************************************************
-       201211-JYURRK-HKN-HEN-SEC       SECTION.
+           MOVE    SPACE               TO  WRK-LSTYMD
+           MOVE    SPACE               TO  WRK-SRYKA
+           MOVE    SPACE               TO  WRK-HKNCOMBI
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
            MOVE    PTINF-HOSPID        TO  JYURRK-HOSPID
            MOVE    "2"                 TO  JYURRK-NYUGAIKBN
            MOVE    PTINF-PTID          TO  JYURRK-PTID
-           MOVE    WRK-LSTYMD          TO  JYURRK-SRYYMD
-           MOVE    WRK-SRYKA           TO  JYURRK-SRYKA
+           MOVE    SPA-SYSYMD          TO  JYURRK-SRYYMD
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
+           MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
+               MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            ELSE
                MOVE    SPACE               TO  JYURRK-REC
                INITIALIZE                  JYURRK-REC
                MOVE    1                   TO  FLG-JYURRK
            END-IF
-           PERFORM UNTIL    FLG-JYURRK     =   1
-               IF      JYURRK-HKNCOMBINUM  NOT =   "9999"
-                   MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
-                   MOVE    1                   TO  FLG-JYURRK
-               ELSE
-                   MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
-                   PERFORM 970-JYURRK-READ-SEC
-               END-IF
-           END-PERFORM
+           IF      FLG-JYURRK          =   ZERO
+               MOVE    JYURRK-SRYYMD       TO  WRK-LSTYMD
+               MOVE    JYURRK-SRYKA        TO  WRK-SRYKA
+               MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
+           END-IF
+      *
+           IF      WRK-LSTYMD      NOT =   SPACE
+               MOVE    WRK-LSTYMD          TO  WRK-SYMD
+               PERFORM 700-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  SPA-GMN-RRKYMD (IDX)
+           END-IF
+      *
            .
-       201211-JYURRK-HKN-HEN-EXT.
+       20121-JYURRK-HEN-EXT.
            EXIT.
            .
       *

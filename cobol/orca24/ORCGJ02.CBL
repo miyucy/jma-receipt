@@ -1750,16 +1750,12 @@
                MOVE    1               TO  FLG-JYURRK
            END-IF
       *
-           PERFORM
-               UNTIL   FLG-JYURRK          =   1
+           IF      FLG-JYURRK          =   ZERO
                IF      SPA-NAI-SRYYM       =   JYURRK-SRYYMD(1:6)
                    MOVE    JYURRK-SRYKA        TO  SPA-J01-SRYKA
                    MOVE    JYURRK-SRYKA        TO  SPA-GMN-SRYKA
                END-IF
-      *
-               MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
-               PERFORM 970-JYURRK-READ-SEC
-           END-PERFORM
+           END-IF
       *
       *    入院で調剤料のみの時のチェック
            IF     (SPA-NYUGAIKBN       =   "1" )  AND
