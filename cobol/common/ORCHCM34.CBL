@@ -2065,11 +2065,16 @@
            MOVE    2               TO  COMMENT-IDX
            PERFORM 2001111-PTCOM-HEN-SEC
       *
-           IF    ( COMMENT-MAX (1)         =   COMMENT-MAX (2) )
-            AND  ( COMMENT-COMMENT-G (1)   =   COMMENT-COMMENT-G (2) )
+           IF    ( COMMENT-MAX (1)         =   ZERO )
+            AND  ( COMMENT-MAX (2)         =   ZERO )
                 CONTINUE
            ELSE
-                MOVE   1           TO  FLG-COMMENT-CHK
+               IF    ( COMMENT-MAX (1)         =   COMMENT-MAX (2) )
+                AND  ( COMMENT-COMMENT-G (1)   =   COMMENT-COMMENT-G(2))
+                    CONTINUE
+               ELSE
+                    MOVE   1           TO  FLG-COMMENT-CHK
+               END-IF
            END-IF
       *
            .
@@ -2760,8 +2765,9 @@
            END-IF
       *
       *    ¿ôÎÌ¡ÊÌôºÞ¡¢´ïºà¤Î¤È¤­¡Ë
-           IF    ( SRY-SRYCD  (IDX9)(1:1)  =   "6"  OR  "7" )
-            AND  ( TNS-TANINAME        NOT =   SPACE )
+      *    IF    ( SRY-SRYCD  (IDX9)(1:1)  =   "6"  OR  "7" )
+      *     AND  ( TNS-TANINAME        NOT =   SPACE )
+           IF    ( TNS-TANINAME        NOT =   SPACE )
                MOVE    TNS-TANINAME        TO  WRK-TANINAME
                PERFORM 2001111-SURYO-HEN-SEC
            END-IF
