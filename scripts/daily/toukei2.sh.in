@@ -80,11 +80,9 @@ fi
                         ;;
          esac
 	     if  [ $RC -ne '0' ]; then
-		ERRCD='0000'$RC
-        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4} >> /home/orca/toukei2.log
-		    exit
-	     fi
-
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14} >> /home/orca/toukei2.log
-
+		    ERRCD='0000'$RC
+        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}'  '${ERRCD:${#ERRCD}-4:4} >> /home/orca/toukei2.log
+        else
+            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14} >> /home/orca/toukei2.log
+        fi
         exit 
