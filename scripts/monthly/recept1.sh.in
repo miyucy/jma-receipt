@@ -119,7 +119,7 @@ fi
                     if  [ $8 -lt '200304' ]; then
 	                    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0103 -parameter $9${10}$1$3$8$5$6
                     else 
-	                    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0104 -parameter $9${10}$1$3$8$5$6
+	                    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0104 -parameter ${11}$9${10}$1$3$8$5$6
 	                fi
                 else
 	                $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0103 -parameter $9${10}$1$3$8$5$6
