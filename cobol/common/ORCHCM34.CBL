@@ -4260,16 +4260,6 @@
            MOVE    "TENSU-KEY"             TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
-               IF    ( TNS-SRYCD           =   "190116590"
-                                           OR  "190116690"
-                                           OR  "190116790" )
-                   MOVE    "20040331"      TO  ORC-DBYMD
-                   MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
-                   PERFORM 900-TBL-SELECT-SEC
-               END-IF
-           END-IF
-      *
-           IF    ( FLG-DBRC        NOT =   ZERO )
                INITIALIZE                  TNS-TENSU-REC
                MOVE    HCM34S01-SRYCD (IDXH IDXI)
                                            TO  WRK-MAE-INPUT
