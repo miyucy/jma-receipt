@@ -640,7 +640,7 @@
       *
            MOVE    WRK-STATUS-ITEM     TO  LNK-ORDER-STATUS-ITEM (IDX1)
            IF    ( FLG-KARTE-KEY       =   ZERO )
-               MOVE    "0"         TO  LNK-ORDER-KEYGENERATE     (IDX1)
+               MOVE    SPACE       TO  LNK-ORDER-KEYGENERATE     (IDX1)
            ELSE
                MOVE    "1"         TO  LNK-ORDER-KEYGENERATE     (IDX1)
            END-IF
@@ -911,7 +911,7 @@
            MOVE    "1"                 TO  ORDER-STATUS-ORDER
            MOVE    SPACE               TO  ORDER-STATUS-ITEM
            IF    ( FLG-KARTE-KEY       =   ZERO )
-               MOVE    "0"             TO  ORDER-KEYGENERATE
+               MOVE    SPACE           TO  ORDER-KEYGENERATE
            ELSE
                MOVE    "1"             TO  ORDER-KEYGENERATE
            END-IF
