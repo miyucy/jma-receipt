@@ -251,6 +251,8 @@
            03  FLG-SYOKAI           PIC 9(01).
       *
            03  FLG-RIHTEI           PIC 9(01).
+      *    情ま’情陸質杅�衝�
+           03  FLG-INGAIKBN         PIC 9(01).
       *
       *    驕儂恄啗
        01  IDX-AREA.
@@ -2967,6 +2969,7 @@
                PERFORM 31031-WKSRY-ZAITENHEN-SEC
            END-IF
       *
+           MOVE    ZERO                TO  FLG-INGAIKBN
       *    褲恓撮ェ恘丐曰彸螂
            PERFORM     VARYING   IDX   FROM    1   BY  1
                        UNTIL    (IDX   >   LNK-WKSRYACT-MAX )  OR
@@ -3057,6 +3060,17 @@
                        MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                (IDX2)
                        MOVE    ZERO                TO  FLG-SET
+      *                情ま’情陸質杅毛鰾醒方曰庍凳
+      *                情陸
+                       IF      FLG-INGAIKBN        =   1
+                           MOVE    "1"             TO  SPA-INGAIKBN
+                       END-IF
+      *                情ま
+                       IF      FLG-INGAIKBN        =   2
+                           MOVE    "0"             TO  SPA-INGAIKBN
+                       END-IF
+      *
+                       MOVE    ZERO                TO  FLG-INGAIKBN
                    END-IF
                END-IF
            END-PERFORM
@@ -3343,10 +3357,16 @@
                         (LNK-WKSRY-TERMID (IDX)  =   "WKSRYACT")
                    IF      LNK-WKSRY-ZAITENKEI (IDX)   =   ZERO
       *                管鰾醒﹥未伕﹛情陸
-                       MOVE    "1"             TO  SPA-INGAIKBN
+      *                管ま卞泔管互丐月凜及心
+                       IF      LNK-WKSRY-SRYCD (IDX IDY)(1:1)
+                                               =   "6"
+                           MOVE    1               TO  FLG-INGAIKBN
+                       END-IF
+      **************** MOVE    "1"             TO  SPA-INGAIKBN
                    ELSE
       *                管鰾醒﹦未伕﹛情ま
-                       MOVE    "0"             TO  SPA-INGAIKBN
+                       MOVE    2               TO  FLG-INGAIKBN
+      **************   MOVE    "0"             TO  SPA-INGAIKBN
                    END-IF
                  END-IF
                END-IF
