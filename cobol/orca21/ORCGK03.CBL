@@ -3259,6 +3259,13 @@
                                        TO  SPA-ERRMSG
                    MOVE    "システム管理を確認して下さい。"
                                        TO  SPA-ERRMSG(31:)
+               WHEN    "1036"
+                   MOVE    "受診履歴の伝票番号がゼロです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "訂正できません。"
+                                       TO  SPA-ERRMSG(31:)
+               WHEN    OTHER
+                   MOVE    SPA-ERRCD   TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  KERR

@@ -605,6 +605,9 @@
       *
       *        画面編集
                PERFORM 500-GMNHEN-SEC
+               IF      FLG-END             =   1
+                   GO      TO      100-INIT-EXT
+               END-IF
            END-IF
       *
       *****MOVE   "NEW"                TO  MCP-PUTTYPE.
@@ -672,6 +675,11 @@
                    END-IF
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KIDCD
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 510-ERRSET-SEC
+           END-IF
+      *
            .
        30010-KID1-SET-EXT.
            EXIT.
@@ -3078,6 +3086,14 @@
       *    診療行為更新
            PERFORM 45011-SRYACT-SYORI-SEC
       *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   5
+               IF      HZN-PARA-DATA-REC (IDY) NOT =   SPACE
+                   MOVE    HZN-PARA-REC(IDY)   TO  PARA-REC
+                   WRITE                       PARA-REC
+               END-IF
+           END-PERFORM
+      *
            CLOSE                       PARA-FILE
       *
       *    入院更新処理
@@ -3182,6 +3198,14 @@
       *
       *    診療行為更新
            PERFORM 45011-SRYACT-SYORI-SEC
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   5
+               IF      HZN-PARA-DATA-REC (IDY) NOT =   SPACE
+                   MOVE    HZN-PARA-REC(IDY)   TO  PARA-REC
+                   WRITE                       PARA-REC
+               END-IF
+           END-PERFORM
       *
            CLOSE                       PARA-FILE
       *
@@ -3506,6 +3530,13 @@
                                        TO  SPA-ERRMSG
                    MOVE    "５００行以上は表示しません。"
                                        TO  SPA-ERRMSG(25:)
+               WHEN    "1036"
+                   MOVE    "受診履歴の伝票番号がゼロです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "訂正できません。"
+                                       TO  SPA-ERRMSG(31:)
+               WHEN    OTHER
+                   MOVE    SPA-ERRCD   TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  KERR

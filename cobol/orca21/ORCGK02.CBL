@@ -8906,6 +8906,12 @@
            MOVE    1                   TO  SPA-GMN-CUR
            MOVE    1                   TO  SPA-MAP-IDX
       *
+      *    伝票番号がゼロの時エラーとする
+           IF     (SPA-DENPNUM         =   ZERO ) AND
+                  (SPA-HKNCOMBINUM NOT =   "9999")
+               MOVE    "1036"              TO  SPA-ERRCD
+           END-IF
+      *
            .
        410141-TEISEI-SET-EXT.
            EXIT.
