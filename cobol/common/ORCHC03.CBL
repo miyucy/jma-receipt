@@ -415,7 +415,7 @@
                MOVE    1               TO  FLG-SYUNOU
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -477,7 +477,7 @@
                INITIALIZE                  SYS-1001-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -510,7 +510,7 @@
                INITIALIZE                  SYS-1002-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -551,7 +551,7 @@
       *        INITIALIZE                  SYS-1031-REC
       *        MOVE    1               TO  FLG-SYSKANRI
       *    END-IF
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
       *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
       *    CALL    "ORCMCPSUB"          USING
       *                                 MCPAREA
@@ -581,7 +581,7 @@
                INITIALIZE                  SYS-4001-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -648,7 +648,7 @@
                PERFORM 900-KANRIMST-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -759,7 +759,7 @@
                END-IF
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -1183,7 +1183,7 @@
       *        PERFORM 980-SYUNOU-READ-SEC
       *    END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
       *    MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
       *    CALL    "ORCMCPSUB"          USING
       *                                 MCPAREA
@@ -1270,7 +1270,7 @@
            ELSE
                MOVE    1               TO  FLG-PTINF
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -1331,7 +1331,7 @@
                MOVE    1               TO  FLG-HKNCOMBI
            END-IF
      *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -1371,7 +1371,7 @@
                MOVE    1               TO  FLG-PTRSIINF
            END-IF
      *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

@@ -2425,7 +2425,7 @@
            ELSE
                MOVE    1              TO  FLG-HKNNUM
            END-IF
-           MOVE    "DBCLOSE"          TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
            MOVE    "HKNNUM-KEY5"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -3209,7 +3209,7 @@
                MOVE    1                   TO  FLG-RECE07
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -3250,7 +3250,7 @@
                MOVE    1               TO  FLG-KANRIMST
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -3299,7 +3299,7 @@
                MOVE    1                   TO  FLG-SEIKYU
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -3380,7 +3380,7 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA

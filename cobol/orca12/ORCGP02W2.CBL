@@ -440,7 +440,7 @@
                MOVE    "PARA-KEY2"         TO  ORC-DBPATH
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PARA-KEY2"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -484,7 +484,7 @@
                MOVE    "PARA-KEY2"         TO  ORC-DBPATH
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PARA-KEY2"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -4402,7 +4402,7 @@
                END-IF
            END-PERFORM
       *
-           MOVE    "DBCLOSE"          TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
            MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"     USING   MCPAREA
                                            ORCMCPAREA
@@ -4449,7 +4449,7 @@
                      PERFORM 921-HKNNUM-NEXT-SEC
                  END-IF
                END-PERFORM
-               MOVE    "DBCLOSE"          TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
                MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
                CALL    "ORCMCPSUB"     USING   MCPAREA
                                                ORCMCPAREA
@@ -4476,7 +4476,7 @@
       *             PERFORM 921-HKNNUM-NEXT-SEC
       *         END-IF
       *       END-PERFORM
-      *       MOVE    "DBCLOSE"            TO  MCP-FUNC
+      *       MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
       *       MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
       *       CALL    "MCPDBSUB"       USING   MCPAREA
       *                                        MCPDATA-REC
@@ -4509,7 +4509,7 @@
       *               PERFORM 921-HKNNUM-NEXT-SEC
       *           END-IF
       *         END-PERFORM
-      *         MOVE    "DBCLOSE"          TO  MCP-FUNC
+      *         MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
       *         MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
       *         CALL    "MCPDBSUB"     USING   MCPAREA
       *                                        MCPDATA-REC
@@ -4526,7 +4526,7 @@
       *             PERFORM 921-HKNNUM-NEXT-SEC
       *         END-IF
       *       END-PERFORM
-      *       MOVE    "DBCLOSE"            TO  MCP-FUNC
+      *       MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
       *       MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
       *       CALL    "MCPDBSUB"       USING   MCPAREA
       *                                        MCPDATA-REC

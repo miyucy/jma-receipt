@@ -832,7 +832,7 @@
              END-IF
       *
              INITIALIZE                        MCPAREA
-             MOVE    "DBCLOSE"         TO      MCP-FUNC
+             MOVE    "DBCLOSECURSOR"   TO      MCP-FUNC
              MOVE    "SYSKANRI-KEY2"   TO      ORC-DBPATH
              CALL    "ORCMCPSUB"       USING
                                        MCPAREA
@@ -1091,7 +1091,7 @@
            END-IF
       *
            INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
+           MOVE    "DBCLOSECURSOR"   TO      MCP-FUNC
            MOVE    "JYURRK-KEY24"    TO      ORC-DBPATH
            CALL    "ORCMCPSUB"       USING
                                      MCPAREA
@@ -1720,7 +1720,7 @@
               END-IF
       *
               INITIALIZE                        MCPAREA
-              MOVE    "DBCLOSE"         TO      MCP-FUNC
+              MOVE    "DBCLOSECURSOR"   TO      MCP-FUNC
               MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
               CALL    "ORCMCPSUB"       USING
                                         MCPAREA
@@ -2077,7 +2077,7 @@
       *
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -2136,7 +2136,7 @@
       *
               END-IF
       *
-              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
               MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
               CALL    "ORCMCPSUB"         USING
                                           MCPAREA
@@ -2252,7 +2252,7 @@
                     END-PERFORM
              END-IF
       *
-             MOVE    "DBCLOSE"           TO  MCP-FUNC
+             MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
              MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
              CALL    "ORCMCPSUB"         USING
                                          MCPAREA
@@ -2435,7 +2435,7 @@
                     END-PERFORM
              END-IF
       *
-             MOVE    "DBCLOSE"           TO  MCP-FUNC
+             MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
              MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
              CALL    "ORCMCPSUB"         USING
                                          MCPAREA
@@ -3817,7 +3817,7 @@
        CSR-CLOSE-SEC            SECTION.
       *
            INITIALIZE                  MCPAREA
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

@@ -1762,7 +1762,7 @@
                            PERFORM 20022-JYUSINYMD-HENSYU-SEC
                        END-PERFORM
       *
-                       MOVE    "DBCLOSE"          TO  MCP-FUNC
+                       MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
                        MOVE    PATH-TBL-PTINF-KEY12
                                                   TO  MCP-PATH
                        CALL    "MCPSUB"           USING
@@ -2457,7 +2457,7 @@
                INITIALIZE                      BTPARA-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-BTPARA-KEY5
                                        TO  MCP-PATH
            CALL    "MCPSUB"            USING
@@ -2494,7 +2494,7 @@
       *****************************************************************
        900-DBCLOSE-SEC                 SECTION.
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA

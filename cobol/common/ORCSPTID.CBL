@@ -198,7 +198,7 @@
                END-IF
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
@@ -252,7 +252,7 @@
                INITIALIZE                  PTNUM-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA

@@ -628,7 +628,7 @@
                PERFORM 900-BTPARA-READ-N-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-BTPARA-KEY3    TO  MCP-PATH
            CALL    "MCPSUB"           USING
                                        MCPAREA
@@ -1659,7 +1659,7 @@
                INITIALIZE                      PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-PTINF-KEY      TO  MCP-PATH
            CALL    "MCPSUB"            USING
                                        MCPAREA
@@ -1700,7 +1700,7 @@
                INITIALIZE                      HKNJAINF-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-HKNJAINF-KEY 
                                        TO  MCP-PATH
            CALL    "MCPSUB"            USING
@@ -1730,7 +1730,7 @@
                INITIALIZE                      BTPARA-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  MCP-PATH
            CALL    "MCPSUB"            USING
                                        MCPAREA
@@ -1788,7 +1788,7 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-SYSKANRI-KEY10
                                        TO  MCP-PATH
            CALL    "MCPSUB"            USING

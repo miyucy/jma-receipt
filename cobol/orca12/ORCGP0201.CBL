@@ -323,7 +323,7 @@
                    MOVE  SPACE                   TO  UKEPAR-REC
                END-IF
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -495,7 +495,7 @@
                    END-IF
       *
                    MOVE  "SYSKANRI-KEY4"         TO  ORC-DBPATH
-                   MOVE  "DBCLOSE"               TO  MCP-FUNC
+                   MOVE  "DBCLOSECURSOR"         TO  MCP-FUNC
                    CALL  "ORCMCPSUB"              USING
                                                   MCPAREA
                                                   ORCMCPAREA
@@ -510,7 +510,7 @@
                END-PERFORM
       *
                MOVE  "UKETUKE-KEY2"              TO  ORC-DBPATH
-               MOVE  "DBCLOSE"                   TO  MCP-FUNC
+               MOVE  "DBCLOSECURSOR"             TO  MCP-FUNC
                CALL  "ORCMCPSUB"                  USING
                                                   MCPAREA
                                                   ORCMCPAREA

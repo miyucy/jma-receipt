@@ -574,7 +574,7 @@
                PERFORM                     910-TENSU-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
@@ -751,7 +751,7 @@
                PERFORM                     910-TENSU-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
            MOVE    SPA-SRYYMD          TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
@@ -862,7 +862,7 @@
                        ELSE
                            MOVE    1                   TO  FLG-TENSU
                        END-IF
-                       MOVE    "DBCLOSE"           TO  MCP-FUNC
+                       MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                        MOVE    "TENSU-KEY"         TO  ORC-DBPATH
                        CALL    "ORCMCPSUB"          USING
                                                     MCPAREA
@@ -888,7 +888,7 @@
                PERFORM                     930-INPUTCD-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -1147,7 +1147,7 @@
                PERFORM                     910-TENSU-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD
            CALL    "ORCMCPSUB"         USING
@@ -1336,7 +1336,7 @@
                    MOVE    WRK-PATH            TO  ORC-DBPATH
                    PERFORM                     910-TENSU-READ-SEC
                END-PERFORM
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    WRK-PATH            TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA

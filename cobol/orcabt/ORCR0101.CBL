@@ -565,7 +565,7 @@
        900-RECEPRT-CLS-SEC            SECTION.
       *
            MOVE    WRK-PATH            TO  ORC-DBPATH
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

@@ -638,7 +638,7 @@
            END-PERFORM
       *
       *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACT-KEY4"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
@@ -799,7 +799,7 @@
            END-PERFORM
       *
       *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "CHK-KEY2"          TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
@@ -905,7 +905,7 @@
                PERFORM 920-KNJBYO-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
@@ -1292,7 +1292,7 @@
                INITIALIZE                  BYOMEI-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "BYOMEI-KEY"           TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
@@ -1376,7 +1376,7 @@
                INITIALIZE                  SRYACCT-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACCT-KEY"           TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
@@ -1422,7 +1422,7 @@
                INITIALIZE                  TNS-TENSU-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"           TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA

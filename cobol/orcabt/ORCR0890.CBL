@@ -317,7 +317,7 @@
                            UNTIL       FLG-PTBYOMEI     =   1
       *    カーソルクロース
            INITIALIZE                  MCPAREA
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH 
            CALL    "ORCMCPSUB"          USING
                                             MCPAREA
@@ -722,7 +722,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA

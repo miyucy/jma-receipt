@@ -2023,7 +2023,7 @@
                INITIALIZE              PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -2046,7 +2046,7 @@
            END-IF
       *
       *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNYUINRRK-KEY"    TO  ORC-DBPATH
            PERFORM 910-DBCLOSE-SEC
       *
@@ -2239,7 +2239,7 @@
       *****************************************************************
        910-DBCLOSE-SEC                 SECTION.
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA

@@ -482,7 +482,7 @@
                    MOVE    "RECEPRT-KEY17"         TO  ORC-DBPATH
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

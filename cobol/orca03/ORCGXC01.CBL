@@ -1172,7 +1172,7 @@
            END-PERFORM                   
       *                  
       *     ラージオブジェクト対応までコメント★
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
       *    MOVE    PATH-TBL-PREVIEW-KEY2
       *                                TO  MCP-PATH
       *    CALL    "MCPSUB"            USING
@@ -1395,7 +1395,7 @@
            END-PERFORM
       * 
       *     ラージオブジェクト対応までコメント★
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
       *    MOVE    PATH-TBL-PREVIEW-KEY2
       *                                TO  MCP-PATH
       *    CALL    "MCPSUB"            USING
@@ -1476,7 +1476,7 @@
                PERFORM 900-PRVKANRI-FET-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-MCP-PATH        TO  MCP-PATH
            CALL    "MCPSUB"            USING
                                        MCPAREA
@@ -2528,7 +2528,7 @@
                MOVE    1                   TO  FLG-PRVKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-PRVKANRI-KEY
                                        TO  MCP-PATH
            CALL    "MCPSUB"            USING
@@ -2566,7 +2566,7 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

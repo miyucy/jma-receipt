@@ -404,7 +404,7 @@
                   PERFORM 500-ERR-HENSYU-SEC
               END-IF
       *
-              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
               MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
               CALL    "ORCMCPSUB"          USING
                                            MCPAREA
@@ -494,7 +494,7 @@
                   PERFORM 500-ERR-HENSYU-SEC
               END-IF
       *
-              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
               MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
               CALL    "ORCMCPSUB"          USING
                                            MCPAREA
@@ -575,7 +575,7 @@
                    PERFORM 20011-IKKATU-SRYACCT-HENSYU-SEC
                END-PERFORM
       *        カーソルクロース
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                            MCPAREA
@@ -614,7 +614,7 @@
                   PERFORM 20012-IKKATU-NYUINACCT-HENSYU-SEC
                END-PERFORM
       *        カーソルクロース
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "NYUINACCT-KEY13"    TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                            MCPAREA
@@ -1212,7 +1212,7 @@
                               UNTIL       FLG-SYSKANRI    =   1
                               OR          FLG-END         =   1
       *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -1338,7 +1338,7 @@
                    PERFORM 200211-KOBETU-SRYACCT-HENSYU-SEC
                END-PERFORM
       *        カーソルクロース
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
@@ -1376,7 +1376,7 @@
                    PERFORM 200212-KOBETU-NYUINACCT-HENSYU-SEC
                END-PERFORM
       *        カーソルクロース
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                            MCPAREA
@@ -1907,7 +1907,7 @@
        900-DBCLOSE-SEC                 SECTION.
       *
            MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

@@ -514,7 +514,7 @@
                MOVE    1                   TO  FLG-SANTEI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
       *****MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
            MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
@@ -675,7 +675,7 @@
                    INITIALIZE                  SANTEI-REC
                END-IF
       *
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
@@ -1014,7 +1014,7 @@
                MOVE    1                   TO  FLG-SANTEI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
       *****MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
            MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
@@ -1143,7 +1143,7 @@
                    MOVE    1                   TO  FLG-SANTEI
                END-IF
       *
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
@@ -1285,7 +1285,7 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY22"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

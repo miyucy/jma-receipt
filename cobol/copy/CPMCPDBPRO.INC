@@ -363,7 +363,7 @@
            EVALUATE    MCP-FUNC
              WHEN     'DBOPEN'
              WHEN     'DBDISCONNECT'
-             WHEN     'DBCLOSE'
+             WHEN     'DBCLOSECURSOR'
              WHEN     'DBSTART'
              WHEN     'DBCOMMIT'
                MOVE    LOW-VALUE       TO  MCP-PATH
@@ -375,7 +375,7 @@
            END-EVALUATE.
       *
            EVALUATE    MCP-FUNC
-             WHEN     'DBCLOSE'
+             WHEN     'DBCLOSECURSOR'
                  CONTINUE
              WHEN      OTHER
                  CALL    "MCPSUB"    USING   MCPAREA

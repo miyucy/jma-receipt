@@ -971,7 +971,7 @@
                PERFORM 900-BYOMEI-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "BYOMEI-KEY2"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
@@ -1499,7 +1499,7 @@
                MOVE    1                   TO  FLG-BYOMEI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "BYOMEI-KEY"           TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA

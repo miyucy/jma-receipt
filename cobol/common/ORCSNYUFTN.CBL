@@ -792,7 +792,7 @@
       *
               END-IF
       *
-              MOVE    "DBCLOSE"               TO  MCP-FUNC
+              MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
               MOVE    "NYUINACCT-KEY2"        TO  ORC-DBPATH
               CALL    "ORCMCPSUB"             USING
                                               MCPAREA
@@ -927,7 +927,7 @@
       *
               END-IF
       *
-              MOVE    "DBCLOSE"               TO  MCP-FUNC
+              MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
               MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH
               CALL    "ORCMCPSUB"             USING
                                               MCPAREA
@@ -1103,7 +1103,7 @@
                   PERFORM   HKNCOMBI-READ-SEC
               END-IF
       *
-              MOVE    "DBCLOSE"            TO      MCP-FUNC
+              MOVE    "DBCLOSECURSOR"      TO      MCP-FUNC
               MOVE    "HKNCOMBI-KEY"       TO      ORC-DBPATH
               CALL    "ORCMCPSUB"           USING   MCPAREA
                                                     ORCMCPAREA
@@ -1348,7 +1348,7 @@
       *          PERFORM   HKNCOMBI-READ-SEC
       *       END-IF
       *
-      *       MOVE    "DBCLOSE"            TO      MCP-FUNC
+      *       MOVE    "DBCLOSECURSOR"      TO      MCP-FUNC
       *       MOVE    "HKNCOMBI-KEY"       TO      ORC-DBPATH
       *       CALL    "ORCMCPSUB"           USING   MCPAREA
       *                                             ORCMCPAREA
@@ -4534,7 +4534,7 @@
                INITIALIZE                  TNS-TENSU-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -4573,7 +4573,7 @@
        CSR-CLOSE-SEC            SECTION.
       *
       *    INITIALIZE                  MCPAREA
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WK-PATH             TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

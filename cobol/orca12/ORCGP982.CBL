@@ -309,7 +309,7 @@
                MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 900-ADRS-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-DBPATH          TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA

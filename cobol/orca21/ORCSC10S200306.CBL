@@ -1155,7 +1155,7 @@
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
       *    MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
       *    CALL    "ORCMCPSUB"          USING
       *                                 MCPAREA
@@ -1667,7 +1667,7 @@
                END-IF
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
       *    MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
       *    CALL    "ORCMCPSUB"          USING
       *                                 MCPAREA
@@ -2564,7 +2564,7 @@
                END-IF
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
       *    MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
       *    CALL    "ORCMCPSUB"          USING
       *                                 MCPAREA
@@ -4434,7 +4434,7 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

@@ -330,7 +330,7 @@
            END-IF.
       *
            INITIALIZE              MCPAREA.
-           MOVE    "DBCLOSE"       TO  MCP-FUNC.
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC.
            MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH.
            CALL    "ORCMCPSUB"     USING
                                    MCPAREA
@@ -443,7 +443,7 @@
                END-IF
       *
                INITIALIZE              MCPAREA
-               MOVE    "DBCLOSE"       TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
                MOVE    WK-PATH         TO  ORC-DBPATH
                CALL    "ORCMCPSUB"     USING
                                        MCPAREA
@@ -675,7 +675,7 @@
                    END-IF
       *
                    INITIALIZE                  MCPAREA
-                   MOVE    "DBCLOSE"           TO  MCP-FUNC
+                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                    MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
                    CALL    "ORCMCPSUB"         USING
                                                MCPAREA

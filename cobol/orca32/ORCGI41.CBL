@@ -4044,7 +4044,7 @@
                MOVE    NACCT-SRYYM     TO  WRK-SRYYM
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-NYUINACCT-KEY25
                                        TO  MCP-PATH
            CALL    "MCPSUB"            USING
@@ -4196,7 +4196,7 @@
                MOVE    NACCT-SRYYM     TO  WRK-SRYYM
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-NYUINACCT-KEY24
                                        TO  MCP-PATH
            CALL    "MCPSUB"            USING
@@ -6943,7 +6943,7 @@
       *****************************************************************
        910-DB-CLOSE-SEC                SECTION.
       *
-           MOVE    "DBCLOSE"            TO  MCP-FUNC.
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

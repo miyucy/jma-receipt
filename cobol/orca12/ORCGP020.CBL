@@ -387,7 +387,7 @@
                MOVE    "PARA-KEY2"         TO  ORC-DBPATH
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PARA-KEY2"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -576,7 +576,7 @@
                PERFORM 910-YYK-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "YYK-KEY4"          TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -1525,7 +1525,7 @@
                END-PERFORM
       *
                MOVE  "UKETUKE-KEY2"         TO  ORC-DBPATH
-               MOVE  "DBCLOSE"              TO  MCP-FUNC
+               MOVE  "DBCLOSECURSOR"        TO  MCP-FUNC
                CALL  "ORCMCPSUB"             USING
                                              MCPAREA
                                              ORCMCPAREA
@@ -1649,7 +1649,7 @@
                PERFORM 900-UKETUKE-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

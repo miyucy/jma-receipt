@@ -185,7 +185,7 @@
       *        MOVE    1                   TO  FLG-INPUTCD
       *    END-IF
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
       *    MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
       *    CALL    "MCPDBSUB"          USING
       *                                MCPAREA

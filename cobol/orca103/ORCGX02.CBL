@@ -444,7 +444,7 @@
                PERFORM 900-CHK-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "CHK-KEY2"          TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -513,7 +513,7 @@
                    PERFORM 900-TENSU-READ-SEC
                END-IF
            END-PERFORM
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -1060,7 +1060,7 @@
       *
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "BYOMEI-KEY2"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -2051,7 +2051,7 @@
                INITIALIZE                  BYOMEI-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "BYOMEI-KEY"           TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2110,7 +2110,7 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
       *    MOVE    "TENSU-KEY"        TO  ORC-DBPATH
       *    CALL    "ORCMCPSUB"          USING
       *                                 MCPAREA
@@ -2194,7 +2194,7 @@
            END-IF
       *
            MOVE    "INPUTCD-KEY2"      TO  ORC-DBPATH
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA

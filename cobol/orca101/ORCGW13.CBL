@@ -522,7 +522,7 @@
       *
            PERFORM 900-SYSKANRI-INV-SEC
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -585,7 +585,7 @@
               END-PERFORM
       *
       *       カーソルクロース
-              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
               MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
               CALL    "ORCMCPSUB"         USING
                                           MCPAREA
@@ -720,7 +720,7 @@
            MOVE    IDX                 TO  SPA-GMN-MAX
       *
       *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                            MCPAREA
@@ -754,7 +754,7 @@
                INITIALIZE                  SYS-4003-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -886,7 +886,7 @@
            END-IF
       *
            MOVE    "TENSU-KEY12S"      TO  ORC-DBPATH
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -2632,7 +2632,7 @@
                    MOVE    1       TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "TENSU-KEY"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -2669,7 +2669,7 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

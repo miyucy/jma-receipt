@@ -974,7 +974,7 @@
       *****************************************************************
        900-DBCLOSE-SEC             SECTION.
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "SYUMEI-KEY4"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1036,7 +1036,7 @@
       *****************************************************************
        900-SMEI2-CLOSE-SEC         SECTION.
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "SYUMEI-KEY5"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1078,7 +1078,7 @@
                INITIALIZE                  SYU-REC
            END-IF
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1120,7 +1120,7 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "PTINF-KEY"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1162,7 +1162,7 @@
                INITIALIZE                  PTNUM-REC
            END-IF
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1201,7 +1201,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA

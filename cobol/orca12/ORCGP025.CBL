@@ -473,7 +473,7 @@
                MOVE    "SRYKARRK-KEY2" TO  ORC-DBPATH
                PERFORM 960-SRYKARRK-NEXT-SEC
            END-PERFORM
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"              USING
                                             MCPAREA
@@ -521,7 +521,7 @@
                MOVE    1               TO  FLG-KANRIMST
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"              USING
                                             MCPAREA
@@ -1336,7 +1336,7 @@
              PERFORM 970-JYURRK-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"             TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"       TO  MCP-FUNC
            MOVE    "JYURRK-KEY7"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"                USING
                                               MCPAREA

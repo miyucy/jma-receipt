@@ -462,7 +462,7 @@
                   MOVE    1               TO  FLG-END
               END-IF
       *
-              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
               MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
               CALL    "ORCMCPSUB"          USING
                                            MCPAREA
@@ -563,7 +563,7 @@
                   PERFORM 500-ERR-HENSYU-SEC
               END-IF
       *
-              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
               MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
               CALL    "ORCMCPSUB"          USING
                                            MCPAREA
@@ -2109,7 +2109,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2169,7 +2169,7 @@
                MOVE    1               TO  FLG-KYUSEIRRK
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "KYUSEIRRK-KEY3"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2301,7 +2301,7 @@
        CSR-CLOSE-SEC            SECTION.
       *
            INITIALIZE                  MCPAREA
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WK-PATH             TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

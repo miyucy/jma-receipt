@@ -256,7 +256,7 @@
                PERFORM 900-SRYACCT-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"        TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"  TO  MCP-FUNC
            MOVE    "SRYACCT-KEY17" TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA

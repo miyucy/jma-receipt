@@ -487,7 +487,7 @@
            ELSE
                MOVE    1                   TO  FLG-INPUTSET
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "INPUTSET-KEY4"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA

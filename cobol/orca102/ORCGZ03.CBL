@@ -731,7 +731,7 @@
                MOVE    1                   TO  FLG-TENSU
                INITIALIZE                      TNS-TENSU-REC
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -767,7 +767,7 @@
                ELSE
                    INITIALIZE                 TENSUPLUS-REC
                END-IF
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
@@ -3077,7 +3077,7 @@
                INITIALIZE                      TNS-TENSU-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -3290,7 +3290,7 @@
                INITIALIZE                      TNS-TENSU-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -3358,7 +3358,7 @@
                INITIALIZE                      TNS-TENSU-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -3641,7 +3641,7 @@
                ELSE
                    MOVE    1               TO  FLG-TENSUPLUS
                END-IF
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
@@ -3764,7 +3764,7 @@
                PERFORM 990-TENSUPLUS-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSUPLUS-KEY2"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -4446,7 +4446,7 @@
       *****************************************************************
        813-TENSUCLS-SEC                          SECTION.
                MOVE  TNS-TENSU-REC               TO  MCPDATA-REC
-               MOVE  "DBCLOSE"                   TO  MCP-FUNC
+               MOVE  "DBCLOSECURSOR"             TO  MCP-FUNC
                MOVE  "TENSU-KEY"                 TO  ORC-DBPATH
                CALL  "ORCMCPSUB"                  USING
                                                   MCPAREA

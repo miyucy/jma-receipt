@@ -177,7 +177,7 @@
                PERFORM 910-PGKANRI-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "PGKANRI-KEY2"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA

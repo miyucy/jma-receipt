@@ -1739,7 +1739,7 @@
        3101-SYSKANRI-CLOSE-SEC     SECTION.
       *
            MOVE    WRK-DBPATH-SYS  TO  ORC-DBPATH
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1806,7 +1806,7 @@
        31011-HKNNUM-CLOSE-SEC      SECTION.
       *
            MOVE    WRK-DBPATH-KOH  TO  ORC-DBPATH
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA

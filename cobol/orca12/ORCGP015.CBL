@@ -438,7 +438,7 @@
            ELSE
                MOVE    1                   TO  FLG-PTNUM
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -482,7 +482,7 @@
            ELSE
                MOVE    1                   TO  FLG-PTNUM
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA

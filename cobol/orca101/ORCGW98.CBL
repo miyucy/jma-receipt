@@ -459,7 +459,7 @@
       *
            PERFORM 3102-SPA-HAITA-MAKE-SEC
       *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
            CALL    "MCPSUB"            USING
                                        MCPAREA
@@ -800,7 +800,7 @@
       *        GO  TO  490-KOUSHIN-EXT
       *    END-IF      
       *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
            CALL    "MCPSUB"            USING
                                        MCPAREA
@@ -1179,7 +1179,7 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -1234,7 +1234,7 @@
                MOVE    1                   TO  FLG-LDMAP
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
            CALL    "MCPSUB"          USING
                                      MCPAREA

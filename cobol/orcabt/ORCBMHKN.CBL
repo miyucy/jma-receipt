@@ -614,7 +614,7 @@
                PERFORM 900-PTHKNINF-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTHKNINF-KEY5"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"              USING
                                             MCPAREA
@@ -692,7 +692,7 @@
                 PERFORM 2201-HKNCOMBI-UPD-SEC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTHKNINF-KEY5"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"              USING
                                             MCPAREA
@@ -965,7 +965,7 @@
                MOVE    1               TO  FLG-ERR3
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -1084,7 +1084,7 @@
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"      USING   MCPAREA
                                             ORCMCPAREA
@@ -1525,7 +1525,7 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

@@ -860,7 +860,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -935,7 +935,7 @@
       *****************************************************************
        910-I001-CLOSE-SEC          SECTION.
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "I001-KEY"      TO  ORC-DBPATH
            CALL    "MCPSUB"            USING
                                        MCPAREA

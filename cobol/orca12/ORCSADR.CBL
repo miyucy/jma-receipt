@@ -178,7 +178,7 @@
            END-PERFORM
       *
            MOVE  "SYSKANRI-KEY2"             TO  ORC-DBPATH
-           MOVE  "DBCLOSE"                   TO  MCP-FUNC
+           MOVE  "DBCLOSECURSOR"             TO  MCP-FUNC
            CALL  "ORCMCPSUB"                  USING
                                               MCPAREA
                                               ORCMCPAREA
@@ -259,7 +259,7 @@
                MOVE  "1"                         TO  JPAR-ERRCD
            END-IF.
       *
-           MOVE  "DBCLOSE"                       TO  MCP-FUNC.
+           MOVE  "DBCLOSECURSOR"                 TO  MCP-FUNC.
            MOVE  "ADRS-KEY2"                     TO  ORC-DBPATH.
            CALL  "ORCMCPSUB"                      USING
                                                   MCPAREA

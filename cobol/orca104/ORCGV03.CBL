@@ -2447,7 +2447,7 @@
        900-TBL-CLOSE-SEC               SECTION.
       *
            MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA

@@ -368,7 +368,7 @@
            END-PERFORM
            MOVE    IDY                 TO  SPA-GMN2A-MAX
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"              USING
                                             MCPAREA

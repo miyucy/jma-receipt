@@ -441,7 +441,7 @@
                END-IF
            END-IF.
       *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC.
            MOVE    "DBKANRI-KEY"       TO  ORC-DBPATH.
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA

@@ -4340,7 +4340,7 @@
                        END-IF
                      END-IF
                    END-IF
-                   MOVE    "DBCLOSE"           TO  MCP-FUNC
+                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                    MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
                    CALL    "ORCMCPSUB"          USING
                                                 MCPAREA
@@ -4642,7 +4642,7 @@
        CSR-CLOSE-SEC            SECTION.
       *
            INITIALIZE                  MCPAREA
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WK-PATH             TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
@@ -5002,7 +5002,7 @@
                INITIALIZE                  PTCOM-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA

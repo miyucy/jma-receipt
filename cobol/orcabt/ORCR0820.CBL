@@ -399,7 +399,7 @@
            END-PERFORM        
       *                 
            MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING   MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
@@ -469,7 +469,7 @@
                END-PERFORM
       *                 
                MOVE    "PTNYUINRRK-KEY22"  TO  ORC-DBPATH
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                CALL    "ORCMCPSUB"         USING   MCPAREA
                                                    ORCMCPAREA
                                                    MCPDATA-REC
@@ -753,7 +753,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA

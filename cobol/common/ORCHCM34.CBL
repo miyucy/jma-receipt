@@ -5659,7 +5659,7 @@
       *****************************************************************
        910-DBCLOSE-SEC               SECTION.
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -5703,7 +5703,7 @@
        920-DBCLOSE-SEC               SECTION.
       *
       *    暫定的にコメント化
-      *    MOVE    "DBCLOSE"       TO  MCP-FUNC
+      *    MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
       *    CALL    "MCPSUB"            USING
       *                                MCPAREA
       *                                MCPDATA-REC

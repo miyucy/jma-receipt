@@ -235,7 +235,7 @@
                MOVE    "PTINF-KEY5"        TO  ORC-DBPATH
                PERFORM 910-PTINF-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY5"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

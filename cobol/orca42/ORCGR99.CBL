@@ -668,7 +668,7 @@
                MOVE    1                   TO  FLG-RECE07
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
       *****MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
            MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING

@@ -283,7 +283,7 @@
            ELSE
                      MOVE     1            TO  FLG-SYUNOU
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -390,7 +390,7 @@
                        END-IF
                     END-IF
                  END-IF
-                 MOVE    "DBCLOSE"               TO  MCP-FUNC
+                 MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
                  MOVE    "SYUNOU-KEY27"          TO  ORC-DBPATH
                  CALL    "ORCMCPSUB"              USING
                                                   MCPAREA
@@ -468,7 +468,7 @@
                         END-IF
                     END-IF
                  END-IF
-                 MOVE    "DBCLOSE"              TO  MCP-FUNC
+                 MOVE    "DBCLOSECURSOR"        TO  MCP-FUNC
                  MOVE    "JYURRK-KEY6"          TO  ORC-DBPATH
                  CALL    "ORCMCPSUB"             USING
                                                  MCPAREA
@@ -500,7 +500,7 @@
                  ELSE                                                         
                      MOVE    1               TO  FLG-HKNKUMI                  
                  END-IF                                                       
-                 MOVE    "DBCLOSE"           TO  MCP-FUNC                     
+                 MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC                     
                  MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH                   
                  CALL    "ORCMCPSUB"          USING                           
                                               MCPAREA                         
@@ -561,7 +561,7 @@
                      UNTIL   (FLG-SRYACCT    =       1      ) OR
                              (IDX1           >       100    )   
       *
-                 MOVE    "DBCLOSE"           TO  MCP-FUNC
+                 MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                  MOVE    "SRYACCT-KEY24"     TO  ORC-DBPATH
                  CALL    "ORCMCPSUB"          USING
                                               MCPAREA
@@ -760,7 +760,7 @@
                                PERFORM    900-SYUMEI-READ-SEC
                        END-PERFORM
                        PERFORM    4405-SMEI-SAKUSEI-SEC
-                       MOVE    "DBCLOSE"           TO  MCP-FUNC
+                       MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                        MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
                        CALL    "ORCMCPSUB"          USING
                                                     MCPAREA
@@ -1276,7 +1276,7 @@
                  END-IF                                                
                END-IF                                                  
       *
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
@@ -1977,7 +1977,7 @@
                      END-IF
                    END-IF
       *
-                   MOVE    "DBCLOSE"            TO  MCP-FUNC
+                   MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
                    MOVE    "SRYACT-KEY8"        TO  ORC-DBPATH
                    CALL    "ORCMCPSUB"           USING
                                                  MCPAREA
@@ -2372,7 +2372,7 @@
              ELSE
                      MOVE       1               TO  FLG-SYUTOTAL
              END-IF.
-             MOVE    "DBCLOSE"               TO  MCP-FUNC.
+             MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC.
              MOVE    "SYUTOTAL-KEY"          TO  ORC-DBPATH.
              CALL    "ORCMCPSUB"              USING
                                               MCPAREA
@@ -2424,7 +2424,7 @@
                PERFORM   901-SYSKANRI-READ-SEC
            END-IF.
       *
-           MOVE    "DBCLOSE"            TO  MCP-FUNC.
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
            MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH.
            CALL    "ORCMCPSUB"           USING
                                          MCPAREA
@@ -2455,7 +2455,7 @@
                PERFORM   901-SYSKANRI-READ-SEC
            END-IF.
       *
-           MOVE    "DBCLOSE"            TO  MCP-FUNC.
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
            MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH.
            CALL    "ORCMCPSUB"           USING
                                          MCPAREA
@@ -2607,7 +2607,7 @@
                    MOVE    1                   TO  FLG-TENSU
            END-IF.
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC.
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

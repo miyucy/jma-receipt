@@ -320,7 +320,7 @@
                PERFORM 2002-PRINT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -342,7 +342,7 @@
                PERFORM 2002-PRINT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -376,7 +376,7 @@
                PERFORM 2002-PRINT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -650,7 +650,7 @@
                                        TO  HC27-KOHNAME (CNT-LINE1)
 115900     END-IF
       * 
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNNUM-KEY5"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                             MCPAREA
@@ -868,7 +868,7 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -907,7 +907,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -967,7 +967,7 @@
                MOVE    1                   TO  FLG-HKNJAINF
            END-IF
       *
-           MOVE   "DBCLOSE"            TO  MCP-FUNC
+           MOVE   "DBCLOSECURSOR"      TO  MCP-FUNC
            MOVE   "HKNJAINF-KEY"       TO  ORC-DBPATH
            CALL   "ORCMCPSUB"          USING MCPAREA
                                              ORCMCPAREA

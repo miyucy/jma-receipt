@@ -1392,7 +1392,7 @@
       *****************************************************************
        900-ACCT-DBCLOSE-SEC        SECTION.
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1426,7 +1426,7 @@
       *****************************************************************
        900-SRY-DBCLOSE-SEC         SECTION.
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1517,7 +1517,7 @@
                    MOVE    1                   TO  FLG-TENSU
                END-IF
       *
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "TENSU-KEY"         TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                            MCPAREA
@@ -1629,7 +1629,7 @@
       *****************************************************************
        900-SYS1005-DBCLOSE-SEC     SECTION.
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA

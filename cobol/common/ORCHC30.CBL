@@ -1771,7 +1771,7 @@
                MOVE    1                   TO  FLG-YAKUJYO
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "YAKUJYO-KEY"           TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -1813,7 +1813,7 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "TENSU-KEY"             TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -1953,7 +1953,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

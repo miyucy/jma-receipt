@@ -509,7 +509,7 @@
                PERFORM 900-PRTKANRI-FET-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-PRTKANRI-KEY3
                                        TO  MCP-PATH
            CALL    "MCPSUB"            USING
@@ -1080,7 +1080,7 @@
                PERFORM 900-PRTKANRI-FET2-SEC
            END-PERFORM
       *                  
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-PRTKANRI-KEY2
                                        TO  MCP-PATH
            CALL    "MCPSUB"            USING
@@ -1275,7 +1275,7 @@
       *        PERFORM 900-PRTKANRI-FET2-SEC
       *****END-PERFORM                   
       *                 
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    PATH-TBL-PRTKANRI-KEY2
                                      TO  MCP-PATH
            CALL    "MCPSUB"            USING
@@ -1961,7 +1961,7 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

@@ -445,7 +445,7 @@
                   PERFORM 500-ERR-HENSYU-SEC
               END-IF
       *
-              MOVE    "DBCLOSE"               TO  MCP-FUNC
+              MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
               MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
               CALL    "ORCMCPSUB"             USING
                                               MCPAREA
@@ -485,7 +485,7 @@
                   PERFORM 500-ERR-HENSYU-SEC
               END-IF
       *
-              MOVE    "DBCLOSE"               TO  MCP-FUNC
+              MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
               MOVE    "SYSKANRI-KEY8"         TO  ORC-DBPATH
               CALL    "ORCMCPSUB"             USING
                                               MCPAREA
@@ -542,7 +542,7 @@
                   PERFORM 500-ERR-HENSYU-SEC
              END-IF
       *
-             MOVE    "DBCLOSE"               TO  MCP-FUNC
+             MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
              MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
              CALL    "ORCMCPSUB"             USING
                                              MCPAREA
@@ -581,7 +581,7 @@
                   PERFORM 500-ERR-HENSYU-SEC
              END-IF
       *
-             MOVE    "DBCLOSE"               TO  MCP-FUNC
+             MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
              MOVE    "SYSKANRI-KEY8"         TO  ORC-DBPATH
              CALL    "ORCMCPSUB"             USING
                                              MCPAREA
@@ -622,7 +622,7 @@
                END-PERFORM
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY11"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -704,7 +704,7 @@
                END-PERFORM
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY11"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -901,7 +901,7 @@
       *
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "NYUINACCT-KEY7"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -989,7 +989,7 @@
                END-PERFORM
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -1160,7 +1160,7 @@
                              MOVE    1      TO    FLG-SHOSAISIN
                          END-IF
                        END-IF
-                       MOVE    "DBCLOSE"          TO  MCP-FUNC
+                       MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
                        MOVE    "TENSU-KEY"        TO  ORC-DBPATH
                        CALL    "ORCMCPSUB"        USING
                                                   MCPAREA
@@ -1172,7 +1172,7 @@
                END-PERFORM
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "SRYACT-KEY9"           TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -1369,7 +1369,7 @@
       *
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "NYUINACCT-KEY7"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -1415,7 +1415,7 @@
                END-PERFORM
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -1452,7 +1452,7 @@
                      END-IF
                   END-PERFORM
                END-IF
-               MOVE    "DBCLOSE"          TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
                MOVE    "TENSU-KEY"        TO  ORC-DBPATH
                CALL    "ORCMCPSUB"        USING
                                           MCPAREA
@@ -1482,7 +1482,7 @@
                      END-IF
                   END-PERFORM
                END-IF
-               MOVE    "DBCLOSE"          TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
                MOVE    "TENSU-KEY"        TO  ORC-DBPATH
                CALL    "ORCMCPSUB"        USING
                                           MCPAREA
@@ -1512,7 +1512,7 @@
                      END-IF
                   END-PERFORM
                END-IF
-               MOVE    "DBCLOSE"          TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
                MOVE    "TENSU-KEY"        TO  ORC-DBPATH
                CALL    "ORCMCPSUB"        USING
                                           MCPAREA
@@ -2032,7 +2032,7 @@
                               MOVE   1         TO   FLG-NYUKHN
                          END-IF
                      END-IF                  
-                     MOVE    "DBCLOSE"          TO  MCP-FUNC
+                     MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
                      MOVE    "TENSU-KEY"        TO  ORC-DBPATH
                      CALL    "ORCMCPSUB"        USING
                                                 MCPAREA
@@ -2054,7 +2054,7 @@
                    MOVE     NYURYAKUSHO-RYAKUSHO
                                        TO  WRK-RYAKUSHO
                  END-IF                  
-                 MOVE    "DBCLOSE"               TO  MCP-FUNC
+                 MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
                  MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
                  CALL    "ORCMCPSUB"             USING
                                                  MCPAREA
@@ -2098,7 +2098,7 @@
                        COMPUTE  WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
                                                    +  WRK-KSNTEN
                     END-IF  
-                    MOVE    "DBCLOSE"            TO  MCP-FUNC
+                    MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
                     MOVE    "TENSU-KEY"          TO  ORC-DBPATH
                     CALL    "ORCMCPSUB"          USING
                                                  MCPAREA
@@ -2107,7 +2107,7 @@
       *
                  END-IF
       *
-                 MOVE    "DBCLOSE"               TO  MCP-FUNC
+                 MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
                  MOVE    "SENTEICDCHG-KEY2"      TO  ORC-DBPATH
                  CALL    "ORCMCPSUB"             USING
                                                  MCPAREA
@@ -2118,7 +2118,7 @@
       *
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "NYUINACT-KEY9"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -2475,7 +2475,7 @@
       *
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "NYUINACCT-KEY7"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -2536,7 +2536,7 @@
       *
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "NYUINACCT-KEY7"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -2588,7 +2588,7 @@
                END-PERFORM
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -2676,7 +2676,7 @@
       *
                        PERFORM   500-RYAKUSYO-HENSYU-SEC
       *
-                       MOVE    "DBCLOSE"               TO  MCP-FUNC
+                       MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
                        MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
                        CALL    "ORCMCPSUB"             USING
                                                        MCPAREA
@@ -2690,7 +2690,7 @@
       *
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "NYUINACT-KEY9"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -2735,7 +2735,7 @@
       *
                        PERFORM   500-RYAKUSYO-HENSYU-SEC
       *
-                       MOVE    "DBCLOSE"               TO  MCP-FUNC
+                       MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
                        MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
                        CALL    "ORCMCPSUB"             USING
                                                        MCPAREA
@@ -2747,7 +2747,7 @@
                END-PERFORM
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "SRYACT-KEY9"           TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -2860,7 +2860,7 @@
                              TO   RECE62-SHOKUJISYUBETU(ID1)
                 END-IF
            END-IF                  
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -2917,7 +2917,7 @@
                END-PERFORM
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
@@ -3197,7 +3197,7 @@
                 END-EVALUATE
            END-IF
       *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
            MOVE    "SRYACT-KEY9"           TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
