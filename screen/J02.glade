@@ -1532,15 +1532,6 @@
     </widget>
 
     <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator2</name>
-      <x>8</x>
-      <y>72</y>
-      <width>16</width>
-      <height>180</height>
-    </widget>
-
-    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
       <x>8</x>
