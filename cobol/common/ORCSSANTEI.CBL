@@ -561,10 +561,15 @@
       *            前回分を削除する
                    PERFORM VARYING     IDX-Y2  FROM    1   BY  1
                            UNTIL       IDX-Y2  >   31
-                       COMPUTE SANTEI-DAY (IDX-Y2)
+                       IF      SANTEI-DAY (IDX-Y2) <   SSANTEI-MAE-DAY
+                                                             (IDX-Y2)
+                           MOVE    ZERO        TO  SANTEI-DAY (IDX-Y2)
+                       ELSE
+                           COMPUTE SANTEI-DAY (IDX-Y2)
                                                =   SANTEI-DAY (IDX-Y2)
                                                -   SSANTEI-MAE-DAY
                                                              (IDX-Y2)
+                       END-IF
                    END-PERFORM
       *            登録する日に数字が入っている
                    PERFORM VARYING     IDX-Y2  FROM    1   BY  1
@@ -804,18 +809,34 @@
                    IF      SSANTEI-KAISU       =   ZERO
                        MOVE    1               TO  SSANTEI-KAISU
                    END-IF
-      *        当月算定歴回数
-                   COMPUTE SANTEI-MSANTEICNT   =   SANTEI-MSANTEICNT
-                                               -   SSANTEI-KAISU
+      *            当月算定歴回数
+                   IF      SANTEI-MSANTEICNT   <   SSANTEI-KAISU
+                       MOVE    ZERO            TO  SANTEI-MSANTEICNT
+                   ELSE
+                       COMPUTE SANTEI-MSANTEICNT   =   SANTEI-MSANTEICNT
+                                                   -   SSANTEI-KAISU
+                   END-IF
       *            当日算定日
                    MOVE    WRK-SRYYMD(7:2)     TO  IDX-Y2
-                   COMPUTE SANTEI-DAY (IDX-Y2) =   SANTEI-DAY (IDX-Y2)
+                   IF      SANTEI-DAY (IDX-Y2) <   SSANTEI-KAISU
+                       MOVE    ZERO            TO  SANTEI-DAY (IDX-Y2)
+                   ELSE
+                       COMPUTE SANTEI-DAY (IDX-Y2)
+                                               =   SANTEI-DAY (IDX-Y2)
                                                -   SSANTEI-KAISU
+                   END-IF
+                   MOVE    ZERO                TO  SANTEI-MSANTEICNT
+                   MOVE    ZERO                TO  SANTEI-MSANTEID
                    PERFORM VARYING     IDX2    FROM   1   BY  1
                            UNTIL       IDX2    >   31
                        IF      SANTEI-DAY (IDX2)   >   ZERO
-                           MOVE    IDX2            TO  SANTEI-MSANTEID
-                           MOVE    31              TO  IDX2
+                           IF      SANTEI-MSANTEID     =   ZERO
+      *                        当月初回算定日
+                               MOVE    IDX2        TO  SANTEI-MSANTEID
+                           END-IF
+      *                    回数
+                           ADD     SANTEI-DAY (IDX2)
+                                                   TO  SANTEI-MSANTEICNT
                        END-IF
                    END-PERFORM
       *
@@ -827,9 +848,15 @@
                    PERFORM VARYING     IDX-Y2  FROM    1   BY  1
                            UNTIL       IDX-Y2  >   31
                        IF      SSANTEI-DAY (IDX-Y2)    >   ZERO
-                           COMPUTE SANTEI-DAY (IDX-Y2)
+                           IF      SSANTEI-DAY(IDX-Y2)
+                                               <=   SANTEI-DAY (IDX-Y2)
+                               COMPUTE SANTEI-DAY (IDX-Y2)
                                                =   SANTEI-DAY (IDX-Y2)
                                                -   SSANTEI-DAY(IDX-Y2)
+                           ELSE
+                               MOVE    ZERO        TO  SANTEI-DAY
+                                                            (IDX-Y2)
+                           END-IF
                        END-IF
                        ADD     SANTEI-DAY (IDX-Y2)
                                                TO  SANTEI-MSANTEICNT
