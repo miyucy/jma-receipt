@@ -2181,7 +2181,7 @@
            OR      RECE02-ZAITAKU      =   SPACE
                CONTINUE
            ELSE
-               IF  WRK-WLINETEK          >   WRK-TEKIYOU-LINE
+               IF  WRK-LINETEK           >   WRK-TEKIYOU-LINE
                    PERFORM 34120-PAGE-SEC
                END-IF    
                ADD     1               TO  WRK-LINETEK
