@@ -1665,7 +1665,7 @@
            END-IF
            IF      SPA-NAI-EDYUKYMD    =   ZERO
                IF      SPA-GMN-EDYUKYMD    =   SPACE
-                   MOVE    ALL "9"             TO  SPA-NAI-EDYUKYMD
+                   MOVE    99999999            TO  SPA-NAI-EDYUKYMD
                    MOVE    "99999999"          TO  SPA-GMN-EDYUKYMD
                ELSE
                    MOVE    4                   TO  SPA-GMN-CUR

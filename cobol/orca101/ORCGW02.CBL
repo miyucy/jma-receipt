@@ -798,7 +798,7 @@
                                        >   3 )
       *                    空白の場合は"1"に置き換える
                            IF    ( SYS-1026-DISCOUNT-OBJ   =   SPACE )
-                               MOVE    1
+                               MOVE    "1"
                                        TO  SYS-1026-DISCOUNT-OBJ
                            END-IF
                            IF    ( SYS-1026-DISCOUNT-OBJ
@@ -1055,7 +1055,7 @@
            END-PERFORM
       *    減免端数区分 空白の時、"1"とする
            IF      SYS-1001-DISCOUNT-HASU-KBN    =   SPACE
-               MOVE    1               TO  SYS-1001-DISCOUNT-HASU-KBN
+               MOVE    "1"             TO  SYS-1001-DISCOUNT-HASU-KBN
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       4
@@ -1068,7 +1068,7 @@
            END-PERFORM
       *    消費税端数区分 空白の時、"2"とする
            IF      SYS-1001-TAX-HASU-KBN   =   SPACE
-               MOVE    2               TO  SYS-1001-TAX-HASU-KBN
+               MOVE    "2"             TO  SYS-1001-TAX-HASU-KBN
            END-IF
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       2

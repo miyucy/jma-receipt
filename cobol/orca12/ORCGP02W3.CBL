@@ -482,7 +482,7 @@
            END-IF
       *
            IF      FLG-PARA            =   ZERO
-               MOVE    1                   TO  DBCOMB-DELKBN
+               MOVE    "1"                 TO  DBCOMB-DELKBN
                MOVE    DBHKNCOMBI-REC      TO  PARA-DATA-REC
       *
                MOVE    PARA-REC            TO  MCPDATA-REC
@@ -501,7 +501,7 @@
                MOVE    "HKNCOMBI"          TO  PARA-FILEMEI
                MOVE    CNT-PARAEDANUM      TO  PARA-EDANUM
       *
-               MOVE    1                   TO  DBCOMB-DELKBN
+               MOVE    "1"                 TO  DBCOMB-DELKBN
                MOVE    DBHKNCOMBI-REC      TO  PARA-DATA-REC
       *
                MOVE    PARA-REC            TO  MCPDATA-REC

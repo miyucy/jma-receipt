@@ -256,7 +256,7 @@
                MOVE  P99-ADRS(1)                 TO  JPAR-EDITADRS-NAME
            ELSE
                MOVE  ZERO                        TO  JPAR-CNT
-               MOVE  1                           TO  JPAR-ERRCD
+               MOVE  "1"                         TO  JPAR-ERRCD
            END-IF.
       *
            MOVE  "DBCLOSE"                       TO  MCP-FUNC.

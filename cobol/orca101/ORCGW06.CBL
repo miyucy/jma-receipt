@@ -1308,206 +1308,206 @@
        4900-KOUSHIN-GSRAUTH-SEC           SECTION.
       *医事業務
            IF  SPA-GMN-CHK(1)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(1:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(1:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(1:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(1:1)
            END-IF
       *受付
            IF  SPA-GMN-CHK(2)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(16:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(16:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(16:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(16:1)
            END-IF
       *登録
            IF  SPA-GMN-CHK(3)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(17:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(17:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(17:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(17:1)
            END-IF
       *照会
            IF  SPA-GMN-CHK(4)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(18:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(18:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(18:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(18:1)
            END-IF
       *予約
            IF  SPA-GMN-CHK(5)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(19:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(19:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(19:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(19:1)
            END-IF
       *診療行為
            IF  SPA-GMN-CHK(6)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(21:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(21:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(21:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(21:1)
            END-IF
       *病名
            IF  SPA-GMN-CHK(7)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(22:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(22:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(22:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(22:1)
            END-IF
       *収納
            IF  SPA-GMN-CHK(8)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(23:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(23:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(23:1) 
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(23:1) 
            END-IF
       *会計照会
            IF  SPA-GMN-CHK(9)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(24:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(24:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(24:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(24:1)
            END-IF
       *データチェック
            IF  SPA-GMN-CHK(10)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(26:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(26:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(26:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(26:1)
            END-IF
       *明細書
            IF  SPA-GMN-CHK(11)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(27:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(27:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(27:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(27:1)
            END-IF
       *請求管理
            IF  SPA-GMN-CHK(12)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(28:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(28:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(28:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(28:1)
            END-IF
       *総括票
            IF  SPA-GMN-CHK(13)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(29:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(29:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(29:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(29:1)
            END-IF
       *日次統計
            IF  SPA-GMN-CHK(14)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(31:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(31:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(31:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(31:1)
            END-IF
       *月次統計
            IF  SPA-GMN-CHK(15)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(32:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(32:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(32:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(32:1)
            END-IF
       *データ出力
            IF  SPA-GMN-CHK(16)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(41:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(41:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(41:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(41:1)
            END-IF
       *外部媒体
            IF  SPA-GMN-CHK(17)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(47:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(47:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(47:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(47:1)
            END-IF
       *マスタ登録
            IF  SPA-GMN-CHK(18)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(51:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(51:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(51:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(51:1)
            END-IF
       *マスタ更新
            IF  SPA-GMN-CHK(19)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(52:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(52:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(52:1) 
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(52:1) 
            END-IF
       *システム管理
            IF  SPA-GMN-CHK(20)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(61:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(61:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(61:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(61:1)
            END-IF
       *点数マスタ
            IF  SPA-GMN-CHK(21)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(62:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(62:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(62:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(62:1)
            END-IF
       *チェックマスタ
            IF  SPA-GMN-CHK(22)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(63:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(63:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(63:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(63:1)
            END-IF
       *保険番号マスタ
            IF  SPA-GMN-CHK(23)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(64:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(64:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(64:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(64:1)
            END-IF
       *保険者マスタ
            IF  SPA-GMN-CHK(24)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(65:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(65:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(65:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(65:1)
            END-IF
       *人名辞書マスタ
            IF  SPA-GMN-CHK(25)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(66:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(66:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(66:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(66:1)
            END-IF
       *----(01.01.05)----START------------
       *薬剤情報マスタ
            IF  SPA-GMN-CHK(26)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(67:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(67:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(67:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(67:1)
            END-IF
       *----(01.01.05)----START------------
       *----(01.01.07)----START------------
       *入退院登録
            IF  SPA-GMN-CHK(27)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(36:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(36:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(36:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(36:1)
            END-IF
       *入院会計照会
            IF  SPA-GMN-CHK(28)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(37:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(37:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(37:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(37:1)
            END-IF
       *入院定期請求
            IF  SPA-GMN-CHK(29)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(38:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(38:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(38:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(38:1)
            END-IF
       *退院時仮計算
            IF  SPA-GMN-CHK(30)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(39:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(39:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(39:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(39:1)
            END-IF
       *病床管理
            IF  SPA-GMN-CHK(31)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(56:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(56:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(56:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(56:1)
            END-IF
       *入院患者照会
            IF  SPA-GMN-CHK(32)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(57:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(57:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(57:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(57:1)
            END-IF
       *----(01.01.07)----START------------
       *----(02.00.01)--ADD-START---
       *プログラム管理
            IF  SPA-GMN-CHK(33)  =  "T"
-               MOVE     1    TO  SYS-1010-GSRAUTH(3:1)
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(3:1)
            ELSE
-               MOVE     0    TO  SYS-1010-GSRAUTH(3:1)
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(3:1)
            END-IF
       *----(02.00.01)--ADD-END-----
           .

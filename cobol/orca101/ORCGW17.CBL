@@ -1311,7 +1311,7 @@
                     OR   ( SPA-NAI-YUKOSTYMD   >   SYS-1040-EDYUKYMD )
                        CONTINUE
                    ELSE
-                       MOVE    "1"             TO  FLG-DABURI
+                       MOVE     1              TO  FLG-DABURI
                    END-IF
                END-IF
       *
