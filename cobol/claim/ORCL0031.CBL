@@ -1503,6 +1503,8 @@
                END-PERFORM
            ELSE
                MOVE    WRK-CONS-BYOMEICD   TO  PTBYO-BYOMEICD (1)
+                                               PTBYO-KHNBYOMEICD
+               MOVE    1                   TO  PTBYO-BYOMEICDSU
            END-IF
       *
       *    ибл╬
