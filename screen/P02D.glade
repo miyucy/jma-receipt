@@ -148,8 +148,8 @@
       <class>GtkPandaEntry</class>
       <name>JIGYOUNAME</name>
       <x>152</x>
-      <y>292</y>
-      <width>300</width>
+      <y>296</y>
+      <width>600</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -166,7 +166,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
@@ -512,22 +512,6 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label263</name>
-      <x>160</x>
-      <y>324</y>
-      <width>60</width>
-      <height>24</height>
-      <label>≈‘∆ª…‹∏©</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -883,22 +867,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label251</name>
-      <x>100</x>
-      <y>88</y>
-      <width>212</width>
-      <height>20</height>
-      <label>°„√ª¥¸µÎ…’    Ω˝…¬«Ø∂‚  º´«Â¿’°‰</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label249</name>
       <x>50</x>
       <y>116</y>
@@ -1116,29 +1084,13 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label262</name>
-      <x>280</x>
-      <y>260</y>
-      <width>80</width>
+      <name>label258</name>
+      <x>24</x>
+      <y>388</y>
+      <width>120</width>
       <height>24</height>
-      <label>Œ≈Õ‹≥´ªœ∆¸</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label260</name>
-      <x>280</x>
-      <y>224</y>
-      <width>80</width>
-      <height>24</height>
-      <label>≈æµ¢ªˆÕ≥</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
+      <label>∑ÚπØ¥…Õ˝ºÍƒ¢»÷πÊ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
@@ -1150,7 +1102,7 @@
       <class>GtkLabel</class>
       <name>label259</name>
       <x>490</x>
-      <y>228</y>
+      <y>224</y>
       <width>100</width>
       <height>24</height>
       <label>ªÕªË∆√Œ„∂Ë ¨</label>
@@ -1196,15 +1148,63 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label258</name>
-      <x>24</x>
-      <y>388</y>
-      <width>120</width>
+      <name>label263</name>
+      <x>160</x>
+      <y>324</y>
+      <width>60</width>
       <height>24</height>
-      <label>∑ÚπØ¥…Õ˝ºÍƒ¢»÷πÊ</label>
+      <label>≈‘∆ª…‹∏©</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label260</name>
+      <x>280</x>
+      <y>224</y>
+      <width>80</width>
+      <height>24</height>
+      <label>≈æµ¢ªˆÕ≥</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
       <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label262</name>
+      <x>280</x>
+      <y>260</y>
+      <width>80</width>
+      <height>24</height>
+      <label>Œ≈Õ‹≥´ªœ∆¸</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label251</name>
+      <x>100</x>
+      <y>88</y>
+      <width>220</width>
+      <height>20</height>
+      <label>°„√ª¥¸µÎ…’    Ω˝…¬«Ø∂‚  º´«Â¿’°‰</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

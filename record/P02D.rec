@@ -4,7 +4,7 @@ P02D	{
 			value	varchar(9);
 		};
 		JIGYOUNAME	{
-			value	varchar(20);
+			value	varchar(80);
 		};
 		HIHKNJANAME	{
 			value	varchar(50);

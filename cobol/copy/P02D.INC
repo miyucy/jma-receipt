@@ -20,7 +20,7 @@
               03  P02D-KOHNUM2.
                 04  P02D-VALUE  PIC X(9).
               03  P02D-JIGYOUNAME.
-                04  P02D-VALUE  PIC X(20).
+                04  P02D-VALUE  PIC X(80).
               03  P02D-HIHKNJANAME.
                 04  P02D-VALUE  PIC X(50).
               03  P02D-SHOBYOYMD.
