@@ -5074,8 +5074,10 @@
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   31
-               MOVE    SPA-SEL-DAY (IDX)    TO  WRK-ZZ
-               MOVE    WRK-ZZ               TO  I44-DAY(IDX)
+               IF      SPA-WRK-CHK-KBN (IDX)   NOT =   ALL SPACE
+                   MOVE    SPA-SEL-DAY (IDX)    TO  WRK-ZZ
+                   MOVE    WRK-ZZ               TO  I44-DAY(IDX)
+               END-IF
            END-PERFORM.
       *
            IF      (WRK-HENKAN(1:1)            <   X"A1")  AND
