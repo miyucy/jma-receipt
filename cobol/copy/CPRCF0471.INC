@@ -41,7 +41,7 @@
       *
                05  RECE471-GAITENTTLKBN    PIC  9(03).
       *診療コード（剤の先頭の診療コード）
-               05  RECE471-SRYCD1          PIC  X(08).                    
+               05  RECE471-SRYCD1          PIC  X(09).                    
       *連番号
                05  RECE471-LINENUM         PIC  9(05).
       *患者番号
