@@ -187,6 +187,7 @@
            03  WRK-CHK-SRYYMR      REDEFINES  WRK-CHK-SRYYM.
                05  WRK-CHK-SRYYR           PIC 9(04).
                05  WRK-CHK-SRYMR           PIC 9(02).
+           03  WRK-ERRCD                   PIC X(04).
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
            03  WRK-NENREI          PIC 9(03).
@@ -720,7 +721,16 @@
            IF      FLG-NYUINACCT-MAE-CHK   =   ZERO
                MOVE  "前月入院会計がありませんでした" TO  WRK-NAIYO
            ELSE
-               MOVE  "入院会計を作成しました" TO  WRK-NAIYO
+               EVALUATE    WRK-ERRCD
+                   WHEN    SPACE
+                       MOVE  "入院会計を作成しました" TO  WRK-NAIYO
+                   WHEN    "2003"
+                       MOVE  "通算日数の取得に失敗しました"
+                                                      TO  WRK-NAIYO
+                   WHEN    "2006"
+                       MOVE  "入院料加算の取得に失敗しました"
+                                                      TO  WRK-NAIYO
+                   END-EVALUATE
            END-IF
            MOVE    WRK-NAIYO           TO  LST-NAIYO (CNT-LINE)
       *
@@ -1288,7 +1298,7 @@
       *
       *    通算日数を求める（通算日数取得サブを使用）
            PERFORM 4801-TSUSAN-SANTEI-GET-SEC
-           IF    ( SPA-ERRCD       NOT =  SPACE )
+           IF    ( WRK-ERRCD       NOT =  SPACE )
                GO  TO  410191-NYUACCT-SAKUSEI-EXT
            END-IF
       *
@@ -1343,11 +1353,11 @@
                    PERFORM 4801-RJNCD-CHG-SEC
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
-                       MOVE    "2006"          TO  SPA-ERRCD
+                       MOVE    "2006"          TO  WRK-ERRCD
                        GO  TO  410191-NYUACCT-SAKUSEI-EXT
                    END-IF
                ELSE
-                   MOVE    "2006"          TO  SPA-ERRCD
+                   MOVE    "2006"          TO  WRK-ERRCD
                    GO  TO  410191-NYUACCT-SAKUSEI-EXT
                END-IF
            END-IF
@@ -1747,7 +1757,7 @@
       *
       *    通算日数を求める（通算日数取得サブを使用）
            PERFORM 4801-TSUSAN-SANTEI-GET-SEC
-           IF    ( SPA-ERRCD    NOT =  SPACE )
+           IF    ( WRK-ERRCD    NOT =  SPACE )
                GO  TO  410191-IPNNYUACCT-SAKUSEI-EXT
            END-IF
       *
@@ -1767,11 +1777,11 @@
                    PERFORM 4801-RJNCD-CHG-SEC
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
-                       MOVE    "2006"          TO  SPA-ERRCD
+                       MOVE    "2006"          TO  WRK-ERRCD
                        GO  TO  410191-NYUACCT-SAKUSEI-EXT
                    END-IF
                ELSE
-                   MOVE    "2006"          TO  SPA-ERRCD
+                   MOVE    "2006"          TO  WRK-ERRCD
                    GO  TO  410191-NYUACCT-SAKUSEI-EXT
                END-IF
            END-IF
@@ -1860,7 +1870,7 @@
       *
            INITIALIZE                  WRK-TSUSAN
                                        WRK-SANTEISTYMD
-           MOVE    SPACE           TO  SPA-ERRCD
+           MOVE    SPACE           TO  WRK-ERRCD
       *
            INITIALIZE                  ORCSTUSANAREA
            MOVE    WRK-HOSPID      TO  STUSAN-HOSPID
@@ -1873,7 +1883,7 @@
            END-IF
            CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
            IF    ( STUSAN-RC       NOT =   ZERO )
-               MOVE    "2003"      TO  SPA-ERRCD
+               MOVE    "2003"      TO  WRK-ERRCD
                GO  TO  4801-TSUSAN-SANTEI-GET-EXT
            END-IF
       *
