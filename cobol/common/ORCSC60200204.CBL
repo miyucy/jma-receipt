@@ -36,6 +36,7 @@
       *  01.00.06    NACL-Â¿¡¹Ç¼  02/10/25  Æþ±¡ÂÐ±þ
       *  01.00.07    NACL-Â¿¡¹Ç¼  02/12/03  Êñ³ç¿ô½¤Àµ
       *  01.00.08    NACL-Â¿¡¹Ç¼  03/01/24  ÄÌÂ§Ç¯Îð¤«¤éÇ¯Îð²Ã»»¤òÄÉ²Ã
+      *  01.00.09    NACL-Â¿¡¹Ç¼  03/07/11  ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»¤òÄÉ²Ã
       *****************************************************************
       *
       *
@@ -169,6 +170,10 @@
            03  WRK-Z9              PIC Z9.
            03  WRK-HEN-Z9          PIC X(04).
            03  WRK-MEISYO          PIC X(62).
+      *
+      *    ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»
+           03  FLG-KENTAI              PIC 9(01).
+           03  WRK-KENTAI-DAY          PIC 9(02).
       *
       *    ¸¡ºº¡¡È½ÃÇ¥°¥ë¡¼¥×
        01  WRK-KENSA-AREA.
@@ -2098,6 +2103,9 @@
            MOVE    ZERO                TO  FLG-BV-ARI
            MOVE    ZERO                TO  FLG-BA-ARI
            MOVE    ZERO                TO  FLG-BC-ARI
+      *    ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»
+           MOVE    ZERO                TO  FLG-KENTAI
+           MOVE    ZERO                TO  WRK-KENTAI-DAY
       *
            MOVE    ZERO                TO  WRK-KENIDX
            INITIALIZE                  WRK-KENSA-AREA
@@ -2306,6 +2314,10 @@
                                                    (07 IDXS)
                        MOVE    "60"            TO  LNK-ORCSC-SRYKBN
                                                    (07 IDXS)
+      *                ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»ÍÑ
+                       IF      IDX                 >=  1  AND  <=  6
+                           MOVE    1               TO  FLG-KENTAI
+                       END-IF
       *                Æþ±¡²ó¿ô
                        IF      WRK-KEN-DAY (IDX)   NOT =   ZERO
                            MOVE    "*/"        TO  LNK-ORCSC-INPUTCD
@@ -2313,7 +2325,17 @@
                            MOVE    WRK-KEN-DAY (IDX)
                                                TO  LNK-ORCSC-INPUTCD
                                                     (07 IDXS 01)(3:2)
+      *                ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»ÍÑ
+                           IF      IDX                 >=  1   OR  <=  6
+                               IF      (WRK-KENTAI-DAY  =   ZERO  )  OR
+                                       (WRK-KEN-DAY (IDX)
+                                                   <   WRK-KENTAI-DAY)
+                                   MOVE    WRK-KEN-DAY (IDX)
+                                                   TO  WRK-KENTAI-DAY
+                               END-IF
+                           END-IF
                        END-IF
+      *
       *                ÆýÍÄ»ù²Ã»»¥»¥Ã¥È
                        PERFORM 30051-NENREI-SET-SEC
       *                Ê»ÍÑ¥Á¥§¥Ã¥¯ÍÑ
@@ -2326,6 +2348,17 @@
                    END-IF
                END-IF
            END-PERFORM
+      *    ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»
+           IF      FLG-KENTAI          =   1
+      *        ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»
+               IF      SPA-NYUGAIKBN       =   1
+                   MOVE    "160161610"         TO  WRK-SRYCD
+               ELSE
+                   MOVE    "160170170"         TO  WRK-SRYCD
+               END-IF
+               MOVE    WRK-KENTAI-DAY      TO  WRK-SAI-DAY
+               PERFORM 3005-AUTO-SAIKETU-SEC
+           END-IF
       *
       *    ºÎ·ìÎÁ¼«Æ°È¯À¸¤Ê¤·
            IF      FLG-FUKA            =   1
