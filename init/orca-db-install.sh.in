@@ -1,11 +1,13 @@
 #!/bin/sh
 
-if test -n "@jma-receipt-env@" ; then
+if test -z "$JMARECEIPT_ENV" ; then
     JMARECEIPT_ENV="@jma-receipt-env@"
 fi
 if ! test -f "$JMARECEIPT_ENV"; then
     exit 0
 fi
+
+. $JMARECEIPT_ENV
 
 HOME=/home/orca
 MSTDIR=orca-$(date +%Y%m%d)

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if test -n "@jma-receipt-env@" ; then
+if test -z "$JMARECEIPT_ENV" ; then
     JMARECEIPT_ENV="@jma-receipt-env@"
 fi
 if ! test -f "$JMARECEIPT_ENV"; then
@@ -8,6 +8,7 @@ if ! test -f "$JMARECEIPT_ENV"; then
 fi
 
 . $JMARECEIPT_ENV
+
 #-------------------------------------------#
 #    患者一覧出力
 #        $1 処理区分
