@@ -30,6 +30,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL¡ÝÂÀÅÄ   04/02/02  ¼¼ÎÁº¹³Û¡¦¿©»ö¤Î»»Äê¤ò
       *                                     »ÃÄêÅª¤Ë½¤Àµ
+      *  01.00.02    NACL¡ÝÂÀÅÄ   04/03/03  °åÎÅµ¡´Ø¸º»»ÂÐ±þ
       *****************************************************************
       *
       *
@@ -73,9 +74,18 @@
            03  FLG-SYOKUDODAY-G.
                05  FLG-SYOKUDODAY              PIC 9(01)
                                                OCCURS  31.
+           03  FLG-NYUINGENDAY-G.
+               05  FLG-NYUINGENDAY-OCC         OCCURS  4.
+                   07  FLG-NYUINGENDAY         PIC 9(01)
+                                               OCCURS  31.
+      *
+      *    ¥«¥¦¥ó¥ÈÎÎ°è
+       01  CNT-AREA.
+           03  CNT-SYS5000                     PIC 9(05).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
+           03  IDX0                            PIC 9(05).
            03  IDX1                            PIC 9(05).
            03  IDX2                            PIC 9(05).
            03  IDX3                            PIC 9(05).
@@ -147,6 +157,8 @@
            03  WRK-SENTEI-KINGAKU-R            REDEFINES
                WRK-SENTEI-KINGAKU-X.
                05  WRK-SENTEI-KINGAKU          PIC  9(04).
+           03  WRK-STIDX                       PIC  9(02).
+           03  WRK-EDIDX                       PIC  9(02).
       *
       *    Æþ±¡ÎÁ
        01  WNYUINRYO-AREA.
@@ -394,6 +406,7 @@
            INITIALIZE                      FLG-AREA
            INITIALIZE                      IDX-AREA
            INITIALIZE                      WRK-AREA
+           INITIALIZE                      CNT-AREA
            INITIALIZE                      WNYUINRYO-AREA
                                            WGAIHAKU-AREA
                                            WBRMSAGAKU-AREA
@@ -521,6 +534,7 @@
                                            WRK-SHOKUJIRYOYO
                                            WRK-TOKUKANRIKASAN
                                            WRK-SENTEI-PTFTN
+                                           FLG-NYUINGENDAY-G
       *
       *    °åÎÅµ¡´Ø¾ðÊó¼èÆÀ½èÍý
            PERFORM 1501-SYS1001-GET-SEC
@@ -561,43 +575,99 @@
       *****************************************************************
        1501-SYS5000-GET-SEC            SECTION.
       *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           MOVE    ZERO                TO  CNT-SYS5000
+      *
            INITIALIZE                      SYS-5000-REC
            MOVE    "5000"              TO  SYS-5000-KANRICD
            MOVE    "*"                 TO  SYS-5000-KBNCD
-           MOVE    HCM34S01-SANTEIYM   TO  ORC-DBYMD
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
            MOVE    SYS-5000-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           MOVE    "SYSKANRI-KEY4"     TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
-               INITIALIZE  SYS-5000-REC
+               MOVE    1               TO  FLG-SYSKANRI
            ELSE
                MOVE    MCPDATA-REC     TO  SYS-5000-REC
            END-IF
       *
-           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
       *
-           PERFORM VARYING IDX4    FROM    1   BY  1
-                   UNTIL ( IDX4    >   4 )
-               IF   ( SYS-5000-GENKBN(IDX4)    =   "2" )
-                   MOVE   1            TO  WRK-SYS-MIJISI(IDX4)
+               IF    ( HCM34S01-SANTEIYM  >=  SYS-5000-STYUKYMD (1:6))
+                AND  ( HCM34S01-SANTEIYM  <=  SYS-5000-EDYUKYMD (1:6))
+      *
+                   PERFORM 1501-SYS5000-HEN-SEC
+      *
                END-IF
+      *
+               MOVE    "SYSKANRI-KEY4" TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC    NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    MCPDATA-REC TO  SYS-5000-REC
+               END-IF
+      *
            END-PERFORM
       *
-           IF    ( SYS-5000-SHOKUJIRYOYOCD     =   "197000110" )
-               MOVE     1              TO   WRK-SHOKUJIRYOYO
-               IF    ( SYS-5000-SHOKUKBN(1)    =  "1" )
-                   MOVE  ZERO          TO   WRK-TOKUKANRIKASAN
-               ELSE
-                   MOVE  1             TO   WRK-TOKUKANRIKASAN
-               END-IF
-           ELSE
-               MOVE      2             TO   WRK-SHOKUJIRYOYO
-           END-IF
+           MOVE    "SYSKANRI-KEY4"     TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
       *
            .
        1501-SYS5000-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡´ðËÜ¾ðÊóÊÔ½¸
+      *****************************************************************
+       1501-SYS5000-HEN-SEC            SECTION.
+      *
+           COMPUTE CNT-SYS5000 =   CNT-SYS5000 +   1
+      *
+           IF    ( CNT-SYS5000         =   1 )
+      *
+               IF    ( SYS-5000-SHOKUJIRYOYOCD     =   "197000110" )
+                   MOVE     1              TO   WRK-SHOKUJIRYOYO
+                   IF    ( SYS-5000-SHOKUKBN(1)    =  "1" )
+                       MOVE  ZERO          TO   WRK-TOKUKANRIKASAN
+                   ELSE
+                       MOVE  1             TO   WRK-TOKUKANRIKASAN
+                   END-IF
+               ELSE
+                   MOVE      2             TO   WRK-SHOKUJIRYOYO
+               END-IF
+           END-IF
+      *
+      *    °åÎÅµ¡´Ø¸º»»¾ðÊóÊÔ½¸
+           MOVE    01                      TO   WRK-STIDX
+           MOVE    31                      TO   WRK-EDIDX
+      *
+           IF    ( HCM34S01-SANTEIYM       =    SYS-5000-STYUKYMD (1:6))
+               MOVE    SYS-5000-STYUKYMD (7:2)
+                                           TO   WRK-STIDX
+           END-IF
+      *
+           IF    ( HCM34S01-SANTEIYM       =    SYS-5000-EDYUKYMD (1:6))
+               MOVE    SYS-5000-EDYUKYMD (7:2)
+                                           TO   WRK-EDIDX
+           END-IF
+      *
+      *
+           PERFORM VARYING IDX4    FROM    1   BY  1
+                   UNTIL ( IDX4    >   4 )
+      *
+               IF   ( SYS-5000-GENKBN(IDX4)    =   "2" )
+                   MOVE   1            TO  WRK-SYS-MIJISI(IDX4)
+                   PERFORM VARYING IDX0    FROM    WRK-STIDX   BY  1
+                           UNTIL ( IDX0        >   WRK-EDIDX )
+      *
+                       MOVE   1        TO  FLG-NYUINGENDAY (IDX4 IDX0)
+      *
+                   END-PERFORM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       1501-SYS5000-HEN-EXT.
            EXIT.
       *****************************************************************
       *    ¼ç½èÍý
@@ -2309,6 +2379,7 @@
                        UNTIL ( IDXD        >   31 )
                    IF    ( FLG-NYUINDAY  (IDXD)        =   1  )
                     AND  ( FLG-NYUINRYODAY (IDXD)      =   1 )
+                    AND  ( FLG-NYUINGENDAY (IDX4 IDXD) =   1 )
                     AND  ( FLG-GAIHAKUDAY(IDXD)        =   ZERO )
                     AND  ( FLG-TOKTEIDAY (IDXD)        =   ZERO )
                        IF    ( FLG-TAISYO              =   ZERO )
@@ -2331,6 +2402,7 @@
                        UNTIL ( IDXD        >   31 )
                    IF    ( FLG-NYUINDAY  (IDXD)        =   1  )
                     AND  ( FLG-NYUINRYODAY (IDXD)      =   1 )
+                    AND  ( FLG-NYUINGENDAY (IDX4 IDXD) =   1 )
                     AND  ( FLG-GAIHAKUDAY(IDXD)        =   ZERO )
                     AND  ( FLG-TOKTEIDAY (IDXD)    NOT =   ZERO )
                        IF    ( FLG-TAISYO              =   ZERO )
