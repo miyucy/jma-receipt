@@ -91,6 +91,10 @@
       *  01.03.02    NACL-藤原    04/11/01  記載なしの公費の処理
       *  01.03.03    NACL-藤原    05/01/12  受診日指定対応
       *  01.03.04    NACL-藤原    05/01/30  訂正日指定対応
+      *  01.03.05    NACL-藤原    05/03/03  老人又は前期高齢者のとき、
+      *                                     月途中に保険者は変わらずに
+      *                                     保険が変更になった場合は１枚
+      *                                     にする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -281,6 +285,8 @@
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
+      * 
+           03  WRK-NENREI                PIC 9(03).
       *
            03  WRK-1033-TABLE.
                05  WRK-1033-TBL    OCCURS  5.
@@ -780,6 +786,10 @@
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      FLG-END         =   1 
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
+      *
+      *            患者年齢計算
+                   PERFORM 500-AGECHK-SEC
+      *
       *            保険組合せ読込み
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    SYS-1001-HOSPID     TO  COMB-HOSPID
@@ -1263,15 +1273,62 @@
            ELSE
                IF      COMB-KOH1HKNNUM     =   "027"
                    MOVE    COMB-KOH1ID         TO  WRK-RECE01-KOHID
+                   MOVE    "0"                 TO  WRK-RECE01-HONKZKKBN
                ELSE
                    MOVE    ZERO                TO  WRK-RECE01-KOHID
+                   MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HONKZKKBN
+                   EVALUATE    PTHKN-HKNNUM
+                       WHEN    "002" 
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "A"
+                               WHEN   "B"
+                               WHEN   "C"
+                               WHEN   "9"
+                                   MOVE    "0" TO  WRK-RECE01-HONKZKKBN
+                               WHEN   "D"
+                               WHEN   "E"
+                               WHEN   "F"
+                               WHEN   "8"
+                                   MOVE    "0" TO  WRK-RECE01-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "031"  THRU    "034"  
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "B"
+                               WHEN   "9"   
+                                   MOVE    "0" TO  WRK-RECE01-HONKZKKBN
+                               WHEN   "E"
+                               WHEN   "8"
+                                   MOVE    "0" TO  WRK-RECE01-HONKZKKBN
+                             END-EVALUATE
+                       WHEN    "060" 
+                           IF     (WRK-NENREI  >=   70)  AND
+                                  (WRK-NENREI  <=   74)
+                               EVALUATE   PTHKN-HOJOKBN
+                                   WHEN   "1"
+                                   WHEN   "4"
+                                       MOVE    "0" 
+                                               TO  WRK-RECE01-HONKZKKBN
+                                   WHEN   "2"
+                                   WHEN   "5"
+                                       MOVE    "0"
+                                               TO  WRK-RECE01-HONKZKKBN
+                              END-EVALUATE
+                          END-IF     
+                      WHEN    OTHER 
+                          EVALUATE   PTHKN-HOJOKBN
+                             WHEN   "9"
+                                 MOVE    "0" TO  WRK-RECE01-HONKZKKBN
+                             WHEN   "8"
+                                 MOVE    "0" TO  WRK-RECE01-HONKZKKBN
+                         END-EVALUATE
+                   END-EVALUATE
                END-IF 
            END-IF
       *
            MOVE    PTHKN-HKNJANUM      TO  WRK-RECE01-HKNJANUM
       *****MOVE    PTHKN-TEKSTYMD      TO  WRK-RECE01-TEKSTYMD
            MOVE    ZERO                TO  WRK-RECE01-TEKSTYMD 
-           MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HONKZKKBN
+      *****MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HONKZKKBN
            EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
                WHEN    "031"   THRU    "034"
@@ -1376,18 +1433,8 @@
            MOVE   PTINF-BIRTHDAY       TO  WRK-RECE01-BIRTHDAY
            MOVE   PTINF-DEATHKBN       TO  WRK-RECE01-DEATHKBN
            MOVE   PTINF-TSTPTNUMKBN    TO  WRK-RECE01-TSTPTNUMKBN
-      *    患者年齢計算
-           INITIALIZE                      ORCSAGECHKAREA
-           MOVE    WRK-RECE01-HOSPID   TO  AGECHK-HOSPID
-           MOVE    WRK-RECE01-PTID     TO  AGECHK-PTID
-           MOVE    WRK-RECE01-SRYYM    TO  AGECHK-SRYYMD(1:6)
-           MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
-           MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
-           CALL    "ORCSAGECHK"            USING
-                                           ORCSAGECHKAREA
-           IF      AGECHK-RC           =   ZERO
-               MOVE  AGECHK-NENREI         TO  WRK-RECE01-AGE
-           END-IF
+      *    患者年齢
+           MOVE    WRK-NENREI          TO  WRK-RECE01-AGE
       *    旧姓履歴の取得
            INITIALIZE                      KYUSEIRRK-REC
            MOVE    WRK-RECE01-HOSPID       TO  KYUSEI-HOSPID
@@ -1866,6 +1913,9 @@
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
       *
+      *    患者年齢計算
+           PERFORM 500-AGECHK-SEC
+      *
       *    処理中止設定処理
            PERFORM 500-CANCEL-HENSYU-SEC
       *
@@ -1928,6 +1978,9 @@
                        OR          FLG-END         =   1
       *
                DISPLAY "JYUSIN PTID=" PTINF-PTID 
+      *
+      *        患者年齢計算
+               PERFORM 500-AGECHK-SEC
       *
       *        処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
@@ -2164,6 +2217,29 @@
            DISPLAY "*** ORCR0010 END ***"
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *        患者年齢計算処理
+      *****************************************************************
+       500-AGECHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  WRK-NENREI
+      *
+           INITIALIZE                      ORCSAGECHKAREA
+           MOVE    SYS-1001-HOSPID     TO  AGECHK-HOSPID
+           MOVE    PTINF-PTID          TO  AGECHK-PTID
+           MOVE    WRK-STYMD (1:6)     TO  AGECHK-SRYYMD(1:6)
+           MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
+           MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"            USING
+                                           ORCSAGECHKAREA
+           IF      AGECHK-RC           =   ZERO
+               MOVE  AGECHK-NENREI         TO  WRK-NENREI
+           END-IF
+      *
+           .
+       500-AGECHK-EXT.
            EXIT.
       *
       *****************************************************************
