@@ -26,12 +26,15 @@ fi
 ##  エラーファイル削除
 	echo $#
 	echo "echo " ${16}
+    if  [ -e ${16} ]; then
+        rm ${16}
+    fi
 
 #   レセ電ファイル作成
 
     $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM500 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${14},${15}
     if  [ -e ${16} ]; then
-        rm  ${16}
+        exit 
     fi
         
 #   症状詳記作成
