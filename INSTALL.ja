@@ -63,7 +63,7 @@ $ ./configure \
            --libdir=/usr/lib/jma-receipt \
            --sysconfdir=/etc/jma-receipt \
            --with-sitedir=/usr/lib/jma-receipt/site-lib \
-           --with-sitesrcdir=/usr/lib/jma-receipt/site-src \
+           --with-sitesrcdir=/usr/local/site-jma-receipt \
            --with-sitelibdir=/usr/lib/jma-receipt/site-lib
 $ make install 
 ----------------------------------------------------------------------------
