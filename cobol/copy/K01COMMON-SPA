@@ -166,6 +166,8 @@
                05  SPA-YAKJYO-2            PIC  9(01).
       *薬剤情報提供料有無(老人２）
                05  SPA-YAKJYO-3            PIC  9(01).
+      *療養担当手当（北海道）
+               05  SPA-RYOYOU-FLG          PIC  X(01).
       *
       *寝たきり老人在宅総合診察料あり
                05  SPA-NETAKIRI-ARI        PIC  9(01).

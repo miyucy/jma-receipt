@@ -36,6 +36,7 @@
       *  01.02.03    NACL-多々納  02/10/31  外来管理加算チェック区分追加
       *  01.02.04    NACL-多々納  02/11/13  一括入力 
       *  01.02.05    NACL-多々納  02/11/20  チェック機能制御初期設定変更
+      *  01.02.05    NACL-多々納  03/02/19  療養担当手当て追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -70,7 +71,7 @@
                    07  SPA-GMN-1007-AREA.           
       *---- (01.00.01) LINE MOD START --------------------------------
       ***              09  SPA-GMN-CHOKI          PIC 9(01).
-                       09  SPA-GMN-DATA-TBL       OCCURS  4.
+                       09  SPA-GMN-DATA-TBL       OCCURS  5.
       *************        11  SPA-GMN-DATA       PIC 9(01).
       *---- (01.00.01) LINE MOD END   --------------------------------
                            11  SPA-GMN-DATA-G.
@@ -342,7 +343,7 @@
                    WHEN    "1007"
                        MOVE    2            TO  SPA-GMN-CUR
                    WHEN    "1008"
-                       MOVE    6            TO  SPA-GMN-CUR
+                       MOVE    10           TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF
       *---- (01.05.01) LINE MOD  --------------------------------
@@ -393,13 +394,14 @@
       ***              MOVE    SYS-1007-SANTEI (IDX:1) 
       **                                        TO  SPA-GMN-CHOKI
                        PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       4
+      *********************UNTIL   IDX >       4
+                           UNTIL   IDX >       5
                            MOVE    SYS-1007-SANTEI (IDX:1)
-                                              TO  SPA-GMN-DATA (IDX)
+                                               TO  SPA-GMN-DATA (IDX)
                            PERFORM VARYING IDY    FROM    1   BY  1
                                UNTIL   IDY     >  SPA-GMN-DATA-MAX
-                               IF      SPA-GMN-DATA (IDX)  
-                                              =   SPA-GMN-DATAL (IDY)
+                               IF      SPA-GMN-DATA (IDX)
+                                               =   SPA-GMN-DATAL (IDY)
                                    MOVE    SPA-GMN-DATALST (IDY)
                                                TO SPA-GMN-DATA-G (IDX)
                                    MOVE    SPA-GMN-DATA-MAX    TO  IDY
@@ -442,7 +444,7 @@
                WHEN    "1007"
                    MOVE    2                  TO  SPA-GMN-CUR
                WHEN    "1008"
-                   MOVE    6                  TO  SPA-GMN-CUR
+                   MOVE    10                 TO  SPA-GMN-CUR
            END-EVALUATE
       *
            . 
@@ -508,7 +510,7 @@
       *
       *    調剤基コード
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   4
+                   UNTIL       IDX     >   5
                MOVE    W07-DATA (IDX)      TO  SPA-GMN-DATA-G (IDX)
            END-PERFORM
       *    相互作用
@@ -555,7 +557,8 @@
        4100-DATA-CHK-SEC       SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   4   )  OR
+      ************ UNTIL      (IDX     >   4   )  OR
+                   UNTIL      (IDX     >   5   )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                MOVE    ZERO                TO  FLG-OK
                PERFORM VARYING     IDY     FROM    1   BY  1
@@ -576,6 +579,8 @@
                            MOVE    "0003"             TO SPA-ERRCD
                        WHEN    4
                            MOVE    "0004"             TO SPA-ERRCD
+                       WHEN    5
+                           MOVE    "0008"             TO SPA-ERRCD
                    END-EVALUATE
                    MOVE    IDX             TO  SPA-GMN-CUR
                    ADD     1               TO  SPA-GMN-CUR
@@ -614,7 +619,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    7               TO  SPA-GMN-CUR
+               MOVE    11              TO  SPA-GMN-CUR
                MOVE    "0006"          TO  SPA-ERRCD
                GO      TO      4101-GAIKANRIKBN-CHK2-EXT
            END-IF
@@ -776,7 +781,7 @@
       *---- (01.00.01) LINE MOD START   --------------------------------
       ***  MOVE    SPA-GMN-CHOKI           TO  SYS-1007-SANTEI (1:1)
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       4 
+                   UNTIL   IDX >       5
                MOVE    SPA-GMN-DATA (IDX)  TO  SYS-1007-SANTEI (IDX:1)
            END-PERFORM 
       *---- (01.00.01) LINE MOD END     --------------------------------
@@ -888,7 +893,7 @@
                    MOVE    "0005"               TO  SPA-ERRCD
                    MOVE    4                    TO  SPA-GMN-CUR
                END-IF
-           END-IF             
+           END-IF
       *
            IF      SPA-ERRCD            =   SPACE
                MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
@@ -938,13 +943,13 @@
       *---- (01.00.01) LINE MOD START   --------------------------------
       ***  MOVE    SPA-GMN-CHOKI            TO  W07-CHOKI
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       4 
+                   UNTIL   IDX >       5 
                MOVE    SPA-GMN-DATA-G (IDX) TO  W07-DATA (IDX)
            END-PERFORM
       *---- (01.00.01) LINE MOD END     --------------------------------
       *     
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       4 
+                   UNTIL   IDX     >       5 
                PERFORM VARYING IDY     FROM    1   BY  1
                        UNTIL   IDY     >       2
                    MOVE    SPA-GMN-DATALST (IDY)
@@ -1021,6 +1026,10 @@
                                                          TO  SPA-ERRMSG
                WHEN    "0006"
                    MOVE    "外来管理加算チェック区分がありません。"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0008"
+                   MOVE
+                       "療養担当手当（北海道）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
@@ -1116,10 +1125,12 @@
                     MOVE  "DATA03"           TO   MCP-WIDGET
                 WHEN    5
                     MOVE  "DATA04"           TO   MCP-WIDGET
-      *---- (01.05.01) LINE MOD START   --------------------------------
                 WHEN    6
+                    MOVE  "DATA05"           TO   MCP-WIDGET
+      *---- (01.05.01) LINE MOD START   --------------------------------
+                WHEN    10
                     MOVE  "KIKAN"            TO   MCP-WIDGET
-                WHEN    7
+                WHEN    11
                     MOVE  "GAIKANRIKBN"      TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
@@ -1128,8 +1139,9 @@
       *
             EVALUATE    SPA-GMN-CUR
                 WHEN    2   THRU    5
-                    MOVE    0                TO  W07-PAGENO
                 WHEN    6
+                    MOVE    0                TO  W07-PAGENO
+                WHEN    10  THRU    11
                     MOVE    1                TO  W07-PAGENO
             END-EVALUATE
       *
@@ -1151,9 +1163,11 @@
                WHEN    "DATA03"
                    MOVE    5           TO  SPA-GMN-CUR
                WHEN    "DATA04"
+                   MOVE    6           TO  SPA-GMN-CUR
+               WHEN    "DATA05"
                    MOVE    99          TO  SPA-GMN-CUR
                WHEN    "KIKAN"
-                   MOVE    7           TO  SPA-GMN-CUR
+                   MOVE    11          TO  SPA-GMN-CUR
                WHEN    "GAIKANRIKBN"
                    MOVE    99          TO  SPA-GMN-CUR
            END-EVALUATE

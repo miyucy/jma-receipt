@@ -40,6 +40,13 @@ W07	{
 					count	int;
 					item	varchar(12)[2];
 				};
+				DATA05_COMBO	{
+					DATA05	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
 			};
 			TAGNAME1    {
 			    state   int;
