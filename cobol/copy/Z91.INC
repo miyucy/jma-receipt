@@ -17,7 +17,8 @@
       ********************************************************************
           03  Z91.
                 04  Z91-FIXED2.
-                    05  Z91-MSTYMD            PIC X(10).
+                    05  Z91-SRYCHK             PIC X.
+                    05  Z91-SRY                PIC X       OCCURS  2.
                     05  Z91-SRYSTRCOMBO.
                         06  Z91-SRYSTR         PIC X(17).
                         06  Z91-SRYSTR-STATE   PIC S9(9)   BINARY.
@@ -28,12 +29,14 @@
                         06  Z91-SRYEND-STATE   PIC S9(9)   BINARY.
                         06  Z91-SRYEND-COUNT   PIC S9(9)   BINARY.
                         06  Z91-SRYEND-ITEM    PIC X(17)   OCCURS  13.
-                    05  Z91-SRYCHK             PIC X.
+                    05  Z91-IYKCHKALL          PIC X.
                     05  Z91-IYKCHK             PIC X       OCCURS  6.
                     05  Z91-TOKCHK             PIC X.
-                    05  Z91-SRY                PIC X       OCCURS  2.
+                    05  Z91-COMCHKALL          PIC X.
+                    05  Z91-COMCHK             PIC X       OCCURS  3.
+                    05  Z91-MSTYMD             PIC X(10).
+                    05  Z91-KEI                PIC X       OCCURS  2.
                     05  Z91-CYU-G                          OCCURS  2.
                         06  Z91-CYU            PIC X.
                         06  Z91-CYU-STATE      PIC S9(9)   BINARY.
                     05  Z91-SYU                PIC X       OCCURS  3.
-                    05  Z91-KEI                PIC X       OCCURS  2.

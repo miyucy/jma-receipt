@@ -29,7 +29,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 04 Jan 2001 03:26:09 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -268,92 +268,63 @@
     </widget>
 
     <widget>
-      <class>GtkFixed</class>
-      <name>fixed6</name>
-      <x>0</x>
-      <y>0</y>
-      <width>0</width>
-      <height>0</height>
+      <class>GtkButton</class>
+      <name>B13</name>
+      <x>920</x>
+      <y>696</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F12</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 25 Dec 2000 05:01:47 GMT</last_modification_time>
+      </signal>
+      <label>処理結果</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkHSeparator</class>
-      <name>hseparator3</name>
-      <x>152</x>
-      <y>56</y>
-      <width>680</width>
+      <name>hseparator31</name>
+      <x>88</x>
+      <y>40</y>
+      <width>832</width>
       <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label165</name>
-      <x>320</x>
-      <y>96</y>
-      <width>40</width>
-      <height>24</height>
-      <label>開始</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
       <class>GtkLabel</class>
       <name>label166</name>
-      <x>560</x>
-      <y>96</y>
-      <width>64</width>
-      <height>24</height>
-      <label>〜    終了</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator2</name>
-      <x>152</x>
-      <y>120</y>
-      <width>680</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator1</name>
-      <x>144</x>
-      <y>64</y>
-      <width>16</width>
-      <height>64</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator2</name>
-      <x>824</x>
-      <y>64</y>
-      <width>16</width>
-      <height>64</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label167</name>
-      <x>152</x>
-      <y>32</y>
+      <x>656</x>
+      <y>80</y>
       <width>56</width>
       <height>24</height>
-      <label>範囲指定</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
+      <label>〜</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label170</name>
+      <x>680</x>
+      <y>80</y>
+      <width>40</width>
+      <height>24</height>
+      <label>終了</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -362,231 +333,127 @@
 
     <widget>
       <class>GtkHSeparator</class>
-      <name>hseparator5</name>
-      <x>152</x>
-      <y>136</y>
-      <width>168</width>
+      <name>hseparator21</name>
+      <x>88</x>
+      <y>104</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator25</name>
+      <x>88</x>
+      <y>264</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator26</name>
+      <x>88</x>
+      <y>304</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator27</name>
+      <x>88</x>
+      <y>392</y>
+      <width>832</width>
       <height>16</height>
     </widget>
 
     <widget>
       <class>GtkVSeparator</class>
-      <name>vseparator3</name>
-      <x>144</x>
-      <y>144</y>
+      <name>vseparator15</name>
+      <x>80</x>
+      <y>48</y>
       <width>16</width>
-      <height>160</height>
+      <height>352</height>
     </widget>
 
     <widget>
       <class>GtkVSeparator</class>
-      <name>vseparator7</name>
-      <x>312</x>
-      <y>144</y>
+      <name>vseparator16</name>
+      <x>912</x>
+      <y>48</y>
       <width>16</width>
-      <height>160</height>
+      <height>352</height>
     </widget>
 
     <widget>
       <class>GtkHSeparator</class>
-      <name>hseparator4</name>
-      <x>152</x>
-      <y>296</y>
-      <width>168</width>
+      <name>hseparator33</name>
+      <x>88</x>
+      <y>416</y>
+      <width>832</width>
       <height>16</height>
     </widget>
 
     <widget>
       <class>GtkLabel</class>
-      <name>label162</name>
-      <x>32</x>
-      <y>136</y>
-      <width>72</width>
-      <height>24</height>
-      <label>医薬品</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>0</x>
-      <y>344</y>
-      <width>1030</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator14</name>
-      <x>152</x>
-      <y>584</y>
-      <width>168</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator8</name>
-      <x>144</x>
-      <y>592</y>
-      <width>16</width>
-      <height>88</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator9</name>
-      <x>312</x>
-      <y>592</y>
-      <width>16</width>
-      <height>88</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator12</name>
-      <x>152</x>
-      <y>672</y>
-      <width>168</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label163</name>
-      <x>32</x>
-      <y>584</y>
-      <width>72</width>
-      <height>24</height>
-      <label>出力順指定</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator16</name>
-      <x>152</x>
-      <y>568</y>
-      <width>280</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator12</name>
-      <x>144</x>
-      <y>512</y>
-      <width>16</width>
-      <height>64</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator6</name>
-      <x>424</x>
-      <y>512</y>
-      <width>16</width>
-      <height>64</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator10</name>
-      <x>152</x>
-      <y>504</y>
-      <width>280</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label168</name>
-      <x>32</x>
-      <y>504</y>
-      <width>96</width>
-      <height>24</height>
-      <label>抽出データ指定</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator15</name>
-      <x>152</x>
-      <y>488</y>
-      <width>224</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator10</name>
-      <x>144</x>
+      <name>label164</name>
+      <x>104</x>
       <y>432</y>
-      <width>16</width>
-      <height>64</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator11</name>
-      <x>368</x>
-      <y>432</y>
-      <width>16</width>
-      <height>64</height>
+      <width>136</width>
+      <height>24</height>
+      <label>マスター日付指定</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
 
     <widget>
       <class>GtkHSeparator</class>
-      <name>hseparator13</name>
-      <x>152</x>
-      <y>424</y>
-      <width>224</width>
+      <name>hseparator28</name>
+      <x>88</x>
+      <y>456</y>
+      <width>832</width>
       <height>16</height>
     </widget>
 
     <widget>
       <class>GtkLabel</class>
       <name>label169</name>
-      <x>32</x>
-      <y>424</y>
-      <width>88</width>
+      <x>104</x>
+      <y>472</y>
+      <width>136</width>
       <height>24</height>
       <label>出力形式指定</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator29</name>
+      <x>88</x>
+      <y>520</y>
+      <width>832</width>
+      <height>16</height>
     </widget>
 
     <widget>
       <class>GtkLabel</class>
-      <name>label164</name>
-      <x>32</x>
-      <y>392</y>
-      <width>112</width>
+      <name>label168</name>
+      <x>104</x>
+      <y>536</y>
+      <width>128</width>
       <height>24</height>
-      <label>マスター日付指定</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
+      <label>抽出データ指定</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -594,36 +461,152 @@
     </widget>
 
     <widget>
-      <class>GtkEntry</class>
-      <name>MSTYMD</name>
-      <x>152</x>
-      <y>392</y>
-      <width>120</width>
+      <class>GtkHSeparator</class>
+      <name>hseparator30</name>
+      <x>88</x>
+      <y>584</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator32</name>
+      <x>88</x>
+      <y>672</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label163</name>
+      <x>104</x>
+      <y>600</y>
+      <width>104</width>
+      <height>24</height>
+      <label>出力順指定</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator17</name>
+      <x>80</x>
+      <y>424</y>
+      <width>16</width>
+      <height>256</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator18</name>
+      <x>912</x>
+      <y>424</y>
+      <width>16</width>
+      <height>256</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label165</name>
+      <x>424</x>
+      <y>80</y>
+      <width>40</width>
+      <height>24</height>
+      <label>開始</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>SRYCHK</name>
+      <x>104</x>
+      <y>56</y>
+      <width>112</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Fri, 11 Jan 2002 02:28:00 GMT</last_modification_time>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
       </signal>
       <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Fri, 11 Jan 2002 02:28:44 GMT</last_modification_time>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text></text>
+      <label>診療行為</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>SRY1</name>
+      <x>248</x>
+      <y>56</y>
+      <width>104</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
+      </signal>
+      <label>全体</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>SRYKBN</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>SRY2</name>
+      <x>248</x>
+      <y>80</y>
+      <width>104</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 28 Jan 2002 05:42:50 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Wed, 06 Feb 2002 10:44:35 GMT</last_modification_time>
+      </signal>
+      <label>診療区分</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>SRYKBN</group>
     </widget>
 
     <widget>
       <class>GtkPandaCombo</class>
       <name>SRYSTRCOMBO</name>
-      <x>368</x>
-      <y>96</y>
+      <x>464</x>
+      <y>80</y>
       <width>176</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -662,8 +645,8 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>SRYENDCOMBO</name>
-      <x>632</x>
-      <y>96</y>
+      <x>720</x>
+      <y>80</y>
       <width>176</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -701,24 +684,24 @@
 
     <widget>
       <class>GtkCheckButton</class>
-      <name>SRYCHK</name>
-      <x>32</x>
-      <y>32</y>
+      <name>IYKCHKALL</name>
+      <x>104</x>
+      <y>120</y>
       <width>104</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
+	<last_modification_time>Thu, 05 Dec 2002 08:37:36 GMT</last_modification_time>
       </signal>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
+	<last_modification_time>Thu, 05 Dec 2002 08:38:07 GMT</last_modification_time>
       </signal>
-      <label>診療行為</label>
+      <label>医薬品</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -726,8 +709,8 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>IYKCHK1</name>
-      <x>168</x>
-      <y>152</y>
+      <x>248</x>
+      <y>120</y>
       <width>100</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -750,8 +733,8 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>IYKCHK2</name>
-      <x>168</x>
-      <y>176</y>
+      <x>248</x>
+      <y>144</y>
       <width>100</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -774,8 +757,8 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>IYKCHK3</name>
-      <x>168</x>
-      <y>200</y>
+      <x>248</x>
+      <y>168</y>
       <width>100</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -798,8 +781,8 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>IYKCHK4</name>
-      <x>168</x>
-      <y>224</y>
+      <x>248</x>
+      <y>192</y>
       <width>109</width>
       <height>26</height>
       <can_focus>True</can_focus>
@@ -822,8 +805,8 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>IYKCHK5</name>
-      <x>168</x>
-      <y>248</y>
+      <x>248</x>
+      <y>216</y>
       <width>109</width>
       <height>26</height>
       <can_focus>True</can_focus>
@@ -846,8 +829,8 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>IYKCHK6</name>
-      <x>168</x>
-      <y>272</y>
+      <x>248</x>
+      <y>240</y>
       <width>109</width>
       <height>26</height>
       <can_focus>True</can_focus>
@@ -870,8 +853,8 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>TOKCHK</name>
-      <x>32</x>
-      <y>312</y>
+      <x>104</x>
+      <y>280</y>
       <width>104</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -892,60 +875,182 @@
     </widget>
 
     <widget>
-      <class>GtkRadioButton</class>
-      <name>SRY1</name>
-      <x>168</x>
-      <y>72</y>
-      <width>104</width>
+      <class>GtkCheckButton</class>
+      <name>COMCHKALL</name>
+      <x>104</x>
+      <y>320</y>
+      <width>109</width>
       <height>26</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
+	<last_modification_time>Thu, 05 Dec 2002 08:49:02 GMT</last_modification_time>
       </signal>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
+	<last_modification_time>Thu, 05 Dec 2002 08:49:26 GMT</last_modification_time>
       </signal>
-      <label>全体</label>
+      <label>コメント</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
-      <group>SRYKBN</group>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>COMCHK1</name>
+      <x>248</x>
+      <y>320</y>
+      <width>104</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Wed, 04 Dec 2002 10:13:38 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 04 Dec 2002 10:14:14 GMT</last_modification_time>
+      </signal>
+      <label>服用方法</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>COMCHK2</name>
+      <x>248</x>
+      <y>344</y>
+      <width>104</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Thu, 05 Dec 2002 08:39:10 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 05 Dec 2002 08:39:34 GMT</last_modification_time>
+      </signal>
+      <label>撮影部位</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>COMCHK3</name>
+      <x>248</x>
+      <y>368</y>
+      <width>104</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Thu, 05 Dec 2002 08:40:32 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 05 Dec 2002 08:40:55 GMT</last_modification_time>
+      </signal>
+      <label>その他</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkEntry</class>
+      <name>MSTYMD</name>
+      <x>248</x>
+      <y>432</y>
+      <width>120</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 11 Jan 2002 02:28:00 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 11 Jan 2002 02:28:44 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
     </widget>
 
     <widget>
       <class>GtkRadioButton</class>
-      <name>SRY2</name>
-      <x>168</x>
-      <y>96</y>
-      <width>104</width>
-      <height>26</height>
+      <name>KEI1</name>
+      <x>248</x>
+      <y>472</y>
+      <width>128</width>
+      <height>24</height>
       <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Tue, 02 Apr 2002 07:52:55 GMT</last_modification_time>
+      </signal>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Mon, 28 Jan 2002 05:42:50 GMT</last_modification_time>
+	<last_modification_time>Tue, 02 Apr 2002 07:54:39 GMT</last_modification_time>
       </signal>
+      <label>点数マスタ一覧</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>SYUKEI</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>KEI2</name>
+      <x>248</x>
+      <y>496</y>
+      <width>192</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
-	<last_modification_time>Wed, 06 Feb 2002 10:44:35 GMT</last_modification_time>
+	<last_modification_time>Tue, 02 Apr 2002 07:53:13 GMT</last_modification_time>
       </signal>
-      <label>診療区分</label>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 02 Apr 2002 07:54:09 GMT</last_modification_time>
+      </signal>
+      <label>入力コード点数マスタ一覧</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
-      <group>SRYKBN</group>
+      <group>SYUKEI</group>
     </widget>
 
     <widget>
       <class>GtkRadioButton</class>
       <name>CYU1</name>
-      <x>168</x>
-      <y>520</y>
+      <x>248</x>
+      <y>536</y>
       <width>128</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -969,8 +1074,8 @@
     <widget>
       <class>GtkRadioButton</class>
       <name>CYU2</name>
-      <x>168</x>
-      <y>544</y>
+      <x>248</x>
+      <y>560</y>
       <width>250</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -994,7 +1099,7 @@
     <widget>
       <class>GtkRadioButton</class>
       <name>SYU1</name>
-      <x>168</x>
+      <x>248</x>
       <y>600</y>
       <width>144</width>
       <height>24</height>
@@ -1019,7 +1124,7 @@
     <widget>
       <class>GtkRadioButton</class>
       <name>SYU2</name>
-      <x>168</x>
+      <x>248</x>
       <y>624</y>
       <width>120</width>
       <height>24</height>
@@ -1044,7 +1149,7 @@
     <widget>
       <class>GtkRadioButton</class>
       <name>SYU3</name>
-      <x>168</x>
+      <x>248</x>
       <y>648</y>
       <width>104</width>
       <height>26</height>
@@ -1064,79 +1169,6 @@
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>SYUJUN</group>
-    </widget>
-
-    <widget>
-      <class>GtkRadioButton</class>
-      <name>KEI1</name>
-      <x>168</x>
-      <y>440</y>
-      <width>128</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Tue, 02 Apr 2002 07:52:55 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 02 Apr 2002 07:54:39 GMT</last_modification_time>
-      </signal>
-      <label>点数マスタ一覧</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-      <group>SYUKEI</group>
-    </widget>
-
-    <widget>
-      <class>GtkRadioButton</class>
-      <name>KEI2</name>
-      <x>168</x>
-      <y>464</y>
-      <width>192</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Tue, 02 Apr 2002 07:53:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 02 Apr 2002 07:54:09 GMT</last_modification_time>
-      </signal>
-      <label>入力コード点数マスタ一覧</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-      <group>SYUKEI</group>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B13</name>
-      <x>920</x>
-      <y>696</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>GDK_SHIFT_MASK</modifiers>
-	<key>GDK_F12</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Mon, 25 Dec 2000 05:01:47 GMT</last_modification_time>
-      </signal>
-      <label>処理結果</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>
 </widget>

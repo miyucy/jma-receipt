@@ -32,6 +32,7 @@
       *  01.00.03    MCC-藤原     02/05/15  処理前にジョブ管理を削除する
       *  01.00.04    MCC-藤原     02/05/22  再印刷ボタン・情報削除ボタン追加
       *  01.00.05    NACL-藤原    02/09/12  ディレクトリをサブプロへ
+      *  01.01.01    NACL-森脇    02/12/06  コメント追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,9 +76,16 @@
                    07  SPA-GMN-SRYCHK      PIC X.
                    07  SPA-GMN-SRY         PIC X     OCCURS  2.
                    07  SPA-GMN-IYKCHK-G.
-                       09  SPA-GMN-IYKCHK
-                                           PIC X     OCCURS  6.
+      *----(01.01.01)--ADD-START----
+                       09  SPA-GMN-IYKCHKALL         PIC X.
+      *----(01.01.01)--ADD-END------
+                       09  SPA-GMN-IYKCHK  PIC X     OCCURS  6.
                    07  SPA-GMN-TOKCHK      PIC X.
+      *----(01.01.01)--ADD-START----
+                   07  SPA-GMN-COMCHK-G.
+                       09  SPA-GMN-COMCHKALL         PIC X.
+                       09  SPA-GMN-COMCHK  PIC X     OCCURS  3.
+      *----(01.01.01)--ADD-END------
                    07  SPA-GMN-MSTYMD      PIC X(9).
                    07  SPA-GMN-CYU         PIC X     OCCURS  2.
                    07  SPA-GMN-SYU         PIC X     OCCURS  3.
@@ -85,29 +93,29 @@
       *
                    07  SPA-Z91-SRYSTR.
                        09  SPA-Z91-SRYSTRL     PIC X(02).
-                       09  SPA-Z91-F1L         PIC X(01).   
-                       09  SPA-Z91-SRYSTRMEIL  PIC X(14).
+                       09  SPA-Z91-F1L         PIC X(01).
+                       09  SPA-Z91-SRYSTRMEIL  PIC X(13).
                    07  SPA-Z91-SRYEND.
                        09  SPA-Z91-SRYENDL     PIC X(02).
-                       09  SPA-Z91-F2L         PIC X(01).   
-                       09  SPA-Z91-SRYENDMEIL  PIC X(14).
+                       09  SPA-Z91-F2L         PIC X(01).
+                       09  SPA-Z91-SRYENDMEIL  PIC X(13).
       *
                05  SPA-GMN-SRYSTR-AREA.
                    07  SPA-GMN-SRYSTR-LIST     OCCURS 13.
                        09  SPA-GMN-SRYSTRL     PIC X(02).
-                       09  SPA-GMN-F1L         PIC X(01).   
+                       09  SPA-GMN-F1L         PIC X(01).
                        09  SPA-GMN-SRYSTRMEIL  PIC X(14).
-                   07  SPA-SRYSTR-MAX          PIC 9(04). 
+                   07  SPA-SRYSTR-MAX          PIC 9(04).
       *
                05  SPA-GMN-SRYEND-AREA.
                    07  SPA-GMN-SRYEND-LIST     OCCURS 13.
                        09  SPA-GMN-SRYENDL     PIC X(02).
-                       09  SPA-GMN-F2L         PIC X(01).   
+                       09  SPA-GMN-F2L         PIC X(01).
                        09  SPA-GMN-SRYENDMEIL  PIC X(14).
                    07  SPA-SRYEND-MAX          PIC 9(04).
       *
                05  SPA-NAI-AREA.
-                   07  SPA-NAI-MSTYMD          PIC 9(08).                         
+                   07  SPA-NAI-MSTYMD          PIC 9(08).
       * 
       *    フラグエリア
        01  FLG-AREA.
@@ -157,7 +165,7 @@
       *   印刷用呼出SHELL
            COPY    "CPHCMLSHELL.INC".
       *
-      *    
+      *
       *01  WRK-SHELL.
       *    03  FILLER             PIC  X(32) VALUE
       *             "/usr/local/orca/scripts/allways/".
@@ -167,7 +175,7 @@
            COPY  "CPMKPASS.INC".
       *
        01  WRK-LNK-AREA.
-           COPY    "CPORCSPRTLNK.INC".             
+           COPY    "CPORCSPRTLNK.INC".
       *              
       *
        01  WRK-CONS-AREA.
@@ -389,6 +397,9 @@
       *
            MOVE  "F"     TO  SPA-GMN-SRYCHK  
       *
+      *----(01.01.01)--ADD-START---
+           MOVE  "F"     TO  SPA-GMN-IYKCHKALL
+      *----(01.01.01)--ADD-END-----
            MOVE  "F"     TO  SPA-GMN-IYKCHK(1)
            MOVE  "F"     TO  SPA-GMN-IYKCHK(2)
            MOVE  "F"     TO  SPA-GMN-IYKCHK(3)
@@ -398,15 +409,22 @@
       *
            MOVE  "F"     TO  SPA-GMN-TOKCHK
       *
-           MOVE  "T"     TO  SPA-GMN-SRY (1)  
-           MOVE  "F"     TO  SPA-GMN-SRY (2) 
+      *----(01.01.01)--ADD-START---
+           MOVE  "F"     TO  SPA-GMN-COMCHKALL
+           MOVE  "F"     TO  SPA-GMN-COMCHK(1)
+           MOVE  "F"     TO  SPA-GMN-COMCHK(2)
+           MOVE  "F"     TO  SPA-GMN-COMCHK(3)
+      *----(01.01.01)--ADD-START---
+      *
+           MOVE  "T"     TO  SPA-GMN-SRY (1)
+           MOVE  "F"     TO  SPA-GMN-SRY (2)
            MOVE  "T"     TO  SPA-GMN-CYU (1)
            MOVE  "F"     TO  SPA-GMN-CYU (2)
-           MOVE  "T"     TO  SPA-GMN-SYU (1)  
-           MOVE  "F"     TO  SPA-GMN-SYU (2) 
+           MOVE  "T"     TO  SPA-GMN-SYU (1)
+           MOVE  "F"     TO  SPA-GMN-SYU (2)
            MOVE  "F"     TO  SPA-GMN-SYU (3)
-           MOVE  "T"     TO  SPA-GMN-KEI (1)  
-           MOVE  "F"     TO  SPA-GMN-KEI (2) 
+           MOVE  "T"     TO  SPA-GMN-KEI (1)
+           MOVE  "F"     TO  SPA-GMN-KEI (2)
       *
            MOVE  "11"    TO  SPA-GMN-SRYSTRL(1)
            MOVE  "12"    TO  SPA-GMN-SRYSTRL(2)
@@ -420,7 +438,9 @@
            MOVE  "60"    TO  SPA-GMN-SRYSTRL(10)
            MOVE  "70"    TO  SPA-GMN-SRYSTRL(11)
            MOVE  "80"    TO  SPA-GMN-SRYSTRL(12)
-           MOVE  "99"    TO  SPA-GMN-SRYSTRL(13)
+      *----(01.01.01)--ADD-START---
+           MOVE  "90"    TO  SPA-GMN-SRYSTRL(13)
+      *----(01.01.01)--ADD-END-----
       *
            MOVE  "初診料"    TO  SPA-GMN-SRYSTRMEIL(1)
            MOVE  "再診料"    TO  SPA-GMN-SRYSTRMEIL(2)
@@ -433,11 +453,13 @@
            MOVE  "麻酔料"    TO  SPA-GMN-SRYSTRMEIL(9)
            MOVE  "検査料"    TO  SPA-GMN-SRYSTRMEIL(10)
            MOVE  "画像診断料"    TO  SPA-GMN-SRYSTRMEIL(11)
-           MOVE  "その他料"      TO  SPA-GMN-SRYSTRMEIL(12)
-           MOVE  "コメント"      TO  SPA-GMN-SRYSTRMEIL(13)
+           MOVE  "その他料"  TO  SPA-GMN-SRYSTRMEIL(12)
+      *----(01.01.01)--ADD-START---
+           MOVE  "入院料"    TO  SPA-GMN-SRYSTRMEIL(13)
+      *----(01.01.01)--ADD-END-----
       *
            MOVE  13      TO  SPA-SRYSTR-MAX
-      *  
+      *
            MOVE  SPA-GMN-SRYSTR-AREA  TO  SPA-GMN-SRYEND-AREA
       *
       *    マスタ日付セット
@@ -516,6 +538,23 @@
                    END-EVALUATE     
                    MOVE  1              TO  SPA-GMN-CUR     
       *        医薬品チェック
+      *----(01.01.01)--ADD-START---
+               WHEN    "CLICKED"       ALSO    "IYKCHKALL"
+                   EVALUATE    SPA-GMN-IYKCHKALL
+                       WHEN    "T"
+                           PERFORM VARYING IDX FROM    1   BY  1
+                                   UNTIL   IDX         >   6
+                               MOVE    "F"  TO  SPA-GMN-IYKCHK(IDX)
+                           END-PERFORM
+                       WHEN    "F"
+                           PERFORM VARYING IDX FROM    1   BY  1
+                                   UNTIL   IDX         >   6
+                               MOVE    "T"  TO  SPA-GMN-IYKCHK(IDX)
+                           END-PERFORM
+                   END-EVALUATE
+                   MOVE  6              TO  SPA-GMN-CUR
+      *----(01.01.01)--ADD-END-----
+      *----(01.01.01)--UPD-START---
                WHEN    "CLICKED"       ALSO    "IYKCHK1"
                    EVALUATE    SPA-GMN-IYKCHK(1)
                        WHEN    "T"
@@ -523,7 +562,7 @@
                        WHEN    "F"
                            MOVE    "T"  TO  SPA-GMN-IYKCHK(1)
                    END-EVALUATE  
-                   MOVE  6              TO  SPA-GMN-CUR
+                   MOVE  7              TO  SPA-GMN-CUR
                WHEN    "CLICKED"       ALSO    "IYKCHK2"
                    EVALUATE    SPA-GMN-IYKCHK(2)
                        WHEN    "T"
@@ -531,7 +570,7 @@
                        WHEN    "F"
                            MOVE    "T"  TO  SPA-GMN-IYKCHK(2)
                    END-EVALUATE 
-                   MOVE  7             TO  SPA-GMN-CUR
+                   MOVE  8             TO  SPA-GMN-CUR
                WHEN    "CLICKED"       ALSO    "IYKCHK3"
                    EVALUATE    SPA-GMN-IYKCHK(3)
                        WHEN    "T"
@@ -539,31 +578,31 @@
                        WHEN    "F"
                            MOVE    "T"  TO  SPA-GMN-IYKCHK(3)
                    END-EVALUATE
-                   MOVE  8              TO  SPA-GMN-CUR
-               WHEN    "CLICKED"       ALSO    "IYKCHK4" 
+                   MOVE  9              TO  SPA-GMN-CUR
+               WHEN    "CLICKED"       ALSO    "IYKCHK4"
                    EVALUATE    SPA-GMN-IYKCHK(4)
                        WHEN    "T"
                            MOVE    "F"  TO  SPA-GMN-IYKCHK(4)
                        WHEN    "F"
                            MOVE    "T"  TO  SPA-GMN-IYKCHK(4)
-                   END-EVALUATE   
-                   MOVE  9              TO  SPA-GMN-CUR
-               WHEN    "CLICKED"       ALSO    "IYKCHK5" 
+                   END-EVALUATE
+                   MOVE  10             TO  SPA-GMN-CUR
+               WHEN    "CLICKED"       ALSO    "IYKCHK5"
                    EVALUATE    SPA-GMN-IYKCHK(5)
                        WHEN    "T"
                            MOVE    "F"  TO  SPA-GMN-IYKCHK(5)
                        WHEN    "F"
                            MOVE    "T"  TO  SPA-GMN-IYKCHK(5)
-                   END-EVALUATE   
-                   MOVE  10             TO  SPA-GMN-CUR
-               WHEN    "CLICKED"       ALSO    "IYKCHK6" 
+                   END-EVALUATE
+                   MOVE  11             TO  SPA-GMN-CUR
+               WHEN    "CLICKED"       ALSO    "IYKCHK6"
                    EVALUATE    SPA-GMN-IYKCHK(6)
                        WHEN    "T"
                            MOVE    "F"  TO  SPA-GMN-IYKCHK(6)
                        WHEN    "F"
                            MOVE    "T"  TO  SPA-GMN-IYKCHK(6)
-                   END-EVALUATE   
-                   MOVE  11             TO  SPA-GMN-CUR
+                   END-EVALUATE
+                   MOVE  12             TO  SPA-GMN-CUR
       *        特定器材チェック
                WHEN    "CLICKED"       ALSO    "TOKCHK" 
                    EVALUATE    SPA-GMN-TOKCHK
@@ -572,7 +611,49 @@
                        WHEN    "F"
                            MOVE    "T"  TO  SPA-GMN-TOKCHK
                    END-EVALUATE                
-                   MOVE  12             TO  SPA-GMN-CUR
+                   MOVE  13             TO  SPA-GMN-CUR
+      *----(01.01.01)--UPD-END-----
+      *----(01.01.01)--ADD-START---
+      *        コメントチェック
+               WHEN    "CLICKED"       ALSO    "COMCHKALL"
+                   EVALUATE    SPA-GMN-COMCHKALL
+                       WHEN    "T"
+                           PERFORM VARYING IDX FROM    1   BY  1
+                                   UNTIL   IDX         >   3
+                               MOVE    "F"  TO  SPA-GMN-COMCHK(IDX)
+                           END-PERFORM
+                       WHEN    "F"
+                           PERFORM VARYING IDX FROM    1   BY  1
+                                   UNTIL   IDX         >   3
+                               MOVE    "T"  TO  SPA-GMN-COMCHK(IDX)
+                           END-PERFORM
+                   END-EVALUATE
+                   MOVE  14             TO  SPA-GMN-CUR
+               WHEN    "CLICKED"       ALSO    "COMCHK1"
+                   EVALUATE    SPA-GMN-COMCHK(1)
+                       WHEN    "T"
+                           MOVE    "F"  TO  SPA-GMN-COMCHK(1)
+                       WHEN    "F"
+                           MOVE    "T"  TO  SPA-GMN-COMCHK(1)
+                   END-EVALUATE  
+                   MOVE  15             TO  SPA-GMN-CUR
+               WHEN    "CLICKED"       ALSO    "COMCHK2"
+                   EVALUATE    SPA-GMN-COMCHK(2)
+                       WHEN    "T"
+                           MOVE    "F"  TO  SPA-GMN-COMCHK(2)
+                       WHEN    "F"
+                           MOVE    "T"  TO  SPA-GMN-COMCHK(2)
+                   END-EVALUATE 
+                   MOVE  16             TO  SPA-GMN-CUR
+               WHEN    "CLICKED"       ALSO    "COMCHK3"
+                   EVALUATE    SPA-GMN-COMCHK(3)
+                       WHEN    "T"
+                           MOVE    "F"  TO  SPA-GMN-COMCHK(3)
+                       WHEN    "F"
+                           MOVE    "T"  TO  SPA-GMN-COMCHK(3)
+                   END-EVALUATE
+                   MOVE  17             TO  SPA-GMN-CUR
+      *----(01.01.01)--ADD-END-----
                WHEN    "CLICKED"       ALSO    "SRY1" 
                    MOVE  Z91-SRY(1)           TO  SPA-GMN-SRY(1)
                WHEN    "CLICKED"       ALSO    "SRY2" 
@@ -597,6 +678,27 @@
                WHEN    "CLICKED"       ALSO    "SYU3" 
                    MOVE  Z91-SYU(3)           TO  SPA-GMN-SYU(3)
            END-EVALUATE
+      *
+      *----(01.01.01)--ADD-START---
+           IF          SPA-GMN-IYKCHK(1)   =   "F"
+               AND     SPA-GMN-IYKCHK(2)   =   "F"
+               AND     SPA-GMN-IYKCHK(3)   =   "F"
+               AND     SPA-GMN-IYKCHK(4)   =   "F"
+               AND     SPA-GMN-IYKCHK(5)   =   "F"
+               AND     SPA-GMN-IYKCHK(6)   =   "F"
+               MOVE    "F"  TO  SPA-GMN-IYKCHKALL
+           ELSE
+               MOVE    "T"  TO  SPA-GMN-IYKCHKALL
+           END-IF
+      *
+           IF          SPA-GMN-COMCHK(1)   =   "F"
+               AND     SPA-GMN-COMCHK(2)   =   "F"
+               AND     SPA-GMN-COMCHK(3)   =   "F"
+               MOVE    "F"  TO  SPA-GMN-COMCHKALL
+           ELSE
+               MOVE    "T"  TO  SPA-GMN-COMCHKALL
+           END-IF
+      *----(01.01.01)--ADD-END-----
       *
            .
        200-GMNSENI-EXT.
@@ -725,6 +827,9 @@
            END-IF
       *
            MOVE  Z91-SRYSTR      TO  SPA-Z91-SRYSTR
+      *----(01.01.01)--ADD-START---
+           MOVE  Z91-SRYSTR      TO  SPA-Z91-SRYEND
+      *----(01.01.01)--ADD-END-----
       *
            MOVE  5               TO  SPA-GMN-CUR   
            .
@@ -818,32 +923,30 @@
       *****************************************************************
        490-PRINT-MAE-SEC                   SECTION.
       *
-           IF            (SPA-GMN-IYKCHK(1)  =   "F")  
-                  AND    (SPA-GMN-IYKCHK(2)  =   "F")  
-                  AND    (SPA-GMN-IYKCHK(3)  =   "F")  
-                  AND    (SPA-GMN-IYKCHK(4)  =   "F")   
-                  AND    (SPA-GMN-IYKCHK(5)  =   "F")
-                  AND    (SPA-GMN-IYKCHK(6)  =   "F")  
-                  AND    (SPA-GMN-SRYCHK     =   "F")   
-                  AND    (SPA-GMN-TOKCHK     =   "F")   
+      *----(01.01.01)--UPD-START---
+           IF            (SPA-GMN-IYKCHKALL  =   "F")
+                  AND    (SPA-GMN-SRYCHK     =   "F")
+                  AND    (SPA-GMN-TOKCHK     =   "F")
+                  AND    (SPA-GMN-COMCHKALL  =   "F")
                   MOVE    "0004"    TO  SPA-ERRCD
            END-IF
+      *----(01.01.01)--UPD-END-----
       *
-           IF      SPA-ERRCD           =   SPACE
-               IF     SPA-NAI-MSTYMD    =   ZERO
+           IF      SPA-ERRCD          =   SPACE
+               IF     SPA-NAI-MSTYMD  =   ZERO
                       MOVE    "0003"      TO  SPA-ERRCD
-               END-IF   
-           END-IF     
-      *        
-           IF      SPA-ERRCD       NOT  =   SPACE
-               GO  TO  490-PRINT-MAE-EXT  
+               END-IF
            END-IF
-      *         
-           MOVE    SPACE               TO  SYS-3003-REC 
+      *
+           IF      SPA-ERRCD       NOT  =   SPACE
+               GO  TO  490-PRINT-MAE-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD 
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -957,7 +1060,12 @@
                    ELSE    
                        MOVE  SPA-Z91-SRYENDL   TO  SHELL-SRYSTR
                        MOVE  SPA-Z91-SRYSTRL   TO  SHELL-SRYEND
-                   END-IF    
+                   END-IF
+      *----(01.01.01)--ADD-START---
+                   IF      SHELL-SRYEND    =  "90"
+                       MOVE  "97"          TO  SHELL-SRYEND
+                   END-IF
+      *----(01.01.01)--ADD-END-----
                ELSE
                    MOVE  1                 TO  SHELL-SRYKBN
                    MOVE  ZERO              TO  SHELL-SRYSTR
@@ -993,6 +1101,18 @@
                MOVE  ZERO                  TO  SHELL-TOKCHK 
            END-IF
       *
+      *----(01.01.01)--ADD-START---
+      *    コメントチェックセット
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX         >   3
+               IF      SPA-GMN-COMCHK(IDX)     =  "T"
+                   MOVE    1           TO  SHELL-COMCHK (IDX) 
+               ELSE
+                   MOVE    ZERO        TO  SHELL-COMCHK (IDX)
+               END-IF
+           END-PERFORM     
+      *----(01.01.01)--ADD-END-----
+      *
       *    抽出区分セット
            IF      SPA-GMN-CYU(1)      =   "T"
                MOVE  1                     TO  SHELL-CYUKBN
@@ -1012,7 +1132,6 @@
       *
       *    マスタ日付チェック
            MOVE  SPA-NAI-MSTYMD        TO  SHELL-MSTYMD
-      *               
       *
       *    印刷処理
            ACCEPT  SYS-YMD         FROM    DATE
@@ -1033,9 +1152,9 @@
            MOVE    SPA-TERMID           TO  TENSUERR-TERMID
       *   
            IF      SPA-GMN-KEI(1)        =   "T"
-               IF      SHELL-SRYCHK          =   1     
-                   MOVE    "ORHCML03"        TO  WRK-PGID
-                   PERFORM 4901-PRINT-SYORI-SEC
+               IF      SHELL-SRYCHK          =   1
+                       MOVE    "ORHCML03"        TO  WRK-PGID
+                       PERFORM 4901-PRINT-SYORI-SEC
                END-IF
       *
                IF      SHELL-IYKCHK-G      =   ALL "0"
@@ -1049,10 +1168,19 @@
                    MOVE    "ORHCML02"        TO  WRK-PGID
                    PERFORM 4901-PRINT-SYORI-SEC
                END-IF
-           ELSE
-               IF      SHELL-SRYCHK        =   1     
-                   MOVE    "ORHCML08"        TO  WRK-PGID
+      *
+      *----(01.01.01)--ADD-START---
+               IF      SHELL-COMCHK-G        =   ALL "0"
+                   CONTINUE
+               ELSE    
+                   MOVE    "ORHCML04"        TO  WRK-PGID
                    PERFORM 4901-PRINT-SYORI-SEC
+               END-IF
+      *----(01.01.01)--ADD-END-----
+           ELSE
+               IF      SHELL-SRYCHK          =   1
+                       MOVE    "ORHCML08"        TO  WRK-PGID
+                       PERFORM 4901-PRINT-SYORI-SEC
                END-IF
       *
                IF      SHELL-IYKCHK-G      =   ALL "0"
@@ -1067,8 +1195,15 @@
                    PERFORM 4901-PRINT-SYORI-SEC
                END-IF
       *
+      *----(01.01.01)--ADD-START---
+               IF      SHELL-COMCHK-G        =   ALL "0"
+                   CONTINUE
+               ELSE    
+                   MOVE    "ORHCML05"        TO  WRK-PGID
+                   PERFORM 4901-PRINT-SYORI-SEC
+               END-IF
+      *----(01.01.01)--ADD-END-----
            END-IF
-      *
       *
       *    印刷処理
       *
@@ -1429,17 +1564,24 @@
            MOVE  SPA-GMN-SRY(2)     TO  Z91-SRY(2)
            MOVE  SPA-GMN-SYU(1)     TO  Z91-SYU(1)
            MOVE  SPA-GMN-SYU(2)     TO  Z91-SYU(2)
-           MOVE  SPA-GMN-SYU(3)     TO  Z91-SYU(3) 
+           MOVE  SPA-GMN-SYU(3)     TO  Z91-SYU(3)
            MOVE  SPA-GMN-KEI(1)     TO  Z91-KEI(1)
-           MOVE  SPA-GMN-KEI(2)     TO  Z91-KEI(2) 
+           MOVE  SPA-GMN-KEI(2)     TO  Z91-KEI(2)
            MOVE  SPA-GMN-CYU(1)     TO  Z91-CYU(1)
            MOVE  SPA-GMN-CYU(2)     TO  Z91-CYU(2)
            MOVE  SPA-GMN-IYKCHK(1)     TO  Z91-IYKCHK(1)
            MOVE  SPA-GMN-IYKCHK(2)     TO  Z91-IYKCHK(2)
-           MOVE  SPA-GMN-IYKCHK(3)     TO  Z91-IYKCHK(3) 
+           MOVE  SPA-GMN-IYKCHK(3)     TO  Z91-IYKCHK(3)
            MOVE  SPA-GMN-IYKCHK(4)     TO  Z91-IYKCHK(4)
            MOVE  SPA-GMN-IYKCHK(5)     TO  Z91-IYKCHK(5)
-           MOVE  SPA-GMN-IYKCHK(6)     TO  Z91-IYKCHK(6)        
+           MOVE  SPA-GMN-IYKCHK(6)     TO  Z91-IYKCHK(6)
+      *----(01.01.01)--ADD-START---
+           MOVE  SPA-GMN-COMCHK(1)     TO  Z91-COMCHK(1)
+           MOVE  SPA-GMN-COMCHK(2)     TO  Z91-COMCHK(2)
+           MOVE  SPA-GMN-COMCHK(3)     TO  Z91-COMCHK(3)
+           MOVE  SPA-GMN-IYKCHKALL     TO  Z91-IYKCHKALL
+           MOVE  SPA-GMN-COMCHKALL     TO  Z91-COMCHKALL
+      *----(01.01.01)--ADD-END-----
       *
            PERFORM  VARYING IDX FROM 1 BY 1
                     UNTIL   IDX > SPA-SRYSTR-MAX
@@ -1500,39 +1642,57 @@
                    MOVE    "SRYSTR"            TO  MCP-WIDGET
                WHEN    5
                    MOVE    "SRYEND"            TO  MCP-WIDGET
-               WHEN    6 
-                   MOVE    "IYKCHK1"           TO  MCP-WIDGET
+      *----(01.01.01)--ADD-START---
+               WHEN    6
+                   MOVE    "IYKCHKALL"         TO  MCP-WIDGET
+      *----(01.01.01)--ADD-END-----
+      *----(01.01.01)--UPD-START---
                WHEN    7
-                   MOVE    "IYKCHK2"           TO  MCP-WIDGET
+                   MOVE    "IYKCHK1"           TO  MCP-WIDGET
                WHEN    8
-                   MOVE    "IYKCHK3"           TO  MCP-WIDGET
+                   MOVE    "IYKCHK2"           TO  MCP-WIDGET
                WHEN    9
-                   MOVE    "IYKCHK4"           TO  MCP-WIDGET
+                   MOVE    "IYKCHK3"           TO  MCP-WIDGET
                WHEN    10
-                   MOVE    "IYKCHK5"           TO  MCP-WIDGET
+                   MOVE    "IYKCHK4"           TO  MCP-WIDGET
                WHEN    11
-                   MOVE    "IYKCHK6"           TO  MCP-WIDGET
+                   MOVE    "IYKCHK5"           TO  MCP-WIDGET
                WHEN    12
-                   MOVE    "TOKCHK"            TO  MCP-WIDGET
+                   MOVE    "IYKCHK6"           TO  MCP-WIDGET
                WHEN    13
-                   MOVE    "MSTYMD"            TO  MCP-WIDGET
+                   MOVE    "TOKCHK"            TO  MCP-WIDGET
+      *----(01.01.01)--UPD-END-----
+      *----(01.01.01)--ADD-START---
                WHEN    14
-                   MOVE    "KEI1"              TO  MCP-WIDGET
+                   MOVE    "COMCHKALL"         TO  MCP-WIDGET
                WHEN    15
-                   MOVE    "KEI2"              TO  MCP-WIDGET
-               WHEN    16 
-                   MOVE    "CYU1"              TO  MCP-WIDGET
+                   MOVE    "COMCHK1"           TO  MCP-WIDGET
+               WHEN    16
+                   MOVE    "COMCHK2"           TO  MCP-WIDGET
                WHEN    17
-                   MOVE    "CYU2"              TO  MCP-WIDGET
+                   MOVE    "COMCHK3"           TO  MCP-WIDGET
+      *----(01.01.01)--ADD-END-----
+      *----(01.01.01)--UPD-START---
                WHEN    18
-                   MOVE    "SYU1"              TO  MCP-WIDGET
-               WHEN    19 
-                   MOVE    "SYU2"              TO  MCP-WIDGET
+                   MOVE    "MSTYMD"            TO  MCP-WIDGET
+               WHEN    19
+                   MOVE    "KEI1"              TO  MCP-WIDGET
                WHEN    20
+                   MOVE    "KEI2"              TO  MCP-WIDGET
+               WHEN    21 
+                   MOVE    "CYU1"              TO  MCP-WIDGET
+               WHEN    22
+                   MOVE    "CYU2"              TO  MCP-WIDGET
+               WHEN    23
+                   MOVE    "SYU1"              TO  MCP-WIDGET
+               WHEN    24 
+                   MOVE    "SYU2"              TO  MCP-WIDGET
+               WHEN    25
                    MOVE    "SYU3"              TO  MCP-WIDGET
+      *----(01.01.01)--UPD-END-----
                WHEN    99
                    MOVE    "B12"               TO  MCP-WIDGET
-           END-EVALUATE        
+           END-EVALUATE
       *
            .
        5001-MAPCUR-EXT.
