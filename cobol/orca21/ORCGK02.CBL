@@ -6694,8 +6694,12 @@
                                                           (SPA-GMN-IDX)
                       INITIALIZE              SPA-COM-TBLREC
                                                           (SPA-GMN-IDX)
-                      COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX
-                                              -   1
+                       IF      WRK-GMN-IDX     =   SPA-GMN-IDX
+                           CONTINUE
+                       ELSE
+                           COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX
+                                                   -   1
+                       END-IF
                    ELSE
       *                ÊÝ¸±³°¶â³ÛÈ½Äê
                        PERFORM 4101191-JIHI-HEN-SEC
@@ -6938,8 +6942,12 @@
                                                      (SPA-GMN-IDX)
                       INITIALIZE              SPA-COM-TBLREC
                                                      (SPA-GMN-IDX)
-                      COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX
-                                              -   1
+                       IF      WRK-GMN-IDX     =   SPA-GMN-IDX
+                           CONTINUE
+                       ELSE
+                           COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX
+                                                   -   1
+                       END-IF
                    ELSE
                        MOVE    SPACE          TO  SPA-ERRCD
       *                ÊÝ¸±³°¶â³ÛÈ½Äê
