@@ -219,6 +219,7 @@
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(02).
            03  DAY-IDX             PIC 9(04).
            03  DAY-IDX2            PIC 9(02).
            03  IDY                 PIC 9(04).
@@ -244,9 +245,11 @@
            03  WRK-ZAINUM          PIC 9(08).
            03  WRK-RECEERR         PIC X(200).
       *
-           03  WRK-FSANTEIYM       PIC 9(06).
-           03  WRK-AFTER2          PIC 9(06).
+           03  WRK-FSANTEIYMD      PIC 9(08).
+           03  WRK-AFTER2          PIC 9(08).
            03  WRK-TOSEKIYMD       PIC 9(08).
+           03  WRK-HINKAIYMD       PIC 9(08).
+           03  WRK-DAY             PIC 9(02).
       *
            03  TBL-SANTEI-DAY.
                05  TB-SANTEI-DAY     PIC 9(02)   OCCURS  31.
@@ -2120,6 +2123,15 @@
       *
            IF   RECE04-FLG-HINKAI-COMMENT   =    "1"
       *
+             MOVE    ZERO    TO   WRK-DAY
+             PERFORM  VARYING   IDX3   FROM  1  BY  1
+                       UNTIL    IDX3  >   31
+                 IF   RECE04-KAISU(1 IDX3)  NOT =  ZERO
+                        MOVE  IDX3  TO  WRK-DAY
+                        MOVE  31    TO  IDX3
+                 END-IF
+             END-PERFORM
+      *
              MOVE     ZERO     TO     FLG-HINKAI-COMMENT
              MOVE     ZERO     TO     WRK-TOSEKIYMD
       *
@@ -2144,25 +2156,26 @@
                     PERFORM   UNTIL  ( FLG-SANTEI         =   1 ) OR
                                      ( FLG-HINKAI-COMMENT =   1 )
       *
-                       MOVE   SANTEI-FSANTEIYMD(1:6)
-                                               TO  WRK-FSANTEIYM
+                       MOVE   SANTEI-FSANTEIYMD  TO  WRK-FSANTEIYMD
       *
                        INITIALIZE                  STS-AREA-DAY
                        INITIALIZE                  LNK-DAY6-AREA
                        MOVE    "61"            TO  LNK-DAY6-IRAI
-                       MOVE    WRK-FSANTEIYM   TO  LNK-DAY6-KIJUN(1:6)
-                       MOVE    "01"            TO  LNK-DAY6-KIJUN(7:2)
+                       MOVE    WRK-FSANTEIYMD  TO  LNK-DAY6-KIJUN
                        MOVE    "2"             TO  LNK-DAY6-ZOGENPTN
                        MOVE     2              TO  LNK-DAY6-ZOGEN
                        CALL    "ORCSDAY"       USING   STS-AREA-DAY
                                                        LNK-DAY6-AREA
-                       MOVE    LNK-DAY6-KEISAN(1:6)
-                                               TO  WRK-AFTER2
+                       MOVE    LNK-DAY6-KEISAN TO  WRK-AFTER2
       *
-                       IF     WRK-FSANTEIYM    <=  RECE04-SRYYM
-                       AND    RECE04-SRYYM     <=  WRK-AFTER2
+                       MOVE    RECE04-SRYYM    TO  WRK-HINKAIYMD(1:6)
+                       MOVE    WRK-DAY         TO  WRK-HINKAIYMD(7:2)
+      *
+                       IF     WRK-DAY      NOT  =  ZERO
+                       AND    WRK-FSANTEIYMD   <=  WRK-HINKAIYMD
+                       AND    WRK-HINKAIYMD    <   WRK-AFTER2
                              MOVE    1    TO   FLG-HINKAI-COMMENT
-                             MOVE  SANTEI-FSANTEIYMD
+                             MOVE  WRK-FSANTEIYMD
                                           TO   WRK-TOSEKIYMD
                        END-IF
       * 
