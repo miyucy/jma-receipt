@@ -1,0 +1,4306 @@
+W98	{
+	fixed1	{
+		FRA_HAITA	{
+					state	int;
+			fixed2	{
+				FLG01_01	{
+					value	varchar(2);
+				};
+				FLG01_02	{
+					value	varchar(2);
+				};
+				FLG01_03	{
+					value	varchar(2);
+				};
+				FLG01_04	{
+					value	varchar(2);
+				};
+				FLG01_05	{
+					value	varchar(2);
+				};
+				FLG01_06	{
+					value	varchar(2);
+				};
+				FLG01_07	{
+					value	varchar(2);
+				};
+				FLG01_08	{
+					value	varchar(2);
+				};
+				FLG01_09	{
+					value	varchar(2);
+				};
+				FLG01_10	{
+					value	varchar(2);
+				};
+				FLG01_11	{
+					value	varchar(2);
+				};
+				FLG01_12	{
+					value	varchar(2);
+				};
+				FLG01_13	{
+					value	varchar(2);
+				};
+				FLG01_14	{
+					value	varchar(2);
+				};
+				FLG01_15	{
+					value	varchar(2);
+				};
+				FLG01_16	{
+					value	varchar(2);
+				};
+				FLG01_17	{
+					value	varchar(2);
+				};
+				FLG01_18	{
+					value	varchar(2);
+				};
+				FLG01_19	{
+					value	varchar(2);
+				};
+				FLG01_20	{
+					value	varchar(2);
+				};
+				FLG01_21	{
+					value	varchar(2);
+				};
+				FLG01_22	{
+					value	varchar(2);
+				};
+				FLG01_23	{
+					value	varchar(2);
+				};
+				FLG01_24	{
+					value	varchar(2);
+				};
+				FLG01_25	{
+					value	varchar(2);
+				};
+				FLG01_26	{
+					value	varchar(2);
+				};
+				FLG02_01	{
+					value	varchar(2);
+				};
+				FLG02_02	{
+					value	varchar(2);
+				};
+				FLG02_03	{
+					value	varchar(2);
+				};
+				FLG02_04	{
+					value	varchar(2);
+				};
+				FLG02_05	{
+					value	varchar(2);
+				};
+				FLG02_06	{
+					value	varchar(2);
+				};
+				FLG02_07	{
+					value	varchar(2);
+				};
+				FLG02_08	{
+					value	varchar(2);
+				};
+				FLG02_09	{
+					value	varchar(2);
+				};
+				FLG02_10	{
+					value	varchar(2);
+				};
+				FLG02_11	{
+					value	varchar(2);
+				};
+				FLG02_12	{
+					value	varchar(2);
+				};
+				FLG02_13	{
+					value	varchar(2);
+				};
+				FLG02_14	{
+					value	varchar(2);
+				};
+				FLG02_15	{
+					value	varchar(2);
+				};
+				FLG02_16	{
+					value	varchar(2);
+				};
+				FLG02_17	{
+					value	varchar(2);
+				};
+				FLG02_18	{
+					value	varchar(2);
+				};
+				FLG02_19	{
+					value	varchar(2);
+				};
+				FLG02_20	{
+					value	varchar(2);
+				};
+				FLG02_21	{
+					value	varchar(2);
+				};
+				FLG02_22	{
+					value	varchar(2);
+				};
+				FLG02_23	{
+					value	varchar(2);
+				};
+				FLG02_24	{
+					value	varchar(2);
+				};
+				FLG02_25	{
+					value	varchar(2);
+				};
+				FLG02_26	{
+					value	varchar(2);
+				};
+				FLG03_01	{
+					value	varchar(2);
+				};
+				FLG03_02	{
+					value	varchar(2);
+				};
+				FLG03_03	{
+					value	varchar(2);
+				};
+				FLG03_04	{
+					value	varchar(2);
+				};
+				FLG03_05	{
+					value	varchar(2);
+				};
+				FLG03_06	{
+					value	varchar(2);
+				};
+				FLG03_07	{
+					value	varchar(2);
+				};
+				FLG03_08	{
+					value	varchar(2);
+				};
+				FLG03_09	{
+					value	varchar(2);
+				};
+				FLG03_10	{
+					value	varchar(2);
+				};
+				FLG03_11	{
+					value	varchar(2);
+				};
+				FLG03_12	{
+					value	varchar(2);
+				};
+				FLG03_13	{
+					value	varchar(2);
+				};
+				FLG03_14	{
+					value	varchar(2);
+				};
+				FLG03_15	{
+					value	varchar(2);
+				};
+				FLG03_16	{
+					value	varchar(2);
+				};
+				FLG03_17	{
+					value	varchar(2);
+				};
+				FLG03_18	{
+					value	varchar(2);
+				};
+				FLG03_19	{
+					value	varchar(2);
+				};
+				FLG03_20	{
+					value	varchar(2);
+				};
+				FLG03_21	{
+					value	varchar(2);
+				};
+				FLG03_22	{
+					value	varchar(2);
+				};
+				FLG03_23	{
+					value	varchar(2);
+				};
+				FLG03_24	{
+					value	varchar(2);
+				};
+				FLG03_25	{
+					value	varchar(2);
+				};
+				FLG03_26	{
+					value	varchar(2);
+				};
+				FLG04_01	{
+					value	varchar(2);
+				};
+				FLG04_02	{
+					value	varchar(2);
+				};
+				FLG04_03	{
+					value	varchar(2);
+				};
+				FLG04_04	{
+					value	varchar(2);
+				};
+				FLG04_05	{
+					value	varchar(2);
+				};
+				FLG04_06	{
+					value	varchar(2);
+				};
+				FLG04_07	{
+					value	varchar(2);
+				};
+				FLG04_08	{
+					value	varchar(2);
+				};
+				FLG04_09	{
+					value	varchar(2);
+				};
+				FLG04_10	{
+					value	varchar(2);
+				};
+				FLG04_11	{
+					value	varchar(2);
+				};
+				FLG04_12	{
+					value	varchar(2);
+				};
+				FLG04_13	{
+					value	varchar(2);
+				};
+				FLG04_14	{
+					value	varchar(2);
+				};
+				FLG04_15	{
+					value	varchar(2);
+				};
+				FLG04_16	{
+					value	varchar(2);
+				};
+				FLG04_17	{
+					value	varchar(2);
+				};
+				FLG04_18	{
+					value	varchar(2);
+				};
+				FLG04_19	{
+					value	varchar(2);
+				};
+				FLG04_20	{
+					value	varchar(2);
+				};
+				FLG04_21	{
+					value	varchar(2);
+				};
+				FLG04_22	{
+					value	varchar(2);
+				};
+				FLG04_23	{
+					value	varchar(2);
+				};
+				FLG04_24	{
+					value	varchar(2);
+				};
+				FLG04_25	{
+					value	varchar(2);
+				};
+				FLG04_26	{
+					value	varchar(2);
+				};
+				FLG05_01	{
+					value	varchar(2);
+				};
+				FLG05_02	{
+					value	varchar(2);
+				};
+				FLG05_03	{
+					value	varchar(2);
+				};
+				FLG05_04	{
+					value	varchar(2);
+				};
+				FLG05_05	{
+					value	varchar(2);
+				};
+				FLG05_06	{
+					value	varchar(2);
+				};
+				FLG05_07	{
+					value	varchar(2);
+				};
+				FLG05_08	{
+					value	varchar(2);
+				};
+				FLG05_09	{
+					value	varchar(2);
+				};
+				FLG05_10	{
+					value	varchar(2);
+				};
+				FLG05_11	{
+					value	varchar(2);
+				};
+				FLG05_12	{
+					value	varchar(2);
+				};
+				FLG05_13	{
+					value	varchar(2);
+				};
+				FLG05_14	{
+					value	varchar(2);
+				};
+				FLG05_15	{
+					value	varchar(2);
+				};
+				FLG05_16	{
+					value	varchar(2);
+				};
+				FLG05_17	{
+					value	varchar(2);
+				};
+				FLG05_18	{
+					value	varchar(2);
+				};
+				FLG05_19	{
+					value	varchar(2);
+				};
+				FLG05_20	{
+					value	varchar(2);
+				};
+				FLG05_21	{
+					value	varchar(2);
+				};
+				FLG05_22	{
+					value	varchar(2);
+				};
+				FLG05_23	{
+					value	varchar(2);
+				};
+				FLG05_24	{
+					value	varchar(2);
+				};
+				FLG05_25	{
+					value	varchar(2);
+				};
+				FLG05_26	{
+					value	varchar(2);
+				};
+				FLG06_01	{
+					value	varchar(2);
+				};
+				FLG06_02	{
+					value	varchar(2);
+				};
+				FLG06_03	{
+					value	varchar(2);
+				};
+				FLG06_04	{
+					value	varchar(2);
+				};
+				FLG06_05	{
+					value	varchar(2);
+				};
+				FLG06_06	{
+					value	varchar(2);
+				};
+				FLG06_07	{
+					value	varchar(2);
+				};
+				FLG06_08	{
+					value	varchar(2);
+				};
+				FLG06_09	{
+					value	varchar(2);
+				};
+				FLG06_10	{
+					value	varchar(2);
+				};
+				FLG06_11	{
+					value	varchar(2);
+				};
+				FLG06_12	{
+					value	varchar(2);
+				};
+				FLG06_13	{
+					value	varchar(2);
+				};
+				FLG06_14	{
+					value	varchar(2);
+				};
+				FLG06_15	{
+					value	varchar(2);
+				};
+				FLG06_16	{
+					value	varchar(2);
+				};
+				FLG06_17	{
+					value	varchar(2);
+				};
+				FLG06_18	{
+					value	varchar(2);
+				};
+				FLG06_19	{
+					value	varchar(2);
+				};
+				FLG06_20	{
+					value	varchar(2);
+				};
+				FLG06_21	{
+					value	varchar(2);
+				};
+				FLG06_22	{
+					value	varchar(2);
+				};
+				FLG06_23	{
+					value	varchar(2);
+				};
+				FLG06_24	{
+					value	varchar(2);
+				};
+				FLG06_25	{
+					value	varchar(2);
+				};
+				FLG06_26	{
+					value	varchar(2);
+				};
+				FLG07_01	{
+					value	varchar(2);
+				};
+				FLG07_02	{
+					value	varchar(2);
+				};
+				FLG07_03	{
+					value	varchar(2);
+				};
+				FLG07_04	{
+					value	varchar(2);
+				};
+				FLG07_05	{
+					value	varchar(2);
+				};
+				FLG07_06	{
+					value	varchar(2);
+				};
+				FLG07_07	{
+					value	varchar(2);
+				};
+				FLG07_08	{
+					value	varchar(2);
+				};
+				FLG07_09	{
+					value	varchar(2);
+				};
+				FLG07_10	{
+					value	varchar(2);
+				};
+				FLG07_11	{
+					value	varchar(2);
+				};
+				FLG07_12	{
+					value	varchar(2);
+				};
+				FLG07_13	{
+					value	varchar(2);
+				};
+				FLG07_14	{
+					value	varchar(2);
+				};
+				FLG07_15	{
+					value	varchar(2);
+				};
+				FLG07_16	{
+					value	varchar(2);
+				};
+				FLG07_17	{
+					value	varchar(2);
+				};
+				FLG07_18	{
+					value	varchar(2);
+				};
+				FLG07_19	{
+					value	varchar(2);
+				};
+				FLG07_20	{
+					value	varchar(2);
+				};
+				FLG07_21	{
+					value	varchar(2);
+				};
+				FLG07_22	{
+					value	varchar(2);
+				};
+				FLG07_23	{
+					value	varchar(2);
+				};
+				FLG07_24	{
+					value	varchar(2);
+				};
+				FLG07_25	{
+					value	varchar(2);
+				};
+				FLG07_26	{
+					value	varchar(2);
+				};
+				FLG08_01	{
+					value	varchar(2);
+				};
+				FLG08_02	{
+					value	varchar(2);
+				};
+				FLG08_03	{
+					value	varchar(2);
+				};
+				FLG08_04	{
+					value	varchar(2);
+				};
+				FLG08_05	{
+					value	varchar(2);
+				};
+				FLG08_06	{
+					value	varchar(2);
+				};
+				FLG08_07	{
+					value	varchar(2);
+				};
+				FLG08_08	{
+					value	varchar(2);
+				};
+				FLG08_09	{
+					value	varchar(2);
+				};
+				FLG08_10	{
+					value	varchar(2);
+				};
+				FLG08_11	{
+					value	varchar(2);
+				};
+				FLG08_12	{
+					value	varchar(2);
+				};
+				FLG08_13	{
+					value	varchar(2);
+				};
+				FLG08_14	{
+					value	varchar(2);
+				};
+				FLG08_15	{
+					value	varchar(2);
+				};
+				FLG08_16	{
+					value	varchar(2);
+				};
+				FLG08_17	{
+					value	varchar(2);
+				};
+				FLG08_18	{
+					value	varchar(2);
+				};
+				FLG08_19	{
+					value	varchar(2);
+				};
+				FLG08_20	{
+					value	varchar(2);
+				};
+				FLG08_21	{
+					value	varchar(2);
+				};
+				FLG08_22	{
+					value	varchar(2);
+				};
+				FLG08_23	{
+					value	varchar(2);
+				};
+				FLG08_24	{
+					value	varchar(2);
+				};
+				FLG08_25	{
+					value	varchar(2);
+				};
+				FLG08_26	{
+					value	varchar(2);
+				};
+				FLG09_01	{
+					value	varchar(2);
+				};
+				FLG09_02	{
+					value	varchar(2);
+				};
+				FLG09_03	{
+					value	varchar(2);
+				};
+				FLG09_04	{
+					value	varchar(2);
+				};
+				FLG09_05	{
+					value	varchar(2);
+				};
+				FLG09_06	{
+					value	varchar(2);
+				};
+				FLG09_07	{
+					value	varchar(2);
+				};
+				FLG09_08	{
+					value	varchar(2);
+				};
+				FLG09_09	{
+					value	varchar(2);
+				};
+				FLG09_10	{
+					value	varchar(2);
+				};
+				FLG09_11	{
+					value	varchar(2);
+				};
+				FLG09_12	{
+					value	varchar(2);
+				};
+				FLG09_13	{
+					value	varchar(2);
+				};
+				FLG09_14	{
+					value	varchar(2);
+				};
+				FLG09_15	{
+					value	varchar(2);
+				};
+				FLG09_16	{
+					value	varchar(2);
+				};
+				FLG09_17	{
+					value	varchar(2);
+				};
+				FLG09_18	{
+					value	varchar(2);
+				};
+				FLG09_19	{
+					value	varchar(2);
+				};
+				FLG09_20	{
+					value	varchar(2);
+				};
+				FLG09_21	{
+					value	varchar(2);
+				};
+				FLG09_22	{
+					value	varchar(2);
+				};
+				FLG09_23	{
+					value	varchar(2);
+				};
+				FLG09_24	{
+					value	varchar(2);
+				};
+				FLG09_25	{
+					value	varchar(2);
+				};
+				FLG09_26	{
+					value	varchar(2);
+				};
+				FLG10_01	{
+					value	varchar(2);
+				};
+				FLG10_02	{
+					value	varchar(2);
+				};
+				FLG10_03	{
+					value	varchar(2);
+				};
+				FLG10_04	{
+					value	varchar(2);
+				};
+				FLG10_05	{
+					value	varchar(2);
+				};
+				FLG10_06	{
+					value	varchar(2);
+				};
+				FLG10_07	{
+					value	varchar(2);
+				};
+				FLG10_08	{
+					value	varchar(2);
+				};
+				FLG10_09	{
+					value	varchar(2);
+				};
+				FLG10_10	{
+					value	varchar(2);
+				};
+				FLG10_11	{
+					value	varchar(2);
+				};
+				FLG10_12	{
+					value	varchar(2);
+				};
+				FLG10_13	{
+					value	varchar(2);
+				};
+				FLG10_14	{
+					value	varchar(2);
+				};
+				FLG10_15	{
+					value	varchar(2);
+				};
+				FLG10_16	{
+					value	varchar(2);
+				};
+				FLG10_17	{
+					value	varchar(2);
+				};
+				FLG10_18	{
+					value	varchar(2);
+				};
+				FLG10_19	{
+					value	varchar(2);
+				};
+				FLG10_20	{
+					value	varchar(2);
+				};
+				FLG10_21	{
+					value	varchar(2);
+				};
+				FLG10_22	{
+					value	varchar(2);
+				};
+				FLG10_23	{
+					value	varchar(2);
+				};
+				FLG10_24	{
+					value	varchar(2);
+				};
+				FLG10_25	{
+					value	varchar(2);
+				};
+				FLG10_26	{
+					value	varchar(2);
+				};
+				FLG11_01	{
+					value	varchar(2);
+				};
+				FLG11_02	{
+					value	varchar(2);
+				};
+				FLG11_03	{
+					value	varchar(2);
+				};
+				FLG11_04	{
+					value	varchar(2);
+				};
+				FLG11_05	{
+					value	varchar(2);
+				};
+				FLG11_06	{
+					value	varchar(2);
+				};
+				FLG11_07	{
+					value	varchar(2);
+				};
+				FLG11_08	{
+					value	varchar(2);
+				};
+				FLG11_09	{
+					value	varchar(2);
+				};
+				FLG11_10	{
+					value	varchar(2);
+				};
+				FLG11_11	{
+					value	varchar(2);
+				};
+				FLG11_12	{
+					value	varchar(2);
+				};
+				FLG11_13	{
+					value	varchar(2);
+				};
+				FLG11_14	{
+					value	varchar(2);
+				};
+				FLG11_15	{
+					value	varchar(2);
+				};
+				FLG11_16	{
+					value	varchar(2);
+				};
+				FLG11_17	{
+					value	varchar(2);
+				};
+				FLG11_18	{
+					value	varchar(2);
+				};
+				FLG11_19	{
+					value	varchar(2);
+				};
+				FLG11_20	{
+					value	varchar(2);
+				};
+				FLG11_21	{
+					value	varchar(2);
+				};
+				FLG11_22	{
+					value	varchar(2);
+				};
+				FLG11_23	{
+					value	varchar(2);
+				};
+				FLG11_24	{
+					value	varchar(2);
+				};
+				FLG11_25	{
+					value	varchar(2);
+				};
+				FLG11_26	{
+					value	varchar(2);
+				};
+				FLG12_01	{
+					value	varchar(2);
+				};
+				FLG12_02	{
+					value	varchar(2);
+				};
+				FLG12_03	{
+					value	varchar(2);
+				};
+				FLG12_04	{
+					value	varchar(2);
+				};
+				FLG12_05	{
+					value	varchar(2);
+				};
+				FLG12_06	{
+					value	varchar(2);
+				};
+				FLG12_07	{
+					value	varchar(2);
+				};
+				FLG12_08	{
+					value	varchar(2);
+				};
+				FLG12_09	{
+					value	varchar(2);
+				};
+				FLG12_10	{
+					value	varchar(2);
+				};
+				FLG12_11	{
+					value	varchar(2);
+				};
+				FLG12_12	{
+					value	varchar(2);
+				};
+				FLG12_13	{
+					value	varchar(2);
+				};
+				FLG12_14	{
+					value	varchar(2);
+				};
+				FLG12_15	{
+					value	varchar(2);
+				};
+				FLG12_16	{
+					value	varchar(2);
+				};
+				FLG12_17	{
+					value	varchar(2);
+				};
+				FLG12_18	{
+					value	varchar(2);
+				};
+				FLG12_19	{
+					value	varchar(2);
+				};
+				FLG12_20	{
+					value	varchar(2);
+				};
+				FLG12_21	{
+					value	varchar(2);
+				};
+				FLG12_22	{
+					value	varchar(2);
+				};
+				FLG12_23	{
+					value	varchar(2);
+				};
+				FLG12_24	{
+					value	varchar(2);
+				};
+				FLG12_25	{
+					value	varchar(2);
+				};
+				FLG12_26	{
+					value	varchar(2);
+				};
+				FLG13_01	{
+					value	varchar(2);
+				};
+				FLG13_02	{
+					value	varchar(2);
+				};
+				FLG13_03	{
+					value	varchar(2);
+				};
+				FLG13_04	{
+					value	varchar(2);
+				};
+				FLG13_05	{
+					value	varchar(2);
+				};
+				FLG13_06	{
+					value	varchar(2);
+				};
+				FLG13_07	{
+					value	varchar(2);
+				};
+				FLG13_08	{
+					value	varchar(2);
+				};
+				FLG13_09	{
+					value	varchar(2);
+				};
+				FLG13_10	{
+					value	varchar(2);
+				};
+				FLG13_11	{
+					value	varchar(2);
+				};
+				FLG13_12	{
+					value	varchar(2);
+				};
+				FLG13_13	{
+					value	varchar(2);
+				};
+				FLG13_14	{
+					value	varchar(2);
+				};
+				FLG13_15	{
+					value	varchar(2);
+				};
+				FLG13_16	{
+					value	varchar(2);
+				};
+				FLG13_17	{
+					value	varchar(2);
+				};
+				FLG13_18	{
+					value	varchar(2);
+				};
+				FLG13_19	{
+					value	varchar(2);
+				};
+				FLG13_20	{
+					value	varchar(2);
+				};
+				FLG13_21	{
+					value	varchar(2);
+				};
+				FLG13_22	{
+					value	varchar(2);
+				};
+				FLG13_23	{
+					value	varchar(2);
+				};
+				FLG13_24	{
+					value	varchar(2);
+				};
+				FLG13_25	{
+					value	varchar(2);
+				};
+				FLG13_26	{
+					value	varchar(2);
+				};
+				FLG14_01	{
+					value	varchar(2);
+				};
+				FLG14_02	{
+					value	varchar(2);
+				};
+				FLG14_03	{
+					value	varchar(2);
+				};
+				FLG14_04	{
+					value	varchar(2);
+				};
+				FLG14_05	{
+					value	varchar(2);
+				};
+				FLG14_06	{
+					value	varchar(2);
+				};
+				FLG14_07	{
+					value	varchar(2);
+				};
+				FLG14_08	{
+					value	varchar(2);
+				};
+				FLG14_09	{
+					value	varchar(2);
+				};
+				FLG14_10	{
+					value	varchar(2);
+				};
+				FLG14_11	{
+					value	varchar(2);
+				};
+				FLG14_12	{
+					value	varchar(2);
+				};
+				FLG14_13	{
+					value	varchar(2);
+				};
+				FLG14_14	{
+					value	varchar(2);
+				};
+				FLG14_15	{
+					value	varchar(2);
+				};
+				FLG14_16	{
+					value	varchar(2);
+				};
+				FLG14_17	{
+					value	varchar(2);
+				};
+				FLG14_18	{
+					value	varchar(2);
+				};
+				FLG14_19	{
+					value	varchar(2);
+				};
+				FLG14_20	{
+					value	varchar(2);
+				};
+				FLG14_21	{
+					value	varchar(2);
+				};
+				FLG14_22	{
+					value	varchar(2);
+				};
+				FLG14_23	{
+					value	varchar(2);
+				};
+				FLG14_24	{
+					value	varchar(2);
+				};
+				FLG14_25	{
+					value	varchar(2);
+				};
+				FLG14_26	{
+					value	varchar(2);
+				};
+				FLG15_01	{
+					value	varchar(2);
+				};
+				FLG15_02	{
+					value	varchar(2);
+				};
+				FLG15_03	{
+					value	varchar(2);
+				};
+				FLG15_04	{
+					value	varchar(2);
+				};
+				FLG15_05	{
+					value	varchar(2);
+				};
+				FLG15_06	{
+					value	varchar(2);
+				};
+				FLG15_07	{
+					value	varchar(2);
+				};
+				FLG15_08	{
+					value	varchar(2);
+				};
+				FLG15_09	{
+					value	varchar(2);
+				};
+				FLG15_10	{
+					value	varchar(2);
+				};
+				FLG15_11	{
+					value	varchar(2);
+				};
+				FLG15_12	{
+					value	varchar(2);
+				};
+				FLG15_13	{
+					value	varchar(2);
+				};
+				FLG15_14	{
+					value	varchar(2);
+				};
+				FLG15_15	{
+					value	varchar(2);
+				};
+				FLG15_16	{
+					value	varchar(2);
+				};
+				FLG15_17	{
+					value	varchar(2);
+				};
+				FLG15_18	{
+					value	varchar(2);
+				};
+				FLG15_19	{
+					value	varchar(2);
+				};
+				FLG15_20	{
+					value	varchar(2);
+				};
+				FLG15_21	{
+					value	varchar(2);
+				};
+				FLG15_22	{
+					value	varchar(2);
+				};
+				FLG15_23	{
+					value	varchar(2);
+				};
+				FLG15_24	{
+					value	varchar(2);
+				};
+				FLG15_25	{
+					value	varchar(2);
+				};
+				FLG15_26	{
+					value	varchar(2);
+				};
+				FLG16_01	{
+					value	varchar(2);
+				};
+				FLG16_02	{
+					value	varchar(2);
+				};
+				FLG16_03	{
+					value	varchar(2);
+				};
+				FLG16_04	{
+					value	varchar(2);
+				};
+				FLG16_05	{
+					value	varchar(2);
+				};
+				FLG16_06	{
+					value	varchar(2);
+				};
+				FLG16_07	{
+					value	varchar(2);
+				};
+				FLG16_08	{
+					value	varchar(2);
+				};
+				FLG16_09	{
+					value	varchar(2);
+				};
+				FLG16_10	{
+					value	varchar(2);
+				};
+				FLG16_11	{
+					value	varchar(2);
+				};
+				FLG16_12	{
+					value	varchar(2);
+				};
+				FLG16_13	{
+					value	varchar(2);
+				};
+				FLG16_14	{
+					value	varchar(2);
+				};
+				FLG16_15	{
+					value	varchar(2);
+				};
+				FLG16_16	{
+					value	varchar(2);
+				};
+				FLG16_17	{
+					value	varchar(2);
+				};
+				FLG16_18	{
+					value	varchar(2);
+				};
+				FLG16_19	{
+					value	varchar(2);
+				};
+				FLG16_20	{
+					value	varchar(2);
+				};
+				FLG16_21	{
+					value	varchar(2);
+				};
+				FLG16_22	{
+					value	varchar(2);
+				};
+				FLG16_23	{
+					value	varchar(2);
+				};
+				FLG16_24	{
+					value	varchar(2);
+				};
+				FLG16_25	{
+					value	varchar(2);
+				};
+				FLG16_26	{
+					value	varchar(2);
+				};
+				FLG17_01	{
+					value	varchar(2);
+				};
+				FLG17_02	{
+					value	varchar(2);
+				};
+				FLG17_03	{
+					value	varchar(2);
+				};
+				FLG17_04	{
+					value	varchar(2);
+				};
+				FLG17_05	{
+					value	varchar(2);
+				};
+				FLG17_06	{
+					value	varchar(2);
+				};
+				FLG17_07	{
+					value	varchar(2);
+				};
+				FLG17_08	{
+					value	varchar(2);
+				};
+				FLG17_09	{
+					value	varchar(2);
+				};
+				FLG17_10	{
+					value	varchar(2);
+				};
+				FLG17_11	{
+					value	varchar(2);
+				};
+				FLG17_12	{
+					value	varchar(2);
+				};
+				FLG17_13	{
+					value	varchar(2);
+				};
+				FLG17_14	{
+					value	varchar(2);
+				};
+				FLG17_15	{
+					value	varchar(2);
+				};
+				FLG17_16	{
+					value	varchar(2);
+				};
+				FLG17_17	{
+					value	varchar(2);
+				};
+				FLG17_18	{
+					value	varchar(2);
+				};
+				FLG17_19	{
+					value	varchar(2);
+				};
+				FLG17_20	{
+					value	varchar(2);
+				};
+				FLG17_21	{
+					value	varchar(2);
+				};
+				FLG17_22	{
+					value	varchar(2);
+				};
+				FLG17_23	{
+					value	varchar(2);
+				};
+				FLG17_24	{
+					value	varchar(2);
+				};
+				FLG17_25	{
+					value	varchar(2);
+				};
+				FLG17_26	{
+					value	varchar(2);
+				};
+				FLG18_01	{
+					value	varchar(2);
+				};
+				FLG18_02	{
+					value	varchar(2);
+				};
+				FLG18_03	{
+					value	varchar(2);
+				};
+				FLG18_04	{
+					value	varchar(2);
+				};
+				FLG18_05	{
+					value	varchar(2);
+				};
+				FLG18_06	{
+					value	varchar(2);
+				};
+				FLG18_07	{
+					value	varchar(2);
+				};
+				FLG18_08	{
+					value	varchar(2);
+				};
+				FLG18_09	{
+					value	varchar(2);
+				};
+				FLG18_10	{
+					value	varchar(2);
+				};
+				FLG18_11	{
+					value	varchar(2);
+				};
+				FLG18_12	{
+					value	varchar(2);
+				};
+				FLG18_13	{
+					value	varchar(2);
+				};
+				FLG18_14	{
+					value	varchar(2);
+				};
+				FLG18_15	{
+					value	varchar(2);
+				};
+				FLG18_16	{
+					value	varchar(2);
+				};
+				FLG18_17	{
+					value	varchar(2);
+				};
+				FLG18_18	{
+					value	varchar(2);
+				};
+				FLG18_19	{
+					value	varchar(2);
+				};
+				FLG18_20	{
+					value	varchar(2);
+				};
+				FLG18_21	{
+					value	varchar(2);
+				};
+				FLG18_22	{
+					value	varchar(2);
+				};
+				FLG18_23	{
+					value	varchar(2);
+				};
+				FLG18_24	{
+					value	varchar(2);
+				};
+				FLG18_25	{
+					value	varchar(2);
+				};
+				FLG18_26	{
+					value	varchar(2);
+				};
+				FLG19_01	{
+					value	varchar(2);
+				};
+				FLG19_02	{
+					value	varchar(2);
+				};
+				FLG19_03	{
+					value	varchar(2);
+				};
+				FLG19_04	{
+					value	varchar(2);
+				};
+				FLG19_05	{
+					value	varchar(2);
+				};
+				FLG19_06	{
+					value	varchar(2);
+				};
+				FLG19_07	{
+					value	varchar(2);
+				};
+				FLG19_08	{
+					value	varchar(2);
+				};
+				FLG19_09	{
+					value	varchar(2);
+				};
+				FLG19_10	{
+					value	varchar(2);
+				};
+				FLG19_11	{
+					value	varchar(2);
+				};
+				FLG19_12	{
+					value	varchar(2);
+				};
+				FLG19_13	{
+					value	varchar(2);
+				};
+				FLG19_14	{
+					value	varchar(2);
+				};
+				FLG19_15	{
+					value	varchar(2);
+				};
+				FLG19_16	{
+					value	varchar(2);
+				};
+				FLG19_17	{
+					value	varchar(2);
+				};
+				FLG19_18	{
+					value	varchar(2);
+				};
+				FLG19_19	{
+					value	varchar(2);
+				};
+				FLG19_20	{
+					value	varchar(2);
+				};
+				FLG19_21	{
+					value	varchar(2);
+				};
+				FLG19_22	{
+					value	varchar(2);
+				};
+				FLG19_23	{
+					value	varchar(2);
+				};
+				FLG19_24	{
+					value	varchar(2);
+				};
+				FLG19_25	{
+					value	varchar(2);
+				};
+				FLG19_26	{
+					value	varchar(2);
+				};
+				FLG20_01	{
+					value	varchar(2);
+				};
+				FLG20_02	{
+					value	varchar(2);
+				};
+				FLG20_03	{
+					value	varchar(2);
+				};
+				FLG20_04	{
+					value	varchar(2);
+				};
+				FLG20_05	{
+					value	varchar(2);
+				};
+				FLG20_06	{
+					value	varchar(2);
+				};
+				FLG20_07	{
+					value	varchar(2);
+				};
+				FLG20_08	{
+					value	varchar(2);
+				};
+				FLG20_09	{
+					value	varchar(2);
+				};
+				FLG20_10	{
+					value	varchar(2);
+				};
+				FLG20_11	{
+					value	varchar(2);
+				};
+				FLG20_12	{
+					value	varchar(2);
+				};
+				FLG20_13	{
+					value	varchar(2);
+				};
+				FLG20_14	{
+					value	varchar(2);
+				};
+				FLG20_15	{
+					value	varchar(2);
+				};
+				FLG20_16	{
+					value	varchar(2);
+				};
+				FLG20_17	{
+					value	varchar(2);
+				};
+				FLG20_18	{
+					value	varchar(2);
+				};
+				FLG20_19	{
+					value	varchar(2);
+				};
+				FLG20_20	{
+					value	varchar(2);
+				};
+				FLG20_21	{
+					value	varchar(2);
+				};
+				FLG20_22	{
+					value	varchar(2);
+				};
+				FLG20_23	{
+					value	varchar(2);
+				};
+				FLG20_24	{
+					value	varchar(2);
+				};
+				FLG20_25	{
+					value	varchar(2);
+				};
+				FLG20_26	{
+					value	varchar(2);
+				};
+				FLG21_01	{
+					value	varchar(2);
+				};
+				FLG21_02	{
+					value	varchar(2);
+				};
+				FLG21_03	{
+					value	varchar(2);
+				};
+				FLG21_04	{
+					value	varchar(2);
+				};
+				FLG21_05	{
+					value	varchar(2);
+				};
+				FLG21_06	{
+					value	varchar(2);
+				};
+				FLG21_07	{
+					value	varchar(2);
+				};
+				FLG21_08	{
+					value	varchar(2);
+				};
+				FLG21_09	{
+					value	varchar(2);
+				};
+				FLG21_10	{
+					value	varchar(2);
+				};
+				FLG21_11	{
+					value	varchar(2);
+				};
+				FLG21_12	{
+					value	varchar(2);
+				};
+				FLG21_13	{
+					value	varchar(2);
+				};
+				FLG21_14	{
+					value	varchar(2);
+				};
+				FLG21_15	{
+					value	varchar(2);
+				};
+				FLG21_16	{
+					value	varchar(2);
+				};
+				FLG21_17	{
+					value	varchar(2);
+				};
+				FLG21_18	{
+					value	varchar(2);
+				};
+				FLG21_19	{
+					value	varchar(2);
+				};
+				FLG21_20	{
+					value	varchar(2);
+				};
+				FLG21_21	{
+					value	varchar(2);
+				};
+				FLG21_22	{
+					value	varchar(2);
+				};
+				FLG21_23	{
+					value	varchar(2);
+				};
+				FLG21_24	{
+					value	varchar(2);
+				};
+				FLG21_25	{
+					value	varchar(2);
+				};
+				FLG21_26	{
+					value	varchar(2);
+				};
+				FLG22_01	{
+					value	varchar(2);
+				};
+				FLG22_02	{
+					value	varchar(2);
+				};
+				FLG22_03	{
+					value	varchar(2);
+				};
+				FLG22_04	{
+					value	varchar(2);
+				};
+				FLG22_05	{
+					value	varchar(2);
+				};
+				FLG22_06	{
+					value	varchar(2);
+				};
+				FLG22_07	{
+					value	varchar(2);
+				};
+				FLG22_08	{
+					value	varchar(2);
+				};
+				FLG22_09	{
+					value	varchar(2);
+				};
+				FLG22_10	{
+					value	varchar(2);
+				};
+				FLG22_11	{
+					value	varchar(2);
+				};
+				FLG22_12	{
+					value	varchar(2);
+				};
+				FLG22_13	{
+					value	varchar(2);
+				};
+				FLG22_14	{
+					value	varchar(2);
+				};
+				FLG22_15	{
+					value	varchar(2);
+				};
+				FLG22_16	{
+					value	varchar(2);
+				};
+				FLG22_17	{
+					value	varchar(2);
+				};
+				FLG22_18	{
+					value	varchar(2);
+				};
+				FLG22_19	{
+					value	varchar(2);
+				};
+				FLG22_20	{
+					value	varchar(2);
+				};
+				FLG22_21	{
+					value	varchar(2);
+				};
+				FLG22_22	{
+					value	varchar(2);
+				};
+				FLG22_23	{
+					value	varchar(2);
+				};
+				FLG22_24	{
+					value	varchar(2);
+				};
+				FLG22_25	{
+					value	varchar(2);
+				};
+				FLG22_26	{
+					value	varchar(2);
+				};
+				FLG23_01	{
+					value	varchar(2);
+				};
+				FLG23_02	{
+					value	varchar(2);
+				};
+				FLG23_03	{
+					value	varchar(2);
+				};
+				FLG23_04	{
+					value	varchar(2);
+				};
+				FLG23_05	{
+					value	varchar(2);
+				};
+				FLG23_06	{
+					value	varchar(2);
+				};
+				FLG23_07	{
+					value	varchar(2);
+				};
+				FLG23_08	{
+					value	varchar(2);
+				};
+				FLG23_09	{
+					value	varchar(2);
+				};
+				FLG23_10	{
+					value	varchar(2);
+				};
+				FLG23_11	{
+					value	varchar(2);
+				};
+				FLG23_12	{
+					value	varchar(2);
+				};
+				FLG23_13	{
+					value	varchar(2);
+				};
+				FLG23_14	{
+					value	varchar(2);
+				};
+				FLG23_15	{
+					value	varchar(2);
+				};
+				FLG23_16	{
+					value	varchar(2);
+				};
+				FLG23_17	{
+					value	varchar(2);
+				};
+				FLG23_18	{
+					value	varchar(2);
+				};
+				FLG23_19	{
+					value	varchar(2);
+				};
+				FLG23_20	{
+					value	varchar(2);
+				};
+				FLG23_21	{
+					value	varchar(2);
+				};
+				FLG23_22	{
+					value	varchar(2);
+				};
+				FLG23_23	{
+					value	varchar(2);
+				};
+				FLG23_24	{
+					value	varchar(2);
+				};
+				FLG23_25	{
+					value	varchar(2);
+				};
+				FLG23_26	{
+					value	varchar(2);
+				};
+				FLG24_01	{
+					value	varchar(2);
+				};
+				FLG24_02	{
+					value	varchar(2);
+				};
+				FLG24_03	{
+					value	varchar(2);
+				};
+				FLG24_04	{
+					value	varchar(2);
+				};
+				FLG24_05	{
+					value	varchar(2);
+				};
+				FLG24_06	{
+					value	varchar(2);
+				};
+				FLG24_07	{
+					value	varchar(2);
+				};
+				FLG24_08	{
+					value	varchar(2);
+				};
+				FLG24_09	{
+					value	varchar(2);
+				};
+				FLG24_10	{
+					value	varchar(2);
+				};
+				FLG24_11	{
+					value	varchar(2);
+				};
+				FLG24_12	{
+					value	varchar(2);
+				};
+				FLG24_13	{
+					value	varchar(2);
+				};
+				FLG24_14	{
+					value	varchar(2);
+				};
+				FLG24_15	{
+					value	varchar(2);
+				};
+				FLG24_16	{
+					value	varchar(2);
+				};
+				FLG24_17	{
+					value	varchar(2);
+				};
+				FLG24_18	{
+					value	varchar(2);
+				};
+				FLG24_19	{
+					value	varchar(2);
+				};
+				FLG24_20	{
+					value	varchar(2);
+				};
+				FLG24_21	{
+					value	varchar(2);
+				};
+				FLG24_22	{
+					value	varchar(2);
+				};
+				FLG24_23	{
+					value	varchar(2);
+				};
+				FLG24_24	{
+					value	varchar(2);
+				};
+				FLG24_25	{
+					value	varchar(2);
+				};
+				FLG24_26	{
+					value	varchar(2);
+				};
+				FLG25_01	{
+					value	varchar(2);
+				};
+				FLG25_02	{
+					value	varchar(2);
+				};
+				FLG25_03	{
+					value	varchar(2);
+				};
+				FLG25_04	{
+					value	varchar(2);
+				};
+				FLG25_05	{
+					value	varchar(2);
+				};
+				FLG25_06	{
+					value	varchar(2);
+				};
+				FLG25_07	{
+					value	varchar(2);
+				};
+				FLG25_08	{
+					value	varchar(2);
+				};
+				FLG25_09	{
+					value	varchar(2);
+				};
+				FLG25_10	{
+					value	varchar(2);
+				};
+				FLG25_11	{
+					value	varchar(2);
+				};
+				FLG25_12	{
+					value	varchar(2);
+				};
+				FLG25_13	{
+					value	varchar(2);
+				};
+				FLG25_14	{
+					value	varchar(2);
+				};
+				FLG25_15	{
+					value	varchar(2);
+				};
+				FLG25_16	{
+					value	varchar(2);
+				};
+				FLG25_17	{
+					value	varchar(2);
+				};
+				FLG25_18	{
+					value	varchar(2);
+				};
+				FLG25_19	{
+					value	varchar(2);
+				};
+				FLG25_20	{
+					value	varchar(2);
+				};
+				FLG25_21	{
+					value	varchar(2);
+				};
+				FLG25_22	{
+					value	varchar(2);
+				};
+				FLG25_23	{
+					value	varchar(2);
+				};
+				FLG25_24	{
+					value	varchar(2);
+				};
+				FLG25_25	{
+					value	varchar(2);
+				};
+				FLG25_26	{
+					value	varchar(2);
+				};
+				FLG26_01	{
+					value	varchar(2);
+				};
+				FLG26_02	{
+					value	varchar(2);
+				};
+				FLG26_03	{
+					value	varchar(2);
+				};
+				FLG26_04	{
+					value	varchar(2);
+				};
+				FLG26_05	{
+					value	varchar(2);
+				};
+				FLG26_06	{
+					value	varchar(2);
+				};
+				FLG26_07	{
+					value	varchar(2);
+				};
+				FLG26_08	{
+					value	varchar(2);
+				};
+				FLG26_09	{
+					value	varchar(2);
+				};
+				FLG26_10	{
+					value	varchar(2);
+				};
+				FLG26_11	{
+					value	varchar(2);
+				};
+				FLG26_12	{
+					value	varchar(2);
+				};
+				FLG26_13	{
+					value	varchar(2);
+				};
+				FLG26_14	{
+					value	varchar(2);
+				};
+				FLG26_15	{
+					value	varchar(2);
+				};
+				FLG26_16	{
+					value	varchar(2);
+				};
+				FLG26_17	{
+					value	varchar(2);
+				};
+				FLG26_18	{
+					value	varchar(2);
+				};
+				FLG26_19	{
+					value	varchar(2);
+				};
+				FLG26_20	{
+					value	varchar(2);
+				};
+				FLG26_21	{
+					value	varchar(2);
+				};
+				FLG26_22	{
+					value	varchar(2);
+				};
+				FLG26_23	{
+					value	varchar(2);
+				};
+				FLG26_24	{
+					value	varchar(2);
+				};
+				FLG26_25	{
+					value	varchar(2);
+				};
+				FLG26_26	{
+					value	varchar(2);
+				};
+				CHK_01_01	{
+					value	bool;
+				};
+				CHK_01_02	{
+					value	bool;
+				};
+				CHK_01_03	{
+					value	bool;
+				};
+				CHK_01_04	{
+					value	bool;
+				};
+				CHK_01_05	{
+					value	bool;
+				};
+				CHK_01_06	{
+					value	bool;
+				};
+				CHK_01_07	{
+					value	bool;
+				};
+				CHK_01_08	{
+					value	bool;
+				};
+				CHK_01_09	{
+					value	bool;
+				};
+				CHK_01_10	{
+					value	bool;
+				};
+				CHK_01_11	{
+					value	bool;
+				};
+				CHK_01_12	{
+					value	bool;
+				};
+				CHK_01_13	{
+					value	bool;
+				};
+				CHK_01_14	{
+					value	bool;
+				};
+				CHK_01_15	{
+					value	bool;
+				};
+				CHK_01_16	{
+					value	bool;
+				};
+				CHK_01_17	{
+					value	bool;
+				};
+				CHK_01_18	{
+					value	bool;
+				};
+				CHK_01_19	{
+					value	bool;
+				};
+				CHK_01_20	{
+					value	bool;
+				};
+				CHK_01_21	{
+					value	bool;
+				};
+				CHK_01_22	{
+					value	bool;
+				};
+				CHK_01_23	{
+					value	bool;
+				};
+				CHK_01_24	{
+					value	bool;
+				};
+				CHK_01_25	{
+					value	bool;
+				};
+				CHK_01_26	{
+					value	bool;
+				};
+				CHK_02_01	{
+					value	bool;
+				};
+				CHK_02_02	{
+					value	bool;
+				};
+				CHK_02_03	{
+					value	bool;
+				};
+				CHK_02_04	{
+					value	bool;
+				};
+				CHK_02_05	{
+					value	bool;
+				};
+				CHK_02_06	{
+					value	bool;
+				};
+				CHK_02_07	{
+					value	bool;
+				};
+				CHK_02_08	{
+					value	bool;
+				};
+				CHK_02_09	{
+					value	bool;
+				};
+				CHK_02_10	{
+					value	bool;
+				};
+				CHK_02_11	{
+					value	bool;
+				};
+				CHK_02_12	{
+					value	bool;
+				};
+				CHK_02_13	{
+					value	bool;
+				};
+				CHK_02_14	{
+					value	bool;
+				};
+				CHK_02_15	{
+					value	bool;
+				};
+				CHK_02_16	{
+					value	bool;
+				};
+				CHK_02_17	{
+					value	bool;
+				};
+				CHK_02_18	{
+					value	bool;
+				};
+				CHK_02_19	{
+					value	bool;
+				};
+				CHK_02_20	{
+					value	bool;
+				};
+				CHK_02_21	{
+					value	bool;
+				};
+				CHK_02_22	{
+					value	bool;
+				};
+				CHK_02_23	{
+					value	bool;
+				};
+				CHK_02_24	{
+					value	bool;
+				};
+				CHK_02_25	{
+					value	bool;
+				};
+				CHK_02_26	{
+					value	bool;
+				};
+				CHK_03_01	{
+					value	bool;
+				};
+				CHK_03_02	{
+					value	bool;
+				};
+				CHK_03_03	{
+					value	bool;
+				};
+				CHK_03_04	{
+					value	bool;
+				};
+				CHK_03_05	{
+					value	bool;
+				};
+				CHK_03_06	{
+					value	bool;
+				};
+				CHK_03_07	{
+					value	bool;
+				};
+				CHK_03_08	{
+					value	bool;
+				};
+				CHK_03_09	{
+					value	bool;
+				};
+				CHK_03_10	{
+					value	bool;
+				};
+				CHK_03_11	{
+					value	bool;
+				};
+				CHK_03_12	{
+					value	bool;
+				};
+				CHK_03_13	{
+					value	bool;
+				};
+				CHK_03_14	{
+					value	bool;
+				};
+				CHK_03_15	{
+					value	bool;
+				};
+				CHK_03_16	{
+					value	bool;
+				};
+				CHK_03_17	{
+					value	bool;
+				};
+				CHK_03_18	{
+					value	bool;
+				};
+				CHK_03_19	{
+					value	bool;
+				};
+				CHK_03_20	{
+					value	bool;
+				};
+				CHK_03_21	{
+					value	bool;
+				};
+				CHK_03_22	{
+					value	bool;
+				};
+				CHK_03_23	{
+					value	bool;
+				};
+				CHK_03_24	{
+					value	bool;
+				};
+				CHK_03_25	{
+					value	bool;
+				};
+				CHK_03_26	{
+					value	bool;
+				};
+				CHK_04_01	{
+					value	bool;
+				};
+				CHK_04_02	{
+					value	bool;
+				};
+				CHK_04_03	{
+					value	bool;
+				};
+				CHK_04_04	{
+					value	bool;
+				};
+				CHK_04_05	{
+					value	bool;
+				};
+				CHK_04_06	{
+					value	bool;
+				};
+				CHK_04_07	{
+					value	bool;
+				};
+				CHK_04_08	{
+					value	bool;
+				};
+				CHK_04_09	{
+					value	bool;
+				};
+				CHK_04_10	{
+					value	bool;
+				};
+				CHK_04_11	{
+					value	bool;
+				};
+				CHK_04_12	{
+					value	bool;
+				};
+				CHK_04_13	{
+					value	bool;
+				};
+				CHK_04_14	{
+					value	bool;
+				};
+				CHK_04_15	{
+					value	bool;
+				};
+				CHK_04_16	{
+					value	bool;
+				};
+				CHK_04_17	{
+					value	bool;
+				};
+				CHK_04_18	{
+					value	bool;
+				};
+				CHK_04_19	{
+					value	bool;
+				};
+				CHK_04_20	{
+					value	bool;
+				};
+				CHK_04_21	{
+					value	bool;
+				};
+				CHK_04_22	{
+					value	bool;
+				};
+				CHK_04_23	{
+					value	bool;
+				};
+				CHK_04_24	{
+					value	bool;
+				};
+				CHK_04_25	{
+					value	bool;
+				};
+				CHK_04_26	{
+					value	bool;
+				};
+				CHK_05_01	{
+					value	bool;
+				};
+				CHK_05_02	{
+					value	bool;
+				};
+				CHK_05_03	{
+					value	bool;
+				};
+				CHK_05_04	{
+					value	bool;
+				};
+				CHK_05_05	{
+					value	bool;
+				};
+				CHK_05_06	{
+					value	bool;
+				};
+				CHK_05_07	{
+					value	bool;
+				};
+				CHK_05_08	{
+					value	bool;
+				};
+				CHK_05_09	{
+					value	bool;
+				};
+				CHK_05_10	{
+					value	bool;
+				};
+				CHK_05_11	{
+					value	bool;
+				};
+				CHK_05_12	{
+					value	bool;
+				};
+				CHK_05_13	{
+					value	bool;
+				};
+				CHK_05_14	{
+					value	bool;
+				};
+				CHK_05_15	{
+					value	bool;
+				};
+				CHK_05_16	{
+					value	bool;
+				};
+				CHK_05_17	{
+					value	bool;
+				};
+				CHK_05_18	{
+					value	bool;
+				};
+				CHK_05_19	{
+					value	bool;
+				};
+				CHK_05_20	{
+					value	bool;
+				};
+				CHK_05_21	{
+					value	bool;
+				};
+				CHK_05_22	{
+					value	bool;
+				};
+				CHK_05_23	{
+					value	bool;
+				};
+				CHK_05_24	{
+					value	bool;
+				};
+				CHK_05_25	{
+					value	bool;
+				};
+				CHK_05_26	{
+					value	bool;
+				};
+				CHK_06_01	{
+					value	bool;
+				};
+				CHK_06_02	{
+					value	bool;
+				};
+				CHK_06_03	{
+					value	bool;
+				};
+				CHK_06_04	{
+					value	bool;
+				};
+				CHK_06_05	{
+					value	bool;
+				};
+				CHK_06_06	{
+					value	bool;
+				};
+				CHK_06_07	{
+					value	bool;
+				};
+				CHK_06_08	{
+					value	bool;
+				};
+				CHK_06_09	{
+					value	bool;
+				};
+				CHK_06_10	{
+					value	bool;
+				};
+				CHK_06_11	{
+					value	bool;
+				};
+				CHK_06_12	{
+					value	bool;
+				};
+				CHK_06_13	{
+					value	bool;
+				};
+				CHK_06_14	{
+					value	bool;
+				};
+				CHK_06_15	{
+					value	bool;
+				};
+				CHK_06_16	{
+					value	bool;
+				};
+				CHK_06_17	{
+					value	bool;
+				};
+				CHK_06_18	{
+					value	bool;
+				};
+				CHK_06_19	{
+					value	bool;
+				};
+				CHK_06_20	{
+					value	bool;
+				};
+				CHK_06_21	{
+					value	bool;
+				};
+				CHK_06_22	{
+					value	bool;
+				};
+				CHK_06_23	{
+					value	bool;
+				};
+				CHK_06_24	{
+					value	bool;
+				};
+				CHK_06_25	{
+					value	bool;
+				};
+				CHK_06_26	{
+					value	bool;
+				};
+				CHK_07_01	{
+					value	bool;
+				};
+				CHK_07_02	{
+					value	bool;
+				};
+				CHK_07_03	{
+					value	bool;
+				};
+				CHK_07_04	{
+					value	bool;
+				};
+				CHK_07_05	{
+					value	bool;
+				};
+				CHK_07_06	{
+					value	bool;
+				};
+				CHK_07_07	{
+					value	bool;
+				};
+				CHK_07_08	{
+					value	bool;
+				};
+				CHK_07_09	{
+					value	bool;
+				};
+				CHK_07_10	{
+					value	bool;
+				};
+				CHK_07_11	{
+					value	bool;
+				};
+				CHK_07_12	{
+					value	bool;
+				};
+				CHK_07_13	{
+					value	bool;
+				};
+				CHK_07_14	{
+					value	bool;
+				};
+				CHK_07_15	{
+					value	bool;
+				};
+				CHK_07_16	{
+					value	bool;
+				};
+				CHK_07_17	{
+					value	bool;
+				};
+				CHK_07_18	{
+					value	bool;
+				};
+				CHK_07_19	{
+					value	bool;
+				};
+				CHK_07_20	{
+					value	bool;
+				};
+				CHK_07_21	{
+					value	bool;
+				};
+				CHK_07_22	{
+					value	bool;
+				};
+				CHK_07_23	{
+					value	bool;
+				};
+				CHK_07_24	{
+					value	bool;
+				};
+				CHK_07_25	{
+					value	bool;
+				};
+				CHK_07_26	{
+					value	bool;
+				};
+				CHK_08_01	{
+					value	bool;
+				};
+				CHK_08_02	{
+					value	bool;
+				};
+				CHK_08_03	{
+					value	bool;
+				};
+				CHK_08_04	{
+					value	bool;
+				};
+				CHK_08_05	{
+					value	bool;
+				};
+				CHK_08_06	{
+					value	bool;
+				};
+				CHK_08_07	{
+					value	bool;
+				};
+				CHK_08_08	{
+					value	bool;
+				};
+				CHK_08_09	{
+					value	bool;
+				};
+				CHK_08_10	{
+					value	bool;
+				};
+				CHK_08_11	{
+					value	bool;
+				};
+				CHK_08_12	{
+					value	bool;
+				};
+				CHK_08_13	{
+					value	bool;
+				};
+				CHK_08_14	{
+					value	bool;
+				};
+				CHK_08_15	{
+					value	bool;
+				};
+				CHK_08_16	{
+					value	bool;
+				};
+				CHK_08_17	{
+					value	bool;
+				};
+				CHK_08_18	{
+					value	bool;
+				};
+				CHK_08_19	{
+					value	bool;
+				};
+				CHK_08_20	{
+					value	bool;
+				};
+				CHK_08_21	{
+					value	bool;
+				};
+				CHK_08_22	{
+					value	bool;
+				};
+				CHK_08_23	{
+					value	bool;
+				};
+				CHK_08_24	{
+					value	bool;
+				};
+				CHK_08_25	{
+					value	bool;
+				};
+				CHK_08_26	{
+					value	bool;
+				};
+				CHK_09_01	{
+					value	bool;
+				};
+				CHK_09_02	{
+					value	bool;
+				};
+				CHK_09_03	{
+					value	bool;
+				};
+				CHK_09_04	{
+					value	bool;
+				};
+				CHK_09_05	{
+					value	bool;
+				};
+				CHK_09_06	{
+					value	bool;
+				};
+				CHK_09_07	{
+					value	bool;
+				};
+				CHK_09_08	{
+					value	bool;
+				};
+				CHK_09_09	{
+					value	bool;
+				};
+				CHK_09_10	{
+					value	bool;
+				};
+				CHK_09_11	{
+					value	bool;
+				};
+				CHK_09_12	{
+					value	bool;
+				};
+				CHK_09_13	{
+					value	bool;
+				};
+				CHK_09_14	{
+					value	bool;
+				};
+				CHK_09_15	{
+					value	bool;
+				};
+				CHK_09_16	{
+					value	bool;
+				};
+				CHK_09_17	{
+					value	bool;
+				};
+				CHK_09_18	{
+					value	bool;
+				};
+				CHK_09_19	{
+					value	bool;
+				};
+				CHK_09_20	{
+					value	bool;
+				};
+				CHK_09_21	{
+					value	bool;
+				};
+				CHK_09_22	{
+					value	bool;
+				};
+				CHK_09_23	{
+					value	bool;
+				};
+				CHK_09_24	{
+					value	bool;
+				};
+				CHK_09_25	{
+					value	bool;
+				};
+				CHK_09_26	{
+					value	bool;
+				};
+				CHK_10_01	{
+					value	bool;
+				};
+				CHK_10_02	{
+					value	bool;
+				};
+				CHK_10_03	{
+					value	bool;
+				};
+				CHK_10_04	{
+					value	bool;
+				};
+				CHK_10_05	{
+					value	bool;
+				};
+				CHK_10_06	{
+					value	bool;
+				};
+				CHK_10_07	{
+					value	bool;
+				};
+				CHK_10_08	{
+					value	bool;
+				};
+				CHK_10_09	{
+					value	bool;
+				};
+				CHK_10_10	{
+					value	bool;
+				};
+				CHK_10_11	{
+					value	bool;
+				};
+				CHK_10_12	{
+					value	bool;
+				};
+				CHK_10_13	{
+					value	bool;
+				};
+				CHK_10_14	{
+					value	bool;
+				};
+				CHK_10_15	{
+					value	bool;
+				};
+				CHK_10_16	{
+					value	bool;
+				};
+				CHK_10_17	{
+					value	bool;
+				};
+				CHK_10_18	{
+					value	bool;
+				};
+				CHK_10_19	{
+					value	bool;
+				};
+				CHK_10_20	{
+					value	bool;
+				};
+				CHK_10_21	{
+					value	bool;
+				};
+				CHK_10_22	{
+					value	bool;
+				};
+				CHK_10_23	{
+					value	bool;
+				};
+				CHK_10_24	{
+					value	bool;
+				};
+				CHK_10_25	{
+					value	bool;
+				};
+				CHK_10_26	{
+					value	bool;
+				};
+				CHK_11_01	{
+					value	bool;
+				};
+				CHK_11_02	{
+					value	bool;
+				};
+				CHK_11_03	{
+					value	bool;
+				};
+				CHK_11_04	{
+					value	bool;
+				};
+				CHK_11_05	{
+					value	bool;
+				};
+				CHK_11_06	{
+					value	bool;
+				};
+				CHK_11_07	{
+					value	bool;
+				};
+				CHK_11_08	{
+					value	bool;
+				};
+				CHK_11_09	{
+					value	bool;
+				};
+				CHK_11_10	{
+					value	bool;
+				};
+				CHK_11_11	{
+					value	bool;
+				};
+				CHK_11_12	{
+					value	bool;
+				};
+				CHK_11_13	{
+					value	bool;
+				};
+				CHK_11_14	{
+					value	bool;
+				};
+				CHK_11_15	{
+					value	bool;
+				};
+				CHK_11_16	{
+					value	bool;
+				};
+				CHK_11_17	{
+					value	bool;
+				};
+				CHK_11_18	{
+					value	bool;
+				};
+				CHK_11_19	{
+					value	bool;
+				};
+				CHK_11_20	{
+					value	bool;
+				};
+				CHK_11_21	{
+					value	bool;
+				};
+				CHK_11_22	{
+					value	bool;
+				};
+				CHK_11_23	{
+					value	bool;
+				};
+				CHK_11_24	{
+					value	bool;
+				};
+				CHK_11_25	{
+					value	bool;
+				};
+				CHK_11_26	{
+					value	bool;
+				};
+				CHK_12_01	{
+					value	bool;
+				};
+				CHK_12_02	{
+					value	bool;
+				};
+				CHK_12_03	{
+					value	bool;
+				};
+				CHK_12_04	{
+					value	bool;
+				};
+				CHK_12_05	{
+					value	bool;
+				};
+				CHK_12_06	{
+					value	bool;
+				};
+				CHK_12_07	{
+					value	bool;
+				};
+				CHK_12_08	{
+					value	bool;
+				};
+				CHK_12_09	{
+					value	bool;
+				};
+				CHK_12_10	{
+					value	bool;
+				};
+				CHK_12_11	{
+					value	bool;
+				};
+				CHK_12_12	{
+					value	bool;
+				};
+				CHK_12_13	{
+					value	bool;
+				};
+				CHK_12_14	{
+					value	bool;
+				};
+				CHK_12_15	{
+					value	bool;
+				};
+				CHK_12_16	{
+					value	bool;
+				};
+				CHK_12_17	{
+					value	bool;
+				};
+				CHK_12_18	{
+					value	bool;
+				};
+				CHK_12_19	{
+					value	bool;
+				};
+				CHK_12_20	{
+					value	bool;
+				};
+				CHK_12_21	{
+					value	bool;
+				};
+				CHK_12_22	{
+					value	bool;
+				};
+				CHK_12_23	{
+					value	bool;
+				};
+				CHK_12_24	{
+					value	bool;
+				};
+				CHK_12_25	{
+					value	bool;
+				};
+				CHK_12_26	{
+					value	bool;
+				};
+				CHK_13_01	{
+					value	bool;
+				};
+				CHK_13_02	{
+					value	bool;
+				};
+				CHK_13_03	{
+					value	bool;
+				};
+				CHK_13_04	{
+					value	bool;
+				};
+				CHK_13_05	{
+					value	bool;
+				};
+				CHK_13_06	{
+					value	bool;
+				};
+				CHK_13_07	{
+					value	bool;
+				};
+				CHK_13_08	{
+					value	bool;
+				};
+				CHK_13_09	{
+					value	bool;
+				};
+				CHK_13_10	{
+					value	bool;
+				};
+				CHK_13_11	{
+					value	bool;
+				};
+				CHK_13_12	{
+					value	bool;
+				};
+				CHK_13_13	{
+					value	bool;
+				};
+				CHK_13_14	{
+					value	bool;
+				};
+				CHK_13_15	{
+					value	bool;
+				};
+				CHK_13_16	{
+					value	bool;
+				};
+				CHK_13_17	{
+					value	bool;
+				};
+				CHK_13_18	{
+					value	bool;
+				};
+				CHK_13_19	{
+					value	bool;
+				};
+				CHK_13_20	{
+					value	bool;
+				};
+				CHK_13_21	{
+					value	bool;
+				};
+				CHK_13_22	{
+					value	bool;
+				};
+				CHK_13_23	{
+					value	bool;
+				};
+				CHK_13_24	{
+					value	bool;
+				};
+				CHK_13_25	{
+					value	bool;
+				};
+				CHK_13_26	{
+					value	bool;
+				};
+				CHK_14_01	{
+					value	bool;
+				};
+				CHK_14_02	{
+					value	bool;
+				};
+				CHK_14_03	{
+					value	bool;
+				};
+				CHK_14_04	{
+					value	bool;
+				};
+				CHK_14_05	{
+					value	bool;
+				};
+				CHK_14_06	{
+					value	bool;
+				};
+				CHK_14_07	{
+					value	bool;
+				};
+				CHK_14_08	{
+					value	bool;
+				};
+				CHK_14_09	{
+					value	bool;
+				};
+				CHK_14_10	{
+					value	bool;
+				};
+				CHK_14_11	{
+					value	bool;
+				};
+				CHK_14_12	{
+					value	bool;
+				};
+				CHK_14_13	{
+					value	bool;
+				};
+				CHK_14_14	{
+					value	bool;
+				};
+				CHK_14_15	{
+					value	bool;
+				};
+				CHK_14_16	{
+					value	bool;
+				};
+				CHK_14_17	{
+					value	bool;
+				};
+				CHK_14_18	{
+					value	bool;
+				};
+				CHK_14_19	{
+					value	bool;
+				};
+				CHK_14_20	{
+					value	bool;
+				};
+				CHK_14_21	{
+					value	bool;
+				};
+				CHK_14_22	{
+					value	bool;
+				};
+				CHK_14_23	{
+					value	bool;
+				};
+				CHK_14_24	{
+					value	bool;
+				};
+				CHK_14_25	{
+					value	bool;
+				};
+				CHK_14_26	{
+					value	bool;
+				};
+				CHK_15_01	{
+					value	bool;
+				};
+				CHK_15_02	{
+					value	bool;
+				};
+				CHK_15_03	{
+					value	bool;
+				};
+				CHK_15_04	{
+					value	bool;
+				};
+				CHK_15_05	{
+					value	bool;
+				};
+				CHK_15_06	{
+					value	bool;
+				};
+				CHK_15_07	{
+					value	bool;
+				};
+				CHK_15_08	{
+					value	bool;
+				};
+				CHK_15_09	{
+					value	bool;
+				};
+				CHK_15_10	{
+					value	bool;
+				};
+				CHK_15_11	{
+					value	bool;
+				};
+				CHK_15_12	{
+					value	bool;
+				};
+				CHK_15_13	{
+					value	bool;
+				};
+				CHK_15_14	{
+					value	bool;
+				};
+				CHK_15_15	{
+					value	bool;
+				};
+				CHK_15_16	{
+					value	bool;
+				};
+				CHK_15_17	{
+					value	bool;
+				};
+				CHK_15_18	{
+					value	bool;
+				};
+				CHK_15_19	{
+					value	bool;
+				};
+				CHK_15_20	{
+					value	bool;
+				};
+				CHK_15_21	{
+					value	bool;
+				};
+				CHK_15_22	{
+					value	bool;
+				};
+				CHK_15_23	{
+					value	bool;
+				};
+				CHK_15_24	{
+					value	bool;
+				};
+				CHK_15_25	{
+					value	bool;
+				};
+				CHK_15_26	{
+					value	bool;
+				};
+				CHK_16_01	{
+					value	bool;
+				};
+				CHK_16_02	{
+					value	bool;
+				};
+				CHK_16_03	{
+					value	bool;
+				};
+				CHK_16_04	{
+					value	bool;
+				};
+				CHK_16_05	{
+					value	bool;
+				};
+				CHK_16_06	{
+					value	bool;
+				};
+				CHK_16_07	{
+					value	bool;
+				};
+				CHK_16_08	{
+					value	bool;
+				};
+				CHK_16_09	{
+					value	bool;
+				};
+				CHK_16_10	{
+					value	bool;
+				};
+				CHK_16_11	{
+					value	bool;
+				};
+				CHK_16_12	{
+					value	bool;
+				};
+				CHK_16_13	{
+					value	bool;
+				};
+				CHK_16_14	{
+					value	bool;
+				};
+				CHK_16_15	{
+					value	bool;
+				};
+				CHK_16_16	{
+					value	bool;
+				};
+				CHK_16_17	{
+					value	bool;
+				};
+				CHK_16_18	{
+					value	bool;
+				};
+				CHK_16_19	{
+					value	bool;
+				};
+				CHK_16_20	{
+					value	bool;
+				};
+				CHK_16_21	{
+					value	bool;
+				};
+				CHK_16_22	{
+					value	bool;
+				};
+				CHK_16_23	{
+					value	bool;
+				};
+				CHK_16_24	{
+					value	bool;
+				};
+				CHK_16_25	{
+					value	bool;
+				};
+				CHK_16_26	{
+					value	bool;
+				};
+				CHK_17_01	{
+					value	bool;
+				};
+				CHK_17_02	{
+					value	bool;
+				};
+				CHK_17_03	{
+					value	bool;
+				};
+				CHK_17_04	{
+					value	bool;
+				};
+				CHK_17_05	{
+					value	bool;
+				};
+				CHK_17_06	{
+					value	bool;
+				};
+				CHK_17_07	{
+					value	bool;
+				};
+				CHK_17_08	{
+					value	bool;
+				};
+				CHK_17_09	{
+					value	bool;
+				};
+				CHK_17_10	{
+					value	bool;
+				};
+				CHK_17_11	{
+					value	bool;
+				};
+				CHK_17_12	{
+					value	bool;
+				};
+				CHK_17_13	{
+					value	bool;
+				};
+				CHK_17_14	{
+					value	bool;
+				};
+				CHK_17_15	{
+					value	bool;
+				};
+				CHK_17_16	{
+					value	bool;
+				};
+				CHK_17_17	{
+					value	bool;
+				};
+				CHK_17_18	{
+					value	bool;
+				};
+				CHK_17_19	{
+					value	bool;
+				};
+				CHK_17_20	{
+					value	bool;
+				};
+				CHK_17_21	{
+					value	bool;
+				};
+				CHK_17_22	{
+					value	bool;
+				};
+				CHK_17_23	{
+					value	bool;
+				};
+				CHK_17_24	{
+					value	bool;
+				};
+				CHK_17_25	{
+					value	bool;
+				};
+				CHK_17_26	{
+					value	bool;
+				};
+				CHK_18_01	{
+					value	bool;
+				};
+				CHK_18_02	{
+					value	bool;
+				};
+				CHK_18_03	{
+					value	bool;
+				};
+				CHK_18_04	{
+					value	bool;
+				};
+				CHK_18_05	{
+					value	bool;
+				};
+				CHK_18_06	{
+					value	bool;
+				};
+				CHK_18_07	{
+					value	bool;
+				};
+				CHK_18_08	{
+					value	bool;
+				};
+				CHK_18_09	{
+					value	bool;
+				};
+				CHK_18_10	{
+					value	bool;
+				};
+				CHK_18_11	{
+					value	bool;
+				};
+				CHK_18_12	{
+					value	bool;
+				};
+				CHK_18_13	{
+					value	bool;
+				};
+				CHK_18_14	{
+					value	bool;
+				};
+				CHK_18_15	{
+					value	bool;
+				};
+				CHK_18_16	{
+					value	bool;
+				};
+				CHK_18_17	{
+					value	bool;
+				};
+				CHK_18_18	{
+					value	bool;
+				};
+				CHK_18_19	{
+					value	bool;
+				};
+				CHK_18_20	{
+					value	bool;
+				};
+				CHK_18_21	{
+					value	bool;
+				};
+				CHK_18_22	{
+					value	bool;
+				};
+				CHK_18_23	{
+					value	bool;
+				};
+				CHK_18_24	{
+					value	bool;
+				};
+				CHK_18_25	{
+					value	bool;
+				};
+				CHK_18_26	{
+					value	bool;
+				};
+				CHK_19_01	{
+					value	bool;
+				};
+				CHK_19_02	{
+					value	bool;
+				};
+				CHK_19_03	{
+					value	bool;
+				};
+				CHK_19_04	{
+					value	bool;
+				};
+				CHK_19_05	{
+					value	bool;
+				};
+				CHK_19_06	{
+					value	bool;
+				};
+				CHK_19_07	{
+					value	bool;
+				};
+				CHK_19_08	{
+					value	bool;
+				};
+				CHK_19_09	{
+					value	bool;
+				};
+				CHK_19_10	{
+					value	bool;
+				};
+				CHK_19_11	{
+					value	bool;
+				};
+				CHK_19_12	{
+					value	bool;
+				};
+				CHK_19_13	{
+					value	bool;
+				};
+				CHK_19_14	{
+					value	bool;
+				};
+				CHK_19_15	{
+					value	bool;
+				};
+				CHK_19_16	{
+					value	bool;
+				};
+				CHK_19_17	{
+					value	bool;
+				};
+				CHK_19_18	{
+					value	bool;
+				};
+				CHK_19_19	{
+					value	bool;
+				};
+				CHK_19_20	{
+					value	bool;
+				};
+				CHK_19_21	{
+					value	bool;
+				};
+				CHK_19_22	{
+					value	bool;
+				};
+				CHK_19_23	{
+					value	bool;
+				};
+				CHK_19_24	{
+					value	bool;
+				};
+				CHK_19_25	{
+					value	bool;
+				};
+				CHK_19_26	{
+					value	bool;
+				};
+				CHK_20_01	{
+					value	bool;
+				};
+				CHK_20_02	{
+					value	bool;
+				};
+				CHK_20_03	{
+					value	bool;
+				};
+				CHK_20_04	{
+					value	bool;
+				};
+				CHK_20_05	{
+					value	bool;
+				};
+				CHK_20_06	{
+					value	bool;
+				};
+				CHK_20_07	{
+					value	bool;
+				};
+				CHK_20_08	{
+					value	bool;
+				};
+				CHK_20_09	{
+					value	bool;
+				};
+				CHK_20_10	{
+					value	bool;
+				};
+				CHK_20_11	{
+					value	bool;
+				};
+				CHK_20_12	{
+					value	bool;
+				};
+				CHK_20_13	{
+					value	bool;
+				};
+				CHK_20_14	{
+					value	bool;
+				};
+				CHK_20_15	{
+					value	bool;
+				};
+				CHK_20_16	{
+					value	bool;
+				};
+				CHK_20_17	{
+					value	bool;
+				};
+				CHK_20_18	{
+					value	bool;
+				};
+				CHK_20_19	{
+					value	bool;
+				};
+				CHK_20_20	{
+					value	bool;
+				};
+				CHK_20_21	{
+					value	bool;
+				};
+				CHK_20_22	{
+					value	bool;
+				};
+				CHK_20_23	{
+					value	bool;
+				};
+				CHK_20_24	{
+					value	bool;
+				};
+				CHK_20_25	{
+					value	bool;
+				};
+				CHK_20_26	{
+					value	bool;
+				};
+				CHK_21_01	{
+					value	bool;
+				};
+				CHK_21_02	{
+					value	bool;
+				};
+				CHK_21_03	{
+					value	bool;
+				};
+				CHK_21_04	{
+					value	bool;
+				};
+				CHK_21_05	{
+					value	bool;
+				};
+				CHK_21_06	{
+					value	bool;
+				};
+				CHK_21_07	{
+					value	bool;
+				};
+				CHK_21_08	{
+					value	bool;
+				};
+				CHK_21_09	{
+					value	bool;
+				};
+				CHK_21_10	{
+					value	bool;
+				};
+				CHK_21_11	{
+					value	bool;
+				};
+				CHK_21_12	{
+					value	bool;
+				};
+				CHK_21_13	{
+					value	bool;
+				};
+				CHK_21_14	{
+					value	bool;
+				};
+				CHK_21_15	{
+					value	bool;
+				};
+				CHK_21_16	{
+					value	bool;
+				};
+				CHK_21_17	{
+					value	bool;
+				};
+				CHK_21_18	{
+					value	bool;
+				};
+				CHK_21_19	{
+					value	bool;
+				};
+				CHK_21_20	{
+					value	bool;
+				};
+				CHK_21_21	{
+					value	bool;
+				};
+				CHK_21_22	{
+					value	bool;
+				};
+				CHK_21_23	{
+					value	bool;
+				};
+				CHK_21_24	{
+					value	bool;
+				};
+				CHK_21_25	{
+					value	bool;
+				};
+				CHK_21_26	{
+					value	bool;
+				};
+				CHK_22_01	{
+					value	bool;
+				};
+				CHK_22_02	{
+					value	bool;
+				};
+				CHK_22_03	{
+					value	bool;
+				};
+				CHK_22_04	{
+					value	bool;
+				};
+				CHK_22_05	{
+					value	bool;
+				};
+				CHK_22_06	{
+					value	bool;
+				};
+				CHK_22_07	{
+					value	bool;
+				};
+				CHK_22_08	{
+					value	bool;
+				};
+				CHK_22_09	{
+					value	bool;
+				};
+				CHK_22_10	{
+					value	bool;
+				};
+				CHK_22_11	{
+					value	bool;
+				};
+				CHK_22_12	{
+					value	bool;
+				};
+				CHK_22_13	{
+					value	bool;
+				};
+				CHK_22_14	{
+					value	bool;
+				};
+				CHK_22_15	{
+					value	bool;
+				};
+				CHK_22_16	{
+					value	bool;
+				};
+				CHK_22_17	{
+					value	bool;
+				};
+				CHK_22_18	{
+					value	bool;
+				};
+				CHK_22_19	{
+					value	bool;
+				};
+				CHK_22_20	{
+					value	bool;
+				};
+				CHK_22_21	{
+					value	bool;
+				};
+				CHK_22_22	{
+					value	bool;
+				};
+				CHK_22_23	{
+					value	bool;
+				};
+				CHK_22_24	{
+					value	bool;
+				};
+				CHK_22_25	{
+					value	bool;
+				};
+				CHK_22_26	{
+					value	bool;
+				};
+				CHK_23_01	{
+					value	bool;
+				};
+				CHK_23_02	{
+					value	bool;
+				};
+				CHK_23_03	{
+					value	bool;
+				};
+				CHK_23_04	{
+					value	bool;
+				};
+				CHK_23_05	{
+					value	bool;
+				};
+				CHK_23_06	{
+					value	bool;
+				};
+				CHK_23_07	{
+					value	bool;
+				};
+				CHK_23_08	{
+					value	bool;
+				};
+				CHK_23_09	{
+					value	bool;
+				};
+				CHK_23_10	{
+					value	bool;
+				};
+				CHK_23_11	{
+					value	bool;
+				};
+				CHK_23_12	{
+					value	bool;
+				};
+				CHK_23_13	{
+					value	bool;
+				};
+				CHK_23_14	{
+					value	bool;
+				};
+				CHK_23_15	{
+					value	bool;
+				};
+				CHK_23_16	{
+					value	bool;
+				};
+				CHK_23_17	{
+					value	bool;
+				};
+				CHK_23_18	{
+					value	bool;
+				};
+				CHK_23_19	{
+					value	bool;
+				};
+				CHK_23_20	{
+					value	bool;
+				};
+				CHK_23_21	{
+					value	bool;
+				};
+				CHK_23_22	{
+					value	bool;
+				};
+				CHK_23_23	{
+					value	bool;
+				};
+				CHK_23_24	{
+					value	bool;
+				};
+				CHK_23_25	{
+					value	bool;
+				};
+				CHK_23_26	{
+					value	bool;
+				};
+				CHK_24_01	{
+					value	bool;
+				};
+				CHK_24_02	{
+					value	bool;
+				};
+				CHK_24_03	{
+					value	bool;
+				};
+				CHK_24_04	{
+					value	bool;
+				};
+				CHK_24_05	{
+					value	bool;
+				};
+				CHK_24_06	{
+					value	bool;
+				};
+				CHK_24_07	{
+					value	bool;
+				};
+				CHK_24_08	{
+					value	bool;
+				};
+				CHK_24_09	{
+					value	bool;
+				};
+				CHK_24_10	{
+					value	bool;
+				};
+				CHK_24_11	{
+					value	bool;
+				};
+				CHK_24_12	{
+					value	bool;
+				};
+				CHK_24_13	{
+					value	bool;
+				};
+				CHK_24_14	{
+					value	bool;
+				};
+				CHK_24_15	{
+					value	bool;
+				};
+				CHK_24_16	{
+					value	bool;
+				};
+				CHK_24_17	{
+					value	bool;
+				};
+				CHK_24_18	{
+					value	bool;
+				};
+				CHK_24_19	{
+					value	bool;
+				};
+				CHK_24_20	{
+					value	bool;
+				};
+				CHK_24_21	{
+					value	bool;
+				};
+				CHK_24_22	{
+					value	bool;
+				};
+				CHK_24_23	{
+					value	bool;
+				};
+				CHK_24_24	{
+					value	bool;
+				};
+				CHK_24_25	{
+					value	bool;
+				};
+				CHK_24_26	{
+					value	bool;
+				};
+				CHK_25_01	{
+					value	bool;
+				};
+				CHK_25_02	{
+					value	bool;
+				};
+				CHK_25_03	{
+					value	bool;
+				};
+				CHK_25_04	{
+					value	bool;
+				};
+				CHK_25_05	{
+					value	bool;
+				};
+				CHK_25_06	{
+					value	bool;
+				};
+				CHK_25_07	{
+					value	bool;
+				};
+				CHK_25_08	{
+					value	bool;
+				};
+				CHK_25_09	{
+					value	bool;
+				};
+				CHK_25_10	{
+					value	bool;
+				};
+				CHK_25_11	{
+					value	bool;
+				};
+				CHK_25_12	{
+					value	bool;
+				};
+				CHK_25_13	{
+					value	bool;
+				};
+				CHK_25_14	{
+					value	bool;
+				};
+				CHK_25_15	{
+					value	bool;
+				};
+				CHK_25_16	{
+					value	bool;
+				};
+				CHK_25_17	{
+					value	bool;
+				};
+				CHK_25_18	{
+					value	bool;
+				};
+				CHK_25_19	{
+					value	bool;
+				};
+				CHK_25_20	{
+					value	bool;
+				};
+				CHK_25_21	{
+					value	bool;
+				};
+				CHK_25_22	{
+					value	bool;
+				};
+				CHK_25_23	{
+					value	bool;
+				};
+				CHK_25_24	{
+					value	bool;
+				};
+				CHK_25_25	{
+					value	bool;
+				};
+				CHK_25_26	{
+					value	bool;
+				};
+				CHK_26_01	{
+					value	bool;
+				};
+				CHK_26_02	{
+					value	bool;
+				};
+				CHK_26_03	{
+					value	bool;
+				};
+				CHK_26_04	{
+					value	bool;
+				};
+				CHK_26_05	{
+					value	bool;
+				};
+				CHK_26_06	{
+					value	bool;
+				};
+				CHK_26_07	{
+					value	bool;
+				};
+				CHK_26_08	{
+					value	bool;
+				};
+				CHK_26_09	{
+					value	bool;
+				};
+				CHK_26_10	{
+					value	bool;
+				};
+				CHK_26_11	{
+					value	bool;
+				};
+				CHK_26_12	{
+					value	bool;
+				};
+				CHK_26_13	{
+					value	bool;
+				};
+				CHK_26_14	{
+					value	bool;
+				};
+				CHK_26_15	{
+					value	bool;
+				};
+				CHK_26_16	{
+					value	bool;
+				};
+				CHK_26_17	{
+					value	bool;
+				};
+				CHK_26_18	{
+					value	bool;
+				};
+				CHK_26_19	{
+					value	bool;
+				};
+				CHK_26_20	{
+					value	bool;
+				};
+				CHK_26_21	{
+					value	bool;
+				};
+				CHK_26_22	{
+					value	bool;
+				};
+				CHK_26_23	{
+					value	bool;
+				};
+				CHK_26_24	{
+					value	bool;
+				};
+				CHK_26_25	{
+					value	bool;
+				};
+				CHK_26_26	{
+					value	bool;
+				};
+				CHK_ON_01	{
+					value	bool;
+				};
+				CHK_ON_02	{
+					value	bool;
+				};
+				CHK_ON_03	{
+					value	bool;
+				};
+				CHK_ON_04	{
+					value	bool;
+				};
+				CHK_ON_05	{
+					value	bool;
+				};
+				CHK_ON_06	{
+					value	bool;
+				};
+				CHK_ON_07	{
+					value	bool;
+				};
+				CHK_ON_08	{
+					value	bool;
+				};
+				CHK_ON_09	{
+					value	bool;
+				};
+				CHK_ON_10	{
+					value	bool;
+				};
+				CHK_ON_11	{
+					value	bool;
+				};
+				CHK_ON_12	{
+					value	bool;
+				};
+				CHK_ON_13	{
+					value	bool;
+				};
+				CHK_ON_14	{
+					value	bool;
+				};
+				CHK_ON_15	{
+					value	bool;
+				};
+				CHK_ON_16	{
+					value	bool;
+				};
+				CHK_ON_17	{
+					value	bool;
+				};
+				CHK_ON_18	{
+					value	bool;
+				};
+				CHK_ON_19	{
+					value	bool;
+				};
+				CHK_ON_20	{
+					value	bool;
+				};
+				CHK_ON_21	{
+					value	bool;
+				};
+				CHK_ON_22	{
+					value	bool;
+				};
+				CHK_ON_23	{
+					value	bool;
+				};
+				CHK_ON_24	{
+					value	bool;
+				};
+				CHK_ON_25	{
+					value	bool;
+				};
+				CHK_ON_26	{
+					value	bool;
+				};
+			};
+		};
+		HAITAUMU_COMBO	{
+			HAITAUMU	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(21)[02];
+		};
+		YOKO_01	{
+			value	varchar(3);
+		};
+		YOKO_02	{
+			value	varchar(3);
+		};
+		YOKO_03	{
+			value	varchar(3);
+		};
+		YOKO_04	{
+			value	varchar(3);
+		};
+		YOKO_05	{
+			value	varchar(3);
+		};
+		YOKO_06	{
+			value	varchar(3);
+		};
+		YOKO_07	{
+			value	varchar(3);
+		};
+		YOKO_08	{
+			value	varchar(3);
+		};
+		YOKO_09	{
+			value	varchar(3);
+		};
+		YOKO_10	{
+			value	varchar(3);
+		};
+		YOKO_11	{
+			value	varchar(3);
+		};
+		YOKO_12	{
+			value	varchar(3);
+		};
+		YOKO_13	{
+			value	varchar(3);
+		};
+		YOKO_14	{
+			value	varchar(3);
+		};
+		YOKO_15	{
+			value	varchar(3);
+		};
+		YOKO_16	{
+			value	varchar(3);
+		};
+		YOKO_17	{
+			value	varchar(3);
+		};
+		YOKO_18	{
+			value	varchar(3);
+		};
+		YOKO_19	{
+			value	varchar(3);
+		};
+		YOKO_20	{
+			value	varchar(3);
+		};
+		YOKO_21	{
+			value	varchar(3);
+		};
+		YOKO_22	{
+			value	varchar(3);
+		};
+		YOKO_23	{
+			value	varchar(3);
+		};
+		YOKO_24	{
+			value	varchar(3);
+		};
+		YOKO_25	{
+			value	varchar(3);
+		};
+		YOKO_26	{
+			value	varchar(3);
+		};
+		TATE_01	{
+			value	varchar(15);
+		};
+		TATE_02	{
+			value	varchar(15);
+		};
+		TATE_03	{
+			value	varchar(15);
+		};
+		TATE_04	{
+			value	varchar(15);
+		};
+		TATE_05	{
+			value	varchar(15);
+		};
+		TATE_06	{
+			value	varchar(15);
+		};
+		TATE_07	{
+			value	varchar(15);
+		};
+		TATE_08	{
+			value	varchar(15);
+		};
+		TATE_09	{
+			value	varchar(15);
+		};
+		TATE_10	{
+			value	varchar(15);
+		};
+		TATE_11	{
+			value	varchar(15);
+		};
+		TATE_12	{
+			value	varchar(15);
+		};
+		TATE_13	{
+			value	varchar(15);
+		};
+		TATE_14	{
+			value	varchar(15);
+		};
+		TATE_15	{
+			value	varchar(15);
+		};
+		TATE_16	{
+			value	varchar(15);
+		};
+		TATE_17	{
+			value	varchar(15);
+		};
+		TATE_18	{
+			value	varchar(15);
+		};
+		TATE_19	{
+			value	varchar(15);
+		};
+		TATE_20	{
+			value	varchar(15);
+		};
+		TATE_21	{
+			value	varchar(15);
+		};
+		TATE_22	{
+			value	varchar(15);
+		};
+		TATE_23	{
+			value	varchar(15);
+		};
+		TATE_24	{
+			value	varchar(15);
+		};
+		TATE_25	{
+			value	varchar(15);
+		};
+		TATE_26	{
+			value	varchar(15);
+		};
+	};
+};
