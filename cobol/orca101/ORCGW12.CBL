@@ -39,7 +39,8 @@
       *  02.00.02    NACL-藤原    03/01/08  通し番号編集区分の追加 
       *  02.00.03    NACL-藤原    03/02/27  入院用県単用項目編集プログラム名の追加
       *  02.00.04    NACL-藤原    03/03/07  未入力時のチェック
-      *  01.00.05    NACL-藤原    03/04/09  続紙区分（入院）の追加
+      *  02.00.05    NACL-藤原    03/04/09  続紙区分（入院）の追加
+      *  02.00.06    NACL-藤原    03/07/02  主病名編集フラグの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -82,6 +83,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-BYOMEIHENKBN1MEI
                                               PIC X(20).
+                       09  SPA-GMN-SYUBYOHENFLG-G.
+                           11  SPA-GMN-SYUBYOHENFLG
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-SYUBYOHENFLGMEI
+                                              PIC X(30).
                        09  SPA-GMN-TENKIHENKBN-G.
                            11  SPA-GMN-TENKIHENKBN
                                               PIC X(01).
@@ -146,6 +153,15 @@
                        09  SPA-GMN-BYOMEIHENKBN1MEIL
                                               PIC X(20).
                    07  SPA-GMN-BYOMEIHENKBN1-MAX
+                                              PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-SYUBYOHENFLGLST       OCCURS  3.
+                       09  SPA-GMN-SYUBYOHENFLGL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-SYUBYOHENFLGMEIL
+                                              PIC X(30).
+                   07  SPA-GMN-SYUBYOHENFLG-MAX
                                               PIC 9(02).    
       *                                        
                    07  SPA-GMN-TENKIHENKBNLST         OCCURS  2.
@@ -459,6 +475,17 @@
                                        TO  SPA-GMN-BYOMEIHENKBN1MEIL(2)
            MOVE    2                   TO  SPA-GMN-BYOMEIHENKBN1-MAX 
       *     
+           MOVE    "0"                 TO  SPA-GMN-SYUBYOHENFLGL   (1)
+           MOVE    "主病名の編集を行わない"
+                                       TO  SPA-GMN-SYUBYOHENFLGMEIL(1)
+           MOVE    "1"                 TO  SPA-GMN-SYUBYOHENFLGL   (2)
+           MOVE    "主病名の編集を行う（区切り有）"
+                                       TO  SPA-GMN-SYUBYOHENFLGMEIL(2)
+           MOVE    "2"                 TO  SPA-GMN-SYUBYOHENFLGL   (3)
+           MOVE    "主病名の編集を行う（区切り無）"
+                                       TO  SPA-GMN-SYUBYOHENFLGMEIL(3)
+           MOVE    3                   TO  SPA-GMN-SYUBYOHENFLG-MAX 
+      *     
            MOVE    "0"                 TO  SPA-GMN-TENKIHENKBNL     (1)
            MOVE    "転帰日を表示しない"
                                        TO  SPA-GMN-TENKIHENKBNMEIL  (1)
@@ -540,6 +567,18 @@
                        MOVE    SPA-GMN-BYOMEIHENKBN1LST (IDY)
                                            TO  SPA-GMN-BYOMEIHENKBN1-G
                        MOVE    SPA-GMN-BYOMEIHENKBN1-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *         
+               MOVE    SYS-2005-SYUBYOHENFLG  TO  SPA-GMN-SYUBYOHENFLG
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-SYUBYOHENFLG-MAX
+                   IF      SPA-GMN-SYUBYOHENFLG 
+                                   =   SPA-GMN-SYUBYOHENFLGL (IDY)
+                       MOVE    SPA-GMN-SYUBYOHENFLGLST (IDY)
+                                           TO  SPA-GMN-SYUBYOHENFLG-G
+                       MOVE    SPA-GMN-SYUBYOHENFLG-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
@@ -650,6 +689,10 @@
                MOVE    SPA-GMN-BYOMEIHENKBN1LST (1)
                                            TO  SPA-GMN-BYOMEIHENKBN1-G
            END-IF                                              
+           IF     SPA-GMN-SYUBYOHENFLG-G  =   SPACE
+               MOVE    SPA-GMN-SYUBYOHENFLGLST (1)
+                                           TO  SPA-GMN-SYUBYOHENFLG-G
+           END-IF                                              
            IF     SPA-GMN-TENKIHENKBN-G    =   SPACE
                MOVE    SPA-GMN-TENKIHENKBNLST (1)
                                            TO  SPA-GMN-TENKIHENKBN-G
@@ -739,6 +782,7 @@
            MOVE    W12-PREFPRGID1      TO  SPA-GMN-PREFPRGID1
            MOVE    W12-KKHPRTKBN       TO  SPA-GMN-KKHPRTKBN-G 
            MOVE    W12-BYOMEIHENKBN1   TO  SPA-GMN-BYOMEIHENKBN1-G 
+           MOVE    W12-SYUBYOHENFLG    TO  SPA-GMN-SYUBYOHENFLG-G 
            MOVE    W12-TENKIHENKBN     TO  SPA-GMN-TENKIHENKBN-G 
            MOVE    W12-SYAPRTNM        TO  SPA-GMN-SYAPRTNM
            MOVE    W12-KKHPRTNM        TO  SPA-GMN-KKHPRTNM
@@ -760,6 +804,11 @@
            END-IF
       *
            PERFORM 4107-BYOMEIHENKBN1-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4114-SYUBYOHENFLG-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1058,6 +1107,36 @@
       *
       *
       *****************************************************************
+      *    主病名編集フラグチェック
+      *****************************************************************
+       4114-SYUBYOHENFLG-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-SYUBYOHENFLG   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-SYUBYOHENFLG-MAX
+                   IF      SPA-GMN-SYUBYOHENFLG 
+                                   =   SPA-GMN-SYUBYOHENFLGL (IDY)
+                       MOVE    SPA-GMN-SYUBYOHENFLGLST (IDY)
+                                           TO  SPA-GMN-SYUBYOHENFLG-G
+                       MOVE    SPA-GMN-SYUBYOHENFLG-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-SYUBYOHENFLGMEI =   SPACE
+                   MOVE    15                      TO  SPA-GMN-CUR
+                   MOVE    "0010"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+      *
+           .
+       4114-SYUBYOHENFLG-CHK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    転帰日編集区分チェック
       *****************************************************************
        4108-TENKIHENKBN-CHK-SEC       SECTION.
@@ -1226,6 +1305,7 @@
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-2005-EDYUKYMD
            MOVE    SPA-GMN-BYOMEIHENKBN    TO  SYS-2005-BYOMEIHENKBN
            MOVE    SPA-GMN-BYOMEIHENKBN1   TO  SYS-2005-BYOMEIHENKBN1
+           MOVE    SPA-GMN-SYUBYOHENFLG    TO  SYS-2005-SYUBYOHENFLG
            MOVE    SPA-GMN-TENKIHENKBN     TO  SYS-2005-TENKIHENKBN
            MOVE    SPA-GMN-KKHRECEKBN      TO  SYS-2005-KKHRECEKBN
            MOVE    SPA-GMN-SYARECEKBN      TO  SYS-2005-SYARECEKBN
@@ -1343,6 +1423,7 @@
       *
            MOVE    SPA-GMN-BYOMEIHENKBN-G   TO  W12-BYOMEIHENKBN
            MOVE    SPA-GMN-BYOMEIHENKBN1-G  TO  W12-BYOMEIHENKBN1
+           MOVE    SPA-GMN-SYUBYOHENFLG-G   TO  W12-SYUBYOHENFLG
            MOVE    SPA-GMN-TENKIHENKBN-G    TO  W12-TENKIHENKBN
            MOVE    SPA-GMN-KKHRECEKBN-G     TO  W12-KKHRECEKBN
            MOVE    SPA-GMN-SYARECEKBN-G     TO  W12-SYARECEKBN
@@ -1366,6 +1447,14 @@
            END-PERFORM
            MOVE    SPA-GMN-BYOMEIHENKBN1-MAX
                                        TO  W12-BYOMEIHENKBN1-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-SYUBYOHENFLG-MAX
+               MOVE    SPA-GMN-SYUBYOHENFLGLST (IDY)
+                                       TO  W12-SYUBYOHENFLGLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-SYUBYOHENFLG-MAX
+                                       TO  W12-SYUBYOHENFLG-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-TENKIHENKBN-MAX
@@ -1485,6 +1574,8 @@
                    MOVE    "通し番号編集区分入力エラー"  TO  SPA-ERRMSG
                WHEN    "0009"
                    MOVE    "続紙区分入力エラー"          TO  SPA-ERRMSG
+               WHEN    "0010"
+                   MOVE    "主病名編集フラグ入力エラー"  TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
                                                TO  SPA-ERRMSG
@@ -1585,6 +1676,8 @@
                     MOVE  "PREFPRGID1"       TO   MCP-WIDGET
                 WHEN    14
                     MOVE  "NEXTPRTKBN"       TO   MCP-WIDGET
+                WHEN    15
+                    MOVE  "SYUBYOHENFLG"     TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -1601,6 +1694,8 @@
                WHEN    "BYOMEIHENKBN"
                    MOVE    2           TO  SPA-GMN-CUR
                WHEN    "BYOMEIHENKBN1"
+                   MOVE    15          TO  SPA-GMN-CUR
+               WHEN    "SYUBYOHENFLG"
                    MOVE    3           TO  SPA-GMN-CUR
                WHEN    "TENKIHENKBN"
                    MOVE    4           TO  SPA-GMN-CUR

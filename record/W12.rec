@@ -20,6 +20,13 @@ W12	{
 			count	int;
 			item	varchar(22)[2];
 		};
+		SYUBYOHENFLG_COMBO	{
+			SYUBYOHENFLG	{
+				value	varchar(32);
+			};
+			count	int;
+			item	varchar(32)[3];
+		};
 		TENKIHENKBN_COMBO	{
 			TENKIHENKBN	{
 				value	varchar(20);
