@@ -3450,6 +3450,7 @@
                                   (LNK-WKSRY-SRYCD(IDX IDS)
                                               =   SPACE )
                    IF     LNK-WKSRY-SRYCD(IDX IDS)     =   "140037490"
+                                                       OR  "140040110"
                        MOVE    LNK-WKSRY-SRYCD (IDX IDS)   TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
                        ADD     TNS-TEN         TO  WRK-SYUTEN1
