@@ -155,7 +155,12 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    WRK-PARA-ERRCD  TO  JOB-ERRCD
+           IF      WRK-PARA-ERRCD  =   SPACE    OR
+                   WRK-PARA-ERRCD  =   X"00000000"
+             MOVE  SPACE           TO  JOB-ERRCD
+           ELSE
+             MOVE  WRK-PARA-ERRCD  TO  JOB-ERRCD
+           END-IF
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
