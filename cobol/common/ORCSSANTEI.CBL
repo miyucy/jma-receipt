@@ -49,6 +49,8 @@
            03  FLG-SYOKAI          PIC 9(01).
            03  FLG-SRYKARRK        PIC 9(01).
       *
+           03  FLG-MANSEI-ALL      PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -67,10 +69,15 @@
            03  WRK-FSANTEIYMD          PIC X(08).
            03  WRK-MAE-FSANTEIYMD      PIC X(08).
            03  WRK-KON-FSANTEIYMD      PIC X(08).
+      *
+           03  WRK-FSANTEIYMD-OLD      PIC X(08).
+           03  WRK-FSANTEIYMD2         PIC X(08).
+           03  WRK-SRYYM               PIC X(06).
       *    チェック用発生日
            03  WRK-HASSYOYMD3          PIC X(08).
       *    初診料算定日
            03  WRK-SYOYMD              PIC X(08).
+           03  WRK-SYOSINYMD           PIC X(008).
       *
            03  WRK-KBN                 PIC X(02).
       * 
@@ -79,6 +86,7 @@
                05  WRK-MAE-MM              PIC 9(02).
                05  WRK-MAE-DD              PIC 9(02).
       * 
+           03  WRK-YMD3                 PIC X(08).
            03  WRK-YMD.
                05  WRK-YY              PIC 9(04).
                05  WRK-MM              PIC 9(02).
@@ -114,6 +122,10 @@
        01  WRK-SANTEI-REC.
            COPY    "CPSANTEI.INC"   REPLACING
                                     //SANTEI-// BY //WRK-SANTEI-//.
+      *    算定履歴
+       01  HZN-SANTEI-REC.
+           COPY    "CPSANTEI.INC"   REPLACING
+                                    //SANTEI-// BY //HZN-SANTEI-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -201,18 +213,27 @@
            END-IF
       *
            MOVE    SPACE               TO  WRK-FSANTEIYMD
+           MOVE    SPACE               TO  HZN-SANTEI-REC
       *
       *    対象コードの初回回数
            MOVE    SSANTEI-SRYCD       TO  WRK-SRYCD
            MOVE    SPACE               TO  WRK-SRYYMD
+           MOVE    SPACE               TO  WRK-FSANTEIYMD-OLD
       *    算定履歴検索（診療日降順）
            MOVE    "SANTEI-KEY3"       TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
+           PERFORM UNTIL   (FLG-SANTEI     =   1 )  OR
+                           (SANTEI-SRYYM   <=  SSANTEI-SRYYMD)
+               MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD-OLD
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
            IF      FLG-SANTEI          =   ZERO
                IF     (SANTEI-FSANTEIYMD   <=  SSANTEI-SRYYMD) AND
                       (SANTEI-MSANTEICNT   >   ZERO      ) AND
                       (SANTEI-FSANTEIYMD   >=  WRK-FSANTEIYMD)
                    MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD
+                   MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
                END-IF
            END-IF
       *
@@ -236,6 +257,11 @@
       *            算定履歴検索
                    MOVE    "SANTEI-KEY3"       TO  WRK-DBPATH
                    PERFORM 1001-SANTEI-KEN-SEC
+                   PERFORM UNTIL   (FLG-SANTEI     =   1 )  OR
+                                   (SANTEI-SRYYM   <=  SSANTEI-SRYYMD)
+                       MOVE    WRK-DBPATH          TO  ORC-DBPATH
+                       PERFORM 920-SANTEI-READ-SEC
+                   END-PERFORM
                    IF      FLG-SANTEI          =   ZERO
                        IF     (SANTEI-FSANTEIYMD   <=
                                                    SSANTEI-SRYYMD) AND
@@ -249,14 +275,13 @@
            END-PERFORM
       *
       *    慢性疼痛疾患管理料の時、初診料算定日から初回算定日を始める
-           IF     (WRK-FSANTEIYMD  NOT =   SPACE      )  AND
-                  (WRK-MAE-SRYCD       =   WRK-MANSEI )
+           IF     (WRK-MAE-SRYCD       =   WRK-MANSEI ) 
                PERFORM 1009-MANSE-CHK-SEC
            END-IF
       *
       *    存在しない時、診療年月
            IF      WRK-FSANTEIYMD      =   SPACE
-                MOVE    SSANTEI-SRYYMD      TO  WRK-FSANTEIYMD
+                MOVE    SSANTEI-SRYYMD     TO  WRK-FSANTEIYMD
            END-IF
       *
            .
@@ -264,10 +289,101 @@
            EXIT.
       *
       *****************************************************************
+      *    初回算定日の日変更処理
+      *****************************************************************
+       10010-MAE-SANTEI-HEN-SEC        SECTION.
+      *
+           MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
+           MOVE    SPACE               TO  WRK-YMD3
+      *    算定履歴検索
+           MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           PERFORM
+               UNTIL      FLG-SANTEI       =   1
+               IF      SANTEI-MSANTEICNT   >   ZERO
+                   MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
+                   MOVE    SANTEI-MSANTEID     TO  WRK-DD
+                   IF     (WRK-YMD3            =   SPACE ) OR
+                          (WRK-YMD3            >   WRK-YMD)
+                       MOVE    WRK-YMD         TO  WRK-YMD3
+                   END-IF
+               END-IF
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+      *
+           IF      WRK-YMD3            =   SPACE
+      *        他の履歴が無い時
+               MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
+               MOVE    SANTEI-MSANTEID     TO  WRK-FSANTEIYMD (7:2)
+           ELSE
+               MOVE    WRK-YMD3            TO  WRK-FSANTEIYMD
+           END-IF
+      *
+           MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
+      *    算定履歴検索
+           MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           PERFORM
+               UNTIL      FLG-SANTEI       =   1
+               MOVE    WRK-FSANTEIYMD      TO  SANTEI-FSANTEIYMD
+      *
+               MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
+      *
+               IF      HZN-SANTEI-KEY      =   SANTEI-KEY
+                   MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
+               END-IF
+      *
+               MOVE    SANTEI-REC          TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                  DISPLAY "ORCSSANTEISANTEI UPD ERR:" SANTEI-KEY
+                                                    ","   MCP-RC
+               END-IF
+      *
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+           .
+       10010-MAE-SANTEI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    算定履歴チェック処理
       *****************************************************************
        1001-SANTEI-KEN-SEC                SECTION.
-      *
       *
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
@@ -327,10 +443,10 @@
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
@@ -370,12 +486,11 @@
       *
       *    初診料算定日がない時、診療科履歴から算定
            IF      SSANTEI-SYOYMD      =   SPACE
+               MOVE    SSANTEI-SRYYMD(1:6)     TO  WRK-SRYYM
                PERFORM 10091-SRYKARRK-CHK-SEC
-               IF      WRK-SYOYMD          <   SSANTEI-SRYYMD
-      *            初診料算定日が診療年月日より前の時
-                   IF      WRK-SYOYMD          >   WRK-FSANTEIYMD
-                       MOVE    SSANTEI-SRYYMD      TO  WRK-FSANTEIYMD
-                   END-IF
+               IF     (WRK-SYOSINYMD       =   SPACE )  OR
+                      (WRK-SYOSINYMD       >   WRK-FSANTEIYMD)
+                   MOVE    SSANTEI-SRYYMD      TO  WRK-FSANTEIYMD
                END-IF
            ELSE
                IF      SSANTEI-SYOYMD      >   WRK-FSANTEIYMD
@@ -383,6 +498,16 @@
                END-IF
            END-IF
       *
+           MOVE    ZERO                TO  FLG-MANSEI-ALL
+           IF     WRK-FSANTEIYMD-OLD  NOT =   SPACE
+               MOVE    WRK-FSANTEIYMD-OLD(1:6) TO  WRK-SRYYM
+               PERFORM 10091-SRYKARRK-CHK-SEC
+               IF     (WRK-SYOSINYMD   NOT =   SPACE     )   AND
+                      (WRK-SYOSINYMD       <=  WRK-FSANTEIYMD)
+                   MOVE    1               TO  FLG-MANSEI-ALL
+                   MOVE    WRK-FSANTEIYMD  TO  WRK-KON-FSANTEIYMD
+               END-IF
+           END-IF
            .
       *
        1009-MANSE-CHK-EXT.
@@ -393,45 +518,117 @@
       *****************************************************************
        10091-SRYKARRK-CHK-SEC      SECTION.
       *
-      *    初診料とは、同時算定できないので、診療科履歴から初診を決定
-           MOVE    SPACE               TO  SRYKARRK-REC
-           INITIALIZE                  SRYKARRK-REC
-           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
-           MOVE    SSANTEI-PTID        TO  KARRK-PTID
+           MOVE    SPACE               TO  WRK-SYOSINYMD
+      *    病院
+      *    老人
+           MOVE    "111700110"         TO  WRK-SRYCD
+           PERFORM 100912-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+           END-IF
+           MOVE    "111000110"         TO  WRK-SRYCD
+           PERFORM 100912-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+           END-IF
+      *    診療所
+      *    老人
+           MOVE    "111700210"         TO  WRK-SRYCD
+           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+           END-IF
+      *    老人外
+           MOVE    "111003610"         TO  WRK-SRYCD
+           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+           END-IF
+      *    小児科診察料
+      *    院外処方   初診
+           MOVE    "113003510"         TO  WRK-SRYCD
+           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+           END-IF
+      *    　　院内処方   初診
+           MOVE    "113003710"         TO  WRK-SRYCD
+           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+           END-IF
       *
-           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+      *    仮の初診料
+           MOVE    "099110001"         TO  WRK-SRYCD
+           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+           END-IF
+      *
+      *    労災初診料
+           MOVE    "101110010"         TO  WRK-SRYCD
+           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+           END-IF
+           .
+      *
+       1009-MANSE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険毎のコードの判定処理
+      *****************************************************************
+       100912-SANTEI-CHK-SEC      SECTION.
+           MOVE    SPACE               TO  WRK-YMD
+      *
+      *    算定履歴検索
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    WRK-SRYYM           TO  SANTEI-SRYYM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
+           MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
-               PERFORM 975-SRYKARRK-READ-SEC
+               MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
            ELSE
-               MOVE    1                   TO  FLG-SRYKARRK
-               MOVE    SPACE               TO  SRYKARRK-REC
-               INITIALIZE                  SRYKARRK-REC
+               MOVE    1                   TO  FLG-SANTEI
            END-IF
-           MOVE    SPACE               TO  WRK-SYOYMD
-           PERFORM UNTIL       FLG-SRYKARRK    =   1
       *
-      *        初診算定日
-              IF      (KARRK-SRYKA         NOT =   SPACE  ) AND
-                      (KARRK-LASTYMD       NOT =   SPACE  ) AND
-                      (KARRK-SYOSINYMD2    NOT =   SPACE  ) AND
-                      (KARRK-SYOSINYMD2    >=  WRK-SYOYMD )
-                   MOVE    KARRK-SYOSINYMD2    TO  WRK-SYOYMD
+           PERFORM UNTIL       FLG-SANTEI          =   1
+      *        終了判定
+               IF      SANTEI-MSANTEICNT   >   ZERO
+                   IF      SANTEI-SRYYM    <   WRK-YMD(1:6)
+                       MOVE    1                   TO  FLG-SANTEI
+                   ELSE
+                       PERFORM VARYING     IDX-Y2  FROM    1  BY  1
+                               UNTIL       IDX-Y2      >   31
+                           IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                               MOVE    IDX-Y2          TO  WRK-DD
+                           END-IF
+                       END-PERFORM
+                       MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
+                   END-IF
                END-IF
       *
-               MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
-               PERFORM 975-SRYKARRK-READ-SEC
+               IF      FLG-SANTEI          =   ZERO
+                   MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
            END-PERFORM
-      *
            .
       *
-       10091-SRYKARRK-CHK-EXT.
+       100912-SANTEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -536,6 +733,11 @@
                MOVE    WRK-SRYYMD(7:2)     TO  SANTEI-MSANTEID
            ELSE
       *        修正
+               IF      SANTEI-FSANTEIYMD(7:2)  =   ZERO
+                   MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
+                   PERFORM 10010-MAE-SANTEI-HEN-SEC
+                   MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
+               END-IF
                MOVE    2                   TO  FLG-SYORI
                MOVE    SANTEI-SRYYM        TO  WRK-MAE-YMD(1:6)
                MOVE    SANTEI-MSANTEID     TO  WRK-MAE-DD
@@ -617,7 +819,6 @@
       *
            IF      FLG-SYORI           =   1
       *
-      *
                MOVE    SMCNDATE-YMD        TO  SANTEI-CREYMD
                MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
                MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
@@ -632,6 +833,10 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "ORCSSANTEI  INS ERR:" SANTEI-KEY
                                           ","   MCP-RC
+               END-IF
+      *
+               IF      FLG-MANSEI-ALL      =   1
+                   PERFORM 400-SANTEI-MANSEI-SEC
                END-IF
            ELSE
       *
@@ -698,10 +903,13 @@
       *
            MOVE    ZERO                TO  FLG-SYOKAI
       *    更新前の当月初回算定日
-           IF     (WRK-MAE-YMD         =   SANTEI-FSANTEIYMD ) AND
-                  (WRK-MAE-DD      NOT =   SANTEI-MSANTEID   )
+           IF    ((WRK-MAE-YMD         =   SANTEI-FSANTEIYMD ) AND
+                  (WRK-MAE-DD      NOT =   SANTEI-MSANTEID   ))
                MOVE    SANTEI-SRYYM        TO  WRK-KON-FSANTEIYMD(1:6)
                MOVE    SANTEI-MSANTEID     TO  WRK-KON-FSANTEIYMD(7:2)
+               IF      SANTEI-MSANTEID     =   ZERO
+                   MOVE    WRK-MAE-DD      TO  WRK-KON-FSANTEIYMD(7:2)
+               END-IF
                MOVE    SANTEI-FSANTEIYMD   TO  WRK-MAE-FSANTEIYMD
                MOVE    SANTEI-REC          TO  WRK-SANTEI-REC
                PERFORM 20011-SANTEI-CHK-SEC
@@ -732,6 +940,7 @@
                                                 TO  WRK-KBN
            END-SEARCH
            MOVE    WRK-SRYCD           TO  WRK-MAE-SRYCD
+           MOVE    SPACE               TO  WRK-YMD3
       *
       *    同一初回算定日で、今回変更以前の日があれば初回算定日にする
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -800,6 +1009,14 @@
            IF      FLG-SANTEI          =   1
                GO      TO      300-DELETE-SYORI-EXT
            END-IF
+      *
+      *    初回算定日の日がゼロの場合一括変更
+           IF      SANTEI-FSANTEIYMD(7:2)  =   ZERO
+               MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
+               PERFORM 10010-MAE-SANTEI-HEN-SEC
+               MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
+           END-IF
+      *
       *    変更前の初回算定日保存
            MOVE    SANTEI-SRYYM        TO  WRK-MAE-YMD(1:6)
            MOVE    SANTEI-MSANTEID     TO  WRK-MAE-DD
@@ -875,10 +1092,9 @@
       *        PERFORM 2009-SSANTEI-RSI-SEC
       ***  END-IF
       *
-      *    初回算定日変更チェック
-           PERFORM 2001-SYOKAI-CHK-SEC
-      *
            IF      SANTEI-MSANTEICNT   =   ZERO
+      *        初回算定日変更チェック
+               PERFORM 2003-DEL-SYOKAI-SEC
       *        削除
                MOVE    SANTEI-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -892,6 +1108,8 @@
                                               ","  MCP-RC
                END-IF
            ELSE
+      *        初回算定日変更チェック
+               PERFORM 2001-SYOKAI-CHK-SEC
       *        修正
                MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
                MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
@@ -916,6 +1134,104 @@
       *
            .
        300-DELETE-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    削除初回算定日変更チェック
+      *****************************************************************
+       2003-DEL-SYOKAI-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYOKAI
+           MOVE    SANTEI-REC          TO  WRK-SANTEI-REC
+      *    更新前の当月初回算定日
+           IF     (WRK-MAE-YMD         =   SANTEI-FSANTEIYMD )
+               MOVE    SANTEI-FSANTEIYMD   TO  WRK-MAE-FSANTEIYMD
+               MOVE    SPACE               TO  WRK-KON-FSANTEIYMD
+               PERFORM 20011-SANTEI-CHK-SEC
+               MOVE    WRK-SANTEI-REC      TO  SANTEI-REC
+      *        今回初回算定日が前回と違うとき修正
+               IF      WRK-KON-FSANTEIYMD  NOT =   SANTEI-FSANTEIYMD
+                   MOVE    1               TO  FLG-SYOKAI
+               END-IF
+           END-IF
+      *
+           IF      FLG-SYOKAI          =   1
+               PERFORM 30011-DEL-SYOKAI-CHK-SEC
+           END-IF
+           MOVE    WRK-SANTEI-REC      TO  SANTEI-REC
+           .
+      *
+       2003-DEL-SYOKAI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    削除時、初回算定日変更
+      *****************************************************************
+       30011-DEL-SYOKAI-CHK-SEC        SECTION.
+      *
+           MOVE    WRK-SANTEI-REC      TO  SANTEI-REC
+      *
+           MOVE    SPACE               TO  WRK-FSANTEIYMD2
+           MOVE    SPACE               TO  WRK-YMD3
+           MOVE    SSANTEI-SRYCD       TO  WRK-SRYCD
+           MOVE    WRK-MAE-YMD         TO  WRK-FSANTEIYMD
+           PERFORM 300111-DEL-SYOKAI-SEC
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   TBL-MAX  )  OR
+                              (WRK-KBN     =   SPACE    )
+               SET     TBL-IDX             TO  IDX
+               IF      TBL-KBN (TBL-IDX)   =   WRK-KBN
+                   MOVE    TBL-SRYCD (TBL-IDX)     TO  WRK-SRYCD
+      *            算定履歴初回算定日変更処理
+                   PERFORM 300111-DEL-SYOKAI-SEC
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-YMD3        NOT =   SPACE
+               IF      WRK-YMD3            >   WRK-FSANTEIYMD2
+                   MOVE    WRK-FSANTEIYMD2     TO  WRK-KON-FSANTEIYMD
+               ELSE
+                   MOVE    WRK-YMD3            TO  WRK-KON-FSANTEIYMD
+               END-IF
+           END-IF
+           IF      WRK-KON-FSANTEIYMD  =   SPACE
+               MOVE    ZERO                TO  FLG-SYOKAI
+           END-IF
+           MOVE    WRK-SANTEI-REC      TO  SANTEI-REC
+      *
+           .
+       30011-DEL-SYOKAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全算定履歴初回算定日判定処理
+      *****************************************************************
+       300111-DEL-SYOKAI-SEC                SECTION.
+      *    算定履歴検索
+           IF      WRK-SRYCD           =   WRK-MANSEI
+               MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
+           ELSE
+               MOVE    "SANTEI-KEY3"       TO  WRK-DBPATH
+           END-IF
+           PERFORM 1001-SANTEI-KEN-SEC
+           PERFORM UNTIL     FLG-SANTEI    =   1
+               IF     (SANTEI-MSANTEICNT   >   ZERO )  AND
+                      (WRK-SANTEI-KEY  NOT =   SANTEI-KEY )
+                   MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
+                   MOVE    SANTEI-MSANTEID     TO  WRK-DD
+                   IF     (WRK-YMD3        =   SPACE  )  OR
+                          (WRK-YMD3        >   WRK-YMD)
+                       MOVE    WRK-YMD         TO  WRK-YMD3
+                       MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD2
+                   END-IF
+               END-IF
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+      *
+           .
+       300111-DEL-SYOKAI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -980,6 +1296,42 @@
        3002-SANTEI-UPD-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    慢性疼痛指導管理料初回算定日変更処理
+      *****************************************************************
+       400-SANTEI-MANSEI-SEC         SECTION.
+      *
+           MOVE    WRK-FSANTEIYMD-OLD  TO  WRK-FSANTEIYMD
+      *    算定履歴検索
+           MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
+           PERFORM 1001-SANTEI-KEN-SEC
+           PERFORM
+               UNTIL      FLG-SANTEI       =   1
+      *
+                   MOVE    WRK-KON-FSANTEIYMD  TO  SANTEI-FSANTEIYMD
+      *
+                   MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
+      *
+                   MOVE    SANTEI-REC          TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                   IF      MCP-RC          NOT =   ZERO
+                      DISPLAY "ORCSSANTEISANTEI UPD ERR:" SANTEI-KEY
+                                                    ","   MCP-RC
+                   END-IF
+      *
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+      *
+           .
+       400-SANTEI-MANSEI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    点数マスター読込
