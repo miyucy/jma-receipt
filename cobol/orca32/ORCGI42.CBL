@@ -1769,7 +1769,7 @@
                    PERFORM VARYING     IDX-N2  FROM    1   BY  1
                            UNTIL       IDX-N2  >   IDX-N
                        IF      TBL-DAY (IDX-N2 IDX-D)  >   ZERO
-                           ADD     TBL-ZAITEN(IDX-D)
+                           ADD     TBL-ZAITEN(IDX-N2)
                                                    TO  WRK-GOK-NYUTEN
                        END-IF
                    END-PERFORM
