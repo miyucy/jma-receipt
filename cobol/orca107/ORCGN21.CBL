@@ -745,7 +745,8 @@
       *    名前半角文字混在チェック
            IF          SPA-GMN-NAME    NOT     =   SPACE
                INITIALIZE              ORCSKANACHKAREA
-               MOVE    1               TO  KANACHK-SYORI
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    80              TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-NAME    TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
@@ -762,7 +763,8 @@
       *    効能効果半角文字混在チェック
            IF          SPA-GMN-EFFECT    NOT     =   SPACE
                INITIALIZE                ORCSKANACHKAREA
-               MOVE    1                 TO  KANACHK-SYORI
+               MOVE    "1"               TO  KANACHK-SYORI
+               MOVE    186               TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-EFFECT    TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"         USING
                                              ORCSKANACHKAREA
@@ -779,7 +781,8 @@
       *    色半角文字混在チェック
            IF          SPA-GMN-COLOR     NOT     =   SPACE
                INITIALIZE                ORCSKANACHKAREA
-               MOVE    1                 TO  KANACHK-SYORI
+               MOVE    "1"               TO  KANACHK-SYORI
+               MOVE    136               TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-COLOR     TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"         USING
                                              ORCSKANACHKAREA
@@ -796,7 +799,8 @@
       *    形半角文字混在チェック
            IF          SPA-GMN-SHAPE     NOT     =   SPACE
                INITIALIZE                ORCSKANACHKAREA
-               MOVE    1                 TO  KANACHK-SYORI
+               MOVE    "1"               TO  KANACHK-SYORI
+               MOVE    136               TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-SHAPE     TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"         USING
                                              ORCSKANACHKAREA
@@ -814,8 +818,9 @@
       *    記号半角文字混在チェック
            IF          SPA-GMN-MARK      NOT     =   SPACE
                INITIALIZE                ORCSKANACHKAREA
-               MOVE    1                 TO  KANACHK-SYORI
-               MOVE    SPA-GMN-MARK     TO  KANACHK-MAE-INPUT
+               MOVE    "1"               TO  KANACHK-SYORI
+               MOVE    136               TO  KANACHK-MAX-CNT
+               MOVE    SPA-GMN-MARK      TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"         USING
                                              ORCSKANACHKAREA
       *
@@ -835,7 +840,8 @@
       *    注意事項半角文字混在チェック
            IF          SPA-GMN-CAUTION   NOT     =   SPACE
                INITIALIZE                ORCSKANACHKAREA
-               MOVE    1                 TO  KANACHK-SYORI
+               MOVE    "1"               TO  KANACHK-SYORI
+               MOVE    410               TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-CAUTION   TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"         USING
                                              ORCSKANACHKAREA
@@ -852,7 +858,7 @@
       *    画像半角文字混在チェック
            IF          SPA-GMN-PHOTO   NOT =   SPACE
                INITIALIZE              ORCSKANACHKAREA
-               MOVE    1               TO  KANACHK-SYORI
+               MOVE    "1"             TO  KANACHK-SYORI
                MOVE    SPA-GMN-PHOTO   TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
