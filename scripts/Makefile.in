@@ -9,42 +9,40 @@ sysconfdir= @sysconfdir@
 scriptsdir = ${exec_prefix}/scripts
 
 noinst_shell_sources = \
-		sample.sh.in \
+	sample.sh.in \
 
 shell_sources = \
-		allways/site-upgrade.sh.in \
-		allways/ORCBQ01.sh.in \
-		allways/master_upgrade.sh.in \
-		allways/orcbsd01.sh.in \
-		allways/orcbse01.sh.in \
-		allways/orcbsf01.sh.in \
-		allways/orcbsf02.sh.in \
-		allways/orcbsf03.sh.in \
-		allways/orhcml09.sh.in \
-		allways/print.sh.in \
-		allways/tensu.sh.in
+	allways/site-upgrade.sh.in \
+	allways/ORCBQ01.sh.in \
+	allways/master_upgrade.sh.in \
+	allways/orcbsd01.sh.in \
+	allways/orcbse01.sh.in \
+	allways/orcbsf01.sh.in \
+	allways/orcbsf02.sh.in \
+	allways/orcbsf03.sh.in \
+	allways/orhcml09.sh.in \
+	allways/print.sh.in \
+	allways/tensu.sh.in \
+	daily/HCALL.sh \
+	daily/execoprg.sh \
+	daily/HC01.sh \
+	daily/HCALL2.sh \
+	monthly/recept1.sh \
+	monthly/recept2.sh \
+	monthly/recept3.sh \
+	monthly/recept4.sh \
+	monthly/recept5.sh \
+	monthly/recept6.sh \
+	monthly/recept7.sh \
+	monthly/recept8.sh \
+	monthly/sokatsu.sh 
 
 ruby_sources = \
-		daily/print-data.rb.in \
-		daily/print_parent2.rb.in \
-		daily/print_parent.rb.in
+	daily/print-data.rb.in \
+	daily/print_parent2.rb.in \
+	daily/print_parent.rb.in
 
 shell_scripts = $(shell_sources:.sh.in=.sh) 
-
-inst_scripts =  $(shell_sources:.sh.in=.sh) \
-		daily/HCALL.sh \
-		daily/execoprg.sh \
-		daily/HC01.sh \
-		daily/HCALL2.sh \
-		monthly/recept1.sh \
-		monthly/recept2.sh \
-		monthly/recept3.sh \
-		monthly/recept4.sh \
-		monthly/recept5.sh \
-		monthly/recept6.sh \
-		monthly/recept7.sh \
-		monthly/recept8.sh \
-		monthly/sokatsu.sh 
 
 noinst_shell_scripts = $(noinst_shell_sources:.sh.in=.sh)
 
@@ -56,9 +54,7 @@ ruby_scripts = $(ruby_sources:.rb.in=.rb)
 	sed -e 's,\@jma-receipt-env\@,$(sysconfdir)\/jma-receipt\.env,g' \
 	$< > $@
 
-all:   \
-	$(noinst_shell_scripts) \
-	$(shell_scripts)
+all:   $(noinst_shell_scripts) $(shell_scripts)
 
 clean: 
 	-rm $(noinst_shell_scripts)
@@ -72,7 +68,7 @@ install: all
 	$(INSTALL) -d $(scriptsdir)/allways
 	$(INSTALL) -d $(scriptsdir)/daily
 	$(INSTALL) -d $(scriptsdir)/monthly
-	for file in $(inst_scripts) $(ruby_scripts); do \
+	for file in $(shell_scripts) $(ruby_scripts); do \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
 	  $(INSTALL) $$file $(scriptsdir)/$$dir; \
 	done

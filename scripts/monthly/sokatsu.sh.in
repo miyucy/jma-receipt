@@ -1,7 +1,15 @@
-#!/bin/bash
-ORCADIR=/usr/local/orca
-ORCABT="$ORCADIR"/lib
-DBSTUB=/usr/local/panda/bin/dbstub
+#!/bin/sh
+if test -n "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="$JMARECEIPT_ENV"
+elif test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
 -------------------------------------------#
 #    決定通知書作成
 #        CPCOMMONSHELL1.INC  
@@ -23,10 +31,10 @@ DBSTUB=/usr/local/panda/bin/dbstub
 
 ##      決定通知書（社保）
         if  [ $2 = '1' ]; then
-       	    $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM020 -parameter $1$5
+       	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM020 -parameter $1$5
        	fi    
 
 ##      決定通知書（国保）
         if  [ $2 = '2' ]; then
-       	    $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM021 -parameter $1$5
+       	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM021 -parameter $1$5
        	fi    

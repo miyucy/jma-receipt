@@ -1,7 +1,15 @@
-#!/bin/bash
-ORCADIR=/usr/local/orca
-ORCABT="$ORCADIR"/lib
-DBSTUB=/usr/local/panda/bin/dbstub
+#!/bin/sh
+if test -n "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="$JMARECEIPT_ENV"
+elif test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
 -------------------------------------------#
 #    Ì¤ÀÁµá°ìÍ÷ºîÀ®
 #        CPCOMMONSHELL1.INC  
@@ -22,4 +30,4 @@ DBSTUB=/usr/local/panda/bin/dbstub
         cd  $ORCABT
 
 ##      Ì¤ÀÁµá°ìÍ÷
-     	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM005 -parameter $1,$4,$2,$5
+     	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM005 -parameter $1,$4,$2,$5

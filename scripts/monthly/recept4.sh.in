@@ -1,7 +1,16 @@
-#!/bin/bash
-ORCADIR=/usr/local/orca
-ORCABT="$ORCADIR"/lib
-DBSTUB=/usr/local/panda/bin/dbstub
+#!/bin/sh
+if test -n "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="$JMARECEIPT_ENV"
+elif test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
 #-------------------------------------------#
 #    レセ電ファイル作成処理
 #        CPCOMMONSHELL1.INC  
@@ -23,21 +32,21 @@ DBSTUB=/usr/local/panda/bin/dbstub
         
      cd  $ORCABT
 
-        $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0200 -parameter $1$6$7
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0200 -parameter $1$6$7
         
         if  [ $4 = '1' ]; then          
 #           固定長のとき
-	    $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0210 -parameter $1,$2,$3,$6,$7
+	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0210 -parameter $1,$2,$3,$6,$7
         else 
 #           ＣＳＶのとき 
-	    $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0300 -parameter $1,$2,$3,$6,$7
+	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0300 -parameter $1,$2,$3,$6,$7
         fi 
         
         if  [ -e $8 ]; then
             exit 
         fi
         
-	$DBSTUB  -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE$6$7
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$6$7
 
         
 

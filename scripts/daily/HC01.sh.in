@@ -1,5 +1,17 @@
-#! /bin/sh
-#/bin/sh -F
+#!/bin/sh
+if test -n "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="$JMARECEIPT_ENV"
+elif test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+#
+#
 	if	[ $1 = 'red2ps' ]	;then
 		if	[ $5 != '' ]	;then
 			$1 $2 $4 -p $5
