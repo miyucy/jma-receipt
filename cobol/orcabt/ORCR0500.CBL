@@ -29,6 +29,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
+      *  01.00.02    NACL-藤原    02/09/27  帳票ＩＤをＤＢより編集
+      *                                     パラメタに入外区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -116,6 +118,7 @@
                                                  PIC X(01).
                    07  WRK-PARA-RECE09-RECESYUBETU
                                                  PIC X(04).
+                   07  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).                              
                05  WRK-PARA-TERMID32             PIC X(32).
       *
            03  WRK-IN                PIC X(01).
@@ -254,23 +257,27 @@
        200-MAIN-SEC                SECTION.
       *
       *    帳票印刷処理
-           MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
+      *****MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
+           MOVE    "RECEPRT-KEY12"     TO  WRK-PATH
            PERFORM 900-RECEPRT-SELECT-SEC
       *
            PERFORM 2001-RECEPRT-PRINT-SEC
                                        UNTIL   FLG-RECEPRT  =   1
       *
-           MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
+      *****MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
+           MOVE    "RECEPRT-KEY12"     TO  WRK-PATH
            PERFORM 900-RECEPRT-CLS-SEC
       *
       *    帳票クリア処理
-           MOVE    "RECEPRT-KEY4"      TO  WRK-PATH
+      *****MOVE    "RECEPRT-KEY4"      TO  WRK-PATH
+           MOVE    "RECEPRT-KEY13"     TO  WRK-PATH
            PERFORM 900-RECEPRT-SELECT-SEC
       *
            PERFORM 2002-RECEPRT-CLEAR-SEC
                                        UNTIL   FLG-RECEPRT  =   1
       *
-           MOVE    "RECEPRT-KEY4"      TO  WRK-PATH
+      *****MOVE    "RECEPRT-KEY4"      TO  WRK-PATH
+           MOVE    "RECEPRT-KEY13"     TO  WRK-PATH
            PERFORM 900-RECEPRT-CLS-SEC
       *
       *   印刷用スクリプト処理
@@ -307,32 +314,33 @@
        2001-RECEPRT-PRINT-SEC          SECTION.
       * 
            MOVE    SPACE               TO  PRT-REC 
-           EVALUATE    RECE08-RECESYUBETU  ALSO    RECE08-PRTID  
+      *****EVALUATE    RECE08-RECESYUBETU  ALSO    RECE08-PRTID  
       *        短期給付             
-               WHEN    "7071"              ALSO    "HC21"
-               WHEN    "7072"              ALSO    "HC21"
-               WHEN    "0000"              ALSO    "HC21"
-                   MOVE    "HC22"          TO  PRT-PRTID   
-               WHEN    "7073"              ALSO    "HC21" 
-                   MOVE    "HC24"          TO  PRT-PRTID   
+      *        WHEN    "7071"              ALSO    "HC21"
+      *        WHEN    "7072"              ALSO    "HC21"
+      *        WHEN    "0000"              ALSO    "HC21"
+      *            MOVE    "HC22"          TO  PRT-PRTID   
+      *        WHEN    "7073"              ALSO    "HC21" 
+      *            MOVE    "HC24"          TO  PRT-PRTID   
       *        傷病年金             
-               WHEN    "7091"              ALSO    "HC21"
-               WHEN    "7092"              ALSO    "HC21"
-                   MOVE    "HC21"          TO  PRT-PRTID   
-               WHEN    "7093"              ALSO    "HC21"
-                   MOVE    "HC24"          TO  PRT-PRTID
+      *        WHEN    "7091"              ALSO    "HC21"
+      *        WHEN    "7092"              ALSO    "HC21"
+      *            MOVE    "HC21"          TO  PRT-PRTID   
+      *        WHEN    "7093"              ALSO    "HC21"
+      *            MOVE    "HC24"          TO  PRT-PRTID
       *        アフターケア             
-               WHEN    "7021"              ALSO    "HC21"
-                   MOVE    "HC18"          TO  PRT-PRTID   
-               WHEN    "7023"              ALSO    "HC21"
-                   MOVE    "HC20"          TO  PRT-PRTID   
+      *        WHEN    "7021"              ALSO    "HC21"
+      *            MOVE    "HC18"          TO  PRT-PRTID   
+      *        WHEN    "7023"              ALSO    "HC21"
+      *            MOVE    "HC20"          TO  PRT-PRTID   
       *        自賠責             
-               WHEN    "7001"              ALSO    "HC23"
-               WHEN    "0000"              ALSO    "HC23"
-                   MOVE    "HC23"          TO  PRT-PRTID   
-               WHEN    "7002"              ALSO    "HC23"
-                   MOVE    "HC29"          TO  PRT-PRTID   
-           END-EVALUATE
+      *        WHEN    "7001"              ALSO    "HC23"
+      *        WHEN    "0000"              ALSO    "HC23"
+      *            MOVE    "HC23"          TO  PRT-PRTID   
+      *        WHEN    "7002"              ALSO    "HC23"
+      *            MOVE    "HC29"          TO  PRT-PRTID   
+      *****END-EVALUATE
+           MOVE    RECE08-FORMID       TO  PRT-PRTID
            MOVE    SYS-1031-PRTNM(4)   TO  PRT-PRTNM 
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
            WRITE   PRT-REC
@@ -446,6 +454,8 @@
            MOVE    WRK-PARA-RECE09-SRYYM    TO  RECE08-RECEYM
            MOVE    WRK-PARA-RECE09-CREYMD   TO  RECE08-CREYMD
            MOVE    WRK-PARA-RECE09-CREHMS   TO  RECE08-CREHMS
+           MOVE    WRK-PARA-RECE09-NYUGAIKBN
+                                            TO  RECE08-NYUGAIKBN
       *
            MOVE    RECE08-REC          TO  MCPDATA-REC
            MOVE    WRK-PATH            TO  ORC-DBPATH
