@@ -76,6 +76,14 @@
       *  01.00.29    NACL-Æ£¸¶    04/03/18  ²èÁü¿ÇÃÇ¤Î½ÐÎÏ½ç¤Î½¤Àµ
       *  01.00.30    NACL-Æ£¸¶    04/03/19  £µ£±¸øÈñ¤Î¤È¤­¼Â»Üµ¡´ØÈÖ¹æ¡Ö£¶£°£²¡×
       *                                     ¤Î¤È¤­¤Î¤ß¸øÈñÉéÃ´³Û¤òµ­Ï¿¤¹¤ë
+      *  01.00.31    NACL-Æ£¸¶    04/04/05  ÉÂÌ¾¥³¡¼¥É£¹£¹£¹£¹£¹£¹£¹ÆÉ¤ßÈô¤Ð¤¹
+      *  01.00.32    NACL-Æ£¸¶    04/04/06  ÊÝ¸±ÍúÎò¤ËÊÝ¸±¼ÔÈÖ¹æ¤òÄÉ²Ã
+      *
+      *  £²£°£°£´Ç¯£´·î»ÅÍÍÊÑ¹¹
+      *  01.01.01    NACL-Æ£¸¶    04/04/06  ¼ê½ÑÎò¤Îµ­ºÜ
+      *                                     ¿ÇÎÅ²Ê¥³¡¼¥É¡Ê¥ì¥»¥×¥È¶¦ÄÌ¡Ë¡¦
+      *                                     ¾¦ÉÊÌ¾µÚ¤Óµ¬³ÊÌ¾µÚ¤Ó¥µ¥¤¥º
+      *                                     ¡ÊÆÃÄê´ïºà¡Ë¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -238,6 +246,7 @@
            03  FLG-RECE05              PIC 9(01).
            03  FLG-RECE09              PIC 9(01).
            03  FLG-RECE11              PIC 9(01).
+           03  FLG-OPECOM              PIC 9(01).
       *
            03  FLG-TEIGEN              PIC 9(01).
            03  FLG-YKZ20               PIC 9(01).
@@ -251,6 +260,7 @@
            03  FLG-KENSA-KASAN         PIC 9(01).
            03  FLG-KENSA-TEIGEN        PIC 9(01).
            03  FLG-SET                 PIC 9(01).
+           03  FLG-OPECOM-CHK          PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -304,6 +314,8 @@
            03  WRK-SYS-SRYYMD          PIC X(08).
       *
            03  WRK-RECEERR             PIC X(200).
+      *
+           03  WRK-OPECOM-PATH         PIC X(64).
       *
            03  WRK-KIZAI-SRYCD         PIC X(09).
       *     ±¦¤º¤áÊÔ½¸ÍÑ     
@@ -392,6 +404,8 @@
                                                PIC X(12).
                            11  WRK-HKN-FL2     PIC X(04).
            03  WRK-RIREKI-MAX                  PIC 9(02).                
+           03  WRK-HKN-RIREKI-X                PIC X(60).
+           03  WRK-HKN-HKNJANUM                PIC X(16).
            03  WRK-HKN-NUM                     PIC X(50).
            03  WRK-HKN-KIGO                    PIC X(50).
            03  WRK-HKN-TEISYUTUSAKI            PIC X(04).    
@@ -407,6 +421,10 @@
            03  WRK-COL                         PIC 9(03). 
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
+      *
+      *    ¼ê½ÑÎòÊÔ½¸
+           03  WRK-OPECOM          PIC 9(01).
+           03  WRK-OPECOM-HEN      PIC X(50).
       *
       *    °åÌôÉÊ¡¦ÆÃÄê´ïºàÍÑ¥Æ¡¼¥Ö¥ë
        01  TBL-ZAIW-AREA.
@@ -653,6 +671,10 @@
       *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    ¼ê½ÑÎò¥ì¥»¥×¥È¥³¥á¥ó¥È¥Þ¥¹¥¿¡¼
+       01  OPECOM-REC.
+           COPY    "CPOPECOM.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
@@ -1066,10 +1088,14 @@
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    ³ä°úÅÀ¿ôÃ±²Á
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ¼«¸ÊÉéÃ´¶èÊ¬
+      *    Í½È÷
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ½èÊý¤»¤ó¸òÉÕ¶èÊ¬
+      *    Í½È÷
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    ¿ÇÎÅ²Ê¥³¡¼¥É
+           MOVE    RECE02-RECEKA       TO  WRK-DATA
            MOVE    1                   TO  WRK-END 
+           MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
       *
            MOVE    1                   TO  FLG-TOTALTEN
@@ -1529,6 +1555,9 @@
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       21
                        OR      RECE031-BYOMEICD(IDX)   =   SPACE
+                 IF      RECE031-BYOMEICD(IDX) =   ALL "9"
+                     CONTINUE
+                 ELSE  
                    IF      RECE031-BYOMEICD(IDX)(1:3)  NOT =   "ZZZ"
                        IF      WRK-BYOMEICD                =   SPACE
       *                    ÇÑ»ßÇ¯·îÆü¤¬ÀßÄê¤µ¤ì¤Æ¤¤¤ë¤È¤­¿ÇÎÅ³«»ÏÆü°ÊÁ°
@@ -1561,6 +1590,7 @@
                        MOVE    RECE031-BYOMEICD(IDX)(4:)
                                            TO  WRK-RECECD(IDY)
                    END-IF    
+                 END-IF       
                END-PERFORM
            END-IF    
       *
@@ -2869,6 +2899,9 @@
                MOVE    TBL-ZAIW-NAME (2 IDX)     TO  WRK-DATA
            END-IF
            MOVE    40                  TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    ¾¦ÉÊÌ¾µÚ¤Óµ¬³ÊÌ¾µÚ¤Ó¥µ¥¤¥º
+           MOVE    300                 TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
       *
@@ -3002,12 +3035,25 @@
                    WHEN    OTHER
                        MOVE    SPACE      TO  WRK-HKN-TEISYUTUSAKI   
                END-EVALUATE          
-               IF      RECE09-NUM         =   SPACE
-               AND     RECE09-KIGO        =   SPACE        
+               IF    ( RECE09-NUM         =   SPACE )
+               AND   ( RECE09-KIGO        =   SPACE )        
+               AND   ( RECE09-HKNJANUM    =   SPACE )        
                    STRING  WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
                            RECE09-TANSEIDONAME    DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI (WRK-RIREKI-MAX)
+                   END-STRING
                ELSE
+                   MOVE    SPACE           TO  WRK-HKN-HKNJANUM
+                   IF      RECE09-HKNJANUM     NOT =   SPACE
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "2"             TO  KANACHK-SYORI 
+                       MOVE    RECE09-HKNJANUM TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  WRK-HKN-HKNJANUM
+                       END-IF
+                   END-IF
                    MOVE    SPACE           TO  WRK-HKN-KIGO
                    IF      RECE09-KIGO     NOT =   SPACE
                        INITIALIZE              ORCSKANACHKAREA
@@ -3030,14 +3076,44 @@
                                                    TO  WRK-HKN-NUM
                        END-IF
                    END-IF
+                   MOVE    SPACE                  TO  WRK-HKN-RIREKI-X
                    STRING  WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
                            RECE09-TANSEIDONAME    DELIMITED  BY  SPACE
+                           "¡¡"                   DELIMITED  BY  SIZE
+                           WRK-HKN-HKNJANUM       DELIMITED  BY  SPACE
                            "¡¡"                   DELIMITED  BY  SIZE
                            WRK-HKN-KIGO           DELIMITED  BY  SPACE
                            "¡Ý"                   DELIMITED  BY  SIZE
                            WRK-HKN-NUM            DELIMITED  BY  SPACE
+                              INTO    WRK-HKN-RIREKI-X
+                   END-STRING
+                   IF      WRK-HKN-RIREKI-X (53:) NOT =   SPACE           
+                       STRING  WRK-HKN-TEISYUTUSAKI
+                                                  DELIMITED  BY  SPACE
+                               RECE09-TANSEIDONAME
+                                                  DELIMITED  BY  SPACE
+                               "¡¡"               DELIMITED  BY  SIZE
+                               WRK-HKN-HKNJANUM   DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI (WRK-RIREKI-MAX)
-                   END-STRING           
+                       END-STRING
+                       ADD     1                   TO  WRK-RIREKI-MAX
+                       IF      WRK-RIREKI-MAX     >   50
+                           MOVE
+                               "ÊÝ¸±ÍúÎò¾ðÊó¤¬¥Æ¡¼¥Ö¥ë¥ª¡¼¥Ð¡¼¤·¤Þ¤·¤¿"
+                                                   TO  WRK-RECEERR
+                           PERFORM 500-ERR-HENSYU-SEC
+                           GO  TO  2001-RIREKI-HEN-EXT
+                       END-IF    
+                       STRING  WRK-HKN-KIGO       DELIMITED  BY  SPACE
+                               "¡Ý"               DELIMITED  BY  SIZE
+                               WRK-HKN-NUM        DELIMITED  BY  SPACE
+                               INTO
+                                   WRK-HKN-RIREKI (WRK-RIREKI-MAX)(13:)
+                       END-STRING
+                   ELSE
+                       MOVE    WRK-HKN-RIREKI-X   TO
+                                       WRK-HKN-RIREKI (WRK-RIREKI-MAX)  
+                   END-IF   
                END-IF                   
                IF      WRK-HKN-RIREKI (WRK-RIREKI-MAX)(13:)
                                           NOT =   SPACE
@@ -3896,6 +3972,52 @@
            END-IF
            .
        900-SYSKANRI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ê½ÑÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       900-OPECOM-READ-SEC           SECTION.
+      *
+           MOVE    OPECOM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-OPECOM-PATH          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-OPECOM-PATH          TO  ORC-DBPATH
+               PERFORM 900-OPECOM-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-OPECOM
+               INITIALIZE                      OPECOM-REC
+           END-IF
+      *
+           .
+       900-OPECOM-READ-EXT.
+           EXIT.
+      *
+     *****************************************************************
+      *    ¼ê½ÑÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       900-OPECOM-READ-N-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  OPECOM-REC
+               MOVE    ZERO                TO  FLG-OPECOM
+           ELSE
+               INITIALIZE                      OPECOM-REC
+               MOVE    1                   TO  FLG-OPECOM
+           END-IF
+      *
+           .
+       900-OPECOM-READ-N-EXT.
            EXIT.
       *
       *

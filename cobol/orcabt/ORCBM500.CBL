@@ -28,6 +28,11 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-藤原    04/03/18  対象が無い場合のエラー表示
+      *
+      *  ２００４年４月仕様変更
+      *  01.01.01    NACL-藤原    04/04/02  電話番号（医療機関情報）
+      *                                     の追加
+      *                                     改正に伴う項目数の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -123,7 +128,9 @@
       *    請求年月（和暦）
            03  WRK-SEIYM               PIC 9(05).         
       *    診療年月（和暦）
-           03  WRK-SRYYM               PIC 9(05).         
+           03  WRK-SRYYM               PIC 9(05). 
+      *
+           03  WRK-MOJISU              PIC 9(02).        
       *       
            03  WRK-PATH                PIC X(64).
       *     右ずめ編集用     
@@ -162,8 +169,11 @@
       *
            COPY    "CPSK2005.INC".
       *
-      *    医療機関情報
+      *    医療機関情報（基本）
            COPY   "CPSK1001.INC".
+      *
+      *    医療機関情報（住所）
+           COPY   "CPSK1002.INC".
       *
            COPY    "CPRCF010.INC".
       *
@@ -297,7 +307,7 @@
       *****************************************************************
        110-SYSKANRI-HENSYU-SEC      SECTION.
       *
-      *    医療機関ＩＤ編集
+      *    医療機関情報編集
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -307,7 +317,21 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
            ELSE
-               MOVE    "*** ORCBM500 SYS1001 INVALID ***" 
+               MOVE    "医療機関情報（基本）が取得できません" 
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           INITIALIZE                  SYS-1002-REC
+           MOVE    "1002"              TO  SYS-1002-KANRICD
+           MOVE    "*"                 TO  SYS-1002-KBNCD
+           MOVE    LNK-PRTKANRI-SKYYMD TO  ORC-DBYMD
+           MOVE    SYS-1002-REC        TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1002-REC
+           ELSE
+               MOVE    "医療機関情報（住所）が取得できません" 
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -419,6 +443,10 @@
       *            
            MOVE    WRK-VOLNUM          TO  WRK-DATA
            MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *            
+           MOVE    SYS-1002-TEL        TO  WRK-DATA
+           MOVE    15                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
       *
@@ -431,6 +459,8 @@
       *    レセプト共通レコード編集処理
       *****************************************************************
        2002-HENSYU-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-REC
       *
            IF      RECEDEN-RECEDATA (1:2)  =   "RE"
       *        総件数・点数の集計
@@ -458,6 +488,57 @@
                        INTO        WRK-REC
                END-STRING
                MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-REC
+      *
+           IF      RECEDEN-SRYYM       <=  "200403"
+               MOVE    ZERO             TO  WRK-MOJISU
+                                            WRK-NAGASA
+               EVALUATE    RECEDEN-RECEDATA (1:2)
+                   WHEN    "RE"
+                       INSPECT RECEDEN-RECEDATA
+                                               TALLYING    WRK-MOJISU
+                                               FOR ALL "," 
+                       IF      WRK-MOJISU          =   16
+                           PERFORM VARYING IDX FROM    250 BY  -1
+                                   UNTIL   IDX <       1
+                               IF      RECEDEN-RECEDATA (IDX:1)
+                                                       =   WRK-KAIGYO
+                                   COMPUTE WRK-NAGASA  =   IDX     -   1
+                                   MOVE    1               TO  IDX
+                               END-IF    
+                           END-PERFORM   
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ","           DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                           MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+                       END-IF     
+                   WHEN    "TO"
+                       INSPECT RECEDEN-RECEDATA
+                                               TALLYING    WRK-MOJISU
+                                               FOR ALL "," 
+                       IF      WRK-MOJISU          =   9
+                           PERFORM VARYING IDX FROM    250 BY  -1
+                                   UNTIL   IDX <       1
+                               IF      RECEDEN-RECEDATA (IDX:1)
+                                                       =   WRK-KAIGYO
+                                   COMPUTE WRK-NAGASA  =   IDX     -   1
+                                   MOVE    1               TO  IDX
+                               END-IF    
+                           END-PERFORM   
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ","           DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                           MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+                       END-IF     
+               END-EVALUATE
            END-IF
       *          
            MOVE    RECEDEN-RECEDATA    TO  RECE30-R
