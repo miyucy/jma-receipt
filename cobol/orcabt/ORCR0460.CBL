@@ -35,6 +35,9 @@
       *  01.00.03    NACL-ÌçÏÆ    02.09.19  ¼«ÇåÀÕÂÐ±þ
       *  01.00.04    NACL-Æ£¸¶    02.09.20  ¸¡ºº¤Î¤È¤­¤ÎÉ½¼¨ÊýË¡¤òÊÑ¹¹
       *  01.00.05    NACL-ÌçÏÆ    02.10.02  Å¦Í×½ÐÎÏ¹àÌÜÊÑ¹¹
+      *  01.00.06    NACL-ÌçÏÆ    02.11.26  ¿ÇÎÅ¼ÂÆü¿ô»»ÄêÍÑ¤Î
+      *                                     ¥³¡¼¥É¤ò°õºþ¤·¤Ê¤¤¤è¤¦ÄÉ²Ã 
+      *                                     ¸¡¿Ç¥³¡¼¥É¤ò°õºþ¤¹¤ë¤è¤¦ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -147,6 +150,7 @@
            03  FLG-KENSA           PIC 9(01).
            03  FLG-TEIGEN          PIC 9(01).
            03  FLG-COMMENT         PIC 9(01).
+           03  FLG-COMMENT2        PIC 9(01).
            03  FLG-HIKAKIN         PIC 9(01).
            03  FLG-SRYCD1          PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -434,10 +438,18 @@
            03  FILLER          PIC X(09)   VALUE   "099409901".
       *    Ï«ºÒ¡Ê²Ã»»¤Ê¤·¡Ë
            03  FILLER          PIC X(09)   VALUE   "099509901".
+      *    ½é¿ÇÎÁ¥À¥ß¡¼
+           03  FILLER          PIC X(09)   VALUE   "099110001".
+      *    ºÆ¿ÇÎÁ¥À¥ß¡¼
+           03  FILLER          PIC X(09)   VALUE   "099120001".
+      *    ½é¿ÇÎÁ»»Äê²Ê¡§
+           03  FILLER          PIC X(09)   VALUE   "830000020".
+      *    ºÆ¿ÇÎÁ»»Äê²Ê¡§
+           03  FILLER          PIC X(09)   VALUE   "830000021".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   15.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   19.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   15.
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   19.
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
@@ -461,6 +473,14 @@
            03  CONS-COMMENT3   PIC X(09)   VALUE   "810000001".
       *    Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç
            03  CONS-COMMENT4   PIC X(09)   VALUE   "099999901".
+      *    ½¸ÃÄ¸¡¿Ç¤«¤é
+           03  CONS-COMMENT5   PIC X(09)   VALUE   "820000003".
+      *    Ï·¿Í¸¡¿Ç¤«¤é
+           03  CONS-COMMENT6   PIC X(09)   VALUE   "820000004".
+      *    ³Ø¹»¸¡¿Ç¤«¤é
+           03  CONS-COMMENT7   PIC X(09)   VALUE   "820000005".
+      *    ·ò¹¯¿ÇÃÇ¤«¤é
+           03  CONS-COMMENT8   PIC X(09)   VALUE   "820000006".
       *---- (01.00.05) LINE ADD END   --------------------------------
       *    Èé²¼¶ÚÆùÃí¼Í
            03  CONS-HIKAKIN    PIC X(09)   VALUE   "130000510".
@@ -648,6 +668,7 @@
       *****    MOVE    RECE44-SRYKBN       TO  WRK-SRYKBN
                MOVE    ZERO                TO  FLG-TEIGEN
                                                FLG-COMMENT
+                                               FLG-COMMENT2
                                                FLG-HIKAKIN 
                MOVE    ZERO                TO  WRK-RECE45
                                                IDY                           
@@ -724,6 +745,7 @@
            MOVE    ZERO                TO  FLG-SYOSIN
            MOVE    ZERO                TO  FLG-TEIGEN
                                            FLG-COMMENT 
+                                           FLG-COMMENT2
                                            FLG-HIKAKIN 
            MOVE    ZERO                TO  WRK-RECE45
                                            IDY                           
@@ -835,6 +857,12 @@
                                                      CONS-COMMENT4 
                            MOVE    1             TO  FLG-COMMENT
                        END-IF 
+                       IF      RECE45-SRYCD(IDX) =   CONS-COMMENT5   OR 
+                                                     CONS-COMMENT6   OR 
+                                                     CONS-COMMENT7   OR 
+                                                     CONS-COMMENT8      
+                           MOVE    1             TO  FLG-COMMENT2       
+                       END-IF                                           
       *---- (01.00.05) LINE ADD END --------------------------------
       *
                        IF      RECE45-SRYCD(IDX) =   CONS-TEIGEN
@@ -913,7 +941,11 @@
       *    ¾Ò²ð´µ¼Ô²Ã»»ÉþÍÑÊýË¡¤Ç¤Ê¤¤¤³¤È
            IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)  
                                              =   CONS-SYOSIN-KASAN1 OR
-                                                 CONS-SYOSIN-KASAN2
+                                                 CONS-SYOSIN-KASAN2 OR
+                                                 CONS-COMMENT5      OR
+                                                 CONS-COMMENT6      OR
+                                                 CONS-COMMENT7      OR
+                                                 CONS-COMMENT8        
                CONTINUE
            ELSE
                MOVE    1             TO  FLG-NOPRT
@@ -1029,6 +1061,11 @@
                    IF  RECE44-MEISAISU       >   1
                        MOVE    ZERO          TO  FLG-NOPRT
                    END-IF
+      *            ¡öºÆ¿Ç¥À¥ß¡¼¤Î¾ì¹ç
+                   IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)          
+                                         =   "099120001"             
+                       MOVE    1             TO  FLG-NOPRT           
+                   END-IF                                            
                END-IF
            END-PERFORM
       *
@@ -1592,6 +1629,7 @@
       *****        MOVE    RECE44-SRYKBN       TO  WRK-SRYKBN
                    MOVE    ZERO                TO  FLG-TEIGEN
                                                    FLG-COMMENT
+                                                   FLG-COMMENT2
                                                    FLG-HIKAKIN 
                    MOVE    ZERO                TO  WRK-RECE45
                                                    IDY
@@ -2001,6 +2039,9 @@
                   (RECE44-SRYKBN      =   "99")
                GO  TO  440-TNSKAI-SET-EXT
            END-IF
+           IF     (FLG-COMMENT2       =   1)                            
+               GO  TO  440-TNSKAI-SET-EXT                               
+           END-IF                                                       
       *---- (01.00.05) LINE ADD END   --------------------------------
       *         
            MOVE    WRK-TNSKAI-ST     TO  IDA
