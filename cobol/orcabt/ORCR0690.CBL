@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Æ£¸¶    02.01.20  Ì¤¼Â»Ü¸º»»¤Î¤È¤­¤Î¢¥É½¼¨
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -585,6 +586,15 @@
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£¶¡Ë
            03  WRK-CONS-SYOSIN-KASAN9  PIC X(09)   VALUE 
                                                    "111011170".
+      *    Ì¤¼Â»Ü¸º»»
+           03  CONS-GENZAN1            PIC X(09)   VALUE   "190080470".
+           03  CONS-GENZAN2            PIC X(09)   VALUE   "190799670".
+           03  CONS-GENZAN3            PIC X(09)   VALUE   "190080570".
+           03  CONS-GENZAN4            PIC X(09)   VALUE   "190799770".
+           03  CONS-GENZAN5            PIC X(09)   VALUE   "190111690".
+           03  CONS-GENZAN6            PIC X(09)   VALUE   "190809090".
+           03  CONS-GENZAN7            PIC X(09)   VALUE   "190111790".
+           03  CONS-GENZAN8            PIC X(09)   VALUE   "190809190".
       *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
        01  WRK-PATH                        PIC X(64).
@@ -974,8 +984,19 @@
                        IF      RECE65-SRYCD(IDX) =   CONS-TEIGEN
                            MOVE    1             TO  FLG-TEIGEN
                        END-IF
-                       IF      RECE64-SRYKBN     =   "31"
-                       AND     RECE65-SRYCD(IDX) =   CONS-HIKAKIN
+                       IF    ( RECE64-SRYKBN     =   "90"              )
+                       AND   ( RECE65-SRYCD(IDX) =   CONS-GENZAN1  OR 
+                                                     CONS-GENZAN2  OR
+                                                     CONS-GENZAN3  OR
+                                                     CONS-GENZAN4  OR
+                                                     CONS-GENZAN5  OR
+                                                     CONS-GENZAN6  OR
+                                                     CONS-GENZAN7  OR
+                                                     CONS-GENZAN8      )
+                           MOVE    1             TO  FLG-TEIGEN
+                       END-IF
+                       IF    ( RECE64-SRYKBN     =   "31"         )
+                       AND   ( RECE65-SRYCD(IDX) =   CONS-HIKAKIN )
                            MOVE    1             TO  FLG-HIKAKIN
                        END-IF  
                    END-IF
@@ -2426,7 +2447,7 @@
            MOVE    WRK-CHAR-N          TO  WRK-ZAIKAISU
            MOVE    "¡ß"                TO  WRK-X
       *
-      *    ÌôºÞÎÁÄþ¸º¤Î¤È¤­ÅÀ¿ô¤Î¤Þ¤¨¤Ë¢¥¤òÉ½¼¨
+      *    ÌôºÞÎÁÄþ¸º¡¦Ì¤¼Â»Ü¸º»»¤Î¤È¤­ÅÀ¿ô¤Î¤Þ¤¨¤Ë¢¥¤òÉ½¼¨
            IF      FLG-TEIGEN          =   1
                PERFORM VARYING IDZ FROM    13  BY  -2
                        UNTIL   IDZ <       3
