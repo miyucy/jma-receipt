@@ -1278,6 +1278,7 @@
            MOVE    SPA-HOSPID            TO  JYURRK-HOSPID
            MOVE    SPA-GMN-PTID          TO  JYURRK-PTID
            MOVE    WRK-SRYKA             TO  JYURRK-SRYKA
+           MOVE    "2"                   TO  JYURRK-NYUGAIKBN
       *
            MOVE    JYURRK-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"            TO  MCP-FUNC
