@@ -314,7 +314,7 @@
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
       *    ÊÑ¹¹¡ú¡ú¡ú¡ú¡ú¡ú
-           MOVE    "001"               TO  HC01PARA-CNT
+           MOVE    001                 TO  HC01PARA-CNT
            OPEN    OUTPUT               PRT-FILE
       *
            .
