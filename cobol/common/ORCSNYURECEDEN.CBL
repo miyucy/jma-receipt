@@ -681,7 +681,8 @@
                  MOVE      ZERO     TO      FLG-RYAKU
                  IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU  NOT =    ZERO)
-                   IF   ACCT-SRYKBN  =  "90" OR "92"   
+                   IF   ACCT-SRYKBN  =  "90" OR "92"
+                     DISPLAY  "ACCT-SRYCDTOTAL = " ACCT-SRYCDTOTAL
                      IF   ACCT-SRYCDTOTAL(6:9)  =   
                                             CONS-KEIKAKU-GENSAN1
                                         OR  CONS-KEIKAKU-GENSAN2
@@ -701,11 +702,12 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
-                           AND   (WRK-GAIHAKU(IDX1)  =  ZERO)
+                           AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO)
                            AND   (ACCT-DAY(1 IDX1)   NOT =  ZERO)
                               EVALUATE   ACCT-SRYCDTOTAL(6:9)
       *                         入院診療計画未実施減算
                                 WHEN  CONS-KEIKAKU-GENSAN1
+                                  DISPLAY "MIJITSUSHI GENSAN ARI -!!"
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-KEIKAKU-GENSAN1(IDX1)
                                 WHEN  CONS-KEIKAKU-GENSAN2
@@ -1177,19 +1179,19 @@
                END-IF
            END-PERFORM
       *   結果表示
-           PERFORM    VARYING   IDX1   FROM  1  BY  1
-                      UNTIL     (IDX1   >     31)
-                DISPLAY  "IDX1 = " IDX1
-                DISPLAY  "WRK-SKJ-HKNCOMBI-DAY = " 
-                          WRK-SKJ-HKNCOMBI-DAY(IDX1)
-                DISPLAY  "WRK-SKJ-SRYCD(1) = " WRK-SKJ-SRYCD(IDX1 1)
-                DISPLAY  "WRK-SKJ-SRYCD(2) = " WRK-SKJ-SRYCD(IDX1 2)
-                DISPLAY  "WRK-SKJ-SRYCD(3) = " WRK-SKJ-SRYCD(IDX1 3)
-                DISPLAY  "WRK-SKJ-SRYCDTOTAL = "
-                                            WRK-SKJ-SRYCDTOTAL(IDX1)
-                DISPLAY  "WRK-SKJ-MONEY    = " WRK-SKJ-MONEY(IDX1)
-                DISPLAY  "WRK-SKJ-KAISU    = " WRK-SKJ-KAISU(IDX1)
-           END-PERFORM
+      **     PERFORM    VARYING   IDX1   FROM  1  BY  1
+      **                UNTIL     (IDX1   >     31)
+      **          DISPLAY  "IDX1 = " IDX1
+      **          DISPLAY  "WRK-SKJ-HKNCOMBI-DAY = " 
+      **                    WRK-SKJ-HKNCOMBI-DAY(IDX1)
+      **          DISPLAY  "WRK-SKJ-SRYCD(1) = " WRK-SKJ-SRYCD(IDX1 1)
+      **          DISPLAY  "WRK-SKJ-SRYCD(2) = " WRK-SKJ-SRYCD(IDX1 2)
+      **          DISPLAY  "WRK-SKJ-SRYCD(3) = " WRK-SKJ-SRYCD(IDX1 3)
+      **          DISPLAY  "WRK-SKJ-SRYCDTOTAL = "
+      **                                      WRK-SKJ-SRYCDTOTAL(IDX1)
+      **          DISPLAY  "WRK-SKJ-MONEY    = " WRK-SKJ-MONEY(IDX1)
+      **          DISPLAY  "WRK-SKJ-KAISU    = " WRK-SKJ-KAISU(IDX1)
+      **     END-PERFORM
       *    レセ電サブ返却エリアへの食事セット
            MOVE       ZERO    TO   IDX2
            PERFORM    VARYING   IDX1   FROM  1  BY  1
