@@ -1397,6 +1397,7 @@
                    ELSE    
                        IF      RECE44-SRYKBN     =   "31"  AND
                                FLG-HIKAKIN       =   ZERO  AND
+                               WRK-ZAIWMAX (3)   >   ZERO  AND
                                IDX1              >   3
                            MOVE    SPACE             TO  WRK-ZAI-MK
                        END-IF            
