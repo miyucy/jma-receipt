@@ -66,7 +66,7 @@
                            11  ORCSTEN-KIZ-SURYO       PIC 9(05)V9(03).
       *                ´ïºàÆü¿ô
                        09  ORCSTEN-KIZ-DAY-G.
-                           09  ORCSTEN-KIZ-DAY         PIC 9(03)
+                           11  ORCSTEN-KIZ-DAY         PIC 9(03)
                                                        OCCURS  31.
       *
       *ÅÀÅ©¼êµ»ÎÁ»»Äê
