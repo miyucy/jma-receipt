@@ -280,6 +280,7 @@
            03  TBL-ZAI-OCC         OCCURS   100.
                05  TBL-ZAI         PIC X(52).
                05  TBL-ZAI-IDX     PIC 9(01).
+               05  TBL-ZAI-SRYCD   PIC X(09).
       *
       *    検査をまとめるテーブル
        01  WRK-KAISU-G.
@@ -2040,7 +2041,11 @@
       *         ACCEPT   WRK-IN       FROM    CONSOLE
            END-IF
            MOVE    WRK-ZAI           TO  TBL-ZAI (WRK-TBLMAX)
-           MOVE    IDX1              TO  TBL-ZAI-IDX(WRK-TBLMAX)
+           IF      RECE64-SRYKBN      =  "33"
+              MOVE    IDX1           TO  TBL-ZAI-IDX(WRK-TBLMAX)
+              MOVE    TBL-ZAIW-SRYCD(IDX1 IDX2)  
+                                     TO  TBL-ZAI-SRYCD(WRK-TBLMAX)
+           END-IF
            MOVE    SPACE             TO  WRK-ZAI
       *
            .
@@ -2098,7 +2103,12 @@
                MOVE    SPACE             TO  WRK-ZAI
                MOVE    WRK-TNSKAI        TO  WRK-ZAI-TNSKAI
                MOVE    WRK-ZAI           TO  TBL-ZAI (IDY)
-               MOVE    IDX1              TO  TBL-ZAI-IDX(IDY)
+               IF      RECE64-SRYKBN      =  "33"
+                  MOVE    TBL-ZAI-IDX(WRK-TBLMAX)
+                                         TO  TBL-ZAI-IDX(IDY)
+                  MOVE    TBL-ZAI-SRYCD(WRK-TBLMAX)
+                                         TO  TBL-ZAI-SRYCD(IDY)
+               END-IF
                MOVE    SPACE             TO  WRK-ZAI
            END-IF
       *
@@ -2132,36 +2142,91 @@
                MOVE    TBL-ZAI (IDY)     TO  RECE66-TEKIYO-INF
       *
                IF      RECE64-SRYKBN      =  "33"
-                  IF   WRK-SRYSYUKBN      =  "330" OR "331"
-                     EVALUATE  TBL-ZAI-IDX(IDY)
-                       WHEN   1
-                         MOVE   7        TO  RECE66-TENTEKIKBN
-                       WHEN   2
-                         MOVE   9        TO  RECE66-TENTEKIKBN
-                       WHEN   3
-                         MOVE   1        TO  RECE66-TENTEKIKBN
-                       WHEN   4
-                         MOVE   5        TO  RECE66-TENTEKIKBN
-                       WHEN   5
-                         MOVE   3        TO  RECE66-TENTEKIKBN
-                     END-EVALUATE
-                     MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
-                  END-IF
-                  IF   WRK-SRYSYUKBN      =  "340"
-                     EVALUATE  TBL-ZAI-IDX(IDY)
-                       WHEN   1
-                         MOVE   8        TO  RECE66-TENTEKIKBN
-                       WHEN   2
-                         MOVE  10        TO  RECE66-TENTEKIKBN
-                       WHEN   3
-                         MOVE   2        TO  RECE66-TENTEKIKBN
-                       WHEN   4
-                         MOVE   6        TO  RECE66-TENTEKIKBN
-                       WHEN   5
-                         MOVE   4        TO  RECE66-TENTEKIKBN
-                     END-EVALUATE
-                     MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
-                  END-IF
+      *
+                IF   (WRK-SRYSYUKBN      =  "330")
+                AND  (TBL-ZAI-IDX(IDY)   =   3   )
+                AND  (TBL-ZAI-SRYCD(IDY) =  "130003710" OR "130009470"
+                                         OR "130003810" OR "130700310"
+                                         OR "130700410" OR "130702910"
+                                         OR "130701010" OR "130702810")
+                         MOVE   1              TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                END-IF
+      *
+                IF   (WRK-SRYSYUKBN      =  "340")
+                AND  (TBL-ZAI-IDX(IDY)   =   3   )
+                AND  (TBL-ZAI-SRYCD(IDY) =  "130004410" OR "130008510")
+                         MOVE   2              TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                END-IF
+      *
+                IF   (WRK-SRYSYUKBN      =  "330" OR "340")
+                AND  (TBL-ZAI-IDX(IDY)   =   3            )
+                AND  (TBL-ZAI-SRYCD(IDY) =  "130000110" OR "130000210"
+                                         OR "130000310" OR "130008270"
+                                         OR "130701270" OR "130004570"
+                                         OR "130009670" OR "130701370"
+                                         OR "130010570" OR "130702670"
+                                         OR "130010670" OR "130702770")
+                         MOVE   3              TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                END-IF
+      *
+                IF   WRK-SRYSYUKBN      =  "330"
+                AND  TBL-ZAI-IDX(IDY)   =   5
+                         MOVE   4              TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                END-IF
+      *
+                IF   WRK-SRYSYUKBN      =  "330"
+                AND  TBL-ZAI-IDX(IDY)   =   4
+                         MOVE   5              TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                END-IF
+      *
+                IF   WRK-SRYSYUKBN      =  "340"
+                AND  TBL-ZAI-IDX(IDY)   =   3
+                AND  RECE66-TENTEKIKBN  =   ZERO
+                         MOVE   6              TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                END-IF
+      *
+                IF   WRK-SRYSYUKBN      =  "340"
+                AND  TBL-ZAI-IDX(IDY)   =   5
+                         MOVE   7              TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                END-IF
+      *
+                IF   WRK-SRYSYUKBN      =  "340"
+                AND  TBL-ZAI-IDX(IDY)   =   4
+                         MOVE   8              TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                END-IF
+      *
+                IF   WRK-SRYSYUKBN      =  "330"
+                AND  TBL-ZAI-IDX(IDY)   =   2
+                         MOVE   9              TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                END-IF
+      *
+                IF   WRK-SRYSYUKBN      =  "331"
+                AND  TBL-ZAI-IDX(IDY)   =   2
+                         MOVE   10             TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                END-IF
+      *
+                IF   WRK-SRYSYUKBN      =  "340"
+                AND  TBL-ZAI-IDX(IDY)   =   2
+                         MOVE   11             TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                END-IF
+      *
+                IF   WRK-SRYSYUKBN      =  "350"
+                AND  TBL-ZAI-IDX(IDY)   =   2
+                         MOVE   12             TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                END-IF
+      *
                END-IF
       *
                IF    ( FLG-COMMENT2     =   1   )               
