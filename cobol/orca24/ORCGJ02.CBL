@@ -3779,8 +3779,8 @@
       *****************************************************************
        410129-DAY-NAICHK-SEC           SECTION.
       *
-           PERFORM   VARYING   IDX-IN2         FROM    1   BY  1
-                     UNTIL    (IDX-IN2         >   31  )  OR
+           PERFORM VARYING     IDX-IN2         FROM    1   BY  1
+                   UNTIL      (IDX-IN2         >   31  )  OR
                               (SPA-ERRCD   NOT =   SPACE) OR
                               (FLG-END         =   1    )
                MOVE    IDX-IN2             TO  SPA-DAY-IDX
@@ -3797,29 +3797,38 @@
                           (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )) OR
                          ((SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  ) AND
                           (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  ))
-                        PERFORM 410121-J022-SET-SEC
+                       PERFORM 410121-J022-SET-SEC
+                   ELSE
+                       PERFORM 4101291-GMNDAY-NAI-SEC
                    END-IF
                 END-IF
-                IF     FLG-END             =   ZERO
-                   MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
-                                               TO  SPA-GNAI-DAY
-                                                        (1 SPA-DAY-IDX)
-                   MOVE    2                   TO  IDR2
-                   IF     (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )
-                       MOVE    3               TO  IDR2
-                   ELSE
-                       IF     (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )
-                           MOVE    4               TO  IDR2
-                       END-IF
-                   END-IF
-                   MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
-                                               TO  SPA-GNAI-DAY
-                                                    (IDR2 SPA-DAY-IDX)
-               END-IF
            END-PERFORM
       *
            .
        410129-DAY-NAICHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    変更日の編集処理
+      *****************************************************************
+       4101291-GMNDAY-NAI-SEC           SECTION.
+      *
+           MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
+                                       TO  SPA-GNAI-DAY (1 SPA-DAY-IDX)
+           MOVE    2                   TO  IDR2
+           IF     (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )
+               MOVE    3               TO  IDR2
+           ELSE
+               IF     (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )
+                   MOVE    4               TO  IDR2
+               END-IF
+           END-IF
+           MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
+                                       TO  SPA-GNAI-DAY
+                                                    (IDR2 SPA-DAY-IDX)
+      *
+           .
+       4101291-GMNDAY-NAI-EXT.
            EXIT.
       *
       *****************************************************************
