@@ -908,6 +908,10 @@
                MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
            END-IF
       *
+           IF      WRK-LSTYMD          =   SPACE
+      *        ¿ÇÎÅ²ÊÍúÎò¤«¤é
+               PERFORM 201211-SRYKARRK-HEN-SEC
+           END-IF
            IF      WRK-LSTYMD      NOT =   SPACE
                MOVE    WRK-LSTYMD          TO  WRK-SYMD
                PERFORM 700-SEIWA-HEN-SEC
@@ -916,6 +920,49 @@
       *
            .
        20121-JYURRK-HEN-EXT.
+           EXIT.
+           .
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÍúÎò¤«¤éÊÔ½¸½èÍý
+      *****************************************************************
+       201211-SRYKARRK-HEN-SEC               SECTION.
+      *    ¿ÇÎÅ²ÊÎò¤ò¸¡º÷
+           MOVE    SPACE               TO  SRYKARRK-REC
+           INITIALIZE                  SRYKARRK-REC
+           MOVE    PTINF-HOSPID        TO  KARRK-HOSPID
+           MOVE    PTINF-PTID          TO  KARRK-PTID
+      *
+           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
+               PERFORM 975-SRYKARRK-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+               MOVE    SPACE               TO  SRYKARRK-REC
+               INITIALIZE                  SRYKARRK-REC
+           END-IF
+           PERFORM UNTIL       FLG-SRYKARRK    =   1
+      *        ºÇ½ª¼õ¿ÇÆü
+               IF     (KARRK-SRYKA     NOT =   SPACE      ) AND
+                      (KARRK-LASTYMD   NOT =   SPACE      ) AND
+                      (KARRK-LASTYMD       >=  WRK-LSTYMD )
+                   MOVE    KARRK-LASTYMD       TO  WRK-LSTYMD
+                   MOVE    KARRK-SRYKA         TO  WRK-SRYKA
+               END-IF
+      *
+               MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
+               PERFORM 975-SRYKARRK-READ-SEC
+           END-PERFORM
+      *
+           .
+       201211-SRYKARRK-HEN-EXT.
            EXIT.
            .
       *
