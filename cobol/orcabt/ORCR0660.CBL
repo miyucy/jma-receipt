@@ -36,6 +36,7 @@
       *  01.00.03    NACL-ÌçÏÆ    03.04.08  Âà±¡»þÉþÌô»ØÆ³²Ã»»»»Äê»þ¤Î
       *                                     Á°·îÌôºÞ´ÉÍý»ØÆ³ÎÁ¤Î»»ÄêÆüÊÔ½¸
       *  01.00.04    NACL-ÌçÏÆ    03.04.24  Í¢·ì¤Ï¥³¥á¥ó¥ÈÊÔ½¸ÂÐ¾Ý³°¤È¤¹¤ë
+      *  01.00.05    NACL-ÌçÏÆ    03.05.28  ¼õ¿ÇÍúÎò¥­¡¼¤ÎÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1011,12 +1012,12 @@
            MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "JYURRK-KEY12"      TO  ORC-DBPATH
+           MOVE    "JYURRK-KEY24"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING   MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "JYURRK-KEY12"  TO  ORC-DBPATH 
+               MOVE    "JYURRK-KEY24"  TO  ORC-DBPATH 
                PERFORM   JYURRK-READ-SEC
                PERFORM   UNTIL   FLG-JYURRK   =    1
                    IF    JYURRK-HKNKBN    =       "0"
@@ -1040,14 +1041,14 @@
                       END-IF      
                    END-IF
       *
-                   MOVE    "JYURRK-KEY12"  TO  ORC-DBPATH 
+                   MOVE    "JYURRK-KEY24"  TO  ORC-DBPATH 
                    PERFORM   JYURRK-READ-SEC
                END-PERFORM
            END-IF
       *
            INITIALIZE                        MCPAREA
            MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "JYURRK-KEY12"    TO      ORC-DBPATH
+           MOVE    "JYURRK-KEY24"    TO      ORC-DBPATH
            CALL    "ORCMCPSUB"       USING
                                      MCPAREA
                                      ORCMCPAREA

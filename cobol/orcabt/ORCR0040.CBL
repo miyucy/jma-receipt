@@ -40,6 +40,7 @@
       *  01.00.08    NACL-門脇    03.04.04  傷病手当金意見書交付料の交付日編集
       *                                     療養費同意書交付料の交付日編集
       *  01.00.09    NACL-門脇    03.04.24  輸血はコメント編集対象外とする
+      *  01.00.10    NACL-門脇    03.05.28  受診履歴キーの変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1112,12 +1113,12 @@
            MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "JYURRK-KEY12"      TO  ORC-DBPATH
+           MOVE    "JYURRK-KEY24"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING   MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "JYURRK-KEY12"  TO  ORC-DBPATH 
+               MOVE    "JYURRK-KEY24"  TO  ORC-DBPATH 
                PERFORM   JYURRK-READ-SEC
                PERFORM   UNTIL   FLG-JYURRK   =    1
                    IF    JYURRK-HKNKBN    =       "0"
@@ -1141,14 +1142,14 @@
                       END-IF      
                    END-IF
       *
-                   MOVE    "JYURRK-KEY12"  TO  ORC-DBPATH 
+                   MOVE    "JYURRK-KEY24"  TO  ORC-DBPATH 
                    PERFORM   JYURRK-READ-SEC
                END-PERFORM
            END-IF
       *
            INITIALIZE                        MCPAREA
            MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "JYURRK-KEY12"    TO      ORC-DBPATH
+           MOVE    "JYURRK-KEY24"    TO      ORC-DBPATH
            CALL    "ORCMCPSUB"       USING
                                      MCPAREA
                                      ORCMCPAREA
