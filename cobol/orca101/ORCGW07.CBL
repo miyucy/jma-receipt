@@ -49,6 +49,8 @@
       *  02.01.09    NACL-藤原    04/03/08  生保受給者番号の追加
       *  02.01.10    NACL-多々納  04/03/10  時間外加算乳幼児チェック追加
       *  02.01.11    NACL-藤原    04/03/08  生保受給者番号の機能停止
+      *  02.01.12    NACL-多々納  04/07/05  最終受診日から初診の期間追加
+      *                                     請求書発行方法追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -174,6 +176,9 @@
                        09  SPA-GMN-CHOKICHK-COMB.
                            11  SPA-GMN-CHOKICHK-LIST       PIC X(20)
                                                            OCCURS  2.
+      *                相互作用チェック期間
+                       09  SPA-GMN-LAST-KIKAN              PIC 9(02).
+      *
                    07  SPA-GMN-PAGE2-AREA.
       *                カルテの病名対象
                        09  SPA-GMN-BYOMEIKBN-G.
@@ -228,6 +233,18 @@
                                13                          PIC X(01).
                                13  SPA-GMN-SRYNYKNKNRKBNMEIL
                                                            PIC X(38).
+      *                請求書発行方法
+                       09  SPA-GMN-HAKHOUFLG-G.
+                           11  SPA-GMN-HAKHOUFLG       PIC X(01).
+                           11  SPA-GMN-HAKHOUFLG-F1    PIC X(01).
+                           11  SPA-GMN-HAKHOUFLG-MEI   PIC X(38).
+                       09  SPA-GMN-HAKHOUFLGLST-G.
+                           11  SPA-GMN-HAKHOUFLG-MAX   PIC 9(03).
+                           11  SPA-GMN-HAKHOUFLG-LST    OCCURS  5.
+                               13  SPA-GMN-HAKHOUFLGL  PIC X(01).
+                               13                      PIC X(01).
+                               13  SPA-GMN-HAKHOUFLGMEIL
+                                                       PIC X(38).
                    07  SPA-GMN-PAGE4-AREA.
       *                入金管理情報（収納機能情報）
                        09  SPA-GMN-SYUNYKNKNRKBN-G.
@@ -642,6 +659,15 @@
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(5)
            MOVE    5                   TO  SPA-GMN-SRYNYKNKNRKBN-MAX
       *
+      *
+           MOVE    "1 診療科・保険組合せ毎"
+                                       TO  SPA-GMN-HAKHOUFLG-LST(1)
+           MOVE    "2 保険組合せ毎（複数科まとめ）"
+                                       TO  SPA-GMN-HAKHOUFLG-LST(2)
+           MOVE    "3 全体"
+                                       TO  SPA-GMN-HAKHOUFLG-LST(3)
+           MOVE    3                   TO  SPA-GMN-HAKHOUFLG-MAX
+      *
            MOVE    "1 伝票の古い未収順に入金"
                                        TO  SPA-GMN-SYUNYKNKNRKBNLST(1)
            MOVE    "2 伝票の新しい未収順に入金"
@@ -754,6 +780,12 @@
       *        包括まとめ
                MOVE    SYS-1008-HOUKATU-FLG
                                        TO  SPA-GMN-HOUKATU
+      *        最終受診日からの期間
+               IF      SYS-1008-LAST-KIKAN-X =   SPACE
+                   MOVE    ZERO            TO  SYS-1008-LAST-KIKAN
+               END-IF
+               MOVE    SYS-1008-LAST-KIKAN
+                                       TO  SPA-GMN-LAST-KIKAN
       *
       *        時間外加算特例乳幼児
                MOVE    SYS-1008-JIKANTOKU-NYU-FLG
@@ -1080,6 +1112,7 @@
            END-IF
       *
            MOVE    SYS-1038-NYKNKNRKBN TO  SPA-GMN-SRYNYKNKNRKBN
+           MOVE    SYS-1038-HAKHOUFLG  TO  SPA-GMN-HAKHOUFLG
       *
       *    入金管理区分
            MOVE    ZERO                TO  FLG-OK
@@ -1097,6 +1130,23 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-SRYNYKNKNRKBNLST (1)
                                        TO  SPA-GMN-SRYNYKNKNRKBN-G
+           END-IF
+      *    請求書発行方法
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-HAKHOUFLG-MAX
+               IF      SPA-GMN-HAKHOUFLG
+                                       =   SPA-GMN-HAKHOUFLGL (IDY)
+                   MOVE    SPA-GMN-HAKHOUFLG-LST (IDY)
+                                       TO  SPA-GMN-HAKHOUFLG-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-HAKHOUFLG-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-HAKHOUFLG-LST (1)
+                                       TO  SPA-GMN-HAKHOUFLG-G
            END-IF
       *
            MOVE    30                  TO  SPA-GMN-CUR
@@ -1236,6 +1286,8 @@
            MOVE    W07-JIKANTOKUNYU    TO  SPA-GMN-JIKANTOKU-NYU-G
            MOVE    W07-GAZOUKSN1       TO  SPA-GMN-GAZOUKSN1-G
       *
+           MOVE    W07-LASTKIKAN       TO  SPA-GMN-LAST-KIKAN
+      *
            MOVE    W07-SRYKACD         TO  SPA-GMN-SRYKACD
            MOVE    W07-SRYKAMEI        TO  SPA-GMN-SRYKAMEI
       *    時間外加算乳幼児チェック
@@ -1272,6 +1324,7 @@
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
+           MOVE    W07-HAKHOUFLG       TO  SPA-GMN-HAKHOUFLG-G
       *
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
@@ -1382,6 +1435,11 @@
                WHEN    "1038"
       *            入金管理区分チェック
                    PERFORM 4108-SRYNYKNKNRKBN-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+      *            請求書発行方法チェック
+                   PERFORM 4108-HAKHOUFLG-CHK-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
@@ -2132,6 +2190,31 @@
            .
        4108-SRYNYKNKNRKBN-CHK-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    請求書発行方法チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-HAKHOUFLG-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-HAKHOUFLG-MAX
+               IF      SPA-GMN-HAKHOUFLG
+                                       =   SPA-GMN-HAKHOUFLGL (IDX)
+                   MOVE    SPA-GMN-HAKHOUFLG-LST(IDX)
+                                          TO  SPA-GMN-HAKHOUFLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    31              TO  SPA-GMN-CUR
+               MOVE    "0035"          TO  SPA-ERRCD
+               GO      TO      4108-HAKHOUFLG-CHK-EXT
+           END-IF
+      *
+           .
+       4108-HAKHOUFLG-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    入金管理区分チェック処理（収納行為機能情報）
       *****************************************************************
@@ -2551,6 +2634,8 @@
                                            SYS-1008-JIKANTOKU-NYU-FLG
       *    画像診断管理加算１（写真診断）
            MOVE    SPA-GMN-GAZOUKSN1       TO  SYS-1008-GAZOUKSN1-FLG
+      *    最終来院日からの期間
+           MOVE    SPA-GMN-LAST-KIKAN      TO  SYS-1008-LAST-KIKAN
       *
       *    時間外加算乳幼児チェック
            MOVE    SPA-GMN-JIKANTOKU-CHK   TO
@@ -2711,6 +2796,7 @@
            MOVE    SPA-W01-STYUKYMD        TO  SYS-1038-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-1038-EDYUKYMD
            MOVE    SPA-GMN-SRYNYKNKNRKBN   TO  SYS-1038-NYKNKNRKBN
+           MOVE    SPA-GMN-HAKHOUFLG       TO  SYS-1038-HAKHOUFLG
       *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
       *
@@ -2961,6 +3047,8 @@
            END-PERFORM
            MOVE    SPA-GMN-DATA-MAX    TO  W07-GAZOUKSN1-COUNT
       *
+           MOVE  SPA-GMN-LAST-KIKAN    TO  W07-LASTKIKAN
+      *
            MOVE  SPA-GMN-INTERACT-KIKAN    TO  W07-KIKAN
       *    外来管理加算チェック
            MOVE    SPA-GMN-GAIKANRIKBN-G   TO  W07-GAIKANKBN
@@ -3095,6 +3183,16 @@
            END-PERFORM
            MOVE    SPA-GMN-SRYNYKNKNRKBN-MAX
                                        TO  W07-SRYNYKNKNRKBN-COUNT
+      *
+      *    請求書発行方法（診療行為機能情報）
+           MOVE    SPA-GMN-HAKHOUFLG-G TO  W07-HAKHOUFLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-HAKHOUFLG-MAX
+               MOVE    SPA-GMN-HAKHOUFLG-LST (IDX)
+                                       TO  W07-HAKHOUFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-HAKHOUFLG-MAX
+                                       TO  W07-HAKHOUFLG-COUNT
       *
       *    入金管理区分（収納機能情報）
            MOVE    SPA-GMN-SYUNYKNKNRKBN-G TO  W07-SYUNYKNKNRKBN
@@ -3295,6 +3393,9 @@
                WHEN    "0027"
                    MOVE    "生活受給者番号がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "0035"
+                   MOVE    "請求書発行方法区分がありません。"
+                                                       TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"    TO  SPA-ERRMSG
                WHEN    "1001"
@@ -3423,6 +3524,8 @@
                    MOVE  "JIKANTOKUNYU"    TO   MCP-WIDGET
                WHEN    18
                    MOVE  "GAZOUKSN1"       TO   MCP-WIDGET
+               WHEN    19
+                   MOVE  "LASTKIKAN"       TO   MCP-WIDGET
       *        時間外加算チェック
                WHEN    50
                    MOVE  "JIKANTOKU_CHK"   TO   MCP-WIDGET
@@ -3469,8 +3572,12 @@
                    MOVE  "HOJYOKBN"        TO   MCP-WIDGET
                WHEN    24
                    MOVE  "SEIHO_JKYSNUM"   TO   MCP-WIDGET
+      *
                WHEN    30
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
+               WHEN    31
+                   MOVE  "HAKHOUFLG"       TO   MCP-WIDGET
+      *
                WHEN    40
                    MOVE  "SYUNYKNKNRKBN"   TO   MCP-WIDGET
                WHEN    41
@@ -3485,7 +3592,7 @@
                    MOVE    0               TO  W07-PAGENO
                WHEN    20  THRU    23
                    MOVE    1               TO  W07-PAGENO
-               WHEN    30  THRU    30
+               WHEN    30  THRU    31
                    MOVE    2               TO  W07-PAGENO
                WHEN    40  THRU    41
                    MOVE    3               TO  W07-PAGENO
@@ -3526,6 +3633,8 @@
                WHEN    "JIKANTOKUNYU"
                    MOVE    18              TO  SPA-GMN-CUR
                WHEN    "GAZOUKSN1"
+                   MOVE    19              TO  SPA-GMN-CUR
+               WHEN    "LASTKIKAN"
                    MOVE    10              TO  SPA-GMN-CUR
       *
                WHEN    "KIKAN"
@@ -3593,8 +3702,12 @@
                    MOVE    99              TO  SPA-GMN-CUR
                WHEN    "SEIHO_JKYSNUM"
                    MOVE    99              TO  SPA-GMN-CUR
+      *
                WHEN    "SRYNYKNKNRKBN"
+                   MOVE    31              TO  SPA-GMN-CUR
+               WHEN    "HAKHOUFLG"
                    MOVE    99              TO  SPA-GMN-CUR
+      *
                WHEN    "SYUNYKNKNRKBN"
       *            MOVE    41              TO  SPA-GMN-CUR
                    MOVE    99              TO  SPA-GMN-CUR
