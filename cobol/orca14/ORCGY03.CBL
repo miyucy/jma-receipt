@@ -58,8 +58,8 @@
       *
            03  SPA-Y03-AREA.
                05  SPA-GMN-PAGE            PIC 9(02).
-               05  SPA-GMN-LINE            PIC 9(02).
-               05  SPA-GMN-MAX             PIC 9(02).
+               05  SPA-GMN-LINE            PIC 9(04).
+               05  SPA-GMN-MAX             PIC 9(04).
                05  SPA-GMN-CUR             PIC 9(02).
       *
                05  SPA-NAI-NEXT            PIC 9(01).
@@ -548,6 +548,7 @@
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDX-G
            MOVE    ZERO                TO  SPA-NAI-NEXT
+           MOVE    ZERO                TO  SPA-GMN-MAX
            PERFORM
                    UNTIL      (FLG-YYK     =   1   )
                          OR   (IDX         >   200 )
@@ -593,7 +594,6 @@
                                         MCPDATA-REC
                                         MCPDATA-REC
       *
-           MOVE    IDX             TO  SPA-GMN-MAX
       *
            PERFORM 3001-TBL-SORT-SEC
       *
@@ -618,6 +618,7 @@
                GO      TO      3101-YOYAKU-HEN-EXT
            END-IF
       *
+           MOVE    IDX             TO  SPA-GMN-MAX
       *****MOVE    IDX             TO  SPA-GMN-TBANGO  (IDX)
            MOVE    IDX-G           TO  SPA-GMN-TBANGO  (IDX)
            MOVE    YYK-KEYYYKTIME  TO  SPA-NAI-TKYYKTIME (IDX)
@@ -744,6 +745,9 @@
       *****************************************************************
        3001-TBL-SORT-SEC              SECTION.
       *
+           MOVE    SPA-GMN-TBANGO (01) TO  IDX-G
+           COMPUTE IDX-G               =   IDX-G   -   1
+      *
            INITIALIZE                  WRK-SORT-AREA
            MOVE    SPA-GMN-TBL         TO  WRK-GMN-TBL
            MOVE    SPA-NAI-TBL         TO  WRK-NAI-TBL
@@ -774,7 +778,8 @@
                                            TO  SPA-GMN-TBLO(IDX)
                    MOVE    WRK-NAI-TBLO (WRK-IDX)
                                            TO  SPA-NAI-TBLO(IDX)
-                   MOVE    IDX             TO  SPA-GMN-TBANGO (IDX)
+                   ADD     1               TO  IDX-G
+                   MOVE    IDX-G           TO  SPA-GMN-TBANGO (IDX)
                    INITIALIZE              WRK-GMN-TBLO (WRK-IDX)
                    INITIALIZE              WRK-NAI-TBLO (WRK-IDX)
                END-IF

@@ -57,7 +57,7 @@
        01  SPA-Y01.
            03  SPA-Y01-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
-               05  SPA-GMN-MAX         PIC 9(02).
+               05  SPA-GMN-MAX         PIC 9(04).
                05  SPA-GMN-CUR         PIC 9(02).
                05  SPA-YYK-MAX         PIC 9(04).
                05  SPA-YYK-SYORI       PIC 9(01).
