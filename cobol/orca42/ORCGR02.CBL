@@ -1546,7 +1546,8 @@
       *****************************************************************
        440-PRINT-KENSU-SEC                SECTION.
       *
-           CALL    "ORCHC**"           USING   SPA-NAI-2005-SYAPRTNM
+           CALL    "ORCHC**"           USING   SPA-AREA
+                                               SPA-NAI-2005-SYAPRTNM
                                                SPA-GMN-FILEKBN
                                                SPA-GMN-TBL1
       *
