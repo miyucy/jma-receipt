@@ -730,13 +730,18 @@
                PERFORM   910-DB-READ-SEC
                PERFORM   UNTIL  MCP-RC  NOT =  ZERO
                       MOVE    MCPDATA-REC     TO  SYUNOU-REC
-                      IF      SYU-DENPPRTYMD  <=  SPA-NAI-I04-TAIINYMD
-                        IF      SYU-SKYMONEY  >   SYU-NYUKIN-TOTAL
-                              COMPUTE   SPA-GMN-I04-ZENMISYU-NYU   =
-                                        SPA-GMN-I04-ZENMISYU-NYU   +
-                                        (SYU-SKYMONEY   -
-                                         SYU-NYUKIN-TOTAL)
-                        END-IF
+                      IF    ( SPA-I01-I04-SKYSTYMD   <= SYU-SKYSTYMD )
+                       AND  ( SPA-I01-I04-SKYEDYMD   >= SYU-SKYEDYMD )
+                           CONTINUE
+                      ELSE
+                           IF  SYU-DENPPRTYMD  <=  SPA-NAI-I04-TAIINYMD
+                               IF SYU-SKYMONEY  >   SYU-NYUKIN-TOTAL
+                                  COMPUTE   SPA-GMN-I04-ZENMISYU-NYU   =
+                                            SPA-GMN-I04-ZENMISYU-NYU   +
+                                           (SYU-SKYMONEY   -
+                                            SYU-NYUKIN-TOTAL)
+                               END-IF
+                           END-IF
                       END-IF
                       MOVE    "SYUNOU-KEY2"   TO   ORC-DBPATH
                       PERFORM   910-DB-READ-SEC
