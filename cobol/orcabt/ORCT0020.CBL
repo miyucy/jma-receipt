@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.03.13  入院請求書複数枚一括印刷対応
+      *  01.01.02    NACL-太田    03.03.18  入院カスタマイズ帳票対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -101,6 +102,7 @@
                05  WRK-YY              PIC 9(04).
                05  WRK-MM              PIC 9(02).
                05  WRK-DD              PIC 9(02).
+           03  WRK-PRINT-PG            PIC X(20).
       *
            COPY    "MCPAREA".
       *
@@ -114,6 +116,9 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *
+      *    帳票ＰＧ名
+           COPY    "CPSK1035.INC".
       *
       *    収納マスター
        01  SYUNOU-REC.
@@ -257,6 +262,9 @@
                MOVE    1               TO  FLG-TEIKIPRT
            END-IF
       *
+      *    帳票プログラム名取得
+           PERFORM 20011-PRINT-PG-EDIT-SEC
+      *
            INITIALIZE    ORCHCN03AREA
            MOVE    WRK-PARA-SYSYMD     TO  ORCHCN03-SYSYMD
            MOVE    WRK-PARA-TERMID     TO  ORCHCN03-TERMID
@@ -276,7 +284,7 @@
            MOVE     CNT-OUT1           TO  ORCHCN03-CNT
       *
       *    入院請求書印刷
-           CALL    "ORCHCN03"  USING   ORCHCN03AREA
+           CALL    WRK-PRINT-PG    USING   ORCHCN03AREA
       *
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -291,6 +299,36 @@
        200-MAIN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *   帳票プログラム名編集処理
+      *****************************************************************
+       20011-PRINT-PG-EDIT-SEC         SECTION.
+      *
+           INITIALIZE                      WRK-PRINT-PG
+      *
+           INITIALIZE                      SYS-1035-REC
+           MOVE    "1035"              TO  SYS-1035-KANRICD
+           MOVE    "00000003"          TO  SYS-1035-KBNCD
+           MOVE    SYS-1035-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-1035-REC
+               IF    ( SYS-1035-ORCACSTCHK     =   "T" )
+                   MOVE    SYS-1035-ORCACSTNM  TO  WRK-PRINT-PG
+               ELSE
+                   MOVE    SYS-1035-ORCAORGNM  TO  WRK-PRINT-PG
+               END-IF
+           END-IF
+      *
+           IF    ( WRK-PRINT-PG        =   SPACE )
+               MOVE    "ORCHCN03"      TO  WRK-PRINT-PG
+           END-IF
+      *
+           .
+       20011-PRINT-PG-EDIT-EXT.
+           EXIT.
       *****************************************************************
       *   編集処理
       *****************************************************************

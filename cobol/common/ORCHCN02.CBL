@@ -168,7 +168,7 @@
            COPY    "CPSK1010.INC".
       *
       *    出力先プリンタ名割り当て情報
-           COPY    "CPSK1031.INC".
+           COPY    "CPSK1034.INC".
       *
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
@@ -259,14 +259,14 @@
        110-PARA-HENSYU-SEC                   SECTION.
       *
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
+           MOVE    SPACE               TO  SYS-1034-REC
+           INITIALIZE                  SYS-1034-REC
+           MOVE    "1034"              TO  SYS-1034-KANRICD
+           MOVE    "*"                 TO  SYS-1034-KBNCD
+           MOVE    SYS-1034-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
+               MOVE    MCPDATA-REC         TO  SYS-1034-REC
            ELSE
                MOVE    1                   TO  FLG-END
            END-IF 
@@ -291,7 +291,7 @@
             MOVE   "HCN02.red"         TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
-            MOVE   SYS-1031-PRTNM(9)   TO  MKPRT-PRTNM
+            MOVE   SYS-1034-PRTNM(2)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
       *

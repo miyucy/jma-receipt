@@ -33,6 +33,7 @@
       *  01.00.04    NACL-太田    03.02.05  自院歴作成データを考慮する
       *  01.00.05    NACL-太田    03.03.07  帳票発行コンボの初期表示修正
       *  01.00.06    NACL-太田    03.03.13  入院請求書複数枚一括印刷対応
+      *  01.00.07    NACL-太田    03.03.18  入院カスタマイズ帳票対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -168,6 +169,8 @@
            03  WRK-STIDX                   PIC 9(05).
            03  WRK-EDIDX                   PIC 9(05).
            03  WRK-SKY-CNT                 PIC 9(10).
+           03  WRK-PRINT-PG                PIC X(20).
+           03  WRK-ORG-PRINT-PG            PIC X(20).
       *
       *
       *    スパ領域 ワーク
@@ -216,6 +219,9 @@
            COPY    "CPSK1013.INC".
       *    ドクター
            COPY    "CPSK1010.INC".
+      *
+      *    帳票プログラム名
+           COPY    "CPSK1035.INC".
       *    医療機関入院基本情報
            COPY    "CPSK5000.INC".
       *    出力先プリンタ名割り当て情報\
@@ -3080,6 +3086,10 @@
       *****************************************************************
        451-SKYPRT-OUT-SEC              SECTION.
       *
+           MOVE    "ORCHCN03"      TO  WRK-ORG-PRINT-PG
+           MOVE    "00000003"      TO  WRK-KBNCD
+           PERFORM 4511-PRINT-PG-EDIT-SEC
+      *
            INITIALIZE      ORCHCN03AREA
            MOVE    SPA-SYSYMD          TO  ORCHCN03-SYSYMD
            MOVE    SPA-TERMID          TO  ORCHCN03-TERMID
@@ -3113,7 +3123,7 @@
                END-IF
            END-PERFORM
       *
-           CALL    "ORCHCN03"      USING   ORCHCN03AREA
+           CALL    WRK-PRINT-PG    USING   ORCHCN03AREA
       *
            .
        451-SKYPRT-OUT-EXT.
@@ -3122,6 +3132,10 @@
       *    退院証明書出力処理
       *****************************************************************
        451-TAIPRT-OUT-SEC          SECTION.
+      *
+           MOVE    "ORCHCN02"      TO  WRK-ORG-PRINT-PG
+           MOVE    "00000002"      TO  WRK-KBNCD
+           PERFORM 4511-PRINT-PG-EDIT-SEC
       *
            INITIALIZE              LNK-PTNYUINRRK
       *
@@ -3133,11 +3147,41 @@
                                    TO  LNK-PTNYUINRRK
            END-IF
       *
-           CALL    "ORCHCN02"  USING   SPA-AREA
-                                       LNK-PTNYUINRRK
+           CALL    WRK-PRINT-PG    USING   SPA-AREA
+                                           LNK-PTNYUINRRK
       *
            .
        451-TAIPRT-OUT-EXT.
+           EXIT.
+      *****************************************************************
+      *   帳票プログラム名編集処理
+      *****************************************************************
+       4511-PRINT-PG-EDIT-SEC         SECTION.
+      *
+           INITIALIZE                      WRK-PRINT-PG
+      *
+           INITIALIZE                      SYS-1035-REC
+           MOVE    "1035"              TO  SYS-1035-KANRICD
+           MOVE    WRK-KBNCD           TO  SYS-1035-KBNCD
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1035-REC        TO  MCPDATA-REC
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC            =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-1035-REC
+               IF    ( SYS-1035-ORCACSTCHK     =   "T" )
+                   MOVE    SYS-1035-ORCACSTNM  TO  WRK-PRINT-PG
+               ELSE
+                   MOVE    SYS-1035-ORCAORGNM  TO  WRK-PRINT-PG
+               END-IF
+           END-IF
+      *
+           IF    ( WRK-PRINT-PG        =   SPACE )
+               MOVE    WRK-ORG-PRINT-PG        TO  WRK-PRINT-PG
+           END-IF
+      *
+           .
+       4511-PRINT-PG-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    自画面編集処理

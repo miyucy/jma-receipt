@@ -77,6 +77,7 @@
       *  01.01.20    NACL-ÂÀÅÄ    03/02/18  Æþ±¡ÀÁµá¤Ï¼è¾Ã²ÄÇ½¤È¤¹¤ë
       *  01.01.21    NACL-ÂÀÅÄ    03/03/07  ÇÓÂ¾À©¸æµ¡Ç½ÄÉ²Ã
       *  01.01.22    NACL-ÂÀÅÄ    03/03/13  Æþ±¡ÀÁµá½ñÊ£¿ôËç°ì³ç°õºþÂÐ±þ
+      *  01.01.23    NACL-ÂÀÅÄ    03.03.18  Æþ±¡¥«¥¹¥¿¥Þ¥¤¥ºÄ¢É¼ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -376,6 +377,7 @@
            COPY    "CPSK1010.INC".
       *    Ä¢É¼£Ð£Ç
            COPY    "CPSK1032.INC".
+           COPY    "CPSK1035.INC".
       *
       *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
        01  PTINF-REC.
@@ -1872,7 +1874,11 @@
                        MOVE    "0010"      TO  SPA-ERRCD
                ELSE
       *            Ä¢É¼¥×¥í¥°¥é¥à¼èÆÀ
-                   PERFORM 4201-PRINT-PG-SEC
+                   IF    ( SYU-NYUGAIKBN   =   1 )
+                       PERFORM 4201-NYU-PRINT-PG-SEC
+                   ELSE
+                       PERFORM 4201-PRINT-PG-SEC
+                   END-IF
       *
                    MOVE   SPA-AREA         TO  WRK-SPA-AREA
                    MOVE   SYU-SRYYMD       TO  WRK-SPA-SRYYMD
@@ -1904,7 +1910,8 @@
                        MOVE    SYU-NYUKIN-TOTAL
                                            TO  ORCHCN03-NYUKIN  (1)
       *
-                       CALL    "ORCHCN03"  USING  ORCHCN03AREA
+                       CALL    WRK-SEIKYU-PG
+                                           USING  ORCHCN03AREA
       *
                    ELSE
       *
@@ -1989,6 +1996,53 @@
            .
       *
        4201-PRINT-PG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ä¢É¼¥×¥í¥°¥é¥à¼èÆÀ½èÍý ¡ÊÆþ±¡¡Ë
+      *****************************************************************
+       4201-NYU-PRINT-PG-SEC           SECTION.
+      *
+      *    ÀÁµá½ñ
+           MOVE    SPACE               TO  WRK-SEIKYU-PG
+      *
+           MOVE    SPACE               TO  SYS-1035-REC
+           INITIALIZE                      SYS-1035-REC
+           MOVE    "1035"              TO  SYS-1035-KANRICD
+           MOVE    "00000003"          TO  SYS-1035-KBNCD
+      *
+           MOVE    SYS-1035-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1035-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1035-REC
+      *        ÆÈ¼«³«È¯Ê¬
+               IF      SYS-1035-ORCACSTCHK     =   "T"
+                   MOVE    SYS-1035-ORCACSTNM  TO  WRK-SEIKYU-PG
+               ELSE
+      *        £Ï£Ò£Ã£ÁÉ¸½àÊ¬
+                   MOVE    SYS-1035-ORCAORGNM  TO  WRK-SEIKYU-PG
+               END-IF
+           END-IF
+           IF      WRK-SEIKYU-PG       =   SPACE
+               MOVE    "ORCHCN03"          TO  WRK-SEIKYU-PG
+           END-IF
+      *
+           .
+      *
+       4201-NYU-PRINT-PG-EXT.
            EXIT.
       *
       *

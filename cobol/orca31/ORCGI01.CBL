@@ -43,6 +43,7 @@
       *  01.00.10    NACL-太田    03.03.12  カルテ印刷機能追加
       *  01.00.11    NACL-太田    03.03.14  転科・転棟・転室時、入院料
       *                                     のみの変更も可とする
+      *  01.00.12    NACL-太田    03.03.18  入院カスタマイズ帳票対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -292,6 +293,7 @@
            03  WRK-ORCHCN01-PRTKBN         PIC X(01).
            03  WRK-AGECHK-SRYYMD           PIC X(08).
            03  WRK-NACCT-SRYYM             PIC X(08).
+           03  WRK-PRINT-PG                PIC X(20).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -334,6 +336,9 @@
            COPY    "CPSK1005.INC".
       *    （職員情報）
            COPY    "CPSK1010.INC".
+      *
+      *    帳票プログラム名
+           COPY    "CPSK1035.INC".
       *    （医療機関情報）
            COPY    "CPSK5000.INC".
       *    （病棟情報）
@@ -5356,6 +5361,9 @@
       *****************************************************************
        4801-ORCHCN01-CALL-SEC          SECTION.
       *
+      *    帳票プログラム名取得
+           PERFORM 4801-PRINT-PG-EDIT-SEC
+      *
            INITIALIZE                      SPA-KYOTUKEY
                                            SPA-KYOTU-SET
                                            ORCHCN01AREA
@@ -5397,11 +5405,41 @@
       *    DISPLAY "ORCHCN01-DR (3)    = " ORCHCN01-DR (3)
       *    DISPLAY "ORCHCN01-NYUINYMD  = " ORCHCN01-NYUINYMD
       *
-           CALL    "ORCHCN01"  USING   SPA-AREA
-                                       ORCHCN01AREA
+           CALL    WRK-PRINT-PG    USING   SPA-AREA
+                                           ORCHCN01AREA
       *
            .
        4801-ORCHCN01-CALL-EXT.
+           EXIT.
+      *****************************************************************
+      *   帳票プログラム名編集処理
+      *****************************************************************
+       4801-PRINT-PG-EDIT-SEC         SECTION.
+      *
+           INITIALIZE                      WRK-PRINT-PG
+      *
+           INITIALIZE                      SYS-1035-REC
+           MOVE    "1035"              TO  SYS-1035-KANRICD
+           MOVE    "00000001"          TO  SYS-1035-KBNCD
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1035-REC        TO  MCPDATA-REC
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC            =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-1035-REC
+               IF    ( SYS-1035-ORCACSTCHK     =   "T" )
+                   MOVE    SYS-1035-ORCACSTNM  TO  WRK-PRINT-PG
+               ELSE
+                   MOVE    SYS-1035-ORCAORGNM  TO  WRK-PRINT-PG
+               END-IF
+           END-IF
+      *
+           IF    ( WRK-PRINT-PG        =   SPACE )
+               MOVE    "ORCHCN01"      TO  WRK-PRINT-PG
+           END-IF
+      *
+           .
+       4801-PRINT-PG-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    入院会計照会遷移処理

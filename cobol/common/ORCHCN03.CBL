@@ -157,7 +157,7 @@
            COPY    "CPSK1013.INC".
       *
       *    出力先プリンタ名割り当て情報
-           COPY  "CPSK1031.INC".
+           COPY  "CPSK1034.INC".
       *
       *    患者マスタ
        01  PTINF-REC.
@@ -327,11 +327,11 @@
                                         MCPDATA-REC
       *
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
+           MOVE    SPACE               TO  SYS-1034-REC
+           INITIALIZE                  SYS-1034-REC
+           MOVE    "1034"              TO  SYS-1034-KANRICD
+           MOVE    "*"                 TO  SYS-1034-KBNCD
+           MOVE    SYS-1034-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            MOVE    ORCHCN03-SYSYMD     TO  ORC-DBYMD
@@ -343,10 +343,10 @@
                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
                PERFORM 900-KANRIMST-READ-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-1031-REC
+                   MOVE    MCPDATA-REC     TO  SYS-1034-REC
                END-IF
            ELSE
-               INITIALIZE                  SYS-1031-REC
+               INITIALIZE                  SYS-1034-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -356,7 +356,7 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
-           MOVE    SYS-1031-PRTNM(9)
+           MOVE    SYS-1034-PRTNM(3)
                                        TO  WRK-PRTNM
       *
       *    ファイルＯＰＥＮ
