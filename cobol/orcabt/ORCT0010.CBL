@@ -409,8 +409,7 @@
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
-           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD (1:6)
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -426,6 +425,22 @@
                                            TO  SPA-1009-HJNKSIRENNUMKETA
            ELSE
                MOVE    "患者番号構成管理情報が取得できませんでした"
+                                           TO  WRK-TEIKIERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  100-INIT-EXT
+           END-IF
+      *
+      *    定期請求管理情報
+           INITIALIZE                  SYS-5010-REC
+           MOVE    "5010"              TO  SYS-5010-KANRICD
+           MOVE    "*"                 TO  SYS-5010-KBNCD
+           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
+           MOVE    SYS-5010-REC        TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-5010-REC
+           ELSE
+               MOVE    "定期請求管理情報が取得できませんでした。"
                                            TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  100-INIT-EXT
@@ -791,10 +806,23 @@
            MOVE    WRK-BTUNUM          TO  SYU-BYOTONUM
            MOVE    WRK-DRCD            TO  SYU-DRCD
       *
+           IF    ( SYS-5010-NYUKINKBN  =   "2" )
+      *
+               MOVE    SYU-SKYMONEY    TO  SYU-NYUKIN-TOTAL
+           END-IF
+      *
+           IF    ( SYU-NYUKIN-TOTAL    >   ZERO )
+               MOVE    1               TO  SYU-NYUKIN-KAISU
+           END-IF
+      *
            IF    ( SYU-SKYMONEY        =   ZERO )
                MOVE    SPACE           TO  SYU-DENPJTIKBN
            ELSE
-               MOVE    "2"             TO  SYU-DENPJTIKBN
+               IF    ( SYU-SKYMONEY   <=  SYU-NYUKIN-TOTAL )
+                   MOVE    "1"         TO  SYU-DENPJTIKBN
+               ELSE
+                   MOVE    "2"         TO  SYU-DENPJTIKBN
+               END-IF
            END-IF
       *
            MOVE    WRK-PARA-TERMID     TO  SYU-TERMID

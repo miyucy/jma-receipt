@@ -294,6 +294,8 @@
            COPY    "CPSK1001.INC".
       *    患者番号構成管理情報
            COPY  "CPSK1009.INC".
+      *    定期請求管理情報
+           COPY  "CPSK5010.INC".
       *    定期請求作成指示（個別指示）コード
            COPY  "CPSK5012.INC".
       *
@@ -429,8 +431,7 @@
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
-           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -446,6 +447,22 @@
                                            TO  SPA-1009-HJNKSIRENNUMKETA
            ELSE
                MOVE    "患者番号構成管理情報が取得できませんでした"
+                                           TO  WRK-TEIKIERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  100-INIT-EXT
+           END-IF
+      *
+      *    定期請求管理情報
+           INITIALIZE                  SYS-5010-REC
+           MOVE    "5010"              TO  SYS-5010-KANRICD
+           MOVE    "*"                 TO  SYS-5010-KBNCD
+           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
+           MOVE    SYS-5010-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-5010-REC
+           ELSE
+               MOVE    "定期請求管理情報が取得できませんでした。"
                                            TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  100-INIT-EXT
@@ -1093,7 +1110,7 @@
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
       *    伝票番号枝番
            MOVE    01                  TO  SMEI-DENPEDANUM
-      *診療科
+      *    診療科
            MOVE    SYU-SRYKA           TO  SMEI-SRYKA
       *    伝票状態区分
            MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
@@ -1112,12 +1129,31 @@
       *    入金連番
            MOVE    01                  TO  SMEI-NYUKINRENNUM
       *
+           IF    ( SYS-5010-NYUKINKBN  =   "2" )
+               IF    ( SYU-NYUKIN-TOTAL    =   ZERO )
+                   CONTINUE
+               ELSE
+      *            入返金区分
+                   MOVE    "1"             TO  SMEI-NYUHEN-KBN
+      *            入返金額
+                   MOVE    SYU-NYUKIN-TOTAL
+                                           TO  SMEI-NYUHEN-MONEY
+      *            入金方法
+                   MOVE    "01"            TO  SMEI-NYUKIN-HOHO
+               END-IF
+           END-IF
+      *
       *    状態区分
            IF    ( SYU-SKYMONEY        =   ZERO )
-               MOVE    SPACE           TO  SMEI-JOUTAIKBN
+               MOVE    SPACE               TO  SMEI-JOUTAIKBN
            ELSE
-               MOVE    "9"             TO  SMEI-JOUTAIKBN
+               IF   (  SYU-SKYMONEY    >   SYU-NYUKIN-TOTAL )
+                   MOVE    "9"             TO  SMEI-JOUTAIKBN
+               ELSE
+                   MOVE    "1"             TO  SMEI-JOUTAIKBN
+               END-IF
            END-IF
+
       *
            MOVE    SYUMEI-REC          TO  WKSYUMEI-REC
       *

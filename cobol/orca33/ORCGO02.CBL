@@ -932,11 +932,13 @@
                    IF    ( FLG-SYUARI  =   1 )
                        MOVE    1   TO  FLG-KIKAN
                    END-IF
-                   IF    ( PTNYUINRRK-TEIKI-SEIKYUKBN  =   "2" )
-                    AND  ( PTNYUINRRK-TAIINYMD >   WRK-KIKAN-SKYEDYMD
+      *            IF    ( PTNYUINRRK-TEIKI-SEIKYUKBN  =   "2" )
+      *             AND  ( PTNYUINRRK-TAIINYMD >   WRK-KIKAN-SKYEDYMD
+      *                                              (WRK-KIKAN-MAX))
+                   IF    ( PTNYUINRRK-TAIINYMD >   WRK-KIKAN-SKYEDYMD
                                                      (WRK-KIKAN-MAX))
                     AND  ( FLG-SYUARI  =   ZERO )
-                       MOVE    1       TO  FLG-KIKAN
+      *                MOVE    1       TO  FLG-KIKAN
                        MOVE    1       TO  FLG-GETUMATU
                        IF    ( PTNYUINRRK-NYUINYMD
                                        <   WRK-KIKAN-SKYSTYMD(1) )

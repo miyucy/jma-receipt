@@ -48,8 +48,12 @@
                    07  SYS-5010-SEIKYU-DAY-OCC   OCCURS  3.
                        09  SYS-5010-SEIKYU-DAY
                                             PIC  9(02).
-      *Í½È÷
-           03                           PIC  X(494).
+      *        Í½È÷
+               05                           PIC  X(10).
+      *        Æþ¶â¶èÊ¬
+               05  SYS-5010-NYUKINKBN       PIC  X(01).
+      *        Í½È÷
+               05                           PIC  X(483).
       *Ã¼Ëö£É£Ä
            03  SYS-5010-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

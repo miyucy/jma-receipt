@@ -15,5 +15,12 @@ W23	{
 		SEIKYU03	{
 			value	varchar(3);
 		};
+		CMB_NYUKINKBN	{
+			NYUKINKBN	{
+				value	varchar(60);
+			};
+			count	int;
+			item	varchar(60)[5];
+		};
 	};
 };

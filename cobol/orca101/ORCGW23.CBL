@@ -32,6 +32,7 @@
       *                                     選択可とする
       *  01.00.02    NACL-太田    03/02/12  期別の指定を可能にする
       *                           03/02/25  再請求区分を削除
+      *  01.00.03    NACL-太田    03/10/14  入金区分を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -73,6 +74,18 @@
                        SPA-GMN-SEIKYU-VAL.
                        09  SPA-GMN-SEIKYU-OCC OCCURS  3.
                            11  SPA-GMN-SEIKYU PIC   X(03).
+                   07  SPA-GMN-NYUKINKBN-G.
+                       09  SPA-GMN-NYUKINKBN  PIC   X(01).
+                       09                     PIC   X(01).
+                       09  SPA-GMN-NYUKINKBNMEI
+                                              PIC   X(58).
+                   07  SPA-GMN-NYUKINKBNLST-G.
+                       09  SPA-GMN-NYUKINKBN-MAX   PIC   9(03).
+                       09  SPA-GMN-NYUKINKBNLST    OCCURS  2.
+                           11  SPA-GMN-NYUKINKBNL  PIC   X(01).
+                           11                      PIC   X(01).
+                           11  SPA-GMN-NYUKINKBNMEIL
+                                                   PIC   X(58).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SEIKYU-VAL.
                        09  SPA-NAI-SEIKYU01   PIC 9(02).
@@ -93,6 +106,7 @@
        01  IDX-AREA.
            03  IDX1                PIC 9(05).
            03  IDX2                PIC 9(05).
+           03  IDXA                PIC 9(05).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -305,6 +319,16 @@
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-YUKOSTYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-YUKOEDYMD
       *
+           MOVE    2                   TO  SPA-GMN-NYUKINKBN-MAX
+           MOVE    "1"                 TO  SPA-GMN-NYUKINKBNL(1)
+           MOVE    "未入金として処理する"
+                                       TO  SPA-GMN-NYUKINKBNMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-NYUKINKBNL(2)
+           MOVE    "入金済として処理する"
+                                       TO  SPA-GMN-NYUKINKBNMEIL(2)
+           MOVE    SPA-GMN-NYUKINKBNLST(1)
+                                       TO  SPA-GMN-NYUKINKBN-G
+      *
            MOVE    SPACE               TO  SYS-5010-REC.
            INITIALIZE                      SYS-5010-REC.
            MOVE    "5010"              TO  SYS-5010-KANRICD.
@@ -324,7 +348,19 @@
                    END-IF
                END-PERFORM
       *
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-NYUKINKBN-MAX )
+      *
+                   IF    ( SYS-5010-NYUKINKBN
+                                   =   SPA-GMN-NYUKINKBNL (IDX1))
+                       MOVE    SPA-GMN-NYUKINKBNLST (IDX1)
+                                       TO  SPA-GMN-NYUKINKBN-G
+                   END-IF
+      *
+               END-PERFORM
+      *
            END-IF.
+      *
            .
       *
        310-SPASET-EXT.
@@ -388,6 +424,7 @@
            MOVE    W23-SEIKYU01    TO  SPA-GMN-SEIKYU01
            MOVE    W23-SEIKYU02    TO  SPA-GMN-SEIKYU02
            MOVE    W23-SEIKYU03    TO  SPA-GMN-SEIKYU03
+           MOVE    W23-NYUKINKBN   TO  SPA-GMN-NYUKINKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -399,25 +436,184 @@
        4102-KIHON-CHK-SEC       SECTION.
       *
       *    請求日確認処理（１）
-           PERFORM T-000-YMDCHEK1-SEC
+           PERFORM 4100-SKYYMD-CHK1-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
       *    請求日確認処理（２）
-           PERFORM T-000-YMDCHEK2-SEC
+           PERFORM 4100-SKYYMD-CHK2-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
       *    請求日確認処理（３）
-           PERFORM T-000-YMDCHEK3-SEC
+           PERFORM 4100-SKYYMD-CHK3-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    入金区分チェック
+           PERFORM 4100-NYUKINKBN-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
            .
        4102-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    請求日 確認処理（１）
+      *****************************************************************
+       4100-SKYYMD-CHK1-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  SPA-NAI-SEIKYU01
+      *
+           IF    ( SPA-GMN-SEIKYU01        =   SPACE )
+               GO  TO  4100-SKYYMD-CHK1-EXT
+           END-IF
+      *
+           INITIALIZE                  ORCSNUMAREA
+           MOVE    SPA-GMN-SEIKYU01    TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF  ( SNUM-RC       NOT =   ZERO  )
+            OR ( SNUM-MINKBN   NOT =   SPACE )
+            OR ( SNUM-SYOKBN   NOT =   SPACE )
+               MOVE    "0001"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+               GO TO   4100-SKYYMD-CHK1-EXT
+           ELSE
+               MOVE    SNUM-OUTNUM     TO  WRK-DAY
+               IF    (( WRK-DAY        >=  01 )
+                AND   ( WRK-DAY        <=  27 ))
+                OR    ( WRK-DAY         =  99 )
+                   CONTINUE
+               ELSE
+                   MOVE    "0002"      TO  SPA-ERRCD
+                   MOVE    1           TO  SPA-GMN-CUR
+                   GO TO   4100-SKYYMD-CHK1-EXT
+               END-IF
+           END-IF
+      *
+           MOVE    WRK-DAY             TO  SPA-NAI-SEIKYU01
+                                           SPA-GMN-SEIKYU01
+           .
+      *
+       4100-SKYYMD-CHK1-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    請求日 確認処理（２）
+      *****************************************************************
+       4100-SKYYMD-CHK2-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  SPA-NAI-SEIKYU02
+      *
+           IF    ( SPA-GMN-SEIKYU02        =   SPACE )
+               GO  TO  4100-SKYYMD-CHK2-EXT
+           END-IF
+      *
+           INITIALIZE                  ORCSNUMAREA
+           MOVE    SPA-GMN-SEIKYU02    TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF  ( SNUM-RC       NOT =   ZERO  )
+            OR ( SNUM-MINKBN   NOT =   SPACE )
+            OR ( SNUM-SYOKBN   NOT =   SPACE )
+               MOVE    "0001"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+               GO TO   4100-SKYYMD-CHK2-EXT
+           ELSE
+               MOVE    SNUM-OUTNUM     TO  WRK-DAY
+               IF    (( WRK-DAY        >=  01 )
+                AND   ( WRK-DAY        <=  27 ))
+                OR    ( WRK-DAY         =  99 )
+                   CONTINUE
+               ELSE
+                   MOVE    "0002"      TO  SPA-ERRCD
+                   MOVE    2           TO  SPA-GMN-CUR
+                   GO TO   4100-SKYYMD-CHK2-EXT
+               END-IF
+           END-IF
+      *
+           MOVE    WRK-DAY             TO  SPA-NAI-SEIKYU02
+                                           SPA-GMN-SEIKYU02
+           .
+      *
+       4100-SKYYMD-CHK2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    請求日 確認処理（３）
+      *****************************************************************
+       4100-SKYYMD-CHK3-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  SPA-NAI-SEIKYU03
+      *
+           IF    ( SPA-GMN-SEIKYU03        =   SPACE )
+               GO  TO  4100-SKYYMD-CHK3-EXT
+           END-IF
+      *
+           INITIALIZE                  ORCSNUMAREA
+           MOVE    SPA-GMN-SEIKYU03    TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF  ( SNUM-RC       NOT =   ZERO  )
+            OR ( SNUM-MINKBN   NOT =   SPACE )
+            OR ( SNUM-SYOKBN   NOT =   SPACE )
+               MOVE    "0001"          TO  SPA-ERRCD
+               MOVE    3               TO  SPA-GMN-CUR
+               GO TO   4100-SKYYMD-CHK3-EXT
+           ELSE
+               MOVE    SNUM-OUTNUM     TO  WRK-DAY
+               IF    (( WRK-DAY        >=  01 )
+                AND   ( WRK-DAY        <=  27 ))
+                OR    ( WRK-DAY         =  99 )
+                   CONTINUE
+               ELSE
+                   MOVE    "0002"      TO  SPA-ERRCD
+                   MOVE    3           TO  SPA-GMN-CUR
+                   GO TO   4100-SKYYMD-CHK3-EXT
+               END-IF
+           END-IF
+      *
+           MOVE    WRK-DAY             TO  SPA-NAI-SEIKYU03
+                                           SPA-GMN-SEIKYU03
+           .
+      *
+       4100-SKYYMD-CHK3-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金区分チェック処理
+      *****************************************************************
+       4100-NYUKINKBN-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-NYUKINKBN-G =   SPACE )
+               MOVE    SPA-GMN-NYUKINKBNLST(1)
+                                       TO  SPA-GMN-NYUKINKBN-G
+               GO  TO  4100-NYUKINKBN-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   SPA-GMN-NYUKINKBN-MAX )
+                     OR  ( SPA-GMN-NYUKINKBN
+                                   =   SPA-GMN-NYUKINKBNL (IDXA))
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDXA    >   SPA-GMN-NYUKINKBN-MAX )
+               MOVE    SPA-GMN-NYUKINKBNLST(1)
+                                       TO  SPA-GMN-NYUKINKBN-G
+           ELSE
+               MOVE    SPA-GMN-NYUKINKBNLST(IDXA)
+                                       TO  SPA-GMN-NYUKINKBN-G
+           END-IF
+      *
+           .
+      *
+       4100-NYUKINKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -469,6 +665,7 @@
            MOVE    SPA-NAI-SEIKYU01        TO  SYS-5010-SEIKYU-DAY1
            MOVE    SPA-NAI-SEIKYU02        TO  SYS-5010-SEIKYU-DAY2
            MOVE    SPA-NAI-SEIKYU03        TO  SYS-5010-SEIKYU-DAY3
+           MOVE    SPA-GMN-NYUKINKBN       TO  SYS-5010-NYUKINKBN
            MOVE    SPA-TERMID              TO  SYS-5010-TERMID
            MOVE    SPA-OPID                TO  SYS-5010-OPID
            MOVE    SYS-5010-REC            TO  SYSKANRI-REC
@@ -542,6 +739,13 @@
            MOVE    SPA-GMN-SEIKYU01        TO  W23-SEIKYU01
            MOVE    SPA-GMN-SEIKYU02        TO  W23-SEIKYU02
            MOVE    SPA-GMN-SEIKYU03        TO  W23-SEIKYU03
+           MOVE    SPA-GMN-NYUKINKBN-G     TO  W23-NYUKINKBN
+           MOVE    SPA-GMN-NYUKINKBN-MAX   TO  W23-NYUKINKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-NYUKINKBN-MAX )
+               MOVE    SPA-GMN-NYUKINKBNLST(IDX1)
+                                           TO  W23-NYUKINKBNLST(IDX1)
+           END-PERFORM
       *
            PERFORM 5001-MAPCUR-SEC.
       *
@@ -643,6 +847,8 @@
                    MOVE    "SEIKYU02"      TO  MCP-WIDGET
            WHEN    03
                    MOVE    "SEIKYU03"      TO  MCP-WIDGET
+           WHEN    04
+                   MOVE    "NYUKINKBN"     TO  MCP-WIDGET
            WHEN    101
                    MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE.
@@ -662,10 +868,12 @@
                    MOVE    2           TO  SPA-GMN-CUR
            WHEN    "SEIKYU03"
                    MOVE    3           TO  SPA-GMN-CUR
+           WHEN    "NYUKINKBN"
+                   MOVE    4           TO  SPA-GMN-CUR
            END-EVALUATE
       *
            EVALUATE    WRK-MCP-WIDGET
-           WHEN    "SEIKYU03"
+           WHEN    "NYUKINKBN"
                MOVE    101             TO  SPA-GMN-CUR
            WHEN    OTHER
                COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR +   1
@@ -786,128 +994,5 @@
                                         MCPDATA-REC.
       *
        900-SYSKANRI-INV-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    請求日 確認処理（１）
-      *****************************************************************
-       T-000-YMDCHEK1-SEC              SECTION.
-      *
-           MOVE    ZERO                TO  SPA-NAI-SEIKYU01
-      *
-           IF    ( SPA-GMN-SEIKYU01        =   SPACE )
-               GO  TO  T-000-YMDCHEK1-EXT
-           END-IF
-      *
-           INITIALIZE                  ORCSNUMAREA
-           MOVE    SPA-GMN-SEIKYU01    TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF  ( SNUM-RC       NOT =   ZERO  )
-            OR ( SNUM-MINKBN   NOT =   SPACE )
-            OR ( SNUM-SYOKBN   NOT =   SPACE )
-               MOVE    "0001"          TO  SPA-ERRCD
-               MOVE    1               TO  SPA-GMN-CUR
-               GO TO   T-000-YMDCHEK1-EXT
-           ELSE
-               MOVE    SNUM-OUTNUM     TO  WRK-DAY
-               IF    (( WRK-DAY        >=  01 )
-                AND   ( WRK-DAY        <=  27 ))
-                OR    ( WRK-DAY         =  99 )
-                   CONTINUE
-               ELSE
-                   MOVE    "0002"      TO  SPA-ERRCD
-                   MOVE    1           TO  SPA-GMN-CUR
-                   GO TO   T-000-YMDCHEK1-EXT
-               END-IF
-           END-IF
-      *
-           MOVE    WRK-DAY             TO  SPA-NAI-SEIKYU01
-                                           SPA-GMN-SEIKYU01
-           .
-      *
-       T-000-YMDCHEK1-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    請求日 確認処理（２）
-      *****************************************************************
-       T-000-YMDCHEK2-SEC                SECTION.
-      *
-           MOVE    ZERO                TO  SPA-NAI-SEIKYU02
-      *
-           IF    ( SPA-GMN-SEIKYU02        =   SPACE )
-               GO  TO  T-000-YMDCHEK2-EXT
-           END-IF
-      *
-           INITIALIZE                  ORCSNUMAREA
-           MOVE    SPA-GMN-SEIKYU02    TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF  ( SNUM-RC       NOT =   ZERO  )
-            OR ( SNUM-MINKBN   NOT =   SPACE )
-            OR ( SNUM-SYOKBN   NOT =   SPACE )
-               MOVE    "0001"          TO  SPA-ERRCD
-               MOVE    2               TO  SPA-GMN-CUR
-               GO TO   T-000-YMDCHEK2-EXT
-           ELSE
-               MOVE    SNUM-OUTNUM     TO  WRK-DAY
-               IF    (( WRK-DAY        >=  01 )
-                AND   ( WRK-DAY        <=  27 ))
-                OR    ( WRK-DAY         =  99 )
-                   CONTINUE
-               ELSE
-                   MOVE    "0002"      TO  SPA-ERRCD
-                   MOVE    2           TO  SPA-GMN-CUR
-                   GO TO   T-000-YMDCHEK2-EXT
-               END-IF
-           END-IF
-      *
-           MOVE    WRK-DAY             TO  SPA-NAI-SEIKYU02
-                                           SPA-GMN-SEIKYU02
-           .
-      *
-       T-000-YMDCHEK2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    請求日 確認処理（３）
-      *****************************************************************
-       T-000-YMDCHEK3-SEC                SECTION.
-      *
-           MOVE    ZERO                TO  SPA-NAI-SEIKYU03
-      *
-           IF    ( SPA-GMN-SEIKYU03        =   SPACE )
-               GO  TO  T-000-YMDCHEK3-EXT
-           END-IF
-      *
-           INITIALIZE                  ORCSNUMAREA
-           MOVE    SPA-GMN-SEIKYU03    TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF  ( SNUM-RC       NOT =   ZERO  )
-            OR ( SNUM-MINKBN   NOT =   SPACE )
-            OR ( SNUM-SYOKBN   NOT =   SPACE )
-               MOVE    "0001"          TO  SPA-ERRCD
-               MOVE    3               TO  SPA-GMN-CUR
-               GO TO   T-000-YMDCHEK3-EXT
-           ELSE
-               MOVE    SNUM-OUTNUM     TO  WRK-DAY
-               IF    (( WRK-DAY        >=  01 )
-                AND   ( WRK-DAY        <=  27 ))
-                OR    ( WRK-DAY         =  99 )
-                   CONTINUE
-               ELSE
-                   MOVE    "0002"      TO  SPA-ERRCD
-                   MOVE    3           TO  SPA-GMN-CUR
-                   GO TO   T-000-YMDCHEK3-EXT
-               END-IF
-           END-IF
-      *
-           MOVE    WRK-DAY             TO  SPA-NAI-SEIKYU03
-                                           SPA-GMN-SEIKYU03
-           .
-      *
-       T-000-YMDCHEK3-EXT.
            EXIT.
       *
