@@ -1517,6 +1517,7 @@
            CALL    "ORCSC94"           USING
                                        ORCSC94AREA
                                        SPA-SCR-REC
+                                       SPA-AREA
       *
            .
        3101-INPUTCD-HEN-EXT.
@@ -3566,6 +3567,7 @@
                CALL    "ORCSC94"           USING
                                            ORCSC94AREA
                                            WRK-SCR-REC
+                                           SPA-AREA
       *
                ADD     1                   TO  WRK-HOZ-IDX
                MOVE    WRK-COM-TBLREC (IDX-Z)
