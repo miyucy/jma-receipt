@@ -192,13 +192,14 @@
       *                労災保険の時、労災保険の連番
                        09  SPA-NAI-RSHKN-EDANUM        PIC 9(04).
       *                登録時の保険者番号・保険種類
-                       09  SPA-MAE-HKNNUM              PIC X(03).
-                       09  SPA-MAE-HKNJANUM            PIC X(08).
-                       09  SPA-MAE-HOJOKBN             PIC X(01).
-                       09  SPA-MAE-HKAKUNINYMD         PIC X(08).
-                       09  SPA-MAE-HKAKUNINYMDW        PIC X(09).
-                       09  SPA-MAE-KIGO             PIC X(40).
-                       09  SPA-MAE-NUM              PIC X(40).
+                       09  SPA-MAE-HKN-AREA.
+                           11  SPA-MAE-HKNNUM              PIC X(03).
+                           11  SPA-MAE-HKNJANUM            PIC X(08).
+                           11  SPA-MAE-HOJOKBN             PIC X(01).
+                           11  SPA-MAE-HKAKUNINYMD         PIC X(08).
+                           11  SPA-MAE-HKAKUNINYMDW        PIC X(09).
+                           11  SPA-MAE-KIGO             PIC X(40).
+                           11  SPA-MAE-NUM              PIC X(40).
       *                保険者情報
                        09  SPA-HKNJA-AREA.
                            11  SPA-HKNJA-HKNJANAME     PIC X(100).
@@ -490,7 +491,8 @@
                        09  SPA-GMN20-KARUTEF       PIC X(01).
                        09  SPA-GMN20-KARUTEMEI     PIC X(14).
                    07  SPA-GMN20-KARUTE-COB.
-                       09  SPA-GMN20-KARUTE-LST    PIC X(16)  OCCURS 2.
+                       09  SPA-GMN20-KARUTE-LST    PIC X(16)  OCCURS 3.
+                   07  SPA-KARUTE-MAX              PIC 9(04).
       *
       *            07  SPA-GMN20-SYOHOU          PIC X(01).
                    07  SPA-GMN20-SYOHOU-G.
@@ -498,7 +500,8 @@
                        09  SPA-GMN20-SYOHOUF       PIC X(01).
                        09  SPA-GMN20-SYOHOUMEI     PIC X(14).
                    07  SPA-GMN20-SYOHOU-COB.
-                       09  SPA-GMN20-SYOHOU-LST    PIC X(16)  OCCURS 2.
+                       09  SPA-GMN20-SYOHOU-LST    PIC X(16)  OCCURS 3.
+                   07  SPA-SYOHOU-MAX             PIC 9(04).
       *
                    07  SPA-GMN20-HKNKUMI         PIC X(04).
                    07  SPA-NAI20-HKNKUMI         PIC 9(04).
