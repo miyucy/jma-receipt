@@ -67,7 +67,6 @@
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-PTCOM           PIC 9(01).
-           03  FLG-SANTEI          PIC 9(01).
            03  FLG-INPUTSET        PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -234,9 +233,6 @@
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
       *
-      *    保険別算定履歴テーブル
-           COPY    "CMSANTEITBL.INC".
-      *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"           REPLACING
                                 //SPA-// BY //WRK-SPA-//.
@@ -292,10 +288,6 @@
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    算定履歴
-       01  SANTEI-REC.
-           COPY    "CPSANTEI.INC".
-      *
       *    入力セットコード
        01  INPUTSET-REC.
            COPY    "CPINPUTSET.INC".
@@ -335,9 +327,6 @@
       *
       *   診療科算定履歴更新サブ
            COPY    "CPORCSKARRK.INC".
-      *
-      *   算定履歴更新サブ
-           COPY    "CPORCSSANTEI.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -434,7 +423,6 @@
                    INITIALIZE                 SPA-5000-GENSAN-CHK-TBL-41
                    INITIALIZE                 SPA-GMN-INPUT-41
                    INITIALIZE                 SPA-NAIGMN-AREA-41
-                   MOVE    06                 TO  SPA-GMN-CUR-41
       *    画面編集
                    PERFORM 500-GMNHEN-SEC
                END-IF
@@ -597,7 +585,7 @@
       *
                    MOVE    1                    TO  FLG-HENSYU
                    PERFORM 310-SPA-SET-SEC
-                   MOVE    1                   TO  SPA-GMN-CUR-41
+                   MOVE    1                    TO  SPA-GMN-CUR-41
            END-EVALUATE.
       *
            MOVE    1                   TO  SPA-GMN-PAGE-41.
@@ -1107,7 +1095,6 @@
                MOVE    WRK-TENSU-X         TO  SPA-GMN-TTENSU-41   (IDG)
                MOVE    IDG                 TO  SPA-NAI-ENDBANGO-41 (IDX)
            END-IF.
-      *
       *
       *    剤終了編集
            ADD     1                   TO  IDG.
@@ -3109,13 +3096,9 @@
            END-IF.
       *
       *    剤修正のチェック
-           IF      SPA-GMN-KOMENTO-41    NOT =   SPACE
-               MOVE    1                   TO  SPA-GMN-CUR-41
-               MOVE    "0009"              TO  SPA-ERRCD
-               GO      TO      420-ZAIHENKOU-EXT
-           END-IF.
-           IF       SPA-NAI-DAY-AREA-41 (SPA-GMN-NUM-41)    NOT =
-                                                        SPA-GMN-DAY-G-41
+           IF     (SPA-GMN-KOMENTO-41    NOT =   SPACE)   OR
+                  (SPA-NAI-DAY-AREA-41 (SPA-GMN-NUM-41)    NOT =
+                                                       SPA-GMN-DAY-G-41)
                MOVE    1                   TO  SPA-GMN-CUR-41
                MOVE    "0009"              TO  SPA-ERRCD
                GO      TO      420-ZAIHENKOU-EXT
@@ -3127,8 +3110,11 @@
                GO      TO      420-ZAIHENKOU-EXT
            END-IF.
            IF      SPA-UPDFLG-41       =   "1"
-               MOVE    "0030"          TO  SPA-ERRCD
-               GO      TO      420-ZAIHENKOU-EXT
+               PERFORM 4901-NYUINACCT-UPD-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE)   OR
+                      (SPA-IIDCD       NOT =   SPACE)
+                   GO      TO      420-ZAIHENKOU-EXT
+               END-IF
            END-IF.
       *
       *    労災の時、剤点数が外来管理加算料に振り替えた時、エラー
@@ -3345,8 +3331,11 @@
            END-IF.
       *
            IF      SPA-UPDFLG-41       =   "1"
-               MOVE    "0030"          TO  SPA-ERRCD
-               GO      TO      430-MAEKPTNUM-EXT
+               PERFORM 4901-NYUINACCT-UPD-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE)   OR
+                      (SPA-IIDCD       NOT =   SPACE)
+                   GO      TO      430-MAEKPTNUM-EXT
+               END-IF
            END-IF.
            IF      SPA-LAST-PTNUM      =   SPACE
                GO      TO      430-MAEKPTNUM-EXT
@@ -3373,8 +3362,11 @@
                GO      TO      430-CHEKU-EXT
            END-IF.
            IF      SPA-UPDFLG-41       =   "1"
-               MOVE    "0030"          TO  SPA-ERRCD
-               GO      TO      430-CHEKU-EXT
+               PERFORM 4901-NYUINACCT-UPD-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE)   OR
+                      (SPA-IIDCD       NOT =   SPACE)
+                   GO      TO      430-CHEKU-EXT
+               END-IF
            END-IF.
       *
            MOVE    SPA-GMN-SRYYM-41       TO  SPA-I40-SRYYMDW(1:6).
@@ -3413,9 +3405,16 @@
                MOVE    "0009"          TO  SPA-ERRCD
                GO      TO      430-FREEMSG-EXT
            END-IF.
-           IF      SPA-UPDFLG-41       =   "1"
-               MOVE    "0030"          TO  SPA-ERRCD
+           IF      SPA-GMN-PTNUM       =   SPACE
+               MOVE    "0019"          TO  SPA-ERRCD
                GO      TO      430-FREEMSG-EXT
+           END-IF.
+           IF      SPA-UPDFLG-41       =   "1"
+               PERFORM 4901-NYUINACCT-UPD-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE)   OR
+                      (SPA-IIDCD       NOT =   SPACE)
+                   GO      TO      430-FREEMSG-EXT
+               END-IF
            END-IF.
       *
            MOVE    SPA-GMN-SRYYM-41      TO  SPA-I40-SRYYMDW(1:6).
@@ -3455,6 +3454,10 @@
       *    剤修正のチェック
            IF      SPA-GMN-NUM-41   NOT =   ZERO
                MOVE    "0009"          TO  SPA-ERRCD
+               GO      TO      41018-ZENGETU-HEN-EXT
+           END-IF.
+           IF      SPA-GMN-PTNUM       =   SPACE
+               MOVE    "0019"          TO  SPA-ERRCD
                GO      TO      41018-ZENGETU-HEN-EXT
            END-IF.
       *
@@ -3500,8 +3503,8 @@
       *        入院会計マスターより編集をする
                PERFORM 410181-NYUINACCT-HEN-SEC
                IF      SPA-ERRCD          NOT =   SPACE
-                   IF     (WRK-SRYYM-SML   <   SPA-SAG-SRYYM-41)  AND
-                          (PTNYUINRRK-NYUINYMD(1:6) < SPA-SAG-SRYYM-41)
+                   IF     (WRK-SRYYM-SML   <   SPA-NAI-SRYYM-41)  AND
+                          (PTNYUINRRK-NYUINYMD(1:6) < SPA-NAI-SRYYM-41)
                        MOVE    SPACE               TO  SPA-ERRCD
                        PERFORM 41018-ZENGETU-COMPUTE-SEC
                    ELSE
@@ -3552,8 +3555,8 @@
       *****************************************************************
        410181-NYUINACCT-HEN-SEC           SECTION.
       *
-           MOVE    SPA-NAI-SRYYM-41   TO  WRK-SYMD(1:6).
-           MOVE    "01"               TO  WRK-SYMD(7:2).
+           MOVE    SPA-NAI-SRYYM-41    TO  WRK-SYMD(1:6).
+           MOVE    "01"                TO  WRK-SYMD(7:2).
            PERFORM 41012-SEIWA-HEN-SEC.
            MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM-41.
       *
@@ -3602,19 +3605,13 @@
                MOVE    1               TO  FLG-NYUINACCT
            END-IF.
            IF      FLG-NYUINACCT              =   1
-               IF      MCP-WIDGET             =   "B06"
-                   MOVE    "0020"              TO  SPA-ERRCD
-                   GO      TO       410181-NYUINACCT-HEN-EXT
+               IF      MCP-WIDGET             =   "B06"   OR
+                                                  "B07"   OR
+                                                  "B12"
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO                TO  SPA-GMN-MAX-41
                END-IF
-               IF      MCP-WIDGET             =   "B07"
-                   MOVE    "0020"              TO  SPA-ERRCD
-                   GO      TO       410181-NYUINACCT-HEN-EXT
-               END-IF
-               IF      MCP-WIDGET             =   "B12"
-                   MOVE    "0020"              TO  SPA-ERRCD
-                   GO      TO       410181-NYUINACCT-HEN-EXT
-               END-IF
-               MOVE    ZERO                TO  SPA-GMN-MAX-41
                MOVE    "0020"              TO  SPA-ERRCD
                GO      TO       410181-NYUINACCT-HEN-EXT
            ELSE
@@ -3840,6 +3837,10 @@
                MOVE    "0009"          TO  SPA-ERRCD
                GO      TO      41019-JIGETU-HEN-EXT
            END-IF.
+           IF      SPA-GMN-PTNUM       =   SPACE
+               MOVE    "0019"          TO  SPA-ERRCD
+               GO      TO      41019-JIGETU-HEN-EXT
+           END-IF.
       *
            MOVE    2                   TO  SPA-I4-SEL.
            IF      SPA-UPDFLG-41          =   "1"
@@ -3877,8 +3878,8 @@
       *        入院会計マスターより編集をする
                PERFORM 410181-NYUINACCT-HEN-SEC
                IF      SPA-ERRCD          NOT =   SPACE
-                   IF     (WRK-SRYYM-BIG   >   SPA-SAG-SRYYM-41)  AND
-                          (PTNYUINRRK-TAIINYMD(1:6) > SPA-SAG-SRYYM-41)
+                   IF     (WRK-SRYYM-BIG   >   SPA-NAI-SRYYM-41)  AND
+                          (PTNYUINRRK-TAIINYMD(1:6) > SPA-NAI-SRYYM-41)
                        MOVE    SPACE               TO  SPA-ERRCD
                        PERFORM 41019-JIGETU-COMPUTE-SEC
                    ELSE
@@ -4049,8 +4050,11 @@
                GO      TO      470-SIMEIKEN-EXT
            END-IF.
            IF      SPA-UPDFLG-41       =   "1"
-               MOVE    "0030"          TO  SPA-ERRCD
-               GO      TO      470-SIMEIKEN-EXT
+               PERFORM 4901-NYUINACCT-UPD-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE)   OR
+                      (SPA-IIDCD       NOT =   SPACE)
+                   GO      TO      470-SIMEIKEN-EXT
+               END-IF
            END-IF.
       *
            MOVE    SPA-GMN-SRYKAMEI-I-41 TO  SPA-I40-SRYKAMEI.
@@ -4092,8 +4096,11 @@
                GO      TO      480-YOYAKU-EXT
            END-IF.
            IF      SPA-UPDFLG-41       =   "1"
-               MOVE    "0030"          TO  SPA-ERRCD
-               GO      TO      480-YOYAKU-EXT
+               PERFORM 4901-NYUINACCT-UPD-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE)   OR
+                      (SPA-IIDCD       NOT =   SPACE)
+                   GO      TO      480-YOYAKU-EXT
+               END-IF
            END-IF.
       *
            MOVE    SPA-GMN-PTID           TO  SPA-PTID.
@@ -4136,8 +4143,11 @@
                GO      TO      490-UKEICHI-EXT
            END-IF.
            IF      SPA-UPDFLG-41       =   "1"
-               MOVE    "0030"          TO  SPA-ERRCD
-               GO      TO      490-UKEICHI-EXT
+               PERFORM 4901-NYUINACCT-UPD-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE)   OR
+                      (SPA-IIDCD       NOT =   SPACE)
+                   GO      TO      490-UKEICHI-EXT
+               END-IF
            END-IF.
       *
       *    戻り時、画面を元へ戻す
@@ -4767,9 +4777,6 @@
                WHEN    "0029"
                    MOVE    "剤識別区分が入院料以外の指定はできません。"
                                        TO  WRK-ERRMSG
-               WHEN    "0030"
-                   MOVE    "登録後実行してください。"
-                                       TO  WRK-ERRMSG
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません"
                                        TO  WRK-ERRMSG
@@ -5107,27 +5114,6 @@
            END-IF.
       *
        970-PTNYUINRRK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    算定歴マスタ読み込み
-      *****************************************************************
-       920-SANTEI-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SANTEI-REC
-               MOVE    ZERO                TO  FLG-SANTEI
-           ELSE
-               INITIALIZE                      SANTEI-REC
-               MOVE    1                   TO  FLG-SANTEI
-           END-IF.
-      *
-       920-SANTEI-READ-EXT.
            EXIT.
       *
       *****************************************************************
