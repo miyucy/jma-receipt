@@ -68,8 +68,10 @@
       *                                     請求点の桁数の変更
       *                                     続紙のタイトル表示 
       *  01.01.02    NACL-藤原    04/03/30  手術歴の記載
-      *  01.00.03    NACL-藤原    04/04/07  カスタマイズ項目にコメント欄
+      *  01.01.03    NACL-藤原    04/04/07  カスタマイズ項目にコメント欄
       *                                     ・診療科名を追加
+      *  01.01.04    NACL-藤原    04/04/09  診療科編集区分による診療科の
+      *                                     記載
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1083,6 +1085,9 @@
            IF      SYS-2005-SYUBYOHENFLG    =   SPACE
                MOVE    ZERO             TO  SYS-2005-SYUBYOHENFLG
            END-IF
+           IF      SYS-2005-SRYKAHENKBN     =   SPACE
+               MOVE    ZERO             TO  SYS-2005-SRYKAHENKBN
+           END-IF
       * 
       *    県内扱い保険者情報
            MOVE    SPACE            TO  WRK-1033-TABLE
@@ -1802,41 +1807,44 @@
       *    医療機関ＴＥＬ
            MOVE    SYS-1002-TEL        TO  HC06-HOSPTEL
       *
-      *    診療科
-           MOVE    SPACE                TO  SYSKANRI-REC
-           INITIALIZE                       SYSKANRI-REC
-           MOVE    "1005"               TO  SYS-KANRICD
-           MOVE    RECE62-LASTSRYKA     TO  SYS-KBNCD
-           MOVE    RECE62-SRYYM         TO  ORC-DBYMD (1:6)
-           MOVE    "01"                 TO  ORC-DBYMD (7:2)
-           PERFORM 960-KANRIMST-READ-SEC
-           IF      FLG-KANRIMST     =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1005-REC
-           ELSE
-               INITIALIZE                      SYS-1005-REC
-           END-IF
-           IF      SYS-1005-RECESRYKA  NOT =   SPACE
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "2"                 TO  KANACHK-SYORI 
-               MOVE    SYS-1005-RECESRYKA  TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-               IF      KANACHK-RC      =   ZERO
+      *    診療科（シス管の設定により編集を行なう）
+           IF      SYS-2005-SRYKAHENKBN
+                                       =   ZERO
+               MOVE    SPACE                TO  SYSKANRI-REC
+               INITIALIZE                       SYSKANRI-REC
+               MOVE    "1005"               TO  SYS-KANRICD
+               MOVE    RECE62-LASTSRYKA     TO  SYS-KBNCD
+               MOVE    RECE62-SRYYM         TO  ORC-DBYMD (1:6)
+               MOVE    "01"                 TO  ORC-DBYMD (7:2)
+               PERFORM 960-KANRIMST-READ-SEC
+               IF      FLG-KANRIMST     =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1005-REC
+               ELSE
+                   INITIALIZE                      SYS-1005-REC
+               END-IF
+               IF      SYS-1005-RECESRYKA  NOT =   SPACE
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "2"                 TO  KANACHK-SYORI 
+                   MOVE    SYS-1005-RECESRYKA  TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                       STRING  "（"            DELIMITED   BY  SIZE
+                               KANACHK-OUT-INPUT(1:KANACHK-MAX)    
+                                               DELIMITED   BY  SIZE
+                               SYS-1005-SRYKANAME
+                                               DELIMITED   BY  SPACE 
+                               "）"            DELIMITED   BY  SIZE
+                                               INTO  HC06-SRYKA
+                       END-STRING
+                   END-IF
+               ELSE
                    STRING  "（"            DELIMITED   BY  SIZE
-                           KANACHK-OUT-INPUT(1:KANACHK-MAX)    
-                                           DELIMITED   BY  SIZE
                            SYS-1005-SRYKANAME
                                            DELIMITED   BY  SPACE 
                            "）"            DELIMITED   BY  SIZE
                                            INTO  HC06-SRYKA
                    END-STRING
                END-IF
-           ELSE
-               STRING  "（"            DELIMITED   BY  SIZE
-                       SYS-1005-SRYKANAME
-                                       DELIMITED   BY  SPACE 
-                       "）"            DELIMITED   BY  SIZE
-                                       INTO  HC06-SRYKA
-               END-STRING
            END-IF    
       *    県単用項目
            IF      FLG-RECE67         =   ZERO
