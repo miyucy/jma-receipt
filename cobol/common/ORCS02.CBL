@@ -1621,8 +1621,8 @@
              OR ((COMB-KOHHKNNUM(KOH-IDX)      = "051"   )  AND
                  (LNK-SYU-SRYYMD(1:6)         >= "200310")           )
       *
-             OR ((WK-1001-PREFNUM              =  13     )  AND
-                 (COMB-KOHHKNNUM(KOH-IDX)      = "151"   )  AND
+             OR ((WK-1001-PREFNUM              =  13            )  AND
+                 (COMB-KOHHKNNUM(KOH-IDX)      = "151" OR "451" )  AND
                  (LNK-SYU-SRYYMD(1:6)         >= "200310")           )
       *
       ***    OR ( COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
@@ -3872,7 +3872,7 @@
                    END-IF
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
                    AND (WK-1001-PREFNUM           =   13           )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151"         )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151" OR "451")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
                WHEN   "2"
@@ -3893,7 +3893,7 @@
                    END-IF
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
                    AND (WK-1001-PREFNUM           =   13           )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151"         )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151" OR "451")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
                WHEN   "3"
@@ -3914,7 +3914,7 @@
                    END-IF
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
                    AND (WK-1001-PREFNUM           =   13           )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151"         )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151" OR "451")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
            END-EVALUATE.
@@ -4908,10 +4908,10 @@
            ELSE
       *      ÅìµþÅÔÃÏÊý¸øÈñ£±£µ£±¤¬¤¢¤ëÊý¤ÎÆÃÎã½èÍý
              IF   WK-1001-PREFNUM    =   13
-               IF  ( LNK-SYU-KOH1HKNNUM    =  "151" )
-               OR  ( LNK-SYU-KOH2HKNNUM    =  "151" )
-               OR  ( LNK-SYU-KOH3HKNNUM    =  "151" )
-               OR  ( LNK-SYU-KOH4HKNNUM    =  "151" )
+               IF  ( LNK-SYU-KOH1HKNNUM    =  "151" OR "451" )
+               OR  ( LNK-SYU-KOH2HKNNUM    =  "151" OR "451" )
+               OR  ( LNK-SYU-KOH3HKNNUM    =  "151" OR "451" )
+               OR  ( LNK-SYU-KOH4HKNNUM    =  "151" OR "451" )
                 COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                    +   LNK-SYU-SKYMONEY-SKJ-KEI
                 IF        WK-FTN    >=  WK-NYUJGNGAK

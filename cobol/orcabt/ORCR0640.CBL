@@ -5659,7 +5659,7 @@
              OR  ((RECE62-KOHNUM(KOHFTN-IDX) =  "051"         )   AND
                   (RECE62-SRYYM             >=  "200310"      ))
              OR  ((WRK-PREFNUM               =  "13"          )   AND
-                  (RECE62-KOHNUM(KOHFTN-IDX) =  "151"         )   AND
+                  (RECE62-KOHNUM(KOHFTN-IDX) =  "151" OR "451")   AND
                   (RECE62-SRYYM             >=  "200310"      ))
       *
                 COMPUTE  WRK-FTNKEI2 = RECE62-FTNMONEY(KOHFTN-IDX + 1)

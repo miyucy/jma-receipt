@@ -2502,8 +2502,8 @@
              OR ((COMB-KOHHKNNUM(KOH-IDX)      = "051"   )  AND
                  (LNK-SYU-SRYYMD(1:6)         >= "200310")           )
       *
-             OR ((WK-1001-PREFNUM              =  13     )  AND
-                 (COMB-KOHHKNNUM(KOH-IDX)      = "151"   )  AND
+             OR ((WK-1001-PREFNUM              =  13            )  AND
+                 (COMB-KOHHKNNUM(KOH-IDX)      = "151" OR "451" )  AND
                  (LNK-SYU-SRYYMD(1:6)         >= "200310")           )
       *
       ***    OR ( COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
