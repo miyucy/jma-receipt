@@ -27,6 +27,7 @@
       *****************************************************************
       *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      * 00.00.01     NACL-øπœ∆    03/04/25  Ω–ŒœæÚ∑ÔΩ§¿µ°¢≤ Ãæ•ª•√•» —ππ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -430,8 +431,10 @@
                    UNTIL ( FLG-SYSKANRI    =   1 )   OR
                          ( IDX             >   49  )
                MOVE    SYS-1005-KBNCD  TO  WRK-TAI-SRYKA(IDX)
-               MOVE    SYS-1005-SRYKANAME2
+      *****(00.00.01)******UPD-START************
+               MOVE    SYS-1005-SRYKANAME1
                                        TO  WRK-TAI-NAIYO(IDX)
+      *****(00.00.01)******ADD-END**************
                COMPUTE CNT-SRYKA       =   CNT-SRYKA   +   1
       *        ø«Œ≈≤ Ã‹ ‘Ω∏
                PERFORM 900-SYS1005-DBFETCH-SEC
@@ -625,9 +628,11 @@
                    END-IF
       *        ≥∞Õ—ÃÙ
                WHEN    3
-                   IF      TNS-YKZKBN      =   4
+      *****(00.00.01)******UPD-START************
+                   IF      TNS-YKZKBN      =   6
                        MOVE    1               TO  FLG-OK
                    END-IF
+      *****(00.00.01)******UPD-END**************
       *        ªı≤ Õ—ÃÙ∫ﬁ
                WHEN    4
                    IF      TNS-YKZKBN      =   8
