@@ -519,13 +519,13 @@
       *
            MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
-           MOVE    "2 今回分・日付の古い未収順に入金"
+           MOVE    "2 今回分・伝票の古い未収順に入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(2)
-           MOVE    "3 今回分・日付の新しい未収順に入金"
+           MOVE    "3 今回分・伝票の新しい未収順に入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(3)
-           MOVE    "4 日付の古い未収順に入金"
+           MOVE    "4 伝票の古い未収順に入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(4)
-           MOVE    "5 日付の新しい未収順に入金"
+           MOVE    "5 伝票の新しい未収順に入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(5)
            MOVE    5                   TO  SPA-GMN-SRYNYKNKNRKBN-MAX
       *
