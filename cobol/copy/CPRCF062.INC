@@ -60,6 +60,8 @@
            03  RECE62-BIRTHDAY            PIC  9(08).
       *死亡区分
            03  RECE62-DEATHKBN            PIC  X(01).
+      *年齢
+           03  RECE62-AGE                 PIC  9(03).
       *主保険情報
            03  RECE62-HKN.
       *主保険−保険ＩＤ
@@ -118,24 +120,12 @@
            03  RECE62-HKNCOMBIINF         OCCURS  10.
       *保険組合せ番号
                05  RECE62-HKNCOMBI        PIC  9(04).
-      *主保険番号
+      *組合せ主保険番号
                05  RECE62-HKNNUMHC        PIC  X(03).
       *組合せ公費保険番号情報
                05  RECE62-KOHNUMHCINF     OCCURS  4.
       *組合せ公費保険番号
                    07  RECE62-KOHNUMHC    PIC  X(03).
-      *特記事項情報
-           03  RECE62-TOKKIINF            OCCURS  5.
-      *特記事項
-               05  RECE62-TOKKI           PIC  X(02).
-      *病棟区分情報
-           03  RECE62-BYOTOKBNINF         OCCURS  4.
-      *病棟区分
-               05  RECE62-BYOTOKBN        PIC  X(02).
-      *実日数情報
-           03  RECE62-JNISSUINF           OCCURS  5.
-      *実日数
-               05  RECE62-JNISSU          PIC  9(02).
       *診療区分別点数情報
            03  RECE62-SRYKBNINF           OCCURS  30.
       *基本点数
@@ -154,48 +144,10 @@
            03  RECE62-FTNMONEYINF         OCCURS  5.
       *負担金額
                05  RECE62-FTNMONEY        PIC  9(09).
-      *老人減免区分
-           03  RECE62-RJNGENMENKBN        PIC  X(01).
-      *老人外来金額
-           03  RECE62-RJNGAIFTN           PIC  9(09).
-      *老人入院金額
-           03  RECE62-RJNNYUFTN           PIC  9(09).
-      *国保減免区分
-           03  RECE62-KKHGENMENKBN        PIC  X(01).
-      *国保減額割合
-           03  RECE62-KKHGENGAKURATE      PIC  X(03).
-      *国保減額金額
-           03  RECE62-KKHGENGAKU          PIC  X(03).
-      *割引点数単価
-           03  RECE62-DISCOUNTTENTNK      PIC  X(02).
-      *食事療養費情報
-           03  RECE62-SHOKUJIINF          OCCURS  5.
-      *食事日数
-               05  RECE62-SHOKUJINISSU    PIC  9(02).
-      *食事療養費
-               05  RECE62-SHOKUJIRYOYOHI  PIC  9(09).
-      *標準負担額
-               05  RECE62-SHOKUJIFTN      PIC  9(09).
-      *標準負担区分
-           03  RECE62-SHOKUJIFTNKBN       PIC  X(01).
-      *
-      *食事種別情報
-           03  RECE62-SHOKUJISYUINF       OCCURS   3.
-      *食事種別
-               05  RECE62-SHOKUJISYUBETU  PIC  X(04).
-      *
-      *食事基本料情報
-           03  RECE62-SHOKUJIKHNINF       OCCURS   4.
-      *食事基本料
-               05  RECE62-SHOKUJIKHNRYO   PIC  9(09).
-      *食事日数
-               05  RECE62-SHOKUJIKHNNISSU PIC  9(02).
-      *
-      *入院年月日
-           03  RECE62-NYUINYMD            PIC  X(08).
-      *
-      *医療機関種別
-           03  RECE62-HOSPSBT             PIC  X(01).
+      *実日数情報
+           03  RECE62-JNISSUINF           OCCURS  5.
+      *実日数
+               05  RECE62-JNISSU          PIC  9(02).
       *
       *入院基本料種別情報
            03  RECE62-NYUSYUINF           OCCURS  20.
@@ -236,25 +188,75 @@
                05  RECE62-NYUTOKKEIINF2   OCCURS  5.
       *合計金額２
                    07  RECE62-NYUTOKKEI2  PIC S9(09).
+      *食事療養費情報
+           03  RECE62-SHOKUJIINF          OCCURS  5.
+      *食事日数
+               05  RECE62-SHOKUJINISSU    PIC  9(02).
+      *食事療養費
+               05  RECE62-SHOKUJIRYOYOHI  PIC  9(09).
+      *標準負担額
+               05  RECE62-SHOKUJIFTN      PIC  9(09).
+      *標準負担区分
+           03  RECE62-SHOKUJIFTNKBN       PIC  X(01).
       *
-      *老人公費負担金額情報
-           03  RECE62-RJNKOHFTNINF        OCCURS  3.
-      *老人外来公費負担額
-               05  RECE62-RJNGAIKOHFTN    PIC  9(09).
-      *老人入院公費負担額
-               05  RECE62-RJNNYUKOHFTN    PIC  9(09).
-      *補足区分
-           03  RECE62-HOSOKUKBN           PIC  X(01).
-      *初診時間区分
-           03  RECE62-SHOSHINTIME         PIC  X(01).
-      *年齢
-           03  RECE62-AGE                 PIC  9(03).
+      *食事種別情報
+           03  RECE62-SHOKUJISYUINF       OCCURS   3.
+      *食事種別
+               05  RECE62-SHOKUJISYUBETU  PIC  X(04).
+      *
+      *食事基本料情報
+           03  RECE62-SHOKUJIKHNINF       OCCURS   4.
+      *食事基本料
+               05  RECE62-SHOKUJIKHNRYO   PIC  9(09).
+      *食事日数
+               05  RECE62-SHOKUJIKHNNISSU PIC  9(02).
+      *
+      *最終診療科
+           03  RECE62-LASTSRYKA           PIC  X(02).
+      *
+      *入院年月日
+           03  RECE62-NYUINYMD            PIC  X(08).
+      *
+      *医療機関種別
+           03  RECE62-HOSPSBT             PIC  X(01).
+      *特記事項情報
+           03  RECE62-TOKKIINF            OCCURS  5.
+      *特記事項
+               05  RECE62-TOKKI           PIC  X(02).
+      *病棟区分情報
+           03  RECE62-BYOTOKBNINF         OCCURS  4.
+      *病棟区分
+               05  RECE62-BYOTOKBN        PIC  X(02).
       *低所得フラグ
            03  RECE62-TEISYOTOKU          PIC  X(01).
       *高齢者フラグ
            03  RECE62-KOUREI              PIC  X(01).
       *高齢者一部負担金再掲
            03  RECE62-KOUREI-SAIKEI       PIC  9(09).
+      *補足区分
+           03  RECE62-HOSOKUKBN           PIC  X(01).
+      *初診時間区分
+           03  RECE62-SHOSHINTIME         PIC  X(01).
+      *老人減免区分
+           03  RECE62-RJNGENMENKBN        PIC  X(01).
+      *老人外来金額
+           03  RECE62-RJNGAIFTN           PIC  9(09).
+      *老人入院金額
+           03  RECE62-RJNNYUFTN           PIC  9(09).
+      *国保減免区分
+           03  RECE62-KKHGENMENKBN        PIC  X(01).
+      *国保減額割合
+           03  RECE62-KKHGENGAKURATE      PIC  X(03).
+      *国保減額金額
+           03  RECE62-KKHGENGAKU          PIC  X(03).
+      *割引点数単価
+           03  RECE62-DISCOUNTTENTNK      PIC  X(02).
+      *老人公費負担金額情報
+           03  RECE62-RJNKOHFTNINF        OCCURS  3.
+      *老人外来公費負担額
+               05  RECE62-RJNGAIKOHFTN    PIC  9(09).
+      *老人入院公費負担額
+               05  RECE62-RJNNYUKOHFTN    PIC  9(09).
       *予備
            03  RECE62-FILLER              PIC  X(34).
       *
