@@ -30,7 +30,8 @@
       *  01.00.01    NACL-太田    03.09.19  自院歴より継続して入院している
       *                                     場合の入院日を修正
       *  01.00.02    NACL-太田    04.01.16  包括分の考慮を追加
-      *  01.00.02    NACL-太田    04.01.19  室料差額消費税区分の考慮を追加
+      *  01.00.03    NACL-太田    04.01.19  室料差額消費税区分の考慮を追加
+      *  01.00.04    NACL-太田    04.02.19  減算時の黒三角編集漏れを修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2745,6 +2746,20 @@
       *
                    IF    ( SRY-SRYCD (IDX9)    =   CONST-TEIGEN )
                        MOVE    1           TO  FLG-MINUS
+                   END-IF
+      *
+                   IF    ( WRK-HKNNUM          NOT =     "971" )
+                    AND  ( WRK-HKNNUM          NOT =     "973" )
+                       IF    ( SRY-SRYCD (IDX9)    =   CONST-GENZAN1
+                                                   OR  CONST-GENZAN2
+                                                   OR  CONST-GENZAN3
+                                                   OR  CONST-GENZAN4
+                                                   OR  CONST-GENZAN5
+                                                   OR  CONST-GENZAN6
+                                                   OR  CONST-GENZAN7
+                                                   OR  CONST-GENZAN8 )
+                           MOVE    1       TO  FLG-MINUS
+                       END-IF
                    END-IF
       *
                    IF    ( FLG-RSIJBI-AREA-HEN =   1 )
