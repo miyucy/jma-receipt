@@ -42,6 +42,14 @@
                05  HKNJAWK-HKNJANAME-TAN3    PIC  X(40).
       *保険番号
                05  HKNJAWK-HKNNUM            PIC  X(03).
+      *給付割合（本人・外来）
+               05  HKNJAWK-HON-GAIKYURATE    PIC  9(03).
+      *給付割合（本人・入院）
+               05  HKNJAWK-HON-NYUKYURATE    PIC  9(03).
+      *給付割合（家族・外来）
+               05  HKNJAWK-KZK-GAIKYURATE    PIC  9(03).
+      *給付割合（家族・入院）
+               05  HKNJA-KZK-NYUKYURATE      PIC  9(03).
       *郵便番号
                05  HKNJAWK-POST              PIC  X(07).
       *住所
