@@ -289,19 +289,25 @@
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
-      *    医療機関ＩＤ編集
-           INITIALIZE                  SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    ZERO                TO  ORC-DBYMD
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1001-REC
-           ELSE
-               MOVE    "医療機関情報が取得できませんでした。"
-                                           TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
+      *
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
+      *
+      *       医療機関ＩＤ編集
+              INITIALIZE                  SYS-1001-REC
+              MOVE    "1001"              TO  SYS-1001-KANRICD
+              MOVE    "*"                 TO  SYS-1001-KBNCD
+              MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+              MOVE    "01"                TO  ORC-DBYMD (7:2)
+              MOVE    SYS-1001-REC        TO  MCPDATA-REC
+              PERFORM 910-SYSKANRI-INV-SEC
+              IF      FLG-SYSKANRI        =   ZERO
+                  MOVE    MCPDATA-REC         TO  SYS-1001-REC
+              ELSE
+                  MOVE    "医療機関情報が取得できませんでした。"
+                                              TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+              END-IF
+      *
            END-IF
       *
            OPEN    OUTPUT              RECE401-FILE
@@ -742,6 +748,23 @@
 070400 20021-KOBETU-HENSYU-SEC              SECTION.
       *
            MOVE    MCPDATA-REC         TO  SYS-2002-REC
+      *
+      *    医療機関ＩＤ編集
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SYS-2002-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+           ELSE
+               MOVE    "医療機関情報が取得できませんでした。"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO     TO     20021-KOBETU-HENSYU-EXT
+           END-IF
       *
       *??     IF      SYS-2002-RECEKBN    =   "1"
       *        診療年月編集
