@@ -636,7 +636,14 @@ COPYS = \
         CPORCHCM31.INC \
         HCM31.INC \
         HCM32.INC \
-        CPRCF068.INC
+        CPRCF068.INC \
+        HCM18.INC \
+        HCM20.INC \
+        HCM21.INC \
+        HCM22.INC \
+        HCM23.INC \
+        HCM24.INC \
+        HCM29.INC
 
 DBPATH = \
 	ORCA-DBPATH
