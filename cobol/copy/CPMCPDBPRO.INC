@@ -324,6 +324,7 @@
       *  01.01.137   NACL-太田    04/03/29  PTTEIKIRRK-KEY6追加
       *  01.01.138   NACL-太田    04/04/08  SYUMEI-KEY7追加
       *  01.01.139   NACL-太田    04/05/06  PTNYUINRRK-KEY30,KEY31追加
+      *  01.01.140   NACL-太田    04/05/17  PTTEIKIRRK-KEY7追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -3076,6 +3077,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTEIKIRRK-KEY6"
                    MOVE    PATH-TBL-PTTEIKIRRK-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTTEIKIRRK-KEY7"
+                   MOVE    PATH-TBL-PTTEIKIRRK-KEY7
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTEIKIRRK-ALL"
                    MOVE    PATH-TBL-PTTEIKIRRK-ALL
