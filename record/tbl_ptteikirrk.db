@@ -141,3 +141,18 @@ path	key6		{
 		;
 	};
 };
+
+
+path	key7		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptteikirrk_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptteikirrk
+        WHERE  
+               HOSPID  =   :HOSPID
+        AND    PTID    =   :PTID
+        AND    RRKNUM  =   :RRKNUM
+		ORDER  BY  SKYEDYMD DESC
+		;
+	};
+};
