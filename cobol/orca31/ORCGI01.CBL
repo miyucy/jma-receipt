@@ -8324,6 +8324,7 @@
                MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
                MOVE    IPN-SANTEISTYMD   TO   WRK-SANTEISTYMD
                MOVE    IPN-SANTEISTYMD   TO   SPA-NAI-I01-IDOYMD
+               MOVE    IPN-SANTEISTYMD   TO   PTNYUINRRK-TENNYUYMD
                PERFORM   4801-TENROOM-EDIT-SEC
            END-IF
       *
