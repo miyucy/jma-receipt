@@ -73,10 +73,10 @@
       *
       *    入院点数算定用ワークエリア
        01  WRK-NYUIN-TENSU-AREA.
-           03  WRK-KHNTEN                  PIC  9(08).                          
+           03  WRK-KHNTEN                  PIC  9(08). 
            03  WRK-KSNTEN                  PIC  S9(08).
-           03  NYUIN-COUNT                 PIC  9(02).                         
-           03  SINRYO-COUNT                PIC  9(02).                         
+           03  NYUIN-COUNT                 PIC  9(02). 
+           03  SINRYO-COUNT                PIC  9(02). 
       *
        01  FLG-AREA.
            03  FLG-HANBETU                 PIC 9(01).
@@ -316,13 +316,15 @@
            MOVE          LNK-DAY7-KOYOMI        TO  WRK-EDYMD. 
       *
            MOVE          LNK-S02-SKYSTYMD(7:2)  TO  WRK-HI-ST(1).
-           IF      LNK-S02-SKYEDYMD(5:2) > LNK-S02-SKYSTYMD(5:2)
+      *    IF      LNK-S02-SKYEDYMD(5:2) > LNK-S02-SKYSTYMD(5:2)
+           IF      LNK-S02-SKYEDYMD(1:6) > LNK-S02-SKYSTYMD(1:6)
               MOVE       WRK-EDYMD(7:2)         TO  WRK-HI-ED(1) 
            ELSE
               MOVE       LNK-S02-SKYEDYMD(7:2)  TO  WRK-HI-ED(1)
            END-IF.
       *
-           IF      LNK-S02-SKYEDYMD(5:2) > LNK-S02-SKYSTYMD(5:2)
+      *    IF      LNK-S02-SKYEDYMD(5:2) > LNK-S02-SKYSTYMD(5:2)
+           IF      LNK-S02-SKYEDYMD(1:6) > LNK-S02-SKYSTYMD(1:6)
               MOVE       LNK-S02-SKYEDYMD(1:6)  TO  WRK-SKYYM(2)
               MOVE       1                      TO  WRK-HI-ST(2)
               MOVE       LNK-S02-SKYEDYMD(7:2)  TO  WRK-HI-ED(2)
@@ -1184,8 +1186,8 @@
                        IF    SRY-SRYCD (IDZ) (1:3)   =   "095"
                                                      OR  "096"
                            IF    SRY-SRYCD (IDZ) (4:2)    =   "00"
-                                                     OR       "91"      010112
-                                                     OR       "92"      010112
+                                                     OR       "91"     
+                                                     OR       "92"     
                                MOVE    SPACE         TO   TNS-TENSU-REC
                                INITIALIZE                 TNS-TENSU-REC
                                MOVE    SRY-SRYCD(IDZ) TO   TNS-SRYCD
@@ -1368,8 +1370,8 @@
                        IF    SRY-SRYCD (IDZ) (1:3)   =   "095"
                                                      OR  "096"
                            IF    SRY-SRYCD (IDZ) (4:2)    =   "00"
-                                                     OR       "91"      010112
-                                                     OR       "92"      010112
+                                                     OR       "91"      
+                                                     OR       "92"      
                                MOVE    SPACE         TO   TNS-TENSU-REC
                                INITIALIZE                 TNS-TENSU-REC
                                MOVE    SRY-SRYCD(IDZ) TO   TNS-SRYCD
@@ -1769,4 +1771,3 @@
            .
        CSR-CLOSE-EXT.
            EXIT.
-      
