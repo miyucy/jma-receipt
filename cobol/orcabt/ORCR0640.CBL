@@ -3908,7 +3908,8 @@
                        IF   SRY-SRYKBN   =  "21"  OR  "22"  OR  "23" OR
                                             "31"  OR  "32"  OR  "33" OR
                                             "40"  OR  "50"  OR  "60" OR
-                                            "70"  OR  "80"  OR  "54"
+                                            "70"  OR  "80"  OR  "54" OR
+                                            "14"
                            MOVE  ZERO          TO   WK-ZAIKAISU
                            MOVE  ZERO          TO   WK-ZAITEN
                            MOVE  ZERO          TO   WK-SYUTEN
@@ -3930,7 +3931,7 @@
                IF    SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
                                       "31"   OR   "32"   OR   "33"   OR
                                       "40"   OR   "50"   OR   "60"   OR
-                                      "70"   OR   "54"
+                                      "70"   OR   "54"   OR   "14"
                      MOVE    6      TO    IDX3
                END-IF
            END-PERFORM
@@ -4136,22 +4137,22 @@
                    IF    BUN-IDX        =   1
                        COMPUTE    RECE62-TENSU(3 BUN-IDX)  =
                                   RECE62-TENSU(3 BUN-IDX)  +
-                                 (ACCT-ZAITEN   *   ACCT-ZAIKAISU)
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE    RECE62-TENSU(3 BUN-IDX2)  =
                                   RECE62-TENSU(3 BUN-IDX2)  +
-                                 (ACCT-ZAITEN   *   ACCT-ZAIKAISU)
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE    RECE62-TENSU(3 BUN-IDX3)  =
                                   RECE62-TENSU(3 BUN-IDX3)  +
-                                 (ACCT-ZAITEN   *   ACCT-ZAIKAISU)
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE    RECE62-TENSU(3 BUN-IDX4)  =
                                   RECE62-TENSU(3 BUN-IDX4)  +
-                                 (ACCT-ZAITEN   *   ACCT-ZAIKAISU)
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
