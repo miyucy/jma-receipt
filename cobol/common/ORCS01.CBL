@@ -7128,7 +7128,8 @@
        2308-ZANOKIKAE-HENSYU-SEC           SECTION.
       *
            IF     WK-1001-PREFNUM       =   27
-             IF   COMB-KOH1HKNNUM       =  "180"
+             IF   COMB-KOH1HKNNUM       =  "180" OR "182" OR
+                                           "186" OR "188"
                   IF   COMB-KOH2HKNNUM  =  "972"
                       IF   ZAN-KOHI1  >  ZAN-KOHI2
                           MOVE   ZAN-KOHI2   TO  ZAN-KOHI1
@@ -7163,7 +7164,8 @@
                       END-IF
                   END-IF
              END-IF
-             IF   COMB-KOH2HKNNUM       =  "180"
+             IF   COMB-KOH2HKNNUM       =  "180" OR "182" OR
+                                           "186" OR "188"
                   IF   COMB-KOH1HKNNUM  =  "972"
                       IF   ZAN-KOHI2  >  ZAN-KOHI1
                           MOVE   ZAN-KOHI1   TO  ZAN-KOHI2
@@ -7198,7 +7200,8 @@
                       END-IF
                   END-IF
              END-IF
-             IF   COMB-KOH3HKNNUM       =  "180"
+             IF   COMB-KOH3HKNNUM       =  "180" OR "182" OR
+                                           "186" OR "188"
                   IF   COMB-KOH1HKNNUM  =  "972"
                       IF   ZAN-KOHI3  >  ZAN-KOHI1
                           MOVE   ZAN-KOHI1   TO  ZAN-KOHI3
@@ -7233,7 +7236,8 @@
                       END-IF
                   END-IF
              END-IF
-             IF   COMB-KOH4HKNNUM       =  "180"
+             IF   COMB-KOH4HKNNUM       =  "180" OR "182" OR
+                                           "186" OR "188"
                   IF   COMB-KOH1HKNNUM  =  "972"
                       IF   ZAN-KOHI4  >  ZAN-KOHI1
                           MOVE   ZAN-KOHI1   TO  ZAN-KOHI4
