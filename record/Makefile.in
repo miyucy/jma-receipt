@@ -275,7 +275,7 @@ RECORD_files = \
 	J025.rec \
 	N31.rec \
 	N31ERR.rec \
-	N31Id1.rec \
+	N31ID1.rec \
 
 DEF_files = \
 	HC01.def \
