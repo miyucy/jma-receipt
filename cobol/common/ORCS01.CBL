@@ -3865,75 +3865,99 @@
       *    ¼ýÇ¼¥Æ¡¼¥Ö¥ë¤Î¸øÈñËè¤Î´µ¼ÔÉéÃ´¶â³Û¤ò¥»¥Ã¥È¤¹¤ë
            IF   (COMB-KOH1HKNNUM         NOT = SPACE)   AND
                 (COMB-KOH1-GAIJGNKBN     =     "1")
-               IF   COMB-KOH1-HKNKOHSBTKBN   NOT =    "3"
-                    MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH1HKNFTNMONEY
+      ***>     IF   COMB-KOH1-HKNKOHSBTKBN   NOT =    "3"
+      ***>          MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH1HKNFTNMONEY
+                    COMPUTE  LNK-SYU-KOH1HKNFTNMONEY  =                  
+                                    LNK-SYU-KOH1COMPFTN     +   5        
+                    COMPUTE  LNK-SYU-KOH1HKNFTNMONEY  =                  
+                                    LNK-SYU-KOH1HKNFTNMONEY /  10        
+                    COMPUTE  LNK-SYU-KOH1HKNFTNMONEY  =                  
+                                    LNK-SYU-KOH1HKNFTNMONEY *  10        
                     IF     LNK-SYU-KOH1YKZFTNKBN   =    "2"
                            COMPUTE  LNK-SYU-KOH1HKNFTNMONEY  =
                                     LNK-SYU-KOH1HKNFTNMONEY  +
                                     LNK-SYU-KOH1COMPYKZFTN
                     END-IF
-               ELSE
-                    IF     COMB-KOH1HKNNUM     =    "027"
-                        MOVE   LNK-SYU-KOH1COMPFTN
-                                         TO  LNK-SYU-KOH1HKNFTNMONEY
-                    ELSE
-                        MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH1HKNFTNMONEY
-                    END-IF
-               END-IF
+      ***>     ELSE
+      ***>          IF     COMB-KOH1HKNNUM     =    "027"
+      ***>              MOVE   LNK-SYU-KOH1COMPFTN
+      ***>                               TO  LNK-SYU-KOH1HKNFTNMONEY
+      ***>          ELSE
+      ***>              MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH1HKNFTNMONEY
+      ***>          END-IF
+      ***>     END-IF
            END-IF.
            IF   (COMB-KOH2HKNNUM        NOT = SPACE)   AND
                 (COMB-KOH2-GAIJGNKBN    =     "1")
-               IF   COMB-KOH2-HKNKOHSBTKBN   NOT =    "3"
-                    MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH2HKNFTNMONEY
+      ***>     IF   COMB-KOH2-HKNKOHSBTKBN   NOT =    "3"
+      ***>          MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH2HKNFTNMONEY
+                    COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =                  
+                                    LNK-SYU-KOH2COMPFTN     +   5        
+                    COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =                  
+                                    LNK-SYU-KOH2HKNFTNMONEY /  10        
+                    COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =                  
+                                    LNK-SYU-KOH2HKNFTNMONEY *  10        
                     IF     LNK-SYU-KOH2YKZFTNKBN   =    "2"
                            COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =
                                     LNK-SYU-KOH2HKNFTNMONEY  +
                                     LNK-SYU-KOH2COMPYKZFTN
                     END-IF
-               ELSE
-                    IF     COMB-KOH2HKNNUM     =    "027"
-                        MOVE   LNK-SYU-KOH2COMPFTN
-                                         TO  LNK-SYU-KOH2HKNFTNMONEY
-                    ELSE
-                        MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH2HKNFTNMONEY
-                    END-IF
-               END-IF
+      ***>     ELSE
+      ***>          IF     COMB-KOH2HKNNUM     =    "027"
+      ***>              MOVE   LNK-SYU-KOH2COMPFTN
+      ***>                               TO  LNK-SYU-KOH2HKNFTNMONEY
+      ***>          ELSE
+      ***>              MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH2HKNFTNMONEY
+      ***>          END-IF
+      ***>     END-IF
            END-IF.
            IF   (COMB-KOH3HKNNUM        NOT = SPACE)   AND
                 (COMB-KOH3-GAIJGNKBN    =     "1")
-               IF   COMB-KOH3-HKNKOHSBTKBN   NOT =    "3"
-                    MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH3HKNFTNMONEY
+      ***>     IF   COMB-KOH3-HKNKOHSBTKBN   NOT =    "3"
+      ***>          MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH3HKNFTNMONEY
+                    COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =                  
+                                    LNK-SYU-KOH3COMPFTN     +   5        
+                    COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =                  
+                                    LNK-SYU-KOH3HKNFTNMONEY /  10        
+                    COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =                  
+                                    LNK-SYU-KOH3HKNFTNMONEY *  10        
                     IF     LNK-SYU-KOH3YKZFTNKBN   =    "2"
                            COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =
                                     LNK-SYU-KOH3HKNFTNMONEY  +
                                     LNK-SYU-KOH3COMPYKZFTN
                     END-IF
-               ELSE
-                    IF     COMB-KOH3HKNNUM     =    "027"
-                        MOVE   LNK-SYU-KOH3COMPFTN
-                                         TO  LNK-SYU-KOH3HKNFTNMONEY
-                    ELSE
-                        MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH3HKNFTNMONEY
-                    END-IF
-               END-IF
+      ***>     ELSE
+      ***>          IF     COMB-KOH3HKNNUM     =    "027"
+      ***>              MOVE   LNK-SYU-KOH3COMPFTN
+      ***>                               TO  LNK-SYU-KOH3HKNFTNMONEY
+      ***>          ELSE
+      ***>              MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH3HKNFTNMONEY
+      ***>          END-IF
+      ***>     END-IF
            END-IF.
            IF   (COMB-KOH4HKNNUM        NOT = SPACE)   AND
                 (COMB-KOH4-GAIJGNKBN    =     "1")
-               IF   COMB-KOH4-HKNKOHSBTKBN   NOT =    "3"
-                    MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH4HKNFTNMONEY
+      ***>     IF   COMB-KOH4-HKNKOHSBTKBN   NOT =    "3"
+      ***>          MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH4HKNFTNMONEY
+                    COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =                  
+                                    LNK-SYU-KOH4COMPFTN     +   5        
+                    COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =                  
+                                    LNK-SYU-KOH4HKNFTNMONEY /  10        
+                    COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =                  
+                                    LNK-SYU-KOH4HKNFTNMONEY *  10        
                     IF     LNK-SYU-KOH4YKZFTNKBN   =    "2"
                            COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =
                                     LNK-SYU-KOH4HKNFTNMONEY  +
                                     LNK-SYU-KOH4COMPYKZFTN
                     END-IF
-               ELSE
-                    IF     COMB-KOH4HKNNUM     =    "027"
-                        MOVE   LNK-SYU-KOH4COMPFTN
-                                         TO  LNK-SYU-KOH4HKNFTNMONEY
-                    ELSE
-                        MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH4HKNFTNMONEY
-                    END-IF
-               END-IF
+      ***>     ELSE
+      ***>          IF     COMB-KOH4HKNNUM     =    "027"
+      ***>              MOVE   LNK-SYU-KOH4COMPFTN
+      ***>                               TO  LNK-SYU-KOH4HKNFTNMONEY
+      ***>          ELSE
+      ***>              MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH4HKNFTNMONEY
+      ***>          END-IF
+      ***>     END-IF
            END-IF.
       *
        2314-FTNKIN-HIKAKU-EXT.
