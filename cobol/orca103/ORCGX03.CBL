@@ -698,6 +698,7 @@
            END-IF
       *
            IF    ( WRK-MCP-WIDGET      =   "CHKKBN" )
+               MOVE    SPACE           TO  SPA-X03-GMN-SELNAME
                MOVE    1               TO  SPA-X03-GMN-PAGE
                PERFORM 3101-SELCHKLST-HEN-SEC
            END-IF
