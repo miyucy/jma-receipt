@@ -2524,6 +2524,7 @@
                MOVE    SPA-PTID            TO  AGECHK-PTID
                MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
                MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+               MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
                IF     (AGECHK-NENREI       >=   70  )  OR

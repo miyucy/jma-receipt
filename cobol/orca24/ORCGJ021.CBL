@@ -427,6 +427,7 @@
                    MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
                    MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
                    MOVE    COMB-HKNCOMBINUM    TO  AGECHK-HKNCOMBINUM
+                   MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
                    CALL    "ORCSAGECHK"        USING
                                                 ORCSAGECHKAREA
                    IF      AGECHK-FTNRATE  NOT =   ZERO
@@ -1182,6 +1183,7 @@
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
            MOVE    SPA-J021-ATO-HKNCOMBI
                                        TO  AGECHK-HKNCOMBINUM
+           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
            IF      AGECHK-FTNRATE  NOT =   ZERO

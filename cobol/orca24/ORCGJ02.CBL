@@ -4835,6 +4835,7 @@
            MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
            MOVE    SPA-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
+           MOVE    SPA-GMN-NYUGAIKBN   TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
       *    …È√¥Œ®

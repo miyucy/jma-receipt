@@ -2782,6 +2782,7 @@
            MOVE    SPA-PTID            TO  AGECHK-PTID
            MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
            MOVE    AGECHK-NENREI2-YY   TO  SPA-NENREI-YY
@@ -2881,6 +2882,7 @@
            MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
            MOVE    SPA-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
+           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
       **** IF      AGECHK-FTNRATE      =   ZERO
