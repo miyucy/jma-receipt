@@ -1075,27 +1075,23 @@
       *
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO      TO      100-INIT-EXT
-               END-IF
       *
-      *        画面編集
-               PERFORM 500-GMNHEN-SEC
-               IF      FLG-END             =   1
-                   GO      TO      100-INIT-EXT
+               IF      FLG-END             =   ZERO
+      *            画面編集
+                   PERFORM 500-GMNHEN-SEC
                END-IF
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      FLG-END             =   ZERO
+               MOVE    SPACE               TO  LINKAREA
       *
-      *****MOVE   "NEW"                TO  MCP-PUTTYPE.
-           MOVE   SPACE                TO  MCP-PUTTYPE.
-           MOVE   "K02"                TO  MCP-WINDOW.
+               MOVE   SPACE                TO  MCP-PUTTYPE
+               MOVE   "K02"                TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
-           .
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  FLG-END
+           END-IF
+          .
        100-INIT-EXT.
            EXIT.
       *
@@ -1120,7 +1116,7 @@
            MOVE    SPA-TERMID          TO  FILE-TERMID1
       *
            OPEN    INPUT               SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
+           IF      STS-SPASCR      NOT =   ZERO
                GO      TO      1002-K02SPA-SET-EXT
            END-IF
       *
@@ -5874,10 +5870,8 @@
                    END-IF
                END-IF
       *
-               IF      K02-INPUTCD (WRK-IDX2)  NOT =   SPACE
-                   IF      WRK-STR             =   ZERO
-                       MOVE    SPA-GMN-IDX         TO  WRK-STR
-                   END-IF
+               IF      WRK-STR             =   ZERO
+                   MOVE    SPA-GMN-IDX         TO  WRK-STR
                END-IF
            END-PERFORM
       *
