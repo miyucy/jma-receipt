@@ -31,6 +31,7 @@
       *                                     剤区分の編集
       *  00.01.02    NACL-森脇    02.09.12  ファイルディレクトリ位置指定
       *  00.01.03    NACL-多々納  02.09.17  印刷サプの追加
+      *  00.01.04    NACL-森脇    02.09.27  内容の変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -129,7 +130,10 @@
       *
            03  WRK-PRTNM               PIC X(20).
            03  WRK-SRYCD               PIC X(09).
-           03  WRK-TANICD              PIC X(03).
+      *----(00.01.04)--UPD-START----
+      *     03  WRK-TANICD              PIC X(03).
+           03  WRK-SSTKIJUNCD          PIC X(04).
+      *----(00.01.04)--UPD-END------
       *
            03  WRK-SURYO               PIC 9(08)V9(03).
            03  WRK-SURYO-R             REDEFINES   WRK-SURYO.
@@ -346,9 +350,9 @@
       *----(00.01.02)--UPD-END------
                END-IF
       *
-      *        点数マスタ薬剤検索
-               MOVE    ORCHC30-SRYCD(CNT-PARA)     TO  WRK-SRYCD
-               PERFORM 900-TENSU-READ-SEC
+      *----(00.01.04)--UPD-START----
+      *        内容編集、区分編集
+               PERFORM 240-NAIYO-SET-SEC
       *
       *        薬剤名セット
                IF  YAKUJYO-NAME    =   SPACE
@@ -357,9 +361,7 @@
                    MOVE    YAKUJYO-NAME    TO  WRK-HENYKZNAME
                END-IF
                PERFORM 223-HENYKZNAME-SET-SEC
-      *
-      *        内容編集、区分編集
-               PERFORM 240-NAIYO-SET-SEC
+      *----(00.01.04)--UPD-END------
       *
            END-PERFORM
       *
@@ -549,17 +551,14 @@
       *****************************************************************
        240-NAIYO-SET-SEC               SECTION.
       *
-      *    数量編集
-           PERFORM 242-HENNAIYO-SURYO-SET-SEC
-           PERFORM 241-HENNAIYO-SET-SEC
-      *
-           MOVE    TNS-TANICD          TO  WRK-TANICD
-      *
+      *----(00.01.04)--UPD-START----
       *    点数マスタ用法検索
            MOVE    ORCHC30-YSRYCD(CNT-PARA)    TO  WRK-SRYCD
            PERFORM 900-TENSU-READ-SEC
       *
       *    用法編集
+           MOVE    1                   TO  IDX
+           MOVE    SPACE               TO  WRK-HENNAIYO
            MOVE    TNS-NAME            TO  WRK-HENNAIYO
            PERFORM 241-HENNAIYO-SET-SEC
       *
@@ -574,9 +573,10 @@
       *    回数カウント
            MOVE    ZERO                TO  CNT-KAISU
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL       IDZ     >   8
+                   UNTIL       IDZ     >   4
                IF  TNS-SSTKIJUNCD(IDZ) =   1
                    COMPUTE CNT-KAISU   =   CNT-KAISU   +   1
+                   MOVE    1           TO  WRK-SSTKIJUNCD(IDZ:1)
                END-IF
            END-PERFORM
       *
@@ -587,6 +587,20 @@
       *    回数編集
            PERFORM 242-HENNAIYO-KAISU-SET-SEC
            PERFORM 241-HENNAIYO-SET-SEC
+      *
+      *    点数マスタ薬剤検索
+           MOVE    ORCHC30-SRYCD(CNT-PARA)     TO  WRK-SRYCD
+           PERFORM 900-TENSU-READ-SEC
+      *
+      *    数量編集
+           IF          TNS-TANICD  =   "015"
+               OR      TNS-TANICD  =   "016"
+               OR      TNS-TANICD  =   "018"
+               OR      TNS-TANICD  =   "059"
+               PERFORM 242-HENNAIYO-SURYO-SET-SEC
+               PERFORM 241-HENNAIYO-SET-SEC
+           END-IF
+      *----(00.01.04)--UPD-END------
       *
       *    区分編集
            PERFORM 243-HENKBN-SET-SEC
@@ -723,7 +737,9 @@
                MOVE    "　　　　　　　　"  TO  WRK-HENNAIYO
            END-IF
       *
-           MOVE    1                   TO  IDX
+      *----(00.01.04)--UPD-START----
+           MOVE    8                   TO  IDX
+      *----(00.01.04)--UPD-END------
       *
            .
        242-HENNAIYO-SURYO-SET-EXT.
@@ -738,7 +754,7 @@
            MOVE    SPACE               TO  WRK-HENSURYO
       *----(00.01.01)--ADD-END------
       *    区分セット
-           EVALUATE    WRK-TANICD
+           EVALUATE    TNS-TANICD
                WHEN    "032"
                WHEN    "033"
                    MOVE    "1"             TO  WRK-HENSURYO
@@ -758,19 +774,15 @@
                    END-IF
            END-EVALUATE
       *
+      *----(00.01.04)--UPD-START----
       *    区分セット
-           IF      TNS-SSTKIJUNCD(1)   =   1
-               MOVE    WRK-HENSURYO    TO  WRK-YKJ-KBN(CNT-LINE 1)
-           END-IF
-           IF      TNS-SSTKIJUNCD(2)   =   1
-               MOVE    WRK-HENSURYO    TO  WRK-YKJ-KBN(CNT-LINE 2)
-           END-IF
-           IF      TNS-SSTKIJUNCD(3)   =   1
-               MOVE    WRK-HENSURYO    TO  WRK-YKJ-KBN(CNT-LINE 3)
-           END-IF
-           IF      TNS-SSTKIJUNCD(4)   =   1
-               MOVE    WRK-HENSURYO    TO  WRK-YKJ-KBN(CNT-LINE 4)
-           END-IF
+           PERFORM VARYING IDZ FROM    1   BY  1
+                   UNTIL   IDZ     >   4
+               IF          WRK-SSTKIJUNCD(IDZ:1)   =   1
+                   MOVE    WRK-HENSURYO    TO  WRK-YKJ-KBN(CNT-LINE IDZ)
+               END-IF
+           END-PERFORM
+      *----(00.01.04)--UPD-END------
            .
       *
        243-HENKBN-SET-EXT.
