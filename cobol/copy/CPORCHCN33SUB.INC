@@ -37,7 +37,7 @@
       *ªªƒÍ«Ø∑Ó
            03  LNK-ORCHCN33SUB-SANTEIYM              PIC  X(06).
       *ø«Œ≈≤ ° £∞£∞°ß¡¥≤ °À
-           03  LNK-ORCHCN33SUB-HKNKBN                PIC  X(01).
+           03  LNK-ORCHCN33SUB-SRYKA                 PIC  X(02).
       * ÷µ—π‡Ã‹
            03  LNK-ORCHCN33SUB-HENKYAKU-AREA.
       *∆˛±° ÷µ—•∆°º•÷•Î
