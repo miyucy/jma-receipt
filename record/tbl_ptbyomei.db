@@ -203,6 +203,7 @@ path	key11	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <   :SRYYMD
+			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
 			AND  (TENKIKBN    =   :TENKIKBN  OR
                   TENKIYMD    >=  :SRYYMD)
 			ORDER BY SRYKA,SYUBYOFLG DESC,SRYYMD,RENNUM
