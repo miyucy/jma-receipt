@@ -3625,9 +3625,9 @@
       *        収納登録（Ｓ０２）
                WHEN    "CLICKED"       ALSO    "B08S"
                    PERFORM 460-SYUNOU-SEC
-      *        前カーソル
-               WHEN    "CLICKED"       ALSO    "B06S"
-                   PERFORM 450-MAECUR-SEC
+      *D       前カーソル
+      *D       WHEN    "CLICKED"       ALSO    "B06S"
+      *D           PERFORM 450-MAECUR-SEC
       *        前頁
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 450-MAEGMN-SEC
@@ -3665,6 +3665,12 @@
       *        入力コード設定へ
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 4106S-INPUTCD-SYORI-SEC
+      *        入退院登録へ
+               WHEN    "CLICKED"       ALSO    "B06S"
+                   PERFORM 4106S-NYUTAIIN-SEC
+      *        入院会計照会へ
+               WHEN    "CLICKED"       ALSO    "B11S"
+                   PERFORM 4111S-NYUKAIKEI-SEC
            END-EVALUATE
       *
            .
@@ -8881,6 +8887,108 @@
            EXIT.
       *
       *****************************************************************
+      *    入退院登録へ
+      *****************************************************************
+       4106S-NYUTAIIN-SEC             SECTION.
+      *
+           IF      SPA-GMN-PTID    NOT =   ZERO
+      *        更新前の基本チェック
+               PERFORM 41001-KIHON-CHK-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
+                      (SPA-KIDCD           =   "0180" )
+                   CONTINUE
+               ELSE
+      *            更新前のチェック
+                   MOVE    "1"                 TO  FLG-TOROKU
+                   PERFORM 510-TBLHEN-SEC
+                   MOVE    SPACE               TO  FLG-TOROKU
+               END-IF
+      *
+               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
+                      (SPA-KIDCD           =   "0180" )
+                   GO      TO      4106S-NYUTAIIN-EXT
+               END-IF
+           END-IF
+      *
+      *    保存パラメタを作成
+           PERFORM 4410-WSINPARA-SEC
+           CLOSE                       PARA-FILE
+      *
+           MOVE    "K02N"              TO  SPA-MOTOPG
+           MOVE    "K02N"              TO  SPA-MOTOPG2
+           MOVE    "I01"               TO  SPA-SAKIPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           INITIALIZE                      SPA-WORK
+      *?   MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
+      *?   MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
+           MOVE    SPA-AREA            TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "I01"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+          .
+       4106S-NYUTAIIN-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    入退院登録へ
+      *****************************************************************
+       4111S-NYUKAIKEI-SEC             SECTION.
+      *
+           IF      SPA-GMN-PTID    NOT =   ZERO
+      *        更新前の基本チェック
+               PERFORM 41001-KIHON-CHK-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
+                      (SPA-KIDCD           =   "0180" )
+                   CONTINUE
+               ELSE
+      *            更新前のチェック
+                   MOVE    "1"                 TO  FLG-TOROKU
+                   PERFORM 510-TBLHEN-SEC
+                   MOVE    SPACE               TO  FLG-TOROKU
+               END-IF
+      *
+               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
+                      (SPA-KIDCD           =   "0180" )
+                   GO      TO      4111S-NYUKAIKEI-EXT
+               END-IF
+           END-IF
+      *
+      *    保存パラメタを作成
+           PERFORM 4410-WSINPARA-SEC
+           CLOSE                       PARA-FILE
+      *
+           MOVE    "K02N"              TO  SPA-MOTOPG
+           MOVE    "K02N"              TO  SPA-MOTOPG2
+           MOVE    "I41"               TO  SPA-SAKIPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           INITIALIZE                      SPA-WORK
+      *?   MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
+      *?   MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
+           MOVE    SPA-AREA            TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "I41"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+          .
+       4111S-NYUKAIKEI-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *   ワーク行為負担パラメタを作成　処理
       *****************************************************************
        4410-WSINPARA-SEC             SECTION.
@@ -9444,21 +9552,21 @@
            IF      SPA-PTNUM           =   SPACE
                MOVE    "1003"              TO  SPA-ERRCD
                MOVE    00                  TO  SPA-GMN-CUR
-               GO      TO      41001-KIHON-CHK-EXT
-           END-IF
-      *    患者マスター存在チェック
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
-           MOVE    SPA-PTID            TO  PTINF-PTID
-           PERFORM 900-PTINF-READ-SEC
-           IF     (FLG-PTINF           =   1     )  OR
-                  (SPA-PTNUM           =   SPACE )
-               MOVE    "1003"              TO  SPA-ERRCD
-               MOVE    00                  TO  SPA-GMN-CUR
            ELSE
-               IF      SPA-HKNCOMBINUM     =   SPACE
-                   MOVE    "1006"          TO  SPA-ERRCD
-                   MOVE    3               TO  SPA-HKN-ERR
-                   MOVE    00              TO  SPA-GMN-CUR
+      *        患者マスター存在チェック
+               MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+               MOVE    SPA-PTID            TO  PTINF-PTID
+               PERFORM 900-PTINF-READ-SEC
+               IF     (FLG-PTINF           =   1     )  OR
+                      (SPA-PTNUM           =   SPACE )
+                   MOVE    "1003"              TO  SPA-ERRCD
+                   MOVE    00                  TO  SPA-GMN-CUR
+               ELSE
+                   IF      SPA-HKNCOMBINUM     =   SPACE
+                       MOVE    "1006"          TO  SPA-ERRCD
+                       MOVE    3               TO  SPA-HKN-ERR
+                       MOVE    00              TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
            IF      SPA-ERRCD       NOT =   SPACE
