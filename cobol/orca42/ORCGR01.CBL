@@ -66,23 +66,20 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
 
       *
       *
        WORKING-STORAGE             SECTION.
-      *
-      *****レセプト明細ファイル シェル領域 
-      *****COPY    "CPCOMMONSHELL1.INC".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -156,6 +153,7 @@
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01). 
            03  FLG-CHK             PIC 9(01).
+           03  FLG-NYUINACCT       PIC 9(01).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -301,6 +299,10 @@
       *    レセプト管理     
        01  RECE07-REC. 
            COPY    "CPRCF007.INC".
+      *
+      *    入院会計
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -860,22 +862,25 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-      *                                  
-           IF      FLG-SRYACCT         =   ZERO
-               IF      FLG-CHK             =   ZERO
-                   MOVE    "0006"              TO  SPA-ERRCD
-               ELSE 
-                   MOVE    4                   TO  SPA-GMN-CUR
-               END-IF    
-           ELSE
-               MOVE    "0006"               TO  SPA-ERRCD
-           END-IF 
+      *
+      *    入院のとき診療会計に存在しないとき入院会計をチェック                                  
+           IF      FLG-CHK             =   ZERO
+               IF      SPA-R01-NYUGAIKBN   =   "1"
+                   PERFORM 41052-NYUINACCT-CHK-SEC
+               END-IF
+           END-IF
+      *          
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0006"              TO  SPA-ERRCD
+           ELSE 
+               MOVE    4                   TO  SPA-GMN-CUR
+           END-IF    
            .
        4105-NYUGAIKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    データ出力処理
+      *    診療会計チェック処理
       *****************************************************************
        41051-SRYACCT-CHK-SEC           SECTION.
       * 
@@ -918,7 +923,44 @@
            .
        41051-SRYACCT-CHK-EXT.
            EXIT.
-
+      *
+      *****************************************************************
+      *    入院会計チェック処理
+      *****************************************************************
+       41052-NYUINACCT-CHK-SEC           SECTION.
+      *     
+      *    入院会計読込み（基本）
+           INITIALIZE                  NYUINACCT-REC
+           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    SPA-NAI-PTID        TO  NACCT-PTID
+           MOVE    SPA-NAI-SRYYM       TO  NACCT-SRYYM
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+               PERFORM  900-NYUINACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-NYUINACCT    
+           END-IF
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF      FLG-NYUINACCT       =   ZERO
+               MOVE    "1"                 TO  FLG-CHK
+           END-IF
+           .
+       41052-NYUINACCT-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    行選択処理
@@ -2391,6 +2433,32 @@
            END-IF
            .
        900-SRYACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院会計マスタ　ＲＥＡＤ
+      *****************************************************************
+       900-NYUINACCT-READ-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-NYUINACCT
+               MOVE    MCPDATA-REC         TO  NYUINACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+      *
+           IF      FLG-NYUINACCT       =   ZERO
+               MOVE    NACCT-PTID          TO  KEY-N-PTID 
+      *********MOVE    NACCT-HKNCOMBI      TO  KEY-N-HKNCOMBI
+               MOVE    NACCT-SRYKA         TO  KEY-N-SRYKA
+           END-IF
+           .
+       900-NYUINACCT-READ-EXT.
            EXIT.
       *
       *****************************************************************
