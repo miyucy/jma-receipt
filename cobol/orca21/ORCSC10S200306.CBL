@@ -3063,7 +3063,6 @@
       *****************************************************************
        500-INDOUSAISIN-SET-SEC         SECTION.
       *
-      *
       *    電話再診かのチェック
            MOVE    SPA-COM-INPUTCD (SPA-GMN-IDX)   TO  WRK-SRYCD
            SET     TBL-IDX             TO  1

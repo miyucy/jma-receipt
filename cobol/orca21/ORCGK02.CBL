@@ -1743,6 +1743,7 @@
            EVALUATE    SPA-KIDCD
                WHEN    "0101"
                    MOVE    SPACE               TO  SPA-KIDCD
+                   MOVE    ZERO                TO  SPA-SYOSIN
                    PERFORM 30019-DOUSAISIN-SEC
       ************ MOVE    SPACE               TO  SPA-KIDCD
       *            ø«Œ≈Œ¡°°º´∆∞Ω§¿µ
