@@ -27,8 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
-      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -99,7 +97,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *****COPY    "CPORCMCP.INC".
+           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -111,34 +109,23 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+           COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -284,54 +271,63 @@
       *****************************************************************
        320-KAKUTEI-SEC                           SECTION.
       *
-           IF      P0201-SELNUM        =   SPACE
+           IF  P0201-SELNUM                      =   SPACE
                MOVE    "0001"                    TO  SPA-ERRCD
-           END-IF
-           IF    (SPA-ERRCD            =   SPACE )  AND
-                 (SPA-NAI201-SELNUM    =   ZERO  )
-               MOVE    "0001"                TO  SPA-ERRCD
-           END-IF
+               GO      TO      320-KAKUTEI-EXT
+           ELSE
+               IF  SPA-NAI201-SELNUM             =   ZERO
+                   MOVE    "0001"                TO  SPA-ERRCD
+                   GO      TO      320-KAKUTEI-EXT
+               END-IF
       *
-           IF    (SPA-ERRCD            =   SPACE )  AND
-                 (SPA-NAI201-SELNUM    >   SPA-GMN201-MAX)
-               MOVE    "0001"                TO  SPA-ERRCD
-           END-IF
-      *
-           IF     SPA-ERRCD            =   SPACE
-      *    既に患者を選択している時、エラーとする
-               IF     (SPA-GMN-PTNUM   NOT =   SPACE )  OR
-                      (SPA-P02-UKEID   NOT =   ZERO  )
-                   MOVE    "0003"                TO  SPA-ERRCD
+               IF  SPA-NAI201-SELNUM             >   SPA-GMN201-MAX
+                   MOVE    "0001"                TO  SPA-ERRCD
+                   GO      TO      320-KAKUTEI-EXT
                END-IF
            END-IF
-           IF     SPA-ERRCD        NOT =   SPACE
+      *
+      *    既に患者を選択している時、エラーとする
+           IF     (SPA-GMN-PTNUM   NOT =   SPACE )  OR
+                  (SPA-P02-UKEID   NOT =   ZERO  )
+               MOVE    "0003"                TO  SPA-ERRCD
                GO      TO      320-KAKUTEI-EXT
            END-IF
       *
       *    共通ＳＰＡ編集
            MOVE  SPACE                           TO  UKETUKE-REC
-           MOVE  SPA-HOSPNUM                      TO  UKE-HOSPNUM.
+           MOVE  SPA-HOSPID                      TO  UKE-HOSPID.
            MOVE  SPA-SYSYMD                      TO  UKE-UKEYMD.
            MOVE  SPA-NAI201-UKEID (SPA-NAI201-SELNUM)
                                                  TO  UKE-UKEID.
            MOVE  UKETUKE-REC                     TO  MCPDATA-REC.
       *
-           MOVE    "tbl_uketuke"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_uketuke"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
+           MOVE  "DBSELECT"                      TO  MCP-FUNC.
+           MOVE  "UKETUKE-KEY"                   TO  ORC-DBPATH.
+           CALL  "ORCMCPSUB"                      USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC.
+      *
+           IF  MCP-RC                            =  ZERO
+               MOVE  ZERO                        TO  IDX
+               MOVE  "DBFETCH"                   TO  MCP-FUNC
+               MOVE  "UKETUKE-KEY"               TO  ORC-DBPATH
+               CALL  "ORCMCPSUB"                  USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
                IF  MCP-RC                        =  ZERO
                    MOVE  MCPDATA-REC             TO  UKEPAR-REC
                ELSE
                    MOVE  SPACE                   TO  UKEPAR-REC
                END-IF
            END-IF
-           MOVE    "tbl_uketuke"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      SPA-ERRCD           =   SPACE
               PERFORM 310-BACK-SEC
@@ -435,6 +431,101 @@
            EXIT.
       *
       *****************************************************************
+      *    初期画面セット処理
+      *****************************************************************
+       410-SCREEN-SEC                            SECTION.
+      *
+           INITIALIZE                            SPA-GMN-AREA.
+      *
+           INITIALIZE                            UKETUKE-REC.
+           INITIALIZE                            P0201.
+           MOVE  SPA-HOSPID                      TO  UKE-HOSPID.
+           MOVE  SPA-SYSYMD                      TO  UKE-UKEYMD.
+           MOVE  ZERO                            TO  UKE-PTID.
+           MOVE  UKETUKE-REC                     TO  MCPDATA-REC.
+      *
+           MOVE  "DBSELECT"                      TO  MCP-FUNC.
+           MOVE  "UKETUKE-KEY2"                  TO  ORC-DBPATH.
+           CALL  "ORCMCPSUB"                      USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC.
+      *
+           IF  MCP-RC                            =  ZERO
+               MOVE  ZERO                        TO  IDX
+               MOVE  "DBFETCH"                   TO  MCP-FUNC
+               MOVE  "UKETUKE-KEY2"              TO  ORC-DBPATH
+               CALL  "ORCMCPSUB"                  USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+      *
+               PERFORM  UNTIL     IDX            >   19    OR
+                              MCP-RC  NOT        =   ZERO  
+                   MOVE  MCPDATA-REC             TO  UKETUKE-REC
+                   COMPUTE  IDX                  =  IDX  +  1
+                   MOVE  IDX                     TO P0201-NUM(IDX)
+                   MOVE  UKE-UKETIME(1:2)    TO P0201-YYKTIME(IDX)(1:2)
+                   MOVE  ":"                 TO P0201-YYKTIME(IDX)(3:1)
+                   MOVE  UKE-UKETIME(3:2)    TO P0201-YYKTIME(IDX)(4:2)
+                   MOVE  UKE-NAME                TO P0201-NAME(IDX)
+                   INITIALIZE                    SYS-1005-REC
+                   MOVE  "1005"                  TO  SYS-1005-KANRICD
+                   MOVE  UKE-SRYKA               TO  SYS-1005-KBNCD
+                   MOVE  SYS-1005-REC            TO  MCPDATA-REC
+      *
+                   MOVE  "DBSELECT"              TO  MCP-FUNC
+                   MOVE  "SYSKANRI-KEY"          TO  ORC-DBPATH
+                   MOVE   SPA-SYSYMD             TO  ORC-DBYMD
+                   CALL  "ORCMCPSUB"              USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+      *
+                   IF  MCP-RC                    =  ZERO
+                       MOVE  "DBFETCH"           TO  MCP-FUNC
+                       MOVE  "SYSKANRI-KEY4"     TO  ORC-DBPATH
+                       CALL  "ORCMCPSUB"          USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+                       MOVE  MCPDATA-REC         TO  SYS-1005-REC
+                       MOVE  SYS-1005-SRYKANAME1 TO  P0201-SRYKA(IDX)
+                   END-IF
+      *
+                   MOVE  "SYSKANRI-KEY4"         TO  ORC-DBPATH
+                   MOVE  "DBCLOSE"               TO  MCP-FUNC
+                   CALL  "ORCMCPSUB"              USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+      *
+                   MOVE  "DBFETCH"               TO  MCP-FUNC
+                   MOVE  "UKETUKE-KEY2"          TO  ORC-DBPATH
+                   CALL  "ORCMCPSUB"              USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+               END-PERFORM
+      *
+               MOVE  "UKETUKE-KEY2"              TO  ORC-DBPATH
+               MOVE  "DBCLOSE"                   TO  MCP-FUNC
+               CALL  "ORCMCPSUB"                  USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+      *
+               MOVE  IDX                         TO  SPA-GMN201-MAX
+      *
+           ELSE
+               MOVE  ZERO                        TO  SPA-GMN201-MAX
+           END-IF.
+           MOVE  SPA-GMN201-MAX                  TO  P0201-COUNT.
+      *
+       41O-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************
        420-ERRSET-SEC                            SECTION.
@@ -469,47 +560,6 @@
       *
        420-ERRSET-EXT.
            EXIT.
-      *****************************************************************
-      *    テーブル検索処理
-      *****************************************************************
-       910-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢクローズ処理
-      *****************************************************************
-       990-DBCLOSE-SEC         SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       990-DBCLOSE-EXT.
-           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -517,10 +567,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW                            SECTION.
       *
            MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
+           CALL   "ORCMCPSUB"                     USING  MCPAREA
+                                                         ORCMCPAREA
+                                                         MCPDATA-REC.
+      *
        900-PUT-WINDOW-EXT.
            EXIT.
       *
