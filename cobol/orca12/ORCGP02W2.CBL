@@ -36,6 +36,9 @@
       *  02.00.02    NACL-Â¿¡¹Ç¼  02/10/31  Á¥°÷ÊÝ¸±Êä½õ¶èÊ¬ÄÉ²Ã
       *  02.00.03    NACL-Â¿¡¹Ç¼  02/11/21  ¶¦ºÑ²¼Á¥£³·îÄÉ²Ã
       *  02.00.04    NACL-Â¿¡¹Ç¼  04/07/15  ¹ñÊÝÊä½õ¶èÊ¬ÄÉ²Ã
+      *  02.00.05    NACL-¾®Æ¦Âô  05/03/16  °ìÈÌÎÅÍÜ¡¢ÆÃÊÌÎÅÍÜ¡ÊµìÆü¸ÛÊÝ¸±¡Ë
+      *                                     ¤Î¾ì¹ç¤Ï¸¶Çú£±£¹¤ÎÃ±ÆÈ¤òºîÀ®²ÄÇ½
+      *                                     ¤ËÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -292,6 +295,9 @@
                    07  WRK-KOH-GENHKNNUM1  PIC X(03).
                    07  WRK-KOH-GENHKNNUM2  PIC X(03).
                    07  WRK-KOH-GENHKNNUM3  PIC X(03).
+      *
+       01  WRK-HIYATOI-AREA.
+           03  WRK-HIYATOI-FLG             PIC 9(01).
       *
        01  WRK-EDIT-AREA.
            03  WRK-KEI1            PIC X(06)   VALUE  "¡Ê·Ñ¡Ë".
@@ -788,11 +794,17 @@
       *
            INITIALIZE                      WRK-LCOMB-AREA
            MOVE    ZERO                TO  WRK-LCOMB-MAX
+           MOVE    ZERO                TO  WRK-HIYATOI-FLG
       *
            PERFORM     VARYING   IDX   FROM    1   BY  1
                        UNTIL   ( IDX   >       100 )
                        OR      ( IDX   >       CNT-HKN )
              IF  WRK-HKN-SBT (IDX)     =   "1"
+      *        °ìÈÌÎÅÍÜ¡¢ÆÃÊÌÎÅÍÜ¡ÊµìÆü¸Û¡¢µìÆÃÊÌÆü¸Û¡Ë¤ÎÈ½Äê
+               
+               IF   WRK-HKN-HKNNUM (IDX)       =   "003"  OR "004"
+                   MOVE    1           TO   WRK-HIYATOI-FLG
+               END-IF
       *        == £±ÁÈÌÜ ==
                INITIALIZE                  WRK-COMB-AREA
                INITIALIZE                  WRK-KCOMB-AREA
@@ -2883,8 +2895,11 @@
            PERFORM     VARYING   IDX   FROM    1   BY  1
                        UNTIL   ( IDX   >       100 )
                        OR      ( IDX   >       CNT-KOH )
-             IF  (WRK-KOH-SBT   (IDX)  =   "6")   AND
-                 (WRK-KOH-SAKJOKBN   (IDX)  =   SPACE)
+             IF ((WRK-KOH-SBT   (IDX)  =   "6")   AND
+                 (WRK-KOH-SAKJOKBN   (IDX)  =   SPACE)) OR
+                ((WRK-KOH-HKNNUM   (IDX)  =   "019")   AND
+                 (WRK-KOH-SAKJOKBN (IDX)  =   SPACE)   AND
+                 (WRK-HIYATOI-FLG         =   1 )     )
       *
                INITIALIZE                  WRK-COMB-AREA
       *
