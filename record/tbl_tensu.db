@@ -980,3 +980,26 @@ path	key21   	{
 	};
 };
 
+path	key22           {
+	DBSELECT	{
+		DECLARE tbl_tensu_key22_csr CURSOR FOR
+		SELECT	SRYCD,
+                	SRYKBN,
+	                SRYSYUKBN,
+                        NAME,
+	                TEN,
+	                JGNCNT,
+	                JGNCNT1D,
+	                JGNCNT1W,
+	                JGNCNTETCM,
+	                JGNCNTETC,
+	                JGNCNTERR,
+	                SANTEIRRKKBN
+		FROM tbl_tensu
+			WHERE   SRYCD    =   :SRYCD
+ 			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+		;
+	};
+};
+

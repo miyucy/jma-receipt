@@ -163,6 +163,40 @@ path	key6 	{
 	};
 };
 
+path	key7 	{
+	DBSELECT	{
+		DECLARE tbl_santei_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_santei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			AND   SRYCD       =   :SRYCD
+			AND   HKNCOMBINUM =   :HKNCOMBINUM
+			ORDER   BY      NYUGAIKBN,
+                                        SRYKA
+		;
+	};
+};
+
+path	key8 	{
+	DBSELECT	{
+		DECLARE tbl_santei_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_santei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYCD       =   :SRYCD
+			AND   SRYYM       <=  :SRYYM
+			AND   HKNCOMBINUM =   :HKNCOMBINUM
+			AND   MSANTEICNT  >   :MSANTEICNT
+			ORDER   BY      SRYYM    DESC,
+                                        NYUGAIKBN,
+                                        SRYKA
+		;
+	};
+};
+
 path	all2	{
 	DBSELECT	{
 		DECLARE tbl_santei_all2_csr CURSOR FOR
