@@ -80,6 +80,8 @@
       *  01.00.39    NACL-ÌçÏÆ    05/03/03  ¿©»ö¤Ë´Ø¤¹¤ëÊÔ½¸½¤Àµ
       *  01.00.40    NACL-ÌçÏÆ    05/03/04  ÀÅ²¬¸©Êì»Ò¾ã³²¤¬Ä¹´ü¤ÈÊ»ÍÑ¤Î
       *                                     ¾ì¹ç¡¢£±£°£°£°£°±ß¾å¸Â¤È¤¹¤ë
+      *  01.00.41    NACL-ÌçÏÆ    05/03/07  ËÌ³¤Æ»¡¢Âçºå¡¢¹­Åç£´£±Ï·¿Í¤Î
+      *                                     £·£²£³£°£°Ä¶¡¢Äã½êÆÀÄãÇ¯¶âÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -102,7 +104,6 @@
            03  WK-FUTANWARI            PIC 9V99.
            03  WK-SEIKYUGK             PIC 9(10).
            03  WK-NYUKFTNRATE          PIC 9(03).
-           03  WK-NYUKFTNRATE2         PIC 9(03).
            03  WK-NYUSKJJYOGAK         PIC 9(06).
            03  WK-NYUSKJJYOGAK2        PIC 9(09).
            03  WK-TOKUTEI-COMPFTN      PIC 9(08).
@@ -121,7 +122,6 @@
            03  FLG-SRYACCT             PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
            03  FLG-GENMEN              PIC 9(01).
-           03  FLG-SANSHOU             PIC X(01).
            03  FLG-SANSHOU2            PIC X(01).
            03  FLG-SANSHOU3            PIC X(01).
            03  FLG-SANTEI1             PIC X(01).
@@ -1656,7 +1656,6 @@
       ******************************************************************
        100-KAKUTEI-SEC          SECTION.
       *
-           MOVE    SPACE                TO      FLG-SANSHOU.
            MOVE    SPACE                TO      FLG-SANSHOU2.
            MOVE    SPACE                TO      FLG-SANSHOU3.     
            MOVE    SPACE                TO      WRK-SKJGNSTYMD-S
@@ -1720,39 +1719,17 @@
                                          ORCMCPAREA
                                          MCPDATA-REC.
       *
+      *    ¸øÈñÉéÃ´ÉôÊ¬¸¡º÷ÍÑ¤Î»²¾ÈÉôÊ¬¥»¥Ã¥È
+      *
            EVALUATE   FLG-TSYRRK        ALSO     FLG-TNKRRK
                WHEN    1                ALSO     1
-                       MOVE     "1"     TO       FLG-SANSHOU
+                       MOVE     "1"     TO       FLG-SANSHOU2
                WHEN    0                ALSO     1
-                       MOVE     "2"     TO       FLG-SANSHOU
+                       MOVE     "2"     TO       FLG-SANSHOU2
                WHEN    0                ALSO     0
                WHEN    1                ALSO     0
-                       MOVE     "3"     TO       FLG-SANSHOU
+                       MOVE     "3"     TO       FLG-SANSHOU2
            END-EVALUATE.
-      *
-           IF   ( LNK-SYU-KOH1HKNNUM     =  SPACE OR "027" )
-           AND  ( LNK-SYU-KOH2HKNNUM     =  SPACE          )
-           AND  ( LNK-SYU-KOH3HKNNUM     =  SPACE          )
-           AND  ( LNK-SYU-KOH4HKNNUM     =  SPACE          )
-                       MOVE     "1"     TO       FLG-SANSHOU
-           END-IF.
-      *
-      *    ¸øÈñÉéÃ´ÉôÊ¬¸¡º÷ÍÑ¤Î»²¾ÈÉôÊ¬¥»¥Ã¥È¡ÊËÜ¿Í¤Ç¸ÇÄê¡Ë
-           MOVE       "1"               TO       FLG-SANSHOU2.
-      *
-      **>  IF    LNK-SYU-SRYYMD(1:6)   <   "200304"
-      **>                 MOVE     "1"     TO       FLG-SANSHOU2
-      **>  ELSE
-      **>     EVALUATE   FLG-TSYRRK        ALSO     FLG-TNKRRK
-      **>         WHEN    1                ALSO     1
-      **>                 MOVE     "1"     TO       FLG-SANSHOU2
-      **>         WHEN    0                ALSO     1
-      **>                 MOVE     "2"     TO       FLG-SANSHOU2
-      **>         WHEN    0                ALSO     0
-      **>         WHEN    1                ALSO     0
-      **>                 MOVE     "3"     TO       FLG-SANSHOU2
-      **>     END-EVALUATE
-      **>  END-IF.
       *
       *
            EVALUATE    FLG-TSYRRK       ALSO     FLG-TNKRRK        
@@ -2411,25 +2388,42 @@
       ******************************************************************
        2103-KOH1-KAISU-SEC           SECTION.
       *
-           EVALUATE   FLG-SANSHOU2
-               WHEN   "1"
-                        MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
-                        MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI1-D
-                        MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
-               WHEN   "2"
-                        MOVE  HKN-TSY-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
-                        MOVE  HKN-TSY-NYUDJGNGAK TO  MAX-KIN-KOHI1-D
-                        MOVE  HKN-TSY-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
-               WHEN   "3"
-                        MOVE  HKN-TNK-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
-                        MOVE  HKN-TNK-NYUDJGNGAK TO  MAX-KIN-KOHI1-D
-                        MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
-           END-EVALUATE.
-      *
-           IF     COMB-KOH1HKNNUM    =     "027"
-                        MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
-                        MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI1-D
-                        MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
+           IF  ( WK-1001-PREFNUM         =  01  OR  27  OR 34  ) AND
+               ( COMB-KOH1HKNNUM         = "141"               )
+              EVALUATE   FLG-SANSHOU2
+                  WHEN   "1"
+                      MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
+                      MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI1-D
+                      MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
+                  WHEN   "2"
+                      MOVE  HKN-TSY-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
+                      MOVE  HKN-TSY-NYUDJGNGAK TO  MAX-KIN-KOHI1-D
+                      MOVE  HKN-TSY-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
+                  WHEN   "3"
+                      MOVE  HKN-TNK-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
+                      MOVE  HKN-TNK-NYUDJGNGAK TO  MAX-KIN-KOHI1-D
+                      MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
+              END-EVALUATE
+           ELSE
+      ***     EVALUATE   FLG-SANSHOU2
+      ***         WHEN   "1"
+                      MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
+                      MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI1-D
+                      MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
+      ***         WHEN   "2"
+      ***             MOVE  HKN-TSY-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
+      ***             MOVE  HKN-TSY-NYUDJGNGAK TO  MAX-KIN-KOHI1-D
+      ***             MOVE  HKN-TSY-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
+      ***         WHEN   "3"
+      ***             MOVE  HKN-TNK-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
+      ***             MOVE  HKN-TNK-NYUDJGNGAK TO  MAX-KIN-KOHI1-D
+      ***             MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
+      ***     END-EVALUATE
+           END-IF.
+           IF    COMB-KOH1HKNNUM   =   "027"
+                      MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
+                      MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI1-D
+                      MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
            END-IF.
       *
            IF  ( LNK-S02-KOUREI-NYUIN-KBN     =       "1"  )
@@ -2468,20 +2462,38 @@
       ******************************************************************
        2104-KOH2-KAISU-SEC           SECTION.
       *
-           EVALUATE   FLG-SANSHOU2
-               WHEN   "1"
-                        MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI2-M
-                        MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI2-D
-                        MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI2-M
-               WHEN   "2"
-                        MOVE  HKN-TSY-NYUMJGNCNT TO  MAX-KAI-KOHI2-M
-                        MOVE  HKN-TSY-NYUDJGNGAK TO  MAX-KIN-KOHI2-D
-                        MOVE  HKN-TSY-NYUMJGNGAK TO  MAX-KIN-KOHI2-M
-               WHEN   "3"
-                        MOVE  HKN-TNK-NYUMJGNCNT TO  MAX-KAI-KOHI2-M
-                        MOVE  HKN-TNK-NYUDJGNGAK TO  MAX-KIN-KOHI2-D
-                        MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI2-M
-           END-EVALUATE.
+           IF  ( WK-1001-PREFNUM         =  01  OR  27  OR 34  ) AND
+               ( COMB-KOH2HKNNUM         = "141"               )
+              EVALUATE   FLG-SANSHOU2
+                  WHEN   "1"
+                      MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI2-M
+                      MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI2-D
+                      MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI2-M
+                  WHEN   "2"
+                      MOVE  HKN-TSY-NYUMJGNCNT TO  MAX-KAI-KOHI2-M
+                      MOVE  HKN-TSY-NYUDJGNGAK TO  MAX-KIN-KOHI2-D
+                      MOVE  HKN-TSY-NYUMJGNGAK TO  MAX-KIN-KOHI2-M
+                  WHEN   "3"
+                      MOVE  HKN-TNK-NYUMJGNCNT TO  MAX-KAI-KOHI2-M
+                      MOVE  HKN-TNK-NYUDJGNGAK TO  MAX-KIN-KOHI2-D
+                      MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI2-M
+              END-EVALUATE
+           ELSE
+      ***     EVALUATE   FLG-SANSHOU2
+      ***         WHEN   "1"
+                      MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI2-M
+                      MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI2-D
+                      MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI2-M
+      ***         WHEN   "2"
+      ***             MOVE  HKN-TSY-NYUMJGNCNT TO  MAX-KAI-KOHI2-M
+      ***             MOVE  HKN-TSY-NYUDJGNGAK TO  MAX-KIN-KOHI2-D
+      ***             MOVE  HKN-TSY-NYUMJGNGAK TO  MAX-KIN-KOHI2-M
+      ***         WHEN   "3"
+      ***             MOVE  HKN-TNK-NYUMJGNCNT TO  MAX-KAI-KOHI2-M
+      ***             MOVE  HKN-TNK-NYUDJGNGAK TO  MAX-KIN-KOHI2-D
+      ***             MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI2-M
+      ***     END-EVALUATE
+           END-IF.
       *
            IF  ( LNK-S02-KOUREI-NYUIN-KBN     =       "1"  )
            AND ( COMB-KOH2HKNNUM(1:1)        >=       "1"  )
@@ -2519,20 +2531,38 @@
       ******************************************************************
        2105-KOH3-KAISU-SEC           SECTION.
       *
-           EVALUATE   FLG-SANSHOU2
-               WHEN   "1"
-                        MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI3-M
-                        MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI3-D
-                        MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI3-M
-               WHEN   "2"
-                        MOVE  HKN-TSY-NYUMJGNCNT TO  MAX-KAI-KOHI3-M
-                        MOVE  HKN-TSY-NYUDJGNGAK TO  MAX-KIN-KOHI3-D
-                        MOVE  HKN-TSY-NYUMJGNGAK TO  MAX-KIN-KOHI3-M
-               WHEN   "3"
-                        MOVE  HKN-TNK-NYUMJGNCNT TO  MAX-KAI-KOHI3-M
-                        MOVE  HKN-TNK-NYUDJGNGAK TO  MAX-KIN-KOHI3-D
-                        MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI3-M
-           END-EVALUATE.
+           IF  ( WK-1001-PREFNUM         =  01  OR  27  OR 34  ) AND
+               ( COMB-KOH3HKNNUM         = "141"               )
+              EVALUATE   FLG-SANSHOU2
+                  WHEN   "1"
+                      MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI3-M
+                      MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI3-D
+                      MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI3-M
+                  WHEN   "2"
+                      MOVE  HKN-TSY-NYUMJGNCNT TO  MAX-KAI-KOHI3-M
+                      MOVE  HKN-TSY-NYUDJGNGAK TO  MAX-KIN-KOHI3-D
+                      MOVE  HKN-TSY-NYUMJGNGAK TO  MAX-KIN-KOHI3-M
+                  WHEN   "3"
+                      MOVE  HKN-TNK-NYUMJGNCNT TO  MAX-KAI-KOHI3-M
+                      MOVE  HKN-TNK-NYUDJGNGAK TO  MAX-KIN-KOHI3-D
+                      MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI3-M
+              END-EVALUATE
+           ELSE
+      ***     EVALUATE   FLG-SANSHOU2
+      ***         WHEN   "1"
+                      MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI3-M
+                      MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI3-D
+                      MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI3-M
+      ***         WHEN   "2"
+      ***             MOVE  HKN-TSY-NYUMJGNCNT TO  MAX-KAI-KOHI3-M
+      ***             MOVE  HKN-TSY-NYUDJGNGAK TO  MAX-KIN-KOHI3-D
+      ***             MOVE  HKN-TSY-NYUMJGNGAK TO  MAX-KIN-KOHI3-M
+      ***         WHEN   "3"
+      ***             MOVE  HKN-TNK-NYUMJGNCNT TO  MAX-KAI-KOHI3-M
+      ***             MOVE  HKN-TNK-NYUDJGNGAK TO  MAX-KIN-KOHI3-D
+      ***             MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI3-M
+      ***     END-EVALUATE
+           END-IF.
       *
            IF  ( LNK-S02-KOUREI-NYUIN-KBN     =       "1"  )
            AND ( COMB-KOH3HKNNUM(1:1)        >=       "1"  )
@@ -2570,20 +2600,38 @@
       ******************************************************************
        2106-KOH4-KAISU-SEC           SECTION.
       *
-           EVALUATE   FLG-SANSHOU2
-               WHEN   "1"
-                        MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI4-M
-                        MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI4-D
-                        MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI4-M
-               WHEN   "2"
-                        MOVE  HKN-TSY-NYUMJGNCNT TO  MAX-KAI-KOHI4-M
-                        MOVE  HKN-TSY-NYUDJGNGAK TO  MAX-KIN-KOHI4-D
-                        MOVE  HKN-TSY-NYUMJGNGAK TO  MAX-KIN-KOHI4-M
-               WHEN   "3"
-                        MOVE  HKN-TNK-NYUMJGNCNT TO  MAX-KAI-KOHI4-M
-                        MOVE  HKN-TNK-NYUDJGNGAK TO  MAX-KIN-KOHI4-D
-                        MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI4-M
-           END-EVALUATE.
+           IF  ( WK-1001-PREFNUM         =  01  OR  27  OR 34  ) AND
+               ( COMB-KOH4HKNNUM         = "141"               )
+              EVALUATE   FLG-SANSHOU2
+                  WHEN   "1"
+                      MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI4-M
+                      MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI4-D
+                      MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI4-M
+                  WHEN   "2"
+                      MOVE  HKN-TSY-NYUMJGNCNT TO  MAX-KAI-KOHI4-M
+                      MOVE  HKN-TSY-NYUDJGNGAK TO  MAX-KIN-KOHI4-D
+                      MOVE  HKN-TSY-NYUMJGNGAK TO  MAX-KIN-KOHI4-M
+                  WHEN   "3"
+                      MOVE  HKN-TNK-NYUMJGNCNT TO  MAX-KAI-KOHI4-M
+                      MOVE  HKN-TNK-NYUDJGNGAK TO  MAX-KIN-KOHI4-D
+                      MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI4-M
+              END-EVALUATE
+           ELSE
+      ***     EVALUATE   FLG-SANSHOU2
+      ***         WHEN   "1"
+                      MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI4-M
+                      MOVE  HKN-HON-NYUDJGNGAK TO  MAX-KIN-KOHI4-D
+                      MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI4-M
+      ***         WHEN   "2"
+      ***             MOVE  HKN-TSY-NYUMJGNCNT TO  MAX-KAI-KOHI4-M
+      ***             MOVE  HKN-TSY-NYUDJGNGAK TO  MAX-KIN-KOHI4-D
+      ***             MOVE  HKN-TSY-NYUMJGNGAK TO  MAX-KIN-KOHI4-M
+      ***         WHEN   "3"
+      ***             MOVE  HKN-TNK-NYUMJGNCNT TO  MAX-KAI-KOHI4-M
+      ***             MOVE  HKN-TNK-NYUDJGNGAK TO  MAX-KIN-KOHI4-D
+      ***             MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI4-M
+      ***     END-EVALUATE
+           END-IF.
       *
            IF  ( LNK-S02-KOUREI-NYUIN-KBN     =       "1"  )
            AND ( COMB-KOH4HKNNUM(1:1)        >=       "1"  )
@@ -2800,254 +2848,34 @@
       ******************************************************************
        2108-ROUJIN41-JYOGEN-HENSYU-SEC           SECTION.
       *
-           IF   WK-1001-PREFNUM            =   27
+           IF   WK-1001-PREFNUM            =   01  OR  27  OR  34
       *
-              IF   COMB-KOH1HKNNUM(2:2)    =  "41"
-                  INITIALIZE                      HKNNUM-REC
-                  MOVE   COMB-HOSPID        TO    HKN-HOSPID
-                  MOVE   COMB-KOH1HKNNUM    TO    HKN-HKNNUM
-                  MOVE     "00"             TO    WK-PAYKBN
-                  MOVE   HKNNUM-REC         TO    MCPDATA-REC
-                  MOVE   "DBSELECT"         TO    MCP-FUNC
-                  MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
-                  CALL   "ORCMCPSUB"        USING MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
-                  IF      MCP-RC            =     ZERO
-                    MOVE    "HKNNUM-KEY2"   TO    ORC-DBPATH
-                    PERFORM  HKNNUM-READ-SEC
-                    PERFORM  UNTIL
-                     ( FLG-HKNNUM     =    1                       ) OR
-                     ((HKN-TEKSTYMD(1:6)   <= LNK-SYU-SRYYMD(1:6) ) AND
-                      (LNK-SYU-SRYYMD(1:6) <= HKN-TEKEDYMD(1:6)   ) AND
-                      (WK-PAYKBN            = HKN-PAYKBN          ))
-                        PERFORM   HKNNUM-READ-SEC
-                    END-PERFORM
-                    IF     FLG-HKNNUM   =   ZERO
-                       MOVE    ZERO     TO    WK-NYUKFTNRATE2
-                       EVALUATE   FLG-SANSHOU2
-                          WHEN   "1"
-                             MOVE   HKN-HON-NYUKFTNRATE   TO
-                                                       WK-NYUKFTNRATE2
-                          WHEN   "2"
-                             MOVE   HKN-TSY-NYUKFTNRATE   TO
-                                                       WK-NYUKFTNRATE2
-                          WHEN   "3"
-                             MOVE   HKN-TNK-NYUKFTNRATE   TO
-                                                       WK-NYUKFTNRATE2
-                       END-EVALUATE
-                       EVALUATE     WK-NYUKFTNRATE2
-      ***                 WHEN   010
-      ***                     MOVE  "1"   TO   COMB-KOH1-NYUJGNKBN
-      ***                     IF  FLG-SANSHOU3     =   SPACE
-      ***                         MOVE   40200   TO   MAX-KIN-KOHI1-M
-      ***                     ELSE
-      ***                       IF  FLG-SANSHOU3     =   "1"
-      ***                         MOVE   15000   TO   MAX-KIN-KOHI1-M
-      ***                       ELSE
-      ***                         MOVE   24600   TO   MAX-KIN-KOHI1-M
-      ***                       END-IF
-      ***                     END-IF
-                          WHEN   020
-                              MOVE  "1"   TO   COMB-KOH1-NYUJGNKBN
-                              MOVE   72300       TO   MAX-KIN-KOHI1-M
-                              MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI
-                              MOVE   1           TO   FLG-IRYOHI2
-                       END-EVALUATE
-                    END-IF
-                  END-IF
-                  MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-                  MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
-                  CALL    "ORCMCPSUB"          USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+              IF   COMB-KOH1HKNNUM         =  "241"
+                      MOVE  "1"          TO   COMB-KOH1-NYUJGNKBN
+                      MOVE   72300       TO   MAX-KIN-KOHI1-M
+                      MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI
+                      MOVE   1           TO   FLG-IRYOHI2
               END-IF
       *
-              IF   COMB-KOH2HKNNUM(2:2)    =  "41"
-                  INITIALIZE                      HKNNUM-REC
-                  MOVE   COMB-HOSPID        TO    HKN-HOSPID
-                  MOVE   COMB-KOH2HKNNUM    TO    HKN-HKNNUM
-                  MOVE     "00"             TO    WK-PAYKBN
-                  MOVE   HKNNUM-REC         TO    MCPDATA-REC
-                  MOVE   "DBSELECT"         TO    MCP-FUNC
-                  MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
-                  CALL   "ORCMCPSUB"        USING MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
-                  IF      MCP-RC            =     ZERO
-                    MOVE    "HKNNUM-KEY2"   TO    ORC-DBPATH
-                    PERFORM  HKNNUM-READ-SEC
-                    PERFORM  UNTIL
-                     ( FLG-HKNNUM     =    1                       ) OR
-                     ((HKN-TEKSTYMD(1:6)   <= LNK-SYU-SRYYMD(1:6) ) AND
-                      (LNK-SYU-SRYYMD(1:6) <= HKN-TEKEDYMD(1:6)   ) AND
-                      (WK-PAYKBN            = HKN-PAYKBN          ))
-                        PERFORM   HKNNUM-READ-SEC
-                    END-PERFORM
-                    IF     FLG-HKNNUM   =   ZERO
-                       MOVE    ZERO     TO    WK-NYUKFTNRATE2
-                       EVALUATE   FLG-SANSHOU2
-                          WHEN   "1"
-                             MOVE   HKN-HON-NYUKFTNRATE   TO
-                                                       WK-NYUKFTNRATE2
-                          WHEN   "2"
-                             MOVE   HKN-TSY-NYUKFTNRATE   TO
-                                                       WK-NYUKFTNRATE2
-                          WHEN   "3"
-                             MOVE   HKN-TNK-NYUKFTNRATE   TO
-                                                       WK-NYUKFTNRATE2
-                       END-EVALUATE
-                       EVALUATE     WK-NYUKFTNRATE2
-      ***                 WHEN   010
-      ***                     MOVE  "1"   TO   COMB-KOH2-NYUJGNKBN
-      ***                     IF  FLG-SANSHOU3     =   SPACE
-      ***                         MOVE   40200   TO   MAX-KIN-KOHI2-M
-      ***                     ELSE
-      ***                       IF  FLG-SANSHOU3     =   "1"
-      ***                         MOVE   15000   TO   MAX-KIN-KOHI2-M
-      ***                       ELSE
-      ***                         MOVE   24600   TO   MAX-KIN-KOHI2-M
-      ***                       END-IF
-      ***                     END-IF
-                          WHEN   020
-                              MOVE  "1"   TO   COMB-KOH2-NYUJGNKBN
-                              MOVE   72300       TO   MAX-KIN-KOHI2-M
-                              MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI
-                              MOVE   2           TO   FLG-IRYOHI2
-                       END-EVALUATE
-                    END-IF
-                  END-IF
-                  MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-                  MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
-                  CALL    "ORCMCPSUB"          USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+              IF   COMB-KOH2HKNNUM         =  "241"
+                      MOVE  "1"          TO   COMB-KOH2-NYUJGNKBN
+                      MOVE   72300       TO   MAX-KIN-KOHI2-M
+                      MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI
+                      MOVE   2           TO   FLG-IRYOHI2
               END-IF
       *
-              IF   COMB-KOH3HKNNUM(2:2)    =  "41"
-                  INITIALIZE                      HKNNUM-REC
-                  MOVE   COMB-HOSPID        TO    HKN-HOSPID
-                  MOVE   COMB-KOH3HKNNUM    TO    HKN-HKNNUM
-                  MOVE     "00"             TO    WK-PAYKBN
-                  MOVE   HKNNUM-REC         TO    MCPDATA-REC
-                  MOVE   "DBSELECT"         TO    MCP-FUNC
-                  MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
-                  CALL   "ORCMCPSUB"        USING MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
-                  IF      MCP-RC            =     ZERO
-                    MOVE    "HKNNUM-KEY2"   TO    ORC-DBPATH
-                    PERFORM  HKNNUM-READ-SEC
-                    PERFORM  UNTIL
-                     ( FLG-HKNNUM     =    1                       ) OR
-                     ((HKN-TEKSTYMD(1:6)   <= LNK-SYU-SRYYMD(1:6) ) AND
-                      (LNK-SYU-SRYYMD(1:6) <= HKN-TEKEDYMD(1:6)   ) AND
-                      (WK-PAYKBN            = HKN-PAYKBN          ))
-                        PERFORM   HKNNUM-READ-SEC
-                    END-PERFORM
-                    IF     FLG-HKNNUM   =   ZERO
-                       MOVE    ZERO     TO    WK-NYUKFTNRATE2
-                       EVALUATE   FLG-SANSHOU2
-                          WHEN   "1"
-                             MOVE   HKN-HON-NYUKFTNRATE   TO
-                                                       WK-NYUKFTNRATE2
-                          WHEN   "2"
-                             MOVE   HKN-TSY-NYUKFTNRATE   TO
-                                                       WK-NYUKFTNRATE2
-                          WHEN   "3"
-                             MOVE   HKN-TNK-NYUKFTNRATE   TO
-                                                       WK-NYUKFTNRATE2
-                       END-EVALUATE
-                       EVALUATE     WK-NYUKFTNRATE2
-      ***                 WHEN   010
-      ***                     MOVE  "1"   TO   COMB-KOH3-NYUJGNKBN
-      ***                     IF  FLG-SANSHOU3     =   SPACE
-      ***                         MOVE   40200   TO   MAX-KIN-KOHI3-M
-      ***                     ELSE
-      ***                       IF  FLG-SANSHOU3     =   "1"
-      ***                         MOVE   15000   TO   MAX-KIN-KOHI3-M
-      ***                       ELSE
-      ***                         MOVE   24600   TO   MAX-KIN-KOHI3-M
-      ***                       END-IF
-      ***                     END-IF
-                          WHEN   020
-                              MOVE  "1"   TO   COMB-KOH3-NYUJGNKBN
-                              MOVE   72300       TO   MAX-KIN-KOHI3-M
-                              MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI
-                              MOVE   3           TO   FLG-IRYOHI2
-                       END-EVALUATE
-                    END-IF
-                  END-IF
-                  MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-                  MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
-                  CALL    "ORCMCPSUB"          USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+              IF   COMB-KOH3HKNNUM         =  "241"
+                      MOVE  "1"          TO   COMB-KOH3-NYUJGNKBN
+                      MOVE   72300       TO   MAX-KIN-KOHI3-M
+                      MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI
+                      MOVE   3           TO   FLG-IRYOHI2
               END-IF
       *
-              IF   COMB-KOH4HKNNUM(2:2)    =  "41"
-                  INITIALIZE                      HKNNUM-REC
-                  MOVE   COMB-HOSPID        TO    HKN-HOSPID
-                  MOVE   COMB-KOH4HKNNUM    TO    HKN-HKNNUM
-                  MOVE     "00"             TO    WK-PAYKBN
-                  MOVE   HKNNUM-REC         TO    MCPDATA-REC
-                  MOVE   "DBSELECT"         TO    MCP-FUNC
-                  MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
-                  CALL   "ORCMCPSUB"        USING MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
-                  IF      MCP-RC            =     ZERO
-                    MOVE    "HKNNUM-KEY2"   TO    ORC-DBPATH
-                    PERFORM  HKNNUM-READ-SEC
-                    PERFORM  UNTIL
-                     ( FLG-HKNNUM     =    1                       ) OR
-                     ((HKN-TEKSTYMD(1:6)   <= LNK-SYU-SRYYMD(1:6) ) AND
-                      (LNK-SYU-SRYYMD(1:6) <= HKN-TEKEDYMD(1:6)   ) AND
-                      (WK-PAYKBN            = HKN-PAYKBN          ))
-                        PERFORM   HKNNUM-READ-SEC
-                    END-PERFORM
-                    IF     FLG-HKNNUM   =   ZERO
-                       MOVE    ZERO     TO    WK-NYUKFTNRATE2
-                       EVALUATE   FLG-SANSHOU2
-                          WHEN   "1"
-                             MOVE   HKN-HON-NYUKFTNRATE   TO
-                                                       WK-NYUKFTNRATE2
-                          WHEN   "2"
-                             MOVE   HKN-TSY-NYUKFTNRATE   TO
-                                                       WK-NYUKFTNRATE2
-                          WHEN   "3"
-                             MOVE   HKN-TNK-NYUKFTNRATE   TO
-                                                       WK-NYUKFTNRATE2
-                       END-EVALUATE
-                       EVALUATE     WK-NYUKFTNRATE2
-      ***                 WHEN   010
-      ***                     MOVE  "1"   TO   COMB-KOH4-NYUJGNKBN
-      ***                     IF  FLG-SANSHOU3     =   SPACE
-      ***                         MOVE   40200   TO   MAX-KIN-KOHI4-M
-      ***                     ELSE
-      ***                       IF  FLG-SANSHOU3     =   "1"
-      ***                         MOVE   15000   TO   MAX-KIN-KOHI4-M
-      ***                       ELSE
-      ***                         MOVE   24600   TO   MAX-KIN-KOHI4-M
-      ***                       END-IF
-      ***                     END-IF
-                          WHEN   020
-                              MOVE  "1"   TO   COMB-KOH4-NYUJGNKBN
-                              MOVE   72300       TO   MAX-KIN-KOHI4-M
-                              MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI
-                              MOVE   4           TO   FLG-IRYOHI2
-                       END-EVALUATE
-                    END-IF
-                  END-IF
-                  MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-                  MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
-                  CALL    "ORCMCPSUB"          USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+              IF   COMB-KOH4HKNNUM         =  "241"
+                      MOVE  "1"          TO   COMB-KOH4-NYUJGNKBN
+                      MOVE   72300       TO   MAX-KIN-KOHI4-M
+                      MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI
+                      MOVE   4           TO   FLG-IRYOHI2
               END-IF
       *
            END-IF
@@ -6021,10 +5849,7 @@
       *    ¡Ê£×£Ë¡Ý£È£Ë£Î£Ë£Â£Î¡¡¶õÇò¡§°åÊÝ¡¡£±¡§Ï«ºÒ¡¦¼«Çå¡Ë
            EVALUATE   WK-HKNKBN
              WHEN   SPACE
-      *    ÉéÃ´¶â³Û¤Î·×»»
-      ***      EVALUATE   FLG-SANSHOU
-      ***        WHEN   "1"
-                   IF   COMB-HONKZKKBN        =   "1"
+               IF   COMB-HONKZKKBN        =   "1"
                         IF    HKN-HON-NYUKFTNRATE     NOT =    ZERO
                               MOVE   HKN-HON-NYUKFTNRATE
                                            TO   WK-DAY-NYUKFTNRATE
@@ -6094,7 +5919,7 @@
                             MOVE  WK-SHOKUJI-FTN
                                             TO   LNK-SYU-SYUSKJ-FTN-RECE
                         END-IF
-                   ELSE
+               ELSE
                         IF    HKN-KZK-NYUKFTNRATE     NOT =    ZERO
                               MOVE   HKN-KZK-NYUKFTNRATE
                                            TO   WK-DAY-NYUKFTNRATE
@@ -6158,96 +5983,7 @@
                             MOVE  WK-SHOKUJI-FTN
                                             TO   LNK-SYU-SYUSKJ-FTN-RECE
                         END-IF
-                   END-IF
-      ***        WHEN   "2"
-      ***          IF    HKN-TSY-NYUKFTNRATE     NOT =    ZERO
-      ***                COMPUTE   WK-FUTANWARI  =
-      ***                          HKN-TSY-NYUKFTNRATE  /  100
-      ***                COMPUTE   LNK-SYU-SYUCOMPFTN  =
-      ***                          WK-ZENGAKU   *  WK-FUTANWARI
-      ***                MOVE      LNK-SYU-SYUCOMPFTN
-      ***                                    TO WK-TOKUTEI-COMPFTN2
-      ***                COMPUTE   LNK-SYU-SYUCOMPFTN =
-      ***                          LNK-SYU-SYUCOMPFTN  +  5
-      ***                COMPUTE   WK-FTN      =
-      ***                          LNK-SYU-SYUCOMPFTN  /  10
-      ***                COMPUTE   LNK-SYU-SYUCOMPFTN =
-      ***                          WK-FTN   *  10
-      ***          END-IF
-      *
-      ***          IF   LNK-S02-KOUREI-NYUIN-KBN   =   "1"
-      ***              IF  ZAN-SYU-M     <     WK-TOKUTEI-COMPFTN2      
-      ***                  MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
-      ***                                       WK-TOKUTEI-COMPFTN      
-      ***              ELSE                                             
-      ***                  MOVE WK-TOKUTEI-COMPFTN2                     
-      ***                                        TO  WK-TOKUTEI-COMPFTN 
-      ***              END-IF
-      ***          ELSE
-      ***                  MOVE WK-TOKUTEI-COMPFTN2              
-      ***                                        TO  WK-TOKUTEI-COMPFTN 
-      ***          END-IF
-      ***          COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
-      ***                    LNK-SYU-SYUCOMPFTN     
-      ***          MOVE  HKN-TSY-NYUSKJRYYKBN
-      ***                                    TO   LNK-SYU-SYUSKJ-FTNKBN
-      ***          MOVE  WK-SHOKUJI-NISSU
-      ***                                    TO   LNK-SYU-SYUSKJ-NISSU
-      ***          MOVE  WK-SHOKUJI-RYOYOHI
-      ***                                    TO   LNK-SYU-SYUSKJ-RYOYOHI
-      ***          IF    HKN-TSY-NYUSKJRYYKBN  NOT =  "0"
-      ***                   IF    HKN-TSY-NYUSKJRYYKBN  NOT =  "3"
-      ***                     MOVE  WK-SHOKUJI-FTN
-      ***                                    TO   LNK-SYU-SYUSKJ-FTN
-      ***                   END-IF
-      ***                   MOVE  WK-SHOKUJI-FTN
-      ***                                   TO   LNK-SYU-SYUSKJ-FTN-RECE
-      ***          END-IF
-      ***        WHEN   "3"
-      ***          IF    HKN-TNK-NYUKFTNRATE     NOT =    ZERO
-      ***                COMPUTE   WK-FUTANWARI  =
-      ***                          HKN-TNK-NYUKFTNRATE  /  100
-      ***                COMPUTE   LNK-SYU-SYUCOMPFTN  =
-      ***                          WK-ZENGAKU   *  WK-FUTANWARI
-      ***                MOVE      LNK-SYU-SYUCOMPFTN
-      ***                                   TO WK-TOKUTEI-COMPFTN2
-      ***                COMPUTE   LNK-SYU-SYUCOMPFTN =
-      ***                          LNK-SYU-SYUCOMPFTN  +  5
-      ***                COMPUTE   WK-FTN      =
-      ***                          LNK-SYU-SYUCOMPFTN  /  10
-      ***                COMPUTE   LNK-SYU-SYUCOMPFTN =
-      ***                          WK-FTN   *  10
-      ***          END-IF
-      *
-      ***          IF   LNK-S02-KOUREI-NYUIN-KBN   =   "1"
-      ***              IF  ZAN-SYU-M     <     WK-TOKUTEI-COMPFTN2      
-      ***                  MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
-      ***                                       WK-TOKUTEI-COMPFTN      
-      ***              ELSE                                             
-      ***                  MOVE WK-TOKUTEI-COMPFTN2                     
-      ***                                        TO  WK-TOKUTEI-COMPFTN 
-      ***              END-IF
-      ***          ELSE
-      ***                  MOVE WK-TOKUTEI-COMPFTN2                
-      ***                                        TO  WK-TOKUTEI-COMPFTN 
-      ***          END-IF
-      ***          COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
-      ***                    LNK-SYU-SYUCOMPFTN     
-      ***          MOVE  HKN-TNK-NYUSKJRYYKBN
-      ***                                    TO   LNK-SYU-SYUSKJ-FTNKBN
-      ***          MOVE  WK-SHOKUJI-NISSU
-      ***                                    TO   LNK-SYU-SYUSKJ-NISSU
-      ***          MOVE  WK-SHOKUJI-RYOYOHI
-      ***                                    TO   LNK-SYU-SYUSKJ-RYOYOHI
-      ***          IF    HKN-TNK-NYUSKJRYYKBN  NOT =  "0"
-      ***                   IF    HKN-TNK-NYUSKJRYYKBN  NOT =  "3"
-      ***                     MOVE  WK-SHOKUJI-FTN
-      ***                                    TO   LNK-SYU-SYUSKJ-FTN
-      ***                   END-IF
-      ***                   MOVE  WK-SHOKUJI-FTN
-      ***                                   TO   LNK-SYU-SYUSKJ-FTN-RECE
-      ***          END-IF
-      ***      END-EVALUATE
+               END-IF
              WHEN   "1"
                IF    WK-4001-KSNRATE(1:2)   =    SPACE
                       MOVE     100        TO   WK-KSNRATE9
@@ -6397,8 +6133,26 @@
            MOVE       ZERO                TO   WK-NYUKFTNRATE.
            MOVE       SPACE               TO   WK-NYUSKJRYYKBN.
            MOVE       ZERO                TO   WK-NYUSKJJYOGAK.
-           EVALUATE   FLG-SANSHOU2
+      *
+           IF  ( WK-1001-PREFNUM         =  01  OR  27  OR 34  ) AND
+               ( COMB-KOHHKNNUM(KOH-IDX) = "141"               )
+             EVALUATE   FLG-SANSHOU2
                WHEN   "1"
+                   MOVE    HKN-HON-NYUKFTNRATE  TO   WK-NYUKFTNRATE
+                   MOVE    HKN-HON-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
+                   MOVE    HKN-HON-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
+               WHEN   "2"
+                   MOVE    HKN-TSY-NYUKFTNRATE  TO   WK-NYUKFTNRATE
+                   MOVE    HKN-TSY-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
+                   MOVE    HKN-TSY-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
+               WHEN   "3"
+                   MOVE    HKN-TNK-NYUKFTNRATE  TO   WK-NYUKFTNRATE
+                   MOVE    HKN-TNK-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
+                   MOVE    HKN-TNK-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
+             END-EVALUATE
+           ELSE
+      ***    EVALUATE   FLG-SANSHOU2
+      ***      WHEN   "1"
                    MOVE    HKN-HON-NYUKFTNRATE  TO   WK-NYUKFTNRATE
                    MOVE    HKN-HON-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
                    MOVE    HKN-HON-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
@@ -6423,57 +6177,58 @@
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "186"         )
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
-               WHEN   "2"
-                   MOVE    HKN-TSY-NYUKFTNRATE  TO   WK-NYUKFTNRATE
-                   MOVE    HKN-TSY-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
-                   MOVE    HKN-TSY-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
-                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
-                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
-                   END-IF
-                   IF  (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
-                       MOVE    "3"              TO   WK-NYUSKJRYYKBN
-                   END-IF
-                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
-                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
-                   END-IF
-                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
-                   AND (WK-1001-PREFNUM           =   13           )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151" OR "451")
-                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
-                   END-IF
-                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
-                   AND (WK-1001-PREFNUM           =   28           )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "186"         )
-                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
-                   END-IF
-               WHEN   "3"
-                   MOVE    HKN-TNK-NYUKFTNRATE  TO   WK-NYUKFTNRATE
-                   MOVE    HKN-TNK-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
-                   MOVE    HKN-TNK-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
-                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
-                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
-                   END-IF
-                   IF  (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
-                       MOVE    "3"              TO   WK-NYUSKJRYYKBN
-                   END-IF
-                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
-                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
-                   END-IF
-                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
-                   AND (WK-1001-PREFNUM           =   13           )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151" OR "451")
-                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
-                   END-IF
-                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
-                   AND (WK-1001-PREFNUM           =   28           )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "186"         )
-                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
-                   END-IF
-           END-EVALUATE.
+      ***      WHEN   "2"
+      ***          MOVE    HKN-TSY-NYUKFTNRATE  TO   WK-NYUKFTNRATE
+      ***          MOVE    HKN-TSY-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
+      ***          MOVE    HKN-TSY-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
+      ***          IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
+      ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
+      ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
+      ***          IF  (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
+      ***              MOVE    "3"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
+      ***          IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
+      ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
+      ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
+      ***          IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
+      ***          AND (WK-1001-PREFNUM           =   13           )
+      ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151" OR "451")
+      ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
+      ***          IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
+      ***          AND (WK-1001-PREFNUM           =   28           )
+      ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "186"         )
+      ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
+      ***      WHEN   "3"
+      ***          MOVE    HKN-TNK-NYUKFTNRATE  TO   WK-NYUKFTNRATE
+      ***          MOVE    HKN-TNK-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
+      ***          MOVE    HKN-TNK-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
+      ***          IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
+      ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
+      ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
+      ***          IF  (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
+      ***              MOVE    "3"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
+      ***          IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
+      ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
+      ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
+      ***          IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
+      ***          AND (WK-1001-PREFNUM           =   13           )
+      ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151" OR "451")
+      ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
+      ***          IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
+      ***          AND (WK-1001-PREFNUM           =   28           )
+      ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "186"         )
+      ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
+      ***    END-EVALUATE
+           END-IF.
       *
            IF   COMB-KOHHKNNUM(KOH-IDX)  =  "027"
                    MOVE    HKN-HON-NYUKFTNRATE  TO   WK-NYUKFTNRATE
@@ -6481,7 +6236,6 @@
                    MOVE    HKN-HON-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
       *
                    MOVE    HKN-HON-NYUKFTNRATE  TO   WK-KOH-FTNRATE
-      *
                    MOVE    "1"                  TO   HKN-RECEFTNDSPKBN
            END-IF.
       *

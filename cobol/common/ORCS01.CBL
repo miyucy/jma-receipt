@@ -1868,41 +1868,46 @@
                  WHEN    0                ALSO     0
                          MOVE     "3"     TO       FLG-SANSHOU
               END-EVALUATE
+              IF   ( LNK-SYU-KOH1HKNNUM     =  SPACE OR "027" )
+              AND  ( LNK-SYU-KOH2HKNNUM     =  SPACE          )
+              AND  ( LNK-SYU-KOH3HKNNUM     =  SPACE          )
+              AND  ( LNK-SYU-KOH4HKNNUM     =  SPACE          )
+                         MOVE     "1"     TO       FLG-SANSHOU
+              END-IF
            ELSE
-              EVALUATE   FLG-TSYRRK       ALSO     FLG-TNKRRK
-                 WHEN    1                ALSO     1
-                         MOVE     "1"     TO       FLG-SANSHOU
-                 WHEN    0                ALSO     1
-                         MOVE     "2"     TO       FLG-SANSHOU
-                 WHEN    0                ALSO     0
-                 WHEN    1                ALSO     0
-                         MOVE     "3"     TO       FLG-SANSHOU
-              END-EVALUATE
+              IF    LNK-SYU-SRYYMD(1:6)   <   "200304"
+                 EVALUATE   FLG-TSYRRK       ALSO     FLG-TNKRRK
+                    WHEN    1                ALSO     1
+                            MOVE     "1"     TO       FLG-SANSHOU
+                    WHEN    0                ALSO     1
+                            MOVE     "2"     TO       FLG-SANSHOU
+                    WHEN    0                ALSO     0
+                    WHEN    1                ALSO     0
+                            MOVE     "3"     TO       FLG-SANSHOU
+                 END-EVALUATE
+                 IF   ( LNK-SYU-KOH1HKNNUM     =  SPACE OR "027" )
+                 AND  ( LNK-SYU-KOH2HKNNUM     =  SPACE          )
+                 AND  ( LNK-SYU-KOH3HKNNUM     =  SPACE          )
+                 AND  ( LNK-SYU-KOH4HKNNUM     =  SPACE          )
+                            MOVE     "1"     TO       FLG-SANSHOU
+                 END-IF
+              ELSE
+                 MOVE       SPACE            TO       FLG-SANSHOU
+              END-IF
            END-IF.
       *
-           IF   ( LNK-SYU-KOH1HKNNUM     =  SPACE OR "027" )
-           AND  ( LNK-SYU-KOH2HKNNUM     =  SPACE          )
-           AND  ( LNK-SYU-KOH3HKNNUM     =  SPACE          )
-           AND  ( LNK-SYU-KOH4HKNNUM     =  SPACE          )
-                         MOVE     "1"     TO       FLG-SANSHOU
-           END-IF.
+      *    ¸øÈñÉéÃ´ÉôÊ¬¸¡º÷ÍÑ¤Î»²¾ÈÉôÊ¬¥»¥Ã¥È
       *
-      *    ¸øÈñÉéÃ´ÉôÊ¬¸¡º÷ÍÑ¤Î»²¾ÈÉôÊ¬¥»¥Ã¥È¡ÊËÜ¿Í¤Ç¸ÇÄê¡Ë
-           MOVE       "1"       TO    FLG-SANSHOU2.
+           EVALUATE   FLG-TSYRRK        ALSO     FLG-TNKRRK
+               WHEN    1                ALSO     1
+                       MOVE     "1"     TO       FLG-SANSHOU2
+               WHEN    0                ALSO     1
+                       MOVE     "2"     TO       FLG-SANSHOU2
+               WHEN    0                ALSO     0
+               WHEN    1                ALSO     0
+                       MOVE     "3"     TO       FLG-SANSHOU2
+           END-EVALUATE.
       *
-      **>  IF    LNK-SYU-SRYYMD(1:6)   <   "200304"
-      **>                MOVE     "1"     TO       FLG-SANSHOU2
-      **>  ELSE
-      **>     EVALUATE   FLG-TSYRRK       ALSO     FLG-TNKRRK
-      **>        WHEN    1                ALSO     1
-      **>                MOVE     "1"     TO       FLG-SANSHOU2
-      **>        WHEN    0                ALSO     1
-      **>                MOVE     "2"     TO       FLG-SANSHOU2
-      **>        WHEN    0                ALSO     0
-      **>        WHEN    1                ALSO     0
-      **>                MOVE     "3"     TO       FLG-SANSHOU2
-      **>     END-EVALUATE
-      **>  END-IF.
       *
            EVALUATE    FLG-TSYRRK       ALSO     FLG-TNKRRK        
                WHEN    1                ALSO     1                 
@@ -3017,8 +3022,8 @@
       ******************************************************************
        2103-KOH1-KAISU-SEC           SECTION.
       *
-           EVALUATE   FLG-SANSHOU2
-               WHEN   "1"
+      ***  EVALUATE   FLG-SANSHOU2
+      ***      WHEN   "1"
                         MOVE  HKN-HON-GAIKKOTGAK TO  TEI-KIN-KOHI1-K
                         MOVE  HKN-HON-GAIKJGNGAK TO  MAX-KIN-KOHI1-K
                         MOVE  HKN-HON-GAIDJGNCNT TO  MAX-KAI-KOHI1-D
@@ -3031,33 +3036,33 @@
                               MOVE  HKN-HON-GAIMNAIJGNGAK
                                                  TO  MAX-KIN-KOHI1-M
                         END-IF
-               WHEN   "2"
-                        MOVE  HKN-TSY-GAIKKOTGAK TO  TEI-KIN-KOHI1-K
-                        MOVE  HKN-TSY-GAIKJGNGAK TO  MAX-KIN-KOHI1-K
-                        MOVE  HKN-TSY-GAIDJGNCNT TO  MAX-KAI-KOHI1-D
-                        MOVE  HKN-TSY-GAIMJGNCNT TO  MAX-KAI-KOHI1-M
-                        MOVE  HKN-TSY-GAIDJGNGAK TO  MAX-KIN-KOHI1-D
-                        IF    FLG-INGAI          =   "1"
-                              MOVE  HKN-TSY-GAIMGAIJGNGAK
-                                                 TO  MAX-KIN-KOHI1-M
-                        ELSE
-                              MOVE  HKN-TSY-GAIMNAIJGNGAK
-                                                 TO  MAX-KIN-KOHI1-M
-                        END-IF
-               WHEN   "3"
-                        MOVE  HKN-TNK-GAIKKOTGAK TO  TEI-KIN-KOHI1-K
-                        MOVE  HKN-TNK-GAIKJGNGAK TO  MAX-KIN-KOHI1-K
-                        MOVE  HKN-TNK-GAIDJGNCNT TO  MAX-KAI-KOHI1-D
-                        MOVE  HKN-TNK-GAIMJGNCNT TO  MAX-KAI-KOHI1-M
-                        MOVE  HKN-TNK-GAIDJGNGAK TO  MAX-KIN-KOHI1-D
-                        IF    FLG-INGAI          =   "1"
-                              MOVE  HKN-TNK-GAIMGAIJGNGAK
-                                                 TO  MAX-KIN-KOHI1-M
-                        ELSE
-                              MOVE  HKN-TNK-GAIMNAIJGNGAK
-                                                 TO  MAX-KIN-KOHI1-M
-                        END-IF
-           END-EVALUATE.
+      ***      WHEN   "2"
+      ***               MOVE  HKN-TSY-GAIKKOTGAK TO  TEI-KIN-KOHI1-K
+      ***               MOVE  HKN-TSY-GAIKJGNGAK TO  MAX-KIN-KOHI1-K
+      ***               MOVE  HKN-TSY-GAIDJGNCNT TO  MAX-KAI-KOHI1-D
+      ***               MOVE  HKN-TSY-GAIMJGNCNT TO  MAX-KAI-KOHI1-M
+      ***               MOVE  HKN-TSY-GAIDJGNGAK TO  MAX-KIN-KOHI1-D
+      ***               IF    FLG-INGAI          =   "1"
+      ***                     MOVE  HKN-TSY-GAIMGAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI1-M
+      ***               ELSE
+      ***                     MOVE  HKN-TSY-GAIMNAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI1-M
+      ***               END-IF
+      ***      WHEN   "3"
+      ***               MOVE  HKN-TNK-GAIKKOTGAK TO  TEI-KIN-KOHI1-K
+      ***               MOVE  HKN-TNK-GAIKJGNGAK TO  MAX-KIN-KOHI1-K
+      ***               MOVE  HKN-TNK-GAIDJGNCNT TO  MAX-KAI-KOHI1-D
+      ***               MOVE  HKN-TNK-GAIMJGNCNT TO  MAX-KAI-KOHI1-M
+      ***               MOVE  HKN-TNK-GAIDJGNGAK TO  MAX-KIN-KOHI1-D
+      ***               IF    FLG-INGAI          =   "1"
+      ***                     MOVE  HKN-TNK-GAIMGAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI1-M
+      ***               ELSE
+      ***                     MOVE  HKN-TNK-GAIMNAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI1-M
+      ***               END-IF
+      ***  END-EVALUATE.
       *
            IF     COMB-KOH1HKNNUM    =     "027"
                         MOVE  HKN-HON-GAIKKOTGAK TO  TEI-KIN-KOHI1-K
@@ -3111,8 +3116,8 @@
       ******************************************************************
        2104-KOH2-KAISU-SEC           SECTION.
       *
-           EVALUATE   FLG-SANSHOU2
-               WHEN   "1"
+      ***  EVALUATE   FLG-SANSHOU2
+      ***      WHEN   "1"
                         MOVE  HKN-HON-GAIKKOTGAK TO  TEI-KIN-KOHI2-K
                         MOVE  HKN-HON-GAIKJGNGAK TO  MAX-KIN-KOHI2-K
                         MOVE  HKN-HON-GAIDJGNCNT TO  MAX-KAI-KOHI2-D
@@ -3125,33 +3130,33 @@
                               MOVE  HKN-HON-GAIMNAIJGNGAK
                                                  TO  MAX-KIN-KOHI2-M
                         END-IF
-               WHEN   "2"
-                        MOVE  HKN-TSY-GAIKKOTGAK TO  TEI-KIN-KOHI2-K
-                        MOVE  HKN-TSY-GAIKJGNGAK TO  MAX-KIN-KOHI2-K
-                        MOVE  HKN-TSY-GAIDJGNCNT TO  MAX-KAI-KOHI2-D
-                        MOVE  HKN-TSY-GAIMJGNCNT TO  MAX-KAI-KOHI2-M
-                        MOVE  HKN-TSY-GAIDJGNGAK TO  MAX-KIN-KOHI2-D
-                        IF    FLG-INGAI          =   "1"
-                              MOVE  HKN-TSY-GAIMGAIJGNGAK
-                                                 TO  MAX-KIN-KOHI2-M
-                        ELSE
-                              MOVE  HKN-TSY-GAIMNAIJGNGAK
-                                                 TO  MAX-KIN-KOHI2-M
-                        END-IF
-               WHEN   "3"
-                        MOVE  HKN-TNK-GAIKKOTGAK TO  TEI-KIN-KOHI2-K
-                        MOVE  HKN-TNK-GAIKJGNGAK TO  MAX-KIN-KOHI2-K
-                        MOVE  HKN-TNK-GAIDJGNCNT TO  MAX-KAI-KOHI2-D
-                        MOVE  HKN-TNK-GAIMJGNCNT TO  MAX-KAI-KOHI2-M
-                        MOVE  HKN-TNK-GAIDJGNGAK TO  MAX-KIN-KOHI2-D
-                        IF    FLG-INGAI          =   "1"
-                              MOVE  HKN-TNK-GAIMGAIJGNGAK
-                                                 TO  MAX-KIN-KOHI2-M
-                        ELSE
-                              MOVE  HKN-TNK-GAIMNAIJGNGAK
-                                                 TO  MAX-KIN-KOHI2-M
-                        END-IF
-           END-EVALUATE.
+      ***      WHEN   "2"
+      ***               MOVE  HKN-TSY-GAIKKOTGAK TO  TEI-KIN-KOHI2-K
+      ***               MOVE  HKN-TSY-GAIKJGNGAK TO  MAX-KIN-KOHI2-K
+      ***               MOVE  HKN-TSY-GAIDJGNCNT TO  MAX-KAI-KOHI2-D
+      ***               MOVE  HKN-TSY-GAIMJGNCNT TO  MAX-KAI-KOHI2-M
+      ***               MOVE  HKN-TSY-GAIDJGNGAK TO  MAX-KIN-KOHI2-D
+      ***               IF    FLG-INGAI          =   "1"
+      ***                     MOVE  HKN-TSY-GAIMGAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI2-M
+      ***               ELSE
+      ***                     MOVE  HKN-TSY-GAIMNAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI2-M
+      ***               END-IF
+      ***      WHEN   "3"
+      ***               MOVE  HKN-TNK-GAIKKOTGAK TO  TEI-KIN-KOHI2-K
+      ***               MOVE  HKN-TNK-GAIKJGNGAK TO  MAX-KIN-KOHI2-K
+      ***               MOVE  HKN-TNK-GAIDJGNCNT TO  MAX-KAI-KOHI2-D
+      ***               MOVE  HKN-TNK-GAIMJGNCNT TO  MAX-KAI-KOHI2-M
+      ***               MOVE  HKN-TNK-GAIDJGNGAK TO  MAX-KIN-KOHI2-D
+      ***               IF    FLG-INGAI          =   "1"
+      ***                     MOVE  HKN-TNK-GAIMGAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI2-M
+      ***               ELSE
+      ***                     MOVE  HKN-TNK-GAIMNAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI2-M
+      ***               END-IF
+      ***  END-EVALUATE.
       *
            IF  ((LNK-S01-KOUREI-ZAITAKU-KBN   =       "1" ) OR
                 (FLG-KOUREI-KBN               =       "1" ))
@@ -3190,8 +3195,8 @@
       ******************************************************************
        2105-KOH3-KAISU-SEC           SECTION.
       *
-           EVALUATE   FLG-SANSHOU2
-               WHEN   "1"
+      ***  EVALUATE   FLG-SANSHOU2
+      ***      WHEN   "1"
                         MOVE  HKN-HON-GAIKKOTGAK TO   TEI-KIN-KOHI3-K
                         MOVE  HKN-HON-GAIKJGNGAK TO   MAX-KIN-KOHI3-K
                         MOVE  HKN-HON-GAIDJGNCNT TO   MAX-KAI-KOHI3-D
@@ -3204,33 +3209,33 @@
                               MOVE  HKN-HON-GAIMNAIJGNGAK
                                                  TO  MAX-KIN-KOHI3-M
                         END-IF
-               WHEN   "2"
-                        MOVE  HKN-TSY-GAIKKOTGAK TO  TEI-KIN-KOHI3-K
-                        MOVE  HKN-TSY-GAIKJGNGAK TO  MAX-KIN-KOHI3-K
-                        MOVE  HKN-TSY-GAIDJGNCNT TO  MAX-KAI-KOHI3-D
-                        MOVE  HKN-TSY-GAIMJGNCNT TO  MAX-KAI-KOHI3-M
-                        MOVE  HKN-TSY-GAIDJGNGAK TO  MAX-KIN-KOHI3-D
-                        IF    FLG-INGAI          =   "1"
-                              MOVE  HKN-TSY-GAIMGAIJGNGAK
-                                                 TO  MAX-KIN-KOHI3-M
-                        ELSE
-                              MOVE  HKN-TSY-GAIMNAIJGNGAK
-                                                 TO  MAX-KIN-KOHI3-M
-                        END-IF
-               WHEN   "3"
-                        MOVE  HKN-TNK-GAIKKOTGAK TO  TEI-KIN-KOHI3-K
-                        MOVE  HKN-TNK-GAIKJGNGAK TO  MAX-KIN-KOHI3-K
-                        MOVE  HKN-TNK-GAIDJGNCNT TO  MAX-KAI-KOHI3-D
-                        MOVE  HKN-TNK-GAIMJGNCNT TO  MAX-KAI-KOHI3-M
-                        MOVE  HKN-TNK-GAIDJGNGAK TO  MAX-KIN-KOHI3-D
-                        IF    FLG-INGAI          =   "1"
-                              MOVE  HKN-TNK-GAIMGAIJGNGAK
-                                                 TO  MAX-KIN-KOHI3-M
-                        ELSE
-                              MOVE  HKN-TNK-GAIMNAIJGNGAK
-                                                 TO  MAX-KIN-KOHI3-M
-                        END-IF
-           END-EVALUATE.
+      ***      WHEN   "2"
+      ***               MOVE  HKN-TSY-GAIKKOTGAK TO  TEI-KIN-KOHI3-K
+      ***               MOVE  HKN-TSY-GAIKJGNGAK TO  MAX-KIN-KOHI3-K
+      ***               MOVE  HKN-TSY-GAIDJGNCNT TO  MAX-KAI-KOHI3-D
+      ***               MOVE  HKN-TSY-GAIMJGNCNT TO  MAX-KAI-KOHI3-M
+      ***               MOVE  HKN-TSY-GAIDJGNGAK TO  MAX-KIN-KOHI3-D
+      ***               IF    FLG-INGAI          =   "1"
+      ***                     MOVE  HKN-TSY-GAIMGAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI3-M
+      ***               ELSE
+      ***                     MOVE  HKN-TSY-GAIMNAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI3-M
+      ***               END-IF
+      ***      WHEN   "3"
+      ***               MOVE  HKN-TNK-GAIKKOTGAK TO  TEI-KIN-KOHI3-K
+      ***               MOVE  HKN-TNK-GAIKJGNGAK TO  MAX-KIN-KOHI3-K
+      ***               MOVE  HKN-TNK-GAIDJGNCNT TO  MAX-KAI-KOHI3-D
+      ***               MOVE  HKN-TNK-GAIMJGNCNT TO  MAX-KAI-KOHI3-M
+      ***               MOVE  HKN-TNK-GAIDJGNGAK TO  MAX-KIN-KOHI3-D
+      ***               IF    FLG-INGAI          =   "1"
+      ***                     MOVE  HKN-TNK-GAIMGAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI3-M
+      ***               ELSE
+      ***                     MOVE  HKN-TNK-GAIMNAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI3-M
+      ***               END-IF
+      ***  END-EVALUATE.
       *
            IF  ((LNK-S01-KOUREI-ZAITAKU-KBN   =       "1" ) OR
                 (FLG-KOUREI-KBN               =       "1" ))
@@ -3269,8 +3274,8 @@
       ******************************************************************
        2106-KOH4-KAISU-SEC           SECTION.
       *
-           EVALUATE   FLG-SANSHOU2
-               WHEN   "1"
+      ***  EVALUATE   FLG-SANSHOU2
+      ***      WHEN   "1"
                         MOVE  HKN-HON-GAIKKOTGAK TO   TEI-KIN-KOHI4-K
                         MOVE  HKN-HON-GAIKJGNGAK TO   MAX-KIN-KOHI4-K
                         MOVE  HKN-HON-GAIDJGNCNT TO   MAX-KAI-KOHI4-D
@@ -3283,33 +3288,33 @@
                               MOVE  HKN-HON-GAIMNAIJGNGAK
                                                  TO  MAX-KIN-KOHI4-M
                         END-IF
-               WHEN   "2"
-                        MOVE  HKN-TSY-GAIKKOTGAK TO  TEI-KIN-KOHI4-K
-                        MOVE  HKN-TSY-GAIKJGNGAK TO  MAX-KIN-KOHI4-K
-                        MOVE  HKN-TSY-GAIDJGNCNT TO  MAX-KAI-KOHI4-D
-                        MOVE  HKN-TSY-GAIMJGNCNT TO  MAX-KAI-KOHI4-M
-                        MOVE  HKN-TSY-GAIDJGNGAK TO  MAX-KIN-KOHI4-D
-                        IF    FLG-INGAI          =   "1"
-                              MOVE  HKN-TSY-GAIMGAIJGNGAK
-                                                 TO  MAX-KIN-KOHI4-M
-                        ELSE
-                              MOVE  HKN-TSY-GAIMNAIJGNGAK
-                                                 TO  MAX-KIN-KOHI4-M
-                        END-IF
-               WHEN   "3"
-                        MOVE  HKN-TNK-GAIKKOTGAK TO  TEI-KIN-KOHI4-K
-                        MOVE  HKN-TNK-GAIKJGNGAK TO  MAX-KIN-KOHI4-K
-                        MOVE  HKN-TNK-GAIDJGNCNT TO  MAX-KAI-KOHI4-D
-                        MOVE  HKN-TNK-GAIMJGNCNT TO  MAX-KAI-KOHI4-M
-                        MOVE  HKN-TNK-GAIDJGNGAK TO  MAX-KIN-KOHI4-D
-                        IF    FLG-INGAI          =   "1"
-                              MOVE  HKN-TNK-GAIMGAIJGNGAK
-                                                 TO  MAX-KIN-KOHI4-M
-                        ELSE
-                              MOVE  HKN-TNK-GAIMNAIJGNGAK
-                                                 TO  MAX-KIN-KOHI4-M
-                        END-IF
-           END-EVALUATE.
+      ***      WHEN   "2"
+      ***               MOVE  HKN-TSY-GAIKKOTGAK TO  TEI-KIN-KOHI4-K
+      ***               MOVE  HKN-TSY-GAIKJGNGAK TO  MAX-KIN-KOHI4-K
+      ***               MOVE  HKN-TSY-GAIDJGNCNT TO  MAX-KAI-KOHI4-D
+      ***               MOVE  HKN-TSY-GAIMJGNCNT TO  MAX-KAI-KOHI4-M
+      ***               MOVE  HKN-TSY-GAIDJGNGAK TO  MAX-KIN-KOHI4-D
+      ***               IF    FLG-INGAI          =   "1"
+      ***                     MOVE  HKN-TSY-GAIMGAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI4-M
+      ***               ELSE
+      ***                     MOVE  HKN-TSY-GAIMNAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI4-M
+      ***               END-IF
+      ***      WHEN   "3"
+      ***               MOVE  HKN-TNK-GAIKKOTGAK TO  TEI-KIN-KOHI4-K
+      ***               MOVE  HKN-TNK-GAIKJGNGAK TO  MAX-KIN-KOHI4-K
+      ***               MOVE  HKN-TNK-GAIDJGNCNT TO  MAX-KAI-KOHI4-D
+      ***               MOVE  HKN-TNK-GAIMJGNCNT TO  MAX-KAI-KOHI4-M
+      ***               MOVE  HKN-TNK-GAIDJGNGAK TO  MAX-KIN-KOHI4-D
+      ***               IF    FLG-INGAI          =   "1"
+      ***                     MOVE  HKN-TNK-GAIMGAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI4-M
+      ***               ELSE
+      ***                     MOVE  HKN-TNK-GAIMNAIJGNGAK
+      ***                                        TO  MAX-KIN-KOHI4-M
+      ***               END-IF
+      ***  END-EVALUATE.
       *
            IF  ((LNK-S01-KOUREI-ZAITAKU-KBN   =       "1" ) OR
                 (FLG-KOUREI-KBN               =       "1" ))
@@ -7136,10 +7141,7 @@
       *    ¡Ê£×£Ë¡Ý£È£Ë£Î£Ë£Â£Î¡¡¶õÇò¡§°åÊÝ¡¡£±¡§Ï«ºÒ¡¡£²¡§¼«ÇåÀÕ¡Ë
            EVALUATE   WK-HKNKBN
              WHEN   SPACE
-      *    ÉéÃ´¶â³Û¤Î·×»»
-      ***      EVALUATE   FLG-SANSHOU
-      ***        WHEN   "1"
-                   IF   COMB-HONKZKKBN        =   "1"
+               IF   COMB-HONKZKKBN        =   "1"
                         MOVE  HKN-HON-GAIKFTNRATE  TO  WK-KOH-FTNRATE
                         IF    HKN-HON-GAIKFTNRATE     NOT =    ZERO
                               COMPUTE   WK-FUTANWARI  =
@@ -7208,7 +7210,7 @@
                         COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                                   LNK-SYU-SYUCOMPFTN     +
                                   LNK-SYU-SYUCOMPYKZFTN
-                   ELSE
+               ELSE
                         MOVE  HKN-KZK-GAIKFTNRATE  TO  WK-KOH-FTNRATE
                         IF    HKN-KZK-GAIKFTNRATE     NOT =    ZERO
                               COMPUTE   WK-FUTANWARI  =
@@ -7270,90 +7272,7 @@
                         COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                                   LNK-SYU-SYUCOMPFTN     +
                                   LNK-SYU-SYUCOMPYKZFTN
-                   END-IF
-      ***        WHEN   "2"
-      ***          IF    HKN-TSY-GAIKFTNRATE     NOT =    ZERO
-      ***                COMPUTE   WK-FUTANWARI  =
-      ***                          HKN-TSY-GAIKFTNRATE  /  100
-      ***                COMPUTE   LNK-SYU-SYUCOMPFTN  =
-      ***                          WK-ZENGAKU   *  WK-FUTANWARI
-      ***                MOVE      LNK-SYU-SYUCOMPFTN
-      ***                                    TO WK-TOKUTEI-COMPFTN2
-      ***                COMPUTE   LNK-SYU-SYUCOMPFTN =
-      ***                          LNK-SYU-SYUCOMPFTN  +  5
-      ***                COMPUTE   WK-FTN      =
-      ***                          LNK-SYU-SYUCOMPFTN  /  10
-      ***                COMPUTE   LNK-SYU-SYUCOMPFTN =
-      ***                          WK-FTN   *  10
-      ***          END-IF
-      ***          MOVE  HKN-TSY-GAIYKZFTNKBN
-      ***                               TO   LNK-SYU-SYUYKZFTNKBN
-      ***          IF    HKN-TSY-GAIYKZFTNKBN  NOT =  "0"
-      ***              MOVE  YAKFTN-SOGOKEI
-      ***                               TO   LNK-SYU-SYUCOMPYKZFTN
-      ***          END-IF
-      *----(01.00.23) LINE ADD START --------------------------
-      *Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
-      *¹âÎð¼Ô¤ÎºßÂðÁí¹ç¡¦ºßÂðËö´ü»»Äê´µ¼Ô
-      *
-      ***          IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
-      ***              IF  ZAN-SYU-M     <     WK-TOKUTEI-COMPFTN2      
-      ***                  MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
-      ***                                       WK-TOKUTEI-COMPFTN      
-      ***              ELSE                                             
-      ***                  MOVE WK-TOKUTEI-COMPFTN2                     
-      ***                                        TO  WK-TOKUTEI-COMPFTN 
-      ***              END-IF
-      ***          ELSE
-      ***                  MOVE WK-TOKUTEI-COMPFTN2              
-      ***                                        TO  WK-TOKUTEI-COMPFTN 
-      ***          END-IF
-      *----(01.00.23) LINE ADD END   --------------------------
-      ***          COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
-      ***                    LNK-SYU-SYUCOMPFTN     +
-      ***                    LNK-SYU-SYUCOMPYKZFTN
-      ***        WHEN   "3"
-      ***          IF    HKN-TNK-GAIKFTNRATE     NOT =    ZERO
-      ***                COMPUTE   WK-FUTANWARI  =
-      ***                          HKN-TNK-GAIKFTNRATE  /  100
-      ***                COMPUTE   LNK-SYU-SYUCOMPFTN  =
-      ***                          WK-ZENGAKU   *  WK-FUTANWARI
-      ***                MOVE      LNK-SYU-SYUCOMPFTN
-      ***                                   TO WK-TOKUTEI-COMPFTN2
-      ***                COMPUTE   LNK-SYU-SYUCOMPFTN =
-      ***                          LNK-SYU-SYUCOMPFTN  +  5
-      ***                COMPUTE   WK-FTN      =
-      ***                          LNK-SYU-SYUCOMPFTN  /  10
-      ***                COMPUTE   LNK-SYU-SYUCOMPFTN =
-      ***                          WK-FTN   *  10
-      ***          END-IF
-      ***          MOVE  HKN-TNK-GAIYKZFTNKBN
-      ***                               TO   LNK-SYU-SYUYKZFTNKBN
-      ***          IF    HKN-TNK-GAIYKZFTNKBN  NOT =  "0"
-      ***              MOVE  YAKFTN-SOGOKEI
-      ***                               TO   LNK-SYU-SYUCOMPYKZFTN
-      ***          END-IF
-      *----(01.00.23) LINE ADD START --------------------------
-      *Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
-      *¹âÎð¼Ô¤ÎºßÂðÁí¹ç¡¦ºßÂðËö´ü»»Äê´µ¼Ô
-      *
-      ***          IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
-      ***              IF  ZAN-SYU-M     <     WK-TOKUTEI-COMPFTN2      
-      ***                  MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
-      ***                                       WK-TOKUTEI-COMPFTN      
-      ***              ELSE                                             
-      ***                  MOVE WK-TOKUTEI-COMPFTN2                     
-      ***                                        TO  WK-TOKUTEI-COMPFTN 
-      ***              END-IF
-      ***          ELSE
-      ***                  MOVE WK-TOKUTEI-COMPFTN2                
-      ***                                        TO  WK-TOKUTEI-COMPFTN 
-      ***          END-IF
-      *----(01.00.23) LINE ADD END   --------------------------
-      ***          COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
-      ***                    LNK-SYU-SYUCOMPFTN     +
-      ***                    LNK-SYU-SYUCOMPYKZFTN
-      ***      END-EVALUATE
+               END-IF
              WHEN   "1"
       *        ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡Ê£´£°£°£±¡Ë¤«¤éÅÀ¿ôÃ±²Á¤Î¼èÆÀ
                INITIALIZE                         SYS-4001-REC
@@ -7540,20 +7459,20 @@
            MOVE       ZERO                TO   WK-GAIKFTNRATE.
            MOVE       SPACE               TO   WK-GAIYKZFTNKBN.
            MOVE       ZERO                TO   WK-GAIKKOTGAK.
-           EVALUATE   FLG-SANSHOU2
-               WHEN   "1"
+      ***  EVALUATE   FLG-SANSHOU2
+      ***      WHEN   "1"
                    MOVE    HKN-HON-GAIKFTNRATE  TO   WK-GAIKFTNRATE
                    MOVE    HKN-HON-GAIYKZFTNKBN TO   WK-GAIYKZFTNKBN
                    MOVE    HKN-HON-GAIKKOTGAK   TO   WK-GAIKKOTGAK
-               WHEN   "2"
-                   MOVE    HKN-TSY-GAIKFTNRATE  TO   WK-GAIKFTNRATE
-                   MOVE    HKN-TSY-GAIYKZFTNKBN TO   WK-GAIYKZFTNKBN
-                   MOVE    HKN-TSY-GAIKKOTGAK   TO   WK-GAIKKOTGAK
-               WHEN   "3"
-                   MOVE    HKN-TNK-GAIKFTNRATE  TO   WK-GAIKFTNRATE
-                   MOVE    HKN-TNK-GAIYKZFTNKBN TO   WK-GAIYKZFTNKBN
-                   MOVE    HKN-TNK-GAIKKOTGAK   TO   WK-GAIKKOTGAK
-           END-EVALUATE.
+      ***      WHEN   "2"
+      ***          MOVE    HKN-TSY-GAIKFTNRATE  TO   WK-GAIKFTNRATE
+      ***          MOVE    HKN-TSY-GAIYKZFTNKBN TO   WK-GAIYKZFTNKBN
+      ***          MOVE    HKN-TSY-GAIKKOTGAK   TO   WK-GAIKKOTGAK
+      ***      WHEN   "3"
+      ***          MOVE    HKN-TNK-GAIKFTNRATE  TO   WK-GAIKFTNRATE
+      ***          MOVE    HKN-TNK-GAIYKZFTNKBN TO   WK-GAIYKZFTNKBN
+      ***          MOVE    HKN-TNK-GAIKKOTGAK   TO   WK-GAIKKOTGAK
+      ***  END-EVALUATE.
       *
            IF   COMB-KOHHKNNUM(KOH-IDX)  =  "027"
                    MOVE    HKN-HON-GAIKFTNRATE  TO   WK-GAIKFTNRATE
