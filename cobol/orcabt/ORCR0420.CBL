@@ -1441,7 +1441,10 @@
               END-IF
            END-IF
       *
-           IF      RECE44-SRYKBN      =     "80"
+           IF     (RECE41-HKNKBN    NOT  =  "4"    AND
+                   RECE44-SRYKBN         =  "80"       )
+           OR     (RECE41-HKNKBN         =  "4"    AND
+                   RECE44-SRYKBN         =  "40"       )
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
                                             "180022210"   OR
                                             "180706810"   OR
