@@ -2423,6 +2423,11 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
+      *    禁忌他
+           PERFORM 4101-COMMENT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
       *    保険組合せ選択
            PERFORM 4101-SELNUM-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -2890,7 +2895,7 @@
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-NICKNAME
                IF      FLG-ERR             =   1
-                   MOVE    "0029"              TO  SPA-ERRCD
+                   MOVE    "0027"              TO  SPA-ERRCD
                    MOVE    5                   TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -3292,6 +3297,91 @@
       *
            .
        4101-CONDITIONH-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    禁忌他チェック処理
+      *****************************************************************
+       4101-COMMENT-CHK-SEC          SECTION.
+      *
+           IF      SPA-GMN-TABOO-1     NOT =   SPACE
+               MOVE    SPA-GMN-TABOO-1     TO  WRK-MAE-INPUT
+               PERFORM 890-HALF-ZEN-SEC
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-TABOO-1
+               IF      FLG-ERR             =   1
+                   MOVE    "0030"              TO  SPA-ERRCD
+                   MOVE    52                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+           IF     (SPA-GMN-TABOO-2     NOT =   SPACE ) AND
+                  (SPA-ERRCD               =   SPACE )
+               MOVE    SPA-GMN-TABOO-2     TO  WRK-MAE-INPUT
+               PERFORM 890-HALF-ZEN-SEC
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-TABOO-2
+               IF      FLG-ERR             =   1
+                   MOVE    "0030"              TO  SPA-ERRCD
+                   MOVE    53                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+           IF     (SPA-GMN-ALLERGY-1     NOT =   SPACE ) AND
+                  (SPA-ERRCD               =   SPACE )
+               MOVE    SPA-GMN-ALLERGY-1   TO  WRK-MAE-INPUT
+               PERFORM 890-HALF-ZEN-SEC
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-ALLERGY-1
+               IF      FLG-ERR             =   1
+                   MOVE    "0030"              TO  SPA-ERRCD
+                   MOVE    54                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+           IF     (SPA-GMN-ALLERGY-2     NOT =   SPACE ) AND
+                  (SPA-ERRCD               =   SPACE )
+               MOVE    SPA-GMN-ALLERGY-2   TO  WRK-MAE-INPUT
+               PERFORM 890-HALF-ZEN-SEC
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-ALLERGY-2
+               IF      FLG-ERR             =   1
+                   MOVE    "0030"              TO  SPA-ERRCD
+                   MOVE    55                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+           IF     (SPA-GMN-KANSENSYO-1 NOT =   SPACE ) AND
+                  (SPA-ERRCD               =   SPACE )
+               MOVE    SPA-GMN-KANSENSYO-1 TO  WRK-MAE-INPUT
+               PERFORM 890-HALF-ZEN-SEC
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-KANSENSYO-1
+               IF      FLG-ERR             =   1
+                   MOVE    "0030"              TO  SPA-ERRCD
+                   MOVE    56                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+           IF     (SPA-GMN-KANSENSYO-2 NOT =   SPACE ) AND
+                  (SPA-ERRCD               =   SPACE )
+               MOVE    SPA-GMN-KANSENSYO-2 TO  WRK-MAE-INPUT
+               PERFORM 890-HALF-ZEN-SEC
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-KANSENSYO-2
+               IF      FLG-ERR             =   1
+                   MOVE    "0030"              TO  SPA-ERRCD
+                   MOVE    57                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *    コメント
+           IF     (SPA-GMN-COMMENT-1   NOT =   SPACE ) AND
+                  (SPA-ERRCD               =   SPACE )
+               MOVE    SPA-GMN-COMMENT-1   TO  WRK-MAE-INPUT
+               PERFORM 890-HALF-ZEN-SEC
+               IF      KANACHK-RC2         =   7
+                   MOVE    WRK-ATO-INPUT       TO  SPA-GMN-COMMENT-1
+               END-IF
+           END-IF
+           IF     (SPA-GMN-COMMENT-2   NOT =   SPACE ) AND
+                  (SPA-ERRCD               =   SPACE )
+               MOVE    SPA-GMN-COMMENT-2   TO  WRK-MAE-INPUT
+               PERFORM 890-HALF-ZEN-SEC
+               IF      KANACHK-RC2         =   7
+                   MOVE    WRK-ATO-INPUT       TO  SPA-GMN-COMMENT-2
+               END-IF
+           END-IF
+           .
+       4101-COMMENT-SET-EXT.
            EXIT.
       *
       ****************************************************************
@@ -5611,6 +5701,9 @@
                   (KANACHK-SYUBETU     =   1     )
                MOVE    1                   TO  FLG-ERR
                MOVE    WRK-MAE-INPUT       TO  WRK-ATO-INPUT
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
+               END-IF
            ELSE
                MOVE    ZERO                TO  FLG-ERR
                MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
