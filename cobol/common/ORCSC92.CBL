@@ -955,6 +955,10 @@
       *****************************************************************
        2005-HEIYOU-CHK-SEC           SECTION.
       *
+           IF      SPA-COM-CHKFLG (IDX-T)  =   "1"
+               GO      TO      2005-HEIYOU-CHK-EXT
+           END-IF
+      *
       *    チェックテーブル検索
            INITIALIZE                  CHK-REC
            MOVE    "5"                 TO  CHK-CHKKBN

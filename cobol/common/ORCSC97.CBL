@@ -223,6 +223,13 @@
       *
       *    半角変換のみの時
            IF      LNK-SC97-KBN        =   "1"
+      *        数量ゼロの判定
+               IF      (LNK-SC97-PG        =   "K02N" )  AND
+                       (LNK-SC97-INPUTCD(1:1)  =   "*" )
+                   CONTINUE
+               ELSE
+                   PERFORM 1003-SURYOU-CHK-SEC
+               END-IF
                GO      TO          100-INPUTCD-SYORI-EXT
            END-IF
       *
@@ -365,6 +372,30 @@
       *
            .
        100-MAE-HANKAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    数量ゼロの判定処理
+      *****************************************************************
+       1003-SURYOU-CHK-SEC    SECTION.
+      *
+           MOVE    LNK-SC97-INPUTCD    TO  WRK-INPUTCD
+      *    １桁目の変換
+           PERFORM 2001-JIKANGAI-CHK-SEC
+      *
+           IF     (LNK-SC97-INPUTCD(1:1)   IS  NUMERIC) AND
+                  (LNK-SC97-INPUTCD(2:1)       =   SPACE  ) AND
+                  (LNK-SC97-INPUTCD(3:1)   NOT =   SPACE  )
+               MOVE    3                   TO  WRK-IDX-FT
+           ELSE
+               MOVE    1                   TO  WRK-IDX-FT
+           END-IF
+      *    数量以下の変換
+           MOVE    LNK-SC97-GMN-IDX    TO  GMN-IDX
+           PERFORM 300-SURYOU-SYORI-SEC
+      *
+           .
+       1003-SURYOU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -555,34 +586,9 @@
        200-INPUTCD-CHK-SEC    SECTION.
       *
            MOVE    LNK-SC97-INPUTCD    TO  WRK-INPUTCD
+      *    １桁目の変換
+           PERFORM 2001-JIKANGAI-CHK-SEC
       *
-      *    １桁が数字で２桁目が空白の判定を全角チェック
-           IF     (LNK-SC97-INPUTCD(1:1)   >=  X"A1"  )  AND
-                  (LNK-SC97-INPUTCD(3:1)   =   " "    )  AND
-                  (LNK-SC97-INPUTCD(4:)    NOT =   SPACE)
-               MOVE    LNK-SC97-INPUTCD    TO  WRK-HENKAN-MAE
-               MOVE    1                   TO  WRK-STR
-               MOVE    2                   TO  WRK-END
-               PERFORM 2010-MOJI-HENKAN-SEC
-               IF      FLG-ALLSUJI         =   1
-                   MOVE    SPACE               TO  WRK-INPUTCD
-                   MOVE    WRK-HENKAN-ATO      TO  WRK-INPUTCD(1:1)
-                   MOVE    LNK-SC97-INPUTCD(3:)
-                                                TO  WRK-INPUTCD(2:)
-               ELSE
-                   MOVE    LNK-SC97-INPUTCD     TO  WRK-INPUTCD
-               END-IF
-           END-IF
-      *
-      *    １桁が’．’の時、種別入力とする
-           IF      LNK-SC97-INPUTCD(1:2)   =   "．" 
-               MOVE    LNK-SC97-INPUTCD    TO  WRK-HENKAN-MAE
-               MOVE    1                   TO  WRK-STR
-               MOVE    22                  TO  WRK-END
-               PERFORM 2010-MOJI-HENKAN-SEC
-               MOVE    WRK-HENKAN-ATO      TO  LNK-SC97-INPUTCD
-      *********GO      TO      200-INPUTCD-CHK-EXT
-           END-IF
       *    診療種別
            IF      LNK-SC97-INPUTCD(1:1)   =   "."
                MOVE    4                   TO  WRK-CD-MCNT
@@ -615,6 +621,43 @@
            PERFORM 300-SURYOU-SYORI-SEC
            .
        200-INPUTCD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    １桁目の変換調査処理
+      *****************************************************************
+       2001-JIKANGAI-CHK-SEC       SECTION.
+      *
+      *    １桁が数字で２桁目が空白の判定を全角チェック
+           IF     (LNK-SC97-INPUTCD(1:1)   >=  X"A1"  )  AND
+                  (LNK-SC97-INPUTCD(3:1)   =   " "    )  AND
+                  (LNK-SC97-INPUTCD(4:)    NOT =   SPACE)
+               MOVE    LNK-SC97-INPUTCD    TO  WRK-HENKAN-MAE
+               MOVE    1                   TO  WRK-STR
+               MOVE    2                   TO  WRK-END
+               PERFORM 2010-MOJI-HENKAN-SEC
+               IF      FLG-ALLSUJI         =   1
+                   MOVE    SPACE               TO  WRK-INPUTCD
+                   MOVE    WRK-HENKAN-ATO      TO  WRK-INPUTCD(1:1)
+                   MOVE    LNK-SC97-INPUTCD(3:)
+                                                TO  WRK-INPUTCD(2:)
+                   MOVE    WRK-INPUTCD          TO  LNK-SC97-INPUTCD
+               ELSE
+                   MOVE    LNK-SC97-INPUTCD     TO  WRK-INPUTCD
+               END-IF
+           END-IF
+      *
+      *    １桁が’．’の時、種別入力とする
+           IF      LNK-SC97-INPUTCD(1:2)   =   "．" 
+               MOVE    LNK-SC97-INPUTCD    TO  WRK-HENKAN-MAE
+               MOVE    1                   TO  WRK-STR
+               MOVE    22                  TO  WRK-END
+               PERFORM 2010-MOJI-HENKAN-SEC
+               MOVE    WRK-HENKAN-ATO      TO  LNK-SC97-INPUTCD
+           END-IF
+      *
+           .
+       2001-JIKANGAI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1144,6 +1187,9 @@
       *    入力コードマスター読込
       *****************************************************************
        930-INPUTCD-READ-SEC         SECTION.
+      *TEST
+           DISPLAY "C97 INPUTCD-READ:" ICD-INPUTCD
+      *TEST
       *
            IF      WRK-CD-MCNT         =   20
                MOVE    "INPUTCD-KEY2"      TO  WRK-PATH

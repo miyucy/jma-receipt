@@ -33,6 +33,7 @@
       * 01.00.03     NACL-多々納  02/11/20  自賠責器材追加
       * 01.00.04     NACL-多々納  03/03/19  老人の労災加算の修正
       * 01.00.05     NACL-多々納  03/09/22  家族通院精神療法算定追加
+      * 01.00.06     NACL-多々納  03/10/10  リハビリチェック変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -73,8 +74,13 @@
       *    施設基準不適合
            03  FLG-KIJUNN          PIC 9(01).
       *    早期リハビリあり
-           03  FLG-SOUKI           PIC 9(01).
+      *****03  FLG-SOUKI           PIC 9(01).
            03  FLG-SOUKI-ALL       PIC 9(01).
+           03  FLG-SOUKI-END       PIC 9(01).
+           03  FLG-SOUKI-ARI       PIC 9(01).
+           03  FLG-SOUKI-ARI1      PIC 9(01).
+           03  FLG-SOUKI-ARI2      PIC 9(01).
+           03  FLG-SANTEI-ARI      PIC 9(01).
       *    手技料計算フラグ
            03  FLG-SYUGI           PIC 9(01).
       *    労災用
@@ -82,7 +88,8 @@
       *    労災加算あり
            03  FLG-ROU-ARI         PIC 9(01).
            03  FLG-ROUSAI          PIC 9(01).
-      *
+      *    リハビリあり
+           03  FLG-RIGAKU          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -92,6 +99,8 @@
       *
            03  IDX2                PIC 9(02).
            03  IDY2                PIC 9(02).
+      *
+           03  IDD                 PIC 9(02).
       *
            03  IDXS                PIC 9(04).
            03  IDX-Z               PIC 9(04).
@@ -108,13 +117,14 @@
            03  IDX-T               PIC 9(04).
            03  IDX-R               PIC 9(04).
            03  IDX-R1              PIC 9(04).
-           03  IDX-R2              PIC 9(04).
-           03  IDX-R3              PIC 9(04).
-           03  IDX-RG              PIC 9(04).
-           03  IDX-RR              PIC 9(04).
+      *
+           03  IDX-RS              PIC 9(04).
+           03  IDZ                 PIC 9(04).
       *
            03  IDX-Z2              PIC 9(04).
            03  IDX-RSI             PIC 9(04).
+      *
+           03  IDX-HZN             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -157,66 +167,10 @@
            03  WRK-IDX             PIC 9(04).
       *
            03  WRK-RIGAKU-KBN      PIC X(01).
-           03  WRK-RIGAKU-KBN2     PIC X(01).
            03  WRK-RIGAKU-RYO      PIC X(01).
-           03  WRK-RIGAKU-RYO1     PIC X(01).
-           03  WRK-RIGAKU-RYO2     PIC X(01).
-           03  WRK-RIGAKU-RYO3     PIC X(01).
-           03  WRK-RIGAKU-RYOS     PIC X(01).
-           03  WRK-RIGAK-CNT       PIC 9(03).
-           03  WRK-RIGAK-CNT1      PIC 9(03).
-           03  WRK-RIGAK-CNT2      PIC 9(03).
-           03  WRK-RIGAK-CNT3      PIC 9(03).
            03  WRK-RIGAK-CNTALL    PIC 9(03).
       *
-           03  WRK-RIGAKU-SYORI    PIC X(01).
       *
-           03  WRK-RIGAKU-CNT-AREA.
-               05  WRK-R-DCNT-S        PIC 9(03).
-               05  WRK-R-DCNT-K        PIC 9(03).
-               05  WRK-R-TCNT-S        PIC 9(03).
-               05  WRK-R-TCNT-K        PIC 9(03).
-      *
-               05  WRK-S-DCNT-S        PIC 9(03).
-               05  WRK-S-DCNT-K        PIC 9(03).
-               05  WRK-S-TCNT-S        PIC 9(03).
-               05  WRK-S-TCNT-K        PIC 9(03).
-      *
-               05  WRK-G-DCNT-S        PIC 9(03).
-               05  WRK-G-DCNT-K        PIC 9(03).
-               05  WRK-G-TCNT-S        PIC 9(03).
-               05  WRK-G-TCNT-K        PIC 9(03).
-      *    入院用
-           03  WRK-RIGAKU-NCNT-AREA.
-               05  WRK-R-DCNT-SN-G.
-                   07  WRK-R-DCNT-SN       PIC 9(03)   OCCURS  31.
-               05  WRK-R-DCNT-KN-G.
-                   07  WRK-R-DCNT-KN       PIC 9(03)   OCCURS  31.
-               05  WRK-R-TCNT-SN       PIC 9(03).
-               05  WRK-R-TCNT-KN       PIC 9(03).
-      *
-               05  WRK-S-DCNT-SN-G.
-                   07  WRK-S-DCNT-SN       PIC 9(03)   OCCURS  31.
-               05  WRK-S-DCNT-KN-G.
-                   07  WRK-S-DCNT-KN       PIC 9(03)   OCCURS  31.
-               05  WRK-S-TCNT-SN       PIC 9(03).
-               05  WRK-S-TCNT-KN       PIC 9(03).
-      *
-               05  WRK-G-DCNT-SN-G.
-                   07  WRK-G-DCNT-SN       PIC 9(03)   OCCURS  31.
-               05  WRK-G-DCNT-KN-G.
-                   07  WRK-G-DCNT-KN       PIC 9(03)   OCCURS  31.
-               05  WRK-G-TCNT-SN       PIC 9(03).
-               05  WRK-G-TCNT-KN       PIC 9(03).
-      *
-           03  WRK-TUKI-GOK        PIC 9(03).
-      *
-           03  WRK-RIGAK-CNTS      PIC 9(03).
-           03  WRK-RIGAK-CNTG      PIC 9(03).
-      *
-           03  WRK-RIG-CNT         PIC 9(03).
-           03  WRK-RIG-DAY-G.
-               05  WRK-RIG-DAY     PIC 9(03)  OCCURS  31.
       *    理学最大単位
            03  WRK-RIGAK-MAX       PIC 9(03).
       *
@@ -231,6 +185,26 @@
            03  WRK-KINGAK          PIC 9(08).
            03  FLG-JIHI            PIC 9(01).
       *
+      *    リハビリ回数集計
+        01  WRK-RIGAKU-NCNT-AREA.
+      *        １:理学、２：作業、３：言語
+               05  WRK-DCNT-TBL        OCCURS  3.
+      *        集団
+                   07  WRK-DCNT-SN-G.
+                       09  WRK-DCNT-SN     PIC 9(03)   OCCURS  31.
+      *            当日
+                   07  WRK-TCNT-S          PIC 9(03).
+      *            月計
+                   07  WRK-TCNT-SN         PIC 9(03).
+      *        個別
+                   07  WRK-DCNT-KN-G.
+                       09  WRK-DCNT-KN     PIC 9(03)   OCCURS  31.
+                   07  WRK-TCNT-K          PIC 9(03).
+                   07  WRK-TCNT-KN         PIC 9(03).
+      *        早期リハ等加算（逓減対象外）
+               05  WRK-GAICNT-G.
+                   07  WRK-GCNT            PIC 9(01)   OCCURS  31.
+      *
       *    早期リハビリ加算有無
        01  WRK-SOUKI-G.
            03  WRK-SOUKI-FLG        PIC 9(01)   OCCURS  31.
@@ -243,43 +217,8 @@
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
       *
-       01  FLG-RIGAKU              PIC 9(01).
-      *
-      *    労災用、早期リハビリテーション加算テーブル
-       01  TBL-RIHABIRI-AREA.
-           03  FILLER              PIC X(09)   VALUE   "180022970".
-           03  FILLER              PIC X(09)   VALUE   "180023070".
-           03  FILLER              PIC X(09)   VALUE   "180023170".
-           03  FILLER              PIC X(09)   VALUE   "180023270".
-           03  FILLER              PIC X(09)   VALUE   "180023370".
-           03  FILLER              PIC X(09)   VALUE   "180023470".
-           03  FILLER              PIC X(09)   VALUE   "180023570".
-      *
-           03  FILLER              PIC X(09)   VALUE   "180024070".
-           03  FILLER              PIC X(09)   VALUE   "180024170".
-           03  FILLER              PIC X(09)   VALUE   "180024270".
-           03  FILLER              PIC X(09)   VALUE   "180024370".
-           03  FILLER              PIC X(09)   VALUE   "180024470".
-           03  FILLER              PIC X(09)   VALUE   "180024570".
-           03  FILLER              PIC X(09)   VALUE   "180024670".
-      *
-           03  FILLER              PIC X(09)   VALUE   "180707670".
-           03  FILLER              PIC X(09)   VALUE   "180707770".
-           03  FILLER              PIC X(09)   VALUE   "180707870".
-           03  FILLER              PIC X(09)   VALUE   "180707970".
-           03  FILLER              PIC X(09)   VALUE   "180708570".
-           03  FILLER              PIC X(09)   VALUE   "180708670".
-           03  FILLER              PIC X(09)   VALUE   "180708770".
-           03  FILLER              PIC X(09)   VALUE   "180708870".
-      *    労災
-           03  FILLER              PIC X(09)   VALUE   "101800040".
-           03  FILLER              PIC X(09)   VALUE   "101800050".
-           03  FILLER              PIC X(09)   VALUE   "101800060".
-           03  FILLER              PIC X(09)   VALUE   "101800070".
-      *
-       01  TBL-RIHABIRI-AREA-R       REDEFINES   TBL-RIHABIRI-AREA.
-           03  TBL-RIHABIRI-OCC      OCCURS   26  INDEXED   TBL-RIDX.
-               05  TBL-RIHA-SRYCD      PIC X(09).
+      *    リハビリの早期リハ加算テーブル
+           COPY   "CMRIHAKSNTBL.INC".
       *
       *
       *****************************************************************
@@ -356,6 +295,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
+           MOVE    LNK-ORCSC-RIGAKU-TBL    TO  WRK-RIGAKU-NCNT-AREA
       *
            EVALUATE    LNK-ORCSC-KBN
       *        剤別　チェック、編集、自動算定
@@ -370,6 +310,7 @@
                WHEN    OTHER
                    MOVE    "1001"          TO  SPA-ERRCD
            END-EVALUATE
+           MOVE    WRK-RIGAKU-NCNT-AREA    TO  LNK-ORCSC-RIGAKU-TBL
       *
            .
            EXIT    PROGRAM
@@ -383,7 +324,8 @@
            PERFORM 1001-NAI-CHK-SEC
            IF     (WRK-GMN-INPUTCD(IDX-MAX)(1:1)
                                        =   "."   )  OR
-                  (SPA-ERRCD       NOT =   SPACE )
+                  (SPA-ERRCD       NOT =   SPACE )  OR
+                  (LNK-ORCSC-KIDCD NOT =   SPACE )
                GO      TO      100-SEL-SYORI-EXT
            END-IF
       *
@@ -400,7 +342,7 @@
        1001-NAI-CHK-SEC                  SECTION.
       *
       *    剤内に早期リハビリ存在チェック
-           PERFORM 10010-SOUKI-CHK-SEC
+      **** PERFORM 10010-SOUKI-CHK-SEC
       *
            MOVE    ZERO                TO  IDX-MAX
            MOVE    ZERO                TO  IDX-SYU
@@ -444,41 +386,6 @@
       *
            .
        1001-NAI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    剤内早期リハビリ存在チェック処理
-      *****************************************************************
-       10010-SOUKI-CHK-SEC                  SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SOUKI-ALL
-           INITIALIZE                  WRK-SOUKI-G
-           MOVE    LNK-ORCSC-SOUKI-G   TO  WRK-SOUKI-G
-      *
-           PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
-                              (FLG-SOUKI-ALL           =   1   )  OR
-                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
-               MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
-               PERFORM 20011-SOUKI-CHK-SEC
-               IF      FLG-SOUKI           =   1
-                   MOVE    1               TO  FLG-SOUKI-ALL
-      *
-                   IF      SPA-NYUGAIKBN   =   "1"
-                       PERFORM VARYING     IDX2     FROM   1   BY  1
-                               UNTIL       IDX2     >   31
-                           IF      WRK-COM-NYUINDAY (IDX-Z IDX2)
-                                                   >   ZERO
-                               MOVE    1               TO  WRK-SOUKI-FLG
-                                                                  (IDX2)
-                           END-IF
-                       END-PERFORM
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           .
-       10010-SOUKI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -670,499 +577,18 @@
       *
            IF     (SPA-NYUGAIKBN       =   "2" ) OR
                   (LNK-ORCSC-SYORIFLG  =   1   )
-      *        外来か訂正の時、日毎のチェックを行う
-               PERFORM 1001122-GAI-RIGAKU-CHK-SEC
+      *        外来か訂正の時の日上限と月上限のチェックと自動逓減
+               PERFORM 2002-GAIRAI-ALL-CHK-SEC
            ELSE
-      *        入院の時、日毎のチェックを行う
-               PERFORM 1001121-NYU-RIGAKU-CHK-SEC
+      *        入院の日上限と月上限のチェックと自動逓減
+               PERFORM 2001-NYUIN-ALL-CHK-SEC
            END-IF
       *
+           MOVE    SPA-ERRCD           TO  WRK-ERRCD
+           MOVE    SPACE               TO  SPA-ERRCD
       *
            .
        100112-RIGAKU-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    外来理学療法チェック処理
-      *****************************************************************
-       1001122-GAI-RIGAKU-CHK-SEC            SECTION.
-      *
-      *    当日算定済みのすべてのリハビリカウント
-           PERFORM 2001-RIGAKU-CNT-CHK-SEC
-      *
-           MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
-      *
-           MOVE    SPACE               TO  WRK-RIGAKU-RYO2
-      *
-      *    同一理学チェック（１日単位チェック）
-           MOVE    ZERO                TO  IDX-RG
-           MOVE    ZERO                TO  WRK-RIG-CNT
-           MOVE    ZERO                TO  WRK-TUKI-CNT
-           MOVE    ZERO                TO  WRK-DAYCNT
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   6
-               IF      LNK-ORCSC-RIGAKU-SRYCD(IDX) =   WRK-SRYCD
-                   MOVE     LNK-ORCSC-RIGAKU-CNT (IDX)
-                                               TO  WRK-RIG-CNT
-                   MOVE     IDX                TO  IDX-RG
-                   MOVE     6                  TO  IDX
-               ELSE
-                   IF      LNK-ORCSC-RIGAKU-SRYCD(IDX)  =  SPACE
-                       MOVE    IDX             TO  IDX-RG
-                       MOVE    WRK-SRYCD       TO
-                                         LNK-ORCSC-RIGAKU-SRYCD(IDX-RG)
-                       MOVE     6                  TO  IDX
-                   ELSE
-                       MOVE    LNK-ORCSC-RIGAKU-SRYCD(IDX)
-                                                   TO  WRK-SRYCD2
-                       PERFORM 10011312-RIGAKU-SERCH-SEC
-      *                療法が同じ時、単位を集計する
-                       IF      (WRK-RIGAKU-RYO     =   WRK-RIGAKU-RYO2)
-                          AND  (WRK-RIGAKU-KBN     =   WRK-RIGAKU-KBN2)
-                           MOVE    LNK-ORCSC-RIGAKU-CNT (IDX)
-                                                   TO  WRK-RIG-CNT
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-      *    当日・当月分
-           EVALUATE    WRK-RIGAKU-RYO  ALSO  WRK-RIGAKU-KBN
-      *        個別の理学
-               WHEN    "K"             ALSO  "R"
-                   ADD     WRK-R-TCNT-K      TO  WRK-TUKI-CNT
-                   ADD     WRK-R-DCNT-K      TO  WRK-DAYCNT
-      *        集団の理学
-               WHEN    "S"             ALSO  "R"
-                   ADD     WRK-R-TCNT-S      TO  WRK-TUKI-CNT
-                   ADD     WRK-R-DCNT-S      TO  WRK-DAYCNT
-      *        個別の作業
-               WHEN    "K"             ALSO  "S"
-                   ADD     WRK-S-TCNT-K      TO  WRK-TUKI-CNT
-                   ADD     WRK-S-DCNT-K      TO  WRK-DAYCNT
-      *        集団の作業
-               WHEN    "S"             ALSO  "S"
-                   ADD     WRK-S-TCNT-S      TO  WRK-TUKI-CNT
-                   ADD     WRK-S-DCNT-S      TO  WRK-DAYCNT
-      *        個別の言語
-               WHEN    "K"             ALSO  "G"
-                   ADD     WRK-G-TCNT-K      TO  WRK-TUKI-CNT
-                   ADD     WRK-G-DCNT-K      TO  WRK-DAYCNT
-      *        集団の言語
-               WHEN    "S"             ALSO  "G"
-                   ADD     WRK-G-TCNT-S      TO  WRK-TUKI-CNT
-                   ADD     WRK-G-DCNT-S      TO  WRK-DAYCNT
-           END-EVALUATE
-      *
-      *    個別・集団療法チェック
-           IF      WRK-RIGAKU-RYO2 NOT =   SPACE
-               IF      WRK-RIGAKU-RYO      =   WRK-RIGAKU-RYO2
-                   CONTINUE
-               ELSE
-                   MOVE    "0093"          TO  WRK-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-                   GO      TO      1001122-GAI-RIGAKU-CHK-EXT
-               END-IF
-           END-IF
-      *
-      *    算定履歴チェック処理
-           INITIALIZE                  ORCSC91AREA
-           MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
-           MOVE    WRK-SRYCD           TO  LNK-SC91-SRYCD
-           MOVE    "3"                 TO  LNK-SC91-KBN
-           MOVE    IDX-Z               TO  LNK-SC91-GMN-IDX
-           MOVE    LNK-ORCSC-KAISU     TO  LNK-SC91-KAISU
-           MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
-           MOVE    1                   TO  LNK-SC91-CHKFLG
-           CALL    "ORCSC91"           USING    MCPAREA
-                                                ORCSC91AREA
-                                                WRK-SCR-REC
-                                                SPA-AREA
-                                                TNS-TENSU-REC
-      *    上限日チェック
-           COMPUTE WRK-DAYCNT          =   LNK-ORCSC-KAISU
-                                       +   WRK-DAYCNT
-                                       +   WRK-RIG-CNT
-           IF     WRK-DAYCNT           >   LNK-SC91-DAYMAXCNT
-               MOVE    "0091"          TO  WRK-ERRCD
-               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-               GO      TO      1001122-GAI-RIGAKU-CHK-EXT
-           END-IF
-      *
-      *    労災の時、理学療法の逓減は傷病発生３月以降とする
-           IF     (SPA-HKNKBN          =   1        )  AND
-                  (SPA-SRYYMD          <   SPA-RSI-SHOBYOYMD3)
-      *        理学療法の同一日の上限回数
-               ADD      LNK-ORCSC-KAISU    TO  LNK-ORCSC-RIGAKU-CNT
-                                                             (IDX-RG)
-               GO      TO      1001122-GAI-RIGAKU-CHK-EXT
-           END-IF
-      *
-      *    当月単位集計
-           COMPUTE WRK-TUKI-CNT        =   WRK-TUKI-CNT
-                                       +   WRK-RIG-CNT
-      *
-           IF      WRK-RIGAKU-RYO      =   "K"
-      *      厚生労働大臣が定める患者以外の時、逓減を行う
-             IF     FLG-SOUKI-ALL        =   ZERO
-      *        個別逓減チェック
-               IF     WRK-TUKI-CNT         >=  10
-      *            逓減あり
-                   PERFORM 11122-RIGAKU-TEIGEN-SEC
-               ELSE
-                   IF     (WRK-TUKI-CNT    +   LNK-ORCSC-KAISU)
-                                            >   10
-                       MOVE    "0081"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-                       GO      TO      1001122-GAI-RIGAKU-CHK-EXT
-                   END-IF
-               END-IF
-             END-IF
-           ELSE
-      *        集団療法は、月８単位
-               IF    (WRK-TUKI-CNT    +   LNK-ORCSC-KAISU)
-                                           >   8
-                   MOVE    "0084"          TO  WRK-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-                   GO      TO      1001122-GAI-RIGAKU-CHK-EXT
-               END-IF
-           END-IF
-      *    理学療法の同一日の上限回数
-           ADD      LNK-ORCSC-KAISU    TO  LNK-ORCSC-RIGAKU-CNT
-                                                             (IDX-RG)
-      *
-           .
-       1001122-GAI-RIGAKU-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院理学療法チェック処理
-      *****************************************************************
-       1001121-NYU-RIGAKU-CHK-SEC            SECTION.
-      *
-      *    当月算定済みのカウント集計
-           PERFORM 20011-RIGAKU-NYU-CNT-SEC
-      *
-           MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
-      *
-           MOVE    SPACE               TO  WRK-RIGAKU-RYO2
-      *
-           MOVE    ZERO                TO  WRK-RIG-DAY-G
-           MOVE    ZERO                TO  WRK-TUKI-CNT
-      *    当日・当月分
-           EVALUATE    WRK-RIGAKU-RYO  ALSO  WRK-RIGAKU-KBN
-      *        個別の理学
-               WHEN    "K"             ALSO  "R"
-                   ADD     WRK-R-TCNT-KN     TO  WRK-TUKI-CNT
-                   MOVE    WRK-R-DCNT-KN-G   TO  WRK-RIG-DAY-G
-      *        集団の理学
-               WHEN    "S"             ALSO  "R"
-                   ADD     WRK-R-TCNT-SN     TO  WRK-TUKI-CNT
-                   MOVE    WRK-R-DCNT-SN-G   TO  WRK-RIG-DAY-G
-      *        個別の作業
-               WHEN    "K"             ALSO  "S"
-                   ADD     WRK-S-TCNT-KN     TO  WRK-TUKI-CNT
-                   MOVE    WRK-S-DCNT-KN-G   TO  WRK-RIG-DAY-G
-      *        集団の作業
-               WHEN    "S"             ALSO  "S"
-                   ADD     WRK-S-TCNT-SN     TO  WRK-TUKI-CNT
-                   MOVE    WRK-S-DCNT-SN-G   TO  WRK-RIG-DAY-G
-      *        個別の言語
-               WHEN    "K"             ALSO  "G"
-                   ADD     WRK-G-TCNT-KN     TO  WRK-TUKI-CNT
-                   MOVE    WRK-G-DCNT-KN-G   TO  WRK-RIG-DAY-G
-      *        集団の言語
-               WHEN    "S"             ALSO  "G"
-                   ADD     WRK-G-TCNT-SN     TO  WRK-TUKI-CNT
-                   MOVE    WRK-G-DCNT-SN-G   TO  WRK-RIG-DAY-G
-           END-EVALUATE
-      *    今回入力分集計
-           MOVE    ZERO                TO  IDX-RG
-           MOVE    ZERO                TO  WRK-DAYCNT
-           MOVE    ZERO                TO  WRK-RIG-CNT
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   6
-               IF      LNK-ORCSC-RIGAKU-SRYCD(IDX) =   WRK-SRYCD
-                   ADD      LNK-ORCSC-RIGAKU-CNT (IDX)
-                                               TO  WRK-RIG-CNT
-                   PERFORM VARYING    IDX2     FROM    1   BY  1
-                           UNTIL      IDX2     >   31
-                       ADD    LNK-ORCSC-RIG-DAY (IDX IDX2)
-                                                   TO  WRK-RIG-DAY(IDX2)
-                   END-PERFORM
-                   MOVE     IDX                TO  IDX-RG
-                   MOVE     6                  TO  IDX
-               ELSE
-                   IF      LNK-ORCSC-RIGAKU-SRYCD(IDX)  =  SPACE
-                       MOVE    IDX             TO  IDX-RG
-                       MOVE    WRK-SRYCD       TO
-                                         LNK-ORCSC-RIGAKU-SRYCD(IDX-RG)
-                       MOVE    WRK-RIGAKU-RYO  TO
-                                         LNK-ORCSC-RIG-RYO (IDX-RG)
-                       MOVE    WRK-RIGAKU-KBN  TO
-                                         LNK-ORCSC-RIG-KBN (IDX-RG)
-                       MOVE    6               TO  IDX
-                   ELSE
-      *                療法が同じ時、単位を集計する
-                       IF      (WRK-RIGAKU-RYO     =   LNK-ORCSC-RIG-RYO
-                                                                 (IDX) )
-                          AND  (WRK-RIGAKU-KBN     =   LNK-ORCSC-RIG-KBN
-                                                                 (IDX) )
-                           ADD     LNK-ORCSC-RIGAKU-CNT (IDX)
-                                                   TO  WRK-RIG-CNT
-                           PERFORM VARYING    IDX2     FROM    1   BY  1
-                                   UNTIL      IDX2     >   31
-                               ADD    LNK-ORCSC-RIG-DAY (IDX IDX2)
-                                                   TO  WRK-RIG-DAY(IDX2)
-                           END-PERFORM
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-      *    算定履歴チェック処理
-      *    PERFORM VARYING     IDX2    FROM    1   BY  1
-      *            UNTIL      (IDX2    >   31  )   OR
-      *                       (WRK-ERRCD   NOT =   SPACE )
-      *        IF      WRK-COM-NYUINDAY (IDX-Z IDX2)   >   ZERO
-      *            MOVE    SPA-SRYYMD      TO  WRK-SRYYMD
-      *            MOVE    IDX2            TO  SPA-SRYYMD(7:2)
-      *
-      *            INITIALIZE                  ORCSC91AREA
-      *            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
-      *            MOVE    WRK-SRYCD           TO  LNK-SC91-SRYCD
-      *            MOVE    "3"                 TO  LNK-SC91-KBN
-      *            MOVE    IDX-Z               TO  LNK-SC91-GMN-IDX
-      *            MOVE    LNK-ORCSC-KAISU     TO  LNK-SC91-KAISU
-      *            MOVE    LNK-ORCSC-TEISEI-AREA
-      *                                        TO  LNK-SC91-TEISEI-AREA
-      *            MOVE    1                   TO  LNK-SC91-CHKFLG
-      *            CALL    "ORCSC91"           USING
-      *                                        MCPAREA
-      *                                        ORCSC91AREA
-      *                                        WRK-SCR-REC
-      *                                        SPA-AREA
-      *                                        TNS-TENSU-REC
-      *
-      *            MOVE    WRK-SRYYMD      TO  SPA-SRYYMD
-      *            上限日チェック
-      *            当日分集計
-      *            COMPUTE WRK-DAYCNT      =   LNK-ORCSC-KAISU
-      *                                    +   WRK-RIG-DAY (IDX2)
-      *            IF     WRK-DAYCNT           >   LNK-SC91-DAYMAXCNT
-      *               MOVE    "0091"          TO  WRK-ERRCD
-      *               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-      *            END-IF
-      *        END-IF
-      *****END-PERFORM
-           IF      WRK-ERRCD       NOT =   SPACE
-               GO      TO      1001121-NYU-RIGAKU-CHK-EXT
-           END-IF
-      *
-      *    個別・集団療法チェック
-           PERFORM VARYING    IDX2     FROM    1   BY  1
-                   UNTIL     (IDX2     >   31  )   OR
-                             (WRK-ERRCD    NOT =   SPACE)
-               IF      WRK-COM-NYUINDAY (IDX-Z IDX2)     >   ZERO
-                   MOVE    ZERO            TO  WRK-RIGAK-CNTALL
-                   PERFORM VARYING    IDY2     FROM    1   BY  1
-                           UNTIL     (IDY2     >   6  )  OR
-                                     (WRK-ERRCD    NOT =   SPACE)  OR
-                                     (LNK-ORCSC-RIGAKU-SRYCD(IDY2)
-                                                       =   SPACE)
-                       IF     (LNK-ORCSC-RIG-DAY (IDY2 IDX2)  >  ZERO )
-                       AND    (WRK-RIGAKU-KBN     =   LNK-ORCSC-RIG-KBN
-                                                                (IDY2))
-                           IF      WRK-RIGAKU-RYO =   LNK-ORCSC-RIG-RYO
-                                                                 (IDY2)
-                               CONTINUE
-                           ELSE
-                               MOVE    "0095"          TO  WRK-ERRCD
-                           END-IF
-                       END-IF
-                       IF     (LNK-ORCSC-RIG-DAY (IDY2 IDX2)  >  ZERO )
-                           ADD     LNK-ORCSC-RIG-DAY(IDY2 IDX2)
-                                                 TO  WRK-RIGAK-CNTALL
-                       END-IF
-                   END-PERFORM
-      *             個別の時、
-                   IF    ( WRK-RIGAKU-RYO      =   "K" )  AND
-                         ( WRK-RIGAKU-KBN      =   "R" )  AND
-                         ( WRK-R-DCNT-SN (IDX2)    >  ZERO)
-                       MOVE    "0095"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
-                   END-IF
-                   IF    ( WRK-RIGAKU-RYO      =   "S" )  AND
-                         ( WRK-RIGAKU-KBN      =   "R" )  AND
-                         ( WRK-R-DCNT-KN (IDX2)    >  ZERO)
-                       MOVE    "0095"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
-                   END-IF
-                   IF    ( WRK-RIGAKU-RYO      =   "K" )  AND
-                         ( WRK-RIGAKU-KBN      =   "S" )  AND
-                         ( WRK-S-DCNT-SN (IDX2)    >  ZERO)
-                       MOVE    "0095"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
-                   END-IF
-                   IF    ( WRK-RIGAKU-RYO      =   "S" )  AND
-                         ( WRK-RIGAKU-KBN      =   "S" )  AND
-                         ( WRK-S-DCNT-KN (IDX2)    >  ZERO)
-                       MOVE    "0095"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
-                   END-IF
-                   IF    ( WRK-RIGAKU-RYO      =   "K" )  AND
-                         ( WRK-RIGAKU-KBN      =   "G" )  AND
-                         ( WRK-G-DCNT-SN (IDX2)    >  ZERO)
-                       MOVE    "0095"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
-                   END-IF
-                   IF    ( WRK-RIGAKU-RYO      =   "S" )  AND
-                         ( WRK-RIGAKU-KBN      =   "G" )  AND
-                         ( WRK-G-DCNT-KN (IDX2)    >  ZERO)
-                       MOVE    "0095"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
-                   END-IF
-                   COMPUTE WRK-RIGAK-CNTALL    =   WRK-RIGAK-CNTALL
-                                               +   WRK-R-DCNT-KN (IDX2)
-                                               +   WRK-R-DCNT-SN (IDX2)
-                                               +   WRK-S-DCNT-KN (IDX2)
-                                               +   WRK-S-DCNT-SN (IDX2)
-                                               +   WRK-G-DCNT-KN (IDX2)
-                                               +   WRK-G-DCNT-SN (IDX2)
-                                               +   LNK-ORCSC-KAISU
-                   IF      WRK-SOUKI-FLG (IDX2)    =   1
-      *            早期リハビリ加算あり１日最大６単位とする
-                       MOVE    6               TO  WRK-RIGAK-MAX
-                   ELSE
-      *            １日最大４単位とする
-                       MOVE    4               TO  WRK-RIGAK-MAX
-                   END-IF
-                   IF      WRK-RIGAK-CNTALL    >   WRK-RIGAK-MAX
-                       IF      WRK-ERRCD       =   SPACE
-                           MOVE    "0092"          TO  WRK-ERRCD
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
-           IF      WRK-ERRCD       NOT =   SPACE
-               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-               GO      TO      1001121-NYU-RIGAKU-CHK-EXT
-           END-IF
-      *    労災の時、理学療法の逓減は傷病発生３月以降とする
-           IF     (SPA-HKNKBN          =   1        )  AND
-                  (SPA-SRYYMD(1:6)     <   SPA-RSI-SHOBYOYMD3(1:6))
-      *        理学療法の同一日の上限回数
-      *         ADD      LNK-ORCSC-KAISU    TO  LNK-ORCSC-RIGAKU-CNT
-      *                                                       (IDX-RG)
-               GO      TO      1001121-NYU-RIGAKU-CHK-EXT
-           END-IF
-           IF     (SPA-HKNKBN          =   1        )  AND
-                  (SPA-SRYYMD(1:6)     =   SPA-RSI-SHOBYOYMD3(1:6))
-               MOVE    SPA-RSI-SHOBYOYMD3(7:2) TO  IDY2
-               MOVE    ZERO                TO  FLG-CHK
-               PERFORM VARYING    IDX2     FROM    IDY2  BY  1
-                       UNTIL      IDX2     >   31
-                   IF      WRK-COM-NYUINDAY(IDX-Z IDX2) >   ZERO
-                       MOVE    1               TO  FLG-CHK
-                   END-IF
-               END-PERFORM
-               IF      FLG-CHK             =   ZERO
-      *        ３月以降に入力がない時
-                   MOVE    IDX-Z               TO  IDX-SYU
-                   PERFORM 1001122-RIGAKU-HEN-SEC
-                   GO      TO      1001121-NYU-RIGAKU-CHK-EXT
-               END-IF
-           END-IF
-      *
-      *    当月単位集計
-           COMPUTE WRK-TUKI-CNT        =   WRK-TUKI-CNT
-                                       +   WRK-RIG-CNT
-      *    今回算定回数
-           COMPUTE WRK-TUKI-GOK        =   WRK-COM-NYU-KAI(IDX-Z)
-                                       *   LNK-ORCSC-KAISU
-      *
-      *    現在の位置
-           MOVE    IDX-Z               TO  IDX-SYU
-           IF      WRK-RIGAKU-RYO      =   "K"
-      *      厚生労働大臣が定める患者以外の時、逓減を行う
-             IF     FLG-SOUKI-ALL        =   ZERO
-      *        個別逓減チェック
-               IF     WRK-TUKI-CNT         >=  10
-      *            逓減あり
-                   PERFORM 11122-RIGAKU-TEIGEN-SEC
-               ELSE
-                   IF     (WRK-TUKI-CNT    +   WRK-TUKI-GOK)
-                                           >   10
-                       MOVE    "0081"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-                       GO      TO      1001121-NYU-RIGAKU-CHK-EXT
-                   END-IF
-               END-IF
-             END-IF
-           ELSE
-      *        集団療法は、月８単位
-               IF     (WRK-TUKI-CNT    +   WRK-TUKI-GOK )
-                                           >   8
-                   MOVE    "0084"          TO  WRK-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-                   GO      TO      1001121-NYU-RIGAKU-CHK-EXT
-               END-IF
-           END-IF
-      *    理学療法の同一日の上限回数
-           PERFORM 1001122-RIGAKU-HEN-SEC
-           .
-       1001121-NYU-RIGAKU-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    理学療法の同一日の回数編集処理
-      *****************************************************************
-       1001122-RIGAKU-HEN-SEC                SECTION.
-      *
-           PERFORM VARYING    IDX2     FROM    1   BY  1
-                   UNTIL      IDX2     >   31
-               IF      WRK-COM-NYUINDAY (IDX-SYU IDX2)   >   ZERO
-                   ADD      LNK-ORCSC-KAISU    TO  LNK-ORCSC-RIG-DAY
-                                                           (IDX-RG IDX2)
-                   ADD      LNK-ORCSC-KAISU    TO  LNK-ORCSC-RIGAKU-CNT
-                                                             (IDX-RG)
-               END-IF
-      *        早期リハビリあり
-               IF      WRK-SOUKI-FLG (IDX2)    =   1
-                   MOVE    1                   TO  LNK-ORCSC-SOUKI-FLG
-                                                          (IDX2)
-               END-IF
-           END-PERFORM
-           .
-       1001122-RIGAKU-HEN-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    個別療法逓減処理（共通）
-      *****************************************************************
-       11122-RIGAKU-TEIGEN-SEC            SECTION.
-      *
-           MOVE    IDX-Z               TO  IDX-S
-           IF      WRK-GEN-SRYCD       =   SPACE
-               IF      LNK-ORCSC-ROUJIN    =   ZERO
-                   MOVE    "180025370"         TO  WRK-SRYCD
-               ELSE
-                   MOVE    "180709070"         TO  WRK-SRYCD
-               END-IF
-           ELSE
-               MOVE    WRK-GEN-SRYCD           TO  WRK-SRYCD
-           END-IF
-           IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
-               CONTINUE
-           ELSE
-               MOVE    IDX-Z           TO  IDX-S
-               MOVE    ZERO            TO  FLG-ARI
-               PERFORM 1002-KASAN-SET-SEC
-           END-IF
-      *
-           .
-       11122-RIGAKU-TEIGEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1203,6 +629,10 @@
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
            MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYOYMD
+      *TEST
+           DISPLAY "C80 LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
+                   ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
+      *TEST
       *
       *
            EVALUATE    WRK-COM-INPUTCD(IDX-Z)
@@ -1394,21 +824,18 @@
            SET     TBL-SAN             TO  1
            SEARCH      TBL-SANTEI-OCC  VARYING   TBL-SAN
                    AT  END
-                       MOVE    SPACE           TO  WRK-RIGAKU-RYOS
-                       MOVE    SPACE           TO  WRK-RIGAKU-KBN2
+                       MOVE    SPACE           TO  WRK-RIGAKU-RYO
+                       MOVE    SPACE           TO  WRK-RIGAKU-KBN
                        MOVE    ZERO            TO  FLG-RIGAKU
                    WHEN    WRK-SRYCD2          =   TBL-SANTEI-SRYCD
                                                            (TBL-SAN)
                        MOVE    TBL-RIGAKU-KBN   (TBL-SAN)
-                                               TO  WRK-RIGAKU-KBN2
+                                               TO  WRK-RIGAKU-KBN
                        MOVE    TBL-RIGAKU-RYO   (TBL-SAN)
-                                               TO  WRK-RIGAKU-RYOS
+                                               TO  WRK-RIGAKU-RYO
                        MOVE    1               TO  FLG-RIGAKU
            END-SEARCH
       *
-           IF      WRK-RIGAKU-KBN      =   WRK-RIGAKU-KBN2
-               MOVE    WRK-RIGAKU-RYOS     TO  WRK-RIGAKU-RYO2
-           END-IF
            .
        10011312-RIGAKU-SERCH-EXT.
            EXIT.
@@ -1811,137 +1238,174 @@
            EXIT.
       *
       *****************************************************************
-      *    全診療行為チェック処理
+      *    外来の日上限と月上限のチェックと自動逓減処理
       *****************************************************************
-       200-ALL-SYORI-SEC                SECTION.
+       2002-GAIRAI-ALL-CHK-SEC                SECTION.
       *
-      *    チェックは診療行為入力のみとする
-           IF      LNK-ORCSC-PG        =   "K02"
-               CONTINUE
-           ELSE
-               GO      TO      200-ALL-SYORI-EXT
-           END-IF
+      *    厚生労働大臣が定める患者のチェック
+           PERFORM 200221-SOUKIKSN-CHK-SEC
       *
-      *    入院で新規の時
-           IF     (SPA-NYUGAIKBN       =   "1" ) AND
-                  (LNK-ORCSC-SYORIFLG  =   ZERO)
-               PERFORM 2001-NYUIN-ALL-CHK-SEC
-               GO      TO      200-ALL-SYORI-EXT
-           END-IF
+           MOVE    SPA-SRYYMD(7:2)    TO  IDD
+           MOVE    SPA-SRYYMD         TO  WRK-SRYYMD
       *
-      *    外来か訂正の時
-           INITIALIZE                  WRK-AREA
+           MOVE    ZERO               TO  WRK-TUKI-CNT
+           MOVE    ZERO               TO  WRK-DAYCNT
       *
-      *    リハビリのチェックは、発生３月以降より
-      **** IF     (SPA-SRYYMD          <   SPA-RSI-HASSYOYMD3)  AND
-      *    IF     (SPA-SRYYMD          <   SPA-RSI-SHOBYOYMD3)  AND
-      *           (SPA-HKNKBN          =   1        )
-      *        GO      TO      200-ALL-SYORI-EXT
-      *****END-IF
-      *
-      *    当日算定済みのすべてのリハビリカウント
-           PERFORM 2001-RIGAKU-CNT-CHK-SEC
-      *
-           MOVE    ZERO                TO  IDX-R
-           MOVE    ZERO                TO  IDX-R1
-           MOVE    ZERO                TO  IDX-R2
-           MOVE    ZERO                TO  IDX-R3
-           MOVE    SPACE               TO  WRK-RIGAKU-SYORI
-           MOVE    ZERO                TO  FLG-SOUKI-ALL
-           PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
-                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) OR
-                              (SPA-ERRCD       NOT =   SPACE )
-      *        理学療法のチェック
-               SET     TBL-SAN             TO  1
-               SEARCH      TBL-SANTEI-OCC  VARYING   TBL-SAN
-                       AT  END
-                           MOVE    ZERO        TO  FLG-RIGAKU
-                           MOVE    SPACE       TO  WRK-RIGAKU-KBN
-                           MOVE    SPACE       TO  WRK-RIGAKU-RYO
-                   WHEN    WRK-COM-INPUTCD (IDX-Z)
-                                               =   TBL-SANTEI-SRYCD
-                                                           (TBL-SAN)
-                       MOVE    1               TO  FLG-RIGAKU
-                       MOVE    TBL-RIGAKU-KBN   (TBL-SAN)
-                                               TO  WRK-RIGAKU-KBN
-                       MOVE    TBL-RIGAKU-RYO   (TBL-SAN)
-                                               TO  WRK-RIGAKU-RYO
-                       MOVE    TBL-RIGAKU-RYO   (TBL-SAN)
-                                               TO  WRK-RIGAKU-SYORI
-               END-SEARCH
-      *        個別・集団理学療法のチェック
-               EVALUATE    WRK-RIGAKU-KBN
-                   WHEN    "R"
-                       IF     (WRK-RIGAKU-RYO1 NOT =   SPACE  )  AND
-                              (WRK-RIGAKU-RYO  NOT =   WRK-RIGAKU-RYO1)
-                           MOVE    "0093"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  WRK-COM-CUR
-                                                             (IDX-Z)
-                       END-IF
-                       ADD     WRK-COM-KAISU(IDX-Z)  TO  WRK-RIGAK-CNT1
-                       MOVE    IDX-Z               TO  IDX-R1
-                   WHEN    "S"
-                       IF     (WRK-RIGAKU-RYO2 NOT =   SPACE  )  AND
-                              (WRK-RIGAKU-RYO  NOT =   WRK-RIGAKU-RYO2)
-                           MOVE    "0093"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  WRK-COM-CUR
-                                                             (IDX-Z)
-                       END-IF
-                       ADD     WRK-COM-KAISU(IDX-Z)  TO  WRK-RIGAK-CNT2
-                       MOVE    IDX-Z               TO  IDX-R2
-                   WHEN    "G"
-                       IF     (WRK-RIGAKU-RYO3 NOT =   SPACE  )  AND
-                              (WRK-RIGAKU-RYO  NOT =   WRK-RIGAKU-RYO3)
-                           MOVE    "0093"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  WRK-COM-CUR
-                                                             (IDX-Z)
-                       END-IF
-                       ADD     WRK-COM-KAISU(IDX-Z)  TO  WRK-RIGAK-CNT3
-                       MOVE    IDX-Z               TO  IDX-R3
-               END-EVALUATE
-      *
-      *********IF     (FLG-RIGAKU          =   1  )  AND
-      *               (SPA-ERRCD           =   SPACE)
-      *            ADD     WRK-COM-KAISU (IDX-Z)   TO  WRK-RIGAK-CNT
-      *            MOVE    IDX-Z               TO  IDX-R
-      *********END-IF
-      *        厚生労働大臣が定める患者のチェック
-               MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
-               PERFORM 20011-SOUKI-CHK-SEC
-               IF      FLG-SOUKI           =   1
-                   MOVE    FLG-SOUKI           TO  FLG-SOUKI-ALL
-               END-IF
-      *
-           END-PERFORM
-      *
+      *    当日上限チェック
+           MOVE    WRK-COM-KAISU(IDX-Z)   TO  WRK-KAISU
+           PERFORM 20021-DAYMAX-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      200-ALL-SYORI-EXT
+               GO      TO      2002-GAIRAI-ALL-CHK-EXT
            END-IF
       *
-           IF      IDX-R1          NOT =   ZERO
-               MOVE    IDX-R1          TO  IDX-RR
-           END-IF
-           IF     (IDX-R2          NOT =   ZERO) AND
-                  (IDX-R2              >   IDX-RR)
-               MOVE    IDX-R2          TO  IDX-RR
-           END-IF
-           IF     (IDX-R3          NOT =   ZERO) AND
-                  (IDX-R3              >   IDX-RR)
-               MOVE    IDX-R3          TO  IDX-RR
+      *    労災の時、理学療法の逓減は傷病発生３月以降とする
+           IF     (SPA-HKNKBN          =   1        )  AND
+                  (SPA-SRYYMD          <   SPA-RSI-SHOBYOYMD3)
+      *        今回分集計
+               PERFORM 20023-KAISU-HEN-SEC
+               GO      TO      2002-GAIRAI-ALL-CHK-EXT
            END-IF
       *
-      *    個別療法
-           COMPUTE WRK-RIGAK-CNTALL    =   WRK-RIGAK-CNT1
-                                       +   WRK-R-DCNT-K
-                                       +   WRK-RIGAK-CNT2
-                                       +   WRK-G-DCNT-K
-                                       +   WRK-RIGAK-CNT3
-                                       +   WRK-S-DCNT-K
-                                       +   WRK-R-DCNT-S
-                                       +   WRK-S-DCNT-S
-                                       +   WRK-G-DCNT-S
-           IF      FLG-SOUKI-ALL       =   1
+      *    月上限判定
+           EVALUATE    WRK-RIGAKU-RYO
+      *        集団
+               WHEN    "S"
+      *            １月８単位まで
+                   IF     (WRK-TCNT-S (IDX-R1) +   WRK-KAISU)
+                                           >   8
+                       MOVE    "0084"          TO  SPA-ERRCD
+                       MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                       STRING  "既に"          DELIMITED  BY  SIZE
+                                WRK-TCNT-S (IDX-R1)
+                                               DELIMITED  BY  SIZE
+                                "単位算定済です。"
+                                               DELIMITED  BY  SIZE
+                                           INTO    LNK-ORCSC-ERRMSG
+                       END-STRING
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                       GO      TO      2002-GAIRAI-ALL-CHK-EXT
+                   END-IF
+      *        個別
+               WHEN    "K"
+      *            早期リハ加算等がある場合
+                   IF      FLG-SOUKI-ARI       =   1
+      *                今回分集計
+                       PERFORM 20023-KAISU-HEN-SEC
+                       GO      TO      2002-GAIRAI-ALL-CHK-EXT
+                   END-IF
+      *            早期リハ加算分を引く
+      *            当月の算定回数
+                   MOVE    ZERO                TO  WRK-TUKI-CNT
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   IDD
+                       IF      WRK-GCNT (IDY)      =   ZERO
+                           COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
+                                                   +   WRK-DCNT-KN
+                                                          (IDX-R1 IDY)
+                       END-IF
+                   END-PERFORM
+      *            １月１１単位から逓減
+                   IF      WRK-TUKI-CNT        >=  10
+      *                逓減あり
+                       PERFORM 20024-RIGAKU-TEIGEN-SEC
+                   ELSE
+                       IF    ((WRK-TUKI-CNT    +   WRK-KAISU)
+                                               >   10  )  AND
+                             (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)  AND
+                             (LNK-ORCSC-KEI-IDX        =   ZERO )
+                           MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                               (IDX-Z)
+                           MOVE    "0081"          TO  SPA-ERRCD
+                           MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                           STRING  "既に"          DELIMITED  BY  SIZE
+                                   WRK-TUKI-CNT
+                                                   DELIMITED  BY  SIZE
+                                   "単位算定済です。"
+                                                   DELIMITED  BY  SIZE
+                                           INTO    LNK-ORCSC-ERRMSG
+                           END-STRING
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                           (IDX-Z)
+                           GO      TO      2002-GAIRAI-ALL-CHK-EXT
+                       ELSE
+      *                    逓減以外で逓減コードがある時
+                           PERFORM 20025-TEIGEN-CHK-SEC
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *    今回分集計
+           PERFORM 20023-KAISU-HEN-SEC
+      *
+           .
+       2002-GAIRAI-ALL-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    当日上限チェック処理
+      *****************************************************************
+       20021-DAYMAX-CHK-SEC         SECTION.
+      *
+      *    当日上限チェック
+           EVALUATE    WRK-RIGAKU-KBN
+      *        理学
+               WHEN    "R"
+                   MOVE    1                   TO  IDX-R1
+      *        作業
+               WHEN    "S"
+                   MOVE    2                   TO  IDX-R1
+      *        言語
+               WHEN    "G"
+                   MOVE    3                   TO  IDX-R1
+      *        エラ−
+               WHEN    OTHER
+                   MOVE    ZERO                TO  IDX-R1
+                   GO      TO      20021-DAYMAX-CHK-EXT
+           END-EVALUATE
+           EVALUATE    WRK-RIGAKU-RYO
+      *        個別
+               WHEN    "K"
+      *            １日３単位まで
+                   IF     (WRK-DCNT-KN (IDX-R1 IDD)    +   WRK-KAISU)
+                                           >   3
+                       MOVE    "0092"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                       GO      TO      20021-DAYMAX-CHK-EXT
+                   END-IF
+      *            同一日集団と混在しないこと
+                   IF      WRK-DCNT-SN (IDX-R1 IDD)    >   ZERO
+                       MOVE    "0093"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                       GO      TO      20021-DAYMAX-CHK-EXT
+                   END-IF
+      *        集団
+               WHEN    "S"
+      *            １日２単位まで
+                   IF     (WRK-DCNT-SN (IDX-R1 IDD)    +   WRK-KAISU)
+                                           >   2
+                       MOVE    "0092"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                       GO      TO      20021-DAYMAX-CHK-EXT
+                   END-IF
+      *            同一日個別と混在しないこと
+                   IF      WRK-DCNT-KN (IDX-R1 IDD)    >   ZERO
+                       MOVE    "0093"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                       GO      TO      20021-DAYMAX-CHK-EXT
+                   END-IF
+           END-EVALUATE
+      *    １日合計単位チェック
+           COMPUTE WRK-RIGAK-CNTALL    =   WRK-DCNT-KN (1 IDD)
+                                       +   WRK-DCNT-KN (2 IDD)
+                                       +   WRK-DCNT-KN (3 IDD)
+                                       +   WRK-DCNT-SN (1 IDD)
+                                       +   WRK-DCNT-SN (2 IDD)
+                                       +   WRK-DCNT-SN (3 IDD)
+                                       +   WRK-KAISU
+      *
+      *    当日に早期リハ加算等がある時、早期リハありとする
+           IF     (FLG-SOUKI-ARI       =   1    )
+               OR (WRK-GCNT (IDD)      >   ZERO )
       *        早期リハビリ加算あり１日最大６単位とする
                MOVE    6               TO  WRK-RIGAK-MAX
            ELSE
@@ -1949,12 +1413,149 @@
                MOVE    4               TO  WRK-RIGAK-MAX
            END-IF
            IF      WRK-RIGAK-CNTALL    >   WRK-RIGAK-MAX
-               MOVE    "0092"          TO  SPA-ERRCD
-               MOVE    "1"             TO  WRK-COM-CUR (IDX-RR)
+      *        ４単位以上の時は警告とする
+               IF     (WRK-RIGAK-MAX       =   4  )  AND
+                      (WRK-RIGAK-CNTALL    <=  6  )
+                  IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE) AND
+                         (LNK-ORCSC-KEI-IDX        =   ZERO )
+                       MOVE    "K092"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                       MOVE    "1"             TO  WRK-COM-KZMFLG(IDX-Z)
+                       MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   END-IF
+               ELSE
+                   MOVE    "0092"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+               END-IF
+               GO      TO      20021-DAYMAX-CHK-EXT
            END-IF
       *
            .
-       200-ALL-SYORI-EXT.
+       20021-DAYMAX-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    今回分集計処理
+      *****************************************************************
+       20023-KAISU-HEN-SEC         SECTION.
+      *
+           EVALUATE    WRK-RIGAKU-RYO
+      *        個別
+               WHEN    "K"
+                   ADD     WRK-KAISU       TO  WRK-DCNT-KN (IDX-R1 IDD)
+                   ADD     WRK-KAISU       TO  WRK-TCNT-K (IDX-R1)
+      *
+      *        集団
+               WHEN    "S"
+                   ADD     WRK-KAISU       TO  WRK-DCNT-SN (IDX-R1 IDD)
+                   ADD     WRK-KAISU       TO  WRK-TCNT-S (IDX-R1)
+           END-EVALUATE
+      *    早期リハビリ他
+           IF      FLG-SOUKI-ARI       =   1
+               ADD     WRK-KAISU           TO  WRK-GCNT (IDD)
+           END-IF
+      *
+           .
+       20023-KAISU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    早期リハビリ、外来移行加算の算定チェック処理
+      *****************************************************************
+       200221-SOUKIKSN-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SOUKI-ARI
+      *
+           PERFORM VARYING     IDX-R   FROM    1   BY  1
+                   UNTIL      (IDX-R       >   200     )   OR
+                              (FLG-SOUKI-ARI   =   1   )   OR
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE   AND
+                               WRK-COM-INPUTCD (IDX-Z) =   SPACE )
+               IF      (WRK-COM-INPUTCD (IDX-R)(1:1)    =   "1" )  AND
+                       (WRK-COM-DATAKBN (IDX-R)         =   "2" )
+      *            厚生労働大臣が定める患者のチェック
+                   MOVE    WRK-COM-INPUTCD (IDX-R) TO  WRK-SRYCD
+                   PERFORM 20011-SOUKI-CHK-SEC
+                   IF      FLG-SOUKI           =   1
+                       MOVE    1               TO  FLG-SOUKI-ARI
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       200221-SOUKIKSN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    個別療法逓減処理（共通）
+      *****************************************************************
+       20024-RIGAKU-TEIGEN-SEC            SECTION.
+      *
+      *    逓減ＯＫの処理
+           IF      WRK-COM-KZMFLG (IDX-Z)  =   SPACE
+               IF      LNK-ORCSC-KEI-IDX   =   ZERO
+                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "2"             TO  WRK-COM-KZMFLG (IDX-Z)
+               END-IF
+               MOVE    "0180"          TO  LNK-ORCSC-KIDCD
+               GO      TO      20024-RIGAKU-TEIGEN-EXT
+           END-IF
+      *
+      *    リハビリ逓減確認
+           IF     (LNK-ORCSC-FLG-RIHTEI    =   ZERO )  OR
+                  (WRK-COM-KZMFLG (IDX-Z)  =   "1"  )
+               MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
+               GO      TO      20024-RIGAKU-TEIGEN-EXT
+           END-IF
+      *
+      *    理学療法の逓減は、傷病発生３月以降
+           IF      SPA-HKNKBN          =   1
+      *        減額診療コード（労災）
+               MOVE    "101800030"         TO  WRK-SRYCD
+           ELSE
+               IF      LNK-ORCSC-ROUJIN    =   ZERO
+                   MOVE    "180025370"         TO  WRK-SRYCD
+               ELSE
+                   MOVE    "180709070"         TO  WRK-SRYCD
+               END-IF
+           END-IF
+      *
+           IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
+               CONTINUE
+           ELSE
+               MOVE    IDX-Z           TO  IDX-S
+               MOVE    ZERO            TO  FLG-ARI
+               PERFORM 1002-KASAN-SET-SEC
+               IF      FLG-ADD         =   1
+      *            自動追加にしない
+                   MOVE    SPACE           TO  WRK-COM-AUTOKBN (IDX-S)
+               END-IF
+           END-IF
+      *
+           .
+       20024-RIGAKU-TEIGEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    逓減以外で逓減コードの判定処理
+      *****************************************************************
+       20025-TEIGEN-CHK-SEC         SECTION.
+      *
+           IF      WRK-COM-INPUTCD (IDX-Z + 1)
+                                       =   "101800030"  OR
+                                           "180025370"  OR
+                                           "180709070"
+               IF     (WRK-COM-KZMFLG (IDX-Z + 1)  =   SPACE )  AND
+                      (LNK-ORCSC-KEI-IDX           =   ZERO  )
+                   MOVE    "1"         TO  WRK-COM-KZMFLG (IDX-Z + 1)
+                   MOVE    "K082"      TO  SPA-ERRCD
+                   MOVE    "1"         TO  WRK-COM-CUR (IDX-Z + 1)
+                   COMPUTE LNK-ORCSC-KEI-IDX   =   IDX-Z   +   1
+               END-IF
+           END-IF
+      *
+           .
+       20025-TEIGEN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1962,11 +1563,139 @@
       *****************************************************************
        2001-NYUIN-ALL-CHK-SEC         SECTION.
       *
-      *    当月算定済みのカウント集計
-           PERFORM 20011-RIGAKU-NYU-CNT-SEC
+      *    厚生労働大臣が定める患者のチェック
+           PERFORM 200221-SOUKIKSN-CHK-SEC
+           MOVE    FLG-SOUKI-ARI       TO  FLG-SOUKI-ARI1
+      *    入力日分のチェック
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2    >   31  )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      WRK-COM-NYUINDAY (IDX-Z IDX2)   >   ZERO
+                   MOVE    IDX2            TO  IDD
+                   MOVE    SPA-SRYYMD      TO  WRK-SRYYMD
+                   MOVE    IDD             TO  WRK-SRYYMD (7:2)
+      *
+      *            当日上限チェック
+                   MOVE    WRK-COM-KAISU(IDX-Z)   TO  WRK-KAISU
+      *            当日に早期リハ加算がある時、ありとする
+                   IF     (WRK-GCNT (IDD)          >   ZERO)
+                       MOVE    1                   TO  FLG-SOUKI-ARI2
+                   ELSE
+                       MOVE    ZERO                TO  FLG-SOUKI-ARI2
+                   END-IF
+                   IF      (FLG-SOUKI-ARI1         =   1  )  OR
+                           (FLG-SOUKI-ARI2         =   1  )
+                       MOVE    1                   TO  FLG-SOUKI-ARI
+                   ELSE
+                       MOVE    ZERO                TO  FLG-SOUKI-ARI
+                   END-IF
+      *
+                   PERFORM 20021-DAYMAX-CHK-SEC
+      *
+                   IF      SPA-ERRCD           =   SPACE
+      *                月上限チェック（入院）
+                       PERFORM 20012-NTUKIMAX-CHK-SEC
+                   END-IF
+               END-IF
+           END-PERFORM
       *
            .
        2001-NYUIN-ALL-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院月上限チェック処理
+      *****************************************************************
+       20012-NTUKIMAX-CHK-SEC         SECTION.
+      *
+      *    労災の時、理学療法の逓減は傷病発生３月以降とする
+           IF     (SPA-HKNKBN          =   1        )  AND
+                  (WRK-SRYYMD          <   SPA-RSI-SHOBYOYMD3)
+      *        今回分集計
+               PERFORM 20023-KAISU-HEN-SEC
+               GO      TO      20012-NTUKIMAX-CHK-EXT
+           END-IF
+      *
+      *    月上限判定
+           EVALUATE    WRK-RIGAKU-RYO
+      *        集団
+               WHEN    "S"
+      *            １月８単位まで
+                   IF     (WRK-TCNT-S (IDX-R1) +   WRK-KAISU )
+                                               >   8
+                       MOVE    "0084"          TO  SPA-ERRCD
+                       MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                       STRING  "既に"          DELIMITED  BY  SIZE
+                               IDD             DELIMITED  BY  SIZE
+                               "日までに"
+                                               DELIMITED  BY  SIZE
+                                WRK-TCNT-S (IDX-R1)
+                                               DELIMITED  BY  SIZE
+                                "単位算定済です。"
+                                               DELIMITED  BY  SIZE
+                                           INTO    LNK-ORCSC-ERRMSG
+                       END-STRING
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                       GO      TO      20012-NTUKIMAX-CHK-EXT
+                   END-IF
+      *        個別
+               WHEN    "K"
+      *            早期リハ加算等がある場合
+                   IF      FLG-SOUKI-ARI       =   1
+      *                今回分集計
+                       PERFORM 20023-KAISU-HEN-SEC
+                       GO      TO      20012-NTUKIMAX-CHK-EXT
+                   END-IF
+      *            早期リハ加算分を引く
+      *            当月の算定回数
+                   MOVE    ZERO                TO  WRK-TUKI-CNT
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   IDD
+                       IF      WRK-GCNT (IDY)      =   ZERO
+                           COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
+                                                   +   WRK-DCNT-KN
+                                                          (IDX-R1 IDY)
+                       END-IF
+                   END-PERFORM
+      *            １月１１単位から逓減
+                   IF      WRK-TUKI-CNT        >=  10
+      *                逓減あり
+                       MOVE    IDX-Z               TO  IDX-HZN
+                       PERFORM 20024-RIGAKU-TEIGEN-SEC
+                       IF      FLG-ADD             =   1
+                           MOVE    IDX-HZN             TO  IDX-Z
+                       END-IF
+                   ELSE
+                       IF    ((WRK-TUKI-CNT    +   WRK-KAISU)
+                                               >   10  )  AND
+                             (WRK-COM-KZMFLG (IDX-Z)   =   SPACE) AND
+                             (LNK-ORCSC-KEI-IDX        =   ZERO )
+                           MOVE    IDX             TO  LNK-ORCSC-KEI-IDX
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                               (IDX-Z)
+                           MOVE    "K081"          TO  SPA-ERRCD
+                           MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                           STRING  "既に"          DELIMITED  BY  SIZE
+                                   IDD             DELIMITED  BY  SIZE
+                                   "日までに"
+                                                   DELIMITED  BY  SIZE
+                                   WRK-TUKI-CNT
+                                                   DELIMITED  BY  SIZE
+                                   "単位算定済です。"
+                                                   DELIMITED  BY  SIZE
+                                           INTO    LNK-ORCSC-ERRMSG
+                           END-STRING
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                           (IDX-Z)
+                           GO      TO      20012-NTUKIMAX-CHK-EXT
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *    今回分集計
+           PERFORM 20023-KAISU-HEN-SEC
+      *
+           .
+       20012-NTUKIMAX-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1987,227 +1716,14 @@
            .
        20011-SOUKI-CHK-EXT.
            EXIT.
+      *
       *****************************************************************
-      *    当日算定済みのすべての理学療法カウント処理
+      *    全診療行為チェック処理
       *****************************************************************
-       2001-RIGAKU-CNT-CHK-SEC         SECTION.
-      *
-           INITIALIZE                  WRK-RIGAKU-CNT-AREA
-      *
-      *    当日算定済みのすべての理学療法カウント 
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   28
-               SET     TBL-SAN             TO  IDX
-               MOVE    TBL-SANTEI-SRYCD (TBL-SAN)
-                                           TO  WRK-SRYCD
-               IF    ((WRK-RIGAKU-RYO      =   SPACE  )  AND
-                      (WRK-RIGAKU-KBN      =   SPACE  ))     OR
-                     ((WRK-RIGAKU-RYO      =   TBL-RIGAKU-RYO(IDX) ) OR
-                      (WRK-RIGAKU-KBN      =   TBL-RIGAKU-RYO(IDX) ))
-      *
-      *        算定履歴チェック処理
-               INITIALIZE                  ORCSC91AREA
-               MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
-               MOVE    WRK-SRYCD           TO  LNK-SC91-SRYCD
-               MOVE    "4"                 TO  LNK-SC91-KBN
-               MOVE    1                   TO  LNK-SC91-GMN-IDX
-               MOVE    ZERO                TO  LNK-SC91-KAISU
-               MOVE    LNK-ORCSC-TEISEI-AREA
-                                           TO  LNK-SC91-TEISEI-AREA
-               MOVE    1                   TO  LNK-SC91-CHKFLG
-               CALL    "ORCSC91"           USING    MCPAREA
-                                               ORCSC91AREA
-                                               WRK-SCR-REC
-                                               SPA-AREA
-                                               TNS-TENSU-REC
-      *
-      *        上限日集計
-               EVALUATE    TBL-RIGAKU-KBN (TBL-SAN)
-                   WHEN    "R"
-      *            理学
-                       IF      TBL-RIGAKU-RYO(TBL-SAN) =   "S"
-                           COMPUTE WRK-R-TCNT-S    =   WRK-R-TCNT-S
-                                                   +   LNK-SC91-CNT
-                                                   -   LNK-SC91-ATO-CNT
-                           COMPUTE WRK-R-DCNT-S    =   WRK-R-DCNT-S
-                                                   +   LNK-SC91-DAYCNT
-                       ELSE
-                           COMPUTE WRK-R-TCNT-K    =   WRK-R-TCNT-K
-                                                   +   LNK-SC91-CNT
-                                                   -   LNK-SC91-ATO-CNT
-                           COMPUTE WRK-R-DCNT-K    =   WRK-R-DCNT-K
-                                                   +   LNK-SC91-DAYCNT
-                       END-IF
-                       IF      LNK-SC91-DAYCNT     >   ZERO
-                           MOVE    TBL-RIGAKU-RYO (TBL-SAN)
-                                                   TO  WRK-RIGAKU-RYO1
-                       END-IF
-                   WHEN    "S"
-      *            作業
-                       IF      TBL-RIGAKU-RYO(TBL-SAN) =   "S"
-                           COMPUTE WRK-S-TCNT-S    =   WRK-S-TCNT-S
-                                                   +   LNK-SC91-CNT
-                                                   -   LNK-SC91-ATO-CNT
-                           COMPUTE WRK-S-DCNT-S    =   WRK-S-DCNT-S
-                                                   +   LNK-SC91-DAYCNT
-                       ELSE
-                           COMPUTE WRK-S-TCNT-K    =   WRK-S-TCNT-K
-                                                   +   LNK-SC91-CNT
-                                                   -   LNK-SC91-ATO-CNT
-                           COMPUTE WRK-S-DCNT-K    =   WRK-S-DCNT-K
-                                                   +   LNK-SC91-DAYCNT
-                       END-IF
-                       IF      LNK-SC91-DAYCNT     >   ZERO
-                           MOVE    TBL-RIGAKU-RYO (TBL-SAN)
-                                                   TO  WRK-RIGAKU-RYO2
-                       END-IF
-                   WHEN    "G"
-      *            言語
-                       IF      TBL-RIGAKU-RYO(TBL-SAN) =   "S"
-                           COMPUTE WRK-G-TCNT-S    =   WRK-G-TCNT-S
-                                                   +   LNK-SC91-CNT
-                                                   -   LNK-SC91-ATO-CNT
-                           COMPUTE WRK-G-DCNT-S    =   WRK-G-DCNT-S
-                                                   +   LNK-SC91-DAYCNT
-                       ELSE
-                           COMPUTE WRK-G-TCNT-K    =   WRK-G-TCNT-K
-                                                   +   LNK-SC91-CNT
-                                                   -   LNK-SC91-ATO-CNT
-                           COMPUTE WRK-G-DCNT-K    =   WRK-G-DCNT-K
-                                                   +   LNK-SC91-DAYCNT
-                       END-IF
-                       IF      LNK-SC91-DAYCNT     >   ZERO
-                           MOVE    TBL-RIGAKU-RYO (TBL-SAN)
-                                                   TO  WRK-RIGAKU-RYO3
-                       END-IF
-               END-EVALUATE
-             END-IF
-           END-PERFORM
+       200-ALL-SYORI-SEC                SECTION.
       *
            .
-       2001-RIGAKU-CNT-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    理学療法の同一日の回数編集処理
-      *****************************************************************
-       20011-RIGAKU-NYU-CNT-SEC              SECTION.
-      *
-           INITIALIZE                  WRK-RIGAKU-NCNT-AREA
-      *    当月算定済みのすべての理学療法カウント 
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   28
-               SET     TBL-SAN             TO  IDX
-               IF      TBL-RIGAKU-RYO (TBL-SAN)    =   "K" OR "S"
-                   MOVE    TBL-SANTEI-SRYCD (TBL-SAN)
-                                               TO  WRK-SRYCD
-                   PERFORM 200111-SANTEI-CHK-SEC
-               END-IF
-           END-PERFORM
-           .
-       20011-RIGAKU-NYU-CNT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    算定履歴検索処理
-      *****************************************************************
-       200111-SANTEI-CHK-SEC              SECTION.
-      *    算定履歴検索
-           INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
-           MOVE    SPA-PTID            TO  SANTEI-PTID
-           MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
-           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-      *    すべて病院毎とする
-           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-           MOVE    ZERO                TO  SANTEI-SRYKA
-      *    労災の時、保険毎
-           IF      SPA-HKNKBN      NOT =   ZERO
-               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
-           ELSE
-               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-           END-IF
-      *
-           MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-               PERFORM 920-SANTEI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SANTEI
-           END-IF
-      *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           IF      FLG-SANTEI          =   1
-               INITIALIZE              SANTEI-REC
-               GO      TO      200111-SANTEI-CHK-EXT
-           END-IF
-      *    リハビリの種別毎に集計する
-      *    当日・当月分
-           EVALUATE    TBL-RIGAKU-RYO (TBL-SAN)
-                                       ALSO  TBL-RIGAKU-KBN (TBL-SAN)
-      *        個別の理学
-               WHEN    "K"             ALSO  "R"
-                   ADD     SANTEI-MSANTEICNT     TO  WRK-R-TCNT-KN
-                   PERFORM VARYING     IDX2    FROM    1   BY  1
-                           UNTIL       IDX2    >   31
-                       ADD     SANTEI-DAY (IDX2)   TO  WRK-R-DCNT-KN
-                                                                (IDX2)
-                   END-PERFORM
-      *        集団の理学
-               WHEN    "S"             ALSO  "R"
-                   ADD     SANTEI-MSANTEICNT     TO  WRK-R-TCNT-SN
-                   PERFORM VARYING     IDX2    FROM    1   BY  1
-                           UNTIL       IDX2    >   31
-                       ADD     SANTEI-DAY (IDX2)   TO  WRK-R-DCNT-SN
-                                                                (IDX2)
-                   END-PERFORM
-      *        個別の作業
-               WHEN    "K"             ALSO  "S"
-                   ADD     SANTEI-MSANTEICNT     TO  WRK-S-TCNT-KN
-                   PERFORM VARYING     IDX2    FROM    1   BY  1
-                           UNTIL       IDX2    >   31
-                       ADD     SANTEI-DAY (IDX2)   TO  WRK-S-DCNT-KN
-                                                                (IDX2)
-                   END-PERFORM
-      *        集団の作業
-               WHEN    "S"             ALSO  "S"
-                   ADD     SANTEI-MSANTEICNT     TO  WRK-S-TCNT-SN
-                   PERFORM VARYING     IDX2    FROM    1   BY  1
-                           UNTIL       IDX2    >   31
-                       ADD     SANTEI-DAY (IDX2)   TO  WRK-S-DCNT-SN
-                                                                (IDX2)
-                   END-PERFORM
-      *        個別の言語
-               WHEN    "K"             ALSO  "G"
-                   ADD     SANTEI-MSANTEICNT     TO  WRK-G-TCNT-KN
-                   PERFORM VARYING     IDX2    FROM    1   BY  1
-                           UNTIL       IDX2    >   31
-                       ADD     SANTEI-DAY (IDX2)   TO  WRK-G-DCNT-KN
-                                                                (IDX2)
-                   END-PERFORM
-      *        集団の言語
-               WHEN    "S"             ALSO  "G"
-                   ADD     SANTEI-MSANTEICNT     TO  WRK-G-TCNT-SN
-                   PERFORM VARYING     IDX2    FROM    1   BY  1
-                           UNTIL       IDX2    >   31
-                       ADD     SANTEI-DAY (IDX2)   TO  WRK-G-DCNT-SN
-                                                                (IDX2)
-                   END-PERFORM
-           END-EVALUATE
-           .
-       200111-SANTEI-CHK-EXT.
+       200-ALL-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

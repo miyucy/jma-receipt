@@ -35,6 +35,7 @@
       *  01.00.06    NACL-多々納  03/02/19  療養担当手当追加
       *  01.00.07    NACL-多々納  03/04/09  保険編集サブプロ追加
       *  01.00.08    NACL-多々納  03/07/17  検索変更他
+      *  01.00.09    NACL-多々納  03/10/27  育児栄養加算、カーソル移動追加
       *****************************************************************
       *
       *
@@ -476,9 +477,23 @@
                IF      SYS-1008-GAIKANRIKBN-CHK    =   SPACE
                    MOVE    "1"             TO  SPA-GAIKANRIKBN-CHK
                END-IF
+      *
+      *        育児栄養加算自動算定
+               MOVE    SYS-1008-IKUJIEIYO-FLG
+                                           TO  SPA-IKUJIEIYO-FLG
+      *        育児栄養加算自動算定科
+               MOVE    SYS-1008-IKUJIEIYO-SRYKA
+                                           TO  SPA-IKUJIEIYO-SRYKA
+      *        外来カーソル移動
+               MOVE    SYS-1008-GAI-CURSOR-SET-1
+                                           TO  SPA-GAI-CURSOR-SET
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
+      *
+               MOVE    ZERO                TO  SPA-IKUJIEIYO-FLG
+               MOVE    SPACE               TO  SPA-IKUJIEIYO-SRYKA
+               MOVE    ZERO                TO  SPA-GAI-CURSOR-SET
            END-IF
       *
       *    診療科
@@ -569,6 +584,10 @@
                END-IF
       *
            END-IF
+      *
+      *    時間外特例医療機関の施設基準はすべてありとする
+           MOVE    1                   TO  SPA-JIKANTOKU
+      *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
       *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
       *    CALL    "MCPDBSUB"          USING
@@ -710,8 +729,22 @@
                IF      SYS-1008-GAIKANRIKBN-CHK    =   SPACE
                    MOVE    "1"             TO  SPA-GAIKANRIKBN-CHK
                END-IF
+      *
+      *        育児栄養加算自動算定
+               MOVE    SYS-1008-IKUJIEIYO-FLG
+                                           TO  SPA-IKUJIEIYO-FLG
+      *        育児栄養加算自動算定科
+               MOVE    SYS-1008-IKUJIEIYO-SRYKA
+                                           TO  SPA-IKUJIEIYO-SRYKA
+      *        外来カーソル移動
+               MOVE    SYS-1008-GAI-CURSOR-SET-1
+                                           TO  SPA-GAI-CURSOR-SET
            ELSE
                MOVE    ZERO                    TO  SPA-INTERACT-KIKAN
+      *
+               MOVE    ZERO                TO  SPA-IKUJIEIYO-FLG
+               MOVE    SPACE               TO  SPA-IKUJIEIYO-SRYKA
+               MOVE    ZERO                TO  SPA-GAI-CURSOR-SET
            END-IF
       *
       *    診療科
@@ -802,6 +835,10 @@
                END-IF
       *
            END-IF
+      *
+      *    時間外特例医療機関の施設基準はすべてありとする
+           MOVE    1                   TO  SPA-JIKANTOKU
+      *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
       *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
       *    CALL    "MCPDBSUB"          USING
@@ -2180,6 +2217,48 @@
                                                TO  SPA-GMN-TABOO (IDX)
                END-IF
            END-IF
+      *
+      *    コメント１
+           IF      PTINF-COMMENT-1   NOT =   SPACE
+                ADD     1                  TO  IDX
+                MOVE    "コメント："       TO  SPA-GMN-TABOO (IDX)
+                MOVE    PTINF-COMMENT-1    TO  SPA-GMN-TABOO (IDX)
+                                                             (11:)
+                IF      PTINF-COMMENT-1(49:)   NOT =   SPACE
+                    ADD     1                  TO  IDX
+                    MOVE    PTINF-COMMENT-1(49:) TO  SPA-GMN-TABOO (IDX)
+                END-IF
+                IF      PTINF-COMMENT-1(111:)  NOT =   SPACE
+                    ADD     1                  TO  IDX
+                    MOVE    PTINF-COMMENT-1(111:)
+                                               TO  SPA-GMN-TABOO (IDX)
+                END-IF
+                IF      PTINF-COMMENT-1(173:)  NOT =   SPACE
+                    ADD     1                  TO  IDX
+                    MOVE    PTINF-COMMENT-1(173:)
+                                               TO  SPA-GMN-TABOO (IDX)
+                END-IF
+           END-IF
+      *    コメント２
+           IF      PTINF-COMMENT-2 NOT =   SPACE
+               ADD     1                   TO  IDX
+               MOVE    PTINF-COMMENT-2     TO  SPA-GMN-TABOO (IDX)
+               IF      PTINF-COMMENT-2(63:)     NOT =   SPACE
+                   ADD     1                   TO  IDX
+                   MOVE    PTINF-COMMENT-2(63:)
+                                               TO  SPA-GMN-TABOO (IDX)
+               END-IF
+               IF      PTINF-COMMENT-2(125:)   NOT =   SPACE
+                   ADD     1                   TO  IDX
+                   MOVE    PTINF-COMMENT-2(125:)
+                                               TO  SPA-GMN-TABOO (IDX)
+               END-IF
+               IF      PTINF-COMMENT-2(187:)   NOT =   SPACE
+                   ADD     1                   TO  IDX
+                   MOVE    PTINF-COMMENT-2(187:)
+                                               TO  SPA-GMN-TABOO (IDX)
+               END-IF
+           END-IF
            MOVE    IDX                 TO  SPA-TABOO-MAX
       *
            .
@@ -2656,6 +2735,56 @@
            CLOSE                       PARA-FILE
       *
            MOVE    WRK-GOK-TENSU       TO  LNK-SC95-GOK-TENSU
+      *
+      *    小児科外来診療科編集
+           MOVE    SPACE               TO  SYS-1006-REC
+           INITIALIZE                      SYS-1006-REC
+           MOVE    "1006"              TO  SYS-1006-KANRICD
+           MOVE    "1"                 TO  SYS-1006-KBNCD
+           MOVE    ZERO                TO  SYS-1006-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1006-EDYUKYMD
+      *    システム管理検索（施設基準）
+           MOVE    SYS-1006-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1006-REC
+               INITIALIZE                  SYS-1006-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  SPA-SYONIKA
+           MOVE    ZERO                TO  SPA-ROUMANSEI
+      *    時間外特例医療機関の施設基準はすべてありとする
+           MOVE    1                   TO  SPA-JIKANTOKU
+      *
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+               IF      SYS-1006-SSTKIJUN (121) =   1
+                   MOVE    1               TO  SPA-SYONIKA
+               END-IF
+      *
+               IF      SYS-1006-SSTKIJUN (128) =   1
+                   MOVE    1               TO  SPA-ROUMANSEI
+               END-IF
+      *        時間外特例医療機関
+               IF      SYS-1006-SSTKIJUN (011) =   1
+                   MOVE    1               TO  SPA-JIKANTOKU
+               END-IF
+      *
+           END-IF
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
       *
       *    患者情報の再セット
            PERFORM 1001-SPA-JYUSIN-SEC

@@ -1856,7 +1856,7 @@
                MOVE    IDX-SYU            TO   IDX-T
                MOVE    IDX-SYU            TO   IDX-S
                MOVE    SPACE              TO   WRK-SRYCD-2
-               PERFORM 1003-JIDOU-CHK-SEC
+      *******  PERFORM 1003-JIDOU-CHK-SEC
       *        ²Ã»»ÄÉ²Ã
                MOVE    3                   TO  FLG-SATU
                PERFORM 1002-JIDOUSET-SEC
