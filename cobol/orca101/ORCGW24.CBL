@@ -412,10 +412,10 @@
       *
            MOVE    2               TO  SPA-GMN-W24-SK-NYUSYOKU-CNT
       *
-           MOVE    "1 入院時食事療療（１）"
+           MOVE    "1 入院時食事療養（１）"
                                    TO  SPA-GMN-W24-SK-NYUSYOKU-ITM (1)
 
-           MOVE    "2 入院時食事療療（２）"
+           MOVE    "2 入院時食事療養（２）"
                                    TO  SPA-GMN-W24-SK-NYUSYOKU-ITM (2)
       *
            .
