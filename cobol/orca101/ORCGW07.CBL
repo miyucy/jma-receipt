@@ -200,7 +200,7 @@
                            11  SPA-GMN-BYOMEIKBNMEI        PIC X(26).
                        09  SPA-GMN-BYOMEIKBN-COMB.
                            11  SPA-GMN-BYOMEIKBN-LIST      PIC X(28)
-                                                           OCCURS  2.
+                                                           OCCURS  3.
       *                人名辞書使用
                        09  SPA-GMN-JISYOKBN-G.
                            11  SPA-GMN-JISYOKBN            PIC X(01).
@@ -712,6 +712,7 @@
       *
            MOVE    "0 すべての病名"    TO  SPA-GMN-BYOMEIKBN-LIST(1)
            MOVE    "1 継続病名のみ"    TO  SPA-GMN-BYOMEIKBN-LIST(2)
+           MOVE    "2 病名記載なし"    TO  SPA-GMN-BYOMEIKBN-LIST(3)
       *
            MOVE    "0 使用する"        TO  SPA-GMN-JISYOKBN-LIST(1)
            MOVE    "1 使用しない"      TO  SPA-GMN-JISYOKBN-LIST(2)
@@ -1170,6 +1171,9 @@
            EVALUATE    SPA-GMN-BYOMEIKBN
                 WHEN    "1"
                     MOVE    SPA-GMN-BYOMEIKBN-LIST(2)
+                                               TO  SPA-GMN-BYOMEIKBN-G
+                WHEN    "2"
+                    MOVE    SPA-GMN-BYOMEIKBN-LIST(3)
                                                TO  SPA-GMN-BYOMEIKBN-G
                 WHEN    OTHER
                     MOVE    SPA-GMN-BYOMEIKBN-LIST(1)
@@ -2384,7 +2388,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
+                   UNTIL       IDX     >   3
                IF      SPA-GMN-BYOMEIKBN
                                       =   SPA-GMN-BYOMEIKBN-LIST(IDX)
                                                                 (1:1)
@@ -3650,11 +3654,11 @@
       *    カルテの病名対象
            MOVE    SPA-GMN-BYOMEIKBN-G     TO  W07-BYOMEIKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
+                   UNTIL       IDX     >   3
                MOVE    SPA-GMN-BYOMEIKBN-LIST (IDX)
                                        TO  W07-BYOMEIKBN-ITEM(IDX)
            END-PERFORM
-           MOVE    2               TO  W07-BYOMEIKBN-COUNT
+           MOVE    3               TO  W07-BYOMEIKBN-COUNT
       *
       *    人名辞書使用
            MOVE    SPA-GMN-JISYOKBN-G      TO  W07-JISYOKBN

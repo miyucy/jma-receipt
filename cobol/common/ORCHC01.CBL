@@ -45,6 +45,7 @@
       *                                     プログラムの整理
       *  02.00.02    NACL-多々納  03/06/30  出力先プリンタサブ追加
       *  02.00.03    NACL-多々納  03/10/27  継続病名のみ編集追加
+      *  02.00.04    NACL-多々納  05/03/03  病名なし追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -422,7 +423,13 @@
       *　　印刷項目編集
            PERFORM 2001-HC01-SYORI-SEC
       *    病名を印刷する
-           PERFORM 2002-BYOMEI-HEN-SEC
+           IF      SYS-1017-KARUTE-BYOMEI    =   "2"
+      *        病名なしの時
+      *        カルテ印刷
+               PERFORM 20031-HC01-PRINT-SEC
+           ELSE
+               PERFORM 2002-BYOMEI-HEN-SEC
+           END-IF
            .
        200-ALL-PRT-EXT.
            EXIT.
