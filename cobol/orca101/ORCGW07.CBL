@@ -418,7 +418,7 @@
       *
            MOVE    "0 標準"            TO  SPA-GMN-GAIMOVE-LIST(1)
            MOVE    "1 保険組合せ"      TO  SPA-GMN-GAIMOVE-LIST(2)
-           MOVE    "2 診察料"          TO  SPA-GMN-GAIMOVE-LIST(3)
+           MOVE    "2 診療科"          TO  SPA-GMN-GAIMOVE-LIST(3)
       *
            MOVE    "0 すべての病名"    TO  SPA-GMN-BYOMEIKBN-LIST(1)
            MOVE    "1 継続病名のみ"    TO  SPA-GMN-BYOMEIKBN-LIST(2)
