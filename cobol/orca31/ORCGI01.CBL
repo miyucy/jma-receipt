@@ -7700,7 +7700,7 @@
       *
       **     MOVE    SENCHG-SENTEISRYCD
       **                             TO  LNK-SCNYUACCT-SENTEI-SRYCD
-           MOVE    "099999915"       TO  LNK-SCNYUACCT-SENTEI-SRYCD
+           MOVE    "099999916"       TO  LNK-SCNYUACCT-SENTEI-SRYCD
            MOVE    WRK-SENTEI-STYMD
                                    TO  LNK-SCNYUACCT-SENTEI-STYMD
       *
