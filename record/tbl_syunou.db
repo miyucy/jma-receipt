@@ -863,3 +863,36 @@ path	st_key1 	{
 		AND   b.TSTPTNUMKBN <> '1'
 	};
 };
+
+#PTIDのみ取得
+path	key36 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key36_csr CURSOR FOR
+		SELECT PTID
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   SRYYMD      LIKE :SRYYMD
+			AND   CREATEKBN   <>  '3'
+			AND   DENPJTIKBN  <> '3'
+			GROUP BY PTID
+		;
+	};
+};
+
+path	key37 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key37_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYMD      LIKE :SRYYMD
+			AND   CREATEKBN   <>  '3'
+			AND   DENPJTIKBN  <> '3'
+			ORDER  BY  SRYKA,HKNCOMBINUM
+		;
+	};
+};
+
