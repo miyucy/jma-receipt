@@ -2667,6 +2667,9 @@
                END-IF
                MOVE    SPA-GMN-BYOMEISBT-G     TO  C03-BYOMEISBT
                PERFORM 41015-BYOMEISBT-CHK-SEC
+               IF      SPA-ERRCD           =   "0103"
+                   MOVE    SPACE               TO  SPA-ERRCD
+               END-IF
                IF      SPA-ERRCD       NOT =   SPACE
                    GO  TO  450-TOUROKU-EXT
                END-IF
