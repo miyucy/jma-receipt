@@ -41,6 +41,7 @@
       *  01.00.09    NACL-門脇    03/04/24  一部負担金（）の編集修正
       *  01.00.10    NACL-門脇    03/05/08  名称有効桁のセット
       *  01.00.11    NACL-門脇    03/05/22  残量廃棄の数量セット
+      *  01.00.12    NACL-門脇    03/05/23  一部負担金記載修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -166,6 +167,7 @@
            03  FLG-ZANHAIKI                            PIC 9(01).
            03  FLG-RECE65-ZAN                          PIC 9(01).
            03  FLG-REWRITE                             PIC 9(01).
+           03  FLG-CHIHOU                              PIC 9(01).
       *
       *
       *    カウント領域
@@ -239,6 +241,7 @@
            03  WRK-FTNKEI                              PIC 9(09).
            03  WRK-FTNKEI2                             PIC 9(09).
            03  WRK-FTNKEI3                             PIC 9(09).
+           03  WRK-KINGAKU                             PIC 9(09).
       *
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
@@ -4860,6 +4863,8 @@
                                    FLG-KOSEI
                                    FLG-IKUSEI
       *
+           MOVE     ZERO     TO    FLG-CHIHOU
+      *
            PERFORM  VARYING  ID1    FROM    1   BY  1
                          UNTIL   ID1   >   2
       *
@@ -4928,11 +4933,12 @@
       *
       *++++
       *
-           PERFORM         KOH-FLG-SET
+           PERFORM         KOH-FLG-SET-SEC
       *
       *
            IF      RECE62-SRYYM      >=  "200210"
              IF    RECE62-KOUREI  NOT =    SPACE
+      *
                 COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
                                     * 10
                                     * RECE62-KYURATE
@@ -4955,67 +4961,36 @@
                                                    WRK-KOH-GAI          
                     END-IF                                              
                 ELSE
-                  IF   ( SYU-KOH-HKNNUM(1)   =   "012" )                
-                  OR   ( SYU-KOH-HKNNUM(2)   =   "012" )                
-                  OR   ( SYU-KOH-HKNNUM(3)   =   "012" )                
-                  OR   ( SYU-KOH-HKNNUM(4)   =   "012" )                
-                      IF  FTN-KOH-XXX  >   15000
-                         MOVE   15000   TO   FTN-KOH-XXX
-                      END-IF
-                      COMPUTE  FTN-KOH-YYY  =  15000  -  FTN-KOH-XXX      
-                      IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
-                        ADD    FTN-KOH-YYY  TO  RECE62-FTNMONEY(1)        
-                                                FTN-KOH-XXX               
-                        IF    RECE62-RJNHKNNUM    NOT =    SPACE          
-                          ADD  FTN-KOH-YYY  TO  RECE62-RJNNYUFTN          
-                        END-IF                                            
-                      ELSE                                                
-                        ADD    WRK-FTNKEI   TO  RECE62-FTNMONEY(1)        
-                                                FTN-KOH-XXX               
-                        IF    RECE62-RJNHKNNUM    NOT =    SPACE          
-                          ADD  WRK-FTNKEI   TO  RECE62-RJNNYUFTN          
-                        END-IF                                            
-                      END-IF
+                  IF   ( SYU-KOH-HKNNUM(1)   =   "012" )
+                  OR   ( SYU-KOH-HKNNUM(2)   =   "012" )
+                  OR   ( SYU-KOH-HKNNUM(3)   =   "012" )
+                  OR   ( SYU-KOH-HKNNUM(4)   =   "012" )
+                      MOVE    15000     TO   WRK-KINGAKU
+                      PERFORM   ICHIBUFTN-KOH-SET-SEC
                   ELSE
                     IF   ( RECE62-TOKKI(1)     =   "02"  )
                     OR   ( RECE62-TOKKI(2)     =   "02"  )
                     OR   ( RECE62-TOKKI(3)     =   "02"  )
                     OR   ( RECE62-TOKKI(4)     =   "02"  )
                     OR   ( RECE62-TOKKI(5)     =   "02"  )
-                      IF  FTN-KOH-XXX  >  10000
-                         MOVE   10000   TO   FTN-KOH-XXX
-                      END-IF
-                      COMPUTE  FTN-KOH-YYY  =  10000  -  FTN-KOH-XXX      
-                      IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
-                        ADD    FTN-KOH-YYY  TO  RECE62-FTNMONEY(1)        
-                                                FTN-KOH-XXX               
-                        IF    RECE62-RJNHKNNUM    NOT =    SPACE          
-                          ADD  FTN-KOH-YYY  TO  RECE62-RJNNYUFTN          
-                        END-IF                                            
-                      ELSE                                                
-                        ADD    WRK-FTNKEI   TO  RECE62-FTNMONEY(1)        
-                                                FTN-KOH-XXX               
-                        IF    RECE62-RJNHKNNUM    NOT =    SPACE          
-                          ADD  WRK-FTNKEI   TO  RECE62-RJNNYUFTN          
-                        END-IF                                            
-                      END-IF
+                      MOVE    10000     TO   WRK-KINGAKU
+                      PERFORM   ICHIBUFTN-KOH-SET-SEC
                     ELSE
-                      IF  FTN-KOH-XXX  >  40200
-                         MOVE   40200   TO   FTN-KOH-XXX
-                      END-IF
-                      COMPUTE  FTN-KOH-YYY  =  40200  -  FTN-KOH-XXX      
-                      IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
-                        ADD    FTN-KOH-YYY  TO  RECE62-FTNMONEY(1)        
-                                                FTN-KOH-XXX               
-                        IF    RECE62-RJNHKNNUM    NOT =    SPACE          
-                          ADD  FTN-KOH-YYY  TO  RECE62-RJNNYUFTN          
-                        END-IF                                            
-                      ELSE                                                
-                        ADD    WRK-FTNKEI   TO  RECE62-FTNMONEY(1)        
-                                                FTN-KOH-XXX               
-                        IF    RECE62-RJNHKNNUM    NOT =    SPACE          
-                          ADD  WRK-FTNKEI   TO  RECE62-RJNNYUFTN          
-                        END-IF                                            
+                      PERFORM         CHIHOU-KOH-HANBETU-SEC
+                      IF   (  RECE62-TEISYOTOKU  NOT =  SPACE  )
+                      AND  (  FLG-CHIHOU             =  1      )
+                        EVALUATE   RECE62-TEISYOTOKU
+                          WHEN  "1"
+                            MOVE    15000     TO   WRK-KINGAKU
+                            PERFORM   ICHIBUFTN-KOH-SET-SEC
+                          WHEN  "2"
+                          WHEN  "3"
+                            MOVE    24600     TO   WRK-KINGAKU
+                            PERFORM   ICHIBUFTN-KOH-SET-SEC
+                        END-EVALUATE
+                      ELSE
+                        MOVE    40200     TO   WRK-KINGAKU
+                        PERFORM   ICHIBUFTN-KOH-SET-SEC
                       END-IF
                     END-IF
                   END-IF                                              
@@ -5378,7 +5353,7 @@
       *****************************************************************
       *    食事負担含む上限額のある公費のフラグ編集
       *****************************************************************
-       KOH-FLG-SET               SECTION.
+       KOH-FLG-SET-SEC               SECTION.
       *
            IF   ( SYU-KOH-HKNNUM(1)   =   "051" )            
            OR   ( SYU-KOH-HKNNUM(2)   =   "051" )            
@@ -5516,7 +5491,7 @@
            END-IF                                            
       *
            .
-       KOH-FLG-EXT.
+       KOH-FLG-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5587,6 +5562,55 @@
       *
            .
        KOHFTN-KINGAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険欄の一部負担金額セット（公費含む場合）
+      *****************************************************************
+       ICHIBUFTN-KOH-SET-SEC               SECTION.
+      *
+           IF  FTN-KOH-XXX  >   WRK-KINGAKU
+                MOVE   WRK-KINGAKU    TO   FTN-KOH-XXX
+           END-IF
+           COMPUTE  FTN-KOH-YYY  =  WRK-KINGAKU  -  FTN-KOH-XXX
+           IF  WRK-FTNKEI  >  FTN-KOH-YYY
+                ADD      FTN-KOH-YYY  TO  RECE62-FTNMONEY(1)
+                                          FTN-KOH-XXX
+                IF    RECE62-RJNHKNNUM    NOT =    SPACE
+                    ADD  FTN-KOH-YYY  TO  RECE62-RJNNYUFTN
+                END-IF
+           ELSE
+                ADD      WRK-FTNKEI   TO  RECE62-FTNMONEY(1)
+                                          FTN-KOH-XXX
+                IF    RECE62-RJNHKNNUM    NOT =    SPACE
+                    ADD  WRK-FTNKEI   TO  RECE62-RJNNYUFTN
+                END-IF
+           END-IF
+      *
+           .
+       ICHIBUFTN-KOH-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主保険＋地方公費　又は　主保険＋老人＋地方公費
+      *    の保険組み合わせかどうか判別
+      *****************************************************************
+       CHIHOU-KOH-HANBETU-SEC               SECTION.
+      *
+           IF  (( SYU-KOH-HKNNUM(1)       =   "027"               )  AND
+                ( SYU-KOH-HKNNUM(2)(1:1)  =   "1" OR "2" OR "3" OR
+                                              "4" OR "5" OR "6" OR
+                                              "7" OR "8"          ))    
+           OR  (  SYU-KOH-HKNNUM(1)(1:1)  =   "1" OR "2" OR "3" OR
+                                              "4" OR "5" OR "6" OR
+                                              "7" OR "8"           )    
+      *
+                MOVE     1       TO      FLG-CHIHOU
+      *
+           END-IF
+      *
+           .
+       CHIHOU-KOH-HANBETU-EXT.
            EXIT.
       *
       *****************************************************************
