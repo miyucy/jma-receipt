@@ -1,0 +1,15 @@
+I46	{
+	fixed10	{
+		scrolledwindow1	{
+			MED_LIST	{
+				count	int;
+				item	{
+					value1	varchar(40);
+					value2	varchar(40);
+					value3	varchar(6);
+				}	[50];
+				select	bool[50];
+			};
+		};
+	};
+};
