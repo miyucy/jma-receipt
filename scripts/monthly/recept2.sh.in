@@ -52,7 +52,7 @@ fi
                exit 
            fi
 
-           $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV1 -parameter ${13},${14},${15},$rennum,${17},${18},${19},${20},${21},${22},${23},$1,$2,$8,$9,${27},$5
+           $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV1 -parameter ${13},${14},${15},$rennum,${17},${18},${19},${20},${21},${22},${23},$1,$2,$8,$9,${27},$5,$6
            if  [ -e $6 ]; then
                exit
            else
