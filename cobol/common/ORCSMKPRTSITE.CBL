@@ -57,6 +57,8 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-DIA             PIC X(10).
+           03  WRK-SHELLTBL-NAME   PIC X(200).
+           03  WRK-SHELLTBL-ARG1   PIC X(200).
       *
       *    デイレクトリ位置
        01  SHELL-NAME.
@@ -159,6 +161,12 @@
            END-STRING
       *    帳票名
            MOVE    SHELL-DIA           TO  MKPASS-IN-02
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  WRK-SHELLTBL-NAME
+           MOVE    MKPASS-OT-02        TO  WRK-SHELLTBL-ARG1
+      *
+      *    フィアルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
       *    ＦＯＲＭ
            STRING  SHELL-FORM          DELIMITED  BY  SPACE
                    MKPRT-DIA           DELIMITED  BY  SPACE
@@ -175,9 +183,9 @@
            MOVE    SPACE               TO  SHELLTBL
            INITIALIZE                      SHELLTBL
       *
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    WRK-SHELLTBL-NAME   TO  SHELLTBL-NAME
       *    DIA
-           MOVE    MKPASS-OT-02        TO  SHELLTBL-ARG1
+           MOVE    WRK-SHELLTBL-ARG1   TO  SHELLTBL-ARG1
       *    FORM
            MOVE    MKPASS-OT-03        TO  SHELLTBL-ARG2
       *    DEF
@@ -209,6 +217,11 @@
                    MKPRT-ID            DELIMITED  BY  SPACE
                                        INTO    MKPASS-IN-01
            END-STRING
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  WRK-SHELLTBL-NAME
+      *
+      *    フィアルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
       *    ＦＯＲＭ
            STRING  SHELL-FORM          DELIMITED  BY  SPACE
                    MKPRT-DIA           DELIMITED  BY  SPACE
@@ -225,7 +238,7 @@
            MOVE    SPACE               TO  SHELLTBL
            INITIALIZE                      SHELLTBL
       *
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    WRK-SHELLTBL-NAME   TO  SHELLTBL-NAME
       *    MONP
            MOVE    SHELL-MONPE         TO  SHELLTBL-ARG1
       *    FROM
