@@ -2699,6 +2699,54 @@
       *
            MOVE    WRK-GOK-TENSU       TO  LNK-SC95-GOK-TENSU
       *
+      *    小児科外来診療科編集
+           MOVE    SPACE               TO  SYS-1006-REC
+           INITIALIZE                      SYS-1006-REC
+           MOVE    "1006"              TO  SYS-1006-KANRICD
+           MOVE    "1"                 TO  SYS-1006-KBNCD
+           MOVE    ZERO                TO  SYS-1006-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1006-EDYUKYMD
+      *    システム管理検索（施設基準）
+           MOVE    SYS-1006-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1006-REC
+               INITIALIZE                  SYS-1006-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  SPA-SYONIKA
+           MOVE    ZERO                TO  SPA-ROUMANSEI
+           MOVE    ZERO                TO  SPA-JIKANTOKU
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+               IF      SYS-1006-SSTKIJUN (121) =   1
+                   MOVE    1               TO  SPA-SYONIKA
+               END-IF
+      *
+               IF      SYS-1006-SSTKIJUN (128) =   1
+                   MOVE    1               TO  SPA-ROUMANSEI
+               END-IF
+      *        時間外特例医療機関
+               IF      SYS-1006-SSTKIJUN (011) =   1
+                   MOVE    1               TO  SPA-JIKANTOKU
+               END-IF
+      *
+           END-IF
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *
       *    患者情報の再セット
            PERFORM 1001-SPA-JYUSIN-SEC
       *
