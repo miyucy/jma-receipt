@@ -7583,10 +7583,11 @@
            MOVE    SYOKIKSN-IN-KHNSRYCD
                             TO   LNK-SCNYUACCT-NYUKHN-SRYCD(1)
       *退院日からの会計再作成に変更 ---------------------------------
-      **     MOVE    SYOKIKSN-IN-SANTEISTYMD
-      **                      TO   LNK-SCNYUACCT-STSRYYMD
-           MOVE     SPA-NAI-I01-TAIINYMD
-                                       TO   LNK-SCNYUACCT-STSRYYMD
+           MOVE    SYOKIKSN-IN-SANTEISTYMD
+                            TO   LNK-SCNYUACCT-STSRYYMD
+      **     MOVE     SPA-NAI-I01-TAIINYMD
+      **                                 TO   LNK-SCNYUACCT-STSRYYMD
+           DISPLAY "LNK-SCNYUACCT-STSRYYMD = " LNK-SCNYUACCT-STSRYYMD
       *--------------------------------------------------------------
       *
            PERFORM   VARYING   IDX6   FROM   1   BY   1
@@ -7598,6 +7599,13 @@
                          TO  LNK-SCNYUACCT-KAGEN-STYUKYMD(IDX6)
                MOVE   SYOKIKSN-OT-YUKOEDYMD(IDX6)
                          TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD(IDX6)
+               DISPLAY "TAIIN-CANCEL"
+               DISPLAY "SYOKIKSN-OT-KGNSRYCD(IDX6) = "
+                        SYOKIKSN-OT-KGNSRYCD(IDX6)
+               DISPLAY "SYOKIKSN-OT-YUKOSTYMD(IDX6) = "
+                        SYOKIKSN-OT-YUKOSTYMD(IDX6)
+               DISPLAY "SYOKIKSN-OT-YUKOEDYMD(IDX6) = "
+                        SYOKIKSN-OT-YUKOEDYMD(IDX6)
            END-PERFORM
       *    入院料加算診療コード取り込み
            PERFORM    4801-NYUKSN-GET-SEC
@@ -7773,6 +7781,40 @@
            .
        4801-TENROOM-EDIT-EXT.
            EXIT.
+      *****************************************************************
+      *    異動取消時会計テーブル編集処理
+      *****************************************************************
+       4801-IDOKAIKEI-CANCEL-SEC       SECTION.
+      *
+           DISPLAY "4801-IDOKAIKEI-CANCEL-SEC"
+      *    入院会計作成サブの呼出し
+           INITIALIZE            ORCSNYUACCT-AREA
+           MOVE     "2"     TO   LNK-SCNYUACCT-SYORI-KBN
+           MOVE     "1"                TO  SPA-NYUGAIKBN
+           MOVE     PTNYUINRRK-PTID    TO  SPA-PTID
+           MOVE     PTNYUINRRK-NYUINKA TO  SPA-SRYKA
+           MOVE     SPA-NAI-I01-MAEIDOYMD
+                                       TO   LNK-SCNYUACCT-EDSRYYMD
+           DISPLAY "PTNYUINRRK-PTID = " PTNYUINRRK-PTID
+           DISPLAY "PTNYUINRRK-NYUINKA = " PTNYUINRRK-NYUINKA
+           DISPLAY "SPA-NAI-I01-IDOYMD-MAE = " SPA-NAI-I01-IDOYMD-MAE
+      *    保険組合せ
+           MOVE   PTNYUINRRK-HKNCOMBINUM
+                                       TO  WRK-HKNCOMBINUM
+           MOVE   WRK-HKNCOMBINUM9     TO  LNK-SCNYUACCT-HKNCOMBINUM
+           MOVE   SPA-SRYKA            TO  WRK-TAIHI-SRYKA
+           MOVE   "00"                 TO  SPA-SRYKA
+           CALL   "ORCSNYUACCT"  USING   SPA-AREA
+                                         ORCSNYUACCT-AREA
+           MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
+           IF     LNK-SCNYUACCT-RC   NOT =  ZERO
+                  DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
+                            LNK-SCNYUACCT-RC
+           END-IF
+      *
+           .
+       4801-IDOKAIKEI-CANCEL-EXT.
+           EXIT.
       *
       *****************************************************************
       *     選定療養費診療行為コード取得処理
@@ -7818,15 +7860,7 @@
            .
        4801-SENTEI-SET-EXT.
            EXIT.
-      *****************************************************************
-      *    異動取消時会計テーブル編集処理
-      *****************************************************************
-       4801-IDOKAIKEI-CANCEL-SEC       SECTION.
       *
-      *
-           .
-       4801-IDOKAIKEI-CANCEL-EXT.
-           EXIT.
       *****************************************************************
       *    通算日数取得処理
       *****************************************************************
