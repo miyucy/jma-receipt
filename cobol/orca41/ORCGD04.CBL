@@ -834,7 +834,7 @@
            MOVE    WRK-PARA-OPID       TO  LNK-PRTKANRI-OPID.
       *½¤Àµ/*³«»Ï*03.09.11*********************************************
       *     MOVE    SYS-1031-PRTNM (5)  TO  LNK-PRTKANRI-PRTNM.
-           MOVE    SYS-1031-PRTNM (11) TO  SPRT-PRTNM.
+           MOVE    SYS-1031-PRTNM (11) TO  LNK-PRTKANRI-PRTNM.
       *½¤Àµ/*½ªÎ»*03.09.11*********************************************
       *
            MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1.
