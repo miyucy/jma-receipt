@@ -1123,12 +1123,46 @@
       *          END-PERFORM
       *     END-PERFORM
       *
-      *    レセ電サブ返却エリアへのセット
+      *    レセ電サブ返却エリアへのセット（入院料　診療区分９０）
            MOVE       ZERO      TO     IDX2
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
                IF   (WRK-SO-MEISAISU(IDX1)  NOT =   ZERO)   AND
-                    (WRK-SO-TEN(IDX1)       NOT =   ZERO)
+                    (WRK-SO-TEN(IDX1)       NOT =   ZERO)   AND
+                    (WRK-SO-SRYKBN(IDX1)    =       "90")
+                     ADD    1      TO    IDX2
+                     MOVE  WRK-SO-HKNCOMBI-DAY(IDX1) TO
+                                     LNK-NYURECEDEN-HKNCOMBI(1 IDX2)
+                     MOVE  WRK-SO-MEISAISU(IDX1)   TO
+                                     LNK-NYURECEDEN-MEISAISU(1 IDX2)
+                     PERFORM   VARYING   IDX3   FROM   1   BY  1
+                               UNTIL (WRK-SO-SRYCD(IDX1 IDX3) = SPACE)
+                                  OR (IDX3   >   20)
+                         MOVE   "SI"   TO   
+                                    LNK-NYURECEDEN-RECSKB(1 IDX2 IDX3)
+                         IF    IDX3   =    1
+                               MOVE   WRK-SO-SRYKBN(IDX1)  TO   
+                                    LNK-NYURECEDEN-SRYSKB(1 IDX2 IDX3)
+                         END-IF
+                         MOVE  WRK-SO-SRYCD(IDX1 IDX3) TO
+                                    LNK-NYURECEDEN-SRYCD(1 IDX2 IDX3)
+                         MOVE  ZERO     TO    IDX4
+                         COMPUTE   IDX4 =    IDX3   +   1
+                         IF    WRK-SO-SRYCD(IDX1 IDX4)    =    SPACE
+                               MOVE   WRK-SO-TEN(IDX1)   TO
+                                      LNK-NYURECEDEN-TEN(1 IDX2 IDX3)
+                               MOVE   WRK-SO-KAISU(IDX1)   TO
+                                     LNK-NYURECEDEN-KAISU(1 IDX2 IDX3)
+                         END-IF
+                     END-PERFORM
+                END-IF
+           END-PERFORM
+      *    レセ電サブ返却エリアへのセット（特定入院料　診療区分９２）
+           PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     31)
+               IF   (WRK-SO-MEISAISU(IDX1)  NOT =   ZERO)   AND
+                    (WRK-SO-TEN(IDX1)       NOT =   ZERO)   AND
+                    (WRK-SO-SRYKBN(IDX1)    =       "92")
                      ADD    1      TO    IDX2
                      MOVE  WRK-SO-HKNCOMBI-DAY(IDX1) TO
                                      LNK-NYURECEDEN-HKNCOMBI(1 IDX2)
