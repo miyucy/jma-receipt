@@ -361,10 +361,10 @@
                    PERFORM 310-HEAD-HEN-01-SEC
       *            Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Ä>½èÍý
                    PERFORM 310-HEAD-HEN-02-SEC
-      *           Ä¢É¼ÊÔ½¸<ÌÀºÙ>½èÍý
+      *            Ä¢É¼ÊÔ½¸<ÌÀºÙ>½èÍý
                    PERFORM 320-BODY-HEN-SEC
       *            Ä¢É¼ÊÔ½¸<¹ç·×>½èÍý
-      *****        PERFORM 330-TERM-HEN-SEC
+                   PERFORM 330-TERM-HEN-SEC
       *            Ä¢É¼°õºþ½èÍý¡Ê£²ÊÇ°Ê¹ß¡Ë
                    PERFORM 390-PRINT-OUT-SEC
                END-IF    
@@ -568,27 +568,19 @@
                END-PERFORM    
            END-PERFORM
       *     
+           MOVE    SUM-GOK-KENSU (IDX1 2)  TO  WRK-KENSUZ
+           MOVE    WRK-KENSUZ              TO  HCM2D-KENSUG (1)    
+      *     
       *    Ä¢É¼°õºþ½èÍý¡Ê£±ÊÇÌÜ¡Ë
            MOVE    ZERO                TO  FLG-PRTKBN
            PERFORM 390-PRINT-OUT-SEC
            MOVE    1                   TO  FLG-PRTKBN
-      *
       *    ¸øÈñÉéÃ´Ê¬ÊÔ½¸½èÍý
            MOVE    ZERO                TO  FLG-MF01-END
            MOVE    1                   TO  IDX2
       * 
            PERFORM 3201-KOH-HENSYU-SEC
                                    UNTIL   FLG-MF01-END   =   1
-      *
-      *    ¹ç·×¡¦Áí¹ç·×
-           MOVE    SUM-GOK-KENSU (IDX1 2)  TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2D-KENSUG (1)    
-      *
-           MOVE    SUM-GOK-KENSU (IDX1 3)  TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2D-KENSUG (2)
-      *
-           MOVE    SUM-GOK-KENSU (IDX1 4)  TO  WRK-GKENSUZ
-           MOVE    WRK-GKENSUZ             TO  HCM2D-GKENSU
            .
        320-BODY-HEN-EXT.
            EXIT.
@@ -735,6 +727,7 @@
       *****************************************************************
       *    
        330-TERM-HEN-SEC         SECTION.
+      *    ¹ç·×¡¦Áí¹ç·×
       *
            MOVE    SUM-GOK-KENSU (IDX1 3)  TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM2D-KENSUG (2)
