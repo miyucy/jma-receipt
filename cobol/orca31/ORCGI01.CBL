@@ -8269,6 +8269,54 @@
       *    退院取消前の会計元データ作成
            INITIALIZE      ORCSSYOKIKSNAREA
       *
+      *    入院会計削除前に会計データの食事区分と保険組合せを退避
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    "00"                TO  NACCT-SRYKA
+           MOVE   SPA-NAI-I01-TAIINYMD(1:6)
+                                       TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "NYUINACCT-KEY16"   TO  WRK-DBPATH
+           PERFORM   900-TBL-SELECT-SEC
+           IF      FLG-DBRC            =   ZERO
+               MOVE    ZERO        TO      WRK-TAIHI-SHOKUJI
+               PERFORM UNTIL       FLG-DBRC     NOT =   ZERO
+      *
+                   MOVE     MCPDATA-REC   TO   NYUINACCT-REC
+      *
+      *            食事を退避
+                   IF      NACCT-ZAISKBKBN     =   "4"
+                       MOVE    SPA-NAI-I01-TAIINYMD(7:2)
+                                         TO    IDX-SHOKUJIX
+                       IF      NACCT-DAY(IDX-SHOKUJI9)  NOT =   ZERO
+                            MOVE   NACCT-DAY(IDX-SHOKUJI9) TO
+                                                  WRK-TAIHI-SHOKUJI
+                       END-IF
+                   END-IF
+      *            保険を退避
+                   IF      NACCT-ZAISKBKBN     =   "5"
+                       MOVE   SPA-NAI-I01-TAIINYMD(7:2)
+                                         TO    IDX-SHOKUJIX
+                       IF      NACCT-DAY(IDX-SHOKUJI9)  NOT =   ZERO
+                            MOVE   NACCT-DAY(IDX-SHOKUJI9) TO
+                                                  WRK-TAIHI-HKN
+                       END-IF
+                   END-IF
+      *
+                   MOVE    "NYUINACCT-KEY16"   TO  WRK-DBPATH
+                   PERFORM 900-TBL-READ-SEC
+               END-PERFORM
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+           END-IF
+      *    入院会計マスタクローズ
+           MOVE    "NYUINACCT-KEY16"      TO  ORC-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *
       *    通算日数、算定開始日を求める
            PERFORM 4801-TSUSAN-SANTEI-GET-SEC
            IF    ( SPA-ERRCD    NOT =  SPACE )
@@ -8317,54 +8365,6 @@
                    GO  TO  4801-TAIINKAIKEI-CANCEL-EXT
                END-IF
            END-IF
-      *
-      *    入院会計削除前に会計データの食事区分と保険組合せを退避
-           INITIALIZE                      NYUINACCT-REC
-           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
-           MOVE    "1"                 TO  NACCT-NYUGAIKBN
-           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
-           MOVE    "00"                TO  NACCT-SRYKA
-           MOVE   SPA-NAI-I01-TAIINYMD(1:6)
-                                       TO  NACCT-SRYYM
-      *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "NYUINACCT-KEY16"   TO  WRK-DBPATH
-           PERFORM   900-TBL-SELECT-SEC
-           IF      FLG-DBRC            =   ZERO
-               MOVE    ZERO        TO      WRK-TAIHI-SHOKUJI
-               PERFORM UNTIL       FLG-DBRC     NOT =   ZERO
-      *
-                   MOVE     MCPDATA-REC   TO   NYUINACCT-REC
-      *
-      *            食事を退避
-                   IF      NACCT-ZAISKBKBN     =   "4"
-                       MOVE    SPA-NAI-I01-TAIINYMD(7:2)
-                                         TO    IDX-SHOKUJIX
-                       IF      NACCT-DAY(IDX-SHOKUJI9)  NOT =   ZERO
-                            MOVE   NACCT-DAY(IDX-SHOKUJI9) TO
-                                                  WRK-TAIHI-SHOKUJI
-                       END-IF
-                   END-IF
-      *            保険を退避
-                   IF      NACCT-ZAISKBKBN     =   "5"
-                       MOVE   SPA-NAI-I01-TAIINYMD(7:2)
-                                         TO    IDX-SHOKUJIX
-                       IF      NACCT-DAY(IDX-SHOKUJI9)  NOT =   ZERO
-                            MOVE   NACCT-DAY(IDX-SHOKUJI9) TO
-                                                  WRK-TAIHI-HKN
-                       END-IF
-                   END-IF
-      *
-                   MOVE    "NYUINACCT-KEY16"   TO  WRK-DBPATH
-                   PERFORM 900-TBL-READ-SEC
-               END-PERFORM
-           ELSE
-               INITIALIZE                  NYUINACCT-REC
-           END-IF
-      *    入院会計マスタクローズ
-           MOVE    "NYUINACCT-KEY16"      TO  ORC-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
       *
       *    入院会計作成サブの呼出し
            INITIALIZE                      ORCSNYUACCT-AREA
@@ -10006,8 +10006,10 @@
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                    TO  WRK-AGECHK-SRYYMD
            PERFORM 4801-RJN-TAISYO-CHK-SEC
+           DISPLAY  "COMB-HKNNUM = "  COMB-HKNNUM
            IF    ( FLG-RJN         =   1 )    AND
-                 ( SPA-NAI-I01-RSI-HKNKBN     =   SPACE )
+                 ( COMB-HKNNUM     NOT =   "971" )  AND
+                 ( COMB-HKNNUM     NOT =   "973" )
                INITIALIZE              SRYCDCHG-REC
       *
                MOVE    SYOKIKSN-IN-KHNSRYCD
@@ -10045,8 +10047,12 @@
            MOVE    SPA-HOSPID          TO   COMB-HOSPID
            MOVE    SPA-NAI-I01-PTID
                                        TO   COMB-PTID
-           MOVE    SPA-GMN-I01-HKNCOMBI-CD
+           IF      SPA-GMN-I01-SYORIKBN-CD =   "07"  OR  "09"
+               MOVE    WRK-TAIHI-HKN   TO   COMB-HKNCOMBINUM
+           ELSE
+               MOVE    SPA-GMN-I01-HKNCOMBI-CD
                                        TO   COMB-HKNCOMBINUM
+           END-IF
            MOVE    HKNCOMBI-REC        TO   MCPDATA-REC
            MOVE    "HKNCOMBI-KEY"      TO   WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC 
@@ -11093,17 +11099,17 @@
                                        TO  I01-DISPKBN-ITM-STT
       *業務処理権限設定
       *    入院会計照会
-            IF      SPA-GSRAUTH-32      =   "1"
-                MOVE    WIDGET-NORMAL       TO  I01-B21-STATE
-            ELSE
-                MOVE    WIDGET-INSENSITIVE  TO  I01-B21-STATE
-            END-IF
+           IF      SPA-GSRAUTH-32      =   "1"
+               MOVE    WIDGET-NORMAL       TO  I01-B21-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  I01-B21-STATE
+           END-IF
       *    患者登録
-            IF      SPA-GSRAUTH-12      =   "1"
-                MOVE    WIDGET-NORMAL       TO  I01-B05-STATE
-            ELSE
-                MOVE    WIDGET-INSENSITIVE  TO  I01-B05-STATE
-            END-IF
+           IF      SPA-GSRAUTH-12      =   "1"
+               MOVE    WIDGET-NORMAL       TO  I01-B05-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  I01-B05-STATE
+           END-IF
       *
            .
        500-GMNHEN-STATE-EDIT-EXT.
