@@ -9,9 +9,9 @@
             02  HCM37-SRYKA PIC X(30).
             02  HCM37-NAME  PIC X(40).
             02  HCM37-BIRTHG    PIC X(2)        OCCURS  4 TIMES.
-            02  HCM37-BIRTHY    PIC X(2).
-            02  HCM37-BIRTHM    PIC X(2).
-            02  HCM37-BIRTHD    PIC X(2).
+            02  HCM37-BIRTHY    PIC X(4).
+            02  HCM37-BIRTHM    PIC X(4).
+            02  HCM37-BIRTHD    PIC X(4).
             02  HCM37-NYUGAIKBN PIC X(2)        OCCURS  2 TIMES.
             02  HCM37-HKNJANUM  PIC X(8).
             02  HCM37-RJNFTNJANUM   PIC X(8).

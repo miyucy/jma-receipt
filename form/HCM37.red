@@ -53,17 +53,17 @@
     </element>
     <element name="BIRTHY" occurs="1">
       <appinfo>
-        <embed object="string" length="2"/>
+        <embed object="string" length="4"/>
       </appinfo>
     </element>
     <element name="BIRTHM" occurs="1">
       <appinfo>
-        <embed object="string" length="2"/>
+        <embed object="string" length="4"/>
       </appinfo>
     </element>
     <element name="BIRTHD" occurs="1">
       <appinfo>
-        <embed object="string" length="2"/>
+        <embed object="string" length="4"/>
       </appinfo>
     </element>
     <element name="NYUGAIKBN" occurs="2">
@@ -1581,30 +1581,30 @@
     </object>
     <object type="Embed - Text" version="0" id="O43">
       <attribute name="obj_pos">
-        <point val="8.1,7.5"/>
+        <point val="8.15,7.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.6152,7.18727;8.1,7.58727"/>
+        <rectangle val="7.443,7.22636;8.15,7.57636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#BIRTHY#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="1"/>
+        <enum val="0"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#99#</string>
+            <string>#&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.4"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="8.1,7.5"/>
+            <point val="8.15,7.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -1613,40 +1613,40 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.2424"/>
+            <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.202"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
     </object>
     <object type="Embed - Text" version="0" id="O44">
       <attribute name="obj_pos">
-        <point val="9.125,7.5"/>
+        <point val="9.175,7.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.6402,7.18727;9.125,7.58727"/>
+        <rectangle val="8.468,7.22636;9.175,7.57636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#BIRTHM#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="1"/>
+        <enum val="0"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#99#</string>
+            <string>#&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.4"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="9.125,7.5"/>
+            <point val="9.175,7.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -1655,40 +1655,40 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.2424"/>
+            <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.202"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
     </object>
     <object type="Embed - Text" version="0" id="O45">
       <attribute name="obj_pos">
-        <point val="10.15,7.5"/>
+        <point val="10.225,7.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6652,7.18727;10.15,7.58727"/>
+        <rectangle val="9.518,7.22636;10.225,7.57636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#BIRTHD#</string>
       </attribute>
       <attribute name="embed_text_string">
-        <enum val="1"/>
+        <enum val="0"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#99#</string>
+            <string>#&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.4"/>
+            <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="10.15,7.5"/>
+            <point val="10.225,7.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -1697,10 +1697,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.2424"/>
+            <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.202"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>

@@ -239,7 +239,13 @@
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBM510"          TO  JOB-PGID
-           MOVE    "症状詳記"          TO  JOB-SHELLMSG
+           IF      WRK-PARA-TEISYUTUSAKI   =   "1"
+               MOVE    "症状詳記（社保）"
+                                       TO  JOB-SHELLMSG
+           ELSE
+               MOVE    "症状詳記（国保）"
+                                       TO  JOB-SHELLMSG
+           END-IF
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
@@ -434,16 +440,16 @@
                MOVE    "○"                TO  HCM37-BIRTHG(4)
            END-EVALUATE
       *
-           MOVE    WRK-SYMD(3:2)       TO  HCM37-BIRTHY
-           MOVE    WRK-SYMD(5:2)       TO  HCM37-BIRTHM
-           MOVE    WRK-SYMD(7:2)       TO  HCM37-BIRTHD
+           MOVE    WRK-HENYMDG(5:4)       TO  HCM37-BIRTHY
+           MOVE    WRK-HENYMDG(11:4)      TO  HCM37-BIRTHM
+           MOVE    WRK-HENYMDG(17:4)      TO  HCM37-BIRTHD
       *
       *    入外区分
            EVALUATE    RECE10-NYUGAIKBN
            WHEN    "1"
-               MOVE    "○"                TO  HCM37-NYUGAIKBN(2)
-           WHEN    "2"
                MOVE    "○"                TO  HCM37-NYUGAIKBN(1)
+           WHEN    "2"
+               MOVE    "○"                TO  HCM37-NYUGAIKBN(2)
            END-EVALUATE
       *
       *    保険者番号
@@ -497,7 +503,13 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE   "HCM37.red"          TO  SPRT-PRTID
-           MOVE    "症状詳記"          TO  SPRT-TITLE
+           IF      WRK-PARA-TEISYUTUSAKI   =   "1"
+               MOVE    "症状詳記（社保）"
+                                       TO  SPRT-TITLE
+           ELSE
+               MOVE    "症状詳記（国保）"
+                                       TO  SPRT-TITLE
+           END-IF
            MOVE    HCM37               TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
@@ -648,7 +660,7 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
            ELSE
-               MOVE    "*** ORCBM500 SYS1001 INVALID ***" 
+               MOVE    "*** ORCBM510 SYS1001 INVALID ***" 
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
