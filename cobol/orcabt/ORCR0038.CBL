@@ -30,6 +30,9 @@
       *  01.00.01    NACL-Æ£¸¶    03.03.12  Êä½õ¶èÊ¬¤ÎÄÉ²Ã
       *  01.00.02    NACL-ÌçÏÆ    03.03.13  ºÞÅÀ¿ô¤ò¥­¡¼¤ËÄÉ²ÃÂÐ±þ
       *  01.00.03    NACL-ÌçÏÆ    04.02.05  ¿ÇÎÅ¥³¡¼¥É¡ö¿ôÎÌ¤ÎÎß·×ÊÔ½¸
+      *  £²£°£°£´Ç¯£´·î²þÀµÂÐ±þ
+      *  01.01.01    NACL-ÌçÏÆ    04.04.10  ºßÂð´µ¼ÔË¬ÌäÅÀÅ©Ãí¼Í´ÉÍý»ØÆ³ÎÁ
+      *                                     »»Äê»þ¤ÎÅÀÅ©Ãí¼Í¤Î¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -345,6 +348,8 @@
                         ADD       1            TO  WRK-COMRENNUM
                         MOVE    WRK-COMRENNUM  TO  RECE042-COMRENNUM
                    END-IF
+                   MOVE    RECE04-FLG-HOUTEN-COMMENT
+                                      TO  RECE042-FLG-HOUTEN-COMMENT
                    MOVE    RECE04-ZAIKAISU     TO  RECE042-ZAIKAISU
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       4
@@ -379,6 +384,8 @@
                    MOVE    RECE04-SURYOUTOTAL  TO  RECE042-SURYOUTOTAL
                    MOVE    RECE04-RUIKEITOTAL  TO  RECE042-RUIKEITOTAL
                    MOVE    RECE04-MEISAISU     TO  RECE042-MEISAISU 
+                   MOVE    RECE04-FLG-HOUTEN-COMMENT
+                                      TO  RECE042-FLG-HOUTEN-COMMENT
                    MOVE    RECE042-REC         TO  WRK-RECE042-REC
                    PERFORM 900-RECE042-INV-SEC
                    IF      FLG-RECE042         =   1

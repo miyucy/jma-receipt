@@ -155,6 +155,8 @@
       *  01.03.03   NACL-ÌçÏÆ     04/04/01  ¥ê¥Ï¸À¸ìÄ°³ÐÎÅË¡¡Ê£³¡ËÄÉ²ÃÂÐ±þ
       *  01.03.04   NACL-ÌçÏÆ     04/04/05  ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ¤Î
       *                                     ¥³¥á¥ó¥ÈÂÐ±þ
+      *  01.03.05   NACL-ÌçÏÆ     04/04/10  ºßÂð´µ¼ÔË¬ÌäÅÀÅ©Ãí¼Í´ÉÍý»ØÆ³ÎÁ
+      *                                     »»Äê»þ¤ÎÅÀÅ©Ãí¼Í¤Î¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -265,6 +267,7 @@
            03  FLG-SHOSAISIN                           PIC 9(01).       
            03  FLG-SET                                 PIC 9(01).
            03  FLG-HOUSIJI-COM                         PIC 9(01).
+           03  FLG-HOUTEN-COM                          PIC 9(01).
            03  FLG-FUKUSHI                             PIC 9(01).
       *
       *    ´ðËÜÅÀ¿ô¤ÎÈóÉ½¼¨È½ÄêÍÑ¥Õ¥é¥°
@@ -309,6 +312,7 @@
            03  IDY                                     PIC 9(03).
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
+           03  IDV                                     PIC 9(03).
            03  NUM-IDX                                 PIC 9(01).
            03  HC-IDX                                  PIC 9(03).
            03  KH-IDX                                  PIC 9(03).
@@ -1116,6 +1120,7 @@
                                MOVE  ZERO  TO   WRK-TANIMOJISU
                                MOVE  SPACE TO   WRK-TANINAME
                                MOVE  ZERO  TO   FLG-HOUSIJI-COM
+                                                FLG-HOUTEN-COM
       *
                                PERFORM   RECE02-TOTALTEN-HENSYU-SEC     
                                PERFORM   RECE04-TENSOU-SEC
@@ -1147,6 +1152,7 @@
                                       MOVE  ZERO  TO   WRK-TANIMOJISU
                                       MOVE  SPACE TO   WRK-TANINAME
                                       MOVE  ZERO  TO   FLG-HOUSIJI-COM
+                                                       FLG-HOUTEN-COM
       *
                                       PERFORM   RECE04-TENSOU-SEC
                                       PERFORM   RECE05-HENSYU-SEC
@@ -1735,6 +1741,20 @@
                    MOVE    PTCOM-INPUTCOMENT   TO    RECE05-NAME(IDX4)
       *
                    MOVE   "1"                  TO    RECE04-COMCDFLG
+      *
+                   IF   SRY-SRYSYUKBN      =     "332"
+                   AND  SRY-SRYCD(IDX2)    =     "810000001"
+                   AND  FLG-HOUTEN-COM     =     ZERO
+                      PERFORM  VARYING  IDV  FROM  1  BY  2
+                              UNTIL  (IDV            >   200 )
+                               OR    (FLG-HOUTEN-COM =     1 )
+                        IF   RECE05-NAME(IDX4)(IDV:2)   =   "Ë¬"
+                          MOVE   SPACE  TO    RECE04-FLG-HOUTEN-COMMENT
+                          MOVE    1     TO    FLG-HOUTEN-COM
+                        END-IF
+                      END-PERFORM
+                   END-IF
+      *
                ELSE
                    MOVE    TNS-NAME            TO    RECE05-NAME(IDX4)
                END-IF
@@ -2084,6 +2104,13 @@
            IF      RECE04-SRYKBN      =     "14"
               IF   SRY-SRYCD(IDX2)    =     CONS-HINKAI-COMMENT
                    MOVE   "1"   TO    RECE04-FLG-HINKAI-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE04-SRYKBN      =     "33"
+              IF   SRY-SRYSYUKBN      =     "332"
+              AND  FLG-HOUTEN-COM     =     ZERO
+                   MOVE   "1"   TO    RECE04-FLG-HOUTEN-COMMENT
               END-IF
            END-IF
       *

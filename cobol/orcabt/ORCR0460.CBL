@@ -56,6 +56,8 @@
       *  ２００４年４月改正対応
       *  01.01.01    NACL-門脇    04.04.01  初診（乳幼児）（夜間・休日・
       *                                     深夜）加算の摘要欄記載
+      *  01.01.02    NACL-門脇    04.04.10  在宅患者訪問点滴注射管理指導料
+      *                                     算定時の点滴注射のコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -932,9 +934,13 @@
                                END-IF    
                              END-IF
                            WHEN    "8"
-                               IF      IDY           =   ZERO
-                                   MOVE    2             TO  IDY
-                               END-IF    
+                               IF   RECE45-SRYSYUKBN  =  "332"
+                                   MOVE    5         TO  IDY
+                               ELSE
+                                 IF      IDY          =   ZERO
+                                   MOVE    2         TO  IDY
+                                 END-IF
+                               END-IF
                            WHEN    "1"
                                IF   RECE41-HKNKBN    NOT  =  "4" 
                                    MOVE    3                 TO  IDY

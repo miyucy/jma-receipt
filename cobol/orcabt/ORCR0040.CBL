@@ -52,6 +52,8 @@
       *  01.01.01    NACL-ÌçÏÆ    04.04.01  ¥ê¥Ï¸À¸ìÄ°³ÐÎÅË¡¡Ê£³¡ËÄÉ²ÃÂÐ±þ
       *  01.01.02    NACL-ÌçÏÆ    04.04.05  ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ¤Î
       *                                     ¥³¥á¥ó¥ÈÂÐ±þ
+      *  01.01.03    NACL-ÌçÏÆ    04.04.10  ºßÂð´µ¼ÔË¬ÌäÅÀÅ©Ãí¼Í´ÉÍý»ØÆ³ÎÁ
+      *                                     »»Äê»þ¤ÎÅÀÅ©Ãí¼Í¤Î¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -949,6 +951,10 @@
                          ADD     1          TO      CNT-RECE04
                          PERFORM    2001-RECE05-TENSOU-SEC
                       END-IF
+                   WHEN      "33"
+      *            ¡ÊºßÂð´µ¼ÔË¬ÌäÅÀÅ©Ãí¼Í´ÉÍý»ØÆ³ÎÁ»»Äê»þ¤ÎÅÀÅ©Ãí¼Í¤Î
+      *              ¥³¥á¥ó¥È¤Î¥»¥Ã¥È¡Ë
+                      PERFORM    2001-HOUTEN-HANTEI-SEC
                    WHEN      "50"
       *            ¡Ê¼ê½ÑÆü¤Î¥»¥Ã¥È¡Ë
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
@@ -2327,6 +2333,165 @@
       *
            .
        2001-HINKAI-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºßÂð´µ¼ÔË¬ÌäÅÀÅ©Ãí¼Í´ÉÍý»ØÆ³ÎÁ»»Äê»þ¤ÎÅÀÅ©Ãí¼Í¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-HOUTEN-HANTEI-SEC          SECTION.
+      *
+           IF     RECE04-FLG-HOUTEN-COMMENT   =    "1"
+               PERFORM    2001-HOUTEN-COMMENT-SEC
+           ELSE
+               MOVE       RECE04-REC    TO   RECE041-REC
+               WRITE      RECE041-REC
+               ADD     1          TO      CNT-RECE04
+               PERFORM    2001-RECE05-TENSOU-SEC
+           END-IF
+      *
+           .
+       2001-HOUTEN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºßÂð´µ¼ÔË¬ÌäÅÀÅ©Ãí¼Í´ÉÍý»ØÆ³ÎÁ»»Äê»þ¤ÎÅÀÅ©Ãí¼Í¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2001-HOUTEN-COMMENT-SEC          SECTION.
+      *
+           MOVE    RECE04-REC        TO      RECE041-REC
+           ADD     1                 TO      RECE041-MEISAISU
+           WRITE   RECE041-REC
+           ADD     1                 TO      CNT-RECE04
+      *
+             INITIALIZE                      RECE05-REC
+             MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
+             MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
+             MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
+             MOVE    RECE04-PTID         TO  RECE05-PTID
+             MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
+             MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
+             MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
+             MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
+             MOVE    RECE04-HOJOKBN      TO  RECE05-HOJOKBN
+             MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
+             MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
+             START   RECE05-FILE
+                 KEY IS    >=   RECE05-KEY
+                 INVALID
+                     MOVE    1           TO  FLG-RECE05
+                 NOT INVALID
+                     PERFORM 990-RECE05-NEXT-SEC
+                     MOVE    RECE05-REC  TO  WRK-RECE05-REC
+             END-START
+      *
+      *      £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+             MOVE    ZERO                 TO  IDX-RECE05
+             MOVE    SPACE                TO  WRK-SRYACTINF-AREA
+             INITIALIZE                       WRK-SRYACTINF-AREA
+             MOVE    SPACE                TO  WRK-NAMEINF-AREA
+             INITIALIZE                       WRK-NAMEINF-AREA
+             MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
+             INITIALIZE                       WRK-DATAKBNINF-AREA
+             MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
+             INITIALIZE                       WRK-HOUKNSKBNINF-AREA
+             MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
+             INITIALIZE                       WRK-KNSJISKBNINF-AREA
+             MOVE    SPACE                TO  WRK-CDKBNINF-AREA
+             INITIALIZE                       WRK-CDKBNINF-AREA
+      *      ¥³¥á¥ó¥È¤ÎÁÞÆþ
+             ADD     1                    TO  IDX-RECE05
+             MOVE    SPACE                TO  COM-RECE05-REC
+             INITIALIZE                       COM-RECE05-REC
+             MOVE    "810000001"          TO  COM-SRYCD(1)
+             MOVE    ZERO                 TO  COM-SRYSURYO(1)
+             MOVE    4                    TO  COM-YUKOKETA(1)
+             MOVE    "¡ÊË¬ÅÀ¡Ë"           TO  COM-NAME(1)
+             MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+                                                   (IDX-RECE05)
+             MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+                                                   (IDX-RECE05)
+      *
+             PERFORM
+               UNTIL  ( FLG-RECE05           =   1                   )
+               OR     ( RECE04-HOSPID    NOT =   RECE05-HOSPID       )
+               OR     ( RECE04-SRYYM     NOT =   RECE05-SRYYM        )
+               OR     ( RECE04-NYUGAIKBN NOT =   RECE05-NYUGAIKBN    )
+               OR     ( RECE04-PTID      NOT =   RECE05-PTID         )
+               OR     ( RECE04-RECEKA    NOT =   RECE05-RECEKA       )
+               OR     ( RECE04-TEISYUTUSAKI
+                                         NOT =   RECE05-TEISYUTUSAKI )
+               OR     ( RECE04-RECESYUBETU
+                                         NOT =   RECE05-RECESYUBETU  )
+               OR     ( RECE04-HKNJANUM  NOT =   RECE05-HKNJANUM     )
+               OR     ( RECE04-HOJOKBN   NOT =   RECE05-HOJOKBN      )
+               OR     ( RECE04-TEKSTYMD  NOT =   RECE05-TEKSTYMD     )
+               OR     ( RECE04-ZAINUM    NOT =   RECE05-ZAINUM       )
+      *
+               PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX               >   5     )
+                         OR      ( RECE05-SRYCD(IDX) =   SPACE )
+                    ADD    1             TO      IDX-RECE05
+                    MOVE   RECE05-SRYACTINF(IDX) TO
+                                             WRK-SRYACTINF(IDX-RECE05)
+                    MOVE   RECE05-NAMEINF(IDX)   TO
+                                             WRK-NAMEINF(IDX-RECE05)     
+                    MOVE   RECE05-DATAKBNINF(IDX) TO
+                                             WRK-DATAKBNINF(IDX-RECE05)
+                    MOVE   RECE05-HOUKNSKBNINF(IDX) TO
+                                           WRK-HOUKNSKBNINF(IDX-RECE05)
+                    MOVE   RECE05-KNSJISKBNINF(IDX) TO
+                                           WRK-KNSJISKBNINF(IDX-RECE05)
+                    MOVE   RECE05-CDKBNINF(IDX)     TO
+                                           WRK-CDKBNINF(IDX-RECE05)
+               END-PERFORM 
+      *
+               PERFORM 990-RECE05-NEXT-SEC
+      *
+             END-PERFORM
+      *
+      *      ¥³¥á¥ó¥È¤ò´Þ¤ó¤ÀÆâÍÆ¤ÇÃæ´Ö¥Õ¥¡¥¤¥ë¤ÎºÆºîÀ®
+             MOVE       ZERO             TO      FLG-WRKRECE05
+             MOVE       ZERO             TO      IDX
+             MOVE       ZERO             TO      IDX-RECE05
+             MOVE       ZERO             TO      WRK-RENNUM
+             PERFORM    UNTIL     FLG-WRKRECE05  =    1
+                    INITIALIZE                        RECE051-REC
+                    MOVE    WRK-RECE05-KEY       TO   RECE051-KEY
+                    ADD     1                    TO   WRK-RENNUM
+                    MOVE    WRK-RENNUM           TO   RECE051-RENNUM
+                    MOVE    WRK-RECE05-KOHBUNRI  TO   RECE051-KOHBUNRI
+                    MOVE    WRK-RECE05-PTNUM     TO   RECE051-PTNUM
+                    MOVE    WRK-RECE05-SRYKA     TO   RECE051-SRYKA
+                    MOVE    WRK-RECE05-SRYKBN    TO   RECE051-SRYKBN
+                    MOVE    WRK-RECE05-SRYSYUKBN TO   RECE051-SRYSYUKBN
+                    MOVE    WRK-RECE05-JIHIMONEY TO   RECE051-JIHIMONEY
+                    PERFORM  VARYING   IDX   FROM   1   BY   1
+                             UNTIL   (IDX       >    5)   OR
+                                     (FLG-WRKRECE05   =   1)
+                       ADD         1             TO    IDX-RECE05
+                       IF  WK-RECE05-SRYCD(IDX-RECE05) = SPACE
+                           MOVE    1             TO    FLG-WRKRECE05
+                       ELSE
+                           MOVE  WRK-SRYACTINF(IDX-RECE05)
+                                            TO   RECE051-SRYACTINF(IDX)  
+                           MOVE  WRK-NAMEINF(IDX-RECE05)
+                                            TO   RECE051-NAMEINF(IDX)
+                           MOVE  WRK-DATAKBNINF(IDX-RECE05)
+                                            TO   RECE051-DATAKBNINF(IDX)
+                           MOVE  WRK-HOUKNSKBNINF(IDX-RECE05)
+                                        TO   RECE051-HOUKNSKBNINF(IDX)
+                           MOVE  WRK-KNSJISKBNINF(IDX-RECE05)
+                                        TO   RECE051-KNSJISKBNINF(IDX)
+                           MOVE  WRK-CDKBNINF(IDX-RECE05)
+                                        TO   RECE051-CDKBNINF(IDX)
+                       END-IF  
+                    END-PERFORM
+                    WRITE   RECE051-REC
+                    ADD     1                    TO  CNT-RECE05
+             END-PERFORM
+      *
+           .
+       2001-HOUTEN-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
