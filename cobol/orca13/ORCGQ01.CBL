@@ -2845,6 +2845,8 @@
             OR   ( Q01-BYOMEI (IDX1)   =   SPA-GMN-Q01-BYOMEI (IDX1) )
       *
                IF    ( Q01-BYOMEI (IDX1)   =   SPACE )
+                   COMPUTE WRK-IDX =   303 + ( IDX1    -   1 ) *   2
+                   MOVE    SPACE   TO  SPA-GMN-Q01-ERRCD (WRK-IDX)
                    MOVE    SPACE       TO  SPA-GMN-Q01-BYOMEICD (IDX1)
                    MOVE    SPACE       TO  SPA-GMN-Q01-BYOMEI   (IDX1)
                END-IF
@@ -2855,6 +2857,9 @@
            END-IF
       *
            MOVE    SPACE               TO  SPA-GMN-Q01-BYOMEICD (IDX1)
+           COMPUTE WRK-IDX =   303 + ( IDX1    -   1 ) *   2
+           MOVE    SPACE   TO  SPA-GMN-Q01-ERRCD (WRK-IDX)
+      *
            MOVE    Q01-BYOMEI (IDX1)   TO  SPA-GMN-Q01-BYOMEI (IDX1)
       *
       *    È¾³Ñ¥Á¥§¥Ã¥¯
@@ -3279,6 +3284,8 @@
                    UNTIL ( IDX2    >       200 )
                IF  ( Q01-BYOLST-SELECT (IDX2)  =   "T" )
                    COMPUTE WRK-IDX =   303 + ( IDX1    -   1 ) *   2
+                   MOVE    SPACE   TO  SPA-GMN-Q01-ERRCD (WRK-IDX)
+                   COMPUTE WRK-IDX =   304 + ( IDX1    -   1 ) *   2
                    MOVE    SPACE   TO  SPA-GMN-Q01-ERRCD (WRK-IDX)
       *
                    MOVE    SPA-GMN-Q01-TBYOMEICD (IDX2)
