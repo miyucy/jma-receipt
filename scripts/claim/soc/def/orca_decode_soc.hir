@@ -945,7 +945,7 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 		$BaseStart, mmlHi:publicInsurance[1]
 
 			# 给锐砷么の挝拌を３つ脱罢
-			$Repeat, 3, @@HI_KOUHI@@, 0
+			$Repeat, 6, @@HI_KOUHI@@, 0
 				# -----------------------------------
 
 				# 给锐砷么 [@@HI_KOUHI@@]
