@@ -30,6 +30,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03/03/16  入院対応
+      *  01.00.02    NACL-藤原    03/03/20  点数・負担額などの桁数を変更 
+      *                                     頁・二枚目に保険者番号の表示
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -73,8 +75,12 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-           COPY    "HCM2G.INC".
-           COPY    "HCM2H.INC".
+      *****COPY    "HCM2G.INC".
+      *****COPY    "HCM2H.INC".
+           COPY    "HCM2GV01.INC"  REPLACING  //HCM2GV01//
+                                   BY         //HCM2G//.
+           COPY    "HCM2HV01.INC"  REPLACING  //HCM2HV01//
+                                   BY         //HCM2H//.
       *
       *    スパ領域
        01  STS-AREA.
@@ -136,11 +142,12 @@
            03  WRK-KOHNUM9         PIC ZZ9.
            03  WRK-NISSUZ          PIC ZZZZZZ.
            03  WRK-KENSUZ          PIC ZZZZZZ.
-           03  WRK-TENSUZ          PIC ZZ,ZZZ,ZZZ.
+           03  WRK-TENSUZ          PIC Z,ZZZ,ZZZ,ZZZ.
            03  WRK-YKZFTNZ         PIC ZZZZ,ZZZ.
-           03  WRK-FTNMONEYZ       PIC Z,ZZZ,ZZZ. 
-           03  WRK-KINGAKZ         PIC Z,ZZZ,ZZZ. 
-           03  WRK-FTNGAKZ         PIC Z,ZZZ,ZZZ. 
+           03  WRK-FTNMONEYZ       PIC Z,ZZZ,ZZZ,ZZZ. 
+           03  WRK-KINGAKZ         PIC Z,ZZZ,ZZZ,ZZZ. 
+           03  WRK-FTNGAKZ         PIC Z,ZZZ,ZZZ,ZZZ. 
+           03  WRK-PAGE            PIC ZZZ9.
       *
       *    公費名称編集
            03  WRK-KOHKBN.
@@ -149,7 +156,7 @@
       *
       *    カウント領域
        01  CNT-AREA.
-           03  CNT-PAGE              PIC 9(03).
+           03  CNT-PAGE              PIC 9(04).
            03  CNT-RECE10            PIC 9(06).
            03  CNT-UPDFILE           PIC 9(06).
       *
@@ -770,6 +777,8 @@
       *    
            MOVE    SYS-1001-HOSPCDN    TO  HCM2H-HOSPCD 
       *
+           MOVE    KEY-O-HKNJANUM      TO  HCM2H-HKNJANUM
+      *
            EVALUATE    WRK-INDEX
                WHEN    1
                    MOVE    "その他のレセ"      TO  HCM2H-TITLE  
@@ -1009,6 +1018,7 @@
        20024-PRINT-OUT-SEC                SECTION.
       *
            ADD     1                   TO  CNT-PAGE
+           MOVE    CNT-PAGE            TO  WRK-PAGE
       *
            INITIALIZE                  ORCSPRTAREA
            MOVE    "INS"               TO  SPRT-MODE
@@ -1026,11 +1036,15 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            EVALUATE    FLG-PRTKBN
-               WHEN    ZERO                            
-                   MOVE   "HCM2G.red"          TO  SPRT-PRTID
+               WHEN    ZERO 
+                   MOVE    WRK-PAGE            TO  HCM2G-PAGE                           
+      *************MOVE   "HCM2G.red"          TO  SPRT-PRTID
+                   MOVE   "HCM2GV01.red"       TO  SPRT-PRTID
                    MOVE    HCM2G               TO  SPRT-PRTDATA
                WHEN    1                            
-                   MOVE   "HCM2H.red"          TO  SPRT-PRTID
+                   MOVE    WRK-PAGE            TO  HCM2H-PAGE                           
+      *************MOVE   "HCM2H.red"          TO  SPRT-PRTID
+                   MOVE   "HCM2HV01.red"       TO  SPRT-PRTID
                    MOVE    HCM2H               TO  SPRT-PRTDATA
            END-EVALUATE        
            EVALUATE    WRK-INDEX
