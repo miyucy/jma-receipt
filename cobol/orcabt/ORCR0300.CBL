@@ -44,6 +44,7 @@
       *                                     薬剤料逓減を出力する
       *                                     未コード化傷病名コードのとき
       *                                     修飾語コードの編集をしない
+      *  01.00.08    NACL-多々納  03/08/25  コメントの値を全角編集へ修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1636,12 +1637,21 @@
                        ELSE
                            MOVE    SPACE               TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)  
+                           INITIALIZE              ORCSKANACHKAREA
+                           MOVE    "2"             TO  KANACHK-SYORI 
                            STRING  PTCOM-INPUTCHI1 DELIMITED  BY  SPACE
                                    PTCOM-INPUTCHI2 DELIMITED  BY  SPACE
                                    PTCOM-INPUTCHI3 DELIMITED  BY  SPACE
                                    PTCOM-INPUTCHI4 DELIMITED  BY  SPACE
-                                   INTO   TBL-COMMENT-NAME (WRK-TBLMAX8)
+                                   INTO   KANACHK-MAE-INPUT
                            END-STRING
+                           CALL    "ORCSKANACHK"   USING
+                                                       ORCSKANACHKAREA
+                           IF      KANACHK-RC      =   ZERO
+                               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                                   TO
+                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
+                           END-IF
                        END-IF
                      END-IF
                    END-IF    
@@ -1814,7 +1824,7 @@
       *
                MOVE    SPACE               TO  WRK-REC
                MOVE    ZERO                TO  WRK-REC-LENGTH
-      *          
+      *
                MOVE    "CO,"               TO  WRK-REC
                MOVE    3                   TO  WRK-REC-LENGTH
       *        診療識別
