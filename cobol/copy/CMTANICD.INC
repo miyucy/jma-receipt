@@ -22,6 +22,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     MCC-多々納   02/03/19  124 菌種追加(H14.4改正)
+      * 01.00.02     NACL-多々納  02/12/13  060 シート追加(H14.12改正)
       *****************************************************************
        01  MTANI-DATA-REC.
            03  FILLER          PIC X(03)  VALUE   "001".
@@ -201,6 +202,9 @@
            03  FILLER          PIC X(03)  VALUE   "059".
            03  FILLER          PIC X(24)  VALUE   "プリスター".
       *
+           03  FILLER          PIC X(03)  VALUE   "060".
+           03  FILLER          PIC X(24)  VALUE   "シート".
+      *
       *
            03  FILLER          PIC X(03)  VALUE   "101".
            03  FILLER          PIC X(24)  VALUE   "分画".
@@ -277,9 +281,10 @@
       *
        01  MTANI-DATA-REC-R         REDEFINES   MTANI-DATA-REC.
       *****03  MTANI-TBL-OCC        OCCURS    59   INDEXED   MTANI-IDX.
-           03  MTANI-TBL-OCC        OCCURS    83   INDEXED   MTANI-IDX.
+      **** 03  MTANI-TBL-OCC        OCCURS    83   INDEXED   MTANI-IDX.
+           03  MTANI-TBL-OCC        OCCURS    84   INDEXED   MTANI-IDX.
                05  MTANI-TANICD        PIC X(03).
                05  MTANI-TANINAME      PIC X(24).
       *
-       01  MTANI-MAX                   PIC 9(04)   VALUE   83.
+       01  MTANI-MAX                   PIC 9(04)   VALUE   84.
       *
