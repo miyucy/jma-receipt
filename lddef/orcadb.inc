@@ -79,6 +79,7 @@ db	{
         tbl_syuday;
         tbl_pgkanri;
         tbl_opecom;
+        tbl_syutotal;
 };
 db	"shell"	{
 	shell;
