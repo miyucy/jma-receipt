@@ -36,14 +36,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -106,20 +106,19 @@
       *
            03  WRK-RECEERR             PIC X(200). 
       *
-      **** 03  WRK-IN                PIC X(01).
            03  WRK-YMD               PIC X(07).
       *
            03  WRK-Z9                PIC ZZZZZ.
            03  WRK-ZZ9               PIC ZZ,ZZZ,ZZZ.
            03  WRK-NISSUZ            PIC ZZZZZZ.
            03  WRK-KENSUZ            PIC ZZZZZZ.
-           03  WRK-TENSUZ            PIC ZZ,ZZZ,ZZZ.
+           03  WRK-TENSUZ            PIC Z,ZZZ,ZZZ,ZZZ.
            03  WRK-YKZFTNZ           PIC ZZZZ,ZZZ.
-           03  WRK-FTNMONEYZ         PIC Z,ZZZ,ZZZ. 
+           03  WRK-FTNMONEYZ         PIC Z,ZZZ,ZZZ,ZZZ. 
            03  WRK-SHOKENSUZ         PIC ZZ,ZZZ.
            03  WRK-SHONISSUZ         PIC ZZ,ZZZ.
-           03  WRK-SHORYOYOHIZ       PIC Z,ZZZ,ZZZ.
-           03  WRK-SHOFTNZ           PIC Z,ZZZ,ZZZ.
+           03  WRK-SHORYOYOHIZ       PIC Z,ZZZ,ZZZ,ZZZ.
+           03  WRK-SHOFTNZ           PIC Z,ZZZ,ZZZ,ZZZ.
            03  WRK-GKENSUZ           PIC ZZZZZZZ. 
       *             
            03  WRK-KOHKBN.
@@ -274,7 +273,6 @@
        100-INIT-SEC                SECTION.
       *
            DISPLAY "*** ORCBM024 START ***"
-      * 
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
