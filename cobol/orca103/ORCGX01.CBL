@@ -30,6 +30,7 @@
       *  01.00.01    MCC-多々納   01/07/03  日付入力チェックサブ追加
       *  01.01.01    MCC-藤原     01/09/21  JOINの修正      
       *  01.01.03    MCC-多々納   02/04/26  印刷の追加      
+      *  01.01.04    NACL-多々納  02/10/02  添え字を数字へ修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -461,16 +462,16 @@
       *****************************************************************
        41011-SELNUM-HENSYU-SEC           SECTION.
       *
-           MOVE    SPA-GMN-TSTYUKYMD(SPA-GMN-SELNUM)
+           MOVE    SPA-GMN-TSTYUKYMD(SPA-NAI-SELNO)
                                        TO  SPA-GMN-STYUKYMD
-           MOVE    SPA-NAI-TSTYUKYMD(SPA-GMN-SELNUM)
+           MOVE    SPA-NAI-TSTYUKYMD(SPA-NAI-SELNO)
                                        TO  SPA-NAI-STYUKYMD
-           MOVE    SPA-GMN-TEDYUKYMD(SPA-GMN-SELNUM)
+           MOVE    SPA-GMN-TEDYUKYMD(SPA-NAI-SELNO)
                                        TO  SPA-GMN-EDYUKYMD
-           MOVE    SPA-NAI-TEDYUKYMD(SPA-GMN-SELNUM)
+           MOVE    SPA-NAI-TEDYUKYMD(SPA-NAI-SELNO)
                                        TO  SPA-NAI-EDYUKYMD
      *
-           MOVE    SPA-NAI-NAME   (SPA-GMN-SELNUM)
+           MOVE    SPA-NAI-NAME   (SPA-NAI-SELNO)
                                        TO  SPA-GMN-NAME
      *
            MOVE    4                   TO  SPA-GMN-CUR 
@@ -698,9 +699,9 @@
                    MOVE    SPA-NAI-TSTYUKYMD (1)   TO  SPA-NAI-STYUKYMD
                    MOVE    SPA-GMN-TEDYUKYMD (1)   TO  SPA-GMN-EDYUKYMD
                    MOVE    SPA-NAI-TEDYUKYMD (1)   TO  SPA-NAI-EDYUKYMD
-                   MOVE    1                       TO  SPA-GMN-SELNUM
-                                                       SPA-NAI-SELNUM
-                                                       SPA-NAI-SELNO
+                   MOVE    "1"                     TO  SPA-GMN-SELNUM
+                   MOVE    1                       TO  SPA-NAI-SELNUM
+                   MOVE    1                       TO  SPA-NAI-SELNO
                    MOVE    12                      TO  SPA-GMN-CUR
                WHEN    OTHER
                    MOVE    3                       TO  SPA-GMN-CUR
