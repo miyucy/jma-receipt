@@ -402,27 +402,29 @@
            END-EVALUATE
            MOVE    HXLST-CHKKBN        TO  CHK-CHKKBN
            MOVE    HXLST-SRYCD         TO  CHK-SRYCD
-           IF    ( HXLST-SRYCD-END     =   SPACE  )
-            OR   ( HXLST-SRYCD         >   HXLST-SRYCD-END )
-               MOVE    HXLST-SRYCD     TO  CHKUP-SRYCD
+      *
+           IF    ( HXLST-SRYCD         =   SPACE )
+               MOVE    "000000000"     TO  CHK-SRYCD
+               MOVE    "999999999"     TO  CHKUP-SRYCD
            ELSE
-               MOVE    HXLST-SRYCD-END TO  CHKUP-SRYCD
+               IF    ( HXLST-SRYCD-END     =   SPACE  )
+                OR   ( HXLST-SRYCD         >   HXLST-SRYCD-END )
+                   MOVE    HXLST-SRYCD     TO  CHKUP-SRYCD
+               ELSE
+                   MOVE    HXLST-SRYCD-END TO  CHKUP-SRYCD
+               END-IF
            END-IF
       *
-           IF      HXLST-SRYCD         =   SPACE
-               EVALUATE HXLST-SRTKBN
-               WHEN   "1"
-                   MOVE    "CHK-KEY10"     TO  WRK-DBPATH
-               WHEN   "2"
-                   MOVE    "CHK-KEY8"      TO  WRK-DBPATH
-               WHEN   "3"
-                   MOVE    "CHK-KEY9"      TO  WRK-DBPATH
-               WHEN   OTHER
-                   MOVE    "CHK-KEY10"     TO  WRK-DBPATH
-               END-EVALUATE
-           ELSE
-               MOVE    "CHK-KEY7"          TO  WRK-DBPATH
-           END-IF
+           EVALUATE HXLST-SRTKBN
+           WHEN   "1"
+               MOVE    "CHK-KEY10"     TO  WRK-DBPATH
+           WHEN   "2"
+               MOVE    "CHK-KEY8"      TO  WRK-DBPATH
+           WHEN   "3"
+               MOVE    "CHK-KEY9"      TO  WRK-DBPATH
+           WHEN   OTHER
+               MOVE    "CHK-KEY10"     TO  WRK-DBPATH
+           END-EVALUATE
       *
            MOVE    ZERO                TO  FLG-CHKMST
            MOVE    CHK-REC             TO  MCPDATA-REC
