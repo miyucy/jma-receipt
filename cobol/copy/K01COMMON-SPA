@@ -89,6 +89,8 @@
                05  SPA-TA-HKNCOMBI-AREA.
                    07  SPA-TA-HKNCOMBI         PIC  9(04)
                                                OCCURS  10.
+      *外来診療料算定有無
+               05  SPA-GAIRAISIN          PIC  9(01).
       *特定疾患有無（病名）
                05  SPA-TOKUTEI             PIC  9(01).
                05  SPA-TOKUTEIFLG          PIC  9(01).

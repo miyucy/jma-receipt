@@ -80,6 +80,8 @@
            03  LNK-ORCSC-INGAIKBN          PIC  X(01).
       *初期表示
            03  LNK-ORCSC-TOROKU            PIC  X(01).
+      *同日再診有無
+           03  LNK-ORCSC-RRK-LSTYMD        PIC  X(08).
       *
       *更新前自動算定のみに使用（Ｋ０２のみ）
       *調剤技術基本料有無
@@ -92,6 +94,9 @@
            03  LNK-ORCSC-YAKJYO-3          PIC  9(01).
       *特定薬剤治療管理料有無
            03  LNK-ORCSC-TOKUTEI-FLG       PIC  9(01).
+      *外来診療料算定有無
+           03  LNK-ORCSC-GAIRAISIN         PIC  9(01).
+      *
       *
       *処方箋料算定判定用
            03  LNK-ORCSC-SANTEI.
