@@ -5870,6 +5870,7 @@
       *****************************************************************
        TENSU-TBL-SEC               SECTION.
       *
+           MOVE    ZERO                     TO      FLG-TENSU
            MOVE    WRK-SRYCD                TO      TTNS-CHK-SRYCD
            MOVE    WK-TAIHI-SRYYMD          TO      TTNS-CHK-YMD
       *
