@@ -70,6 +70,8 @@
       *  00.02.04    NACL-藤原    04/11/01  病名が修飾語コードのみで構成
       *                                     されている場合種別を病名に変
       *                                     更できるようにする
+      *  00.02.05    NACL-藤原    05/02/22  コード入力時に予約コードの
+      *                                     とき、編集病名にする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1356,6 +1358,9 @@
                                                    (TBL-BYOMEICD-IDX)
                        MOVE    TBL-YYK-BYOMEI (TBL-BYOMEICD-IDX)
                                                TO  SPA-NAI-BYOMEI (IDZ)
+                       MOVE    "1"             TO
+                                               SPA-NAI-BYOMEIHENFLG-O
+                                                                  (IDZ) 
                        MOVE    1               TO  FLG-BYOMEICD-OK
                        GO  TO  410111-BYOMEI-HENSYU-EXT
                END-SEARCH
@@ -1375,6 +1380,8 @@
                        MOVE    "1"       TO  SPA-NAI-UTAGAIFLG(IDZ)
                    END-IF    
                    MOVE    BYO-TOKSKNCD  TO  SPA-NAI-TOKSKNCD (IDZ)
+                   MOVE    SPACE         TO  SPA-NAI-BYOMEIHENFLG-O
+                                                              (IDZ) 
                ELSE
                    MOVE    "■■■"      TO  SPA-NAI-BYOMEI   (IDZ)
                END-IF
@@ -1836,6 +1843,18 @@
       *    病名編集フラグセット
            MOVE    SPACE                   TO  SPA-GMN-BYOMEIHENFLG
                                                SPA-NAI-BYOMEIHENFLG
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
+               IF    ( SPA-NAI-BYOMEICD(IDX)
+                                       NOT =   SPACE )
+               AND   ( SPA-NAI-BYOMEIHENFLG-O (IDX)
+                                           =   "1"   )
+                   MOVE    "病名編集"      TO  SPA-GMN-BYOMEIHENFLG
+                   MOVE    "1"             TO  SPA-NAI-BYOMEIHENFLG
+                   MOVE    WRK-CONS-BYOMEICD-MAX
+                                           TO  IDX
+               END-IF
+           END-PERFORM                                    
            .
        41021-BYOMEI-HENSYU-EXT.
            EXIT.
