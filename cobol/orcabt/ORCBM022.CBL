@@ -346,13 +346,13 @@
            END-IF
       *     
       *    医療保険欄
-           IF      RECE10-RJNHKNNUM        =   SPACE
-           AND     RECE10-HKNNUM       NOT =   SPACE
+           IF    ( RECE10-RJNHKNNUM        =   SPACE )
+           AND   ( RECE10-HKNNUM       NOT =   SPACE )
       *      
       *        船員保険の補助区分が前期高齢者以外の時
          
-               IF      RECE10-HKNNUM           =   "002"
-               AND     RECE10-HOJOKBN          =   "1" OR  "2" OR  "3"
+               IF    ( RECE10-HKNNUM           =   "002"               )
+               AND   ( RECE10-HOJOKBN          =   "1" OR  "2" OR  "3" )
                                                        OR  SPACE 
                    IF      RECE10-AGE              <   3
                        MOVE    5                       TO  IDY1
@@ -366,9 +366,9 @@
                ELSE    
       *      
       *            共済組合の補助区分が前期高齢者以外の時     
-                   IF      RECE10-HKNNUM           >=  "031"   AND
-                                                   <=  "034"
-                   AND     RECE10-HOJOKBN          =   "2" OR  SPACE 
+                   IF    (  RECE10-HKNNUM          >=  "031"   AND
+                                                   <=  "034"         )
+                   AND   (  RECE10-HOJOKBN         =   "2" OR  SPACE ) 
                        IF      RECE10-AGE              <   3
                            MOVE    5                       TO  IDY1
                        ELSE                    

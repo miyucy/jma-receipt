@@ -580,8 +580,8 @@
                                    SUM-TOTALTEN   (IDX2 IDX3)
            ADD     RECE10-FTNMONEY (IDX1) TO
                                    SUM-FTNMONEY   (IDX2 IDX3)
-           IF      IDX3                   =   2
-           AND     IDX2                   =   3   OR  5   OR  8 
+           IF    ( IDX3                   =   2                 )
+           AND   ( IDX2                   =   3   OR  5   OR  8 ) 
                ADD     RECE10-YKZFTN   (IDX1) TO
                                        SUM-YKZFTN     (IDX2)
            END-IF                            
@@ -789,10 +789,10 @@
                    MOVE    SUM-TOTALTEN(IDX IDY)
                                            TO  WRK-TENSUZ
                    MOVE    WRK-TENSUZ      TO  HCM2E-TENSU (IDX IDY)
-                   IF      IDY             =   2
-                   AND     IDX             =   3   OR  5   OR  8
+                   IF    ( IDY             =   2                 ) 
+                   AND   ( IDX             =   3   OR  5   OR  8 )
                        MOVE    SUM-YKZFTN  (IDX)
-                                               TO  WRK-YKZFTNZ
+                                               TO  WRK-YKZFTNZ 
                        MOVE    WRK-YKZFTNZ     TO  HCM2E-YKZFTN(IDX IDY)
                    END-IF    
                    IF      IDY             =   2

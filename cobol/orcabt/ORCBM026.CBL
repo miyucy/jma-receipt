@@ -797,16 +797,16 @@
                    MOVE    SUM-TOTALTEN(IDX IDY)
                                            TO  WRK-TENSUZ
                    MOVE    WRK-TENSUZ      TO  HCM2G-TENSU (IDX IDY)
-                   IF      IDY             =   2
-                   AND     IDX             =   3   OR  4   OR  5   OR
-                                               6   OR  8   OR  11    
+                   IF    ( IDY             =   2                      )
+                   AND   ( IDX             =   3   OR  4   OR  5   OR
+                                               6   OR  8   OR  11     )     
                        MOVE    SUM-YKZFTN  (IDX)
                                                TO  WRK-YKZFTNZ
                        MOVE    WRK-YKZFTNZ     TO  HCM2G-YKZFTN(IDX IDY)
                    END-IF    
-                   IF      IDY             =   2
-                   AND     IDX             =   1   OR  2   OR  9   OR
-                                               10
+                   IF    ( IDY             =   2                       )
+                   AND   ( IDX             =   1   OR  2   OR  9   OR
+                                               10                      )
                        MOVE    SUM-FTNMONEY    (IDX IDY)
                                                TO  WRK-FTNMONEYZ
                        MOVE    WRK-FTNMONEYZ   TO  HCM2G-ITBFTN(IDX IDY)

@@ -424,10 +424,10 @@
       *
       *                処理対象以外かアフターケア以外か日付変更がないとき
       *                同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
-                       IF    ( WRK-ROUSAIKBN         =   "1"         )  
-                       OR    (     WRK-UPDKBN        =   SPACE         
-                               AND PTRSI-HKNKBN      =   "1" OR  "2" 
-                                                             OR  "4" )  
+                       IF    ( WRK-ROUSAIKBN         =   "1"           )  
+                       OR    (     ( WRK-UPDKBN      =   SPACE       )         
+                               AND ( PTRSI-HKNKBN    =   "1" OR  "2" 
+                                                             OR  "4" ) )  
                            MOVE    KEY-NEW             TO  KEY-OLD
                            PERFORM     UNTIL   FLG-SRYACCT =   1 
                                        OR      KEY-NEW NOT =   KEY-OLD
@@ -765,10 +765,10 @@
                        PERFORM 20011-FILE-SYORI-SEC
                    END-IF    
       *
-                   IF    ( WRK-ROUSAIKBN           =   "1"         )  
-                   OR    (     WRK-UPDKBN          =   SPACE         
-                           AND PTRSI-HKNKBN        =   "1" OR  "2" 
-                                                           OR  "4" )    
+                   IF    ( WRK-ROUSAIKBN           =   "1"           )  
+                   OR    (     ( WRK-UPDKBN        =   SPACE       )         
+                           AND ( PTRSI-HKNKBN      =   "1" OR  "2" 
+                                                           OR  "4" ) )    
                        MOVE    KEY-NEW             TO  KEY-OLD
                        PERFORM     UNTIL   FLG-SRYACCT     =   1 
                                    OR      KEY-NEW     NOT =   KEY-OLD

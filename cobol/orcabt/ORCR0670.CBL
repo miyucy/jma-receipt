@@ -476,8 +476,8 @@
            MOVE    PTBYO-BYOMEI      TO  WRK-BYOMEI
       *
       *    疑いフラグがセットされているとき
-           IF      PTBYO-UTAGAIFLG   =   "1" OR  "3"
-           AND     WRK-HENFLG1         =   SPACE                         
+           IF    ( PTBYO-UTAGAIFLG   =   "1" OR  "3" )
+           AND   ( WRK-HENFLG1         =   SPACE     )                         
                MOVE    SPACE               TO  WRK-BYOMEI
                STRING  PTBYO-BYOMEI        DELIMITED BY  SPACE
                        WRK-CONS-UTAGAI     DELIMITED BY  SIZE
@@ -486,8 +486,8 @@
                                 WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
                MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG                 
            END-IF    
-           IF      PTBYO-UTAGAIFLG   =   "2" OR  "3"
-           AND     WRK-HENFLG2         =   SPACE                         
+           IF    ( PTBYO-UTAGAIFLG   =   "2" OR  "3" )
+           AND   ( WRK-HENFLG2         =   SPACE     )                          
                MOVE    SPACE               TO  WRK-BYOMEIW
                STRING  WRK-CONS-KYUSEI     DELIMITED BY  SIZE
                        WRK-BYOMEI          DELIMITED BY  SPACE
