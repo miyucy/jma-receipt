@@ -920,9 +920,8 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
-      *    入院のとき診療会計に存在しないとき入院会計をチェック                                  
-           IF    ( FLG-CHK             =   ZERO )
-           AND   ( FLG-ERR             =   ZERO )
+      *    入院のとき診療会計に存在しないとき入院会計をチェック
+           IF      FLG-ERR             =   ZERO
                IF      SPA-R01-NYUGAIKBN   =   "1"
                    PERFORM 41052-NYUINACCT-CHK-SEC
                END-IF
@@ -1019,7 +1018,6 @@
            END-IF
       *
            PERFORM             UNTIL    FLG-NYUINACCT  =   1
-                               OR       FLG-CHK        =   1     
                                OR       FLG-ERR        =   1      
       *        保険組合せ読込み
                IF      NACCT-ZAISKBKBN     =   "1"
