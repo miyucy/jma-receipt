@@ -8262,6 +8262,16 @@
       *-         PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
       *-     END-IF
       *
+      *    ÆÃÄê½¸Ãæ¼£ÎÅ¼¼´ÉÍýÎÁ»»Äê»þ¤Ë£±£´Æü¤ò·Ð²á¤·¤Æ¤¤¤¿¾ì¹ç¤Ï
+      *    °ìÈÌ¤ÎÆþ±¡ÎÁ»»Äê¤È¤¹¤ë
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN   =  "09"  OR  "16"
+                   IF   STUSAN-NISSU01   >   14
+                       MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
+                   END-IF
+               END-IF
+           END-IF
+      *
            IF      SPA-GMN-I01-TOKNYUIN-CD    NOT =   SPACE
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
            ELSE
