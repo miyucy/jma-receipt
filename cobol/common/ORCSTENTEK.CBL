@@ -58,8 +58,12 @@
            03  FLG-MADOKU          PIC 9(01).
            03  FLG-MADOKU-OK       PIC 9(01).
            03  FLG-CHU-ARI         PIC 9(01).
+           03  FLG-HAIKI           PIC 9(01).
+           03  FLG-TENARI          PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
+           03  FLG-ERR             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -67,6 +71,12 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDY                 PIC 9(04).
+      *
+           03  IDXA                PIC 9(04).
+           03  IDXA2               PIC 9(04).
+           03  IDXS                PIC 9(04).
+           03  IDX-T2              PIC 9(04).
+           03  IDX-T3              PIC 9(04).
       *
            03  IDX-T               PIC 9(04).
            03  IDX-H               PIC 9(04).
@@ -87,9 +97,14 @@
       *
            03  WRK-DD              PIC 9(02).
       *
-           03  WRK-TENSU           PIC 9(07)V9(03).
+           03  WRK-TENSU           PIC 9(07).
+           03  WRK-SURYO-9         PIC 9(07).
            03  WRK-SURYO           PIC 9(07)V9(03).
+           03  WRK-HAIKI-SURYO     PIC 9(07)V9(03).
            03  WRK-EKIRYOU         PIC 9(07)V9(03).
+      *
+           03  WRK-TENSU-KEI       PIC 9(07)V9(04).
+           03  WRK-SYOKEIS2        PIC 9(08)V9(03).
       *
            03  WRK-SRYCD               PIC X(08).
            03  WRK-MAX-RYOU            PIC 9(07).
@@ -115,6 +130,16 @@
       *            保険組合せ
                    07  TBL-HKNCOMBI        PIC X(04).
                    07  TBL-SRYKA           PIC X(02).
+      *            廃棄フラグ
+                   07  TBL-HAIKI           PIC 9(01).
+                   07  TBL-HAIKI-SURYO     PIC 9(05)V9(03).
+      *
+      *    器材集計用
+       01  TBL-KIZAI-AREA.
+           03  TBL-KIZAI-AREA-OCC            OCCURS   10.
+               05  TBL-KIZ-SRYCD       PIC X(09).
+               05  TBL-KIZ-SURYO       PIC 9(05)V9(03).
+               05  TBL-KIZ-CHK         PIC 9(01).
       *
       *    手技料用
        01  TBL2-AREA.
@@ -164,6 +189,11 @@
            COPY    "CPJYURRK.INC"     REPLACING
                                      //JYURRK-// BY //TBL-JYURRK-//.
       *
+      *    診療行為マスター
+       01  TBL-SRYACT-AREA.
+           02  TBL-SRYACT-REC         OCCURS  10.
+           COPY    "CPSRYACT.INC"     REPLACING
+                                     //SRY-// BY //TBL-SRY-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -252,11 +282,42 @@
       *    点数計算処理
            PERFORM 200-KEISAN-SYORI-SEC
       *
+      *
            IF      ORCSTEN-KBN         =   "1"  OR  "3"
       *        手技料一括変更処理
                PERFORM 300-KOUSIN-SYORI-SEC
            END-IF
       *
+      *TEST
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL      (IDX     >   50  )   OR
+                              (ORCSTEN-KIZ-ZAITEN (IDX) =  ZERO)
+               DISPLAY "ORCSTEN-KIZ-ZAITEN:" ORCSTEN-KIZ-ZAITEN (IDX)
+               DISPLAY "ORCSTEN-KIZ-SRYCD1:" ORCSTEN-KIZ-SRYCD (IDX 1)
+                                  ",SURYO1:" ORCSTEN-KIZ-SURYO (IDX 1)
+               DISPLAY "ORCSTEN-KIZ-SRYCD2:" ORCSTEN-KIZ-SRYCD (IDX 2)
+                                  ",SURYO2:" ORCSTEN-KIZ-SURYO (IDX 2)
+               DISPLAY "ORCSTEN-KIZ-DAY:" ORCSTEN-KIZ-DAY(IDX 1) 
+                       "," ORCSTEN-KIZ-DAY(IDX 2) 
+                       "," ORCSTEN-KIZ-DAY(IDX 3) 
+                       "," ORCSTEN-KIZ-DAY(IDX 4) 
+                       "," ORCSTEN-KIZ-DAY(IDX 5) 
+           END-PERFORM
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL      (IDX     >   31  )
+             IF      (ORCSTEN-ZAITEN (IDX) NOT = ZERO)
+               DISPLAY "ORCSTEN-ZAITEN:" ORCSTEN-ZAITEN (IDX)
+               PERFORM VARYING     IDX2    FROM   1   BY  1
+                       UNTIL      (IDX2    >   50  )   OR 
+                                  (ORCSTEN-SRYCD (IDX IDX2) =  SPACE)
+               DISPLAY "ORCSTEN-SRYCD:" ORCSTEN-SRYCD (IDX IDX2)
+                              ",SURYO:" ORCSTEN-SURYO (IDX IDX2)
+               DISPLAY "ORCSTEN-HAIK:" ORCSTEN-HAIK-SRYCD (IDX IDX2)
+                              ",SURYO:" ORCSTEN-HAIK-SURYO (IDX IDX2)
+             END-PERFORM
+            END-IF
+           END-PERFORM
+      *TEST
            .
        000-PROC-EXT.
       *
@@ -292,11 +353,7 @@
            END-IF
            PERFORM
                UNTIL       (FLG-SRYACCT         =   1       )
-               IF      ACCT-ZAIKAISU       =   ZERO
-                   MOVE    ZERO                TO  FLG-ZAIARI
-               ELSE
-                   MOVE    1                   TO  FLG-ZAIARI
-               END-IF
+               MOVE    ZERO                TO  FLG-ZAIARI
                MOVE    ZERO                TO  WRK-DD
       *        最初の日を保存
                PERFORM VARYING     IDY2    FROM    1   BY  1
@@ -307,7 +364,8 @@
                    END-IF
                END-PERFORM
       *        保険チェック
-               IF     (ORCSTEN-KBN         =   "2"    )  AND
+               IF     (ORCSTEN-KBN         =   "2"  OR   "4"   )  AND
+                      (ORCSTEN-HKNCOMBI    NOT =   SPACE       )  AND
                       (ACCT-HKNCOMBI   NOT =   ORCSTEN-HKNCOMBI)
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
@@ -335,6 +393,9 @@
       *****************************************************************
        1001-SRYACT-HEN-SEC            SECTION.
       *
+           INITIALIZE                 TBL-SRYACT-AREA
+           MOVE    ZERO               TO  IDXS
+      *
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
@@ -359,9 +420,29 @@
                MOVE    1                   TO  FLG-SRYACT
            END-IF
            PERFORM UNTIL      FLG-SRYACT   =   1
+      *
+               ADD     1                   TO  IDXS
+               MOVE    SRYACT-REC          TO  TBL-SRYACT-REC (IDXS)
+      *
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 920-SRYACT-NEXT-SEC
+           END-PERFORM
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"         USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *
+      *    テーブルの診療行為マスターをチェックする
+           PERFORM VARYING     IDXA    FROM    1   BY  1
+                   UNTIL       IDXA        >   IDXS
+      *
+               MOVE    TBL-SRYACT-REC (IDXA)   TO  SRYACT-REC
+      *
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2        >   5   )  OR
-                                  (SRY-SRYCD(IDX2)     =   SPACE )
+                                  (SRY-SRYCD(IDX2) =   SPACE )
       *            薬剤
                    IF     (SRY-SRYCD (IDX2)(1:1)   =   "6" )  AND
                           (SRY-SRYSYUKBN           =   "330"  OR
@@ -383,17 +464,14 @@
                        PERFORM 10015-DOU-HENSYU-SEC
                    END-IF
                END-PERFORM
-      *
-               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-               PERFORM 920-SRYACT-NEXT-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"         USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *                                MCPDATA-REC
+      *    器材テーブル編集
+           IF     (TBL-SRY-SRYSYUKBN (1)   =   "330"  OR
+                                               "331")
+      *        診療行為より器材編集
+               PERFORM 10016-TBL-KIZAIHEN-SEC
+           END-IF
            .
        100-HENSYU-SYORI-EXT.
            EXIT.
@@ -453,18 +531,46 @@
                    UNTIL       IDX-D   >   31
                IF      ACCT-DAY (1 IDX-D)  >   ZERO
                    ADD     ACCT-DAY (1 IDX-D)  TO  TBL-DAY (IDX-T IDX-D)
+      *            残量廃棄計算
+                   MOVE    ZERO                TO  FLG-HAIKI
+                   IF     (IDX2                <   5  )  AND
+                          (SRY-SRYCD (IDX2 + 1)    =   "099309901")
+                       MOVE    1                   TO  FLG-HAIKI
+                   END-IF
+                   IF     (IDX2                =   5  )  AND
+                          (IDXA                <   IDXS)
+                       COMPUTE IDXA2           =   IDXA    +   1
+                       IF      TBL-SRY-SRYCD (IDXA2 1)
+                                                   =   "099309901"
+                           MOVE    1                   TO  FLG-HAIKI
+                       END-IF
+                   END-IF
       *            数量
-                   COMPUTE WRK-SURYO            =   SRY-SRYSURYO(IDX2)
+                   IF      FLG-HAIKI            =   ZERO
+                       COMPUTE WRK-SURYO        =   SRY-SRYSURYO(IDX2)
                                                 *   ACCT-DAY (1 IDX-D)
+                   ELSE
+                       COMPUTE WRK-SURYO-9     =   SRY-SRYSURYO(IDX2)
+                                               +   0.99
+                       COMPUTE WRK-SURYO       =   WRK-SURYO-9
+                                               *   ACCT-DAY (1 IDX-D)
+      *                廃棄数量
+                       MOVE    1               TO  TBL-HAIKI
+                                                          (IDX-T IDX-D)
+                       COMPUTE WRK-HAIKI-SURYO =   WRK-SURYO-9
+                                               -   SRY-SRYSURYO(IDX2)
+                       ADD     WRK-HAIKI-SURYO TO  TBL-HAIKI-SURYO
+                                                          (IDX-T IDX-D)
+                   END-IF
                    ADD     WRK-SURYO            TO  TBL-SURYO
-                                                      (IDX-T IDX-D)
+                                                          (IDX-T IDX-D)
       *            液量
                    COMPUTE WRK-EKIRYOU     =   TBL-CSYYOURYO (IDX-T)
                                            *   WRK-SURYO
                    ADD     WRK-EKIRYOU     TO  TBL-CHUSYARYO
                                                       (IDX-T IDX-D)
       *            診療科・保険
-      *        １つの薬剤は１日に同じ科・保険でのみ使用するものとする
+      *           １つの薬剤は１日に同じ科・保険でのみ使用するものとする
                    MOVE    ACCT-SRYKA          TO  TBL-SRYKA
                                                       (IDX-T IDX-D)
                    MOVE    ACCT-HKNCOMBI       TO  TBL-HKNCOMBI
@@ -474,6 +580,120 @@
       *
            .
        100121-DAY-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    器材集計テーブル編集処理
+      *****************************************************************
+       10016-TBL-KIZAIHEN-SEC            SECTION.
+      *
+           INITIALIZE                  TBL-KIZAI-AREA
+      *    器材のみを保存する
+           MOVE    ZERO                TO  IDX-T
+           PERFORM VARYING     IDXA    FROM    1   BY  1
+                   UNTIL      (IDXA        >   IDXS  )
+                           OR (IDX-T       >=  10    )
+      *
+               MOVE    TBL-SRYACT-REC (IDXA)   TO  SRYACT-REC
+      *
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2        >   5   )  OR
+                                  (SRY-SRYCD(IDX2) =   SPACE ) OR
+                                  (IDX-T           >=  10    )
+                   IF     (SRY-SRYCD (IDX2)(1:1)   =   "7" )  OR
+                          (SRY-SRYCD (IDX2)(1:3)   =   "059" )
+                       ADD     1                   TO  IDX-T
+                       MOVE    SRY-SRYCD (IDX2)    TO  TBL-KIZ-SRYCD
+                                                               (IDX-T)
+                       MOVE    SRY-SRYSURYO(IDX2)  TO  TBL-KIZ-SURYO
+                                                               (IDX-T)
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+           IF      IDX-T               =   ZERO
+               GO      TO      10016-TBL-KIZAIHEN-EXT
+           END-IF
+      *
+      *    剤点数の同じものを検索する
+           PERFORM VARYING     IDX-T   FROM    1   BY  1
+                   UNTIL       IDX-T       >   50
+               IF      ORCSTEN-KIZ-ZAITEN (IDX-T)  =   ZERO
+                   PERFORM 100161-KIZAI-HEN-SEC
+                   MOVE    50              TO  IDX-T
+               ELSE
+                   IF      ORCSTEN-KIZ-ZAITEN (IDX-T)
+                                           =   ACCT-KIZAITEN
+                       PERFORM 100162-KIAZI-CHK-SEC
+                       IF      FLG-ERR         =   ZERO
+                           PERFORM 100161-KIZAI-HEN-SEC
+                           MOVE    50              TO  IDX-T
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       10016-TBL-KIZAIHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブル編集処理
+      *****************************************************************
+       100161-KIZAI-HEN-SEC            SECTION.
+      *
+           MOVE    ACCT-KIZAITEN       TO  ORCSTEN-KIZ-ZAITEN (IDX-T)
+      *
+           PERFORM VARYING     IDX-T2  FROM    1   BY  1
+                   UNTIL      (IDX-T2      >   10    )
+                           OR (TBL-KIZ-SRYCD(IDX-T2)  =   SPACE)
+               MOVE    TBL-KIZ-SRYCD(IDX-T2)   TO  ORCSTEN-KIZ-SRYCD
+                                                        (IDX-T IDX-T2)
+               MOVE    TBL-KIZ-SURYO(IDX-T2)   TO  ORCSTEN-KIZ-SURYO
+                                                        (IDX-T IDX-T2)
+           END-PERFORM
+      *    回数集計
+           PERFORM VARYING     IDX-T2  FROM    1   BY  1
+                   UNTIL       IDX-T2      >   31
+               ADD     ACCT-DAY (1 IDX-T2) TO  ORCSTEN-KIZ-DAY
+                                                      (IDX-T IDX-T2)
+           END-PERFORM
+      *
+           .
+       100161-KIZAI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルチェック処理
+      *****************************************************************
+       100162-KIAZI-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ERR
+      *
+           PERFORM VARYING     IDX-T2  FROM    1   BY  1
+                   UNTIL       IDX-T2      >   10
+               MOVE    ZERO                TO  FLG-CHK
+               PERFORM VARYING     IDX-T3  FROM    1   BY  1
+                       UNTIL      (IDX-T3      >   10 )  OR
+                                  (FLG-CHK     =   1  )
+      *            コードと数量が同じものがあること
+                   IF     (ORCSTEN-KIZ-SRYCD (IDX-T IDX-T2)
+                                           =   TBL-KIZ-SRYCD(IDX-T3))
+                   AND    (ORCSTEN-KIZ-SURYO (IDX-T IDX-T2)
+                                           =   TBL-KIZ-SURYO(IDX-T3))
+                   AND    (TBL-KIZ-CHK  (IDX-T3)
+                                           =   ZERO            )
+                      MOVE    1                TO  TBL-KIZ-CHK(IDX-T3)
+                      MOVE    1                TO  FLG-CHK
+                   END-IF
+               END-PERFORM
+               IF      FLG-CHK             =   ZERO
+                   MOVE    1               TO  FLG-ERR
+                   MOVE    10              TO  IDX-T2
+               END-IF
+           END-PERFORM
+      *
+           .
+       100162-KIAZI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -606,6 +826,7 @@
       *
            INITIALIZE                  TBL-SYUKEI-AREA
       *
+           MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDX-D   FROM    1   BY  1
                    UNTIL       IDX-D   >   31
                MOVE    ZERO            TO  IDX
@@ -630,18 +851,35 @@
       *****************************************************************
        2001-TBL-HENSYU-SEC            SECTION.
       *
-           MOVE    TBL-SRYCD (IDX-T)   TO  ORCSTEN-SRYCD (IDX IDX-D)
+           MOVE    TBL-SRYCD (IDX-T)   TO  ORCSTEN-SRYCD (IDX-D IDX)
            MOVE    TBL-SURYO (IDX-T IDX-D)
-                                       TO  ORCSTEN-SURYO (IDX IDX-D)
+                                       TO  ORCSTEN-SURYO (IDX-D IDX)
       *
-           COMPUTE WRK-TENSU           =   TBL-TEN  (IDX-T)
+           COMPUTE WRK-TENSU-KEI       =   TBL-TEN  (IDX-T)
                                        *   TBL-SURYO (IDX-T IDX-D)
+           IF      WRK-TENSU-KEI       <=  15
+               MOVE    1               TO  WRK-SYOKEIS2
+           ELSE
+               COMPUTE WRK-SYOKEIS2    =  ((WRK-TENSU-KEI   -  15)
+                                           /    10 )
+                                           +   1
+           END-IF
+           COMPUTE WRK-TENSU           =   WRK-SYOKEIS2   +  0.999
+      *
            ADD     WRK-TENSU           TO  ORCSTEN-ZAITEN (IDX-D)
       *    液量
            ADD     TBL-CHUSYARYO (IDX-T IDX-D)
                                        TO  ORCSTEN-CHUSYARYO (IDX-D)
+      *    廃棄あり
+           IF      TBL-HAIKI (IDX-T IDX-D) =   1
+               MOVE    "099309901"         TO  ORCSTEN-HAIK-SRYCD
+                                                     (IDX-D IDX)
+               MOVE    TBL-HAIKI-SURYO(IDX-T IDX-D)
+                                           TO  ORCSTEN-HAIK-SURYO
+                                                     (IDX-D IDX)
+           END-IF
       *
-      *   生物学的製剤区分
+      *    生物学的製剤区分
            IF      TBL-SEIBUTU (IDX-T) =   1
                MOVE    1               TO  TBL-S-SEIBUTU (IDX-D)
            END-IF
@@ -745,12 +983,12 @@
                PERFORM 930-SRYACCT-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
       *
            .
        3001-SYUJYU-HEN-EXT.
@@ -897,9 +1135,6 @@
                    MOVE    TBL2-HKNCOMBI(IDY IDX-D)
                                            TO  TBL-HEN-HKNCOMBI
                                                              (IDX-H)
-      *TEST
-                 DISPLAY "TBL-HEN-ZAINUM:" TBL-HEN-ZAINUM(IDX-H)
-      *TEST
                END-IF
       *        削除
                IF      TBL-HEN-ZAINUM (IDX-H)  =   TBL2-ZAINUM

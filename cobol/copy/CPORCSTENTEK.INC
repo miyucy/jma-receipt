@@ -27,7 +27,8 @@
       *
       *入力
            03  ORCSTEN-IN-AREA.
-      *処理区分（１：一括更新、２：保険別、３：一括チェック）
+      *処理区分（１：一括更新、２：保険別、３：一括チェック
+      *          ４：レセプト出力）
                05  ORCSTEN-KBN                 PIC  X(01).
       *患者ＩＤ
                05  ORCSTEN-PTID                PIC  9(10).
@@ -49,6 +50,25 @@
                        09  ORCSTEN-SRYCD       PIC X(09).
       *                数量
                        09  ORCSTEN-SURYO       PIC 9(05)V9(03).
+      *                残量廃棄コメント
+                       09  ORCSTEN-HAIK-SRYCD  PIC X(09).
+      *                廃棄数量
+                       09  ORCSTEN-HAIK-SURYO   PIC 9(05)V9(03).
+      *        器材剤別テーブル
+               05  ORCSTEN-KIZAI-TBL-G.
+                   07  ORCSTEN-KIZI-ZAI-OCC        OCCURS   50.
+      *                器材点数
+                       09  ORCSTEN-KIZ-ZAITEN          PIC  9(08).
+                       09  ORCSTEN-KIZ-MEI-OCC         OCCURS   10.
+      *                    器材診療コード
+                           11  ORCSTEN-KIZ-SRYCD       PIC X(09).
+      *                    器材数量
+                           11  ORCSTEN-KIZ-SURYO       PIC 9(05)V9(03).
+      *                器材日数
+                       09  ORCSTEN-KIZ-DAY-G.
+                           09  ORCSTEN-KIZ-DAY         PIC 9(03)
+                                                       OCCURS  31.
+      *
       *点滴手技料算定
            03  ORCSTEN-DAY-AREA.
       *        未算定日
