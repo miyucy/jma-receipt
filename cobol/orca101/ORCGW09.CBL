@@ -28,9 +28,11 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     MCC-藤原     01/09/11  削除処理の修正 
-      * 01.01.02     MCC-藤原     01/09/21  JOINの修正     
-      * 01.01.03     MCC-藤原     02/07/03  提出先の追加     
-      * 01.01.04     NACL-藤原    02/09/20  自賠責の提出先の追加     
+      * 01.00.02     MCC-藤原     01/09/21  JOINの修正     
+      * 01.00.03     MCC-藤原     02/07/03  提出先の追加     
+      * 01.00.04     NACL-藤原    02/09/20  自賠責の提出先の追加     
+      *
+      * 01.01.01     NACL-藤原    02/09/25  入外区分・表示順の追加     
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -59,13 +61,18 @@
                05  SPA-GMN-AREA.
                    07  SPA-GMN-STYUKYMD       PIC X(09).
                    07  SPA-GMN-EDYUKYMD       PIC X(09).
-                   07  SPA-GMN-PRTJYUNI       PIC X(02).
+                   07  SPA-GMN-PRTJYUNI       PIC X(03).
                    07  SPA-GMN-TEISYUTUSAKILST    OCCURS  5.
                        09  SPA-GMN-TEISYUTUSAKIL  PIC X(01).
                        09  SPA-GMN-F1L            PIC X(01).
                        09  SPA-GMN-TEISYUTUSAKIMEIL
                                                   PIC X(24).
                    07  SPA-GMN-TEISYUTUSAKI-MAX   PIC 9(02).    
+                   07  SPA-GMN-NYUGAIKBNLST       OCCURS  2.
+                       09  SPA-GMN-NYUGAIKBNL     PIC X(01).
+                       09  SPA-GMN-F1L            PIC X(01).
+                       09  SPA-GMN-NYUGAIKBNMEIL  PIC X(06).
+                   07  SPA-GMN-NYUGAIKBN-MAX      PIC 9(02).    
                    07  SPA-GMN-KOUMOKU.
                        09  SPA-GMN-SYURUINAME
                                               PIC X(40).
@@ -78,6 +85,11 @@
                            11  SPA-GMN-F1             PIC X(01).
                            11  SPA-GMN-TEISYUTUSAKIMEI
                                                       PIC X(24).
+                       09  SPA-GMN-NYUGAIKBN-G.                               
+                           11  SPA-GMN-NYUGAIKBN      PIC X(01).
+                           11  SPA-GMN-F1             PIC X(01).
+                           11  SPA-GMN-NYUGAIKBNMEI   PIC X(06).
+                       09  SPA-GMN-DSPSEQ         PIC 9(03).        
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
@@ -329,6 +341,12 @@
            MOVE    "保険会社"          TO  SPA-GMN-TEISYUTUSAKIMEIL(4)
            MOVE    4                   TO  SPA-GMN-TEISYUTUSAKI-MAX                              
       *
+           MOVE    "1"                 TO  SPA-GMN-NYUGAIKBNL   (1) 
+           MOVE    "入院"              TO  SPA-GMN-NYUGAIKBNMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-NYUGAIKBNL   (2)
+           MOVE    "入院外"            TO  SPA-GMN-NYUGAIKBNMEIL(2)
+           MOVE    2                   TO  SPA-GMN-NYUGAIKBN-MAX                              
+      *
            INITIALIZE                          SPA-GMN-KOUMOKU
       * 
            MOVE    SPACE                   TO  SYS-2003-REC
@@ -358,6 +376,21 @@
                    MOVE    SYS-2003-SYUBETU (IDX)
                                            TO  SPA-GMN-SYUBETU (IDX)
                END-PERFORM
+               MOVE    SYS-2003-NYUGAIKBN  TO  SPA-GMN-NYUGAIKBN
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-NYUGAIKBN-MAX
+                   IF      SPA-GMN-NYUGAIKBN    =
+                                           SPA-GMN-NYUGAIKBNL (IDX)
+                       MOVE    SPA-GMN-NYUGAIKBNLST (IDX)
+                                           TO  SPA-GMN-NYUGAIKBN-G
+                       MOVE    SPA-GMN-NYUGAIKBN-MAX
+                                           TO  IDX
+                   END-IF
+               END-PERFORM                                                                              
+               IF      SYS-2003-DSPSEQ (1:3)   NOT NUMERIC
+                   MOVE    ZERO                TO  SYS-2003-DSPSEQ
+               END-IF
+               MOVE    SYS-2003-DSPSEQ     TO  SPA-GMN-DSPSEQ     
            END-IF     
       *         
            PERFORM VARYING IDX FROM    1   BY  1
@@ -439,6 +472,10 @@
                    MOVE    MCP-WIDGET          TO  WRK-WIDGET
                    MOVE    WRK-WIDGET2         TO  IDX 
                    PERFORM 4101-SYUBETU-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
+                   PERFORM 4102-NYUGAIKBN-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "DSPSEQ"
+                   PERFORM 4103-DSPSEQ-CHK-SEC
            END-EVALUATE
       *
            .
@@ -552,6 +589,54 @@
            .
        4101-SYUBETU-CHK-EXT.
            EXIT.
+      *     
+      *****************************************************************
+      *    入外区分チェック
+      *****************************************************************
+       4102-NYUGAIKBN-CHK-SEC       SECTION.
+      *
+           MOVE    14                   TO  SPA-GMN-CUR
+      *
+           MOVE    W09-NYUGAIKBN        TO  SPA-GMN-NYUGAIKBN-G
+      *
+           IF      SPA-GMN-NYUGAIKBN   NOT =   SPACE 
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-NYUGAIKBN-MAX
+                   IF      SPA-GMN-NYUGAIKBN    =
+                                       SPA-GMN-NYUGAIKBNL (IDX)
+                       MOVE    SPA-GMN-NYUGAIKBNLST (IDX)
+                                       TO  SPA-GMN-NYUGAIKBN-G
+                       MOVE    SPA-GMN-NYUGAIKBN-MAX
+                                       TO  IDX
+                   END-IF
+               END-PERFORM     
+      *
+               IF      SPA-GMN-NYUGAIKBNMEI    =   SPACE
+                   MOVE    "0005"              TO  SPA-ERRCD
+               END-IF                                                                             
+           END-IF
+      *
+           IF      SPA-ERRCD               =   SPACE     
+               MOVE    15                  TO  SPA-GMN-CUR
+           END-IF    
+           .
+       4102-NYUGAIKBN-CHK-EXT.
+           EXIT.
+      *     
+      *****************************************************************
+      *    表示順チェック
+      *****************************************************************
+       4103-DSPSEQ-CHK-SEC       SECTION.
+      *
+           MOVE    15                   TO  SPA-GMN-CUR
+      *
+           MOVE    W09-DSPSEQ           TO  SPA-GMN-DSPSEQ
+      *     
+           MOVE    3                    TO  SPA-GMN-CUR
+           .
+       4103-NYUGAIKBN-CHK-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    戻る　処理
@@ -655,6 +740,8 @@
            MOVE    SPA-W01-EDYUKYMD      TO  SYS-2003-EDYUKYMD
            MOVE    SPA-GMN-SYURUINAME    TO  SYS-2003-SYURUINAME
            MOVE    SPA-GMN-TEISYUTUSAKI  TO  SYS-2003-TEISYUTUSAKI
+           MOVE    SPA-GMN-NYUGAIKBN     TO  SYS-2003-NYUGAIKBN
+           MOVE    SPA-GMN-DSPSEQ        TO  SYS-2003-DSPSEQ
            INITIALIZE                        SYS-2003-SYUBETU-G
            MOVE    ZERO                  TO  IDY
            PERFORM VARYING IDX FROM    1   BY  1
@@ -703,6 +790,7 @@
            MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR 
       *
            PERFORM 4100-TEISYUTUSAKI-CHK-SEC
+           PERFORM 4102-NYUGAIKBN-CHK-SEC
            PERFORM 4100-SYURUINAME-CHK-SEC
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
@@ -759,7 +847,16 @@
                                        TO  W09-TEISYUTUSAKILST (IDX)
            END-PERFORM    
            MOVE    SPA-GMN-TEISYUTUSAKI-MAX TO  W09-TEISYUTUSAKI-COUNT
-           MOVE    SPA-GMN-PRTJYUNI        TO  W09-PRTJYUNI
+           MOVE    SPA-GMN-PRTJYUNI         TO  W09-PRTJYUNI
+           MOVE    SPA-GMN-NYUGAIKBN-G      TO  W09-NYUGAIKBN
+           PERFORM VARYING IDX FROM    1       BY  1
+                   UNTIL   IDX >       SPA-GMN-NYUGAIKBN-MAX
+               MOVE    SPA-GMN-NYUGAIKBNLST (IDX)
+                                       TO  W09-NYUGAIKBNLST (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-NYUGAIKBN-MAX
+                                       TO  W09-NYUGAIKBN-COUNT
+           MOVE    SPA-GMN-DSPSEQ      TO  W09-DSPSEQ     
       * 
            MOVE    SPA-GMN-SYURUINAME      TO  W09-SYURUINAME
            PERFORM VARYING IDX FROM    1   BY  1
@@ -784,9 +881,9 @@
       *
            MOVE    WIDGET-INSENSITIVE      TO  W09-B03-STATE
       *
-           IF      SPA-W01-SELNUM          >   ZERO    
-               MOVE    WIDGET-NORMAL      TO  W09-B03-STATE
-           END-IF 
+      **   IF      SPA-W01-SELNUM          >   ZERO    
+      **       MOVE    WIDGET-NORMAL      TO  W09-B03-STATE
+      **   END-IF 
            .
        51O-GSRAUTH-EXT.
            EXIT.
@@ -810,6 +907,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0005"
                    MOVE    "提出先区分がエラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "入外区分がエラーです"
                                                TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
@@ -906,6 +1006,10 @@
                     MOVE  "SYUBETU09"      TO   MCP-WIDGET
                 WHEN    12
                     MOVE  "SYUBETU10"      TO   MCP-WIDGET
+                WHEN    14
+                    MOVE  "NYUGAIKBN"      TO   MCP-WIDGET
+                WHEN    15
+                    MOVE  "DSPSEQ"         TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
             END-EVALUATE
