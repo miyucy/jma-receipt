@@ -336,7 +336,7 @@ K02	{
 				value	varchar(62);
 			};
 			count	int;
-			item	varchar(62)[23];
+			item	varchar(62)[32];
 		};
 		SYORIMEI	{
 		    style   varchar(20);

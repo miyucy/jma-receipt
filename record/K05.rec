@@ -309,5 +309,19 @@ K05	{
 		    style   varchar(20);
 			value	varchar(20);
 		};
+		NYUGAIKBNCOMB	{
+			NYUGAIKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
+		ROUJINCOMB	{
+			ROUJIN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[3];
+		};
 	};
 };
