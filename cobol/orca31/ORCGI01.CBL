@@ -8449,7 +8449,7 @@
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタの医療機関情報より取得
-           MOVE    "SYSKANRI-KEY2" TO  WRK-DBPATH
+           MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
       *
            IF   FLG-DBRC           =    ZERO
