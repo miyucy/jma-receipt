@@ -526,7 +526,7 @@
       *                ´µ¼ÔÃÂÀ¸Æü
                        11  SPA-GMN-I04-BIRTHDAY      PIC X(09).
       *                ´µ¼ÔÇ¯Îð
-                       11  SPA-GMN-I04-AGE           PIC X(07).
+                       11  SPA-GMN-I04-AGE           PIC X(08).
       *                ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
                        11  SPA-GMN-I04-HKNCOMBI      PIC X(60).
       *                ÉéÃ´Î¨

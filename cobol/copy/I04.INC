@@ -39,7 +39,7 @@
               03  I04-BIRTHDAY.
                 04  I04-VALUE   PIC X(9).
               03  I04-NENREI.
-                04  I04-VALUE   PIC X(7).
+                04  I04-VALUE   PIC X(8).
               03  I04-SRYKA.
                 04  I04-VALUE   PIC X(10).
               03  I04-HAKYMD.
