@@ -1066,10 +1066,10 @@
       *
            MOVE    2                   TO  SPA-GMN-Q01-UTAGAIKBNLST-MAX
       *
-           MOVE    "1"                 TO  SPA-GMN-Q01-UTAGAIKBNL (1)
+           MOVE    "0"                 TO  SPA-GMN-Q01-UTAGAIKBNL (1)
            MOVE    "含まない"          TO  SPA-GMN-Q01-UTAGAIKBNMEIL (1)
       *
-           MOVE    "2"                 TO  SPA-GMN-Q01-UTAGAIKBNL (2)
+           MOVE    "1"                 TO  SPA-GMN-Q01-UTAGAIKBNL (2)
            MOVE    "疑い病名のみ"      TO  SPA-GMN-Q01-UTAGAIKBNMEIL (2)
       *
            .

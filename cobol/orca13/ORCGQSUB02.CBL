@@ -2140,7 +2140,7 @@
       *
            PERFORM 900-SQL-JYOKEN-EDIT2-SEC
       *
-           IF    ( SPA-Q01-UTAGAIKBN   =   "2" )
+           IF    ( SPA-Q01-UTAGAIKBN   =   "1" )
                STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
                        ".UTAGAIFLG IN ('1','3')"
                                            DELIMITED BY SIZE
