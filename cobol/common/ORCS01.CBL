@@ -195,6 +195,7 @@
            03  FLG-ADDKBN              PIC 9(01). 
       *----(01.00.03) LINE ADD END   --------------------------
            03  FLG-LOCALRJN            PIC 9(01).
+           03  FLG-JGNKAISU            PIC 9(01).
       *
            03  WK-ERR                  PIC 9(01).
            03  WK-UERR                 PIC 9(01).
@@ -2702,6 +2703,18 @@
       ******************************************************************
        220-SYUNOU-SEC           SECTION.
       *
+           MOVE     ZERO        TO    FLG-JGNKAISU.
+           IF  (MAX-KAI-KOHI1-D  NOT = ZERO)   OR
+               (MAX-KAI-KOHI2-D  NOT = ZERO)   OR
+               (MAX-KAI-KOHI3-D  NOT = ZERO)   OR
+               (MAX-KAI-KOHI4-D  NOT = ZERO)   OR
+               (MAX-KAI-KOHI1-M  NOT = ZERO)   OR
+               (MAX-KAI-KOHI2-M  NOT = ZERO)   OR
+               (MAX-KAI-KOHI3-M  NOT = ZERO)   OR
+               (MAX-KAI-KOHI4-M  NOT = ZERO)   
+                  MOVE     1    TO    FLG-JGNKAISU
+           END-IF.
+      *
            IF  (COMB-KOH1-GAIJGNKBN        =       "1")      OR
                (COMB-KOH2-GAIJGNKBN        =       "1")      OR
                (COMB-KOH3-GAIJGNKBN        =       "1")      OR
@@ -2722,13 +2735,21 @@
                                                    MCPDATA-REC
                IF      MCP-RC             =       ZERO
                    MOVE    "SYUNOU-KEY14" TO      ORC-DBPATH
-                   PERFORM  SYUNOU-READ-SEC
+                   IF   FLG-JGNKAISU  =  1
+                       PERFORM  SYUNOU-READ2-SEC
+                   ELSE
+                       PERFORM  SYUNOU-READ-SEC
+                   END-IF
                    PERFORM  UNTIL  (FLG-SYUNOU   =    "1")
                      IF   SYU-DENPJTIKBN  NOT =  "3"
                              PERFORM        2201-SYUNOU-COUNT-SEC
                      END-IF
                      MOVE           "SYUNOU-KEY14"   TO   ORC-DBPATH
-                     PERFORM        SYUNOU-READ-SEC
+                     IF   FLG-JGNKAISU  =  1
+                       PERFORM  SYUNOU-READ2-SEC
+                     ELSE
+                       PERFORM  SYUNOU-READ-SEC
+                     END-IF
                    END-PERFORM
                    MOVE        LNK-SYU-SRYYMD(7:2)   TO   IDX2X
                    MOVE        KOHI1-TBL(IDX2) TO    KAISU-KOHI1-D
@@ -3455,26 +3476,26 @@
       *
       *    ≤·µÓ§Œ¥µº‘ ›∏±…È√¥Œﬂ∑◊≥€§»æÂ∏¬∂‚≥€§Œ»Ê≥”
       *
-           IF       MAX-KIN-KOHI1-D        NOT =  ZERO
-               IF   FTN-KOHI1-D            >=     MAX-KIN-KOHI1-D
-                    MOVE     "1"           TO     FLG-SANTEI1
-               END-IF
-           END-IF.
-           IF       MAX-KIN-KOHI2-D        NOT =  ZERO
-               IF   FTN-KOHI2-D            >=     MAX-KIN-KOHI2-D
-                    MOVE     "1"           TO     FLG-SANTEI2
-               END-IF
-           END-IF.
-           IF       MAX-KIN-KOHI3-D        NOT =  ZERO
-               IF   FTN-KOHI3-D            >=     MAX-KIN-KOHI3-D
-                    MOVE     "1"           TO     FLG-SANTEI3
-               END-IF
-           END-IF.
-           IF       MAX-KIN-KOHI4-D        NOT =  ZERO
-               IF   FTN-KOHI4-D            >=     MAX-KIN-KOHI4-D
-                    MOVE     "1"           TO     FLG-SANTEI4
-               END-IF
-           END-IF.
+      ***     IF       MAX-KIN-KOHI1-D        NOT =  ZERO
+      ***         IF   FTN-KOHI1-D            >=     MAX-KIN-KOHI1-D
+      ***              MOVE     "1"           TO     FLG-SANTEI1
+      ***         END-IF
+      ***     END-IF.
+      ***     IF       MAX-KIN-KOHI2-D        NOT =  ZERO
+      ***         IF   FTN-KOHI2-D            >=     MAX-KIN-KOHI2-D
+      ***              MOVE     "1"           TO     FLG-SANTEI2
+      ***         END-IF
+      ***     END-IF.
+      ***     IF       MAX-KIN-KOHI3-D        NOT =  ZERO
+      ***         IF   FTN-KOHI3-D            >=     MAX-KIN-KOHI3-D
+      ***              MOVE     "1"           TO     FLG-SANTEI3
+      ***         END-IF
+      ***     END-IF.
+      ***     IF       MAX-KIN-KOHI4-D        NOT =  ZERO
+      ***         IF   FTN-KOHI4-D            >=     MAX-KIN-KOHI4-D
+      ***              MOVE     "1"           TO     FLG-SANTEI4
+      ***         END-IF
+      ***     END-IF.
       *
       *----(01.00.23) LINE ADD START --------------------------
       * ø¿Æ£±£¥«Ø£±£∞∑Ó≤˛¿µ¬–±˛
@@ -3489,26 +3510,26 @@
                END-IF
            END-IF.
       *----(01.00.23) LINE ADD END   --------------------------
-           IF       MAX-KIN-KOHI1-M        NOT =  ZERO
-               IF   FTN-KOHI1-M            >=     MAX-KIN-KOHI1-M
-                    MOVE     "1"           TO     FLG-SANTEI1
-               END-IF
-           END-IF.
-           IF       MAX-KIN-KOHI2-M        NOT =  ZERO
-               IF   FTN-KOHI2-M            >=     MAX-KIN-KOHI2-M
-                    MOVE     "1"           TO     FLG-SANTEI2
-               END-IF
-           END-IF.
-           IF       MAX-KIN-KOHI3-M        NOT =  ZERO
-               IF   FTN-KOHI3-M            >=     MAX-KIN-KOHI3-M
-                    MOVE     "1"           TO     FLG-SANTEI3
-               END-IF
-           END-IF.
-           IF       MAX-KIN-KOHI4-M        NOT =  ZERO
-               IF   FTN-KOHI4-M            >=     MAX-KIN-KOHI4-M
-                    MOVE     "1"           TO     FLG-SANTEI4
-               END-IF
-           END-IF.
+      ***     IF       MAX-KIN-KOHI1-M        NOT =  ZERO
+      ***         IF   FTN-KOHI1-M            >=     MAX-KIN-KOHI1-M
+      ***              MOVE     "1"           TO     FLG-SANTEI1
+      ***         END-IF
+      ***     END-IF.
+      ***     IF       MAX-KIN-KOHI2-M        NOT =  ZERO
+      ***         IF   FTN-KOHI2-M            >=     MAX-KIN-KOHI2-M
+      ***              MOVE     "1"           TO     FLG-SANTEI2
+      ***         END-IF
+      ***     END-IF.
+      ***     IF       MAX-KIN-KOHI3-M        NOT =  ZERO
+      ***         IF   FTN-KOHI3-M            >=     MAX-KIN-KOHI3-M
+      ***              MOVE     "1"           TO     FLG-SANTEI3
+      ***         END-IF
+      ***     END-IF.
+      ***     IF       MAX-KIN-KOHI4-M        NOT =  ZERO
+      ***         IF   FTN-KOHI4-M            >=     MAX-KIN-KOHI4-M
+      ***              MOVE     "1"           TO     FLG-SANTEI4
+      ***         END-IF
+      ***     END-IF.
       *
       *     ›∏±° ∏¯»Ò°À•∆°º•÷•Î§Œ¥µº‘…È√¥æÂ∏¬≥€§»≈ˆ∑Ó§Œ¥µº‘…È√¥Œﬂ∑◊≥€
       *    §´§ÈªªƒÍ≤ƒ«Ωªƒ≥€§ÚªªΩ–§π§Î
@@ -5401,6 +5422,58 @@
       ******************************************************************
        2314-FTNKIN-HIKAKU-SEC         SECTION.
       *
+           IF   COMB-KOH1HKNNUM        NOT   =   "027" 
+           AND  COMB-HKNNUM            NOT   =   SPACE
+               IF   LNK-SYU-KOH1HKNNUM   NOT =  SPACE
+               AND  LNK-SYU-KOH1COMPFTN      >   LNK-SYU-SYUCOMPFTN
+                   MOVE   LNK-SYU-SYUCOMPFTN TO  LNK-SYU-KOH1COMPFTN
+                   COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
+                             LNK-SYU-KOH1COMPFTN     +
+                             LNK-SYU-KOH1COMPYKZFTN
+                   IF    WK-KOH-COMPFTN(1)  =  ALL"9"
+                       CONTINUE
+                   ELSE
+                      MOVE  LNK-SYU-SYUCOMPFTN TO   WK-KOH-COMPFTN(1)
+                   END-IF
+               END-IF
+               IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
+               AND  LNK-SYU-KOH2COMPFTN      >   LNK-SYU-SYUCOMPFTN
+                   MOVE   LNK-SYU-SYUCOMPFTN TO  LNK-SYU-KOH2COMPFTN
+                   COMPUTE   LNK-SYU-KOH2COMPTOTAL   =
+                             LNK-SYU-KOH2COMPFTN     +
+                             LNK-SYU-KOH2COMPYKZFTN
+                   IF    WK-KOH-COMPFTN(2)  =  ALL"9"
+                       CONTINUE
+                   ELSE
+                      MOVE  LNK-SYU-SYUCOMPFTN TO   WK-KOH-COMPFTN(2)
+                   END-IF
+               END-IF
+               IF   LNK-SYU-KOH3HKNNUM   NOT =  SPACE
+               AND  LNK-SYU-KOH3COMPFTN      >   LNK-SYU-SYUCOMPFTN
+                   MOVE   LNK-SYU-SYUCOMPFTN TO  LNK-SYU-KOH3COMPFTN
+                   COMPUTE   LNK-SYU-KOH3COMPTOTAL   =
+                             LNK-SYU-KOH3COMPFTN     +
+                             LNK-SYU-KOH3COMPYKZFTN
+                   IF    WK-KOH-COMPFTN(3)  =  ALL"9"
+                       CONTINUE
+                   ELSE
+                      MOVE  LNK-SYU-SYUCOMPFTN TO   WK-KOH-COMPFTN(3)
+                   END-IF
+               END-IF
+               IF   LNK-SYU-KOH4HKNNUM   NOT =  SPACE
+               AND  LNK-SYU-KOH4COMPFTN      >   LNK-SYU-SYUCOMPFTN
+                   MOVE   LNK-SYU-SYUCOMPFTN TO  LNK-SYU-KOH4COMPFTN
+                   COMPUTE   LNK-SYU-KOH4COMPTOTAL   =
+                             LNK-SYU-KOH4COMPFTN     +
+                             LNK-SYU-KOH4COMPYKZFTN
+                   IF    WK-KOH-COMPFTN(4)  =  ALL"9"
+                       CONTINUE
+                   ELSE
+                      MOVE  LNK-SYU-SYUCOMPFTN TO   WK-KOH-COMPFTN(4)
+                   END-IF
+               END-IF
+           END-IF.
+      *
       *    ¿¡µ·≥€»Ê≥”
            MOVE    ZERO               TO    WK-KNJFTNKIN.
       *    ºÁ ›∏±§Œ§ﬂ
@@ -5480,62 +5553,14 @@
                END-IF
            END-IF.
       *
-      ***  IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"   
-      ***  AND  COMB-KOH1HKNNUM        NOT   =   "027" 
-      ***  AND  COMB-HKNNUM            NOT   =   SPACE
            IF   COMB-KOH1HKNNUM        NOT   =   "027" 
            AND  COMB-HKNNUM            NOT   =   SPACE
-               MOVE    LNK-SYU-SYUCOMPFTN     TO  WK-KNJFTNKIN
-               IF   LNK-SYU-KOH1HKNNUM   NOT =  SPACE
-               AND  LNK-SYU-KOH1COMPFTN      <     WK-KNJFTNKIN
-                   MOVE   LNK-SYU-KOH1COMPFTN TO  WK-KNJFTNKIN
+               IF  LNK-SYU-SYUCOMPFTN       <     WK-KNJFTNKIN
+                   MOVE   LNK-SYU-SYUCOMPFTN    TO   WK-KNJFTNKIN
                END-IF
-               IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
-               AND  LNK-SYU-KOH2COMPFTN      <     WK-KNJFTNKIN
-                   MOVE   LNK-SYU-KOH2COMPFTN TO  WK-KNJFTNKIN
+               IF  LNK-SYU-SYUCOMPYKZFTN    <     LNK-SYU-YKZ-FTN
+                   MOVE   LNK-SYU-SYUCOMPYKZFTN TO   LNK-SYU-YKZ-FTN
                END-IF
-               IF   LNK-SYU-KOH3HKNNUM   NOT =  SPACE
-               AND  LNK-SYU-KOH3COMPFTN      <     WK-KNJFTNKIN
-                   MOVE   LNK-SYU-KOH3COMPFTN TO  WK-KNJFTNKIN
-               END-IF
-               IF   LNK-SYU-KOH4HKNNUM   NOT =  SPACE
-               AND  LNK-SYU-KOH4COMPFTN      <     WK-KNJFTNKIN
-                   MOVE   LNK-SYU-KOH4COMPFTN TO  WK-KNJFTNKIN
-               END-IF
-               IF     LNK-SYU-SYUCOMPFTN   =  WK-KNJFTNKIN               
-                  IF  LNK-SYU-KOH1HKNNUM   NOT =  SPACE
-                    MOVE  LNK-SYU-SYUCOMPFTN   TO   LNK-SYU-KOH1COMPFTN  
-                    IF    WK-KOH-COMPFTN(1)  =  ALL"9"                  
-                       CONTINUE                                         
-                    ELSE                                                
-                      MOVE  LNK-SYU-SYUCOMPFTN TO   WK-KOH-COMPFTN(1)   
-                    END-IF                                              
-                  END-IF
-                  IF  LNK-SYU-KOH2HKNNUM   NOT =  SPACE
-                    MOVE  LNK-SYU-SYUCOMPFTN   TO   LNK-SYU-KOH2COMPFTN  
-                    IF    WK-KOH-COMPFTN(2)  =  ALL"9"                  
-                       CONTINUE                                         
-                    ELSE                                                
-                      MOVE  LNK-SYU-SYUCOMPFTN TO   WK-KOH-COMPFTN(2)   
-                    END-IF                                              
-                  END-IF
-                  IF  LNK-SYU-KOH3HKNNUM   NOT =  SPACE
-                    MOVE  LNK-SYU-SYUCOMPFTN   TO   LNK-SYU-KOH3COMPFTN  
-                    IF    WK-KOH-COMPFTN(3)  =  ALL"9"                  
-                       CONTINUE                                         
-                    ELSE                                                
-                      MOVE  LNK-SYU-SYUCOMPFTN TO   WK-KOH-COMPFTN(3)   
-                    END-IF                                              
-                  END-IF
-                  IF  LNK-SYU-KOH4HKNNUM   NOT =  SPACE
-                    MOVE  LNK-SYU-SYUCOMPFTN   TO   LNK-SYU-KOH4COMPFTN  
-                    IF    WK-KOH-COMPFTN(4)  =  ALL"9"                  
-                       CONTINUE                                         
-                    ELSE                                                
-                      MOVE  LNK-SYU-SYUCOMPFTN TO   WK-KOH-COMPFTN(4)   
-                    END-IF                                              
-                  END-IF
-               END-IF                                                    
            END-IF.
       *
       *    º˝«º•∆°º•÷•Î§Œ¿¡µ·≥€§Ú•ª•√•»
@@ -6779,7 +6804,33 @@
       *
        SYUNOU-READ-EXT.
            EXIT.
-      
+      *****************************************************************
+      *    º˝«º•ﬁ•π•ø°º∆…π˛° æÂ∏¬≤ÛøÙ§¨§¢§ÎæÏπÁ°À
+      *****************************************************************
+       SYUNOU-READ2-SEC          SECTION.
+      *
+       SYUNOU-READ2-100.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
+               IF     (LNK-S01-SAIKEISAN-KBN    =   "1")    AND
+                      (LNK-S01-SAIKEISAN-DENPYO <=   SYU-DENPNUM)
+                       GO    TO    SYUNOU-READ2-100
+               ELSE
+                       MOVE    ZERO    TO  FLG-SYUNOU
+               END-IF
+           ELSE
+               INITIALIZE                  SYU-SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF.
+      *
+       SYUNOU-READ2-EXT.
+           EXIT.
       *****************************************************************
       *    ¥µº‘æ Û∆…π˛
       *****************************************************************

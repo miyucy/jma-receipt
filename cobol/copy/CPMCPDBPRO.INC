@@ -294,6 +294,7 @@
       *  01.01.113   NACL-太田  　03/12/10  SRYACCT-KEY27,KEY28追加
       *  01.01.114   NACL-太田  　03/12/10  NYUINACCT-KEY20追加
       *  01.01.115   NACL-太田  　03/12/11  PTBYOMEI-KEY16,KEY17追加
+      *  01.01.116   NACL-門脇  　04/01/06  SYUDAY-KEY,DEL1追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1075,6 +1076,11 @@
                WHEN    "DBUPDATE"      ALSO   "KOHPLUS-UPD1"
                    MOVE    PATH-TBL-KOHPLUS-UPD1
                                        TO  WRK-PATH
+      *
+               WHEN    "DBDELETE"      ALSO   "SYUDAY-DEL1"
+                   MOVE    PATH-TBL-SYUDAY-DEL1
+                                       TO  WRK-PATH
+      *
       *---- (NYUIN.08) LINE ADD END      ------------------------------
                WHEN    ANY             ALSO   "SYSKANRI-KEY"
                    MOVE    PATH-TBL-SYSKANRI-KEY
@@ -2996,6 +3002,11 @@
                WHEN    ANY             ALSO   "BD003-KEY4"
                    MOVE    PATH-VIEW-BD003-KEY4
                                        TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "SYUDAY-KEY"
+                   MOVE    PATH-TBL-SYUDAY-KEY
+                                       TO  WRK-PATH
+      *
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC
            END-EVALUATE

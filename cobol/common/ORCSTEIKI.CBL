@@ -37,6 +37,7 @@
       *  00.00.06    NACL-ÌçÏÆ    03/04/16  Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²
       *                                     ¡Ü½é¿Ç»þ¡¡ÂÐ±þ
       *  00.00.07    NACL-ÌçÏÆ    03/07/28  Ï«ºÒ¡¦¼«ÇåÀÕÆþ±¡ÂÐ±þ
+      *  00.00.08    NACL-ÌçÏÆ    03/12/02  ÆüÊÌ¼ýÇ¼¥Þ¥¹¥¿¹¹¿·Åù
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -152,9 +153,17 @@
        01  TABLE-RMSAGAKU.
            03  TBL-RMSAGAKU                PIC 9(05)   OCCURS  50.
       *
+      * Æþ±¡ÎÁ¥Õ¥é¥°ÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
+       01  TABLE-NYUIN.                                                 XXX
+           03  TBL-NYUIN                   PIC 9(01)   OCCURS  31.      XXX
+      *
       * ³°ÇñÂàÈòÍÑ¥Æ¡¼¥Ö¥ë     
        01  TABLE-GAIHAKU.
            03  TBL-GAIHAKU                 PIC 9(01)   OCCURS  31.
+      *
+      * ¿ÇÎÅ²ñ·×ºÞ²ó¿ôÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
+       01  TABLE-ZAIKAISU.                                              XXX
+           03  TBL-ZAIKAISU                PIC 9(03)   OCCURS  31.      XXX
       *
       * ³°Çñ¥«¥¦¥ó¥ÈÎÎ°è     
        01  WRK-GAIHAKU-COUNT               PIC 9(02).
@@ -244,6 +253,15 @@
          02 WRK-SYUNOU-REC     OCCURS 10.
            COPY    "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYU-//.
       *
+      *    ÆüÊÌ¼ýÇ¼¥Þ¥¹¥¿                                               YYY
+       01  SYUDAY-REC.
+           COPY    "CPSYUDAY.INC".
+      *
+      *    ¥ï¡¼¥¯ÆüÊÌ¼ýÇ¼¥Þ¥¹¥¿                                         YYY
+       01  WRK-SYUDAY-REC-T.
+         02 WRK-SYUDAY-REC     OCCURS 10.
+           COPY    "CPSYUDAY.INC" REPLACING  //SDAY-// BY //WRK-SDAY-//.
+      *
       *    Æþ±¡²ñ·×
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
@@ -313,11 +331,15 @@
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 10.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
+       01  LNK-SYUDAY-REC-T.                                            YYY
+         02 LNK-SYUDAY-REC     OCCURS 10.
+           COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
       /
        PROCEDURE           DIVISION  USING
                                      SPA-AREA
                                      LNK-ORCS02-REC
-                                     LNK-SYUNOU-REC-T.
+                                     LNK-SYUNOU-REC-T
+                                     LNK-SYUDAY-REC-T.                  YYY
       ******************************************************************
       *        °ÍÍêÀ©¸æ½èÍý
       ******************************************************************
@@ -333,8 +355,10 @@
            MOVE    ZERO            TO  NYUIN-COUNT.
       *
            INITIALIZE    LNK-SYUNOU-REC-T.
+           INITIALIZE    LNK-SYUDAY-REC-T.                              YYY
       *
            INITIALIZE    WRK-SYUNOU-REC-T.
+           INITIALIZE    WRK-SYUDAY-REC-T.                              YYY
       *
            INITIALIZE    WRK-AREA
                          WRK-SKYYM-TABLE
@@ -386,12 +410,14 @@
       *
                 MOVE     LNK-ORCS02-REC       TO  WRK-ORCS02-REC
                 MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
+                MOVE     LNK-SYUDAY-REC(IDX)  TO  SYUDAY-REC            YYY
       *
                 IF       IDX   >   1
                    PERFORM    VARYING   IDY    FROM   1   BY   1
                                  UNTIL  IDY    >    IDX - 1
       *
                       MOVE  LNK-SYUNOU-REC(IDY) TO WRK-SYUNOU-REC(IDY)  
+                      MOVE  LNK-SYUDAY-REC(IDY) TO WRK-SYUDAY-REC(IDY)  YYY
       *
                    END-PERFORM
                 END-IF
@@ -400,14 +426,19 @@
                                                WRK-ORCS02-REC
                                                SYUNOU-REC
                                                WRK-SYUNOU-REC-T
+                                               SYUDAY-REC               YYY
+                                               WRK-SYUDAY-REC-T         YYY
       *
       *         MOVE     "2"                  TO  SYU-DENPJTIKBN
                 IF       WRK-S02-TEIKI-KBN    =   "X"
                     MOVE     "3"              TO  SYU-CREATEKBN
+                                                  SDAY-CREATEKBN        YYY
                 ELSE
                     MOVE     "2"              TO  SYU-CREATEKBN
+                                                  SDAY-CREATEKBN        YYY
                 END-IF
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
+                MOVE     SYUDAY-REC           TO  LNK-SYUDAY-REC(IDX)   YYY
                 MOVE     WRK-ORCS02-REC       TO  LNK-ORCS02-REC 
       *
            END-PERFORM.
@@ -748,23 +779,33 @@
       *
               PERFORM    VARYING   IDY   FROM   1   BY   1
                                          UNTIL    IDY    >    31
-      *
                 IF        WRK-HANBETU-DAY(IDX IDY)   NOT =  SPACE 
                    MOVE   IDY     TO    WRK-HANBETU-KAISHI(IDX)
                    MOVE   31      TO    IDY
                 END-IF
-      *
               END-PERFORM
+      *
+      ***     IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(1)
+      ***         MOVE   WRK-HI-ST(1)  TO  WRK-HANBETU-KAISHI(IDX)
+      ***     END-IF
+      ***     IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(2)
+      ***         MOVE   WRK-HI-ST(2)  TO  WRK-HANBETU-KAISHI(IDX)
+      ***     END-IF
       *
               PERFORM    VARYING   IDY   FROM  31   BY  -1
                                          UNTIL    IDY    <    1
-      *
                 IF        WRK-HANBETU-DAY(IDX IDY)   NOT =  SPACE 
                    MOVE   IDY     TO    WRK-HANBETU-SYURYO(IDX)
                    MOVE   1       TO    IDY
                 END-IF
-      *
               END-PERFORM
+      *
+      ***     IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(1)
+      ***         MOVE   WRK-HI-ED(1)  TO  WRK-HANBETU-SYURYO(IDX)
+      ***     END-IF
+      ***     IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(2)
+      ***         MOVE   WRK-HI-ED(2)  TO  WRK-HANBETU-SYURYO(IDX)
+      ***     END-IF
       *
            END-PERFORM.
       *
@@ -1079,6 +1120,14 @@
                                       TO LNK-SYU-DAY(IDX IDY)
               END-PERFORM
       *
+      *       ¥ï¡¼¥¯ÆüÊÌ¼ýÇ¼¥ì¥³¡¼¥É¥»¥Ã¥È½èÍý                          YYY
+      *
+              MOVE LNK-S02-HOSPID     TO LNK-SDAY-HOSPID(IDX)
+              MOVE LNK-S02-NYUGAIKBN  TO LNK-SDAY-NYUGAIKBN(IDX)
+              MOVE LNK-S02-PTID       TO LNK-SDAY-PTID(IDX)
+              MOVE WRK-HANBETU-SKYYM(IDX)
+                                      TO LNK-SDAY-SKYYM(IDX)
+      *
            END-PERFORM. 
       *
        SYUNOU-SET-EXT.
@@ -1090,6 +1139,7 @@
        NYUIN-KAIKEI-SET-SEC         SECTION.
       *
            MOVE    LNK-SYUNOU-REC(IDX) TO  SYUNOU-REC
+           MOVE    LNK-SYUDAY-REC(IDX) TO  SYUDAY-REC                   YYY
       *
       *³°Çñ¾ðÊó¤Î¼èÆÀ
            MOVE    ZERO                TO  FLG-NYUINACCT
@@ -1161,6 +1211,7 @@
       *Æþ±¡ÎÁ´Ø·¸¤Î¼èÆÀ
       *
            MOVE    ZERO                TO  NYUIN-COUNT
+           INITIALIZE                      TABLE-NYUIN                  XXX
            MOVE    SPACE               TO  HKNTEKGAI-NYUIN
            INITIALIZE                      HKNTEKGAI-NYUIN
       *
@@ -1214,12 +1265,39 @@
                             WHEN  2
                                 COMPUTE SYU-HKNTEN(11) = SYU-HKNTEN(11)
                                                     - (5 * NYUIN-COUNT)
+                                PERFORM VARYING SYU-IDX FROM 1 BY 1     XXX
+                                         UNTIL    SYU-IDX  >   31       XXX
+                                 IF (TBL-NYUIN(SYU-IDX) NOT = ZERO) AND XXX
+                                    (TBL-GAIHAKU(SYU-IDX)   = ZERO)     XXX
+                                    COMPUTE SDAY-HKNTEN(SYU-IDX) =      XXX
+                                            SDAY-HKNTEN(SYU-IDX) -      XXX
+                                            5                           XXX
+                                 END-IF                                 XXX
+                                END-PERFORM                             XXX
                             WHEN  3
                                 COMPUTE SYU-HKNTEN(11) = SYU-HKNTEN(11)
                                                    - (10 * NYUIN-COUNT)
+                                PERFORM VARYING SYU-IDX FROM 1 BY 1     XXX
+                                         UNTIL    SYU-IDX  >   31       XXX
+                                 IF (TBL-NYUIN(SYU-IDX) NOT = ZERO) AND XXX
+                                    (TBL-GAIHAKU(SYU-IDX)   = ZERO)     XXX
+                                    COMPUTE SDAY-HKNTEN(SYU-IDX) =      XXX
+                                            SDAY-HKNTEN(SYU-IDX) -      XXX
+                                            10                          XXX
+                                 END-IF                                 XXX
+                                END-PERFORM                             XXX
                             WHEN  4
                                 COMPUTE SYU-HKNTEN(11) = SYU-HKNTEN(11)
                                                     - (5 * NYUIN-COUNT)
+                                PERFORM VARYING SYU-IDX FROM 1 BY 1     XXX
+                                         UNTIL    SYU-IDX  >   31       XXX
+                                 IF (TBL-NYUIN(SYU-IDX) NOT = ZERO) AND XXX
+                                    (TBL-GAIHAKU(SYU-IDX)   = ZERO)     XXX
+                                    COMPUTE SDAY-HKNTEN(SYU-IDX) =      XXX
+                                            SDAY-HKNTEN(SYU-IDX) -      XXX
+                                            5                           XXX
+                                 END-IF                                 XXX
+                                END-PERFORM                             XXX
                         END-EVALUATE
                     END-IF
                END-PERFORM
@@ -1233,6 +1311,7 @@
            PERFORM   CSR-CLOSE-SEC
       *
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU-REC(IDX)
+           MOVE    SYUDAY-REC          TO  LNK-SYUDAY-REC(IDX)          YYY
       *
            .
       *
@@ -1245,6 +1324,7 @@
        NYUIN-KAIKEI-SET2-SEC         SECTION.
       *
            MOVE    LNK-SYUNOU-REC(IDX) TO  SYUNOU-REC
+           MOVE    LNK-SYUDAY-REC(IDX) TO  SYUDAY-REC                   YYY
       *
       *Æþ±¡ÎÁ´Ø·¸¤Î¼èÆÀ
       *
@@ -1282,6 +1362,7 @@
            PERFORM      ROSAI-JIBAI-NYUINRYO-SEC
       *
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU-REC(IDX)
+           MOVE    SYUDAY-REC          TO  LNK-SYUDAY-REC(IDX)          YYY
       *
            .
       *
@@ -1397,23 +1478,34 @@
                        IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
                            (NACCT-DAY(SYU-IDX) NOT =  ZERO)
                            ADD        1      TO    NYUIN-COUNT
+                           MOVE   NACCT-DAY(SYU-IDX)                    XXX
+                                      TO  TBL-NYUIN(SYU-IDX)            XXX
                            IF    TBL-SENTEI(SYU-IDX)   =   ZERO
                                EVALUATE   TBL-GAIHAKU(SYU-IDX)
                                  WHEN   ZERO
                                      ADD    NACCT-ZAITEN
-                                                    TO  SYU-HKNTEN(11)
+                                           TO  SYU-HKNTEN(11)
+                                               SDAY-HKNTEN(SYU-IDX)     XXX
       *                          ³°Çñ¡Ê£±£µ¡ó¡Ë
                                  WHEN   1
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
                                              ((WRK-KHNTEN    *  0.15)
                                                              +  0.5)
+                                     COMPUTE  SDAY-HKNTEN(SYU-IDX) =    XXX
+                                              SDAY-HKNTEN(SYU-IDX) +    XXX
+                                             ((WRK-KHNTEN    *  0.15)   XXX
+                                                             +  0.5)    XXX
       *                          ³°Çñ¡Ê£³£°¡ó¡Ë
                                  WHEN   2
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
                                             ((WRK-KHNTEN      *  0.3)
                                                               +  0.5)
+                                     COMPUTE  SDAY-HKNTEN(SYU-IDX) =    XXX
+                                              SDAY-HKNTEN(SYU-IDX) +    XXX
+                                            ((WRK-KHNTEN      *  0.3)   XXX
+                                                              +  0.5)   XXX
       *                          ³°Çñ¡ÊÁªÄêÎÅÍÜÈñ£±£°¡ó¡Ë
                                  WHEN   3
                                      COMPUTE  SYU-HKNTEN(11)  =
@@ -1421,26 +1513,41 @@
                                             ((WRK-KHNTEN      *
                                               WRK-SENTEI-GAIHAKU-KEISU)
                                                               +  0.5)
+                                     COMPUTE  SDAY-HKNTEN(SYU-IDX) =    XXX
+                                              SDAY-HKNTEN(SYU-IDX) +    XXX
+                                            ((WRK-KHNTEN      *         XXX
+                                              WRK-SENTEI-GAIHAKU-KEISU) XXX
+                                                              +  0.5)   XXX
       *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç¡Ê£±£µ¡ó¡Ë
                                  WHEN   4
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
                                             ((WRK-KHNTEN      *  0.15)
                                                               +  0.5)
+                                     COMPUTE  SDAY-HKNTEN(SYU-IDX) =    XXX
+                                              SDAY-HKNTEN(SYU-IDX) +    XXX
+                                            ((WRK-KHNTEN      *  0.15)  XXX
+                                                              +  0.5)   XXX
                                END-EVALUATE
                            ELSE
       *                        ÁªÄê´ü´Ö¤ÎÅÀ¿ô»»Äê
                                EVALUATE   TBL-GAIHAKU(SYU-IDX)
                                  WHEN   ZERO
                                      ADD    WRK-SENTEI-ZAITEN
-                                                    TO  SYU-HKNTEN(11)
+                                           TO  SYU-HKNTEN(11)
+                                               SDAY-HKNTEN(SYU-IDX)     XXX
       *                          ³°Çñ
                                  WHEN   1
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
-                                             ((WRK-KHNTEN    *
-                                               WRK-SENTEI-GAIHAKU-KEISU)
+                                            ((WRK-KHNTEN    *
+                                              WRK-SENTEI-GAIHAKU-KEISU)
                                                              +  0.5)
+                                     COMPUTE  SDAY-HKNTEN(SYU-IDX) =    XXX
+                                              SDAY-HKNTEN(SYU-IDX) +    XXX
+                                            ((WRK-KHNTEN    *           XXX
+                                              WRK-SENTEI-GAIHAKU-KEISU) XXX
+                                                             +  0.5)    XXX
       *                          ³°Çñ¡ÊÁªÄêÎÅÍÜÈñ£±£°¡ó¡Ë
                                  WHEN   3
                                      COMPUTE  SYU-HKNTEN(11)  =
@@ -1448,6 +1555,11 @@
                                             ((WRK-KHNTEN      *
                                               WRK-SENTEI-GAIHAKU-KEISU)
                                                               +  0.5)
+                                     COMPUTE  SDAY-HKNTEN(SYU-IDX) =    XXX
+                                              SDAY-HKNTEN(SYU-IDX) +    XXX
+                                            ((WRK-KHNTEN      *         XXX
+                                              WRK-SENTEI-GAIHAKU-KEISU) XXX
+                                                              +  0.5)   XXX
       *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç
                                  WHEN   4
                                      COMPUTE  SYU-HKNTEN(11)  =
@@ -1455,6 +1567,11 @@
                                             ((WRK-KHNTEN      *
                                               WRK-SENTEI-GAIHAKU-KEISU)
                                                               +  0.5)
+                                     COMPUTE  SDAY-HKNTEN(SYU-IDX) =    XXX
+                                              SDAY-HKNTEN(SYU-IDX) +    XXX
+                                            ((WRK-KHNTEN      *         XXX
+                                              WRK-SENTEI-GAIHAKU-KEISU) XXX
+                                                              +  0.5)   XXX
                                END-EVALUATE
       *                        ÁªÄê´ü´Ö¤Î´µ¼Ô¼«¸ÊÉéÃ´³Û»»Äê
                                PERFORM    SENTEI-PTFTN-SEC
@@ -1470,7 +1587,9 @@
                        IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
                            (NACCT-DAY(SYU-IDX) NOT =  ZERO)    AND
                            (TBL-GAIHAKU(SYU-IDX)   =  ZERO  OR  4)
-                           ADD   NACCT-ZAITEN   TO    SYU-HKNTEN(11)
+                           ADD   NACCT-ZAITEN   TO
+                                             SYU-HKNTEN(11)
+                                             SDAY-HKNTEN(SYU-IDX)       XXX
                        END-IF
                    END-PERFORM
                END-IF
@@ -2295,6 +2414,7 @@
        SINRYO-KAIKEI-SET-SEC         SECTION.
       *
            MOVE    LNK-SYUNOU-REC(IDX) TO  SYUNOU-REC
+           MOVE    LNK-SYUDAY-REC(IDX) TO  SYUDAY-REC                   YYY
       *
            MOVE    SPACE               TO  HKNTEKGAI-TABLE
            INITIALIZE                      HKNTEKGAI-TABLE
@@ -2349,6 +2469,7 @@
            PERFORM   HKNTEKGAI-SET-SEC
       *
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU-REC(IDX)
+           MOVE    SYUDAY-REC          TO  LNK-SYUDAY-REC(IDX)          YYY
       *
            .
       *
@@ -2363,13 +2484,21 @@
       *    Æþ±¡Æü¤È¿ÇÎÅÆü¡Ê¿ÇÎÅ²ñ·×¥Æ¡¼¥Ö¥ë¤Î¥«¥ì¥ó¥À¡¼¡Ë¤òÈæ³Ó¤·¤Æ
       *    »»ÄêÂÐ¾ÝÆü¿ô¤òµá¤á¤ë
            MOVE      ZERO          TO     SINRYO-COUNT
+           INITIALIZE                     TABLE-ZAIKAISU                XXX
            IF   ACCT-SRYKBN  =  "90"  OR  "92"
              PERFORM   VARYING   SYU-IDX   FROM   1   BY   1
                      UNTIL      SYU-IDX   >   31
                  IF  (SYU-DAY(SYU-IDX)       =     "1"         )   AND
                      (ACCT-DAY(1 SYU-IDX)    NOT =  ZERO)          AND
                      (SYU-HKNCOMBINUM        =    ACCT-HKNCOMBI)
-                     ADD   ACCT-DAY(1 SYU-IDX)    TO     SINRYO-COUNT
+                     ADD   ACCT-DAY(1 SYU-IDX)
+                                      TO   SINRYO-COUNT
+                     IF   SYU-SYUHKNNUM  =  "971"  OR  "973"            XXX
+                        CONTINUE                                        XXX
+                     ELSE                                               XXX
+                        MOVE  ACCT-DAY(1 SYU-IDX)                       XXX
+                                      TO   TBL-ZAIKAISU(SYU-IDX)        XXX
+                     END-IF                                             XXX
                  END-IF
              END-PERFORM
            ELSE
@@ -2378,7 +2507,14 @@
                  IF  (SYU-DAY(SYU-IDX)       =     "1"  OR  "2")   AND
                      (ACCT-DAY(1 SYU-IDX)    NOT =  ZERO)          AND
                      (SYU-HKNCOMBINUM        =    ACCT-HKNCOMBI)
-                     ADD   ACCT-DAY(1 SYU-IDX)    TO     SINRYO-COUNT
+                     ADD   ACCT-DAY(1 SYU-IDX)
+                                      TO   SINRYO-COUNT
+                     IF   SYU-SYUHKNNUM  =  "971"  OR  "973"            XXX
+                        CONTINUE                                        XXX
+                     ELSE                                               XXX
+                        MOVE  ACCT-DAY(1 SYU-IDX)                       XXX
+                                      TO   TBL-ZAIKAISU(SYU-IDX)        XXX
+                     END-IF                                             XXX
                  END-IF
              END-PERFORM
            END-IF
@@ -2396,6 +2532,12 @@
                    WHEN    "12"
                     COMPUTE SYU-HKNTEN (01) =  SYU-HKNTEN (01)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1           XXX
+                               UNTIL    SYU-IDX   >    31               XXX
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                   XXX
+                               SDAY-HKNTEN(SYU-IDX) +                   XXX
+                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))   XXX
+                    END-PERFORM                                         XXX
                     IF   ACCT-SRYKBN                =  "11"             
                     AND  ACCT-ZAITEN           NOT  =  ZERO             
                     AND  WRK-HANBETU-SENINFLG(IDX)  =   "1"             
@@ -2405,19 +2547,43 @@
                    WHEN    "13"
                     COMPUTE SYU-HKNTEN (02) =  SYU-HKNTEN (02)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1           XXX
+                               UNTIL    SYU-IDX   >    31               XXX
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                   XXX
+                               SDAY-HKNTEN(SYU-IDX) +                   XXX
+                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))   XXX
+                    END-PERFORM                                         XXX
       *            ºßÂð
                    WHEN    "14"
                     COMPUTE SYU-HKNTEN (03) =  SYU-HKNTEN (03)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1           XXX
+                               UNTIL    SYU-IDX   >    31               XXX
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                   XXX
+                               SDAY-HKNTEN(SYU-IDX) +                   XXX
+                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))   XXX
+                    END-PERFORM                                         XXX
       *            ÅêÌô
                    WHEN    "21"   THRU  "27"
                    COMPUTE SYU-HKNTEN (04) =  SYU-HKNTEN (04)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1           XXX
+                               UNTIL    SYU-IDX   >    31               XXX
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                   XXX
+                               SDAY-HKNTEN(SYU-IDX) +                   XXX
+                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))   XXX
+                    END-PERFORM                                         XXX
       *            Ãí¼Í
                    WHEN    "31"
                    WHEN    "32"
                     COMPUTE SYU-HKNTEN (05) =  SYU-HKNTEN (05)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1           XXX
+                               UNTIL    SYU-IDX   >    31               XXX
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                   XXX
+                               SDAY-HKNTEN(SYU-IDX) +                   XXX
+                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))   XXX
+                    END-PERFORM                                         XXX
       *            ÅÀÅ©Ãí¼ÍËô¤ÏÃæ¿´ÀÅÌ®Ãí¼Í
                    WHEN    "33"
                        PERFORM   TENTEK-GET-SEC
@@ -2426,35 +2592,79 @@
                                WHEN  "330"
                                WHEN  "331"
                                   COMPUTE SYU-HKNTEN (05) = 
-                                          SYU-HKNTEN (05)  +
+                                          SYU-HKNTEN (05) + 
                                          (ACCT-SYUTEN1 * SINRYO-COUNT)
+                                  PERFORM VARYING SYU-IDX FROM 1 BY 1   XXX
+                                          UNTIL    SYU-IDX  >  31       XXX
+                                    COMPUTE SDAY-HKNTEN(SYU-IDX) =      XXX
+                                            SDAY-HKNTEN(SYU-IDX) +      XXX
+                                           (ACCT-SYUTEN1 *              XXX
+                                            TBL-ZAIKAISU(SYU-IDX))      XXX
+                                  END-PERFORM                           XXX
                                WHEN  "340"
                                   COMPUTE SYU-HKNTEN (05) = 
-                                          SYU-HKNTEN (05)  +
+                                          SYU-HKNTEN (05) + 
                                          (ACCT-ZAITEN * SINRYO-COUNT)
+                                  PERFORM VARYING SYU-IDX FROM 1 BY 1   XXX
+                                          UNTIL    SYU-IDX  >  31       XXX
+                                    COMPUTE SDAY-HKNTEN(SYU-IDX) =      XXX
+                                            SDAY-HKNTEN(SYU-IDX) +      XXX
+                                           (ACCT-ZAITEN  *              XXX
+                                            TBL-ZAIKAISU(SYU-IDX))      XXX
+                                  END-PERFORM                           XXX
                            END-EVALUATE
                        END-IF
       *            ½èÃÖ
                    WHEN    "40"
                     COMPUTE SYU-HKNTEN (06)   =  SYU-HKNTEN (06)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1           XXX
+                               UNTIL    SYU-IDX   >    31               XXX
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                   XXX
+                               SDAY-HKNTEN(SYU-IDX) +                   XXX
+                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))   XXX
+                    END-PERFORM                                         XXX
       *            ¼ê½Ñ
                    WHEN    "50"
                    WHEN    "54"
                     COMPUTE SYU-HKNTEN (07)   =  SYU-HKNTEN (07)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1           XXX
+                               UNTIL    SYU-IDX   >    31               XXX
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                   XXX
+                               SDAY-HKNTEN(SYU-IDX) +                   XXX
+                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))   XXX
+                    END-PERFORM                                         XXX
       *            ¸¡ºº
                    WHEN    "60"
                     COMPUTE SYU-HKNTEN (08)   =  SYU-HKNTEN (08)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1           XXX
+                               UNTIL    SYU-IDX   >    31               XXX
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                   XXX
+                               SDAY-HKNTEN(SYU-IDX) +                   XXX
+                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))   XXX
+                    END-PERFORM                                         XXX
       *            £ØÀþ
                    WHEN    "70"
                     COMPUTE SYU-HKNTEN (09)   =  SYU-HKNTEN (09)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1           XXX
+                               UNTIL    SYU-IDX   >    31               XXX
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                   XXX
+                               SDAY-HKNTEN(SYU-IDX) +                   XXX
+                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))   XXX
+                    END-PERFORM                                         XXX
       *            ¤½¤ÎÂ¾
                    WHEN    "80"
                     COMPUTE SYU-HKNTEN (10)   =  SYU-HKNTEN (10)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1           XXX
+                               UNTIL    SYU-IDX   >    31               XXX
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                   XXX
+                               SDAY-HKNTEN(SYU-IDX) +                   XXX
+                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))   XXX
+                    END-PERFORM                                         XXX
       *            Æþ±¡ÎÁ²Ã»»
                    WHEN    "90"
                    WHEN    "92"
@@ -2465,9 +2675,23 @@
                                                     190799670
                         COMPUTE SYU-HKNTEN (11)   =  SYU-HKNTEN (11) -
                                (ACCT-ZAITEN  *   SINRYO-COUNT)
+                        PERFORM  VARYING  SYU-IDX  FROM  1  BY  1       XXX
+                                   UNTIL    SYU-IDX   >    31           XXX
+                           COMPUTE SDAY-HKNTEN(SYU-IDX) =               XXX
+                                   SDAY-HKNTEN(SYU-IDX) -               XXX
+                                  (ACCT-ZAITEN  *                       XXX
+                                   TBL-ZAIKAISU(SYU-IDX))               XXX
+                        END-PERFORM                                     XXX
                       ELSE
                         COMPUTE SYU-HKNTEN (11)   =  SYU-HKNTEN (11) +
                                (ACCT-ZAITEN  *   SINRYO-COUNT)
+                        PERFORM  VARYING  SYU-IDX  FROM  1  BY  1       XXX
+                                   UNTIL    SYU-IDX   >    31           XXX
+                           COMPUTE SDAY-HKNTEN(SYU-IDX) =               XXX
+                                   SDAY-HKNTEN(SYU-IDX) +               XXX
+                                  (ACCT-ZAITEN  *                       XXX
+                                   TBL-ZAIKAISU(SYU-IDX))               XXX
+                        END-PERFORM                                     XXX
                       END-IF
                     END-IF
       *            ÊÝ¸±Å¬ÍÑ³°µÚ¤Ó¼«Èñ
@@ -3196,6 +3420,12 @@
                     IF  ORCSTEN-ZAITEN(IDX1)  NOT =  ZERO
                         ADD    ORCSTEN-ZAITEN(IDX1)
                                       TO   SYU-HKNTEN (05)
+                        IF   SYU-SYUHKNNUM  =  "971"  OR  "973"         XXX
+                           CONTINUE                                     XXX
+                        ELSE                                            XXX
+                           ADD    ORCSTEN-ZAITEN(IDX1)                  XXX
+                                      TO   SDAY-HKNTEN(IDX1)            XXX
+                        END-IF                                          XXX
                     END-IF
                END-IF
       *
@@ -3209,6 +3439,16 @@
                     PERFORM  VARYING  IDX2    FROM    1   BY  1
                           UNTIL   IDX2     >       31
                       IF  SYU-DAY(IDX2)   =   "1"  OR  "2"
+      *
+                        IF   SYU-SYUHKNNUM  =  "971"  OR  "973"         XXX
+                           CONTINUE                                     XXX
+                        ELSE                                            XXX
+                           COMPUTE  SDAY-HKNTEN(IDX2)  =                XXX
+                                    SDAY-HKNTEN(IDX2)  +                XXX
+                                    ( ORCSTEN-KIZ-ZAITEN(IDX1) *        XXX
+                                      ORCSTEN-KIZ-DAY(IDX1 IDX2) )      XXX
+                        END-IF
+      *
                         ADD    ORCSTEN-KIZ-DAY(IDX1 IDX2)
                                       TO   WRK-ZAIKAISU
                       END-IF

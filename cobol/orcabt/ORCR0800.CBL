@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    03.12.15  日別収納更新・削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -73,6 +74,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-OUT1                                PIC 9(06).
+           03  CNT-OUT2                                PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDX                                     PIC 9(04). 
@@ -192,6 +194,10 @@
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
+      *    日別収納マスター
+       01  SYUDAY-REC.
+           COPY    "CPSYUDAY.INC".
+      *
       *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
@@ -222,6 +228,9 @@
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 10.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
+       01  LNK-SYUDAY-REC-T.
+         02 LNK-SYUDAY-REC     OCCURS 10.
+           COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -404,6 +413,29 @@
                MOVE  "仮収納データ削除処理に失敗しました"
                                TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+      *    一括ダミー日別収納削除処理
+      *
+           IF   FLG-ERR         =   1
+              CONTINUE
+           ELSE
+              INITIALIZE                  SYUDAY-REC
+              MOVE    SYS-1001-HOSPID     TO  SDAY-HOSPID
+              MOVE    "1"                 TO  SDAY-NYUGAIKBN
+              MOVE    "3"                 TO  SDAY-CREATEKBN
+              MOVE    SYUDAY-REC          TO  MCPDATA-REC
+              MOVE    "SYUDAY-DEL1"       TO  ORC-DBPATH
+              MOVE    "DBDELETE"          TO  MCP-FUNC
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC          NOT =   ZERO
+                  MOVE  "仮日別収納データ削除処理に失敗しました"
+                                  TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+              END-IF
            END-IF
       *
            .
@@ -811,9 +843,11 @@
       *    収納データ取得処理
            MOVE    SPACE           TO  LNK-ORCS02-REC
                                        LNK-SYUNOU-REC-T
+                                       LNK-SYUDAY-REC-T
       *
            INITIALIZE                  LNK-ORCS02-REC
                                        LNK-SYUNOU-REC-T
+                                       LNK-SYUDAY-REC-T
       *
            MOVE    SYS-1001-HOSPID TO  LNK-S02-HOSPID
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
@@ -827,6 +861,7 @@
                                    SPA-AREA
                                    LNK-ORCS02-REC
                                    LNK-SYUNOU-REC-T
+                                   LNK-SYUDAY-REC-T
       *
       *    仮収納出力処理
            IF      LNK-S02-RC      =   ZERO
@@ -867,15 +902,24 @@
       *
            MOVE    LNK-SYUNOU-REC (IDX1)
                                        TO  SYUNOU-REC
+           MOVE    LNK-SYUDAY-REC (IDX1)
+                                       TO  SYUDAY-REC
       *
       *    伝票番号取得処理
            ADD     1                   TO  WRK-DENPNUM
            MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
+                                           SDAY-DENPNUM
       *
            MOVE    WRK-PARA-TERMID     TO  SYU-TERMID
+                                           SDAY-TERMID
+      *
            MOVE    SYS-YMD             TO  SYU-CREYMD
                                            SYU-UPYMD
+           MOVE    SYS-YMD             TO  SDAY-CREYMD
+                                           SDAY-UPYMD
+      *
            MOVE    SYS-TIME            TO  SYU-UPHMS
+                                           SDAY-UPHMS
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -901,6 +945,35 @@
                MOVE  ERR-HEN-ERRMSG    TO  WRK-RECEERR
       *
                PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           IF  FLG-ERR          =   1
+               CONTINUE
+           ELSE
+             IF  SDAY-DAYINFFLG   =   "1"
+      *         仮日別収納
+                MOVE    SYUDAY-REC          TO  MCPDATA-REC
+                MOVE    "SYUDAY-KEY"        TO  ORC-DBPATH
+                MOVE    "DBINSERT"          TO  MCP-FUNC
+                CALL    "ORCMCPSUB"         USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+                IF      MCP-RC              =   ZERO 
+                    COMPUTE CNT-OUT2    =   CNT-OUT2    +   1
+                ELSE 
+                    DISPLAY "PTID=" KEY-O-PTID
+                    DISPLAY "SKYYM=" WRK-SEIKYUSTYMD(1:6)
+      *
+                    MOVE    "仮日別収納データの更新に失敗"
+                                            TO  ERR-ERRMSG
+                    PERFORM 600-ERRMSG-EDIT-SEC
+      *
+                    MOVE  ERR-HEN-ERRMSG    TO  WRK-RECEERR
+      *
+                    PERFORM 500-ERR-HENSYU-SEC
+                END-IF
+             END-IF
            END-IF
       *
            .
@@ -1279,7 +1352,8 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "KARITEIKI (ORCR0800) CNT " CNT-OUT1 
+           DISPLAY "KARITEIKI (ORCR0800) CNT " CNT-OUT1
+           DISPLAY "HIBETU    (ORCR0800) CNT " CNT-OUT2
            DISPLAY "*** ORCR0800 END ***"
            .
        300-TERM-EXT.

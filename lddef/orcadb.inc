@@ -76,6 +76,7 @@ db	{
 	tbl_kohplus;
 	tbl_prvkanri;
 	view_bd003;
+        tbl_syuday;
 };
 db	"shell"	{
 	shell;

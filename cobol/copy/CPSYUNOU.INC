@@ -59,6 +59,8 @@
            03  SYU-SYUHKNFTNMONEY      PIC  9(07).
       *肩瘦副≥纷换砷么垛
            03  SYU-SYUCOMPFTN          PIC  9(07).
+      *肩瘦副≥纷换砷么垛∈边帽疤淡峡脱∷
+           03  SYU-SYUCOMPFTN-ENTANI   PIC  9(07).
       *肩瘦副≥纷换挑恨办婶砷么垛
            03  SYU-SYUCOMPYKZFTN       PIC  9(07).
       *肩瘦副≥纷换砷么垛纷
@@ -73,6 +75,8 @@
                05  SYU-KOH1HKNFTNMONEY     PIC  9(07).
       *给锐１≥纷换砷么垛
                05  SYU-KOH1COMPFTN         PIC  9(07).
+      *给锐１≥纷换砷么垛∈边帽疤淡峡脱∷
+               05  SYU-KOH1COMPFTN-ENTANI  PIC  9(07).
       *给锐１≥纷换挑恨办婶砷么垛
                05  SYU-KOH1COMPYKZFTN      PIC  9(07).
       *给锐１≥纷换砷么垛纷
@@ -85,6 +89,8 @@
                05  SYU-KOH2HKNFTNMONEY     PIC  9(07).
       *给锐２≥纷换砷么垛
                05  SYU-KOH2COMPFTN         PIC  9(07).
+      *给锐２≥纷换砷么垛∈边帽疤淡峡脱∷
+               05  SYU-KOH2COMPFTN-ENTANI  PIC  9(07).
       *给锐２≥纷换挑恨办婶砷么垛
                05  SYU-KOH2COMPYKZFTN      PIC  9(07).
       *给锐２≥纷换砷么垛纷
@@ -97,6 +103,8 @@
                05  SYU-KOH3HKNFTNMONEY     PIC  9(07).
       *给锐３≥纷换砷么垛
                05  SYU-KOH3COMPFTN         PIC  9(07).
+      *给锐３≥纷换砷么垛∈边帽疤淡峡脱∷
+               05  SYU-KOH3COMPFTN-ENTANI  PIC  9(07).
       *给锐３≥纷换挑恨办婶砷么垛
                05  SYU-KOH3COMPYKZFTN      PIC  9(07).
       *给锐３≥纷换砷么垛纷
@@ -109,6 +117,8 @@
                05  SYU-KOH4HKNFTNMONEY     PIC  9(07).
       *给锐４≥纷换砷么垛
                05  SYU-KOH4COMPFTN         PIC  9(07).
+      *给锐４≥纷换砷么垛∈边帽疤淡峡脱∷
+               05  SYU-KOH4COMPFTN-ENTANI  PIC  9(07).
       *给锐４≥纷换挑恨办婶砷么垛
                05  SYU-KOH4COMPYKZFTN      PIC  9(07).
       *给锐４≥纷换砷么垛纷
@@ -124,6 +134,8 @@
                  07  SYU-KOH-HKNFTNMONEY     PIC  9(07).
       *给锐≥纷换砷么垛
                  07  SYU-KOH-COMPFTN         PIC  9(07).
+      *给锐≥纷换砷么垛∈边帽疤淡峡脱∷
+                 07  SYU-KOH-COMPFTN-ENTANI  PIC  9(07).
       *给锐≥纷换挑恨办婶砷么垛
                  07  SYU-KOH-COMPYKZFTN      PIC  9(07).
       *给锐≥纷换砷么垛纷
@@ -229,6 +241,8 @@
                   09  SYU-TOTAL-MONEY         PIC  9(07).
                   09  SYU-TOTAL-TGMONEY       PIC  9(07).
                   09  SYU-TOTAL-TGMONEY-TAX   PIC  9(07).
+      *瘦副努脱嘲垛驰≥久锐狼∈浩非∷
+           03  SYU-TGMONEY-TAX-SAI         PIC  9(07).
       *极锐１から５
            03  SYU-JIHI-NAIYOU.
                05  SYU-JIHI-1              PIC  9(07). 
@@ -285,6 +299,14 @@
            03  SYU-RSISDO-MONEY        PIC  9(07).
       *汐阂瘦副≥その戮
            03  SYU-RSIETC-MONEY        PIC  9(07).
+      *汐阂瘦副≥久锐狼∈浩非∷
+           03  SYU-RSI-TAX-SAI         PIC  9(07).
+      *汐阂瘦副≥边氟て圭纷驰
+           03  SYU-RSI-TOTAL           PIC  9(07).
+      *汐阂极清≥懒滇垛驰∈泣纷山淡很脱∷
+           03  SYU-RSIJIBAI-SKYMONEY   PIC  9(07).
+      *懒滇垛驰≥久锐狼∈浩非∷
+           03  SYU-SKYMONEY-TAX-SAI    PIC  9(07).
       *懒滇垛驰
            03  SYU-SKYMONEY            PIC  9(07).
       *掐垛圭纷驰
@@ -301,6 +323,8 @@
            03  SYU-YKZKENNUM           PIC  9(05).
       *技瘟汗驰
            03  SYU-RMSAGAKU            PIC  9(07).
+      *技瘟汗驰≥久锐狼∈浩非∷
+           03  SYU-RMSAGAKU-TAX-SAI    PIC  9(07).
       *咯祸１から咯祸７
            03  SYU-SHOKUJI-NAIYOU.
                05  SYU-SHOKUJI1-NISSU  PIC  9(02).
@@ -374,6 +398,10 @@
       *咯祸砷么驰∈极锐¨极甘砷么圭纷∷
            03  SYU-SKYMONEY-SKJ-JIHI-KEI
                                        PIC  9(07).
+      *咯祸砷么∈砷么驰侍瓷妄脱∷
+           03  SYU-SKJ-PTFTN           OCCURS 3.
+               05  SYU-SKJ-FTNGAKU     PIC  9(05).
+               05  SYU-SKJ-FTNDAY      PIC  9(02).
       *浩纷换惰尸
            03  SYU-SAIKEISANKBN        PIC  X(01).
       *薄嘲借数惰尸
@@ -427,6 +455,8 @@
            03  SYU-FUKU-DENPNUM        PIC  9(07).
       *剩眶彩まとめ惰尸∈１¨费鲁　２¨澄年∷
            03  SYU-FUKU-KBN            PIC  X(01).
+      *哼另壳惰尸
+           03  SYU-ZAITAKU             PIC  X(01).
       *壳闻惰尸侍惦烧嘲爬眶
            03  SYU-KYUFUGAI.
                05  SYU-KYUFUGAI-TBL          OCCURS   6.
@@ -446,6 +476,8 @@
               05  SYU-KYUFUGAI-OSIN3-TEN      PIC  9(07).
       *惦烧滦据嘲爬眶∈圭纷∷
               05  SYU-KYUFUGAI-GOKEI-TEN      PIC  9(07).
+      *掐薄箭羌壳闻泣帽疤砷么攫鼠フラグ
+           03  SYU-DAYINFFLG           PIC  X(01).
       *眉琐ＩＤ
            03  SYU-TERMID              PIC  X(16).
       *オペ〖レ〖タＩＤ
