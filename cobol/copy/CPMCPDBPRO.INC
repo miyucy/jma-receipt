@@ -285,6 +285,7 @@
       *  01.01.105   NACL-藤原    03/10/03  PTBYOMEI-KEY13追加
       *  01.01.106   NACL-藤原    03/10/07  PTBYOMEI-KEYKEY14,KEY15追加
       *  01.01.107   NACL-森脇    03/10/09  BD003-KEY,KEY2,KEY3,KEY4追加
+      *  01.01.108   NACL-太田    03/10/10  I001-KEY4追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2769,6 +2770,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "I001-ALL"
                    MOVE    PATH-VIEW-I001-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "I001-KEY4"
+                   MOVE    PATH-VIEW-I001-KEY4
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "Q001-ALL"
                    MOVE    PATH-VIEW-Q001-ALL
