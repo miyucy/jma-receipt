@@ -122,6 +122,7 @@
            03  WRK-SENTEISRYCD                 PIC X(09).
            03  WRK-SRYCDTOTAL                  PIC 9(09).
            03  WRK-SENTEI-KEISU                PIC 9V99.
+           03  WRK-SENTEI-KEISU2               PIC 9V99.
            03  WRK-BRMSAGAKU                   PIC 9(05).
            03  WRK-SKJ-TEN-G.
                05  WRK-SKJ-TEN-RYOYO1          PIC 9(08).
@@ -1294,9 +1295,18 @@
                EVALUATE    FLG-GAIHAKUDAY(IDXD)
                WHEN    1
                WHEN    3
-               WHEN    4
                    COMPUTE WRK-GAIHAKU-TEN
                        = ( WRK-KHNTEN  *   WRK-SENTEI-KEISU )  +  0.5
+               WHEN    4
+                   IF    ( NACCT-SRYYM     <=  "200403" )
+                       COMPUTE WRK-GAIHAKU-TEN
+                           = ( WRK-KHNTEN  *   WRK-SENTEI-KEISU )
+                           +  0.5
+                   ELSE
+                       COMPUTE WRK-GAIHAKU-TEN
+                           = ( WRK-KHNTEN  *   WRK-SENTEI-KEISU2 )
+                           +  0.5
+                   END-IF
                END-EVALUATE
            ELSE
                EVALUATE  FLG-GAIHAKUDAY(IDXD)
@@ -1326,6 +1336,7 @@
        200111-SENTEI-KEISU-GET-SEC     SECTION.
       *
            MOVE    ZERO                TO  WRK-SENTEI-KEISU
+           MOVE    ZERO                TO  WRK-SENTEI-KEISU2
       *
       *    選定入院の場合の係数を求めておく
            EVALUATE    TRUE
@@ -1336,6 +1347,7 @@
                MOVE   0.05           TO    WRK-SENTEI-KEISU
            WHEN (  NACCT-SRYYM         >=    "200404" )
                MOVE   ZERO          TO     WRK-SENTEI-KEISU
+               MOVE   0.15          TO     WRK-SENTEI-KEISU2
            END-EVALUATE
            .
       *
@@ -1656,14 +1668,18 @@
                        COMPUTE WRK-SENTEI-GAIHAKU1
                            = ( WRK-KHNTEN  *   0.3  )
                            +   0.5
+                       COMPUTE WRK-SENTEI-GAIHAKU2
+                           = ( WRK-KHNTEN  *   WRK-SENTEI-KEISU2 )
+                           +   0.5
                    ELSE
                        COMPUTE WRK-SENTEI-GAIHAKU1
                            = ( WRK-KHNTEN  *   0.15 )
                            +   0.5
+                       COMPUTE WRK-SENTEI-GAIHAKU2
+                           = ( WRK-KHNTEN  *   WRK-SENTEI-KEISU )
+                           +   0.5
                    END-IF
-                   COMPUTE WRK-SENTEI-GAIHAKU2
-                       = ( WRK-KHNTEN  *   WRK-SENTEI-KEISU)
-                       +   0.5
+      *
                    COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
                        =   WRK-SENTEI-PTFTN (IDX-TAX)
                        + ( WRK-SENTEI-GAIHAKU1

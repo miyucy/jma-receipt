@@ -439,6 +439,7 @@
            03  WRK-SENTEI-SRYCD-W                      PIC 9(09).       
            03  WRK-SENTEI-SRYCD2-W                     PIC 9(09).       
            03  WRK-SENTEI-KEISU                        PIC 9V99.
+           03  WRK-SENTEI-KEISU2                       PIC 9V99.
            03  WRK-GAIHAKU-SRYCD                       PIC X(09).
            03  WRK-GAIHAKU-KHNTEN                      PIC 9(08).
            03  WRK-NYUKHNKSNKBN                        PIC 9(03).
@@ -1839,6 +1840,7 @@
        SENTEI-KEISU-GET-SEC           SECTION.
       *
            MOVE      ZERO           TO     WRK-SENTEI-KEISU
+           MOVE      ZERO           TO     WRK-SENTEI-KEISU2
       *
            IF   RECE62-SRYYM    <=    "200303"
                MOVE   0.1           TO     WRK-SENTEI-KEISU
@@ -1851,6 +1853,7 @@
       *
            IF   RECE62-SRYYM    >=    "200404"
                MOVE   ZERO          TO     WRK-SENTEI-KEISU
+               MOVE   0.15          TO     WRK-SENTEI-KEISU2
            END-IF
       *
            .
@@ -2165,11 +2168,17 @@
                          MOVE    3     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC
                      WHEN   4
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-      ****                       (WRK-DAY1-KHNTEN(IDY)  *  0.15)
-                                 (WRK-DAY1-KHNTEN(IDY)  
-                                              *  WRK-SENTEI-KEISU)
-                                                        +  0.5
+                         IF   RECE62-SRYYM    >=    "200404"
+                            COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                    (WRK-DAY1-KHNTEN(IDY)  
+                                                 *  WRK-SENTEI-KEISU2)
+                                                           +  0.5
+                         ELSE
+                            COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                    (WRK-DAY1-KHNTEN(IDY)  
+                                                 *  WRK-SENTEI-KEISU)
+                                                           +  0.5
+                         END-IF
                          MOVE    5     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC
                     END-EVALUATE
@@ -2219,11 +2228,17 @@
                          MOVE    8     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC
                      WHEN   4
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-      ****                       (WRK-DAY1-KHNTEN(IDY)  *  0.15)
-                                 (WRK-DAY1-KHNTEN(IDY)  
-                                              *  WRK-SENTEI-KEISU)
-                                                        +  0.5
+                         IF   RECE62-SRYYM    >=    "200404"
+                            COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                    (WRK-DAY1-KHNTEN(IDY)  
+                                                 *  WRK-SENTEI-KEISU2)
+                                                           +  0.5
+                         ELSE
+                            COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                    (WRK-DAY1-KHNTEN(IDY)  
+                                                 *  WRK-SENTEI-KEISU)
+                                                           +  0.5
+                         END-IF
                          MOVE   10     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC
                     END-EVALUATE
@@ -5467,6 +5482,36 @@
                INITIALIZE       TNS-TENSU-REC
                MOVE    1   TO   FLG-TENSU
                DISPLAY   "TENSU SELECT ERR" 
+           END-IF
+      *
+      *****選定入院時の他医療機関のコードが未決定の為、暫定処置
+           IF    FLG-TENSU    =     1
+              IF   WRK-SRYCD  =   "190116590" OR "190116690"
+                                              OR "190116790"
+      *
+                 INITIALIZE                           TNS-TENSU-REC
+                 MOVE    WRK-SRYCD            TO      TNS-SRYCD
+                 MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
+                 MOVE    "20040301"           TO      ORC-DBYMD
+                 MOVE    "DBSELECT"           TO      MCP-FUNC
+                 MOVE    "TENSU-KEY"          TO      ORC-DBPATH
+                 CALL    "ORCMCPSUB"          USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+                 IF      MCP-RC               =       ZERO
+                     MOVE    "TENSU-KEY"      TO      ORC-DBPATH
+                     PERFORM  TENSU-READ-SEC
+                     IF       FLG-TENSU       =       1
+                         DISPLAY   "TENSU FETCH ERR"  
+                     END-IF
+                 ELSE
+                     INITIALIZE       TNS-TENSU-REC
+                     MOVE    1   TO   FLG-TENSU
+                     DISPLAY   "TENSU SELECT ERR" 
+                 END-IF
+      *
+              END-IF
            END-IF
       *
            MOVE   "TENSU-KEY"      TO  WK-PATH

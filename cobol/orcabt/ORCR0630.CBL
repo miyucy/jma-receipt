@@ -241,6 +241,7 @@
            03  WRK-SRYYMD                              PIC X(08).       
            03  WRK-SRYYMD-TAIHI                        PIC X(08).   
            03  WRK-SENTEI-KEISU                        PIC 9V99.    
+           03  WRK-SENTEI-KEISU2                       PIC 9V99.
            03  WRK-GAIHAKU-SRYCD                       PIC X(09).
            03  WRK-GAIHAKU-KHNTEN                      PIC 9(08).
       *
@@ -1502,6 +1503,7 @@
        SENTEI-KEISU-GET-SEC           SECTION.
       *
            MOVE      ZERO           TO     WRK-SENTEI-KEISU
+           MOVE      ZERO           TO     WRK-SENTEI-KEISU2
       *
            IF   RECE62-SRYYM    <=    "200303"
                MOVE   0.1           TO     WRK-SENTEI-KEISU
@@ -1514,6 +1516,7 @@
       *
            IF   RECE62-SRYYM    >=    "200404"
                MOVE   ZERO          TO     WRK-SENTEI-KEISU
+               MOVE   0.15          TO     WRK-SENTEI-KEISU2
            END-IF
       *
            .
@@ -1627,10 +1630,15 @@
                                  (WRK-KHNTEN  *  WRK-SENTEI-KEISU)
                                                      +  0.5
                        WHEN   4
-                         COMPUTE  WRK-NYUKHNRYO =
-      ****                       (WRK-KHNTEN         *  0.15)
-                                 (WRK-KHNTEN  *  WRK-SENTEI-KEISU)
-                                                     +  0.5
+                         IF   RECE62-SRYYM    >=    "200404"
+                            COMPUTE  WRK-NYUKHNRYO =
+                                    (WRK-KHNTEN  *  WRK-SENTEI-KEISU2)
+                                                        +  0.5
+                         ELSE
+                            COMPUTE  WRK-NYUKHNRYO =
+                                    (WRK-KHNTEN  *  WRK-SENTEI-KEISU)
+                                                        +  0.5
+                         END-IF
                     END-EVALUATE
                   ELSE
                     EVALUATE   WRK-DAY2(IDY)
@@ -1732,10 +1740,15 @@
                                                      +  0.5
                          MOVE   1   TO   FLG-GAIHAKU
                        WHEN   4
-                         COMPUTE  WRK-NYUTOKRYO =
-      ****                       (WRK-KHNTEN         *  0.15)
-                                 (WRK-KHNTEN  *  WRK-SENTEI-KEISU)
-                                                     +  0.5
+                         IF   RECE62-SRYYM    >=    "200404"
+                            COMPUTE  WRK-NYUTOKRYO =
+                                    (WRK-KHNTEN  *  WRK-SENTEI-KEISU2)
+                                                        +  0.5
+                         ELSE
+                            COMPUTE  WRK-NYUTOKRYO =
+                                    (WRK-KHNTEN  *  WRK-SENTEI-KEISU)
+                                                        +  0.5
+                         END-IF
                          MOVE   1   TO   FLG-GAIHAKU
                     END-EVALUATE
                   ELSE
