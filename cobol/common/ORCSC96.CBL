@@ -177,6 +177,9 @@
                WHEN    "0022"
                    MOVE    "数量が上限値以上です"
                                        TO  SPA-ERRMSG
+               WHEN    "K030"
+                   MOVE    "警告！数量が上限値以上です。"
+                                       TO  SPA-ERRMSG
                WHEN    "0023"
                    MOVE    "剤削除は剤開始からです"
                                        TO  SPA-ERRMSG

@@ -1200,7 +1200,19 @@
                WHEN    TNS-KZMJGN        <   WRK-SURYO
                    IF      TNS-KZMERR        =   0  OR  2
       *            点数計算式１をせず、エラーとする
-                       MOVE    "0022"        TO  SPA-ERRCD
+      ****             MOVE    "0022"        TO  SPA-ERRCD
+      *            警告エラーとする
+                       MOVE    "K030"            TO  SPA-ERRCD
+      *            点数計算式１
+                       COMPUTE WRK-KEI-TEN1    =  (WRK-SURYO
+                                               -  TNS-KZMKGN)
+                                               /   TNS-KZM
+                                               +   0.999
+                       MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
+                       COMPUTE WRK-KEI-TEN     =   TNS-TEN
+                                               + ( WRK-KEI-TEN2
+                                               *   TNS-KZMTEN )
+                       COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
                    ELSE
       *            点数計算式２
                        COMPUTE WRK-KEI-TEN1    =  (TNS-KZMJGN
@@ -1215,7 +1227,8 @@
                    END-IF
            END-EVALUATE
       *
-           IF      SPA-ERRCD           =   SPACE
+           IF     (SPA-ERRCD           =   SPACE) OR
+                  (SPA-ERRCD(1:1)      =   "K"  )
                IF      WRK-KEI-TEN2        >   ZERO
                    MOVE    WRK-KEI-TEN2    TO  WRK-COM-KISOTEN  (IDX-Z)
                ELSE

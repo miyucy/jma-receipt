@@ -214,12 +214,11 @@
            END-PERFORM
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+           MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-      *
       *
            .
        100-RIGAKU-ALLCNT-EXT.
@@ -425,6 +424,12 @@
                PERFORM 940-SRYACCT-READ-SEC
            END-PERFORM
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        200-SOUKI-ALLCNT-EXT.
@@ -485,6 +490,12 @@
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 950-SRYACT-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    早期なし
            IF     (WRK-RIGAKU-RYO-A    =   SPACE  )  OR

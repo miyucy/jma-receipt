@@ -1671,6 +1671,12 @@
                        MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
                        PERFORM 940-SINACCT-READ-SEC
                    END-PERFORM
+                   MOVE    "DBCLOSE"           TO  MCP-FUNC
+                   MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
                END-PERFORM
       *
                END-IF
@@ -1678,6 +1684,12 @@
                MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        30010-JYURRK-SYORI-EXT.
@@ -1744,6 +1756,12 @@
                PERFORM 900-SRYACT-NEXT-SEC
            END-PERFORM
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        300011-YAKFTN-SRYACT-EXT.

@@ -1014,6 +1014,12 @@
                    INITIALIZE                  JYURRK-REC
                    MOVE    1               TO  FLG-JYURRK
                END-IF
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "JYURRK-KEY15"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
                IF      FLG-JYURRK          =   ZERO
                    IF      JYURRK-SRYYMD       <   SPA-SRYYMD
                        MOVE    "8002"          TO  WRK-ERRCD
@@ -2349,6 +2355,12 @@
                    MOVE    "SANTEI-KEY4"       TO  ORC-DBPATH
                    PERFORM 920-SANTEI-READ-SEC
                END-PERFORM
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "SANTEI-KEY4"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
            END-PERFORM
            .
        10013-SANTEI-CNT-EXT.
@@ -2384,6 +2396,11 @@
            ELSE
                MOVE    1                   TO  FLG-SANTEI
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
       *
            .
        100111-SANTEI-KEN-EXT.
@@ -2877,6 +2894,8 @@
                                   (WRK-COM-SRYKA(IDX-Z)
                                                NOT =   SPA-SRYKA)
                                COMPUTE IDX-ZAI2    =   IDX-ZAI2  -  1
+                           ELSE
+                               MOVE   IDX-Z            TO  IDX-SYU2
                            END-IF
                        END-IF
                        IF     (WRK-COM-INPUTCD(IDX-Z)  =  "830000020")
@@ -2886,16 +2905,20 @@
                                   (WRK-COM-SRYKA(IDX-Z)
                                                NOT =   SPA-SRYKA)
                                COMPUTE IDX-ZAI1    =   IDX-ZAI1  -  1
+                           ELSE
+                               MOVE   IDX-Z            TO  IDX-SYU2
                            END-IF
                        END-IF
       *                褲說恔�耀掁礿礿暀熂У﹡薑�允月
                        IF     (WRK-COM-INPUTCD(IDX-Z)  =  "099110001")
                          AND  (WRK-COM-SRYKBN (IDX-Z)  =  "11"      )
                            ADD     1               TO  IDX-ZAI1
+                           MOVE   IDX-Z            TO  IDX-SYU2
                        END-IF
                        IF     (WRK-COM-INPUTCD(IDX-Z)  =  "099120001")
                          AND  (WRK-COM-SRYKBN (IDX-Z)  =  "12"      )
                            ADD     1               TO  IDX-ZAI2
+                           MOVE   IDX-Z            TO  IDX-SYU2
                        END-IF
                    END-IF
                END-IF
@@ -3613,6 +3636,11 @@
                MOVE    1                   TO  LNK-DAY6-ZOGEN
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
+      *TEST
+      *        DISPLAY "C10 WRK-SYOYMD:" WRK-SYOYMD
+      *          ",LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
+      *          ",LNK-DAY6-KEISANZEN:" LNK-DAY6-KEISANZEN
+      *TEST
                MOVE    LNK-DAY6-KEISAN     TO  WRK-KEIYMD
                MOVE    LNK-DAY6-KEISANZEN  TO  WRK-KEIYMDZEN
                IF      LNK-DAY6-KEISAN NOT =   LNK-DAY6-KEISANZEN

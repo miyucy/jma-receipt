@@ -47,6 +47,7 @@
       *  02.00.10    NACL-多々納  03/05/21  慢性疼痛の同時チェック追加
       *  02.00.11    NACL-多々納  03/07/02  入院の消炎鎮痛処理と
       *                                     在宅寝たきり処置チェック変更
+      *  02.00.12    NACL-多々納  04/11/30  きざみ値上限判定修正他
       *****************************************************************
       *
       *
@@ -324,72 +325,118 @@
                MOVE    "0007"          TO  SPA-ERRCD
                MOVE    1               TO  FLG-ERR
            END-IF
-           IF      FLG-ERR             =   1
-               GO      TO      000-PROC-EXT
+      *
+      *    主処理
+           IF     (FLG-ERR             =   ZERO )  AND
+                  (SPA-ERRCD           =   SPACE )
+               PERFORM 200-MAIN-SEC
            END-IF
       *
-      *    数量・回数のみ変更の時、編集のみ
-           IF     (LNK-SC92-KBN        =   "5"  )  AND
-                  (SPA-COM-INPUTCD(IDX-T)  NOT =   SPACE )  AND
-                  (SPA-COM-CHKFLG (IDX-T)  NOT =   SPACE )
-               PERFORM 300-SURYOHEN-SEC
-               GO      TO      000-PROC-EXT
-           END-IF
+           .
+       000-PROC-EXT.
       *
+           EXIT    PROGRAM
+           .
+      *
+      *****************************************************************
+      *    主処理
+      *****************************************************************
+       200-MAIN-SEC      SECTION.
+      *
+           EVALUATE    LNK-SC92-KBN
+                WHEN   "5"
+      *            数量・回数のみ変更の時
+                   IF    (SPA-COM-INPUTCD(IDX-T)  NOT =   SPACE )  AND
+                         (SPA-COM-CHKFLG (IDX-T)  NOT =   SPACE )
+                       PERFORM 300-SURYOHEN-SEC
+                   ELSE
+                       MOVE    LNK-SC92-SRYCD  TO  SPA-COM-INPUTCD
+                                                            (IDX-T)
+                       PERFORM 200-KIHON-CHK-SEC
+                       IF      SPA-ERRCD           =   SPACE
+      *                    基本編集・併用チェック
+                           PERFORM 300-KIHON-HEN-SEC
+                       END-IF
+                   END-IF
+               WHEN    "1"
+      *            行挿入
+                   PERFORM 400-GYOINSN-SEC
+                   IF      SPA-ERRCD           =   SPACE
+      *                基本チェック
+                       PERFORM 200-KIHON-CHK-SEC
+                   END-IF
+                   IF      SPA-ERRCD           =   SPACE
+      *                基本編集・併用チェック
+                       PERFORM 300-KIHON-HEN-SEC
+                   END-IF
+               WHEN    "3"
+      *            チェックのみ
+                   MOVE    LNK-SC92-SRYCD  TO  SPA-COM-INPUTCD(IDX-T)
+                   PERFORM 200-KIHON-CHK-SEC
+                   IF     (SPA-ERRCD           =   SPACE ) AND
+                          (LNK-SC92-ERRCD3     =   SPACE ) AND
+                          (LNK-SC92-SRYCD(1:1) =   "1"   )
+                       PERFORM 2005-HEIYOU-CHK-SEC
+                   END-IF
+               WHEN    "4"
+      *            併用算定チェックのみ
+                   PERFORM 2005-HEIYOU-CHK-SEC
+               WHEN    "6"
+      *            画面遷移前の編集
+                   MOVE    LNK-SC92-SRYCD  TO  SPA-COM-INPUTCD(IDX-T)
+                   PERFORM 200-KIHON-CHK-SEC
+                   IF      SPA-ERRCD           =   SPACE
+      *                ＳＰＡ編集
+                       PERFORM 300-TENSU-HENSYU-SEC
+                   END-IF
+               WHEN    OTHER
+      *            その他
+                   MOVE    LNK-SC92-SRYCD  TO  SPA-COM-INPUTCD(IDX-T)
+                   PERFORM 200-KIHON-CHK-SEC
+                   IF      SPA-ERRCD           =   SPACE
+      *                基本編集・併用チェック
+                       PERFORM 300-KIHON-HEN-SEC
+                   END-IF
+           END-EVALUATE
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       200-KIHON-CHK-SEC      SECTION.
+      *
+      *    点数マスタ読込み
            MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
            IF      FLG-TENSU           =   1
                MOVE    "0001"              TO  SPA-ERRCD
-               IF      LNK-SC92-KBN    NOT =   "3"
-                   MOVE    "1"                 TO  SPA-COM-CUR (IDX-T)
-               END-IF
-               GO      TO      000-PROC-EXT
            END-IF
-      *    併用算定チェックのみの時、終了
-           IF      LNK-SC92-KBN        =   "4"
-               PERFORM 2005-HEIYOU-CHK-SEC
-               GO      TO      000-PROC-EXT
+      *    基本チェック１
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 200-INPUTCD-KIHON-SEC
            END-IF
       *
-      *    基本チェック
-           PERFORM 200-INPUTCD-KIHON-SEC
+      *    基本チェック２
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 200-INPUTCD-KIHON2-SEC
+           END-IF
            IF      SPA-ERRCD       NOT =   SPACE
                IF      LNK-SC92-KBN    NOT =   "3"
                    MOVE    "1"                 TO  SPA-COM-CUR (IDX-T)
                END-IF
-               GO      TO      000-PROC-EXT
            END-IF
       *
-      *    追加挿入
-           IF      LNK-SC92-KBN        =   "1"
-               PERFORM 400-GYOINSN-SEC
-               IF      SPA-ERRCD       =   SPACE
-      *            MOVE    "2"             TO  LNK-SC92-KBN
-                   CONTINUE
-               ELSE
-                   GO      TO      000-PROC-EXT
-               END-IF
-           ELSE
-               MOVE    LNK-SC92-SRYCD      TO  SPA-COM-INPUTCD(IDX-T)
-           END-IF
+           .
+       200-KIHON-CHK-EXT.
+           EXIT.
       *
-      *    基本チェック
-           PERFORM 200-INPUTCD-KIHON2-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               IF      LNK-SC92-KBN    NOT =   "3"
-                   MOVE    "1"                 TO  SPA-COM-CUR (IDX-T)
-               END-IF
-               GO      TO      000-PROC-EXT
-           END-IF
-      *    チェックのみの時、終了
-           IF      LNK-SC92-KBN        =   "3"
-      *        併用算定チェック（算定回数がＯＫの時）
-               IF     (LNK-SC92-ERRCD3     =   SPACE ) AND
-                      (LNK-SC92-SRYCD(1:1) =   "1"   )
-                   PERFORM 2005-HEIYOU-CHK-SEC
-               END-IF
-               GO      TO      000-PROC-EXT
-           END-IF
+      *****************************************************************
+      *    基本編集・併用算定チェック処理
+      *****************************************************************
+       300-KIHON-HEN-SEC      SECTION.
       *
       *    ＳＰＡ編集
            PERFORM 300-TENSU-HENSYU-SEC
@@ -423,10 +470,8 @@
            END-IF
       *
            .
-       000-PROC-EXT.
-      *
-           EXIT    PROGRAM
-           .
+       300-KIHON-HEN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    基本チェック処理
@@ -477,34 +522,6 @@
                    END-IF
            END-EVALUATE
       *
-      **** 老人適用区分チェック
-      *    EVALUATE    TNS-ROUTEKKBN
-      *        WHEN    0
-      *            CONTINUE
-      *        WHEN    1
-      *            IF      LNK-SC92-ROUJIN  NOT =   ZERO
-      *                PERFORM 2002-SRYCDCHG-HEN-SEC
-      *****************MOVE    "0015"          TO  LNK-SC92-ERRCD2
-      *            END-IF
-      *        WHEN    2
-      *            IF      LNK-SC92-ROUJIN  NOT =   1
-      *                PERFORM 2002-SRYCDCHG-HEN-SEC
-      *****************MOVE    "0015"          TO  LNK-SC92-ERRCD2
-      *            END-IF
-      *****END-EVALUATE
-      *
-      *    算定回数チェック
-           IF      TNS-SANTEIRRKKBN    NOT =   ZERO
-               PERFORM 2001-SANTEI-CHK-SEC
-           END-IF
-      *
-      *    施設基準適合分チェック
-      *----(01.00.01) LINE MOD START ----------------------------------
-      *    IF     (LNK-SC92-SRYCD  (1:2)
-      *                                NOT =   "84"   )  AND
-      **** IF     (LNK-SC92-SRYCD  (1:1)
-      ****                             NOT =   "8"    )  AND
-      *----(01.00.01) LINE MOD END   ----------------------------------
       *    施設基準適合分チェック（コメント・用法は対象外）
            IF     (LNK-SC92-SRYCD  (1:1)
                                            =   "8"    )  OR
@@ -531,6 +548,16 @@
       *
       *    労災・自賠責チェック
            PERFORM 20088-RSIJIB-CHK-SEC
+      *
+      *    算定回数チェック
+           IF      LNK-SC92-KBN    NOT =   "6"
+               IF     (TNS-SANTEIRRKKBN    =   ZERO   )  OR
+                      (SPA-HKNCOMBINUM     =   "9999" )
+                   CONTINUE
+               ELSE
+                   PERFORM 2001-SANTEI-CHK-SEC
+               END-IF
+           END-IF
       *
            .
        200-INPUTCD-KIHON-EXT.
@@ -582,11 +609,12 @@
            END-PERFORM
       *
       *    カーソルクロース
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    WRK-PATH            TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      IDX                 =   ZERO
                IF      TNS-ROUTEKKBN   =   1
@@ -744,11 +772,6 @@
       *****************************************************************
        2001-SANTEI-CHK-SEC             SECTION.
       *
-           IF      SPA-HKNCOMBINUM     =   "9999"
-               GO      TO      2001-SANTEI-CHK-EXT
-           END-IF
-      *
-      *
            MOVE    TNS-TENSU-REC       TO  HZN-TNS-TENSU-REC
       *    算定履歴チェック処理
            INITIALIZE                  ORCSC91AREA
@@ -808,11 +831,12 @@
            END-IF
       *
       *    カーソルクロース
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    ZERO                TO  FLG-SST
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1022,11 +1046,12 @@
                PERFORM 950-CHK-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "CHK-KEY3"          TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "CHK-KEY3"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    慢性疼痛疾患管理料のチェック
            IF     (LNK-SC92-ERRCD6 NOT =   SPACE      )  AND
@@ -1080,6 +1105,12 @@
                MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        200512-SANTEI-SELECT-EXT.
@@ -1478,6 +1509,12 @@
                PERFORM 910-PTNYUINRRK-READ-SEC
       *
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        20054-NETAKIRI-CHK-EXT.
@@ -2114,6 +2151,12 @@
                INITIALIZE                  SYS-1005-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            MOVE    SPACE               TO  WRK-SRYKAMEI
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
@@ -2221,8 +2264,18 @@
       *            上限値＜データ
                WHEN    TNS-KZMJGN        <   WRK-SURYO
                    IF      TNS-KZMERR        =   0  OR  2
-      *            点数計算式１をせず、エラーとする
-                       MOVE    "0022"        TO  SPA-ERRCD
+      *            警告エラーとする
+                       MOVE    "K030"            TO  SPA-ERRCD
+      *            点数計算式１
+                       COMPUTE WRK-KEI-TEN1    =  (WRK-SURYO
+                                               -  TNS-KZMKGN)
+                                               /   TNS-KZM
+                                               +   0.999
+                       MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
+                       COMPUTE WRK-KEI-TEN     =   TNS-TEN
+                                               + ( WRK-KEI-TEN2
+                                               *   TNS-KZMTEN )
+                       COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
                    ELSE
       *            点数計算式２
                        COMPUTE WRK-KEI-TEN1    =  (TNS-KZMJGN
@@ -2237,7 +2290,8 @@
                    END-IF
            END-EVALUATE
       *
-           IF     (SPA-ERRCD           =   SPACE )  AND
+           IF    ((SPA-ERRCD           =   SPACE )  OR
+                  (SPA-ERRCD(1:1)      =   "K"   )) AND
                   (WRK-KEI-TEN2        >   ZERO  )
                MOVE    WRK-KEI-TEN2    TO  SPA-COM-KISOTEN  (IDX-T)
            END-IF
@@ -2271,11 +2325,12 @@
                MOVE    1                   TO  FLG-TENSUPLUS
                INITIALIZE                      TENSUPLUS-REC
            END-IF
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    採血料区分
            MOVE    TNSP-SAIKETUKBN     TO  SPA-COM-SAIKETUKBN (IDX-T)
@@ -2350,17 +2405,16 @@
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
-           IF      FLG-INPUTCD         =   1
-               GO      TO      400-INPUTCD-HEN-EXT
+           IF      FLG-INPUTCD         =   ZERO
+               MOVE    ICD-INPUTCD     TO  SPA-COM-ICD-INPUTCD(IDX-T)
            END-IF
-      *
-           MOVE    ICD-INPUTCD         TO  SPA-COM-ICD-INPUTCD(IDX-T)
       *
            .
        400-INPUTCD-HEN-EXT.
@@ -2405,11 +2459,11 @@
                MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
       *        算定回数チェック
-               IF      TNS-SANTEIRRKKBN    NOT =   ZERO
+               IF     (TNS-SANTEIRRKKBN    =   ZERO   )  OR
+                      (SPA-HKNCOMBINUM     =   "9999" )
+                   CONTINUE
+               ELSE
                    PERFORM 2001-SANTEI-CHK-SEC
-                   IF      LNK-SC92-ERRCD3 NOT =   SPACE
-                       GO      TO      300-SURYOHEN-EXT
-                   END-IF
                END-IF
            END-IF
       *
@@ -2512,12 +2566,12 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            .
        910-TENSU-READ-EXT.
            EXIT.
@@ -2557,11 +2611,12 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        911-TENSU-READ22-EXT.

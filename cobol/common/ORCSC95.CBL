@@ -3881,16 +3881,16 @@
                MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
       *        йё©Т©гне╡й
                IF      WRK-KEY-SRYKA       NOT =   JYURRK-SRYKA
-                   MOVE    SPACE               TO  WKSRY-SRYCD(1)
-                   MOVE    "$"                 TO  WKSRY-SRYCD(1)(1:1)
-                   MOVE    JYURRK-SRYKA        TO  WKSRY-SRYCD(1)(2:2)
-                   MOVE    JYURRK-DRCD(2:4)    TO  WKSRY-SRYCD(1)(5:4)
+                   MOVE    SPACE               TO  WKSRY-INPUTCD(1)
+                   MOVE    "$"                 TO  WKSRY-INPUTCD(1)(1:1)
+                   MOVE    JYURRK-SRYKA        TO  WKSRY-INPUTCD(1)(2:2)
+                   MOVE    JYURRK-DRCD(2:4)    TO  WKSRY-INPUTCD(1)(5:4)
                    PERFORM 490211-WKSRYACT-OUT-SEC
                END-IF
                IF      WRK-KEY-HKNCOMBI    NOT =   JYURRK-HKNCOMBINUM
-                   MOVE    SPACE               TO  WKSRY-SRYCD(1)
-                   MOVE    "#"                 TO  WKSRY-SRYCD(1)(1:1)
-                   MOVE    JYURRK-HKNCOMBINUM  TO  WKSRY-SRYCD(1)(2:4)
+                   MOVE    SPACE               TO  WKSRY-INPUTCD(1)
+                   MOVE    "#"                 TO  WKSRY-INPUTCD(1)(1:1)
+                   MOVE    JYURRK-HKNCOMBINUM  TO  WKSRY-INPUTCD(1)(2:4)
                    PERFORM 490211-WKSRYACT-OUT-SEC
                END-IF
            END-IF
