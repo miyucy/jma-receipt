@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     01.05.07  明治の開始年の修正
       *  01.00.02    MCC-藤原     01.05.07  日のニューメリックチェック追加
+      *  01.00.03    NACL-藤原    02.10.21  漢字項目の空白を全角に修正
       *****************************************************************
 001400 ENVIRONMENT         DIVISION.
 001500 CONFIGURATION       SECTION.
@@ -555,6 +556,8 @@
 052500     MOVE    CST-PN                   TO    EDT-GYMD2-P2.
 052600     MOVE    EDT-YMD-D                TO    EDT-GYMD2-D.
 052700     MOVE    EDT-GYMD2                TO    LNK-DAY2-EDTYMD2.
+           INSPECT LNK-DAY2-EDTYMD2         REPLACING   ALL "  "
+                                                        BY  "　". 
 052800*
 052900*    *編集３ → NN NN年NN月NN日
 053000     MOVE    LNK-DAY1-GENMEI          TO    EDT-GYMD3-G.
@@ -565,6 +568,8 @@
 053500     MOVE    EDT-YMD-D                TO    EDT-GYMD3-D.
 053600     MOVE    CST-HI                   TO    EDT-GYMD3-HI.
 053700     MOVE    EDT-GYMD3                TO    LNK-DAY2-EDTYMD3.
+           INSPECT LNK-DAY2-EDTYMD3         REPLACING   ALL "  "
+                                                        BY  "　". 
 053800*
 053900     MOVE    SPACE                    TO    LNK-DAY1-AREA.
 054000 DTEDIT-EXT.
