@@ -1821,6 +1821,17 @@
                END-IF
            END-IF
       *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( WRK-MCP-WIDGET  =   "NYUKINGK2" )
+                   IF    ( SPA-S01-SYORINO     =   CONST-PROC-NYUKIN )
+                    AND  ( SPA-GMN-NYUKIN      =   ZERO )
+                    AND  ( SPA-GMN-MISYU-ZAN   >   ZERO )
+                       MOVE    SPA-GMN-MISYU-ZAN
+                                   TO  SPA-GMN-NYUKIN
+                   END-IF
+               END-IF
+           END-IF
+      *
            .
        4101-NYUKIN-CHK-EXT.
            EXIT.
