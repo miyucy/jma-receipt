@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    02.11.11  転帰日が未来日のとき病名の表示
       *                                     をするように修正
+      *  01.00.02    NACL-門脇    03.03.10  診療科１０から２０へ
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -349,7 +350,7 @@
            MOVE    ZERO                TO  FLG-CHK 
            IF      SYS-2005-BYOMEIHENKBN1      =   ZERO     
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       10
+                       UNTIL   IDX >       20
                        OR      RECE41-SRYKA(IDX)   =   SPACE
                    IF      PTBYO-SRYKA          =   RECE41-SRYKA (IDX)
                        MOVE    1                    TO  FLG-CHK

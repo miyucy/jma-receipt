@@ -30,6 +30,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-ÌçÏÆ    02.09.09  ¼«ÇåÀÕÂÐ±þ
       *  01.00.02    NACL-Æ£¸¶    03.02.24  ºÇ¿·¤Î¥ì¥»¥×¥È¤Î¤ß£Ä£Â¤Ë»Ä¤¹
+      *  01.00.03    NACL-ÌçÏÆ    03.03.10  ¿ÇÎÅ²Ê£±£°¤«¤é£²£°¤Ø
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -658,7 +659,7 @@
 070400 20011-RECE40-REWRITE-SEC            SECTION.
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       10
+                   UNTIL   IDX >       20
                IF      WRK-RECE40-SRYKA    (IDX)       =   SPACE
                    MOVE    ACCT-SRYKA      TO  WRK-RECE40-SRYKA (IDX)
                    MOVE    10              TO  IDX

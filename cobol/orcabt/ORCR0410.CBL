@@ -31,6 +31,7 @@
       *  01.00.01    NACL-ÌçÏÆ    02.09.09  ¼«ÇåÀÕÂÐ±þ
       *  01.00.02    NACL-ÌçÏÆ    02.11.21  ¼«ÇåÀÕ¡Ê¥Ý¥ê¥Í¥Ã¥¯Åù¤ÎÂÐ±þ¡Ë
       *  01.00.03    NACL-ÌçÏÆ    02.11.25  ¿ÇÎÅ¼ÂÆü¿ô»»Äê¤Î¥³¡¼¥ÉÄÉ²Ã
+      *  01.00.04    NACL-ÌçÏÆ    03.03.10  ¿ÇÎÅ²Ê£±£°¤«¤é£²£°¤Ø
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -462,7 +463,7 @@
            MOVE    SPTID-PTNUM          TO  RECE41-PTNUM
       *    ¿ÇÎÅ²Ê¾ðÊó¤Î¥»¥Ã¥È
            PERFORM   VARYING   IDX   FROM   1   BY   1
-                     UNTIL    (IDX      >   10)    OR
+                     UNTIL    (IDX      >   20)    OR
                               (RECE40-SRYKA(IDX)  =   SPACE)
                MOVE  RECE40-SRYKA(IDX)    TO   RECE41-SRYKA(IDX)
            END-PERFORM
@@ -600,7 +601,7 @@
                                                   WRK-MEISAI-KIN        
       *        
               PERFORM    VARYING    IDX    FROM   1   BY   1
-                         UNTIL     (IDX      >   10)  OR
+                         UNTIL     (IDX      >   20)  OR
                                    (RECE40-SRYKA(IDX)   =   SPACE)
                   PERFORM    NISUU-HENSYU-SEC
                   IF    RECE41-HKNKBN   =   "4"                         
@@ -616,7 +617,7 @@
               MOVE       ZERO       TO     WRK-KENSAYMD-ZEN
       *
               PERFORM    VARYING    IDX    FROM   1   BY   1
-                         UNTIL     (IDX      >   10)  OR
+                         UNTIL     (IDX      >   20)  OR
                                    (RECE40-SRYKA(IDX)   =   SPACE)
                   PERFORM    NISUU-HENSYU2-SEC
                   PERFORM    NISUU-HENSYU3-SEC

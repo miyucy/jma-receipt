@@ -44,7 +44,7 @@
            03  RECE40-HKNCOMBI            PIC  9(04).
       *¿ÇÎÅ²Ê¾ðÊó
            03 RECE40-SRYKAINF.
-               05  RECE40-SRYKA           PIC  X(02)  OCCURS  10.
+               05  RECE40-SRYKA           PIC  X(02)  OCCURS  20.
       *Ì¤ÄûÀµ¶èÊ¬
            03  RECE40-TEISEIKBN           PIC  X(01).
       *Í½È÷

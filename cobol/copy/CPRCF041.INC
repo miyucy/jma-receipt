@@ -44,7 +44,7 @@
       *¥µº‘»÷πÊ
            03  RECE41-PTNUM               PIC  X(20).
       *ø«Œ≈≤ æ Û
-           03  RECE41-SRYKAINF            OCCURS  10.
+           03  RECE41-SRYKAINF            OCCURS  20.
       *ø«Œ≈≤ 
                05  RECE41-SRYKA           PIC  X(02).
       *•´• ª·Ãæ

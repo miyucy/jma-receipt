@@ -35,9 +35,10 @@
       *  01.00.04    NACL-門脇    02.11.06  約束処方時の点数欄表示修正
       *  01.00.05    NACL-門脇    02.11.21  自賠責（ポリネック等の対応）
       *  01.00.06    NACL-門脇    02.11.26  検診コードを編集できるよう修正
-      *  01.02.07    NACL-藤原    02.12.02  酸素の時単価を表示するように追加
-      *  01.02.08    NACL-藤原    03.01.22  データ区分の追加
-      *  01.02.09    NACL-門脇    03.02.06  コメントカウントフラグの編集追加
+      *  01.00.07    NACL-藤原    02.12.02  酸素の時単価を表示するように追加
+      *  01.00.08    NACL-藤原    03.01.22  データ区分の追加
+      *  01.00.09    NACL-門脇    03.02.06  コメントカウントフラグの編集追加
+      *  01.00.10    NACL-門脇    03.03.10  診療科１０から２０へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -594,7 +595,7 @@
               INITIALIZE                   FLG-KHNTEN-JI-AREA           
       *
               PERFORM    VARYING    IDX    FROM   1   BY   1
-                         UNTIL     (IDX      >   10)  OR
+                         UNTIL     (IDX      >   20)  OR
                                    (RECE41-SRYKA(IDX)   =   SPACE)
                   PERFORM    RECE44-HENSYU-SEC
               END-PERFORM
@@ -608,7 +609,7 @@
            ELSE
       *
               PERFORM    VARYING    IDX    FROM   1   BY   1
-                         UNTIL     (IDX      >   10)  OR
+                         UNTIL     (IDX      >   20)  OR
                                    (RECE41-SRYKA(IDX)   =   SPACE)
                   PERFORM    RECE44-HENSYU2-SEC
               END-PERFORM
