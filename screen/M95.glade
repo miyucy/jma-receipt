@@ -31,7 +31,7 @@
   <title>(M95)業務選択−日付セット</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
-  <modal>False</modal>
+  <modal>True</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>False</allow_grow>
   <auto_shrink>False</auto_shrink>
@@ -137,7 +137,7 @@
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
       <text></text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 

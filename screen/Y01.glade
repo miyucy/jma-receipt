@@ -4646,13 +4646,6 @@
 	  <last_modification_time>Fri, 30 Nov 2001 09:36:56 GMT</last_modification_time>
 	</signal>
 	<signal>
-	  <name>unselect_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Fri, 30 Nov 2001 09:37:02 GMT</last_modification_time>
-	</signal>
-	<signal>
 	  <name>select_row</name>
 	  <handler>selection_changed</handler>
 	  <data>SELECT</data>

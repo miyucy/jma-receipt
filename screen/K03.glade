@@ -1406,22 +1406,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label474</name>
-      <x>764</x>
-      <y>104</y>
-      <width>160</width>
-      <height>20</height>
-      <label>Ï«ºÒÊÝ¸±Å¬ÍÑÊ¬¡Ê±ß¡Ë</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>JIHIMSG1</name>
       <x>404</x>
       <y>136</y>
@@ -2112,6 +2096,22 @@
       <width>72</width>
       <height>24</height>
       <label>¥É¥¯¥¿¡¼</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label474</name>
+      <x>764</x>
+      <y>104</y>
+      <width>180</width>
+      <height>20</height>
+      <label>Ï«ºÒ¼«ÇåÊÝ¸±Å¬ÍÑÊ¬¡Ê±ß¡Ë</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

@@ -27,7 +27,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Tue, 26 Dec 2000 01:00:37 GMT</last_modification_time>
   </signal>
-  <title>(P02D)´µ¼ÔÅÐÏ¿¡ÝÏ«ºÒÊÝ¸±ÆþÎÏ</title>
+  <title>(P02D)´µ¼ÔÅÐÏ¿¡ÝÏ«ºÒ¼«ÇåÊÝ¸±ÆþÎÏ</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -252,22 +252,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label247</name>
-      <x>24</x>
-      <y>24</y>
-      <width>120</width>
-      <height>24</height>
-      <label>¡¡¡¡Ï«ºÒÊÝ¸±¶èÊ¬</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaEntry</class>
       <name>SINSATUYMD</name>
       <x>152</x>
@@ -473,40 +457,6 @@
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator2</name>
-      <x>8</x>
-      <y>88</y>
-      <width>80</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator3</name>
-      <x>260</x>
-      <y>88</y>
-      <width>530</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label251</name>
-      <x>100</x>
-      <y>88</y>
-      <width>150</width>
-      <height>18</height>
-      <label>¡ãÃ»´üµëÉÕ¡¡½ýÉÂÇ¯¶â¡ä</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label242</name>
       <x>380</x>
@@ -620,40 +570,6 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label254</name>
-      <x>100</x>
-      <y>360</y>
-      <width>110</width>
-      <height>18</height>
-      <label>¡ã¥¢¥Õ¥¿¡¼¥±¥¢¡ä</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator4</name>
-      <x>8</x>
-      <y>360</y>
-      <width>80</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator5</name>
-      <x>220</x>
-      <y>360</y>
-      <width>570</width>
-      <height>16</height>
     </widget>
 
     <widget>
@@ -1202,6 +1118,90 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label247</name>
+      <x>24</x>
+      <y>24</y>
+      <width>120</width>
+      <height>24</height>
+      <label>Ï«ºÒ¼«ÇåÊÝ¸±¶èÊ¬</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator2</name>
+      <x>8</x>
+      <y>88</y>
+      <width>80</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator4</name>
+      <x>8</x>
+      <y>360</y>
+      <width>80</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator5</name>
+      <x>220</x>
+      <y>360</y>
+      <width>570</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label254</name>
+      <x>100</x>
+      <y>360</y>
+      <width>110</width>
+      <height>18</height>
+      <label>¡ã¥¢¥Õ¥¿¡¼¥±¥¢¡ä</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label251</name>
+      <x>100</x>
+      <y>88</y>
+      <width>212</width>
+      <height>20</height>
+      <label>¡ãÃ»´üµëÉÕ¡¡½ýÉÂÇ¯¶â  ¼«ÇåÀÕ¡ä</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator3</name>
+      <x>320</x>
+      <y>88</y>
+      <width>472</width>
+      <height>16</height>
     </widget>
   </widget>
 </widget>
