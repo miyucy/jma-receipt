@@ -99,6 +99,8 @@
                05  WRK-CHK-SRYDD           PIC X(02).
            03  WRK-CHK-NAME            PIC X(100).
       *
+           03  WRK-DAYMAXCNT           PIC 9(04).
+      *
       *    Æ±»þ¤Ë»»Äê¤¹¤ë¿ÇÎÅ¹Ô°Ù¥³¡¼¥É°ìÍ÷
        01  TBL-DOUJI-AREA.
       *     ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê¡Ê½èÊýäµ¸òÉÕ¤¢¤ê¡Ë
@@ -825,22 +827,23 @@
       *
       *
       *    Ï«ºÒ¤Ç¾Ã±êÄÃÄË½èÃÖ¤Î»þ¡¢ÅöÆü¾å¸Â²ó¿ô¤òÊÑ¹¹¤¹¤ë
+           MOVE    LNK-SC91-DAYMAXCNT  TO  WRK-DAYMAXCNT
            IF      SPA-HKNKBN      NOT =   ZERO
                EVALUATE    WRK-RIGAKU-KBN
       *            ¥Þ¥Ã¥µ¡¼¥¸
                    WHEN    "M"
       *            ´ï¶ñ
                    WHEN    "K"
-                       MOVE    3               TO  LNK-SC91-DAYMAXCNT
-      *            ¼¾ÉÛ
+                       MOVE    3               TO  WRK-DAYMAXCNT
+      *           ¼¾ÉÛ
                    WHEN    "P"
-                       MOVE    ZERO            TO  LNK-SC91-DAYMAXCNT
+                       MOVE    ZERO            TO  WRK-DAYMAXCNT
                END-EVALUATE
            END-IF
       *    ÅöÆü¤Î£Í£Á£Ø
            IF     (LNK-SC91-ERRCD      =   SPACE  )  AND
-                  (LNK-SC91-DAYMAXCNT  >   ZERO   )
-               IF      LNK-SC91-DAYMAXCNT
+                  (WRK-DAYMAXCNT       >   ZERO   )
+               IF      WRK-DAYMAXCNT
                                    <= ( WRK-SC91-DAYCNT  +  WRK-DAYCNT
                                                          +  WRK-DOCNT )
                    MOVE    "0033"          TO  LNK-SC91-ERRCD
@@ -1148,6 +1151,7 @@
                    END-IF
                END-IF
       *
+      *
             IF     FLG-NYU-CHK          =   ZERO
                IF      LNK-SC91-KBN        =   "1"  OR  "3"
                    IF      IDX             =   LNK-SC91-GMN-IDX
@@ -1192,7 +1196,7 @@
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY22"         TO  ORC-DBPATH
+           MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
            MOVE    SPA-SRYYMD          TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
