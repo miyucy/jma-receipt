@@ -284,6 +284,7 @@
       *  01.01.104   NACL-太田    03/09/30  SYUNOU-KEY20追加
       *  01.01.105   NACL-藤原    03/10/03  PTBYOMEI-KEY13追加
       *  01.01.106   NACL-藤原    03/10/07  PTBYOMEI-KEYKEY14,KEY15追加
+      *  01.01.107   NACL-森脇    03/10/09  BD003-KEY,KEY2,KEY3,KEY4追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2931,6 +2932,19 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "KOHPLUS-ALL"
                    MOVE    PATH-TBL-KOHPLUS-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.01.107*******************************************
+               WHEN    ANY             ALSO   "BD003-KEY"
+                   MOVE    PATH-VIEW-BD003-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "BD003-KEY2"
+                   MOVE    PATH-VIEW-BD003-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "BD003-KEY3"
+                   MOVE    PATH-VIEW-BD003-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "BD003-KEY4"
+                   MOVE    PATH-VIEW-BD003-KEY4
                                        TO  WRK-PATH
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC

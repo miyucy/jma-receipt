@@ -75,6 +75,7 @@ db	{
 	tbl_receden;
 	tbl_kohplus;
 	tbl_prvkanri;
+	view_bd003;
 };
 db	"shell"	{
 	shell;

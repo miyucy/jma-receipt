@@ -796,6 +796,9 @@ COPYS = \
         CPORCSNTYMD.INC \
         S05.INC \
         HCRCP400.INC \
+        HCM38.INC \
+        HCM39.INC \
+        CPBD003.INC \
 
 DBPATH = \
 	ORCA-DBPATH
