@@ -3377,6 +3377,11 @@
                                                TO  SPA-ERRMSG
                WHEN    "2509"
                    MOVE    "登録できません"    TO  SPA-ERRMSG
+               WHEN    "2510"
+                   MOVE    "旧姓履歴が２０件以上です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "登録できません。"
+                                               TO  SPA-ERRMSG(27:)
                WHEN    "2530"
                    MOVE    "全角で入力して下さい"    TO  SPA-ERRMSG
                WHEN    "2517"

@@ -3199,20 +3199,27 @@
        41091-KYUSEI-KOU-SEC      SECTION.
       *    ¿·µ¬¤Î»þ¡¢µìÀ«ÍúÎò¤Ï½ÐÎÏ¤·¤Ê¤¤
            IF      SPA-P02-SYORI       =   1
-               GO      TO      4109-TOUROKU-CHK-EXT
+               GO      TO      41091-KYUSEI-KOU-EXT
            END-IF
       *
+           MOVE    ZERO                TO  IDX
            IF     (SPA-OLD-NAME    NOT =   SPACE   )  AND
                   (SPA-GMN-NAME    NOT =   SPACE   )  AND
                   (SPA-GMN-NAME    NOT =   SPA-OLD-NAME)
                MOVE    SPA-NAI25-KYU-MAX   TO  IDX
-               IF    ( SPA-GMN25-KYU-CHGYMD(IDX)   =   SPA-SYSYMD) OR
-                     ( SPA-GMN25-KYU-NAME  (IDX)   =   SPA-OLD-NAME
+               IF    ( IDX                         >   ZERO      ) AND
+                     ((SPA-GMN25-KYU-CHGYMD(IDX)   =   SPA-SYSYMD) OR
+                      (SPA-GMN25-KYU-NAME  (IDX)   =   SPA-OLD-NAME
                   AND  SPA-GMN25-KYU-KANANAME(IDX) =   SPA-OLD-KANANAME
-                  AND  SPA-GMN25-KYU-NICKNAME(IDX) =   SPA-OLD-NICKNAME)
+                  AND  SPA-GMN25-KYU-NICKNAME(IDX) =  SPA-OLD-NICKNAME))
                    CONTINUE
                ELSE
                    ADD     1               TO  IDX
+                   IF      IDX             >   20
+                      MOVE    "2510"           TO  SPA-ERRCD
+                      MOVE    1                TO  SPA-GMN-CUR
+                      GO      TO      41091-KYUSEI-KOU-EXT
+                   END-IF
                    ADD     1               TO  SPA-NAI25-KYU-MAX
       *
                    MOVE    SPA-OLD-NAME    TO  SPA-GMN25-KYU-NAME
@@ -3233,7 +3240,7 @@
       *
            .
       *
-       4109-TOUROKU-CHK-EXT.
+       41091-KYUSEI-KOU-EXT.
            EXIT.
       *
       ****************************************************************
