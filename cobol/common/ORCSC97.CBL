@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−多々納 02/10/18  入院追加
       *  01.00.02    NACL−多々納 03/01/12  半角記号入力可能追加
+      *  01.00.03    NACL−多々納 03/04/14  全角判定修正、約束処方修正
       *****************************************************************
       *
       *
@@ -452,9 +453,6 @@
                GO      TO      1002-NYUINKAISU-EXT
            END-IF
       *
-      *TEST
-           DISPLAY "TBL-NYUIN-KAISU-AREA:" TBL-NYUIN-KAISU-AREA
-      *TEST
       *    期間編集
            INITIALIZE                      LNK-SC97-NYUIN-KAISU
            MOVE    ZERO                TO  IDX
@@ -641,8 +639,8 @@
            MOVE    ZERO                TO  WRK-CD-MCNT
            MOVE    SPACE               TO  WRK-CD
            PERFORM VARYING IDX     FROM    WRK-IDX-FT   BY  1
-                   UNTIL  (IDX         >   22     )  OR
-                          (WRK-INPUTCD(IDX:1)
+                   UNTIL  (IDX         >   22     )
+                    OR    (WRK-INPUTCD(IDX:1)
                                        =   SPACE  OR  "*" )
       *      全角の＊を半角の*とする
              IF      WRK-INPUTCD(IDX:2)    =  "＊" OR "　"
@@ -655,7 +653,12 @@
       *
                IF      WRK-INPUTCD (IDX:1)
                                       >=  X"A1"
+      *            全角の時、２桁編集
                    MOVE    1               TO  FLG-KANJI
+                   ADD     1               TO  IDX
+                   ADD     1               TO  WRK-CD-MCNT
+                   MOVE    WRK-INPUTCD(IDX:1)
+                                           TO  WRK-CD (WRK-CD-MCNT:1)
                ELSE
                    IF     (WRK-INPUTCD (IDX:1)
                                           IS  ALPHABETIC )  OR
@@ -877,12 +880,15 @@
                    COMPUTE IDY                 =   WRK-CD-MCNT   +  1
                    MOVE    WRK-INPUTCD(IDY:)   TO  LNK-SC97-INPUTCD
                                                                 (7:)
+                   MOVE    ICD-SRYCD           TO  LNK-SC97-INCD
+                   MOVE    6                   TO  LNK-SC97-INCDCNT
                ELSE
                    IF     (WRK-CD              =   ICD-INPUTCD )
       *************IF     (WRK-CD              =   ICD-INPUTCD )  AND
       ********************(WRK-ICD-CDSYU   NOT =   "J"         )
       *                点数コード決定
                        MOVE    ICD-SRYCD           TO  LNK-SC97-INCD
+                       MOVE    9                   TO  LNK-SC97-INCDCNT
       *                点数コードが同じ時
                        IF      SPA-COM-INPUTCD(GMN-IDX)
                                                =   LNK-SC97-INCD
