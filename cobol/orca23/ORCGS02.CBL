@@ -3085,7 +3085,7 @@
                            (TBL-ZAIBAN(IDX1)   NOT = SRY-ZAINUM)
       *                    保険適用外金額セット
                            PERFORM    4404-HKNTEKGAI-TBL-SEC
-                           MOVE   "SRYACT-KEY2"  TO  MCP-FUNC
+                           MOVE   "SRYACT-KEY2"  TO  ORC-DBPATH
                            PERFORM    SINKOU-READ-SEC
                        END-PERFORM
                    END-IF
