@@ -81,6 +81,7 @@
       *  01.00.37    NACL-小豆沢  03.10.03  老人性痴呆疾患治療病棟入院料の算定
       *                                     対応追加
       *  01.00.38    NACL-太田    03.10.09  入院日変更時に室料差額を初期化しない
+      *  01.00.39    NACL-小豆沢  03.10.24  労災（自賠）入院自に老人点数無効
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -9476,7 +9477,9 @@
       *
       **     MOVE    SENCHG-SENTEISRYCD
       **                             TO  LNK-SCNYUACCT-SENTEI-SRYCD
-           IF      SENCHG-SENTEISRYCD    NOT =  SPACE
+           IF     (SENCHG-SENTEISRYCD    NOT =  SPACE)   AND
+                  (COMB-HKNNUM           NOT =  "971" )  AND
+                  (COMB-HKNNUM           NOT =  "973" )
                MOVE    "099999916"   TO  LNK-SCNYUACCT-SENTEI-SRYCD
                MOVE    WRK-SENTEI-STYMD
                                      TO  LNK-SCNYUACCT-SENTEI-STYMD

@@ -31,6 +31,7 @@
       *                                     以内再入院）の考慮を追加
       *  01.00.02    NACL-小豆沢  03.06.25  特定集中治療室管理料の次月会計
       *                                     作成に対応
+      *  01.00.03    NACL-小豆沢  03.10.24  労災（自賠）入院自に老人点数無効
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5246,7 +5247,9 @@
       *
       **     MOVE    SENCHG-SENTEISRYCD
       **                             TO  LNK-SCNYUACCT-SENTEI-SRYCD
-           IF      SENCHG-SENTEISRYCD    NOT =  SPACE
+           IF     (SENCHG-SENTEISRYCD    NOT =  SPACE)   AND
+                  (COMB-HKNNUM           NOT =   "971")  AND
+                  (COMB-HKNNUM           NOT =   "973")
                MOVE    "099999916"   TO  LNK-SCNYUACCT-SENTEI-SRYCD
                MOVE    WRK-SENTEI-STYMD
                                      TO  LNK-SCNYUACCT-SENTEI-STYMD
