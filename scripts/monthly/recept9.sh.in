@@ -112,7 +112,7 @@ fi
             exit 
         else 
            if  [ $7 != 'NOPG' ]; then
-               $DBSTUB -dir $LDDIRECTORY -bd recept $7 -parameter $1$5$6              >> /home/orca/recept9.log
+               $DBSTUB -dir $LDDIRECTORY -bd recept $7 -parameter $1$5$6       >> /home/orca/recept9.log
 
            fi
         fi
@@ -121,7 +121,29 @@ fi
         if  [ -e $4 ]; then
             exit 
         else 
-            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0710 -parameter $1$2$3$8$5$6    >> /home/orca/recept9.log
+            if  [ $2 -eq '1' ]; then
+##
+##              レセ一括作成 
+                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0710 -parameter $9${10}$1$2$3$8$5$6    >> /home/orca/recept9.log
+                if  [ -e $4 ]; then
+                    exit 
+                else
+                    if  [ ${11} -eq '40' ]; then
+                        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCRCP401 -parameter $9${10}$1$2$3$8$5$6 >> /home/orca/recept9.log
+                    fi
+                fi
+            else
+##
+##              レセ個別作成 
+                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0710 -parameter $9${10}$1$2$3$8$5$6    >> /home/orca/recept9.log
+                if  [ -e $4 ]; then
+                    exit 
+                else
+                    if  [ ${14} -eq '40' ]; then
+                        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCRCP401 -parameter $9${10}$1$2$3$8$5$6 >> /home/orca/recept9.log
+                    fi
+                fi
+            fi
         fi
 
 ##
