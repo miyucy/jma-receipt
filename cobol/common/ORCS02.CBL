@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    03/03/07  老人限度額の集計変更
       *  01.00.02    NACL-門脇    03/03/10  食事区分”４”の対応追加
+      *  01.00.03    NACL-門脇    03/03/18  公費の低年金・低所得対応等
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -647,6 +648,7 @@
        100-KAKUTEI-SEC          SECTION.
       *
            MOVE    SPACE                TO      FLG-SANSHOU.
+           MOVE    SPACE                TO      FLG-SANSHOU2.
            MOVE    SPACE                TO      FLG-SANSHOU3.     
            MOVE    SPACE                TO      WRK-SKJGNSTYMD-S
            MOVE    SPACE                TO      WRK-SKJGNSTYMD-E
@@ -719,8 +721,26 @@
                        MOVE     "3"     TO       FLG-SANSHOU
            END-EVALUATE.
       *
+           IF   ( LNK-SYU-KOH1HKNNUM     =  SPACE OR "027" )
+           AND  ( LNK-SYU-KOH2HKNNUM     =  SPACE          )
+           AND  ( LNK-SYU-KOH3HKNNUM     =  SPACE          )
+           AND  ( LNK-SYU-KOH4HKNNUM     =  SPACE          )
+                       MOVE     "1"     TO       FLG-SANSHOU
+           END-IF.
+      *
       *    公費負担部分検索用の参照部分セット（本人で固定）
-           MOVE       "1"               TO       FLG-SANSHOU2.
+      ***  MOVE       "1"               TO       FLG-SANSHOU2.
+      *
+           EVALUATE   FLG-TSYRRK        ALSO     FLG-TNKRRK
+               WHEN    1                ALSO     1
+                       MOVE     "1"     TO       FLG-SANSHOU2
+               WHEN    0                ALSO     1
+                       MOVE     "2"     TO       FLG-SANSHOU2
+               WHEN    0                ALSO     0
+               WHEN    1                ALSO     0
+                       MOVE     "3"     TO       FLG-SANSHOU2
+           END-EVALUATE.
+      *
       *
            EVALUATE    FLG-TSYRRK       ALSO     FLG-TNKRRK        
                WHEN    1                ALSO     1                 
@@ -1066,6 +1086,10 @@
                WHEN   "3"
                         MOVE  HKN-TNK-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
            END-EVALUATE.
+      *
+           IF     COMB-KOH1HKNNUM    =     "027"
+                        MOVE  HKN-HON-NYUMJGNGAK TO  MAX-KIN-KOHI1-M
+           END-IF.
       *
        2103-KOH1-KAISU-EXT.
            EXIT.
@@ -2491,8 +2515,8 @@
            EVALUATE   WK-HKNKBN
              WHEN   SPACE
       *    負担金額の計算
-               EVALUATE   FLG-SANSHOU
-                 WHEN   "1"
+      ***      EVALUATE   FLG-SANSHOU
+      ***        WHEN   "1"
                    IF   COMB-HONKZKKBN        =   "1"
                         IF    HKN-HON-NYUKFTNRATE     NOT =    ZERO
                               COMPUTE   WK-FUTANWARI  =
@@ -2582,95 +2606,95 @@
                                             TO   LNK-SYU-SYUSKJ-FTN-RECE
                         END-IF
                    END-IF
-                 WHEN   "2"
-                   IF    HKN-TSY-NYUKFTNRATE     NOT =    ZERO
-                         COMPUTE   WK-FUTANWARI  =
-                                   HKN-TSY-NYUKFTNRATE  /  100
-                         COMPUTE   LNK-SYU-SYUCOMPFTN  =
-                                   WK-ZENGAKU   *  WK-FUTANWARI
-                         MOVE      LNK-SYU-SYUCOMPFTN
-                                             TO WK-TOKUTEI-COMPFTN2
-                         COMPUTE   LNK-SYU-SYUCOMPFTN =
-                                   LNK-SYU-SYUCOMPFTN  +  5
-                         COMPUTE   WK-FTN      =
-                                   LNK-SYU-SYUCOMPFTN  /  10
-                         COMPUTE   LNK-SYU-SYUCOMPFTN =
-                                   WK-FTN   *  10
-                   END-IF
+      ***        WHEN   "2"
+      ***          IF    HKN-TSY-NYUKFTNRATE     NOT =    ZERO
+      ***                COMPUTE   WK-FUTANWARI  =
+      ***                          HKN-TSY-NYUKFTNRATE  /  100
+      ***                COMPUTE   LNK-SYU-SYUCOMPFTN  =
+      ***                          WK-ZENGAKU   *  WK-FUTANWARI
+      ***                MOVE      LNK-SYU-SYUCOMPFTN
+      ***                                    TO WK-TOKUTEI-COMPFTN2
+      ***                COMPUTE   LNK-SYU-SYUCOMPFTN =
+      ***                          LNK-SYU-SYUCOMPFTN  +  5
+      ***                COMPUTE   WK-FTN      =
+      ***                          LNK-SYU-SYUCOMPFTN  /  10
+      ***                COMPUTE   LNK-SYU-SYUCOMPFTN =
+      ***                          WK-FTN   *  10
+      ***          END-IF
       *
-                   IF   LNK-S02-KOUREI-NYUIN-KBN   =   "1"
-                       IF  ZAN-SYU-M     <     WK-TOKUTEI-COMPFTN2      
-                           MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
-                                                WK-TOKUTEI-COMPFTN      
-                       ELSE                                             
-                           MOVE WK-TOKUTEI-COMPFTN2                     
-                                                 TO  WK-TOKUTEI-COMPFTN 
-                       END-IF
-                   ELSE
-                           MOVE WK-TOKUTEI-COMPFTN2              
-                                                 TO  WK-TOKUTEI-COMPFTN 
-                   END-IF
-                   COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
-                             LNK-SYU-SYUCOMPFTN     
-                   MOVE  HKN-TSY-NYUSKJRYYKBN
-                                             TO   LNK-SYU-SYUSKJ-FTNKBN
-                   MOVE  WK-SHOKUJI-NISSU
-                                             TO   LNK-SYU-SYUSKJ-NISSU
-                   MOVE  WK-SHOKUJI-RYOYOHI
-                                             TO   LNK-SYU-SYUSKJ-RYOYOHI
-                   IF    HKN-TSY-NYUSKJRYYKBN  NOT =  "0"
-                            IF    HKN-TSY-NYUSKJRYYKBN  NOT =  "3"
-                              MOVE  WK-SHOKUJI-FTN
-                                             TO   LNK-SYU-SYUSKJ-FTN
-                            END-IF
-                            MOVE  WK-SHOKUJI-FTN
-                                            TO   LNK-SYU-SYUSKJ-FTN-RECE
-                   END-IF
-                 WHEN   "3"
-                   IF    HKN-TNK-NYUKFTNRATE     NOT =    ZERO
-                         COMPUTE   WK-FUTANWARI  =
-                                   HKN-TNK-NYUKFTNRATE  /  100
-                         COMPUTE   LNK-SYU-SYUCOMPFTN  =
-                                   WK-ZENGAKU   *  WK-FUTANWARI
-                         MOVE      LNK-SYU-SYUCOMPFTN
-                                            TO WK-TOKUTEI-COMPFTN2
-                         COMPUTE   LNK-SYU-SYUCOMPFTN =
-                                   LNK-SYU-SYUCOMPFTN  +  5
-                         COMPUTE   WK-FTN      =
-                                   LNK-SYU-SYUCOMPFTN  /  10
-                         COMPUTE   LNK-SYU-SYUCOMPFTN =
-                                   WK-FTN   *  10
-                   END-IF
+      ***          IF   LNK-S02-KOUREI-NYUIN-KBN   =   "1"
+      ***              IF  ZAN-SYU-M     <     WK-TOKUTEI-COMPFTN2      
+      ***                  MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
+      ***                                       WK-TOKUTEI-COMPFTN      
+      ***              ELSE                                             
+      ***                  MOVE WK-TOKUTEI-COMPFTN2                     
+      ***                                        TO  WK-TOKUTEI-COMPFTN 
+      ***              END-IF
+      ***          ELSE
+      ***                  MOVE WK-TOKUTEI-COMPFTN2              
+      ***                                        TO  WK-TOKUTEI-COMPFTN 
+      ***          END-IF
+      ***          COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
+      ***                    LNK-SYU-SYUCOMPFTN     
+      ***          MOVE  HKN-TSY-NYUSKJRYYKBN
+      ***                                    TO   LNK-SYU-SYUSKJ-FTNKBN
+      ***          MOVE  WK-SHOKUJI-NISSU
+      ***                                    TO   LNK-SYU-SYUSKJ-NISSU
+      ***          MOVE  WK-SHOKUJI-RYOYOHI
+      ***                                    TO   LNK-SYU-SYUSKJ-RYOYOHI
+      ***          IF    HKN-TSY-NYUSKJRYYKBN  NOT =  "0"
+      ***                   IF    HKN-TSY-NYUSKJRYYKBN  NOT =  "3"
+      ***                     MOVE  WK-SHOKUJI-FTN
+      ***                                    TO   LNK-SYU-SYUSKJ-FTN
+      ***                   END-IF
+      ***                   MOVE  WK-SHOKUJI-FTN
+      ***                                   TO   LNK-SYU-SYUSKJ-FTN-RECE
+      ***          END-IF
+      ***        WHEN   "3"
+      ***          IF    HKN-TNK-NYUKFTNRATE     NOT =    ZERO
+      ***                COMPUTE   WK-FUTANWARI  =
+      ***                          HKN-TNK-NYUKFTNRATE  /  100
+      ***                COMPUTE   LNK-SYU-SYUCOMPFTN  =
+      ***                          WK-ZENGAKU   *  WK-FUTANWARI
+      ***                MOVE      LNK-SYU-SYUCOMPFTN
+      ***                                   TO WK-TOKUTEI-COMPFTN2
+      ***                COMPUTE   LNK-SYU-SYUCOMPFTN =
+      ***                          LNK-SYU-SYUCOMPFTN  +  5
+      ***                COMPUTE   WK-FTN      =
+      ***                          LNK-SYU-SYUCOMPFTN  /  10
+      ***                COMPUTE   LNK-SYU-SYUCOMPFTN =
+      ***                          WK-FTN   *  10
+      ***          END-IF
       *
-                   IF   LNK-S02-KOUREI-NYUIN-KBN   =   "1"
-                       IF  ZAN-SYU-M     <     WK-TOKUTEI-COMPFTN2      
-                           MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
-                                                WK-TOKUTEI-COMPFTN      
-                       ELSE                                             
-                           MOVE WK-TOKUTEI-COMPFTN2                     
-                                                 TO  WK-TOKUTEI-COMPFTN 
-                       END-IF
-                   ELSE
-                           MOVE WK-TOKUTEI-COMPFTN2                
-                                                 TO  WK-TOKUTEI-COMPFTN 
-                   END-IF
-                   COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
-                             LNK-SYU-SYUCOMPFTN     
-                   MOVE  HKN-TNK-NYUSKJRYYKBN
-                                             TO   LNK-SYU-SYUSKJ-FTNKBN
-                   MOVE  WK-SHOKUJI-NISSU
-                                             TO   LNK-SYU-SYUSKJ-NISSU
-                   MOVE  WK-SHOKUJI-RYOYOHI
-                                             TO   LNK-SYU-SYUSKJ-RYOYOHI
-                   IF    HKN-TNK-NYUSKJRYYKBN  NOT =  "0"
-                            IF    HKN-TNK-NYUSKJRYYKBN  NOT =  "3"
-                              MOVE  WK-SHOKUJI-FTN
-                                             TO   LNK-SYU-SYUSKJ-FTN
-                            END-IF
-                            MOVE  WK-SHOKUJI-FTN
-                                            TO   LNK-SYU-SYUSKJ-FTN-RECE
-                   END-IF
-               END-EVALUATE
+      ***          IF   LNK-S02-KOUREI-NYUIN-KBN   =   "1"
+      ***              IF  ZAN-SYU-M     <     WK-TOKUTEI-COMPFTN2      
+      ***                  MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
+      ***                                       WK-TOKUTEI-COMPFTN      
+      ***              ELSE                                             
+      ***                  MOVE WK-TOKUTEI-COMPFTN2                     
+      ***                                        TO  WK-TOKUTEI-COMPFTN 
+      ***              END-IF
+      ***          ELSE
+      ***                  MOVE WK-TOKUTEI-COMPFTN2                
+      ***                                        TO  WK-TOKUTEI-COMPFTN 
+      ***          END-IF
+      ***          COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
+      ***                    LNK-SYU-SYUCOMPFTN     
+      ***          MOVE  HKN-TNK-NYUSKJRYYKBN
+      ***                                    TO   LNK-SYU-SYUSKJ-FTNKBN
+      ***          MOVE  WK-SHOKUJI-NISSU
+      ***                                    TO   LNK-SYU-SYUSKJ-NISSU
+      ***          MOVE  WK-SHOKUJI-RYOYOHI
+      ***                                    TO   LNK-SYU-SYUSKJ-RYOYOHI
+      ***          IF    HKN-TNK-NYUSKJRYYKBN  NOT =  "0"
+      ***                   IF    HKN-TNK-NYUSKJRYYKBN  NOT =  "3"
+      ***                     MOVE  WK-SHOKUJI-FTN
+      ***                                    TO   LNK-SYU-SYUSKJ-FTN
+      ***                   END-IF
+      ***                   MOVE  WK-SHOKUJI-FTN
+      ***                                   TO   LNK-SYU-SYUSKJ-FTN-RECE
+      ***          END-IF
+      ***      END-EVALUATE
              WHEN   "1"
       *        システム管理マスタ（４００１）から点数単価の取得
                INITIALIZE                         SYS-4001-REC
@@ -2828,6 +2852,12 @@
                    MOVE    HKN-TNK-NYUKFTNRATE  TO   WK-NYUKFTNRATE
                    MOVE    HKN-TNK-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
            END-EVALUATE.
+      *
+           IF   COMB-KOHHKNNUM(KOH-IDX)  =  "027"
+                   MOVE    HKN-HON-NYUKFTNRATE  TO   WK-NYUKFTNRATE
+                   MOVE    HKN-HON-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
+           END-IF.
+      *
       *
        2302-KOH-HKNREAD-EXT.
            EXIT.
