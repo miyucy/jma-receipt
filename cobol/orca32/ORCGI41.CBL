@@ -2651,15 +2651,15 @@
            MOVE    SPA-NAI-TBANGO-41 (SPA-GMN-NUM-41)   TO  IDX2.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "1")   AND
                  (I41-DAY (IDX)              NOT = SPACE)  AND
-                 (I41-DAY (IDX)              NOT =  "1")
+                 (SPA-GMN-DAY-41 (IDX)       NOT =   1)
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
                GO      TO      41012-DAY-CHK-EXT
            END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "2")   AND
                  (I41-DAY (IDX)              NOT = SPACE)  AND
-                 (I41-DAY (IDX)              NOT =  "1")   AND
-                 (I41-DAY (IDX)              NOT =  "2")
+                 (SPA-GMN-DAY-41 (IDX)       NOT =   1)    AND
+                 (SPA-GMN-DAY-41 (IDX)       NOT =   2)
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
                GO      TO      41012-DAY-CHK-EXT
@@ -2674,16 +2674,17 @@
                        MOVE    99              TO  IDY
                    END-IF
                END-PERFORM
-                   IF    SPA-ERRCD    NOT = SPACE
-                       MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
-                       GO      TO      41012-DAY-CHK-EXT
-                   END-IF
+               IF    SPA-ERRCD    NOT = SPACE
+                   MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
+                   GO      TO      41012-DAY-CHK-EXT
+               END-IF
            END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "4")  AND
                  (I41-DAY (IDX)              NOT = SPACE)  AND
-                 (I41-DAY (IDX)              NOT =  "1")   AND
-                 (I41-DAY (IDX)              NOT =  "2")   AND
-                 (I41-DAY (IDX)              NOT =  "3")
+                 (SPA-GMN-DAY-41 (IDX)       NOT = ZERO)   AND
+                 (SPA-GMN-DAY-41 (IDX)       NOT =   1)    AND
+                 (SPA-GMN-DAY-41 (IDX)       NOT =   2)    AND
+                 (SPA-GMN-DAY-41 (IDX)       NOT =   3)
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
                GO      TO      41012-DAY-CHK-EXT
@@ -2698,14 +2699,14 @@
                        MOVE    99              TO  IDY
                    END-IF
                END-PERFORM
-                   IF    SPA-ERRCD    NOT = SPACE
-                       MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
-                       GO      TO      41012-DAY-CHK-EXT
-                   END-IF
+               IF    SPA-ERRCD    NOT = SPACE
+                   MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
+                   GO      TO      41012-DAY-CHK-EXT
+               END-IF
            END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "6")   AND
                  (I41-DAY (IDX)              NOT = SPACE)  AND
-                 (I41-DAY (IDX)              NOT =  "1")
+                 (SPA-GMN-DAY-41 (IDX)       NOT =   1)
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
                GO      TO      41012-DAY-CHK-EXT
@@ -2924,6 +2925,7 @@
                    END-IF
            END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "4")  AND
+                 (WRK-KOMENTO-D              NOT = ZERO)  AND
                  (WRK-KOMENTO-D              NOT =   1)   AND
                  (WRK-KOMENTO-D              NOT =   2)   AND
                  (WRK-KOMENTO-D              NOT =   3)
