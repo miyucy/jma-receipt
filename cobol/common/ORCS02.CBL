@@ -1158,6 +1158,8 @@
       *
            INITIALIZE         WK-CHIHOU-FLG-TAIHI-AREA.
       *
+           INITIALIZE         WK-SYUHEN-TAIHI-AREA.
+      *
       *    *∏¯»Ò£±§ŒæÂ∏¬∂‚≥€ºËπ˛§ﬂ
            IF (COMB-KOH1HKNNUM           NOT =  SPACE)    AND
               (COMB-KOH1-NYUJGNKBN       =     "1")
@@ -1441,8 +1443,6 @@
                    END-EVALUATE
                END-IF
            END-IF.
-      *
-           INITIALIZE       WK-SYUHEN-TAIHI-AREA.
       *
            IF  ( LNK-S02-KOUREI-NYUIN-KBN     =      "1"   )
            AND ( COMB-HKNNUM            NOT   =     SPACE  )
@@ -1916,7 +1916,11 @@
       *                                 WK-SYU-SYUCOMPFTN  *  10        
       ***
                       IF   FLG-SYUHEN   =   "1"
-                        ADD   SYU-KOH1COMPFTN   TO   FTN-KOHI1-M-HEN  
+                        IF  (SYU-KOH2HKNNUM     NOT = SPACE)              
+                        OR  (SYU-KOH3HKNNUM     NOT = SPACE)
+                        OR  (SYU-KOH4HKNNUM     NOT = SPACE)
+                          ADD   SYU-KOH1COMPFTN   TO   FTN-KOHI1-M-HEN  
+                        END-IF
                       END-IF
       ***
                       IF  (SYU-KOH2HKNNUM     NOT = SPACE)              
@@ -1962,7 +1966,12 @@
       *                                 WK-SYU-SYUCOMPFTN  *  10        
       ***
                       IF   FLG-SYUHEN   =   "1"
-                        ADD   SYU-SYUCOMPFTN    TO   FTN-SYU-M-HEN  
+                        IF  (SYU-KOH1HKNNUM     NOT = SPACE)              
+                        OR  (SYU-KOH2HKNNUM     NOT = SPACE)
+                        OR  (SYU-KOH3HKNNUM     NOT = SPACE)
+                        OR  (SYU-KOH4HKNNUM     NOT = SPACE)
+                          ADD   SYU-SYUCOMPFTN    TO   FTN-SYU-M-HEN  
+                        END-IF
                       END-IF
       ***
                       IF  (SYU-KOH1HKNNUM     NOT = SPACE)              
@@ -4969,79 +4978,44 @@
       *    º˝«º•∆°º•÷•Î§Œ∏¯»ÒÀË§Œ¥µº‘…È√¥∂‚≥€§Ú•ª•√•»§π§Î
            IF   (COMB-KOH1HKNNUM         NOT = SPACE)   AND
                 (COMB-KOH1-NYUJGNKBN     =     "1")
-      ***>     IF   COMB-KOH1-HKNKOHSBTKBN   NOT =    "3"
-      ***>          MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH1HKNFTNMONEY
+             IF  ( LNK-S02-KOUREI-NYUIN-KBN     =        "1"  )
+             AND ( COMB-KOH1HKNNUM              =       "027" )
+                  CONTINUE
+             ELSE
                     COMPUTE  LNK-SYU-KOH1HKNFTNMONEY  =                  
                                     LNK-SYU-KOH1COMPFTN     +   5        
                     COMPUTE  LNK-SYU-KOH1HKNFTNMONEY  =                  
                                     LNK-SYU-KOH1HKNFTNMONEY /  10        
                     COMPUTE  LNK-SYU-KOH1HKNFTNMONEY  =                  
                                     LNK-SYU-KOH1HKNFTNMONEY *  10        
-      ***>     ELSE
-      ***>          IF     COMB-KOH1HKNNUM     =    "027"
-      ***>              MOVE   LNK-SYU-KOH1COMPFTN
-      ***>                               TO  LNK-SYU-KOH1HKNFTNMONEY
-      ***>          ELSE
-      ***>              MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH1HKNFTNMONEY
-      ***>          END-IF
-      ***>     END-IF
+             END-IF
            END-IF.
            IF   (COMB-KOH2HKNNUM        NOT = SPACE)   AND
                 (COMB-KOH2-NYUJGNKBN    =     "1")
-      ***>     IF   COMB-KOH2-HKNKOHSBTKBN   NOT =    "3"
-      ***>          MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH2HKNFTNMONEY
                     COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =                  
                                     LNK-SYU-KOH2COMPFTN     +   5        
                     COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =                  
                                     LNK-SYU-KOH2HKNFTNMONEY /  10        
                     COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =                  
                                     LNK-SYU-KOH2HKNFTNMONEY *  10        
-      ***>     ELSE
-      ***>          IF     COMB-KOH2HKNNUM     =    "027"
-      ***>              MOVE   LNK-SYU-KOH2COMPFTN
-      ***>                               TO  LNK-SYU-KOH2HKNFTNMONEY
-      ***>          ELSE
-      ***>              MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH2HKNFTNMONEY
-      ***>          END-IF
-      ***>     END-IF
            END-IF.
            IF   (COMB-KOH3HKNNUM        NOT = SPACE)   AND
                 (COMB-KOH3-NYUJGNKBN    =     "1")
-      ***>     IF   COMB-KOH3-HKNKOHSBTKBN   NOT =    "3"
-      ***>          MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH3HKNFTNMONEY
                     COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =                  
                                     LNK-SYU-KOH3COMPFTN     +   5        
                     COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =                  
                                     LNK-SYU-KOH3HKNFTNMONEY /  10        
                     COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =                  
                                     LNK-SYU-KOH3HKNFTNMONEY *  10        
-      ***>     ELSE
-      ***>          IF     COMB-KOH3HKNNUM     =    "027"
-      ***>              MOVE   LNK-SYU-KOH3COMPFTN
-      ***>                               TO  LNK-SYU-KOH3HKNFTNMONEY
-      ***>          ELSE
-      ***>              MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH3HKNFTNMONEY
-      ***>          END-IF
-      ***>     END-IF
            END-IF.
            IF   (COMB-KOH4HKNNUM        NOT = SPACE)   AND
                 (COMB-KOH4-NYUJGNKBN    =     "1")
-      ***>     IF   COMB-KOH4-HKNKOHSBTKBN   NOT =    "3"
-      ***>          MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH4HKNFTNMONEY
                     COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =                  
                                     LNK-SYU-KOH4COMPFTN     +   5        
                     COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =                  
                                     LNK-SYU-KOH4HKNFTNMONEY /  10        
                     COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =                  
                                     LNK-SYU-KOH4HKNFTNMONEY *  10        
-      ***>     ELSE
-      ***>          IF     COMB-KOH4HKNNUM     =    "027"
-      ***>              MOVE   LNK-SYU-KOH4COMPFTN
-      ***>                               TO  LNK-SYU-KOH4HKNFTNMONEY
-      ***>          ELSE
-      ***>              MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH4HKNFTNMONEY
-      ***>          END-IF
-      ***>     END-IF
            END-IF.
       *
       *    •Ï•ªµ≠∫‹∂‚≥€¬‡»ÚÕ—•®•Í•¢§´§Èº˝«ºπ‡Ã‹§ÿ ‘Ω∏
@@ -5105,26 +5079,26 @@
       *
            END-IF.
       *
-           IF   FLG-SYUHEN                 =   "1"
+      ***     IF   FLG-SYUHEN                 =   "1"
       *
-              IF   COMB-HKNNUM            NOT =   SPACE
-              AND  LNK-SYU-SYUCOMPFTN     NOT =   WK-HEN-SYUCOMPFTN
+      ***        IF   COMB-HKNNUM            NOT =   SPACE
+      ***        AND  LNK-SYU-SYUCOMPFTN     NOT =   WK-HEN-SYUCOMPFTN
       *
-                 MOVE  WK-HEN-SYUCOMPFTN   TO  LNK-SYU-SYUCOMPFTN
-                 COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
-                           LNK-SYU-SYUCOMPFTN      
+      ***           MOVE  WK-HEN-SYUCOMPFTN   TO  LNK-SYU-SYUCOMPFTN
+      ***           COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
+      ***                     LNK-SYU-SYUCOMPFTN      
       *
-              END-IF
-              IF   COMB-KOH1HKNNUM            =   "027"
-              AND  LNK-SYU-KOH1COMPFTN    NOT =   WK-HEN-KOH1COMPFTN
+      ***        END-IF
+      ***        IF   COMB-KOH1HKNNUM            =   "027"
+      ***        AND  LNK-SYU-KOH1COMPFTN    NOT =   WK-HEN-KOH1COMPFTN
       *
-                 MOVE  WK-HEN-KOH1COMPFTN  TO  LNK-SYU-KOH1COMPFTN
-                 COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
-                           LNK-SYU-KOH1COMPFTN      
+      ***           MOVE  WK-HEN-KOH1COMPFTN  TO  LNK-SYU-KOH1COMPFTN
+      ***           COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
+      ***                     LNK-SYU-KOH1COMPFTN      
       *
-              END-IF
+      ***        END-IF
       *
-           END-IF.
+      ***     END-IF.
       *
        2314-FTNKIN-HIKAKU-EXT.
            EXIT.

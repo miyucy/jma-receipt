@@ -126,6 +126,7 @@
       *  01.02.28   NACL-ÃÁœ∆     03/07/15  ∆˝Õƒª˘°¶Õƒª˘§Œ•≥•·•Û•»•’•È•∞
       *                                     •ª•√•»
       *  01.02.29   NACL-ÃÁœ∆     03/08/20  ∏¯»Òº¬∆¸øÙ•∆°º•÷•Îæ Û§Œ•ª•√•»
+      *  01.02.30   NACL-ÃÁœ∆     03/09/18  ∞Ï…Ù…È√¥∂‚≥€ ‘Ω∏Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3212,6 +3213,182 @@
                                              SYU-SYUCOMPYKZFTN
            IF      RECE02-SRYYM      >=  "200210"
              IF    RECE02-ZAITAKU      NOT =    SPACE
+                PERFORM     HOKEN-FUTAN-HENSYU-SEC
+             ELSE                                                       
+                IF    RECE02-RJNHKNNUM    NOT =    SPACE                
+                  ADD    SYU-KOH1COMPFTN  TO   RECE02-RJNGAIFTN         
+                END-IF                                                  
+      *         ¡•∞˜ ›∏±° »Ô ›∏±º‘°À°‹ƒÃ∂–∫“≥≤
+                IF    RECE02-SENIN-TUUSAI     =    "1"
+                  ADD    SYU-SYUCOMPFTN   TO   RECE02-FTNMONEY(1)
+                END-IF
+             END-IF
+           ELSE
+             IF    RECE02-RJNHKNNUM    NOT =    SPACE
+                ADD    SYU-KOH1COMPFTN  TO   RECE02-FTNMONEY(1)
+                ADD    SYU-KOH1COMPFTN  TO   RECE02-RJNGAIFTN
+             END-IF
+      *      ¡•∞˜ ›∏±° »Ô ›∏±º‘°À°‹ƒÃ∂–∫“≥≤
+             IF    RECE02-SENIN-TUUSAI     =    "1"
+                ADD    SYU-SYUCOMPFTN   TO   RECE02-FTNMONEY(1)
+             END-IF
+           END-IF
+      *
+           MOVE    IDX1            TO  HC-IDX
+      *
+           MOVE       ZERO              TO   KH-IDX
+           PERFORM    VARYING   IDX2    FROM   1   BY   1
+             UNTIL    IDX2      >       4
+              IF      RECE02-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
+                 IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(1)
+                      MOVE    2          TO        KH-IDX
+                      EVALUATE  TRUE
+                          WHEN  RECE02-KOHNUM(1)  =  SYU-KOH-HKNNUM(1)
+                                MOVE     1    TO   IDX3
+                          WHEN  RECE02-KOHNUM(1)  =  SYU-KOH-HKNNUM(2)
+                                MOVE     2    TO   IDX3
+                          WHEN  RECE02-KOHNUM(1)  =  SYU-KOH-HKNNUM(3)
+                                MOVE     3    TO   IDX3
+                          WHEN  RECE02-KOHNUM(1)  =  SYU-KOH-HKNNUM(4)
+                                MOVE     4    TO   IDX3
+                      END-EVALUATE
+      *
+                      PERFORM   KOHJNISSUTBL-SET-SEC
+      *
+                      COMPUTE  RECE02-YKZFTN(KH-IDX) =
+                                          RECE02-YKZFTN(KH-IDX) +
+                                          SYU-KOH-COMPYKZFTN(IDX3)
+                      ADD      1          TO   RECE02-KOHKENSU(1)
+                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
+                      AND   (RECE02-KOHNUM(1)    =  "010" OR "021")
+                            CONTINUE
+                      ELSE
+                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                         RECE02-FTNMONEY(KH-IDX)
+                      END-IF
+                      IF   RECE02-KOHNUM(1) =  "051"
+                      AND  FLG-KOH      NOT =   2
+                            MOVE     1   TO   FLG-KOH
+                      END-IF
+                      IF   RECE02-KOHNUM(1) =  "010"  OR  "021" 
+                            MOVE     2   TO   FLG-KOH
+                      END-IF 
+                 END-IF
+                 IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(2)
+                      MOVE    3          TO        KH-IDX
+                      EVALUATE  TRUE
+                          WHEN  RECE02-KOHNUM(2)  =  SYU-KOH-HKNNUM(1)
+                                MOVE     1    TO   IDX3
+                          WHEN  RECE02-KOHNUM(2)  =  SYU-KOH-HKNNUM(2)
+                                MOVE     2    TO   IDX3
+                          WHEN  RECE02-KOHNUM(2)  =  SYU-KOH-HKNNUM(3)
+                                MOVE     3    TO   IDX3
+                          WHEN  RECE02-KOHNUM(2)  =  SYU-KOH-HKNNUM(4)
+                                MOVE     4    TO   IDX3
+                      END-EVALUATE
+      *
+                      PERFORM   KOHJNISSUTBL-SET-SEC
+      *
+                      COMPUTE  RECE02-YKZFTN(KH-IDX) =
+                                          RECE02-YKZFTN(KH-IDX) +
+                                          SYU-KOH-COMPYKZFTN(IDX3)
+                      ADD      1          TO   RECE02-KOHKENSU(2)
+                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
+                      AND   (RECE02-KOHNUM(2)    =  "010" OR "021")
+                            CONTINUE
+                      ELSE
+                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                         RECE02-FTNMONEY(KH-IDX)
+                      END-IF
+                      IF   RECE02-KOHNUM(2) =  "051"
+                      AND  FLG-KOH      NOT =   2
+                            MOVE     1   TO   FLG-KOH
+                      END-IF
+                      IF   RECE02-KOHNUM(2) =  "010"  OR  "021" 
+                            MOVE     2   TO   FLG-KOH
+                      END-IF 
+                 END-IF
+                 IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(3)
+                      MOVE    4          TO        KH-IDX
+                      EVALUATE  TRUE
+                          WHEN  RECE02-KOHNUM(3)  =  SYU-KOH-HKNNUM(1)
+                                MOVE     1    TO   IDX3
+                          WHEN  RECE02-KOHNUM(3)  =  SYU-KOH-HKNNUM(2)
+                                MOVE     2    TO   IDX3
+                          WHEN  RECE02-KOHNUM(3)  =  SYU-KOH-HKNNUM(3)
+                                MOVE     3    TO   IDX3
+                          WHEN  RECE02-KOHNUM(3)  =  SYU-KOH-HKNNUM(4)
+                                MOVE     4    TO   IDX3
+                      END-EVALUATE
+      *
+                      PERFORM   KOHJNISSUTBL-SET-SEC
+      *
+                      COMPUTE  RECE02-YKZFTN(KH-IDX) =
+                                          RECE02-YKZFTN(KH-IDX) +
+                                          SYU-KOH-COMPYKZFTN(IDX3)
+                      ADD      1          TO   RECE02-KOHKENSU(3)
+                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
+                      AND   (RECE02-KOHNUM(3)    =  "010" OR "021")
+                            CONTINUE
+                      ELSE
+                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                         RECE02-FTNMONEY(KH-IDX)
+                      END-IF
+                      IF   RECE02-KOHNUM(3) =  "051"
+                      AND  FLG-KOH      NOT =   2
+                            MOVE     1   TO   FLG-KOH
+                      END-IF
+                      IF   RECE02-KOHNUM(3) =  "010"  OR  "021" 
+                            MOVE     2   TO   FLG-KOH
+                      END-IF 
+                 END-IF
+                 IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(4)
+                      MOVE    5          TO        KH-IDX
+                      EVALUATE  TRUE
+                          WHEN  RECE02-KOHNUM(4)  =  SYU-KOH-HKNNUM(1)
+                                MOVE     1    TO   IDX3
+                          WHEN  RECE02-KOHNUM(4)  =  SYU-KOH-HKNNUM(2)
+                                MOVE     2    TO   IDX3
+                          WHEN  RECE02-KOHNUM(4)  =  SYU-KOH-HKNNUM(3)
+                                MOVE     3    TO   IDX3
+                          WHEN  RECE02-KOHNUM(4)  =  SYU-KOH-HKNNUM(4)
+                                MOVE     4    TO   IDX3
+                      END-EVALUATE
+      *
+                      PERFORM   KOHJNISSUTBL-SET-SEC
+      *
+                      COMPUTE  RECE02-YKZFTN(KH-IDX) =
+                                          RECE02-YKZFTN(KH-IDX) +
+                                          SYU-KOH-COMPYKZFTN(IDX3)
+                      ADD      1          TO   RECE02-KOHKENSU(4)
+                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
+                      AND   (RECE02-KOHNUM(4)    =  "010" OR "021")
+                            CONTINUE
+                      ELSE
+                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                         RECE02-FTNMONEY(KH-IDX)
+                      END-IF
+                      IF   RECE02-KOHNUM(4) =  "051"
+                      AND  FLG-KOH      NOT =   2
+                            MOVE     1   TO   FLG-KOH
+                      END-IF
+                      IF   RECE02-KOHNUM(4) =  "010"  OR  "021" 
+                            MOVE     2   TO   FLG-KOH
+                      END-IF 
+                 END-IF
+              END-IF
+           END-PERFORM
+           .
+       RECE02-HENSYU-EXT3.
+           EXIT.
+      *
+      *****************************************************************
+      *     ›∏± ¨…È√¥∂‚≥€ ‘Ω∏
+      *****************************************************************
+       HOKEN-FUTAN-HENSYU-SEC               SECTION.
+      *
+      ***  IF      RECE02-SRYYM      <    "200310"
+      *
                 COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
                                     * 10
                                     * RECE02-KYURATE
@@ -3270,200 +3447,38 @@
       *
                 ADD   SYU-KOH-FTN   TO   WRK-KOH-FTN
       *
-             ELSE                                                       
-                IF    RECE02-RJNHKNNUM    NOT =    SPACE                
-                  ADD    SYU-KOH1COMPFTN  TO   RECE02-RJNGAIFTN         
-                END-IF                                                  
-      *         ¡•∞˜ ›∏±° »Ô ›∏±º‘°À°‹ƒÃ∂–∫“≥≤
-                IF    RECE02-SENIN-TUUSAI     =    "1"
-                  ADD    SYU-SYUCOMPFTN   TO   RECE02-FTNMONEY(1)
-                END-IF
-             END-IF
-           ELSE
-             IF    RECE02-RJNHKNNUM    NOT =    SPACE
-                ADD    SYU-KOH1COMPFTN  TO   RECE02-FTNMONEY(1)
-                ADD    SYU-KOH1COMPFTN  TO   RECE02-RJNGAIFTN
-             END-IF
-      *      ¡•∞˜ ›∏±° »Ô ›∏±º‘°À°‹ƒÃ∂–∫“≥≤
-             IF    RECE02-SENIN-TUUSAI     =    "1"
-                ADD    SYU-SYUCOMPFTN   TO   RECE02-FTNMONEY(1)
-             END-IF
-           END-IF
-      *****EVALUATE  TRUE
-      *        WHEN  (SYU-HKNCOMBINUM   =    RECE02-HKNCOMBI(1))
-      *              MOVE     1         TO   HC-IDX
-      *        WHEN  (SYU-HKNCOMBINUM   =    RECE02-HKNCOMBI(2))
-      *              MOVE     2         TO   HC-IDX
-      *        WHEN  (SYU-HKNCOMBINUM   =    RECE02-HKNCOMBI(3))
-      *              MOVE     3         TO   HC-IDX
-      *        WHEN  OTHER
-      *              MOVE     ZERO      TO   HC-IDX
-      *****END-EVALUATE
-      *    MOVE    ZERO                TO  HC-IDX
-      *    PERFORM VARYING IDX1    FROM    1   BY  1
-      *            UNTIL   IDX1    >       10
-      *            OR      RECE02-HKNCOMBI (IDX1)   =   ZERO 
-      *        IF      SYU-HKNCOMBINUM  =
-      *                                 RECE02-HKNCOMBI (IDX1)
-      *            MOVE    IDX1            TO  HC-IDX
-      *            MOVE    10              TO  IDX1
-      *        END-IF
-      *    END-PERFORM          
+      ***  ELSE
+      *         º˝«ºπ‡Ã‹§´§È ‘Ω∏§π§Î§Ë§¶§À —ππ
+      ***          IF   ( SYU-KOH-FTN         =   ZERO   )                 
+      ***          AND  ( SYU-KOH-HKNNUM(1)   =   SPACE OR "027"  )        
+      ***          AND  ( SYU-KOH-HKNNUM(2)   =   SPACE  )                 
+      ***          AND  ( SYU-KOH-HKNNUM(3)   =   SPACE  )                 
+      ***          AND  ( SYU-KOH-HKNNUM(4)   =   SPACE  )                 
+      ***              IF    RECE02-RJNHKNNUM    NOT =    SPACE            
+      ***                ADD    SYU-KOH1COMPFTN  TO   RECE02-FTNMONEY(1)   
+      ***                                             RECE02-RJNGAIFTN     
+      ***                                             WRK-KOH-GAI          
+      ***              ELSE                                                
+      ***                ADD    SYU-SYUCOMPFTN   TO   RECE02-FTNMONEY(1)   
+      ***                                             WRK-KOH-GAI          
+      ***              END-IF                                              
+      ***          ELSE
+      ***              IF    RECE02-RJNHKNNUM    NOT =    SPACE
+      ***                ADD    SYU-KOH1COMPFTN  TO   RECE02-FTNMONEY(1)
+      ***                                             RECE02-RJNGAIFTN
+      ***                                             FTN-KOH-XXX
+      ***              ELSE
+      ***                ADD    SYU-SYUCOMPFTN   TO   RECE02-FTNMONEY(1)
+      ***                                             FTN-KOH-XXX
+      ***              END-IF
+      ***          END-IF
       *
-           MOVE    IDX1            TO  HC-IDX
+      ***          ADD   SYU-KOH-FTN   TO   WRK-KOH-FTN
       *
-           MOVE       ZERO              TO   KH-IDX
-           PERFORM    VARYING   IDX2    FROM   1   BY   1
-             UNTIL    IDX2      >       4
-              IF      RECE02-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
-                 IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(1)
-                      MOVE    2          TO        KH-IDX
-                      EVALUATE  TRUE
-                          WHEN  RECE02-KOHNUM(1)  =  SYU-KOH-HKNNUM(1)
-                                MOVE     1    TO   IDX3
-                          WHEN  RECE02-KOHNUM(1)  =  SYU-KOH-HKNNUM(2)
-                                MOVE     2    TO   IDX3
-                          WHEN  RECE02-KOHNUM(1)  =  SYU-KOH-HKNNUM(3)
-                                MOVE     3    TO   IDX3
-                          WHEN  RECE02-KOHNUM(1)  =  SYU-KOH-HKNNUM(4)
-                                MOVE     4    TO   IDX3
-                      END-EVALUATE
+      ***  END-IF
       *
-                      PERFORM   KOHJNISSUTBL-SET-SEC
-      *
-                      COMPUTE  RECE02-YKZFTN(KH-IDX) =
-                                          RECE02-YKZFTN(KH-IDX) +
-                                          SYU-KOH-COMPYKZFTN(IDX3)
-                      ADD      1          TO   RECE02-KOHKENSU(1)
-      *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
-                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
-                      AND   (RECE02-KOHNUM(1)    =  "010" OR "021")
-                            CONTINUE
-                      ELSE
-                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
-                                         RECE02-FTNMONEY(KH-IDX)
-                      END-IF
-      *               END-IF
-                      IF   RECE02-KOHNUM(1) =  "051"
-                      AND  FLG-KOH      NOT =   2
-                            MOVE     1   TO   FLG-KOH
-                      END-IF
-                      IF   RECE02-KOHNUM(1) =  "010"  OR  "021" 
-                            MOVE     2   TO   FLG-KOH
-                      END-IF 
-                 END-IF
-                 IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(2)
-                      MOVE    3          TO        KH-IDX
-                      EVALUATE  TRUE
-                          WHEN  RECE02-KOHNUM(2)  =  SYU-KOH-HKNNUM(1)
-                                MOVE     1    TO   IDX3
-                          WHEN  RECE02-KOHNUM(2)  =  SYU-KOH-HKNNUM(2)
-                                MOVE     2    TO   IDX3
-                          WHEN  RECE02-KOHNUM(2)  =  SYU-KOH-HKNNUM(3)
-                                MOVE     3    TO   IDX3
-                          WHEN  RECE02-KOHNUM(2)  =  SYU-KOH-HKNNUM(4)
-                                MOVE     4    TO   IDX3
-                      END-EVALUATE
-      *
-                      PERFORM   KOHJNISSUTBL-SET-SEC
-      *
-                      COMPUTE  RECE02-YKZFTN(KH-IDX) =
-                                          RECE02-YKZFTN(KH-IDX) +
-                                          SYU-KOH-COMPYKZFTN(IDX3)
-                      ADD      1          TO   RECE02-KOHKENSU(2)
-      *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
-                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
-                      AND   (RECE02-KOHNUM(2)    =  "010" OR "021")
-                            CONTINUE
-                      ELSE
-                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
-                                         RECE02-FTNMONEY(KH-IDX)
-                      END-IF
-      *               END-IF
-                      IF   RECE02-KOHNUM(2) =  "051"
-                      AND  FLG-KOH      NOT =   2
-                            MOVE     1   TO   FLG-KOH
-                      END-IF
-                      IF   RECE02-KOHNUM(2) =  "010"  OR  "021" 
-                            MOVE     2   TO   FLG-KOH
-                      END-IF 
-                 END-IF
-                 IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(3)
-                      MOVE    4          TO        KH-IDX
-                      EVALUATE  TRUE
-                          WHEN  RECE02-KOHNUM(3)  =  SYU-KOH-HKNNUM(1)
-                                MOVE     1    TO   IDX3
-                          WHEN  RECE02-KOHNUM(3)  =  SYU-KOH-HKNNUM(2)
-                                MOVE     2    TO   IDX3
-                          WHEN  RECE02-KOHNUM(3)  =  SYU-KOH-HKNNUM(3)
-                                MOVE     3    TO   IDX3
-                          WHEN  RECE02-KOHNUM(3)  =  SYU-KOH-HKNNUM(4)
-                                MOVE     4    TO   IDX3
-                      END-EVALUATE
-      *
-                      PERFORM   KOHJNISSUTBL-SET-SEC
-      *
-                      COMPUTE  RECE02-YKZFTN(KH-IDX) =
-                                          RECE02-YKZFTN(KH-IDX) +
-                                          SYU-KOH-COMPYKZFTN(IDX3)
-                      ADD      1          TO   RECE02-KOHKENSU(3)
-      *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
-                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
-                      AND   (RECE02-KOHNUM(3)    =  "010" OR "021")
-                            CONTINUE
-                      ELSE
-                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
-                                         RECE02-FTNMONEY(KH-IDX)
-                      END-IF
-      *               END-IF
-                      IF   RECE02-KOHNUM(3) =  "051"
-                      AND  FLG-KOH      NOT =   2
-                            MOVE     1   TO   FLG-KOH
-                      END-IF
-                      IF   RECE02-KOHNUM(3) =  "010"  OR  "021" 
-                            MOVE     2   TO   FLG-KOH
-                      END-IF 
-                 END-IF
-                 IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(4)
-                      MOVE    5          TO        KH-IDX
-                      EVALUATE  TRUE
-                          WHEN  RECE02-KOHNUM(4)  =  SYU-KOH-HKNNUM(1)
-                                MOVE     1    TO   IDX3
-                          WHEN  RECE02-KOHNUM(4)  =  SYU-KOH-HKNNUM(2)
-                                MOVE     2    TO   IDX3
-                          WHEN  RECE02-KOHNUM(4)  =  SYU-KOH-HKNNUM(3)
-                                MOVE     3    TO   IDX3
-                          WHEN  RECE02-KOHNUM(4)  =  SYU-KOH-HKNNUM(4)
-                                MOVE     4    TO   IDX3
-                      END-EVALUATE
-      *
-                      PERFORM   KOHJNISSUTBL-SET-SEC
-      *
-                      COMPUTE  RECE02-YKZFTN(KH-IDX) =
-                                          RECE02-YKZFTN(KH-IDX) +
-                                          SYU-KOH-COMPYKZFTN(IDX3)
-                      ADD      1          TO   RECE02-KOHKENSU(4)
-      *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
-                      IF    (RECE02-FTNMONEY(1)  =  ZERO)
-                      AND   (RECE02-KOHNUM(4)    =  "010" OR "021")
-                            CONTINUE
-                      ELSE
-                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
-                                         RECE02-FTNMONEY(KH-IDX)
-                      END-IF
-      *               END-IF
-                      IF   RECE02-KOHNUM(4) =  "051"
-                      AND  FLG-KOH      NOT =   2
-                            MOVE     1   TO   FLG-KOH
-                      END-IF
-                      IF   RECE02-KOHNUM(4) =  "010"  OR  "021" 
-                            MOVE     2   TO   FLG-KOH
-                      END-IF 
-                 END-IF
-              END-IF
-           END-PERFORM
            .
-       RECE02-HENSYU-EXT3.
+       HOKEN-FUTAN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3559,10 +3574,15 @@
            IF  (( SYU-KOH-HKNNUM(1)       =   "027"               )  AND
                 ( SYU-KOH-HKNNUM(2)(1:1)  =   "1" OR "2" OR "3" OR
                                               "4" OR "5" OR "6" OR
-                                              "7" OR "8"          ))    
-           OR  (  SYU-KOH-HKNNUM(1)(1:1)  =   "1" OR "2" OR "3" OR
+                                              "7" OR "8"          )  AND
+                ( SYU-KOH-HKNNUM(3)       =   SPACE               )  AND
+                ( SYU-KOH-HKNNUM(4)       =   SPACE               ))
+           OR  (( SYU-KOH-HKNNUM(1)(1:1)  =   "1" OR "2" OR "3" OR
                                               "4" OR "5" OR "6" OR
-                                              "7" OR "8"           )    
+                                              "7" OR "8"          )  AND
+                ( SYU-KOH-HKNNUM(2)       =   SPACE               )  AND
+                ( SYU-KOH-HKNNUM(3)       =   SPACE               )  AND
+                ( SYU-KOH-HKNNUM(4)       =   SPACE               ))
       *
                 MOVE     1       TO      FLG-CHIHOU
       *

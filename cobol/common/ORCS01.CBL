@@ -1801,6 +1801,10 @@
       ******************************************************************
        210-HOKEN-KAISU-SEC           SECTION.
       *
+           INITIALIZE       WK-CHIHOU-FLG-TAIHI-AREA.
+      *
+           INITIALIZE       WK-SYUHEN-TAIHI-AREA.
+      *
       *    医療機関での老人保険負担種別をシステム管理マスタより取得
       **>  IF    (COMB-KOH1-HKNKOHSBTKBN   =   "3")   OR
       **>        (COMB-KOH2-HKNKOHSBTKBN   =   "3")   OR
@@ -1829,8 +1833,6 @@
                PERFORM    2102-SHOHOUSEN-HANTEI-SEC
              END-IF.
       **>  END-IF.
-      *
-           INITIALIZE         WK-CHIHOU-FLG-TAIHI-AREA.
       *
       *    *公費１の上限回数（金額）取込み
            IF (COMB-KOH1HKNNUM           NOT =  SPACE)    AND
@@ -2123,8 +2125,6 @@
                    END-EVALUATE
                END-IF
            END-IF.
-      *
-           INITIALIZE       WK-SYUHEN-TAIHI-AREA.
       *
            IF  ((LNK-S01-KOUREI-ZAITAKU-KBN   =       "1" ) OR
                 (FLG-KOUREI-KBN               =       "1" ))
@@ -2698,10 +2698,14 @@
                                         WK-SYU-SYUCOMPFTN  *  10        
       ***
                       IF   FLG-SYUHEN   =   "1"
-                        IF     LNK-SYU-SRYYMD(7:2)    =  SYU-SRYYMD(7:2)
-                          ADD   WK-SYU-SYUCOMPFTN TO   FTN-KOHI1-D-HEN  
-                        END-IF                                          
-                        ADD   WK-SYU-SYUCOMPFTN   TO   FTN-KOHI1-M-HEN  
+                        IF  (SYU-KOH2HKNNUM     NOT = SPACE)              
+                        OR  (SYU-KOH3HKNNUM     NOT = SPACE)              
+                        OR  (SYU-KOH4HKNNUM     NOT = SPACE)              
+                          IF   LNK-SYU-SRYYMD(7:2)   =  SYU-SRYYMD(7:2)
+                            ADD   WK-SYU-SYUCOMPFTN TO  FTN-KOHI1-D-HEN  
+                          END-IF                                          
+                          ADD   WK-SYU-SYUCOMPFTN   TO  FTN-KOHI1-M-HEN  
+                        END-IF
                       END-IF
       ***
                       IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
@@ -2710,7 +2714,7 @@
                         OR  (SYU-KOH4HKNNUM     NOT = SPACE)              
                           MOVE     SYU-KOH-FTN  TO  WK-SYU-SYUCOMPFTN     
                         END-IF                                            
-                        IF     LNK-SYU-SRYYMD(7:2)    =  SYU-SRYYMD(7:2)  
+                        IF     LNK-SYU-SRYYMD(7:2)   =  SYU-SRYYMD(7:2)  
                           ADD   WK-SYU-SYUCOMPFTN TO   FTN-KOHI1-D      
                         END-IF                                          
                         ADD   WK-SYU-SYUCOMPFTN   TO   FTN-KOHI1-M      
@@ -2726,7 +2730,12 @@
                                         WK-SYU-SYUCOMPFTN  *  10        
       ***
                       IF   FLG-SYUHEN   =   "1"
-                        ADD   WK-SYU-SYUCOMPFTN     TO   FTN-SYU-M-HEN  
+                        IF  (SYU-KOH1HKNNUM     NOT = SPACE)              
+                        OR  (SYU-KOH2HKNNUM     NOT = SPACE)              
+                        OR  (SYU-KOH3HKNNUM     NOT = SPACE)              
+                        OR  (SYU-KOH4HKNNUM     NOT = SPACE)  
+                          ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M-HEN  
+                        END-IF
                       END-IF
       ***
                       IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
@@ -5309,8 +5318,11 @@
       *    収納テーブルの公費毎の患者負担金額をセットする
            IF   (COMB-KOH1HKNNUM         NOT = SPACE)   AND
                 (COMB-KOH1-GAIJGNKBN     =     "1")
-      ***>     IF   COMB-KOH1-HKNKOHSBTKBN   NOT =    "3"
-      ***>          MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH1HKNFTNMONEY
+             IF  ((LNK-S01-KOUREI-ZAITAKU-KBN   =       "1" ) OR
+                  (FLG-KOUREI-KBN               =       "1" ))
+             AND ( COMB-KOH1HKNNUM              =       "027")
+                  CONTINUE
+             ELSE
                     COMPUTE  LNK-SYU-KOH1HKNFTNMONEY  =                  
                                     LNK-SYU-KOH1COMPFTN     +   5        
                     COMPUTE  LNK-SYU-KOH1HKNFTNMONEY  =                  
@@ -5322,19 +5334,10 @@
                                     LNK-SYU-KOH1HKNFTNMONEY  +
                                     LNK-SYU-KOH1COMPYKZFTN
                     END-IF
-      ***>     ELSE
-      ***>          IF     COMB-KOH1HKNNUM     =    "027"
-      ***>              MOVE   LNK-SYU-KOH1COMPFTN
-      ***>                               TO  LNK-SYU-KOH1HKNFTNMONEY
-      ***>          ELSE
-      ***>              MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH1HKNFTNMONEY
-      ***>          END-IF
-      ***>     END-IF
+             END-IF
            END-IF.
            IF   (COMB-KOH2HKNNUM        NOT = SPACE)   AND
                 (COMB-KOH2-GAIJGNKBN    =     "1")
-      ***>     IF   COMB-KOH2-HKNKOHSBTKBN   NOT =    "3"
-      ***>          MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH2HKNFTNMONEY
                     COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =                  
                                     LNK-SYU-KOH2COMPFTN     +   5        
                     COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =                  
@@ -5346,19 +5349,9 @@
                                     LNK-SYU-KOH2HKNFTNMONEY  +
                                     LNK-SYU-KOH2COMPYKZFTN
                     END-IF
-      ***>     ELSE
-      ***>          IF     COMB-KOH2HKNNUM     =    "027"
-      ***>              MOVE   LNK-SYU-KOH2COMPFTN
-      ***>                               TO  LNK-SYU-KOH2HKNFTNMONEY
-      ***>          ELSE
-      ***>              MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH2HKNFTNMONEY
-      ***>          END-IF
-      ***>     END-IF
            END-IF.
            IF   (COMB-KOH3HKNNUM        NOT = SPACE)   AND
                 (COMB-KOH3-GAIJGNKBN    =     "1")
-      ***>     IF   COMB-KOH3-HKNKOHSBTKBN   NOT =    "3"
-      ***>          MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH3HKNFTNMONEY
                     COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =                  
                                     LNK-SYU-KOH3COMPFTN     +   5        
                     COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =                  
@@ -5370,19 +5363,9 @@
                                     LNK-SYU-KOH3HKNFTNMONEY  +
                                     LNK-SYU-KOH3COMPYKZFTN
                     END-IF
-      ***>     ELSE
-      ***>          IF     COMB-KOH3HKNNUM     =    "027"
-      ***>              MOVE   LNK-SYU-KOH3COMPFTN
-      ***>                               TO  LNK-SYU-KOH3HKNFTNMONEY
-      ***>          ELSE
-      ***>              MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH3HKNFTNMONEY
-      ***>          END-IF
-      ***>     END-IF
            END-IF.
            IF   (COMB-KOH4HKNNUM        NOT = SPACE)   AND
                 (COMB-KOH4-GAIJGNKBN    =     "1")
-      ***>     IF   COMB-KOH4-HKNKOHSBTKBN   NOT =    "3"
-      ***>          MOVE   WK-KNJFTNKIN  TO  LNK-SYU-KOH4HKNFTNMONEY
                     COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =                  
                                     LNK-SYU-KOH4COMPFTN     +   5        
                     COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =                  
@@ -5394,14 +5377,6 @@
                                     LNK-SYU-KOH4HKNFTNMONEY  +
                                     LNK-SYU-KOH4COMPYKZFTN
                     END-IF
-      ***>     ELSE
-      ***>          IF     COMB-KOH4HKNNUM     =    "027"
-      ***>              MOVE   LNK-SYU-KOH4COMPFTN
-      ***>                               TO  LNK-SYU-KOH4HKNFTNMONEY
-      ***>          ELSE
-      ***>              MOVE   WK-KNJFTNKIN  TO LNK-SYU-KOH4HKNFTNMONEY
-      ***>          END-IF
-      ***>     END-IF
            END-IF.
       *
       *    レセ記載金額退避用エリアから収納項目へ編集
@@ -5467,28 +5442,28 @@
       *
            END-IF.
       *
-           IF   FLG-SYUHEN                 =   "1"
+      ***     IF   FLG-SYUHEN                 =   "1"
       *
-              IF   COMB-HKNNUM            NOT =   SPACE
-              AND  LNK-SYU-SYUCOMPFTN     NOT =   WK-HEN-SYUCOMPFTN
+      ***        IF   COMB-HKNNUM            NOT =   SPACE
+      ***        AND  LNK-SYU-SYUCOMPFTN     NOT =   WK-HEN-SYUCOMPFTN
       *
-                 MOVE  WK-HEN-SYUCOMPFTN   TO  LNK-SYU-SYUCOMPFTN
-                 COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
-                           LNK-SYU-SYUCOMPFTN     +
-                           LNK-SYU-SYUCOMPYKZFTN
+      ***           MOVE  WK-HEN-SYUCOMPFTN   TO  LNK-SYU-SYUCOMPFTN
+      ***           COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
+      ***                     LNK-SYU-SYUCOMPFTN     +
+      ***                     LNK-SYU-SYUCOMPYKZFTN
       *
-              END-IF
-              IF   COMB-KOH1HKNNUM            =   "027"
-              AND  LNK-SYU-KOH1COMPFTN    NOT =   WK-HEN-KOH1COMPFTN
+      ***        END-IF
+      ***        IF   COMB-KOH1HKNNUM            =   "027"
+      ***        AND  LNK-SYU-KOH1COMPFTN    NOT =   WK-HEN-KOH1COMPFTN
       *
-                 MOVE  WK-HEN-KOH1COMPFTN  TO  LNK-SYU-KOH1COMPFTN
-                 COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
-                           LNK-SYU-KOH1COMPFTN     +
-                           LNK-SYU-KOH1COMPYKZFTN
+      ***           MOVE  WK-HEN-KOH1COMPFTN  TO  LNK-SYU-KOH1COMPFTN
+      ***           COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
+      ***                     LNK-SYU-KOH1COMPFTN     +
+      ***                     LNK-SYU-KOH1COMPYKZFTN
       *
-              END-IF
+      ***        END-IF
       *
-           END-IF.
+      ***     END-IF.
       *
        2314-FTNKIN-HIKAKU-EXT.
            EXIT.
