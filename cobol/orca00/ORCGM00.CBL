@@ -43,7 +43,9 @@
       *  01.02.04    MCC-多々納   02/02/22  MID1の追加
       *  01.02.05    NACL-多々納  02/10/22  病床数追加
       *  01.02.06    NACL-多々納  02/12/19  入院時日付変更修正
+      *  01.02.07    NACL-多々納  03/02/10  病床数（一般）追加
       *****************************************************************
+      *
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
@@ -344,8 +346,16 @@
                MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG
       *        病床数
                MOVE    SYS-1001-BEDSU      TO  SPA-BEDSU
+      *        病床数（一般）
+               IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
+                      (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
+                   MOVE    ZERO                TO  SPA-BEDSUIPN
+               ELSE
+                   MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
+               END-IF
       *TEST    すべて外来とする
-               MOVE    ZERO                TO  SPA-BEDSU
+      *         MOVE    ZERO                TO  SPA-BEDSU
+      *         MOVE    ZERO                TO  SPA-BEDSUIPN
       *TEST
            ELSE
                MOVE    "1002"              TO  SPA-ERRCD

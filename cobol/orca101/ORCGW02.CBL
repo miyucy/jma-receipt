@@ -38,6 +38,7 @@
       *                                     ためカーソル制御を変更
       *  01.00.09    NACL-森脇    02.08.16  薬剤情報発行フラグ追加
       *  01.00.10    NACL-多々納  02/11/12  一括入力、全角チェック追加
+      *  01.00.11    NACL-多々納  03/01/10  病床数（一般）追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -133,6 +134,7 @@
                            11  SPA-GMN-KAISETUNAME    PIC X(120).
                            11  SPA-GMN-KANRINAME      PIC X(80).
                            11  SPA-GMN-BEDSU          PIC 9(04).
+                           11  SPA-GMN-BEDSUIPN       PIC 9(04).
                            11  SPA-GMN-ROUPAYKBN-G.
                                13  SPA-GMN-ROUPAYKBN  PIC X(01).
                                13  SPA-GMN-F4         PIC X(01).
@@ -668,6 +670,13 @@
                        MOVE    SYS-1001-KANRINAME  TO
                                                    SPA-GMN-KANRINAME
                        MOVE    SYS-1001-BEDSU      TO  SPA-GMN-BEDSU
+                       IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
+                              (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
+                           MOVE    ZERO            TO  SPA-GMN-BEDSUIPN
+                       ELSE
+                           MOVE    SYS-1001-BEDSUIPN
+                                                   TO  SPA-GMN-BEDSUIPN
+                       END-IF
                        MOVE    SYS-1001-ROUPAYKBN  TO
                                                    SPA-GMN-ROUPAYKBN
                        PERFORM VARYING IDY FROM    1   BY  1
@@ -893,6 +902,7 @@
            MOVE    W02-KAISETUNAME     TO  SPA-GMN-KAISETUNAME
            MOVE    W02-KANRINAME       TO  SPA-GMN-KANRINAME
            MOVE    W02-BEDSU           TO  SPA-GMN-BEDSU
+           MOVE    W02-BEDSUIPPN       TO  SPA-GMN-BEDSUIPN
            MOVE    W02-ROUPAYKBN       TO  SPA-GMN-ROUPAYKBN-G
            MOVE    W02-HOSPSBT1        TO  SPA-GMN-HOSPSBT1-G
            MOVE    W02-HOSPCDN         TO  SPA-GMN-HOSPCDN
@@ -1691,6 +1701,7 @@
                    MOVE    SPA-GMN-KAISETUNAME TO  SYS-1001-KAISETUNAME
                    MOVE    SPA-GMN-KANRINAME   TO  SYS-1001-KANRINAME 
                    MOVE    SPA-GMN-BEDSU       TO  SYS-1001-BEDSU 
+                   MOVE    SPA-GMN-BEDSUIPN    TO  SYS-1001-BEDSUIPN
                    MOVE    SPA-GMN-ROUPAYKBN   TO  SYS-1001-ROUPAYKBN 
                    MOVE    SPA-GMN-HOSPSBT1    TO  SYS-1001-HOSPSBT1 
                    MOVE    SPA-GMN-HOSPCDN     TO  SYS-1001-HOSPCDN
@@ -1971,6 +1982,7 @@
            MOVE    SPA-GMN-KAISETUNAME TO  W02-KAISETUNAME
            MOVE    SPA-GMN-KANRINAME   TO  W02-KANRINAME
            MOVE    SPA-GMN-BEDSU       TO  W02-BEDSU  
+           MOVE    SPA-GMN-BEDSUIPN    TO  W02-BEDSUIPPN
            MOVE    SPA-GMN-ROUPAYKBN-G TO  W02-ROUPAYKBN
            MOVE    SPA-GMN-HOSPSBT1-G  TO  W02-HOSPSBT1
            MOVE    SPA-GMN-HOSPCDN     TO  W02-HOSPCDN
@@ -2260,6 +2272,8 @@
                     MOVE  "KANRINAME"      TO   MCP-WIDGET
                 WHEN    09
                     MOVE  "BEDSU"          TO   MCP-WIDGET
+                WHEN    37
+                    MOVE  "BEDSUIPPN"      TO   MCP-WIDGET
                 WHEN    10
                     MOVE  "ROUPAYKBN"      TO   MCP-WIDGET
                 WHEN    11
@@ -2354,6 +2368,9 @@
               WHEN    "KANRINAME"
                   MOVE    9                TO  SPA-GMN-CUR
               WHEN    "BEDSU"
+      ************MOVE    10               TO  SPA-GMN-CUR
+                  MOVE    37               TO  SPA-GMN-CUR
+              WHEN    "BEDSUIPPN"
                   MOVE    10               TO  SPA-GMN-CUR
               WHEN    "ROUPAYKBN"
                   MOVE    11               TO  SPA-GMN-CUR

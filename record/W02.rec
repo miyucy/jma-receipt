@@ -58,6 +58,9 @@ W02	{
 				BEDSU	{
 					value	number(4);
 				};
+				BEDSUIPPN	{
+					value	number(4);
+				};
 				HOSPSBT1_COMBO	{
 					HOSPSBT1	{
 						value	varchar(20);
