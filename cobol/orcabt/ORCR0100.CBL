@@ -22,6 +22,7 @@
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥ì¥»¥×¥È
       *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¥ì¥»¥×¥È°õºþÍÑ¥Õ¥¡¥¤¥ëºîÀ®
+      *                      £²£°£°£²Ç¯£±£°·î²þÀµ°ÊÁ°
       *  ´ÉÍý¼Ô            : 
       *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
       *  00/12/01    MCC-ÂÀÅÄ      ¿·µ¬ºîÀ®
@@ -97,6 +98,7 @@
       *  01.00.45    NACL-Æ£¸¶    02.08.26  ¼«Èñ(8888)¤Î¤È¤­ÀÁµá´ÉÍý¤Î¹¹¿·
       *                                     ½èÍý¤ò¤·¤Ê¤¤
       *
+      *  £²£°£°£²Ç¯£±£°·î²þÀµÂÐ±þ
       *  01.01.01    NACL-Æ£¸¶    02/09/17  ¸©Æâ¸©³°¶èÊ¬¡¦¸©ÈÖ¹æ¡¦
       *                                     Ç¯Îð¡¦µëÉÕ³ä¹ç¤ÎÄÉ²Ã
       *****************************************************************
@@ -314,6 +316,7 @@
                05  WRK-PARA-TERMID  PIC  X(16).
                05  WRK-PARA-SYSYMD  PIC  X(08).
                05  WRK-PARA-RECEKBN PIC  X(01).
+               05  WRK-PARA-RECEYM  PIC  X(06). 
                05  WRK-PARA-JOBID   PIC  9(07).
                05  WRK-PARA-SHELLID PIC  X(08).
       *
@@ -476,19 +479,6 @@
               "£±£²£³£´£µ£¶£·£¸£¹£°".
        01  TBL-SUJI-R          REDEFINES   TBL-SUJI-AREA.
            03  TBL-SUJI        PIC X(02)   OCCURS   10.
-      *     
-      *   Á´³Ñ¥¢¥ë¥Õ¥¡¥Ù¥Ã¥È
-       01  TBL-CHAR-AREA.
-           03  TBL-CHAR-N-AREA.
-               05  FILLER          PIC X(52)   VALUE
-              "£Á£Â£Ã£Ä£Å£Æ£Ç£È£É£Ê£Ë£Ì£Í£Î£Ï£Ð£Ñ£Ò£Ó£Ô£Õ£Ö£×£Ø£Ù£Ú".
-           03  TBL-CHAR-N-R        REDEFINES   TBL-CHAR-N-AREA.
-               05  TBL-CHAR-N      PIC X(02)   OCCURS   26.
-           03  TBL-CHAR-X-AREA.
-               05  FILLER          PIC X(26)   VALUE
-              "ABCDEFGHIJKLMNOPQRSTUVWXYZ".
-           03  TBL-CHAR-X-R        REDEFINES   TBL-CHAR-X-AREA.
-               05  TBL-CHAR-X      PIC X(01)   OCCURS   26.
       *
       *   ÆÃµ­»ö¹à
        01  TBL-TOKKI-AREA.
@@ -768,6 +758,7 @@
            MOVE    SYS-MM              TO  WRK-SYSMM
            MOVE    SYS-DD              TO  WRK-SYSDD
            ACCEPT  SYS-TIME            FROM    TIME
+           
       *
       *    °åÎÅµ¡´Ø¾ðÊó
            MOVE    SPACE            TO  SYSKANRI-REC
@@ -2398,7 +2389,7 @@
            IF      RECE02-YKZFTN   (IDX3) >   ZERO
            AND     RECE02-YKZFTN   (IDX3) 
                                       NOT =   RECE02-YKZFTN (IDX1)
-               MOVE    RECE02-YKZFTN   (IDX2) TO  WRK-KGK9
+               MOVE    RECE02-YKZFTN   (IDX3) TO  WRK-KGK9
                MOVE    WRK-KGK9               TO  HC06-YKZFTN  (3)
            END-IF    
       *
@@ -2898,6 +2889,8 @@
                END-IF                      
                MOVE    RECE02-KANANAME     TO  RECE08-KANANAME
       *********MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+               MOVE    "2"                 TO  RECE08-NYUGAIKBN
+               MOVE    "HC06"              TO  RECE08-FORMID
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
@@ -2934,19 +2927,30 @@
       *
            INITIALIZE                      RECE07-REC
            MOVE    RECE08-PRTID        TO  RECE07-PRTID
+           IF      WRK-PARA-SRYYM      =   ZERO
+               MOVE    "2"                 TO  RECE07-SYOKBN
+           ELSE
+               MOVE    "1"                 TO  RECE07-SYOKBN
+           END-IF         
       *****MOVE    RECE08-SRYYM        TO  RECE07-SRYYM
-           MOVE    RECE08-RECEYM       TO  RECE07-SRYYM
+           MOVE    WRK-PARA-RECEYM     TO  RECE07-SRYYM
            MOVE    RECE08-CREYMD       TO  RECE07-CREYMD
            MOVE    RECE08-CREHMS       TO  RECE07-CREHMS
            MOVE    RECE08-TEISYUTUSAKI TO  RECE07-TEISYUTUSAKI
            MOVE    RECE08-RECESYUBETU  TO  RECE07-RECESYUBETU
+           MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN
            MOVE    RECE07-REC          TO  MCPDATA-REC 
            PERFORM 900-RECE07-READ-SEC
            IF      FLG-RECE07          =   1
                INITIALIZE                      RECE07-REC
                MOVE    RECE08-PRTID        TO  RECE07-PRTID
+               IF      WRK-PARA-SRYYM      =   ZERO
+                   MOVE    "2"                 TO  RECE07-SYOKBN
+               ELSE
+                   MOVE    "1"                 TO  RECE07-SYOKBN
+               END-IF         
       *****    MOVE    RECE08-SRYYM        TO  RECE07-SRYYM
-               MOVE    RECE08-RECEYM       TO  RECE07-SRYYM
+               MOVE    WRK-PARA-RECEYM     TO  RECE07-SRYYM
                MOVE    RECE08-CREYMD       TO  RECE07-CREYMD
                MOVE    RECE08-CREHMS       TO  RECE07-CREHMS
                MOVE    RECE08-TEISYUTUSAKI TO  RECE07-TEISYUTUSAKI
@@ -2954,6 +2958,7 @@
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
                MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
+               MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN 
                MOVE    RECE08-TERMID       TO  RECE07-TERMID
            ELSE
                ADD     1                   TO  RECE07-PAGE
@@ -3070,6 +3075,9 @@
                                            TO  RECE10-HKNJANUM-S
                    END-IF
                END-IF
+               MOVE    RECE08-PREFKBN      TO  RECE10-PREFKBN
+               MOVE    RECE08-PREFNUM      TO  RECE10-PREFNUM
+               MOVE    RECE02-AGE          TO  RECE10-AGE  
                MOVE    WRK-PARA-SYSYMD     TO  RECE10-CREYMD
                MOVE    ZERO                TO  RECE10-UPDYMD
            END-IF
@@ -3167,44 +3175,6 @@
       *
            .
        31101-NUM-ZENKAKU-HENKAN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¿ôÃÍ¡¦¥¢¥ë¥Õ¥¡¥Ù¥Ã¥ÈÈ¾³Ñ¢ªÁ´³ÑÊÑ´¹½èÍý
-      *****************************************************************
-       31101-CHAR-ZENKAKU-HENKAN-SEC    SECTION.
-      *
-           MOVE    1                   TO  IDZ
-      *     
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   WRK-CHAR-CNT
-               EVALUATE    WRK-CHAR-X (IDX:1)
-                   WHEN    "0"   
-                       MOVE    TBL-SUJI (10)
-                                       TO  WRK-CHAR-N (IDZ:)
-                   WHEN    "1" THRU    "9"                    
-                       MOVE    WRK-CHAR-X (IDX:1)
-                                       TO  WRK-NUM-IDX
-                       MOVE    TBL-SUJI (WRK-NUM-IDX)
-                                       TO  WRK-CHAR-N (IDZ:)
-                   WHEN    "A" THRU    "Z"
-                       PERFORM VARYING IDW     FROM    1   BY  1
-                               UNTIL   IDW     >       26
-                           IF      WRK-CHAR-X (IDX:1)
-                                                  =   TBL-CHAR-X (IDW)
-                               MOVE    TBL-CHAR-N (IDW)
-                                                  TO  WRK-CHAR-N (IDZ:)
-                               MOVE    26         TO  IDW
-                           END-IF
-                       END-PERFORM                                                                                      
-                   WHEN    OTHER
-                       MOVE    "  "    TO  WRK-CHAR-N (IDZ:)
-               END-EVALUATE
-               ADD     2               TO  IDZ
-           END-PERFORM
-      *
-           .
-       31101-CHAR-ZENKAKU-HENKAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3414,14 +3384,16 @@
        900-RECE07-READ-SEC           SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
+      *****MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
+           MOVE    "RECEKANRI-KEY4"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
+      *****    MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
+               MOVE    "RECEKANRI-KEY4"    TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -3437,7 +3409,8 @@
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
+      *****MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
+           MOVE    "RECEKANRI-KEY4"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
