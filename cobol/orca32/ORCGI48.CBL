@@ -279,11 +279,6 @@
            MOVE    SPA-I48-INPUTCD     TO  WRK-INPUTCD.
            MOVE    ZERO                TO  SPA-I48-NEXT.
       *
-      *    ユーザー登録他
-           MOVE    "1:コメント"        TO  SPA-I48-USERLST (1).
-           MOVE    "2:労災"            TO  SPA-I48-USERLST (2).
-           MOVE    SPACE               TO  SPA-I48-USER-G.
-      *
            IF      (SPA-I48-GMN-INPUT  =   SPACE )  AND
                    (SPA-I48-GMN-SYORI  =   SPACE )
                CONTINUE
@@ -316,8 +311,6 @@
                END-IF
            END-IF.
            IF     ( SPA-I48-GMN-MAX    =   ZERO  )
-      *    AND    ((SPA-I48-CDSYUBETU  =   "J"   )  OR
-      *            (SPA-I48-GMN-SYORI  =   "8"  OR  "U"))
                PERFORM 3102-TENSU-SET-SEC
       *        点数マスタ検索時、自院がゼロ件の時、全体を検索
                IF     (SPA-I48-GMN-ALL     =   SPACE)  AND
@@ -885,19 +878,6 @@
                MOVE    WRK-NOZ             TO  I48-SELNUM
            END-IF
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
-               IF      SPA-I48-USERLST (IDX)   NOT =   SPACE
-                   MOVE    SPA-I48-USERLST(IDX) TO  I48-USER-ITEM(IDX)
-                   MOVE    IDX                  TO  I48-USER-COUNT
-               END-IF
-           END-PERFORM.
-           IF     (SPA-I48-GMN-SYORI   =   "U"  )  AND
-                  (SPA-I48-GMN-SYORI3(1:1)  =   "U")
-               MOVE    SPA-I48-USER-G      TO  I48-USER
-           ELSE
-               MOVE    SPACE               TO  SPA-I48-USER-G
-           END-IF.
       *
            PERFORM 5001-MAPCUR-SEC.
       *
@@ -914,8 +894,6 @@
                    MOVE    "SELNUM"        TO  MCP-WIDGET
                WHEN    06
                    MOVE    "INPUT"         TO  MCP-WIDGET
-               WHEN    07
-                   MOVE    "USER"          TO  MCP-WIDGET
            END-EVALUATE.
       *
        5001-MAPCUR-EXT.
@@ -965,9 +943,6 @@
       *        行選択
                WHEN    ANY             ALSO    "LIST"
                    PERFORM 41012-LISTSEL-SEC
-      *        ユーザー
-               WHEN    "ACTIVATE"      ALSO    "USER"
-                   PERFORM 41014-USER-CHK-SEC
            END-EVALUATE.
       *
        200-ENTRY-EXT.
@@ -1201,39 +1176,6 @@
            PERFORM                     310-SPA-SET-SEC.
       *
        280-SINRYOU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ユーザー登録分処理
-      *****************************************************************
-       41014-USER-CHK-SEC              SECTION.
-      *
-           MOVE    7                   TO  SPA-I48-GMN-CUR.
-      *
-           MOVE    I48-USER            TO  SPA-I48-USER-G.
-      *
-           EVALUATE    SPA-I48-USER
-               WHEN    "1"
-                   MOVE    "U1"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "2"
-                   MOVE    "U2"            TO  SPA-I48-GMN-SYORI3
-               WHEN    OTHER
-                   MOVE    "0011"          TO  SPA-ERRCD
-                   GO      TO      41014-USER-CHK-EXT
-           END-EVALUATE.
-      *
-           MOVE    "U"                 TO  SPA-I48-GMN-SYORI.
-           MOVE    "2"                 TO  SPA-I48-TYPE.
-      *
-           INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-           INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-           MOVE    SPACE               TO  SPA-I48-SRYCD-G.
-           MOVE    SPACE               TO  SPA-I48-GMN-ALL.
-      *    ＳＰＡセット
-           MOVE    ZERO                TO  SPA-I48-NEXT.
-           PERFORM                     310-SPA-SET-SEC.
-      *
-       41014-USER-CHK-EXT.
            EXIT.
       *
       *****************************************************************

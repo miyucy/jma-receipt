@@ -2157,7 +2157,7 @@
                WHEN    "CLICKED"       ALSO    "B003"
                    PERFORM 240-SYOC
       *        ¡Ê¼ê½Ñ¡¦Ëã¿ì¡Ë
-               WHEN    "CLICKED"       ALSO    "B007"
+               WHEN    "CLICKED"       ALSO    "B008"
                    PERFORM 240-SYUJU-SEC
       *        ¡Ê¸¡ºº¡Ë
                WHEN    "CLICKED"       ALSO    "B004"

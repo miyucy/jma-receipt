@@ -900,7 +900,7 @@
 
     <widget>
       <class>GtkButton</class>
-      <name>B007</name>
+      <name>B008</name>
       <x>304</x>
       <y>80</y>
       <width>72</width>
