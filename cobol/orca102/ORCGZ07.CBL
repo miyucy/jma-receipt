@@ -204,6 +204,7 @@
            COPY    "ZERR.INC".
            COPY    "ZID1.INC".
            COPY    "ZID2.INC".
+           COPY    "ZID3.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA

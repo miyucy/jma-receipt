@@ -19,6 +19,7 @@ bind	"Z99"		"OpenCOBOL"	"ORCGZ99";
 bind	"ZERR"		"OpenCOBOL"	"ORCGZERR";
 bind	"ZID1"		"OpenCOBOL"	"ORCGZID1";
 bind	"ZID2"		"OpenCOBOL"	"ORCGZID2";
+bind	"ZID3"		"OpenCOBOL"	"ORCGZID3";
 
 multiplex_group	orca102;
 
@@ -41,6 +42,7 @@ data	{
 		ZERR;
 		ZID1;
 		ZID2;
+		ZID3;
 	};
 };
 

@@ -239,6 +239,7 @@ RECORD_files = \
 	ZERR.rec \
 	ZID1.rec \
 	ZID2.rec \
+	ZID3.rec \
 	mcpspa.rec \
 	orcalink.rec \
 	orcaspa.rec \

@@ -34,6 +34,8 @@
       *  01.00.05    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.01.01    NACL-森脇    02/12/06  コメント追加
       *  01.01.02    NACL-藤原    03/05/12  印刷開始・終了頁の編集の修正 
+      *  01.01.03    NACL-太田    03/07/02  出力先プリンタサブ追加
+      *                                     印刷する・しないのボタン追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -232,6 +234,9 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
@@ -260,6 +265,7 @@
            COPY    "ZERR.INC".
            COPY    "ZID1.INC".
            COPY    "ZID2.INC".
+           COPY    "ZID3.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -380,6 +386,9 @@
                    GO      TO      300-SCREEN-EXT
                WHEN    "ZID2"
                    PERFORM 340-ZID2-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "ZID3"
+                   PERFORM 350-ZID3-SET-SEC
                    GO      TO      300-SCREEN-EXT
                WHEN    "Z97"
                    GO      TO      300-SCREEN-EXT
@@ -506,6 +515,21 @@
            MOVE    SPACE           TO  SPA-ZIDCD2
            .
        340-ZID2-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面（ＺＩＤ３）ＯＫ処理
+      *****************************************************************
+       350-ZID3-SET-SEC            SECTION.
+      *
+           IF      SPA-ZID1-FLG    =   "OK"    OR  "NO"
+               PERFORM 490-PRINT-SEC
+           END-IF
+      *
+           MOVE    SPACE           TO  SPA-ZID1-FLG
+           MOVE    SPACE           TO  SPA-ZIDCD
+           .
+       350-ZID3-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1037,19 +1061,33 @@
                MOVE    "1004"              TO  SPA-ERRCD
                GO  TO  490-PRINT-EXT
            END-IF             
+      *
+      *    出力先プリンタ名割り当て情報編集
+           INITIALIZE                      SYS-1031-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
+               INITIALIZE                  SYS-1031-REC
+           END-IF 
       *     
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
-           ELSE    
-               INITIALIZE                  SYS-1031-REC
-           END-IF
+      *    MOVE    SPACE               TO  SYS-1031-REC
+      *    INITIALIZE                  SYS-1031-REC
+      *    MOVE    "1031"              TO  SYS-1031-KANRICD
+      *    MOVE    "*"                 TO  SYS-1031-KBNCD
+      *    MOVE    SYS-1031-REC        TO  MCPDATA-REC
+      *    PERFORM 900-SYSKANRI-INV-SEC
+      *    IF      FLG-SYSKANRI        =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SYS-1031-REC
+      *    ELSE    
+      *        INITIALIZE                  SYS-1031-REC
+      *    END-IF
       *
            INITIALIZE                  SHELL-AREA
       *
@@ -1212,66 +1250,70 @@
       *
       *    印刷処理
       *
-           PERFORM 45011-JOBKANRI-HENSYU-SEC
+           IF      SPA-ZID1-FLG        =   "OK"
+               PERFORM 45011-JOBKANRI-HENSYU-SEC
       *
-           MOVE    0                   TO  WRK-STPAGE
-           MOVE    99999               TO  WRK-EDPAGE
+               MOVE    0                   TO  WRK-STPAGE
+               MOVE    99999               TO  WRK-EDPAGE
       *             
-           MOVE    SPACE               TO  SHELLTBL
-      *****MOVE    "/usr/local/orca/scripts/allways/print.sh"
-      *****                            TO  SHELLTBL-NAME
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    "scripts/allways/print.sh"
-                                       TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
-           MOVE    SPACE               TO  LNK-PRTKANRI-AREA
-           INITIALIZE                      LNK-PRTKANRI-AREA
-           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
-                                       TO  LNK-PRTKANRI-TBL-KEY 
-           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
-                                       TO  LNK-PRTKANRI-TBL-GROUP
-           MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
-           MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM                             
-           MOVE    SPA-NAI-MSTYMD      TO  LNK-PRTKANRI-SKYYMD
-           MOVE    "print.sh"          TO  LNK-PRTKANRI-SHELLID
-           MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
-           MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
-           MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
-           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
-           MOVE    LNK-PRTKANRI-TBL-KEY
-                                       TO  SHELLTBL-ARG2     
-           MOVE    LNK-PRTKANRI-TBL-GROUP
-                                       TO  SHELLTBL-ARG3       
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                       TO  SHELLTBL-ARG4       
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5       
-           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6       
-           MOVE    LNK-PRTKANRI-SHELLID
-                                       TO  SHELLTBL-ARG7       
-           MOVE    LNK-PRTKANRI-PRIORITY
-                                       TO  SHELLTBL-ARG8      
-           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9       
-           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
-           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
+               MOVE    SPACE               TO  SHELLTBL
+      *****    MOVE    "/usr/local/orca/scripts/allways/print.sh"
+      *****                                TO  SHELLTBL-NAME
+      *        ファイルデイレクトリ位置指定
+               INITIALIZE                  ORCSMKPASSAREA
+               MOVE    "scripts/allways/print.sh"
+                                           TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+               MOVE    SPACE               TO  LNK-PRTKANRI-AREA
+               INITIALIZE                      LNK-PRTKANRI-AREA
+               MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                           TO  LNK-PRTKANRI-TBL-KEY 
+               MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                           TO  LNK-PRTKANRI-TBL-GROUP
+               MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
+               MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
+               MOVE    SPA-NAI-MSTYMD      TO  LNK-PRTKANRI-SKYYMD
+               MOVE    "print.sh"          TO  LNK-PRTKANRI-SHELLID
+               MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
+               MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
+               MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
+               MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
+               MOVE    LNK-PRTKANRI-TBL-KEY
+                                           TO  SHELLTBL-ARG2
+               MOVE    LNK-PRTKANRI-TBL-GROUP
+                                           TO  SHELLTBL-ARG3
+               MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                           TO  SHELLTBL-ARG4
+               MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5
+               MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6
+               MOVE    LNK-PRTKANRI-SHELLID
+                                           TO  SHELLTBL-ARG7
+               MOVE    LNK-PRTKANRI-PRIORITY
+                                           TO  SHELLTBL-ARG8
+               MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9
+               MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
+               MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
       *                 
-           MOVE    TENSUERR            TO  SHELLTBL-ARG12
-           MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
-           MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  SHELLTBL-ARG14
-           MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
-           MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC                         
+               MOVE    TENSUERR            TO  SHELLTBL-ARG12
+               MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
+               MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  SHELLTBL-ARG14
+               MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
+               MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
+               MOVE    SHELLTBL            TO  MCPDATA-REC
+               MOVE    "SHELL"             TO  MCP-FUNC
+               MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           END-IF
       *
       *    ＪＯＢＩＤ更新処理
       *
            PERFORM 45012-JOBID-UPD-SEC 
+      *     
+           PERFORM 490-KAKUNIN-SEC
       *     
            .
        490-PRINT-EXT.
@@ -1540,8 +1582,15 @@
            END-IF
       *
            IF      SPA-ZIDCD       NOT =   SPACE
-               PERFORM 520-ZIDSET-SEC
-               GO  TO  500-SET-SCREEN-EXT
+               EVALUATE    SPA-ZIDCD
+               WHEN    "1001"
+               WHEN    "1002"
+                   PERFORM 540-ZID3SET-SEC
+                   GO  TO  500-SET-SCREEN-EXT
+               WHEN    OTHER
+                   PERFORM 520-ZIDSET-SEC
+                   GO  TO  500-SET-SCREEN-EXT
+               END-EVALUATE
            END-IF
       *     
            IF      SPA-ZIDCD2      NOT =   SPACE
@@ -1764,12 +1813,6 @@
            MOVE    SPACE               TO  WRK-ZIDMSG
       *
            EVALUATE    SPA-ZIDCD
-               WHEN    "1001"
-                   MOVE    "設定内容に従い帳票を印刷します"
-                                        TO  WRK-ZIDMSG
-               WHEN    "1002"
-                   MOVE    "設定内容に従い入力コード帳票を印刷します"
-                                        TO  WRK-ZIDMSG
                WHEN    "6666"
                    MOVE    "印刷処理中です"
                                             TO  WRK-ZIDMSG
@@ -1828,6 +1871,40 @@
        530-ZIDSET2-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ガイドメッセージ表示
+      *****************************************************************
+       540-ZID3SET-SEC                 SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ZIDMSG
+      *
+           EVALUATE    SPA-ZIDCD
+           WHEN    "1001"
+               MOVE    "設定内容に従い帳票を印刷します"
+                                       TO  WRK-ZIDMSG
+           WHEN    "1002"
+               MOVE    "設定内容に従い入力コード帳票を印刷します"
+                                       TO  WRK-ZIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  ZID3
+           MOVE    SPA-ZIDCD           TO  ZID3-ID1CODE
+           MOVE    WRK-ZIDMSG          TO  ZID3-ID1MSG
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "Z91"               TO  SPA-MOTOPG
+           MOVE    "ZID3"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "ZID3"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       540-ZID3SET-EXT.
+           EXIT.
       *****************************************************************
       *    日付変換　処理
       *****************************************************************

@@ -232,6 +232,7 @@ SCREEN_screen = \
         ZERR.glade \
         ZID1.glade \
         ZID2.glade \
+        ZID3.glade \
         P02X.glade \
         U02X.glade \
         W15.glade \

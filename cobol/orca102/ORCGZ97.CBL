@@ -124,6 +124,7 @@
            COPY    "ZERR.INC".
            COPY    "ZID1.INC".
            COPY    "ZID2.INC".
+           COPY    "ZID3.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -170,6 +171,7 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
       *    処理状態
+               WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
            END-EVALUATE
