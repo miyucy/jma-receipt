@@ -46,6 +46,8 @@
       *                                     する
       *  01.00.08    NACL-藤原    05/01/18  特定器材レコードの点数の編集
       *                                     方法を修正
+      *  01.00.09    NACL-藤原    05/01/20  診療区分９０・９２のコメント
+      *                                     の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -253,6 +255,8 @@
            03  IDW1                    PIC 9(03).
            03  IDW2                    PIC 9(03).
            03  IDX0                    PIC 9(03).
+           03  IDZ1                    PIC 9(03).
+           03  IDZ2                    PIC 9(03).
            03  SYSKAN-IDX              PIC 9(03).
       *    
        01  KEY-AREA                          VALUE   LOW-VALUE.          
@@ -643,6 +647,11 @@
                    07  TBL-KOUI-SRYKBN12-KAISU  PIC  9(04).
       *            点数
                    07  TBL-KOUI-SRYKBN12-TEN    PIC  9(09)V9(02).
+      *
+      *    負担区分編集用エリア
+       01  WRK-RECE641-REC.
+           COPY    "CPRCF0641.INC" REPLACING  //RECE641//
+                                   BY         //WRK-RECE641//.
       *
        01  WRK-RECE65-REC.
            COPY    "CPRCF005.INC"  REPLACING  //RECE65//
@@ -2173,10 +2182,10 @@
        2007-HENSYU-SEC              SECTION.
       *
       *    負担区分編集処理
-           INITIALIZE                      RECE641-REC
-           MOVE    RECE62-HOSPID       TO  RECE641-HOSPID
-           MOVE    RECE62-PTID         TO  RECE641-PTID
-           MOVE    RECE62-HKNCOMBI (1) TO  RECE641-HKNCOMBI
+           INITIALIZE                      WRK-RECE641-REC
+           MOVE    RECE62-HOSPID       TO  WRK-RECE641-HOSPID
+           MOVE    RECE62-PTID         TO  WRK-RECE641-PTID
+           MOVE    RECE62-HKNCOMBI (1) TO  WRK-RECE641-HKNCOMBI
            PERFORM 20070-FTNKBN-HENSYU-SEC
       *
       *    症状詳記（手術歴・保険履歴）
@@ -2220,8 +2229,10 @@
                OR     ( RECE62-HOJOKBN-KEY
                                          NOT =   RECE641-HOJOKBN      )
                OR     ( RECE62-TEKSTYMD  NOT =   RECE641-TEKSTYMD     )
+               OR     ( RECE641-SRYKBN       >=  "90"                 )
       *
       *        負担区分編集処理
+               MOVE    RECE641-REC         TO  WRK-RECE641-REC  
                PERFORM 20070-FTNKBN-HENSYU-SEC
       *
       *        明細テーブル退避処理
@@ -2258,9 +2269,9 @@
            PERFORM VARYING IDX0    FROM    1  BY 1
                    UNTIL ( IDX0    >  TCOMB-MAX )
                     OR   ( FLG-HIT =  1 )
-               IF    ( RECE641-HOSPID      =   TCOMB-HOSPID (IDX0))
-                AND  ( RECE641-PTID        =   TCOMB-PTID   (IDX0))
-                AND  ( RECE641-HKNCOMBI    =   TCOMB-HKNCOMBINUM
+               IF    ( WRK-RECE641-HOSPID      =   TCOMB-HOSPID (IDX0))
+                AND  ( WRK-RECE641-PTID        =   TCOMB-PTID   (IDX0))
+                AND  ( WRK-RECE641-HKNCOMBI    =   TCOMB-HKNCOMBINUM
                                                             (IDX0))
                     MOVE   TCOMB-OCC (IDX0)
                                        TO  HKNCOMBI-REC
@@ -2271,11 +2282,11 @@
            IF    ( FLG-HIT         =  ZERO )
       *        保険組合せ読込み
                INITIALIZE                 HKNCOMBI-REC
-               MOVE    RECE641-HOSPID  TO  COMB-HOSPID
-               MOVE    RECE641-PTID    TO  COMB-PTID
-               MOVE    RECE641-HKNCOMBI
-                                      TO  COMB-HKNCOMBINUM 
-               MOVE    HKNCOMBI-REC   TO  MCPDATA-REC
+               MOVE    WRK-RECE641-HOSPID TO  COMB-HOSPID
+               MOVE    WRK-RECE641-PTID   TO  COMB-PTID
+               MOVE    WRK-RECE641-HKNCOMBI
+                                          TO  COMB-HKNCOMBINUM 
+               MOVE    HKNCOMBI-REC       TO  MCPDATA-REC
                PERFORM 910-HKNCOMBI-INV-SEC
                IF      FLG-HKNCOMBI   =   1
                    GO  TO  20070-FTNKBN-HENSYU-EXT
@@ -3691,11 +3702,11 @@
        20077-NYUIN-HENSYU-SEC           SECTION.
       *
       *    入院料
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       2
-               PERFORM VARYING IDXY    FROM    1   BY  1
-                       UNTIL   IDXY    >       31
-                       OR      LNK-NYURECEDEN-HKNCOMBI (IDXX IDXY)
+           PERFORM VARYING IDZ1    FROM    1   BY  1
+                   UNTIL   IDZ1    >       3
+               PERFORM VARYING IDZ2    FROM    1   BY  1
+                       UNTIL   IDZ2    >       31
+                       OR      LNK-NYURECEDEN-HKNCOMBI (IDZ1 IDZ2)
                                                =   ZERO
       *
                    MOVE    ZERO                    TO  FLG-CHK
@@ -3703,7 +3714,7 @@
                    PERFORM VARYING IDXZ    FROM    1   BY  1
                            UNTIL   IDXZ    >       10
                            OR      RECE62-HKNCOMBI (IDXZ)  =   ZERO
-                       IF      LNK-NYURECEDEN-HKNCOMBI (IDXX IDXY)
+                       IF      LNK-NYURECEDEN-HKNCOMBI (IDZ1 IDZ2)
                                            =   RECE62-HKNCOMBI (IDXZ)
                            MOVE    1                   TO  FLG-CHK
                            MOVE    10                  TO  IDXZ
@@ -3712,11 +3723,11 @@
       *
       *            負担区分編集処理
                    IF      FLG-CHK             =   1
-                       INITIALIZE                  RECE641-REC
-                       MOVE    RECE62-HOSPID       TO  RECE641-HOSPID
-                       MOVE    RECE62-PTID         TO  RECE641-PTID
-                       MOVE    LNK-NYURECEDEN-HKNCOMBI (IDXX IDXY)
-                                                   TO  RECE641-HKNCOMBI
+                       INITIALIZE                  WRK-RECE641-REC
+                       MOVE    RECE62-HOSPID   TO  WRK-RECE641-HOSPID
+                       MOVE    RECE62-PTID     TO  WRK-RECE641-PTID
+                       MOVE    LNK-NYURECEDEN-HKNCOMBI (IDZ1 IDZ2)
+                                               TO  WRK-RECE641-HKNCOMBI
                        PERFORM 20070-FTNKBN-HENSYU-SEC
                        IF      WRK-FTNKBN          =   SPACE
                            MOVE    ZERO                TO  FLG-CHK
@@ -3725,20 +3736,20 @@
       *
                    PERFORM VARYING IDXZ    FROM    1   BY  1
                            UNTIL   IDXZ    >  
-                                   LNK-NYURECEDEN-MEISAISU (IDXX IDXY)
+                                   LNK-NYURECEDEN-MEISAISU (IDZ1 IDZ2)
                            OR      FLG-CHK =       ZERO
       *                                 
                        MOVE    SPACE               TO  WRK-REC
                        MOVE    ZERO                TO  WRK-REC-LENGTH
       *
-                       EVALUATE    LNK-NYURECEDEN-RECSKB(IDXX IDXY IDXZ)
+                       EVALUATE    LNK-NYURECEDEN-RECSKB(IDZ1 IDZ2 IDXZ)
                            WHEN    "CO"
                                MOVE    "CO,"           TO  WRK-REC
                                MOVE    3               TO
                                                        WRK-REC-LENGTH
       *                        診療識別
                                MOVE    LNK-NYURECEDEN-SRYSKB
-                                                       (IDXX IDXY IDXZ)
+                                                       (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-DATA
                                MOVE    2               TO  WRK-NAGASA
                                PERFORM 5004-MOJI-HENSYU-SEC  
@@ -3748,13 +3759,13 @@
                                PERFORM 5004-MOJI-HENSYU-SEC  
       *                        コメントコード
                                MOVE    LNK-NYURECEDEN-SRYCD
-                                                       (IDXX IDXY IDXZ)
+                                                       (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-DATA
                                MOVE    9               TO  WRK-NAGASA
                                PERFORM 5004-MOJI-HENSYU-SEC  
       *                        文字データ
                                MOVE    LNK-NYURECEDEN-COMMENT
-                                                       (IDXX IDXY IDXZ)
+                                                       (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-DATA
                                MOVE    76              TO  WRK-NAGASA
                                MOVE    1               TO  WRK-END 
@@ -3764,7 +3775,7 @@
                                            =   "1211"  OR  "1221"  OR
                                                "1231"                  )
                                AND   (  LNK-NYURECEDEN-SRYCD
-                                                       (IDXX IDXY IDXZ)
+                                                       (IDZ1 IDZ2 IDXZ)
                                            =   WRK-CONS-HYOJYUN-FUTAN1
                                            OR  WRK-CONS-HYOJYUN-FUTAN2
                                            OR  WRK-CONS-HYOJYUN-FUTAN3
@@ -3776,7 +3787,7 @@
                                                        WRK-REC-LENGTH
       *                            診療識別
                                    MOVE    LNK-NYURECEDEN-SRYSKB
-                                                       (IDXX IDXY IDXZ)
+                                                       (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-DATA
                                    MOVE    2           TO  WRK-NAGASA
                                    PERFORM 5004-MOJI-HENSYU-SEC  
@@ -3786,7 +3797,7 @@
                                    PERFORM 5004-MOJI-HENSYU-SEC  
       *                            診療行為コード
                                    MOVE    LNK-NYURECEDEN-SRYCD
-                                                       (IDXX IDXY IDXZ)
+                                                       (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-DATA
                                    MOVE    9           TO  WRK-NAGASA
                                    PERFORM 5004-MOJI-HENSYU-SEC  
@@ -3794,10 +3805,10 @@
                                    PERFORM 5005-NUM-HENSYU-SEC  
       *                            点数
                                    IF      LNK-NYURECEDEN-TEN
-                                                    (IDXX IDXY IDXZ)
+                                                    (IDZ1 IDZ2 IDXZ)
                                                         >   ZERO
                                        MOVE    LNK-NYURECEDEN-TEN
-                                                       (IDXX IDXY IDXZ)
+                                                       (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-TENSU
                                        MOVE    WRK-TENSU
                                                        TO  WRK-NUM
@@ -3806,10 +3817,10 @@
                                    PERFORM 5005-NUM-HENSYU-SEC  
       *                            回数
                                    IF      LNK-NYURECEDEN-KAISU
-                                                   (IDXX IDXY IDXZ)
+                                                   (IDZ1 IDZ2 IDXZ)
                                                        >   ZERO 
                                        MOVE    LNK-NYURECEDEN-KAISU
-                                                       (IDXX IDXY IDXZ)
+                                                       (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-KAISU
                                        MOVE    WRK-KAISU
                                                        TO  WRK-NUM
@@ -3824,9 +3835,64 @@
                        END-IF
                    END-PERFORM
                END-PERFORM
+      *
+      *        差し込みコメント編集
+               IF      IDZ1            <   3 
+                  PERFORM 200771-NYUIN-COMMENT-HENSYU-SEC
+               END-IF
            END-PERFORM
            .
        20077-NYUIN-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *        差し込みコメント編集処理
+      *****************************************************************
+       200771-NYUIN-COMMENT-HENSYU-SEC      SECTION.
+      *
+           PERFORM
+               UNTIL  ( FLG-END              =   1                   )
+               OR     ( FLG-RECE64           =   1                   )
+               OR     ( RECE62-HOSPID    NOT =   RECE641-HOSPID       )
+               OR     ( RECE62-SRYYM     NOT =   RECE641-SRYYM        )
+               OR     ( RECE62-NYUGAIKBN NOT =   RECE641-NYUGAIKBN    )
+               OR     ( RECE62-PTID      NOT =   RECE641-PTID         )
+               OR     ( RECE62-RECEKA    NOT =   RECE641-RECEKA       )
+               OR     ( RECE62-TEISYUTUSAKI
+                                         NOT =   RECE641-TEISYUTUSAKI )
+               OR     ( RECE62-RECESYUBETU
+                                         NOT =   RECE641-RECESYUBETU  )
+               OR     ( RECE62-HKNJANUM-KEY
+                                         NOT =   RECE641-HKNJANUM     )
+               OR     ( RECE62-HOJOKBN-KEY
+                                         NOT =   RECE641-HOJOKBN      )
+               OR     ( RECE62-TEKSTYMD  NOT =   RECE641-TEKSTYMD     )
+                   EVALUATE    IDZ1
+                       WHEN    1 
+                           IF      RECE641-SRYKBN       >  "90"
+                               GO  TO  200771-NYUIN-COMMENT-HENSYU-EXT
+                           END-IF
+                       WHEN    2 
+                           IF      RECE641-SRYKBN       >  "92"
+                               GO  TO  200771-NYUIN-COMMENT-HENSYU-EXT
+                           END-IF
+                   END-EVALUATE
+      *
+      *            負担区分編集処理
+                   MOVE    RECE641-REC  TO  WRK-RECE641-REC
+                   PERFORM 20070-FTNKBN-HENSYU-SEC
+      *
+      *            明細テーブル退避処理
+                   PERFORM 20071-ZAI-TAIHI-SEC
+      *           摘要データ編集処理
+                   IF      FLG-END           =   ZERO
+                       PERFORM 20072-ZAI-HENSYU-SEC
+      * 
+                       PERFORM 990-RECE641-NEXT-SEC
+                   END-IF     
+           END-PERFORM
+           .
+       200771-NYUIN-COMMENT-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
