@@ -666,6 +666,8 @@
                                                MCPDATA-REC
                END-IF
       *
+               MOVE    SYUNOU-REC          TO  WRK-SYUNOU-REC
+      *
       *        収納明細マスター作成
                PERFORM 45001-SINMEI-SYORI-SEC
       *
@@ -673,6 +675,8 @@
                IF      SPA-CONTKBN         =   "2"
                    PERFORM 45011-SYUNOU-UPD-SEC
                END-IF
+      *
+               MOVE    WRK-SYUNOU-REC      TO  SYUNOU-REC
            END-IF
       *
            MOVE    SYUNOU-REC          TO  WRK-SYUNOU-REC
