@@ -2231,6 +2231,11 @@
                      MOVE  "190097010"      TO   WRK-GAIHAKU-SRYCD
                WHEN  "190813270"
                      MOVE  "190805710"      TO   WRK-GAIHAKU-SRYCD
+      *
+               WHEN  "190117670"
+                     MOVE  "190097010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190813870"
+                     MOVE  "190805710"      TO   WRK-GAIHAKU-SRYCD
            END-EVALUATE
       *
            IF    WRK-GAIHAKU-SRYCD    NOT =   SPACE
@@ -2768,6 +2773,23 @@
                  IF  FLG-ARI  =  ZERO  
                         MOVE   "Í­°å"
                                   TO   RECE62-NYUSYUBETU(ID1)(1:4)
+                 END-IF
+      *
+              END-IF
+              IF   WRK-SRYCD  =  "190117670"  OR  "190813870"
+      *
+                 MOVE     ZERO     TO    FLG-ARI
+                 PERFORM  VARYING  ID1    FROM    1   BY  1
+                       UNTIL   ID1                   > 20
+                         OR    RECE62-NYUSYUBETU(ID1) = SPACE
+                         OR    FLG-ARI                = 1 
+                    IF  RECE62-NYUSYUBETU(ID1)(1:6)   =   "Í­´Ç°å"
+                        MOVE  1   TO   FLG-ARI
+                    END-IF
+                 END-PERFORM  
+                 IF  FLG-ARI  =  ZERO  
+                        MOVE   "Í­´Ç°å"
+                                  TO   RECE62-NYUSYUBETU(ID1)(1:6)
                  END-IF
       *
               END-IF

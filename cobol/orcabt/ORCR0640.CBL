@@ -2118,6 +2118,11 @@
                      MOVE  "190097010"      TO   WRK-GAIHAKU-SRYCD
                WHEN  "190813270"
                      MOVE  "190805710"      TO   WRK-GAIHAKU-SRYCD
+      *
+               WHEN  "190117670"
+                     MOVE  "190097010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190813870"
+                     MOVE  "190805710"      TO   WRK-GAIHAKU-SRYCD
            END-EVALUATE
       *
            IF    WRK-GAIHAKU-SRYCD    NOT =   SPACE
