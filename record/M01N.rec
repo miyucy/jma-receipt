@@ -63,9 +63,6 @@ M01N	{
 		                 G71	{
 		                	state	int;
 	                          };
-		                 G81	{
-		                	state	int;
-	                          };
 	 	                 G82	{
 			               state	int;
 		                 };

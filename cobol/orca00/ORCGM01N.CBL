@@ -1024,7 +1024,7 @@
       *
       *----(01.02.07) LINE UPD START ----------------------------------
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       25 
+                   UNTIL   IDX >       24 
                MOVE    WIDGET-INSENSITIVE      TO  M01N-STATE-O (IDX)
            END-PERFORM
       *----(01.02.07) LINE UPD END   ----------------------------------
@@ -1123,9 +1123,9 @@
                    MOVE    WIDGET-NORMAL      TO  M01N-G71-STATE
                END-IF
       *
-               IF      SYS-1010-GSRAUTH(46:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M01N-G81-STATE
-               END-IF
+      ****     IF      SYS-1010-GSRAUTH(46:1)   =  "1"
+      *            MOVE    WIDGET-NORMAL      TO  M01N-G81-STATE
+      *****    END-IF
                IF      SYS-1010-GSRAUTH(47:1)   =  "1"
                    MOVE    WIDGET-NORMAL      TO  M01N-G82-STATE
                END-IF

@@ -1013,7 +1013,7 @@
        510-GSRAUTH-SEC             SECTION.
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       19
+                   UNTIL   IDX >       18
                MOVE    WIDGET-INSENSITIVE      TO  M01-STATE-O (IDX)
            END-PERFORM
       *
@@ -1088,9 +1088,9 @@
                    MOVE    WIDGET-NORMAL      TO  M01-G71-STATE
                END-IF
       *
-               IF      SYS-1010-GSRAUTH(46:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M01-G81-STATE
-               END-IF
+      ******   IF      SYS-1010-GSRAUTH(46:1)   =  "1"
+      *            MOVE    WIDGET-NORMAL      TO  M01-G81-STATE
+      ******   END-IF
                IF      SYS-1010-GSRAUTH(47:1)   =  "1"
                    MOVE    WIDGET-NORMAL      TO  M01-G82-STATE
                END-IF

@@ -43,10 +43,9 @@
                 05  M01N-G51-STATE   PIC S9(09) BINARY.
                 05  M01N-G52-STATE   PIC S9(09) BINARY.
                 05  M01N-G71-STATE   PIC S9(09) BINARY.
-                05  M01N-G81-STATE   PIC S9(09) BINARY.
                 05  M01N-G82-STATE   PIC S9(09) BINARY.
                 05  M01N-G91-STATE   PIC S9(09) BINARY.
                 05  M01N-G92-STATE   PIC S9(09) BINARY.
               04  M01N-STATE-R       REDEFINES  M01N-STATE-G.
-                05  M01N-STATE-O     PIC S9(09) BINARY  OCCURS  25.
+                05  M01N-STATE-O     PIC S9(09) BINARY  OCCURS  24.
               04  M01N-SELNUM  PIC 9(2).
