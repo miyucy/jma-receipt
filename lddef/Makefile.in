@@ -66,7 +66,7 @@ INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) \
 .ld.in.ld .bd.in.bd:
 	$(CPP) $(LDFILEFLAGS) $< > $@
 
-all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE)
+all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE) dbgroup.inc kentan.inc
 
 $(LDFILE) $(BDFILE):  orcadb.inc 
 
@@ -76,9 +76,15 @@ directory:
 	sed -e 's,\@ORCA_DIR\@,$(ORCA_DIR),g' \
 	$(DIRECTORYFILE_in) > $(DIRECTORYFILE) 
 
+dbgroup.inc: 
+	ln -sf ../etc/dbgroup.inc .
+
+kentan.inc:
+	ln -sf ../etc/kentan.inc .
+
 clean: 
 	-rm $(LDFILE) $(BDFILE)
-	-rm directory 
+	-rm directory dbgroup.inc kentan.inc
 
 distclean: clean
 	-rm -f Makefile
