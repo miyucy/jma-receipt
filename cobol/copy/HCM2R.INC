@@ -7,11 +7,10 @@
               03  HCM2R-TAI-TENSU
                       PIC X(8)    OCCURS  5 TIMES.
               03  HCM2R-TAI-ITBFTN
-                      PIC X(8)    OCCURS  4 TIMES.
+                      PIC X(8)    OCCURS  2 TIMES.
               03  HCM2R-KOU-KENSU PIC X(4).
               03  HCM2R-KOU-TENSU PIC X(8).
               03  HCM2R-KOU-ITBFTN    PIC X(8).
-              03  HCM2R-KOU-KNJFTN    PIC X(8).
               03  HCM2R-SYO-KENSU PIC X(4).
               03  HCM2R-SYO-TENSU PIC X(8).
               03  HCM2R-SYO-ITBFTN    PIC X(8).

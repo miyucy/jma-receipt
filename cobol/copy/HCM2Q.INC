@@ -18,7 +18,7 @@
               03  HCM2Q-IPN-TENSU
                       PIC X(8)    OCCURS  4 TIMES.
               03  HCM2Q-IPN-ITBFTN
-                      PIC X(8)    OCCURS  3 TIMES.
+                      PIC X(8)    OCCURS  2 TIMES.
               03  HCM2Q-SYO-KENSU PIC X(4).
               03  HCM2Q-SYO-TENSU PIC X(8).
               03  HCM2Q-SYO-ITBFTN    PIC X(8).

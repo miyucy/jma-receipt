@@ -28,6 +28,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.01.01    NACL-¿¹ÏÆ    04/10/07  ÌôºÞÉéÃ´¶âÍó¤òºï½ü
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -121,7 +122,9 @@
                05  SUM-KENSU           PIC 9(06).
                05  SUM-TOTALTEN        PIC 9(10).
                05  SUM-FTNMONEY        PIC 9(10).
-               05  SUM-YKZFTN          PIC 9(10).
+      *----(01.01.01)--UPD-START---
+      *         05  SUM-YKZFTN          PIC 9(10).
+      *----(01.01.01)--UPD-END-----
                05  SUM-SHOKUJIKENSU    PIC 9(06).
                05  SUM-SHOKUJIRYOYOHI  PIC 9(10).
                05  SUM-SHOKUJIFTN      PIC 9(10).
@@ -138,7 +141,9 @@
                05  GSUM-KENSU          PIC 9(06).
                05  GSUM-TOTALTEN       PIC 9(10).
                05  GSUM-FTNMONEY       PIC 9(10).
-               05  GSUM-YKZFTN         PIC 9(10).
+      *----(01.01.01)--UPD-START---
+      *         05  GSUM-YKZFTN         PIC 9(10).
+      *----(01.01.01)--UPD-END-----
       *    ¿©»öÁí·×
            03  GSUM-SHO-TBL        OCCURS  2.
                05  GSUM-SHO-KENSU      PIC 9(06).
@@ -495,11 +500,13 @@
                                    TO  SUM-TOTALTEN(IDX)
            ADD     RECE10-FTNMONEY(1)
                                    TO  SUM-FTNMONEY(IDX)
-           IF        ( RECE10-NYUGAIKBN    =   "2")
-               AND   ( IDX                =   3   OR  5   OR  8 )
-               ADD     RECE10-YKZFTN(1)
-                                       TO  SUM-YKZFTN(IDX)
-           END-IF
+      *----(01.01.01)--UPD-START---
+      *     IF        ( RECE10-NYUGAIKBN    =   "2")
+      *         AND   ( IDX                =   3   OR  5   OR  8 )
+      *         ADD     RECE10-YKZFTN(1)
+      *                                 TO  SUM-YKZFTN(IDX)
+      *     END-IF
+      *----(01.01.01)--UPD-END-----
       *    ¿©»öÎÅÍÜ
            IF          RECE10-NYUGAIKBN    =   "1"
                IF          RECE10-SHOKUJINISSU(1)   >   ZERO
@@ -536,9 +543,11 @@
                                    TO  SUM-FTNMONEY(12)
       *
                EVALUATE    RECE10-NYUGAIKBN
-               WHEN    "2"
-                   ADD     RECE10-YKZFTN(IDY)
-                                       TO  SUM-YKZFTN(12)
+      *----(01.01.01)--UPD-START---
+      *         WHEN    "2"
+      *             ADD     RECE10-YKZFTN(IDY)
+      *                                 TO  SUM-YKZFTN(12)
+      *----(01.01.01)--UPD-END-----
       *        ¿©»öÎÅÍÜ
                WHEN    "1"
                    IF      RECE10-SHOKUJINISSU(IDY)   >   ZERO
@@ -640,11 +649,13 @@
                                        TO  WRK-ITBFTNZ
                        MOVE    WRK-ITBFTNZ
                                TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
-                   WHEN    3
-                       MOVE    SUM-YKZFTN(IDX)
-                                       TO  WRK-ITBFTNZ
-                       MOVE    WRK-ITBFTNZ
-                               TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
+      *----(01.01.01)--UPD-START---
+      *             WHEN    3
+      *                 MOVE    SUM-YKZFTN(IDX)
+      *                                 TO  WRK-ITBFTNZ
+      *                 MOVE    WRK-ITBFTNZ
+      *                         TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
+      *----(01.01.01)--UPD-END-----
                    END-EVALUATE
       *
                    ADD     SUM-SHOKUJIKENSU(IDX)
@@ -662,12 +673,14 @@
                                        TO  WRK-TENSUZ
                    MOVE    WRK-TENSUZ  TO  HCM2R-TAI-TENSU(CNT-LINE IDZ)
                    EVALUATE    IDX
-                   WHEN    5
-                   WHEN    8
-                       MOVE    SUM-YKZFTN(IDX)
-                                       TO  WRK-ITBFTNZ
-                       MOVE    WRK-ITBFTNZ
-                               TO  HCM2R-TAI-ITBFTN(CNT-LINE IDZ)
+      *----(01.01.01)--UPD-START---
+      *             WHEN    5
+      *             WHEN    8
+      *                 MOVE    SUM-YKZFTN(IDX)
+      *                                 TO  WRK-ITBFTNZ
+      *                 MOVE    WRK-ITBFTNZ
+      *                         TO  HCM2R-TAI-ITBFTN(CNT-LINE IDZ)
+      *----(01.01.01)--UPD-END-----
                    WHEN    6   THRU    7
                        MOVE    SUM-FTNMONEY(IDX)
                                        TO  WRK-ITBFTNZ
@@ -709,8 +722,10 @@
                    MOVE    SUM-FTNMONEY(IDX)
                                            TO  WRK-ITBFTNZ
                    MOVE    WRK-ITBFTNZ TO  HCM2R-KOU-ITBFTN(CNT-LINE)
-                   MOVE    SUM-YKZFTN(IDX) TO  WRK-ITBFTNZ
-                   MOVE    WRK-ITBFTNZ TO  HCM2R-KOU-KNJFTN(CNT-LINE)
+      *----(01.01.01)--UPD-START---
+      *             MOVE    SUM-YKZFTN(IDX) TO  WRK-ITBFTNZ
+      *             MOVE    WRK-ITBFTNZ TO  HCM2R-KOU-KNJFTN(CNT-LINE)
+      *----(01.01.01)--UPD-END-----
       *
                    ADD     SUM-SHOKUJIKENSU(IDX)
                                    TO  SUM-SHO-KENSU(2)
@@ -723,7 +738,9 @@
                ADD     SUM-KENSU(IDX)      TO  GSUM-KENSU(IDX)
                ADD     SUM-TOTALTEN(IDX)   TO  GSUM-TOTALTEN(IDX)
                ADD     SUM-FTNMONEY(IDX)   TO  GSUM-FTNMONEY(IDX)
-               ADD     SUM-YKZFTN(IDX)     TO  GSUM-YKZFTN(IDX)
+      *----(01.01.01)--UPD-START---
+      *         ADD     SUM-YKZFTN(IDX)     TO  GSUM-YKZFTN(IDX)
+      *----(01.01.01)--UPD-END-----
       *
            END-PERFORM
       *
@@ -780,11 +797,13 @@
                                        TO  WRK-ITBFTNZ
                        MOVE    WRK-ITBFTNZ
                                TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
-                   WHEN    3
-                       MOVE    GSUM-YKZFTN(IDX)
-                                       TO  WRK-ITBFTNZ
-                       MOVE    WRK-ITBFTNZ
-                               TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
+      *----(01.01.01)--UPD-START---
+      *             WHEN    3
+      *                 MOVE    GSUM-YKZFTN(IDX)
+      *                                 TO  WRK-ITBFTNZ
+      *                 MOVE    WRK-ITBFTNZ
+      *                         TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
+      *----(01.01.01)--UPD-END-----
                    END-EVALUATE
       *        ¹ñÌ±·ò¹¯ÊÝ¸±¡ÊÂà¿¦¼Ô¡Ë
                WHEN    5   THRU    9
@@ -795,12 +814,14 @@
                                        TO  WRK-TENSUZ
                    MOVE    WRK-TENSUZ  TO  HCM2R-TAI-TENSU(CNT-LINE IDZ)
                    EVALUATE    IDX
-                   WHEN    5
-                   WHEN    8
-                       MOVE    GSUM-YKZFTN(IDX)
-                                       TO  WRK-ITBFTNZ
-                       MOVE    WRK-ITBFTNZ
-                               TO  HCM2R-TAI-ITBFTN(CNT-LINE IDZ)
+      *----(01.01.01)--UPD-START---
+      *             WHEN    5
+      *             WHEN    8
+      *                 MOVE    GSUM-YKZFTN(IDX)
+      *                                 TO  WRK-ITBFTNZ
+      *                 MOVE    WRK-ITBFTNZ
+      *                         TO  HCM2R-TAI-ITBFTN(CNT-LINE IDZ)
+      *----(01.01.01)--UPD-END-----
                    WHEN    6   THRU    7
                        MOVE    GSUM-FTNMONEY(IDX)
                                        TO  WRK-ITBFTNZ
@@ -830,9 +851,11 @@
                    MOVE    GSUM-FTNMONEY(IDX)
                                            TO  WRK-ITBFTNZ
                    MOVE    WRK-ITBFTNZ TO  HCM2R-KOU-ITBFTN(CNT-LINE)
-                   MOVE    GSUM-YKZFTN(IDX)
-                                           TO  WRK-ITBFTNZ
-                   MOVE    WRK-ITBFTNZ TO  HCM2R-KOU-KNJFTN(CNT-LINE)
+      *----(01.01.01)--UPD-START---
+      *             MOVE    GSUM-YKZFTN(IDX)
+      *                                     TO  WRK-ITBFTNZ
+      *             MOVE    WRK-ITBFTNZ TO  HCM2R-KOU-KNJFTN(CNT-LINE)
+      *----(01.01.01)--UPD-END-----
                END-EVALUATE
       *
            END-PERFORM
