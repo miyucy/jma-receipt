@@ -1347,6 +1347,23 @@
                        END-IF
       *
                     END-IF
+                    IF  WRK-RYAKU-SRYCD  =  "190117070" OR "190813270"
+      *
+                       MOVE     ZERO     TO    FLG-ARI
+                       PERFORM  VARYING  ID1    FROM    1   BY  1
+                           UNTIL   ID1                          > 20
+                             OR    LNK-SROUNYUIN-RYAKUSYO2(ID1) = SPACE
+                             OR    FLG-ARI                      = 1 
+                         IF LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:4) = "Í­°å"
+                              MOVE  1   TO   FLG-ARI
+                         END-IF
+                       END-PERFORM  
+                       IF  FLG-ARI  =  ZERO  
+                            MOVE  "Í­°å"
+                                TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:4)
+                       END-IF
+      *
+                    END-IF
       *
                   ELSE
       *
