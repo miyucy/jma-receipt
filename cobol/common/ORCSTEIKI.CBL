@@ -122,11 +122,20 @@
        01  TABLE-SENTEI.
            03  TBL-SENTEI                  PIC 9(01)   OCCURS  31.
       *
+      * ÁªÄê³°Çñ·×»»ÎÎ°è
+       01  WRK-SENTEI-GAIHAKU1             PIC 9(08).
+       01  WRK-SENTEI-GAIHAKU2             PIC 9(08).
+      *
       * ÊÝ¸±Å¬ÍÑ³°¶â³ÛÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  HKNTEKGAI-TABLE.
-           03  HKNTEKGAI-TBL               OCCURS 11.
+           03  HKNTEKGAI-TBL               OCCURS 10.
                05  TBL-TGMONEY             PIC 9(08).
                05  TBL-TGMONEY-TAX         PIC 9(08).
+      *
+      * Æþ±¡ÊÝ¸±Å¬ÍÑ³°¶â³ÛÂàÈòÍÑÎÎ°è
+       01  HKNTEKGAI-NYUIN.
+           03  NYUIN-TGMONEY               PIC 9(08).
+           03  NYUIN-TGMONEY-TAX           PIC 9(08).
       *
       * ¼«ÈñÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  JIHI-TABLE.
@@ -977,6 +986,8 @@
       *Æþ±¡ÎÁ´Ø·¸¤Î¼èÆÀ
       *
            MOVE    ZERO                TO  NYUIN-COUNT
+           MOVE    SPACE               TO  HKNTEKGAI-NYUIN
+           INITIALIZE                      HKNTEKGAI-NYUIN
       *
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                      NYUINACCT-REC
@@ -1153,6 +1164,7 @@
                                                               +  0.5)
                                END-EVALUATE
                            ELSE
+      *                        ÁªÄê´ü´Ö¤ÎÅÀ¿ô»»Äê
                                EVALUATE   TBL-GAIHAKU(SYU-IDX)
                                  WHEN   ZERO
                                      ADD    WRK-SENTEI-ZAITEN
@@ -1161,30 +1173,41 @@
                                  WHEN   1
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
-                                             ((WRK-SENTEI-KHNTEN
-                                                             *  0.15)
+                                             ((WRK-KHNTEN    *  0.1)
                                                              +  0.5)
-      *                          ³°Çñ¡Ê£³£°¡ó¡Ë
-                                 WHEN   2
-                                     COMPUTE  SYU-HKNTEN(11)  =
-                                              SYU-HKNTEN(11)  +
-                                            ((WRK-SENTEI-KHNTEN
-                                                              *  0.3)
-                                                              +  0.5)
       *                          ³°Çñ¡ÊÁªÄêÎÅÍÜÈñ£±£°¡ó¡Ë
                                  WHEN   3
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
-                                            ((WRK-SENTEI-KHNTEN
-                                                              *  0.1)
+                                            ((WRK-KHNTEN      *  0.1)
                                                               +  0.5)
       *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç¡Ê£±£µ¡ó¡Ë
                                  WHEN   4
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
-                                            ((WRK-SENTEI-KHNTEN
-                                                              *  0.15)
+                                            ((WRK-KHNTEN      *  0.15)
                                                               +  0.5)
+                               END-EVALUATE
+      *                        ÁªÄê´ü´Ö¤Î´µ¼Ô¼«¸ÊÉéÃ´³Û»»Äê¡¿¾ÃÈñÀÇÌµ¤·
+                               EVALUATE   TBL-GAIHAKU(SYU-IDX)
+                                 WHEN   ZERO
+                                     COMPUTE  NYUIN-TGMONEY =
+                                              NYUIN-TGMONEY +
+                                             (WRK-KHNTEN  -  
+                                              WRK-SENTEI-KHNTEN) * 10
+      *                          ³°Çñ¡Ê£±£µ¡ó¤È£±£°¡ó¤Îº¹³Û¡Ë
+                                 WHEN   3
+                                     MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                     MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                     COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                             (WRK-KHNTEN * 0.15) + 0.5
+                                     COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                             (WRK-KHNTEN * 0.1) + 0.5
+                                     COMPUTE  NYUIN-TGMONEY  =
+                                              NYUIN-TGMONEY  +
+                                             (WRK-SENTEI-GAIHAKU1 -
+                                              WRK-SENTEI-GAIHAKU2)
+                                              *  10
                                END-EVALUATE
                            END-IF
                        END-IF
@@ -1954,12 +1977,18 @@
       *
       *  ÊÝ¸±Å¬ÍÑ³°
            PERFORM     VARYING   IDZ    FROM   1    BY    1
-                         UNTIL   IDZ    >      11
+                         UNTIL   IDZ    >      10
                   MOVE   TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(IDZ)
                   MOVE   TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(IDZ)
                   ADD    TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(12)
                   ADD    TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(12)
            END-PERFORM
+      *
+      *  Æþ±¡ÊÝ¸±Å¬ÍÑ³°
+           MOVE   NYUIN-TGMONEY                TO  SYU-TGMONEY(11)
+           MOVE   NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(11)
+           ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(12)
+           ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(12)
       *
       *  ¼«Èñ£±¤«¤é£µ
            PERFORM     VARYING   IDZ    FROM    1    BY    1
