@@ -1011,10 +1011,10 @@
       *
       *病院・診療所区分
            MOVE    SYS-1001-HOSPSBT TO  RECE62-HOSPSBT               
-           .
       *
       *    病棟区分セット
            PERFORM    BYOTOKBN-SET-SEC
+           .
        210-HENSYU-EXT.
            EXIT.
       *
