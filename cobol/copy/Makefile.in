@@ -851,6 +851,9 @@ COPYS = \
         HCM03V02.INC \
         HCN03V02.INC \
         CPORCSBYOMEI.INC \
+        CPPGKANRI.INC \
+        CPPGKANRIC.INC \
+        M97.INC \
 
 DBPATH = \
 	ORCA-DBPATH

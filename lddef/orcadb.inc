@@ -77,6 +77,7 @@ db	{
 	tbl_prvkanri;
 	view_bd003;
         tbl_syuday;
+        tbl_pgkanri;
 };
 db	"shell"	{
 	shell;

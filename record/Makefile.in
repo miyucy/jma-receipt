@@ -263,7 +263,8 @@ RECORD_files = \
         Z07.rec \
         S05.rec \
         I22.rec \
-        I23.rec 
+        I23.rec \
+        M97.rec \
 
 DEF_files = \
 	HC01.def \
@@ -402,7 +403,8 @@ DB_files = \
 	view_bd001.db \
 	view_bd002.db \
 	view_bd003.db \
-        tbl_syuday.db
+        tbl_syuday.db \
+        tbl_pgkanri.db \
 
 all:   
 
