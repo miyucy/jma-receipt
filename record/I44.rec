@@ -258,17 +258,8 @@ I44	{
 		SEX	{
 			value	varchar(2);
 		};
-		HKNCOMBI	{
-			value	varchar(40);
-		};
 		SRYKA	{
 			value	varchar(10);
-		};
-		RATE	{
-			value	varchar(6);
-		};
-		RRKYMD	{
-			value	varchar(13);
 		};
 		DAY01	{
 			value	varchar(2);

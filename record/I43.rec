@@ -17,7 +17,7 @@ I43	{
 				value	varchar(20);
 			};
 			count	int;
-			item	varchar(20)[100];
+			item	varchar(20)[41];
 		};
 		MIDASI	{
 		    style   varchar(20); 
@@ -25,10 +25,10 @@ I43	{
 		};
 		HKNCOMBICOMB	{
 			HKNCOMBI	{
-				value	varchar(40);
+				value	varchar(55);
 			};
 			count	int;
-			item	varchar(40)[10];
+			item	varchar(55)[10];
 		};
 		scrolledwindow1	{
 			RECELIST	{
@@ -39,7 +39,7 @@ I43	{
 					value0	varchar(3);
 					value1	varchar(6);
 					value2	varchar(10);
-					value3	varchar(20);
+					value3	varchar(50);
 					value4	varchar(3);
 					value5	varchar(50);
 				}	[100];

@@ -15,26 +15,11 @@ I42	{
 		SEX	{
 			value	varchar(2);
 		};
-		SRYKA	{
-			value	varchar(10);
-		};
-		scrolledwindow1	{
-			SRYACTYMD	{
-				count	int;
-				row int;
-				rowattr int;
-				item	{
-					value0	varchar(10);
-					value1	varchar(40);
-				}	[100];
-				select	bool[100];
-			};
-		};
 		scrolledwindow2	{
 			SRYACTCNT	{
 				count	int;
-				row int;
-				rowattr int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(7);
 					value1	varchar(40);
@@ -42,6 +27,61 @@ I42	{
 				}	[100];
 				select	bool[100];
 			};
+		};
+		scrolledwindow1	{
+			SRYACTYMD	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(10);
+					value1	varchar(40);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		TENSU	{
+			value	varchar(10);
+		};
+		RSITENSU	{
+			value	varchar(10);
+		};
+		JIHIKIN	{
+			value	varchar(10);
+		};
+		SRYYM	{
+			value	varchar(6);
+		};
+		NYUGAIKBN_COMB	{
+			NYUGAIKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
+		SRYKA_COMB	{
+			SRYKA	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[41];
+		};
+		HHKNCOMBI_COMB	{
+			HHKNCOMBI	{
+				value	varchar(55);
+			};
+			count	int;
+			item	varchar(55)[20];
+		};
+		NYUTENSU	{
+			value	varchar(10);
+		};
+		MIDASI	{
+		        style   varchar(20);
+			value	varchar(20);
+		};
+		MIDASIN	{
+			value	varchar(10);
 		};
 	};
 };
