@@ -35,6 +35,7 @@
       *  00.00.04    NACL-太田    03.03.24  選定療養費情報を追加
       *  00.00.05    NACL-太田    03.04.10  請求書未収額印刷区分を追加
       *  00.00.06    NACL-太田    03/06/25  点数マスタ有効期間の指定を修正
+      *  00.00.07    NACL-太田    04/01/07  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -102,6 +103,7 @@
            03  WRK-TNS-NAME                        PIC X(100).
            03  WRK-STYUKYMD                        PIC X(08).
            03  WRK-EDYUKYMD                        PIC X(08).
+           03  WRK-CREYMD                          PIC X(08).
       *
       *    固定値領域
        01  CONST-AREA.
@@ -213,6 +215,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -1379,7 +1384,15 @@
                                    TO  WRK-STYUKYMD
                MOVE    SYS-5000-EDYUKYMD
                                    TO  WRK-EDYUKYMD
+               MOVE    SYS-5000-CREYMD
+                                   TO  WRK-CREYMD
                PERFORM 4811-HOSP-NYUINKHN-EDIT-SEC
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    WRK-CREYMD      TO  SYS-5000-CREYMD
+               MOVE    SMCNDATE-YMD    TO  SYS-5000-UPYMD
+               MOVE    SMCNDATE-HMS    TO  SYS-5000-UPHMS
+      *
                MOVE    SYS-5000-REC    TO  SYSKANRI-REC
                MOVE    SYS-5000-KANRICD
                                        TO  SYSUP-KANRICD
@@ -1391,6 +1404,12 @@
                PERFORM 900-TBL-UPDATE-SEC
            ELSE
                PERFORM 4811-HOSP-NYUINKHN-EDIT-SEC
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  SYS-5000-CREYMD
+                                           SYS-5000-UPYMD
+               MOVE    SMCNDATE-HMS    TO  SYS-5000-UPHMS
+      *
                MOVE    SYS-5000-REC    TO  MCPDATA-REC
                MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
                PERFORM 900-TBL-INSERT-SEC
@@ -3637,6 +3656,17 @@
       *
            .
        800-ENRTRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
