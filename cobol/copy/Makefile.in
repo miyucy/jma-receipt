@@ -285,6 +285,7 @@ COPYS = \
 	FID2.INC \
 	FID3.INC \
 	G01.INC \
+	G02.INC \
 	G01COMMON-SPA \
 	G99.INC \
 	GERR.INC \
@@ -800,6 +801,8 @@ COPYS = \
         CPORCSC80CNT.INC \
         CPORCSMCNDATE.INC \
         S05.INC \
+        CPTCF001.INC \
+        CPTCF002.INC \
 
 DBPATH = \
 	ORCA-DBPATH
