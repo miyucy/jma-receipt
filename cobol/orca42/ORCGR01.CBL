@@ -600,7 +600,6 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-      *
            INITIALIZE              SPA-R01-AREA
       *
            EVALUATE    SPA-R01-RECEKBN
@@ -681,14 +680,20 @@
                    END-EVALUATE
            END-EVALUATE
       *
-           IF      SPA-GMN-SYORI   =   "2"
-               MOVE    SPACE           TO  SPA-GMN-TEISEIYM
-               PERFORM 4110-TEISEIYM-SEC
-               IF      SPA-ERRCD       =   SPACE
+           EVALUATE    SPA-GMN-SYORI
+               WHEN    "2"    
                    MOVE    "訂正日"        TO  SPA-GMN-LABEL
                    MOVE    "対象診療年月"  TO  SPA-GMN-LABEL1
                    MOVE    "一括作成年月日"
                                            TO  SPA-GMN-LABEL2
+               WHEN    "3"    
+                   MOVE    "受診日"        TO  SPA-GMN-LABEL
+           END-EVALUATE
+      *
+           IF      SPA-GMN-SYORI   =   "2"
+               MOVE    SPACE           TO  SPA-GMN-TEISEIYM
+               PERFORM 4110-TEISEIYM-SEC
+               IF      SPA-ERRCD       =   SPACE
                    MOVE    11              TO  SPA-GMN-CUR
                ELSE
                    MOVE    SPACE           TO  SPA-ERRCD
@@ -1688,25 +1693,30 @@
                MOVE    RECE07-REC          TO  MCPDATA-REC
                PERFORM 900-RECE07-INV-SEC
                IF      FLG-RECE07          =   ZERO
-                   MOVE    RECE07-CREYMD       TO  WRK-SYMD
+                   MOVE    RECE07-CREYMD   TO  WRK-SYMD
                    PERFORM 5002-HIZUKE-HEN-SEC
-                   MOVE    LNK-DAY2-EDTYMD3    TO  SPA-GMN-CREYMD
+                   MOVE    LNK-DAY2-EDTYMD3
+                                           TO  SPA-GMN-CREYMD
       *
-                   INITIALIZE                      STS-AREA-DAY
-                   INITIALIZE                      LNK-DAY6-AREA
-                   MOVE    "61"                TO  LNK-DAY6-IRAI
-                   MOVE    RECE07-CREYMD       TO  LNK-DAY6-KIJUN
-                   MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-                   MOVE    1                   TO  LNK-DAY6-ZOGEN
-                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                   IF      RECE07-CREYMD       =   SPA-SYSYMD
+                       MOVE    "0027"          TO  SPA-ERRCD
+                   ELSE
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY6-AREA
+                       MOVE    "61"            TO  LNK-DAY6-IRAI
+                       MOVE    RECE07-CREYMD   TO  LNK-DAY6-KIJUN
+                       MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                       MOVE    1               TO  LNK-DAY6-ZOGEN
+                       CALL    "ORCSDAY"       USING   STS-AREA-DAY
                                                        LNK-DAY6-AREA
-                   MOVE    LNK-DAY6-KEISAN     TO  SPA-NAI-STJYUSINYMD
+                       MOVE    LNK-DAY6-KEISAN TO  SPA-NAI-STJYUSINYMD
                                                    WRK-SYMD
-                   PERFORM 5002-HIZUKE-HEN-SEC
-                   MOVE    WRK-HENYMDG         TO  SPA-GMN-STJYUSINYMD
+                       PERFORM 5002-HIZUKE-HEN-SEC
+                       MOVE    WRK-HENYMDG     TO  SPA-GMN-STJYUSINYMD
       *
-                   MOVE    SPA-SYSYMDWH        TO  SPA-GMN-EDJYUSINYMD
-                   MOVE    SPA-SYSYMD          TO  SPA-NAI-EDJYUSINYMD
+                       MOVE    SPA-SYSYMDWH    TO  SPA-GMN-EDJYUSINYMD
+                       MOVE    SPA-SYSYMD      TO  SPA-NAI-EDJYUSINYMD
+                   END-IF
                ELSE
                    MOVE    "0025"              TO  SPA-ERRCD
                END-IF
@@ -3071,6 +3081,9 @@
                                                        TO  SPA-ERRMSG
                WHEN    "0026"
                    MOVE    "訂正日に該当する患者がありません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0027"
+                   MOVE    "一括作成した日に訂正日指定はできません"
                                                        TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "レセプト指示コード（個別）が削除できません"
