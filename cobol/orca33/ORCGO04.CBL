@@ -1308,7 +1308,7 @@
                MOVE    SPA-GMN-O04-TDENPEDANUM  (IDX0)
                                            TO  WRK-Z9
                MOVE    WRK-Z9              TO  O04-TRENNUM (IDX0)
-               MOVE    SPACE               TO  WRK-TSKYMONEY
+               INITIALIZE                      WRK-TSKYMONEY-G
                MOVE    SPA-GMN-O04-TSKYMONEY    (IDX0)
                                            TO  WRK-TSKYMONEY
                IF    ( SPA-NAI-O04-MEISAIJOUTAIKBN =   "1" )
