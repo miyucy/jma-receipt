@@ -7,8 +7,6 @@ I47	{
 			viewport1	{
 				list1	{
 					count	int;
-					row int;
-					rowattr int;
 					item	varchar(40)[50];
 					select	bool[50];
 				};

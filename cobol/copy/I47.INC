@@ -22,7 +22,5 @@
                 05  I47-VIEWPORT1.
                   06  I47-LIST1.
                     07  I47-COUNT    PIC S9(9)   BINARY.
-                    07  I47-ROW      PIC S9(9)   BINARY.
-                    07  I47-ROWATTR  PIC S9(9)   BINARY.
                     07  I47-KNKMEI   PIC X(40)   OCCURS  50 TIMES.
                     07  I47-SELECT PIC X       OCCURS  50 TIMES.
