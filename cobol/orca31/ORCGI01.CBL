@@ -67,6 +67,8 @@
       *                                     算定しない
       *  01.00.28    NACL-小豆沢  03.07.10  退院取消時の通算日数算定を修正
       *  01.00.29    NACL-太田    03.07.10  排他制御処理修正
+      *  01.00.30    NACL-小豆沢  03.07.10  異動取消時に診療会計を削除しないよう
+      *                                     変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -8670,7 +8672,7 @@
       *
       *    入院会計作成サブの呼出し（異動分の会計削除）
            INITIALIZE            ORCSNYUACCT-AREA
-           MOVE     "2"     TO   LNK-SCNYUACCT-SYORI-KBN
+           MOVE     "4"     TO   LNK-SCNYUACCT-SYORI-KBN
            MOVE     "1"                TO  SPA-NYUGAIKBN
            MOVE     PTNYUINRRK-PTID    TO  SPA-PTID
            MOVE     PTNYUINRRK-NYUINKA TO  SPA-SRYKA
