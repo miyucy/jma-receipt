@@ -87,6 +87,8 @@
       *  01.07.01    NACL-藤原    02/08/20  新傷病名マスタ対応
       *  01.07.02    NACL-藤原    02/08/28  労災のとき保険組合せの名称の修正
       *  01.07.03    NACL-藤原    02/09/17  自賠責とき保険組合せの名称の修正
+      *  01.07.04    NACL-藤原    02/11/19  編集病名のときの接頭語のチェック
+      *                                     の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4106,18 +4108,20 @@
            END-IF    
       *
       *    最後の病名コードが接頭語のとき
-           PERFORM VARYING IDZ FROM    6   BY  -1
-                   UNTIL   IDZ <       1
-               IF      SPA-GMN-C02-BYOMEICD(IDZ)   NOT =   SPACE    
-                   IF      SPA-GMN-C02-BYOMEICD (IDZ)(1:1) =   "Z"
-                   AND     SPA-GMN-C02-BYOMEICD (IDZ)(4:1) 
-                                                       NOT =   "8" 
-                       MOVE    "0067"              TO  SPA-ERRCD
-                       GO      TO      420-TUIKA-EXT
+           IF      SPA-NAI-C02-BYOMEIHENFLG    =   SPACE
+               PERFORM VARYING IDZ FROM    6   BY  -1
+                       UNTIL   IDZ <       1
+                   IF      SPA-GMN-C02-BYOMEICD(IDZ)   NOT =   SPACE    
+                       IF      SPA-GMN-C02-BYOMEICD (IDZ)(1:1) =   "Z"
+                       AND     SPA-GMN-C02-BYOMEICD (IDZ)(4:1) 
+                                                           NOT =   "8" 
+                           MOVE    "0067"              TO  SPA-ERRCD
+                           GO      TO      420-TUIKA-EXT
+                       END-IF
+                       MOVE    1               TO  IDZ     
                    END-IF
-                   MOVE    1               TO  IDZ     
-               END-IF
-           END-PERFORM        
+               END-PERFORM
+           END-IF           
       *
       *    単独使用禁止の病名があるとき
            IF      SPA-NAI-C02-BYOMEIHENFLG    =   SPACE
