@@ -71,6 +71,8 @@
       *                                     メッセージを修正
       *  01.00.25    ひさなが     03/08/05  チェック内容全件印刷の終了
       *                                     無効処理を修正
+      *  01.00.26    ひさなが     03/08/06  チェック内容全件印刷の終了
+      *                                     警告データが有る場合を修正
       *
       *****************************************************************
       *
@@ -1080,6 +1082,17 @@
                    END-IF
                    PERFORM T-100-RECECHEK-READ-SEC
                END-PERFORM
+      *修正/*開始*03.08.06*********************************************
+               INITIALIZE                W-TABLE-S4
+               MOVE    SPACE             TO  T-ERR-08
+               MOVE    SPACE             TO  T-ERR-09
+               IF  W-PTBYO-MAX2   NOT =  ZERO
+                   PERFORM T-530-RECECHEK-CHK8-1-SEC
+               END-IF
+               IF  W-PTBYO-MAX1   NOT =  ZERO
+                   PERFORM T-530-RECECHEK-CHK9-1-SEC
+               END-IF
+      *修正/*終了*03.08.06*********************************************
                IF  (SPA-GMN-CNV (12) NOT =  SPACE)        AND
                    (T-ERR-12             =  SPACE)        AND
                    (W-JITU-DAY4      NOT =  ZERO)         AND
@@ -1241,10 +1254,10 @@
                    INITIALIZE                W-TABLE-S4
                    MOVE    SPACE             TO  T-ERR-08
                    MOVE    SPACE             TO  T-ERR-09
-                   IF  W-PTBYO-KB2 (1)   NOT =   SPACE
+                   IF  W-PTBYO-MAX2   NOT =  ZERO
                        PERFORM T-530-RECECHEK-CHK8-1-SEC
                    END-IF
-                   IF  W-PTBYO-KB1 (1)   NOT =   SPACE
+                   IF  W-PTBYO-MAX1   NOT =  ZERO
                        PERFORM T-530-RECECHEK-CHK9-1-SEC
                    END-IF
                END-IF
@@ -3547,9 +3560,17 @@
       *
        T-530-RECECHEK-CHK4-1-SEC         SECTION.
       *
+           DISPLAY " ******ACCT-PTID       " ACCT-PTID
+           DISPLAY "      SRY-ZAINUM       " SRY-ZAINUM
+           DISPLAY "      ACCT-SRYKA       " ACCT-SRYKA
+           DISPLAY "      SRY-SRYCD (IDX3) " SRY-SRYCD (IDX3)
            PERFORM VARYING IDX4  FROM  1  BY 1
                    UNTIL   IDX4  >  1000
+           DISPLAY "     W-SRYCD-21 22 " W-SRYCD-21 (IDX4)
+                                    "  " W-SRYCD-22 (IDX4)
                IF  W-SRYCD-22 (IDX4)   =   SRY-SRYCD (IDX3)
+           DISPLAY "    ACCT-NYUGAIKBN " ACCT-NYUGAIKBN
+
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                    MOVE    SPACE               TO  DID2-REC
                    MOVE    ACCT-HOSPID         TO  DID2-REC(1:24)
@@ -3706,8 +3727,10 @@
                            END-PERFORM
                        ELSE
                            MOVE    1            TO  FLG-RED1
-                           INITIALIZE      W-BYOMEI-LIST1 (W-PTBYO-MAX1)
-                           COMPUTE  W-PTBYO-MAX1  =  W-PTBYO-MAX1  -  1
+                           IF  W-PTBYO-MAX1   >   ZERO
+                               INITIALIZE  W-BYOMEI-LIST1 (W-PTBYO-MAX1)
+                               COMPUTE W-PTBYO-MAX1 = W-PTBYO-MAX1 - 1
+                           END-IF
                        END-IF
                    END-IF
                    IF  (PTBYO-SRYYMD   NOT  =   SPACE)      AND
@@ -3865,8 +3888,10 @@
                            END-PERFORM
                        ELSE
                            MOVE    1            TO  FLG-RED2
-                           INITIALIZE      W-BYOMEI-LIST2 (W-PTBYO-MAX2)
-                           COMPUTE  W-PTBYO-MAX2  =  W-PTBYO-MAX2  -  1
+                           IF  W-PTBYO-MAX2   >   ZERO
+                               INITIALIZE  W-BYOMEI-LIST2 (W-PTBYO-MAX2)
+                               COMPUTE W-PTBYO-MAX2 = W-PTBYO-MAX2 - 1
+                           END-IF
                        END-IF
                    END-IF
                    IF  (PTBYO-SRYYMD   NOT  =   SPACE)      AND
