@@ -38,7 +38,7 @@
       *                                     コードをから実日数の加算 
       *  01.00.06    MCC-小豆沢   02.09.02  診療実日数算定時のフラグクリア
       *                                     を追加 
-      *  01.00.07   NACL-門脇     02.11.25  診療実日数算定のコード追加
+      *  01.00.07    NACL-門脇    02.11.25  診療実日数算定のコード追加
       *****************************************************************
       *
       *
@@ -337,7 +337,8 @@
                            IF   (ACCT-ZAITEN    =        ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO     TO    FLG-SHOSAISIN
-                               IF   ACCT-SRYKBN  =  "99"
+                               IF   ACCT-SRYKBN  =  "11"  OR  "12" 
+                                                          OR  "99" 
                                    PERFORM   SHOSAISIN-HANTEI-SEC
                                END-IF
                                PERFORM   RECE02-TENSOU-SEC
