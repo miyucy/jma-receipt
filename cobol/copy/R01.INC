@@ -33,7 +33,9 @@
                 05  R01-VALUE   PIC X(51).
               04  R01-SCROLLEDWINDOW1.
                 05  R01-RECELST.
-                  06  R01-COUNT   PIC S9(9)   BINARY.
+                  06  R01-COUNT      PIC S9(9)   BINARY.
+                  06  R01-ROW        PIC S9(9)   BINARY.
+                  06  R01-ROWATTR    PIC S9(9)   BINARY.
                   06  R01-ITEM        OCCURS  100 TIMES.
                     07  R01-TRENNUM  PIC X(4).
                     07  R01-TPTNUM   PIC X(21).

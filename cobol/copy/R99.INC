@@ -3,7 +3,9 @@
                 04  R99-VALUE   PIC X(81).
               03  R99-SCROLLEDWINDOW28.
                 04  R99-JOBKANRILST.
-                  05  R99-COUNT   PIC S9(9)   BINARY.
+                  05  R99-COUNT       PIC S9(9)   BINARY.
+                  05  R99-ROW         PIC S9(9)   BINARY.
+                  05  R99-ROWATTR     PIC S9(9)   BINARY.
                   05  R99-ITEM        OCCURS  2 TIMES.
                     06  R99-RENNUM    PIC X(7).
                     06  R99-SHORINM   PIC X(34).

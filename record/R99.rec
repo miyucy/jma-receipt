@@ -6,6 +6,8 @@ R99	{
 		scrolledwindow28	{
 			JOBKANRILST	{
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value1	varchar(7);
 					value2	varchar(34);
