@@ -50,7 +50,7 @@
       *
       *    処理対象患者ファイル
            SELECT  BG00701-FILE    ASSIGN   ORCBG00701PARA
-                                   ORGANIZATION    IS  SEQUENTIAL
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-BG00701.
       *
 006900*    エラーファイル
