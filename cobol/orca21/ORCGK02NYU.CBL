@@ -4369,6 +4369,23 @@
       *
            MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
            MOVE    K02N-SRYKA          TO  SPA-GMN-SRYKA-G
+      *    ¿ÇÎÅ²Ê
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
+               IF      SPA-GMN-SRYKA   =   SPA-GMN-SRYKAL (IDX)
+                   MOVE    SPA-GMN-SRYKALST (IDX)
+                                           TO  SPA-GMN-SRYKA-G
+                   MOVE    SPA-SRYKA-MAX   TO  IDX
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+      *    ²Ê¤¬Ìµ¤¤»þ¡¢Á°¤Î²Ê¤ËÌá¤¹
+           IF      FLG-CHK             =   ZERO
+               MOVE    SPA-MAE-SRYKA-G TO  SPA-GMN-SRYKA-G
+               GO      TO      41013-SRYKAI-SYORI-EXT
+           END-IF
+      *
            IF      SPA-SYORIFLG        =   1
                MOVE    "0123"              TO  SPA-KIDCD
            ELSE
