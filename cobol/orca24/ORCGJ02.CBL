@@ -2507,8 +2507,8 @@
       *    ¼õ¿ÇÍúÎò
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-RRK-MAX
-               MOVE    SPA-GMN-RRKNO  (IDX)    TO  WRK-ZZ
-               MOVE    WRK-ZZ-X                TO  J02-RRKNO   (IDX)
+               MOVE    SPA-GMN-RRKNO  (IDX)    TO  WRK-ZZZ
+               MOVE    WRK-ZZZ-X               TO  J02-RRKNO   (IDX)
                MOVE    SPA-GMN-RRKYMD (IDX)    TO  J02-RRKYMD  (IDX)
                IF     (SPA-NAI-RRKSELNUM       >   ZERO   )   AND
                       (SPA-GMN-RRKNO  (IDX)    =   SPA-NAI-RRKSELNUM)
