@@ -698,20 +698,12 @@
       *****************************************************************
        240-MAIN-HEN-SEC            SECTION.
       *
-      *    最初の算定日を取得する
-           MOVE    ZERO                TO  WRK-DD
-           PERFORM VARYING     IDX-D   FROM    1   BY   1
-                   UNTIL       IDX-D   >   31
-               IF          ACCT-DAY(1 IDX-D)   >   ZERO
-                   MOVE    IDX-D               TO  WRK-DD
-                   PERFORM VARYING IDX     FROM    1   BY  1
-                           UNTIL ( IDX     >   5 )
-                           OR    ( SRY-SRYCD(IDX)  =   SPACE )
-      *               薬剤を対象とする
-                      IF      SRY-SRYCD(IDX)(1:1)     =   "6"
-                           PERFORM 250-TOKEI-HEN-SEC 
-                      END-IF
-                   END-PERFORM
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL ( IDX     >   5 )
+                   OR    ( SRY-SRYCD(IDX)  =   SPACE )
+      *        薬剤を対象とする
+               IF      SRY-SRYCD(IDX)(1:1)     =   "6"
+                   PERFORM 250-TOKEI-HEN-SEC 
                END-IF
            END-PERFORM
             .
@@ -803,19 +795,38 @@
                END-STRING
                MOVE    WRK-NAME        TO  TOKEI-TANINAME
       *
-               MOVE    ZERO            TO  TOKEI-CNT(WRK-DD)
-               COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
-                                           +   ACCT-DAY(1 WRK-DD)
+               MOVE    ZERO            TO  TOKEI-CNT-G
+      *
+               PERFORM 260-TOKEI-SET-SEC
                WRITE   TOKEI-REC
                COMPUTE CNT-TOKEI           =   CNT-TOKEI   +   1
            ELSE
-               COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
-                                           +   ACCT-DAY(1 WRK-DD)
+               PERFORM 260-TOKEI-SET-SEC
                REWRITE TOKEI-REC
            END-IF
       *----(01.01.02)--UPD-END-----
              .
        250-TOKEI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    統計編集処理
+      *****************************************************************
+       260-TOKEI-SET-SEC           SECTION.
+      *
+      *    最初の算定日を取得する
+           MOVE    ZERO                TO  WRK-DD
+           PERFORM VARYING     IDX-D   FROM    1   BY   1
+                   UNTIL       IDX-D   >   31
+               IF          ACCT-DAY(1 IDX-D)   >   ZERO
+                   MOVE    IDX-D               TO  WRK-DD
+                   COMPUTE TOKEI-CNT(WRK-DD)
+                           =   TOKEI-CNT(WRK-DD)
+                           +   ACCT-DAY(1 WRK-DD)
+               END-IF
+           END-PERFORM
+             .
+       260-TOKEI-SET-EXT.
            EXIT.
       *
       *****************************************************************

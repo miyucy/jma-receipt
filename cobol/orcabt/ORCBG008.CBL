@@ -645,19 +645,12 @@
       *****************************************************************
        240-MAIN-HEN-SEC            SECTION.
       *
-           MOVE    ZERO                TO  WRK-DD
-           PERFORM VARYING     IDX-D   FROM    1   BY   1
-                   UNTIL       IDX-D   >   31
-               IF          ACCT-DAY(1 IDX-D)   >   ZERO
-                   MOVE    IDX-D               TO  WRK-DD
-                   PERFORM VARYING IDX     FROM    1   BY  1
-                           UNTIL ( IDX     >   5 )
-                           OR    ( SRY-SRYCD(IDX)  =   SPACE )
-      *                ÌôºÞ¤òÂÐ¾Ý¤È¤¹¤ë
-                       IF      SRY-SRYCD(IDX)(1:1)     =   "6"
-                           PERFORM 250-TOKEI-HEN-SEC 
-                       END-IF
-                   END-PERFORM
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL ( IDX     >   5 )
+                   OR    ( SRY-SRYCD(IDX)  =   SPACE )
+      *        ÌôºÞ¤òÂÐ¾Ý¤È¤¹¤ë
+               IF      SRY-SRYCD(IDX)(1:1)     =   "6"
+                   PERFORM 250-TOKEI-HEN-SEC 
                END-IF
            END-PERFORM
             .
@@ -711,54 +704,53 @@
                MOVE    WRK-YKZKBN          TO  TOKEI-YKZKBN
                MOVE    SRY-SRYCD(IDX)      TO  TOKEI-SRYCD
                MOVE    TNS-NAME            TO  TOKEI-NAME
+               MOVE    ZERO                TO  TOKEI-CNT-G
       *
-               IF      WRK-SYUBETU         =   "1"
-                   COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
-                   MOVE    WRK-DD              TO  CNT-DAY
-      *
-                   PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
-                           OR    ( CNT-DAY     >   WRK-DAYED )
-                       MOVE    ZERO            TO  TOKEI-CNT(CNT-DAY)
-                       COMPUTE TOKEI-CNT(CNT-DAY)
-                                               =   TOKEI-CNT(CNT-DAY)
-                                               +   SRY-SRYSURYO(IDX)
-                       COMPUTE CNT-DAY =   CNT-DAY +   1
-                   END-PERFORM
-               ELSE
-                   MOVE    ZERO            TO  WRK-SURYO
-                   COMPUTE WRK-SURYO       =   SRY-SRYSURYO(IDX)
-                                           *   ACCT-DAY(1 WRK-DD)
-                   MOVE    ZERO            TO  TOKEI-CNT(WRK-DD)
-                   COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
-                                               +   WRK-SURYO
-               END-IF
-      *
+               PERFORM 260-TOKEI-SET-SEC
                WRITE   TOKEI-REC
                COMPUTE CNT-TOKEI           =   CNT-TOKEI   +   1
            ELSE
-               IF      WRK-SYUBETU         =   "1"
-                   COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
-                   MOVE    WRK-DD              TO  CNT-DAY
       *
-                   PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
-                           OR    ( CNT-DAY     >   WRK-DAYED )
-                       COMPUTE TOKEI-CNT(CNT-DAY)
-                                               =   TOKEI-CNT(CNT-DAY)
-                                               +   SRY-SRYSURYO(IDX)
-                       COMPUTE CNT-DAY =   CNT-DAY +   1
-                   END-PERFORM
-               ELSE
-                   MOVE    ZERO            TO  WRK-SURYO
-                   COMPUTE WRK-SURYO       =   SRY-SRYSURYO(IDX)
-                                           *   ACCT-DAY(1 WRK-DD)
-                   COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
-                                               +   WRK-SURYO
-               END-IF
-      *
+               PERFORM 260-TOKEI-SET-SEC
                REWRITE TOKEI-REC
            END-IF
              .
        250-TOKEI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Åý·×ÊÔ½¸½èÍý
+      *****************************************************************
+       260-TOKEI-SET-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-DD
+           PERFORM VARYING     IDX-D   FROM    1   BY   1
+                   UNTIL       IDX-D   >   31
+               IF          ACCT-DAY(1 IDX-D)   >   ZERO
+                   MOVE    IDX-D               TO  WRK-DD
+                   IF      WRK-SYUBETU         =   "1"
+                       COMPUTE WRK-DAY         =   WRK-DD
+                                               +   ACCT-DAY(1 WRK-DD)
+                       MOVE    WRK-DD              TO  CNT-DAY
+      *
+                       PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
+                               OR    ( CNT-DAY     >   WRK-DAYED )
+                           COMPUTE TOKEI-CNT(CNT-DAY)
+                                               =   TOKEI-CNT(CNT-DAY)
+                                               +   SRY-SRYSURYO(IDX)
+                           COMPUTE CNT-DAY =   CNT-DAY +   1
+                       END-PERFORM
+                   ELSE
+                       MOVE    ZERO            TO  WRK-SURYO
+                       COMPUTE WRK-SURYO       =   SRY-SRYSURYO(IDX)
+                                               *   ACCT-DAY(1 WRK-DD)
+                       COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
+                                                   +   WRK-SURYO
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       260-TOKEI-SET-EXT.
            EXIT.
       *
       *****************************************************************

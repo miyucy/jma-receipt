@@ -242,6 +242,7 @@
                            IF      JOB-ERRCD       =   SPACE
                                CONTINUE
                            ELSE
+                               INITIALIZE          G99-MSG
                                STRING  JOB-YOBI    DELIMITED  BY  SPACE
                                        "¡Ú"        DELIMITED  BY  SIZE
                                       JOB-SHELLMSG DELIMITED  BY  SPACE
