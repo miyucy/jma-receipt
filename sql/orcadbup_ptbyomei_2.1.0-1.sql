@@ -13,6 +13,9 @@
 --                                    --
 --    入力コードが未設定なら          --
 --         病名コードを編集する       --
+--    病名コード１が未設定なら        --
+--         未コード化傷病名コードを   --
+--                     編集する       --
 --                                    --
 --                                    --
 -- Create Date : 2003/12/25           --
@@ -204,7 +207,7 @@ opid,
 creymd,
 upymd,
 uphms
-from tbl_ptbyomeiwk where byomeiinputcd <> '';
+from tbl_ptbyomeiwk where byomeiinputcd <> '' and (byomeicd_1 <> '' and byomeicd_1 <> '0000999');
 
 -- TBL_PTBYOMEIWK → TBL_PTBYOMEI   （入力コード無）--
 
@@ -288,7 +291,71 @@ opid,
 creymd,
 upymd,
 uphms
-from tbl_ptbyomeiwk where byomeiinputcd = '';
+from tbl_ptbyomeiwk where byomeiinputcd = '' and (byomeicd_1 <> '' and byomeicd_1 <> '0000999');
+
+-- TBL_PTBYOMEIWK → TBL_PTBYOMEI   （病名コード１無）--
+
+insert into tbl_ptbyomei
+(hospid,
+ptid,
+sryka,
+sryymd,
+rennum,
+khnbyomeicd,
+byomeiinputcd_1,
+byomeicdsu,
+byomeicd_1,
+utagaiflg,
+syubyoflg,
+manseikbn,
+nyugaikbn,
+hkncombi,
+rezeflg,
+rezemm,
+tenkikbn,
+tenkiymd,
+byomei,
+byomeimoji,
+chartbyomei,
+chartbyomeimoji,
+byomeihenflg,
+hknbyomeiflg,
+termid,
+opid,
+creymd,
+upymd,
+uphms
+)
+select hospid,
+ptid,
+sryka,
+sryymd,
+rennum,
+'0000999',
+'0000999',
+1,
+'0000999',
+utagaiflg,
+syubyoflg,
+manseikbn,
+nyugaikbn,
+hkncombi,
+rezeflg,
+rezemm,
+tenkikbn,
+tenkiymd,
+byomei,
+byomeimoji,
+chartbyomei,
+chartbyomeimoji,
+'1',
+hknbyomeiflg,
+termid,
+opid,
+creymd,
+upymd,
+uphms
+from tbl_ptbyomeiwk where byomeicd_1 = '' or byomeicd_1 = '0000999';
 
 -- TBL_PTBYOMEIWK 削除             --
 
