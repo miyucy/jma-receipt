@@ -535,21 +535,21 @@
                                                   (SPA-J023-SRYKAMAX)
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   10  )  OR
+                   UNTIL      (IDX     >   41  )  OR
                               (SPA-GMN-SRYKAL (IDX)
                                            =   SPACE )  OR
-                              (SPA-J023-SRYKAMAX   =   10 )
-             IF      SPA-GMN-SRYKAL (IDX)  =   "00"
-                CONTINUE
-             ELSE
-               ADD     1                   TO  SPA-J023-SRYKAMAX
-               MOVE    SPA-GMN-SRYKAL (IDX)
+                              (SPA-J023-SRYKAMAX   =   41 )
+               IF      SPA-GMN-SRYKAL (IDX)  =   "00"
+                   CONTINUE
+               ELSE
+                   ADD     1                   TO  SPA-J023-SRYKAMAX
+                   MOVE    SPA-GMN-SRYKAL (IDX)
                                            TO  SPA-J023-SRYKAL
                                                   (SPA-J023-SRYKAMAX)
-               MOVE    SPA-GMN-SRYKAMEIL (IDX)
+                   MOVE    SPA-GMN-SRYKAMEIL (IDX)
                                            TO  SPA-J023-SRYKAMEIL
                                                   (SPA-J023-SRYKAMAX)
-             END-IF
+               END-IF
            END-PERFORM
       *
            .

@@ -763,6 +763,7 @@
       *
            MOVE    SPACE               TO  SPA-JIDCD
            INITIALIZE                  SPA-J02-AREA
+           INITIALIZE                  SPA-J02-SYOKI
            INITIALIZE                  SPA-SCR-REC
            EVALUATE    SPA-MOTOPG
       *         業務選択より
@@ -1062,7 +1063,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   9    )  OR
+                   UNTIL       (IDX            >   40   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC         TO  SYS-1005-REC
       *
@@ -2620,6 +2621,7 @@
                WHEN   10
                    INITIALIZE                  SPA-J02-AREA
                    INITIALIZE                  SPA-SCR-REC
+                   INITIALIZE                  SPA-GMN-NYUIN-AREA
                    MOVE    SPA-J02-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
                    MOVE    SPA-J02-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
                    MOVE    "0017"              TO  SPA-ERRCD
@@ -2644,6 +2646,7 @@
                WHEN    OTHER
                    INITIALIZE                  SPA-J02-AREA
                    INITIALIZE                  SPA-SCR-REC
+                   INITIALIZE                  SPA-GMN-NYUIN-AREA
                    MOVE    SPA-J02-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
                    MOVE    SPA-J02-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
                    MOVE    "0017"              TO  SPA-ERRCD
@@ -2787,8 +2790,8 @@
            END-IF
            MOVE    ZERO                TO  FLG-OK
            PERFORM
-                   UNTIL      (FLG-PTNYUINRRK      =   1 )  OR
-                              (FLG-OK              =   1 )
+                   UNTIL      (FLG-PTNYUINRRK      =   1 )
+      ******************* OR  (FLG-OK              =   1 )
       *        転入日
                IF      PTNYUINRRK-TENNYUYMD(1:6)   <=  SPA-NAI-SRYYM
       *            転出日
@@ -4218,6 +4221,7 @@
                INITIALIZE                  SPA-J02-AREA
                INITIALIZE                  SPA-SCR-REC
                INITIALIZE                  SPA-J02-SET
+               INITIALIZE                  SPA-J02-SYOKI
                MOVE    SPA-J02-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
                MOVE    SPA-J02-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
                MOVE    SPACE               TO  SPA-GMN-SRYKA-G
@@ -4801,6 +4805,10 @@
            END-IF
       *
            PERFORM 3101-SRYKA-HEN-SEC
+      *    入院が存在するかのチェック
+           IF      SPA-BEDSU           >   ZERO
+               PERFORM 410101-NYUINRRK-CHK-SEC
+           END-IF
       *
       *    受診履歴編集
            PERFORM 3103-JYURRK-HEN-SEC
@@ -4993,6 +5001,10 @@
            END-IF
       *
            PERFORM 3101-SRYKA-HEN-SEC
+      *    入院が存在するかのチェック
+           IF      SPA-BEDSU           >   ZERO
+               PERFORM 410101-NYUINRRK-CHK-SEC
+           END-IF
       *
       *    受診履歴編集
            PERFORM 3103-JYURRK-HEN-SEC
@@ -5295,6 +5307,7 @@
                INITIALIZE                  SPA-J02-AREA
                INITIALIZE                  SPA-SCR-REC
                INITIALIZE                  SPA-J02-SET
+               INITIALIZE                  SPA-GMN-NYUIN-AREA
                MOVE    SPA-J02-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
                MOVE    SPA-J02-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
                MOVE    SPACE               TO  SPA-GMN-SRYKA-G
