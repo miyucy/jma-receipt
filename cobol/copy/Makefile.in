@@ -410,7 +410,6 @@ COPYS = \
 	M02.INC \
 	M95.INC \
 	M96.INC \
-	MCPAREA \
 	MCPDATA.INC \
 	MD1.INC \
 	MERR.INC \
@@ -598,6 +597,8 @@ COPYS = \
 DBPATH = \
 	ORCA-DBPATH
 
+MCPAREA = \
+	MCPAREA 
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
@@ -647,7 +648,7 @@ COPYS_inc = $(COPYS_sources:.INC.in=.INC)
 
 .SUFFIXES: .INC.in .INC
 
-all: ORCA-DBPATH $(COPYS_inc)
+all: ORCA-DBPATH MCPAREA $(COPYS_inc)
 
 .INC.in.INC: 
 	formdir_len=`echo -n "$(formdir)/"|wc -c|sed -e "s/ //g"` &&\
@@ -679,8 +680,12 @@ ORCA-DBPATH: $(top_builddir)/lddef/directory
 	$(COPYGEN) -dbpath -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -lddir $(top_builddir)/lddef -bddir $(top_builddir)/lddef -ld orca00 > $@ || (rm -f $@; false)
 	test -s $@ || (rm -f $@; false)
 
+MCPAREA: $(top_builddir)/lddef/directory
+	$(COPYGEN) -mcp  -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -lddir $(top_builddir)/lddef -bddir $(top_builddir)/lddef > $@ || (rm -f $@; false)
+	test -s $@ || (rm -f $@; false)
+
 clean: 
-	-rm $(COPYS_inc) $(DBPATH)
+	-rm $(COPYS_inc) $(DBPATH) $(MCPAREA)
 
 distclean: clean
 	-rm -f Makefile
@@ -700,6 +705,7 @@ filecheck:
 	-name "CPCOMMONSHELL4.INC" -o \
 	-name "CPCOMMONSHELLMST.INC" -o \
 	-name "ORCA-DBPATH" -o \
+	-name "MCPAREA" -o \
 	-printf "file\t%f\n") \
 	|sort +1 |uniq -u -f1 
 
@@ -708,7 +714,7 @@ install: all installdirs
 installdirs:
 
 install-copys: install-copydirs
-	for f in $(COPYS) $(COPYS_inc) $(DBPATH); do \
+	for f in $(COPYS) $(COPYS_inc) $(DBPATH) $(MCPAREA); do \
 	  $(INSTALL_DATA) $${f} $(copydir) ; done
 
 install-copydirs:
