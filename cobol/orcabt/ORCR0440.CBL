@@ -28,6 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    02.11.11  転帰日が未来日のとき病名の表示
+      *                                     をするように修正
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -367,7 +369,8 @@
                    IF      PTBYO-TENKIKBN       =   SPACE
                        CONTINUE
                    ELSE
-                       IF      PTBYO-TENKIYMD(1:6)  =   RECE41-SRYYM
+      ***              IF      PTBYO-TENKIYMD(1:6)  =   RECE41-SRYYM
+                       IF      PTBYO-TENKIYMD(1:6)  >=  RECE41-SRYYM
                            CONTINUE
                        ELSE
                            GO  TO  2001-PTBYO-CHK-EXT
