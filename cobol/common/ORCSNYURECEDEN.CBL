@@ -1271,7 +1271,8 @@
            PERFORM   910-DB-CLOSE-SEC
       *
       *９０日越え（低所得情報）
-           IF   TSYRRK-SKJGNSTYMD(1:6)  <=  LNK-NYURECEDEN-SANTEIYM
+           IF  (TSYRRK-SKJGNSTYMD(1:6)  <= LNK-NYURECEDEN-SANTEIYM) AND
+               (TSYRRK-SKJGNSTYMD       NOT = SPACE)
                IF  TSYRRK-SKJGNSTYMD(1:6)  <  LNK-NYURECEDEN-SANTEIYM
                    MOVE   1             TO   TSY90-IDX
                ELSE
@@ -1285,6 +1286,7 @@
                     END-IF
                END-PERFORM
            END-IF
+      *
       *低年金情報の取得
            INITIALIZE                          TNKRRK-REC
            MOVE    LNK-NYURECEDEN-HOSPID   TO  TNKRRK-HOSPID
