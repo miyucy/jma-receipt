@@ -14,6 +14,7 @@ RENNUM=0
 #        ${16} ジョブＩＤ
 #        ${17} シェルＩＤ
 #        ${18} エラーファイル名 
+#        ${19} 処理年月
 #-------------------------------------------#
 #
 ##      エラーファイル削除
@@ -32,6 +33,14 @@ RENNUM=0
            if  [ -e ${18} ]; then
                exit
            fi
+           
+           if  [ $5 -ge '200210' ]; then
+               RENNUM=$(expr $RENNUM + 1) 
+               $DBSTUB  -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17}
+               if  [ -e ${18} ]; then
+                   exit
+               fi
+           fi    
         fi 
 ##      総括表（国保）
         if  [ ${13} -ne 1 ]; then
@@ -39,7 +48,7 @@ RENNUM=0
             if  [ ${15} = 1 ]; then
                  $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM012 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${14},${16},${17}
             else
-                 $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM004 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${14},${16},${17}
+                 $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM004 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17}
             fi	
             if  [ -e ${18} ]; then
                 exit
