@@ -46,7 +46,7 @@ ruby_sources = \
 shell_scripts = $(shell_sources:.sh.in=.sh)
 noinst_shell_scripts = $(noinst_shell_sources:.sh.in=.sh)
 
-ruby_scripts = $(ruby_surces:.rb.in=.rb)
+ruby_scripts = $(ruby_sources:.rb.in=.rb)
 
 .SUFFIXES: .sh.in .sh .rb.in .rb
 
@@ -70,7 +70,7 @@ install: all
 	$(INSTALL) -d $(scriptsdir)/allways
 	$(INSTALL) -d $(scriptsdir)/daily
 	$(INSTALL) -d $(scriptsdir)/monthly
-	for file in $(shell_scripts) $(ruby_scripts);do \
+	for file in $(shell_scripts) $(ruby_scripts); do \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
 	  $(INSTALL) $$file $(scriptsdir)/$$dir; \
 	done
