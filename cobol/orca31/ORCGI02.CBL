@@ -28,7 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *
+      *  01.00.01    NACL-太田    03.02.05  自院歴作成データを考慮する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -307,13 +307,13 @@
                                        TO  SPA-GMN-I02-NYUGAI
       *
            IF    ( FLG-TAIN    =   ZERO )
-               MOVE    ZERO    TO  SPA-NAI-I02-TAINRRK-FLG
+               MOVE    ZERO    TO  SPA-NAI-I02-NYURRK-FLG
       *        病名リスト編集処理
                PERFORM 3101-BYOMEILST-EDIT-SEC
                MOVE    WIDGET-NORMAL   TO  SPA-GMN-I02-NYUGAI-STT
                                            SPA-GMN-I02-NYUGAI-ITM-STT
            ELSE
-               MOVE    1       TO  SPA-NAI-I02-TAINRRK-FLG
+               MOVE    1       TO  SPA-NAI-I02-NYURRK-FLG
                MOVE    SPACE   TO  SPA-GMN-I02-NYUGAI
       *
                PERFORM 3101-TAINFUKA-SEL-SEC
@@ -376,7 +376,7 @@
       *****************************************************************
        3101-NEW-NYUINRRK-EDIT-SEC      SECTION.
       *
-           IF    ( PTNYUINRRK-JTIKBN   =   "5" )
+           IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
                MOVE    1           TO  FLG-TAIN
            ELSE
                MOVE    ZERO        TO  FLG-TAIN
@@ -393,7 +393,10 @@
       *    状態
            EVALUATE    TRUE
            WHEN    PTNYUINRRK-JTIKBN   =   "5"
-               MOVE    "他院入院"  TO  SPA-GMN-I02-JYOTAI
+               MOVE    "他院歴"    TO  SPA-GMN-I02-JYOTAI
+           WHEN    PTNYUINRRK-JTIKBN   =   "6"
+               MOVE    "自院入院歴"
+                                   TO  SPA-GMN-I02-JYOTAI
            WHEN    PTNYUINRRK-TAIINYMD =   "99999999"
                MOVE    "入院中"    TO  SPA-GMN-I02-JYOTAI
            WHEN    OTHER
@@ -401,12 +404,12 @@
            END-EVALUATE
       *
       *    病棟名
-           IF    ( PTNYUINRRK-JTIKBN   NOT =   "5" )
-               PERFORM 3101-S5001-SEL-SEC
-               MOVE    WRK-BTUNAME     TO  SPA-GMN-I02-BTUNAME
-           ELSE
+           IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
                MOVE    PTNYUINRRK-BTUNAME
                                        TO  SPA-GMN-I02-BTUNAME
+           ELSE
+               PERFORM 3101-S5001-SEL-SEC
+               MOVE    WRK-BTUNAME     TO  SPA-GMN-I02-BTUNAME
            END-IF
       *
       *    病室番号
@@ -633,12 +636,12 @@
                                    TO  SPA-GMN-I02-TNYUINKA (IDX1)
       *
       *        病棟名
-               IF    ( PTNYUINRRK-JTIKBN   NOT =   "5" )
-                   PERFORM 3101-S5001-SEL-SEC
-                   MOVE    WRK-BTUNAME TO  SPA-GMN-I02-TBTUNAME (IDX1)
-               ELSE
+               IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
                    MOVE    PTNYUINRRK-BTUNAME
                                        TO  SPA-GMN-I02-TBTUNAME (IDX1)
+               ELSE
+                   PERFORM 3101-S5001-SEL-SEC
+                   MOVE    WRK-BTUNAME TO  SPA-GMN-I02-TBTUNAME (IDX1)
                END-IF
       *
       *        病室番号
@@ -945,7 +948,7 @@
       *
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-I02-NYUGAI
       *
-           IF    ( SPA-NAI-I02-TAINRRK-FLG     =   ZERO )
+           IF    ( SPA-NAI-I02-NYURRK-FLG     =   ZERO )
                PERFORM 3101-BYOMEILST-EDIT-SEC
            END-IF
       *

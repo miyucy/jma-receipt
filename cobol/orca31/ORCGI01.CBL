@@ -30,8 +30,9 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    02.12.10  収納明細削除処理追加
       *  01.00.02    NACL-太田    02.12.26  入院科の初期表示を修正
-      *  01.01.03    NACL-太田    03.01.24  食事の集計方法修正
-      *  01.01.04    NACL-太田    03.02.03  退院時診療行為チェック追加
+      *  01.00.03    NACL-太田    03.01.24  食事の集計方法修正
+      *  01.00.04    NACL-太田    03.02.03  退院時診療行為チェック追加
+      *  01.00.05    NACL-太田    03.02.05  自院歴作成データを考慮する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -69,7 +70,6 @@
            03  FLG-HKNCOMBICHK             PIC 9(01).
            03  FLG-SYORIPTN                PIC 9(01).
            03  FLG-TAISYO                  PIC 9(01).
-           03  FLG-TAINSOYRI               PIC 9(01).
            03  FLG-UKETUKEGAITO            PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-ORCSDAY                 PIC 9(01).
@@ -571,7 +571,7 @@
            WHEN    "I02"
                GO  TO      300-SCREEN-EXT
       *
-      *    他院歴表示画面
+      *    入院歴作成画面
            WHEN    "I03"
                PERFORM 330-I03-SET-SEC
                GO  TO      300-SCREEN-EXT
@@ -756,7 +756,7 @@
        310-CMB-SYORIKBN-SET4-EXT.
            EXIT.
       *****************************************************************
-      *    処理区分コンボ初期処理（前回他院歴作成）
+      *    処理区分コンボ初期処理（前回入院歴作成）
       *****************************************************************
        310-CMB-SYORIKBN-SET5-SEC       SECTION.
       *
@@ -1060,7 +1060,7 @@
            EXIT.
       *
       *****************************************************************
-      *    他院歴作成画面から戻った場合の処理
+      *    入院歴作成画面から戻った場合の処理
       *****************************************************************
        330-I03-SET-SEC                 SECTION.
       *
@@ -1084,8 +1084,8 @@
                    MOVE    SPA-GMN-I01-SYORIKBN-ITM (01)
                                        TO  SPA-GMN-I01-SYORIKBN
                ELSE
-      *            他院歴有り
-                   IF    ( PTNYUINRRK-JTIKBN   =   "5" )
+      *            歴作成データ有り
+                   IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
       *                MOVE    WIDGET-NORMAL
       *                                TO  SPA-GMN-I01-B08-STT
                        PERFORM 310-CMB-SYORIKBN-SET5-SEC
@@ -1110,8 +1110,8 @@
                    PERFORM 310-CMB-SYORIKBN-SET2-SEC
                    MOVE    SPACE       TO  SPA-GMN-I01-SYORIKBN
                ELSE
-      *            他院歴有り
-                   IF    ( PTNYUINRRK-JTIKBN   =   "5" )
+      *            歴作成データ有り
+                   IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
                        PERFORM 4101-INPUT-AREA-EDIT2-SEC
                        PERFORM 4201-WIDGET-INSENSITIVE-SEC
       *                MOVE    WIDGET-NORMAL
@@ -1136,6 +1136,9 @@
       *
            IF    ( SPA-GMN-I01-NYUREKILST-CNT  >   ZERO )
                MOVE    1           TO  SPA-GMN-I01-NYUREKILST-SEL
+                                       SPA-GMN-I01-SELNUM
+           ELSE
+               MOVE   ZERO         TO  SPA-GMN-I01-NYUREKILST-SEL
                                        SPA-GMN-I01-SELNUM
            END-IF
       *
@@ -1175,10 +1178,10 @@
                PERFORM 480-NYUINREKI-SEC
            WHEN    "CLICKED"       ALSO    "B07"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
-               PERFORM 480-TAINREKI-SAKUSEI-SEC
+               PERFORM 480-NYUINRRK-SAKUSEI-SEC
            WHEN    "CLICKED"       ALSO    "B08"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
-               PERFORM 480-TAINREKI-SYUSEI-SEC
+               PERFORM 480-NYUINRRK-SYUSEI-SEC
            WHEN    "CLICKED"       ALSO    "B09"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-KENSAKU-SEC
@@ -1263,8 +1266,8 @@
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    自院分のデータを表示している場合のみチェックを行う
-           IF    ( SPA-NAI-I01-TAINRRK-FLG   = ZERO )
+      *    入院退院登録画面で登録した入院歴のみチェックする
+           IF    ( SPA-NAI-I01-NYURRK-FLG   = ZERO )
       *        基本チェック処理
                PERFORM 4102-KIHON-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -1566,7 +1569,7 @@
       *
       *        患者情報設定
                PERFORM 4101-PTINF-SET-SEC
-      *        IF    ( SPA-NAI-I01-TAINRRK-FLG        =   ZERO )
+      *        IF    ( SPA-NAI-I01-NYURRK-FLG        =   ZERO )
       *            IF    ( SPA-GMN-I01-HKNCOMBI-CNT   >   ZERO )
       *                CONTINUE
       *            ELSE
@@ -1638,7 +1641,7 @@
       *    入力領域初期化
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *
-           MOVE    ZERO            TO  SPA-NAI-I01-TAINRRK-FLG
+           MOVE    ZERO            TO  SPA-NAI-I01-NYURRK-FLG
       *
       *    前回異動日
            MOVE    PTNYUINRRK-TENNYUYMD
@@ -1808,14 +1811,14 @@
        4101-SHONYUINYMD-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    入力領域編集処理（他院歴を編集）
+      *    入力領域編集処理（入院歴を編集）
       *****************************************************************
        4101-INPUT-AREA-EDIT2-SEC       SECTION.
       *
       *    入力領域初期化
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *
-           MOVE    1               TO  SPA-NAI-I01-TAINRRK-FLG
+           MOVE    1               TO  SPA-NAI-I01-NYURRK-FLG
       *
       *    病棟名称
            MOVE    PTNYUINRRK-BTUNAME
@@ -1960,10 +1963,10 @@
       *
       *
       *        入院歴リスト編集
-               IF    ( PTNYUINRRK-JTIKBN   NOT =   "5" )
-                   PERFORM 4101-NYUREKILST-EDIT-SEC
-               ELSE
+               IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
                    PERFORM 4101-NYUREKILST-EDIT2-SEC
+               ELSE
+                   PERFORM 4101-NYUREKILST-EDIT-SEC
                END-IF
       *
       *        入院履歴検索処理
@@ -2056,8 +2059,9 @@
            ELSE
       *
                EVALUATE    TRUE
-      *        他院歴あり
+      *        歴作成データあり
                WHEN    PTNYUINRRK-JTIKBN   =   "5"
+               WHEN    PTNYUINRRK-JTIKBN   =   "6"
                    MOVE    2           TO  FLG-SYORIPTN
       *        入院中
                WHEN    PTNYUINRRK-TAIINYMD =   "99999999"
@@ -2309,7 +2313,7 @@
        4101-NYUREKILST-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    入院歴リスト編集処理(他院歴を編集)
+      *    入院歴リスト編集処理(入院歴を編集)
       *****************************************************************
        4101-NYUREKILST-EDIT2-SEC       SECTION.
       *
@@ -2360,7 +2364,7 @@
       *
       *    通算対象日数
            MOVE    PTNYUINRRK-TAISYONISSU
-                                   TO  SPA-NAI-I01-TTAINTAISYO (IDX1)
+                                   TO  SPA-NAI-I01-TNYURRKTAISYO (IDX1)
       *
       *    病名
            INITIALIZE  PTTAINFUKA-REC
@@ -2570,22 +2574,22 @@
                    END-IF
       *
                ELSE
-                   MOVE    SPA-NAI-I01-TTAINTAISYO (IDX2)
+                   MOVE    SPA-NAI-I01-TNYURRKTAISYO (IDX2)
                                TO  WRK-NISSU
                    IF    ( SPA-GMN-I01-NYUREKILST-CNT
                                        >   IDX2 )
                     AND  ( SPA-NAI-I01-TNYUINYMD (IDX2)
                        =   SPA-NAI-I01-TTAIINYMD (IDX2 + 1)
-                    AND    SPA-NAI-I01-TTAINTAISYO (IDX2)
+                    AND    SPA-NAI-I01-TNYURRKTAISYO (IDX2)
                                        =   WRK-NISSU2 )
                        COMPUTE WRK-TSUSAN
                            =   WRK-TSUSAN
-                           +   SPA-NAI-I01-TTAINTAISYO (IDX2)
+                           +   SPA-NAI-I01-TNYURRKTAISYO (IDX2)
                            -   1
                    ELSE
                        COMPUTE WRK-TSUSAN
                            =   WRK-TSUSAN
-                           +   SPA-NAI-I01-TTAINTAISYO (IDX2)
+                           +   SPA-NAI-I01-TNYURRKTAISYO (IDX2)
                    END-IF
       *
                END-IF
@@ -2960,7 +2964,7 @@
                                        SPA-NAI-I01-IDOYMD
                                        SPA-NAI-I01-IDOYMD-MAE
       *
-      *    他院歴ボタンの状態を退避
+      *    入院歴ボタンの状態を退避
            MOVE    SPA-GMN-I01-B07-STT
                                    TO  WRK-WIDGET-B07-STT
            MOVE    SPA-GMN-I01-B08-STT
@@ -2973,10 +2977,10 @@
            PERFORM 4101-PTNYUINRRK-SEL1-SEC
            IF    ( FLG-PTNYUINRRK  =   ZERO  )
       *        入力領域編集処理
-               IF    ( PTNYUINRRK-JTIKBN   NOT =   "5" )
-                   PERFORM 4101-INPUT-AREA-EDIT-SEC
-               ELSE
+               IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
                    PERFORM 4101-INPUT-AREA-EDIT2-SEC
+               ELSE
+                   PERFORM 4101-INPUT-AREA-EDIT-SEC
                END-IF
            END-IF
       *
@@ -3059,7 +3063,7 @@
                MOVE    WIDGET-NORMAL   TO  SPA-GMN-I01-B12-STT
            END-EVALUATE
       *
-      *    他院歴ボタンの状態を元にもどす
+      *    入院歴ボタンの状態を元にもどす
            MOVE    WRK-WIDGET-B07-STT  TO  SPA-GMN-I01-B07-STT
            MOVE    WRK-WIDGET-B08-STT  TO  SPA-GMN-I01-B08-STT
       *
@@ -4809,9 +4813,9 @@
            EXIT.
       *
       *****************************************************************
-      *    他院歴作成画面遷移処理（作成処理）
+      *    入院歴作成画面遷移処理（作成処理）
       *****************************************************************
-       480-TAINREKI-SAKUSEI-SEC        SECTION.
+       480-NYUINRRK-SAKUSEI-SEC        SECTION.
       *
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
@@ -4901,13 +4905,13 @@
            MOVE  1             TO  FLG-END
       *
            .
-       480-TAINREKI-SAKUSEI-EXT.
+       480-NYUINRRK-SAKUSEI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    他院歴作成画面遷移処理（修正処理）
+      *    入院歴作成画面遷移処理（修正処理）
       *****************************************************************
-       480-TAINREKI-SYUSEI-SEC         SECTION.
+       480-NYUINRRK-SYUSEI-SEC         SECTION.
       *
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
@@ -4919,19 +4923,19 @@
                CONTINUE
            ELSE
                MOVE    "1023"          TO  SPA-ERRCD
-               GO  TO  480-TAINREKI-SYUSEI-EXT
+               GO  TO  480-NYUINRRK-SYUSEI-EXT
            END-IF
       *
            MOVE    SPA-GMN-I01-NYUREKILST-SEL
                                        TO  IDX1
       *
-      *    他院歴が選択されていること
+      *    歴作成データが選択されていること
            IF    ( SPA-NAI-I01-TZITA-FLG (IDX1)    =   ZERO )
                MOVE    "1023"          TO  SPA-ERRCD
-               GO  TO  480-TAINREKI-SYUSEI-EXT
+               GO  TO  480-NYUINRRK-SYUSEI-EXT
            END-IF
       *
-      *    他院歴が最新であること
+      *    歴作成データが最新であること
            COMPUTE IDX3    =   IDX1    -   1
            PERFORM VARYING IDX2    FROM    IDX3    BY  -1
                    UNTIL ( IDX2    <   1 )
@@ -4944,7 +4948,7 @@
            END-PERFORM
       *
            IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  480-TAINREKI-SYUSEI-EXT
+               GO  TO  480-NYUINRRK-SYUSEI-EXT
            END-IF
       *
            MOVE    "2"             TO  SPA-I01-I03-SYORIKBN
@@ -5000,7 +5004,7 @@
            MOVE  1             TO  FLG-END
       *
            .
-       480-TAINREKI-SYUSEI-EXT.
+       480-NYUINRRK-SYUSEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5691,7 +5695,8 @@
                                    TO  PTNYUINRRK-DRCD3 ( 2 : )
            END-IF
       *    状態区分
-      *    （１：入院　２：転科　３：転棟　４：転室　５：他院歴）
+      *    （１：入院　２：転科　３：転棟　４：転室　５：他院歴
+      *      ６：自院歴 ）
       *    転入日
       *    転出日
            EVALUATE    SPA-GMN-I01-SYORIKBN-CD
@@ -7311,7 +7316,7 @@
                                    TO  WRK-SANTEISTYMD
            END-IF
       *
-      *    今回が初回の場合、または過去に他院歴しかない場合は、
+      *    今回が初回の場合、または過去に歴作成データしかない場合は、
       *    以下の処理は行わない
            IF    ( PTNYUINRRK-SHOKAIKBN    =   "1" )
              OR  ( WRK-REKI-ZIIN-CNT      <=  ZERO )
@@ -7421,7 +7426,7 @@
                END-IF
            END-IF
       *
-      *    今回が初回の場合、または過去に他院歴しかない場合は、
+      *    今回が初回の場合、または過去に歴作成データしかない場合は、
       *    以下の処理は行わない
            IF    ( PTNYUINRRK-SHOKAIKBN    =   "1" )
              OR  ( WRK-REKI-ZIIN-CNT      <=  ZERO )
@@ -7680,7 +7685,9 @@
       *
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
       *
-               IF    ( PTNYUINRRK-JTIKBN   NOT =   "5" )
+               IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
+                   CONTINUE
+               ELSE
                    MOVE    1           TO  FLG-ZI-SAISIN
                    MOVE    PTNYUINRRK-RRKNUM
                                        TO  WRK-ZI-SAISIN-RRKNUM
@@ -8540,10 +8547,10 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
-      *    他院歴作成ボタン
+      *    入院歴作成ボタン
            MOVE    SPA-GMN-I01-B07-STT
                                        TO  I01-B07-STT
-      *    他院歴修正ボタン
+      *    入院歴修正ボタン
            MOVE    SPA-GMN-I01-B08-STT
                                        TO  I01-B08-STT
       *    登録ボタン
@@ -8969,8 +8976,10 @@
                MOVE    "継続元の歴番号を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "1023"
-               MOVE    "他院歴を選択してください"
-                                       TO  SPA-ERRMSG
+               MOVE    "入院歴作成画面で作成した入院歴を選択して"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "ください"
+                                       TO  SPA-ERRMSG (41 : )
            WHEN    "1024"
                MOVE    "選択歴より新しい歴が存在するため修正でき"
                                        TO  SPA-ERRMSG (1 : 40)

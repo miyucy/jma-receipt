@@ -28,7 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *
+      *  01.00.01    NACL-太田    03.02.05  自院歴作成機能追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -116,6 +116,12 @@
            03  WRK-BAK-SHOKAI-STT          PIC S9(9)   BINARY.
            03  WRK-BAK-SHONUM              PIC S9(3).
            03  WRK-BAK-SHONUM-STT          PIC S9(9)   BINARY.
+      *
+       01  CONST-AREA.
+           03  CONST-ZIIN-LBL              PIC X(06)
+               VALUE   "自院歴".
+           03  CONST-TAIN-LBL              PIC X(06)
+               VALUE   "他院歴".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -315,6 +321,11 @@
                    MOVE    SPA-GMN-I03-SHOKAI-ITM (01)
                                    TO    SPA-GMN-I03-SHOKAI
                END-IF
+      *
+               MOVE    "F"         TO    SPA-NAI-I03-RRKKBN
+               MOVE    CONST-TAIN-LBL
+                                   TO    SPA-GMN-I03-RRKKBN
+      *
            END-IF
       *
            .
@@ -393,12 +404,18 @@
            WHEN    "CLICKED"       ALSO    "B02"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 420-CLEAR-SEC
+           WHEN    "CLICKED"       ALSO    "B03"
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               PERFORM 4101-RRKKBN-CHK-SEC
            WHEN    "CLICKED"       ALSO    "B04"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-DEL-SEC
            WHEN    "CLICKED"       ALSO    "B12"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-TOUROKU-SEC
+           WHEN    "CLICKED"       ALSO    "RRKKBN"
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               PERFORM 4101-RRKKBN-CHK-SEC
            END-EVALUATE.
       *
        200-GMNSENI-EXT.
@@ -609,6 +626,17 @@
            END-IF
       *
            MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+      *
+      *    履歴区分
+           IF    ( PTNYUINRRK-JTIKBN   =   "5" )
+               MOVE    "F"         TO  SPA-NAI-I03-RRKKBN
+               MOVE    CONST-TAIN-LBL
+                                   TO  SPA-GMN-I03-RRKKBN
+           ELSE
+               MOVE    "T"         TO  SPA-NAI-I03-RRKKBN
+               MOVE    CONST-ZIIN-LBL
+                                   TO  SPA-GMN-I03-RRKKBN
+           END-IF
       *
       *    初回継続区分
            MOVE  PTNYUINRRK-SHOKAIKBN
@@ -885,6 +913,23 @@
        4101-KHNRYO-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    履歴区分チェック処理
+      *****************************************************************
+       4101-RRKKBN-CHK-SEC             SECTION.
+      *
+           IF    ( SPA-NAI-I03-RRKKBN  =   "T" )
+               MOVE    CONST-TAIN-LBL  TO  SPA-GMN-I03-RRKKBN
+               MOVE    "F"             TO  SPA-NAI-I03-RRKKBN
+           ELSE
+               MOVE    CONST-ZIIN-LBL  TO  SPA-GMN-I03-RRKKBN
+               MOVE    "T"             TO  SPA-NAI-I03-RRKKBN
+           END-IF
+      *
+           .
+      *
+       4101-RRKKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    初回サーチ処理
       *****************************************************************
        4103-CMB-SHOKAI-SRH-SEC     SECTION.
@@ -983,6 +1028,8 @@
       *
            MOVE    SPA-GMN-I03-SHOKAI-ITM (01)
                                        TO  SPA-GMN-I03-SHOKAI
+           MOVE    "F"                 TO  SPA-NAI-I03-RRKKBN
+           MOVE    CONST-TAIN-LBL      TO  SPA-GMN-I03-RRKKBN
       *
            .
       *
@@ -1033,7 +1080,9 @@
                    GO  TO  480-TOUROKU-EXT
                END-IF
                MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
-               IF    ( PTNYUINRRK-JTIKBN       NOT =   "5" )
+               IF    ( PTNYUINRRK-JTIKBN       =   "5" OR  "6" )
+                   CONTINUE
+               ELSE
                    MOVE    "2005"  TO  SPA-ERRCD
                    GO  TO  480-TOUROKU-EXT
                END-IF
@@ -1163,7 +1212,11 @@
            MOVE    WRK-SHONUM      TO  PTNYUINRRK-SHONUM
       *
       *    状態区分
-           MOVE    "5"             TO  PTNYUINRRK-JTIKBN
+           IF    ( SPA-NAI-I03-RRKKBN  =   "F" )
+               MOVE    "5"             TO  PTNYUINRRK-JTIKBN
+           ELSE
+               MOVE    "6"             TO  PTNYUINRRK-JTIKBN
+           END-IF
       *    転入日
            MOVE    SPA-NAI-I03-NYUINYMD
                                    TO  PTNYUINRRK-TENNYUYMD
@@ -1195,8 +1248,9 @@
       *
            MOVE    ZERO                    TO  WRK-SHONUM
       *
-      *    初回の場合、設定する初回番号を求める
-           IF    ( SPA-GMN-I03-SHOKAI-CD   =   "1"  )
+      *    初回登録場合、設定する初回番号を求める
+           IF    ( WRK-UPDKBN              =   "INS" )
+            AND  ( SPA-GMN-I03-SHOKAI-CD   =   "1"  )
       *        入院履歴マスタ検索
                MOVE    ZERO                TO  FLG-PTNYUINRRK
                INITIALIZE  PTNYUINRRK-REC
@@ -1530,6 +1584,12 @@
            MOVE    SPA-GMN-I03-KHNRYO
                                    TO  I03-KHNRYO
       *
+      *    履歴区分
+           MOVE    SPA-NAI-I03-RRKKBN
+                                   TO  I03-RRKKBN
+           MOVE    SPA-GMN-I03-RRKKBN
+                                   TO  I03-RRKKBN-LBL
+      *
       *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
       *
@@ -1759,7 +1819,7 @@
       *
            EVALUATE    SPA-I0IDCD
            WHEN    "3001"
-               MOVE    "他院歴情報を削除します"
+               MOVE    "入院歴情報を削除します"
                                         TO  WRK-I0IDMSG
            END-EVALUATE
       *

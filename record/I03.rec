@@ -46,5 +46,9 @@ I03	{
 		KHNRYO	{
 			value	varchar(50);
 		};
+		RRKKBN	{
+			value	bool;
+			label	varchar(10);
+		};
 	};
 };

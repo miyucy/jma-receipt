@@ -28,8 +28,9 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    02.12.10  収納明細作成処理追加
-      *  01.01.02    NACL-太田    03.01.23  食事の計算方法修正
-      *  01.01.03    NACL-太田    03.01.24  保険組合せリストの表示を修正
+      *  01.00.02    NACL-太田    03.01.23  食事の計算方法修正
+      *  01.00.03    NACL-太田    03.01.24  保険組合せリストの表示を修正
+      *  01.00.04    NACL-太田    03.02.05  自院歴作成データを考慮する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2563,7 +2564,9 @@
       *
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
       *
-               IF    ( PTNYUINRRK-JTIKBN   NOT =   "5" )
+               IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
+                   CONTINUE
+               ELSE
                    MOVE    1           TO  FLG-ZI-SAISIN
                    MOVE    PTNYUINRRK-RRKNUM
                                        TO  WRK-ZI-SAISIN-RRKNUM

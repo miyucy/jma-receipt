@@ -35,3 +35,5 @@
               04  I03-BYOMEI               PIC X(50)
                                            OCCURS  5.
               04  I03-KHNRYO               PIC X(50).
+              04  I03-RRKKBN               PIC X.
+              04  I03-RRKKBN-LBL           PIC X(10).

@@ -5,13 +5,9 @@
   <name>I03</name>
   <program_name>I03</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -29,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 21 Dec 2000 08:10:05 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -101,7 +97,18 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <label></label>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F3</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 21 Dec 2000 06:13:54 GMT</last_modification_time>
+      </signal>
+      <label>¼«±¡¡¿Â¾±¡</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -234,7 +241,6 @@
       <y>10</y>
       <width>30</width>
       <height>24</height>
-      <can_focus>False</can_focus>
       <editable>False</editable>
       <format>ZZZ</format>
     </widget>
@@ -516,6 +522,30 @@
     </widget>
 
     <widget>
+      <class>GtkToggleButton</class>
+      <name>RRKKBN</name>
+      <x>380</x>
+      <y>10</y>
+      <width>90</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Wed, 05 Feb 2003 04:42:08 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 05 Feb 2003 04:46:30 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+      <active>False</active>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
       <name>label118</name>
       <x>40</x>
@@ -706,6 +736,7 @@
       <xpad>0</xpad>
       <ypad>0</ypad>
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label140</name>

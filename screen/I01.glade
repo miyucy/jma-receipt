@@ -157,7 +157,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 07 Aug 2002 05:11:41 GMT</last_modification_time>
       </signal>
-      <label>Æþ±¡Îò</label>
+      <label>Æþ±¡ÎòÉ½¼¨</label>
       <relief>GTK_RELIEF_NORMAL</relief>
 
     </widget>
@@ -180,7 +180,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 07 Aug 2002 05:11:41 GMT</last_modification_time>
       </signal>
-      <label>Â¾±¡ÎòºîÀ®</label>
+      <label>Æþ±¡ÎòºîÀ®</label>
       <relief>GTK_RELIEF_NORMAL</relief>
 
     </widget>
@@ -203,7 +203,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 07 Aug 2002 05:11:41 GMT</last_modification_time>
       </signal>
-      <label>Â¾±¡Îò½¤Àµ</label>
+      <label>Æþ±¡Îò½¤Àµ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
 
     </widget>

@@ -186,8 +186,8 @@
                  11  SPA-NAI-I01-PTRRKEDANUM       PIC 9(03).
       *        入力領域内部領域
                09  SPA-NAI-I01-INPUT-AREA.
-      *          他院歴表示フラグ（1...他院歴表示中/0：その他）
-                 11  SPA-NAI-I01-TAINRRK-FLG       PIC 9(01).
+      *          入院歴表示フラグ（1...歴作成データ表示中/0：その他）
+                 11  SPA-NAI-I01-NYURRK-FLG        PIC 9(01).
       *          病室番号
                  11  SPA-NAI-I01-BRMNUM-MAE        PIC X(6).
                  11  SPA-NAI-I01-BRMNUM-ERR        PIC X(4).
@@ -223,7 +223,7 @@
       *            退院日（西暦）
                    13  SPA-NAI-I01-TTAIINYMD       PIC X(8).
       *            他院通算対象日数
-                   13  SPA-NAI-I01-TTAINTAISYO     PIC 9(5).
+                   13  SPA-NAI-I01-TNYURRKTAISYO     PIC 9(5).
       *        画面コンボデータ領域
                09  SPA-GMN-I01-CMB-DAT-AREA.
       *          処理区分コンボ
@@ -397,8 +397,8 @@
       *
       *        画面入力部内部領域
                09  SPA-NAI-I02-INPUT-AREA.
-      *          他院歴表示フラグ（1...他院歴表示中/0：その他）
-                 11  SPA-NAI-I02-TAINRRK-FLG       PIC 9(01).
+      *          入院歴表示フラグ（1...歴作成データ表示中/0：その他）
+                 11  SPA-NAI-I02-NYURRK-FLG       PIC 9(01).
       *          入院日（西暦）
                  11  SPA-NAI-I02-NYUINYMD          PIC X(08).
       *          退院日（西暦）
@@ -453,6 +453,8 @@
                                                    OCCURS  5.
       *          入院基本料
                  11  SPA-GMN-I03-KHNRYO            PIC X(50).
+      *          履歴区分
+                 11  SPA-GMN-I03-RRKKBN            PIC X(10).
       *
       *        画面入力部領域
                09  SPA-NAI-I03-INPUT-AREA.
@@ -464,6 +466,8 @@
                  11  SPA-NAI-I03-TAIINYMD          PIC X(08).
                  11  SPA-NAI-I03-TAIINYMD-MAE      PIC X(09).
                  11  SPA-NAI-I03-TAIINYMD-ERRCD    PIC X(04).
+      *          履歴区分
+                 11  SPA-NAI-I03-RRKKBN            PIC X(1).
       *
       *        画面コンボデータ領域
                09  SPA-GMN-I03-CMB-DAT-AREA.
