@@ -58,11 +58,21 @@
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-DATAKBNMEIL     PIC X(20).
                    07  SPA-GMN-DATAKBN-MAX         PIC 9(02).    
+                   07  SPA-GMN-NYUGAIKBNLST        OCCURS  3.
+                       09  SPA-GMN-NYUGAIKBNL      PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-NYUGAIKBNMEIL   PIC X(12).
+                   07  SPA-GMN-NYUGAIKBN-MAX       PIC 9(02).    
       *                                             
                    07  SPA-GMN-DATAKBN-G.
                        09  SPA-GMN-DATAKBN         PIC X(01).
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-DATAKBNMEI      PIC X(20).
+      *                                             
+                   07  SPA-GMN-NYUGAIKBN-G.
+                       09  SPA-GMN-NYUGAIKBN       PIC X(01).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-NYUGAIKBNMEI    PIC X(12).
       *                                             
                    07  SPA-GMN-SKYYM               PIC X(07).
                    07  SPA-GMN-SRYYM               PIC X(20).
@@ -89,6 +99,7 @@
                    07  SPA-B06-STATE               PIC S9(09)  BINARY.
                    07  SPA-B07-STATE               PIC S9(09)  BINARY.
                    07  SPA-DATA-STATE              PIC S9(09)  BINARY.
+                   07  SPA-NYUGAIKBN-STATE         PIC S9(09)  BINARY.
                    07  SPA-SRYYM-STATE             PIC S9(09)  BINARY.
                    07  SPA-DATAKBN1-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN2-STATE          PIC S9(09)  BINARY.
