@@ -2,6 +2,7 @@
             02  HCN01-PTNUM PIC X(20).
             02  HCN01-KANANAME  PIC X(30).
             02  HCN01-NAME  PIC X(30).
+            02  HCN01-NAME2 PIC X(60).
             02  HCN01-BIRTHYMD.
               03  HCN01-BIRTHGG   PIC X(4).
               03  HCN01-BIRTHYY   PIC X(2).

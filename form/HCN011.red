@@ -11,6 +11,11 @@
         <embed object="string" length="30"/>
       </appinfo>
     </element>
+    <element name="NAME2" occurs="1">
+      <appinfo>
+        <embed object="string" length="60"/>
+      </appinfo>
+    </element>
     <element name="BYOMEI-TBL" occurs="22">
       <element name="CD" occurs="1">
         <appinfo>
@@ -16772,6 +16777,52 @@
           </attribute>
           <attribute name="multi">
             <real val="0.202"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O454">
+      <attribute name="obj_pos">
+        <point val="13.8,2.15"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="13.8,1.88982;19.1025,2.58982"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#NAME2#</string>
+      </attribute>
+      <attribute name="embed_text_column">
+        <int val="30"/>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;
+&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.35"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="13.8,2.15"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
