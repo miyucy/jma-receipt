@@ -59,7 +59,20 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  KSN-IDX             PIC 9(04).
            03  GENSAN-IDX          PIC 9(04).
+      *
+      *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
+       01  CONSTANT-AREA.
+      *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
+           03  CONS-KEIKAKU-GENSAN1        PIC X(09) VALUE "190080470".
+           03  CONS-KEIKAKU-GENSAN2        PIC X(09) VALUE "190799670".
+      *    Æü¾ïÀ¸³è¾ã³²²Ã»»
+           03  CONS-NICHIJOU-KSN1          PIC X(09) VALUE "190109170".
+           03  CONS-NICHIJOU-KSN2          PIC X(09) VALUE "190807570".
+      *    ÃÔÊò²Ã»»
+           03  CONS-CHIHOU-KSN1            PIC X(09) VALUE "190109270".
+           03  CONS-CHIHOU-KSN2            PIC X(09) VALUE "190808670".
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -93,8 +106,11 @@
                    07  WRK-GAIHAKU         PIC X(09).
                    07  WRK-NYUKHNKSNKBN    PIC 9(03).
       *
-      *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
-           03  WRK-GENSAN1                 PIC X(09).
+      *    Æþ±¡ÎÁ²Ã»»ÂàÈòÎÎ°è
+           03  WRK-NYUKSN-AREA             OCCURS 20.
+               05  WRK-NYUKSN              PIC X(09).
+               05  WRK-NYUKSN-DAY          PIC 9(01)  OCCURS 31.
+      *
       *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
            03  WRK-GENSAN2                 PIC X(09).
       *    °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»¥ï¡¼¥¯
@@ -102,12 +118,17 @@
       *    êóáìÂÐºöÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
            03  WRK-GENSAN4                 PIC X(09).
       *
-      *    Æü¾ïÀ¸³è¾ã³²²Ã»»
-           03  WRK-NICHIJOU-KSN1           PIC X(09) VALUE "190109170".
-           03  WRK-NICHIJOU-KSN2           PIC X(09) VALUE "190807570".
-      *    ÃÔÊò²Ã»»
-           03  WRK-CHIHOU-KSN1             PIC X(09) VALUE "190109270".
-           03  WRK-CHIHOU-KSN2             PIC X(09) VALUE "190808670".
+      *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
+           03  WRK-KEIKAKU-GENSAN1         PIC 9(01) OCCURS 31.
+           03  WRK-KEIKAKU-GENSAN2         PIC 9(01) OCCURS 31.
+      *
+      *    Æü¾ïÀ¸³è¾ã³²²Ã»»ÂàÈò
+           03  WRK-NICHIJOU-KSN1           PIC 9(01) OCCURS 31.
+           03  WRK-NICHIJOU-KSN2           PIC 9(01) OCCURS 31.
+      *
+      *    ÃÔÊò²Ã»»ÂàÈò
+           03  WRK-CHIHOU-KSN1             PIC 9(01) OCCURS 31.
+           03  WRK-CHIHOU-KSN2             PIC 9(09) OCCURS 31.
       *
       *    ¿ÇÎÅ¥³¡¼¥É·×½¸·×ÍÑ
            03  WRK-SRYCD-X                 PIC X(09).
@@ -401,6 +422,39 @@
                END-PERFORM
            END-IF
       *
+      *Ï«ºÒÆþ±¡»þ¤ÎÆþ±¡ÎÁ²Ã»»¼èÆÀ¡ÊÆþ±¡²ñ·×¤è¤ê¡Ë
+           MOVE    ZERO                    TO  KSN-IDX
+           INITIALIZE                          NYUINACCT-REC
+           MOVE    LNK-SROUNYUIN-HOSPID    TO  NACCT-HOSPID
+           MOVE    LNK-SROUNYUIN-PTID      TO  NACCT-PTID
+           MOVE    LNK-SROUNYUIN-SANTEIYM  TO  NACCT-SRYYM
+           MOVE    "6"                     TO  NACCT-ZAISKBKBN
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           PERFORM 910-NYUINACCT-SELECT-SEC
+           IF      FLG-NYUINACCT           =   ZERO
+               MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+               PERFORM   910-NYUINACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+      *            Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
+                   ADD        1         TO         KSN-IDX
+                   MOVE    NACCT-SRYCDTOTAL   TO   WRK-NYUKSN(KSN-IDX)
+                   PERFORM    VARYING   IDX   FROM   1   BY   1
+                              UNTIL     IDX   >   31
+                       IF    (LNK-SROUNYUIN-NYUIN-FLG(IDX) = "1")  AND
+                             (NACCT-DAY(IDX)   NOT =   ZERO)
+                           MOVE   NACCT-DAY(IDX)
+                                        TO  WRK-NYUKSN-DAY(KSN-IDX IDX)
+                       END-IF
+                   END-PERFORM
+                   MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+                   PERFORM 910-NYUINACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+           MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+      *
       *    ¼èÆÀ¤·¤¿Ï«ºÒÆþ±¡¾ðÊó¤«¤éÆüÃ±°Ì¤ÎÆþ±¡²ñ·×¾ðÊó¤òºÆ¹½ÃÛ
            PERFORM      VARYING    IDX   FROM   1  BY  1
                         UNTIL      IDX   >   31
@@ -454,6 +508,15 @@
                    MOVE   WRK-SHOKIKSN(IDX) TO  LNK-SROUNYUIN-SRYCD
                                            (IDX WRK-MEISAISU)
                END-IF
+      *        Æþ±¡ÎÁ²Ã»»¡ÊÆþ±¡²ñ·×¡Ë
+               PERFORM   VARYING   KSN-IDX   FROM  1  BY  1
+                         UNTIL    (WRK-NYUKSN(KSN-IDX)  =  SPACE)  OR
+                                  (KSN-IDX             >  20)
+                         ADD     1           TO  WRK-MEISAISU
+                         MOVE WRK-NYUKSN(KSN-IDX)
+                                             TO  LNK-SROUNYUIN-SRYCD
+                                                 (IDX WRK-MEISAISU)
+               END-PERFORM
            END-PERFORM
       *
       *    ºÆ¹½ÃÛ¤·¤¿Ï«ºÒÆþ±¡²ñ·×¾ðÊó¤«¤éÅÀ¿ô¤Î»»Äê
