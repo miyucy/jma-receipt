@@ -272,6 +272,7 @@ RECORD_files = \
 	X97.rec \
 	XID2.rec \
 	X03.rec \
+	W17.rec \
 
 DEF_files = \
 	HC01.def \

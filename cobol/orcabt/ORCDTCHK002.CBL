@@ -444,17 +444,26 @@
                    07  SRH-KOHNUML                 PIC X(03).
                    07  SRH-PAYKBNL                 PIC X(02).
                    07  SRH-KOHNUMMEIL              PIC X(10).
-           03  SRH-SRYKA-DAT.
-               05  SRH-SRYKA                       PIC X(02).
-               05  SRH-SRYKAMEI1                   PIC X(20).
-               05  SRH-SRYKAMEI2                   PIC X(12).
-               05  SRH-SRYKAMEI3                   PIC X(04).
-               05  SRH-SRYKA-MAX                   PIC 9(05).
-               05  SRH-SRYKA-OCC                   OCCURS 100.
-                   07  SRH-SRYKAL                  PIC X(02).
-                   07  SRH-SRYKAMEI1L              PIC X(20).
-                   07  SRH-SRYKAMEI2L              PIC X(12).
-                   07  SRH-SRYKAMEI3L              PIC X(04).
+           03  SRH-1005-DAT.
+               05  SRH-1005-SRYKA                  PIC X(02).
+               05  SRH-1005-SRYKAMEI1              PIC X(20).
+               05  SRH-1005-SRYKAMEI2              PIC X(12).
+               05  SRH-1005-SRYKAMEI3              PIC X(04).
+               05  SRH-1005-MAX                    PIC 9(05).
+               05  SRH-1005-OCC                    OCCURS 100.
+                   07  SRH-1005-SRYKAL             PIC X(02).
+                   07  SRH-1005-SRYKAMEI1L         PIC X(20).
+                   07  SRH-1005-SRYKAMEI2L         PIC X(12).
+                   07  SRH-1005-SRYKAMEI3L         PIC X(04).
+           03  SRH-1040-DAT.
+               05  SRH-1040-KOHNUM                 PIC X(03).
+               05  SRH-1040-FTNJANUMCHK            PIC X(01).
+               05  SRH-1040-JKYSNUMCHK             PIC X(01).
+               05  SRH-1040-MAX                    PIC 9(05).
+               05  SRH-1040-OCC                    OCCURS  100.
+                   07  SRH-1040-KOHNUML            PIC X(03).
+                   07  SRH-1040-FTNJANUMCHKL       PIC X(01).
+                   07  SRH-1040-JKYSNUMCHKL        PIC X(01).
       *
       *    点数マスタ退避ワーク
       *    薬剤
@@ -587,6 +596,9 @@
       *    診療科目情報
            COPY    "CPSK1005.INC".
       *
+      *    データチェック機能情報
+           COPY    "CPSK1040.INC".
+      *
       *    レセプト編集区分
            COPY    "CPSK2005.INC".
       *
@@ -713,6 +725,9 @@
       *
       *    診療科編集処理
            PERFORM 1001-SRYKA-HEN-SEC
+      *
+      *    負担者番号受給者番号抜けチェック対象取得処理
+           PERFORM 1001-SYS1040-GET-SEC
       *
       *    レセプト編集区分取得処理
            PERFORM 1001-SYS2005-GET-SEC
@@ -928,9 +943,10 @@
       *****************************************************************
        1001-SRYKA-HEN-SEC              SECTION.
       *
-           INITIALIZE              SRH-SRYKA-DAT
+           INITIALIZE              SRH-1005-DAT
       *
       *    システム管理マスタ検索処理
+           MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    WRK-KJNYMD          TO  ORC-DBYMD
@@ -948,15 +964,15 @@
                UNTIL     ( IDX5            >   100 )
                    OR    ( FLG-SYSKANRI    NOT =   ZERO )
       *
-               MOVE    IDX5            TO  SRH-SRYKA-MAX
+               MOVE    IDX5            TO  SRH-1005-MAX
                MOVE    SYS-1005-KBNCD (1 : 2)
-                                       TO  SRH-SRYKAL (IDX5)
+                                       TO  SRH-1005-SRYKAL (IDX5)
                MOVE    SYS-1005-SRYKANAME1
-                                       TO  SRH-SRYKAMEI1L (IDX5)
+                                       TO  SRH-1005-SRYKAMEI1L (IDX5)
                MOVE    SYS-1005-SRYKANAME2
-                                       TO  SRH-SRYKAMEI2L (IDX5)
+                                       TO  SRH-1005-SRYKAMEI2L (IDX5)
                MOVE    SYS-1005-SRYKANAME3
-                                       TO  SRH-SRYKAMEI3L (IDX5)
+                                       TO  SRH-1005-SRYKAMEI3L (IDX5)
       *
       *        システム管理マスタ読込処理
                MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
@@ -975,6 +991,59 @@
       *
            .
        1001-SRYKA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    公費負担者番号・受給者番号抜けチェック対象取得処理
+      *****************************************************************
+       1001-SYS1040-GET-SEC            SECTION.
+      *
+      *
+           INITIALIZE              SRH-1040-DAT
+      *
+      *    システム管理マスタ検索処理
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYS-1040-REC
+           MOVE    "1040"              TO  SYS-1040-KANRICD
+           MOVE    WRK-KJNYMD          TO  ORC-DBYMD
+           MOVE    SYS-1040-REC        TO  MCPDATA-REC
+      *
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF ( MCP-RC             NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           ELSE
+               MOVE    MCPDATA-REC     TO  SYS-1040-REC
+           END-IF
+      *
+           PERFORM VARYING IDX5    FROM    1   BY  1
+               UNTIL     ( IDX5            >   100 )
+                   OR    ( FLG-SYSKANRI    NOT =   ZERO )
+      *
+               MOVE    IDX5            TO  SRH-1040-MAX
+               MOVE    SYS-1040-KBNCD (1 : 3)
+                                       TO  SRH-1040-KOHNUML (IDX5)
+               MOVE    SYS-1040-FTNJANUMCHK
+                                       TO  SRH-1040-FTNJANUMCHKL(IDX5)
+               MOVE    SYS-1040-JKYSNUMCHK
+                                       TO  SRH-1040-JKYSNUMCHKL (IDX5)
+      *
+      *        システム管理マスタ読込処理
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 910-DBFETCH-SEC
+               IF ( MCP-RC             NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    MCPDATA-REC TO  SYS-1040-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+      *    システム管理マスタクローズ処理
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       1001-SYS1040-GET-EXT.
            EXIT.
       *****************************************************************
       *    レセプト編集区分取得処理
@@ -2524,22 +2593,41 @@
       *****************************************************************
        200111-FTNJKYNUM-CHK-SEC        SECTION.
       *
+           MOVE    PTKOH-KOHNUM        TO  SRH-1040-KOHNUM
+           PERFORM 2111-SYS1040-GET-SEC
+      *
            MOVE    PTKOH-FTNJANUM      TO  WRK-PTKOH-FTNJANUM
            MOVE    PTKOH-JKYSNUM       TO  WRK-PTKOH-JKYSNUM
       *
            INSPECT WRK-PTKOH-FTNJANUM  REPLACING   ALL "　"    BY  "  "
            INSPECT WRK-PTKOH-JKYSNUM   REPLACING   ALL "　"    BY  "  "
       *
-           IF    ( WRK-PTKOH-FTNJANUM  =   SPACE )
-            OR   ( WRK-PTKOH-JKYSNUM   =   SPACE )
+           IF    ( SRH-1040-FTNJANUMCHK    =   "1" )
+               CONTINUE
+           ELSE
+               IF    ( WRK-PTKOH-FTNJANUM  =   SPACE )
       *
-               IF    ( WRK-PTKOH-JKYSNUM       =   SPACE )
-                AND  ( PTKOH-KOHNUM            =   "012" )
-                    CONTINUE
-               ELSE
                    MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
                    MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
                    MOVE    "030001"        TO  WRK-ERRCD
+                   PERFORM 212-ERRMES-HEN-SEC
+      *
+                   IF    ( ORCBSD01-CHKKBN (3) =   "1" )
+                       MOVE    1           TO  FLG-CHKEND (3)
+                       GO  TO  200111-FTNJKYNUM-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( SRH-1040-JKYSNUMCHK =   "1" )
+            OR   ( PTKOH-KOHNUM        =   "012" )
+               CONTINUE
+           ELSE
+               IF    ( WRK-PTKOH-JKYSNUM   =   SPACE )
+      *
+                   MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                   MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                   MOVE    "030002"        TO  WRK-ERRCD
                    PERFORM 212-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -2556,7 +2644,7 @@
       *
                    MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
                    MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
-                   MOVE    "030002"        TO  WRK-ERRCD
+                   MOVE    "030003"        TO  WRK-ERRCD
                    PERFORM 212-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -2574,7 +2662,7 @@
       *
                    MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
                    MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
-                   MOVE    "030003"        TO  WRK-ERRCD
+                   MOVE    "030004"        TO  WRK-ERRCD
                    PERFORM 212-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -2982,7 +3070,7 @@
        2001121-PTBYO-CHK-SEC           SECTION.
       *
            IF    ( FLG-PTBYO-MOJI      =   1 )
-               MOVE    PTBYO-SRYKA         TO  SRH-SRYKA
+               MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "050004"            TO  WRK-ERRCD
                PERFORM 213-ERRMES-HEN-SEC
@@ -2994,7 +3082,7 @@
            END-IF
       *
            IF    ( FLG-PTBYO-MOJI      =   2)
-               MOVE    PTBYO-SRYKA         TO  SRH-SRYKA
+               MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "050005"            TO  WRK-ERRCD
                PERFORM 213-ERRMES-HEN-SEC
@@ -3006,7 +3094,7 @@
            END-IF
       *
            IF    ( PTBYO-BYOMEIMOJI    =   ZERO )
-               MOVE    PTBYO-SRYKA         TO  SRH-SRYKA
+               MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "050006"            TO  WRK-ERRCD
                PERFORM 213-ERRMES-HEN-SEC
@@ -3019,7 +3107,7 @@
       *
            IF    ( PTBYO-BYOMEI        NOT = SPACE)  
             AND  ( PTBYO-BYOMEICD-G        = SPACE)
-               MOVE    PTBYO-SRYKA         TO  SRH-SRYKA
+               MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "050007"            TO  WRK-ERRCD
                PERFORM 213-ERRMES-HEN-SEC
@@ -3034,7 +3122,7 @@
              AND ( PTBYO-TENKIYMD  NOT =   SPACE))
             OR  (( PTBYO-TENKIKBN  NOT =   SPACE)
              AND ( PTBYO-TENKIYMD      =   SPACE))
-               MOVE    PTBYO-SRYKA         TO  SRH-SRYKA
+               MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "050008"            TO  WRK-ERRCD
                PERFORM 213-ERRMES-HEN-SEC
@@ -3049,7 +3137,7 @@
                MOVE    PTBYO-CHARTBYOMEI   TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-KANA-CHK-SEC
                IF    ( FLG-KANACHK NOT =   2 )
-                   MOVE    PTBYO-SRYKA         TO  SRH-SRYKA
+                   MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                    MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                    MOVE    "050009"            TO  WRK-ERRCD
                    PERFORM 213-ERRMES-HEN-SEC
@@ -3142,7 +3230,7 @@
       *
            IF    ( FLG-PTBYO-LEN-ERR       NOT =   ZERO )
       *
-               MOVE    PTBYO-SRYKA         TO  SRH-SRYKA
+               MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
       *
       *        病名に半角文字が混在していない場合、
       *        病名の先頭５文字まで編集
@@ -3273,7 +3361,7 @@
            IF    ( PTBYO-UTAGAIFLG     = "1" OR "3")
             AND  ( PTBYO-TENKIKBN      = SPACE)
             AND  ( PTBYO-SRYYMD (1:6) <= WRK-UTAIGAI-CHK-YM )
-               MOVE    PTBYO-SRYKA         TO  SRH-SRYKA
+               MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "070001"            TO  WRK-ERRCD
                PERFORM 213-ERRMES-HEN-SEC
@@ -3293,7 +3381,7 @@
        2001121-PTBYO-TOUROKU-CHK-SEC    SECTION.
       *
            IF    ( CNT-PTBYOMEI1   =   ZERO )
-               MOVE    WRK-SRYKA   TO  SRH-SRYKA
+               MOVE    WRK-SRYKA   TO  SRH-1005-SRYKA
                MOVE    "050001"    TO  WRK-ERRCD
                PERFORM 214-ERRMES-HEN-SEC
       *
@@ -3303,7 +3391,7 @@
                END-IF
            ELSE
                IF    ( CNT-PTBYOMEI2   =   ZERO )
-                   MOVE    WRK-SRYKA       TO  SRH-SRYKA
+                   MOVE    WRK-SRYKA       TO  SRH-1005-SRYKA
                    IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
                        MOVE    "050002"    TO  WRK-ERRCD
                    ELSE
@@ -3344,7 +3432,7 @@
                        END-STRING
       *
                        MOVE    TSRYKA-SRYKA (IDX4)
-                                           TO  SRH-SRYKA
+                                           TO  SRH-1005-SRYKA
                        MOVE    WRK-PTBYOMES-PLUS
                                            TO  WRK-ERRMES-PLUS
                        MOVE    "060001"    TO  WRK-ERRCD
@@ -3620,7 +3708,7 @@
       *****************************************************************
        200112-YKZ-BYO-ERRMES-HEN-SEC   SECTION.
       *
-           MOVE    WRK-SRYKA           TO  SRH-SRYKA
+           MOVE    WRK-SRYKA           TO  SRH-1005-SRYKA
       *
            MOVE    CHK-SRYCD           TO  WRK-SRYCD
            MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
@@ -3805,7 +3893,7 @@
       *****************************************************************
        200112-SRY-BYO-ERRMES-HEN-SEC   SECTION.
       *
-           MOVE    WRK-SRYKA           TO  SRH-SRYKA
+           MOVE    WRK-SRYKA           TO  SRH-1005-SRYKA
       *
            MOVE    CHK-SRYCD           TO  WRK-SRYCD
            MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
@@ -5080,7 +5168,7 @@
            PERFORM 2111-DTCHK004-KYOTU-HEN-SEC
       *
            STRING  "［"                DELIMITED   BY  SIZE
-                   SRH-SRYKAMEI2       DELIMITED   BY  SPACE
+                   SRH-1005-SRYKAMEI2  DELIMITED   BY  SPACE
                    "］"                DELIMITED   BY  SIZE
                    WRK-ERRMES          DELIMITED   BY  SPACE
                    "【"                DELIMITED   BY  SIZE
@@ -5110,8 +5198,8 @@
            PERFORM 2111-DTCHK004-KYOTU-HEN-SEC
       *
            STRING  "［"                DELIMITED   BY  SIZE
-                   SRH-SRYKAMEI2       DELIMITED   BY  SPACE
-                   "］"                 DELIMITED   BY  SIZE
+                   SRH-1005-SRYKAMEI2  DELIMITED   BY  SPACE
+                   "］"                DELIMITED   BY  SIZE
                    WRK-ERRMES          DELIMITED   BY  SPACE
            INTO    DTCHK004-ERRMSG
            END-STRING
@@ -5286,26 +5374,49 @@
       *****************************************************************
        2111-SRYKA-GET-SEC              SECTION.
       *
-           MOVE    SPACE               TO  SRH-SRYKAMEI1
-                                           SRH-SRYKAMEI2
-                                           SRH-SRYKAMEI3
+           MOVE    SPACE               TO  SRH-1005-SRYKAMEI1
+                                           SRH-1005-SRYKAMEI2
+                                           SRH-1005-SRYKAMEI3
       *
            PERFORM VARYING SRH-IDX FROM    1   BY  1
-                   UNTIL ( SRH-IDX >   SRH-SRYKA-MAX )
-               IF    ( SRH-SRYKA   =   SRH-SRYKAL (SRH-IDX) )
-                   MOVE    SRH-SRYKAMEI1L (SRH-IDX)
-                                       TO  SRH-SRYKAMEI1
-                   MOVE    SRH-SRYKAMEI2L (SRH-IDX)
-                                       TO  SRH-SRYKAMEI2
-                   MOVE    SRH-SRYKAMEI3L (SRH-IDX)
-                                       TO  SRH-SRYKAMEI3
-                   MOVE    SRH-SRYKA-MAX
+                   UNTIL ( SRH-IDX >   SRH-1005-MAX )
+               IF    ( SRH-1005-SRYKA  =   SRH-1005-SRYKAL (SRH-IDX) )
+                   MOVE    SRH-1005-SRYKAMEI1L (SRH-IDX)
+                                       TO  SRH-1005-SRYKAMEI1
+                   MOVE    SRH-1005-SRYKAMEI2L (SRH-IDX)
+                                       TO  SRH-1005-SRYKAMEI2
+                   MOVE    SRH-1005-SRYKAMEI3L (SRH-IDX)
+                                       TO  SRH-1005-SRYKAMEI3
+                   MOVE    SRH-1005-MAX
                                        TO  SRH-IDX
                END-IF
            END-PERFORM
       *
            .
        2111-SRYKA-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    公費負担者番号受給者番号抜けチェック編集処理
+      *****************************************************************
+       2111-SYS1040-GET-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  SRH-1040-FTNJANUMCHK
+                                           SRH-1040-JKYSNUMCHK
+      *
+           PERFORM VARYING SRH-IDX FROM    1   BY  1
+                   UNTIL ( SRH-IDX >   SRH-1040-MAX )
+               IF    ( SRH-1040-KOHNUM  =   SRH-1040-KOHNUML (SRH-IDX) )
+                   MOVE    SRH-1040-FTNJANUMCHKL (SRH-IDX)
+                                       TO  SRH-1040-FTNJANUMCHK
+                   MOVE    SRH-1040-JKYSNUMCHKL  (SRH-IDX)
+                                       TO  SRH-1040-JKYSNUMCHK
+                   MOVE    SRH-1040-MAX
+                                       TO  SRH-IDX
+               END-IF
+           END-PERFORM
+      *
+           .
+       2111-SYS1040-GET-EXT.
            EXIT.
       *****************************************************************
       *    処理経過編集処理

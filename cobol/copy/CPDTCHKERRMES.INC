@@ -66,16 +66,21 @@
       *    ** 030xxx 公費負担者番号・受給者番号抜け
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "030001".
-           05 PIC  X(30)   VALUE   "公費情報の受給者番号又は負担者".
-           05 PIC  X(30)   VALUE   "番号が未入力です              ".
+           05 PIC  X(30)   VALUE   "公費情報の負担者番号が未入力で".
+           05 PIC  X(30)   VALUE   "す                            ".
            05 PIC  X(30)   VALUE   "                              ".
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "030002".
+           05 PIC  X(30)   VALUE   "公費情報の受給者番号が未入力で".
+           05 PIC  X(30)   VALUE   "す                            ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "030003".
            05 PIC  X(30)   VALUE   "公費情報の負担者番号に全角文字".
            05 PIC  X(30)   VALUE   "と半角文字が混在しています    ".
            05 PIC  X(30)   VALUE   "                              ".
       *                            +---------+---------+---------+.
-           05 PIC  X(06)   VALUE   "030003".
+           05 PIC  X(06)   VALUE   "030004".
            05 PIC  X(30)   VALUE   "公費情報の受給者番号に全角文字".
            05 PIC  X(30)   VALUE   "と半角文字が混在しています    ".
            05 PIC  X(30)   VALUE   "                              ".
@@ -279,7 +284,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  44.
+           05 ERRMES-OCC   OCCURS  45.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   44.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   45.

@@ -252,6 +252,8 @@
            03  FILLER              PIC X(35)   VALUE
                "1039 収納機能情報".
            03  FILLER              PIC X(35)   VALUE
+               "1040 データチェック機能情報".
+           03  FILLER              PIC X(35)   VALUE
                "2003 レセプト作成指示（印刷順）情報".
            03  FILLER              PIC X(35)   VALUE
                "2005 レセプト・総括印刷情報".
@@ -265,11 +267,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   28.
+           03  TBL-KANRICD-TBL         OCCURS   29.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   28.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   29.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -399,6 +401,7 @@
            COPY    "W14.INC".
            COPY    "W15.INC".
            COPY    "W16.INC".
+           COPY    "W17.INC".
            COPY    "W20.INC".
            COPY    "W21.INC".
            COPY    "W22.INC".
@@ -1009,6 +1012,7 @@
                    MOVE    5               TO  SPA-GMN-CUR
                    GO  TO  4104-KANRICD-CHK-EXT
                WHEN    "1036"
+               WHEN    "1040"
                WHEN    "5001"
                WHEN    "5002"
                WHEN    "5003"
@@ -1532,6 +1536,7 @@
        410-KAKUTEI-SEC           SECTION.
       *
            IF    ( SPA-GMN-KANRICD     =   "1036"
+             OR                            "1040"
              OR                            "5001"
              OR                            "5002" 
              OR                            "5003" 
@@ -1602,6 +1607,8 @@
                    MOVE    "W15"               TO  SPA-SAKIPG
                WHEN    "1036"
                    MOVE    "W16"               TO  SPA-SAKIPG
+               WHEN    "1040"
+                   MOVE    "W17"               TO  SPA-SAKIPG
                WHEN    "5000"
                    MOVE    "W24"               TO  SPA-SAKIPG
                WHEN    "5001"

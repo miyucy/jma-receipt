@@ -1,0 +1,54 @@
+W17	{
+	fixed1	{
+		B06	{
+			state	int;
+		};
+		CLISTSCROLL	{
+			CHECKLIST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(4);
+					value2	varchar(21);
+					value3	varchar(15);
+					value4	varchar(15);
+					value5	varchar(10);
+					value6	varchar(10);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		SELNUM	{
+			value	number(2);
+		};
+		KOUHICOMBO	{
+			KOUHI	{
+				value	varchar(24);
+			};
+			count	int;
+			item	varchar(24)[99];
+		};
+		FTSNUMCOMBO	{
+			FTSNUM	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[2];
+		};
+		JKSNUMCOMBO	{
+			JKSNUM	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[2];
+		};
+		YUKOSTYMD	{
+			value	varchar(10);
+		};
+		YUKOEDYMD	{
+			value	varchar(10);
+		};
+	};
+};

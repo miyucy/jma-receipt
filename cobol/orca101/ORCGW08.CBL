@@ -162,6 +162,7 @@
            COPY    "W14.INC".
            COPY    "W15.INC".
            COPY    "W16.INC".
+           COPY    "W17.INC".
            COPY    "W20.INC".
            COPY    "W21.INC".
            COPY    "W22.INC".
