@@ -31,7 +31,7 @@ all:   $(init_scripts)
 filecheck:
 
 clean: 
-	-rm $(init_scripts)
+	-rm -f $(init_scripts)
 
 distclean: clean
 	-rm -f Makefile

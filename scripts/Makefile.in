@@ -75,8 +75,8 @@ filecheck:
 	|sort +1 |uniq -u -f1
 
 clean: 
-	-rm $(noinst_shell_scripts)
-	-rm $(shell_scripts)
+	-rm -f $(noinst_shell_scripts)
+	-rm -f $(shell_scripts)
 
 distclean: clean
 	-rm -f Makefile

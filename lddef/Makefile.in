@@ -83,8 +83,8 @@ kentan.inc:
 	ln -sf ../etc/kentan.inc .
 
 clean: 
-	-rm $(LDFILE) $(BDFILE)
-	-rm directory dbgroup.inc kentan.inc
+	-rm -f $(LDFILE) $(BDFILE)
+	-rm -f directory dbgroup.inc kentan.inc
 
 distclean: clean
 	-rm -f Makefile
