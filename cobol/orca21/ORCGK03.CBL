@@ -236,6 +236,7 @@
            03  WRK-TEISEI-AREA.
       *¿¡µ·∂‚≥€
                05  WRK-SKYMONEY            PIC S9(07).
+               05  WRK-SKYMONEY2           PIC S9(07).
       *∫π≥€
                05  WRK-SAGAKU              PIC S9(07).
       *æ√»Ò¿«° ∫∆∑«°À
@@ -1054,19 +1055,21 @@
                   (SYU-DENPNUM         >   ZERO)  AND
                   (SPA-SYUNOU-IDX      >   ZERO)  AND
                   (SPA-IDX-KOUI        >   ZERO)
-               MOVE    SPA-MAE-SKYMONEY (SPA-SYUNOU-IDX)
-                                           TO  WRK-Z9-1
-               COMPUTE WRK-SKYMONEY        =   SYU-SKYMONEY
+               COMPUTE WRK-SKYMONEY        =   SPA-MAE-SKYMONEY
+                                                    (SPA-SYUNOU-IDX)
+                                           +   SPA-TEI-CHOSEI
+                                                    (SPA-SYUNOU-IDX)
+               MOVE    WRK-SKYMONEY        TO  WRK-Z9-1
+               COMPUTE WRK-SKYMONEY2       =   SYU-SKYMONEY
                                            +   SYU-CHOSEI
-               MOVE    WRK-SKYMONEY        TO  WRK-Z9-2
+               MOVE    WRK-SKYMONEY2       TO  WRK-Z9-2
                STRING  "ƒ˚¿µ¡∞¿¡µ·≥€°ß"    DELIMITED  BY  SIZE
                        WRK-Z9-1            DELIMITED  BY  SIZE
                        "°°∫£≤Û¿¡µ·≥€°ß"    DELIMITED  BY  SIZE
                        WRK-Z9-2            DELIMITED  BY  SIZE
                                        INTO    SPA-GMN-FUKUZENMDS2
                END-STRING
-               IF      SPA-MAE-SKYMONEY (SPA-SYUNOU-IDX)
-                                           =   WRK-SKYMONEY
+               IF      WRK-SKYMONEY    =   WRK-SKYMONEY2
                    MOVE    SPACE               TO  SPA-GMN-FUKUZENMDS2
                END-IF
            ELSE
@@ -1120,6 +1123,7 @@
       *            ¿¡µ·∂‚≥€ƒ˚¿µ∫π≥€
                    COMPUTE SPA-TEI-SKYMONEY (IDX)
                                            =   SYU-SKYMONEY
+                                           -   SYU-CHOSEI
                                            -  (SPA-MAE-SKYMONEY (IDX)
                                            -   SPA-TEI-CHOSEI (IDX) )
       *            æ√»Ò¿«° ∫∆∑«°Àƒ˚¿µ∫π≥€
@@ -1148,6 +1152,7 @@
       *            ¿¡µ·∂‚≥€ƒ˚¿µ∫π≥€
                    COMPUTE SPA-TEI-SKYMONEY (IDX)
                                            =   SYU-SKYMONEY
+                                           -   SYU-CHOSEI
                                            -  (SPA-MAE-SKYMONEY (IDX)
                                            -   SPA-TEI-CHOSEI (IDX) )
       *            æ√»Ò¿«° ∫∆∑«°Àƒ˚¿µ∫π≥€
