@@ -21,7 +21,7 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（労災・自賠責）
       *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
-      *                      （傷病名編集）
+      *                      傷病名編集（労災・自賠責）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−藤原　   新規作成
@@ -341,10 +341,10 @@
        2001-PTBYO-HENSYU-EXT.
            EXIT. 
       *            
-070100*****************************************************************
-070200*    患者病名チェック処理
-070300*****************************************************************
-070400 2001-PTBYO-CHK-SEC         SECTION.
+      *****************************************************************
+      *    患者病名チェック処理
+      *****************************************************************
+       2001-PTBYO-CHK-SEC         SECTION.
       *
       *    診療科
            MOVE    ZERO                TO  FLG-CHK 
@@ -524,10 +524,38 @@
       *
            WRITE   RECE42-REC
            ADD     1                   TO  CNT-OUT   
-076800     .
-076900 20011-RECE42-WRITE-EXT.
-077000     EXIT.
-057400*
+           .
+       20011-RECE42-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    終了処理
+      *****************************************************************
+       300-TERM-SEC                SECTION.
+      *
+           CLOSE   RECE41-FILE
+           CLOSE   RECE42-FILE
+      *
+      *    ステップ管理終了処理
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           PERFORM 900-DBDISCONNECT-SEC
+      *
+          DISPLAY "RECE41  IN  " CNT-IN 
+          DISPLAY "RECE42  CNT " CNT-OUT  
+          DISPLAY "*** ORCR0440 END ***"
+      ***     ACCEPT  WRK-IN FROM CONSOLE 
+           .
+       300-TERM-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -560,34 +588,6 @@
       *
            .
        500-ERR-HENSYU-EXT.
-           EXIT.
-057400*
-      *****************************************************************
-      *    終了処理
-      *****************************************************************
-       300-TERM-SEC                SECTION.
-      *
-           CLOSE   RECE41-FILE
-           CLOSE   RECE42-FILE
-      *
-      *    ステップ管理終了処理
-           MOVE    "STE"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
-      *
-           PERFORM 900-DBDISCONNECT-SEC
-      *
-          DISPLAY "RECE41  IN  " CNT-IN 
-          DISPLAY "RECE42  CNT " CNT-OUT  
-          DISPLAY "*** ORCR0440 END ***"
-      ***     ACCEPT  WRK-IN FROM CONSOLE 
-           .
-       300-TERM-EXT.
            EXIT.
       *
       *****************************************************************

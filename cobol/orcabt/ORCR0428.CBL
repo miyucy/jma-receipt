@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト
-      *  コンポーネント名  : 旧総合病院以外のとき科別の同一剤のまとめをする
+      *  コンポーネント名  : 同一剤のまとめ２（労災・自賠責）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  03/01/14    NACL−藤原    新規作成
@@ -303,7 +303,6 @@
        200-MAIN-EXT.
            EXIT.
       *
-      * 
       *****************************************************************
       *    同一剤のまとめ処理
       *****************************************************************
@@ -450,6 +449,31 @@
            EXIT.
       *
       *****************************************************************
+      *    終了処理
+      *****************************************************************
+       300-TERM-SEC                SECTION.
+      *
+      *    ステップ管理終了処理
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           PERFORM 900-DBDISCONNECT-SEC
+      *
+           DISPLAY "RECE44     :" CNT-IN   
+           DISPLAY "RECE443    :" CNT-RECE443
+           DISPLAY "RECE44X    :" CNT-RECE44X
+           DISPLAY "*** ORCR0428 END ***"
+           .
+       300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
@@ -481,31 +505,6 @@
       *
            .
        500-ERR-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    終了処理
-      *****************************************************************
-       300-TERM-SEC                SECTION.
-      *
-      *    ステップ管理終了処理
-           MOVE    "STE"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
-      *
-           PERFORM 900-DBDISCONNECT-SEC
-      *
-           DISPLAY "RECE44     :" CNT-IN   
-           DISPLAY "RECE443    :" CNT-RECE443
-           DISPLAY "RECE44X    :" CNT-RECE44X
-           DISPLAY "*** ORCR0428 END ***"
-           .
-       300-TERM-EXT.
            EXIT.
       *
       *****************************************************************

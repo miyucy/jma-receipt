@@ -21,7 +21,7 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（労災・自賠責）
       *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
-      *                      （点数摘要欄並び替え）
+      *                      摘要欄並び替え（労災・自賠責）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−小豆沢   新規作成
@@ -210,7 +210,7 @@
            OPEN    INPUT               RECE46-FILE
            OPEN    I-O                 RECE47-FILE
       *
-           PERFORM    RECE46-READ-SEC
+           PERFORM    900-RECE46-READ-SEC
       *
           .
        100-INIT-EXT.
@@ -223,7 +223,7 @@
       *
            PERFORM     210-HENSYU-SEC
       *
-           PERFORM     RECE46-READ-SEC
+           PERFORM     900-RECE46-READ-SEC
            .
        200-MAIN-EXT.
            EXIT.
@@ -326,7 +326,7 @@
       ***  END-IF
       *****IF     RECE46-SRYKBN  NOT =  "11" AND "95" AND "96"
            IF     RECE46-SRYKBN  NOT =  "95" AND "96"
-               PERFORM     RECE47-WRITE-SEC
+               PERFORM     2101-RECE47-WRITE-SEC
            END-IF
            .
        210-HENSYU-EXT.
@@ -335,16 +335,44 @@
       *****************************************************************
       *    データ更新処理（Ｆ００６１）
       *****************************************************************
-       RECE47-WRITE-SEC                SECTION.
+       2101-RECE47-WRITE-SEC                SECTION.
       *
            WRITE   RECE47-REC
       *
            ADD     1                   TO  CNT-OUT
       *
            .
-       RECE47-WRITE-EXT.
+       2101-RECE47-WRITE-EXT.
            EXIT.
-057400*
+      *
+      *****************************************************************
+      *    終了処理
+      *****************************************************************
+       300-TERM-SEC                SECTION.
+      *
+           CLOSE   RECE46-FILE
+                   RECE47-FILE
+      *
+      *    ステップ管理終了処理
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           PERFORM 900-DBDISCONNECT-SEC
+      *
+           DISPLAY "RECE46-IN   :" CNT-IN   
+           DISPLAY "RECE47-OUT :" CNT-OUT   
+           DISPLAY "*** ORCR0470 END ***"
+      ***     ACCEPT  WRK-IN FROM CONSOLE 
+           .
+       300-TERM-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -380,37 +408,9 @@
            EXIT.
       *
       *****************************************************************
-      *    終了処理
-      *****************************************************************
-       300-TERM-SEC                SECTION.
-      *
-           CLOSE   RECE46-FILE
-                   RECE47-FILE
-      *
-      *    ステップ管理終了処理
-           MOVE    "STE"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
-      *
-           PERFORM 900-DBDISCONNECT-SEC
-      *
-           DISPLAY "RECE46-IN   :" CNT-IN   
-           DISPLAY "RECE47-OUT :" CNT-OUT   
-           DISPLAY "*** ORCR0470 END ***"
-      ***     ACCEPT  WRK-IN FROM CONSOLE 
-           .
-       300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    中間ファイルＲＥＡＤ処理
       *****************************************************************
-       RECE46-READ-SEC            SECTION.
+       900-RECE46-READ-SEC            SECTION.
       *
            READ    RECE46-FILE   NEXT
                AT  END
@@ -422,7 +422,7 @@
       *
            END-READ
            .
-       RECE46-READ-EXT.
+       900-RECE46-READ-EXT.
            EXIT.
       *
       *      

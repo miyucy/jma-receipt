@@ -21,7 +21,7 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（労災・自賠責）
       *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
-      *                      （レセプトコメント編集） 
+      *                      コメント編集（労災・自賠責）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  02/07/01    MCC-門脇　    新規作成
@@ -99,7 +99,7 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE4551-KEY
                                    FILE    STATUS  IS  STS-RECE451.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -690,7 +690,7 @@
                                                  MCPDATA-REC
              IF      MCP-RC              =   ZERO
                MOVE    "SYSKANRI-KEY2"  TO  ORC-DBPATH 
-               PERFORM   SYSKANRI-READ-SEC
+               PERFORM   900-SYSKANRI-READ-SEC
                PERFORM   VARYING   IDX    FROM   1   BY   1
                           UNTIL   (IDX             >      50)
                             OR    (FLG-SYSKANRI    =       1)
@@ -701,7 +701,7 @@
                    PERFORM   2001-JUSHIN-KENSAKU-SEC
       *
                    MOVE    "SYSKANRI-KEY2"  TO  ORC-DBPATH 
-                   PERFORM   SYSKANRI-READ-SEC
+                   PERFORM   900-SYSKANRI-READ-SEC
                END-PERFORM
              END-IF
       *
@@ -771,7 +771,7 @@
                       MOVE   ZERO   TO  FLG-COMMENT
       *            （慢性疼痛疾患管理料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
-                         PERFORM    2001-SHIDOU-HANTEI-SEC
+                        PERFORM    2001-SHIDOU-HANTEI-SEC
                       END-IF
       *            （傷病手当金意見書交付料交付日のセット）
                       IF   FLG-COMMENT  =  ZERO
@@ -782,7 +782,7 @@
                         PERFORM    2001-RYOYO-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-RECE44-TENSOU-SEC
+                        PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "14"
                       MOVE   ZERO   TO  FLG-COMMENT
@@ -796,7 +796,7 @@
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-RECE44-TENSOU-SEC
+                        PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "33"
       *            （在宅患者訪問点滴注射管理指導料算定時の点滴注射の
@@ -821,10 +821,10 @@
                       IF  FLG-ARI  =  1
                           PERFORM   2001-RIHA-COMMENT-SEC
                       ELSE
-                          PERFORM   2001-RECE44-TENSOU-SEC
+                          PERFORM   2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN   OTHER
-                      PERFORM       2001-RECE44-TENSOU-SEC
+                      PERFORM       2099-RECE44-TENSOU-SEC
                  END-EVALUATE
                ELSE                                                     
                  EVALUATE      RECE44-SRYKBN                            
@@ -832,7 +832,7 @@
                       MOVE   ZERO   TO  FLG-COMMENT
       *            （慢性疼痛疾患管理料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
-                         PERFORM    2001-SHIDOU-HANTEI-SEC
+                        PERFORM    2001-SHIDOU-HANTEI-SEC
                       END-IF
       *            （傷病手当金意見書交付料交付日のセット）
                       IF   FLG-COMMENT  =  ZERO
@@ -843,7 +843,7 @@
                         PERFORM    2001-RYOYO-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-RECE44-TENSOU-SEC
+                        PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "14"
                       MOVE   ZERO   TO  FLG-COMMENT
@@ -857,7 +857,7 @@
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-RECE44-TENSOU-SEC
+                        PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "33"
       *            （在宅患者訪問点滴注射管理指導料算定時の点滴注射の
@@ -882,10 +882,10 @@
                       IF  FLG-ARI  =  1
                           PERFORM   2001-RIHA-COMMENT-SEC
                       ELSE
-                          PERFORM   2001-RECE44-TENSOU-SEC
+                          PERFORM   2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN   OTHER                                         
-                      PERFORM       2001-RECE44-TENSOU-SEC
+                      PERFORM       2099-RECE44-TENSOU-SEC
                  END-EVALUATE                                           
                END-IF                                                   
       *
@@ -930,7 +930,7 @@
                                                MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "JYURRK-KEY24"  TO  ORC-DBPATH 
-               PERFORM   JYURRK-READ-SEC
+               PERFORM   900-JYURRK-READ-SEC
                PERFORM   UNTIL   FLG-JYURRK   =    1
                   IF   RECE41-HKNKBN    NOT  =  "4" 
                    IF    JYURRK-HKNKBN    =       "1"
@@ -981,7 +981,7 @@
                   END-IF
       *
                   MOVE    "JYURRK-KEY24"  TO  ORC-DBPATH 
-                  PERFORM   JYURRK-READ-SEC
+                  PERFORM   900-JYURRK-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -1064,7 +1064,7 @@
                  ELSE
                     IF  IDY     <  10 
                        IF    WK-FREE-YUKOKETA(IDZ)  =  25
-                          PERFORM  2001-FREE-COMMENT-KAIGYO-SEC
+                          PERFORM  20011-FREE-COMMENT-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "、"
@@ -1078,7 +1078,7 @@
                        END-IF
       *
                        IF    WK-FREE-YUKOKETA(IDZ)  =  24 OR 25
-                          PERFORM  2001-FREE-COMMENT-KAIGYO-SEC
+                          PERFORM  20011-FREE-COMMENT-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)(3:2)     
@@ -1101,7 +1101,7 @@
                        END-IF
                     ELSE
                        IF    WK-FREE-YUKOKETA(IDZ)  =  25
-                          PERFORM  2001-FREE-COMMENT-KAIGYO-SEC
+                          PERFORM  20011-FREE-COMMENT-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "、"
@@ -1114,7 +1114,7 @@
                        END-IF
       *
                        IF    WK-FREE-YUKOKETA(IDZ)  =  23 OR 24 OR 25
-                          PERFORM  2001-FREE-COMMENT-KAIGYO-SEC
+                          PERFORM  20011-FREE-COMMENT-KAIGYO-SEC
                           ADD   2  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)     
@@ -1147,7 +1147,7 @@
       *****************************************************************
       *    複数診療科受診の科・日付の編集（改行）
       *****************************************************************
-       2001-FREE-COMMENT-KAIGYO-SEC          SECTION.
+       20011-FREE-COMMENT-KAIGYO-SEC          SECTION.
       *
            ADD      1              TO  IDZ
       *
@@ -1156,7 +1156,7 @@
            MOVE    ALL "　"        TO  WK-FREE-NAME(IDZ)(1:WRK-KETA)
       *
            .
-       2001-FREE-COMMENT-KAIGYO-EXT.
+       20011-FREE-COMMENT-KAIGYO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1470,7 +1470,7 @@
            IF      MCP-RC              =   ZERO
       *
                 MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-                PERFORM        SANTEI-READ-SEC
+                PERFORM        900-SANTEI-READ-SEC
       *
                 PERFORM   UNTIL  ( FLG-SANTEI         =   1 ) OR
                                  ( FLG-KYUSEI-COMMENT =   1 )
@@ -1506,7 +1506,7 @@
                    END-PERFORM
       *
                    MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-                   PERFORM        SANTEI-READ-SEC
+                   PERFORM        900-SANTEI-READ-SEC
       *
                 END-PERFORM
       *
@@ -1520,7 +1520,7 @@
                                        MCPDATA-REC
       *
            IF      FLG-KYUSEI-COMMENT    =      1
-               PERFORM    2001-KYUSEIHASSYO-COMMENT-SEC
+               PERFORM    20011-KYUSEIHASSYO-COMMENT-SEC
            END-IF
       *
            .
@@ -1530,7 +1530,7 @@
       *****************************************************************
       *    脳血管疾患急性発症日のコメント編集
       *****************************************************************
-       2001-KYUSEIHASSYO-COMMENT-SEC          SECTION.
+       20011-KYUSEIHASSYO-COMMENT-SEC          SECTION.
       *
            INITIALIZE                      RECE441-REC
            MOVE    RECE41-HOSPID       TO  RECE441-HOSPID
@@ -1575,7 +1575,7 @@
            ADD     1                    TO  CNT-RECE45
       *
            .
-       2001-KYUSEIHASSYO-COMMENT-EXT.
+       20011-KYUSEIHASSYO-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1605,7 +1605,7 @@
                                          MCPDATA-REC
              IF      MCP-RC              =   ZERO
                   MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-                  PERFORM        SANTEI-READ-SEC
+                  PERFORM        900-SANTEI-READ-SEC
                   PERFORM   UNTIL   FLG-SANTEI  =   1
       *
                      IF     SANTEI-FSANTEIYMD(1:6)  =  RECE44-SRYYM   
@@ -1613,7 +1613,7 @@
                      END-IF
       * 
                      MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-                     PERFORM        SANTEI-READ-SEC
+                     PERFORM        900-SANTEI-READ-SEC
                   END-PERFORM
              END-IF
       *
@@ -1626,7 +1626,7 @@
       *
              IF      FLG-SHIDOU-COMMENT    =      1
                  MOVE       99      TO     FLG-COMMENT
-                 PERFORM    2001-SHIDOU-COMMENT-SEC
+                 PERFORM    20011-SHIDOU-COMMENT-SEC
              END-IF         
       *
            END-IF
@@ -1638,9 +1638,9 @@
       *****************************************************************
       *    慢性疼痛疾患管理料のコメント編集
       *****************************************************************
-       2001-SHIDOU-COMMENT-SEC          SECTION.
+       20011-SHIDOU-COMMENT-SEC          SECTION.
       *
-           PERFORM   2001-SANTEI-DAY-SEC
+           PERFORM   200111-SANTEI-DAY-SEC
       *
            MOVE       RECE44-REC    TO   RECE441-REC
            ADD        1             TO   RECE441-MEISAISU
@@ -1686,7 +1686,7 @@
            ADD      1                   TO  CNT-RECE45
       *
            .
-       2001-SHIDOU-COMMENT-EXT.
+       20011-SHIDOU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1696,7 +1696,7 @@
       *
            IF      RECE44-FLG-SYOBYO-COMMENT   =    "1"
                 MOVE       4       TO     FLG-COMMENT
-                PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+                PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
       *
            .
@@ -1710,7 +1710,7 @@
       *
            IF      RECE44-FLG-RYOYO-COMMENT    =    "1"
                 MOVE       4       TO     FLG-COMMENT
-                PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+                PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
       *
            .
@@ -1724,7 +1724,7 @@
       *
            IF     RECE44-FLG-HOUSIJI-COMMENT   =    "1"
                MOVE       3       TO     FLG-COMMENT
-               PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+               PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
       *
            .
@@ -1768,7 +1768,7 @@
                                          MCPDATA-REC
              IF      MCP-RC              =   ZERO
                     MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-                    PERFORM        SANTEI-READ-SEC
+                    PERFORM        900-SANTEI-READ-SEC
                     PERFORM   UNTIL  ( FLG-SANTEI         =   1 ) OR
                                      ( FLG-HINKAI-COMMENT =   1 )
       *
@@ -1796,7 +1796,7 @@
                        END-IF
       * 
                        MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-                       PERFORM        SANTEI-READ-SEC
+                       PERFORM        900-SANTEI-READ-SEC
                     END-PERFORM
              END-IF
       *
@@ -1809,7 +1809,7 @@
       *
              IF      FLG-HINKAI-COMMENT    =      1
                  MOVE       99      TO     FLG-COMMENT
-                 PERFORM    2001-HINKAI-COMMENT-SEC
+                 PERFORM    20011-HINKAI-COMMENT-SEC
              END-IF
       *
            END-IF
@@ -1821,9 +1821,9 @@
       *****************************************************************
       *    在宅血液透析頻回指導管理料のコメント編集
       *****************************************************************
-       2001-HINKAI-COMMENT-SEC          SECTION.
+       20011-HINKAI-COMMENT-SEC          SECTION.
       *
-             PERFORM    2001-RECE45-TAIHI-SEC
+             PERFORM    200111-RECE45-TAIHI-SEC
       *
       *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE45
@@ -1846,10 +1846,10 @@
                             TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)(27:4)
              MOVE    "1"    TO  WRK-RECE45XX-SIKFLG(MAX-MEISAISU 1)
       *
-             PERFORM    2001-SRYACTINF-HENSYU-SEC
+             PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
-       2001-HINKAI-COMMENT-EXT.
+       20011-HINKAI-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1858,9 +1858,9 @@
        2001-HOUTEN-HANTEI-SEC          SECTION.
       *
            IF     RECE44-FLG-HOUTEN-COMMENT   =    "1"
-               PERFORM    2001-HOUTEN-COMMENT-SEC
+               PERFORM    20011-HOUTEN-COMMENT-SEC
            ELSE
-               PERFORM    2001-RECE44-TENSOU-SEC
+               PERFORM    2099-RECE44-TENSOU-SEC
            END-IF
       *
            .
@@ -1870,9 +1870,9 @@
       *****************************************************************
       *    在宅患者訪問点滴注射管理指導料算定時の点滴注射のコメント編集
       *****************************************************************
-       2001-HOUTEN-COMMENT-SEC          SECTION.
+       20011-HOUTEN-COMMENT-SEC          SECTION.
       *
-             PERFORM    2001-RECE45-TAIHI-SEC
+             PERFORM    200111-RECE45-TAIHI-SEC
       *
       *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE45
@@ -1889,10 +1889,10 @@
                             TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
              MOVE    "1"    TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
       *
-             PERFORM    2001-SRYACTINF-HENSYU-SEC
+             PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
-       2001-HOUTEN-COMMENT-EXT.
+       20011-HOUTEN-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1902,9 +1902,9 @@
       *
            IF     RECE44-FLG-SHUJUTU-COMMENT   =    SPACE
                MOVE       1       TO     FLG-COMMENT
-               PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
+               PERFORM    20011-SHUJUTSU-ETC-COMMENT-SEC
            ELSE
-               PERFORM    2001-RECE44-TENSOU-SEC
+               PERFORM    2099-RECE44-TENSOU-SEC
            END-IF
       *
            .
@@ -1918,9 +1918,9 @@
       *
            IF      RECE44-FLG-CTMRI-COMMENT   =    "1"
                 MOVE       2       TO     FLG-COMMENT
-                PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
+                PERFORM    20011-SHUJUTSU-ETC-COMMENT-SEC
            ELSE
-                PERFORM    2001-RECE44-TENSOU-SEC
+                PERFORM    2099-RECE44-TENSOU-SEC
            END-IF
       *
            .
@@ -1930,16 +1930,16 @@
       *****************************************************************
       *    手術日等のコメント編集（差込：上）
       *****************************************************************
-       2001-SHUJUTSU-ETC-COMMENT-SEC          SECTION.
+       20011-SHUJUTSU-ETC-COMMENT-SEC          SECTION.
       *
-           PERFORM   2001-SANTEI-DAY-SEC
+           PERFORM   200111-SANTEI-DAY-SEC
       *
            MOVE       ZERO       TO   IDZ                               
            INITIALIZE            WRK-FREE-AREA2                         
       *
-           PERFORM  2001-FREE-COMMENT2-SEC                              
+           PERFORM  200111-FREE-COMMENT2-SEC                              
       *
-           PERFORM  2001-RECE45-TAIHI-SEC
+           PERFORM  200111-RECE45-TAIHI-SEC
       *
       *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE45
@@ -1960,25 +1960,25 @@
                 MOVE    "1"   TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
            END-PERFORM 
       *
-           PERFORM    2001-SRYACTINF-HENSYU-SEC
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
-       2001-SHUJUTSU-ETC-COMMENT-EXT.
+       20011-SHUJUTSU-ETC-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
       *    手術日等のコメント編集２（差込：下）
       *****************************************************************
-       2001-SHUJUTSU-ETC2-COMMENT-SEC          SECTION.
+       20011-SHUJUTSU-ETC2-COMMENT-SEC          SECTION.
       *
-           PERFORM   2001-SANTEI-DAY-SEC
+           PERFORM   200111-SANTEI-DAY-SEC
       *
            MOVE       ZERO       TO   IDZ                               
            INITIALIZE            WRK-FREE-AREA2                         
       *
-           PERFORM  2001-FREE-COMMENT2-SEC                              
+           PERFORM  200111-FREE-COMMENT2-SEC                              
       *
-           PERFORM  2001-RECE45-TAIHI-SEC
+           PERFORM  200111-RECE45-TAIHI-SEC
       *
       *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE45
@@ -2001,16 +2001,16 @@
                 MOVE    "1"  TO  WRK-RECE45XX-SIKFLG(MAX-MEISAISU 1)
            END-PERFORM 
       *
-           PERFORM    2001-SRYACTINF-HENSYU-SEC
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
-       2001-SHUJUTSU-ETC2-COMMENT-EXT.
+       20011-SHUJUTSU-ETC2-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
       *    算定日の確定
       *****************************************************************
-       2001-SANTEI-DAY-SEC          SECTION.
+       200111-SANTEI-DAY-SEC          SECTION.
       *
            INITIALIZE                TBL-SANTEI-DAY
       *
@@ -2025,13 +2025,13 @@
            END-PERFORM
       *
            .
-       2001-SANTEI-DAY-EXT.
+       200111-SANTEI-DAY-EXT.
            EXIT.
       *
       *****************************************************************
       *    手術日等の日付の編集
       *****************************************************************
-       2001-FREE-COMMENT2-SEC          SECTION.                         
+       200111-FREE-COMMENT2-SEC          SECTION.                         
       *
            ADD      1          TO    IDZ
       *
@@ -2113,7 +2113,7 @@
                        MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  25
-                          PERFORM  2001-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  2001111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "、"
@@ -2127,7 +2127,7 @@
                        END-IF
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  24 OR 25
-                          PERFORM  2001-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  2001111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)(3:2)     
@@ -2153,7 +2153,7 @@
                        MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  25
-                          PERFORM  2001-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  2001111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "、"
@@ -2166,7 +2166,7 @@
                        END-IF
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  23 OR 24 OR 25
-                          PERFORM  2001-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  2001111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)     
@@ -2192,13 +2192,13 @@
       *
            END-PERFORM
            .
-       2001-FREE-COMMENT2-EXT.
+       200111-FREE-COMMENT2-EXT.
            EXIT.
       *
       *****************************************************************
       *    手術日等の日付の編集（改行）
       *****************************************************************
-       2001-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  
+       2001111-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  
       *
            ADD      1              TO  IDZ
       *
@@ -2207,7 +2207,7 @@
            MOVE    ALL "　"        TO  WK-FREE-NAME2(IDZ)(1:WRK-KETA)
       *
            .
-       2001-FREE-COMMENT2-KAIGYO-EXT.
+       2001111-FREE-COMMENT2-KAIGYO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2215,7 +2215,7 @@
       *****************************************************************
        2001-RIHA-COMMENT-SEC          SECTION.
       *
-             PERFORM  2001-RECE45-TAIHI-SEC
+             PERFORM  200111-RECE45-TAIHI-SEC
       *
       *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE45
@@ -2368,7 +2368,7 @@
                            TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)(9:4)
              END-IF
       *
-             PERFORM    2001-SRYACTINF-HENSYU-SEC
+             PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
        2001-RIHA-COMMENT-EXT.
@@ -2377,21 +2377,21 @@
       *****************************************************************
       *    レセプト０４転送処理
       *****************************************************************
-       2001-RECE44-TENSOU-SEC     SECTION.
+       2099-RECE44-TENSOU-SEC     SECTION.
       *
            MOVE       RECE44-REC    TO   RECE441-REC
            WRITE      RECE441-REC
            ADD        1             TO   CNT-RECE44
-           PERFORM    2001-RECE45-TENSOU-SEC
+           PERFORM    20991-RECE45-TENSOU-SEC
       *
            .
-       2001-RECE44-TENSOU-EXT.
+       2099-RECE44-TENSOU-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト０５転送処理
       *****************************************************************
-       2001-RECE45-TENSOU-SEC     SECTION.
+       20991-RECE45-TENSOU-SEC     SECTION.
       *
            INITIALIZE                      RECE45-REC
            MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
@@ -2430,13 +2430,13 @@
            END-PERFORM
       *
            .
-       2001-RECE45-TENSOU-EXT.
+       20991-RECE45-TENSOU-EXT.
            EXIT.
       *
       *****************************************************************
       *    ０５　退避処理
       *****************************************************************
-       2001-RECE45-TAIHI-SEC     SECTION.
+       200111-RECE45-TAIHI-SEC     SECTION.
       *
            INITIALIZE                      RECE45-REC
            MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
@@ -2457,13 +2457,13 @@
            END-START
       *
            .
-       2001-RECE45-TAIHI-EXT.
+       200111-RECE45-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
       *    ０５　ＳＲＹＡＣＴＩＮＦ編集処理
       *****************************************************************
-       2001-SRYACTINF-HENSYU-SEC     SECTION.
+       200111-SRYACTINF-HENSYU-SEC     SECTION.
       *
            PERFORM
              UNTIL  ( FLG-RECE45           =   1                   )
@@ -2531,7 +2531,7 @@
            ADD     1                 TO      CNT-RECE44
       *
            .
-       2001-SRYACTINF-HENSYU-EXT.
+       200111-SRYACTINF-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2671,7 +2671,7 @@
       *****************************************************************
       *    算定歴マスタ読み込み
       *****************************************************************
-       SANTEI-READ-SEC         SECTION.
+       900-SANTEI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
@@ -2687,13 +2687,13 @@
            END-IF
       *
            .
-       SANTEI-READ-EXT.
+       900-SANTEI-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    システム管理マスター読込
       *****************************************************************
-       SYSKANRI-READ-SEC         SECTION.
+       900-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -2709,13 +2709,13 @@
            END-IF
       *
            .
-       SYSKANRI-READ-EXT.
+       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    受診履歴読込
       *****************************************************************
-       JYURRK-READ-SEC         SECTION.
+       900-JYURRK-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -2731,7 +2731,7 @@
            END-IF
       *
            .
-       JYURRK-READ-EXT.
+       900-JYURRK-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2767,7 +2767,7 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
            .
-       100-DBOPEN-EXT.
+       120-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************

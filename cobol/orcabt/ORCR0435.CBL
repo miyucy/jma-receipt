@@ -21,7 +21,7 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（労災・自賠責）
       *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
-      *                      （レセプトコメント編集２） 
+      *                      コメント編集２（労災・自賠責）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  02/07/01    MCC-門脇　    新規作成
@@ -76,7 +76,7 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE4551-KEY
                                    FILE    STATUS  IS  STS-RECE451.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -118,7 +118,7 @@
            COPY    "CPRCF045.INC"  REPLACING   //RECE45//
                                    BY          //RECE4551//.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -538,40 +538,6 @@
            EXIT.
       *
       *****************************************************************
-      *    エラー出力処理
-      *****************************************************************
-       500-ERR-HENSYU-SEC                SECTION.
-      *
-           OPEN    INPUT   RECEERR-FILE
-           IF      STS-RECEERR         =   ZERO
-               CLOSE   RECEERR-FILE
-           ELSE
-               OPEN    OUTPUT              RECEERR-FILE
-      *
-               MOVE    WRK-RECEERR         TO  RECEERR-REC
-               WRITE   RECEERR-REC
-               CLOSE   RECEERR-FILE
-      *         
-      *        ジョブ管理開始処理
-               MOVE    "JBE"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
-               MOVE    WRK-RECEERR     TO  JOB-YOBI
-               MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
-           END-IF
-      *                             
-           MOVE    1                   TO  FLG-END
-      *
-           .
-       500-ERR-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
@@ -616,6 +582,40 @@
       *
            .
        310-FILE-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー出力処理
+      *****************************************************************
+       500-ERR-HENSYU-SEC                SECTION.
+      *
+           OPEN    INPUT   RECEERR-FILE
+           IF      STS-RECEERR         =   ZERO
+               CLOSE   RECEERR-FILE
+           ELSE
+               OPEN    OUTPUT              RECEERR-FILE
+      *
+               MOVE    WRK-RECEERR         TO  RECEERR-REC
+               WRITE   RECEERR-REC
+               CLOSE   RECEERR-FILE
+      *         
+      *        ジョブ管理開始処理
+               MOVE    "JBE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               MOVE    WRK-RECEERR     TO  JOB-YOBI
+               MOVE    "9999"          TO  JOB-ERRCD
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
+           END-IF
+      *                             
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       500-ERR-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -687,7 +687,7 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
            .
-       100-DBOPEN-EXT.
+       120-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************

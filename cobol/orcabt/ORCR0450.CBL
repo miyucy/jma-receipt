@@ -21,7 +21,7 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（労災・自賠責）
       *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
-      *                      （傷病名並替え）
+      *                      傷病名並び替え（労災・自賠責）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−藤原　   新規作成
@@ -307,7 +307,35 @@
            .
        200-MAIN-EXT.
            EXIT. 
-057400*
+      *
+      *****************************************************************
+      *    終了処理
+      *****************************************************************
+       300-TERM-SEC                SECTION.
+      *
+           CLOSE   RECE42-FILE
+           CLOSE   RECE43-FILE
+      *
+      *    ステップ管理終了処理
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           PERFORM 900-DBDISCONNECT-SEC
+      *
+           DISPLAY "RECE42   IN  " CNT-IN  
+           DISPLAY "RECE43  CNT " CNT-OUT  
+           DISPLAY "*** ORCR0450 END ***"
+      ***     ACCEPT  WRK-IN FROM CONSOLE 
+           .
+       300-TERM-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -340,34 +368,6 @@
       *
            .
        500-ERR-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    終了処理
-      *****************************************************************
-       300-TERM-SEC                SECTION.
-      *
-           CLOSE   RECE42-FILE
-           CLOSE   RECE43-FILE
-      *
-      *    ステップ管理終了処理
-           MOVE    "STE"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
-      *
-           PERFORM 900-DBDISCONNECT-SEC
-      *
-           DISPLAY "RECE42   IN  " CNT-IN  
-           DISPLAY "RECE43  CNT " CNT-OUT  
-           DISPLAY "*** ORCR0450 END ***"
-      ***     ACCEPT  WRK-IN FROM CONSOLE 
-           .
-       300-TERM-EXT.
            EXIT.
       *
       *****************************************************************
