@@ -5,6 +5,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03/09/30  診断履歴モジュールの変更
       ************************************************************
       *01  LF04-REC.
       *
@@ -404,13 +405,16 @@
       * カルテ電子保存の確定日
                05  LF04-CONFIRMDATE3        PIC X(10).
       * 疾患コード (mmlRd:code)
-               05  LF04-SND-SPICOD1         PIC X(10).
+      *********05  LF04-SND-SPICOD1         PIC X(10).
+               05  LF04-SND-SPICOD1         PIC X(50).
       * 疾患コード体系名 (mmlRd:system)
                05  LF04-SND-SPICODTBL1      PIC X(15).
       * 疾患名
-               05  LF04-SND-SPINAME1        PIC X(50).
+      *********05  LF04-SND-SPINAME1        PIC X(50).
+               05  LF04-SND-SPINAME1        PIC X(80).
       * <疾患要素>
-               05  LF04-SNDSPITBL           OCCURS  3.
+      *********05  LF04-SNDSPITBL           OCCURS  3.
+               05  LF04-SNDSPITBL           OCCURS  6.
       * 疾患コード (mmlRd:code)
                    07  LF04-SNDSPITBL-SPICOD2     PIC X(10).
       * 疾患コード体系名 (mmlRd:system)

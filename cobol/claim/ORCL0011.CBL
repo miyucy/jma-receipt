@@ -74,6 +74,7 @@
            03  FLG-LF03            PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
+           03  FLG-HKNNUM          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -108,15 +109,21 @@
                05  WRK-KOHI-TBL        OCCURS  4.
                    07  WRK-KOHID-O     PIC  9(10).
                    07  WRK-KOHHKNNUM-O PIC  X(03).
+                   07  WRK-KOHMEI-O    PIC  X(50).
+                   07  WRK-GAIJGNKBN-O PIC  X(01).
       *    ÊÂ¤ÓÂØ¤¨¸å
            03  WRK-KOHI-AREA-X.
                05  WRK-KOHI-TBL-X      OCCURS  4.
                    07  WRK-KOHID       PIC  9(10).
                    07  WRK-KOHHKNNUM   PIC  X(03).
+                   07  WRK-KOHMEI      PIC  X(50).
+                   07  WRK-GAIJGNKBN   PIC  X(01).
       *    £Ó£Ï£Ò£ÔÍÑ¥ï¡¼¥¯
            03  WRK-KOHI.
                05  WRK-KOHID-W         PIC  9(10).
                05  WRK-KOHHKNNUM-W     PIC  X(03).
+               05  WRK-KOHMEI-W        PIC  X(50).
+               05  WRK-GAIJGNKBN-W     PIC  X(01).
       *
       *    ¿Ç»¡ÎÁÍÑ
        01  WRK-SINSATU-AREA.
@@ -162,6 +169,12 @@
       *
            03  WRK-LSTYMD              PIC X(08).
            03  WRK-LSTSRYKA            PIC X(02).
+      * 
+      *    ÉéÃ´Î¨
+           03  WRK-FTNRATE             PIC 9(02)V99.
+           03  WRK-Z9                  PIC 9.ZZ.
+           03  WRK-FTNRATEMEI          PIC X(05).
+           03  WRK-ZZ9                 PIC ZZZZ9.
       *
        01  WRK-SRT-AREA.
            03  WRK-SRT-TABLE.
@@ -458,6 +471,10 @@
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
+      *    ÊÝ¸±ÈÖ¹æ
+       01  HKNNUM-REC.
+           COPY    "CPHKNNUM.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -476,6 +493,11 @@
       *     
       *    ´µ¼ÔÈÖ¹æÊÑ´¹¥µ¥Ö
            COPY    "CPORCSPTID.INC".
+      *
+      *    ÊÝ¸±Ç¯Îð¡¦ÉéÃ´³ä¹ç»»Äê¥µ¥Ö
+           COPY    "CPORCSAGECHK.INC".
+      *
+      *
       *    £Õ£É£Ä¼èÆÀÍÑ¥¨¥ê¥¢
        01 UIDIO-AREA.
            03  C-RET   PIC X(2).
@@ -654,6 +676,12 @@
                                      INTO    WRK-LF01-RENRAKU-ADRS
            END-IF 
       *
+           IF       PTINF-HOME-TEL1      NOT =  SPACE
+               MOVE     "?????"          TO  WRK-LF01-PHONE-AREA
+               MOVE     "?????"          TO  WRK-LF01-PHONE-CITY
+               MOVE     "?????"          TO  WRK-LF01-PHONE-NUM
+               MOVE     PTINF-HOME-TEL1  TO  WRK-LF01-PHONE-MEMO
+           END-IF
       *
            IF      PTINF-OFFICE-POST     =   SPACE
            AND     PTINF-OFFICE-ADRS     =   SPACE
@@ -736,6 +764,7 @@
            END-IF
       *
            MOVE    ZERO                TO  IDX
+           MOVE    SPACE               TO   WRK-FTNRATEMEI
            PERFORM UNTIL       (IDX            =   20   )  OR
                                (FLG-HKNCOMBI   =   1    )
            DISPLAY "ÊÝ¸±¾ðÊó START"
@@ -744,8 +773,32 @@
                        COMB-DELKBN           =   SPACE
                    ADD     1                 TO  IDX
       *
-111500*   ¼çÊÝ¸±¾ðÊóÆÉ¤ß½Ð¤·
+      *            ÉéÃ´Î¨·×»»
+                   INITIALIZE                  ORCSAGECHKAREA
+                   MOVE    COMB-HOSPID         TO  AGECHK-HOSPID
+                   MOVE    COMB-PTID           TO  AGECHK-PTID
+                   MOVE    LNK-SYSYMD          TO  AGECHK-SRYYMD
+                   MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
+                   MOVE    COMB-HKNCOMBINUM    TO  AGECHK-HKNCOMBINUM
+                   CALL    "ORCSAGECHK"        USING
+                                               ORCSAGECHKAREA
+      *            ÉéÃ´Î¨
+                   IF      AGECHK-RC           =   ZERO
+                       COMPUTE WRK-FTNRATE         =   AGECHK-FTNRATE
+                                                   /   100
+                   ELSE
+                       COMPUTE WRK-FTNRATE         =   COMB-GAI-KFTNRATE
+                                                   /   100
+                   END-IF
+                   MOVE    WRK-FTNRATE         TO   WRK-Z9
+                   MOVE    WRK-Z9              TO   WRK-FTNRATEMEI
+      *
+      *   ¼çÊÝ¸±¾ðÊóÆÉ¤ß½Ð¤·
                    IF      COMB-HKNID          NOT =   ZERO
+      *                ÉéÃ´Î¨
+                       MOVE    WRK-FTNRATEMEI      TO
+                                               WRK-LF01-OUTRATIO (IDX)
+      *
                        MOVE    COMB-HKNCOMBINUM    TO
                                                LF03-HKNCOMBINUM (IDX)
       *                 
@@ -796,6 +849,7 @@
                        PERFORM 500-HIZUKE-HENSYU-SEC
                        MOVE    WRK-HENYMD      
                                TO  WRK-LF01-TEKEDYMD (IDX)
+      **************** MOVE    "0.3" TO  WRK-LF01-OUTRATIO (IDX)
              DISPLAY "PTHKN-HKNNUM = " "[" PTHKN-HKNNUM "]" 
                        PERFORM VARYING IDW FROM    1   BY  1
                                UNTIL   IDW >       40
@@ -826,7 +880,7 @@
       *      END-PERFORM
                    END-IF
       *
-111500*   ¸øÈñÆÉ¤ß½Ð¤·
+      *   ¸øÈñÆÉ¤ß½Ð¤·
                    IF      COMB-KOHHKNNUM (1)  NOT =   SPACE
                        PERFORM 20012-KOHID-HENSYU-SEC
                        PERFORM VARYING IDY1 FROM    1   BY  1
@@ -863,9 +917,17 @@
                            PERFORM 500-HIZUKE-HENSYU-SEC
                            MOVE    WRK-HENYMD      TO
                                         WRK-LF01-TTEKEDYMD (IDX IDY1)
+      *??
+      *                    ÉéÃ´Î¨¡¦ÉéÃ´³ÛÊÔ½¸
+                           PERFORM 400-KOHFTN-HENSYU-SEC
+      *??
+      *                    ¸øÈñÌ¾¾Î
+                           MOVE    WRK-KOHMEI (IDY1)   TO
+                                           WRK-LF01-KOHINAME (IDX IDY1)
+      *
                        END-PERFORM    
                    END-IF
-115900         END-IF
+               END-IF
       *
                MOVE    "HKNCOMBI-KEY2"       TO  ORC-DBPATH
                PERFORM 900-COMB-READ-SEC
@@ -1101,6 +1163,12 @@
                    UNTIL   IDZ >       4
                MOVE    COMB-KOHID    (IDZ) TO  WRK-KOHID-O     (IDZ)
                MOVE    COMB-KOHHKNNUM(IDZ) TO  WRK-KOHHKNNUM-O (IDZ)
+      *        ¸øÈñÌ¾¾Î
+               MOVE    COMB-KOH-TANSEIDONAME(IDZ)
+                                           TO  WRK-KOHMEI-O    (IDZ)
+      *        ¸øÈñ¡Ý³°Íè¡Ý¾å¸Â¶èÊ¬
+               MOVE    COMB-KOH-GAIJGNKBN (IDZ)
+                                           TO  WRK-GAIJGNKBN-O (IDZ)
            END-PERFORM
       *
       *    Í¥Àè½ç°Ì¤ËÊÂ¤ÙÂØ¤¨
@@ -1157,6 +1225,63 @@
 076800     .
 076900 20012-KOHID-HENSYU-EXT.
 077000     EXIT.
+      *
+      *****************************************************************
+      *    ÉéÃ´Î¨¡¦ÉéÃ´³ÛÊÔ½¸½èÍý
+      *****************************************************************
+       400-KOHFTN-HENSYU-SEC        SECTION.
+      *
+      *
+           MOVE    SPACE               TO  HKNNUM-REC
+           MOVE    LNK-HOSPID          TO  HKN-HOSPID
+      *    ÊÝ¸±ÈÖ¹æ¡Ê¸øÈñ¡Ë
+           MOVE    PTKOH-KOHNUM        TO  HKN-HKNNUM
+      *    »ÙÊ§¶èÊ¬
+           MOVE    PTKOH-PAYKBN        TO  HKN-PAYKBN
+           MOVE    LNK-SYSYMD          TO  HKN-TEKSTYMD
+           MOVE    LNK-SYSYMD          TO  HKN-TEKEDYMD
+           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNNUM-KEY"    TO  ORC-DBPATH
+               PERFORM 980-HKNNUM-READ-SEC
+           ELSE
+               INITIALIZE              HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           IF      WRK-GAIJGNKBN (IDY1)    =   SPACE
+      *        ËÜ¿Í¡Ý³°Íè¡Ý²ó¡ÝÉéÃ´³ä¹ç
+               COMPUTE WRK-FTNRATE         =   HKN-HON-GAIKFTNRATE
+                                           /   100
+               MOVE    WRK-FTNRATE         TO  WRK-Z9
+               MOVE    WRK-Z9              TO  WRK-FTNRATEMEI
+               MOVE    WRK-FTNRATEMEI      TO  WRK-LF01-RATIO (IDX IDY1)
+               MOVE    "ratio"             TO  WRK-LF01-RATIO-CODE
+                                                              (IDX IDY1)
+           ELSE
+      *        ¾å¸Â³Û
+               IF      HKN-HON-GAIKKOTGAK  =   ZERO
+      *            ËÜ¿Í¡Ý³°Íè¡ÝÆü¡Ý¾å¸Â³Û
+                   MOVE    HKN-HON-GAIDJGNGAK  TO  WRK-ZZ9
+               ELSE
+      *            ËÜ¿Í¡Ý³°Íè¡Ý²ó¡Ý¾å¸Â³Û
+                   MOVE    HKN-HON-GAIKKOTGAK  TO  WRK-ZZ9
+               END-IF
+               MOVE    WRK-ZZ9             TO  WRK-LF01-RATIO (IDX IDY1)
+               MOVE    "fix"               TO  WRK-LF01-RATIO-CODE
+                                                              (IDX IDY1)
+           END-IF
+           .
+       400-KOHFTN-HENSYU-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ¿Ç»¡ÎÁ¥³¡¼¥É¤ò·èÄê½èÍý
@@ -1834,6 +1959,27 @@
       *
            .
        930-SRYACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±ÈÖ¹æ¥Þ¥¹¥¿¼¡¸¡º÷½èÍý
+      *****************************************************************
+       980-HKNNUM-READ-SEC             SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  HKNNUM-REC
+               MOVE    ZERO            TO  FLG-HKNNUM
+           ELSE
+               INITIALIZE              HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+           .
+       980-HKNNUM-READ-EXT.
            EXIT.
       *
       *****************************************************************

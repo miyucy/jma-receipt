@@ -8,6 +8,9 @@
 #                  '01-10-30 by Ymmt
 # version 1.4.0 マルチスレッド対応
 #                  '02-11-12 by hiki
+# version 1.4.1 １秒中の複数受信対応
+#               後ろに、受信の度にカウントアップされる番号を付加している
+#                  '03-10-15 by hiki
 
 require 'socket'
 require 'xml_valid.rb'
@@ -27,6 +30,9 @@ $seq_exec = 0       # 実行中識別番号
 $seq_max = 32767    # 識別番号の最大値
 $thr_sleeptime = 1  # スレッドの順序待ち時のsleep時間
 # 2002/11/12 add end (hiki)
+# 2003/10/15 add start (hiki)
+$fname_seq = 0      # 受信カウンタ(ファイル名に使用する)
+# 2002/10/15 add end (hiki)
 
 #----- Define Classes --------------------------------
 
@@ -136,7 +142,15 @@ def file_chk(fl)
 end
 
 def make_file_name
-  flname = "claim_rcv_" + Time.now.strftime("%m%d_%H%M%S") + ".xml"
+# 2003/10/15 edit start (hiki)
+#  flname = "claim_rcv_" + Time.now.strftime("%m%d_%H%M%S") + ".xml"
+  flname = "claim_rcv_" + Time.now.strftime("%m%d_%H%M%S") + "_" + sprintf("%02d", $fname_seq) + ".xml"
+  $fname_seq += 1
+  if $fname_seq > 99
+    $fname_seq = 0
+  end
+  return flname
+# 2002/10/15 edit end (hiki)
 end
 
 #----- Main -----------------------------------------
