@@ -690,6 +690,9 @@
                                        TO  SPA-ERRMSG
                    MOVE    "中心静脈注射料は算定できません。"
                                        TO  SPA-ERRMSG(25:)
+               WHEN    "9028"
+                   MOVE    "この診療種別は外来のみの使用です。"
+                                       TO  SPA-ERRMSG
                WHEN    "9100"
                    MOVE    "診療内容が２００行を超えます。"
                                        TO  SPA-ERRMSG

@@ -992,6 +992,22 @@
                MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN   (IDX)
                GO      TO      51011-SRYSYUKBN-KBN-EXT
            END-IF
+      *    皮下筋肉注射の振替えなしの時、そのまま
+           IF     (IDX                     >   1     )  AND
+                  (SPA-GMN-INPUTCD(IDX - 1)(1:4)   =   ".312" ) AND
+                  (SPA-COM-TNSSRYKBN (IDX) =   "31"  )
+               MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
+               MOVE    SPA-COM-TNSSRYKBN (IDX) TO  WRK-SRYKBN
+               MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN   (IDX)
+               GO      TO      51011-SRYSYUKBN-KBN-EXT
+           END-IF
+           IF      SPA-COM-SRYSYUKBN (IDX)  =   "312"
+               IF     (IDX                  =   1   )  OR
+                      (SPA-COM-SRYSYUKBN (IDX - 1)  NOT =   "312")
+                   MOVE    SPA-COM-TNSSRYSYUKBN (IDX)
+                                            TO  SPA-COM-SRYSYUKBN (IDX)
+               END-IF
+           END-IF
       *
            IF      SPA-COM-TNSSRYKBN (IDX) NOT =   ZERO
                MOVE    SPA-COM-TNSSRYKBN (IDX) TO  WRK-SRYKBN
@@ -1216,14 +1232,6 @@
                END-IF
       *
            END-IF
-      *
-      *TEST
-                DISPLAY "C93 IDX:" IDX
-                       ",FLG-ARI:" FLG-ARI
-                      ",SRYSYU:" SPA-COM-TNSSRYSYUKBN (IDX)
-                     ",GMN:" SPA-GMN-INPUTCD(IDX)
-                     "," SPA-GMN-INPUTCD(IDX - 1)(1:4)
-      *TEST
       *
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"              TO  SPA-ERRCD

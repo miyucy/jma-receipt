@@ -34,6 +34,7 @@
       * 01.00.04     NACL−多々納 02/12/09  動脈注射エラー追加
       * 01.00.05     NACL−多々納 03/01/07  入院点滴処理追加
       * 01.00.06     NACL−多々納 03/04/01  中心静脈自動発生追加
+      * 01.00.07     NACL−多々納 03/04/10  皮下筋注射変換なし(312)追加
       *****************************************************************
       *
       *
@@ -402,6 +403,13 @@
                                                                (IDX-Z)
                            END-IF
                        END-IF
+                       IF      WRK-GMN-INPUTCD(IDX-Z)  =   ".312"
+                           IF     SPA-NYUGAIKBN        =   "1"
+                               MOVE    "9028"          TO  WRK-ERRCD
+                               MOVE    "1"             TO  WRK-COM-CUR
+                                                               (IDX-Z)
+                           END-IF
+                       END-IF
       *
                    WHEN    OTHER
       *                編集チェックへ
@@ -539,6 +547,9 @@
       *            ELSE
       *                MOVE    "130700510"     TO  WRK-SRYCD
       *******      END-IF
+      *        皮下筋肉注射
+               WHEN    "312"
+                   MOVE    "130000510"         TO  WRK-SRYCD
       *        静脈注射
                WHEN    "320"
                    MOVE    "130003510"         TO  WRK-SRYCD
