@@ -848,7 +848,7 @@
            MOVE    ZERO                TO  ORC-DBYMD
            MOVE    SYS-5012-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    "SYSKANRI-KEY7"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -864,7 +864,7 @@
                               OR          FLG-ERR         =   1
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    "SYSKANRI-KEY7"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -1182,12 +1182,13 @@
       *****************************************************************
        900-SYS5012-READ-SEC         SECTION.
       *
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    "SYSKANRI-KEY7"     TO  ORC-DBPATH
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+           DISPLAY "SYS5012 MCP-RC = " MCP-RC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYS5012
                MOVE    MCPDATA-REC     TO  SYS-5012-REC
