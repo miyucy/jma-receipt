@@ -1881,7 +1881,10 @@
       *                   PERFORM 1100-KASAN-SET-SEC
       *                   MOVE    SPACE            TO  WRK-COM-AUTOKBN
       *****                                                (IDX-Z)
-                          IF      WRK-COM-KZMFLG (IDX-Z)   =   SPACE
+                          IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)
+                            AND  (LNK-ORCSC-KEI-IDX        =   ZERO )
+                              MOVE    IDX-Z            TO
+                                                       LNK-ORCSC-KEI-IDX
                               MOVE    "K007"           TO  WRK-ERRCD
                               MOVE    "1"              TO  WRK-COM-CUR
                                                           (IDX-Z)
