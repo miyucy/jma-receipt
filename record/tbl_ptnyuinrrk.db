@@ -562,3 +562,18 @@ path	key32	{
 	};
 };
 
+path	key33		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key33_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE   HOSPID      =   :HOSPID 
+			AND		PTID          =   :PTID
+			AND		RRKEDANUM     =   1
+                        AND             JTIKBN        <>  '5'
+                        AND             JTIKBN        <>  '6'
+			ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC
+		;
+	};
+};
+
