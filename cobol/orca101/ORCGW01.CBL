@@ -214,8 +214,6 @@
            03  FILLER              PIC X(35)   VALUE
                "1027 割引率情報".
            03  FILLER              PIC X(35)   VALUE
-               "1027 割引率情報".
-           03  FILLER              PIC X(35)   VALUE
                "1030 帳票編集区分情報".
            03  FILLER              PIC X(35)   VALUE
                "1031 出力先プリンタ割り当て情報".
@@ -235,11 +233,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   26.
+           03  TBL-KANRICD-TBL         OCCURS   25.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   26.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   25.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
