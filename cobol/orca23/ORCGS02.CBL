@@ -2176,6 +2176,8 @@
                        INITIALIZE      ORCHC03AREA
                        MOVE   SYU-DENPNUM  TO  ORCHC03-DENPNUM
                        MOVE   SYU-SKYMONEY TO  ORCHC03-SEIKYU
+                       MOVE   SYU-SKYMONEY-TAX-SAI
+                                           TO  ORCHC03-SEIKYU-TAX-SAI 
                        MOVE   SYU-NYUKIN-TOTAL
                                            TO  ORCHC03-NYUKIN
       *****************CALL  "ORCHC03"     USING   WRK-SPA-AREA
