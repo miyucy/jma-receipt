@@ -55,6 +55,7 @@
       *  01.01.06    NACL-門脇    04.07.30  同日複数再診のコメント修正
       *  中止処理追加
       *  01.02.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.02.02    NACL-門脇    04/12/09  脳血管疾患急性発症終了日対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1471,7 +1472,7 @@
            MOVE    CONS-KYUSEI         TO  SANTEI-SRYCD
            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
            MOVE    ZERO                TO  SANTEI-SRYKA
-           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           MOVE    RECE41-HKNCOMBI     TO  SANTEI-HKNCOMBINUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH

@@ -65,6 +65,7 @@
       *                                     ½¤Àµ
       *  Ãæ»ß½èÍýÄÉ²Ã
       *  01.03.01    NACL-Æ£¸¶    04/09/28  Ãæ»ß½èÍý¤ÎÄÉ²Ã
+      *  01.03.02    NACL-ÌçÏÆ    04/12/09  Ç¾·ì´É¼À´µµÞÀ­È¯¾É½ªÎ»ÆüÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -204,6 +205,7 @@
            03  FLG-SHIDOU-COMMENT  PIC 9(01).
            03  FLG-HINKAI-COMMENT  PIC 9(01).
            03  FLG-KYUSEI-COMMENT  PIC 9(01).
+           03  FLG-KYUSEI-COMMENT2 PIC 9(01).
            03  FLG-COMMENT         PIC 9(02).
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -411,6 +413,8 @@
            03  CONS-TOSEKI          PIC X(09) VALUE "114009310".
       *    Ç¾·ì´É¼À´µµÞÀ­È¯¾ÉÆü
            03  CONS-KYUSEI          PIC X(09) VALUE "099800101".
+      *    Ç¾·ì´É¼À´µµÞÀ­È¯¾É½ªÎ»Æü
+           03  CONS-KYUSEI-END      PIC X(09) VALUE "099800102".
       *
       *   ¥ê¥Ï¥Ó¥ê¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë
        01  TBL-RIHA-AREA.
@@ -1959,7 +1963,10 @@
        2001-KYUSEIHASSYO-HANTEI-SEC          SECTION.
       *
            MOVE     ZERO     TO     FLG-KYUSEI-COMMENT
+           MOVE     ZERO     TO     FLG-KYUSEI-COMMENT2
            MOVE     ZERO     TO     WRK-KYUSEIYMD
+      *
+      *    Ç¾·ì´É¼À´µµÞÀ­È¯¾ÉÆü
       *
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
@@ -2028,7 +2035,68 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
       *
+      *    Ç¾·ì´É¼À´µµÞÀ­È¯¾É½ªÎ»Æü
+      *
            IF      FLG-KYUSEI-COMMENT    =      1
+      *       »»ÄêÍúÎò¸¡º÷
+              INITIALIZE                  SANTEI-REC
+              MOVE    RECE02-HOSPID       TO  SANTEI-HOSPID
+              MOVE    RECE02-PTID         TO  SANTEI-PTID
+              MOVE    CONS-KYUSEI-END     TO  SANTEI-SRYCD
+              MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+              MOVE    ZERO                TO  SANTEI-SRYKA
+              MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+              MOVE    SANTEI-REC          TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"         USING
+                                          MCPAREA
+                                          ORCMCPAREA
+                                          MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+      *
+                   MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                   PERFORM        900-SANTEI-READ-SEC
+      *
+                   PERFORM   UNTIL ( FLG-SANTEI          =   1         )
+                              OR   ( SANTEI-SRYYM  < WRK-KYUSEIYMD(1:6))
+                              OR   ( FLG-KYUSEI-COMMENT2 =   1         )
+      *
+                      PERFORM  VARYING   IDX3   FROM  31  BY  -1
+                             UNTIL ( IDX3                  <    1      )
+                              OR   ( FLG-KYUSEI-COMMENT2   =    1      )
+      *
+                        IF   SANTEI-DAY(IDX3)  NOT =  ZERO
+      *
+                           MOVE   SANTEI-SRYYM   TO  WRK-FSANTEIYMD(1:6)
+                           MOVE   IDX3           TO  WRK-FSANTEIYMD(7:2)
+      *
+                           IF   WRK-KYUSEIYMD        <  WRK-FSANTEIYMD
+                           AND  WRK-FSANTEIYMD(1:6)  <  RECE02-SRYYM
+                                  MOVE    1    TO   FLG-KYUSEI-COMMENT2
+                           END-IF
+      *
+                        END-IF
+      *
+                      END-PERFORM
+      *
+                      MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                      PERFORM        900-SANTEI-READ-SEC
+      *
+                   END-PERFORM
+      *
+              END-IF
+      *
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"         USING
+                                          MCPAREA
+                                          ORCMCPAREA
+                                          MCPDATA-REC
+           END-IF
+      *
+           IF      FLG-KYUSEI-COMMENT    =      1
+           AND     FLG-KYUSEI-COMMENT2   =      ZERO
                PERFORM    20011-KYUSEIHASSYO-COMMENT-SEC
            END-IF
       *

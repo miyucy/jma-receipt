@@ -39,6 +39,7 @@
       *  01.01.04    NACL-ÌçÏÆ    04.06.07  ¥³¥Ô¡¼¶ç£°£¸£µÊÑ¹¹¤ËÈ¼¤¦½¤Àµ
       *  Ãæ»ß½èÍýÄÉ²Ã
       *  01.02.01    NACL-Æ£¸¶    04/10/13  Ãæ»ß½èÍý¤ÎÄÉ²Ã
+      *  01.02.02    NACL-ÌçÏÆ    04/12/09  Ç¾·ì´É¼À´µµÞÀ­È¯¾É½ªÎ»ÆüÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1041,7 +1042,7 @@
            MOVE    CONS-KYUSEI         TO  SANTEI-SRYCD
            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
            MOVE    ZERO                TO  SANTEI-SRYKA
-           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           MOVE    RECE82-HKNCOMBI     TO  SANTEI-HKNCOMBINUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
