@@ -189,39 +189,39 @@
                    VALUE   "ORCA105" .
                05  ORC-LOCKCONST-NAME-T26   PIC  X(40)  
                    VALUE   "ÊÝ¸±¼Ô¥Þ¥¹¥¿" .
-             03  ORC-LOCKCONST-T26.
-               05  ORC-LOCKCONST-WINDOW-T26   PIC  X(10)
-                   VALUE   "N11" .
-               05  ORC-LOCKCONST-LD-T26  PIC  X(20)
-                   VALUE   "ORCA106" .
-               05  ORC-LOCKCONST-NAME-T26   PIC  X(40)  
-                   VALUE   "¿ÍÌ¾¼­½ñ¥Þ¥¹¥¿" .
              03  ORC-LOCKCONST-T27.
                05  ORC-LOCKCONST-WINDOW-T27   PIC  X(10)
-                   VALUE   "I0" .
+                   VALUE   "N11" .
                05  ORC-LOCKCONST-LD-T27  PIC  X(20)
-                   VALUE   "ORCA31" .
+                   VALUE   "ORCA106" .
                05  ORC-LOCKCONST-NAME-T27   PIC  X(40)  
-                   VALUE   "ÆþÂà±¡ÅÐÏ¿" .
+                   VALUE   "¿ÍÌ¾¼­½ñ¥Þ¥¹¥¿" .
              03  ORC-LOCKCONST-T28.
                05  ORC-LOCKCONST-WINDOW-T28   PIC  X(10)
-                   VALUE   "I4" .
+                   VALUE   "I0" .
                05  ORC-LOCKCONST-LD-T28  PIC  X(20)
-                   VALUE   "ORCA32" .
+                   VALUE   "ORCA31" .
                05  ORC-LOCKCONST-NAME-T28   PIC  X(40)  
-                   VALUE   "Æþ±¡²ñ·×¾È²ñ" .
+                   VALUE   "ÆþÂà±¡ÅÐÏ¿" .
              03  ORC-LOCKCONST-T29.
                05  ORC-LOCKCONST-WINDOW-T29   PIC  X(10)
-                   VALUE   "I5" .
+                   VALUE   "I4" .
                05  ORC-LOCKCONST-LD-T29  PIC  X(20)
-                   VALUE   "ORCA34" .
+                   VALUE   "ORCA32" .
                05  ORC-LOCKCONST-NAME-T29   PIC  X(40)  
+                   VALUE   "Æþ±¡²ñ·×¾È²ñ" .
+             03  ORC-LOCKCONST-T30.
+               05  ORC-LOCKCONST-WINDOW-T30   PIC  X(10)
+                   VALUE   "I5" .
+               05  ORC-LOCKCONST-LD-T30  PIC  X(20)
+                   VALUE   "ORCA34" .
+               05  ORC-LOCKCONST-NAME-T30   PIC  X(40)  
                    VALUE   "Âà±¡»þ²¾·×»»" .
            02  ORC-LOCKCONST-R  REDEFINES   ORC-LOCKCONST-T.
-             03  ORC-LOCKCONST-TX           OCCURS  29 
+             03  ORC-LOCKCONST-TX           OCCURS  30 
                                             INDEXED  TBLLOCK-IDX.
                05  ORC-LOCKCONST-WINDOW       PIC  X(10).
                05  ORC-LOCKCONST-LD      PIC  X(20).
                05  ORC-LOCKCONST-NAME       PIC  X(40).
            02  ORC-LOCKCONST-COUNT       PIC  S9(09)  
-                   VALUE   29.
+                   VALUE   30.
