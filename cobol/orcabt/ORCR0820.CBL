@@ -338,6 +338,7 @@
                END-IF
       *        保険組合せのチェック（会計に対象の組合せがないときは全て）
                IF      RECE82-DAY-AREA     =   ALL "0"
+                   MOVE    "1"   TO   RECE82-NYUINRYOFLG
                    PERFORM 21011-PTNYUINRRK-HENSYU-SEC
                ELSE
                    PERFORM VARYING IDX FROM    IDX4    BY  1

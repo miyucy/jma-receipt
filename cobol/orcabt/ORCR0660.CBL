@@ -652,7 +652,7 @@
              MOVE    RECE62-RECEKA       TO  RECE64-RECEKA
              MOVE    RECE62-TEISYUTUSAKI TO  RECE64-TEISYUTUSAKI
              MOVE    RECE62-RECESYUBETU  TO  RECE64-RECESYUBETU
-             MOVE    RECE62-HKNJANUM     TO  RECE64-HKNJANUM
+             MOVE    RECE62-HKNJANUM-KEY TO  RECE64-HKNJANUM
              MOVE    RECE62-HOJOKBN-KEY  TO  RECE64-HOJOKBN
              MOVE    RECE62-TEKSTYMD     TO  RECE64-TEKSTYMD
              MOVE    ZERO                TO  RECE64-ZAINUM
@@ -675,7 +675,8 @@
                                          NOT =   RECE64-TEISYUTUSAKI )
                OR     ( RECE62-RECESYUBETU
                                          NOT =   RECE64-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM  NOT =   RECE64-HKNJANUM     )
+               OR     ( RECE62-HKNJANUM-KEY
+                                         NOT =   RECE64-HKNJANUM     )
                OR     ( RECE62-HOJOKBN-KEY
                                          NOT =   RECE64-HOJOKBN      )
                OR     ( RECE62-TEKSTYMD  NOT =   RECE64-TEKSTYMD     )
@@ -692,6 +693,14 @@
       *
            END-IF
       *
+      *    他保険にて入院料算定済みのコメント
+      *
+           IF   RECE62-NYUINRYOFLG   NOT =   SPACE
+      *
+              PERFORM   2001-NYUINRYO-COMMENT-SEC
+      *
+           END-IF
+      *
       *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE64-REC
            MOVE    RECE62-HOSPID       TO  RECE64-HOSPID
@@ -701,7 +710,7 @@
            MOVE    RECE62-RECEKA       TO  RECE64-RECEKA
            MOVE    RECE62-TEISYUTUSAKI TO  RECE64-TEISYUTUSAKI
            MOVE    RECE62-RECESYUBETU  TO  RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM     TO  RECE64-HKNJANUM
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE64-HKNJANUM
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE64-HOJOKBN
            MOVE    RECE62-TEKSTYMD     TO  RECE64-TEKSTYMD
            MOVE    ZERO                TO  RECE64-ZAINUM
@@ -724,7 +733,8 @@
                                          NOT =   RECE64-TEISYUTUSAKI )
                OR     ( RECE62-RECESYUBETU
                                          NOT =   RECE64-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM  NOT =   RECE64-HKNJANUM     )
+               OR     ( RECE62-HKNJANUM-KEY
+                                         NOT =   RECE64-HKNJANUM     )
                OR     ( RECE62-HOJOKBN-KEY
                                          NOT =   RECE64-HOJOKBN      )
                OR     ( RECE62-TEKSTYMD  NOT =   RECE64-TEKSTYMD     )
@@ -947,6 +957,61 @@
       *
            .
        2001-RIHA-COUNT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    他保険にて入院料算定済みのコメント編集
+      *****************************************************************
+       2001-NYUINRYO-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE641-REC
+           MOVE    RECE62-HOSPID       TO  RECE641-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE641-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE641-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE641-PTID
+           MOVE    RECE62-RECEKA       TO  RECE641-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE641-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE641-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE641-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
+           MOVE    99999999            TO  RECE641-ZAINUM
+           MOVE    "90"                TO  RECE641-SRYKBN
+      *
+           MOVE    1                   TO  RECE641-MEISAISU
+      *
+           WRITE   RECE641-REC
+           ADD     1                   TO  CNT-RECE64
+      *
+           INITIALIZE                      RECE651-REC
+           MOVE    RECE62-HOSPID       TO  RECE651-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE651-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE651-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE651-PTID
+           MOVE    RECE62-RECEKA       TO  RECE651-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE651-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE651-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE651-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE651-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE651-TEKSTYMD
+           MOVE    99999999            TO  RECE651-ZAINUM
+           MOVE    "90"                TO  RECE651-SRYKBN
+      *    コメントの挿入
+           MOVE    SPACE               TO  COM-RECE65-REC
+           INITIALIZE                      COM-RECE65-REC
+           MOVE    "810000001"         TO  COM-SRYCD(1)
+           MOVE     ZERO               TO  COM-SRYSURYO(1)
+           MOVE     11                 TO  COM-YUKOKETA(1)
+           MOVE    "他保険にて入院料算定済" 
+                                       TO  COM-NAME(1)
+      *
+           MOVE    COM-SRYACTINF(1)    TO  RECE651-SRYACTINF(1)
+           MOVE    COM-NAMEINF(1)      TO  RECE651-NAMEINF(1)
+           WRITE   RECE651-REC
+           ADD     1                   TO  CNT-RECE65
+      *
+           .
+       2001-NYUINRYO-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

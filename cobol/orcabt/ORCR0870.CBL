@@ -605,6 +605,14 @@
              END-PERFORM
            END-IF
       *
+      *    他保険にて入院料算定済みのコメント
+      *
+           IF   RECE82-NYUINRYOFLG   NOT =   SPACE
+      *
+              PERFORM   2001-NYUINRYO-COMMENT-SEC
+      *
+           END-IF
+      *
            INITIALIZE                      RECE84-REC
            MOVE    RECE82-HOSPID       TO  RECE84-HOSPID
            MOVE    RECE82-SRYYM        TO  RECE84-SRYYM
@@ -904,6 +912,58 @@
       *
            .
        2001-RIHA-COUNT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    他保険にて入院料算定済みのコメント編集
+      *****************************************************************
+       2001-NYUINRYO-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE841-REC
+           MOVE    RECE82-HOSPID       TO  RECE841-HOSPID
+           MOVE    RECE82-SRYYM        TO  RECE841-SRYYM
+           MOVE    RECE82-NYUGAIKBN    TO  RECE841-NYUGAIKBN
+           MOVE    RECE82-PTID         TO  RECE841-PTID
+           MOVE    RECE82-RECEKA       TO  RECE841-RECEKA
+           MOVE    RECE82-HKNID        TO  RECE841-HKNID
+           MOVE    RECE82-TEKSTYMD     TO  RECE841-TEKSTYMD
+           MOVE    99999999            TO  RECE841-ZAINUM
+           MOVE    "90"                TO  RECE841-SRYKBN
+      *
+           MOVE    1                   TO  RECE841-MEISAISU
+      *
+           WRITE   RECE841-REC
+           ADD     1                   TO  CNT-RECE84
+      *
+           INITIALIZE                      RECE851-REC
+           MOVE    RECE82-HOSPID       TO  RECE851-HOSPID
+           MOVE    RECE82-SRYYM        TO  RECE851-SRYYM
+           MOVE    RECE82-NYUGAIKBN    TO  RECE851-NYUGAIKBN
+           MOVE    RECE82-PTID         TO  RECE851-PTID
+           MOVE    RECE82-RECEKA       TO  RECE851-RECEKA
+           MOVE    RECE82-HKNID        TO  RECE851-HKNID
+           MOVE    RECE82-TEKSTYMD     TO  RECE851-TEKSTYMD
+           MOVE    99999999            TO  RECE851-ZAINUM
+           MOVE    "90"                TO  RECE851-SRYKBN
+      *    コメントの挿入
+           MOVE    SPACE               TO  COM-RECE85-REC
+           INITIALIZE                      COM-RECE85-REC
+           MOVE    "810000001"         TO  COM-SRYCD(1)
+           MOVE     ZERO               TO  COM-SRYSURYO(1)
+           MOVE     11                 TO  COM-YUKOKETA(1)
+           MOVE    "他保険にて入院料算定済" 
+                                       TO  COM-NAME(1)
+      *
+           MOVE    COM-SRYACTINF(1)    TO  RECE851-SRYACTINF(1)
+           MOVE    COM-NAMEINF(1)      TO  RECE851-NAMEINF(1)
+      *
+           MOVE     "1"                TO  RECE851-SIKFLG(1)
+      *
+           WRITE   RECE851-REC
+           ADD     1                   TO  CNT-RECE85
+      *
+           .
+       2001-NYUINRYO-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

@@ -286,7 +286,7 @@
            MOVE    RECE62-RECEKA       TO  RECE64-RECEKA
            MOVE    RECE62-TEISYUTUSAKI TO  RECE64-TEISYUTUSAKI
            MOVE    RECE62-RECESYUBETU  TO  RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM     TO  RECE64-HKNJANUM
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE64-HKNJANUM
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE64-HOJOKBN
            MOVE    RECE62-TEKSTYMD     TO  RECE64-TEKSTYMD
            MOVE    ZERO                TO  RECE64-ZAINUM
@@ -309,7 +309,8 @@
                                          NOT =   RECE64-TEISYUTUSAKI )
                OR     ( RECE62-RECESYUBETU
                                          NOT =   RECE64-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM  NOT =   RECE64-HKNJANUM     )
+               OR     ( RECE62-HKNJANUM-KEY
+                                         NOT =   RECE64-HKNJANUM     )
                OR     ( RECE62-HOJOKBN-KEY
                                          NOT =   RECE64-HOJOKBN      )
                OR     ( RECE62-TEKSTYMD  NOT =   RECE64-TEKSTYMD     )

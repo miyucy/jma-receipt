@@ -301,6 +301,8 @@
                05  RECE62-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE62-ERR-TEKSTYMD    PIC 9(08).
                05  RECE62-ERR-TEKEDYMD    PIC 9(08).
+      *Â¾ÊÝ¸±Æþ±¡ÎÁ»»ÄêºÑ¤ß¥Õ¥é¥°
+           03  RECE62-NYUINRYOFLG         PIC  X(01).
       *Í½È÷
-           03  RECE62-FILLER              PIC  X(32).
+           03  RECE62-FILLER              PIC  X(31).
       *

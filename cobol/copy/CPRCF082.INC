@@ -243,6 +243,8 @@
                05  RECE82-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE82-ERR-TEKSTYMD    PIC 9(08).
                05  RECE82-ERR-TEKEDYMD    PIC 9(08).
+      *Â¾ÊÝ¸±Æþ±¡ÎÁ»»ÄêºÑ¤ß¥Õ¥é¥°
+           03  RECE82-NYUINRYOFLG         PIC  X(01).
       *Í½È÷
-           03  RECE82-FILLER              PIC  X(82).
+           03  RECE82-FILLER              PIC  X(31).
       *

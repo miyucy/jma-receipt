@@ -2071,9 +2071,9 @@
                   (RECE84-SRYKBN      =   "11" OR "99")
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF                                                      
-           IF     (FLG-COMMENT3       =    1  )   AND                  
-                  (RECE84-SRYKBN      =   "33")   AND                  
-                  (RECE84-ZAITEN      =   ZERO)                        
+           IF     (FLG-COMMENT3       =    1          )   AND
+                  (RECE84-SRYKBN      =   "33" OR "90")   AND
+                  (RECE84-ZAITEN      =   ZERO        )      
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF     
       *---- (01.00.05) LINE ADD END   --------------------------------
