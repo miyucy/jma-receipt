@@ -486,7 +486,7 @@
       *****************************************************************
        2001-DUMMY-SYUNOU-DEL-SEC       SECTION.
       *
-           IF    ( WRK-PARA-SYOKBN     =   "1" )
+      *    IF    ( WRK-PARA-SYOKBN     =   "1" )
       *
       *    --  一括ダミー収納削除処理 --
       *
@@ -507,62 +507,62 @@
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  2001-DUMMY-SYUNOU-DEL-EXT
                END-IF
-           ELSE
+      *    ELSE
       *
       *    --  個別ダミー収納削除処理 --
       *
       *        定期請求指示（個別指示）コード読み込み
-               MOVE    ZERO                TO  FLG-SYS5012
-               INITIALIZE                      SYS-5012-REC
-               MOVE    "5012"              TO  SYS-5012-KANRICD
-               MOVE    ZERO                TO  ORC-DBYMD
-               MOVE    SYS-5012-REC        TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   PERFORM 900-SYS5012-READ-SEC
-               ELSE
-                   MOVE    1               TO  FLG-SYS5012
-               END-IF
+      *        MOVE    ZERO                TO  FLG-SYS5012
+      *        INITIALIZE                      SYS-5012-REC
+      *        MOVE    "5012"              TO  SYS-5012-KANRICD
+      *        MOVE    ZERO                TO  ORC-DBYMD
+      *        MOVE    SYS-5012-REC        TO  MCPDATA-REC
+      *        MOVE    "DBSELECT"          TO  MCP-FUNC
+      *        MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+      *        CALL    "ORCMCPSUB"         USING
+      *                                    MCPAREA
+      *                                    ORCMCPAREA
+      *                                    MCPDATA-REC
+      *        IF      MCP-RC              =   ZERO
+      *            PERFORM 900-SYS5012-READ-SEC
+      *        ELSE
+      *            MOVE    1               TO  FLG-SYS5012
+      *        END-IF
       *
-               PERFORM UNTIL ( FLG-SYS5012 NOT =   ZERO )
+      *        PERFORM UNTIL ( FLG-SYS5012 NOT =   ZERO )
       *
       *            個別ダミー収納削除処理
-                   INITIALIZE              SYUNOU-REC
-                   MOVE    SYS-1001-HOSPID TO  SYU-HOSPID
-                   MOVE    "1"             TO  SYU-NYUGAIKBN
-                   MOVE    SYS-5012-PTID   TO  SYU-PTID
-                   MOVE    "3"             TO  SYU-CREATEKBN
-                   MOVE    SYUNOU-REC      TO  MCPDATA-REC
-                   MOVE    "SYUNOU-DEL3"   TO  ORC-DBPATH
-                   MOVE    "DBDELETE"      TO  MCP-FUNC
-                   CALL    "ORCMCPSUB"     USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-                   IF  (   MCP-RC          NOT =   ZERO )
-                       MOVE  "個別仮収納データ削除処理に失敗しました"
-                                           TO  WRK-TEIKIERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                       GO  TO  2001-DUMMY-SYUNOU-DEL-EXT
-                   END-IF
+      *            INITIALIZE              SYUNOU-REC
+      *            MOVE    SYS-1001-HOSPID TO  SYU-HOSPID
+      *            MOVE    "1"             TO  SYU-NYUGAIKBN
+      *            MOVE    SYS-5012-PTID   TO  SYU-PTID
+      *            MOVE    "3"             TO  SYU-CREATEKBN
+      *            MOVE    SYUNOU-REC      TO  MCPDATA-REC
+      *            MOVE    "SYUNOU-DEL3"   TO  ORC-DBPATH
+      *            MOVE    "DBDELETE"      TO  MCP-FUNC
+      *            CALL    "ORCMCPSUB"     USING
+      *                                    MCPAREA
+      *                                    ORCMCPAREA
+      *                                    MCPDATA-REC
+      *            IF  (   MCP-RC          NOT =   ZERO )
+      *                MOVE  "個別仮収納データ削除処理に失敗しました"
+      *                                    TO  WRK-TEIKIERR
+      *                PERFORM 500-ERR-HENSYU-SEC
+      *                GO  TO  2001-DUMMY-SYUNOU-DEL-EXT
+      *            END-IF
       *
-                   PERFORM 900-SYS5012-READ-SEC
+      *            PERFORM 900-SYS5012-READ-SEC
       *
-               END-PERFORM
+      *        END-PERFORM
       *
       *        カーソルクロース
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"             USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
-           END-IF
+      *        MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *        MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+      *        CALL    "ORCMCPSUB"             USING
+      *                                        MCPAREA
+      *                                        ORCMCPAREA
+      *                                        MCPDATA-REC
+      *    END-IF
       *
            .
        2001-DUMMY-SYUNOU-DEL-EXT.
