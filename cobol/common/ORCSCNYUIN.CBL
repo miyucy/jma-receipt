@@ -2458,13 +2458,13 @@
            END-IF
       *
       *    入院調剤料の自動削除
-      **** INITIALIZE                  ORCSCHOZAIAREA
-      *    MOVE    "2"                 TO  ORCSCHO-KBN
-      *    MOVE    SPA-PTID            TO  ORCSCHO-PTID
-      *    MOVE    ORCSCNYUIN-YMD(1:6) TO  ORCSCHO-SRYYM
-      *    CALL    "ORCSCHOZAI"        USING
-      *                                SPA-AREA
-      *****                            ORCSCHOZAIAREA
+           INITIALIZE                  ORCSCHOZAIAREA
+           MOVE    "2"                 TO  ORCSCHO-KBN
+           MOVE    SPA-PTID            TO  ORCSCHO-PTID
+           MOVE    ORCSCNYUIN-YMD(1:6) TO  ORCSCHO-SRYYM
+           CALL    "ORCSCHOZAI"        USING
+                                       SPA-AREA
+                                       ORCSCHOZAIAREA
       *    翌月の削除もおこなう
            MOVE    ORCSCNYUIN-YMD      TO  WRK-SRYYMD
            COMPUTE WRK-SRYMM           =   WRK-SRYMM   +   1
