@@ -308,6 +308,8 @@
       *  01.01.126   NACL-多々納　04/02/24  TENSYU-KEY90,KEY91,KEY92追加
       *  01.01.127   NACL-小豆沢  04/02/24  SYSKANRI-KEY11追加
       *  01.01.128   NACL-藤原    04/02/25  PTBYOMEI-KEY21,KEY22,KEY23追加
+      *  01.01.129   NACL-太田    04/03/01  CHK-KEY8,CHK-KEY9,CHK-KEY10追加
+      *  01.01.130   NACL-太田    04/03/02  TENSU-KEY24追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1203,6 +1205,18 @@
                    PERFORM 2001-SEL-CHK-SEC
                WHEN    ANY             ALSO   "CHK-KEY7"
                    MOVE    PATH-TBL-CHK-KEY7
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-CHK-SEC
+               WHEN    ANY             ALSO   "CHK-KEY8"
+                   MOVE    PATH-TBL-CHK-KEY8
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-CHK-SEC
+               WHEN    ANY             ALSO   "CHK-KEY9"
+                   MOVE    PATH-TBL-CHK-KEY9
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-CHK-SEC
+               WHEN    ANY             ALSO   "CHK-KEY10"
+                   MOVE    PATH-TBL-CHK-KEY10
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-CHK-SEC
       *追加/*終了*01.09.12********************************************
@@ -2108,6 +2122,10 @@
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-TENSU-REC
       *----(01.01.94)--ADD-END-----
+               WHEN    ANY             ALSO   "TENSU-KEY24"
+                   MOVE    PATH-TBL-TENSU-KEY24
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
       ************ PERFORM 2001-SEL-TENSU-REC
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "TENSU-ALL"
