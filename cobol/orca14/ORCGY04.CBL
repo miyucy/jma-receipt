@@ -138,7 +138,7 @@
            03  WRK-GMN-TBL.
                05  WRK-GMN-TBLO    OCCURS  6.
                    07  WRK-GMN-YYKYMD      PIC X(20).
-                   07  WRK-GMN-TBLO2   OCCURS  90.
+                   07  WRK-GMN-TBLO2   OCCURS  200.
                        09  WRK-GMN-TSINRYO     PIC X(02).
                        09  WRK-GMN-TYYKTIME    PIC X(05).
                        09  WRK-GMN-TKNJNAME    PIC X(20).
@@ -147,7 +147,7 @@
            03  WRK-NAI-TBL.
                05  WRK-NAI-TBLO    OCCURS  6.
                    07  WRK-NAI-YYKYMD      PIC X(08).
-                   07  WRK-NAI-TBLO2   OCCURS  90.
+                   07  WRK-NAI-TBLO2   OCCURS  200.
                        09  WRK-NAI-TBANGO      PIC 9(03).
                        09  WRK-NAI-TYYKID      PIC 9(03).
                        09  WRK-NAI-TKYYKTIME   PIC 9(04).
@@ -320,7 +320,7 @@
            END-IF
       *
            MOVE    SPA-WORK                TO  SPA-Y01KYOUTU
-      *       
+      *
       *    ¿ÇÎÅÆâÍÆ¤ò£Ó£Ð£Á¤Ë¥»¥Ã¥È
            MOVE    SPACE               TO  SYS-1012-REC
            MOVE    "1012"              TO  SYS-1012-KANRICD
@@ -446,7 +446,7 @@
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
            .
-       3OO-SCREEN-EXT.
+       300-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -561,7 +561,7 @@
       *
            IF      YYK-YYKID            >   ZERO
                ADD     1               TO  IDY
-               IF      IDY             >   90
+               IF      IDY             >   200
                    GO      TO      3101-YOYAKU-HEN-EXT
                END-IF
                PERFORM 41002-SRYNAIYO-SET-SEC
@@ -723,7 +723,7 @@
            MOVE    ZERO               TO  Y04-LIST5-COUNT
            MOVE    ZERO               TO  Y04-LIST6-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX             >   50
+                   UNTIL       IDX             >   SPA-GMN-MAX(1)
                    OR          SPA-GMN-TSINRYO (1 IDX)  =   SPACE 
                MOVE    SPA-GMN-TSINRYO (1 IDX) 
                                            TO  Y04-LIST1-SRYNAIYO(IDX)
@@ -735,7 +735,7 @@
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX             >   50
+                   UNTIL       IDX             >   SPA-GMN-MAX(2)
                    OR          SPA-GMN-TSINRYO (2 IDX)  =   SPACE 
                MOVE    SPA-GMN-TSINRYO (2 IDX) 
                                            TO  Y04-LIST2-SRYNAIYO(IDX)
@@ -747,7 +747,7 @@
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX             >   50
+                   UNTIL       IDX             >   SPA-GMN-MAX(3)
                    OR          SPA-GMN-TSINRYO (3 IDX)  =   SPACE 
                MOVE    SPA-GMN-TSINRYO (3 IDX) 
                                            TO  Y04-LIST3-SRYNAIYO(IDX)
@@ -759,7 +759,7 @@
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX             >   50
+                   UNTIL       IDX             >   SPA-GMN-MAX(4)
                    OR          SPA-GMN-TSINRYO (4 IDX)  =   SPACE 
                MOVE    SPA-GMN-TSINRYO (4 IDX) 
                                            TO  Y04-LIST4-SRYNAIYO(IDX)
@@ -771,7 +771,7 @@
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX             >   50
+                   UNTIL       IDX             >   SPA-GMN-MAX(5)
                    OR          SPA-GMN-TSINRYO (5 IDX)  =   SPACE 
                MOVE    SPA-GMN-TSINRYO (5 IDX) 
                                            TO  Y04-LIST5-SRYNAIYO(IDX)
@@ -783,7 +783,7 @@
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX             >   50
+                   UNTIL       IDX             >   SPA-GMN-MAX(6)
                    OR          SPA-GMN-TSINRYO (6 IDX)  =   SPACE 
                MOVE    SPA-GMN-TSINRYO (6 IDX) 
                                            TO  Y04-LIST6-SRYNAIYO(IDX)

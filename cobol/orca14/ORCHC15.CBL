@@ -229,7 +229,7 @@
            MOVE    ZERO                TO  IDX-L
            INITIALIZE                  HC15
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   90
+                   UNTIL       IDX     >   200
                ADD     1               TO  IDX-L
                IF      IDX-L           >   33
       *            Ä¢É¼°õºþ³«»Ï½èÍý
@@ -248,7 +248,7 @@
                END-PERFORM
       *
                IF      FLG-SYORI           =   ZERO
-                   MOVE    90              TO  IDX
+                   MOVE    200             TO  IDX
                END-IF
       *
            END-PERFORM

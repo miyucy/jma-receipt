@@ -47,7 +47,7 @@
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-TBLO    OCCURS  6.
                            11  SPA-GMN-YYKYMD      PIC X(20).
-                           11  SPA-GMN-TBLO2   OCCURS  90.
+                           11  SPA-GMN-TBLO2   OCCURS  200.
                                13  SPA-GMN-TSINRYO     PIC X(02).
                                13  SPA-GMN-TYYKTIME    PIC X(05).
                                13  SPA-GMN-TKNJNAME    PIC X(20).
@@ -59,7 +59,7 @@
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBLO    OCCURS  6.
                            11  SPA-NAI-YYKYMD      PIC X(08).
-                           11  SPA-NAI-TBLO2   OCCURS  90.
+                           11  SPA-NAI-TBLO2   OCCURS  200.
                                13  SPA-NAI-TBANGO      PIC 9(03).
                                13  SPA-NAI-TYYKID      PIC 9(03).
                                13  SPA-NAI-TKYYKTIME   PIC 9(04).

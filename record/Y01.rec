@@ -694,8 +694,8 @@ Y01	{
 					value3	varchar(20);
 					value4	varchar(4);
 					value5	varchar(4);
-				}	[50];
-				select	bool[50];
+				}	[200];
+				select	bool[200];
 			};
 		};
 		SRYKA_COMB	{

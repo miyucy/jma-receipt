@@ -478,13 +478,13 @@
               03  Y01-S-SROLLEDWINDOW3.
                 04  Y01-PTLIST.
                   05  Y01-PTLIST-COUNT   PIC S9(9)   BINARY.
-                  05  Y01-ITEM        OCCURS  50 TIMES.
+                  05  Y01-ITEM        OCCURS  200 TIMES.
                     06  Y01-TBANGO       PIC X(3).
                     06  Y01-TYYKTIME     PIC X(5).
                     06  Y01-TNAME        PIC X(20).
                     06  Y01-TKAMEI       PIC X(4).
                     06  Y01-TRAIINZUMI   PIC X(4).
-                  05  Y01-PTLIST-SELECT  PIC X       OCCURS  50 TIMES.
+                  05  Y01-PTLIST-SELECT  PIC X       OCCURS  200 TIMES.
               03  Y01-SRYKA-COMB.
                 04  Y01-SRYKA.
                   05  Y01-VALUE   PIC X(21).
