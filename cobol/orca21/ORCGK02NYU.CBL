@@ -923,6 +923,7 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
+           INITIALIZE                  LNK-WKSRYACT-MAX
       *
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-K02
