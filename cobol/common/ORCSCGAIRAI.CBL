@@ -1342,6 +1342,12 @@
                MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SYUMEI-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
@@ -1601,8 +1607,7 @@
       *    伝票番号がゼロの時エラーとする
            IF      SPA-DENPNUM         =   ZERO
                MOVE    "1036"              TO  SPA-ERRCD
-               GO      TO      1001-TEISEI-SYORI-EXT
-           END-IF
+           ELSE
       *
            INITIALIZE                  WRK-TEISEI-AREA
            IF      SPA-TEI-DENPNUM (1) =   ZERO
@@ -1619,6 +1624,8 @@
                    PERFORM 10011-TEISEI-SYORI1-SEC
                    PERFORM 10012-TEISEI-SYUTTL-DEL-SEC
                END-PERFORM
+           END-IF
+      *
            END-IF
            .
        1001-TEISEI-SYORI-EXT.
@@ -1962,35 +1969,7 @@
                                                        (IDX-1 IDX-2)
       *            回数がゼロの時、削除
                    IF      ACCT-ZAIKAISU       =   ZERO
-      *
-                       INITIALIZE                  SRYACT-REC
-                       MOVE    ACCT-HOSPID         TO  SRY-HOSPID
-                       MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
-                       MOVE    ACCT-PTID           TO  SRY-PTID
-                       MOVE    ACCT-SRYKA          TO  SRY-SRYKA
-                       MOVE    ACCT-SRYYM          TO  SRY-SRYYM
-                       MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
-                       MOVE    SRYACT-REC          TO  MCPDATA-REC
-                       MOVE    "DBDELETE"          TO  MCP-FUNC
-                       MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
-                       IF      MCP-RC          NOT =   ZERO
-                            DISPLAY "K03 SRYACT DEL ERR:" MCP-RC
-                       END-IF
-      *
-                       MOVE    SRYACCT-REC         TO  MCPDATA-REC
-                       MOVE    "DBDELETE"          TO  MCP-FUNC
-                       MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
-                       IF      MCP-RC          NOT =   ZERO
-                            DISPLAY "K03 SRYACCT DEL ERR:" MCP-RC
-                       END-IF
+                       PERFORM 45001121-ZAINUM-DELETE-SEC
                    ELSE
       *
                        MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
@@ -2026,6 +2005,63 @@
       *
            .
        4500112-TEISEI-SRYACCT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    剤削除処理
+      *****************************************************************
+       45001121-ZAINUM-DELETE-SEC          SECTION.
+      *
+           INITIALIZE                  SRYACT-REC
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+                DISPLAY "K03 SRYACT DEL ERR:" MCP-RC
+                        ",KEY:" SRY-KEY
+           END-IF
+      *    コメント
+           INITIALIZE                  PTCOM-REC
+           MOVE    ACCT-HOSPID         TO  PTCOM-HOSPID
+           MOVE    ACCT-PTID           TO  PTCOM-PTID
+           MOVE    ACCT-ZAINUM         TO  PTCOM-ZAINUM
+      *
+           MOVE    PTCOM-REC           TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "PTCOM-KEY2"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "K03  PTCOM  DEL ERR:" MCP-RC
+                     ",KEY:" PTCOM-KEY
+           END-IF
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "K03 SRYACCT DEL ERR:" MCP-RC
+                        ",KEY:" ACCT-KEY
+           END-IF
+      *
+           .
+       45001121-ZAINUM-DELETE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2155,6 +2191,13 @@
                MOVE    1               TO  FLG-SYUTTL
                INITIALIZE              SYUTTL-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
            IF      FLG-SYUTTL          =   ZERO
                MOVE    SYUTTL-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -2427,7 +2470,7 @@
            PERFORM 4501-SRYACCT-SYORI-SEC
       *
       *    診療コードがない時、処理をしない
-           IF      WRK-MEISAISU        =   ZERO
+           IF      WRK-MEISAISU        =   ZERO 
                GO      TO      4501-SRYACT-KOU-EXT
            END-IF
       *
@@ -3049,6 +3092,12 @@
                INITIALIZE                  SYUNOU-REC
                MOVE    1               TO  FLG-SYUNOU
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      FLG-SYUNOU          =   ZERO
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -3142,6 +3191,12 @@
                PERFORM 940-WKSRYACT-READ-SEC
            END-PERFORM
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY7"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        45002-WKSRYACT-DEL-EXT.
@@ -3277,6 +3332,12 @@
                MOVE    1               TO  FLG-SYUTTL
                INITIALIZE              SYUTTL-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            MOVE    SPACE               TO  SYUTTL-REC
            INITIALIZE                  SYUTTL-REC
@@ -3506,12 +3567,12 @@
                PERFORM 970-JYURRK-NEXT-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    受診履歴の連番変更する
            MOVE    SPA-OLD-SRYKA       TO  WRK-JYURRK-SRYKA
@@ -3597,6 +3658,13 @@
                PERFORM 970-JYURRK-NEXT-SEC
            END-PERFORM
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "JYURRK-KEY9"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
            .
        4500115-TEISEI-RENNUM-EXT.
            EXIT.
@@ -3668,6 +3736,13 @@
                    MOVE    "JYURRK-KEY6"            TO  ORC-DBPATH
                    PERFORM 970-JYURRK-NEXT-SEC
                END-PERFORM
+      *
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
            END-PERFORM
       *
       *    受診履歴の連番変更する
@@ -3732,6 +3807,12 @@
                    ELSE
                        MOVE    1                   TO  FLG-JYURRK
                    END-IF
+                   MOVE    "DBCLOSE"           TO  MCP-FUNC
+                   MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
                    IF      FLG-JYURRK          =   ZERO
       *                収納削除
                        PERFORM 45001141-SYUNOU-DELETE-SEC
@@ -3779,6 +3860,12 @@
            ELSE
                MOVE    1                   TO  FLG-SYUNOU
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      FLG-SYUNOU          =   ZERO
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -3813,7 +3900,7 @@
                MOVE    SYU-FUKU-DENPNUM    TO  SYUTTL-DENPNUM
                MOVE    SYUTTL-REC          TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "SYUTOTAL-KEY"        TO  ORC-DBPATH
+               MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -3825,6 +3912,12 @@
                    MOVE    1               TO  FLG-SYUTTL
                    INITIALIZE              SYUTTL-REC
                END-IF
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      FLG-SYUTTL          =   ZERO
                    MOVE    SYUTTL-REC          TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC

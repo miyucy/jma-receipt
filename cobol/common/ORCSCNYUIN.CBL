@@ -523,6 +523,12 @@
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *    対象なし
            IF     (FLG-HKNCOMBI        =   1  )  OR
                   (COMB-TEKEDYMD(1:6)  <   WRK-SRYYMD (1:6))
@@ -775,6 +781,12 @@
                MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
                PERFORM 930-SRYACCT-NEXT-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    次月がある時、次月の判定
            IF      TBL2-KAISUU-AREA    NOT =   ZERO
@@ -820,6 +832,12 @@
                MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
                PERFORM 930-SRYACCT-NEXT-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            .
        10011-KAISUU-SYORI-EXT.
            EXIT.
@@ -1915,35 +1933,7 @@
                                                        (IDX-1 IDX-2)
       *            回数がゼロの時、削除
                    IF      ACCT-ZAIKAISU       =   ZERO
-      *
-                       INITIALIZE                  SRYACT-REC
-                       MOVE    ACCT-HOSPID         TO  SRY-HOSPID
-                       MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
-                       MOVE    ACCT-PTID           TO  SRY-PTID
-                       MOVE    ACCT-SRYKA          TO  SRY-SRYKA
-                       MOVE    ACCT-SRYYM          TO  SRY-SRYYM
-                       MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
-                       MOVE    SRYACT-REC          TO  MCPDATA-REC
-                       MOVE    "DBDELETE"          TO  MCP-FUNC
-                       MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
-                       IF      MCP-RC          NOT =   ZERO
-                            DISPLAY "K03 SRYACT DEL ERR:" MCP-RC
-                       END-IF
-      *
-                       MOVE    SRYACCT-REC         TO  MCPDATA-REC
-                       MOVE    "DBDELETE"          TO  MCP-FUNC
-                       MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
-                       IF      MCP-RC          NOT =   ZERO
-                            DISPLAY "K03 SRYACCT DEL ERR:" MCP-RC
-                       END-IF
+                       PERFORM 45001121-ZAINUM-DELETE-SEC
                    ELSE
       *
                        MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
@@ -1980,6 +1970,63 @@
       *
            .
        4500112-TEISEI-SRYACCT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    剤削除処理
+      *****************************************************************
+       45001121-ZAINUM-DELETE-SEC          SECTION.
+      *
+           INITIALIZE                  SRYACT-REC
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+                DISPLAY "K03 SRYACT DEL ERR:" MCP-RC
+                        ",KEY:" SRY-KEY
+           END-IF
+      *    コメント
+           INITIALIZE                  PTCOM-REC
+           MOVE    ACCT-HOSPID         TO  PTCOM-HOSPID
+           MOVE    ACCT-PTID           TO  PTCOM-PTID
+           MOVE    ACCT-ZAINUM         TO  PTCOM-ZAINUM
+      *
+           MOVE    PTCOM-REC           TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "PTCOM-KEY2"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "K03  PTCOM  DEL ERR:" MCP-RC
+                     ",KEY:" PTCOM-KEY
+           END-IF
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "K03 SRYACCT DEL ERR:" MCP-RC
+                        ",KEY:" ACCT-KEY
+           END-IF
+      *
+           .
+       45001121-ZAINUM-DELETE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2118,8 +2165,14 @@
                    ELSE
                        MOVE    1                   TO  FLG-JYURRK
                    END-IF
-                   IF      FLG-JYURRK          =   ZERO
+                   MOVE    "DBCLOSE"           TO  MCP-FUNC
+                   MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
       *
+                   IF      FLG-JYURRK          =   ZERO
       *                受診履歴削除
                        MOVE    JYURRK-REC          TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -2282,6 +2335,12 @@
                PERFORM 940-WKSRYACT-READ-SEC
            END-PERFORM
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY7"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        400-WKSRYACT-DEL-EXT.

@@ -172,14 +172,11 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *   ºÞÊ¬Î¥½èÍý
-           PERFORM 100-ZAI-SET-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      000-PROC-EXT
-           END-IF
+      *    ¥¯¥ê¥¢½èÍý
+           PERFORM 100-INTI-SYORI-SEC
       *
-      *    ºÞËè¤Î·×»»½èÍý
-      *****PERFORM 300-ZAI-KEISAN-SEC
+      *    ºÞÊ¬Î¥½èÍý
+           PERFORM 100-ZAI-SET-SEC
       *
            .
        000-PROC-EXT.
@@ -189,9 +186,9 @@
            .
       *
       *****************************************************************
-      *    ºÞÊ¬Î¥½èÍý
+      *    ¥¯¥ê¥¢Î¥½èÍý
       *****************************************************************
-       100-ZAI-SET-SEC              SECTION.
+       100-INTI-SYORI-SEC              SECTION.
       *
       *    ¿ÇÎÅ¹Ô°Ù¡¢·×·×»»
            INITIALIZE                  WRK-AREA
@@ -233,29 +230,36 @@
                END-IF
            END-PERFORM
       *
+           .
+      *
+       100-INTI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºÞÊ¬Î¥½èÍý
+      *****************************************************************
+       100-ZAI-SET-SEC              SECTION.
+      *
            MOVE    ZERO                TO  FLG-KENSA-ARI
       *    ºÞÊ¬Î¥
            PERFORM 1002-ZAIBUNNRI-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-ZAI-SET-EXT
-           END-IF
+           IF      SPA-ERRCD           =   SPACE
       *    ¸¡ºº¤ÎÊñ³ç¤¬¤¢¤Ã¤¿»þ¡¢¤Þ¤È¤á¤ë
       *    Æþ±¡¤Ç¿ÇÎÅ¹Ô°ÙÆþÎÏ¤Ï¤·¤Ê¤¤
-           IF     (SPA-NYUGAIKBN       =   "1" )  AND
-                  (LNK-SC93-PG         =   "K02N")
-               CONTINUE
-              IF      FLG-KENSA-ARI       =   1
-      *            ºÞÊ¬Î¥
-                   PERFORM 1002-ZAIBUNNRI-SEC
-               END-IF
-           ELSE
-              IF      FLG-KENSA-ARI       =   1
-                   PERFORM 200-KENSA-SORT-SEC
-      *            ºÞÊ¬Î¥
-                   PERFORM 1002-ZAIBUNNRI-SEC
+               IF     (SPA-NYUGAIKBN       =   "1" )  AND
+                      (LNK-SC93-PG         =   "K02N")
+                  IF      FLG-KENSA-ARI       =   1
+      *                ºÞÊ¬Î¥
+                       PERFORM 1002-ZAIBUNNRI-SEC
+                   END-IF
+               ELSE
+                  IF      FLG-KENSA-ARI       =   1
+                       PERFORM 200-KENSA-SORT-SEC
+      *                ºÞÊ¬Î¥
+                       PERFORM 1002-ZAIBUNNRI-SEC
+                   END-IF
                END-IF
            END-IF
-      *
       *
            MOVE    ZERO                TO  WRK-ZAINUM
            MOVE    ZERO                TO  WRK-ZAI-CNT
@@ -606,6 +610,8 @@
                            ELSE
                                MOVE    "99"         TO  SPA-COM-SRYKBN
                                                              (IDX)
+                               MOVE    "990"       TO  SPA-COM-SRYSYUKBN
+                                                                 (IDX)
                            END-IF
       *                ²èÁü¿ÇÃÇ»£±ÆÉô°Ì(Á°¤¬²èÁü¿ÇÃÇ¤Ç¤¢¤ë¤³¤È¡Ë
                        WHEN    "002"
@@ -729,6 +735,8 @@
                                                               OR  "$" ))
                                MOVE    "99"        TO  SPA-COM-SRYKBN
                                                                 (IDX)
+                               MOVE    "990"       TO  SPA-COM-SRYSYUKBN
+                                                                 (IDX)
                            ELSE
                                MOVE    SPA-COM-SRYKBN (IDX - 1)
                                                    TO  SPA-COM-SRYKBN
@@ -829,6 +837,8 @@
                              WHEN    OTHER
                                MOVE    "99"          TO  SPA-COM-SRYKBN
                                                                   (IDX)
+                               MOVE    "990"       TO  SPA-COM-SRYSYUKBN
+                                                                 (IDX)
                            END-EVALUATE
                    END-EVALUATE
       *
@@ -846,6 +856,8 @@
                                                                 (IDX)
                        ELSE
                            MOVE    "99"            TO  SPA-COM-SRYKBN
+                                                                (IDX)
+                           MOVE    "990"           TO  SPA-COM-SRYSYUKBN
                                                                 (IDX)
                        END-IF
                    ELSE
@@ -1171,6 +1183,7 @@
                   (SPA-GMN-INPUTCD(IDX)(1:1)   =   "*" )
                MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX - 1)
                MOVE    "1"             TO  SPA-COM-ZAIEND (IDX)
+               MOVE    "1"             TO  SPA-COM-KAIFLG (IDX)
                MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
                                        TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    SPA-COM-SRYKBN   (IDX - 1)
