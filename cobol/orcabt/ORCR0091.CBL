@@ -74,11 +74,6 @@
 006900*    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
-006900*    チェックファイル
-           SELECT  RECECHK-FILE    ASSIGN  RECECHK
-                                   ORGANIZATION    IS  LINE
-                                                       SEQUENTIAL 
-                                   FILE    STATUS  IS  STS-RECECHK.
       *
        DATA                    DIVISION.
        FILE                    SECTION.
@@ -98,9 +93,6 @@
 006900*    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
-006900*    チェックファイル
-       FD  RECECHK-FILE.
-       01  RECECHK-REC             PIC X(20). 
       *
        WORKING-STORAGE             SECTION.
       *
@@ -118,18 +110,12 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-      *    チェックファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
-                                   BY         //RECECHK//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    フラグ領域
        01  STS-AREA.
            03  STS-RECE06                              PIC X(02).
            03  STS-RECE061                             PIC X(02).
            03  STS-RECEERR                             PIC X(02).
-           03  STS-RECECHK                             PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
@@ -235,16 +221,12 @@
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
-           MOVE    "RECECHK"           TO  RECECHK-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECECHK-TERMID
       *
            OPEN    OUTPUT              RECE0661-FILE
            CLOSE                       RECE0661-FILE
       *
            OPEN    INPUT               RECE06-FILE
            OPEN    I-O                 RECE061-FILE
-      *
-           OPEN    OUTPUT              RECECHK-FILE
       *
            PERFORM    RECE06-READ-SEC
       *
@@ -332,13 +314,7 @@
                  CONTINUE
             ELSE     
               IF  SAISHIN-FLG          =      "1"
-                  IF  RECE06-TEKIYO(49:2)  NOT =  "１"
-                      MOVE   RECE06-PTNUM  TO    RECECHK-REC(1:20)
-                      WRITE  RECECHK-REC
-                      MOVE   SPACE        TO   SAISHIN-FLG
-                  ELSE
-                      MOVE  SPACE         TO   SAISHIN-FLG
-                  END-IF
+                 MOVE      SPACE        TO      SAISHIN-FLG
               END-IF
             END-IF 
            END-IF 
@@ -432,7 +408,6 @@
       *
            CLOSE   RECE06-FILE
                    RECE061-FILE
-           CLOSE   RECECHK-FILE
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
