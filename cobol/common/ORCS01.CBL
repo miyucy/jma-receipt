@@ -4216,7 +4216,6 @@
            IF      LNK-SKOHPLUS-RC =   ZERO
                MOVE   LNK-SKOHPLUS-FTNKBN    TO   WK-KOH-FTNKBN
            ELSE
-               DISPLAY "ORCSKOHPLUS ERR  RC = " LNK-SKOHPLUS-RC
                MOVE   "2"                    TO   WK-KOH-FTNKBN
            END-IF
       *
@@ -4237,6 +4236,7 @@
                IF    WK-KOH-FTNKBN   NOT =  SPACE
                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                            LNK-SYU-KYUFUGAI-GOKEI-TEN
+                                        *  10
                                         *  WK-FUTANWARI
                ELSE
                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
@@ -4491,6 +4491,7 @@
                IF    WK-KOH-FTNKBN   NOT =  SPACE
                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                            LNK-SYU-KYUFUGAI-GOKEI-TEN
+                                        *  10
                                         *  WK-FUTANWARI
                ELSE
                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
