@@ -5378,6 +5378,34 @@
                GO  TO  4801-KANREN-CHK-EXT
            END-IF
       *
+      *    入院基本料チェック
+           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" OR "08" )
+               IF    ( SPA-GMN-I01-TOKNYUIN    =   SPACE )
+                   INITIALIZE  SYS-5001-REC
+                   MOVE    "5001"              TO  SYS-5001-KANRICD
+                   MOVE    SPA-GMN-I01-BTUNAME-CD
+                                               TO  SYS-5001-KBNCD
+                   MOVE    WRK-KIHON-KJNYMD    TO  ORC-DBYMD
+                   MOVE    SYS-5001-REC        TO  MCPDATA-REC
+                   MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+                   PERFORM 900-TBL-SELECT-SEC
+                   IF    ( FLG-DBRC    =   ZERO )
+                       MOVE    MCPDATA-REC     TO  SYS-5001-REC
+                   ELSE
+                       INITIALIZE                  SYS-5001-REC
+                   END-IF
+      *
+                   MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+                   PERFORM 900-TBL-CLOSE-SEC
+      *
+                   IF    ( SYS-5001-BTU-KHNSRYCD   =   SPACE )
+                       MOVE    "1027"          TO  SPA-ERRCD
+                       MOVE    16              TO  SPA-GMN-I01-CUR
+                       GO  TO  4801-KANREN-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
       *    処理区分固有の関連チェック
            EVALUATE    SPA-GMN-I01-SYORIKBN-CD
       *    入院登録
@@ -9082,6 +9110,9 @@
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "録は行えません" 
                                        TO  SPA-ERRMSG (41 : )
+           WHEN    "1027"
+               MOVE    "入院料が指定されていません"
+                                       TO  SPA-ERRMSG
            WHEN    "2001"
                MOVE    "登録処理に失敗しました"
                                        TO  SPA-ERRMSG
