@@ -2550,6 +2550,15 @@
                          AND  (WRK-COM-SRYKBN (IDX-Z)  =  "11"      )
                            ADD     1               TO  IDX-ZAI1
                        END-IF
+      *                褲說恔�耀掁礿礿暀熂У﹡薑�允月
+                       IF     (WRK-COM-INPUTCD(IDX-Z)  =  "099110001")
+                         AND  (WRK-COM-SRYKBN (IDX-Z)  =  "11"      )
+                           ADD     1               TO  IDX-ZAI1
+                       END-IF
+                       IF     (WRK-COM-INPUTCD(IDX-Z)  =  "099120001")
+                         AND  (WRK-COM-SRYKBN (IDX-Z)  =  "12"      )
+                           ADD     1               TO  IDX-ZAI2
+                       END-IF
                    END-IF
                END-IF
       *
