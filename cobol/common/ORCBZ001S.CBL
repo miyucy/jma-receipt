@@ -129,10 +129,6 @@
            PERFORM 200-MAIN-SEC
       *
            PERFORM 300-END-SEC
-      *TEST
-           DISPLAY "ORCBZ001S-ENDFLG:"  ORCBZ001S-ENDFLG
-                  ",ORCBZ001S-MAX-CNT:" ORCBZ001S-MAX-CNT
-      *TEST
       *
            .
        000-PROC-EXT.
@@ -235,10 +231,8 @@
            MOVE    ZERO                TO  IDX
            COMPUTE WRK-KETA2           =   WRK-KETA    +   1
            PERFORM UNTIL   (FLG-PTNUM      =   1  )  OR
-                           (IDX            >=  120)
-      *!TEST
-               DISPLAY "PTNUM-PTNUM:" PTNUM-PTNUM
-      *!TEST
+                           (IDX            >=  120)  OR
+                           (FLG-END        =   1  )
       *
       *        現在の構成以外を対象外とする
                IF     (PTNUM-PTNUM(1:WRK-KETA)    =   ZERO  )
@@ -260,7 +254,8 @@
       *
       *    対象がない時、システム管理の連番を判定する
            IF     (FLG-PTNUM           =   1  )  AND
-                  (ORCBZ001S-MAX-CNT   =   ZERO )
+                  (FLG-END             =   ZERO) AND
+                  (ORCBZ001S-MAX-CNT   =   ZERO)
                PERFORM 2002-RENNUM-CHK-SEC
                GO      TO     200-MAIN-EXT
            END-IF
@@ -276,10 +271,11 @@
            ELSE
                MOVE    ZERO                TO  ORCBZ001S-ENDFLG
            END-IF
+      *    終了
+           IF      FLG-END             =   1
+               MOVE    1                   TO  ORCBZ001S-ENDFLG
+           END-IF
       *
-      *TEST
-      *    DISPLAY "ORCBZ001S-MAX-CNT:" ORCBZ001S-MAX-CNT
-      *TEST
            .
        200-MAIN-EXT.
            EXIT.
@@ -295,10 +291,12 @@
       *
            MOVE    ZERO                TO  FLG-ERR
            PERFORM UNTIL      (FLG-ERR     =   1   )  OR
+                              (FLG-END     =   1   )  OR
                               (IDX         >=  120 )
       *        患者番号構成決定処理
                PERFORM 20011-NUM-HENSYU-SEC
                IF     (FLG-ERR             =   1    )  OR
+                      (FLG-END             =   1    )  OR
                       (WRK-ST-PTNUM        =   WRK-ED-PTNUM)
                    MOVE    1                   TO  FLG-ERR
                ELSE
@@ -306,9 +304,6 @@
                    ADD     1                   TO  IDX
                    MOVE    IDX                 TO  ORCBZ001S-MAX-CNT
                    MOVE    WRK-ST-PTNUM        TO  ORCBZ001S-PTNUM(IDX)
-      *TEST
-           DISPLAY "ORCBZ001S-PTNUMT:" ORCBZ001S-PTNUM(IDX)
-      *TEST
                END-IF
            END-PERFORM
       *
@@ -321,7 +316,7 @@
       *****************************************************************
        20011-NUM-HENSYU-SEC          SECTION.
       *
-           MOVE    ZERO                TO  FLG-ERR
+           MOVE    ZERO                TO  FLG-END
            MOVE    ZERO                TO  WRK-RENNUM
            EVALUATE    SYS-1009-PTNUMKSIKBN
       *    自由構成
@@ -331,12 +326,12 @@
       *            自由構成桁数
                    MOVE    SYS-1009-JIYKSIKETA     TO  WRK-K1
                    MOVE    WRK-ST-PTNUM(1:WRK-K1)  TO  WRK-RENNUM
-                   ADD     1                       TO  WRK-RENNUM
       *            最終連番より小さいこと
-                   IF      WRK-RENNUM          >   SYS-1009-RENNUM
-                       MOVE    1               TO  FLG-ERR
+                   IF      WRK-RENNUM          >=  SYS-1009-RENNUM
+                       MOVE    1               TO  FLG-END
                        GO      TO      20011-NUM-HENSYU-EXT
                    END-IF
+                   ADD     1                       TO  WRK-RENNUM
                    IF      SYS-1009-JIYKSIKETA     <=  10
                        COMPUTE IDY         =   10
                                            -   SYS-1009-JIYKSIKETA
@@ -367,7 +362,7 @@
                            OR (WRK-ED-PTNUM(1:3)  >=  SPA-SYSYMDW(1:3))
                            CONTINUE
                        ELSE
-                           MOVE    1                  TO  FLG-ERR
+                           MOVE    1                  TO  FLG-END
                            GO      TO      20011-NUM-HENSYU-EXT
                        END-IF
                    ELSE
@@ -376,7 +371,7 @@
                            OR (WRK-ED-PTNUM(1:4)  >=  SPA-SYSYMD (1:4))
                            CONTINUE
                        ELSE
-                           MOVE    1                  TO  FLG-ERR
+                           MOVE    1                  TO  FLG-END
                            GO      TO      20011-NUM-HENSYU-EXT
                        END-IF
                    END-IF
@@ -385,30 +380,33 @@
                        IF      WRK-ST-PTNUM(1:3)  NOT =   SPA-SYSYMDW
                                                                    (1:3)
                            MOVE    ZERO               TO  WRK-ST-PTNUM
+                           MOVE    SPA-SYSYMDW(1:3)   TO  WRK-ST-PTNUM
+                                                                (1:3)
                        END-IF
                        MOVE    4                  TO  IDX-S
-                       MOVE    SPA-SYSYMD (1:4)   TO  WRK-ST-PTNUM(1:3)
                    ELSE
       *                西暦
-                       IF      WRK-ST-PTNUM(1:4)  NOT =   SPA-SYSYMDW
+                       IF      WRK-ST-PTNUM(1:4)  NOT =   SPA-SYSYMD
                                                                    (1:4)
                            MOVE    ZERO               TO  WRK-ST-PTNUM
+                           MOVE    SPA-SYSYMD (1:4)   TO  WRK-ST-PTNUM
+                                                                  (1:4)
                        END-IF
                        MOVE    5                  TO  IDX-S
-                       MOVE    SPA-SYSYMD (1:4)   TO  WRK-ST-PTNUM(1:4)
                    END-IF
                    MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  WRK-K1
+                   MOVE    ZERO                        TO  WRK-RENNUM
                    MOVE    WRK-ST-PTNUM(IDX-S:WRK-K1)  TO  WRK-RENNUM
-                   ADD     1                       TO  WRK-RENNUM
       *            最終連番より小さいこと
-                   IF      WRK-RENNUM          >   SYS-1009-RENNUM
-                       MOVE    1               TO  FLG-ERR
+                   IF      WRK-RENNUM          >=  SYS-1009-RENNUM
+                       MOVE    1               TO  FLG-END
                        GO      TO      20011-NUM-HENSYU-EXT
                    END-IF
+                   ADD     1                       TO  WRK-RENNUM
                    IF      SYS-1009-HJNKSIRENNUMKETA   <=  10
                        COMPUTE IDY         =   10
                                            -   SYS-1009-HJNKSIRENNUMKETA
-                                           +   IDX-S
+                                           +   1
                        MOVE    SPACE           TO  WRK-ST-PTNUM(IDX-S:)
                        MOVE    WRK-RENNUM(IDY:WRK-K1)
                                                TO  WRK-ST-PTNUM
@@ -417,7 +415,7 @@
                        COMPUTE IDY         =   SYS-1009-HJNKSIRENNUMKETA
                                            -   10
                        COMPUTE IDY             =   IDY
-                                               +   IDX-S
+                                               +   1
                        MOVE    SPACE           TO  WRK-ST-PTNUM(IDY:)
                        MOVE    WRK-RENNUM(1:10)
                                                TO  WRK-ST-PTNUM
@@ -430,12 +428,12 @@
                WHEN   "4"
                    MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  WRK-K1
                    MOVE    WRK-ST-PTNUM(1:WRK-K1)  TO  WRK-RENNUM
-                   ADD     1                       TO  WRK-RENNUM
       *            最終連番より小さいこと
-                   IF      WRK-RENNUM          >   SYS-1009-RENNUM
-                       MOVE    1               TO  FLG-ERR
+                   IF      WRK-RENNUM          >=  SYS-1009-RENNUM
+                       MOVE    1               TO  FLG-END
                        GO      TO      20011-NUM-HENSYU-EXT
                    END-IF
+                   ADD     1                       TO  WRK-RENNUM
                    IF      SYS-1009-HJNKSIRENNUMKETA   <=  10
                        COMPUTE IDY         =   10
                                            -   SYS-1009-HJNKSIRENNUMKETA
@@ -485,9 +483,6 @@
       *    システム管理の連番処理
       *****************************************************************
        2002-RENNUM-CHK-SEC                     SECTION.
-      *TEST
-           DISPLAY "WRK-ST-PTNUM:" WRK-ST-PTNUM
-      *TEST
       *
            IF      WRK-ST-PTNUM        =   SPACE
                MOVE    ZERO                TO  ORCBZ001S-MAX-CNT
@@ -501,7 +496,7 @@
                   (SYS-1009-HJNKSIKBN      =   "1"  OR  "2")
                IF      SYS-1009-HJNKSINENKBN  =   "1"
       *            和暦
-                   MOVE    SPA-SYSYMD (1:3)   TO  WRK-ED-PTNUM(1:3)
+                   MOVE    SPA-SYSYMDW(1:3)   TO  WRK-ED-PTNUM(1:3)
                ELSE
       *            西暦
                    MOVE    SPA-SYSYMD (1:4)   TO  WRK-ED-PTNUM(1:4)
@@ -509,35 +504,30 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-ERR
+           MOVE    ZERO                TO  FLG-END
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL      (FLG-ERR     =   1   )  OR
+                              (FLG-END     =   1   )  OR
                               (IDX         >=  120 )
       *        患者番号構成決定処理
                PERFORM 20011-NUM-HENSYU-SEC
-               IF      FLG-ERR             =   1
+               IF      FLG-END             =   1
                    CONTINUE
                ELSE
       *            対象番号編集
                    ADD     1                   TO  IDX
                    MOVE    IDX                 TO  ORCBZ001S-MAX-CNT
                    MOVE    WRK-ST-PTNUM        TO  ORCBZ001S-PTNUM(IDX)
-      *TEST
-           DISPLAY "ORCBZ001S-PTNUMT:" ORCBZ001S-PTNUM(IDX)
-      *TEST
                END-IF
            END-PERFORM
-      *TEST
-           DISPLAY " FLG-ERR:"  FLG-ERR
-                  ",ORCBZ001S-MAX-CNT:" ORCBZ001S-MAX-CNT
-      *TEST
       *
       *    終了
-           IF      FLG-ERR             =   ZERO
+           IF      FLG-END             =   ZERO
                MOVE    ZERO                TO  ORCBZ001S-ENDFLG
            ELSE
                MOVE    1                   TO  ORCBZ001S-ENDFLG
            END-IF
-          .
+           .
        2002-RENNUM-CHK-EXT.
            EXIT.
       *
