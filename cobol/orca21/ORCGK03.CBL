@@ -1136,6 +1136,7 @@
                        MOVE    ZERO        TO  SPA-TEI-SKYMONEY (IDX)
                        MOVE    ZERO        TO  SPA-TEI-SKYMONEY-TAX-SAI
                                                             (IDX)
+                       MOVE    ZERO        TO  SPA-TEI-CHOSEI (IDX)
                    END-IF
                END-IF
            END-PERFORM
@@ -1165,6 +1166,7 @@
                        MOVE    ZERO        TO  SPA-TEI-SKYMONEY (IDX)
                        MOVE    ZERO        TO  SPA-TEI-SKYMONEY-TAX-SAI
                                                             (IDX)
+                       MOVE    ZERO        TO  SPA-TEI-CHOSEI (IDX)
                    END-IF
                END-IF
            END-PERFORM
@@ -3609,8 +3611,7 @@
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL     (IDX      >   SPA-GMN-SRYKA-MAX ) OR
                              (FLG-CHK  =   1     )
-               IF      SPA-GMN-SRYKA       =   SPA-GMN-TSRYKA
-                                                             (IDX)
+               IF      SPA-GMN-SRYKA       =   SPA-GMN-TSRYKA (IDX)
                    IF      IDX             =   SPA-GMN-SRYKA-MAX
                        MOVE    SPA-GMN-SRYKA-LIST(1)
                                            TO  SPA-GMN-SRYKA-G
@@ -3635,10 +3636,11 @@
       *    ÂÐ¾Ý¼ýÇ¼¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        49011-FUKU-SRYKA-CHK-SEC        SECTION.
-           MOVE    ZERO                TO  FLG-CHK
       *
+           MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING    IDX      FROM    1   BY  1
-                   UNTIL    (FLG-CHK  =   1     )
+                   UNTIL     (IDX      >   SPA-HKN-MAX ) OR
+                             (FLG-CHK  =   1     )
                IF      SPA-GMN-HKNCOMBI    =   SPA-GMN-THKNCOMBINUM
                                                              (IDX)
                    IF      IDX             =   SPA-HKN-MAX
@@ -3656,6 +3658,11 @@
                    PERFORM 48011-SYUNOU-CHK-SEC
                    IF      FLG-OK          =   1
                        MOVE    1               TO  FLG-CHK
+                   ELSE
+                       IF     (SPA-GMN-HKNCOMBI    =   ZERO )  AND
+                              (SPA-GMN-SRYKA       =   ZERO )
+                           MOVE    1               TO  FLG-CHK
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
@@ -4059,6 +4066,16 @@
       **** MOVE    SPA-GMN-SYORI       TO  ORCSCGAIRAI-SYORI
       *    ¼ýÇ¼¾ðÊó
            MOVE    SPA-SYUNOU-MAX      TO  ORCSCGAIRAI-SYUNOU-MAX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SYUNOU-MAX
+      *        ÄûÀµ¤Î»þ¡¢ÀÁµá³Û¤«¤éÁ°²óÄ´À°³Û¤ò°ú¤¯
+               MOVE    SPA-SYUNOU-REC(IDX) TO  SYUNOU-REC
+               IF      SYU-DENPNUM     NOT =   ZERO
+                   COMPUTE SYU-SKYMONEY    =   SYU-SKYMONEY
+                                           -   SPA-TEI-CHOSEI  (IDX)
+                   MOVE    SYUNOU-REC      TO  SPA-SYUNOU-REC(IDX)
+               END-IF
+           END-PERFORM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
                MOVE    SPA-SYUNOU-REC(IDX) TO  ORCSCGAIRAI-SYUNOU-REC
