@@ -3,6 +3,7 @@ tbl_jobkanri	{
 	JOBID			number(7,0);
 #--> シェルＩＤ
 	SHELLID			char(8);
+	RUN_OPID		char(16);
 #--> シェルメッセージ
 	SHELLMSG		char(100);
 	TERMID			varchar(32);
@@ -19,6 +20,12 @@ tbl_jobkanri	{
 	SRYYMD			char(8);
 	PTID			number(10,0);
 	UPDCNT			number(10,0);
+	STEPCNT			number(3,0);
+	STOPFLG 		number(1,0);
+	PID1	 		number(5,0);
+	PID2	 		number(5,0);
+	PID3	 		number(5,0);
+	PID4	 		number(5,0);
 	YOBI			varchar(500);
 #-----> 主キー更新用項目
 #	UPSHELLID	char(8),virtual;
@@ -80,6 +87,12 @@ path	upd1	{
 					SRYYMD		=	:SRYYMD,
 					PTID		=	:PTID,
 					UPDCNT		=	:UPDCNT,
+					STEPCNT		=	:STEPCNT,
+					STOPFLG		=	:STOPFLG,
+					PID1		=	:PID1,
+					PID2		=	:PID2,
+					PID3		=	:PID3,
+					PID4		=	:PID4,
 					YOBI		=	:YOBI
 			WHERE   SHELLID		=   :SHELLID 
 			AND		JOBID			=  :JOBID
