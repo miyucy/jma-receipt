@@ -103,6 +103,8 @@
       *                                     年齢・給付割合の追加
       *  01.01.02    NACL-藤原    02/10/17  氏名を３２から５０に変更
       *  01.01.03    NACL-門脇    02/10/17  公費２の一部負担金欄の編集修正
+      *  01.01.04    NACL-藤原    02/10/24  保険内自費のみのとき出力しないように
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3305,14 +3307,23 @@
                    MOVE    HIGH-VALUE          TO  KEY-NEW
                NOT AT  END
                    MOVE    ZERO                TO  FLG-RECE02
-                   ADD     1                   TO  CNT-RECE02
-                   MOVE    RECE02-HOSPID       TO  KEY-N-HOSPID
-                   MOVE    RECE02-SRYYM        TO  KEY-N-SRYYM
-                   MOVE    RECE02-NYUGAIKBN    TO  KEY-N-NYUGAIKBN
-                   MOVE    RECE02-PTID         TO  KEY-N-PTID
-                   MOVE    RECE02-RECEKA       TO  KEY-N-RECEKA
-                   MOVE    RECE02-TEISYUTUSAKI TO  KEY-N-TEISYUTUSAKI
-                   MOVE    RECE02-RECESYUBETU  TO  KEY-N-RECESYUBETU
+                   IF      RECE02-TOTALTEN (1) =   ZERO
+                   AND     RECE02-TOTALTEN (2) =   ZERO 
+                   AND     RECE02-TOTALTEN (3) =   ZERO 
+                   AND     RECE02-TOTALTEN (4) =   ZERO
+                   AND     RECE02-TOTALTEN (5) =   ZERO
+                       GO  TO  990-RECE02-READ-SEC
+                   ELSE    
+                       ADD     1                   TO  CNT-RECE02
+                       MOVE    RECE02-HOSPID       TO  KEY-N-HOSPID
+                       MOVE    RECE02-SRYYM        TO  KEY-N-SRYYM
+                       MOVE    RECE02-NYUGAIKBN    TO  KEY-N-NYUGAIKBN
+                       MOVE    RECE02-PTID         TO  KEY-N-PTID
+                       MOVE    RECE02-RECEKA       TO  KEY-N-RECEKA
+                       MOVE    RECE02-TEISYUTUSAKI TO
+                                                   KEY-N-TEISYUTUSAKI
+                       MOVE    RECE02-RECESYUBETU  TO  KEY-N-RECESYUBETU
+                   END-IF    
            END-READ
       *
            .

@@ -30,6 +30,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02.10.21  病名編集時に半角空白を全角へ変換
+      *  01.01.02    NACL-藤原    02/10/24  保険内自費のみのとき出力しないように
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2943,14 +2945,23 @@
                    MOVE    HIGH-VALUE          TO  KEY-NEW
                NOT AT  END
                    MOVE    ZERO                TO  FLG-RECE02
-                   ADD     1                   TO  CNT-RECE02
-                   MOVE    RECE02-HOSPID       TO  KEY-N-HOSPID
-                   MOVE    RECE02-SRYYM        TO  KEY-N-SRYYM
-                   MOVE    RECE02-NYUGAIKBN    TO  KEY-N-NYUGAIKBN
-                   MOVE    RECE02-PTID         TO  KEY-N-PTID
-                   MOVE    RECE02-RECEKA       TO  KEY-N-RECEKA
-                   MOVE    RECE02-TEISYUTUSAKI TO  KEY-N-TEISYUTUSAKI
-                   MOVE    RECE02-RECESYUBETU  TO  KEY-N-RECESYUBETU
+                   IF      RECE02-TOTALTEN (1) =   ZERO
+                   AND     RECE02-TOTALTEN (2) =   ZERO 
+                   AND     RECE02-TOTALTEN (3) =   ZERO 
+                   AND     RECE02-TOTALTEN (4) =   ZERO
+                   AND     RECE02-TOTALTEN (5) =   ZERO
+                       GO  TO  990-RECE02-READ-SEC
+                   ELSE    
+                       ADD     1                   TO  CNT-RECE02
+                       MOVE    RECE02-HOSPID       TO  KEY-N-HOSPID
+                       MOVE    RECE02-SRYYM        TO  KEY-N-SRYYM
+                       MOVE    RECE02-NYUGAIKBN    TO  KEY-N-NYUGAIKBN
+                       MOVE    RECE02-PTID         TO  KEY-N-PTID
+                       MOVE    RECE02-RECEKA       TO  KEY-N-RECEKA
+                       MOVE    RECE02-TEISYUTUSAKI TO
+                                                   KEY-N-TEISYUTUSAKI
+                       MOVE    RECE02-RECESYUBETU  TO  KEY-N-RECESYUBETU
+                   END-IF    
            END-READ
       *
            .
