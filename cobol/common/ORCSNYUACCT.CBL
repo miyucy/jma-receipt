@@ -1695,7 +1695,7 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY15"   TO  ORC-DBPATH
                PERFORM 930-NYUINACCT-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-NYUINACCT
@@ -1749,11 +1749,11 @@
                    END-IF
                END-IF
       *
-               MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY15"   TO  ORC-DBPATH
                PERFORM 930-NYUINACCT-READ-SEC
            END-PERFORM
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY15"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
