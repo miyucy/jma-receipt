@@ -329,6 +329,14 @@
                                     MOVE    "0062"   TO  SPA-ERRCD
                                     GO       TO          MAIN-EXT
                                 END-IF
+                            ELSE
+                              IF   WRK-GRPCNT  =  1
+                                PERFORM   4400-SYUTOTAL-FIND2-SEC
+                                IF   FLG-NG   =   1
+                                    MOVE    "0062"   TO  SPA-ERRCD
+                                    GO       TO          MAIN-EXT
+                                END-IF
+                              END-IF
                             END-IF
                             MOVE   ZERO      TO  WRK-GRPCNT
                           END-IF
@@ -353,6 +361,14 @@
                            MOVE    "0062"   TO  SPA-ERRCD
                            GO       TO          MAIN-EXT
                        END-IF
+                 ELSE
+                    IF   WRK-GRPCNT  =  1
+                       PERFORM   4400-SYUTOTAL-FIND2-SEC
+                       IF   FLG-NG   =   1
+                           MOVE    "0062"   TO  SPA-ERRCD
+                           GO       TO          MAIN-EXT
+                       END-IF
+                    END-IF
                  END-IF
                  MOVE    "DBCLOSE"               TO  MCP-FUNC
                  MOVE    "SYUNOU-KEY27"          TO  ORC-DBPATH
@@ -821,6 +837,23 @@
            .
       *
        4400-SYUTOTAL-FIND-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    収納合計マスタがあるか
+      ******************************************************************
+       4400-SYUTOTAL-FIND2-SEC           SECTION.
+      *
+           MOVE       ZERO        TO      FLG-NG
+      *
+           PERFORM   900-SYUTOTAL-READ-SEC
+           IF    FLG-SYUTOTAL   =   ZERO
+                  MOVE    1       TO      FLG-NG
+           END-IF
+      *
+           .
+      *
+       4400-SYUTOTAL-FIND2-EXT.
            EXIT.
       *
       ******************************************************************
