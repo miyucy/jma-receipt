@@ -17,8 +17,8 @@
 <widget>
   <class>GtkWindow</class>
   <name>E02</name>
-  <width>1015</width>
-  <height>741</height>
+  <width>1024</width>
+  <height>768</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
