@@ -1558,6 +1558,10 @@
                IF      WRK-SPA-PTNUM       NOT =   SPACE
       *            初期表示へ
                    MOVE    WRK-SPA-PTNUM   TO  K02N-PTNUM
+      *            受付一覧からの時、診療科を編集する
+                   IF      WRK-MOTOPG          =   "U01"
+                       MOVE    WRK-SPA-SRYKA   TO  SPA-SRYKA
+                   END-IF
                    PERFORM 41010-PTNUM-SYORI-SEC
                    MOVE    SPACE           TO  SPA-ERRCD
                    MOVE    ZERO            TO  SPA-NAI-ROUSTR
@@ -3527,6 +3531,11 @@
            IF     (SPA-KIDCD       NOT =   SPACE ) OR
                   (SPA-ERRCD       NOT =   SPACE )
                GO      TO      41010-PTNUM-SYORI-EXT
+           END-IF
+      *    受付一覧からの時、診療科を編集する
+           IF      WRK-MOTOPG          =   "U01"
+               MOVE    WRK-SPA-SRYKA   TO  SPA-SRYKA
+               MOVE    WRK-SPA-SRYKA   TO  SPA-GMN-SRYKA
            END-IF
       *
       *    初期ＳＰＡ編集処理
