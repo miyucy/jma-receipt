@@ -7642,8 +7642,6 @@
       *
       *    通算算定済日数
            MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
-      *    入院料加算診療コード取り込み
-           PERFORM    4801-NYUKSN-GET-SEC
       *
       *    特定入院で入院料が変更になるコードの対応
       *    診療所老人医療管理料
@@ -7828,6 +7826,9 @@
            END-IF
       *
       *-------特定入院対応ここまで-----------------------------------
+      *
+      *    入院料加算診療コード取り込み
+           PERFORM    4801-NYUKSN-GET-SEC
       *
       *    特定入院料区分のセット
            IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
@@ -8228,8 +8229,13 @@
            MOVE    ZERO            TO  FLG-TENSU
            INITIALIZE              TNS-TENSU-REC
       *
-           MOVE    LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+           IF      LNK-SCNYUACCT-NYUKHN-SRYCD(1) NOT = SPACE
+               MOVE   LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                                    TO  TNS-SRYCD
+           ELSE
+               MOVE   LNK-SCNYUACCT-KAGEN-SRYCD(1)
+                                   TO  TNS-SRYCD
+           END-IF
            MOVE    SYOKIKSN-IN-SANTEISTYMD    TO  ORC-DBYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
@@ -8240,6 +8246,8 @@
            ELSE
                MOVE    1           TO  FLG-TENSU
            END-IF
+           DISPLAY  "FLG-TENSU = " FLG-TENSU
+           DISPLAY "TNS-NYUKHNKSNKBN = " TNS-NYUKHNKSNKBN
       *
       *    点数マスタクローズ
            MOVE    "TENSU-KEY"     TO  ORC-DBPATH
@@ -8291,6 +8299,7 @@
            MOVE    WRK-NYUKHNKSN-SRYCD(IDX8)
                                    TO  TNS-SRYCD
            MOVE    SYOKIKSN-IN-SANTEISTYMD    TO  ORC-DBYMD
+           DISPLAY "SYOKIKSN-IN-SANTEISTYMD= " SYOKIKSN-IN-SANTEISTYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
            MOVE    "TENSU-KEY"     TO  WRK-DBPATH
@@ -8597,8 +8606,6 @@
       *
       *    通算算定済日数
            MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
-      *    入院料加算診療コード取り込み
-           PERFORM    4801-NYUKSN-GET-SEC
       *
       *    特定入院で入院料が変更になるコードの対応
       *    診療所老人医療管理料
@@ -8947,6 +8954,9 @@
            END-IF
       *-------特定入院対応ここまで-----------------------------------
       *
+      *    入院料加算診療コード取り込み
+           PERFORM    4801-NYUKSN-GET-SEC
+      *
       *    特定入院料区分のセット
            IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
                MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
@@ -9160,8 +9170,7 @@
            END-PERFORM
       *    通算算定済日数
            MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
-      *    入院料加算診療コード取り込み
-           PERFORM    4801-NYUKSN-GET-SEC
+      *
       *    特定入院で入院料が変更になるコードの対応
       *    診療所老人医療管理料
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190774110"
@@ -9568,6 +9577,9 @@
            END-IF
       *-------特定入院対応ここまで-----------------------------------
       *
+      *    入院料加算診療コード取り込み
+           PERFORM    4801-NYUKSN-GET-SEC
+      *
       *    特定入院料区分のセット
            IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
                MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
@@ -9828,8 +9840,7 @@
            END-PERFORM
       *    通算算定済日数
            MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
-      *    入院料加算診療コード取り込み
-           PERFORM    4801-NYUKSN-GET-SEC
+      *
       *    特定入院で入院料が変更になるコードの対応
       *    診療所老人医療管理料
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190774110"
@@ -10235,6 +10246,9 @@
                  END-IF
            END-IF
       *-------特定入院対応ここまで-----------------------------------
+      *
+      *    入院料加算診療コード取り込み
+           PERFORM    4801-NYUKSN-GET-SEC
       *
       *    特定入院料区分のセット
            IF      PTNYUINRRK-TOKUTEI-NYUIN    =   SPACE
