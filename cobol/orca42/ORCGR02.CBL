@@ -1514,9 +1514,6 @@
        4107-PRTKBN-CHK-SEC             SECTION.
       *
            MOVE    200                TO  SPA-GMN-CUR
-      *???
-           DISPLAY "SPA=" SPA-GMN-PRTKBN-G "#" R02-PRTKBN "#"
-      *???  
       *
            MOVE    R02-PRTKBN         TO  SPA-GMN-PRTKBN-G
       *
