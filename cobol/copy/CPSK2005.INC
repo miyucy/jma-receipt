@@ -94,8 +94,11 @@
                                         PIC  X(16).
       *Ï·¿Í¤È¸¶Çú¶èÊ¬
                05  SYS-2005-RJNGNBKKBN  PIC  X(01).
+      *¼«Èñ¥ì¥»Å¦Í×Íóµ­ºÜ¶èÊ¬
+               05  SYS-2005-JIHITEKKSIKBN
+                                        PIC  X(01).
       *Í½È÷
-           03  FILLER                   PIC  X(244).
+           03  FILLER                   PIC  X(243).
       *Ã¼Ëö£É£Ä
            03  SYS-2005-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
