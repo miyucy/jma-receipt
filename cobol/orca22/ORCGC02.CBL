@@ -111,6 +111,8 @@
       *  02.07.18    NACL-藤原    03/07/07  病名コード入力時、病名が変更
       *                                     なければ疑い・慢性区分の変更
       *                                     をしないように修正
+      *  02.07.19    NACL-藤原    03/07/15  更新時の入力コードのチェック
+      *                                     チェックを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4372,6 +4374,40 @@
                    GO  TO  420-TUIKA-EXT
                END-IF
            END-IF    
+      *
+      *    入力コードのチェック
+           IF      SPA-GMN-C02-BYOMEIINPUTCD   NOT =   SPACE
+               MOVE    ZERO                TO  WRK-LENGTH                    
+               PERFORM VARYING IDX FROM    10  BY  -1
+                       UNTIL   IDX <       1
+                   IF      SPA-GMN-C02-BYOMEIINPUTCD(IDX:1)
+                                           NOT =   SPACE
+                       MOVE    IDX             TO  WRK-LENGTH
+                       MOVE    1               TO  IDX
+                   END-IF
+               END-PERFORM
+               IF      WRK-LENGTH          =   7   OR  ZERO
+                   MOVE    "0070"              TO  SPA-ERRCD
+                   GO  TO  420-TUIKA-EXT
+               END-IF    
+               IF      SPA-ERRCD           =   SPACE
+                   INITIALIZE                  USERBYOMEI-REC
+                   MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+                   MOVE    SPA-GMN-C02-BYOMEIINPUTCD
+                                           TO  USBYO-BYOMEIINPUTCD
+                   PERFORM 900-USERBYOMEI-INV-SEC
+                   IF      FLG-USERBYOMEI      =   ZERO
+                       MOVE    "0068"              TO  SPA-ERRCD
+                       GO  TO  420-TUIKA-EXT
+                   ELSE
+                       IF      SPA-GMN-C02-BYOMEI  =   SPACE
+                       AND     SPA-GMN-C02-BYOMEICD-G   =   SPACE
+                           MOVE    "0010"              TO  SPA-ERRCD
+                           GO  TO  420-TUIKA-EXT
+                       END-IF
+                   END-IF
+               END-IF    
+           END-IF                                  
       *     
       *    これ以上追加できないとき
            IF      SPA-GMN-C02-MAX      =   200
@@ -5129,6 +5165,40 @@
                    GO  TO  430-HENKOU-EXT
                END-IF
            END-IF    
+      *
+      *    入力コードのチェック
+           IF      SPA-GMN-C02-BYOMEIINPUTCD   NOT =   SPACE
+               MOVE    ZERO                TO  WRK-LENGTH                    
+               PERFORM VARYING IDX FROM    10  BY  -1
+                       UNTIL   IDX <       1
+                   IF      SPA-GMN-C02-BYOMEIINPUTCD(IDX:1)
+                                           NOT =   SPACE
+                       MOVE    IDX             TO  WRK-LENGTH
+                       MOVE    1               TO  IDX
+                   END-IF
+               END-PERFORM
+               IF      WRK-LENGTH          =   7   OR  ZERO
+                   MOVE    "0070"              TO  SPA-ERRCD
+                   GO  TO  430-HENKOU-EXT
+               END-IF    
+               IF      SPA-ERRCD           =   SPACE
+                   INITIALIZE                  USERBYOMEI-REC
+                   MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+                   MOVE    SPA-GMN-C02-BYOMEIINPUTCD
+                                           TO  USBYO-BYOMEIINPUTCD
+                   PERFORM 900-USERBYOMEI-INV-SEC
+                   IF      FLG-USERBYOMEI      =   ZERO
+                       MOVE    "0068"              TO  SPA-ERRCD
+                       GO  TO  430-HENKOU-EXT
+                   ELSE
+                       IF      SPA-GMN-C02-BYOMEI  =   SPACE
+                       AND     SPA-GMN-C02-BYOMEICD-G   =   SPACE
+                           MOVE    "0010"              TO  SPA-ERRCD
+                           GO  TO  430-HENKOU-EXT
+                       END-IF
+                   END-IF
+               END-IF    
+           END-IF                                  
       *
       *    自院病名が変更されていたとき病名に移行があるとき
            IF      SPA-CIDCD2         NOT =   SPACE
