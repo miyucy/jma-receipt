@@ -42,8 +42,8 @@
       *
        01  WK-KSNRATE9                 PIC 9(03).
        01  WK-KSNRATE                  PIC 9V99.
-       01  WK-NISSU1                   PIC 9(05).
-       01  WK-NISSU2                   PIC 9(05).
+      *01  WK-NISSU1                   PIC 9(05).
+      *01  WK-NISSU2                   PIC 9(05).
        01  KEISAN-AREA.
            03  WK-KNJFTNKIN            PIC 9(10).
            03  WK-ZENGAKU              PIC 9(10).
@@ -74,6 +74,13 @@
            03  FLG-SANTEI4             PIC X(01).
       *
            03  WK-PAYKBN               PIC X(02).
+      *
+      *    Äã½êÆÀ£±¤ÎÄ¹´üÆþ±¡Ç§ÄêÇ¯·îÆü
+           03  WRK-SKJGNSTYMD-S        PIC X(08).
+           03  WRK-SKJGNSTYMD-E        PIC X(08).
+           03  WRK-SKJGNSTYMD2.
+               05  WRK-SKJGNSTYYMM2    PIC 9(06).
+               05  WRK-SKJGNSTDD2      PIC 9(02).
       *
       *    ÊÝ¸±¶èÊ¬¡Ê¶õÇò¡§°åÊÝ¡¡£±¡§Ï«ºÒ¡¦¼«Çå¡Ë
            03  WK-HKNKBN               PIC X(01).
@@ -167,8 +174,8 @@
            03  WK-NISSU-SKJ            PIC 9(02).
            03  WK-KNJFTNKIN-SKJ        PIC 9(07).
            03  WK-RYOYOHI-SKJ          PIC 9(07).
-           03  WK-TSUSAN-NISSU         PIC 9(04).
-           03  WK-SEIKYUKIKAN-NISSU    PIC 9(04).
+      *    03  WK-TSUSAN-NISSU         PIC 9(04).
+      *    03  WK-SEIKYUKIKAN-NISSU    PIC 9(04).
       *    ¿©Æ²²Ã»»ÂàÈò¥Æ¡¼¥Ö¥ë
        01  WK-SHOKUDOKASAN-TABLE.
            03  WK-SHOKUDOKASAN-T       OCCURS   31.
@@ -629,6 +636,8 @@
       *
            MOVE    SPACE                TO      FLG-SANSHOU.
            MOVE    SPACE                TO      FLG-SANSHOU3.     
+           MOVE    SPACE                TO      WRK-SKJGNSTYMD-S
+           MOVE    SPACE                TO      WRK-SKJGNSTYMD-E
       *
            INITIALIZE                           TNKRRK-REC.
            MOVE    LNK-SYU-HOSPID       TO      TNKRRK-HOSPID.
@@ -706,6 +715,12 @@
                        MOVE    SPACE    TO       FLG-SANSHOU3      
                WHEN    0                ALSO     1                 
                        MOVE     "2"     TO       FLG-SANSHOU3      
+      *
+                       MOVE     TSYRRK-SKJGNSTYMD
+                                        TO       WRK-SKJGNSTYMD-S
+                       MOVE     TSYRRK-NINEDYMD
+                                        TO       WRK-SKJGNSTYMD-E
+      *
                WHEN    0                ALSO     0                 
                WHEN    1                ALSO     0
                        MOVE     "1"     TO       FLG-SANSHOU3      
@@ -1620,20 +1635,20 @@
                                         MCPDATA-REC.
       *
       *
-           MOVE     ZERO                TO  WK-NISSU1
-                                            WK-NISSU2.
+      *    MOVE     ZERO                TO  WK-NISSU1
+      *                                     WK-NISSU2.
       *
-           INITIALIZE                   STS-AREA-DAY.
-           INITIALIZE                   LNK-DAY5-AREA.
-           MOVE    "51"                 TO  LNK-DAY5-IRAI.
-           MOVE    LNK-S02-SKYSTYMD     TO  LNK-DAY5-START.
-           MOVE    LNK-SYU-SKYSTYMD     TO  LNK-DAY5-END.
-           CALL    "ORCSDAY"            USING   STS-AREA-DAY
-                                                LNK-DAY5-AREA.
-           IF      ( STS-DAY-RC1    =   ZERO )
-               MOVE    LNK-DAY5-NISSU1  TO  WK-NISSU1
-               MOVE    LNK-DAY5-NISSU2  TO  WK-NISSU2
-           END-IF.
+      *    INITIALIZE                   STS-AREA-DAY.
+      *    INITIALIZE                   LNK-DAY5-AREA.
+      *    MOVE    "51"                 TO  LNK-DAY5-IRAI.
+      *    MOVE    LNK-S02-SKYSTYMD     TO  LNK-DAY5-START.
+      *    MOVE    LNK-SYU-SKYSTYMD     TO  LNK-DAY5-END.
+      *    CALL    "ORCSDAY"            USING   STS-AREA-DAY
+      *                                         LNK-DAY5-AREA.
+      *    IF      ( STS-DAY-RC1    =   ZERO )
+      *        MOVE    LNK-DAY5-NISSU1  TO  WK-NISSU1
+      *        MOVE    LNK-DAY5-NISSU2  TO  WK-NISSU2
+      *    END-IF.
       *
       *
            INITIALIZE                            NYUINACCT-REC.
@@ -1810,7 +1825,7 @@
       ******************************************************************
        23001-SHOKUJI-COUNT-SEC         SECTION.
       *
-           ADD        WK-NISSU1   TO    WK-SEIKYUKIKAN-NISSU. 
+      *    ADD        WK-NISSU1   TO    WK-SEIKYUKIKAN-NISSU. 
       *
            MOVE       LNK-SYU-SKYSTYMD(7:2)  TO   IDX-ST.
            MOVE       LNK-SYU-SKYEDYMD(7:2)  TO   IDX-ED.
@@ -1818,8 +1833,8 @@
            PERFORM    VARYING   IDY   FROM   IDX-ST   BY   1
                                     UNTIL    IDY     >    IDX-ED
       *
-             COMPUTE  WK-SEIKYUKIKAN-NISSU  =  WK-SEIKYUKIKAN-NISSU 
-                                            +  1
+      *      COMPUTE  WK-SEIKYUKIKAN-NISSU  =  WK-SEIKYUKIKAN-NISSU 
+      *                                     +  1
       *
              MOVE     ZERO     TO      WK-SHOKUJI-JIHI
       *
@@ -1958,14 +1973,27 @@
                   WHEN  1
                           ADD     300    TO   WK-SHOKUJI-FTN
                   WHEN  2
-                    COMPUTE   WK-TSUSAN-NISSU  =  
-                                        LNK-S02-NYUIN-TSUSAN-NISSU  +
-                                        WK-SEIKYUKIKAN-NISSU
-      **>           IF        WK-TSUSAN-NISSU  <=  90
+      *             COMPUTE   WK-TSUSAN-NISSU  =  
+      *                                 LNK-S02-NYUIN-TSUSAN-NISSU  +
+      *                                 WK-SEIKYUKIKAN-NISSU
+      *             IF        WK-TSUSAN-NISSU  <=  90
+      *                   ADD     650    TO   WK-SHOKUJI-FTN
+      *             ELSE
+      *                   ADD     500    TO   WK-SHOKUJI-FTN
+      *             END-IF
+                    IF    WRK-SKJGNSTYMD-S   NOT  =   SPACE
+                       MOVE   LNK-SYU-SKYSTYMD(1:6) 
+                                         TO  WRK-SKJGNSTYYMM2
+                       MOVE   IDY        TO  WRK-SKJGNSTDD2
+                       IF   WRK-SKJGNSTYMD-S  <=  WRK-SKJGNSTYMD2
+                       AND  WRK-SKJGNSTYMD-E  >=  WRK-SKJGNSTYMD2 
+                          ADD     500    TO   WK-SHOKUJI-FTN
+                       ELSE
                           ADD     650    TO   WK-SHOKUJI-FTN
-      **>           ELSE
-      **>                 ADD     500    TO   WK-SHOKUJI-FTN
-      **>           END-IF
+                       END-IF
+                    ELSE
+                          ADD     650    TO   WK-SHOKUJI-FTN
+                    END-IF    
                 END-EVALUATE
               END-IF
       *
