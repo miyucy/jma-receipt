@@ -48,6 +48,9 @@
       *  01.03.10    NACL-Æ£¸¶    02/10/07  £²£°£°£²Ç¯£±£°·î²þÀµÂÐ±þ
       *
       *  01.04.01    NACL-Æ£¸¶    03/03/05  Æþ±¡ÂÐ±þ
+      *  01.04.02    NACL-Æ£¸¶    03.05.06  ÃÏÊý¸øÈñ£Ä£ÂÂÐ±þºÑ¥Õ¥é¥°
+      *                                     ¤ÎÄÉ²Ã
+      *                                     °õºþ³«»Ï¡¦½ªÎ»ÊÇ¤ÎÊÔ½¸¤Î½¤Àµ 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -170,7 +173,10 @@
              05  WRK-SHELL-TERMID  PIC  X(16).
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
       *       
-           03  WRK-SHELL-RECEKBN   PIC X(01).  
+           03  WRK-SHELL-RECEKBN   PIC X(01).
+      *  
+           03  WRK-STPAGE          PIC 9(05).
+           03  WRK-EDPAGE          PIC 9(05).
       *      
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -512,7 +518,21 @@
            ELSE
                MOVE    "Ìµ"                 TO  SPA-GMN-PRTKBN2-VALUE
                MOVE   "red"                 TO  SPA-GMN-PRTKBN2-STYLE
-           END-IF      
+           END-IF
+      *      
+      *    ÃÏÊý¸øÈñ£Ä£ÂÂÐ±þºÑ¥Õ¥é¥°
+           IF      SYS-3003-KOHSKY-FLG =   "1"
+               MOVE    WIDGET-NORMAL      TO  SPA-DATAKBN1-STATE
+                                              SPA-DATAKBN2-STATE
+                                              SPA-DATAKBN4-STATE
+                                              SPA-DATAKBN5-STATE
+                                              SPA-DATAKBN3-STATE       
+               MOVE    "T"                TO  SPA-DATAKBN1-VALUE
+               MOVE    "F"                TO  SPA-DATAKBN2-VALUE  
+               MOVE    "F"                TO  SPA-DATAKBN4-VALUE  
+               MOVE    "F"                TO  SPA-DATAKBN5-VALUE  
+               MOVE    "F"                TO  SPA-DATAKBN3-VALUE  
+           END-IF
       *
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
@@ -1193,6 +1213,9 @@
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *                                   
       *****MOVE    RECEERR             TO  SHELL-ERRFILE
+      *
+           MOVE    0                   TO  WRK-STPAGE
+           MOVE    99999               TO  WRK-EDPAGE
       *             
            MOVE    SPACE               TO  SHELLTBL
            MOVE    "/scripts/allways/print.sh"
@@ -1238,8 +1261,8 @@
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
-           MOVE    0                   TO  SHELLTBL-ARG15
-           MOVE    99999               TO  SHELLTBL-ARG16
+           MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
+           MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH

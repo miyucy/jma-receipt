@@ -30,6 +30,7 @@
       *  01.00.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.00.02    NACL-藤原    02/10/18  確定のとき自動的に情報確認画面を表示
       *  01.00.03    NACL-藤原    03/03/03  レセプト再印刷の追加
+      *  01.04.02    NACL-藤原    03/05/12  印刷開始・終了頁の編集の修正 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -51,7 +52,7 @@
        WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル シェル領域 
-           COPY    "CPCOMMONSHELL1.INC".
+      *****COPY    "CPCOMMONSHELL1.INC".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -168,6 +169,9 @@
            03  WRK-SELNUM          PIC 9(03). 
       *
            03  WRK-ZZ              PIC ZZ9.
+      *  
+           03  WRK-STPAGE          PIC 9(05).
+           03  WRK-EDPAGE          PIC 9(05).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1181,7 +1185,14 @@
       *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *                                   
-           MOVE    RECEERR             TO  SHELL-ERRFILE
+      *****MOVE    RECEERR             TO  SHELL-ERRFILE
+      *
+           MOVE    SPA-GMN-STPAGE      TO  WRK-STPAGE
+           IF      SPA-GMN-EDPAGE      =   ZERO
+               MOVE    ALL "9"             TO  WRK-EDPAGE                                 
+           ELSE
+               MOVE    SPA-GMN-EDPAGE      TO  WRK-EDPAGE
+           END-IF                            
       *             
            MOVE    SPACE               TO  SHELLTBL
       *****MOVE    "/usr/local/orca/scripts/allways/print.sh"
@@ -1220,16 +1231,12 @@
            MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
            MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
       *                 
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG12
+           MOVE    RECEERR             TO  SHELLTBL-ARG12
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
-           MOVE    SPA-GMN-STPAGE      TO  SHELLTBL-ARG15
-           IF      SPA-GMN-EDPAGE      =   ZERO
-               MOVE    ALL "9"             TO  SHELLTBL-ARG16                                   
-           ELSE
-               MOVE    SPA-GMN-EDPAGE      TO  SHELLTBL-ARG16
-           END-IF                            
+           MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
+           MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH

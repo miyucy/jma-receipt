@@ -38,6 +38,7 @@
       *  01.00.08    MCC-藤原     02/06/04  再印刷・情報削除ボタン追加
       *  01.00.09    NACL-藤原    02/07/25  確定のとき自動的に情報確認画面を表示
       *  01.00.10    NACL-藤原    02/09/12  ディレクトリをサブプロへ
+      *  01.00.11    NACL-藤原    03/05/12  印刷開始・終了頁の編集の修正 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -149,6 +150,9 @@
       *
            03  WRK-WIDGET1         PIC 9(01).
            03  WRK-WIDGET2         PIC 9(02).  
+      *  
+           03  WRK-STPAGE          PIC 9(05).
+           03  WRK-EDPAGE          PIC 9(05).
       *      
       *    システム領域
        01  SYS-AREA.
@@ -1025,6 +1029,9 @@
       *    印刷処理
       *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *
+           MOVE    0                   TO  WRK-STPAGE
+           MOVE    99999               TO  WRK-EDPAGE
       *             
            MOVE    SPACE               TO  SHELLTBL
       *****MOVE    "/usr/local/orca/scripts/allways/print.sh"
@@ -1070,8 +1077,8 @@
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
-           MOVE    0                   TO  SHELLTBL-ARG15
-           MOVE    99999               TO  SHELLTBL-ARG16                                   
+           MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
+           MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
