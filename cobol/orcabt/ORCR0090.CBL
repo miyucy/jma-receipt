@@ -525,12 +525,12 @@
            03  FILLER          PIC X(09)   VALUE   "112007070".
       *    時間外（再診）
            03  FILLER          PIC X(09)   VALUE   "112001110".
-      *    時間外特例（再診）
-           03  FILLER          PIC X(09)   VALUE   "112001410".
+      ***  時間外特例（再診）
+      ***  03  FILLER          PIC X(09)   VALUE   "112001410".
       *    時間外（再診）
            03  FILLER          PIC X(09)   VALUE   "112701010".
-      *    時間外特例（再診）
-           03  FILLER          PIC X(09)   VALUE   "112701310".
+      ***  時間外特例（再診）
+      ***  03  FILLER          PIC X(09)   VALUE   "112701310".
       *    休診（再診）
            03  FILLER          PIC X(09)   VALUE   "112001210".
       *    休日（再診）
@@ -576,9 +576,9 @@
       *    再診料算定科：
            03  FILLER          PIC X(09)   VALUE   "830000021".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   42.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   40.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   42.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   40.         
       *
       *    固定値
        01  CONST-AREA.
@@ -1436,8 +1436,7 @@
                                   "112701110"  OR  "112701210"  OR
                                   "112010150"  OR  "112009750"  OR
                                   "112010650"  OR  "112704450"  OR
-                                  "112704150"  OR  "112704850"  OR
-                                  "112001410"  OR  "112701310"     )
+                                  "112704150"  OR  "112704850"     )
                        MOVE    ZERO          TO  FLG-NOPRT
                  ELSE
                        MOVE    1             TO  FLG-NOPRT
