@@ -36,6 +36,7 @@
       *  01.00.02    ひさなが     02/06/26  印刷管理・印刷ＤＢ追加
       *  01.00.03    ひさなが     02/09/13  ディレクトリをサブプロへ
       *  01.00.04    ひさなが     03/04/17  入院時保険組合せチェック
+      *  01.00.05    ひさなが     03/05/13  ボタンが押せない場合修正
       *
       *****************************************************************
       *
@@ -308,7 +309,6 @@
            INITIALIZE                  FLG-AREA.
       *    エラー画面より
            IF  SPA-MOTOPG   =   "DERR" OR "DID1" OR "DID2" OR "D99"
-               MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5011-MAPCUR-SEC
                IF  (SPA-GMN-RUN   =   ZERO  OR  2)  AND
                    (SPA-GMN-KBN   =   "OK")
@@ -318,7 +318,7 @@
                    MOVE    "ORCBSD1"           TO  JOB-SHELLID
                    MOVE    SPA-TERMID          TO  JOB-TERMID
                    CALL    "ORCSJOB"           USING
-                                               WRK-JOBKANRI-AREA  
+                                               WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
                    IF  WRK-JOBKANRI-RETURN   =   ZERO
                        INITIALIZE                      WRK-JOBKANRI-AREA
@@ -337,7 +337,7 @@
                    MOVE    "ORCBSD1"           TO  JOB-SHELLID
                    MOVE    SPA-TERMID          TO  JOB-TERMID
                    CALL    "ORCSJOB"           USING
-                                               WRK-JOBKANRI-AREA  
+                                               WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
                    IF  WRK-JOBKANRI-RETURN   =   ZERO
                        INITIALIZE                      WRK-JOBKANRI-AREA
@@ -365,9 +365,27 @@
                    CLOSE                           DID1-FILE
                    MOVE    1                   TO  SPA-GMN-CUR
                    MOVE    1                   TO  FLG-END
-                   MOVE    SPACE               TO  SPA-MOTOPG
                    MOVE    SPACE               TO  SPA-GMN-KBN
                END-IF
+      *修正/*開始*03.05.13*********************************************
+               IF  (SPA-MOTOPG        =   "D99")        AND
+                   (SPA-GMN-RUN   NOT =   ZERO  AND  2)
+                   MOVE    "CHK"               TO  WRK-JOBKANRI-MODE
+                   INITIALIZE                      JOBKANRI-REC
+                   MOVE    1                   TO  JOB-JOBID
+                   MOVE    "ORCBSD1"           TO  JOB-SHELLID
+                   MOVE    SPA-TERMID          TO  JOB-TERMID
+                   CALL    "ORCSJOB"           USING
+                                               WRK-JOBKANRI-AREA
+                                               JOBKANRI-REC
+                   IF  WRK-JOBKANRI-RETURN   =   ZERO
+                       IF  JOB-ENDYMD   NOT =   SPACE
+                           MOVE    ZERO                TO  SPA-GMN-RUN
+                       END-IF
+                   END-IF
+               END-IF
+               MOVE    SPACE               TO  SPA-MOTOPG
+      *修正/*終了*03.05.13*********************************************
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
@@ -458,7 +476,13 @@
                (SPA-NYUGAIKBN   NOT =   SPACE)
                MOVE    SPA-HOSPID      TO  SPA-GMN-HOSPID
                MOVE    SPA-SRYYMD      TO  SPA-GMN-SRYYMD-S
-               MOVE    SPA-NYUGAIKBN   TO  SPA-GMN-NYUGAIKBN
+               IF  SPA-NYUGAIKBN   =   "1"
+                   MOVE    "1"             TO    SPA-GMN-NYUGAIKBN
+                   MOVE    SPA-GMN-GAI(1)  TO    SPA-GMN-NYUGAIKBN-MSG
+               ELSE
+                   MOVE    "2"             TO    SPA-GMN-NYUGAIKBN
+                   MOVE    SPA-GMN-GAI(2)  TO    SPA-GMN-NYUGAIKBN-MSG
+               END-IF
                PERFORM T-000-RECECHEK-SEC
            ELSE
                MOVE    1               TO  SPA-GMN-PAGE
