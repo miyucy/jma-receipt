@@ -1689,7 +1689,7 @@
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY15"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
