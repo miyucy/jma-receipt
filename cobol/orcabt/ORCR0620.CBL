@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03.03.03  診療科数１０から２０へ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -582,7 +583,7 @@
            MOVE    SPTID-PTNUM          TO  RECE62-PTNUM
       *    診療科情報のセット
            PERFORM   VARYING   IDX   FROM   1   BY   1
-                     UNTIL    (IDX      >   10)    OR
+                     UNTIL    (IDX      >   20)    OR
                               (RECE61-SRYKA(IDX)  =   SPACE)
                MOVE  RECE61-SRYKA(IDX)    TO   RECE62-SRYKA(IDX)
            END-PERFORM
@@ -1009,7 +1010,7 @@
                END-IF
            END-IF        
       *
-      *病院・診療所区分
+      *    病院・診療所区分
            MOVE    SYS-1001-HOSPSBT TO  RECE62-HOSPSBT               
       *
       *    病棟区分セット
