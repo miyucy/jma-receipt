@@ -53,7 +53,7 @@
                    07  SPA-GMN-C02-CUR         PIC 9(02).
                    07  SPA-GMN-C02-AREA.
                        09  SPA-GMN-C02-SYSYMD          PIC X(09).
-                       09  SPA-GMN-C02-HKNCOMBIMEIH    PIC X(10).
+                       09  SPA-GMN-C02-HKNCOMBIMEIH    PIC X(100).
                        09  SPA-GMN-C02-FTNRATE         PIC X(10).
                        09  SPA-GMN-C02-SRYKALST        OCCURS  10.
                            11  SPA-GMN-C02-SRYKAL      PIC X(02).
