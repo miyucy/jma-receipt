@@ -269,6 +269,9 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *    診療行為用共通パラメタ
+           COPY    "K01COMMON-SPA".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -302,6 +305,10 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            MOVE    LNK-ORCSC-RIGAKU-TBL    TO  WRK-RIGAKU-NCNT-AREA
+      *
+           IF      LNK-ORCSC-PG        =   "K02"
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           END-IF
       *
            EVALUATE    LNK-ORCSC-KBN
       *        剤別　チェック、編集、自動算定
@@ -376,6 +383,7 @@
       *
                EVALUATE    WRK-MOJI
                    WHEN    "0"
+                       PERFORM 10012-CHK2-SEC
                    WHEN    "8"
                    WHEN    "."
                    WHEN    "S"
@@ -442,6 +450,62 @@
       *
            .
        10011-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    急性発生日チェック処理
+      *****************************************************************
+       10012-CHK2-SEC                  SECTION.
+      *
+      *    急性発生終了
+           IF      WRK-COM-INPUTCD(IDX-Z)  =   "099800102"
+               IF      SPA-HKNKBN          =   1
+                   MOVE    "8025"              TO  WRK-ERRCD
+                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+               END-IF
+           END-IF
+      *
+      *    診療行為のみでチェック
+           IF     (WRK-ERRCD           =   SPACE  )  AND
+                  (LNK-ORCSC-PG        =   "K02"  )
+               PERFORM 100121-KYSEI-CHK-SEC
+           END-IF
+      *
+           .
+       10012-CHK2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    急性発生日チェック処理
+      *****************************************************************
+       100121-KYSEI-CHK-SEC                  SECTION.
+      *
+      *    急性発生日
+           IF      WRK-COM-INPUTCD(IDX-Z)  =   "099800101"
+               IF      SPA-KYUSEI-END      =   SPA-SRYYMD
+                   MOVE    "8023"             TO  WRK-ERRCD
+                   MOVE    "1"                TO  WRK-COM-CUR (IDX-Z)
+               END-IF
+           END-IF
+      *    急性発生終了
+           IF      WRK-COM-INPUTCD(IDX-Z)  =   "099800102"
+               IF     (SPA-KYUSEI-FLG      =   1    )  OR
+                      (SPA-KYUSEI-YMD      =   SPA-SRYYMD)
+                   MOVE    "8023"             TO  WRK-ERRCD
+                   MOVE    "1"                TO  WRK-COM-CUR (IDX-Z)
+               ELSE
+                   IF     (SPA-KYUSEI-YMD  NOT =   SPACE )  AND
+                          (SPA-KYUSEI-END      =   SPACE )
+                       CONTINUE
+                   ELSE
+                       MOVE    "8024"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       100121-KYSEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************

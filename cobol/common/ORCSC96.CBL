@@ -677,6 +677,19 @@
                                        TO  SPA-ERRMSG
                    MOVE    "算定可能です。"
                                        TO  SPA-ERRMSG(31:)
+               WHEN    "8023"
+                   MOVE    "脳血管急性発生日と発生終了日を同日に"
+                                       TO  SPA-ERRMSG
+                   MOVE    "算定できません。"
+                                       TO  SPA-ERRMSG(37:)
+               WHEN    "8024"
+                   MOVE    "脳血管急性発生日が設定されていません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "8025"
+                   MOVE    "脳血管急性発生終了日は労災・自賠責では"
+                                       TO  SPA-ERRMSG
+                   MOVE    "算定できません。"
+                                       TO  SPA-ERRMSG(39:)
                WHEN    "8050"
                    MOVE    "外来診察料算定時は電話再診の算定は"
                                        TO  SPA-ERRMSG

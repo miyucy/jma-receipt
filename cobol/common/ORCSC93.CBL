@@ -825,6 +825,7 @@
                                END-IF
       *                      Ｈ１６．４から急性発生日
                              WHEN    "099800101"
+                             WHEN    "099800102"
                                MOVE    "80"      TO  SPA-COM-SRYKBN
                                                                   (IDX)
                                MOVE    "810"     TO  SPA-COM-SRYSYUKBN
@@ -833,7 +834,7 @@
                                MOVE    "1"       TO  SPA-COM-ZAIEND
                                                              (IDX)
                                MOVE    1         TO  FLG-ZAI
-                               MOVE    1         TO  FLG-HASSYO
+      *!                       MOVE    1         TO  FLG-HASSYO
                              WHEN    OTHER
                                MOVE    "99"          TO  SPA-COM-SRYKBN
                                                                   (IDX)
@@ -1013,18 +1014,6 @@
                GO      TO      5101-SYRKBN-SET-EXT
            END-IF
       *
-           IF      FLG-HASSYO          =   1
-               IF      SPA-COM-SRYKBN(IDX) =   "80"
-                   IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "8"
-                       MOVE    2               TO  FLG-SYORI
-                       MOVE    ZERO            TO  FLG-HASSYO
-                   END-IF
-               ELSE
-                   MOVE    2               TO  FLG-SYORI
-                   MOVE    ZERO            TO  FLG-HASSYO
-               END-IF
-           END-IF
-      *
       *    剤終了判定
            MOVE    ZERO                TO  FLG-SYORI
       *    最終行・回数・計　入力時
@@ -1121,6 +1110,23 @@
                END-IF
            END-IF
       *
+      *    前行が急性発生の時終了とする
+           IF     (SPA-COM-INPUTCD(IDX)    =   "099800101"
+                                           OR  "099800101" )
+               MOVE    1               TO  FLG-HASSYO
+           ELSE
+               IF      FLG-HASSYO          =   1
+                   IF     (SPA-COM-SRYKBN(IDX) =   "80" ) AND
+                          (SPA-COM-INPUTCD(IDX)(1:1)
+                                               =   "8"  )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO            TO  FLG-HASSYO
+                       MOVE    2               TO  FLG-SYORI
+                   END-IF
+               END-IF
+           END-IF
+      *
       *    会計照時、剤変更時、診療区分変更エラー
            IF      LNK-SC93-PG         =   "J04"
                IF      FLG-SYORI           =   2
@@ -1134,8 +1140,10 @@
            IF      FLG-ZAI             =   1
                IF     (IDX             >   1   )  AND
                      ((SPA-GMN-INPUTCD(IDX - 1)(1:1)   NOT =   ".") OR
-                      (SPA-GMN-SRYKBN (IDX - 1)
-                                       NOT =   SPA-GMN-SRYKBN(IDX)))
+      *?              (SPA-GMN-SRYKBN (IDX - 1)
+      *?                               NOT =   SPA-GMN-SRYKBN(IDX)))
+                      (SPA-COM-SRYKBN (IDX - 1)
+                                       NOT =   SPA-COM-SRYKBN(IDX)))
                    MOVE    2               TO  FLG-SYORI
                ELSE
                    MOVE    1               TO  FLG-SYORI

@@ -1339,8 +1339,122 @@
            MOVE    SPACE               TO  SPA-KYUSEI-90
            MOVE    SPACE               TO  SPA-KYUSEI-YMD
            MOVE    SPACE               TO  SPA-GMN-KYUSEI
-      *
+      *    急性発生日
            MOVE    "099800101"         TO  WRK-SRYCD
+           PERFORM 100191-KYUSEI-SANTEI-SEC
+           MOVE    WRK-YMD             TO  SPA-KYUSEI-YMD
+      *
+      *    急性発生終了日
+           MOVE    "099800102"         TO  WRK-SRYCD
+           PERFORM 100191-KYUSEI-SANTEI-SEC
+      *    訂正の時当日なら、対象外
+           IF      SPA-SYORIFLG        =   1
+               IF      WRK-YMD         =   SPA-SRYYMD
+                   MOVE    SPACE           TO  WRK-YMD
+               END-IF
+           END-IF
+           IF     (WRK-YMD         NOT =   SPACE ) AND
+                  (WRK-YMD             <=  SPA-SRYYMD    )  AND
+                  (WRK-YMD             >   SPA-KYUSEI-YMD)
+               MOVE    WRK-YMD             TO  SPA-KYUSEI-END
+           ELSE
+               MOVE    SPACE               TO  SPA-KYUSEI-END
+           END-IF
+      *
+           IF     (SPA-KYUSEI-YMD  NOT =   SPACE )  AND
+                 ((SPA-KYUSEI-YMD      >   SPA-KYUSEI-END)  OR
+                  (SPA-KYUSEI-END      =   SPA-SRYYMD    ))
+               PERFORM 100192-KYUSEI-HENSYU-SEC
+           END-IF
+      *
+      *    急性発生日が傷病日より後の場合、急性発生日から６ヶ月後とする
+           IF     (SPA-HKNKBN          =   1        )  AND
+                  (SPA-RSI-SHOBYOYMD   NOT =   SPACE ) AND
+                  (SPA-RSI-SHOBYOYMD   <   SPA-KYUSEI-YMD )
+               MOVE    SPA-KYUSEI-YMD      TO  WRK-HASSYOYMD
+               COMPUTE WRK-HAS-MM          =   WRK-HAS-MM
+                                           +   6
+               IF      WRK-HAS-MM          >   12
+                   COMPUTE WRK-HAS-MM      =   WRK-HAS-MM    -   12
+                   COMPUTE WRK-HAS-YY      =   WRK-HAS-YY    +   1
+               END-IF
+               MOVE    WRK-HASSYOYMD       TO  SPA-RSI-SHOBYOYMD3
+           END-IF
+      *
+           .
+       10019-KYUSEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    急性発生日算定日処理
+      *****************************************************************
+       100192-KYUSEI-HENSYU-SEC                  SECTION.
+      *
+      *    180日後計算
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-KYUSEI-YMD      TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    180                 TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  SPA-KYUSEI-180
+      *
+      *    90日後
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-KYUSEI-YMD      TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    90                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  SPA-KYUSEI-90
+      *
+      *    画面表示用
+           MOVE    SPACE               TO  WRK-HENSYU-AREA
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    SPA-KYUSEI-YMD      TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-KYUSEI-YMD
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    SPA-KYUSEI-90       TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-KYUSEI-90
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    SPA-KYUSEI-180      TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-KYUSEI-180
+      *
+           STRING   "急性発症日："     DELIMITED  BY  SIZE
+                   WRK-KYUSEI-YMD      DELIMITED  BY  SIZE
+                   "　９０超："        DELIMITED  BY  SIZE
+                   WRK-KYUSEI-90       DELIMITED  BY  SIZE
+                   "　１８０超："      DELIMITED  BY  SIZE
+                   WRK-KYUSEI-180      DELIMITED  BY  SIZE
+                   INTO                SPA-GMN-KYUSEI
+           END-STRING
+      *
+           .
+       100192-KYUSEI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    急性発生日算定日処理
+      *****************************************************************
+       100191-KYUSEI-SANTEI-SEC                  SECTION.
       *
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
       *    算定履歴検索
@@ -1352,8 +1466,12 @@
            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
            MOVE    ZERO                TO  SANTEI-SRYKA
       *
-      *    労災が決定するまで、保険はゼロとする
-           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+      *    労災毎とする
+           IF      SPA-HKNKBN          =   1
+               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1411,84 +1529,7 @@
                MOVE    SPACE           TO  WRK-YMD
            END-IF
       *
-           MOVE    WRK-YMD             TO  SPA-KYUSEI-YMD
-      *    180日後計算
-           IF      WRK-YMD             =   SPACE
-               GO      TO      10019-KYUSEI-CHK-EXT
-           END-IF
-      *
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY6-AREA
-           MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    WRK-YMD             TO  LNK-DAY6-KIJUN
-           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-           MOVE    180                 TO  LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KEISAN     TO  SPA-KYUSEI-180
-      *
-      *    90日後
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY6-AREA
-           MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    WRK-YMD             TO  LNK-DAY6-KIJUN
-           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-           MOVE    90                  TO  LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KEISAN     TO  SPA-KYUSEI-90
-      *
-      *    画面表示用
-           MOVE    SPACE               TO  WRK-HENSYU-AREA
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY2-AREA
-           MOVE    "21"                TO  LNK-DAY2-IRAI
-           MOVE    SPA-KYUSEI-YMD      TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY2-AREA
-           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-KYUSEI-YMD
-      *
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY2-AREA
-           MOVE    "21"                TO  LNK-DAY2-IRAI
-           MOVE    SPA-KYUSEI-90       TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY2-AREA
-           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-KYUSEI-90
-      *
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY2-AREA
-           MOVE    "21"                TO  LNK-DAY2-IRAI
-           MOVE    SPA-KYUSEI-180      TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY2-AREA
-           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-KYUSEI-180
-      *
-           STRING   "急性発症日："     DELIMITED  BY  SIZE
-                   WRK-KYUSEI-YMD      DELIMITED  BY  SIZE
-                   "　９０超："        DELIMITED  BY  SIZE
-                   WRK-KYUSEI-90       DELIMITED  BY  SIZE
-                   "　１８０超："      DELIMITED  BY  SIZE
-                   WRK-KYUSEI-180      DELIMITED  BY  SIZE
-                   INTO                SPA-GMN-KYUSEI
-           END-STRING
-      *
-      *    急性発生日が傷病日より後の場合、急性発生日から６ヶ月後とする
-           IF     (SPA-HKNKBN          =   1        )  AND
-                  (SPA-RSI-SHOBYOYMD   NOT =   SPACE ) AND
-                  (SPA-RSI-SHOBYOYMD   <   SPA-KYUSEI-YMD )
-               MOVE    SPA-KYUSEI-YMD      TO  WRK-HASSYOYMD
-               COMPUTE WRK-HAS-MM          =   WRK-HAS-MM
-                                           +   6
-               IF      WRK-HAS-MM          >   12
-                   COMPUTE WRK-HAS-MM      =   WRK-HAS-MM    -   12
-                   COMPUTE WRK-HAS-YY      =   WRK-HAS-YY    +   1
-               END-IF
-               MOVE    WRK-HASSYOYMD       TO  SPA-RSI-SHOBYOYMD3
-           END-IF
-      *
-           .
-       10019-KYUSEI-CHK-EXT.
+       100191-KYUSEI-SANTEI-EXT.
            EXIT.
       *
       *****************************************************************
