@@ -88,8 +88,9 @@
       *  01.07.02    NACL-藤原    02/08/28  労災のとき保険組合せの名称の修正
       *  01.07.03    NACL-藤原    02/09/17  自賠責とき保険組合せの名称の修正
       *  01.07.04    NACL-藤原    02/10/24  戻り先にｋ０２Ｎを追加
-      *  01.07.04    NACL-藤原    02/11/19  編集病名のときの接頭語のチェック
+      *  01.07.05    NACL-藤原    02/11/19  編集病名のときの接頭語のチェック
       *                                     の修正
+      *                                     病名の長さチェックの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -199,7 +200,7 @@
                05  WRK-RECECD-TBL.
                    07  WRK-RECECD  OCCURS  3
                                    PIC X(01).
-               05  WRK-MOJISU      PIC 9(02).
+               05  WRK-MOJISU      PIC 9(03).
       *
            03  WRK-HKNCOMBIMEI     PIC X(100).
            03  WRK-HKNKBN-MEI       PIC X(02).
@@ -1367,6 +1368,9 @@
            END-PERFORM
       *
            PERFORM 41021-BYOMEI-HENSYU-SEC
+      *???
+           DISPLAY "ERRCD=" SPA-ERRCD "##"
+      *???         
       *
       *   入力病名コード数カウント
            PERFORM 410111-BYOMEICDSU-HENSYU-SEC
@@ -2664,18 +2668,45 @@
                    GO  TO  41021-BYOMEI-HENSYU-EXT
               END-IF
            END-PERFORM
-      *    文字数チェック     
-           PERFORM VARYING     IDX     FROM    100 BY  -1
-                   UNTIL       IDX     <       1
-               IF      WRK-BYOMEI(IDX:1)   NOT =   SPACE
-                   MOVE    IDX                 TO  WRK-MOJISU 
-                   MOVE    1                   TO  IDX
-               END-IF  
-           END-PERFORM
-           IF      WRK-MOJISU              >   80
-               MOVE    "0007"          TO  SPA-ERRCD
-               GO  TO  41021-BYOMEI-HENSYU-EXT
-          END-IF
+      *     
+      *    文字数チェック
+           MOVE    SPA-NAI-C02-BYOMEI(1)
+                                       TO  WRK-BYOMEI
+           PERFORM VARYING IDX FROM    2   BY  1
+                   UNTIL   IDX  >      6  
+               IF      SPA-NAI-C02-BYOMEITOP   (IDX)   =   "1"   
+               AND     WRK-BYOMEI                  NOT =   SPACE     
+                   PERFORM VARYING     IDY     FROM    99 BY  -2
+                           UNTIL       IDY     =       1 
+                       IF      WRK-BYOMEI(IDY:2)   NOT =   SPACE
+                           COMPUTE WRK-MOJISU  =   IDY     +   1 
+                           MOVE    1                   TO  IDY
+                       END-IF  
+                   END-PERFORM
+                   IF      WRK-MOJISU              >   80
+                       MOVE    "0007"          TO  SPA-ERRCD
+                       GO  TO  41021-BYOMEI-HENSYU-EXT
+                   END-IF
+                   MOVE    SPACE                   TO  WRK-BYOMEI
+               END-IF    
+               STRING  WRK-BYOMEI              DELIMITED  BY  SPACE
+                       SPA-NAI-C02-BYOMEI(IDX) DELIMITED  BY  SPACE
+                              INTO          WRK-BYOMEI
+               END-STRING
+           END-PERFORM    
+           IF     WRK-BYOMEI                  NOT =   SPACE     
+               PERFORM VARYING     IDY     FROM    99 BY  -2
+                       UNTIL       IDY     =       1 
+                   IF      WRK-BYOMEI(IDY:2)   NOT =   SPACE
+                       COMPUTE WRK-MOJISU  =   IDY     +   1 
+                       MOVE    1                   TO  IDY
+                   END-IF  
+               END-PERFORM
+               IF      WRK-MOJISU              >   80
+                   MOVE    "0007"          TO  SPA-ERRCD
+                   GO  TO  41021-BYOMEI-HENSYU-EXT
+               END-IF
+           END-IF    
       *
       *    病名文字数編集
            COMPUTE WRK-MOJISU   =   WRK-MOJISU  /   2        
@@ -3381,7 +3412,7 @@
                    OR  SPA-GMN-C02-BYOMEI(IDX:2)   =   SPACE
                IF      SPA-GMN-C02-BYOMEI(IDX:2)   =   "■"
                    MOVE    "0035"          TO  SPA-ERRCD
-                   GO  TO  41021-BYOMEI-HENSYU-EXT
+                   GO  TO  41013-BYOMEI-CHK-EXT
               END-IF
            END-PERFORM
       *         
@@ -5454,7 +5485,7 @@
       *
       *
            .
-       600-C04-SYORI-EXT.
+       600-C03-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
