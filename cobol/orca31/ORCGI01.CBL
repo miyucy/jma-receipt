@@ -83,6 +83,7 @@
       *  01.00.38    NACL-太田    03.10.09  入院日変更時に室料差額を初期化しない
       *  01.00.39    NACL-小豆沢  03.10.24  労災（自賠）入院時に老人点数無効
       *  01.00.40    NACL-小豆沢  03.10.27  労災（自賠）入院時に選定入院なし
+      *  01.00.41    NACL-太田    03.11.14  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -557,6 +558,9 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -6606,12 +6610,16 @@
            MOVE    "0"             TO  PTNYUINRRK-NYUINCHUKBN
       *
            IF    ( WRK-UPDKBN      =   "UPD" )
-               ACCEPT  SYS-TIME        FROM    TIME
-               MOVE    SYS-TIME    TO  PTNYUINRRK-UPHMS
-               MOVE    SPA-SYSYMD  TO  PTNYUINRRK-UPYMD
-               MOVE    WRK-CREYMD  TO  PTNYUINRRK-CREYMD
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    WRK-CREYMD      TO  PTNYUINRRK-CREYMD
+               MOVE    SMCNDATE-YMD    TO  PTNYUINRRK-UPYMD
+               MOVE    SMCNDATE-HMS    TO  PTNYUINRRK-UPHMS
            ELSE
-               MOVE    SPA-SYSYMD  TO  PTNYUINRRK-CREYMD
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  PTNYUINRRK-CREYMD
+                                           PTNYUINRRK-UPYMD
+               MOVE    SMCNDATE-HMS    TO  PTNYUINRRK-UPHMS
            END-IF
       *
            .
@@ -6833,9 +6841,9 @@
                ELSE
                    MOVE    "99999999"
                                        TO  PTNYUINRRK-TAIINYMD
-                   ACCEPT  SYS-TIME        FROM    TIME
-                   MOVE    SYS-TIME    TO  PTNYUINRRK-UPHMS
-                   MOVE    SPA-SYSYMD  TO  PTNYUINRRK-UPYMD
+                  PERFORM 800-MCNDATE-SEC
+                  MOVE    SMCNDATE-YMD        TO  PTNYUINRRK-UPYMD
+                  MOVE    SMCNDATE-HMS        TO  PTNYUINRRK-UPHMS
       *
                    MOVE    "PTNYUINRRK-KEY"
                                        TO  WRK-DBPATH
@@ -6898,6 +6906,11 @@
       *            請求取消として収納データを更新
                    MOVE    ZERO            TO  SYU-SKYMONEY
                    MOVE    "3"             TO  SYU-DENPJTIKBN
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  SYU-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  SYU-UPHMS
+      *
                    MOVE    SYUNOU-REC      TO  MCPDATA-REC
                    MOVE    "SYUNOU-KEY"    TO  WRK-DBPATH
                    PERFORM 900-TBL-UPDATE-SEC
@@ -7038,8 +7051,14 @@
            MOVE    "SYUMEI-KEY"        TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
+                                           SMEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
+      *
       *    収納明細追加
            MOVE    "SYUMEI-KEY"        TO  WRK-DBPATH
+      *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            PERFORM 900-TBL-INSERT-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
@@ -7160,10 +7179,6 @@
                MOVE    SUMTEIKIRRK-OCC (IDX13)
                                        TO  TEIKIRRK-REC
                MOVE    SPA-TERMID      TO  TEIKIRRK-TERMID
-               MOVE    SPA-SYSYMD      TO  TEIKIRRK-CREYMD
-                                           TEIKIRRK-UPYMD
-               ACCEPT  SYS-TIME        FROM    TIME
-               MOVE    SYS-TIME        TO  TEIKIRRK-UPHMS
       *
                MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
@@ -7181,6 +7196,10 @@
                        =   TEIKIRRK-SKYMONEY
                        +   SUMTEIKIRRK-SKYMONEY (IDX13)
       *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  TEIKIRRK-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
+      *
       *            定期請求管理データ更新
                    MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                    MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
@@ -7190,6 +7209,11 @@
                        GO  TO  4801-TEIKIRRK-UPD-EXT
                    END-IF
                ELSE
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  TEIKIRRK-CREYMD
+                                               TEIKIRRK-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
       *
                    MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                    MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
@@ -7274,9 +7298,9 @@
       *
            MOVE    ALL "9"     TO  PTNYUINRRK-TENSTUYMD
       *
-           ACCEPT  SYS-TIME        FROM    TIME
-           MOVE    SYS-TIME    TO  PTNYUINRRK-UPHMS
-           MOVE    SPA-SYSYMD  TO  PTNYUINRRK-UPYMD
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  PTNYUINRRK-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTNYUINRRK-UPHMS
       *
            MOVE    "PTNYUINRRK-KEY"
                                TO  WRK-DBPATH
@@ -7305,9 +7329,9 @@
            MOVE    SPA-NAI-I01-IDOYMD
                                TO  PTNYUINRRK-TENSTUYMD
       *
-           ACCEPT  SYS-TIME        FROM    TIME
-           MOVE    SYS-TIME    TO  PTNYUINRRK-UPHMS
-           MOVE    SPA-SYSYMD  TO  PTNYUINRRK-UPYMD
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  PTNYUINRRK-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTNYUINRRK-UPHMS
       *
            MOVE    "PTNYUINRRK-KEY"
                                TO  WRK-DBPATH
@@ -10090,7 +10114,8 @@
                   (COMB-KOH1HKNNUM  =   "027"))      OR
                  ( AGECHK-NENREI   >=    75)         OR
                  ((AGECHK-NENREI   >=    70)     AND
-                  (PTINF-BIRTHDAY  <=   "19320930"))
+                  (PTINF-BIRTHDAY  <=   "19320930")) OR
+                  (AGECHK-ROUJIN    =    1)
                MOVE    1            TO  FLG-RJN
            END-IF
       *
@@ -10167,6 +10192,10 @@
                MOVE    ZERO            TO  PTINF-RRKNUM
                                            PTINF-RRKEDANUM
            END-IF
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
       *    患者情報更新
            MOVE    PTINF-REC           TO  MCPDATA-REC
@@ -11812,6 +11841,17 @@
       *
            .
        800-ENRTRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
