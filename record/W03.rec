@@ -1,5 +1,8 @@
 W03	{
 	fixed2	{
+	        B03	{
+	           	state	int;
+	        };
 		CD01	{
 			value	varchar(4);
 		};
