@@ -584,12 +584,19 @@
            END-IF
            PERFORM
                UNTIL      (FLG-SRYACCT     =   1   )
+      *        Êñ³ç¤Þ¤È¤áÆþÎÏÂÐ¾Ý³°
+               IF      ACCT-HKNCOMBI       =   "9999"
+                   CONTINUE
+               ELSE
+      *
       *        ÊÝ¸±ÊÔ½¸
                PERFORM 20013-HKNCOMBI-HEN-SEC
       *
                IF      ACCT-ZAITEN         >   ZERO
                    MOVE    1                   TO  FLG-SYORI
                    PERFORM 20011-SRYACCT-HEN-SEC
+               END-IF
+      *
                END-IF
       *
                MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
