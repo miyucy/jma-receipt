@@ -2320,7 +2320,7 @@
                MOVE    RECE64-SRYKA      TO  RECE66-SRYKA
                MOVE    RECE64-SRYKBN     TO  RECE66-SRYKBN
                MOVE    RECE64-ZAISKBKBN  TO  RECE66-ZAISKBKBN
-               IF    RECE64-ZAISKBKBN  =   "1" OR "2"
+               IF    RECE64-ZAISKBKBN  =   "1" OR "2" OR "4"
                    MOVE   RECE64-ZAINUM  TO  RECE66-ZAISKBBAN
                END-IF
                MOVE    TBL-ZAI (IDY)     TO  RECE66-TEKIYO-INF
