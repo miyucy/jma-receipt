@@ -56,11 +56,14 @@
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
            03  FLG-SENTEICDCHG             PIC 9(01).
+           03  FLG-TOKUTEI                 PIC 9(01).
+           03  FLG-TOKUTEI-SITEI           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX1                        PIC 9(05).
            03  IDX2                        PIC 9(05).
+           03  IDX3                        PIC 9(05).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -84,6 +87,8 @@
            03  WRK-STIDX                   PIC 9(02).
            03  WRK-EDIDX                   PIC 9(02).
            03  WRK-ACCT-NISSU              PIC 9(08).
+           03  WRK-ACCT-TOK-NISSU1         PIC 9(08).
+           03  WRK-ACCT-TOK-NISSU2         PIC 9(08).
            03  WRK-DAY-X                   PIC X(02).
            03  WRK-DAY-R   REDEFINES   WRK-DAY-X.
                05  WRK-DAY-9               PIC 9(02).
@@ -266,6 +271,14 @@
                MOVE    PTNYUINRRK-NYUINYMD TO  WRK-STYMD
                MOVE    STUSAN-KJNYMD       TO  WRK-EDYMD
                PERFORM 2120-NYUINKIKAN-SEL-SEC
+               COMPUTE STUSAN-NISSU04
+                   =   STUSAN-NISSU04 +    WRK-ACCT-NISSU
+               COMPUTE STUSAN-NISSU05
+                   =   STUSAN-NISSU05 +    WRK-ACCT-NISSU
+               COMPUTE STUSAN-NISSU06
+                   =   STUSAN-NISSU06 +    WRK-ACCT-TOK-NISSU1
+               COMPUTE STUSAN-NISSU07
+                   =   STUSAN-NISSU07 +    WRK-ACCT-TOK-NISSU2
            ELSE
                PERFORM 2110-TUSAN-SYUKEI-SEC
                IF    ( STUSAN-RC       NOT  =   ZERO )
@@ -345,6 +358,10 @@
                MOVE    PTNYUINRRK-NYUINYMD TO  WRK-STYMD
                MOVE    PTNYUINRRK-TAIINYMD TO  WRK-EDYMD
                PERFORM 2120-NYUINKIKAN-SEL-SEC
+               COMPUTE STUSAN-NISSU04
+                   =   STUSAN-NISSU04 +    WRK-ACCT-NISSU
+               COMPUTE STUSAN-NISSU05
+                   =   STUSAN-NISSU05 +    WRK-ACCT-NISSU
            END-EVALUATE
            .
       *
@@ -359,6 +376,8 @@
            MOVE    WRK-EDYMD           TO  WRK-EDSRYYM
       *
            MOVE    ZERO                TO  WRK-ACCT-NISSU
+                                           WRK-ACCT-TOK-NISSU1
+                                           WRK-ACCT-TOK-NISSU2
       *
            PERFORM UNTIL ( WRK-STSRYYM >   WRK-EDSRYYM )
       *
@@ -375,11 +394,6 @@
                MOVE    WRK-KEISANYMD   TO  WRK-STSRYYM
       *
            END-PERFORM
-      *
-           COMPUTE STUSAN-NISSU04
-               =   STUSAN-NISSU04 +    WRK-ACCT-NISSU
-           COMPUTE STUSAN-NISSU05
-               =   STUSAN-NISSU05 +    WRK-ACCT-NISSU
       *
            .
        2120-NYUINKIKAN-SEL-EXT.
@@ -413,9 +427,7 @@
                        GO  TO  2121-NYUINACCT-SEL-EXT
                    END-IF
       *
-                   IF  ( FLG-SENTEICDCHG =   ZERO )
-                       PERFORM 2121-NYUINACT-TUSAN-SEC
-                   END-IF
+                   PERFORM 2121-NYUINACT-TUSAN-SEC
                END-IF
       *
                MOVE    "NYUINACCT-KEY7"    TO  WRK-DBPATH
@@ -479,6 +491,7 @@
                    IF    ( TNS-DATAKBN     =   1 )
                        MOVE    1           TO  FLG-HIT
                        PERFORM 2121-SENTEICDCHG-CHK-SEC
+                       PERFORM 2121-TOKUTEI-CHK-SEC
                    END-IF
                END-IF
       *
@@ -515,13 +528,28 @@
            PERFORM VARYING IDX1    FROM    WRK-STIDX   BY  1
                    UNTIL ( IDX1    >       WRK-EDIDX )
                IF    ( NACCT-DAY (IDX1)    >   ZERO )
-                   COMPUTE WRK-ACCT-NISSU
-                       =   WRK-ACCT-NISSU +    1
-                   MOVE    IDX1            TO  WRK-DAY-9
+                   IF    ( FLG-SENTEICDCHG =   ZERO )
+                    AND  ( FLG-TOKUTEI     =   ZERO )
       *
-                   IF    ( STUSAN-KJNYMD (1:6) =   NACCT-SRYYM )
-                    AND  ( STUSAN-KJNYMD (7:2) =   WRK-DAY-X   )
-                       MOVE    1           TO  STUSAN-KJNYMD-CHK-FLG
+                       COMPUTE WRK-ACCT-NISSU
+                           =   WRK-ACCT-NISSU +    1
+                       MOVE    IDX1        TO  WRK-DAY-9
+      *
+                       IF    ( STUSAN-KJNYMD (1:6) =   NACCT-SRYYM )
+                        AND  ( STUSAN-KJNYMD (7:2) =   WRK-DAY-X   )
+                           MOVE    1       TO  STUSAN-KJNYMD-CHK-FLG
+                       END-IF
+      *
+                   END-IF
+      *
+                   IF    ( FLG-TOKUTEI     =   1 )
+                       COMPUTE WRK-ACCT-TOK-NISSU1
+                           =   WRK-ACCT-TOK-NISSU1 +   1
+      *
+                       IF    ( FLG-TOKUTEI-SITEI   =   1 )
+                           COMPUTE WRK-ACCT-TOK-NISSU2
+                               =   WRK-ACCT-TOK-NISSU2 +   1
+                       END-IF
                    END-IF
       *
                END-IF
@@ -555,6 +583,35 @@
       *
            .
        2121-SENTEICDCHG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÆÃÄêÆþ±¡ÎÁ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       2121-TOKUTEI-CHK-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TOKUTEI
+                                           FLG-TOKUTEI-SITEI
+      *
+           IF  ( TNS-NYUTENTTLKBN      =   920 )
+               MOVE    1               TO  FLG-TOKUTEI
+      *
+               PERFORM VARYING IDX3    FROM    1   BY  1
+                       UNTIL ( IDX3    >   5 )
+      *
+                   IF    ( STUSAN-TOKUTEI-SRYCD (IDX3)
+                                   NOT =   SPACE )
+                       IF    ( STUSAN-TOKUTEI-SRYCD (IDX3)
+                                       =   TNS-SRYCD )
+                           MOVE    1   TO  FLG-TOKUTEI-SITEI
+                           MOVE    5   TO  IDX3
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
+           .
+       2121-TOKUTEI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ²áµîÆþ±¡Ê¬ÄÌ»»½èÍý
