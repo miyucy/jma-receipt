@@ -606,12 +606,12 @@
                IF      RECE02-RJNHKNNUM    =   SPACE           
                AND     RECE02-HKNNUM       =   SPACE
                    IF      RECE02-KOHNUM (3)   NOT =   SPACE
-                       MOVE    RECE02-TOTALTEN (1) TO  SUM-TOTALTEN
+                       ADD     RECE02-TOTALTEN (1) TO  SUM-TOTALTEN
                    ELSE
-                       MOVE    RECE02-TOTALTEN (2) TO  SUM-TOTALTEN
+                       ADD     RECE02-TOTALTEN (2) TO  SUM-TOTALTEN
                    END-IF
                ELSE
-                   MOVE    RECE02-TOTALTEN (1) TO  SUM-TOTALTEN
+                   ADD     RECE02-TOTALTEN (1) TO  SUM-TOTALTEN
                END-IF
       *         
       *        レセプト共通レコード
