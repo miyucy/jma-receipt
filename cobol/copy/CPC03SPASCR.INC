@@ -140,6 +140,7 @@
                                13  SPA-NAI-TCDSYU      PIC X(01).    
       *                         
                        09  SPA-NAI-SELNO                PIC 9(03).
+                       09  SPA-NAI-BUNRUI-SELNO         PIC 9(03).
       *            病名コード移行用領域
                        09  SPA-C03-IKOSAKI-BYOMEICD
                                                    PIC X(07).
