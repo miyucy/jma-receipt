@@ -101,6 +101,8 @@
            03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-TOUROKU         PIC 9(01).
+           03  FLG-ZENKAKU         PIC 9(01).
+           03  FLG-HANKAKU         PIC 9(01).
       *
       *    カウント領域
       *
@@ -129,6 +131,8 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-MAE-INPUT       PIC X(200).
+           03  WRK-OUT-INPUT       PIC X(200).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -177,6 +181,9 @@
            COPY  "CPORCSDAY.INC".
       *
            COPY  "CPORCSLNK.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -617,6 +624,16 @@
       *****************************************************************
        4101-HCNAME-CHK-SEC       SECTION.
       *
+           MOVE    SPA-GMN-HCNAME      TO  WRK-MAE-INPUT
+           PERFORM 5002-ZENKAKU-CHK-SEC
+           IF    ( FLG-ZENKAKU NOT =   ZERO )
+               MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+               GO  TO  4101-HCNAME-CHK-EXT
+           END-IF
+      *
+           MOVE    WRK-OUT-INPUT       TO  SPA-GMN-HCNAME
+      *
            .
        4101-HCNAME-CHK-EXT.
            EXIT.
@@ -625,6 +642,14 @@
       *    プログラム名チェック（日次統計情報）
       *****************************************************************
        4102-PRGNAME-CHK-SEC     SECTION.
+      *
+           MOVE    SPA-GMN-PRGNAME     TO  WRK-MAE-INPUT
+           PERFORM 5002-HANKAKU-CHK-SEC
+           IF    ( FLG-HANKAKU NOT =   ZERO )
+               MOVE    "0003"          TO  SPA-ERRCD
+               MOVE    3               TO  SPA-GMN-CUR
+               GO  TO  4102-PRGNAME-CHK-EXT
+           END-IF
       *
            .
        4102-PRGNAME-CHK-EXT.
@@ -636,12 +661,26 @@
        4103-PARAHYOJI-CHK-SEC     SECTION.
       *
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL       IDZ     >   CONST-3001-PARA-MAX
+                   UNTIL     ( IDZ         >   CONST-3001-PARA-MAX )
+                          OR ( SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-PARAHYOJI(IDZ)  =   SPACE
                    MOVE    SPACE           TO  SPA-GMN-PARA (IDZ)
                    MOVE    "T"             TO  SPA-GMN-OPTHISSU (IDZ)
                    MOVE    "F"             TO  SPA-GMN-OPTNINI  (IDZ)
+               ELSE
+                   MOVE    SPA-GMN-PARAHYOJI(IDZ)
+                                           TO  WRK-MAE-INPUT
+                   PERFORM 5002-ZENKAKU-CHK-SEC
+                   IF    ( FLG-ZENKAKU NOT =   ZERO )
+                       MOVE    "0004"          TO  SPA-ERRCD
+                   END-IF
                END-IF
+      *
+               IF      SPA-ERRCD       NOT =   SPACE
+                       COMPUTE SPA-GMN-CUR
+                           =   ( IDZ - 1 ) * 2 + 4
+               END-IF
+      *
            END-PERFORM
       *
            .
@@ -652,6 +691,24 @@
       *    パラメタチェック（日次統計情報）
       *****************************************************************
        4104-PARA-CHK-SEC     SECTION.
+      *
+           PERFORM VARYING     IDZ     FROM    1   BY  1
+                   UNTIL      (IDZ     >   CONST-3001-PARA-MAX   )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               MOVE    SPA-GMN-PARA (IDZ)  TO  WRK-MAE-INPUT
+               PERFORM 5002-HANKAKU-CHK-SEC
+               IF    ( FLG-HANKAKU NOT =   ZERO )
+                   MOVE    "0005"          TO  SPA-ERRCD
+               END-IF
+               IF      SPA-ERRCD       NOT =   SPACE
+                   COMPUTE SPA-GMN-CUR
+                       =   ( IDZ - 1 ) * 2 + 5
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4104-PARA-CHK-EXT
+           END-IF
       *
            IF      FLG-TOUROKU         =   ZERO
                GO      TO      4104-PARA-CHK-EXT
@@ -776,14 +833,32 @@
       *****************************************************************
        4111-HCNAME-CHK-SEC       SECTION.
       *
+           MOVE    SPA-GMN-HCNAME1     TO  WRK-MAE-INPUT
+           PERFORM 5002-ZENKAKU-CHK-SEC
+           IF    ( FLG-ZENKAKU NOT =   ZERO )
+               MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    101             TO  SPA-GMN-CUR
+               GO  TO  4111-HCNAME-CHK-EXT
+           END-IF
+      *
+           MOVE    WRK-OUT-INPUT       TO  SPA-GMN-HCNAME1
+      *
            .
-       4101-HCNAME-CHK-EXT.
+       4111-HCNAME-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    プログラム名チェック（月次統計情報）
       *****************************************************************
        4112-PRGNAME-CHK-SEC     SECTION.
+      *
+           MOVE    SPA-GMN-PRGNAME1     TO  WRK-MAE-INPUT
+           PERFORM 5002-HANKAKU-CHK-SEC
+           IF    ( FLG-HANKAKU NOT =   ZERO )
+               MOVE    "0003"          TO  SPA-ERRCD
+               MOVE    103             TO  SPA-GMN-CUR
+               GO  TO  4112-PRGNAME-CHK-EXT
+           END-IF
       *
            .
        4112-PRGNAME-CHK-EXT.
@@ -796,9 +871,22 @@
       *
       *
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL       IDZ     >   CONST-3002-PARA-MAX
+                   UNTIL      (IDZ     >   CONST-3002-PARA-MAX   )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-PARAHYOJI1(IDZ)  =   SPACE
                    MOVE    SPACE           TO  SPA-GMN-PARA1 (IDZ)
+               ELSE
+                   MOVE    SPA-GMN-PARAHYOJI1(IDZ)
+                                           TO  WRK-MAE-INPUT
+                   PERFORM 5002-ZENKAKU-CHK-SEC
+                   IF    ( FLG-ZENKAKU NOT =   ZERO )
+                       MOVE    "0004"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *
+               IF      SPA-ERRCD       NOT =   SPACE
+                       COMPUTE SPA-GMN-CUR
+                           =   ( IDZ - 1 ) * 2 + 104
                END-IF
            END-PERFORM
            .
@@ -809,6 +897,26 @@
       *    パラメタチェック（月次統計情報）
       *****************************************************************
        4114-PARA-CHK-SEC     SECTION.
+      *
+           PERFORM VARYING     IDZ     FROM    1   BY  1
+                   UNTIL      (IDZ     >   CONST-3002-PARA-MAX   )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+      *
+               MOVE    SPA-GMN-PARA1 (IDZ) TO  WRK-MAE-INPUT
+               PERFORM 5002-HANKAKU-CHK-SEC
+               IF    ( FLG-HANKAKU NOT =   ZERO )
+                   MOVE    "0005"          TO  SPA-ERRCD
+               END-IF
+               IF      SPA-ERRCD       NOT =   SPACE
+                   COMPUTE SPA-GMN-CUR
+                       =   ( IDZ - 1 ) * 2 + 105
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4114-PARA-CHK-EXT
+           END-IF
       *
            IF      FLG-TOUROKU         =   ZERO
                GO      TO      4114-PARA-CHK-EXT
@@ -1179,6 +1287,18 @@
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    "入力エラー"        TO  SPA-ERRMSG
+               WHEN    "0002"
+                   MOVE    "帳票名は全角で指定してください" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE    "プログラム名は半角で指定してください" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "帳票パラメータ名は全角で指定してください" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE    "帳票パラメータＩＤは半角で指定してください" 
+                                               TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
                                                TO  SPA-ERRMSG
@@ -1409,7 +1529,7 @@
                WHEN    "PARA51"
                    MOVE    114         TO  SPA-GMN-CUR
                WHEN    "PARAHYOJI61"
-                   MOVE    105         TO  SPA-GMN-CUR
+                   MOVE    115         TO  SPA-GMN-CUR
                WHEN    "PARA61"
                    MOVE    116         TO  SPA-GMN-CUR
                WHEN    "PARAHYOJI71"
@@ -1481,6 +1601,51 @@
       *
            .
        5002-HIZUKE-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全角チェック処理
+      *****************************************************************
+       5002-ZENKAKU-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ZENKAKU
+           MOVE    SPACE               TO  WRK-OUT-INPUT
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    1               TO  FLG-ZENKAKU
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  WRK-OUT-INPUT
+           END-IF
+      *
+           .
+       5002-ZENKAKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    半角チェック処理
+      *****************************************************************
+       5002-HANKAKU-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HANKAKU
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   2     )
+               MOVE    1               TO  FLG-HANKAKU
+           END-IF
+      *
+           .
+       5002-HANKAKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
