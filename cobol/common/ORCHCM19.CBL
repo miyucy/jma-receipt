@@ -826,7 +826,10 @@
                        END-IF
                    WHEN    "1"
                    WHEN    "2"
+      *                前回処方と頭書
                        MOVE    1                   TO  WRK-PAGE-MAX
+                   WHEN    OTHER
+                       MOVE    ZERO                TO  WRK-PAGE-MAX
                END-EVALUATE
       *---(01.00.01) LINE ADD START ------------------------------------
                MOVE    ZERO            TO  FLG-PRINT
@@ -1106,6 +1109,9 @@
                PERFORM 3102-PTKOHINF-HEN-SEC
                MOVE    WRK-FTNSNO      TO  WRK-FTNJA1
                MOVE    WRK-JKYSNO      TO  WRK-JKYSNUM1
+           ELSE
+               MOVE    SPACE           TO  WRK-FTNJA1
+               MOVE    SPACE           TO  WRK-JKYSNUM1
            END-IF
       *
       *    公費情報２
@@ -1118,6 +1124,9 @@
                PERFORM 3102-PTKOHINF-HEN-SEC
                MOVE    WRK-FTNSNO      TO  WRK-FTNJA2
                MOVE    WRK-JKYSNO      TO  WRK-JKYSNUM2
+           ELSE
+               MOVE    SPACE           TO  WRK-FTNJA2
+               MOVE    SPACE           TO  WRK-JKYSNUM2
            END-IF
       *
       *    記号・番号
@@ -1139,6 +1148,7 @@
                                            TO  WRK-NUM
            END-IF
       *
+           MOVE    SPACE               TO  WRK-HEN-KIGONUM
            STRING  WRK-KIGONUM         DELIMITED   BY  SPACE
                    "・"                DELIMITED   BY  SIZE
                    WRK-NUM             DELIMITED   BY  SPACE
