@@ -39,6 +39,7 @@
       *
       *    フラグ領域
        01  FLG-AREA.
+           03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
            03  FLG-PTKOHFTN        PIC 9(01).
@@ -52,6 +53,7 @@
        01  WRK-AREA.
            03  WRK-HKNMST-JGNGAK  PIC 9(06).
            03  WRK-KOHFTN         PIC 9(10).
+           03  WRK-PREFNUM        PIC 9(02).
       *
       *    共通領域
            COPY    "MCPAREA".
@@ -72,6 +74,8 @@
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
+      *    システム管理
+           COPY    "CPSK1001.INC".
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -138,6 +142,28 @@
            IF    LNK-FTNJGNCHK-KOHID    =  ZERO
                MOVE    10              TO  LNK-FTNJGNCHK-RC
            END-IF
+      *
+      *    県番号取得
+           INITIALIZE                      SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    LNK-FTNJGNCHK-SRYYM TO  ORC-DBYMD(1:6)
+           MOVE    "01"                TO  ORC-DBYMD(7:2)
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"    USING    MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC               =  ZERO
+               MOVE     "SYSKANRI-KEY" TO  ORC-DBPATH
+               PERFORM   SYSKANRI-READ-SEC
+               MOVE      SYS-1001-PREFNUM
+                                       TO  WRK-PREFNUM
+           END-IF
+      *    システム管理クローズ
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
       *
            .
        100-PRM-CHK-EXT.
@@ -212,7 +238,7 @@
            OR ((LNK-FTNJGNCHK-KOHNUM         = "051"   )  AND
                (LNK-FTNJGNCHK-SRYYM         >= "200310")           )
       *
-           OR ((SPA-PREFNUM                  =  13            )  AND
+           OR ((WRK-PREFNUM                  =  13            )  AND
                (LNK-FTNJGNCHK-KOHNUM         = "151" OR "451" )  AND
                (LNK-FTNJGNCHK-SRYYM         >= "200310")           )
       *
@@ -319,9 +345,9 @@
       **             END-EVALUATE
       **          END-IF
       *
-      *    患者公費負担クローズ
-           MOVE    "PTKOHFTN-KEY4"             TO  ORC-DBPATH
-           PERFORM   910-DB-CLOSE-SEC
+      *        患者公費負担クローズ
+               MOVE    "PTKOHFTN-KEY4"             TO  ORC-DBPATH
+               PERFORM   910-DB-CLOSE-SEC
       *
            END-IF
            .
@@ -334,7 +360,6 @@
        210-HANTEI-SEC            SECTION.
       *
       *収納マスタから該当公費の患者負担額チェック
-           INITIALIZE                      SYUNOU-REC
            MOVE    LNK-FTNJGNCHK-HOSPID    TO  SYU-HOSPID
            MOVE    LNK-FTNJGNCHK-PTID      TO  SYU-PTID
            MOVE    LNK-FTNJGNCHK-NYUGAIKBN TO  SYU-NYUGAIKBN
@@ -348,14 +373,11 @@
            PERFORM 910-SYUNOU-SELECT-SEC
            IF      FLG-SYUNOU              NOT =   ZERO
                MOVE    01                  TO  LNK-FTNJGNCHK-RC
-               GO  TO  200-MAIN-EXT
+               GO  TO  210-HANTEI-EXT
            ELSE
                MOVE    "SYUNOU-KEY25"      TO  ORC-DBPATH
                PERFORM 910-SYUNOU-READ-SEC
-               IF   FLG-SYUNOU             NOT =   ZERO
-                    MOVE    01             TO  LNK-FTNJGNCHK-RC
-                    GO  TO  200-MAIN-EXT
-               ELSE
+               IF   FLG-SYUNOU             =   ZERO
       *            患者負担金の集計
                    MOVE      ZERO          TO      WRK-KOHFTN
                    PERFORM   UNTIL    FLG-SYUNOU  =   1
@@ -387,6 +409,29 @@
            PERFORM   910-DB-CLOSE-SEC
            .
        210-HANTEI-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    システム管理マスター読込
+      *****************************************************************
+       SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1001-REC
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               INITIALIZE                  SYS-1001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
