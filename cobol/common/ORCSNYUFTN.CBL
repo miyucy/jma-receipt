@@ -1233,6 +1233,9 @@
            MOVE   "SRYACCT-KEY9"       TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
+      *    点滴薬剤（器材）点数まとめ処理
+           PERFORM   TENTEK-MATOME-SEC
+      *
       *    保険点数集計
            PERFORM     VARYING   IDZ    FROM   1    BY    1
                          UNTIL   IDZ    >      10
@@ -1300,7 +1303,6 @@
                                   COMPUTE SYU-HKNTEN (05) = 
                                           SYU-HKNTEN (05)  +
                                          (ACCT-SYUTEN1 * SINRYO-COUNT)
-                                  PERFORM TENTEK-MATOME-SEC
                                WHEN  "340"
                                   COMPUTE SYU-HKNTEN (05) = 
                                           SYU-HKNTEN (05)  +
@@ -1813,7 +1815,7 @@
       *
       *診療行為情報の取得
            MOVE    ZERO               TO   FLG-SRYACT
-           INITIALIZE                      SRYACCT-REC
+           INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPID        TO   SRY-HOSPID
            MOVE    ACCT-NYUGAIKBN     TO   SRY-NYUGAIKBN
            MOVE    ACCT-PTID          TO   SRY-PTID
@@ -1846,9 +1848,9 @@
       *
            INITIALIZE                  ORCSTENTEKAREA
            MOVE    "2"                 TO  ORCSTEN-KBN
-           MOVE    ACCT-PTID           TO  ORCSTEN-PTID
-           MOVE    ACCT-SRYYM          TO  ORCSTEN-SRYYM
-           MOVE    ACCT-HKNCOMBI       TO  ORCSTEN-HKNCOMBI
+           MOVE    SYU-PTID            TO  ORCSTEN-PTID
+           MOVE    SYU-SRYYMD(1:6)     TO  ORCSTEN-SRYYM
+           MOVE    SYU-HKNCOMBINUM     TO  ORCSTEN-HKNCOMBI
            CALL    "ORCSTENTEK"        USING
                                        SPA-AREA
                                        ORCSTENTEKAREA
