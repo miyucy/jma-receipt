@@ -434,8 +434,10 @@
                END-IF
       *
                MOVE    HKNJA-IDOYMD        TO  SPA-HKNJA-IDOYMD
-               MOVE    HKNJA-KYURATE1      TO  SPA-HKNJA-KYURATE1
-               MOVE    HKNJA-KYURATE2      TO  SPA-HKNJA-KYURATE2
+      *!       MOVE    HKNJA-KYURATE1      TO  SPA-HKNJA-KYURATE1
+      *!       MOVE    HKNJA-KYURATE2      TO  SPA-HKNJA-KYURATE2
+               MOVE    ZERO                TO  SPA-HKNJA-KYURATE1
+               MOVE    ZERO                TO  SPA-HKNJA-KYURATE2
            ELSE
                MOVE    SPACE               TO  SPA-HKNJA-HKNJANAME
                MOVE    SPACE               TO  SPA-HKNJA-ADRS
