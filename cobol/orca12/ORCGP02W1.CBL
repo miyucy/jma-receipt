@@ -2160,6 +2160,25 @@
            IF      P02-P02-FTNJANUM3   NOT =   SPA-GMN-FTNJANUM (3)
                MOVE    SPACE               TO  SPA-NAI-PTKOH-KEIFLG(3)
            END-IF
+      *    年齢チェックをクリアする
+           IF     (P02-P02-FTNJANUM1   NOT =   SPA-GMN-FTNJANUM (1)) OR
+                  (P02-P02-KOHNUM1     NOT =   SPA-GMN-KOHNUM-G (1)) OR
+                  (P02-P02-KTEKSTYMD1  NOT =   SPA-GMN-KTEKSTYMD(1)) OR
+                  (P02-P02-KTEKEDYMD1  NOT =   SPA-GMN-KTEKEDYMD(1))
+               MOVE    ZERO                TO  SPA-NAI-AGECHK   (1)
+           END-IF
+           IF     (P02-P02-FTNJANUM2   NOT =   SPA-GMN-FTNJANUM (2)) OR
+                  (P02-P02-KOHNUM2     NOT =   SPA-GMN-KOHNUM-G (2)) OR
+                  (P02-P02-KTEKSTYMD2  NOT =   SPA-GMN-KTEKSTYMD(2)) OR
+                  (P02-P02-KTEKEDYMD2  NOT =   SPA-GMN-KTEKEDYMD(2))
+               MOVE    ZERO                TO  SPA-NAI-AGECHK   (2)
+           END-IF
+           IF     (P02-P02-FTNJANUM3   NOT =   SPA-GMN-FTNJANUM (3)) OR
+                  (P02-P02-KOHNUM3     NOT =   SPA-GMN-KOHNUM-G (3)) OR
+                  (P02-P02-KTEKSTYMD3  NOT =   SPA-GMN-KTEKSTYMD(3)) OR
+                  (P02-P02-KTEKEDYMD3  NOT =   SPA-GMN-KTEKEDYMD(3))
+               MOVE    ZERO                TO  SPA-NAI-AGECHK   (3)
+           END-IF
       *    公費１
            MOVE    P02-P02-FTNJANUM1   TO  SPA-GMN-FTNJANUM (1)
            MOVE    P02-P02-KOHNUM1     TO  SPA-GMN-KOHNUM-G (1)
@@ -2188,6 +2207,7 @@
            MOVE    P02-P02-JKYSNUM3    TO  SPA-GMN-JKYSNUM  (3)
            IF      P02-P02-KTEKSTYMD3  NOT =   SPA-GMN-KTEKSTYMD (3)
                MOVE    ZERO             TO  SPA-NAI-AGE65    (3)
+               MOVE    ZERO             TO  SPA-NAI-AGECHK   (3)
            END-IF
            MOVE    P02-P02-KTEKSTYMD3  TO  SPA-GMN-KTEKSTYMD (3)
            MOVE    P02-P02-KTEKEDYMD3  TO  SPA-GMN-KTEKEDYMD (3)
