@@ -1724,6 +1724,7 @@
            CALL    "ORCSC94"           USING
                                        ORCSC94AREA
                                        WRK-SCR-REC
+                                       SPA-AREA
       *
       *    ø«Œ≈∆¸§Ú ‘Ω∏
            INITIALIZE                  ORCSC92AREA
@@ -2060,6 +2061,7 @@
            CALL    "ORCSC94"           USING
                                        ORCSC94AREA
                                        WRK-SCR-REC
+                                       SPA-AREA
       *
       *    ø«Œ≈∆¸§Ú ‘Ω∏
            INITIALIZE                  ORCSC92AREA

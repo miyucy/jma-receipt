@@ -2412,6 +2412,7 @@
            CALL    "ORCSC94"           USING
                                        ORCSC94AREA
                                        SPA-SCR-REC
+                                       SPA-AREA
       *
            IF      SPA-GMN-IDX         >   1
                MOVE    SPA-COM-SRYSYUKBN (SPA-GMN-IDX - 1)

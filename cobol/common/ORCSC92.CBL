@@ -2487,6 +2487,7 @@
            CALL    "ORCSC94"           USING
                                        ORCSC94AREA
                                        SPA-SCR-REC
+                                       SPA-AREA
       *
            .
        500-GMN-HEN-EXT.
