@@ -74,7 +74,7 @@
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
-       INPUT-OUTPUT                SECTION
+       INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
       *    レセプト０２データ
