@@ -689,9 +689,9 @@
       
                        END-IF
                    END-PERFORM
-                   MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
-                   PERFORM 910-NYUINACCT-READ-SEC
                  END-IF
+                 MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+                 PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
       *    入院会計クローズ
