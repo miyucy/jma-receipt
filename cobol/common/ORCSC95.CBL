@@ -106,6 +106,8 @@
            03  FLG-JIKAN           PIC 9(01).
            03  FLG-COMMENT         PIC 9(01).
       *
+           03  FLG-UKETUKE-ARI     PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -495,6 +497,14 @@
       *        入院初診料自動発生
                MOVE    SYS-1008-NYU-SYOSIN
                                            TO  SPA-NYU-SYOSIN
+      *        数量ゼロ入力
+               IF      SYS-1008-SURYOZERO-FLG  =   SPACE
+                   MOVE    ZERO            TO  SPA-SURYOZERO-FLG
+               ELSE
+                   MOVE    SYS-1008-SURYOZERO-FLG
+                                           TO  SPA-SURYOZERO-FLG
+               END-IF
+      *
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -503,6 +513,7 @@
                MOVE    SPACE               TO  SPA-IKUJIEIYO-SRYKA
                MOVE    ZERO                TO  SPA-GAI-CURSOR-SET
                MOVE    ZERO                TO  SPA-NYU-SYOSIN
+               MOVE    ZERO                TO  SPA-SURYOZERO-FLG
            END-IF
       *
       *    診療科
@@ -751,6 +762,14 @@
       *        入院初診料自動発生
                MOVE    SYS-1008-NYU-SYOSIN
                                            TO  SPA-NYU-SYOSIN
+      *        数量ゼロ入力
+               IF      SYS-1008-SURYOZERO-FLG  =   SPACE
+                   MOVE    ZERO            TO  SPA-SURYOZERO-FLG
+               ELSE
+                   MOVE    SYS-1008-SURYOZERO-FLG
+                                           TO  SPA-SURYOZERO-FLG
+               END-IF
+      *
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
       *
@@ -758,6 +777,7 @@
                MOVE    SPACE               TO  SPA-IKUJIEIYO-SRYKA
                MOVE    ZERO                TO  SPA-GAI-CURSOR-SET
                MOVE    ZERO                TO  SPA-NYU-SYOSIN
+               MOVE    ZERO                TO  SPA-SURYOZERO-FLG
            END-IF
       *
       *    診療科
@@ -912,7 +932,9 @@
            INITIALIZE                  SPA-K02
            IF      LNK-SC95-PG         =   "K01"  OR  "K10"
                CONTINUE
+               MOVE    1                   TO  FLG-UKETUKE-ARI
            ELSE
+               MOVE    ZERO                TO  FLG-UKETUKE-ARI
                MOVE    SPACE               TO  SPA-HKNCOMBINUM
                MOVE    ZERO                TO  SPA-FTNRATE
                MOVE    SPACE               TO  SPA-FTNRATEMEI
@@ -1237,6 +1259,7 @@
                        MOVE    UKE-DRCD            TO  SPA-DRCD
                        MOVE    1                   TO  FLG-UKETUKE
                    END-IF
+                   MOVE    1               TO  FLG-UKETUKE-ARI
                END-IF
                IF      FLG-UKETUKE         =   ZERO
                    MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
@@ -1354,6 +1377,15 @@
                        IF      SPA-SYORIFLG        =   ZERO
                            IF       IDX-J1         =   ZERO
                                MOVE     IDX            TO  IDX-J1
+                           ELSE
+                               IF      (SPA-NAI-RRK-SRYKA(IDX-J1)
+                                                   =   SPA-NAI-RRK-SRYKA
+                                                                 (IDX))
+                               AND     (SPA-NAI-RRKYMD(IDX-J1)
+                                                   =   SPA-NAI-RRKYMD
+                                                                 (IDX))
+                                   MOVE    IDX         TO  IDX-J1
+                               END-IF
                            END-IF
                        ELSE
       *                訂正の時、選択した連番 
@@ -1446,6 +1478,7 @@
       *
       *    ドクター
            IF      SPA-DRCD            =   SPACE
+             AND   FLG-UKETUKE-ARI     =   ZERO
                MOVE    SPA-NAI-RRK-DRCD(IDX-J1)    TO  SPA-DRCD
            END-IF
       *    保険組合せ（中途終了分選択時は選択済み）
@@ -1732,6 +1765,7 @@
                IF      SYS-1010-KBNCD(1:1)     =   "1"
       *            ドクターの指定がない時、最初のドクターとする
                    IF      SPA-DRCD            =   SPACE
+                      AND  FLG-UKETUKE-ARI     =   ZERO
       *                対象の科のドクターを優先する
                        PERFORM 100121-SEMONKACD-CHK-SEC
                        IF      WRK-DRCD2           =   SPACE 
@@ -2852,6 +2886,7 @@
       *?   MOVE    SPACE               TO  SPA-HKNCOMBINUM
       *?   MOVE    ZERO                TO  SPA-FTNRATE
       *?   MOVE    SPACE               TO  SPA-FTNRATEMEI
+           MOVE    ZERO                TO  FLG-UKETUKE-ARI
       *
            IF      LNK-SC95-PG         =   "K02"  OR  "K01"
                CONTINUE

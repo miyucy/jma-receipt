@@ -227,7 +227,8 @@
                    PERFORM 2001-SURYO-HEN-SEC
       *            画像診断用　分画数
                    IF      SPA-COM-DATAKBN(IDX)        =   "3"
-                       IF      SPA-COM-BUNGSU (IDX)    >   ZERO
+      *****************IF      SPA-COM-BUNGSU (IDX)    >   ZERO
+                       IF      SPA-COM-BUNGSU (IDX)    >   1
                            MOVE    SPA-COM-BUNGSU (IDX)
                                                    TO  WRK-BUNGSU-Z
                        END-IF
@@ -439,6 +440,10 @@
       *
            MOVE    SPACE               TO  WRK-SURYO-X
            MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
+      *    数量０入力フラグ
+           IF      SPA-SURYOZERO-FLG   =   1
+               MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1-9
+           END-IF
       *
            MOVE    ZERO                TO  FLG-SP
            PERFORM VARYING     IDM     FROM    3  BY  -1
