@@ -20,6 +20,7 @@ tbl_hknnum {
 	TENTNK				number(3);
 	RECESKYKBN                      char(1);
 	RECEFTNDSPKBN                   char(1);
+	RECEJGNDSPKBN                   char(1);
 	HON_GAIFTNKBN			char(1);
 	HON_GAIKFTNRATE			number(3);
 	HON_GAIKKOTGAK			number(6);
@@ -39,6 +40,7 @@ tbl_hknnum {
 	HON_NYUMJGNGAK			number(6);
 	HON_NYUMJGNCNT			number(2);
 	HON_NYUSKJRYYKBN		char(1);
+	HON_NYUSKJJYOGAK		number(6);
 	KZK_GAIFTNKBN			char(1);
 	KZK_GAIKFTNRATE			number(3);
 	KZK_GAIKKOTGAK			number(6);
@@ -58,6 +60,7 @@ tbl_hknnum {
 	KZK_NYUMJGNGAK			number(6);
 	KZK_NYUMJGNCNT			number(2);
 	KZK_NYUSKJRYYKBN		char(1);
+	KZK_NYUSKJJYOGAK		number(6);
 	TSY_GAIFTNKBN			char(1);
 	TSY_GAIKFTNRATE			number(3);
 	TSY_GAIKKOTGAK			number(6);
@@ -77,6 +80,7 @@ tbl_hknnum {
 	TSY_NYUMJGNGAK			number(6);
 	TSY_NYUMJGNCNT			number(2);
 	TSY_NYUSKJRYYKBN		char(1);
+	TSY_NYUSKJJYOGAK		number(6);
 	TNK_GAIFTNKBN			char(1);
 	TNK_GAIKFTNRATE			number(3);
 	TNK_GAIKKOTGAK			number(6);
@@ -96,6 +100,7 @@ tbl_hknnum {
 	TNK_NYUMJGNGAK			number(6);
 	TNK_NYUMJGNCNT			number(2);
 	TNK_NYUSKJRYYKBN		char(1);
+	TNK_NYUSKJJYOGAK		number(6);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);
