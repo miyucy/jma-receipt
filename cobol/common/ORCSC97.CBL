@@ -185,6 +185,8 @@
            MOVE    SPACE               TO  SPA-ERRMSG
            INITIALIZE                      WRK-MOJI-AREA
            INITIALIZE                      WRK-AREA
+           INITIALIZE                      FLG-AREA
+           INITIALIZE                      IDX-AREA
       *
            PERFORM 100-INPUTCD-SYORI-SEC
       *

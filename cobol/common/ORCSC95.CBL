@@ -32,6 +32,7 @@
       *  01.00.03    NACL-Â¿¡¹Ç¼  02/09/11  ¼«ÇåÀÕÄÉ²Ã
       *  01.00.04    NACL¡ÝÂ¿¡¹Ç¼ 02/10/10  ³°Íè´ÉÍý²Ã»»¥Á¥§¥Ã¥¯¤ÎÍ­Ìµ
       *  01.00.05    NACL¡ÝÂ¿¡¹Ç¼ 02/10/18  Æþ±¡ÄÉ²Ã
+      *  01.00.06    NACL-Â¿¡¹Ç¼  03/02/19  ÎÅÍÜÃ´Åö¼êÅöÄÉ²Ã
       *****************************************************************
       *
       *
@@ -478,7 +479,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   10   )  OR
+                   UNTIL       (IDX            >   40   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD (1:2)  TO  SPA-GMN-SRYKAL   (IDX)
@@ -709,7 +710,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   10   )  OR
+                   UNTIL       (IDX            >   40   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD (1:2)  TO  SPA-GMN-SRYKAL   (IDX)

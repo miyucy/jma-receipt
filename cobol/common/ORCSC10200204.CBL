@@ -2930,6 +2930,15 @@
                END-IF
            END-IF
       *
+      *    初診料の判定
+           IF      WRK-KBN         NOT =   SPACE
+               IF      WRK-KBN             =   "F"
+                   MOVE    1               TO  LNK-ORCSC-SYOSIN2
+               ELSE
+                   MOVE    ZERO            TO  LNK-ORCSC-SYOSIN2
+               END-IF
+           END-IF
+      *
            .
        2001-SINSATU-CHK-EXT.
            EXIT.
@@ -2954,6 +2963,22 @@
                MOVE    WRK-KBN         TO  WRK-SINSATU-KBN
                MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
                MOVE    IDX-Z           TO  IDX-SINSATU
+      *
+      *        発生日３月以降の回数チェック
+               IF      SPA-SRYYMD      >=  SPA-RSI-HASSYOYMD3
+                   IF      LNK-ORCSC-SINSATU-CNT   >=  5
+                       IF      WRK-KAISU       NOT =   5
+                           MOVE    "K020"          TO  WRK-KEICD
+                           MOVE    IDX-Z           TO  WRK-KEICD-IDX
+                       END-IF
+                   ELSE
+                       IF      WRK-KAISU           =   5
+                           MOVE    "K020"          TO  WRK-KEICD
+                           MOVE    IDX-Z           TO  WRK-KEICD-IDX
+                       END-IF
+                   END-IF
+               END-IF
+      *
            END-IF
       *
            .

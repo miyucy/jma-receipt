@@ -980,11 +980,6 @@
       *****************************************************************
        3009-NYUINKAISU-SEC              SECTION.
       *
-      *TEST
-           DISPLAY "3009-NYUINKAISU SRYKBN:" WRK-COM-SRYKBN (IDX)
-                 ",KAISU:" WRK-COM-KAISU (IDX)
-                 ",WRK-KAISU:" WRK-KAISU
-      *TEST
       *    内服は日数分作成する
            IF      WRK-COM-SRYKBN (IDX)    =   "21"
                IF      WRK-COM-KAISU (IDX)     >   WRK-KAISU
@@ -1373,7 +1368,9 @@
            MOVE    ZERO                TO  FLG-ZAI
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
-                              (WRK-GMN-INPUTCD(IDX) =   SPACE)
+                             ((WRK-GMN-INPUTCD(IDX) =   SPACE)  AND
+                              (WRK-COM-INPUTCD(IDX) =   SPACE ))
+                       OR    ( SPA-ERRCD       NOT  =   SPACE )
       *
       *
                MOVE    WRK-COM-SRYSYUKBN  (IDX)  TO  WRK-CHK-SRYSYUKBN
@@ -1417,6 +1414,9 @@
                    END-IF
                    MOVE    "820000047"     TO  WRK-SRYCD
                    PERFORM 30011-GENTUIKA-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX)
+                   END-IF
                    MOVE    1               TO  FLG-ZAI
                END-IF
       *
@@ -1428,8 +1428,8 @@
            MOVE    ZERO                TO  WRK-GMN-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
-                              (WRK-GMN-INPUTCD(IDX) =   SPACE  AND
-                               WRK-COM-INPUTCD(IDX) =   SPACE )
+                             ((WRK-GMN-INPUTCD(IDX) =   SPACE ) AND
+                              (WRK-COM-INPUTCD(IDX) =   SPACE ))
                ADD     1               TO  WRK-GMN-MAX
            END-PERFORM
       *
@@ -1443,6 +1443,8 @@
        30011-GENTUIKA-SEC         SECTION.
       *
            MOVE    IDX-Z               TO  IDX-S
+      *
+           MOVE    WRK-SCR-REC         TO  HOZ-SCR-REC
       *
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
@@ -1469,11 +1471,12 @@
       *    エラーの時、追加なし
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
-               MOVE    SPACE           TO  SPA-ERRCD
-               INITIALIZE              WRK-GMN-TBLREC (IDX-S)
-               INITIALIZE              WRK-COM-TBLREC (IDX-S)
-               COMPUTE IDX-S           =   IDX-S
-                                       -   1
+               IF      SPA-ERRCD           =   "0020"  OR  "0007"
+                   MOVE    "7007"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    SPACE               TO  SPA-ERRCD
+               END-IF
+               MOVE    HOZ-SCR-REC         TO  WRK-SCR-REC
                GO      TO      30011-GENTUIKA-EXT
            END-IF
       *
@@ -1491,6 +1494,8 @@
       *
       *    自動追加分（入力時に追加）
            MOVE    "3"                 TO  WRK-COM-AUTOKBN (IDX-S)
+      *
+      *
            .
        30011-GENTUIKA-EXT.
            EXIT.
@@ -1515,12 +1520,6 @@
                    MOVE    "24"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
                END-IF
-      *TEST
-               DISPLAY "WRK-SRYCD:" WRK-SRYCD
-                       ",INPUTCD:" LNK-ORCSC-INPUTCD(02 IDXS IDN2)
-                       ",IDS:" IDXS
-                        ",WRK-KAISU:" WRK-KAISU
-      *TEST
            END-IF
       *    麻毒加算料
            IF      FLG-MADOKU          =   1
@@ -1636,9 +1635,6 @@
                    END-IF
                END-PERFORM
            END-IF
-      *TEST
-           DISPLAY "WRK-KAISU-H:" WRK-KAISU-H
-      *TEST
            MOVE    1                   TO  IDN2
            MOVE    1                   TO  IDN3
            PERFORM VARYING     IDN1    FROM    1   BY  1

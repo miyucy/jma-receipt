@@ -120,6 +120,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+      *
            IF      LNK-SC90-IDX        <   1  OR  >  200
                GO      TO      000-PROC-EXT
            END-IF
@@ -150,7 +154,6 @@
            ELSE
                MOVE    LNK-COM-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
            END-IF
-      *
       *
       **** EVALUATE    LNK-COM-INPUTCD(1:1)
            EVALUATE    WRK-MOJI
@@ -327,8 +330,8 @@
       *        ÃâÁÇ
                IF      LNK-COM-SANSOKBN (IDX)  =   ZERO
       *            (¹ØÆþ²Á³Ê¡ö¿ôÎÌ)¡¡»Í¼Î¸ÞÆþ
-                   COMPUTE WRK-SYOKEIS2        =   LNK-COM-KISOTEN(IDX)
-                                               *   LNK-COM-SURYO  (IDX)
+                   COMPUTE WRK-SYOKEIS2        =  (LNK-COM-KISOTEN(IDX)
+                                               *   LNK-COM-SURYO  (IDX))
                                                +   0.5
                    MOVE    WRK-SYOKEIS2        TO  WRK-SYOKEIS
                    ADD     WRK-SYOKEIS         TO  LNK-SC90-CHIKEI
@@ -447,8 +450,9 @@
                    MOVE    ZERO            TO  WRK-SYOKEIS3
                END-IF
            ELSE
-               COMPUTE WRK-SYOKEIS3        =   (WRK-SYOKEIS2   -  15)
-                                           /    10  +   1
+               COMPUTE WRK-SYOKEIS3        =  ((WRK-SYOKEIS2   -  15)
+                                           /    10 )
+                                           +   1
            END-IF
       *
            COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.999
@@ -486,8 +490,9 @@
                END-IF
            ELSE
       ******** COMPUTE WRK-SYOKEIS2    =  (LNK-SC90-ZAIKEI   -  15)
-               COMPUTE WRK-SYOKEIS3    =  (LNK-SC90-ZAIKEI   -  15)
-                                               / 10  +   1
+               COMPUTE WRK-SYOKEIS3    =  ((LNK-SC90-ZAIKEI  -  15)
+                                       / 10 )
+                                       +   1
            END-IF
       *
       *****COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS2   + 0.99
@@ -522,8 +527,9 @@
                END-IF
            ELSE
       *********COMPUTE WRK-SYOKEIS2    =  (LNK-SC90-GAIKEI    -  15)
-               COMPUTE WRK-SYOKEIS3    =  (LNK-SC90-GAIKEI    -  15)
-                                                   / 10  +   1
+               COMPUTE WRK-SYOKEIS3    =  ((LNK-SC90-GAIKEI   -  15)
+                                                   / 10)
+                                                   +   1
            END-IF
       *
       *****COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS2   + 0.99
@@ -539,8 +545,8 @@
        2003-KIZTEN-SET-SEC             SECTION.
       *
       *    ¶â³Û·×¡à£±£°¡¡»Í¼Î¸ÞÆþ
-           COMPUTE WRK-SYOKEIS2        =   LNK-SC90-KIZKEI
-                                       /   10
+           COMPUTE WRK-SYOKEIS2        =  (LNK-SC90-KIZKEI
+                                       /   10  )
                                        +   0.5
            MOVE    WRK-SYOKEIS2        TO  LNK-SC90-KIZTEN
       *
@@ -555,8 +561,8 @@
        2004-CHITEN-SET-SEC             SECTION.
       *
       *    ¶â³Û·×¡à£±£°¡¡»Í¼Î¸ÞÆþ
-           COMPUTE WRK-SYOKEIS2        =   LNK-SC90-CHIKEI
-                                       /   10
+           COMPUTE WRK-SYOKEIS2        =  (LNK-SC90-CHIKEI
+                                       /   10  )
                                        +   0.5
            MOVE    WRK-SYOKEIS2        TO  LNK-SC90-CHITEN
       *

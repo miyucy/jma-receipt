@@ -264,6 +264,11 @@
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  WRK-INPUT-SET-AREA
+      *
            MOVE    SPACE               TO  LNK-SC92-ERRAREA
            MOVE    LNK-SC92-GMN-IDX    TO  IDX-T
       *    約束の時、処理なし
@@ -274,6 +279,11 @@
            END-IF
       *    入院回数処理なし
            IF      LNK-SC92-SRYCD(1:1) =   "*"   OR  SPACE
+               GO      TO      000-PROC-EXT
+           END-IF
+      *    ２００行以上エラー
+           IF      LNK-SC92-GMN-IDX    >   200
+               MOVE    "0007"          TO  SPA-ERRCD
                GO      TO      000-PROC-EXT
            END-IF
       *
@@ -1975,7 +1985,7 @@
        400-GYOINSN-SEC                 SECTION.
       *
            IF      SPA-GMN-INPUTCD (200)   NOT =   SPACE
-               MOVE    "0020"          TO  SPA-ERRCD
+               MOVE    "0007"          TO  SPA-ERRCD
                GO      TO      400-GYOINSN-EXT
            END-IF
       *

@@ -1299,14 +1299,18 @@
                        MOVE    WRK-KEIMAI      TO  WRK-COM-SURYO
                                                            (IDX-Z)
                    END-IF
-                END-IF
+               END-IF
            END-IF
       *
       *    きざみ値計算
            MOVE    WRK-COM-SURYO (IDX-Z)   TO  WRK-SURYO
            MOVE    ZERO                    TO  WRK-KEI-TEN2
       *    きざみ点数を算定点数の１／２とする
-           COMPUTE WRK-KZMTEN          =   WRK-SATU-TEN   /  2
+           IF      WRK-SATU-TEN        =   ZERO
+               MOVE    ZERO                TO  WRK-KZMTEN
+           ELSE
+               COMPUTE WRK-KZMTEN          =   WRK-SATU-TEN   /  2
+           END-IF
       *    きざみ値判定
            EVALUATE    TRUE
       *            データ≦（下限値−きざみ値）
@@ -2487,6 +2491,9 @@
            MOVE    WRK-SCR-REC         TO  HOZ-SCR-REC
            MOVE    WRK-GMN-MAX         TO  WRK-IDX
            ADD     1                   TO  WRK-IDX
+           IF      WRK-IDX              >   200
+               MOVE    200                 TO  WRK-IDX
+           END-IF
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
            MOVE    "3"                 TO  LNK-SC92-KBN

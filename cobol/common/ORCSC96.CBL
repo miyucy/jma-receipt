@@ -456,6 +456,16 @@
                                        TO  SPA-ERRMSG
                    MOVE    "初診料を入力して下さい。"
                                        TO  SPA-ERRMSG(29:)
+               WHEN    "7007"
+                   MOVE    "自動算定で２００行を超えます。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "分けて入力して下さい。"
+                                       TO  SPA-ERRMSG(31:)
+               WHEN    "7001"
+                   MOVE    "２００行を超えた行です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "これ以上入力できません。"
+                                       TO  SPA-ERRMSG(31:)
                WHEN    "8000"
                    MOVE    "労災保険の診療コードです。入力できません。"
                                        TO  SPA-ERRMSG

@@ -140,6 +140,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+      *
       *    対象行チェック
            IF      LNK-SC94-IDX    >=   1  AND  <=  200
                CONTINUE
