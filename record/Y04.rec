@@ -1,33 +1,33 @@
 Y04	{
 	fixed1	{
 		TYYKYMD1	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		TYYKYMD2	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		TYYKYMD3	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		TYYKYMD4	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		TYYKYMD5	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		TYYKYMD6	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		DRNAME_COMBO	{
 			DRNAME	{
-				value	varchar(28);
+				value	varchar(27);
 			};
 			count	int;
 			item	varchar(27)[10];
 		};
 		SRYNAIYO_COMBO	{
 			SRYNAIYO	{
-				value	varchar(22);
+				value	varchar(21);
 			};
 			count	int;
 			item	varchar(21)[10];

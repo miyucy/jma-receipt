@@ -18,9 +18,9 @@
         02  Y03.
       ***   02  Y03-FIXED1.
               03  Y03-SRYMD.
-                04  Y03-VALUE   PIC X(10).
+                04  Y03-VALUE   PIC X(9).
               03  Y03-HYODAI.
-                04  Y03-VALUE   PIC X(21).
+                04  Y03-VALUE   PIC X(20).
               03  Y03-SCROLLEDWINDOW1.
                 04  Y03-TSLIST.
                   05  Y03-COUNT   PIC S9(9)   BINARY.
@@ -32,6 +32,6 @@
                         08  Y03-DRNAME  PIC X(12).
                         08  Y03-NAME  PIC X(20).
                         08  Y03-PTNUM  PIC X(20).
-                        08  Y03-RENRAKU  PIC X(15).
+                        08  Y03-RENRAKU  PIC X(16).
                         08  Y03-RAIIN  PIC X(4).
                   05  Y03-SELECT  PIC X       OCCURS  90 TIMES.

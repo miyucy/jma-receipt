@@ -21,5 +21,5 @@
       *****************************************************************
          02  YERR.
             03  YERR-FIXED1.
-              04  YERR-ERRCODE    PIC X(11).
-              04  YERR-ERRMSG PIC X(61).
+              04  YERR-ERRCODE    PIC X(10).
+              04  YERR-ERRMSG PIC X(80).
