@@ -48,6 +48,7 @@
       *  01.05.01    NACL-藤原    03/08/28  登録数の制限をなくす
       *                                     表示切替・全科の機能追加
       *  01.05.02    NACL-藤原    04/02/24  入外区分の表示切替の機能追加
+      *  01.05.03    NACL-藤原    04/03/08  手術歴登録画面の追加
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -460,9 +461,9 @@
       *              
       *    簡単修正画面
            03  SPA-C10.
-               05  SPA-GMN-C10-MAX         PIC 9(04).
-               05  SPA-GMN-C10-CUR         PIC 9(02).
-               05  SPA-GMN-C10-AREA.
+               05  SPA-C10-AREA.
+                   07  SPA-GMN-C10-MAX         PIC 9(04).
+                   07  SPA-GMN-C10-CUR         PIC 9(02).
                    07  SPA-GMN-C10-AREA.
                        09  SPA-GMN-C10-KOUMOKU.
                            11  SPA-GMN-C10-UTAGAIFLG-G.
@@ -538,6 +539,147 @@
                    07  SPA-NAIB-C10-AREA.
                        09  SPA-NAI-C10-KOUMOKU.
                            11  SPA-NAI-C10-TENKIYMD        PIC X(08).
+      *              
+      *    手術歴入力画面
+           03  SPA-C11-AREA.
+               05  SPA-GMN-C11-CUR         PIC 9(02).
+               05  SPA-GMN-C11-OPE-NEXT    PIC 9(01).
+               05  SPA-GMN-C11-COM-NEXT    PIC 9(01).
+               05  SPA-GMN-C11-OPE-PAGE    PIC 9(01).
+               05  SPA-GMN-C11-COM-PAGE    PIC 9(01).
+               05  SPA-GMN-C11-AREA.
+                   07  SPA-GMN-C11-SYSYMD          PIC X(09).
+      *                                         
+                   07  SPA-GMN-C11-SRYKALST        OCCURS  40.
+                       11  SPA-GMN-C11-SRYKAL      PIC X(02).
+                       11  SPA-GMN-C11-F1L         PIC X(01).
+                       11  SPA-GMN-C11-SRYKAMEIL   PIC X(20).
+                   07  SPA-GMN-C11-SRYKA-MAX       PIC 9(02).    
+      *                                             
+                   07  SPA-GMN-C11-SRYKA-G.
+                       11  SPA-GMN-C11-SRYKA       PIC X(02).
+                       11  SPA-GMN-C11-F1          PIC X(01).
+                       11  SPA-GMN-C11-SRYKAMEI    PIC X(20).
+      *                                             
+                   07  SPA-GMN-C11-DSPYMLST        OCCURS  6.
+                       09  SPA-GMN-C11-DSPYML      PIC X(01).
+                       09  SPA-GMN-C11-F1L         PIC X(01).
+                       09  SPA-GMN-C11-DSPYMMEIL   PIC X(10).
+                   07  SPA-GMN-C11-DSPYM-MAX       PIC 9(02).
+      *                                             
+                   07  SPA-GMN-C11-DSPYM-G.
+                       09  SPA-GMN-C11-DSPYM       PIC X(01).
+                       09  SPA-GMN-C11-F1          PIC X(01).
+                       09  SPA-GMN-C11-DSPYMMEI    PIC X(10).
+      *                         
+                   07  SPA-GMN-C11-NYUGAIKBNLST    OCCURS  2.
+                       09  SPA-GMN-C11-NYUGAIKBNL  PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-C11-NYUGAIKBNMEIL
+                                                   PIC X(06).    
+      *
+                   07  SPA-GMN-C11-BSRYKALST       OCCURS  40.
+                       09  SPA-GMN-C11-BSRYKAL     PIC X(02).
+                       09  SPA-GMN-C11-F1L         PIC X(01).
+                       09  SPA-GMN-C11-BSRYKAMEIL  PIC X(20).
+                   07  SPA-GMN-C11-BSRYKA-MAX      PIC 9(02).    
+      *                                             
+                   07  SPA-GMN-C11-HEAD.
+                       09  SPA-GMN-C11-PTNUM       PIC X(20).
+                       09  SPA-GMN-C11-KANANAME    PIC X(30).
+                       09  SPA-GMN-C11-NAME        PIC X(30).
+                       09  SPA-GMN-C11-SEX         PIC X(02).
+                       09  SPA-GMN-C11-BIRTHDAY    PIC X(09).
+      *                                             
+                   07  SPA-GMN-C11-BODY.
+                       09  SPA-GMN-C11-SELNUM1     PIC 9(03).
+                       09  SPA-GMN-C11-SELNUM2     PIC 9(03).
+                       09  SPA-GMN-C11-BODY1.
+                           11  SPA-GMN-C11-OPENAME     PIC X(50).
+                           11  SPA-GMN-C11-OPECOMMENT  PIC X(50).
+                           11  SPA-GMN-C11-SRYYMD      PIC X(09).
+                           11  SPA-GMN-C11-BSRYKA-G.
+                               13  SPA-GMN-C11-BSRYKA  PIC X(02).
+                               13  SPA-GMN-C11-F1      PIC X(01).
+                               13  SPA-GMN-C11-BSRYKAMEI
+                                                       PIC X(20).
+                           11  SPA-GMN-C11-NYUGAIKBN-G.
+                               13  SPA-GMN-C11-NYUGAIKBN
+                                                       PIC X(01).
+                               13  SPA-GMN-C11-F1      PIC X(01).
+                               13  SPA-GMN-C11-NYUGAIKBNMEI
+                                                       PIC X(06).
+                           11  SPA-GMN-C11-HKNNUM-G.
+                               13  SPA-GMN-C11-HKNNUM  PIC X(03).
+                               13  SPA-GMN-C11-F1      PIC X(01).
+                               13  SPA-GMN-C11-HKNNUMMEI
+                                                       PIC X(10).
+                           11  SPA-GMN-C11-TEKSTYM     PIC X(06).
+                           11  SPA-GMN-C11-TEKEDYM     PIC X(06).
+      *                         
+                           11  SPA-GMN-C11-HKNNUMLST   OCCURS  5.
+                               13  SPA-GMN-C11-HKNNUML PIC X(03).
+                               13  SPA-GMN-C11-F1L     PIC X(01).
+                               13  SPA-GMN-C11-HKNNUMMEIL
+                                                       PIC X(10).
+                           11  SPA-GMN-C11-HKNNUM-MAX  PIC 9(02).
+      *                         
+                   07  SPA-GMN-C11-OPELIST-TBL.
+                       09  SPA-GMN-C11-OPELIST-OCC         OCCURS  100.
+                           11  SPA-GMN-C11-OPE-TNUM        PIC 9(3).
+                           11  SPA-GMN-C11-OPE-TSRYKA      PIC X(20).
+                           11  SPA-GMN-C11-OPE-TOPENAME    PIC X(50).
+                           11  SPA-GMN-C11-OPE-TSRYYMD     PIC X(09).
+                           11  SPA-GMN-C11-OPE-THKNCOMBI   PIC X(40).
+                       09  SPA-GMN-C11-OPE-MAX             PIC 9(03).
+      *                         
+                   07  SPA-GMN-C11-COMMENTLIST-TBL.
+                       09  SPA-GMN-C11-COMMENTLIST-OCC     OCCURS  100.
+                           11  SPA-GMN-C11-COM-TNUM        PIC 9(3).
+                           11  SPA-GMN-C11-COM-TSRYKA      PIC X(20).
+                           11  SPA-GMN-C11-COM-TOPENAME    PIC X(50).
+                           11  SPA-GMN-C11-COM-TSRYYMD     PIC X(9).
+                           11  SPA-GMN-C11-COM-TNYUGAIKBN  PIC X(6).
+                           11  SPA-GMN-C11-COM-THKNNUM     PIC X(10).
+                           11  SPA-GMN-C11-COM-TTEKYM      PIC X(16).
+                       09  SPA-GMN-C11-COM-MAX             PIC 9(03).
+      *
+               05  SPA-NAI-C11-AREA.
+                   07  SPA-NAI-C11-SYSYMD          PIC X(08).
+                   07  SPA-NAI-C11-DSPYMLST        OCCURS  6.
+                       09  SPA-NAI-C11-DSPYMSTL    PIC X(06).
+      *                                             
+                   07  SPA-NAI-C11-HEAD.
+                       09  SPA-NAI-C11-PTID        PIC 9(10).
+                       09  SPA-NAI-C11-DSPYM       PIC 9(06).
+                   07  SPA-NAI-C11-BODY.
+                       09  SPA-NAI-C11-SELNUM1     PIC 9(03).
+                       09  SPA-NAI-C11-SELNUM2     PIC 9(03).
+                       09  SPA-NAI-C11-BODY1.
+                           11  SPA-NAI-C11-TEKSTYM     PIC X(06).
+                           11  SPA-NAI-C11-TEKEDYM     PIC X(06).
+                           11  SPA-NAI-C11-HKNID       PIC 9(10).
+                           11  SPA-NAI-C11-HKNKBN      PIC X(01).
+                           11  SPA-NAI-C11-SRYYMD      PIC X(08).
+                           11  SPA-NAI-C11-SRYCD       PIC X(09).
+                           11  SPA-NAI-C11-RENNUM      PIC 9(03).
+                           11  SPA-NAI-C11-HKNCOMBI    PIC 9(04).
+      *                         
+                           11  SPA-NAI-C11-HKNNUMLST   OCCURS  5.
+                               13  SPA-NAI-C11-HKNIDL  PIC 9(10).
+                               13  SPA-NAI-C11-HKNKBNL PIC X(01).
+      *                                             
+                   07  SPA-NAI-C11-OPELIST-TBL.
+                       09  SPA-NAI-C11-OPELIST-OCC         OCCURS  100.
+                           11  SPA-NAI-C11-OPE-TSRYYMD     PIC X(8).
+                           11  SPA-NAI-C11-OPE-TSRYCD      PIC X(9).
+                           11  SPA-NAI-C11-OPE-THKNCOMBI   PIC 9(4).
+                           11  SPA-NAI-C11-OPE-TSRYKA      PIC X(2).
+                   07  SPA-NAI-C11-COMMENTLIST-TBL.
+                       09  SPA-NAI-C11-COMMENTLIST-OCC     OCCURS  100.
+                           11  SPA-NAI-C11-COM-TSRYYMD     PIC X(8).
+                           11  SPA-NAI-C11-COM-TSRYCD      PIC X(09).
+                           11  SPA-NAI-C11-COM-TRENNUM     PIC 9(03).
       *
       *    他の画面
-           03  SPA-C02SONOTA                  PIC X(30000). 
+           03  SPA-C02SONOTA                  PIC X(10). 
