@@ -1167,15 +1167,15 @@
                    ELSE
                        IF      COMB-HKNNUM     =   "060"   OR  "067" 
                            IF      HKN-RECESKYKBN  =   "1" OR  "3"
-                               MOVE    2   TO  TOUKEI01-TRECESKYKBN(IDY)
+                               MOVE    "2" TO  TOUKEI01-TRECESKYKBN(IDY)
                            ELSE
-                               MOVE    1   TO  TOUKEI01-TRECESKYKBN(IDY)
+                               MOVE    "1" TO  TOUKEI01-TRECESKYKBN(IDY)
                            END-IF
                        ELSE                
                            IF      HKN-RECESKYKBN  =   "2" OR  "3"
-                               MOVE    2   TO  TOUKEI01-TRECESKYKBN(IDY)
+                               MOVE    "2" TO  TOUKEI01-TRECESKYKBN(IDY)
                            ELSE
-                               MOVE    1   TO  TOUKEI01-TRECESKYKBN(IDY)
+                               MOVE    "1" TO  TOUKEI01-TRECESKYKBN(IDY)
                            END-IF
                        END-IF
                    END-IF
@@ -1198,7 +1198,7 @@
                        CALL    "ORCSFTNJGNCHK" USING
                                                ORCSFTNJGNCHKAREA
                        IF     LNK-FTNJGNCHK-RC =   1
-                           MOVE       2    TO  TOUKEI01-TRECESKYKBN(IDY)
+                           MOVE       "2"  TO  TOUKEI01-TRECESKYKBN(IDY)
                        END-IF
                    END-IF
                ELSE
@@ -1215,19 +1215,19 @@
                            IF      SYS-2005-RJNGNBKKBN =   "1" OR  ZERO
                                CONTINUE 
                            ELSE
-                               MOVE    1   TO  TOUKEI01-TRECESKYKBN(IDY)
+                               MOVE    "1" TO  TOUKEI01-TRECESKYKBN(IDY)
                            END-IF
                        ELSE                
                            IF      SYS-2005-RJNGNBKKBN =   "2" OR  ZERO
                                CONTINUE 
                            ELSE
-                               MOVE    1   TO  TOUKEI01-TRECESKYKBN(IDY)
+                               MOVE    "1" TO  TOUKEI01-TRECESKYKBN(IDY)
                            END-IF
                        END-IF
                        GO  TO  200121-KOHID-HENSYU-EXT
                    END-IF
       *            全国公費のとき（長期・老人原爆以外）
-                   MOVE    1           TO  TOUKEI01-TRECESKYKBN(IDY)
+                   MOVE    "1"         TO  TOUKEI01-TRECESKYKBN(IDY)
                END-IF       
            END-IF
            .
@@ -1274,7 +1274,7 @@
       *        
       *    県内扱いの場合、公費付加情報よりレセプト請求区分を取得
            IF      WRK-PREFKBN         =   SPACE
-               MOVE    2                   TO  TOUKEI01-TRECESKYKBN(IDY)
+               MOVE    "2"                 TO  TOUKEI01-TRECESKYKBN(IDY)
            ELSE
                INITIALIZE                  ORCSKOHPLUS-AREA
                MOVE    COMB-HOSPID         TO  LNK-SKOHPLUS-HOSPID
@@ -1286,12 +1286,12 @@
                                            ORCSKOHPLUS-AREA
                IF      LNK-SKOHPLUS-RC     =   ZERO
                    IF      LNK-SKOHPLUS-RECESKYKBN =   "1" OR  "3"
-                       MOVE    2           TO  TOUKEI01-TRECESKYKBN(IDY)
+                       MOVE    "2"         TO  TOUKEI01-TRECESKYKBN(IDY)
                    ELSE
-                       MOVE    1           TO  TOUKEI01-TRECESKYKBN(IDY)
+                       MOVE    "1"         TO  TOUKEI01-TRECESKYKBN(IDY)
                    END-IF
                ELSE
-                   MOVE    1           TO  TOUKEI01-TRECESKYKBN (IDY)
+                   MOVE    "1"         TO  TOUKEI01-TRECESKYKBN (IDY)
                END-IF
            END-IF
       *
@@ -1360,7 +1360,7 @@
       *    自費のとき
            IF     TOUKEI01-HKNKOHSBTKBN
                                        =   "8"
-               MOVE    "8888"              TO  TOUKEI01-RECESYUBETU 
+               MOVE    8888                TO  TOUKEI01-RECESYUBETU 
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
       *         

@@ -570,7 +570,7 @@
            MOVE    10                  TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *
-           MOVE    99                  TO  WRK-DATA
+           MOVE    "99"                TO  WRK-DATA
            MOVE    2                   TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC

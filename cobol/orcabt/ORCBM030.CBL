@@ -1216,7 +1216,7 @@
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
            MOVE    WRK-CONS-SRYYM-200304
                                        TO  RECE10-SRYYM
-           MOVE    ALL "9"             TO  RECE10-XXSRYYM
+           MOVE    999999              TO  RECE10-XXSRYYM
            IF      WRK-PARA-HKNJANUM   NOT =   ZERO
                MOVE    WRK-PARA-HKNJANUM   TO  RECE10-XXSTHKNJANUM
                                                RECE10-XXEDHKNJANUM
