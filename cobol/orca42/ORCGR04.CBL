@@ -33,6 +33,7 @@
       * 
       *  01.01.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.01.02    NACL-藤原    02/09/20  自賠責の追加
+      *  01.01.03    NACL-藤原    03/01/09  通し番号のためのパラメタ追加 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1242,7 +1243,11 @@
            MOVE    SPA-SYSYMD          TO  WRK-SHELL-SYSYMD
            MOVE    WRK-SHELL-ARG1      TO  SHELLTBL-ARG3 
            MOVE    "1"                 TO  SHELLTBL-ARG4
-           MOVE    "1"                 TO  SHELLTBL-ARG5
+           IF      SPA-R01-FILEKBN =   "1"
+               MOVE    "1"             TO  SHELLTBL-ARG5
+           ELSE
+               MOVE    "2"             TO  SHELLTBL-ARG5
+           END-IF    
            MOVE    RECEERR             TO  SHELLTBL-ARG6
            MOVE    WRK-RECE09-KEY      TO  SHELLTBL-ARG7 
            MOVE    SPA-TERMID          TO  SHELLTBL-ARG8
