@@ -65,7 +65,7 @@
                                 PIC S9(10).
               03  S03-HKNTEKGAI PIC S9(10).
               03  S03-JIHIMSG-G OCCURS  5.
-                04  S03-JIHIMSG PIC X(20).
+                04  S03-JIHIMSG PIC X(08).
               03  S03-JIHI1     PIC S9(10).
               03  S03-JIHI2     PIC S9(10).
               03  S03-JIHI3     PIC S9(10).
