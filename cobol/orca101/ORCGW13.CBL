@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02.09.17  加算率追加
+      *  01.00.02    NACL-藤原    02.09.30  指定病院番号の空白チェック修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -585,17 +586,19 @@
       *
       *    半角チェック
       *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI 
-           MOVE    SPA-GMN-RSIIRYOCDN  TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-           IF      KANACHK-RC          =   ZERO
-           AND     KANACHK-SYUBETU     =   "2"
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-RSIIRYOCDN 
-           ELSE
-               MOVE    "0004"              TO  SPA-ERRCD
-               GO  TO  4103-RSIIRYOCDN-CHK-EXT
-           END-IF
+           IF      SPA-GMN-RSIIRYOCDN      NOT =   SPACE     
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI 
+               MOVE    SPA-GMN-RSIIRYOCDN  TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF      KANACHK-RC          =   ZERO
+               AND     KANACHK-SYUBETU     =   "2"
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-RSIIRYOCDN 
+               ELSE
+                   MOVE    "0004"              TO  SPA-ERRCD
+                   GO  TO  4103-RSIIRYOCDN-CHK-EXT
+               END-IF
+           END-IF    
       *
            IF      SPA-GMN-RSIIRYOKBN     =   "1"
                IF      SPA-GMN-RSIIRYOCDN     =   SPACE
