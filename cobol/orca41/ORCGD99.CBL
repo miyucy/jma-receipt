@@ -69,11 +69,11 @@
                            11  SPA-GMN-NYUGAIKBN-M    PIC X(14).
                        09  SPA-GMN-TBL2       OCCURS  20.
                            11  SPA-GMN-MSG            PIC X(40).
-                           11  SPA-GMN-CHKKBN         PIC X(16).
+                           11  SPA-GMN-CHKKBN         PIC X(20).
                            11  SPA-GMN-TBL3       OCCURS  5.
                                13  SPA-GMN-CHKKBN-K   PIC X(01).
                                13  SPA-GMN-CHKKBN-FL  PIC X(01).
-                               13  SPA-GMN-CHKKBN-M   PIC X(14).
+                               13  SPA-GMN-CHKKBN-M   PIC X(18).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-MOTOPG         PIC X(08).
       *

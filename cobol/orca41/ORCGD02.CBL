@@ -172,6 +172,7 @@
            03  T-HANNTEI6          PIC X(02).
            03  T-HANNTEI7          PIC X(02).
            03  T-HANNTEI8          PIC X(01).
+           03  T-HANNTEI8-2        PIC X(01).
            03  T-ERR-01            PIC X(01).
            03  T-ERR-02            PIC X(01).
            03  T-ERR-03            PIC X(01).
@@ -745,6 +746,7 @@
            INITIALIZE                      W-TABLE-S4.
            INITIALIZE                      W-PTBYO-BYOMEI-AREA1.
            INITIALIZE                      W-PTBYO-BYOMEI-AREA2.
+           MOVE    SPACE                   TO  T-HANNTEI8-2.
            MOVE    ZERO                    TO  W-JITU-DAY3.
            MOVE    ZERO                    TO  W-JITU-DAY4.
            MOVE    ZERO                    TO  FLG-ERR-TBL.
@@ -1115,7 +1117,7 @@
       *½¤Àµ/*³«»Ï*03.08.06*********************************************
                MOVE    SPACE             TO  T-ERR-08
                MOVE    SPACE             TO  T-ERR-09
-               IF  T-HANNTEI8   =   SPACE
+               IF  T-HANNTEI8-2   =   SPACE
                    MOVE    ZERO              TO  W-PTBYO-MAX1
                    MOVE    ZERO              TO  W-PTBYO-MAX2
                END-IF
@@ -1125,8 +1127,6 @@
                IF  W-PTBYO-MAX1   NOT =  ZERO
                    PERFORM T-530-RECECHEK-CHK9-1-SEC
                END-IF
-               INITIALIZE                W-PTBYO-BYOMEI-AREA1
-               INITIALIZE                W-PTBYO-BYOMEI-AREA2
       *½¤Àµ/*½ªÎ»*03.08.06*********************************************
                IF  W-S-KBN   =   "*"
                    PERFORM T-520-RECECHEK-SEC
@@ -1284,6 +1284,24 @@
                MOVE    SPACE             TO  WK-SRYSYUKBN
       *½¤Àµ/*³«»Ï*03.08.26*********************************************
       *         PERFORM T-100-RECECHEK-HANTEI-CHK1-SEC
+               IF  (W1-SRY-HOSPID   NOT =  ALL "*")        AND
+                   ((ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
+                    (ACCT-PTID     NOT =   W1-SRY-PTID))
+                   MOVE    SPACE             TO  T-ERR-08
+                   MOVE    SPACE             TO  T-ERR-09
+                   IF  T-HANNTEI8-2   =   SPACE
+                       MOVE    ZERO              TO  W-PTBYO-MAX1
+                       MOVE    ZERO              TO  W-PTBYO-MAX2
+                   END-IF
+                   IF  W-PTBYO-MAX2   NOT =  ZERO
+                       PERFORM T-530-RECECHEK-CHK8-1-SEC
+                   END-IF
+                   IF  W-PTBYO-MAX1   NOT =  ZERO
+                       PERFORM T-530-RECECHEK-CHK9-1-SEC
+                   END-IF
+                   INITIALIZE                W-PTBYO-BYOMEI-AREA1
+                   INITIALIZE                W-PTBYO-BYOMEI-AREA2
+               END-IF
                IF  T-HANNTEI8   =   "*"
                    PERFORM T-100-RECECHEK-HANTEI-CHK1-SEC
                END-IF
@@ -1295,6 +1313,7 @@
            MOVE    ACCT-SRYKA   TO  W1-SRY-SRYKA.
            MOVE    COMB-HKNNUM  TO  W-COMB-HKNNUM.
            MOVE    "ED"         TO  T-HANNTEI6.
+           MOVE    T-HANNTEI8   TO  T-HANNTEI8-2.
       *
        T-100-RECECHEK-HANTEI-1-EXT.
            EXIT.
@@ -1303,27 +1322,9 @@
       *
        T-100-RECECHEK-HANTEI-CHK1-SEC    SECTION.
       *
-      *½¤Àµ/*³«»Ï*03.08.05*********************************************
-           MOVE    SPACE             TO  T-ERR-08.
-           MOVE    SPACE             TO  T-ERR-09.
-           IF  T-HANNTEI8   =   SPACE
-               MOVE    ZERO              TO  W-PTBYO-MAX1
-               MOVE    ZERO              TO  W-PTBYO-MAX2
-           END-IF.
-           IF  W-PTBYO-MAX2   NOT =  ZERO
-               PERFORM T-530-RECECHEK-CHK8-1-SEC
-           END-IF.
-           IF  W-PTBYO-MAX1   NOT =  ZERO
-               PERFORM T-530-RECECHEK-CHK9-1-SEC
-           END-IF.
-           INITIALIZE                W-PTBYO-BYOMEI-AREA1.
-           INITIALIZE                W-PTBYO-BYOMEI-AREA2.
-      *½¤Àµ/*½ªÎ»*03.08.05*********************************************
            IF  (ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                (ACCT-PTID     NOT =   W1-SRY-PTID)    OR
                (ACCT-SRYKA    NOT =   W1-SRY-SRYKA)
-               INITIALIZE                W-PTBYO-BYOMEI-AREA1
-               INITIALIZE                W-PTBYO-BYOMEI-AREA2
                MOVE    SPACE             TO  T-ERR-05
                MOVE    SPACE             TO  T-ERR-06
                MOVE    SPACE             TO  T-ERR-07
@@ -1749,11 +1750,7 @@
                      (COMB-HKNID    NOT =   ZERO))        OR
                     ((ACCT-PTID         =   PTHKN-PTID)  AND
                      (COMB-HKNID    NOT =   PTHKN-HKNID) AND
-                     (COMB-HKNID    NOT =   ZERO)))      AND
-                   (COMB-HKNNUM   NOT =   W-HKNNUM1  AND
-                                          W-HKNNUM2  AND
-                                          W-HKNNUM3  AND
-                                          W-HKNNUM4)
+                     (COMB-HKNID    NOT =   ZERO)))
                    PERFORM T-300-RECECHEK-SEC
                END-IF
                IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND

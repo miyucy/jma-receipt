@@ -65,150 +65,150 @@ D01	{
 		};
 		NYUGAIKBNCOMB	{
 			NYUGAIKBN	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB01	{
 			CHKKBN01	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB02	{
 			CHKKBN02	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB03	{
 			CHKKBN03	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB04	{
 			CHKKBN04	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB05	{
 			CHKKBN05	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB06	{
 			CHKKBN06	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB07	{
 			CHKKBN07	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB08	{
 			CHKKBN08	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB09	{
 			CHKKBN09	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB10	{
 			CHKKBN10	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB11	{
 			CHKKBN11	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB12	{
 			CHKKBN12	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB13	{
 			CHKKBN13	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB14	{
 			CHKKBN14	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB15	{
 			CHKKBN15	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB16	{
 			CHKKBN16	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB17	{
 			CHKKBN17	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB18	{
 			CHKKBN18	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB19	{
 			CHKKBN19	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 		CHKKBNCOMB20	{
 			CHKKBN20	{
-				value	varchar(16);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(16)[5];
+			item	varchar(20)[5];
 		};
 	};
 };
