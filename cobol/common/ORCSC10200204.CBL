@@ -3471,8 +3471,8 @@
       *
                 IF     (WRK-COM-SRYKBN     (IDX-Z)
                                            NOT =   "95" AND "96") AND
-      **************   (WRK-COM-INPUTCD(IDX-Z)(1:3)
-      **************                       NOT =   "101"  )   AND
+                       (WRK-COM-INPUTCD(IDX-Z)(1:3)
+                                           NOT =   "101"  )   AND
                        (WRK-COM-GAIKANRIKBN(IDX-Z)
                                                =   1   )
                    IF     (WRK-COM-SYUTEN2 (IDX-Z) >  ZERO )  AND
@@ -3499,8 +3499,8 @@
       *
                     IF     (WRK-COM-SRYKBN     (IDX-Z)
                                           NOT =   "95" AND "96") AND
-      ******************** (WRK-COM-INPUTCD(IDX-Z)(1:3)
-      ********************                 NOT =   "101"  )   AND
+                           (WRK-COM-INPUTCD(IDX-Z)(1:3)
+                                           NOT =   "101"  )   AND
                            (WRK-COM-GAIKANRIKBN(IDX-Z)
                                                =   1   )
                        IF     (WRK-COM-SYUTEN2 (IDX-Z)
