@@ -240,12 +240,12 @@
                       07  P02-VALUE   PIC X(23).
                     06  P02-P02-DISCOUNTKBN-COUNT   PIC S9(9)   BINARY.
                     06  P02-P02-DISCOUNTKBN-ITEM    PIC X(23)
-                                                          OCCURS  10.
+                                                          OCCURS  99.
                   05  P02-P02-DISCOUNT-COB.
                     06  P02-P02-DISCOUNT.
                       07  P02-VALUE   PIC X(14).
                     06  P02-P02-DISCOUNT-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P02-DISCOUNT-ITEM    PIC X(14)   OCCURS  10.
+                    06  P02-P02-DISCOUNT-ITEM    PIC X(14)   OCCURS  99.
                   05  P02-P02-SETAINUSI.
                     06  P02-VALUE   PIC X(50).
                   05  P02-P02-ZOKUGARA.
@@ -254,17 +254,17 @@
                     06  P02-P02-CONDITION1.
                       07  P02-VALUE   PIC X(23).
                     06  P02-P02-CONDITION1-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P02-CONDITION1-ITEM    PIC X(23)  OCCURS 10.
+                    06  P02-P02-CONDITION1-ITEM    PIC X(23)  OCCURS 99.
                   05  P02-P02-CONDITION2-COB.
                     06  P02-P02-CONDITION2.
                       07  P02-VALUE   PIC X(23).
                     06  P02-P02-CONDITION2-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P02-CONDITION2-ITEM    PIC X(23)  OCCURS 10.
+                    06  P02-P02-CONDITION2-ITEM    PIC X(23)  OCCURS 99.
                   05  P02-P02-CONDITION3-COB.
                     06  P02-P02-CONDITION3.
                       07  P02-VALUE   PIC X(23).
                     06  P02-P02-CONDITION3-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P02-CONDITION3-ITEM    PIC X(23)  OCCURS 10.
+                    06  P02-P02-CONDITION3-ITEM    PIC X(23)  OCCURS 99.
                   05  P02-P02-TABOO1.
                     06  P02-VALUE   PIC X(100).
                   05  P02-P02-TABOO2.

@@ -516,7 +516,7 @@
            END-IF
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL   ( FLG-SYSKANRI  =   1  )
-                     OR      ( IDX           >   10 )
+                     OR      ( IDX           >   99 )
                MOVE    MCPDATA-REC     TO  SYS-1026-REC
                MOVE    SYS-1026-KBNCD (1:2)
                                    TO  SPA-GMN-DISCOUNTKBN-KBNCD  (IDX)
@@ -524,6 +524,9 @@
                                    TO  SPA-GMN-DISCOUNTKBN-BODY   (IDX)
                MOVE    SYS-1026-DISCOUNT-KBN
                                    TO  SPA-GMN-DISCOUNTKBN-RATEKBN(IDX)
+      *
+               MOVE    IDX         TO  SPA-DISCOUNTKBN-MAX
+      *
                MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
                PERFORM 900-SYSTEM-READ-SEC
            END-PERFORM
@@ -539,6 +542,7 @@
                MOVE    ZERO        TO  SPA-GMN-DISCOUNTKBN-KBNCD  (1)
                MOVE    "³ºÅö¤Ê¤·"  TO  SPA-GMN-DISCOUNTKBN-BODY   (1)
                MOVE    ZERO        TO  SPA-GMN-DISCOUNTKBN-RATEKBN(1)
+               MOVE    1           TO  SPA-DISCOUNTKBN-MAX
            END-IF
       *
            MOVE    SPA-GMN-DISCOUNTKBN-KBNCD(1)
@@ -566,7 +570,7 @@
            END-IF
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL   ( FLG-SYSKANRI  =   1  )
-                     OR      ( IDX           >   10 )
+                     OR      ( IDX           >   99 )
                MOVE    MCPDATA-REC     TO  SYS-1027-REC
                MOVE    SPACE           TO  WRK-RATE-AREA
                MOVE    SYS-1027-KBNCD (1:2)
@@ -590,6 +594,8 @@
                END-EVALUATE
                MOVE    WRK-RATE-AREA   TO  SPA-GMN-DISCOUNT-EDIT (IDX)
       *
+               MOVE    IDX             TO  SPA-DISCOUNT-MAX
+      *
                MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
                PERFORM 900-SYSTEM-READ-SEC
            END-PERFORM
@@ -607,6 +613,7 @@
                MOVE    ZERO        TO  SPA-GMN-DISCOUNT-RITU   (1)
                MOVE    "00 ³ºÅö¤Ê¤·"
                                    TO  SPA-GMN-DISCOUNT-EDIT   (1)
+               MOVE    1               TO  SPA-DISCOUNT-MAX
            END-IF
       *----(01.00.07) LINE ADD END   -------------------------------
       *
@@ -641,7 +648,7 @@
              END-IF
              PERFORM   VARYING   IDY   FROM    1   BY  1
                        UNTIL   ( FLG-SYSKANRI  =   1  )
-                       OR      ( IDY           >   10 )
+                       OR      ( IDY           >   99 )
                MOVE    MCPDATA-REC       TO  SYS-1018-REC
                MOVE    SYS-1018-KBNCD (1:2)
                                  TO  SPA-GMN-CONDITION-KBNCD (IDX IDY)
@@ -649,6 +656,9 @@
                                  TO  SPA-GMN-CONDITION-BODY  (IDX IDY)
                MOVE    SYS-1018-CONDITION-WORD
                                  TO  SPA-GMN-CONDITION-WORD  (IDX IDY)
+      *
+               MOVE    IDY       TO  SPA-CONDITION-MAX  (IDX)
+      *
                MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
                PERFORM 900-SYSTEM-READ-SEC
              END-PERFORM
@@ -664,6 +674,7 @@
                  MOVE    ZERO        TO  SPA-GMN-CONDITION-KBNCD(IDX 1)
                  MOVE    "³ºÅö¤Ê¤·"  TO  SPA-GMN-CONDITION-BODY (IDX 1)
                  MOVE    SPACE       TO  SPA-GMN-CONDITION-WORD (IDX 1)
+                 MOVE    1           TO  SPA-CONDITION-MAX (IDX)
              END-IF
       *----(01.00.07) LINE ADD END   -------------------------------
            END-PERFORM
@@ -1457,7 +1468,7 @@
                MOVE    ZERO               TO  SPA-GMN-DISCOUNTKBN
            END-IF
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX       >   10 )
+                     UNTIL   ( IDX       >   SPA-DISCOUNTKBN-MAX )
       ******         OR    ( SPA-GMN-DISCOUNTKBN-KBNCD(IDX) = SPACE )
       *****          OR    ( SPA-GMN-DISCOUNTKBN (4:)   NOT = SPACE )
                IF  SPA-GMN-DISCOUNTKBN
@@ -1532,7 +1543,7 @@
            MOVE    SPA-GMN-CONDITION (IDX)(1:2)    TO  WRK-KBNCD
       *
            PERFORM   VARYING   IDY     FROM    1   BY  1
-                     UNTIL   ( IDY     >   10    )
+                     UNTIL   ( IDY     >   SPA-CONDITION-MAX(IDX))
                      OR      ( SPA-GMN-CONDITION-KBNCD (IDX IDY)
                                            =   SPACE )
                IF      WRK-KBNCD       =   SPA-GMN-CONDITION-KBNCD
@@ -2611,7 +2622,7 @@
       *    ¾õÂÖ£±
            MOVE    ZERO                TO  P02-P02-CONDITION1-COUNT
            PERFORM   VARYING   IDX     FROM    1   BY  1
-                     UNTIL    (IDX         >   10  )  OR
+                     UNTIL    (IDX         >   SPA-CONDITION-MAX(1)) OR
                               (SPA-GMN-CONDITION-KBNCD (1 IDX)
                                            =   SPACE)
                MOVE    SPA-GMN-CONDITION-KBNCD (1 IDX)
@@ -2625,7 +2636,7 @@
       *    ¾õÂÖ£²
            MOVE    ZERO                TO  P02-P02-CONDITION2-COUNT
            PERFORM   VARYING   IDX     FROM    1   BY  1
-                     UNTIL    (IDX         >   10  )  OR
+                     UNTIL    (IDX         >   SPA-CONDITION-MAX(2)) OR
                               (SPA-GMN-CONDITION-KBNCD (2 IDX)
                                            =   SPACE)
                MOVE    SPA-GMN-CONDITION-KBNCD (2 IDX)
@@ -2639,7 +2650,7 @@
       *    ¾õÂÖ£³
            MOVE    ZERO                TO  P02-P02-CONDITION3-COUNT
            PERFORM   VARYING   IDX     FROM    1   BY  1
-                     UNTIL    (IDX         >   10  )  OR
+                     UNTIL    (IDX         >   SPA-CONDITION-MAX(3)) OR
                               (SPA-GMN-CONDITION-KBNCD (3 IDX)
                                            =   SPACE)
                MOVE    SPA-GMN-CONDITION-KBNCD (3 IDX)
@@ -2653,7 +2664,7 @@
       *    ¸ºÌÈ»öÍ³
            MOVE    ZERO                TO  P02-P02-DISCOUNTKBN-COUNT
            PERFORM VARYING   IDX       FROM    1   BY  1
-                   UNTIL    (IDX           >   10  )  OR
+                   UNTIL    (IDX           >   SPA-DISCOUNTKBN-MAX)  OR
                             (SPA-GMN-DISCOUNTKBN-KBNCD (IDX)
                                            =   SPACE)
                MOVE    SPA-GMN-DISCOUNTKBN-KBNCD (IDX)

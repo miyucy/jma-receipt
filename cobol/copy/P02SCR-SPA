@@ -111,26 +111,29 @@
                    07  SPA-GMN-COMMENT-2       PIC X(100).
       *            減免事由（1026）
                    07  SPA-GMN-DISCOUNTKBN-TBL.
-                       09  SPA-GMN-DISCOUNTKBN-LST       OCCURS   10.
+                       09  SPA-GMN-DISCOUNTKBN-LST       OCCURS   99.
                            11  SPA-GMN-DISCOUNTKBN-KBNCD     PIC X(02).
                            11  SPA-GMN-DISCOUNTKBN-BODY      PIC X(20).
                            11  SPA-GMN-DISCOUNTKBN-RATEKBN   PIC X(02).
+                       09  SPA-DISCOUNTKBN-MAX           PIC 9(04).
       *            割引率（1027）
                    07  SPA-GMN-DISCOUNT-TBL.
-                       09  SPA-GMN-DISCOUNT-LST           OCCURS   10.
+                       09  SPA-GMN-DISCOUNT-LST           OCCURS   99.
                            11  SPA-GMN-DISCOUNT-KBNCD        PIC X(02).
                            11  SPA-GMN-DISCOUNT-TEIRITU      PIC X(01).
                            11  SPA-GMN-DISCOUNT-RITU         PIC 9(07).
                            11  SPA-GMN-DISCOUNT-EDIT         PIC X(14).
+                       09  SPA-DISCOUNT-MAX              PIC 9(04).
       *            状態１〜３
                    07  SPA-GMN-CONDITION-TBL.
                        09  SPA-GMN-CONDITION-KBN       OCCURS   3.
-                           11  SPA-GMN-CONDITION-LST       OCCURS   10.
+                           11  SPA-GMN-CONDITION-LST       OCCURS   99.
                                13  SPA-GMN-CONDITION-KBNCD PIC X(02).
                                13  SPA-GMN-CONDITION-H     PIC X(01).
                                13  SPA-GMN-CONDITION-BODY  PIC X(20).
-                           11  SPA-GMN-CONDITION-LST2      OCCURS   10.
+                           11  SPA-GMN-CONDITION-LST2      OCCURS   99.
                                13  SPA-GMN-CONDITION-WORD  PIC X(02).
+                           11  SPA-CONDITION-MAX           PIC 9(04).
       *            保険情報
                    07  SPA-GMN-HKN-AREA.
       *                保険情報

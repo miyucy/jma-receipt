@@ -3118,14 +3118,14 @@
       *    減免事由より割引率区分を取得
            MOVE    SPACE               TO  WRK-RATEKBN
            PERFORM VARYING   IDX   FROM    1   BY  1
-                   UNTIL   ( IDX       >   10 )
+                   UNTIL   ( IDX       >   SPA-DISCOUNTKBN-MAX )
                    OR      ( SPA-GMN-DISCOUNTKBN-KBNCD (IDX)
                                              =   SPACE )
                IF      SPA-GMN-DISCOUNTKBN
                                    =   SPA-GMN-DISCOUNTKBN-KBNCD (IDX)
                    MOVE    SPA-GMN-DISCOUNTKBN-RATEKBN (IDX)
                                        TO  WRK-RATEKBN
-                   MOVE    10          TO  IDX
+                   MOVE    SPA-DISCOUNTKBN-MAX TO  IDX
                END-IF
            END-PERFORM
       *    見つからない場合、セットしない
@@ -3135,7 +3135,7 @@
       *
            MOVE    SPACE               TO  WRK-RATE-AREA
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL  ( IDX     >     10 )
+                     UNTIL  ( IDX     >     SPA-DISCOUNT-MAX )
                      OR     ( SPA-GMN-DISCOUNT-KBNCD (IDX)  =   SPACE )
       *
              IF  WRK-RATEKBN           =   SPA-GMN-DISCOUNT-KBNCD (IDX)
@@ -3151,7 +3151,7 @@
                  WHEN    "2"
                      MOVE    "(円)"        TO  WRK-RATE-TANI
                  END-EVALUATE
-                 MOVE    10                TO  IDX
+                 MOVE    SPA-DISCOUNT-MAX  TO  IDX
              END-IF
            END-PERFORM
            MOVE    WRK-RATE-AREA       TO  SPA-GMN-DISCOUNT
@@ -3167,7 +3167,7 @@
       *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   10  )  OR
+                   UNTIL      (IDX         >   SPA-DISCOUNTKBN-MAX)  OR
                               (SPA-GMN-DISCOUNTKBN-KBNCD(IDX)
                                            =   SPACE  )
                IF      SPA-GMN-DISCOUNTKBN
@@ -3195,7 +3195,7 @@
                             (SPA-ERRCD NOT =   SPACE )
                MOVE    ZERO                TO  FLG-CHK
                PERFORM VARYING   IDY       FROM    1   BY  1
-                       UNTIL   ( IDY       >   10    )
+                       UNTIL   ( IDY       >   SPA-CONDITION-MAX(IDX))
                        OR      ( SPA-GMN-CONDITION-KBNCD (IDX IDY)
                                            =   SPACE )
                    IF      SPA-GMN-CONDITION (IDX)(1:2)

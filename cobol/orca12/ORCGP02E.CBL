@@ -836,13 +836,13 @@
                MOVE    ZERO               TO  SPA-GMN-DISCOUNTKBN
            END-IF
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX       >   10 )
+                     UNTIL   ( IDX       >   SPA-DISCOUNTKBN-MAX )
                      OR    ( SPA-GMN-DISCOUNTKBN-KBNCD(IDX) = SPACE )
                IF  SPA-GMN-DISCOUNTKBN
                                      =   SPA-GMN-DISCOUNTKBN-KBNCD(IDX)
                    MOVE    SPA-GMN-DISCOUNTKBN-BODY (IDX)
                                      TO  SPA-GMN-DISCOUNTKBN-MEI
-                   MOVE    10        TO  IDX
+                   MOVE    SPA-DISCOUNTKBN-MAX     TO  IDX
                END-IF
            END-PERFORM
       *    ³ä°úÎ¨
@@ -853,7 +853,7 @@
            MOVE    SPACE                   TO  WRK-RATE-AREA
            MOVE    SPA-GMN-DISCOUNT        TO  WRK-RATE-KBN
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX         >   10 )
+                     UNTIL   ( IDX         >   SPA-DISCOUNT-MAX )
                      OR      ( SPA-GMN-DISCOUNT-KBNCD(IDX) = SPACE )
                IF  WRK-RATE-KBN        =   SPA-GMN-DISCOUNT-KBNCD(IDX)
                    MOVE    SPA-GMN-DISCOUNT-RITU (IDX)
@@ -910,7 +910,7 @@
            MOVE    SPA-GMN-CONDITION (IDX)(1:2)    TO  WRK-KBNCD
       *
            PERFORM   VARYING   IDY     FROM    1   BY  1
-                     UNTIL   ( IDY     >   10    )
+                     UNTIL   ( IDY     >   SPA-CONDITION-MAX(IDX) )
                      OR      ( SPA-GMN-CONDITION-KBNCD (IDX IDY)
                                            =   SPACE )
                IF      WRK-KBNCD       =   SPA-GMN-CONDITION-KBNCD
@@ -919,7 +919,7 @@
                                          TO  SPA-GMN-CONDITION(IDX)(4:)
                    MOVE    SPA-GMN-CONDITION-WORD (IDX IDY)
                                          TO  SPA-GMN-CONDITIONH (IDX)
-                   MOVE    10            TO  IDY
+                   MOVE    SPA-CONDITION-MAX(IDX)  TO  IDY
                END-IF
            END-PERFORM
       *

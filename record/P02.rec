@@ -303,14 +303,14 @@ P02	{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				P02_DISCOUNT_COB	{
 					P02_DISCOUNT	{
 						value	varchar(14);
 					};
 					count	int;
-					item	varchar(14)[10];
+					item	varchar(14)[99];
 				};
 				P02_SETAINUSI	{
 					value	varchar(50);
@@ -323,21 +323,21 @@ P02	{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				P02_CONDITION2_COB	{
 					P02_CONDITION2	{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				P02_CONDITION3_COB	{
 					P02_CONDITION3	{
 						value	varchar(23);
 					};
 					count	int;
-					item	varchar(23)[10];
+					item	varchar(23)[99];
 				};
 				P02_TABOO1	{
 					value	varchar(100);
