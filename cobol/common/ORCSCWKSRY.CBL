@@ -1954,8 +1954,6 @@
                DISPLAY "ORCSCWKSRY PARA WRITE ERR:"   STS-PARA    "."
            END-IF
       *
-           MOVE    ZERO                TO  WRK-TENSUKEI
-           INITIALIZE                  WRK-WKSRY-AREA
            MOVE    ZERO                TO  IDY
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
