@@ -740,3 +740,4 @@
       *      対象月数（合計データのみ設定）
              07  SPA-I0-SYUNOU-TUKI-SU               PIC 9(02).
              07  SPA-I0-SYUNOU-DAT                   PIC X(3000).
+             07  SPA-I0-SYUDAY-DAT                   PIC X(4000).

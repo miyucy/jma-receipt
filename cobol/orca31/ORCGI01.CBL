@@ -402,6 +402,9 @@
          02 SUMSYUNOU-CNT     PIC 9(05).
          02 SUMSYUNOU-OCC     OCCURS 13.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //SUMSYU-//.
+         02 SUMSYUDAY-OCC     OCCURS 13.
+           COPY  "CPSYUDAY.INC"    REPLACING  //SDAY-//
+                                                       BY //SUMSDAY-//.
       *    収納合計ワーク
        01  TTLSYUNOU-REC.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //TTLSYU-//.
@@ -554,6 +557,9 @@
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 10.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
+       01  LNK-SYUDAY-REC-T.
+         02 LNK-SYUDAY-REC     OCCURS 10.
+           COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
       *
       *    通算日数取得サブ
            COPY "CPORCSTUSAN.INC".
@@ -10566,9 +10572,11 @@
       *
            MOVE    SPACE           TO  LNK-ORCS02-REC
                                        LNK-SYUNOU-REC-T
+                                       LNK-SYUDAY-REC-T
       *
            INITIALIZE                  LNK-ORCS02-REC
                                        LNK-SYUNOU-REC-T
+                                       LNK-SYUDAY-REC-T
       *
            MOVE    SPA-HOSPID      TO  LNK-S02-HOSPID
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
@@ -10593,6 +10601,7 @@
                                    SPA-AREA
                                    LNK-ORCS02-REC
                                    LNK-SYUNOU-REC-T
+                                   LNK-SYUDAY-REC-T
            DISPLAY "LNK-S02-RC = " LNK-S02-RC
            IF    ( LNK-S02-RC      NOT = ZERO )
                EVALUATE LNK-S02-RC
@@ -10697,6 +10706,8 @@
       *
                    MOVE    LNK-SYUNOU-REC (IDX11)
                                        TO  SUMSYUNOU-OCC (SUMSYUNOU-CNT)
+                   MOVE    LNK-SYUDAY-REC (IDX11)
+                                       TO  SUMSYUDAY-OCC (SUMSYUNOU-CNT)
       *            保険料
                    PERFORM VARYING     IDX12   FROM    1   BY  1
                            UNTIL       IDX12   >   11
@@ -10994,6 +11005,8 @@
       *
                MOVE    SUMSYUNOU-OCC (IDX11)
                                    TO  SPA-I0-SYUNOU-DAT (IDX11)
+               MOVE    SUMSYUDAY-OCC (IDX11)
+                                   TO  SPA-I0-SYUDAY-DAT (IDX11)
       *
            END-PERFORM
       *

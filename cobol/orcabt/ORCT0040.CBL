@@ -58,6 +58,11 @@
                    ORGANIZATION   LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI05.
       *
+      *    単独更新用日別収納ファイル(IN)
+           SELECT  TEIKI08-FILE    ASSIGN   TEIKI08PARA
+                   ORGANIZATION    LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-TEIKI08.
+      *
       *    エラーファイル
            SELECT  TEIKIERR-FILE   ASSIGN  TEIKIERR
                                    FILE    STATUS  IS  STS-TEIKIERR.
@@ -68,8 +73,14 @@
       *    定期請求収納ファイル
        FD  TEIKI06-FILE.
        01  TEIKI06-REC.
+         02  TEIKI06-SYU-DAT.
            COPY    "CPSYUNOU.INC"      REPLACING   //SYU-//
-                                       BY          //TEIKI06-//.
+                                       BY          //TEIKI06-SYU-//.
+         02  TEIKI06-SYUDAY-EXIST-FLG
+                                       PIC 9(01).
+         02  TEIKI06-SYUDAY-DAT.
+           COPY    "CPSYUDAY.INC"      REPLACING   //SDAY-//
+                                       BY          //TEIKI06-SDAY-//.
       *
       *    定期請求履歴情報ファイル
        FD  TEIKI02-FILE.
@@ -88,6 +99,15 @@
        01  TEIKI05-REC.
            COPY    "CPPTTEIKIRRK.INC"  REPLACING   //PTTEIKIRRK-//
                                        BY          //TEIKI05-//.
+      *
+      *    単独更新用日別収納ファイル
+       FD  TEIKI08-FILE.
+       01  TEIKI08-REC.
+      *    更新区分（１：更新（追加）／２：削除）
+         02    TEIKI08-UPD-FLG         PIC 9(01).
+         02    TEIKI08-SYUDAY-DAT.
+           COPY    "CPSYUDAY.INC"      REPLACING   //SDAY-//
+                                       BY          //TEIKI08-SDAY-//.
       *
       *    エラーファイル
        FD  TEIKIERR-FILE.
@@ -117,6 +137,11 @@
                                    REPLACING  //TEIKI01//
                                    BY         //TEIKI05//.
       *
+      *    単独更新用日別収納ファイル(IN)
+           COPY    "CPCOMMONDAT5.INC"
+                                   REPLACING  //TEIKI01//
+                                   BY         //TEIKI08//.
+      *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
@@ -130,6 +155,7 @@
            03  STS-TEIKI02                             PIC X(02).
            03  STS-TEIKI07                             PIC X(02).
            03  STS-TEIKI05                             PIC X(02).
+           03  STS-TEIKI08                             PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
@@ -138,8 +164,10 @@
            03  FLG-TEIKI02                             PIC 9(01).
            03  FLG-TEIKI07                             PIC 9(01).
            03  FLG-TEIKI05                             PIC 9(01).
+           03  FLG-TEIKI08                             PIC 9(01).
            03  FLG-SYUNOU                              PIC 9(01).
            03  FLG-SYUMEI                              PIC 9(01).
+           03  FLG-SYUDAY                              PIC 9(01).
            03  FLG-SYSKANRI                            PIC 9(01).
            03  FLG-SYS5012                             PIC 9(01).
            03  FLG-PTINF                               PIC 9(01).
@@ -152,7 +180,8 @@
       *
       *    カウント領域
        01  CNT-AREA.
-           03  CNT-OUT1                                PIC 9(06).
+           03  CNT-TEIKI06                             PIC 9(06).
+           03  CNT-TEIKI08                             PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDX1                                    PIC 9(04). 
@@ -200,6 +229,7 @@
            03  WRK-LEN                 PIC 9(05).
            03  WRK-SHO                 PIC 9(05).
            03  WRK-AMARI               PIC 9(05).
+           03  WRK-CREYMD                      PIC X(08).
       *
        01  ERR-EDIT-AREA.
            03  ERR-PTID                PIC 9(10).
@@ -242,6 +272,11 @@
            COPY  "CPTEIKIRRK.INC"    REPLACING  //TEIKIRRK-//
                                            BY //WKTEIKIRRK-//.
       *
+      *    日別収納退避ワーク
+       01  WKSYUDAY-REC.
+           COPY  "CPSYUDAY.INC"      REPLACING  //SDAY-//
+                                           BY //WKSDAY-//.
+      *
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
@@ -265,6 +300,10 @@
       *    収納マスター
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
+      *
+      *    日別収納
+       01  SYUDAY-REC.
+           COPY    "CPSYUDAY.INC".
       *
       *    収納明細
        01  SYUMEI-REC.
@@ -309,13 +348,6 @@
       *
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *
-      *    定期請求用収納作成サブ
-       01  LNK-ORCS02-REC.
-           COPY  "CPORCS02.INC".
-       01  LNK-SYUNOU-REC-T.
-         02 LNK-SYUNOU-REC     OCCURS 10.
-           COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -406,6 +438,9 @@
            MOVE    "TEIKI005"          TO  TEIKI05PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  TEIKI05PARA-TERMID
       *
+           MOVE    "TEIKI008"          TO  TEIKI08PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TEIKI08PARA-TERMID
+      *
            MOVE    "TEIKIERR"          TO  TEIKIERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  TEIKIERR-TERMID
       *
@@ -413,6 +448,7 @@
            OPEN    INPUT               TEIKI02-FILE
            OPEN    INPUT               TEIKI07-FILE
            OPEN    INPUT               TEIKI05-FILE
+           OPEN    INPUT               TEIKI08-FILE
       *
       *
       *    医療機関ＩＤ編集
@@ -507,6 +543,12 @@
       *
       *    定期請求情報更新処理
            PERFORM 2003-SEIKYU-KOUSIN-SEC
+           IF    ( FLG-ERR     =   1 )
+               GO  TO  200-MAIN-EXT
+           END-IF
+      *
+      *    単独更新用日別収納更新処理
+           PERFORM 2004-TEIKI08-KOUSIN-SEC
            IF    ( FLG-ERR     =   1 )
                GO  TO  200-MAIN-EXT
            END-IF
@@ -902,9 +944,9 @@
                IF (  FLG-ERR   =   1 )
                    GO  TO  2003-SEIKYU-KOUSIN-EXT
                END-IF
-               MOVE    WRK-DENPNUM         TO  TEIKI06-DENPNUM
+               MOVE    WRK-DENPNUM         TO  TEIKI06-SYU-DENPNUM
       *
-               MOVE    TEIKI06-REC         TO  SYUNOU-REC
+               MOVE    TEIKI06-SYU-DAT     TO  SYUNOU-REC
       *
       *        更新前チェック（既に重複するデータがある場合はエラー）
                MOVE   ZERO                 TO  FLG-SYUNOU
@@ -920,7 +962,7 @@
                    GO  TO  2003-SEIKYU-KOUSIN-EXT
                END-IF
       *
-               MOVE    TEIKI06-REC         TO  SYUNOU-REC
+               MOVE    TEIKI06-SYU-DAT     TO  SYUNOU-REC
       *
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD        TO  SYU-CREYMD
@@ -943,6 +985,14 @@
                                            TO  WRK-TEIKIERR
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  2003-SEIKYU-KOUSIN-EXT
+               END-IF
+      *
+      *        日別収納作成処理
+               IF    ( TEIKI06-SYUDAY-EXIST-FLG    =   1 )
+                   PERFORM 20031-SYUDAY-SAKUSEI-SEC
+                   IF (  FLG-ERR   =   1 )
+                       GO  TO  2003-SEIKYU-KOUSIN-EXT
+                   END-IF
                END-IF
       *
       *        収納明細作成処理
@@ -1124,6 +1174,25 @@
       *
            .
        20031-DENPNUM-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    日別収納作成処理
+      *****************************************************************
+       20031-SYUDAY-SAKUSEI-SEC        SECTION.
+      *
+           INITIALIZE                      WKSYUDAY-REC
+      *
+           MOVE    TEIKI06-SYUDAY-DAT  TO  WKSYUDAY-REC
+           MOVE    SYU-DENPNUM         TO  WKSDAY-DENPNUM
+      *
+      *    日別収納更新処理
+           PERFORM 900-SYUDAY-UPD-SEC
+           IF    ( FLG-ERR         =   1 )
+               GO  TO  20031-SYUDAY-SAKUSEI-EXT
+           END-IF
+      *
+           .
+       20031-SYUDAY-SAKUSEI-EXT.
            EXIT.
       *****************************************************************
       *    収納明細作成処理
@@ -1619,6 +1688,36 @@
        20031-SYU-DENPNUM-GET-EXT.
            EXIT. 
       *****************************************************************
+      *    単独更新用日別収納更新処理
+      *****************************************************************
+       2004-TEIKI08-KOUSIN-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TEIKI08
+           PERFORM 910-TEIKI08-READ-SEC
+      *
+           PERFORM UNTIL ( FLG-TEIKI08 NOT =   ZERO )
+      *
+               MOVE    TEIKI08-SYUDAY-DAT
+                                       TO  WKSYUDAY-REC
+      *
+               EVALUATE    TEIKI08-UPD-FLG
+      *
+      *        更新
+               WHEN    1
+                   PERFORM 900-SYUDAY-UPD-SEC
+      *        削除
+               WHEN    2
+                   PERFORM 900-SYUDAY-DEL-SEC
+               END-EVALUATE
+      *
+               PERFORM 910-TEIKI08-READ-SEC
+      *
+           END-PERFORM
+      *
+           .
+       2004-TEIKI08-KOUSIN-EXT.
+           EXIT. 
+      *****************************************************************
       *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
@@ -1660,6 +1759,7 @@
                    TEIKI02-FILE
                    TEIKI07-FILE
                    TEIKI05-FILE
+                   TEIKI08-FILE
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -1672,9 +1772,21 @@
                                    JOBKANRI-REC
       *
            PERFORM 900-DBDISCONNECT-SEC
-      *     
-           DISPLAY "TEIKI06 (ORCT0040) CNT " CNT-OUT1 
+      *
+      *    日別収納の単独更新のみの場合は、対象データなしとして
+      *    エラー扱いとする。
+      *    ただしＤＢの更新は行うので、DBDISCONNECT後にチェックする
+           IF    ( CNT-TEIKI06      =   ZERO )
+            AND  ( CNT-TEIKI08      >   ZERO )
+               MOVE    "処理対象のデータがありませんでした"
+                                    TO  WRK-TEIKIERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           DISPLAY "TEIKI06 (ORCT0040) CNT " CNT-TEIKI06
+           DISPLAY "TEIKI08 (ORCT0040) CNT " CNT-TEIKI08
            DISPLAY "*** ORCT0040 END ***"
+      *
       ***  ACCEPT  WRK-IN FROM CONSOLE 
            .
        300-TERM-EXT.
@@ -1862,6 +1974,10 @@
                MOVE    1               TO  FLG-TEIKI06
            END-READ
       *
+           IF    ( FLG-TEIKI06         =   ZERO )
+               COMPUTE CNT-TEIKI06     =   CNT-TEIKI06 +   1
+           END-IF
+      *
            .
        910-TEIKI06-READ-EXT.
            EXIT.
@@ -1906,6 +2022,23 @@
        910-TEIKI05-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    単独更新用日別収納ファイル読込
+      *****************************************************************
+       910-TEIKI08-READ-SEC            SECTION.
+      *
+           READ    TEIKI08-FILE
+           AT  END
+               MOVE    1               TO  FLG-TEIKI08
+           END-READ
+      *
+           IF    ( FLG-TEIKI08         =   ZERO )
+               COMPUTE CNT-TEIKI08     =   CNT-TEIKI08 +   1
+           END-IF
+      *
+           .
+       910-TEIKI08-READ-EXT.
+           EXIT.
       *****************************************************************
       *    定期請求管理情報削除処理
       *****************************************************************
@@ -2270,6 +2403,125 @@
       *
            .
        900-TEIKIPRT-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    日別収納更新処理
+      *****************************************************************
+       900-SYUDAY-UPD-SEC              SECTION.
+      *
+           MOVE    WKSYUDAY-REC        TO  SYUDAY-REC
+           PERFORM 900-SYUDAY-KEY-SEL-SEC
+           IF    ( FLG-SYUDAY          =   ZERO )
+      *
+      *        既に存在する場合はUPDATE
+               MOVE    SDAY-CREYMD     TO  WRK-CREYMD
+               MOVE    WKSYUDAY-REC    TO  SYUDAY-REC
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    WRK-CREYMD      TO  SDAY-CREYMD
+               MOVE    SMCNDATE-YMD    TO  SDAY-UPYMD
+               MOVE    SMCNDATE-HMS    TO  SDAY-UPHMS
+               MOVE    SYUDAY-REC      TO  MCPDATA-REC
+               MOVE    "SYUDAY-KEY"    TO  ORC-DBPATH
+               MOVE    "DBUPDATE"      TO  MCP-FUNC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF  (   MCP-RC          NOT =   ZERO )
+                   MOVE  "日別収納マスタの更新に失敗しました"
+                                       TO  WRK-TEIKIERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  900-SYUDAY-UPD-EXT
+               END-IF
+           ELSE
+      *
+      *        存在しない場合はINSERT
+               MOVE    WKSYUDAY-REC    TO  SYUDAY-REC
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  SDAY-UPYMD
+                                           SDAY-CREYMD
+               MOVE    SMCNDATE-HMS    TO  SDAY-UPHMS
+               MOVE    SYUDAY-REC      TO  MCPDATA-REC
+               MOVE    "SYUDAY-KEY"    TO  ORC-DBPATH
+               MOVE    "DBINSERT"      TO  MCP-FUNC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF  (   MCP-RC          NOT =   ZERO )
+                   MOVE  "日別収納マスタの更新に失敗しました"
+                                       TO  WRK-TEIKIERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  900-SYUDAY-UPD-EXT
+               END-IF
+           END-IF
+      *
+           .
+       900-SYUDAY-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    日別収納削除処理
+      *****************************************************************
+       900-SYUDAY-DEL-SEC              SECTION.
+      *
+           MOVE    WKSYUDAY-REC    TO  MCPDATA-REC
+           MOVE    "SYUDAY-KEY"    TO  ORC-DBPATH
+           MOVE    "DBDELETE"      TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF  (   MCP-RC          NOT =   ZERO )
+               MOVE  "日別収納マスタの削除に失敗しました"
+                                   TO  WRK-TEIKIERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  900-SYUDAY-DEL-EXT
+           END-IF
+      *
+           .
+       900-SYUDAY-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    日別収納マスタ検索処理
+      *****************************************************************
+       900-SYUDAY-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUDAY
+      *
+           MOVE    SYUDAY-REC          TO  MCPDATA-REC
+           MOVE    "SYUDAY-KEY"        TO  ORC-DBPATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "SYUDAY-KEY"    TO  ORC-DBPATH
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYUDAY-REC
+               ELSE
+                   MOVE    1           TO  FLG-SYUDAY
+               END-IF
+           ELSE
+                   MOVE    1           TO  FLG-SYUDAY
+           END-IF
+      *
+           MOVE    "SYUDAY-KEY"        TO  ORC-DBPATH
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-SYUDAY-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ　オープン処理

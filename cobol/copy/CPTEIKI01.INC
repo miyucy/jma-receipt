@@ -30,4 +30,8 @@
                05  TEIKI01-SKYSTYMD        PIC X(08).
                05  TEIKI01-SKYEDYMD        PIC X(08).
                05  TEIKI01-HKNCOMBINUM     PIC 9(04).
-           03  TEIKI01-DAT                 PIC X(5000).
+           03  TEIKI01-SYU-DAT             PIC X(5000).
+           03  TEIKI01-SYUDAY.
+               05  TEIKI01-SYUDAY-EXIST-FLG
+                                           PIC 9(01).
+               05  TEIKI01-SYUDAY-DAT      PIC X(5000).

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    03.12.19  日別収納マスタ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -132,6 +133,7 @@
            03  FLG-TEIKI03                             PIC 9(01).
            03  FLG-SYUNOU                              PIC 9(01).
            03  FLG-PTTEIKIRRK                          PIC 9(01).
+           03  FLG-SYUDAY                              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -193,6 +195,10 @@
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
+      *    日別収納マスタ
+       01  SYUDAY-REC.
+           COPY    "CPSYUDAY.INC".
+      *
       *    患者定期請求履歴
        01  PTTEIKIRRK-REC.
            COPY    "CPPTTEIKIRRK.INC".
@@ -210,6 +216,9 @@
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 10.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
+       01  LNK-SYUDAY-REC-T.
+         02 LNK-SYUDAY-REC     OCCURS 10.
+           COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -393,7 +402,17 @@
       *
            MOVE    WRK-PARA-TERMID     TO  SYU-TERMID
       *
-           MOVE    SYUNOU-REC          TO  TEIKI04-DAT
+           MOVE    SYUNOU-REC          TO  TEIKI04-SYU-DAT
+      *
+      *    日別収納マスタ検索処理
+           PERFORM 900-SYUDAY-KEY-SEL-SEC
+           IF    ( FLG-SYUDAY          =   ZERO )
+               MOVE    1               TO  TEIKI04-SYUDAY-EXIST-FLG
+               MOVE    SYUDAY-REC      TO  TEIKI04-SYUDAY-DAT
+           ELSE
+               MOVE    ZERO            TO  TEIKI04-SYUDAY-EXIST-FLG
+               MOVE    SPACE           TO  TEIKI04-SYUDAY-DAT
+           END-IF
       *
            MOVE    SYU-HOSPID          TO  TEIKI04-HOSPID
            MOVE    SYU-PTID            TO  TEIKI04-PTID
@@ -532,6 +551,51 @@
        300-TERM-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    日別収納マスタ検索処理
+      *****************************************************************
+       900-SYUDAY-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUDAY
+      *
+           INITIALIZE                      SYUDAY-REC
+           MOVE    SYU-HOSPID          TO  SDAY-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SDAY-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SDAY-PTID
+           MOVE    SYU-DENPNUM         TO  SDAY-DENPNUM
+           MOVE    SYUDAY-REC          TO  MCPDATA-REC
+           MOVE    "SYUDAY-KEY"        TO  ORC-DBPATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "SYUDAY-KEY"    TO  ORC-DBPATH
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYUDAY-REC
+               ELSE
+                   MOVE    1           TO  FLG-SYUDAY
+               END-IF
+           ELSE
+                   MOVE    1           TO  FLG-SYUDAY
+           END-IF
+      *
+           MOVE    "SYUDAY-KEY"        TO  ORC-DBPATH
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-SYUDAY-KEY-SEL-EXT.
+           EXIT.
       *****************************************************************
       *    収納マスター読込
       *****************************************************************

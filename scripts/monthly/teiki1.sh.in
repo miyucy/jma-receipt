@@ -58,7 +58,7 @@ fi
         fi 
 
         if  [ -e $8 ]; then
-            exit  
+            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0050 -parameter $1,$2,$3,$4,$5,$6,$7,
         else
             $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$6$7
         fi 

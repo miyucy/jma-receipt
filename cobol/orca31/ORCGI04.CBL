@@ -71,6 +71,7 @@
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-SYUMEI          PIC 9(01).
+           03  FLG-SYUDAY          PIC 9(01).
            03  FLG-PTTEIKIRRK      PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-PTCOM           PIC 9(01).
@@ -195,6 +196,11 @@
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-//
                                            BY //WKSYU-//.
       *
+      *    日別収納ワーク
+       01  WKSYUDAY-REC.
+           COPY  "CPSYUDAY.INC"    REPLACING  //SDAY-//
+                                           BY //WKSDAY-//.
+      *
       *    収納明細ワーク
        01  WKSYUMEI-REC.
            COPY  "CPSYUMEI.INC"    REPLACING  //SMEI-//
@@ -242,6 +248,10 @@
       *    収納マスター
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
+      *
+      *    日別収納マスター
+       01  SYUDAY-REC.
+           COPY    "CPSYUDAY.INC".
       *
       *    収納明細マスタ−
        01  SYUMEI-REC.
@@ -2799,6 +2809,12 @@
       *
            MOVE      SYUNOU-REC    TO  SPA-I0-SYUNOU-DAT (IDX-SYU)
       *
+      *    日別収納マスタ更新処理
+           PERFORM 4801-SYUDAY-UPD-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4801-SYUNOU-UPD-EXT
+           END-IF
+      *
       *    収納明細マスタ更新処理
            PERFORM 4801-SYUMEI-UPD-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -2807,6 +2823,57 @@
       *
            .
        4801-SYUNOU-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    日別収納マスタ更新処理
+      *****************************************************************
+       4801-SYUDAY-UPD-SEC         SECTION.
+      *
+           MOVE    SPA-I0-SYUDAY-DAT (IDX-SYU)
+                                       TO  SYUDAY-REC
+      *
+           IF    ( SDAY-DAYINFFLG      =   "1" )
+      *
+               MOVE    SYU-DENPNUM     TO  SDAY-DENPNUM
+      *
+      *
+               MOVE    SYUDAY-REC      TO  WKSYUDAY-REC
+      *
+      *        更新前チェック（既に重複するデータがある場合はエラー）
+               MOVE   ZERO             TO  FLG-SYUDAY
+               MOVE    SYUDAY-REC      TO  MCPDATA-REC
+               MOVE    "SYUDAY-KEY"    TO  WRK-DBPATH
+               PERFORM 900-TBL-SELECT-SEC
+               IF    ( FLG-DBRC    NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYUDAY
+               END-IF
+      *
+               MOVE    "SYUDAY-KEY"    TO  WRK-DBPATH
+               PERFORM 900-TBL-CLOSE-SEC
+      *
+               IF    ( FLG-SYUDAY      =   ZERO )
+                   MOVE    "4019"      TO  SPA-ERRCD
+                   GO  TO  4801-SYUDAY-UPD-EXT
+               END-IF
+      *
+               MOVE    WKSYUDAY-REC    TO  SYUDAY-REC
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  SDAY-CREYMD
+                                           SDAY-UPYMD
+               MOVE    SMCNDATE-HMS    TO  SDAY-UPHMS
+      *
+               MOVE    SYUDAY-REC      TO  MCPDATA-REC
+               MOVE    "SYUDAY-KEY"    TO  WRK-DBPATH
+               PERFORM 900-TBL-INSERT-SEC
+               IF    ( FLG-DBRC    NOT =   ZERO )
+                   MOVE    "4020"      TO  SPA-ERRCD
+                   GO  TO  4801-SYUDAY-UPD-EXT
+               END-IF
+           END-IF
+      *
+           .
+       4801-SYUDAY-UPD-EXT.
            EXIT.
       *****************************************************************
       *    収納明細マスタ更新処理

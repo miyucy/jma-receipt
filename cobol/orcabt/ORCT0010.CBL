@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.04.02  負担金計算サブ引数修正
+      *  01.00.02    NACL-太田    03.12.19  負担金計算サブ引数修正
+      *                                     （日別収納マスタ）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -264,6 +266,10 @@
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
+      *    日別収納マスタ
+       01  SYUDAY-REC.
+           COPY    "CPSYUDAY.INC".
+      *
       *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
@@ -292,6 +298,9 @@
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 10.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
+       01  LNK-SYUDAY-REC-T.
+         02 LNK-SYUDAY-REC     OCCURS 10.
+           COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -735,9 +744,11 @@
       *
            MOVE    SPACE           TO  LNK-ORCS02-REC
                                        LNK-SYUNOU-REC-T
+                                       LNK-SYUDAY-REC-T
       *
            INITIALIZE                  LNK-ORCS02-REC
                                        LNK-SYUNOU-REC-T
+                                       LNK-SYUDAY-REC-T
       *
            MOVE    SYS-1001-HOSPID TO  LNK-S02-HOSPID
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
@@ -754,6 +765,7 @@
                                    SPA-AREA
                                    LNK-ORCS02-REC
                                    LNK-SYUNOU-REC-T
+                                   LNK-SYUDAY-REC-T
            IF    ( LNK-S02-RC      NOT = ZERO )
                MOVE    PTNYUINRRK-PTID
                                        TO  ERR-PTID
@@ -786,6 +798,32 @@
       *    定期収納ファイル出力処理
       *****************************************************************
        20011-TEIKI01-OUTPUT-SEC      SECTION.
+      *
+           INITIALIZE                  TEIKI01-REC
+      *
+      *    収納情報編集処理
+           PERFORM 20011-TEIKI01-SYUNOU-HEN-SEC
+      *
+      *    日別収納情報編集処理
+           PERFORM 20011-TEIKI01-SYUDAY-HEN-SEC
+      *
+           MOVE    SYU-HOSPID          TO  TEIKI01-HOSPID
+           MOVE    SYU-PTID            TO  TEIKI01-PTID
+           MOVE    SYU-SKYSTYMD        TO  TEIKI01-SKYSTYMD
+           MOVE    SYU-SKYEDYMD        TO  TEIKI01-SKYEDYMD
+           MOVE    SYU-HKNCOMBINUM     TO  TEIKI01-HKNCOMBINUM
+      *
+           WRITE   TEIKI01-REC
+      *
+           COMPUTE CNT-OUT1    =   CNT-OUT1    +   1
+      *
+           .
+       20011-TEIKI01-OUTPUT-EXT.
+           EXIT. 
+      *****************************************************************
+      *    収納情報編集処理
+      *****************************************************************
+       20011-TEIKI01-SYUNOU-HEN-SEC    SECTION.
       *
            MOVE    LNK-SYUNOU-REC (IDX1)
                                        TO  SYUNOU-REC
@@ -827,20 +865,31 @@
       *
            MOVE    WRK-PARA-TERMID     TO  SYU-TERMID
       *
-           MOVE    SYU-HOSPID          TO  TEIKI01-HOSPID
-           MOVE    SYU-PTID            TO  TEIKI01-PTID
-           MOVE    SYU-SKYSTYMD        TO  TEIKI01-SKYSTYMD
-           MOVE    SYU-SKYEDYMD        TO  TEIKI01-SKYEDYMD
-           MOVE    SYU-HKNCOMBINUM     TO  TEIKI01-HKNCOMBINUM
-      *
-           MOVE    SYUNOU-REC          TO  TEIKI01-DAT
-      *
-           WRITE   TEIKI01-REC
-      *
-           COMPUTE CNT-OUT1    =   CNT-OUT1    +   1
+           MOVE    SYUNOU-REC          TO  TEIKI01-SYU-DAT
       *
            .
-       20011-TEIKI01-OUTPUT-EXT.
+       20011-TEIKI01-SYUNOU-HEN-EXT.
+           EXIT. 
+      *****************************************************************
+      *    日別収納情報編集処理
+      *****************************************************************
+       20011-TEIKI01-SYUDAY-HEN-SEC    SECTION.
+      *
+           MOVE    LNK-SYUDAY-REC (IDX1)
+                                       TO  SYUDAY-REC
+      *
+           MOVE    WRK-PARA-TERMID     TO  SDAY-TERMID
+      *
+           IF    ( SDAY-DAYINFFLG      =   "1" )
+               MOVE    1               TO  TEIKI01-SYUDAY-EXIST-FLG
+               MOVE    SYUDAY-REC      TO  TEIKI01-SYUDAY-DAT
+           ELSE
+               MOVE    ZERO            TO  TEIKI01-SYUDAY-EXIST-FLG
+               MOVE    SPACE           TO  TEIKI01-SYUDAY-DAT
+           END-IF
+      *
+           .
+       20011-TEIKI01-SYUDAY-HEN-EXT.
            EXIT. 
       *****************************************************************
       *    患者請求履歴ファイル出力処理

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    03.12.19  日別収納マスタ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -58,6 +59,11 @@
                    ORGANIZATION    LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI07.
       *
+      *    単独更新用日別収納ファイル(OT)
+           SELECT  TEIKI08-FILE    ASSIGN   TEIKI08PARA
+                   ORGANIZATION    LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-TEIKI08.
+      *
       *    エラーファイル
            SELECT  TEIKIERR-FILE   ASSIGN  TEIKIERR
                                    FILE    STATUS  IS  STS-TEIKIERR.
@@ -79,13 +85,29 @@
       *    定期請求収納ファイル(OT)
        FD  TEIKI06-FILE.
        01  TEIKI06-REC.
+         02  TEIKI06-SYU-DAT.
            COPY    "CPSYUNOU.INC"      REPLACING   //SYU-//
-                                       BY          //TEIKI06-//.
+                                       BY          //TEIKI06-SYU-//.
+         02  TEIKI06-SYUDAY-EXIST-FLG
+                                       PIC 9(01).
+         02  TEIKI06-SYUDAY-DAT.
+           COPY    "CPSYUDAY.INC"      REPLACING   //SDAY-//
+                                       BY          //TEIKI06-SDAY-//.
+      *
       *    請求取消対象収納ファイル(OT)
        FD  TEIKI07-FILE.
        01  TEIKI07-REC.
            COPY    "CPSYUNOU.INC"      REPLACING   //SYU-//
                                        BY          //TEIKI07-//.
+      *
+      *    単独更新用日別収納ファイル(OT)
+       FD  TEIKI08-FILE.
+       01  TEIKI08-REC.
+      *    更新区分（１：更新（追加）／２：削除）
+         02    TEIKI08-UPD-FLG         PIC 9(01).
+         02    TEIKI08-SYUDAY-DAT.
+           COPY    "CPSYUDAY.INC"      REPLACING   //SDAY-//
+                                       BY          //TEIKI08-SDAY-//.
       *
       *    エラーファイル
        FD  TEIKIERR-FILE.
@@ -111,6 +133,11 @@
                                    REPLACING  //TEIKI01//
                                    BY         //TEIKI07//.
       *
+      *    単独更新用日別収納ファイル(OT)
+           COPY    "CPCOMMONDAT5.INC"
+                                   REPLACING  //TEIKI01//
+                                   BY         //TEIKI08//.
+      *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
@@ -124,6 +151,7 @@
            03  STS-TEIKI04                             PIC X(02).
            03  STS-TEIKI06                             PIC X(02).
            03  STS-TEIKI07                             PIC X(02).
+           03  STS-TEIKI08                             PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
@@ -133,6 +161,7 @@
        01  CNT-AREA.
            03  CNT-OUT1                                PIC 9(06).
            03  CNT-OUT2                                PIC 9(06).
+           03  CNT-OUT3                                PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDX1                                    PIC 9(04). 
@@ -196,9 +225,17 @@
            COPY    "CPSYUNOU.INC"      REPLACING   //SYU-//
                                        BY          //ZOUSYU-//.
       *
+       01  ZOUSYUDAY-REC.
+           COPY    "CPSYUDAY.INC"      REPLACING   //SDAY-//
+                                       BY          //ZOUSDAY-//.
+      *
        01  GENSYUNOU-REC.
            COPY    "CPSYUNOU.INC"      REPLACING   //SYU-//
                                        BY          //GENSYU-//.
+      *
+       01  GENSYUDAY-REC.
+           COPY    "CPSYUDAY.INC"      REPLACING   //SDAY-//
+                                       BY          //GENSDAY-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -300,6 +337,9 @@
            MOVE    "TEIKI007"          TO  TEIKI07PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  TEIKI07PARA-TERMID
       *
+           MOVE    "TEIKI008"          TO  TEIKI08PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TEIKI08PARA-TERMID
+      *
            MOVE    "TEIKIERR"          TO  TEIKIERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  TEIKIERR-TERMID
       *
@@ -307,6 +347,7 @@
            OPEN    INPUT               TEIKI04-FILE
            OPEN    OUTPUT              TEIKI06-FILE
            OPEN    OUTPUT              TEIKI07-FILE
+           OPEN    OUTPUT              TEIKI08-FILE
       *
            .
        100-INIT-EXT.
@@ -326,14 +367,10 @@
       *
                EVALUATE    TRUE
                WHEN    KEY-ZOU         <   KEY-GEN
-                   MOVE    TEIKI01-DAT TO  TEIKI06-REC
-                   WRITE   TEIKI06-REC
-                   COMPUTE CNT-OUT1    =   CNT-OUT1    +   1
+                   PERFORM 2001-TEIKI06-WRITE-SEC
                    PERFORM 910-TEIKI01-READ-SEC
                WHEN    KEY-ZOU         >   KEY-GEN
-                   MOVE    TEIKI04-DAT TO  TEIKI07-REC
-                   WRITE   TEIKI07-REC
-                   COMPUTE CNT-OUT2    =   CNT-OUT2    +   1
+                   PERFORM 2001-TEIKI07-WRITE-SEC
                    PERFORM 910-TEIKI04-READ-SEC
                WHEN    KEY-ZOU         =   KEY-GEN
       *            同一収納チェック
@@ -354,8 +391,11 @@
       *****************************************************************
        2001-DOUITU-SYUNOU-CHK-SEC      SECTION.
       *
-           MOVE    TEIKI01-DAT     TO  ZOUSYUNOU-REC
-           MOVE    TEIKI04-DAT     TO  GENSYUNOU-REC
+           MOVE    TEIKI01-SYU-DAT     TO  ZOUSYUNOU-REC
+           MOVE    TEIKI01-SYUDAY-DAT  TO  ZOUSYUDAY-REC
+      *
+           MOVE    TEIKI04-SYU-DAT     TO  GENSYUNOU-REC
+           MOVE    TEIKI04-SYUDAY-DAT  TO  GENSYUDAY-REC
       *
            INITIALIZE                  ZOUSYU-DENPNUM
                                        ZOUSYU-DENPLASTNUM
@@ -388,17 +428,91 @@
                                        GENSYU-UPHMS
       *
            IF    ( ZOUSYUNOU-REC   NOT =   GENSYUNOU-REC )
-               MOVE    TEIKI01-DAT     TO  TEIKI06-REC
-               WRITE   TEIKI06-REC
-               COMPUTE CNT-OUT1    =   CNT-OUT1    +   1
-      *
-               MOVE    TEIKI04-DAT     TO  TEIKI07-REC
-               WRITE   TEIKI07-REC
-               COMPUTE CNT-OUT2    =   CNT-OUT2    +   1
+               PERFORM 2001-TEIKI06-WRITE-SEC
+               PERFORM 2001-TEIKI07-WRITE-SEC
+           ELSE
+      *        単独更新用日別収納ファイル編集処理
+               PERFORM 2001-TEIKI08-HEN-SEC
            END-IF
       *
            .
        2001-DOUITU-SYUNOU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    定期請求収納ファイル出力処理
+      *****************************************************************
+       2001-TEIKI06-WRITE-SEC          SECTION.
+      *
+           MOVE    TEIKI01-SYU-DAT
+                                       TO  TEIKI06-SYU-DAT
+           MOVE    TEIKI01-SYUDAY-EXIST-FLG
+                                       TO  TEIKI06-SYUDAY-EXIST-FLG
+           MOVE    TEIKI01-SYUDAY-DAT
+                                       TO  TEIKI06-SYUDAY-DAT
+           WRITE   TEIKI06-REC
+           COMPUTE CNT-OUT1    =   CNT-OUT1    +   1
+      *
+           .
+       2001-TEIKI06-WRITE-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求取消対象収納ファイル出力処理
+      *****************************************************************
+       2001-TEIKI07-WRITE-SEC          SECTION.
+      *
+           MOVE    TEIKI04-SYU-DAT     TO  TEIKI07-REC
+           WRITE   TEIKI07-REC
+           COMPUTE CNT-OUT2    =   CNT-OUT2    +   1
+      *
+           .
+       2001-TEIKI07-WRITE-EXT.
+           EXIT.
+      *****************************************************************
+      *    単独更新用日別ファイル出力処理
+      *****************************************************************
+       2001-TEIKI08-HEN-SEC            SECTION.
+      *
+           EVALUATE TEIKI01-SYUDAY-EXIST-FLG
+                                       ALSO    TEIKI04-SYUDAY-EXIST-FLG
+      *    新日別と旧日別がともに存在し、内容が異なる場合、
+      *    旧日別の内容を新日別の内容で置き換える
+           WHEN    1       ALSO    1
+               IF    ( ZOUSDAY-DAY-AREA    NOT =   GENSDAY-DAY-AREA )
+                   INITIALIZE              TEIKI08-REC
+                   MOVE    1       TO      TEIKI08-UPD-FLG
+                   MOVE    ZOUSYUDAY-REC
+                                   TO      TEIKI08-SYUDAY-DAT
+                   MOVE    GENSDAY-DENPNUM
+                                   TO      TEIKI08-SDAY-DENPNUM
+                   WRITE   TEIKI08-REC
+                   COMPUTE CNT-OUT3    =   CNT-OUT3    +   1
+               END-IF
+      *
+      *    新日別は存在するが旧日別が存在しない場合、
+      *    新日別を追加する
+           WHEN    1       ALSO    ZERO
+               INITIALIZE              TEIKI08-REC
+               MOVE    1       TO      TEIKI08-UPD-FLG
+               MOVE    ZOUSYUDAY-REC
+                               TO      TEIKI08-SYUDAY-DAT
+               MOVE    GENSDAY-DENPNUM
+                               TO      TEIKI08-SDAY-DENPNUM
+               WRITE   TEIKI08-REC
+               COMPUTE CNT-OUT3    =   CNT-OUT3    +   1
+      *
+      *    新日別は存在せず旧日別が存在する場合、
+      *    旧日別を削除する
+           WHEN    ZERO    ALSO    1
+               INITIALIZE              TEIKI08-REC
+               MOVE    2       TO      TEIKI08-UPD-FLG
+               MOVE    GENSYUDAY-REC
+                               TO      TEIKI08-SYUDAY-DAT
+               WRITE   TEIKI08-REC
+               COMPUTE CNT-OUT3    =   CNT-OUT3    +   1
+           END-EVALUATE
+      *
+           .
+       2001-TEIKI08-HEN-EXT.
            EXIT.
       *****************************************************************
       *    エラー出力処理
@@ -444,8 +558,10 @@
                    TEIKI04-FILE
                    TEIKI06-FILE
                    TEIKI07-FILE
+                   TEIKI08-FILE
       *
-           IF      CNT-OUT1            =   ZERO 
+           IF    ( CNT-OUT1            =   ZERO )
+            AND  ( CNT-OUT3            =   ZERO )
                MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
