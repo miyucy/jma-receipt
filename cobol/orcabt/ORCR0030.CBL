@@ -2561,6 +2561,17 @@
                 COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
                 COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
                 COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
+                IF   ( SYU-KOH-FTN         =   ZERO   )
+                AND  ( SYU-KOH-HKNNUM(1)   =   SPACE OR "027"  ) 
+                AND  ( SYU-KOH-HKNNUM(2)   =   SPACE  )
+                AND  ( SYU-KOH-HKNNUM(3)   =   SPACE  )
+                AND  ( SYU-KOH-HKNNUM(4)   =   SPACE  )
+                    CONTINUE
+                ELSE            
+                    IF   WRK-FTNKEI   >   12000
+                       MOVE   12000   TO   WRK-FTNKEI
+                    END-IF 
+                END-IF
                 IF  RECE02-TEISYOTOKU = SPACE
                     IF  RECE02-KYURATE = 10
                        MOVE  12000   TO  WRK-GENDO
