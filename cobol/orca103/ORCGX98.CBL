@@ -184,6 +184,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-X01KYOUTU 
            MOVE    SPA-FREE        TO  SPA-X01FREE
@@ -312,6 +316,7 @@
                MOVE    ZERO            TO  SPA-X98-GMN-MAX
                GO      TO      3101-BYOMEICD-SET-EXT
            END-IF
+      *
       *
            INITIALIZE                  BYOMEI-REC
            MOVE    SPA-X98-GMN-INPUT   TO  BYO-BYOMEI
@@ -741,31 +746,59 @@
       *
            MOVE    X98-INPUT           TO  SPA-X98-GMN-INPUT
       *
+           MOVE    ZERO                TO  FLG-KANJI
+           MOVE    ZERO                TO  FLG-KANA
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-X98-GMN-INPUT   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF      KANACHK-RC      NOT =   ZERO
+      *        全角半角混在エラー
+               MOVE    "0001"          TO  SPA-ERRCD
+               GO  TO                  41013-INPUT-CHK-EXT
+           ELSE
+               MOVE    KANACHK-MAX     TO  WRK-MOJI
+      *        全角
+               IF      KANACHK-SYUBETU     =   2
+                   MOVE    1               TO  FLG-KANJI
+               ELSE
+                   MOVE    ZERO            TO  FLG-KANJI
+               END-IF
+           END-IF
+      * 
            EVALUATE    SPA-X98-GMN-KBN
                WHEN    "1"
+      *            病名
                    MOVE    SPACE           TO  SPA-X98-GMN-SYORI
-               WHEN    "2"
-                   MOVE    ZERO                TO  FLG-KANJI
-                   MOVE    ZERO                TO  FLG-KANA
-                   MOVE    ZERO                TO  WRK-MOJI
-      *
-                   INITIALIZE                  ORCSKANACHKAREA
-                   MOVE    "1"                 TO  KANACHK-SYORI
-                   MOVE    SPA-X98-GMN-INPUT   TO  KANACHK-MAE-INPUT
-                   CALL    "ORCSKANACHK"       USING
-                                               ORCSKANACHKAREA
-                   IF      KANACHK-RC      NOT =   ZERO
-      *                全角半角混在エラー
-                       MOVE    "0001"          TO  SPA-ERRCD
+                   IF      FLG-KANJI           =   1
+      *                全角入力（点数マスタより）
+                       MOVE    "J"                 TO  SPA-X98-CDSYUBETU
                    ELSE
-                       MOVE    KANACHK-MAX     TO  WRK-MOJI
-      *                全角
-                       IF      KANACHK-SYUBETU     =   2
-                           MOVE    1               TO  FLG-KANJI
-                       ELSE
-                           MOVE    ZERO            TO  FLG-KANJI
-                       END-IF
+                       MOVE    "A"                 TO  SPA-X98-CDSYUBETU
                    END-IF
+               WHEN    "2"
+      ********     MOVE    ZERO                TO  FLG-KANJI
+      *            MOVE    ZERO                TO  FLG-KANA
+      *            MOVE    ZERO                TO  WRK-MOJI
+      *
+      *            INITIALIZE                  ORCSKANACHKAREA
+      *            MOVE    "1"                 TO  KANACHK-SYORI
+      *            MOVE    SPA-X98-GMN-INPUT   TO  KANACHK-MAE-INPUT
+      *            CALL    "ORCSKANACHK"       USING
+      *                                        ORCSKANACHKAREA
+      *            IF      KANACHK-RC      NOT =   ZERO
+      *                全角半角混在エラー
+      *                MOVE    "0001"          TO  SPA-ERRCD
+      *            ELSE
+      *                MOVE    KANACHK-MAX     TO  WRK-MOJI
+      *                全角
+      *                IF      KANACHK-SYUBETU     =   2
+      *                    MOVE    1               TO  FLG-KANJI
+      *                ELSE
+      *                    MOVE    ZERO            TO  FLG-KANJI
+      *                END-IF
+      *            END-IF
       * 
       *************PERFORM VARYING IDX     FROM    1   BY  1
       *                    UNTIL  (IDX         >   22     )  OR
@@ -783,12 +816,12 @@
       *                    END-IF
       *                END-IF
       *************END-PERFORM
-                   IF     (WRK-MOJI            =   ZERO  )  OR
-                          (FLG-KANJI           =   1     AND
-                           FLG-KANA            =   1     )
-                       MOVE    "0001"          TO  SPA-ERRCD
-                       GO  TO                  41013-INPUT-CHK-EXT
-                   END-IF
+      *            IF     (WRK-MOJI            =   ZERO  )  OR
+      *                   (FLG-KANJI           =   1     AND
+      *                    FLG-KANA            =   1     )
+      *                MOVE    "0001"          TO  SPA-ERRCD
+      *                GO  TO                  41013-INPUT-CHK-EXT
+      *************END-IF
       *
                    IF      FLG-KANJI           =   1
       *                全角入力（点数マスタより）
@@ -1003,11 +1036,15 @@
        290-MAE-SEC                   SECTION.
       *
       *    全角入力時、のみ
-           IF      SPA-X98-CDSYUBETU   NOT =   SPACE
+           IF      SPA-X98-CDSYUBETU   NOT =   "J"
                GO      TO      290-MAE-EXT
            END-IF
       *
-           INSPECT SPA-X98-GMN-INPUT   REPLACING  ALL "＊"  BY  SPACE
+           IF      SPA-X98-GMN-INPUT   =   SPACE
+              GO      TO      290-MAE-EXT
+           END-IF
+      *
+           INSPECT SPA-X98-GMN-INPUT   REPLACING  ALL "＊"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
            MOVE    ZERO                TO  ID2
            PERFORM VARYING     ID1     FROM    1   BY  1
@@ -1035,11 +1072,15 @@
        291-BUB-SEC                   SECTION.
       *
       *    全角入力時、のみ
-           IF      SPA-X98-CDSYUBETU   NOT =   SPACE
+           IF      SPA-X98-CDSYUBETU   NOT =   "J"
                GO      TO      291-BUB-EXT
            END-IF
       *
-           INSPECT SPA-X98-GMN-INPUT   REPLACING  ALL "＊"  BY  SPACE
+           IF      SPA-X98-GMN-INPUT   =   SPACE
+               GO      TO      291-BUB-EXT
+           END-IF
+      *
+           INSPECT SPA-X98-GMN-INPUT   REPLACING  ALL "＊"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
            MOVE    ZERO                TO  ID2
            PERFORM VARYING     ID1     FROM    1   BY  1
@@ -1071,11 +1112,15 @@
        292-ATO-SEC                   SECTION.
       *
       *    全角入力時、のみ
-           IF      SPA-X98-CDSYUBETU   NOT =   SPACE
+           IF      SPA-X98-CDSYUBETU   NOT =   "J"
                GO      TO      292-ATO-EXT
            END-IF
       *
-           INSPECT SPA-X98-GMN-INPUT   REPLACING  ALL "＊"  BY  SPACE
+           IF      SPA-X98-GMN-INPUT   =   SPACE
+               GO      TO      292-ATO-EXT
+           END-IF
+      *
+           INSPECT SPA-X98-GMN-INPUT   REPLACING  ALL "＊"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
            MOVE    ZERO                TO  ID2
            PERFORM VARYING     ID1     FROM    1   BY  1
