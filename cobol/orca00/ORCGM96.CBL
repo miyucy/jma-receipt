@@ -31,6 +31,7 @@
       *                                     新規作成日表示に変更
       *
       *  01.00.02    太田         04/02/03  MCPAREAの初期化を削除
+      *  01.00.03    NACL-伊藤    04/02/05  M97の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -166,6 +167,7 @@
            COPY    "M02.INC". 
            COPY    "M95.INC".
            COPY    "M96.INC".
+           COPY    "M97.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".

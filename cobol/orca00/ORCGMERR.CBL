@@ -30,6 +30,7 @@
       *  01.01.02    MCC-藤原     01/09/27  MVERの追加  
       *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
       *  01.02.02    MCC-多々納   02/02/22  MID1の追加
+      *  01.02.03    NACL-伊藤    04/02/05  M97の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -81,6 +82,7 @@
            COPY    "M02.INC". 
            COPY    "M95.INC".
            COPY    "M96.INC".
+           COPY    "M97.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".
