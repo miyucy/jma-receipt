@@ -139,6 +139,15 @@ I06	{
 			item	varchar(51)[30];
 			state	int;
 		};
+		CMB_NYUKBN	{
+			NYUKBN	{
+				value	varchar(11);
+				state	int;
+			};
+			count	int;
+			item	varchar(11)[2];
+			state	int;
+		};
 		CMB_TOKNYUIN	{
 			TOKNYUIN	{
 				value	varchar(51);

@@ -878,7 +878,7 @@
                END-IF
            WHEN    "02"
                IF    ( ITEM-TOKNYUIN-G     =   SPACE )
-                   MOVE    "1014"      TO  ERRCD-ORDER
+                   MOVE    "1030"      TO  ERRCD-ORDER
                END-IF
            END-EVALUATE
       *
@@ -1194,9 +1194,9 @@
                                    TO  PTNYUINRRK-DOUJITSUKBN
       *
            MOVE    SODR-OPID       TO  PTNYUINRRK-OPID
-           MOVE    SODR-UKEYMD     TO  PTNYUINRRK-CREYMD
+           MOVE    SODR-UPYMD      TO  PTNYUINRRK-CREYMD
                                        PTNYUINRRK-UPYMD
-           MOVE    SODR-UKEHMS     TO  PTNYUINRRK-UPHMS
+           MOVE    SODR-UPHMS      TO  PTNYUINRRK-UPHMS
       *
            PERFORM 900-PTNYUINRRK-KEY-SEL-SEC
            IF    ( FLG-PTNYUINRRK      =   ZERO )
@@ -1367,9 +1367,9 @@
            END-IF
       *
            MOVE    SODR-OPID           TO  ORDER-OPID
-           MOVE    SODR-UKEYMD         TO  ORDER-CREYMD
+           MOVE    SODR-UPYMD          TO  ORDER-CREYMD
                                            ORDER-UPYMD
-           MOVE    SODR-UKEHMS         TO  ORDER-UPHMS
+           MOVE    SODR-UPHMS          TO  ORDER-UPHMS
       *
       *
            PERFORM 900-ORDER-KEY-SEL-SEC
@@ -1401,6 +1401,9 @@
       *
            INITIALIZE                  SODRNACCT-AREA
            MOVE    SODR-ORDERID    TO  SODRNACCT-ORDERID
+           MOVE    SODR-OPID       TO  SODRNACCT-OPID
+           MOVE    SODR-UPYMD      TO  SODRNACCT-UPYMD
+           MOVE    SODR-UPHMS      TO  SODRNACCT-UPHMS
            MOVE    ITEM-NYUKBN     TO  SODRNACCT-NYUKBN
            MOVE    TRRK-REC        TO  LNK-PTNYUINRRK-REC
       *
@@ -1470,8 +1473,8 @@
                                        TO  PTINF-RRKEDANUM
       *
            MOVE    SODR-OPID           TO  PTINF-OPID
-           MOVE    SODR-UKEYMD         TO  PTINF-UPYMD
-           MOVE    SODR-UKEHMS         TO  PTINF-UPHMS
+           MOVE    SODR-UPYMD          TO  PTINF-UPYMD
+           MOVE    SODR-UPHMS          TO  PTINF-UPHMS
       *
       *    患者情報更新
            MOVE    PTINF-REC           TO  MCPDATA-REC

@@ -546,6 +546,9 @@
            MOVE    SODR-ORDERID    TO  SODRNACCT-ORDERID
            MOVE    ZERO            TO  SODRNACCT-NYUKBN
            MOVE    SODR-SRYYMD     TO  SODRNACCT-STARTYMD
+           MOVE    SODR-OPID       TO  SODRNACCT-OPID
+           MOVE    SODR-UPYMD      TO  SODRNACCT-UPYMD
+           MOVE    SODR-UPHMS      TO  SODRNACCT-UPHMS
            MOVE    TRRK-REC        TO  LNK-PTNYUINRRK-REC
       *
            CALL    "ORCSODRNACCT"      USING

@@ -87,6 +87,12 @@
                 04  I06-HKNCOMBI-COUNT         PIC S9(9)   BINARY.
                 04  I06-HKNCOMBI-ITEM          PIC X(51)   OCCURS  30.
                 04  I06-HKNCOMBI-ITEM-STATE    PIC S9(9)   BINARY.
+              03  I06-CMB-NYUKBN.
+                04  I06-NYUKBN                 PIC X(11).
+                04  I06-NYUKBN-STATE           PIC S9(9)   BINARY.
+                04  I06-NYUKBN-COUNT           PIC S9(9)   BINARY.
+                04  I06-NYUKBN-ITEM            PIC X(11)   OCCURS  2.
+                04  I06-NYUKBN-ITEM-STATE      PIC S9(9)   BINARY.
               03  I06-CMB-TOKNYUIN.
                 04  I06-TOKNYUIN               PIC X(51).
                 04  I06-TOKNYUIN-STATE         PIC S9(9)   BINARY.

@@ -484,6 +484,10 @@
       *
            MOVE    "0"                 TO  SODR-PROCKBN
       *
+           MOVE   "CLAIM"              TO  SODR-OPID
+           MOVE   WRK-UKEYMD           TO  SODR-UPYMD
+           MOVE   WRK-UKEHMS           TO  SODR-UPHMS
+      *
            MOVE        SPACE           TO  WRK-PGNAME
       *
            INITIALIZE  WRK-ORDER-CLAIMID-G

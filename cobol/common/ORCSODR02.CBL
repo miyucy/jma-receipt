@@ -1133,7 +1133,7 @@
       *    請求開始日（入院日または前回定期請求終了日の翌日）を設定
            MOVE    WRK-SKYSTYMD    TO  LNK-S02-SKYSTYMD
            MOVE    SODR-SRYYMD     TO  LNK-S02-SKYEDYMD
-           MOVE    SODR-UKEYMD     TO  LNK-S02-SYSYMD
+           MOVE    SODR-SRYYMD     TO  LNK-S02-SYSYMD
            MOVE    "1"             TO  LNK-S02-SYORI-KBN
            CALL    "ORCSNYUFTN"    USING
                                    SPA-AREA
@@ -1168,8 +1168,8 @@
            MOVE    ITEM-TAIINCD    TO  PTNYUINRRK-TAIINCD
       *
            MOVE    SODR-OPID       TO  PTNYUINRRK-OPID
-           MOVE    SODR-UKEYMD     TO  PTNYUINRRK-UPYMD
-           MOVE    SODR-UKEHMS     TO  PTNYUINRRK-UPHMS
+           MOVE    SODR-UPYMD      TO  PTNYUINRRK-UPYMD
+           MOVE    SODR-UPHMS      TO  PTNYUINRRK-UPHMS
       *
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    PATH-TBL-PTNYUINRRK-UPD2
@@ -1262,8 +1262,8 @@
                        MOVE    "3"             TO  SYU-DENPJTIKBN
       *
                        MOVE    SODR-OPID       TO  SYU-OPID
-                       MOVE    SODR-UKEYMD     TO  SYU-UPYMD
-                       MOVE    SODR-UKEHMS     TO  SYU-UPHMS
+                       MOVE    SODR-UPYMD      TO  SYU-UPYMD
+                       MOVE    SODR-UPHMS      TO  SYU-UPHMS
       *
                        MOVE    SYUNOU-REC      TO  MCPDATA-REC
                        MOVE    PATH-TBL-SYUNOU-KEY
@@ -1382,9 +1382,9 @@
            PERFORM 910-DBCLOSE-SEC
       *
            MOVE    SODR-OPID           TO  SMEI-OPID
-           MOVE    SODR-UKEYMD         TO  SMEI-CREYMD
+           MOVE    SODR-UPYMD          TO  SMEI-CREYMD
                                            SMEI-UPYMD
-           MOVE    SODR-UKEHMS         TO  SMEI-UPHMS
+           MOVE    SODR-UPHMS          TO  SMEI-UPHMS
       *
       *    収納明細追加
            MOVE    PATH-TBL-SYUMEI-KEY TO  MCP-PATH
@@ -1561,8 +1561,8 @@
                        +   SUMTEIKIRRK-SKYMONEY (IDX1)
       *
                    MOVE    SODR-OPID       TO  TEIKIRRK-OPID
-                   MOVE    SODR-UKEYMD     TO  TEIKIRRK-UPYMD
-                   MOVE    SODR-UKEHMS     TO  TEIKIRRK-UPHMS
+                   MOVE    SODR-UPYMD      TO  TEIKIRRK-UPYMD
+                   MOVE    SODR-UPHMS      TO  TEIKIRRK-UPHMS
       *
       *            定期請求管理データ更新
                    MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
@@ -1578,9 +1578,9 @@
                ELSE
       *
                    MOVE    SODR-OPID       TO  TEIKIRRK-OPID
-                   MOVE    SODR-UKEYMD     TO  TEIKIRRK-CREYMD
+                   MOVE    SODR-UPYMD      TO  TEIKIRRK-CREYMD
                                                TEIKIRRK-UPYMD
-                   MOVE    SODR-UKEHMS     TO  TEIKIRRK-UPHMS
+                   MOVE    SODR-UPHMS      TO  TEIKIRRK-UPHMS
       *
                    MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                    MOVE    PATH-TBL-TEIKIRRK-KEY
@@ -1677,9 +1677,9 @@
            END-IF
       *
            MOVE    SODR-OPID           TO  ORDER-OPID
-           MOVE    SODR-UKEYMD         TO  ORDER-CREYMD
+           MOVE    SODR-UPYMD          TO  ORDER-CREYMD
                                            ORDER-UPYMD
-           MOVE    SODR-UKEHMS         TO  ORDER-UPHMS
+           MOVE    SODR-UPHMS          TO  ORDER-UPHMS
       *
       *
            PERFORM 900-ORDER-KEY-SEL-SEC
@@ -1711,6 +1711,9 @@
       *
            INITIALIZE                  SODRNACCT-AREA
            MOVE    SODR-ORDERID    TO  SODRNACCT-ORDERID
+           MOVE    SODR-OPID       TO  SODRNACCT-OPID
+           MOVE    SODR-UPYMD      TO  SODRNACCT-UPYMD
+           MOVE    SODR-UPHMS      TO  SODRNACCT-UPHMS
            MOVE    TRRK-REC        TO  LNK-PTNYUINRRK-REC
 
       *
@@ -1763,9 +1766,9 @@
            END-IF
       *
            MOVE    SODR-OPID       TO  SYU-OPID
-           MOVE    SODR-UKEYMD     TO  SYU-CREYMD
+           MOVE    SODR-UPYMD      TO  SYU-CREYMD
                                        SYU-UPYMD
-           MOVE    SODR-UKEHMS     TO  SYU-UPHMS
+           MOVE    SODR-UPHMS      TO  SYU-UPHMS
       *
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
            MOVE    PATH-TBL-SYUNOU-KEY
@@ -1829,9 +1832,9 @@
                END-IF
       *
                MOVE    SODR-OPID       TO  SDAY-OPID
-               MOVE    SODR-UKEYMD     TO  SDAY-CREYMD
+               MOVE    SODR-UPYMD      TO  SDAY-CREYMD
                                            SDAY-UPYMD
-               MOVE    SODR-UKEHMS     TO  SDAY-UPHMS
+               MOVE    SODR-UPHMS      TO  SDAY-UPHMS
       *
                MOVE    SYUDAY-REC      TO  MCPDATA-REC
                MOVE    PATH-TBL-SYUDAY-KEY
@@ -1930,9 +1933,9 @@
       *
       *
            MOVE    SODR-OPID       TO  SMEI-OPID
-           MOVE    SODR-UKEYMD     TO  SMEI-CREYMD
+           MOVE    SODR-UPYMD      TO  SMEI-CREYMD
                                        SMEI-UPYMD
-           MOVE    SODR-UKEHMS     TO  SMEI-UPHMS
+           MOVE    SODR-UPHMS      TO  SMEI-UPHMS
       *
            MOVE    SYUMEI-REC      TO  MCPDATA-REC
            MOVE    PATH-TBL-SYUMEI-KEY
@@ -1995,8 +1998,8 @@
                                            TO  WRK-DENPNUM
       *
                MOVE    SODR-OPID           TO  SYS-0042-OPID
-               MOVE    SODR-UKEYMD         TO  SYS-0042-UPYMD
-               MOVE    SODR-UKEHMS         TO  SYS-0042-UPHMS
+               MOVE    SODR-UPYMD          TO  SYS-0042-UPYMD
+               MOVE    SODR-UPHMS          TO  SYS-0042-UPHMS
       *
                MOVE    SYS-0042-REC        TO  MCPDATA-REC
                MOVE    PATH-TBL-SYSKANRI-KEY
@@ -2074,8 +2077,8 @@
                                        TO  PTINF-RRKEDANUM
       *
            MOVE    SODR-OPID           TO  PTINF-OPID
-           MOVE    SODR-UKEYMD         TO  PTINF-UPYMD
-           MOVE    SODR-UKEHMS         TO  PTINF-UPHMS
+           MOVE    SODR-UPYMD          TO  PTINF-UPYMD
+           MOVE    SODR-UPHMS          TO  PTINF-UPHMS
       *
       *    患者情報更新
            MOVE    PTINF-REC           TO  MCPDATA-REC
