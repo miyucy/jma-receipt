@@ -1595,7 +1595,6 @@
       *
       *    入院基本料を求める
            PERFORM 4100-NYUKHN-KHNTEN-GET-SEC
-      *
            .
       *
        4102-KIHON-CHK-EXT.
@@ -2460,8 +2459,7 @@
                MOVE    SPA-GMN-W20-BTU-EDKBN-ITM (1)
                                        TO  SPA-GMN-W20-BTU-EDKBN
       *
-               MOVE    SPA-NAI-W20-YUKOSTYMD
-                                       TO  SPA-NAI-W20-YUKOSTYMD-MOT
+               PERFORM 4101-NYUKHN-COD-TAIHI-SEC
       *
            END-IF
       *
@@ -2660,6 +2658,9 @@
       *
            IF  ( SPA-GMN-W20-BTU-SBT-CD
                                NOT =   SPA-NAI-W20-BTU-SBT-MOT )
+               INITIALIZE          SPA-NAI-W20-BTU-KHNSRYCD
+                                   SPA-NAI-W20-BTU-KHNTEN
+                                   SPA-GMN-W20-BTU-KHNRYO
       *
                MOVE    SPACE       TO  SPA-GMN-W20-RECEDSPKBN
                PERFORM VARYING IDX1    FROM    1   BY  1
@@ -3283,8 +3284,9 @@
            IF    ( W20SUB01-O-RC   =   ZERO )
       *        サブプロからの返却値の内容で看護配置等を置き換える
                PERFORM 4100-BTU-ITEM-REPLACE-SEC
-               PERFORM 4101-NYUKHN-COD-TAIHI-SEC
            END-IF
+      *
+           PERFORM 4101-NYUKHN-COD-TAIHI-SEC
       *
            MOVE    206             TO  SPA-GMN-W20-CUR
       *
@@ -3420,7 +3422,9 @@
       *****************************************************************
        4100-NYUKHN-KHNTEN-GET-SEC          SECTION.
       *
-           IF    ( SPA-GMN-W20-CHK-BTU-KNGSIS
+           IF    ( SPA-NAI-W20-YUKOSTYMD
+                                   =   SPA-NAI-W20-YUKOSTYMD-MOT )
+            AND  ( SPA-GMN-W20-CHK-BTU-KNGSIS
                                    =   SPA-NAI-W20-CHK-BTU-KNGSIS-MOT )
             AND  ( SPA-GMN-W20-BTU-SBT-CD
                                    =   SPA-NAI-W20-BTU-SBT-MOT )
@@ -3484,6 +3488,8 @@
       *****************************************************************
        4101-NYUKHN-COD-TAIHI-SEC          SECTION.
       *
+           MOVE    SPA-NAI-W20-YUKOSTYMD
+                                   TO  SPA-NAI-W20-YUKOSTYMD-MOT
            MOVE    SPA-GMN-W20-CHK-BTU-KNGSIS
                                    TO  SPA-NAI-W20-CHK-BTU-KNGSIS-MOT
            MOVE    SPA-GMN-W20-BTU-SBT-CD
@@ -3828,8 +3834,9 @@
                                    TO  WRK-SRYCD-KEY
       *        入院基本料設定処理
                PERFORM 4100-BTU-KHNRYO-SET-SEC
-               PERFORM 4101-NYUKHN-COD-TAIHI-SEC
            END-IF
+      *
+           PERFORM 4101-NYUKHN-COD-TAIHI-SEC
       *
            .
        4100-INPUT-AREA-EDIT-EXT.
@@ -4007,8 +4014,6 @@
                                    TO  WRK-KJN-YUKSTYMD
            PERFORM 3101-CMB-SYOKI-SEC
       *
-           MOVE    SPA-NAI-W20-YUKOSTYMD
-                                   TO  SPA-NAI-W20-YUKOSTYMD-MOT
            .
       *
        4100-SYS-KANRI-SAI-SET-EXT.
