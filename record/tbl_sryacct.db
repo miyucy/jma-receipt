@@ -909,3 +909,21 @@ path	key38	{
 			ORDER BY B.PTNUM;
 	};
 };
+
+path	key39 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key39_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			AND   ZAIKAISU    =   0
+			ORDER  BY   SRYKA,
+                                    SRYKBN,
+                                    ZAINUM
+		;
+	};
+};
+

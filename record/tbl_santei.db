@@ -40,6 +40,9 @@ tbl_santei {
 	DAY29				number(3,0);
 	DAY30				number(3,0);
 	DAY31				number(3,0);
+	MSANTEIFLG                      number(1,0);
+	MSANTEITEN                      number(8,0);
+	MSANTEITENKBN                   number(1,0);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);
@@ -206,3 +209,20 @@ path	all2	{
 		;
 	};
 };
+
+path	key9 	{
+	DBSELECT	{
+		DECLARE tbl_santei_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_santei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			AND   MSANTEIFLG  <>  0
+			AND   MSANTEICNT  >   0
+			ORDER   BY      MSANTEID,
+                                        MSANTEITENKBN
+		;
+	};
+};
+
