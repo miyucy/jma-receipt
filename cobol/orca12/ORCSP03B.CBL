@@ -147,6 +147,9 @@
            03  WRK-HKN-TEKSTYMD        PIC X(08).
            03  WRK-HKN-TEKEDYMD        PIC X(08).
       *
+           03  WRK-HKN2-TEKSTYMD        PIC X(08).
+           03  WRK-HKN2-TEKEDYMD        PIC X(08).
+      *
            03  WRK-CUR                 PIC 9(02).
       *
        01  WRK-HENSYU-AREA.
@@ -1025,6 +1028,8 @@
            MOVE    ZERO                TO  WRK-EDYEAR
            MOVE    SPACE               TO  WRK-HKN-TEKSTYMD
            MOVE    SPACE               TO  WRK-HKN-TEKEDYMD
+           MOVE    SPACE               TO  WRK-HKN2-TEKSTYMD
+           MOVE    SPACE               TO  WRK-HKN2-TEKEDYMD
       *
            MOVE    SPACE               TO  HKNNUM-REC
            MOVE    SPA-HOSPID          TO  HKN-HOSPID
@@ -1061,6 +1066,7 @@
            PERFORM
                UNTIL   FLG-HKNNUM      =   1
                MOVE    2                   TO  FLG-CHK
+      *        範囲内
                IF     (SPA-NAI-KTEKSTYMD (IDX-K)
                                             >=  HKN-TEKSTYMD )  AND
                       (SPA-NAI-KTEKEDYMD (IDX-K)
@@ -1070,9 +1076,17 @@
                    MOVE    1                   TO  FLG-HKNNUM
                    MOVE    1                   TO  FLG-CHK
                END-IF
-               IF      FLG-CHK         NOT =   1
+      *        開始同一
+               IF     (SPA-NAI-KTEKSTYMD (IDX-K)
+                                           >=  HKN-TEKSTYMD )  AND
+                      (SPA-NAI-KTEKEDYMD (IDX-K)
+                                           >   HKN-TEKEDYMD )
                    MOVE    HKN-TEKSTYMD    TO  WRK-HKN-TEKSTYMD
                    MOVE    HKN-TEKEDYMD    TO  WRK-HKN-TEKEDYMD
+               END-IF
+               IF      FLG-CHK         NOT =   1
+                   MOVE    HKN-TEKSTYMD    TO  WRK-HKN2-TEKSTYMD
+                   MOVE    HKN-TEKEDYMD    TO  WRK-HKN2-TEKEDYMD
                END-IF
       *
                IF      FLG-HKNNUM          =   ZERO
@@ -1091,6 +1105,10 @@
                GO      TO      2002-KOHKIKAN-CHK-EXT
            END-IF
       *
+           IF      WRK-HKN-TEKSTYMD    =   SPACE
+               MOVE    WRK-HKN2-TEKSTYMD   TO  WRK-HKN-TEKSTYMD
+               MOVE    WRK-HKN2-TEKEDYMD   TO  WRK-HKN-TEKEDYMD
+           END-IF
       *    適応期間エラー
       *    保険期間の終了日が変更された時、終了日を自動変更する
            IF     (SPA-NAI-KTEKSTYMD(IDX-K) >=  WRK-HKN-TEKSTYMD) AND
