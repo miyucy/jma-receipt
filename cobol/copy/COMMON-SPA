@@ -46,9 +46,10 @@
       * 01.00.19     NACL-多々納  04/01/16  数量ゼロ入力フラグ追加（１バイト）
       * 01.00.20     NACL-多々納  04/01/30  時間外区分追加
       * 01.00.21     NACL-多々納  04/03/10  システム日付曜日追加
+      * 01.00.22     NACL-多々納  04/04/07  3100 増やす
       *****************************************************************
       *
-      *     共通ＳＰＡ     (RL=3100)
+      *     共通ＳＰＡ     (RL=6200)
        01  SPA-AREA.
       *
            02  SPA-KYOUTU.
@@ -240,27 +241,7 @@
              03  SPA-ERRMSG                PIC X(80).
       *
       *----(01.00.02) LINE UPD START ----------------------------------
-      *******03  SPA-WORK                  PIC X(597).
-      *******03  SPA-WORK                  PIC X(596).
-      *******03  SPA-WORK                  PIC X(590).
-      *******03  SPA-WORK                  PIC X(560).
-      *******03  SPA-WORK                  PIC X(546).
-      *******03  SPA-WORK                  PIC X(541).
-      *******03  SPA-WORK                  PIC X(561).
-      *******03  SPA-WORK                  PIC X(1559).
-      *******03  SPA-WORK                  PIC X(1535).
-      *******03  SPA-WORK                  PIC X(1555).
-      *******03  SPA-WORK                  PIC X(1553).
-      *******03  SPA-WORK                  PIC X(1525).
-      ****** 03  SPA-WORK                  PIC X(1517).
-      *******03  SPA-WORK                  PIC X(1516).
-      *******03  SPA-WORK                  PIC X(1512).
-      ****** 03  SPA-WORK                  PIC X(1507).
-      ****** 03  SPA-WORK                  PIC X(2479).
-      ****** 03  SPA-WORK                  PIC X(2474).
-      ****** 03  SPA-WORK                  PIC X(2472).
-      ****** 03  SPA-WORK                  PIC X(2463).
-      *******03  SPA-WORK                  PIC X(2461).
-             03  SPA-WORK                  PIC X(2460).
+      *******03  SPA-WORK                  PIC X(2460).
+             03  SPA-WORK                  PIC X(5552).
       *----(01.00.02) LINE UPD END   ----------------------------------
       *
