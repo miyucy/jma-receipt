@@ -105,6 +105,10 @@
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
+           03  IDX4                PIC 9(04).
+           03  IDX5                PIC 9(04).
+           03  IDX6                PIC 9(04).
+           03  IDX7                PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDG                 PIC 9(04).
            03  IDH                 PIC 9(04).
@@ -515,6 +519,8 @@
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *    初期画面編集
+               MOVE    ZERO                TO  IDX4
+               MOVE    ZERO                TO  IDX6
                PERFORM 300-SCREEN-SEC
                IF      FLG-END         =   1
                    GO      TO      100-INIT-EXT
@@ -1940,7 +1946,8 @@
                                                  TO  I41-TTENSU (IDX)
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
-                       IF  SPA-GMN-SRYKA-I-41      =   "00"
+                       IF  (SPA-GMN-SRYKA-I-41      =   "00")        OR
+                           (SPA-WRK-CHK-KBN (IDY)   NOT =  ALL SPACE)
                            MOVE    SPA-GMN-TDAY-41 (IDX IDY)(1:2)
                                                  TO  I41-TDAY (IDX IDY)
                            IF (SPA-GMN-TZAISKBKBN-41 (IDX)
@@ -1949,18 +1956,6 @@
                                                         NOT = SPACE)
                                MOVE    SPA-GMN-TDAY-41 (IDX IDY)
                                                  TO  WRK-CHK-DAY (IDY)
-                           END-IF
-                       ELSE
-                           IF  SPA-WRK-CHK-KBN (IDY)   NOT =  ALL SPACE
-                               MOVE    SPA-GMN-TDAY-41 (IDX IDY)(1:2)
-                                                 TO  I41-TDAY (IDX IDY)
-                               IF (SPA-GMN-TZAISKBKBN-41 (IDX)
-                                                            = "1")  AND
-                                  (SPA-GMN-TDAY-41 (IDX IDY)
-                                                        NOT = SPACE)
-                                   MOVE    SPA-GMN-TDAY-41 (IDX IDY)
-                                                 TO  WRK-CHK-DAY (IDY)
-                               END-IF
                            END-IF
                        END-IF
                    END-PERFORM
@@ -1987,6 +1982,13 @@
                END-PERFORM
       *        診療会計マスターより編集をする
                IF      SPA-GENSAN-RE2-41       =   1
+                   IF      SPA-GMN-MAX-41       =   ZERO
+                       MOVE    1                   TO  IDX4
+                       COMPUTE IDX6   =   IDG   +   1
+                   ELSE
+                       MOVE    SPA-GMN-MAX-41      TO  IDX4
+                       MOVE    SPA-GMN-MAX-41      TO  IDX6
+                   END-IF
                    PERFORM VARYING     IDZ2    FROM    1   BY  1
                            UNTIL       IDZ2            >   50
                        IF      SPA-5000-NYUGAIKBN-41 (IDZ2) NOT = SPACE
@@ -1997,40 +1999,40 @@
                MOVE    ZERO                TO  SPA-GENSAN-RE1-41
            END-IF.
       *
-           IF      (SPA-GMN-MAX-41   NOT =   ZERO)         AND
-                   (SPA-GENSAN-ST2-41    >   SPA-GMN-MAX-41)
-               PERFORM   VARYING   IDX    FROM    SPA-GMN-MAX-41   BY  1
+           IF      (IDX6             NOT =   ZERO)   AND
+                   (SPA-GENSAN-ST2-41    >   IDX6)
+               MOVE    IDX4                 TO  IDX5
+               MOVE    IDX6                 TO  IDX7
+               PERFORM   VARYING   IDX    FROM    IDX6   BY  1
                          UNTIL     IDX        >   SPA-GENSAN-ST2-41
                    IF      SPA-GMN-TMEISYO-41 (IDX)   =   ALL "-"
-                       MOVE    ALL "-"       TO  I41-DATELIST-ITEM (IDX)
+                       MOVE    ALL "-"      TO  I41-DATELIST-ITEM (IDX4)
                    ELSE
                        IF      SPA-GMN-TBANGO-41 (IDX)    >   ZERO
                            MOVE    SPA-GMN-TBANGO-41  (IDX)
                                                  TO  WRK-ZZZZ
-                           MOVE    WRK-ZZZZ-X    TO  I41-TNO    (IDX)
+                           MOVE    WRK-ZZZZ-X    TO  I41-TNO    (IDX4)
                        END-IF
                        MOVE    SPA-GMN-TMEISYO-41 (IDX)
-                                                 TO  I41-TMEISYO(IDX)
+                                                 TO  I41-TMEISYO(IDX4)
                        MOVE    SPA-GMN-TTENSU-41  (IDX)(3:5)
-                                                 TO  I41-TTENSU (IDX)
+                                                 TO  I41-TTENSU (IDX4)
                        PERFORM VARYING     IDY     FROM    1   BY  1
                                UNTIL       IDY     >   31
-                       IF  SPA-GMN-SRYKA-I-41      =   "00"
-                               MOVE  SPA-GMN-TDAY-41 (IDX IDY)(1:2)
-                                                 TO  I41-TDAY (IDX IDY)
-                           ELSE
-                               IF  SPA-WRK-CHK-KBN (IDY)   NOT
-                                                           =  ALL SPACE
-                                   MOVE  SPA-GMN-TDAY-41 (IDX IDY)(1:2)
-                                                 TO  I41-TDAY (IDX IDY)
-                               END-IF
-                           END-IF
+                           MOVE  SPA-GMN-TDAY-41 (IDX IDY)(1:2)
+                                                 TO  I41-TDAY (IDX4 IDY)
                        END-PERFORM
                    END-IF
       *
-                   MOVE    "F"             TO  I41-DATELIST-SELECT (IDX)
+                   MOVE    "F"            TO  I41-DATELIST-SELECT (IDX4)
+                   ADD     1              TO  IDX4
                END-PERFORM
+               MOVE    IDX5                 TO  IDX4
+               MOVE    IDX7                 TO  IDX6
                MOVE    SPA-GENSAN-ST2-41    TO  I41-DATELIST-COUNT
+               IF      SPA-ERRCD   =   "0031"
+                   MOVE    SPACE                TO  SPA-ERRCD
+               END-IF
            END-IF.
       *
            IF      SPA-GMN-NUM-41   NOT =   ZERO
@@ -2042,14 +2044,10 @@
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   31
-               IF  SPA-GMN-SRYKA-I-41      =   "00"
+               IF  (SPA-GMN-SRYKA-I-41      =   "00")          OR
+                   (SPA-WRK-CHK-KBN (IDX)   NOT =   ALL SPACE)
                    MOVE    SPA-GMN-DAY-41 (IDX)    TO  WRK-ZZ
                    MOVE    WRK-ZZ-X             TO  I41-DAY (IDX)
-               ELSE
-                   IF      SPA-WRK-CHK-KBN (IDX)   NOT =   ALL SPACE
-                       MOVE    SPA-GMN-DAY-41 (IDX)    TO  WRK-ZZ
-                       MOVE    WRK-ZZ-X             TO  I41-DAY (IDX)
-                   END-IF
                END-IF
            END-PERFORM.
       *
@@ -2765,7 +2763,7 @@
       *
        41012-DAY-CHK-EXT.
            EXIT.
-      *                
+      *
       *****************************************************************
       *    明細選択処理
       *****************************************************************
@@ -3995,7 +3993,8 @@
                PERFORM UNTIL      (FLG-SRYACT     =   1)  OR
                                   (IDZ3           =   50)
                    ADD     1               TO  IDZ3
-                   IF      SPA-GMN-SRYKA-I-41     =   "00"
+                   IF     (SPA-GMN-SRYKA-I-41     =   "00")  OR
+                          (SPA-GMN-SRYKA-I-41     =   SRY-SRYKA)
                        MOVE    1             TO
                                          SPA-GENSAN-RE2-41
                        MOVE    SRY-NYUGAIKBN TO
@@ -4006,19 +4005,6 @@
                                          SPA-5000-ZAINUM-41 (IDZ3)
                        MOVE    SRY-SRYKBN    TO
                                          SPA-5000-SRYKBN-41 (IDZ3)
-                   ELSE
-                       IF      SPA-GMN-SRYKA-I-41     =   SRY-SRYKA
-                           MOVE    1             TO
-                                           SPA-GENSAN-RE2-41
-                           MOVE    SRY-NYUGAIKBN TO
-                                           SPA-5000-NYUGAIKBN-41 (IDZ3)
-                           MOVE    SRY-SRYKA     TO
-                                           SPA-5000-SRYKA-41 (IDZ3)
-                           MOVE    SRY-ZAINUM    TO
-                                           SPA-5000-ZAINUM-41 (IDZ3)
-                           MOVE    SRY-SRYKBN    TO
-                                           SPA-5000-SRYKBN-41 (IDZ3)
-                       END-IF
                    END-IF
                    PERFORM 930-SRYACT-RAED-SEC
                END-PERFORM
