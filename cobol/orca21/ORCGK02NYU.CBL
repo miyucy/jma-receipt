@@ -920,7 +920,6 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
            MOVE    ZERO                TO  LNK-WKSRYACT-MAX
-           MOVE    SPACE               TO  LNK-WKSRYACT-AREA
       *
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-K02
@@ -6554,6 +6553,9 @@
            MOVE    SPA-TOKUTEIG-KNJ2   TO  LNK-ORCSC-TOKUTEIG-KNJ2
       *    消炎鎮痛処置当月内算定
            MOVE    WRK-SYOEN-CNT       TO  LNK-ORCSC-SYOEN-CNT
+      *    急性発生１８０日以内
+           MOVE    SPA-KYUSEI-180      TO  LNK-ORCSC-KYUSEI-180
+           MOVE    SPA-KYUSEI-FLG      TO  LNK-ORCSC-KYUSEI-FLG
       *    当月外来管理加算の取れない患者
            MOVE    SPA-GAIRAI-NASI     TO  LNK-ORCSC-GAIRAI-NASI
       *    再診チェック済
@@ -7641,6 +7643,9 @@
            MOVE    SPA-SAISIN-CHK      TO  LNK-ORCSC-SAISIN-CHK
       *    消炎鎮痛処置当月内算定
            MOVE    SPA-SYOEN-CNT       TO  LNK-ORCSC-SYOEN-CNT
+      *    急性発生１８０日以内
+           MOVE    SPA-KYUSEI-180      TO  LNK-ORCSC-KYUSEI-180
+           MOVE    SPA-KYUSEI-FLG      TO  LNK-ORCSC-KYUSEI-FLG
       *    当月外来管理加算の取れない患者
            MOVE    SPA-GAIRAI-NASI     TO  LNK-ORCSC-GAIRAI-NASI
       *    労災用 外来管理点数

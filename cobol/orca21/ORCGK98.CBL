@@ -1609,6 +1609,14 @@
                ELSE
                    MOVE    SPA-K98-GMN-TANI (IDX)  TO  K98-TANI (IDX)
                END-IF
+      *        ÁªÂòÃæ
+               IF      (IDX                =   SPA-K98-NAI-SELNUM(1)) OR
+                       (IDX                =   SPA-K98-NAI-SELNUM(2)) OR
+                       (IDX                =   SPA-K98-NAI-SELNUM(3)) OR
+                       (IDX                =   SPA-K98-NAI-SELNUM(4)) OR
+                       (IDX                =   SPA-K98-NAI-SELNUM(5))
+                   MOVE    "*"                 TO  K98-NO  (IDX)(1:1)
+               END-IF
            END-PERFORM
       *
            MOVE    SPA-K98-GMN-MAX     TO  K98-COUNT

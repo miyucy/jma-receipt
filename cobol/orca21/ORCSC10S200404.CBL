@@ -16,13 +16,13 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCSC10S200306.
+       PROGRAM-ID.                 ORCSC10S200404.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 診療行為入力
       *  コンポーネント名  : 診療行為診察料自動発生編集処理
       *                      （Ｋ０２のみ共通使用）
-      *                      Ｈ１５年６月改正対応
+      *                      Ｈ１６年４月改正対応
       *  管理者            : 
       *  作成日付    作業者        記述
       *  03/05/23    NACL−多々納  新規作成
@@ -1117,6 +1117,8 @@
                END-PERFORM
            END-IF
       *
+      *    急性発生日決定
+           PERFORM 10019-KYUSEI-CHK-SEC
       *
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
@@ -1279,9 +1281,107 @@
                WHEN    "140048010"
                    ADD     WRK-SYOEN-CNT       TO  SPA-SYOEN-CNT
            END-EVALUATE
+      *TEST
+           DISPLAY "C10S SPA-SYOEN-CNT:" SPA-SYOEN-CNT
+                   ",SANTEI-SRYCD:" SANTEI-SRYCD
+                   ",WRK-SYOEN-CNT:" WRK-SYOEN-CNT
+      *TEST
       *
            .
        10011-TOUGETU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    急性発生日決定処理
+      *****************************************************************
+       10019-KYUSEI-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  SPA-KYUSEI-FLG
+           MOVE    SPACE               TO  SPA-KYUSEI-180
+      *
+           MOVE    "099800101"         TO  WRK-SRYCD
+      *
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *    算定履歴検索
+           MOVE    SPACE               TO  SANTEI-REC
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+      *
+      *    労災が決定するまで、保険はゼロとする
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-YMD
+           PERFORM
+               UNTIL       FLG-SANTEI      =   1
+      *
+               IF     (SANTEI-MSANTEICNT   >   ZERO )  AND
+                      (SANTEI-SRYYM        <=  SPA-SRYYMD(1:6))
+      *            最後の発生日、当日以降は対象外
+                   IF      SANTEI-SRYYM        =   SPA-SRYYMD(1:6)
+                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y3
+                   ELSE
+                       MOVE    31                  TO  IDX-Y3
+                   END-IF
+                   MOVE    ZERO                TO  WRK-DD
+                   PERFORM VARYING     IDX-Y2  FROM    IDX-Y3  BY  -1
+                           UNTIL       IDX-Y2  <   1
+                       IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                           MOVE    IDX-Y2          TO  WRK-DD
+                           MOVE    1               TO  IDX-Y2
+                       END-IF
+                   END-PERFORM
+                   IF      WRK-DD              >   ZERO
+                       MOVE    SANTEI-SRYYM    TO  WRK-YMD(1:6)
+                       MOVE    1               TO  FLG-SANTEI
+                   END-IF
+               END-IF
+      *
+               IF     FLG-SANTEI           =   ZERO
+                  MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                  PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+      *    180日後計算
+           IF      WRK-YMD             =   ZERO
+               GO      TO      10019-KYUSEI-CHK-EXT
+           END-IF
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-YMD             TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    180                 TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+      *TEST
+           DISPLAY "C10S WRK-YMD:" WRK-YMD
+                   ",LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
+                   ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
+                   ",SPA-SRYYMD:" SPA-SRYYMD
+      *TEST
+           MOVE    LNK-DAY6-KEISAN     TO  SPA-KYUSEI-180
+           .
+       10019-KYUSEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3507,6 +3607,7 @@
            MOVE    ZERO                TO  SPA-ZAIMATU-ARI
       *
            MOVE    ZERO                TO  SPA-SEIKATU-ARI
+           MOVE    ZERO                TO  SPA-KYUSEI-FLG
       *
       *    包括まとめ入力対象外
            IF      SPA-HKNCOMBINUM     =   "9999"
@@ -3596,6 +3697,9 @@
       *            慢性疼痛疾患管理料
                    WHEN    "113006510"
                        MOVE    1               TO  SPA-TOKUTEI-KNJ
+      *            急性発生
+                   WHEN    "099800101"
+                       MOVE    1               TO  SPA-KYUSEI-FLG
                END-EVALUATE
       *
       *        診察料検索

@@ -572,14 +572,21 @@
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
       *
+      *    保存ＳＰＡ領域ワーク
+       01  WRK-HZN-SCR-AREA.
+           COPY    "CPK02SPASCR.INC"  REPLACING
+                                       //SPA-// BY //WRK-HZN-//.
+      *
+       01  WRK-HOZ-IDX             PIC 9(04).
+      *
       *    ワークテーブル２(一時保存用）
-       01  WRK-HOZ-AREA.
-           03  WRK-HGMN-TBL            OCCURS   200.
-               05  WRK-HGMN-TBLREC.
-                   07  WRK-HGMN-DATA   PIC X(150).
-               05  WRK-HCOM-TBLREC.
-                   07  WRK-HCOM-DATA   PIC X(800).
-           03  WRK-HOZ-IDX             PIC 9(04).
+      *01  WRK-HOZ-AREA.
+      *    03  WRK-HGMN-TBL            OCCURS   200.
+      *        05  WRK-HGMN-TBLREC.
+      *            07  WRK-HGMN-DATA   PIC X(150).
+      *        05  WRK-HCOM-TBLREC.
+      *            07  WRK-HCOM-DATA   PIC X(800).
+      *****03  WRK-HOZ-IDX             PIC 9(04).
       *
       *
       *   日本語数字
@@ -3254,7 +3261,7 @@
            MOVE    ZERO                TO  IDX-Z
            MOVE    ZERO                TO  WRK-KAISU
            INITIALIZE                  WRK-SCR-REC
-           INITIALIZE                  WRK-HOZ-AREA
+           INITIALIZE                  WRK-HZN-SCR-AREA
            INITIALIZE                  WRK-HOZ-IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200      )   OR
@@ -3311,11 +3318,16 @@
            INITIALIZE                  SPA-GMN-REC
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   200
-               IF      WRK-HGMN-TBLREC (IDX)   NOT =   SPACE
-                   ADD     1                       TO  SPA-GMN-MAX
-                   MOVE    WRK-HGMN-TBLREC (IDX)   TO  SPA-GMN-TBLREC
-                                                          (SPA-GMN-MAX)
-                   MOVE    WRK-HCOM-TBLREC (IDX)   TO  SPA-COM-TBLREC
+               IF     (WRK-HZN-GMN-INPUTCD (IDX)   =   SPACE)  AND
+                      (WRK-HZN-COM-INPUTCD (IDX)   =   SPACE)
+                   CONTINUE
+               ELSE
+                   ADD     1                   TO  SPA-GMN-MAX
+                   MOVE    WRK-HZN-GMN-TBLREC (IDX)
+                                               TO  SPA-GMN-TBLREC
+                                                         (SPA-GMN-MAX)
+                   MOVE    WRK-HZN-COM-TBLREC (IDX)
+                                               TO  SPA-COM-TBLREC
                                                          (SPA-GMN-MAX)
                END-IF
            END-PERFORM
@@ -3557,10 +3569,10 @@
       *
                ADD     1                   TO  WRK-HOZ-IDX
                MOVE    WRK-COM-TBLREC (IDX-Z)
-                                           TO  WRK-HCOM-TBLREC
+                                           TO  WRK-HZN-COM-TBLREC
                                                        (WRK-HOZ-IDX)
                MOVE    WRK-GMN-TBLREC (IDX-Z)
-                                           TO  WRK-HGMN-TBLREC
+                                           TO  WRK-HZN-GMN-TBLREC
                                                        (WRK-HOZ-IDX)
       *
            END-PERFORM
@@ -4876,7 +4888,10 @@
                        UNTIL      (IDZ        >   5   )  OR
                                   (SRY-SRYCD(IDZ)     =   SPACE )
       *            手技料の時、算定歴を判定する
-                   IF      SRY-SRYCD (IDZ)(1:1)    =   "1"
+                   IF     (SRY-SRYCD (IDZ)(1:1)    =   "1"  )
+      *                システム予約で履歴があるもの
+                       OR (SRY-SRYCD (IDZ)(1:3)    =   "099" )
+      *
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
@@ -5294,7 +5309,10 @@
                        UNTIL      (IDZ        >   5   )  OR
                                   (SRY-SRYCD(IDZ)     =   SPACE )
       *        手技料の時、算定歴を判定する
-                   IF      SRY-SRYCD (IDZ)(1:1)    =   "1"
+                   IF     (SRY-SRYCD (IDZ)(1:1)    =   "1"   )
+      *                システム予約で履歴があるもの
+                       OR (SRY-SRYCD (IDZ)(1:3)    =   "099" )
+      *
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO

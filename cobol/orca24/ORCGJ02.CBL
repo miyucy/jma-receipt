@@ -7023,7 +7023,10 @@
                        UNTIL      (IDZ         >   5        )  OR
                                   (SRY-SRYCD (IDZ) =   SPACE)
       *            手技料の時、算定歴を判定する
-                   IF      SRY-SRYCD (IDZ)(1:1)    =   "1"
+                   IF     (SRY-SRYCD (IDZ)(1:1)    =   "1" )
+      *                システム予約コード
+                       OR (SRY-SRYCD (IDZ)(1:3)    =   "099" )
+      *
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        MOVE    SRY-SRYCD (IDZ)     TO  WRK-SRYCD
                        PERFORM 910-TENSU-READ-SEC
@@ -8038,10 +8041,10 @@
                    MOVE    "受診履歴番号が存在しません"
                                        TO  WRK-ERRMSG
                WHEN    "1006"
-                   MOVE    "受診履歴の伝票番号がゼロです。"
+                   MOVE    "受診履歴の伝票番号がゼロのものがあります。"
                                        TO  WRK-ERRMSG
                    MOVE    "変更できません。"
-                                       TO  WRK-ERRMSG(31:)
+                                       TO  WRK-ERRMSG(43:)
       *
                WHEN    "K001"
                    MOVE    "受診日変更により当日の受診回数が変更"
