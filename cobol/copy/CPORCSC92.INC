@@ -53,6 +53,8 @@
                05  LNK-SC92-LSTSRYKA          PIC  X(02).
       *        最終受診科
                05  LNK-SC92-LSTSRYKAMEI       PIC  X(20).
+      *        当月入院有無
+               05  LNK-SC92-NYUINFLG          PIC  9(01).
       *    訂正時の診療コード
            03  LNK-SC92-TEISEI-AREA.
                05  LNK-SC92-TEISEI-OCC      OCCURS   100.
@@ -83,4 +85,6 @@
            03  LNK-SC92-ERRAREA-R      REDEFINES   LNK-SC92-ERRAREA.
                05  LNK-SC92-ERRCD          PIC X(04)
                                            OCCURS  10.
+      *    エラーメッセージ（併用算定）
+           03  LNK-SC92-ERRMSG         PIC X(100).
       *

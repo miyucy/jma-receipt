@@ -154,6 +154,9 @@
       *        退院日
                05  SPA-K02N-TAIINYMD           PIC X(08).
       *
+      *        当月入院有無（算定履歴チェック用）
+               05  SPA-K02N-NYUINFLG          PIC  9(01).
+      *
       *複数診療科用
            03  SPA-FUKU-AREA.
                05  SPA-FUKU-SYORI          PIC  X(01).
