@@ -29,7 +29,7 @@
                     06  W28-TBTUNAME       PIC X(40).
                     06  W28-TKHNRYO        PIC X(60).
                     06  W28-TFTNNAME       PIC X(20).
-                    06  W28-TTANKA         PIC X(10).
+                    06  W28-TTANKA         PIC X(16).
                     06  W28-TTAXNAME       PIC X(10).
                     06  W28-TSTYUKYMD      PIC X(9).
                     06  W28-TEDYUKYMD      PIC X(9).
@@ -46,11 +46,19 @@
                 04  W28-SENTEI-FTNKBN-ITM  PIC X(22)
                                            OCCURS  10 TIMES.
               03  W28-SENTEI-TANKA         PIC S9(4).
+              03  W28-SENTEI-TANKAIP       PIC S9(4).
+              03  W28-SENTEI-TANKAIP-STATE PIC S9(9)   BINARY.
+              03  W28-SENTEI-TANKARJ       PIC S9(4).
+              03  W28-SENTEI-TANKARJ-STATE PIC S9(9)   BINARY.
               03  W28-CMB-SENTEI-TAX.
                 04  W28-SENTEI-TAX         PIC X(20).
                 04  W28-SENTEI-TAX-CNT     PIC S9(9)
                                            BINARY.
                 04  W28-SENTEI-TAX-ITM     PIC X(20)
                                            OCCURS  5 TIMES.
-              03  W28-LBL-SENTEI-TANKA     PIC X(8).
+              03  W28-LBL-SENTEI-TANKA     PIC X(10).
               03  W28-LBL-SENTEI-EN        PIC X(2).
+              03  W28-LBL-SENTEI-TANKAIP   PIC X(8).
+              03  W28-LBL-SENTEI-ENIP      PIC X(2).
+              03  W28-LBL-SENTEI-TANKARJ   PIC X(8).
+              03  W28-LBL-SENTEI-ENRJ      PIC X(2).

@@ -76,14 +76,15 @@
                    13  SPA-GMN-W28-SENTEI-FTNKBN-NM    PIC X(20).
       *          ÅÀ¿ôÃ±²Á
                  11  SPA-GMN-W28-SENTEI-TANKA          PIC S9(4).
+      *          ÅÀ¿ôÃ±²Á¡Ê°ìÈÌ¡Ë
+                 11  SPA-GMN-W28-SENTEI-TANKAIP        PIC S9(4).
+      *          ÅÀ¿ôÃ±²Á¡ÊÏ·¿Í¡Ë
+                 11  SPA-GMN-W28-SENTEI-TANKARJ        PIC S9(4).
       *          ¾ÃÈñÀÇ
                  11  SPA-GMN-W28-SENTEI-TAX.
                    13  SPA-GMN-W28-SENTEI-TAX-CD       PIC X(01).
                    13                                  PIC X(01).
                    13  SPA-GMN-W28-SENTEI-TAX-NM       PIC X(18).
-      *          ¥é¥Ù¥ë£±
-                 11  SPA-GMN-W28-LBL-SENTEI-TANKA      PIC X(8).
-                 11  SPA-GMN-W28-LBL-SENTEI-EN         PIC X(2).
       *
       *        ´ð½àÆü
                09    SPA-GMN-W28-KJNYMD-AREA.
@@ -98,8 +99,9 @@
                    13  SPA-GMN-W28-TBTUNUM             PIC 9(2).
                    13  SPA-GMN-W28-TBTUNAME            PIC X(40).
                    13  SPA-GMN-W28-TKHNRYO             PIC X(60).
-                   13  SPA-GMN-W28-TFTNNAME            PIC X(20).
                    13  SPA-GMN-W28-TTANKA              PIC 9(04).
+                   13  SPA-GMN-W28-TTANKAIP            PIC 9(04).
+                   13  SPA-GMN-W28-TTANKARJ            PIC 9(04).
                    13  SPA-GMN-W28-TTAXNAME            PIC X(10).
                    13  SPA-GMN-W28-TSTYUKYMD           PIC X(9).
                    13  SPA-GMN-W28-TEDYUKYMD           PIC X(9).
@@ -187,6 +189,10 @@
                05  WRK-ZZZZ9               PIC ZZZZ9.
                05  WRK-ZZZZZ9              PIC ZZZZZ9.
                05  WRK-ZZZZZZZZZ9          PIC ZZZZZZZZZ9.
+           03  WRK-IPN-RJN-EDT.
+               05  WRK-TANKAIP             PIC ZZZZ9.
+               05  WRK-LBLSEP              PIC X(02).
+               05  WRK-TANKARJ             PIC ZZZZ9.
            03  WRK-STSELNUM                PIC 9(05).
            03  WRK-EDSELNUM                PIC 9(03).
            03  WRK-EDBTUNUM                PIC X(06).
@@ -527,19 +533,35 @@
            EVALUATE SPA-NAI-W28-TFTNKBN (IDX1)
            WHEN    SPACE
                MOVE    "1"             TO  SPA-NAI-W28-TFTNKBN (IDX1)
-               MOVE    "ÄêÎ¨"          TO  SPA-GMN-W28-TFTNNAME(IDX1)
                MOVE     10             TO  SPA-GMN-W28-TTANKA  (IDX1)
+               MOVE     ZERO           TO  SPA-GMN-W28-TTANKAIP(IDX1)
+               MOVE     ZERO           TO  SPA-GMN-W28-TTANKARJ(IDX1)
                MOVE     "0"            TO  SPA-NAI-W28-TTAXKBN (IDX1)
            WHEN    "1"
-               MOVE    "ÄêÎ¨"          TO  SPA-GMN-W28-TFTNNAME(IDX1)
                MOVE    SYS-5001-SENTEI-TANKA
                                        TO  SPA-GMN-W28-TTANKA  (IDX1)
+               MOVE    ZERO            TO  SPA-GMN-W28-TTANKAIP(IDX1)
+               MOVE    ZERO            TO  SPA-GMN-W28-TTANKARJ(IDX1)
                MOVE    SYS-5001-SENTEI-TAXKBN
                                        TO  SPA-NAI-W28-TTAXKBN (IDX1)
            WHEN    "2"
-               MOVE    "Äê³Û"          TO  SPA-GMN-W28-TFTNNAME(IDX1)
-               MOVE    SYS-5001-SENTEI-KINGAKU
-                                       TO  SPA-GMN-W28-TTANKA  (IDX1)
+               IF   (  SYS-5001-SENTEI-KINGAKU-X     IS    NUMERIC  )
+                   MOVE    SYS-5001-SENTEI-KINGAKU
+                                       TO  SPA-GMN-W28-TTANKA   (IDX1)
+               END-IF
+               IF   (  SYS-5001-SENTEI-IPN-KINGAKU-X IS    NUMERIC  )
+                   MOVE    SYS-5001-SENTEI-IPN-KINGAKU
+                                       TO  SPA-GMN-W28-TTANKAIP (IDX1)
+               ELSE
+                   MOVE    ZERO        TO  SPA-GMN-W28-TTANKAIP (IDX1)
+               END-IF
+               IF   (  SYS-5001-SENTEI-RJN-KINGAKU-X IS    NUMERIC  )
+                   MOVE    SYS-5001-SENTEI-RJN-KINGAKU
+                                       TO  SPA-GMN-W28-TTANKARJ (IDX1)
+               ELSE
+                   MOVE    ZERO        TO  SPA-GMN-W28-TTANKARJ (IDX1)
+               END-IF
+      *
                MOVE    SYS-5001-SENTEI-TAXKBN
                                        TO  SPA-NAI-W28-TTAXKBN (IDX1)
            END-EVALUATE
@@ -742,6 +764,12 @@
       *    ÁªÄêÎÅÍÜÈñ¡ÝÅÀ¿ôÃ±²Á
            MOVE    W28-SENTEI-TANKA    TO  SPA-GMN-W28-SENTEI-TANKA
       *
+      *    ÁªÄêÎÅÍÜÈñ¡ÝÅÀ¿ôÃ±²Á¡Ê°ìÈÌ¡Ë
+           MOVE    W28-SENTEI-TANKAIP  TO  SPA-GMN-W28-SENTEI-TANKAIP
+      *
+      *    ÁªÄêÎÅÍÜÈñ¡ÝÅÀ¿ôÃ±²Á¡ÊÏ·¿Í¡Ë
+           MOVE    W28-SENTEI-TANKARJ  TO  SPA-GMN-W28-SENTEI-TANKARJ
+      *
       *    ÁªÄêÎÅÍÜÈñ¡Ý¾ÃÈñÀÇ
            MOVE    W28-SENTEI-TAX      TO  SPA-GMN-W28-SENTEI-TAX
       *
@@ -785,6 +813,18 @@
       *
       *    ÁªÄêÎÅÍÜÈñ¡ÝÅÀ¿ôÃ±²Á
            PERFORM 4100-SENTEI-TANKA-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    ÁªÄêÎÅÍÜÈñ¡ÝÅÀ¿ôÃ±²Á¡Ê°ìÈÌ¡Ë
+           PERFORM 4100-SENTEI-TANKAIP-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    ÁªÄêÎÅÍÜÈñ¡ÝÅÀ¿ôÃ±²Á¡ÊÏ·¿Í¡Ë
+           PERFORM 4100-SENTEI-TANKARJ-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -940,12 +980,20 @@
                MOVE    SPA-GMN-W28-SENTEI-TANKA
                                    TO  SYS-5001-SENTEI-TANKA
                MOVE    ZERO        TO  SYS-5001-SENTEI-KINGAKU
+               MOVE    ZERO        TO  SYS-5001-SENTEI-IPN-KINGAKU
+               MOVE    ZERO        TO  SYS-5001-SENTEI-RJN-KINGAKU
            WHEN    "2"
                MOVE    ZERO        TO  SYS-5001-SENTEI-TANKA
                MOVE    SPA-GMN-W28-SENTEI-TANKA
                                    TO  SYS-5001-SENTEI-KINGAKU
+               MOVE    SPA-GMN-W28-SENTEI-TANKAIP
+                                   TO  SYS-5001-SENTEI-IPN-KINGAKU
+               MOVE    SPA-GMN-W28-SENTEI-TANKARJ
+                                   TO  SYS-5001-SENTEI-RJN-KINGAKU
            WHEN    OTHER
                MOVE    ZERO        TO  SYS-5001-SENTEI-KINGAKU
+               MOVE    ZERO        TO  SYS-5001-SENTEI-IPN-KINGAKU
+               MOVE    ZERO        TO  SYS-5001-SENTEI-RJN-KINGAKU
            END-EVALUATE
       *
            .
@@ -1101,12 +1149,6 @@
       *****************************************************************
        4100-SENTEI-FTNKBN-CHK-SEC         SECTION.
       *
-           IF    ( SPA-GMN-W28-SENTEI-FTNKBN   =   SPACE )
-               MOVE    SPA-GMN-W28-SENTEI-FTNKBN-ITM (1)
-                                       TO  SPA-GMN-W28-SENTEI-FTNKBN
-               GO  TO  4100-SENTEI-FTNKBN-CHK-EXT
-           END-IF
-      *
       *    ³ºÅö¥³¡¼¥É¤Î¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯
            MOVE    SPA-GMN-W28-SENTEI-FTNKBN-CD
                                        TO  WRK-CMB-CD
@@ -1118,14 +1160,10 @@
                                        TO  SPA-GMN-W28-SENTEI-FTNKBN
            END-IF
       *
-           EVALUATE    SPA-GMN-W28-SENTEI-FTNKBN-CD
-           WHEN    "1"
-                   MOVE    "ÅÀ¿ôÃ±²Á"  TO  SPA-GMN-W28-LBL-SENTEI-TANKA
-                   MOVE    SPACE       TO  SPA-GMN-W28-LBL-SENTEI-EN
-           WHEN    "2"
-                   MOVE    "£±Æü"      TO  SPA-GMN-W28-LBL-SENTEI-TANKA
-                   MOVE    "±ß"        TO  SPA-GMN-W28-LBL-SENTEI-EN
-           END-EVALUATE
+           IF    ( SPA-GMN-W28-SENTEI-FTNKBN-CD    NOT =   "2" )
+               MOVE    ZERO            TO  SPA-GMN-W28-SENTEI-TANKAIP
+               MOVE    ZERO            TO  SPA-GMN-W28-SENTEI-TANKARJ
+           END-IF
       *
            .
        4100-SENTEI-FTNKBN-CHK-EXT.
@@ -1138,6 +1176,24 @@
       *
            .
        4100-SENTEI-TANKA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÁªÄêÎÅÍÜÈñ¡ÝÅÀ¿ôÃ±²Á¡Ê°ìÈÌ¡Ë
+      *****************************************************************
+       4100-SENTEI-TANKAIP-CHK-SEC     SECTION.
+      *
+      *
+           .
+       4100-SENTEI-TANKAIP-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÁªÄêÎÅÍÜÈñ¡ÝÅÀ¿ôÃ±²Á¡ÊÏ·¿Í¡Ë
+      *****************************************************************
+       4100-SENTEI-TANKARJ-CHK-SEC     SECTION.
+      *
+      *
+           .
+       4100-SENTEI-TANKARJ-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ÁªÄêÎÅÍÜÈñ¡Ý¾ÃÈñÀÇ
@@ -1190,15 +1246,10 @@
       *
            MOVE    SPA-GMN-W28-TTANKA  (IDXI)
                                        TO  SPA-GMN-W28-SENTEI-TANKA
-      *
-          EVALUATE SPA-NAI-W28-TFTNKBN (IDXI)
-          WHEN    "1"
-               MOVE    "ÅÀ¿ôÃ±²Á"      TO  SPA-GMN-W28-LBL-SENTEI-TANKA
-               MOVE    SPACE           TO  SPA-GMN-W28-LBL-SENTEI-EN
-           WHEN    "2"
-               MOVE    "£±Æü"          TO  SPA-GMN-W28-LBL-SENTEI-TANKA
-               MOVE    "±ß"            TO  SPA-GMN-W28-LBL-SENTEI-EN
-           END-EVALUATE
+           MOVE    SPA-GMN-W28-TTANKAIP(IDXI)
+                                       TO  SPA-GMN-W28-SENTEI-TANKAIP
+           MOVE    SPA-GMN-W28-TTANKARJ(IDXI)
+                                       TO  SPA-GMN-W28-SENTEI-TANKARJ
       *
            MOVE    SPA-NAI-W28-TTAXKBN (IDXI)
                                        TO  WRK-CMB-CD
@@ -1418,6 +1469,22 @@
                    GO  TO  4900-KANRENCHK-EXT
                END-IF
            END-IF
+      *
+      *    ÁªÄêÆþ±¡ÎÁ¡ÝÉéÃ´¶èÊ¬¤¬Äê³ÛÀßÄê¤Î»þ¡¢
+      *    °ìÈÌ¡¿Ï·¿Í¤È°ìÈÌ£±Æü¡¦Ï·¿Í£±Æü¤È°ì½ï¤ËÀßÄê¤µ¤ì¤Æ¤¤¤Ê¤¤¤³¤È
+           IF    ( SPA-GMN-W28-SENTEI-FTNKBN-CD   =   "2" )
+               IF    ( SPA-GMN-W28-SENTEI-TANKA   >   ZERO  )
+                   IF    ( SPA-GMN-W28-SENTEI-TANKAIP =    ZERO )
+                    AND  ( SPA-GMN-W28-SENTEI-TANKARJ =    ZERO )
+                       CONTINUE
+                   ELSE
+                       MOVE    4       TO  SPA-GMN-W28-CUR
+                       MOVE    "1008"  TO  SPA-ERRCD
+                       GO  TO  4900-KANRENCHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
            .
       *
        4900-KANRENCHK-EXT.
@@ -1452,6 +1519,8 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           INITIALIZE                          W28
+      *
       *    ³«»ÏÁªÂòÈÖ¹æ
            MOVE    SPA-GMN-W28-STSELNUM    TO  W28-STSELNUM
       *    ½ªÎ»ÁªÂòÈÖ¹æ
@@ -1482,12 +1551,27 @@
       *    ÁªÄêÎÅÍÜÈñ¡ÝÅÀ¿ôÃ±²Á
            MOVE    SPA-GMN-W28-SENTEI-TANKA
                                    TO  W28-SENTEI-TANKA
+      *    ÁªÄêÎÅÍÜÈñ¡ÝÅÀ¿ôÃ±²Á¡Ê°ìÈÌ¡Ë
+           MOVE    SPA-GMN-W28-SENTEI-TANKAIP
+                                   TO  W28-SENTEI-TANKAIP
+      *    ÁªÄêÎÅÍÜÈñ¡ÝÅÀ¿ôÃ±²Á¡ÊÏ·¿Í¡Ë
+           MOVE    SPA-GMN-W28-SENTEI-TANKARJ
+                                   TO  W28-SENTEI-TANKARJ
       *
       *    ÁªÄêÎÅÍÜÈñ¡Ý¥é¥Ù¥ë
-           MOVE    SPA-GMN-W28-LBL-SENTEI-TANKA
+           EVALUATE    SPA-GMN-W28-SENTEI-FTNKBN-CD
+           WHEN    "1"
+               MOVE    "ÅÀ¿ôÃ±²Á"  TO  W28-LBL-SENTEI-TANKA
+               MOVE    SPACE       TO  W28-LBL-SENTEI-EN
+           WHEN    "2"
+               MOVE    "°ìÈÌ¡¿Ï·¿Í"
                                    TO  W28-LBL-SENTEI-TANKA
-           MOVE    SPA-GMN-W28-LBL-SENTEI-EN
-                                   TO  W28-LBL-SENTEI-EN
+               MOVE    "±ß"        TO  W28-LBL-SENTEI-EN
+               MOVE    "°ìÈÌ£±Æü"  TO  W28-LBL-SENTEI-TANKAIP
+               MOVE    "±ß"        TO  W28-LBL-SENTEI-ENIP
+               MOVE    "Ï·¿Í£±Æü"  TO  W28-LBL-SENTEI-TANKARJ
+               MOVE    "±ß"        TO  W28-LBL-SENTEI-ENRJ
+           END-EVALUATE
       *
       *    ÁªÄêÎÅÍÜÈñ¡Ý¾ÃÈñÀÇ
            MOVE    SPA-GMN-W28-SENTEI-TAX
@@ -1532,14 +1616,38 @@
       *        Æþ±¡ÎÁ
                MOVE    SPA-GMN-W28-TKHNRYO  (IDX1)
                                            TO  W28-TKHNRYO  (IDX1)
-      *        ÉéÃ´·×»»
-               MOVE    SPA-GMN-W28-TFTNNAME (IDX1)
-                                           TO  W28-TFTNNAME (IDX1)
+      *
+               EVALUATE SPA-NAI-W28-TFTNKBN (IDX1)
+               WHEN    SPACE
+                   MOVE    "ÄêÎ¨"      TO  W28-TFTNNAME (IDX1)
+               WHEN    "1"
+                   MOVE    "ÄêÎ¨"      TO  W28-TFTNNAME (IDX1)
+               WHEN    "2"
+                   IF    ( SPA-GMN-W28-TTANKAIP (IDX1)     >   ZERO )
+                    OR   ( SPA-GMN-W28-TTANKARJ (IDX1)     >   ZERO )
+                       MOVE    "Äê³Û(°ì¡§Ï·)"
+                                       TO  W28-TFTNNAME (IDX1)
+                   ELSE
+                       MOVE    "Äê³Û"  TO  W28-TFTNNAME (IDX1)
+                   END-IF
+               END-EVALUATE
+      *
       *        Ã±²Á¡Ê¶â³Û¡Ë
-               MOVE    SPA-GMN-W28-TTANKA (IDX1)
+               IF    ( SPA-GMN-W28-TTANKAIP (IDX1)     >   ZERO )
+                OR   ( SPA-GMN-W28-TTANKARJ (IDX1)     >   ZERO )
+                   MOVE    SPACE           TO  WRK-IPN-RJN-EDT
+                   MOVE    SPA-GMN-W28-TTANKAIP (IDX1)
+                                           TO  WRK-TANKAIP
+                   MOVE    "¡§"             TO  WRK-LBLSEP
+                   MOVE    SPA-GMN-W28-TTANKARJ (IDX1)
+                                           TO  WRK-TANKARJ
+                   MOVE    WRK-IPN-RJN-EDT TO  W28-TTANKA (IDX1)
+               ELSE
+                   MOVE    SPA-GMN-W28-TTANKA (IDX1)
                                            TO  WRK-ZZZZZZZZZ9
-               MOVE    WRK-ZZZZZZZZZ9
+                   MOVE    WRK-ZZZZZZZZZ9
                                            TO  W28-TTANKA (IDX1)
+               END-IF
       *
       *        ¾ÃÈñÀÇ
                MOVE    SPA-GMN-W28-TTAXNAME(IDX1)
@@ -1573,6 +1681,14 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
+           MOVE    WIDGET-NORMAL       TO  W28-SENTEI-TANKAIP-STATE
+           MOVE    WIDGET-NORMAL       TO  W28-SENTEI-TANKARJ-STATE
+      *
+           IF    ( SPA-GMN-W28-SENTEI-FTNKBN-CD    =   "1" )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  W28-SENTEI-TANKAIP-STATE
+                                           W28-SENTEI-TANKARJ-STATE
+           END-IF
       *
            .
        500-GMNHEN-STATE-EDIT-EXT.
@@ -1588,6 +1704,18 @@
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
       *
+           IF    ( SPA-GMN-W28-CUR     =    006 )
+               IF    ( W24-SENTEI-TANKAIP-STATE =  WIDGET-INSENSITIVE )
+                   MOVE    007             TO  SPA-GMN-W28-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-W28-CUR     =    007 )
+               IF    ( W24-SENTEI-TANKAIP-STATE =  WIDGET-INSENSITIVE )
+                   MOVE    005             TO  SPA-GMN-W28-CUR
+               END-IF
+           END-IF
+      *
            EVALUATE    SPA-GMN-W28-CUR
            WHEN    001
                MOVE    "STSELNUM"          TO  MCP-WIDGET
@@ -1599,6 +1727,10 @@
                MOVE    "SENTEI_TANKA"      TO  MCP-WIDGET
            WHEN    005
                MOVE    "SENTEI_TAX"        TO  MCP-WIDGET
+           WHEN    006
+               MOVE    "SENTEI_TANKAIP"    TO  MCP-WIDGET
+           WHEN    007
+               MOVE    "SENTEI_TANKARJ"    TO  MCP-WIDGET
            WHEN    100
                MOVE    "KJNYMD"            TO  MCP-WIDGET
            WHEN    212
@@ -1616,24 +1748,19 @@
       *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "STSELNUM"
-               MOVE    001             TO  SPA-GMN-W28-CUR
-           WHEN    "EDSELNUM"
                MOVE    002             TO  SPA-GMN-W28-CUR
-           WHEN    "SENTEI_FTNKBN"
+           WHEN    "EDSELNUM"
                MOVE    003             TO  SPA-GMN-W28-CUR
-           WHEN    "SENTEI_TANKA"
+           WHEN    "SENTEI_FTNKBN"
                MOVE    004             TO  SPA-GMN-W28-CUR
-           WHEN    "SENTEI_TAX"
+           WHEN    "SENTEI_TANKA"
+               MOVE    006             TO  SPA-GMN-W28-CUR
+           WHEN    "SENTEI_TANKAIP"
+               MOVE    007             TO  SPA-GMN-W28-CUR
+           WHEN    "SENTEI_TANKARJ"
                MOVE    005             TO  SPA-GMN-W28-CUR
-           END-EVALUATE
-      *
-      *    ¼¡¥«¡¼¥½¥ë°ÌÃÖ¤òÀßÄê
-           EVALUATE    WRK-MCP-WIDGET
            WHEN    "SENTEI_TAX"
                MOVE    212             TO  SPA-GMN-W28-CUR
-           WHEN    OTHER
-               COMPUTE SPA-GMN-W28-CUR =   SPA-GMN-W28-CUR
-                                           +   1
            END-EVALUATE
       *
            .
@@ -1687,6 +1814,14 @@
            WHEN    "1007"
                MOVE    "ÅÀ¿ôÃ±²Á¤Ï£¹£¹ÅÀ°Ê²¼¤ÇÆþÎÏ¤·¤Æ¤¯¤À¤µ¤¤"
                                        TO  SPA-ERRMSG
+           WHEN    "1008"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "°ìÈÌ¡¿Ï·¿Í¤È°ìÈÌ£±Æü¡ÊÏ·¿Í£±Æü¡Ë¤Ï¤¤¤º¤ì"
+                                           DELIMITED   BY  SIZE
+                       "¤«¤òÆþÎÏ¤·¤Æ¤¯¤À¤µ¤¤"
+                                           DELIMITED   BY  SIZE
+               INTO  SPA-ERRMSG
+               END-STRING
            WHEN    "4001"  THRU    "4999"
                MOVE    "¹¹¿·¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
                                        TO  SPA-ERRMSG

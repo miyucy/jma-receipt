@@ -122,6 +122,10 @@
                      15  SPA-GMN-W24-SENTEI-FTNKBN-NM  PIC X(20).
       *            点数単価
                    13  SPA-GMN-W24-SENTEI-TANKA        PIC S9(4).
+      *            点数単価（一般）
+                   13  SPA-GMN-W24-SENTEI-TANKAIP      PIC S9(4).
+      *            点数単価（老人）
+                   13  SPA-GMN-W24-SENTEI-TANKARJ      PIC S9(4).
       *            消費税
                    13  SPA-GMN-W24-SENTEI-TAX.
                      15  SPA-GMN-W24-SENTEI-TAX-CD     PIC X(01).

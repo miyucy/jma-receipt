@@ -109,14 +109,24 @@
                     07  W24-SENTEI-FTNKBN-ITM  PIC X(22)
                                                OCCURS  10 TIMES.
                   06  W24-SENTEI-TANKA         PIC S9(4).
+                  06  W24-SENTEI-TANKAIP       PIC S9(4).
+                  06  W24-SENTEI-TANKAIP-STATE PIC S9(9)
+                                               BINARY.
+                  06  W24-SENTEI-TANKARJ       PIC S9(4).
+                  06  W24-SENTEI-TANKARJ-STATE PIC S9(9)
+                                               BINARY.
                   06  W24-CMB-SENTEI-TAX.
                     07  W24-SENTEI-TAX         PIC X(20).
                     07  W24-SENTEI-TAX-CNT     PIC S9(9)
                                                BINARY.
                     07  W24-SENTEI-TAX-ITM     PIC X(20)
                                                OCCURS  5 TIMES.
-                  06  W24-LBL-SENTEI-TANKA     PIC X(8).
+                  06  W24-LBL-SENTEI-TANKA     PIC X(10).
                   06  W24-LBL-SENTEI-EN        PIC X(2).
+                  06  W24-LBL-SENTEI-TANKAIP   PIC X(8).
+                  06  W24-LBL-SENTEI-ENIP      PIC X(2).
+                  06  W24-LBL-SENTEI-TANKARJ   PIC X(8).
+                  06  W24-LBL-SENTEI-ENRJ      PIC X(2).
               04  W24-CMB-REKI-DISPKBN.
                 05  W24-REKI-DISPKBN           PIC X(24).
                 05  W24-REKI-DISPKBN-CNT       PIC S9(9)

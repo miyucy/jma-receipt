@@ -879,8 +879,8 @@
            WHEN    SPACE
                MOVE    CONST-SENTEI-TANKA
                                        TO  SPA-GMN-W24-SENTEI-TANKA
-               MOVE    "≈¿øÙ√±≤¡"      TO  SPA-GMN-W24-LBL-SENTEI-TANKA
-               MOVE    SPACE           TO  SPA-GMN-W24-LBL-SENTEI-EN
+               MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKAIP
+               MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKARJ
            WHEN    "1"
                IF    ( SYS-5000-SENTEI-TANKA-X     IS  NUMERIC )
                    MOVE    SYS-5000-SENTEI-TANKA
@@ -888,8 +888,8 @@
                ELSE
                    MOVE    ZERO        TO  SPA-GMN-W24-SENTEI-TANKA
                END-IF
-               MOVE    "≈¿øÙ√±≤¡"      TO  SPA-GMN-W24-LBL-SENTEI-TANKA
-               MOVE    SPACE           TO  SPA-GMN-W24-LBL-SENTEI-EN
+               MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKAIP
+               MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKARJ
            WHEN    "2"
                IF    ( SYS-5000-SENTEI-KINGAKU-X   IS  NUMERIC )
                    MOVE    SYS-5000-SENTEI-KINGAKU
@@ -897,13 +897,23 @@
                ELSE
                    MOVE    ZERO        TO  SPA-GMN-W24-SENTEI-TANKA
                END-IF
-               MOVE    "£±∆¸"          TO  SPA-GMN-W24-LBL-SENTEI-TANKA
-               MOVE    "±ﬂ"            TO  SPA-GMN-W24-LBL-SENTEI-EN
+               IF    ( SYS-5000-SENTEI-IPN-KINGAKU-X   IS  NUMERIC )
+                   MOVE    SYS-5000-SENTEI-IPN-KINGAKU
+                                       TO  SPA-GMN-W24-SENTEI-TANKAIP
+               ELSE
+                   MOVE    ZERO        TO  SPA-GMN-W24-SENTEI-TANKAIP
+               END-IF
+               IF    ( SYS-5000-SENTEI-RJN-KINGAKU-X   IS  NUMERIC )
+                   MOVE    SYS-5000-SENTEI-RJN-KINGAKU
+                                       TO  SPA-GMN-W24-SENTEI-TANKARJ
+               ELSE
+                   MOVE    ZERO        TO  SPA-GMN-W24-SENTEI-TANKARJ
+               END-IF
            WHEN    OTHER
                MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKA
+               MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKAIP
+               MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKARJ
                MOVE    SPACE           TO  SPA-GMN-W24-SENTEI-TAX
-               MOVE    SPACE           TO  SPA-GMN-W24-LBL-SENTEI-TANKA
-               MOVE    SPACE           TO  SPA-GMN-W24-LBL-SENTEI-EN
            END-EVALUATE
       *
       *    ∆˛±°ŒÚ…Ωº®∂Ë ¨
@@ -1195,6 +1205,12 @@
       *    ¡™ƒÍŒ≈Õ‹»Ò°›≈¿øÙ√±≤¡
            MOVE    W24-SENTEI-TANKA    TO  SPA-GMN-W24-SENTEI-TANKA
       *
+      *    ¡™ƒÍŒ≈Õ‹»Ò°›≈¿øÙ√±≤¡° ∞Ï»Ã°À
+           MOVE    W24-SENTEI-TANKAIP  TO  SPA-GMN-W24-SENTEI-TANKAIP
+      *
+      *    ¡™ƒÍŒ≈Õ‹»Ò°›≈¿øÙ√±≤¡° œ∑øÕ°À
+           MOVE    W24-SENTEI-TANKARJ  TO  SPA-GMN-W24-SENTEI-TANKARJ
+      *
       *    ¡™ƒÍŒ≈Õ‹»Ò°›æ√»Ò¿«
            MOVE    W24-SENTEI-TAX      TO  SPA-GMN-W24-SENTEI-TAX
       *
@@ -1313,6 +1329,18 @@
       *
       *    ¡™ƒÍŒ≈Õ‹»Ò°›≈¿øÙ√±≤¡
            PERFORM 4100-SENTEI-TANKA-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    ¡™ƒÍŒ≈Õ‹»Ò°›≈¿øÙ√±≤¡° ∞Ï»Ã°À
+           PERFORM 4100-SENTEI-TANKAIP-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    ¡™ƒÍŒ≈Õ‹»Ò°›≈¿øÙ√±≤¡° œ∑øÕ°À
+           PERFORM 4100-SENTEI-TANKARJ-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1719,8 +1747,14 @@
                MOVE    ZERO        TO  SYS-5000-SENTEI-TANKA
                MOVE    SPA-GMN-W24-SENTEI-TANKA
                                    TO  SYS-5000-SENTEI-KINGAKU
+               MOVE    SPA-GMN-W24-SENTEI-TANKAIP
+                                   TO  SYS-5000-SENTEI-IPN-KINGAKU
+               MOVE    SPA-GMN-W24-SENTEI-TANKARJ
+                                   TO  SYS-5000-SENTEI-RJN-KINGAKU
            WHEN    OTHER
                MOVE    ZERO        TO  SYS-5000-SENTEI-KINGAKU
+               MOVE    ZERO        TO  SYS-5000-SENTEI-IPN-KINGAKU
+               MOVE    ZERO        TO  SYS-5000-SENTEI-IPN-KINGAKU
            END-EVALUATE
       *
       *    ∆˛±°ŒÚ…Ωº®∂Ë ¨
@@ -2397,12 +2431,6 @@
       *****************************************************************
        4100-SENTEI-FTNKBN-CHK-SEC         SECTION.
       *
-           IF    ( SPA-GMN-W24-SENTEI-FTNKBN =   SPACE )
-               MOVE    SPA-GMN-W24-SENTEI-FTNKBN-ITM (1)
-                                       TO  SPA-GMN-W24-SENTEI-FTNKBN
-               GO  TO  4100-SENTEI-FTNKBN-CHK-EXT
-           END-IF
-      *
       *    ≥∫≈ˆ•≥°º•…§Œ•«°º•ø§¨¬∏∫ﬂ§π§Î§´•¡•ß•√•Ø
            MOVE    SPA-GMN-W24-SENTEI-FTNKBN-CD
                                        TO  WRK-CMB-CD
@@ -2416,16 +2444,15 @@
       *
            EVALUATE    SPA-GMN-W24-SENTEI-FTNKBN-CD
            WHEN    "1"
-                   MOVE    "≈¿øÙ√±≤¡"  TO  SPA-GMN-W24-LBL-SENTEI-TANKA
-                   MOVE    SPACE       TO  SPA-GMN-W24-LBL-SENTEI-EN
+               MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKAIP
+               MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKARJ
            WHEN    "2"
-                   MOVE    "£±∆¸"      TO  SPA-GMN-W24-LBL-SENTEI-TANKA
-                   MOVE    "±ﬂ"        TO  SPA-GMN-W24-LBL-SENTEI-EN
+               CONTINUE
            WHEN    OTHER
-                   MOVE    ZERO        TO  SPA-GMN-W24-SENTEI-TANKA
-                   MOVE    SPACE       TO  SPA-GMN-W24-SENTEI-TAX
-                   MOVE    SPACE       TO  SPA-GMN-W24-LBL-SENTEI-TANKA
-                   MOVE    SPACE       TO  SPA-GMN-W24-LBL-SENTEI-EN
+               MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKA
+               MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKAIP
+               MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKARJ
+               MOVE    SPACE           TO  SPA-GMN-W24-SENTEI-TAX
            END-EVALUATE
       *
            .
@@ -2439,6 +2466,24 @@
       *
            .
        4100-SENTEI-TANKA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¡™ƒÍŒ≈Õ‹»Ò°›≈¿øÙ√±≤¡° ∞Ï»Ã°À
+      *****************************************************************
+       4100-SENTEI-TANKAIP-CHK-SEC     SECTION.
+      *
+      *
+           .
+       4100-SENTEI-TANKAIP-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¡™ƒÍŒ≈Õ‹»Ò°›≈¿øÙ√±≤¡° œ∑øÕ°À
+      *****************************************************************
+       4100-SENTEI-TANKARJ-CHK-SEC     SECTION.
+      *
+      *
+           .
+       4100-SENTEI-TANKARJ-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ¡™ƒÍŒ≈Õ‹»Ò°›æ√»Ò¿«
@@ -3043,8 +3088,6 @@
       *
            MOVE    CONST-SENTEI-TANKA
                                    TO  SPA-GMN-W24-SENTEI-TANKA
-           MOVE    "≈¿øÙ√±≤¡"      TO  SPA-GMN-W24-LBL-SENTEI-TANKA
-           MOVE    SPACE           TO  SPA-GMN-W24-LBL-SENTEI-EN
       *
            MOVE    SPA-GMN-W24-SENTEI-TAX-ITM (1)
                                    TO  SPA-GMN-W24-SENTEI-TAX
@@ -3246,6 +3289,21 @@
                END-IF
            END-IF
       *
+      *    ¡™ƒÍ∆˛±°Œ¡°›…È√¥∂Ë ¨§¨ƒÍ≥€¿ﬂƒÍ§Œª˛°¢
+      *    ∞Ï»Ã°øœ∑øÕ§»∞Ï»Ã£±∆¸°¶œ∑øÕ£±∆¸§»∞ÏΩÔ§À¿ﬂƒÍ§µ§Ï§∆§§§ §§§≥§»
+           IF    ( SPA-GMN-W24-SENTEI-FTNKBN-CD   =   "2" )
+               IF    ( SPA-GMN-W24-SENTEI-TANKA   >   ZERO  )
+                   IF    ( SPA-GMN-W24-SENTEI-TANKAIP =    ZERO )
+                    AND  ( SPA-GMN-W24-SENTEI-TANKARJ =    ZERO )
+                       CONTINUE
+                   ELSE
+                       MOVE    40      TO  SPA-GMN-W24-CUR
+                       MOVE    "1008"  TO  SPA-ERRCD
+                       GO  TO  4900-KANRENCHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
            .
       *
        4900-KANRENCHK-EXT.
@@ -3279,6 +3337,8 @@
       *    ≤ËÃÃ ‘Ω∏ΩËÕ˝
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
+      *
+           INITIALIZE                  W24
       *
       *    Õ≠∏˙≥´ªœ∆¸
            MOVE    SPA-GMN-W24-STYUKYMD
@@ -3453,11 +3513,30 @@
            MOVE    SPA-GMN-W24-SENTEI-TANKA
                                    TO  W24-SENTEI-TANKA
       *
+      *    ¡™ƒÍŒ≈Õ‹»Ò°›≈¿øÙ√±≤¡° ∞Ï»Ã°À
+           MOVE    SPA-GMN-W24-SENTEI-TANKAIP
+                                   TO  W24-SENTEI-TANKAIP
+      *
+      *    ¡™ƒÍŒ≈Õ‹»Ò°›≈¿øÙ√±≤¡° œ∑øÕ°À
+           MOVE    SPA-GMN-W24-SENTEI-TANKARJ
+                                   TO  W24-SENTEI-TANKARJ
+      *
       *    ¡™ƒÍŒ≈Õ‹»Ò°›•È•Ÿ•Î
-           MOVE    SPA-GMN-W24-LBL-SENTEI-TANKA
-                                   TO  W24-LBL-SENTEI-TANKA
-           MOVE    SPA-GMN-W24-LBL-SENTEI-EN
-                                   TO  W24-LBL-SENTEI-EN
+           EVALUATE    SPA-GMN-W24-SENTEI-FTNKBN-CD
+           WHEN    "1"
+               MOVE    "≈¿øÙ√±≤¡"      TO  W24-LBL-SENTEI-TANKA
+               MOVE    SPACE           TO  W24-LBL-SENTEI-EN
+           WHEN    "2"
+               MOVE    "∞Ï»Ã°øœ∑øÕ"    TO  W24-LBL-SENTEI-TANKA
+               MOVE    "±ﬂ"            TO  W24-LBL-SENTEI-EN
+               MOVE    "∞Ï»Ã£±∆¸"      TO  W24-LBL-SENTEI-TANKAIP
+               MOVE    "±ﬂ"            TO  W24-LBL-SENTEI-ENIP
+               MOVE    "œ∑øÕ∞Ï∆¸"      TO  W24-LBL-SENTEI-TANKARJ
+               MOVE    "±ﬂ"            TO  W24-LBL-SENTEI-ENRJ
+           WHEN    OTHER
+               MOVE    SPACE           TO  W24-LBL-SENTEI-TANKA
+               MOVE    SPACE           TO  W24-LBL-SENTEI-EN
+           END-EVALUATE
       *
       *    ¡™ƒÍŒ≈Õ‹»Ò°›æ√»Ò¿«
            MOVE    SPA-GMN-W24-SENTEI-TAX
@@ -3539,10 +3618,19 @@
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
            MOVE    WIDGET-NORMAL       TO  W24-B03-STATE
+           MOVE    WIDGET-NORMAL       TO  W24-SENTEI-TANKAIP-STATE
+           MOVE    WIDGET-NORMAL       TO  W24-SENTEI-TANKARJ-STATE
+           MOVE    WIDGET-NORMAL       TO  W24-B03-STATE
       *
            IF    ( SPA-W01-STYUKYMD    =   ZERO )
                MOVE    WIDGET-INSENSITIVE
                                        TO  W24-B03-STATE
+           END-IF
+      *
+           IF    ( SPA-GMN-W24-SENTEI-FTNKBN-CD    =   "1" )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  W24-SENTEI-TANKAIP-STATE
+                                           W24-SENTEI-TANKARJ-STATE
            END-IF
       *
            .
@@ -3715,6 +3803,24 @@
                MOVE    "BRMSGK_TAX"    TO  MCP-WIDGET
            WHEN    047
                MOVE    "NACCT_BRMSGK"  TO  MCP-WIDGET
+           WHEN    048
+               IF    ( W24-SENTEI-TANKAIP-STATE
+                                       =   WIDGET-NORMAL )
+                   MOVE    "SENTEI_TANKAIP"
+                                       TO  MCP-WIDGET
+               ELSE
+                   MOVE    "SENTEI_TAX"
+                                       TO  MCP-WIDGET
+               END-IF
+           WHEN    049
+               IF    ( W24-SENTEI-TANKARJ-STATE
+                                       =   WIDGET-NORMAL )
+                   MOVE    "SENTEI_TANKARJ"
+                                       TO  MCP-WIDGET
+               ELSE
+                   MOVE    "SENTEI_TAX"
+                                       TO  MCP-WIDGET
+               END-IF
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -3730,120 +3836,109 @@
       *
            EVALUATE    MCP-WIDGET
            WHEN    "SK_NYUSYOKU"
-               MOVE    001             TO  SPA-GMN-W24-CUR
-           WHEN    "SK_TOKKSN"
                MOVE    002             TO  SPA-GMN-W24-CUR
-           WHEN    "SK_SYOKUDO"
+           WHEN    "SK_TOKKSN"
                MOVE    003             TO  SPA-GMN-W24-CUR
+           WHEN    "SK_SYOKUDO"
+               MOVE    005             TO  SPA-GMN-W24-CUR
       *    WHEN    "GN_NYUSRY"
       *        MOVE    004             TO  SPA-GMN-W24-CUR
            WHEN    "GN_INKANSEN"
-               MOVE    005             TO  SPA-GMN-W24-CUR
-           WHEN    "GN_ANZEN"
                MOVE    006             TO  SPA-GMN-W24-CUR
-           WHEN    "GN_JOKUSO"
+           WHEN    "GN_ANZEN"
                MOVE    007             TO  SPA-GMN-W24-CUR
+           WHEN    "GN_JOKUSO"
+               MOVE    046             TO  SPA-GMN-W24-CUR
            WHEN    "CHK_NYUKSN01"
-               MOVE    008             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN02"
                MOVE    009             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN03"
+           WHEN    "CHK_NYUKSN02"
                MOVE    010             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN04"
+           WHEN    "CHK_NYUKSN03"
                MOVE    011             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN05"
+           WHEN    "CHK_NYUKSN04"
                MOVE    012             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN06"
+           WHEN    "CHK_NYUKSN05"
                MOVE    013             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN07"
+           WHEN    "CHK_NYUKSN06"
                MOVE    014             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN08"
+           WHEN    "CHK_NYUKSN07"
                MOVE    015             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN09"
+           WHEN    "CHK_NYUKSN08"
                MOVE    016             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN10"
+           WHEN    "CHK_NYUKSN09"
                MOVE    017             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN11"
+           WHEN    "CHK_NYUKSN10"
                MOVE    018             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN12"
+           WHEN    "CHK_NYUKSN11"
                MOVE    019             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN13"
+           WHEN    "CHK_NYUKSN12"
                MOVE    020             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN14"
+           WHEN    "CHK_NYUKSN13"
                MOVE    021             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN15"
+           WHEN    "CHK_NYUKSN14"
                MOVE    022             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN16"
+           WHEN    "CHK_NYUKSN15"
                MOVE    023             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN17"
+           WHEN    "CHK_NYUKSN16"
                MOVE    024             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN18"
+           WHEN    "CHK_NYUKSN17"
                MOVE    025             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN19"
+           WHEN    "CHK_NYUKSN18"
                MOVE    026             TO  SPA-GMN-W24-CUR
-           WHEN    "CHK_NYUKSN20"
+           WHEN    "CHK_NYUKSN19"
                MOVE    027             TO  SPA-GMN-W24-CUR
-           WHEN    "CHIIKIKSN"
+           WHEN    "CHK_NYUKSN20"
                MOVE    028             TO  SPA-GMN-W24-CUR
-           WHEN    "SRYCD01"
+           WHEN    "CHIIKIKSN"
                MOVE    029             TO  SPA-GMN-W24-CUR
-           WHEN    "SRYCD02"
+           WHEN    "SRYCD01"
                MOVE    030             TO  SPA-GMN-W24-CUR
-           WHEN    "SRYCD03"
+           WHEN    "SRYCD02"
                MOVE    031             TO  SPA-GMN-W24-CUR
-           WHEN    "SRYCD04"
+           WHEN    "SRYCD03"
                MOVE    032             TO  SPA-GMN-W24-CUR
-           WHEN    "SRYCD05"
+           WHEN    "SRYCD04"
                MOVE    033             TO  SPA-GMN-W24-CUR
-           WHEN    "SRYCD06"
+           WHEN    "SRYCD05"
                MOVE    034             TO  SPA-GMN-W24-CUR
-           WHEN    "SRYCD07"
+           WHEN    "SRYCD06"
                MOVE    035             TO  SPA-GMN-W24-CUR
-           WHEN    "SRYCD08"
+           WHEN    "SRYCD07"
                MOVE    036             TO  SPA-GMN-W24-CUR
-           WHEN    "SRYCD09"
+           WHEN    "SRYCD08"
                MOVE    037             TO  SPA-GMN-W24-CUR
-           WHEN    "SRYCD10"
+           WHEN    "SRYCD09"
                MOVE    038             TO  SPA-GMN-W24-CUR
+           WHEN    "SRYCD10"
+               MOVE    039             TO  SPA-GMN-W24-CUR
            WHEN    "SENTEI_FTNKBN"
                EVALUATE    SPA-GMN-W24-SENTEI-FTNKBN-CD
                WHEN    "1"
                WHEN    "2"
-                   MOVE    039         TO  SPA-GMN-W24-CUR
+                   MOVE    040         TO  SPA-GMN-W24-CUR
                WHEN    OTHER
-                   MOVE    041         TO  SPA-GMN-W24-CUR
+                   MOVE    042         TO  SPA-GMN-W24-CUR
                END-EVALUATE
            WHEN    "SENTEI_TANKA"
-               MOVE    040             TO  SPA-GMN-W24-CUR
+               MOVE    048             TO  SPA-GMN-W24-CUR
+           WHEN    "SENTEI_TANKAIP"
+               MOVE    049             TO  SPA-GMN-W24-CUR
+           WHEN    "SENTEI_TANKARJ"
+               MOVE    041             TO  SPA-GMN-W24-CUR
            WHEN    "SENTEI_TAX"
-               MOVE    041         TO  SPA-GMN-W24-CUR
+               MOVE    042         TO  SPA-GMN-W24-CUR
            WHEN    "REKI_DISPKBN"
-               MOVE    042             TO  SPA-GMN-W24-CUR
-           WHEN    "SKYPRTKBN"
                MOVE    043             TO  SPA-GMN-W24-CUR
-           WHEN    "SKYMISYUPRTKBN"
+           WHEN    "SKYPRTKBN"
                MOVE    044             TO  SPA-GMN-W24-CUR
-           WHEN    "TAIPRTKBN"
+           WHEN    "SKYMISYUPRTKBN"
                MOVE    045             TO  SPA-GMN-W24-CUR
-           WHEN    "BRMSGK_TAX"
-               MOVE    046             TO  SPA-GMN-W24-CUR
-           WHEN    "NACCT_BRMSGK"
-               MOVE    047             TO  SPA-GMN-W24-CUR
-           END-EVALUATE
-      *
-      *    º°•´°º•Ω•Î∞Ã√÷§Ú¿ﬂƒÍ
-           EVALUATE    MCP-WIDGET
-           WHEN    "GN_JOKUSO"
-               MOVE    046             TO  SPA-GMN-W24-CUR
-           WHEN    "NACCT_BRMSGK"
-               MOVE    008             TO  SPA-GMN-W24-CUR
-           WHEN    "SK_SYOKUDO"
-               MOVE    005             TO  SPA-GMN-W24-CUR
            WHEN    "TAIPRTKBN"
                MOVE    212             TO  SPA-GMN-W24-CUR
-           WHEN    OTHER
-               COMPUTE SPA-GMN-W24-CUR =   SPA-GMN-W24-CUR
-                                           +   1
+           WHEN    "BRMSGK_TAX"
+               MOVE    047             TO  SPA-GMN-W24-CUR
+           WHEN    "NACCT_BRMSGK"
+               MOVE    008             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
            .
@@ -3896,6 +3991,14 @@
            WHEN    "1007"
                MOVE    "≈¿øÙ√±≤¡§œ£π£π≈¿∞ ≤º§«∆˛Œœ§∑§∆§Ø§¿§µ§§"
                                        TO  SPA-ERRMSG
+           WHEN    "1008"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "∞Ï»Ã°øœ∑øÕ§»∞Ï»Ã£±∆¸° œ∑øÕ£±∆¸°À§œ§§§∫§Ï"
+                                           DELIMITED   BY  SIZE
+                       "§´§Ú∆˛Œœ§∑§∆§Ø§¿§µ§§"
+                                           DELIMITED   BY  SIZE
+               INTO  SPA-ERRMSG
+               END-STRING
            WHEN    "1201"
                MOVE    "ππø∑§«§≠§ﬁ§ª§Û§«§∑§ø"
                                        TO  SPA-ERRMSG
