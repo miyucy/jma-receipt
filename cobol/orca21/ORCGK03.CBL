@@ -1492,8 +1492,10 @@
                    GO      TO      450-NYUKIN-CHK-EXT
                END-IF
       *        今回入金が請求額以下であること
-      *???     IF     (SPA-GMN-SEIKYU          >   ZERO  )  AND
-               IF     (SPA-GMN-NYUKIN          >   SPA-GMN-SEIKYU)
+               IF    ((SPA-GMN-SEIKYU          >=  ZERO  )  AND
+                      (SPA-GMN-NYUKIN          >   SPA-GMN-SEIKYU)) OR
+                     ((SPA-GMN-SEIKYU          <   ZERO  )  AND
+                      (SPA-GMN-NYUKIN          >   ZERO  ))
                    MOVE    "0008"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-GMN-CUR
                    GO      TO      450-NYUKIN-CHK-EXT
