@@ -431,7 +431,7 @@
                    END-IF
                WHEN    2
                    IF      SPA-HOSPSBT     NOT =   2
-                       MOVE    "0016"          TO  SPA-ERRCD
+                       MOVE    "0116"          TO  SPA-ERRCD
                        GO      TO      200-INPUTCD-KIHON-EXT
                    END-IF
            END-EVALUATE
@@ -446,7 +446,7 @@
                    END-IF
                WHEN    2
                    IF      SPA-NYUGAIKBN   NOT =   "2"
-                       MOVE    "0014"          TO  LNK-SC92-ERRCD1
+                       MOVE    "0114"          TO  LNK-SC92-ERRCD1
                    END-IF
            END-EVALUATE
       *
@@ -559,7 +559,11 @@
       *                                MCPDATA-REC
       *
            IF      IDX                 =   ZERO
-               MOVE    "0015"          TO  LNK-SC92-ERRCD2
+               IF      TNS-ROUTEKKBN   =   1
+                   MOVE    "0115"          TO  LNK-SC92-ERRCD2
+               ELSE
+                   MOVE    "0015"          TO  LNK-SC92-ERRCD2
+               END-IF
                GO      TO      2002-SRYCDCHG-HEN-EXT
            END-IF
       *
@@ -2409,6 +2413,21 @@
       *    数量・回数のみ変更の時の編集処理
       *****************************************************************
        300-SURYOHEN-SEC         SECTION.
+      *
+      *    回数が１以上の時、算定回数チェック
+           IF     (SPA-COM-INPUTCD(IDX-T)(1:1)     =   "1" )  AND
+                  (SPA-COM-SRYKBN (IDX-T)(1:1) NOT =  "9"  )  AND
+                  (SPA-COM-KAISU  (IDX-T)          >  1    )
+               MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+      *        算定回数チェック
+               IF      TNS-SANTEIRRKKBN    NOT =   ZERO
+                   PERFORM 2001-SANTEI-CHK-SEC
+                   IF      LNK-SC92-ERRCD3 NOT =   SPACE
+                       GO      TO      300-SURYOHEN-EXT
+                   END-IF
+               END-IF
+           END-IF
       *
       *    入力値のある時、再編集
            IF      SPA-COM-INPUTCD (IDX-T)(1:2)    =   "84"
