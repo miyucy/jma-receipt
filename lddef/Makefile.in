@@ -6,7 +6,9 @@ exec_prefix= @exec_prefix@
 lddefdir = ${exec_prefix}/lddef
 libdir = @libdir@
 
-CPP = cpp
+CPP = @CPP@
+# dummy flags
+LDFLAGS = -x c
 
 LDFILE_sources = \
 	orca00.ld.in \
@@ -59,7 +61,7 @@ INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) \
 .SUFFIXES: .ld.in .bd.in .ld .bd 
 
 .ld.in.ld .bd.in.bd:
-	$(CPP) $< > $@
+	$(CPP) $(LDFLAGS) $< > $@
 
 all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE)
 
