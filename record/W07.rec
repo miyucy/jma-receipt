@@ -198,6 +198,9 @@ W07	{
 					state   int;
 					value	varchar(2);
 				};
+				LASTKIKAN	{
+					value	number(2);
+				};
 			};
 			TAGNAME1    {
 			    state   int;
@@ -245,6 +248,13 @@ W07	{
 			TAG3	{
 				SRYNYKNKNRKBN_COMBO	{
 					SRYNYKNKNRKBN	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[5];
+				};
+				HAKHOUFLG_COMB	{
+					HAKHOUFLG	{
 						value	varchar(40);
 					};
 					count	int;
