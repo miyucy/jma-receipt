@@ -2389,7 +2389,7 @@
                IF      LNK-SC92-ERRCD(IDX-ERR) NOT =   SPACE
                    MOVE    LNK-SC92-ERRCD(IDX-ERR)     TO  SPA-ERRCD
       *            算定回数、併用算定チェックはエラーとしない
-                   IF     IDX-ERR              =   3  OR  7
+                   IF     IDX-ERR              =   3  OR  6
                        MOVE    SPACE           TO  SPA-ERRCD
                    END-IF
                END-IF
@@ -5992,7 +5992,6 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
-      *
       *
       *    行位置とカーソル位置の決定
            PERFORM 5002-GMNSPA-HEN-SEC
