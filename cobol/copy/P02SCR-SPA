@@ -30,6 +30,7 @@
       *  02.00.03    NACL-Â¿¡¹Ç¼  03/01/08  ¸øÈñ¤ÎºÇÂç·ï¿ô£±£°£°·ï¤Ø
       *  02.00.04    NACL-Â¿¡¹Ç¼  03/02/14  Ë¡ÊÌÈÖ¹æ¥Á¥§¥Ã¥¯¶èÊ¬ÄÉ²Ã
       *  02.00.05    NACL-Â¿¡¹Ç¼  03/03/24  ¸øÈñÉéÃ´³ÛÄÉ²Ã
+      *  02.00.06    NACL-Â¿¡¹Ç¼  03/05/12  ¼«ÈñÀÁµá¶èÊ¬ÄÉ²Ã
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -897,6 +898,16 @@
                        09  SPA-GMN2D-HKNKBN-LST    PIC X(16)
                                                    OCCURS   4.
                    07  SPA-GMN2D-HKNKBN-MAX        PIC 9(04).
+      *            ¼«ÈñÀÁµá¶èÊ¬
+                   07  SPA-GMN2D-JIBAISEIKBN-G.
+                       09  SPA-GMN2D-JIBAISEIKBN        PIC X(01).
+                       09  SPA-GMN2D-JIBAISEIKBNF       PIC X(01).
+                       09  SPA-GMN2D-JIBAISEIKBNMEI     PIC X(28).
+                   07  SPA-GMN2D-JIBAISEIKBN-COMB.
+                       09  SPA-GMN2D-JIBAISEIKBN-LST    PIC X(30)
+                                                   OCCURS   2.
+                   07  SPA-GMN2D-JIBAISEIKBN-MAX   PIC 9(04).
+      *
                    07  SPA-GMN2D-HIHKNJANAME       PIC X(50).
       *
                    07  SPA-GMN2D-KOHNUM1         PIC X(14).

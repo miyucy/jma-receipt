@@ -77,6 +77,8 @@
            03  PTRSI-COMMENT               PIC  X(200).
       *ºÒ³²¶èÊ¬
            03  PTRSI-SAIGAIKBN             PIC  X(01).
+      *¼«ÇåÀÕ´µ¼ÔÀÁµá¶èÊ¬
+           03  PTRSI-JIBAISEIKBN           PIC  X(01).
       *Ã¼Ëö£É£Ä
            03  PTRSI-TERMID                PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
