@@ -493,6 +493,12 @@
                    MOVE    ZERO                TO  SPA-YAKJYOPRTFLG
                END-IF
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    システム管理検索（チェック機能制御情報）
            MOVE    SPACE               TO  SYS-1008-REC
@@ -619,6 +625,12 @@
                MOVE    ZERO                TO  SPA-JIKANCHK-TIME-G
                MOVE    ZERO                TO  SPA-JIKANTOKU-CHK
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    診療科
            MOVE    SPACE               TO  SYS-KEY
@@ -656,11 +668,12 @@
                PERFORM 900-KANRIMST-READ-SEC
            END-PERFORM
       *    カーソルクロース
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    入外区分
            MOVE    "2"                 TO  SPA-NYUGAIKBN
@@ -708,15 +721,15 @@
                END-IF
       *
            END-IF
-      *
       *    時間外特例医療機関の施設基準はすべてありとする
            MOVE    1                   TO  SPA-JIKANTOKU
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    システム管理検索（施設基準）
            MOVE    SPACE               TO  SYS-1007-REC
@@ -753,6 +766,13 @@
                MOVE    SYS-1007-SANTEI (6:1)   TO  SPA-TOKUTEI-FLG
            END-IF
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
       *    システム管理検索（診療行為一括入金管理情報）
            MOVE    SPACE               TO  SYS-1038-REC
            INITIALIZE                  SYS-1007-REC
@@ -784,12 +804,12 @@
                MOVE    "0"                 TO  SPA-KAGRPFLG
           END-IF
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        100-K01KYOUTU-EXT.
@@ -848,6 +868,12 @@
                END-IF
            END-IF
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    システム管理検索（チェック機能制御情報）
            MOVE    SPACE               TO  SYS-1008-REC
@@ -938,6 +964,13 @@
                MOVE    "1"                 TO  SPA-GAZOUKSN1
            END-IF
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
       *    診療科
            MOVE    SPACE               TO  SYS-KEY
            MOVE    SPACE               TO  SYS-1005-REC
@@ -974,11 +1007,12 @@
                PERFORM 900-KANRIMST-READ-SEC
            END-PERFORM
       *    カーソルクロース
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
       *    入外区分
            MOVE    "1"                 TO  SPA-NYUGAIKBN
@@ -1026,15 +1060,15 @@
                END-IF
       *
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
       *    時間外特例医療機関の施設基準はすべてありとする
            MOVE    1                   TO  SPA-JIKANTOKU
-      *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
       *
       *    システム管理検索（施設基準）
            MOVE    SPACE               TO  SYS-1007-REC
@@ -1071,12 +1105,12 @@
                MOVE    SYS-1007-SANTEI (6:1)   TO  SPA-TOKUTEI-FLG
            END-IF
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        900-K01KYOUTU-EXT.
@@ -1216,6 +1250,12 @@
                MOVE    "JYURRK-KEY2"    TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "JYURRK-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
       *    診察日の再編集
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1374,12 +1414,12 @@
                INITIALIZE                  SYUNOU-REC
                MOVE    1               TO  FLG-SYUNOU
            END-IF
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                ORCMCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "MCPDBSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        200211-FUKU-HEN-EXT.
@@ -1477,11 +1517,12 @@
                END-IF
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        10014-UKETUKE-CHK-EXT.
@@ -1897,11 +1938,12 @@
                INITIALIZE                  SYUNOU-REC
                MOVE    1               TO  FLG-SYUNOU
            END-IF
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      FLG-SYUNOU      NOT =   ZERO
               GO   TO      100111-CONTKBN-HANTEI-EXT
@@ -2022,11 +2064,12 @@
                END-IF
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    対象の科のドクターがなかった時、科指定なしか最初
            IF      SPA-DRCD            =   SPACE
@@ -2728,11 +2771,13 @@
                PERFORM 975-SRYKARRK-READ-SEC
            END-PERFORM
       *
-      ***  MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      ****                             MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
            IF      SPA-RRK-LSTSRYKA    NOT =   SPACE
                MOVE    SPA-RRK-LSTSRYKA    TO  SPA-LSTSRYKA
            END-IF
@@ -2805,11 +2850,12 @@
                PERFORM 980-PTBYOMEI-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *----(01.00.01) LINE ADD START ----------------------------------
       *    治癒の最終日の判定（最終来院日より前なら治癒でない）
            IF      WRK-CHIYUYMD    NOT =   SPACE
@@ -2938,11 +2984,12 @@
                PERFORM 980-PTBYOMEI-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    最終転帰日のチェック
            IF      WRK-TENKIYMD    NOT =   SPACE
@@ -3102,11 +3149,12 @@
                PERFORM 980-SYUNOU-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            .
        49011-MISYU-HEN-EXT.
            EXIT.
@@ -3120,32 +3168,34 @@
            MOVE    ZERO                TO  SPA-TOKUTEI-F
            MOVE    ZERO                TO  SPA-TOKUTEIFLG
            MOVE    ZERO                TO  SPA-CHOKITOFLG
+      *    特定疾患科
+           INITIALIZE                   SPA-TOKUTEI-AREA-G
       *
       *    特定疾患の有無検索
            MOVE    SPACE               TO  PTBYOMEI-REC
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-PTID            TO  PTBYO-PTID
-           MOVE    SPA-SRYKA           TO  PTBYO-SRYKA
+      **** MOVE    SPA-SRYKA           TO  PTBYO-SRYKA
            MOVE    SPA-SRYYMD          TO  PTBYO-SRYYMD
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY10"    TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY24"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTBYOMEI-KEY10"    TO  ORC-DBPATH
+               MOVE    "PTBYOMEI-KEY24"    TO  ORC-DBPATH
                PERFORM 980-PTBYOMEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
                MOVE    SPACE               TO  PTBYOMEI-REC
                INITIALIZE                  PTBYOMEI-REC
            END-IF
-           PERFORM UNTIL      (FLG-PTBYOMEI    =   1 )  OR
-                              (SPA-TOKUTEI     =   1 )
+           PERFORM UNTIL      (FLG-PTBYOMEI    =   1 ) 
+      ****************  OR    (SPA-TOKUTEI     =   1 )
       *            特定疾患の有無
               IF     (PTBYO-SRYYMD        <=   SPA-SRYYMD )
       *            疑い病名は対象外とする
@@ -3154,29 +3204,75 @@
                    IF      PTBYO-MANSEIKBN     =   05
                        IF     (PTBYO-TENKIKBN      =   SPACE )  OR
                               (PTBYO-TENKIYMD      >   SPA-SRYYMD)
-                           MOVE    1               TO  SPA-TOKUTEI
+                           PERFORM 110111-MANSEIKBN-SET-SEC
+                           IF      SPA-SRYKA       =   PTBYO-SRYKA
+                               MOVE    1               TO  SPA-TOKUTEI
+                           END-IF
                         END-IF
                    END-IF
       *            皮膚科特定疾患の有無
                    IF      PTBYO-MANSEIKBN     =   03  OR  04
                        IF     (PTBYO-TENKIKBN      =   SPACE )  OR
                               (PTBYO-TENKIYMD      >   SPA-SRYYMD)
-                           IF      SPA-TOKUTEI-F       =   03
-                               CONTINUE
-                           ELSE
-                               MOVE    PTBYO-MANSEIKBN
+                           PERFORM 110111-MANSEIKBN-SET-SEC
+                           IF      SPA-SRYKA       =   PTBYO-SRYKA
+                               IF      SPA-TOKUTEI-F       =   03
+                                   CONTINUE
+                               ELSE
+                                   MOVE    PTBYO-MANSEIKBN
                                                    TO  SPA-TOKUTEI-F
+                               END-IF
                            END-IF
                         END-IF
                    END-IF
                END-IF
-               MOVE    "PTBYOMEI-KEY10"    TO  ORC-DBPATH
+               MOVE    "PTBYOMEI-KEY24"    TO  ORC-DBPATH
                PERFORM 980-PTBYOMEI-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTBYOMEI-KEY24"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            .
        11011-TOKUTEI-SYORI-EXT.
            EXIT.
+      *****************************************************************
+      *    診療科毎の特定疾患編集処理
+      *****************************************************************
+       110111-MANSEIKBN-SET-SEC              SECTION.
       *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   10
+               IF      SPA-TOKU-SRYKA (IDX)    =   SPACE
+                   MOVE    PTBYO-SRYKA     TO  SPA-TOKU-SRYKA (IDX)
+                   MOVE    PTBYO-MANSEIKBN TO  SPA-TOKU-FLG   (IDX)
+                   MOVE    10              TO  IDX
+               ELSE
+                   IF      SPA-TOKU-SRYKA (IDX)    =   PTBYO-SRYKA
+                       EVALUATE    SPA-TOKU-FLG (IDX)
+                           WHEN    05
+                               CONTINUE
+                           WHEN    03
+                               IF      PTBYO-MANSEIKBN     =   05
+                                   MOVE    PTBYO-MANSEIKBN
+                                                   TO  SPA-TOKU-FLG(IDX)
+                               END-IF
+                           WHEN    04
+                               IF      PTBYO-MANSEIKBN     =   03
+                                   MOVE    PTBYO-MANSEIKBN
+                                                   TO  SPA-TOKU-FLG(IDX)
+                               END-IF
+                       END-EVALUATE
+                       MOVE    10              TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       110111-MANSEIKBN-SET-EXT.
+           EXIT.
       *****************************************************************
       *    入院ＳＰＡ編集、ワーク診療行為作成処理
       *****************************************************************
@@ -3334,11 +3430,12 @@
                END-IF
       *
            END-IF
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    患者情報の再セット
            PERFORM 1001-SPA-JYUSIN-SEC
@@ -3376,12 +3473,12 @@
                INITIALIZE                  SYUNOU-REC
                MOVE    1               TO  FLG-SYUNOU
            END-IF
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                ORCMCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "MCPDBSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            IF      FLG-SYUNOU          =   ZERO
       *        伝票状態区分
@@ -3630,11 +3727,12 @@
                END-IF
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE     WRK-PATH           TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE     WRK-PATH           TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
           .
        4901-RRKNASI-SET-EXT.
            EXIT.
@@ -3749,12 +3847,12 @@
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE     WRK-PATH           TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE     WRK-PATH           TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
           .
        4902-RRKARI-SET-EXT.
            EXIT.
@@ -3918,11 +4016,12 @@
                PERFORM 930-SRYACT-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
           .
        490111-ZAISET-HEN-EXT.
@@ -4310,12 +4409,12 @@
                PERFORM 940-WKSINKOUI-READ-SEC
            END-PERFORM
       *
-      *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      FLG-DRCDCHK         =   1
       *        職員情報（ドクター）
@@ -4344,6 +4443,12 @@
                    MOVE    SPA-DRCD(2:4)       TO  SPA-DRCD-NAME
                    MOVE    SYS-1010-NAME       TO  SPA-DRCD-NAME (6:)
                END-IF
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
            END-IF
       *
            .
@@ -4439,11 +4544,12 @@
                PERFORM 940-WKSINKOUI-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            CLOSE                       PARA-FILE
       *
@@ -4574,6 +4680,12 @@
                MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
                PERFORM 940-WKSINKOUI-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        4900-WKSRYACT-CLEAR-EXT.
@@ -4676,11 +4788,12 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        900-PTINF-READ-EXT.
@@ -4783,11 +4896,12 @@
                INITIALIZE                  SRYACCT-REC
            END-IF
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        940-SRYACCT-READ-EXT.
@@ -4848,10 +4962,11 @@
            END-IF
       *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        950-PTCOM-READ-EXT.

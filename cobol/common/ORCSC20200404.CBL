@@ -110,6 +110,7 @@
            03  FLG-CHOKI                PIC 9(01).
       *
            03  FLG-SYOHOU-ERR           PIC 9(01).
+           03  FLG-TOKUTEI              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -138,6 +139,7 @@
       *
            03  IDX-SYOHOU          PIC 9(04).
            03  IDX-KA              PIC 9(04).
+           03  IDX-KA2             PIC 9(04).
            03  IDX-CHOKI           PIC 9(04).
            03  IDT                 PIC 9(04).
       *
@@ -847,6 +849,7 @@
       *!!      OR (SPA-NYUGAIKBN        =   "1"  )
                PERFORM 30010-JYURRK-SYORI-SEC
       *!!  END-IF
+      *
       *    科毎
            INITIALIZE                  TBL-SRYKA-AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -880,12 +883,33 @@
       *
            MOVE    ZERO                TO  IDXS
            MOVE    SPACE               TO  LNK-ORCSC-KIDCD
+      *
            PERFORM VARYING     IDX-KA  FROM    1   BY  1
                    UNTIL      (IDX-KA      >   10   )  OR
                               (TBL-SRYKA (IDX-KA)  =   SPACE)  OR
                               (LNK-ORCSC-KIDCD NOT =   SPACE)
                MOVE    TBL-SRYKA (IDX-KA)      TO  WRK-SRYKA
                MOVE    TBL-HKNCOMBI(IDX-KA)    TO  WRK-HKNCOMBI
+      *
+               MOVE    ZERO            TO  FLG-TOKUTEI
+               PERFORM VARYING     IDX-KA2 FROM    1   BY  1
+                       UNTIL      (IDX-KA2     >   10   )  OR
+                                  (SPA-TOKU-SRYKA (IDX-KA2)
+                                               =   SPACE   )
+                   IF      SPA-TOKU-SRYKA (IDX-KA2)    =   WRK-SRYKA
+                       IF      SPA-TOKU-FLG(IDX-KA2)   =   05
+                           MOVE    1           TO  FLG-TOKUTEI
+                       END-IF
+                       MOVE    10              TO  IDX-KA2
+                   END-IF
+               END-PERFORM
+               IF      (SPA-TOKUTEIFLG     NOT =   ZERO )  OR
+                       (SPA-CHOKITOFLG     NOT =   ZERO )
+                   IF      (SPA-TOKUTEI-SRYKA  NOT =   SPACE  )  AND
+                           (SPA-TOKUTEI-SRYKA  NOT =   WRK-SRYKA)
+                       MOVE    ZERO        TO  FLG-TOKUTEI
+                   END-IF
+               END-IF
                PERFORM 3000-JIDOU-SYORI-SEC
            END-PERFORM
       *
@@ -897,9 +921,6 @@
       *    自動算定発生処理
       *****************************************************************
        3000-JIDOU-SYORI-SEC              SECTION.
-      *
-           MOVE    ZERO                TO  FLG-TOKUSYO1
-           MOVE    ZERO                TO  FLG-TOKUSYO2
       *
            MOVE    ZERO                TO  FLG-NAIYAK
            MOVE    ZERO                TO  FLG-TONPUK
@@ -914,6 +935,8 @@
            MOVE    ZERO                TO  FLG-SINSATU
            MOVE    ZERO                TO  FLG-CHOUKI 
       *
+           MOVE    ZERO                TO  FLG-TOKUSYO1
+           MOVE    ZERO                TO  FLG-TOKUSYO2
            MOVE    ZERO                TO  FLG-CHOKIKA1
            MOVE    ZERO                TO  FLG-CHOKIKA2
       *
@@ -1510,9 +1533,9 @@
            END-IF
       *
       *    主科の時のみ行う
-           IF     (IDX-KA          NOT =   1  )  OR
+      *****IF     (IDX-KA          NOT =   1  )  OR
       *    新規の時のみ行う
-                  (LNK-ORCSC-SYORIFLG  =   1  )  OR
+           IF     (LNK-ORCSC-SYORIFLG  =   1  )  OR
       *    処方せん料算定時の時のみ行う
                   (FLG-SYOHO-CHK       =   ZERO) OR
                   (FLG-SYOHOSENN       =   ZERO)
@@ -1521,7 +1544,8 @@
       *
       *    特定疾患処方管理加算のチェック
            IF     (FLG-SYOHOSENN       =   1  )  AND
-                  (LNK-ORCSC-TOKUTEI   =   1  )
+      **********  (LNK-ORCSC-TOKUTEI   =   1  )
+                  (FLG-TOKUTEI         =   1  )
       *     長期投薬加算、特定疾患処方管理加算の入力が無い時
             AND   (FLG-TOKUSYO1            =   ZERO)
             AND   (FLG-CHOKIKA1            =   ZERO)
@@ -1665,7 +1689,8 @@
                   (SPA-CHOKITOFLG      =   ZERO)
       *        長期投薬加算チェック
                MOVE    "120003270"         TO  WRK-SRYCD
-               MOVE     1                  TO  FLG-CHOKIKSN
+               MOVE    1                   TO  FLG-CHOKIKSN
+               MOVE    WRK-SRYKA           TO  SPA-TOKUTEI-SRYKA
       *        算定可能かのチェック
                PERFORM 3001-KYOUTU-CHEK-SEC
       *        算定回数エラー
@@ -1700,6 +1725,7 @@
            IF      SPA-TOKUTEIFLG      =   ZERO
       *        特定疾患処方管理
                MOVE    "120002570"         TO  WRK-SRYCD
+               MOVE    WRK-SRYKA           TO  SPA-TOKUTEI-SRYKA
       *        算定可能かのチェック
                PERFORM 3001-KYOUTU-CHEK-SEC
       *        算定エラー
@@ -1921,9 +1947,9 @@
       *        END-IF
       *****END-IF
       *    主科の時のみ行う
-           IF      IDX-KA          NOT =   1
-               GO      TO      3002-INNAI-SYORI-EXT
-           END-IF
+      *    IF      IDX-KA          NOT =   1
+      *        GO      TO      3002-INNAI-SYORI-EXT
+      *    END-IF
       *
       *    新規の時のみ行う
            IF      LNK-ORCSC-SYORIFLG  =   1
@@ -1932,7 +1958,8 @@
       *
       *    特定疾患処方管理加算のチェック
            IF     (FLG-SYOHORYO            =   1  )  AND
-                  (LNK-ORCSC-TOKUTEI       =   1  )
+      **********  (LNK-ORCSC-TOKUTEI   =   1  )
+                  (FLG-TOKUTEI         =   1  )
       *     長期投薬加算、特定疾患処方管理加算の入力が無い時
             AND   (FLG-TOKUSYO2            =   ZERO)
             AND   (FLG-CHOKIKA2            =   ZERO)
@@ -2200,6 +2227,7 @@
                MOVE    "120003170"         TO  WRK-SRYCD
       *        算定可能かのチェック
                MOVE     1                  TO  FLG-CHOKIKSN
+               MOVE    WRK-SRYKA           TO  SPA-TOKUTEI-SRYKA
                PERFORM 3001-KYOUTU-CHEK-SEC
       *        算定回数エラー
                IF     (FLG-ERR             =   ZERO )  AND
@@ -2233,6 +2261,7 @@
            IF      SPA-TOKUTEIFLG      =   ZERO
       *        特定疾患処方管理
                MOVE    "120002270"         TO  WRK-SRYCD
+               MOVE    WRK-SRYKA           TO  SPA-TOKUTEI-SRYKA
       *        算定可能かのチェック
                PERFORM 3001-KYOUTU-CHEK-SEC
       *        算定エラー
