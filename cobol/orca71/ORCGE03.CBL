@@ -32,6 +32,7 @@
       * 01.00.02     ひさなが     02/12/20  作業項目長さ修正
       * 01.00.03     ひさなが     03/04/08  診療年月の開始位置誤り修正
       * 01.00.04     ひさなが     03/05/12  入院関連テーブルの追加
+      * 01.00.05     ひさなが     03/05/21  診療年月設定時の判定順変更
       *
       *****************************************************************
       *
@@ -95,7 +96,7 @@
            03  IDX1                PIC 9(03).
            03  IDX2                PIC 9(03).
            03  IDX3                PIC 9(03).
-           03  IDX4                PIC 9(04).
+           03  IDX4                PIC 9(05).
            03  IDX5                PIC 9(04).
            03  IDX6                PIC 9(03).
            03  IDX7                PIC 9(03).
@@ -103,7 +104,7 @@
       *
       *    編集作業
        01  W-AREA.
-           03  WK-EIECS-REC            PIC  X(7000).
+           03  WK-EIECS-REC            PIC  X(20000).
            03  WRK-PARA.
                05  WRK-PARA-SRYYM      PIC  X(06).
                05  WRK-PARA-TERMID     PIC  X(64).
@@ -119,6 +120,7 @@
            03  WK-PTPNT                PIC  9(05).
       *修正/*開始*03.04.08*********************************************
            03  WK-SRYYM-S              PIC  9(06).
+           03  WK-SRYYM-L              PIC  9(06).
       *修正/*終了*03.04.08*********************************************
       *
       *    作業テーブル名称領域
@@ -130,7 +132,6 @@
                05  WK-TBL-NAME     PIC X(20).
        01  WK-TBL2.
            03  WK-TBLRET       OCCURS  600.
-      *         05  WK-TBL-RMSG     PIC X(200).
                05  WK-TBL-RMSG.
                    07  WK-TBL-RMSG-1   PIC x(01).
                    07  WK-TBL-RMSG-2   PIC X(29).
@@ -151,6 +152,7 @@
       *****************************************************************
       *    連絡　領域
       *****************************************************************
+      *
       *
       *    連絡
            COPY    "MCPDATA.INC".
@@ -309,6 +311,8 @@
                                   IF      EIE01-REC(1:8)  =  "SRYYM***"
                                       MOVE    EIE01-REC(71:6)
                                                  TO  WK-SRYYM-S
+                                      COMPUTE WK-SRYYM-L  =  WK-SRYYM-S
+                                                          +  6
                                   ELSE
                                       MOVE    EIE01-REC
                                                  TO  WK-TBL-RMSG (IDX1)
@@ -318,15 +322,19 @@
                END-READ
       *
                CLOSE                       EIE01-FILE
-               OPEN    OUTPUT              EIECS-FILE
       *
                MOVE    SPACE           TO  MCPDATA-REC
+               IF  WK-SRYYM   NOT =   SPACE
+                   PERFORM T-001-SRYYMSET-01-SEC
+               END-IF
                MOVE    "DBSELECT"      TO  MCP-FUNC
                MOVE    WK-PATH         TO  ORC-DBPATH
                CALL    "ORCMCPSUB"     USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
+      *
+               OPEN    OUTPUT              EIECS-FILE
       *
                IF  MCP-RC   =   ZERO
                    PERFORM T-001-TBLFETCH-01-SEC
@@ -357,6 +365,55 @@
       *
       **********************
       *
+       T-001-SRYYMSET-01-SEC             SECTION.
+      *
+           EVALUATE    WK-TBL-MSG (IDX2)(1:10)
+               WHEN    "JYURRK    "
+                   MOVE    "JYURRK-ALL2"   TO  WK-PATH
+                   MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
+                   MOVE    "%"             TO  MCPDATA-REC(WK-SRYYM-L:1)
+               WHEN    "PTBYOMEI  "
+                   MOVE    "PTBYOMEI-ALL2" TO  WK-PATH
+                   MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
+                   MOVE    "%"             TO  MCPDATA-REC(WK-SRYYM-L:1)
+               WHEN    "SRYACCT   "
+                   MOVE    "SRYACCT-ALL2"  TO  WK-PATH
+                   MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
+               WHEN    "SRYACT    "
+                   MOVE    "SRYACT-ALL2"   TO  WK-PATH
+                   MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
+               WHEN    "WKSRYACT  "
+                   MOVE    "WKSRYACT-ALL2" TO  WK-PATH
+                   MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
+                   MOVE    "%"             TO  MCPDATA-REC(WK-SRYYM-L:1)
+               WHEN    "SANTEI    "
+                   MOVE    "SANTEI-ALL2"   TO  WK-PATH
+                   MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
+               WHEN    "SEIKYU    "
+                   MOVE    "SEIKYU-ALL2"   TO  WK-PATH
+                   MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
+               WHEN    "BD002     "
+                   MOVE    "BD002-ALL2"    TO  WK-PATH
+                   MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
+                   MOVE    "%"             TO  MCPDATA-REC(53:1)
+      *修正/*開始*03.05.12*********************************************
+               WHEN    "NYUINACCT "
+                   MOVE    "NYUINACCT-ALL2"  TO  WK-PATH
+                   MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
+               WHEN    "NYUINACT  "
+                   MOVE    "NYUINACT-ALL2" TO  WK-PATH
+                   MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
+               WHEN    "PTTEIKIRRK"
+                   MOVE    "PTTEIKIRRK-ALL2" TO  WK-PATH
+                   MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
+      *修正/*終了*03.05.12*********************************************
+           END-EVALUATE.
+      *
+       T-001-SRYYMSET-01-EXT.
+           EXIT.
+      *
+      **********************
+      *
        T-001-TBLFETCH-01-SEC             SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC.
@@ -379,36 +436,7 @@
                MOVE    WK-TBL-RMSG-9 (IDX1)        TO  WK-STPNT
                MOVE    WK-TBL-RMSG-5 (IDX1)        TO  WK-KTPNT
                MOVE    WK-TBL-RMSG-7 (IDX1)        TO  WK-PTPNT
-               IF      WK-SRYYM   =   ALL SPACE
-                   PERFORM T-001-TBLCNVAT-02-SEC
-               ELSE
-                   IF  ((WK-TBL-MSG (IDX2)(1:6) = "JYURRK")      AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:8) = "PTBYOMEI")    AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:7) = "SRYACCT")     AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:6) = "SRYACT")      AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:8) = "WKSRYACT")    AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:6) = "SANTEI")      AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:6) = "SEIKYU")      AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:5) = "BD002")       AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-      *修正/*開始*03.05.12*********************************************
-                       ((WK-TBL-MSG (IDX2)(1:9) = "NYUINACCT")   AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:8) = "NYUINACT")    AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:10) = "PTTEIKIRRK") AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))
-      *修正/*終了*03.05.12*********************************************
-                       PERFORM T-001-TBLCNVAT-02-SEC
-                   END-IF
-               END-IF
+               PERFORM T-001-TBLCNVAT-02-SEC
            END-IF.
       *
        T-001-TBLCNVAT-01-EXT.
