@@ -6081,6 +6081,13 @@
                    IF       SPA-COM-INPUTCD (IDX)(1:2)   =  "84"
                         MOVE    ZERO            TO  FLG-TAISYO
                    END-IF
+      *            自動追加で画像診断の時対象外
+                   IF      (SPA-COM-SRYKBN  (IDX)    =  "70"  ) AND
+                           (SPA-COM-DATAKBN (IDX)    =  "2"   ) AND
+                           (SPA-COM-INPUTCD  (IDX) =  "170012070"
+                                                   OR  "170020470")
+                        MOVE    ZERO            TO  FLG-TAISYO
+                   END-IF
                END-IF
       *
                IF      FLG-TAISYO              =   ZERO
