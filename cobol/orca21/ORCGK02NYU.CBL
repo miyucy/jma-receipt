@@ -223,6 +223,8 @@
       *
            03  FLG-TEISEI           PIC 9(01).
            03  FLG-MOD-FLG           PIC 9(01).
+      *    画面変更
+           03  FLG-HENKOU            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -4831,6 +4833,10 @@
                   (SPA-KIDCD       NOT =   SPACE )
                GO      TO      410112-KOUI-SPACHK-EXT
            END-IF
+      *    他画面遷移時
+           IF      FLG-HENKOU          =   1
+               GO      TO      410112-KOUI-SPACHK-EXT
+           END-IF
       *
       *    点数計算・剤別チェック処理
            MOVE    SPACE           TO  FLG-TOROKU
@@ -4839,13 +4845,10 @@
                                    OR  "0021" )  AND
                   (SPA-KIDCD       =   SPACE  )  AND
                   (FLG-END         =   ZERO   )
-               CONTINUE
-           ELSE
-               GO      TO      410112-KOUI-SPACHK-EXT
+      *        診療コード入力
+               PERFORM 410119-SAIINPUT-SEC
            END-IF
       *
-      *    診療コード入力
-           PERFORM 410119-SAIINPUT-SEC
            .
        410112-KOUI-SPACHK-EXT.
            EXIT.
@@ -5026,8 +5029,12 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)
+               IF      FLG-HENKOU          =   1
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)
                                        TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
+               END-IF
            ELSE
                MOVE    SPACE           TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
@@ -5548,6 +5555,13 @@
            ELSE
                MOVE    "5"                 TO  LNK-SC92-KBN
            END-IF
+           IF      FLG-HENKOU          =   1
+      *        画面遷移前
+               IF     (LNK-SC97-NYURYOKU       =   1 ) OR
+                      (SPA-COM-CHKFLG (SPA-GMN-IDX)  =   SPACE)
+                   MOVE    "6"                 TO  LNK-SC92-KBN
+               END-IF
+           END-IF
            MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
            MOVE    "K02"               TO  LNK-SC92-PG
            MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
@@ -5704,12 +5718,12 @@
                            IF      WRK-SUR-MCNT    NOT =   ZERO
                                MOVE    "0002"          TO  SPA-ERRCD
                            END-IF
-                       ELSE
-      *                数量　＞　きざみ値上限の時、エラー
-                           IF      SPA-COM-SURYO(SPA-GMN-IDX)
-                                                   >   TNS-KZMJGN
-                                   MOVE    "0037"          TO  SPA-ERRCD
-                           END-IF
+      *!!              ELSE
+      *!!              数量　＞　きざみ値上限の時、エラー
+      *                    IF      SPA-COM-SURYO(SPA-GMN-IDX)
+      *                                            >   TNS-KZMJGN
+      *                            MOVE    "0037"          TO  SPA-ERRCD
+      *!!                  END-IF
                        END-IF
                    ELSE
       *                コード変更なし
@@ -5718,13 +5732,13 @@
                            IF      WRK-SUR-MCNT    NOT =   ZERO
                                MOVE    "0002"          TO  SPA-ERRCD
                            END-IF
-                       ELSE
+      *!!              ELSE
       *                数量　＞　きざみ値上限の時、エラー
-                           IF      SPA-COM-SURYO(SPA-GMN-IDX)
-                                                   >   SPA-COM-KZMJGN
-                                                           (SPA-GMN-IDX)
-                               MOVE    "0037"          TO  SPA-ERRCD
-                           END-IF
+      *                    IF      SPA-COM-SURYO(SPA-GMN-IDX)
+      *                                            >   SPA-COM-KZMJGN
+      *                                                    (SPA-GMN-IDX)
+      *                        MOVE    "0037"          TO  SPA-ERRCD
+      *!!                  END-IF
                        END-IF
                    END-IF
       *
@@ -8582,11 +8596,12 @@
            END-IF
       *
       *    診療行為入力チェック
+           MOVE    1                   TO  FLG-HENKOU
            PERFORM 41011-KOUI-ALLHEN-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )
                GO      TO      430-SANTEIRRK-EXT
            END-IF
-      *
       *
            MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
@@ -8704,20 +8719,25 @@
                GO      TO      440-BYOTOROKU-EXT
            END-IF
       *
-      *    更新前の基本チェック
-           PERFORM 41001-KIHON-CHK-SEC
+      *    基本チェック
+           MOVE    1                   TO  FLG-HENKOU
+           PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE  )  OR
-                  (SPA-KIDCD           =   "0180" )
-               GO      TO      440-BYOTOROKU-EXT
+                  (SPA-KIDCD           =   "0180" )  OR
+                  (FLG-END             =   1      )
+               CONTINUE
+           ELSE
+      *        病名登録遷移処理
+               PERFORM 4401-C02SET-SEC
            END-IF
       *
-      *    更新前のチェック
-           MOVE    "1"                 TO  FLG-TOROKU
-           PERFORM 510-TBLHEN-SEC
-           MOVE    SPACE               TO  FLG-TOROKU
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      440-BYOTOROKU-EXT
-           END-IF
+      *!   更新前のチェック
+      *    MOVE    "1"                 TO  FLG-TOROKU
+      *    PERFORM 510-TBLHEN-SEC
+      *    MOVE    SPACE               TO  FLG-TOROKU
+      *    IF      SPA-ERRCD       NOT =   SPACE
+      *        GO      TO      440-BYOTOROKU-EXT
+      *!   END-IF
       *
       *    禁忌更新前のチェック
       *    PERFORM 41001-YAKKNK-CHK-SEC
@@ -8729,7 +8749,7 @@
       *        GO      TO      440-BYOTOROKU-EXT
       *    END-IF
       *    病名登録遷移処理
-           PERFORM 4401-C02SET-SEC
+      *!!  PERFORM 4401-C02SET-SEC
            .
        440-BYOTOROKU-EXT.
            EXIT.
@@ -8778,18 +8798,20 @@
                ELSE
       *
       *            診療行為入力チェック
+                   MOVE    1                   TO  FLG-HENKOU
                    PERFORM 41011-KOUI-ALLHEN-SEC
-                   IF     (SPA-ERRCD       NOT =   SPACE  )  AND
-                          (SPA-KIDCD           =   "0180" )
+                   IF     (SPA-ERRCD       NOT =   SPACE  )  OR
+                          (SPA-KIDCD           =   "0180" )  OR
+                          (FLG-END             =   1      )
                       GO      TO      440-KNJADD-EXT
                    END-IF
-      *        更新前のチェック
-                   MOVE    "1"                 TO  FLG-TOROKU
-                   PERFORM 510-TBLHEN-SEC
-                   MOVE    SPACE               TO  FLG-TOROKU
-                   IF      SPA-ERRCD       NOT =   SPACE
-                      GO      TO      440-KNJADD-EXT
-                   END-IF
+      *********更新前のチェック
+      *            MOVE    "1"                 TO  FLG-TOROKU
+      *            PERFORM 510-TBLHEN-SEC
+      *            MOVE    SPACE               TO  FLG-TOROKU
+      *            IF      SPA-ERRCD       NOT =   SPACE
+      *               GO      TO      440-KNJADD-EXT
+      ***********  END-IF
                END-IF
            END-IF
       *
@@ -8824,21 +8846,22 @@
       *
       *
            IF      SPA-GMN-PTID    NOT =   ZERO
-      *
       *        更新前の基本チェック
-               PERFORM 41001-KIHON-CHK-SEC
-               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
-                      (SPA-KIDCD           =   "0180" )
+               MOVE    1                   TO  FLG-HENKOU
+               PERFORM 41011-KOUI-ALLHEN-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                      (SPA-KIDCD           =   "0180" ) OR
+                      (FLG-END             =   1     )
                    GO      TO      450-KAIKEI-EXT
                END-IF
       *
-      *        更新前のチェック
-               MOVE    "1"                 TO  FLG-TOROKU
-               PERFORM 510-TBLHEN-SEC
-               MOVE    SPACE               TO  FLG-TOROKU
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      450-KAIKEI-EXT
-               END-IF
+      ******** 更新前のチェック
+      *        MOVE    "1"                 TO  FLG-TOROKU
+      *        PERFORM 510-TBLHEN-SEC
+      *        MOVE    SPACE               TO  FLG-TOROKU
+      *        IF      SPA-ERRCD       NOT =   SPACE
+      *            GO      TO      450-KAIKEI-EXT
+      ******** END-IF
       *
            END-IF
       *
@@ -8876,19 +8899,21 @@
       *
            IF      SPA-GMN-PTID    NOT =   ZERO
       *        更新前の基本チェック
-               PERFORM 41001-KIHON-CHK-SEC
-               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
-                      (SPA-KIDCD           =   "0180" )
+               MOVE    1                   TO  FLG-HENKOU
+               PERFORM 41011-KOUI-ALLHEN-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                      (SPA-KIDCD           =   "0180" ) OR
+                      (FLG-END             =   1     )
                    GO      TO      460-SYUNOU-EXT
                END-IF
       *
-      *        更新前のチェック
-               MOVE    "1"                 TO  FLG-TOROKU
-               PERFORM 510-TBLHEN-SEC
-               MOVE    SPACE               TO  FLG-TOROKU
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      460-SYUNOU-EXT
-               END-IF
+      ******** 更新前のチェック
+      *        MOVE    "1"                 TO  FLG-TOROKU
+      *        PERFORM 510-TBLHEN-SEC
+      *        MOVE    SPACE               TO  FLG-TOROKU
+      *        IF      SPA-ERRCD       NOT =   SPACE
+      *            GO      TO      460-SYUNOU-EXT
+      ******** END-IF
            END-IF
       *
       *    保存パラメタを作成
@@ -8924,19 +8949,11 @@
       *
            IF      SPA-GMN-PTID    NOT =   ZERO
       *        更新前の基本チェック
-               PERFORM 41001-KIHON-CHK-SEC
-               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
-                      (SPA-KIDCD           =   "0180" )
-                   CONTINUE
-               ELSE
-      *            更新前のチェック
-                   MOVE    "1"                 TO  FLG-TOROKU
-                   PERFORM 510-TBLHEN-SEC
-                   MOVE    SPACE               TO  FLG-TOROKU
-               END-IF
-      *
-               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
-                      (SPA-KIDCD           =   "0180" )
+               MOVE    1                   TO  FLG-HENKOU
+               PERFORM 41011-KOUI-ALLHEN-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                      (SPA-KIDCD           =   "0180" ) OR
+                      (FLG-END             =   1     )
                    GO      TO      4106S-NYUTAIIN-EXT
                END-IF
            END-IF
@@ -8974,19 +8991,11 @@
       *
            IF      SPA-GMN-PTID    NOT =   ZERO
       *        更新前の基本チェック
-               PERFORM 41001-KIHON-CHK-SEC
-               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
-                      (SPA-KIDCD           =   "0180" )
-                   CONTINUE
-               ELSE
-      *            更新前のチェック
-                   MOVE    "1"                 TO  FLG-TOROKU
-                   PERFORM 510-TBLHEN-SEC
-                   MOVE    SPACE               TO  FLG-TOROKU
-               END-IF
-      *
-               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
-                      (SPA-KIDCD           =   "0180" )
+               MOVE    1                   TO  FLG-HENKOU
+               PERFORM 41011-KOUI-ALLHEN-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                      (SPA-KIDCD           =   "0180" ) OR
+                      (FLG-END             =   1     )
                    GO      TO      4111S-NYUKAIKEI-EXT
                END-IF
            END-IF
@@ -9131,6 +9140,7 @@
        450-MAEGMN-SEC             SECTION.
       *
       *    診療行為入力チェック
+           MOVE    1                   TO  FLG-HENKOU
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD           =   "0180" )  OR
@@ -9156,6 +9166,7 @@
        460-ATOGMN-SEC             SECTION.
       *
       *    診療行為入力チェック
+           MOVE    1                   TO  FLG-HENKOU
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD           =   "0180")  OR
@@ -9333,6 +9344,7 @@
        470-SANTEI-SEC             SECTION.
       *
       *    診療行為入力チェック
+           MOVE    1                   TO  FLG-HENKOU
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD           =   "0180" )  OR
@@ -9425,8 +9437,10 @@
        480-YOYAKU-SEC             SECTION.
       *
       *    診療行為入力チェック
+           MOVE    1                   TO  FLG-HENKOU
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" ) OR
                   (FLG-END             =   1     )
                GO      TO      480-YOYAKU-EXT
            END-IF
@@ -9465,8 +9479,10 @@
        490-UKEICHI-SEC             SECTION.
       *
       *    診療行為入力チェック
+           MOVE    1                   TO  FLG-HENKOU
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" ) OR
                   (FLG-END             =   1     )
                GO      TO      490-UKEICHI-EXT
            END-IF
@@ -9508,8 +9524,10 @@
        4102-UKETUKE-SEC             SECTION.
       *
       *    診療行為入力チェック
+           MOVE    1                   TO  FLG-HENKOU
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" ) OR
                   (FLG-END             =   1     )
                GO      TO      4102-UKETUKE-EXT
            END-IF
