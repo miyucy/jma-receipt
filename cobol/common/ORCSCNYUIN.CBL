@@ -1564,6 +1564,10 @@
       *
            IF      FLG-ARI             =   ZERO
       *        »ÞÈÖ
+               IF      WRK-JYURRK-EDANUM   =   9
+                   MOVE    "0006"          TO  SPA-ERRCD
+                   MOVE    ZERO            TO  WRK-JYURRK-EDANUM
+               END-IF
                ADD     1                   TO  WRK-JYURRK-EDANUM
       *        ¼õ¿ÇÍúÎò¿·µ¬
                PERFORM 20011-JYURRK-SYOKI-SEC
@@ -1693,7 +1697,9 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               MOVE    "0005"          TO  SPA-ERRCD
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0005"          TO  SPA-ERRCD
+               END-IF
                DISPLAY "K08 JYURRK INS ERR:" MCP-RC 
                         ",KEY:" JYURRK-KEY "."
            END-IF
