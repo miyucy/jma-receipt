@@ -1103,11 +1103,10 @@
            MOVE    LNK-NYURECEDEN-HOSPID   TO  NACCT-HOSPID
            MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
            MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
-           MOVE    "4"                     TO  NACCT-ZAISKBKBN
-           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY23"       TO  ORC-DBPATH
            PERFORM 910-NYUINACCT-SELECT-SEC
            IF      FLG-NYUINACCT           =   ZERO
-               MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+               MOVE     "NYUINACCT-KEY23"  TO  ORC-DBPATH
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   VARYING   IDX1   FROM  1   BY  1
                          UNTIL     IDX1   >    31
