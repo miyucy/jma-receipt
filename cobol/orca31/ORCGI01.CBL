@@ -5032,13 +5032,13 @@
        481-KANJATOROKU-SEC             SECTION.
       *
       *    患者登録の権限がない時、エラー
-      *     IF      SPA-GSRAUTH-12      =   "1"
-      *         CONTINUE
-      *     ELSE
-      *         MOVE    "9300"              TO  SPA-ERRCD
-      *         MOVE    1                   TO  SPA-GMN-I01-CUR
-      *         GO  TO  481-KANJATOROKU-EXT
-      *     END-IF
+           IF      SPA-GSRAUTH-12      =   "1"
+               CONTINUE
+           ELSE
+               MOVE    "9300"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-I01-CUR
+               GO  TO  481-KANJATOROKU-EXT
+           END-IF
       *
       *    ＳＰＡの内容を退避
            INITIALIZE                  I0SUB01-LNK
