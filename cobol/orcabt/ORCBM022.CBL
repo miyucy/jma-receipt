@@ -369,11 +369,7 @@
                                WHEN    "001"
                                    MOVE    2               TO  IDY2
                                WHEN    "002"
-                                   IF      RECE10-HOJOKBN      =   SPACE
-                                       MOVE    4               TO  IDY2
-                                   ELSE
-                                       MOVE    3               TO  IDY2
-                                   END-IF        
+                                   MOVE    3               TO  IDY2
                                WHEN    "003"
                                    MOVE    5               TO  IDY2
                                WHEN    "004"
@@ -391,11 +387,7 @@
                                WHEN    "001"
                                    MOVE    2               TO  IDY2
                                WHEN    "002"    
-                                   IF      RECE10-HOJOKBN      =   SPACE
-                                       MOVE    4               TO  IDY2
-                                   ELSE
-                                       MOVE    3               TO  IDY2
-                                   END-IF        
+                                   MOVE    3               TO  IDY2
                                WHEN    "031"  THRU  "034"
                                    MOVE    6               TO  IDY2
                                WHEN    "006"
@@ -409,10 +401,14 @@
                                WHEN    "001"
                                    MOVE    2               TO  IDY2
                                WHEN    "002"    
-                                   IF      RECE10-HOJOKBN      =   SPACE
-                                       MOVE    4               TO  IDY2
-                                   ELSE
+                                   IF      RECE10-HOJOKBN  =   "1" OR
+                                                               "2" OR
+                                                               "3"
                                        MOVE    3               TO  IDY2
+                                   ELSE
+                                       IF      RECE10-HOJOKBN  =   SPACE
+                                           MOVE    4           TO  IDY2
+                                       END-IF    
                                    END-IF        
                                WHEN    "003"
                                    MOVE    5               TO  IDY2
