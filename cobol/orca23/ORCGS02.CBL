@@ -3236,13 +3236,15 @@
            IF      FLG-SYUNOU          =   1
                    CONTINUE
            ELSE
-             IF (SYU-DENPJTIKBN =     SPACE  OR  "2"  OR  "3")   OR
-                (SYU-NYUKIN-KAISU  NOT =        1      )
+             IF (SYU-DENPJTIKBN =  SPACE  OR "3" OR "A")   OR
+                (SYU-NYUKIN-TOTAL  =       ZERO    )
                   MOVE    "0002"     TO    SPA-ERRCD
              ELSE
                   MOVE    "2"        TO    SYU-DENPJTIKBN
+                  MOVE    SYU-NYUKIN-TOTAL
+                                     TO    WRK-SAGAKU
                   MOVE    ZERO       TO    SYU-NYUKIN-TOTAL
-                  MOVE    ZERO       TO    SYU-NYUKIN-KAISU
+      ***         MOVE    ZERO       TO    SYU-NYUKIN-KAISU
                   MOVE    SYUNOU-REC          TO  MCPDATA-REC
                   MOVE    "DBUPDATE"          TO  MCP-FUNC
                   MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -3250,50 +3252,42 @@
                                                MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
+                  INITIALIZE                      SYUMEI-REC
                   MOVE    SPA-HOSPID          TO  SMEI-HOSPID
-      ************MOVE    SPA-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+      **********  MOVE    SPA-NYUGAIKBN       TO  SMEI-NYUGAIKBN
                   MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
                                               TO  SMEI-NYUGAIKBN
                   MOVE    SPA-GMN-PTID        TO  SMEI-PTID
                   MOVE    SPA-GMN-TDENPNUM (SPA-GMN-SELBAN)
                                               TO  SMEI-DENPNUM
-                  MOVE    1                   TO  SMEI-DENPEDANUM
                   MOVE    SYUMEI-REC          TO  MCPDATA-REC
                   MOVE    "DBSELECT"          TO  MCP-FUNC
-                  MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
+                  MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
                   CALL    "ORCMCPSUB"          USING
                                                MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
                   IF      MCP-RC              =    ZERO
-                    MOVE    "SYUMEI-KEY"         TO  ORC-DBPATH
-                    PERFORM 900-SYUMEI-READ-SEC
+                      MOVE    "SYUMEI-KEY2"   TO   ORC-DBPATH
+                      PERFORM 900-SYUMEI-READ-SEC
                   ELSE
-                    MOVE    1                    TO  FLG-SYUMEI
+                      MOVE    1                    TO  FLG-SYUMEI
                   END-IF
-                  IF      FLG-SYUMEI    =     1
-                      CONTINUE
-                  ELSE
-                      MOVE      SPACE    TO   SMEI-NYUHEN-KBN
-                      MOVE      ZERO     TO   SMEI-NYUHEN-MONEY
-      *>                MOVE      SPACE    TO   SMEI-NYUHEN-YMD
-                      MOVE      SPA-SYSYMD TO   SMEI-NYUHEN-YMD
-                      MOVE      SPACE    TO   SMEI-NYUKIN-HOHO
-                      MOVE      "6"      TO   SMEI-JOUTAIKBN
-                      MOVE    SYUMEI-REC      TO  MCPDATA-REC
-                      MOVE    "DBUPDATE"      TO  MCP-FUNC
-                      MOVE    "SYUMEI-KEY"    TO  ORC-DBPATH
-                      CALL    "ORCMCPSUB"      USING
+      *
+                  PERFORM   VARYING  IDX  FROM   1  BY   1
+                      UNTIL  (FLG-SYUMEI   =      1)
+                              MOVE   "SYUMEI-KEY2"  TO  ORC-DBPATH  
+                              PERFORM   900-SYUMEI-READ-SEC
+                  END-PERFORM
+      *
+                  MOVE    "DBCLOSE"           TO  MCP-FUNC
+                  MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
+                  CALL    "ORCMCPSUB"          USING
                                                MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
-                      MOVE    "DBCLOSE"       TO  MCP-FUNC
-                      MOVE    "SYUMEI-KEY"    TO  ORC-DBPATH
-                      CALL    "ORCMCPSUB"      USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
-                  END-IF
+      *
+                  PERFORM    4701-SMEI-SAKUSEI-SEC
              END-IF
            END-IF
       *****PERFORM    310-SPA-SET-SEC.
@@ -3301,6 +3295,62 @@
            MOVE    1                   TO  SPA-GMN-CUR
            .
        470-NYUDEL-EXT.
+           EXIT.
+      *
+      *************************************************************
+      *    入金取消処理（収納明細レコード作成）
+      *************************************************************
+       4701-SMEI-SAKUSEI-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  SYUMEI-REC
+           INITIALIZE                      SYUMEI-REC
+           MOVE    SPA-HOSPID          TO  SMEI-HOSPID
+           MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
+                                       TO  SMEI-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  SMEI-PTID
+      *伝票番号
+           MOVE    SPA-GMN-TDENPNUM (SPA-GMN-SELBAN) (1:7)
+                                       TO  SMEI-DENPNUM
+      *伝票番号枝番
+           MOVE    IDX                 TO  SMEI-DENPEDANUM
+      *入金連番
+           MOVE    ZERO                TO  SMEI-NYUKINRENNUM
+      *伝票状態区分
+           MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
+      *請求発行日（発行日の西暦）
+           MOVE    SPACE               TO  SMEI-SKYPRINTYMD
+      *請求再発行日
+           MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
+      *領収書発行日
+           MOVE    SPACE               TO  SMEI-RYOSYUPRINTYMD
+      *領収書再発行日
+           MOVE    SPACE               TO  SMEI-RYOSYUREPRINTYMD
+      *請求金額
+           MOVE    ZERO                TO  SMEI-SKYMONEY
+      *入返金区分
+           MOVE    "2"                 TO  SMEI-NYUHEN-KBN
+      *入返金額
+           MOVE    ZERO                TO  SMEI-NYUHEN-MONEY
+           COMPUTE   SMEI-NYUHEN-MONEY  =  WRK-SAGAKU  *  -1
+      *入返金日
+           MOVE    SPA-SYSYMD          TO  SMEI-NYUHEN-YMD
+      *入金方法
+           MOVE    "00"                TO  SMEI-NYUKIN-HOHO
+      *状態区分
+           MOVE    "6"                 TO  SMEI-JOUTAIKBN
+      *
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "1001"              TO  SPA-ERRCD
+           END-IF     
+           .
+       4701-SMEI-SAKUSEI-EXT.
            EXIT.
       *
       *************************************************************
