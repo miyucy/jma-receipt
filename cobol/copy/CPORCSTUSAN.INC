@@ -48,6 +48,9 @@
                05  STUSAN-TUSAN-R  REDEFINES   STUSAN-NISSU-VAL.
                    07  STUSAN-TUSAN-OCC    OCCURS  5.
                        09  STUSAN-NISSU    PIC 9(08).
+      *            基準日チェックフラグ　（0:対象外／1:対象）
+      *            （基準日の入院料が通算日数の対象となるかチェック）
+               05  STUSAN-KJNYMD-CHK-FLG   PIC 9(01).
                05  STUSAN-RRK-VAL.
       *            テーブルオーバーフラグ
                    07  STUSAN-RRK-FLG-OVER     PIC 9(01).

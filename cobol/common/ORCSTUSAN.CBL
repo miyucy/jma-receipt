@@ -30,7 +30,9 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.03.12  日付４の計算方法修正
       *  01.00.02    NACL-太田    03.03.24  特定入院料の考慮を削除
-      *  01.00.01    NACL-太田    03.03.12  日付５を追加
+      *  01.00.03    NACL-太田    03.03.12  日付５を追加
+      *  01.00.04    NACL-太田    03.06.04  基準日当日の通算日数対象
+      *                                     チェック追加
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -82,6 +84,9 @@
            03  WRK-STIDX                   PIC 9(02).
            03  WRK-EDIDX                   PIC 9(02).
            03  WRK-ACCT-NISSU              PIC 9(08).
+           03  WRK-DAY-X                   PIC X(02).
+           03  WRK-DAY-R   REDEFINES   WRK-DAY-X.
+               05  WRK-DAY-9               PIC 9(02).
       *
       *    患者入院履歴ワーク
        01  WKPTNYUINRRK-REC.
@@ -512,6 +517,13 @@
                IF    ( NACCT-DAY (IDX1)    >   ZERO )
                    COMPUTE WRK-ACCT-NISSU
                        =   WRK-ACCT-NISSU +    1
+                   MOVE    IDX1            TO  WRK-DAY-9
+      *
+                   IF    ( STUSAN-KJNYMD (1:6) =   NACCT-SRYYM )
+                    AND  ( STUSAN-KJNYMD (7:2) =   WRK-DAY-X   )
+                       MOVE    1           TO  STUSAN-KJNYMD-CHK-FLG
+                   END-IF
+      *
                END-IF
            END-PERFORM
       *
