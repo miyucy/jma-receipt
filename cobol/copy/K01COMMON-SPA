@@ -92,8 +92,6 @@
                05  SPA-TOKUTEIFLG          PIC  9(01).
       *皮膚科特定疾患有無（病名）
                05  SPA-TOKUTEI-F           PIC  9(02).
-      *病床数
-               05  SPA-BEDSU               PIC  9(04).
       *未収金
                05  SPA-MISYUMONEY          PIC  S9(08).
       *
@@ -136,6 +134,8 @@
                05  SPA-WKSRY-HKNCOMBI      PIC  9(04).
       *老人保険変更なし
                05  SPA-RJN-ERR             PIC  9(01).
+      *診療年月日末日
+               05  SPA-SRYLST-DD           PIC 9(02).
       *
            03  SPA-K02SET-AREA.
       *小児科外来診療科
@@ -202,6 +202,8 @@
                05  SPA-JIKANTOKU           PIC  9(01).
       *他保険受診有無
                05  SPA-TAHOKEN-FLG         PIC  9(01).
+      *診察料変更あり
+               05  SPA-SINSATU-SAI         PIC  9(01).
       *
            03  SPA-SONOTA-AREA.
       *確認メッセージ
@@ -261,4 +263,7 @@
                        09  SPA-GMN-F1L         PIC X(01).
                        09  SPA-GMN-SRYKAMEIL   PIC X(12).
                    07  SPA-SRYKA-MAX           PIC 9(04).
+      *
+      *戻り先
+           03  SPA-HZN-MOTOPG          PIC X(08).
       *

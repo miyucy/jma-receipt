@@ -25,6 +25,7 @@
       *  01.00.02    MCC-多々納   02/05/28  禁忌用追加(RL=????)
       *  01.00.03    NACL-多々納  02/08/06  アフターケア用追加
       *  01.00.04    NACL-多々納  02/08/26  老人区分移動
+      *  01.00.05    NACL-多々納  02/10/17  入院用追加
       ************************************************************
       *
        01  SPA-K02.
@@ -165,6 +166,25 @@
                    07  SPA-MAE-CHK             PIC 9(01).
                    07  SPA-MAE-SYORI           PIC 9(01).
                05  SPA-CHK-IDX                 PIC 9(04).
+      *
+      *    入院用（Ｋ０２Ｎ）
+           03  SPA-K02N-AREA.
+               05  SPA-K02N-NYUINKA-G.
+                   07  SPA-K02N-NYUINKA        PIC X(02).
+                   07  SPA-K02N-NYUINKAMEI     PIC X(10).
+               05  SPA-K02N-JIKANKBN-G.
+                   07  SPA-K02N-JIKANKBN       PIC X(01).
+                   07  SPA-K02N-J01            PIC X(01).
+                   07  SPA-K02N-JIKANKBNMEI    PIC X(10).
+               05  SPA-K02N-JIKANKBN-COMB.
+                   07  SPA-K02N-JIKANKBN-LST   PIC X(12)
+                                               OCCURS  5.
+               05  SPA-K02N-NYUINYMD           PIC X(08).
+               05  SPA-K02N-TAIINYMD           PIC X(08).
+               05  SPA-K02N-NYUINKIKAN.
+                   07  SPA-K02N-NYUINYMDW          PIC X(09).
+                   07  SPA-K02N-H1                 PIC X(01).
+                   07  SPA-K02N-TAIINYMDW          PIC X(09).
       *
       *    保険組合せ一覧（患者番号変更毎にクリア）
            03  SPA-HKNCOMI-AREA.
