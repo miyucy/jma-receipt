@@ -700,13 +700,8 @@
       *    エラー画面より
            IF      SPA-MOTOPG          =   "I4ERR"
                MOVE    SPACE               TO  SPA-MOTOPG
-               PERFORM 5001-MAPCUR-SEC
-               IF      MCP-WIDGET(1:7)     =   "INPUTCD"
-                   MOVE    SPACE               TO  I44-MEISYO
-                                                      (LNK-GI4B-GMN-IDX)
-                   MOVE    SPACE               TO  I44-SURYO
-                                                      (LNK-GI4B-GMN-IDX)
-               END-IF
+               MOVE    SPA-I44GMN-AREA(5:) TO  SPA-SCR-REC(5:)
+               PERFORM 500-GMNHEN-SEC
            ELSE
       *
       *        初期画面セット
@@ -4945,7 +4940,8 @@
            END-PERFORM.
       *
            IF      (LNK-GI4G-INPUTCD(1:1)       <   X"A1")  AND
-                   (LNK-GI4G-INPUTCD(1:1)   NOT =    "/")
+                   (LNK-GI4G-INPUTCD(1:1)   NOT =    "/")   AND
+                   (SPA-ERRCD                   =   SPACE)
                MOVE    SPA-SCR-REC TO  SPA-I44GMN-AREA
            END-IF.
       *
@@ -5143,6 +5139,9 @@
       *
            MOVE    "I44"               TO  SPA-MOTOPG.
            MOVE    "I4ERR"             TO  SPA-SAKIPG.
+           MOVE    SPA-I4KYOUTU        TO  SPA-WORK.
+           MOVE    SPA-AREA            TO  SPA-COMMON.
+           MOVE    SPA-I44-I48         TO  SPA-FREE.
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE.
            MOVE    "I4ERR"             TO  MCP-WINDOW.
