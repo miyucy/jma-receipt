@@ -487,6 +487,7 @@ path	key24	{
 	};
 };
 
+
 path	key25	{ 	
 	DBSELECT	{
 		DECLARE tbl_ptbyomei_key25_csr CURSOR FOR
@@ -501,3 +502,19 @@ path	key25	{
 		;
 	};
 };
+
+path	key26	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key26_csr CURSOR FOR
+		SELECT BYOMEI
+		FROM tbl_ptbyomei
+		WHERE  SRYKA     LIKE :SRYKA
+		AND    SRYYMD       >= :SRYYMD
+		AND    SRYYMD       <= :UPYMD
+		AND	   BYOMEI    LIKE :BYOMEI
+		GROUP  BY  BYOMEI
+		ORDER  BY  COUNT(*) DESC,BYOMEI
+		;
+	};
+};
+
