@@ -349,3 +349,13 @@
                    07  SPA-J025-MAX               PIC 9(04).
                05  SPA-J025-ERRMSG         PIC X(100).
       *
+      *    カルテ３号紙発行
+           03  SPA-J026-AREA.
+               05  SPA-J026-CUR            PIC 9(02).
+               05  SPA-J026-GMN-AREA.
+                   07  SPA-J026-GMN-STRDD         PIC 9(02).
+                   07  SPA-J026-GMN-ENDPAGE       PIC 9(03).
+                   07  SPA-J026-GMN-ENDLINE       PIC 9(02).
+                   07  SPA-J026-GMN-MIDASI        PIC X(40).
+      *
+      *

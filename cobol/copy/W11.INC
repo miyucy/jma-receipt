@@ -84,11 +84,12 @@
                         08  W11-ORCAORGNM-N03-COUNT  PIC S9(9)   BINARY.
                         08  W11-ORCAORGNM-N03LST PIC X(20)
                                                OCCURS  2 TIMES.
-                      07  W11-ORCAORGCHK-N-G   OCCURS   3.
+                      07  W11-ORCAORGNM-N04    PIC X(20).
+                      07  W11-ORCAORGCHK-N-G   OCCURS   4.
                         08  W11-ORCAORGCHK-N   PIC X.
-                      07  W11-ORCACSTNM-N-G    OCCURS   3.
+                      07  W11-ORCACSTNM-N-G    OCCURS   4.
                         08  W11-ORCACSTNM-N    PIC X(20).
-                      07  W11-ORCACSTCHK-N-G   OCCURS   3.
+                      07  W11-ORCACSTCHK-N-G   OCCURS   4.
                         08  W11-ORCACSTCHK-N   PIC X.
                     06  W11-N0102-STATE        PIC S9(9)   BINARY.
                 04  W11-N01-STATE              PIC S9(9)   BINARY.
@@ -101,6 +102,12 @@
                                                PIC S9(9)  BINARY.
                     06  W11-SYOHOGEPRTFLGLST   PIC X(12)
                                                OCCURS  2 TIMES.
+                  05  W11-KARUTE3KBN-COMBO.
+                    06  W11-KARUTE3KBN.
+                      07  W11-VALUE   PIC X(20).
+                    06  W11-KARUTE3KBN-COUNT   PIC S9(9)   BINARY.
+                    06  W11-KARUTE3KBN-ITEM
+                            PIC X(20)   OCCURS  2 TIMES.
                 04  W11-N02-STATE              PIC S9(9)    BINARY.
               03  W11-STYUKYMD                 PIC X(9).
               03  W11-EDYUKYMD                 PIC X(9).
