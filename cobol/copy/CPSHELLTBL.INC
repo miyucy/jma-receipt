@@ -37,3 +37,23 @@
             02  SHELLTBL-ARG18  PIC X(100).
             02  SHELLTBL-ARG19  PIC X(100).
             02  SHELLTBL-ARG20  PIC X(100).
+            02  SHELLTBL-ARG21  PIC X(100).
+            02  SHELLTBL-ARG22  PIC X(100).
+            02  SHELLTBL-ARG23  PIC X(100).
+            02  SHELLTBL-ARG24  PIC X(100).
+            02  SHELLTBL-ARG25  PIC X(100).
+            02  SHELLTBL-ARG26  PIC X(100).
+            02  SHELLTBL-ARG27  PIC X(100).
+            02  SHELLTBL-ARG28  PIC X(100).
+            02  SHELLTBL-ARG29  PIC X(100).
+            02  SHELLTBL-ARG30  PIC X(100).
+            02  SHELLTBL-ARG31  PIC X(100).
+            02  SHELLTBL-ARG32  PIC X(100).
+            02  SHELLTBL-ARG33  PIC X(100).
+            02  SHELLTBL-ARG34  PIC X(100).
+            02  SHELLTBL-ARG35  PIC X(100).
+            02  SHELLTBL-ARG36  PIC X(100).
+            02  SHELLTBL-ARG37  PIC X(100).
+            02  SHELLTBL-ARG38  PIC X(100).
+            02  SHELLTBL-ARG39  PIC X(100).
+            02  SHELLTBL-ARG40  PIC X(100).
