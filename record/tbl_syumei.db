@@ -143,3 +143,28 @@ path	key6 	{
 	};
 };
 
+#sitekey
+path	st_key1 	{
+	DBSELECT	{
+		DECLARE tbl_syumei_st_key1_csr CURSOR FOR
+        SELECT *
+		FROM tbl_syumei
+        		WHERE   HOSPID        =  :HOSPID
+                AND     NYUHEN_YMD    =  :NYUHEN_YMD
+        ORDER BY	NYUGAIKBN,SRYKA,DENPNUM,DENPEDANUM
+		;
+	};
+};
+
+#sitekey
+path	st_key2 	{
+	DBSELECT	{
+		DECLARE tbl_syumei_st_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syumei
+			WHERE   HOSPID        =  :HOSPID
+            AND     NYUHEN_YMD    =  :NYUHEN_YMD
+            ORDER BY	NYUGAIKBN,SRYKA,PTID,DENPNUM,DENPEDANUM
+		;
+	};
+};
