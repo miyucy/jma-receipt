@@ -206,6 +206,7 @@
       *                                     RECEPRT-DEL1,DEL2追加 
       *  01.01.42    NACL-伊藤    03/03/03  KENSASORT-KEY追加
       *                                     KENSASORT-ALL追加 
+      *  01.01.43    NACL-多々納　03/03/04  SYUNOU-KEY11,KEY12追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -567,6 +568,8 @@
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY8"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY9"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY10"
+               WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY11"
+               WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY12"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY2"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY3"
@@ -577,6 +580,8 @@
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY8"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY9"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY10"
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY11"
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY12"
                    MOVE    PATH-TBL-SYUNOU-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL1"
@@ -1483,6 +1488,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY10"
                    MOVE    PATH-TBL-SYUNOU-KEY10
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY11"
+                   MOVE    PATH-TBL-SYUNOU-KEY11
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY12"
+                   MOVE    PATH-TBL-SYUNOU-KEY12
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"

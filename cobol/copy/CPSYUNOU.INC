@@ -423,6 +423,10 @@
                05  SYU-DAY-TBL2.
                    07  SYU-DAY         PIC  X(01)
                                          OCCURS   31.
+      *複数科まとめ識別伝票番号
+           03  SYU-FUKU-DENPNUM        PIC  9(07).
+      *複数科まとめ区分（１：継続　２：確定）
+           03  SYU-FUKU-KBN            PIC  X(01).
       *端末ＩＤ
            03  SYU-TERMID              PIC  X(16).
       *オペーレータＩＤ

@@ -217,6 +217,8 @@ tbl_syunou {
         DAY_29                          char(1);
         DAY_30                          char(1);
         DAY_31                          char(1);
+        FUKU_DENPNUM                    number(7,0);
+	FUKU_KBN      			char(1);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
@@ -368,6 +370,34 @@ path	key10 	{
 			AND   PTID        =   :PTID
 			AND   CREATEKBN   =   '3'
 			ORDER   BY          DENPNUM
+		;
+	};
+};
+
+path	key11 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key11_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYMD      =   :SRYYMD
+			ORDER   BY          HKNCOMBINUM
+		;
+	};
+};
+
+path	key12 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key12_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   FUKU_DENPNUM    =   :FUKU_DENPNUM
+			ORDER   BY          FUKU_KBN
 		;
 	};
 };
