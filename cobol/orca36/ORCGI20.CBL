@@ -201,14 +201,14 @@
            03  WRK-BRMNUM          PIC ZZZZZZZ9.     
       *
            03  WRK-JYOKEN-AREA.
-               03  WRK-NAME        PIC X(100).
-               03  WRK-STAGE       PIC 9(03).
-               03  WRK-EDAGE       PIC 9(03). 
-               03  WRK-ADRS        PIC X(150).
-               03  WRK-STBIRTHDAY  PIC 9(08).
-               03  WRK-EDBIRTHDAY  PIC 9(08).
-               03  WRK-MOJISU1     PIC 9(03).
-               03  WRK-MOJISU2     PIC 9(03).
+               05  WRK-NAME        PIC X(100).
+               05  WRK-STAGE       PIC 9(03).
+               05  WRK-EDAGE       PIC 9(03). 
+               05  WRK-ADRS        PIC X(150).
+               05  WRK-STBIRTHDAY  PIC 9(08).
+               05  WRK-EDBIRTHDAY  PIC 9(08).
+               05  WRK-MOJISU1     PIC 9(03).
+               05  WRK-MOJISU2     PIC 9(03).
       *         
        01  WRK-HEN-AREA.
            03  WRK-LENGTH          PIC 9(02).
