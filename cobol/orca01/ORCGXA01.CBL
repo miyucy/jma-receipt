@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.00.02    NACL-藤原    02/10/18  確定のとき自動的に情報確認画面を表示
+      *  01.00.03    NACL-藤原    03/03/03  レセプト再印刷の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -386,6 +387,9 @@
                WHEN    "MONTHLY"
                    MOVE    SPACE          TO  SPA-GMN-TITLE1
                    MOVE    "作成年月日"   TO  SPA-GMN-TITLE2
+               WHEN    "RECEPT2"
+                   MOVE    "診療年月"     TO  SPA-GMN-TITLE1
+                   MOVE    "作成年月日"   TO  SPA-GMN-TITLE2
                WHEN    OTHER
                    MOVE    "年月"         TO  SPA-GMN-TITLE1
                    MOVE    "年月日"       TO  SPA-GMN-TITLE2
@@ -612,7 +616,7 @@
            MOVE    ZERO                TO  SPA-GMN-STPAGE
                                            SPA-GMN-EDPAGE
                                            SPA-GMN-SELNUM
-                                           SPA-NAI-SELNUM      
+                                           SPA-NAI-SELNUM
            IF      SPA-GMN-RENNUM      =   ZERO
                MOVE    ZERO                TO  SPA-GMN-SHORI-RENNUM
                MOVE    99                  TO  SPA-GMN-CUR
@@ -1048,17 +1052,21 @@
            IF      SPA-GMN-TBL-GROUP   =   SPACE
                MOVE    "0001"              TO  SPA-ERRCD
            ELSE
-               IF      SPA-GMN-STPAGE      >
+               IF      SPA-GMN-SELNUM  =   ZERO
+                   CONTINUE
+               ELSE
+                   IF      SPA-GMN-STPAGE      >
                                    SPA-GMN-TPAGE (SPA-GMN-SELNUM) 
-               OR      SPA-GMN-EDPAGE      >
+                   OR      SPA-GMN-EDPAGE      >
                                    SPA-GMN-TPAGE (SPA-GMN-SELNUM) 
-                   MOVE    "0002"              TO  SPA-ERRCD
-               ELSE    
-                   IF      SPA-GMN-EDPAGE      <   SPA-GMN-STPAGE 
                        MOVE    "0002"              TO  SPA-ERRCD
+                   ELSE    
+                       IF      SPA-GMN-EDPAGE      <   SPA-GMN-STPAGE 
+                           MOVE    "0002"              TO  SPA-ERRCD
+                       END-IF
                    END-IF
-               END-IF
-           END-IF                                            
+               END-IF            
+           END-IF                                
       *
            IF      SPA-ERRCD       NOT =   SPACE                 
                GO  TO  450-PRINT-GID-EXT               
@@ -1217,7 +1225,11 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
            MOVE    SPA-GMN-STPAGE      TO  SHELLTBL-ARG15
-           MOVE    SPA-GMN-EDPAGE      TO  SHELLTBL-ARG16                                   
+           IF      SPA-GMN-EDPAGE      =   ZERO
+               MOVE    ALL "9"             TO  SHELLTBL-ARG16                                   
+           ELSE
+               MOVE    SPA-GMN-EDPAGE      TO  SHELLTBL-ARG16
+           END-IF                            
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
