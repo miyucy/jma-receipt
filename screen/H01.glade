@@ -340,7 +340,7 @@
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
       <text>12345678901234567890</text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -368,7 +368,7 @@
       <text_visible>True</text_visible>
       <text_max_length>7</text_max_length>
       <text>H13.11</text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -396,7 +396,7 @@
       <text_visible>True</text_visible>
       <text_max_length>2</text_max_length>
       <text></text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -10002,70 +10002,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label550</name>
-      <x>210</x>
-      <y>680</y>
-      <width>100</width>
-      <height>14</height>
-      <label>薬剤一部負担金</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label549</name>
-      <x>210</x>
-      <y>667</y>
-      <width>100</width>
-      <height>14</height>
-      <label>　　一部負担金</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label548</name>
-      <x>210</x>
-      <y>652</y>
-      <width>100</width>
-      <height>14</height>
-      <label>　　　合計点数</label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label551</name>
-      <x>210</x>
-      <y>696</y>
-      <width>100</width>
-      <height>14</height>
-      <label>　　　　実日数</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label553</name>
       <x>706</x>
       <y>72</y>
@@ -10146,118 +10082,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label550</name>
-      <x>650</x>
-      <y>680</y>
-      <width>100</width>
-      <height>14</height>
-      <label>薬剤一部負担金</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label549</name>
-      <x>650</x>
-      <y>667</y>
-      <width>100</width>
-      <height>14</height>
-      <label>　　一部負担金</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label548</name>
-      <x>650</x>
-      <y>652</y>
-      <width>100</width>
-      <height>14</height>
-      <label>　　　合計点数</label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label551</name>
-      <x>650</x>
-      <y>696</y>
-      <width>100</width>
-      <height>14</height>
-      <label>　　　　実日数</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label495</name>
-      <x>210</x>
-      <y>4</y>
-      <width>60</width>
-      <height>18</height>
-      <label>患者番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label538</name>
-      <x>24</x>
-      <y>4</y>
-      <width>60</width>
-      <height>18</height>
-      <label>診療年月</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SRYKALBL</name>
-      <x>24</x>
-      <y>24</y>
-      <width>60</width>
-      <height>18</height>
-      <label>診療科　</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label552</name>
       <x>192</x>
       <y>73</y>
@@ -10307,6 +10131,8 @@
 	<text_visible>True</text_visible>
 	<text_max_length>14</text_max_length>
 	<text></text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
       </widget>
     </widget>
 
@@ -10334,7 +10160,7 @@
       <text_visible>True</text_visible>
       <text_max_length>7</text_max_length>
       <text>H13.11</text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -10362,7 +10188,7 @@
       <text_visible>True</text_visible>
       <text_max_length>7</text_max_length>
       <text>H13.11</text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -10432,15 +10258,6 @@
 
     <widget>
       <class>GtkHSeparator</class>
-      <name>hseparator2</name>
-      <x>5</x>
-      <y>40</y>
-      <width>1010</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
       <name>hseparator3</name>
       <x>5</x>
       <y>64</y>
@@ -10488,6 +10305,143 @@
       <width>120</width>
       <height>18</height>
       <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HNYUGAIKBN</name>
+      <x>465</x>
+      <y>24</y>
+      <width>60</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HTEISYUTUSAKI</name>
+      <x>530</x>
+      <y>24</y>
+      <width>80</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HRECESYUBETU</name>
+      <x>610</x>
+      <y>24</y>
+      <width>90</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HHKNJANUM</name>
+      <x>700</x>
+      <y>24</y>
+      <width>70</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HKIGO</name>
+      <x>780</x>
+      <y>24</y>
+      <width>200</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator2</name>
+      <x>5</x>
+      <y>40</y>
+      <width>1010</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SRYKALBL</name>
+      <x>24</x>
+      <y>24</y>
+      <width>60</width>
+      <height>18</height>
+      <label>診療科  </label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label538</name>
+      <x>24</x>
+      <y>4</y>
+      <width>60</width>
+      <height>18</height>
+      <label>診療年月</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label495</name>
+      <x>210</x>
+      <y>4</y>
+      <width>60</width>
+      <height>18</height>
+      <label>患者番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -10578,13 +10532,13 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>HNYUGAIKBN</name>
-      <x>465</x>
-      <y>24</y>
-      <width>60</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
+      <name>label549</name>
+      <x>210</x>
+      <y>667</y>
+      <width>100</width>
+      <height>14</height>
+      <label>        一部負担金</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
@@ -10594,13 +10548,13 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>HTEISYUTUSAKI</name>
-      <x>530</x>
-      <y>24</y>
-      <width>80</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
+      <name>label550</name>
+      <x>210</x>
+      <y>680</y>
+      <width>100</width>
+      <height>14</height>
+      <label>薬剤一部負担金</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
@@ -10610,13 +10564,13 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>HRECESYUBETU</name>
-      <x>610</x>
-      <y>24</y>
-      <width>90</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
+      <name>label551</name>
+      <x>210</x>
+      <y>696</y>
+      <width>100</width>
+      <height>14</height>
+      <label>               実日数</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
@@ -10626,13 +10580,13 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>HHKNJANUM</name>
-      <x>700</x>
-      <y>24</y>
-      <width>70</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
+      <name>label549</name>
+      <x>650</x>
+      <y>667</y>
+      <width>100</width>
+      <height>14</height>
+      <label>        一部負担金</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
@@ -10642,13 +10596,61 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>HKIGO</name>
-      <x>780</x>
-      <y>24</y>
-      <width>200</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
+      <name>label550</name>
+      <x>650</x>
+      <y>680</y>
+      <width>100</width>
+      <height>14</height>
+      <label>薬剤一部負担金</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label551</name>
+      <x>650</x>
+      <y>696</y>
+      <width>100</width>
+      <height>14</height>
+      <label>               実日数</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label548</name>
+      <x>210</x>
+      <y>652</y>
+      <width>100</width>
+      <height>14</height>
+      <label>            合計点数</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label548</name>
+      <x>650</x>
+      <y>652</y>
+      <width>100</width>
+      <height>14</height>
+      <label>            合計点数</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
