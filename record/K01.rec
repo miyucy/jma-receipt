@@ -1,19 +1,10 @@
 K01	{
 	fixed2	{
 		PTNUM	{
-			value	varchar(21);
-		};
-		SRYYMD	{
-			value	varchar(11);
-		};
-		HKNKUMI	{
-			value	varchar(5);
+			value	varchar(20);
 		};
 		NAME	{
-			value	varchar(51);
-		};
-		KZKKBNNAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		CALENDAR1	{
 			year	int;
@@ -22,62 +13,71 @@ K01	{
 		};
 		SRYKACOMBO	{
 			SRYKA	{
-				value	varchar(22);
+				value	varchar(21);
 			};
 			count	int;
 			item	varchar(21)[10];
 		};
+		SRYYMD	{
+			value	varchar(10);
+		};
 		ZENKAICOMB	{
 			ZENKAI	{
-				value	varchar(21);
+				value	varchar(20);
 			};
 			count	int;
 			item	varchar(20)[5];
 		};
 		DRNAMECOMBO	{
 			DRNAME	{
-				value	varchar(28);
+				value	varchar(27);
 			};
 			count	int;
 			item	varchar(27)[10];
 		};
 		BUNSANCOMB	{
 			BUNSAN	{
-				value	varchar(21);
+				value	varchar(20);
 			};
 			count	int;
 			item	varchar(20)[5];
 		};
 		INGAIKBNCOMB	{
 			INGAISHOHOKBN	{
-				value	varchar(21);
+				value	varchar(20);
 			};
 			count	int;
 			item	varchar(20)[5];
 		};
+		HKNKUMI	{
+			value	varchar(4);
+		};
 		CONTKBNCOMB	{
 			CONTKBN	{
-				value	varchar(22);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(21)[5];
+			item	varchar(20)[5];
 		};
-		SYORIMEI	{
-		    style   varchar(20);
-			value	varchar(12);
+		KZKKBNNAME	{
+			value	varchar(50);
 		};
 		scrolledwindow3	{
 			HKNKUMILST	{
 				count	int;
 				item	{
 					value1	varchar(5);
-					value2	varchar(51);
+					value2	varchar(50);
 					value3	varchar(10);
 					value4	varchar(10);
 					value5	varchar(5);
 				}	[100];
 				select	bool[100];
 			};
+		};
+		SYORIMEI	{
+		    style   varchar(20);
+			value	varchar(12);
 		};
 	};
 };
