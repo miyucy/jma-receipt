@@ -265,6 +265,7 @@
            03  FLG-SRYKBN            PIC 9(01).
            03  FLG-FUKU-END          PIC 9(01).
            03  FLG-FUKU              PIC 9(01).
+           03  FLG-HKN-ARI           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -5256,8 +5257,36 @@
                PERFORM 410121-HKNCOMBI-SAI-SEC
            END-IF
       *
+      *    ÊÝ¸±¡¦¿ÇÎÅ²Ê¤ÎºÆÊÔ½¸
+           PERFORM 410121-COM-HKNCOMBI-SET-SEC
+      *
            .
        41012-HKNCOMBI-CHANGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±¡¦¿ÇÎÅ²Ê¤ÎºÆÊÔ½¸½èÍý
+      *****************************************************************
+       410121-COM-HKNCOMBI-SET-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKN-ARI
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX              >   200       )   OR
+                              (SPA-GMN-INPUTCD(IDX) =   SPACE  AND
+                               SPA-COM-INPUTCD(IDX) =   SPACE )  OR
+                              (FLG-HKN-ARI          =   1     )
+               IF      SPA-GMN-INPUTCD (IDX)   =   "#"
+                   MOVE    1                   TO  FLG-HKN-ARI
+               END-IF
+               IF     (FLG-HKN-ARI             =   ZERO  )  AND
+                      (SPA-COM-HKNCOMBI (IDX)  =   SPA-MAE-HKNCOMBINUM)
+                   MOVE    SPA-HKNCOMBINUM    TO  SPA-COM-HKNCOMBI
+                                                               (IDX)
+               END-IF
+           END-PERFORM
+      *
+           .
+       410121-COM-HKNCOMBI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6292,17 +6321,6 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-CHK
-           MOVE    SPACE               TO  WRK-SYU-HKNNUM
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-HKN-MAX
-               IF      SPA-HKNCOMBINUM     =   SPA-GMN-THKNCOMBINUM
-                                                             (IDX)
-                   MOVE    SPA-NAI-HKNNUM (IDX)  TO  WRK-SYU-HKNNUM
-                   MOVE    SPA-HKN-MAX           TO  IDX
-               END-IF
-           END-PERFORM
-      *
-           MOVE    ZERO                TO  FLG-CHK
            MOVE    SPACE               TO  WRK-SEL-HKNNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-HKN-MAX )  OR
@@ -6389,7 +6407,7 @@
                    IF      IDX-KA          NOT =   ZERO
                        MOVE    IDX-KA          TO  SPA-GMN-IDX
                    END-IF
-                   IF      WRK-SEL-HKNNUM      =   WRK-SYU-HKNNUM
+                   IF      WRK-SEL-HKNNUM      =   SPA-HKNNUM
                        MOVE    "099409901"     TO  WRK-SRYCD
                    ELSE
                        MOVE    "099999902"     TO  WRK-SRYCD
