@@ -511,8 +511,7 @@
       *****************************************************************
        910-LOCK-UPD-SEC              SECTION.
       *
-      *    MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    PATH-TBL-LOCK-KEY
                                        TO  MCP-PATH
            CALL    "MCPSUB"            USING
@@ -528,6 +527,29 @@
       *
            .
        910-LOCK-UPD-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    排他テーブル削除　処理
+      *****************************************************************
+       920-LOCK-DEL-SEC              SECTION.
+      *
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    PATH-TBL-LOCK-KEY
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC     =   ZERO
+               MOVE  MCP-RC            TO  SLOCK-RETURN
+           ELSE
+               DISPLAY "DELETE ERR KEY = [" MCP-RC "]"   
+               MOVE  MCP-RC            TO  SLOCK-RETURN
+           END-IF
+      *
+           .
+       920-LOCK-DEL-EXT.
            EXIT.
       * 
       *****************************************************************
@@ -618,7 +640,7 @@
                  END-IF
                END-PERFORM
                MOVE  TBL-LOCK          TO  MCPDATA-REC
-               PERFORM 910-LOCK-UPD-SEC
+               PERFORM 920-LOCK-DEL-SEC
                IF      MCP-RC     =   ZERO
                    CONTINUE
                ELSE
