@@ -139,10 +139,12 @@
       *                                     加算項目であるが基本項目となって
       *                                     いる項目がある場合の記載順
       *                                     超音波内視鏡加算を逓減の後に記載
-      *  01.02.15    NACL-藤原    04/02/05  公費の負担者番号・受給者番号
+      *  01.02.15    NACL-藤原    05/02/05  公費の負担者番号・受給者番号
       *                                     のカスタマイズ項目の編集
       *  01.02.16    NACL-藤原    05/03/18  レセプト特記事項編集情報によ
       *                                     るレセプト編集
+      *                                     公費の負担者番号・受給者番号
+      *                                     のカスタマイズ項目を中止
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1717,71 +1719,75 @@
            MOVE    "KO,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
       *    負担者番号
-           IF    ( FLG-RECE11          =   ZERO  )
-           AND   ( RECE11-KOHINF-RECEDEN (IDY)
-                                   NOT =   SPACE )
+           IF      RECE02-KOHFTNJANUM (IDY)
+                                   NOT =   SPACE
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI 
-               MOVE    RECE11-KOHFTNJANUM-RECEDEN (IDY)
+               MOVE    RECE02-KOHFTNJANUM (IDY)
                                        TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                IF      KANACHK-SYUBETU =   "1"
-                   MOVE    RECE11-KOHFTNJANUM-RECEDEN (IDY)
+                   MOVE    RECE02-KOHFTNJANUM (IDY)
                                            TO  WRK-DATA
                END-IF
-           ELSE
-               IF      RECE02-KOHFTNJANUM (IDY)
-                                           NOT =   SPACE
+           END-IF
+           EVALUATE    RECE02-2006-RECEDEN-FTNJANUMKBN  (IDY)
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "01"
+                   MOVE    SPACE           TO  WRK-DATA
+               WHEN    OTHER
                    INITIALIZE              ORCSKANACHKAREA
                    MOVE    "1"             TO  KANACHK-SYORI 
-                   MOVE    RECE02-KOHFTNJANUM (IDY)
+                   MOVE    RECE02-2006-RECEDEN-FTNJANUM (IDY)
                                            TO  KANACHK-MAE-INPUT
                    CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                    IF      KANACHK-SYUBETU =   "1"
-                       MOVE    RECE02-KOHFTNJANUM (IDY)
+                       MOVE    RECE02-2006-RECEDEN-FTNJANUM (IDY)
+                                               TO  WRK-DATA
+                   END-IF
+           END-EVALUATE
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC     
+      *    受給者番号
+           IF    ( RECE02-PREFNUM      =   "23"                    )
+           AND   ( RECE02-TEISYUTUSAKI =   "2"                     )
+           AND   ( RECE02-KOHNUM (IDY) (1:1)
+                                       >=  "1" AND <= "8"          )
+           AND   ( RECE02-KOHHBTNUM (IDY)
+                                       =   "81" OR  "82"  OR 
+                                           "83" OR  "84"  OR  "85" )
+               MOVE    "0000000"           TO  WRK-DATA
+           ELSE                          
+               IF      RECE02-KOHJKYSNUM  (IDY)
+                                           NOT =   SPACE
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-KOHJKYSNUM  (IDY)
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-SYUBETU =   "1"
+                       MOVE    RECE02-KOHJKYSNUM  (IDY)
                                                TO  WRK-DATA
                    END-IF
                END-IF
            END-IF
-           MOVE    8                   TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC     
-      *    受給者番号
-           IF    ( FLG-RECE11          =   ZERO  )
-           AND   ( RECE11-KOHINF-RECEDEN (IDY)
-                                   NOT =   SPACE )
-               INITIALIZE              ORCSKANACHKAREA
-               MOVE    "1"             TO  KANACHK-SYORI 
-               MOVE    RECE11-KOHJKYSNUM-RECEDEN (IDY)
-                                       TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-               IF      KANACHK-SYUBETU =   "1"
-                   MOVE    RECE11-KOHJKYSNUM-RECEDEN (IDY)
-                                           TO  WRK-DATA
-               END-IF
-           ELSE
-               IF    ( RECE02-PREFNUM      =   "23"                    )
-               AND   ( RECE02-TEISYUTUSAKI =   "2"                     )
-               AND   ( RECE02-KOHNUM (IDY) (1:1)
-                                           >=  "1" AND <= "8"          )
-               AND   ( RECE02-KOHHBTNUM (IDY)
-                                           =   "81" OR  "82"  OR 
-                                               "83" OR  "84"  OR  "85" )
-                   MOVE    "0000000"           TO  WRK-DATA
-               ELSE                          
-                   IF      RECE02-KOHJKYSNUM  (IDY)
-                                               NOT =   SPACE
-                       INITIALIZE              ORCSKANACHKAREA
-                       MOVE    "1"             TO  KANACHK-SYORI 
-                       MOVE    RECE02-KOHJKYSNUM  (IDY)
-                                               TO  KANACHK-MAE-INPUT
-                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                       IF      KANACHK-SYUBETU =   "1"
-                           MOVE    RECE02-KOHJKYSNUM  (IDY)
-                                                   TO  WRK-DATA
-                       END-IF
+           EVALUATE    RECE02-2006-RECEDEN-JKYSNUMKBN  (IDY)
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "01"
+                   MOVE    SPACE           TO  WRK-DATA
+               WHEN    OTHER
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-2006-RECEDEN-JKYSNUM (IDY)
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-SYUBETU =   "1"
+                       MOVE    RECE02-2006-RECEDEN-JKYSNUM (IDY)
+                                               TO  WRK-DATA
                    END-IF
-               END-IF
-           END-IF
+           END-EVALUATE
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    任意給付区分                             

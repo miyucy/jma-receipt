@@ -48,6 +48,26 @@ W61	{
 		KYURATE	{
 			value	number(3);
 		};
+		FTNJANUMKBN_COMBO	{
+			FTNJANUMKBN	{
+				value	varchar(25);
+			};
+			count	int;
+			item	varchar(25)[5];
+		};
+		FTNJANUM	{
+			value	varchar(8);
+		};
+		JKYSNUMKBN_COMBO	{
+			JKYSNUMKBN	{
+				value	varchar(25);
+			};
+			count	int;
+			item	varchar(25)[5];
+		};
+		JKYSNUM	{
+			value	varchar(7);
+		};
 		RECEDEN_TOKKI	{
 			value	varchar(2);
 		};
@@ -60,6 +80,26 @@ W61	{
 			};
 			count	int;
 			item	varchar(12)[2];
+		};
+		RECEDEN_FTNJANUMKBN_COMBO	{
+			RECEDEN_FTNJANUMKBN	{
+				value	varchar(25);
+			};
+			count	int;
+			item	varchar(25)[5];
+		};
+		RECEDEN_FTNJANUM	{
+			value	varchar(8);
+		};
+		RECEDEN_JKYSNUMKBN_COMBO	{
+			RECEDEN_JKYSNUMKBN	{
+				value	varchar(25);
+			};
+			count	int;
+			item	varchar(25)[5];
+		};
+		RECEDEN_JKYSNUM	{
+			value	varchar(7);
 		};
 		scrolledwindow28	{
 			TOKKILST	{

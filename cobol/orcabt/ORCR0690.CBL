@@ -192,7 +192,6 @@
       *
            03  FLG-SYS-2006        PIC 9(01).
            03  FLG-2006-CHK        PIC 9(01).
-           03  FLG-2006-ERR        PIC 9(01).
            03  FLG-HKNNUM-OK       PIC 9(01).
            03  FLG-CHK-SYOKBN      PIC 9(01).
       *
@@ -2177,10 +2176,9 @@
            END-PERFORM
       *
       *    レセ電・給付割合
-           IF  (   FLG-SYS-2006            =   1       )
-           AND ( ( RECE62-KOHNUM (1)   NOT =   SPACE )
+           IF    ( RECE62-KOHNUM (1)   NOT =   SPACE )
            OR    ( RECE62-ETC-KOHNUM (1)
-                                       NOT =   SPACE ) )
+                                       NOT =   SPACE )
                MOVE    2                   TO  FLG-CHK-SYOKBN
                PERFORM 20081-SYS2006-HENSYU-SEC
                IF      FLG-2006-CHK        =   1
@@ -2206,7 +2204,7 @@
                END-IF
            END-PERFORM
       *
-      *    レセ電・特記事項
+      *    レセ電・公費別編集情報
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       4
                    OR      RECE62-KOHNUM (IDY) =   SPACE
@@ -2216,7 +2214,6 @@
                        UNTIL   IDW2            >  SYSKAN-IDY
                        OR      TBL-SYS2006 (IDW2)
                                                =   SPACE
-                   MOVE    ZERO            TO  FLG-2006-ERR
                    MOVE    TBL-SYS2006 (IDW2)
                                            TO  WRK-2006-REC
       *
@@ -2226,9 +2223,35 @@
                    END-IF    
                END-PERFORM
       *
-               MOVE    SYS-2006-RECEDEN-KORECKBN
+               IF      FLG-2006-CHK        =   1
+                   MOVE    SYS-2006-FTNJANUMKBN
+                                       TO  RECE62-2006-FTNJANUMKBN (IDY)
+                   MOVE    SYS-2006-FTNJANUM
+                                       TO  RECE62-2006-FTNJANUM    (IDY)
+                   MOVE    SYS-2006-JKYSNUMKBN
+                                       TO  RECE62-2006-JKYSNUMKBN  (IDY)
+                   MOVE    SYS-2006-JKYSNUM
+                                       TO  RECE62-2006-JKYSNUM     (IDY)
+                   MOVE    SYS-2006-RECEDEN-KORECKBN
                                        TO  RECE62-2006-RECEDEN-KORECKBN
-                                                                   (IDZ)
+                                                                   (IDY)
+                   MOVE    SYS-2006-RECEDEN-FTNJANUMKBN
+                                       TO
+                                   RECE62-2006-RECEDEN-FTNJANUMKBN (IDY)
+                   MOVE    SYS-2006-RECEDEN-FTNJANUM
+                                       TO
+                                   RECE62-2006-RECEDEN-FTNJANUM    (IDY)
+                   MOVE    SYS-2006-RECEDEN-JKYSNUMKBN
+                                       TO
+                                   RECE62-2006-RECEDEN-JKYSNUMKBN  (IDY)
+                   MOVE    SYS-2006-RECEDEN-JKYSNUM
+                                       TO
+                                   RECE62-2006-RECEDEN-JKYSNUM     (IDY)
+      *???
+               DISPLAY "KOH=" IDY "#" RECE62-KOHNUM (IDY) "#"
+                                      RECE62-2006-KOH-OCC (IDY) "#"
+      *???
+               END-IF
            END-PERFORM        
       *
            .
@@ -2249,7 +2272,6 @@
                PERFORM VARYING IDW2    FROM     1   BY  1
                        UNTIL   IDW2             >   SYSKAN-IDY
                        OR      TBL-SYS2006 (IDW2)   =   SPACE
-                   MOVE    ZERO                TO  FLG-2006-ERR
                    MOVE    TBL-SYS2006 (IDW2)  TO  WRK-2006-REC
       *
                    IF      RECE62-KOHNUM (IDW1)
@@ -2294,7 +2316,6 @@
                                            =   "019"
                        PERFORM VARYING IDW2    FROM     1   BY  1
                                UNTIL   IDW2             >   SYSKAN-IDY
-                           MOVE    ZERO                TO  FLG-2006-ERR
                            MOVE    TBL-SYS2006 (IDW2)  TO  WRK-2006-REC
       *
                            IF    ( WRK-2006-KYURATE

@@ -58,8 +58,7 @@
       *                                     公費一部負担金０円記載フラグの追加
       *  01.03.02    NACL-門脇    05.03.11  負担金額情報に項目追加
       *                                     レセプト記載外公費情報に項目追加
-      *  01.03.03    NACL-藤原    05.03.14  レセ電：特記事項の追加
-      *                                     レセ電：給付割合の追加
+      *  01.00.20    NACL-藤原    05.03.14  レセプト特記事項編集情報の追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -367,9 +366,34 @@
       *        レセ電：給付割合
                05  RECE02-2006-RECEDEN-KYURATE
                                           PIC  9(03).
-      *       レセ電：公費レコード区分
-               05  RECE02-2006-RECEDEN-KORECKBNINF.
-                   07  RECE02-2006-RECEDEN-KORECKBN
-                                          PIC  X(01)
-                                               OCCURS  4.
+      *        公費情報
+               05  RECE02-2006-KOHINF.
+                   07  RECE02-2006-KOH-OCC     OCCURS  4. 
+      *                負担者番号記載区分
+                       11  RECE02-2006-FTNJANUMKBN
+                                          PIC  X(02).
+      *                負担者番号
+                       11  RECE02-2006-FTNJANUM
+                                          PIC  X(08).
+      *                受給者番号記載区分
+                       11  RECE02-2006-JKYSNUMKBN
+                                          PIC  X(02).
+      *                受給者番号
+                       11  RECE02-2006-JKYSNUM
+                                          PIC  X(07).
+      *                レセ電：公費レコード区分
+                       11  RECE02-2006-RECEDEN-KORECKBN
+                                          PIC  X(01).
+      *                レセ電：負担者番号記載区分
+                       11  RECE02-2006-RECEDEN-FTNJANUMKBN
+                                          PIC  X(02).
+      *                レセ電：負担者番号
+                       11  RECE02-2006-RECEDEN-FTNJANUM
+                                          PIC  X(08).
+      *                レセ電：受給者番号記載区分
+                       11  RECE02-2006-RECEDEN-JKYSNUMKBN
+                                          PIC  X(02).
+      *                レセ電：受給者番号
+                       11  RECE02-2006-RECEDEN-JKYSNUM
+                                          PIC  X(07).
       *

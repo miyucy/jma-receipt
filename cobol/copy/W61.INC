@@ -32,6 +32,20 @@
                 04  W61-VALUE   PIC X(12).
               03  W61-KYURATE.
                 04  W61-VALUE   PIC S9(3).
+              03  W61-FTNJANUMKBN-COMBO.
+                04  W61-FTNJANUMKBN         PIC X(25).
+                04  W61-FTNJANUMKBN-COUNT   PIC S9(9)   BINARY.
+                04  W61-FTNJANUMKBN-ITEM
+                        PIC X(25)   OCCURS  5 TIMES.
+              03  W61-FTNJANUM.
+                04  W61-VALUE   PIC X(8).
+              03  W61-JKYSNUMKBN-COMBO.
+                04  W61-JKYSNUMKBN         PIC X(25).
+                04  W61-JKYSNUMKBN-COUNT   PIC S9(9)   BINARY.
+                04  W61-JKYSNUMKBN-ITEM
+                        PIC X(25)   OCCURS  5 TIMES.
+              03  W61-JKYSNUM.
+                04  W61-VALUE   PIC X(7).
               03  W61-RECEDEN-TOKKI.
                 04  W61-VALUE   PIC X(2).
               03  W61-RECEDEN-KYURATE.
@@ -41,6 +55,18 @@
                 04  W61-RECEDEN-KORECKBN-COUNT   PIC S9(9)   BINARY.
                 04  W61-RECEDEN-KORECKBN-ITEM
                         PIC X(12)   OCCURS  2 TIMES.
+              03  W61-RECEDEN-FTNJANUMKBN-COMBO.
+                04  W61-RECEDEN-FTNJANUMKBN         PIC X(25).
+                04  W61-RECEDEN-FTNJANUMKBN-COUNT   PIC S9(9)   BINARY.
+                04  W61-RECEDEN-FTNJANUMKBN-ITEM
+                        PIC X(25)   OCCURS  5 TIMES.
+              03  W61-RECEDEN-FTNJANUM  PIC X(8).
+              03  W61-RECEDEN-JKYSNUMKBN-COMBO.
+                04  W61-RECEDEN-JKYSNUMKBN         PIC X(25).
+                04  W61-RECEDEN-JKYSNUMKBN-COUNT   PIC S9(9)   BINARY.
+                04  W61-RECEDEN-JKYSNUMKBN-ITEM
+                        PIC X(25)   OCCURS  5 TIMES.
+              03  W61-RECEDEN-JKYSNUM   PIC X(7).
               03  W61-SCROLLEDWINDOW28.
                 04  W61-TOKKILST.
                   05  W61-COUNT   PIC S9(9)   BINARY.

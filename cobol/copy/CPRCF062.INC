@@ -437,9 +437,34 @@
       *        レセ電：給付割合
                05  RECE62-2006-RECEDEN-KYURATE
                                           PIC  9(03).
-      *       レセ電：公費レコード区分
-               05  RECE62-2006-RECEDEN-KORECKBNINF.
-                   07  RECE62-2006-RECEDEN-KORECKBN
-                                          PIC  X(01)
-                                               OCCURS  4.
+      *        公費情報
+               05  RECE62-2006-KOHINF.
+                   07  RECE62-2006-KOH-OCC     OCCURS  4. 
+      *                負担者番号記載区分
+                       11  RECE62-2006-FTNJANUMKBN
+                                          PIC  X(02).
+      *                負担者番号
+                       11  RECE62-2006-FTNJANUM
+                                          PIC  X(08).
+      *                受給者番号記載区分
+                       11  RECE62-2006-JKYSNUMKBN
+                                          PIC  X(02).
+      *                受給者番号
+                       11  RECE62-2006-JKYSNUM
+                                          PIC  X(07).
+      *                レセ電：公費レコード区分
+                       11  RECE62-2006-RECEDEN-KORECKBN
+                                          PIC  X(01).
+      *                レセ電：負担者番号記載区分
+                       11  RECE62-2006-RECEDEN-FTNJANUMKBN
+                                          PIC  X(02).
+      *                レセ電：負担者番号
+                       11  RECE62-2006-RECEDEN-FTNJANUM
+                                          PIC  X(08).
+      *                レセ電：受給者番号記載区分
+                       11  RECE62-2006-RECEDEN-JKYSNUMKBN
+                                          PIC  X(02).
+      *                レセ電：受給者番号
+                       11  RECE62-2006-RECEDEN-JKYSNUM
+                                          PIC  X(07).
       *
