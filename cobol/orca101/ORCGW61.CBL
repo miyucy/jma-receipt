@@ -419,7 +419,7 @@
            MOVE    1               TO  SPA-GMN-RJNKBN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-RECEDEN-KORECKBNL    (1)
-           MOVE    "記録する"      TO  SPA-GMN-RECEDEN-KORECKBNMEIL (1)
+           MOVE    "記録しない"    TO  SPA-GMN-RECEDEN-KORECKBNMEIL (1)
            MOVE    1               TO  SPA-GMN-RECEDEN-KORECKBN-MAX
       *
       *    レセプト特記事項編集情報
