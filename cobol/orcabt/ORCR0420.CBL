@@ -390,6 +390,8 @@
       *    •’•£•Î•‡Œ¡° ∆˝Õƒª˘°À≤√ªª
            03  CONS-FILM-YOUJI-KASAN  
                                PIC X(09)   VALUE   "799990070".
+      *    ª¿¡« ‰¿µŒ®
+           03  CONS-SANSO      PIC X(09)   VALUE   "770020070".
       *
       *****ª¿¡« 
       *****COPY    "CMSANSOTBL.INC".
@@ -1126,7 +1128,8 @@
                    IF   (( SRY-SRYKBN               =   "70" )  AND
                          ( TNS-DATAKBN              =   "3"  ))
                    OR   (  SRY-SRYCD (IDX2)         =
-                                    CONS-FILM-YOUJI-KASAN     )
+                                    CONS-FILM-YOUJI-KASAN  OR  
+                                    CONS-SANSO                )
                        CONTINUE
                    ELSE
       **               SET     TBL-SANSO           TO  1

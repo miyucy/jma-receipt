@@ -549,7 +549,9 @@
            03  WRK-CONS-FILM-YOUJI-KASAN
                                        PIC X(09)   VALUE 
                                                    "799990070".
-      *
+      *    ª¿¡« ‰¿µŒ®
+           03  WRK-CONS-SANSO          PIC X(09)   VALUE 
+                                                   "770020070".
       *
       *    •—•πÃæŒŒ∞Ë
        01  WRK-PATH                        PIC X(64).
@@ -959,7 +961,8 @@
                             END-IF
                           ELSE
                             IF      RECE45-SRYCD (IDX)    =
-                                     WRK-CONS-FILM-YOUJI-KASAN
+                                     WRK-CONS-FILM-YOUJI-KASAN  OR
+                                     WRK-CONS-SANSO
                                CONTINUE
                             ELSE
                                IF  TBL-ZAIW-TANINAME  (IDY IDZ)  

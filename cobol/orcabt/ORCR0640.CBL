@@ -419,6 +419,9 @@
       *    •’•£•Î•‡Œ¡° ∆˝Õƒª˘°À≤√ªª
            03  CONS-FILM-YOUJI-KASAN  
                                    PIC X(09) VALUE "799990070".
+      *    ª¿¡« ‰¿µŒ®
+           03  CONS-SANSO          PIC X(09) VALUE "770020070".
+      *
       *
       *****ª¿¡« 
       *****COPY    "CMSANSOTBL.INC".
@@ -3082,7 +3085,8 @@
                    IF   (( SRY-SRYKBN               =   "70" )  AND
                          ( TNS-DATAKBN              =   "3"  ))
                    OR   (  SRY-SRYCD (IDX2)         =
-                                    CONS-FILM-YOUJI-KASAN     )
+                                    CONS-FILM-YOUJI-KASAN  OR  
+                                    CONS-SANSO                )
                        CONTINUE
                    ELSE
       *********        SET     TBL-SANSO           TO  1
@@ -4725,15 +4729,17 @@
            MOVE    RECE62-NYUGAIKBN     TO      SYU-NYUGAIKBN
            MOVE    RECE62-PTID          TO      SYU-PTID
       ***  MOVE    RECE62-SRYKA(IDX)    TO      SYU-SRYKA
+           MOVE    RECE62-SRYYM         TO      SYU-SRYYMD(1:6)
+           MOVE    "__"                 TO      SYU-SRYYMD(7:2)
            MOVE    SYUNOU-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SYUNOU-KEY10"       TO      ORC-DBPATH
+           MOVE    "SYUNOU-KEY17"       TO      ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SYUNOU-KEY10"   TO      ORC-DBPATH
+               MOVE    "SYUNOU-KEY17"   TO      ORC-DBPATH
                PERFORM  SYUNOU-READ-SEC
                PERFORM  UNTIL
                   (FLG-SYUNOU             =    1)
@@ -4742,21 +4748,20 @@
                            OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
                        IF      SYU-HKNCOMBINUM   =
                                                 RECE62-HKNCOMBI (IDX1)
-                           IF   ( RECE62-SRYYM   =  SYU-SRYYMD(1:6) )
-                           AND  ( SYU-DENPJTIKBN    NOT =  "3"      )
+                           IF  SYU-DENPJTIKBN    NOT =  "3"
                                PERFORM   RECE62-HENSYU-SEC3
                            END-IF
                            MOVE    10              TO  IDX1
                        END-IF
                    END-PERFORM          
-                   MOVE     "SYUNOU-KEY10"  TO   ORC-DBPATH
+                   MOVE     "SYUNOU-KEY17"  TO   ORC-DBPATH
                    PERFORM   SYUNOU-READ-SEC
                END-PERFORM
            ELSE
                DISPLAY   "SYUNOU SELECT ERR" 
            END-IF
       *
-           MOVE   "SYUNOU-KEY10"     TO  WK-PATH
+           MOVE   "SYUNOU-KEY17"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
            .
