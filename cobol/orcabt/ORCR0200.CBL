@@ -39,7 +39,7 @@
 006900*
            SELECT  RECE04-FILE     ASSIGN  RECE04PARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE04-KEY
                                    FILE    STATUS  IS  STS-RECE04.
 006900*
@@ -195,10 +195,10 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
-           MOVE    "RECE040"           TO  RECE04PARA-FILE-ID
+           MOVE    "RECE041"           TO  RECE04PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE04PARA-TERMID
       *
-           MOVE    "RECE041"           TO  RECE041PARA-FILE-ID
+           MOVE    "RECE049"           TO  RECE041PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE041PARA-TERMID
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
@@ -221,6 +221,8 @@
       *    ¼ç½èÍý
       *****************************************************************
        200-MAIN-SEC                SECTION.
+      *???
+           DISPLAY "RECE04=" RECE04-KEY "#"
       *    
            INITIALIZE                      RECE041-REC
            MOVE    RECE04-HOSPID       TO  RECE041-HOSPID
@@ -231,6 +233,7 @@
            MOVE    RECE04-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
            MOVE    RECE04-RECESYUBETU  TO  RECE041-RECESYUBETU
            MOVE    RECE04-HKNJANUM     TO  RECE041-HKNJANUM
+           MOVE    RECE04-HOJOKBN      TO  RECE041-HOJOKBN
            MOVE    RECE04-TEKSTYMD     TO  RECE041-TEKSTYMD
            MOVE    RECE04-ZAINUM       TO  RECE041-ZAINUM
            MOVE    RECE04-KOHBUNRI     TO  RECE041-KOHBUNRI
@@ -251,14 +254,7 @@
            MOVE    RECE04-DRCD         TO  RECE041-DRCD
            MOVE    RECE04-ZAIREQFLG    TO  RECE041-ZAIREQFLG
            MOVE    RECE04-TEIGENRATE   TO  RECE041-TEIGENRATE
-           PERFORM   VARYING   IDX   FROM   1  BY  1
-                     UNTIL  IDX   >   4
-               PERFORM   VARYING   IDX   FROM   1  BY  1
-                         UNTIL  IDX   >   31
-                      MOVE    RECE04-KAISU(IDX IDY)
-                                       TO  RECE041-KAISU(IDX IDY)
-               END-PERFORM                        
-           END-PERFORM
+           MOVE    RECE04-DAY-AREA     TO  RECE041-DAY-AREA
       *
            WRITE   RECE041-REC
            ADD     1                   TO  CNT-OUT
@@ -322,10 +318,9 @@
            CLOSE   RECE04-FILE
            CLOSE   RECE041-FILE
       *
-      ***     DISPLAY "RECE04   IN  " CNT-IN  UPON CONSOLE 
-      ***     DISPLAY "RECE041  CNT " CNT-OUT UPON CONSOLE 
-      ***     DISPLAY "*** ORCR0055 END ***"
-      ***     ACCEPT  WRK-IN FROM CONSOLE 
+           DISPLAY "RECE04   IN  " CNT-IN
+           DISPLAY "RECE041  CNT " CNT-OUT
+           DISPLAY "*** ORCR0200 END ***"
            .
        300-TERM-EXT.
            EXIT.
@@ -342,6 +337,8 @@
                    ADD     1           TO  CNT-IN
                    MOVE    ZERO        TO  FLG-END
            END-READ
+      *???
+           DISPLAY "FLG=" FLG-END "#" CNT-IN "#"
            .
        900-RECE04-READ-EXT.
            EXIT.

@@ -330,11 +330,11 @@
       *    ÃÙ∫ﬁŒ¡ƒ˛∏∫
            03  WRK-CONS-TEIGEN        PIC X(09)   VALUE   "630010002".
       *    ∆‚…˛ÃÙ£≤£∞£µ±ﬂ∞ ≤º
-           03  WRK-CONS-NAI205        PIC X(09)   VALUE   "610010002".
+      *****03  WRK-CONS-NAI205        PIC X(09)   VALUE   "610010002".
       *    √ÌºÕ£≤£∞£µ±ﬂ∞ ≤º
-           03  WRK-CONS-CHU205        PIC X(09)   VALUE   "640010002".
+      *****03  WRK-CONS-CHU205        PIC X(09)   VALUE   "640010002".
       *    ≥∞…˛ÃÙ£≤£∞£µ±ﬂ∞ ≤º
-           03  WRK-CONS-GAI205        PIC X(09)   VALUE   "660010002".
+      *****03  WRK-CONS-GAI205        PIC X(09)   VALUE   "660010002".
       *
       *****************************************************************
       *    •’•°•§•Î•Ï•§•¢•¶•»
@@ -449,10 +449,10 @@
            MOVE    "RECE031"           TO  RECE03PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE03PARA-TERMID
       *
-           MOVE    "RECE041"           TO  RECE04PARA-FILE-ID
+           MOVE    "RECE049"           TO  RECE04PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE04PARA-TERMID
       *
-           MOVE    "RECE050"           TO  RECE05PARA-FILE-ID
+           MOVE    "RECE051"           TO  RECE05PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE05PARA-TERMID
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
@@ -1258,6 +1258,7 @@
            MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
            MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
            MOVE    RECE02-HKNJANUM     TO  RECE041-HKNJANUM
+           MOVE    RECE02-HOJOKBN      TO  RECE041-HOJOKBN
            MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
       *
            START   RECE041-FILE
@@ -1280,6 +1281,7 @@
                OR     ( RECE02-RECESYUBETU
                                          NOT =   RECE041-RECESYUBETU  )
                OR     ( RECE02-HKNJANUM  NOT =   RECE041-HKNJANUM     )
+               OR     ( RECE02-HOJOKBN   NOT =   RECE041-HOJOKBN      )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE041-TEKSTYMD     )
       *        …È√¥∂Ë ¨ ‘Ω∏ΩËÕ˝
                PERFORM 20070-FTNKBN-HENSYU-SEC        
@@ -1458,6 +1460,7 @@
            MOVE    RECE041-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
            MOVE    RECE041-RECESYUBETU  TO  RECE05-RECESYUBETU
            MOVE    RECE041-HKNJANUM     TO  RECE05-HKNJANUM
+           MOVE    RECE041-HOJOKBN      TO  RECE05-HOJOKBN
            MOVE    RECE041-TEKSTYMD     TO  RECE05-TEKSTYMD
            MOVE    RECE041-ZAINUM       TO  RECE05-ZAINUM
            START   RECE05-FILE
@@ -1478,8 +1481,9 @@
                OR     ( RECE041-TEISYUTUSAKI
                                          NOT =   RECE05-TEISYUTUSAKI )
                OR     ( RECE041-RECESYUBETU
-                                         NOT =   RECE05-RECESYUBETU  )
+                                          NOT =   RECE05-RECESYUBETU  )
                OR     ( RECE041-HKNJANUM  NOT =   RECE05-HKNJANUM     )
+               OR     ( RECE041-HOJOKBN   NOT =   RECE05-HOJOKBN      )
                OR     ( RECE041-TEKSTYMD  NOT =   RECE05-TEKSTYMD     )
                OR     ( RECE041-ZAINUM    NOT =   RECE05-ZAINUM       )
       *
@@ -1648,21 +1652,6 @@
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1                   TO  FLG-END
            ELSE
-               IF      RECE05-SRYCD (IDX)(1:1) =   "6"
-               AND     FLG-YKZ20               =   1
-                   IF      RECE041-SRYKBN =   "21"  OR  "22" 
-                       MOVE    WRK-CONS-NAI205         TO
-                                   TBL-ZAIW-SRYCD      (WRK-ZAIWMAX)
-                   END-IF                
-                   IF      RECE041-SRYKBN =   "23" 
-                       MOVE    WRK-CONS-GAI205         TO
-                                   TBL-ZAIW-SRYCD      (WRK-ZAIWMAX)
-                   END-IF                
-                   IF      RECE041-SRYKBN (1:1)    =   "3" 
-                       MOVE    WRK-CONS-CHU205         TO
-                                   TBL-ZAIW-SRYCD      (WRK-ZAIWMAX)
-                   END-IF                
-               ELSE    
                    MOVE    RECE05-SRYCD      (IDX) TO
                                    TBL-ZAIW-SRYCD      (WRK-ZAIWMAX)
                    MOVE    RECE05-SRYSURYO   (IDX) TO
@@ -1673,7 +1662,6 @@
                                    TBL-ZAIW-TENSIKIBETU(WRK-ZAIWMAX)
                    MOVE    RECE05-TEN        (IDX) TO
                                    TBL-ZAIW-TEN        (WRK-ZAIWMAX)
-               END-IF                            
            END-IF
       *
            EVALUATE    TBL-ZAIW-SRYCD (WRK-ZAIWMAX) (1:1)
