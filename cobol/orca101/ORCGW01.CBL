@@ -55,6 +55,8 @@
       *  01.05.07    NACL-太田    03/03/05  9800 排他制御情報追加
       *  01.05.08    NACL-多々納  03/05/27  診療内容追加（１０１２）
       *  01.05.09    NACL-多々納  03/06/10  無床診療所に排他制御追加
+      *  01.05.10    NACL-太田    03/07/08  1027 割引率情報の区分コード表示を
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -168,6 +170,13 @@
                05  WRK-WDD         PIC 9(02).
       *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
+           03  WRK-RATE-AREA.
+               05  WRK-RATE-EDIT.
+                   07  WRK-RATE-EDITZ  PIC ZZZZZZZ.
+                   07  WRK-RATE-TANI   PIC X(04).
+               05  WRK-RATE-EDIT-R  REDEFINES    WRK-RATE-EDIT.
+                   07  WRK-RATE-EDITR  PIC X(11).
+      *
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1114,8 +1123,18 @@
                                               TO  SPA-GMN-KBNCDMEIL(IDX)
                    WHEN    "1027"
                        MOVE    SYSKANRI-REC   TO  SYS-1027-REC
-                       MOVE    SYS-1027-DISCOUNT-RATE (1:7)
-                                              TO  SPA-GMN-KBNCDMEIL(IDX)
+                       MOVE    SPACE          TO  WRK-RATE-AREA
+                       MOVE    SYS-1027-DISCOUNT-RATE
+                                              TO  WRK-RATE-EDITZ
+                       EVALUATE    SYS-1027-TEIRITU
+                       WHEN    "0"
+                           MOVE    "該当なし" TO  WRK-RATE-EDIT-R
+                       WHEN    "1"
+                           MOVE    "(%)"      TO  WRK-RATE-TANI
+                       WHEN    "2"
+                           MOVE    "(円)"     TO  WRK-RATE-TANI
+                       END-EVALUATE
+                       MOVE    WRK-RATE-AREA  TO  SPA-GMN-KBNCDMEIL(IDX)
                    WHEN    "3001"
                        MOVE    SYSKANRI-REC   TO  SYS-3001-REC
                        MOVE    SYS-3001-HCNAME (1:26)
