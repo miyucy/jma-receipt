@@ -34,6 +34,8 @@
       *                                     の追加
       *                                     改正に伴う項目数の変更
       *  01.01.02    NACL-藤原    04/08/10  入院レセ電の追加
+      *  01.01.03    NACL-藤原    04/09/17  入外区分によって処理対象を
+      *                                     限定する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -118,6 +120,7 @@
        01  WRK-AREA.
            COPY    "CPORCSPRTLNK.INC".
            05  WRK-PARA-TEISYUTUSAKI   PIC X(01).
+           05  WRK-PARA-NYUGAIKBN      PIC X(01).
            05  WRK-PARA-JOBID          PIC 9(07).
            05  WRK-PARA-SHELLID        PIC X(08).
       *
@@ -133,7 +136,10 @@
       *
            03  WRK-MOJISU              PIC 9(02).        
       *       
-           03  WRK-PATH                PIC X(64).
+           03  WRK-PATH.
+               05  WRK-MCP-BLOCKS      PIC S9(9)   BINARY.
+               05  WRK-MCP-RNAME       PIC S9(9)   BINARY.
+               05  WRK-MCP-PNAME       PIC S9(9)   BINARY.
       *     右ずめ編集用     
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
@@ -206,6 +212,7 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
       *
            COPY    "MCPAREA".
       *
@@ -256,6 +263,7 @@
                                                WRK-PARA-TEISYUTUSAKI
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
+                                               WRK-PARA-NYUGAIKBN
            END-UNSTRING                                  
       *
            PERFORM 100-DBOPEN-SEC
@@ -267,14 +275,27 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCBM500"      TO  JOB-PGID
-           IF      WRK-PARA-TEISYUTUSAKI   
-                                       =   "1" 
-               MOVE    "レセ電ファイル作成（社保）"
-                                       TO  JOB-SHELLMSG
-           ELSE
-               MOVE    "レセ電ファイル作成（国保）"
-                                       TO  JOB-SHELLMSG
-           END-IF
+           EVALUATE    WRK-PARA-TEISYUTUSAKI
+                           ALSO    WRK-PARA-NYUGAIKBN   
+               WHEN    "1" ALSO    ZERO
+                   MOVE    "レセ電ファイル作成（社保）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "1" ALSO    "1"
+                   MOVE    "レセ電ファイル作成（社保・入院）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "1" ALSO    "2"
+                   MOVE    "レセ電ファイル作成（社保・入院外）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "2" ALSO    ZERO
+                   MOVE    "レセ電ファイル作成（国保）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "2" ALSO    "1"
+                   MOVE    "レセ電ファイル作成（国保・入院）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "2" ALSO    "2"
+                   MOVE    "レセ電ファイル作成（国保・入院外）"
+                                           TO  JOB-SHELLMSG
+           END-EVALUATE
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
@@ -292,12 +313,17 @@
            OPEN    OUTPUT             RECE30-FILE  
       *
       *
-           IF      WRK-PARA-TEISYUTUSAKI   
-                                       =   "1" 
-               MOVE    "SEIKYU-KEY23"      TO  WRK-PATH
-           ELSE  
-               MOVE    "SEIKYU-KEY24"      TO  WRK-PATH
-           END-IF
+           EVALUATE    WRK-PARA-TEISYUTUSAKI
+                           ALSO    WRK-PARA-NYUGAIKBN   
+               WHEN    "1" ALSO    ZERO
+                   MOVE    PATH-TBL-SEIKYU-KEY23   TO  WRK-PATH
+               WHEN    "1" ALSO    ANY
+                   MOVE    PATH-TBL-SEIKYU-KEY25   TO  WRK-PATH
+               WHEN    "2" ALSO    ZERO
+                   MOVE    PATH-TBL-SEIKYU-KEY24   TO  WRK-PATH
+               WHEN    "2" ALSO    ANY
+                   MOVE    PATH-TBL-SEIKYU-KEY26   TO  WRK-PATH
+           END-EVALUATE
            PERFORM 900-SEIKYU-SELECT-SEC
            .
        100-INIT-EXT.
@@ -388,7 +414,7 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  MCP-PATH
                PERFORM 900-SEIKYU-READ-SEC
            END-PERFORM
       *
@@ -587,11 +613,10 @@
        300-TERM-SEC                SECTION.
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    WRK-PATH            TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+                                       MCPDATA-REC      
       *
            CLOSE   RECE30-FILE
       *
@@ -815,18 +840,18 @@
       *     
       *    請求管理ＤＢ検索
            MOVE    SPACE               TO  RECE10-REC
-           INITIALIZE                  RECE10-REC
+           INITIALIZE                      RECE10-REC
            MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
+           MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-PATH            TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC      
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  MCP-PATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-END
@@ -840,12 +865,11 @@
       *****************************************************************
        900-SEIKYU-READ-SEC           SECTION.
       *
-           MOVE    WRK-PATH            TO  ORC-DBPATH
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-PATH            TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC      
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-END
                MOVE    MCPDATA-REC         TO  RECE10-REC
