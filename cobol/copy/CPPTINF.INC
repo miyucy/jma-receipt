@@ -142,8 +142,9 @@
       *更新時間
            03  PTINF-UPHMS                   PIC  X(06).
       *virtual項目
-      *診療開始年月日
            03  PTINF-ST-SRYYMD               PIC  X(08).
            03  PTINF-ED-SRYYMD               PIC  X(08).
            03  PTINF-NYUGAIKBN               PIC  X(01).
            03  PTINF-HKNKBN                  PIC  X(01).
+           03  PTINF-SRYYMD                  PIC  X(08).
+           03  PTINF-SRYYM                   PIC  X(06).
