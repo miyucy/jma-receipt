@@ -1,0 +1,14 @@
+        01  HCN011.
+            02  HCN011-PTNUM    PIC X(20).
+            02  HCN011-BYOMEI-TBL       OCCURS  22 TIMES.
+              03  HCN011-CD   PIC X(2).
+              03  HCN011-BYOMEI   PIC X(100).
+              03  HCN011-STRYMD.
+                04  HCN011-STRYY    PIC X(2).
+                04  HCN011-STRMM    PIC X(2).
+                04  HCN011-STRDD    PIC X(2).
+              03  HCN011-ENDYMD.
+                04  HCN011-ENDYY    PIC X(2).
+                04  HCN011-ENDMM    PIC X(2).
+                04  HCN011-ENDDD    PIC X(2).
+            02  HCN011-NAME PIC X(30).

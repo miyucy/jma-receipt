@@ -102,6 +102,8 @@ FORM_files = \
               HCM2B.red \
               HCM07.red \
               HCM08.red \
+              HCN01.red \
+              HCN011.red \
 
 all:   
 

@@ -1,0 +1,69 @@
+        01  HCN01.
+            02  HCN01-PTNUM PIC X(20).
+            02  HCN01-KANANAME  PIC X(30).
+            02  HCN01-NAME  PIC X(30).
+            02  HCN01-BIRTHYMD.
+              03  HCN01-BIRTHGG   PIC X(4).
+              03  HCN01-BIRTHYY   PIC X(2).
+              03  HCN01-BIRTHMM   PIC X(2).
+              03  HCN01-BIRTHDD   PIC X(2).
+            02  HCN01-NENREI    PIC X(3).
+            02  HCN01-SEX   PIC X(2)    OCCURS  2 TIMES.
+            02  HCN01-ADRS  PIC X(100).
+            02  HCN01-TEL   PIC X(15).
+            02  HCN01-RENNAME   PIC X(58).
+            02  HCN01-RENADRS   PIC X(116).
+            02  HCN01-HIRUTEL   PIC X(15).
+            02  HCN01-YORUTEL   PIC X(15).
+            02  HCN01-KINNAME   PIC X(58).
+            02  HCN01-KINADRS   PIC X(116).
+            02  HCN01-KINTEL    PIC X(15).
+            02  HCN01-SINRYOKA  PIC X(10).
+            02  HCN01-DR    PIC X(26)   OCCURS  3 TIMES.
+            02  HCN01-SYUTOKYMD.
+              03  HCN01-SYUTOKGG  PIC X(4).
+              03  HCN01-SYUTOKYY  PIC X(2).
+              03  HCN01-SYUTOKMM  PIC X(2).
+              03  HCN01-SYUTOKDD  PIC X(2).
+            02  HCN01-HPTNUM.
+              03  HCN01-HPTNUMS   PIC X(1)        OCCURS  8 TIMES.
+            02  HCN01-KIGONUM   PIC X(52).
+            02  HCN01-HIHKNNAME PIC X(26).
+            02  HCN01-ZOKUGARA  PIC X(26).
+            02  HCN01-YUKOYMD.
+              03  HCN01-YUKOGG    PIC X(4).
+              03  HCN01-YUKOYY    PIC X(2).
+              03  HCN01-YUKOMM    PIC X(2).
+              03  HCN01-YUKODD    PIC X(2).
+            02  HCN01-JIGYONAME PIC X(52).
+            02  HCN01-JIGYOADRS PIC X(52).
+            02  HCN01-KOH-TBL           OCCURS  2 TIMES.
+              03  HCN01-FTNSNO.
+                04  HCN01-FTNSNOS   PIC X(1)        OCCURS  8 TIMES.
+              03  HCN01-JKYSNO.
+                04  HCN01-JKYSNOS   PIC X(1)        OCCURS  7 TIMES.
+              03  HCN01-KOHENDYMD.
+                04  HCN01-KOHENDGG  PIC X(4).
+                04  HCN01-KOHENDYY  PIC X(2).
+                04  HCN01-KOHENDMM  PIC X(2).
+                04  HCN01-KOHENDDD  PIC X(2).
+            02  HCN01-NYUINYMD.
+              03  HCN01-NYUINGG   PIC X(4).
+              03  HCN01-NYUINYY   PIC X(2).
+              03  HCN01-NYUINMM   PIC X(2).
+              03  HCN01-NYUINDD   PIC X(2).
+            02  HCN01-TAIINYMD.
+              03  HCN01-TAIINGG   PIC X(4).
+              03  HCN01-TAIINYY   PIC X(2).
+              03  HCN01-TAIINMM   PIC X(2).
+              03  HCN01-TAIINDD   PIC X(2).
+            02  HCN01-BYOMEI-TBL        OCCURS  10 TIMES.
+              03  HCN01-BYOMEI    PIC X(100).
+              03  HCN01-STRYMD.
+                04  HCN01-STRYY PIC X(2).
+                04  HCN01-STRMM PIC X(2).
+                04  HCN01-STRDD PIC X(2).
+              03  HCN01-ENDYMD.
+                04  HCN01-ENDYY PIC X(2).
+                04  HCN01-ENDMM PIC X(2).
+                04  HCN01-ENDDD PIC X(2).

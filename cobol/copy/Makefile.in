@@ -677,6 +677,8 @@ COPYS = \
         CPSK9800.INC \
         CPTBLLOCK.INC \
         W98.INC \
+        HCN01.INC \
+        HCN011.INC \
 
 DBPATH = \
 	ORCA-DBPATH
