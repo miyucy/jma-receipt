@@ -3317,7 +3317,7 @@
       </signal>
       <signal>
 	<name>enter</name>
-	<handler>entyr_changed</handler>
+	<handler>entry_changed</handler>
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 12 May 2003 08:30:17 GMT</last_modification_time>
       </signal>
@@ -3467,7 +3467,7 @@
       </signal>
       <signal>
 	<name>enter</name>
-	<handler>setry_changed</handler>
+	<handler>entry_changed</handler>
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 12 May 2003 08:36:31 GMT</last_modification_time>
       </signal>
@@ -3492,7 +3492,7 @@
       </signal>
       <signal>
 	<name>enter</name>
-	<handler>ENTRY_CHANGED</handler>
+	<handler>entry_changed</handler>
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 12 May 2003 08:37:48 GMT</last_modification_time>
       </signal>
