@@ -1299,7 +1299,7 @@
            MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    ACCT-SRYKBN          TO      RECE64-SRYKBN
-           IF      ACCT-SRYKBN = "90"
+           IF      ACCT-SRYKBN = "90" OR "92"
                  MOVE    "6"            TO      RECE64-ZAISKBKBN
            ELSE 
               IF   ACCT-SRYKBN = "97"
@@ -1548,8 +1548,7 @@
            MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
-      **   MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
-           MOVE    "90"                 TO      RECE64-SRYKBN
+           MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
       **   MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
            MOVE    "6"                  TO      RECE64-ZAISKBKBN
       **   MOVE    NACCT-ZAINUM         TO      RECE64-ZAINUM
@@ -1563,8 +1562,6 @@
                                         TO      RECE64-HKNCOMBI
            MOVE    SPACE                TO      RECE64-JIHOKBN
            EVALUATE   SYUKEI-IDX3
-      **>      WHEN  1
-      **>            ??  
                WHEN  2
                  MOVE    5              TO      RECE64-ZAITEN
                  MOVE    1              TO      RECE64-MEISAISU
@@ -1715,15 +1712,14 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
            IF      MCP-RC               =       ZERO
-      *
                MOVE    "NYUINACT-KEY9"  TO      ORC-DBPATH
                PERFORM  NYUINACT-READ-SEC
-               PERFORM  UNTIL  (FLG-NYUINACT  =    "1")
-                   PERFORM   RECE65-TENSOU2-GAI-SEC
-                   PERFORM   RECE65-WRITE-SEC
-                   MOVE          "NYUINACT-KEY9"  TO   ORC-DBPATH
-                   PERFORM        NYUINACT-READ-SEC
-               END-PERFORM
+           ELSE
+               MOVE     1               TO      FLG-NYUINACT
+           END-IF
+           IF  FLG-NYUINACT   =   ZERO
+               PERFORM   RECE65-TENSOU2-GAI-SEC
+               PERFORM   RECE65-WRITE-SEC
            END-IF
       *
            MOVE   "NYUINACT-KEY9"      TO  WK-PATH
@@ -1753,15 +1749,14 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
            IF      MCP-RC               =       ZERO
-      *
                MOVE    "NYUINACT-KEY9"  TO      ORC-DBPATH
                PERFORM  NYUINACT-READ-SEC
-               PERFORM  UNTIL  (FLG-NYUINACT  =    "1")
-                   PERFORM   RECE65-TENSOU2-SKJ-SEC
-                   PERFORM   RECE65-WRITE-SEC
-                   MOVE          "NYUINACT-KEY9"  TO   ORC-DBPATH
-                   PERFORM        NYUINACT-READ-SEC
-               END-PERFORM
+           ELSE
+               MOVE     1               TO      FLG-NYUINACT
+           END-IF
+           IF  FLG-NYUINACT   =   ZERO
+               PERFORM   RECE65-TENSOU2-SKJ-SEC
+               PERFORM   RECE65-WRITE-SEC
            END-IF
       *
            MOVE   "NYUINACT-KEY9"      TO  WK-PATH
@@ -2096,9 +2091,9 @@
            END-IF 
       **   MOVE    NSRY-SRYSYUKBN       TO      RECE65-SRYSYUKBN
            IF      WRK-GAI2-SRYKBNFLG(SYUKEI-IDX3)  =   1
-              MOVE    "900"             TO      RECE65-SRYKBN
+              MOVE    "900"             TO      RECE65-SRYSYUKBN
            ELSE
-              MOVE    "920"             TO      RECE65-SRYKBN
+              MOVE    "920"             TO      RECE65-SRYSYUKBN
            END-IF 
            MOVE    NSRY-JIHIMONEYTOTAL  TO      RECE65-JIHIMONEY
       *
@@ -2229,15 +2224,11 @@
            MOVE    RECE62-PTNUM         TO      RECE65-PTNUM
       *
            MOVE    NSRY-SRYKA           TO      RECE65-SRYKA
-      **   MOVE    NSRY-SRYKBN          TO      RECE65-SRYKBN
-           MOVE    "90"                 TO      RECE65-SRYKBN
-      **   MOVE    NSRY-SRYSYUKBN       TO      RECE65-SRYSYUKBN
-           MOVE    "900"                TO      RECE65-SRYKBN
+           MOVE    NSRY-SRYKBN          TO      RECE65-SRYKBN
+           MOVE    NSRY-SRYSYUKBN       TO      RECE65-SRYSYUKBN
            MOVE    NSRY-JIHIMONEYTOTAL  TO      RECE65-JIHIMONEY
       *
            EVALUATE   SYUKEI-IDX3
-      **>      WHEN  1
-      **>            ??  
                WHEN  2
                  IF    RECE62-RJNHKNNUM    =    SPACE
                     MOVE    190080570   TO      RECE65-SRYCD(1)
