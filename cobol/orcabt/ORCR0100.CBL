@@ -3355,6 +3355,8 @@
            CLOSE                       RECE02-FILE
            CLOSE                       RECE031-FILE
            CLOSE                       RECE061-FILE
+                                       RECE09-FILE
+                                       RECE11-FILE 
       *
            IF      CNT-OUT            =   ZERO 
                MOVE    "対象データがありませんでした" TO  WRK-RECEERR

@@ -53,6 +53,12 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE661-KEY
                                    FILE    STATUS  IS  STS-RECE66.
+      *    入退院履歴情報
+           SELECT  RECE68-FILE     ASSIGN  RECE68PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE68-KEY
+                                   FILE    STATUS  IS  STS-RECE68.
       *                             
            SELECT  RECE69-FILE     ASSIGN  RECE69PARA
                                    ORGANIZATION    IS  INDEXED
@@ -88,6 +94,10 @@
        01  RECE661-REC. 
            COPY    "CPRCF0661.INC".
       *
+       FD  RECE68-FILE.
+       01  RECE68-REC. 
+           COPY    "CPRCF068.INC".
+      *
       *    レセプト０９データ
        FD  RECE69-FILE.
        01  RECE69-REC. 
@@ -119,6 +129,11 @@
                                    REPLACING  //RECE01//
                                    BY         //RECE66//.
       *
+      *     入退院履歴情報ファイル 名称領域 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE68//.
+      *
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
                                    BY         //RECE69//.
@@ -131,14 +146,14 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEERR//.
-           03                      PIC X(04)   VALUE   ".dat".
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *       
            COPY    "HCN06.INC"     REPLACING  //HCN06//
                                    BY         //HC06//.
-            COPY    "HCN061.INC"   REPLACING  //HCN061//
+           COPY    "HCN061.INC"   REPLACING   //HCN061//
                                    BY         //HC061//.
-      *     COPY    "HCN062.INC".
+      *    COPY    "HCN062.INC".
       *
       *    スパ領域
        01  SPA-AREA.
@@ -150,6 +165,7 @@
            03  STS-RECE62          PIC X(02).
            03  STS-RECE63          PIC X(02).
            03  STS-RECE66          PIC X(02).
+           03  STS-RECE68          PIC X(02).
            03  STS-RECE69          PIC X(02).
            03  STS-RECE67          PIC X(02).
            03  STS-RECEERR         PIC X(02).
@@ -162,6 +178,7 @@
            03  FLG-RECE631         PIC 9(01).
            03  FLG-RECE661         PIC 9(01).
            03  FLG-RECE08          PIC 9(01).
+           03  FLG-RECE68          PIC 9(01).
            03  FLG-RECE69          PIC 9(01).
            03  FLG-RECE67          PIC 9(01).
            03  FLG-KANRIMST        PIC 9(01).
@@ -329,9 +346,11 @@
       *        傷病名欄編集行         
                05  WRK-LINEBYO                 PIC 9(02).
       *        適用欄編集行         
-               05  WRK-LINETEK                 PIC 9(02).
+               05  WRK-LINETEK                 PIC 9(03).
       *        前行の続きのとき（傷病名）         
                05  WRK-CONTINUE                PIC 9(01).
+      *    適用欄最大行数
+           03  WRK-TEKIYOU-LINE                PIC 9(03).
       *    傷病名編集
            03  WRK-BYOMEI                      PIC X(150).
            03  WRK-BYOMEIW                     PIC X(150).
@@ -363,6 +382,17 @@
                        09  WRK-BYOMEI2R-TENKIYMD
                                                PIC X(06).
       *                 
+      *    入退院履歴編集（適用欄）
+           03  WRK-NYUTAI-RIREKI-AREA.
+               05  WRK-NYUTAI-RIREKI           PIC X(52).
+               05  WRK-NYUTAI-RIREKI-W         REDEFINES
+                                               WRK-NYUTAI-RIREKI.
+                   07  WRK-NYUTAI-MSG          PIC X(12).
+                   07  WRK-NYUTAI-NYUINYMD     PIC X(18).
+                   07  WRK-NYUTAI-FL1          PIC X(02).
+                   07  WRK-NYUTAI-TAIINYMD     PIC X(18).
+                   07  WRK-NYUTAI-FL2          PIC X(02).
+      *                 
       *    保険履歴編集（適用欄）
            03  WRK-HKN-RIREKI-AREA.
                05  WRK-HKN-RIREKI-TBL          OCCURS  50.  
@@ -390,8 +420,6 @@
            03  WRK-R061-SRYKBN-O               PIC X(02).
            03  WRK-R061-KOHBUNRI-O             PIC 9(01).
       *
-      *****03  WRK-IN                          PIC X(01).
-      *
            03  WRK-SRYYMD                      PIC X(08).
            03  WRK-KGKZ                        PIC ZZZ,ZZZ,ZZZ.
            03  WRK-KGK9                        PIC ZZZ,ZZZ,ZZ9.
@@ -415,14 +443,14 @@
            03  WRK-BYOMEI1-MAX     PIC 9(02)   VALUE   48.
       *    傷病名最大文字数（適用欄）
            03  WRK-BYOMEI2-MAX     PIC 9(02)   VALUE   44.
-      *    適用欄最大行数
-           03  WRK-TEKIYOU-LINE    PIC 9(02)   VALUE   35.
       *    傷病名欄最大行数
            03  WRK-BYOMEI-LINE     PIC 9(02)   VALUE   5.
+      *    適用欄最大行数
+           03  WRK-TEKIYOU1-LINE   PIC 9(02)   VALUE   35.
       *    適用欄（続紙）最大行数
-           03  WRK-TEKIYOU1-LINE   PIC 9(02)   VALUE   140.
+           03  WRK-TEKIYOU2-LINE   PIC 9(03)   VALUE   140.
       *    適用欄（続紙）最大行数
-           03  WRK-TEKIYOU2-LINE   PIC 9(02)   VALUE   110.
+           03  WRK-TEKIYOU3-LINE   PIC 9(03)   VALUE   110.
       *
       *   特記事項
        01  TBL-TOKKI-AREA.
@@ -530,6 +558,8 @@
       *    医療機関情報
            COPY    "CPSK1001.INC".
            COPY    "CPSK1002.INC".
+      *    
+           COPY    "CPSK1005.INC".
       *
            COPY    "CPRCF008.INC".
       *
@@ -641,7 +671,7 @@
            MOVE    ZERO                TO  WRK-RECENUM
       *
            IF      SPA-STS             =   ZERO
-              PERFORM 990-RECE62-READ-SEC
+              PERFORM 900-RECE62-READ-SEC
            END-IF
            .
        100-INIT-EXT.
@@ -660,6 +690,9 @@
       *
            MOVE    "RECE661"           TO  RECE66PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE66PARA-TERMID
+      *
+           MOVE    "RECE680"           TO  RECE68PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE68PARA-TERMID
       *
            MOVE    "RECE690"           TO  RECE69PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE69PARA-TERMID
@@ -691,6 +724,12 @@
            OPEN    INPUT               RECE69-FILE
            IF  STS-RECE69            NOT =   ZERO
                DISPLAY "*** ORCR0710 RECE69 OPEN ERR  ***" STS-RECE69
+               MOVE    2               TO  SPA-STS
+           END-IF
+      *
+           OPEN    INPUT               RECE68-FILE
+           IF  STS-RECE68            NOT =   ZERO
+               DISPLAY "*** ORCR0710 RECE68 OPEN ERR  ***" STS-RECE68
                MOVE    2               TO  SPA-STS
            END-IF
       *
@@ -840,7 +879,7 @@
       *                                      
                        PERFORM 2001-SYORI-SEC
       *
-                       PERFORM 990-RECE62-READ-SEC
+                       PERFORM 900-RECE62-READ-SEC
                    END-PERFORM
                END-PERFORM    
            END-PERFORM
@@ -902,7 +941,7 @@
                INVALID
                    MOVE    1            TO  FLG-RECE69
                NOT INVALID
-                   PERFORM 990-RECE69-NEXT-SEC
+                   PERFORM 900-RECE69-NEXT-SEC
            END-START
            PERFORM UNTIL ( FLG-RECE69           =   1                )
                    OR    ( RECE62-HOSPID    NOT =   RECE69-HOSPID    )
@@ -997,7 +1036,7 @@
                                       WRK-HKN-FL      (WRK-RIREKI-MAX) 
                END-IF                                    
       *
-               PERFORM 990-RECE69-NEXT-SEC
+               PERFORM 900-RECE69-NEXT-SEC
            END-PERFORM
       *
            IF      CNT-RECE69             =   1
@@ -1014,7 +1053,8 @@
       *****************************************************************
        2001-SYORI-SEC                SECTION.
       *
-           MOVE    1         TO  CNT-PAGE
+           MOVE    1                  TO  CNT-PAGE
+           MOVE    WRK-TEKIYOU1-LINE  TO  WRK-TEKIYOU-LINE
       *
       *    医療保険・公費のフラグ
            MOVE    SPACE              TO  WRK-3SYU-KBN
@@ -1056,6 +1096,9 @@
       *    帳票編集<傷病名>処理
            PERFORM 320-HC101-BYOMEI-HEN-SEC
       *
+      *    帳票編集<入退院履歴>処理
+           PERFORM 380-HC101-NYUTAI-RIREKI-HEN-SEC
+      *
       *    帳票編集<剤>処理
            PERFORM 340-HC101-ZAI-HEN-SEC
       *
@@ -1089,7 +1132,7 @@
            MOVE    RECE62-HKNJANUM-KEY TO  RECE67-HKNJANUM
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE67-HOJOKBN
            MOVE    RECE62-TEKSTYMD     TO  RECE67-TEKSTYMD
-           PERFORM 990-RECE67-READ-SEC
+           PERFORM 900-RECE67-READ-SEC
            IF      FLG-RECE67          =   ZERO
                MOVE    RECE67-PRTDATA      TO  RECE67-HC06
            END-IF    
@@ -1223,12 +1266,16 @@
       *    医療機関ＴＥＬ
            MOVE    SYS-1002-TEL        TO  HC06-HOSPTEL
       *
-      *     診療科
-      *     IF  RECE62-SRYKA        NOT =   SPACE
-      *         MOVE    SPACE           TO  HC06-SRYKA
-      *     ELSE
-               MOVE    SPACE           TO  HC06-SRYKA
-      *     END-IF
+      *    診療科
+           MOVE    SPACE                TO  SYSKANRI-REC
+           INITIALIZE                       SYSKANRI-REC
+           MOVE    "1005"               TO  SYS-KANRICD
+           MOVE    RECE62-LASTSRYKA     TO  SYS-KBNCD
+           PERFORM 960-KANRIMST-READ-SEC
+           IF      FLG-KANRIMST     =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1005-REC
+               MOVE    SYS-1005-SRYKANAME  TO  HC06-SRYKA
+           END-IF    
       *
       *    病床数
            MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
@@ -1693,7 +1740,7 @@
                INVALID
                    MOVE    1           TO  FLG-RECE631
                NOT INVALID
-                   PERFORM 990-RECE631-NEXT-SEC
+                   PERFORM 900-RECE631-NEXT-SEC
            END-START
       *
            PERFORM
@@ -1881,7 +1928,7 @@
            MOVE    RECE631-TENKIKBN      TO  WRK-BO-TENKIKBN
            MOVE    RECE631-TENKIYMD      TO  WRK-BO-TENKIYMD
       *
-           PERFORM 990-RECE631-NEXT-SEC
+           PERFORM 900-RECE631-NEXT-SEC
       *
            .
        3210-BYOMEI-SET-EXT.
@@ -2583,7 +2630,7 @@
                INVALID
                    MOVE    1            TO  FLG-RECE661
                NOT INVALID
-                   PERFORM 990-RECE661-NEXT-SEC
+                   PERFORM 900-RECE661-NEXT-SEC
            END-START
            PERFORM
                UNTIL  ( FLG-RECE661           =   1 )
@@ -2615,7 +2662,7 @@
                MOVE    RECE661-SRYKBN        TO  WRK-R061-SRYKBN-O
                MOVE    RECE661-KOHBUNRI      TO  WRK-R061-KOHBUNRI-O
       *
-               PERFORM 990-RECE661-NEXT-SEC
+               PERFORM 900-RECE661-NEXT-SEC
            END-PERFORM
       *
            .
@@ -2734,6 +2781,13 @@
            ADD     1             TO  CNT-PAGE
            PERFORM 310-HCN061-HEAD-HEN-SEC
            MOVE    ZERO          TO  WRK-LINETEK
+      *
+      *    続紙の最大行をセット     
+           IF      CNT-PAGE        =   1   
+               MOVE    WRK-TEKIYOU1-LINE TO  WRK-TEKIYOU-LINE
+           ELSE    
+               MOVE    WRK-TEKIYOU2-LINE TO  WRK-TEKIYOU-LINE
+           END-IF    
       *
            .
        34120-PAGE-EXT.
@@ -2968,6 +3022,104 @@
       *
            .
        370-HC101-HKN-RIREKI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票編集<入退院履歴情報>処理
+      *****************************************************************
+       380-HC101-NYUTAI-RIREKI-HEN-SEC      SECTION.
+      *
+      *    最初の行のコメントのセット
+           MOVE    SPACE               TO  WRK-NYUTAI-RIREKI-AREA
+           MOVE    "入退院履歴"        TO  WRK-NYUTAI-MSG
+      *          
+           INITIALIZE                      RECE68-REC
+           MOVE    RECE62-HOSPID       TO  RECE68-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE68-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE68-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE68-PTID
+           MOVE    RECE62-RECEKA       TO  RECE68-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE68-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE68-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE68-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE68-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE68-TEKSTYMD
+      *
+           START   RECE68-FILE
+               KEY IS    >=   RECE68-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE68
+               NOT INVALID
+                   PERFORM 900-RECE68-NEXT-SEC
+           END-START
+      *
+           PERFORM UNTIL ( FLG-RECE68           =  1                   )
+                   OR    ( RECE62-HOSPID    NOT =  RECE68-HOSPID       )
+                   OR    ( RECE62-SRYYM     NOT =  RECE68-SRYYM        )
+                   OR    ( RECE62-NYUGAIKBN NOT =  RECE68-NYUGAIKBN    )
+                   OR    ( RECE62-PTID      NOT =  RECE68-PTID         )
+                   OR    ( RECE62-RECEKA    NOT =  RECE68-RECEKA       )
+                   OR    ( RECE62-TEISYUTUSAKI
+                                             NOT =  RECE68-TEISYUTUSAKI)
+                   OR    ( RECE62-RECESYUBETU
+                                             NOT =  RECE68-RECESYUBETU )
+                   OR    ( RECE62-HKNJANUM-KEY
+                                             NOT =  RECE68-HKNJANUM    )
+                   OR    ( RECE62-HOJOKBN-KEY
+                                             NOT =  RECE68-HOJOKBN     )
+                   OR    ( RECE62-TEKSTYMD   NOT =  RECE68-TEKSTYMD    )
+      *
+      *        最初の行のとき２行あける
+               IF      WRK-NYUTAI-RIREKI-AREA
+                                       NOT =   SPACE
+                   COMPUTE WRK-WLINETEK    =   WRK-LINETEK +   2                                       
+                   IF  WRK-WLINETEK        >   WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   END-IF    
+                   ADD     2               TO  WRK-LINETEK     
+               END-IF
+      *
+               IF  WRK-LINETEK         >   WRK-TEKIYOU-LINE
+                   PERFORM 34120-PAGE-SEC
+               END-IF    
+      *
+               ADD     1                   TO  WRK-LINETEK
+               MOVE    RECE68-NYUINYMD     TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    LNK-DAY2-EDTYMD3(5:18)    TO  
+                                           WRK-NYUTAI-NYUINYMD
+               MOVE    "〜"                TO  WRK-NYUTAI-FL1                                
+               IF      RECE68-TAIINYMD (1:6)   
+                                           >   RECE62-SRYYM
+                   CONTINUE
+               ELSE
+                   MOVE    RECE68-TAIINYMD     TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3(5:18)    TO  
+                                               WRK-NYUTAI-TAIINYMD
+               END-IF
+               INSPECT WRK-NYUTAI-RIREKI-AREA  REPLACING   ALL "  "
+                                                           BY  "　"  
+               IF      CNT-PAGE        =   1   
+                   MOVE    WRK-NYUTAI-RIREKI-AREA
+                                       TO  HC06-TEKIYO (WRK-LINETEK)
+               ELSE                    
+                   MOVE    WRK-NYUTAI-RIREKI-AREA
+                                       TO  HC061-TEKIYO(WRK-LINETEK)
+               END-IF                    
+               MOVE    SPACE           TO  WRK-NYUTAI-RIREKI-AREA    
+      *
+               PERFORM 900-RECE68-NEXT-SEC
+           END-PERFORM
+      *
+      *    最後の行のとき１行あける
+           IF      WRK-NYUTAI-RIREKI-AREA
+                                       =   SPACE                   
+               ADD     1               TO  WRK-LINETEK     
+           END-IF
+      *
+           .
+       380-HC101-NYUTAI-RIREKI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3435,6 +3587,9 @@
            CLOSE                       RECE62-FILE
            CLOSE                       RECE631-FILE
            CLOSE                       RECE661-FILE
+           CLOSE                       RECE67-FILE
+           CLOSE                       RECE68-FILE
+           CLOSE                       RECE69-FILE 
       *
            IF      CNT-OUT            =   ZERO 
                MOVE    "対象データがありませんでした" TO  WRK-RECEERR
@@ -3464,7 +3619,7 @@
       *****************************************************************
       *    レセプト０２データ順検索処理
       *****************************************************************
-       990-RECE62-READ-SEC           SECTION.
+       900-RECE62-READ-SEC           SECTION.
       *
            READ    RECE62-FILE       NEXT
                AT  END
@@ -3477,7 +3632,7 @@
                    AND     RECE62-TOTALTEN (3) =   ZERO 
                    AND     RECE62-TOTALTEN (4) =   ZERO
                    AND     RECE62-TOTALTEN (5) =   ZERO
-                       GO  TO  990-RECE62-READ-SEC
+                       GO  TO  900-RECE62-READ-SEC
                    ELSE    
                        ADD     1                   TO  CNT-RECE62
                        MOVE    RECE62-HOSPID       TO  KEY-N-HOSPID
@@ -3492,13 +3647,13 @@
            END-READ
       *
            .
-       990-RECE62-READ-EXT.
+       900-RECE62-READ-EXT.
            EXIT.
       *
       ****************************************************************
-      *    レセプト０３１データ読み
+      *    傷病名情報データ読み
       ****************************************************************
-       990-RECE631-NEXT-SEC           SECTION.
+       900-RECE631-NEXT-SEC           SECTION.
       *
            READ    RECE631-FILE      NEXT
                AT  END
@@ -3506,18 +3661,18 @@
                NOT AT  END
                    MOVE    ZERO      TO  FLG-RECE631
                    IF      RECE631-TENKIKBN     =   "8"
-                       GO  TO  990-RECE631-NEXT-SEC
+                       GO  TO  900-RECE631-NEXT-SEC
                    END-IF
            END-READ
       *
            .
-       990-RECE631-NEXT-EXT.
+       900-RECE631-NEXT-EXT.
            EXIT.
       *
       ****************************************************************
-      *    レセプト０６１データ読み
+      *    	摘要欄情報データ読み
       ****************************************************************
-       990-RECE661-NEXT-SEC           SECTION.
+       900-RECE661-NEXT-SEC           SECTION.
       *
            READ    RECE661-FILE       NEXT
                AT  END
@@ -3531,13 +3686,29 @@
            END-READ
       *
            .
-       990-RECE661-NEXT-EXT.
+       900-RECE661-NEXT-EXT.
            EXIT.
       *
       ****************************************************************
-      *    レセプト０９データ読み
+      *    入退院履歴情報データ読み
       ****************************************************************
-       990-RECE69-NEXT-SEC           SECTION.
+       900-RECE68-NEXT-SEC           SECTION.
+      *
+           READ    RECE68-FILE      NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE68
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE68
+           END-READ
+      *
+           .
+       900-RECE68-NEXT-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    保険履歴情報データ読み
+      ****************************************************************
+       900-RECE69-NEXT-SEC           SECTION.
       *
            READ    RECE69-FILE      NEXT
                AT  END
@@ -3547,13 +3718,13 @@
            END-READ
       *
            .
-       990-RECE69-NEXT-EXT.
+       900-RECE69-NEXT-EXT.
            EXIT.
       *
       ****************************************************************
-      *    レセプト１１データ読み
+      *    県単独項目情報データ読み
       ****************************************************************
-       990-RECE67-READ-SEC           SECTION.
+       900-RECE67-READ-SEC           SECTION.
       *
            READ    RECE67-FILE
                INVALID
@@ -3563,7 +3734,7 @@
            END-READ
       *
            .
-       990-RECE67-READ-EXT.
+       900-RECE67-READ-EXT.
            EXIT.
       *
       *****************************************************************

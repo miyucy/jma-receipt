@@ -48,6 +48,16 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE62X-KEY
                                    FILE    STATUS  IS  STS-RECE62.
+           SELECT  RECE68-FILE     ASSIGN  RECE68PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE68-KEY
+                                   FILE    STATUS  IS  STS-RECE68.
+           SELECT  RECE68X-FILE    ASSIGN  RECE68PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE68X-KEY
+                                   FILE    STATUS  IS  STS-RECE68.
            SELECT  RECE69-FILE     ASSIGN  RECE69PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
@@ -84,6 +94,15 @@
            COPY    "CPRCF062.INC"  REPLACING  //RECE62//
                                    BY         //RECE62X//.
       *
+       FD  RECE68-FILE.
+       01  RECE68-REC. 
+           COPY    "CPRCF068.INC".
+      *
+       FD  RECE68X-FILE.
+       01  RECE68X-REC. 
+           COPY    "CPRCF068.INC"  REPLACING  //RECE68//
+                                   BY         //RECE68X//.
+      *
        FD  RECE69-FILE.
        01  RECE69-REC. 
            COPY    "CPRCF069.INC".
@@ -119,6 +138,11 @@
                                    REPLACING  //RECE01//
                                    BY         //RECE69//.
       *
+      *     ÆþÂà±¡ÍúÎò¾ðÊó¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE68//.
+      *
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
                                    BY         //RECE67//.
@@ -132,6 +156,7 @@
        01  STS-AREA.
            03  STS-RECE61                              PIC X(02).
            03  STS-RECE62                              PIC X(02).
+           03  STS-RECE68                              PIC X(02).
            03  STS-RECE69                              PIC X(02).
            03  STS-RECE67                              PIC X(02).
            03  STS-RECEERR                             PIC X(02).
@@ -139,6 +164,7 @@
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-RECE61                              PIC 9(01). 
+           03  FLG-RECE68                              PIC 9(01). 
            03  FLG-PTINF                               PIC 9(01).
            03  FLG-PTHKNINF                            PIC 9(01).
            03  FLG-PTKOHINF                            PIC 9(01).
@@ -152,9 +178,12 @@
            03  FLG-TSYRRK                              PIC 9(01).
            03  FLG-TNKRRK                              PIC 9(01).
            03  FLG-PTNYUINRRK                          PIC 9(01).
+           03  FLG-PTNYUINRRK12                        PIC 9(01).
+           03  FLG-PTNYUINRRK13                        PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
+           03  CNT-RECE68                              PIC 9(06). 
            03  CNT-RECE69                              PIC 9(06). 
            03  CNT-TBL-OCC                             OCCURS  2. 
                05  CNT-IN                              PIC 9(06).
@@ -206,6 +235,11 @@
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
+      *
+      *    ¥ï¡¼¥¯ÆþÂà±¡ÍúÎò
+       01  WRK-RECE68-REC. 
+           COPY    "CPRCF068.INC"  REPLACING  //RECE68//
+                                   BY         //WRK-RECE68//.
       *
       *    ¥ï¡¼¥¯Æþ±¡ÍúÎò
        01  WRK-PTNYUINRRK-REC.
@@ -412,6 +446,7 @@
       *    ¥ì¥»¥×¥È½èÍý
                    MOVE    "RECE610"           TO  RECE61PARA-FILE-ID
                    MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
+                   MOVE    "RECE680"           TO  RECE68PARA-FILE-ID
                    MOVE    "RECE690"           TO  RECE69PARA-FILE-ID
                    MOVE    "RECE670"           TO  RECE67PARA-FILE-ID
                    MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
@@ -422,6 +457,7 @@
                    MOVE    WRK-CONS-TERMID     TO  RECE62PARA-TERMID
                END-IF
                MOVE    WRK-PARA-TERMID     TO  RECE61PARA-TERMID
+               MOVE    WRK-PARA-TERMID     TO  RECE68PARA-TERMID
                MOVE    WRK-PARA-TERMID     TO  RECE69PARA-TERMID
                MOVE    WRK-PARA-TERMID     TO  RECE67PARA-TERMID
       *
@@ -444,9 +480,12 @@
            CLOSE                       RECE62X-FILE
       *
            IF      IDZ             =   1               
+               OPEN    OUTPUT              RECE68X-FILE
+               CLOSE                       RECE68X-FILE
+               OPEN    I-O                 RECE68-FILE
+      *
                OPEN    OUTPUT              RECE69X-FILE
                CLOSE                       RECE69X-FILE
-      *
                OPEN    OUTPUT              RECE69-FILE
       *
                OPEN    OUTPUT              RECE67-FILE
@@ -465,12 +504,13 @@
            PERFORM     RECE61-READ-SEC
       *
            PERFORM                     UNTIL   FLG-RECE61  =   1
+      *            
+               PERFORM     210-HENSYU-SEC
       *
                IF      IDZ             =   1               
                    PERFORM 230-RECE69-HENSYU-SEC
+                   PERFORM 240-RECE68-HENSYU-SEC
                END-IF
-      *            
-               PERFORM     210-HENSYU-SEC
       *
                PERFORM     220-DATA-WRITE-SEC
       *
@@ -482,6 +522,7 @@
       *
            IF      IDZ             =   1               
                CLOSE   RECE69-FILE
+                       RECE68-FILE
            END-IF    
            .
        200-HENSYU-EXT.
@@ -899,7 +940,7 @@
                MOVE    "1"                 TO  RECE62-KOUREI
            END-IF
       *
-      *    Æþ±¡Ç¯·îÆü
+      *    Æþ±¡Ç¯·îÆü¡¦ºÇ½ª²Ê
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    RECE61-HOSPID       TO  PTNYUINRRK-HOSPID
            MOVE    RECE61-PTID         TO  PTNYUINRRK-PTID
@@ -910,6 +951,7 @@
            PERFORM 900-PTNYUINRRK-INV-SEC
            IF      FLG-PTNYUINRRK       =   ZERO
                MOVE    PTNYUINRRK-NYUINYMD TO  RECE62-NYUINYMD
+               MOVE    PTNYUINRRK-NYUINKA  TO  RECE62-LASTSRYKA
                MOVE    PTNYUINRRK-REC      TO  WRK-PTNYUINRRK-REC
                INITIALIZE                      PTNYUINRRK-REC
                MOVE    RECE61-HOSPID       TO  PTNYUINRRK-HOSPID
@@ -1897,7 +1939,113 @@
            .
        230-RECE69-HENSYU-EXT.
            EXIT.
-057400*
+      * 
+      *****************************************************************
+      *    ÆþÂà±¡ÍúÎò¾ðÊóÊÔ½¸½èÍý
+      *****************************************************************
+       240-RECE68-HENSYU-SEC                   SECTION.
+      *
+      *    ¿ÇÎÅ·îÆâ¤ÎÆþÂà±¡¾ðÊó
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    RECE61-HOSPID       TO  PTNYUINRRK-HOSPID
+           MOVE    RECE61-PTID         TO  PTNYUINRRK-PTID
+           MOVE    RECE61-SRYYM        TO  PTNYUINRRK-NYUINYMD (1:6)
+           MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING   MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+               PERFORM 900-PTNYUINRRK-KEY12-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTNYUINRRK12    
+           END-IF
+           PERFORM                     UNTIL   FLG-PTNYUINRRK12    =   1
+               IF      PTNYUINRRK-NYUINYMD (1:6)
+                                           =   RECE62-SRYYM
+               OR      PTNYUINRRK-TAIINYMD (1:6)
+                                           >=  RECE62-SRYYM
+                   PERFORM 2401-RECE68-WRITE-SEC
+      *            ¿ÇÎÅ·îÆâ¤ÎÆþÂà±¡¾ðÊó¤ÎÍúÎò
+                   IF      FLG-RECE68          =   1                            
+                       MOVE    PTNYUINRRK-REC  TO  WRK-PTNYUINRRK-REC
+                       INITIALIZE                  PTNYUINRRK-REC
+                       MOVE    RECE61-HOSPID   TO  PTNYUINRRK-HOSPID
+                       MOVE    RECE61-PTID     TO  PTNYUINRRK-PTID
+                       MOVE    WRK-PTNYUINRRK-SHONUM
+                                               TO  PTNYUINRRK-SHONUM
+                       MOVE    RECE61-SRYYM    TO
+                                               PTNYUINRRK-NYUINYMD (1:6)
+                       MOVE    "31"            TO
+                                               PTNYUINRRK-NYUINYMD (7:2)
+                       MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+                       MOVE    "PTNYUINRRK-KEY13"
+                                               TO  ORC-DBPATH
+                       MOVE    "DBSELECT"      TO  MCP-FUNC
+                       CALL    "ORCMCPSUB"     USING   MCPAREA
+                                                       ORCMCPAREA
+                                                       MCPDATA-REC
+                       IF      MCP-RC              =   ZERO
+                           PERFORM 900-PTNYUINRRK-KEY13-READ-SEC
+                       ELSE
+                           MOVE    1               TO  FLG-PTNYUINRRK13 
+                       END-IF
+                       PERFORM             UNTIL   FLG-PTNYUINRRK13 =  1
+                           PERFORM 2401-RECE68-WRITE-SEC
+                           PERFORM 900-PTNYUINRRK-KEY13-READ-SEC
+                       END-PERFORM
+      *                 
+                       MOVE    "PTNYUINRRK-KEY13"  TO  ORC-DBPATH
+                       MOVE    "DBCLOSE"           TO  MCP-FUNC
+                       CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                           ORCMCPAREA
+                                                           MCPDATA-REC
+                   END-IF
+               END-IF        
+               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+               PERFORM 900-PTNYUINRRK-KEY12-READ-SEC
+           END-PERFORM        
+      *                 
+           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING   MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+           .
+       240-RECE68-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÆþÂà±¡ÍúÎò½ÐÎÏ½èÍý
+      *****************************************************************
+       2401-RECE68-WRITE-SEC         SECTION.
+      *
+           MOVE    RECE62-HOSPID       TO  RECE68-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE68-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE68-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE68-PTID
+           MOVE    RECE62-RECEKA       TO  RECE68-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE68-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE68-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE68-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE68-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE68-TEKSTYMD
+           MOVE    PTNYUINRRK-NYUINYMD TO  RECE68-NYUINYMD
+           MOVE    RECE68-REC          TO  WRK-RECE68-REC          
+           PERFORM 900-RECE68-READ-SEC
+           IF      FLG-RECE68          =   1
+               MOVE    WRK-RECE68-REC       TO  RECE68-REC 
+               MOVE    PTNYUINRRK-TAIINYMD TO  RECE68-TAIINYMD
+               WRITE   RECE68-REC
+               ADD     1                   TO  CNT-RECE68
+           END-IF    
+           .
+       2401-RECE68-WRITE-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ¥¨¥é¡¼½ÐÎÏ½èÍý
       *****************************************************************
@@ -1957,6 +2105,7 @@
       *
            DISPLAY "RECE61  CNT-IN  :" CNT-IN  (1) 
            DISPLAY "RECE62  CNT-OUT :" CNT-OUT (1) 
+           DISPLAY "RECE68  CNT-OUT :" CNT-RECE68  
            DISPLAY "RECE69  CNT-OUT :" CNT-RECE69  
            DISPLAY "RECE61X CNT-IN  :" CNT-IN  (2) 
            DISPLAY "RECE62X CNT-OUT :" CNT-OUT (2) 
@@ -2270,6 +2419,48 @@
            .
        900-PTNYUINRRK-INV-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÍúÎòÆÉ¹þ¡Ê£Ë£Å£Ù£±£²¡Ë
+      *****************************************************************
+       900-PTNYUINRRK-KEY12-READ-SEC    SECTION.
+      *    
+           MOVE    "DBFETCH"            TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-KEY12"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC               =   ZERO
+               MOVE    ZERO                 TO  FLG-PTNYUINRRK12
+               MOVE    MCPDATA-REC          TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1                    TO  FLG-PTNYUINRRK12
+           END-IF
+           .
+       900-PTNYUINRRK-KEY12-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÍúÎòÆÉ¹þ¡Ê£Ë£Å£Ù£±£³¡Ë
+      *****************************************************************
+       900-PTNYUINRRK-KEY13-READ-SEC    SECTION.
+      *    
+           MOVE    "DBFETCH"            TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-KEY13"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC               =   ZERO
+               MOVE    ZERO                 TO  FLG-PTNYUINRRK13
+               MOVE    MCPDATA-REC          TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1                    TO  FLG-PTNYUINRRK13
+           END-IF
+           .
+       900-PTNYUINRRK-KEY13-READ-EXT.
+           EXIT.
       *      
       *****************************************************************
       *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
@@ -2340,6 +2531,21 @@
            END-READ
            .
        RECE61-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÆþÂà±¡ÍúÎòÆÉ¹þ
+      *****************************************************************
+       900-RECE68-READ-SEC            SECTION.
+      *
+           READ    RECE68-FILE
+               INVALID
+                   MOVE    1           TO  FLG-RECE68
+               NOT INVALID
+                   MOVE    ZERO        TO  FLG-RECE68
+           END-READ
+           .
+       900-RECE68-READ-EXT.
            EXIT.
       *
       
