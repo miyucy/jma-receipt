@@ -986,21 +986,9 @@
                        MOVE    1           TO  TBL-NYUINDAY (IDN1)
                    END-IF
                END-IF
-      *TEST
-           DISPLAY "3009-NYUINKAISU-SEC:" SPA-SRYYMD
-                   ",INPUTCD:" WRK-GMN-INPUTCD(IDX)
-                   ",FLG-MADOKU-ARI:" FLG-MADOKU-ARI
-                   ",IDN1:" IDN1
-                   ",NYUINDAY:" TBL-NYUINDAY (IDN1)
-      *TEST
                GO      TO      3009-NYUINKAISU-EXT
            END-IF
       *
-      *TEST
-           DISPLAY "3009-NYUINKAISU-SEC:" 
-                   ",NYUINDAY:" WRK-COM-NYUIN-AREA (IDX)
-                  "," TBL-NYUINDAY-AREA
-      *TEST
       *    投薬で入院回数の時、回数集計
            PERFORM VARYING     IDN1    FROM    1   BY  1
                    UNTIL       IDN1    >   31
@@ -1573,10 +1561,6 @@
                       (TBL-NYUINDAY (IDN1) NOT =   ZERO   ))  OR
                      ((FLG-DAY                 =   1    )  AND
                       (TBL-NYUINDAY (IDN1)     =   2    ) )
-      *TEST
-                DISPLAY "IDN2:" IDN2 ",IDN1:" IDN1
-                       ",WRK-DAY:" WRK-DAY (IDN2)
-                       ",WRK-SEL:" WRK-SEL (IDN2)
                    IF     (IDN2            =   1   OR 2 )   OR
                           (WRK-DAY (IDN2 - 1)  NOT =   (IDN1  -  1 ) )
                        MOVE    IDN1            TO  WRK-DAY (IDN2)
@@ -1607,9 +1591,6 @@
                    END-IF
                END-IF
            END-PERFORM
-      *TEST
-           DISPLAY "WRK-NISUU-AREA:" WRK-NISUU-AREA
-      *TEST
            INITIALIZE                      LNK-ORCSC-INPUTCD-G (02 IDXS)
            MOVE    1                   TO  IDN2
            MOVE    1                   TO  IDN3
@@ -1633,10 +1614,6 @@
                ADD     3                   TO  IDN3
            END-PERFORM
       *
-      *TEST
-           DISPLAY "C20 WRK-SRYCD:" WRK-SRYCD
-                  ",LNK-ORCSC-INPUTCD:" LNK-ORCSC-INPUTCD (02 IDXS 1)
-      *TEST
            .
        300212-NISUU-SET-EXT.
            EXIT.
