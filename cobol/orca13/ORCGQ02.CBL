@@ -53,6 +53,7 @@
       *                                   |条件入力された場合に限り
       *                                   |検索を行う
       *                                   +テスト患者区分を条件に追加
+      * 01.00.03     MCC-太田     02/09/12+パスをサブプロから取得
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -259,7 +260,7 @@
                05  CONST-JYOKENMEI PIC X(10)   OCCURS  5.
       *----(01.00.01) LINE ADD START ----------------------------------
            03  CONST-SHELNAME      PIC X(100)
-               VALUE   "/usr/local/orca/scripts/allways/ORCBQ01.sh".
+               VALUE   "scripts/allways/ORCBQ01.sh".
            03  CONST-LINE                          PIC 9(05)
                VALUE   30.
       *----(01.00.01) LINE ADD END   ----------------------------------
@@ -319,6 +320,9 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *----(01.00.02) LINE ADD END   ----------------------------------
+      *
+      *    フィアルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -587,7 +591,13 @@
            PERFORM 900-JOBKANRI-HENSYU-SEC
       *
       *    印刷用スクリプト処理
-           MOVE    CONST-SHELNAME  TO  SHELLTBL-NAME
+      *
+      *    フィアルデイレクトリ位置指定
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    CONST-SHELNAME  TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *
            MOVE    SPA-Q02-Q100-PROC-FLG
                                    TO  SHELLTBL-ARG1
            MOVE    SPA-Q02-Q100-FILENAME
@@ -1120,7 +1130,7 @@
       *----(01.00.01) LINE ADD END   ----------------------------------
            ELSE
       *        検索結果件数を取得
-               INITIALIZE                  MCPAREA
+      *        INITIALIZE                  MCPAREA
                MOVE    PATH-QUERY-PTINF-CNT-KEY
                                            TO  MCP-PATH
                MOVE    SPACE               TO  QUERY-PTINF-CNT-REC
@@ -3469,11 +3479,7 @@
            MOVE    "1"             TO  KANACHK-SYORI
            MOVE    WRK-KANACHK-MAE-INPUT
                                    TO  KANACHK-MAE-INPUT
-           DISPLAY "KANACHK-SYORI     [" KANACHK-SYORI "]"
-           DISPLAY "KANACHK-MAE-INPUT [" KANACHK-MAE-INPUT "]"
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           DISPLAY "KANACHK-RC        [" KANACHK-RC "]"
-           DISPLAY "KANACHK-SYUBETU   [" KANACHK-SYUBETU "]"
            IF      ( KANACHK-RC    NOT =   ZERO )
                MOVE    1           TO  FLG-ENTRYCHK
                GO  TO  800-ENRTRY-CHK-EXT
@@ -3592,7 +3598,7 @@
       *****************************************************************
        910-PTINF-SELECT-SEC            SECTION.
       *
-           INITIALIZE                  MCPAREA
+      *    INITIALIZE                  MCPAREA
            MOVE    PATH-QUERY-PTINF-KEY
                                        TO  MCP-PATH
            MOVE    SPACE               TO  QUERY-PTINF-REC
@@ -3613,7 +3619,7 @@
       *****************************************************************
        910-PTINF-READ-SEC              SECTION.
       *
-           INITIALIZE              MCPAREA
+      *    INITIALIZE              MCPAREA
            MOVE    PATH-QUERY-PTINF-KEY
                                        TO  MCP-PATH
            MOVE    SPACE               TO  MCPDATA-REC
@@ -3650,7 +3656,7 @@
       *****************************************************************
        910-PTINF-CLOSE-SEC             SECTION.
       *
-           INITIALIZE              MCPAREA
+      *    INITIALIZE              MCPAREA
            MOVE    PATH-QUERY-PTINF-KEY
                                        TO  MCP-PATH
            MOVE    SPACE               TO  MCPDATA-REC

@@ -11,13 +11,18 @@
       *     Everyone is granted permission to use, copy, modify and
       * redistribute this program, but only under the conditions described
       * in the JMA Open Source License. You should have received a copy of
-      * this license along with this program. If not, stop using this
+      * this licence along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-         02  JID1.
-      *D      02  JID1-FIXED1.
-              03  JID1-ID1CODE.
-                04  JID1-VALUE  PIC X(11).
-              03  JID1-ID1MSG.
-                04  JID1-VALUE  PIC X(81).
+      *----------------------------------------------------------------*
+      *    ディレクトリ位置指定                                        *
+      *----------------------------------------------------------------*
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      ************************************************************
+       01  HOMEDIR-AREA.
+           03  HOMEDIR-NAME             PIC X(100)   VALUE
+               "/usr/local/orca/".
+      *

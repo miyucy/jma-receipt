@@ -791,7 +791,7 @@
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-BANTI
            ELSE
-               MOVE    "2105"              TO  SPA-ERRCD
+               MOVE    "2104"              TO  SPA-ERRCD
                MOVE    9                   TO  SPA-GMN21-CUR
            END-IF
            .

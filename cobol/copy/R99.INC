@@ -12,3 +12,4 @@
                     06  R99-ERRMSG    PIC X(100).
                   05  R99-SELECT  PIC X       OCCURS  2 TIMES.
               03  R99-B12-STATE   PIC S9(9)   BINARY.
+              03  R99-PROGRESSBAR-VALUE       PIC S9(9)   BINARY.

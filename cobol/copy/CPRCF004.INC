@@ -23,6 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     01.06.29  保険者番号・
       *                                     適用開始年月日の追加
+      *  01.00.02    NACL-藤原    02.09.02  日数のテーブルを変更
       ************************************************************
       *01  RECE04-REC.
            03  RECE04-KEY.
@@ -82,7 +83,9 @@
            03  RECE04-ZAIREQFLG           PIC  X(01).
       *逓減率
            03  RECE04-TEIGENRATE          PIC  X(01).
-      *日別回数情報
-           03  RECE04-KAISUINF            OCCURS  31.
-      *回数
-               05  RECE04-KAISU           PIC  9(03).
+      *日数回数テーブル
+           03  RECE04-DAY-AREA.
+      *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
+             04  RECE04-DAY-TBL           OCCURS  4.
+                 05  RECE04-KAISUINF      OCCURS  31.
+                     07  RECE04-KAISU     PIC  9(03).

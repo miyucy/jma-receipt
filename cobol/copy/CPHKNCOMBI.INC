@@ -21,6 +21,7 @@
       ************************************************************
       *  コピ〖剁饯赖旺悟
       * Maj/Min/Rev  饯赖荚       泣烧      柒推
+      *  01.00.01    NACL-驴」羌  02/09/09  毁失惰尸纳裁
       ************************************************************
       *01  HKNCOMBI-REC.
       *キ〖
@@ -47,24 +48,34 @@
                05 COMB-KOH1ID              PIC  9(10).
       *给锐１≥瘦副戎规
                05 COMB-KOH1HKNNUM          PIC  X(03).
+      *给锐１≥毁失惰尸
+               05 COMB-KOH1PAYKBN          PIC  X(02).
       *给锐２≥ＩＤ
                05 COMB-KOH2ID              PIC  9(10).
       *给锐２≥瘦副戎规
                05 COMB-KOH2HKNNUM          PIC  X(03).
+      *给锐２≥毁失惰尸
+               05 COMB-KOH2PAYKBN          PIC  X(02).
       *给锐３≥ＩＤ
                05 COMB-KOH3ID              PIC  9(10).
       *给锐３≥瘦副戎规
                05 COMB-KOH3HKNNUM          PIC  X(03).
+      *给锐３≥毁失惰尸
+               05 COMB-KOH3PAYKBN          PIC  X(02).
       *给锐４≥ＩＤ
                05 COMB-KOH4ID              PIC  9(10).
       *给锐４≥瘦副戎规
                05 COMB-KOH4HKNNUM          PIC  X(03).
+      *给锐４≥毁失惰尸
+               05 COMB-KOH4PAYKBN          PIC  X(02).
            03 COMB-KOHI-AREA-R     REDEFINES  COMB-KOHI-AREA
                                            OCCURS   4.
       *给锐≥ＩＤ
                05 COMB-KOHID              PIC  9(10).
       *给锐≥瘦副戎规
                05 COMB-KOHHKNNUM          PIC  X(03).
+      *给锐≥毁失惰尸
+               05 COMB-KOHPAYKBN          PIC  X(02).
       *努脱倡幌泣
            03 COMB-TEKSTYMD               PIC  X(08).
       *努脱姜位泣

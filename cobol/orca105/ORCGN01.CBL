@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     01/09/21  JOINの修正      
       *  01.00.02    MCC-藤原     01/10/24  削除ができるように修正 
+      *  01.00.03    NACL-藤原    02/09/05  保険番号のコラムリストを
+      *                                     １００に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -54,13 +56,14 @@
                05  SPA-GMN-MAX         PIC 9(03).
                05  SPA-GMN-CUR         PIC 9(02).
       *
+      
                05  SPA-GMN-AREA.
                    07  SPA-GMN-HKNJANUM       PIC X(08).
-                   07  SPA-GMN-HKNNUMLST      OCCURS  50.
+                   07  SPA-GMN-HKNNUMLST      OCCURS  100.
                        09  SPA-GMN-HKNNUML    PIC X(03).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-HKNNUMNML  PIC X(20).
-                   07  SPA-GMN-HKNIDX         PIC 9(02).
+                   07  SPA-GMN-HKNIDX         PIC 9(03).
       *                 
                    07  SPA-GMN-KOUMOKU.
                        09  SPA-GMN-HKNJANAME      PIC X(200).
@@ -81,7 +84,7 @@
                05  SPA-NAI-AREA.
                    07  SPA-NAI-UPDFLG     PIC 9(01).
                    07  SPA-HKNJANUM-LEN   PIC 9(01).
-                   07  SPA-NAI-HKNNUML    OCCURS  50.
+                   07  SPA-NAI-HKNNUML    OCCURS  100.
                        09  SPA-NAI-HKNKOHSBTKBN   PIC X(01).
       *
       *   
@@ -320,6 +323,8 @@
            END-IF
       *
            PERFORM UNTIL       FLG-HKNNUM  =   1
+                               OR      SPA-GMN-HKNIDX
+                                           =   100
                IF      SPA-GMN-HKNIDX  >   ZERO
                AND     HKN-HKNNUM      = 
                                       SPA-GMN-HKNNUML (SPA-GMN-HKNIDX)

@@ -48,6 +48,8 @@
            03  SPA-P02-WIDGET             PIC X(20).
       *    都道府県区分
            03  SPA-NAI-PREFNUM            PIC 9(02).
+      *    入力個所
+           03  SPA-MCP-WIDGET             PIC X(64).
       *
       *     患者別クリア
            03  SPA-P02GMNAREA.
@@ -87,6 +89,7 @@
                05  SPA-P027-PG                PIC 9(04).
       *警告メッセージ
            03  SPA-PIDCD                  PIC X(04).
+           03  SPA-PIDMSG                 PIC X(100).
       *警告画面より
            03  SPA-PID1-AREA. 
                05  SPA-PID1-FLG           PIC X(02).
@@ -102,6 +105,22 @@
                05  JPAR-ERRCD              PIC X(01).
                05  JPAR-KBN                PIC X(01).
                05  JPAR-FREE               PIC X(438).
+      *
+      *    保険期間変換用
+           03  SPA-HKN-KENKAN-AREA.
+               05  SPA-HKN-IDX1             PIC 9(04).
+      *    公費期間変換用
+           03  SPA-KOH-KENKAN-AREA.
+               05  SPA-KOH-IDX1             PIC 9(04).
+               05  SPA-KOH-IDX2             PIC 9(04).
+               05  SPA-KOH-FLG              PIC 9(01).
+               05  SPA-KOH-ADD              PIC 9(01).
+      *
+               05  SPA-HKN-TEKEDYMD         PIC X(08).
+      *
+      *    労災・自賠責保険登録有無
+           03  SPA-ROSAI-FLG                PIC 9(01).
+           03  SPA-JIBAI-FLG                PIC 9(01).
       *
       *    患者パラメタデータ
       *   03  KPARA-REC                 REDEFINES   JPARA-REC.

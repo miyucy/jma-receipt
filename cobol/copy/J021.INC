@@ -15,16 +15,27 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-         02  J021.
-            03  J021-KNMINO.
-              04  J021-SELNUM PIC X(5).
-              04  J021-SCROLLEDWINDOW1.
-                05  J021-CLIST2.
-                  06  J021-COUNT  PIC S9(9)   BINARY.
-                  06  J021-ITEM       OCCURS  30 TIMES.
-                    07  J021-NUM      PIC X(5).
-                    07  J021-HKNKUMI  PIC X(31).
-                    07  J021-TEKSTYMD PIC X(10).
-                    07  J021-TEKEDYMD PIC X(10).
-                    07  J021-FTNRATE  PIC X(5).
-                  06  J021-SELECT PIC X       OCCURS  30 TIMES.
+        02  J021.
+   ********** 02  J021-KNMINO.
+              03  J021-MAE-HKNCOMBI.
+                04  J021-VALUE  PIC X(5).
+              03  J021-MAE-HKNCOMBIMEI.
+                04  J021-VALUE  PIC X(41).
+              03  J021-ATO-HKNCOMBI.
+                04  J021-VALUE  PIC X(5).
+              03  J021-ATO-HKNCOMBIMEI.
+                04  J021-VALUE  PIC X(41).
+              03  J021-MAE-FTNRATE.
+                04  J021-VALUE  PIC X(9).
+              03  J021-ATO-FTNRATE.
+                04  J021-VALUE  PIC X(9).
+              03  J021-SCROLLEDWINDOW1.
+                04  J021-HKNLIST.
+                  05  J021-HKNLIST-COUNT  PIC S9(9)   BINARY.
+                  05  J021-ITEM       OCCURS  40 TIMES.
+                    06  J021-NUM PIC X(4).
+                    06  J021-HKNKUMI PIC X(40).
+                    06  J021-TEKSTYMD PIC X(10).
+                    06  J021-TEKEDYMD PIC X(10).
+                    06  J021-FTNRATE  PIC X(8).
+                  05  J021-HKNLIST-SELECT PIC X       OCCURS  40 TIMES.

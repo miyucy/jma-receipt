@@ -1883,7 +1883,7 @@
                    MOVE    COMB-KOH4-TANSEIDONAME  
                                     TO  SPA-GMN-KOH4-TANSEIDONAME(IDX)
       *            労災の時、部位を公費１の項目へ
-                   IF      COMB-HKNNUM         =   "971"
+                   IF      COMB-HKNNUM         =   "971"  OR  "973"
                        PERFORM 4101152-RSI-HENSYU-SEC
                    END-IF
       *
@@ -1951,7 +1951,8 @@
                    PERFORM 900-HKNNUM-INV-SEC
       *            労災の時、対象外
                    IF    ( FLG-HKNNUM          =   ZERO   )  AND
-                         ( PTHKN-HKNNUM    NOT =   "971"  )
+                         ( PTHKN-HKNNUM    NOT =   "971" AND
+                                                   "973"  )
                        ADD     1                   TO  IDX
                        MOVE    IDX                 TO  SPA-MIKAKU-MAX
                        MOVE    HKN-TANSEIDONAME    TO
@@ -2732,7 +2733,7 @@
                GO  TO  4901-UKEADD-EXT
            END-IF
       *
-      *    明細ﾚｺｰﾄﾞ追加
+      *    明細レコード追加
       *
            INITIALIZE                       UKETUKE-REC
            MOVE    SPA-HOSPID               TO  UKE-HOSPID

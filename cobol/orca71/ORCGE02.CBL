@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     ひさなが     02/05/10  ジョブ管理検索追加
+      * 01.00.03     ひさなが     02/09/13  ディレクトリをサブプロへ
       *
       *****************************************************************
       *
@@ -170,6 +171,9 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
+      *    フィアルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
+      *
       *
       *****************************************************************
       *    連絡　領域
@@ -282,7 +286,14 @@
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
-                   MOVE    "orcbse01.sh"       TO  SHELL-SHELL
+      *修正/*開始*02.09.13*********************************************
+      *             MOVE    "orcbse01.sh"       TO  SHELL-SHELL
+                   INITIALIZE                      ORCSMKPASSAREA
+                   MOVE    "scripts/allways/orcbse01.sh"
+                                               TO  MKPASS-IN-01
+                   CALL    "ORCSMKPASS"     USING  ORCSMKPASSAREA
+                   MOVE    MKPASS-OT-01        TO  SHELL-NAME
+      *修正/*終了*02.09.13*********************************************
                    MOVE    SPA-SYSYMD(1:6)     TO  SHELL-SRYYM
                    MOVE    SPA-TERMID          TO  SHELL-TERMID
                    MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
@@ -393,12 +404,10 @@
                    PERFORM T-002-AGARU-SEC
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM T-002-SAGARU-SEC
-      *修正/*開始*02.05.10*********************************************
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM T-001-WRITCHEK-SEC
                    PERFORM T-000-WRITCHEK-SEC
                    PERFORM 530-RIDSET3-SEC
-      *修正/*終了*02.05.10*********************************************
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM T-001-WRITCHEK-SEC
                    PERFORM T-000-WRITCHEK-SEC
@@ -517,6 +526,8 @@
                                TO  E02-VALUE1 (IDX7)(1:25)
                        MOVE    WK-TBL-BTN-A (IDX7)
                                TO  E02-SELECT1 (IDX7)
+                       MOVE    IDX7
+                               TO  E02-COUNT1
                END-PERFORM
            END-IF.
       *
@@ -527,6 +538,8 @@
                                TO  E02-VALUE2 (IDX7)(1:25)
                        MOVE    WK-TBL-BTN-B (IDX7)
                                TO  E02-SELECT2 (IDX7)
+                       MOVE    IDX7
+                               TO  E02-COUNT2
                END-PERFORM
            END-IF.
       *
@@ -641,7 +654,6 @@
        530-RIDSET2-EXT.
            EXIT.
       *
-      *修正/*開始*02.05.10*********************************************
       *****************************************************************
       *    ジョブ管理表示理
       *****************************************************************
@@ -664,7 +676,6 @@
       *
        530-RIDSET3-EXT.
            EXIT.
-      *修正/*終了*02.05.10*********************************************
       *
       *****************************************************************
       *    ＰＵＴ　処理

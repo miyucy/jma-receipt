@@ -36,6 +36,8 @@
                05  ORCHC30-YSRYCD      PIC X(09).
       *        数量
                05  ORCHC30-SURYO       PIC 9(05)V9(03).
-      *        日数
+      *        日数（回数）
                05  ORCHC30-KAISU       PIC 9(03).
+      *        （１：内服、２：頓服、３：外用、）
+               05  ORCHC30-ZAIKBN      PIC X(01).
       *

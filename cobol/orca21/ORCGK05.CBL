@@ -32,6 +32,7 @@
       *  02.00.00    MCC−多々納  01/05/21  入力コードをセットコードを表示へ
       *  02.00.01    MCC−多々納  01/09/07  画面変更に伴う修正
       *  02.00.02    MCC−多々納  02/07/16  インターフェースの変更
+      *  02.00.03    NACL−多々納 02/09/24  検索修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2676,6 +2677,9 @@
                    MOVE    "3"                 TO  SPA-K98-GMN-SYORI
                ELSE
                    EVALUATE    SPA-COM-SRYKBN(SPA-GMN-IDX - 1)
+                       WHEN    SPACE
+      *                    診療区分が決定してない時
+                           PERFORM  4101-K98-SYRKBN-SEC
                        WHEN    "31"
                        WHEN    "32"
                        WHEN    "33"
@@ -2742,6 +2746,31 @@
            .
       *
        410-K98-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療区分が決定してない時診療種別処理
+      *****************************************************************
+       4101-K98-SYRKBN-SEC       SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-IDX
+               EVALUATE    SPA-GMN-INPUTCD(IDX)(1:3)
+                   WHEN    ".21"
+                       MOVE    "3"                 TO  SPA-K98-GMN-SYORI
+                   WHEN    ".22"
+                       MOVE    "3"                 TO  SPA-K98-GMN-SYORI
+                   WHEN    ".23"
+                       MOVE    "4"                 TO  SPA-K98-GMN-SYORI
+                   WHEN    ".31"
+                   WHEN    ".32"
+                   WHEN    ".33"
+                       MOVE    "5"                 TO  SPA-K98-GMN-SYORI
+               END-EVALUATE
+           END-PERFORM
+      *
+           .
+      *
+       4101-K98-SYRKBN-EXT.
            EXIT.
       *****************************************************************
       *    Ｋ９８画面編集処理

@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     02.03.18  帳票ファイル名の変更
+      *  01.00.03    NACL-多々納  02.09.13  印刷サプの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -51,11 +52,11 @@
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
       *    シェル用領域
-           COPY    "CPCOMMONSHELL.INC".
+      **** COPY    "CPCOMMONSHELL.INC".
       *
       *    シェル用領域
-           COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "CPSHELLTBL.INC".
+      **** COPY    "ORCA-DBPATH".
       *
       *
       *    フラグ領域
@@ -170,6 +171,9 @@
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
+      *    印刷パラメタ
+           COPY    "CPORCSMKPRT.INC".
+      *
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -281,26 +285,35 @@
       *　　印刷用データ出力
               WRITE  HC15
       *
-            MOVE   "HC01.sh"           TO  SHELL-ID
-            MOVE   "HC15.dia"          TO  SHELL-DIA
-            MOVE   "HC15.def"          TO  SHELL-DEF
-            MOVE   HC01PARA            TO  SHELL-DAT
-            MOVE   SYS-1031-PRTNM(7)   TO  SHELL-PRTNM 
+      ***** MOVE   "HC01.sh"           TO  SHELL-ID
+      *     MOVE   "HC15.dia"          TO  SHELL-DIA
+      *     MOVE   "HC15.def"          TO  SHELL-DEF
+      *     MOVE   HC01PARA            TO  SHELL-DAT
+      ***** MOVE   SYS-1031-PRTNM(7)   TO  SHELL-PRTNM 
             CLOSE                       PRT-FILE
-      *     印刷用スクリプト処理
+      *
+            INITIALIZE                 ORCSMKPRTAREA
+            MOVE   "HC01.sh"           TO  MKPRT-ID
+            MOVE   "HC15.dia"          TO  MKPRT-DIA
+            MOVE   "HC15.def"          TO  MKPRT-DEF
+            MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   SYS-1031-PRTNM(7)   TO  MKPRT-PRTNM
+            CALL   "ORCSMKPRT"         USING
+                                       ORCSMKPRTAREA
+      ***** 印刷用スクリプト処理
       *★   ETC-EXEC SHELL   SHELL-AREA 10
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
-           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
-           MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                   MCPAREA
-                   MCPDATA-REC
+      *    MOVE    SHELL-NAME          TO  SHELLTBL-NAME
+      *    MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
+      *    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
+      *    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
+      *    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
+      *    MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
+      *    MOVE    SHELLTBL            TO  MCPDATA-REC
+      *    MOVE    "SHELL"             TO  MCP-FUNC
+      *    MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+      *    CALL    "MCPSUB"            USING
+      *            MCPAREA
+      **********   MCPDATA-REC
       *
            .
        400-PRINT-EXT.

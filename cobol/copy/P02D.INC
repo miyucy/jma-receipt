@@ -41,7 +41,7 @@
                 04  P02D-HKNKBN.
                   05  P02D-VALUE  PIC X(17).
                 04  P02D-HKNKBN-COUNT  PIC S9(9)   BINARY.
-                04  P02D-HKNKBN-ITEM   PIC X(16)   OCCURS  3 TIMES.
+                04  P02D-HKNKBN-ITEM   PIC X(16)   OCCURS  4 TIMES.
               03  P02D-COMMENT.
                 04  P02D-VALUE  PIC X(101).
               03  P02D-SONSHOUKBNCOMBO.

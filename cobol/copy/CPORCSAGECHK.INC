@@ -16,39 +16,37 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    負担金額算定用パラメタ　　　　　 COPY (CPORCS01.INC)
-      *                                使用プログラム (ORCS01NEW)
+      *    保険算定用年齢・割合計算パラメタ                      *
+      *                         COPY  (CPORCSAGECHK.INC)          *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-       01  LNK-ORCS01-REC.
+       01  ORCSAGECHKAREA.
+      *入力値
+      *    医療機関ＩＤ（必須）
+           03  AGECHK-HOSPID           PIC X(24).
+      *    患者ＩＤ（必須）
+           03  AGECHK-PTID             PIC 9(10).
+      *    診療日（必須）
+           03  AGECHK-SRYYMD           PIC X(08).
+      *    患者生年月日
+           03  AGECHK-BIRTHDAY         PIC X(08).
+      *    保険組合番号
+           03  AGECHK-HKNCOMBINUM      PIC X(04).
+      *出力値
+           03  AGECHK-OUT-AREA.
+      *        年齢
+               05  AGECHK-NENREI         PIC 9(03).
+      *        以下、保険組合番号入力時
+      *        負担割合（３歳未満と70歳以上の８，９割給付のみ）
+               05  AGECHK-FTNRATE        PIC 9(03).
+      *        負担割合名称
+               05  AGECHK-FTNRATEMEI     PIC X(10).
+      *        老人エラー（１：老人保険なし）
+               05  AGECHK-RJNCHK         PIC 9(01).
+      *    復帰コード
+           03  AGECHK-RC              PIC 9(02).
       *
-           03  LNK-S01-SINKOUI.
-      *診療行為内容 
-             04  LNK-S01-TBL1         OCCURS    3.
-      *診療行為内容 
-               05  LNK-S01-TBL         OCCURS   40.
-      *診療区分
-                   07  LNK-S01-SRYKBN      PIC  X(02).
-      *剤番号
-                   07  LNK-S01-ZAIBAN      PIC  9(08).
-      *診療コード
-                   07  LNK-S01-SRYCD       PIC  X(09).
-      *数量
-                   07  LNK-S01-SURYOU      PIC  9(05)V9(03).
-      *回数
-                   07  LNK-S01-KAISUU      PIC  9(03).
-      *点数
-                   07  LNK-S01-TENSUU      PIC  9(07).
-      *
-      *再計算処理区分
-           03  LNK-S01-SAIKEISAN-KBN       PIC  X(01).
-      *再計算対象伝票番号
-           03  LNK-S01-SAIKEISAN-DENPYO    PIC  9(07).
-      *自賠責手技点合計
-           03  LNK-S01-SYUTEN              PIC  9(07).
-      *復帰コード
-           03  LNK-S01-RC                  PIC S9(9)   BINARY.
       *

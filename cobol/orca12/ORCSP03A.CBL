@@ -741,10 +741,6 @@
                    END-IF
            END-EVALUATE
       *
-      *TEST
-           DISPLAY "SPA-GMN-HOJOKBN:" SPA-GMN-HOJOKBN
-                   ",SPA-GMN-HKNNUM:" SPA-GMN-HKNNUM
-      *TEST
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDT     FROM    1  BY  1
                    UNTIL       IDT     >   SPA-GMN-HOJO-MAX
@@ -768,12 +764,6 @@
       *****************************************************************
        310111-HKNTBL-RJNHEN-SEC            SECTION.
       *
-      *TEST
-           DISPLAY "310111-HKNTBL-RJNHEN-SEC:"
-                   ",SPA-NAI-HTEKSTYMD:" SPA-NAI-HTEKSTYMD
-                    ",SPA-BYMD-70:" SPA-BYMD-70
-                    ",SPA-GMN-HKNNUM:" SPA-GMN-HKNNUM
-      *TEST
       *    Å¬ÍÑ³«»ÏÆü¤¬£·£°ºÐ°Ê¾å¤Ç¡¢Ï«ºÒ¡¦¼£¸³¡¦¼«Èñ°Ê³°
            IF     ((SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-70)  OR
                    (SPA-NAI-HTEKSTYMD  =   SPACE    AND

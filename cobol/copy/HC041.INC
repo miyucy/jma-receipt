@@ -73,3 +73,4 @@
                   05  HC041-KOHNUM-TBL1  OCCURS  2.
                       07  HC041-KOHNUM   PIC  X(3).
                       07  HC041-KOHNAME  PIC  X(12).
+              03  HC041-HKNJANUM         PIC  X(08).

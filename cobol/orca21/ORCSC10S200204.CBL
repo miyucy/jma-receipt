@@ -857,13 +857,16 @@
                        MOVE    1               TO  FLG-CHK
                   END-IF
               WHEN     1
+      *           ¼«ÇåÀÕ
+                  IF      SPA-RSI-HKNKBN       =   "4"
+                      IF      JYURRK-HKNKBN    NOT =   2
+                           MOVE    1               TO  FLG-CHK
+                      END-IF
+                  ELSE
       *           Ï«ºÒ
-                  IF      JYURRK-HKNKBN    NOT =   1
-                       MOVE    1               TO  FLG-CHK
-                  END-IF
-              WHEN     2
-                  IF      JYURRK-HKNKBN    NOT =   2
-                       MOVE    1               TO  FLG-CHK
+                      IF      JYURRK-HKNKBN    NOT =   1
+                           MOVE    1               TO  FLG-CHK
+                      END-IF
                   END-IF
            END-EVALUATE
       *

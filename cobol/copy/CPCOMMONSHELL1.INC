@@ -37,7 +37,7 @@
       *¡ú    03  FILLER             PIC  X(03) VALUE "sh ".
            03  SHELL-NAME.
              05  FILLER             PIC  X(32) VALUE
-                    "/usr/local/orca/scripts/monthly/".
+                     "/usr/local/orca/scripts/monthly/".
              05  SHELL-SHELL        PIC  X(30).
            03  SHELL-ARG1.
              05  SHELL-SRYYM        PIC  X(06).

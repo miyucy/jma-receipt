@@ -40,4 +40,4 @@
                 04  N01-HKNNUM.
                   05  N01-VALUE   PIC X(31).
                 04  N01-COUNT     PIC S9(9)   BINARY.
-                04  N01-HKNNUMLST PIC X(30)   OCCURS  50 TIMES.
+                04  N01-HKNNUMLST PIC X(30)   OCCURS  100 TIMES.

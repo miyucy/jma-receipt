@@ -34,6 +34,7 @@
       *  01.00.02    ひさなが     02/05/10  ジョブ管理検索追加
       *  01.00.02    ひさなが     02/05/10  半角チェックの追加
       *  01.00.02    ひさなが     02/06/26  印刷管理・印刷ＤＢ追加
+      *  01.00.03    ひさなが     02/09/13  ディレクトリをサブプロへ
       *
       *****************************************************************
       *
@@ -212,6 +213,9 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    フィアルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
       *
       *****************************************************************
@@ -468,10 +472,8 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *修正/*開始*02.06.26*********************************************
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 530-RIDSET4-SEC
-      *修正/*終了*02.06.26*********************************************
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 530-RIDSET3-SEC
                WHEN    "CLICKED"       ALSO    "B12"
@@ -986,7 +988,6 @@
        530-RIDSET3-EXT.
            EXIT.
       *
-      *修正/*開始*02.06.26*********************************************
       *****************************************************************
       *    印刷管理表示理
       *****************************************************************
@@ -1012,7 +1013,6 @@
        530-RIDSET4-EXT.
            EXIT.
       *
-      *修正/*終了*02.06.26*********************************************
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
@@ -1490,27 +1490,33 @@
            MOVE    SPA-GMN-TBLG2               TO    DID1-REC(1:20).
            WRITE   DID1-REC.
       *
-           MOVE    "orcbsd01.sh"           TO  SHELL-SHELL.
-           MOVE    SPA-GMN-SRYYMD-S(1:6)   TO  SHELL-SRYYM.
-           MOVE    SPA-TERMID              TO  SHELL-TERMID
-                                               SHELL-WK-TERMID.
-           MOVE    SPA-SYSYMD              TO  SHELL-SYSYMD.
-           MOVE    SPA-OPID                TO  SHELL-OPID.
-           MOVE    ZERO                    TO  SHELL-SYOKBN.
-           MOVE    ZERO                    TO  SHELL-RECEKBN.
-           MOVE    DID4PARA                TO  SHELL-ERRFILE.
-           MOVE    SHELL-NAME              TO  SHELLTBL-NAME.
-           MOVE    SHELL-ARG1              TO  SHELLTBL-ARG1.
-           MOVE    SHELL-ARG2              TO  SHELLTBL-ARG2.
-           MOVE    SHELL-ARG3              TO  SHELLTBL-ARG3.
-           MOVE    SHELL-ARG4              TO  SHELLTBL-ARG4.
-           MOVE    SHELL-ARG5              TO  SHELLTBL-ARG5.
-           MOVE    SHELLTBL                TO  MCPDATA-REC.
-           MOVE    "SHELL"                 TO  MCP-FUNC.
-           MOVE    PATH-SHELL-SHELL        TO  MCP-PATH.
-           CALL    "MCPSUB"                USING
-                                           MCPAREA
-                                           MCPDATA-REC.
+      *修正/*開始*02.09.13*********************************************
+      *     MOVE    "orcbsd01.sh"           TO  SHELL-SHELL.
+           INITIALIZE                                ORCSMKPASSAREA.
+           MOVE    "scripts/allways/orcbsd01.sh" TO  MKPASS-IN-01.
+           CALL    "ORCSMKPASS"               USING  ORCSMKPASSAREA.
+           MOVE    MKPASS-OT-01                  TO  SHELL-NAME.
+      *修正/*終了*02.09.13*********************************************
+           MOVE    SPA-GMN-SRYYMD-S(1:6)       TO  SHELL-SRYYM.
+           MOVE    SPA-TERMID                  TO  SHELL-TERMID
+                                                   SHELL-WK-TERMID.
+           MOVE    SPA-SYSYMD                  TO  SHELL-SYSYMD.
+           MOVE    SPA-OPID                    TO  SHELL-OPID.
+           MOVE    ZERO                        TO  SHELL-SYOKBN.
+           MOVE    ZERO                        TO  SHELL-RECEKBN.
+           MOVE    DID4PARA                    TO  SHELL-ERRFILE.
+           MOVE    SHELL-NAME                  TO  SHELLTBL-NAME.
+           MOVE    SHELL-ARG1                  TO  SHELLTBL-ARG1.
+           MOVE    SHELL-ARG2                  TO  SHELLTBL-ARG2.
+           MOVE    SHELL-ARG3                  TO  SHELLTBL-ARG3.
+           MOVE    SHELL-ARG4                  TO  SHELLTBL-ARG4.
+           MOVE    SHELL-ARG5                  TO  SHELLTBL-ARG5.
+           MOVE    SHELLTBL                    TO  MCPDATA-REC.
+           MOVE    "SHELL"                     TO  MCP-FUNC.
+           MOVE    PATH-SHELL-SHELL            TO  MCP-PATH.
+           CALL    "MCPSUB"                    USING
+                                               MCPAREA
+                                               MCPDATA-REC.
       *
        T-000-RECECHEK-EXT.
            EXIT.

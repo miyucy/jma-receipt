@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    02.09.17  加算率追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,6 +72,7 @@
                            11  SPA-GMN-TENKBNMEI
                                               PIC X(18).
                        09  SPA-GMN-RSIIRYOCDN PIC X(40). 
+                       09  SPA-GMN-KSNRATE    PIC 9(02).
                    07  SPA-GMN-KOUMOKU1.
                        09  SPA-GMN-SONSHOUKBN.                 
                            11  SPA-GMN-SONSHOUKBN1
@@ -186,6 +188,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    半角チェックサブ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    日付サブルーチン領域
       *
@@ -402,6 +407,11 @@
                END-PERFORM
       *         
                MOVE    SYS-4001-RSIIRYOCDN TO  SPA-GMN-RSIIRYOCDN
+      *
+               IF      SYS-4001-KSNRATE (1:2)  NOT NUMERIC
+                   MOVE    ZERO                TO  SYS-4001-KSNRATE
+               END-IF                    
+               MOVE    SYS-4001-KSNRATE    TO  SPA-GMN-KSNRATE
            END-IF             
       *
       * 
@@ -497,6 +507,8 @@
                    PERFORM 4100-RSIIRYOKBN-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "TENKBN"
                    PERFORM 4101-TENKBN-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "KSNRATE"
+                   PERFORM 4102-KSNRATE-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "RSIIRYOCDN"
                    PERFORM 4103-RSIIRYOCDN-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "SONSHOUKBN2"
@@ -546,6 +558,23 @@
            EXIT.
       *
       *****************************************************************
+      *    加算率チェック
+      *****************************************************************
+       4102-KSNRATE-CHK-SEC       SECTION.
+      *
+           MOVE    7                      TO  SPA-GMN-CUR
+      *
+           MOVE    W13-KSNRATE            TO  SPA-GMN-KSNRATE 
+      *
+           IF      SPA-ERRCD               =   SPACE
+               MOVE    4                      TO  SPA-GMN-CUR
+           END-IF
+           .
+       4102-KSNRATE-CHK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    指定医療機関コード（漢字）チェック
       *****************************************************************
        4103-RSIIRYOCDN-CHK-SEC       SECTION.
@@ -553,6 +582,20 @@
            MOVE    2                      TO  SPA-GMN-CUR
       *
            MOVE    W13-RSIIRYOCDN         TO  SPA-GMN-RSIIRYOCDN 
+      *
+      *    半角チェック
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI 
+           MOVE    SPA-GMN-RSIIRYOCDN  TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           IF      KANACHK-RC          =   ZERO
+           AND     KANACHK-SYUBETU     =   "2"
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-RSIIRYOCDN 
+           ELSE
+               MOVE    "0004"              TO  SPA-ERRCD
+               GO  TO  4103-RSIIRYOCDN-CHK-EXT
+           END-IF
       *
            IF      SPA-GMN-RSIIRYOKBN     =   "1"
                IF      SPA-GMN-RSIIRYOCDN     =   SPACE
@@ -597,7 +640,7 @@
            END-IF       
       *     
            IF      SPA-ERRCD               =   SPACE
-               MOVE    4                       TO  SPA-GMN-CUR
+               MOVE    7                       TO  SPA-GMN-CUR
            END-IF
            .
        4101-TENKBN-CHK-EXT.
@@ -820,6 +863,7 @@
            MOVE    SPA-GMN-RSIIRYOKBN      TO  SYS-4001-RSIIRYOKBN
            MOVE    SPA-GMN-TENKBN          TO  SYS-4001-TENKBN
            MOVE    SPA-GMN-RSIIRYOCDN      TO  SYS-4001-RSIIRYOCDN
+           MOVE    SPA-GMN-KSNRATE         TO  SYS-4001-KSNRATE
            MOVE    SYS-4001-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
@@ -971,6 +1015,7 @@
            MOVE    SPA-GMN-EDYUKYMD         TO  W13-YUKOEDYMD
       *
            MOVE    SPA-GMN-RSIIRYOKBN-G     TO  W13-RSIIRYOKBN
+           MOVE    SPA-GMN-KSNRATE          TO  W13-KSNRATE 
            MOVE    SPA-GMN-TENKBN-G         TO  W13-TENKBN
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
@@ -1042,6 +1087,8 @@
                WHEN    "0003"
                    MOVE    "労災指定のときは入力して下さい"
                                                          TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "全角入力して下さい"        TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "数字で入力して下さい"        TO  SPA-ERRMSG
                WHEN    "0010"
@@ -1086,7 +1133,7 @@
       *
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
-                   MOVE    "労災医療機関情報を登録します"
+                   MOVE    "労災自賠医療機関情報を登録します"
                                                 TO  WRK-WIDMSG
            END-EVALUATE
       *
@@ -1127,6 +1174,8 @@
                     MOVE  "SONSHOUKBN2"    TO   MCP-WIDGET
                 WHEN    6
                     MOVE  "SONSHOUNAME"    TO   MCP-WIDGET
+                WHEN    7
+                    MOVE  "KSNRATE"        TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
             END-EVALUATE

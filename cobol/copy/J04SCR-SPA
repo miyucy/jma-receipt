@@ -61,6 +61,10 @@
       *
       *特定薬剤治療管理料初回年月日
                05  SPA-TOKTEI-YMD          PIC  X(08).
+      *時間外特例医療機関
+               05  SPA-JIKANTOKU           PIC  9(01).
+      *小児科外来診療科
+               05  SPA-SYONIKA             PIC  9(01).
       *
       *    Ｋ９８画面用
            03  SPA-J98-MOTOPG              PIC X(08).

@@ -31,6 +31,7 @@
       *                                     ジョブ管理ＤＢの追加
       *  01.00.03    MCC-藤原     02/05/15  処理前にジョブ管理を削除する
       *  01.00.04    MCC-藤原     02/05/22  再印刷ボタン・情報削除ボタン追加
+      *  01.00.05    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -157,10 +158,13 @@
            COPY    "CPHCMLSHELL.INC".
       *
       *    
-       01  WRK-SHELL.
-           03  FILLER             PIC  X(32) VALUE
-                    "/usr/local/orca/scripts/allways/".
-           03  WRK-SHELL-NAME     PIC  X(30).
+      *01  WRK-SHELL.
+      *    03  FILLER             PIC  X(32) VALUE
+      *             "/usr/local/orca/scripts/allways/".
+      *    03  WRK-SHELL-NAME     PIC  X(30).
+      *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".             
@@ -1071,8 +1075,14 @@
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *             
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "/usr/local/orca/scripts/allways/print.sh"
-                                       TO  SHELLTBL-NAME
+      *****MOVE    "/usr/local/orca/scripts/allways/print.sh"
+      *****                            TO  SHELLTBL-NAME
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    "scripts/allways/print.sh"
+                                       TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
            MOVE    SPACE               TO  LNK-PRTKANRI-AREA
            INITIALIZE                      LNK-PRTKANRI-AREA
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
@@ -1133,10 +1143,16 @@
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *                                   
            MOVE    SPACE               TO  SHELLTBL 
-           MOVE    "tensu.sh"          TO  WRK-SHELL-NAME
+      *****MOVE    "tensu.sh"          TO  WRK-SHELL-NAME
       *             
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    WRK-SHELL           TO  SHELLTBL-NAME
+      *****MOVE    WRK-SHELL           TO  SHELLTBL-NAME
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    "scripts/allways/tensu.sh"
+                                   TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
            ADD     1               TO  WRK-PRTKANRI-RENNUM

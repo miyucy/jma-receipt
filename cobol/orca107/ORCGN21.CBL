@@ -145,13 +145,13 @@
       *----(00.01.02)--ADD-START----
        01  MSG-AREA.
            03  MSG-CAUTION.
-             05  FILLER        PIC X(40)   VALUE
-                          "発疹、痒みなど又その他の副反応等ありまし".
-             05  FILLER        PIC X(30)   VALUE
-                          "たらご連絡ください。".
-             05  FILLER        PIC X(01)   VALUE X"0A".
              05  FILLER        PIC X(34)   VALUE
-                          "医師の指示通りにおのみ下さい。".
+                          "医師の指示通りに服用してください。".
+             05  FILLER        PIC X(01)   VALUE X"0A".
+             05  FILLER        PIC X(40)   VALUE
+                          "発疹・かゆみ等の過敏症が現れた時は服用を".
+             05  FILLER        PIC X(30)   VALUE
+                          "中止し、医師に相談して下さい。".
       *----(00.01.02)--ADD-END------
       *
       *****************************************************************

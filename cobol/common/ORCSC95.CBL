@@ -2520,7 +2520,7 @@
                                                                 (1:1)
            END-EVALUATE
            MOVE    WKSRY-SRYCD (IDX)   TO  WKSRY-INPUTCD (IDX)(3:)
-           MOVE    SPACE               TO   WKSRY-AUTOKBN  (IDX)
+           MOVE    SPACE               TO  WKSRY-AUTOKBN  (IDX)
       *
            .
        49012-JIKAN-SYORI-EXT.

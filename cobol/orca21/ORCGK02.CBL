@@ -46,6 +46,7 @@
       *  03.00.01    NACL-多々納  02/09/03  インターフェースの変更その２
       *                                     剤削除の入力をどこでもＯＫとした
       *  03.00.02    NACL-多々納  02/09/11  自賠責追加
+      *  03.00.03    NACL−多々納 02/09/24  検索修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3629,6 +3630,10 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
+           IF      SPA-ERRCD       NOT =   SPACE
+                GO      TO      41010-PTNUM-SYORI-EXT
+           END-IF
+      *
       *
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
@@ -4572,6 +4577,9 @@
                    MOVE    "3"                 TO  SPA-K98-GMN-SYORI
                ELSE
                    EVALUATE    SPA-COM-SRYKBN(SPA-GMN-IDX - 1)
+                       WHEN    SPACE
+      *                    診療区分が決定してない時
+                           PERFORM  4101-K98-SYRKBN-SEC
                        WHEN    "31"
                        WHEN    "32"
                        WHEN    "33"
@@ -4582,7 +4590,7 @@
                            MOVE    "4"         TO  SPA-K98-GMN-SYORI
                        WHEN    "21"
                        WHEN    "22"
-      *                    外薬
+      *                    内服
                            MOVE    "3"         TO  SPA-K98-GMN-SYORI
                        WHEN    OTHER
       *                    診療行為
@@ -4632,6 +4640,31 @@
            .
       *
        410-K98-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療区分が決定してない時診療種別処理
+      *****************************************************************
+       4101-K98-SYRKBN-SEC       SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-IDX
+               EVALUATE    SPA-GMN-INPUTCD(IDX)(1:3)
+                   WHEN    ".21"
+                       MOVE    "3"                 TO  SPA-K98-GMN-SYORI
+                   WHEN    ".22"
+                       MOVE    "3"                 TO  SPA-K98-GMN-SYORI
+                   WHEN    ".23"
+                       MOVE    "4"                 TO  SPA-K98-GMN-SYORI
+                   WHEN    ".31"
+                   WHEN    ".32"
+                   WHEN    ".33"
+                       MOVE    "5"                 TO  SPA-K98-GMN-SYORI
+               END-EVALUATE
+           END-PERFORM
+      *
+           .
+      *
+       4101-K98-SYRKBN-EXT.
            EXIT.
       *****************************************************************
       *    Ｋ９８画面編集処理

@@ -129,7 +129,10 @@
       *  01.00.83    NACL-太田    02/08/22  SYSKANRI-KEY9,KEY10追加
       *  01.00.84    NACL-藤原    02/08/27  BD002-KEY2追加
       *  01.00.85    NACL-太田    02/09/03  TENSU-KEY13,14追加
-      *  01.00.86    NACL-太田    02/09/03  PTBYOMEI-KEY6追加
+      *  01.00.86    NACL-多々納  02/09/12  HKNNUM-KEY6,KEY7  追加
+      *  01.00.87    NACL-太田    02/09/19  PTBYOMEI-KEY6追加
+      *  01.00.88    NACL-多々納  02/09/25  SRYACCT-KEY11
+      *                                     SANTEI-KEY6
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -257,11 +260,15 @@
                WHEN    "DBUPDATE"      ALSO   "HKNNUM-KEY3"
                WHEN    "DBUPDATE"      ALSO   "HKNNUM-KEY4"
                WHEN    "DBUPDATE"      ALSO   "HKNNUM-KEY5"
+               WHEN    "DBUPDATE"      ALSO   "HKNNUM-KEY6"
+               WHEN    "DBUPDATE"      ALSO   "HKNNUM-KEY7"
                WHEN    "DBDELETE"      ALSO   "HKNNUM-KEY"
                WHEN    "DBDELETE"      ALSO   "HKNNUM-KEY2"
                WHEN    "DBDELETE"      ALSO   "HKNNUM-KEY3"
                WHEN    "DBDELETE"      ALSO   "HKNNUM-KEY4"
                WHEN    "DBDELETE"      ALSO   "HKNNUM-KEY5"
+               WHEN    "DBDELETE"      ALSO   "HKNNUM-KEY6"
+               WHEN    "DBDELETE"      ALSO   "HKNNUM-KEY7"
                    MOVE    PATH-TBL-HKNNUM-KEY
                                        TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO   "INPUTSET-KEY"
@@ -433,6 +440,7 @@
                WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY8"
                WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY9"
                WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY10"
+               WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY11"
                WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY"
                WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY2"
                WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY3"
@@ -443,6 +451,7 @@
                WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY8"
                WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY9"
                WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY10"
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY11"
                    MOVE    PATH-TBL-SRYACCT-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SRYACCT-DEL1"
@@ -580,10 +589,12 @@
                WHEN    "DBUPDATE"      ALSO   "SANTEI-KEY2"
                WHEN    "DBUPDATE"      ALSO   "SANTEI-KEY4"
                WHEN    "DBUPDATE"      ALSO   "SANTEI-KEY5"
+               WHEN    "DBUPDATE"      ALSO   "SANTEI-KEY6"
                WHEN    "DBDELETE"      ALSO   "SANTEI-KEY"
                WHEN    "DBDELETE"      ALSO   "SANTEI-KEY2"
                WHEN    "DBDELETE"      ALSO   "SANTEI-KEY4"
                WHEN    "DBDELETE"      ALSO   "SANTEI-KEY5"
+               WHEN    "DBDELETE"      ALSO   "SANTEI-KEY6"
                    MOVE    PATH-TBL-SANTEI-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SANTEI-DEL1"
@@ -850,6 +861,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "HKNNUM-KEY5"
                    MOVE    PATH-TBL-HKNNUM-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HKNNUM-KEY6"
+                   MOVE    PATH-TBL-HKNNUM-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HKNNUM-KEY7"
+                   MOVE    PATH-TBL-HKNNUM-KEY7
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "HKNNUM-ALL"
@@ -1130,6 +1147,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-KEY10"
                    MOVE    PATH-TBL-SRYACCT-KEY10
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY11"
+                   MOVE    PATH-TBL-SRYACCT-KEY11
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SRYACCT-ALL"
@@ -1511,6 +1531,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SANTEI-KEY5"
                    MOVE    PATH-TBL-SANTEI-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SANTEI-KEY6"
+                   MOVE    PATH-TBL-SANTEI-KEY6
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SANTEI-ALL"

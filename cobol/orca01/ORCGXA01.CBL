@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -113,6 +114,9 @@
       *   
            COPY    "CMJOBNAME.INC".
       *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
+      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
@@ -178,6 +182,11 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
+      *                             
+       01  WRK-SHELL-NAME.
+           05  FILLER             PIC X(16) VALUE
+                                             "scripts/allways/".
+           05  WRK-SHELL-SHELL    PIC X(20).         
       *
            COPY    "CPSHELLTBL.INC".
       *     
@@ -1166,8 +1175,15 @@
            MOVE    RECEERR             TO  SHELL-ERRFILE
       *             
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "/usr/local/orca/scripts/allways/print.sh"
-                                       TO  SHELLTBL-NAME
+      *****MOVE    "/usr/local/orca/scripts/allways/print.sh"
+      *****                            TO  SHELLTBL-NAME
+           MOVE    "print.sh"          TO  WRK-SHELL-SHELL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *     
            MOVE    SPACE               TO  LNK-PRTKANRI-AREA
            INITIALIZE                      LNK-PRTKANRI-AREA
            MOVE    SPA-WRK-TBL-KEY     TO  LNK-PRTKANRI-TBL-KEY  

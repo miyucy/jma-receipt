@@ -56,8 +56,12 @@
                        09  SPA-COM-PAGE          PIC 9(04).
                        09  SPA-COM-GYOU          PIC 9(04).
                        09  SPA-COM-CUR           PIC X(01).
+      *                今回入力位置
                        09  SPA-COM-IN            PIC X(01).
+      *                今回入力有り
                        09  SPA-COM-IN2           PIC X(01).
+      *                数量入力有り
+                       09  SPA-COM-IN3           PIC X(01).
                        09  SPA-MAE-INPUTCD       PIC X(22).
       *---(01.00.01)
       *
@@ -122,7 +126,8 @@
       *                    禁忌薬剤警告済フラグ
                            11  SPA-COM-KNKFLG        PIC X(01).
                            11  SPA-COM-KNKUMU        PIC X(01).
-                           11  SPA-COM-KNKFLG2       PIC X(01).
+      *                    労災読み替え加算分
+                           11  SPA-COM-RSIFLG2       PIC X(01).
       *                    警告済フラグ
                            11  SPA-COM-KZMFLG        PIC X(01).
       *                    併用算定済フラグ

@@ -35,6 +35,7 @@
       *  01.00.02    ひさなが     02/05/07  半角チェックの追加
       *  01.00.02    ひさなが     02/05/10  ジョブ管理検索追加
       *  01.00.02    ひさなが     02/06/26  印刷管理・印刷ＤＢ追加
+      *  01.00.05    ひさなが     02/09/13  ディレクトリをサブプロへ
       *
       *****************************************************************
       *
@@ -206,11 +207,12 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *修正/*開始*02.06.26*********************************************
       *
       *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
-      *修正/*終了*02.06.26*********************************************
+      *
+      *    フィアルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
       *
       *****************************************************************
@@ -695,7 +697,6 @@
            MOVE    W-HEN03-X           TO  W-HC401-PAGE.
       *
       *    印刷用スクリプト処理
-      *修正/*開始*02.06.26*********************************************
            INITIALIZE                  ORCSPRTAREA.
            MOVE    "INS"               TO  SPRT-MODE.
            MOVE    1                   TO  SPRT-RENNUM.
@@ -716,7 +717,6 @@
            MOVE    SYS-1031-PRTNM (5)  TO  SPRT-PRTNM.
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA.
-      *修正/*終了*02.06.26*********************************************
       *
            MOVE    1                   TO  IDX1.
            MOVE    SPACE               TO  W-HC401.
@@ -745,7 +745,6 @@
       *
       *******************
       *
-      *修正/*開始*02.06.26*********************************************
        T-310-CHEKWEITE-SEC               SECTION.
       *
            MOVE    "CHK"               TO  WRK-JOBKANRI-MODE.
@@ -779,8 +778,15 @@
                                        JOBKANRI-REC.
       *
            MOVE    SPACE               TO  SHELLTBL.
-           MOVE    "/usr/local/orca/scripts/allways/print.sh"
-                                       TO  SHELLTBL-NAME.
+      *修正/*開始*02.09.13*********************************************
+      *     MOVE    "/usr/local/orca/scripts/allways/print.sh"
+      *                                 TO  SHELLTBL-NAME.
+           INITIALIZE                  ORCSMKPASSAREA.
+           MOVE    "scripts/allways/print.sh"
+                                       TO  MKPASS-IN-01.
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA.
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME.
+      *修正/*終了*02.09.13*********************************************
            MOVE    1                   TO  SHELLTBL-ARG1.
            MOVE    "ORCBSD1"           TO  SHELLTBL-ARG2.
            MOVE    WRK-PARA-SYSYMD     TO  SHELLTBL-ARG3(1:8).
@@ -808,4 +814,3 @@
       *
        T-310-CHEKWEITE-EXT.
            EXIT.
-      *修正/*終了*02.06.26*********************************************

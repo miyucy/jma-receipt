@@ -25,6 +25,13 @@
       *  作成日付    作業者        記述
       *  02/07/11    MCC-森脇      新規作成
       *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  00.01.01    NACL-森脇    02.09.04  編集数量のクリア
+      *                                     剤区分の編集
+      *  00.01.02    NACL-森脇    02.09.12  ファイルディレクトリ位置指定
+      *  00.01.03    NACL-多々納  02.09.17  印刷サプの追加
+      *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION                   SECTION.
@@ -49,9 +56,9 @@
            COPY    "CPCOMMONPRT.INC".
       *
       *    シェル用領域
-           COPY    "CPCOMMONSHELL.INC".
-           COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      **** COPY    "CPCOMMONSHELL.INC".
+      *    COPY    "CPSHELLTBL.INC".
+      *****COPY    "ORCA-DBPATH".
       *
       *    帳票領域
            COPY    "HC301.INC".
@@ -61,11 +68,14 @@
            COPY    "HC305.INC".
            COPY    "HC306.INC".
       *
+      *----(00.01.02)--ADD-START----
+       01  FILE-NAME           PIC X(512).
+      *
       *    空白の画像
        01  KUHAKU-NAME.
-           03  FILLER          PIC X(16)   VALUE   "/usr/local/orca/".
            03  FILLER          PIC X(05)   VALUE   "data/".
            03  FILLER          PIC X(15)   VALUE   "transparent.jpg".
+      *----(00.01.02)--ADD-END------
       *
       *    システム領域
        01  SYS-AREA.
@@ -196,6 +206,14 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *----(00.01.02)--ADD-START----
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
+      *----(00.01.02)--ADD-END------
+      *
+      *    印刷パラメタ
+           COPY    "CPORCSMKPRT.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -248,6 +266,14 @@
       *
       *    職員情報
            PERFORM 900-1010-READ-SEC
+      *
+      *----(00.01.02)--ADD-START----
+      *    フィアルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    KUHAKU-NAME         TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  FILE-NAME
+      *----(00.01.02)--ADD-END------
       *
            .
        100-INIT-EXT.
@@ -306,15 +332,18 @@
                        MOVE  YAKUJYO-PHOTO
                                            TO  WRK-YKJ-GAZO(CNT-LINE)
                    ELSE
+      *----(00.01.02)--UPD-START----
       *                空白の画像
-                       MOVE    KUHAKU-NAME
-                                           TO  WRK-YKJ-GAZO(CNT-LINE)
+                       MOVE    FILE-NAME   TO  WRK-YKJ-GAZO(CNT-LINE)
+      *----(00.01.02)--UPD-END------
       *                形状編集
                        PERFORM 230-KEIJYO-SET-SEC
                    END-IF
                ELSE
+      *----(00.01.02)--UPD-START----
       *            空白の画像
-                   MOVE    KUHAKU-NAME     TO  WRK-YKJ-GAZO(CNT-LINE)
+                   MOVE    FILE-NAME   TO  WRK-YKJ-GAZO(CNT-LINE)
+      *----(00.01.02)--UPD-END------
                END-IF
       *
       *        点数マスタ薬剤検索
@@ -534,9 +563,13 @@
            MOVE    TNS-NAME            TO  WRK-HENNAIYO
            PERFORM 241-HENNAIYO-SET-SEC
       *
+      *----(00.01.01)--UPD-START----
       *    日数編集
-           PERFORM 242-HENNAIYO-NISSU-SET-SEC
-           PERFORM 241-HENNAIYO-SET-SEC
+           IF          ORCHC30-ZAIKBN(CNT-PARA)    NOT =   3
+               PERFORM 242-HENNAIYO-NISSU-SET-SEC
+               PERFORM 241-HENNAIYO-SET-SEC
+           END-IF
+      *----(00.01.01)--UPD-END------
       *
       *    回数カウント
            MOVE    ZERO                TO  CNT-KAISU
@@ -621,7 +654,14 @@
            MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                        TO  WRK-HENNAIYO(1:KANACHK-MAX)
            COMPUTE IDZ     =   KANACHK-MAX     +   1
-           MOVE    "日分"              TO  WRK-HENNAIYO(IDZ:4)
+      *----(00.01.01)--UPD-START----
+           EVALUATE    ORCHC30-ZAIKBN(CNT-PARA)
+               WHEN    1
+                   MOVE    "日分"              TO  WRK-HENNAIYO(IDZ:4)
+               WHEN    2
+                   MOVE    "回分"              TO  WRK-HENNAIYO(IDZ:4)
+           END-EVALUATE
+      *----(00.01.01)--UPD-END------
       *
            .
        242-HENNAIYO-NISSU-SET-EXT.
@@ -694,11 +734,14 @@
       *****************************************************************
        243-HENKBN-SET-SEC              SECTION.
       *
+      *----(00.01.01)--ADD-START----
+           MOVE    SPACE               TO  WRK-HENSURYO
+      *----(00.01.01)--ADD-END------
       *    区分セット
            EVALUATE    WRK-TANICD
                WHEN    "032"
                WHEN    "033"
-                   MOVE    "1"             TO  WRK-HENSURYO(1:1)
+                   MOVE    "1"             TO  WRK-HENSURYO
                WHEN    OTHER
                    COMPUTE WRK-SURYO   =   ORCHC30-SURYO(CNT-PARA)
                                        /   CNT-KAISU
@@ -1306,45 +1349,73 @@
       *****************************************************************
        400-PRINT-SEC                SECTION.
       *
-           MOVE   "HC01.sh"          TO  SHELL-ID
+      *****MOVE   "HC01.sh"          TO  SHELL-ID
       *
-           EVALUATE  CNT-LINE
-               WHEN  1
-                   MOVE   "HC301.dia"          TO  SHELL-DIA
-                   MOVE   "HC301.def"          TO  SHELL-DEF
-               WHEN  2
-                   MOVE   "HC302.dia"          TO  SHELL-DIA
-                   MOVE   "HC302.def"          TO  SHELL-DEF
-               WHEN  3
-                   MOVE   "HC303.dia"          TO  SHELL-DIA
-                   MOVE   "HC303.def"          TO  SHELL-DEF
-               WHEN  4
-                   MOVE   "HC304.dia"          TO  SHELL-DIA
-                   MOVE   "HC304.def"          TO  SHELL-DEF
-               WHEN  5
-                   MOVE   "HC305.dia"          TO  SHELL-DIA
-                   MOVE   "HC305.def"          TO  SHELL-DEF
-               WHEN  6
-                   MOVE   "HC306.dia"          TO  SHELL-DIA
-                   MOVE   "HC306.def"          TO  SHELL-DEF
-           END-EVALUATE
-           MOVE   HC01PARA            TO  SHELL-DAT
-           MOVE   SYS-1031-PRTNM(8)   TO  SHELL-PRTNM 
+      *    EVALUATE  CNT-LINE
+      *        WHEN  1
+      *            MOVE   "HC301.dia"          TO  SHELL-DIA
+      *            MOVE   "HC301.def"          TO  SHELL-DEF
+      *        WHEN  2
+      *            MOVE   "HC302.dia"          TO  SHELL-DIA
+      *            MOVE   "HC302.def"          TO  SHELL-DEF
+      *        WHEN  3
+      *            MOVE   "HC303.dia"          TO  SHELL-DIA
+      *            MOVE   "HC303.def"          TO  SHELL-DEF
+      *        WHEN  4
+      *            MOVE   "HC304.dia"          TO  SHELL-DIA
+      *            MOVE   "HC304.def"          TO  SHELL-DEF
+      *        WHEN  5
+      *            MOVE   "HC305.dia"          TO  SHELL-DIA
+      *            MOVE   "HC305.def"          TO  SHELL-DEF
+      *        WHEN  6
+      *            MOVE   "HC306.dia"          TO  SHELL-DIA
+      *            MOVE   "HC306.def"          TO  SHELL-DEF
+      *    END-EVALUATE
+      *    MOVE   HC01PARA            TO  SHELL-DAT
+      **** MOVE   SYS-1031-PRTNM(8)   TO  SHELL-PRTNM 
            CLOSE                       PRT-FILE
       *
-      *    印刷用スクリプト処理
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
-           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
-           MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                   MCPAREA
-                   MCPDATA-REC
+      **** 印刷用スクリプト処理
+      *    MOVE    SHELL-NAME          TO  SHELLTBL-NAME
+      *    MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
+      *    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
+      *    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
+      *    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
+      *    MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
+      *    MOVE    SHELLTBL            TO  MCPDATA-REC
+      *    MOVE    "SHELL"             TO  MCP-FUNC
+      *    MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+      *    CALL    "MCPSUB"            USING
+      *            MCPAREA
+      *****        MCPDATA-REC
+      *
+      *
+           INITIALIZE                  ORCSMKPRTAREA
+           MOVE    "HC01.sh"           TO  MKPRT-ID
+           EVALUATE  CNT-LINE
+               WHEN  1
+                   MOVE   "HC301.dia"          TO  MKPRT-DIA
+                   MOVE   "HC301.def"          TO  MKPRT-DEF
+               WHEN  2
+                   MOVE   "HC302.dia"          TO  MKPRT-DIA
+                   MOVE   "HC302.def"          TO  MKPRT-DEF
+               WHEN  3
+                   MOVE   "HC303.dia"          TO  MKPRT-DIA
+                   MOVE   "HC303.def"          TO  MKPRT-DEF
+               WHEN  4
+                   MOVE   "HC304.dia"          TO  MKPRT-DIA
+                   MOVE   "HC304.def"          TO  MKPRT-DEF
+               WHEN  5
+                   MOVE   "HC305.dia"          TO  MKPRT-DIA
+                   MOVE   "HC305.def"          TO  MKPRT-DEF
+               WHEN  6
+                   MOVE   "HC306.dia"          TO  MKPRT-DIA
+                   MOVE   "HC306.def"          TO  MKPRT-DEF
+           END-EVALUATE
+           MOVE    HC01PARA            TO  MKPRT-DAT
+           MOVE    SYS-1031-PRTNM(8)   TO  MKPRT-PRTNM
+           CALL    "ORCSMKPRT"         USING
+                                       ORCSMKPRTAREA
       *
            .
        400-PRINT-EXT.

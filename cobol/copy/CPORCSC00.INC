@@ -132,8 +132,6 @@
            03  LNK-ORCSC-GAIRAI-NASI       PIC  9(01).
       *時間外特例区分
            03  LNK-ORCSC-JIKANTOKU         PIC  9(01).
-      *労災  アフターケアフラグ
-           03  LNK-ORCSC-RSI-HKNKBN        PIC  X(01).
       *
       *理学療法当月内算定
            03  LNK-ORCSC-RIGAKU-TBL.
@@ -174,11 +172,11 @@
       *    労災の外来管理加算読み替え点数
            03  LNK-ORCSC-GAIRAI-TEN        PIC  9(05)V9(03).
       *    救急医療管理加算有無（労災・自賠責用）
-           03  LNK-ORCSC-RSI-KYUKASN       PIC  9(01).
+      *****03  LNK-ORCSC-RSI-KYUKASN       PIC  9(01).
       *    療養の給付請求書取扱料（労災・自賠責用）
-           03  LNK-ORCSC-RSI-KYUFU         PIC  9(01).
+      **** 03  LNK-ORCSC-RSI-KYUFU         PIC  9(01).
       *    手指の創傷に係る機能回復指導加算（労災・自賠責用）
-           03  LNK-ORCSC-RSI-KAIFUKU       PIC  9(01).
+      *****03  LNK-ORCSC-RSI-KAIFUKU       PIC  9(01).
       *
       *    加算追加領域（更新時の自動加算（単独剤））
            03  LNK-ORCSC-KASAN.

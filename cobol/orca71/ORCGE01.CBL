@@ -37,6 +37,7 @@
       *                                     機序テーブルの追加
       *                                     人名テーブルの追加
       *                                     月代り受給者番号の追加
+      *  01.00.05    ひさなが     02/09/13  ディレクトリをサブプロへ
       *
       *****************************************************************
       *
@@ -82,8 +83,10 @@
       *
       *    抽出項目用ファイル 名称領域 
        01  EIE01PARA.
-           03  FILLER               PIC  X(23) VALUE
-               "/usr/local/orca/record/".
+           03  FILLER               PIC  X(50).
+       01  EIE01PARA-NAME.
+           03  FILLER               PIC  X(07) VALUE
+               "record/".
            03  EIE01-FILE-ID        PIC  X(23).
       *
       *    抽出項目１〜６０ファイル 名称領域 
@@ -111,10 +114,8 @@
                            11  SPA-GMN-BTN-B  PIC X(01).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-MOTOPG         PIC X(08).
-      *修正/*開始*02.05.10*********************************************
        01  SPA-WRK-AREA.
            03  SPA-WRK-TBLG1       PIC X(2658).
-      *修正/*終了*02.05.10*********************************************
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -178,6 +179,9 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    フィアルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
       *
       *****************************************************************
@@ -287,9 +291,7 @@
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
-      *修正/*開始*02.05.10*********************************************
                MOVE    LNK-SCRSPA          TO  SPA-WRK-AREA
-      *修正/*終了*02.05.10*********************************************
            END-IF.
       *
            MOVE    1                       TO  SPA-GMN-CUR.
@@ -364,7 +366,6 @@
            MOVE    "tbl_srycdchg.db     "  TO  WK-TBL-NAME-C(33).
            MOVE    "USERBYOMEI          "  TO  WK-TBL-MSG-C(34).
            MOVE    "tbl_userbyomei.db   "  TO  WK-TBL-NAME-C(34).
-      *追加/*開始*02.02.04********************************************
            MOVE    "JOBKANRI            "  TO  WK-TBL-MSG-C(35).
            MOVE    "tbl_jobkanri.db     "  TO  WK-TBL-NAME-C(35).
            MOVE    "EXAMPLE             "  TO  WK-TBL-MSG-C(36).
@@ -375,18 +376,12 @@
            MOVE    "tbl_dbkanri.db      "  TO  WK-TBL-NAME-C(38).
            MOVE    "RECEKANRI           "  TO  WK-TBL-MSG-C(39).
            MOVE    "tbl_recekanri.db    "  TO  WK-TBL-NAME-C(39).
-      *追加/*終了*02.02.04********************************************
-      *追加/*開始*02.04.23********************************************
            MOVE    "PTRSIINF            "  TO  WK-TBL-MSG-C(40).
            MOVE    "tbl_ptrsiinf.db     "  TO  WK-TBL-NAME-C(40).
-      *追加/*終了*02.04.23********************************************
-      *追加/*開始*02.05.10********************************************
            MOVE    "PRTKANRI            "  TO  WK-TBL-MSG-C(41).
            MOVE    "tbl_prtkanri.db     "  TO  WK-TBL-NAME-C(41).
            MOVE    "PRTDATA             "  TO  WK-TBL-MSG-C(42).
            MOVE    "tbl_prtdata.db      "  TO  WK-TBL-NAME-C(42).
-      *追加/*終了*02.05.10********************************************
-      *追加/*開始*02.05.29********************************************
            MOVE    "INTERACT            "  TO  WK-TBL-MSG-C(43).
            MOVE    "tbl_interact.db     "  TO  WK-TBL-NAME-C(43).
            MOVE    "SSKIJYO             "  TO  WK-TBL-MSG-C(44).
@@ -395,7 +390,6 @@
            MOVE    "tbl_jinmei.db       "  TO  WK-TBL-NAME-C(45).
            MOVE    "MONTHLYNUM          "  TO  WK-TBL-MSG-C(46).
            MOVE    "tbl_monthlynum.db   "  TO  WK-TBL-NAME-C(46).
-      *追加/*終了*02.05.29********************************************
            MOVE    "BD001               "  TO  WK-TBL-MSG-C(47).
            MOVE    "view_bd001.db       "  TO  WK-TBL-NAME-C(47).
            MOVE    "BD002               "  TO  WK-TBL-MSG-C(48).
@@ -420,11 +414,9 @@
            IF  SPA-MOTOPG  NOT =  "E02"   AND   "XB01"
                PERFORM T-000-RECEWRIT-SEC
            END-IF.
-      *修正/*開始*02.05.10*********************************************
            IF  SPA-WRK-AREA   NOT =   SPACE
                MOVE    SPA-WRK-AREA            TO  SPA-E01-AREA
            END-IF.
-      *修正/*終了*02.05.10*********************************************
       *
        300-SCREEN-EXT.
            EXIT.
@@ -459,10 +451,8 @@
                    PERFORM T-002-CHUSYUTU-SEC
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM T-002-TORIYAME-SEC
-      *修正/*開始*02.05.10*********************************************
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 530-RIDSET3-SEC
-      *修正/*終了*02.05.10*********************************************
                WHEN    "CLICKED"       ALSO    "B12"
                    IF      SPA-GMN-MAX-B       =   ZERO
                        MOVE    "0001"              TO    SPA-ERRCD
@@ -573,12 +563,14 @@
                    UNTIL   IDX1  >    SPA-GMN-MAX-A
                MOVE    SPA-GMN-MSG-A (IDX1)   TO  E01-VALUE1  (IDX1)
                MOVE    SPA-GMN-BTN-A (IDX1)   TO  E01-SELECT1 (IDX1)
+               MOVE    IDX1                   TO  E01-COUNT1
            END-PERFORM.
       *
            PERFORM VARYING IDX1  FROM  1  BY 1
                    UNTIL   IDX1  >    SPA-GMN-MAX-B
                MOVE    SPA-GMN-MSG-B (IDX1)   TO  E01-VALUE2  (IDX1)
                MOVE    SPA-GMN-BTN-B (IDX1)   TO  E01-SELECT2 (IDX1)
+               MOVE    IDX1                   TO  E01-COUNT2
            END-PERFORM.
       *
            PERFORM 5011-MAPCUR-SEC.
@@ -674,7 +666,6 @@
        530-RIDSET2-EXT.
            EXIT.
       *
-      *修正/*開始*02.05.10*********************************************
       *****************************************************************
       *    ジョブ管理表示理
       *****************************************************************
@@ -698,7 +689,6 @@
       *
        530-RIDSET3-EXT.
            EXIT.
-      *修正/*終了*02.05.10*********************************************
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -956,7 +946,14 @@
            PERFORM VARYING IDX1  FROM  1  BY 1
                    UNTIL   IDX1  >    60
                IF      WK-TBL-NAME-C (IDX1)  NOT =   SPACE
+      *修正/*開始*02.09.13*********************************************
+      *             MOVE    WK-TBL-NAME-C (IDX1) TO  EIE01-FILE-ID
+                   INITIALIZE                  ORCSMKPASSAREA
                    MOVE    WK-TBL-NAME-C (IDX1) TO  EIE01-FILE-ID
+                   MOVE    EIE01PARA-NAME      TO  MKPASS-IN-01
+                   CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+                   MOVE    MKPASS-OT-01        TO  EIE01PARA
+      *修正/*終了*02.09.13*********************************************
                    MOVE    ALL SPACE            TO  EIE02PARA-FILE
                    STRING  WK-TBL-MSG-C (IDX1)  DELIMITED  BY  SPACE
                            ".CNV"               DELIMITED  BY  SIZE

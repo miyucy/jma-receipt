@@ -2365,9 +2365,9 @@
       *        労災コードの判定
                PERFORM 200112-RSI-KEI-CHK-SEC
       *
-               IF    ( WRK-COM-ZAIEND(IDX-Z)   NOT =    "1"   )  OR
+      *********IF    ( WRK-COM-ZAIEND(IDX-Z)   NOT =    "1"   )  OR
       *              外来管理加算、継続加算以外のチェック
-                     ( FLG-GAIRAI              =    1   OR
+               IF    ( FLG-GAIRAI              =    1   OR
                        FLG-KEIZOK              =    1   OR
       *                労災分以外
                        FLG-RSIFLG              =    1         )

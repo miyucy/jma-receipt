@@ -24,6 +24,7 @@
       *  01.00.02    MCC−多々納  01/09/12  診療科一覧の追加(RL=549)
       *  01.00.02    MCC−多々納  01/09/12  診療科一覧の追加(RL=559)
       *  01.00.03    MCC-多々納   02/04/09  労災用追加
+      *  01.00.04    NACL-多々納  02/09/02  併用算定エラーメッセージ
       ************************************************************
       *
        01  SPA-K01KYOUTU.
@@ -59,14 +60,8 @@
                05  SPA-RSI-SHOBYOYMD       PIC  X(08).
       *発生年月日（労災・自賠責用）
                05  SPA-RSI-HASSYOYMD       PIC  X(08).
-      *救急医療管理加算有無（労災・自賠責用）
-               05  SPA-RSI-KYUKASN         PIC  9(01).
       *労災  アフターケアフラグ
-               05  SPA-RSI-HKNKBN          PIC  X(01).
-      *労災  療養の給付請求書有無
-               05  SPA-RSI-KYUFU           PIC  9(01).
-      *労災  手指の創傷に係る機能回復始動加算有無
-               05  SPA-RSI-KAIFUKU         PIC  9(01).
+      *********05  SPA-RSI-HKNKBN          PIC  X(01).
       *
       *初診算定日
                05  SPA-SYOYMD              PIC  X(08).
@@ -133,6 +128,8 @@
                05  SPA-FRST-SRYCD          PIC  X(09).
       *中途終了分の保険組合せ
                05  SPA-WKSRY-HKNCOMBI      PIC  9(04).
+      *老人保険変更なし
+               05  SPA-RJN-ERR             PIC  9(01).
       *
            03  SPA-K02SET-AREA.
       *小児科外来診療科
@@ -197,6 +194,8 @@
                05  SPA-TAHOKEN-FLG         PIC  9(01).
       *
            03  SPA-SONOTA-AREA.
+      *確認メッセージ
+               05  SPA-ERRMSG2             PIC  X(100).
       *
       *確認メッセージ
                05  SPA-KIDCD               PIC  X(04).
@@ -209,22 +208,6 @@
       *        メッセージ
                    07  SPA-KID2-FLG        PIC  X(02).
                    07  SPA-KID2-KIDMSG     PIC  X(80).
-      *DDDDDDDD    処方発行
-      *            07  SPA-KID2-SYOHOPRT-G.
-      *                09  SPA-KID2-SYOHOPRT   PIC  X(01).
-      *                09  SPA-KID2-SYOHOH     PIC  X(01).
-      *                09  SPA-KID2-SYOHOPRTM  PIC  X(14).
-      *            07  SPA-KID2-SYOHOPRT-LIST.
-      *                09  SPA-KID2-SYOHOPRTLST     PIC X(18)
-      *                                             OCCURS   3.
-      *            薬情発行
-      *            07  SPA-KID2-YAKJYOPRT-G.
-      *                09  SPA-KID2-YAKJYOPRT  PIC  X(01).
-      *                09  SPA-KID2-YAKJYOH    PIC  X(01).
-      *                09  SPA-KID2-YAKJYOPRTM PIC  X(14).
-      *            07  SPA-KID2-YAKJYOPRT-LIST.
-      *                09  SPA-KID2-YAKJYOPRTLST    PIC X(18)
-      *DDDDDDDDDD                                   OCCURS   3.
       *
       *Ｐ入力画面より
                05  SPA-K99-DATA            PIC  X(25).

@@ -23,7 +23,7 @@
       *  コンポーネント名  : 予約患者一覧（Ｙ０４）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  XX.XX.XX    ＮＮＮ        新規作成
+      *  01.00.01    NACL-多々納  02/09/11  ドクター編集の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -395,13 +395,14 @@
            END-IF
       *
            MOVE    ZERO                TO  WRK-DRNCD-MAX
-           PERFORM VARYING IDX
-                   FROM    1       BY  1
+           MOVE    ZERO                TO  IDX
+           PERFORM
                    UNTIL      (IDX             >   10    )   OR
                               (FLG-SYSKANRI      =   1   )
       *
                MOVE    MCPDATA-REC      TO  SYS-1010-REC
                IF      SYS-1010-KBNCD(1:1) =   "1"
+                   ADD     1                   TO  IDX
                    MOVE    SYS-1010-KBNCD(2:4) TO  SPA-GMN-DRNCD
                    MOVE    SPACE               TO  SPA-GMN-D1
                    MOVE    SYS-1010-NAME       TO  SPA-GMN-DRNAMEMEI

@@ -25,6 +25,7 @@
       *  01.00.02    MCC-多々納   01/07/02  日付桁数変更・年齢追加
       *  01.00.03    MCC-太田     02/05/31  カナ氏名候補画面を追加
       *  02.00.00    MCC-多々納   02/06/20  レイアウト変更による変更
+      *  02.00.01    NACL-多々納  02/09/09  平成１４年１０月対応
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -189,6 +190,7 @@
       *                登録時の保険者番号・保険種類
                        09  SPA-MAE-HKNNUM              PIC X(03).
                        09  SPA-MAE-HKNJANUM            PIC X(08).
+                       09  SPA-MAE-HOJOKBN             PIC X(01).
                        09  SPA-MAE-HKAKUNINYMD         PIC X(08).
                        09  SPA-MAE-HKAKUNINYMDW        PIC X(09).
       *                保険者情報
@@ -206,7 +208,8 @@
                        09  SPA-GMN-KOH-TBL         OCCURS   3.
                            11  SPA-GMN-KOHNUM-G.
                                13  SPA-GMN-KOHNUM      PIC X(03).
-                               13  SPA-GMN-H1          PIC X(01).
+      ************************ 13  SPA-GMN-H1          PIC X(01).
+                               13  SPA-GMN-KOHKBN      PIC X(01).
                                13  SPA-GMN-KOHNUMMEI   PIC X(16).
       *
                            11  SPA-GMN-KTEKSTYMD        PIC X(10).
@@ -222,10 +225,12 @@
                            11  SPA-NAI-PTKOH-EDANUM       PIC 9(04).
                            11  SPA-NAI-PTKOH-KOHID        PIC 9(10).
                            11  SPA-NAI-PTKOH-SBTKBN       PIC X(01).
+                           11  SPA-NAI-PTKOH-PAYKBN       PIC X(02).
       *                登録時の負担者番号・公費種類
                            11  SPA-MAE-KOHNUM-G.
                                13  SPA-MAE-KOHNUM      PIC X(03).
-                               13  SPA-MAE-H1          PIC X(01).
+      ************************ 13  SPA-MAE-H1          PIC X(01).
+                               13  SPA-MAE-KOHKBN      PIC X(01).
                                13  SPA-MAE-KOHNUMMEI   PIC X(16).
                            11  SPA-MAE-FTNJANUM            PIC X(08).
                            11  SPA-MAE-KKAKUNINYMD         PIC X(08).
@@ -266,11 +271,14 @@
                        09  SPA-NAI-HKNNUM-LIST.
                            11  SPA-NAI-HKNNUMLST       OCCURS 50.
                                13  SPA-NAI-HKNSBTKBN     PIC X(01).
+                               13  SPA-NAI-HKNHBTNUM     PIC X(02).
+                               13  SPA-NAI-HKNPAYKBN     PIC X(02).
                    07  SPA-KOH-AREA.
                        09  SPA-GMN-HOKNUM-LIST.
                            11  SPA-GMN-KOHNUMLST       OCCURS 50.
                                13  SPA-GMN-KOHNUML     PIC X(03).
-                               13  SPA-GMM-HL1         PIC X(01).
+      ************************ 13  SPA-GMM-HL1         PIC X(01).
+                               13  SPA-GMN-KOHKBNL     PIC X(01).
                                13  SPA-GMN-KOHNUMMEIL  PIC X(16).
                        09  SPA-GMN-KOHMAX              PIC 9(04).
                        09  SPA-NAI-KOHNUM-LIST.
@@ -279,7 +287,9 @@
       *                        検証番号チェック区分
                                13  SPA-NAI-KENSNUMCHKKBN    PIC X(01).
                                13  SPA-NAI-JKYSKENSNUMCHKKBN
-                                                            PIC X(01).
+                                                         PIC X(01).
+                               13  SPA-NAI-HBTNUM        PIC X(02).
+                               13  SPA-NAI-KOHPAYKBN     PIC X(02).
       *
                05  SPA-NAI-AREA.
                    07  SPA-GMN-OLD-KANANAME    PIC X(50).
@@ -297,6 +307,17 @@
                    07  SPA-NAI-NENREI.
                        09  SPA-NAI-NENREI-YY       PIC 9(03).
                        09  SPA-NAI-NENREI-MM       PIC 9(02).
+      *
+      *        ７０歳到達年月日
+                   07  SPA-BYMD-70.
+                       09 SPA-B70-YY               PIC 9(04).
+                       09 SPA-B70-MM               PIC 9(02).
+                       09 SPA-B70-DD               PIC 9(02).
+      *        ７５歳到達年月日
+                   07  SPA-BYMD-75.
+                       09 SPA-B75-YY               PIC 9(04).
+                       09 SPA-B75-MM               PIC 9(02).
+                       09 SPA-B75-DD               PIC 9(02).
       *            保険表示連番
       **************7  SPA-NAI-HKNEDANUM       PIC 9(04).
       *
@@ -371,6 +392,8 @@
                    07  SPA-PTKOHINF-TBL        OCCURS   40.
                        09  SPA-PTKOH-KOHID         PIC 9(10).
                        09  SPA-PTKOH-KOHNUM        PIC X(03).
+      *                支払区分追加
+                       09  SPA-PTKOH-PAYKBN        PIC X(02).
                        09  SPA-PTKOH-FTNJANUM      PIC X(08).
                        09  SPA-PTKOH-JKYSNUM       PIC X(20).
                        09  SPA-PTKOH-TEKSTYMD      PIC X(08).
@@ -766,6 +789,8 @@
            03  SPA-P982-AREA.
                05  SPA-GMN982-CUR                   PIC 9(02).
                05  SPA-GMN982-NEXT                  PIC 9(04). 
+      *        元ＰＧ
+               05  SPA-GMN982-MOTOPG                PIC X(08).
       *
                05  SPA-GMN982-KEY.
                    07  SPA-GMN982-LPUBCD            PIC X(05).
@@ -796,7 +821,7 @@
                        09  SPA-GMN2D-HKNKBNMEI     PIC X(14).
                    07  SPA-GMN2D-HKNKBN-COMB.
                        09  SPA-GMN2D-HKNKBN-LST    PIC X(16)
-                                                   OCCURS   3.
+                                                   OCCURS   4.
                    07  SPA-GMN2D-HKNKBN-MAX        PIC 9(04).
                    07  SPA-GMN2D-HIHKNJANAME       PIC X(50).
       *

@@ -191,6 +191,14 @@
               03  FILLER      PIC S9(9)   BINARY  VALUE 1.
               03  FILLER      PIC S9(9)   BINARY  VALUE 5.
               03  FILLER      PIC S9(9)   BINARY  VALUE 5.
+            02  PATH-TBL-HKNNUM-KEY6.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 1.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 5.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 6.
+            02  PATH-TBL-HKNNUM-KEY7.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 1.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 5.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 7.
             02  PATH-TBL-INPUTSET-KEY.
               03  FILLER      PIC S9(9)   BINARY  VALUE 1.
               03  FILLER      PIC S9(9)   BINARY  VALUE 6.
@@ -555,6 +563,10 @@
               03  FILLER      PIC S9(9)   BINARY  VALUE 1.
               03  FILLER      PIC S9(9)   BINARY  VALUE 17.
               03  FILLER      PIC S9(9)   BINARY  VALUE 11.
+            02  PATH-TBL-SRYACCT-KEY11.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 1.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 17.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 12.
             02  PATH-TBL-SRYACT-KEY.
               03  FILLER      PIC S9(9)   BINARY  VALUE 1.
               03  FILLER      PIC S9(9)   BINARY  VALUE 18.
@@ -987,6 +999,10 @@
               03  FILLER      PIC S9(9)   BINARY  VALUE 1.
               03  FILLER      PIC S9(9)   BINARY  VALUE 28.
               03  FILLER      PIC S9(9)   BINARY  VALUE 6.
+            02  PATH-TBL-SANTEI-KEY6.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 1.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 28.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 7.
             02  PATH-TBL-PARA-KEY.
               03  FILLER      PIC S9(9)   BINARY  VALUE 5.
               03  FILLER      PIC S9(9)   BINARY  VALUE 29.

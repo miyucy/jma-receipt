@@ -86,12 +86,10 @@
                            11  SPA-GMN-BTN    PIC X(01).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-MOTOPG         PIC X(08).
-      *修正/*開始*02.05.10*********************************************
        01  SPA-WRK-AREA.
            03  SPA-WRK-WRK         PIC X(13).
            03  SPA-WRK-FILE-ID     PIC X(128).
            03  SPA-WRK-TBLG1       PIC X(1260).
-      *修正/*終了*02.05.10*********************************************
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -140,6 +138,9 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    フィアルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
       *
       *****************************************************************
@@ -292,9 +293,7 @@
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
-      *修正/*開始*02.05.10*********************************************
                MOVE    LNK-SCRSPA          TO  SPA-WRK-AREA
-      *修正/*終了*02.05.10*********************************************
            END-IF.
       *
            MOVE    1                       TO  SPA-GMN-CUR.
@@ -405,7 +404,6 @@
            MOVE    "USERBYOMEI          "  TO  WK-TBL-MSG-1 (34).
            MOVE    "tbl_userbyomei      "  TO  WK-TBL-MSG-2 (34).
            MOVE    "CHKBTN34            "  TO  WK-TBL-MSG-3 (34).
-      *追加/*開始*02.02.04********************************************
            MOVE    "JOBKANRI            "  TO  WK-TBL-MSG-1 (35).
            MOVE    "tbl_jobkanri        "  TO  WK-TBL-MSG-2 (35).
            MOVE    "CHKBTN35            "  TO  WK-TBL-MSG-3 (35).
@@ -421,21 +419,15 @@
            MOVE    "RECEKANRI           "  TO  WK-TBL-MSG-1 (39).
            MOVE    "tbl_recekanri       "  TO  WK-TBL-MSG-2 (39).
            MOVE    "CHKBTN39            "  TO  WK-TBL-MSG-3 (39).
-      *追加/*終了*02.02.04********************************************
-      *追加/*開始*02.04.23********************************************
            MOVE    "PTRSIINF            "  TO  WK-TBL-MSG-1 (40).
            MOVE    "tbl_ptrsiinf        "  TO  WK-TBL-MSG-2 (40).
            MOVE    "CHKBTN40            "  TO  WK-TBL-MSG-3 (40).
-      *追加/*終了*02.04.23********************************************
-      *追加/*開始*02.05.10********************************************
            MOVE    "PRTKANRI            "  TO  WK-TBL-MSG-1 (41).
            MOVE    "tbl_prtkanri        "  TO  WK-TBL-MSG-2 (41).
            MOVE    "CHKBTN41            "  TO  WK-TBL-MSG-3 (41).
            MOVE    "PRTDATA             "  TO  WK-TBL-MSG-1 (42).
            MOVE    "tbl_prtdata         "  TO  WK-TBL-MSG-2 (42).
            MOVE    "CHKBTN42            "  TO  WK-TBL-MSG-3 (42).
-      *追加/*終了*02.05.10********************************************
-      *追加/*開始*02.05.29********************************************
            MOVE    "INTERACT            "  TO  WK-TBL-MSG-1 (43).
            MOVE    "tbl_interact        "  TO  WK-TBL-MSG-2 (43).
            MOVE    "CHKBTN43            "  TO  WK-TBL-MSG-3 (43).
@@ -448,7 +440,6 @@
            MOVE    "MONTHLYNUM          "  TO  WK-TBL-MSG-1 (46).
            MOVE    "tbl_monthlynum      "  TO  WK-TBL-MSG-2 (46).
            MOVE    "CHKBTN46            "  TO  WK-TBL-MSG-3 (46).
-      *追加/*終了*02.05.29********************************************
       *一時作業テーブルのため次のテーブルはバックアップの対象外とする
       *     MOVE    "BD001               "  TO  WK-TBL-MSG-1 (**).
       *     MOVE    "view_bd001          "  TO  WK-TBL-MSG-2 (**).
@@ -469,11 +460,9 @@
            PERFORM T-000-SETTABLE-SEC.
       *
            PERFORM T-000-READCHEK-SEC.
-      *修正/*開始*02.05.10*********************************************
            IF  SPA-WRK-AREA   NOT =   SPACE
                MOVE    SPA-WRK-AREA            TO  SPA-F01-AREA
            END-IF.
-      *修正/*終了*02.05.10*********************************************
       *
        300-SCREEN-EXT.
            EXIT.
@@ -500,10 +489,8 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *修正/*開始*02.05.10*********************************************
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 530-RIDSET3-SEC
-      *修正/*終了*02.05.10*********************************************
                WHEN    "CLICKED"       ALSO    "B12"
                    IF      SPA-GMN-MAX-B       =   ZERO
                        MOVE    "0001"              TO  SPA-ERRCD
@@ -840,7 +827,6 @@
        530-RIDSET2-EXT.
            EXIT.
       *
-      *修正/*開始*02.05.10*********************************************
       *****************************************************************
       *    ジョブ管理表示理
       *****************************************************************
@@ -864,7 +850,6 @@
       *
        530-RIDSET3-EXT.
            EXIT.
-      *修正/*終了*02.05.10*********************************************
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -935,7 +920,14 @@
        T-000-WRITABLE-SEC                SECTION.
       *
            IF      SPA-GMN-MAX-A = SPA-GMN-MAX-B
-               MOVE    "orcbsf02.sh"     TO  SHELL-SHELL
+      *修正/*開始*02.09.13*********************************************
+      *         MOVE    "orcbsf02.sh"     TO  SHELL-SHELL
+               INITIALIZE                    ORCSMKPASSAREA
+               MOVE    "scripts/allways/orcbsf02.sh"
+                                         TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"      USING  ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01      TO  SHELL-NAME
+      *修正/*終了*02.09.13*********************************************
                MOVE    "ALL-TABLE"       TO  SHELL-T-NAME
                MOVE    "ALL-TABLE"       TO  SHELL-C-NAME
                MOVE    "ALL-TABLE"       TO  SHELL-W-NAME
@@ -959,7 +951,14 @@
                PERFORM VARYING IDX1  FROM  1  BY 1
                        UNTIL   IDX1  >    SPA-GMN-MAX-A
                    IF      SPA-GMN-BTN (IDX1) = "T"
-                       MOVE    "orcbsf01.sh"       TO  SHELL-SHELL
+      *修正/*開始*02.09.13*********************************************
+      *                 MOVE    "orcbsf01.sh"       TO  SHELL-SHELL
+                       INITIALIZE                  ORCSMKPASSAREA
+                       MOVE    "scripts/allways/orcbsf01.sh"
+                                                   TO  MKPASS-IN-01
+                       CALL    "ORCSMKPASS"        USING  ORCSMKPASSAREA
+                       MOVE    MKPASS-OT-01        TO  SHELL-NAME
+      *修正/*終了*02.09.13*********************************************
                        MOVE    WK-TBL-MSG-2 (IDX1) TO  SHELL-T-NAME
                        MOVE    "CNV-TABLE"         TO  SHELL-C-NAME
                        MOVE    "OUT-TABLE-WK"      TO  SHELL-W-NAME
@@ -984,7 +983,14 @@
                                                  MCPDATA-REC
                    END-IF
                END-PERFORM
-               MOVE    "orcbsf03.sh"     TO  SHELL-SHELL
+      *修正/*開始*02.09.13*********************************************
+      *         MOVE    "orcbsf03.sh"     TO  SHELL-SHELL
+               INITIALIZE                ORCSMKPASSAREA
+               MOVE    "scripts/allways/orcbsf03.sh"
+                                         TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"      USING  ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01      TO  SHELL-NAME
+      *修正/*終了*02.09.13*********************************************
                MOVE    "OUT-TABLE-WK"    TO  SHELL-T-NAME
                MOVE    "OUT-TABLE-WK"    TO  SHELL-C-NAME
                MOVE    "OUT-TABLE-WK"    TO  SHELL-W-NAME

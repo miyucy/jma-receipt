@@ -2448,6 +2448,9 @@
                    MOVE    "3"                 TO  SPA-J98-GMN-SYORI
                ELSE
                    EVALUATE    SPA-COM-SRYKBN(SPA-GMN-IDX - 1)
+                       WHEN    SPACE
+      *                    診療区分が決定してない時
+                           PERFORM  4101-J98-SYRKBN-SEC
                        WHEN    "31"
                        WHEN    "32"
                        WHEN    "33"
@@ -2526,6 +2529,31 @@
            .
       *
        410-J98-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療区分が決定してない時診療種別処理
+      *****************************************************************
+       4101-J98-SYRKBN-SEC       SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-IDX
+               EVALUATE    SPA-GMN-INPUTCD(IDX)(1:3)
+                   WHEN    ".21"
+                       MOVE    "3"                 TO  SPA-J98-GMN-SYORI
+                   WHEN    ".22"
+                       MOVE    "3"                 TO  SPA-J98-GMN-SYORI
+                   WHEN    ".23"
+                       MOVE    "4"                 TO  SPA-J98-GMN-SYORI
+                   WHEN    ".31"
+                   WHEN    ".32"
+                   WHEN    ".33"
+                       MOVE    "5"                 TO  SPA-J98-GMN-SYORI
+               END-EVALUATE
+           END-PERFORM
+      *
+           .
+      *
+       4101-J98-SYRKBN-EXT.
            EXIT.
       *****************************************************************
       *    Ｋ９８画面編集処理

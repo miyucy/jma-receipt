@@ -408,7 +408,8 @@
            MOVE    "3004"                  TO  SPA-GMN-KANRICDL (23)
            MOVE    "県単独事業情報"        TO  SPA-GMN-KANRICDMEIL(23)
            MOVE    "4001"                  TO  SPA-GMN-KANRICDL (24)
-           MOVE    "労災医療機関情報"      TO  SPA-GMN-KANRICDMEIL(24)
+      *****MOVE    "労災医療機関情報"
+           MOVE    "労災自賠医療機関情報"  TO  SPA-GMN-KANRICDMEIL(24)
       *     
            MOVE    24                      TO  SPA-GMN-KANRICD-MAX
       *     

@@ -406,6 +406,12 @@
                        MOVE    "¡¡"            TO  WRK-MEISYO(IDY:2)
                        ADD     1               TO  IDX
                        ADD     2               TO  IDY
+      *            ²þ¹Ô
+                   WHEN    X"0A"
+                       MOVE    KANACHK-MAE-INPUT (IDX:1)
+                                               TO  WRK-MEISYO(IDY:1)
+                       ADD     1               TO  IDX
+                       ADD     1               TO  IDY
                    WHEN    OTHER
                        MOVE    KANACHK-MAE-INPUT (IDX:2)
                                                TO  WRK-MEISYO(IDY:2)
