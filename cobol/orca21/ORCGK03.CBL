@@ -42,6 +42,7 @@
       *  02.00.07    NACL-多々納  02/12/05  初診料算定日追加
       *  02.00.08    NACL-多々納  02/12/11  ドクターエラーカーソル位置修正
       *  02.00.09    NACL-多々納  02/12/16  ドクター未入力ＯＫ追加
+      *  02.00.10    NACL-多々納  02/12/17  診療種別の判定追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -209,6 +210,8 @@
            03  FLG-CLAIM           PIC 9(01).
            03  FLG-CLAIM-OK        PIC 9(01).
       *
+           03  FLG-CHK-OK          PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -322,6 +325,9 @@
            03  WRK-GMN-SELNUM          PIC 9(02).
       *
            03  WRK-PTID                   PIC X(10).
+      *    診療種別
+           03  WRK-SRYSYUKBN              PIC X(03).
+           03  WRK-MAE-SRYSYUKBN          PIC X(03).
       *
       *    診療行為内容比較用テーブル
        01  TBL-AREA.
@@ -3583,6 +3589,13 @@
            MOVE    LNK-WKSRY-SRYYMD (01)(1:6)
                                            TO  ACCT-SRYYM
            MOVE    LNK-WKSRY-SRYKBN (01)   TO  ACCT-SRYKBN
+      *    診療種別により判定を追加する
+           IF     (LNK-WKSRY-SRYSYUKBN (01) =  SPACE )  OR
+                  (LNK-WKSRY-SRYSYUKBN (01)(3:1)   =   "0" )
+               MOVE    SPACE                   TO  WRK-SRYSYUKBN
+           ELSE
+               MOVE    LNK-WKSRY-SRYSYUKBN (01)    TO  WRK-SRYSYUKBN
+           END-IF
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -3602,6 +3615,7 @@
                        (FLG-OK             =   1    )
       *
       *        診療コード計を比較する
+               MOVE     ZERO                TO  FLG-CHK-OK
                IF     (ACCT-HKNCOMBI        =   SPA-HKNCOMBINUM) AND
                       (ACCT-SRYCDTOTAL      =   WRK-SRYCDKEI   ) AND
                       (ACCT-ZAITEN          =   WRK-ZAITEN     ) AND
@@ -3744,6 +3758,21 @@
                MOVE    1                   TO  FLG-SRYACT
            END-IF
            PERFORM UNTIL     (FLG-SRYACT       =   1  )
+      *        診療種別により判定を追加する
+               IF     (SRY-SRYSYUKBN       =  SPACE )  OR
+                      (SRY-SRYSYUKBN(3:1)  =   "0"  )
+                   MOVE    SPACE           TO  WRK-MAE-SRYSYUKBN
+               ELSE
+                   MOVE    SRY-SRYSYUKBN   TO  WRK-MAE-SRYSYUKBN
+               END-IF
+      *        診療種別区分判定
+               IF       WRK-SRYSYUKBN       =   WRK-MAE-SRYSYUKBN
+                   MOVE     1               TO  FLG-CHK-OK
+               ELSE
+                   MOVE     ZERO            TO  FLG-CHK-OK
+               END-IF
+               IF      FLG-CHK-OK          =   1
+      *
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2        >   5   )  OR
                                   (SRY-SRYCD(IDX2)     =   SPACE )
@@ -3771,6 +3800,8 @@
                        END-IF
                    END-IF
                END-PERFORM
+      *
+               END-IF
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 915-SRYACT-NEXT-SEC
            END-PERFORM
