@@ -111,6 +111,7 @@
            03  FLG-DELETE          PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-ERR2            PIC 9(01).
+           03  FLG-ERR3            PIC 9(01).
            03  FLG-PTNYUINRRK          PIC 9(01).
       *
            03  FLG-NYUIN               PIC 9(01).
@@ -172,7 +173,7 @@
                05  WRK-SDD2            PIC 9(02).
       *
            03  WRK-PTID                PIC 9(10).
-           03  WRK-SRYCD           PIC 9(09).
+           03  WRK-SRYCD               PIC X(09).
       *
            03  WRK-Z3                  PIC ZZ9.
       *
@@ -494,6 +495,10 @@
       *
            PERFORM 2001-NYUIN-CHK-SEC
       *
+           IF      CNT-ERR2         >   ZERO
+               PERFORM 3001-SYUNOU-DEL-SEC
+           END-IF
+      *
            .
        200-MAIN-EXT.
            EXIT.
@@ -566,13 +571,13 @@
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY19"   TO  ORC-DBPATH
+           MOVE    "PTNYUINRRK-KEY3"   TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY19"   TO  ORC-DBPATH
+               MOVE    "PTNYUINRRK-KEY3"   TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            ELSE
                MOVE    1               TO  FLG-PTNYUINRRK
@@ -938,12 +943,43 @@
            MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYUNOU
+           END-IF
+           IF      FLG-SYUNOU          =   1
+      *********PERFORM 20031-SYUNOU-CHK-SEC
+               MOVE    1               TO  FLG-ERR3
+               ADD     1               TO  CNT-ERR2
+           ELSE
+               MOVE    ZERO            TO  FLG-ERR3
+           END-IF
+      *
+           INITIALIZE                  SYUNOU-REC
+           MOVE    JYURRK-HOSPID       TO  SYU-HOSPID
+           MOVE    JYURRK-PTID         TO  SYU-PTID
+           MOVE    JYURRK-NYUGAIKBN    TO  SYU-NYUGAIKBN
+           MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
+      *!   IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCBMCNGM SYUNOU DEL ERR:" MCP-RC
+                            ",KEY:" SYU-KEY
+      *!   END-IF
       *    ¼ýÇ¼ÌÀºÙºï½ü
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
@@ -958,6 +994,10 @@
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCBMCNGM SYUMEI DEL ERR:" MCP-RC
+                            ",KEY:" SMEI-KEY
+           END-IF
       *
       *    ¼õ¿ÇÍúÎòºï½ü
            MOVE    JYURRK-REC          TO  MCPDATA-REC
@@ -1019,12 +1059,14 @@
       *
       *            »»ÄêÍúÎò¤Îºï½ü½èÍý
                    MOVE    ACCT-DAY (IDX-1 IDX-2)  TO  WRK-KAISU
-                   IF      ACCT-DAY (IDX-1 1)    =   ZERO
-                       MOVE    ACCT-ZAIKAISU     TO  WRK-KAISU
+                   IF     (FLG-ERR2              =   4    ) AND
+                          (ACCT-DAY (IDX-1 1)    =   ZERO )
+                       MOVE    1                 TO  WRK-KAISU
                    END-IF
                    PERFORM 4500113-TEISEI-SANTEI-SEC
       *
-                   IF      ACCT-DAY (IDX-1 1)    =   ZERO
+                   IF     (FLG-ERR2              =   4    ) AND
+                          (ACCT-DAY (IDX-1 1)    =   ZERO )
                        MOVE    ZERO           TO  ACCT-ZAIKAISU
                    ELSE
       *            ºÞ²ó¿ô¡¡ÊÑ¹¹
@@ -1219,6 +1261,75 @@
            EXIT.
       *
       *****************************************************************
+      *    ¼ýÇ¼ºï½ü½èÍý
+      *****************************************************************
+       3001-SYUNOU-DEL-SEC             SECTION.
+      *
+      *    ¼ýÇ¼ºï½ü
+           INITIALIZE                  SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    "1"                 TO  SYU-NYUGAIKBN
+           MOVE    "________"          TO  SYU-SRYYMD
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY15"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY15"      TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYUNOU
+           END-IF
+           PERFORM
+               UNTIL   FLG-SYUNOU          =   1
+               IF      SYU-SKYEDYMD        =   "99999999"
+      *
+               MOVE    SYUNOU-REC          TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                          MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *!   IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCBMCNGM SYUNOU DEL ERR:" MCP-RC
+                            ",KEY:" SYU-KEY
+      *!   END-IF
+      *    ¼ýÇ¼ÌÀºÙºï½ü
+           MOVE    SPACE               TO  SYUMEI-REC
+           INITIALIZE                      SYUMEI-REC
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SMEI-PTID
+           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SYUMEI-DEL2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCBMCNGM SYUMEI DEL ERR:" MCP-RC
+                            ",KEY:" SMEI-KEY
+           END-IF
+      *
+           END-IF
+      *
+               MOVE    "SYUNOU-KEY15"      TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+      *
+           END-PERFORM
+      *
+           .
+       3001-SYUNOU-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    °õºþ½èÍý
       *****************************************************************
        290-ERR-PRINT-SEC             SECTION.
@@ -1263,8 +1374,18 @@
            ELSE
                MOVE    "¹¹¿·"              TO  ERR-ERRMSG
            END-IF
-      *
            MOVE    ERR-REC             TO  HCMSL80-MOJI (CNT-LCNT1)
+           IF      FLG-ERR3            =   1
+               ADD     1                   TO  CNT-LCNT1
+               IF      CNT-LCNT1           >   80
+      *        Ä¢É¼°õºþ½èÍý
+                 PERFORM 400-PRINT-OUT-SEC
+                  MOVE    1                   TO  CNT-LCNT1
+               END-IF
+               MOVE    SPACE               TO  ERR-REC
+               MOVE    "¼ýÇ¼¥¨¥é¡¼"        TO  ERR-ERRMSG
+               MOVE    ERR-REC             TO  HCMSL80-MOJI (CNT-LCNT1)
+           END-IF
       *
            .
        290-ERR-PRINT-EXT.
@@ -1544,7 +1665,7 @@
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           MOVE    JYURRK-SRYYMD       TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
