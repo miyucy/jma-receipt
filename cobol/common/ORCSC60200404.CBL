@@ -786,6 +786,12 @@
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
            ELSE
@@ -1362,9 +1368,6 @@
       *    点数計算処理
       *****************************************************************
        10021-KEISAN-SEC                  SECTION.
-      *
-      *    器材は別に集計する
-           MOVE    ZERO                TO  LNK-SC90-KIZTEN
       *
            MOVE    LNK-ORCSC-KAISU     TO  LNK-SC90-KAISU
            MOVE    "1"                 TO  LNK-SC90-KBN
