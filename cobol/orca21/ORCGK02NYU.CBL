@@ -1912,6 +1912,25 @@
       *
       **** MOVE    ZERO                TO  SPA-NAI-ROUSTR
       *****MOVE    ZERO                TO  SPA-NAI-ROUFLG
+      *    Ï·¿ÍÈ½Äê
+           PERFORM 3102-ROUJIN-SET-SEC
+      *
+      *    £Ä£Ï¿ÇÎÅÆüÉÕÊÔ½¸
+           PERFORM 3101-DORRKYMD-HEN-SEC
+      *
+      *    £Ä£ÏÊÔ½¸
+           MOVE    "F"                 TO  SPA-GMN-TEISEI
+           MOVE    ZERO                TO  SPA-NAI-SYORI
+      *
+           .
+       310-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ï·¿ÍÈ½Äê½èÍý
+      *****************************************************************
+       3102-ROUJIN-SET-SEC              SECTION.
+      *
            MOVE    ZERO                TO  SPA-NAI-ROUJIN
       *    Ï·¿ÍÈ½Äê
            IF     (SPA-KOH1HKNNUM       =   "027"   )  OR
@@ -1954,15 +1973,8 @@
                END-IF
            END-IF
       *
-      *    £Ä£Ï¿ÇÎÅÆüÉÕÊÔ½¸
-           PERFORM 3101-DORRKYMD-HEN-SEC
-      *
-      *    £Ä£ÏÊÔ½¸
-           MOVE    "F"                 TO  SPA-GMN-TEISEI
-           MOVE    ZERO                TO  SPA-NAI-SYORI
-      *
            .
-       310-SPA-SET-EXT.
+       3102-ROUJIN-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2126,6 +2138,9 @@
                                        TO  SPA-KOH3HKNNUM
            MOVE    SPA-NAI-KOH4HKNNUM  (IDX)
                                        TO  SPA-KOH4HKNNUM
+      *    Ï·¿ÍÈ½Äê
+           PERFORM 3102-ROUJIN-SET-SEC
+      *
       *    Ï«ºÒ »Í»è¶èÊ¬
            MOVE    SPA-NAI-RSI-SISIKBN (IDX)
                                        TO  SPA-RSI-SISIKBN
@@ -5390,7 +5405,7 @@
       *        ¹Ô¤òÁÞÆþ¤·¤ÆÄÉ²Ã¤¹¤ë
                ADD     1               TO  SPA-GMN-IDX
                PERFORM 41014-GYOINSN-SEC
-               IF      SPA-ERRCD       =   SPACE
+             IF      SPA-ERRCD       =   SPACE
       *
                ADD     1               TO  IDX-IP
       *
@@ -5531,7 +5546,7 @@
                MOVE    "INPUTSET-KEY2"     TO  ORC-DBPATH
                PERFORM 975-INPUTSET-READ-SEC
       *
-               END-IF
+            END-IF
       *
            END-PERFORM
       *
@@ -6252,6 +6267,9 @@
            END-IF
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-ORCSC-TEISEI-AREA
       *
+      *    Æþ±¡´ü´Ö
+      *     MOVE    SPA-K02N-NYUINYMD   TO  LNK-ORCSC-NYUINYMD
+      *     MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *            ¿ÇÎÅ
@@ -7210,6 +7228,10 @@
            END-IF
       *
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-ORCSC-TEISEI-AREA
+      *
+      *    Æþ±¡´ü´Ö
+      *     MOVE    SPA-K02N-NYUINYMD   TO  LNK-ORCSC-NYUINYMD
+      *     MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
       *
       *            ¿ÇÎÅ
            IF      SPA-SRYKBN-CNT (01) >   ZERO
