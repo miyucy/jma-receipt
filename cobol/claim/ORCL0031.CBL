@@ -1,24 +1,19 @@
-      ******************************************************************
-      * ORCA -- Online Receipt Computer Advantage
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
       *
-      * Copyright (C)  2000-2001 JMA.         
+      * This program is part of "JMA standard receipt software".
       *
-      * This module is part of ORCA.
-      *
-      *     ORCA is distributed in the hope that it will be useful, but
-      * WITHOUT ANY WARRANTY.  No author or distributor accepts 
-      * responsibility to anyone for the consequences of using it or for
-      * whether it serves any particular purpose or works at all, unless
-      * he says so in writing.
-      * Refer to the GNU General Public License for full details. 
-      *
-      *     Everyone is granted permission to copy, modify and
-      * redistribute ORCA, but only under the conditions described in
-      * the GNU General Public License.  A copy of this license is
-      * supposed to have been given to you along with ORCA so you can
-      * know your rights and responsibilities.  It should be in a file
-      * named COPYING.  Among other things, the copyright notice and 
-      * this notice must be preserved on all copies. 
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
       ******************************************************************
       *
        IDENTIFICATION          DIVISION.
@@ -44,6 +39,8 @@
       *  01.00.09    NACL-多々納  04/08/24  入院回数修正
       *  01.00.10    NACL-多々納  04/10/21  ドクター追加
       *  01.00.11    NACL-多々納  04/11/09  入院追加
+      *  01.00.12    NACL-藤原    05/03/10  病名コードの取り込み
+      *                                     未コード化傷病名コードの場合
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -106,6 +103,7 @@
            03  FLG-OK              PIC 9(01).
       *    0:正常 1:エラー  2:単独病名エラー
       *    3:コード順エラー 4:修飾語のみ
+      *    5:未コード化傷病名コード
            03  FLG-BYOMEI-CHK      PIC 9(01). 
       *
            03  FLG-ERR             PIC 9(01).
@@ -2102,7 +2100,8 @@
       *    病名コードチェック
            PERFORM 200611-BYOMEICD-CHK-SEC
       *
-           IF      FLG-BYOMEI-CHK      =   1
+      *    病名コードがエラー又は未コード化傷病名コードのときは疾患名を編集
+           IF      FLG-BYOMEI-CHK      =   1   OR  5
                MOVE    LF04-SND-SPINAME1 (IDX) TO  WRK-BYOMEI
            END-IF 
       *
@@ -2135,8 +2134,8 @@
       *    病名コードチェック
            PERFORM 200611-BYOMEICD-CHK-SEC
       *
-      *    病名コードがエラーのときは疾患名を編集
-           IF      FLG-BYOMEI-CHK      =   1
+      *    病名コードがエラー又は未コード化傷病名コードのときは疾患名を編集
+           IF      FLG-BYOMEI-CHK      =   1   OR  5
                STRING  LF04-SNDSPITBL-SPINAME2(IDX 1) DELIMITED BY SPACE
                        LF04-SNDSPITBL-SPINAME2(IDX 2) DELIMITED BY SPACE
                        LF04-SNDSPITBL-SPINAME2(IDX 3) DELIMITED BY SPACE
@@ -2193,18 +2192,25 @@
       *
       *        病名マスタ存在チェック
                IF      FLG-BYOMEI-CHK          =   ZERO
-                   INITIALIZE                      BYOMEI-REC
-                   MOVE    WRK-TBYOMEICD (IDY) TO  BYO-BYOMEICD
-                   PERFORM 900-BYOMEI-READ-SEC
-                   IF      FLG-BYOMEI          =   1  
-                       MOVE    1               TO  FLG-BYOMEI-CHK
+                   IF      WRK-TBYOMEICD (IDY)     =   WRK-CONS-BYOMEICD
+                       MOVE    5               TO  FLG-BYOMEI-CHK
                    ELSE
-                       MOVE    BYO-BYOMEI      TO  WRK-TBYOMEI    (IDY)
-                       MOVE    BYO-TANDOKUKBN  TO  WRK-TTANDOKUKBN(IDY)
-                       MOVE    BYO-UTAGAIFLG   TO  WRK-TUTAGAIFLG (IDY)
-                       IF      WRK-TBYOMEICD (IDY) (1:1)
-                                           NOT =   "Z"
-                           MOVE    BYO-TOKSKNCD    TO  WRK-TOKSKNCD
+                       INITIALIZE                      BYOMEI-REC
+                       MOVE    WRK-TBYOMEICD (IDY) TO  BYO-BYOMEICD
+                       PERFORM 900-BYOMEI-READ-SEC
+                       IF      FLG-BYOMEI          =   1  
+                           MOVE    1               TO  FLG-BYOMEI-CHK
+                       ELSE
+                           MOVE    BYO-BYOMEI      TO
+                                                   WRK-TBYOMEI    (IDY)
+                           MOVE    BYO-TANDOKUKBN  TO
+                                                   WRK-TTANDOKUKBN(IDY)
+                           MOVE    BYO-UTAGAIFLG   TO
+                                                   WRK-TUTAGAIFLG (IDY)
+                           IF      WRK-TBYOMEICD (IDY) (1:1)
+                                               NOT =   "Z"
+                               MOVE    BYO-TOKSKNCD    TO  WRK-TOKSKNCD
+                           END-IF
                        END-IF      
                    END-IF
                END-IF
@@ -2530,8 +2536,8 @@
                END-IF
            END-PERFORM
       *
-      *    疾患コードがエラー以外のとき
-           IF      FLG-BYOMEI-CHK      NOT =   1
+      *    疾患コードがエラー又は未コード化傷病名コード以外のとき
+           IF      FLG-BYOMEI-CHK      NOT =   1   AND 5
                MOVE    ZERO                TO  IDZ
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       6
@@ -2686,7 +2692,8 @@
                    END-IF
                END-IF    
            ELSE
-      *    疾患コードがエラーのとき病名からコード検索
+      *        疾患コードがエラー又は未コード化傷病名コードのとき
+      *        病名からコード検索
                INITIALIZE                  ORCSBYOMEIAREA
                MOVE    "1"                 TO  LNK-BYO-SYORI
                MOVE    PTBYO-SRYYMD        TO  LNK-BYO-SRYYMD-IN
