@@ -4446,9 +4446,9 @@
       *
       *    保険区分が変更された時、再編集を行う
            IF     (SPA-SYORIFLG        =   1   )  AND
-                 ((SPA-HKNKBN          =   SPA-MAE-HKNKBN)
+                  (SPA-HKNKBN          =   SPA-MAE-HKNKBN)
       *            労災の時、初回算定日を再編集する
-              OR  (SPA-HKNKBN      NOT =   ZERO))
+             AND  (SPA-HKNKBN          =   ZERO)
                CONTINUE
            ELSE
                PERFORM 410121-HKNCOMBI-SAI-SEC
@@ -4503,8 +4503,8 @@
            END-IF
       *
       *    保険区分が変更された時、再編集を行う
-           IF     (SPA-HKNKBN          =   SPA-MAE-HKNKBN  )  OR
-                  (SPA-HKNKBN      NOT =   ZERO            )
+           IF     (SPA-HKNKBN          =   SPA-MAE-HKNKBN  )  AND
+                  (SPA-HKNKBN          =   ZERO            )
                CONTINUE
            ELSE
       *        初診算定時のから変更がある時、診察料の変更のみ
