@@ -99,6 +99,8 @@
       *                                     （フラグ初期化位置変更）
       *  01.00.28    NACL−門脇   03/02/06  自費保険の課税対応
       *  01.00.29    NACL−門脇   03/03/07  老人限度額の集計変更
+      *  01.00.30    NACL−門脇   03/03/24  平成１５年４月１日改正対応
+      *                                     ＜薬剤一部負担金廃止＞
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -556,7 +558,9 @@
       *    薬剤一部負担金の計算処理
            MOVE         ZERO              TO     LNK-SYU-YKZ-FTN.
            MOVE         ZERO              TO     LNK-SYU-RESE-YKZ-FTN.
-           PERFORM      YAKFTN-SANTEI-SEC.
+           IF    LNK-SYU-SRYYMD(1:6)   <   "200304"
+                PERFORM      YAKFTN-SANTEI-SEC
+           END-IF.
            MOVE         YAKFTN-SOGOKEI    TO     LNK-SYU-RESE-YKZ-FTN.
            EVALUATE     FLG-SANSHOU
                WHEN     "1"
