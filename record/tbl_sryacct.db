@@ -452,6 +452,7 @@ path	key18	{
                         AND   A.SRYKA     = B.SRYKA
                         AND   A.SRYYM     = B.SRYYM
                         AND   A.ZAINUM    = B.ZAINUM
+                        AND   1           = B.RENNUM
 			ORDER   BY      A.SRYKBN,
                                         B.SRYSYUKBN, 
                                         A.ZAINUM
@@ -473,6 +474,7 @@ path	key19	{
                         AND   A.PTID      = B.PTID
                         AND   A.SRYYM     = B.SRYYM
                         AND   A.ZAINUM    = B.ZAINUM
+                        AND   1           = B.RENNUM
 			ORDER  BY   A.SRYKA,
                                     A.SRYKBN,
                                     B.SRYSYUKBN,
