@@ -1354,6 +1354,8 @@
                    PERFORM 3002-PARA-SET-SEC
       *            特定疾患判定のクリア
                    MOVE    ZERO            TO  SPA-TOKUTEIFLG
+                   MOVE    ZERO            TO  SPA-NAIFUKU-CHK
+                   MOVE    ZERO            TO  SPA-NAIFUKU-OK
       *            診療行為、計計算処理、編集
       *            MOVE    "2"             TO  FLG-TOROKU
                    MOVE    SPACE           TO  FLG-TOROKU
@@ -1374,6 +1376,8 @@
                    IF      SPA-MOTOPG      =   "K03"
       *                特定疾患判定のクリア
                        MOVE    ZERO            TO  SPA-TOKUTEIFLG
+                       MOVE    ZERO            TO  SPA-NAIFUKU-CHK
+                       MOVE    ZERO            TO  SPA-NAIFUKU-OK
                    END-IF
                    PERFORM 3003-GMN-HEN-SEC
                    IF      SPA-MOTOPG      =   "S02"  OR  "J02" OR "C02"
@@ -1622,7 +1626,6 @@
            MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
            MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
            IF     (SPA-MOTOPG          =   "K01"        )
-      *!!!   AND  (SPA-PTID            =   SPA-GMN-PTID )
                MOVE    "K01"               TO  LNK-SC95-PG
            ELSE
                IF      SPA-MOTOPG          =   "U02"
@@ -2139,6 +2142,21 @@
                    IF      SPA-KID1-FLG        =   "OK"
                       INITIALIZE                  SPA-SCR-REC
                    END-IF
+      *
+      *        内服７種類以上逓減確認
+               WHEN    "2001"
+               WHEN    "2002"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                      MOVE    1                TO  SPA-NAIFUKU-OK
+                   ELSE
+                      MOVE    ZERO             TO  SPA-NAIFUKU-OK
+                   END-IF
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   MOVE    SPACE               TO  SPA-KID1-FLG
+      *            画面制御
+                   MOVE    "JOIN"              TO  WRK-PUTTYPE
+                   PERFORM 41002-KOUSIN-SYORI-SEC
       *
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KID1-FLG
@@ -13689,6 +13707,16 @@
                                        TO  WRK-KIDMSG
                    MOVE    "現在の診療内容をクリアしますか？"
                                        TO  WRK-KIDMSG(33:)
+               WHEN    "2001"
+                   MOVE    "内服薬剤が７種類以上になります。"
+                                       TO  WRK-KIDMSG
+                   MOVE    "逓減しますか？"
+                                       TO  WRK-KIDMSG(33:)
+               WHEN    "2002"
+                   MOVE    "内服薬剤が７種類以上になります。"
+                                       TO  WRK-KIDMSG
+                   MOVE    "７種類以上の処方せん料にしますか？"
+                                       TO  WRK-KIDMSG(33:)
                WHEN    OTHER
                    MOVE    SPA-KIDCD
                                        TO  WRK-KIDMSG
@@ -13709,6 +13737,8 @@
                WHEN    "0122"
                WHEN    "0180"
                WHEN    "0190"
+               WHEN    "2001"
+               WHEN    "2002"
                    MOVE    "ＮＯ"            TO  KID1-B01
            END-EVALUATE
       *

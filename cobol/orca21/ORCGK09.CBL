@@ -1414,6 +1414,8 @@
       *                                        ALL "  "  BY  "¡¡"
                INSPECT SPA-GMN-TZAIKEI (IDG)   REPLACING
                                                ALL "  "  BY  "¡¡"
+      *
+               MOVE    SPA-NAI-MAX2        TO  SPA-NAI-TBANGO    (IDG)
            END-IF
       *
       *    ºÞ½ªÎ»ÊÔ½¸
@@ -2159,6 +2161,9 @@
                MOVE    WRK-ZZ                  TO  K09-NO  (IDX)
                MOVE    SPA-GMN-RRKYMD (IDX)    TO  K09-RRKYMD(IDX)
                MOVE    SPA-GMN-RRKSRYKA (IDX)  TO  K09-RRKSRYKA(IDX)
+               MOVE    SPA-GMN-RRKHKNCOMBI(IDX)
+                                               TO  K09-RRKHKNCOMBI
+                                                               (IDX)
                IF      SPA-GMN-NO (IDX)    =   SPA-NAI-DOSELNUM
                    MOVE    "T"             TO  K09-RRKLIST-SELECT (IDX)
                ELSE
@@ -2171,13 +2176,15 @@
                      UNTIL     IDX         >   SPA-GMN-MAX2
                IF      SPA-GMN-TMEISYO(IDX)(1:1)   =   "-"
                    MOVE    ALL "-"             TO  K09-MNO (IDX)
+                   MOVE    ALL "¡Ý"            TO  K09-MEISAI (IDX)
                ELSE
                    IF      SPA-GMN-TBANGO (IDX)    NOT =   ZERO
                        MOVE    SPA-GMN-TBANGO (IDX)    TO  WRK-ZZ
                        MOVE    WRK-ZZ                  TO  K09-MNO (IDX)
                    END-IF
-               END-IF
                MOVE    SPA-GMN-TMEISYO (IDX)   TO  K09-MEISAI (IDX)
+               END-IF
+      **       MOVE    SPA-GMN-TMEISYO (IDX)   TO  K09-MEISAI (IDX)
            END-PERFORM
            MOVE    SPA-GMN-MAX2        TO  K09-MEILIST-COUNT
       *
