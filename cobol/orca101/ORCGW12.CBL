@@ -49,6 +49,8 @@
       *  02.00.11    NACL-藤原    04/02/18  社保ＯＣＲ区分の追加
       *  02.00.12    NACL-藤原    04/03/05  主病名編集フラグに区分を追加
       *  02.00.13    NACL-藤原    04/03/29  続紙区分に縦形式（長）追加
+      *  02.00.14    NACL-藤原    04/04/09  レセプトコメント（症状詳記）記録区分
+      *                                     ・診療科編集区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -172,6 +174,18 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-JIHITEKKSIKBNMEI
                                               PIC X(08).
+                       09  SPA-GMN-RECECOMKBN-G.
+                           11  SPA-GMN-RECECOMKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-RECECOMKBNMEI
+                                              PIC X(24).
+                       09  SPA-GMN-SRYKAHENKBN-G.
+                           11  SPA-GMN-SRYKAHENKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-SRYKAHENKBNMEI
+                                              PIC X(18).
       *                                        
                    07  SPA-GMN-BYOMEIHENKBNLST        OCCURS  2.
                        09  SPA-GMN-BYOMEIHENKBNL
@@ -290,6 +304,23 @@
                        09  SPA-GMN-JIHITEKKSIKBNMEIL
                                               PIC X(08).
                    07  SPA-GMN-JIHITEKKSIKBN-MAX
+                                              PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-RECECOMKBNLST           OCCURS  2.
+                       09  SPA-GMN-RECECOMKBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-RECECOMKBNMEIL
+                                              PIC X(24).
+                   07  SPA-GMN-RECECOMKBN-MAX PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-SRYKAHENKBNLST           OCCURS  2.
+                       09  SPA-GMN-SRYKAHENKBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-SRYKAHENKBNMEIL
+                                              PIC X(18).
+                   07  SPA-GMN-SRYKAHENKBN-MAX
                                               PIC 9(02).    
       *
                05  SPA-NAIB-AREA.
@@ -643,6 +674,21 @@
                                        TO  SPA-GMN-RJNGNBKKBNMEIL (4)
            MOVE    4                   TO  SPA-GMN-RJNGNBKKBN-MAX 
       *     
+           MOVE    "0"                 TO  SPA-GMN-RECECOMKBNL    (1)
+           MOVE    "レセ電データに記録する"
+                                       TO  SPA-GMN-RECECOMKBNMEIL (1)
+           MOVE    "1"                 TO  SPA-GMN-RECECOMKBNL    (2)
+           MOVE    "レセ電データに記録しない"
+                                       TO  SPA-GMN-RECECOMKBNMEIL (2)
+           MOVE    2                   TO  SPA-GMN-RECECOMKBN-MAX 
+      *     
+           MOVE    "0"                 TO  SPA-GMN-SRYKAHENKBNL    (1)
+           MOVE    "診療科を表示する"  TO  SPA-GMN-SRYKAHENKBNMEIL (1)
+           MOVE    "1"                 TO  SPA-GMN-SRYKAHENKBNL    (2)
+           MOVE    "診療科を表示しない"
+                                       TO  SPA-GMN-SRYKAHENKBNMEIL (2)
+           MOVE    2                   TO  SPA-GMN-SRYKAHENKBN-MAX 
+      *     
            MOVE    "0"                 TO  SPA-GMN-JIHITEKKSIKBNL    (1)
            MOVE    "なし"              TO  SPA-GMN-JIHITEKKSIKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-JIHITEKKSIKBNL    (2)
@@ -849,6 +895,30 @@
                                            TO  IDY
                    END-IF
                END-PERFORM
+      *
+               MOVE    SYS-2005-RECECOMKBN TO  SPA-GMN-RECECOMKBN
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-RECECOMKBN-MAX
+                   IF      SPA-GMN-RECECOMKBN 
+                                   =   SPA-GMN-RECECOMKBNL (IDY)
+                       MOVE    SPA-GMN-RECECOMKBNLST (IDY)
+                                           TO  SPA-GMN-RECECOMKBN-G
+                       MOVE    SPA-GMN-RECECOMKBN-MAX
+                                           TO  IDY
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    SYS-2005-SRYKAHENKBN TO  SPA-GMN-SRYKAHENKBN
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-SRYKAHENKBN-MAX
+                   IF      SPA-GMN-SRYKAHENKBN 
+                                   =   SPA-GMN-SRYKAHENKBNL (IDY)
+                       MOVE    SPA-GMN-SRYKAHENKBNLST (IDY)
+                                           TO  SPA-GMN-SRYKAHENKBN-G
+                       MOVE    SPA-GMN-SRYKAHENKBN-MAX
+                                           TO  IDY
+                   END-IF
+               END-PERFORM
            END-IF
       *
            IF     SPA-GMN-BYOMEIHENKBN-G   =   SPACE
@@ -902,6 +972,14 @@
            IF     SPA-GMN-KKHOCRKBN-G  =   SPACE
                MOVE    SPA-GMN-KKHOCRKBNLST (1)
                                            TO  SPA-GMN-KKHOCRKBN-G
+           END-IF                                              
+           IF     SPA-GMN-RECECOMKBN   =   SPACE
+               MOVE    SPA-GMN-RECECOMKBNLST (1)
+                                           TO  SPA-GMN-RECECOMKBN-G
+           END-IF                                              
+           IF     SPA-GMN-SRYKAHENKBN  =   SPACE
+               MOVE    SPA-GMN-SRYKAHENKBNLST (1)
+                                           TO  SPA-GMN-SRYKAHENKBN-G
            END-IF                                              
       *
            MOVE    1                   TO  SPA-GMN-CUR
@@ -984,6 +1062,8 @@
            MOVE    W12-JIHITEKKSIKBN   TO  SPA-GMN-JIHITEKKSIKBN-G 
            MOVE    W12-SYAPRTNM-NEXT   TO  SPA-GMN-SYAPRTNM-NEXT
            MOVE    W12-KKHPRTNM-NEXT   TO  SPA-GMN-KKHPRTNM-NEXT
+           MOVE    W12-SRYKAHENKBN     TO  SPA-GMN-SRYKAHENKBN-G
+           MOVE    W12-RECECOMKBN      TO  SPA-GMN-RECECOMKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -1025,6 +1105,11 @@
            END-IF
       *
            PERFORM 4103-RECEDENOUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4120-RECECOMKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1095,6 +1180,11 @@
            END-IF
       *
            PERFORM 4118-JIHITEKKSIKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4121-SRYKAHENKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1601,6 +1691,62 @@
            .
        4119-SYAOCRKBN-CHK-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    レセプトコメント（症状詳記）記録区分チェック
+      *****************************************************************
+       4120-RECECOMKBN-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-RECECOMKBN   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-RECECOMKBN-MAX
+                   IF      SPA-GMN-RECECOMKBN
+                                   =   SPA-GMN-RECECOMKBNL (IDY)
+                       MOVE    SPA-GMN-RECECOMKBNLST (IDY)
+                                           TO  SPA-GMN-RECECOMKBN-G
+                       MOVE    SPA-GMN-RECECOMKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-RECECOMKBNMEI   =   SPACE
+                   MOVE    22                      TO  SPA-GMN-CUR
+                   MOVE    "0013"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4120-RECECOMKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科編集区分チェック
+      *****************************************************************
+       4121-SRYKAHENKBN-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-SRYKAHENKBN   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-SRYKAHENKBN-MAX
+                   IF      SPA-GMN-SRYKAHENKBN
+                                   =   SPA-GMN-SRYKAHENKBNL (IDY)
+                       MOVE    SPA-GMN-SRYKAHENKBNLST (IDY)
+                                           TO  SPA-GMN-SRYKAHENKBN-G
+                       MOVE    SPA-GMN-SRYKAHENKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-SRYKAHENKBNMEI  =   SPACE
+                   MOVE    23                      TO  SPA-GMN-CUR
+                   MOVE    "0014"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4122-SRYKAHENKBN-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
@@ -1684,6 +1830,8 @@
            MOVE    SPA-GMN-JIHITEKKSIKBN   TO  SYS-2005-JIHITEKKSIKBN
            MOVE    SPA-GMN-SYAPRTNM-NEXT   TO  SYS-2005-SYAPRTNM-NEXT
            MOVE    SPA-GMN-KKHPRTNM-NEXT   TO  SYS-2005-KKHPRTNM-NEXT
+           MOVE    SPA-GMN-SRYKAHENKBN     TO  SYS-2005-SRYKAHENKBN
+           MOVE    SPA-GMN-RECECOMKBN      TO  SYS-2005-RECECOMKBN
            MOVE    SYS-2005-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
@@ -1811,6 +1959,8 @@
            MOVE    SPA-GMN-NEXTPRTKBN1-G    TO  W12-NEXTPRTKBN1
            MOVE    SPA-GMN-RJNGNBKKBN-G     TO  W12-RJNGNBKKBN
            MOVE    SPA-GMN-JIHITEKKSIKBN-G  TO  W12-JIHITEKKSIKBN
+           MOVE    SPA-GMN-RECECOMKBN-G     TO  W12-RECECOMKBN
+           MOVE    SPA-GMN-SRYKAHENKBN-G    TO  W12-SRYKAHENKBN
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-BYOMEIHENKBN-MAX
@@ -1928,6 +2078,22 @@
            END-PERFORM
            MOVE    SPA-GMN-JIHITEKKSIKBN-MAX
                                        TO  W12-JIHITEKKSIKBN-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-RECECOMKBN-MAX
+               MOVE    SPA-GMN-RECECOMKBNLST (IDY)
+                                       TO  W12-RECECOMKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-RECECOMKBN-MAX
+                                       TO  W12-RECECOMKBN-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-SRYKAHENKBN-MAX
+               MOVE    SPA-GMN-SRYKAHENKBNLST (IDY)
+                                       TO  W12-SRYKAHENKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-SRYKAHENKBN-MAX
+                                       TO  W12-SRYKAHENKBN-COUNT 
       *
            MOVE    SPA-GMN-SYAPRTNM    TO  W12-SYAPRTNM
       *
@@ -1998,6 +2164,13 @@
                    MOVE    "老人と原爆区分入力エラー"    TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE    "自費レセ摘要欄記載区分入力エラー"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE
+                       "レセプトコメント（症状詳記）記録区分入力エラー"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "診療科編集区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
@@ -2113,6 +2286,10 @@
                     MOVE  "JIHITEKKSIKBN"    TO   MCP-WIDGET
                 WHEN    21
                     MOVE  "SYAOCRKBN"        TO   MCP-WIDGET
+                WHEN    22
+                    MOVE  "RECECOMKBN"       TO   MCP-WIDGET
+                WHEN    23
+                    MOVE  "SRYKAHENKBN"      TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -2139,6 +2316,8 @@
                WHEN    "KKHRECEKBN"
                    MOVE    6           TO  SPA-GMN-CUR
                WHEN    "RECEDENOUT"
+                   MOVE    22          TO  SPA-GMN-CUR
+               WHEN    "RECECOMKBN"
                    MOVE    21          TO  SPA-GMN-CUR
                WHEN    "SYAOCRKBN"
                    MOVE    7           TO  SPA-GMN-CUR
@@ -2169,6 +2348,8 @@
                WHEN    "RJNGNBKKBN"
                    MOVE    20          TO  SPA-GMN-CUR
                WHEN    "JIHITEKKSIKBN"
+                   MOVE    23          TO  SPA-GMN-CUR
+               WHEN    "SRYKAHENKBN"
                    MOVE    11          TO  SPA-GMN-CUR
                WHEN    "KKHPRTKBN"
                    MOVE    99          TO  SPA-GMN-CUR
