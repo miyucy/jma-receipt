@@ -249,6 +249,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -514,6 +517,12 @@
            CLOSE                       TOKEIX-FILE
       *
            MOVE    1                   TO  FLG-END
+      *
+      *    ファイル削除
+           MOVE    ZERO        TO  IF-RESULT
+           MOVE    TOKEIPARA   TO  IF-FILENAME
+           CALL    "orcfiledel"    USING
+                                       ORCSFDELAREA
            .
        200-MAIN-EXT.
            EXIT.
