@@ -1,28 +1,13 @@
-I01	{
+I06	{
 	fixed6	{
-		B07	{
-			state	int;
-		};
-		B08	{
-			state	int;
-		};
 		B12	{
 			state	int;
-		};
-		B05	{
-			state	int;
-		};
-		B21	{
-			state	int;
-		};
-		B24	{
-			label	varchar(10);
 		};
 		PTNUM	{
 			value	varchar(20);
 		};
 		NAME	{
-			value	varchar(60);
+			value	varchar(100);
 		};
 		SEX	{
 			value	varchar(4);
@@ -31,21 +16,28 @@ I01	{
 			value	varchar(9);
 		};
 		AGE	{
-			value	varchar(8);
+			value	varchar(9);
 		};
-		CMB_SYORIKBN	{
-			SYORIKBN	{
-				value	varchar(23);
-			};
-			count	int;
-			item	varchar(23)[20];
+		HSRYKA{
+			value	varchar(10);
+		};
+		HHKNCOMBI{
+			value	varchar(46);
+		};
+		IDOJIYU	{
+			value	varchar(30);
+		};
+		LBL_MAEIDOMEI	{
+			value	varchar(12);
+		};
+		MAEIDOYMD	{
+			value	varchar(10);
+		};
+		SELNUM	{
+			value	number(3);
 		};
 		IDOYMD	{
 			value	varchar(10);
-			state	int;
-		};
-		MAEIDOYMD	{
-			value	varchar(9);
 		};
 		BRMNUM	{
 			value	varchar(6);
@@ -156,55 +148,50 @@ I01	{
 			item	varchar(51)[30];
 			state	int;
 		};
-		SNTNYUIN{
+		SNTNYUIN	{
 			value	varchar(60);
 			state	int;
 		};
-		MAEUKE	{
-			value	number(5);
-			state	int;
-		};
-		CMB_SEIKYU	{
-			SEIKYU	{
-				value	varchar(24);
-				state	int;
-			};
-			count	int;
-			item	varchar(24)[05];
-			state	int;
-		};
-		CMB_DISPKBN	{
-			DISPKBN	{
-				value	varchar(11);
-				state	int;
-			};
-			count	int;
-			item	varchar(11)[05];
-			state	int;
-		};
-		SELNUM	{
-			value	number(3);
-		};
 		scrolledwindow1	{
-			NYUREKILST	{
+			ALLIDOLST	{
 				count	int;
-				row int;
+				row	int;
 				rowattr int;
 				item	{
 					value0	varchar(4);
-					value1	varchar(2);
-					value2	varchar(4);
+					value1	varchar(10);
+					value2	varchar(10);
 					value3	varchar(20);
-					value4	varchar(6);
-					value5	varchar(9);
-					value6	varchar(11);
-					value7	varchar(20);
-					value8	varchar(40);
-					value9	varchar(4);
-					value10	varchar(5);
-					value11	varchar(5);
-				}	[100];
-				select	bool[100];
+					value4	varchar(100);
+					value5	varchar(4);
+				}	[50];
+				select	bool[50];
+			};
+		};
+		scrolledwindow3	{
+			KJNIDOLST	{
+				count	int;
+				row	int;
+				rowattr int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(10);
+					value2	varchar(10);
+					value3	varchar(4);
+				}	[50];
+				select	bool[50];
+			};
+		};
+		scrolledwindow4	{
+			ERRMESLST	{
+				count	int;
+				row	int;
+				rowattr int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(100);
+				}	[20];
+				select	bool[20];
 			};
 		};
 	};

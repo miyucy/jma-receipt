@@ -299,6 +299,7 @@ RECORD_files = \
 	W30.rec \
 	W60.rec \
 	K081.rec \
+	I06.rec \
 
 DEF_files = \
 	HC01.def \

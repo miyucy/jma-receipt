@@ -72,17 +72,20 @@
            03  WRK-ERRCD               PIC X(04).
            03  WRK-KARTE-KEY           PIC X(36).
            03  WRK-ORDERNUM            PIC 9(05).
-           03  WRK-RENNUM              PIC 9(05).
-           03  WRK-SRYSKBKBN           PIC X(05).
-           03  WRK-ALSNAME             PIC X(80).
+           03  WRK-ITEMNUM             PIC 9(05).
+           03  WRK-ITEMID              PIC X(05).
+           03  WRK-REMARKS             PIC X(80).
            03  WRK-KANACHK-MAE-INPUT   PIC X(500).
            03  WRK-KANACHK-OUT-INPUT   PIC X(500).
            03  WRK-PGNAME              PIC X(20).
            03  WRK-TBLID               PIC X(20).
-           03  WRK-IJICD               PIC X(10).
-           03  WRK-CREKBN              PIC X(01).
+           03  WRK-ITEM                PIC X(10).
+           03  WRK-STATUS-ITEM         PIC X(01).
            03  WRK-UKEYMD              PIC X(08).
            03  WRK-UKEHMS              PIC X(06).
+           03  WRK-ORDERID-G.
+               05  WRK-ORDERID1        PIC X(02).
+               05  WRK-ORDERID2        PIC X(02).
       *
        01  ERRCD-AREA.
            03  ERRCD-KHNERR            PIC X(04).
@@ -93,7 +96,7 @@
       *    固定値領域
        01  CONST-AREA.
            03  CONST-SRYTBLP-MAX       PIC 9(05)   VALUE   20.
-           03  CONST-SRYTBLC-MAX       PIC 9(05)   VALUE   20.
+           03  CONST-SRYTBLC-MAX       PIC 9(05)   VALUE   30.
       *
       *    入院CLAIM項目IDコピー句
            COPY    "CPNCLAIMID.INC".
@@ -121,7 +124,7 @@
            COPY    "CPORCSODR.INC".
        01  LNK-ORDER-REC.
            02  LNK-ORDER-MAX           PIC 9(03).
-           02  LNK-ORDER-OCC           OCCURS   20.
+           02  LNK-ORDER-OCC           OCCURS   30.
            COPY    "CPORDER.INC"       REPLACING  //ORDER-//
                                        BY         //LNK-ORDER-//.
       *    ＵＩＤ取得用エリア
@@ -244,25 +247,26 @@
                PERFORM 1001-KIHON-ERRSET-SEC
            END-IF
       *
-           IF    ( SCL31N-SRYKA    =   SPACE )
-               MOVE    "0002"      TO  ERRCD-KHNERR
-               PERFORM 1001-KIHON-ERRSET-SEC
-           END-IF
+      *    IF    ( SCL31N-SRYKA    =   SPACE )
+      *        MOVE    "0002"      TO  ERRCD-KHNERR
+      *        PERFORM 1001-KIHON-ERRSET-SEC
+      *    END-IF
       *
-           IF    ( SCL31N-PTNUM    =   SPACE )
+           IF    ( SCL31N-PTID     =   ZERO )
                MOVE    "0003"      TO  ERRCD-KHNERR
                PERFORM 1001-KIHON-ERRSET-SEC
            END-IF
       *
-           IF    ( SCL31N-PTID     =   ZERO )
+           IF    ( SCL31N-PTNUM    =   SPACE )
+            OR   ( SCL31N-PTNUM    =   ZERO )
                MOVE    "0004"      TO  ERRCD-KHNERR
                PERFORM 1001-KIHON-ERRSET-SEC
            END-IF
       *
-           IF    ( SCL31N-HKNCOMBI =   ZERO )
-               MOVE    "0005"      TO  ERRCD-KHNERR
-               PERFORM 1001-KIHON-ERRSET-SEC
-           END-IF
+      *    IF    ( SCL31N-HKNCOMBI =   ZERO )
+      *        MOVE    "0005"      TO  ERRCD-KHNERR
+      *        PERFORM 1001-KIHON-ERRSET-SEC
+      *    END-IF
       *
            IF    ( SCL31N-NYUGAIKBN    NOT =   "1" )
                MOVE    "0006"      TO  ERRCD-KHNERR
@@ -312,7 +316,7 @@
       *                PERFORM 2001-KYUSYOKU-SEC
                    WHEN    OTHER
                        MOVE    "0008"  TO  WRK-ERRCD
-                       MOVE    "00"    TO  WRK-IDOKBN
+                       MOVE    "000"   TO  WRK-IDOKBN
                        PERFORM 20011-ZAIERR-HEN-SEC
                    END-EVALUATE
       *
@@ -408,19 +412,19 @@
       *****************************************************************
        20011-ZAIERR-HEN-SEC            SECTION.
       *
-           MOVE    ZERO                TO  WRK-RENNUM
+           MOVE    ZERO                TO  WRK-ITEMNUM
       *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL ( IDXB    >   CONST-SRYTBLC-MAX )
                     OR   ( FLG-END =   1 )
       *
                PERFORM VARYING IDX-IJI FROM    1   BY  1
-                       UNTIL ( IDX-IJI >   NCLAIMID-CHAILD-MAX )
+                       UNTIL ( IDX-IJI >   NCLAIMID-ITEM-MAX )
                         OR   ( FLG-END =   1 )
                    IF    ( LF04-TBLID (IDXA IDXB)
-                                   =   NCLAIMID-CHAILDNM (IDX-IJI) )
-                       MOVE    NCLAIMID-CHAILDID (IDX-IJI)
-                                       TO  WRK-SRYSKBKBN
+                                   =   NCLAIMID-ITEMNM (IDX-IJI) )
+                       MOVE    NCLAIMID-ITEMID (IDX-IJI)
+                                       TO  WRK-ITEMID
                        PERFORM 20011-ORDER-INSERT-SEC
                    END-IF
                END-PERFORM
@@ -442,22 +446,29 @@
            PERFORM 20011-LNK-ORDER-SET-SEC
       *
            MOVE   SCL31N-HOSPID        TO  SODR-HOSPID
-           MOVE   SCL31N-SRYKA         TO  SODR-SRYKA
+           MOVE   LF04-UID8            TO  SODR-UID8
+           MOVE   SCL31N-NYUGAIKBN     TO  SODR-NYUGAIKBN
+           MOVE   SCL31N-PTNUM         TO  SODR-PTNUM
            MOVE   SCL31N-PTID          TO  SODR-PTID
-           MOVE   SCL31N-HKNCOMBI      TO  SODR-HKNCOMBI
+           MOVE   SCL31N-SRYKA         TO  SODR-SRYKA
            MOVE   SCL31N-SRYYMD        TO  SODR-SRYYMD
+           MOVE   SCL31N-HKNCOMBI      TO  SODR-HKNCOMBI
+           MOVE   SCL31N-DRCD          TO  SODR-DRCD
            MOVE   WRK-UKEYMD           TO  SODR-UKEYMD
            MOVE   WRK-UKEHMS           TO  SODR-UKEHMS
-           MOVE   LF04-UID8            TO  SODR-UID8
       *
            MOVE    "0"                 TO  SODR-PROCKBN
       *
            MOVE        SPACE           TO  WRK-PGNAME
       *
+           INITIALIZE  WRK-ORDERID-G
+           MOVE    LF04-SRYCD (IDXA)   TO  WRK-ORDERID1
+      *
            EVALUATE    WRK-IDOKBN
            WHEN   "001"
       *
-               MOVE    "01"            TO  SODR-IDOKBN
+               MOVE    "01"            TO  WRK-ORDERID2
+               MOVE    WRK-ORDERID-G   TO  SODR-ORDERID
       *
                PERFORM 20011-ORCSODR01-ITM-CHK-SEC
       *
@@ -465,7 +476,8 @@
       *
            WHEN   "002"
       *
-               MOVE    "02"            TO  SODR-IDOKBN
+               MOVE    "02"            TO  WRK-ORDERID2
+               MOVE    WRK-ORDERID-G   TO  SODR-ORDERID
       *
                PERFORM 20011-ORCSODR02-ITM-CHK-SEC
       *
@@ -494,24 +506,43 @@
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL ( IDXB    >   CONST-SRYTBLC-MAX )
       *
-               PERFORM VARYING IDX-IJI FROM    1   BY  1
-                       UNTIL ( IDX-IJI >   NCLAIMID-CHAILD-MAX )
+               MOVE    ALL "9"     TO  WRK-ITEMID
       *
-                   IF    ( LF04-TBLID (IDXA IDXB)
-                                   =   NCLAIMID-CHAILDNM (IDX-IJI) )
-                       MOVE    NCLAIMID-CHAILDID (IDX-IJI)
-                                       TO  WRK-SRYSKBKBN
+               MOVE    SPACE       TO  WRK-ITEM
+                                       WRK-REMARKS
+                                       WRK-STATUS-ITEM
       *
-                       MOVE    LF04-IJICD (IDXA IDXB)
-                                       TO  WRK-IJICD
+               IF    ( LF04-TBLID (IDXA IDXB)  NOT =   SPACE )
+      *
+                   PERFORM VARYING IDX-IJI FROM    1   BY  1
+                           UNTIL ( IDX-IJI     >   NCLAIMID-ITEM-MAX )
+                            OR   ( WRK-ITEMID  NOT =   ALL "9" )
+      *
+                       IF    ( LF04-TBLID (IDXA IDXB)
+                                   =   NCLAIMID-ITEMNM (IDX-IJI) )
+      *
+                           MOVE    NCLAIMID-ITEMID (IDX-IJI)
+                                       TO  WRK-ITEMID
+                       END-IF
+      *
+                   END-PERFORM
+      *
+                   MOVE    LF04-IJICD (IDXA IDXB)
+                                       TO  WRK-ITEM
+      *
+                   EVALUATE    WRK-ITEMID
+                   WHEN    NCLAIMID-TAIINCDID
                        MOVE    LF04-ALSNAME (IDXA IDXB)
-                                       TO  WRK-ALSNAME
+                                       TO  WRK-REMARKS
+                   WHEN    NCLAIMID-SYOKAIID
+                       MOVE    LF04-SRYMEMO (IDXA IDXB)
+                                       TO  WRK-REMARKS
+                   END-EVALUATE
       *
-                       MOVE    "0"     TO  WRK-CREKBN
-                       PERFORM 20011-LNK-ORDER-HEN-SEC
+                   MOVE    "0"         TO  WRK-STATUS-ITEM
+                   PERFORM 20011-LNK-ORDER-HEN-SEC
       *
-                   END-IF
-               END-PERFORM
+               END-IF
       *
            END-PERFORM
       *
@@ -539,53 +570,46 @@
            MOVE    SCL31N-SRYKA        TO  LNK-ORDER-SRYKA     (IDX1)
            MOVE    SCL31N-SRYYMD       TO  LNK-ORDER-SRYYMD    (IDX1)
            MOVE    SCL31N-HKNCOMBI     TO  LNK-ORDER-HKNCOMBI  (IDX1)
-           MOVE    WRK-ORDERNUM        TO  LNK-ORDER-ORDERNUM  (IDX1)
-           MOVE    IDX1                TO  LNK-ORDER-RENNUM    (IDX1)
-           MOVE    WRK-UKEYMD          TO  LNK-ORDER-UKEYMD    (IDX1)
-           MOVE    WRK-UKEHMS          TO  LNK-ORDER-UKEHMS    (IDX1)
            MOVE    SCL31N-DRCD         TO  LNK-ORDER-DRCD      (IDX1)
       *
-           MOVE    LF04-SRYCD (IDXA)   TO  WRK-KANACHK-MAE-INPUT
-           PERFORM 800-HANKAKU-CHK-SEC
-           IF    ( FLG-ENTRYCHK        =   ZERO )
-               MOVE    LF04-SRYCD (IDXA)
-                                       TO  LNK-ORDER-ZAICD     (IDX1)
-           ELSE
-               MOVE    SPACE           TO  LNK-ORDER-ZAICD     (IDX1)
-           END-IF
+           INITIALIZE                      WRK-ORDERID-G
       *
-           MOVE    SPACE               TO  LNK-ORDER-SRYSYUKBN (IDX1)
+           MOVE    LF04-SRYCD (IDXA)   TO  WRK-ORDERID1
       *
            EVALUATE    WRK-IDOKBN
            WHEN    "001"
-               MOVE    "01"            TO  LNK-ORDER-IDOKBN    (IDX1)
+               MOVE    "01"            TO  WRK-ORDERID2
            WHEN    "002"
-               MOVE    "02"            TO  LNK-ORDER-IDOKBN    (IDX1)
+               MOVE    "02"            TO  WRK-ORDERID2
            END-EVALUATE
       *
-           MOVE    WRK-SRYSKBKBN       TO  LNK-ORDER-SRYSKBKBN (IDX1)
+           MOVE    WRK-ORDERID-G       TO  LNK-ORDER-ORDERID   (IDX1)
       *
-           MOVE    WRK-IJICD           TO  WRK-KANACHK-MAE-INPUT
+           MOVE    WRK-ORDERNUM        TO  LNK-ORDER-ORDERNUM  (IDX1)
+           MOVE    IDX1                TO  LNK-ORDER-ITEMNUM   (IDX1)
+           MOVE    WRK-UKEYMD          TO  LNK-ORDER-UKEYMD    (IDX1)
+           MOVE    WRK-UKEHMS          TO  LNK-ORDER-UKEHMS    (IDX1)
+      *
+           MOVE    WRK-ITEMID          TO  LNK-ORDER-ITEMID    (IDX1)
+      *
+           MOVE    WRK-ITEM            TO  WRK-KANACHK-MAE-INPUT
            PERFORM 800-HANKAKU-CHK-SEC
            IF    ( FLG-ENTRYCHK        =   ZERO )
-               MOVE    WRK-IJICD       TO  LNK-ORDER-SRYCD     (IDX1)
+               MOVE    WRK-ITEM        TO  LNK-ORDER-ITEM      (IDX1)
            ELSE
-               MOVE    SPACE           TO  LNK-ORDER-SRYCD     (IDX1)
+               MOVE    SPACE           TO  LNK-ORDER-ITEM      (IDX1)
            END-IF
       *
-           MOVE    ZERO                TO  LNK-ORDER-SRYSURYO  (IDX1)
-           MOVE    ZERO                TO  LNK-ORDER-SRYKAISU  (IDX1)
-           MOVE    ZERO                TO  LNK-ORDER-ZAIKAISU  (IDX1)
-      *
-           MOVE    WRK-CREKBN          TO  LNK-ORDER-CREKBN    (IDX1)
+           MOVE    WRK-STATUS-ITEM     TO  LNK-ORDER-STATUS-ITEM (IDX1)
            IF    ( FLG-KARTE-KEY       =   ZERO )
-               MOVE    "0"         TO  LNK-ORDER-KARTE-KEY-STS (IDX1)
+               MOVE    "0"         TO  LNK-ORDER-KEYGENERATE     (IDX1)
            ELSE
-               MOVE    "1"         TO  LNK-ORDER-KARTE-KEY-STS (IDX1)
+               MOVE    "1"         TO  LNK-ORDER-KEYGENERATE     (IDX1)
            END-IF
       *
-           IF    ( WRK-SRYSKBKBN       =   NCLAIMID-TAIINCDID )
-               MOVE    WRK-ALSNAME TO  WRK-KANACHK-MAE-INPUT
+           EVALUATE    WRK-ITEMID
+           WHEN    NCLAIMID-TAIINCDID
+               MOVE    WRK-REMARKS TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-ZENKAKU-CHK-SEC
                IF    ( FLG-ENTRYCHK        =   ZERO )
                    MOVE    WRK-KANACHK-OUT-INPUT
@@ -593,21 +617,28 @@
                ELSE
                    MOVE    SPACE   TO  LNK-ORDER-REMARKS       (IDX1)
                END-IF
-           END-IF
+           WHEN    NCLAIMID-SYOKAIID
+               MOVE    WRK-REMARKS TO  WRK-KANACHK-MAE-INPUT
+               PERFORM 800-HANKAKU-CHK-SEC
+               IF    ( FLG-ENTRYCHK        =   ZERO )
+                   MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  LNK-ORDER-REMARKS       (IDX1)
+               ELSE
+                   MOVE    SPACE   TO  LNK-ORDER-REMARKS       (IDX1)
+               END-IF
+           END-EVALUATE
+      *
       *
            .
        20011-LNK-ORDER-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    入院処理項目チェック
+      *    入院処理項目チェック（必須項目抜け）
       *****************************************************************
        20011-ORCSODR01-ITM-CHK-SEC     SECTION.
       *
       *    入院区分チェック
            PERFORM 20011-NYUKBN-CHK-SEC
-      *
-      *    継続区分チェック
-           PERFORM 20011-SYOKAI-CHK-SEC
       *
       *    病棟コードチェック
            PERFORM 20011-BTUNUM-CHK-SEC
@@ -615,22 +646,14 @@
       *    病室コードチェック
            PERFORM 20011-BRMNUM-CHK-SEC
       *
-      *    室料差額チェック
-           PERFORM 20011-SAGAKU-CHK-SEC
-      *
-      *    担当医チェック
-           PERFORM 20011-DR-CHK-SEC
-      *
            .
        20011-ORCSODR01-ITM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    退院処理項目チェック
+      *    退院処理項目チェック（必須項目抜け）
       *****************************************************************
        20011-ORCSODR02-ITM-CHK-SEC     SECTION.
       *
-      *    退院事由チェック
-           PERFORM 20011-TAIINCD-CHK-SEC
       *
            .
        20011-ORCSODR02-ITM-CHK-EXT.
@@ -644,35 +667,15 @@
            MOVE    NCLAIMID-NYUKBNNM   TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
            IF        ( CNT-TBLID   =   ZERO )
-                   MOVE    2           TO  SODR-NYUKBN-FLG
-                   MOVE    NCLAIMID-NYUKBNID
-                                       TO  WRK-SRYSKBKBN
-                   MOVE    SPACE       TO  WRK-IJICD
-                   MOVE    "1"         TO  WRK-CREKBN
-                   PERFORM 20011-LNK-ORDER-HEN-SEC
-           ELSE
-               IF    ( CNT-TBLID   >   1     )
-                   MOVE    1           TO  SODR-NYUKBN-FLG
-               END-IF
+               MOVE    NCLAIMID-NYUKBNID
+                                       TO  WRK-ITEMID
+               MOVE    SPACE           TO  WRK-ITEM
+               MOVE    "4"             TO  WRK-STATUS-ITEM
+               PERFORM 20011-LNK-ORDER-HEN-SEC
            END-IF
       *
            .
        20011-NYUKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    継続区分チェック
-      *****************************************************************
-       20011-SYOKAI-CHK-SEC            SECTION.
-      *
-      *    継続区分チェック
-           MOVE    NCLAIMID-SYOKAINM   TO  WRK-TBLID
-           PERFORM 20011-ITEM-CNT-CHK-SEC
-           IF    ( CNT-TBLID   >   1     )
-               MOVE    1               TO  SODR-SYOKAI-FLG
-           END-IF
-      *
-           .
-       20011-SYOKAI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    病棟コードチェック
@@ -683,16 +686,11 @@
            MOVE    NCLAIMID-BTUNUMNM   TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
            IF        ( CNT-TBLID   =   ZERO )
-                   MOVE    2           TO  SODR-BTUNUM-FLG
-                   MOVE    NCLAIMID-BTUNUMID
-                                       TO  WRK-SRYSKBKBN
-                   MOVE    SPACE       TO  WRK-IJICD
-                   MOVE    "1"         TO  WRK-CREKBN
-                   PERFORM 20011-LNK-ORDER-HEN-SEC
-           ELSE
-               IF    ( CNT-TBLID   >   1     )
-                   MOVE    1           TO  SODR-BTUNUM-FLG
-               END-IF
+               MOVE    NCLAIMID-BTUNUMID
+                                       TO  WRK-ITEMID
+               MOVE    SPACE           TO  WRK-ITEM
+               MOVE    "4"             TO  WRK-STATUS-ITEM
+               PERFORM 20011-LNK-ORDER-HEN-SEC
            END-IF
       *
            .
@@ -707,65 +705,15 @@
            MOVE    NCLAIMID-BRMNUMNM   TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
            IF        ( CNT-TBLID   =   ZERO )
-                   MOVE    2           TO  SODR-BRMNUM-FLG
-                   MOVE    NCLAIMID-BRMNUMID
-                                       TO  WRK-SRYSKBKBN
-                   MOVE    SPACE       TO  WRK-IJICD
-                   MOVE    "1"         TO  WRK-CREKBN
-                   PERFORM 20011-LNK-ORDER-HEN-SEC
-           ELSE
-               IF    ( CNT-TBLID   >   1     )
-                   MOVE    1           TO  SODR-BRMNUM-FLG
-               END-IF
+               MOVE    NCLAIMID-BRMNUMID
+                                       TO  WRK-ITEMID
+               MOVE    SPACE           TO  WRK-ITEM
+               MOVE    "4"             TO  WRK-STATUS-ITEM
+               PERFORM 20011-LNK-ORDER-HEN-SEC
            END-IF
       *
            .
        20011-BRMNUM-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    室料差額チェック
-      *****************************************************************
-       20011-SAGAKU-CHK-SEC            SECTION.
-      *
-      *    室料差額チェック
-           MOVE    NCLAIMID-SAGAKUNM   TO  WRK-TBLID
-           PERFORM 20011-ITEM-CNT-CHK-SEC
-           IF    ( CNT-TBLID   >   1     )
-               MOVE    1               TO  SODR-SAGAKU-FLG
-           END-IF
-      *
-           .
-       20011-SAGAKU-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    担当医チェック
-      *****************************************************************
-       20011-DR-CHK-SEC                SECTION.
-      *
-      *    担当医チェック
-           MOVE    NCLAIMID-DRNM   TO  WRK-TBLID
-           PERFORM 20011-ITEM-CNT-CHK-SEC
-           IF    ( CNT-TBLID   >   3     )
-               MOVE    1               TO  SODR-DR-FLG
-           END-IF
-      *
-           .
-       20011-DR-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    退院事由チェック
-      *****************************************************************
-       20011-TAIINCD-CHK-SEC                SECTION.
-      *
-      *    退院事由チェック
-           MOVE    NCLAIMID-TAIINCDNM  TO  WRK-TBLID
-           PERFORM 20011-ITEM-CNT-CHK-SEC
-           IF    ( CNT-TBLID   >   1     )
-               MOVE    1               TO  SODR-TAIINCD-FLG
-           END-IF
-      *
-           .
-       20011-TAIINCD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    項目出現回数チェック処理
@@ -795,7 +743,7 @@
       *
            MOVE    ZERO                TO  FLG-CHRERR
       *
-           COMPUTE WRK-RENNUM  =   WRK-RENNUM  +   1
+           COMPUTE WRK-ITEMNUM =   WRK-ITEMNUM +   1
       *
            INITIALIZE                      ORDER-REC
            MOVE    SCL31N-HOSPID       TO  ORDER-HOSPID
@@ -806,66 +754,64 @@
            MOVE    SCL31N-SRYKA        TO  ORDER-SRYKA
            MOVE    SCL31N-SRYYMD       TO  ORDER-SRYYMD
            MOVE    SCL31N-HKNCOMBI     TO  ORDER-HKNCOMBI
+           MOVE    SCL31N-DRCD         TO  ORDER-DRCD
            MOVE    WRK-ORDERNUM        TO  ORDER-ORDERNUM
-           MOVE    WRK-RENNUM          TO  ORDER-RENNUM
+           MOVE    WRK-ITEMNUM         TO  ORDER-ITEMNUM
            MOVE    WRK-UKEYMD          TO  ORDER-UKEYMD
            MOVE    WRK-UKEHMS          TO  ORDER-UKEHMS
-           MOVE    SCL31N-DRCD         TO  ORDER-DRCD
-           MOVE    "1"                 TO  ORDER-STATUS
-           MOVE    ERRCD-ERRCD (1)     TO  ORDER-ERRCD1
-           MOVE    ERRCD-ERRCD (2)     TO  ORDER-ERRCD2
+      *
+           INITIALIZE                      WRK-ORDERID-G
       *
            MOVE    LF04-SRYCD (IDXA)   TO  WRK-KANACHK-MAE-INPUT
            PERFORM 800-HANKAKU-CHK-SEC
            IF    ( FLG-ENTRYCHK        =   ZERO )
                MOVE    LF04-SRYCD (IDXA)
-                                       TO  ORDER-ZAICD
+                                       TO  WRK-ORDERID1
            ELSE
-               MOVE    SPACE           TO  ORDER-ZAICD
+               MOVE    SPACE           TO  WRK-ORDERID1
                MOVE    1               TO  FLG-CHRERR
            END-IF
       *
-           MOVE    SPACE               TO  ORDER-SRYSYUKBN
-      *
-      *
            EVALUATE    WRK-IDOKBN
            WHEN   "001"
-               MOVE    "01"            TO  ORDER-IDOKBN
+               MOVE    "01"            TO  WRK-ORDERID2
            WHEN   "002"
-               MOVE    "02"            TO  ORDER-IDOKBN
+               MOVE    "02"            TO  WRK-ORDERID2
            WHEN   OTHER
-               MOVE    "00"            TO  ORDER-IDOKBN
+               MOVE    "00"            TO  WRK-ORDERID2
            END-EVALUATE
       *
-           MOVE    WRK-SRYSKBKBN       TO  ORDER-SRYSKBKBN
+           MOVE    WRK-ORDERID-G       TO  ORDER-ORDERID
+      *
+           MOVE    ERRCD-ERRCD (1)     TO  ORDER-ERRCD1
+           MOVE    ERRCD-ERRCD (2)     TO  ORDER-ERRCD2
+           MOVE    WRK-ITEMID          TO  ORDER-ITEMID
       *
            MOVE    LF04-IJICD (IDXA IDXB)
                                        TO  WRK-KANACHK-MAE-INPUT
            PERFORM 800-HANKAKU-CHK-SEC
            IF    ( FLG-ENTRYCHK        =   ZERO )
                MOVE    LF04-IJICD (IDXA IDXB)
-                                       TO  ORDER-SRYCD
+                                       TO  ORDER-ITEM
            ELSE
-               MOVE    SPACE           TO  ORDER-SRYCD
+               MOVE    SPACE           TO  ORDER-ITEM
                MOVE    1               TO  FLG-CHRERR
            END-IF
-           MOVE    ZERO                TO  ORDER-SRYSURYO
-           MOVE    ZERO                TO  ORDER-SRYKAISU
-           MOVE    ZERO                TO  ORDER-ZAIKAISU
-           MOVE    WRK-ERRCD           TO  ORDER-ERRCD-ZAI
+           MOVE    WRK-ERRCD           TO  ORDER-ERRCD-ORDER
       *    IF    ( FLG-CHRERR          =   ZERO )
       *        項目チェック無し
-               MOVE    "0901"          TO  ORDER-ERRCD-ITEM
+               MOVE    SPACE           TO  ORDER-ERRCD-ITEM
       *    ELSE
       *        文字化け
       *        MOVE    "090?"          TO  ORDER-ERRCD-ITEM
       *    END-IF
       *
-           MOVE    "0"                 TO  ORDER-CREKBN
+           MOVE    "1"                 TO  ORDER-STATUS-ORDER
+           MOVE    SPACE               TO  ORDER-STATUS-ITEM
            IF    ( FLG-KARTE-KEY       =   ZERO )
-               MOVE    "0"             TO  ORDER-KARTE-KEY-STS
+               MOVE    "0"             TO  ORDER-KEYGENERATE
            ELSE
-               MOVE    "1"             TO  ORDER-KARTE-KEY-STS
+               MOVE    "1"             TO  ORDER-KEYGENERATE
            END-IF
            MOVE    SPACE               TO  ORDER-TERMID
            MOVE    "CLAIM"             TO  ORDER-OPID

@@ -7,27 +7,25 @@ tbl_order {
 	SRYKA				char(2);
 	SRYYMD				char(8);
 	HKNCOMBI			number(4,0);
+	DRCD				char(5);
+	ORDERID				char(4);
 	ORDERNUM			number(2,0);
-	RENNUM				number(2,0);
+	ITEMNUM				number(2,0);
 	UKEYMD   			char(8);
 	UKEHMS   			char(6);
-	DRCD				char(5);
-	STATUS				char(1);
 	ERRCD1				char(4);
 	ERRCD2				char(4);
-	ZAICD				char(02);
-	SRYSYUKBN			char(3);
-	IDOKBN				char(2);
-	SRYSKBKBN			char(5);
-	SRYCD				char(9);
-	SRYSURYO			number(8,3);
-	SRYKAISU			number(3,0);
-	ZAIKAISU			number(8,0);
-	ERRCD_ZAI			char(4);
-	ERRCD_ITEM			char(4);
-	CREKBN				char(1);
-	KARTE_KEY_STS			char(1);
+	ITEMID				char(5);
+	ITEM				varchar(10);
 	REMARKS				varchar(80);
+	ERRCD_ORDER			char(4);
+	ERRCD_ITEM			char(4);
+	STATUS_ORDER		char(1);
+	STATUS_ITEM			char(1);
+	MODIFY				char(1);
+	KEYGENERATE			char(1);
+	RRKNUM				number(3,0);
+	RRKEDANUM			number(3,0);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);
@@ -35,7 +33,7 @@ tbl_order {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,KARTE_KEY,NYUGAIKBN,PTNUM,PTID,SRYKA,SRYYMD,HKNCOMBI,ORDERNUM,RENNUM,UKEYMD,UKEHMS;
+	HOSPID,KARTE_KEY,NYUGAIKBN,PTNUM,PTID,SRYKA,SRYYMD,HKNCOMBI,DRCD,ORDERID,ORDERNUM,ITEMNUM,UKEYMD,UKEHMS;
 };
 
 path	key 	{
@@ -51,8 +49,10 @@ path	key 	{
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYMD      =   :SRYYMD
 			AND   HKNCOMBI    =   :HKNCOMBI
+			AND   DRCD        =   :DRCD
+			AND   ORDERID     =   :ORDERID
 			AND   ORDERNUM    =   :ORDERNUM
-			AND   RENNUM      =   :RENNUM
+			AND   ITEMNUM     =   :ITEMNUM
 			AND   UKEYMD      =   :UKEYMD
 			AND   UKEHMS      =   :UKEHMS
 		;
@@ -70,3 +70,77 @@ path	key2 	{
 	};
 };
 
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_order_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_order
+			WHERE   HOSPID    =   :HOSPID
+			AND     KARTE_KEY =   :KARTE_KEY
+			AND     ORDERNUM  =   :ORDERNUM
+			AND     STATUS_ITEM = :STATUS_ITEM
+		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_order
+			WHERE   HOSPID    =   :HOSPID
+			AND     KARTE_KEY =   :KARTE_KEY
+			AND     ORDERNUM  =   :ORDERNUM
+		;
+	};
+};
+
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_order_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_order
+		WHERE  HOSPID        = :HOSPID
+		AND    SRYYMD        = :SRYYMD
+		AND    ITEMNUM       = 1
+		AND    STATUS_ORDER  <>    '3'
+		ORDER  BY  UKEYMD DESC,UKEHMS DESC,KARTE_KEY DESC,ORDERNUM DESC
+		;
+	};
+};
+
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_order_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_order
+		WHERE  HOSPID        = :HOSPID
+		AND    PTID          = :PTID
+		AND    ITEMNUM       = 1
+		AND    STATUS_ORDER  <>    '3'
+		ORDER  BY  SRYYMD DESC,UKEYMD DESC,UKEHMS DESC,KARTE_KEY DESC,ORDERNUM DESC
+		;
+	};
+};
+
+path	key6 	{
+	DBSELECT	{
+		DECLARE tbl_order_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_order
+		WHERE  HOSPID        = :HOSPID
+		AND    KARTE_KEY     = :KARTE_KEY
+		AND    ORDERNUM      = :ORDERNUM
+		ORDER  BY  ITEMID,ITEMNUM
+		;
+	};
+};
+
+path	upd1 	{
+	DBUPDATE	{
+		UPDATE  tbl_order
+		SET  STATUS_ORDER  =  '3'
+		WHERE   KARTE_KEY =   :KARTE_KEY
+		AND     ORDERNUM  =   :ORDERNUM
+		;
+	};
+};

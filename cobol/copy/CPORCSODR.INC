@@ -23,35 +23,23 @@
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        01  SODR-AREA.
-      *
-           03  SODR-HOSPID             PIC X(24).
-           03  SODR-PTID               PIC 9(10).
-           03  SODR-SRYKA              PIC X(02).
-           03  SODR-HKNCOMBI           PIC 9(04).
-           03  SODR-SRYYMD             PIC X(08).
-      *
-           03  SODR-UKEYMD             PIC X(08).
-           03  SODR-UKEHMS             PIC X(06).
-      *
-           03  SODR-UID8               PIC X(36).
-      *
-           03  SODR-PROCKBN            PIC X(01).
-      *
-           03  SODR-IDOKBN             PIC X(02).
-      *    0:正常 / 1:２重送信/ 2:ダミーデータ作成 
-           03  SODR-NYUKBN-FLG         PIC 9(01).
-      *    0:正常 / 1:２重送信/ 2:ダミーデータ作成 
-           03  SODR-SYOKAI-FLG         PIC 9(01).
-      *    0:正常 / 1:２重送信/ 2:ダミーデータ作成 
-           03  SODR-BTUNUM-FLG         PIC 9(01).
-      *    0:正常 / 1:２重送信/ 2:ダミーデータ作成 
-           03  SODR-BRMNUM-FLG         PIC 9(01).
-      *    0:正常 / 1:２重送信/ 2:ダミーデータ作成 
-           03  SODR-SAGAKU-FLG         PIC 9(01).
-      *    0:正常 / 1:２重送信※/ 1:ダミーデータ作成 
-      *    ※１〜３件は正常、４件以上場合はエラー
-           03  SODR-DR-FLG             PIC 9(01).
-      *    0:正常 / 1:２重送信※/ 1:ダミーデータ作成 
-           03  SODR-TAIINCD-FLG        PIC 9(01).
-      *
-           03  SODR-RC                 PIC S9(02).
+           03  SODR-IN.
+               05  SODR-HOSPID             PIC X(24).
+               05  SODR-UID8               PIC X(36).
+               05  SODR-NYUGAIKBN          PIC X(01).
+               05  SODR-PTNUM              PIC X(20).
+               05  SODR-PTID               PIC 9(10).
+               05  SODR-SRYKA              PIC X(02).
+               05  SODR-SRYYMD             PIC X(08).
+               05  SODR-HKNCOMBI           PIC 9(04).
+               05  SODR-DRCD               PIC X(05).
+               05  SODR-ORDERID            PIC X(04).
+               05  SODR-ORDERNUM           PIC 9(02).
+               05  SODR-UKEYMD             PIC X(08).
+               05  SODR-UKEHMS             PIC X(06).
+               05  SODR-PROCKBN            PIC X(01).
+               05  SODR-INF-CANCEL         PIC 9(02).
+           03  SODR-OT.
+               05  SODR-ERRCD              PIC X(04).
+               05  SODR-INF                PIC 9(02).
+               05  SODR-RC                 PIC S9(02).

@@ -32,27 +32,25 @@
                05  ORDER-SRYKA         PIC X(02).
                05  ORDER-SRYYMD        PIC X(08).
                05  ORDER-HKNCOMBI      PIC X(04).
+               05  ORDER-DRCD          PIC X(05).
+               05  ORDER-ORDERID       PIC X(04).
                05  ORDER-ORDERNUM      PIC 9(02).
-               05  ORDER-RENNUM        PIC 9(02).
+               05  ORDER-ITEMNUM       PIC 9(02).
                05  ORDER-UKEYMD        PIC X(08).
                05  ORDER-UKEHMS        PIC X(06).
-           03  ORDER-DRCD              PIC X(05).
-           03  ORDER-STATUS            PIC X(01).
            03  ORDER-ERRCD1            PIC X(04).
            03  ORDER-ERRCD2            PIC X(04).
-           03  ORDER-ZAICD             PIC X(02).
-           03  ORDER-SRYSYUKBN         PIC X(03).
-           03  ORDER-IDOKBN            PIC X(02).
-           03  ORDER-SRYSKBKBN         PIC X(05).
-           03  ORDER-SRYCD             PIC X(09).
-           03  ORDER-SRYSURYO          PIC 9(05)V999.
-           03  ORDER-SRYKAISU          PIC 9(03).
-           03  ORDER-ZAIKAISU          PIC 9(08).
-           03  ORDER-ERRCD-ZAI         PIC X(04).
-           03  ORDER-ERRCD-ITEM        PIC X(04).
-           03  ORDER-CREKBN            PIC X(01).
-           03  ORDER-KARTE-KEY-STS     PIC X(01).
+           03  ORDER-ITEMID            PIC X(05).
+           03  ORDER-ITEM              PIC X(10).
            03  ORDER-REMARKS           PIC X(80).
+           03  ORDER-ERRCD-ORDER       PIC X(04).
+           03  ORDER-ERRCD-ITEM        PIC X(04).
+           03  ORDER-STATUS-ORDER      PIC X(01).
+           03  ORDER-STATUS-ITEM       PIC X(01).
+           03  ORDER-MODIFY            PIC X(01).
+           03  ORDER-KEYGENERATE       PIC X(01).
+           03  ORDER-RRKNUM            PIC 9(03).
+           03  ORDER-RRKEDANUM         PIC 9(03).
            03  ORDER-TERMID            PIC X(16).
            03  ORDER-OPID              PIC X(16).
            03  ORDER-CREYMD            PIC X(08).

@@ -40,6 +40,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                     PIC 9(01).
+           03  FLG-ENTRYCHK                PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -52,6 +53,8 @@
            03  WRK-STR                     PIC X(20).
            03  WRK-IDX1                    PIC 9(05).
            03  WRK-IDX2                    PIC 9(05).
+           03  WRK-KANACHK-MAE-INPUT       PIC X(500).
+           03  WRK-KANACHK-OUT-INPUT       PIC X(500).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -61,6 +64,9 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    カナチェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *
       *****************************************************************
@@ -83,10 +89,18 @@
            INITIALIZE                      IDX-AREA
            INITIALIZE                      SBRMNUM-RC
       *
-           IF    ( SBRMNUM-IN-PROCKBN  =   "2" )
-               PERFORM 200-EDIT-SEC
+           IF    ( SBRMNUM-IN-BRMNUM   =   SPACE )
+               MOVE    SPACE   TO  SBRMNUM-OT-BRMNUM
            ELSE
-               PERFORM 100-EDIT-SEC
+      *
+               PERFORM 010-PARA-CHK-SEC
+               IF    ( SBRMNUM-RC  =   ZERO )
+                   IF    ( SBRMNUM-IN-PROCKBN  =   "2" )
+                       PERFORM 200-EDIT-SEC
+                   ELSE
+                       PERFORM 100-EDIT-SEC
+                   END-IF
+               END-IF
            END-IF
       *
       *
@@ -97,6 +111,22 @@
            EXIT PROGRAM
            .
       *
+      *****************************************************************
+      *    入力引数チェック処理
+      *****************************************************************
+       010-PARA-CHK-SEC                SECTION.
+      *
+      *    全角半角混在チェック
+           MOVE    SBRMNUM-IN-BRMNUM   TO  WRK-KANACHK-MAE-INPUT
+      *
+           PERFORM 800-HANKAKU-CHK-SEC
+           IF    ( FLG-ENTRYCHK    NOT =   ZERO )
+               MOVE    1               TO  SBRMNUM-RC
+           END-IF
+      *
+           .
+       010-PARA-CHK-EXT.
+           .
       *****************************************************************
       *    編集処理
       *****************************************************************
@@ -187,4 +217,35 @@
       *
            .
        200-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    半角文字チェック
+      *****************************************************************
+       800-HANKAKU-CHK-SEC              SECTION.
+      *
+           MOVE    ZERO            TO  FLG-ENTRYCHK
+      *
+           IF  ( WRK-KANACHK-MAE-INPUT
+                                   =   SPACE )
+               GO  TO  800-HANKAKU-CHK-EXT
+           END-IF
+      *
+           MOVE    SPACE           TO  ORCSKANACHKAREA
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI
+           MOVE    WRK-KANACHK-MAE-INPUT
+                                   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF      ( KANACHK-RC    =   ZERO )
+               IF      ( KANACHK-SYUBETU   NOT =   1 )
+                   DISPLAY "HANKAKU CHK ERR : " WRK-KANACHK-MAE-INPUT
+                   MOVE    1       TO  FLG-ENTRYCHK
+               END-IF
+           ELSE
+                   DISPLAY "HANKAKU CHK ERR : " WRK-KANACHK-MAE-INPUT
+                   MOVE    1       TO  FLG-ENTRYCHK
+           END-IF
+      *
+           .
+       800-HANKAKU-CHK-EXT.
            EXIT.

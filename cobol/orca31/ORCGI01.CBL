@@ -682,6 +682,7 @@
            COPY    "I03.INC".
            COPY    "I04.INC".
            COPY    "I05.INC".
+           COPY    "I06.INC".
            COPY    "I0ERR.INC".
            COPY    "I0ID1.INC".
            COPY    "I0ID2.INC".
@@ -1686,6 +1687,9 @@
            WHEN    "CLICKED"       ALSO    "B21"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-NYUINKAIKEI-SEC
+           WHEN    "CLICKED"       ALSO    "B24"
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               PERFORM 480-I06-SENI-SEC
            END-EVALUATE.
       *
        200-GMNSENI-EXT.
@@ -6185,6 +6189,25 @@
        480-S02-SENI-EXT.
            EXIT.
       *****************************************************************
+      *    オーダー変更画面遷移処理
+      *****************************************************************
+       480-I06-SENI-SEC                SECTION.
+      *
+      *    収納登録へ遷移する
+           MOVE    "I01"               TO  SPA-MOTOPG
+           MOVE    "I06"               TO  SPA-SAKIPG
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "I06"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       480-I06-SENI-EXT.
+           EXIT.
+      *****************************************************************
       *    他業務引継情報設定処理
       *****************************************************************
        4801-SENIJI-PARA-SET-SEC        SECTION.
@@ -6673,7 +6696,7 @@
       *
       *            前回自院歴チェック
                    PERFORM 4801-ZENKAI-ZIINRRK-CHK-SEC
-                   IF    ( SPA-ERRCD   NOT =   ZERO )
+                   IF    ( SPA-ERRCD   NOT =   SPACE )
                        GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
                    END-IF
                END-IF
