@@ -560,13 +560,13 @@
       *        入院チェック
                PERFORM 1001-NYUIN-CHK-SEC
                IF      FLG-NYUIN       =   1
-                   MOVE    2               TO  FLG-ERR
-                   PERFORM 290-ERR-PRINT-SEC
-               ELSE
                    IF (JYURRK-SRYYMD   =   WRK-NYUINYMD )  OR
                       (JYURRK-SRYYMD   =   WRK-TAIINYMD )
                        MOVE    3               TO  FLG-ERR
                        PERFORM 290-ERR-PRINT-SEC
+                   ELSE
+                      MOVE    2               TO  FLG-ERR
+                      PERFORM 290-ERR-PRINT-SEC
                    END-IF
                END-IF
       *
