@@ -28,6 +28,7 @@
       ****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-ÌçÏÆ    04/10/01  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -43,6 +44,8 @@
       *    Åº¤¨»úÎÎ°è
        01  IDX-AREA.
            03  IDX                         PIC 9(02).
+           03  IDX2                        PIC 9(03).
+           03  IDX3                        PIC 9(03).
            03  IDY                         PIC 9(02).
            03  IDZ                         PIC 9(02).
       *
@@ -58,6 +61,11 @@
            03  WRK-MEISAI                  PIC 9(07).
            03  WRK-RYOYO                   PIC 9(07).
            03  WRK-SENINFLG                PIC X(01).
+           03  WRK-SONOTA-TBL.
+              04  WRK-SONOTA-OCC           OCCURS  20.
+                 05  WRK-SONOTA-SRYCD      PIC  X(09).
+                 05  WRK-SONOTA-ZAIKAISU   PIC  9(07).
+                 05  WRK-SONOTA-TANKA      PIC  9(07).
       *
            03  WRK-SKYMONEY-TBL.
               04  WRK-SKYMONEY-TBL-OCC           OCCURS  15.
@@ -239,6 +247,8 @@
            MOVE       ZERO      TO     WRK-MEISAI.
            MOVE       ZERO      TO     WRK-RYOYO.
            MOVE       SPACE     TO     WRK-SENINFLG.
+           INITIALIZE                  WRK-SONOTA-TBL.
+           MOVE       ZERO      TO     IDX3.
       *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX                 >    15 )
@@ -261,6 +271,7 @@
                        MOVE   WRK-SINDAN    TO    LNK-S01-SINDAN(IDX)
                        MOVE   WRK-MEISAI    TO    LNK-S01-MEISAI(IDX)
                        MOVE   WRK-RYOYO     TO    LNK-S01-RYOYO(IDX)
+                       MOVE   WRK-SONOTA-TBL  TO  LNK-S01-SONOTA(IDX)
       *
                     END-IF
       *
@@ -274,6 +285,8 @@
                           MOVE    ZERO    TO   WRK-MEISAI
                           MOVE    ZERO    TO   WRK-RYOYO
                           MOVE    SPACE   TO   WRK-SENINFLG
+                          INITIALIZE           WRK-SONOTA-TBL
+                          MOVE    ZERO    TO   IDX3
                     END-IF
       *
                     IF  LNK-SYU-SYUHKNNUM(IDX)  =   "973"
@@ -286,6 +299,22 @@
                                             +  LNK-S01-MEISAI(IDX)
                       COMPUTE   WRK-RYOYO   =  WRK-RYOYO
                                             +  LNK-S01-RYOYO(IDX)
+      *
+                      PERFORM    VARYING   IDX2    FROM   1   BY   1
+                        UNTIL  (IDX2                           >    20 )
+                          OR   (LNK-S01-SONOTA-SRYCD(IDX IDX2) =  SPACE)
+                         IF   IDX3  >= 20
+                            DISPLAY "TABLE OVER"
+                         ELSE
+                            ADD    1      TO   IDX3
+                            MOVE   LNK-S01-SONOTA-SRYCD(IDX IDX2)
+                                          TO   WRK-SONOTA-SRYCD(IDX3)
+                            MOVE   LNK-S01-SONOTA-ZAIKAISU(IDX IDX2)
+                                          TO   WRK-SONOTA-ZAIKAISU(IDX3)
+                            MOVE   LNK-S01-SONOTA-TANKA(IDX IDX2)
+                                          TO   WRK-SONOTA-TANKA(IDX3)
+                         END-IF
+                      END-PERFORM
       *
                     END-IF
       *

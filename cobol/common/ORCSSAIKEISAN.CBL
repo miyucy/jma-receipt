@@ -27,6 +27,7 @@
       ****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-ÌçÏÆ    04/10/01  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -45,6 +46,7 @@
            03  IDX2                        PIC 9(03).
            03  IDX3                        PIC 9(03).
            03  IDX4                        PIC 9(03).
+           03  IDX5                        PIC 9(03).
            03  IDY                         PIC 9(03).
            03  IDZ                         PIC 9(03).
            03  IDW                         PIC 9(03).
@@ -1025,7 +1027,6 @@
                     (  ACCT-MEISAISU     =    1              ))         
                  CONTINUE                                               
               ELSE                                                      
-      *          MOVE  ACCT-SYUTEN1  TO  TBL-SYUTEN(IDX1)               
                  COMPUTE  TBL-SYUTEN(IDX1)  =  ACCT-SYUTEN1
                                             *  TBL-ZAIKAISU(IDX1)
                  IF  (LNK-SYU-SYUHKNNUM(IDY)  =   "973")
@@ -1055,6 +1056,7 @@
       *
            MOVE      ZERO     TO     WRK-TYK-HKNTEN
            MOVE      ZERO     TO     IDX2
+           MOVE      ZERO     TO     IDX5
       *
            PERFORM   VARYING      IDX1    FROM    1    BY    1
                       UNTIL     (IDX1               >   100  )
@@ -1315,8 +1317,6 @@
                                             -   WK-YOUBUKASAN
                                             -   WK-RYOYOTEATE
       *
-      ***    COMPUTE   LNK-S01-SINDAN(IDY)  =  WK-SINDAN  *  10
-      ***    COMPUTE   LNK-S01-MEISAI(IDY)  =  WK-MEISAI  *  10
              MOVE      WK-SINDAN       TO   LNK-S01-SINDAN(IDY)
              MOVE      WK-MEISAI       TO   LNK-S01-MEISAI(IDY)
       *
@@ -1827,15 +1827,29 @@
                                   (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
                            COMPUTE WK-RSIETC2 = WK-RSIETC2 +           
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))   
+      *
+      *                    ¼«ÇåÀÕÊÝ¸±½èÍý
+                           IF    LNK-SYU-SYUHKNNUM(IDY)  =   "973"
+                              IF   IDX5  >= 20
+                                DISPLAY "TABLE OVER"
+                              ELSE
+                                ADD    1   TO  IDX5
+                                MOVE   SRY-SRYCD(IDX3)
+                                   TO  LNK-S01-SONOTA-SRYCD(IDY IDX5)
+                                MOVE   TBL-ZAIKAISU (IDX1)
+                                   TO  LNK-S01-SONOTA-ZAIKAISU(IDY IDX5)
+                                MOVE   TNS-TEN
+                                   TO  LNK-S01-SONOTA-TANKA(IDY IDX5)
+                              END-IF
+                            END-IF
+      *
                          END-IF                                        
                          IF    SRY-SRYCD (IDX3)(1:5)   =   "09591"     
                            COMPUTE WK-SINDAN = WK-SINDAN +             
-      ****                        (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))   
                          END-IF                                        
                          IF    SRY-SRYCD (IDX3)(1:5)   =   "09592"     
                            COMPUTE WK-MEISAI = WK-MEISAI +             
-      ****                        (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))   
                          END-IF                                        
       *

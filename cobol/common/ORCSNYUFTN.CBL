@@ -56,6 +56,7 @@
       *                                     判定修正（システム管理より)
       *  01.00.18    NACL-門脇    04/09/07  初診料算定フラグ（地方公費用）
       *                                     のセット
+      *  01.00.19    NACL-門脇    04/10/01  自賠責特定器材等消費税対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -91,6 +92,11 @@
               03 WRK-JIBAI-SINDAN          PIC 9(09).
               03 WRK-JIBAI-MEISAI          PIC 9(09).
               03 WRK-JIBAI-RYOYO           PIC 9(09).
+              03 WRK-JIBAI-SONOTA.
+                04  WRK-JIBAI-SONOTA-OCC          OCCURS  50.
+                  05  WRK-JIBAI-SONOTA-SRYCD      PIC  X(09).
+                  05  WRK-JIBAI-SONOTA-ZAIKAISU   PIC  9(07).
+                  05  WRK-JIBAI-SONOTA-TANKA      PIC  9(07).
       *
        01  WRK-SYOSIN-TABLE.
            02  WRK-SYOSIN-TBL    OCCURS   10.
@@ -247,6 +253,7 @@
            03  IDZ                         PIC 9(02).
            03  IDX1                        PIC 9(02).
            03  IDX2                        PIC 9(02).
+           03  IDX3                        PIC 9(03).
            03  IDX6                        PIC 9(02).
            03  SYU-IDX                     PIC 9(02).
            03  NYUINACT-IDX                PIC 9(02).
@@ -469,6 +476,9 @@
                 MOVE     WRK-JIBAI-RYOYO(IDX) TO  LNK-S02-RYOYO
       *
                 MOVE     WRK-SYOSIN(IDX)      TO  LNK-S02-SYOSINFLG
+      *
+                MOVE     WRK-JIBAI-SONOTA(IDX)
+                                              TO  LNK-S02-SONOTA
       *
                 MOVE     LNK-ORCS02-REC       TO  WRK-ORCS02-REC
                 MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
@@ -2657,6 +2667,8 @@
       *
            INITIALIZE                      WRK-ROSAI-AREA
       *
+           MOVE    ZERO                TO  IDX3
+      *
       *診療会計情報の取得
            MOVE    ZERO                TO  FLG-SRYACCT
            INITIALIZE                      SRYACCT-REC
@@ -3111,6 +3123,22 @@
                          IF    SRY-SRYCD (IDZ)  =   "199000510"
                            COMPUTE WRK-RYOYOTEATE = WRK-RYOYOTEATE +
                                   (TNS-TEN  *   SINRYO-COUNT)
+                         END-IF
+      *
+                         IF    SRY-SRYCD (IDZ)(1:5)   =   "09591"
+                                                    OR    "09592"
+                                                    OR    "09593"
+                           IF   IDX3  >= 50
+                             DISPLAY "TABLE OVER"
+                           ELSE
+                             ADD    1   TO  IDX3
+                             MOVE   SRY-SRYCD(IDZ)
+                                TO  WRK-JIBAI-SONOTA-SRYCD(IDX IDX3)
+                             MOVE   SINRYO-COUNT
+                                TO  WRK-JIBAI-SONOTA-ZAIKAISU(IDX IDX3)
+                             MOVE   TNS-TEN
+                                TO  WRK-JIBAI-SONOTA-TANKA(IDX IDX3)
+                           END-IF
                          END-IF
       *
                       END-IF
