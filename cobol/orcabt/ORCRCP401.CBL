@@ -3026,15 +3026,13 @@
                    OR    ( RECE62-TOKKI(IDX)   =   SPACE )
                    OR    ( IDZ                 =   4     ) 
       *
-               MOVE    SPACE                   TO  HC06-TOKKI (IDX)
-               PERFORM VARYING IDX2    FROM    1   BY  1
-                       UNTIL ( IDX2            >   11    )
-                       OR    ( HC06-TOKKI (IDX)
-                                           NOT =   SPACE )
-                   IF      RECE62-TOKKI(IDX)   =   TBL-TOKKICD(IDX2)
+               PERFORM VARYING IDY     FROM    1   BY  1
+                       UNTIL ( IDY             >   11    )
+                   IF      RECE62-TOKKI(IDX)   =   TBL-TOKKICD(IDY)
                        ADD     1                TO  IDZ
-                       MOVE    TBL-TOKKINAME(IDX2)
+                       MOVE    TBL-TOKKINAME(IDY)
                                                 TO  HC06-TOKKI (IDZ)
+                       MOVE    11               TO  IDY
                    END-IF
                END-PERFORM
            END-PERFORM

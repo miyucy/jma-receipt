@@ -556,7 +556,7 @@
                MOVE    SYS-2006-RJNKBN     TO  SPA-NAI-TRJNKBN   (IDX)
                                                WRK-KBN
                PERFORM 5001-RJNKBN-HENSYU-SEC
-               MOVE    WRK-KBNMEI          TO  SPA-GMN-TRJNKBN   (IDX)
+               MOVE    WRK-KBNMEI (1:8)    TO  SPA-GMN-TRJNKBN   (IDX)
       *
                MOVE    SYS-2006-ZAITAKU    TO  SPA-NAI-TZAITAKU  (IDX)
                                                WRK-KBN
@@ -2366,7 +2366,7 @@
                    MOVE    "保険者番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "老人保健入力エラー"
+                   MOVE    "老人区分入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0008"
                    MOVE    "在総診入力エラー"
