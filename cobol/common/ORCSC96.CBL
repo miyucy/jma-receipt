@@ -967,6 +967,11 @@
                WHEN    "1034"
                    MOVE    "保険組合せがありません。選択し直して下さい"
                                        TO  SPA-ERRMSG
+               WHEN    "1036"
+                   MOVE    "受診履歴の伝票番号がゼロです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "訂正できません。"
+                                       TO  SPA-ERRMSG(31:)
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG
@@ -978,6 +983,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "K004"
                    MOVE    "警告！既に今月算定済みです。"
+                                       TO  SPA-ERRMSG
+               WHEN    "K018"
+                   MOVE    "警告！既に今月算定上限回数を超えています。"
                                        TO  SPA-ERRMSG
                WHEN    "K005"
                    MOVE    "警告！既に診察料を算定してます。"

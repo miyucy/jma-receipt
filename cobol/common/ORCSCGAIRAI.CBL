@@ -408,6 +408,9 @@
            IF      SPA-SYORIFLG         =   1
                PERFORM 1001-TEISEI-SYORI-SEC
            END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      100-SAKUSEI-SYORI-EXT
+           END-IF
       *
            MOVE    SPACE               TO  WRK-KARRK-SYOSINYMD2
       *    保険毎に処理する
@@ -666,11 +669,10 @@
                                                MCPDATA-REC
                END-IF
       *
-               MOVE    SYUNOU-REC          TO  WRK-SYUNOU-REC
-      *
       *        収納明細マスター作成
                PERFORM 45001-SINMEI-SYORI-SEC
       *
+               MOVE    SYUNOU-REC          TO  WRK-SYUNOU-REC
       *        継続が確定した時、伝票状態区分を更新する
                IF      SPA-CONTKBN         =   "2"
                    PERFORM 45011-SYUNOU-UPD-SEC
@@ -1321,6 +1323,12 @@
       *    訂正時、受診履歴等の削除処理
       *****************************************************************
        1001-TEISEI-SYORI-SEC          SECTION.
+      *
+      *    伝票番号がゼロの時エラーとする
+           IF      SPA-DENPNUM         =   ZERO
+               MOVE    "1036"              TO  SPA-ERRCD
+               GO      TO      1001-TEISEI-SYORI-EXT
+           END-IF
       *
            MOVE    ZERO                TO  WRK-DEL-RENNUM
            MOVE    ZERO                TO  WRK-JYURRK-RENNUM
