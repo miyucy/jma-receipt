@@ -1736,13 +1736,14 @@
                        MOVE    10                TO  WRK-GAIKFTNRATE
                    WHEN    OTHER
       *                ¤½¤ÎÂ¾
-                       MOVE    HKN-HON-GAIKFTNRATE
-                                                   TO  WRK-GAIKFTNRATE
+                       MOVE    ZERO              TO  WRK-GAIKFTNRATE
                END-EVALUATE
-               MOVE    WRK-GAIKFTNRATE     TO  WRK-LCOMB-GAI-KFTNRATE
+               IF      WRK-GAIKFTNRATE     NOT =   ZERO
+                   MOVE    WRK-GAIKFTNRATE TO  WRK-LCOMB-GAI-KFTNRATE
                                                               (IDX2)
-               MOVE    WRK-GAIKFTNRATE     TO  WRK-LCOMB-NYU-KFTNRATE
+                   MOVE    WRK-GAIKFTNRATE TO  WRK-LCOMB-NYU-KFTNRATE
                                                               (IDX2)
+               END-IF
            END-IF
       *
            .
