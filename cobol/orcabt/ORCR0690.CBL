@@ -65,6 +65,7 @@
       *  01.02.02    NACL-門脇    05/02/28  （サ）記載対応
       *  01.02.03    NACL-門脇    05/03/02  薬剤で単位のないデータの数量編集
       *                                     修正
+      *  01.02.04    NACL-藤原    05/03/07  包括対象検査のまとめの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -318,8 +319,10 @@
            03  WRK-KAKSU-OCC               OCCURS  4.
                05  WRK-KAISU               PIC 9(03).  
            03  WRK-KAISU1                  PIC 9(02).
+           03  WRK-KAISU2                  PIC 9(02).
        01  WRK-HOUKNSKBN                   PIC 9(01).
        01  WRK-KOHBUNRI                    PIC 9(01).
+       01  WRK-KENSA-SU                    PIC 9(03).
       *
        01  WRK-RECE64-ZAITEN               PIC 9(08). 
       *         
@@ -329,6 +332,9 @@
                                                   OCCURS  31.
        01  WRK-RECE64-FLG-TABLE.
            03  WRK-RECE64-FLG              PIC 9(01)
+                                                  OCCURS  100.
+       01  WRK-RECE64-MATOME-TABLE.
+           03  WRK-RECE64-MATOME           PIC 9(01)
                                                   OCCURS  100.
        01  WRK-RECE64-TABLE.
            03  WRK-RECE64-TBL              OCCURS  100.
@@ -1736,17 +1742,19 @@
            EXIT.
       *
       *****************************************************************
-      *    検査まとめ処理
+      *    包括対象検査まとめ処理
       *****************************************************************
        2007-SRYKBN60-HENSYU-SEC         SECTION.
+      * 
+           INITIALIZE                   WRK-RECE64-MATOME-TABLE
       *     
-      *    検査のまとめ処理
            MOVE    1                    TO  IDXX 
            PERFORM              UNTIL   IDXX >       31
                INITIALIZE                  WRK-RECE64-FLG-TABLE
                                            WRK-KAISU-G
                                            WRK-HOUKNSKBN
                                            WRK-KOHBUNRI
+                                           WRK-KENSA-SU
       *
                IF      WRK-SUM-KAISU (IDXX)   >   ZERO
                    PERFORM VARYING IDY FROM    1   BY  1
@@ -1756,77 +1764,79 @@
                            IF      WRK-KAISU (1)   =   ZERO
                                MOVE    WRK-RECE64-KAISU (IDY 1 IDXX)
                                                    TO  WRK-KAISU (1)
-      *************************MOVE    WRK-RECE64-KAISU (IDY 2 IDXX)
-      *************************                    TO  WRK-KAISU (2)
-      *************************MOVE    WRK-RECE64-KAISU (IDY 3 IDXX)
-      *************************                    TO  WRK-KAISU (3)
-      *************************MOVE    WRK-RECE64-KAISU (IDY 4 IDXX)
-      *************************                    TO  WRK-KAISU (4)
                                MOVE    WRK-RECE64-HOUKNSKBN (IDY)
                                                    TO  WRK-HOUKNSKBN                    
                                MOVE    WRK-RECE64-KOHBUNRI (IDY)
                                                    TO  WRK-KOHBUNRI                  
                            END-IF
-      *********************IF      WRK-RECE64-KAISU (IDY 2 IDXX)
-      *********************                        =   WRK-KAISU (2)
-      *********************AND     WRK-RECE64-KAISU (IDY 3 IDXX)
-      *********************                        =   WRK-KAISU (3)
-      *********************AND     WRK-RECE64-KAISU (IDY 4 IDXX)
-      *********************                        =   WRK-KAISU (4)
                            IF      WRK-RECE64-KAISU (IDY 1 IDXX)
                                                    =   WRK-KAISU (1)
                            AND     WRK-RECE64-HOUKNSKBN (IDY)
                                                    =   WRK-HOUKNSKBN
                            AND     WRK-RECE64-KOHBUNRI  (IDY)
                                                    =   WRK-KOHBUNRI
-                               MOVE    ZERO        TO
-                                       WRK-RECE64-KAISU (IDY 1 IDXX)
-                                       WRK-RECE64-KAISU (IDY 2 IDXX)
-                                       WRK-RECE64-KAISU (IDY 3 IDXX)
-                                       WRK-RECE64-KAISU (IDY 4 IDXX)
-                               COMPUTE WRK-SUM-KAISU (IDXX) 
-                                                   =
-                                               WRK-SUM-KAISU (IDXX) - 
-                                                   WRK-KAISU   (1)                                       
                                MOVE    1           TO  WRK-RECE64-FLG 
                                                        (IDY)
+                               ADD     1           TO  WRK-KENSA-SU
                            END-IF
                        END-IF
                    END-PERFORM
-                   IF      WRK-KAISU (1)      >   ZERO
-                       ADD     1                  TO  WRK-KAISU1
-                   END-IF
       *
-      *            同じ検査が月に何日あるか
-                   COMPUTE IDX1    =   IDXX     +   1
-                   PERFORM VARYING IDZ FROM    IDX1    BY  1
-                           UNTIL   IDZ >       31
-                     IF      WRK-SUM-KAISU (IDZ)   >   ZERO
-                       MOVE    ZERO                TO  FLG-OK                            
-                       PERFORM VARYING IDW FROM    1   BY  1
-                               UNTIL   IDW >       WRK-RECE64-MAX
-                               OR      FLG-OK      =   1
-                           IF      WRK-RECE64-FLG   (IDW)  =   "1"
-      *************************IF      WRK-RECE64-KAISU (IDW 2 IDZ)
-      *************************                    =   WRK-KAISU (2)
-      *************************AND     WRK-RECE64-KAISU (IDW 3 IDZ)
-      *************************                    =   WRK-KAISU (3)
-      *************************AND     WRK-RECE64-KAISU (IDW 4 IDZ)
-      *************************                    =   WRK-KAISU (4)                  
-                               IF      WRK-RECE64-KAISU (IDW 1 IDZ)
-                                                   =   WRK-KAISU (1)
-                                   MOVE    2               TO  FLG-OK                                    
-                               ELSE                    
-                                   MOVE    1               TO  FLG-OK                                    
-                               END-IF
-                           END-IF
+      *            同じ回数の検査が同日に複数回あるか
+                   IF      WRK-KENSA-SU       =   1
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       WRK-RECE64-MAX
+                           IF      WRK-RECE64-FLG (IDY)    =   1
+                               COMPUTE WRK-SUM-KAISU (IDXX) 
+                                               =
+                                               WRK-SUM-KAISU (IDXX) -
+                                               WRK-KAISU   (1)
+                               MOVE    1           TO  WRK-RECE64-MATOME 
+                                                             (IDY)
+                           END-IF                                       
                        END-PERFORM
-      *                同じ検査が同じ回数で全てあるとき                 
-                       IF      FLG-OK          =   2
+                   ELSE
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       WRK-RECE64-MAX
+                           IF      WRK-RECE64-FLG (IDY)    =   1
+                               MOVE    ZERO        TO
+                                           WRK-RECE64-KAISU (IDY 1 IDXX)
+                                           WRK-RECE64-KAISU (IDY 2 IDXX)
+                                           WRK-RECE64-KAISU (IDY 3 IDXX)
+                                           WRK-RECE64-KAISU (IDY 4 IDXX)
+                               COMPUTE WRK-SUM-KAISU (IDXX) 
+                                               =
+                                               WRK-SUM-KAISU (IDXX) -
+                                               WRK-KAISU   (1)
+                           END-IF                                       
+                       END-PERFORM
+                       ADD     1                  TO  WRK-KAISU1
+      *
+      *                同じ検査が月に何日あるか
+                       COMPUTE IDX1    =   IDXX    +   1
+                       PERFORM VARYING IDZ FROM    IDX1    BY  1
+                               UNTIL   IDZ >       31
+                         IF      WRK-SUM-KAISU (IDZ)   >   ZERO
+                           MOVE    ZERO                TO  FLG-OK                            
                            PERFORM VARYING IDW FROM    1   BY  1
                                    UNTIL   IDW >       WRK-RECE64-MAX
-                               IF      WRK-RECE64-FLG   (IDW)  =   "1"
-                                   MOVE    ZERO    TO  WRK-RECE64-KAISU
+                                   OR      FLG-OK      =   1
+                               IF      WRK-RECE64-FLG   (IDW)  =   1
+                                   IF      WRK-RECE64-KAISU (IDW 1 IDZ)
+                                                   =   WRK-KAISU (1)
+                                       MOVE    2           TO  FLG-OK                                    
+                                   ELSE                    
+                                       MOVE    1           TO  FLG-OK                                    
+                                   END-IF
+                               END-IF
+                           END-PERFORM
+      *                    同じ検査が同じ回数で全てあるとき                 
+                           IF      FLG-OK          =   2
+                               PERFORM VARYING IDW FROM    1   BY  1
+                                       UNTIL   IDW >   WRK-RECE64-MAX
+                                   IF      WRK-RECE64-FLG   (IDW)  =   1
+                                       MOVE    ZERO    TO
+                                                       WRK-RECE64-KAISU
                                                       (IDW 1 IDZ)
                                                        WRK-RECE64-KAISU
                                                       (IDW 2 IDZ)
@@ -1834,19 +1844,79 @@
                                                       (IDW 3 IDZ)
                                                        WRK-RECE64-KAISU
                                                       (IDW 4 IDZ)
-                                   COMPUTE WRK-SUM-KAISU (IDZ) 
+                                       COMPUTE WRK-SUM-KAISU (IDZ) 
                                                    =
-                                                   WRK-SUM-KAISU (IDZ) - 
+                                                   WRK-SUM-KAISU (IDZ) -
                                                    WRK-KAISU   (1)                                       
-                               END-IF
-                           END-PERFORM
-                           ADD     1              TO  WRK-KAISU1                                                               
-                       END-IF
-                     END-IF  
+                                   END-IF
+                               END-PERFORM
+                               ADD     1              TO  WRK-KAISU1                                                               
+                           END-IF  
+                         END-IF  
+                       END-PERFORM
+      *
+      *                同じ検査をまとめて出力する
+                       MOVE    ZERO                TO  FLG-SRYCD1
+      *
+                       INITIALIZE                      WRK-ZAIW-AREA
+                       MOVE    ZERO                TO  WRK-ZAIWMAX-G
+                       MOVE    ZERO                TO  WRK-TBLMAX
+                       MOVE    ZERO                TO  FLG-TEIGEN
+                                                       FLG-COMMENT
+                                                       FLG-COMMENT2
+                                                       FLG-COMMENT3
+                                                       FLG-HIKAKIN 
+                       MOVE    ZERO                TO  WRK-RECE65
+                                                      WRK-RECE65-TENTEKI
+                                                       IDY
+                       MOVE    SPACE               TO  WRK-SRYSYUKBN
+      *                                             
+                       MOVE    SPACE               TO  RECE64-REC
+                       INITIALIZE                      RECE64-REC
+                       MOVE    ZERO                TO  WRK-RECE64-ZAITEN
+                       PERFORM VARYING IDW FROM    1   BY  1
+                               UNTIL   IDW >       WRK-RECE64-MAX
+                           IF      WRK-RECE64-FLG   (IDW)  =   1
+                               MOVE    WRK-RECE64-REC    (IDW) 
+                                                   TO  RECE64-REC
+                               ADD     RECE64-ZAITEN 
+                                                   TO  WRK-RECE64-ZAITEN
+                               PERFORM 2002-TBLZAIW-TAIHI-SEC
+                           END-IF
+                       END-PERFORM    
+                       COMPUTE RECE64-ZAIKAISU     =
+                                   WRK-KAISU (1)   *   WRK-KAISU1                
+                       MOVE    WRK-RECE64-ZAITEN   TO  RECE64-SYUTEN1
+                                                       RECE64-ZAITEN                                                        
+      *
+      *                レセプト０４剤編集前処理
+                       PERFORM 2001-RECE64-ZAIHEN-MAE-SEC
+      *
+                       IF      SPA-STS          =   ZERO
+                           PERFORM 20051-SRYKBNELSE-KENSA-SEC
+      *                    剤・診療行為テーブル出力処理
+                           PERFORM 450-RECE66-OUT-SEC
+                       END-IF    
+                   END-IF
+               END-IF
+      *
+               IF      WRK-SUM-KAISU (IDXX)   =   ZERO
+                   ADD     1                  TO  IDXX
+               END-IF
+           END-PERFORM
+      *
+      *    まとまらなかった検査は剤別に記載する
+           PERFORM VARYING IDW     FROM    1   BY  1
+                   UNTIL   IDW     >       WRK-RECE64-MAX
+               MOVE    ZERO                TO  WRK-KAISU2                  
+               IF      WRK-RECE64-MATOME (IDW)     =   1
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       31
+                       COMPUTE WRK-KAISU2  =   WRK-KAISU2  +
+                                           WRK-RECE64-KAISU (IDW 1 IDXX)
                    END-PERFORM
       *
-      *            同じ検査をまとめて出力する
-                   MOVE    ZERO                  TO  FLG-SRYCD1
+                   MOVE    ZERO                TO  FLG-SRYCD1
       *
                    INITIALIZE                      WRK-ZAIW-AREA
                    MOVE    ZERO                TO  WRK-ZAIWMAX-G
@@ -1864,20 +1934,13 @@
                    MOVE    SPACE               TO  RECE64-REC
                    INITIALIZE                      RECE64-REC
                    MOVE    ZERO                TO  WRK-RECE64-ZAITEN
-                   PERFORM VARYING IDW FROM    1   BY  1
-                           UNTIL   IDW >       WRK-RECE64-MAX
-                       IF      WRK-RECE64-FLG   (IDW)  =   "1"
-                           MOVE    WRK-RECE64-REC    (IDW) 
+                   MOVE    WRK-RECE64-REC    (IDW) 
                                                TO  RECE64-REC
-                           ADD     RECE64-ZAITEN 
-                                               TO  WRK-RECE64-ZAITEN
-                           PERFORM 2002-TBLZAIW-TAIHI-SEC
-                       END-IF
-                   END-PERFORM    
-                   COMPUTE RECE64-ZAIKAISU     =
-                               WRK-KAISU (1)   *   WRK-KAISU1                
-                   MOVE    WRK-RECE64-ZAITEN       TO  RECE64-SYUTEN1
-                                                       RECE64-ZAITEN                                                        
+                   ADD     RECE64-ZAITEN       TO  WRK-RECE64-ZAITEN
+                   PERFORM 2002-TBLZAIW-TAIHI-SEC
+                   MOVE    WRK-KAISU2          TO  RECE64-ZAIKAISU               
+                   MOVE    WRK-RECE64-ZAITEN   TO  RECE64-SYUTEN1
+                                                   RECE64-ZAITEN                                                        
       *
       *            レセプト０４剤編集前処理
                    PERFORM 2001-RECE64-ZAIHEN-MAE-SEC
@@ -1886,13 +1949,9 @@
                        PERFORM 20051-SRYKBNELSE-KENSA-SEC
       *                剤・診療行為テーブル出力処理
                        PERFORM 450-RECE66-OUT-SEC
-                   END-IF    
-               END-IF
-      *
-               IF      WRK-SUM-KAISU (IDXX)   =   ZERO
-                   ADD     1                  TO  IDXX
-               END-IF
-           END-PERFORM                        
+                   END-IF
+               END-IF    
+           END-PERFORM
            .
        2007-SRYKBN60-HENSYU-EXT.
            EXIT.
