@@ -466,6 +466,21 @@
                                        TO  SPA-ERRMSG
                    MOVE    "これ以上入力できません。"
                                        TO  SPA-ERRMSG(31:)
+               WHEN    "7002"
+                   MOVE    "最終ページです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "これ以上入力できません。"
+                                       TO  SPA-ERRMSG(17:)
+               WHEN    "7003"
+                   MOVE    "最終ページです。これ以上入力すると"
+                                       TO  SPA-ERRMSG
+                   MOVE    "登録時にエラーとなることがあります。"
+                                       TO  SPA-ERRMSG(25:)
+               WHEN    "7004"
+                   MOVE    "２００行をオーバーします。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "２００行までを対象とします。"
+                                       TO  SPA-ERRMSG(27:)
                WHEN    "8000"
                    MOVE    "労災保険の診療コードです。入力できません。"
                                        TO  SPA-ERRMSG

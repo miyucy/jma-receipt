@@ -1372,6 +1372,10 @@
                END-IF
            END-PERFORM
       *
+           IF      IDX-SYU             =   ZERO
+               GO      TO      1006-KASAN-SET-EXT
+           END-IF
+      *
       *    ¸¡ººÄþ¸º¸º»»
            IF     (WRK-TENSUKEI-TEI    >   ZERO )  OR
                   (WRK-TENSUKEI-TNEN   >   ZERO )

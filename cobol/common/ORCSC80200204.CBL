@@ -1277,8 +1277,8 @@
                        WHEN    2
       *                    £±¡¥£µÇÜ¤È¤¹¤ë
                            MOVE    "101800010"     TO  WRK-SRYCD
-                           MOVE    1               TO  FLG-ROUSAI
                    END-EVALUATE
+                   MOVE    1                    TO  FLG-ROUSAI
                END-IF
            END-IF
       *
