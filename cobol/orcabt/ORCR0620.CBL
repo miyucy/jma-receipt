@@ -1306,7 +1306,7 @@
                        MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                        PERFORM 910-MONTHLYNUM-READ-SEC
                        IF    ( FLG-MONTHLYNUM          =   ZERO  )
-                       AND   ( MONTHLYNUM-JKYSNUM  NOT =   SPACE )
+      *****************AND   ( MONTHLYNUM-JKYSNUM  NOT =   SPACE )
                            MOVE    MONTHLYNUM-JKYSNUM 
                                            TO  RECE62-KOHJKYSNUM (IDX2)
                        ELSE                       
