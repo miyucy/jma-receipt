@@ -5875,6 +5875,18 @@
            MOVE    SPA-NYUGAIKBN       TO  LNK-UPD-NYUGAIKBN
            MOVE    SPA-SRYYMD(1:6)     TO  LNK-UPD-SRYYM
            MOVE    SPA-HKNKBN          TO  LNK-UPD-HKNKBN
+           IF      SPA-HKNKBN          =   "1"
+               EVALUATE    SPA-RSI-HKNKBN
+                   WHEN    "1"
+                   WHEN    "2"
+                   WHEN    "3"
+      *                 Ï«ºÒ
+                       MOVE    "1"                 TO  LNK-UPD-HKNKBN
+                   WHEN    "4"
+      *                 ¼«ÇåÀÕ
+                       MOVE    "2"                 TO  LNK-UPD-HKNKBN
+               END-EVALUATE
+           END-IF
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
            IF      LNK-UPD-RC      NOT =   ZERO
                MOVE    "0005"              TO  SPA-ERRCD
