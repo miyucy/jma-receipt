@@ -101,6 +101,7 @@
            03  IDXD                            PIC 9(05).
            03  IDXE                            PIC 9(05).
            03  IDX-KHN                         PIC 9(05).
+           03  IDX-TAX                         PIC 9(05).
       *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
@@ -147,11 +148,11 @@
                    07  WRK-SYS-MIJISI-ZAITEN   PIC 9(08).
            03  WRK-SHOKUJIRYOYO                PIC 9(01).
            03  WRK-TOKUKANRIKASAN              PIC 9(01).
-           03  WRK-SENTEI-PTFTN                PIC 9(08).
+           03  WRK-SENTEI-PTFTN-G.
+               05  WRK-SENTEI-PTFTN            PIC 9(08)   OCCURS  2.
            03  WRK-SENTEI-GAIHAKU1             PIC 9(08).
            03  WRK-SENTEI-GAIHAKU2             PIC 9(08).
            03  WRK-SENTEI-FTNKBN               PIC X(01).
-           03  WRK-SENTEI-TAXKBN               PIC X(01).
            03  WRK-SENTEI-TANKA-X              PIC  X(02).
            03  WRK-SENTEI-TANKA-R              REDEFINES
                WRK-SENTEI-TANKA-X.
@@ -536,7 +537,7 @@
            INITIALIZE                      WRK-SYS-MIJISI-G
                                            WRK-SHOKUJIRYOYO
                                            WRK-TOKUKANRIKASAN
-                                           WRK-SENTEI-PTFTN
+                                           WRK-SENTEI-PTFTN-G
                                            FLG-NYUINGENDAY-G
       *
       *    ∞ÂŒ≈µ°¥ÿæ ÛºË∆¿ΩËÕ˝
@@ -1561,8 +1562,11 @@
                    WHEN    "2"
                        MOVE    SYS-5000-SENTEI-FTNKBN
                                            TO  WRK-SENTEI-FTNKBN
-                       MOVE    SYS-5000-SENTEI-TAXKBN
-                                           TO  WRK-SENTEI-TAXKBN
+                       IF    ( SYS-5000-SENTEI-TAXKBN      =   "1" )
+                           MOVE    2       TO  IDX-TAX
+                       ELSE
+                           MOVE    1       TO  IDX-TAX
+                       END-IF
                        MOVE    SYS-5000-SENTEI-TANKA-X
                                            TO  WRK-SENTEI-TANKA-X
                        MOVE    SYS-5000-SENTEI-KINGAKU-X
@@ -1571,8 +1575,11 @@
                    WHEN    "3"
                        MOVE    SBTUSENTEI-DAY-FTNKBN   (IDXD)
                                            TO  WRK-SENTEI-FTNKBN
-                       MOVE    SBTUSENTEI-DAY-TAXKBN   (IDXD)
-                                           TO  WRK-SENTEI-TAXKBN
+                       IF    ( SBTUSENTEI-DAY-TAXKBN   (IDXD)  =   "1" )
+                           MOVE    2       TO  IDX-TAX
+                       ELSE
+                           MOVE    1       TO  IDX-TAX
+                       END-IF
                        MOVE    SBTUSENTEI-DAY-TANKA    (IDXD)
                                            TO  WRK-SENTEI-TANKA
                        MOVE    SBTUSENTEI-DAY-KINGAKU  (IDXD)
@@ -1635,129 +1642,50 @@
                    MOVE   10           TO  WRK-SENTEI-TANKA
                END-IF
       *
-               EVALUATE    WRK-SENTEI-TAXKBN
-      *        æ√»Ò¿«§ §∑
-               WHEN    SPACE
-               WHEN    "0"
-      *
-                   EVALUATE    FLG-GAIHAKUDAY(IDXD)
-                   WHEN   ZERO
-                       COMPUTE WRK-SENTEI-PTFTN
-                           =   WRK-SENTEI-PTFTN
-                           + ( WRK-KHNTEN  -   WRK-SENTEI-KHNTEN )
-                           *   WRK-SENTEI-TANKA
-      *            ≥∞«Ò° £±£µ°Û§»¡™ƒÍ≥∞«Ò§Œ∫π≥€°À
-                   WHEN    3
-                   WHEN    4
-                       IF    ( FLG-GAIHAKUDAY(IDXD)    =   3 )
-                        AND  ( HCM34S01-SANTEIYM      >=   "200404" )
-                           COMPUTE WRK-SENTEI-GAIHAKU1
-                               = ( WRK-KHNTEN  *   0.3  )
-                               +   0.5
-                       ELSE
-                           COMPUTE WRK-SENTEI-GAIHAKU1
-                               = ( WRK-KHNTEN  *   0.15 )
-                               +   0.5
-                       END-IF
-                       COMPUTE WRK-SENTEI-GAIHAKU2
-                           = ( WRK-KHNTEN  *   WRK-SENTEI-KEISU)
+               EVALUATE    FLG-GAIHAKUDAY(IDXD)
+               WHEN   ZERO
+                   COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
+                       =   WRK-SENTEI-PTFTN (IDX-TAX)
+                       + ( WRK-KHNTEN  -   WRK-SENTEI-KHNTEN )
+                       *   WRK-SENTEI-TANKA
+      *        ≥∞«Ò° £±£µ°Û§»¡™ƒÍ≥∞«Ò§Œ∫π≥€°À
+               WHEN    3
+               WHEN    4
+                   IF    ( FLG-GAIHAKUDAY(IDXD)    =   4 )
+                    AND  ( HCM34S01-SANTEIYM      >=   "200404" )
+                       COMPUTE WRK-SENTEI-GAIHAKU1
+                           = ( WRK-KHNTEN  *   0.3  )
                            +   0.5
-                       COMPUTE WRK-SENTEI-PTFTN
-                           =   WRK-SENTEI-PTFTN
-                           + ( WRK-SENTEI-GAIHAKU1
-                           -   WRK-SENTEI-GAIHAKU2 )
-                           *   WRK-SENTEI-TANKA
-                   END-EVALUATE
-      *        æ√»Ò¿«§¢§Í
-               WHEN   "1"
-                   EVALUATE    FLG-GAIHAKUDAY(IDXD)
-                   WHEN   ZERO
-                       IF    ( SYS-1001-TAX-HASU-KBN   =   "1" )
-                           COMPUTE WRK-SENTEI-PTFTN
-                               =   WRK-SENTEI-PTFTN
-                               + ((WRK-KHNTEN  -   WRK-SENTEI-KHNTEN)
-                               *   WRK-SENTEI-TANKA
-                               *   1.05 )
-                               +   0.5
-                       ELSE
-                           COMPUTE WRK-SENTEI-PTFTN
-                               =   WRK-SENTEI-PTFTN
-                               + ( WRK-KHNTEN
-                               -   WRK-SENTEI-KHNTEN )
-                               *   WRK-SENTEI-TANKA
-                               *   1.05
-                       END-IF
-      *                ≥∞«Ò° £±£µ°Û§»¡™ƒÍ≥∞«Ò§Œ∫π≥€°À
-                   WHEN   3
-                   WHEN   4
-                       IF    ( FLG-GAIHAKUDAY(IDXD)    =   3 )
-                        AND  ( HCM34S01-SANTEIYM      >=   "200404" )
-                           COMPUTE WRK-SENTEI-GAIHAKU1
-                               = ( WRK-KHNTEN  *   0.3 )
-                               +   0.5
-                       ELSE
-                           COMPUTE WRK-SENTEI-GAIHAKU1
-                               = ( WRK-KHNTEN  *   0.15 )
-                               +   0.5
-                       END-IF
-      *
-                       COMPUTE WRK-SENTEI-GAIHAKU2
-                           = ( WRK-KHNTEN  *   WRK-SENTEI-KEISU)
+                   ELSE
+                       COMPUTE WRK-SENTEI-GAIHAKU1
+                           = ( WRK-KHNTEN  *   0.15 )
                            +   0.5
-                       IF    ( SYS-1001-TAX-HASU-KBN   =  "1" )
-                           COMPUTE WRK-SENTEI-PTFTN
-                               =   WRK-SENTEI-PTFTN
-                               + ((WRK-SENTEI-GAIHAKU1
-                               -   WRK-SENTEI-GAIHAKU2 )
-                               *   WRK-SENTEI-TANKA
-                               *   1.05 )
-                               +   0.5
-                       ELSE
-                           COMPUTE WRK-SENTEI-PTFTN
-                               =   WRK-SENTEI-PTFTN
-                               + ( WRK-SENTEI-GAIHAKU1
-                               -   WRK-SENTEI-GAIHAKU2 )
-                               *  WRK-SENTEI-TANKA
-                               *  1.05
-                       END-IF
-                   END-EVALUATE
+                   END-IF
+                   COMPUTE WRK-SENTEI-GAIHAKU2
+                       = ( WRK-KHNTEN  *   WRK-SENTEI-KEISU)
+                       +   0.5
+                   COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
+                       =   WRK-SENTEI-PTFTN (IDX-TAX)
+                       + ( WRK-SENTEI-GAIHAKU1
+                       -   WRK-SENTEI-GAIHAKU2 )
+                       *   WRK-SENTEI-TANKA
                END-EVALUATE
       *    ƒÍ≥€¿ﬂƒÍ
            WHEN    "2"
+      *
                IF    ( WRK-SENTEI-KINGAKU-X   =   SPACE )
                    MOVE    ZERO        TO  WRK-SENTEI-KINGAKU
                END-IF
       *
-               EVALUATE   WRK-SENTEI-TAXKBN
-      *        æ√»Ò¿«§ §∑
-               WHEN    SPACE
-               WHEN    "0"
-                   EVALUATE   FLG-GAIHAKUDAY(IDXD)
-                   WHEN    ZERO
-                   WHEN    3
-                   WHEN    4
-                       COMPUTE WRK-SENTEI-PTFTN
-                           =   WRK-SENTEI-PTFTN
-                           +   WRK-SENTEI-KINGAKU
-                   END-EVALUATE
-      *        æ√»Ò¿«§¢§Í
-               WHEN   "1"
-                   EVALUATE    FLG-GAIHAKUDAY(IDXD)
-                   WHEN    ZERO
-                   WHEN    3
-                   WHEN    4
-                       IF    ( SYS-1001-TAX-HASU-KBN   =   "1" )
-                           COMPUTE WRK-SENTEI-PTFTN
-                               =   WRK-SENTEI-PTFTN
-                               + ( WRK-SENTEI-KINGAKU *   1.05 )
-                               +  0.5
-                       ELSE
-                           COMPUTE WRK-SENTEI-PTFTN
-                               =   WRK-SENTEI-PTFTN
-                               + ( WRK-SENTEI-KINGAKU *   1.05 )
-                       END-IF
-                   END-EVALUATE
+               EVALUATE   FLG-GAIHAKUDAY(IDXD)
+               WHEN    ZERO
+               WHEN    3
+               WHEN    4
+                   COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
+                       =   WRK-SENTEI-PTFTN (IDX-TAX)
+                       +   WRK-SENTEI-KINGAKU
                END-EVALUATE
+      *
            END-EVALUATE
       *
            .
@@ -2872,7 +2800,18 @@
       *****************************************************************
        2001-HENKYAKU-SET-SEC           SECTION.
       *
-           MOVE    WRK-SENTEI-PTFTN    TO  HCM34S01-SENTEI-PTFTN
+           IF    ( SYS-1001-TAX-HASU-KBN   =   "1" )
+               COMPUTE HCM34S01-SENTEI-PTFTN
+                   =   WRK-SENTEI-PTFTN (1)
+                   +   WRK-SENTEI-PTFTN (2)
+                   *   1.05
+                   *   0.5
+           ELSE
+               COMPUTE HCM34S01-SENTEI-PTFTN
+                   =   WRK-SENTEI-PTFTN (1)
+                   +   WRK-SENTEI-PTFTN (2)
+                   *   1.05
+           END-IF
       *
            MOVE    ZERO                TO  HCM34S01-HENKYAKU-MAX
       *
