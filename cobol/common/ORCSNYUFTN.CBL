@@ -33,6 +33,7 @@
       *  00.00.03    NACL-ÂÀÅÄ    03/04/02  ÆþÎÏ°ú¿ô½¤Àµ
       *  00.00.04    NACL-ÌçÏÆ    03/04/16  Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²
       *                                     ¡Ü½é¿Ç»þ¡¡ÂÐ±þ
+      *  00.00.05    NACL-¾®Æ¦Âô  03/05/16  ÁªÄêÆþ±¡ÎÁ¤Î¼«¸ÊÉéÃ´·×»»ÊÑ¹¹
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -202,6 +203,7 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK5000.INC".
+           COPY    "CPSK5001.INC".
       *
            COPY    "CPSK5113.INC".
       *
@@ -1348,29 +1350,8 @@
                                             ((WRK-KHNTEN      *  0.15)
                                                               +  0.5)
                                END-EVALUATE
-      *                        ÁªÄê´ü´Ö¤Î´µ¼Ô¼«¸ÊÉéÃ´³Û»»Äê¡¿¾ÃÈñÀÇÌµ¤·
-                               EVALUATE   TBL-GAIHAKU(SYU-IDX)
-                                 WHEN   ZERO
-                                     COMPUTE  NYUIN-TGMONEY =
-                                              NYUIN-TGMONEY +
-                                             (WRK-KHNTEN  -  
-                                              WRK-SENTEI-KHNTEN) * 10
-      *                          ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
-                                 WHEN   3
-                                     MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
-                                     MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
-                                     COMPUTE  WRK-SENTEI-GAIHAKU1 =
-                                             (WRK-KHNTEN * 0.15) + 0.5
-                                     COMPUTE  WRK-SENTEI-GAIHAKU2 =
-                                             (WRK-KHNTEN * 
-                                              WRK-SENTEI-GAIHAKU-KEISU)
-                                                                 + 0.5
-                                     COMPUTE  NYUIN-TGMONEY  =
-                                              NYUIN-TGMONEY  +
-                                             (WRK-SENTEI-GAIHAKU1 -
-                                              WRK-SENTEI-GAIHAKU2)
-                                              *  10
-                               END-EVALUATE
+      *                        ÁªÄê´ü´Ö¤Î´µ¼Ô¼«¸ÊÉéÃ´³Û»»Äê
+                               PERFORM    SENTEI-PTFTN-SEC
                            END-IF
                        END-IF
                    END-PERFORM
@@ -1705,6 +1686,246 @@
       *
            .
        GAIHAKU-NYUINKHN-SET-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    ÁªÄê´ü´Ö¤Î´µ¼Ô¼«¸ÊÉéÃ´³Û»»Äê
+      **************************************************************
+       SENTEI-PTFTN-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+               PERFORM  SYSKANRI-READ-SEC
+               MOVE    "SYSKANRI-KEY"  TO  WK-PATH
+               PERFORM   CSR-CLOSE-SEC
+               EVALUATE   SYS-5000-SENTEI-FTNKBN
+      *            °åÎÅµ¡´ØÄêÎ¨ÀßÄê
+                   WHEN   "1"
+                       IF     SYS-5000-SENTEI-TANKA-X   =   SPACE
+                           MOVE   10       TO   SYS-5000-SENTEI-TANKA
+                       END-IF
+                       EVALUATE   SYS-5000-SENTEI-TAXKBN
+      *                   ¾ÃÈñÀÇ¤Ê¤·
+                           WHEN   SPACE
+                           WHEN   "0"
+                               EVALUATE   TBL-GAIHAKU(SYU-IDX)
+                                 WHEN   ZERO
+                                     COMPUTE  NYUIN-TGMONEY =
+                                              NYUIN-TGMONEY +
+                                             (WRK-KHNTEN  -  
+                                              WRK-SENTEI-KHNTEN) * 
+                                              SYS-5000-SENTEI-TANKA
+      *                          ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
+                                 WHEN   3
+                                     MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                     MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                     COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                             (WRK-KHNTEN * 0.15) + 0.5
+                                     COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                             (WRK-KHNTEN * 
+                                              WRK-SENTEI-GAIHAKU-KEISU)
+                                                                 + 0.5
+                                     COMPUTE  NYUIN-TGMONEY  =
+                                              NYUIN-TGMONEY  +
+                                             (WRK-SENTEI-GAIHAKU1 -
+                                              WRK-SENTEI-GAIHAKU2)
+                                              *  SYS-5000-SENTEI-TANKA
+                               END-EVALUATE
+      *                   ¾ÃÈñÀÇ¤¢¤ê
+                           WHEN   "1"
+                               EVALUATE   TBL-GAIHAKU(SYU-IDX)
+                                 WHEN   ZERO
+                                     COMPUTE  NYUIN-TGMONEY =
+                                              NYUIN-TGMONEY +
+                                             (WRK-KHNTEN  -  
+                                              WRK-SENTEI-KHNTEN) * 
+                                              SYS-5000-SENTEI-TANKA *
+                                              1.05
+      *                          ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
+                                 WHEN   3
+                                     MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                     MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                     COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                             (WRK-KHNTEN * 0.15) + 0.5
+                                     COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                             (WRK-KHNTEN * 
+                                              WRK-SENTEI-GAIHAKU-KEISU)
+                                                                 + 0.5
+                                     COMPUTE  NYUIN-TGMONEY  =
+                                              NYUIN-TGMONEY  +
+                                             (WRK-SENTEI-GAIHAKU1 -
+                                              WRK-SENTEI-GAIHAKU2)
+                                              *  SYS-5000-SENTEI-TANKA
+                                              *  1.05
+                               END-EVALUATE
+                       END-EVALUATE
+      *            °åÎÅµ¡´ØÄê³ÛÀßÄê
+                   WHEN   "2"
+                       IF     SYS-5000-SENTEI-KINGAKU-X   =   SPACE
+                           MOVE   ZERO    TO  SYS-5000-SENTEI-KINGAKU
+                       END-IF
+                       EVALUATE   SYS-5000-SENTEI-TAXKBN
+      *                   ¾ÃÈñÀÇ¤Ê¤·
+                           WHEN   SPACE
+                           WHEN   "0"
+                               EVALUATE   TBL-GAIHAKU(SYU-IDX)
+                                 WHEN   ZERO
+                                 WHEN   3
+                                     COMPUTE  NYUIN-TGMONEY =
+                                              NYUIN-TGMONEY +
+                                              SYS-5000-SENTEI-KINGAKU
+                               END-EVALUATE
+      *                   ¾ÃÈñÀÇ¤¢¤ê
+                           WHEN   "1"
+                               EVALUATE   TBL-GAIHAKU(SYU-IDX)
+                                 WHEN   ZERO
+                                 WHEN   3
+                                     COMPUTE  NYUIN-TGMONEY =
+                                              NYUIN-TGMONEY +
+                                             (SYS-5000-SENTEI-KINGAKU *
+                                              1.05)
+                               END-EVALUATE
+                       END-EVALUATE
+      *            ÉÂÅïÀßÄê
+                   WHEN   "3"
+                       PERFORM   SENTEI-PTFTN-BYOTO-SEC
+               END-EVALUATE
+           END-IF
+           .
+       SENTEI-PTFTN-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    ÁªÄê´ü´Ö¤Î´µ¼Ô¼«¸ÊÉéÃ´³Û»»Äê¡ÊÉÂÅïÀßÄê¡Ë
+      **************************************************************
+       SENTEI-PTFTN-BYOTO-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+
+
+
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5001"              TO  SYS-KANRICD
+           MOVE    SYU-BYOTONUM        TO  SYS-KBNCD
+           MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+               PERFORM  SYSKANRI-READ-SEC
+               MOVE    "SYSKANRI-KEY"  TO  WK-PATH
+               PERFORM   CSR-CLOSE-SEC
+               EVALUATE   SYS-5001-SENTEI-FTNKBN
+      *            ÉÂÅïÄêÎ¨ÀßÄê
+                   WHEN   "1"
+                       IF   SYS-5001-SENTEI-TANKA-X = SPACE
+                           MOVE 10  TO  SYS-5001-SENTEI-TANKA
+                       END-IF
+                       EVALUATE   SYS-5001-SENTEI-TAXKBN
+      *                 ¾ÃÈñÀÇ¤Ê¤·
+                           WHEN   SPACE
+                           WHEN   "0"
+                               EVALUATE   TBL-GAIHAKU(SYU-IDX)
+                                 WHEN   ZERO
+                                       COMPUTE  NYUIN-TGMONEY =
+                                                NYUIN-TGMONEY +
+                                               (WRK-KHNTEN  -  
+                                                WRK-SENTEI-KHNTEN) * 
+                                              SYS-5001-SENTEI-TANKA
+      *                          ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
+                                 WHEN   3
+                                     MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                     MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                     COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                             (WRK-KHNTEN * 0.15) + 0.5
+                                     COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                             (WRK-KHNTEN * 
+                                              WRK-SENTEI-GAIHAKU-KEISU)
+                                                                 + 0.5
+                                     COMPUTE  NYUIN-TGMONEY  =
+                                              NYUIN-TGMONEY  +
+                                             (WRK-SENTEI-GAIHAKU1 -
+                                              WRK-SENTEI-GAIHAKU2)
+                                              *  SYS-5001-SENTEI-TANKA
+                               END-EVALUATE
+      *                   ¾ÃÈñÀÇ¤¢¤ê
+                           WHEN   "1"
+                               EVALUATE   TBL-GAIHAKU(SYU-IDX)
+                                 WHEN   ZERO
+                                     COMPUTE  NYUIN-TGMONEY =
+                                              NYUIN-TGMONEY +
+                                             (WRK-KHNTEN  -  
+                                              WRK-SENTEI-KHNTEN) * 
+                                              SYS-5001-SENTEI-TANKA *
+                                              1.05
+      *                          ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
+                                 WHEN   3
+                                     MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                     MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                     COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                             (WRK-KHNTEN * 0.15) + 0.5
+                                     COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                             (WRK-KHNTEN * 
+                                              WRK-SENTEI-GAIHAKU-KEISU)
+                                                                 + 0.5
+                                     COMPUTE  NYUIN-TGMONEY  =
+                                              NYUIN-TGMONEY  +
+                                             (WRK-SENTEI-GAIHAKU1 -
+                                              WRK-SENTEI-GAIHAKU2)
+                                              *  SYS-5001-SENTEI-TANKA
+                                              *  1.05
+                               END-EVALUATE
+                       END-EVALUATE
+      *            ÉÂÅïÄê³ÛÀßÄê
+                   WHEN   "2"
+                       IF     SYS-5001-SENTEI-KINGAKU-X   =   SPACE
+                           MOVE   ZERO    TO  SYS-5001-SENTEI-KINGAKU
+                       END-IF
+                       EVALUATE   SYS-5001-SENTEI-TAXKBN
+      *                   ¾ÃÈñÀÇ¤Ê¤·
+                           WHEN   SPACE
+                           WHEN   "0"
+                               EVALUATE   TBL-GAIHAKU(SYU-IDX)
+                                 WHEN   ZERO
+                                 WHEN   3
+                                     COMPUTE  NYUIN-TGMONEY =
+                                              NYUIN-TGMONEY +
+                                              SYS-5001-SENTEI-KINGAKU
+                               END-EVALUATE
+      *                   ¾ÃÈñÀÇ¤¢¤ê
+                           WHEN   "1"
+                               EVALUATE   TBL-GAIHAKU(SYU-IDX)
+                                 WHEN   ZERO
+                                 WHEN   3
+                                     COMPUTE  NYUIN-TGMONEY =
+                                              NYUIN-TGMONEY +
+                                             (SYS-5001-SENTEI-KINGAKU *
+                                              1.05)
+                               END-EVALUATE
+                       END-EVALUATE
+               END-EVALUATE
+           END-IF
+           .
+       SENTEI-PTFTN-BYOTO-EXT.
            EXIT.
       *
       ******************************************************************
