@@ -81,6 +81,7 @@
       *  01.01.10    NACL-Æ£¸¶    04/09/13  Ä¢É¼ÊÌ»ØÄêÊÔ½¸¾ðÊó¤«¤é¤ÎÊÔ½¸
       *  01.01.11    NACL-ÌçÏÆ    04/09/16  ¸øÈñ£²¤Î¼ÂÆü¿ô¡¢¿©»öÎÅÍÜ¤ÎÊÔ½¸
       *                                     ¾ò·ï¤ò½¤Àµ
+      *  01.01.12    NACL-Æ£¸¶    04/09/17  ¥«¥¹¥¿¥Þ¥¤¥º¹àÌÜ¤Î£Ï£Ã£ÒÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -680,6 +681,68 @@
       *
        01  WRK-CNT                 PIC  9(5).
       *
+      *    £Ï£Ã£ÒÊÔ½¸ÎÎ°è
+       01  OCR1-AREA.
+           03  OCR1-HKNJANUM                           PIC 9(08).
+           03  OCR1-HOSPCD                             PIC 9(07).
+           03  OCR1-SKYTENSU                           PIC 9(07).
+           03  OCR1-CHKDGT1                            PIC 9(01).
+           03  OCR1-YKZFTN                             PIC 9(05).
+           03  OCR1-CHKDGT2                            PIC 9(01).
+           03  OCR1-FTNMONEY                           PIC 9(05).
+           03  OCR1-CHKDGT3                            PIC 9(01).
+           03  OCR1-CHKDGT4                            PIC 9(01).
+           03  OCR1-JNISSU                             PIC 9(02).
+           03  OCR1-SRYYM                              PIC 9(04).
+           03  OCR1-CHKDGT5                            PIC 9(01).
+           03  OCR1-FTNJANUM                           PIC 9(08).
+           03  OCR1-JKYSNUM                            PIC 9(07).
+           03  OCR1-CHKDGT6                            PIC 9(01).
+           03  OCR1-PREFNUM                            PIC 9(02).
+           03  OCR1-TENSUHYO                           PIC 9(01).
+           03  OCR1-HKNSYUBETU1                        PIC 9(01).
+           03  OCR1-HKNSYUBETU2                        PIC 9(01).
+           03  OCR1-HONKZKKBN                          PIC 9(01).
+           03  OCR1-SEIRINO                            PIC 9(01).
+           03  OCR1-CHKDGT7                            PIC 9(01).
+      *
+       01  OCR2-AREA.
+           03  OCR2-SEX                                PIC 9(01).
+           03  OCR2-GENGO                              PIC 9(01).
+           03  OCR2-BIRTHYY                            PIC 9(02).
+           03  OCR2-CHKDGT1                            PIC 9(01).
+           03  OCR2-KIGO                               PIC 9(10).
+           03  OCR2-NUM                                PIC 9(10).
+           03  OCR2-CHKDGT2                            PIC 9(01).
+           03  OCR2-AREA-X.
+               05  OCR2-FTNJANUM                       PIC 9(08).
+               05  OCR2-JKYSNUM                        PIC 9(07).
+               05  OCR2-CHKDGT3                        PIC 9(01).
+               05  OCR2-JNISSU                         PIC 9(02).
+               05  OCR2-TENSU                          PIC 9(07).
+               05  OCR2-CHKDGT4                        PIC 9(01).
+               05  OCR2-YKZFTN                         PIC 9(05).
+               05  OCR2-CHKDGT5                        PIC 9(01).
+               05  OCR2-FTNMONEY                       PIC 9(05).
+               05  OCR2-CHKDGT6                        PIC 9(01).
+               05  OCR2-CHKDGT7                        PIC 9(01).
+           03  OCR2-YOBI                               PIC X(02).
+      *
+       01  OCR3-AREA.
+           03  OCR3-AREA-X.
+               05  OCR3-FTNJANUM                       PIC 9(08).
+               05  OCR3-JKYSNUM                        PIC 9(07).
+               05  OCR3-CHKDGT1                        PIC 9(01).
+               05  OCR3-JNISSU                         PIC 9(02).
+               05  OCR3-TENSU                          PIC 9(07).
+               05  OCR3-CHKDGT2                        PIC 9(01).
+               05  OCR3-YKZFTN                         PIC 9(05).
+               05  OCR3-CHKDGT3                        PIC 9(01).
+               05  OCR3-FTNMONEY                       PIC 9(05).
+               05  OCR3-CHKDGT4                        PIC 9(01).
+               05  OCR3-CHKDGT5                        PIC 9(01).
+           03  OCR3-YOBI                               PIC X(28).
+      *
        01  WRK-ERR-MSG-AREA.
            03  WRK-ERR-MSG-1.
                05  WRK-ERR-HKNCOMBINUM-1
@@ -790,6 +853,12 @@
       *   ÆüÉÕÊÑ´¹¥µ¥Ö
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *    ¿ôÃÍÊÑ´¹¥µ¥Ö
+           COPY    "CPORCSNUM.INC".
+      *
+      *    ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¡Ê¥â¥¸¥å¥é¥¹£±£±ÍÑ¡Ë»»½Ð¥µ¥Ö
+           COPY    "CPORCCHKDGT11.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
@@ -1175,7 +1244,7 @@
            IF      FLG-KANRIMST     =   ZERO
                MOVE    MCPDATA-REC      TO  SYS-2005-REC
            ELSE    
-               MOVE    SPACE            TO  SYS-2005-REC
+               INITIALIZE                   SYS-2005-REC
            END-IF
            IF      SYS-2005-BYOMEIHENKBN    =   SPACE
                MOVE    ZERO             TO  SYS-2005-BYOMEIHENKBN
@@ -1191,6 +1260,12 @@
            END-IF
            IF      SYS-2005-SRYKAHENKBN     =   SPACE
                MOVE    ZERO             TO  SYS-2005-SRYKAHENKBN
+           END-IF
+           IF      SYS-2005-SYAOCRKBN   =   SPACE
+               MOVE    ZERO             TO  SYS-2005-SYAOCRKBN
+           END-IF
+           IF      SYS-2005-KKHOCRKBN   =   SPACE
+               MOVE    ZERO             TO  SYS-2005-KKHOCRKBN
            END-IF
       * 
       *    ¸©Æâ°·¤¤ÊÝ¸±¼Ô¾ðÊó
@@ -1772,6 +1847,15 @@
            PERFORM 900-RECE67-READ-SEC
            IF      FLG-RECE67          =   ZERO
                MOVE    RECE67-PRTDATA      TO  RECE67-HC06
+      *        ¥«¥¹¥¿¥Þ¥¤¥º¹àÌÜ¤¬¤¢¤ë¤È¤­£Ï£Ã£Ò¤ËÈ¿±Ç¤µ¤»¤ë 
+               IF ( ( RECE62-TEISYUTUSAKI   =   1           ) AND
+                    ( SYS-2005-SYAOCRKBN    =   "2"         )     ) 
+               OR ( ( RECE62-TEISYUTUSAKI   =   2           ) AND
+                    ( SYS-2005-KKHOCRKBN    =   "2" OR  "3" )     ) 
+                   MOVE    RECE62-OCR1            TO  OCR1-AREA
+                   MOVE    RECE62-OCR2            TO  OCR2-AREA
+                   MOVE    RECE62-OCR3            TO  OCR3-AREA
+               END-IF  
            END-IF    
            .
        301-RECE67-HENSYU-EXT.
@@ -1983,6 +2067,26 @@
                        MOVE    WRK-BEDSU           TO  HC06-BEDSU
                    END-IF
                END-IF
+           END-IF
+      *
+      *    £Ï£Ã£Ò
+           IF  CNT-PAGE                =   1
+      *        ¥«¥¹¥¿¥Þ¥¤¥º¹àÌÜ¤¬¤¢¤ë¤È¤­£Ï£Ã£Ò¤ËÈ¿±Ç¤µ¤»¤ë 
+               IF      FLG-RECE67          =   ZERO
+                   IF ( ( RECE62-TEISYUTUSAKI   =   1           ) AND
+                        ( SYS-2005-SYAOCRKBN    =   "2"         )     ) 
+                   OR ( ( RECE62-TEISYUTUSAKI   =   2           ) AND
+                        ( SYS-2005-KKHOCRKBN    =   "2" OR  "3" )     ) 
+                       MOVE    RECE62-OCR1            TO  OCR1-AREA
+                       MOVE    RECE62-OCR2            TO  OCR2-AREA
+                       MOVE    RECE62-OCR3            TO  OCR3-AREA
+                       PERFORM 3301-OCR-HENSYU-SEC
+                   END-IF
+               END-IF    
+      *
+               MOVE    RECE62-OCR3     TO  HC06-OCR1
+               MOVE    RECE62-OCR2     TO  HC06-OCR2
+               MOVE    RECE62-OCR1     TO  HC06-OCR3
            END-IF
       *
       *    ¸©Ã±ÍÑ¹àÌÜ
@@ -2883,6 +2987,308 @@
            .                                                            
        3110-BYOTOKBN-SET-EXT.                                           
            EXIT.                                                        
+      * 
+      *****************************************************************
+      *    ÊÔ½¸½èÍý
+      *****************************************************************
+       3301-OCR-HENSYU-SEC              SECTION.
+      *
+           IF      RECE67-KOHINF (IDA) NOT =   SPACE
+      *        ¸øÈñ£±ÉéÃ´¼ÔÈÖ¹æ
+               IF      RECE67-KOHFTNJANUM(IDA) =      SPACE
+                   MOVE  ZERO               TO      OCR2-FTNJANUM
+               ELSE
+                   INITIALIZE                       ORCSNUMAREA
+                   MOVE    RECE67-KOHFTNJANUM(IDA)
+                                            TO      SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =       ZERO
+                       MOVE   SNUM-OUTNUM
+                                        TO      OCR2-FTNJANUM
+                   ELSE
+                       MOVE   ZERO      TO      OCR2-FTNJANUM
+                   END-IF
+               END-IF
+      *        ¸øÈñ£±¼õµë¼ÔÈÖ¹æ
+               IF      RECE67-KOHJKYSNUM(IDA) =       SPACE
+                   MOVE  ZERO               TO      OCR2-JKYSNUM
+               ELSE
+                   INITIALIZE                       ORCSNUMAREA
+                   MOVE    RECE67-KOHJKYSNUM(IDA)
+                                            TO      SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =       ZERO
+                       MOVE   SNUM-OUTNUM
+                                        TO      OCR2-JKYSNUM
+                   ELSE
+                       MOVE   ZERO      TO      OCR2-JKYSNUM
+                   END-IF
+               END-IF
+           END-IF 
+      *
+           IF      RECE67-KOHINF (IDB) NOT =   SPACE
+      *        ¸øÈñ£²ÉéÃ´¼ÔÈÖ¹æ
+               IF      RECE67-KOHFTNJANUM(IDB) =      SPACE
+                   MOVE  ZERO               TO      OCR3-FTNJANUM
+               ELSE
+                   INITIALIZE                       ORCSNUMAREA
+                   MOVE    RECE67-KOHFTNJANUM(IDB)
+                                            TO      SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =       ZERO
+                       MOVE   SNUM-OUTNUM
+                                        TO      OCR3-FTNJANUM
+                   ELSE
+                       MOVE   ZERO      TO      OCR3-FTNJANUM
+                   END-IF
+               END-IF
+      *        ¸øÈñ£²¼õµë¼ÔÈÖ¹æ
+               IF      RECE67-KOHJKYSNUM(IDB) =       SPACE
+                   MOVE  ZERO               TO      OCR3-JKYSNUM
+               ELSE
+                   INITIALIZE                       ORCSNUMAREA
+                   MOVE    RECE67-KOHJKYSNUM(IDB)
+                                            TO      SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =       ZERO
+                       MOVE   SNUM-OUTNUM
+                                        TO      OCR3-JKYSNUM
+                   ELSE
+                       MOVE   ZERO      TO      OCR3-JKYSNUM
+                   END-IF
+               END-IF
+      *  
+      *        ¿ÇÎÅ¼ÂÆü¿ô
+               IF      RECE67-JNISSU (IDX1) >   ZERO
+                   MOVE    RECE67-JNISSU(IDX1)     TO  OCR1-JNISSU
+               END-IF
+      *        ¸øÈñ£±¿ÇÎÅ¼ÂÆü¿ô
+               IF      RECE67-JNISSU (IDX2) >   ZERO
+                   MOVE    RECE67-JNISSU  (IDX2)   TO  OCR2-JNISSU
+               END-IF
+      *        ¸øÈñ£²¿ÇÎÅ¼ÂÆü¿ô
+               IF      RECE67-JNISSU (IDX3) >   ZERO
+                   MOVE    RECE67-JNISSU  (IDX3)   TO  OCR3-JNISSU
+               END-IF
+      *        ÀÁµáÅÀ¿ô
+               IF      RECE67-TOTALTEN (IDX1)  >   ZERO
+                   MOVE    RECE67-TOTALTEN(IDX1)   TO  OCR1-SKYTENSU
+               END-IF
+               IF      RECE67-FTNMONEY (IDX1)  >   ZERO
+                   MOVE    RECE67-FTNMONEY(IDX1)   TO  OCR1-FTNMONEY
+               END-IF
+      *        ¸øÈñ¡¦ÀÁµáÅÀ¿ô£±
+               IF      RECE67-TOTALTEN (IDX2)  >   ZERO                     
+                   MOVE    RECE67-TOTALTEN(IDX2)   TO  OCR2-TENSU
+               END-IF
+               IF    RECE67-FTNMONEY (IDX2)    >   ZERO
+                   MOVE    RECE67-FTNMONEY(IDX2)   TO  OCR2-FTNMONEY
+               END-IF
+      *        ¸øÈñ¡¦ÀÁµáÅÀ¿ô£²
+               IF      RECE67-TOTALTEN (IDX3)  >   ZERO                      
+                   MOVE    RECE67-TOTALTEN(IDX3)   TO  OCR3-TENSU
+               END-IF
+               IF      RECE67-FTNMONEY (IDX3)  >   ZERO
+                   MOVE    RECE67-FTNMONEY(IDX3)   TO  OCR3-FTNMONEY
+               END-IF
+           END-IF
+      *
+           PERFORM 3301-OCR1-HENSYU-SEC
+           PERFORM 3302-OCR2-HENSYU-SEC
+           PERFORM 3303-OCR3-HENSYU-SEC
+           .
+       3301-OCR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥È£Ï£Ã£ÒÎÎ°è¤Î¥»¥Ã¥È£±¡Ê£Æ£°£°£²¡Ë
+      *****************************************************************
+       3301-OCR1-HENSYU-SEC                   SECTION.
+      *
+      *¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£±
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR1-SKYTENSU        TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR1-CHKDGT1
+           ELSE
+                   MOVE  ZERO           TO      OCR1-CHKDGT1
+           END-IF
+      *¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£³
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR1-FTNMONEY        TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR1-CHKDGT3
+           ELSE
+                   MOVE  ZERO           TO      OCR1-CHKDGT3
+           END-IF
+      *¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£´
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR1-AREA(1:35)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR1-CHKDGT4
+           ELSE
+                   MOVE  ZERO           TO      OCR1-CHKDGT4
+           END-IF
+      *¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£µ
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR1-AREA(37:6)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR1-CHKDGT5
+           ELSE
+                   MOVE  ZERO           TO      OCR1-CHKDGT5
+           END-IF
+      *
+           MOVE    OCR1-AREA            TO      RECE62-OCR1           
+      *
+           .
+       3301-OCR1-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥È£Ï£Ã£ÒÎÎ°è¤Î¥»¥Ã¥È£²¡Ê£Æ£°£°£²¡Ë
+      *****************************************************************
+       3302-OCR2-HENSYU-SEC                   SECTION.
+      *
+      *¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£²
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR2-AREA(6:20)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT2
+           ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT2
+           END-IF
+      *
+           IF      OCR2-AREA-X          =   SPACE
+               CONTINUE
+           ELSE
+      *
+               INSPECT OCR2-AREA-X
+                           REPLACING    ALL   " "   BY   "0"
+      *
+      *        ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£³
+               INITIALIZE                           LNK-CHKDGT-AREA
+               MOVE    1                    TO      LNK-I-SYORIKBN
+               MOVE    OCR2-AREA(27:15)     TO      LNK-I-CODE
+               CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+               IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT3
+               ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT3
+               END-IF
+      *        ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£´
+               INITIALIZE                           LNK-CHKDGT-AREA
+               MOVE    1                    TO      LNK-I-SYORIKBN
+               MOVE    OCR2-AREA(45:7)      TO      LNK-I-CODE
+               CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+               IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT4
+               ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT4
+               END-IF
+      *        ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£¶
+               INITIALIZE                           LNK-CHKDGT-AREA
+               MOVE    1                    TO      LNK-I-SYORIKBN
+               MOVE    OCR2-AREA(59:5)      TO      LNK-I-CODE
+               CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+               IF      LNK-O-ERRCD          =       ZERO
+                  MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT6
+               ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT6
+               END-IF
+      *        ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£·
+               INITIALIZE                           LNK-CHKDGT-AREA
+               MOVE    1                    TO      LNK-I-SYORIKBN
+               MOVE    OCR2-AREA(43:22)     TO      LNK-I-CODE
+               CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+               IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR2-CHKDGT7
+               ELSE
+                   MOVE  ZERO           TO      OCR2-CHKDGT7
+               END-IF
+      *
+               IF      OCR2-AREA-X          =   ALL "0"
+                   MOVE    SPACE                    TO  OCR2-AREA-X
+               END-IF
+           END-IF
+      *  
+           MOVE    OCR2-AREA            TO      RECE62-OCR2
+      *
+           .
+       3302-OCR2-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥È£Ï£Ã£ÒÎÎ°è¤Î¥»¥Ã¥È£³¡Ê£Æ£°£°£²¡Ë
+      *****************************************************************
+       3303-OCR3-HENSYU-SEC                   SECTION.
+      *
+           IF      OCR3-AREA-X          =   SPACE
+               GO  TO  3303-OCR3-HENSYU-EXT
+           END-IF
+      *
+           INSPECT OCR3-AREA-X
+                           REPLACING    ALL   " "   BY   "0"
+      *
+      *¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£±
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR3-AREA(1:15)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR3-CHKDGT1
+           ELSE
+                   MOVE  ZERO           TO      OCR3-CHKDGT1
+           END-IF
+      *¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£²
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR3-AREA(19:7)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR3-CHKDGT2
+           ELSE
+                   MOVE  ZERO           TO      OCR3-CHKDGT2
+           END-IF
+      *¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£´
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR3-AREA(33:5)      TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR3-CHKDGT4
+           ELSE
+                   MOVE  ZERO           TO      OCR3-CHKDGT4
+           END-IF
+      *¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È£µ
+           INITIALIZE                           LNK-CHKDGT-AREA
+           MOVE    1                    TO      LNK-I-SYORIKBN
+           MOVE    OCR3-AREA(17:22)     TO      LNK-I-CODE
+           CALL    "ORCSCHKDGT11"       USING   LNK-CHKDGT-AREA
+           IF      LNK-O-ERRCD          =       ZERO
+                   MOVE  LNK-O-CHKDGT   TO      OCR3-CHKDGT5
+           ELSE
+                   MOVE  ZERO           TO      OCR3-CHKDGT5
+           END-IF
+      *
+           IF      OCR3-AREA-X          =   ALL "0"
+               MOVE    SPACE                TO  RECE62-OCR3
+           ELSE 
+               MOVE    OCR3-AREA            TO  RECE62-OCR3
+           END-IF
+      *
+           .
+       3303-OCR3-HENSYU-EXT.
+           EXIT.
       *
       *****************************************************************
       *    Ä¢É¼ÊÔ½¸<½ýÉÂÌ¾>½èÍý

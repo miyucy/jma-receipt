@@ -177,6 +177,7 @@
       *  01.04.07   NACL-ÌçÏÆ     04/08/04  Æ±°ìÊÝ¸±ÈÖ¹æÂÐ±þ
       *  01.04.08   NACL-ÌçÏÆ     04/08/11  Ê£¿ôÊÝ¸±¡¦Ê£¿ô²ÊÆþÎÏÂÐ±þ
       *  01.04.09   NACL-ÌçÏÆ     04/09/17  £Ï£Ã£Ò¸øÈñ£²¤ÎÊÔ½¸½¤Àµ
+      *  01.04.10   NACL-Æ£¸¶     04/09/17  £Ï£Ã£Ò¶èÊ¬¤ÎÀßÄê¤ËÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1017,6 +1018,9 @@
            IF      SYS-2005-SYAOCRKBN   =   SPACE
                MOVE    ZERO             TO  SYS-2005-SYAOCRKBN
            END-IF
+           IF      SYS-2005-KKHOCRKBN   =   SPACE
+               MOVE    ZERO             TO  SYS-2005-KKHOCRKBN
+           END-IF
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
@@ -1136,10 +1140,10 @@
            PERFORM     2112-ICHIBUFUTAN-OKIKAE-SEC
       *
            IF      IDZ                  =   1
-               IF ( RECE02-TEISYUTUSAKI     =     1   AND
-                    SYS-2005-SYAOCRKBN      =     ZERO    )   
-               OR ( RECE02-TEISYUTUSAKI     =     2   AND
-                    SYS-2005-KKHOCRKBN      =     "1"     )   
+               IF ( ( RECE02-TEISYUTUSAKI   =   1               )  AND
+                    ( SYS-2005-SYAOCRKBN    =   ZERO    OR  "2" )      )
+               OR ( ( RECE02-TEISYUTUSAKI   =   2               )  AND
+                    ( SYS-2005-KKHOCRKBN    =   "1"     OR  "3" )      )
       *
       *            °åÎÅÊÝ¸±¡¦¸øÈñ¤Î¥Õ¥é¥°
                    MOVE    SPACE              TO  WRK-3SYU-KBN

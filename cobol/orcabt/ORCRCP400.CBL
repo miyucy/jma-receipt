@@ -52,6 +52,7 @@
       *  01.01.08    NACL-∆£∏∂    04/08/18  ∏¯»Ò£≤§Œ¿¡µ·≈¿§Œ ‘Ω∏æÚ∑Ô§ÚΩ§¿µ
       *  01.01.09    NACL-∆£∏∂    04/09/13  ƒ¢…º ÃªÿƒÍ ‘Ω∏æ Û§´§È§Œ ‘Ω∏
       *  01.01.10    NACL-ÃÁœ∆    04/09/16  ∏¯»Ò£≤§Œº¬∆¸øÙ§Œ ‘Ω∏æÚ∑Ô§ÚΩ§¿µ
+      *  01.01.11    NACL-∆£∏∂    04/09/17  £œ£√£“∂Ë ¨§Œ¿ﬂƒÍ§Àƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1143,7 +1144,7 @@
            IF      FLG-KANRIMST     =   ZERO
                MOVE    MCPDATA-REC      TO  SYS-2005-REC
            ELSE    
-               MOVE    SPACE            TO  SYS-2005-REC
+               INITIALIZE                   SYS-2005-REC
            END-IF
            IF      SYS-2005-BYOMEIHENKBN    =   SPACE
                MOVE    ZERO             TO  SYS-2005-BYOMEIHENKBN
@@ -1156,6 +1157,12 @@
            END-IF
            IF      SYS-2005-NEXTPRTKBN-G      =   SPACE
                MOVE    ZERO             TO  SYS-2005-NEXTPRTKBN-G
+           END-IF
+           IF      SYS-2005-SYAOCRKBN   =   SPACE
+               MOVE    ZERO             TO  SYS-2005-SYAOCRKBN
+           END-IF
+           IF      SYS-2005-KKHOCRKBN   =   SPACE
+               MOVE    ZERO             TO  SYS-2005-KKHOCRKBN
            END-IF
       * 
       *    ∏©∆‚∞∑§§ ›∏±º‘æ Û
@@ -1849,10 +1856,10 @@
            IF      FLG-RECE11          =   ZERO
                MOVE    RECE11-PRTDATA      TO  RECE11-HC06
       *        •´•π•ø•ﬁ•§•∫π‡Ã‹§¨§¢§Î§»§≠£œ£√£“§À»ø±«§µ§ª§Î 
-               IF ( RECE02-TEISYUTUSAKI     =     1   AND
-                    SYS-2005-SYAOCRKBN      =     ZERO    )   
-               OR ( RECE02-TEISYUTUSAKI     =     2   AND
-                    SYS-2005-KKHOCRKBN      =     "1"     )   
+               IF ( ( RECE02-TEISYUTUSAKI   =   1               )  AND
+                    ( SYS-2005-SYAOCRKBN    =   ZERO    OR  "2" )      )
+               OR ( ( RECE02-TEISYUTUSAKI   =   2               )  AND
+                    ( SYS-2005-KKHOCRKBN    =   "1"     OR  "3" )      )
                    MOVE    RECE02-OCR1            TO  OCR1-AREA
                    MOVE    RECE02-OCR2            TO  OCR2-AREA
                    MOVE    RECE02-OCR3            TO  OCR3-AREA
@@ -2039,10 +2046,10 @@
            IF  CNT-PAGE                =   1
       *        •´•π•ø•ﬁ•§•∫π‡Ã‹§¨§¢§Î§»§≠£œ£√£“§À»ø±«§µ§ª§Î 
                IF      FLG-RECE11          =   ZERO
-                   IF ( RECE02-TEISYUTUSAKI     =     1   AND
-                        SYS-2005-SYAOCRKBN      =     ZERO    )   
-                   OR ( RECE02-TEISYUTUSAKI     =     2   AND
-                        SYS-2005-KKHOCRKBN      =     "1"     )   
+                   IF ( ( RECE02-TEISYUTUSAKI   =   1            )  AND
+                        ( SYS-2005-SYAOCRKBN    =   ZERO OR  "2" )     )
+                   OR ( ( RECE02-TEISYUTUSAKI   =   2            )  AND
+                        ( SYS-2005-KKHOCRKBN    =   "1"  OR  "3" )     )
                        MOVE    RECE02-OCR1            TO  OCR1-AREA
                        MOVE    RECE02-OCR2            TO  OCR2-AREA
                        MOVE    RECE02-OCR3            TO  OCR3-AREA
