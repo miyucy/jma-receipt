@@ -44,6 +44,7 @@
       *  01.00.10    NACL-ÌçÏÆ    04/01/21  Ï«ºÒ¤ÎÆÃÄê´ïºà(09593)ÂÐ±þ
       *  01.00.11    NACL-ÌçÏÆ    04/01/21  Ï«ºÒ¡¦¼«ÇåÀÕ¤ÎÆþ±¡¼¼ÎÁ²Ã»»
       *                                     (09594)ÂÐ±þ
+      *  01.00.12    NACL-¾®Æ¦Âô  04/02/24  ·îÅÓÃæ¤Î°åÎÅµ¡´Ø¸º»»ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -167,6 +168,15 @@
        01  TABLE-GAIHAKU.
            03  TBL-GAIHAKU                 PIC 9(01)   OCCURS  31.
       *
+      * Ì¤¼Â»Ü¸º»»ÂàÈòÍÑ¥Æ¡¼¥Ö¥ë     
+       01  TABLE-GENSAN.
+           03  TBL-INNAI-KANSEN            PIC 9(02)   OCCURS  31.
+           03  TBL-IRYOU-ANZEN             PIC 9(02)   OCCURS  31.
+           03  TBL-JOKUSOU                 PIC 9(02)   OCCURS  31.
+       01  WRK-INNAI-KANSEN-GENTEN         PIC 9(03).
+       01  WRK-IRYOU-ANZEN-GENTEN          PIC 9(03).
+       01  WRK-JOKUSOU-GENTEN              PIC 9(03).
+      *
       * ¿ÇÎÅ²ñ·×ºÞ²ó¿ôÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  TABLE-ZAIKAISU.                                              XXX
            03  TBL-ZAIKAISU                PIC 9(03)   OCCURS  31.      XXX
@@ -174,7 +184,10 @@
       * ³°Çñ¥«¥¦¥ó¥ÈÎÎ°è     
        01  WRK-GAIHAKU-COUNT               PIC 9(02).
       *
-      * ÁªÄêÎÅÍÜÂàÈòÍÑ¥Æ¡¼¥Ö¥ë     
+      * °åÎÅµ¡´Ø¾ðÊó¡ÊÆþ±¡¡Ý´ðËÜ¡Ë
+       01  WRK-SYS5000-COUNT               PIC 9(02).
+      *
+      * ÁªÄêÎÅÍÜÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  TABLE-SENTEI.
            03  TBL-SENTEI                  PIC 9(01)   OCCURS  31.
       *
@@ -224,6 +237,9 @@
            03  SENTEI-IDX                  PIC 9(02).
            03  KOHFTN-IDX                  PIC 9(02).
            03  KOHFTN-IDX2                 PIC 9(02).
+           03  KIRIKAE-IDX                 PIC 9(02).
+           03  KIRIKAE-IDXX     REDEFINES   KIRIKAE-IDX
+                                           PIC X(02).
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -1247,21 +1263,27 @@
            MOVE     "NYUINACT-KEY9"    TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
-      *°åÎÅµ¡´Ø¸º»»¤Î¼èÆÀ¡Ê¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤ê¡Ë
            COMPUTE  NYUIN-COUNT = NYUIN-COUNT  -  WRK-GAIHAKU-COUNT
-           MOVE    ZERO                TO  FLG-SYSKANRI
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "5000"              TO  SYS-KANRICD
-           MOVE    "*"                 TO  SYS-KBNCD
-           MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           IF      MCP-RC              =   ZERO
+      *
+      *°åÎÅµ¡´Ø¸º»»¤Î¼èÆÀ¡Ê¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤ê¡Ë
+      *    ·îÆâ¤ËÊ£¿ô¤Î°åÎÅ´ü´Ö¾ðÊó¤¬¤Ê¤¤¤«¥Á¥§¥Ã¥¯
+           PERFORM   SYS-5000-CHK-SEC
+           DISPLAY "WRK-SYS5000-COUNT = " WRK-SYS5000-COUNT
+      *
+           IF        WRK-SYS5000-COUNT    =     ZERO
+             MOVE    ZERO                TO  FLG-SYSKANRI
+             INITIALIZE                      SYSKANRI-REC
+             MOVE    "5000"              TO  SYS-KANRICD
+             MOVE    "*"                 TO  SYS-KBNCD
+             MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
+             MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+             IF      MCP-RC              =   ZERO
                MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
                PERFORM  SYSKANRI-READ-SEC
                PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
@@ -1307,6 +1329,47 @@
                         END-EVALUATE
                     END-IF
                END-PERFORM
+             END-IF
+             MOVE     "SYSKANRI-KEY"   TO  WK-PATH
+             PERFORM   CSR-CLOSE-SEC
+           ELSE
+               PERFORM  SYS-5000-GET-SEC
+      *
+               MOVE     ZERO   TO  WRK-INNAI-KANSEN-GENTEN
+               MOVE     ZERO   TO  WRK-IRYOU-ANZEN-GENTEN
+               MOVE     ZERO   TO  WRK-JOKUSOU-GENTEN
+      *
+               PERFORM  VARYING  SYU-IDX  FROM  1  BY  1
+                        UNTIL    SYU-IDX  >   31
+                   IF (TBL-NYUIN(SYU-IDX) NOT = ZERO) AND
+                      (TBL-GAIHAKU(SYU-IDX)   = ZERO)
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =
+                               SDAY-HKNTEN(SYU-IDX) -
+                               TBL-INNAI-KANSEN(SYU-IDX)
+                       IF   TBL-INNAI-KANSEN(SYU-IDX)  NOT = ZERO
+                            ADD   5     TO   WRK-INNAI-KANSEN-GENTEN
+                       END-IF
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =
+                               SDAY-HKNTEN(SYU-IDX) -
+                               TBL-IRYOU-ANZEN(SYU-IDX)
+                       IF   TBL-IRYOU-ANZEN(SYU-IDX)  NOT = ZERO
+                            ADD   10    TO   WRK-IRYOU-ANZEN-GENTEN
+                       END-IF
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =
+                               SDAY-HKNTEN(SYU-IDX) -
+                               TBL-JOKUSOU(SYU-IDX)
+                       IF   TBL-JOKUSOU(SYU-IDX)  NOT = ZERO
+                            ADD   5     TO   WRK-INNAI-KANSEN-GENTEN
+                       END-IF
+                   END-IF
+               END-PERFORM
+               COMPUTE SYU-HKNTEN(11)  =   SYU-HKNTEN(11)
+                                       -   WRK-INNAI-KANSEN-GENTEN
+               COMPUTE SYU-HKNTEN(11)  =   SYU-HKNTEN(11)
+                                       -   WRK-IRYOU-ANZEN-GENTEN
+               COMPUTE SYU-HKNTEN(11)  =   SYU-HKNTEN(11)
+                                       -   WRK-JOKUSOU-GENTEN
+      *
            END-IF
       *
       **     PERFORM   VARYING   IDZ   FROM  1   BY   1
@@ -3520,6 +3583,141 @@
            .
       *
        TENTEK-MATOME-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ·îÆâ¤ËÊ£¿ô¤Î°åÎÅ´ü´Ö¾ðÊó¤¬¤Ê¤¤¤«¸¡º÷¡Ê°åÎÅµ¡´Ø¸º»»¤Î³ÎÇ§¡Ë  *
+      ******************************************************************
+       SYS-5000-CHK-SEC                 SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SYU-SKYSTYMD(1:6)   TO  ORC-DBYMD(1:6)
+           MOVE    "__"                TO  ORC-DBYMD(7:2)
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+               PERFORM  SYSKANRI-READ-SEC
+               MOVE     ZERO     TO        WRK-SYS5000-COUNT
+               PERFORM  UNTIL    FLG-SYSKANRI   =   1
+                   ADD     1     TO        WRK-SYS5000-COUNT
+                   MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+                   PERFORM  SYSKANRI-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE     "SYSKANRI-KEY11"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+      *
+       SYS-5000-CHK-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ·îÆâ¤Î°åÎÅ´ü´Ö¾ðÊó¼èÆÀ¡Ê°åÎÅµ¡´Ø¸º»»¾ðÊó¡Ë                  *
+      ******************************************************************
+       SYS-5000-GET-SEC                 SECTION.
+      *
+           INITIALIZE                      TABLE-GENSAN
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+             MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+             PERFORM  SYSKANRI-READ-SEC
+             PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
+                      UNTIL     GENSAN-IDX   >   4
+                  PERFORM   VARYING   SYU-IDX   FROM  1  BY  1
+                            UNTIL     SYU-IDX   >  31
+                    IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"
+                        EVALUATE  GENSAN-IDX
+                            WHEN  2
+                              MOVE   5   TO  TBL-INNAI-KANSEN(SYU-IDX)
+                            WHEN  3
+                              MOVE   10  TO  TBL-IRYOU-ANZEN(SYU-IDX)
+                            WHEN  4
+                              MOVE   5   TO  TBL-JOKUSOU(SYU-IDX)
+                        END-EVALUATE
+                    END-IF
+                  END-PERFORM
+             END-PERFORM
+           END-IF
+      *
+           MOVE     "SYSKANRI-KEY"   TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SYU-SKYSTYMD(1:6)   TO  ORC-DBYMD(1:6)
+           MOVE    "__"                TO  ORC-DBYMD(7:2)
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+               PERFORM  SYSKANRI-READ-SEC
+               PERFORM  UNTIL    FLG-SYSKANRI   =   1
+                   MOVE   SYS-5000-STYUKYMD(7:2)  TO  KIRIKAE-IDXX
+                   PERFORM    VARYING  SYU-IDX  FROM KIRIKAE-IDX BY 1
+                              UNTIL    SYU-IDX  >   31
+                       IF  SYS-5000-GENKBN(2)   =   "2"
+                           MOVE   5      TO  TBL-INNAI-KANSEN
+                                                       (SYU-IDX)
+                       ELSE
+                           MOVE   ZERO   TO  TBL-INNAI-KANSEN
+                                                       (SYU-IDX)
+                       END-IF
+                       IF  SYS-5000-GENKBN(3)   =   "2"
+                           MOVE   10     TO  TBL-IRYOU-ANZEN
+                                                       (SYU-IDX)
+                       ELSE
+                           MOVE   ZERO   TO  TBL-IRYOU-ANZEN
+                                                       (SYU-IDX)
+                       END-IF
+                       IF  SYS-5000-GENKBN(4)   =   "2"
+                           MOVE   5      TO  TBL-JOKUSOU
+                                                       (SYU-IDX)
+                       ELSE
+                           MOVE   ZERO   TO  TBL-JOKUSOU
+                                                       (SYU-IDX)
+                       END-IF
+                   END-PERFORM
+                   MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+                   PERFORM  SYSKANRI-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+             MOVE     "SYSKANRI-KEY11"      TO  WK-PATH
+             PERFORM   CSR-CLOSE-SEC
+      *
+           .
+      *
+       SYS-5000-GET-EXT.
            EXIT.
       *
       *****************************************************************
