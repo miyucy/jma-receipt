@@ -71,6 +71,7 @@
       *  01.04.02    NACL-藤原    03/08/05  外来レセ電処理の追加
       *  01.04.03    NACL-門脇    04/01/14  診療行為の包括分は除く
       *                                     SRYACCT9→30
+      *  01.04.04    NACL-藤原    04/03/08  コラムリストの行制御
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -166,6 +167,7 @@
            03  FLG-HKNCOMBI        PIC 9(01). 
            03  FLG-CHK             PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
+           03  FLG-ROW             PIC 9(01).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -251,6 +253,8 @@
            03  WRK-NYUGAIKBN       PIC X(10).
       * 
            03  WRK-PREFNUM         PIC 9(02).
+      *
+           03  WRK-R01-ROW         PIC S9(09). 
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -721,6 +725,8 @@
       *
            MOVE    SPA-GMN-RENNUM      TO  SPA-NAI-SELNO
       *
+           MOVE    SPA-GMN-RENNUM      TO  R01-ROW
+      *
            PERFORM 41021-RENNUM-HENSYU-SEC
       *
            .
@@ -1165,6 +1171,8 @@
            MOVE    SPA-GMN-MAX          TO  IDX
            PERFORM 4201-INTBL-SET-SEC
       *
+           MOVE    SPA-GMN-MAX      TO  R01-ROW
+      *
            MOVE    4                TO  SPA-GMN-CUR  
       *
            .
@@ -1506,6 +1514,8 @@
                    MOVE    "2"              TO  SPA-NAI-SYOKBN
                END-IF
            END-IF
+      *
+           MOVE    1                   TO  FLG-ROW
       *
            MOVE    3                   TO  SPA-GMN-CUR 
       *
@@ -2204,6 +2214,12 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
+      *
+           IF      FLG-ROW             =   1
+               MOVE    ZERO                TO  WRK-R01-ROW
+           ELSE
+               MOVE    R01-ROW             TO  WRK-R01-ROW
+           END-IF
       * 
            MOVE    SPACE               TO  R01
       *
@@ -2232,7 +2248,11 @@
                    MOVE    "F"             TO  R01-SELECT (IDX)
                END-IF
            END-PERFORM
-           MOVE    SPA-GMN-MAX            TO  R01-COUNT
+           MOVE    SPA-GMN-MAX         TO  R01-COUNT
+           MOVE    ZERO                TO  R01-ROW
+           IF      WRK-R01-ROW         >   ZERO
+               MOVE    WRK-R01-ROW         TO  R01-ROW
+           END-IF
       *
            MOVE    SPA-GMN-RENNUM         TO  R01-RENNUM
            MOVE    SPA-GMN-PTNUM          TO  R01-PTNUM
