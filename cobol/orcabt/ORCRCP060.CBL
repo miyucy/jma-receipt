@@ -386,7 +386,7 @@
       *        傷病名欄編集行         
                05  WRK-LINEBYO                 PIC 9(02).
       *        適用欄編集行         
-               05  WRK-LINETEK                 PIC 9(02).
+               05  WRK-LINETEK                 PIC 9(03).
       *        前行の続きのとき（傷病名）         
                05  WRK-CONTINUE                PIC 9(01).
       *    適用欄最大行数
