@@ -213,6 +213,7 @@
       *  01.01.47    NACL-伊藤    03/03/11  INTERACT-KEY3の追加
       *                                     INTERACT-UPD1,DEL1追加 
       *  01.01.48    NACL-藤原    03/03/14  PTBYO-KEY7追加
+      *  01.01.49    NACL-藤原    03/03/16  KOHSKY-KEY5,KEY6追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2459,6 +2460,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "KOHSKY-KEY4"
                    MOVE    PATH-TBL-KOHSKY-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KOHSKY-KEY5"
+                   MOVE    PATH-TBL-KOHSKY-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KOHSKY-KEY6"
+                   MOVE    PATH-TBL-KOHSKY-KEY6
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "KOHSKY-ALL"
                    MOVE    PATH-TBL-KOHSKY-ALL

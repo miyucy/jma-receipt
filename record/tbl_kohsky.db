@@ -613,6 +613,63 @@ path	key4	{
 	};
 };
 
+path	key5	{
+	DBSELECT	{
+		DECLARE tbl_kohsky_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_kohsky
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (   (  KOHNUM1     =   :XXKOHNUM1 )
+                       OR (  KOHNUM2     =   :XXKOHNUM1 )
+                       OR (  KOHNUM3     =   :XXKOHNUM1 )
+                       OR (  KOHNUM4     =   :XXKOHNUM1 )
+                       OR (  KOHNUM1     =   :XXKOHNUM2 )
+                       OR (  KOHNUM2     =   :XXKOHNUM2 )
+                       OR (  KOHNUM3     =   :XXKOHNUM2 )
+                       OR (  KOHNUM4     =   :XXKOHNUM2 )
+                       OR (  KOHNUM1     =   :XXKOHNUM3 )
+                       OR (  KOHNUM2     =   :XXKOHNUM3 )
+                       OR (  KOHNUM3     =   :XXKOHNUM3 )
+                       OR (  KOHNUM4     =   :XXKOHNUM3 ) )
+		;
+	};
+};
+path	key6	{
+	DBSELECT	{
+		DECLARE tbl_kohsky_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_kohsky
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (   (  KOHNUM1     =   :XXKOHNUM1 )
+                       OR (  KOHNUM2     =   :XXKOHNUM1 )
+                       OR (  KOHNUM3     =   :XXKOHNUM1 )
+                       OR (  KOHNUM4     =   :XXKOHNUM1 )
+                       OR (  KOHNUM1     =   :XXKOHNUM2 )
+                       OR (  KOHNUM2     =   :XXKOHNUM2 )
+                       OR (  KOHNUM3     =   :XXKOHNUM2 )
+                       OR (  KOHNUM4     =   :XXKOHNUM2 )
+                       OR (  KOHNUM1     =   :XXKOHNUM3 )
+                       OR (  KOHNUM2     =   :XXKOHNUM3 )
+                       OR (  KOHNUM3     =   :XXKOHNUM3 )
+                       OR (  KOHNUM4     =   :XXKOHNUM3 )
+                       OR (  KOHNUM1     =   :XXKOHNUM4 )
+                       OR (  KOHNUM2     =   :XXKOHNUM4 )
+                       OR (  KOHNUM3     =   :XXKOHNUM4 )
+                       OR (  KOHNUM4     =   :XXKOHNUM4 ) )
+		;
+	};
+};
+
 path	del1 	{
 	DBDELETE	{
 		DELETE
