@@ -484,11 +484,11 @@
            MOVE    SPACE                TO  RECE451-SIKFLGINF(2)
            INITIALIZE                       RECE451-SIKFLGINF(2)
       *
-           MOVE    "840000045"          TO  RECE451-SRYCD(2)
+           MOVE    "810000001"          TO  RECE451-SRYCD(2)
            MOVE    ZERO                 TO  RECE451-SRYSURYO(2)
            MOVE    9                    TO  RECE451-YUKOKETA(2)
       * 
-           MOVE    "発症　　　月　　日" TO  RECE451-NAME(2)
+           MOVE    "算定　　　月　　日" TO  RECE451-NAME(2)
            MOVE     RECE41-KYUKYUYMD(5:2)
                                         TO  DAY-IDX
            MOVE     TBL-TUKI(DAY-IDX)   TO  RECE451-NAME(2)(7:4)
