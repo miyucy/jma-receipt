@@ -38,7 +38,7 @@
               03  J02-SEX.
                 04  J02-VALUE   PIC X(2).
               03  J02-DAY       OCCURS 31.
-                04  J02-VALUE   PIC X(2).
+                04  J02-VALUE   PIC X(3).
               03  J02-RRKSELNUM.
                 04  J02-VALUE   PIC X(3).
               03  J02-HENSRYYMD.

@@ -1,13 +1,13 @@
 W07	{
 	fixed1	{
+		B03 {
+		    state   int;
+		};
 		YUKOSTYMD	{
 			value	varchar(9);
 		};
 		YUKOEDYMD	{
 			value	varchar(9);
-		};
-		B03 {
-		    state   int;
 		};
 		notebook1	{
 			pageno	int;
@@ -54,20 +54,76 @@ W07	{
 					count	int;
 					item	varchar(12)[2];
 				};
+				DATA07_COMBO	{
+					DATA07	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				SRYKACD	{
+					state   int;
+					value	varchar(2);
+				};
+				SRYKAMEI	{
+					value	varchar(20);
+				};
+				NYUSYOSIN_COMB	{
+					NYUSYOSIN	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				KIKAN	{
+					value	number(2);
+				};
+				GAIKANKBN_COMBO	{
+					GAIKANKBN	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[3];
+				};
+				GAIMOVE_COMBO	{
+					GAIMOVE	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[3];
+				};
 			};
 			TAGNAME1    {
 			    state   int;
 			};
 			TAG2	{
-				KIKAN	{
-					value   number(2);
-				};
-				GAIKANRIKBNCOMB	{
-					GAIKANRIKBN	{
-						value	varchar(22);
+				BYOMEIKBN_COMBO	{
+					BYOMEIKBN	{
+						value	varchar(28);
 					};
 					count	int;
-					item	varchar(22)[3];
+					item	varchar(28)[2];
+				};
+				JISYOKBN_COMBO	{
+					JISYOKBN	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[2];
+				};
+				HAKKOKBN_COMBO	{
+					HAKKOKBN	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[3];
+				};
+				HOJYOKBN_COMBO	{
+					HOJYOKBN	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[2];
 				};
 			};
 			TAGNAME2    {

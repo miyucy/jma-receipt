@@ -91,11 +91,9 @@
                    07  TBL-ATO-ATAI-G.
                        09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
       *
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
-      *
       *
       *    診療行為マスター
        01  SRYACT-REC.
@@ -176,6 +174,11 @@
                   (ORCSCZAICHK-SRYSYUKBN   =   "210"  OR
                                                "230" )
                MOVE    SPACE                   TO  WRK-SRYSYUKBN
+      *        画像診断で部位からの場合
+               IF     (ORCSCZAICHK-SRYSYUKBN   =   SPACE  )  AND
+                      (ORCSCZAICHK-SRYKBN      =   "70"   )
+                   MOVE    "700"               TO  WRK-SRYSYUKBN
+               END-IF
            ELSE
                MOVE    ORCSCZAICHK-SRYSYUKBN   TO  WRK-SRYSYUKBN
            END-IF
@@ -285,6 +288,11 @@
                       (SRY-SRYSYUKBN       =  "210"  OR
                                               "230" )
                    MOVE    SPACE           TO  WRK-MAE-SRYSYUKBN
+      *            画像診断で部位からの場合
+                   IF     (SRY-SRYSYUKBN       =   SPACE  )  AND
+                          (SRY-SRYKBN          =   "70"   )
+                       MOVE    "700"               TO  WRK-MAE-SRYSYUKBN
+                   END-IF
                ELSE
                    MOVE    SRY-SRYSYUKBN   TO  WRK-MAE-SRYSYUKBN
                END-IF

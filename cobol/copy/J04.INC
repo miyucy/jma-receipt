@@ -47,4 +47,4 @@
               03  J04-RRKYMD.
                 04  J04-VALUE   PIC X(13).
               03  J04-DAY       OCCURS  31.
-                04  J04-VALUE   PIC X(2).
+                04  J04-VALUE   PIC X(3).

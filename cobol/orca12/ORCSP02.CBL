@@ -226,6 +226,9 @@
       *    職員情報
            COPY    "CPSK1010.INC".
       *
+      *    職員設定情報
+           COPY    "CPSK1017.INC".
+      *
       *    受付
        01  UKETUKE-REC.
            COPY    "CPUKETUKE.INC".
@@ -687,8 +690,56 @@
       *    診療科をＳＰＡにセット
            PERFORM 313-SRYKA-SPASET-SEC
       *
+      *    患者登録情報をＳＰＡにセット
+           PERFORM 10031-SYSKANRI1017-SET-SEC
+      *
            .
        1003-SYSKAN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者登録情報スパ初期編集処理
+      *****************************************************************
+       10031-SYSKANRI1017-SET-SEC              SECTION.
+      *
+      *    患者登録機能制御情報
+           MOVE    SPACE               TO  SYS-1017-REC
+           INITIALIZE                  SYS-1017-REC
+           MOVE    "1017"              TO  SYS-1017-KANRICD
+           MOVE    "*"                 TO  SYS-1017-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1017-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1017-REC
+      *        人名辞書使用チェック
+               MOVE    SYS-1017-JINMEI-USE     TO  SPA-NAI-JINMEI-USE
+      *        患者登録のカルテ発行
+               MOVE    SYS-1017-KARUTE-HAKKO   TO  SPA-NAI-KARUTE-HAKKO
+      *        自費保険の補助区分
+               MOVE    SYS-1017-JIHIHKN-TAX    TO  SPA-NAI-JIHIHKN-TAX
+           ELSE
+      *        未登録の時、ゼロとする
+               MOVE    ZERO                    TO  SPA-NAI-JINMEI-USE
+               MOVE    ZERO                    TO  SPA-NAI-KARUTE-HAKKO
+               MOVE    ZERO                    TO  SPA-NAI-JIHIHKN-TAX
+           END-IF
+      *
+           .
+       10031-SYSKANRI1017-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1050,13 +1101,27 @@
            MOVE    "1 カルテ発行あり"  TO  SPA-GMN-HAKKO-LST (2)
            MOVE    SPA-GMN-HAKKO-LST (1)
                                        TO  SPA-GMN-HAKKO-G
+      *    新規患者の時の患者登録のカルテ発行
+           IF      SPA-P02-SYORI       =   1
+               IF      SPA-NAI-KARUTE-HAKKO    =   "1"  OR  "2"
+                   MOVE    SPA-GMN-HAKKO-LST (2)
+                                           TO  SPA-GMN-HAKKO-G
+               END-IF
+           END-IF
       *
            MOVE    "0 発行なし"        TO  SPA-GMN20-KARUTE-LST (1)
            MOVE    "1 発行あり"        TO  SPA-GMN20-KARUTE-LST (2)
            MOVE    "2 続紙頭書"        TO  SPA-GMN20-KARUTE-LST (3)
+           MOVE    3                   TO  SPA-KARUTE-MAX
            MOVE    SPA-GMN20-KARUTE-LST(1)
                                        TO  SPA-GMN20-KARUTE-G
-           MOVE    3                   TO  SPA-KARUTE-MAX
+      *    患者登録のカルテ発行
+           IF      SPA-P02-SYORI       =   1
+               IF      SPA-NAI-KARUTE-HAKKO    =   "1"  OR  "2"
+                   MOVE    SPA-GMN20-KARUTE-LST(2)
+                                       TO  SPA-GMN20-KARUTE-G
+               END-IF
+           END-IF
       *
            MOVE    "0 発行なし"        TO  SPA-GMN20-SYOHOU-LST (1)
            MOVE    "1 発行あり"        TO  SPA-GMN20-SYOHOU-LST (2)

@@ -838,6 +838,8 @@
                       (WRK-CHK-SRYSYUKBN       =   "213" OR
                                                    "223" OR
                                                    "233"  )
+      *            点数がゼロの場合対象外とする
+                   OR (WRK-COM-KEI (IDX)       =   ZERO   )
                    CONTINUE
                ELSE
       *

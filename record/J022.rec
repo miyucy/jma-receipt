@@ -4,13 +4,13 @@ J022	{
 			value	varchar(14);
 		};
 		DAY1	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY2	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY3	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 	};
 };

@@ -44,6 +44,7 @@
       * 02.00.01     NACL-Â¿¡¹Ç¼  03/08/29  £È£±£µ¡¥£¹¤«¤é
       *                                     Ï«ºÒ¡¦¼«ÇåÀÕÄþ¸ºÀ©¤ÎÇÑ»ß
       *                                     ¡Ê¥ì¥»ÅÅ¥³¡¼¥É¤ÎÊÑ¹¹¤Ê¤·¡Ë
+      * 02.00.02     NACL-Â¿¡¹Ç¼  03/10/27  °é»ù±ÉÍÜ²Ã»»¼«Æ°»»ÄêÄÉ²Ã
       *****************************************************************
       *
       *
@@ -1927,6 +1928,8 @@
       *
       *    °Ê¹ß¡¢ºÆ¿Ç»þ¤Î¤ß
            IF      SPA-SYOSIN          =   1
+      *        °é»ù±ÉÍÜ²Ã»»¼«Æ°È¯À¸
+               PERFORM 3302-IKUJIEIYO-SET-SEC
                GO      TO      3301-SYOSIN-SYORI-EXT
            END-IF
       *
@@ -2134,6 +2137,41 @@
            MOVE    1                   TO  FLG-ADD
            .
        3301-SYOSIN-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   °é»ù±ÉÍÜ²Ã»»¼«Æ°È¯À¸½èÍý
+      *****************************************************************
+       3302-IKUJIEIYO-SET-SEC                  SECTION.
+      *
+      *    °é»ù±ÉÍÜ²Ã»»¼«Æ°»»Äê
+           IF      SPA-IKUJIEIYO-FLG   NOT =   "1"
+               GO      TO      3302-IKUJIEIYO-SET-EXT
+           END-IF
+      *    £³ºÐ¤Ë¤Ê¤ëÇ¯·îÆü¤ò·×»»
+           MOVE    SPA-BIRTHDAY        TO  WRK-BIRTHDAY
+           COMPUTE WRK-BIRTH-YY        =   WRK-BIRTH-YY    +  3
+      *    £³ºÐÌ¤Ëþ¤ËÅ¬ÍÑ
+           IF      WRK-BIRTHDAY(1:6)   <   SPA-SRYYMD (1:6)
+               GO      TO      3302-IKUJIEIYO-SET-EXT
+           END-IF
+      *
+      *    °é»ù±ÉÍÜ²Ã»»¼«Æ°»»Äê²Ê
+           IF     (SPA-IKUJIEIYO-SRYKA =   ZERO      )  OR
+                  (SPA-IKUJIEIYO-SRYKA =   SPA-SRYKA )
+               CONTINUE
+           ELSE
+               GO      TO      3302-IKUJIEIYO-SET-EXT
+           END-IF
+      *
+      *    ½é¿Ç¡Ê°é»ù±ÉÍÜ»ØÆ³¡Ë²Ã»»
+           MOVE    "111000470"         TO  WRK-SRYCD
+      *    ÄÉ²Ã¶¦ÄÌ½èÍý
+           MOVE    ZERO                TO  WRK-IDX-IN
+           PERFORM 33041-SRYCD-ADD-SEC
+      *
+           .
+       3302-IKUJIEIYO-SET-EXT.
            EXIT.
       *
       *****************************************************************

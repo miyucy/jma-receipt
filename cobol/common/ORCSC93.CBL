@@ -41,6 +41,7 @@
       * 01.00.12     NACL-Â¿¡¹Ç¼  03/02/21  Æþ±¡ÎÁ¤Î²Ã»»¤Î¤ß½¤Àµ
       * 01.00.13     NACL-Â¿¡¹Ç¼  03/05/09  ºÞÌÀºÙ¤ò£³£°¤Þ¤Ç¤È¤¹¤ë
       * 01.00.14     NACL-Â¿¡¹Ç¼  03/09/12  ¸¡ººÊñ³ç¤Ê¤·ÄÉ²Ã¡Ê610¡Ë
+      * 01.00.15     NACL-Â¿¡¹Ç¼  03/10/28  ¸¡ººÊñ³ç½¤Àµ
       *****************************************************************
       *
       *
@@ -105,6 +106,7 @@
            03  IDX-KEN2            PIC 9(04).
            03  FLG-KENSA           PIC 9(01).
            03  FLG-KENSA-ARI       PIC 9(01).
+           03  FLG-KEN-ERR         PIC 9(01).
       *
            03  WRK-HOUKNSKBN       PIC X(02).
       *
@@ -928,7 +930,7 @@
                    IF      SPA-COM-HOUKNSKBN(IDX)   =   ZERO
                        MOVE    2                    TO  FLG-SYORI
                    ELSE
-                       MOVE    1                    TO  FLG-KENSA-ARI
+      **************** MOVE    1                    TO  FLG-KENSA-ARI
       *                Êñ³çÂÐ¾Ý¸¡ººÊÑ¹¹»þ
                        IF      SPA-COM-HOUKNSKBN(IDX)
                                               NOT =  SPA-COM-HOUKNSKBN
@@ -1161,28 +1163,39 @@
                    MOVE    1             TO  WRK-KENSA-MAX
            END-EVALUATE
       *
-           IF      SPA-COM-HOUKNSKBN(IDX)
-                                   NOT =   SPA-COM-HOUKNSKBN
-                                                          (IDX-1)
-               MOVE    ZERO                TO  WRK-KENSA-CNT
+           MOVE    ZERO                TO  WRK-KENSA-CNT
+           PERFORM VARYING     IDX-KEN     FROM    1   BY  1
+                   UNTIL       IDX-KEN     >   200
+               IF      (SPA-COM-SRYKBN (IDX-KEN)   =   "60" ) AND
+                       (SPA-COM-SRYSYUKBN (IDX-KEN)
+                                               NOT =   "610")  AND
+                       (SPA-COM-INPUTCD (IDX-KEN)(1:1)
+                                                   =   "1"  )  AND
+                       (SPA-COM-DATAKBN (IDX-KEN)  =   "1"  )
+                   MOVE    ZERO                TO  FLG-KEN-ERR
+                   IF      (SPA-COM-KAIFLG (IDX-KEN)   =   "1" )  AND
+                           (SPA-COM-KAISU  (IDX-KEN)   >   1   )
+      *                ²ó¿ô¤¬£±°Ê¾å¤Ç¡¢£±ºÞ¤Î»þ¡¢Êñ³çÂÐ¾Ý³°
+                       IF     ((IDX-KEN                >   1   )  AND
+                               (SPA-GMN-INPUTCD (IDX-KEN - 1)(1:1)
+                                                       =   "." )) OR
+                              ( WRK-KENSA-CNT          =   ZERO )
+                           MOVE    1                   TO  FLG-KEN-ERR
+                       END-IF
+                   END-IF
+                   IF     (FLG-KEN-ERR         =   ZERO )  AND
+                          (SPA-COM-HOUKNSKBN(IDX)
+                                               =   SPA-COM-HOUKNSKBN
+                                                        (IDX-KEN) )
+                       ADD     1                 TO  WRK-KENSA-CNT
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      WRK-KENSA-MAX       <=  WRK-KENSA-CNT
+               MOVE    1                   TO  FLG-KENSA-ARI
            END-IF
       *
-           ADD     1                   TO  WRK-KENSA-CNT
-           IF      WRK-KENSA-CNT       =   1
-               MOVE    ZERO                TO  FLG-KENSA
-               PERFORM VARYING     IDX-KEN     FROM    1   BY  1
-                       UNTIL       IDX-KEN     >=  WRK-KENSA-MAX
-                   COMPUTE IDX-KEN2            =   IDX     +   IDX-KEN
-                   IF      SPA-COM-HOUKNSKBN(IDX)
-                                               =   SPA-COM-HOUKNSKBN
-                                                        (IDX-KEN2)
-                       CONTINUE
-                   ELSE
-                       MOVE    1                 TO  FLG-KENSA
-                   END-IF
-               END-PERFORM
-           END-IF
-           IF     (FLG-KENSA           =   ZERO   )  OR
+           IF     (WRK-KENSA-MAX       <=  WRK-KENSA-CNT   )  OR
                   (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." ) 
                CONTINUE
            ELSE

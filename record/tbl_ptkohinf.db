@@ -107,3 +107,20 @@ path	del1 	{
 		;
 	};
 };
+
+
+path	key6 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohinf_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohinf
+			WHERE HOSPID      =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   KOHNUM      =   :KOHNUM
+			AND   TEKSTYMD    <=  :TEKSTYMD
+			AND   TEKEDYMD    >=  :TEKEDYMD
+			AND   SAKJOKBN    <>   "1"
+			ORDER   BY      KOHID
+		;
+	};
+};

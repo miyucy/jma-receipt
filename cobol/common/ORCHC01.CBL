@@ -44,6 +44,7 @@
       *  02.00.01    NACL-多々納  03/03/26  続紙の頭書の追加
       *                                     プログラムの整理
       *  02.00.02    NACL-多々納  03/06/30  出力先プリンタサブ追加
+      *  02.00.03    NACL-多々納  03/10/27  継続病名のみ編集追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -269,6 +270,9 @@
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
       *
+      *    患者登録機能制御情報
+           COPY  "CPSK1017.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -392,6 +396,20 @@
       *    ELSE
       *        MOVE    1                   TO  FLG-END
       *****END-IF 
+      *
+      *    患者登録機能制御情報
+           MOVE    SPACE               TO  SYS-1017-REC
+           INITIALIZE                  SYS-1017-REC
+           MOVE    "1017"              TO  SYS-1017-KANRICD
+           MOVE    "*"                 TO  SYS-1017-KBNCD
+           MOVE    SYS-1017-REC        TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1017-REC
+           ELSE
+               INITIALIZE                  SYS-1017-REC
+           END-IF
+      *
            .
        110-PARA-HENSYU-EXT.
            EXIT.
@@ -817,6 +835,13 @@
            END-IF
            PERFORM 
                    UNTIL   FLG-PTBYOMEI    NOT =   ZERO
+      *
+      *      継続病名のみの時、転帰日のあるものを対象外とする
+             IF     (SYS-1017-KARUTE-BYOMEI    =   "1"  )  AND
+                    (PTBYO-TENKIYMD        NOT =   SPACE)
+               CONTINUE
+             ELSE
+      *
                ADD     1               TO  IDX
                IF      WRK-PRT-CNT     =   1
                    IF      IDX             >   8
@@ -846,6 +871,9 @@
       *            続紙病名編集処理
                    PERFORM 20022-HC011-BYOMEI-SET-SEC
                END-IF
+      *
+             END-IF
+      *
       *
                MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
                PERFORM 950-PTBYOMEI-READ-SEC

@@ -1930,6 +1930,10 @@
                PERFORM 100112-COMMT1-SEC
            END-IF
       *    初回算定日をセットする
+           IF      WRK-SYOKAI-YMD      =   SPACE
+               MOVE    SPA-SRYYMD          TO  WRK-SYOKAI-YMD
+           END-IF
+      *
            MOVE    WRK-SYOKAI-YMD      TO  LNK-ORCSC-TOKTEI-YMD
            .
        10011-TOKUYAKU-EXT.

@@ -14,7 +14,7 @@
       * this license along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
-      ********************************************************************
+      *******************************************************************
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC70200204.
       *****************************************************************
@@ -2597,10 +2597,6 @@
       *    自動算定処理
       *****************************************************************
        300-AUTO-SYORI-SEC                SECTION.
-      *
-      *2001.3.21  自動算定を保留事項とする
-      *****GO      TO      300-AUTO-SYORI-EXT.
-      *
       *
            MOVE    ZERO                TO  FLG-CTMRI
            MOVE    ZERO                TO  FLG-XSEN

@@ -5,13 +5,9 @@
   <name>J04</name>
   <program_name>J04</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -29,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 04 Jan 2001 03:26:09 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -2237,13 +2233,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY01</name>
-      <x>120</x>
+      <x>108</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2252,13 +2248,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY02</name>
-      <x>144</x>
+      <x>136</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2267,13 +2263,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY03</name>
-      <x>168</x>
+      <x>164</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2284,11 +2280,11 @@
       <name>DAY04</name>
       <x>192</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2297,13 +2293,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY05</name>
-      <x>216</x>
+      <x>220</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2312,14 +2308,14 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY06</name>
-      <x>248</x>
+      <x>252</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text></text>
+      <text_max_length>3</text_max_length>
+      <text>123</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -2327,13 +2323,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY07</name>
-      <x>272</x>
+      <x>280</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>0</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2342,13 +2338,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY08</name>
-      <x>296</x>
+      <x>308</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2357,13 +2353,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY09</name>
-      <x>320</x>
+      <x>336</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2372,13 +2368,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY10</name>
-      <x>344</x>
+      <x>364</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2387,13 +2383,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY11</name>
-      <x>376</x>
+      <x>396</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2402,13 +2398,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY12</name>
-      <x>400</x>
+      <x>424</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2417,13 +2413,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY13</name>
-      <x>424</x>
+      <x>452</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2432,13 +2428,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY14</name>
-      <x>448</x>
+      <x>480</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2447,13 +2443,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY15</name>
-      <x>472</x>
+      <x>508</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2462,13 +2458,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY16</name>
-      <x>504</x>
+      <x>540</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2477,13 +2473,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY17</name>
-      <x>528</x>
+      <x>568</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2492,13 +2488,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY18</name>
-      <x>552</x>
+      <x>596</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2507,13 +2503,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY19</name>
-      <x>576</x>
+      <x>624</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2522,13 +2518,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY20</name>
-      <x>600</x>
+      <x>652</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2537,13 +2533,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY21</name>
-      <x>632</x>
+      <x>684</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2552,13 +2548,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY22</name>
-      <x>656</x>
+      <x>712</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2567,13 +2563,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY23</name>
-      <x>680</x>
+      <x>740</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2582,13 +2578,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY24</name>
-      <x>704</x>
+      <x>768</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2597,13 +2593,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY25</name>
-      <x>728</x>
+      <x>796</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2612,13 +2608,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY26</name>
-      <x>760</x>
+      <x>830</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2627,13 +2623,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY27</name>
-      <x>784</x>
+      <x>856</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2642,14 +2638,14 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY28</name>
-      <x>808</x>
+      <x>880</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text></text>
+      <text_max_length>3</text_max_length>
+      <text>123</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -2657,14 +2653,14 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY29</name>
-      <x>832</x>
+      <x>908</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text></text>
+      <text_max_length>3</text_max_length>
+      <text>123</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -2672,13 +2668,13 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY30</name>
-      <x>856</x>
+      <x>932</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
+      <text_max_length>3</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -2687,112 +2683,16 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DAY31</name>
-      <x>888</x>
+      <x>964</x>
       <y>640</y>
-      <width>24</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text></text>
+      <text_max_length>3</text_max_length>
+      <text>223</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label157</name>
-      <x>16</x>
-      <y>640</y>
-      <width>96</width>
-      <height>24</height>
-      <label>ÂÐ¾Ý¿ÇÎÅ²ó¿ô</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label158</name>
-      <x>120</x>
-      <y>624</y>
-      <width>32</width>
-      <height>16</height>
-      <label>1</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label159</name>
-      <x>208</x>
-      <y>624</y>
-      <width>32</width>
-      <height>16</height>
-      <label>5</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label160</name>
-      <x>344</x>
-      <y>624</y>
-      <width>32</width>
-      <height>16</height>
-      <label>10</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label161</name>
-      <x>464</x>
-      <y>624</y>
-      <width>32</width>
-      <height>16</height>
-      <label>15</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label162</name>
-      <x>600</x>
-      <y>624</y>
-      <width>32</width>
-      <height>16</height>
-      <label>20</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -2847,8 +2747,104 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>label157</name>
+      <x>8</x>
+      <y>640</y>
+      <width>96</width>
+      <height>24</height>
+      <label>ÂÐ¾Ý¿ÇÎÅ²ó¿ô</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label158</name>
+      <x>108</x>
+      <y>624</y>
+      <width>32</width>
+      <height>16</height>
+      <label>1</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label159</name>
+      <x>220</x>
+      <y>624</y>
+      <width>32</width>
+      <height>16</height>
+      <label>5</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label160</name>
+      <x>364</x>
+      <y>624</y>
+      <width>32</width>
+      <height>16</height>
+      <label>10</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label161</name>
+      <x>504</x>
+      <y>624</y>
+      <width>32</width>
+      <height>16</height>
+      <label>15</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label162</name>
+      <x>648</x>
+      <y>624</y>
+      <width>32</width>
+      <height>16</height>
+      <label>20</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>label163</name>
-      <x>724</x>
+      <x>792</x>
       <y>624</y>
       <width>32</width>
       <height>16</height>
@@ -2864,7 +2860,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label164</name>
-      <x>852</x>
+      <x>928</x>
       <y>624</y>
       <width>32</width>
       <height>16</height>

@@ -2060,7 +2060,7 @@
            ELSE
       *        診療行為が無かった時、終了とする
                IF      IDX-KOUI         =   ZERO
-                   PERFORM 4900-END-SYORI-SEC
+                   PERFORM 4909-NASI-SYORI-SEC
                    GO      TO      450-TOROKU-EXT
                END-IF
            END-IF
@@ -2075,6 +2075,83 @@
            PERFORM 4500-TOROKU-SYORI-SEC
            .
        450-TOROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    登録・更新処理
+      *****************************************************************
+       4909-NASI-SYORI-SEC             SECTION.
+      *
+      *    初診料算定がある時は、算定履歴と診療科履歴を作成する
+           IF      SPA-SYOSIN-YMD  NOT =   SPACE
+      *
+      *        算定履歴作成
+               MOVE    SPA-SYOSIN-YMD      TO  WRK-SRYYMD
+               MOVE    SPA-SYOSIN-SRYCD    TO  WRK-SRYCD
+               MOVE    WRK-SRYCD           TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      TNS-SANTEIRRKKBN    NOT =   ZERO
+                   MOVE    ZERO            TO  FLG-TOKTEI
+                   MOVE    1               TO  WRK-KAISU
+                   PERFORM 45021-SANTEI-UPD-SEC
+      *            診療科履歴処理
+                   PERFORM 45099-SRYKARRK-ADD-SEC
+               END-IF
+           END-IF
+      *
+           PERFORM 4900-END-SYORI-SEC
+      *
+           .
+       4909-NASI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科履歴のみ登録処理
+      *****************************************************************
+       45099-SRYKARRK-ADD-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  SRYKARRK-REC
+           INITIALIZE                      SRYKARRK-REC
+           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-PTID            TO  KARRK-PTID
+           MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+      *
+           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+               PERFORM 975-SRYKARRK-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    新規であること
+           IF      FLG-SRYKARRK           =   1
+               MOVE    SPACE               TO  SRYKARRK-REC
+               INITIALIZE                      SRYKARRK-REC
+               MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+               MOVE    SPA-PTID            TO  KARRK-PTID
+               MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+               MOVE    SPA-SYOSIN-YMD      TO  KARRK-SYOSINYMD1
+               MOVE    SPA-SYOSIN-YMD      TO  KARRK-SYOSINYMD2
+               MOVE    SPA-SYOSIN-YMD      TO  KARRK-LASTYMD
+           END-IF
+      *    診療科履歴作成終了処理
+           PERFORM 45009-SRYKARRK-OUT-SEC
+      *
+           .
+       45099-SRYKARRK-ADD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2292,7 +2369,9 @@
       *    ワーク診療行為マスタ−が存在した時、削除する
            PERFORM 45002-WKSRYACT-DEL-SEC
       *    受診内容データに時間を設定し、更新する
-           PERFORM 45003-UKETUKE-SEC
+           IF      SPA-SYORIFLG        =   ZERO
+               PERFORM 45003-UKETUKE-SEC
+           END-IF
       *
       *    各帳票印刷
            PERFORM 45009-PRINT-SEC

@@ -389,6 +389,14 @@
                                        TO  SPA-ERRMSG
                    MOVE    "分散して入力して下さい。"
                                        TO  SPA-ERRMSG(31:)
+               WHEN    "K081"
+                   MOVE    "警告！個別療法が１０単位を超えます。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "分散して入力して下さい。"
+                                       TO  SPA-ERRMSG(37:)
+               WHEN    "K082"
+                   MOVE    "警告！個別療法が１０単位以下です。"
+                                       TO  SPA-ERRMSG
                WHEN    "0082"
                    MOVE    "初診料算定日より、６ヶ月以降です。"
                                        TO  SPA-ERRMSG
@@ -407,10 +415,15 @@
                    "算定上限回数を超えています。算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0092"
-                   MOVE    "理学療法等の１日の上限単位を超えています。"
+                   MOVE    "リハビリの１日の上限単位を超えています。"
                                        TO  SPA-ERRMSG
                    MOVE    "算定できません"
                                        TO  SPA-ERRMSG(43:)
+               WHEN    "K092"
+                   MOVE    "警告！"
+                                       TO  SPA-ERRMSG
+                   MOVE    "リハビリの１日単位が４単位を超えています。"
+                                       TO  SPA-ERRMSG(7:)
                WHEN    "0093"
                    MOVE    "個別療法と集団療法の混在はできません。"
                                        TO  SPA-ERRMSG
@@ -753,9 +766,9 @@
       *
                WHEN    "K140"
                    MOVE    "警告！手術が算定されています。"
-                                       TO  SPA-ERRMSG
+                                                TO  SPA-ERRMSG
                    MOVE    "注射料は算定できません。"
-                                       TO  SPA-ERRMSG(31:)
+                                                TO  SPA-ERRMSG(31:)
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.

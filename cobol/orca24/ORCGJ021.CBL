@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  03/11/10  レセプトコメント更新追加
+      *                                     生保単独チェック追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -56,17 +58,21 @@
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-RECECOM         PIC 9(01).
       *
            03  FLG-HKNCOMBICHK     PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-ATO-ROUJIN      PIC 9(01).
            03  FLG-MAE-ROUJIN      PIC 9(01).
+           03  FLG-ATO-SEIHO       PIC 9(01).
+           03  FLG-MAE-SEIHO       PIC 9(01).
            03  FLG-KOUSIN          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDX-R               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -127,6 +133,17 @@
       *    収納マスタ
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
+      *
+      *    レセプトコメント
+       01  RECECOM-REC.
+           COPY    "CPRECECOM.INC".
+      *
+      *
+      *    レセプトコメント
+       01  HZN-RECECOM-AREA.
+         02  HZN-RECECOM-REC           OCCURS  40.
+           COPY    "CPRECECOM.INC"     REPLACING
+                                   //RECECOM-// BY //HZN-RECECOM-//.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -228,6 +245,18 @@
       *    終了フラグのある時、終了とする
            IF      SPA-J021-ENDFLG    =   1
                PERFORM 210-BACK
+               GO      TO      100-INIT-EXT
+           END-IF
+      *    更新確認メッセージ表示
+           IF      SPA-J021-ENDFLG    =   9
+               IF      SPA-NYUGAIKBN       =   "2"
+                   MOVE    1               TO  SPA-J021-ENDFLG
+      *            処理終了のメッセージを表示する
+                   MOVE    "0010"          TO  SPA-ERRCD
+                   PERFORM 510-ERRSET-SEC
+               ELSE
+                   PERFORM 210-BACK
+               END-IF
                GO      TO      100-INIT-EXT
            END-IF
       *
@@ -404,6 +433,23 @@
                        MOVE    AGECHK-FTNRATEMEI   TO  SPA-J021-TFTNRATE
                                                          (SPA-J021-MAX)
                    END-IF
+      *            老人判定
+                   IF      AGECHK-ROUJIN       =   1
+                       MOVE    1               TO  SPA-NAI-TROUJIN
+                                                      (SPA-J021-MAX)
+                   END-IF
+      *            生保単独の場合
+                   IF     (COMB-HKNNUM         =   SPACE )  AND
+                          ((COMB-KOH1HKNNUM    =   "012" )  OR
+                           (COMB-KOH2HKNNUM    =   "012" )  OR
+                           (COMB-KOH3HKNNUM    =   "012" )  OR
+                           (COMB-KOH4HKNNUM    =   "012" ))
+                       IF      AGECHK-NENREI       >=  65
+                           MOVE    1           TO  SPA-NAI-TSEIHO
+                                                      (SPA-J021-MAX)
+                       END-IF
+                   END-IF
+      *
                    MOVE    COMB-TEKSTYMD       TO  WRK-SYMD
                    PERFORM 800-SEIWA-HEN-SEC
                    MOVE    WRK-HENYMDG         TO  SPA-J021-TTEKSTYMD
@@ -751,6 +797,8 @@
                                            TO  SPA-J021-MAE-FTNRATE
                    MOVE    SPA-NAI-TROUJIN (IDX)
                                            TO  FLG-MAE-ROUJIN
+                   MOVE    SPA-NAI-TSEIHO  (IDX)
+                                           TO  FLG-MAE-SEIHO
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
@@ -899,6 +947,7 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-ATO-ROUJIN
+           MOVE    ZERO                TO  FLG-ATO-SEIHO
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL     (IDX          >   SPA-J021-MAX)  OR
@@ -911,6 +960,8 @@
                                            TO  SPA-J021-ATO-FTNRATE
                    MOVE    SPA-NAI-TROUJIN (IDX)
                                            TO  FLG-ATO-ROUJIN
+                   MOVE    SPA-NAI-TSEIHO  (IDX)
+                                           TO  FLG-ATO-SEIHO
       *
                    IF     (SPA-NAI-TEKSTYMD (IDX)(1:6)
                                            <=  SPA-NAI-SRYYM  )  AND
@@ -953,16 +1004,33 @@
                GO      TO      4002-ATO-HKNCOMBI-EXT
            END-IF
       *
-           IF      FLG-ATO-ROUJIN      NOT =   ZERO
-               IF     (FLG-MAE-ROUJIN      =   FLG-ATO-ROUJIN )  OR
-                      (SPA-J02-ROUJIN      =   1              )
-                   CONTINUE
-               ELSE
-                   MOVE    "0004"              TO  SPA-ERRCD
+      *****IF      FLG-ATO-ROUJIN      NOT =   ZERO
+      *        IF     (FLG-MAE-ROUJIN      =   FLG-ATO-ROUJIN )  OR
+      *               (SPA-J02-ROUJIN      =   1              )
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    "0004"              TO  SPA-ERRCD
+      *            MOVE    2                   TO  SPA-J021-CUR
+      *            GO      TO      4002-ATO-HKNCOMBI-EXT
+      *        END-IF
+      *****END-IF
+      *
+           IF      FLG-MAE-ROUJIN      =   FLG-ATO-ROUJIN
+      *        どちらかがが生保単独ので場合
+               IF    ((FLG-MAE-SEIHO       =   1   )  OR
+                      (FLG-ATO-SEIHO       =   1   ))  AND
+                      (FLG-MAE-ROUJIN      =   1   )   AND
+                      (SPA-J02-ROUJIN      =   ZERO)
+                   MOVE    "0014"              TO  SPA-ERRCD
                    MOVE    2                   TO  SPA-J021-CUR
                    GO      TO      4002-ATO-HKNCOMBI-EXT
                END-IF
+           ELSE
+               MOVE    "0004"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-J021-CUR
+               GO      TO      4002-ATO-HKNCOMBI-EXT
            END-IF
+      *
            .
        4002-ATO-HKNCOMBI-EXT.
            EXIT.
@@ -1087,6 +1155,9 @@
       *    算定履歴
            PERFORM 300314-SANTEI-UPD-SEC
       *
+      *    レセプトコメント
+           PERFORM 300315-RECECOM-UPD-SEC
+      *
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-NYUGAIKBN       =   "2"
                    MOVE    1               TO  SPA-J021-ENDFLG
@@ -1095,6 +1166,12 @@
                    PERFORM 510-ERRSET-SEC
                ELSE
                    PERFORM 210-BACK
+               END-IF
+           ELSE
+      *        レセプトコメントを更新しない場合
+               IF      SPA-ERRCD       =   "0020"
+                   MOVE    9               TO  SPA-J021-ENDFLG
+                   PERFORM 510-ERRSET-SEC
                END-IF
            END-IF
            .
@@ -1368,6 +1445,124 @@
            .
        300314-SANTEI-UPD-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    レセプトコメント変更処理
+      *****************************************************************
+       300315-RECECOM-UPD-SEC          SECTION.
+      *
+           INITIALIZE                  HZN-RECECOM-AREA
+           MOVE    ZERO                TO  IDX-R
+      *
+      *    算定履歴
+           MOVE    SPACE               TO  RECECOM-REC
+           INITIALIZE                  RECECOM-REC
+           MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
+           MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+           MOVE    SPA-NYUGAIKBN       TO  RECECOM-NYUGAIKBN
+           MOVE    SPA-NAI-SRYYM       TO  RECECOM-SRYYM
+           MOVE    SPA-J021-MAE-HKNCOMBI
+                                       TO  RECECOM-HKNCOMBI
+      *
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "RECECOM-KEY4"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "RECECOM-KEY4"      TO  ORC-DBPATH
+               PERFORM 920-RECECOM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-RECECOM
+           END-IF
+           PERFORM
+               UNTIL    FLG-RECECOM    =   1
+               ADD     1                   TO  IDX-R
+               IF      IDX-R               >   40
+                   MOVE    "0011"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    RECECOM-REC     TO  HZN-RECECOM-REC(IDX-R)
+               END-IF
+      *
+               MOVE    "RECECOM-KEY4"      TO  ORC-DBPATH
+               PERFORM 920-RECECOM-READ-SEC
+           END-PERFORM
+      *
+           IF      IDX-R               =   ZERO
+               GO      TO     300315-RECECOM-UPD-EXT
+           END-IF
+      *
+           IF      IDX-R               >   1
+               MOVE    "0020"              TO  SPA-ERRCD
+               GO      TO     300315-RECECOM-UPD-EXT
+           END-IF
+      *
+      *    診療科が同じか、ゼロのもの
+           IF     (IDX-R               =   1    )  AND
+                 ((HZN-RECECOM-SRYKA(1)    =   ZERO )  OR
+                  (HZN-RECECOM-SRYKA(1)    =   SPA-J01-SRYKA))
+               CONTINUE
+           ELSE
+               GO      TO     300315-RECECOM-UPD-EXT
+           END-IF
+      *
+      *    １件だけの時、更新する
+           MOVE    SPACE               TO  RECECOM-REC
+           INITIALIZE                  RECECOM-REC
+           MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
+           MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+           MOVE    SPA-NYUGAIKBN       TO  RECECOM-NYUGAIKBN
+           MOVE    SPA-NAI-SRYYM       TO  RECECOM-SRYYM
+           MOVE    SPA-J021-MAE-HKNCOMBI
+                                       TO  RECECOM-HKNCOMBI
+      *
+           MOVE    HZN-RECECOM-REC(1)  TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+               PERFORM 920-RECECOM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-RECECOM
+           END-IF
+           IF      FLG-RECECOM         =   ZERO
+      *        削除
+               MOVE    HZN-RECECOM-REC(1)  TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+      *        保険変更
+               MOVE    HZN-RECECOM-REC(1)  TO  RECECOM-REC
+               MOVE    SPA-J021-ATO-HKNCOMBI
+                                           TO  RECECOM-HKNCOMBI
+               MOVE    RECECOM-REC         TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J021 RECECOM UPD ERR:"   MCP-RC
+                           ",KEY:" RECECOM-KEY
+                   MOVE    "0011"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+      *
+           .
+       300315-RECECOM-UPD-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
@@ -1435,6 +1630,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "診療行為の訂正で変更して下さい。"
                                        TO  SPA-ERRMSG(39:)
+               WHEN    "0014"
+                   MOVE    "生活保護単独は一般・老人の判別ができま"
+                                       TO  SPA-ERRMSG
+                   MOVE    "せん。診療行為の訂正で変更して下さい。"
+                                       TO  SPA-ERRMSG(39:)
                WHEN    "0005"
                    MOVE    "変更前保険組合せを入力して下さい。"
                                        TO  SPA-ERRMSG
@@ -1467,6 +1667,11 @@
                WHEN    "0011"
                    MOVE    "変換エラーです。"
                                        TO  SPA-ERRMSG
+               WHEN    "0020"
+                   MOVE    "レセプトコメントが複数あります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "レセプトコメントは更新しませんでした。"
+                                       TO  SPA-ERRMSG(31:)
            END-EVALUATE
       *
            MOVE    SPACE               TO  JERR
@@ -1635,6 +1840,27 @@
        980-SYUNOU-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    レセプトコメント読込
+      *****************************************************************
+       920-RECECOM-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  RECECOM-REC
+               MOVE    ZERO            TO  FLG-RECECOM
+           ELSE
+               INITIALIZE                  RECECOM-REC
+               MOVE    1               TO  FLG-RECECOM
+           END-IF
+      *
+           .
+       920-RECECOM-READ-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
