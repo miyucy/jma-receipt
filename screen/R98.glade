@@ -5,13 +5,9 @@
   <name>R98</name>
   <program_name>R98</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -29,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 04 Jan 2001 03:26:09 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -298,6 +294,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM01</name>
+      <x>40</x>
+      <y>80</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM01</name>
       <x>100</x>
@@ -380,6 +400,30 @@
       <text>12345678901234567890</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM02</name>
+      <x>40</x>
+      <y>104</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -468,6 +512,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM03</name>
+      <x>40</x>
+      <y>128</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM03</name>
       <x>100</x>
@@ -550,6 +618,30 @@
       <text>12345678901234567890</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM04</name>
+      <x>40</x>
+      <y>152</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -638,6 +730,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM05</name>
+      <x>40</x>
+      <y>176</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM05</name>
       <x>100</x>
@@ -720,6 +836,30 @@
       <text>12345678901234567890</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM06</name>
+      <x>40</x>
+      <y>200</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -808,6 +948,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM07</name>
+      <x>40</x>
+      <y>224</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM07</name>
       <x>100</x>
@@ -890,6 +1054,30 @@
       <text>12345678901234567890</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM08</name>
+      <x>40</x>
+      <y>248</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -978,6 +1166,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM09</name>
+      <x>40</x>
+      <y>272</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM09</name>
       <x>100</x>
@@ -1060,6 +1272,30 @@
       <text>12345678901234567890</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM10</name>
+      <x>40</x>
+      <y>296</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -1148,6 +1384,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM11</name>
+      <x>40</x>
+      <y>320</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM11</name>
       <x>100</x>
@@ -1230,6 +1490,30 @@
       <text>12345678901234567890</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM12</name>
+      <x>40</x>
+      <y>344</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -1318,6 +1602,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM13</name>
+      <x>40</x>
+      <y>368</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM13</name>
       <x>100</x>
@@ -1400,6 +1708,30 @@
       <text>12345678901234567890</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM14</name>
+      <x>40</x>
+      <y>392</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -1488,6 +1820,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM15</name>
+      <x>40</x>
+      <y>416</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM15</name>
       <x>100</x>
@@ -1570,6 +1926,30 @@
       <text>12345678901234567890</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM16</name>
+      <x>40</x>
+      <y>440</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -1658,6 +2038,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM17</name>
+      <x>40</x>
+      <y>464</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM17</name>
       <x>100</x>
@@ -1740,6 +2144,30 @@
       <text>12345678901234567890</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM18</name>
+      <x>40</x>
+      <y>488</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -1828,6 +2256,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM19</name>
+      <x>40</x>
+      <y>512</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM19</name>
       <x>100</x>
@@ -1910,6 +2362,30 @@
       <text>12345678901234567890</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM20</name>
+      <x>40</x>
+      <y>536</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -1998,6 +2474,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM21</name>
+      <x>40</x>
+      <y>560</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM21</name>
       <x>100</x>
@@ -2080,6 +2580,30 @@
       <text>12345678901234567890</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM22</name>
+      <x>40</x>
+      <y>584</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -2168,6 +2692,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM23</name>
+      <x>40</x>
+      <y>608</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM23</name>
       <x>100</x>
@@ -2253,6 +2801,30 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM24</name>
+      <x>40</x>
+      <y>632</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM24</name>
       <x>100</x>
@@ -2335,6 +2907,30 @@
       <text>12345678901234567890</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>RENNUM25</name>
+      <x>40</x>
+      <y>656</y>
+      <width>60</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:14:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZZZ</format>
     </widget>
 
     <widget>
@@ -2497,10 +3093,42 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>label166</name>
+      <x>50</x>
+      <y>50</y>
+      <width>40</width>
+      <height>20</height>
+      <label>»÷  πÊ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>SRYYMH</name>
       <x>112</x>
       <y>8</y>
       <width>200</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HYOUJIKBN</name>
+      <x>600</x>
+      <y>8</y>
+      <width>150</width>
       <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
