@@ -747,16 +747,6 @@
                        MOVE    1                    TO  SPA-GMN-CUR-41
                    END-IF
       *
-               WHEN    "0109"
-      *            一括変更の未設定項目発見の確認
-                   PERFORM 4901-NYUINACCT-UPD3-SEC
-                   MOVE    ZERO           TO  FLG-NYUINACT
-                   PERFORM 4901-NYUINACCT-UPD2-SEC
-                           UNTIL      FLG-NYUINACT   =   1
-                   MOVE    ZERO           TO  SPA-GMN-CUR-41
-      *
-                   PERFORM 490-TOROKU-CRE-SEC
-      *
                WHEN    "0110"
       *            最新入院履歴の変更の確認
                    IF      SPA-I4ID-FLG        =   "OK"
@@ -2789,6 +2779,20 @@
                GO      TO      41012-DAY-CHK-EXT
            END-IF.
            IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)      =  "1")      AND
+                 (SPA-GMN-TSRYCD-41 (IDX2)      NOT = W-YOYAKU)  AND
+                 (SPA-GMN-DAY-41 (IDX)          NOT = ZERO)      AND
+                 (SPA-WRK-CHK-KBN (IDX)             =  "2"  OR  "3")
+               MOVE    "0024"          TO  SPA-ERRCD
+               MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
+               GO      TO      41012-DAY-CHK-EXT
+           END-IF.
+           IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)      =  "1")      AND
+                 (SPA-GMN-TSRYCD-41 (IDX2)      NOT = W-YOYAKU)  AND
+                 (SPA-GMN-DAY-41 (IDX)              = ZERO)      AND
+                 (SPA-WRK-CHK-KBN (IDX)             =  "2"  OR  "3")
+               MOVE    "1"             TO  SPA-WRK-CHK-KBN (IDX)
+           END-IF.
+           IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)      =  "1")      AND
                  (SPA-GMN-TSRYCD-41 (IDX2)          = W-YOYAKU)  AND
                  (SPA-GMN-DAY-41 (IDX)          NOT = ZERO)      AND
                  (WRK-CHK-DAY (IDX)                 = ZERO)
@@ -2870,6 +2874,7 @@
       *
            MOVE    I41-KOMENTO         TO  SPA-GMN-KOMENTO-41.
            MOVE    05                  TO  SPA-GMN-CUR-41.
+           PERFORM 41013-DAY-CHK2-SEC.
       *
            IF     I41-KOMENTO          =   SPACE
                MOVE    03                  TO  SPA-GMN-CUR-41
@@ -3122,10 +3127,18 @@
                          UNTIL    IDX       >    SPA-WRK-KOMENTO-E
                   IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)    =  "1")     AND
                         (SPA-GMN-TSRYCD-41 (IDX2)    NOT = W-YOYAKU) AND
-                        (WRK-GMN-DAY (IDX)           NOT = ZERO)     AND
-                        (SPA-WRK-CHK-KBN (IDX)           = ALL SPACE)
+                        (SPA-WRK-KOMENTO-D           NOT = ZERO)     AND
+                        (SPA-GMN-TDAY-41 (IDX2 IDX)      = SPACE)    AND
+                        (SPA-WRK-CHK-KBN (IDX)           =  "2" OR "3")
                       MOVE    03           TO  SPA-GMN-CUR-41
                       MOVE    "0024"       TO  SPA-ERRCD
+                  END-IF
+                  IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)    =  "1")     AND
+                        (SPA-GMN-TSRYCD-41 (IDX2)    NOT = W-YOYAKU) AND
+                        (SPA-WRK-KOMENTO-D               = ZERO)     AND
+                        (SPA-GMN-TDAY-41 (IDX2 IDX)      = SPACE)    AND
+                        (SPA-WRK-CHK-KBN (IDX)           =  "2" OR "3")
+                      MOVE    "1"             TO  SPA-WRK-CHK-KBN (IDX)
                   END-IF
                   IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)    =  "1")     AND
                         (SPA-GMN-TSRYCD-41 (IDX2)        = W-YOYAKU) AND
@@ -5778,9 +5791,8 @@
       *
            IF     (SPA-WRK-KOMENTO-SRYCD   NOT =   SPACE)   AND
                   (SPA-WRK-KOMENTO-E           =   99)
-               MOVE    ZERO           TO  FLG-NYUINACT
                PERFORM 4901-NYUINACCT-UPD2-SEC
-                       UNTIL      FLG-NYUINACT   =   1
+                       UNTIL    SPA-WRK-KOMENTO-SRYYM  >  WRK-SRYYM-BIG
            END-IF.
       *
        4901-NYUINACCT-UPD-EXT.
@@ -5868,20 +5880,11 @@
                    UNTIL       IDY     >   31
                IF    WRK-CHK-DAY (IDY)   =   ZERO
                    MOVE    SPACE         TO  SPA-WRK-CHK-KBN (IDY)
+               ELSE
+                   MOVE    "1"           TO  SPA-WRK-CHK-KBN (IDY)
                END-IF
            END-PERFORM.
-           MOVE    SPACE         TO  SPA-IIDCD.
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   IDV
-               IF    SPA-WRK-CHK-KBN (IDY)   =   SPACE
-                   MOVE    "0109"        TO  SPA-IIDCD
-                   MOVE    1             TO  FLG-NYUINACT
-               END-IF
-           END-PERFORM.
-           IF    SPA-IIDCD   =   SPACE
-               MOVE    "OK"          TO  SPA-I4ID-FLG
-               PERFORM 4901-NYUINACCT-UPD3-SEC
-           END-IF.
+           PERFORM 4901-NYUINACCT-UPD3-SEC.
       *
        4901-NYUINACCT-UPD2-EXT.
            EXIT.
@@ -5946,20 +5949,13 @@
                    MOVE    ZERO                TO  NACCT-ZAIKAISU
                    PERFORM   VARYING  IDX  FROM  1  BY  1
                              UNTIL    IDX    >   IDV
-                       IF    SPA-I4ID-FLG   =   "OK"
-                           MOVE    SPA-WRK-KOMENTO-D
-                                                  TO  NACCT-DAY  (IDX)
-                           ADD     SPA-WRK-KOMENTO-D
-                                                  TO  NACCT-ZAIKAISU
+                       IF    SPA-WRK-CHK-KBN (IDX)   =   SPACE
+                           MOVE    ZERO         TO  NACCT-DAY  (IDX)
                        ELSE
-                           IF    SPA-WRK-CHK-KBN (IDX)   =   SPACE
-                               MOVE    ZERO         TO  NACCT-DAY  (IDX)
-                           ELSE
-                               MOVE    SPA-WRK-KOMENTO-D
-                                                    TO  NACCT-DAY (IDX)
-                               ADD     SPA-WRK-KOMENTO-D
-                                                    TO  NACCT-ZAIKAISU
-                           END-IF
+                           MOVE    SPA-WRK-KOMENTO-D
+                                                TO  NACCT-DAY (IDX)
+                           ADD     SPA-WRK-KOMENTO-D
+                                                TO  NACCT-ZAIKAISU
                        END-IF
                    END-PERFORM
       *
@@ -6260,22 +6256,25 @@
       *
            EVALUATE    SPA-IIDCD
                WHEN    "0102"
-               MOVE
-           "剤が修正されています。ＯＫで修正分は反映されずに終了します"
-                                       TO  WRK-JIDMSG
+                   MOVE    "剤が修正されています。ＯＫで修正分は反映"
+                                       TO  WRK-JIDMSG1
+                   MOVE    "されずに終了します"
+                                       TO  WRK-JIDMSG2
                WHEN    "0103"
-               MOVE
-               "剤選択されました。現在選択中の内容はクリアされます。"
-                                       TO  WRK-JIDMSG
+                   MOVE    "剤選択されました。現在選択中の内容はクリ"
+                                       TO  WRK-JIDMSG1
+                   MOVE    "アされます。"
+                                       TO  WRK-JIDMSG2
                WHEN    "0104"
                    MOVE    "現在までの修正分を登録後、受診履歴の選択"
                                        TO  WRK-JIDMSG1
                    MOVE    "で当日の剤内容を追加修正します"
                                        TO  WRK-JIDMSG2
                WHEN    "0106"
-               MOVE
-           "診療年月が変更されました。現在までの修正分を登録します。"
-                                       TO  WRK-JIDMSG
+                   MOVE    "診療年月が変更されました。現在までの修正"
+                                       TO  WRK-JIDMSG1
+                   MOVE    "分を登録します。"
+                                       TO  WRK-JIDMSG2
                WHEN    "0107"
                    MOVE    "入院科が変更されました。現在までの修正分"
                                        TO  WRK-JIDMSG1
@@ -6285,11 +6284,6 @@
                    MOVE    "診療年月が変更されました。現在までの修正"
                                        TO  WRK-JIDMSG1
                    MOVE    "分を登録します。"
-                                       TO  WRK-JIDMSG2
-               WHEN    "0109"
-                   MOVE    "入院基本料が未設定の項目があります。未設"
-                                       TO  WRK-JIDMSG1
-                   MOVE    "定部分も登録します。"
                                        TO  WRK-JIDMSG2
                WHEN    "0110"
                    MOVE    "最新でない入院履歴を更新することになりま"
