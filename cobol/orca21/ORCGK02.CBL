@@ -93,13 +93,13 @@
        01  FILE-NAME1.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
-           03  FILE-TERMID1        PIC X(16)   VALUE   SPACE.
+           03  FILE-TERMID1        PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(04)   VALUE   ".TXT".
       *    パラメタファイル名
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "K01PARA".
-           03  FILE-TERMID2        PIC X(16)   VALUE   SPACE.
+           03  FILE-TERMID2        PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
        01  WRK-DATA-REC.
@@ -4478,6 +4478,8 @@
                       (WRK-IDX2            =   WRK-IN-MAP-IDX)
                    MOVE    "1"                 TO  SPA-COM-IN
                                                           (SPA-GMN-IDX)
+                   MOVE    "1"                 TO  SPA-COM-IN2
+                                                           (SPA-GMN-IDX)
                    IF     (K02-INPUTCD (WRK-IDX2)  =   SPACE )  AND
                           (SPA-MAE-INPUTCD (SPA-GMN-IDX)
                                                    =   SPACE )  AND

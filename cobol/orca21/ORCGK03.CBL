@@ -66,7 +66,7 @@
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "K01PARA".
-           03  FILE-TERMID2        PIC X(16)   VALUE   SPACE.
+           03  FILE-TERMID2        PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    画面色等
@@ -4414,6 +4414,10 @@
                    END-IF
                END-IF
            END-IF
+      *TEST!!!
+      *    MOVE    2             TO  FLG-CLAIM
+      *    MOVE    "1"           TO  SPA-K03X-CODE
+      *TEST!!!
       *
            IF      FLG-CLAIM           =   2
                CONTINUE

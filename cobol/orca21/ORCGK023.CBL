@@ -55,7 +55,7 @@
        01  FILE-NAME1.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
-           03  FILE-TERMID1        PIC X(16)   VALUE   SPACE.
+           03  FILE-TERMID1        PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *

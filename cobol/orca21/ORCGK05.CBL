@@ -71,14 +71,14 @@
        01  FILE-NAME1.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "K05SPASCR".
-           03  FILE-TERMID1        PIC X(16)   VALUE   SPACE.
+           03  FILE-TERMID1        PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    パラメタファイル名
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "K01PARA".
-           03  FILE-TERMID2        PIC X(16)   VALUE   SPACE.
+           03  FILE-TERMID2        PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    画面色等
@@ -248,6 +248,10 @@
       *
            03  WRK-MOJISU          PIC 9(04).
            03  WRK-FREE            PIC 9(04).
+      *
+      *    入力名称
+      **** 03  WRK-MEISYO              PIC X(62).
+      *****03  IDX-MEI                 PIC 9(04).
       *
            03  WRK-KEI             PIC 9(08).
            03  WRK-IDX             PIC 9(03).
