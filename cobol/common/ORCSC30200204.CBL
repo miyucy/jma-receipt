@@ -1290,10 +1290,7 @@
                ELSE
                    IF     (TBL-TEN-IDX  (IDY)  >   ZERO ) AND
                           (TBL-TEN-SRYCD(IDY)  NOT =   "130004410")
-      *                手技料エラー
-      *****************MOVE    "9015"              TO  SPA-ERRCD
-      *                MOVE    TBL-TEN-IDX (IDY)   TO  IDX-K
-      **************** MOVE    "1"             TO  WRK-COM-CUR (IDX-K)
+      *                液量エラー
                        MOVE    TBL-TEN-IDX (IDY)   TO  IDX-KBN
                        IF      WRK-COM-KZMFLG (IDX-KBN)    =   SPACE
                            MOVE    "K012"          TO  WRK-ERRCD
@@ -1327,9 +1324,9 @@
       *                MOVE    "1"             TO  WRK-COM-CUR
       *                                                   (IDX-KBN)
       ****         END-IF
-                       MOVE    "9019"              TO  SPA-ERRCD
-                       MOVE    TBL-TEN-IDX (IDY)   TO  IDX-K
-                       MOVE    "1"                 TO  WRK-COM-CUR
+                   MOVE    "9019"              TO  SPA-ERRCD
+                   MOVE    TBL-TEN-IDX (IDY)   TO  IDX-K
+                   MOVE    "1"                 TO  WRK-COM-CUR
                                                               (IDX-K)
                END-IF
       *        手術が存在する時、点滴手技は算定できない
