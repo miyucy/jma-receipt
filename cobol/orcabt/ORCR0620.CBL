@@ -30,6 +30,7 @@
       *  01.00.01    NACL-藤原    03.03.03  診療科数１０から２０へ変更
       *  01.00.02    NACL-藤原    03/03/07  レセプト記載外公費情報追加
       *  01.00.03    NACL-藤原    03/03/11  種別不明の情報を編集
+      *  01.00.04    NACL-藤原    03/03/15  入院履歴から診療科の編集を行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -197,6 +198,7 @@
        01  IDX-AREA.
            03  IDX                                     PIC 9(03).
            03  IDY                                     PIC 9(03).
+           03  IDW                                     PIC 9(03).
            03  IDX2                                    PIC 9(03).
            03  IDX3                                    PIC 9(02).
            03  IDX4                                    PIC 9(02).
@@ -583,12 +585,73 @@
            CALL    "ORCSPTID"           USING   ORCSPTIDAREA
                                                 SPA-1009-TBL
            MOVE    SPTID-PTNUM          TO  RECE62-PTNUM
+      *
+      *    保険組合せ番号情報
+           PERFORM VARYING IDX    FROM   1   BY   1
+                   UNTIL   IDX          >     10
+                   OR          RECE61-HKNCOMBI-O(IDX)  =   ZERO
+               MOVE    RECE61-HKNCOMBI-O(IDX)
+                                       TO  RECE62-HKNCOMBI(IDX)
+           END-PERFORM    
       *    診療科情報のセット
-           PERFORM   VARYING   IDX   FROM   1   BY   1
-                     UNTIL    (IDX      >   20)    OR
-                              (RECE61-SRYKA(IDX)  =   SPACE)
-               MOVE  RECE61-SRYKA(IDX)    TO   RECE62-SRYKA(IDX)
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       20
+                   OR      RECE61-SRYKA (IDX)  =   SPACE
+               MOVE    RECE61-SRYKA (IDX)  TO  RECE62-SRYKA (IDX)
            END-PERFORM
+      *
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    RECE61-HOSPID       TO  PTNYUINRRK-HOSPID
+           MOVE    RECE61-PTID         TO  PTNYUINRRK-PTID
+           MOVE    RECE61-SRYYM        TO  PTNYUINRRK-NYUINYMD (1:6)
+           MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING   MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+               PERFORM 900-PTNYUINRRK-KEY12-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTNYUINRRK12    
+           END-IF
+           PERFORM                     UNTIL   FLG-PTNYUINRRK12    =   1
+               IF      PTNYUINRRK-NYUINYMD (1:6)
+                                           =   RECE62-SRYYM
+               OR      PTNYUINRRK-TAIINYMD (1:6)
+                                           >=  RECE62-SRYYM
+                   PERFORM VARYING IDW FROM    1   BY  1
+                           UNTIL   IDW >       20
+                           OR      PTNYUINRRK-NYUINKA
+                                               =   RECE62-SRYKA (IDW)
+                       IF      RECE62-SRYKA (IDW)  =   SPACE  
+                           PERFORM VARYING IDX FROM    1   BY  1
+                                   UNTIL   IDX >       10
+                                   OR      RECE62-HKNCOMBI (IDX)
+                                                       =   ZERO
+                               IF      RECE62-HKNCOMBI (IDX)   =
+                                               PTNYUINRRK-HKNCOMBINUM
+                                   MOVE    PTNYUINRRK-NYUINKA  
+                                               TO  RECE62-SRYKA (IDW)
+                                   MOVE    10  TO  IDX
+                               END-IF
+                           END-PERFORM
+                           MOVE    20          TO  IDW
+                       END-IF
+                   END-PERFORM
+               END-IF
+               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+               PERFORM 900-PTNYUINRRK-KEY12-READ-SEC
+           END-PERFORM
+      *                 
+           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING   MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+
       *    審査支払機関
            IF      RECE61-HKNNUM        =   "060"   OR    "067"
                MOVE    2                TO  RECE62-TEISYUTUSAKI
@@ -842,14 +905,6 @@
       *
       *    主保険給付割合のセット
            PERFORM   KYURATE-SET-SEC
-      *
-      *    保険組合せ番号情報
-           PERFORM VARYING IDX    FROM   1   BY   1
-                   UNTIL   IDX          >     10
-                   OR          RECE61-HKNCOMBI-O(IDX)  =   ZERO
-               MOVE    RECE61-HKNCOMBI-O(IDX)
-                                       TO  RECE62-HKNCOMBI(IDX)
-           END-PERFORM    
       *
       *    組合せ公費保険番号情報のセット
            PERFORM   KOHNUMHC-SET-SEC

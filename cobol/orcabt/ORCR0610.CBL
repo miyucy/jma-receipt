@@ -29,6 +29,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Æ£¸¶    03.03.03  ¿ÇÎÅ²Ê¿ô£±£°¤«¤é£²£°¤ØÊÑ¹¹
       *  01.00.02    NACL-Æ£¸¶    03/03/11  ¼ïÊÌÉÔÌÀ¤Î¾ðÊó¤òÊÔ½¸
+      *  01.00.03    NACL-Æ£¸¶    03/03/15  Æþ±¡²ñ·×¤«¤é¤Î¿ÇÎÅ²Ê¤ÎÊÔ½¸¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -185,6 +186,7 @@
                05  WRK-SRYYM           PIC 9(06).
                05  WRK-SRYDD           PIC 9(02).  
            03  WRK-SYOKBN              PIC X(01).
+           03  WRK-DBKBN               PIC X(01).
       *
            03  WRK-STYMD               PIC X(08).
            03  WRK-EDYMD               PIC X(08).
@@ -594,6 +596,8 @@
            END-IF  
       *
       *    ¿ÇÎÅ²ñ·×ÆÉ¤ß¹þ¤ß¡Ê´µ¼Ô£É£Ä¡¢ÊÝ¸±ÁÈ¹ç¤»¡¢¿ÇÎÅ²Ê½ç¡Ë
+      *
+           MOVE    "1"                 TO  WRK-DBKBN 
       *      
            INITIALIZE                  SRYACCT-REC
            MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
@@ -626,6 +630,8 @@
                                         MCPDATA-REC
       *
       *    Æþ±¡²ñ·×ÆÉ¤ß¹þ¤ß¡Ê´µ¼Ô£É£Ä¡¢¿ÇÎÅ²Ê¡¢ºÞ¼±ÊÌ¶èÊ¬½ç¡Ë
+      *
+           MOVE    "2"                 TO  WRK-DBKBN 
       *
            MOVE    LOW-VALUE           TO  KEY-AREA
       *     
@@ -1032,9 +1038,6 @@
                                                    WRK-ERR-HKNCOMBINUM
                        END-IF        
       *
-                    DISPLAY "HENSYU-ERR=" WRK-TEISEIKBN "#" 
-                                          WRK-ERR-ERRKBN "##"
-      *
                        PERFORM 200122-NYUINACCT-HENSYU-SEC
                    END-IF 
                END-PERFORM
@@ -1132,23 +1135,7 @@
       *****************************************************************
        200122-NYUINACCT-HENSYU-SEC           SECTION.
       *
-      *        ¥ì¥»¥×¥È¿ÇÎÅ²Ê¡ÊµìÁí¹çÉÂ±¡¤Î¤È¤­¡Ë
-           IF      SYS-1001-HOSPSBT1   =   1
-               INITIALIZE                  SYS-1005-REC
-               MOVE    "1005"              TO  SYS-1005-KANRICD
-               MOVE    KEY-O-SRYKA         TO  SYS-1005-KBNCD
-               IF      WRK-PARA-SYOKBN     =   "1"
-                   MOVE    SYS-2001-SRYYM      TO  ORC-DBYMD(1:6)
-               ELSE
-                   MOVE    SYS-2002-SRYYM      TO  ORC-DBYMD(1:6)
-               END-IF
-               MOVE    "01"                TO  ORC-DBYMD(7:2)
-               MOVE    SYS-1005-REC        TO  MCPDATA-REC
-               PERFORM 910-SYSKANRI-INV-SEC
-               MOVE    MCPDATA-REC         TO  SYS-1005-REC
-           ELSE
-               INITIALIZE                   SYS-1005-REC
-           END-IF
+           INITIALIZE                   SYS-1005-REC
       *
       *    ºÇ½ª¿ÇÎÅÆü
            MOVE    NACCT-SRYYM         TO  WRK-SRYYM
@@ -1408,7 +1395,11 @@
       *
            PERFORM 20012-KOHID-HENSYU-SEC
            MOVE    COMB-HKNCOMBINUM   TO  WRK-RECE61-HKNCOMBI-O (1)
-           MOVE    KEY-O-SRYKA        TO  WRK-RECE61-SRYKA      (1)
+           IF      WRK-DBKBN          =   "2"
+               CONTINUE
+           ELSE              
+               MOVE    ACCT-SRYKA     TO  WRK-RECE61-SRYKA      (1)
+           END-IF
            MOVE    PTHKN-TEKSTYMD     TO  WRK-RECE61-TEKSTYMDX  (1)
            MOVE    PTHKN-TEKEDYMD     TO  WRK-RECE61-TEKEDYMDX  (1)
            MOVE    PTHKN-CONTKBN      TO  WRK-RECE61-CONTKBN
@@ -1457,17 +1448,21 @@
                    END-IF
                END-IF
            END-PERFORM
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       20
-               IF      WRK-RECE61-SRYKA    (IDX)       =   SPACE
-                   MOVE    ACCT-SRYKA      TO  WRK-RECE61-SRYKA (IDX)
-                   MOVE    20              TO  IDX
-               ELSE
-                   IF      WRK-RECE61-SRYKA    (IDX)   =   ACCT-SRYKA
-                       MOVE    20                  TO  IDX
-                   END-IF
-               END-IF    
-           END-PERFORM
+           IF      WRK-DBKBN               =   "2"
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       20
+                   IF      WRK-RECE61-SRYKA    (IDX)       =   SPACE
+                       MOVE    ACCT-SRYKA  TO  WRK-RECE61-SRYKA (IDX)
+                       MOVE    20          TO  IDX
+                   ELSE
+                       IF      WRK-RECE61-SRYKA  (IDX) =   ACCT-SRYKA
+                           MOVE    20          TO  IDX
+                       END-IF
+                   END-IF    
+               END-PERFORM
+           END-IF
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
                IF      WRK-RECE61-TEKSTYMDX (IDX)  =   SPACE
@@ -1727,6 +1722,8 @@
                                            MCPDATA-REC
       *
       *        ¿ÇÎÅ²ñ·×ÆÉ¤ß¹þ¤ß
+           MOVE    "1"                 TO  WRK-DBKBN 
+      *      
            INITIALIZE                  SRYACCT-REC
            MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
            MOVE    SYS-2002-PTID       TO  ACCT-PTID
@@ -1759,6 +1756,8 @@
                                         MCPDATA-REC
       *
       *        Æþ±¡²ñ·×ÆÉ¤ß¹þ¤ß
+           MOVE    "2"                 TO  WRK-DBKBN 
+      *      
       *
            MOVE    LOW-VALUE           TO  KEY-AREA
       *     
@@ -2112,7 +2111,8 @@
            IF      FLG-NYUINACCT       =   ZERO
                MOVE    NACCT-PTID          TO  KEY-N-PTID 
       *********MOVE    NACCT-HKNCOMBI      TO  KEY-N-HKNCOMBI
-               MOVE    NACCT-SRYKA         TO  KEY-N-SRYKA
+      *********MOVE    NACCT-SRYKA         TO  KEY-N-SRYKA
+               MOVE    SPACE               TO  KEY-N-SRYKA
            END-IF
            .
        900-NYUINACCT-READ-EXT.
