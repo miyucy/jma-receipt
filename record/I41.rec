@@ -157,7 +157,7 @@ I41	{
 				item	{
 					value0	varchar(3);
 					value1	varchar(60);
-					value2	varchar(5);
+					value2	varchar(7);
 					value3	varchar(2);
 					value4	varchar(2);
 					value5	varchar(2);
@@ -199,8 +199,8 @@ I41	{
 				row int;
 				rowattr int;
 				item	{
-					value0	varchar(8);
-					value1	varchar(32);
+					value0	varchar(4);
+					value1	varchar(50);
 				}	[30];
 				select	bool[30];
 			};

@@ -2042,7 +2042,7 @@
 	  <last_modification_time>Thu, 10 Oct 2002 06:00:12 GMT</last_modification_time>
 	</signal>
 	<columns>34</columns>
-	<column_widths>29,211,40,17,15,15,15,15,15,16,16,15,15,15,15,15,16,17,15,16,15,15,15,16,15,16,15,15,15,15,15,15,16,15</column_widths>
+	<column_widths>29,211,48,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>

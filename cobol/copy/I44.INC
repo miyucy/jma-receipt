@@ -36,13 +36,7 @@
                 04  I44-VALUE   PIC X(9).
               03  I44-SEX.
                 04  I44-VALUE   PIC X(2).
-              03  I44-HKNCOMBI.
-                04  I44-VALUE   PIC X(40).
               03  I44-SRYKA.
                 04  I44-VALUE   PIC X(10).
-              03  I44-RATE.
-                04  I44-VALUE   PIC X(6).
-              03  I44-RRKYMD.
-                04  I44-VALUE   PIC X(13).
               03  I44-DAY       OCCURS  31.
                 04  I44-VALUE   PIC X(2).

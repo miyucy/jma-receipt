@@ -6,19 +6,7 @@ I48	{
 		SENTAKU	{
 			value	varchar(30);
 		};
-		SELNUM1	{
-			value	varchar(3);
-		};
-		SELNUM2	{
-			value	varchar(3);
-		};
-		SELNUM3	{
-			value	varchar(3);
-		};
-		SELNUM4	{
-			value	varchar(3);
-		};
-		SELNUM5	{
+		SELNUM	{
 			value	varchar(3);
 		};
 		scrolledwindow26	{
