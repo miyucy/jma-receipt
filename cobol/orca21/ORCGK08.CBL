@@ -2957,6 +2957,8 @@
                        MOVE    LNK-SYUNOU2-REC (IDS1)
                                            TO  SYUNOU-REC
                    ELSE
+                       MOVE    LNK-SYUNOU2-REC (IDS1)
+                                               TO  WRK-SYUNOU-REC
                        PERFORM 450141-SYUNOU-ADD-HEN-SEC
                    END-IF
                END-IF
@@ -2975,8 +2977,6 @@
       *    収納更新・科合計追加処理
       *****************************************************************
        450141-SYUNOU-ADD-HEN-SEC             SECTION.
-      *
-           MOVE    LNK-SYUNOU2-REC (IDS1)  TO  WRK-SYUNOU-REC
       *
            ADD     WRK-SYU-TAX-TAISHOU TO  SYU-TAX-TAISHOU
            ADD     WRK-SYU-TAX-MONEY   TO  SYU-TAX-MONEY
@@ -3031,7 +3031,7 @@
            END-PERFORM
       *
            .
-       45012-SYUNOU-SYORI-EXT.
+       450141-SYUNOU-ADD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3105,29 +3105,23 @@
                IF      LNK-SYU2-SRYKA (IDS1)   =   ZERO
                    MOVE    LNK-SYU2-HKNCOMBINUM(IDS1)
                                                TO  WRK-HKNCOMBI
-                   MOVE    LNK-SYUNOU2-REC (IDS1)  TO  SYUNOU-REC
-                   INITIALIZE                  SYU-RSI-TOTAL
-                   INITIALIZE                  SYU-SKYMONEY-TAX-SAI
-                   INITIALIZE                  SYU-SKYMONEY
-                   INITIALIZE                  SYU-NYUKIN-TOTAL
-                   INITIALIZE                  SYU-HKNTEKMONEY
-                   PERFORM VARYING     IDS2    FROM    1   BY  1
-                           UNTIL       IDS2    >   LNK-SYUNOU2-MAX
-                       IF     (LNK-SYU2-HKNCOMBINUM(IDS2)
+                   MOVE    SPACE               TO  SYUNOU-REC
+                   INITIALIZE                  SYUNOU-REC
+                   PERFORM VARYING     IDS3    FROM    1   BY  1
+                           UNTIL       IDS3    >   LNK-SYUNOU2-MAX
+                       IF     (LNK-SYU2-HKNCOMBINUM(IDS3)
                                                =   WRK-HKNCOMBI ) AND
-                              (LNK-SYU2-SRYKA (IDS2)
+                              (LNK-SYU2-SRYKA (IDS3)
                                            NOT =   ZERO  )
-                           ADD     LNK-SYU2-RSI-TOTAL(IDS2)
-                                               TO  SYU-RSI-TOTAL
-                           ADD     LNK-SYU2-SKYMONEY-TAX-SAI(IDS2)
-                                               TO  SYU-SKYMONEY-TAX-SAI
-                           ADD     LNK-SYU2-SKYMONEY (IDS2)
-                                               TO  SYU-SKYMONEY
-                           ADD     LNK-SYU2-NYUKIN-TOTAL(IDS2)
-                                               TO  SYU-NYUKIN-TOTAL
-      *                    保険適用金額
-                           ADD     LNK-SYU2-HKNTEKMONEY(IDS2)
-                                               TO  SYU-HKNTEKMONEY
+                           IF      SYU-PTID        =   ZERO
+                               MOVE    LNK-SYUNOU2-REC (IDS3)
+                                                   TO  SYUNOU-REC
+                               MOVE    ZERO        TO  SYU-SRYKA
+                           ELSE
+                               MOVE    LNK-SYUNOU2-REC (IDS3)
+                                                   TO  WRK-SYUNOU-REC
+                               PERFORM 450141-SYUNOU-ADD-HEN-SEC
+                           END-IF
                        END-IF
                    END-PERFORM
                    MOVE    SYUNOU-REC      TO  LNK-SYUNOU2-REC (IDS1)

@@ -1108,14 +1108,38 @@
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
                MOVE    SPA-SYUNOU-REC (IDX)    TO  SYUNOU-REC
       *
-               IF      SYU-DENPNUM     =   ZERO
+               IF     (SYU-DENPNUM     =   ZERO  )  OR
+                      (SYU-SRYKA       =   ZERO  )
                    CONTINUE
                ELSE
-                   IF      SYU-SRYKA       =   ZERO
-                       PERFORM 31091-SYUTTL-MAE-SEC
-                   ELSE
-                       PERFORM 31092-SYUNOU-MAE-SEC
+                   PERFORM 31092-SYUNOU-MAE-SEC
+                   MOVE    SPA-SYUNOU-REC (IDX)    TO  SYUNOU-REC
+      *            º£²óÀÁµá³Û ¡Ý Á°²óÀÁµá³Û
+      *            ÀÁµá¶â³ÛÄûÀµº¹³Û
+                   COMPUTE SPA-TEI-SKYMONEY (IDX)
+                                           =   SYU-SKYMONEY
+                                           -   SPA-MAE-SKYMONEY (IDX)
+      *            ¾ÃÈñÀÇ¡ÊºÆ·Ç¡ËÄûÀµº¹³Û
+                   COMPUTE SPA-TEI-SKYMONEY-TAX-SAI (IDX)
+                                           =   SYU-SKYMONEY-TAX-SAI
+                                           -   SPA-MAE-SKYMONEY-TAX-SAI
+                                                                (IDX)
+      *            ¥¯¥ê¥¢¤Î»þ¡¢¥¼¥í¤È¤¹¤ë
+                   IF      SPA-IDX-KOUI        =   ZERO
+                       MOVE    ZERO        TO  SPA-TEI-SKYMONEY (IDX)
+                       MOVE    ZERO        TO  SPA-TEI-SKYMONEY-TAX-SAI
+                                                            (IDX)
                    END-IF
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SYUNOU-MAX
+               MOVE    SPA-SYUNOU-REC (IDX)    TO  SYUNOU-REC
+      *
+               IF     (SYU-DENPNUM NOT =   ZERO  )  AND
+                      (SYU-SRYKA       =   ZERO  )
+                   PERFORM 31091-SYUTTL-MAE-SEC
                    MOVE    SPA-SYUNOU-REC (IDX)    TO  SYUNOU-REC
       *            º£²óÀÁµá³Û ¡Ý Á°²óÀÁµá³Û
       *            ÀÁµá¶â³ÛÄûÀµº¹³Û
@@ -1178,26 +1202,27 @@
        31091-SYUTTL-MAE-SEC             SECTION.
       *
       *    Ê£¿ô²Ê¤Þ¤È¤á½¸·×
-           IF      SPA-KAGRPFLG        =   "0"
-               INITIALIZE                  SYUTTL-REC
-               MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID 
-               MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN 
-               MOVE    SYU-PTID            TO  SYUTTL-PTID 
-               MOVE    SYU-DENPNUM         TO  SYUTTL-DENPNUM 
-               MOVE    SYUTTL-REC          TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
+      *****IF      SPA-KAGRPFLG        =   "0"
+           INITIALIZE                  SYUTTL-REC
+           MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID 
+           MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN 
+           MOVE    SYU-PTID            TO  SYUTTL-PTID 
+           MOVE    SYU-DENPNUM         TO  SYUTTL-DENPNUM 
+           MOVE    SYUTTL-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
                MOVE    "SYUTOTAL-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "SYUTOTAL-KEY"        TO  ORC-DBPATH
-                   PERFORM 981-SYUTTL-READ-SEC
-               ELSE
-                   MOVE    1               TO  FLG-SYUTTL
-                   INITIALIZE              SYUTTL-REC
-               END-IF
+               PERFORM 981-SYUTTL-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYUTTL
+               INITIALIZE              SYUTTL-REC
+           END-IF
+           IF      FLG-SYUTTL          =   ZERO
       *        ÀÁµá¶â³Û
                MOVE    SYUTTL-SKYMONEY     TO  SPA-MAE-SKYMONEY (IDX)
       *        Æþ¶â¹ç·×³Û
@@ -1210,7 +1235,7 @@
       *        Æ±¤¸ÊÝ¸±¤ÎÁ°ÀÁµá³Û¤ò²Ã»»¤¹¤ë
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL       IDX2    >   SPA-SYUNOU-MAX
-                   MOVE    SPA-SYUNOU-REC (IDX)    TO  WRK-SYUNOU-REC
+                   MOVE    SPA-SYUNOU-REC (IDX2)   TO  WRK-SYUNOU-REC
                    IF     (SYU-HKNCOMBINUM     =   WRK-SYU-HKNCOMBINUM)
                      AND  (WRK-SYU-SRYKA   NOT =   ZERO  )
                        ADD     SPA-MAE-SKYMONEY (IDX2)
@@ -1257,12 +1282,13 @@
                    MOVE    WRK-SEIKYU      TO  SYU-NYUKIN-TOTAL
                END-IF
       *
-               IF      SPA-SYORIFLG        =   1
-                   IF      SPA-GOK-SKYMONEY    <   SYU-NYUKIN-TOTAL
-                       MOVE    SPA-GOK-SKYMONEY
-                                               TO  SYU-NYUKIN-TOTAL
-                   END-IF
-               END-IF
+      *!       IF      SPA-SYORIFLG        =   1
+      *            IF     (SPA-GOK-SKYMONEY    >   ZERO )  AND
+      *                   (SPA-GOK-SKYMONEY    <   SYU-NYUKIN-TOTAL)
+      *                MOVE    SPA-GOK-SKYMONEY
+      *                                        TO  SYU-NYUKIN-TOTAL
+      *            END-IF
+      *!       END-IF
                MOVE    SYUNOU-REC          TO  SPA-SYUNOU-REC (IDX)
            END-PERFORM
       *
@@ -1279,6 +1305,8 @@
            MOVE    ZERO                TO  FLG-FUKU
            INITIALIZE                  WRK-TEISEI-AREA
            MOVE    ZERO                TO  SPA-GOK-NYUKIN
+           MOVE    ZERO                TO  SPA-NAI-SEIKYU
+           MOVE    ZERO                TO  SPA-NAI-SKYMONEY-TAX-SAI
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
@@ -1306,7 +1334,7 @@
            IF     (SPA-SYUNOU-IDX      >   ZERO ) AND
                   (SPA-DENPNUM         >   ZERO )
       *        ÄûÀµÁ°
-               MOVE    SPA-TEI-SKYMONEY(SPA-SYUNOU-IDX)
+               ADD     SPA-TEI-SKYMONEY(SPA-SYUNOU-IDX)
                                            TO  SPA-NAI-SEIKYU
                ADD     SPA-TEI-SKYMONEY-TAX-SAI(SPA-SYUNOU-IDX)
                                            TO  SPA-NAI-SKYMONEY-TAX-SAI
@@ -1430,6 +1458,13 @@
                                            TO  WRK-NYUKIN-TOTAL
            ADD     SPA-MAE-SKYMONEY-TAX-SAI(IDX)
                                            TO  WRK-SKYMONEY-TAX-SAI
+           IF     (WRK-SYU-DENPNUM     >   ZERO )
+      *        ÄûÀµÁ°
+               ADD     SPA-TEI-SKYMONEY(IDX)
+                                           TO  SPA-NAI-SEIKYU
+               ADD     SPA-TEI-SKYMONEY-TAX-SAI(IDX)
+                                           TO  SPA-NAI-SKYMONEY-TAX-SAI
+           END-IF
       *
             .
        31000-SYUNOU-ADD-EXT.
@@ -2977,7 +3012,7 @@
            IF      SPA-GMN-ZENMISYU    =   ZERO
       *!       IF      SPA-GMN-SEIKYU      <   SPA-GMN-NYUKIN
                IF      WRK-SEIKYU          <   SPA-GOK-NYUKIN
-                  MOVE    "0008"              TO  SPA-ERRCD
+                   MOVE    "0008"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-GMN-CUR
                END-IF
                GO      TO      310512-NYUKIN-JYUTOU-EXT
@@ -3046,12 +3081,12 @@
                    MOVE    "0008"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-GMN-CUR
                END-IF
-      *        ÄûÀµ¤Ç¹ç·×ÀÁµá³Û°Ê¾å¤Î»þ
-               IF      (SPA-SYORIFLG       =   1   )  AND
-                       (WRK-SEIKYU         <   SPA-GMN-NYUKIN)
-                   MOVE    "0008"              TO  SPA-ERRCD
-                   MOVE    1                   TO  SPA-GMN-CUR
-               END-IF
+      *!       ÄûÀµ¤Ç¹ç·×ÀÁµá³Û°Ê¾å¤Î»þ
+      *        IF      (SPA-SYORIFLG       =   1   )  AND
+      *                (WRK-SEIKYU         <   SPA-GMN-NYUKIN)
+      *            MOVE    "0008"              TO  SPA-ERRCD
+      *            MOVE    1                   TO  SPA-GMN-CUR
+      *!       END-IF
            END-IF
       *
            .
