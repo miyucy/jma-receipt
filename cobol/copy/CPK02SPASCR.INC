@@ -132,7 +132,7 @@
       *                    警告済フラグ
                            11  SPA-COM-KZMFLG        PIC X(01).
       *                    併用算定済フラグ
-                           11  SPA-COM-SDOFLG        PIC X(01).
+      *********************11  SPA-COM-SDOFLG        PIC X(01).
       *                    基本チェック済フラグ
                            11  SPA-COM-CHKFLG        PIC X(01).
       *                    時間加算フラグ
@@ -152,6 +152,10 @@
                            11  SPA-COM-NYU-KAI        PIC 9(03).
                            11  SPA-COM-NYUINDAY       PIC 9(01)
                                                       OCCURS  31.
+      *                入院警告済フラグ（注射）
+                       09  SPA-COM-NYU-KZMFLG-G.
+                           11  SPA-COM-NYU-KZMFLG        PIC X(01)
+                                                     OCCURS   31.
       *        点数マスタ項目
       *                点数マスタの診療区分
                        09  SPA-COM-TNSSRYKBN     PIC X(02).
