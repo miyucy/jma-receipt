@@ -19,6 +19,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01/00/01    多々納       01.10.03  レコード長を2048 増やす
+      *  01/00/02    多々納       03.03.10  共通レコード長を1000 増やす
       ************************************************************
       *
       *    共通ＬＮＫ     (RL=64000/64512)
@@ -26,11 +27,12 @@
            02  LINKDATA-REDEFINE.
       ****** 03  FILLER                PIC X(62464).
       ***    03  FILLER                PIC X(64512).
-             03  FILLER                PIC X(200000).
+      ***    03  FILLER                PIC X(200000).
+             03  FILLER                PIC X(202000).
            02  LINKORCA              REDEFINES  LINKDATA-REDEFINE.
-               04  LNK-KYOUTU          PIC X(2100).
+               04  LNK-KYOUTU          PIC X(3100).
                04  LNK-FREE.
-                   05  LNK-COMMON          PIC X(2100).
+                   05  LNK-COMMON          PIC X(3100).
       ***          05  LNK-SCRSPA          PIC X(160312).
                    05  LNK-SCRSPA          PIC X(195800).
       *
