@@ -1279,10 +1279,11 @@
                                                HC29-TEKIYO (WRK-LINETEK)
                            END-IF
                        END-IF
-                       ADD     1                   TO  WRK-LINETEK
+      ***              ADD     1                   TO  WRK-LINETEK
                        IF      WRK-LINETEK          >=   WRK-LINE-MAX
                            PERFORM 34120-PAGE-SEC
                        END-IF    
+                       ADD     1                   TO  WRK-LINETEK
                        IF      CNT-PAGE        =   1 
                            MOVE    RECE471-TEKIYO-INF  TO
                                                HC23-TEKIYO2(WRK-LINETEK)
