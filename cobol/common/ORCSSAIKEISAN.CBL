@@ -27,61 +27,8 @@
       ****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    NACL-ÌçÏÆ    04/10/01  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ±þ
-      *  01.00.02    NACL-ÌçÏÆ    04/12/01  ¼ýÇ¼³°Íè°ì³çºÆ·×»»ÂÐ±þ
-      *  01.00.03    NACL-ÌçÏÆ    04/12/17  ¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
+      *  01.00.01    NACL-ÌçÏÆ    04/12/17  ¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
       *                                     »ÈÍÑ²Ã»»¤òÌôºÞÅù¤Ø
-      *  01.00.04    NACL-ÌçÏÆ    05/01/27  ¹ø¡¦¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
-      *                                     »ÈÍÑ²Ã»»¤Îµ»½Ñ¡¦ÌôºÞÅù¤ÎÁªÂòÂÐ±þ
-      *  01.00.05    NACL-¾®Æ¦Âô  05/07/15  ¼«Èñ£±£°¹àÌÜÂÐ±þ
-      *  01.00.06    NACL-ÌçÏÆ    05/07/19  ¼ýÇ¼¹àÌÜÄÉ²Ã¤ËÈ¼¤¦½¤Àµ
-      *  01.00.07    NACL-ÌçÏÆ    06/03/30  Ï«ºÒÆ±Æü½é¿ÇÂÐ±þ
-      *  03.01.01    NACL-ÌçÏÆ    06/07/06  ÎÎ¼ý½ñÂÐ±þ
-      *  03.02.01    NACL-ÌçÏÆ    06/09/05  ·ò¹¯ÊÝ¸±Ë¡£±£°·î²þÀµÂÐ±þ
-      *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
-      *  03.04.02    NACL-ÌçÏÆ    07/01/22  ¼ýÇ¼ÌÀºÙÊÔ½¸½¤Àµ
-      *  03.04.03    NACL-Â¿¡¹Ç¼  07/03/06  Êñ³ç¿ÇÎÅºÞÈ½ÄêÄÉ²Ã
-      *  03.04.04    NACL-ÌçÏÆ    07/05/11  Ï«ºÒ¡¦¼«ÇåÀÕÃ±²Á£±£°±ßÌ¤ËþÂÐ±þ
-      *  03.04.05    NACL-ÌçÏÆ    07/06/08  ½é¿ÇÎÁ»»Äê»þ¤Î¾ò·ïÄÉ²Ã
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.01.01    NACL-ÌçÏÆ    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
-      *  04.01.02    NACL-ÌçÏÆ    07/12/07  ¸ø³²ÂÐ±þ
-      *  04.02.01    NACL-ÌçÏÆ    08/02/29  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
-      *  04.04.01    NACL-ÌçÏÆ    10/03/31  ²þÀµÂÐ±þ¡ÊðôÉô¸ÇÄêÂÓ²Ã»»¤ÎÂÐ±þ¡Ë
-      *  04.05.01    NACL-ÌçÏÆ    09/06/16  °ì³çºÆ·×»»ÊýË¡ÁªÂòµ¡Ç½ÂÐ±þ
-      *  04.05.02    NACL-ÌçÏÆ    10/01/19  ¼£¸³ÂÐ±þ
-      *  04.05.03    NACL-ÌçÏÆ    10/01/26  ÅìµþÅÔ¥Þ¥ë»ÒÄÉ²ÃÂÐ±þ
-      *  04.05.04    NACL-ÌçÏÆ    11/02/28  Ä¹ºê¸©ÃÏÊý¸øÈñÂÐ±þ
-      *  04.05.05    NACL-ÌçÏÆ    12/03/09  ²þÀµÂÐ±þ¡§³°Íè¸½ÊªµëÉÕÂÐ±þ
-      *  04.05.06    NACL-ÌçÏÆ    12/03/30  ²þÀµÂÐ±þ¡§Ï«ºÒºÆ¿Ç¡ÊÆ±°ìÆü£²²ÊÌÜ¡Ë
-      *
-      *  04.06.01    NACL-ÌçÏÆ    10/09/02  ½Ð»º°é»ù°ì»þ¶âÄ¾ÀÜ»ÙÊ§À©ÅÙ¡Ê³°Íè¡Ë
-      *  04.06.02    NACL-ÌçÏÆ    10/11/08  ¼çÊÝ¸±¡Ü¥Þ¥ëÄ¹¤ÎÀÁµáÂÐ±þ
-      *  04.06.03    NACL-ÌçÏÆ    10/12/06  Ï«ºÒ¡¦¼«ÇåÀÕ¤Î¶â³Û¥Õ¥ê¡¼ÆþÎÏ
-      *                                     ¥³¡¼¥ÉÂÐ±þ
-      *  04.06.04    NACL-ÌçÏÆ    13/02/18  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
-      *                                     ¡Ê¿·¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÂÐ±þ¡Ë
-      *  04.06.05    NACL-ÌçÏÆ    13/02/27  Ê¿À®£²£µÇ¯£´·î²þÀµÂÐ±þ
-      *  04.06.06    NACL-ÌçÏÆ    13/09/25  Ï«ºÒ¥Þ¥¹¥¿ÄÉ²ÃÂÐ±þ
-      *                                     ¡ÊÅÅÏÃºÆ¿ÇÎÁ¡¡Åù¡Ë
-      *
-      *  04.07.01    NACL-ÌçÏÆ    13/07/10  ¼«ÇåÀÕ¡ÊÂè»°¼Ô¹Ô°Ù¡ËÂÐ±þ
-      *  04.07.02    NACL-ÌçÏÆ    14/02/13  Ï«ºÒ¡¦¼«ÇåÀÕ¤Î»Ü½Ñ²Ã»»ÂÐ±þ
-      *  04.07.03    NACL-ÌçÏÆ    14/03/01  Ï«ºÒ¥Þ¥¹¥¿ÄÉ²ÃÂÐ±þ
-      *  04.07.04    NACL-ÌçÏÆ    14/07/31  Âè»°¼Ô¹Ô°Ù¤Î¸½ÊªµëÉÕÂÐ±þ
-      *  04.07.05    NACL-Â¿¡¹Ç¼  14/09/02  ¥Þ¥¤¥Ê¥¹ºÞÅÀ¿ôÈ½ÄêÂÐ±þ
-      *  04.07.06    NACL-ÌçÏÆ    14/12/09  Ê¿À®£²£·Ç¯£±·î²þÀµÂÐ±þ
-      *                                     ¡Ê½éºÆ¿ÇÎÁ¡¦ÄãÂÅ·ëÎ¨ÂÐ±þ¡Ë
-      *
-      *  04.08.00    NACL-Â¿¡¹Ç¼  13/01/18  ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë£±£°ÂÐ±þ
-      *  04.08.01    NACL-ÌçÏÆ    16/03/03  ¸ø³²¤ÎÎÅÍÜÃ´Åö¼êÅö¤Ï
-      *                                     ÌôºÞ¡¦´ïºàÅÀ¤Î¼è¤ê°·¤¤¤È¤¹¤ë
-      *  04.08.02    NACL-ÌçÏÆ    16/03/24  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.03    NACL-ÌçÏÆ    17/01/05  °ì³çºÆ·×»»³ºÅö¼Ô¤Î¥ê¥¹¥È¥¢¥Ã¥×
-      *                                     ÂÐ±þ
-      *  04.08.04    NACL-ÌçÏÆ    17/02/21  ½é¿Ç»»Äê¾ò·ïÄÉ²Ã
-      *  04.08.05    NACL-ÌçÏÆ    17/12/15  Âè»°¼Ô¹Ô°Ù¸½ÊªµëÉÕ¤Ë´Ø¤ï¤ë
-      *                                     ÉéÃ´¶â·×»»ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -100,9 +47,7 @@
            03  IDX2                        PIC 9(03).
            03  IDX3                        PIC 9(03).
            03  IDX4                        PIC 9(03).
-           03  IDX5                        PIC 9(03).
            03  IDY                         PIC 9(03).
-           03  IDY2                        PIC 9(03).
            03  IDZ                         PIC 9(03).
            03  IDW                         PIC 9(03).
            03  SAI-IDX                     PIC 9(03).
@@ -123,11 +68,6 @@
            03  FLG-SENIN-SYOSIN            PIC 9(01).
            03  FLG-NOGRP                   PIC 9(01).
            03  FLG-OK                      PIC 9(01).
-           03  FLG-TAISYO                  PIC 9(01).
-           03  FLG-PTINF                   PIC 9(01).
-           03  FLG-GENBUTU                 PIC 9(01).
-           03  FLG-GENBUTU2                PIC 9(01).
-           03  FLG-GENBUTU3                PIC 9(01).
       *
       *    ¥ï¡¼¥¯ÎÎ°è
        01  WRK-AREA.
@@ -146,7 +86,6 @@
                  05  WRK-SAIKEISAN-DD      PIC 9(02).
            03  WRK-KAGRPFLG                PIC X(01).
            03  WRK-TYK-HKNTEN              PIC S9(07).
-           03  WRK-TYK-HKNTEN2             PIC  9(07).
            03  WRK-SKYMONEY-TBL.
               04  WRK-SKYMONEY-TBL-OCC     OCCURS  15.
                  05  WRK-SKYMONEY          PIC 9(07).
@@ -157,13 +96,6 @@
               04  WRK-DOUJI-SRYKA-TBL-OCC  OCCURS  15.
                  05  WRK-DOUJI-SRYKA       PIC X(02)
                                            OCCURS  10.
-           03  WRK-4001-KOTEIKBN           PIC X(01).
-      *
-           03  WRK-SYURRKNUM               PIC S9(09)  BINARY.
-           03  WRK-SYUEDANUM               PIC S9(09)  BINARY.
-           03  WRK-SYURRKUPDKBN            PIC X(01).
-           03  WRK-FUTANWARI               PIC 9V99.
-           03  WRK-KEISAN2                 PIC 9(09).
       *
       *    ºÞÈÖ¹æÅùÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  ZAIBAN-TABLE.
@@ -173,16 +105,14 @@
                  05  TBL-ZAIKAISU          PIC  9(07).
                  05  TBL-ZAITEN            PIC  S9(08).
                  05  TBL-SYUTEN            PIC  9(08).
-                 05  TBL-GENTEN            PIC  9(08).
-                 05  TBL-ZAIKBN            PIC  9(03).
       *
       *    ÊÝ¸±Å¬ÍÑ³°¶â³ÛÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  HKNTEKGAI-TABLE.
-           03  HKNTEKGAI-TBL               OCCURS 16.
+           03  HKNTEKGAI-TBL               OCCURS 11.
                  05  TBL-TGMONEY           PIC  9(08).
                  05  TBL-TGMONEY-TAX       PIC  9(08).
        01  JIHI-TABLE.
-           03  JIHI-TBL                    OCCURS 10.
+           03  JIHI-TBL                    OCCURS  5.
                  05  TBL-JIHI-TAXNASI      PIC  9(08).
                  05  TBL-JIHI-TAXARI       PIC  9(08).
       *
@@ -201,21 +131,14 @@
       *
            03  WK-SINDAN                   PIC  9(08).
            03  WK-MEISAI                   PIC  9(08).
-           03  WK-KYUKYU                   PIC  9(08).
       *
            03  WK-YOUBUKASAN               PIC  9(08).
            03  WK-KYOBUKASAN               PIC  9(08).
-           03  WK-KEIBUKASAN               PIC  9(08).
            03  WK-SOGAIKASAN               PIC  9(08).
            03  WK-RYOYOTEATE               PIC  9(08).
       *
            03  WK-SYUTEN-KEI               PIC  9(08).
            03  WRK-TEN                     PIC  9(08).
-      *
-           03  WK-KOGAI-TEN                PIC  9(08).
-      *
-           03  WRK-TEN-KG                  PIC  9(09).
-           03  WRK-TEN-KG2                 PIC  9(09).
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -234,21 +157,13 @@
            03  FILLER          PIC X(09)   VALUE    "111700210".
            03  FILLER          PIC X(09)   VALUE    "111000110".
            03  FILLER          PIC X(09)   VALUE    "111700110".
-           03  FILLER          PIC X(09)   VALUE    "111012510".
-           03  FILLER          PIC X(09)   VALUE    "111012710".
-           03  FILLER          PIC X(09)   VALUE    "111011810".
-           03  FILLER          PIC X(09)   VALUE    "111012610".
-           03  FILLER          PIC X(09)   VALUE    "111012810".
-           03  FILLER          PIC X(09)   VALUE    "099110001".
            03  FILLER          PIC X(09)   VALUE    "113003510".
            03  FILLER          PIC X(09)   VALUE    "113003710".
-           03  FILLER          PIC X(09)   VALUE    "113019710".
-           03  FILLER          PIC X(09)   VALUE    "113019910".
       *
        01  TBL-SYOSIN-R        REDEFINES   TBL-SYOSIN-AREA.
-           03  TBL-SYOSIN      PIC X(09)   OCCURS   14.
+           03  TBL-SYOSIN      PIC X(09)   OCCURS    6.
       *
-       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE    14.
+       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     6.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -262,14 +177,6 @@
        01  WRK-SYUNOU-REC.
            COPY    "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYU-//.
       *
-      *    ¥ï¡¼¥¯¼ýÇ¼¥Þ¥¹¥¿¡¼¡Ê¸ºÅÀÍÑ¡Ë
-       01  WRK-SYUNOUG-REC.
-           COPY    "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYUG-//.
-      *
-      *    ¥ï¡¼¥¯¼ýÇ¼¥Þ¥¹¥¿¡¼¡ÊÂàÈòÍÑ¡Ë
-       01  WRK-SYUNOU-TAIHI-REC.
-           COPY    "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYUT-//.
-      *
       *    ¼ýÇ¼ÌÀºÙ¥Þ¥¹¥¿¡¼
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
@@ -281,10 +188,6 @@
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
-      *
-      *    ¿ÇÎÅ²ñ·×ÉÕ²Ã¾ðÊó¥Þ¥¹¥¿¡Ý
-       01  SRYACCTPLUS-REC.
-           COPY    "CPSRYACCTPLUS.INC".
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡Ý
        01  SRYACT-REC.
@@ -298,17 +201,11 @@
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
-       01  PTINF-REC.
-           COPY    "CPPTINF.INC".
-      *
       *    ÅÀ¿ô
            COPY    "CPTENSU.INC".
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý
            COPY    "CPSK1038.INC".
-      *
-           COPY    "CPSK4001.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -317,20 +214,11 @@
       *    Ê¡²¬¸©ÃÏÊý¸øÈñµëÉÕÂÐ¾Ý³°ÅÀ¿ô¼èÆÀ¥µ¥Ö
            COPY    "CPORCSSYU40.INC".
       *
-      *    ÆüÊó¥­¡¼¼èÆÀ¥µ¥Ö
-           COPY "CPORCSDAILYKEY.INC".
-      *
       *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
            COPY    "CPORCSMCNDATE.INC".
       *
       *    ÉéÃ´¶â³Û·×»»ÍÑ¥Ñ¥é¥á¥¿
            COPY    "CPORCS01.INC".
-      *
-      *    ¼ýÇ¼¹¹¿·º¹³Û¼èÆÀ
-           COPY    "CPORCSS002.INC".
-      *
-      *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
-           COPY    "CPORCSAGECHK.INC".
       *
       *    ¥ï¡¼¥¯ÉéÃ´¶â³Û·×»»ÍÑ¥Ñ¥é¥á¥¿¡Ê¹ç·×ÍÑ¡Ë
       ***  COPY    "CPORCS01.INC" REPLACING  //LNK-// BY //WRK-//.
@@ -343,7 +231,7 @@
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
-      ***  COPY    "CPORCMCP.INC".
+           COPY    "CPORCMCP.INC".
       *
       /
       ***
@@ -370,27 +258,28 @@
                                        WRK-AREA
       *
            INITIALIZE                          SYUNOU-REC
-           MOVE    LNK-ORCSSKS-HOSPNUM     TO  SYU-HOSPNUM
+           MOVE    LNK-ORCSSKS-HOSPID      TO  SYU-HOSPID
            MOVE    LNK-ORCSSKS-NYUGAIKBN   TO  SYU-NYUGAIKBN
            MOVE    LNK-ORCSSKS-PTID        TO  SYU-PTID
            MOVE    LNK-ORCSSKS-DENPNUM     TO  SYU-DENPNUM
            MOVE    SYUNOU-REC              TO  MCPDATA-REC
            MOVE    "DBSELECT"              TO  MCP-FUNC
-           MOVE    "tbl_syunou"            TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"             USING  MCPAREA
-                                                  MCPDATA-REC
-                                                  SPA-AREA
+           MOVE    "SYUNOU-KEY"            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
            IF      MCP-RC     =       ZERO
-                     MOVE    "tbl_syunou"  TO  MCP-TABLE
-                     MOVE    "key"         TO  MCP-PATHNAME
+                     MOVE    "SYUNOU-KEY"  TO  ORC-DBPATH
                      PERFORM  900-SYUNOU-READ-SEC
            ELSE
                      MOVE     1            TO  FLG-SYUNOU
            END-IF
-           MOVE     "tbl_syunou"           TO  MCP-TABLE
-           MOVE     "key"                  TO  MCP-PATHNAME
-           PERFORM   DB-CLOSE-SEC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      FLG-SYUNOU          =   1
                MOVE    "0060"         TO  SPA-ERRCD
@@ -412,50 +301,29 @@
                MOVE     SYS-1038-KAGRPFLG TO      WRK-KAGRPFLG
                                                   LNK-S01-KAGRPFLG
       *
-               MOVE     SPACE   TO   WRK-4001-KOTEIKBN
-               IF   SYU-SYUHKNNUM   =   "971" OR "973"
-                 PERFORM  900-SYS4001-READ-SEC
-                 MOVE     SYS-4001-KOTEIKBN   TO  WRK-4001-KOTEIKBN
-               END-IF
-      *
-               MOVE     SYUNOU-REC        TO      WRK-SYUNOU-TAIHI-REC
-      *
-               IF  (LNK-ORCSSKS-IKTGENKEIFLG  NOT = SPACE)
-               AND (WRK-GRP-DENPNUM           NOT = ZERO )
-                 PERFORM  4407-GRP-DATA-CHECK-SEC
-               END-IF
-               IF   FLG-GENBUTU  =  1
-                 MOVE  ZERO               TO      WRK-GRP-DENPNUM
-               END-IF
-      *
                IF   WRK-GRP-DENPNUM   =   ZERO
                  ADD     1                TO      IDY
-                 MOVE    WRK-SYUNOU-TAIHI-REC
-                                          TO      LNK-SYUNOU-REC(IDY)
-                 MOVE    WRK-SYUT-SKYMONEY
-                                          TO      WRK-MAE-SEIKYUGK(IDY)
+                 MOVE    SYUNOU-REC       TO      LNK-SYUNOU-REC(IDY)
+                 MOVE    SYU-SKYMONEY     TO      WRK-MAE-SEIKYUGK(IDY)
                  MOVE    1                TO      FLG-NOGRP
                ELSE
                  INITIALIZE                       SYUNOU-REC
-                 MOVE    LNK-ORCSSKS-HOSPNUM
-                                          TO      SYU-HOSPNUM
+                 MOVE    LNK-ORCSSKS-HOSPID
+                                          TO      SYU-HOSPID
                  MOVE    LNK-ORCSSKS-NYUGAIKBN
                                           TO      SYU-NYUGAIKBN
                  MOVE    LNK-ORCSSKS-PTID TO      SYU-PTID
                  MOVE    WRK-GRP-DENPNUM  TO      SYU-GRP-DENPNUM
                  MOVE    SYUNOU-REC       TO      MCPDATA-REC
                  MOVE    "DBSELECT"       TO      MCP-FUNC
-                 MOVE    "tbl_syunou"     TO      MCP-TABLE
-                 MOVE    "key27"          TO      MCP-PATHNAME
-                 CALL    "ORCDBMAIN"      USING   MCPAREA
+                 MOVE    "SYUNOU-KEY27"   TO      ORC-DBPATH
+                 CALL    "ORCMCPSUB"      USING   MCPAREA
+                                                  ORCMCPAREA
                                                   MCPDATA-REC
-                                                  SPA-AREA
                  IF      MCP-RC             =       ZERO
-                     MOVE    "tbl_syunou" TO      MCP-TABLE
-                     MOVE    "key27"      TO      MCP-PATHNAME
+                     MOVE    "SYUNOU-KEY27"   TO  ORC-DBPATH
                      PERFORM  900-SYUNOU-READ-SEC
                      PERFORM  UNTIL  (FLG-SYUNOU   =    1)
-                              OR     (SPA-ERRCD    NOT =   SPACE)
                        IF   SYU-DENPJTIKBN  NOT =  "3"
                           IF   WRK-TAIHI-HKNCOMBINUM  NOT =  SPACE
                           AND  WRK-TAIHI-HKNCOMBINUM
@@ -464,42 +332,33 @@
                                 PERFORM   4400-SYUTOTAL-FIND-SEC
                                 IF   FLG-NG   =   1
                                     MOVE    "0062"   TO  SPA-ERRCD
+                                    GO       TO          MAIN-EXT
                                 END-IF
                             ELSE
                               IF   WRK-GRPCNT  =  1
                                 PERFORM   4400-SYUTOTAL-FIND2-SEC
                                 IF   FLG-NG   =   1
                                     MOVE    "0062"   TO  SPA-ERRCD
+                                    GO       TO          MAIN-EXT
                                 END-IF
                               END-IF
                             END-IF
                             MOVE   ZERO      TO  WRK-GRPCNT
                           END-IF
-                          IF      SPA-ERRCD  =   SPACE
-                              ADD   1            TO  IDY
-                              MOVE  SYUNOU-REC   TO  LNK-SYUNOU-REC(IDY)
-                              MOVE  SYU-SKYMONEY
-                                             TO  WRK-MAE-SEIKYUGK(IDY)
-                              MOVE  SYU-HKNCOMBINUM
+                          ADD   1            TO  IDY
+                          MOVE  SYUNOU-REC   TO  LNK-SYUNOU-REC(IDY)
+                          MOVE  SYU-SKYMONEY TO  WRK-MAE-SEIKYUGK(IDY)
+                          MOVE  SYU-HKNCOMBINUM
                                              TO  WRK-TAIHI-HKNCOMBINUM
-                              MOVE  SYU-FUKU-DENPNUM
+                          MOVE  SYU-FUKU-DENPNUM
                                              TO  WRK-TAIHI-DENPNUM
-                              MOVE  SYU-SYUHKNNUM
+                          MOVE  SYU-SYUHKNNUM
                                              TO  WRK-TAIHI-SYUHKNNUM
-                              ADD   1            TO  WRK-GRPCNT
-                          END-IF
+                          ADD   1            TO  WRK-GRPCNT
                        END-IF
-                       MOVE    "tbl_syunou"  TO  MCP-TABLE
-                       MOVE    "key27"       TO  MCP-PATHNAME
+                       MOVE    "SYUNOU-KEY27"   TO  ORC-DBPATH
                        PERFORM  900-SYUNOU-READ-SEC
                      END-PERFORM
-                 END-IF
-                 MOVE     "tbl_syunou"       TO  MCP-TABLE
-                 MOVE     "key27"            TO  MCP-PATHNAME
-                 PERFORM   DB-CLOSE-SEC
-      *
-                 IF      SPA-ERRCD     NOT =   SPACE
-                     GO       TO          MAIN-EXT
                  END-IF
                  IF   WRK-GRPCNT  >  1
                        PERFORM   4400-SYUTOTAL-FIND-SEC
@@ -516,6 +375,12 @@
                        END-IF
                     END-IF
                  END-IF
+                 MOVE    "DBCLOSE"               TO  MCP-FUNC
+                 MOVE    "SYUNOU-KEY27"          TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"              USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
                END-IF
       *
                IF    IDY   =   ZERO
@@ -530,7 +395,6 @@
       *    ¼ýÇ¼¥Ç¡¼¥¿¤ÎºÆÊÔ½¸
       *
            INITIALIZE                  WRK-SYUNOU-REC
-           INITIALIZE                  WRK-SYUNOUG-REC
       ***  INITIALIZE                  WRK-ORCS01-REC
            MOVE       SPACE     TO     WRK-TAIHI-HKNCOMBINUM
       *
@@ -538,14 +402,12 @@
                               UNTIL  (IDY                 >    15 )
                                 OR   (LNK-SYU-SRYYMD(IDY) =  SPACE)
       *
-               INITIALIZE             WRK-SYUNOUG-REC
-      *
       *        ¼ýÇ¼¹àÌÜ½é´ü²½
       *
                MOVE       SPACE   TO  LNK-SYU-SKY-NAIYOU(IDY)
                INITIALIZE             LNK-SYU-SKY-NAIYOU(IDY)
                PERFORM  VARYING  IDX3  FROM    1    BY    1
-                         UNTIL   IDX3    >     10
+                         UNTIL   IDX3    >     5
                    MOVE    ZERO   TO  LNK-SYU-JIHI-TAXNASI(IDY IDX3)
                    MOVE    ZERO   TO  LNK-SYU-JIHI-TAXARI (IDY IDX3)
                END-PERFORM
@@ -557,7 +419,6 @@
                                       LNK-SYU-RSISAISHIN-MONEY(IDY)
                                       LNK-SYU-RSISDO-MONEY(IDY)
                                       LNK-SYU-RSIETC-MONEY(IDY)
-                                      LNK-SYU-SHOHOU-SAI(IDY)
                MOVE       SPACE   TO  LNK-SYU-KYUFUGAI(IDY)
                INITIALIZE             LNK-SYU-KYUFUGAI(IDY)
       *
@@ -568,151 +429,68 @@
       *
                  MOVE    ZERO                   TO  SAI-IDX
                  INITIALIZE                         JYURRK-REC
-                 MOVE    LNK-SYU-HOSPNUM(IDY)   TO  JYURRK-HOSPNUM
+                 MOVE    LNK-SYU-HOSPID(IDY)    TO  JYURRK-HOSPID
                  MOVE    LNK-SYU-PTID(IDY)      TO  JYURRK-PTID
                  MOVE    LNK-SYU-NYUGAIKBN(IDY) TO  JYURRK-NYUGAIKBN
                  MOVE    LNK-SYU-DENPNUM(IDY)   TO  JYURRK-DENPNUM
                  MOVE    JYURRK-REC             TO  MCPDATA-REC
                  MOVE    "DBSELECT"             TO  MCP-FUNC
-                 MOVE    "tbl_jyurrk"           TO  MCP-TABLE
-                 MOVE    "key6"                 TO  MCP-PATHNAME
-                 CALL    "ORCDBMAIN"            USING   MCPAREA
-                                                        MCPDATA-REC
-                                                        SPA-AREA
+                 MOVE    "JYURRK-KEY6"          TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"             USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
                  IF      MCP-RC              =   ZERO
-                    MOVE       "tbl_jyurrk"     TO  MCP-TABLE
-                    MOVE       "key6"           TO  MCP-PATHNAME
+                    MOVE       "JYURRK-KEY6"    TO  ORC-DBPATH
                     PERFORM     900-JYURRK-READ-SEC
-      *H24.5
-      *             ÊÝ¸±ÁÈ¹ç¤»È½ÄêÄÉ²Ã
-                    PERFORM UNTIL   (FLG-JYURRK     =   1   )
-                            OR      (JYURRK-HKNCOMBINUM 
-                                         =   LNK-SYU-HKNCOMBINUM(IDY))
-                         PERFORM     900-JYURRK-READ-SEC
-                    END-PERFORM
-      *H24.5
                     IF   FLG-JYURRK   =    ZERO
                         COMPUTE   SAI-IDX  =  JYURRK-RENNUM  +  1
-      *ver.4.8
-      **                IF    SAI-IDX   >   4
-      **                    MOVE      4         TO  SAI-IDX
-      **                END-IF
+                        IF    SAI-IDX   >   4
+                            MOVE      4         TO  SAI-IDX
+                        END-IF
                         IF    JYURRK-SRYKBN1 = "01"
                             MOVE   "1"   TO   LNK-S01-SINSATUFLG
                         END-IF
                     END-IF
                  END-IF
-                 MOVE     "tbl_jyurrk"          TO  MCP-TABLE
-                 MOVE     "key6"                TO  MCP-PATHNAME
-                 PERFORM   DB-CLOSE-SEC
-      *
+                 MOVE    "DBCLOSE"              TO  MCP-FUNC
+                 MOVE    "JYURRK-KEY6"          TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"             USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
                  IF    SAI-IDX   =   ZERO
                    MOVE    "0063"         TO  SPA-ERRCD
                    GO       TO                MAIN-EXT
                  END-IF
       *
-                 IF    LNK-SYU-SYUHKNNUM(IDY)   =   "971" OR "973"
-      *
-                   INITIALIZE                        PTINF-REC
-                   MOVE    LNK-SYU-HOSPNUM(IDY) TO   PTINF-HOSPNUM
-                   MOVE    LNK-SYU-PTID(IDY)    TO   PTINF-PTID
-                   MOVE    PTINF-REC            TO   MCPDATA-REC
-                   MOVE    "DBSELECT"           TO   MCP-FUNC
-                   MOVE    "tbl_ptinf"          TO   MCP-TABLE
-                   MOVE    "key"                TO   MCP-PATHNAME
-                   CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                        MCPDATA-REC
-                                                        SPA-AREA
-                   IF      MCP-RC               =    ZERO
-                       MOVE    "tbl_ptinf"      TO   MCP-TABLE
-                       MOVE    "key"            TO   MCP-PATHNAME
-                       PERFORM  900-PTINF-READ-SEC
-                   ELSE
-                       INITIALIZE      PTINF-REC
-                   END-IF
-                   MOVE    "tbl_ptinf"          TO   MCP-TABLE
-                   MOVE    "key"                TO   MCP-PATHNAME
-                   PERFORM  DB-CLOSE-SEC
-      *
-                   INITIALIZE                        ORCSAGECHKAREA
-                   MOVE    LNK-SYU-HOSPNUM(IDY) TO   AGECHK-HOSPNUM
-                   MOVE    LNK-SYU-PTID(IDY)    TO   AGECHK-PTID
-                   MOVE    LNK-SYU-SRYYMD(IDY)  TO   AGECHK-SRYYMD
-                   MOVE    PTINF-BIRTHDAY       TO   AGECHK-BIRTHDAY
-                   MOVE    LNK-SYU-HKNCOMBINUM(IDY)
-                                                TO   AGECHK-HKNCOMBINUM
-                   MOVE    LNK-SYU-NYUGAIKBN(IDY)
-                                                TO   AGECHK-NYUGAIKBN
-                   CALL    "ORCSAGECHK"         USING
-                                                ORCSAGECHKAREA
-                                                SPA-AREA
-                   IF      AGECHK-RC            =    ZERO
-                       CONTINUE
-                   ELSE
-                       INITIALIZE    ORCSAGECHKAREA
-                   END-IF
-      *
-                   EVALUATE  LNK-SYU-SYUHKNNUM(IDY)
-                     WHEN      "971"
-                       EVALUATE  AGECHK-HKNKBN
-      *                  Ï«ºÒ½àµò
-                         WHEN      1
-                           IF  JYURRK-HKNKBN  =  "5"
-                             MOVE    "0062"         TO  SPA-ERRCD
-                             GO       TO                MAIN-EXT
-                           END-IF
-      *                  ·òÊÝ½àµò
-                         WHEN      5
-                           IF  JYURRK-HKNKBN  =  "1"
-                             MOVE    "0062"         TO  SPA-ERRCD
-                             GO       TO                MAIN-EXT
-                           END-IF
-                       END-EVALUATE
-                     WHEN      "973"
-                       EVALUATE  AGECHK-HKNKBN
-      *                  Ï«ºÒ½àµò
-                         WHEN      2
-                           IF  JYURRK-HKNKBN  =  "4"
-                             MOVE    "0062"         TO  SPA-ERRCD
-                             GO       TO                MAIN-EXT
-                           END-IF
-      *                  ·òÊÝ½àµò
-                         WHEN      4
-                           IF  JYURRK-HKNKBN  =  "2"
-                             MOVE    "0062"         TO  SPA-ERRCD
-                             GO       TO                MAIN-EXT
-                           END-IF
-                       END-EVALUATE
-                   END-EVALUATE
-      *
-                 END-IF
-      *
       *          Á¥°÷ÄÌ¶ÐºÒ³²¤ÎÈ½ÊÌ
       *
                  MOVE    ZERO                TO  FLG-SENIN                    
-                 INITIALIZE                      HKNCOMBI-REC 
-                 MOVE    LNK-SYU-HOSPNUM(IDY)
-                                             TO  COMB-HOSPNUM
-                 MOVE    LNK-SYU-PTID(IDY)   TO  COMB-PTID
+                 INITIALIZE                      HKNCOMBI-REC                 
+                 MOVE    LNK-SYU-HOSPID(IDY) TO  COMB-HOSPID                  
+                 MOVE    LNK-SYU-PTID(IDY)   TO  COMB-PTID                    
                  MOVE    LNK-SYU-HKNCOMBINUM(IDY)
-                                             TO  COMB-HKNCOMBINUM 
-                 MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-                 MOVE    "DBSELECT"          TO  MCP-FUNC
-                 MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-                 MOVE    "key"               TO  MCP-PATHNAME
-                 CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                     MCPDATA-REC
-                                                     SPA-AREA
-                 IF      MCP-RC              =   ZERO
-                     MOVE    "tbl_hkncombi"  TO  MCP-TABLE
-                     MOVE    "key"           TO  MCP-PATHNAME
+                                             TO  COMB-HKNCOMBINUM             
+                 MOVE    HKNCOMBI-REC        TO  MCPDATA-REC                  
+                 MOVE    "DBSELECT"          TO  MCP-FUNC                     
+                 MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH                   
+                 CALL    "ORCMCPSUB"          USING                           
+                                              MCPAREA                         
+                                              ORCMCPAREA                      
+                                              MCPDATA-REC                     
+                 IF      MCP-RC              =   ZERO                         
+                     MOVE     "HKNCOMBI-KEY" TO  ORC-DBPATH                   
                      PERFORM  900-HKNCOMBI-READ-SEC                           
                  ELSE                                                         
                      MOVE    1               TO  FLG-HKNKUMI                  
                  END-IF                                                       
-                 MOVE     "tbl_hkncombi"     TO  MCP-TABLE
-                 MOVE     "key"              TO  MCP-PATHNAME
-                 PERFORM   DB-CLOSE-SEC
+                 MOVE    "DBCLOSE"           TO  MCP-FUNC                     
+                 MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH                   
+                 CALL    "ORCMCPSUB"          USING                           
+                                              MCPAREA                         
+                                              ORCMCPAREA                      
+                                              MCPDATA-REC                     
       *
                  IF     FLG-HKNKUMI         =   ZERO                          
                     IF    COMB-HKNNUM           =    "002"                    
@@ -720,7 +498,6 @@
                           WHEN   "3"                                          
                           WHEN   "C"                                          
                           WHEN   "F"                                          
-                          WHEN   "I"                                          
                               MOVE     1     TO     FLG-SENIN                 
                         END-EVALUATE                                          
                     END-IF                                                    
@@ -740,8 +517,7 @@
       *          ¿ÇÎÅÎÅ²ñ·×¥Þ¥¹¥¿¤«¤éºÞÈÖ¹æÅùÂàÈòÍÑ¥Æ¡¼¥Ö¥ë¤Ø
       *
                  INITIALIZE                      SRYACCT-REC
-                 MOVE    LNK-SYU-HOSPNUM(IDY)
-                                             TO  ACCT-HOSPNUM
+                 MOVE    LNK-SYU-HOSPID(IDY) TO  ACCT-HOSPID
                  MOVE    LNK-SYU-NYUGAIKBN(IDY)
                                              TO  ACCT-NYUGAIKBN
                  MOVE    LNK-SYU-PTID(IDY)   TO  ACCT-PTID
@@ -752,14 +528,13 @@
                                              TO  ACCT-HKNCOMBI
                  MOVE    SRYACCT-REC         TO  MCPDATA-REC
                  MOVE    "DBSELECT"          TO  MCP-FUNC
-                 MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                 MOVE    "key24"             TO  MCP-PATHNAME
-                 CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                     MCPDATA-REC
-                                                     SPA-AREA
+                 MOVE    "SRYACCT-KEY24"     TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"          USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
                  IF      MCP-RC              =   ZERO
-                     MOVE    "tbl_sryacct"   TO  MCP-TABLE
-                     MOVE    "key24"         TO  MCP-PATHNAME
+                     MOVE    "SRYACCT-KEY24" TO  ORC-DBPATH
                      PERFORM  900-SRYACCT-READ-SEC
                  ELSE
                      MOVE    1               TO  FLG-SRYACCT
@@ -771,9 +546,12 @@
                      UNTIL   (FLG-SRYACCT    =       1      ) OR
                              (IDX1           >       100    )   
       *
-                 MOVE     "tbl_sryacct"      TO  MCP-TABLE
-                 MOVE     "key24"            TO  MCP-PATHNAME
-                 PERFORM   DB-CLOSE-SEC
+                 MOVE    "DBCLOSE"           TO  MCP-FUNC
+                 MOVE    "SRYACCT-KEY24"     TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"          USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
       *
       *          ¼ýÇ¼¹àÌÜÊÔ½¸
       *
@@ -825,27 +603,11 @@
       *    ´µ¼ÔÉéÃ´³Û·×»»½èÍý
       *
            MOVE    "1"           TO  LNK-S01-SAIKEISAN-KBN
-           MOVE    LNK-ORCSSKS-IKTSORTKBN
-                                 TO  LNK-S01-IKTSORTKBN
-           MOVE    LNK-ORCSSKS-IKTKEISANKBN
-                                 TO  LNK-S01-IKTKEISANKBN
-           MOVE    LNK-ORCSSKS-BUNBENJIHIKBN
-                                 TO  LNK-S01-BUNBENJIHIKBN
-           MOVE    LNK-ORCSSKS-IKTGENKEIFLG
-                                 TO  LNK-S01-IKTGENKEIFLG
-           IF   FLG-GENBUTU  =  1
-             MOVE    "1"         TO  LNK-S01-IKTGENMKJFLG
-           END-IF
-           MOVE    LNK-ORCSSKS-IKTJISSIFLG
-                                 TO  LNK-S01-IKTJISSIFLG
-           MOVE    LNK-ORCSSKS-IKTCHECKFLG
-                                 TO  LNK-S01-IKTCHECKFLG
       *
            CALL    "ORCSGAIFTN"        USING
                                        MCPAREA
                                        LNK-ORCS01-REC
                                        LNK-SYUNOU-REC-T
-                                       SPA-AREA
       *
       *    ¤Þ¤È¤áº¹³Û»»½Ð¤ÈÀÁµá³Û»»½Ð
       *
@@ -903,12 +665,9 @@
       *
       *    ¼ýÇ¼¥Ç¡¼¥¿¹¹¿·Åù
       *
-           MOVE       ZERO      TO     IDY2
-      *
            PERFORM    VARYING   IDY    FROM   1   BY   1
                               UNTIL  (IDY                 >    15 )
                                 OR   (LNK-SYU-SRYYMD(IDY) =  SPACE)
-                                OR   (SPA-ERRCD       NOT =  SPACE)
       *
              IF   LNK-SYU-SRYKA(IDY)  NOT =  "00"
       *
@@ -946,23 +705,55 @@
       *          ¼ýÇ¼¥Þ¥¹¥¿¤Î¹¹¿·
       *
                  MOVE    LNK-SYUNOU-REC(IDY) TO  SYUNOU-REC
+                 MOVE    SYUNOU-REC          TO  MCPDATA-REC
+                 MOVE    "DBUPDATE"          TO  MCP-FUNC
+                 MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"          USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
       *
-                 IF   LNK-ORCSSKS-IKTCHECKFLG  =  SPACE
-                   PERFORM   4408-SYUNOU-KOUSIN-SEC
+      *          ºÆ·×»»Ê¬¤Î¼ýÇ¼ÌÀºÙ¥Þ¥¹¥¿ºîÀ®
+      *
+                 INITIALIZE                       SYUMEI-REC
+                 MOVE    LNK-SYU-HOSPID(IDY)  TO  SMEI-HOSPID
+                 MOVE    LNK-SYU-NYUGAIKBN(IDY)
+                                              TO  SMEI-NYUGAIKBN
+                 MOVE    LNK-SYU-PTID(IDY)    TO  SMEI-PTID
+                 MOVE    LNK-SYU-DENPNUM(IDY) TO  SMEI-DENPNUM
+                 MOVE    SYUMEI-REC           TO  MCPDATA-REC
+                 MOVE    "DBSELECT"           TO  MCP-FUNC
+                 MOVE    "SYUMEI-KEY2"        TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"          USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+                 IF      MCP-RC              =    ZERO
+                       MOVE    "SYUMEI-KEY2"      TO  ORC-DBPATH
+                       PERFORM  900-SYUMEI-READ-SEC
+                 ELSE
+                       MOVE    1                  TO  FLG-SYUMEI
                  END-IF
-      *
-                 ADD    1         TO   IDY2
-                 MOVE   LNK-SYU-DENPNUM(IDY)
-                                  TO   LNK-ORCSSKS-DENPNUM-END(IDY2)
-                 IF   LNK-ORCSSKS-IKTCHECKFLG  =  "1"
-                   MOVE    LNK-SYUNOU-REC(IDY)
-                                  TO   LNK-ORCSSKS-SYUNOU-DATA(IDY2)
+                 IF      FLG-SYUMEI    =     1
+                       CONTINUE
+                 ELSE
+                       PERFORM   VARYING  IDX3  FROM   1  BY   1
+                           UNTIL   (FLG-SYUMEI   =      1 )
+                               MOVE      "SYUMEI-KEY2"  TO  ORC-DBPATH
+                               PERFORM    900-SYUMEI-READ-SEC
+                       END-PERFORM
+                       PERFORM    4405-SMEI-SAKUSEI-SEC
+                       MOVE    "DBCLOSE"           TO  MCP-FUNC
+                       MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"          USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
                  END-IF
       *
              ELSE
       *
-                 IF     WRK-KAGRPFLG             =   "0"
-                 AND    LNK-ORCSSKS-IKTCHECKFLG  =  SPACE
+                 IF     WRK-KAGRPFLG     =   "0"
       *
       *            ¤Þ¤È¤áº¹³Û¤ÈÀÁµá³Û¤ÎÃÖ¤­´¹¤¨
       *
@@ -990,19 +781,15 @@
       *
       *            ¼ýÇ¼¹ç·×¥Þ¥¹¥¿¤Î¹¹¿·
       *
-                   IF  LNK-ORCSSKS-BUNBENJIHIKBN = "1"
-                     CONTINUE
-                   ELSE
-                     INITIALIZE                      SYUTTL-REC
-                     PERFORM   4406-GOKEI-OKIKAE-SEC
-                     MOVE    SYUTTL-REC          TO  MCPDATA-REC
-                     MOVE    "DBUPDATE"          TO  MCP-FUNC
-                     MOVE    "tbl_syutotal"      TO  MCP-TABLE
-                     MOVE    "key"               TO  MCP-PATHNAME
-                     CALL    "ORCDBMAIN"         USING  MCPAREA
-                                                        MCPDATA-REC
-                                                        SPA-AREA
-                   END-IF
+                   INITIALIZE                      SYUTTL-REC
+                   PERFORM   4406-GOKEI-OKIKAE-SEC
+                   MOVE    SYUTTL-REC          TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
       *
                  END-IF
       *
@@ -1040,8 +827,8 @@
              PERFORM   900-SYUTOTAL-READ-SEC
              IF    FLG-SYUTOTAL  =   1
                   ADD   1                 TO   IDY
-                  MOVE  LNK-ORCSSKS-HOSPNUM
-                                          TO   LNK-SYU-HOSPNUM(IDY)
+                  MOVE  LNK-ORCSSKS-HOSPID
+                                          TO   LNK-SYU-HOSPID(IDY)
                   MOVE  LNK-ORCSSKS-NYUGAIKBN
                                           TO   LNK-SYU-NYUGAIKBN(IDY)
                   MOVE  LNK-ORCSSKS-PTID  TO   LNK-SYU-PTID(IDY)
@@ -1131,8 +918,6 @@
            MOVE     SYUTTL-SKYKUKBN       TO  LNK-SYU-SKYKUKBN(IDY)
       *ÀÁµáÆâÍÆ
            MOVE     SYUTTL-SKY-NAIYOU     TO  LNK-SYU-SKY-NAIYOU(IDY)
-      *½èÊý¤»¤óÎÁºÆ·Ç
-           MOVE     SYUTTL-SHOHOU-SAI     TO  LNK-SYU-SHOHOU-SAI(IDY)
       *ÊÝ¸±Å¬ÍÑ³°¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            MOVE     SYUTTL-TGMONEY-TAX-SAI
                                       TO  LNK-SYU-TGMONEY-TAX-SAI(IDY)
@@ -1172,9 +957,6 @@
                                       TO  LNK-SYU-DISCOUNT-TEIRITU(IDY)
       *³ä°úÎ¨
            MOVE     SYUTTL-DISCOUNT-RATE  TO  LNK-SYU-DISCOUNT-RATE(IDY)
-      *¸ºÌÈ¶â³Û
-           MOVE     SYUTTL-DISCOUNT-MONEY
-                                      TO  LNK-SYU-DISCOUNT-MONEY(IDY)
       *Ï«ºÒÊÝ¸±¡Ý½é¿ÇÎÁ
            MOVE     SYUTTL-RSISHOSHIN-MONEY
                                       TO  LNK-SYU-RSISHOSHIN-MONEY(IDY)
@@ -1207,8 +989,6 @@
            MOVE     SYUTTL-ZAITAKU        TO  LNK-SYU-ZAITAKU(IDY)
       *¿ÇÎÅ¶èÊ¬ÊÌµëÉÕ³°ÅÀ¿ô
            MOVE     SYUTTL-KYUFUGAI       TO  LNK-SYU-KYUFUGAI(IDY)
-      *ÊÝ¸±Å¬ÍÑ¶èÊ¬
-           MOVE     SYUTTL-HKNTEKKBN      TO  LNK-SYU-HKNTEKKBN(IDY)
       *Ã¼Ëö£É£Ä
            MOVE     SYUTTL-TERMID         TO  LNK-SYU-TERMID(IDY)
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
@@ -1230,108 +1010,30 @@
       **************************************************************
        4401-SRYACCT-SET-SEC           SECTION.
       *
-           MOVE      ZERO    TO     FLG-TAISYO
-      *
-           IF    ((LNK-SYU-SYUHKNNUM(IDY)  =   "971" OR "973"    ) OR
-                  (LNK-SYU-KOH1HKNNUM(IDY) =   "970"             ))
-           AND   ( ACCT-SRYKBN             =   "80"               )
-           AND   ( ACCT-ZAITEN             =    ZERO              )
-           AND   ( ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO )
-           AND   ( ACCT-JIHOKBN            =    SPACE             )
-      *
-              PERFORM  44011-SRYACCTPLUS-KENSAKU-SEC
-      *
-           END-IF
-      *
-           IF    (LNK-SYU-SYUHKNNUM(IDY)
-                                      NOT =   "971" AND "973"
-                                                    AND "975"   )
-           AND   (ACCT-SRYKBN             =   "11"              )
-           AND   (ACCT-ZAITEN             =    ZERO             )
-           AND   (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)
-           AND   (ACCT-JIHOKBN            =    SPACE            )
-      *
-              PERFORM  44012-SRYACT-KENSAKU-SEC
-      *
-           END-IF
-      *
-           IF    (LNK-SYU-SYUHKNNUM(IDY)
-                                      NOT =   "971" AND "973"
-                                                    AND "975"   )
-           AND   (ACCT-SRYKBN             =   "99"              )
-           AND   (ACCT-ZAITEN             =    ZERO             )
-           AND   (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)
-           AND   (ACCT-JIHOKBN            =    SPACE            )
-           AND   (LNK-S01-SINSATUFLG2     =    SPACE            )
-      *
-              PERFORM  44013-SRYACT-KENSAKU2-SEC
-      *
-           END-IF
-      *
-           IF    (LNK-SYU-SYUHKNNUM(IDY)
-                                      NOT =   "971" AND "973"
-                                                    AND "975"   )
-           AND   (ACCT-SRYKBN             =   "99"              )
-           AND   (ACCT-ZAITEN             =    ZERO             )
-           AND   (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)
-           AND   (ACCT-JIHOKBN            =    SPACE            )
-           AND   (LNK-S01-JIKANGAI        =    SPACE            )
-      *
-              PERFORM  44014-SRYACT-KENSAKU3-SEC
-      *
-           END-IF
-      *
-           IF    (LNK-SYU-KOH1HKNNUM(IDY) =   "970"             )
-           AND   (ACCT-SRYKBN             =   "99"              )
-           AND   (ACCT-ZAITEN             =    ZERO             )
-           AND   (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)
-           AND   (ACCT-JIHOKBN            =    SPACE            )
-           AND   (LNK-S01-DAISANYUSENFLG  =    SPACE            )
-      *
-              PERFORM  44015-SRYACT-KENSAKU4-SEC
-      *
-           END-IF
-      *
-           IF   ((ACCT-ZAITEN       NOT = ZERO                  ) AND
-                 (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO) AND
-                 (ACCT-JIHOKBN          = SPACE                 ))
-           OR   ( FLG-TAISYO            =   1                    )
-      *
-      *H26.10
-      *       ¿ÇÎÅ¹Ô°ÙÉí²Ã¾ðÊó¤«¤é¥Þ¥¤¥Ê¥¹ÅÀ¿ôºÞ¤ÎÈ½Äê
-              IF      ACCT-ZAIREQFLG     =   "1"
-      *           ÉÕ²Ã¾ðÊó¤¢¤ê
-                  PERFORM  44011-SRYACCTPLUS-KENSAKU-SEC
-              ELSE
-                  MOVE     ZERO          TO  ACCTP-PLUSKBN
-              END-IF
+           IF    (ACCT-ZAITEN       NOT = ZERO                  ) AND
+                 (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)    
       *
               MOVE    ACCT-SRYKBN    TO  TBL-SRYKBN(IDX1)
               MOVE    ACCT-ZAINUM    TO  TBL-ZAIBAN(IDX1)
               MOVE    ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD)
                                      TO  TBL-ZAIKAISU(IDX1)
-              IF     ACCT-ZAIKBN       =    2
-                   MOVE  ACCT-ZAITEN TO  TBL-GENTEN(IDX1)
-                   MOVE  ACCT-ZAIKBN TO  TBL-ZAIKBN(IDX1)
+              IF     (ACCT-SRYCDTOTAL   =    630010002)   AND
+                     (ACCT-MEISAISU     =    1)
+                 COMPUTE   TBL-ZAITEN(IDX1)  =  TBL-ZAITEN(IDX1) +
+                                              (ACCT-ZAITEN * -1)
               ELSE
-      *H26.10   ¥Þ¥¤¥Ê¥¹È½Äê
-                IF   ACCTP-PLUSKBN     =    1
-                   COMPUTE   TBL-ZAITEN(IDX1)  =  TBL-ZAITEN(IDX1) +
-                                                (ACCT-ZAITEN * -1)
-                ELSE
-                   MOVE  ACCT-ZAITEN TO  TBL-ZAITEN(IDX1)
-                END-IF
+                 MOVE  ACCT-ZAITEN   TO  TBL-ZAITEN(IDX1)
               END-IF
               IF   (   ACCT-SRYKBN       =   "95"  OR  "96"   )         
-              OR   (   ACCT-ZAIKBN       =    2               )
-      *H26.10   ¥Þ¥¤¥Ê¥¹È½Äê
-              OR   (   ACCTP-PLUSKBN     =    1               )
+              OR   ((  ACCT-SRYCDTOTAL   =    630010002      )  AND     
+                    (  ACCT-MEISAISU     =    1              ))         
                  CONTINUE                                               
               ELSE                                                      
+      *          MOVE  ACCT-SYUTEN1  TO  TBL-SYUTEN(IDX1)               
                  COMPUTE  TBL-SYUTEN(IDX1)  =  ACCT-SYUTEN1
                                             *  TBL-ZAIKAISU(IDX1)
-                 IF  (LNK-SYU-SYUHKNNUM(IDY)  =   "973" OR "975")
-                 AND (ACCT-SRYKBN             =   "70"          )
+                 IF  (LNK-SYU-SYUHKNNUM(IDY)  =   "973")
+                 AND (ACCT-SRYKBN             =   "70" )
                      COMPUTE  TBL-SYUTEN(IDX1) =
                               TBL-SYUTEN(IDX1) -
                              (ACCT-SYUTEN2 * TBL-ZAIKAISU(IDX1))
@@ -1341,236 +1043,11 @@
       *
            END-IF
       *
-           MOVE    "tbl_sryacct"     TO  MCP-TABLE
-           MOVE    "key24"           TO  MCP-PATHNAME
+           MOVE    "SRYACCT-KEY24"   TO  ORC-DBPATH
            PERFORM  900-SRYACCT-READ-SEC
            .
       *
        4401-SRYACCT-SET-EXT.
-           EXIT.
-      *
-      **************************************************************
-      *    ¿ÇÎÅ²ñ·×ÉÕ²Ã¾ðÊó¸¡º÷
-      **************************************************************
-       44011-SRYACCTPLUS-KENSAKU-SEC           SECTION.
-      *
-           INITIALIZE                      SRYACCTPLUS-REC
-           MOVE    ACCT-HOSPNUM       TO   ACCTP-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN     TO   ACCTP-NYUGAIKBN
-           MOVE    ACCT-PTID          TO   ACCTP-PTID
-           MOVE    ACCT-SRYKA         TO   ACCTP-SRYKA
-           MOVE    ACCT-SRYYM         TO   ACCTP-SRYYM
-           MOVE    ACCT-ZAINUM        TO   ACCTP-ZAINUM
-           MOVE    1                  TO   ACCTP-RENNUM
-           MOVE    SRYACCTPLUS-REC    TO   MCPDATA-REC
-           MOVE    "DBSELECT"         TO   MCP-FUNC
-           MOVE    "tbl_sryacctplus"  TO   MCP-TABLE
-           MOVE    "key"              TO   MCP-PATHNAME
-           CALL    "ORCDBMAIN"        USING  MCPAREA
-                                             MCPDATA-REC
-                                             SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"          TO  MCP-FUNC
-               MOVE    "tbl_sryacctplus"  TO  MCP-TABLE
-               MOVE    "key"              TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"        USING  MCPAREA
-                                                 MCPDATA-REC
-                                                 SPA-AREA
-               IF      MCP-RC          =   ZERO
-                   MOVE    MCPDATA-REC    TO  SRYACCTPLUS-REC
-                   IF   ACCTP-RSIKINGAKU  NOT = ZERO
-                      MOVE    1   TO   FLG-TAISYO
-                   END-IF
-               END-IF
-           END-IF
-      *
-           MOVE     "tbl_sryacctplus"  TO   MCP-TABLE
-           MOVE     "key"              TO   MCP-PATHNAME
-           PERFORM   DB-CLOSE-SEC
-      *
-           .
-      *
-       44011-SRYACCTPLUS-KENSAKU-EXT.
-           EXIT.
-      *
-      **************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¾ðÊó¸¡º÷
-      **************************************************************
-       44012-SRYACT-KENSAKU-SEC           SECTION.
-      *
-           INITIALIZE                           SRYACT-REC
-           MOVE    ACCT-HOSPNUM         TO      SRY-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
-           MOVE    ACCT-PTID            TO      SRY-PTID
-           MOVE    ACCT-SRYYM           TO      SRY-SRYYM
-           MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
-           MOVE    "099110001"          TO      SRY-SRYCD(1)
-           MOVE    "099110001"          TO      SRY-SRYCD(2)
-           MOVE    "099110001"          TO      SRY-SRYCD(3)
-           MOVE    "099110001"          TO      SRY-SRYCD(4)
-           MOVE    "099110001"          TO      SRY-SRYCD(5)
-           MOVE    SRYACT-REC           TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "tbl_sryact"         TO      MCP-TABLE
-           MOVE    "key8"               TO      MCP-PATHNAME
-           CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"        TO      MCP-FUNC
-               MOVE    "tbl_sryact"     TO      MCP-TABLE
-               MOVE    "key8"           TO      MCP-PATHNAME
-               CALL    "ORCDBMAIN"      USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-               IF      MCP-RC          =   ZERO
-                   MOVE   MCPDATA-REC   TO      SRYACT-REC
-                   MOVE   1             TO      FLG-TAISYO
-               END-IF
-           END-IF
-      *
-           MOVE     "tbl_sryact"        TO      MCP-TABLE
-           MOVE     "key8"              TO      MCP-PATHNAME
-           PERFORM   DB-CLOSE-SEC
-      *
-           .
-      *
-       44012-SRYACT-KENSAKU-EXT.
-           EXIT.
-      *
-      **************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¾ðÊó¸¡º÷
-      **************************************************************
-       44013-SRYACT-KENSAKU2-SEC           SECTION.
-      *
-           INITIALIZE                           SRYACT-REC
-           MOVE    ACCT-HOSPNUM         TO      SRY-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
-           MOVE    ACCT-PTID            TO      SRY-PTID
-           MOVE    ACCT-SRYYM           TO      SRY-SRYYM
-           MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
-           MOVE    "099409905"          TO      SRY-SRYCD(1)
-           MOVE    "099409905"          TO      SRY-SRYCD(2)
-           MOVE    "099409905"          TO      SRY-SRYCD(3)
-           MOVE    "099409905"          TO      SRY-SRYCD(4)
-           MOVE    "099409905"          TO      SRY-SRYCD(5)
-           MOVE    SRYACT-REC           TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "tbl_sryact"         TO      MCP-TABLE
-           MOVE    "key8"               TO      MCP-PATHNAME
-           CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"        TO      MCP-FUNC
-               MOVE    "tbl_sryact"     TO      MCP-TABLE
-               MOVE    "key8"           TO      MCP-PATHNAME
-               CALL    "ORCDBMAIN"      USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-               IF      MCP-RC          =   ZERO
-                   MOVE   MCPDATA-REC   TO      SRYACT-REC
-                   MOVE   "1"           TO      LNK-S01-SINSATUFLG2
-               END-IF
-           END-IF
-      *
-           MOVE     "tbl_sryact"        TO      MCP-TABLE
-           MOVE     "key8"              TO      MCP-PATHNAME
-           PERFORM   DB-CLOSE-SEC
-      *
-           .
-      *
-       44013-SRYACT-KENSAKU2-EXT.
-           EXIT.
-      *
-      **************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¾ðÊó¸¡º÷
-      **************************************************************
-       44014-SRYACT-KENSAKU3-SEC           SECTION.
-      *
-           INITIALIZE                           SRYACT-REC
-           MOVE    ACCT-HOSPNUM         TO      SRY-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
-           MOVE    ACCT-PTID            TO      SRY-PTID
-           MOVE    ACCT-SRYYM           TO      SRY-SRYYM
-           MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
-           MOVE    "099409907"          TO      SRY-SRYCD(1)
-           MOVE    "099409907"          TO      SRY-SRYCD(2)
-           MOVE    "099409907"          TO      SRY-SRYCD(3)
-           MOVE    "099409907"          TO      SRY-SRYCD(4)
-           MOVE    "099409907"          TO      SRY-SRYCD(5)
-           MOVE    SRYACT-REC           TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "tbl_sryact"         TO      MCP-TABLE
-           MOVE    "key8"               TO      MCP-PATHNAME
-           CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"        TO      MCP-FUNC
-               MOVE    "tbl_sryact"     TO      MCP-TABLE
-               MOVE    "key8"           TO      MCP-PATHNAME
-               CALL    "ORCDBMAIN"      USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-               IF      MCP-RC          =   ZERO
-                   MOVE   MCPDATA-REC   TO      SRYACT-REC
-                   MOVE   "1"           TO      LNK-S01-JIKANGAI
-               END-IF
-           END-IF
-      *
-           MOVE     "tbl_sryact"        TO      MCP-TABLE
-           MOVE     "key8"              TO      MCP-PATHNAME
-           PERFORM   DB-CLOSE-SEC
-      *
-           .
-      *
-       44014-SRYACT-KENSAKU3-EXT.
-           EXIT.
-      *
-      **************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¾ðÊó¸¡º÷
-      **************************************************************
-       44015-SRYACT-KENSAKU4-SEC           SECTION.
-      *
-           INITIALIZE                           SRYACT-REC
-           MOVE    ACCT-HOSPNUM         TO      SRY-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
-           MOVE    ACCT-PTID            TO      SRY-PTID
-           MOVE    ACCT-SRYYM           TO      SRY-SRYYM
-           MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
-           MOVE    "099999931"          TO      SRY-SRYCD(1)
-           MOVE    "099999931"          TO      SRY-SRYCD(2)
-           MOVE    "099999931"          TO      SRY-SRYCD(3)
-           MOVE    "099999931"          TO      SRY-SRYCD(4)
-           MOVE    "099999931"          TO      SRY-SRYCD(5)
-           MOVE    SRYACT-REC           TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "tbl_sryact"         TO      MCP-TABLE
-           MOVE    "key8"               TO      MCP-PATHNAME
-           CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"        TO      MCP-FUNC
-               MOVE    "tbl_sryact"     TO      MCP-TABLE
-               MOVE    "key8"           TO      MCP-PATHNAME
-               CALL    "ORCDBMAIN"      USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-               IF      MCP-RC          =   ZERO
-                   MOVE   MCPDATA-REC   TO      SRYACT-REC
-                   MOVE   "1"           TO      LNK-S01-DAISANYUSENFLG
-               END-IF
-           END-IF
-      *
-           MOVE     "tbl_sryact"        TO      MCP-TABLE
-           MOVE     "key8"              TO      MCP-PATHNAME
-           PERFORM   DB-CLOSE-SEC
-      *
-           .
-      *
-       44015-SRYACT-KENSAKU4-EXT.
            EXIT.
       *
       ******************************************************************
@@ -1581,9 +1058,7 @@
            MOVE      ZERO     TO     FLG-SENIN-SYOSIN
       *
            MOVE      ZERO     TO     WRK-TYK-HKNTEN
-           MOVE      ZERO     TO     WRK-TYK-HKNTEN2
            MOVE      ZERO     TO     IDX2
-           MOVE      ZERO     TO     IDX5
       *
            PERFORM   VARYING      IDX1    FROM    1    BY    1
                       UNTIL     (IDX1               >   100  )
@@ -1592,6 +1067,7 @@
                EVALUATE    TBL-SRYKBN  (IDX1)
       *            ¿ÇÎÅ
                    WHEN    "11"
+                   WHEN    "12"
                     COMPUTE LNK-SYU-HKNTEN(IDY 01) =
                             LNK-SYU-HKNTEN(IDY 01) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
@@ -1599,38 +1075,16 @@
                     AND  (FLG-SENIN         =    1 )
                          MOVE    1     TO     FLG-SENIN-SYOSIN
                     END-IF
-                   WHEN    "12"
-                    IF   TBL-ZAIKBN(IDX1) =  2
-                      COMPUTE WRK-SYUG-HKNTEN(01) =
-                              WRK-SYUG-HKNTEN(01) +
-                             (TBL-GENTEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-                    ELSE
-                      COMPUTE LNK-SYU-HKNTEN(IDY 01) =
-                              LNK-SYU-HKNTEN(IDY 01) +
-                             (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-                    END-IF
       *            »ØÆ³
                    WHEN    "13"
-                    IF   TBL-ZAIKBN(IDX1) =  2
-                      COMPUTE WRK-SYUG-HKNTEN(02) =
-                              WRK-SYUG-HKNTEN(02) +
-                             (TBL-GENTEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-                    ELSE
-                      COMPUTE LNK-SYU-HKNTEN(IDY 02) =
-                              LNK-SYU-HKNTEN(IDY 02) +
-                             (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-                    END-IF
+                    COMPUTE LNK-SYU-HKNTEN(IDY 02) =
+                            LNK-SYU-HKNTEN(IDY 02) +
+                           (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
       *            ºßÂð
                    WHEN    "14"
-                    IF   TBL-ZAIKBN(IDX1) =  2
-                      COMPUTE WRK-SYUG-HKNTEN(03) =
-                              WRK-SYUG-HKNTEN(03) +
-                             (TBL-GENTEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-                    ELSE
-                      COMPUTE LNK-SYU-HKNTEN(IDY 03) =
-                              LNK-SYU-HKNTEN(IDY 03) +
-                             (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-                    END-IF
+                    COMPUTE LNK-SYU-HKNTEN(IDY 03) =
+                            LNK-SYU-HKNTEN(IDY 03) +
+                           (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
       *            ÅêÌô
                    WHEN    "21"   THRU  "27"
                     COMPUTE WRK-TYK-HKNTEN  =
@@ -1650,100 +1104,30 @@
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
       *            ¼ê½Ñ
                    WHEN    "50"
+                   WHEN    "54"
                     COMPUTE LNK-SYU-HKNTEN(IDY 07) =
                             LNK-SYU-HKNTEN(IDY 07) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            Ëã¿ì
-                   WHEN    "54"
+      *            ¸¡ºº
+                   WHEN    "60"
                     COMPUTE LNK-SYU-HKNTEN(IDY 08) =
                             LNK-SYU-HKNTEN(IDY 08) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            ¸¡ºº
-                   WHEN    "60"
+      *            £ØÀþ
+                   WHEN    "70"
                     COMPUTE LNK-SYU-HKNTEN(IDY 09) =
                             LNK-SYU-HKNTEN(IDY 09) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            ÉÂÍý¿ÇÃÇ
-                   WHEN    "64"
-                    COMPUTE LNK-SYU-HKNTEN(IDY 14) =
-                            LNK-SYU-HKNTEN(IDY 14) +
-                           (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            £ØÀþ
-                   WHEN    "70"
+      *            ¤½¤ÎÂ¾
+                   WHEN    "80"
                     COMPUTE LNK-SYU-HKNTEN(IDY 10) =
                             LNK-SYU-HKNTEN(IDY 10) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            ¤½¤ÎÂ¾
-                   WHEN    "80"
-                    INITIALIZE                       SRYACT-REC
-                    MOVE    LNK-SYU-HOSPNUM(IDY)
-                                                TO   SRY-HOSPNUM
-                    MOVE    LNK-SYU-NYUGAIKBN(IDY)
-                                                TO   SRY-NYUGAIKBN
-                    MOVE    LNK-SYU-PTID(IDY)   TO   SRY-PTID
-                    MOVE    LNK-SYU-SRYKA(IDY)  TO   SRY-SRYKA
-                    MOVE    LNK-SYU-SRYYMD(IDY)(1:6)
-                                                TO   SRY-SRYYM
-                    MOVE    TBL-ZAIBAN(IDX1)    TO   SRY-ZAINUM
-                    MOVE    SRYACT-REC          TO   MCPDATA-REC
-                    MOVE    "DBSELECT"          TO   MCP-FUNC
-                    MOVE    "tbl_sryact"        TO   MCP-TABLE
-                    MOVE    "key2"              TO   MCP-PATHNAME
-                    CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                        MCPDATA-REC
-                                                        SPA-AREA
-                    IF      MCP-RC             =       ZERO
-                      MOVE     "tbl_sryact"     TO   MCP-TABLE
-                      MOVE     "key2"           TO   MCP-PATHNAME
-                      PERFORM   900-SRYACT-READ-SEC
-                    ELSE
-                      MOVE    1                 TO   FLG-SRYACT
-                    END-IF
-                    IF      FLG-SRYACT          =   ZERO
-                      EVALUATE   SRY-SRYSYUKBN
-      *                ¥ê¥Ï
-                       WHEN         "800"
-                       WHEN         "809"
-      ***              WHEN         "810"
-                        COMPUTE LNK-SYU-HKNTEN(IDY 11) =
-                                LNK-SYU-HKNTEN(IDY 11) +
-                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *                ½èÊý¤»¤óÎÁ
-                       WHEN         "820"
-                         COMPUTE WRK-TYK-HKNTEN2 =
-                                 WRK-TYK-HKNTEN2 +
-                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *                Àº¿À²ÊÀìÌçÎÅË¡
-                       WHEN         "830"
-                        COMPUTE LNK-SYU-HKNTEN(IDY 12) =
-                                LNK-SYU-HKNTEN(IDY 12) +
-                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *                Êü¼ÍÀþ
-                       WHEN         "840"
-                        COMPUTE LNK-SYU-HKNTEN(IDY 13) =
-                                LNK-SYU-HKNTEN(IDY 13) +
-                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *                ÎÅÍÜÃ´Åö¼êÅö
-                       WHEN         "850"
-                        COMPUTE LNK-SYU-HKNTEN(IDY 16) =
-                                LNK-SYU-HKNTEN(IDY 16) +
-                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *                Æþ±¡ÎÁ
-                       WHEN         "890"
-                        COMPUTE LNK-SYU-HKNTEN(IDY 15) =
-                                LNK-SYU-HKNTEN(IDY 15) +
-                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-                      END-EVALUATE
-                    END-IF
-                    MOVE     "tbl_sryact"     TO   MCP-TABLE
-                    MOVE     "key2"           TO   MCP-PATHNAME
-                    PERFORM   DB-CLOSE-SEC
                END-EVALUATE
       *
                IF    (IDY                 =     1  )
                AND   (LNK-S01-SYOSINFLG   =   SPACE)
                    IF  LNK-SYU-SYUHKNNUM(IDY)   =   "971"  OR  "973"
-                                                           OR  "975"
                       CONTINUE
                    ELSE
                       PERFORM  44025-SYOSINFLG-SET-SEC
@@ -1756,8 +1140,7 @@
       *
       *            ÌôºÞ¥³¡¼¥ÉÅù¤Î¥»¥Ã¥È
                    INITIALIZE                       SRYACT-REC
-                   MOVE    LNK-SYU-HOSPNUM(IDY)
-                                               TO   SRY-HOSPNUM
+                   MOVE    LNK-SYU-HOSPID(IDY) TO   SRY-HOSPID
                    MOVE    LNK-SYU-NYUGAIKBN(IDY)
                                                TO   SRY-NYUGAIKBN
                    MOVE    LNK-SYU-PTID(IDY)   TO   SRY-PTID
@@ -1767,14 +1150,13 @@
                    MOVE    TBL-ZAIBAN(IDX1)    TO   SRY-ZAINUM
                    MOVE    SRYACT-REC          TO   MCPDATA-REC
                    MOVE    "DBSELECT"          TO   MCP-FUNC
-                   MOVE    "tbl_sryact"        TO   MCP-TABLE
-                   MOVE    "key2"              TO   MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
+                   MOVE    "SRYACT-KEY2"       TO   ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
                    IF      MCP-RC             =       ZERO
-                     MOVE     "tbl_sryact"     TO   MCP-TABLE
-                     MOVE     "key2"           TO   MCP-PATHNAME
+                     MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
                      PERFORM   900-SRYACT-READ-SEC
                      PERFORM  UNTIL  (FLG-SRYACT   =    1)
                           EVALUATE   LNK-SYU-INGAISHOHOKBN(IDY)
@@ -1788,11 +1170,6 @@
                                        WHEN   "221"
                                        WHEN   "231"
                                        WHEN   "291"
-      *H26.10
-                                       WHEN   "293"
-                                       WHEN   "294"
-                                       WHEN   "296"
-                                       WHEN   "297"
                                        WHEN   "   "
                                           PERFORM  44021-YAKUZAI-SET-SEC
                                    END-EVALUATE       
@@ -1802,20 +1179,13 @@
                                        WHEN   "221"
                                        WHEN   "231"
                                        WHEN   "291"
-      *H26.10
-                                       WHEN   "294"
-                                       WHEN   "297"
                                           PERFORM  44021-YAKUZAI-SET-SEC
                                    END-EVALUATE       
                           END-EVALUATE
-                          MOVE     "tbl_sryact"     TO   MCP-TABLE
-                          MOVE     "key2"           TO   MCP-PATHNAME
+                          MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
                           PERFORM   900-SRYACT-READ-SEC
                      END-PERFORM
                    END-IF
-                   MOVE     "tbl_sryact"     TO   MCP-TABLE
-                   MOVE     "key2"           TO   MCP-PATHNAME
-                   PERFORM   DB-CLOSE-SEC
       *
                  END-IF
       *
@@ -1823,7 +1193,7 @@
       *
                IF  TBL-SRYKBN(IDX1)       =   "95"   OR  "96"
                    INITIALIZE                        SRYACT-REC
-                   MOVE    LNK-SYU-HOSPNUM(IDY) TO   SRY-HOSPNUM
+                   MOVE    LNK-SYU-HOSPID(IDY)  TO   SRY-HOSPID
                    MOVE    LNK-SYU-NYUGAIKBN(IDY)
                                                 TO   SRY-NYUGAIKBN
                    MOVE    LNK-SYU-PTID(IDY)    TO   SRY-PTID
@@ -1833,40 +1203,30 @@
                    MOVE    TBL-ZAIBAN(IDX1)     TO   SRY-ZAINUM
                    MOVE    SRYACT-REC           TO   MCPDATA-REC
                    MOVE    "DBSELECT"           TO   MCP-FUNC
-                   MOVE    "tbl_sryact"         TO   MCP-TABLE
-                   MOVE    "key2"               TO   MCP-PATHNAME
-                   CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                        MCPDATA-REC
-                                                        SPA-AREA
+                   MOVE    "SRYACT-KEY2"        TO   ORC-DBPATH
+                   CALL    "ORCMCPSUB"           USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
                    IF      MCP-RC             =       ZERO
-                     MOVE     "tbl_sryact"      TO   MCP-TABLE
-                     MOVE     "key2"            TO   MCP-PATHNAME
+                     MOVE     "SRYACT-KEY2"     TO   ORC-DBPATH
                      PERFORM   900-SRYACT-READ-SEC
                      PERFORM  UNTIL  (FLG-SRYACT   =    1)
       *                   ÊÝ¸±Å¬ÍÑ³°¤Î¥Æ¡¼¥Ö¥ë¥»¥Ã¥È
                           PERFORM    44022-HKNTEKGAI-TBL-SEC
       *
-                          MOVE     "tbl_sryact" TO   MCP-TABLE
-                          MOVE     "key2"       TO   MCP-PATHNAME
+                          MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
                           PERFORM   900-SRYACT-READ-SEC
                      END-PERFORM
                    END-IF
-                   MOVE     "tbl_sryact"     TO   MCP-TABLE
-                   MOVE     "key2"           TO   MCP-PATHNAME
-                   PERFORM   DB-CLOSE-SEC
                END-IF
       *
-               IF  (LNK-SYU-SYUHKNNUM(IDY)   =   "971"  OR  "973"
-                                                        OR  "975")
-               OR  (LNK-SYU-KOH1HKNNUM(IDY)  =   "970"           )
-                 IF  ( TBL-SRYKBN(IDX1)         =   "95" OR "96")
-                 OR  ( TBL-ZAIKBN(IDX1)         =    2          )
-                 OR  ((LNK-SYU-KOH1HKNNUM(IDY)  =   "970"      ) AND
-                      (TBL-SRYKBN(IDX1)     NOT =   "80"       ))
+               IF  LNK-SYU-SYUHKNNUM(IDY)   =   "971"  OR  "973"
+                 IF  TBL-SRYKBN(IDX1)       =   "95"   OR  "96"        
                    CONTINUE                                            
                  ELSE                                                  
                    INITIALIZE                        SRYACT-REC
-                   MOVE    LNK-SYU-HOSPNUM(IDY) TO   SRY-HOSPNUM
+                   MOVE    LNK-SYU-HOSPID(IDY)  TO   SRY-HOSPID
                    MOVE    LNK-SYU-NYUGAIKBN(IDY)
                                                 TO   SRY-NYUGAIKBN
                    MOVE    LNK-SYU-PTID(IDY)    TO   SRY-PTID
@@ -1876,34 +1236,31 @@
                    MOVE    TBL-ZAIBAN(IDX1)     TO   SRY-ZAINUM
                    MOVE    SRYACT-REC           TO   MCPDATA-REC
                    MOVE    "DBSELECT"           TO   MCP-FUNC
-                   MOVE    "tbl_sryact"         TO   MCP-TABLE
-                   MOVE    "key2"               TO   MCP-PATHNAME
-                   CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                        MCPDATA-REC
-                                                        SPA-AREA
+                   MOVE    "SRYACT-KEY2"        TO   ORC-DBPATH
+                   CALL    "ORCMCPSUB"           USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
                    IF      MCP-RC             =       ZERO
-                     MOVE     "tbl_sryact"      TO   MCP-TABLE
-                     MOVE     "key2"            TO   MCP-PATHNAME
+                     MOVE     "SRYACT-KEY2"     TO   ORC-DBPATH
                      PERFORM   900-SRYACT-READ-SEC
                      PERFORM  UNTIL  (FLG-SRYACT   =    1)
       *                   ÉéÃ´¶â³Û¤Î¼êµ»ÅÀ»»½ÐÅù
-                          IF   LNK-SYU-KOH1HKNNUM(IDY)  =   "970"
-                             PERFORM    44026-SYUTEN-KEISAN2-SEC
-                          ELSE
-                             PERFORM    44023-SYUTEN-KEISAN-SEC
-                          END-IF
+                          PERFORM    44023-SYUTEN-KEISAN-SEC
       *
-                          MOVE     "tbl_sryact" TO   MCP-TABLE
-                          MOVE     "key2"       TO   MCP-PATHNAME
+                          MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
                           PERFORM   900-SRYACT-READ-SEC
                      END-PERFORM
                    END-IF
-                   MOVE     "tbl_sryact"        TO   MCP-TABLE
-                   MOVE     "key2"              TO   MCP-PATHNAME
-                   PERFORM   DB-CLOSE-SEC
                  END-IF                                                
                END-IF                                                  
       *
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
            END-PERFORM
       *
       *    Ï«ºÒ¼«ÇåÀÕÊÝ¸±½èÍý
@@ -1944,50 +1301,15 @@
                    MOVE    ZERO           TO  WK-RSIETC-TENSU
                    COMPUTE WK-RSIETC-TENSU   =
                            LNK-SYU-RSIETC-MONEY(IDY)      /   10
-                   COMPUTE LNK-SYU-HKNTEN(IDY 11)   =
-                           LNK-SYU-HKNTEN(IDY 11)   -
+                   COMPUTE LNK-SYU-HKNTEN(IDY 10)   =
+                           LNK-SYU-HKNTEN(IDY 10)   -
                            WK-RSIETC-TENSU
              END-IF
              MOVE     WK-RSIETC2    TO   LNK-SYU-RSIETC-MONEY(IDY)
            END-IF
       *
-           IF  LNK-SYU-KOH1HKNNUM(IDY)      =   "970"
-             COMPUTE  LNK-SYU-RSIETC-MONEY(IDY) = WK-RSIETC * 10
-             IF   LNK-SYU-RSIETC-MONEY(IDY) NOT = ZERO
-               MOVE   ZERO        TO  WK-RSIETC-TENSU
-               COMPUTE WK-RSIETC-TENSU = LNK-SYU-RSIETC-MONEY(IDY) / 10
-               COMPUTE LNK-SYU-HKNTEN(IDY 11) = LNK-SYU-HKNTEN(IDY 11)
-                                              - WK-RSIETC-TENSU
-             END-IF
-             MOVE     WK-RSIETC2  TO  LNK-SYU-RSIETC-MONEY(IDY)
-           END-IF
-      *
-           IF   LNK-SYU-HKNTEN(IDY 01) >= WRK-SYUG-HKNTEN(01)
-              COMPUTE  LNK-SYU-HKNTEN(IDY 01) =  LNK-SYU-HKNTEN(IDY 01)
-                                              -  WRK-SYUG-HKNTEN(01)
-           ELSE
-              MOVE     ZERO    TO    LNK-SYU-HKNTEN(IDY 01)
-           END-IF
-           IF   LNK-SYU-HKNTEN(IDY 02) >= WRK-SYUG-HKNTEN(02)
-              COMPUTE  LNK-SYU-HKNTEN(IDY 02) =  LNK-SYU-HKNTEN(IDY 02)
-                                              -  WRK-SYUG-HKNTEN(02)
-           ELSE
-              MOVE     ZERO    TO    LNK-SYU-HKNTEN(IDY 02)
-           END-IF
-           IF   LNK-SYU-HKNTEN(IDY 03) >= WRK-SYUG-HKNTEN(03)
-              COMPUTE  LNK-SYU-HKNTEN(IDY 03) =  LNK-SYU-HKNTEN(IDY 03)
-                                              -  WRK-SYUG-HKNTEN(03)
-           ELSE
-              MOVE     ZERO    TO    LNK-SYU-HKNTEN(IDY 03)
-           END-IF
-      *
       *    ¼«ÇåÀÕÊÝ¸±½èÍý
            IF  LNK-SYU-SYUHKNNUM(IDY)  =   "973"
-      *
-             COMPUTE   WK-SYUTEN-KEI  =  WK-SYUTEN-KEI
-                                      -  WRK-SYUG-HKNTEN(01)
-                                      -  WRK-SYUG-HKNTEN(02)
-                                      -  WRK-SYUG-HKNTEN(03)
       *
              COMPUTE   LNK-S01-SYUTEN(IDY)  =   WK-SYUTEN-KEI
                                             -   WK-RSISHOSHIN
@@ -1996,30 +1318,13 @@
                                             -   WK-RSIETC
                                             -   WK-YOUBUKASAN
                                             -   WK-KYOBUKASAN
-                                            -   WK-KEIBUKASAN
                                             -   WK-SOGAIKASAN
                                             -   WK-RYOYOTEATE
       *
+      ***    COMPUTE   LNK-S01-SINDAN(IDY)  =  WK-SINDAN  *  10
+      ***    COMPUTE   LNK-S01-MEISAI(IDY)  =  WK-MEISAI  *  10
              MOVE      WK-SINDAN       TO   LNK-S01-SINDAN(IDY)
              MOVE      WK-MEISAI       TO   LNK-S01-MEISAI(IDY)
-      *
-             MOVE      WK-RYOYOTEATE   TO   LNK-S01-RYOYO(IDY)
-      *
-             MOVE      WK-KYUKYU       TO   LNK-S01-KYUKYU(IDY)
-      *
-           END-IF
-      *
-      *    ¸ø³²½èÍý
-           IF  LNK-SYU-SYUHKNNUM(IDY)  =   "975"
-      *
-             COMPUTE   WK-SYUTEN-KEI  =  WK-SYUTEN-KEI
-                                      -  WRK-SYUG-HKNTEN(01)
-                                      -  WRK-SYUG-HKNTEN(02)
-                                      -  WRK-SYUG-HKNTEN(03)
-      *
-             COMPUTE   LNK-S01-SYUTEN(IDY)  =   WK-SYUTEN-KEI
-                                            -   WK-KOGAI-TEN
-                                            -   WK-RYOYOTEATE
       *
              MOVE      WK-RYOYOTEATE   TO   LNK-S01-RYOYO(IDY)
       *
@@ -2030,16 +1335,14 @@
            END-IF
       *
            MOVE        WRK-TYK-HKNTEN  TO   LNK-SYU-HKNTEN(IDY 04)
-           ADD         WRK-TYK-HKNTEN2 TO   LNK-SYU-HKNTEN(IDY 04)
-           MOVE        WRK-TYK-HKNTEN2 TO   LNK-SYU-SHOHOU-SAI(IDY)
       *
       *    ÊÝ¸±Å¬ÍÑ³°¶â³Û¤Î½¸·×¥Æ¡¼¥Ö¥ë¤«¤é¼ýÇ¼¥Æ¡¼¥Ö¥ë¤Ø¤Î¥»¥Ã¥È
            PERFORM     44024-HKNTEKGAI-SET-SEC
       *
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >     16
-               COMPUTE   LNK-SYU-HKNTEN(IDY 17)  =
-                         LNK-SYU-HKNTEN(IDY 17)  +
+                      UNTIL    IDX3      >     11
+               COMPUTE   LNK-SYU-HKNTEN(IDY 12)  =
+                         LNK-SYU-HKNTEN(IDY 12)  +
                          LNK-SYU-HKNTEN(IDY IDX3)
            END-PERFORM
            .
@@ -2079,7 +1382,7 @@
            EVALUATE    SRY-SRYKBN
                WHEN    "95"
                    PERFORM     VARYING    IDX3    FROM    1     BY    1
-                                 UNTIL   (IDX3         >   5   )   OR
+                                 UNTIL   (IDX3         >   5    )   OR
        	                                 (SRY-SRYCD(IDX3)  =   SPACE)
                        IF    SRY-SRYCD (IDX3) (1:3)   =   "095"
                                                       OR  "096"
@@ -2089,14 +1392,9 @@
                                                       OR       "93"
                                                       OR       "94"
                                INITIALIZE    TNS-TENSU-REC
-                               MOVE    SRY-SRYCD(IDX3)
-                                                 TO   TNS-SRYCD
-                               MOVE    LNK-SYU-HOSPNUM(IDY)
-                                                 TO   TNS-HOSPNUM
+                               MOVE    SRY-SRYCD(IDX3) TO   TNS-SRYCD
                                MOVE    LNK-SYU-SRYYMD(IDY)
-                                                 TO   TNS-YUKOSTYMD
-                               MOVE    LNK-SYU-SRYYMD(IDY)
-                                                 TO   TNS-YUKOEDYMD
+                                                       TO   ORC-DBYMD
                                PERFORM    900-TENSU-READ-SEC
                                IF      FLG-TENSU   =    ZERO
                                    EVALUATE    TNS-GAITENTTLKBN
@@ -2125,31 +1423,6 @@
                                                =   TBL-JIHI-TAXNASI(5)
                                                +  (SRY-JIHIMONEY(IDX3)
                                                  * TBL-ZAIKAISU(IDX1)) 
-                                       WHEN    6
-                                          COMPUTE  TBL-JIHI-TAXNASI(6)
-                                               =   TBL-JIHI-TAXNASI(6)
-                                               +  (SRY-JIHIMONEY(IDX3)
-                                                 * TBL-ZAIKAISU(IDX1)) 
-                                       WHEN    7
-                                          COMPUTE  TBL-JIHI-TAXNASI(7)
-                                               =   TBL-JIHI-TAXNASI(7)
-                                               +  (SRY-JIHIMONEY(IDX3)
-                                                 * TBL-ZAIKAISU(IDX1)) 
-                                       WHEN    8
-                                          COMPUTE  TBL-JIHI-TAXNASI(8)
-                                               =   TBL-JIHI-TAXNASI(8)
-                                               +  (SRY-JIHIMONEY(IDX3)
-                                                 * TBL-ZAIKAISU(IDX1)) 
-                                       WHEN    9
-                                          COMPUTE  TBL-JIHI-TAXNASI(9)
-                                               =   TBL-JIHI-TAXNASI(9)
-                                               +  (SRY-JIHIMONEY(IDX3)
-                                                 * TBL-ZAIKAISU(IDX1)) 
-                                       WHEN    10
-                                          COMPUTE  TBL-JIHI-TAXNASI(10)
-                                               =   TBL-JIHI-TAXNASI(10)
-                                               +  (SRY-JIHIMONEY(IDX3)
-                                                 * TBL-ZAIKAISU(IDX1)) 
                                    END-EVALUATE
                                END-IF
                            ELSE
@@ -2188,64 +1461,29 @@
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   "50"
+                                   WHEN   "54"
                                        COMPUTE  TBL-TGMONEY(7)
                                             =   TBL-TGMONEY(7)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "54"
+                                   WHEN   "60"
                                        COMPUTE  TBL-TGMONEY(8)
                                             =   TBL-TGMONEY(8)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "60"
+                                   WHEN   "70"
                                        COMPUTE  TBL-TGMONEY(9)
                                             =   TBL-TGMONEY(9)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "64"
-                                       COMPUTE  TBL-TGMONEY(14)
-                                            =   TBL-TGMONEY(14)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "70"
+                                   WHEN   "80"
                                        COMPUTE  TBL-TGMONEY(10)
                                             =   TBL-TGMONEY(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "80"
-      ***                          WHEN   "81"
-                                       COMPUTE  TBL-TGMONEY(11)
-                                            =   TBL-TGMONEY(11)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "82"
-                                       COMPUTE  TBL-TGMONEY(4)
-                                            =   TBL-TGMONEY(4)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "83"
-                                       COMPUTE  TBL-TGMONEY(12)
-                                            =   TBL-TGMONEY(12)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "84"
-                                       COMPUTE  TBL-TGMONEY(13)
-                                            =   TBL-TGMONEY(13)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "85"
-                                       COMPUTE  TBL-TGMONEY(16)
-                                            =   TBL-TGMONEY(16)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "89"
-                                       COMPUTE  TBL-TGMONEY(15)
-                                            =   TBL-TGMONEY(15)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   OTHER
-                                       COMPUTE  TBL-TGMONEY(11)
-                                            =   TBL-TGMONEY(11)
+                                       COMPUTE  TBL-TGMONEY(10)
+                                            =   TBL-TGMONEY(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                END-EVALUATE
@@ -2253,12 +1491,8 @@
                        ELSE
                            INITIALIZE    TNS-TENSU-REC
                            MOVE    SRY-SRYCD(IDX3) TO   TNS-SRYCD
-                           MOVE    LNK-SYU-HOSPNUM(IDY)
-                                                   TO   TNS-HOSPNUM
                            MOVE    LNK-SYU-SRYYMD(IDY)
-                                                   TO   TNS-YUKOSTYMD
-                           MOVE    LNK-SYU-SRYYMD(IDY)
-                                                   TO   TNS-YUKOEDYMD
+                                                   TO   ORC-DBYMD
                            PERFORM    900-TENSU-READ-SEC
                            IF      FLG-TENSU   =    ZERO
                                EVALUATE   TNS-SRYKBN
@@ -2296,64 +1530,26 @@
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   "50"
+                                   WHEN   "54"
                                        COMPUTE  TBL-TGMONEY(7)
                                             =   TBL-TGMONEY(7)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "54"
+                                   WHEN   "60"
                                        COMPUTE  TBL-TGMONEY(8)
                                             =   TBL-TGMONEY(8)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "60"
+                                   WHEN   "70"
                                        COMPUTE  TBL-TGMONEY(9)
                                             =   TBL-TGMONEY(9)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "64"
-                                       COMPUTE  TBL-TGMONEY(14)
-                                            =   TBL-TGMONEY(14)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "70"
+                                   WHEN   "80"
                                        COMPUTE  TBL-TGMONEY(10)
                                             =   TBL-TGMONEY(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "80"
-                                     EVALUATE   TNS-SRYSYUKBN
-                                      WHEN       "800"
-      ***                             WHEN       "810"
-                                       COMPUTE  TBL-TGMONEY(11)
-                                            =   TBL-TGMONEY(11)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                      WHEN       "820"
-                                       COMPUTE  TBL-TGMONEY(4)
-                                            =   TBL-TGMONEY(4)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                      WHEN       "830"
-                                       COMPUTE  TBL-TGMONEY(12)
-                                            =   TBL-TGMONEY(12)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                      WHEN       "840"
-                                       COMPUTE  TBL-TGMONEY(13)
-                                            =   TBL-TGMONEY(13)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                      WHEN       "850"
-                                       COMPUTE  TBL-TGMONEY(16)
-                                            =   TBL-TGMONEY(16)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                      WHEN       "890"
-                                       COMPUTE  TBL-TGMONEY(15)
-                                            =   TBL-TGMONEY(15)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                     END-EVALUATE
                                    WHEN   OTHER
                                      IF   TNS-SRYCD(1:1)    =   "6"
                                        IF    TNS-YKZKBN     =    4
@@ -2370,8 +1566,8 @@
                                      END-IF
                                      IF   TNS-SRYCD(1:1)    =   "7"
                                      OR   TNS-SRYCD(1:3)    =   "059"
-                                       COMPUTE  TBL-TGMONEY(11)
-                                            =   TBL-TGMONEY(11)
+                                       COMPUTE  TBL-TGMONEY(10)
+                                            =   TBL-TGMONEY(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                      END-IF
@@ -2391,14 +1587,9 @@
                                                       OR       "93"
                                                       OR       "94"
                                INITIALIZE    TNS-TENSU-REC
-                               MOVE    SRY-SRYCD(IDX3)
-                                                 TO   TNS-SRYCD
-                               MOVE    LNK-SYU-HOSPNUM(IDY)
-                                                 TO   TNS-HOSPNUM
+                               MOVE    SRY-SRYCD(IDX3) TO   TNS-SRYCD
                                MOVE    LNK-SYU-SRYYMD(IDY)
-                                                 TO   TNS-YUKOSTYMD
-                               MOVE    LNK-SYU-SRYYMD(IDY)
-                                                 TO   TNS-YUKOEDYMD
+                                                       TO   ORC-DBYMD
                                PERFORM    900-TENSU-READ-SEC
                                IF      FLG-TENSU   =    ZERO
                                    EVALUATE    TNS-GAITENTTLKBN
@@ -2427,31 +1618,6 @@
                                                =   TBL-JIHI-TAXARI(5)
                                                +  (SRY-JIHIMONEY(IDX3)
                                                  * TBL-ZAIKAISU(IDX1)) 
-                                       WHEN    6
-                                          COMPUTE  TBL-JIHI-TAXARI(6)
-                                               =   TBL-JIHI-TAXARI(6)
-                                               +  (SRY-JIHIMONEY(IDX3)
-                                                 * TBL-ZAIKAISU(IDX1)) 
-                                       WHEN    7
-                                          COMPUTE  TBL-JIHI-TAXARI(7)
-                                               =   TBL-JIHI-TAXARI(7)
-                                               +  (SRY-JIHIMONEY(IDX3)
-                                                 * TBL-ZAIKAISU(IDX1)) 
-                                       WHEN    8
-                                          COMPUTE  TBL-JIHI-TAXARI(8)
-                                               =   TBL-JIHI-TAXARI(8)
-                                               +  (SRY-JIHIMONEY(IDX3)
-                                                 * TBL-ZAIKAISU(IDX1)) 
-                                       WHEN    9
-                                          COMPUTE  TBL-JIHI-TAXARI(9)
-                                               =   TBL-JIHI-TAXARI(9)
-                                               +  (SRY-JIHIMONEY(IDX3)
-                                                 * TBL-ZAIKAISU(IDX1)) 
-                                       WHEN    10
-                                          COMPUTE  TBL-JIHI-TAXARI(10)
-                                               =   TBL-JIHI-TAXARI(10)
-                                               +  (SRY-JIHIMONEY(IDX3)
-                                                 * TBL-ZAIKAISU(IDX1)) 
                                    END-EVALUATE
                                END-IF
                            ELSE
@@ -2490,64 +1656,29 @@
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   "50"
+                                   WHEN   "54"
                                        COMPUTE  TBL-TGMONEY-TAX(7)
                                             =   TBL-TGMONEY-TAX(7)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "54"
+                                   WHEN   "60"
                                        COMPUTE  TBL-TGMONEY-TAX(8)
                                             =   TBL-TGMONEY-TAX(8)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "60"
+                                   WHEN   "70"
                                        COMPUTE  TBL-TGMONEY-TAX(9)
                                             =   TBL-TGMONEY-TAX(9)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "64"
-                                       COMPUTE  TBL-TGMONEY-TAX(14)
-                                            =   TBL-TGMONEY-TAX(14)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "70"
+                                   WHEN   "80"
                                        COMPUTE  TBL-TGMONEY-TAX(10)
                                             =   TBL-TGMONEY-TAX(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "80"
-      ***                          WHEN   "81"
-                                       COMPUTE  TBL-TGMONEY-TAX(11)
-                                            =   TBL-TGMONEY-TAX(11)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "82"
-                                       COMPUTE  TBL-TGMONEY-TAX(4)
-                                            =   TBL-TGMONEY-TAX(4)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "83"
-                                       COMPUTE  TBL-TGMONEY-TAX(12)
-                                            =   TBL-TGMONEY-TAX(12)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "84"
-                                       COMPUTE  TBL-TGMONEY-TAX(13)
-                                            =   TBL-TGMONEY-TAX(13)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "85"
-                                       COMPUTE  TBL-TGMONEY-TAX(16)
-                                            =   TBL-TGMONEY-TAX(16)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "89"
-                                       COMPUTE  TBL-TGMONEY-TAX(15)
-                                            =   TBL-TGMONEY-TAX(15)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   OTHER
-                                       COMPUTE  TBL-TGMONEY-TAX(11)
-                                            =   TBL-TGMONEY-TAX(11)
+                                       COMPUTE  TBL-TGMONEY-TAX(10)
+                                            =   TBL-TGMONEY-TAX(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                END-EVALUATE
@@ -2555,12 +1686,8 @@
                        ELSE
                            INITIALIZE    TNS-TENSU-REC
                            MOVE    SRY-SRYCD(IDX3) TO   TNS-SRYCD
-                           MOVE    LNK-SYU-HOSPNUM(IDY)
-                                                   TO   TNS-HOSPNUM
                            MOVE    LNK-SYU-SRYYMD(IDY)
-                                                   TO   TNS-YUKOSTYMD
-                           MOVE    LNK-SYU-SRYYMD(IDY)
-                                                   TO   TNS-YUKOEDYMD
+                                                   TO   ORC-DBYMD
                            PERFORM    900-TENSU-READ-SEC
                            IF      FLG-TENSU   =    ZERO
                                EVALUATE   TNS-SRYKBN
@@ -2598,64 +1725,26 @@
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   "50"
+                                   WHEN   "54"
                                        COMPUTE  TBL-TGMONEY-TAX(7)
                                             =   TBL-TGMONEY-TAX(7)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "54"
+                                   WHEN   "60"
                                        COMPUTE  TBL-TGMONEY-TAX(8)
                                             =   TBL-TGMONEY-TAX(8)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "60"
+                                   WHEN   "70"
                                        COMPUTE  TBL-TGMONEY-TAX(9)
                                             =   TBL-TGMONEY-TAX(9)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "64"
-                                       COMPUTE  TBL-TGMONEY-TAX(14)
-                                            =   TBL-TGMONEY-TAX(14)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "70"
+                                   WHEN   "80"
                                        COMPUTE  TBL-TGMONEY-TAX(10)
                                             =   TBL-TGMONEY-TAX(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "80"
-                                    EVALUATE   TNS-SRYSYUKBN
-                                      WHEN       "800"
-      ***                             WHEN       "810"
-                                       COMPUTE  TBL-TGMONEY-TAX(11)
-                                            =   TBL-TGMONEY-TAX(11)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                      WHEN       "820"
-                                       COMPUTE  TBL-TGMONEY-TAX(4)
-                                            =   TBL-TGMONEY-TAX(4)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                      WHEN       "830"
-                                       COMPUTE  TBL-TGMONEY-TAX(12)
-                                            =   TBL-TGMONEY-TAX(12)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                      WHEN       "840"
-                                       COMPUTE  TBL-TGMONEY-TAX(13)
-                                            =   TBL-TGMONEY-TAX(13)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                      WHEN       "850"
-                                       COMPUTE  TBL-TGMONEY-TAX(16)
-                                            =   TBL-TGMONEY-TAX(16)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                      WHEN       "890"
-                                       COMPUTE  TBL-TGMONEY-TAX(15)
-                                            =   TBL-TGMONEY-TAX(15)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
-                                    END-EVALUATE
                                    WHEN   OTHER
                                      IF   TNS-SRYCD(1:1)    =   "6"
                                        IF    TNS-YKZKBN     =    4
@@ -2672,8 +1761,8 @@
                                      END-IF
                                      IF   TNS-SRYCD(1:1)    =   "7"
                                      OR   TNS-SRYCD(1:3)    =   "059"
-                                       COMPUTE  TBL-TGMONEY-TAX(11)
-                                            =   TBL-TGMONEY-TAX(11)
+                                       COMPUTE  TBL-TGMONEY-TAX(10)
+                                            =   TBL-TGMONEY-TAX(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                      END-IF
@@ -2703,219 +1792,76 @@
                                 (SRY-SRYCD(IDX3) =   SPACE)            
       *                                                                
                     INITIALIZE    TNS-TENSU-REC
-                    MOVE    SRY-SRYCD(IDX3)      TO   TNS-SRYCD
-                    MOVE    LNK-SYU-HOSPNUM(IDY) TO   TNS-HOSPNUM
-                    MOVE    LNK-SYU-SRYYMD(IDY)  TO   TNS-YUKOSTYMD
-                    MOVE    LNK-SYU-SRYYMD(IDY)  TO   TNS-YUKOEDYMD
+                    MOVE    SRY-SRYCD(IDX3) TO   TNS-SRYCD
+                    MOVE    LNK-SYU-SRYYMD(IDY)
+                                            TO   ORC-DBYMD
                     PERFORM    900-TENSU-READ-SEC
                     IF      FLG-TENSU   =    ZERO
       *                                                     
-                      IF  LNK-SYU-SYUHKNNUM(IDY)  =  "971" OR "973"
-      *
                          COMPUTE  WRK-TEN     =   TNS-TEN  /  10       
       *                                                                
-                         IF   LNK-SYU-SRYYMD(IDY)(1:6)  >=   "201307"
-                           IF  SRY-SRYCD(IDX3) =
-                               "101110010" OR "101110040"
-                             COMPUTE WK-RSISHOSHIN = WK-RSISHOSHIN +
-                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
-                           END-IF
-                           IF  SRY-SRYCD(IDX3) = "101800890"
-                             COMPUTE WK-RSIETC  = WK-RSIETC +
-                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
-                             COMPUTE WK-RSIETC2 = WK-RSIETC2 +
-                                    (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
-                           END-IF
-                           IF  SRY-SRYCD(IDX3) =
-                               "101120010" OR "101120040" OR
-                               "101120050" OR "101120060" OR
-                               "101120070" OR "101120080"
-                             COMPUTE WK-RSISAISHIN = WK-RSISAISHIN +
-                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
-                           END-IF
-                           IF  SRY-SRYCD(IDX3) =  "101130190"
-                             COMPUTE WK-RSISDO = WK-RSISDO +
-                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
-                           END-IF
-                           IF  SRY-SRYCD(IDX3) =
-                               "101800870" OR "101800470" OR
-                               "101800480" OR "101800490" OR
-                               "101800500" OR "101800510" OR
-                               "101800520" OR "101800530" OR
-                               "101800540" OR "101800960" OR
-                               "101800970" OR "101800980" OR
-                               "101801040"
-                             COMPUTE WK-RSIETC  = WK-RSIETC +
-                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
-                             COMPUTE WK-RSIETC2 = WK-RSIETC2 +
-                                    (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
-                           END-IF
-                           EVALUATE  SRY-SRYCD(IDX3)
-                            WHEN    "101801010"  THRU  "101801020"
-                             COMPUTE WK-RSIETC  = WK-RSIETC +
-                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
-                             COMPUTE WK-RSIETC2 = WK-RSIETC2 +
-                                    (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
-      *
-                             COMPUTE WRK-TEN-KG     = WRK-TEN
-                             COMPUTE WRK-TEN-KG2    = TNS-TEN
-                           END-EVALUATE
-                           IF  SRY-SRYCD(IDX3) = "101801030"
-                             COMPUTE WRK-FUTANWARI  = TNS-TEN / 100
-      *
-                             COMPUTE WRK-KEISAN2    =
-                                    (WRK-TEN-KG     * WRK-FUTANWARI)
-                                                    + 0.5
-                             COMPUTE WRK-KEISAN2    =
-                                    (WRK-KEISAN2    *
-                                                TBL-ZAIKAISU (IDX1))
-                             COMPUTE WK-RSIETC      =
-                                     WK-RSIETC      + WRK-KEISAN2
-      *
-                             COMPUTE WRK-KEISAN2    =
-                                    (WRK-TEN-KG2    * WRK-FUTANWARI)
-                             COMPUTE WRK-KEISAN2    =
-                                    (WRK-KEISAN2    *
-                                                TBL-ZAIKAISU (IDX1))
-                             COMPUTE WK-RSIETC2     =
-                                     WK-RSIETC2     + WRK-KEISAN2
-                           END-IF
-                         ELSE
-                           IF  SRY-SRYCD(IDX3) =
-                               "101110010" OR "101110030" OR
-                               "101110040"
-                             COMPUTE WK-RSISHOSHIN = WK-RSISHOSHIN +
-                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
-                           END-IF
-                           IF  SRY-SRYCD(IDX3) =
-                               "101120030" OR "101120040" OR
-                               "101120050" OR "101120060" OR
-                               "101120100"
-                             COMPUTE WK-RSISAISHIN = WK-RSISAISHIN +
-                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
-                           END-IF
-                           IF ( SRY-SRYCD(IDX3) =
-                                "101130020" OR "101130030" OR
-                                "101130040" OR "101130050" OR
-                                "101130060" OR "101130070" OR
-                                "101130080" OR "101130090" OR
-                                "101130100"                      )
-                           OR ((LNK-SYU-SRYYMD(IDY)(1:6)
-                                                   <=   "200803") AND
-                               (SRY-SRYCD(IDX3) =  "101130010"  ))
-                             COMPUTE WK-RSISDO = WK-RSISDO +
-                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
-                           END-IF
-                         END-IF
+                         IF   SRY-SRYCD(IDX3) =  "101110010"  OR       
+                                                 "101110020"  OR       
+                                                 "101110030"           
+                           COMPUTE WK-RSISHOSHIN = WK-RSISHOSHIN +     
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
+                         END-IF                                        
+                         IF   SRY-SRYCD(IDX3) =  "101120030"  OR       
+                                                 "101120040"  OR       
+                                                 "101120050"  OR       
+                                                 "101120060"           
+                           COMPUTE WK-RSISAISHIN = WK-RSISAISHIN +     
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
+                         END-IF                                        
+                         IF   SRY-SRYCD(IDX3) =  "101130010"  OR       
+                                                 "101130020"  OR       
+                                                 "101130030"  OR       
+                                                 "101130040"  OR       
+                                                 "101130050"  OR       
+                                                 "101130060"  OR       
+                                                 "101130070"  OR       
+                                                 "101130080"  OR       
+                                                 "101130090"  OR       
+                                                 "101130100"           
+                           COMPUTE WK-RSISDO = WK-RSISDO +             
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
+                         END-IF                                        
                          IF    SRY-SRYCD (IDX3)(1:5)   =   "09591"     
                                                      OR    "09592"     
                                                      OR    "09593"     
-                           IF  SRY-SRYSYUKBN = "809"
-                             COMPUTE WRK-TEN    = SRY-JIHIMONEY(IDX3)
-                                                / 10
-                             COMPUTE WK-RSIETC  = WK-RSIETC +
-                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
-                             COMPUTE WK-RSIETC2 = WK-RSIETC2 +
-                                    (SRY-JIHIMONEY(IDX3)
-                                              *   TBL-ZAIKAISU (IDX1))
-                           ELSE
-                             COMPUTE WK-RSIETC  = WK-RSIETC +
-                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
-                             COMPUTE WK-RSIETC2 = WK-RSIETC2 +
-                                    (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
-                           END-IF
-      *
-      *                    ¼«ÇåÀÕÊÝ¸±½èÍý
-                           IF    LNK-SYU-SYUHKNNUM(IDY)  =   "973"
-                              IF   IDX5  >= 20
-                                DISPLAY "TABLE OVER"
-                              ELSE
-                                ADD    1   TO  IDX5
-                                MOVE   SRY-SRYCD(IDX3)
-                                   TO  LNK-S01-SONOTA-SRYCD(IDY IDX5)
-                                MOVE   TBL-ZAIKAISU (IDX1)
-                                   TO  LNK-S01-SONOTA-ZAIKAISU(IDY IDX5)
-                                IF  SRY-SRYSYUKBN = "809"
-                                  MOVE SRY-JIHIMONEY(IDX3)
-                                   TO  LNK-S01-SONOTA-TANKA(IDY IDX5)
-                                ELSE
-                                  MOVE TNS-TEN
-                                   TO  LNK-S01-SONOTA-TANKA(IDY IDX5)
-                                END-IF
-                              END-IF
-                            END-IF
-      *
+                           COMPUTE WK-RSIETC = WK-RSIETC +             
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
+                           COMPUTE WK-RSIETC2 = WK-RSIETC2 +           
+                                  (TNS-TEN  *   TBL-ZAIKAISU (IDX1))   
                          END-IF                                        
                          IF    SRY-SRYCD (IDX3)(1:5)   =   "09591"     
-                          IF  SRY-SRYSYUKBN = "809"
                            COMPUTE WK-SINDAN = WK-SINDAN +             
-                                  (SRY-JIHIMONEY(IDX3)
-                                            *   TBL-ZAIKAISU (IDX1))
-                          ELSE
-                           COMPUTE WK-SINDAN = WK-SINDAN +             
+      ****                        (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))   
-                          END-IF
                          END-IF                                        
                          IF    SRY-SRYCD (IDX3)(1:5)   =   "09592"     
-                          IF  SRY-SRYSYUKBN = "809"
-                           COMPUTE WK-MEISAI = WK-MEISAI +
-                                  (SRY-JIHIMONEY(IDX3)
-                                            *   TBL-ZAIKAISU (IDX1))
-                          ELSE
                            COMPUTE WK-MEISAI = WK-MEISAI +             
+      ****                        (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))   
-                          END-IF
                          END-IF                                        
       *
                          IF    SRY-SRYCD (IDX3)  =   "140037490"
-                          IF  WRK-4001-KOTEIKBN  =  SPACE OR "2"
                            COMPUTE WK-YOUBUKASAN = WK-YOUBUKASAN +
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
-                          END-IF
                          END-IF
                          IF    SRY-SRYCD (IDX3)  =   "140040110"
-                          IF  WRK-4001-KOTEIKBN  =  SPACE OR "2"
                            COMPUTE WK-KYOBUKASAN = WK-KYOBUKASAN +
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
-                          END-IF
-                         END-IF
-                         IF    SRY-SRYCD (IDX3)  =   "140052610"
-                          IF  WRK-4001-KOTEIKBN  =  SPACE OR "2"
-                           COMPUTE WK-KEIBUKASAN = WK-KEIBUKASAN +
-                                  (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
-                          END-IF
                          END-IF
                          IF    SRY-SRYCD (IDX3)  =   "150266970"
-                          IF  WRK-4001-KOTEIKBN  =  SPACE OR "2"
                            COMPUTE WK-SOGAIKASAN = WK-SOGAIKASAN +
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
-                          END-IF
                          END-IF
       *
                          IF    SRY-SRYCD (IDX3)  =   "199000610"
                            COMPUTE WK-RYOYOTEATE = WK-RYOYOTEATE +
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
                          END-IF
-      *
-                         IF    LNK-SYU-SYUHKNNUM(IDY)  =  "973"
-                         AND   LNK-SYU-SRYYMD(IDY)(1:6)  >=   "201307"
-                         AND   SRY-SRYCD (IDX3)  =   "101800890"
-                           COMPUTE WK-KYUKYU = WK-KYUKYU +
-                                  (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
-                         END-IF
-                      ELSE
-                         IF    SRY-SRYCD (IDX3)  =  "102130010"
-                                                OR  "102130020"
-                                                OR  "102400010"
-                           COMPUTE WK-KOGAI-TEN = WK-KOGAI-TEN +
-                                  (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
-                         END-IF
-      *
-                         IF    SRY-SRYCD (IDX3)  =   "199000610"
-                           COMPUTE WK-RYOYOTEATE = WK-RYOYOTEATE +
-                                  (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
-                         END-IF
-                      END-IF
       *                                                                
                     END-IF                                             
       *                                                                
@@ -2932,16 +1878,16 @@
       *
       *  ÊÝ¸±Å¬ÍÑ³°
            PERFORM     VARYING   IDX3    FROM   1    BY    1
-                         UNTIL   IDX3    >      16
+                         UNTIL   IDX3    >      11
                MOVE   TBL-TGMONEY(IDX3)
                                  TO  LNK-SYU-TGMONEY(IDY IDX3)
                MOVE   TBL-TGMONEY-TAX(IDX3)
                                  TO  LNK-SYU-TGMONEY-TAX(IDY IDX3)
            END-PERFORM
       *
-      *  ¼«Èñ£±¤«¤é£±£°
+      *  ¼«Èñ£±¤«¤é£µ
            PERFORM     VARYING   IDX3    FROM    1    BY    1
-                         UNTIL   IDX3    >     10
+                         UNTIL   IDX3    >     5
               MOVE   TBL-JIHI-TAXNASI(IDX3)
                                  TO  LNK-SYU-JIHI-TAXNASI(IDY IDX3)
               MOVE   TBL-JIHI-TAXARI(IDX3)
@@ -2964,7 +1910,7 @@
                            OR    ( LNK-S01-SYOSINFLG   =   "1" )
       *
                    INITIALIZE                        SRYACT-REC
-                   MOVE    LNK-SYU-HOSPNUM(IDY) TO   SRY-HOSPNUM
+                   MOVE    LNK-SYU-HOSPID(IDY)  TO   SRY-HOSPID
                    MOVE    LNK-SYU-NYUGAIKBN(IDY)
                                                 TO   SRY-NYUGAIKBN
                    MOVE    LNK-SYU-PTID(IDY)    TO   SRY-PTID
@@ -2979,23 +1925,25 @@
                    MOVE    TBL-SYOSIN(IDX4)     TO   SRY-SRYCD (5)
                    MOVE    SRYACT-REC           TO   MCPDATA-REC
                    MOVE    "DBSELECT"           TO   MCP-FUNC
-                   MOVE    "tbl_sryact"         TO   MCP-TABLE
-                   MOVE    "key8"               TO   MCP-PATHNAME
-                   CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                        MCPDATA-REC
-                                                        SPA-AREA
+                   MOVE    "SRYACT-KEY8"        TO   ORC-DBPATH
+                   CALL    "ORCMCPSUB"           USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
                    IF      MCP-RC             =       ZERO
-                     MOVE     "tbl_sryact"      TO   MCP-TABLE
-                     MOVE     "key8"            TO   MCP-PATHNAME
+                     MOVE     "SRYACT-KEY8"     TO   ORC-DBPATH
                      PERFORM   900-SRYACT-READ-SEC
                      IF     FLG-SRYACT   =    ZERO
                            MOVE    "1"          TO   LNK-S01-SYOSINFLG
                      END-IF
                    END-IF
       *
-                   MOVE    "tbl_sryact"         TO      MCP-TABLE
-                   MOVE    "key8"               TO      MCP-PATHNAME
-                   PERFORM  DB-CLOSE-SEC
+                   MOVE    "DBCLOSE"            TO  MCP-FUNC
+                   MOVE    "SRYACT-KEY8"        TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"           USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
       *
                END-PERFORM
       *
@@ -3006,81 +1954,19 @@
        44025-SYOSINFLG-SET-EXT.
            EXIT.
       *
-      **************************************************************
-      *    ÉéÃ´¶â³Û¤Î¼êµ»ÅÀ»»½ÐÅù¡ÊÂè»°¼Ô¹Ô°Ù¡Ë
-      **************************************************************
-       44026-SYUTEN-KEISAN2-SEC          SECTION.
-      *
-           PERFORM   VARYING   IDX3   FROM   1   BY   1
-                      UNTIL   (IDX3            >       5)
-                        OR    (SRY-SRYCD(IDX3) =   SPACE)
-      *
-             IF  SRY-SRYCD(IDX3)(1:5) = "09591" OR "09592" OR "09593"
-      *
-               INITIALIZE    TNS-TENSU-REC
-               MOVE    SRY-SRYCD(IDX3)      TO   TNS-SRYCD
-               MOVE    LNK-SYU-HOSPNUM(IDY) TO   TNS-HOSPNUM
-               MOVE    LNK-SYU-SRYYMD(IDY)  TO   TNS-YUKOSTYMD
-               MOVE    LNK-SYU-SRYYMD(IDY)  TO   TNS-YUKOEDYMD
-               PERFORM    900-TENSU-READ-SEC
-               IF      FLG-TENSU   =    ZERO
-      *
-                 COMPUTE  WRK-TEN  =    TNS-TEN  /  10
-      *
-                 IF  SRY-SRYSYUKBN = "809"
-                   COMPUTE WRK-TEN    = SRY-JIHIMONEY(IDX3) / 10
-                   COMPUTE WK-RSIETC  = WK-RSIETC  +
-                          (WRK-TEN    * TBL-ZAIKAISU(IDX1))
-                   COMPUTE WK-RSIETC2 = WK-RSIETC2 +
-                          (SRY-JIHIMONEY(IDX3)
-                                      * TBL-ZAIKAISU(IDX1))
-                 ELSE
-                   COMPUTE WK-RSIETC  = WK-RSIETC  +
-                          (WRK-TEN    * TBL-ZAIKAISU(IDX1))
-                   COMPUTE WK-RSIETC2 = WK-RSIETC2 +
-                          (TNS-TEN    * TBL-ZAIKAISU(IDX1))
-                 END-IF
-      *
-                 IF   IDX5  >= 20
-                   DISPLAY "TABLE OVER"
-                 ELSE
-                   ADD    1   TO  IDX5
-                   MOVE   SRY-SRYCD(IDX3)
-                              TO  LNK-S01-SONOTA-SRYCD(IDY IDX5)
-                   MOVE   TBL-ZAIKAISU(IDX1)
-                              TO  LNK-S01-SONOTA-ZAIKAISU(IDY IDX5)
-                   IF  SRY-SRYSYUKBN = "809"
-                      MOVE SRY-JIHIMONEY(IDX3)
-                              TO  LNK-S01-SONOTA-TANKA(IDY IDX5)
-                   ELSE
-                      MOVE TNS-TEN
-                              TO  LNK-S01-SONOTA-TANKA(IDY IDX5)
-                   END-IF
-                 END-IF
-      *
-               END-IF
-      *
-             END-IF
-      *
-           END-PERFORM
-           .
-      *
-       44026-SYUTEN-KEISAN2-EXT.
-           EXIT.
-      *
       ******************************************************************
       *    ¹ç·×¥Ç¡¼¥¿¤ÎºÆÊÔ½¸ÍÑÂàÈò
       ******************************************************************
        4403-GOKEI-TAIHI-SEC           SECTION.
       *
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >     17
+                      UNTIL    IDX3      >     12
                COMPUTE   WRK-SYU-HKNTEN(IDX3) =
                          WRK-SYU-HKNTEN(IDX3) +
                          LNK-SYU-HKNTEN(IDY IDX3)
            END-PERFORM
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >     16
+                      UNTIL    IDX3      >     11
                COMPUTE   WRK-SYU-TGMONEY(IDX3) =
                          WRK-SYU-TGMONEY(IDX3) +
                          LNK-SYU-TGMONEY(IDY IDX3)
@@ -3089,7 +1975,7 @@
                          LNK-SYU-TGMONEY-TAX(IDY IDX3)
            END-PERFORM
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >      10
+                      UNTIL    IDX3      >      5
                COMPUTE   WRK-SYU-JIHI-TAXNASI(IDX3) =
                          WRK-SYU-JIHI-TAXNASI(IDX3) +
                          LNK-SYU-JIHI-TAXNASI(IDY IDX3)
@@ -3115,9 +2001,25 @@
                          WRK-SYU-KYUFUGAI-TEN(IDX3) +
                          LNK-SYU-KYUFUGAI-TEN(IDY IDX3)
            END-PERFORM
-           COMPUTE       WRK-SYU-SHOHOU-SAI =
-                         WRK-SYU-SHOHOU-SAI +
-                         LNK-SYU-SHOHOU-SAI(IDY)
+      *
+      *    ¼«ÇåÀÕÊÝ¸±½èÍý
+      ***  IF  LNK-SYU-SYUHKNNUM(IDY)  =   "973"
+      *
+      ***      COMPUTE   WRK-S01-SYUTEN(1)  =  WRK-S01-SYUTEN(1)
+      ***                                   +  LNK-S01-SYUTEN(IDY)
+      ***      COMPUTE   WRK-S01-SINDAN(1)  =  WRK-S01-SINDAN(1)
+      ***                                   +  LNK-S01-SINDAN(IDY)
+      ***      COMPUTE   WRK-S01-MEISAI(1)  =  WRK-S01-MEISAI(1)
+      ***                                   +  LNK-S01-MEISAI(IDY)
+      ***      COMPUTE   WRK-S01-RYOYO(1)   =  WRK-S01-RYOYO(1)
+      ***                                   +  LNK-S01-RYOYO(IDY)
+      *
+      ***  END-IF
+      *
+      ***  IF      WRK-S01-SENINFLG(1)     =  SPACE
+      ***  AND     LNK-S01-SENINFLG(IDY)   =  "1"
+      ***        MOVE     "1"          TO   WRK-S01-SENINFLG(1)
+      ***  END-IF
       *
            .
       *
@@ -3130,19 +2032,19 @@
        4404-GOKEI-HENSYU-SEC           SECTION.
       *
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >     17
+                      UNTIL    IDX3      >     12
                MOVE      WRK-SYU-HKNTEN(IDX3)
                              TO    LNK-SYU-HKNTEN(IDY IDX3)
            END-PERFORM
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >     16
+                      UNTIL    IDX3      >     11
                MOVE      WRK-SYU-TGMONEY(IDX3)
                              TO    LNK-SYU-TGMONEY(IDY IDX3)
                MOVE      WRK-SYU-TGMONEY-TAX(IDX3)
                              TO    LNK-SYU-TGMONEY-TAX(IDY IDX3)
            END-PERFORM
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >      10
+                      UNTIL    IDX3      >      5
                MOVE      WRK-SYU-JIHI-TAXNASI(IDX3)
                              TO    LNK-SYU-JIHI-TAXNASI(IDY IDX3)
                MOVE      WRK-SYU-JIHI-TAXARI(IDX3)
@@ -3161,12 +2063,87 @@
                MOVE      WRK-SYU-KYUFUGAI-TEN(IDX3)
                              TO    LNK-SYU-KYUFUGAI-TEN(IDY IDX3)
            END-PERFORM
-           MOVE    WRK-SYU-SHOHOU-SAI
-                             TO    LNK-SYU-SHOHOU-SAI(IDY)
+      *
+      *    ¼«ÇåÀÕÊÝ¸±½èÍý
+      ***  IF  LNK-SYU-SYUHKNNUM(IDY)  =   "973"
+      *
+      ***      MOVE   WRK-S01-SYUTEN(1)    TO    LNK-S01-SYUTEN(IDY)
+      ***      MOVE   WRK-S01-SINDAN(1)    TO    LNK-S01-SINDAN(IDY)
+      ***      MOVE   WRK-S01-MEISAI(1)    TO    LNK-S01-MEISAI(IDY)
+      ***      MOVE   WRK-S01-RYOYO(1)     TO    LNK-S01-RYOYO(IDY)
+      *
+      ***  END-IF
+      *
+      ***  MOVE       WRK-S01-SENINFLG(1)  TO    LNK-S01-SENINFLG(IDY)
       *
            .
       *
        4404-GOKEI-HENSYU-EXT.
+           EXIT.
+      *
+      *************************************************************
+      *    ¼ýÇ¼ÌÀºÙ¥ì¥³¡¼¥ÉºîÀ®
+      *************************************************************
+       4405-SMEI-SAKUSEI-SEC           SECTION.
+      *
+           MOVE    SPACE                TO  SYUMEI-REC
+           INITIALIZE                       SYUMEI-REC
+      *
+           MOVE    LNK-SYU-HOSPID(IDY)  TO  SMEI-HOSPID
+           MOVE    LNK-SYU-NYUGAIKBN(IDY)
+                                        TO  SMEI-NYUGAIKBN
+           MOVE    LNK-SYU-PTID(IDY)    TO  SMEI-PTID
+      *ÅÁÉ¼ÈÖ¹æ
+           MOVE    LNK-SYU-DENPNUM(IDY) TO  SMEI-DENPNUM
+      *ÅÁÉ¼ÈÖ¹æ»ÞÈÖ
+           MOVE    IDX3                 TO  SMEI-DENPEDANUM
+      *Æþ¶âÏ¢ÈÖ
+           MOVE    ZERO                 TO  SMEI-NYUKINRENNUM
+      *¿ÇÎÅ²Ê
+           MOVE    LNK-SYU-SRYKA(IDY)   TO  SMEI-SRYKA
+      *ÅÁÉ¼¾õÂÖ¶èÊ¬
+           MOVE    SPACE                TO  SMEI-MEISAIJOUTAIKBN
+      *ÀÁµáÈ¯¹ÔÆü¡ÊÈ¯¹ÔÆü¤ÎÀ¾Îñ¡Ë
+           MOVE    SPACE                TO  SMEI-SKYPRINTYMD
+      *ÀÁµáºÆÈ¯¹ÔÆü
+           MOVE    SPACE                TO  SMEI-SKYREPRINTYMD
+      *ÎÎ¼ý½ñÈ¯¹ÔÆü
+           MOVE    SPACE                TO  SMEI-RYOSYUPRINTYMD
+      *ÎÎ¼ý½ñºÆÈ¯¹ÔÆü
+           MOVE    SPACE                TO  SMEI-RYOSYUREPRINTYMD
+      *ÀÁµá¶â³Û
+           IF  WRK-ATO-SEIKYUGK(IDY)    NOT =   WRK-MAE-SEIKYUGK(IDY)
+               COMPUTE   SMEI-SKYMONEY  =   WRK-ATO-SEIKYUGK(IDY)  -
+                                            WRK-MAE-SEIKYUGK(IDY)
+           ELSE
+               MOVE    ZERO             TO  SMEI-SKYMONEY
+           END-IF
+      *ÆþÊÖ¶â¶èÊ¬
+           MOVE    SPACE                TO  SMEI-NYUHEN-KBN
+      *ÆþÊÖ¶â³Û
+           MOVE    ZERO                 TO  SMEI-NYUHEN-MONEY
+      *ÆþÊÖ¶âÆü
+           MOVE    SPA-SYSYMD           TO  SMEI-NYUHEN-YMD
+      *Æþ¶âÊýË¡
+           MOVE    "00"                 TO  SMEI-NYUKIN-HOHO
+      *¾õÂÖ¶èÊ¬
+           MOVE    "3"                  TO  SMEI-JOUTAIKBN
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD         TO  SMEI-CREYMD
+                                            SMEI-UPYMD
+           MOVE    SMCNDATE-HMS         TO  SMEI-UPHMS
+      *
+           MOVE    SYUMEI-REC           TO  MCPDATA-REC
+           MOVE    "DBINSERT"           TO  MCP-FUNC
+           MOVE    "SYUMEI-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+      *
+       4405-SMEI-SAKUSEI-EXT.
            EXIT.
       *
       ******************************************************************
@@ -3218,8 +2195,6 @@
            MOVE    LNK-SYU-SKYKUKBN(IDY)       TO  SYUTTL-SKYKUKBN
       *ÀÁµáÆâÍÆ
            MOVE    LNK-SYU-SKY-NAIYOU(IDY)     TO  SYUTTL-SKY-NAIYOU
-      *½èÊý¤»¤óÎÁºÆ·Ç
-           MOVE    LNK-SYU-SHOHOU-SAI(IDY)     TO  SYUTTL-SHOHOU-SAI
       *ÊÝ¸±Å¬ÍÑ³°¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            MOVE    LNK-SYU-TGMONEY-TAX-SAI(IDY)
                                            TO  SYUTTL-TGMONEY-TAX-SAI
@@ -3255,8 +2230,6 @@
                                            TO  SYUTTL-DISCOUNT-TEIRITU
       *³ä°úÎ¨
            MOVE    LNK-SYU-DISCOUNT-RATE(IDY)  TO  SYUTTL-DISCOUNT-RATE
-      *¸ºÌÈ¶â³Û
-           MOVE    LNK-SYU-DISCOUNT-MONEY(IDY) TO  SYUTTL-DISCOUNT-MONEY
       *Ï«ºÒÊÝ¸±¡Ý½é¿ÇÎÁ
            MOVE    LNK-SYU-RSISHOSHIN-MONEY(IDY)
                                            TO  SYUTTL-RSISHOSHIN-MONEY
@@ -3289,8 +2262,6 @@
            MOVE    LNK-SYU-ZAITAKU(IDY)        TO  SYUTTL-ZAITAKU
       *¿ÇÎÅ¶èÊ¬ÊÌµëÉÕ³°ÅÀ¿ô
            MOVE    LNK-SYU-KYUFUGAI(IDY)       TO  SYUTTL-KYUFUGAI
-      *ÊÝ¸±Å¬ÍÑ¶èÊ¬
-           MOVE    LNK-SYU-HKNTEKKBN(IDY)      TO  SYUTTL-HKNTEKKBN
       *Ã¼Ëö£É£Ä
            MOVE    LNK-SYU-TERMID(IDY)         TO  SYUTTL-TERMID
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
@@ -3307,228 +2278,6 @@
        4406-GOKEI-OKIKAE-EXT.
            EXIT.
       *
-      ******************************************************************
-      *    Ê£¿ô²Ê¤Þ¤È¤áÆþÎÏÊ¬¤Î¥Á¥§¥Ã¥¯
-      ******************************************************************
-       4407-GRP-DATA-CHECK-SEC           SECTION.
-      *
-           INITIALIZE                         SYUNOU-REC
-           MOVE    LNK-ORCSSKS-HOSPNUM    TO  SYU-HOSPNUM
-           MOVE    LNK-ORCSSKS-NYUGAIKBN  TO  SYU-NYUGAIKBN
-           MOVE    LNK-ORCSSKS-PTID       TO  SYU-PTID
-           MOVE    WRK-GRP-DENPNUM        TO  SYU-GRP-DENPNUM
-           MOVE    SYUNOU-REC             TO  MCPDATA-REC
-           MOVE    "DBSELECT"             TO  MCP-FUNC
-           MOVE    "tbl_syunou"           TO  MCP-TABLE
-           MOVE    "key27"                TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING  MCPAREA
-                                              MCPDATA-REC
-                                              SPA-AREA
-           IF      MCP-RC  =  ZERO
-              MOVE    "tbl_syunou"        TO  MCP-TABLE
-              MOVE    "key27"             TO  MCP-PATHNAME
-              PERFORM  900-SYUNOU-READ-SEC
-              PERFORM  UNTIL   FLG-SYUNOU   =    1
-                IF   SYU-DENPJTIKBN  NOT =  "3"
-                  IF   SYU-SAIKEISANKBN    =  "1"
-                     MOVE    1     TO  FLG-GENBUTU2
-                  END-IF
-                  IF  (SYU-SYUHKNNUM   NOT = SPACE)
-                  AND (SYU-KOH1HKNNUM  NOT = SPACE)
-                  AND (SYU-KOH1HKNNUM  NOT = "970")
-                     MOVE    1     TO  FLG-GENBUTU3
-                  END-IF
-                END-IF
-                MOVE    "tbl_syunou"      TO  MCP-TABLE
-                MOVE    "key27"           TO  MCP-PATHNAME
-                PERFORM  900-SYUNOU-READ-SEC
-              END-PERFORM
-           END-IF
-           MOVE       "tbl_syunou"        TO  MCP-TABLE
-           MOVE       "key27"             TO  MCP-PATHNAME
-           PERFORM     DB-CLOSE-SEC
-      *
-           IF   FLG-GENBUTU2  =   1
-           AND  FLG-GENBUTU3  =   1
-              MOVE    1     TO   FLG-GENBUTU
-           END-IF
-      *
-           .
-      *
-       4407-GRP-DATA-CHECK-EXT.
-           EXIT.
-      *
-      ******************************************************************
-      *    ¼ýÇ¼¹¹¿·
-      ******************************************************************
-       4408-SYUNOU-KOUSIN-SEC           SECTION.
-      *
-           INITIALIZE                   SS002-AREA
-           CALL    "ORCSS002"   USING   SS002-AREA
-                                        SYUNOU-REC
-                                        SPA-AREA
-           MOVE    SS002-SYURRKNUM     TO  WRK-SYURRKNUM
-           MOVE    SS002-SYUEDANUM     TO  WRK-SYUEDANUM
-           MOVE    SS002-SYURRKUPDKBN  TO  WRK-SYURRKUPDKBN
-      *
-           MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING  MCPAREA
-                                              MCPDATA-REC
-                                              SPA-AREA
-      *
-      *    ºÆ·×»»Ê¬¤Î¼ýÇ¼ÌÀºÙ¥Þ¥¹¥¿ºîÀ®
-      *
-           INITIALIZE                       SYUMEI-REC
-           MOVE    LNK-SYU-HOSPNUM(IDY) TO  SMEI-HOSPNUM
-           MOVE    LNK-SYU-NYUGAIKBN(IDY)
-                                        TO  SMEI-NYUGAIKBN
-           MOVE    LNK-SYU-PTID(IDY)    TO  SMEI-PTID
-           MOVE    LNK-SYU-DENPNUM(IDY) TO  SMEI-DENPNUM
-           MOVE    SYUMEI-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"           TO  MCP-FUNC
-           MOVE    "tbl_syumei"         TO  MCP-TABLE
-           MOVE    "key2"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"          USING  MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC              =    ZERO
-                 MOVE    "tbl_syumei"   TO  MCP-TABLE
-                 MOVE    "key2"         TO  MCP-PATHNAME
-                 PERFORM  900-SYUMEI-READ-SEC
-           ELSE
-                 MOVE    1                  TO  FLG-SYUMEI
-           END-IF
-           IF      FLG-SYUMEI    =     1
-                 CONTINUE
-           ELSE
-                 PERFORM   VARYING  IDX3  FROM   1  BY   1
-                     UNTIL   (FLG-SYUMEI   =      1 )
-                         MOVE    "tbl_syumei"   TO  MCP-TABLE
-                         MOVE    "key2"         TO  MCP-PATHNAME
-                         PERFORM  900-SYUMEI-READ-SEC
-                 END-PERFORM
-                 IF  LNK-ORCSSKS-BUNBENJIHIKBN = "1"
-                   CONTINUE
-                 ELSE
-                   PERFORM    44081-SMEI-SAKUSEI-SEC
-                 END-IF
-           END-IF
-           MOVE     "tbl_syumei"   TO  MCP-TABLE
-           MOVE     "key2"         TO  MCP-PATHNAME
-           PERFORM   DB-CLOSE-SEC
-      *
-           .
-      *
-       4408-SYUNOU-KOUSIN-EXT.
-           EXIT.
-      *
-      *************************************************************
-      *    ¼ýÇ¼ÌÀºÙ¥ì¥³¡¼¥ÉºîÀ®
-      *************************************************************
-       44081-SMEI-SAKUSEI-SEC           SECTION.
-      *
-           MOVE    SPACE                TO  SYUMEI-REC
-           INITIALIZE                       SYUMEI-REC
-      *
-           MOVE    LNK-SYU-HOSPNUM(IDY) TO  SMEI-HOSPNUM
-           MOVE    LNK-SYU-NYUGAIKBN(IDY)
-                                        TO  SMEI-NYUGAIKBN
-           MOVE    LNK-SYU-PTID(IDY)    TO  SMEI-PTID
-      *ÅÁÉ¼ÈÖ¹æ
-           MOVE    LNK-SYU-DENPNUM(IDY) TO  SMEI-DENPNUM
-      *ÅÁÉ¼ÈÖ¹æ»ÞÈÖ
-           MOVE    IDX3                 TO  SMEI-DENPEDANUM
-      *Æþ¶âÏ¢ÈÖ
-           MOVE    ZERO                 TO  SMEI-NYUKINRENNUM
-      *¿ÇÎÅ²Ê
-           MOVE    LNK-SYU-SRYKA(IDY)   TO  SMEI-SRYKA
-      *ÅÁÉ¼¾õÂÖ¶èÊ¬
-           MOVE    SPACE                TO  SMEI-MEISAIJOUTAIKBN
-      *ÀÁµáÈ¯¹ÔÆü¡ÊÈ¯¹ÔÆü¤ÎÀ¾Îñ¡Ë
-           MOVE    SPACE                TO  SMEI-SKYPRINTYMD
-      *ÀÁµáºÆÈ¯¹ÔÆü
-           MOVE    SPACE                TO  SMEI-SKYREPRINTYMD
-      *ÎÎ¼ý½ñÈ¯¹ÔÆü
-           MOVE    SPACE                TO  SMEI-RYOSYUPRINTYMD
-      *ÎÎ¼ý½ñºÆÈ¯¹ÔÆü
-           MOVE    SPACE                TO  SMEI-RYOSYUREPRINTYMD
-      *ÀÁµá¶â³Û
-           IF  WRK-ATO-SEIKYUGK(IDY)    NOT =   WRK-MAE-SEIKYUGK(IDY)
-               COMPUTE   SMEI-SKYMONEY  =   WRK-ATO-SEIKYUGK(IDY)  -
-                                            WRK-MAE-SEIKYUGK(IDY)
-           ELSE
-               MOVE    ZERO             TO  SMEI-SKYMONEY
-           END-IF
-      *ÆþÊÖ¶â¶èÊ¬
-           MOVE    SPACE                TO  SMEI-NYUHEN-KBN
-      *ÆþÊÖ¶â³Û
-           MOVE    ZERO                 TO  SMEI-NYUHEN-MONEY
-      *ÆþÊÖ¶âÆü
-           IF    ( LNK-ORCSSKS-SYSYMD   IS  NUMERIC )
-               MOVE    LNK-ORCSSKS-SYSYMD
-                                        TO  SMEI-NYUHEN-YMD
-           ELSE
-               MOVE    SPA-SYSYMD       TO  SMEI-NYUHEN-YMD
-           END-IF
-      *Æþ¶âÊýË¡
-           MOVE    "00"                 TO  SMEI-NYUKIN-HOHO
-      *¾õÂÖ¶èÊ¬
-           MOVE    "3"                  TO  SMEI-JOUTAIKBN
-      *
-           MOVE    WRK-SYURRKNUM        TO  SMEI-SYURRKNUM
-           MOVE    WRK-SYUEDANUM        TO  SMEI-SYUEDANUM
-           MOVE    WRK-SYURRKUPDKBN     TO  SMEI-SYURRKUPDKBN
-      *
-           PERFORM 800-MCNDATE-SEC
-           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
-                                           SMEI-UPYMD
-           MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
-                                           SMEI-UPHMS
-      *
-           MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
-           MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
-           MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
-           IF    ( LNK-ORCSSKS-SYSHMS  IS  NUMERIC )
-               MOVE    SMEI-NYUHEN-YMD TO  SDAILYKEY-CREYMD
-               MOVE    LNK-ORCSSKS-SYSHMS
-                                       TO  SDAILYKEY-CREHMS
-               MOVE    "FORCE"         TO  SDAILYKEY-BASEYMD
-           END-IF
-           PERFORM 800-DAILYKEY-SEC
-           MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
-      *
-           MOVE    SYUMEI-REC          TO  MCPDATA-REC
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_syumei"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF       MCP-RC             =   ZERO
-             CONTINUE
-           ELSE
-             MOVE     "0070"           TO  SPA-ERRCD
-           END-IF
-           .
-      *
-       44081-SMEI-SAKUSEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÆüÊó¥­¡¼¼èÆÀ¥µ¥Ö
-      *****************************************************************
-       800-DAILYKEY-SEC         SECTION.
-      *
-           CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
-                                            SPA-AREA
-      *
-           .
-      *
-       800-DAILYKEY-EXT.
-           EXIT.
       *****************************************************************
       *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
       *****************************************************************
@@ -3546,19 +2295,18 @@
       *****************************************************************
        900-SYUNOU-READ-SEC          SECTION.
       *
-           MOVE    "DBFETCH"            TO  MCP-FUNC
-           CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
+           MOVE    "DBFETCH"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC      TO   SYUNOU-REC
                MOVE    ZERO             TO   FLG-SYUNOU
            ELSE
                INITIALIZE                    SYUNOU-REC
                MOVE    1                TO   FLG-SYUNOU
-           END-IF
-      *
-           .
+           END-IF. 
       *
        900-SYUNOU-READ-EXT.
            EXIT.
@@ -3568,30 +2316,29 @@
       *****************************************************************
        900-SYUTOTAL-READ-SEC          SECTION.
       *
-           INITIALIZE                             SYUTTL-REC
-           MOVE    LNK-ORCSSKS-HOSPNUM    TO      SYUTTL-HOSPNUM
-           MOVE    LNK-ORCSSKS-NYUGAIKBN  TO      SYUTTL-NYUGAIKBN
-           MOVE    LNK-ORCSSKS-PTID       TO      SYUTTL-PTID
-           MOVE    WRK-TAIHI-DENPNUM      TO      SYUTTL-DENPNUM
-           MOVE    SYUTTL-REC             TO      MCPDATA-REC
-           MOVE    "DBSELECT"             TO      MCP-FUNC
-           MOVE    "tbl_syutotal"         TO      MCP-TABLE
-           MOVE    "key"                  TO      MCP-PATHNAME
-           CALL    "ORCDBMAIN"            USING   MCPAREA
-                                                  MCPDATA-REC
-                                                  SPA-AREA
-           IF      MCP-RC             =       ZERO
-              MOVE      "tbl_syutotal"    TO      MCP-TABLE
-              MOVE      "key"             TO      MCP-PATHNAME
-              PERFORM    901-SYUTOTAL-FETCH-SEC
-           ELSE
-              MOVE       1               TO  FLG-SYUTOTAL
-           END-IF
-           MOVE      "tbl_syutotal"       TO      MCP-TABLE
-           MOVE      "key"                TO      MCP-PATHNAME
-           PERFORM    DB-CLOSE-SEC
-      *
-           .
+             INITIALIZE                             SYUTTL-REC.
+             MOVE    LNK-ORCSSKS-HOSPID     TO      SYUTTL-HOSPID.
+             MOVE    LNK-ORCSSKS-NYUGAIKBN  TO      SYUTTL-NYUGAIKBN.
+             MOVE    LNK-ORCSSKS-PTID       TO      SYUTTL-PTID.
+             MOVE    WRK-TAIHI-DENPNUM      TO      SYUTTL-DENPNUM.
+             MOVE    SYUTTL-REC             TO      MCPDATA-REC.
+             MOVE    "DBSELECT"             TO      MCP-FUNC.
+             MOVE    "SYUTOTAL-KEY"         TO      ORC-DBPATH.
+             CALL    "ORCMCPSUB"             USING   MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC.
+             IF      MCP-RC             =       ZERO
+                     MOVE      "SYUTOTAL-KEY"   TO   ORC-DBPATH
+                     PERFORM    901-SYUTOTAL-FETCH-SEC
+             ELSE
+                     MOVE       1               TO  FLG-SYUTOTAL
+             END-IF.
+             MOVE    "DBCLOSE"               TO  MCP-FUNC.
+             MOVE    "SYUTOTAL-KEY"          TO  ORC-DBPATH.
+             CALL    "ORCMCPSUB"              USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC.
       *
        900-SYUTOTAL-READ-EXT.
            EXIT.
@@ -3601,19 +2348,18 @@
       *****************************************************************
        901-SYUTOTAL-FETCH-SEC          SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYUTTL-REC
                MOVE    ZERO            TO  FLG-SYUTOTAL
            ELSE
                INITIALIZE                  SYUTTL-REC
                MOVE    1               TO  FLG-SYUTOTAL
-           END-IF
-      *
-           .
+           END-IF.
       *
        901-SYUTOTAL-FETCH-EXT.
            EXIT.
@@ -3623,65 +2369,30 @@
       ******************************************************************
        900-SYS1038-READ-SEC           SECTION.
       *
-           INITIALIZE                         SYS-1038-REC
-           MOVE    "1038"               TO    SYS-1038-KANRICD
-           MOVE    "*"                  TO    SYS-1038-KBNCD
-           MOVE    LNK-ORCSSKS-HOSPNUM  TO    SYS-1038-HOSPNUM
-           MOVE    WRK-SAIKEISAN-YMD    TO    SYS-1038-STYUKYMD
-           MOVE    WRK-SAIKEISAN-YMD    TO    SYS-1038-EDYUKYMD
-           MOVE    SYS-1038-REC         TO    MCPDATA-REC
-           MOVE    "DBSELECT"           TO    MCP-FUNC
-           MOVE    "tbl_syskanri"       TO    MCP-TABLE
-           MOVE    "key10"              TO    MCP-PATHNAME
-           CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
+           INITIALIZE                         SYS-1038-REC.
+           MOVE    "1038"               TO    SYS-1038-KANRICD.
+           MOVE    "*"                  TO    SYS-1038-KBNCD.
+           MOVE    WRK-SAIKEISAN-YMD    TO    ORC-DBYMD.
+           MOVE    SYS-1038-REC         TO    MCPDATA-REC.
+           MOVE    "DBSELECT"           TO    MCP-FUNC.
+           MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            IF      MCP-RC               =     ZERO
-               MOVE     "tbl_syskanri"  TO    MCP-TABLE
-               MOVE     "key10"         TO    MCP-PATHNAME
+               MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
                PERFORM   901-SYSKANRI-READ-SEC
-           END-IF
+           END-IF.
       *
-           MOVE     "tbl_syskanri"      TO    MCP-TABLE
-           MOVE     "key10"             TO    MCP-PATHNAME
-           PERFORM   DB-CLOSE-SEC
-      *
-           .
+           MOVE    "DBCLOSE"            TO  MCP-FUNC.
+           MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC.
       *
        900-SYS1038-READ-EXT.
-           EXIT.
-      *
-      ******************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý£´£°£°£±ÆÉ¹þ
-      ******************************************************************
-       900-SYS4001-READ-SEC           SECTION.
-      *
-           INITIALIZE                         SYS-4001-REC
-           MOVE    "4001"               TO    SYS-4001-KANRICD
-           MOVE    "*"                  TO    SYS-4001-KBNCD
-           MOVE    LNK-ORCSSKS-HOSPNUM  TO    SYS-4001-HOSPNUM
-           MOVE    WRK-SAIKEISAN-YMD    TO    SYS-4001-STYUKYMD
-           MOVE    WRK-SAIKEISAN-YMD    TO    SYS-4001-EDYUKYMD
-           MOVE    SYS-4001-REC         TO    MCPDATA-REC
-           MOVE    "DBSELECT"           TO    MCP-FUNC
-           MOVE    "tbl_syskanri"       TO    MCP-TABLE
-           MOVE    "key10"              TO    MCP-PATHNAME
-           CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-           IF      MCP-RC               =     ZERO
-               MOVE     "tbl_syskanri"  TO    MCP-TABLE
-               MOVE     "key10"         TO    MCP-PATHNAME
-               PERFORM   901-SYSKANRI-READ-SEC
-           END-IF
-      *
-           MOVE     "tbl_syskanri"      TO    MCP-TABLE
-           MOVE     "key10"             TO    MCP-PATHNAME
-           PERFORM   DB-CLOSE-SEC
-      *
-           .
-      *
-       900-SYS4001-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3689,21 +2400,18 @@
       *****************************************************************
        901-SYSKANRI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBFETCH"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1038-REC
-                                           SYS-4001-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
                INITIALIZE                  SYS-1038-REC
-                                           SYS-4001-REC
                MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           .
+           END-IF.
       *
        901-SYSKANRI-READ-EXT.
            EXIT.
@@ -3713,17 +2421,18 @@
       **************************************************************
        900-JYURRK-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
            ELSE
                INITIALIZE                  JYURRK-REC
                MOVE    1               TO  FLG-JYURRK
-           END-IF
+           END-IF.
       *
            .
        900-JYURRK-READ-EXT.
@@ -3734,17 +2443,18 @@
       **************************************************************
        900-HKNCOMBI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
                MOVE    ZERO            TO  FLG-HKNKUMI
            ELSE
                INITIALIZE                  HKNCOMBI-REC
                MOVE    1               TO  FLG-HKNKUMI
-           END-IF
+           END-IF.
       *
            .
        900-HKNCOMBI-READ-EXT.
@@ -3755,17 +2465,18 @@
       **************************************************************
        900-SRYACCT-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SRYACCT-REC
                MOVE    ZERO            TO  FLG-SRYACCT
            ELSE
                INITIALIZE                  SRYACCT-REC
                MOVE    1               TO  FLG-SRYACCT
-           END-IF
+           END-IF.
       *
            .
        900-SRYACCT-READ-EXT.
@@ -3776,17 +2487,18 @@
       **************************************************************
        900-SRYACT-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SRYACT-REC
                MOVE    ZERO            TO  FLG-SRYACT
            ELSE
                INITIALIZE                  SRYACT-REC
                MOVE    1               TO  FLG-SRYACT
-           END-IF
+           END-IF.
       *
            .
        900-SRYACT-READ-EXT.
@@ -3797,20 +2509,20 @@
       *****************************************************************
        900-TENSU-READ-SEC         SECTION.
       *
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU
@@ -3821,13 +2533,14 @@
            ELSE
                    INITIALIZE                  TNS-TENSU-REC
                    MOVE    1                   TO  FLG-TENSU
-           END-IF
+           END-IF.
       *
-           MOVE     "tbl_tensu"            TO  MCP-TABLE
-           MOVE     "key"                  TO  MCP-PATHNAME
-           PERFORM   DB-CLOSE-SEC
-      *
-           .
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
       *
        900-TENSU-READ-EXT.
            EXIT.
@@ -3837,55 +2550,20 @@
       **************************************************************
        900-SYUMEI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYUMEI-REC
                MOVE    ZERO            TO  FLG-SYUMEI
            ELSE
                INITIALIZE                  SYUMEI-REC
                MOVE    1               TO  FLG-SYUMEI
-           END-IF
+           END-IF.
       *
            .
        900-SYUMEI-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼Ô¾ðÊóÆÉ¹þ
-      *****************************************************************
-       900-PTINF-READ-SEC           SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTINF-REC
-               MOVE    ZERO            TO  FLG-PTINF
-           ELSE
-               INITIALIZE                  PTINF-REC
-               MOVE    1               TO  FLG-PTINF
-           END-IF
-      *
-           .
-       900-PTINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
-      *****************************************************************
-       DB-CLOSE-SEC                 SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       DB-CLOSE-EXT.
            EXIT.
       *
