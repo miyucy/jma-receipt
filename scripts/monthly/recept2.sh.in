@@ -23,7 +23,6 @@ fi
 #        $6 エラーファイル名 
 #        $7 印刷用条件パラメタ 
 #        $8 印刷開始 
-#        $8 端末ＩＤX(32)  （ＯＲＣＲ０１０２のとき）
 #        $9 印刷終了
 #        $10 帳票識別番号
 #        $11 社保プリンタ名
@@ -32,6 +31,7 @@ fi
 #        $24 続紙印刷区分
 #        $25 社保（続紙）プリンタ名
 #        $26 国保（続紙）プリンタ名
+#        $27 印刷区分 1:印刷のみ 2:印刷＆ｐｓ 3:ｐｓのみ 
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
@@ -47,11 +47,16 @@ fi
 	       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0101 -parameter ${24},$1,$2,$3,$7,$8,$9,${10},
         else 
            rennum=$(expr $rennum + 1) 
-	       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0102 -parameter $1,$2,$3,$7,$8,$5,${11},${12},${13},${14},${15},$rennum,${17},${18},${19},${20},${21},${22},${23},${25},${26}
+	       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0102 -parameter $1,$2,$3,$7,$5,${11},${12},${13},${14},${15},$rennum,${17},${18},${19},${20},${21},${22},${23},${25},${26},${27}
            if  [ -e $6 ]; then
                exit 
+           fi
+
+           $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBPREV1 -parameter ${13},${14},${15},$rennum,${17},${18},${19},${20},${21},${22},${23},$1,$2,$8,$9,${27}
+           if  [ -e $6 ]; then
+               exit
            else
-	       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$1$2
+	          $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$1$2
            fi
         fi
 
