@@ -3960,10 +3960,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O200">
       <attribute name="obj_pos">
-        <point val="9.6,4.15"/>
+        <point val="9.6,4.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6,3.94186;11.5796,4.22186"/>
+        <rectangle val="9.6,4.19186;11.5796,4.47186"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3977,7 +3977,7 @@
             <real val="0.28"/>
           </attribute>
           <attribute name="pos">
-            <point val="9.6,4.15"/>
+            <point val="9.6,4.4"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>

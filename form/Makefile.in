@@ -108,6 +108,10 @@ FORM_files = \
               HCM2CV01.red \
               HCM01.red \
               HCM011.red \
+              HCM2EV01.red \
+              HCM2FV01.red \
+              HCM2GV01.red \
+              HCM2HV01.red \
 
 all:   
 
