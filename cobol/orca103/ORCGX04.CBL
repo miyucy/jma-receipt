@@ -1291,6 +1291,7 @@
                                    TO  SPA-GMN-BYOSTATUS
       *
            PERFORM 4101-CDLST-SEC
+           PERFORM 41011-BYOMEICD-SEC
       *
            IF    ( LNK-BYO-BYOMEICD-MAX-ERR    =   1 )
                MOVE    "0006"          TO  SPA-ERRCD
@@ -1880,7 +1881,6 @@
                    MOVE    IDX-LST
                                TO  SPA-GMN-BYOLST-SEL
                    PERFORM 41011-INPUT-AREA-HEN-SEC
-                   MOVE    2   TO  SPA-GMN-CUR
                    MOVE    SPA-GMN-BYOLST-MAX
                                TO  IDX-LST
       *
@@ -1937,8 +1937,38 @@
       *
            PERFORM 4101-CDLST-SEC
       *
+           PERFORM 41011-BYOMEICD-SEC
+      *
+           IF    ( SPA-GMN-BYOCD (1)   =   SPACE )
+               MOVE    8               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    2               TO  SPA-GMN-CUR
+           END-IF
+      *
            .
        41011-INPUT-AREA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    病名コード欄編集処理
+      *****************************************************************
+       41011-BYOMEICD-SEC              SECTION.
+      *
+           IF    ( SPA-GMN-CDLST-MAX          <=  CONST-BYOCD-MAX )
+            AND  ( SPA-GMN-TCDBYOCD  (1)   NOT =  "0000999" )
+      *
+               PERFORM VARYING IDX6    FROM    1   BY  1
+                       UNTIL ( IDX6    >   CONST-BYOCD-MAX )
+      *
+                   MOVE    SPA-GMN-TCDBYOCD (IDX6)
+                                       TO  SPA-GMN-BYOCD (IDX6)
+      *
+               END-PERFORM
+      *
+           END-IF
+      *
+           .
+      *
+       41011-BYOMEICD-EXT.
            EXIT.
       *****************************************************************
       *    コード表示リスト編集処理
