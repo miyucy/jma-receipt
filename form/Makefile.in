@@ -58,6 +58,7 @@ EXTRA_DIST = \
               HCML09.dia \
               HCP7LA.dia \
               HCPO.dia \
+              HCM06.red \
               HCM19.red \
               HC29.dia
 
