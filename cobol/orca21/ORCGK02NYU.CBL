@@ -5691,6 +5691,12 @@
                                        TO  SPA-COM-KAISU2(SPA-GMN-IDX)
       *
       *    分画数（未入力時、１回）
+           IF     (SPA-COM-INPUTCD(SPA-GMN-IDX) (1:1)  =   "7" ) AND
+                  (WRK-BUNGSU          =   ZERO   )  AND
+                  (LNK-SC97-MOJI2  NOT =   SPACE  )
+      *        分画数変換
+               PERFORM 41011221-BUNGSU-HENSYU-SEC
+           END-IF
            MOVE    WRK-BUNGSU          TO  SPA-COM-BUNGSU(SPA-GMN-IDX)
            IF      WRK-BUNGSU          =   ZERO
                MOVE    1               TO  SPA-COM-BUNGSU(SPA-GMN-IDX)
@@ -5710,6 +5716,31 @@
       *
            .
        4101122-KOMOKU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    分画数変換処理
+      *****************************************************************
+       41011221-BUNGSU-HENSYU-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-BUNGSU
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    LNK-SC97-MOJI2(1:LNK-SC97-MCNT2)
+                                       TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN         =   "1"   )
+               MOVE    "0012"              TO  SPA-ERRCD
+           ELSE
+               MOVE    SNUM-OUTNUM         TO  WRK-BUNGSU
+           END-IF
+           MOVE    SPACE              TO  LNK-SC97-MOJI2
+           MOVE    SPACE              TO  WRK-MOJI2
+           MOVE    ZERO               TO  LNK-SC97-MCNT2
+      *
+           .
+       41011221-BUNGSU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
