@@ -1196,7 +1196,12 @@
                    PERFORM 3002-PARA-SET-SEC
                    IF      SPA-ERRMSG(1:2)    =   "NO"
       *                ╠сды
-                       PERFORM 3003-GMN-HEN-SEC
+                       IF      SPA-PTNUM(1:1)     =   "*"
+                           MOVE    SPACE          TO  SPA-PTNUM
+                           PERFORM 30010-INIT-GMN-SEC
+                       ELSE
+                           PERFORM 3003-GMN-HEN-SEC
+                       END-IF
                    ELSE
                        IF      SPA-PTNUM       =   SPACE
                            PERFORM 30010-INIT-GMN-SEC
