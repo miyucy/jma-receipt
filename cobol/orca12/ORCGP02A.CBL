@@ -49,8 +49,10 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC X(03).
-           03  FLG-KNJMST          PIC X(01).
-           03  FLG-KENSYO          PIC X(01).
+           03  FLG-PTINF           PIC 9(01).
+      *
+           03  FLG-CHK             PIC 9(01).
+      *
       *
       *    カウント領域
        01  CNT-AREA.
@@ -63,9 +65,7 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-ERRMSG          PIC X(40).
-           03  WRK-GMN-LINE        PIC 9(04).
-           03  WRK-RENNUMZ         PIC ZZZZ.
+           03  WRK-PIDMSG          PIC X(100).
            03  WRK-WYMD.
                05  WRK-WGO         PIC X(01).
                05  WRK-WYY         PIC 9(02).
@@ -75,6 +75,7 @@
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
+           03  WRK-RENNUMZ         PIC ZZZZ.
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -94,6 +95,9 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    患者情報
+       01  PTINF-REC.
+           COPY "CPPTINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -102,6 +106,9 @@
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *   患者番号変換サブ
+           COPY    "CPORCSPTID.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -147,6 +154,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-P02SCRAREA
            MOVE    SPA-WORK        TO  SPA-P02KYOUTU
@@ -187,8 +198,21 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    初期画面編集
-      *D     PERFORM 300-SCREEN-SEC
+      *    エラー画面より
+           IF      SPA-MOTOPG          =   "PERR"
+               MOVE    SPACE               TO  SPA-MOTOPG
+               PERFORM 5001-MAPCUR-SEC
+           ELSE
+      *
+      *        初期画面編集
+               PERFORM 300-SCREEN-SEC
+               IF      FLG-END             =   1
+                   GO      TO      100-INIT-EXT
+               END-IF
+      *
+      *        画面編集
+               PERFORM 500-GMNHEN-SEC
+           END-IF
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE.
            MOVE    "P02A"              TO  MCP-WINDOW.
@@ -206,10 +230,138 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
+           EVALUATE    SPA-MOTOPG
+      *        確認メッセージ
+               WHEN    "PID1"
+                   PERFORM 3001-PID1-SYORI-SEC
+                   GO      TO                  300-SCREEN-EXT
+           END-EVALUATE
+      *
+      *    ＳＰＡ編集
+           MOVE    ZERO                TO  SPA-GMN2A-MAX
+      *
+           MOVE    SPACE               TO  PTINF-REC
+           INITIALIZE                      PTINF-REC
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-GMN-KANANAME    TO  PTINF-KANANAME
+      *
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTINF-KEY3"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTINF-KEY3"    TO  ORC-DBPATH
+               PERFORM 900-PTINF-READ-SEC
+           ELSE
+               INITIALIZE                  PTINF-REC
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+           MOVE    ZERO                TO  IDY
+           PERFORM   UNTIL  ( FLG-PTINF    =   1  )
+                     OR     ( IDY          >=  20 )
+               MOVE    MCPDATA-REC         TO  PTINF-REC
+               MOVE    ZERO                TO  FLG-CHK
+               IF      SPA-P02A-SYORI      =   1
+      *            氏名のみ一致
+                   IF      PTINF-PTID  NOT =   SPA-GMN-PTID
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+               ELSE
+      *            氏名・性別・生年月日一致
+                   IF      (PTINF-SEX          =   SPA-GMN-SEX )   AND
+                           (PTINF-BIRTHDAY     =   SPA-NAI-BIRTHDAY) AND
+                           (PTINF-PTID     NOT =   SPA-GMN-PTID   )
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+               END-IF
+               IF      SPA-GMN-KANANAME    NOT =   PTINF-KANANAME
+                   MOVE    ZERO                TO  FLG-CHK
+               END-IF
+      *
+               IF      FLG-CHK             =   1
+                   ADD     1               TO  IDY
+                   MOVE    IDY             TO  SPA-GMN2A-NUM      (IDY)
+                   MOVE    PTINF-PTID      TO  SPA-GMN2A-PTID     (IDY)
+      *
+      *            患者番号変換(管理）を検索し、患者IDより患者NOを取得
+                   INITIALIZE                      ORCSPTIDAREA
+                   MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+                   MOVE    PTINF-PTID          TO  SPTID-PTID
+                   CALL    "ORCSPTID"      USING   ORCSPTIDAREA
+                                                   SPA-1009-TBL
+                   IF      SPTID-RC        NOT =   ZERO
+                       MOVE    SPACE           TO  SPA-GMN2A-PTNUM(IDY)
+                   ELSE
+                       MOVE    SPTID-PTNUM     TO  SPA-GMN2A-PTNUM(IDY)
+                   END-IF
+                   MOVE    PTINF-NAME          TO  SPA-GMN2A-NAME (IDY)
+      *************MOVE    PTINF-HOME-ADRS     TO  SPA-GMN2A-ADRS (IDY)
+                   STRING  PTINF-HOME-ADRS     DELIMITED  BY  SPACE
+                           PTINF-HOME-BANTI    DELIMITED  BY  SPACE
+                                           INTO    SPA-GMN2A-ADRS (IDY)
+                   END-STRING
+                   MOVE    PTINF-HOME-TEL1     TO  SPA-GMN2A-TEL1 (IDY)
+      *            生年月日
+                   MOVE    SPACE               TO  STS-AREA-DAY
+                   INITIALIZE                      STS-AREA-DAY
+                   MOVE    SPACE               TO  LNK-DAY2-AREA
+                   MOVE    "21"                TO  LNK-DAY2-IRAI
+                   MOVE    PTINF-BIRTHDAY      TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"           USING
+                                               STS-AREA-DAY
+                                               LNK-DAY2-AREA
+                   IF      STS-DAY-RC1         =   ZERO
+                       MOVE    LNK-DAY2-EDTYMD1
+                                               TO  SPA-GMN2A-BIRTHDAY
+                                                                 (IDY)
+                   ELSE
+                       MOVE    PTINF-BIRTHDAY  TO  SPA-GMN2A-BIRTHDAY
+                                                                 (IDY)
+                   END-IF
+               END-IF
+      *
+               MOVE    "PTINF-KEY3"    TO  ORC-DBPATH
+               PERFORM 900-PTINF-READ-SEC
+           END-PERFORM
+           MOVE    IDY                 TO  SPA-GMN2A-MAX
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTINF-KEY3"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
       *
            .
-       3OO-SCREEN-EXT.
+       300-SCREEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    確認画面より処理
+      *****************************************************************
+       3001-PID1-SYORI-SEC              SECTION.
+      *
+           EVALUATE    SPA-PIDCD
+               WHEN    "0101"
+                   IF      SPA-PID1-FLG        =   "OK"
+      *                患者置換
+                       MOVE    SPA-GMN2A-PTNUM(SPA-GMN2A-SELNUM)
+                                               TO  SPA-NAI2A-PTNUM
+                   ELSE
+                       MOVE    SPACE           TO  SPA-NAI2A-PTNUM
+                   END-IF
+                   PERFORM 210-BACK
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  SPA-PIDCD
+      *
+           .
+       3001-PID1-SYORI-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    画面編集処理
@@ -217,7 +369,6 @@
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE               TO  P02A
-      *
            PERFORM   VARYING    IDX   FROM    1   BY  1
                      UNTIL      IDX      >    SPA-GMN2A-MAX
                MOVE    SPA-GMN2A-NUM   (IDX)  TO  WRK-RENNUMZ
@@ -226,8 +377,26 @@
                MOVE    SPA-GMN2A-NAME  (IDX)  TO  P02A-NAME  (IDX)
                MOVE    SPA-GMN2A-ADRS  (IDX)  TO  P02A-ADRS  (IDX)
                MOVE    SPA-GMN2A-TEL1  (IDX)  TO  P02A-TEL   (IDX)
+               MOVE    SPA-GMN2A-BIRTHDAY  (IDX)
+                                              TO  P02A-BIRTHDAY(IDX)
+               IF      IDX                 =   SPA-GMN2A-SELNUM
+                   MOVE    "T"             TO  P02A-DUALLIST-SELECT
+                                                               (IDX)
+               ELSE
+                   MOVE    "F"             TO  P02A-DUALLIST-SELECT
+                                                               (IDX)
+               END-IF
            END-PERFORM
-           MOVE    SPA-GMN2A-MAX        TO  P02A-DUALLIST-COUNT
+           MOVE    SPA-GMN2A-MAX       TO  P02A-DUALLIST-COUNT
+           IF      SPA-GMN2A-MAX       >   ZERO
+               IF      SPA-P02A-SYORI      =   1
+                   MOVE    "同姓同名者リスト"      TO  P02A-MIDASI
+               ELSE
+                   MOVE    "二重登録者疑いリスト"  TO  P02A-MIDASI
+               END-IF
+           END-IF
+      *
+           MOVE    SPA-GMN2A-SELNUM    TO  P02A-SELNUM
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -241,8 +410,10 @@
        5001-MAPCUR-SEC             SECTION.
       *
            EVALUATE    SPA-GMN2A-CUR
-           WHEN    01
-               MOVE    "B01"       TO  MCP-WIDGET
+               WHEN    01
+                   MOVE    "B01"       TO  MCP-WIDGET
+               WHEN    02
+                   MOVE    "SELNUM"    TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -268,9 +439,99 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
+           MOVE    MCP-WIDGET          TO  SPA-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        リスト選択
+               WHEN    ANY             ALSO    "DUALLIST"
+                   PERFORM 4001-DUALIST-SEL-SEC
+               WHEN    OTHER
+      *            入力チェック処理
+                   PERFORM 410-INPUT-CHK-SEC
+           END-EVALUATE
       *
            .
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ選択処理
+      *****************************************************************
+       4001-DUALIST-SEL-SEC          SECTION.
+      *
+      *    行選択
+           MOVE    ZERO                TO  SPA-GMN2A-SELNUM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN2A-MAX
+      *TEST
+           DISPLAY "P02A P02A-DUALLIST-SELECT:" P02A-DUALLIST-SELECT
+                                                     (IDX)
+      *TEST
+               IF      P02A-DUALLIST-SELECT (IDX)    =   "T"
+                   MOVE    IDX             TO  SPA-GMN2A-SELNUM
+               END-IF
+           END-PERFORM
+      *TEST
+           DISPLAY "P02A SPA-GMN2A-SELNUM:" SPA-GMN2A-SELNUM
+           DISPLAY "P02A SPA-GMN2A-MAX:" SPA-GMN2A-MAX
+      *TEST
+      *
+           IF      SPA-GMN2A-SELNUM    NOT =   ZERO
+               PERFORM 4102-SELNUM-CHK-SEC
+           END-IF
+      *
+           .
+      *
+       4001-DUALIST-SEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC          SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           PERFORM 4102-SELNUM-CHK-SEC
+           .
+      *
+       410-INPUT-CHK-EXT.
+      *
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC          SECTION.
+      *
+           MOVE    P02A-SELNUM         TO  SPA-GMN2A-SELNUM
+           .
+      *
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    選択番号処理
+      *****************************************************************
+       4102-SELNUM-CHK-SEC                 SECTION.
+      *
+           MOVE    2                   TO  SPA-GMN2A-CUR
+      *
+      *    新規の時のみ置換えを行う
+           IF      SPA-P02-SYORI       =   1
+               IF     (SPA-GMN2A-SELNUM    =   ZERO )  OR
+                      (SPA-GMN2A-SELNUM    >   SPA-GMN2A-MAX)
+                   MOVE    "0001"          TO  SPA-ERRCD
+               ELSE
+                  MOVE    "0101"          TO  SPA-PIDCD
+               END-IF
+           ELSE
+               MOVE    "0002"          TO  SPA-ERRCD
+           END-IF
+           .
+      *
+       4102-SELNUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -296,7 +557,6 @@
            .
        210-BACK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    自画面編集処理
       *****************************************************************
@@ -304,7 +564,15 @@
       *
            PERFORM 500-GMNHEN-SEC
       *
-           PERFORM 510-ERRSET-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 510-ERRSET-SEC
+               GO      TO              500-SET-SCREEN-EXT
+           END-IF
+      *
+           IF      SPA-PIDCD       NOT =   SPACE
+               PERFORM 520-JIDSET-SEC
+               GO      TO              500-SET-SCREEN-EXT
+           END-IF
       *
            MOVE    SPACE               TO  LINKAREA
       *
@@ -325,11 +593,89 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "入力エラー"        TO  SPA-ERRMSG
+                   MOVE    "選択番号入力エラー"    TO  SPA-ERRMSG
+               WHEN    "0002"
+                   MOVE    "選択は新患者登録の時のみ入力できます"
+                                                   TO  SPA-ERRMSG
            END-EVALUATE
+      *
+           MOVE    SPACE               TO  PERR
+           MOVE    SPA-ERRCD           TO  PERR-ERRCODE
+           MOVE    SPA-ERRMSG          TO  PERR-ERRMSG
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "P02A"              TO  SPA-MOTOPG
+           MOVE    "PERR"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "PERR"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
       *
            .
        510-ERRMSG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       520-JIDSET-SEC              SECTION.
+      *
+           EVALUATE    SPA-PIDCD
+               WHEN    "0101"
+                   MOVE    "患者を変更します。現在の患者番号は"
+                                               TO  WRK-PIDMSG
+                   MOVE    "欠番となります。よろしいですか？"
+                                               TO  WRK-PIDMSG(35:)
+               WHEN    OTHER
+                   MOVE    SPA-PIDCD
+                                       TO  WRK-PIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  SPA-PID1-FLG
+      *
+           MOVE    SPACE               TO  PID1
+           MOVE    SPA-PIDCD           TO  PID1-ID1CODE
+           MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
+      *
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "P02A"              TO  SPA-MOTOPG
+           MOVE    "PID1"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "PID1"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       520-JIDSET-EXT.
+           EXIT.
+      *****************************************************************
+      **    患者マスター読み込み
+      *****************************************************************
+       900-PTINF-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+               MOVE    ZERO            TO  FLG-PTINF
+           ELSE
+               INITIALIZE                  PTINF-REC
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+      *
+           .
+       900-PTINF-READ-EXT.
            EXIT.
       *
       *****************************************************************

@@ -1317,13 +1317,18 @@
        1001-HIHKNJANAME-CHK-SEC     SECTION.
       *
       *    新規の時、氏名または、世帯主を編集
-           IF      SPA-GMN-HKNNUM      NOT =   SPACE
-               IF      SPA-GMN-HIHKNJANAME    =   SPACE
-                   IF      SPA-GMN-SETAINUSI   NOT =   SPACE
-                       MOVE    SPA-GMN-SETAINUSI
-                                             TO  SPA-GMN-HIHKNJANAME
-                   ELSE
-                       MOVE    SPA-GMN-NAME  TO  SPA-GMN-HIHKNJANAME
+           IF     (SPA-GMN-HKNNUM      NOT =   SPACE        )
+      *        本人の場合、氏名を編集する
+               IF      SPA-GMN-HONKZKKBN       =   "1"
+                   MOVE    SPA-GMN-NAME        TO  SPA-GMN-HIHKNJANAME
+               ELSE
+                   IF      SPA-GMN-HIHKNJANAME    =   SPACE
+                       IF      SPA-GMN-SETAINUSI   NOT =   SPACE
+                           MOVE    SPA-GMN-SETAINUSI
+                                                 TO  SPA-GMN-HIHKNJANAME
+                       ELSE
+                           MOVE    SPA-GMN-NAME  TO  SPA-GMN-HIHKNJANAME
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -1335,7 +1340,15 @@
                IF      FLG-ERR         NOT =   ZERO
                    MOVE    "0055"              TO  SPA-ERRCD
                    MOVE    18                  TO  SPA-GMN-CUR
+                   GO      TO      1001-HIHKNJANAME-CHK-EXT
                END-IF
+           END-IF
+      *
+      *    被保険者名入力で、家族の場合世帯主名を編集する
+           IF     (SPA-GMN-HIHKNJANAME NOT =   SPACE     )  AND
+                  (SPA-MCP-WIDGET          =   "P02_HIHKNJANAME") AND
+                  (SPA-GMN-HONKZKKBN       =   "2"      )
+               MOVE    SPA-GMN-HIHKNJANAME     TO  SPA-GMN-SETAINUSI
            END-IF
            .
       *
@@ -1644,6 +1657,15 @@
                IF      SPA-GMN-HONKZKKBN   NOT =   "1"
                    MOVE    "0066"          TO  SPA-ERRCD
                    MOVE    10              TO  SPA-GMN-CUR
+               END-IF
+           ELSE
+      *
+      *        １５歳未満の時、家族とする
+               IF      SPA-NAI-NENREI-YY   <=  15
+                   IF      SPA-GMN-HONKZKKBN   =   "1"
+                       MOVE    "0067"          TO  SPA-ERRCD
+                       MOVE    10              TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
       *

@@ -4117,6 +4117,31 @@
       *****************************************************************
        41013-NIJYU-GMN-SET-SEC   SECTION.
       *
+           INITIALIZE                  SPA-P02A-AREA
+           MOVE    FLG-P02A-SYORI      TO  SPA-P02A-SYORI
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP02A"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+      *
+      *---- °Ê²¼ºï½ü  ¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý
+           GO      TO              41013-NIJYU-GMN-SET-EXT
+      *
            MOVE    ZERO                TO  SPA-GMN2A-MAX
            MOVE    SPACE               TO  PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID

@@ -597,6 +597,17 @@
                        MOVE    1                   TO  SPA-GMN-CUR
                    END-IF
                    GO      TO                  300-SCREEN-EXT
+      *        二重登録画面より
+               WHEN    "P02A"
+                   IF      SPA-NAI2A-PTNUM NOT =   SPACE
+                       MOVE    SPA-NAI2A-PTNUM     TO  P02-PTNUM
+                       PERFORM 4100-PTNUM-SYORI-SEC
+                       MOVE    SPACE              TO  SPA-NAI2A-PTNUM
+                   ELSE
+      *                カーソルを移動する
+                       MOVE    "LINK"              TO  MCP-STATUS
+                       PERFORM 3002-GMNSET-SEC
+                   END-IF
       *        ＣＬＡＩＭ画面より
                WHEN    "P02X"
                    MOVE    "P02"               TO  SPA-P02-GAMEN
@@ -3053,6 +3064,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0066"
                    MOVE    "本人のみ入力可能です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0067"
+                   MOVE    "家族のみ入力可能です。"
                                                TO  SPA-ERRMSG
                WHEN    "1065"
                    MOVE    "補助区分は本人の時のみ入力可能です。"
