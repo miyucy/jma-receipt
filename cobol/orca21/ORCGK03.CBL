@@ -143,6 +143,7 @@
            03  IDY                 PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(02).
+           03  IDX4                PIC 9(04).
            03  IDX-P               PIC 9(04).
            03  IDX-KOUI            PIC 9(04).
            03  IDX-SIN             PIC 9(04).
@@ -1317,14 +1318,13 @@
                        UNTIL      (IDX     >   15  )  OR
                                   (SPA-TBL-HKNCOMBI (IDX)  =   SPACE )
                    IF      SPA-TBL-SRYKA (IDX 2)   =   SPACE
-                       IF      SPA-GMN-HKNCOMBI    =   "0000"
+                       IF     (SPA-GMN-HKNCOMBI    =   "0000" ) OR
+                              (SPA-GMN-HKNCOMBI    =   SPA-TBL-HKNCOMBI
+                                                             (IDX) )
                            MOVE    SPA-TBL-HKNCOMBI(IDX)
                                                    TO  WRK-HKNCOMBI
-                       ELSE
-                           MOVE    SPA-GMN-HKNCOMBI
-                                                   TO  WRK-HKNCOMBI
+                           PERFORM 31001-ZENNKA-HEN-SEC
                        END-IF
-                       PERFORM 31001-ZENNKA-HEN-SEC
                    END-IF
                END-PERFORM
            END-IF
@@ -1361,9 +1361,9 @@
       *****************************************************************
        31001-ZENNKA-HEN-SEC             SECTION.
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-SYUNOU-MAX
-               MOVE    SPA-SYUNOU-REC(IDX)     TO  WRK-SYUNOU-REC
+           PERFORM VARYING     IDX4    FROM    1   BY  1
+                   UNTIL       IDX4    >   SPA-SYUNOU-MAX
+               MOVE    SPA-SYUNOU-REC(IDX4)    TO  WRK-SYUNOU-REC
                IF      WRK-HKNCOMBI        =   WRK-SYU-HKNCOMBINUM
                    PERFORM 31000-SYUNOU-ADD-SEC
                    MOVE    1               TO  FLG-FUKU
