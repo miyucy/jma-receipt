@@ -1020,6 +1020,15 @@
                END-IF
       *
                IF    ( PTNYUINRRK-TAIINYMD =   SODR-SRYYMD )
+      *
+                   IF    ( ITEM-SYOKAI     =   "01" )
+                     AND ( ITEM-SHONUM     =   PTNYUINRRK-SHONUM  )
+                           CONTINUE
+                   ELSE
+                       MOVE    "1035"      TO  ERRCD-ORDER
+                       GO  TO  20021-NYUINRRK-CHK-EXT
+                   END-IF
+      *
                    MOVE    "1"         TO  ITEM-DOUJITSUKBN
                END-IF
       *

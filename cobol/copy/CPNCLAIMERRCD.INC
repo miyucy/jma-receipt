@@ -23,7 +23,7 @@
       * Maj/Min/Rev  修正者       日付     内容
       ************************************************************
        01  NCLAIMERRCD-AREA.
-           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   74.
+           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   75.
            03  NCLAIMERRCD-VAL.
       *-----------------------------------------------------------
                05                      PIC X(04)   VALUE   "0001".
@@ -194,6 +194,10 @@
                05                      PIC X(80)   VALUE
                    "特定入院料未設定".
       *-----------------------------------------------------------
+               05                      PIC X(04)   VALUE   "1031".
+               05                      PIC X(80)   VALUE
+                   "継続入院ではない同日再入院".
+      *-----------------------------------------------------------
                05                      PIC X(04)   VALUE   "1901".
                05                      PIC X(80)   VALUE
                    "未使用項目".
@@ -323,6 +327,6 @@
                    "未使用項目".
       *-----------------------------------------------------------
            03  NCLAIMERRCD-R   REDEFINES   NCLAIMERRCD-VAL.
-               05  NCLAIMERRCD-OCC     OCCURS  74.
+               05  NCLAIMERRCD-OCC     OCCURS  75.
                    07  NCLAIMERRCDL    PIC X(04).
                    07  NCLAIMERRCDLMEI PIC X(80).
