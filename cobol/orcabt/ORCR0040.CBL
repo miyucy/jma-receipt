@@ -409,15 +409,27 @@
       *
       *   再診（４回目以降／人工腎臓）診療行為テーブル
        01  TBL-JINSAI4-AREA.
-           03  FILLER          PIC X(09)   VALUE   "112009610".
            03  FILLER          PIC X(09)   VALUE   "112009510".
-           03  FILLER          PIC X(09)   VALUE   "112012750".
+           03  FILLER          PIC X(09)   VALUE   "112009610".
+           03  FILLER          PIC X(09)   VALUE   "112012610".
+           03  FILLER          PIC X(09)   VALUE   "112704010".
            03  FILLER          PIC X(09)   VALUE   "112706610".
+           03  FILLER          PIC X(09)   VALUE   "112010450".
+           03  FILLER          PIC X(09)   VALUE   "112010550".
+           03  FILLER          PIC X(09)   VALUE   "112704750".
+           03  FILLER          PIC X(09)   VALUE   "112007710".
+           03  FILLER          PIC X(09)   VALUE   "112007810".
+           03  FILLER          PIC X(09)   VALUE   "112012310".
+           03  FILLER          PIC X(09)   VALUE   "112702610".
+           03  FILLER          PIC X(09)   VALUE   "112706310".
+           03  FILLER          PIC X(09)   VALUE   "112008650".
+           03  FILLER          PIC X(09)   VALUE   "112008750".
+           03  FILLER          PIC X(09)   VALUE   "112703350".
       *
        01  TBL-JINSAI4-R       REDEFINES   TBL-JINSAI4-AREA.
-            03  TBL-JINSAI4    PIC X(09)   OCCURS   4.       
+            03  TBL-JINSAI4    PIC X(09)   OCCURS  16.       
       *
-       01  TBL-JINSAI4-MAX     PIC 9(02)   VALUE    4.  
+       01  TBL-JINSAI4-MAX     PIC 9(02)   VALUE   16.  
       *
       *
       *   人工腎臓診療行為テーブル
@@ -508,17 +520,45 @@
            03  FILLER          PIC X(09)   VALUE   "112706850".
       *    電話等再診（病院）(１回目）
            03  FILLER          PIC X(09)   VALUE   "112007950".
+      *    電話等再診（病院）(２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112008050".
+      *    電話等再診（病院）(４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112008150".
+      *    電話等再診（病院）(４回目以降）（１５歳未満）
+           03  FILLER          PIC X(09)   VALUE   "112008250".
+      *    電話等再診（病院）(４回目以降）（厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112012450".
       *    老：電話等再診（病院）(１回目）
            03  FILLER          PIC X(09)   VALUE   "112702750".
+      *    老：電話等再診（病院）(２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112702850".
+      *    老：電話等再診（病院）(４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112702950".
+      *    老：電話等再診（病院）(４回目以降）（厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112706450".
       *    同日電話等再診（病院）(１回目）
            03  FILLER          PIC X(09)   VALUE   "112008850".
+      *    同日電話等再診（病院）(２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112008950".
+      *    同日電話等再診（病院）(４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112009050".
+      *    同日電話等再診（病院）(４回目以降）（１５歳未満）
+           03  FILLER          PIC X(09)   VALUE   "112009150".
+      *    同日電話等再診（病院）(４回目以降）（厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112012550".
       *    老：同日電話等再診（病院）(１回目）
            03  FILLER          PIC X(09)   VALUE   "112703450".
+      *    老：同日電話等再診（病院）(２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112703550".
+      *    老：同日電話等再診（病院）(４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112703650".
+      *    老：同日電話等再診（病院）(４回目以降）（厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112706550".
       *
        01  TBL-DENWA-R         REDEFINES   TBL-DENWA-AREA.
-            03  TBL-DENWA      PIC X(09)   OCCURS   22.       
+            03  TBL-DENWA      PIC X(09)   OCCURS   36.       
       *
-       01  TBL-DENWA-MAX       PIC 9(02)   VALUE    22.  
+       01  TBL-DENWA-MAX       PIC 9(02)   VALUE    36.  
       *
       *
       *   同日再診対象診療行為テーブル
@@ -561,17 +601,45 @@
            03  FILLER          PIC X(09)   VALUE   "112706850".
       *    同日電話等再診（病院）(１回目）
            03  FILLER          PIC X(09)   VALUE   "112008850".
+      *    同日電話等再診（病院）(２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112008950".
+      *    同日電話等再診（病院）(４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112009050".
+      *    同日電話等再診（病院）(４回目以降）（１５歳未満）
+           03  FILLER          PIC X(09)   VALUE   "112009150".
+      *    同日電話等再診（病院）(４回目以降）（厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112012550".
       *    老：同日電話等再診（病院）(１回目）
            03  FILLER          PIC X(09)   VALUE   "112703450".
+      *    老：同日電話等再診（病院）(２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112703550".
+      *    老：同日電話等再診（病院）(４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112703650".
+      *    老：同日電話等再診（病院）(４回目以降）（厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112706550".
       *    同日再診（病院）(１回目）
            03  FILLER          PIC X(09)   VALUE   "112008350".
+      *    同日再診（病院）(２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112008450".
+      *    同日再診（病院）(４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112008550".
+      *    同日再診（病院）(４回目以降）（１５歳未満）
+           03  FILLER          PIC X(09)   VALUE   "112008650".
+      *    同日再診（病院）(４回目以降）（厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112008750".
       *    老：同日再診（病院）(１回目）
            03  FILLER          PIC X(09)   VALUE   "112703050".
+      *    老：同日再診（病院）(２回目又は３回目）
+           03  FILLER          PIC X(09)   VALUE   "112703150".
+      *    老：同日再診（病院）(４回目以降）
+           03  FILLER          PIC X(09)   VALUE   "112703250".
+      *    老：同日再診（病院）(４回目以降）（厚生労働大臣が定める者）
+           03  FILLER          PIC X(09)   VALUE   "112703350".
       *
        01  TBL-DOUJITU-R       REDEFINES   TBL-DOUJITU-AREA.
-            03  TBL-DOUJITU    PIC X(09)   OCCURS   22.       
+            03  TBL-DOUJITU    PIC X(09)   OCCURS   36.       
       *
-       01  TBL-DOUJITU-MAX     PIC 9(02)   VALUE    22.  
+       01  TBL-DOUJITU-MAX     PIC 9(02)   VALUE    36.  
       *
       *
       *   ＣＴ・ＭＲＩ対象診療行為テーブル

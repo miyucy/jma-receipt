@@ -461,12 +461,22 @@
            03  CONS-SAISHIN6       PIC X(09) VALUE "112704550".
            03  CONS-SAISHIN7       PIC X(09) VALUE "112704250".
            03  CONS-SAISHIN8       PIC X(09) VALUE "112704950".
+           03  CONS-SAISHIN9       PIC X(09) VALUE "112007510".
+           03  CONS-SAISHIN10      PIC X(09) VALUE "112008050".
+           03  CONS-SAISHIN11      PIC X(09) VALUE "112008450".
+           03  CONS-SAISHIN12      PIC X(09) VALUE "112008950".
+           03  CONS-SAISHIN13      PIC X(09) VALUE "112702410".
+           03  CONS-SAISHIN14      PIC X(09) VALUE "112702850".
+           03  CONS-SAISHIN15      PIC X(09) VALUE "112703150".
+           03  CONS-SAISHIN16      PIC X(09) VALUE "112703550".
       *    外来管理加算（４回目以降のコード）
            03  CONS-GAIRAIKSN1     PIC X(09) VALUE "112011110".
            03  CONS-GAIRAIKSN2     PIC X(09) VALUE "112011210".
            03  CONS-GAIRAIKSN3     PIC X(09) VALUE "112012910".
            03  CONS-GAIRAIKSN4     PIC X(09) VALUE "112705410".
            03  CONS-GAIRAIKSN5     PIC X(09) VALUE "112707010".
+           03  CONS-GAIRAIKSN6     PIC X(09) VALUE "112705210".
+           03  CONS-GAIRAIKSN7     PIC X(09) VALUE "112706910".
       *    在宅総合・在宅末期
            03  CONS-ZAITAKU1       PIC X(09) VALUE "114701210".
            03  CONS-ZAITAKU2       PIC X(09) VALUE "114701710".
@@ -1084,14 +1094,24 @@
                                                 CONS-SAISHIN5    OR
                                                 CONS-SAISHIN6    OR
                                                 CONS-SAISHIN7    OR
-                                                CONS-SAISHIN8
+                                                CONS-SAISHIN8    OR
+                                                CONS-SAISHIN9    OR
+                                                CONS-SAISHIN10   OR
+                                                CONS-SAISHIN11   OR
+                                                CONS-SAISHIN12   OR
+                                                CONS-SAISHIN13   OR
+                                                CONS-SAISHIN14   OR
+                                                CONS-SAISHIN15   OR
+                                                CONS-SAISHIN16
                         MOVE   "1"        TO    RECE02-SAISHIN-PRTKBN
                    END-IF
                    IF   SRY-SRYCD(IDX2)   =     CONS-GAIRAIKSN1    OR
                                                 CONS-GAIRAIKSN2    OR
                                                 CONS-GAIRAIKSN3    OR
                                                 CONS-GAIRAIKSN4    OR
-                                                CONS-GAIRAIKSN5
+                                                CONS-GAIRAIKSN5    OR
+                                                CONS-GAIRAIKSN6    OR
+                                                CONS-GAIRAIKSN7
                         MOVE   "1"        TO    RECE02-GAIRAIKSN-PRTKBN
                    END-IF
                END-IF
@@ -1368,6 +1388,24 @@
                                             "112704950"   OR
                                             "112705050"   OR
                                             "112706850"   OR
+                                            "112007950"   OR
+                                            "112008050"   OR
+                                            "112008150"   OR
+                                            "112008250"   OR
+                                            "112012450"   OR
+                                            "112702750"   OR
+                                            "112702850"   OR
+                                            "112702950"   OR
+                                            "112706450"   OR
+                                            "112008850"   OR
+                                            "112008950"   OR
+                                            "112009050"   OR
+                                            "112009150"   OR
+                                            "112012550"   OR
+                                            "112703450"   OR
+                                            "112703550"   OR
+                                            "112703650"   OR
+                                            "112706550"   OR
                                             "112010150"   OR
                                             "112010250"   OR
                                             "112010350"   OR
@@ -1377,15 +1415,25 @@
                                             "112704550"   OR
                                             "112704650"   OR
                                             "112704750"   OR
-                                            "112009610"   OR
-                                            "112009510"   OR
-                                            "112706610"   OR
-                                            "112007950"   OR
-                                            "112702750"   OR
-                                            "112008850"   OR
-                                            "112703450"   OR
                                             "112008350"   OR
-                                            "112703050"
+                                            "112008450"   OR
+                                            "112008550"   OR
+                                            "112008650"   OR
+                                            "112008750"   OR
+                                            "112703050"   OR
+                                            "112703150"   OR
+                                            "112703250"   OR
+                                            "112703350"   OR
+                                            "112009510"   OR
+                                            "112009610"   OR
+                                            "112012610"   OR
+                                            "112704010"   OR
+                                            "112706610"   OR
+                                            "112007710"   OR
+                                            "112007810"   OR
+                                            "112012310"   OR
+                                            "112702610"   OR
+                                            "112706310"   
                         MOVE   "1"        TO    RECE02-COMCNTFLG
               END-IF
            END-IF

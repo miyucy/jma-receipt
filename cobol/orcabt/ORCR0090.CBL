@@ -1455,11 +1455,9 @@
                                   "112010150"  OR  "112009750"  OR
                                   "112010650"  OR  "112704450"  OR
                                   "112704150"  OR  "112704850"  OR
-                                  "112007410"  OR  "112702310"  OR
                                   "112007950"  OR  "112702750"  OR
                                   "112008850"  OR  "112703450"  OR
-                                  "112008350"  OR  "112703050"  OR
-                                  "112705110"                      )
+                                  "112008350"  OR  "112703050"     )
                        MOVE    ZERO          TO  FLG-NOPRT
                  ELSE
                        MOVE    1             TO  FLG-NOPRT
@@ -1469,13 +1467,9 @@
       *            ＊再診の場合
                    IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                          =   "112009210"  OR
-                                             "112010150"  OR
-                                             "112009750"  OR
-                                             "112010650"  OR
                                              "112703710"  OR
-                                             "112704450"  OR
-                                             "112704150"  OR
-                                             "112704850"
+                                             "112007410"  OR
+                                             "112702310"
                      IF  RECE02-SAISHIN-PRTKBN   =   "1"
                          MOVE    ZERO          TO  FLG-NOPRT
                      END-IF
@@ -1483,7 +1477,8 @@
       *            ＊外来管理加算の場合
                    IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                          =   "112011010"  OR
-                                             "112705310"
+                                             "112705310"  OR
+                                             "112705110"
                      IF  RECE02-GAIRAIKSN-PRTKBN   =   "1"
                          MOVE    ZERO          TO  FLG-NOPRT
                      END-IF

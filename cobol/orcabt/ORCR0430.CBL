@@ -190,7 +190,6 @@
            03  CNT-RECE41          PIC 9(06).
            03  CNT-RECE44          PIC 9(06).
            03  CNT-RECE45          PIC 9(06).
-           03  CNT-JINZOU          PIC 9(06).
            03  CNT-RIHA            PIC 9(06).
            03  CNT-JUSHIN          PIC 9(06).
            03  CNT-SANTEIKA        PIC 9(06).
@@ -309,15 +308,6 @@
        01  WRK-TAIHI-ZAINUM-R     REDEFINES   WRK-TAIHI-ZAINUM.
             03  WRK-RIHA-ZAINUM   PIC 9(08)   OCCURS   16.       
       *
-      *
-      *人工腎臓実施カレンダー
-       01  WRK-JINZOU-AREA.
-           03  WRK-JINZOU                    PIC  X(01)  OCCURS 31.
-      *
-      *再診４回目以降実施カレンダー
-       01  WRK-SAISHIN4-AREA.
-           03  WRK-SAISHIN4                  PIC  X(01)  OCCURS 31. 
-      *
       *理学療法実施カレンダー
        01  WRK-RIGAKU-AREA.
            03  WRK-RIGA1-SHU                 PIC  X(01)  OCCURS 31.   
@@ -394,31 +384,6 @@
            03  CONS-SYOSINSANTEIKA  PIC X(09) VALUE "830000020".
       *    再診料算定科：
            03  CONS-SAISINSANTEIKA  PIC X(09) VALUE "830000021".
-      *
-      *
-      *   再診（４回目以降／人工腎臓）診療行為テーブル
-       01  TBL-JINSAI4-AREA.
-           03  FILLER          PIC X(09)   VALUE   "112009610".
-           03  FILLER          PIC X(09)   VALUE   "112009510".
-           03  FILLER          PIC X(09)   VALUE   "112012750".
-           03  FILLER          PIC X(09)   VALUE   "112706610".
-      *
-       01  TBL-JINSAI4-R       REDEFINES   TBL-JINSAI4-AREA.
-            03  TBL-JINSAI4    PIC X(09)   OCCURS   4.       
-      *
-       01  TBL-JINSAI4-MAX     PIC 9(02)   VALUE    4.  
-      *
-      *
-      *   人工腎臓診療行為テーブル
-       01  TBL-JINZOU-AREA.
-           03  FILLER          PIC X(09)   VALUE    "140036710".
-           03  FILLER          PIC X(09)   VALUE    "140007710".
-      *
-       01  TBL-JINZOU-R        REDEFINES   TBL-JINZOU-AREA.
-            03  TBL-JINZOU     PIC X(09)   OCCURS   2.       
-      *
-       01  TBL-JINZOU-MAX      PIC 9(02)   VALUE    2.  
-      *
       *
       *   リハビリ診療行為テーブル
        01  TBL-RIHA-AREA.
@@ -663,8 +628,6 @@
        200-MAIN-SEC                SECTION.
       *
            MOVE       ZERO             TO  CNT-SANTEIKA
-           INITIALIZE                      WRK-SAISHIN4-AREA
-           INITIALIZE                      WRK-JINZOU-AREA
            INITIALIZE                      WRK-RIGAKU-AREA
            INITIALIZE                      WRK-TAIHI-ZAINUM
       *
@@ -707,11 +670,6 @@
       *               （再診料算定科：のカウント）
                          MOVE    CONS-SAISINSANTEIKA  TO  WRK-SRYCD
                          PERFORM    2001-SANTEIKA-COUNT-SEC
-      *               （再診４回目のカウント）
-                         PERFORM    2001-SAISHIN4-COUNT-SEC
-                      WHEN      "40"
-      *               （人工腎臓のカウント）
-                         PERFORM    2001-JINZOU-COUNT-SEC
                       WHEN      "80"
       *               （リハビリのカウント）
                          PERFORM    2001-RIHA-COUNT-SEC
@@ -726,11 +684,7 @@
       *               （再診料算定科：のカウント）
                          MOVE    CONS-SAISINSANTEIKA  TO  WRK-SRYCD
                          PERFORM    2001-SANTEIKA-COUNT-SEC
-      *               （再診４回目のカウント）                          
-                         PERFORM    2001-SAISHIN4-COUNT-SEC             
                       WHEN      "40"                                    
-      *               （人工腎臓のカウント）                            
-                         PERFORM    2001-JINZOU-COUNT-SEC               
       *               （リハビリのカウント）                            
                          PERFORM    2001-RIHA-COUNT-SEC                 
                   END-EVALUATE                                          
@@ -803,11 +757,6 @@
              END-IF
       *
            END-IF
-      *
-      *    人工腎臓の判定
-      *
-           PERFORM    2001-JINZOU-HANTEI-SEC
-      *
       *
       *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE44-REC
@@ -1373,139 +1322,6 @@
            EXIT.
       *
       *****************************************************************
-      *    再診４回目以降のカウント
-      *****************************************************************
-       2001-SAISHIN4-COUNT-SEC          SECTION.
-      *
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX           >   TBL-JINSAI4-MAX )
-      *
-              INITIALIZE                        SRYACT-REC
-              MOVE    RECE44-HOSPID     TO      SRY-HOSPID
-              MOVE    RECE44-NYUGAIKBN  TO      SRY-NYUGAIKBN
-              MOVE    RECE44-PTID       TO      SRY-PTID
-              MOVE    RECE44-SRYYM      TO      SRY-SRYYM
-              MOVE    RECE44-ZAINUM     TO      SRY-ZAINUM
-              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (1)
-              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (2)
-              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (3)
-              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (4)
-              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (5)
-      *
-              MOVE    SRYACT-REC        TO      MCPDATA-REC
-              MOVE    "DBSELECT"        TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-              IF  MCP-RC                =       ZERO
-                  MOVE    "DBFETCH"     TO      MCP-FUNC
-                  MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-                  CALL    "ORCMCPSUB"           USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                  IF      MCP-RC        =       ZERO
-                      IF      RECE41-HKNKBN   NOT  =   "3"
-                         PERFORM  VARYING   IDX1  FROM  1  BY  1
-                                  UNTIL     IDX1  >   31
-                           IF   RECE44-KAISU(1 IDX1)  NOT = ZERO
-                               MOVE  "1"  TO  WRK-SAISHIN4(IDX1)
-                           END-IF
-                         END-PERFORM
-                      ELSE
-                         MOVE   RECE41-TEKSTYMD(7:2)  TO  WRK-DAY
-                         IF   RECE44-KAISU(1 WRK-DAY)  NOT = ZERO
-                             MOVE  "1"  TO  WRK-SAISHIN4(WRK-DAY)
-                         END-IF
-                      END-IF
-                  END-IF 
-              END-IF
-      *
-              INITIALIZE                        MCPAREA
-              MOVE    "DBCLOSE"         TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           END-PERFORM
-      *
-           .
-       2001-SAISHIN4-COUNT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    人工腎臓のカウント
-      *****************************************************************
-       2001-JINZOU-COUNT-SEC          SECTION.
-      *
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX           >   TBL-JINZOU-MAX )
-      *
-              INITIALIZE                        SRYACT-REC
-              MOVE    RECE44-HOSPID     TO      SRY-HOSPID
-              MOVE    RECE44-NYUGAIKBN  TO      SRY-NYUGAIKBN
-              MOVE    RECE44-PTID       TO      SRY-PTID
-              MOVE    RECE44-SRYYM      TO      SRY-SRYYM
-              MOVE    RECE44-ZAINUM     TO      SRY-ZAINUM
-              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (1)
-              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (2)
-              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (3)
-              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (4)
-              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (5)
-      *
-              MOVE    SRYACT-REC        TO      MCPDATA-REC
-              MOVE    "DBSELECT"        TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-              IF  MCP-RC                =       ZERO
-                  MOVE    "DBFETCH"     TO      MCP-FUNC
-                  MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-                  CALL    "ORCMCPSUB"           USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                  IF      MCP-RC        =       ZERO
-                      MOVE    RECE44-REC    TO      WRK-RECE44-REC
-                      IF      RECE41-HKNKBN   NOT  =   "3"
-                         PERFORM  VARYING   IDX1  FROM  1  BY  1
-                                  UNTIL     IDX1  >   31
-                           IF   RECE44-KAISU(1 IDX1)  NOT = ZERO
-                               MOVE  "1"  TO  WRK-JINZOU(IDX1)
-                           END-IF
-                         END-PERFORM
-                      ELSE
-                         MOVE   RECE41-TEKSTYMD(7:2)  TO  WRK-DAY
-                         IF   RECE44-KAISU(1 WRK-DAY)  NOT = ZERO
-                             MOVE  "1"  TO  WRK-JINZOU(WRK-DAY)
-                         END-IF
-                      END-IF
-                  END-IF
-              END-IF
-      *
-              INITIALIZE                        MCPAREA
-              MOVE    "DBCLOSE"         TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           END-PERFORM
-      *
-           .
-       2001-JINZOU-COUNT-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    リハビリのカウント
       *****************************************************************
        2001-RIHA-COUNT-SEC          SECTION.
@@ -1623,87 +1439,6 @@
       *
            .
        2001-RIHA-COUNT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    人工腎臓の判定
-      *****************************************************************
-       2001-JINZOU-HANTEI-SEC          SECTION.
-      *
-      *    人工腎臓と再診の突き合わせ
-      *
-           MOVE       ZERO             TO     CNT-JINZOU
-           PERFORM    VARYING    IDX   FROM   1   BY   1
-                         UNTIL      IDX   >    31
-                     IF   (WRK-JINZOU(IDX)    =   "1")  AND
-                          (WRK-SAISHIN4(IDX)  =   "1")
-                          ADD     1           TO   CNT-JINZOU
-                     END-IF
-           END-PERFORM
-      *
-           IF      CNT-JINZOU        NOT =      ZERO
-               PERFORM    2002-JINZOU-COMMENT-SEC
-           END-IF
-      *
-           .
-       2001-JINZOU-HANTEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    人工腎臓のコメント編集
-      *****************************************************************
-       2002-JINZOU-COMMENT-SEC          SECTION.
-      *
-           INITIALIZE                      RECE441-REC
-           MOVE    RECE41-HOSPID       TO  RECE441-HOSPID
-           MOVE    RECE41-SRYYM        TO  RECE441-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE441-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE441-PTID
-           MOVE    RECE41-RECEKA       TO  RECE441-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE441-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE441-TEKSTYMD
-           MOVE    99999980            TO  RECE441-ZAINUM
-           MOVE    WRK-RECE44-SRYKBN   TO  RECE441-SRYKBN
-      *
-           MOVE       1                TO  RECE441-MEISAISU
-      *
-           WRITE   RECE441-REC
-           ADD     1                   TO  CNT-RECE44
-      *
-           INITIALIZE                      RECE451-REC
-           MOVE    RECE41-HOSPID       TO  RECE451-HOSPID
-           MOVE    RECE41-SRYYM        TO  RECE451-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE451-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE451-PTID
-           MOVE    RECE41-RECEKA       TO  RECE451-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE451-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE451-TEKSTYMD
-           MOVE    99999980            TO  RECE451-ZAINUM
-           MOVE    WRK-RECE44-SRYKBN   TO  RECE451-SRYKBN
-      *    人工腎臓コメントの挿入
-           ADD     1                    TO  IDX-RECE45
-           MOVE    SPACE                TO  COM-RECE45-REC
-           INITIALIZE                       COM-RECE45-REC
-           MOVE    "810000001"          TO  COM-SRYCD(1)
-           MOVE    ZERO                 TO  COM-SRYSURYO(1)
-           MOVE    14                   TO  COM-YUKOKETA(1)
-           MOVE    "再診４回目以降実施回数　　回"  TO COM-NAME(1)
-      *
-           MOVE    CNT-JINZOU           TO  DAY-IDX
-           MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(23:4)
-      *
-           MOVE    "1"                  TO  COM-SIKFLG(1)
-      *
-           MOVE    COM-SRYACTINF(1)     TO  RECE451-SRYACTINF(1)
-           MOVE    COM-NAMEINF(1)       TO  RECE451-NAMEINF(1)
-      *
-           MOVE    COM-SIKFLGINF(1)     TO  RECE451-SIKFLGINF(1) 
-      *
-           WRITE   RECE451-REC
-           ADD     1                    TO  CNT-RECE45
-      *
-           .
-       2002-JINZOU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

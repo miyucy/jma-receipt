@@ -1435,18 +1435,7 @@
            END-IF
       *
            IF      SRY-SRYKBN         =     "12"
-              IF   SRY-SRYCD(IDX2)    =     "830000021"   OR
-                                            "112009610"   OR
-                                            "112009510"   OR
-                                            "112012750"   OR
-                                            "112706610"   
-                        MOVE   "1"        TO    RECE41-COMCNTFLG
-              END-IF
-           END-IF
-      *
-           IF      SRY-SRYKBN         =     "40"
-              IF   SRY-SRYCD(IDX2)    =     "140036710"   OR
-                                            "140007710"
+              IF   SRY-SRYCD(IDX2)    =     "830000021"
                         MOVE   "1"        TO    RECE41-COMCNTFLG
               END-IF
            END-IF
