@@ -57,6 +57,8 @@
       *  01.02.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.02.02    NACL-藤原    02/09/24  ２００２．１０改正対応
       *  01.02.03    NACL-藤原    02/11/06  前回作成のときの年月のチェック
+      *　入院機能追加　
+      *  01.03.01    NACL-藤原    02/12/11  入外区分追加 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -800,10 +802,13 @@
            MOVE    R01-NYUGAIKBN       TO  SPA-GMN-NYUGAIKBN
       *
            IF      SPA-GMN-NYUGAIKBN    =   SPACE
-               MOVE    "2"                  TO  SPA-GMN-NYUGAIKBN
+      *********MOVE    "2"                  TO  SPA-GMN-NYUGAIKBN
+               MOVE    SPA-R01-RECE07-NYUGAIKBN
+                                            TO  SPA-GMN-NYUGAIKBN
            END-IF
       *
-           IF      SPA-GMN-NYUGAIKBN    =   SPACE   OR  "1" OR  "2"
+      *****IF      SPA-GMN-NYUGAIKBN    =   SPACE   OR  "1" OR  "2"
+           IF      SPA-GMN-NYUGAIKBN    =   SPA-R01-RECE07-NYUGAIKBN
                CONTINUE
            ELSE
                MOVE    "0001"               TO  SPA-ERRCD
@@ -1278,6 +1283,13 @@
                        MOVE    "0012"                 TO  SPA-ERRCD
                        GO  TO  480-ZENKAI-HYOUJI-EXT
                    END-IF    
+                   IF      SYS-2001-NYUGAIKBN  =
+                                           SPA-R01-RECE07-NYUGAIKBN
+                       CONTINUE
+                   ELSE     
+                       MOVE    "0013"                 TO  SPA-ERRCD
+                       GO  TO  480-ZENKAI-HYOUJI-EXT
+                   END-IF    
                END-IF
            END-IF
       *
@@ -1618,7 +1630,11 @@
            MOVE    SPACE           TO  SHELLTBL
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "0"
-                   MOVE    "recept1.sh"        TO  WRK-SHELL-SHELL
+                   IF      SPA-R01-RECE07-NYUGAIKBN   =   "1"
+                       MOVE    "recept9.sh"    TO  WRK-SHELL-SHELL
+                   ELSE
+                       MOVE    "recept1.sh"    TO  WRK-SHELL-SHELL
+                           END-IF                        
                WHEN    "3"
                    MOVE    "recept6.sh"        TO  WRK-SHELL-SHELL
                WHEN    "4"

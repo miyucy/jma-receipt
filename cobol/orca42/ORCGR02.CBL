@@ -475,7 +475,16 @@
                            INTO    SPA-GMN-FILEKBN
                    END-STRING
                WHEN    "2"
-                   MOVE    "個別作成分"    TO  SPA-GMN-FILEKBN
+                   EVALUATE    SPA-R01-RECE07-NYUGAIKBN
+                       WHEN    "1"
+                           MOVE    "入院"        TO  WRK-NYUGAIKBN
+                       WHEN    "2"
+                           MOVE    "入院外"      TO  WRK-NYUGAIKBN
+                   END-EVALUATE  
+                   STRING  WRK-NYUGAIKBN      DELIMITED  BY  SPACE 
+                           "個別作成分"       DELIMITED  BY  SIZE
+                           INTO    SPA-GMN-FILEKBN
+                   END-STRING
            END-EVALUATE
       *　　ファイル作成日
            IF      SPA-R01-RECE07-CREYMD   NOT =   SPACE
