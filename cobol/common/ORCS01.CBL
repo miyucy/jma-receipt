@@ -99,7 +99,6 @@
       *                                     （フラグ初期化位置変更）
       *  01.00.28    NACL−門脇   03/02/06  自費保険の課税対応
       *  01.00.29    NACL−門脇   03/03/07  老人限度額の集計変更
-      *  01.00.30    NACL−門脇   03/03/18  公費の低年金・低所得対応等
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1000,29 +999,7 @@
            END-IF.
       *
       *    公費負担部分検索用の参照部分セット（本人で固定）
-      ***  MOVE       "1"       TO    FLG-SANSHOU2.
-      *
-           IF  LNK-SYU-SRYYMD(1:6)          <  "200210"
-              EVALUATE   FLG-TSYRRK       ALSO     FLG-TNKRRK
-                 WHEN    1                ALSO     0
-                 WHEN    1                ALSO     1
-                         MOVE     "1"     TO       FLG-SANSHOU2
-                 WHEN    0                ALSO     1
-                         MOVE     "2"     TO       FLG-SANSHOU2
-                 WHEN    0                ALSO     0
-                         MOVE     "3"     TO       FLG-SANSHOU2
-              END-EVALUATE
-           ELSE
-              EVALUATE   FLG-TSYRRK       ALSO     FLG-TNKRRK
-                 WHEN    1                ALSO     1
-                         MOVE     "1"     TO       FLG-SANSHOU2
-                 WHEN    0                ALSO     1
-                         MOVE     "2"     TO       FLG-SANSHOU2
-                 WHEN    0                ALSO     0
-                 WHEN    1                ALSO     0
-                         MOVE     "3"     TO       FLG-SANSHOU2
-              END-EVALUATE
-           END-IF.
+           MOVE       "1"       TO    FLG-SANSHOU2.
       *
            EVALUATE    FLG-TSYRRK       ALSO     FLG-TNKRRK        
                WHEN    1                ALSO     1                 

@@ -30,7 +30,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    03/03/07  老人限度額の集計変更
       *  01.00.02    NACL-門脇    03/03/10  食事区分”４”の対応追加
-      *  01.00.03    NACL-門脇    03/03/18  公費の低年金・低所得対応等
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -718,17 +717,7 @@
            END-IF.
       *
       *    公費負担部分検索用の参照部分セット（本人で固定）
-      ***  MOVE       "1"               TO       FLG-SANSHOU2.
-      *
-           EVALUATE   FLG-TSYRRK        ALSO     FLG-TNKRRK
-               WHEN    1                ALSO     1
-                       MOVE     "1"     TO       FLG-SANSHOU2
-               WHEN    0                ALSO     1
-                       MOVE     "2"     TO       FLG-SANSHOU2
-               WHEN    0                ALSO     0
-               WHEN    1                ALSO     0
-                       MOVE     "3"     TO       FLG-SANSHOU2
-           END-EVALUATE.
+           MOVE       "1"               TO       FLG-SANSHOU2.
       *
       *
            EVALUATE    FLG-TSYRRK       ALSO     FLG-TNKRRK        
