@@ -6009,9 +6009,7 @@
       *    ÄÌ»»»»ÄêºÑÆü¿ô
            MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
       *    Æþ±¡ÎÁ²Ã»»¿ÇÎÅ¥³¡¼¥É
-           IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
-               PERFORM    4801-NYUKSN-GET-SEC
-           END-IF
+           PERFORM    4801-NYUKSN-GET-SEC
       *    ³°Çñ
            MOVE   "099999911"   TO  LNK-SCNYUACCT-GAIHAKU-SRYCD
       *    ¼¼ÎÁº¹³Û
@@ -6061,9 +6059,10 @@
       *****************************************************************
        4801-NYUKSN-GET-SEC         SECTION.
       *
-      *°åÎÅµ¡ïð¾ðÊó
-           INITIALIZE              SYSKANRI-REC
+           MOVE   ZERO             TO   IDX8
       *
+      *°åÎÅµ¡ïð²Ã»»¾ðÊó
+           INITIALIZE              SYSKANRI-REC
            MOVE    "5000"          TO  SYS-KANRICD
            MOVE    SPA-SYSYMD      TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
@@ -6075,7 +6074,6 @@
            IF   FLG-DBRC           =    ZERO
                MOVE    MCPDATA-REC TO   SYS-5000-REC
       *        Æþ±¡ÎÁ²Ã»»
-               MOVE   ZERO             TO   IDX8
                PERFORM   VARYING   IDX7   FROM   1  BY  1
                  UNTIL  (SYS-5000-KSNCD(IDX7)    =   SPACE)  OR
                         (IDX7                    >   20)
@@ -6104,7 +6102,59 @@
            PERFORM     4801-BTUSEL-SEC
       *
            IF   FLG-SYSKANRI           =    ZERO
-      *        Æþ±¡ÎÁ²Ã»»
+      *
+      *        ´Ç¸îÊä½õ²Ã»»
+               IF    SYS-5001-BTU-KNGHJOKSN   NOT =   SPACE
+                   ADD      1          TO     IDX8
+                   EVALUATE     SYS-5001-BTU-KNGHJOKSN
+                       WHEN     "01"
+                           MOVE  "190103070"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "02"
+                           MOVE  "190103470"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "03"
+                           MOVE  "190103770"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "04"
+                           MOVE  "190103970"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "05"
+                           MOVE  "190104070"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                   END-EVALUATE
+               END-IF
+      *
+      *        Ìë´Ö¶ÐÌ³Åù´Ç¸î²Ã»»
+               IF    SYS-5001-BTU-YAKANKNGKSN   NOT =   SPACE
+                   ADD      1          TO     IDX8
+                   EVALUATE     SYS-5001-BTU-YAKANKNGKSN
+                       WHEN     "01"
+                           MOVE  "190109870"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "02"
+                           MOVE  "190076070"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "03"
+                           MOVE  "190076170"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "04"
+                           MOVE  "190076370"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "05"
+                           MOVE  "190076470"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                   END-EVALUATE
+               END-IF
+      *
+      *        ¾®»ùÆþ±¡°åÎÅ´ÉÍýÎÁ²Ã»»¡ÊÊÝ°é»Î£±¿Í°Ê¾å¡Ë
+               IF    SYS-5001-BTU-HIKSISUKBN   =   "2"
+                   ADD      1          TO     IDX8
+                   MOVE  "190111370"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *
+      *        ÉÂÅïÆþ±¡ÎÁ²Ã»»
                PERFORM   VARYING   IDX7   FROM   1  BY  1
                  UNTIL  (SYS-5001-KSNCD(IDX7)    =   SPACE)  OR
                         (IDX7                    >   12)
@@ -6341,9 +6391,7 @@
                          TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD(IDX6)
            END-PERFORM
       *    Æþ±¡ÎÁ²Ã»»¿ÇÎÅ¥³¡¼¥É
-           IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
-               PERFORM    4801-NYUKSN-GET-SEC
-           END-IF
+           PERFORM    4801-NYUKSN-GET-SEC
       *    ³°Çñ
            MOVE   "099999911"   TO  LNK-SCNYUACCT-GAIHAKU-SRYCD
       *    ¼¼ÎÁº¹³Û
@@ -6450,9 +6498,7 @@
       *    ÄÌ»»»»ÄêºÑÆü¿ô
            MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
       *    Æþ±¡ÎÁ²Ã»»¿ÇÎÅ¥³¡¼¥É
-           IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
-               PERFORM    4801-NYUKSN-GET-SEC
-           END-IF
+           PERFORM    4801-NYUKSN-GET-SEC
       *    ³°Çñ
            MOVE   "099999911"   TO  LNK-SCNYUACCT-GAIHAKU-SRYCD
       *    ¼¼ÎÁº¹³Û
