@@ -29,6 +29,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    02/10/03  入外区分・処理区分の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -237,6 +238,7 @@
                05  WRK-PARA-TERMID  PIC  X(16).
                05  WRK-PARA-SYSYMD  PIC  X(08).
                05  WRK-PARA-RECEKBN PIC  X(01).
+               05  WRK-PARA-RECEYM  PIC  X(06). 
                05  WRK-PARA-JOBID   PIC  9(07).
                05  WRK-PARA-SHELLID PIC  X(08).
       *
@@ -1563,7 +1565,7 @@
            EXIT.
       *
       *****************************************************************
-      *    レセプト明細管理ＤＢ
+      *    レセプト明細ＤＢ
       *****************************************************************
        3901-RECE08-INSERT-SEC        SECTION.
       *
@@ -1614,13 +1616,16 @@
            ELSE    
                MOVE    RECE41-KANANAME     TO  RECE08-KANANAME
       *********MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+               MOVE    "2"                 TO  RECE08-NYUGAIKBN
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
                IF      CNT-PAGE            =   1                                 
                    MOVE    HC22                TO  RECE08-PRTDATA
+                   MOVE    "HC22"              TO  RECE08-FORMID
                ELSE
                    MOVE    HC24                TO  RECE08-PRTDATA
+                   MOVE    "HC24"              TO  RECE08-FORMID
                END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1648,22 +1653,33 @@
            EXIT.
       *
       *****************************************************************
-      *    出力処理
+      *    レセプト管理ＤＢ出力処理
       *****************************************************************
        3903-RECE07-WRITE-SEC        SECTION.
       *
            INITIALIZE                      RECE07-REC
            MOVE    RECE08-PRTID        TO  RECE07-PRTID
-           MOVE    RECE08-RECEYM       TO  RECE07-SRYYM
+           IF      WRK-PARA-SRYYM      =   ZERO
+               MOVE    "2"                 TO  RECE07-SYOKBN
+           ELSE
+               MOVE    "1"                 TO  RECE07-SYOKBN
+           END-IF         
+           MOVE    WRK-PARA-RECEYM     TO  RECE07-SRYYM
            MOVE    RECE08-CREYMD       TO  RECE07-CREYMD
            MOVE    RECE08-CREHMS       TO  RECE07-CREHMS
            MOVE    RECE08-TEISYUTUSAKI TO  RECE07-TEISYUTUSAKI
            MOVE    RECE08-RECESYUBETU  TO  RECE07-RECESYUBETU
+           MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN
            MOVE    RECE07-REC          TO  MCPDATA-REC 
            PERFORM 900-RECE07-READ-SEC
            IF      FLG-RECE07          =   1
                INITIALIZE                      RECE07-REC
                MOVE    RECE08-PRTID        TO  RECE07-PRTID
+               IF      WRK-PARA-SRYYM      =   ZERO
+                   MOVE    "2"                 TO  RECE07-SYOKBN
+               ELSE
+                   MOVE    "1"                 TO  RECE07-SYOKBN
+               END-IF         
                MOVE    RECE08-RECEYM       TO  RECE07-SRYYM
                MOVE    RECE08-CREYMD       TO  RECE07-CREYMD
                MOVE    RECE08-CREHMS       TO  RECE07-CREHMS
@@ -1672,6 +1688,7 @@
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
                MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
+               MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN 
                MOVE    RECE08-TERMID       TO  RECE07-TERMID
            ELSE
                ADD     1                   TO  RECE07-PAGE
