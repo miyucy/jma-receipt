@@ -264,6 +264,7 @@
                    MOVE    IDY             TO  SPA-K97-HKN-MAX
                END-IF
            END-PERFORM
+      *
       *    ドクター編集
            INITIALIZE                  ORCSDRSETAREA
            MOVE    "1"                 TO  ORCSDR-KBN
@@ -275,6 +276,12 @@
                                        ORCSDRSETAREA
            MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
            MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+           IF      SPA-K97-SRYKA       =   SPACE  OR  ZERO
+               CONTINUE
+           ELSE
+               MOVE    SPA-K97-SRYKA       TO  SPA-K97-SELNUM2
+               PERFORM 22031-UKETUKE-CHK-SEC
+           END-IF
       *
            .
        310-SPA-SET-EXT.
