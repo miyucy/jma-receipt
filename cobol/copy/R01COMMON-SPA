@@ -73,6 +73,9 @@
       *起動ジョブ数
            05  SPA-R01-JOBCNT              PIC  9(02).
       *
+      *自動遷移区分
+           05  SPA-R01-AUTODSPKBN          PIC  X(01).
+      *
       *警告メッセージ
            05  SPA-RIDCD                   PIC  X(04).
            05  SPA-RIDCD2                  PIC  X(04).
