@@ -3540,7 +3540,7 @@
                    MOVE    LNK-WKSRY-SRYKBN (IDX)
                                                TO  SPA-GMN-SRYKBN(IDX2)
                END-IF
-      *     訂正の時、診療種別が未入力で院外の薬剤があった時
+      *        訂正の時、診療種別が未入力で院外の薬剤があった時
                IF     (LNK-WKSRY-SRYSYUKBN (IDX)   =   SPACE OR
                                                        "210" OR
                                                        "220" OR
@@ -6896,15 +6896,16 @@
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                IF      ISET-SURYO1     =   ZERO
       *            数量ゼロフラグ
-                   IF     (SPA-SURYOZERO-FLG   =   ZERO )  OR
-                          (ISET-INPUTCD(1:1)   NOT =   "6" 
-                                                   AND "7" )
-                       MOVE    1           TO  SPA-COM-SURYO
-                                                         (SPA-GMN-IDX)
-                   ELSE
+                   IF     (SPA-SURYOZERO-FLG   =   1    )  AND
+                          (ISET-INPUTCD(1:1)   =   "6" 
+                                               OR  "7" )  AND
+                          (ISET-INPUTCD    NOT =   "799990070" )
                        MOVE    ZERO        TO  SPA-COM-SURYO
                                                          (SPA-GMN-IDX)
                        MOVE    "A001"      TO  WRK-ERRCD2
+                   ELSE
+                       MOVE    1           TO  SPA-COM-SURYO
+                                                         (SPA-GMN-IDX)
                    END-IF
                ELSE
                    MOVE    ISET-SURYO1 TO  SPA-COM-SURYO (SPA-GMN-IDX)

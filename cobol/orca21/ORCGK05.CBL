@@ -3371,11 +3371,13 @@
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                IF      ISET-SURYO1     =   ZERO
       *            数量ゼロフラグ
-                   IF      SPA-SURYOZERO-FLG   =   ZERO
-                       MOVE    1           TO  SPA-COM-SURYO
+                   IF     (SPA-SURYOZERO-FLG   =   1      )  AND
+                          (ISET-INPUTCD(1:1)   =   "7"  OR  "6") AND
+                          (ISET-INPUTCD    NOT =   "799990070" )
+                       MOVE    ZERO        TO  SPA-COM-SURYO
                                                          (SPA-GMN-IDX)
                    ELSE
-                       MOVE    ZERO        TO  SPA-COM-SURYO
+                       MOVE    1           TO  SPA-COM-SURYO
                                                          (SPA-GMN-IDX)
                    END-IF
                ELSE
