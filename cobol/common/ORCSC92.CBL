@@ -504,7 +504,8 @@
            END-IF
       *
       *    対象年齢チェック
-           IF      LNK-SC92-SRYCD(1:1) =   "1"
+           IF     (LNK-SC92-SRYCD(1:1) =   "1" )  OR
+                  (LNK-SC92-SRYCD(1:1) =   "7" )
                PERFORM 2003-NENREI-CHK-SEC
            END-IF
       *
