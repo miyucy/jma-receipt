@@ -826,9 +826,6 @@
            END-IF
       *
            MOVE    WRK-PARA-TERMID     TO  SYU-TERMID
-           MOVE    SYS-YMD             TO  SYU-CREYMD
-                                           SYU-UPYMD
-           MOVE    SYS-TIME            TO  SYU-UPHMS
       *
            MOVE    SYU-HOSPID          TO  TEIKI01-HOSPID
            MOVE    SYU-PTID            TO  TEIKI01-PTID
@@ -864,9 +861,6 @@
            MOVE    PTNYUINRRK-RRKNUM   TO  PTTEIKIRRK-RRKNUM
       *
            MOVE    WRK-PARA-TERMID     TO  PTTEIKIRRK-TERMID
-           MOVE    SYS-YMD             TO  PTTEIKIRRK-CREYMD
-                                           PTTEIKIRRK-UPYMD
-           MOVE    SYS-TIME            TO  PTTEIKIRRK-UPHMS
       *
            MOVE    PTTEIKIRRK-REC      TO  TEIKI02-REC
       *

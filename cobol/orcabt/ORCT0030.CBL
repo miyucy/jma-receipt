@@ -392,9 +392,6 @@
        20011-TEIKI04-OUTPUT-SEC      SECTION.
       *
            MOVE    WRK-PARA-TERMID     TO  SYU-TERMID
-           MOVE    SYS-YMD             TO  SYU-CREYMD
-                                           SYU-UPYMD
-           MOVE    SYS-TIME            TO  SYU-UPHMS
       *
            MOVE    SYUNOU-REC          TO  TEIKI04-DAT
       *
@@ -464,9 +461,6 @@
            MOVE    PTTEIKIRRK-REC      TO  TEIKI05-REC
       *
            MOVE    WRK-PARA-TERMID     TO  TEIKI05-TERMID
-           MOVE    SYS-YMD             TO  TEIKI05-CREYMD
-                                           TEIKI05-UPYMD
-           MOVE    SYS-TIME            TO  TEIKI05-UPHMS
       *
            WRITE   TEIKI05-REC
       *

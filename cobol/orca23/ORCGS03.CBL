@@ -48,6 +48,7 @@
       *  01.01.14    NACL-森脇    03.01.06  S04の追加
       *  01.01.15    NACL-太田    03.10.27  入金上限額のチェックを修正
       *  01.01.16    NACL-太田    03.10.29  履歴修正処理修正
+      *  01.01.17    NACL-太田    03.11.12  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -353,6 +354,9 @@
       *
        01  LNK-SYUNOU-REC.
            COPY "CPSYUNOU.INC" REPLACING //SYU-// BY //LNK-SYU-//.
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *************************************************************
       *    連絡　領域
@@ -1625,6 +1629,11 @@
                    ELSE
                        MOVE    "1"             TO    SYU-DENPJTIKBN
                    END-IF
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -1732,6 +1741,11 @@
            MOVE    SPA-GMN-NYUKINCD    TO  SMEI-NYUKIN-HOHO
       *状態区分
            MOVE    "2"                 TO  SMEI-JOUTAIKBN
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
+                                           SMEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1851,6 +1865,11 @@
                    ELSE
                        MOVE    "1"      TO    SYU-DENPJTIKBN
                    END-IF
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -1896,6 +1915,11 @@
                       IF  SPA-GMN-NYUKIN-IN  NOT = ZERO
                           MOVE    "2"         TO  SMEI-JOUTAIKBN
                       END-IF 
+      *
+                      PERFORM 800-MCNDATE-SEC
+                      MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
+                      MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
+      *
                       MOVE    SYUMEI-REC          TO  MCPDATA-REC
                       MOVE    "DBUPDATE"          TO  MCP-FUNC
                       MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
@@ -2088,6 +2112,17 @@
        510-ERRSET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
+           EXIT.
       *************************************************************
       *    収納マスター読込
       *************************************************************

@@ -31,6 +31,7 @@
       *  01.00.01    NACL-太田    02/12/05  処理結果確認画面への
       *                                     遷移追加等
       *  01.00.02    NACL-太田    02/02/17  期毎の指定を可能にする
+      *  01.01.03    NACL-太田    03/11/12  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -230,6 +231,9 @@
       *     
            COPY    "ORCA-DBPATH".
       *
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -997,6 +1001,16 @@
                END-IF 
                MOVE    "1"                 TO  SYS-5011-SYOKBN
                MOVE    SPA-NAI-SRYYM       TO  SYS-5011-SRYYM
+               IF      FLG-SYSKANRI        =   1
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  SYS-5011-CREYMD
+                                               SYS-5011-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  SYS-5011-UPHMS
+               ELSE
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  SYS-5011-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  SYS-5011-UPHMS
+               END-IF
                MOVE    SYS-5011-REC        TO  MCPDATA-REC
                IF      FLG-SYSKANRI        =   1
                    MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1569,6 +1583,17 @@
        530-OIDSET2-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
+           EXIT.
       *****************************************************************
       *    管理マスター読込（キー）
       *****************************************************************

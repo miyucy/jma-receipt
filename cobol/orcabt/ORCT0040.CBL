@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL−太田   03.09.02  定期請求印刷情報に設定する
       *                                     氏名をカナ氏名に修正
+      * 01.00.34     NACL-太田    03.11.12  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -319,6 +320,9 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -662,6 +666,11 @@
            MOVE    ZERO                TO  SYU-SKYMONEY
       *                                    SYU-NYUKIN-TOTAL
            MOVE    "3"                 TO  SYU-DENPJTIKBN
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -779,6 +788,12 @@
       *
       *    収納明細追加
            MOVE    WKSYUMEI-REC        TO  SYUMEI-REC
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
+                                           SMEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
+      *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
@@ -906,6 +921,12 @@
                END-IF
       *
                MOVE    TEIKI06-REC         TO  SYUNOU-REC
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD        TO  SYU-CREYMD
+                                               SYU-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -979,6 +1000,11 @@
                END-IF
       *
                MOVE    WRK-DENPNUM         TO  PTTEIKIRRK-DENPNUM
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD        TO  PTTEIKIRRK-CREYMD
+                                               PTTEIKIRRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTTEIKIRRK-UPHMS
       *
                MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
                MOVE    "PTTEIKIRRK-KEY"    TO  ORC-DBPATH
@@ -1057,6 +1083,10 @@
       *
                MOVE    SYS-0041-DENPNUMMAX-NYU
                                            TO  WRK-DENPNUM
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD        TO  SYS-0041-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-0041-UPHMS
       *
                MOVE    SYS-0041-REC        TO  MCPDATA-REC
                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -1172,6 +1202,12 @@
            END-IF
       *
            MOVE    WKSYUMEI-REC    TO  SYUMEI-REC
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD    TO  SMEI-CREYMD
+                                       SMEI-UPYMD
+           MOVE    SMCNDATE-HMS    TO  SMEI-UPHMS
+      *
            MOVE    SYUMEI-REC      TO  MCPDATA-REC
            MOVE    "SYUMEI-KEY"    TO  ORC-DBPATH
            MOVE    "DBINSERT"      TO  MCP-FUNC
@@ -1298,6 +1334,7 @@
            END-IF
       *
            MOVE    WKTEIKIPRT-REC      TO  TEIKIPRT-REC
+      *
       *
       *    定期請求印刷データ作成
            MOVE    TEIKIPRT-REC        TO  MCPDATA-REC
@@ -1464,6 +1501,10 @@
                        =   TEIKIRRK-SKYMONEY
                        +   SUMTEIKIRRK-SKYMONEY (IDX1)
       *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  TEIKIRRK-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
+      *
       *            定期請求管理データ更新
                    MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                    MOVE    "TEIKIRRK-KEY"  TO  ORC-DBPATH
@@ -1481,6 +1522,11 @@
                ELSE
       *
                    MOVE    WKTEIKIRRK-REC  TO  TEIKIRRK-REC
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  TEIKIRRK-CREYMD
+                                               TEIKIRRK-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
       *
       *            定期請求管理データ作成
                    MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
@@ -1693,6 +1739,17 @@
        800-ERRMSG-EDIT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
+           EXIT.
       *****************************************************************
       *    システム管理マスタ読込
       *****************************************************************

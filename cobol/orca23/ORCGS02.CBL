@@ -92,6 +92,7 @@
       *  01.00.32    NACL-小豆沢  03.09.17  福岡県の対応追加（再計算時に給付
       *                                     対象外点数を取り込み）
       *  01.00.33    NACL-太田    03.10.01  未収金管理機能強化対応
+      *  01.00.34    NACL-太田    03.11.12  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -512,6 +513,9 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       **************************************************************
       *    連絡　領域
@@ -2314,6 +2318,11 @@
       *
            MOVE    "3"             TO  SYU-DENPJTIKBN
            MOVE    ZERO            TO  SYU-SKYMONEY
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD    TO  SYU-UPYMD
+           MOVE    SMCNDATE-HMS    TO  SYU-UPHMS
+      *
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"    TO  ORC-DBPATH
@@ -2472,6 +2481,12 @@
       *
            MOVE    WKSYUMEI-REC        TO  SYUMEI-REC
       *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
+                                           SMEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
+      *
+      *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
@@ -2605,11 +2620,11 @@
                COMPUTE TEIKIRRK-SKYMONEY
                    =   TEIKIRRK-SKYMONEY
                    + ( PTTEIKIRRK-SKYMONEY   *   -1 )
-               MOVE    SPA-TERMID      TO  TEIKIRRK-TERMID
-               MOVE    SPA-SYSYMD      TO  TEIKIRRK-UPYMD
-               ACCEPT  SYS-TIME        FROM    TIME
-               MOVE    SYS-TIME        TO  TEIKIRRK-UPHMS
       *
+               MOVE    SPA-TERMID      TO  TEIKIRRK-TERMID
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  TEIKIRRK-UPYMD
+               MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
       *
                MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                MOVE    "TEIKIRRK-KEY"  TO  ORC-DBPATH
@@ -2636,10 +2651,11 @@
                COMPUTE TEIKIRRK-SKYMONEY
                    =   PTTEIKIRRK-SKYMONEY   *   -1
                MOVE    SPA-TERMID      TO  TEIKIRRK-TERMID
-               MOVE    SPA-SYSYMD      TO  TEIKIRRK-CREYMD
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  TEIKIRRK-CREYMD
                                            TEIKIRRK-UPYMD
-               ACCEPT  SYS-TIME        FROM    TIME
-               MOVE    SYS-TIME        TO  TEIKIRRK-UPHMS
+               MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
       *
                MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                MOVE    "TEIKIRRK-KEY"  TO  ORC-DBPATH
@@ -3228,6 +3244,11 @@
                        MOVE    "1"         TO      SYU-DENPJTIKBN
                END-IF
            END-IF
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
       *    収納マスタの更新
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -3413,6 +3434,11 @@
            MOVE    "00"                TO  SMEI-NYUKIN-HOHO
       *状態区分
            MOVE    "3"                 TO  SMEI-JOUTAIKBN
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
+                                           SMEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -4039,6 +4065,11 @@
                 MOVE    ZERO                TO    WRK-SAGAKU
                 COMPUTE WRK-SAGAKU = SYU-SKYMONEY - SYU-NYUKIN-TOTAL
                 MOVE    SYU-SKYMONEY        TO    SYU-NYUKIN-TOTAL
+      *
+                PERFORM 800-MCNDATE-SEC
+                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
                 MOVE    SYUNOU-REC          TO  MCPDATA-REC
                 MOVE    "DBUPDATE"          TO  MCP-FUNC
                 MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -4148,6 +4179,11 @@
            MOVE    "00"                TO  SMEI-NYUKIN-HOHO
       *状態区分
            MOVE    "4"                 TO  SMEI-JOUTAIKBN
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
+                                           SMEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -4264,6 +4300,11 @@
                                      TO    WRK-SAGAKU
                   MOVE    ZERO       TO    SYU-NYUKIN-TOTAL
       ***         MOVE    ZERO       TO    SYU-NYUKIN-KAISU
+      *
+                  PERFORM 800-MCNDATE-SEC
+                  MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+                  MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
                   MOVE    SYUNOU-REC          TO  MCPDATA-REC
                   MOVE    "DBUPDATE"          TO  MCP-FUNC
                   MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -4363,6 +4404,11 @@
            MOVE    "00"                TO  SMEI-NYUKIN-HOHO
       *状態区分
            MOVE    "6"                 TO  SMEI-JOUTAIKBN
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
+                                           SMEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -5082,6 +5128,17 @@
       *
            .
        520-SIDSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       **************************************************************
       *    患者マスター読込（主キー）

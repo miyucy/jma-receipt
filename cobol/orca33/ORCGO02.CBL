@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.01.01    NACL-太田    03.11.12  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -346,6 +347,9 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -1766,7 +1770,17 @@
                MOVE    ALL ZERO            TO  SYS-5011-STYUKYMD
                MOVE    ALL "9"             TO  SYS-5011-EDYUKYMD
            END-IF 
-           MOVE    "2"                 TO  SYS-5011-SYOKBN
+           MOVE    "2"                     TO  SYS-5011-SYOKBN
+           IF      FLG-SYSKANRI        =   1
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD        TO  SYS-5011-CREYMD
+                                               SYS-5011-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-5011-UPHMS
+           ELSE
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD        TO  SYS-5011-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-5011-UPHMS
+           END-IF
            MOVE    SYS-5011-REC        TO  MCPDATA-REC
            IF      FLG-SYSKANRI        =   1
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1831,6 +1845,12 @@
                                                TO  SYS-5012-NYUINYMD
                    MOVE    SPA-NAI-TTAIINYMD(IDX1)
                                                TO  SYS-5012-TAIINYMD
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD        TO  SYS-5012-CREYMD
+                                                   SYS-5012-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SYS-5012-UPHMS
+      *
                    MOVE    SYS-5012-REC        TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -2393,6 +2413,17 @@
        530-OIDSET2-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
+           EXIT.
       *****************************************************************
       *    患者マスター読込（主キー）
       *****************************************************************
