@@ -8,6 +8,7 @@ tbl_hknnum {
 	SEIDONAME			varchar(100);
 	TANSEIDONAME			varchar(20);
 	HKNKOHSBTKBN			char(1);
+	HBTNUMCHKKBN			char(1);
 	KENSNUMCHKKBN			char(1);
 	JKYSKENSNUMCHKKBN		char(1);
 	HKNKOUKBN			char(1);

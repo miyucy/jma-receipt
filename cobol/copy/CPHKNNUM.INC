@@ -43,6 +43,8 @@
            03 HKN-TANSEIDONAME          PIC  X(20).
       *保険公費種別区分
            03 HKN-HKNKOHSBTKBN          PIC  X(01).
+      *法別番号チェック区分
+           03 HKN-HBTNUMCHKKBN          PIC  X(01).
       *検証番号チェック区分
            03 HKN-KENSNUMCHKKBN         PIC  X(01).
       *受給者検証番号チェック区分
