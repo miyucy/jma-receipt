@@ -68,7 +68,7 @@
       *                                     を修正
       *  01.00.20   NACL-藤原     03.01.17  特記事項０４老保の判定に年齢判定
       *                                     を追加する
-      *                                     レセプト種別の編集を修正 
+      *  01.00.20   NACL-藤原     03.01.20  月代り受給者番号に入外区分を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1013,6 +1013,8 @@
                        MOVE    WRK-CONS-SEIHO-HKNNUM
                                                TO  MONTHLYNUM-KOHNUM
                        MOVE    RECE02-SRYYM    TO  MONTHLYNUM-SRYYM
+                       MOVE    RECE02-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
                        MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                        PERFORM 910-MONTHLYNUM-READ-SEC
                        IF      FLG-MONTHLYNUM  =   ZERO

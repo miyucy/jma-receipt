@@ -1034,6 +1034,8 @@
                        MOVE    WRK-CONS-SEIHO-HKNNUM
                                                TO  MONTHLYNUM-KOHNUM
                        MOVE    RECE62-SRYYM    TO  MONTHLYNUM-SRYYM
+                       MOVE    RECE62-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
                        MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                        PERFORM 910-MONTHLYNUM-READ-SEC
                        IF      FLG-MONTHLYNUM  =   ZERO
