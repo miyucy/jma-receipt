@@ -6548,6 +6548,10 @@
                PERFORM 420013-MIIVHDAY-HEN-SEC
            END-IF
       *    点滴手技料エラー編集
+      *TEST
+           DISPLAY "IDX-D:" IDX-D
+                   ",ORCSTEN-MIDAY-AREA:" ORCSTEN-MIDAY-AREA
+      *TEST
            IF     (IDX-D               <   2         )  AND
                   (ORCSTEN-MIDAY-AREA  NOT =   ZERO  )
                PERFORM 420012-MIDAY-HEN-SEC
@@ -6763,7 +6767,7 @@
            MOVE    1                   TO  IDX-N
            PERFORM VARYING     IDX-N2  FROM    1   BY  1
                    UNTIL       IDX-N2  >   31
-               IF      ORCSTEN-MI-DAY (IDX-N2) =   2  OR  3
+               IF      ORCSTEN-MI-DAY (IDX-N2) =   3
                    IF      IDX-N       >   1
                        MOVE    ","         TO  WRK-NYUIN-ERR(IDX-N:1)
                        ADD     1           TO  IDX-N
@@ -6773,6 +6777,43 @@
                    ADD     2               TO  IDX-N
                END-IF
            END-PERFORM
+      *
+           IF      WRK-NYUIN-ERR   NOT=   SPACE
+               ADD     1                   TO  IDX-D
+               MOVE    "加算算定日："      TO  SPA-GMN-NYUINMSG(IDX-D)
+               MOVE    WRK-NYUIN-ERR(1:38) TO  SPA-GMN-NYUINMSG(IDX-D)
+                                                               (13:)
+               IF     (WRK-NYUIN-ERR(39:)  NOT =   SPACE )  AND
+                      (IDX-D               <   2         )
+                   ADD     1                   TO  IDX-D
+                   MOVE    WRK-NYUIN-ERR(39:)  TO  SPA-GMN-NYUINMSG
+                                                              (IDX-D)
+               END-IF
+               MOVE    "0058"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+           END-IF
+           IF      IDX-D               >=  2
+               GO      TO      420011-KASAN-ERR-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-NYUIN-ERR
+           MOVE    1                   TO  IDX-N
+           PERFORM VARYING     IDX-N2  FROM    1   BY  1
+                   UNTIL       IDX-N2  >   31
+               IF      ORCSTEN-MI-DAY (IDX-N2) =   2
+                   IF      IDX-N       >   1
+                       MOVE    ","         TO  WRK-NYUIN-ERR(IDX-N:1)
+                       ADD     1           TO  IDX-N
+                   END-IF
+                   MOVE    IDX-N2          TO  WRK-NYUIN-ERR
+                                                            (IDX-N:2)
+                   ADD     2               TO  IDX-N
+               END-IF
+           END-PERFORM
+           IF      WRK-NYUIN-ERR       =   SPACE
+               GO      TO      420011-KASAN-ERR-EXT
+           END-IF
+      *
            ADD     1                   TO  IDX-D
            MOVE    "加算未算定："      TO  SPA-GMN-NYUINMSG(IDX-D)
            MOVE    WRK-NYUIN-ERR(1:38) TO  SPA-GMN-NYUINMSG(IDX-D)(13:)
@@ -6781,6 +6822,8 @@
                ADD     1                   TO  IDX-D
                MOVE    WRK-NYUIN-ERR(39:)  TO  SPA-GMN-NYUINMSG(IDX-D)
            END-IF
+           MOVE    "0057"              TO  SPA-ERRCD
+           MOVE    1                   TO  SPA-GMN-CUR
            .
        420011-KASAN-ERR-EXT.
            EXIT.
@@ -6968,6 +7011,15 @@
                WHEN    "0056"
                    MOVE    "中心静脈注射料が算定できる日があります。"
                                        TO  WRK-ERRMSG
+               WHEN    "0057"
+                   MOVE
+                   "麻毒・生物学的製剤加算が算定できる日があります。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0058"
+                   MOVE    "麻毒・生物学的製剤加算のみ算定している日が"
+                                       TO  WRK-ERRMSG
+                   MOVE    "あります。確認して下さい。"
+                                       TO  WRK-ERRMSG(43:)
                WHEN    "2000"
                    MOVE    "更新エラーです。"
                                        TO  WRK-ERRMSG
