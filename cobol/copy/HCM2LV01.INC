@@ -20,5 +20,5 @@
             02  HCM2LV01-BKO-TBL        OCCURS  10 TIMES.
               03  HCM2LV01-BKO-KENSU  PIC X(6).
               03  HCM2LV01-BKO-NISSU  PIC X(6).
-              03  HCM2LV01-BKO-ITBFTN PIC X(8).
+              03  HCM2LV01-BKO-ITBFTN PIC X(9).
               03  HCM2LV01-BKO-KOJYO  PIC X(9).
