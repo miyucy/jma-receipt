@@ -166,6 +166,7 @@
       *  01.01.19    NACL-太田    02/12/13  PTNYUINRRK-KEY11追加
       *  01.01.20    NACL-太田    02/12/13  SYUNOU-KEY6追加
       *  01.01.21    NACL-藤原    02/12/17  PTNYUINRRK-KEY12,KEY13追加
+      *  01.01.22    NACL-多々納  02/12/18  PTINF-KEY6,KEY7,KEY8,KEY9
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -411,11 +412,19 @@
                WHEN    "DBUPDATE"      ALSO    "PTINF-KEY3"
                WHEN    "DBUPDATE"      ALSO    "PTINF-KEY4"
                WHEN    "DBUPDATE"      ALSO    "PTINF-KEY5"
+               WHEN    "DBUPDATE"      ALSO    "PTINF-KEY6"
+               WHEN    "DBUPDATE"      ALSO    "PTINF-KEY7"
+               WHEN    "DBUPDATE"      ALSO    "PTINF-KEY8"
+               WHEN    "DBUPDATE"      ALSO    "PTINF-KEY9"
                WHEN    "DBDELETE"      ALSO    "PTINF-KEY"
                WHEN    "DBDELETE"      ALSO    "PTINF-KEY2"
                WHEN    "DBDELETE"      ALSO    "PTINF-KEY3"
                WHEN    "DBDELETE"      ALSO    "PTINF-KEY4"
                WHEN    "DBDELETE"      ALSO    "PTINF-KEY5"
+               WHEN    "DBDELETE"      ALSO    "PTINF-KEY6"
+               WHEN    "DBDELETE"      ALSO    "PTINF-KEY7"
+               WHEN    "DBDELETE"      ALSO    "PTINF-KEY8"
+               WHEN    "DBDELETE"      ALSO    "PTINF-KEY9"
                    MOVE    PATH-TBL-PTINF-KEY 
                                        TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO    "YYK-KEY"
@@ -1192,6 +1201,19 @@
                    PERFORM 2001-SEL-PTINF-SEC
                WHEN    ANY             ALSO   "PTINF-KEY4"
                    MOVE    PATH-TBL-PTINF-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTINF-KEY6"
+                   MOVE    PATH-TBL-PTINF-KEY6
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PTINF-SEC
+               WHEN    ANY             ALSO   "PTINF-KEY7"
+                   MOVE    PATH-TBL-PTINF-KEY7
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTINF-KEY8"
+                   MOVE    PATH-TBL-PTINF-KEY8
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTINF-KEY9"
+                   MOVE    PATH-TBL-PTINF-KEY9
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "PTINF-ALL"
@@ -2530,6 +2552,7 @@
       *
            IF      ORC-DBPATH            =   "PTINF-KEY2"  OR
                                            "PTINF-KEY5"
+                                       OR  "PTINF-KEY6"
                MOVE    ZERO                TO  WRK-MOJISU
                MOVE    SPACE               TO  WRK-NAME
                PERFORM VARYING     IDX     FROM    100   BY  -1
@@ -2549,6 +2572,7 @@
       *
            IF      ORC-DBPATH            =   "PTINF-KEY3"  OR
                                            "PTINF-KEY5"
+                                       OR  "PTINF-KEY6"
                MOVE    ZERO                TO  WRK-MOJISU
                MOVE    SPACE               TO  WRK-NAME
                PERFORM VARYING     IDX     FROM    100   BY  -1

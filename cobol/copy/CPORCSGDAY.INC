@@ -26,7 +26,7 @@
        01  ORCSGDAYAREA.
       *入力日付
            03  SGDAY-INDAY              PIC X(10).
-      *入力タイプ（１：年月、空白：年月日）
+      *入力タイプ（１：年月、空白：年月日、２：タイプなし）
            03  SGDAY-INTYPE             PIC X(01).
       *出力
            03  SGDAY-OT-AREA.
