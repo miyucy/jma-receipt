@@ -2300,7 +2300,7 @@
                WHEN    "0002"
                    MOVE    "追加できません"            TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "ＩＤ取得サブでエラー"      TO  SPA-ERRMSG
+                   MOVE    "該当の患者が存在しません"  TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE    "対象のデータを選択してありません"
                                                        TO  SPA-ERRMSG
