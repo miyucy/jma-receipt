@@ -263,6 +263,9 @@
       *    保険期間チェック
            03  WRK-HKN-ST          PIC 9(02).
            03  WRK-HKN-ED          PIC 9(02).
+           03  WRK-HKN-YMD.
+               05  WRK-HKN-YM          PIC X(06).
+               05  WRK-HKN-DD          PIC 9(02).
       *
            03  WRK-MATU                PIC 9(02).
            03  WRK-TAIINYMD            PIC X(08).
@@ -2112,10 +2115,16 @@
                    MOVE    SPA-NAI-DAY-41 (IDX IDK)
                                            TO  WRK-HKNCOMBINUM(2:3)
                    MOVE    ZERO            TO  FLG-CHK2
+                   MOVE    SPA-NAI-SRYYM   TO  WRK-HKN-YM
+                   MOVE    IDK             TO  WRK-HKN-DD
                    PERFORM VARYING IDH     FROM    1   BY  1
                            UNTIL   IDH     >   SPA-HKNCOMBI-MAX
-                       IF      SPA-I41-THKNCOMBI(IDH)
-                                               =   WRK-HKNCOMBINUM
+                       IF     (SPA-I41-THKNCOMBI(IDH)
+                                               =   WRK-HKNCOMBINUM) AND
+                              (SPA-I41-TTEKSTYMD (IDH)
+                                               <=  WRK-HKN-YMD) AND
+                              (SPA-I41-TTEKEDYMD (IDH)
+                                               >=  WRK-HKN-YMD)
                            MOVE    SPA-HKNCOMBI-MAX    TO  IDH
                            MOVE    1                   TO  FLG-CHK2
                        END-IF
