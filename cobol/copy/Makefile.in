@@ -694,6 +694,7 @@ COPYS = \
         HCM01.INC \
         HCM011.INC \
         HCM2EV01.INC \
+        HCM2EV02.INC \
         HCM2FV01.INC \
         HCM2GV01.INC \
         HCM2HV01.INC \
@@ -714,7 +715,7 @@ COPYS = \
         HCM2N.INC \
         HCM2O.INC \
         HCM2P.INC \
-        HCM2FV0.INC \
+        HCM2FV02.INC \
         HCM2GV02.INC \
         HCM2HV02.INC \
         HCM05.INC \
