@@ -711,6 +711,9 @@
       *    合計請求額計算処理
            PERFORM 3102-SEIKYU-KEI-SEC
       *
+      *    自費名称編集
+           PERFORM 3102-JIHIMSG-HEN-SEC
+      *
       *    前回未収
            PERFORM 3101-ZENMISYU-SEC
       *
