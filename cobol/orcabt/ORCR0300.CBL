@@ -68,6 +68,7 @@
       *  01.00.23    NACL-藤原    03/12/19  病床数を一般病床数から編集
       *                                     山形の地方公費対応（国保）
       *  01.00.24    NACL-藤原    04/01/19  病床数の記載の修正
+      *  01.00.25    NACL-藤原    04/01/20  老人減免区分コードの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1193,10 +1194,9 @@
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    負担金額（老人減免区分）
-           IF    ( RECE02-TEISYUTUSAKI     =   "2"        )
-           AND   ( RECE02-RJNHKNNUM    NOT =   SPACE      )
-           AND   ((RECE02-ETC-KOHNUM (1)   =   "019" ) OR
-                  (RECE02-KOHNUM     (1)       =   "019" )) 
+      *****IF    ( RECE02-TEISYUTUSAKI     =   "2"        )
+           IF    ( RECE02-RJNHKNNUM    NOT =   SPACE )
+           AND   (RECE02-ETC-KOHNUM  (1)   =   "019" ) 
                MOVE    4                   TO  WRK-NUM
                MOVE    1                   TO  WRK-NAGASA
            END-IF    
