@@ -363,7 +363,7 @@
                                              ORCMCPAREA
                                              MCPDATA-REC
       *
-          ELSE
+           ELSE
       *
              MOVE     ZERO               TO  SYSKAN-IDX
              MOVE     SPACE              TO  TBL-SYS5000-T
@@ -401,9 +401,9 @@
                                              ORCMCPAREA
                                              MCPDATA-REC
       *
-          END-IF
+           END-IF
       *
-          .
+           .
        100-INIT-EXT.
            EXIT.
       *
