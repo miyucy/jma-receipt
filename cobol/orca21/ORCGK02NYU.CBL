@@ -6342,6 +6342,8 @@
            MOVE    SPA-SEIKATU-ARI2    TO  LNK-ORCSC-SEIKATU-ARI2
       *    複数診療科あり
            MOVE    SPA-FUKU-SRYKA      TO  LNK-ORCSC-FUKU-SRYKA
+      *    訂正前診療科
+           MOVE    SPA-OLD-SRYKA       TO  LNK-ORCSC-OLD-SRYKA
       *    時間外特例区分
            MOVE    SPA-JIKANTOKU       TO  LNK-ORCSC-JIKANTOKU
       *
@@ -7334,6 +7336,8 @@
            MOVE    SPA-NAI-GAIFLG      TO  LNK-ORCSC-GAIFLG
       *    複数診療科あり
            MOVE    SPA-FUKU-SRYKA      TO  LNK-ORCSC-FUKU-SRYKA
+      *    訂正前診療科
+           MOVE    SPA-OLD-SRYKA       TO  LNK-ORCSC-OLD-SRYKA
       *    電話再診の有無
            MOVE    SPA-TELSAI-ARI      TO  LNK-ORCSC-TELSAI-ARI
       *    特定疾患あり
