@@ -44,6 +44,7 @@
       *  02.00.09    NACL-多々納  02/12/16  ドクター未入力ＯＫ追加
       *  02.00.10    NACL-多々納  02/12/17  診療種別の判定追加
       *  02.00.11    NACL-多々納  02/12/18  継続の時今回請求額を編集する
+      *  02.00.12    NACL-多々納  03/01/08  入金額の上限修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1491,8 +1492,8 @@
                    GO      TO      450-NYUKIN-CHK-EXT
                END-IF
       *        今回入金が請求額以下であること
-               IF     (SPA-GMN-SEIKYU          >   ZERO  )  AND
-                      (SPA-GMN-NYUKIN          >   SPA-GMN-SEIKYU)
+      *???     IF     (SPA-GMN-SEIKYU          >   ZERO  )  AND
+               IF     (SPA-GMN-NYUKIN          >   SPA-GMN-SEIKYU)
                    MOVE    "0008"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-GMN-CUR
                    GO      TO      450-NYUKIN-CHK-EXT
