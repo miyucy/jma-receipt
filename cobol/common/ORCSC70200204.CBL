@@ -161,8 +161,8 @@
            03  WRK-TENSUKEI3       PIC S9(08)V999.
       *
            03  WRK-SYOKEIS         PIC 9(08)V99.
-           03  WRK-SYOKEIS2        PIC 9(08)V99.
-           03  WRK-SYOKEIS3        PIC 9(08)V999.
+           03  WRK-SYOKEIS2        PIC 9(08)V9999.
+           03  WRK-SYOKEIS3        PIC 9(08)V9999.
            03  WRK-SYOKEI          PIC 9(08).
       *    点数計算用
            03  WRK-KISOTEN-9           PIC 9(07)V9(03).
@@ -2226,7 +2226,7 @@
                                        /   10
            END-IF
       *
-           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.999
+           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.9999
       *
            .
        1004-SATU-ZAITENU-EXT.
