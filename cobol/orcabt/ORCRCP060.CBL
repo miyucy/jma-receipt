@@ -73,6 +73,7 @@
       *  01.01.16    NACL-門脇    05/01/13  公費請求テーブル保険組合せ
       *                                     番号情報編集修正
       *  01.01.17    NACL-藤原    05/01/14  受診日指定対応
+      *  01.02.08    NACL-藤原    05/01/30  訂正日指定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5024,18 +5025,20 @@
                MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
                MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN 
                MOVE    RECE08-TERMID       TO  RECE07-TERMID
-               IF      WRK-PARA-SYOKBN     =   "2"
                    EVALUATE    BTPARA-INFO-KBN
                        WHEN    "01"
                            MOVE    ZERO            TO  RECE07-SYORISBT
                        WHEN    "02"
                            MOVE    "1"             TO  RECE07-SYORISBT
+                           MOVE    BTPARA-INFO-PARA (17:6)
+                                                   TO  RECE07-STYMD
                        WHEN    "03"
                            MOVE    "2"             TO  RECE07-SYORISBT
+                           MOVE    BTPARA-INFO-PARA (1:8)
+                                                   TO  RECE07-STYMD
+                           MOVE    BTPARA-INFO-PARA (9:8)
+                                                   TO  RECE07-EDYMD
                    END-EVALUATE
-                   MOVE    BTPARA-INFO-PARA (1:8)  TO  RECE07-STYMD
-                   MOVE    BTPARA-INFO-PARA (9:8)  TO  RECE07-EDYMD
-               END-IF 
            ELSE
                ADD     1                   TO  RECE07-PAGE
                IF      CNT-KENSU           =   1

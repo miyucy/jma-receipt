@@ -44,7 +44,9 @@
       *  01.00.10    NACL-藤原    04/05/13  傷病の経過の編集の修正
       *  01.00.11    NACL-門脇    04/07/28  休業証明のみの療養期間対応
       *  01.00.12    NACL-藤原    04/09/13  帳票別指定編集情報からの編集
-      *  01.00.13    NACL-藤原    05/01/14  受診日指定対応
+      *
+      *  01.01.01    NACL-藤原    05/01/14  受診日指定対応
+      *  01.01.02    NACL-藤原    05/02/10  訂正日指定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2230,11 +2232,15 @@
                            MOVE    ZERO            TO  RECE07-SYORISBT
                        WHEN    "02"
                            MOVE    "1"             TO  RECE07-SYORISBT
+                           MOVE    BTPARA-INFO-PARA (17:6)
+                                                   TO  RECE07-STYMD
                        WHEN    "03"
                            MOVE    "2"             TO  RECE07-SYORISBT
+                           MOVE    BTPARA-INFO-PARA (1:8)
+                                                   TO  RECE07-STYMD
+                           MOVE    BTPARA-INFO-PARA (9:8)
+                                                   TO  RECE07-EDYMD
                    END-EVALUATE
-                   MOVE    BTPARA-INFO-PARA (1:8)  TO  RECE07-STYMD
-                   MOVE    BTPARA-INFO-PARA (9:8)  TO  RECE07-EDYMD
                END-IF 
            ELSE
                ADD     1                   TO  RECE07-PAGE

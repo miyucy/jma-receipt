@@ -75,6 +75,7 @@
       *  01.06.01    NACL-藤原    04/09/28  中止ボタンを追加
       *                                     印刷済のチェック表示対応 
       *  01.06.02    NACL-藤原    05/01/13  受診日指定
+      *  01.06.03    NACL-藤原    05/01/30  訂正日指定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -574,7 +575,18 @@
                                    "個別作成分"   DELIMITED  BY  SIZE
                                    INTO    SPA-GMN-FILEKBN
                            END-STRING
-                       WHEN    OTHER
+                       WHEN    "1"
+                           MOVE    SPA-R01-RECE07-STYMD
+                                                      TO  WRK-SYMD
+                           MOVE    "01"               TO  WRK-SYMD (7:)
+                           PERFORM 5002-HIZUKE-HEN-SEC
+                           STRING  "訂正日指定　" DELIMITED  BY SIZE
+                                   WRK-HENYMDG3 (1:16)
+                                                  DELIMITED  BY SIZE
+                                   "分"           DELIMITED  BY SIZE
+                                   INTO    SPA-GMN-FILEKBN
+                           END-STRING
+                       WHEN    "2"
                            MOVE    SPA-R01-RECE07-STYMD
                                                       TO  WRK-SYMD
                            PERFORM 5002-HIZUKE-HEN-SEC
@@ -583,23 +595,13 @@
                                                       TO  WRK-SYMD
                            PERFORM 5002-HIZUKE-HEN-SEC
                            MOVE    WRK-HENYMDG3       TO  WRK-EDYMD
-                           IF      SPA-R01-RECE07-SYORISBT     =   "1" 
-                               STRING  "訂正日指定　" DELIMITED  BY SIZE
-                                       WRK-STYMD      DELIMITED  BY SIZE
-                                       "〜"           DELIMITED  BY SIZE
-                                       WRK-EDYMD (17:6)
-                                                      DELIMITED  BY SIZE
-                                       INTO    SPA-GMN-FILEKBN
-                               END-STRING
-                           ELSE    
-                               STRING  "受診日指定　" DELIMITED  BY SIZE
-                                       WRK-STYMD      DELIMITED  BY SIZE
-                                       "〜"           DELIMITED  BY SIZE
-                                       WRK-EDYMD (17:6)
-                                                      DELIMITED  BY SIZE
-                                       INTO    SPA-GMN-FILEKBN
-                               END-STRING
-                           END-IF     
+                           STRING  "受診日指定　" DELIMITED  BY SIZE
+                                   WRK-STYMD      DELIMITED  BY SIZE
+                                   "〜"           DELIMITED  BY SIZE
+                                   WRK-EDYMD (17:6)
+                                                  DELIMITED  BY SIZE
+                                   INTO    SPA-GMN-FILEKBN
+                           END-STRING
                    END-EVALUATE
            END-EVALUATE
       *　　ファイル作成日

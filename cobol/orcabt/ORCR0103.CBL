@@ -78,6 +78,7 @@
       *  01.03.03    NACL-門脇    05/01/13  公費請求テーブル保険組合せ
       *                                     番号情報編集修正
       *  01.03.04    NACL-藤原    05/01/14  受診日指定対応
+      *  01.03.05    NACL-藤原    05/01/30  訂正日指定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4324,6 +4325,116 @@
                        MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                        PERFORM 900-DBCLOSE-SEC
                    WHEN    "02"
+                       INITIALIZE                      PTINF-REC
+                       MOVE    SYS-1001-HOSPID     TO  PTINF-HOSPID
+                       MOVE    BTPARA-INFO-PARA (1:8)
+                                                   TO  PTINF-ST-SRYYMD    
+                       MOVE    BTPARA-INFO-PARA (9:8)
+                                                   TO  PTINF-ED-SRYYMD
+                       MOVE    "2"                 TO  PTINF-NYUGAIKBN
+                       MOVE    ZERO                TO  PTINF-HKNKBN
+                       MOVE    BTPARA-INFO-PARA(17:6) 
+                                                   TO  PTINF-SRYYMD(1:6)
+                       MOVE    "__"                TO  PTINF-SRYYMD(7:2)
+                       MOVE    PTINF-REC           TO  MCPDATA-REC
+                       MOVE    "DBSELECT"          TO  MCP-FUNC
+                       MOVE    PATH-TBL-PTINF-KEY13
+                                                   TO  MCP-PATH
+                       CALL    "MCPSUB"            USING
+                                                       MCPAREA
+                                                       MCPDATA-REC
+                       IF      MCP-RC              =   ZERO
+                           MOVE    PATH-TBL-PTINF-KEY13
+                                                       TO  MCP-PATH
+                           PERFORM 900-PTINF-READ-N-SEC
+                       ELSE
+                           MOVE    1                  TO  FLG-PTINF
+                       END-IF
+      *
+                       PERFORM     UNTIL       FLG-PTINF       =   1
+      *                    診療年月の請求管理削除処理
+                           INITIALIZE                  RECE10-REC
+                           MOVE    SYS-1001-HOSPID TO  RECE10-HOSPID
+                           MOVE    PTINF-PTID      TO  RECE10-PTID
+                           MOVE    BTPARA-INFO-PARA (17:6)
+                                                   TO  RECE10-SRYYM
+                           MOVE    "2"             TO  RECE10-NYUGAIKBN
+                           MOVE    RECE10-REC      TO  MCPDATA-REC
+                           MOVE    "SEIKYU-DEL4"   TO  ORC-DBPATH
+                           MOVE    "DBDELETE"      TO  MCP-FUNC
+                           CALL    "ORCMCPSUB"         USING
+                                                       MCPAREA
+                                                       ORCMCPAREA
+                                                       MCPDATA-REC      
+                           IF      MCP-RC      NOT =   ZERO
+                               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC="
+                                                       MCP-RC
+                               MOVE
+                        "請求管理削除処理（個別分）でエラーとなりました"
+                                                   TO    WRK-RECEERR
+                               PERFORM 500-ERR-HENSYU-SEC
+                               GO  TO  5001-DB-DELETE-EXT
+                           END-IF
+      *
+      *                    診療年月の公費請求書削除処理
+                           INITIALIZE                  KOHSKY-REC
+                           MOVE    SYS-1001-HOSPID TO  KOHSKY-HOSPID
+                           MOVE    PTINF-PTID      TO  KOHSKY-PTID
+                           MOVE    BTPARA-INFO-PARA (17:6)
+                                                   TO  KOHSKY-SRYYM
+                           MOVE    "2"             TO  KOHSKY-NYUGAIKBN
+                           MOVE    KOHSKY-REC      TO  MCPDATA-REC
+                           MOVE    "KOHSKY-DEL2"   TO  ORC-DBPATH
+                           MOVE    "DBDELETE"      TO  MCP-FUNC
+                           CALL    "ORCMCPSUB"         USING
+                                                       MCPAREA
+                                                       ORCMCPAREA
+                                                       MCPDATA-REC
+                           IF      MCP-RC      NOT =   ZERO
+                               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC="
+                                                       MCP-RC
+                               MOVE
+                      "公費請求書削除処理（個別分）でエラーとなりました"
+                                                   TO    WRK-RECEERR
+                               PERFORM 500-ERR-HENSYU-SEC
+                               GO  TO  5001-DB-DELETE-EXT
+                           END-IF
+      *
+      *                    診療年月のレセ電削除処理
+                           INITIALIZE                  RECEDEN-REC
+                           MOVE    SYS-1001-HOSPID TO  RECEDEN-HOSPID
+                           MOVE    PTINF-PTID      TO  RECEDEN-PTID
+                           MOVE    BTPARA-INFO-PARA (17:6)
+                                                   TO  RECEDEN-SRYYM
+                           MOVE    "2"             TO  RECEDEN-NYUGAIKBN
+                           MOVE    RECEDEN-REC     TO  MCPDATA-REC
+                           MOVE    "RECEDEN-DEL2"  TO  ORC-DBPATH
+                           MOVE    "DBDELETE"      TO  MCP-FUNC
+                           CALL    "ORCMCPSUB"         USING
+                                                       MCPAREA
+                                                       ORCMCPAREA
+                                                       MCPDATA-REC
+                           IF      MCP-RC      NOT =   ZERO
+                               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC="
+                                                       MCP-RC
+                               MOVE
+                          "レセ電削除処理（個別分）でエラーとなりました"
+                                                   TO    WRK-RECEERR
+                               PERFORM 500-ERR-HENSYU-SEC
+                               GO  TO  5001-DB-DELETE-EXT
+                           END-IF
+      *
+                           MOVE    PATH-TBL-PTINF-KEY13
+                                                      TO  MCP-PATH
+                           PERFORM 900-PTINF-READ-N-SEC
+                       END-PERFORM 
+      *
+                       MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
+                       MOVE    PATH-TBL-PTINF-KEY13
+                                                  TO  MCP-PATH
+                       CALL    "MCPSUB"           USING
+                                                      MCPAREA
+                                                      MCPDATA-REC
                    WHEN    "03"
                        INITIALIZE                      PTINF-REC
                        MOVE    SYS-1001-HOSPID     TO  PTINF-HOSPID

@@ -44,7 +44,9 @@
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
       *  01.01.02    NACL-門脇    05/01/07  医師名、保険会社名の編集
-      *  01.01.02    NACL-藤原    05/01/21  受診日指定対応
+      *
+      *  01.01.01    NACL-藤原    05/01/21  受診日指定対応
+      *  01.01.02    NACL-藤原    05/02/10  訂正日指定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2175,11 +2177,15 @@
                            MOVE    ZERO            TO  RECE07-SYORISBT
                        WHEN    "02"
                            MOVE    "1"             TO  RECE07-SYORISBT
+                           MOVE    BTPARA-INFO-PARA (17:6)
+                                                   TO  RECE07-STYMD
                        WHEN    "03"
                            MOVE    "2"             TO  RECE07-SYORISBT
+                           MOVE    BTPARA-INFO-PARA (1:8)
+                                                   TO  RECE07-STYMD
+                           MOVE    BTPARA-INFO-PARA (9:8)
+                                                   TO  RECE07-EDYMD
                    END-EVALUATE
-                   MOVE    BTPARA-INFO-PARA (1:8)  TO  RECE07-STYMD
-                   MOVE    BTPARA-INFO-PARA (9:8)  TO  RECE07-EDYMD
                END-IF 
            ELSE
                ADD     1                   TO  RECE07-PAGE

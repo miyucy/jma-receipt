@@ -86,6 +86,7 @@ db	{
         tbl_help;
         tbl_chksnd;
         query_dtchk;
+	tbl_receupd;
 };
 db	"shell"	{
 	shell;

@@ -90,6 +90,7 @@
       *  01.03.01    NACL-藤原    04/09/28  中止処理の追加
       *  01.03.02    NACL-藤原    04/11/01  記載なしの公費の処理
       *  01.03.03    NACL-藤原    05/01/12  受診日指定対応
+      *  01.03.04    NACL-藤原    05/01/30  訂正日指定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -243,6 +244,11 @@
            03  WRK-HKNNUM              PIC 9(03). 
       *
            03  WRK-PATH                PIC X(64).
+      *
+           03  WRK-DBPATH.
+               05  FILLER          PIC S9(09)  BINARY.
+               05  FILLER          PIC S9(09)  BINARY.
+               05  FILLER          PIC S9(09)  BINARY.
       *
            03  WRK-PRTSEQ              PIC 9(03).
       *
@@ -1696,6 +1702,62 @@
       *
                    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                    PERFORM 900-DBCLOSE-SEC
+               WHEN    "02"
+      *            該当診療年月の医療機関情報取得
+                   MOVE  ZERO                  TO  FLG-SET
+                   MOVE  BTPARA-INFO-PARA(17:6)
+                                               TO  WRK-SYS-SRYYMD(1:6)
+                   MOVE  "01"                  TO  WRK-SYS-SRYYMD(7:2)
+                   PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                            UNTIL  ( SYSKAN-IDX              >  10   )
+                            OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                            OR    ( FLG-SET                 =   1   )
+                       MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
+                       IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                       AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
+                           MOVE     1       TO    FLG-SET
+                       END-IF
+                   END-PERFORM
+                   IF     FLG-SET              =   ZERO
+                       STRING
+                       "医療機関情報が取得できませんでした。診療年月＝"
+                                               DELIMITED  BY  SIZE 
+                            BTPARA-INFO-PARA(1:6)
+                                               DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+                       END-STRING
+                       PERFORM 500-ERR-HENSYU-SEC
+                   ELSE
+      *                診療年月編集
+                       MOVE     BTPARA-INFO-PARA(17:6)
+                                               TO  WRK-STYMD (1:6)
+                       MOVE    "01"            TO  WRK-STYMD (7:2)
+                       INITIALIZE                      STS-AREA-DAY
+                       INITIALIZE                      LNK-DAY7-AREA
+                       MOVE    "71"            TO  LNK-DAY7-IRAI
+                       MOVE    WRK-STYMD (1:6) TO  LNK-DAY7-YM
+                       CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                       LNK-DAY7-AREA
+                       MOVE    LNK-DAY7-KOYOMI TO  WRK-EDYMD
+      *
+      *                対象患者のよる抽出処理
+                       INITIALIZE                      PTINF-REC
+                       MOVE    SYS-1001-HOSPID     TO  PTINF-HOSPID
+                       MOVE    BTPARA-INFO-PARA (1:8)
+                                                   TO  PTINF-ST-SRYYMD    
+                       MOVE    BTPARA-INFO-PARA (9:8)
+                                                   TO  PTINF-ED-SRYYMD
+                       MOVE    "2"                 TO  PTINF-NYUGAIKBN
+                       MOVE    ZERO                TO  PTINF-HKNKBN
+                       MOVE    BTPARA-INFO-PARA(17:6) 
+                                                   TO  PTINF-SRYYMD(1:6)
+                       MOVE    "__"                TO  PTINF-SRYYMD(7:2)
+                       MOVE    PTINF-REC           TO  MCPDATA-REC
+                       MOVE    "DBSELECT"          TO  MCP-FUNC
+                       MOVE    PATH-TBL-PTINF-KEY14
+                                                   TO  WRK-DBPATH
+                       PERFORM 20022-JYUSINYMD-HENSYU-SEC
+                   END-IF
                WHEN    "03"
       *            該当診療年月の医療機関情報取得
                    MOVE  ZERO                  TO  FLG-SET
@@ -1723,18 +1785,18 @@
                    ELSE
       *                診療年月編集
                        MOVE     BTPARA-INFO-PARA(1:6)
-                                                   TO  WRK-STYMD (1:6)
-                       MOVE    "01"                TO  WRK-STYMD (7:2)
-                       INITIALIZE                      STS-AREA-DAY
-                       INITIALIZE                      LNK-DAY7-AREA
-                       MOVE    "71"                TO  LNK-DAY7-IRAI
-                       MOVE    BTPARA-INFO-PARA(1:6)
-                                                   TO  LNK-DAY7-YM
-                       CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                           LNK-DAY7-AREA
-                       MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
+                                               TO  WRK-STYMD (1:6)
+                       MOVE    "01"            TO  WRK-STYMD (7:2)
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY7-AREA
+                       MOVE    "71"            TO  LNK-DAY7-IRAI
+                       MOVE    WRK-STYMD (1:6) TO  LNK-DAY7-YM
+                       CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                       LNK-DAY7-AREA
+                       MOVE    LNK-DAY7-KOYOMI TO  WRK-EDYMD
       *
-                       INITIALIZE                     PTINF-REC
+      *                対象患者のよる抽出処理
+                       INITIALIZE                      PTINF-REC
                        MOVE    SYS-1001-HOSPID     TO  PTINF-HOSPID
                        MOVE    BTPARA-INFO-PARA (1:8)
                                                    TO  PTINF-ST-SRYYMD    
@@ -1743,31 +1805,9 @@
                        MOVE    "2"                 TO  PTINF-NYUGAIKBN
                        MOVE    ZERO                TO  PTINF-HKNKBN
                        MOVE    PTINF-REC           TO  MCPDATA-REC
-                       MOVE    "DBSELECT"          TO  MCP-FUNC
                        MOVE    PATH-TBL-PTINF-KEY12
-                                                   TO  MCP-PATH
-                       CALL    "MCPSUB"            USING
-                                                       MCPAREA
-                                                       MCPDATA-REC
-                       IF      MCP-RC              =   ZERO
-                           MOVE    PATH-TBL-PTINF-KEY12
-                                                       TO  MCP-PATH
-                           PERFORM 900-PTINF-READ-N-SEC
-                       ELSE
-                           MOVE    1                  TO  FLG-PTINF
-                       END-IF
-      *
-                       PERFORM     UNTIL       FLG-PTINF       =   1
-                                   OR          FLG-END         =   1
-                           PERFORM 20022-JYUSINYMD-HENSYU-SEC
-                       END-PERFORM
-      *
-                       MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
-                       MOVE    PATH-TBL-PTINF-KEY12
-                                                  TO  MCP-PATH
-                       CALL    "MCPSUB"           USING
-                                                      MCPAREA
-                                                      MCPDATA-REC
+                                                   TO  WRK-DBPATH
+                       PERFORM 20022-JYUSINYMD-HENSYU-SEC
                    END-IF
            END-EVALUATE
            .
@@ -1870,48 +1910,73 @@
       *****************************************************************
        20022-JYUSINYMD-HENSYU-SEC              SECTION.
       *
-           MOVE    MCPDATA-REC         TO  PTINF-REC
-      *
-           DISPLAY "JYUSIN PTID=" PTINF-PTID 
-      *
-      *    処理中止設定処理
-           PERFORM 500-CANCEL-HENSYU-SEC
-      *
-           IF      FLG-END             =   ZERO
-      *        診療会計読み込み
-               INITIALIZE                  SRYACCT-REC
-               MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
-               MOVE    PTINF-PTID          TO  ACCT-PTID
-               MOVE    BTPARA-INFO-PARA (1:6)
-                                           TO  ACCT-SRYYM
-               MOVE    "2"                 TO  ACCT-NYUGAIKBN
-               MOVE    SRYACCT-REC         TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
-                   PERFORM 900-SRYACCT-READ-SEC
-               ELSE
-                   INITIALIZE                  SRYACCT-REC
-                   MOVE    1                   TO  FLG-SRYACCT
-               END-IF
-      *
-               PERFORM UNTIL       FLG-SRYACCT     =   1
-                       OR          FLG-END         =   1
-                   PERFORM 20011-HENSYU-SEC
-               END-PERFORM
-      *        カーソルクロース
-               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
-               PERFORM 900-DBCLOSE-SEC
-      *
-               MOVE    PATH-TBL-PTINF-KEY12
-                                           TO  MCP-PATH
+           MOVE    WRK-DBPATH          TO  MCP-PATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-DBPATH         TO  MCP-PATH
                PERFORM 900-PTINF-READ-N-SEC
+           ELSE
+               MOVE    1                  TO  FLG-PTINF
            END-IF
+      *
+           PERFORM     UNTIL       FLG-PTINF       =   1
+                       OR          FLG-END         =   1
+      *
+               DISPLAY "JYUSIN PTID=" PTINF-PTID 
+      *
+      *        処理中止設定処理
+               PERFORM 500-CANCEL-HENSYU-SEC
+      *
+               IF      FLG-END             =   ZERO
+      *            診療会計読み込み
+                   INITIALIZE                  SRYACCT-REC
+                   MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
+                   MOVE    PTINF-PTID          TO  ACCT-PTID
+                   EVALUATE    BTPARA-INFO-KBN
+                       WHEN    "02"
+                           MOVE    BTPARA-INFO-PARA (17:6)
+                                                   TO  ACCT-SRYYM
+                       WHEN    "03"
+                           MOVE    BTPARA-INFO-PARA (1:6)
+                                                   TO  ACCT-SRYYM
+                   END-EVALUATE
+                   MOVE    "2"                 TO  ACCT-NYUGAIKBN
+                   MOVE    SRYACCT-REC         TO  MCPDATA-REC
+                   MOVE    "DBSELECT"          TO  MCP-FUNC
+                   MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+                       PERFORM 900-SRYACCT-READ-SEC
+                   ELSE
+                       INITIALIZE                  SRYACCT-REC
+                       MOVE    1                   TO  FLG-SRYACCT
+                   END-IF
+      *
+                   PERFORM UNTIL       FLG-SRYACCT     =   1
+                           OR          FLG-END         =   1
+                       PERFORM 20011-HENSYU-SEC
+                   END-PERFORM
+      *            カーソルクロース
+                   MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+                   PERFORM 900-DBCLOSE-SEC
+      *
+                   MOVE    WRK-DBPATH          TO  MCP-PATH
+                   PERFORM 900-PTINF-READ-N-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
+           MOVE    WRK-DBPATH         TO  MCP-PATH
+           CALL    "MCPSUB"           USING
+                                          MCPAREA
+                                          MCPDATA-REC
       *
            .
        20022-JYUSINYMD-HENSYU-EXT.
@@ -2182,41 +2247,6 @@
            END-IF
            .
        900-SRYACCT-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    診療行為マスタ読込
-      *****************************************************************
-       910-SRYACCT-INV-SEC         SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY33"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY33"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-SRYACCT
-                   MOVE    MCPDATA-REC         TO  SRYACCT-REC
-               ELSE
-                   MOVE    1                   TO  FLG-SRYACCT
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-SRYACCT
-           END-IF
-      *
-           MOVE    "SRYACCT-KEY33"     TO  ORC-DBPATH
-           PERFORM 900-DBCLOSE-SEC
-      *
-           .
-       910-SRYACCT-INV-EXT.
            EXIT.
       *
       *****************************************************************

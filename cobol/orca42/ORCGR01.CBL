@@ -82,6 +82,7 @@
       *  01.05.01    NACL-藤原    04/09/28 中止ボタンを追加
       *  01.05.02    NACL-藤原    04/12/20 受診日指定
       *                                    ファンクションキーの変更
+      *  01.05.03    NACL-藤原    05/01/30 訂正日指定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -98,8 +99,7 @@
       *
       *    エラーファイル
        FD  RECEERR-FILE.
-       01  RECEERR-REC             PIC X(200). 
-
+       01  RECEERR-REC             PIC X(200).
       *
       *
        WORKING-STORAGE             SECTION.
@@ -159,6 +159,8 @@
                        09  SPA-GMN-SRYYM           PIC X(07).
       *----(01.00.04) LINE UPD END   ----------------------------------
                        09  SPA-GMN-NYUGAIKBN       PIC X(01).
+                       09  SPA-GMN-TEISEIYM        PIC X(07).
+                       09  SPA-GMN-CREYMD          PIC X(22).
       *
                05  SPA-NAI-SELNO                   PIC 9(03).                   
       *
@@ -170,6 +172,7 @@
                        09  SPA-NAI-SRYYM           PIC 9(06).
                        09  SPA-NAI-STJYUSINYMD     PIC 9(08).
                        09  SPA-NAI-EDJYUSINYMD     PIC 9(08).
+                       09  SPA-NAI-TEISEIYM        PIC 9(06).
       * 
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBL-G           OCCURS   100.
@@ -298,6 +301,11 @@
            03  WRK-KENSU-X         PIC X(10).
       *    入力項目名
            03  WRK-MCP-WIDGET      PIC X(64).
+      *
+           03  WRK-DBPATH.
+               05  FILLER          PIC S9(09)  BINARY.
+               05  FILLER          PIC S9(09)  BINARY.
+               05  FILLER          PIC S9(09)  BINARY.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -577,7 +585,7 @@
            MOVE    LNK-KYOUTU          TO  WRK-SPA-KYOUTU
       *    受付、患者検索より
            IF      WRK-SPA-PTNUM       NOT =   SPACE
-                   MOVE    WRK-SPA-PTNUM   TO  R01-PTNUM
+                   MOVE    WRK-SPA-PTNUM   TO  SPA-GMN-PTNUM
                PERFORM 4103-PTNUM-CHK-SEC
                MOVE    5                   TO  SPA-GMN-CUR
            END-IF
@@ -612,7 +620,6 @@
                    INTO    SPA-GMN-SYOKBN
            END-STRING
       *             
-      *****IF      SPA-SYSYMD(7:2)     >=  "10"
            IF      SPA-SYSYMD(7:2)     >   "10"
                MOVE    SPA-SYSYMD(1:6)     TO  SPA-NAI-HYO-SRYYM
                MOVE    SPA-SYSYMDWH(1:6)   TO  SPA-NAI-HYO-SRYYMH
@@ -639,9 +646,11 @@
                WHEN    "2"
                    MOVE    "1"               TO  SPA-GMN-SYORIL    (1)
                    MOVE    "個　別"          TO  SPA-GMN-SYORIMEIL (1)
-                   MOVE    "3"               TO  SPA-GMN-SYORIL    (2)
-                   MOVE    "受診日"          TO  SPA-GMN-SYORIMEIL (2)
-                   MOVE    2                 TO  SPA-GMN-SYORILST-MAX
+                   MOVE    "2"               TO  SPA-GMN-SYORIL    (2)
+                   MOVE    "訂正日"          TO  SPA-GMN-SYORIMEIL (2)
+                   MOVE    "3"               TO  SPA-GMN-SYORIL    (3)
+                   MOVE    "受診日"          TO  SPA-GMN-SYORIMEIL (3)
+                   MOVE    3                 TO  SPA-GMN-SYORILST-MAX
            END-EVALUATE
       *
       *    パラメタＤＢ読み込み
@@ -659,7 +668,7 @@
                    PERFORM 900-BTPARA-READ-SEC
                    EVALUATE    BTPARA-INFO-KBN
                        WHEN    "03"
-                           MOVE    SPA-GMN-SYORILST (2)
+                           MOVE    SPA-GMN-SYORILST (3)
                                                TO  SPA-GMN-SYORI-G
                        WHEN    "02"
                            MOVE    SPA-GMN-SYORILST (2)
@@ -696,6 +705,7 @@
                        PERFORM 210-BACK-SYORI-SEC
                    WHEN    "1002"
                    WHEN    "1006"
+                   WHEN    "1007"
       *                ジョブ管理チェック処理
                        PERFORM 4501-JOBKANRI-CHK-SEC
                        IF      SPA-ERRCD      =   SPACE
@@ -709,12 +719,13 @@
                        EVALUATE    SPA-GMN-SYORI
                            WHEN    "1"
                                MOVE    4               TO  SPA-GMN-CUR
+                               MOVE    SPACE           TO  SPA-GMN-LABEL
                            WHEN    "2"
-                               MOVE    9               TO  SPA-GMN-CUR
-                           MOVE    "訂正日"            TO  SPA-GMN-LABEL
+                               MOVE    11              TO  SPA-GMN-CUR
+                               MOVE    "訂正日"        TO  SPA-GMN-LABEL
                            WHEN    "3"
                                MOVE    9               TO  SPA-GMN-CUR
-                           MOVE    "受診日"            TO  SPA-GMN-LABEL
+                               MOVE    "受診日"        TO  SPA-GMN-LABEL
                        END-EVALUATE                
                    WHEN    OTHER
                           PERFORM 480-ZENKAI-HYOUJI-SEC
@@ -725,14 +736,13 @@
                        MOVE    SPA-GMN-SYORI-OLD-G TO  SPA-GMN-SYORI-G
                        EVALUATE    SPA-GMN-SYORI
                            WHEN    "1"
-                               MOVE    4               TO  SPA-GMN-CUR
+                               MOVE    SPACE           TO  SPA-GMN-LABEL
                            WHEN    "2"
-                               MOVE    9               TO  SPA-GMN-CUR
-                           MOVE    "訂正日"            TO  SPA-GMN-LABEL
+                               MOVE    "訂正日"        TO  SPA-GMN-LABEL
                            WHEN    "3"
-                               MOVE    9               TO  SPA-GMN-CUR
-                           MOVE    "受診日"            TO  SPA-GMN-LABEL
+                               MOVE    "受診日"        TO  SPA-GMN-LABEL
                        END-EVALUATE                
+                       MOVE    8                   TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF    
       *
@@ -955,8 +965,9 @@
                    EVALUATE    SPA-GMN-SYORI
                        WHEN    "1"
                            MOVE    4               TO  SPA-GMN-CUR
+                           MOVE    SPACE           TO  SPA-GMN-LABEL
                        WHEN    "2"
-                           MOVE    9               TO  SPA-GMN-CUR
+                           MOVE    11              TO  SPA-GMN-CUR
                        MOVE    "訂正日"            TO  SPA-GMN-LABEL
                        WHEN    "3"
                            MOVE    9               TO  SPA-GMN-CUR
@@ -1017,6 +1028,7 @@
            MOVE    R01-NYUGAIKBN   TO  SPA-GMN-NYUGAIKBN
            MOVE    R01-STJYUSINYMD TO  SPA-GMN-STJYUSINYMD
            MOVE    R01-EDJYUSINYMD TO  SPA-GMN-EDJYUSINYMD
+           MOVE    R01-TEISEIYM    TO  SPA-GMN-TEISEIYM
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -1055,6 +1067,7 @@
                        END-IF
                    END-IF
                WHEN    "2"
+                   PERFORM 4110-TEISEIYM-SEC
                WHEN    "3"
                    PERFORM 4108-STJYUSINYMD-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
@@ -1635,6 +1648,85 @@
            EXIT.
       *
       *****************************************************************
+      *    訂正日入力処理
+      *****************************************************************
+       4110-TEISEIYM-SEC               SECTION.
+      *
+           MOVE    SPACE               TO  SPA-GMN-CREYMD
+           MOVE    ZERO                TO  SPA-NAI-STJYUSINYMD
+                                           SPA-NAI-EDJYUSINYMD
+      *
+           IF      SPA-GMN-TEISEIYM =   SPACE
+               MOVE    SPA-NAI-HYO-SRYYM   TO  SPA-NAI-TEISEIYM
+               MOVE    SPA-NAI-HYO-SRYYMH  TO  SPA-GMN-TEISEIYM
+           ELSE
+      *        日付画面チェックサブ
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN-TEISEIYM    TO  SGDAY-INDAY
+               MOVE    "1"                 TO  SGDAY-INTYPE
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-TEISEIYM
+                   MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-TEISEIYM
+               ELSE
+                   MOVE    "0024"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *             
+           IF      SPA-ERRCD           =   SPACE
+               INITIALIZE                  RECE07-REC
+               IF      SPA-R01-RECEKBN     =   "0" OR  "1" OR  "2"
+                   MOVE    "HC06"              TO  RECE07-PRTID
+               ELSE
+                   IF      SPA-R01-RECEKBN     =   "3"
+                       MOVE    "HC21"              TO  RECE07-PRTID
+                   END-IF
+                   IF      SPA-R01-RECEKBN     =   "4"
+                       MOVE    "HC23"              TO  RECE07-PRTID
+                   END-IF
+               END-IF            
+               MOVE    SPA-NAI-TEISEIYM    TO  RECE07-SRYYM
+               MOVE    "1"                 TO  RECE07-SYOKBN
+               MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
+               MOVE    SPA-R01-RECEKBN     TO  RECE07-RECEKBN
+               MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
+               MOVE    RECE07-REC          TO  MCPDATA-REC
+               PERFORM 900-RECE07-INV-SEC
+               IF      FLG-RECE07          =   ZERO
+                   MOVE    RECE07-CREYMD       TO  WRK-SYMD
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3    TO  SPA-GMN-CREYMD
+      *
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY6-AREA
+                   MOVE    "61"                TO  LNK-DAY6-IRAI
+                   MOVE    RECE07-CREYMD       TO  LNK-DAY6-KIJUN
+                   MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+                   MOVE    1                   TO  LNK-DAY6-ZOGEN
+                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                   MOVE    LNK-DAY6-KEISAN     TO  SPA-NAI-STJYUSINYMD
+                                                   WRK-SYMD
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    WRK-HENYMDG         TO  SPA-GMN-STJYUSINYMD
+      *
+                   MOVE    SPA-SYSYMDWH        TO  SPA-GMN-EDJYUSINYMD
+                   MOVE    SPA-SYSYMD          TO  SPA-NAI-EDJYUSINYMD
+               ELSE
+                   MOVE    "0025"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    11              TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4110-TEISEIYM-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    確定ボタン押下時チェック処理
       *****************************************************************
        4101-KAKUTEI-CHK-SEC        SECTION.
@@ -1962,6 +2054,7 @@
            EVALUATE    SPA-GMN-SYORI
                WHEN    "1" 
                    MOVE    "1002"             TO  SPA-RIDCD
+               WHEN    "2"
                WHEN    "3"
                    MOVE    ZERO               TO  WRK-KENSU
                    MOVE    SPACE              TO  WRK-KENSU-X 
@@ -1981,31 +2074,46 @@
                        WHEN    "4"
                            MOVE    "2"            TO  PTINF-HKNKBN
                    END-EVALUATE
-                   MOVE    PTINF-REC          TO  MCPDATA-REC
-                   MOVE    "DBSELECT"         TO  MCP-FUNC
-                   MOVE    PATH-TBL-PTINF-KEY11
-                                              TO  MCP-PATH
+                   IF      SPA-GMN-SYORI       =   "2"
+                       MOVE    SPA-NAI-TEISEIYM    TO  PTINF-SRYYMD(1:6)
+                       MOVE    '__'                TO  PTINF-SRYYMD(7:2)
+                   END-IF 
+                   MOVE    PTINF-REC           TO  MCPDATA-REC
+                   MOVE    "DBSELECT"          TO  MCP-FUNC
+                   IF      SPA-GMN-SYORI       =   "2"
+                       MOVE    PATH-TBL-PTINF-KEY13
+                                                   TO  WRK-DBPATH
+                   ELSE
+                       MOVE    PATH-TBL-PTINF-KEY11
+                                                   TO  WRK-DBPATH
+                   END-IF
+                   MOVE    WRK-DBPATH          TO  MCP-PATH
                    CALL    "MCPSUB"           USING
                                                   MCPAREA
                                                   MCPDATA-REC
                    IF      MCP-RC              =   ZERO
+                       MOVE    WRK-DBPATH          TO  MCP-PATH
                        PERFORM 900-PTINF-READ-N-SEC
                    ELSE
                        MOVE    1                  TO  FLG-PTINF
                    END-IF
                    PERFORM                 UNTIL   FLG-PTINF   =   1
                        ADD     1                   TO  WRK-KENSU
+                       MOVE    WRK-DBPATH          TO  MCP-PATH
                        PERFORM 900-PTINF-READ-N-SEC
                    END-PERFORM
                    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-                   MOVE    PATH-TBL-SYSKANRI-KEY10
-                                               TO  MCP-PATH
+                   MOVE    WRK-DBPATH          TO  MCP-PATH
                    CALL    "MCPSUB"            USING
                                                MCPAREA
                                                MCPDATA-REC
       *
                    IF      WRK-KENSU           =   ZERO
-                       MOVE    "0019"          TO  SPA-ERRCD
+                       IF      SPA-GMN-SYORI       =   "2"
+                           MOVE    "0026"          TO  SPA-ERRCD
+                       ELSE
+                           MOVE    "0019"          TO  SPA-ERRCD
+                       END-IF
                    ELSE
                        MOVE    WRK-KENSU       TO  WRK-KENSUZ
                        INITIALIZE              ORCSKANACHKAREA
@@ -2014,9 +2122,13 @@
                        CALL    "ORCSKANACHK"   USING ORCSKANACHKAREA
                        IF    ( KANACHK-RC      =   ZERO )
                        AND   ( KANACHK-SYUBETU =   "2"  )
-                       MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
-                                                   TO  WRK-KENSU-X
-                           MOVE    "1006"              TO  SPA-RIDCD
+                           MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
+                                                       TO  WRK-KENSU-X
+                           IF      SPA-GMN-SYORI       =   "2"
+                               MOVE    "1007"              TO  SPA-RIDCD
+                           ELSE
+                               MOVE    "1006"              TO  SPA-RIDCD
+                           END-IF
                        END-IF 
                    END-IF
            END-EVALUATE
@@ -2235,12 +2347,13 @@
                    MOVE    "01"                TO  BTPARA-INFO-KBN
                WHEN    "2"
                    MOVE    "02"                TO  BTPARA-INFO-KBN
-                   MOVE    SPA-NAI-STJYUSINYMD TO  BTPARA-INFO-PARA (1:)
-                   MOVE    SPA-NAI-EDJYUSINYMD TO  BTPARA-INFO-PARA (9:)
+                   MOVE    SPA-NAI-STJYUSINYMD TO  BTPARA-INFO-PARA(1:)
+                   MOVE    SPA-NAI-EDJYUSINYMD TO  BTPARA-INFO-PARA(9:)
+                   MOVE    SPA-NAI-TEISEIYM    TO  BTPARA-INFO-PARA(17:)
                WHEN    "3"
                    MOVE    "03"                TO  BTPARA-INFO-KBN
-                   MOVE    SPA-NAI-STJYUSINYMD TO  BTPARA-INFO-PARA (1:)
-                   MOVE    SPA-NAI-EDJYUSINYMD TO  BTPARA-INFO-PARA (9:)
+                   MOVE    SPA-NAI-STJYUSINYMD TO  BTPARA-INFO-PARA(1:)
+                   MOVE    SPA-NAI-EDJYUSINYMD TO  BTPARA-INFO-PARA(9:)
            END-EVALUATE
            MOVE    SPA-TERMID          TO  BTPARA-TERMID
            MOVE    SPA-OPID            TO  BTPARA-OPID
@@ -2401,13 +2514,17 @@
                MOVE    SYS-2005-PREFPRGID (1)
                                        TO  SHELLTBL-ARG7
            END-IF
-           IF      SPA-GMN-SYORI   =   "1"
-               MOVE    SPA-NAI-TSRYYM (1)
-                                       TO  SHELLTBL-ARG8
-           ELSE
-               MOVE    SPA-NAI-STJYUSINYMD (1:6)
-                                       TO  SHELLTBL-ARG8
-           END-IF
+           EVALUATE    SPA-GMN-SYORI
+               WHEN    "1"
+                   MOVE    SPA-NAI-TSRYYM (1)
+                                           TO  SHELLTBL-ARG8
+               WHEN    "2"
+                   MOVE    SPA-NAI-TEISEIYM
+                                           TO  SHELLTBL-ARG8
+               WHEN    "3"
+                   MOVE    SPA-NAI-STJYUSINYMD (1:6)
+                                           TO  SHELLTBL-ARG8
+           END-EVALUATE
            MOVE    WRK-SYSYMD      TO  SHELLTBL-ARG9
            MOVE    SYS-TIME        TO  SHELLTBL-ARG10
       *****MOVE    SYS-1001-PREFNUM
@@ -2768,6 +2885,7 @@
                                            R01-PTNUM-STATE
                                            R01-SRYYM-STATE
                                            R01-NYUGAIKBN-STATE
+                                           R01-TEISEIYM-STATE
                                            R01-B09-STATE
            EVALUATE    SPA-GMN-SYORI
                WHEN    "1"
@@ -2777,11 +2895,13 @@
                                                    R01-NYUGAIKBN-STATE
                                                    R01-B09-STATE
                WHEN    "2"
+                   MOVE    WIDGET-NORMAL       TO  R01-TEISEIYM-STATE
                WHEN    "3" 
                    MOVE    WIDGET-NORMAL       TO  R01-STJYUSINYMD-STATE
                                                    R01-EDJYUSINYMD-STATE
            END-EVALUATE
       *
+           MOVE    SPA-GMN-TEISEIYM    TO  R01-TEISEIYM
            MOVE    SPA-GMN-STJYUSINYMD TO  R01-STJYUSINYMD
            MOVE    SPA-GMN-EDJYUSINYMD TO  R01-EDJYUSINYMD
            MOVE    SPA-GMN-RENNUM      TO  R01-RENNUM
@@ -2789,6 +2909,7 @@
            MOVE    SPA-GMN-NAME        TO  R01-NAME
            MOVE    SPA-GMN-SRYYM       TO  R01-SRYYM
            MOVE    SPA-GMN-NYUGAIKBN   TO  R01-NYUGAIKBN
+           MOVE    SPA-GMN-CREYMD      TO  R01-CREYMD
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -2823,6 +2944,8 @@
                    MOVE  "STJYUSINYMD"     TO  MCP-WIDGET
                WHEN    10
                    MOVE  "EDJYUSINYMD"     TO  MCP-WIDGET
+               WHEN    11
+                   MOVE  "TEISEIYM"        TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -2852,6 +2975,8 @@
                WHEN    "STJYUSINYMD"
                    MOVE    10              TO  SPA-GMN-CUR
                WHEN    "EDJYUSINYMD"
+                   MOVE    7               TO  SPA-GMN-CUR
+               WHEN    "TEISEIYM"
                    MOVE    7               TO  SPA-GMN-CUR
            END-EVALUATE
            .
@@ -2928,6 +3053,15 @@
                    MOVE    "項目の入力途中です"        TO  SPA-ERRMSG
                WHEN    "0023"
                    MOVE    "選択番号入力エラー"        TO  SPA-ERRMSG
+               WHEN    "0024"
+                   MOVE    "訂正日対象診療年月入力エラー" 
+                                                       TO  SPA-ERRMSG
+               WHEN    "0025"
+                   MOVE    "対象の診療年月の一括作成が行われていません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0026"
+                   MOVE    "訂正日に該当する患者がありません"
+                                                       TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "レセプト指示コード（個別）が削除できません"
                                                        TO  SPA-ERRMSG
@@ -2987,6 +3121,14 @@
                    STRING  "受診日に該当する患者は" DELIMITED  BY  SIZE
                            WRK-KENSU-X              DELIMITED  BY  SPACE
                            "人です。受診日指定で作表します"
+                                                    DELIMITED  BY  SIZE
+                           INTO   WRK-RIDMSG
+                   END-STRING                   
+               WHEN    "1007"
+                   STRING  "訂正期間に該当する患者は"
+                                                    DELIMITED  BY  SIZE
+                           WRK-KENSU-X              DELIMITED  BY  SPACE
+                           "人です。訂正日指定で作表します"
                                                     DELIMITED  BY  SIZE
                            INTO   WRK-RIDMSG
                    END-STRING                   

@@ -151,8 +151,9 @@
       *                                     の警告を追加
       *  01.08.15    NACL-藤原    04/11/15  主病名の確認メッセージの表示
       *                                     をシス管の設定より行う
-      *  00.00.04    NACL-藤原    04/11/01  病名入力時修飾語コードのみで
+      *  00.08.16    NACL-藤原    04/11/01  病名入力時修飾語コードのみで
       *                                     構成されていても病名とする
+      *  01.08.17    NACL-藤原    05/02/10  訂正日指定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -485,6 +486,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    レセプト作成管理マスタ更新サブ
+           COPY    "CPORCSRECEUPD.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -6204,11 +6208,34 @@
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1001"              TO  SPA-ERRCD
-               DISPLAY MCP-FUNC "PTBYOMEI-KEY =>" PTBYO-KEY 
+               DISPLAY MCP-FUNC "PTBYOMEI-KEY =>" PTBYO-KEY
+           ELSE
+               PERFORM 450221-RECEUPD-UPDATE-SEC
            END-IF
       *
           .
        45022-PTBYOMEI-UPDATE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト作成管理マスタ更新処理
+      *****************************************************************
+       450221-RECEUPD-UPDATE-SEC           SECTION.
+      *
+           INITIALIZE                      ORCSRECEUPDAREA
+           MOVE    "1"                 TO  LNK-UPD-SYORI
+           MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
+           MOVE    SPA-NAI-C02-PTID     TO  LNK-UPD-PTID
+           MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
+           MOVE    SPA-OPID            TO  LNK-UPD-OPID
+           CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
+           IF      LNK-UPD-RC      NOT =   ZERO
+               MOVE    "????"              TO  SPA-ERRCD
+               DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC
+           END-IF
+      *
+           .
+       450221-RECEUPD-UPDATE-EXT.
            EXIT.
       *
       *****************************************************************
