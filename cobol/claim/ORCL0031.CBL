@@ -1356,7 +1356,6 @@
       *************IF      LF04-SND-SPINAME1 (IDX)
       *************                        =   PTBYO-BYOMEI
                    IF      WRK-BYOMEI1     =   PTBYO-BYOMEI
-      *                                            (1:PTBYO-BYOMEIMOJI)
                        MOVE    1           TO  FLG-PTBYOMEI-UMU
                    END-IF
                    MOVE    PTBYO-RENNUM        TO  WRK-PTBYO-RENNUM
@@ -1513,7 +1512,7 @@
            PERFORM VARYING     IDY     FROM    160 BY  -1
                    UNTIL       IDY     <   1
                IF      PTBYO-BYOMEI(IDY:1)     NOT =   SPACE
-                   MOVE    IDY                 TO  PTBYO-BYOMEIMOJI
+                   COMPUTE PTBYO-BYOMEIMOJI    =   IDY /   2
                    MOVE    1                   TO  IDY
                END-IF
            END-PERFORM
