@@ -39,6 +39,6 @@ distclean:
 
 install: all
 	$(INSTALL) -d $(initdir)
-	$(INSTALL_SCRIPT) $(init_SCRIPT) $(initdir)
+	$(INSTALL_SCRIPT) $(init_scripts) $(initdir)
 	$(INSTALL_DATA) $(EXTRA_DIST) $(initdir)
 
