@@ -148,7 +148,7 @@
                05  WRK-NAI-SRYYM-41-MM  PIC 9(02).
            03  WRK-NYUINYMD        PIC X(08).
            03  WRK-TSUSAN          PIC 9(05).
-           03  WRK-RRKNUM          PIC 9(03).
+           03  WRK-SHONUM          PIC 9(03).
            03  WRK-STYMD           PIC X(08).
            03  WRK-EDYMD           PIC X(08).
            03  WRK-NISSU           PIC 9(05).
@@ -4132,8 +4132,8 @@
            IF      MCP-RC               =  ZERO
                MOVE    "PTNYUINRRK-KEY9"   TO  ORC-DBPATH
                PERFORM 970-PTNYUINRRK-READ-SEC
-               MOVE    PTNYUINRRK-RRKNUM
-                                       TO  WRK-RRKNUM
+               MOVE    PTNYUINRRK-SHONUM
+                                       TO  WRK-SHONUM
                MOVE    PTNYUINRRK-TENNYUYMD
                                        TO  WRK-SANTEISTYMD
                MOVE    PTNYUINRRK-TOKUTEI-NYUIN
@@ -4147,34 +4147,35 @@
            DISPLAY   "410191-NYUACCT-SAKUSEI-SEC2"
       *
            PERFORM    UNTIL   (FLG-PTNYUINRRK        =   1)   OR
-                              (PTNYUINRRK-RRKNUM  NOT =  WRK-RRKNUM)
-               MOVE    PTNYUINRRK-TENNYUYMD
-                                           TO  WRK-STYMD
-               IF      PTNYUINRRK-TENSTUYMD    NOT =   SPACE
-      *               月末算定
-                       INITIALIZE                      STS-AREA-DAY
-                       INITIALIZE                      LNK-DAY7-AREA
-                       MOVE    "71"                TO  LNK-DAY7-IRAI
-                       IF      WRK-NAI-SRYYM-41-MM    =   1
-                               COMPUTE  WRK-NAI-SRYYM-41-YY
-                                    =   WRK-NAI-SRYYM-41-YY   -  1
-                               MOVE   12   TO  WRK-NAI-SRYYM-41-MM
-                       ELSE
-                               COMPUTE  WRK-NAI-SRYYM-41-MM
-                                    =   WRK-NAI-SRYYM-41-MM   -  1
-                       END-IF
-                       MOVE    WRK-NAI-SRYYM-41    TO  LNK-DAY7-YM
-                       CALL    "ORCSDAY"           USING STS-AREA-DAY
+                              (PTNYUINRRK-SHONUM  NOT =  WRK-SHONUM)
+               IF      PTNYUINRRK-JTIKBN      NOT =    "5"
+                   MOVE    PTNYUINRRK-TENNYUYMD
+                                               TO  WRK-STYMD
+                   IF      PTNYUINRRK-TAISYONISSU   =    ZERO
+      *                   月末算定
+                           INITIALIZE                    STS-AREA-DAY
+                           INITIALIZE                    LNK-DAY7-AREA
+                           MOVE    "71"              TO  LNK-DAY7-IRAI
+                           IF      WRK-NAI-SRYYM-41-MM    =   1
+                                   COMPUTE  WRK-NAI-SRYYM-41-YY
+                                        =   WRK-NAI-SRYYM-41-YY   -  1
+                                   MOVE   12   TO  WRK-NAI-SRYYM-41-MM
+                           ELSE
+                                   COMPUTE  WRK-NAI-SRYYM-41-MM
+                                        =   WRK-NAI-SRYYM-41-MM   -  1
+                           END-IF
+                           MOVE    WRK-NAI-SRYYM-41    TO  LNK-DAY7-YM
+                           CALL    "ORCSDAY"       USING STS-AREA-DAY
                                                          LNK-DAY7-AREA
-                       IF      STS-DAY-RC1         =   ZERO
-                           MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
-                       END-IF
-               ELSE
-                   MOVE    PTNYUINRRK-TENSTUYMD
-                                           TO  WRK-EDYMD
+                           IF      STS-DAY-RC1         =   ZERO
+                               MOVE    LNK-DAY7-KOYOMI   TO  WRK-EDYMD
+                           END-IF
+                           PERFORM    410191-KIKAN-CALC-SEC
+                           ADD      WRK-NISSU2         TO  WRK-TSUSAN
+                   ELSE
+                       ADD    PTNYUINRRK-TAISYONISSU   TO  WRK-TSUSAN
+                   END-IF
                END-IF
-               PERFORM    410191-KIKAN-CALC-SEC
-               ADD      WRK-NISSU2         TO  WRK-TSUSAN
                MOVE    "PTNYUINRRK-KEY9"   TO  ORC-DBPATH
                PERFORM  970-PTNYUINRRK-READ-SEC
            END-PERFORM
@@ -4341,6 +4342,9 @@
       *
            MOVE    LNK-DAY5-NISSU1     TO  WRK-NISSU1
            MOVE    LNK-DAY5-NISSU2     TO  WRK-NISSU2
+           DISPLAY "410191-KIKAN-CALC-SEC WRK-STYMD = " WRK-STYMD
+           DISPLAY "410191-KIKAN-CALC-SEC WRK-EDYMD = " WRK-EDYMD
+           DISPLAY "410191-KIKAN-CALC-SEC WRK-NISSU2 = " WRK-NISSU2
       *
            .
        410191-KIKAN-CALC-EXT.
