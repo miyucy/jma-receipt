@@ -1681,9 +1681,9 @@
            END-IF 
            MOVE    "6"                  TO      RECE64-ZAISKBKBN
            IF      FLG-MIJISI2   =   1
-             COMPUTE WRK-ZAINUM    =  99970  +  SYUKEI-IDX3
+             COMPUTE WRK-ZAINUM    =  99960  +  SYUKEI-IDX3
            ELSE
-             COMPUTE WRK-ZAINUM    =  99980  +  SYUKEI-IDX3
+             COMPUTE WRK-ZAINUM    =  99970  +  SYUKEI-IDX3
            END-IF
            MOVE    WRK-ZAINUM           TO      RECE64-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
@@ -2343,9 +2343,9 @@
            MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
            IF      FLG-MIJISI2   =   1
-             COMPUTE WRK-ZAINUM    =  99970  +  SYUKEI-IDX3
+             COMPUTE WRK-ZAINUM    =  99960  +  SYUKEI-IDX3
            ELSE
-             COMPUTE WRK-ZAINUM    =  99980  +  SYUKEI-IDX3
+             COMPUTE WRK-ZAINUM    =  99970  +  SYUKEI-IDX3
            END-IF
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE65-ZAIREN

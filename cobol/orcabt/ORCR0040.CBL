@@ -31,6 +31,7 @@
       *                                     コメント差込み
       *  01.00.02    NACL-門脇    02.11.29  複数診療科受診の
       *                                     コメント差込み
+      *  01.00.03    NACL-門脇    03.02.04  剤まとめ対応等
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -154,17 +155,14 @@
       *    スパ領域
        01  SPA2-AREA.
            03  SPA-STS              PIC 9(04).
-           03  SPA-ERRCD            PIC X(04).
       *
       *    フラグ領域
        01  STS-AREA.
-           03  STS-RECE            PIC X(02).
            03  STS-RECE02          PIC X(02).
            03  STS-RECE04          PIC X(02).
            03  STS-RECE041         PIC X(02).
            03  STS-RECE05          PIC X(02).
            03  STS-RECE051         PIC X(02).
-           03  STS-PARA            PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
       *    フラグ領域
@@ -173,15 +171,14 @@
            03  FLG-RECE02          PIC 9(01).
            03  FLG-RECE04          PIC 9(01).
            03  FLG-RECE05          PIC 9(01).
-           03  FLG-TENSU           PIC 9(01).
            03  FLG-SHUJUTU-COMMENT PIC 9(01).
            03  FLG-WRKRECE05       PIC 9(01).
-           03  FLG-JINZOU-COMMENT  PIC 9(01).
            03  FLG-SHIDOU-COMMENT  PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-FIRST           PIC 9(01).
+           03  FLG-ARI             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -190,22 +187,6 @@
            03  CNT-RECE05          PIC 9(06).
            03  CNT-JINZOU          PIC 9(06).
            03  CNT-RIHA            PIC 9(06).
-           03  CNT-RIGA1-KO        PIC 9(06).
-           03  CNT-RIGA2-KO        PIC 9(06).
-           03  CNT-RIGA3-KO        PIC 9(06).
-           03  CNT-RIGA4-KO        PIC 9(06).
-           03  CNT-RIGA1-SHU       PIC 9(06).
-           03  CNT-RIGA2-SHU       PIC 9(06).
-           03  CNT-RIGA3-SHU       PIC 9(06).
-           03  CNT-RIGA4-SHU       PIC 9(06).
-           03  CNT-SAGYO1-KO       PIC 9(06).
-           03  CNT-SAGYO2-KO       PIC 9(06).
-           03  CNT-SAGYO1-SHU      PIC 9(06).
-           03  CNT-SAGYO2-SHU      PIC 9(06).
-           03  CNT-GENGO1-KO       PIC 9(06).
-           03  CNT-GENGO2-KO       PIC 9(06).
-           03  CNT-GENGO1-SHU      PIC 9(06).
-           03  CNT-GENGO2-SHU      PIC 9(06).
            03  CNT-JUSHIN          PIC 9(06).
            03  CNT-SANTEIKA        PIC 9(06).
            03  CNT-IN-COMMIT       PIC 9(06).
@@ -213,6 +194,8 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDX1                PIC 9(04).
+           03  IDX2                PIC 9(04).
            03  DAY-IDX             PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -246,6 +229,8 @@
            03  WRK-SRYYMDX.
                05  WRK-SRYYM         PIC 9(06).
                05  WRK-SRYDD         PIC 9(02).
+      *
+           03  WRK-SRYCD             PIC X(09).
       *
        01  WRK-RECE04-REC. 
            COPY    "CPRCF004.INC"  REPLACING   //RECE04//
@@ -286,54 +271,64 @@
       *
       *理学療法剤番号退避領域
        01  WRK-TAIHI-ZAINUM.
-           03  WRK-RIGA1-SHU-ZAINUM          PIC  9(08).   
-           03  WRK-RIGA1-KO-ZAINUM           PIC  9(08).   
-           03  WRK-RIGA2-SHU-ZAINUM          PIC  9(08).   
-           03  WRK-RIGA2-KO-ZAINUM           PIC  9(08).   
-           03  WRK-RIGA3-SHU-ZAINUM          PIC  9(08).   
-           03  WRK-RIGA3-KO-ZAINUM           PIC  9(08).   
-           03  WRK-RIGA4-SHU-ZAINUM          PIC  9(08).   
-           03  WRK-RIGA4-KO-ZAINUM           PIC  9(08).   
-           03  WRK-SAGYO1-SHU-ZAINUM         PIC  9(08).   
-           03  WRK-SAGYO1-KO-ZAINUM          PIC  9(08).   
-           03  WRK-SAGYO2-SHU-ZAINUM         PIC  9(08).   
-           03  WRK-SAGYO2-KO-ZAINUM          PIC  9(08).   
-           03  WRK-GENGO1-SHU-ZAINUM         PIC  9(08).   
-           03  WRK-GENGO1-KO-ZAINUM          PIC  9(08).   
-           03  WRK-GENGO2-SHU-ZAINUM         PIC  9(08).   
-           03  WRK-GENGO2-KO-ZAINUM          PIC  9(08).   
+           03  WRK-TAIHI-ZAINUM-T              OCCURS  5.
+               05  WRK-RIGA1-SHU-ZAINUM      PIC  9(05).   
+               05  WRK-RIGA1-KO-ZAINUM       PIC  9(05).   
+               05  WRK-RIGA2-SHU-ZAINUM      PIC  9(05).   
+               05  WRK-RIGA2-KO-ZAINUM       PIC  9(05).   
+               05  WRK-RIGA3-SHU-ZAINUM      PIC  9(05).   
+               05  WRK-RIGA3-KO-ZAINUM       PIC  9(05).   
+               05  WRK-RIGA4-SHU-ZAINUM      PIC  9(05).   
+               05  WRK-RIGA4-KO-ZAINUM       PIC  9(05).   
+               05  WRK-SAGYO1-SHU-ZAINUM     PIC  9(05).   
+               05  WRK-SAGYO2-SHU-ZAINUM     PIC  9(05).   
+               05  WRK-SAGYO1-KO-ZAINUM      PIC  9(05).   
+               05  WRK-SAGYO2-KO-ZAINUM      PIC  9(05).   
+               05  WRK-GENGO1-SHU-ZAINUM     PIC  9(05).   
+               05  WRK-GENGO1-KO-ZAINUM      PIC  9(05).   
+               05  WRK-GENGO2-SHU-ZAINUM     PIC  9(05).   
+               05  WRK-GENGO2-KO-ZAINUM      PIC  9(05).   
+      *
+       01  WRK-TAIHI-ZAINUM-R     REDEFINES   WRK-TAIHI-ZAINUM.
+           03  WRK-RIHA-ZAINUM-T               OCCURS  5.
+               05  WRK-RIHA-ZAINUM   PIC 9(05)   OCCURS   16.       
+      *
       *
       *人工腎臓実施カレンダー
        01  WRK-JINZOU-AREA.
-           03  WRK-JINZOU                    PIC  X(01)  OCCURS 31.   
+           03  WRK-JINZOU-T                    OCCURS   5.
+             05  WRK-JINZOU                    PIC  X(01)  OCCURS 31.   
       *
       *再診４回目以降実施カレンダー
        01  WRK-SAISHIN4-AREA.
-           03  WRK-SAISHIN4                  PIC  X(01)  OCCURS 31.   
-      *
-      *算定科実施カレンダー
-       01  WRK-SANTEIKA-AREA.
-           03  WRK-SANTEIKA                  PIC  X(01)  OCCURS 31.
+           03  WRK-SAISHIN4-T                  OCCURS   5.
+             05  WRK-SAISHIN4                  PIC  X(01)  OCCURS 31.   
       *
       *理学療法実施カレンダー
        01  WRK-RIGAKU-AREA.
-           03  WRK-RIGA1-SHU                 PIC  X(01)  OCCURS 31.   
-           03  WRK-RIGA1-KO                  PIC  X(01)  OCCURS 31.   
-           03  WRK-RIGA2-SHU                 PIC  X(01)  OCCURS 31.   
-           03  WRK-RIGA2-KO                  PIC  X(01)  OCCURS 31.   
-           03  WRK-RIGA3-SHU                 PIC  X(01)  OCCURS 31.   
-           03  WRK-RIGA3-KO                  PIC  X(01)  OCCURS 31.   
-           03  WRK-RIGA4-SHU                 PIC  X(01)  OCCURS 31.   
-           03  WRK-RIGA4-KO                  PIC  X(01)  OCCURS 31.   
-           03  WRK-SAGYO1-SHU                PIC  X(01)  OCCURS 31.   
-           03  WRK-SAGYO1-KO                 PIC  X(01)  OCCURS 31.   
-           03  WRK-SAGYO2-SHU                PIC  X(01)  OCCURS 31.   
-           03  WRK-SAGYO2-KO                 PIC  X(01)  OCCURS 31.   
-           03  WRK-GENGO1-SHU                PIC  X(01)  OCCURS 31.   
-           03  WRK-GENGO1-KO                 PIC  X(01)  OCCURS 31.   
-           03  WRK-GENGO2-SHU                PIC  X(01)  OCCURS 31.   
-           03  WRK-GENGO2-KO                 PIC  X(01)  OCCURS 31.   
+           03  WRK-RIGAKU-T                    OCCURS  5.
+             05  WRK-RIGA1-SHU                 PIC  X(01)  OCCURS 31.   
+             05  WRK-RIGA1-KO                  PIC  X(01)  OCCURS 31.   
+             05  WRK-RIGA2-SHU                 PIC  X(01)  OCCURS 31.   
+             05  WRK-RIGA2-KO                  PIC  X(01)  OCCURS 31.   
+             05  WRK-RIGA3-SHU                 PIC  X(01)  OCCURS 31.   
+             05  WRK-RIGA3-KO                  PIC  X(01)  OCCURS 31.   
+             05  WRK-RIGA4-SHU                 PIC  X(01)  OCCURS 31.   
+             05  WRK-RIGA4-KO                  PIC  X(01)  OCCURS 31.   
+             05  WRK-SAGYO1-SHU                PIC  X(01)  OCCURS 31.   
+             05  WRK-SAGYO2-SHU                PIC  X(01)  OCCURS 31.   
+             05  WRK-SAGYO1-KO                 PIC  X(01)  OCCURS 31.   
+             05  WRK-SAGYO2-KO                 PIC  X(01)  OCCURS 31.   
+             05  WRK-GENGO1-SHU                PIC  X(01)  OCCURS 31.   
+             05  WRK-GENGO1-KO                 PIC  X(01)  OCCURS 31.   
+             05  WRK-GENGO2-SHU                PIC  X(01)  OCCURS 31.   
+             05  WRK-GENGO2-KO                 PIC  X(01)  OCCURS 31.   
       *
+       01  WRK-RIGAKU-R        REDEFINES     WRK-RIGAKU-AREA.
+           02  WRK-RIGAKU-OCC                  OCCURS    5.
+             03  WRK-RIGAKU-OCC2               OCCURS   16.
+               04  WRK-RIGAKU-OCC3             OCCURS   31.
+                 05  WRK-RIGAKU                PIC  X(01).
       *
       *    日付全角変換領域
        01  TBL-DAY-AREA.
@@ -377,50 +372,73 @@
        01  CONST-AREA.
       *    手術日コメント
            03  CONS-SHUJUTU-COMMENT PIC X(09) VALUE "840000042".
-      *    人工腎臓１
-           03  CONS-JINZOU1         PIC X(09) VALUE "140036710".
-      *    人工腎臓２
-           03  CONS-JINZOU2         PIC X(09) VALUE "140007710".
-      *    再診（４回目以降／人工腎臓）
-           03  CONS-SAISHIN41       PIC X(09) VALUE "112009610".
-           03  CONS-SAISHIN42       PIC X(09) VALUE "112009510".
-           03  CONS-SAISHIN43       PIC X(09) VALUE "112012750".
-           03  CONS-SAISHIN44       PIC X(09) VALUE "112706610".
       *    慢性とう痛疾患
            03  CONS-MANSEI          PIC X(09) VALUE "113006510".
-      *    理学療法
-           03  CONS-RIGA1-SHU1      PIC X(09) VALUE "180706910".
-           03  CONS-RIGA1-SHU2      PIC X(09) VALUE "180022210".
-           03  CONS-RIGA1-KO1       PIC X(09) VALUE "180706810".
-           03  CONS-RIGA1-KO2       PIC X(09) VALUE "180022110".
-           03  CONS-RIGA2-SHU1      PIC X(09) VALUE "180707110".
-           03  CONS-RIGA2-SHU2      PIC X(09) VALUE "180022410".
-           03  CONS-RIGA2-KO1       PIC X(09) VALUE "180707010".
-           03  CONS-RIGA2-KO2       PIC X(09) VALUE "180022310".
-           03  CONS-RIGA3-SHU1      PIC X(09) VALUE "180707310".
-           03  CONS-RIGA3-SHU2      PIC X(09) VALUE "180022610".
-           03  CONS-RIGA3-KO1       PIC X(09) VALUE "180707210".
-           03  CONS-RIGA3-KO2       PIC X(09) VALUE "180022510".
-           03  CONS-RIGA4-SHU1      PIC X(09) VALUE "180707510".
-           03  CONS-RIGA4-SHU2      PIC X(09) VALUE "180022810".
-           03  CONS-RIGA4-KO1       PIC X(09) VALUE "180707410".
-           03  CONS-RIGA4-KO2       PIC X(09) VALUE "180022710".
-           03  CONS-SAGYO1-SHU1     PIC X(09) VALUE "180708210".
-           03  CONS-SAGYO1-SHU2     PIC X(09) VALUE "180023710".
-           03  CONS-SAGYO1-KO1      PIC X(09) VALUE "180708110".
-           03  CONS-SAGYO1-KO2      PIC X(09) VALUE "180023610".
-           03  CONS-SAGYO2-SHU1     PIC X(09) VALUE "180708410".
-           03  CONS-SAGYO2-SHU2     PIC X(09) VALUE "180023910".
-           03  CONS-SAGYO2-KO1      PIC X(09) VALUE "180708310".
-           03  CONS-SAGYO2-KO2      PIC X(09) VALUE "180023810".
-           03  CONS-GENGO1-SHU      PIC X(09) VALUE "180024910".
-           03  CONS-GENGO1-KO       PIC X(09) VALUE "180024810".
-           03  CONS-GENGO2-SHU      PIC X(09) VALUE "180025110".
-           03  CONS-GENGO2-KO       PIC X(09) VALUE "180025010".
       *    初診料算定科：
            03  CONS-SYOSINSANTEIKA  PIC X(09) VALUE "830000020".
       *    再診料算定科：
            03  CONS-SAISINSANTEIKA  PIC X(09) VALUE "830000021".
+      *
+      *
+      *   再診（４回目以降／人工腎臓）診療行為テーブル
+       01  TBL-JINSAI4-AREA.
+           03  FILLER          PIC X(09)   VALUE   "112009610".
+           03  FILLER          PIC X(09)   VALUE   "112009510".
+           03  FILLER          PIC X(09)   VALUE   "112012750".
+           03  FILLER          PIC X(09)   VALUE   "112706610".
+      *
+       01  TBL-JINSAI4-R       REDEFINES   TBL-JINSAI4-AREA.
+            03  TBL-JINSAI4    PIC X(09)   OCCURS   4.       
+      *
+       01  TBL-JINSAI4-MAX     PIC 9(02)   VALUE    4.  
+      *
+      *
+      *   人工腎臓診療行為テーブル
+       01  TBL-JINZOU-AREA.
+           03  FILLER          PIC X(09)   VALUE    "140036710".
+           03  FILLER          PIC X(09)   VALUE    "140007710".
+      *
+       01  TBL-JINZOU-R        REDEFINES   TBL-JINZOU-AREA.
+            03  TBL-JINZOU     PIC X(09)   OCCURS   2.       
+      *
+       01  TBL-JINZOU-MAX      PIC 9(02)   VALUE    2.  
+      *
+      *
+      *   リハビリ診療行為テーブル
+       01  TBL-RIHA-AREA.
+           03  FILLER          PIC X(09)   VALUE    "180706910".
+           03  FILLER          PIC X(09)   VALUE    "180022210".
+           03  FILLER          PIC X(09)   VALUE    "180706810".
+           03  FILLER          PIC X(09)   VALUE    "180022110".
+           03  FILLER          PIC X(09)   VALUE    "180707110".
+           03  FILLER          PIC X(09)   VALUE    "180022410".
+           03  FILLER          PIC X(09)   VALUE    "180707010".
+           03  FILLER          PIC X(09)   VALUE    "180022310".
+           03  FILLER          PIC X(09)   VALUE    "180707310".
+           03  FILLER          PIC X(09)   VALUE    "180022610".
+           03  FILLER          PIC X(09)   VALUE    "180707210".
+           03  FILLER          PIC X(09)   VALUE    "180022510".
+           03  FILLER          PIC X(09)   VALUE    "180707510".
+           03  FILLER          PIC X(09)   VALUE    "180022810".
+           03  FILLER          PIC X(09)   VALUE    "180707410".
+           03  FILLER          PIC X(09)   VALUE    "180022710".
+           03  FILLER          PIC X(09)   VALUE    "180708210".
+           03  FILLER          PIC X(09)   VALUE    "180023710".
+           03  FILLER          PIC X(09)   VALUE    "180708410".
+           03  FILLER          PIC X(09)   VALUE    "180023910".
+           03  FILLER          PIC X(09)   VALUE    "180708110".
+           03  FILLER          PIC X(09)   VALUE    "180023610".
+           03  FILLER          PIC X(09)   VALUE    "180708310".
+           03  FILLER          PIC X(09)   VALUE    "180023810".
+           03  FILLER          PIC X(09)   VALUE    "180024910".
+           03  FILLER          PIC X(09)   VALUE    "180024810".
+           03  FILLER          PIC X(09)   VALUE    "180025110".
+           03  FILLER          PIC X(09)   VALUE    "180025010".
+      *
+       01  TBL-RIHA-R          REDEFINES   TBL-RIHA-AREA.
+            03  TBL-RIHA       PIC X(09)   OCCURS   28.       
+      *
+       01  TBL-RIHA-MAX        PIC 9(02)   VALUE    28.  
       *
       *
       *   電話再診対象診療行為テーブル
@@ -515,7 +533,7 @@
       *
       *    複数診療科受診の退避テーブル
        01  TBL-JUSHIN-INF.
-           03  TBL-JUSHIN-INF2      OCCURS    10.
+           03  TBL-JUSHIN-INF2      OCCURS    50.
                05  TBL-JUSHIN-SRYKA       PIC X(02).
                05  TBL-JUSHIN-SRYKANAME   PIC X(80).
                05  TBL-JUSHIN-ARI         PIC X(01).
@@ -547,13 +565,6 @@
       *
       *    診療科目情報
            COPY    "CPSK1005.INC".
-      *
-      *    点数
-           COPY    "CPTENSU.INC".
-      *
-      *    診療会計
-       01  SRYACCT-REC.
-           COPY    "CPSRYACCT.INC".
       *
       *    診療行為
        01  SRYACT-REC.
@@ -689,10 +700,13 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    複数診療科受診
            MOVE       ZERO             TO  CNT-SANTEIKA
-           INITIALIZE                      WRK-SANTEIKA-AREA
-      *    算定科の取得
+           INITIALIZE                      TBL-COUNT-INF
+           INITIALIZE                      WRK-SAISHIN4-AREA
+           INITIALIZE                      WRK-JINZOU-AREA
+           INITIALIZE                      WRK-RIGAKU-AREA
+           INITIALIZE                      WRK-TAIHI-ZAINUM
+      *
            INITIALIZE                      RECE04-REC
            MOVE    RECE02-HOSPID       TO  RECE04-HOSPID
            MOVE    RECE02-SRYYM        TO  RECE04-SRYYM
@@ -729,22 +743,33 @@
                EVALUATE      RECE04-SRYKBN
                    WHEN      "11"
       *            （初診料算定科：のカウント）
-                      PERFORM    2001-SYOSINSANTEIKA-COUNT-SEC
+                      MOVE    CONS-SYOSINSANTEIKA  TO  WRK-SRYCD
+                      PERFORM    2001-SANTEIKA-COUNT-SEC
                    WHEN      "12"
       *            （再診料算定科：のカウント）
-                      PERFORM    2001-SAISINSANTEIKA-COUNT-SEC
+                      MOVE    CONS-SAISINSANTEIKA  TO  WRK-SRYCD
+                      PERFORM    2001-SANTEIKA-COUNT-SEC
+      *
+      *            （電話再診のカウント）
+                      PERFORM    2001-DENWA-COUNT-SEC
+      *            （同日再診のカウント）
+                      PERFORM    2001-DOUJITU-COUNT-SEC
+      *
+      *            （再診４回目のカウント）
+                      PERFORM    2001-SAISHIN4-COUNT-SEC
+                   WHEN      "40"
+      *            （人工腎臓のカウント）
+                      PERFORM    2001-JINZOU-COUNT-SEC
+                   WHEN      "80"
+      *            （リハビリのカウント）
+                      PERFORM    2001-RIHA-COUNT-SEC
                END-EVALUATE
       *
                PERFORM 990-RECE04-NEXT-SEC
       *
            END-PERFORM
       *
-           PERFORM    VARYING    IDX   FROM   1   BY   1
-                                    UNTIL      IDX   >    31
-                   IF    WRK-SANTEIKA(IDX)  =   "1"  
-                       ADD     1           TO   CNT-SANTEIKA
-                   END-IF
-           END-PERFORM 
+      *    複数診療科受診
       *
            IF   CNT-SANTEIKA   >  ZERO
       *
@@ -767,7 +792,7 @@
                MOVE    "SYSKANRI-KEY2"  TO  ORC-DBPATH 
                PERFORM   SYSKANRI-READ-SEC
                PERFORM   VARYING   IDX    FROM   1   BY   1
-                          UNTIL   (IDX             >      10)
+                          UNTIL   (IDX             >      50)
                             OR    (FLG-SYSKANRI    =       1)
                    MOVE    SYS-1005-KBNCD  TO TBL-JUSHIN-SRYKA(IDX)
                    MOVE    SYS-1005-SRYKANAME   
@@ -780,12 +805,20 @@
                END-PERFORM
              END-IF
       *
+             INITIALIZE                        MCPAREA
+             MOVE    "DBCLOSE"         TO      MCP-FUNC
+             MOVE    "SYSKANRI-KEY2"   TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"       USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
       *      複数の診療科受診があるか判定
              MOVE       ZERO       TO   IDZ  
              INITIALIZE            WRK-FREE-AREA
       *
              PERFORM   VARYING   IDX    FROM   1   BY   1
-                            UNTIL   (IDX             >      10)
+                            UNTIL   (IDX             >      50)
                IF   TBL-JUSHIN-ARI (IDX)  =  "1"
                    ADD       1     TO   CNT-JUSHIN
                    PERFORM  2002-FREE-COMMENT-SEC
@@ -799,52 +832,6 @@
            END-IF
       *
       *    電話再診・同日複数再診
-           INITIALIZE                      TBL-COUNT-INF
-      *
-           INITIALIZE                      RECE04-REC
-           MOVE    RECE02-HOSPID       TO  RECE04-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE04-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE04-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE04-PTID
-           MOVE    RECE02-RECEKA       TO  RECE04-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE04-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE04-RECESYUBETU
-           MOVE    RECE02-HKNJANUM     TO  RECE04-HKNJANUM
-           MOVE    RECE02-TEKSTYMD     TO  RECE04-TEKSTYMD
-           MOVE    ZERO                TO  RECE04-ZAINUM
-      *
-           START   RECE04-FILE
-               KEY IS    >=   RECE04-KEY
-               INVALID
-                   MOVE    1           TO  FLG-RECE04
-               NOT INVALID
-                   PERFORM 990-RECE04-NEXT-SEC
-           END-START
-           PERFORM
-               UNTIL  ( FLG-RECE04           =   1                   )
-               OR     ( RECE02-HOSPID    NOT =   RECE04-HOSPID       )
-               OR     ( RECE02-SRYYM     NOT =   RECE04-SRYYM        )
-               OR     ( RECE02-NYUGAIKBN NOT =   RECE04-NYUGAIKBN    )
-               OR     ( RECE02-PTID      NOT =   RECE04-PTID         )
-               OR     ( RECE02-RECEKA    NOT =   RECE04-RECEKA       )
-               OR     ( RECE02-TEISYUTUSAKI
-                                         NOT =   RECE04-TEISYUTUSAKI )
-               OR     ( RECE02-RECESYUBETU
-                                         NOT =   RECE04-RECESYUBETU  )
-               OR     ( RECE02-HKNJANUM  NOT =   RECE04-HKNJANUM     )
-               OR     ( RECE02-TEKSTYMD  NOT =   RECE04-TEKSTYMD     )
-      *
-               EVALUATE      RECE04-SRYKBN
-                   WHEN      "12"
-      *            （電話再診のカウント）
-                      PERFORM    2001-DENWA-COUNT-SEC
-      *            （同日再診のカウント）
-                      PERFORM    2001-DOUJITU-COUNT-SEC
-               END-EVALUATE
-      *
-               PERFORM 990-RECE04-NEXT-SEC
-      *
-           END-PERFORM
       *
            PERFORM   VARYING   IDX    FROM   1   BY   1
                           UNTIL   (IDX             >      5)
@@ -867,65 +854,9 @@
            END-PERFORM
       *
       *    人工腎臓の判定
-           INITIALIZE                      RECE04-REC
-           MOVE    RECE02-HOSPID       TO  RECE04-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE04-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE04-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE04-PTID
-           MOVE    RECE02-RECEKA       TO  RECE04-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE04-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE04-RECESYUBETU
-           MOVE    RECE02-HKNJANUM     TO  RECE04-HKNJANUM
-           MOVE    RECE02-TEKSTYMD     TO  RECE04-TEKSTYMD
-           MOVE    ZERO                TO  RECE04-ZAINUM
-      *
-           START   RECE04-FILE
-               KEY IS    >=   RECE04-KEY
-               INVALID
-                   MOVE    1           TO  FLG-RECE04
-               NOT INVALID
-                   PERFORM 990-RECE04-NEXT-SEC
-           END-START
-           MOVE    ZERO              TO      FLG-JINZOU-COMMENT
-           INITIALIZE                        WRK-JINZOU-AREA
-           INITIALIZE                        WRK-SAISHIN4-AREA
-           INITIALIZE                        WRK-RIGAKU-AREA
-           INITIALIZE                        WRK-TAIHI-ZAINUM
-           PERFORM
-               UNTIL  ( FLG-RECE04           =   1                   )
-               OR     ( RECE02-HOSPID    NOT =   RECE04-HOSPID       )
-               OR     ( RECE02-SRYYM     NOT =   RECE04-SRYYM        )
-               OR     ( RECE02-NYUGAIKBN NOT =   RECE04-NYUGAIKBN    )
-               OR     ( RECE02-PTID      NOT =   RECE04-PTID         )
-               OR     ( RECE02-RECEKA    NOT =   RECE04-RECEKA       )
-               OR     ( RECE02-TEISYUTUSAKI
-                                         NOT =   RECE04-TEISYUTUSAKI )
-               OR     ( RECE02-RECESYUBETU
-                                         NOT =   RECE04-RECESYUBETU  )
-               OR     ( RECE02-HKNJANUM  NOT =   RECE04-HKNJANUM     )
-               OR     ( RECE02-TEKSTYMD  NOT =   RECE04-TEKSTYMD     )
-      *
-               MOVE          SPACE       TO      RECE041-REC
-               INITIALIZE    RECE041-REC
-               EVALUATE      RECE04-SRYKBN
-                   WHEN      "12"
-      *            （再診４回目のカウント）
-                      PERFORM    2001-SAISHIN4-COUNT-SEC
-                   WHEN      "40"
-      *            （人工腎臓のカウント）
-                      PERFORM    2001-JINZOU-COUNT-SEC
-                   WHEN      "80"
-                      PERFORM    2001-RIHA-COUNT-SEC
-               END-EVALUATE
-      *
-               PERFORM 990-RECE04-NEXT-SEC
-      *
-           END-PERFORM
       *
            PERFORM    2001-JINZOU-HANTEI-SEC
-           IF         FLG-JINZOU-COMMENT    =     1
-                      PERFORM    2002-JINZOU-COMMENT-SEC
-           END-IF
+      *
       *
       *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE04-REC
@@ -961,49 +892,26 @@
                OR     ( RECE02-HKNJANUM  NOT =   RECE04-HKNJANUM     )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE04-TEKSTYMD     )
       *
-               MOVE          SPACE       TO      RECE041-REC
-               INITIALIZE    RECE041-REC
                EVALUATE      RECE04-SRYKBN
                    WHEN      "13"
                       PERFORM    2001-SHIDOU-HANTEI-SEC
-                      IF      FLG-SHIDOU-COMMENT    =      1
-                          PERFORM    2001-SHIDOU-COMMENT-SEC
-                      ELSE
-                          MOVE       RECE04-REC    TO   RECE041-REC
-                          WRITE      RECE041-REC
-                          ADD     1          TO      CNT-RECE04
-                          PERFORM    2002-RECE05-TENSOU-SEC
-                      END-IF         
                    WHEN      "50"
       *            （手術日のセット）
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
-                      IF     (FLG-SHUJUTU-COMMENT   =      1)  AND
-                             (RECE04-SYUTEN1    NOT =   ZERO)
-                          PERFORM    2001-SHUJUTSU-COMMENT-SEC
-                      ELSE
-                          MOVE       RECE04-REC    TO   RECE041-REC
-                          WRITE      RECE041-REC
-                          ADD     1          TO      CNT-RECE04
-                          PERFORM    2002-RECE05-TENSOU-SEC
-                      END-IF
                    WHEN      "80"
       *            （リハビリのセット）
-                      IF  RECE04-ZAINUM    =   WRK-RIGA1-SHU-ZAINUM OR
-                                               WRK-RIGA1-KO-ZAINUM  OR
-                                               WRK-RIGA2-SHU-ZAINUM OR
-                                               WRK-RIGA2-KO-ZAINUM  OR
-                                               WRK-RIGA3-SHU-ZAINUM OR
-                                               WRK-RIGA3-KO-ZAINUM  OR
-                                               WRK-RIGA4-SHU-ZAINUM OR
-                                               WRK-RIGA4-KO-ZAINUM  OR
-                                               WRK-SAGYO1-SHU-ZAINUM OR
-                                               WRK-SAGYO1-KO-ZAINUM  OR
-                                               WRK-SAGYO2-SHU-ZAINUM OR
-                                               WRK-SAGYO2-KO-ZAINUM  OR
-                                               WRK-GENGO1-SHU-ZAINUM OR
-                                               WRK-GENGO1-KO-ZAINUM  OR
-                                               WRK-GENGO2-SHU-ZAINUM OR
-                                               WRK-GENGO2-KO-ZAINUM
+                      COMPUTE  WRK-KOHBUNRI 
+                                 =    RECE04-KOHBUNRI  +  1
+                      MOVE    ZERO     TO    FLG-ARI
+                      PERFORM   VARYING   IDX    FROM   1   BY   1
+                            UNTIL   (IDX             >      16)
+                             OR     (FLG-ARI         =       1)
+                          IF  RECE04-ZAINUM  =  
+                                   WRK-RIHA-ZAINUM(WRK-KOHBUNRI IDX)
+                              MOVE    1    TO   FLG-ARI 
+                          END-IF
+                      END-PERFORM
+                      IF  FLG-ARI  =  1
                           PERFORM   2001-RIHA-COMMENT-SEC
                       ELSE
                           MOVE       RECE04-REC    TO   RECE041-REC
@@ -1011,7 +919,6 @@
                           ADD     1          TO      CNT-RECE04
                           PERFORM    2002-RECE05-TENSOU-SEC
                       END-IF
-      *
                    WHEN   OTHER
                       MOVE       RECE04-REC    TO   RECE041-REC
                       WRITE      RECE041-REC
@@ -1037,9 +944,9 @@
            EXIT.
       *
       *****************************************************************
-      *    初診料算定科：のカウント
+      *    算定科：のカウント
       *****************************************************************
-       2001-SYOSINSANTEIKA-COUNT-SEC          SECTION.
+       2001-SANTEIKA-COUNT-SEC          SECTION.
       *
            INITIALIZE                          SRYACT-REC
            MOVE    RECE04-HOSPID       TO      SRY-HOSPID
@@ -1047,11 +954,11 @@
            MOVE    RECE04-PTID         TO      SRY-PTID
            MOVE    RECE04-SRYYM        TO      SRY-SRYYM
            MOVE    RECE04-ZAINUM       TO      SRY-ZAINUM
-           MOVE    CONS-SYOSINSANTEIKA TO      SRY-SRYCD (1)
-           MOVE    CONS-SYOSINSANTEIKA TO      SRY-SRYCD (2)
-           MOVE    CONS-SYOSINSANTEIKA TO      SRY-SRYCD (3)
-           MOVE    CONS-SYOSINSANTEIKA TO      SRY-SRYCD (4)
-           MOVE    CONS-SYOSINSANTEIKA TO      SRY-SRYCD (5)
+           MOVE    WRK-SRYCD           TO      SRY-SRYCD (1)
+           MOVE    WRK-SRYCD           TO      SRY-SRYCD (2)
+           MOVE    WRK-SRYCD           TO      SRY-SRYCD (3)
+           MOVE    WRK-SRYCD           TO      SRY-SRYCD (4)
+           MOVE    WRK-SRYCD           TO      SRY-SRYCD (5)
       *
            MOVE    SRYACT-REC        TO      MCPDATA-REC
            MOVE    "DBSELECT"        TO      MCP-FUNC
@@ -1069,40 +976,8 @@
                                              ORCMCPAREA
                                              MCPDATA-REC
                IF      MCP-RC        =       ZERO
-                   MOVE    RECE04-REC        TO      WRK-RECE04-REC
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                            MOVE  MCPDATA-REC    TO   SRYACCT-REC
-                            PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                   MOVE  "1" TO  WRK-SANTEIKA(IDX)
-                                END-IF
-                            END-PERFORM
-                       END-IF
-                   END-IF
+                   ADD   RECE04-ZAIKAISU  
+                                 TO   CNT-SANTEIKA
                END-IF
            END-IF
       *
@@ -1114,106 +989,8 @@
                                      ORCMCPAREA
                                      MCPDATA-REC
       *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
            .
-       2001-SYOSINSANTEIKA-COUNT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    再診料算定科：のカウント
-      *****************************************************************
-       2001-SAISINSANTEIKA-COUNT-SEC          SECTION.
-      *
-           INITIALIZE                          SRYACT-REC
-           MOVE    RECE04-HOSPID       TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN    TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID         TO      SRY-PTID
-           MOVE    RECE04-SRYYM        TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM       TO      SRY-ZAINUM
-           MOVE    CONS-SAISINSANTEIKA TO      SRY-SRYCD (1)
-           MOVE    CONS-SAISINSANTEIKA TO      SRY-SRYCD (2)
-           MOVE    CONS-SAISINSANTEIKA TO      SRY-SRYCD (3)
-           MOVE    CONS-SAISINSANTEIKA TO      SRY-SRYCD (4)
-           MOVE    CONS-SAISINSANTEIKA TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    RECE04-REC        TO      WRK-RECE04-REC
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                            MOVE  MCPDATA-REC    TO   SRYACCT-REC
-                            PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                   MOVE  "1" TO  WRK-SANTEIKA(IDX)
-                                END-IF
-                            END-PERFORM
-                       END-IF
-                   END-IF
-               END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           .
-       2001-SAISINSANTEIKA-COUNT-EXT.
+       2001-SANTEIKA-COUNT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1267,6 +1044,14 @@
                    PERFORM   JYURRK-READ-SEC
                END-PERFORM
            END-IF
+      *
+           INITIALIZE                        MCPAREA
+           MOVE    "DBCLOSE"         TO      MCP-FUNC
+           MOVE    "JYURRK-KEY12"    TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"       USING
+                                     MCPAREA
+                                     ORCMCPAREA
+                                     MCPDATA-REC
       *
            .
        2001-JUSHIN-KENSAKU-EXT.
@@ -1483,7 +1268,8 @@
                 MOVE    RECE02-RECESYUBETU   TO  RECE051-RECESYUBETU
                 MOVE    RECE02-HKNJANUM      TO  RECE051-HKNJANUM
                 MOVE    RECE02-TEKSTYMD      TO  RECE051-TEKSTYMD
-                MOVE    ZERO                 TO  RECE051-ZAINUM
+      *         MOVE    ZERO                 TO  RECE051-ZAINUM
+                MOVE    99999                TO  RECE051-ZAINUM
                 MOVE    "99"                 TO  RECE051-SRYKBN
                 ADD     1                    TO  WRK-RENNUM
                 MOVE    WRK-RENNUM           TO  RECE051-RENNUM
@@ -1516,7 +1302,8 @@
            MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
            MOVE    RECE02-HKNJANUM     TO  RECE041-HKNJANUM
            MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
-           MOVE    ZERO                TO  RECE041-ZAINUM
+      *    MOVE    ZERO                TO  RECE041-ZAINUM
+           MOVE    99999               TO  RECE041-ZAINUM
       *    MOVE    WRK-RECE04-KOHBUNRI TO  RECE041-KOHBUNRI
            MOVE    "99"                TO  RECE041-SRYKBN
       *
@@ -1565,52 +1352,16 @@
                                                 ORCMCPAREA
                                                 MCPDATA-REC
                   IF      MCP-RC        =       ZERO
-                      MOVE    RECE04-REC        TO      WRK-RECE04-REC
-                      MOVE    MCPDATA-REC       TO      SRYACT-REC
-                      INITIALIZE                        SRYACCT-REC
-                      MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                      MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                      MOVE    SRY-PTID          TO      ACCT-PTID
-                      MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                      MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                      MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                      MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                      MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                      MOVE    "DBSELECT"        TO      MCP-FUNC
-                      MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                      CALL    "ORCMCPSUB"       USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                      IF      MCP-RC    =       ZERO
-                          MOVE    "DBFETCH"     TO      MCP-FUNC
-                          MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                          CALL    "ORCMCPSUB"           USING
-                                                        MCPAREA
-                                                        ORCMCPAREA
-                                                        MCPDATA-REC
-                          IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC    TO   SRYACCT-REC
-                               COMPUTE  WRK-KOHBUNRI 
-                                          =    RECE04-KOHBUNRI  +  1
-                               ADD   ACCT-ZAIKAISU  
-                                          TO   CNT-DENWA(WRK-KOHBUNRI)
-                          END-IF
-                      END-IF
+                      COMPUTE  WRK-KOHBUNRI 
+                                 =    RECE04-KOHBUNRI  +  1
+                      ADD   RECE04-ZAIKAISU  
+                                 TO   CNT-DENWA(WRK-KOHBUNRI)
                   END-IF
               END-IF
       *
               INITIALIZE                        MCPAREA
               MOVE    "DBCLOSE"         TO      MCP-FUNC
               MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-              INITIALIZE                        MCPAREA
-              MOVE    "DBCLOSE"         TO      MCP-FUNC
-              MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
               CALL    "ORCMCPSUB"       USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -1657,52 +1408,16 @@
                                                 ORCMCPAREA
                                                 MCPDATA-REC
                   IF      MCP-RC        =       ZERO
-                      MOVE    RECE04-REC        TO      WRK-RECE04-REC
-                      MOVE    MCPDATA-REC       TO      SRYACT-REC
-                      INITIALIZE                        SRYACCT-REC
-                      MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                      MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                      MOVE    SRY-PTID          TO      ACCT-PTID
-                      MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                      MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                      MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                      MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                      MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                      MOVE    "DBSELECT"        TO      MCP-FUNC
-                      MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                      CALL    "ORCMCPSUB"       USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                      IF      MCP-RC    =       ZERO
-                          MOVE    "DBFETCH"     TO      MCP-FUNC
-                          MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                          CALL    "ORCMCPSUB"           USING
-                                                        MCPAREA
-                                                        ORCMCPAREA
-                                                        MCPDATA-REC
-                          IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC    TO   SRYACCT-REC
-                               COMPUTE  WRK-KOHBUNRI 
-                                          =    RECE04-KOHBUNRI  +  1
-                               ADD   ACCT-ZAIKAISU  
-                                          TO   CNT-DOUJITU(WRK-KOHBUNRI)
-                          END-IF
-                      END-IF
+                      COMPUTE  WRK-KOHBUNRI 
+                                 =    RECE04-KOHBUNRI  +  1
+                      ADD   RECE04-ZAIKAISU  
+                                 TO   CNT-DOUJITU(WRK-KOHBUNRI)
                   END-IF
               END-IF
       *
               INITIALIZE                        MCPAREA
               MOVE    "DBCLOSE"         TO      MCP-FUNC
               MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-              INITIALIZE                        MCPAREA
-              MOVE    "DBCLOSE"         TO      MCP-FUNC
-              MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
               CALL    "ORCMCPSUB"       USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -1733,7 +1448,6 @@
       *    MOVE    99999               TO  RECE041-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
            MOVE    WRK-KOHBUNRI        TO  RECE041-KOHBUNRI
-      *    MOVE    WRK-RECE04-KOHBUNRI TO  RECE041-KOHBUNRI
            MOVE    "99"                TO  RECE041-SRYKBN
       *
            MOVE    2                   TO  RECE041-MEISAISU
@@ -1803,7 +1517,6 @@
       *    MOVE    99999               TO  RECE041-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
            MOVE    WRK-KOHBUNRI        TO  RECE041-KOHBUNRI
-      *    MOVE    WRK-RECE04-KOHBUNRI TO  RECE041-KOHBUNRI
            MOVE    "99"                TO  RECE041-SRYKBN
       *
            MOVE    1                   TO  RECE041-MEISAISU
@@ -1863,7 +1576,6 @@
       *    MOVE    99999               TO  RECE041-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
            MOVE    WRK-KOHBUNRI        TO  RECE041-KOHBUNRI
-      *    MOVE    WRK-RECE04-KOHBUNRI TO  RECE041-KOHBUNRI
            MOVE    "99"                TO  RECE041-SRYKBN
       *
            MOVE    1                   TO  RECE041-MEISAISU
@@ -1908,325 +1620,58 @@
       *****************************************************************
        2001-SAISHIN4-COUNT-SEC          SECTION.
       *
-      *再診（４回目以降／人工腎臓）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SAISHIN41    TO      SRY-SRYCD (1)
-           MOVE    CONS-SAISHIN41    TO      SRY-SRYCD (2)
-           MOVE    CONS-SAISHIN41    TO      SRY-SRYCD (3)
-           MOVE    CONS-SAISHIN41    TO      SRY-SRYCD (4)
-           MOVE    CONS-SAISHIN41    TO      SRY-SRYCD (5)
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( IDX           >   TBL-JINSAI4-MAX )
       *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
+              INITIALIZE                        SRYACT-REC
+              MOVE    RECE04-HOSPID     TO      SRY-HOSPID
+              MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
+              MOVE    RECE04-PTID       TO      SRY-PTID
+              MOVE    RECE04-SRYYM      TO      SRY-SRYYM
+              MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
+              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (1)
+              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (2)
+              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (3)
+              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (4)
+              MOVE    TBL-JINSAI4(IDX)  TO      SRY-SRYCD (5)
       *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-SAISHIN4(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
+              MOVE    SRYACT-REC        TO      MCPDATA-REC
+              MOVE    "DBSELECT"        TO      MCP-FUNC
+              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
+              IF  MCP-RC                =       ZERO
+                  MOVE    "DBFETCH"     TO      MCP-FUNC
+                  MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+                  CALL    "ORCMCPSUB"           USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                  IF      MCP-RC        =       ZERO
+                      COMPUTE  WRK-KOHBUNRI 
+                                 =    RECE04-KOHBUNRI  +  1
+                      PERFORM  VARYING   IDX1  FROM  1  BY  1
+                               UNTIL     IDX1  >   31
+                          IF   RECE04-KAISU(1 IDX1)  NOT = ZERO
+                              MOVE  "1"  TO  
+                                    WRK-SAISHIN4(WRK-KOHBUNRI IDX1)
+                          END-IF
+                      END-PERFORM
+                  END-IF 
+              END-IF
       *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
+              INITIALIZE                        MCPAREA
+              MOVE    "DBCLOSE"         TO      MCP-FUNC
+              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
-      *再診（４回目以降／１５才未満）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SAISHIN42    TO      SRY-SRYCD (1)
-           MOVE    CONS-SAISHIN42    TO      SRY-SRYCD (2)
-           MOVE    CONS-SAISHIN42    TO      SRY-SRYCD (3)
-           MOVE    CONS-SAISHIN42    TO      SRY-SRYCD (4)
-           MOVE    CONS-SAISHIN42    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-SAISHIN4(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *再診（４回目以降／厚生大臣）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SAISHIN43    TO      SRY-SRYCD (1)
-           MOVE    CONS-SAISHIN43    TO      SRY-SRYCD (2)
-           MOVE    CONS-SAISHIN43    TO      SRY-SRYCD (3)
-           MOVE    CONS-SAISHIN43    TO      SRY-SRYCD (4)
-           MOVE    CONS-SAISHIN43    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-SAISHIN4(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *再診（４回目以降／厚生大臣／老人）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SAISHIN44    TO      SRY-SRYCD (1)
-           MOVE    CONS-SAISHIN44    TO      SRY-SRYCD (2)
-           MOVE    CONS-SAISHIN44    TO      SRY-SRYCD (3)
-           MOVE    CONS-SAISHIN44    TO      SRY-SRYCD (4)
-           MOVE    CONS-SAISHIN44    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-SAISHIN4(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
+           END-PERFORM
       *
            .
        2001-SAISHIN4-COUNT-EXT.
@@ -2237,170 +1682,175 @@
       *****************************************************************
        2001-JINZOU-COUNT-SEC          SECTION.
       *
-      *人工腎臓１について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-JINZOU1      TO      SRY-SRYCD (1)
-           MOVE    CONS-JINZOU1      TO      SRY-SRYCD (2)
-           MOVE    CONS-JINZOU1      TO      SRY-SRYCD (3)
-           MOVE    CONS-JINZOU1      TO      SRY-SRYCD (4)
-           MOVE    CONS-JINZOU1      TO      SRY-SRYCD (5)
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( IDX           >   TBL-JINZOU-MAX )
       *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
+              INITIALIZE                        SRYACT-REC
+              MOVE    RECE04-HOSPID     TO      SRY-HOSPID
+              MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
+              MOVE    RECE04-PTID       TO      SRY-PTID
+              MOVE    RECE04-SRYYM      TO      SRY-SRYYM
+              MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
+              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (1)
+              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (2)
+              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (3)
+              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (4)
+              MOVE    TBL-JINZOU(IDX)   TO      SRY-SRYCD (5)
       *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    RECE04-REC        TO      WRK-RECE04-REC
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE   MCPDATA-REC    TO  SRYACCT-REC
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1"  TO  WRK-JINZOU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
+              MOVE    SRYACT-REC        TO      MCPDATA-REC
+              MOVE    "DBSELECT"        TO      MCP-FUNC
+              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
+              IF  MCP-RC                =       ZERO
+                  MOVE    "DBFETCH"     TO      MCP-FUNC
+                  MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+                  CALL    "ORCMCPSUB"           USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                  IF      MCP-RC        =       ZERO
+                      MOVE    RECE04-REC    TO      WRK-RECE04-REC
+                      COMPUTE  WRK-KOHBUNRI 
+                                 =    RECE04-KOHBUNRI  +  1
+                      PERFORM  VARYING   IDX1  FROM  1  BY  1
+                               UNTIL     IDX1  >   31
+                          IF   RECE04-KAISU(1 IDX1)  NOT = ZERO
+                               MOVE  "1"  TO  
+                                     WRK-JINZOU(WRK-KOHBUNRI IDX1)
+                          END-IF
+                      END-PERFORM
+                  END-IF
+              END-IF
       *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
+              INITIALIZE                        MCPAREA
+              MOVE    "DBCLOSE"         TO      MCP-FUNC
+              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
-      *人工腎臓２について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-JINZOU2      TO      SRY-SRYCD (1)
-           MOVE    CONS-JINZOU2      TO      SRY-SRYCD (2)
-           MOVE    CONS-JINZOU2      TO      SRY-SRYCD (3)
-           MOVE    CONS-JINZOU2      TO      SRY-SRYCD (4)
-           MOVE    CONS-JINZOU2      TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    RECE04-REC        TO      WRK-RECE04-REC
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE   MCPDATA-REC    TO  SRYACCT-REC
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1"  TO  WRK-JINZOU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
+           END-PERFORM
       *
            .
        2001-JINZOU-COUNT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    リハビリのカウント
+      *****************************************************************
+       2001-RIHA-COUNT-SEC          SECTION.
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( IDX           >   TBL-RIHA-MAX )
+      *
+              INITIALIZE                        SRYACT-REC
+              MOVE    RECE04-HOSPID     TO      SRY-HOSPID
+              MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
+              MOVE    RECE04-PTID       TO      SRY-PTID
+              MOVE    RECE04-SRYYM      TO      SRY-SRYYM
+              MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
+              MOVE    TBL-RIHA(IDX)     TO      SRY-SRYCD (1)
+              MOVE    TBL-RIHA(IDX)     TO      SRY-SRYCD (2)
+              MOVE    TBL-RIHA(IDX)     TO      SRY-SRYCD (3)
+              MOVE    TBL-RIHA(IDX)     TO      SRY-SRYCD (4)
+              MOVE    TBL-RIHA(IDX)     TO      SRY-SRYCD (5)
+      *
+              MOVE    SRYACT-REC        TO      MCPDATA-REC
+              MOVE    "DBSELECT"        TO      MCP-FUNC
+              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+              IF  MCP-RC                =       ZERO
+                  MOVE    "DBFETCH"     TO      MCP-FUNC
+                  MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+                  CALL    "ORCMCPSUB"           USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                  IF      MCP-RC        =       ZERO
+                     EVALUATE    IDX
+                        WHEN   1  
+                        WHEN   2
+                           MOVE    1    TO    IDX2   
+                        WHEN   3  
+                        WHEN   4
+                           MOVE    2    TO    IDX2   
+                        WHEN   5  
+                        WHEN   6
+                           MOVE    3    TO    IDX2   
+                        WHEN   7  
+                        WHEN   8
+                           MOVE    4    TO    IDX2   
+                        WHEN   9  
+                        WHEN  10
+                           MOVE    5    TO    IDX2   
+                        WHEN  11  
+                        WHEN  12
+                           MOVE    6    TO    IDX2   
+                        WHEN  13  
+                        WHEN  14
+                           MOVE    7    TO    IDX2   
+                        WHEN  15  
+                        WHEN  16
+                           MOVE    8    TO    IDX2   
+                        WHEN  17  
+                        WHEN  18
+                           MOVE    9    TO    IDX2   
+                        WHEN  19  
+                        WHEN  20
+                           MOVE   10    TO    IDX2   
+                        WHEN  21  
+                        WHEN  22
+                           MOVE   11    TO    IDX2   
+                        WHEN  23  
+                        WHEN  24
+                           MOVE   12    TO    IDX2   
+                        WHEN  25  
+                           MOVE   13    TO    IDX2
+                        WHEN  26
+                           MOVE   14    TO    IDX2   
+                        WHEN  27  
+                           MOVE   15    TO    IDX2
+                        WHEN  28
+                           MOVE   16    TO    IDX2   
+                     END-EVALUATE
+                     COMPUTE  WRK-KOHBUNRI 
+                                 =    RECE04-KOHBUNRI  +  1
+                     IF  RECE04-ZAINUM  >  
+                                     WRK-RIHA-ZAINUM(WRK-KOHBUNRI IDX2)
+                         MOVE  RECE04-ZAINUM  TO  
+                                     WRK-RIHA-ZAINUM(WRK-KOHBUNRI IDX2)
+                     END-IF
+                     PERFORM  VARYING   IDX1  FROM  1  BY  1
+                              UNTIL     IDX1  >   31
+                         IF   RECE04-KAISU(1 IDX1)  NOT = ZERO
+                              MOVE  "1"  TO  
+                                    WRK-RIGAKU(WRK-KOHBUNRI IDX2 IDX1)
+                         END-IF
+                     END-PERFORM
+                  END-IF
+              END-IF
+      *
+              INITIALIZE                        MCPAREA
+              MOVE    "DBCLOSE"         TO      MCP-FUNC
+              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           END-PERFORM
+      *
+           .
+       2001-RIHA-COUNT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2409,18 +1859,24 @@
        2001-JINZOU-HANTEI-SEC          SECTION.
       *
       *    人工腎臓と再診の突き合わせ
-           MOVE       ZERO             TO     CNT-JINZOU
-           PERFORM    VARYING    IDX   FROM   1   BY   1
-                      UNTIL      IDX   >    31
-                  IF   (WRK-JINZOU(IDX)    =   "1")  AND
-                       (WRK-SAISHIN4(IDX)  =   "1")
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( IDX           >   5  )
+      *
+              MOVE       ZERO             TO     CNT-JINZOU
+              PERFORM    VARYING    IDY   FROM   1   BY   1
+                      UNTIL      IDY   >    31
+                  IF   (WRK-JINZOU(IDX IDY)    =   "1")  AND
+                       (WRK-SAISHIN4(IDX IDY)  =   "1")
                        ADD     1           TO   CNT-JINZOU
                   END-IF
-           END-PERFORM
+              END-PERFORM
       *
-           IF      CNT-JINZOU        NOT =      ZERO
-               MOVE    1         TO      FLG-JINZOU-COMMENT
-           END-IF
+              IF      CNT-JINZOU        NOT =      ZERO
+                  PERFORM    2002-JINZOU-COMMENT-SEC
+              END-IF
+      *
+           END-PERFORM
       *
            .
        2001-JINZOU-HANTEI-EXT.
@@ -2441,8 +1897,10 @@
            MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
            MOVE    RECE02-HKNJANUM     TO  RECE041-HKNJANUM
            MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
-           MOVE    ZERO                TO  RECE041-ZAINUM
-           MOVE    WRK-RECE04-KOHBUNRI TO  RECE041-KOHBUNRI
+           COMPUTE WRK-ZAINUM    =  99980  +  IDX
+           MOVE    WRK-ZAINUM          TO  RECE041-ZAINUM
+           COMPUTE WRK-KOHBUNRI  =  IDX  -  1
+           MOVE    WRK-KOHBUNRI        TO  RECE041-KOHBUNRI
            MOVE    WRK-RECE04-SRYKBN   TO  RECE041-SRYKBN
       *
            MOVE    1                   TO  RECE041-MEISAISU
@@ -2460,7 +1918,8 @@
            MOVE    RECE02-RECESYUBETU  TO  RECE051-RECESYUBETU
            MOVE    RECE02-HKNJANUM     TO  RECE051-HKNJANUM
            MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
-           MOVE    ZERO                TO  RECE051-ZAINUM
+           COMPUTE WRK-ZAINUM    =  99980  +  IDX
+           MOVE    WRK-ZAINUM          TO  RECE051-ZAINUM
            MOVE    WRK-RECE04-SRYKBN   TO  RECE051-SRYKBN
       *    人工腎臓コメントの挿入
            ADD     1                    TO  IDX-RECE05
@@ -2479,124 +1938,6 @@
       *
            .
        2002-JINZOU-COMMENT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    人工腎臓のコメント編集
-      *****************************************************************
-       2001-JINZOU-COMMENT-SEC          SECTION.
-      *
-           MOVE    RECE04-REC        TO      RECE041-REC
-           ADD     1                 TO      RECE041-MEISAISU
-           WRITE   RECE041-REC
-           ADD     1                 TO      CNT-RECE04
-      *
-      *      ※明細が５以上の場合
-             INITIALIZE                      RECE05-REC
-             MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
-             MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
-             MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
-             MOVE    RECE04-PTID         TO  RECE05-PTID
-             MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
-             MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
-             MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
-             MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
-             MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
-             MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
-             START   RECE05-FILE
-                 KEY IS    >=   RECE05-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE05
-                 NOT INVALID
-                     PERFORM 990-RECE05-NEXT-SEC
-                     MOVE    RECE05-REC  TO  WRK-RECE05-REC
-             END-START
-      *
-      *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
-             MOVE    ZERO                 TO  IDX-RECE05
-             MOVE    SPACE                TO  WRK-SRYACTINF-AREA
-             INITIALIZE                       WRK-SRYACTINF-AREA
-             MOVE    SPACE                TO  WRK-NAMEINF-AREA
-             INITIALIZE                       WRK-NAMEINF-AREA
-      *      人工腎臓コメントの挿入
-             ADD     1                    TO  IDX-RECE05
-             MOVE    SPACE                TO  COM-RECE05-REC
-             INITIALIZE                       COM-RECE05-REC
-             MOVE    "810000001"          TO  COM-SRYCD(1)
-             MOVE    ZERO                 TO  COM-SRYSURYO(1)
-             MOVE    14                   TO  COM-YUKOKETA(1)
-             MOVE    "再診４回目以降実施回数　　回"  TO COM-NAME(1)
-             MOVE    CNT-JINZOU           TO  DAY-IDX
-             MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(23:4)
-             MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-                                                   (IDX-RECE05)
-             MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-                                                   (IDX-RECE05)
-      *
-             PERFORM
-               UNTIL  ( FLG-RECE05           =   1                   )
-               OR     ( RECE04-HOSPID    NOT =   RECE05-HOSPID       )
-               OR     ( RECE04-SRYYM     NOT =   RECE05-SRYYM        )
-               OR     ( RECE04-NYUGAIKBN NOT =   RECE05-NYUGAIKBN    )
-               OR     ( RECE04-PTID      NOT =   RECE05-PTID         )
-               OR     ( RECE04-RECEKA    NOT =   RECE05-RECEKA       )
-               OR     ( RECE04-TEISYUTUSAKI
-                                         NOT =   RECE05-TEISYUTUSAKI )
-               OR     ( RECE04-RECESYUBETU
-                                         NOT =   RECE05-RECESYUBETU  )
-               OR     ( RECE04-HKNJANUM  NOT =   RECE05-HKNJANUM     )
-               OR     ( RECE04-TEKSTYMD  NOT =   RECE05-TEKSTYMD     )
-               OR     ( RECE04-ZAINUM    NOT =   RECE05-ZAINUM       )
-      *
-               PERFORM   VARYING   IDX   FROM    1   BY  1
-                         UNTIL   ( IDX               >   5     )
-                         OR      ( RECE05-SRYCD(IDX) =   SPACE )
-                    ADD    1             TO      IDX-RECE05
-                    MOVE   RECE05-SRYACTINF(IDX) TO
-                                             WRK-SRYACTINF(IDX-RECE05)
-                    MOVE   RECE05-NAMEINF(IDX)   TO
-                                             WRK-NAMEINF(IDX-RECE05)     
-               END-PERFORM 
-      *
-               PERFORM 990-RECE05-NEXT-SEC
-      *
-             END-PERFORM
-      *
-      *      腎臓コメントを含んだ内容で中間ファイルの再作成
-             MOVE       ZERO             TO      FLG-WRKRECE05
-             MOVE       ZERO             TO      IDX
-             MOVE       ZERO             TO      IDX-RECE05
-             MOVE       ZERO             TO      WRK-RENNUM
-             PERFORM    UNTIL     FLG-WRKRECE05  =    1
-                    INITIALIZE                        RECE051-REC
-                    MOVE    WRK-RECE05-KEY       TO   RECE051-KEY
-                    ADD     1                    TO   WRK-RENNUM
-                    MOVE    WRK-RENNUM           TO   RECE051-RENNUM
-                    MOVE    WRK-RECE05-KOHBUNRI  TO   RECE051-KOHBUNRI
-                    MOVE    WRK-RECE05-PTNUM     TO   RECE051-PTNUM
-                    MOVE    WRK-RECE05-SRYKA     TO   RECE051-SRYKA
-                    MOVE    WRK-RECE05-SRYKBN    TO   RECE051-SRYKBN
-                    MOVE    WRK-RECE05-SRYSYUKBN TO   RECE051-SRYSYUKBN
-                    MOVE    WRK-RECE05-JIHIMONEY TO   RECE051-JIHIMONEY
-                    PERFORM  VARYING   IDX   FROM   1   BY   1
-                             UNTIL   (IDX       >    5)   OR
-                                     (FLG-WRKRECE05   =   1)
-                       ADD         1             TO    IDX-RECE05
-                       IF  WK-RECE05-SRYCD(IDX-RECE05) = SPACE
-                           MOVE    1             TO    FLG-WRKRECE05
-                       ELSE
-                           MOVE  WRK-SRYACTINF(IDX-RECE05)
-                                            TO   RECE051-SRYACTINF(IDX)  
-                           MOVE  WRK-NAMEINF(IDX-RECE05)
-                                            TO   RECE051-NAMEINF(IDX)
-                       END-IF  
-                    END-PERFORM
-                    WRITE   RECE051-REC
-                    ADD     1                    TO  CNT-RECE05
-             END-PERFORM     
-      *
-           .
-       2001-JINZOU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2636,7 +1977,6 @@
                                              ORCMCPAREA
                                              MCPDATA-REC
                IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC   TO  SRYACT-REC
                    MOVE    1         TO      FLG-SHIDOU-COMMENT
                END-IF
            END-IF
@@ -2649,26 +1989,23 @@
                                      ORCMCPAREA
                                      MCPDATA-REC
       *
-      *
-      ***  IF  RECE04-SRYYM       >=  "200210"
-      *
-      *      算定履歴検索
-             INITIALIZE                  SANTEI-REC
-             MOVE    RECE04-HOSPID       TO  SANTEI-HOSPID
-             MOVE    RECE04-PTID         TO  SANTEI-PTID
-             MOVE    RECE04-SRYYM        TO  SANTEI-SRYYM
-             MOVE    "113006510"         TO  SANTEI-SRYCD
-             MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-             MOVE    ZERO                TO  SANTEI-SRYKA
-             MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-             MOVE    SANTEI-REC          TO  MCPDATA-REC
-             MOVE    "DBSELECT"          TO  MCP-FUNC
-             MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-             CALL    "ORCMCPSUB"         USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC
-             IF      MCP-RC              =   ZERO
+      *    算定履歴検索
+           INITIALIZE                  SANTEI-REC
+           MOVE    RECE04-HOSPID       TO  SANTEI-HOSPID
+           MOVE    RECE04-PTID         TO  SANTEI-PTID
+           MOVE    RECE04-SRYYM        TO  SANTEI-SRYYM
+           MOVE    "113006510"         TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
                   MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
                   PERFORM        SANTEI-READ-SEC
                   PERFORM   UNTIL   FLG-SANTEI  =   1
@@ -2682,19 +2019,105 @@
                      MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
                      PERFORM        SANTEI-READ-SEC
                   END-PERFORM
-             END-IF
+           END-IF
       *
-             MOVE    "DBCLOSE"           TO  MCP-FUNC
-             MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-             CALL    "ORCMCPSUB"         USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
-      ***  END-IF
+      *
+           IF      FLG-SHIDOU-COMMENT    =      1
+               PERFORM    2001-SHIDOU-COMMENT-SEC
+           ELSE
+               MOVE       RECE04-REC    TO   RECE041-REC
+               WRITE      RECE041-REC
+               ADD     1          TO      CNT-RECE04
+               PERFORM    2002-RECE05-TENSOU-SEC
+           END-IF         
       *
            .
        2001-SHIDOU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    指導管理料のコメント編集
+      *****************************************************************
+       2001-SHIDOU-COMMENT-SEC          SECTION.
+      *
+           PERFORM   2001-SHIDOU-DAY-SEC
+      *
+           MOVE       RECE04-REC    TO   RECE041-REC
+           ADD     1                TO   RECE041-MEISAISU
+           WRITE      RECE041-REC
+           ADD     1                TO   CNT-RECE04
+      *
+           INITIALIZE                      RECE05-REC
+           MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
+           MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
+           MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
+           MOVE    RECE04-PTID         TO  RECE05-PTID
+           MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
+           MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
+           MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
+           MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
+           MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
+           MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
+           START   RECE05-FILE
+                 KEY IS    >=   RECE05-KEY
+                 INVALID
+                     MOVE    1           TO  FLG-RECE05
+                 NOT INVALID
+                     PERFORM 990-RECE05-NEXT-SEC
+           END-START
+      *
+           MOVE    RECE05-REC       TO      RECE051-REC
+           MOVE    RECE05-SRYACTINF(1)  TO  RECE051-SRYACTINF(1)
+           MOVE    RECE05-SRYACTINF(2)  TO  RECE051-SRYACTINF(3)
+           MOVE    RECE05-SRYACTINF(3)  TO  RECE051-SRYACTINF(4)
+           MOVE    RECE05-SRYACTINF(4)  TO  RECE051-SRYACTINF(5)
+           MOVE    RECE05-NAMEINF(1)    TO  RECE051-NAMEINF(1)
+           MOVE    RECE05-NAMEINF(2)    TO  RECE051-NAMEINF(3)
+           MOVE    RECE05-NAMEINF(3)    TO  RECE051-NAMEINF(4)
+           MOVE    RECE05-NAMEINF(4)    TO  RECE051-NAMEINF(5)
+      *
+           MOVE    SPACE                TO  RECE051-SRYACTINF(2)
+           INITIALIZE                       RECE051-SRYACTINF(2)
+           MOVE    "810000001"          TO  RECE051-SRYCD(2)
+           MOVE    ZERO                 TO  RECE051-SRYSURYO(2)
+           MOVE    15                   TO  RECE051-YUKOKETA(2)
+           MOVE    "慢性疼痛疾患管理算定日　　　日"
+                                        TO  RECE051-NAME(2)
+           MOVE     TB-SHUJUTSU-DAY(1)  TO  DAY-IDX
+           MOVE     TBL-DAY(DAY-IDX)    TO  RECE051-NAME(2)(25:4)
+           WRITE    RECE051-REC
+           ADD      1                    TO  CNT-RECE05
+      *
+           .
+       2001-SHIDOU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    指導管理算定日の確定
+      *****************************************************************
+       2001-SHIDOU-DAY-SEC          SECTION.
+      *
+           INITIALIZE                TBL-SHUJUTSU-DAY
+      *
+           MOVE    ZERO          TO  DAY-IDX
+           PERFORM    VARYING    IDX  FROM   1   BY   1
+                      UNTIL     (IDX      >   31)  OR
+                                (DAY-IDX  >   10)
+                IF   RECE04-KAISU(1 IDX)  NOT = ZERO
+                      ADD   1     TO   DAY-IDX
+                      MOVE  IDX   TO   TB-SHUJUTSU-DAY(DAY-IDX)
+                END-IF
+           END-PERFORM
+      *
+           .
+       2001-SHIDOU-DAY-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2734,7 +2157,7 @@
                                              ORCMCPAREA
                                              MCPDATA-REC
                IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC   TO  SRYACT-REC
+                   CONTINUE
                ELSE
                    MOVE    1         TO      FLG-SHUJUTU-COMMENT
                END-IF
@@ -2748,66 +2171,19 @@
                                      ORCMCPAREA
                                      MCPDATA-REC
       *
+      *
+           IF     (FLG-SHUJUTU-COMMENT   =      1)  AND
+                  (RECE04-SYUTEN1    NOT =   ZERO)
+               PERFORM    2001-SHUJUTSU-COMMENT-SEC
+           ELSE
+               MOVE       RECE04-REC    TO   RECE041-REC
+               WRITE      RECE041-REC
+               ADD     1          TO      CNT-RECE04
+               PERFORM    2002-RECE05-TENSOU-SEC
+           END-IF
+      *
            .
        2001-SHUJUTSU-HANTEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    指導管理料のコメント編集
-      *****************************************************************
-       2001-SHIDOU-COMMENT-SEC          SECTION.
-      *
-           PERFORM   2001-SHIDOU-DAY-SEC
-      *
-             MOVE       RECE04-REC    TO   RECE041-REC
-             ADD     1                TO   RECE041-MEISAISU
-             WRITE      RECE041-REC
-             ADD     1                TO   CNT-RECE04
-      *
-             INITIALIZE                      RECE05-REC
-             MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
-             MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
-             MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
-             MOVE    RECE04-PTID         TO  RECE05-PTID
-             MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
-             MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
-             MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
-             MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
-             MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
-             MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
-             START   RECE05-FILE
-                 KEY IS    >=   RECE05-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE05
-                 NOT INVALID
-                     PERFORM 990-RECE05-NEXT-SEC
-             END-START
-      *
-             MOVE    RECE05-REC       TO      RECE051-REC
-             MOVE    RECE05-SRYACTINF(1)  TO  RECE051-SRYACTINF(1)
-             MOVE    RECE05-SRYACTINF(2)  TO  RECE051-SRYACTINF(3)
-             MOVE    RECE05-SRYACTINF(3)  TO  RECE051-SRYACTINF(4)
-             MOVE    RECE05-SRYACTINF(4)  TO  RECE051-SRYACTINF(5)
-             MOVE    RECE05-NAMEINF(1)    TO  RECE051-NAMEINF(1)
-             MOVE    RECE05-NAMEINF(2)    TO  RECE051-NAMEINF(3)
-             MOVE    RECE05-NAMEINF(3)    TO  RECE051-NAMEINF(4)
-             MOVE    RECE05-NAMEINF(4)    TO  RECE051-NAMEINF(5)
-      *
-             MOVE    SPACE                TO  RECE051-SRYACTINF(2)
-             INITIALIZE                       RECE051-SRYACTINF(2)
-             MOVE    "810000001"          TO  RECE051-SRYCD(2)
-             MOVE    ZERO                 TO  RECE051-SRYSURYO(2)
-             MOVE    15                   TO  RECE051-YUKOKETA(2)
-             MOVE    "慢性疼痛疾患管理算定日　　　日"
-                                          TO  RECE051-NAME(2)
-             MOVE     TB-SHUJUTSU-DAY(1)  TO  DAY-IDX
-             MOVE     TBL-DAY(DAY-IDX)    TO  RECE051-NAME(2)(25:4)
-             WRITE    RECE051-REC
-             ADD      1                    TO  CNT-RECE05
-      *    
-      *
-           .
-       2001-SHIDOU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2816,56 +2192,157 @@
        2001-SHUJUTSU-COMMENT-SEC          SECTION.
       *
            PERFORM   2001-SHUJUTSU-DAY-SEC
+      *    ※明細が５以上の場合
+           INITIALIZE                      RECE05-REC
+           MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
+           MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
+           MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
+           MOVE    RECE04-PTID         TO  RECE05-PTID
+           MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
+           MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
+           MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
+           MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
+           MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
+           MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
+           START   RECE05-FILE
+                 KEY IS    >=   RECE05-KEY
+                 INVALID
+                     MOVE    1           TO  FLG-RECE05
+                 NOT INVALID
+                     PERFORM 990-RECE05-NEXT-SEC
+                     MOVE    RECE05-REC  TO  WRK-RECE05-REC
+           END-START
       *
-      **     MOVE    RECE04-REC        TO      RECE041-REC
-      **     ADD     1                 TO      RECE041-MEISAISU
-      **     WRITE   RECE041-REC
-      **     ADD     1                 TO      CNT-RECE04
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
+           MOVE    ZERO                 TO  IDX-RECE05
+           MOVE    SPACE                TO  WRK-SRYACTINF-AREA
+           INITIALIZE                       WRK-SRYACTINF-AREA
+           MOVE    SPACE                TO  WRK-NAMEINF-AREA
+           INITIALIZE                       WRK-NAMEINF-AREA
+      *    手術日コメントの挿入
+           PERFORM  VARYING      IDX    FROM  1   BY   1
+                    UNTIL       (IDX    >     10)      OR
+                                (TB-SHUJUTSU-DAY(IDX)  =  ZERO)
+               ADD     1                    TO  IDX-RECE05
+               MOVE    SPACE                TO  COM-RECE05-REC
+               INITIALIZE                       COM-RECE05-REC
+               MOVE    "840000042"          TO  COM-SRYCD(1)
+               MOVE    ZERO                 TO  COM-SRYSURYO(1)
+               MOVE    6                    TO  COM-YUKOKETA(1)
+               MOVE    "手術　　　日"       TO  COM-NAME(1)
+               MOVE    TB-SHUJUTSU-DAY(IDX) TO  DAY-IDX
+               MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
+               MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+                                                     (IDX-RECE05)
+               MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+                                                     (IDX-RECE05)
+           END-PERFORM
       *
-      **     IF      RECE041-MEISAISU  <=      2
-      **       INITIALIZE                      RECE05-REC
-      **       MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
-      **       MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
-      **       MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
-      **       MOVE    RECE04-PTID         TO  RECE05-PTID
-      **       MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
-      **       MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
-      **       MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
-      **       MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
-      **       MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
-      **       MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
-      **       START   RECE05-FILE
-      **           KEY IS    >=   RECE05-KEY
-      **           INVALID
-      **               MOVE    1           TO  FLG-RECE05
-      **           NOT INVALID
-      **               PERFORM 990-RECE05-NEXT-SEC
-      **       END-START
+           PERFORM
+             UNTIL  ( FLG-RECE05           =   1                   )
+             OR     ( RECE04-HOSPID    NOT =   RECE05-HOSPID       )
+             OR     ( RECE04-SRYYM     NOT =   RECE05-SRYYM        )
+             OR     ( RECE04-NYUGAIKBN NOT =   RECE05-NYUGAIKBN    )
+             OR     ( RECE04-PTID      NOT =   RECE05-PTID         )
+             OR     ( RECE04-RECEKA    NOT =   RECE05-RECEKA       )
+             OR     ( RECE04-TEISYUTUSAKI
+                                       NOT =   RECE05-TEISYUTUSAKI )
+             OR     ( RECE04-RECESYUBETU
+                                       NOT =   RECE05-RECESYUBETU  )
+             OR     ( RECE04-HKNJANUM  NOT =   RECE05-HKNJANUM     )
+             OR     ( RECE04-TEKSTYMD  NOT =   RECE05-TEKSTYMD     )
+             OR     ( RECE04-ZAINUM    NOT =   RECE05-ZAINUM       )
       *
-      **       MOVE    RECE05-REC       TO      RECE051-REC
-      **       MOVE    RECE05-SRYACTINF(1)  TO  RECE051-SRYACTINF(2)
-      **       MOVE    RECE05-SRYACTINF(2)  TO  RECE051-SRYACTINF(3)
-      **       MOVE    RECE05-SRYACTINF(3)  TO  RECE051-SRYACTINF(4)
-      **       MOVE    RECE05-SRYACTINF(4)  TO  RECE051-SRYACTINF(5)
-      **       MOVE    RECE05-NAMEINF(1)    TO  RECE051-NAMEINF(2)
-      **       MOVE    RECE05-NAMEINF(2)    TO  RECE051-NAMEINF(3)
-      **       MOVE    RECE05-NAMEINF(3)    TO  RECE051-NAMEINF(4)
-      **       MOVE    RECE05-NAMEINF(4)    TO  RECE051-NAMEINF(5)
+             PERFORM   VARYING   IDX   FROM    1   BY  1
+                       UNTIL   ( IDX               >   5     )
+                       OR      ( RECE05-SRYCD(IDX) =   SPACE )
+                  ADD    1             TO      IDX-RECE05
+                  MOVE   RECE05-SRYACTINF(IDX) TO
+                                           WRK-SRYACTINF(IDX-RECE05)
+                  MOVE   RECE05-NAMEINF(IDX)   TO
+                                           WRK-NAMEINF(IDX-RECE05)     
+             END-PERFORM 
       *
-      **       MOVE    SPACE                TO  RECE051-SRYACTINF(1)
-      **       INITIALIZE                       RECE051-SRYACTINF(1)
-      **       MOVE    "840000042"          TO  RECE051-SRYCD(1)
-      **       MOVE    ZERO                 TO  RECE051-SRYSURYO(1)
-      **       MOVE    6                    TO  RECE051-YUKOKETA(1)
-      **       MOVE    "手術　　　日"       TO  RECE051-NAME(1)
-      **       MOVE     TB-SHUJUTSU-DAY(1)  TO  DAY-IDX
-      **       MOVE    TBL-DAY(DAY-IDX)    TO  RECE051-NAME(1)(7:4)
-      **       WRITE   RECE051-REC
-      **       ADD     1                    TO  CNT-RECE05
-      *    
-      **     ELSE
+             PERFORM 990-RECE05-NEXT-SEC
       *
-      **     ※明細が５以上の場合
+           END-PERFORM
+      *
+      *    手術日コメントを含んだ内容で中間ファイルの再作成
+           MOVE       ZERO             TO      FLG-WRKRECE05
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE05
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE05  =    1
+                  INITIALIZE                        RECE051-REC
+                  MOVE    WRK-RECE05-KEY       TO   RECE051-KEY
+                  ADD     1                    TO   WRK-RENNUM
+                  MOVE    WRK-RENNUM           TO   RECE051-RENNUM
+                  MOVE    WRK-RECE05-KOHBUNRI  TO   RECE051-KOHBUNRI
+                  MOVE    WRK-RECE05-PTNUM     TO   RECE051-PTNUM
+                  MOVE    WRK-RECE05-SRYKA     TO   RECE051-SRYKA
+                  MOVE    WRK-RECE05-SRYKBN    TO   RECE051-SRYKBN
+                  MOVE    WRK-RECE05-SRYSYUKBN TO   RECE051-SRYSYUKBN
+                  MOVE    WRK-RECE05-JIHIMONEY TO   RECE051-JIHIMONEY
+                  PERFORM  VARYING   IDX   FROM   1   BY   1
+                           UNTIL   (IDX       >    5)   OR
+                                   (FLG-WRKRECE05   =   1)
+                     ADD         1             TO    IDX-RECE05
+                     IF  WK-RECE05-SRYCD(IDX-RECE05) = SPACE
+                         MOVE    1             TO    FLG-WRKRECE05
+                     ELSE
+                         MOVE  WRK-SRYACTINF(IDX-RECE05)
+                                          TO   RECE051-SRYACTINF(IDX)  
+                         MOVE  WRK-NAMEINF(IDX-RECE05)
+                                          TO   RECE051-NAMEINF(IDX)
+                         ADD   1          TO   WRK-CNT-MEISAI
+                     END-IF  
+                  END-PERFORM
+                  WRITE   RECE051-REC
+                  ADD     1                    TO  CNT-RECE05
+           END-PERFORM     
+      *
+           MOVE    RECE04-REC        TO      RECE041-REC
+           MOVE    WRK-CNT-MEISAI    TO      RECE041-MEISAISU
+           WRITE   RECE041-REC
+           ADD     1                 TO      CNT-RECE04
+      *
+           .
+       2001-SHUJUTSU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    手術日の確定
+      *****************************************************************
+       2001-SHUJUTSU-DAY-SEC          SECTION.
+      *
+           INITIALIZE                TBL-SHUJUTSU-DAY
+      *
+           MOVE    ZERO          TO  DAY-IDX
+           PERFORM    VARYING    IDX  FROM   1   BY   1
+                      UNTIL     (IDX      >   31)  OR
+                                (DAY-IDX  >   10)
+                IF   RECE04-KAISU(1 IDX)  NOT = ZERO
+                      ADD   1     TO   DAY-IDX
+                      MOVE  IDX   TO   TB-SHUJUTSU-DAY(DAY-IDX)
+                END-IF
+           END-PERFORM
+      *
+           .
+       2001-SHUJUTSU-DAY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    リハビリのコメント編集
+      *****************************************************************
+       2001-RIHA-COMMENT-SEC          SECTION.
+      *
+           MOVE    RECE04-REC        TO      RECE041-REC
+           ADD     1                 TO      RECE041-MEISAISU
+           WRITE   RECE041-REC
+           ADD     1                 TO      CNT-RECE04
+      *
+      *      ※明細が５以上の場合
              INITIALIZE                      RECE05-REC
              MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
              MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
@@ -2892,24 +2369,156 @@
              INITIALIZE                       WRK-SRYACTINF-AREA
              MOVE    SPACE                TO  WRK-NAMEINF-AREA
              INITIALIZE                       WRK-NAMEINF-AREA
-      *        手術日コメントの挿入
-             PERFORM  VARYING      IDX    FROM  1   BY   1
-                      UNTIL       (IDX    >     10)      OR
-                                  (TB-SHUJUTSU-DAY(IDX)  =  ZERO)
-                 ADD     1                    TO  IDX-RECE05
-                 MOVE    SPACE                TO  COM-RECE05-REC
-                 INITIALIZE                       COM-RECE05-REC
-                 MOVE    "840000042"          TO  COM-SRYCD(1)
-                 MOVE    ZERO                 TO  COM-SRYSURYO(1)
-                 MOVE    6                    TO  COM-YUKOKETA(1)
-                 MOVE    "手術　　　日"       TO  COM-NAME(1)
-                 MOVE    TB-SHUJUTSU-DAY(IDX) TO  DAY-IDX
-                 MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
-                 MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-                                                       (IDX-RECE05)
-                 MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-                                                       (IDX-RECE05)
-             END-PERFORM
+      *      リハビリコメントの挿入
+      *      ADD     1                    TO  IDX-RECE05
+             MOVE    SPACE                TO  COM-RECE05-REC
+             INITIALIZE                       COM-RECE05-REC
+             MOVE    "840000096"          TO  COM-SRYCD(1)
+             MOVE    ZERO                 TO  COM-SRYSURYO(1)
+             MOVE    7                    TO  COM-YUKOKETA(1)
+             MOVE    "実施日数　　日"     TO  COM-NAME(1)
+             MOVE    ZERO                 TO  CNT-RIHA
+             EVALUATE   RECE04-ZAINUM
+                 WHEN   WRK-RIGA1-SHU-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-RIGA1-SHU(WRK-KOHBUNRI IDX) 
+                                                      NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-RIGA2-SHU-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-RIGA2-SHU(WRK-KOHBUNRI IDX) 
+                                                      NOT = SPACE
+                                ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-RIGA3-SHU-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-RIGA3-SHU(WRK-KOHBUNRI IDX) 
+                                                      NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-RIGA4-SHU-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-RIGA4-SHU(WRK-KOHBUNRI IDX) 
+                                                      NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-RIGA1-KO-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-RIGA1-KO(WRK-KOHBUNRI IDX) 
+                                                     NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-RIGA2-KO-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-RIGA2-KO(WRK-KOHBUNRI IDX) 
+                                                     NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-RIGA3-KO-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-RIGA3-KO(WRK-KOHBUNRI IDX) 
+                                                     NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-RIGA4-KO-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-RIGA4-KO(WRK-KOHBUNRI IDX) 
+                                                     NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-SAGYO1-SHU-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-SAGYO1-SHU(WRK-KOHBUNRI IDX) 
+                                                       NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-SAGYO2-SHU-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-SAGYO2-SHU(WRK-KOHBUNRI IDX) 
+                                                       NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-SAGYO1-KO-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-SAGYO1-KO(WRK-KOHBUNRI IDX) 
+                                                      NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-SAGYO2-KO-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-SAGYO2-KO(WRK-KOHBUNRI IDX) 
+                                                      NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-GENGO1-SHU-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-GENGO1-SHU(WRK-KOHBUNRI IDX) 
+                                                       NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-GENGO2-SHU-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-GENGO2-SHU(WRK-KOHBUNRI IDX) 
+                                                       NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-GENGO1-KO-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-GENGO1-KO(WRK-KOHBUNRI IDX) 
+                                                      NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   WRK-GENGO2-KO-ZAINUM(WRK-KOHBUNRI)
+                        PERFORM  VARYING  IDX   FROM  1  BY  1
+                                 UNTIL    IDX   >   31
+                            IF   WRK-GENGO2-KO(WRK-KOHBUNRI IDX) 
+                                                      NOT = SPACE
+                                 ADD      1     TO  CNT-RIHA
+                            END-IF
+                        END-PERFORM
+                 WHEN   OTHER
+                        CONTINUE
+             END-EVALUATE
+             IF      CNT-RIHA             NOT =    ZERO
+               MOVE    CNT-RIHA             TO  DAY-IDX
+               MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(9:4)
+               COMPUTE  MAX-MEISAISU        =   RECE04-MEISAISU  +  1
+               MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+                                                     (MAX-MEISAISU)
+               MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+                                                     (MAX-MEISAISU)
+             END-IF
       *
              PERFORM
                UNTIL  ( FLG-RECE05           =   1                   )
@@ -2940,12 +2549,11 @@
       *
              END-PERFORM
       *
-      *      手術日コメントを含んだ内容で中間ファイルの再作成
+      *      リハビリコメントを含んだ内容で中間ファイルの再作成
              MOVE       ZERO             TO      FLG-WRKRECE05
              MOVE       ZERO             TO      IDX
              MOVE       ZERO             TO      IDX-RECE05
              MOVE       ZERO             TO      WRK-RENNUM
-             MOVE       ZERO             TO      WRK-CNT-MEISAI
              PERFORM    UNTIL     FLG-WRKRECE05  =    1
                     INITIALIZE                        RECE051-REC
                     MOVE    WRK-RECE05-KEY       TO   RECE051-KEY
@@ -2968,139 +2576,14 @@
                                             TO   RECE051-SRYACTINF(IDX)  
                            MOVE  WRK-NAMEINF(IDX-RECE05)
                                             TO   RECE051-NAMEINF(IDX)
-                           ADD   1          TO   WRK-CNT-MEISAI
                        END-IF  
                     END-PERFORM
                     WRITE   RECE051-REC
                     ADD     1                    TO  CNT-RECE05
              END-PERFORM     
       *
-             MOVE    RECE04-REC        TO      RECE041-REC
-             MOVE    WRK-CNT-MEISAI    TO      RECE041-MEISAISU
-             WRITE   RECE041-REC
-             ADD     1                 TO      CNT-RECE04
-      *
-      **     END-IF
-      *
            .
-       2001-SHUJUTSU-COMMENT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    指導管理算定日の確定
-      *****************************************************************
-       2001-SHIDOU-DAY-SEC          SECTION.
-      *
-           INITIALIZE                TBL-SHUJUTSU-DAY
-      *
-           INITIALIZE                        SRYACCT-REC
-           MOVE    RECE04-HOSPID     TO      ACCT-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      ACCT-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      ACCT-PTID
-           MOVE    RECE04-SRYKA      TO      ACCT-SRYKA
-           MOVE    RECE04-SRYYM      TO      ACCT-SRYYM
-           MOVE    RECE04-SRYKBN     TO      ACCT-SRYKBN
-           MOVE    RECE04-ZAINUM     TO      ACCT-ZAINUM
-      *
-           MOVE    SRYACCT-REC       TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =  ZERO
-               MOVE    "DBFETCH"      TO     MCP-FUNC
-               MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-              IF      MCP-RC        =        ZERO
-                   MOVE    ZERO          TO  DAY-IDX
-                   MOVE    MCPDATA-REC   TO  SRYACCT-REC
-                   PERFORM    VARYING    IDX  FROM   1   BY   1
-                              UNTIL     (IDX      >   31)  OR
-                                        (DAY-IDX  >   10)
-                        IF    ACCT-DAY(1 IDX)  NOT =  ZERO
-                              ADD   1     TO   DAY-IDX
-                              MOVE  IDX   TO  TB-SHUJUTSU-DAY(DAY-IDX)
-                        END-IF
-                         CONTINUE
-                   END-PERFORM
-              END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           .
-       2001-SHIDOU-DAY-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    手術日の確定
-      *****************************************************************
-       2001-SHUJUTSU-DAY-SEC          SECTION.
-      *
-           INITIALIZE                TBL-SHUJUTSU-DAY
-      *
-           INITIALIZE                        SRYACCT-REC
-           MOVE    RECE04-HOSPID     TO      ACCT-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      ACCT-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      ACCT-PTID
-           MOVE    RECE04-SRYKA      TO      ACCT-SRYKA
-           MOVE    RECE04-SRYYM      TO      ACCT-SRYYM
-           MOVE    RECE04-SRYKBN     TO      ACCT-SRYKBN
-           MOVE    RECE04-ZAINUM     TO      ACCT-ZAINUM
-      *
-           MOVE    SRYACCT-REC       TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =  ZERO
-               MOVE    "DBFETCH"      TO     MCP-FUNC
-               MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-              IF      MCP-RC        =        ZERO
-                   MOVE    ZERO          TO  DAY-IDX
-                   MOVE    MCPDATA-REC   TO  SRYACCT-REC
-                   PERFORM    VARYING    IDX  FROM   1   BY   1
-                              UNTIL     (IDX      >   31)  OR
-                                        (DAY-IDX  >   10)
-                        IF    ACCT-DAY(1 IDX)  NOT =  ZERO
-                              ADD   1     TO   DAY-IDX
-                              MOVE  IDX   TO  TB-SHUJUTSU-DAY(DAY-IDX)
-                        END-IF
-                         CONTINUE
-                   END-PERFORM
-              END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           .
-       2001-SHUJUTSU-DAY-EXT.
+       2001-RIHA-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3212,7 +2695,6 @@
            DISPLAY "RECE04  CNT " CNT-RECE04 
            DISPLAY "RECE05  CNT " CNT-RECE05 
            DISPLAY "*** ORCR0040 END ***"
-      ***     ACCEPT  WRK-IN FROM CONSOLE 
       *
            .
        300-END-EXT.
@@ -3285,70 +2767,6 @@
       *
            .
        990-RECE05-NEXT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数マスター読込（キー）
-      *****************************************************************
-       900-TENSU-INV-SEC         SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-TENSU
-                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-               ELSE
-                   INITIALIZE                  TNS-TENSU-REC
-                   MOVE    1                   TO  FLG-TENSU
-               END-IF
-           ELSE
-               INITIALIZE                  TNS-TENSU-REC
-               MOVE    1                   TO  FLG-TENSU
-           END-IF
-      *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           .
-       900-TENSU-INV-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数読込
-      *****************************************************************
-       TENSU-READ-SEC           SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
-               MOVE    ZERO            TO  FLG-TENSU
-           ELSE
-               INITIALIZE                  TNS-TENSU-REC
-               MOVE    1               TO  FLG-TENSU
-           END-IF
-      *
-           .
-       TENSU-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3499,2603 +2917,4 @@
                                         MCPDATA-REC.
            .
        900-DBSTART-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    リハビリのカウント
-      *****************************************************************
-       2001-RIHA-COUNT-SEC          SECTION.
-      *
-      *理学療法（１）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA1-SHU1   TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA1-SHU1   TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA1-SHU1   TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA1-SHU1   TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA1-SHU1   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA1-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA1-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA1-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（１）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA1-SHU2   TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA1-SHU2   TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA1-SHU2   TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA1-SHU2   TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA1-SHU2   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA1-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA1-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA1-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（１）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA1-KO1    TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA1-KO1    TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA1-KO1    TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA1-KO1    TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA1-KO1    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA1-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA1-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA1-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（１）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA1-KO2    TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA1-KO2    TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA1-KO2    TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA1-KO2    TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA1-KO2    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA1-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA1-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA1-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（２）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA2-SHU1   TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA2-SHU1   TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA2-SHU1   TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA2-SHU1   TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA2-SHU1   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA2-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA2-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA2-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（２）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA2-SHU2   TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA2-SHU2   TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA2-SHU2   TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA2-SHU2   TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA2-SHU2   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA2-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA2-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA2-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（２）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA2-KO1    TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA2-KO1    TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA2-KO1    TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA2-KO1    TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA2-KO1    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA2-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA2-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA2-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（２）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA2-KO2    TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA2-KO2    TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA2-KO2    TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA2-KO2    TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA2-KO2    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA2-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA2-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA2-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（３）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA3-SHU1   TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA3-SHU1   TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA3-SHU1   TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA3-SHU1   TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA3-SHU1   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA3-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA3-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA3-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（３）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA3-SHU2   TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA3-SHU2   TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA3-SHU2   TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA3-SHU2   TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA3-SHU2   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA3-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA3-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA3-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（３）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA3-KO1    TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA3-KO1    TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA3-KO1    TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA3-KO1    TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA3-KO1    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA3-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA3-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA3-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（３）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA3-KO2    TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA3-KO2    TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA3-KO2    TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA3-KO2    TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA3-KO2    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA3-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA3-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA3-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（４）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA4-SHU1   TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA4-SHU1   TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA4-SHU1   TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA4-SHU1   TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA4-SHU1   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA4-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA4-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA4-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（４）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA4-SHU2   TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA4-SHU2   TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA4-SHU2   TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA4-SHU2   TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA4-SHU2   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA4-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA4-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA4-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（４）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA4-KO1    TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA4-KO1    TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA4-KO1    TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA4-KO1    TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA4-KO1    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA4-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA4-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA4-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *理学療法（４）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-RIGA4-KO2    TO      SRY-SRYCD (1)
-           MOVE    CONS-RIGA4-KO2    TO      SRY-SRYCD (2)
-           MOVE    CONS-RIGA4-KO2    TO      SRY-SRYCD (3)
-           MOVE    CONS-RIGA4-KO2    TO      SRY-SRYCD (4)
-           MOVE    CONS-RIGA4-KO2    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM  > WRK-RIGA4-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                  WRK-RIGA4-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                        MOVE  "1" TO WRK-RIGA4-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *作業療法（１）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SAGYO1-SHU1  TO      SRY-SRYCD (1)
-           MOVE    CONS-SAGYO1-SHU1  TO      SRY-SRYCD (2)
-           MOVE    CONS-SAGYO1-SHU1  TO      SRY-SRYCD (3)
-           MOVE    CONS-SAGYO1-SHU1  TO      SRY-SRYCD (4)
-           MOVE    CONS-SAGYO1-SHU1  TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM > WRK-SAGYO1-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                 WRK-SAGYO1-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                       MOVE  "1" TO WRK-SAGYO1-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *作業療法（１）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SAGYO1-SHU2  TO      SRY-SRYCD (1)
-           MOVE    CONS-SAGYO1-SHU2  TO      SRY-SRYCD (2)
-           MOVE    CONS-SAGYO1-SHU2  TO      SRY-SRYCD (3)
-           MOVE    CONS-SAGYO1-SHU2  TO      SRY-SRYCD (4)
-           MOVE    CONS-SAGYO1-SHU2  TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM > WRK-SAGYO1-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                 WRK-SAGYO1-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                       MOVE  "1" TO WRK-SAGYO1-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *作業療法（２）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SAGYO2-SHU1  TO      SRY-SRYCD (1)
-           MOVE    CONS-SAGYO2-SHU1  TO      SRY-SRYCD (2)
-           MOVE    CONS-SAGYO2-SHU1  TO      SRY-SRYCD (3)
-           MOVE    CONS-SAGYO2-SHU1  TO      SRY-SRYCD (4)
-           MOVE    CONS-SAGYO2-SHU1  TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM > WRK-SAGYO2-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                 WRK-SAGYO2-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                       MOVE  "1" TO WRK-SAGYO2-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *作業療法（２）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SAGYO2-SHU2  TO      SRY-SRYCD (1)
-           MOVE    CONS-SAGYO2-SHU2  TO      SRY-SRYCD (2)
-           MOVE    CONS-SAGYO2-SHU2  TO      SRY-SRYCD (3)
-           MOVE    CONS-SAGYO2-SHU2  TO      SRY-SRYCD (4)
-           MOVE    CONS-SAGYO2-SHU2  TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM > WRK-SAGYO2-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                 WRK-SAGYO2-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                       MOVE  "1" TO WRK-SAGYO2-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *作業療法（１）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SAGYO1-KO1   TO      SRY-SRYCD (1)
-           MOVE    CONS-SAGYO1-KO1   TO      SRY-SRYCD (2)
-           MOVE    CONS-SAGYO1-KO1   TO      SRY-SRYCD (3)
-           MOVE    CONS-SAGYO1-KO1   TO      SRY-SRYCD (4)
-           MOVE    CONS-SAGYO1-KO1   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM > WRK-SAGYO1-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                 WRK-SAGYO1-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                       MOVE  "1" TO WRK-SAGYO1-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *作業療法（１）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SAGYO1-KO2   TO      SRY-SRYCD (1)
-           MOVE    CONS-SAGYO1-KO2   TO      SRY-SRYCD (2)
-           MOVE    CONS-SAGYO1-KO2   TO      SRY-SRYCD (3)
-           MOVE    CONS-SAGYO1-KO2   TO      SRY-SRYCD (4)
-           MOVE    CONS-SAGYO1-KO2   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM > WRK-SAGYO1-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                 WRK-SAGYO1-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                       MOVE  "1" TO WRK-SAGYO1-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *作業療法（２）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SAGYO2-KO1   TO      SRY-SRYCD (1)
-           MOVE    CONS-SAGYO2-KO1   TO      SRY-SRYCD (2)
-           MOVE    CONS-SAGYO2-KO1   TO      SRY-SRYCD (3)
-           MOVE    CONS-SAGYO2-KO1   TO      SRY-SRYCD (4)
-           MOVE    CONS-SAGYO2-KO1   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM > WRK-SAGYO2-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                 WRK-SAGYO2-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                       MOVE  "1" TO WRK-SAGYO2-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *作業療法（２）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-SAGYO2-KO2   TO      SRY-SRYCD (1)
-           MOVE    CONS-SAGYO2-KO2   TO      SRY-SRYCD (2)
-           MOVE    CONS-SAGYO2-KO2   TO      SRY-SRYCD (3)
-           MOVE    CONS-SAGYO2-KO2   TO      SRY-SRYCD (4)
-           MOVE    CONS-SAGYO2-KO2   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM > WRK-SAGYO2-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                 WRK-SAGYO2-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                       MOVE  "1" TO WRK-SAGYO2-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *言語聴覚療法（１）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-GENGO1-SHU   TO      SRY-SRYCD (1)
-           MOVE    CONS-GENGO1-SHU   TO      SRY-SRYCD (2)
-           MOVE    CONS-GENGO1-SHU   TO      SRY-SRYCD (3)
-           MOVE    CONS-GENGO1-SHU   TO      SRY-SRYCD (4)
-           MOVE    CONS-GENGO1-SHU   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM > WRK-GENGO1-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                 WRK-GENGO1-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                       MOVE  "1" TO WRK-GENGO1-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *言語聴覚療法（１）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-GENGO1-KO    TO      SRY-SRYCD (1)
-           MOVE    CONS-GENGO1-KO    TO      SRY-SRYCD (2)
-           MOVE    CONS-GENGO1-KO    TO      SRY-SRYCD (3)
-           MOVE    CONS-GENGO1-KO    TO      SRY-SRYCD (4)
-           MOVE    CONS-GENGO1-KO    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM > WRK-GENGO1-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                 WRK-GENGO1-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                       MOVE  "1" TO WRK-GENGO1-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *言語聴覚療法（２）（集団療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-GENGO2-SHU   TO      SRY-SRYCD (1)
-           MOVE    CONS-GENGO2-SHU   TO      SRY-SRYCD (2)
-           MOVE    CONS-GENGO2-SHU   TO      SRY-SRYCD (3)
-           MOVE    CONS-GENGO2-SHU   TO      SRY-SRYCD (4)
-           MOVE    CONS-GENGO2-SHU   TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM > WRK-GENGO2-SHU-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                 WRK-GENGO2-SHU-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                       MOVE  "1" TO WRK-GENGO2-SHU(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-      *言語聴覚療法（２）（個別療法）について検索
-           INITIALIZE                        SRYACT-REC
-           MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-           MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-           MOVE    RECE04-PTID       TO      SRY-PTID
-           MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-           MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    CONS-GENGO2-KO    TO      SRY-SRYCD (1)
-           MOVE    CONS-GENGO2-KO    TO      SRY-SRYCD (2)
-           MOVE    CONS-GENGO2-KO    TO      SRY-SRYCD (3)
-           MOVE    CONS-GENGO2-KO    TO      SRY-SRYCD (4)
-           MOVE    CONS-GENGO2-KO    TO      SRY-SRYCD (5)
-      *
-           MOVE    SRYACT-REC        TO      MCPDATA-REC
-           MOVE    "DBSELECT"        TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           IF  MCP-RC                =       ZERO
-               MOVE    "DBFETCH"     TO      MCP-FUNC
-               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-               IF      MCP-RC        =       ZERO
-                   MOVE    MCPDATA-REC       TO      SRYACT-REC
-                   INITIALIZE                        SRYACCT-REC
-                   MOVE    SRY-HOSPID        TO      ACCT-HOSPID
-                   MOVE    SRY-NYUGAIKBN     TO      ACCT-NYUGAIKBN
-                   MOVE    SRY-PTID          TO      ACCT-PTID
-                   MOVE    SRY-SRYKA         TO      ACCT-SRYKA
-                   MOVE    SRY-SRYYM         TO      ACCT-SRYYM
-                   MOVE    SRY-SRYKBN        TO      ACCT-SRYKBN
-                   MOVE    SRY-ZAINUM        TO      ACCT-ZAINUM
-                   MOVE    SRYACCT-REC       TO      MCPDATA-REC
-                   MOVE    "DBSELECT"        TO      MCP-FUNC
-                   MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-                   IF      MCP-RC    =       ZERO
-                       MOVE    "DBFETCH"     TO      MCP-FUNC
-                       MOVE    "SRYACCT-KEY" TO      ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                       IF      MCP-RC        =       ZERO
-                               MOVE  MCPDATA-REC  TO  SRYACCT-REC
-                               IF  ACCT-ZAINUM > WRK-GENGO2-KO-ZAINUM
-                                   MOVE  ACCT-ZAINUM  TO
-                                                 WRK-GENGO2-KO-ZAINUM
-                               END-IF
-                               PERFORM  VARYING   IDX  FROM  1  BY  1
-                                        UNTIL     IDX  >   31
-                                   IF   ACCT-DAY(1 IDX)  NOT = ZERO
-                                       MOVE  "1" TO WRK-GENGO2-KO(IDX)
-                                   END-IF
-                               END-PERFORM
-                       END-IF
-                   END-IF
-           END-IF
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           INITIALIZE                        MCPAREA
-           MOVE    "DBCLOSE"         TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY"     TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"       USING
-                                     MCPAREA
-                                     ORCMCPAREA
-                                     MCPDATA-REC
-      *
-           .
-       2001-RIHA-COUNT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    リハビリのコメント編集
-      *****************************************************************
-       2001-RIHA-COMMENT-SEC          SECTION.
-      *
-           MOVE    RECE04-REC        TO      RECE041-REC
-           ADD     1                 TO      RECE041-MEISAISU
-           WRITE   RECE041-REC
-           ADD     1                 TO      CNT-RECE04
-      *
-      *      ※明細が５以上の場合
-             INITIALIZE                      RECE05-REC
-             MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
-             MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
-             MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
-             MOVE    RECE04-PTID         TO  RECE05-PTID
-             MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
-             MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
-             MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
-             MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
-             MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
-             MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
-             START   RECE05-FILE
-                 KEY IS    >=   RECE05-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE05
-                 NOT INVALID
-                     PERFORM 990-RECE05-NEXT-SEC
-                     MOVE    RECE05-REC  TO  WRK-RECE05-REC
-             END-START
-      *
-      *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
-             MOVE    ZERO                 TO  IDX-RECE05
-             MOVE    SPACE                TO  WRK-SRYACTINF-AREA
-             INITIALIZE                       WRK-SRYACTINF-AREA
-             MOVE    SPACE                TO  WRK-NAMEINF-AREA
-             INITIALIZE                       WRK-NAMEINF-AREA
-      *      リハビリコメントの挿入
-      *      ADD     1                    TO  IDX-RECE05
-             MOVE    SPACE                TO  COM-RECE05-REC
-             INITIALIZE                       COM-RECE05-REC
-             MOVE    "840000096"          TO  COM-SRYCD(1)
-             MOVE    ZERO                 TO  COM-SRYSURYO(1)
-             MOVE    7                    TO  COM-YUKOKETA(1)
-             MOVE    "実施日数　　日"     TO  COM-NAME(1)
-             MOVE    ZERO                 TO  CNT-RIHA
-             EVALUATE   RECE04-ZAINUM
-                 WHEN   WRK-RIGA1-SHU-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA1-SHU(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA2-SHU-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA2-SHU(IDX) NOT = SPACE
-                                ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA3-SHU-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA3-SHU(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA4-SHU-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA4-SHU(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA1-KO-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA1-KO(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA2-KO-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA2-KO(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA3-KO-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA3-KO(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA4-KO-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA4-KO(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-SAGYO1-SHU-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-SAGYO1-SHU(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-SAGYO2-SHU-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-SAGYO2-SHU(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-SAGYO1-KO-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-SAGYO1-KO(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-SAGYO2-KO-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-SAGYO2-KO(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-GENGO1-SHU-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-GENGO1-SHU(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-GENGO2-SHU-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-GENGO2-SHU(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-GENGO1-KO-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-GENGO1-KO(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-GENGO2-KO-ZAINUM
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-GENGO2-KO(IDX) NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   OTHER
-                        CONTINUE
-             END-EVALUATE
-             IF      CNT-RIHA             NOT =    ZERO
-               MOVE    CNT-RIHA             TO  DAY-IDX
-               MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(9:4)
-               COMPUTE  MAX-MEISAISU        =   RECE04-MEISAISU  +  1
-               MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-                                                     (MAX-MEISAISU)
-               MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-                                                     (MAX-MEISAISU)
-             END-IF
-      *
-             PERFORM
-               UNTIL  ( FLG-RECE05           =   1                   )
-               OR     ( RECE04-HOSPID    NOT =   RECE05-HOSPID       )
-               OR     ( RECE04-SRYYM     NOT =   RECE05-SRYYM        )
-               OR     ( RECE04-NYUGAIKBN NOT =   RECE05-NYUGAIKBN    )
-               OR     ( RECE04-PTID      NOT =   RECE05-PTID         )
-               OR     ( RECE04-RECEKA    NOT =   RECE05-RECEKA       )
-               OR     ( RECE04-TEISYUTUSAKI
-                                         NOT =   RECE05-TEISYUTUSAKI )
-               OR     ( RECE04-RECESYUBETU
-                                         NOT =   RECE05-RECESYUBETU  )
-               OR     ( RECE04-HKNJANUM  NOT =   RECE05-HKNJANUM     )
-               OR     ( RECE04-TEKSTYMD  NOT =   RECE05-TEKSTYMD     )
-               OR     ( RECE04-ZAINUM    NOT =   RECE05-ZAINUM       )
-      *
-               PERFORM   VARYING   IDX   FROM    1   BY  1
-                         UNTIL   ( IDX               >   5     )
-                         OR      ( RECE05-SRYCD(IDX) =   SPACE )
-                    ADD    1             TO      IDX-RECE05
-                    MOVE   RECE05-SRYACTINF(IDX) TO
-                                             WRK-SRYACTINF(IDX-RECE05)
-                    MOVE   RECE05-NAMEINF(IDX)   TO
-                                             WRK-NAMEINF(IDX-RECE05)     
-               END-PERFORM 
-      *
-               PERFORM 990-RECE05-NEXT-SEC
-      *
-             END-PERFORM
-      *
-      *      リハビリコメントを含んだ内容で中間ファイルの再作成
-             MOVE       ZERO             TO      FLG-WRKRECE05
-             MOVE       ZERO             TO      IDX
-             MOVE       ZERO             TO      IDX-RECE05
-             MOVE       ZERO             TO      WRK-RENNUM
-             PERFORM    UNTIL     FLG-WRKRECE05  =    1
-                    INITIALIZE                        RECE051-REC
-                    MOVE    WRK-RECE05-KEY       TO   RECE051-KEY
-                    ADD     1                    TO   WRK-RENNUM
-                    MOVE    WRK-RENNUM           TO   RECE051-RENNUM
-                    MOVE    WRK-RECE05-KOHBUNRI  TO   RECE051-KOHBUNRI
-                    MOVE    WRK-RECE05-PTNUM     TO   RECE051-PTNUM
-                    MOVE    WRK-RECE05-SRYKA     TO   RECE051-SRYKA
-                    MOVE    WRK-RECE05-SRYKBN    TO   RECE051-SRYKBN
-                    MOVE    WRK-RECE05-SRYSYUKBN TO   RECE051-SRYSYUKBN
-                    MOVE    WRK-RECE05-JIHIMONEY TO   RECE051-JIHIMONEY
-                    PERFORM  VARYING   IDX   FROM   1   BY   1
-                             UNTIL   (IDX       >    5)   OR
-                                     (FLG-WRKRECE05   =   1)
-                       ADD         1             TO    IDX-RECE05
-                       IF  WK-RECE05-SRYCD(IDX-RECE05) = SPACE
-                           MOVE    1             TO    FLG-WRKRECE05
-                       ELSE
-                           MOVE  WRK-SRYACTINF(IDX-RECE05)
-                                            TO   RECE051-SRYACTINF(IDX)  
-                           MOVE  WRK-NAMEINF(IDX-RECE05)
-                                            TO   RECE051-NAMEINF(IDX)
-                       END-IF  
-                    END-PERFORM
-                    WRITE   RECE051-REC
-                    ADD     1                    TO  CNT-RECE05
-             END-PERFORM     
-      *
-           .
-       2001-RIHA-COMMENT-EXT.
            EXIT.

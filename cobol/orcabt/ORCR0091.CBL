@@ -278,6 +278,12 @@
            MOVE    RECE06-TEKSTYMD      TO      RECE061-TEKSTYMD
            MOVE    RECE06-KOHBUNRI      TO      RECE061-KOHBUNRI
            MOVE    RECE06-ZAINUM        TO      RECE061-ZAINUM
+           IF      RECE06-ZAINUM(1:4)  =  9998
+                 MOVE     ZERO          TO      RECE061-ZAINUM
+           END-IF
+           IF      RECE06-ZAINUM       =  99999
+                 MOVE     ZERO          TO      RECE061-ZAINUM
+           END-IF
            IF      RECE06-SRYKBN        =       "60"
               IF   RECE06-KNSJISKBN     =       2
                    MOVE    5            TO      RECE061-KNSJISKBN

@@ -236,6 +236,12 @@
            MOVE    RECE66-TEKSTYMD      TO      RECE661-TEKSTYMD
            MOVE    RECE66-KOHBUNRI      TO      RECE661-KOHBUNRI
            MOVE    RECE66-ZAINUM        TO      RECE661-ZAINUM
+           IF      RECE66-ZAINUM(1:4)  =  9998
+                 MOVE     ZERO          TO      RECE661-ZAINUM
+           END-IF
+           IF      RECE66-ZAINUM       =  99999
+                 MOVE     ZERO          TO      RECE661-ZAINUM
+           END-IF
            IF      RECE66-SRYKBN        =       "60"
               IF   RECE66-KNSJISKBN     =       2
                    MOVE    5            TO      RECE661-KNSJISKBN
