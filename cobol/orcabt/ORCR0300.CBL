@@ -1743,6 +1743,8 @@
            INITIALIZE                      TBL-ZAIW-AREA
                                            TBL-KOUI-AREA
            INITIALIZE                      WRK-RECE05-REC
+                                           WRK-KASAN-RECE05-REC
+                                           WRK-TEIGEN-RECE05-REC
       *
            MOVE    ZERO                TO  WRK-ZAIWMAX
            MOVE    ZERO                TO  WRK-TBLMAX1
@@ -1754,6 +1756,8 @@
                                            FLG-KOKUJISKBKBN1
                                            FLG-GAITENTTLKBN
                                            FLG-SRYSYUKBN721
+                                           FLG-KENSA-KASAN
+                                           FLG-KENSA-TEIGEN
                                            WRK-SRYCD1-MAX
       *                                     
            MOVE    RECE041-SRYKBN      TO  WRK-SRYKBN
