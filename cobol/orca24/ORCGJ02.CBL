@@ -38,6 +38,7 @@
       *  01.00.09    NACL-多々納  03/03/05  排他制御処理追加
       *  01.00.10    NACL-多々納  03/04/04  中心静脈自動算定追加
       *  01.00.11    NACL-多々納  03/05/12  前次頁対応、診療日変更修正
+      *  01.00.12    NACL-多々納  03/08/28  入院の受診履歴追加修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -373,6 +374,7 @@
       *    受診履歴追加用
            03  WRK-RRK-HKNKBN          PIC X(01).
            03  WRK-RRK-RENNUM          PIC 9(01).
+           03  WRK-RRK-DOUJI-RENNUM    PIC 9(01).
       *    点滴算定エラー
            03  WRK-ERR-TBL.
                05  WRK-ERR-DAY         PIC 9(01)   OCCURS  31.
@@ -2459,7 +2461,8 @@
                MOVE    SPA-GMN-RRKNO  (IDX)    TO  WRK-ZZ
                MOVE    WRK-ZZ-X                TO  J02-RRKNO   (IDX)
                MOVE    SPA-GMN-RRKYMD (IDX)    TO  J02-RRKYMD  (IDX)
-               IF      SPA-GMN-RRKNO  (IDX)    =   SPA-NAI-RRKSELNUM
+               IF     (SPA-NAI-RRKSELNUM       >   ZERO   )   AND
+                      (SPA-GMN-RRKNO  (IDX)    =   SPA-NAI-RRKSELNUM)
                    MOVE    "T"             TO  J02-RRKLIST-SELECT(IDX)
                ELSE
                    MOVE    "F"             TO  J02-RRKLIST-SELECT(IDX)
@@ -3513,6 +3516,7 @@
       *    対象履歴判定
            MOVE    ZERO                TO  IDX-RRK
            MOVE    ZERO                TO  WRK-RRK-RENNUM
+           MOVE    ZERO                TO  WRK-RRK-DOUJI-RENNUM
            MOVE    ZERO                TO  WRK-RRK-HKNKBN
            PERFORM VARYING     IDR     FROM    1   BY   1
                    UNTIL       IDR     >   SPA-RRK-MAX
@@ -3520,6 +3524,13 @@
                IF     (IDR2                =   SPA-DAY-IDX    ) AND
                       (SPA-RRK-SRYKA (IDR) =   SPA-NAIGMN-SRYKA)
                    MOVE    SPA-RRK-RENNUM(IDR) TO  WRK-RRK-RENNUM
+      *            入院の場合、最大同時連番を取得する
+                   IF     (SPA-NYUGAIKBN       =   "1" )  AND
+                          (SPA-RRK-DOUJI-RENNUM(IDR)
+                                               >   WRK-RRK-DOUJI-RENNUM)
+                       MOVE    SPA-RRK-DOUJI-RENNUM(IDR)
+                                              TO  WRK-RRK-DOUJI-RENNUM
+                   END-IF
                END-IF
                IF     (SPA-RRK-HKNCOMBI(IDR)   =   SPA-GMN-HKNCOMBI)
                    MOVE    SPA-RRK-HKNKBN(IDR) TO  WRK-RRK-HKNKBN
@@ -3537,7 +3548,8 @@
                    MOVE    ZERO                TO  WRK-IDR
                    MOVE    ZERO                TO  WRK-IDR-MAX
                    PERFORM VARYING     IDR3    FROM    1   BY   1
-                           UNTIL       IDR3    >   60
+      *********************UNTIL       IDR3    >   60
+                           UNTIL       IDR3    >   135
                        IF      SPA-RRK-ZAINUM (IDX-RRK IDR3)
                                                   =   SPA-GMN-ZAINUM
                            MOVE    IDR3           TO  WRK-IDR
@@ -3596,6 +3608,17 @@
            ADD     1                   TO  WRK-RRK-RENNUM
            MOVE    WRK-RRK-RENNUM      TO  SPA-RRK-RENNUM   (IDR)
            MOVE    ZERO                TO  SPA-RRK-DOUJI-RENNUM(IDR)
+      *
+      *    入院の場合、同時連番を連番とする
+           IF     (SPA-NYUGAIKBN       =   "1"  )  AND
+                  (WRK-RRK-RENNUM      >   1    )
+               MOVE    1                   TO  WRK-RRK-RENNUM
+               ADD     1                   TO  WRK-RRK-DOUJI-RENNUM
+               MOVE    WRK-RRK-RENNUM      TO  SPA-RRK-RENNUM   (IDR)
+               MOVE    WRK-RRK-DOUJI-RENNUM
+                                           TO  SPA-RRK-DOUJI-RENNUM(IDR)
+           END-IF
+      *
            MOVE    1                   TO  SPA-RRK-KAIKEI-RENNUM(IDR)
            MOVE    ZERO                TO  SPA-RRK-DENPNUM (IDR)
            MOVE    ZERO                TO  SPA-RRK-DENPNUM (IDR)
@@ -3948,16 +3971,26 @@
                                        TO  JYURRK-SRYYMD
            MOVE    SPA-RRK-RENNUM (SPA-NAI-RRKSELNUM)
                                        TO  JYURRK-RENNUM
+      *    入院の場合、保険毎に変更する
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
+                                           TO  JYURRK-HKNCOMBINUM
+               MOVE    "JYURRK-KEY19"      TO  WRK-ORC-DBPATH
+           ELSE
+               MOVE    "JYURRK-KEY5"       TO  WRK-ORC-DBPATH
+           END-IF
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+      ***  MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+      *******  MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            ELSE
                INITIALIZE                  JYURRK-REC
@@ -3999,7 +4032,8 @@
                            ",KEY:" JYURRK-KEY
                END-IF
       *
-               MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+      *******  MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
       *
