@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * “úˆã•W€ƒŒƒZƒvƒgƒ\ƒtƒgiJMA standard receipt softwarej
+      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,11 +17,11 @@
       ********************************************************************
       *****************************************************************
       *
-      *     •aº–¼Ì•ÒW           CPORCSBRMNUM.INC
+      *     ÉÂ¼¼Ì¾¾ÎÊÔ½¸           CPORCSBRMNUM.INC
       *
       *****************************************************************
-      *  ƒRƒs[‹åC³—š—ğ
-      * Maj/Min/Rev  C³Ò       “ú•t      “à—e
+      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
+      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *****************************************************************
        01  ORCSBRMNUMAREA.
            03  SBRMNUM-IN-BRMNUM       PIC X(06).
