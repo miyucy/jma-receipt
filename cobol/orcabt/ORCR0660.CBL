@@ -725,6 +725,9 @@
                         ADD     1          TO      CNT-RECE64
                         PERFORM    2001-RECE65-TENSOU-SEC
                       END-IF
+                   WHEN      "14"
+      *            （訪問看護指示料算定日のセット）
+                      PERFORM    2001-HOUSIJI-HANTEI-SEC
                    WHEN      "50"
       *            （手術日のセット）
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
@@ -1328,6 +1331,25 @@
       *
            .
        2001-TAIIN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    訪問看護指示料があるか判定
+      *****************************************************************
+       2001-HOUSIJI-HANTEI-SEC          SECTION.
+      *
+           IF     RECE64-FLG-HOUSIJI-COMMENT   =    "1"
+               MOVE       3       TO     FLG-COMMENT
+               PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+           ELSE
+               MOVE       RECE64-REC    TO   RECE641-REC
+               WRITE      RECE641-REC
+               ADD     1          TO      CNT-RECE64
+               PERFORM    2001-RECE65-TENSOU-SEC
+           END-IF
+      *
+           .
+       2001-HOUSIJI-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************

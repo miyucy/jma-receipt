@@ -445,13 +445,15 @@
       *
       *
       *    À˝¿≠§»§¶ƒÀº¿¥µ
-           03  CONS-MANSEI           PIC X(09) VALUE   "113006510".
+           03  CONS-MANSEI           PIC X(09)  VALUE  "113006510".
       *    Ω˝…¬ºÍ≈ˆ∂‚∞’∏´ΩÒ∏Ú…’Œ¡
-           03  CONS-SYOBYO-COMMENT   PIC X(09) VALUE   "180000710".
+           03  CONS-SYOBYO-COMMENT   PIC X(09)  VALUE  "180000710".
       *    Œ≈Õ‹»Ò∆±∞’ΩÒ∏Ú…’Œ¡
-           03  CONS-RYOYO-COMMENT    PIC X(09) VALUE   "113004310".
+           03  CONS-RYOYO-COMMENT    PIC X(09)  VALUE  "113004310".
+      *    À¨Ã‰¥«∏Óªÿº®Œ¡
+           03  CONS-HOUSIJI-COMMENT  PIC X(09)  VALUE  "114008010".
       *    ºÍΩ—∆¸•≥•·•Û•»
-           03  CONS-SHUJUTU-COMMENT  PIC X(09) VALUE   "840000042".
+           03  CONS-SHUJUTU-COMMENT  PIC X(09)  VALUE  "840000042".
       *    ∆¨…Ù√±Ω„£√£‘ª£±∆
            03  CONS-CTMRI-COMMENT1   PIC X(09)  VALUE  "170011710".
       *    ∂Ì¥¥√±Ω„£√£‘ª£±∆
@@ -1595,6 +1597,12 @@
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-RYOYO-COMMENT
                    MOVE   "1"   TO    RECE44-FLG-RYOYO-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE44-SRYKBN      =     "14"
+              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI-COMMENT
+                   MOVE   "1"   TO    RECE44-FLG-HOUSIJI-COMMENT
               END-IF
            END-IF
       *

@@ -906,6 +906,9 @@
                          ADD     1          TO      CNT-RECE04
                          PERFORM    2001-RECE05-TENSOU-SEC
                       END-IF
+                   WHEN      "14"
+      *            （訪問看護指示料算定日のセット）
+                      PERFORM    2001-HOUSIJI-HANTEI-SEC
                    WHEN      "50"
       *            （手術日のセット）
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
@@ -2033,6 +2036,25 @@
            EXIT.
       *
       *****************************************************************
+      *    訪問看護指示料があるか判定
+      *****************************************************************
+       2001-HOUSIJI-HANTEI-SEC          SECTION.
+      *
+           IF     RECE04-FLG-HOUSIJI-COMMENT   =    "1"
+               MOVE       3       TO     FLG-COMMENT
+               PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+           ELSE
+               MOVE       RECE04-REC    TO   RECE041-REC
+               WRITE      RECE041-REC
+               ADD     1          TO      CNT-RECE04
+               PERFORM    2001-RECE05-TENSOU-SEC
+           END-IF
+      *
+           .
+       2001-HOUSIJI-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    手術日のコメントがあるか判定
       *****************************************************************
        2001-SHUJUTSU-HANTEI-SEC          SECTION.
@@ -2406,18 +2428,24 @@
            ADD      1          TO    IDZ
       *
            EVALUATE   FLG-COMMENT
-              WHEN    1
+               WHEN    1
                  MOVE     4          TO    WRK-KETA
                                            WRK-KETA-TAIHI
                  MOVE     2          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
                  MOVE    "手術"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
-              WHEN    2
+               WHEN    2
                  MOVE     4          TO    WRK-KETA
                                            WRK-KETA-TAIHI
                  MOVE     2          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
                  MOVE    "実施"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+               WHEN    3
+                 MOVE     4          TO    WRK-KETA
+                                           WRK-KETA-TAIHI
+                 MOVE     2          TO    WRK-KETA2
+                 MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
+                 MOVE    "算定"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
                WHEN    4
                  MOVE     4          TO    WRK-KETA
                                            WRK-KETA-TAIHI

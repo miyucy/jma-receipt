@@ -112,6 +112,8 @@
            03  RECE04-FLG-SYOBYO-COMMENT  PIC  X(01).
       *Œ≈Õ‹»Ò∆±∞’ΩÒ∏Ú…’Œ¡
            03  RECE04-FLG-RYOYO-COMMENT   PIC  X(01).
+      *À¨Ã‰¥«∏Óªÿº®Œ¡
+           03  RECE04-FLG-HOUSIJI-COMMENT PIC  X(01).
       *ºÍΩ—° Õ¢∑Ï§œΩ¸§Ø°À
            03  RECE04-FLG-SHUJUTU-COMMENT PIC  X(01).
       *£√£‘°¶£Õ£“£…

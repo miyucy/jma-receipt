@@ -105,6 +105,8 @@
            03  RECE64-FLG-RYOYO-COMMENT   PIC  X(01).
       *退院時服薬指導加算を算定時の薬剤管理指導料
            03  RECE64-FLG-TAIIN-COMMENT   PIC  X(01).
+      *訪問看護指示料
+           03  RECE64-FLG-HOUSIJI-COMMENT PIC  X(01).
       *手術（輸血は除く）
            03  RECE64-FLG-SHUJUTU-COMMENT PIC  X(01).
       *ＣＴ・ＭＲＩ

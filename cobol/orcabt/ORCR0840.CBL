@@ -438,6 +438,8 @@
            03  CONS-RYOYO-COMMENT    PIC X(09)  VALUE  "113004310".
       *    Âà±¡»þÉþÌô»ØÆ³²Ã»»
            03  CONS-TAIIN-COMMENT    PIC X(09)  VALUE  "113006270".
+      *    Ë¬Ìä´Ç¸î»Ø¼¨ÎÁ
+           03  CONS-HOUSIJI-COMMENT  PIC X(09)  VALUE  "114008010".
       *    ¼ê½ÑÆü¥³¥á¥ó¥È
            03  CONS-SHUJUTU-COMMENT  PIC X(09)  VALUE  "840000042".
       *    Æ¬ÉôÃ±½ã£Ã£Ô»£±Æ
@@ -2629,6 +2631,12 @@
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-TAIIN-COMMENT
                    MOVE   "1"   TO    RECE84-FLG-TAIIN-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE84-SRYKBN      =     "14"
+              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI-COMMENT
+                   MOVE   "1"   TO    RECE84-FLG-HOUSIJI-COMMENT
               END-IF
            END-IF
       *

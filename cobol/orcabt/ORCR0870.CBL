@@ -677,6 +677,9 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-RECE84-WRITE-SEC
                       END-IF
+                   WHEN      "14"
+      *            （訪問看護指示料算定日のセット）
+                      PERFORM    2001-HOUSIJI-HANTEI-SEC
                    WHEN      "50"
       *            （手術日のセット）
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
@@ -762,6 +765,9 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-RECE84-WRITE-SEC
                       END-IF
+                   WHEN      "14"
+      *            （訪問看護指示料算定日のセット）
+                      PERFORM    2001-HOUSIJI-HANTEI-SEC
                    WHEN      "40"          
                       MOVE   ZERO   TO  FLG-COMMENT
       *            （精神科退院前訪問指導料算定日のセット）
@@ -1200,6 +1206,25 @@
       *
            .
        2001-TAIIN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    訪問看護指示料があるか判定
+      *****************************************************************
+       2001-HOUSIJI-HANTEI-SEC          SECTION.
+      *
+           IF     RECE84-FLG-HOUSIJI-COMMENT   =    "1"
+               MOVE       3       TO     FLG-COMMENT
+               PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+           ELSE
+               MOVE       RECE84-REC    TO   RECE841-REC
+               WRITE      RECE841-REC
+               ADD     1          TO      CNT-RECE84
+               PERFORM    2001-RECE85-TENSOU-SEC
+           END-IF
+      *
+           .
+       2001-HOUSIJI-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
