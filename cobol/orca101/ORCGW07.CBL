@@ -37,6 +37,7 @@
       *  01.02.04    NACL-多々納  02/11/13  一括入力 
       *  01.02.05    NACL-多々納  02/11/20  チェック機能制御初期設定変更
       *  01.02.05    NACL-多々納  03/02/19  療養担当手当て追加
+      *  01.02.06    NACL-多々納  03/03/14  特定薬剤治療管理料追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,7 +72,7 @@
                    07  SPA-GMN-1007-AREA.           
       *---- (01.00.01) LINE MOD START --------------------------------
       ***              09  SPA-GMN-CHOKI          PIC 9(01).
-                       09  SPA-GMN-DATA-TBL       OCCURS  5.
+                       09  SPA-GMN-DATA-TBL       OCCURS  6.
       *************        11  SPA-GMN-DATA       PIC 9(01).
       *---- (01.00.01) LINE MOD END   --------------------------------
                            11  SPA-GMN-DATA-G.
@@ -396,7 +397,7 @@
       **                                        TO  SPA-GMN-CHOKI
                        PERFORM VARYING IDX FROM    1   BY  1
       *********************UNTIL   IDX >       4
-                           UNTIL   IDX >       5
+                           UNTIL   IDX >       6
                            MOVE    SYS-1007-SANTEI (IDX:1)
                                                TO  SPA-GMN-DATA (IDX)
                            PERFORM VARYING IDY    FROM    1   BY  1
@@ -420,10 +421,18 @@
                                            TO  SPA-GMN-GAIKANRIKBN-CHK
                END-EVALUATE
            END-IF
-      *
+      *    初期設定
            EVALUATE    SPA-W01-KANRICD
                WHEN    "1007"
-                   CONTINUE
+                   PERFORM VARYING IDX    FROM     1   BY  1
+                           UNTIL   IDX         >   6
+                       IF     SPA-GMN-DATA (IDX)   =   "0"  OR  "1"
+                           CONTINUE
+                       ELSE
+                           MOVE    SPA-GMN-DATALST (01)
+                                               TO  SPA-GMN-DATA-G (IDX)
+                       END-IF
+                   END-PERFORM
                WHEN    "1008"
                    IF      SPA-GMN-GAIKANRIKBN-CHK   =   SPACE
                        MOVE    "1"     TO  SPA-GMN-GAIKANRIKBN-CHK
@@ -511,7 +520,7 @@
       *
       *    調剤基コード
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   5
+                   UNTIL       IDX     >   6
                MOVE    W07-DATA (IDX)      TO  SPA-GMN-DATA-G (IDX)
            END-PERFORM
       *    相互作用
@@ -559,7 +568,7 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
       ************ UNTIL      (IDX     >   4   )  OR
-                   UNTIL      (IDX     >   5   )  OR
+                   UNTIL      (IDX     >   6   )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                MOVE    ZERO                TO  FLG-OK
                PERFORM VARYING     IDY     FROM    1   BY  1
@@ -582,6 +591,8 @@
                            MOVE    "0004"             TO SPA-ERRCD
                        WHEN    5
                            MOVE    "0008"             TO SPA-ERRCD
+                       WHEN    6
+                           MOVE    "0009"             TO SPA-ERRCD
                    END-EVALUATE
                    MOVE    IDX             TO  SPA-GMN-CUR
                    ADD     1               TO  SPA-GMN-CUR
@@ -782,7 +793,7 @@
       *---- (01.00.01) LINE MOD START   --------------------------------
       ***  MOVE    SPA-GMN-CHOKI           TO  SYS-1007-SANTEI (1:1)
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       5
+                   UNTIL   IDX >       6
                MOVE    SPA-GMN-DATA (IDX)  TO  SYS-1007-SANTEI (IDX:1)
            END-PERFORM 
       *---- (01.00.01) LINE MOD END     --------------------------------
@@ -882,11 +893,11 @@
            MOVE    SPACE                TO  SPA-ERRCD
            MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR 
       *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       4
-                   OR      SPA-ERRCD   NOT =   SPACE
+      **** PERFORM VARYING IDX FROM    1   BY  1
+      *            UNTIL   IDX >       4
+      ****         OR      SPA-ERRCD   NOT =   SPACE
                PERFORM 4100-DATA-CHK-SEC
-           END-PERFORM
+      **** END-PERFORM
       *
            IF      SPA-ERRCD            =   SPACE
                IF      SPA-GMN-DATA (3)     =   "1"
@@ -944,13 +955,13 @@
       *---- (01.00.01) LINE MOD START   --------------------------------
       ***  MOVE    SPA-GMN-CHOKI            TO  W07-CHOKI
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       5 
+                   UNTIL   IDX >       6 
                MOVE    SPA-GMN-DATA-G (IDX) TO  W07-DATA (IDX)
            END-PERFORM
       *---- (01.00.01) LINE MOD END     --------------------------------
       *     
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       5 
+                   UNTIL   IDX     >       6 
                PERFORM VARYING IDY     FROM    1   BY  1
                        UNTIL   IDY     >       2
                    MOVE    SPA-GMN-DATALST (IDY)
@@ -1031,6 +1042,10 @@
                WHEN    "0008"
                    MOVE
                        "療養担当手当（北海道）入力エラー"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0009"
+                   MOVE
+                       "特定薬剤治療管理料入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
@@ -1128,6 +1143,8 @@
                     MOVE  "DATA04"           TO   MCP-WIDGET
                 WHEN    6
                     MOVE  "DATA05"           TO   MCP-WIDGET
+                WHEN    7
+                    MOVE  "DATA06"           TO   MCP-WIDGET
       *---- (01.05.01) LINE MOD START   --------------------------------
                 WHEN    10
                     MOVE  "KIKAN"            TO   MCP-WIDGET
@@ -1140,7 +1157,7 @@
       *
             EVALUATE    SPA-GMN-CUR
                 WHEN    2   THRU    5
-                WHEN    6
+                WHEN    6   THRU    7
                     MOVE    0                TO  W07-PAGENO
                 WHEN    10  THRU    11
                     MOVE    1                TO  W07-PAGENO
@@ -1166,6 +1183,8 @@
                WHEN    "DATA04"
                    MOVE    6           TO  SPA-GMN-CUR
                WHEN    "DATA05"
+                   MOVE    7           TO  SPA-GMN-CUR
+               WHEN    "DATA06"
                    MOVE    99          TO  SPA-GMN-CUR
                WHEN    "KIKAN"
                    MOVE    11          TO  SPA-GMN-CUR
