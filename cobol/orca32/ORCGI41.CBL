@@ -91,6 +91,7 @@
            03  FLG-KAIKEI-SAKUSEI  PIC 9(01).
            03  FLG-DBRC            PIC 9(01).
            03  FLG-NYUKSN          PIC 9(01).
+           03  FLG-SST             PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -288,6 +289,8 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1005.INC".
+      *
+           COPY    "CPSK1006.INC".
       *
            COPY    "CPSK5000.INC".
       *
@@ -3212,6 +3215,65 @@
                END-IF
            END-IF.
       *
+      *    施設基準情報検索
+           MOVE    SPACE               TO  SYS-1006-REC.
+           MOVE    "1006"              TO  SYS-1006-KANRICD.
+           MOVE    "1"                 TO  SYS-1006-KBNCD.
+           MOVE    ZERO                TO  SYS-1006-STYUKYMD.
+           MOVE    ALL "9"             TO  SYS-1006-EDYUKYMD.
+      *    システム管理検索
+           MOVE    SYS-1006-REC        TO  MCPDATA-REC.
+           MOVE    SPA-NAI-SRYYM-41    TO  ORC-DBYMD(1:6).
+           MOVE    "01"                TO  ORC-DBYMD(7:2).
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF.
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+           ELSE
+               INITIALIZE                  SYS-1006-REC
+           END-IF.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX         >  400
+               IF      SPA-GMN-TMEISYO-41 (IDX)  NOT =   ALL "-"
+                   IF      SPA-GMN-TBANGO-41 (IDX)   =   SPA-GMN-NUM-41
+                       MOVE    SPA-GMN-TSRYCD-41 (IDX)   TO  TNS-SRYCD
+                       MOVE    500                       TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM.
+      *
+           PERFORM 910-TENSU-READ-SEC.
+      *
+           MOVE    ZERO                TO  FLG-SST.
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   10  )   OR
+                              (FLG-SST     =   1   )
+               IF      TNS-SSTKIJUNCD (IDX)    =   ZERO
+                   CONTINUE
+               ELSE
+                   MOVE    TNS-SSTKIJUNCD (IDX)    TO  IDY
+                   IF      SYS-1006-SSTKIJUN (IDY) =   1
+                       MOVE    1               TO  FLG-SST
+                   END-IF
+               END-IF
+           END-PERFORM.
+           IF      FLG-SST             =   ZERO
+               MOVE    1                   TO  SPA-GMN-CUR-41
+               MOVE    "0030"              TO  SPA-ERRCD
+               GO      TO      420-ZAIHENKOU-EXT
+           END-IF.
+      *
       *    労災の時、剤点数が外来管理加算料に振り替えた時、エラー
            IF      SPA-NAI-HKNKBN-41      =   1
                PERFORM 4201-RIS-ZAIHENKOU-SEC
@@ -4595,6 +4657,7 @@
            END-IF
       *
       *    入院料と入院料加算の併算定チェック
+           MOVE       ZERO       TO     IDX9
            PERFORM    VARYING    IDX8   FROM   1   BY   1
                       UNTIL      (WRK-NYUKHNKSN-SRYCD(IDX8)  =  SPACE)
                          OR      (IDX8   >     20)
@@ -5747,6 +5810,9 @@
                                        TO  WRK-ERRMSG
                WHEN    "0029"
                    MOVE    "剤識別区分が入院料以外の指定はできません。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0030"
+                   MOVE    "施設基準ではありません。算定できません"
                                        TO  WRK-ERRMSG
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません"
