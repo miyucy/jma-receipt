@@ -2233,20 +2233,20 @@
                                                    TO  WRK-MOJI
                END-IF
       *
-               IF     (WRK-MOJI                     =   "6" OR
-                                                        "7" )  OR
-                      (WRK-MOJI                     =   "1" AND
-                       TNS-SRYSYUKBN(1:1)       NOT =   "7" AND
-                       TNS-KZMCOMPSIKIBETU      NOT =   0   )  OR
-                      (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
-                                                    =   "001" ) OR
-                      (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
-                                                    =   "84"  AND
-                       TNS-SSTKIJUNCDTBL(1)     NOT =   ZERO )  OR
-                      (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
-                                                    =   "09500" OR
-                                                        "09600" AND
-                       TNS-TEN                      =   ZERO )
+               IF     (WRK-MOJI                    =   "6" OR
+                                                       "7" )  OR
+                     ((WRK-MOJI                    =   "1" ) AND
+                      (TNS-SRYSYUKBN(1:1)      NOT =   "7" ) AND
+                      (TNS-KZMCOMPSIKIBETU     NOT =   0   ))  OR
+                     ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
+                                                   =   "001" ) OR
+                     ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
+                                                   =   "84" ) AND
+                      (TNS-SSTKIJUNCDTBL(1)    NOT =   ZERO ))  OR
+                     ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
+                                                   =   "09500" OR
+                                                       "09600" ) AND
+                      (TNS-TEN                     =   ZERO ))
                    MOVE    "2"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
                    MOVE    "1"             TO  SPA-COM-IN3 (SPA-GMN-IDX)
                END-IF
