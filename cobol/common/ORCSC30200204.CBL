@@ -487,7 +487,9 @@
                                            +   WRK-CHUSYA
       *            Æþ±¡»þ¤ÎÌôºÞ¤È¼êµ»ÎÁ¤òÊ¬¤±¤ë
                    IF    (SPA-NYUGAIKBN        =   1   ) AND
-                         (FLG-SYUGI            =   1   )
+                         (FLG-SYUGI            =   1   ) AND
+                         (WRK-COM-SRYSYUKBN (IDX-Z)    =   "330" OR
+                                                           "331")
                        MOVE    "9020"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    END-IF
