@@ -1210,7 +1210,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label313</name>
-	  <label>∞Âª’£≥øÕ∞ æÂ</label>
+	  <label>∞Âª’«€√÷≈¨πÁ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1737,7 +1737,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 31 Jul 2002 06:06:25 GMT</last_modification_time>
       </signal>
-      <label>∞Âª’£≥øÕ∞ æÂ</label>
+      <label>∞Âª’«€√÷≈¨πÁ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
