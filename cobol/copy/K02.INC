@@ -107,3 +107,7 @@
                 04  K02-B08S-STATE   PIC S9(9)   BINARY.
               03  K02-B09S.
                 04  K02-B09S-STATE   PIC S9(9)   BINARY.
+              03  K02-B06S.
+                04  K02-B06S-LABEL   PIC X(10).
+              03  K02-DRNAME.
+                04  K02-VALUE   PIC X(50).

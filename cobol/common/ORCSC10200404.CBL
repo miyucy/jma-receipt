@@ -2871,10 +2871,20 @@
                        IF     (WRK-COM-INPUTCD(IDX-Z)  =  "830000021")
                          AND  (WRK-COM-SRYKBN (IDX-Z)  =  "12"      )
                            ADD     1               TO  IDX-ZAI2
+                           IF     (IDX-ZAI2        >   1   )   AND
+                                  (WRK-COM-SRYKA(IDX-Z)
+                                               NOT =   SPA-SRYKA)
+                               COMPUTE IDX-ZAI2    =   IDX-ZAI2  -  1
+                           END-IF
                        END-IF
                        IF     (WRK-COM-INPUTCD(IDX-Z)  =  "830000020")
                          AND  (WRK-COM-SRYKBN (IDX-Z)  =  "11"      )
                            ADD     1               TO  IDX-ZAI1
+                           IF     (IDX-ZAI1        >   1   )   AND
+                                  (WRK-COM-SRYKA(IDX-Z)
+                                               NOT =   SPA-SRYKA)
+                               COMPUTE IDX-ZAI1    =   IDX-ZAI1  -  1
+                           END-IF
                        END-IF
       *                ¿Ç»¡ÎÁ£Ä£Õ£Í£Í£Ù¤â¿Ç»¡ÎÁ¤È¤¹¤ë
                        IF     (WRK-COM-INPUTCD(IDX-Z)  =  "099110001")
@@ -3015,7 +3025,10 @@
       *
       *        Â¾ÊÝ¸±»»ÄêºÑ¤ß
                IF      WRK-COM-INPUTCD(IDX-Z) =   "099999902"
-                   MOVE    1               TO  FLG-TAHOKEN
+                   IF      WRK-COM-HKNCOMBI(IDX-Z)
+                                               =   SPA-HKNCOMBINUM
+                       MOVE    1           TO  FLG-TAHOKEN
+                   END-IF
                END-IF
       *
       *        ¸¡¿Ç¤«¤é¤Î¥³¥á¥ó¥È
@@ -3107,7 +3120,7 @@
                   (IDX-ZAI2            >   1   )) AND
                  ( IDX-SYU2            >   ZERO )
                MOVE    "0017"          TO  SPA-ERRCD
-               MOVE    "1"             TO  WRK-COM-CUR (IDX-SYU2)
+               MOVE    "1"             TO  WRK-COM-CUR(IDX-SYU2)
                GO      TO      200-ALL-SYORI-EXT
            END-IF
       *    ¿·µ¬´µ¼ÔÆþÎÏ¤Î»þ¡¢É¬¤º½é¿ÇÎÁ¤Ç¤¢¤ë¤³¤È
@@ -3581,6 +3594,10 @@
                MOVE    LNK-ORCSC-TAIINYMD  TO  WRK-SYOYMD
            END-IF
       *
+      *TEST
+           DISPLAY "C10 WRK-SYOYMD:" WRK-SYOYMD
+                  ",LNK-ORCSC-SYOYMD:" LNK-ORCSC-SYOYMD
+      *TEST 
            MOVE    ZERO                TO  FLG-KYUJITU
            IF      WRK-SYOYMD          =   SPACE
                MOVE    SPA-SRYYMD          TO  WRK-KEIYMD

@@ -412,7 +412,7 @@
            EVALUATE    SSANTEI-PG
                WHEN    "K03"
                    MOVE    SPA-NYUGAIKBN       TO  SSANTEI-NYUGAIKBN
-                   MOVE    SPA-SRYKA           TO  SSANTEI-SRYKA
+      ************ MOVE    SPA-SRYKA           TO  SSANTEI-SRYKA
            END-EVALUATE
       *
       *    保険毎のコードの判定
@@ -443,8 +443,8 @@
            END-EVALUATE
       *    健保以外で保険別の時、保険をセット
            IF     (FLG-HKNSAN          =   1   )  AND
-                  (SPA-HKNKBN      NOT =   ZERO)
-               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+                  (SSANTEI-HKNKBN  NOT =   ZERO)
+               MOVE    SSANTEI-HKNCOMBINUM TO  SANTEI-HKNCOMBINUM
            ELSE
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
@@ -695,7 +695,7 @@
       *         GO      TO      200-SINKI-SYORI-EXT
       ***** END-IF
       *    健保以外でＣＴ・ＭＲＩの作成なし
-           IF     (SPA-HKNKBN      NOT =   ZERO   )  AND
+           IF     (SSANTEI-HKNKBN  NOT =   ZERO   )  AND
                   (SSANTEI-SRYCD       =   "099700101"  OR
                                            "099700102"  OR
                                            "099700103" )
@@ -741,8 +741,8 @@
                END-EVALUATE
       *        健保以外で保険別の時、保険をセット
                IF     (FLG-HKNSAN          =   1   )  AND
-                      (SPA-HKNKBN      NOT =   ZERO)
-                   MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+                      (SSANTEI-HKNKBN  NOT =   ZERO)
+                   MOVE    SSANTEI-HKNCOMBINUM TO  SANTEI-HKNCOMBINUM
                ELSE
                    MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
                END-IF
@@ -1020,7 +1020,7 @@
       ***** END-IF
       *
       *    健保以外でＣＴ・ＭＲＩの作成なし
-           IF     (SPA-HKNKBN      NOT =   ZERO   )  AND
+           IF     (SSANTEI-HKNKBN  NOT =   ZERO   )  AND
                   (SSANTEI-SRYCD       =   "099700101"  OR
                                            "099700102"  OR
                                            "099700103" )
@@ -1289,6 +1289,10 @@
       *****************************************************************
        3002-SANTEI-UPD-SEC                SECTION.
       *
+      *TEST
+           DISPLAY "WRK-MAE-FSANTEIYMD:"  WRK-MAE-FSANTEIYMD
+                  ",WRK-KON-FSANTEIYMD:" WRK-KON-FSANTEIYMD
+      *TEST
            MOVE    WRK-MAE-FSANTEIYMD  TO  WRK-FSANTEIYMD
       *    算定履歴検索
            MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH

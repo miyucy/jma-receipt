@@ -464,9 +464,9 @@
                PERFORM 1004-JIDO-KASAN-SEC
            END-IF
       *
-           IF      WRK-ERRCD(1:1)  NOT =   "K"
+      *!   IF      WRK-ERRCD(1:1)  NOT =   "K"
                MOVE    WRK-ERRCD          TO  SPA-ERRCD
-           END-IF
+      *!   END-IF
       *
            .
        1001-NAI-CHK-EXT.
@@ -600,6 +600,7 @@
                    END-IF
            END-EVALUATE
       *
+           MOVE    ZERO                TO  IDX-SYU
            IF      WRK-SRYCD       NOT =   SPACE
                MOVE    1                   TO  IDX-S
                MOVE    ZERO                TO  FLG-ARI
@@ -609,6 +610,19 @@
                    MOVE    "1"             TO  WRK-COM-AUTOKBN (IDX-S)
                    MOVE    IDX-S           TO  IDX-SYU
                    ADD     1               TO  IDX-MAX
+               END-IF
+           END-IF
+      *
+      *    同日２回目警告
+           IF     (LNK-ACCT2-SRYCD NOT =   SPACE   )  AND
+                  (IDX-SYU             >   ZERO    )  AND
+                  (WRK-COM-SRYSYUKBN (01)  =   "330")
+               IF     (WRK-COM-KZMFLG (IDX-SYU)    =   SPACE )
+                  AND (LNK-ORCSC-KEI-IDX       =   ZERO )
+                   MOVE    "K006"              TO  WRK-ERRCD
+                   MOVE    "1"                 TO  WRK-COM-KZMFLG
+                                                              (IDX-SYU)
+                   MOVE    IDX-SYU             TO  LNK-ORCSC-KEI-IDX
                END-IF
            END-IF
       *
@@ -658,22 +672,21 @@
                END-IF
            END-IF
       *
-      *
       *    同日２回目以降は変更なし
-           IF     (IDX-SYU             >   ZERO    )  AND
-                  (WRK-COM-INPUTCD(IDX-SYU)
-                                       =   "099303301")
-               IF      WRK-SRYCD       NOT =   LNK-ACCT2-SRYCD
-                   IF      WRK-COM-KZMFLG (IDX-SYU)    =   SPACE
-                      AND (LNK-ORCSC-KEI-IDX        =   ZERO )
-                       MOVE    "K006"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-KZMFLG
-                                                              (IDX-SYU)
-                       MOVE    IDX-SYU         TO  LNK-ORCSC-KEI-IDX
-                   END-IF
-               END-IF
-               GO    TO      1002-TENTEKI-CHK-EXT
-           END-IF
+      *****IF     (IDX-SYU             >   ZERO    )  AND
+      *           (WRK-COM-INPUTCD(IDX-SYU)
+      *                                =   "099303301")
+      *        IF      WRK-SRYCD       NOT =   LNK-ACCT2-SRYCD
+      *            IF      WRK-COM-KZMFLG (IDX-SYU)    =   SPACE
+      *               AND (LNK-ORCSC-KEI-IDX        =   ZERO )
+      *                MOVE    "K006"          TO  WRK-ERRCD
+      *                MOVE    "1"             TO  WRK-COM-KZMFLG
+      *                                                       (IDX-SYU)
+      *                MOVE    IDX-SYU         TO  LNK-ORCSC-KEI-IDX
+      *            END-IF
+      *        END-IF
+      *        GO    TO      1002-TENTEKI-CHK-EXT
+      *****END-IF
            IF      WRK-SRYCD           =   SPACE
                GO    TO      1002-TENTEKI-CHK-EXT
            END-IF
@@ -713,6 +726,17 @@
       *
            END-IF
       *
+      *    同日２回目警告
+           IF     (LNK-ACCT2-SRYCD NOT =   SPACE   )  AND
+                  (IDX-SYU             >   ZERO    )
+               IF     (WRK-COM-KZMFLG (IDX-SYU)    =   SPACE )
+                  AND (LNK-ORCSC-KEI-IDX       =   ZERO )
+                   MOVE    "K006"              TO  WRK-ERRCD
+                   MOVE    "1"                 TO  WRK-COM-KZMFLG
+                                                              (IDX-SYU)
+                   MOVE    IDX-SYU             TO  LNK-ORCSC-KEI-IDX
+               END-IF
+           END-IF
            .
        1002-TENTEKI-CHK-EXT.
            EXIT.
@@ -896,6 +920,12 @@
                                        ORCSC92AREA
                                        WRK-SCR-REC
                                        SPA-AREA
+      *TEST
+           DISPLAY "WRK-SRYCD:" WRK-SRYCD
+                   ",IDX-S:" IDX-S
+                  ",GMN:" WRK-GMN-INPUTCD (IDX-S)
+                  ",COM:" WRK-COM-INPUTCD (IDX-S)
+      *TEST
       *
       *    エラーの時、追加なし
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
@@ -1259,6 +1289,8 @@
       *
       *    入院の時、自動発生する
            IF      SPA-NYUGAIKBN       =   "2"
+      *        外来の時、点滴液量チェック
+               PERFORM 3001-GAIRAI-TENTEKI-SEC
                GO      TO      300-AUTO-SYORI-EXT
            END-IF
            MOVE    SPACE               TO  WRK-ERRCD
@@ -1426,10 +1458,6 @@
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   31
                IF      TBL-AUTO-SRYCD (IDY)    NOT =   SPACE
-      *TEST
-             DISPLAY "IDY:" IDY 
-                     ",TBL-AUTO-SRYCD:" TBL-AUTO-SRYCD (IDY)
-      *TEST
                    IF     (WRK-TEN-SRYCD           =   SPACE )  OR
                           (TBL-AUTO-SRYCD (IDY)    =   WRK-TEN-SRYCD)
                        MOVE    TBL-AUTO-SRYCD (IDY)    TO  WRK-TEN-SRYCD
@@ -1506,6 +1534,82 @@
        300-AUTO-SYORI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    外来の時、点滴液量チェック処理
+      *****************************************************************
+       3001-GAIRAI-TENTEKI-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  IDX-SYU
+           MOVE    ZERO                TO  IDX-CHU
+           MOVE    ZERO                TO  WRK-CHUSYA
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   200  )  OR
+                              (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
+                              (SPA-ERRCD        NOT =   SPACE)
+      *        点滴は１回のみとする（外来のみ）
+               IF     (SPA-NYUGAIKBN               =   "2"   )  AND
+                      (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
+                                                       "960") AND
+                      (WRK-COM-INPUTCD  (IDX)      =   "130009310" OR
+                                                       "130003710" OR
+                                                       "130003810")
+                   MOVE    IDX             TO  IDX-SYU
+                   IF      IDX-CHU         =   ZERO
+                       MOVE    IDX             TO  IDX-CHU
+                   END-IF
+               END-IF
+      *        注射液量加算
+               IF     (SPA-NYUGAIKBN           =   "2"   )  AND
+                      (WRK-COM-SRYSYUKBN(IDX)  =   "330"
+                                               OR  "331"  )  AND
+                      (WRK-COM-INPUTCD(IDX)(1:1)   =  "6")
+                   COMPUTE WRK-CHUSYA      =  (WRK-COM-CSYYOURYO(IDX)
+                                           *   WRK-COM-SURYO   (IDX))
+                                           +   WRK-CHUSYA
+                   IF      IDX-CHU         =   ZERO
+                       MOVE    IDX             TO  IDX-CHU
+                   END-IF
+               END-IF
+           END-PERFORM
+      *    今回と前回の両方に手技がある場合は、チェックしない
+           IF     (IDX-SYU             >   ZERO ) AND
+                  (LNK-ACCT2-SRYCD NOT =   SPACE)
+               GO      TO      3001-GAIRAI-TENTEKI-EXT
+           END-IF
+      *    外来の当日の合計液量判定
+           IF       WRK-CHUSYA         =   ZERO
+               GO      TO      3001-GAIRAI-TENTEKI-EXT
+           END-IF
+           COMPUTE WRK-CHUSYA      =   WRK-CHUSYA
+                                   +   LNK-ACCT2-CSYYOURYO
+           IF      LNK-ORCSC-NENREI-YY     <   6
+               MOVE    "130003710"     TO  WRK-SRYCD
+               MOVE    100             TO  WRK-MAX-RYOU
+           ELSE
+               MOVE    "130003810"     TO  WRK-SRYCD
+               MOVE    500             TO  WRK-MAX-RYOU
+           END-IF
+           IF      WRK-CHUSYA          >=  WRK-MAX-RYOU
+               IF    ((IDX-SYU             >   ZERO ) AND
+                      (WRK-COM-INPUTCD(IDX-SYU)
+                                           =   WRK-SRYCD))  OR
+                     ((LNK-ACCT2-SRYCD NOT =   SPACE    ) AND
+                      (LNK-ACCT2-SRYCD     =   WRK-SRYCD))
+                   CONTINUE
+               ELSE
+                   IF      (LNK-ORCSC-KEI-IDX  =   ZERO ) AND
+                           (WRK-COM-KZMFLG (IDX-CHU)    =   SPACE )
+                       MOVE    "K009"              TO  SPA-ERRCD
+                       MOVE    "1"                 TO  WRK-COM-KZMFLG
+                                                              (IDX-CHU)
+                       MOVE    IDX-CHU             TO  LNK-ORCSC-KEI-IDX
+                   END-IF
+               END-IF
+           END-IF
+           .
+       3001-GAIRAI-TENTEKI-EXT.
+           EXIT.
       *****************************************************************
       *    点滴液量集計処理
       *****************************************************************

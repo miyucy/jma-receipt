@@ -231,6 +231,7 @@
       *            計算できる点数識別であること
                    EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
                        WHEN    1
+                       WHEN    2
                        WHEN    3
                        WHEN    4
                            CONTINUE

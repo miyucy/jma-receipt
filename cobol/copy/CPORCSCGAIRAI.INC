@@ -37,11 +37,20 @@
                05  ORCSCGAIRAI-KON-SKYMONEY    PIC S9(07).
       *    入金額
                05  ORCSCGAIRAI-NYUKIN          PIC S9(07).
+      *    入金方法
+               05  ORCSCGAIRAI-NYUKIN-HOHO     PIC X(02).
       *   （１：まとめ継続、２：まとめ確定）
                05  ORCSCGAIRAI-SYORI           PIC 9(01).
       *
       *    伝票番号
-               05  ORCSCGAIRAI-DENPNUM         PIC 9(07).
+      *!       05  ORCSCGAIRAI-DENPNUM         PIC 9(07).
       *    受診履歴番号
-               05  ORCSCGAIRAI-JYURRK-RENNUM   PIC 9(01).
+      *!       05  ORCSCGAIRAI-JYURRK-RENNUM   PIC 9(01).
+      *    収納領域
+               05  ORCSCGAIRAI-SYUNOU-AREA.
+                   07  ORCSCGAIRAI-SYUNOU-MAX  PIC 9(04).
+                   07  ORCSCGAIRAI-SYUNOU-TBL  OCCURS  15.
+                       09  ORCSCGAIRAI-SYUNOU-REC  PIC X(1600).
+      *               受診履歴番号
+                       09  ORCSCGAIRAI-JYURRK-RENNUM   PIC 9(01).
       *

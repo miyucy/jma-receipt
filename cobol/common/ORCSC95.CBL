@@ -216,6 +216,12 @@
            03  WRK-SYOSINYMD1          PIC X(08).
            03  WRK-SRYCD               PIC X(09).
       *
+           03  WRK-KEY-SRYYMD          PIC X(08).
+           03  WRK-KEY-SRYKA           PIC X(02).
+           03  WRK-KEY-DRCD            PIC X(05).
+           03  WRK-KEY-HKNCOMBI        PIC X(04).
+           03  WRK-FUKU-ZAINUM         PIC 9(08).
+      *
       *他科受診科有り
        01  WRK-TAKA-SRYKA-AREA.
            03  WRK-TAKA-SRYKA          PIC  X(02)
@@ -252,6 +258,8 @@
            COPY    "CPSK1007.INC".
       *
            COPY    "CPSK1008.INC".
+      *
+           COPY    "CPSK1038.INC".
       *
       *    患者マスタ−
        01  PTINF-REC.
@@ -546,6 +554,13 @@
                    MOVE    SYS-1008-GAZOUKSN1-FLG
                                            TO  SPA-GAZOUKSN1
                END-IF
+      *        最終来院日からの期間
+               IF      SYS-1008-LAST-KIKAN-X   =   SPACE
+                   MOVE    ZERO            TO  SPA-LAST-KIKAN
+               ELSE
+                   MOVE    SYS-1008-LAST-KIKAN
+                                           TO  SPA-LAST-KIKAN
+               END-IF
       *        時間外加算乳幼児チェック
                IF      SYS-1008-JIKANTOKU-CHK  =   SPACE
                    MOVE    ZERO            TO  SPA-JIKANTOKU-CHK
@@ -584,6 +599,7 @@
                MOVE    ZERO                TO  SPA-CHOKICHK-FLG
                MOVE    ZERO                TO  SPA-JIKANTOKU-NYU
                MOVE    "1"                 TO  SPA-GAZOUKSN1
+               MOVE    ZERO                TO  SPA-LAST-KIKAN
                MOVE    ZERO                TO  SPA-JIKANCHK-TIME-G
                MOVE    ZERO                TO  SPA-JIKANTOKU-CHK
            END-IF
@@ -720,6 +736,37 @@
       *        特定薬剤治療管理料有無
                MOVE    SYS-1007-SANTEI (6:1)   TO  SPA-TOKUTEI-FLG
            END-IF
+      *
+      *    システム管理検索（診療行為一括入金管理情報）
+           MOVE    SPACE               TO  SYS-1038-REC
+           INITIALIZE                  SYS-1007-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1038-REC
+               INITIALIZE                  SYS-1038-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1038-REC
+      *        複数科まとめ集計
+               MOVE    SYS-1038-KAGRPFLG       TO  SPA-KAGRPFLG
+           END-IF
+           IF      SPA-KAGRPFLG        =   SPACE
+               MOVE    "0"                 TO  SPA-KAGRPFLG
+          END-IF
       *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
       *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -1047,6 +1094,10 @@
            IF      LNK-SC95-KBN        =   "2"
       *        受診履歴一覧編集
                PERFORM 2002-JYURRK-SET-SEC
+      *        最終来院日からの判定
+               IF      SPA-LAST-KIKAN      NOT =   ZERO
+                   PERFORM 2003-LAST-KIKAN-CHK-SEC
+               END-IF
            END-IF
       *
       *    受付マスタより、診療科、ドクターの決定
@@ -1233,27 +1284,30 @@
            IF      JYURRK-SRYKBN-G NOT =   SPACE
                MOVE    "1"                 TO  SPA-NAI-RRK-SINSATU (IDX)
            END-IF
+      *    複数診療科・保険
+           MOVE    JYURRK-GRP-DENPNUM TO  SPA-NAI-GRP-DENPNUM (IDX)
+           MOVE    JYURRK-GRP-RENNUM  TO  SPA-NAI-GRP-RENNUM (IDX)
       *
            MOVE    IDX                 TO  SPA-GMN-MAX1
       *
-      *    外来で診療日の時のみ
-           IF     (SPA-NYUGAIKBN       =   "2" )
-             AND  (SPA-SRYYMD          =   JYURRK-SRYYMD)
+      *****外来で診療日の時のみ
+      *    IF     (SPA-NYUGAIKBN       =   "2" )
+      *      AND  (SPA-SRYYMD          =   JYURRK-SRYYMD)
       *        複数科診療の判定をする
-               PERFORM 200211-FUKU-HEN-SEC
-               IF      FLG-SYUNOU          =   ZERO
+      *        PERFORM 200211-FUKU-HEN-SEC
+      *        IF      FLG-SYUNOU          =   ZERO
       *            複数診療科
-                   IF      SYU-FUKU-DENPNUM    >   ZERO
-                       MOVE    SYU-FUKU-KBN    TO  SPA-NAI-RRK-FUKU-KBN
-                                                                  (IDX)
-                   END-IF
-               END-IF
-           END-IF
+      *            IF      SYU-FUKU-DENPNUM    >   ZERO
+      *                MOVE    SYU-FUKU-KBN    TO  SPA-NAI-RRK-FUKU-KBN
+      *                                                           (IDX)
+      *            END-IF
+      *        END-IF
+      *****END-IF
       *
            .
        20021-JYURRK-HEN-EXT.
            EXIT.
-      *
+      *DEL
       *****************************************************************
       *    複数科診療の判定編集処理
       *****************************************************************
@@ -1293,6 +1347,30 @@
       *
            .
        200211-FUKU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    最終来院日から初診の判定処理
+      *****************************************************************
+       2003-LAST-KIKAN-CHK-SEC              SECTION.
+      *
+           IF     (SPA-LSTYMD          =   SPACE )  OR
+                  (SPA-SYOSIN          =   1     )
+               GO      TO      2003-LAST-KIKAN-CHK-EXT
+           END-IF
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-LSTYMD          TO  LNK-DAY6-KIJUN
+           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    SPA-LAST-KIKAN      TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           IF      LNK-DAY6-KEISAN     <=  SPA-SRYYMD
+               MOVE    1               TO  SPA-SYOSIN
+           END-IF
+           .
+       2003-LAST-KIKAN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1565,22 +1643,24 @@
       *        PERFORM 100112-FUKU-HEN-SEC
       *        GO      TO      10011-JYURRK-EXT
       **** END-IF
-      *    受診歴なし
-           IF      IDX-J1              =   ZERO
+      *!   受診歴なし
+      *    IF      IDX-J1              =   ZERO
       *        複数科まとめ編集
-               PERFORM 100112-FUKU-HEN-SEC
-               GO      TO      10011-JYURRK-EXT
-           END-IF
+      *        PERFORM 100112-FUKU-HEN-SEC
+      *        GO      TO      10011-JYURRK-EXT
+      *!   END-IF
       *
       *    ドクター
-           IF      SPA-DRCD            =   SPACE
-             AND   FLG-UKETUKE-ARI     =   ZERO
+           IF     (SPA-DRCD            =   SPACE)
+             AND  (IDX-J1              >   ZERO )
+             AND  (FLG-UKETUKE-ARI     =   ZERO )
                MOVE    SPA-NAI-RRK-DRCD(IDX-J1)    TO  SPA-DRCD
            END-IF
       *    保険組合せ（中途終了分選択時は選択済み）
            IF     (LNK-SC95-KBN        =   "8"  )  OR
       ************(SPA-SYORIFLG        =   1    )  OR
                   (SPA-HKNCOMBINUM NOT =   SPACE)
+             OR   (IDX-J1              =   ZERO )
                CONTINUE
            ELSE
                MOVE    SPA-NAI-RRK-HKNCOMBI(IDX-J1)
@@ -1588,9 +1668,11 @@
            END-IF
       *
       *    最終受診履歴
-           MOVE    SPA-NAI-RENNUM (IDX-J1) TO  LNK-SC95-LAST-RENNUM
+           IF      IDX-J1              >   ZERO
+               MOVE    SPA-NAI-RENNUM (IDX-J1) TO  LNK-SC95-LAST-RENNUM
+           END-IF
       *    複数科まとめ編集
-           PERFORM 100112-FUKU-HEN-SEC
+      *!   PERFORM 100112-FUKU-HEN-SEC
            .
        10011-JYURRK-EXT.
            EXIT.
@@ -1700,6 +1782,7 @@
                  AND  (SPA-RENNUM          =   SPA-NAI-RENNUM   (IDX))
                  AND  (SPA-DOUJI-RENNUM    =   SPA-NAI-DOUJI-RENNUM
                                                                 (IDX))
+                 AND  (SPA-NAI-GRP-DENPNUM(IDX)    =   ZERO  )
       *        複数科診療の判定をする
                    PERFORM 200211-FUKU-HEN-SEC
                    IF      FLG-SYUNOU          =   ZERO
@@ -1707,7 +1790,10 @@
                        MOVE    SYU-FUKU-KBN    TO  SPA-FUKU-SYORI
                    END-IF
                END-IF
-           ELSE
+           END-IF
+      *DEL
+           GO      TO  100111-DOUJI-JYURRK-EXT
+      *    ELSE
                PERFORM 200211-FUKU-HEN-SEC
       *        複数診療科
                IF      SYU-FUKU-KBN    NOT =   SPACE
@@ -1737,7 +1823,8 @@
                        END-IF
                    END-PERFORM
                END-IF
-           END-IF
+      *    END-IF
+      *DEL
            .
        100111-DOUJI-JYURRK-EXT.
            EXIT.
@@ -1854,6 +1941,7 @@
            MOVE    ZERO                TO  FLG-DRCDOK
            MOVE    SPACE               TO  WRK-DRCD
            MOVE    SPACE               TO  WRK-DRCD2
+           MOVE    SPACE               TO  SPA-DRCD-NAME
            PERFORM
                    UNTIL      (FLG-SYSKANRI    =   1 )  OR
                               (FLG-DRCDOK      =   1 )
@@ -1877,6 +1965,9 @@
                    END-IF
                    IF      SPA-DRCD            =   SYS-1010-KBNCD(1:5)
                        MOVE    1                   TO  FLG-DRCDOK
+                       MOVE    SPA-DRCD(2:4)       TO  SPA-DRCD-NAME
+                       MOVE    SYS-1010-NAME       TO  SPA-DRCD-NAME
+                                                                (6:)
                    END-IF
                END-IF
       *
@@ -3394,6 +3485,11 @@
       *****************************************************************
        4901-PARA-OUT-SEC               SECTION.
       *
+           MOVE    ZERO                TO  IDX-TEI
+           INITIALIZE                  SPA-K02-TEISEI-AREA
+      *
+           MOVE    ZERO                TO  WRK-EDABAN
+      *
            IF     (LNK-SC95-RRKYMD     =   SPACE)  OR
                   (LNK-SC95-RENNUM     =   ZERO )
                PERFORM 4901-RRKNASI-SET-SEC
@@ -3500,16 +3596,21 @@
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    LNK-SC95-RRKYMD     TO  JYURRK-SRYYMD
            MOVE    LNK-SC95-RENNUM     TO  JYURRK-RENNUM
-      *
-           MOVE    "JYURRK-KEY5"       TO  WRK-PATH
+           IF      LNK-SC95-GRP-DENPNUM
+                                   NOT =   ZERO
+               MOVE    LNK-SC95-GRP-DENPNUM    TO  JYURRK-GRP-DENPNUM
+               MOVE    "JYURRK-KEY26"          TO  WRK-PATH
+           ELSE
+               MOVE    "JYURRK-KEY5"       TO  WRK-PATH
+           END-IF
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    WRK-PATH            TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
@@ -3521,16 +3622,43 @@
       *
            MOVE    ZERO                TO  FLG-SYORI
            MOVE    ZERO                TO  IDX-JYU
+           MOVE    SPACE               TO  WRK-KEY-SRYKA
+           MOVE    SPACE               TO  WRK-KEY-HKNCOMBI
+           MOVE    SPACE               TO  WRK-KEY-DRCD
+           MOVE    SPACE               TO  WRK-KEY-SRYYMD
            PERFORM
                    UNTIL    FLG-JYURRK     =   1
                MOVE    ZERO                TO  FLG-NO
       *        訂正処理時、同日連番の同じもの
                IF      LNK-SC95-KBN        =   "4"
-                  IF      LNK-SC95I-DOUJI-RENNUM
-                                               =   JYURRK-DOUJI-RENNUM
+                  IF    ((LNK-SC95-GRP-DENPNUM =   ZERO )  AND
+                         (LNK-SC95I-DOUJI-RENNUM
+                                               =   JYURRK-DOUJI-RENNUM))
+                   OR   ((LNK-SC95-GRP-DENPNUM NOT =   ZERO )  AND
+                         (LNK-SC95-GRP-DENPNUM
+                                               =   JYURRK-GRP-DENPNUM))
                        CONTINUE
                    ELSE
                        MOVE    1               TO  FLG-NO
+                   END-IF
+      *
+                   IF      WRK-KEY-SRYKA       =   SPACE
+                       MOVE    JYURRK-SRYKA        TO  WRK-KEY-SRYKA
+                       MOVE    JYURRK-HKNCOMBINUM  TO  WRK-KEY-HKNCOMBI
+                       MOVE    JYURRK-SRYYMD       TO  WRK-KEY-SRYYMD
+                       MOVE    JYURRK-DRCD         TO  WRK-KEY-DRCD
+                   END-IF
+                   IF     (LNK-SC95-GRP-DENPNUM    NOT =   ZERO ) AND
+                         ((JYURRK-SRYKA        NOT =  WRK-KEY-SRYKA) OR
+                          (JYURRK-HKNCOMBINUM  NOT =  WRK-KEY-HKNCOMBI))
+                       IF      FLG-SYORI           =   1
+                           PERFORM 49021-FUKU-HENSYU-SEC
+                           MOVE    JYURRK-SRYKA    TO  WRK-KEY-SRYKA
+                           MOVE    JYURRK-HKNCOMBINUM
+                                                   TO  WRK-KEY-HKNCOMBI
+                           MOVE    JYURRK-SRYYMD   TO  WRK-KEY-SRYYMD
+                           MOVE    JYURRK-DRCD     TO  WRK-KEY-DRCD
+                       END-IF
                    END-IF
                END-IF
       *
@@ -3545,9 +3673,15 @@
                    END-IF
       *            訂正処理時、ドクター、保険組合せ、伝票番号を取得する
                    IF      LNK-SC95-KBN        =   "4"
-                       MOVE    JYURRK-DRCD         TO  SPA-DRCD
-                       MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM
-                       MOVE    JYURRK-DENPNUM      TO  SPA-DENPNUM
+                       IF     (LNK-SC95-GRP-DENPNUM    =   ZERO ) OR
+                             ((LNK-SC95-GRP-DENPNUM    NOT =   ZERO) AND
+                              (JYURRK-GRP-RENNUM       =   1    ))
+                           MOVE    JYURRK-DRCD         TO  SPA-DRCD
+                           MOVE    JYURRK-SRYKA        TO  SPA-SRYKA
+                           MOVE    JYURRK-HKNCOMBINUM  TO
+                                                       SPA-HKNCOMBINUM
+                           MOVE    JYURRK-DENPNUM      TO  SPA-DENPNUM
+                      END-IF
                   END-IF
                END-IF
       *
@@ -3565,14 +3699,77 @@
        4902-RRKARI-SET-EXT.
            EXIT.
       *****************************************************************
+      *    複数科・保険分の診療行為マスタを作成する 
+      *****************************************************************
+       49021-FUKU-HENSYU-SEC           SECTION.
+      *
+           IF      FLG-SYORI           =   1
+               PERFORM 49011-ZAISET-SEC
+           END-IF
+      *
+           IF      WRK-EDABAN          >   ZERO
+      *        科・保険の行
+               MOVE    SPACE               TO  WKSRYACT-REC
+               INITIALIZE                  WKSRYACT-REC
+               MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+               MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+               MOVE    SPA-PTID            TO  WKSRY-PTID
+               MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
+               MOVE    WRK-KEY-SRYYMD      TO  WKSRY-SRYYMD
+               MOVE    1                   TO  WKSRY-RENNUM
+      *        剤回数計
+               MOVE    1                   TO  WKSRY-ZAIKAIKEI
+      *        保険組合
+               MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
+               IF      WRK-KEY-HKNCOMBI    NOT =   JYURRK-HKNCOMBINUM
+                   MOVE    "#"                 TO  WKSRY-SRYCD(1)(1:1)
+                   MOVE    JYURRK-HKNCOMBINUM  TO  WKSRY-SRYCD(1)(2:4)
+                   PERFORM 490211-WKSRYACT-OUT-SEC
+               END-IF
+      *        診療科
+               IF      WRK-KEY-SRYKA       NOT =   JYURRK-SRYKA
+                   MOVE    "$"                 TO  WKSRY-SRYCD(1)(1:1)
+                   MOVE    JYURRK-SRYKA        TO  WKSRY-SRYCD(1)(2:2)
+                   MOVE    JYURRK-DRCD(2:4)    TO  WKSRY-SRYCD(1)(5:4)
+                   PERFORM 490211-WKSRYACT-OUT-SEC
+               END-IF
+           END-IF
+      *
+           INITIALIZE                      WRK-ZAINUM-TBL
+           MOVE    ZERO                TO  IDX-JYU
+      *
+          .
+       49021-FUKU-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    ワーク診療行為作成処理
+      *****************************************************************
+       490211-WKSRYACT-OUT-SEC           SECTION.
+      *
+           ADD     1                   TO  WRK-FUKU-ZAINUM
+           MOVE    WRK-FUKU-ZAINUM     TO  WKSRY-ZAINUM
+      *
+           MOVE    SPACE               TO  PARA-REC
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+           ADD     1                   TO  WRK-EDABAN
+           MOVE    WRK-EDABAN          TO  PARA-EDABAN
+           MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
+      *
+           WRITE                       PARA-REC
+      *    ワーク診療行為作成有無
+           MOVE    1               TO  LNK-SC95-WKSRYACT
+          .
+       490211-WKSRYACT-OUT-EXT.
+           EXIT.
+      *****************************************************************
       *    診療行為マスタを作成する 
       *****************************************************************
        49011-ZAISET-SEC           SECTION.
       *
-           MOVE    ZERO                TO  IDX-TEI
-           INITIALIZE                  SPA-K02-TEISEI-AREA
+      *    MOVE    ZERO                TO  IDX-TEI
+      *    INITIALIZE                  SPA-K02-TEISEI-AREA
       *
-           MOVE    ZERO                TO  WRK-EDABAN
+      *    MOVE    ZERO                TO  WRK-EDABAN
            MOVE    ZERO                TO  FLG-JIKAN
       *
            PERFORM VARYING     IDX-JYU     FROM    1   BY  1
@@ -3600,13 +3797,12 @@
       *****************************************************************
        490111-ZAISET-HEN-SEC           SECTION.
       *
-      *
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                  SRYACT-REC
            MOVE    SPA-HOSPID          TO  SRY-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
-           MOVE    SPA-SRYKA           TO  SRY-SRYKA
+           MOVE    WRK-KEY-SRYKA       TO  SRY-SRYKA
            MOVE    WRK-RRK-SRYYMD(1:6) TO  SRY-SRYYM
            MOVE    WRK-TZAINUM (IDX-JYU IDX-R)
                                        TO  SRY-ZAINUM
@@ -3732,7 +3928,8 @@
            MOVE    SRY-HOSPID          TO  WKSRY-HOSPID
            MOVE    SRY-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SRY-PTID            TO  WKSRY-PTID
-           MOVE    SRY-SRYKA           TO  WKSRY-SRYKA
+      *!   MOVE    SRY-SRYKA           TO  WKSRY-SRYKA
+           MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
            MOVE    SRY-SRYYM           TO  WKSRY-SRYYMD(1:6)
            MOVE    SRY-SRYKBN          TO  WKSRY-SRYKBN
            MOVE    SRY-ZAINUM          TO  WKSRY-ZAINUM
@@ -3744,7 +3941,8 @@
       *剤点数
            MOVE    ACCT-ZAITEN         TO  WKSRY-ZAITENKEI
       *保険組合
-           MOVE    ACCT-HKNCOMBI       TO  WKSRY-HKNCOMBI
+      *!   MOVE    ACCT-HKNCOMBI       TO  WKSRY-HKNCOMBI
+           MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   5   )   OR
@@ -3770,6 +3968,11 @@
                                                        OR "F"
                                                        OR "G"
                        PERFORM 49012-JIKAN-SYORI-SEC
+                   END-IF
+      *            Ｈ１６．４から特定疾患処方管理料等の自動発生チェック
+                   IF     (SRY-SRYYM       >=   "200404" ) AND
+                          (SRY-AUTOKBN(IDX) =   "3"      )
+                       PERFORM 49013-SYOHOU-CHK-SEC
                    END-IF
                END-IF
       *    点滴判定
@@ -3905,6 +4108,35 @@
       *
            .
        49012-JIKAN-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    自動発生分チェック処理
+      *****************************************************************
+       49013-SYOHOU-CHK-SEC              SECTION.
+      *
+      *    長期投薬加算
+           IF      (SRY-SRYSYUKBN      =   "820")  AND
+                   (SRY-SRYCD  (IDX)   =   "120003270")
+               MOVE    SPACE           TO  WKSRY-AUTOKBN  (IDX)
+           END-IF
+      *    特定疾患処方管理
+           IF      (SRY-SRYSYUKBN      =   "820")  AND
+                   (SRY-SRYCD  (IDX)   =   "120002570")
+               MOVE    SPACE           TO  WKSRY-AUTOKBN  (IDX)
+           END-IF
+      *    長期投薬加算
+           IF      (SRY-SRYSYUKBN      =   "250")  AND
+                   (SRY-SRYCD  (IDX)   =   "120003170")
+               MOVE    SPACE           TO  WKSRY-AUTOKBN  (IDX)
+           END-IF
+      *    特定疾患処方管理
+           IF      (SRY-SRYSYUKBN      =   "250")  AND
+                   (SRY-SRYCD  (IDX)   =   "120002270")
+               MOVE    SPACE           TO  WKSRY-AUTOKBN  (IDX)
+           END-IF
+      *
+           .
+       49013-SYOHOU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ワーク診療行為マスタを作成する 

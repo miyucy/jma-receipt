@@ -191,8 +191,19 @@
            INITIALIZE                      WRK-AREA
            INITIALIZE                      FLG-AREA
            INITIALIZE                      IDX-AREA
+           INITIALIZE                      LNK-SC97-OUTAREA
       *
            PERFORM 100-INPUTCD-SYORI-SEC
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      LNK-SC97-KBN        =   "1"
+      *            半角変換のみの時
+                   PERFORM 1001-SYORI-KBN1-SEC
+               ELSE
+      *            内容変換
+                   PERFORM 1002-SYORI-KBN2-SEC
+               END-IF
+           END-IF
       *
            . 
        000-PROC-EXT.
@@ -205,9 +216,6 @@
       *****************************************************************
        100-INPUTCD-SYORI-SEC            SECTION.
       *
-      *
-           INITIALIZE                      LNK-SC97-OUTAREA
-      *
       *    '_'をなくす
            INSPECT LNK-SC97-INPUTCD
                    TALLYING    LNK-SC97-JODOU  FOR  ALL "_"
@@ -217,45 +225,58 @@
            PERFORM 100-MAE-HANKAKU-SEC
            IF      WRK-INPUTCD     NOT =   SPACE
                MOVE    WRK-INPUTCD         TO  LNK-SC97-INPUTCD
-               GO      TO          100-INPUTCD-SYORI-EXT
            END-IF
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO          100-INPUTCD-SYORI-EXT
-           END-IF
-      *
-      *    半角変換のみの時
-           IF      LNK-SC97-KBN        =   "1"
-      *        数量ゼロの判定
-               IF      (LNK-SC97-PG        =   "K02N" )  AND
-                       (LNK-SC97-INPUTCD(1:1)  =   "*" )
+      *    保険・診療科
+           IF      LNK-SC97-INPUTCD(1:1)   =   "#"
+                                           OR  "$"
+      *        外来でＨ１６．４月からとする
+               IF     (LNK-SC97-PG         =   "K02 " )  AND
+                      (SPA-SRYYMD          >=  "20040401")
                    CONTINUE
                ELSE
-                   PERFORM 1003-SURYOU-CHK-SEC
+                   IF      SPA-ERRCD       =   SPACE
+                       MOVE    "1055"          TO  SPA-ERRCD
+                   END-IF
                END-IF
-               GO      TO          100-INPUTCD-SYORI-EXT
            END-IF
+      *
+           .
+       100-INPUTCD-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    半角変換のみの時処理
+      *****************************************************************
+       1001-SYORI-KBN1-SEC            SECTION.
+      * 
+      *    数量ゼロの判定
+           IF      (LNK-SC97-PG        =   "K02N" )  AND
+                   (LNK-SC97-INPUTCD(1:1)  =   "*" )
+               CONTINUE
+           ELSE
+               PERFORM 1003-SURYOU-CHK-SEC
+           END-IF
+      *
+           .
+       100-INPUTCD-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    内容変換・チェック処理
+      *****************************************************************
+       1002-SYORI-KBN2-SEC            SECTION.
       *
       *    入院の回数
            IF      (LNK-SC97-PG        =   "K02N" )  AND
                    (LNK-SC97-INPUTCD(1:1)  =   "*"    )
                PERFORM 1002-NYUINKAISU-SEC
-               GO      TO          100-INPUTCD-SYORI-EXT
-           END-IF
-      *
-      *    入力コードの判定
-           PERFORM 200-INPUTCD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO          100-INPUTCD-SYORI-EXT
-           END-IF
-      *    診療種別入力は、以下の処理なし
-           IF     (LNK-SC97-INPUTCD(1:1)   =   "." ) AND
-                  (LNK-SC97-INPUTCD(2:3)   NUMERIC ) AND
-                  (LNK-SC97-INPUTCD(5:)    =   SPACE)
-               GO      TO          100-INPUTCD-SYORI-EXT
+           ELSE
+      *        入力コードの判定
+               PERFORM 200-INPUTCD-CHK-SEC
            END-IF
       *
            .
-       100-INPUTCD-SYORI-EXT.
+       1002-SYORI-KBN2-EXT.
            EXIT
            .
       *
@@ -349,27 +370,25 @@
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    LNK-SC97-INPUTCD
                                        TO  WRK-INPUTCD
-               GO      TO      100-MAE-HANKAKU-EXT
-           END-IF
+           ELSE
       *
-      *    １桁目へ−，＋編集
-           IF      WRK-CHK-FLG     NOT =   SPACE
-               MOVE    WRK-CHK-FLG         TO  WRK-INPUTCD(1:1)
-               MOVE    WRK-INPUTCD3        TO  WRK-INPUTCD(2:)
-           END-IF
-      *
-      *
-           IF      LNK-SC97-INPUTCD(1:2)   =   "!!"
-               MOVE    LNK-SC97-INPUTCD
+      *        １桁目へ−，＋編集
+               IF      WRK-CHK-FLG     NOT =   SPACE
+                   MOVE    WRK-CHK-FLG         TO  WRK-INPUTCD(1:1)
+                   MOVE    WRK-INPUTCD3        TO  WRK-INPUTCD(2:)
+               END-IF
+               IF      LNK-SC97-INPUTCD(1:2)   =   "!!"
+                   MOVE    LNK-SC97-INPUTCD
                                        TO  WRK-INPUTCD
-           END-IF
-           IF      LNK-SC97-INPUTCD(1:1)   =   "!"  OR
-                                               " "  OR
-                                               "/"  OR
-                                               "-"  OR
-                                               "+"
-               MOVE    LNK-SC97-INPUTCD
-                                       TO  WRK-INPUTCD
+               END-IF
+               IF      LNK-SC97-INPUTCD(1:1)   =   "!"  OR
+                                                   " "  OR
+                                                   "/"  OR
+                                                   "-"  OR
+                                                   "+"
+                   MOVE    LNK-SC97-INPUTCD
+                                           TO  WRK-INPUTCD
+               END-IF
            END-IF
       *
            .
@@ -396,13 +415,15 @@
            MOVE    LNK-SC97-GMN-IDX    TO  GMN-IDX
            PERFORM 300-SURYOU-SYORI-SEC
            IF      LNK-SC97-INPUTCD(1:1)   =   " "
-               GO      TO      1003-SURYOU-CHK-EXT
-           END-IF
+      *        削除行
+               CONTINUE
+           ELSE
       *
-      *    入力コード文字列調査処理
-           PERFORM 2020-INPUTCD-CHOSA-SEC
-           MOVE    WRK-INPUTCD         TO  LNK-SC97-INPUTCD
-           MOVE    WRK-CD              TO  LNK-SC97-INCD
+      *        入力コード文字列調査処理
+               PERFORM 2020-INPUTCD-CHOSA-SEC
+               MOVE    WRK-INPUTCD         TO  LNK-SC97-INPUTCD
+               MOVE    WRK-CD              TO  LNK-SC97-INCD
+           END-IF
       *
            .
        1003-SURYOU-CHK-EXT.
@@ -599,36 +620,51 @@
       *    １桁目の変換
            PERFORM 2001-JIKANGAI-CHK-SEC
       *
-      *    診療種別
-           IF      LNK-SC97-INPUTCD(1:1)   =   "."
-               MOVE    4                   TO  WRK-CD-MCNT
-               MOVE    1                   TO  WRK-IDX-FT
+           EVALUATE    LNK-SC97-INPUTCD(1:1)
+               WHEN    "."
+      *        診療種別
+                   MOVE    4                   TO  WRK-CD-MCNT
+                   MOVE    1                   TO  WRK-IDX-FT
+      *            数量以下の変換
+                   PERFORM 300-SURYOU-SYORI-SEC
+               WHEN    "#"
+               WHEN    "$"
+      *        保険・診療科
+                   MOVE    4                   TO  WRK-CD-MCNT
+                   MOVE    1                   TO  WRK-IDX-FT
+      *            数量以下の変換
+                   PERFORM 300-SURYOU-SYORI-SEC
+               WHEN    OTHER
+      *            その他
+                   PERFORM 2001-INPUTCHK-SYORI-SEC
+           END-EVALUATE
+           .
+       200-INPUTCD-CHK-EXT.
+           EXIT.
       *
-      *        数量以下の変換
-               PERFORM 300-SURYOU-SYORI-SEC
-               GO      TO      200-INPUTCD-CHK-EXT
-           END-IF
+      *****************************************************************
+      *    入力コードの判定処理
+      *****************************************************************
+       2001-INPUTCHK-SYORI-SEC       SECTION.
       *
       *    入力コード文字列調査処理
            PERFORM 2020-INPUTCD-CHOSA-SEC
            MOVE    WRK-INPUTCD         TO  LNK-SC97-INPUTCD
            MOVE    WRK-CD              TO  LNK-SC97-INCD
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      200-INPUTCD-CHK-EXT
-           END-IF
       *
       *    入力コード変更時、点数マスタの決定
-           IF      LNK-SC97-NYURYOKU   =   1
+           IF     (LNK-SC97-NYURYOKU   =   1      )  AND
+                  (SPA-ERRCD           =   SPACE  )
                PERFORM 2030-INPUTCD-KENSAKU-SEC
-      *********IF     (LNK-SC97-CDSYU      NOT =   SPACE )  OR
-               IF     (LNK-SC97-KENSAKU    NOT =   SPACE )  OR
-                      (SPA-ERRCD           NOT =   SPACE )
-                   GO      TO      200-INPUTCD-CHK-EXT
-               END-IF
+           END-IF
+           IF     (LNK-SC97-KENSAKU    NOT =   SPACE )  OR
+                  (SPA-ERRCD           NOT =   SPACE )
+               CONTINUE
+           ELSE
+      *        数量以下の変換
+               PERFORM 300-SURYOU-SYORI-SEC
            END-IF
       *
-      *    数量以下の変換
-           PERFORM 300-SURYOU-SYORI-SEC
            .
        200-INPUTCD-CHK-EXT.
            EXIT.

@@ -465,7 +465,6 @@
       *    来月の調剤料を算定しなおす
            PERFORM 600-NEXT-CHOZAI-SEC
       *
-      *
       *    診療科履歴変更
            INITIALIZE                  ORCSKARRKAREA
            MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
@@ -1713,8 +1712,6 @@
       *    会計連番
            MOVE    1                   TO  JYURRK-KAIKEI-RENNUM
       *
-           MOVE    "1"                 TO  JYURRK-LASTKBN
-      *
            MOVE    SPA-DRCD            TO  JYURRK-DRCD
            MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
            MOVE    ZERO                TO  JYURRK-DENPNUM
@@ -1807,8 +1804,6 @@
       *            診療会計マスタの診療回数をクリアする
                    PERFORM 4500112-TEISEI-SRYACCT-SEC
       *
-      *            最終フラグクリア
-                   MOVE    ZERO                TO  JYURRK-LASTKBN
       *            会計連番
                    MOVE    JYURRK-KAIKEI-RENNUM
                                                TO  WRK-KAIKEI-RENNUM

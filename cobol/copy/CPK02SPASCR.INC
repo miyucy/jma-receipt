@@ -165,6 +165,12 @@
                        09  SPA-COM-NYU-KZMFLG-G.
                            11  SPA-COM-NYU-KZMFLG        PIC X(01)
                                                      OCCURS   31.
+      *                保険組合せ（空白は選択保険）
+                       09  SPA-COM-HKNCOMBI      PIC  X(04).
+      *                診療科（空白は選択）
+                       09  SPA-COM-SRYKA         PIC  X(02).
+      *                ドクター（空白は選択）
+                       09  SPA-COM-DRCD          PIC  X(04).
       *        点数マスタ項目
       *                点数マスタの診療区分
                        09  SPA-COM-TNSSRYKBN     PIC X(02).

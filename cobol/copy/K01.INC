@@ -54,13 +54,6 @@
                 04  K01-INGAI-ITEM    PIC X(20)   OCCURS  5 TIMES.
               03  K01-HKNKUMI.
                 04  K01-VALUE   PIC X(4).
-              03  K01-CONTKBNCOMB.
-                04  K01-CONTKBN.
-                  05  K01-VALUE   PIC X(20).
-                04  K01-CONTKBN-COUNT   PIC S9(9)   BINARY.
-                04  K01-CONTKBN-ITEM    PIC X(20)   OCCURS  5 TIMES.
-              03  K01-KZKKBNNAME.
-                04  K01-VALUE   PIC X(50).
               03  K01-SCROLLEDWINDOW3.
                 04  K01-HKNKUMILST.
                   05  K01-HKNKUM-COUNT   PIC S9(9)   BINARY.

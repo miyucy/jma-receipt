@@ -158,7 +158,9 @@
       *    診療行為コードより、処理を決定
       *
            IF      SPA-GMN-INPUTCD(IDX)(1:1)       =   "." OR "S"
-                                                           OR  "*"
+                                                   OR  "*"
+                                                   OR  "#"
+                                                   OR  "$"
                MOVE    SPA-GMN-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
            ELSE
                MOVE    SPA-COM-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
@@ -171,6 +173,11 @@
            END-IF
       *
            IF      WRK-MOJI            =   "."
+               GO     TO      000-PROC-EXT
+           END-IF
+      *
+           IF      WRK-MOJI            =   "#"
+                                       OR  "$"
                GO     TO      000-PROC-EXT
            END-IF
       *    入院回数
@@ -321,7 +328,6 @@
            END-PERFORM
       *
       *    入力値再編集
-      *
       *     文字列調査の開始位置　取得
            IF     (SPA-GMN-INPUTCD(IDX)(1:1)  IS  NUMERIC    ) AND
                   (SPA-GMN-INPUTCD(IDX)(2:1)      =   SPACE  ) AND

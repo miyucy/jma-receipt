@@ -78,6 +78,8 @@
                05  SPA-JIKANTOKU-NYU       PIC X(01).
       *画像診断管理加算１（写真診断）
                05  SPA-GAZOUKSN1           PIC X(01).
+      *最終受診日から初診判定までの期間
+               05  SPA-LAST-KIKAN          PIC 9(02).
       *時間外チェック除外時間
                05  SPA-JIKANTOKU-CHK       PIC X(01).
                05  SPA-JIKANCHK-TIME-G.
@@ -85,6 +87,8 @@
                        09  SPA-JIKANCHK-STR        PIC 9(04).
                        09  SPA-JIKANCHK-END        PIC 9(04).
                05  SPA-JIKANCHK-ERR        PIC X(01).
+      *複数科まとめ集計
+               05  SPA-KAGRPFLG            PIC X(01).
       *
            03  SPA-K01SET-AREA.
       *処理フラグ（０：通常、１：訂正）
@@ -184,10 +188,6 @@
                05  SPA-DOUJI-DENPNUM       PIC  9(07).
       *同時診療連番
                05  SPA-DOUJI-RENNUM        PIC  9(01).
-      *初診算定時の最終行
-               05  SPA-FRST-LINE           PIC  9(04).
-      *初診算定時の最終診療行為
-               05  SPA-FRST-SRYCD          PIC  X(09).
       *中途終了分の保険組合せ
                05  SPA-WKSRY-HKNCOMBI      PIC  9(04).
       *老人保険変更なし
@@ -201,6 +201,16 @@
                05  SPA-OLD-SRYKA           PIC X(02).
       *訂正前保険組合せ
                05  SPA-OLD-HKNCOMBI        PIC X(04).
+      *外来訂正時対象伝票番号
+               05  SPA-TEI-AREA.
+                   07  SPA-TEI-TBL             OCCURS   15.
+                       09  SPA-TEI-DENPNUM     PIC 9(07).
+                       09  SPA-TEI-SRYKA       PIC X(02).
+                       09  SPA-TEI-HKNCOMBI    PIC X(04).
+                       09  SPA-TEI-RENNUM          PIC  9(01).
+                       09  SPA-TEI-DOUJI-RENNUM    PIC  9(01).
+      *主ドクター
+               05  SPA-DRCD-NAME           PIC X(50).
       *
       *入院用（Ｋ０２Ｎ）
       *        入院日
@@ -301,6 +311,19 @@
                05  SPA-NAIFUKU-OK          PIC  9(01).
       *外来調基算定確認
                05  SPA-CHOZAI-CHK          PIC  9(01).
+      *外来複数保険組合せ
+               05  SPA-TBL-HKNCOMBI-AREA.
+                   07  SPA-TBL-HKNCOMBI-OCC     OCCURS   15.
+                       09  SPA-TBL-HKNCOMBI     PIC X(04).
+                       09  SPA-TBL-HKNCOMBIMEI  PIC X(50).
+                       09  SPA-TBL-FTNRATEMEI   PIC X(05).
+                       09  SPA-TBL-FTNRATE      PIC 9(03).
+      *                複数科
+                       09  SPA-TBL-SRYKA-AREA   OCCURS   10.
+                           11  SPA-TBL-SRYKA    PIC X(02).
+                           11  SPA-TBL-DRCD.
+                               13  SPA-TBL-DRCD1    PIC X(01).
+                               13  SPA-TBL-DRCD2    PIC X(04).
       *
            03  SPA-SONOTA-AREA.
       *確認メッセージ

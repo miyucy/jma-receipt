@@ -212,6 +212,8 @@
            03  LNK-ORCSC-KASAN.
                05  LNK-ORCSC-KASAN-TBL  OCCURS  10.
                    07  LNK-ORCSC-KASN-TBL2     OCCURS   30.
+                       09  LNK-ORCSC-SRYKA         PIC X(02).
+                       09  LNK-ORCSC-HKNCOMBI      PIC X(04).
                        09  LNK-ORCSC-SRYSYUKBN     PIC X(03).
                        09  LNK-ORCSC-SRYKBN        PIC X(02).
                        09  LNK-ORCSC-SRYCD         PIC X(09).
@@ -224,6 +226,8 @@
                        09  LNK-ORCSC-INPUTCD-G.
                            11  LNK-ORCSC-INPUTCD       PIC X(22)
                                                    OCCURS  5.
+      *                自動発生分としない
+                       09  LNK-ORCSC-AUTOKBN       PIC X(01).
       *    確認メッセージ
            03  LNK-ORCSC-KIDCD              PIC  X(04).
       *

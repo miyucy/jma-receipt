@@ -37,7 +37,8 @@
       *  02.00.03    NACL-多々納  02/09/04  臨時投薬の１４日以内を修正
       *  02.00.04    NACL-多々納  02/12/03  他科受診メッセージ削除
       *  02.00.05    NACL-多々納  03/07/10  入院調剤料算定なし追加
-      *  02.00.00    NACL-多々納  04/03/10  改正対応
+      *  02.00.06    NACL-多々納  04/03/10  改正対応
+      *  02.00.07    NACL-多々納  04/06/XX  複数科・保険対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -102,6 +103,10 @@
            03  FLG-YAKUZAI-ARI         PIC 9(01).
            03  FLG-ZAIEND              PIC 9(01).
       *
+           03  FLG-ALL                  PIC 9(01).
+           03  FLG-YAKUJYO              PIC 9(01).
+           03  FLG-CHOKI                PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -128,7 +133,7 @@
            03  IDN1                PIC 9(02).
       *
            03  IDX-SYOHOU          PIC 9(04).
-      *
+           03  IDX-KA              PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -194,12 +199,15 @@
            03  WRK-H-DAY               PIC 9(02).
            03  WRK-H-SEL               PIC X(01).
       *    末日
-           03  WRK-MATU                    PIC 9(02).
+           03  WRK-MATU                PIC 9(02).
       *
            03  WRK-ORC-DBPATH          PIC X(63).
       *
            03  WRK-HEN-MEI             PIC X(20).
            03  WRK-HENSYU-MEISYO       PIC X(60).
+      *
+           03  WRK-SRYKA               PIC X(02).
+           03  WRK-HKNCOMBI            PIC X(04).
       *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
@@ -214,6 +222,12 @@
        01  TBL-NYUINDAY-AREA.
            03  TBL-NYUINDAY-OCC        OCCURS   31.
                05  TBL-NYUINDAY        PIC 9(01).
+      *
+      *    診療科・保険
+       01  TBL-SRYKA-AREA.
+           03  TBL-SRYKA-OCC           OCCURS   10.
+               05  TBL-SRYKA           PIC X(02).
+               05  TBL-HKNCOMBI        PIC X(04).
       *
       *    保存用
        01  HOZ-SCR-REC.
@@ -434,7 +448,6 @@
            .
        10010-SRYKBN-CHK-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    明細別内容チェック、自動算定編集処理
@@ -793,6 +806,58 @@
       *!!      OR (SPA-NYUGAIKBN        =   "1"  )
                PERFORM 30010-JYURRK-SYORI-SEC
       *!!  END-IF
+      *    科毎
+           INITIALIZE                  TBL-SRYKA-AREA
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   200  )  OR
+                              (WRK-GMN-INPUTCD(IDX) =   SPACE)
+               IF      WRK-COM-SRYKBN(IDX)(1:1)    =   "2"
+                   IF      WRK-COM-SRYKA (IDX)     =   SPACE
+                       MOVE    SPA-SRYKA      TO  WRK-COM-SRYKA(IDX)
+                   END-IF
+                   IF      WRK-COM-HKNCOMBI (IDX)  =   SPACE
+                       MOVE    SPA-HKNCOMBINUM
+                                              TO  WRK-COM-HKNCOMBI(IDX)
+                   END-IF
+                   PERFORM VARYING     IDX-KA  FROM    1   BY  1
+                           UNTIL       IDX-KA  >   10
+                       IF      TBL-SRYKA (IDX-KA)  =   SPACE
+                           MOVE    WRK-COM-SRYKA(IDX)  TO  TBL-SRYKA
+                                                              (IDX-KA)
+                           MOVE    WRK-COM-HKNCOMBI(IDX)
+                                                       TO  TBL-HKNCOMBI
+                                                              (IDX-KA)
+                       END-IF
+                       IF      TBL-SRYKA (IDX-KA)  =   WRK-COM-SRYKA
+                                                               (IDX)
+                           MOVE    10              TO  IDX-KA
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           MOVE    ZERO                TO  IDXS
+           MOVE    SPACE               TO  LNK-ORCSC-KIDCD
+           PERFORM VARYING     IDX-KA  FROM    1   BY  1
+                   UNTIL      (IDX-KA      >   10   )  OR
+                              (TBL-SRYKA (IDX-KA)  =   SPACE)  OR
+                              (LNK-ORCSC-KIDCD NOT =   SPACE)
+               MOVE    TBL-SRYKA (IDX-KA)      TO  WRK-SRYKA
+               MOVE    TBL-HKNCOMBI(IDX-KA)    TO  WRK-HKNCOMBI
+               PERFORM 3000-JIDOU-SYORI-SEC
+           END-PERFORM
+      *
+           .
+       300-AUTO-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自動算定発生処理
+      *****************************************************************
+       3000-JIDOU-SYORI-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TOKUSYO1
+           MOVE    ZERO                TO  FLG-TOKUSYO2
       *
            MOVE    ZERO                TO  FLG-NAIYAK
            MOVE    ZERO                TO  FLG-TONPUK
@@ -801,8 +866,6 @@
            MOVE    ZERO                TO  FLG-TONPUK2
            MOVE    ZERO                TO  FLG-GAIYAK2
            MOVE    ZERO                TO  FLG-MADOKU
-           MOVE    ZERO                TO  FLG-TOKUSYO1
-           MOVE    ZERO                TO  FLG-TOKUSYO2
            MOVE    ZERO                TO  FLG-KOUHATU
            MOVE    ZERO                TO  IDX-SYOHOU
            MOVE    ZERO                TO  FLG-MADOKU-ARI
@@ -822,6 +885,7 @@
                    UNTIL      (IDX     >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)
       *
+           IF      WRK-COM-SRYKA (IDX)     =   WRK-SRYKA
                MOVE    WRK-COM-SRYSYUKBN (IDX) TO  WRK-CHK-SRYSYUKBN
       *----(01.00.01) LINE ADD START ----------------------------------
                IF      WRK-CHK-SRYSYUKBN       =   SPACE
@@ -958,9 +1022,10 @@
                                                    "12"  )
                    MOVE    1                   TO  FLG-SINSATU
                END-IF
+      *
+            END-IF
            END-PERFORM
       *
-           MOVE    ZERO                TO  IDXS
       *    院外分
            PERFORM 3001-INGAI-SYORI-SEC
       *    院内分
@@ -1034,7 +1099,6 @@
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            END-IF
       *
-      *
            .
        300-AUTO-SYORI-EXT.
            EXIT.
@@ -1072,7 +1136,6 @@
       *   処方内容チェク処理
       *****************************************************************
        3000-SYOHOU-CHK-SEC              SECTION.
-      *
       *
            EVALUATE    WRK-CHK-SRYSYUKBN
                WHEN    "211"
@@ -1330,6 +1393,16 @@
                MOVE    SPACE               TO  WRK-SRYCD
            END-IF
       *
+      *    主科の時のみ行う
+           IF      IDX-KA          NOT =   1
+               GO      TO      3001-INGAI-SYORI-EXT
+           END-IF
+      *
+      *    新規の時のみ行う
+           IF      LNK-ORCSC-SYORIFLG  =   1
+               GO      TO      3001-INGAI-SYORI-EXT
+           END-IF
+      *
       *    特定疾患処方管理加算のチェック
            IF     (FLG-SYOHOSENN       =   1  )  AND
                   (LNK-ORCSC-TOKUTEI   =   1  )
@@ -1358,6 +1431,9 @@
                                                          (02 IDXS)
                        MOVE    "80"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
+      *                自動発生分としない
+                       MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
+                                                         (02 IDXS)
                    END-IF
                    MOVE    1                   TO  FLG-TOKUSYO1
                    GO      TO      3001-INGAI-SYORI-EXT
@@ -1372,11 +1448,15 @@
                                                          (02 IDXS)
                        MOVE    "80"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
+      *                自動発生分としない
+                       MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
+                                                         (02 IDXS)
                    END-IF
                    MOVE    1                   TO  FLG-TOKUSYO1
                END-IF
       *
            END-IF
+      *
            .
        3001-INGAI-SYORI-EXT.
            EXIT.
@@ -1578,15 +1658,18 @@
       *----(01.00.02) LINE ADD START ----------------------------------
       *           調基が１であること
              IF      LNK-ORCSC-CHOKI-FLG   =   1
+               AND  (FLG-CHOKI             =   ZERO )
       *----(01.00.02) LINE ADD END   ----------------------------------
                MOVE    "120001810"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD2
+               MOVE    1                   TO  FLG-ALL
                PERFORM 3002-KASAN-SYORI-SEC
                IF      FLG-ERR             =   ZERO
                    MOVE    "270"           TO  LNK-ORCSC-SRYSYUKBN
                                                          (02 IDXS)
                    MOVE    "27"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
+                   MOVE    1               TO  FLG-CHOKI
                END-IF
              END-IF
            END-IF
@@ -1596,49 +1679,8 @@
            IF     (FLG-NAIYAK          =   1    )  OR
                   (FLG-TONPUK          =   1    )  OR
                   (FLG-GAIYAK          =   1    )
-               MOVE    SPACE               TO  WRK-SRYCD
-      *        老人区分判定
-               IF      LNK-ORCSC-ROUJIN    =   0
-                   IF      LNK-ORCSC-YAKJYO-1      =    1
-                       MOVE    "120002370"         TO  WRK-SRYCD
-                       MOVE    SPACE               TO  WRK-SRYCD2
-                       PERFORM 3002-KASAN-SYORI-SEC
-                       IF      FLG-ERR             =   ZERO
-                           MOVE    "130"       TO  LNK-ORCSC-SRYSYUKBN
-                                                             (02 IDXS)
-                           MOVE    "13"        TO  LNK-ORCSC-SRYKBN
-                                                             (02 IDXS)
-                       END-IF
-                   END-IF
-               ELSE
-      *            老人の時、手帳記載あり、なしの両方の算定チェック
-                   MOVE    "113701310"         TO  WRK-SRYCD
-                   PERFORM 3003-YAKJYO-CHK-SEC
-                   IF      FLG-YAKJYO          =   ZERO
-                       MOVE    "113701410"         TO  WRK-SRYCD
-                       PERFORM 3003-YAKJYO-CHK-SEC
-                   END-IF
-                   IF      FLG-YAKJYO          =   ZERO
-                       MOVE    SPACE               TO  WRK-SRYCD
-                       IF      LNK-ORCSC-YAKJYO-2      =    1
-                           MOVE    "113701310"         TO  WRK-SRYCD
-                       ELSE
-                           IF      LNK-ORCSC-YAKJYO-3  =    1
-                               MOVE    "113701410"     TO  WRK-SRYCD
-                           END-IF
-                       END-IF
-                       IF      WRK-SRYCD       NOT =   SPACE
-                           MOVE    SPACE               TO  WRK-SRYCD2
-                           PERFORM 3002-KASAN-SYORI-SEC
-                           IF      FLG-ERR             =   ZERO
-                               MOVE    "130"     TO
-                                                 LNK-ORCSC-SRYSYUKBN
-                                                              (02 IDXS)
-                               MOVE    "13"      TO  LNK-ORCSC-SRYKBN
-                                                              (02 IDXS)
-                           END-IF
-                       END-IF
-                   END-IF
+               IF     (FLG-YAKUJYO         =   ZERO )
+                   PERFORM 30022-INNAI-YAKUJYOUCHK-SEC
                END-IF
            END-IF
       *
@@ -1658,6 +1700,15 @@
       *            END-IF
       *        END-IF
       *****END-IF
+      *    主科の時のみ行う
+           IF      IDX-KA          NOT =   1
+               GO      TO      3002-INNAI-SYORI-EXT
+           END-IF
+      *
+      *    新規の時のみ行う
+           IF      LNK-ORCSC-SYORIFLG  =   1
+               GO      TO      3002-INNAI-SYORI-EXT
+           END-IF
       *
       *    特定疾患処方管理加算のチェック
            IF     (FLG-SYOHORYO            =   1  )  AND
@@ -1687,6 +1738,9 @@
                                                          (02 IDXS)
                        MOVE    "25"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
+      *                自動発生分としない
+                       MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
+                                                         (02 IDXS)
                    END-IF
                    MOVE    1                   TO  FLG-TOKUSYO2
                    GO      TO      3002-INNAI-SYORI-EXT
@@ -1701,14 +1755,63 @@
                                                          (02 IDXS)
                        MOVE    "25"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
+      *                自動発生分としない
+                       MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
+                                                         (02 IDXS)
                    END-IF
                    MOVE    1                   TO  FLG-TOKUSYO2
                END-IF
       *
            END-IF
-      *
            .
        3002-INNAI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    院内薬剤情報提供料処理
+      *****************************************************************
+       30022-INNAI-YAKUJYOUCHK-SEC     SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SRYCD
+      *    老人区分判定
+           IF      LNK-ORCSC-ROUJIN    =   0
+               IF      LNK-ORCSC-YAKJYO-1      =    1
+                    MOVE    "120002370"         TO  WRK-SRYCD
+                    MOVE    SPACE               TO  WRK-SRYCD2
+               END-IF
+           ELSE
+      *        老人の時、手帳記載あり、なしの両方の算定チェック
+               MOVE    "113701310"         TO  WRK-SRYCD
+               PERFORM 3003-YAKJYO-CHK-SEC
+               IF      FLG-YAKJYO          =   ZERO
+                   MOVE    "113701410"         TO  WRK-SRYCD
+                   PERFORM 3003-YAKJYO-CHK-SEC
+               END-IF
+               MOVE    SPACE               TO  WRK-SRYCD
+               MOVE    SPACE               TO  WRK-SRYCD2
+               IF      FLG-YAKJYO          =   ZERO
+                   IF      LNK-ORCSC-YAKJYO-2  =    1
+                       MOVE    "113701310"         TO  WRK-SRYCD
+                       MOVE    "113701410"         TO  WRK-SRYCD2
+                   END-IF
+                   IF      LNK-ORCSC-YAKJYO-3  =   1
+                       MOVE    "113701410"         TO  WRK-SRYCD
+                       MOVE    "113701310"         TO  WRK-SRYCD2
+                   END-IF
+               END-IF
+           END-IF
+           IF      WRK-SRYCD           =   SPACE
+               GO      TO      30022-INNAI-YAKUJYOUCHK-EXT
+           END-IF
+           MOVE    1                   TO  FLG-ALL
+           PERFORM 3002-KASAN-SYORI-SEC
+           IF      FLG-ERR             =   ZERO
+               MOVE    "130"           TO  LNK-ORCSC-SRYSYUKBN(02 IDXS)
+               MOVE    "13"            TO  LNK-ORCSC-SRYKBN   (02 IDXS)
+               MOVE    1                   TO  FLG-YAKUJYO
+           END-IF
+           .
+       30022-INNAI-YAKUJYOUCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1788,6 +1891,7 @@
                               (WRK-COM-INPUTCD(IDX) =   SPACE ))
                        OR    ( SPA-ERRCD       NOT  =   SPACE )
       *
+             IF      WRK-COM-SRYKA(IDX)    =   WRK-SRYKA
       *
                MOVE    WRK-COM-SRYSYUKBN  (IDX)  TO  WRK-CHK-SRYSYUKBN
       *----(01.00.01) LINE ADD START ----------------------------------
@@ -1835,10 +1939,12 @@
                    END-IF
                    MOVE    1               TO  FLG-ZAI
                END-IF
+             END-IF
       *
                IF      WRK-COM-ZAIEND (IDX)    =   "1"
                    MOVE    ZERO            TO  FLG-ZAI
                END-IF
+      *
            END-PERFORM
       *
            MOVE    ZERO                TO  WRK-GMN-MAX
@@ -1901,12 +2007,18 @@
                MOVE    "21"                TO  WRK-COM-SRYKBN(IDX-S)
                MOVE    "21"                TO  WRK-GMN-SRYKBN(IDX-S)
                MOVE    "210"               TO  WRK-COM-SRYSYUKBN(IDX-S)
+               MOVE    WRK-SRYKA           TO  WRK-COM-SRYKA    (IDX-S)
+               MOVE    WRK-HKNCOMBI        TO  WRK-COM-HKNCOMBI (IDX-S)
            ELSE
                MOVE    WRK-COM-SRYKBN (IDX-S + 1)
                                            TO  WRK-COM-SRYKBN(IDX-S)
                MOVE    SPACE               TO  WRK-GMN-SRYKBN(IDX-S)
                MOVE    WRK-COM-SRYSYUKBN (IDX-S + 1)
                                            TO  WRK-COM-SRYSYUKBN(IDX-S)
+               MOVE    WRK-COM-SRYKA     (IDX-S + 1)
+                                           TO  WRK-COM-SRYKA    (IDX-S)
+               MOVE    WRK-COM-HKNCOMBI  (IDX-S + 1)
+                                           TO  WRK-COM-HKNCOMBI (IDX-S)
            END-IF
       *
       *    自動追加分（入力時に追加）
@@ -1975,9 +2087,10 @@
                        MOVE    "120001710"         TO  WRK-SRYCD
       ************ ELSE
       *                診療所
-      *:               MOVE    "120001810"         TO  WRK-SRYCD
+      *                MOVE    "120001810"         TO  WRK-SRYCD
       *************END-IF
                    MOVE    SPACE               TO  WRK-SRYCD2
+                   MOVE    1                   TO  FLG-ALL
                    PERFORM 3002-KASAN-SYORI-SEC
                    IF      FLG-ERR             =   ZERO
                        MOVE    3               TO  FLG-DAY
@@ -2210,6 +2323,9 @@
                               (FLG-ERR              =   1    )   OR
                               (WRK-COM-INPUTCD(IDX) =   SPACE  AND
                                WRK-GMN-INPUTCD(IDX) =   SPACE)
+            IF     (WRK-COM-SRYKA (IDX)    =   WRK-SRYKA)  OR
+                   (FLG-ALL                =   1        )  OR
+                   (SPA-NYUGAIKBN          =   "1"      )
                IF     (WRK-COM-INPUTCD(IDX)    =   WRK-SRYCD )  OR
                       (WRK-SRYCD2          NOT =   SPACE   AND
                        WRK-COM-INPUTCD(IDX)    =   WRK-SRYCD2)
@@ -2229,6 +2345,7 @@
                                MOVE    1               TO  FLG-ERR
                        END-EVALUATE
                END-EVALUATE
+             END-IF
            END-PERFORM
            IF      FLG-ERR             =   1
                GO      TO      3002-KASAN-SYORI-EXT
@@ -2256,7 +2373,7 @@
                            WHEN    "120003010"
                            WHEN    "120002810"
                                MOVE    1               TO  FLG-ERR
-                   END-EVALUATE
+                       END-EVALUATE
                END-EVALUATE
            END-PERFORM
            IF      FLG-ERR             =   1
@@ -2289,7 +2406,7 @@
                GO      TO      3002-KASAN-SYORI-EXT
            END-IF
       *
-      *        算定履歴チェック処理
+      *    算定履歴チェック処理
            IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                PERFORM 3001-SANTEI-CHK-SEC
            END-IF
@@ -2304,7 +2421,10 @@
                                            =   WRK-KEIKEI
                                            -   WRK-SANTEN
                END-IF
-      *
+               MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
+                                                         (02 IDXS)
+               MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
+                                                         (02 IDXS)
       *        年齢加算処理
                PERFORM 3002-NENREI-KASAN-SEC
            END-IF

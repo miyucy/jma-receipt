@@ -146,6 +146,9 @@
            03  IDX-DOJI1           PIC 9(04).
            03  IDX-DOJI2           PIC 9(04).
       *
+           03  IDX-XSEN             PIC 9(01).
+           03  IDX-KAKUI            PIC 9(01).
+           03  IDX-CTMRI            PIC 9(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -238,6 +241,9 @@
            03  WRK-KIDCD           PIC X(04).
       *
            03  WRK-ERRCD           PIC X(04).
+      *
+           03  WRK-SRYKA           PIC X(02).
+           03  WRK-HKNCOMBI        PIC X(04).
       *
       *    入院日
        01  WRK-NYUINDAY-AREA.
@@ -2640,6 +2646,8 @@
                IF     (FLG-JIKASAN         =   ZERO         )  AND
                       (WRK-COM-KZMFLG (IDX-Z)  =   SPACE    )  AND
                       (LNK-ORCSC-TOROKU    NOT =   "2"   )
+      *            外来の場合のみ
+                 AND  (SPA-NYUGAIKBN       =   "2"       )
                    MOVE    "K001"              TO  SPA-ERRCD
                    MOVE    "2"                 TO  WRK-COM-CUR (IDX-Z)
                    MOVE    "1"                 TO  WRK-COM-KZMFLG
@@ -2903,7 +2911,8 @@
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            END-IF
       *
-      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
            MOVE    ZERO                TO  FLG-CTMRI
            MOVE    ZERO                TO  FLG-XSEN
            MOVE    ZERO                TO  FLG-KAKUI
@@ -2930,6 +2939,9 @@
                        WHEN    "721"
                            MOVE    1                   TO  FLG-XSEN
                            MOVE    1                   TO  FLG-XSEN-ARI
+                           IF      IDX-XSEN            =   ZERO
+                               MOVE    IDX-Z           TO  IDX-XSEN
+                           END-IF
                    END-EVALUATE
       *
       *            検査等実施判定グループ
@@ -2938,10 +2950,16 @@
                        WHEN    31
                            MOVE    1                   TO  FLG-KAKUI
                            MOVE    1                   TO  FLG-KAKUI-ARI
+                           IF      IDX-KAKUI           =   ZERO
+                               MOVE    IDX-Z           TO  IDX-KAKUI
+                           END-IF
       *                コンピュータ
                        WHEN    32
                            MOVE    1                   TO  FLG-CTMRI
                            MOVE    1                   TO  FLG-CTMRI-ARI
+                           IF      IDX-CTMRI           =   ZERO
+                               MOVE    IDX-Z           TO  IDX-CTMRI
+                           END-IF
                    END-EVALUATE
       *
       *            遠隔画像診断管理加算チェック
@@ -2990,6 +3008,12 @@
                MOVE    "170025210"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
                MOVE    WRK-XSEN-DAY        TO  WRK-NYU-DAY
+               MOVE    SPACE               TO  WRK-SRYKA
+               MOVE    SPACE               TO  WRK-HKNCOMBI
+               IF      IDX-XSEN            >   ZERO
+                   MOVE    WRK-COM-SRYKA (IDX-XSEN)    TO  WRK-SRYKA
+                   MOVE    WRK-COM-HKNCOMBI(IDX-XSEN)  TO  WRK-HKNCOMBI
+               END-IF
                PERFORM 3002-KASAN-SYORI-SEC
            END-IF
       *
@@ -2999,6 +3023,12 @@
                MOVE    "170015310"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
                MOVE    WRK-KAKUI-DAY       TO  WRK-NYU-DAY
+               MOVE    SPACE               TO  WRK-SRYKA
+               MOVE    SPACE               TO  WRK-HKNCOMBI
+               IF      IDX-KAKUI           >   ZERO
+                   MOVE    WRK-COM-SRYKA (IDX-KAKUI)   TO  WRK-SRYKA
+                   MOVE    WRK-COM-HKNCOMBI(IDX-KAKUI) TO  WRK-HKNCOMBI
+               END-IF
                PERFORM 3002-KASAN-SYORI-SEC
                IF     (FLG-ERR             =   ZERO )  AND
                       (FLG-ENKALL          =   ZERO )  AND
@@ -3028,6 +3058,12 @@
                MOVE    "170015410"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
                MOVE    WRK-CTMRI-DAY       TO  WRK-NYU-DAY
+               MOVE    SPACE               TO  WRK-SRYKA
+               MOVE    SPACE               TO  WRK-HKNCOMBI
+               IF      IDX-CTMRI           >   ZERO
+                   MOVE    WRK-COM-SRYKA (IDX-CTMRI)   TO  WRK-SRYKA
+                   MOVE    WRK-COM-HKNCOMBI(IDX-CTMRI) TO  WRK-HKNCOMBI
+               END-IF
                PERFORM 3002-KASAN-SYORI-SEC
                IF     (FLG-ERR             =   ZERO )  AND
                       (FLG-ENKALL          =   ZERO )  AND
@@ -3121,6 +3157,12 @@
            IF      FLG-ERR             =   1
                GO      TO      3002-KASAN-SYORI-EXT
            END-IF
+           IF      WRK-SRYKA           =   SPACE
+               MOVE    SPA-SRYKA           TO  WRK-SRYKA
+           END-IF
+           IF      WRK-HKNCOMBI        =   SPACE
+               MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
+           END-IF
       *    追加のチェック
            PERFORM 3001-SANTEI-CHK-SEC
            IF      FLG-ERR             =   ZERO
@@ -3132,6 +3174,10 @@
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                        (08 IDXS)
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
+                                                       (08 IDXS)
+               MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
+                                                       (08 IDXS)
+               MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                        (08 IDXS)
                MOVE    "700"           TO  LNK-ORCSC-SRYSYUKBN
                                                         (08 IDXS)

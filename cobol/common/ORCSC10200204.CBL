@@ -3284,13 +3284,20 @@
                GO      TO      230-SIDOU-SYOSIN-EXT
            END-IF
       *
+           IF      LNK-ORCSC-SYORIFLG      =   1
+      *        訂正時点の初診算定日
+               MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
+           ELSE
+               MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
+           END-IF
       *    最終退院日がある時、退院日
            IF     (LNK-ORCSC-TAIINYMD  =   SPACE )  OR
-                  (LNK-ORCSC-TAIINYMD  <=  LNK-ORCSC-SYOYMD)
-               MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
+                  (LNK-ORCSC-TAIINYMD  <=  WRK-SYOYMD)
+               CONTINUE
            ELSE
                MOVE    LNK-ORCSC-TAIINYMD  TO  WRK-SYOYMD
            END-IF
+      *
            MOVE    ZERO                TO  FLG-KYUJITU
            IF      WRK-SYOYMD          =   SPACE
                MOVE    SPA-SRYYMD          TO  WRK-KEIYMD
@@ -3306,15 +3313,6 @@
                MOVE    1                   TO  LNK-DAY6-ZOGEN
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
-      *TEST
-               DISPLAY "C10 LNK-ORCSC-SYOYMD:" LNK-ORCSC-SYOYMD
-                     ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
-                     ",LNK-DAY6-KOYOMIZEN:" LNK-DAY6-KOYOMIZEN
-                     ",LNK-DAY6-KOYOMIGO:" LNK-DAY6-KOYOMIGO
-               DISPLAY "C10 LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
-                     ",LNK-DAY6-KEISANZEN:" LNK-DAY6-KEISANZEN
-                     ",LNK-DAY6-KEISANGO:" LNK-DAY6-KEISANGO
-      *TEST
                MOVE    LNK-DAY6-KEISAN     TO  WRK-KEIYMD
                MOVE    LNK-DAY6-KEISANZEN  TO  WRK-KEIYMDZEN
                IF      LNK-DAY6-KEISAN NOT =   LNK-DAY6-KEISANZEN
@@ -3332,7 +3330,9 @@
                        MOVE    "0034"          TO  SPA-ERRCD
                    ELSE
                        IF      WRK-KEIYMDZEN   =   SPA-SRYYMD
-                           IF      WRK-COM-KZMFLG (IDX-Z)  =   SPACE
+                           IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
+                             AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
+                               MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX
                                MOVE    "1"         TO  WRK-COM-KZMFLG
                                                                 (IDX-Z)
                                MOVE    "K002"          TO  SPA-ERRCD
@@ -3373,9 +3373,15 @@
            MOVE    ZERO                TO  FLG-KYUJITU
            IF      LNK-ORCSC-SYOYMD    =   SPACE
                MOVE    SPA-SRYYMD          TO  WRK-KEIYMD
+               MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
            ELSE
-      *        初診料算定日＋１月後
-               MOVE    LNK-ORCSC-SYOYMD    TO  WRK-KEIYMD
+               IF      LNK-ORCSC-SYORIFLG      =   1
+      *            訂正時点の初診算定日
+                   MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
+               ELSE
+                   MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
+               END-IF
+               MOVE    WRK-SYOYMD          TO  WRK-KEIYMD
                COMPUTE WRK-KEI-MM          =   WRK-KEI-MM
                                            +   1
                IF      WRK-KEI-MM          >   12
@@ -3384,7 +3390,7 @@
                                                +   1
                END-IF
            END-IF
-           IF      LNK-ORCSC-SYOYMD(7:2)   =   "01"
+           IF      WRK-SYOYMD(7:2)     =   "01"
       *        初診料算定日が１日の時翌月から
                IF      WRK-KEIYMD(1:6)     <=  SPA-SRYYMD(1:6)
                    CONTINUE

@@ -43,13 +43,17 @@
            03  SSANTEI-KAISU             PIC  9(08).
       *初診料算定日（新規でＫ０３の時のみ）
            03  SSANTEI-SYOYMD            PIC  X(08).
+      *診療科
+           03  SSANTEI-SRYKA             PIC  X(02).
+      *保険組合せ
+           03  SSANTEI-HKNCOMBINUM       PIC  X(04).
+      *保険区分
+           03  SSANTEI-HKNKBN            PIC  X(01).
       *
       *    一括更新の時（Ｊ０２）
            03  SSANTEI-IKKATU.
       *入外区分
                05  SSANTEI-NYUGAIKBN       PIC  X(01).
-      *診療科
-               05  SSANTEI-SRYKA           PIC  X(02).
       *当月初回算定日
                05  SSANTEI-MSANTEID        PIC  X(02).
       *当月算定回数

@@ -99,6 +99,11 @@
                05  SPA-NAI-AREA.
       *            処理フラグ（０：通常、１：訂正）
                    07  SPA-NAI-SYORI             PIC 9(01).
+      *!           処理フラグ
+                   07  SPA-NAI-CUR-2           PIC 9(02).
+      *            切替えフラグ
+                   07  SPA-NAI-B06SFLG         PIC 9(01).
+      *!
       *            ＤＯ内容（Ｋ０９と共通）
                    07  SPA-NAI-RRKTBL.
                        09  SPA-NAI-RRKTBLREC         OCCURS   150.
@@ -112,6 +117,9 @@
                            11  SPA-NAI-RRK-FUKU-KBN  PIC  X(01).
                            11  SPA-NAI-RRK-SINSATU   PIC  X(01).
                            11  SPA-NAI-RRK-DRCD      PIC  X(05).
+      *                複数診療科・保険
+                           11  SPA-NAI-GRP-DENPNUM   PIC  9(07).
+                           11  SPA-NAI-GRP-RENNUM    PIC  9(02).
                    07  SPA-NAI-DOSELNUM              PIC  9(03).
       *
                    07  SPA-NAI-TESELNUM              PIC  9(03).
@@ -145,7 +153,6 @@
       *        診療種別チェック用テーブル
                05  SPA-SRYKBN-AREA.
                    07  SPA-SRYKBN-CNT          PIC 9(01)   OCCURS 10.
-      *
       *        禁忌薬剤チェック
                05  SPA-KNKYAK-AREA.
                    07  SPA-KNK-TBL             OCCURS   100.
@@ -169,10 +176,10 @@
                    07  SPA-ACCT2-SRYCD           PIC X(09).
                    07  SPA-ACCT2-ZAINUM          PIC 9(08).
                    07  SPA-ACCT2-CSYYOURYO       PIC 9(08).
-      *            07  SPA-ACCT2-TBL             OCCURS   100.
+      *****        07  SPA-ACCT2-TBL             OCCURS   100.
       *                09  SPA-ACCT2-SRYKBN          PIC  X(02).
       *                09  SPA-ACCT2-SRYCD           PIC  X(09).
-      *                09  SPA-ACCT2-GAIKANRIKBN     PIC  9(01).
+      *****:           09  SPA-ACCT2-GAIKANRIKBN     PIC  9(01).
       *
       *        更新前確認チェック
                05  SPA-MAE-CHKTBL          OCCURS   10.
@@ -412,4 +419,29 @@
                05  SPA-K052-CUR            PIC 9(02).
                05  SPA-K052-INPUTCD1       PIC X(06).
                05  SPA-K052-INPUTCD2       PIC X(06).
+      *    Ｋ９７画面固有ＳＰＡ
+           03  SPA-K97-AREA.
+               05  SPA-K97-CUR             PIC 9(02).
+               05  SPA-K97-SELNUM1         PIC X(04).
+               05  SPA-K97-SELNUM2         PIC X(02).
+               05  SPA-K97-SELNUM3         PIC X(04).
+               05  SPA-K97-SRYKA           PIC X(02).
+               05  SPA-K97-DRCD            PIC X(04).
+               05  SPA-K97-HKNCOMBI        PIC X(04).
+               05  SPA-K97-SYORI           PIC 9(01).
+               05  SPA-K97-SYU-DRCD        PIC X(05).
+               05  SPA-K97-SYU-DRNAME      PIC X(50).
+      *
+               05  SPA-K97-HKNCOMBI-LISTG.
+                   07  SPA-K97-HKN-LIST    OCCURS  15.
+                       09  SPA-K97-THKNCOMBINUM   PIC X(04).
+                       09  SPA-K97-THKNCOMBIMEI   PIC X(50).
+                   07  SPA-K97-HKN-MAX            PIC 9(04).
+      *
+               05  SPA-GMN-DRCDLST-G.
+                   07  SPA-GMN-DRCDLST     OCCURS  20.
+                       09  SPA-GMN-DRCDL       PIC X(04).
+                       09  SPA-GMN-F1L         PIC X(01).
+                       09  SPA-GMN-DRCDMEIL    PIC X(24).
+               05  SPA-DRCD-MAX            PIC 9(04).
       *

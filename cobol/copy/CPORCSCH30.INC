@@ -29,6 +29,6 @@
       *    処理区分(１：院内、２：院外、3:中途終了院内、4:中途終了院外）
            03  ORCSCH30-KBN            PIC X(01).
       *
-      *    受診歴の連番
-           03  ORCSCH30-RENNUM         PIC 9(01).
+      *    伝票番号
+           03  ORCSCH30-DENPNUM        PIC 9(07).
       *

@@ -41,6 +41,8 @@
            03  LNK-SC95-RENNUM         PIC 9(01).
            03  LNK-SC95I-DOUJI-RENNUM  PIC 9(01).
       *
+           03  LNK-SC95-GRP-DENPNUM   PIC 9(07).
+      *
       *ＯＵＴ
       *    费鲁面∈１¨Ｋ０２で费鲁面の箕、Ｋ０１へ∷
            03  LNK-SC95-DOUJI.

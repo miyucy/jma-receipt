@@ -37,6 +37,7 @@
       * 01.00.07     NACL-Â¿¡¹Ç¼  03/05/21  Ãí¼Í±Õ»ÄÎÌÇÑ´þÄÉ²Ã
       * 01.00.08     NACL-Â¿¡¹Ç¼  04/03/15  £È£±£¶Ç¯£´·î²þÀµÄÉ²Ã
       * 01.00.09     NACL-Â¿¡¹Ç¼  04/03/29  £È£±£¶Ç¯£´·î²þÀµÏ«ºÒÄÉ²Ã
+      * 01.00.10     NACL-Â¿¡¹Ç¼  04/07/26  ½èÃÖ²Ã»»ÎÁÄÉ²Ã(403)
       *****************************************************************
       *
       *
@@ -1262,6 +1263,12 @@
                END-IF
            END-PERFORM
       *
+      *    ½èÃÖ²Ã»»ÎÁ
+           IF     (WRK-COM-SRYSYUKBN(IDX-Z)    =   "403" )  AND
+                  (WRK-COM-SRYKBN (IDX-Z)      =   "40"  )
+               MOVE    1                   TO  FLG-ARI
+           END-IF
+      *
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
@@ -1349,7 +1356,12 @@
            IF      IDX-ZS              >   ZERO
                COMPUTE IDX-Z           =   IDX-MAX    +  1
                PERFORM 100212-TENSUKEI-SEC
-            END-IF
+           ELSE
+      *        ¼êµ»ÎÁ¤¬Ìµ¤¤¾ì¹ç(403)
+               IF      LNK-SC90-TENSUKEI   NOT =   ZERO
+                   MOVE    LNK-SC90-TENSUKEI   TO  WRK-GOK-TENSUKEI
+               END-IF
+           END-IF
       **** COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
       ****                             +   LNK-SC90-TENGAKEI
            COMPUTE WRK-GOK-TENSUKEI    =   WRK-GOK-TENSUKEI

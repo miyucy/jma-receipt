@@ -1,22 +1,5 @@
-      *******************************************************************
-      * Project code name "ORCA"
-      * 日医標準レセプトソフト（JMA standard receipt software）
-      * Copyright(C) 2002 JMA (Japan Medical Association)
-      *
-      * This program is part of "JMA standard receipt software".
-      *
-      *     This program is distributed in the hope that it will be useful
-      * for further advancement in medical care, according to JMA Open
-      * Source License, but WITHOUT ANY WARRANTY.
-      *     Everyone is granted permission to use, copy, modify and
-      * redistribute this program, but only under the conditions described
-      * in the JMA Open Source License. You should have received a copy of
-      * this licence along with this program. If not, stop using this
-      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
-      * 113-8621, Japan.
-      ********************************************************************
         02  K03.
-      ***  02  K03-FIXED3.
+    ******  02  K03-FIXED3.
               03  K03-PTNUM.
                 04  K03-VALUE   PIC X(20).
               03  K03-SRYYMD.
@@ -29,12 +12,8 @@
                 04  K03-VALUE   PIC X(2).
               03  K03-BIRTHDAY.
                 04  K03-VALUE   PIC X(9).
-              03  K03-HKNCOMBI.
-                04  K03-VALUE   PIC X(60).
               03  K03-FTNRATE.
                 04  K03-VALUE   PIC X(5).
-              03  K03-SRYKA.
-                04  K03-VALUE   PIC X(10).
               03  K03-HAKYMD.
                 04  K03-VALUE   PIC X(9).
               03  K03-DENPNUM.
@@ -81,8 +60,9 @@
                 04  K03-VALUE   PIC X(10).
               03  K03-RJNFTN.
                 04  K03-VALUE   PIC X(10).
-              03  K03-CHOSEI.
-                04  K03-VALUE   PIC X(10).
+              03  K03-CHOSEI-G.
+                04  K03-CHOSEI-STATE   PIC S9(9)   BINARY.
+                04  K03-CHOSEI   PIC X(10).
               03  K03-GOKSKY.
                 04  K03-VALUE   PIC X(10).
               03  K03-MISYUZAN.
@@ -119,7 +99,7 @@
                 04  K03-VALUE   PIC X(10).
               03  K03-SYORIMEI.
                 04  K03-SYORIMEI-STYLE   PIC X(20).
-                04  K03-SYORIMEI-VALUE   PIC X(12).
+                04  K03-SYORIMEI-VALUE   PIC X(20).
               03  K03-ROUSYOSIN.
                 04  K03-VALUE   PIC X(10).
               03  K03-ROUSAISIN.
@@ -128,8 +108,6 @@
                 04  K03-VALUE   PIC X(10).
               03  K03-ROUETC.
                 04  K03-VALUE   PIC X(10).
-              03  K03-JIHIMSG1.
-                04  K03-VALUE   PIC X(8).
               03  K03-JIHIMSG2.
                 04  K03-VALUE   PIC X(8).
               03  K03-JIHIMSG3.
@@ -146,45 +124,77 @@
                 04  K03-VALUE   PIC X(10).
               03  K03-JIHITAX5.
                 04  K03-VALUE   PIC X(10).
-              03  K03-NYUKIN.
-                04  K03-VALUE   PIC X(10).
-              03  K03-SYOHOPRTFLGCOMBO.
-                04  K03-SYOHOPRTFLG.
-                  05  K03-VALUE   PIC X(18).
-                04  K03-SYOHOPRT-COUNT   PIC S9(9)   BINARY.
-                04  K03-SYOHOPRT-ITEM    PIC X(18)   OCCURS  3 TIMES.
-              03  K03-HAKFLGCOMBO.
-                04  K03-HAKFLG.
-                  05  K03-VALUE   PIC X(18).
-                04  K03-HAKFLG-COUNT   PIC S9(9)   BINARY.
-                04  K03-HAKFLG-ITEM    PIC X(18)   OCCURS  2 TIMES.
-              03  K03-YAKJYOFLGCOMBO.
-                04  K03-YAKJYOFLG.
-                  05  K03-VALUE   PIC X(18).
-                04  K03-YAKJYOFLG-COUNT   PIC S9(9)   BINARY.
-                04  K03-YAKJYOFLG-ITEM    PIC X(18)   OCCURS  4 TIMES.
-              03  K03-DRCDCOMBO.
-                04  K03-DRCD.
-                  05  K03-VALUE   PIC X(29).
-                04  K03-DRCD-COUNT   PIC S9(9)   BINARY.
-                04  K03-DRCD-ITEM    PIC X(29)   OCCURS  20 TIMES.
-              03  K03-FUKUSAGAKU.
-                04  K03-VALUE   PIC X(10).
+              03  K03-NYUKIN-G.
+                04  K03-NYUKIN-STATE   PIC S9(9)   BINARY.
+                04  K03-NYUKIN   PIC X(10).
               03  K03-JIHIMSG4.
                 04  K03-VALUE   PIC X(8).
               03  K03-JIHIMSG5.
                 04  K03-VALUE   PIC X(8).
-              03  K03-FUKUMSG.
-                04  K03-FUKUMSG-STYLE   PIC X(20).
-                04  K03-FUKUMSG-VALUE   PIC X(20).
-              03  K03-FUKUZENMDS.
-                04  K03-VALUE   PIC X(30).
-              03  K03-FUKUMDS.
-                04  K03-VALUE   PIC X(20).
+              03  K03-CHOUKAKIN.
+                04  K03-VALUE   PIC X(10).
+              03  K03-HKNCOMBI-COMB.
+                04  K03-HKNCOMBI.
+                  05  K03-VALUE   PIC X(60).
+                04  K03-HKNCOMBI-COUNT   PIC S9(9)   BINARY.
+                04  K03-HKNCOMBI-ITEM
+                        PIC X(60)   OCCURS  15 TIMES.
+              03  K03-SRYKA-COMB.
+                04  K03-SRYKA.
+                  05  K03-VALUE   PIC X(20).
+                04  K03-SRYKA-COUNT   PIC S9(9)   BINARY.
+                04  K03-SRYKA-ITEM
+                        PIC X(20)   OCCURS  40 TIMES.
+              03  K03-DRCDCOMBO.
+                04  K03-DRCD.
+                  05  K03-VALUE   PIC X(29).
+                04  K03-DRCD-COUNT   PIC S9(9)   BINARY.
+                04  K03-DRCD-ITEM
+                        PIC X(29)   OCCURS  20 TIMES.
+              03  K03-NYUKINHOU-COMB.
+                04  K03-NYUKINHOU.
+                  05  K03-VALUE   PIC X(30).
+                04  K03-NYUKINHOU-COUNT   PIC S9(9)   BINARY.
+                04  K03-NYUKINHOU-ITEM
+                        PIC X(30)   OCCURS  10 TIMES.
               03  K03-NYUKINKBN-COMB.
                 04  K03-NYUKINKBN.
                   05  K03-VALUE   PIC X(40).
                 04  K03-NYUKINKBN-COUNT   PIC S9(9)   BINARY.
-                04  K03-NYUKINKBN-ITEM    PIC X(40)   OCCURS  9.
-              03  K03-CHOUKAKIN.
-                04  K03-VALUE   PIC X(10).
+                04  K03-NYUKINKBN-ITEM
+                        PIC X(40)   OCCURS  10 TIMES.
+              03  K03-YAKJYOFLGCOMBO.
+                04  K03-YAKJYOFLG.
+                  05  K03-VALUE   PIC X(18).
+                04  K03-YAKJYOFLG-COUNT   PIC S9(9)   BINARY.
+                04  K03-YAKJYOFLG-ITEM
+                        PIC X(18)   OCCURS  4 TIMES.
+              03  K03-SYOHOPRTFLGCOMBO.
+                04  K03-SYOHOPRTFLG.
+                  05  K03-VALUE   PIC X(18).
+                04  K03-SYOHOPRTFLG-COUNT   PIC S9(9)   BINARY.
+                04  K03-SYOHOPRTFLG-ITEM
+                        PIC X(18)   OCCURS  3 TIMES.
+              03  K03-HAKFLGCOMBO.
+                04  K03-HAKFLG.
+                  05  K03-VALUE   PIC X(24).
+                04  K03-HAKFLG-COUNT   PIC S9(9)   BINARY.
+                04  K03-HAKFLG-ITEM
+                        PIC X(24)   OCCURS  3 TIMES.
+              03  K03-HAKHOUFLGCOMB.
+                04  K03-HAKHOUFLG.
+                  05  K03-VALUE   PIC X(30).
+                04  K03-HAKHOUFLG-COUNT   PIC S9(9)   BINARY.
+                04  K03-HAKHOUFLG-ITEM
+                        PIC X(30)   OCCURS  5 TIMES.
+              03  K03-JIHIMSG1.
+                04  K03-VALUE   PIC X(8).
+              03  K03-FUKUZENMDS2.
+                04  K03-VALUE   PIC X(50).
+              03  K03-FUKUZENMDS.
+                04  K03-VALUE   PIC X(30).
+              03  K03-FUKUMSG.
+                04  K03-FUKUMSG-STYLE   PIC X(20).
+                04  K03-FUKUMSG-VALUE   PIC X(20).
+              03  K03-NYUKINMSG.
+                04  K03-VALUE   PIC X(50).

@@ -527,6 +527,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "回数を１回にして分けて入力して下さい。"
                                        TO  SPA-ERRMSG(33:)
+               WHEN    "0141"
+                   MOVE    "まとめ入力連番が正しくありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "対象外とします。"
+                                       TO  SPA-ERRMSG(33:)
                WHEN    "7007"
                    MOVE    "自動算定で２００行を超えます。"
                                        TO  SPA-ERRMSG
@@ -795,6 +800,9 @@
                                        TO  SPA-ERRMSG
                    MOVE    "違います。"
                                        TO  SPA-ERRMSG(37:)
+               WHEN    "9031"
+                   MOVE    "入院患者初回加算は既に算定済みです。"
+                                       TO  SPA-ERRMSG
                WHEN    "9100"
                    MOVE    "診療内容が２００行を超えます。"
                                        TO  SPA-ERRMSG
@@ -802,6 +810,10 @@
                                        TO  SPA-ERRMSG(31:)
                WHEN    "9200"
                    MOVE    "入院・食事は外来では入力できません。"
+                                       TO  SPA-ERRMSG
+      *
+               WHEN    "1055"
+                   MOVE    "複数科、複数保険は入力はできません。"
                                        TO  SPA-ERRMSG
       *
                WHEN    "9300"
@@ -1009,6 +1021,37 @@
                                        TO  SPA-ERRMSG
                    MOVE    "長期投薬加算（処方せん料）は算定できません"
                                        TO  SPA-ERRMSG(29:)
+      *!
+               WHEN    "1050"
+                   MOVE    "労災・自賠責、包括分入力の"
+                                       TO  SPA-ERRMSG
+                   MOVE    "複数保険入力はできません。"
+                                       TO  SPA-ERRMSG(27:)
+               WHEN    "1051"
+                   MOVE    "保険組合せがありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "1052"
+                   MOVE    "主保険と老人・一般の判定が違います。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "複数保険入力はできません。"
+                                       TO  SPA-ERRMSG(27:)
+               WHEN    "1053"
+                   MOVE    "診療科がありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "1054"
+                   MOVE    "ドクターがありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "1056"
+                   MOVE    "複数科、複数保険は１行目には"
+                                       TO  SPA-ERRMSG
+                   MOVE    "入力はできません。"
+                                       TO  SPA-ERRMSG(29:)
+               WHEN    "1057"
+                   MOVE    "継続入力・複数科まとめで入力されています。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "訂正での複数科・保険入力はできません。"
+                                       TO  SPA-ERRMSG(43:)
+      *!
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG
@@ -1030,8 +1073,13 @@
                    MOVE    "小児科外来診療料の自動発生はしません"
                                        TO  SPA-ERRMSG(33:)
                WHEN    "K006"
-                   MOVE    "警告！同日診療の点滴手技料を変更して下さい"
+                   MOVE    "警告！既に点滴手技料を算定しています。"
                                        TO  SPA-ERRMSG
+               WHEN    "K009"
+                   MOVE    "警告！当日の点滴合計液量と点滴手技料が"
+                                       TO  SPA-ERRMSG
+                   MOVE    "違います。まとめて算定して下さい。"
+                                       TO  SPA-ERRMSG(39:)
                WHEN    "K007"
                    MOVE    "警告！特定薬剤治療管理料は４月日以降"
                                        TO  SPA-ERRMSG

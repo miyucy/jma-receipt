@@ -40,6 +40,8 @@
       *  01.00.10    NACL-Â¿¡¹Ç¼  03/09/11  ³°ÍèÄþ¸º¸¡ººÆ±»þÆþÎÏÄÉ²Ã
       *                                     ³°ÍèÊñ³ç¤Ê¤·¡Ê610)ÄÉ²Ã
       *  01.00.11    NACL-Â¿¡¹Ç¼  04/03/15  ²þÀµÂÐ±þ
+      *  01.00.12    NACL-Â¿¡¹Ç¼  04/06/XX  Æþ±¡½é²ó»»ÄêÆü½ÅÊ£»»Äê¥Á¥§¥Ã¥¯ÄÉ²ÃÂ¾
+      *                                     Ê£¿ôÊÝ¸±¡¦²ÊÄÉ²Ã
       *****************************************************************
       *
       *
@@ -87,6 +89,8 @@
            03  FLG-KSN-END         PIC 9(01).
            03  FLG-CHK             PIC 9(01).
       *
+           03  FLG-SYOKAI-OK       PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -120,6 +124,10 @@
            03  IDT                 PIC 9(04).
            03  IDK                 PIC 9(04).
       *
+           03  IDXS-KENTAI         PIC 9(04).
+           03  IDX-BV              PIC 9(04).
+           03  IDX-BA              PIC 9(04).
+           03  IDX-BC              PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -127,6 +135,8 @@
            03  WRK-MOJI            PIC X(01). 
            03  WRK-ERRCD           PIC X(04). 
            03  WRK-SRYCD           PIC X(09). 
+           03  WRK-SRYKA           PIC X(02). 
+           03  WRK-HKNCOMBI        PIC X(04). 
       *
            03  WRK-IDX             PIC 9(04).
       *    ÆýÍÄ»ù¤Î¼«Æ°²Ã»»¥³¡¼¥É
@@ -190,9 +200,15 @@
       *
            03  WRK-TEI-CNT             PIC 9(03).
       *
+           03  WRK-YMD.
+               05  WRK-YM              PIC X(06).
+               05  WRK-DD              PIC 9(02).
+      *
       *    ¸¡ºº¡¡È½ÃÇ¥°¥ë¡¼¥×
        01  WRK-KENSA-AREA.
            03  WRK-KENSA-TBL                       OCCURS   20.
+               05  WRK-KEN-SRYKA       PIC X(02).
+               05  WRK-KEN-HKNCOMBI    PIC X(04).
                05  WRK-KENSAGRP        PIC 9(02).
                05  WRK-KEN-KBN         PIC 9(01).
                05  WRK-KEN-SRYCD       PIC X(09).
@@ -371,13 +387,18 @@
            03  FILLER          PIC X(12)  VALUE    "11 160125550".
       *    ·ÈÂÓ·¿È¯ºî»þ¿´ÅÅ¿Þµ­Ï¿·×»ÈÍÑ¿´ÅÅ¿Þ
            03  FILLER          PIC X(12)  VALUE    "11 160125950".
+      * 12
+      *    Ä¶²»ÇÈ¸¡ºº¡ÊÃÇÁØ»£±ÆË¡¡Ë¡ÊÊ¢Éô¡Ë
+           03  FILLER          PIC X(12)  VALUE    "12 160072210".
+      *    Ä¶²»ÇÈ¸¡ºº¡ÊÃÇÁØ»£±ÆË¡¡Ë¡Ê¤½¤ÎÂ¾¡Ë
+           03  FILLER          PIC X(12)  VALUE    "12 160165010".
       *
        01  TBL-KENSA-HOU-AREA-R    REDEFINES   TBL-KENSA-HOU-AREA.
-           03  TBL-KENSA-HOU-OCC       OCCURS  54  INDEXED  KEN-IDX.
+           03  TBL-KENSA-HOU-OCC       OCCURS  56  INDEXED  KEN-IDX.
                05  TBL-KEN-HOU         PIC X(02).
                05  TBL-FILLER          PIC X(01).
                05  TBL-KEN-SRYCD       PIC X(09).
-       01  KEN-IDX-MAX                 PIC 9(04)   VALUE   54.
+       01  KEN-IDX-MAX                 PIC 9(04)   VALUE   56.
       *
       *****************************************************************
       *    ½ÅÊ£»»ÄêÉÔ²Ä¥Æ¡¼¥Ö¥ë
@@ -409,14 +430,22 @@
       *    £Á¡¿£Ç
            03  FILLER          PIC X(14)  VALUE    "04 11160022350".
       *
+      *¤É¤ì¤«£±¤Ä
+      *    £Ó£Ð¡Ý£Á
+           03  FILLER          PIC X(14)  VALUE    "05 1 160169350".
+      *    ¥·¥ê¥¢¥ë²½Åüº¿¹³¸¶£Ë£Ì¡Ý£¶
+           03  FILLER          PIC X(14)  VALUE    "05 1 160168550".
+      *    ¥µ¡¼¥Õ¥¡¥¯¥¿¥ó¥È¥í¥×¥í¥Æ¥¤¥ó£Ä
+           03  FILLER          PIC X(14)  VALUE    "05 1 160168450".
+      *
        01  TBL-KENSA-JYU-AREA-R    REDEFINES   TBL-KENSA-JYU-AREA.
-           03  TBL-KENSA-JYU-OCC       OCCURS  10  INDEXED  JYU-IDX.
+           03  TBL-KENSA-JYU-OCC       OCCURS  13  INDEXED  JYU-IDX.
                05  TBL-JYU-KBN         PIC X(02).
                05  TBL-FILLER1         PIC X(01).
                05  TBL-JYU-KEN         PIC X(01).
                05  TBL-FILLER2         PIC X(01).
                05  TBL-JYU-SRYCD       PIC X(09).
-       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   10.
+       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   13.
       *
       *    ½ÅÊ£»»ÄêÉÔ²Ä¥Æ¡¼¥Ö¥ë¡Ê£²¡Ë
        01  TBL-KENSA-JYU2-AREA.
@@ -471,6 +500,7 @@
       *   ÆüÉÕÊÑ´¹¥µ¥Ö
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
       *    ¿ÇÎÅ¹Ô°Ù»»ÄêÊÔ½¸¥Ñ¥é¥á¥¿
            COPY    "CPORCSC90.INC".
       *
@@ -677,6 +707,11 @@
                        PERFORM 100112-COMMNT-SET-SEC
                    END-IF
       *
+      *            Æþ±¡´µ¼Ô½é²ó²Ã»»¤Î¥Á¥§¥Ã¥¯
+                   IF      WRK-COM-INPUTCD (IDX-Z) =   "160161510"
+                       PERFORM 100113-NYUINSYOKAI-SEC
+                   END-IF
+      *
            END-EVALUATE
       *
            .
@@ -850,6 +885,7 @@
                    MOVE    WRK-SRYCD           TO  WRK-NYU-SRYCD
                END-IF
            END-PERFORM
+      *
       *
            .
        1007-NYUYOJI-SET-EXT.
@@ -1111,6 +1147,7 @@
        108121-SANTEI-CHK-EXT.
            EXIT.
       *
+      *
       *****************************************************************
       *    ¿À·Ð¼§µ¤¿ÇÃÇ¤Î¥³¥á¥ó¥È¼«Æ°È¯À¸½èÍý
       *****************************************************************
@@ -1128,6 +1165,100 @@
       *
            .
        100112-COMMNT-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡´µ¼Ô½é²ó²Ã»»¤Î¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       100113-NYUINSYOKAI-SEC          SECTION.
+      *
+           IF      SPA-NYUGAIKBN       =   "2"
+               GO      TO      100113-NYUINSYOKAI-EXT
+           END-IF
+      *
+           MOVE    WRK-COM-INPUTCD (IDX-Z)
+                                      TO  WRK-SRYCD
+           MOVE    ZERO               TO  WRK-TEI-CNT
+           IF      LNK-ORCSC-SYORIFLG  =   1
+               PERFORM VARYING     IDT     FROM    1   BY  1
+                       UNTIL      (IDT     >   100 )  OR
+                                  (LNK-ORCSC-TEI-SRYCD(IDT)
+                                           =   SPACE )
+                   IF      WRK-SRYCD       =   LNK-ORCSC-TEI-SRYCD(IDT)
+                       ADD     LNK-ORCSC-TEI-KAISU(IDT)
+                                           TO  WRK-TEI-CNT
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    »»ÄêÍúÎò¸¡º÷¡Ê»»ÄêÍúÎò¶èÊ¬¤Ï£±¤È¤¹¤ë¡Ë
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           MOVE    ZERO                TO  FLG-SYOKAI-OK
+           PERFORM UNTIL   (FLG-SANTEI     =   1   )  OR
+                           (FLG-SYOKAI-OK  =   1   )
+               MOVE    SANTEI-SRYYM        TO  WRK-YM
+               MOVE    ZERO                TO  WRK-DD
+               PERFORM VARYING    IDX2     FROM    1   BY  1
+                       UNTIL     (IDX2     >   31  )  OR
+                                 (FLG-SYOKAI-OK    =   1   )
+                   IF      SANTEI-DAY (IDX2)   NOT =   ZERO
+                       MOVE    IDX2            TO  WRK-DD
+                       IF     (LNK-ORCSC-NYUINYMD
+                                               <=  WRK-YMD )  AND
+                              (LNK-ORCSC-TAIINYMD
+                                               >=  WRK-YMD )
+                           MOVE    1           TO  FLG-SYOKAI-OK
+                       END-IF
+      *                ÄûÀµ¤Î»þÅöÆüÊ¬¤Ï»»Äê¤Ê¤·¤È¤¹¤ë
+                       IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
+                              (WRK-YMD             =   SPA-SRYYMD) AND
+                              (WRK-TEI-CNT         >   ZERO )
+                           MOVE    ZERO        TO  FLG-SYOKAI-OK
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF      SANTEI-SRYYM        <   LNK-ORCSC-NYUINYMD(1:6)
+                   MOVE    1                   TO  FLG-SANTEI
+               ELSE
+                   MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF      FLG-SYOKAI-OK       =   1
+               MOVE    "9031"              TO  WRK-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+           END-IF
+           .
+       100113-NYUINSYOKAI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2410,9 +2541,15 @@
                IF      WRK-COM-INPUTCD(IDX-JIKAN + 1)  =   WRK-SRYCD
                    CONTINUE
                ELSE
-                   MOVE    IDX-JIKAN       TO  IDX-S
+                   MOVE    IDX-JIKAN           TO  IDX-S
                    MOVE    ZERO                TO  FLG-KASAN
                    PERFORM 2001-JIDOTUIKA-SEC
+                   IF      FLG-ARI             =   1
+                       MOVE    "2"             TO  WRK-COM-AUTOKBN
+                                                              (IDX-T)
+                       MOVE    "1"             TO  WRK-COM-IN  (IDX-T)
+                       MOVE    "2"             TO  WRK-COM-IN2 (IDX-T)
+                   END-IF
                END-IF
            END-IF
       *
@@ -2553,6 +2690,29 @@
                        MOVE    WRK-COM-KNSJISGRPKBN (IDX)
                                            TO  WRK-KENIDX
                        ADD     1           TO  WRK-KENSAGRP(WRK-KENIDX)
+      *                ÊÝ¸±¡¦²Ê
+                       IF      WRK-KEN-SRYKA (WRK-KENIDX)  =   SPACE
+                           IF      WRK-COM-SRYKA (IDX)     =   SPACE
+                               MOVE    SPA-SRYKA   TO  WRK-KEN-SRYKA
+                                                           (WRK-KENIDX)
+                           ELSE
+                               MOVE    WRK-COM-SRYKA (IDX)
+                                                   TO  WRK-KEN-SRYKA
+                                                           (WRK-KENIDX)
+                           END-IF
+                       END-IF
+                       IF      WRK-KEN-HKNCOMBI (WRK-KENIDX)   =   SPACE
+                           IF      WRK-COM-HKNCOMBI (IDX)  =   SPACE
+                               MOVE    SPA-HKNCOMBINUM
+                                                   TO  WRK-KEN-HKNCOMBI
+                                                           (WRK-KENIDX)
+                           ELSE
+                               MOVE    WRK-COM-HKNCOMBI (IDX)
+                                                   TO  WRK-KEN-HKNCOMBI
+                                                           (WRK-KENIDX)
+                           END-IF
+                       END-IF
+      *
       *                È½ÃÇÎÁ¤ÎÈ½Äê
       *---(01.00.02)   LINE UPD START  ---------------------------------
       *****************IF      WRK-COM-KNSJISGRPKBN (IDX)  =   2
@@ -2567,14 +2727,23 @@
                        WHEN    1
                            MOVE    1           TO  FLG-BC
                            MOVE    1           TO  FLG-BC-ARI
+                           IF      IDX-BC      =   ZERO
+                               MOVE    IDX         TO  IDX-BC
+                           END-IF
       *                ÀÅÌ®ºÎ·ì
                        WHEN    2
                            MOVE    1           TO  FLG-BV
                            MOVE    1           TO  FLG-BV-ARI
+                           IF      IDX-BV      =   ZERO
+                               MOVE    IDX         TO  IDX-BV
+                           END-IF
       *                Æ°Ì®ºÎ·ì
                        WHEN    3
                            MOVE    1           TO  FLG-BA
                            MOVE    1           TO  FLG-BA-ARI
+                           IF      IDX-BA      =   ZERO
+                               MOVE    IDX         TO  IDX-BA
+                           END-IF
                    END-EVALUATE
                END-IF
       *
@@ -2735,6 +2904,12 @@
       *
                    IF      FLG-ERR         =   ZERO
                        ADD     1               TO  IDXS
+                       MOVE    WRK-KEN-SRYKA (IDX)
+                                               TO  LNK-ORCSC-SRYKA
+                                                   (07 IDXS)
+                       MOVE    WRK-KEN-HKNCOMBI (IDX)
+                                               TO  LNK-ORCSC-HKNCOMBI
+                                                   (07 IDXS)
                        MOVE    WRK-KEN-SRYCD (IDX)
                                                TO  LNK-ORCSC-SRYCD
                                                    (07 IDXS)
@@ -2747,6 +2922,7 @@
       *                ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»ÍÑ
                        IF      IDX                 >=  1  AND  <=  6
                            MOVE    1               TO  FLG-KENTAI
+                           MOVE    IDXS            TO  IDXS-KENTAI
                        END-IF
       *                Æþ±¡²ó¿ô
                        IF      WRK-KEN-DAY (IDX)   NOT =   ZERO
@@ -2780,6 +2956,10 @@
            END-PERFORM
       *    ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»
            IF      FLG-KENTAI          =   1
+               MOVE    LNK-ORCSC-SRYKA (07 IDXS-KENTAI)
+                                           TO  WRK-SRYKA
+               MOVE    LNK-ORCSC-HKNCOMBI(07 IDXS-KENTAI)
+                                           TO  WRK-HKNCOMBI
       *        ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»
                IF      SPA-NYUGAIKBN       =   1
       *            ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»£²
@@ -2808,6 +2988,10 @@
       *
       *    ºÎ·ìÎÁ¼«Æ°È¯À¸
            IF      FLG-BA              =   1
+               MOVE    WRK-COM-SRYKA (IDX-BA)
+                                           TO  WRK-SRYKA
+               MOVE    WRK-COM-HKNCOMBI(IDX-BA)
+                                           TO  WRK-HKNCOMBI
       *        Æ°Ì®·ìºÎ·ì
                MOVE    "160101210"         TO  WRK-SRYCD
                IF      SPA-NYUGAIKBN       =   "1"
@@ -2821,6 +3005,10 @@
                GO      TO      300-AUTO-SYORI-EXT
            END-IF
            IF      FLG-BV              =   1
+               MOVE    WRK-COM-SRYKA (IDX-BV)
+                                           TO  WRK-SRYKA
+               MOVE    WRK-COM-HKNCOMBI(IDX-BV)
+                                           TO  WRK-HKNCOMBI
       *        ÀÅÌ®·ìºÎ·ì
                MOVE    "160095710"         TO  WRK-SRYCD
                MOVE    WRK-BV-DAY          TO  WRK-SAI-DAY
@@ -2830,6 +3018,10 @@
                GO      TO      300-AUTO-SYORI-EXT
            END-IF
            IF      FLG-BC              =   1
+               MOVE    WRK-COM-SRYKA (IDX-BC)
+                                           TO  WRK-SRYKA
+               MOVE    WRK-COM-HKNCOMBI(IDX-BC)
+                                           TO  WRK-HKNCOMBI
       *        Ëõ¾ÃºÎ·ì
                MOVE    "160095810"         TO  WRK-SRYCD
                MOVE    WRK-BC-DAY          TO  WRK-SAI-DAY
@@ -2892,7 +3084,7 @@
       *    ºÎ·ìÎÁ¡ÊÆ°Ì®¡Ë
            IF      FLG-BA-ARI          =   1
                MOVE    1               TO  TBL-NYUINDAY(IDN1)
-               IF       WRK-GMN-INPUTCD(IDX)(1:1)  =   "*"
+               IF      WRK-GMN-INPUTCD(IDX)(1:1)  =   "*"
                    PERFORM VARYING     IDN2    FROM    1   BY  1
                            UNTIL       IDN2    >   31
                        IF      WRK-COM-NYUINDAY (IDX IDN2) >   ZERO
@@ -3014,6 +3206,10 @@
                PERFORM 910-TENSU-READ-SEC
       *
                ADD     1               TO  IDXS
+               MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
+                                                   (07 IDXS)
+               MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
+                                                   (07 IDXS)
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                    (07 IDXS)
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
@@ -3136,6 +3332,10 @@
                PERFORM 910-TENSU-READ-SEC
       *
                ADD     1               TO  IDXS
+               MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
+                                                   (07 IDXS)
+               MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
+                                                   (07 IDXS)
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                    (07 IDXS)
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU

@@ -60,6 +60,10 @@
       *
                05  SPA-GMN-NYUINYMD        PIC X(09).
                05  SPA-GMN-TAIINYMD        PIC X(09).
+      *入院期間設定
+               05  SPA-NAI-NYUIN-KIKAN.
+                   07  SPA-NAI-NYUIN       PIC 9(01)
+                                           OCCURS   31.
       *
       *開始パラメタ番号
                05  SPA-MAE-STRNUM          PIC 9(04).

@@ -73,6 +73,7 @@
            03  FLG-CHKMST          PIC 9(01).
            03  FLG-PTNYUINRRK        PIC 9(01).
       *
+           03  FLG-ERR             PIC 9(01).
            03  FLG-SST             PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
@@ -238,6 +239,12 @@
        01  HZN-SANTEI-REC.
            COPY    "CPSANTEI.INC"    REPLACING
                                      //SANTEI-// BY //HZN-SANTEI-//.
+      *    算定履歴
+       01  TBLW-SANTEI-AREA.
+         02  TBLW-SANTEI-REC          OCCURS   100.
+           COPY    "CPSANTEI.INC"    REPLACING
+                                     //SANTEI-// BY //TBLW-SANTEI-//.
+       01  IDX-TBL                   PIC 9(04).
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -306,15 +313,18 @@
            IF     (LNK-SC92-SRYCD(1:1) =   "S" )  AND
                   (LNK-SC92-SRYCD(2:5) NUMERIC )  AND
                   (LNK-SC92-SRYCD(7:)  =   SPACE)
-               GO      TO      000-PROC-EXT
+               MOVE    1               TO  FLG-ERR
            END-IF
       *    入院回数処理なし
            IF      LNK-SC92-SRYCD(1:1) =   "*"   OR  SPACE
-               GO      TO      000-PROC-EXT
+               MOVE    1               TO  FLG-ERR
            END-IF
       *    ２００行以上エラー
            IF      LNK-SC92-GMN-IDX    >   200
                MOVE    "0007"          TO  SPA-ERRCD
+               MOVE    1               TO  FLG-ERR
+           END-IF
+           IF      FLG-ERR             =   1
                GO      TO      000-PROC-EXT
            END-IF
       *
@@ -354,7 +364,8 @@
            IF      LNK-SC92-KBN        =   "1"
                PERFORM 400-GYOINSN-SEC
                IF      SPA-ERRCD       =   SPACE
-                   MOVE    "2"             TO  LNK-SC92-KBN
+      *            MOVE    "2"             TO  LNK-SC92-KBN
+                   CONTINUE
                ELSE
                    GO      TO      000-PROC-EXT
                END-IF
@@ -699,9 +710,9 @@
            END-IF
       *
       *    同一剤内に時間加算は１つのみ
-           IF      TNS-TIMEKSNKBN      NOT =   ZERO
+           IF     (TNS-TIMEKSNKBN      NOT =   ZERO )
       *----(01.00.01) LINE ADD START ----------------------------------
-              AND  TNS-DATAKBN             =   "2"
+              AND (TNS-DATAKBN             =   "2"  )
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
                MOVE    ZERO                TO  WRK-TIME
@@ -711,10 +722,10 @@
                    IF      IDX             NOT =   IDX-T
                        IF     (SPA-COM-DATAKBN   (IDX)   =   "2" ) AND
                               (SPA-COM-TIMEKSNKBN(IDX) NOT =   ZERO)
-                           ADD     1               TO  WRK-TIME
-                           IF      WRK-TIME        >   1
+                           IF      WRK-TIME        >=  1
                                MOVE    "0043"          TO  SPA-ERRCD
                            END-IF
+                           ADD     1               TO  WRK-TIME
                        END-IF
                    END-IF
       *
@@ -967,6 +978,9 @@
                GO      TO      2005-HEIYOU-CHK-EXT
            END-IF
       *
+      *    当月算定済み
+           PERFORM 200512-SANTEI-SELECT-SEC
+      *
       *    チェックテーブル検索
            INITIALIZE                  CHK-REC
            MOVE    "5"                 TO  CHK-CHKKBN
@@ -1027,6 +1041,51 @@
            EXIT.
       *
       *****************************************************************
+      *    当月算定済み
+      *****************************************************************
+       200512-SANTEI-SELECT-SEC            SECTION.
+      *
+           INITIALIZE                  TBLW-SANTEI-AREA
+           MOVE    ZERO                TO  IDX-TBL
+      *    算定履歴検索
+           MOVE    SPACE               TO  SANTEI-REC
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           PERFORM
+               UNTIL      (FLG-SANTEI      =   1  )  OR
+                          (IDX-TBL         >=  100)
+               IF      SANTEI-MSANTEICNT   >   ZERO
+                   ADD     1                   TO  IDX-TBL
+                   MOVE    SANTEI-REC          TO  TBLW-SANTEI-REC
+                                                         (IDX-TBL)
+               END-IF
+      *
+               MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+      *
+           .
+       200512-SANTEI-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    チェックコードの算定チェック
       *****************************************************************
        20051-CHK-SANTEI-SEC            SECTION.
@@ -1040,49 +1099,63 @@
       *
       *    保険毎のコードの判定
            PERFORM 1000-SANTEI-CHK-SEC
-      *
-           INITIALIZE                  HZN-SANTEI-REC
-      *    算定履歴検索
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
-           MOVE    SPA-PTID            TO  SANTEI-PTID
-           MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
-           MOVE    CHK-CD (IDX-C)      TO  SANTEI-SRYCD
-      *    保険毎の時、保険組合せが同じこと
-           IF     (FLG-HKNSAN          =   1   )  AND
-                  (SPA-HKNKBN      NOT =   ZERO)
-               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
-           ELSE
-               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           MOVE    ZERO                TO  FLG-SANTEI-OK
+           PERFORM VARYING     IDX2    FROM    1   BY   1
+                   UNTIL      (IDX2    >   IDX-TBL )  OR
+                              (FLG-SANTEI-OK   =   1  )
+               IF      CHK-CD (IDX-C)      =   TBLW-SANTEI-SRYCD(IDX2)
+      *            対象の算定履歴判定
+                   MOVE    TBLW-SANTEI-REC(IDX2)   TO  SANTEI-REC
+                   PERFORM 200511-SANTEI-CHK-SEC
+               END-IF
+           END-PERFORM
+           IF      FLG-SANTEI-OK       =   ZERO
+               INITIALIZE                  SANTEI-REC
            END-IF
       *
-           MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SANTEI-KEY7"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SANTEI-KEY7"       TO  ORC-DBPATH
-               PERFORM 920-SANTEI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SANTEI
-           END-IF
-           PERFORM UNTIL       FLG-SANTEI      =   1
+      *    INITIALIZE                  HZN-SANTEI-REC
+      *    算定履歴検索
+      *    INITIALIZE                  SANTEI-REC
+      *    MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+      *    MOVE    SPA-PTID            TO  SANTEI-PTID
+      *    MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
+      *    MOVE    CHK-CD (IDX-C)      TO  SANTEI-SRYCD
+      *    保険毎の時、保険組合せが同じこと
+      *    IF     (FLG-HKNSAN          =   1   )  AND
+      *           (SPA-HKNKBN      NOT =   ZERO)
+      *        MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+      *    ELSE
+      *        MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+      *    END-IF
+      *
+      *    MOVE    SANTEI-REC          TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SANTEI-KEY7"       TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SANTEI-KEY7"       TO  ORC-DBPATH
+      *        PERFORM 920-SANTEI-READ-SEC
+      *    ELSE
+      *        MOVE    1                   TO  FLG-SANTEI
+      *    END-IF
+      *    PERFORM UNTIL       FLG-SANTEI      =   1
       *
       *        対象の算定履歴判定
-               PERFORM 200511-SANTEI-CHK-SEC
+      *        PERFORM 200511-SANTEI-CHK-SEC
       *
-               IF      FLG-SANTEI-OK       =   1
-                   MOVE    SANTEI-REC              TO  HZN-SANTEI-REC
-               END-IF
+      *        IF      FLG-SANTEI-OK       =   1
+      *            MOVE    SANTEI-REC              TO  HZN-SANTEI-REC
+      *        END-IF
       *
-               MOVE    "SANTEI-KEY7"       TO  ORC-DBPATH
-               PERFORM 920-SANTEI-READ-SEC
-           END-PERFORM
+      *        MOVE    "SANTEI-KEY7"       TO  ORC-DBPATH
+      *        PERFORM 920-SANTEI-READ-SEC
+      *    END-PERFORM
       *
-           MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
+      **** MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
       *
       *
       *    算定歴の回数をチェックする
@@ -1157,28 +1230,42 @@
        200511-SANTEI-CHK-SEC                SECTION.
       *
            MOVE    ZERO                TO  FLG-SANTEI-OK
+      *    保険毎の時、保険組合せが同じこと
+           IF     (FLG-HKNSAN          =   1   )  AND
+                  (SPA-HKNKBN      NOT =   ZERO)
+               IF      SPA-HKNCOMBINUM     =   SANTEI-HKNCOMBINUM
+                   CONTINUE
+               ELSE
+                   GO      TO      200511-SANTEI-CHK-EXT
+               END-IF
+           ELSE
+               IF      SANTEI-HKNCOMBINUM  =   ZERO
+                   CONTINUE
+               ELSE
+                   GO      TO      200511-SANTEI-CHK-EXT
+               END-IF
+           END-IF
       *
            EVALUATE    TRUE
       *         算定履歴区分＝１
-               WHEN   (SANTEI-NYUGAIKBN       =   ZERO )  AND
-                      (SANTEI-SRYKA           =   ZERO )
-                   MOVE    1                  TO  FLG-SANTEI-OK
+               WHEN   (SANTEI-NYUGAIKBN    =   ZERO )  AND
+                      (SANTEI-SRYKA        =   ZERO )
+                   MOVE    1                   TO  FLG-SANTEI-OK
       *         算定履歴区分＝２
-               WHEN   (SANTEI-NYUGAIKBN       =   SPA-NYUGAIKBN) AND
-                      (SANTEI-SRYKA           =   ZERO )
-                   MOVE    1                  TO  FLG-SANTEI-OK
+               WHEN   (SANTEI-NYUGAIKBN    =   SPA-NYUGAIKBN) AND
+                      (SANTEI-SRYKA        =   ZERO )
+                   MOVE    1                   TO  FLG-SANTEI-OK
       *
       *         算定履歴区分＝３
-               WHEN   (SANTEI-NYUGAIKBN       =   ZERO )  AND
-                      (SANTEI-SRYKA           =   SPA-SRYKA )
-                   MOVE    1                  TO  FLG-SANTEI-OK
+               WHEN   (SANTEI-NYUGAIKBN    =   ZERO )  AND
+                      (SANTEI-SRYKA        =   SPA-SRYKA )
+                   MOVE    1                   TO  FLG-SANTEI-OK
       *
       *         算定履歴区分＝４
-               WHEN   (SANTEI-NYUGAIKBN       =   SPA-NYUGAIKBN) AND
-                      (SANTEI-SRYKA           =   SPA-SRYKA )
-                   MOVE    1                  TO  FLG-SANTEI-OK
-               END-EVALUATE
-      *
+               WHEN   (SANTEI-NYUGAIKBN    =   SPA-NYUGAIKBN) AND
+                      (SANTEI-SRYKA        =   SPA-SRYKA )
+                   MOVE    1                   TO  FLG-SANTEI-OK
+           END-EVALUATE
       *
            .
        200511-SANTEI-CHK-EXT.
@@ -1551,76 +1638,6 @@
                    MOVE    SPACE               TO  WRK-YMD
                END-IF
            END-IF
-      *
-      *    算定履歴検索
-      *    INITIALIZE                  SANTEI-REC
-      *    MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
-      *    MOVE    SPA-PTID            TO  SANTEI-PTID
-      *    MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-      *    EVALUATE    TNS-SANTEIRRKKBN
-      *        WHEN    1
-      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-      *            MOVE    ZERO                TO  SANTEI-SRYKA
-      *        WHEN    2
-      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-      *            MOVE    ZERO                TO  SANTEI-SRYKA
-      *        WHEN    3
-      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-      *            MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-      *        WHEN    4
-      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-      *            MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-      *    END-EVALUATE
-      *
-      *    MOVE    SANTEI-REC          TO  MCPDATA-REC
-      *    MOVE    "DBSELECT"          TO  MCP-FUNC
-      *    MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-      *        PERFORM 920-SANTEI-READ-SEC
-      *    ELSE
-      *        MOVE    1                   TO  FLG-SANTEI
-      *    END-IF
-      *
-      *    PERFORM UNTIL       FLG-SANTEI          =   1
-      *
-      *        IF      SANTEI-MSANTEICNT   >   ZERO
-      *            IF      SANTEI-SRYYM    <=  SPA-SRYYMD(1:6)
-      *                PERFORM VARYING     IDX-Y2  FROM    1  BY  1
-      *                        UNTIL       IDX-Y2      >   31
-      *                    IF      SANTEI-DAY (IDX-Y2) >   ZERO
-      *                        MOVE    IDX-Y2          TO  WRK-DD
-      *                    END-IF
-      *                END-PERFORM
-      *                MOVE    SANTEI-SRYYM        TO  WRK-YYMM
-      *                MOVE    1                   TO  FLG-SANTEI
-      *                初回慢性疼痛の時、診療日より後の時なしとする
-      *                IF     (WRK-SRYCD       =   "113006510" ) AND
-      *                       (SANTEI-FSANTEIYMD(1:6)
-      *                                        =   SANTEI-SRYYM ) AND
-      *                       (SPA-SRYYMD(1:6) =   SANTEI-SRYYM ) AND
-      *                       (SPA-SRYYMD(7:2) <   SANTEI-MSANTEID)
-      *                    MOVE    SPACE               TO  WRK-YMD
-      *                END-IF
-      *            END-IF
-      *        END-IF
-      *
-      *        IF      FLG-SANTEI          =   ZERO
-      *            MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-      *            PERFORM 920-SANTEI-READ-SEC
-      *        END-IF
-      *    END-PERFORM
-      *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
       *
            .
       *
