@@ -331,7 +331,9 @@
                 MOVE    BUN-IDX     TO        KH-IDX
            END-IF
       *
-           MOVE    KH-IDX          TO        RECE64-KOHBUNRI
+           IF    RECE64-KOHBUNRI     =      ZERO
+               MOVE    KH-IDX          TO        RECE64-KOHBUNRI
+           END-IF
            .
        KOHBUNRI-SET-EXT.
            EXIT.
