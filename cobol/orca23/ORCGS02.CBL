@@ -95,6 +95,7 @@
       *  01.00.34    NACL-ÂÀÅÄ    03.11.12  ¹¹¿·ÆüÉÕÊÔ½¸ÂÐ±þ
       *  01.00.35    NACL-ÌçÏÆ    04.01.14  ¿ÇÎÅ¹Ô°Ù¤ÎÊñ³çÊ¬¤Ï½ü¤¯
       *                                     SRYACCT2¢ª32
+      *  01.00.36    NACL-ÌçÏÆ    04.01.21  Ï«ºÒ¤ÎÆÃÄê´ïºà(09593)ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3057,7 +3058,7 @@
                    END-IF
                END-IF
       *
-               IF  SYU-SYUHKNNUM       =   "973"                        010112
+               IF  SYU-SYUHKNNUM       =   "971"  OR  "973"
                  IF  TBL-SRYKBN(IDX1)       =   "95"   OR  "96"         010112
                    CONTINUE                                             010112
                  ELSE                                                   010112
@@ -3115,6 +3116,7 @@
       *----(01.00.07) LINE ADD START -------------------------------
       *    Ï«ºÒÊÝ¸±½èÍý
            IF  SYU-SYUHKNNUM       =   "971"                            010112
+             COMPUTE  SYU-RSISHOSHIN-MONEY  =  WK-RSISHOSHIN     * 10
              IF      SYU-RSISHOSHIN-MONEY     NOT =    ZERO
                    MOVE    ZERO           TO  WK-RSISHOSHIN-TENSU
                    COMPUTE WK-RSISHOSHIN-TENSU  =  SYU-RSISHOSHIN-MONEY
@@ -3122,6 +3124,7 @@
                    COMPUTE SYU-HKNTEN (01)      =  SYU-HKNTEN (01)   -
                                                    WK-RSISHOSHIN-TENSU
              END-IF
+             COMPUTE  SYU-RSISAISHIN-MONEY  =  WK-RSISAISHIN     * 10
              IF      SYU-RSISAISHIN-MONEY     NOT =    ZERO
                    MOVE    ZERO           TO  WK-RSISAISHIN-TENSU
                    COMPUTE WK-RSISAISHIN-TENSU  =  SYU-RSISAISHIN-MONEY
@@ -3129,12 +3132,14 @@
                    COMPUTE SYU-HKNTEN (01)      =  SYU-HKNTEN (01)   -
                                                    WK-RSISAISHIN-TENSU
              END-IF
+             COMPUTE  SYU-RSISDO-MONEY      =  WK-RSISDO         * 10
              IF      SYU-RSISDO-MONEY       NOT =    ZERO
                    MOVE    ZERO           TO  WK-RSISDO-TENSU
                    COMPUTE WK-RSISDO-TENSU   =   SYU-RSISDO-MONEY / 10
                    COMPUTE SYU-HKNTEN (02)   =   SYU-HKNTEN (02)   -
                                               WK-RSISDO-TENSU
              END-IF
+             COMPUTE  SYU-RSIETC-MONEY      =  WK-RSIETC         * 10
              IF      SYU-RSIETC-MONEY       NOT =    ZERO
                    MOVE    ZERO           TO  WK-RSIETC-TENSU
                    COMPUTE WK-RSIETC-TENSU   =   SYU-RSIETC-MONEY / 10
@@ -3469,6 +3474,7 @@
                                                      OR       "91"      010112
                                                      OR       "92"      010112
                                                      OR       "93"
+                                                     OR       "94"
                                MOVE    SPACE         TO   TNS-TENSU-REC
                                INITIALIZE                 TNS-TENSU-REC
                                MOVE    SRY-SRYCD(IDX3) TO   TNS-SRYCD
@@ -3704,6 +3710,7 @@
                                                      OR       "91"      010112
                                                      OR       "92"      010112
                                                      OR       "93"
+                                                     OR       "94"
                                MOVE    SPACE         TO   TNS-TENSU-REC
                                INITIALIZE                 TNS-TENSU-REC
                                MOVE    SRY-SRYCD(IDX3) TO   TNS-SRYCD

@@ -40,6 +40,9 @@
       *  00.00.09    NACL-ÌçÏÆ    04/01/14  ¿ÇÎÅ¹Ô°Ù¤ÎÊñ³çÊ¬¤Ï½ü¤¯
       *                                     SRYACCT7¢ª33
       *                                     SRYACCT9¢ª30
+      *  01.00.10    NACL-ÌçÏÆ    04/01/21  Ï«ºÒ¤ÎÆÃÄê´ïºà(09593)ÂÐ±þ
+      *  01.00.11    NACL-ÌçÏÆ    04/01/21  Ï«ºÒ¡¦¼«ÇåÀÕ¤ÎÆþ±¡¼¼ÎÁ²Ã»»
+      *                                     (09594)ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2850,11 +2853,22 @@
                                   (WRK-TEN  *   SINRYO-COUNT)
                       END-IF
       *
+                      IF     SYU-SYUHKNNUM   =   "971"
+      *
+                         IF    SRY-SRYCD (IDZ)(1:5)   =   "09593"
+                                                    OR    "09594"
+                           COMPUTE WRK-RSIETC = WRK-RSIETC +
+                                  (WRK-TEN  *   SINRYO-COUNT)
+                         END-IF
+      *
+                      END-IF
+      *
                       IF     SYU-SYUHKNNUM   =   "973"
       *
                          IF    SRY-SRYCD (IDZ)(1:5)   =   "09591"
                                                     OR    "09592"
                                                     OR    "09593"
+                                                    OR    "09594"
                            COMPUTE WRK-RSIETC = WRK-RSIETC +
                                   (WRK-TEN  *   SINRYO-COUNT)
                          END-IF
@@ -2959,6 +2973,7 @@
                                                      OR       "91"     
                                                      OR       "92"     
                                                      OR       "93"     
+                                                     OR       "94"     
                                MOVE    SPACE         TO   TNS-TENSU-REC
                                INITIALIZE                 TNS-TENSU-REC
                                MOVE    SRY-SRYCD(IDZ) TO   TNS-SRYCD
@@ -3161,6 +3176,7 @@
                                                      OR       "91"      
                                                      OR       "92"      
                                                      OR       "93"      
+                                                     OR       "94"      
                                MOVE    SPACE         TO   TNS-TENSU-REC
                                INITIALIZE                 TNS-TENSU-REC
                                MOVE    SRY-SRYCD(IDZ) TO   TNS-SRYCD
