@@ -6627,7 +6627,8 @@
       *    編集後内容セット
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   WRK-GYO-MAX  )  OR
-                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+                             ((WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
+                              (WRK-COM-INPUTCD (IDX-Z) =   SPACE ))
       *
       *!       MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-HZN-GMN-INPUCD
       *!                                             (IDX-Z)
@@ -6659,6 +6660,10 @@
                    MOVE    IDX-Z           TO  WRK-MAX
                ELSE
                    MOVE    SPACE           TO  WRK-COM-ZAIEND(IDX-Z)
+               END-IF
+      *        回数
+               IF      LNK-ORCSC-KAISU NOT =   WRK-COM-KAISU (IDX-Z)
+                   MOVE    LNK-ORCSC-KAISU     TO  WRK-COM-KAISU(IDX-Z)
                END-IF
       *        最終行に回数入力（＊）が有った時、最終行を回数入力
                IF      FLG-KAISU           NOT =   ZERO
@@ -7777,6 +7782,8 @@
            MOVE    SPA-NAI-RRK-SRYKA(SPA-NAI-DOSELNUM)
                                        TO  SPA-OLD-SRYKA
       *    保険組合せ
+           MOVE    SPA-NAI-RRK-HKNCOMBI(SPA-NAI-DOSELNUM)
+                                       TO  SPA-HKNCOMBINUM
            MOVE    SPA-NAI-RRK-HKNCOMBI(SPA-NAI-DOSELNUM)
                                        TO  SPA-OLD-HKNCOMBI
       *
