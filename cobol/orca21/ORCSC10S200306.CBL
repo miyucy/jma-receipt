@@ -96,6 +96,9 @@
            03  FLG-CHK             PIC 9(01).
            03  FLG-ARI             PIC 9(01).
       *
+           03  FLG-ARI2            PIC 9(01).
+           03  FLG-ARI3            PIC 9(01).
+      *
            03  FLG-SYOSIN          PIC 9(01).
       *
            03  FLG-ROUMANSEI       PIC 9(01).
@@ -1076,8 +1079,8 @@
       *
       *    上限１日
            MOVE    ZERO                TO  WRK-DAYCNT
-           IF     (TNS-JGNCNT1D        >   ZERO  )  AND
-                  (SPA-SRYYMD(7:2)     NUMERIC   )  AND
+      *****IF     (TNS-JGNCNT1D        >   ZERO  )  AND
+           IF     (SPA-SRYYMD(7:2)     NUMERIC   )  AND
                   (SPA-SRYYMD(7:2)     >   ZERO  )
                MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                MOVE    SANTEI-DAY (IDX-Y2) TO  WRK-DAYCNT
@@ -4358,10 +4361,12 @@
            INITIALIZE                  WRK-SCR-REC
            MOVE    ZERO                TO  IDX3
            MOVE    ZERO                TO  FLG-CHK-ALL
+           MOVE    ZERO                TO  FLG-ARI2
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
                              ((HZN-COM-INPUTCD (IDX)   =   SPACE ) AND
-                              (HZN-GMN-INPUTCD (IDX)   =   SPACE ))
+                              (HZN-GMN-INPUTCD (IDX)   =   SPACE ))  OR
+                             ( FLG-ARI2                =   1     )
       *
                MOVE    ZERO                    TO  FLG-ARI
                IF     (HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
@@ -4372,6 +4377,7 @@
                    IF      HZN-COM-INPUTCD(IDX) NOT =   SPACE
                        PERFORM 10101-SINSATU-CHK-SEC
                    END-IF
+      *
                    IF      FLG-ARI             =   1
                        IF     (HZN-GMN-INPUTCD(IDX)(1:1) NUMERIC  )  AND
                               (HZN-GMN-INPUTCD(IDX)(2:1) =   SPACE)
@@ -4408,6 +4414,13 @@
                    MOVE    ZERO                TO  FLG-CHK
                END-IF
            END-PERFORM
+      *
+      *    診察料に変更が無い時、そのまま
+           IF      FLG-ARI2            =   1
+               MOVE    HZN-SCR-REC         TO  SPA-SCR-REC
+               GO      TO      10102-SINSATU-CHENGE-EXT
+           END-IF
+      *
       *    剤毎に対象を編集する
            IF      IDX3                >   ZERO
                IF     (IDX3                =   1  )  AND
@@ -4447,8 +4460,10 @@
            SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
                AT  END
                    MOVE    ZERO                TO  FLG-ARI
+                   MOVE    ZERO                TO  FLG-ARI3
                WHEN   WRK-SRYCD            =   TBL-SRYCD (TBL-IDX)
                    MOVE    1                   TO  FLG-ARI
+                   MOVE    1                   TO  FLG-ARI3
            END-SEARCH
       *
            IF      FLG-ARI         =   ZERO
@@ -4467,10 +4482,23 @@
                SET     TBL-RSI              TO  1
                SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
                    AT  END
-                       MOVE    ZERO               TO  FLG-ARI
+                       MOVE    ZERO                TO  FLG-ARI
                    WHEN    WRK-SRYCD       =   TBLR-SRYCD (TBL-RSI)
-                       MOVE    1                  TO  FLG-ARI
+                       MOVE    1                   TO  FLG-ARI
+                       IF      TBLR-KBN (TBL-RSI)  =   "F"   OR "S"
+                           MOVE    1                   TO  FLG-ARI3
+                       END-IF
                END-SEARCH
+           END-IF
+      *    診察料で同じコードがある時
+           IF      FLG-ARI3            =   1
+               PERFORM VARYING     IDXS    FROM    1   BY  1
+                       UNTIL      (IDXS    >   SPA-GMN-IDX )  OR
+                                  (FLG-ARI2    =   1           )
+                   IF      WRK-SRYCD       =   SPA-COM-INPUTCD (IDXS)
+                       MOVE    1               TO  FLG-ARI2
+                   END-IF
+               END-PERFORM
            END-IF
       *
            IF      FLG-ARI             =   1
