@@ -38,6 +38,7 @@
       * 01.00.07     NACL-Â¿¡¹Ç¼  02/12/02  À¸³è½¬´·ÉÂ¤Î¥³¡¼¥É¥¨¥é¡¼½¤Àµ
       * 01.00.08     NACL-Â¿¡¹Ç¼  02/12/06  ËýÀ­áÖÄË¤Î»»Äê¥Á¥§¥Ã¥¯½¤Àµ
       * 01.00.09     NACL-Â¿¡¹Ç¼  03/02/19  ÎÅÍÜÃ´Åö¼êÅöÄÉ²Ã
+      * 01.00.10     NACL-Â¿¡¹Ç¼  03/03/28  ¼«ÇåÀÕ¤ÎÄþ¸º¤ò£¶¥ö·î°Ê¹ß¤È¤¹¤ë
       *****************************************************************
       *
       *
@@ -84,6 +85,8 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
+      *
+           03  FLG-KBN             PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-ADD             PIC 9(01).
@@ -1458,6 +1461,42 @@
                COMPUTE WRK-HAS-YY      =   WRK-HAS-YY    +   1
            END-IF
            MOVE    WRK-HASSYOYMD       TO  SPA-RSI-SHOBYOYMD3
+      *
+      *    Ê¿À®£±£µÇ¯£²·î¤è¤ê
+      *    ¼«ÇåÀÕ»þ¡¢£¶¥ö·î¤È¤¹¤ë¡Ê¿ÇÎÅÆü¤¬£È£±£µ¡¥£²°Ê¹ß¡Ë
+           IF      (SPA-HKNKBN         =   1    )  AND
+                   (SPA-RSI-HKNKBN     =   "4"  )  AND
+                   (SPA-SRYYMD         >=  "20030201")
+      *         ½ýÉÂÆüÈ½Äê
+               IF      SPA-RSI-SHOBYOYMD  <   "20030201"
+                   MOVE    "20030201"          TO  WRK-HASSYOYMD
+               ELSE
+                   MOVE    SPA-RSI-SHOBYOYMD   TO  WRK-HASSYOYMD
+               END-IF
+      *        ½ýÉÂÆü¤«¤é£¶¥ö·î¤Î·×»»
+               COMPUTE WRK-HAS-MM          =   WRK-HAS-MM
+                                           +   6
+               IF      WRK-HAS-MM          >   12
+                   COMPUTE WRK-HAS-MM      =   WRK-HAS-MM    -   12
+                   COMPUTE WRK-HAS-YY      =   WRK-HAS-YY    +   1
+               END-IF
+               MOVE    WRK-HASSYOYMD       TO  SPA-RSI-SHOBYOYMD3
+      *
+      *        È¯À¸ÆüÈ½Äê
+               IF      SPA-RSI-HASSYOYMD   <   "20030201"
+                   MOVE    "20030201"          TO  WRK-HASSYOYMD
+               ELSE
+                   MOVE    SPA-RSI-HASSYOYMD   TO  WRK-HASSYOYMD
+               END-IF
+      *        È¯À¸Æü¤«¤é£¶¥ö·î¤Î·×»»
+               COMPUTE WRK-HAS-MM          =   WRK-HAS-MM
+                                           +   6
+               IF      WRK-HAS-MM          >   12
+                   COMPUTE WRK-HAS-MM      =   WRK-HAS-MM    -   12
+                   COMPUTE WRK-HAS-YY      =   WRK-HAS-YY    +   1
+               END-IF
+               MOVE    WRK-HASSYOYMD       TO  SPA-RSI-HASSYOYMD3
+           END-IF
       *
       *    ÎÅÍÜ¤ÎµëÉÕÀÁµá½ñ¼è°·ÎÁ¤Î¥Á¥§¥Ã¥¯
       *****MOVE    SPACE               TO  WRK-HASSYOYMD
@@ -3358,6 +3397,7 @@
       *****************************************************************
        5019-SYONIKA-CHK-SEC                SECTION.
       *
+           MOVE    ZERO                TO  FLG-KBN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
@@ -3408,20 +3448,49 @@
                                WHEN    "111010670"
                                    CONTINUE
                                WHEN    OTHER
-      *****************************±ý¿ÇÎÁ¤Ç¤¢¤ë¤³¤È
-      *                            IF      SPA-COM-SRYKBN (IDX)
-      *                                                    =  "14"
-      *                                CONTINUE
-      *****************************ELSE
+                                   MOVE    ZERO            TO  FLG-OK
+      *                            ¿Ç»¡ÎÁ¸¡º÷
+                                   PERFORM 50191-SRYCD-CHK-SEC
+      *                            ÅÅÏÃºÆ¿Ç¤Ç¡¢ÅöÆü¿Ç»¡¤¬¤Ê¤¤¤³¤È
+                                   IF     (SPA-SYONIKA-ARI NOT =   2 )
+                                     AND  (SPA-SYONIKA-ARI2    =   ZERO)
+                                     AND  (WRK-KBN         =   "T" OR
+                                                               "S"  )
+                                       MOVE    1           TO  FLG-KBN
+                                       MOVE    1           TO  FLG-OK
+                                   END-IF
       *                            ¼ïÊÌ¤Î¤ß¤Ï£Ï£Ë
-                                   IF      SPA-GMN-INPUTCD(IDX)(1:4)
-                                                         =   ".130"
+                                   IF    ( SPA-GMN-INPUTCD(IDX)(1:4)
+                                                         =   ".130"  )
+                                       MOVE    1           TO  FLG-OK
+                                   END-IF
+      *                            ÅÅÏÃºÆ¿Ç¤ÎÆýÍÄ»ù²Ã»»¤Ï£Ï£Ë
+                                   IF     (SPA-GMN-INPUTCD(IDX)
+                                                        =   "112000970")
+                                     AND (FLG-KBN       =   1          )
+                                       MOVE    1           TO  FLG-OK
+                                   END-IF
+                                   IF      FLG-OK          =   1
                                        CONTINUE
                                    ELSE
                                        MOVE    "0044"  TO  SPA-ERRCD
                                        MOVE    "1"     TO  SPA-COM-CUR
                                                                 (IDX)
                                    END-IF
+      *****************************±ý¿ÇÎÁ¤Ç¤¢¤ë¤³¤È
+      *                            IF      SPA-COM-SRYKBN (IDX)
+      *                                                    =  "14"
+      *                                CONTINUE
+      *****************************ELSE
+      *                            ¼ïÊÌ¤Î¤ß¤Ï£Ï£Ë
+      *                            IF      SPA-GMN-INPUTCD(IDX)(1:4)
+      *                                                  =   ".130"
+      *                                CONTINUE
+      *                            ELSE
+      *                                MOVE    "0044"  TO  SPA-ERRCD
+      *                                MOVE    "1"     TO  SPA-COM-CUR
+      *                                                         (IDX)
+      **************************** END-IF
                            END-EVALUATE
       *
       *                ±ý¿ÇÎÁ¤Ç¤¢¤ë¤³¤È
@@ -3528,9 +3597,32 @@
                    END-EVALUATE 
                END-IF
              END-IF
+      *
+             IF      SPA-COM-ZAIEND (IDX)  =   "1"
+                  MOVE    ZERO                TO  FLG-KBN
+             END-IF
            END-PERFORM
            .
        5019-SYONIKA-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿Ç»¡ÎÁ¸¡º÷½èÍý
+      *****************************************************************
+       50191-SRYCD-CHK-SEC                SECTION.
+      *    ¿Ç»¡ÎÁ¸¡º÷
+           SET     TBL-IDX             TO  1
+           SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
+               AT   END
+                    MOVE    ZERO           TO  FLG-ARI
+                    MOVE    SPACE          TO  WRK-KBN
+                WHEN   SPA-COM-INPUTCD (IDX)
+                                          =   TBL-SRYCD (TBL-IDX)
+                    MOVE    1                  TO  FLG-ARI
+                    MOVE    TBL-KBN (TBL-IDX)  TO  WRK-KBN
+           END-SEARCH
+           .
+       50191-SRYCD-CHK-EXT.
            EXIT.
       *
       *****************************************************************
