@@ -131,9 +131,11 @@
       *
            PERFORM 800-NYUKHN-SEL-SEC
            IF    ( FLG-NYUKHN      =   ZERO )
+      *        看護配置・平均在日数等で検索の場合、
       *        有床診療所１群入院基本料１で、入力パラメータの
       *        看護師数区分が空白の場合、看護配置適合に置き換える
-               IF    ( NYUKHN-KHNSRYCD         =   "190097010" )
+               IF    ( W20SUB01-I-KBN          =   "2" )
+                 AND ( NYUKHN-KHNSRYCD         =   "190097010" )
                  AND ( W20SUB01-I-KNGSISUKBN   =   SPACE )
                    INITIALIZE  NYUINKHN-REC
                    MOVE    "190109670"     TO  NYUKHN-KHNSRYCD
