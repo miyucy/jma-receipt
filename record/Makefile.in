@@ -220,6 +220,7 @@ RECORD_files = \
 	W99.rec \
 	WERR.rec \
 	WID1.rec \
+	WID2.rec \
 	X01.rec \
 	X02.rec \
 	X98.rec \

@@ -205,3 +205,18 @@ path	key12		{
 		;
 	};
 };
+
+path	upd2	{ 	
+	DBUPDATE	{
+		UPDATE	tbl_syskanri 
+				SET	
+					STYUKYMD     =   :STYUKYMD,
+					EDYUKYMD     =   :EDYUKYMD,
+					UPYMD        =   :UPYMD,
+					UPHMS        =   :UPHMS
+			WHERE   KANRICD      =   :UPKANRICD
+			AND		STYUKYMD     =   :UPSTYUKYMD
+			AND		EDYUKYMD     =   :UPEDYUKYMD
+		;
+	};
+};
