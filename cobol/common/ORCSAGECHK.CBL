@@ -29,6 +29,8 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       * 01.00.01     NACL-Â¿¡¹Ç¼  02/10/01  À¸³èÊÝ¸îÄÉ²Ã
+      * 01.00.02     NACL-Â¿¡¹Ç¼  02/10/07  Á¥°÷ËÜ¿ÍÄÉ²Ã
+      *                                     £·£µºÐ°Ê¾å¤ÎÏ·¿Í¸øÈñÍ­ÌµÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -52,6 +54,7 @@
            03  FLG-HKNNUM          PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
+           03  FLG-OK2             PIC 9(01).
            03  FLG-HKN-ERR         PIC 9(01).
       *
       *    Åº»úÎÎ°è
@@ -209,6 +212,8 @@
       *****************************************************************
        200-FTNRATE-SEC                SECTION.
       *
+           MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  FLG-OK2
       *    ÊÝ¸±ÁÈ¹ç¥Þ¥¹¥¿¡¼ÊÔ½¸
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
@@ -264,7 +269,6 @@
                GO      TO      200-FTNRATE-EXT
            END-IF
       *
-           MOVE    ZERO                TO  FLG-OK
       *    ¼çÊÝ¸±È½Äê
            MOVE    COMB-HKNNUM         TO  WRK-HKNNUM
            MOVE    ZERO                TO  WRK-PAYKBN
@@ -300,6 +304,11 @@
                            PTHKN-HOJOKBN       =   "1"  OR  "2")
                        MOVE    1               TO  FLG-OK
                    END-IF
+      *            Á¥°÷¤ÇÊä½õ¶èÊ¬¤Î¤¢¤ë»þ£Ï£Ë¤È¤¹¤ë
+                   IF     (COMB-HKNNUM         =   "002" ) AND
+                          (PTHKN-HOJOKBN   NOT =   SPACE )
+                       MOVE    1               TO  FLG-OK
+                   END-IF
                END-IF
                MOVE    "DBCLOSE"           TO  MCP-FUNC
                MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
@@ -308,9 +317,9 @@
                                                 ORCMCPAREA
                                                 MCPDATA-REC
            END-IF
-           IF      FLG-OK                  =   1
-               GO      TO      200-FTNRATE-EXT
-           END-IF
+      **** IF      FLG-OK                  =   1
+      *        GO      TO      200-FTNRATE-EXT
+      **** END-IF
       *
       *    À¸³èÊÝ¸î¤Î¤ß¤Î»þ
            IF     (COMB-HKNNUM         =   SPACE )  AND
@@ -318,8 +327,8 @@
                   (COMB-KOH2HKNNUM     =   "012" )  OR
                   (COMB-KOH3HKNNUM     =   "012" )  OR
                   (COMB-KOH4HKNNUM     =   "012" ))
-               MOVE    1               TO  FLG-OK
-               GO      TO      200-FTNRATE-EXT
+               MOVE    1               TO  FLG-OK2
+      *********GO      TO      200-FTNRATE-EXT
            END-IF
       *    Ï·¿Í¸øÈñ¤Ç¡¢»ÙÊ§¶èÊ¬¤¬¤¢¤ë»þ
            IF    ((COMB-KOH1HKNNUM     =   "027" )  AND
@@ -330,7 +339,7 @@
                   (COMB-KOH3PAYKBN     =   "01" OR "02" ))  OR
                  ((COMB-KOH4HKNNUM     =   "027" )  AND
                   (COMB-KOH4PAYKBN     =   "01" OR "02" ))
-               MOVE    1               TO  FLG-OK
+               MOVE    1               TO  FLG-OK2
            ELSE
       *        ¸øÈñ£±
                IF      COMB-KOH1HKNNUM     NOT =   SPACE
@@ -340,9 +349,6 @@
                    IF      FLG-HKNNUM          =   ZERO
                        IF      HKN-HKNKOHSBTKBN    =   "3"
                            PERFORM 2001-KOH-CHK-SEC
-                           IF      FLG-OK          =   1
-                               GO      TO      200-FTNRATE-EXT
-                           END-IF
                        END-IF
                    END-IF
                END-IF
@@ -354,9 +360,6 @@
                    IF      FLG-HKNNUM          =   ZERO
                        IF      HKN-HKNKOHSBTKBN    =   "3"
                            PERFORM 2001-KOH-CHK-SEC
-                           IF      FLG-OK          =   1
-                               GO      TO      200-FTNRATE-EXT
-                           END-IF
                        END-IF
                    END-IF
                END-IF
@@ -368,9 +371,6 @@
                    IF      FLG-HKNNUM          =   ZERO
                        IF      HKN-HKNKOHSBTKBN    =   "3"
                            PERFORM 2001-KOH-CHK-SEC
-                           IF      FLG-OK          =   1
-                               GO      TO      200-FTNRATE-EXT
-                           END-IF
                        END-IF
                    END-IF
                END-IF
@@ -382,17 +382,22 @@
                    IF      FLG-HKNNUM          =   ZERO
                        IF      HKN-HKNKOHSBTKBN    =   "3"
                            PERFORM 2001-KOH-CHK-SEC
-                           IF      FLG-OK          =   1
-                               GO      TO      200-FTNRATE-EXT
-                           END-IF
                        END-IF
                    END-IF
                END-IF
       *
            END-IF
-           IF      FLG-OK              =   ZERO
+           IF      FLG-OK              =   ZERO   AND
+                   FLG-OK2             =   ZERO
                MOVE    1               TO  AGECHK-RJNCHK
+               GO      TO      200-FTNRATE-EXT
            END-IF
+      *    £·£µºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¸øÈñ¤¬¤¢¤ë¤³¤È
+           IF     (AGECHK-NENREI       >=  75 )  AND
+                  (FLG-OK2             =   ZERO)
+               MOVE    2               TO  AGECHK-RJNCHK
+           END-IF
+      *
       *
            .
        200-FTNRATE-EXT.
@@ -403,7 +408,7 @@
       *****************************************************************
        2001-KOH-CHK-SEC         SECTION.
       *
-           MOVE    1                   TO  FLG-OK
+           MOVE    1                   TO  FLG-OK2
            .
        2001-KOH-CHK-EXT.
            EXIT.

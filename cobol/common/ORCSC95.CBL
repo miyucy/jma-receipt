@@ -1212,9 +1212,14 @@
            MOVE    ZERO                TO  SPA-RJN-ERR
       *
       *    戏客でＨ１４ˉ１０の瘦副恃构がない箕
-           IF      AGECHK-RJNCHK   NOT =   ZERO
+           IF      AGECHK-RJNCHK       =   1
                MOVE    "1027"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-RJN-ERR
+           END-IF
+      *
+      *    戏客でＨ１４ˉ１０の瘦副恃构がない箕
+           IF      AGECHK-RJNCHK       =   2
+               MOVE    1                   TO  SPA-NAI-ROUFLG
            END-IF
       *
            .
@@ -2431,7 +2436,7 @@
                    END-IF
       *            ＣＴˇＭＲＩの箕、コ〖ド恃构
                    IF      TNS-SRYSYUKBN   =   "723"  OR  "724"
-                                               OR  "713"  OR  "714"
+                                           OR  "713"  OR  "714"
                        PERFORM 490111-CTMRT-HEN-SEC
                    END-IF
                END-IF

@@ -685,9 +685,9 @@
                    MOVE    "の算定に変更して下さい。"
                                        TO  SPA-ERRMSG(37:)
                WHEN    "K008"
-                   MOVE    "警告！７０歳に到達しました。"
+                   MOVE    "警告！７５歳に到達しました。"
                                        TO  SPA-ERRMSG
-                   MOVE    "老人保健を入力して下さい。"
+                   MOVE    "老人公費を入力して下さい。"
                                        TO  SPA-ERRMSG(29:)
                WHEN    "K020"
                    MOVE    "警告！再診料の受診回数が違います。"
