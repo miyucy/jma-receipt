@@ -30,7 +30,7 @@ echo "done"
 
 # copy data files
 echo -n "Copying data files..."
-for d in data doc etc form init lddef record screen scripts/allways ; do
+for d in data doc form init lddef record screen scripts/allways ; do
   if test -d "${SITESRCDIR}/${d}"; then
     mkdir -p "${SITEDIR}/${d}"
     chown orca.orca "${SITEDIR}/${d}"
@@ -38,5 +38,12 @@ for d in data doc etc form init lddef record screen scripts/allways ; do
       cp "${SITESRCDIR}/${d}/${f}" "${SITEDIR}/${d}"
     done
   fi
+done
+echo "done"
+
+#copy etc files
+echo -n "Copying etc files..."
+for f in `ls ${SITEETCDIR}`; do 
+  cp "${SITEETCDIR}/${f}" "${SYSCONFDIR}/${d}"
 done
 echo "done"
