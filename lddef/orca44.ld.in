@@ -5,6 +5,7 @@ textsize	400;
 
 bind	""		"OpenCOBOL"	"ORCGT01";
 bind	"T01"		"OpenCOBOL"	"ORCGT01";
+bind	"T02"		"OpenCOBOL"	"ORCGT02";
 bind	"T99"		"OpenCOBOL"	"ORCGT99";
 bind	"TERR"		"OpenCOBOL"	"ORCGTERR";
 bind	"TID1"		"OpenCOBOL"	"ORCGTID1";
@@ -17,10 +18,11 @@ data	{
 	spa	orcaspa;
 	window	{
 		T01;
+		T02;
 		T99;
 		TERR;
-                TID1;
-                TID2;
+		TID1;
+		TID2;
 	};
 };
 
