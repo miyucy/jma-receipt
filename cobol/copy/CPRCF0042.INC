@@ -39,6 +39,8 @@
                05  RECE042-RECESYUBETU     PIC  9(04).
       *保険者番号        
                05  RECE042-HKNJANUM       PIC  X(08).
+      *補助区分
+               05  RECE042-HOJOKBN         PIC  X(01).
       *適用開始年月日
                05  RECE042-TEKSTYMD        PIC  X(08). 
       *公費分離区分
