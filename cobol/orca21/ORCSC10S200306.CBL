@@ -1719,8 +1719,8 @@
       *
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  SPA-GMN-IDX
-           MOVE    ZERO                TO  SPA-FRST-LINE
-           MOVE    SPACE               TO  SPA-FRST-SRYCD
+      **** MOVE    ZERO                TO  SPA-FRST-LINE
+      **** MOVE    SPACE               TO  SPA-FRST-SRYCD
            MOVE    ZERO                TO  SPA-GAIRAISIN
       *
            MOVE    SPACE               TO  WRK-SRYCD
@@ -1749,9 +1749,9 @@
       *            療養担当手当発生
                    PERFORM 330123-RYOYOU-TEATE-SEC
       *
-                   MOVE    SPA-GMN-IDX         TO  SPA-FRST-LINE
-                   MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
-                                               TO  SPA-FRST-SRYCD
+      *********    MOVE    SPA-GMN-IDX         TO  SPA-FRST-LINE
+      *            MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
+      *********                                TO  SPA-FRST-SRYCD
                END-IF
                GO      TO      200-SYOSIN-SET-EXT
              END-IF
@@ -1763,11 +1763,11 @@
                   (FLG-SYONIKA-ARI     =   1   )
                PERFORM 3303-SYONIKA-SET-SEC
                IF      FLG-SYONIKA         =   1
-                   IF      SPA-GMN-IDX         >   ZERO
-                       MOVE    SPA-GMN-IDX         TO  SPA-FRST-LINE
-                       MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
-                                                   TO  SPA-FRST-SRYCD
-                   END-IF
+      ************ IF      SPA-GMN-IDX         >   ZERO
+      ***********      MOVE    SPA-GMN-IDX         TO  SPA-FRST-LINE
+      *                MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
+      *                                            TO  SPA-FRST-SRYCD
+      ************ END-IF
                    GO      TO      200-SYOSIN-SET-EXT
                END-IF
            END-IF
@@ -1829,11 +1829,11 @@
       *    指導料の自動発生
            PERFORM 33012-SIDOU-SYORI-SEC
       *
-           IF      SPA-GMN-IDX         >   ZERO
-               MOVE    SPA-GMN-IDX         TO  SPA-FRST-LINE
-               MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
-                                           TO  SPA-FRST-SRYCD
-           END-IF
+      **** IF      SPA-GMN-IDX         >   ZERO
+      *        MOVE    SPA-GMN-IDX         TO  SPA-FRST-LINE
+      *        MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
+      *                                    TO  SPA-FRST-SRYCD
+      **** END-IF
            .
        200-SYOSIN-SET-EXT.
            EXIT.
@@ -2193,7 +2193,7 @@
            MOVE    ZERO                TO  FLG-SYONIKA
       *
            MOVE    SPACE               TO  WRK-SRYCD
-      *     院外処方
+      *    院外処方
            IF      SPA-INGAIKBN        =   "1"
                IF      SPA-SYOSIN          =   1
       *            初診
@@ -2237,9 +2237,13 @@
       *        院外院内変更
                MOVE    SPACE               TO  LNK-SC92-KBN
                MOVE    WRK-IDX-IN          TO  LNK-SC92-GMN-IDX
+               MOVE    SPA-COM-TIMEFLG(WRK-IDX-IN)
+                                           TO  FLG-JIKAN
                INITIALIZE                      SPA-COM-TBLREC
                                                         (WRK-IDX-IN)
                MOVE    WRK-SRYCD           TO  SPA-COM-INPUTCD
+                                                        (WRK-IDX-IN)
+               MOVE    FLG-JIKAN           TO  SPA-COM-TIMEFLG
                                                         (WRK-IDX-IN)
            END-IF
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
