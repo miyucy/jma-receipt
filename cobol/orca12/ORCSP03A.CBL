@@ -699,6 +699,10 @@
                    MOVE    WRK-HONKA-REC (1)   TO  SPA-GMN-HONKZKKBN-G
                END-IF
            END-IF
+      *    自費の時、本人
+           IF      SPA-GMN-HKNNUM (1:2)    =   "98"
+               MOVE    WRK-HONKA-REC (1)   TO  SPA-GMN-HONKZKKBN-G
+           END-IF
       *
            INITIALIZE                      SPA-GMN-HONKZKKBN-LIST
            MOVE    ZERO                TO  SPA-GMN-HONKZK-MAX
