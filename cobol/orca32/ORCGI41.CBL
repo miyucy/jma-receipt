@@ -4182,7 +4182,8 @@
                MOVE    1               TO  FLG-NYUINACCT
            END-IF
       *
-           IF      FLG-NYUINACCT       =   ZERO
+           IF      (FLG-NYUINACCT       =   ZERO)   AND
+                   (NACCT-ZAISKBKBN     =   "1")
       *        ÂÐ¾Ý¤¢¤ê
                MOVE    1                   TO  FLG-SET
            END-IF
