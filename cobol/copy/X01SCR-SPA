@@ -29,7 +29,7 @@
       *    Ｘ９８画面用
            03  SPA-X98-MOTOPG              PIC X(08).
            03  SPA-X98GMN-AREA.
-               05  SPA-X98-GMN-MAX               PIC 9(03).
+               05  SPA-X98-GMN-MAX               PIC 9(04).
                05  SPA-X98-GMN-CUR               PIC 9(03).
                05  SPA-X98-NAI-SELNUM            PIC 9(03).
                05  SPA-X98-GMN-SELNUM            PIC X(03).
@@ -46,5 +46,6 @@
       *
                        11  SPA-X98-NAI-NO         PIC 9(03).
       *
+               05  SPA-X98-NEXT               PIC 9(04).
       *    他の画面
            03  SPA-X01SONOTA                  PIC X(30000). 
