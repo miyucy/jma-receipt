@@ -1,11 +1,10 @@
 tbl_wksryact {
-	HOSPNUM			    number(2,0);
+	HOSPID			    char(24);
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	SRYKA				char(2);
 	SRYYMD				char(8);
 	HKNCOMBI			number(4,0);
-	DOUJITSUKBN			char(1);
 	ZAINUM			        number(8,0);
 	RENNUM                          number(2,0);
 	DRCD				char(5);
@@ -13,7 +12,7 @@ tbl_wksryact {
 	SRYKBN			        char(2);
 	JIHIMONEYTOTAL			number(7,0);
 	SRYCD_1			        char(9);
-	SRYSURYO_1			number(10,5);
+	SRYSURYO_1			number(8,3);
 	SRYKAISU_1			number(3,0);
 	ZAIKAISU_1			number(8,0);
 	AUTOKBN_1			char(1);
@@ -23,13 +22,10 @@ tbl_wksryact {
 	INPUTCHI1_2			char(8);
 	INPUTCHI1_3			char(8);
 	INPUTCHI1_4			char(8);
-	INPUTCHI1_5			char(8);
-	INPUTCD_1  			char(54);
+	INPUTCD_1  			char(22);
 	JIHIMONEY_1			number(7,0);
-	INPUTKBN_1			char(1);
-	KANSURYO_1			number(10,5);
 	SRYCD_2			        char(9);
-	SRYSURYO_2			number(10,5);
+	SRYSURYO_2			number(8,3);
 	SRYKAISU_2			number(3,0);
 	ZAIKAISU_2			number(8,0);
 	AUTOKBN_2			char(1);
@@ -39,13 +35,10 @@ tbl_wksryact {
 	INPUTCHI2_2			char(8);
 	INPUTCHI2_3			char(8);
 	INPUTCHI2_4			char(8);
-	INPUTCHI2_5			char(8);
-	INPUTCD_2  			char(54);
+	INPUTCD_2  			char(22);
 	JIHIMONEY_2			number(7,0);
-	INPUTKBN_2			char(1);
-	KANSURYO_2			number(10,5);
 	SRYCD_3			        char(9);
-	SRYSURYO_3			number(10,5);
+	SRYSURYO_3			number(8,3);
 	SRYKAISU_3			number(3,0);
 	ZAIKAISU_3			number(8,0);
 	AUTOKBN_3			char(1);
@@ -55,13 +48,10 @@ tbl_wksryact {
 	INPUTCHI3_2			char(8);
 	INPUTCHI3_3			char(8);
 	INPUTCHI3_4			char(8);
-	INPUTCHI3_5			char(8);
-	INPUTCD_3  			char(54);
+	INPUTCD_3  			char(22);
 	JIHIMONEY_3			number(7,0);
-	INPUTKBN_3			char(1);
-	KANSURYO_3			number(10,5);
 	SRYCD_4			        char(9);
-	SRYSURYO_4			number(10,5);
+	SRYSURYO_4			number(8,3);
 	SRYKAISU_4			number(3,0);
 	ZAIKAISU_4			number(8,0);
 	AUTOKBN_4			char(1);
@@ -71,13 +61,10 @@ tbl_wksryact {
 	INPUTCHI4_2			char(8);
 	INPUTCHI4_3			char(8);
 	INPUTCHI4_4			char(8);
-	INPUTCHI4_5			char(8);
-	INPUTCD_4  			char(54);
+	INPUTCD_4  			char(22);
 	JIHIMONEY_4			number(7,0);
-	INPUTKBN_4			char(1);
-	KANSURYO_4			number(10,5);
 	SRYCD_5			        char(9);
-	SRYSURYO_5			number(10,5);
+	SRYSURYO_5			number(8,3);
 	SRYKAISU_5			number(3,0);
 	ZAIKAISU_5			number(8,0);
 	AUTOKBN_5			char(1);
@@ -87,11 +74,8 @@ tbl_wksryact {
 	INPUTCHI5_2			char(8);
 	INPUTCHI5_3			char(8);
 	INPUTCHI5_4			char(8);
-	INPUTCHI5_5			char(8);
-	INPUTCD_5  			char(54);
+	INPUTCD_5  			char(22);
 	JIHIMONEY_5			number(7,0);
-	INPUTKBN_5			char(1);
-	KANSURYO_5			number(10,5);
 	ZAITENKEI			number(8,0);
 	ZAIKAIKEI			number(7,0);
 	SYUTEN1                         number(7,0);
@@ -101,7 +85,6 @@ tbl_wksryact {
 	DOUJI_DENPNUM			number(7,0);
 	DOUJI_RENNUM			number(1,0);
 	CONTKBN  			char(1);
-	ZAIKBN  			number(3,0);
 	MOD_FLG				number(1,0);
 	KARTE_FLG			number(1,0);
 	KARTE_KEY			varchar(36);
@@ -112,7 +95,7 @@ tbl_wksryact {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPNUM,NYUGAIKBN,PTID,SRYKA,SRYYMD,HKNCOMBI,DOUJITSUKBN,ZAINUM,RENNUM;
+	HOSPID,NYUGAIKBN,PTID,SRYKA,SRYYMD,HKNCOMBI,ZAINUM,RENNUM;
 };
 
 path	key 	{
@@ -120,13 +103,12 @@ path	key 	{
 		DECLARE tbl_wksryact_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYMD      =   :SRYYMD
 			AND   HKNCOMBI    =   :HKNCOMBI
-			AND   DOUJITSUKBN   =   :DOUJITSUKBN
 			AND   ZAINUM      =   :ZAINUM
 			AND   RENNUM      =   :RENNUM
 		;
@@ -138,13 +120,12 @@ path	key2 	{
 		DECLARE tbl_wksryact_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYMD      =   :SRYYMD
 			AND   HKNCOMBI    =   :HKNCOMBI
-			AND   DOUJITSUKBN   =   :DOUJITSUKBN
 			ORDER   BY        ZAINUM,
                                           RENNUM
 		;
@@ -156,7 +137,7 @@ path	key3 	{
 		DECLARE tbl_wksryact_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -171,13 +152,12 @@ path	del11 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYMD      =   :SRYYMD
 			AND   HKNCOMBI    =   :HKNCOMBI
-			AND   DOUJITSUKBN   =   :DOUJITSUKBN
 		;
 	};
 };
@@ -186,7 +166,6 @@ path	all 	{
 		DECLARE tbl_wksryact_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -194,7 +173,7 @@ path	del12 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 		;
 	};
@@ -205,13 +184,12 @@ path	key4 	{
 		DECLARE tbl_wksryact_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			ORDER   BY        SRYYMD,
                                           SRYKA,
                                           HKNCOMBI,
-                                          DOUJITSUKBN,
                                           ZAINUM,
                                           RENNUM
 		;
@@ -222,13 +200,12 @@ path	key5 	{
 		DECLARE tbl_wksryact_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			ORDER   BY        PTID,
 		                          SRYYMD,
                                           SRYKA,
                                           HKNCOMBI,
-                                          DOUJITSUKBN,
                                           ZAINUM,
                                           RENNUM
 		;
@@ -239,8 +216,7 @@ path	all2	{
 		DECLARE tbl_wksryact_all2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   SRYYMD    LIKE   :SRYYMD
+			WHERE   SRYYMD    LIKE   :SRYYMD
 		;
 	};
 };
@@ -249,14 +225,13 @@ path	key6 	{
 		DECLARE tbl_wksryact_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
-                        AND   MOD_FLG     <>   '0'
+                        AND   MOD_FLG     =   '1'
 			ORDER   BY        SRYYMD,
                                           SRYKA,
                                           HKNCOMBI,
-                                          DOUJITSUKBN,
                                           ZAINUM,
                                           RENNUM
 		;
@@ -267,212 +242,15 @@ path	key7	{
 		DECLARE tbl_wksryact_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD      =   :SRYYMD
                         AND   MOD_FLG     <>  '0'
 			ORDER   BY        SRYKA,
                                           HKNCOMBI,
-                                          DOUJITSUKBN,
                                           ZAINUM,
                                           RENNUM
-		;
-	};
-};
-path	key8	{
-	DBSELECT	{
-		DECLARE tbl_wksryact_key8_csr CURSOR FOR
-		SELECT distinct a.*,b.ptnum
-		FROM tbl_wksryact a,tbl_ptnum b
-			WHERE  a.HOSPNUM      =   :HOSPNUM
-			AND    a.NYUGAIKBN   =   :NYUGAIKBN
-			AND    a.HOSPNUM      =   b.HOSPNUM
-                        AND    a.PTID        =   b.PTID
-			ORDER   BY        b.PTNUM,
-		                          a.SRYYMD,
-                                          a.SRYKA,
-                                          a.HKNCOMBI,
-                                          a.DOUJITSUKBN,
-                                          a.ZAINUM,
-                                          a.RENNUM
-		;
-	};
-};
-path	key9	{
-	DBSELECT	{
-		DECLARE tbl_wksryact_key9_csr CURSOR FOR
-		SELECT distinct a.*,b.ptnum
-		FROM tbl_wksryact a,tbl_ptnum b
-			WHERE  a.HOSPNUM      =   :HOSPNUM
-			AND    a.NYUGAIKBN   =   :NYUGAIKBN
-			AND    a.HOSPNUM      =   b.HOSPNUM
-                        AND    a.PTID        =   b.PTID
-			ORDER   BY        a.CREYMD,
-			                  a.UPHMS,
-                                          b.PTNUM,
-		                          a.SRYYMD,
-                                          a.SRYKA,
-                                          a.HKNCOMBI,
-                                          a.DOUJITSUKBN,
-                                          a.ZAINUM,
-                                          a.RENNUM
-		;
-	};
-};
-
-path	key10 	{
-	DBSELECT	{
-		DECLARE tbl_wksryact_key10_csr CURSOR FOR
-		SELECT *
-		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			ORDER   BY        CREYMD,
-			                  UPHMS,
-		                          SRYYMD,
-                                          SRYKA,
-                                          HKNCOMBI,
-                                          DOUJITSUKBN,
-                                          ZAINUM,
-                                          RENNUM
-		;
-	};
-};
-
-path	key11	{
-	DBSELECT	{
-		DECLARE tbl_wksryact_key11_csr CURSOR FOR
-		SELECT distinct a.*,b.ptnum
-		FROM tbl_wksryact a,tbl_ptnum b
-			WHERE  a.HOSPNUM      =   :HOSPNUM
-			AND    a.NYUGAIKBN    =   :NYUGAIKBN
-			AND    a.SRYYMD       =   :SRYYMD
-			AND    a.HOSPNUM      =   b.HOSPNUM
-                        AND    a.PTID         =   b.PTID
-			ORDER   BY        b.PTNUM,
-                                          a.SRYKA,
-                                          a.HKNCOMBI,
-                                          a.DOUJITSUKBN,
-                                          a.ZAINUM,
-                                          a.RENNUM
-		;
-	};
-};
-
-path	key12 	{
-	DBSELECT	{
-		DECLARE tbl_wksryact_key12_csr CURSOR FOR
-		SELECT *
-		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			AND   SRYKA       =   :SRYKA
-			AND   SRYYMD      =   :SRYYMD
-			AND   KARTE_KEY   =   :KARTE_KEY
-			ORDER   BY        ZAINUM,
-                                          RENNUM
-		;
-	};
-};
-
-path	key13 	{
-	DBSELECT	{
-		DECLARE tbl_wksryact_key13_csr CURSOR FOR
-		SELECT *
-		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			AND   SRYKA       =   :SRYKA
-			AND   SRYYMD      =   :SRYYMD
-			ORDER   BY        HKNCOMBI,
-                                          DOUJITSUKBN,
-				          ZAINUM,
-                                          RENNUM
-		;
-	};
-};
-path	del13 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			AND   SRYKA       =   :SRYKA
-			AND   SRYYMD      =   :SRYYMD
-			AND   KARTE_KEY   =   :KARTE_KEY
-		;
-	};
-};
-
-path	key14 	{
-	DBSELECT	{
-		DECLARE tbl_wksryact_key14_csr CURSOR FOR
-		SELECT distinct a.*,b.ptnum
-		FROM tbl_wksryact a,tbl_ptnum b
-			WHERE  a.HOSPNUM      =   :HOSPNUM
-			AND    a.NYUGAIKBN    =   :NYUGAIKBN
-			AND    a.SRYYMD       =   :SRYYMD
-			AND    a.HOSPNUM      =   b.HOSPNUM
-                        AND    a.PTID         =   b.PTID
-			ORDER   BY        b.PTNUM,
-                                          a.SRYKA,
-                                          a.HKNCOMBI,
-                                          a.DOUJITSUKBN,
-                                          a.ZAINUM,
-                                          a.RENNUM
-		;
-	};
-};
-
-path	key15 	{
-	DBSELECT	{
-		DECLARE tbl_wksryact_key15_csr CURSOR FOR
-		SELECT *
-		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			AND   SRYYMD      =   :SRYYMD
-			ORDER   BY        SRYKA,
-					  HKNCOMBI,
-                                          DOUJITSUKBN,
-				          ZAINUM,
-                                          RENNUM
-		;
-	};
-};
-
-path	key16 	{
-	DBSELECT	{
-		DECLARE tbl_wksryact_key16_csr CURSOR FOR
-		SELECT *
-		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			AND   SRYKA       =   :SRYKA
-			AND   SRYYMD      =   :SRYYMD
-			AND   HKNCOMBI    =   :HKNCOMBI
-			AND   DOUJITSUKBN   =   :DOUJITSUKBN
-			ORDER   BY        ZAINUM   DESC,
-                                          RENNUM
-		;
-	};
-};
-
-path	del14 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND  (SRYYMD      >=   :SRYYMD)
-			AND  (SRYYMD      <=   :UPYMD )
 		;
 	};
 };
