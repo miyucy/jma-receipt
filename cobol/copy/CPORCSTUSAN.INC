@@ -48,5 +48,16 @@
                05  STUSAN-TUSAN-R  REDEFINES   STUSAN-NISSU-VAL.
                    07  STUSAN-TUSAN-OCC    OCCURS  5.
                        09  STUSAN-NISSU    PIC 9(08).
+               05  STUSAN-RRK-VAL.
+      *            テーブルオーバーフラグ
+                   07  STUSAN-RRK-FLG-OVER     PIC 9(01).
+                   07  STUSAN-RRK-CNT      PIC 9(05).
+                   07  STUSAN-RRK-OCC      OCCURS  50.
+                       09  STUSAN-RRK-JTIKBN   PIC X(01).
+                       09  STUSAN-RRK-NYUINYMD PIC X(08).
+                       09  STUSAN-RRK-TAIINYMD PIC X(08).
+      *                一般入院料で入院していた日数
+      *                （歴作成データの場合は対象日数）
+                       09  STUSAN-RRK-NISSU    PIC 9(08).
       *  リターンコード
            03  STUSAN-RC               PIC 9(02).

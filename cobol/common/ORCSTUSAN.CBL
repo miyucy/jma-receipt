@@ -58,6 +58,7 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX1                        PIC 9(05).
+           03  IDX2                        PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -80,6 +81,7 @@
            03  WRK-KEISANYMD               PIC X(08).
            03  WRK-STIDX                   PIC 9(02).
            03  WRK-EDIDX                   PIC 9(02).
+           03  WRK-ACCT-NISSU              PIC 9(08).
       *
       *    患者入院履歴ワーク
        01  WKPTNYUINRRK-REC.
@@ -163,6 +165,18 @@
            DISPLAY "STUSAN-NISSU03 = " STUSAN-NISSU03
            DISPLAY "STUSAN-NISSU04 = " STUSAN-NISSU04
            DISPLAY "STUSAN-NISSU05 = " STUSAN-NISSU05
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   STUSAN-RRK-CNT )
+               DISPLAY "STUSAN-RRK-JTIKBN (" IDX1 ")= "
+                        STUSAN-RRK-JTIKBN (IDX1)
+               DISPLAY "STUSAN-RRK-NYUINYMD (" IDX1 ")= "
+                        STUSAN-RRK-NYUINYMD (IDX1)
+               DISPLAY "STUSAN-RRK-TAIINYMD (" IDX1 ")= "
+                        STUSAN-RRK-TAIINYMD (IDX1)
+               DISPLAY "STUSAN-RRK-NISSU (" IDX1 ")= "
+                        STUSAN-RRK-NISSU (IDX1)
+           END-PERFORM
       *
            .
        000-PROC-EXT.
@@ -254,6 +268,7 @@
                END-IF
            END-IF
       *
+           PERFORM 2100-RRK-DATA-SET-SEC
       *
            .
        2100-KONKAI-NYUIN-TUSAN-EXT.
@@ -338,6 +353,8 @@
            MOVE    WRK-STYMD           TO  WRK-STSRYYM
            MOVE    WRK-EDYMD           TO  WRK-EDSRYYM
       *
+           MOVE    ZERO                TO  WRK-ACCT-NISSU
+      *
            PERFORM UNTIL ( WRK-STSRYYM >   WRK-EDSRYYM )
       *
                PERFORM 2121-NYUINACCT-SEL-SEC
@@ -353,6 +370,11 @@
                MOVE    WRK-KEISANYMD   TO  WRK-STSRYYM
       *
            END-PERFORM
+      *
+           COMPUTE STUSAN-NISSU04
+               =   STUSAN-NISSU04 +    WRK-ACCT-NISSU
+           COMPUTE STUSAN-NISSU05
+               =   STUSAN-NISSU05 +    WRK-ACCT-NISSU
       *
            .
        2120-NYUINKIKAN-SEL-EXT.
@@ -488,10 +510,8 @@
            PERFORM VARYING IDX1    FROM    WRK-STIDX   BY  1
                    UNTIL ( IDX1    >       WRK-EDIDX )
                IF    ( NACCT-DAY (IDX1)    >   ZERO )
-                   COMPUTE STUSAN-NISSU04
-                       =   STUSAN-NISSU04 +    1
-                   COMPUTE STUSAN-NISSU05
-                       =   STUSAN-NISSU05 +    1
+                   COMPUTE WRK-ACCT-NISSU
+                       =   WRK-ACCT-NISSU +    1
                END-IF
            END-PERFORM
       *
@@ -555,6 +575,9 @@
                    GO  TO  2100-KAKO-NYUIN-TUSAN-EXT
                END-IF
       *
+      *        入院履歴データ設定処理
+               PERFORM 2100-RRK-DATA-SET-SEC
+      *
                MOVE    "PTNYUINRRK-KEY16"  TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
                IF    ( FLG-DBRC            =   1 )
@@ -567,6 +590,33 @@
       *
            .
        2100-KAKO-NYUIN-TUSAN-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院履歴データ設定処理
+      *****************************************************************
+       2100-RRK-DATA-SET-SEC           SECTION.
+      *
+           IF    ( STUSAN-RRK-CNT     >=  50 )
+               MOVE    1               TO  STUSAN-RRK-FLG-OVER
+               GO  TO  2100-RRK-DATA-SET-EXT
+           END-IF
+      *
+           COMPUTE STUSAN-RRK-CNT
+               =   STUSAN-RRK-CNT      +   1
+           MOVE    STUSAN-RRK-CNT      TO  IDX2
+      *
+           MOVE    PTNYUINRRK-JTIKBN   TO  STUSAN-RRK-JTIKBN   (IDX2)
+           MOVE    PTNYUINRRK-NYUINYMD TO  STUSAN-RRK-NYUINYMD (IDX2)
+           MOVE    PTNYUINRRK-TAIINYMD TO  STUSAN-RRK-TAIINYMD (IDX2)
+           IF    ( PTNYUINRRK-JTIKBN   =   "5" OR  "6" )
+               MOVE    PTNYUINRRK-TAISYONISSU
+                                       TO  STUSAN-RRK-NISSU    (IDX2)
+           ELSE
+               MOVE    WRK-ACCT-NISSU  TO  STUSAN-RRK-NISSU    (IDX2)
+           END-IF
+      *
+           .
+       2100-RRK-DATA-SET-EXT.
            EXIT.
       *****************************************************************
       *    日付チェック・編集処理
