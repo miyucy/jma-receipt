@@ -54,6 +54,8 @@
       *                                     検査等実施判断情報のセット
       *                                     各種番号等情報のセット
       *  01.00.20    NACL-門脇    03/10/02  東京都地方公費対応
+      *  01.00.21    NACL-門脇    03/11/26  自費レセプトの自費分
+      *                                     摘要欄記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3368,6 +3370,22 @@
                MOVE    RECE65-SRYYM       TO    WK-TAIHI-SRYYM
                MOVE    WK-TAIHI-DAY       TO    WK-TAIHI-SRYD
                PERFORM    TENSU-TBL-SEC
+      *
+               IF      RECE62-RECESYUBETU  =  8888
+                 IF      SRY-SRYKBN    =     "95" OR "96"
+                   IF      SRY-SRYCD(IDX2)(1:3)  =  "095" OR "096"
+                     IF      SRY-SRYCD(IDX2)(1:5)  =  "09500" OR "09600"
+                                                  OR  "09591" OR "09691"
+                                                  OR  "09592" OR "09692"
+                                                  OR  "09593" OR "09693"
+                          CONTINUE
+                     ELSE
+                          ADD     TNS-TEN    TO   RECE64-SYUTEN1
+                     END-IF
+                   END-IF
+                 END-IF
+               END-IF
+      *
                IF      TNS-SRYKBN         =     "80"
                    IF  TNS-NYUTENTTLKBN   =     130
                        MOVE   "13"        TO    RECE64-SRYKBN

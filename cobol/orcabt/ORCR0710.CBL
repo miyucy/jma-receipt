@@ -55,6 +55,8 @@
       *                                     ０：請求しないとして更新する
       *  01.00.21    NACL-藤原    03/08/05  月内で保険者が変わったときの
       *                                     件数の集計方法を変更する
+      *  01.00.22    NACL-門脇    03/11/26  自費レセプトの自費分
+      *                                     摘要欄記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4290,7 +4292,22 @@
                                                 MCPDATA-REC
       *
                IF      MCP-RC     =   ZERO
-                   ADD     1                 TO  CNT-OUT 
+                   IF      RECE62-RECESYUBETU       =   8888
+                   AND     RECE62-TOTALTEN (1)      =   ZERO
+                   AND     RECE62-TOTALTEN (2)      =   ZERO 
+                   AND     RECE62-TOTALTEN (3)      =   ZERO 
+                   AND     RECE62-TOTALTEN (4)      =   ZERO
+                   AND     RECE62-TOTALTEN (5)      =   ZERO
+                   AND     RECE62-SHOKUJIRYOYOHI(1) =   ZERO
+                   AND     RECE62-SHOKUJIRYOYOHI(2) =   ZERO
+                   AND     RECE62-SHOKUJIRYOYOHI(3) =   ZERO
+                   AND     RECE62-SHOKUJIRYOYOHI(4) =   ZERO
+                   AND     RECE62-SHOKUJIRYOYOHI(5) =   ZERO
+                   AND     CNT-RECE661              =   ZERO
+                       CONTINUE
+                   ELSE
+                       ADD     1                 TO  CNT-OUT
+                   END-IF
                ELSE 
                    DISPLAY "ORCR0710 RECE08=" MCP-RC " " RECE08-KEY 
                    STRING
@@ -4758,6 +4775,7 @@
                                                =   ZERO
                    AND     RECE62-SHOKUJIRYOYOHI (5)
                                                =   ZERO
+                   AND     RECE62-RECESYUBETU  NOT =  8888
                        GO  TO  900-RECE62-READ-SEC
                    ELSE    
                        ADD     1                   TO  CNT-RECE62
