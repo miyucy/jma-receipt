@@ -7195,7 +7195,10 @@
                MOVE    SPACE           TO  WRK-COM-KZMFLG
                                                     (LNK-ORCSC-KEI-IDX)
            END-IF
-           MOVE    SPA-KIDCD           TO  WRK-KIDCD
+           IF     (SPA-KIDCD       NOT =   SPACE )  AND
+                  (WRK-KIDCD           =   SPACE )
+               MOVE    SPA-KIDCD           TO  WRK-KIDCD
+           END-IF
       *
            MOVE    ZERO                TO  WRK-MAX
       *!   INITIALIZE                  WRK-HZN-GMN-AREA
