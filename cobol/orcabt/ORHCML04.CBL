@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    NACL-森脇    03/03/10  TERMIDの領域指定なし
+      *  01.01.02    NACL-森脇    03/07/14  帳票をHCML03→HCML04に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -56,7 +57,10 @@
                                    BY         //TENSUERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *     
-           COPY    "HCML03.INC".
+      *----(01.01.02)--UPD-START---
+      *     COPY    "HCML03.INC".
+           COPY    "HCML04.INC".
+      *----(01.01.02)--UPD-END-----
       *
       *    スパ領域
        01  STS-AREA.
@@ -96,7 +100,9 @@
            03  WRK-TENSUERR          PIC X(200).        
       *
            03  WRK-LNKYMD            PIC X(10).
-           03  WRK-MSTYMDH           PIC X(10).
+      *----(01.01.02)--UPD-START---
+           03  WRK-MSTYMDH           PIC X(22).
+      *----(01.01.02)--UPD-END-----
       *     
            03  WRK-SYSYMD.
                05  WRK-SYSYY         PIC 9(04).
@@ -118,12 +124,17 @@
       *
            03  WRK-PAGE              PIC ZZ,ZZ9.
            03  WRK-TEN               PIC Z,ZZZ,ZZ9.99.
-           03  WRK-JGNCNT            PIC ZZ9.
-           03  WRK-KGNAGE            PIC Z9.
-           03  WRK-JGNAGE            PIC Z9.  
+      *----(01.01.02)--ADD-START---
+           03  WRK-ZZ9               PIC ZZ9.
+      *----(01.01.02)--ADD-END-----
       *
            03  WRK-SRYCDSTR          PIC X(09).
            03  WRK-SRYCDEND          PIC X(09).
+      *
+      *----(01.01.02)--ADD-START---
+           03  WRK-MAE-INPUT           PIC X(200).
+           03  WRK-OUT-INPUT           PIC X(200).
+      *----(01.01.02)--ADD-END-----
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -161,6 +172,11 @@
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *----(01.01.02)--ADD-START---
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *----(01.01.02)--ADD-END-----
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -236,7 +252,12 @@
            MOVE    LNK-PRTKANRI-SKYYMD
                                     TO  WRK-LNKYMD
            PERFORM 831-YMDCONV12-SEC
-           MOVE    WRK-LNKYMD       TO  WRK-MSTYMDH
+      *----(01.01.02)--UPD-START---
+      *     MOVE    WRK-LNKYMD       TO  WRK-MSTYMDH
+           MOVE    WRK-LNKYMD       TO  WRK-MAE-INPUT
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-OUT-INPUT    TO  WRK-MSTYMDH
+      *----(01.01.02)--UPD-END-----
       *     
            MOVE    "TENSUERR"       TO  TENSUERR-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
@@ -341,13 +362,13 @@
            MOVE    ZERO                TO  CNT-LINE
            ADD     1                   TO  CNT-PAGE
       *
-           INITIALIZE                      HCML03
-           MOVE    SPACE               TO  HCML03
+           INITIALIZE                      HCML04
+           MOVE    SPACE               TO  HCML04
       *
-           MOVE    SYS-1001-HOSPNAME   TO  HCML03-HOSPNAME
-           MOVE    WRK-MSTYMDH         TO  HCML03-MSTYMD
+           MOVE    SYS-1001-HOSPNAME   TO  HCML04-HOSPNAME
+           MOVE    WRK-MSTYMDH         TO  HCML04-MSTYMD
            MOVE    CNT-PAGE            TO  WRK-PAGE
-           MOVE    WRK-PAGE            TO  HCML03-PAGE
+           MOVE    WRK-PAGE            TO  HCML04-PAGE
       *
            .
        310-HEAD-HEN-EXT.
@@ -365,103 +386,99 @@
       *
                ADD     1                  TO  CNT-LINE
       *
+      *----(01.01.02)--UPD-START---
+      *        診療行為コード
+               MOVE    TNS-SRYCD          TO  HCML04-SRYCD(CNT-LINE)
+      *        品名
+               MOVE    TNS-NAME           TO  HCML04-NAME(CNT-LINE)
+      *        金額
                MOVE    TNS-TEN            TO  WRK-TEN
-               MOVE    WRK-TEN            TO  HCML03-TEN(CNT-LINE)
-               IF      TNS-JGNCNT  NOT  =  "000"
-                   MOVE    TNS-JGNCNT     TO  WRK-JGNCNT
-                   MOVE    WRK-JGNCNT     TO  HCML03-JGNCNT(CNT-LINE)
-               END-IF
-      *
-               MOVE    SPACE              TO  WRK-CDKBN           
-      *       
-               IF  TNS-CDKBN-KBN = "-"
-                   MOVE    SPACE          TO  WRK-CDKBN-KBN
-               ELSE
-                   MOVE    TNS-CDKBN-KBN  TO  WRK-CDKBN-KBN
-               END-IF
-               MOVE    TNS-CDKBN-KBNNUM   TO  WRK-CDKBN-KBNNUM
-               MOVE    "-"                TO  WRK-CDKBN-HI1
-               MOVE    TNS-CDKBN-KBNNUM-EDA   TO  WRK-CDKBN-KBNNUM-EDA
-               MOVE    "-"                TO  WRK-CDKBN-HI2
-               MOVE    TNS-CDKBN-KOUBAN   TO  WRK-CDKBN-KOUBAN
-      *
-               MOVE    WRK-CDKBN          TO  HCML03-CDKBN(CNT-LINE)
-      *
-               IF  TNS-KGNAGE  NOT  =  "00"
-                   MOVE    TNS-KGNAGE     TO  WRK-KGNAGE
-                   MOVE    WRK-KGNAGE     TO  HCML03-KGNAGE(CNT-LINE)
-               END-IF
-               IF  TNS-JGNAGE  NOT  =  "00"
-                   MOVE    "-"            TO  HCML03-NYOROAGE(CNT-LINE)
-                   IF  TNS-JGNAGE  =  "AA"
-                       MOVE    TNS-JGNAGE TO  HCML03-JGNAGE(CNT-LINE)
-                   ELSE
-                       MOVE    TNS-JGNAGE TO  WRK-JGNAGE
-                       MOVE    WRK-JGNAGE TO  HCML03-JGNAGE(CNT-LINE)
-                   END-IF
-               END-IF
-      *
-               MOVE    TNS-SRYCD          TO  HCML03-SRYCD(CNT-LINE)
-               MOVE    TNS-NAME           TO  HCML03-NAME(CNT-LINE)
-               MOVE    TNS-TANINAME       TO  HCML03-TANINAME(CNT-LINE)
-               MOVE    TNS-YUKOSTYMD      TO  HCML03-YUKOSTYMD(CNT-LINE)
-               MOVE    TNS-YUKOEDYMD      TO  HCML03-YUKOEDYMD(CNT-LINE)
-               MOVE    "-"                TO  HCML03-NYORO(CNT-LINE)
-      *
-               MOVE    TNS-SRYKBN         TO  HCML03-SRYKBN(CNT-LINE)
-               MOVE    TNS-SRYSYUKBN      TO  HCML03-SRYSYUKBN(CNT-LINE)
-      *
-               IF      TNS-TENSIKIBETU  NOT  =  "0"
-                     MOVE TNS-TENSIKIBETU TO 
-                                          HCML03-TENSIKIBETU(CNT-LINE)
-               END-IF
-      *
-               IF      TNS-DATAKBN  NOT  =  "0"
-                   MOVE    TNS-DATAKBN  TO  HCML03-DATAKBN(CNT-LINE)
-               END-IF
-      *
+               MOVE    WRK-TEN            TO  HCML04-TEN(CNT-LINE)
+      *        保険適用
                IF      TNS-HKNTEKKBN  NOT  =  "1"
-                   MOVE TNS-HKNTEKKBN  TO  HCML03-HKNTEKKBN(CNT-LINE)
+                   MOVE TNS-HKNTEKKBN     TO  HCML04-HKNTEK(CNT-LINE)
                END-IF
       *
-               IF      TNS-NYUGAITEKKBN  NOT  =  "0"
-                 MOVE TNS-NYUGAITEKKBN TO HCML03-NYUGAITEKKBN(CNT-LINE)
+      *        点数欄集計先識別（外来）
+               MOVE    TNS-GAITENTTLKBN   TO  WRK-ZZ9
+               MOVE    WRK-ZZ9            TO  HCML04-GAITEN (CNT-LINE)
+      *        点数欄集計先識別（入院）
+               MOVE    TNS-NYUTENTTLKBN   TO  WRK-ZZ9
+               MOVE    WRK-ZZ9            TO  HCML04-NYUTEN (CNT-LINE)
+      *
+               IF      IDX     =   1
+      *            朝
+                   IF      TNS-SSTKIJUNCD(1)  =   1
+                       MOVE  "○"    TO  HCML04-FUKUYOU1 (CNT-LINE)
+                   END-IF
+      *            昼
+                   IF      TNS-SSTKIJUNCD(2)  =   1
+                       MOVE  "○"    TO  HCML04-FUKUYOU2 (CNT-LINE)
+                   END-IF
+      *            夕
+                   IF      TNS-SSTKIJUNCD(3)  =   1
+                       MOVE  "○"    TO  HCML04-FUKUYOU3 (CNT-LINE)
+                   END-IF
+      *            寝前
+                   IF      TNS-SSTKIJUNCD(4)  =   1
+                       MOVE  "○"    TO  HCML04-FUKUYOU4 (CNT-LINE)
+                   END-IF
+               ELSE
+                   IF      IDX     =   2
+      *                部位区分
+                       EVALUATE    TNS-BUIKBN
+                       WHEN    "1"
+                           MOVE    "頭部"     TO  HCML04-BUI (CNT-LINE)
+                       WHEN    "2"
+                           MOVE    "躯幹"     TO  HCML04-BUI (CNT-LINE)
+                       WHEN    "3"
+                           MOVE    "四肢"     TO  HCML04-BUI (CNT-LINE)
+                       WHEN    "5"
+                           MOVE    "胸部"     TO  HCML04-BUI (CNT-LINE)
+                       WHEN    "6"
+                           MOVE    "腹部"     TO  HCML04-BUI (CNT-LINE)
+                       WHEN    "7"
+                           MOVE    "脊椎"     TO  HCML04-BUI (CNT-LINE)
+                       WHEN    "8"
+                           MOVE    "消化管"   TO  HCML04-BUI (CNT-LINE)
+                       WHEN    "0"
+                           MOVE    "その他"   TO  HCML04-BUI (CNT-LINE)
+                       END-EVALUATE
+                   END-IF
+      *
+      *            位置１
+                   MOVE  TNS-SSTKIJUNCD(1)    TO  WRK-ZZ9
+                   MOVE  WRK-ZZ9              TO  HCML04-KRM1 (CNT-LINE)
+      *            桁数１
+                   MOVE  TNS-SSTKIJUNCD(2)    TO  WRK-ZZ9
+                   MOVE  WRK-ZZ9              TO  HCML04-KET1 (CNT-LINE)
+      *            位置２
+                   MOVE  TNS-SSTKIJUNCD(3)    TO  WRK-ZZ9
+                   MOVE  WRK-ZZ9              TO  HCML04-KRM2 (CNT-LINE)
+      *            桁数２
+                   MOVE  TNS-SSTKIJUNCD(4)    TO  WRK-ZZ9
+                   MOVE  WRK-ZZ9              TO  HCML04-KET2 (CNT-LINE)
+      *            位置３
+                   MOVE  TNS-SSTKIJUNCD(5)    TO  WRK-ZZ9
+                   MOVE  WRK-ZZ9              TO  HCML04-KRM3 (CNT-LINE)
+      *            桁数３
+                   MOVE  TNS-SSTKIJUNCD(6)    TO  WRK-ZZ9
+                   MOVE  WRK-ZZ9              TO  HCML04-KET3 (CNT-LINE)
+      *            位置４
+                   MOVE  TNS-SSTKIJUNCD(7)    TO  WRK-ZZ9
+                   MOVE  WRK-ZZ9              TO  HCML04-KRM4 (CNT-LINE)
+      *            桁数４
+                   MOVE  TNS-SSTKIJUNCD(8)    TO  WRK-ZZ9
+                   MOVE  WRK-ZZ9              TO  HCML04-KET4 (CNT-LINE)
                END-IF
       *
-               IF      TNS-ROUTEKKBN  NOT  =  "0"
-                   MOVE   TNS-ROUTEKKBN  TO  HCML03-ROUTEKKBN(CNT-LINE)
-               END-IF
-      *
-               IF      TNS-HOSPSRYKBN  NOT  =  "0"
-                   MOVE  TNS-HOSPSRYKBN  TO  HCML03-HOSPSRYKBN(CNT-LINE)
-               END-IF
-      *
-               IF      TNS-HOUKNSKBN  NOT  =  "00"
-                   MOVE  TNS-HOUKNSKBN  TO  HCML03-HOUKNSKBN(CNT-LINE)
-               END-IF
-      *
-               IF      TNS-TSUSOKUAGE  NOT  =  "0"
-                   MOVE  TNS-TSUSOKUAGE  TO  HCML03-TSUSOKUAGE(CNT-LINE)
-               END-IF
-      *
-               IF      TNS-KNSJISGRPKBN  NOT  =  "00"
-                   MOVE TNS-KNSJISGRPKBN  TO 
-                                          HCML03-KNSJISGRPKBN(CNT-LINE)
-               END-IF
-      *
-               IF      TNS-GAIKANRIKBN  NOT  =  "0"
-                   MOVE TNS-GAIKANRIKBN TO HCML03-GAIKANRIKBN(CNT-LINE)
-               END-IF
-      *
-               IF      TNS-BUIKBN  NOT  =  "0"
-                   MOVE  TNS-BUIKBN  TO  HCML03-BUIKBN(CNT-LINE)
-               END-IF
-      *
-               IF      TNS-SANTEIRRKKBN  NOT  =  "0"
-                   MOVE TNS-SANTEIRRKKBN  TO
-                                          HCML03-SANTEIRRKKBN(CNT-LINE)
-               END-IF
-      *
+      *        有効期間開始日
+               MOVE    TNS-YUKOSTYMD      TO  HCML04-YUKOSTYMD(CNT-LINE)
+      *        "-"
+               MOVE    "-"                TO  HCML04-NYORO(CNT-LINE)
+      *        有効期間終了日
+               MOVE    TNS-YUKOEDYMD      TO  HCML04-YUKOEDYMD(CNT-LINE)
+      *-----(01.01.02)--UPD-END-----
                PERFORM 900-DBFETCH-SEC
       *
            END-PERFORM
@@ -490,10 +507,12 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE    "HCML03"            TO  SPRT-PRTID
+      *----(01.01.02)--UPD-END-----
+           MOVE    "HCML04.red"        TO  SPRT-PRTID
+      *----(01.01.02)--UPD-END-----
            MOVE    "点数マスタ一覧表・コメント"
                                        TO  SPRT-TITLE
-           MOVE    HCML03              TO  SPRT-PRTDATA
+           MOVE    HCML04              TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
@@ -570,6 +589,30 @@
        300-END-EXT.
            EXIT.
       *
+      *----(01.01.02)--ADD-START---
+      *****************************************************************
+      *    全角変換処理
+      *****************************************************************
+       800-HENKAN-SEC                 SECTION.
+      *
+           INITIALIZE                  WRK-OUT-INPUT
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF      KANACHK-RC          =   ZERO
+               MOVE    KANACHK-OUT-INPUT
+                                           TO  WRK-OUT-INPUT
+           ELSE
+               MOVE    WRK-MAE-INPUT       TO  WRK-OUT-INPUT
+           END-IF
+      *
+           .
+       800-HENKAN-EXT.
+           EXIT.
+      *----(01.01.02)--ADD-END-----
       *****************************************************************
       *   和暦年月日→西暦年月日（機能１２）
       *****************************************************************

@@ -53,7 +53,6 @@ FORM_files = \
               HCML01.dia \
               HCML02.dia \
               HCML03.dia \
-              HCML04.dia \
               HCML05.dia \
               HCML06.dia \
               HCML07.red \
@@ -146,6 +145,7 @@ FORM_files = \
               HCM16.red \
               HCMZ001.red \
               HCM33.red \
+              HCML04.red \
 
 all:   
 
