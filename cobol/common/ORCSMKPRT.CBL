@@ -172,6 +172,9 @@
            CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
       *
       *    SHELL
+           MOVE    SPACE               TO  SHELLTBL
+           INITIALIZE                      SHELLTBL
+      *
            MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
       *    DIA
            MOVE    MKPASS-OT-02        TO  SHELLTBL-ARG1
@@ -219,6 +222,9 @@
            CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
       *
       *    SHELL
+           MOVE    SPACE               TO  SHELLTBL
+           INITIALIZE                      SHELLTBL
+      *
            MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
       *    MONP
            MOVE    SHELL-MONPE         TO  SHELLTBL-ARG1
