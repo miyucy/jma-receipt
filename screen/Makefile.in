@@ -225,7 +225,8 @@ EXTRA_DIST = \
              ZID1.glade \
              ZID2.glade \
              P02X.glade \
-             U02X.glade
+             U02X.glade \
+             W15.glade
 
 
 all:   
