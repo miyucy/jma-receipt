@@ -29,7 +29,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-藤原    02/11/13  更新用ファイルの編集の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -681,9 +680,7 @@
       *****************************************************************
        20013-UPD-FILE-HENSYU-SEC         SECTION.
       *
-      *****MOVE    RECE10-REC          TO  RECE10X-REC
-           MOVE    SPACE               TO  RECE10X-REC
-           MOVE    RECE10-KEY          TO  RECE10X-KEY
+           MOVE    RECE10-REC          TO  RECE10X-REC
            WRITE   RECE10X-REC
            ADD     1                   TO  CNT-UPDFILE
            .
