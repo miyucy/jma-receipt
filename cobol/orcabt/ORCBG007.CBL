@@ -159,6 +159,10 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
+      *    患者情報
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
+      *
       *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
@@ -436,6 +440,9 @@
       *
       *    処理対象患者ファイル出力処理
            PERFORM 2101-BG007-OUT-SEC
+           IF    ( FLG-END     NOT =   ZERO )
+               GO  TO  210-GAI-ALL-HEN-EXT
+           END-IF
       *
       *    会計カード編集処理
            PERFORM 2101-KAIKEI-HEN-SEC
@@ -475,8 +482,30 @@
       *
            PERFORM UNTIL ( FLG-SRYACCT NOT =   ZERO )
       *
-               MOVE    ACCT-PTID   TO  BG00701-PTID
-               WRITE   BG00701-REC
+      *        患者情報読み込み（テスト患者チェック）
+               INITIALIZE              PTINF-REC
+               MOVE    SPA-HOSPID  TO  PTINF-HOSPID
+               MOVE    ACCT-PTID   TO  PTINF-PTID
+               MOVE    PTINF-REC   TO  MCPDATA-REC
+               MOVE    "PTINF-KEY" TO  WRK-DBPATH
+               PERFORM 900-TBL-SELECT-SEC
+               IF    ( FLG-DBRC    NOT =   ZERO )
+                   INITIALIZE          ERR-EDIT-AREA
+                   MOVE    "患者情報の取得に失敗しました"
+                                   TO  ERR-ERRMSG
+                   PERFORM 800-ERRMSG-EDIT-SEC
+                   MOVE    ERR-HEN-ERRMSG  TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  2101-BG007-OUT-EXT
+               ELSE
+                   MOVE    MCPDATA-REC TO  PTINF-REC
+               END-IF
+      *
+      *        テスト患者は対象外とする
+               IF    ( PTINF-TSTPTNUMKBN   NOT =   "1" )
+                   MOVE    ACCT-PTID   TO  BG00701-PTID
+                   WRITE   BG00701-REC
+               END-IF
       *
                MOVE    "SRYACCT-KEY21" TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
@@ -817,23 +846,20 @@
       *
            MOVE    SPACE           TO  ERR-HEN-ERRMSG
       *
-      *    患者ＩＤが指定されていた場合患者番号を取得
-           IF    ( ERR-PTID    NOT =   ZERO )
-               MOVE    SPACE       TO  ERR-PTNUM
-               INITIALIZE              ORCSPTIDAREA
-               MOVE    WRK-PARA-HOSPID TO  SPTID-HOSPID
-               MOVE    ERR-PTID        TO  SPTID-PTID
-               CALL    "ORCSPTID"      USING   ORCSPTIDAREA
-                                               SPA-1009-TBL
-               IF    ( SPTID-RC            =   ZERO )
-                   MOVE    SPTID-PTNUM TO  ERR-PTNUM
-               ELSE
-                   STRING "?(ID:"      DELIMITED   BY  SIZE
-                      ERR-PTID         DELIMITED   BY  SIZE
-                      ")"              DELIMITED   BY  SIZE
-                   INTO   ERR-PTNUM
-                   END-STRING
-               END-IF
+           MOVE    SPACE       TO  ERR-PTNUM
+           INITIALIZE              ORCSPTIDAREA
+           MOVE    WRK-PARA-HOSPID TO  SPTID-HOSPID
+           MOVE    ERR-PTID        TO  SPTID-PTID
+           CALL    "ORCSPTID"      USING   ORCSPTIDAREA
+                                           SPA-1009-TBL
+           IF    ( SPTID-RC            =   ZERO )
+               MOVE    SPTID-PTNUM TO  ERR-PTNUM
+           ELSE
+               STRING "?(ID:"      DELIMITED   BY  SIZE
+                  ERR-PTID         DELIMITED   BY  SIZE
+                  ")"              DELIMITED   BY  SIZE
+               INTO   ERR-PTNUM
+               END-STRING
            END-IF
       *
            MOVE    1               TO  WRK-LEN
