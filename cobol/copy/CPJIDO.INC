@@ -56,10 +56,16 @@
                05  FILLER              PIC  X(9)   VALUE   "120002710" .
                05  FILLER              PIC  X(9)   VALUE   "120002910" .
       *
+      *Æþ±¡Ê¬
+               05  FILLER              PIC  X(9)   VALUE   "120001710" .
+               05  FILLER              PIC  X(9)   VALUE   "120001110" .
+               05  FILLER              PIC  X(9)   VALUE   "120000410" .
+      *
            02  JIDOTBL-R  REDEFINES   JIDOTBL-T.
       *******03  JIDOTBL-TX           OCCURS  38.
       *******03  JIDOTBL-TX           OCCURS  42.
-             03  JIDOTBL-TX           OCCURS  39.
+      ****** 03  JIDOTBL-TX           OCCURS  39.
+             03  JIDOTBL-TX           OCCURS  42.
                05  JIDOTBL-CODE        PIC  X(9).
-       01  JIDO-MAX                PIC 9(04)   VALUE   39.
+       01  JIDO-MAX                PIC 9(04)   VALUE   42.
       *
