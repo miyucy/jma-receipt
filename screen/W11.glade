@@ -278,9 +278,9 @@
     <widget>
       <class>GtkNotebook</class>
       <name>note3</name>
-      <x>16</x>
+      <x>15</x>
       <y>72</y>
-      <width>972</width>
+      <width>995</width>
       <height>592</height>
       <can_focus>True</can_focus>
       <show_tabs>True</show_tabs>
@@ -296,165 +296,12 @@
 	<name>fi23</name>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label214</name>
-	  <x>772</x>
-	  <y>24</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <label>独自開発プログラム名</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label213</name>
-	  <x>584</x>
-	  <y>24</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <label>標準プログラム名</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label154</name>
-	  <x>220</x>
-	  <y>24</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <label>帳票名</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label164</name>
-	  <x>424</x>
-	  <y>24</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <label>プリンタ名</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkHSeparator</class>
 	  <name>hseparator1</name>
 	  <x>212</x>
 	  <y>264</y>
 	  <width>744</width>
 	  <height>16</height>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label219</name>
-	  <x>772</x>
-	  <y>292</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <label>独自開発プログラム名</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label218</name>
-	  <x>584</x>
-	  <y>292</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <label>標準プログラム名</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label217</name>
-	  <x>424</x>
-	  <y>292</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <label>プリンタ名</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label216</name>
-	  <x>220</x>
-	  <y>292</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <label>帳票名</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label221</name>
-	  <x>220</x>
-	  <y>276</y>
-	  <width>60</width>
-	  <height>18</height>
-	  <label>入院帳票</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkVSeparator</class>
-	  <name>vseparator1</name>
-	  <x>204</x>
-	  <y>44</y>
-	  <width>16</width>
-	  <height>488</height>
 	</widget>
 
 	<widget>
@@ -641,2006 +488,3317 @@
 	</widget>
 
 	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME01</name>
-	  <x>220</x>
-	  <y>44</y>
-	  <width>200</width>
-	  <height>20</height>
+	  <class>GtkNotebook</class>
+	  <name>note4</name>
+	  <x>212</x>
+	  <y>12</y>
+	  <width>770</width>
+	  <height>520</height>
 	  <can_focus>True</can_focus>
 	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	    <name>switch_page</name>
+	    <handler>switch_page</handler>
+	    <last_modification_time>Fri, 08 Aug 2003 08:09:17 GMT</last_modification_time>
 	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	  <show_tabs>True</show_tabs>
+	  <show_border>True</show_border>
+	  <tab_pos>GTK_POS_TOP</tab_pos>
+	  <scrollable>False</scrollable>
+	  <tab_hborder>2</tab_hborder>
+	  <tab_vborder>2</tab_vborder>
+	  <popup_enable>False</popup_enable>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME02</name>
-	  <x>220</x>
-	  <y>64</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	  <widget>
+	    <class>GtkFixed</class>
+	    <name>fixed3</name>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME03</name>
-	  <x>220</x>
-	  <y>84</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME01</name>
+	      <x>20</x>
+	      <y>44</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME04</name>
-	  <x>220</x>
-	  <y>104</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME02</name>
+	      <x>20</x>
+	      <y>64</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME05</name>
-	  <x>220</x>
-	  <y>124</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME03</name>
+	      <x>20</x>
+	      <y>84</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME06</name>
-	  <x>220</x>
-	  <y>144</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME04</name>
+	      <x>20</x>
+	      <y>104</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME07</name>
-	  <x>220</x>
-	  <y>164</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME05</name>
+	      <x>20</x>
+	      <y>124</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME08</name>
-	  <x>220</x>
-	  <y>184</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME06</name>
+	      <x>20</x>
+	      <y>144</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME09</name>
-	  <x>220</x>
-	  <y>204</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME07</name>
+	      <x>20</x>
+	      <y>164</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME10</name>
-	  <x>220</x>
-	  <y>224</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME08</name>
+	      <x>20</x>
+	      <y>184</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM01</name>
-	  <x>424</x>
-	  <y>44</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME09</name>
+	      <x>20</x>
+	      <y>204</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM02</name>
-	  <x>424</x>
-	  <y>64</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME10</name>
+	      <x>20</x>
+	      <y>224</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM03</name>
-	  <x>424</x>
-	  <y>84</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME11</name>
+	      <x>20</x>
+	      <y>244</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM04</name>
-	  <x>424</x>
-	  <y>104</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME12</name>
+	      <x>20</x>
+	      <y>264</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM05</name>
-	  <x>424</x>
-	  <y>124</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME13</name>
+	      <x>20</x>
+	      <y>284</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM06</name>
-	  <x>424</x>
-	  <y>144</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME14</name>
+	      <x>20</x>
+	      <y>304</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM07</name>
-	  <x>424</x>
-	  <y>164</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME15</name>
+	      <x>20</x>
+	      <y>324</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM08</name>
-	  <x>424</x>
-	  <y>184</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME16</name>
+	      <x>20</x>
+	      <y>344</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM09</name>
-	  <x>424</x>
-	  <y>204</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME17</name>
+	      <x>20</x>
+	      <y>364</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM10</name>
-	  <x>424</x>
-	  <y>224</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME18</name>
+	      <x>20</x>
+	      <y>384</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCAORGNM01</name>
-	  <x>584</x>
-	  <y>44</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME19</name>
+	      <x>20</x>
+	      <y>404</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCAORGNM02</name>
-	  <x>584</x>
-	  <y>64</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME20</name>
+	      <x>20</x>
+	      <y>424</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCAORGNM03</name>
-	  <x>584</x>
-	  <y>84</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM01</name>
+	      <x>224</x>
+	      <y>44</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCAORGNM04</name>
-	  <x>584</x>
-	  <y>184</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM02</name>
+	      <x>224</x>
+	      <y>64</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCAORGNM05</name>
-	  <x>584</x>
-	  <y>224</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM03</name>
+	      <x>224</x>
+	      <y>84</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCAORGCHK01</name>
-	  <x>748</x>
-	  <y>44</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 05:00:24 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:19:49 GMT</last_modification_time>
-	  </signal>
-	  <label>_
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM04</name>
+	      <x>224</x>
+	      <y>104</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM05</name>
+	      <x>224</x>
+	      <y>124</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM06</name>
+	      <x>224</x>
+	      <y>144</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM07</name>
+	      <x>224</x>
+	      <y>164</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM08</name>
+	      <x>224</x>
+	      <y>184</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM09</name>
+	      <x>224</x>
+	      <y>204</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM10</name>
+	      <x>224</x>
+	      <y>224</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM11</name>
+	      <x>224</x>
+	      <y>244</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM12</name>
+	      <x>224</x>
+	      <y>264</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM13</name>
+	      <x>224</x>
+	      <y>284</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM14</name>
+	      <x>224</x>
+	      <y>304</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM15</name>
+	      <x>224</x>
+	      <y>324</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM16</name>
+	      <x>224</x>
+	      <y>344</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM17</name>
+	      <x>224</x>
+	      <y>364</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM18</name>
+	      <x>224</x>
+	      <y>384</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM19</name>
+	      <x>224</x>
+	      <y>404</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM20</name>
+	      <x>224</x>
+	      <y>424</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCAORGNM01</name>
+	      <x>384</x>
+	      <y>44</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCAORGNM02</name>
+	      <x>384</x>
+	      <y>64</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCAORGNM03</name>
+	      <x>384</x>
+	      <y>84</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCAORGNM04</name>
+	      <x>384</x>
+	      <y>184</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCAORGNM05</name>
+	      <x>384</x>
+	      <y>224</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK01</name>
+	      <x>548</x>
+	      <y>44</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 05:00:24 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:19:49 GMT</last_modification_time>
+	      </signal>
+	      <label>_
 </label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>CARUTE</group>
-	</widget>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>CARUTE</group>
+	    </widget>
 
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCAORGCHK02</name>
-	  <x>748</x>
-	  <y>64</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 05:03:55 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:20:08 GMT</last_modification_time>
-	  </signal>
-	  <label>_
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK02</name>
+	      <x>548</x>
+	      <y>64</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 05:03:55 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:20:08 GMT</last_modification_time>
+	      </signal>
+	      <label>_
 </label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>SYOHO</group>
-	</widget>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>SYOHO</group>
+	    </widget>
 
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCAORGCHK03</name>
-	  <x>748</x>
-	  <y>84</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:20:30 GMT</last_modification_time>
-	  </signal>
-	  <label>_
-
-
-</label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>RYOSYU</group>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCAORGCHK04</name>
-	  <x>748</x>
-	  <y>184</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
-	  </signal>
-	  <label>_
-
-
-</label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>YAKUJYO</group>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCAORGCHK05</name>
-	  <x>748</x>
-	  <y>224</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
-	  </signal>
-	  <label>_
-
-</label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>SRYROKU</group>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCACSTNM01</name>
-	  <x>772</x>
-	  <y>44</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCACSTNM02</name>
-	  <x>772</x>
-	  <y>64</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCACSTNM03</name>
-	  <x>772</x>
-	  <y>84</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCACSTNM04</name>
-	  <x>772</x>
-	  <y>184</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCACSTNM05</name>
-	  <x>772</x>
-	  <y>224</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCACSTCHK01</name>
-	  <x>936</x>
-	  <y>44</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 05:04:10 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:20:56 GMT</last_modification_time>
-	  </signal>
-	  <label>_
-</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>CARUTE</group>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCACSTCHK02</name>
-	  <x>936</x>
-	  <y>64</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 05:04:32 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:21:39 GMT</last_modification_time>
-	  </signal>
-	  <label>_
-</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>SYOHO</group>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCACSTCHK03</name>
-	  <x>936</x>
-	  <y>84</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 05:04:23 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:21:58 GMT</last_modification_time>
-	  </signal>
-	  <label>_
-</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>RYOSYU</group>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCACSTCHK04</name>
-	  <x>936</x>
-	  <y>184</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 05:04:23 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:22:33 GMT</last_modification_time>
-	  </signal>
-	  <label>_
-
-</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>YAKUJYO</group>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCACSTCHK05</name>
-	  <x>936</x>
-	  <y>224</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Fri, 04 Jul 2003 06:15:58 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 04 Jul 2003 06:16:25 GMT</last_modification_time>
-	  </signal>
-	  <label>_
-
-</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>SRYROKU</group>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME01N</name>
-	  <x>220</x>
-	  <y>312</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME02N</name>
-	  <x>220</x>
-	  <y>332</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME03N</name>
-	  <x>220</x>
-	  <y>352</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME04N</name>
-	  <x>220</x>
-	  <y>372</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME05N</name>
-	  <x>220</x>
-	  <y>392</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME06N</name>
-	  <x>220</x>
-	  <y>412</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME07N</name>
-	  <x>220</x>
-	  <y>432</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME08N</name>
-	  <x>220</x>
-	  <y>452</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME09N</name>
-	  <x>220</x>
-	  <y>472</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>DSPNAME10N</name>
-	  <x>220</x>
-	  <y>492</y>
-	  <width>200</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM01N</name>
-	  <x>424</x>
-	  <y>312</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM02N</name>
-	  <x>424</x>
-	  <y>332</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM03N</name>
-	  <x>424</x>
-	  <y>352</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM04N</name>
-	  <x>424</x>
-	  <y>372</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM05N</name>
-	  <x>424</x>
-	  <y>392</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM06N</name>
-	  <x>424</x>
-	  <y>412</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM07N</name>
-	  <x>424</x>
-	  <y>432</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM08N</name>
-	  <x>424</x>
-	  <y>452</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM09N</name>
-	  <x>424</x>
-	  <y>472</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>PRTNM10N</name>
-	  <x>424</x>
-	  <y>492</y>
-	  <width>150</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>16</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCAORGNM01N</name>
-	  <x>584</x>
-	  <y>312</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCAORGNM02N</name>
-	  <x>584</x>
-	  <y>332</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCAORGNM03N</name>
-	  <x>584</x>
-	  <y>352</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>False</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCAORGCHK01N</name>
-	  <x>748</x>
-	  <y>312</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
-	  </signal>
-	  <label>_
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK03</name>
+	      <x>548</x>
+	      <y>84</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:20:30 GMT</last_modification_time>
+	      </signal>
+	      <label>_
 
 
 </label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>NYU01</group>
-	</widget>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>RYOSYU</group>
+	    </widget>
 
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCAORGCHK02N</name>
-	  <x>748</x>
-	  <y>332</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
-	  </signal>
-	  <label>_
-
-
-</label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>NYU02</group>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCAORGCHK03N</name>
-	  <x>748</x>
-	  <y>352</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
-	  </signal>
-	  <label>_
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK04</name>
+	      <x>548</x>
+	      <y>184</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
+	      </signal>
+	      <label>_
 
 
 </label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>NYU03</group>
-	</widget>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>YAKUJYO</group>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCACSTNM01N</name>
-	  <x>772</x>
-	  <y>312</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK05</name>
+	      <x>548</x>
+	      <y>224</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
+	      </signal>
+	      <label>_
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCACSTNM02N</name>
-	  <x>772</x>
-	  <y>332</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+</label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>SRYROKU</group>
+	    </widget>
 
-	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>ORCACSTNM03N</name>
-	  <x>772</x>
-	  <y>352</y>
-	  <width>160</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>20</text_max_length>
-	  <text></text>
-	  <input_mode>XIM</input_mode>
-	  <xim_enabled>False</xim_enabled>
-	</widget>
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCACSTNM01</name>
+	      <x>572</x>
+	      <y>44</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
 
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCACSTCHK01N</name>
-	  <x>936</x>
-	  <y>312</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
-	  </signal>
-	  <label>_
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCACSTNM02</name>
+	      <x>572</x>
+	      <y>64</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCACSTNM03</name>
+	      <x>572</x>
+	      <y>84</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCACSTNM04</name>
+	      <x>572</x>
+	      <y>184</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCACSTNM05</name>
+	      <x>572</x>
+	      <y>224</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCACSTCHK01</name>
+	      <x>736</x>
+	      <y>44</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 05:04:10 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:20:56 GMT</last_modification_time>
+	      </signal>
+	      <label>_
+</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>CARUTE</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCACSTCHK02</name>
+	      <x>736</x>
+	      <y>64</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 05:04:32 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:21:39 GMT</last_modification_time>
+	      </signal>
+	      <label>_
+</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>SYOHO</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCACSTCHK03</name>
+	      <x>736</x>
+	      <y>84</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 05:04:23 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:21:58 GMT</last_modification_time>
+	      </signal>
+	      <label>_
+</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>RYOSYU</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCACSTCHK04</name>
+	      <x>736</x>
+	      <y>184</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 05:04:23 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:22:33 GMT</last_modification_time>
+	      </signal>
+	      <label>_
+
+</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>YAKUJYO</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCACSTCHK05</name>
+	      <x>736</x>
+	      <y>224</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:58 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 04 Jul 2003 06:16:25 GMT</last_modification_time>
+	      </signal>
+	      <label>_
+
+</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>SRYROKU</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkLabel</class>
+	      <name>label229</name>
+	      <x>20</x>
+	      <y>24</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <label>帳票名</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	    </widget>
+
+	    <widget>
+	      <class>GtkLabel</class>
+	      <name>label230</name>
+	      <x>224</x>
+	      <y>24</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <label>プリンタ名</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	    </widget>
+
+	    <widget>
+	      <class>GtkLabel</class>
+	      <name>label231</name>
+	      <x>384</x>
+	      <y>24</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <label>標準プログラム名</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	    </widget>
+
+	    <widget>
+	      <class>GtkLabel</class>
+	      <name>label232</name>
+	      <x>572</x>
+	      <y>24</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <label>独自開発プログラム名</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <child_name>Notebook:tab</child_name>
+	    <name>N0101</name>
+	    <width>34</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>send_event</handler>
+	      <data>CLICKED</data>
+	      <last_modification_time>Mon, 11 Aug 2003 07:47:08 GMT</last_modification_time>
+	    </signal>
+	    <label>一般</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFixed</class>
+	    <name>fixed4</name>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME01N</name>
+	      <x>20</x>
+	      <y>44</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME02N</name>
+	      <x>20</x>
+	      <y>64</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME03N</name>
+	      <x>20</x>
+	      <y>84</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME04N</name>
+	      <x>20</x>
+	      <y>104</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME05N</name>
+	      <x>20</x>
+	      <y>124</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME06N</name>
+	      <x>20</x>
+	      <y>144</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME07N</name>
+	      <x>20</x>
+	      <y>164</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME08N</name>
+	      <x>20</x>
+	      <y>184</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME09N</name>
+	      <x>20</x>
+	      <y>204</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME10N</name>
+	      <x>20</x>
+	      <y>224</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME11N</name>
+	      <x>20</x>
+	      <y>244</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME12N</name>
+	      <x>20</x>
+	      <y>264</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME13N</name>
+	      <x>20</x>
+	      <y>284</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME14N</name>
+	      <x>20</x>
+	      <y>304</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME15N</name>
+	      <x>20</x>
+	      <y>324</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME16N</name>
+	      <x>20</x>
+	      <y>344</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME17N</name>
+	      <x>20</x>
+	      <y>364</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME18N</name>
+	      <x>20</x>
+	      <y>384</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME19N</name>
+	      <x>20</x>
+	      <y>404</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>DSPNAME20N</name>
+	      <x>20</x>
+	      <y>424</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:15 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>30</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM01N</name>
+	      <x>224</x>
+	      <y>44</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM02N</name>
+	      <x>224</x>
+	      <y>64</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM03N</name>
+	      <x>224</x>
+	      <y>84</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM04N</name>
+	      <x>224</x>
+	      <y>104</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM05N</name>
+	      <x>224</x>
+	      <y>124</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM06N</name>
+	      <x>224</x>
+	      <y>144</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM07N</name>
+	      <x>224</x>
+	      <y>164</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM08N</name>
+	      <x>224</x>
+	      <y>184</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM09N</name>
+	      <x>224</x>
+	      <y>204</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM10N</name>
+	      <x>224</x>
+	      <y>224</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM11N</name>
+	      <x>224</x>
+	      <y>244</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM12N</name>
+	      <x>224</x>
+	      <y>264</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM13N</name>
+	      <x>224</x>
+	      <y>284</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM14N</name>
+	      <x>224</x>
+	      <y>304</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM15N</name>
+	      <x>224</x>
+	      <y>324</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM16N</name>
+	      <x>224</x>
+	      <y>344</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM17N</name>
+	      <x>224</x>
+	      <y>364</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM18N</name>
+	      <x>224</x>
+	      <y>384</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM19N</name>
+	      <x>224</x>
+	      <y>404</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>PRTNM20N</name>
+	      <x>224</x>
+	      <y>424</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>16</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCAORGNM01N</name>
+	      <x>384</x>
+	      <y>44</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCAORGNM02N</name>
+	      <x>384</x>
+	      <y>64</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCAORGNM03N</name>
+	      <x>384</x>
+	      <y>84</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK01N</name>
+	      <x>548</x>
+	      <y>44</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
+	      </signal>
+	      <label>_
 
 
 </label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>NYU01</group>
-	</widget>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>NYU01</group>
+	    </widget>
 
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCACSTCHK02N</name>
-	  <x>936</x>
-	  <y>332</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
-	  </signal>
-	  <label>_
-
-
-</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>NYU02</group>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>ORCACSTCHK03N</name>
-	  <x>936</x>
-	  <y>352</y>
-	  <width>20</width>
-	  <height>20</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
-	  </signal>
-	  <label>_
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK02N</name>
+	      <x>548</x>
+	      <y>64</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
+	      </signal>
+	      <label>_
 
 
 </label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>NYU03</group>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>NYU02</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK03N</name>
+	      <x>548</x>
+	      <y>84</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
+	      </signal>
+	      <label>_
+
+
+</label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>NYU03</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCACSTNM01N</name>
+	      <x>572</x>
+	      <y>44</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCACSTNM02N</name>
+	      <x>572</x>
+	      <y>64</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCACSTNM03N</name>
+	      <x>572</x>
+	      <y>84</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCACSTCHK01N</name>
+	      <x>736</x>
+	      <y>44</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
+	      </signal>
+	      <label>_
+
+
+</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>NYU01</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCACSTCHK02N</name>
+	      <x>736</x>
+	      <y>64</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
+	      </signal>
+	      <label>_
+
+
+</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>NYU02</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCACSTCHK03N</name>
+	      <x>736</x>
+	      <y>84</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
+	      </signal>
+	      <label>_
+
+
+</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>NYU03</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkLabel</class>
+	      <name>label233</name>
+	      <x>20</x>
+	      <y>24</y>
+	      <width>200</width>
+	      <height>20</height>
+	      <label>帳票名</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	    </widget>
+
+	    <widget>
+	      <class>GtkLabel</class>
+	      <name>label217</name>
+	      <x>224</x>
+	      <y>24</y>
+	      <width>150</width>
+	      <height>20</height>
+	      <label>プリンタ名</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	    </widget>
+
+	    <widget>
+	      <class>GtkLabel</class>
+	      <name>label218</name>
+	      <x>384</x>
+	      <y>24</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <label>標準プログラム名</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	    </widget>
+
+	    <widget>
+	      <class>GtkLabel</class>
+	      <name>label219</name>
+	      <x>572</x>
+	      <y>24</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <label>独自開発プログラム名</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <child_name>Notebook:tab</child_name>
+	    <name>N0102</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>send_event</handler>
+	      <data>CLICKED</data>
+	      <last_modification_time>Mon, 11 Aug 2003 07:47:18 GMT</last_modification_time>
+	    </signal>
+	    <label>入院</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
+	  </widget>
 	</widget>
       </widget>
 
