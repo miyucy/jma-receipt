@@ -1914,7 +1914,7 @@
                                            USING  ORCHCN03AREA
       *
                    ELSE
-      *
+                       INITIALIZE      ORCHC03AREA
                        MOVE   SYU-DENPNUM  TO  ORCHC03-DENPNUM
                        MOVE   SYU-SKYMONEY TO  ORCHC03-SEIKYU
                        MOVE   SYU-NYUKIN-TOTAL
