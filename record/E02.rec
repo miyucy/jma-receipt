@@ -6,6 +6,8 @@ E02	{
 		scrolledwindow1	{
 			CLIST1	{
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value1	char(25);
 				}	[600];
@@ -15,6 +17,8 @@ E02	{
 		scrolledwindow2	{
 			CLIST2	{
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value1	char(25);
 				}	[600];

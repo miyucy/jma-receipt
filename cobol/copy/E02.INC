@@ -22,12 +22,16 @@
               04  E02-SCROLLEDWINDOW1.
                 05  E02-CLIST1.
                   06  E02-COUNT1   PIC S9(9)   BINARY.
+                  06  E02-ROW1     PIC S9(9)   BINARY.
+                  06  E02-ROWATTR1 PIC S9(9)   BINARY.
                   06  E02-ITEM1        OCCURS  600 TIMES.
                     07  E02-VALUE1  PIC X(25).
                   06  E02-SELECT1  PIC X       OCCURS  600 TIMES.
               04  E02-SCROLLEDWINDOW2.
                 05  E02-CLIST2.
                   06  E02-COUNT2   PIC S9(9)   BINARY.
+                  06  E02-ROW2     PIC S9(9)   BINARY.
+                  06  E02-ROWATTR2 PIC S9(9)   BINARY.
                   06  E02-ITEM2        OCCURS  600 TIMES.
                     07  E02-VALUE2  PIC X(25).
                   06  E02-SELECT2  PIC X       OCCURS  600 TIMES.

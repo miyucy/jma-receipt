@@ -3,6 +3,8 @@ E01	{
 		scrolledwindow1	{
 			CLIST1	{
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value1	char(25);
 				}	[90];
@@ -12,6 +14,8 @@ E01	{
 		scrolledwindow2	{
 			CLIST2	{
 				count	int;
+				row int;
+				rowattr int;
 				item	{
 					value1	char(25);
 				}	[90];
