@@ -62,7 +62,7 @@
       *    パラメタファイル名
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(09)   VALUE   "K01PARA".
+           03  FILLER              PIC X(07)   VALUE   "K01PARA".
            03  FILE-TERMID2        PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
@@ -972,7 +972,7 @@
                        END-IF
                    END-IF
       *
-      *        継続のチェック
+      *            継続のチェック
                    IF     (SPA-SRYYMD          =   JYURRK-SRYYMD) AND
                           (JYURRK-DOUJI-RENNUM NOT =   ZERO     )
                        PERFORM 100111-CONTKBN-HANTEI-SEC
