@@ -149,6 +149,8 @@
       *
            03  FLG-SYONIKA-CHK     PIC 9(01).
       *
+           03  FLG-TAIIN           PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -186,7 +188,9 @@
       *    ÄûÀµÆü¤Î²ó¿ô
            03  WRK-TEI-KAISU       PIC 9(04).
       *
+           03  WRK-SYOYMD          PIC X(08).
            03  WRK-KEIYMD          PIC X(08).
+           03  WRK-KEIYMDZEN       PIC X(08).
       *
       *    »»ÄêÇ¯·îÆü
            03  WRK-SANTEI-YMD          PIC X(08).
@@ -2757,22 +2761,33 @@
       *****************************************************************
        330121-SIDOU-CHK-SEC               SECTION.
       *
+      *    ºÇ½ªÂà±¡Æü¤¬¤¢¤ë»þ¡¢Âà±¡Æü
+           IF     (SPA-K02N-TAIINYMD   =   SPACE )  OR
+                  (SPA-K02N-TAIINYMD   <=  SPA-SYOYMD)
+               MOVE    ZERO                TO  FLG-TAIIN
+               MOVE    SPA-SYOYMD          TO  WRK-SYOYMD
+           ELSE
+               MOVE    SPA-K02N-TAIINYMD   TO  WRK-SYOYMD
+               MOVE    1                   TO  FLG-TAIIN
+           END-IF
       *
            MOVE    ZERO                TO  FLG-KYUJITU
-           IF      SPA-SYOYMD          =   SPACE
+           IF      WRK-SYOYMD          =   SPACE
                MOVE    SPA-SRYYMD          TO  WRK-KEIYMD
+               MOVE    SPA-SRYYMD          TO  WRK-KEIYMDZEN
            ELSE
       *        ½é¿ÇÎÁ»»ÄêÆü¡Ü£±·î¸å
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
                MOVE    "61"                TO  LNK-DAY6-IRAI
-               MOVE    SPA-SYOYMD          TO  LNK-DAY6-KIJUN
+               MOVE    WRK-SYOYMD          TO  LNK-DAY6-KIJUN
                MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
                MOVE    1                   TO  LNK-DAY6-ZOGEN
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
-               MOVE    LNK-DAY6-KOYOMI     TO  WRK-KEIYMD
-               IF      LNK-DAY6-KOYOMI NOT =   LNK-DAY6-KOYOMIZEN
+               MOVE    LNK-DAY6-KEISAN     TO  WRK-KEIYMD
+               MOVE    LNK-DAY6-KEISANZEN  TO  WRK-KEIYMDZEN
+               IF      LNK-DAY6-KEISAN NOT =   LNK-DAY6-KEISANZEN
                    MOVE    1                   TO  FLG-KYUJITU
                END-IF
            END-IF
@@ -2781,17 +2796,25 @@
                WHEN    WRK-KEIYMD          <   SPA-SRYYMD
                    CONTINUE
                WHEN    WRK-KEIYMD          >   SPA-SRYYMD
-                   MOVE    "0034"          TO  SPA-ERRCD
-               WHEN    WRK-KEIYMD          =   SPA-SRYYMD
-      *            ÈéÉæ²Ê¤Î»þ¡¢£±·î¸å
+      *            £±·î¸å¤ÎÁ°±Ä¶ÈÆü¤ÈÆ±¤¸»þ¡¢£Ï£Ë
                    IF      FLG-SIDOU       =   1
-                       MOVE    "0034"          TO  SPA-ERRCD
-                   ELSE
-      *            ÆÃÄê¼À´µ¤Î»þ¡¢£±·î¸å¤¬µÙÆü¤Î»þ¡¢£Ï£Ë
-                       IF      FLG-KYUJITU     =   ZERO
+                       IF      FLG-TAIIN       =   1
+                           MOVE    "0120"         TO  SPA-ERRCD
+                       ELSE
                            MOVE    "0034"          TO  SPA-ERRCD
                        END-IF
+                   ELSE
+      *****************IF      WRK-KEIYMDZEN   =   SPA-SRYYMD
+      *                ELSE
+                           IF      FLG-TAIIN       =   1
+                               MOVE    "0120"          TO  SPA-ERRCD
+                           ELSE
+                               MOVE    "0034"          TO  SPA-ERRCD
+                           END-IF
+      *****************END-IF
                    END-IF
+               WHEN    WRK-KEIYMD          =   SPA-SRYYMD
+                   CONTINUE
            END-EVALUATE
            .
        330121-SIDOU-CHK-EXT.
