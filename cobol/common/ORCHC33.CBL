@@ -732,7 +732,10 @@
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
       *                労災の金額算定分の時、点数をゼロとする
-                       IF      TNS-TENSIKIBETU     =   1
+                       IF     (TNS-TENSIKIBETU     =   1  )  OR
+                              (TNS-SRYCD (1:5)     =   "09591" OR
+                                                       "09592" OR
+                                                       "09593" )
                            COMPUTE WRK-SUM-TEN     =   WRK-SUM-TEN
                                                    +  (TNS-TEN
                                                    /   10  )
@@ -1044,8 +1047,8 @@
                    COMPUTE WRK-RSI-MONEY       =   SYU-RSISHOSHIN-MONEY
                                                +   SYU-RSISAISHIN-MONEY
                                                +   SYU-RSISDO-MONEY
-                                               +   SYU-RSISDO-MONEY
-                   IF      WRK-RSI-MONEY       >   ZERO
+                                               +   SYU-RSIETC-MONEY
+                  IF      WRK-RSI-MONEY       >   ZERO
                        ADD     1                   TO  IDX-T1
                        MOVE    WRK-RSI-MONEY       TO  WRK-Z89
                        MOVE    WRK-Z89             TO  TBL-NAIYO
