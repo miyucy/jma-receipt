@@ -195,7 +195,8 @@
       *
            PERFORM 100-INPUTCD-SYORI-SEC
       *
-           IF      SPA-ERRCD           =   SPACE
+           IF     (SPA-ERRCD           =   SPACE ) AND
+                  (FLG-END             =   ZERO  )
                IF      LNK-SC97-KBN        =   "1"
       *            半角変換のみの時
                    PERFORM 1001-SYORI-KBN1-SEC
@@ -225,6 +226,7 @@
            PERFORM 100-MAE-HANKAKU-SEC
            IF      WRK-INPUTCD     NOT =   SPACE
                MOVE    WRK-INPUTCD         TO  LNK-SC97-INPUTCD
+               MOVE    1                   TO  FLG-END
            END-IF
       *    保険・診療科
            IF      LNK-SC97-INPUTCD(1:1)   =   "#"
@@ -423,7 +425,6 @@
       *        削除行
                CONTINUE
            ELSE
-      *
       *        入力コード文字列調査処理
                PERFORM 2020-INPUTCD-CHOSA-SEC
                MOVE    WRK-INPUTCD         TO  LNK-SC97-INPUTCD
