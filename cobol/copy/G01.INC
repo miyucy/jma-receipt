@@ -33,4 +33,3 @@
               03  G01-NUM-G           OCCURS  10.
                 04  G01-NUM-STATE     PIC S9(9)   BINARY.
                 04  G01-NUM           PIC X(03).
- 
