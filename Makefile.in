@@ -18,7 +18,7 @@ recorddir = ${ORCA_DIR}/record
 screendir = ${ORCA_DIR}/screen
 scriptsdir = ${ORCA_DIR}/scripts
 
-SUBDIRS = etc screen form record lddef cobol scripts init data doc
+SUBDIRS = etc screen form record lddef cobol scripts init data doc tools
 
 all:   
 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i all; done
