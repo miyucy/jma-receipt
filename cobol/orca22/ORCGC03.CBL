@@ -278,6 +278,9 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-C01KYOUTU
            MOVE    SPA-FREE        TO  SPA-C02FREE
@@ -388,9 +391,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "CERR"

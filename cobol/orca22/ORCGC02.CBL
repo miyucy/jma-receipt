@@ -101,6 +101,7 @@
       *  02.07.11    NACL-多々納  03/03/14  ファイル削除追加
       *  02.07.12    NACL-藤原    03/03/14  同一開始日の病名の表示順の修正
       *  02.07.13    NACL-藤原    03/03/26  選択番号がエラーのときクリアする
+      *  02.07.14    NACL-藤原    03/04/15  診療科から病名を編集しておく
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -409,6 +410,10 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-C02FREE
@@ -806,6 +811,9 @@
                    ELSE
                        PERFORM 330-SPASET-JYURRK-HENSYU-SEC     
                        MOVE    27                TO  SPA-GMN-C02-CUR
+                       IF      SPA-GMN-C02-SRYKA NOT =   SPACE 
+                           PERFORM 310-SPASET-PTBYO-HENSYU-SEC
+                       END-IF
                    END-IF
                END-IF
            END-IF    
@@ -1664,8 +1672,11 @@
                PERFORM 310-SPASET-HKNCOMBI-HENSYU-SEC
                PERFORM 330-SPASET-JYURRK-HENSYU-SEC     
                MOVE    27                TO  SPA-GMN-C02-CUR
+               IF      SPA-GMN-C02-SRYKA NOT =   SPACE 
+                   PERFORM 310-SPASET-PTBYO-HENSYU-SEC
+               END-IF
                IF      SPA-GMN-C02-SRYKA-MAX =   1
-                   PERFORM 310-SPASET-PTBYO-HENSYU-SEC 
+      *************PERFORM 310-SPASET-PTBYO-HENSYU-SEC 
                    MOVE    1                   TO  SPA-GMN-C02-CUR
                END-IF                                      
            END-IF    
