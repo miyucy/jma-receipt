@@ -2856,6 +2856,7 @@
            IF      FLG-CHK             =   ZERO
                MOVE    "0029"              TO  SPA-ERRCD
                MOVE    6                   TO  SPA-GMN-CUR
+               GO      TO      4101-HAKKO-CHK-EXT
            END-IF
       *
            .
@@ -4942,6 +4943,10 @@
            INITIALIZE                            P98
            INITIALIZE                            P99
            INITIALIZE                            JPARA-REC
+           INITIALIZE                            SPA-GMN98-TABLE
+           MOVE  ZERO                        TO  SPA-GMN98-MAX
+           MOVE  ZERO                        TO  SPA-GMN98-PAGE
+      *
            CALL  "ORCSADR"                       USING
                                                  SPA-P02KYOUTU
                                                  SPA-P02SCRAREA
