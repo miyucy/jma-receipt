@@ -2330,7 +2330,11 @@
                  END-IF
                END-IF                                                   
                MOVE    TNS-NYUTENTTLKBN   TO    RECE85-TENTTLKBN(IDX4)
-               MOVE    TNS-YUKOKETA       TO    RECE85-YUKOKETA(IDX4)
+               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
+                  MOVE ZERO               TO    RECE85-YUKOKETA(IDX4)
+               ELSE
+                  MOVE TNS-YUKOKETA       TO    RECE85-YUKOKETA(IDX4)
+               END-IF
                MOVE    TNS-DATAKBN        TO    RECE85-DATAKBN (IDX4)
                MOVE    TNS-HOUKNSKBN      TO    RECE85-HOUKNSKBN(IDX4)
                MOVE    TNS-KNSJISKBN      TO    RECE85-KNSJISKBN(IDX4)

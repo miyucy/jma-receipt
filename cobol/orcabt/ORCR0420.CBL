@@ -1208,7 +1208,11 @@
                ELSE
                    MOVE  TNS-GAITENTTLKBN TO    RECE45-TENTTLKBN(IDX4)
                END-IF
-               MOVE    TNS-YUKOKETA       TO    RECE45-YUKOKETA(IDX4)
+               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
+                  MOVE ZERO               TO    RECE45-YUKOKETA(IDX4)
+               ELSE
+                  MOVE TNS-YUKOKETA       TO    RECE45-YUKOKETA(IDX4)
+               END-IF
                MOVE    TNS-DATAKBN        TO    RECE45-DATAKBN (IDX4)
                MOVE    TNS-HOUKNSKBN      TO    RECE45-HOUKNSKBN(IDX4)
                MOVE    TNS-KNSJISKBN      TO    RECE45-KNSJISKBN(IDX4)
