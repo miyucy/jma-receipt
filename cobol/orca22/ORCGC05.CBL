@@ -585,6 +585,8 @@
       *
            IF    ( SPA-GMN-PAGE        =   1    )
            OR    ( SPA-GMN-BYOMEI-MAX  =   ZERO )
+               MOVE    "0005"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
                GO      TO      460-MAEGMN-EXT
            END-IF
       *
@@ -608,6 +610,8 @@
       *
            IF    ( SPA-GMN-NEXT        =   ZERO )
            OR    ( SPA-GMN-BYOMEI-MAX  =   ZERO )
+               MOVE    "0006"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
                GO      TO      470-ATOGMN-EXT
            END-IF
       *
@@ -1395,7 +1399,10 @@
                    MOVE    "病名が長すぎます"
                                        TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "対象の病名が１００件以上あります"
+                   MOVE    "前ページはありません"
+                                       TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "次ページはありません"
                                        TO  SPA-ERRMSG
                WHEN    "0056"
                    MOVE    "複数病名の入力はできません"
