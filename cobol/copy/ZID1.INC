@@ -22,6 +22,6 @@
         02  ZID1.
             03  ZID1-FIXED1.
               04  ZID1-ID1CODE.
-                05  ZID1-VALUE  PIC X(11).
+                05  ZID1-VALUE  PIC X(10).
               04  ZID1-ID1MSG.
-                05  ZID1-VALUE  PIC X(71).
+                05  ZID1-VALUE  PIC X(80).

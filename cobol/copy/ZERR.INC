@@ -22,6 +22,6 @@
         02  ZERR.
             03  ZERR-FIXED1.
               04  ZERR-ERRCODE.
-                05  ZERR-VALUE  PIC X(11).
+                05  ZERR-VALUE  PIC X(10).
               04  ZERR-ERRMSG.
-                05  ZERR-VALUE  PIC X(61).
+                05  ZERR-VALUE  PIC X(80).

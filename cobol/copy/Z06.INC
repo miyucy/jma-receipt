@@ -18,40 +18,40 @@
         02  Z06.
      *******02  Z06-FIXED1.
               03  Z06-SRYCDH.
-                04  Z06-VALUE   PIC X(10).
+                04  Z06-VALUE   PIC X(9).
               03  Z06-YUKOSTYMDH.
-                04  Z06-VALUE   PIC X(10).
+                04  Z06-VALUE   PIC X(9).
               03  Z06-YUKOEDYMDH.
-                04  Z06-VALUE   PIC X(10).
+                04  Z06-VALUE   PIC X(9).
               03  Z06-NAMEH.
-                04  Z06-VALUE   PIC X(101).
+                04  Z06-VALUE   PIC X(100).
               03  Z06-NAME.
-                04  Z06-VALUE   PIC X(101).
+                04  Z06-VALUE   PIC X(100).
               03  Z06-KANANAME.
-                04  Z06-VALUE   PIC X(101).
+                04  Z06-VALUE   PIC X(100).
               03  Z06-YUKOSTYMD.
-                04  Z06-VALUE   PIC X(11).
+                04  Z06-VALUE   PIC X(10).
               03  Z06-YUKOEDYMD.
-                04  Z06-VALUE   PIC X(11).
+                04  Z06-VALUE   PIC X(10).
               03  Z06-FORMALNAME.
-                04  Z06-VALUE   PIC X(201).
+                04  Z06-VALUE   PIC X(200).
               03  Z06-JITEN1COMB.
                 04  Z06-JITEN1.
-                  05  Z06-VALUE   PIC X(13).
+                  05  Z06-VALUE   PIC X(12).
                 04  Z06-JITEN1-COUNT   PIC S9(9)   BINARY.
                 04  Z06-JITEN1-ITEM    PIC X(12)   OCCURS  2 TIMES.
               03  Z06-JITEN2COMB.
                 04  Z06-JITEN2.
-                  05  Z06-VALUE   PIC X(13).
+                  05  Z06-VALUE   PIC X(12).
                 04  Z06-JITEN2-COUNT   PIC S9(9)   BINARY.
                 04  Z06-JITEN2-ITEM    PIC X(12)   OCCURS  2 TIMES.
               03  Z06-JITEN3COMB.
                 04  Z06-JITEN3.
-                  05  Z06-VALUE   PIC X(13).
+                  05  Z06-VALUE   PIC X(12).
                 04  Z06-JITEN3-COUNT   PIC S9(9)   BINARY.
                 04  Z06-JITEN3-ITEM    PIC X(12)   OCCURS  2 TIMES.
               03  Z06-JITEN4COMB.
                 04  Z06-JITEN4.
-                  05  Z06-VALUE   PIC X(13).
+                  05  Z06-VALUE   PIC X(12).
                 04  Z06-JITEN4-COUNT   PIC S9(9)   BINARY.
                 04  Z06-JITEN4-ITEM    PIC X(12)   OCCURS  2 TIMES.

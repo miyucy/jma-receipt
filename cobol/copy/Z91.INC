@@ -15,16 +15,16 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-            03  Z91.
+          03  Z91.
                 04  Z91-FIXED2.
-                    05  Z91-MSTYMD            PIC X(11).
+                    05  Z91-MSTYMD            PIC X(10).
                     05  Z91-SRYSTRCOMBO.
-                        06  Z91-SRYSTR         PIC X(18).
+                        06  Z91-SRYSTR         PIC X(17).
                         06  Z91-SRYSTR-STATE   PIC S9(9)   BINARY.
                         06  Z91-SRYSTR-COUNT   PIC S9(9)   BINARY.
                         06  Z91-SRYSTR-ITEM    PIC X(17)   OCCURS  13.
                     05  Z91-SRYENDCOMBO.
-                        06  Z91-SRYEND         PIC X(18).
+                        06  Z91-SRYEND         PIC X(17).
                         06  Z91-SRYEND-STATE   PIC S9(9)   BINARY.
                         06  Z91-SRYEND-COUNT   PIC S9(9)   BINARY.
                         06  Z91-SRYEND-ITEM    PIC X(17)   OCCURS  13.

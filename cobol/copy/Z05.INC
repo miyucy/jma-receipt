@@ -15,82 +15,82 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  Z05.
-      *****02  Z05-FIXED7.
+         02  Z05.
+      ***  02  Z05-FIXED7.
               03  Z05-JGNAGE.
-                04  Z05-VALUE   PIC X(3).
+                04  Z05-VALUE   PIC X(2).
               03  Z05-KGNAGE.
-                04  Z05-VALUE   PIC X(3).
+                04  Z05-VALUE   PIC X(2).
               03  Z05-SRYCDH.
-                04  Z05-VALUE   PIC X(10).
+                04  Z05-VALUE   PIC X(9).
               03  Z05-NAMEH.
-                04  Z05-VALUE   PIC X(101).
+                04  Z05-VALUE   PIC X(100).
               03  Z05-YUKOSTYMDH.
-                04  Z05-VALUE   PIC X(10).
+                04  Z05-VALUE   PIC X(9).
               03  Z05-YUKOEDYMDH.
-                04  Z05-VALUE   PIC X(10).
+                04  Z05-VALUE   PIC X(9).
               03  Z05-KANANAME.
-                04  Z05-VALUE   PIC X(101).
+                04  Z05-VALUE   PIC X(100).
               03  Z05-NAME.
-                04  Z05-VALUE   PIC X(101).
+                04  Z05-VALUE   PIC X(100).
               03  Z05-TEN.
                 04  Z05-VALUE   PIC S9(8)V9(2).
               03  Z05-OLDTEN.
                 04  Z05-VALUE   PIC S9(8)V9(2).
               03  Z05-YUKOSTYMD.
-                04  Z05-VALUE   PIC X(11).
+                04  Z05-VALUE   PIC X(10).
               03  Z05-YUKOEDYMD.
-                04  Z05-VALUE   PIC X(11).
+                04  Z05-VALUE   PIC X(10).
               03  Z05-JGNTEN.
                 04  Z05-VALUE   PIC S9(7).
               03  Z05-KOUHYOJYUNNUM.
                 04  Z05-VALUE   PIC S9(9).
               03  Z05-FORMALNAME.
-                04  Z05-VALUE   PIC X(201).
+                04  Z05-VALUE   PIC X(200).
               03  Z05-INPCHKKBN.
                 04  Z05-VALUE   PIC S9(1).
               03  Z05-TENSIKIBETUCOB.
                 04  Z05-TENSIKIBETU.
-                  05  Z05-VALUE   PIC X(27).
+                  05  Z05-VALUE   PIC X(26).
                 04  Z05-TENSIKIBETU-COUNT   PIC S9(9)   BINARY.
-                04  Z05-TENSIKIBETU-ITEM    PIC X(26)   OCCURS 7.
+                04  Z05-TENSIKIBETU-ITEM    PIC X(26)   OCCURS  7 TIMES.
               03  Z05-OLDTENSKBCOB.
                 04  Z05-OLDTENSKB.
-                  05  Z05-VALUE   PIC X(27).
+                  05  Z05-VALUE   PIC X(26).
                 04  Z05-OLDTENSKB-COUNT   PIC S9(9)   BINARY.
-                04  Z05-OLDTENSKB-ITEM    PIC X(26)   OCCURS  7.
+                04  Z05-OLDTENSKB-ITEM    PIC X(26)   OCCURS  7 TIMES.
               03  Z05-TANICDCOB.
                 04  Z05-TANICD.
-                  05  Z05-VALUE   PIC X(21).
+                  05  Z05-VALUE   PIC X(20).
                 04  Z05-TANICD-COUNT   PIC S9(9)   BINARY.
                 04  Z05-TANICD-ITEM    PIC X(20)   OCCURS  90 TIMES.
               03  Z05-MEIUSESKBCOB.
                 04  Z05-MEIUSESKB.
-                  05  Z05-VALUE   PIC X(21).
+                  05  Z05-VALUE   PIC X(20).
                 04  Z05-MEIUSESKB-COUNT   PIC S9(9)   BINARY.
                 04  Z05-MEIUSESKB-ITEM    PIC X(20)   OCCURS  3 TIMES.
               03  Z05-TOKUKIZAIAGEKSNKBNCOB.
                 04  Z05-TOKUKIZAIAGEKSNKBN.
-                  05  Z05-VALUE   PIC X(21).
+                  05  Z05-VALUE   PIC X(20).
                 04  Z05-TOKUKIZAIAGEKSN-COUNT   PIC S9(9)   BINARY.
-                04  Z05-TOKUKIZAIAGEKSN-ITEM    PIC X(20)   OCCURS 2.
-              03  Z05-SANSOKBNCOB.
-                04  Z05-SANSOKBN.
-                  05  Z05-VALUE   PIC X(31).
-                04  Z05-SANSOKBN-COUNT   PIC S9(9)   BINARY.
-                04  Z05-SANSOKBN-ITEM    PIC X(30)   OCCURS  2 TIMES.
+                04  Z05-TOKUKIZAIAGEKSN-ITEM    PIC X(20)   OCCURS  2.
               03  Z05-DATAKBNCOB.
                 04  Z05-DATAKBN.
-                  05  Z05-VALUE   PIC X(17).
+                  05  Z05-VALUE   PIC X(16).
                 04  Z05-DATAKBN-COUNT   PIC S9(9)   BINARY.
                 04  Z05-DATAKBN-ITEM    PIC X(16)   OCCURS  3 TIMES.
               03  Z05-TOKUKIZAISBT1COB.
                 04  Z05-TOKUKIZAISBT1.
-                  05  Z05-VALUE   PIC X(31).
+                  05  Z05-VALUE   PIC X(30).
                 04  Z05-TOKUKIZAISBT1-COUNT   PIC S9(9)   BINARY.
                 04  Z05-TOKUKIZAISBT1-ITEM    PIC X(30)   OCCURS  4.
               03  Z05-TOKUKIZAISBT2COB.
                 04  Z05-TOKUKIZAISBT2.
-                  05  Z05-VALUE   PIC X(31).
+                  05  Z05-VALUE   PIC X(30).
                 04  Z05-TOKUKIZAISBT2-COUNT   PIC S9(9)   BINARY.
                 04  Z05-TOKUKIZAISBT2-ITEM    PIC X(30)   OCCURS  2.
+              03  Z05-SANSOKBNCOB.
+                04  Z05-SANSOKBN.
+                  05  Z05-VALUE   PIC X(30).
+                04  Z05-SANSOKBN-COUNT   PIC S9(9)   BINARY.
+                04  Z05-SANSOKBN-ITEM    PIC X(30)   OCCURS  2 TIMES.

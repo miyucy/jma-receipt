@@ -18,6 +18,6 @@
         02  Z99.
      ****  02  Z99-FIXED2.
               03  Z99-INPUTCD   OCCURS   10.
-                04  Z99-VALUE   PIC X(21).
+                04  Z99-VALUE   PIC X(20).
               03  Z99-HYOUJI    OCCURS  10.
-                04  Z99-VALUE   PIC X(5).
+                04  Z99-VALUE   PIC X(4).

@@ -18,10 +18,10 @@
         02  Z98.
      ***  02  Z98-FIXED32.
               03  Z98-INPUT.
-                04  Z98-VALUE   PIC X(23).
+                04  Z98-VALUE   PIC X(22).
               03  Z98-SENTAKU.
-                04  Z98-VALUE   PIC X(31).
-              03  Z98-SELNUM     PIC X(04)   OCCURS  5.
+                04  Z98-VALUE   PIC X(30).
+              03  Z98-SELNUM     PIC X(03)   OCCURS  5.
               03  Z98-SCROLLEDWINDOW26.
                 04  Z98-LIST.
                   05  Z98-COUNT   PIC S9(9)   BINARY.
@@ -33,12 +33,12 @@
                   05  Z98-SELECT  PIC X       OCCURS  200 TIMES.
               03  Z98-JIINCOB.
                 04  Z98-JIIN.
-                  05  Z98-VALUE   PIC X(17).
+                  05  Z98-VALUE   PIC X(16).
                 04  Z98-JIIN-COUNT   PIC S9(9)   BINARY.
                 04  Z98-JIIN-ITEM    PIC X(16)   OCCURS  10 TIMES.
               03  Z98-USERCOB.
                 04  Z98-USER.
-                  05  Z98-VALUE   PIC X(11).
+                  05  Z98-VALUE   PIC X(10).
                 04  Z98-USER-COUNT   PIC S9(9)   BINARY.
                 04  Z98-USER-ITEM    PIC X(10)   OCCURS  10 TIMES.
 

@@ -18,10 +18,10 @@
         02  Z90.
       **    02  Z90-FIXED1.
               03  Z90-SRYNAME.
-                04  Z90-VALUE   PIC X(101).
+                04  Z90-VALUE   PIC X(100).
               03  Z90-SRYCDCHG      OCCURS  5.
-                04  Z90-VALUE   PIC X(21).
+                04  Z90-VALUE   PIC X(20).
               03  Z90-SRYCDNAME     OCCURS  5.
-                04  Z90-VALUE   PIC X(101).
+                04  Z90-VALUE   PIC X(100).
               03  Z90-SRYCD.
-                04  Z90-VALUE   PIC X(21).
+                04  Z90-VALUE   PIC X(20).

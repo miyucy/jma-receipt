@@ -22,7 +22,7 @@
         02  Z01.
             03  Z01-FIXED1.
               04  Z01-SRYCD.
-                05  Z01-VALUE   PIC X(10).
+                05  Z01-VALUE   PIC X(9).
               04  Z01-BS1.
                 05  Z01-BS1VALUE   PIC X.
                 05  Z01-BS1LABEL   PIC X(10).
@@ -35,10 +35,10 @@
                     07  Z01-TYUKOEDYMD  PIC X(9).
                   06  Z01-SELECT  PIC X       OCCURS  30 TIMES.
               04  Z01-SELNUM.
-                05  Z01-VALUE   PIC X(4).
+                05  Z01-VALUE   PIC X(3).
               04  Z01-YUKOSTYMD.
-                05  Z01-VALUE   PIC X(11).
+                05  Z01-VALUE   PIC X(10).
               04  Z01-YUKOEDYMD.
-                05  Z01-VALUE   PIC X(11).
+                05  Z01-VALUE   PIC X(10).
               04  Z01-NAME.
-                05  Z01-VALUE   PIC X(101).
+                05  Z01-VALUE   PIC X(100).
