@@ -41,10 +41,10 @@ C02	{
 		};
 		HNYUGAIKBN_COMBO	{
 			HNYUGAIKBN	{
-				value	varchar(8);
+				value	varchar(14);
 			};
 			count	int;
-			item	varchar(8)[3];
+			item	varchar(14)[3];
 		};
 		B03	{
 	           	state	int;
@@ -52,11 +52,11 @@ C02	{
 		B09	{
 	           	state	int;
 		};
-		B20	{
-			label	varchar(6);
-		};
 		B21	{
 			label	varchar(4);
+		};
+		B23	{
+			label	varchar(6);
 		};
 		BANGO	{
 			value	varchar(50);
