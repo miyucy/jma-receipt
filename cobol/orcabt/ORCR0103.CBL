@@ -68,6 +68,7 @@
       *  01.02.08    NACL-Æ£¸¶    04/01/19  ÉÂ¾²¿ô¤Îµ­ºÜ¤Î½¤Àµ
       *  01.02.09    NACL-ÌçÏÆ    04/01/20  ¼«Èñ¥ì¥»¥×¥È¤Î¼«ÈñÊ¬
       *                                     Å¦Í×Íóµ­ºÜÂÐ±þ
+      *  01.02.10    NACL-ÌçÏÆ    04/01/20  ¼«Èñ¥ì¥»Å¦Í×ÍóÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3499,17 +3500,7 @@
                                                 MCPDATA-REC
       *
                IF      MCP-RC     =   ZERO
-                   IF      RECE02-RECESYUBETU  =   8888
-                   AND     RECE02-TOTALTEN (1) =   ZERO
-                   AND     RECE02-TOTALTEN (2) =   ZERO
-                   AND     RECE02-TOTALTEN (3) =   ZERO
-                   AND     RECE02-TOTALTEN (4) =   ZERO
-                   AND     RECE02-TOTALTEN (5) =   ZERO
-                   AND     CNT-RECE061         =   ZERO
-                       CONTINUE
-                   ELSE
-                       ADD     1                 TO  CNT-OUT
-                   END-IF
+                   ADD     1                 TO  CNT-OUT
                ELSE 
                    DISPLAY "ORCR0103 RECE08=" MCP-RC " " RECE08-KEY 
                    STRING
@@ -3898,6 +3889,15 @@
                    AND     RECE02-RECESYUBETU  NOT =  8888
                        GO  TO  990-RECE02-READ-SEC
                    ELSE
+                     IF      RECE02-TOTALTEN (1) =   ZERO
+                     AND     RECE02-TOTALTEN (2) =   ZERO 
+                     AND     RECE02-TOTALTEN (3) =   ZERO 
+                     AND     RECE02-TOTALTEN (4) =   ZERO
+                     AND     RECE02-TOTALTEN (5) =   ZERO
+                     AND     RECE02-RECESYUBETU  =   8888
+                     AND     RECE02-JIHTEKFLG    =   SPACE
+                       GO  TO  990-RECE02-READ-SEC
+                     ELSE
                        IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM
                            GO  TO  990-RECE02-READ-SEC
                        ELSE
@@ -3926,6 +3926,7 @@
                                PERFORM 900-SYSKANRI-HENSYU-SEC
                            END-IF
                        END-IF 
+                     END-IF
                    END-IF    
            END-READ
       *

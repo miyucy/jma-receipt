@@ -58,6 +58,7 @@
       *  01.00.22    NACL-ÌçÏÆ    03/11/26  ¼«Èñ¥ì¥»¥×¥È¤Î¼«ÈñÊ¬
       *                                     Å¦Í×Íóµ­ºÜÂÐ±þ
       *  01.00.23    NACL-Æ£¸¶    04/01/19  ÉÂ¾²¿ô¤Îµ­ºÜ¤Î½¤Àµ
+      *  01.00.24    NACL-ÌçÏÆ    04/01/20  ¼«Èñ¥ì¥»Å¦Í×ÍóÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4422,22 +4423,7 @@
                                                 MCPDATA-REC
       *
                IF      MCP-RC     =   ZERO
-                   IF      RECE62-RECESYUBETU       =   8888
-                   AND     RECE62-TOTALTEN (1)      =   ZERO
-                   AND     RECE62-TOTALTEN (2)      =   ZERO 
-                   AND     RECE62-TOTALTEN (3)      =   ZERO 
-                   AND     RECE62-TOTALTEN (4)      =   ZERO
-                   AND     RECE62-TOTALTEN (5)      =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI(1) =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI(2) =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI(3) =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI(4) =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI(5) =   ZERO
-                   AND     CNT-RECE661              =   ZERO
-                       CONTINUE
-                   ELSE
-                       ADD     1                 TO  CNT-OUT
-                   END-IF
+                   ADD     1                 TO  CNT-OUT
                ELSE 
                    DISPLAY "ORCR0710 RECE08=" MCP-RC " " RECE08-KEY 
                    STRING
@@ -4908,6 +4894,25 @@
                    AND     RECE62-RECESYUBETU  NOT =  8888
                        GO  TO  900-RECE62-READ-SEC
                    ELSE
+                     IF      RECE62-TOTALTEN (1) =   ZERO
+                     AND     RECE62-TOTALTEN (2) =   ZERO 
+                     AND     RECE62-TOTALTEN (3) =   ZERO 
+                     AND     RECE62-TOTALTEN (4) =   ZERO
+                     AND     RECE62-TOTALTEN (5) =   ZERO
+                     AND     RECE62-SHOKUJIRYOYOHI (1)
+                                               =   ZERO
+                     AND     RECE62-SHOKUJIRYOYOHI (2)
+                                               =   ZERO
+                     AND     RECE62-SHOKUJIRYOYOHI (3)
+                                               =   ZERO
+                     AND     RECE62-SHOKUJIRYOYOHI (4)
+                                               =   ZERO
+                     AND     RECE62-SHOKUJIRYOYOHI (5)
+                                               =   ZERO
+                     AND     RECE62-RECESYUBETU  =   8888
+                     AND     RECE62-JIHTEKFLG    =   SPACE
+                       GO  TO  900-RECE62-READ-SEC
+                     ELSE
       *
                        DISPLAY "RECE62  PTNUM=" RECE62-PTNUM
       *
@@ -4932,6 +4937,7 @@
                             PERFORM 900-SYSKANRI-HENSYU-SEC
                        END-IF
       *
+                     END-IF
                    END-IF    
            END-READ
       *
