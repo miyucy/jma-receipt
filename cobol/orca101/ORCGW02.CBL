@@ -1397,7 +1397,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       2
+                   UNTIL   IDY     >       3
                IF      SPA-GMN-SYOHOPRTFLG =   SPA-GMN-SYOHOPRTFLGL
                                                               (IDY)
                    MOVE    SPA-GMN-SYOHOPRTFLGLST (IDY)
