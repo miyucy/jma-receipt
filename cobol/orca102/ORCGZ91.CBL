@@ -937,11 +937,10 @@
       *
            PERFORM 410-SRYSTR-CHK-SEC
       *
-           IF      FLG-OK          =   ZERO
-               MOVE    4               TO  SPA-GMN-CUR
-               MOVE    "0001"          TO  SPA-ERRCD
+           IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  400-SRYSTR-EXT
            END-IF
+      *
            MOVE    SPA-Z91-SRYSTR  TO  SPA-Z91-SRYEND
       *
            MOVE    5               TO  SPA-GMN-CUR
@@ -958,9 +957,7 @@
       *
            PERFORM 410-SRYEND-CHK-SEC
       *
-           IF      FLG-OK   =   ZERO
-               MOVE    5                TO  SPA-GMN-CUR
-               MOVE    "0001"           TO  SPA-ERRCD
+           IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  400-SRYEND-EXT
            END-IF
       *
@@ -975,6 +972,13 @@
        410-SRYSTR-CHK-SEC          SECTION.
       *
            MOVE    ZERO            TO  FLG-OK
+      *
+           IF      SPA-Z91-SRYSTR      =   SPACE
+               MOVE    4               TO  SPA-GMN-CUR
+               MOVE    "0006"          TO  SPA-ERRCD
+               GO  TO  410-SRYSTR-CHK-EXT
+           END-IF
+      *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   SPA-SRYSTR-MAX
                IF       SPA-GMN-SRYSTRL(IDX)   =  SPA-Z91-SRYSTRL
@@ -984,6 +988,12 @@
                     MOVE    SPA-SRYSTR-MAX TO  IDX
                END-IF
            END-PERFORM
+      *
+           IF      FLG-OK          =   ZERO
+               MOVE    4               TO  SPA-GMN-CUR
+               MOVE    "0005"          TO  SPA-ERRCD
+           END-IF
+      *
            .
        410-SRYSTR-CHK-EXT.
            EXIT.
@@ -994,6 +1004,13 @@
        410-SRYEND-CHK-SEC          SECTION.
       *
            MOVE    ZERO            TO  FLG-OK
+      *
+           IF      SPA-Z91-SRYEND      =   SPACE
+               MOVE    5               TO  SPA-GMN-CUR
+               MOVE    "0006"          TO  SPA-ERRCD
+               GO  TO  410-SRYEND-CHK-EXT
+           END-IF
+      *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   SPA-SRYEND-MAX
                IF       SPA-GMN-SRYENDL(IDX)   =  SPA-Z91-SRYENDL
@@ -1003,6 +1020,17 @@
                     MOVE    SPA-SRYEND-MAX TO  IDX
                END-IF
            END-PERFORM
+      *
+           IF      FLG-OK          =   ZERO
+               MOVE    5               TO  SPA-GMN-CUR
+               MOVE    "0005"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF    SPA-Z91-SRYSTRL   >   SPA-Z91-SRYENDL
+               MOVE    5               TO  SPA-GMN-CUR
+               MOVE    "0007"          TO  SPA-ERRCD
+               GO  TO  410-SRYEND-CHK-EXT
+           END-IF
            .
        410-SRYEND-CHK-EXT.
            EXIT. 
@@ -1132,15 +1160,11 @@
       *
            IF      SPA-GMN-SRY(2)      =   "T"
                PERFORM 410-SRYSTR-CHK-SEC
-               IF      FLG-OK          =   ZERO
-                   MOVE    "0001"          TO  SPA-ERRCD
-                   MOVE    4               TO  SPA-GMN-CUR
+               IF      SPA-ERRCD       NOT =   SPACE
                    GO  TO  490-PRINT-MAE-EXT
                END-IF
                PERFORM 410-SRYEND-CHK-SEC
-               IF      FLG-OK          =   ZERO
-                   MOVE    "0001"          TO  SPA-ERRCD
-                   MOVE    5               TO  SPA-GMN-CUR
+               IF      SPA-ERRCD       NOT =   SPACE
                    GO  TO  490-PRINT-MAE-EXT
                END-IF
            END-IF
@@ -2013,10 +2037,6 @@
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
-      *----(02.00.04)--ADD-START---
-               WHEN    "0001"
-                   MOVE    "診療区分エラー"           TO  SPA-ERRMSG
-      *----(02.00.04)--ADD-END-----
                WHEN    "0002"
                    MOVE    "日付入力エラー"           TO  SPA-ERRMSG
                WHEN    "0003"
@@ -2024,6 +2044,16 @@
                WHEN    "0004"
                    MOVE    "パラメタが入力されてない項目があります"
                                                       TO  SPA-ERRMSG
+      *----(02.00.04)--ADD-START---
+               WHEN    "0005"
+                   MOVE    "診療区分選択エラー"       TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "診療区分が選択されていません"
+                                                      TO  SPA-ERRMSG
+               WHEN    "0007"
+                   MOVE    "開始より終了が小さくなっています"
+                                                      TO  SPA-ERRMSG
+      *----(02.00.04)--ADD-END-----
                WHEN    "1001"
                    MOVE    "出力ができませんでした"
                                                       TO  SPA-ERRMSG
