@@ -3483,11 +3483,11 @@
            MOVE    SPA-NAI-W20-YUKOSTYMD
                                    TO  W20SUB01-I-KJNYMD
       *
-      *    IF    ( SPA-GMN-W20-CHK-BTU-KNGSIS  =   "T" )
-      *        MOVE    "1"             TO  W20SUB01-I-KNGSISUKBN
-      *    ELSE
-      *        MOVE    SPACE           TO  W20SUB01-I-KNGSISUKBN
-      *    END-IF
+           IF    ( SPA-GMN-W20-CHK-BTU-KNGSIS  =   "T" )
+               MOVE    "1"             TO  W20SUB01-I-KNGSISUKBN
+           ELSE
+               MOVE    SPACE           TO  W20SUB01-I-KNGSISUKBN
+           END-IF
       *
            MOVE    SPA-GMN-W20-BTU-SBT-CD
                                        TO  W20SUB01-I-BTUSBTKBN
