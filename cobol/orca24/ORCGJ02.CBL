@@ -3944,6 +3944,10 @@
       *    剤回数一括入力処理
       *****************************************************************
        41019-IKKATU-CHK-SEC             SECTION.
+      *TEST
+           DISPLAY "41019-IKKATU-CHK-SEC:" 
+               ",J02-IKKATU:" J02-IKKATU
+      *TEST
       *
            MOVE    11                  TO  SPA-GMN-CUR
       *
@@ -6040,7 +6044,7 @@
                PERFORM 410191-JIGETU-SYORI1-SEC
            END-IF
            .
-        41019-JIGETU-SYORI-EXT.
+       41019-JIGETU-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7558,6 +7562,7 @@
            END-IF
            MOVE    SYU-ACCT-UPDKBN     TO  WRK-SYU-ACCT-UPDKBN
       *
+           MOVE    SPACE               TO  SPA-ERRCD
            INITIALIZE                  LNK-ORCSSAIKEISAN-REC
            MOVE    SYU-HOSPID          TO  LNK-ORCSSKS-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  LNK-ORCSSKS-NYUGAIKBN
@@ -7567,6 +7572,12 @@
            CALL    "ORCSSAIKEISAN"     USING
                                        SPA-AREA
                                        LNK-ORCSSAIKEISAN-REC
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    0                   TO  FLG-ERR
+           ELSE
+               MOVE    1                   TO  FLG-ERR
+           END-IF
+           MOVE    SPACE               TO  SPA-ERRCD
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -7584,7 +7595,14 @@
                MOVE    1               TO  FLG-SYUNOU
            END-IF
       *
-           IF      FLG-SYUNOU          =   ZERO
+           IF      FLG-ERR         =   1
+               IF      SPA-J025-MAX        <=  100
+                   MOVE    "エラ−"    TO  SPA-J025-KBNMEI
+                                                 (SPA-J025-MAX)
+               END-IF
+           END-IF
+           IF     (FLG-SYUNOU          =   ZERO )  AND
+                  (FLG-ERR             =   ZERO )
                IF      SPA-J025-MAX        <=  100
                    MOVE    SYU-SKYMONEY    TO  SPA-J025-ATO-SKYMONEY
                                                     (SPA-J025-MAX)
