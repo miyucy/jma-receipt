@@ -28,7 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *
+      *  01.00.01    NACL-太田    02/11/04  暫定的に定期請求を月末のみ
+      *                                     選択可とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -43,8 +44,11 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *
       *    スパ領域
            COPY    "COMMON-SPA".
+      *
+           COPY    "ENUM-VALUE".
       *
       *    システム管理情報設定用共通パラメタ
            COPY    "W01COMMON-SPA".
@@ -241,19 +245,33 @@
            MOVE    1                   TO  SPA-GMN-CUR.
            MOVE    1                   TO  SPA-GMN-PAGE.
       *
-           MOVE    SPACE               TO  SYS-5010-REC.
-           INITIALIZE                      SYS-5010-REC.
-           MOVE    "5010"                  TO  SYS-5010-KANRICD.
-           MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD.
-           MOVE    SYS-5010-REC            TO  MCPDATA-REC.
-           PERFORM 900-SYSKANRI-INV-SEC.
-           IF  FLG-SYSKANRI   =   ZERO
-               MOVE    MCPDATA-REC             TO  SYS-5010-REC
-               MOVE    SYS-5010-SEIKYU-DAY1    TO  SPA-GMN-SEIKYU01
-               MOVE    SYS-5010-SEIKYU-DAY2    TO  SPA-GMN-SEIKYU02
-               MOVE    SYS-5010-SEIKYU-DAY3    TO  SPA-GMN-SEIKYU03
-               MOVE    SYS-5010-RESEIKYUKBN    TO  SPA-GMN-RESEIKYUKBN
-           END-IF.
+      *---- (01.00.01) LINE DEL START --------------------------------
+      *    MOVE    SPACE               TO  SYS-5010-REC.
+      *    INITIALIZE                      SYS-5010-REC.
+      *    MOVE    "5010"                  TO  SYS-5010-KANRICD.
+      *    MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD.
+      *    MOVE    SYS-5010-REC            TO  MCPDATA-REC.
+      *    PERFORM 900-SYSKANRI-INV-SEC.
+      *    IF  FLG-SYSKANRI   =   ZERO
+      *        MOVE    MCPDATA-REC             TO  SYS-5010-REC
+      *        MOVE    SYS-5010-SEIKYU-DAY1    TO  SPA-GMN-SEIKYU01
+      *        MOVE    SYS-5010-SEIKYU-DAY2    TO  SPA-GMN-SEIKYU02
+      *        MOVE    SYS-5010-SEIKYU-DAY3    TO  SPA-GMN-SEIKYU03
+      *        MOVE    SYS-5010-RESEIKYUKBN    TO  SPA-GMN-RESEIKYUKBN
+      *
+      *    END-IF.
+      *---- (01.00.01) LINE DEL START --------------------------------
+      *---- (01.00.01) LINE ADD START --------------------------------
+      *
+           MOVE    99                     TO  SPA-GMN-SEIKYU01
+           MOVE    ZERO                   TO  SPA-GMN-SEIKYU02
+           MOVE    ZERO                   TO  SPA-GMN-SEIKYU03
+           MOVE    "2"                    TO  SPA-GMN-RESEIKYUKBN
+      *
+           MOVE    5               TO  SPA-GMN-CUR
+           .
+      *
+      *---- (01.00.01) LINE ADD END   --------------------------------
       *
        310-SPASET-EXT.
            EXIT.
@@ -417,6 +435,12 @@
            END-IF.
            MOVE    SPA-GMN-RESEIKYUKBN     TO  W23-RESEIKYUKBN.
       *
+      *---- (01.00.01) LINE ADD START --------------------------------
+           MOVE    WIDGET-INSENSITIVE      TO  W23-SEIKYU01-STATE
+                                               W23-SEIKYU02-STATE
+                                               W23-SEIKYU03-STATE
+                                               W23-RESEIKYUKBN-STATE
+      *---- (01.00.01) LINE ADD END   --------------------------------
            PERFORM 5011-MAPCUR-SEC.
       *
        500-GMNHEN-EXT.
