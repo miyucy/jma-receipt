@@ -4521,6 +4521,7 @@
       *    »áÌ¾¸¡º÷¤Ø
            IF      SPTNUM-RC           =   20
       *
+               MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
                MOVE    SPACE               TO  LINKAREA
                MOVE    SPA-KYOUTU          TO  LNK-COMMON
                MOVE    SPA-K02             TO  LNK-SCRSPA
