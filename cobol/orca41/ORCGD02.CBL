@@ -158,7 +158,6 @@
            03  T-HANNTEI6-3        PIC X(02).
            03  T-HANNTEI6-4        PIC X(02).
            03  T-HANNTEI7          PIC X(02).
-           03  T-HANNTEI8          PIC X(02).
            03  T-ERR-01            PIC X(01).
            03  T-ERR-02            PIC X(01).
            03  T-ERR-03            PIC X(01).
@@ -345,6 +344,10 @@
            03  W-HANNTEI-KOH-LIST             OCCURS  100.
                05  W-HANNTEI-KOH   PIC 9(10).
                05  W-HANNTEI-KOHN  PIC X(03).
+      *    診療会計の診療科作業
+       01  W-ACCTSRYKA-AREA.
+           03  W-HANNTEI-ACCTSRYKA-LIST       OCCURS  100.
+               05  W-HANNTEI-ACCTSRYKA PIC X(02).
       *
       *    メッセージ領域
        01  T-MESSAGE-AREA.
@@ -439,7 +442,7 @@
                "510-04該当患者は患者病名情報に古い診療開始日の疑い病名が
       -        "入力されています                  ".
            03  T-MESSAGE-510-05    PIC X(90)   VALUE
-               "510-05初診入力日で病名開始日が登録されていません        
+               "510-05初診入力日で病名開始日が登録された病名がありません
       -        "                                  ".
            03  T-MESSAGE-510-06    PIC X(90)   VALUE
                "510-06該当患者は病名に対応する病名コードが入力されていま
@@ -447,6 +450,9 @@
            03  T-MESSAGE-510-07    PIC X(90)   VALUE
                "510-07該当患者は転帰区分と転帰日の関係誤り              
       -        "                                  ".
+           03  T-MESSAGE-510-08    PIC X(90)   VALUE
+               "510-08該当患者は患者病名情報に診療年月に対応する病名が入
+      -        "力されていません                  ".
            03  T-MESSAGE-520-01    PIC X(90)   VALUE
                "520-01診療科履歴情報テーブル異常                        
       -        "                                  ".
@@ -1155,6 +1161,7 @@
                INITIALIZE                W-TABLE-S4
                INITIALIZE                WK-NYUINACCT-K
                INITIALIZE                W-KOH-AREA
+               INITIALIZE                W-ACCTSRYKA-AREA
                MOVE    ALL ZERO          TO  W-NACCT-DAY-K-ERR
                MOVE    ZERO              TO  W-JITU-DAY4
                MOVE    ZERO              TO  W-JITU-DAY5
@@ -1164,7 +1171,6 @@
                MOVE    SPACE             TO  T-HANNTEI6-3
                MOVE    SPACE             TO  T-HANNTEI6-4
                MOVE    SPACE             TO  T-HANNTEI7
-               MOVE    SPACE             TO  T-HANNTEI8
                MOVE    "---"             TO  W-COMB-HANNTEI1
                MOVE    SPACE             TO  W-COMB-HANNTEI2
                MOVE    SPACE             TO  T-ERR-01
@@ -1226,14 +1232,31 @@
                    MOVE    SPACE             TO  T-ERR-07
                    MOVE    SPACE             TO  T-ERR-13-3
                    MOVE    SPACE             TO  T-ERR-15
-                   PERFORM T-510-RECECHEK-SEC
+                   MOVE    "*"               TO  T-HANNTEI3
+                   MOVE    "*"               TO  T-HANNTEI3
+                   PERFORM VARYING  IDX5  FROM  1  BY 1
+                           UNTIL    IDX5  >   100
+                       IF  W-HANNTEI-ACCTSRYKA (IDX5)  =  ACCT-SRYKA
+                           MOVE    200               TO  IDX5
+                           MOVE    SPACE             TO  T-HANNTEI3
+                           MOVE    "ED"              TO  T-HANNTEI6
+                       ELSE
+                           IF  W-HANNTEI-ACCTSRYKA (IDX5)  =  SPACE
+                               PERFORM T-510-RECECHEK-SEC
+                               MOVE    ACCT-SRYKA
+                                         TO  W-HANNTEI-ACCTSRYKA (IDX5)
+                               MOVE    200             TO  IDX5
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               ELSE
+                   MOVE    SPACE             TO  T-HANNTEI3
                END-IF
       *
                IF  (SPA-GMN-CNV (5)   =   "1")    AND
                    (T-ERR-05          =  SPACE)   AND
-                   (T-HANNTEI6        =   "CH")   AND
-                   ((T-HANNTEI7        =  "ER")    OR
-                    (T-HANNTEI8        =  "ER"))
+                   (T-HANNTEI6        =  "CH")    AND
+                   (T-HANNTEI7        =  "ER")
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                    MOVE    SPACE             TO  DID2-REC
                    MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
@@ -1241,7 +1264,23 @@
                    MOVE    ACCT-PTID         TO  DID2-REC(26:10)
                    MOVE    T-MESSAGE-510-05  TO  DID2-REC(71:90)
                    WRITE   DID2-REC
+                   MOVE    SPACE             TO  T-HANNTEI3
                    MOVE    "*"               TO  T-ERR-05
+               END-IF
+      *
+               IF  (SPA-GMN-CNV (5) NOT = SPACE)  AND
+                   (T-ERR-05            = SPACE)  AND
+                   (T-HANNTEI3          = "*")
+                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                   MOVE SPACE                TO  DID2-REC
+                   MOVE ACCT-HOSPID          TO  DID2-REC(1:24)
+                   MOVE "-"                  TO  DID2-REC(25:1)
+                   MOVE ACCT-PTID            TO  DID2-REC(26:10)
+                   MOVE T-MESSAGE-510-08     TO  DID2-REC(71:90)
+                   WRITE   DID2-REC
+                   MOVE    "*"               TO  T-ERR-05
+                   MOVE    "ED"              TO  T-HANNTEI6
+                   MOVE    "ED"              TO  T-HANNTEI6-1
                END-IF
       *
                IF  (SPA-GMN-CNV (12)    =  "1")    AND
@@ -1482,9 +1521,12 @@
            ELSE
                PERFORM T-300-RECECHEK-READ-SEC
                IF  MCP-RC   NOT =   ZERO
-                   IF  (T-ERR-01     =   SPACE)  AND
-                       (T-ERR-02     =   SPACE)  AND
-                       (T-ERR-13-2   =   SPACE)
+                   IF  (T-ERR-01            =   SPACE)  AND
+                       (T-ERR-02            =   SPACE)  AND
+                       (T-ERR-13-2          =   SPACE)  AND
+                       ((SPA-GMN-CNV (1)    =   "1")    OR
+                        (SPA-GMN-CNV (2)    =   "1")    OR
+                        (SPA-GMN-CNV (13)   =   "1"))
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                        MOVE    SPACE              TO  DID2-REC
                        MOVE    ACCT-HOSPID        TO  DID2-REC(1:24)
@@ -2279,29 +2321,22 @@
                ELSE
                    PERFORM UNTIL      MCP-RC   NOT  =  ZERO
                        MOVE    MCPDATA-REC           TO  PTBYOMEI-REC
-                       MOVE    "*"                   TO  T-HANNTEI3
-                       IF  PTBYO-SRYYMD(1:6)      > ACCT-SRYYM
+                       IF  (PTBYO-SRYYMD(1:6) NOT > ACCT-SRYYM)  AND
+                           (PTBYO-TENKIKBN        = SPACE)  AND
+                           ((PTBYO-TENKIYMD        = SPACE)  OR
+                            (PTBYO-TENKIYMD        = ZERO))
                            MOVE    SPACE             TO  T-HANNTEI3
                        END-IF
                        IF  (PTBYO-SRYYMD(1:6) NOT > ACCT-SRYYM)  AND
-                           (PTBYO-TENKIKBN        = SPACE)
+                           (PTBYO-TENKIKBN      NOT = SPACE)  AND
+                           (PTBYO-TENKIYMD      NOT = SPACE)  AND
+                           (PTBYO-TENKIYMD      NOT = ZERO)   AND
+                           (PTBYO-TENKIYMD(1:6) NOT < ACCT-SRYYM)
                            MOVE    SPACE             TO  T-HANNTEI3
                        END-IF
-                       IF  (PTBYO-TENKIYMD    NOT = SPACE)  AND
-                           (PTBYO-TENKIYMD    NOT = ZERO)
-                           MOVE    SPACE             TO  T-HANNTEI3
-                       END-IF
-      *修正/*開始*03.06.20*********************************************
-                       IF  (PTBYO-SRYYMD   NOT  =   SPACE)      AND
-                           (PTBYO-SRYYMD   NOT  =   ZERO)       AND
-                           (PTBYO-SRYYMD(1:6)   >   ACCT-SRYYM)
-                           PERFORM T-510-RECECHEK-CHK1-SEC
-                       END-IF
-      *修正/*終了*03.06.20*********************************************
                        IF  (SPA-GMN-CNV (5)   = "1")    AND
                            (T-ERR-05          = SPACE)  AND
-                           ((T-HANNTEI3      = "*")     OR
-                            (PTBYO-BYOMEI    = SPACE))
+                           (PTBYO-BYOMEI      = SPACE)
                            IF  T-HANNTEI6-1      = SPACE
                                COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                                MOVE SPACE            TO  DID2-REC
@@ -2406,7 +2441,6 @@
                            (PTBYO-BYOMEI     NOT = SPACE)       AND
                            (PTBYO-SRYYMD(1:6)    = ACCT-SRYYM)  AND
                            (T-ERR-05             = SPACE)
-                           MOVE    SPACE              TO  T-HANNTEI8
                            MOVE    PTBYO-SRYYMD(7:2)  TO  IDX7
                            IF  W-ACCT-DAY (IDX7) =  ZERO
                                MOVE    "ER"           TO  T-HANNTEI7
@@ -2481,64 +2515,6 @@
        T-510-RECECHEK-READ-EXT.
            EXIT.
       *
-      *******************
-      *
-      *修正/*開始*03.06.20*********************************************
-       T-510-RECECHEK-CHK1-SEC           SECTION.
-      *
-           INITIALIZE                  SRYKARRK-REC.
-           MOVE    ACCT-HOSPID         TO  KARRK-HOSPID.
-           MOVE    ACCT-PTID           TO  KARRK-PTID.
-           MOVE    PTBYO-SRYKA         TO  KARRK-SRYKA.
-      *
-           MOVE    SRYKARRK-REC        TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-      *
-           IF  MCP-RC   NOT =   ZERO
-               IF  FLG-ERR-TBL   =   ZERO
-                   MOVE    1                       TO  FLG-ERR-TBL
-                   MOVE    SPACE                   TO  DID2-REC
-                   MOVE    T-MESSAGE-520-01        TO  DID2-REC(10:90)
-                   WRITE   DID2-REC
-               END-IF
-               MOVE    SPACE                   TO  DID3-REC
-               MOVE    T-MESSAGE-520-01(1:60)  TO  DID3-REC(1:60)
-               WRITE   DID3-REC
-           ELSE
-               PERFORM T-520-RECECHEK-READ-SEC
-               IF  MCP-RC    NOT  =   ZERO
-                   MOVE    SPACE                 TO  DID2-REC
-                   MOVE    ACCT-HOSPID           TO  DID2-REC(1:24)
-                   MOVE    "-"                   TO  DID2-REC(25:1)
-                   MOVE    ACCT-PTID             TO  DID2-REC(26:10)
-                   MOVE    "-"                   TO  DID2-REC(36:1)
-                   MOVE    PTBYO-SRYKA           TO  DID2-REC(37:2)
-                   MOVE    T-MESSAGE-520-02      TO  DID2-REC(71:90)
-                   MOVE    PTBYO-SRYKA           TO  DID2-REC(191:2)
-               ELSE
-                   MOVE    MCPDATA-REC           TO  SRYKARRK-REC
-                   IF  PTBYO-SRYYMD(1:6)   >   KARRK-LASTYMD(1:6)
-                       MOVE    "*"                   TO  T-HANNTEI3
-                   END-IF
-               END-IF
-           END-IF.
-      *
-           INITIALIZE                  MCPAREA.
-           MOVE    "DBCLOSE"           TO  MCP-FUNC.
-           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-      *
-       T-510-RECECHEK-CHK1.
-           EXIT.
-      *修正/*終了*03.06.20*********************************************
       *****************************************************************
       *    診療科履歴情報テーブル 参照処理
       *****************************************************************
@@ -2892,7 +2868,6 @@
                         (SRY-SRYCD (4)   =   W-YOYAKU6)   OR
                         (SRY-SRYCD (5)   =   W-YOYAKU6))
                        MOVE    "CH"                    TO  T-HANNTEI6
-                       MOVE    "ER"                    TO  T-HANNTEI8
                        MOVE    ACCT-DAY-TBL2 (1)       TO  WK-SRYACCT
                    END-IF
                    IF  T-HANNTEI6   =   SPACE
