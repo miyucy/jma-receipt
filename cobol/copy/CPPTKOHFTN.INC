@@ -38,7 +38,7 @@
       *ÊÝ¸±ÈÖ¹æ¡Ê¸øÈñ¡Ë
            03  PTKOHFTN-KOHNUM             PIC  X(03).
       *»ÙÊ§¶èÊ¬
-           03  PTKOH-PAYKBN                PIC  X(02).
+           03  PTKOHFTN-PAYKBN             PIC  X(02).
       *³°Íè¾å¸Â³Û
            03  PTKOHFTN-GAIJGNGAK          PIC  9(07).
       *Æþ±¡¾å¸Â³Û
