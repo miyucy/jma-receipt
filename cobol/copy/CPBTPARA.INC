@@ -33,7 +33,7 @@
       *連番号
                05  BTPARA-RENNUM        PIC 9(04).
       *ジョブＩＤ
-           05  BTPARA-JOBID             PIC 9(03).
+               05  BTPARA-JOBID         PIC 9(03).
       *scriptID
            03  BTPARA-SCRIPTID          PIC X(20).
       *パラメタ区分

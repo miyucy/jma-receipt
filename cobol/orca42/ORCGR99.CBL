@@ -470,6 +470,12 @@
                                            TO  SPA-R01-RECE07-SRYYM
                                    MOVE    SPA-RECE07-NYUGAIKBN
                                            TO  SPA-R01-RECE07-NYUGAIKBN
+                                   MOVE    SPA-RECE07-SYORISBT
+                                           TO  SPA-R01-RECE07-SYORISBT
+                                   MOVE    SPA-RECE07-STYMD
+                                           TO  SPA-R01-RECE07-STYMD
+                                   MOVE    SPA-RECE07-EDYMD
+                                           TO  SPA-R01-RECE07-EDYMD
                                END-IF
                            END-IF   
                        END-IF
@@ -568,10 +574,11 @@
       *****************************************************************
        4501-REPRINT-CHK-SEC         SECTION.
       *
-           INITIALIZE              SPA-RECE07-KEY
-                                   SPA-RECE07-RECEKBN
-                                   SPA-RECE07-NYUGAIKBN
-                                   SPA-RECE07-SRYYM
+      *****INITIALIZE              SPA-RECE07-KEY
+      *****                        SPA-RECE07-RECEKBN
+      *****                        SPA-RECE07-NYUGAIKBN
+      *****                        SPA-RECE07-SRYYM
+           INITIALIZE              SPA-RECE07-REC
       *
       *
            INITIALIZE                  RECE07-REC
@@ -599,10 +606,11 @@
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
-               MOVE    RECE07-KEY          TO  SPA-RECE07-KEY
-               MOVE    RECE07-RECEKBN      TO  SPA-RECE07-RECEKBN
-               MOVE    RECE07-SRYYM        TO  SPA-RECE07-SRYYM
-               MOVE    RECE07-NYUGAIKBN    TO  SPA-RECE07-NYUGAIKBN
+      *********MOVE    RECE07-KEY          TO  SPA-RECE07-KEY
+      *********MOVE    RECE07-RECEKBN      TO  SPA-RECE07-RECEKBN
+      *********MOVE    RECE07-SRYYM        TO  SPA-RECE07-SRYYM
+      *********MOVE    RECE07-NYUGAIKBN    TO  SPA-RECE07-NYUGAIKBN
+               MOVE    RECE07-REC          TO  SPA-RECE07-REC
            END-IF
       *
            .

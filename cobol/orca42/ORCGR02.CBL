@@ -74,6 +74,7 @@
       *  中止処理追加
       *  01.06.01    NACL-藤原    04/09/28  中止ボタンを追加
       *                                     印刷済のチェック表示対応 
+      *  01.06.02    NACL-藤原    05/01/13  受診日指定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -131,7 +132,7 @@
                05  SPA-GMN-CUR                     PIC 9(03).
                05  SPA-GMN-AREA.
                    07  SPA-GMN-SYOKBN              PIC X(01).
-                   07  SPA-GMN-FILEKBN             PIC X(40).
+                   07  SPA-GMN-FILEKBN             PIC X(42).
                    07  SPA-GMN-CREYMD              PIC X(22).
                    07  SPA-GMN-PAGEH               PIC 9(04).
                    07  SPA-GMN-KENSUH              PIC 9(04).
@@ -259,6 +260,8 @@
            03  WRK-TEISYUTUSAKI    PIC X(01).
            03  WRK-HENFLG          PIC 9(01).
            03  WRK-PAGE            PIC ZZZZ9.
+           03  WRK-STYMD           PIC X(22).
+           03  WRK-EDYMD           PIC X(22).
       *     
            03  WRK-SHELL-ARG1.
              05  WRK-SHELL-SRYYM   PIC  X(06).
@@ -564,10 +567,39 @@
                        WHEN    "2"
                            MOVE    "入院外"      TO  WRK-NYUGAIKBN
                    END-EVALUATE  
-                   STRING  WRK-NYUGAIKBN      DELIMITED  BY  SPACE 
-                           "個別作成分"       DELIMITED  BY  SIZE
-                           INTO    SPA-GMN-FILEKBN
-                   END-STRING
+                   EVALUATE    SPA-R01-RECE07-SYORISBT
+                       WHEN    "01"
+                           STRING  WRK-NYUGAIKBN  DELIMITED  BY  SPACE 
+                                   "個別作成分"   DELIMITED  BY  SIZE
+                                   INTO    SPA-GMN-FILEKBN
+                           END-STRING
+                       WHEN    OTHER
+                           MOVE    SPA-R01-RECE07-STYMD
+                                                      TO  WRK-SYMD
+                           PERFORM 5002-HIZUKE-HEN-SEC
+                           MOVE    WRK-HENYMDG3       TO  WRK-STYMD
+                           MOVE    SPA-R01-RECE07-EDYMD
+                                                      TO  WRK-SYMD
+                           PERFORM 5002-HIZUKE-HEN-SEC
+                           MOVE    WRK-HENYMDG3       TO  WRK-EDYMD
+                           IF      SPA-R01-RECE07-SYORISBT     =   "02" 
+                               STRING  "訂正日指定　" DELIMITED  BY SIZE
+                                       WRK-STYMD      DELIMITED  BY SIZE
+                                       "〜"           DELIMITED  BY SIZE
+                                       WRK-EDYMD (17:6)
+                                                      DELIMITED  BY SIZE
+                                       INTO    SPA-GMN-FILEKBN
+                               END-STRING
+                           ELSE    
+                               STRING  "受診日指定　" DELIMITED  BY SIZE
+                                       WRK-STYMD      DELIMITED  BY SIZE
+                                       "〜"           DELIMITED  BY SIZE
+                                       WRK-EDYMD (17:6)
+                                                      DELIMITED  BY SIZE
+                                       INTO    SPA-GMN-FILEKBN
+                               END-STRING
+                           END-IF     
+                   END-EVALUATE
            END-EVALUATE
       *　　ファイル作成日
            IF      SPA-R01-RECE07-CREYMD   NOT =   SPACE
@@ -684,6 +716,11 @@
                    END-IF
                END-PERFORM
            ELSE
+               IF    ( SPA-R01-RECE07-SYORISBT =   "2" OR  "3" )
+               AND   ( SYS-2005-PRTJYUNKBN2    =   "05"        )
+                   MOVE    SYS-2005-PRTJYUNKBN1
+                                           TO  SYS-2005-PRTJYUNKBN2
+               END-IF
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       5
                        OR      SPA-GMN-PRTJYUNL (IDX)

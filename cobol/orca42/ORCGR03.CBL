@@ -72,6 +72,7 @@
       *  中止処理追加
       *  01.05.01    NACL-藤原    04/09/28 中止ボタンを追加
       *  01.05.02    NACL-藤原    04/12/20 再印刷選択時の処理結果表示中止
+      *  01.05.03    NACL-藤原    05/01/13 受診日指定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -166,6 +167,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-RECE07          PIC 9(01).
+           03  FLG-BTPARA          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -275,9 +277,16 @@
        01  RECE07-REC. 
            COPY    "CPRCF007.INC".
       *
+      *    パラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *   日付変換サブ
             COPY    "CPORCSDAY.INC".
@@ -1269,6 +1278,12 @@
                                           TO  SPA-R01-RECE07-SRYYM
                        MOVE    SPA-RECE07-NYUGAIKBN
                                           TO  SPA-R01-RECE07-NYUGAIKBN
+                       MOVE    SPA-RECE07-SYORISBT
+                                          TO  SPA-R01-RECE07-SYORISBT
+                       MOVE    SPA-RECE07-STYMD
+                                          TO  SPA-R01-RECE07-STYMD
+                       MOVE    SPA-RECE07-EDYMD
+                                          TO  SPA-R01-RECE07-EDYMD
                    END-IF    
            END-EVALUATE
       *
@@ -1351,10 +1366,11 @@
       *****************************************************************
        4501-REPRINT-CHK-SEC         SECTION.
       *
-           INITIALIZE              SPA-RECE07-KEY
-                                   SPA-RECE07-RECEKBN
-                                   SPA-RECE07-NYUGAIKBN
-                                   SPA-RECE07-SRYYM
+      *****INITIALIZE              SPA-RECE07-KEY
+      *****                        SPA-RECE07-RECEKBN
+      *****                        SPA-RECE07-NYUGAIKBN
+      *****                        SPA-RECE07-SRYYM
+           INITIALIZE              SPA-RECE07-REC
       *
            INITIALIZE                  RECE07-REC
            IF      SPA-R01-RECEKBN     =   "0" OR  "1" OR  "2"
@@ -1384,10 +1400,11 @@
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
-               MOVE    RECE07-KEY          TO  SPA-RECE07-KEY
-               MOVE    RECE07-RECEKBN      TO  SPA-RECE07-RECEKBN
-               MOVE    RECE07-SRYYM        TO  SPA-RECE07-SRYYM
-               MOVE    RECE07-NYUGAIKBN    TO  SPA-RECE07-NYUGAIKBN
+      *********MOVE    RECE07-KEY          TO  SPA-RECE07-KEY
+      *********MOVE    RECE07-RECEKBN      TO  SPA-RECE07-RECEKBN
+      *********MOVE    RECE07-SRYYM        TO  SPA-RECE07-SRYYM
+      *********MOVE    RECE07-NYUGAIKBN    TO  SPA-RECE07-NYUGAIKBN
+               MOVE    RECE07-REC          TO  SPA-RECE07-REC
            END-IF
       *
            .
@@ -1443,6 +1460,44 @@
                        DISPLAY "2001 SYSKANRI-KEY =>" SYS-2001-KEY 
                        GO  TO  450-KOUSHIN-EXT
                    END-IF
+      *
+      *            パラメタＤＢ更新
+                   INITIALIZE                  BTPARA-REC
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  BTPARA-SHELLID
+                   MOVE    BTPARA-REC      TO  MCPDATA-REC
+                   MOVE    "DBDELETE"      TO  MCP-FUNC
+                   MOVE    PATH-TBL-BTPARA-DEL1
+                                           TO  MCP-PATH
+                   CALL    "MCPSUB"        USING
+                                               MCPAREA
+                                               MCPDATA-REC
+      *
+      *            更新日取得
+                   INITIALIZE                  ORCSMCNDATEAREA
+                    CALL    "ORCSMCNDATE"       USING
+                                               ORCSMCNDATEAREA
+      *
+                   INITIALIZE                      BTPARA-REC
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                               TO  BTPARA-SHELLID
+                   MOVE    WRK-CONS-JOB-JOBID  TO  BTPARA-JOBID
+                   MOVE    "00"                TO  BTPARA-INFO-KBN
+                   MOVE    SPA-TERMID          TO  BTPARA-TERMID
+                   MOVE    SPA-OPID            TO  BTPARA-OPID
+                   MOVE    SMCNDATE-YMD        TO  BTPARA-CREYMD
+                   MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
+                   MOVE    BTPARA-REC          TO  MCPDATA-REC
+                   MOVE    PATH-TBL-BTPARA-KEY TO  MCP-PATH
+                   MOVE    "DBINSERT"          TO  MCP-FUNC
+                   CALL    "MCPSUB"            USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
+                   IF      MCP-RC      NOT =   ZERO
+                       MOVE    "1002"          TO  SPA-ERRCD
+                       GO  TO  450-KOUSHIN-EXT
+                    END-IF
       *
       *            ジョブ開始セット
                    MOVE    "DEL"           TO  SJOBKANRI-MODE
@@ -1832,6 +1887,12 @@
                                           TO  SPA-R01-RECE07-SRYYM
                            MOVE    SPA-RECE07-NYUGAIKBN
                                           TO  SPA-R01-RECE07-NYUGAIKBN
+                           MOVE    SPA-RECE07-SYORISBT
+                                          TO  SPA-R01-RECE07-SYORISBT
+                           MOVE    SPA-RECE07-STYMD
+                                          TO  SPA-R01-RECE07-STYMD
+                           MOVE    SPA-RECE07-EDYMD
+                                          TO  SPA-R01-RECE07-EDYMD
                        END-IF
                      END-IF 
                    ELSE
@@ -2088,6 +2149,9 @@
                                                        TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "レセプト指示コードが更新できません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "1002"
+                   MOVE    "パラメタＤＢが更新できません"
                                                        TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "作成済みの帳票管理ファイルがありません"

@@ -63,6 +63,7 @@
       *  01.01.16    NACL-門脇    04/12/21  実日数０記載対応
       *  01.01.17    NACL-門脇    05/01/13  公費請求テーブル保険組合せ
       *                                     番号情報編集修正
+      *  01.01.18    NACL-藤原    05/01/14  受診日指定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -228,6 +229,7 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
            03  FLG-OPECOM          PIC 9(01).
+           03  FLG-BTPARA          PIC 9(01).
       *
            03  FLG-KOHSKY          PIC 9(01).
            03  FLG-RECE02X         PIC 9(01).
@@ -717,6 +719,9 @@
                "地方公費のみ選択されています。主保険がありません".
       *
        01  WRK-CONS-SRYYM             PIC X(06)   VALUE   "200304". 
+      *     
+           COPY    "ORCA-DBPATH".
+           COPY    "ORCA-DBMETA".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -769,6 +774,10 @@
       *    手術歴レセプトコメントマスター
        01  OPECOM-REC.
            COPY    "CPOPECOM.INC".
+      *
+      *    パラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1223,6 +1232,21 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *
+      *    パラメタＤＢ読み込み
+           INITIALIZE                      BTPARA-REC
+           MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
+           MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
+           MOVE    PATH-TBL-BTPARA-KEY5
+                                       TO  MCP-PATH
+           PERFORM 900-BTPARA-READ-SEC
+           IF      FLG-BTPARA          =   1
+               MOVE
+                   "パラメタ情報が取得できませんでした。"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    2                    TO  SPA-STS
+           END-IF
            .
        120-HOSPINF-GET-EXT.
            EXIT.
@@ -1567,55 +1591,13 @@
            PERFORM             UNTIL   FLG-RECE02X =   1
                                OR      FLG-ERR     =   1
       *
-               IF      RECE02X-RECESYUBETU     =   ZERO
-                   IF      RECE02X-HKNNUM      NOT =   SPACE 
-                       CONTINUE
-                   ELSE
-                       PERFORM 20021-KOHSKY-FUMEI-HENSYU-SEC
-                   END-IF
-               ELSE
-                   PERFORM 20022-KOHSKY-WRITE-SEC
-               END-IF 
+               PERFORM 20022-KOHSKY-WRITE-SEC
       *
                PERFORM 990-RECE02X-READ-SEC
            END-PERFORM
       *
            .
        2002-KOHSKY-WRITE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費請求書不明分レセプト出力処理
-      *****************************************************************
-       20021-KOHSKY-FUMEI-HENSYU-SEC           SECTION.
-      *
-           IF   WRK-PARA-SRYYM         =   ZERO
-      *        医療機関編集
-               MOVE  RECE02X-SRYYM         TO  WRK-SYS-SRYYMD(1:6)
-               MOVE  "01"                  TO  WRK-SYS-SRYYMD(7:2)
-               PERFORM 900-SYSKANRI-HENSYU-SEC
-           END-IF
-      *
-           MOVE    RECE02X-REC         TO  RECE02-REC 
-      *
-           MOVE    1                   TO  CNT-PAGE
-           MOVE    1                   TO  FLG-RECE11
-      *
-           MOVE    SPACE               TO  WRK-3SYU-KBN
-           MOVE    ZERO                TO  SEIHIDX
-           MOVE    ZERO                TO  KAKKIDX
-           MOVE    ZERO                TO  SESNIDX
-           MOVE    ZERO                TO  KOHIDX
-                                           KOHIDX1
-      *
-      *    帳票編集<ヘッダー部>処理
-           PERFORM 310-HC101-HEAD-HEN-SEC
-      *
-      *    帳票印刷処理
-           PERFORM 390-PRINT-OUT-SEC
-      *
-           .
-       20021-KOHSKY-FUMEI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4928,8 +4910,12 @@
            IF      WRK-PARA-SYOKBN     =   "1"
                MOVE    WRK-RECENUM         TO  RECE08-RECENUM
            ELSE
-               COMPUTE RECE08-RECENUM  =
-                       RECE02-PRTSEQ   *   100 +   CNT-PAGE
+               IF      BTPARA-INFO-KBN     =   "01"
+                   COMPUTE RECE08-RECENUM  =
+                           RECE02-PRTSEQ   *   100 +   CNT-PAGE
+               ELSE
+                   MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+               END-IF
            END-IF
            MOVE    RECE08-REC          TO  MCPDATA-REC
            PERFORM 900-RECE08-READ-SEC
@@ -5056,6 +5042,18 @@
                MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
                MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN 
                MOVE    RECE08-TERMID       TO  RECE07-TERMID
+               IF      WRK-PARA-SYOKBN     =   "2"
+                   EVALUATE    BTPARA-INFO-KBN
+                       WHEN    "01"
+                           MOVE    ZERO            TO  RECE07-SYORISBT
+                       WHEN    "02"
+                           MOVE    "1"             TO  RECE07-SYORISBT
+                       WHEN    "03"
+                           MOVE    "2"             TO  RECE07-SYORISBT
+                   END-EVALUATE
+                   MOVE    BTPARA-INFO-PARA (1:8)  TO  RECE07-STYMD
+                   MOVE    BTPARA-INFO-PARA (9:8)  TO  RECE07-EDYMD
+               END-IF 
            ELSE
                ADD     1                   TO  RECE07-PAGE
                IF      CNT-KENSU           =   1
@@ -5445,7 +5443,7 @@
                    END-IF
       *            テスト患者・レセプト種別不明のとき読み飛ばす
                    IF    ( RECE02X-TSTPTNUMKBN     =   "1"    )
-      *************OR    ( RECE02X-RECESYUBETU     =   ZERO   )
+                   OR    ( RECE02X-RECESYUBETU     =   ZERO   )
                        GO  TO  990-RECE02X-READ-SEC
                    END-IF
       *            点数が全てゼロのとき読み飛ばす
@@ -5969,6 +5967,56 @@
       *
            .
        900-OPECOM-READ-N-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-SEC         SECTION.
+      *
+           MOVE    BTPARA-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    PATH-TBL-BTPARA-KEY5    TO  MCP-PATH
+               PERFORM 900-BTPARA-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    PATH-TBL-BTPARA-KEY5
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-BTPARA-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-N-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  BTPARA-REC
+               MOVE    ZERO                TO  FLG-BTPARA
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           .
+       900-BTPARA-READ-N-EXT.
            EXIT.
       *
       *****************************************************************

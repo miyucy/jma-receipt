@@ -57,6 +57,11 @@ tbl_ptinf {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
+#-----> virtualπ‡Ã‹
+	ST_SRYYMD			char(8),virtual;
+	ED_SRYYMD			char(8),virtual;
+	NYUGAIKBN			char(1),virtual;
+	HKNKBN				char(1),virtual;
 };
 
 primary	{
@@ -189,6 +194,40 @@ path	key10	{
                AND    b.HOSPID    =   :HOSPID
                AND    b.PTID      =   c.PTID
 			ORDER BY  b.PTNUM
+		;
+	};
+};
+path	key11	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key11_csr CURSOR FOR
+		SELECT a.ptid from tbl_ptinf a, 
+		(SELECT distinct ptid from tbl_jyurrk 
+		WHERE hospid	=	:HOSPID 
+		AND (sryymd 	<=	:ED_SRYYMD 
+		AND sryymd 	>=	:ST_SRYYMD) 
+		AND nyugaikbn	=	:NYUGAIKBN 
+		AND hknkbn	=	:HKNKBN 
+		group by ptid) b 
+		WHERE a.hospid	=	:HOSPID 
+		AND a.ptid	=	b.ptid 
+		AND a.tstptnumkbn	=	'0'
+		;
+	};
+};
+path	key12	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key12_csr CURSOR FOR
+		SELECT a.* from tbl_ptinf a, 
+		(SELECT distinct ptid from tbl_jyurrk 
+		WHERE hospid	=	:HOSPID 
+		AND (sryymd 	<=	:ED_SRYYMD 
+		AND sryymd 	>=	:ST_SRYYMD) 
+		AND nyugaikbn	=	:NYUGAIKBN 
+		AND hknkbn	=	:HKNKBN 
+		group by ptid) b 
+		WHERE a.hospid	=	:HOSPID 
+		AND a.ptid	=	b.ptid 
+		AND a.tstptnumkbn	=	'0'
 		;
 	};
 };

@@ -1,19 +1,39 @@
 R01	{
 	fixed6	{
+		SYORI_COMBO	{
+			state	int;
+			SYORI	{
+				value	varchar(12);
+			};
+			count	int;
+			item	varchar(12)[5];
+		};
+		STJYUSINYMD	{
+			state	int;
+			value	varchar(10);
+		};
+		EDJYUSINYMD	{
+			state	int;
+			value	varchar(10);
+		};
 		RENNUM	{
+			state	int;
 			value	number(3);
 		};
 		SRYYM	{
-			value	varchar(8);
+			state	int;
+			value	varchar(7);
 		};
 		PTNUM	{
-			value	varchar(21);
+			state	int;
+			value	varchar(20);
 		};
 		NYUGAIKBN	{
-			value	varchar(2);
+			state	int;
+			value	varchar(1);
 		};
 		NAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		scrolledwindow1	{
 			RECELST	{
@@ -22,17 +42,20 @@ R01	{
 				rowattr int;
 				item	{
 					value1	varchar(4);
-					value2	varchar(21);
-					value3	varchar(51);
+					value2	varchar(20);
+					value3	varchar(50);
 					value4	varchar(7);
-					value5	varchar(2);
+					value5	varchar(1);
 				}	[100];
 				select	bool[100];
 			};
 		};
 		SYOKBN	{
 		    style   varchar(20); 
-			value	varchar(20);
+			value	varchar(25);
+		};
+		LABEL	{
+			value	varchar(10);
 		};
 	};
 };

@@ -10,6 +10,9 @@ tbl_recekanri	{
         PAGE                number(5);
         KENSU               number(5);
         RECEKBN             char(1);
+        SYORISBT            char(1);
+        STYMD               char(8);
+        EDYMD               char(8);
         TERMID              varchar(16);
 };
 
