@@ -432,6 +432,12 @@
                MOVE    "JYURRK-KEY8"       TO  ORC-DBPATH
                PERFORM 970-JYURRK-NEXT-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "JYURRK-KEY8"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    外来がなく、入院ののみの時、入院の最終履歴日を編集する
            IF     (WRK-LST-SRYYMD      =   SPACE )  AND
@@ -728,12 +734,12 @@
                PERFORM 920-SRYACT-NEXT-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"         USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            .
        300112-SRYACT-HEN-EXT.
            EXIT.

@@ -427,12 +427,12 @@
                PERFORM 930-SRYACCT-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"         USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        10011-SRYACCT-21HEN-EXT.
@@ -553,12 +553,12 @@
                PERFORM 930-SRYACCT-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"         USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        10012-SRYACCT-HEN-EXT.
@@ -625,13 +625,12 @@
                PERFORM 920-SRYACT-NEXT-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"         USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *                                MCPDATA-REC
-      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        600111-SRYACT-HEN-EXT.
@@ -678,7 +677,12 @@
                MOVE    "NYUINACCT-KEY17"    TO  ORC-DBPATH
                PERFORM 930-NYUINACCT-READ-SEC
            END-PERFORM
-      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
       *    入院履歴判定
            MOVE    SPACE               TO  PTNYUINRRK-REC
@@ -776,6 +780,12 @@
                MOVE    "PTNYUINRRK-KEY33"  TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-KEY33"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        200-GAIHAKU-HEN-EXT.
@@ -1136,6 +1146,7 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   10  )  OR
                               (TBL-CHO-ZAINUM(IDX) =   ZERO )
+                          OR  (ORCSCHO-ERRCD   NOT =   ZERO )
                INITIALIZE                      SRYACCT-REC
                MOVE    SPA-HOSPID          TO  ACCT-HOSPID
                MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
@@ -1189,7 +1200,6 @@
                             DISPLAY "ORCSCHOZAI SRYACCT UPD ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
                             MOVE    1               TO  ORCSCHO-ERRCD
-                            GO  TO  4005-CHOU-UPDATE-EXT
                        END-IF
       *
                    END-IF
@@ -1208,6 +1218,7 @@
       *    当月入院調剤料の剤がない時、作成する
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   10
+                          OR  (ORCSCHO-ERRCD   NOT =   ZERO )
                IF      (TBL-CHO-ZAINUM(IDX)    =   ZERO )  AND
                        (TBL-CHO-ADD   (IDX)    =   "1"  )
                    PERFORM 40052-CHOUZAI-INS-SEC
@@ -1260,6 +1271,12 @@
                MOVE    "SRYACCT-KEY11"     TO  ORC-DBPATH
                PERFORM 930-SRYACCT-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY11"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      FLG-CHK             =   ZERO
                MOVE    1               TO  FLG-SRYACCT-DEL
            END-IF
@@ -1382,6 +1399,12 @@
                PERFORM 970-JYURRK-NEXT-SEC
            END-PERFORM
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "JYURRK-KEY20"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        40052-SRYACCT-DEL-EXT.
@@ -1414,6 +1437,7 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   10  )  OR
                               (TBL-MAD-ZAINUM(IDX) =   ZERO )
+                          OR  (ORCSCHO-ERRCD   NOT =   ZERO )
                INITIALIZE                      SRYACCT-REC
                MOVE    SPA-HOSPID          TO  ACCT-HOSPID
                MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
@@ -1453,7 +1477,6 @@
                        PERFORM 40052-SRYACCT-DEL-SEC
                    ELSE
       *
-      *
                    MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
@@ -1468,7 +1491,6 @@
                         DISPLAY "ORCSCHOZAI SRYACCT UPD ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
                         MOVE    1               TO  ORCSCHO-ERRCD
-                        GO  TO  4006-MADO-UPDATE-EXT
                    END-IF
       *
                    END-IF
@@ -1476,17 +1498,18 @@
                    DISPLAY "ORCSCHOZAI SRYACCT READ ERR:" ACCT-KEY
                END-IF
       *
-      *        MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *        MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-      *        CALL    "ORCMCPSUB"          USING
-      *                                     MCPAREA
-      *                                     ORCMCPAREA
-      *                                     MCPDATA-REC
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
            END-PERFORM
       *
       *    当月入院麻毒の剤がない時、作成する
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   10
+                          OR  (ORCSCHO-ERRCD   NOT =   ZERO )
                IF      (TBL-MAD-ZAINUM(IDX)    =   ZERO )  AND
                        (TBL-MAD-ADD   (IDX)    =   "1"  )
                    PERFORM 40062-MADOKU-INS-SEC
