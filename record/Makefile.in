@@ -379,6 +379,7 @@ DB_files = \
 	tbl_senteicdchg.db \
 	tbl_ptkohftn.db \
 	tbl_receden.db \
+	tbl_kohplus.db \
 	view_I001.db \
 	view_Q001.db \
 	view_Q002.db \
