@@ -2362,6 +2362,10 @@
            MOVE    RECE05-NAMEINF(2)    TO  RECE051-NAMEINF(3)
            MOVE    RECE05-NAMEINF(3)    TO  RECE051-NAMEINF(4)
            MOVE    RECE05-NAMEINF(4)    TO  RECE051-NAMEINF(5)
+           MOVE    RECE05-DATAKBNINF(1) TO  RECE051-DATAKBNINF(1)
+           MOVE    RECE05-DATAKBNINF(2) TO  RECE051-DATAKBNINF(3)
+           MOVE    RECE05-DATAKBNINF(3) TO  RECE051-DATAKBNINF(4)
+           MOVE    RECE05-DATAKBNINF(4) TO  RECE051-DATAKBNINF(5)
       *
            MOVE    SPACE                TO  RECE051-SRYACTINF(2)
            INITIALIZE                       RECE051-SRYACTINF(2)
@@ -3226,6 +3230,8 @@
              INITIALIZE                       WRK-SRYACTINF-AREA
              MOVE    SPACE                TO  WRK-NAMEINF-AREA
              INITIALIZE                       WRK-NAMEINF-AREA
+             MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
+             INITIALIZE                       WRK-DATAKBNINF-AREA
       *      リハビリコメントの挿入
       *      ADD     1                    TO  IDX-RECE05
              MOVE    SPACE                TO  COM-RECE05-REC
@@ -3401,6 +3407,8 @@
                                              WRK-SRYACTINF(IDX-RECE05)
                     MOVE   RECE05-NAMEINF(IDX)   TO
                                              WRK-NAMEINF(IDX-RECE05)     
+                    MOVE   RECE05-DATAKBNINF(IDX) TO
+                                             WRK-DATAKBNINF(IDX-RECE05)
                END-PERFORM 
       *
                PERFORM 990-RECE05-NEXT-SEC
@@ -3434,6 +3442,8 @@
                                             TO   RECE051-SRYACTINF(IDX)  
                            MOVE  WRK-NAMEINF(IDX-RECE05)
                                             TO   RECE051-NAMEINF(IDX)
+                           MOVE  WRK-DATAKBNINF(IDX-RECE05)
+                                            TO   RECE051-DATAKBNINF(IDX)
                        END-IF  
                     END-PERFORM
                     WRITE   RECE051-REC

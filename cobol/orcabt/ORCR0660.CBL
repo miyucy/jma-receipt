@@ -1716,6 +1716,10 @@
            MOVE    RECE65-NAMEINF(2)    TO  RECE651-NAMEINF(3)
            MOVE    RECE65-NAMEINF(3)    TO  RECE651-NAMEINF(4)
            MOVE    RECE65-NAMEINF(4)    TO  RECE651-NAMEINF(5)
+           MOVE    RECE65-DATAKBNINF(1) TO  RECE651-DATAKBNINF(1)
+           MOVE    RECE65-DATAKBNINF(2) TO  RECE651-DATAKBNINF(3)
+           MOVE    RECE65-DATAKBNINF(3) TO  RECE651-DATAKBNINF(4)
+           MOVE    RECE65-DATAKBNINF(4) TO  RECE651-DATAKBNINF(5)
       *
            MOVE    SPACE                TO  RECE651-SRYACTINF(2)
            INITIALIZE                       RECE651-SRYACTINF(2)
@@ -2317,6 +2321,8 @@
              INITIALIZE                       WRK-SRYACTINF-AREA
              MOVE    SPACE                TO  WRK-NAMEINF-AREA
              INITIALIZE                       WRK-NAMEINF-AREA
+             MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
+             INITIALIZE                       WRK-DATAKBNINF-AREA
       *      リハビリコメントの挿入
       *      ADD     1                    TO  IDX-RECE65
              MOVE    SPACE                TO  COM-RECE65-REC
@@ -2493,6 +2499,8 @@
                                              WRK-SRYACTINF(IDX-RECE65)
                     MOVE   RECE65-NAMEINF(IDX)   TO
                                              WRK-NAMEINF(IDX-RECE65)     
+                    MOVE   RECE65-DATAKBNINF(IDX) TO
+                                             WRK-DATAKBNINF(IDX-RECE65)
                END-PERFORM 
       *
                PERFORM 990-RECE65-NEXT-SEC
@@ -2526,6 +2534,8 @@
                                             TO   RECE651-SRYACTINF(IDX)  
                            MOVE  WRK-NAMEINF(IDX-RECE65)
                                             TO   RECE651-NAMEINF(IDX)
+                           MOVE  WRK-DATAKBNINF(IDX-RECE65)
+                                            TO   RECE651-DATAKBNINF(IDX)
                        END-IF  
                     END-PERFORM
                     WRITE   RECE651-REC
@@ -2572,6 +2582,8 @@
            INITIALIZE                       WRK-SRYACTINF-AREA
            MOVE    SPACE                TO  WRK-NAMEINF-AREA
            INITIALIZE                       WRK-NAMEINF-AREA
+           MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
+           INITIALIZE                       WRK-DATAKBNINF-AREA
       *
            MOVE    RECE64-MEISAISU      TO  MAX-MEISAISU
       *
@@ -2632,6 +2644,8 @@
                                            WRK-SRYACTINF(IDX-RECE65)
                   MOVE   RECE65-NAMEINF(IDX)   TO
                                            WRK-NAMEINF(IDX-RECE65)     
+                  MOVE   RECE65-DATAKBNINF(IDX) TO
+                                           WRK-DATAKBNINF(IDX-RECE65)
              END-PERFORM 
       *
              PERFORM 990-RECE65-NEXT-SEC
@@ -2666,6 +2680,8 @@
                                           TO   RECE651-SRYACTINF(IDX)  
                          MOVE  WRK-NAMEINF(IDX-RECE65)
                                           TO   RECE651-NAMEINF(IDX)
+                         MOVE  WRK-DATAKBNINF(IDX-RECE65)
+                                          TO   RECE651-DATAKBNINF(IDX)
                          ADD   1          TO   WRK-CNT-MEISAI
                      END-IF  
                   END-PERFORM

@@ -1671,6 +1671,10 @@
            MOVE    RECE45-SIKFLGINF(2)  TO  RECE451-SIKFLGINF(3)
            MOVE    RECE45-SIKFLGINF(3)  TO  RECE451-SIKFLGINF(4)
            MOVE    RECE45-SIKFLGINF(4)  TO  RECE451-SIKFLGINF(5)
+           MOVE    RECE45-DATAKBNINF(1) TO  RECE451-DATAKBNINF(1)
+           MOVE    RECE45-DATAKBNINF(2) TO  RECE451-DATAKBNINF(3)
+           MOVE    RECE45-DATAKBNINF(3) TO  RECE451-DATAKBNINF(4)
+           MOVE    RECE45-DATAKBNINF(4) TO  RECE451-DATAKBNINF(5)
       *
            MOVE    SPACE                TO  RECE451-SRYACTINF(2)
            INITIALIZE                       RECE451-SRYACTINF(2)
@@ -2814,6 +2818,8 @@
              INITIALIZE                       WRK-NAMEINF-AREA
              MOVE    SPACE                TO  WRK-SIKFLGINF-AREA
              INITIALIZE                       WRK-SIKFLGINF-AREA
+             MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
+             INITIALIZE                       WRK-DATAKBNINF-AREA
       *      リハビリコメントの挿入
       *      ADD     1                    TO  IDX-RECE45
              MOVE    SPACE                TO  COM-RECE45-REC
@@ -2973,6 +2979,8 @@
                                              WRK-NAMEINF(IDX-RECE45)
                     MOVE   RECE45-SIKFLGINF(IDX)   TO
                                              WRK-SIKFLGINF(IDX-RECE45)     
+                    MOVE   RECE45-DATAKBNINF(IDX) TO
+                                             WRK-DATAKBNINF(IDX-RECE45)
                END-PERFORM 
       *
                PERFORM 990-RECE45-NEXT-SEC
@@ -3007,6 +3015,8 @@
                                             TO   RECE451-NAMEINF(IDX)
                            MOVE  WRK-SIKFLGINF(IDX-RECE45)
                                             TO   RECE451-SIKFLGINF(IDX)
+                           MOVE  WRK-DATAKBNINF(IDX-RECE45)
+                                            TO   RECE451-DATAKBNINF(IDX)
                        END-IF  
                     END-PERFORM
                     WRITE   RECE451-REC
