@@ -805,8 +805,6 @@
       *
            MOVE    2               TO  SPA-GMN-CUR
       *
-           MOVE    1               TO  FLG-SYULIST-ROW
-      *
            .
        310-SPA-SET-EXT.
            EXIT.
@@ -1212,10 +1210,11 @@
       *
            MOVE    SPA-GMN-TBL-SEL     TO  WRK-TBL-SEL-MOT
       *
+           MOVE    1                   TO  FLG-SYULIST-ROW
+      *
            MOVE    ZERO                TO  SPA-GMN-MAX
            INITIALIZE                      SPA-GMN-TBL
                                            SPA-NAI-TBL
-
       *
            MOVE   ZERO                 TO  IDX1
       *
@@ -4697,7 +4696,6 @@
       *
            INITIALIZE              SPA-GMN-INPUT
                                    SPA-GMN-TBL-SEL
-           MOVE    1                   TO  FLG-SYULIST-ROW
       *
            .
        490-ZENGETU-EXT.
@@ -4757,7 +4755,6 @@
            PERFORM 300-SYUNOU-HENSYU-SEC
            INITIALIZE              SPA-GMN-INPUT
                                    SPA-GMN-TBL-SEL
-           MOVE    1                   TO  FLG-SYULIST-ROW
       *
            .
        490-JIGETU-EXT.

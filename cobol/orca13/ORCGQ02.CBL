@@ -57,6 +57,7 @@
       * 01.00.04     NACL-太田    03/05/26+老人一割、２割を追加
       * 01.00.05     NACL-太田    03/06/10+一括入力対応
       * 01.00.06     NACL-太田    03/09/11+コラムリストに郵便番号を追加
+      * 01.00.07     NACL-太田    04/02/09+コラムリスト編集修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -104,6 +105,7 @@
            03  FLG-ENTRYCHK                        PIC 9(01).
            03  FLG-JOBEND                          PIC 9(01).
            03  FLG-HKNKOHSEL                       PIC 9(01).
+           03  FLG-GMN-INIT                        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -158,6 +160,9 @@
                05  WRK-AGE-MEI                     PIC X(04).
            03  WRK-KJYNYMD                         PIC 9(08).
            03  WRK-MCP-WIDGET                      PIC X(64).
+      *
+       01  WRK-ROW-AREA.
+           03  WRK-KEKKALST-ROW                    PIC S9(9)   BINARY.
       *
        01  WRK-WIDGET-AREA.
            03  WRK-WIDGET                          PIC X(20).
@@ -583,6 +588,8 @@
       *****************************************************************
        310-Q02-GMN-EDIT-SEC            SECTION.
       *
+      *
+           MOVE   1                TO  FLG-GMN-INIT
       *
            MOVE    SPACE           TO  SPA-GMN-Q02-KEKKATBL
                                        SPA-GMN-Q02-PTINF-AREA
@@ -1678,6 +1685,13 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
+      *
+           IF    ( FLG-GMN-INIT            =   1 )
+               MOVE    ZERO                TO  Q02-KEKKALST-ROW
+               MOVE    ZERO                TO  Q02-KEKKALST-ROWATTR
+           ELSE
+               MOVE    ZERO                TO  Q02-KEKKALST-ROWATTR
+           END-IF
       *
            MOVE    WIDGET-NORMAL           TO  Q02-B10-STATE
                                                Q02-B24-STATE
