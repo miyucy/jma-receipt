@@ -247,9 +247,15 @@
       *
                    MOVE    PTNUM-PTNUM         TO  WRK-ST-PTNUM
                END-IF
+      *        最大患者番号までとする
+               IF      (ORCBZ001S-LST-PTNUM    NOT =   SPACE )  AND
+                       (ORCBZ001S-LST-PTNUM    <   WRK-ST-PTNUM)
+                   MOVE    1                   TO  FLG-END
+               ELSE
       *
-               MOVE    "PTNUM-KEY3"        TO  ORC-DBPATH
-               PERFORM 910-PTNUM-READ-SEC
+                   MOVE    "PTNUM-KEY3"        TO  ORC-DBPATH
+                   PERFORM 910-PTNUM-READ-SEC
+               END-IF
            END-PERFORM
       *
       *    対象がない時、システム管理の連番を判定する
@@ -295,6 +301,11 @@
                               (IDX         >=  120 )
       *        患者番号構成決定処理
                PERFORM 20011-NUM-HENSYU-SEC
+      *        最大患者番号までとする
+               IF      (ORCBZ001S-LST-PTNUM    NOT =   SPACE )  AND
+                       (ORCBZ001S-LST-PTNUM    <   WRK-ST-PTNUM)
+                   MOVE    1                   TO  FLG-END
+               END-IF
                IF     (FLG-ERR             =   1    )  OR
                       (FLG-END             =   1    )  OR
                       (WRK-ST-PTNUM        =   WRK-ED-PTNUM)
@@ -511,6 +522,12 @@
                               (IDX         >=  120 )
       *        患者番号構成決定処理
                PERFORM 20011-NUM-HENSYU-SEC
+      *        最大患者番号までとする
+               IF      (ORCBZ001S-LST-PTNUM    NOT =   SPACE )  AND
+                       (ORCBZ001S-LST-PTNUM    <   WRK-ST-PTNUM)
+                   MOVE    1                   TO  FLG-END
+               END-IF
+      *
                IF      FLG-END             =   1
                    CONTINUE
                ELSE
