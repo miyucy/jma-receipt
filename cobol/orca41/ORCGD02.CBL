@@ -83,6 +83,7 @@
       *                                     診療開始日チェックの修正
       *  01.00.32    ひさなが     03/09/20  患者氏名、患者病名チェック
       *                                     全空白、全単バイト文字修正
+      *                                     保険適応年齢チェックの修正
       *
       *****************************************************************
       *
@@ -190,6 +191,8 @@
            03  T-ERR-13            PIC X(01).
            03  T-ERR-14            PIC X(01).
            03  T-ERR-15            PIC X(01).
+           03  T-CHK-SPACE         PIC X(01).
+           03  T-CHK-SPACE2        PIC X(01).
            03  T-CNT-IN            PIC 9(09).
            03  T-CNT-OUT           PIC 9(09).
       *
@@ -214,6 +217,7 @@
            03  IDW2                PIC 9(03).
            03  IDW3                PIC 9(03).
            03  IDW4                PIC 9(03).
+           03  IDW5                PIC 9(03).
            03  IDX1                PIC 9(03).
            03  IDX2                PIC 9(03).
            03  IDX3                PIC 9(03).
@@ -1232,6 +1236,8 @@
       *
       *******************
       *
+      *    判定領域初期化  対象データ抽出
+      *
        T-100-RECECHEK-HANTEI-1-SEC       SECTION.
       *
            IF  (ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
@@ -1306,9 +1312,8 @@
                IF  T-HANNTEI5   =   "*"
                    PERFORM T-200-RECECHEK-CHK1-SEC
                END-IF
-      *    患者情報テーブル参照
-      *        保険適応年齢チェック対象出力
-      *        患者氏名チェック対象出力
+      *    保険適応年齢チェック対象出力
+      *    患者氏名チェック対象出力
                IF  (T-HANNTEI8         =   "*")               AND
                    ((ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                     (ACCT-PTID     NOT =   W1-SRY-PTID))      AND
@@ -1338,12 +1343,12 @@
                    INITIALIZE                W-PTBYO-BYOMEI-AREA1
                    INITIALIZE                W-PTBYO-BYOMEI-AREA2
                END-IF
-      *    患者病名情報テーブル参照
-      *        患者病名チェック対象出力
-      *        疑い病名チェック対象出力
-      *        病名コード抜けチェック対象出力
-      *        患者病名チェック対象出力
-      *        実日数チェック対象出力
+      *    診療開始日チェック対象出力
+      *    患者病名チェック対象出力
+      *    疑い病名チェック対象出力
+      *    病名コード抜けチェック対象出力
+      *    患者病名チェック対象出力
+      *    実日数チェック対象出力
                IF  T-HANNTEI8   =   "*"
                    PERFORM T-100-RECECHEK-HANTEI-CHK1-SEC
                END-IF
@@ -1359,6 +1364,15 @@
            EXIT.
       *
       *******************
+      *
+      *    診療開始日チェック対象出力
+      *    患者病名チェック対象出力
+      *    疑い病名チェック対象出力
+      *    病名コード抜けチェック対象出力
+      *    患者病名を指定時実行
+      *        患者病名チェック対象出力
+      *    実日数を指定時実行
+      *        実日数チェック対象出力
       *
        T-100-RECECHEK-HANTEI-CHK1-SEC    SECTION.
       *
@@ -1945,10 +1959,26 @@
                    END-IF
                    IF  (T-ERR-02            =   SPACE)   AND
                        (SPA-GMN-CNV (2) NOT =   SPACE)
-                       IF  (PTHKN-KIGO         =   SPACE)   OR
-                           (PTHKN-NUM          =   SPACE)   OR
-                           (PTHKN-KIGO         =   "　")    OR
-                           (PTHKN-NUM          =   "　")
+                       MOVE    "*"         TO  T-CHK-SPACE
+                       MOVE    "*"         TO  T-CHK-SPACE2
+                       PERFORM VARYING  IDW5  FROM  1  BY 2
+                               UNTIL    IDW5  >    80
+                           IF  (PTHKN-KIGO(IDW5:2)  NOT =  "  ") AND
+                               (PTHKN-KIGO(IDW5:2)  NOT =  "　")
+                               MOVE    SPACE     TO  T-CHK-SPACE
+                               MOVE    200       TO  IDW5
+                           END-IF
+                       END-PERFORM
+                       PERFORM VARYING  IDW5  FROM  1  BY 2
+                               UNTIL    IDW5  >    80
+                           IF  (PTHKN-NUM(IDW5:2)   NOT =  "  ") AND
+                               (PTHKN-NUM(IDW5:2)   NOT =  "　")
+                               MOVE    SPACE     TO  T-CHK-SPACE2
+                               MOVE    200       TO  IDW5
+                           END-IF
+                       END-PERFORM
+                       IF  (T-CHK-SPACE   =  "*")   OR
+                           (T-CHK-SPACE2  =  "*")
                            COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                            MOVE    SPACE             TO  DID2-REC
                            MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
@@ -1982,9 +2012,7 @@
                                    MOVE    "*"           TO  T-ERR-02
                                END-IF
                            ELSE
-                               IF  (PTHKN-KIGO(1:1) NOT =   X"0A") AND
-                                   (PTHKN-KIGO(1:1) NOT =   X"00") AND
-                                   (PTHKN-KIGO(1:1)     <   X"A1")
+                               IF  PTHKN-KIGO(1:1)     <   X"A1"
                                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                                    MOVE    SPACE     TO  DID2-REC
                                    MOVE    ACCT-HOSPID
@@ -2025,9 +2053,7 @@
                                    MOVE    "*"           TO  T-ERR-02
                                END-IF
                            ELSE
-                               IF  (PTHKN-NUM(1:1)  NOT =   X"0A") AND
-                                   (PTHKN-NUM(1:1)  NOT =   X"00") AND
-                                   (PTHKN-NUM(1:1)      <   X"A1")
+                               IF  PTHKN-NUM(1:1)      <   X"A1"
                                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                                    MOVE    SPACE     TO  DID2-REC
                                    MOVE    ACCT-HOSPID
@@ -2660,60 +2686,67 @@
       *
       *******************
       *
-      *    患者情報テーブル参照
-      *        保険適応年齢、患者氏名を指定時実行
-      *          保険適応年齢チェック対象出力
-      *          患者氏名チェック対象出力
+      *    保険適応年齢チェック対象出力
+      *        保険適応年齢を指定時実行
+      *    患者氏名チェック対象出力
+      *        患者氏名を指定時実行
       *
        T-500-RECECHEK2-SEC               SECTION.
       *
-           IF  (T-ERR-04              =   SPACE)  AND
-               (SPA-GMN-CNV (4)   NOT =   SPACE)
-               MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM1
-               MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM2
-               MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM3
-               COMPUTE W-YY1 = W-YY1 + 15
-               COMPUTE W-YY2 = W-YY2 + 65
-               IF   PTINF-BIRTHDAY   <=   W-BIRTHDAY1
-                    COMPUTE W-YY3 = W-YY3 + 70
-               ELSE
-                    COMPUTE W-YY3 = W-YY3 + 75
-               END-IF
-               IF  (W-COMB-HANNTEI2   =   "1")    AND
-                   (T-SINRYOU-AREA    <   W-YM1)
-                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                   MOVE    SPACE             TO  DID2-REC
-                   MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
-                   MOVE    "-"               TO  DID2-REC(25:1)
-                   MOVE    ACCT-PTID         TO  DID2-REC(26:10)
-                   MOVE    T-MESSAGE-500-03  TO  DID2-REC(71:90)
-                   WRITE   DID2-REC
-                   MOVE    "*"               TO  T-ERR-04
-               END-IF
-               IF  (W-COMB-HANNTEI1   =   W-KOHNUM1)  AND
-                   (T-SINRYOU-AREA    <   W-YM2)
-                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                   MOVE    SPACE             TO  DID2-REC
-                   MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
-                   MOVE    "-"               TO  DID2-REC(25:1)
-                   MOVE    ACCT-PTID         TO  DID2-REC(26:10)
-                   MOVE    T-MESSAGE-500-04  TO  DID2-REC(71:90)
-                   WRITE   DID2-REC
-                   MOVE    "*"               TO  T-ERR-04
-               END-IF
-               IF  ((W-COMB-HANNTEI1      =   "---")  AND
-                    (T-SINRYOU-AREA       >   W-YM3))  OR
-                   ((W-COMB-HANNTEI1      =   "---")  AND
-                    (T-SINRYOU-AREA       =   W-YM3)  AND
-                    (PTINF-BIRTHDAY(7:2)  =   "01"))
-                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                   MOVE    SPACE             TO  DID2-REC
-                   MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
-                   MOVE    "-"               TO  DID2-REC(25:1)
-                   MOVE    ACCT-PTID         TO  DID2-REC(26:10)
-                   MOVE    T-MESSAGE-500-05  TO  DID2-REC(71:90)
-                   WRITE   DID2-REC
-                   MOVE    "*"               TO  T-ERR-04
+           IF  (COMB-HKNNUM       NOT =   W-HKNNUM1)  AND
+      *修正/*開始*03.09.20*********************************************
+               (COMB-HKNNUM       NOT =   W-HKNNUM2)  AND
+               (COMB-HKNNUM       NOT =   W-HKNNUM3)  AND
+               (COMB-HKNNUM       NOT =   W-HKNNUM4)
+      *修正/*終了*03.09.20*********************************************
+               IF  (T-ERR-04              =   SPACE)  AND
+                   (SPA-GMN-CNV (4)   NOT =   SPACE)
+                   MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM1
+                   MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM2
+                   MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM3
+                   COMPUTE W-YY1 = W-YY1 + 15
+                   COMPUTE W-YY2 = W-YY2 + 65
+                   IF   PTINF-BIRTHDAY   <=   W-BIRTHDAY1
+                        COMPUTE W-YY3 = W-YY3 + 70
+                   ELSE
+                        COMPUTE W-YY3 = W-YY3 + 75
+                   END-IF
+                   IF  (W-COMB-HANNTEI2   =   "1")    AND
+                       (T-SINRYOU-AREA    <   W-YM1)
+                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                       MOVE    SPACE             TO  DID2-REC
+                       MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
+                       MOVE    "-"               TO  DID2-REC(25:1)
+                       MOVE    ACCT-PTID         TO  DID2-REC(26:10)
+                       MOVE    T-MESSAGE-500-03  TO  DID2-REC(71:90)
+                       WRITE   DID2-REC
+                       MOVE    "*"               TO  T-ERR-04
+                   END-IF
+                   IF  (W-COMB-HANNTEI1   =   W-KOHNUM1)  AND
+                       (T-SINRYOU-AREA    <   W-YM2)
+                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                       MOVE    SPACE             TO  DID2-REC
+                       MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
+                       MOVE    "-"               TO  DID2-REC(25:1)
+                       MOVE    ACCT-PTID         TO  DID2-REC(26:10)
+                       MOVE    T-MESSAGE-500-04  TO  DID2-REC(71:90)
+                       WRITE   DID2-REC
+                       MOVE    "*"               TO  T-ERR-04
+                   END-IF
+                   IF  ((W-COMB-HANNTEI1      =   "---")  AND
+                        (T-SINRYOU-AREA       >   W-YM3))  OR
+                       ((W-COMB-HANNTEI1      =   "---")  AND
+                        (T-SINRYOU-AREA       =   W-YM3)  AND
+                        (PTINF-BIRTHDAY(7:2)  =   "01"))
+                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                       MOVE    SPACE             TO  DID2-REC
+                       MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
+                       MOVE    "-"               TO  DID2-REC(25:1)
+                       MOVE    ACCT-PTID         TO  DID2-REC(26:10)
+                       MOVE    T-MESSAGE-500-05  TO  DID2-REC(71:90)
+                       WRITE   DID2-REC
+                       MOVE    "*"               TO  T-ERR-04
+                   END-IF
                END-IF
            END-IF.
            IF  (T-ERR-13               =   SPACE)  AND
@@ -2736,8 +2769,16 @@
                    END-IF
                ELSE
       *修正/*開始*03.09.20*********************************************
-                   IF  (PTINF-KANANAME          =   SPACE)   OR
-                       (PTINF-KANANAME          =   "　")
+                   MOVE    "*"         TO  T-CHK-SPACE
+                   PERFORM VARYING  IDW5  FROM  1  BY 2
+                           UNTIL    IDW5  >   100
+                       IF  (PTINF-KANANAME(IDW5:2)  NOT =  "  ") AND
+                           (PTINF-KANANAME(IDW5:2)  NOT =  "　")
+                           MOVE    SPACE     TO  T-CHK-SPACE
+                           MOVE    200       TO  IDW5
+                       END-IF
+                   END-PERFORM
+                   IF  T-CHK-SPACE = "*"
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                        MOVE    SPACE             TO  DID2-REC
                        MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
@@ -2750,8 +2791,6 @@
                        END-IF
                    END-IF
                    IF  (PTINF-KANANAME      NOT =   SPACE) AND
-                       (PTINF-KANANAME(1:1) NOT =   X"0A") AND
-                       (PTINF-KANANAME(1:1) NOT =   X"00") AND
                        (PTINF-KANANAME(1:1)     <   X"A1")
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                        MOVE    SPACE             TO  DID2-REC
@@ -2787,8 +2826,16 @@
                    END-IF
                ELSE
       *修正/*開始*03.09.20*********************************************
-                   IF  (PTINF-NAME             =   SPACE)   OR
-                       (PTINF-NAME             =   "　")
+                   MOVE    "*"         TO  T-CHK-SPACE
+                   PERFORM VARYING  IDW5  FROM  1  BY 2
+                           UNTIL    IDW5  >   100
+                       IF  (PTINF-NAME(IDW5:2)  NOT =  "  ") AND
+                           (PTINF-NAME(IDW5:2)  NOT =  "　")
+                           MOVE    SPACE     TO  T-CHK-SPACE
+                           MOVE    200       TO  IDW5
+                       END-IF
+                   END-PERFORM
+                   IF  T-CHK-SPACE = "*"
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                        MOVE    SPACE             TO  DID2-REC
                        MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
@@ -2801,8 +2848,6 @@
                        END-IF
                    END-IF
                    IF  (PTINF-NAME         NOT =   SPACE) AND
-                       (PTINF-NAME(1:1)    NOT =   X"0A") AND
-                       (PTINF-NAME(1:1)    NOT =   X"00") AND
                        (PTINF-NAME(1:1)        <   X"A1")
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                        MOVE    SPACE             TO  DID2-REC
@@ -2886,7 +2931,7 @@
       *        患者病名、診療開始日、疑い病名、病名コード抜けを
       *                                                      指定時実行
       *          患者病名チェック対象出力
-      *          診療開始日チェック対象出力
+      *          診療開始日チェック用作業区分設定
       *          疑い病名チェック対象出力
       *          病名コード抜けチェック対象出力
       *****************************************************************
@@ -2962,26 +3007,39 @@
                                MOVE    SPACE             TO  T-HANNTEI3
                            END-IF
                            IF  (SPA-GMN-CNV (5) NOT = SPACE)  AND
-                               (T-ERR-05            = SPACE)  AND
-                               ((PTBYO-BYOMEI        = SPACE)  OR
-                                (PTBYO-BYOMEI        = "　"))
-                               COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                               MOVE    SPACE         TO  DID2-REC
-                               MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
-                               MOVE    "-"           TO  DID2-REC(25:1)
-                               MOVE    ACCT-PTID     TO  DID2-REC(26:10)
-                               MOVE    ACCT-SRYKA    TO  DID2-REC(191:2)
-                               STRING T-MESSAGE-510-03
+                               (T-ERR-05            = SPACE)
+                               MOVE    "*"         TO  T-CHK-SPACE
+                               PERFORM VARYING  IDW5  FROM  1  BY 2
+                                       UNTIL    IDW5  >   160
+                                   IF  (PTBYO-BYOMEI(IDW5:2)
+                                                        NOT = "  ") AND
+                                       (PTBYO-BYOMEI(IDW5:2)
+                                                        NOT = "　")
+                                       MOVE    SPACE     TO  T-CHK-SPACE
+                                       MOVE    200       TO  IDW5
+                                   END-IF
+                               END-PERFORM
+                               IF  T-CHK-SPACE = "*"
+                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                                   MOVE    SPACE     TO  DID2-REC
+                                   MOVE    ACCT-HOSPID
+                                                     TO  DID2-REC(1:24)
+                                   MOVE    "-"       TO  DID2-REC(25:1)
+                                   MOVE    ACCT-PTID TO  DID2-REC(26:10)
+                                   MOVE    ACCT-SRYKA
+                                                     TO  DID2-REC(191:2)
+                                   STRING T-MESSAGE-510-03
                                                      DELIMITED BY SPACE
-                                      "、"           DELIMITED BY SIZE
-                                      PTBYO-BYOMEICD (1)
+                                          "、"       DELIMITED BY SIZE
+                                          PTBYO-BYOMEICD (1)
                                                      DELIMITED BY SPACE
-                                            INTO     DID2-REC(71:90)
-                               END-STRING
-                               WRITE   DID2-REC
-                               IF  SPA-GMN-CNV (5)  =  "1"
-                                   MOVE    "*"           TO  T-ERR-05
-                                   MOVE    "ED"          TO  T-HANNTEI6
+                                                INTO DID2-REC(71:90)
+                                   END-STRING
+                                   WRITE   DID2-REC
+                                   IF  SPA-GMN-CNV (5)  =  "1"
+                                       MOVE    "*"       TO  T-ERR-05
+                                       MOVE    "ED"      TO  T-HANNTEI6
+                                   END-IF
                                END-IF
                            END-IF
                            IF  (SPA-GMN-CNV (5) NOT = SPACE)  AND
@@ -3009,11 +3067,7 @@
                                        MOVE    "ED"       TO  T-HANNTEI6
                                    END-IF
                                ELSE
-                                   IF  (PTBYO-BYOMEI(1:1)
-                                                        NOT = X"0A") AND
-                                       (PTBYO-BYOMEI(1:1)
-                                                        NOT = X"00") AND
-                                       (PTBYO-BYOMEI(1:1)   < X"A1")
+                                   IF  PTBYO-BYOMEI(1:1)   < X"A1"
                                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                                        MOVE    SPACE TO  DID2-REC
                                        MOVE    ACCT-HOSPID
@@ -3060,12 +3114,7 @@
                                        MOVE    "ED"      TO  T-HANNTEI6
                                    END-IF
                                ELSE
-                                   IF  (PTBYO-CHARTBYOMEI(1:1)
-                                                        NOT = X"0A") AND
-                                       (PTBYO-CHARTBYOMEI(1:1)
-                                                        NOT = X"00") AND
-                                       (PTBYO-CHARTBYOMEI(1:1)
-                                                            < X"A1")
+                                   IF  PTBYO-CHARTBYOMEI(1:1)  <  X"A1"
                                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                                        MOVE    SPACE
                                                      TO  DID2-REC
@@ -3246,9 +3295,8 @@
            EXIT.
       *
       *****************************************************************
-      *    診療科履歴情報テーブル 参照処理
+      *    診療開始日チェック対象出力
       *        診療開始日を指定時実行
-      *          診療開始日チェック対象出力
       *****************************************************************
        T-520-RECECHEK-SEC                SECTION.
       *
@@ -5443,9 +5491,8 @@
       *
       *******************
       *
-      *    入院会計情報テーブル
+      *    保険組合せ有効期間チェック対象出力（入院会計情報）
       *        保険組合せ有効期間を指定時実行
-      *          保険組合せ有効期間チェック対象出力
       *
        T-540-RECECHEK-WRITE4-1-SEC       SECTION.
       *
@@ -5503,9 +5550,8 @@
       *
       *******************
       *
-      *    入院会計情報テーブル
+      *    実日数チェック対象出力（入院会計情報）
       *        実日数を指定時実行
-      *          実日数チェック対象出力
       *
        T-540-RECECHEK-WRITE4-2-SEC       SECTION.
       *
@@ -5551,9 +5597,8 @@
       *
       *******************
       *
-      *    入院会計情報テーブル
+      *    保険組合せ有効期間チェック対象出力（入院会計情報）
       *        保険組合せ有効期間を指定時実行
-      *          保険組合せ有効期間チェック対象出力
       *
        T-540-RECECHEK-WRITE4-3-SEC       SECTION.
       *
