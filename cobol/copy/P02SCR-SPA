@@ -148,10 +148,10 @@
                        09  SPA-GMN-HOJOKBN-G.
                            11  SPA-GMN-HOJOKBN         PIC X(01).
                            11  SPA-GMN-H3              PIC X(01).
-                           11  SPA-GMN-HOJOKBNMEI      PIC X(04).
+                           11  SPA-GMN-HOJOKBNMEI      PIC X(10).
                        09  SPA-GMN-HOJOKBN-LIST.
-                           11  SPA-GMN-HOJOKBNCOB      OCCURS 5.
-                               13  SPA-GMN-HOJOKBNL    PIC X(06).
+                           11  SPA-GMN-HOJOKBNCOB      OCCURS 15.
+                               13  SPA-GMN-HOJOKBNL    PIC X(12).
                        09  SPA-GMN-HOJO-MAX            PIC 9(04).
       *                ·ÑÂ³¶èÊ¬
                        09  SPA-GMN-CONTKBN-G.

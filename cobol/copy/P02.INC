@@ -139,9 +139,9 @@
                     06  P02-HONKZKBN-ITEM    PIC X(6)    OCCURS  3.
                   05  P02-P02-HOJOKBNCOB.
                     06  P02-P02-HOJOKBN.
-                      07  P02-VALUE   PIC X(6).
+                      07  P02-VALUE   PIC X(12).
                     06  P02-HOJOKBN-COUNT   PIC S9(9)   BINARY.
-                    06  P02-HOJOKBN-ITEM    PIC X(6)    OCCURS  5.
+                    06  P02-HOJOKBN-ITEM    PIC X(12)    OCCURS  15.
                   05  P02-P02-CONTKBNCOB.
                     06  P02-P02-CONTKBN.
                       07  P02-VALUE   PIC X(6).

@@ -47,6 +47,7 @@
       *  02.00.02    NACL-Â¿¡¹Ç¼  02/09/09  Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
       *                                     ¼«ÇåÀÕÊÝ¸±¤ÎÄÉ²Ã
       *  02.00.03    NACL-Â¿¡¹Ç¼  02/10/07  Á¥°÷¤ÎÏ·¿ÍÊä½õ¶èÊ¬¤Î½é´üÉ½¼¨½¤Àµ
+      *  02.00.04    NACL-Â¿¡¹Ç¼  02/10/31  Á¥°÷ÊÝ¸±Êä½õ¶èÊ¬ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -357,13 +358,19 @@
            03  WRK-HJO-TBL.
                05  WRK-HJO-MAX         PIC 9(04).
                05  WRK-HJO-REC-G1.
-                   07  FILLER          PIC X(06) VALUE "1 ¿¦Ì³".
-                   07  FILLER          PIC X(06) VALUE "2 ²¼Á¥".
-                   07  FILLER          PIC X(06) VALUE "3 ÄÌ¶Ð".
-                   07  FILLER          PIC X(06) VALUE "8 £²³ä".
-                   07  FILLER          PIC X(06) VALUE "9 £±³ä".
+                   07  FILLER          PIC X(10) VALUE "1 ¿¦Ì³".
+                   07  FILLER          PIC X(10) VALUE "2 ²¼Á¥".
+                   07  FILLER          PIC X(10) VALUE "3 ÄÌ¶Ð".
+                   07  FILLER          PIC X(10) VALUE "8 £²³ä".
+                   07  FILLER          PIC X(10) VALUE "9 £±³ä".
+                   07  FILLER          PIC X(10) VALUE "A £±³ä¿¦Ì³".
+                   07  FILLER          PIC X(10) VALUE "B £±³ä²¼Á¥".
+                   07  FILLER          PIC X(10) VALUE "C £±³äÄÌ¶Ð".
+                   07  FILLER          PIC X(10) VALUE "D £²³ä¿¦Ì³".
+                   07  FILLER          PIC X(10) VALUE "E £²³ä²¼Á¥".
+                   07  FILLER          PIC X(10) VALUE "F £²³äÄÌ¶Ð".
                05  WRK-HJO-REC-R1      REDEFINES   WRK-HJO-REC-G1.
-                   07  WRK-HJO-REC1    PIC X(06) OCCURS  5.
+                   07  WRK-HJO-REC1    PIC X(10) OCCURS  11.
                05  WRK-HJO-REC-G2.
                    07  FILLER          PIC X(06) VALUE "0 Ìµ¤·".
                    07  FILLER          PIC X(06) VALUE "1 £±³ä".
@@ -825,7 +832,7 @@
                WHEN    "002"
                    IF     (SPA-PTHKN-TEKSTYMD(IDX) >=  "20021001") AND
                           (SPA-PTHKN-TEKSTYMD(IDX) >=  SPA-BYMD-70)
-                       MOVE    5               TO  WRK-HJO-MAX
+                       MOVE    11              TO  WRK-HJO-MAX
                    ELSE
                        MOVE    3               TO  WRK-HJO-MAX
                    END-IF
@@ -1163,7 +1170,7 @@
                WHEN    "002"
                    IF     (SPA-NAI-HTEKSTYMD       >=  "20021001") AND
                           (SPA-NAI-HTEKSTYMD       >=  SPA-BYMD-70)
-                       MOVE    5               TO  WRK-HJO-MAX
+                       MOVE    11              TO  WRK-HJO-MAX
                    ELSE
                        MOVE    3               TO  WRK-HJO-MAX
                    END-IF

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       * 01.00.01     NACL-Â¿¡¹Ç¼  02/10/07  Á¥°÷Ï·¿ÍÊä½õ¶èÊ¬¥Á¥§¥Ã¥¯ÄÉ²Ã
       * 01.00.02     NACL-Â¿¡¹Ç¼  02/10/18  Ç¤·Ñ¤Î¼«Æ°È¯À¸¤ò£²Ç¯¥Á¥§¥Ã¥¯¤ò£µÇ¯¤ËÊÑ¹¹
+      * 01.00.03     NACL-Â¿¡¹Ç¼  02/10/31  Á¥°÷ÊÝ¸±Êä½õ¶èÊ¬ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -122,13 +123,19 @@
       *
            03  WRK-HJO-TBL.
                05  WRK-HJO-REC-G1.
-                   07  FILLER          PIC X(06) VALUE "1 ¿¦Ì³".
-                   07  FILLER          PIC X(06) VALUE "2 ²¼Á¥".
-                   07  FILLER          PIC X(06) VALUE "3 ÄÌ¶Ð".
-                   07  FILLER          PIC X(06) VALUE "8 £²³ä".
-                   07  FILLER          PIC X(06) VALUE "9 £±³ä".
+                   07  FILLER          PIC X(10) VALUE "1 ¿¦Ì³".
+                   07  FILLER          PIC X(10) VALUE "2 ²¼Á¥".
+                   07  FILLER          PIC X(10) VALUE "3 ÄÌ¶Ð".
+                   07  FILLER          PIC X(10) VALUE "8 £²³ä".
+                   07  FILLER          PIC X(10) VALUE "9 £±³ä".
+                   07  FILLER          PIC X(10) VALUE "A £±³ä¿¦Ì³".
+                   07  FILLER          PIC X(10) VALUE "B £±³ä²¼Á¥".
+                   07  FILLER          PIC X(10) VALUE "C £±³äÄÌ¶Ð".
+                   07  FILLER          PIC X(10) VALUE "D £²³ä¿¦Ì³".
+                   07  FILLER          PIC X(10) VALUE "E £²³ä²¼Á¥".
+                   07  FILLER          PIC X(10) VALUE "F £²³äÄÌ¶Ð".
                05  WRK-HJO-REC-R1      REDEFINES   WRK-HJO-REC-G1.
-                   07  WRK-HJO-REC1    PIC X(06) OCCURS  5.
+                   07  WRK-HJO-REC1    PIC X(10) OCCURS  11.
                05  WRK-HJO-REC-G2.
                    07  FILLER          PIC X(06) VALUE "0 Ìµ¤·".
                    07  FILLER          PIC X(06) VALUE "1 £±³ä".
@@ -691,7 +698,7 @@
                          ((SPA-NAI-HTEKSTYMD       =   SPACE     ) AND
                           (SPA-SYSYMD              >=  "20021001") AND
                           (SPA-SYSYMD              >=  SPA-BYMD-70))
-                       MOVE    5               TO  SPA-GMN-HOJO-MAX
+                       MOVE    11              TO  SPA-GMN-HOJO-MAX
                    ELSE
                        MOVE    3               TO  SPA-GMN-HOJO-MAX
                    END-IF
@@ -811,7 +818,7 @@
       *
       *    Á¥°÷¤ÇÏ·¿Í²ÈÂ²¤Î»þ¡¢£±³ä¤òÂÐ¾Ý¤È¤¹¤ë
            IF      (SPA-GMN-HKNNUM     =   "002")  AND
-                   (SPA-GMN-HOJO-MAX   =   5    )  AND
+                   (SPA-GMN-HOJO-MAX   =   11    )  AND
                    (SPA-GMN-HOJOKBN    =   SPACE)  AND
                    (SPA-GMN-HONKZKKBN   =   "2" )
                IF     (SPA-NAI-HKNSTR      =   ZERO      ) OR
@@ -871,7 +878,7 @@
                    GO      TO      1001-HOJOKBN-CHK-EXT
                END-IF
       *        Ï·¿Í
-               IF      (SPA-GMN-HOJO-MAX    =   5     )  AND
+               IF      (SPA-GMN-HOJO-MAX    =   11     )  AND
                        (SPA-GMN-HOJOKBN     =   "1"   OR
                                                 "2"   OR
                                                 "3"   )

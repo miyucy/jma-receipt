@@ -33,6 +33,7 @@
       *  01.00.04    MCC-太田     01/05/01  特別地方公費組合せ修正
       *  01.00.05    MCC-太田     01/05/16  再書き込み対応修正
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
+      *  02.00.02    NACL-多々納  02/10/31  船員保険補助区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -632,6 +633,18 @@
                    MOVE    "船員下船後"        TO  WRK-KEN-SEIDO
                WHEN    "3"
                    MOVE    "船員通勤"          TO  WRK-KEN-SEIDO
+               WHEN    "A"
+                   MOVE    "船職務高１"        TO  WRK-KEN-SEIDO
+               WHEN    "B"
+                   MOVE    "船下船高１"        TO  WRK-KEN-SEIDO
+               WHEN    "C"
+                   MOVE    "船通勤高１"        TO  WRK-KEN-SEIDO
+               WHEN    "D"
+                   MOVE    "船職務高２"        TO  WRK-KEN-SEIDO
+               WHEN    "E"
+                   MOVE    "船下船高２"        TO  WRK-KEN-SEIDO
+               WHEN    "F"
+                   MOVE    "船通勤高２"        TO  WRK-KEN-SEIDO
                WHEN    OTHER
                    MOVE    HKN-TANSEIDONAME    TO  WRK-KEN-SEIDO
                END-EVALUATE
@@ -805,7 +818,13 @@
       *************(WRK-HKN-HOJOKBN(IDX)   NOT =   SPACE)
                    (WRK-HKN-HOJOKBN(IDX)       =   "1"  OR
                                                    "2"  OR
-                                                   "3" )
+                                                   "3"  OR
+                                                   "A"  OR
+                                                   "B"  OR
+                                                   "C"  OR
+                                                   "D"  OR
+                                                   "E"  OR
+                                                   "F" )
                  ADD     1             TO  WRK-LCOMB-MAX
                  MOVE    WRK-KCOMB-REC (IDX2)
                                        TO  WRK-LCOMB-REC
@@ -1418,7 +1437,13 @@
       **********(WRK-LCOMB-HOJOKBN (IDX2)  NOT =   SPACE))
                 (WRK-LCOMB-HOJOKBN (IDX2)      =   "1" OR
                                                    "2" OR
-                                                   "3"  ))
+                                                   "3"  OR
+                                                   "A"  OR
+                                                   "B"  OR
+                                                   "C"  OR
+                                                   "D"  OR
+                                                   "E"  OR
+                                                   "F" ))
             INITIALIZE                         WRK-KENSAKU-AREA
             MOVE    WRK-LCOMB-HKNNUM  (IDX2)   TO  WRK-KEN-HKNNUM
       *----(01.00.01) LINE MOD START ---------------------------------
