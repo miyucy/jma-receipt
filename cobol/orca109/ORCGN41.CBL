@@ -1289,7 +1289,7 @@
        4103-HELP-CHK-SEC              SECTION.
       *
            IF      SPA-GMN-HELP        =   SPACE
-               CONTINUE
+               MOVE    SPACE               TO  SPA-NAI-HELP-G
            ELSE
       *        ２５文字ずつのチェック
                MOVE    SPACE               TO  WRK-HELP-AREA
@@ -1836,6 +1836,9 @@
                   (SPA-GMN-HELP    NOT =   SPACE )
                MOVE    99                  TO  SPA-GMN-CUR
            END-IF
+           IF      SPA-GMN-HELPKBN     =   "0"
+               MOVE    3               TO  SPA-GMN-CUR
+           END-IF
       *
            .
        420-HELP-IN-EXT.
@@ -1987,6 +1990,12 @@
                IF      SPA-NAI-MENUNUM2    NOT =   ZERO
                    MOVE    2                   TO  SPA-SYORIFLG
                    PERFORM 3001-MENU-HENSYU-SEC
+               END-IF
+      *        目次１の内容編集
+               IF      SPA-GMN-SELNUM      NOT =   ZERO
+                   MOVE    SPA-GMN-SELNUM      TO  WRK-MENUNUM1
+                   MOVE    ZERO                TO  WRK-MENUNUM2
+                   PERFORM 41011-HELP-HENSYU-SEC
                END-IF
                MOVE    ZERO                TO  SPA-NAI-MENUNUM2
                MOVE    5                   TO  SPA-GMN-CUR
