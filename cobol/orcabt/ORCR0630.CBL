@@ -771,7 +771,9 @@
                                   OR    RECE62-NYUKHNRYO(ID1) = ZERO
                                   OR    FLG-ARI               = 1
                       IF  RECE62-NYUKHNRYO(ID1)  =  WRK-NYUKHNRYO
-                            ADD   1   TO   RECE62-NYUKHNNISSU(ID1)
+                            IF   KH-IDX =  1
+                              ADD   1   TO   RECE62-NYUKHNNISSU(ID1)
+                            END-IF
                             ADD   WRK-NYUKHNRYO
                                       TO   RECE62-NYUKHNKEI(ID1 KH-IDX)
                             MOVE  1   TO   FLG-ARI
@@ -811,7 +813,9 @@
                                   OR    RECE62-NYUTOKRYO(ID1) = ZERO
                                   OR    FLG-ARI               = 1
                       IF  RECE62-NYUTOKRYO(ID1)  =  WRK-NYUTOKRYO
-                            ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
+                            IF   KH-IDX =  1
+                              ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
+                            END-IF
                             ADD   WRK-NYUTOKRYO
                                       TO   RECE62-NYUTOKKEI(ID1 KH-IDX)
                             MOVE  1   TO   FLG-ARI
