@@ -83,6 +83,8 @@ SRCS = ORCHC01.CBL \
        ORCSDRSET.CBL \
        ORCSLOCK.CBL \
 
+CSRCS = \
+	orcfiledel.c
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global
