@@ -72,6 +72,8 @@
       *  01.04.03    NACL-門脇    04/01/14  診療行為の包括分は除く
       *                                     SRYACCT9→30
       *  01.04.04    NACL-藤原    04/03/08  コラムリストの行制御
+      *  01.04.05    NACL-藤原    04/05/06  保険組合せが無いときの
+      *                                     エラーを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -165,8 +167,10 @@
            03  FLG-RECE07          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01). 
-           03  FLG-CHK             PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
+      *
+           03  FLG-CHK             PIC 9(01).
+           03  FLG-ERR             PIC 9(01).
            03  FLG-ROW             PIC 9(01).
       *
       *    フラグ領域
@@ -871,6 +875,7 @@
       *
       *    診療会計チェック
            MOVE    ZERO                TO  FLG-CHK
+                                           FLG-ERR
       *     
            INITIALIZE                  SRYACCT-REC
            MOVE    SPA-HOSPID          TO  ACCT-HOSPID
@@ -894,6 +899,7 @@
       *
            PERFORM             UNTIL   FLG-SRYACCT     =   1
                                OR      FLG-CHK         =   1
+                               OR      FLG-ERR         =   1
                PERFORM 41051-SRYACCT-CHK-SEC
            END-PERFORM
       *    カーソルクロース
@@ -905,16 +911,21 @@
                                         MCPDATA-REC
       *
       *    入院のとき診療会計に存在しないとき入院会計をチェック                                  
-           IF      FLG-CHK             =   ZERO
+           IF    ( FLG-CHK             =   ZERO )
+           AND   ( FLG-ERR             =   ZERO )
                IF      SPA-R01-NYUGAIKBN   =   "1"
                    PERFORM 41052-NYUINACCT-CHK-SEC
                END-IF
            END-IF
       *          
-           IF      FLG-CHK             =   ZERO
-               MOVE    "0006"              TO  SPA-ERRCD
+           IF      FLG-ERR             =   1
+               MOVE    "0008"              TO  SPA-ERRCD
            ELSE 
-               MOVE    4                   TO  SPA-GMN-CUR
+               IF      FLG-CHK             =   ZERO
+                   MOVE    "0006"              TO  SPA-ERRCD
+               ELSE 
+                   MOVE    4                   TO  SPA-GMN-CUR
+               END-IF
            END-IF    
            .
        4105-NYUGAIKBN-CHK-EXT.
@@ -942,21 +953,24 @@
                        OR      COMB-HKNNUM =   WRK-CONS-JIBAISEKI-HKNNUM
                            CONTINUE
                        ELSE    
-                           MOVE    "1"         TO  FLG-CHK
+                           MOVE    1           TO  FLG-CHK
                        END-IF
                    WHEN    "3"
                        IF      COMB-HKNNUM =   WRK-CONS-ROUSAI-HKNNUM
-                           MOVE    "1"         TO  FLG-CHK
+                           MOVE    1           TO  FLG-CHK
                        END-IF
                    WHEN    "4"
                        IF      COMB-HKNNUM =   WRK-CONS-JIBAISEKI-HKNNUM
-                           MOVE    "1"         TO  FLG-CHK
+                           MOVE    1           TO  FLG-CHK
                        END-IF
                END-EVALUATE
+           ELSE
+               MOVE    1                   TO  FLG-ERR
            END-IF        
       *
            PERFORM UNTIL   FLG-SRYACCT     =   1
-                   OR      FLG-CHK         =   1 
+                   OR      FLG-CHK         =   1
+                   OR      FLG-ERR         =   1 
                    OR      KEY-NEW     NOT =   KEY-OLD
                MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
                PERFORM 900-SRYACCT-READ-SEC
@@ -989,13 +1003,15 @@
                MOVE    1                   TO  FLG-NYUINACCT    
            END-IF
       *
-           PERFORM             UNTIL    FLG-NYUINACCT  =   "1"
-                               OR       FLG-CHK        =   "1"           
+           PERFORM             UNTIL    FLG-NYUINACCT  =   1
+                               OR       FLG-CHK        =   1     
+                               OR       FLG-ERR        =   1      
       *    保険組合せ読込み
                IF      NACCT-ZAISKBKBN     =   "5"
                  PERFORM VARYING IDXX    FROM    1   BY  1
                          UNTIL   IDXX    >       31
-                         OR      FLG-CHK =       "1"
+                         OR      FLG-CHK =       1
+                         OR      FLG-ERR =       1     
                    IF      NACCT-DAY (IDXX)      >   ZERO    
                        INITIALIZE                  HKNCOMBI-REC
                        MOVE    ACCT-HOSPID         TO  COMB-HOSPID
@@ -1013,19 +1029,21 @@
                                                WRK-CONS-JIBAISEKI-HKNNUM
                                    CONTINUE
                                ELSE    
-                                   MOVE    "1"         TO  FLG-CHK
+                                   MOVE    1           TO  FLG-CHK
                                END-IF
                            WHEN    "3"
                                IF      COMB-HKNNUM =
                                                WRK-CONS-ROUSAI-HKNNUM
-                                   MOVE    "1"         TO  FLG-CHK
+                                   MOVE    1           TO  FLG-CHK
                                END-IF
                            WHEN    "4"
                                IF      COMB-HKNNUM =
                                                WRK-CONS-JIBAISEKI-HKNNUM
-                                   MOVE    "1"         TO  FLG-CHK
+                                   MOVE    1           TO  FLG-CHK
                                END-IF
-                         END-EVALUATE
+                         END-EVALUATE 
+                       ELSE
+                         MOVE    1                 TO  FLG-ERR
                        END-IF
                    END-IF
                  END-PERFORM
@@ -2313,6 +2331,9 @@
                WHEN    "0007"
                    MOVE
                        "改正前と改正後のレセプトは同時に処理できません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0008"
+                   MOVE    "対象の保険組合せが無い会計があります"
                                                        TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "対象のデータが入力してありません"
