@@ -521,8 +521,8 @@
                MOVE    "TEIKIKANRI-ALL"    TO  ORC-DBPATH
                PERFORM 900-TEIKIKANRI-NEXT-SEC
            ELSE
-               INITIALIZE                  TEIKIPRT-REC
-               MOVE    1               TO  FLG-TEIKIPRT
+               INITIALIZE                  TEIKIKANRI-REC
+               MOVE    1               TO  FLG-TEIKIKANRI
            END-IF
       *
            PERFORM UNTIL ( FLG-TEIKIKANRI  NOT =   ZERO )
@@ -612,8 +612,8 @@
                MOVE    "TEIKIKANRI-ALL" TO  ORC-DBPATH
                PERFORM 900-TEIKIKANRI-NEXT-SEC
            ELSE
-               INITIALIZE                  TEIKIPRT-REC
-               MOVE    1               TO  FLG-TEIKIPRT
+               INITIALIZE                  TEIKIKANRI-REC
+               MOVE    1               TO  FLG-TEIKIKANRI
            END-IF
       *
            PERFORM UNTIL ( FLG-TEIKIKANRI  NOT =   ZERO )
