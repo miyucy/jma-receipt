@@ -747,7 +747,7 @@
                MOVE    SPA-GMN2D-DRCD-G    TO  SPA-GMN2D-DRCDLST
                                                    (SPA-GMN2D-DRCD-MAX)
            END-IF
-      *
+           .
        30021-DRCD-HEN-EXT.
            EXIT.
       *
@@ -2520,8 +2520,12 @@
                    MOVE    SPA-GMN2D-JIBAISEIKBN
                                                TO  PTRSI-JIBAISEIKBN
       *    极清勒么碰板
-                   MOVE    "1"                 TO  PTRSI-DRCD(1:1)
-                   MOVE    SPA-GMN2D-DRCD      TO  PTRSI-DRCD(2:4)
+                   IF      SPA-GMN2D-DRCD      =   SPACE
+                       MOVE    SPACE               TO  PTRSI-DRCD
+                   ELSE
+                       MOVE    "1"                 TO  PTRSI-DRCD(1:1)
+                       MOVE    SPA-GMN2D-DRCD      TO  PTRSI-DRCD(2:4)
+                   END-IF
       *    极清勒瘦副柴家叹
                    MOVE    SPA-GMN2D-HOKENNAME TO  PTRSI-HOKENNAME
            END-EVALUATE
