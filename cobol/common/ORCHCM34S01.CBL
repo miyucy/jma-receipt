@@ -1291,7 +1291,7 @@
       *
                PERFORM 200111-SENTEI-KEISU-GET-SEC
       *
-               EVALUATE    NACCT-DAY (IDXD)
+               EVALUATE    FLG-GAIHAKUDAY(IDXD)
                WHEN    1
                WHEN    3
                WHEN    4
