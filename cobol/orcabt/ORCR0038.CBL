@@ -314,8 +314,9 @@
                OR     ( RECE02-TEKSTYMD  NOT =   RECE04-TEKSTYMD     )
       *
       *        Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤Ç¤Ê¤¤¤È¤­
-               IF      RECE02-SRYKA (2)    =   SPACE
-               OR      RECE04-COMCDFLG     =   "1"
+      ***      IF      RECE02-SRYKA (2)    =   SPACE
+      ***      OR      RECE04-COMCDFLG     =   "1"
+               IF      RECE04-COMCDFLG     =   "1"
                    MOVE    SPACE               TO  RECE042-REC
                    INITIALIZE                      RECE042-REC
                    MOVE    RECE04-HOSPID       TO  RECE042-HOSPID
