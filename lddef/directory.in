@@ -14,6 +14,7 @@ ld	{
 	orca00	"localhost:9100";
 	orca01	"localhost:9101";
 	orca02	"localhost:9102";
+	orca03	"localhost:9103";
 	orca11	"localhost:9111";
 	orca12	"localhost:9112";
 	orca13	"localhost:9113";
