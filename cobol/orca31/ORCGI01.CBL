@@ -3242,6 +3242,11 @@
            EVALUATE    SPA-GMN-I01-SYORIKBN-CD
       *    入院登録
            WHEN    "01"
+      *
+      *        コンボボックス初期処理
+               MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
+               PERFORM 310-CMB-SYOKI-SEC
+      *
       *        受付マスタより入院科等を確定する
                MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
                PERFORM 4101-UKETUKE-SEL-SEC
@@ -3560,7 +3565,6 @@
                MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-NYUINYMD
                MOVE    WRK-SYMD        TO  SPA-NAI-I01-NYUINYMD
            END-IF
-      *
       *
            IF    (  SPA-NAI-I01-NYUINYMD
                                    NOT =   SPA-NAI-I01-NYUINYMD-MAE )
