@@ -267,6 +267,7 @@
                05  WRK-GMN-DAY     PIC 9(03)  OCCURS  31.
            03  WRK-CHK-TBL.
                05  WRK-CHK-DAY     PIC 9(03)  OCCURS  31.
+           03  WRK-CHK-ZAISKBKBN   PIC X(01).
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
@@ -4660,8 +4661,9 @@
                GO      TO      470-KAKUTEI-EXT
            END-IF.
       *
-           MOVE   SPA-GMN-NUM-41          TO  IDX.
-           MOVE   SPA-NAI-TBANGO-41 (IDX) TO  IDG.
+           MOVE   SPA-GMN-NUM-41              TO  IDX.
+           MOVE   SPA-NAI-TZAISKBKBN-41 (IDX) TO  WRK-CHK-ZAISKBKBN.
+           MOVE   SPA-NAI-TBANGO-41 (IDX)     TO  IDG.
            MOVE   SPA-GMN-DAY-G-41        TO  SPA-NAI-DAY-AREA-41 (IDX).
       *
            MOVE   SPA-GMN-ROUJIN-41       TO  SPA-NAI-ROUJIN-41   (IDX).
@@ -4706,54 +4708,71 @@
                END-IF
            END-PERFORM.
       *
-           PERFORM   VARYING  IDX  FROM  1  BY 1
-                     UNTIL    IDX    >   SPA-GMN-MAX-41
-               IF      SPA-GMN-TZAISKBKBN-41 (IDX)   NOT =  "1"
-                   PERFORM VARYING    IDK      FROM    1   BY  1
-                           UNTIL      IDK      >   31
-                       IF    SPA-WRK-CHK-KBN   (IDK)   =    SPACE
-                           MOVE    SPACE  TO  SPA-GMN-TDAY-41 (IDX IDK)
-                       END-IF
-                   END-PERFORM
-               END-IF
-               IF      SPA-GMN-TZAISKBKBN-41 (IDX)   =  "3" OR "4" OR
-                                                        "6"
-                   PERFORM VARYING    IDK      FROM    1   BY  1
-                           UNTIL      IDK      >   31
-                       IF    SPA-WRK-CHK-SIKIBETU (IDK)   =    "1"
-                           MOVE    SPACE  TO  SPA-GMN-TDAY-41 (IDX IDK)
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM.
-      *
-           PERFORM   VARYING  IDX  FROM  1  BY 1
-                     UNTIL    IDX    >   SPA-GENSAN-ST4-41
-               IF      SPA-NAI-TZAISKBKBN-41 (IDX)   NOT =  "1"
-                   PERFORM VARYING    IDK      FROM    1   BY  1
-                           UNTIL      IDK      >   31
-                       IF    SPA-WRK-CHK-KBN   (IDK)   =    SPACE
-                           MOVE    ZERO   TO  SPA-NAI-DAY-41 (IDX IDK)
-                       END-IF
-                   END-PERFORM
-               END-IF
-               IF      SPA-NAI-TZAISKBKBN-41 (IDX)   =  "3" OR "4" OR
-                                                        "6"
-                   PERFORM VARYING    IDK      FROM    1   BY  1
-                           UNTIL      IDK      >   31
-                       IF    SPA-WRK-CHK-SIKIBETU (IDK)   =    "1"
-                           MOVE    ZERO   TO  SPA-NAI-DAY-41 (IDX IDK)
-                       END-IF
-                   END-PERFORM
-               END-IF
-               MOVE    ZERO              TO  WRK-ZAIKAISU
-               PERFORM VARYING    IDK      FROM    1   BY  1
-                       UNTIL      IDK      >   31
-                   ADD     SPA-NAI-DAY-41  (IDX IDK)
-                                         TO  WRK-ZAIKAISU
+           IF     WRK-CHK-ZAISKBKBN                 =  "1"
+               PERFORM   VARYING  IDX  FROM  1  BY 1
+                         UNTIL    IDX    >   SPA-GMN-MAX-41
+                   IF      SPA-GMN-TZAISKBKBN-41 (IDX)   NOT =  "1"
+                       PERFORM VARYING    IDK      FROM    1   BY  1
+                               UNTIL      IDK      >   31
+                           IF    SPA-WRK-CHK-KBN   (IDK)   =    SPACE
+                               MOVE  SPACE TO  SPA-GMN-TDAY-41 (IDX IDK)
+                           END-IF
+                       END-PERFORM
+                   END-IF
                END-PERFORM
-               MOVE    WRK-ZAIKAISU      TO  SPA-NAI-ZAIKAISU-41 (IDX)
-           END-PERFORM.
+               PERFORM   VARYING  IDX  FROM  1  BY 1
+                         UNTIL    IDX    >   SPA-GENSAN-ST4-41
+                   IF      SPA-NAI-TZAISKBKBN-41 (IDX)   NOT =  "1"
+                       PERFORM VARYING    IDK      FROM    1   BY  1
+                               UNTIL      IDK      >   31
+                           IF    SPA-WRK-CHK-KBN   (IDK)   =    SPACE
+                               MOVE  ZERO  TO  SPA-NAI-DAY-41 (IDX IDK)
+                           END-IF
+                       END-PERFORM
+                       MOVE    ZERO              TO  WRK-ZAIKAISU
+                       PERFORM VARYING    IDK      FROM    1   BY  1
+                               UNTIL      IDK      >   31
+                           ADD     SPA-NAI-DAY-41  (IDX IDK)
+                                           TO  WRK-ZAIKAISU
+                       END-PERFORM
+                       MOVE  WRK-ZAIKAISU  TO  SPA-NAI-ZAIKAISU-41 (IDX)
+                   END-IF
+               END-PERFORM
+           END-IF.
+      *
+           IF     WRK-CHK-ZAISKBKBN                 =  "2"
+               PERFORM   VARYING  IDX  FROM  1  BY 1
+                         UNTIL    IDX    >   SPA-GMN-MAX-41
+                   IF      SPA-GMN-TZAISKBKBN-41 (IDX)   =  "3" OR "4"
+                                                                OR "6"
+                       PERFORM VARYING    IDK      FROM    1   BY  1
+                               UNTIL      IDK      >   31
+                           IF    SPA-WRK-CHK-SIKIBETU (IDK)   =    "1"
+                               MOVE  SPACE TO  SPA-GMN-TDAY-41 (IDX IDK)
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-PERFORM
+               PERFORM   VARYING  IDX  FROM  1  BY 1
+                         UNTIL    IDX    >   SPA-GENSAN-ST4-41
+                   IF      SPA-NAI-TZAISKBKBN-41 (IDX)   =  "3" OR "4"
+                                                                OR "6"
+                       PERFORM VARYING    IDK      FROM    1   BY  1
+                               UNTIL      IDK      >   31
+                           IF    SPA-WRK-CHK-SIKIBETU (IDK)   =    "1"
+                               MOVE  ZERO  TO  SPA-NAI-DAY-41 (IDX IDK)
+                           END-IF
+                       END-PERFORM
+                       MOVE    ZERO              TO  WRK-ZAIKAISU
+                       PERFORM VARYING    IDK      FROM    1   BY  1
+                               UNTIL      IDK      >   31
+                           ADD     SPA-NAI-DAY-41  (IDX IDK)
+                                           TO  WRK-ZAIKAISU
+                       END-PERFORM
+                       MOVE  WRK-ZAIKAISU  TO  SPA-NAI-ZAIKAISU-41 (IDX)
+                   END-IF
+               END-PERFORM
+           END-IF.
       *
       *    変更項目クリア
            INITIALIZE                  SPA-GMN-INPUT-41.
