@@ -52,6 +52,8 @@
       *  01.02.15    NACL-藤原    04.06.08  適用終了日の追加
       *  01.02.16    NACL-藤原    04.06.15  印刷順の追加（個別作成時のみ）
       *  01.02.17    NACL-藤原    04.07.06  組合せ公費保険ＩＤの追加
+      *  01.02.18    NACL-門脇    04.12.15  公費一部負担金レセ記載フラグの追加
+      *                                     公費一部負担金０円記載フラグの追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -322,4 +324,13 @@
                    09  RECE02-HENTOTALTEN PIC  9(08).
       *印刷順
            03  RECE02-PRTSEQ              PIC  9(03).
+      *公費一部負担金レセ記載フラグ（所得者情報で限度額を入力する公費を対象）
+           03  RECE02-KISAIFLGINF-AREA.
+               05  RECE02-KISAIFLGINF     OCCURS  5.
+                   09  RECE02-KISAIFLG    PIC  X(01).
+      *公費一部負担金０円記載フラグ
+           03  RECE02-ZEROKISAIFLGINF-AREA.
+               05  RECE02-ZEROKISAIFLGINF OCCURS  5.
+                   09  RECE02-ZEROKISAIFLG
+                                          PIC  X(01).
       *

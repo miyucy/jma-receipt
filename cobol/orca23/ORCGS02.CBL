@@ -3303,7 +3303,7 @@
            MOVE    SPA-NAI-SRYYM       TO  SYU-SRYYMD (1:6)
            MOVE    "__"                TO  SYU-SRYYMD (7:)
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "SYUNOU-KEY14"      TO  WRK-DBPATH
+           MOVE    "SYUNOU-KEY35"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
                MOVE    1               TO  FLG-SYUNOU
@@ -3347,7 +3347,7 @@
       *
                END-IF
       *
-               MOVE    "SYUNOU-KEY14"  TO  WRK-DBPATH
+               MOVE    "SYUNOU-KEY35"  TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
                IF    ( FLG-DBRC    NOT =   ZERO )
                    MOVE    1           TO  FLG-SYUNOU
@@ -3359,7 +3359,7 @@
       *
            END-PERFORM
       *
-           MOVE    "SYUNOU-KEY14"      TO  WRK-DBPATH
+           MOVE    "SYUNOU-KEY35"      TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    SPA-ERRCD   NOT =  SPACE

@@ -80,6 +80,9 @@
       *  01.02.02    NACL-藤原    04/10/25  負担金額等のカスタマイズ項目
       *                                     の編集方法を変更
       *  01.02.03    NACL-藤原    04/11/01  記載なしの公費(原爆)の処理
+      *  01.02.04    NACL-門脇    04/12/15  公費の一部負担金額０記載対応、
+      *                                     省略不可分の対応
+      *  01.02.05    NACL-門脇    04/12/21  実日数０記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2718,26 +2721,35 @@
       *
       *    <診療実日数>
            IF      CNT-PAGE        =   1
-               MOVE    RECE02-JNISSU (IDX1)
-                                       TO  WRK-JINISSUZ
-               MOVE    WRK-JINISSU     TO  HC06-JINISSU
-               IF  RECE02-JNISSU (IDX1)
-                                   NOT =   RECE02-JNISSU (IDX2)
-                   MOVE    RECE02-JNISSU (IDX2)
-                                           TO  WRK-JINISSUZ
-                   MOVE    WRK-JINISSU     TO  HC06-JINISSU1
+               IF      RECE02-TOTALTEN (IDX1)     >   ZERO
+                  MOVE    RECE02-JNISSU (IDX1)
+                                          TO  WRK-JINISSU2Z
+                  MOVE    WRK-JINISSU2    TO  HC06-JINISSU
                END-IF
-               IF  RECE02-JNISSU (IDX2)
-                                   NOT =   RECE02-JNISSU (IDX3)
-                 IF  RECE02-FUKUSHIFLG  =  "1"
-                   MOVE    RECE02-JNISSU (IDX3)
-                                           TO  WRK-JINISSU2Z
-                   MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
-                 ELSE
-                   MOVE    RECE02-JNISSU (IDX3)
-                                           TO  WRK-JINISSUZ
-                   MOVE    WRK-JINISSU     TO  HC06-JINISSU2
-                 END-IF
+               IF      RECE02-TOTALTEN (IDX2)     >   ZERO
+                  IF  RECE02-JNISSU (IDX1)
+                                      NOT  =   RECE02-JNISSU (IDX2)
+                      MOVE    RECE02-JNISSU (IDX2)
+                                              TO  WRK-JINISSU2Z
+                      MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
+                  END-IF
+               END-IF
+               IF  RECE02-FUKUSHIFLG  =  "1"
+                   IF  RECE02-JNISSU (IDX2)
+                                       NOT =   RECE02-JNISSU (IDX3)
+                       MOVE    RECE02-JNISSU (IDX3)
+                                               TO  WRK-JINISSU2Z
+                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
+                   END-IF
+               ELSE
+                   IF      RECE02-TOTALTEN (IDX3)     >   ZERO
+                      IF  RECE02-JNISSU (IDX2)
+                                          NOT =   RECE02-JNISSU (IDX3)
+                          MOVE    RECE02-JNISSU (IDX3)
+                                                  TO  WRK-JINISSU2Z
+                          MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
+                      END-IF
+                   END-IF
                END-IF
       *        県単用項目
                IF      FLG-RECE11           =   ZERO
@@ -3492,6 +3504,20 @@
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(2)
                END-IF
            END-IF
+           IF    ( RECE02-TOTALTEN (IDX2) >   ZERO                  )
+           AND   ( RECE02-FTNMONEY (IDX2) =   RECE02-FTNMONEY (IDX1))
+           AND   ( RECE02-KISAIFLG (IDX2) =   "1"                   )
+               IF    RECE02-FTNMONEY (IDX2)   >   ZERO
+                   MOVE    RECE02-FTNMONEY (IDX2) TO  WRK-KGK7
+                   MOVE    WRK-KGK7               TO  HC06-FTNMONEY(2)
+               END-IF
+           END-IF
+           IF    ( RECE02-TOTALTEN (IDX2)     >   ZERO )
+           AND   ( RECE02-FTNMONEY (IDX2)     =   ZERO )
+           AND   ( RECE02-ZEROKISAIFLG (IDX2) =   "1"  )
+                   MOVE    RECE02-FTNMONEY (IDX2) TO  WRK-KGK7
+                   MOVE    WRK-KGK7               TO  HC06-FTNMONEY(2)
+           END-IF
            IF      RECE02-TOTALTEN (IDX2) >   ZERO                     
            AND     RECE02-TOTALTEN (IDX2)
                                       NOT =   RECE02-TOTALTEN (IDX1)   
@@ -3513,6 +3539,20 @@
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
                END-IF
              END-IF
+           END-IF
+           IF    ( RECE02-TOTALTEN (IDX3) >   ZERO                  )
+           AND   ( RECE02-FTNMONEY (IDX3) =   RECE02-FTNMONEY (IDX2))
+           AND   ( RECE02-KISAIFLG (IDX3) =   "1"                   )
+               IF    RECE02-FTNMONEY (IDX3)   >   ZERO
+                   MOVE    RECE02-FTNMONEY (IDX3) TO  WRK-KGK7
+                   MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
+               END-IF
+           END-IF
+           IF    ( RECE02-TOTALTEN (IDX3)     >   ZERO )
+           AND   ( RECE02-FTNMONEY (IDX3)     =   ZERO )
+           AND   ( RECE02-ZEROKISAIFLG (IDX3) =   "1"  )
+                   MOVE    RECE02-FTNMONEY (IDX3) TO  WRK-KGK7
+                   MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
            END-IF
            IF      RECE02-TOTALTEN (IDX3) >   ZERO                      
            AND     RECE02-TOTALTEN (IDX3)

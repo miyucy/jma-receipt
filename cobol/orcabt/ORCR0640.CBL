@@ -112,6 +112,10 @@
       *                                     ¡Ê¿Ç¶è£´£°¡¢£µ£°¡¢£µ£´¡¢£¶£°¡Ë
       *  01.02.04    NACL-¾®Æ¦Âô  04/12/08  ÅÀ¿ô¥Õ¥é¥°¤Î½é´ü²½ÄÉ²Ã
       *  01.02.05    NACL-Æ£¸¶    04/11/01  µ­ºÜ¤Ê¤·¤Î¸øÈñ¤Î½èÍý
+      *  01.02.06    NACL-ÌçÏÆ    04/12/15  ¸øÈñ°ìÉôÉéÃ´¶â¥ì¥»µ­ºÜ¥Õ¥é¥°
+      *                                     ¤ÎÊÔ½¸
+      *                                     ¸øÈñ°ìÉôÉéÃ´¶â£°±ßµ­ºÜ¥Õ¥é¥°
+      *                                     ¤ÎÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -240,6 +244,7 @@
            03  FLG-HOUSIJI-COM                         PIC 9(01).
            03  FLG-FUKUSHI-SKJ                         PIC 9(01).
            03  FLG-RECESKYKBN                          PIC 9(01).
+           03  FLG-HKNNUM                              PIC 9(01).
       *
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
@@ -777,6 +782,9 @@
       *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
+      *    ÊÝ¸±ÈÖ¹æ
+       01  HKNNUM-REC.
+           COPY    "CPHKNNUM.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
@@ -6737,6 +6745,80 @@
       *
            END-PERFORM
       *
+      *    ¸øÈñ°ìÉôÉéÃ´¶â¥ì¥»µ­ºÜ¥Õ¥é¥°¤ÎÊÔ½¸
+      *    ¸øÈñ°ìÉôÉéÃ´¶â£°±ßµ­ºÜ¥Õ¥é¥°¤ÎÊÔ½¸
+      *
+           IF    RECE62-SRYYM        >=  "200404"
+      *
+             PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                         UNTIL    KOHFTN-IDX     >    4
+      *
+               IF   RECE62-KOUREI    NOT =    SPACE
+                   IF ( RECE62-KOHNUM(KOHFTN-IDX) =  "012" OR "015"
+                                                  OR "016" OR "051" )
+                   OR ((WRK-PREFNUM      =   13           ) AND
+                       (RECE62-KOHNUM(KOHFTN-IDX) =  "151" OR "451"))
+                   OR ((WRK-PREFNUM      =   28           ) AND
+                       (RECE62-KOHNUM(KOHFTN-IDX) =  "186"         ))
+                         MOVE  "1"   TO
+                                 RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                   END-IF
+               END-IF
+      *
+               IF ( RECE62-KOHNUM(KOHFTN-IDX) =  "015" OR "016"
+                                                       OR "051" )
+               OR ((WRK-PREFNUM      =   13           ) AND
+                   (RECE62-KOHNUM(KOHFTN-IDX) =  "151" OR "451"))
+               OR ((WRK-PREFNUM      =   28           ) AND
+                   (RECE62-KOHNUM(KOHFTN-IDX) =  "186"         ))
+                     MOVE  "1"   TO
+                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+               ELSE
+                 IF   RECE62-KOHNUM(KOHFTN-IDX) =  "012"
+                   CONTINUE
+                 ELSE
+      *            ÊÝ¸±ÈÖ¹æ¥Æ¡¼¥Ö¥ë¤Î¸¡º÷
+                   INITIALIZE                      HKNNUM-REC
+                   MOVE   RECE62-HOSPID      TO    HKN-HOSPID
+                   MOVE   RECE62-KOHNUM(KOHFTN-IDX)
+                                             TO    HKN-HKNNUM
+                   MOVE   HKNNUM-REC         TO    MCPDATA-REC
+                   MOVE   "DBSELECT"         TO    MCP-FUNC
+                   MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
+                   CALL   "ORCMCPSUB"        USING MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+                   IF      MCP-RC            =     ZERO
+                     MOVE    "HKNNUM-KEY2"   TO    ORC-DBPATH
+                     PERFORM  HKNNUM-READ-SEC
+                     PERFORM  UNTIL
+                      ( FLG-HKNNUM         =   1               ) OR
+                      ((HKN-TEKSTYMD(1:6) <= RECE62-SRYYM     ) AND
+                       (RECE62-SRYYM      <= HKN-TEKEDYMD(1:6)))
+                         MOVE     "HKNNUM-KEY2" TO    ORC-DBPATH
+                         PERFORM   HKNNUM-READ-SEC
+                     END-PERFORM
+                   ELSE
+                     MOVE     1              TO    FLG-HKNNUM
+                   END-IF
+      *
+                   IF   FLG-HKNNUM  =  ZERO
+                     IF   HKN-HON-NYUDJGNGAK    NOT = ZERO
+                     OR   HKN-HON-NYUDGJNCNT    NOT = ZERO
+                     OR   HKN-HON-NYUMJGNGAK    NOT = ZERO
+                     OR   HKN-HON-NYUMJGNCNT    NOT = ZERO
+                        MOVE  "1"   TO
+                                RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                     END-IF
+                   END-IF
+      *
+                 END-IF
+               END-IF
+      *
+             END-PERFORM
+      *
+           END-IF
+      *
            .
        KOH-FUTAN-SET-EXT.
            EXIT.
@@ -7491,6 +7573,8 @@
                                            RECE62-HENTOTALTENINF-AREA
                                            RECE62-NYUKHNINF2
                                            RECE62-NYUTOKINF2
+                                           RECE62-KISAIFLGINF-AREA
+                                           RECE62-ZEROKISAIFLGINF-AREA
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       30
                INITIALIZE              RECE62-TENSUINF-AREA (IDX)
@@ -7516,6 +7600,10 @@
                                        TO  RECE62-NYUKHNKEI2    (1)
            MOVE    WRK-RECE62-NYUTOKKEI2    (1)
                                        TO  RECE62-NYUTOKKEI2    (1)
+           MOVE    WRK-RECE62-KISAIFLG      (1)
+                                       TO  RECE62-KISAIFLG      (1)
+           MOVE    WRK-RECE62-ZEROKISAIFLG  (1)
+                                       TO  RECE62-ZEROKISAIFLG  (1)
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       30
                MOVE    WRK-RECE62-TENSU (IDX 1)
@@ -7578,6 +7666,10 @@
                                        TO  RECE62-NYUTOKKEIINF
                                                            (IDX1 IDYX)
                            END-PERFORM
+                           MOVE    WRK-RECE62-KISAIFLG (IDXX)
+                                           TO  RECE62-KISAIFLG (IDYX)
+                           MOVE    WRK-RECE62-ZEROKISAIFLG (IDXX)
+                                           TO  RECE62-ZEROKISAIFLG(IDYX)
                        WHEN    "4"
                            ADD     1       TO  IDZX
                            MOVE    WRK-RECE62-KOHNUM (IDX)
@@ -8046,6 +8138,28 @@
       *
            .
        HKNCOMBI-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±ÈÖ¹æÆÉ¹þ
+      *****************************************************************
+       HKNNUM-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNNUM-REC
+               MOVE    ZERO            TO  FLG-HKNNUM
+           ELSE
+               INITIALIZE                  HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           .
+       HKNNUM-READ-EXT.
            EXIT.
       *
       *****************************************************************
