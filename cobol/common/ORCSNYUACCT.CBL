@@ -155,7 +155,7 @@
                05  WRK-JGN-DD          PIC 9(02).
            03  WRK-YY                  PIC 9(03).
       *
-           03  WRK-SRYKBN              PIC X(03).
+           03  WRK-SRYKBN              PIC X(02).
       *
        01  TBL-NYUIN-AREA.
            03  TBL-NYUIN-OCC           OCCURS   10.
@@ -947,7 +947,8 @@
            MOVE    SPA-PTID            TO  NACCT-PTID
            MOVE    SPA-SRYKA           TO  NACCT-SRYKA
            MOVE    WRK-ACT-STYMD(1:6)  TO  NACCT-SRYYM
-           IF      TBL-SRYCD (01)(2:2) =   "97"
+           IF     (TBL-SRYCD (01)(2:2) =   "97" )  OR
+                  (TBL-SRYCD (01)      =   "099999913")
                MOVE    "97"                TO  NACCT-SRYKBN
            ELSE
                MOVE    "90"                TO  NACCT-SRYKBN
