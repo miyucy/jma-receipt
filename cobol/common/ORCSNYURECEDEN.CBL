@@ -1516,50 +1516,71 @@
                                       ADD  1920 TO WRK-SKJ-MONEY(IDX1)
                                    WHEN  "197000710"
                                       ADD  1520 TO WRK-SKJ-MONEY(IDX1)
-                               END-EVALUATE    
-                               MOVE   "197000810"
+                               END-EVALUATE
+                               IF   WRK-SYS5000-SHOKUCD(1 IDX1) NOT =
+                                                                 SPACE
+                                   MOVE   "197000810"
                                          TO  WRK-SKJFTN-SRYCD(IDX1)
+                               END-IF
                            WHEN   2
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
                                                TO  WRK-SKJ-RYOYO(IDX1)
-                               MOVE   "197000470"
+                               IF   WRK-SYS5000-SHOKUCD(1 IDX1) NOT =
+                                                                 SPACE
+                                   MOVE   "197000470"
                                          TO  WRK-SKJ3-TOKU-SHOKU(IDX1)
+                               END-IF
                                EVALUATE  WRK-SYS5000-SHOKUCD(1 IDX1)
                                    WHEN  "197000110"
                                       ADD  1920 TO WRK-SKJ-MONEY(IDX1)
                                    WHEN  "197000710"
                                       ADD  1520 TO WRK-SKJ-MONEY(IDX1)
                                END-EVALUATE
-                               MOVE   "197000810"
+                               IF   WRK-SYS5000-SHOKUCD(1 IDX1) NOT =
+                                                                 SPACE
+                                   MOVE   "197000810"
                                          TO  WRK-SKJFTN-SRYCD(IDX1)
+                               END-IF
                            WHEN   3
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
                                                TO  WRK-SKJ-RYOYO(IDX1)
-                               MOVE   "197000670"
+                               IF   WRK-SYS5000-SHOKUCD(1 IDX1) NOT =
+                                                                 SPACE
+                                   MOVE   "197000670"
                                           TO  WRK-SKJ2-FUKUSU(IDX1)
+                               END-IF
                                EVALUATE  WRK-SYS5000-SHOKUCD(1 IDX1)
                                    WHEN  "197000110"
                                       ADD  1920 TO WRK-SKJ-MONEY(IDX1)
                                    WHEN  "197000710"
                                       ADD  1520 TO WRK-SKJ-MONEY(IDX1)
                                END-EVALUATE
-                               MOVE   "197000810"
+                               IF   WRK-SYS5000-SHOKUCD(1 IDX1) NOT =
+                                                                 SPACE
+                                   MOVE   "197000810"
                                          TO  WRK-SKJFTN-SRYCD(IDX1)
+                               END-IF
                            WHEN   4
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
                                                TO  WRK-SKJ-RYOYO(IDX1)
-                               MOVE   "197000470"
+                               IF   WRK-SYS5000-SHOKUCD(1 IDX1) NOT =
+                                                                 SPACE
+                                   MOVE   "197000470"
                                          TO  WRK-SKJ3-TOKU-SHOKU(IDX1)
-                               MOVE   "197000670"
+                                   MOVE   "197000670"
                                           TO  WRK-SKJ2-FUKUSU(IDX1)
+                               END-IF
                                EVALUATE  WRK-SYS5000-SHOKUCD(1 IDX1)
                                    WHEN  "197000110"
                                       ADD  1920 TO WRK-SKJ-MONEY(IDX1)
                                    WHEN  "197000710"
                                       ADD  1520 TO WRK-SKJ-MONEY(IDX1)
                                END-EVALUATE
-                               MOVE   "197000810"
+                               IF   WRK-SYS5000-SHOKUCD(1 IDX1) NOT =
+                                                                 SPACE
+                                   MOVE   "197000810"
                                          TO  WRK-SKJFTN-SRYCD(IDX1)
+                               END-IF
                        END-EVALUATE
       *                ∆√ Ã¥…Õ˝≤√ªª
                        IF    WRK-SYS5000-SHOKUCD(2 IDX1)  NOT = SPACE
