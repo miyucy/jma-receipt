@@ -539,7 +539,10 @@ path	key21	{
                         AND   SRYYMD      <=  :UPSRYYMD)
 			AND   LASTKBN     =   '1'
 			ORDER   BY        PTID,
-                                          SRYYMD
+                                          SRYYMD,
+                                          RENNUM,
+                                          DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };
