@@ -60,6 +60,7 @@
       *  01.04.03    NACL-藤原    03/01/15  確定のとき自動的に情報確認画面を表示
       *  01.04.04    NACL-藤原    03/02/25  プリンタ名をオンラインより渡す
       *  01.04.05    NACL-藤原    03/03/03  再印刷機能追加
+      *  01.04.06    NACL-藤原    03/05/23  レセ電のボタンを削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2360,6 +2361,9 @@
                    MOVE    WIDGET-NORMAL           TO  R02-B09-STATE
                END-IF    
            END-IF 
+      *    レセ電作成のボタンは押せない
+           MOVE    WIDGET-INSENSITIVE      TO  R02-B10-STATE
+                                               R02-B09-STATE
       *
       *
            PERFORM 5001-MAPCUR-SEC
