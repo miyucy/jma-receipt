@@ -8202,11 +8202,6 @@
       *****************************************************************
        4801-SENTEI-SET-SEC         SECTION.
       *
-           IF    ( LNK-SCNYUACCT-TOKUTEINYUIN-KBN
-                                       =   "1" )
-               GO  TO  4801-SENTEI-SET-EXT
-           END-IF
-      *
            INITIALIZE  SENTEICDCHG-REC
            MOVE    LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                                    TO  SENCHG-IPNSRYCD
