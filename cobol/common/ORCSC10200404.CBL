@@ -539,11 +539,12 @@
                   (WRK-GMN-INPUTCD(IDX-MAX)
                                        =   SPACE )  OR
                   (SPA-ERRCD       NOT =   SPACE )
-               GO      TO      100-SEL-SYORI-EXT
-           END-IF
+               CONTINUE
+           ELSE
       *
-      *    点数計算
-           PERFORM 1002-TENSU-KEI-SEC
+      *        点数計算
+               PERFORM 1002-TENSU-KEI-SEC
+           END-IF
       *
            .
        100-SEL-SYORI-EXT.
@@ -3173,8 +3174,9 @@
       *
            IF      SPA-HKNKBN          =   1
       *        労災の時、外来管理加算の読み替えチェック
-               IF      IDX-ZAI1            =   ZERO
-      *            再診の時のみ
+               IF     (IDX-ZAI1            =   ZERO ) AND
+                      (LNK-ORCSC-SINSATU-ARI   =   1)
+      *            再診の時で再診料のある時
                    PERFORM 20011-RSIGAIKAN-SYORI-SEC
                END-IF
            ELSE
