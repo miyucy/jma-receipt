@@ -121,7 +121,7 @@
       *        05  SYS-TSS         PIC 9(02).
       *********05  SYS-TDD         PIC 9(02).
       *    ¥·¥¹¥Æ¥àÎÎ°è
-       01  SYS-AREA.
+      *01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
       *
       *    Åº»úÎÎ°è
