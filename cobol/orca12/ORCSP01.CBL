@@ -526,7 +526,7 @@
                                 (WRK-KETA:SYS-1009-KKCKSIRENNUMKETA)
                                                TO  WRK-RENNUM-X
                    PERFORM 2002-SNUM-SEC
-                   IF      SYS-1009-RENNUM     >=   WRK-RENNUM
+                   IF      SYS-1009-RENNUM     <    WRK-RENNUM
                        MOVE    "1008"          TO  SPA-ERRCD
                        GO      TO      200-CHECK-EXT
                    END-IF
