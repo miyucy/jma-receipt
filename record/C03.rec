@@ -3,6 +3,24 @@ C03	{
 		BANGO	{
 			value	number(5);
 		};
+		BYOMEICD_1	{
+			value	varchar(8);
+		};
+		BYOMEICD_2	{
+			value	varchar(8);
+		};
+		BYOMEICD_3	{
+			value	varchar(8);
+		};
+		BYOMEICD_4	{
+			value	varchar(8);
+		};
+		BYOMEICD_5	{
+			value	varchar(8);
+		};
+		BYOMEICD_6	{
+			value	varchar(8);
+		};
 		BYOMEI	{
 			value	varchar(80);
 		};

@@ -67,8 +67,8 @@
                            11  SPA-GMN-BANGO           PIC 9(05).
                            11  SPA-GMN-BYOMEIINPUTCD   PIC X(10).
                            11  SPA-GMN-BYOMEICD-G.
-                               13  SPA-GMN-BYOMEICD    OCCURS  21
-                                                       PIC X(07).
+                               13  SPA-GMN-BYOMEICD    OCCURS  6
+                                                       PIC X(08).
                            11  SPA-GMN-UTAGAIFLG-G.
                                13  SPA-GMN-UTAGAIFLG   PIC X(01).
                                13  SPA-GMN-F1          PIC X(01).
@@ -125,6 +125,8 @@
                            11  SPA-NAI-BYOMEI-TBL.
                                13  SPA-NAI-BYOMEI-OCC  OCCURS  21.
                                    15  SPA-NAI-BYOMEI-G.
+                                       17  SPA-NAI-BYOMEICD
+                                                       PIC X(07).
                                        17  SPA-NAI-BYOMEI  
                                                        PIC X(80).
                                        17  SPA-NAI-UTAGAIFLG

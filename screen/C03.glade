@@ -371,9 +371,177 @@
 
     <widget>
       <class>GtkPandaEntry</class>
-      <name>BYOMEI</name>
+      <name>BYOMEICD_1</name>
       <x>360</x>
       <y>536</y>
+      <width>96</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 31 Jan 2001 01:21:46 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 31 Jan 2001 01:22:18 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>8</text_max_length>
+      <text>12345</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>BYOMEICD_2</name>
+      <x>464</x>
+      <y>536</y>
+      <width>96</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:07:59 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:08:17 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>8</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>BYOMEICD_3</name>
+      <x>568</x>
+      <y>536</y>
+      <width>96</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:08:42 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:08:57 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>8</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>BYOMEICD_4</name>
+      <x>672</x>
+      <y>536</y>
+      <width>96</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:09:18 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:09:32 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>8</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>BYOMEICD_5</name>
+      <x>776</x>
+      <y>536</y>
+      <width>96</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:09:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:10:06 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>8</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>BYOMEICD_6</name>
+      <x>880</x>
+      <y>536</y>
+      <width>96</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:10:22 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:10:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>8</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>BYOMEI</name>
+      <x>360</x>
+      <y>572</y>
       <width>616</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -401,7 +569,7 @@
       <class>GtkPandaEntry</class>
       <name>CHARTBYOMEI</name>
       <x>360</x>
-      <y>572</y>
+      <y>608</y>
       <width>616</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -439,6 +607,7 @@
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
+
 
     <widget>
       <class>GtkScrolledWindow</class>
@@ -572,7 +741,7 @@
       <class>GtkNumberEntry</class>
       <name>DSPSEQ</name>
       <x>360</x>
-      <y>640</y>
+      <y>672</y>
       <width>40</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -763,7 +932,7 @@
       <class>GtkPandaCombo</class>
       <name>UTAGAIFLGCOMBO</name>
       <x>360</x>
-      <y>608</y>
+      <y>640</y>
       <width>112</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -832,7 +1001,7 @@
       <class>GtkPandaCombo</class>
       <name>HKNBYOMEIFLGCOMBO</name>
       <x>864</x>
-      <y>608</y>
+      <y>640</y>
       <width>112</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -930,7 +1099,7 @@
       <class>GtkPandaCombo</class>
       <name>MANSEIFLGCOMBO</name>
       <x>545</x>
-      <y>608</y>
+      <y>640</y>
       <width>250</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -972,7 +1141,7 @@
       <class>GtkLabel</class>
       <name>label585</name>
       <x>280</x>
-      <y>640</y>
+      <y>672</y>
       <width>72</width>
       <height>24</height>
       <label>表示連番</label>
@@ -988,7 +1157,7 @@
       <class>GtkLabel</class>
       <name>label481</name>
       <x>280</x>
-      <y>604</y>
+      <y>640</y>
       <width>80</width>
       <height>24</height>
       <label>疑    い</label>
@@ -1004,7 +1173,7 @@
       <class>GtkLabel</class>
       <name>label582</name>
       <x>280</x>
-      <y>568</y>
+      <y>608</y>
       <width>80</width>
       <height>24</height>
       <label>カルテ病名</label>
@@ -1020,10 +1189,26 @@
       <class>GtkLabel</class>
       <name>label502</name>
       <x>280</x>
-      <y>536</y>
+      <y>572</y>
       <width>72</width>
       <height>24</height>
       <label>病    名    </label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label526</name>
+      <x>280</x>
+      <y>536</y>
+      <width>72</width>
+      <height>24</height>
+      <label>病名コード</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -1100,7 +1285,7 @@
       <class>GtkLabel</class>
       <name>label484</name>
       <x>484</x>
-      <y>604</y>
+      <y>640</y>
       <width>64</width>
       <height>24</height>
       <label>疾患区分</label>
@@ -1116,7 +1301,7 @@
       <class>GtkLabel</class>
       <name>label505</name>
       <x>800</x>
-      <y>604</y>
+      <y>640</y>
       <width>64</width>
       <height>24</height>
       <label>保険病名</label>

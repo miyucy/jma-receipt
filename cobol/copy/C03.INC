@@ -18,6 +18,8 @@
             02  C03.
               03  C03-BANGO.
                 04  C03-VALUE   PIC S9(5).
+              03  C03-BYOMEICD      OCCURS  6.
+                04  C03-VALUE   PIC X(8).
               03  C03-BYOMEI.
                 04  C03-VALUE   PIC X(80).
               03  C03-CHARTBYOMEI.

@@ -125,6 +125,7 @@
       *  新患者病名マスタ対応
       *  01.08.01    NACL-藤原    03/08/28  登録数の制限をなくす
       *  01.08.02    NACL-藤原    04/02/24  入外区分の表示切替の機能追加
+      *                                     病名文字数のエラー時の表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3296,6 +3297,7 @@
                    PERFORM VARYING IDXX    FROM    1   BY  1
                            UNTIL   IDXX    >   21
                            OR      USBYO-BYOMEICD (IDXX)   =   SPACE
+                           OR      USBYO-BYOMEICD (IDXX)   =   ALL "9"
                        MOVE    USBYO-BYOMEICD (IDXX)
                                        TO
                                        SPA-NAI-C02-BYOMEICD-O (IDZ IDXX)
@@ -3731,7 +3733,8 @@
                  IF      USBYO-BYOMEIHENFLG    =   SPACE        
                    PERFORM VARYING IDX3    FROM    1   BY  1
                            UNTIL   IDX3    >       21
-                           OR      USBYO-BYOMEICD (IDX3)   =   SPACE
+                           OR    ( USBYO-BYOMEICD (IDX3)   =
+                                           SPACE   OR  ALL "9" )
                        IF      USBYO-BYOMEICD (IDX3) (1:1) =   "Z"
                            CONTINUE
                        ELSE
