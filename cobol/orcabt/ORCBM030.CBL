@@ -599,7 +599,7 @@
            IF      FLG-UPD             =   1
                PERFORM 20013-UPD-FILE-HENSYU-SEC
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  MCP-PATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    SPACE               TO  WRK-RECEERR
