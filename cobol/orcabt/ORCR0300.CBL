@@ -51,6 +51,7 @@
       *  01.00.11    NACL-藤原    03/09/30  酸素の単価の編集
       *  01.00.12    NACL-藤原    03/10/10  コメントの名称編集の修正
       *  01.00.13    NACL-藤原    03/10/15  診療年月の編集の修正
+      *  01.00.14    NACL-藤原    03/10/22  摘要情報の編集の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -201,6 +202,8 @@
            03  FLG-TOTALTEN            PIC 9(01).
            03  FLG-KOKUJISKBKBN1       PIC 9(01).
            03  FLG-GAITENTTLKBN        PIC 9(01).
+           03  FLG-TBLMAX              PIC 9(01).
+           03  FLG-SRYSYUKBN721        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -218,6 +221,7 @@
            03  IDY2                    PIC 9(03).
            03  IDY3                    PIC 9(03).
            03  IDXX                    PIC 9(03).
+           03  IDW1                    PIC 9(03).
       *
        01  KEY-AREA                                VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -305,7 +309,8 @@
                05  WRK-FTNKBN          PIC X(01).
                05  WRK-KOHNUM          PIC 9(01)
                                            OCCURS  3.
-               05  WRK-SEHFLG          PIC 9(01).           
+               05  WRK-SEHFLG          PIC 9(01).
+           03  WRK-SRYCD1-MAX          PIC 9(03).           
       *    日付変換用
            03  WRK-SYMD                PIC X(08).
       *
@@ -365,15 +370,10 @@
                        09  TBL-ZAIW-YUKOKETA    PIC  9(02).
                        09  TBL-ZAIW-NAME        PIC  X(200).
       *
-      *    コメントデータ用テーブル
-       01  TBL-COMMENT-AREA.
-           03  TBL-COMMENT-REC                  OCCURS  10.
-               05  TBL-COMMENT-SRYCD            PIC  X(09).
-               05  TBL-COMMENT-NAME             PIC  X(200).
-      *
       *    診療行為データ用テーブル
        01  TBL-KOUI-AREA.
            03  TBL-KOUI-REC                     OCCURS  100.
+               05  TBL-KOUI-SRYCD1              PIC X(01).
       *        並び替え用ｋｅｙ      
                05  TBL-KOUI-KEY.
       *            告示等識別区分
@@ -399,6 +399,8 @@
                    07  TBL-KOUI-TENSIKIBETU     PIC  9(01).
                    07  TBL-KOUI-TEN             PIC  9(09)V9(02).
       *----(01.00.04) LINE ADD END ------------------------------------
+               05  TBL-KOUI-KZMCOMPSIKIBETU     PIC  9(01).
+               05  TBL-KOUI-NAME                PIC  X(200).
       *    並び替え用ワーク
        01  TBL-KOUI-SORT                        PIC X(200).
       *
@@ -412,6 +414,14 @@
                    07  TBL-KOUI-SRYKBN12-KAISU  PIC  9(04).
       *            点数
                    07  TBL-KOUI-SRYKBN12-TEN    PIC  9(09)V9(02).
+      *
+       01  WRK-RECE05-REC.
+           COPY    "CPRCF005.INC"  REPLACING  //RECE05//
+                                   BY         //WRK-RECE05//.
+      *
+       01  WRK-721-RECE05-REC.
+           COPY    "CPRCF005.INC"  REPLACING  //RECE05//
+                                   BY         //WRK-721-RECE05//.
       *  
        01  WRK-CONS-AREA.
       *    コンマ
@@ -1452,7 +1462,7 @@
       *   
            INITIALIZE                 WRK-FTNKBN-AREA
       *
-      *        保険組合せ読込み
+      *    保険組合せ読込み
            INITIALIZE                 HKNCOMBI-REC
            MOVE    RECE041-HOSPID  TO  COMB-HOSPID
            MOVE    RECE041-PTID    TO  COMB-PTID
@@ -1588,7 +1598,7 @@
       *
            INITIALIZE                      TBL-ZAIW-AREA
                                            TBL-KOUI-AREA
-                                           TBL-COMMENT-AREA
+           INITIALIZE                      WRK-RECE05-REC
       *
            MOVE    ZERO                TO  WRK-ZAIWMAX
            MOVE    ZERO                TO  WRK-TBLMAX1
@@ -1599,6 +1609,8 @@
                                            FLG-YKZ20
                                            FLG-KOKUJISKBKBN1
                                            FLG-GAITENTTLKBN
+                                           FLG-SRYSYUKBN721
+                                           WRK-SRYCD1-MAX
       *                                     
            MOVE    RECE041-SRYKBN      TO  WRK-SRYKBN
       *
@@ -1622,21 +1634,21 @@
                    PERFORM 990-RECE05-NEXT-SEC
            END-START
            PERFORM
-               UNTIL  ( FLG-END              =   1                   )
-               OR     ( FLG-RECE05           =   1                   )
-               OR     ( RECE041-HOSPID    NOT =   RECE05-HOSPID       )
-               OR     ( RECE041-SRYYM     NOT =   RECE05-SRYYM        )
-               OR     ( RECE041-NYUGAIKBN NOT =   RECE05-NYUGAIKBN    )
-               OR     ( RECE041-PTID      NOT =   RECE05-PTID         )
-               OR     ( RECE041-RECEKA    NOT =   RECE05-RECEKA       )
+               UNTIL  ( FLG-END                =   1                   )
+               OR     ( FLG-RECE05             =   1                   )
+               OR     ( RECE041-HOSPID     NOT =   RECE05-HOSPID       )
+               OR     ( RECE041-SRYYM      NOT =   RECE05-SRYYM        )
+               OR     ( RECE041-NYUGAIKBN  NOT =   RECE05-NYUGAIKBN    )
+               OR     ( RECE041-PTID       NOT =   RECE05-PTID         )
+               OR     ( RECE041-RECEKA     NOT =   RECE05-RECEKA       )
                OR     ( RECE041-TEISYUTUSAKI
-                                         NOT =   RECE05-TEISYUTUSAKI )
+                                           NOT =   RECE05-TEISYUTUSAKI )
                OR     ( RECE041-RECESYUBETU
-                                          NOT =   RECE05-RECESYUBETU  )
-               OR     ( RECE041-HKNJANUM  NOT =   RECE05-HKNJANUM     )
-               OR     ( RECE041-HOJOKBN   NOT =   RECE05-HOJOKBN      )
-               OR     ( RECE041-TEKSTYMD  NOT =   RECE05-TEKSTYMD     )
-               OR     ( RECE041-ZAINUM    NOT =   RECE05-ZAINUM       )
+                                           NOT =   RECE05-RECESYUBETU  )
+               OR     ( RECE041-HKNJANUM   NOT =   RECE05-HKNJANUM     )
+               OR     ( RECE041-HOJOKBN    NOT =   RECE05-HOJOKBN      )
+               OR     ( RECE041-TEKSTYMD   NOT =   RECE05-TEKSTYMD     )
+               OR     ( RECE041-ZAINUM     NOT =   RECE05-ZAINUM       )
       *
                PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX               >   5     )
@@ -1652,8 +1664,6 @@
                            PERFORM 200711-COMMENT-TAIHI-SEC
                        WHEN    "1"
                            PERFORM 200711-KOUI-TAIHI-SEC
-      *****************WHEN    "6" 
-      ******************** PERFORM 200711-YKZ-TAIHI-SEC
                        WHEN    OTHER
                            PERFORM 200711-ELSE-TAIHI-SEC
                    END-EVALUATE
@@ -1661,6 +1671,12 @@
       *
                PERFORM 990-RECE05-NEXT-SEC
            END-PERFORM
+      *
+      *    画像診断のとき順番を変える
+           IF      FLG-SRYSYUKBN721    =   1
+               MOVE    WRK-RECE05-REC      TO  RECE05-REC
+               PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+           END-IF
       *
            .
        20071-TBL-TAIHI-EXT.
@@ -1679,30 +1695,30 @@
                    GO  TO  200711-COMMENT-TAIHI-EXT
                END-IF
            END-IF    
-      *
-           ADD     1                   TO  WRK-TBLMAX8
-      *               
-           IF      WRK-TBLMAX8         >   10
-               MOVE    "*** ORCR0300 COMMENT TABLE  OVER  ***"
+      *     
+           IF      WRK-TBLMAX1         >=  100
+               MOVE    "*** ORCR0300 KOUI TABLE OVER  ***"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
+               ADD     1                   TO  WRK-TBLMAX1
+      *
                MOVE    RECE05-SRYCD (IDX)  TO
-                                   TBL-COMMENT-SRYCD (WRK-TBLMAX8)
+                                           TBL-KOUI-SRYCD (WRK-TBLMAX1)
                MOVE    RECE05-NAME  (IDX)  TO
-                                   TBL-COMMENT-NAME  (WRK-TBLMAX8)
+                                           TBL-KOUI-NAME  (WRK-TBLMAX1)
       *                             
                IF      RECE05-SRYCD (IDX) (1:1) =   "0"
       *            部位／薬剤
                    MOVE    "810000001"     TO  
-                                   TBL-COMMENT-SRYCD (WRK-TBLMAX8)
+                                       TBL-KOUI-SRYCD (WRK-TBLMAX1)
                ELSE
                    IF      RECE05-SRYCD (IDX)   =   "810000001"
                        CONTINUE
                    ELSE
                      IF      RECE05-INPUTNUM(IDX) =   ZERO
                            MOVE    "810000001"     TO  
-                                       TBL-COMMENT-SRYCD (WRK-TBLMAX8)
+                                           TBL-KOUI-SRYCD (WRK-TBLMAX1)
                      ELSE
                        MOVE    RECE02-HOSPID           TO  PTCOM-HOSPID
                        MOVE    RECE02-PTID             TO  PTCOM-PTID
@@ -1724,15 +1740,15 @@
                                COMPUTE IDW =   KANACHK-MAX +   1
                                MOVE    PTCOM-INPUTCOMENT (IDW:)
                                                    TO
-                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
+                                           TBL-KOUI-NAME (WRK-TBLMAX1)
                            ELSE
                                MOVE    PTCOM-INPUTCOMENT
                                                    TO
-                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
+                                           TBL-KOUI-NAME (WRK-TBLMAX1)
                            END-IF
                        ELSE
-                           MOVE    SPACE               TO
-                                       TBL-COMMENT-NAME (WRK-TBLMAX8)  
+                           MOVE    SPACE           TO
+                                           TBL-KOUI-NAME (WRK-TBLMAX1)  
                            INITIALIZE              ORCSKANACHKAREA
                            MOVE    "2"             TO  KANACHK-SYORI 
                            STRING  PTCOM-INPUTCHI1 DELIMITED  BY  SPACE
@@ -1746,7 +1762,7 @@
                            IF      KANACHK-RC      =   ZERO
                                MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                                    TO
-                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
+                                           TBL-KOUI-NAME (WRK-TBLMAX1)
                            END-IF
                        END-IF
                      END-IF
@@ -1776,13 +1792,50 @@
                    GO  TO  200711-KOUI-TAIHI-EXT
                END-IF
            END-IF
-      *     
+      *
+      *    画像診断のとき順番を変える
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
+           PERFORM 900-TENSU-READ-SEC
+      *
+           IF      FLG-SRYSYUKBN721    >   ZERO
+               IF      TNS-SRYSYUKBN       =   "711"
+                   PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+               END-IF
+               MOVE    RECE05-REC          TO  WRK-RECE05-REC
+               MOVE    IDX                 TO  IDW1
+               MOVE     FLG-SRYSYUKBN721   TO  IDX 
+               MOVE    WRK-721-RECE05-REC  TO  RECE05-REC
+               PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+               MOVE    ZERO                TO  FLG-SRYSYUKBN721
+               INITIALIZE                  WRK-721-RECE05-REC
+               MOVE    WRK-RECE05-REC      TO  RECE05-REC
+               MOVE    IDW1                TO  IDX
+           ELSE
+               IF      TNS-SRYSYUKBN       =   "721"
+                   MOVE    IDX             TO  FLG-SRYSYUKBN721
+                   MOVE    RECE05-REC      TO WRK-721-RECE05-REC
+               ELSE
+                   PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
+               END-IF
+           END-IF
+           .
+       200711-KOUI-TAIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    摘要データ（診療行為）退避編集処理
+      *****************************************************************
+          2007111-KOUI-TAIHI-HENSYU-SEC SECTION.
+      *
            IF      WRK-TBLMAX1         >=  100
                MOVE    "*** ORCR0300 KOUI TABLE OVER  ***"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
                ADD     1                   TO  WRK-TBLMAX1
+      *
+               MOVE    WRK-TBLMAX1         TO  WRK-SRYCD1-MAX
       *
                MOVE    RECE05-SRYCD    (IDX)   TO
                                        TBL-KOUI-SRYCD   (WRK-TBLMAX1)
@@ -1816,6 +1869,10 @@
                    MOVE    TNS-TEN             TO
                                    TBL-KOUI-TEN          (WRK-TBLMAX1)
       *----(01.00.04) LINE ADD END ------------------------------------
+                   IF      TNS-SRYCD (1:1)     =   "1"
+                       MOVE    TNS-KZMCOMPSIKIBETU TO
+                                   TBL-KOUI-KZMCOMPSIKIBETU(WRK-TBLMAX1)
+                   END-IF
       *
                    IF      TNS-KOKUJISKBKBN1   NOT =   "1"
                        MOVE    1                   TO  FLG-KOKUJISKBKBN1
@@ -1824,16 +1881,6 @@
            END-IF
            .
        200711-KOUI-TAIHI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    摘要データ（薬剤）退避処理
-      *****************************************************************
-       200711-YKZ-TAIHI-SEC          SECTION.
-      *
-           PERFORM 200711-ELSE-TAIHI-SEC    
-           .
-       200711-YKZ-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1949,182 +1996,201 @@
       *****************************************************************
        20072-ZAI-HENSYU-SEC          SECTION.
       *     
-      *    コメントデータの編集
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-TBLMAX8     
-      *
-               MOVE    SPACE               TO  WRK-REC
-               MOVE    ZERO                TO  WRK-REC-LENGTH
-      *
-               MOVE    "CO,"               TO  WRK-REC
-               MOVE    3                   TO  WRK-REC-LENGTH
-      *        診療識別
-               IF      IDX                 =   1
-               AND     WRK-SRYKBN      NOT =   SPACE     
-                   MOVE    WRK-SRYKBN          TO  WRK-DATA
-                   MOVE    2                   TO  WRK-NAGASA
-                   MOVE    SPACE               TO  WRK-SRYKBN
-               END-IF    
-               PERFORM 5004-MOJI-HENSYU-SEC  
-      *        負担区分
-               MOVE    WRK-FTNKBN          TO  WRK-DATA
-               MOVE    1                   TO  WRK-NAGASA
-               PERFORM 5004-MOJI-HENSYU-SEC  
-      *        コメントコード
-               MOVE    TBL-COMMENT-SRYCD (IDX)
-                                           TO  WRK-DATA
-               MOVE    9                   TO  WRK-NAGASA
-               PERFORM 5004-MOJI-HENSYU-SEC  
-      *        文字データ
-               MOVE    TBL-COMMENT-NAME(IDX)
-                                           TO  WRK-DATA
-               MOVE    76                  TO  WRK-NAGASA
-               MOVE    1                   TO  WRK-END 
-               PERFORM 5004-MOJI-HENSYU-SEC  
-      *
-               PERFORM 5001-FILE-WRITE-SEC
-           END-PERFORM
-      *
-      *    診療行為データの編集
+      *    診療行為データ・コメントデータの編集
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-TBLMAX1
       *
+      *        診療行為最終データ又は次がコメントデータの場合
+               MOVE    ZERO            TO  FLG-TBLMAX
+               IF      IDX             =   WRK-SRYCD1-MAX
+                   CONTINUE
+               ELSE
+                   COMPUTE IDX1    =   IDX     +   1
+                   IF      TBL-KOUI-SRYCD (IDX1) (1:1)
+                                           =   "0" OR  "8"
+                       MOVE    1               TO  FLG-TBLMAX
+                   END-IF
+               END-IF
+      *
                MOVE    SPACE               TO  WRK-REC
                MOVE    ZERO                TO  WRK-REC-LENGTH
-      *          
-               MOVE    "SI,"               TO  WRK-REC
-               MOVE    3                   TO  WRK-REC-LENGTH
-      *        診療識別
+      *
+               EVALUATE    TBL-KOUI-SRYCD (IDX) (1:1)
+                   WHEN    "0"
+                   WHEN    "8"
+                       MOVE    "CO,"               TO  WRK-REC
+                       MOVE    3                   TO  WRK-REC-LENGTH
+      *                診療識別
+                       IF    ( IDX                 =   1     )
+                       AND   ( WRK-SRYKBN      NOT =   SPACE )
+                           MOVE    WRK-SRYKBN          TO  WRK-DATA
+                           MOVE    2                   TO  WRK-NAGASA
+                           MOVE    SPACE               TO  WRK-SRYKBN
+                       END-IF    
+                       PERFORM 5004-MOJI-HENSYU-SEC  
+      *                負担区分
+                       MOVE    WRK-FTNKBN          TO  WRK-DATA
+                       MOVE    1                   TO  WRK-NAGASA
+                       PERFORM 5004-MOJI-HENSYU-SEC  
+      *                コメントコード
+                       MOVE    TBL-KOUI-SRYCD (IDX)
+                                                   TO  WRK-DATA
+                       MOVE    9                   TO  WRK-NAGASA
+                       PERFORM 5004-MOJI-HENSYU-SEC  
+      *                文字データ
+                       MOVE    TBL-KOUI-NAME(IDX)  TO  WRK-DATA
+                       MOVE    76                  TO  WRK-NAGASA
+                       MOVE    1                   TO  WRK-END 
+                       PERFORM 5004-MOJI-HENSYU-SEC  
+                   WHEN    OTHER     
+                       MOVE    "SI,"               TO  WRK-REC
+                       MOVE    3                   TO  WRK-REC-LENGTH
+      *                診療識別
       *----(01.00.04) LINE ADD START ----------------------------------
-               IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
-               AND   ( IDX                 >   1              )
-               AND   ( FLG-KOKUJISKBKBN1   =   ZERO           )
-                    MOVE    RECE041-SRYKBN  TO  WRK-DATA
-                    MOVE    2               TO  WRK-NAGASA
-                    MOVE    SPACE           TO  WRK-SRYKBN
-               END-IF
-      *----(01.00.04) LINE ADD END ------------------------------------
-               IF    ( IDX                 =   1     )
-               AND   ( WRK-SRYKBN      NOT =   SPACE )
-                   MOVE    WRK-SRYKBN          TO  WRK-DATA
-                   MOVE    2                   TO  WRK-NAGASA
-                   MOVE    SPACE               TO  WRK-SRYKBN
-               END-IF
-               PERFORM 5004-MOJI-HENSYU-SEC  
-      *        負担区分
-               MOVE    WRK-FTNKBN          TO  WRK-DATA
-               MOVE    1                   TO  WRK-NAGASA
-               PERFORM 5004-MOJI-HENSYU-SEC  
-      *        診療行為コード
-               MOVE    TBL-KOUI-SRYCD (IDX)
-                                           TO  WRK-DATA
-               MOVE    9                   TO  WRK-NAGASA
-               PERFORM 5004-MOJI-HENSYU-SEC  
-      *        数量
-               IF    ( RECE041-SRYKBN(1:1)     =   "1" OR  "2" OR "3" )
-               AND   ( TBL-KOUI-SRYSURYO (IDX) <=  1                  )
-                   CONTINUE
-               ELSE    
-                   IF      TBL-KOUI-SRYSURYO (IDX)  >   ZERO
-                       MOVE    TBL-KOUI-SRYSURYO (IDX)
-                                                TO  WRK-SURYO
-                       MOVE    WRK-SURYO        TO  WRK-NUM
-                       MOVE    8                TO  WRK-NAGASA
-                   END-IF
-               END-IF    
-               PERFORM 5005-NUM-HENSYU-SEC  
-      *        点数
-      *----(01.00.04) LINE ADD START ----------------------------------
-               IF      RECE041-SRYKBN            =   "13"  OR  "14"
-                   IF      IDX                   <   WRK-TBLMAX1
-                       IF      FLG-KOKUJISKBKBN1 =   ZERO
-                           MOVE    TBL-KOUI-TEN (IDX)
-                                                 TO  WRK-TENSU
-                           MOVE    WRK-TENSU     TO  WRK-NUM
-                           MOVE    7             TO  WRK-NAGASA
-                           COMPUTE RECE041-SYUTEN1
-                                                 =   RECE041-SYUTEN1
-                                                 -   TBL-KOUI-TEN (IDX)
+                       IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
+                       AND   ( IDX                 >   1              )
+                       AND   ( FLG-KOKUJISKBKBN1   =   ZERO           )
+                           MOVE    RECE041-SRYKBN  TO  WRK-DATA
+                            MOVE    2               TO  WRK-NAGASA
+                            MOVE    SPACE           TO  WRK-SRYKBN
                        END-IF
-                   END-IF
-               END-IF
       *----(01.00.04) LINE ADD END ------------------------------------
-               IF      IDX               =   WRK-TBLMAX1
-                   IF      RECE041-SYUTEN1       >   ZERO
-                       IF      RECE041-SRYKBN    =   "70"
-                           COMPUTE WRK-TENSU =   RECE041-SYUTEN1   - 
-                                                 RECE041-SYUTEN2
-                       ELSE
-                           EVALUATE    FLG-GAITENTTLKBN
-                               WHEN    ZERO
-                                   MOVE    RECE041-SYUTEN1
+                       IF    ( IDX                 =   1     )
+                       AND   ( WRK-SRYKBN      NOT =   SPACE )
+                           MOVE    WRK-SRYKBN          TO  WRK-DATA
+                           MOVE    2                   TO  WRK-NAGASA
+                           MOVE    SPACE               TO  WRK-SRYKBN
+                       END-IF
+                       PERFORM 5004-MOJI-HENSYU-SEC  
+      *                負担区分
+                       MOVE    WRK-FTNKBN          TO  WRK-DATA
+                       MOVE    1                   TO  WRK-NAGASA
+                       PERFORM 5004-MOJI-HENSYU-SEC  
+      *                診療行為コード
+                       MOVE    TBL-KOUI-SRYCD (IDX)
+                                                   TO  WRK-DATA
+                       MOVE    9                   TO  WRK-NAGASA
+                       PERFORM 5004-MOJI-HENSYU-SEC  
+      *                数量
+                       IF      TBL-KOUI-SRYSURYO (IDX) >   ZERO
+                           IF    ( RECE041-SRYKBN(1:1) =
+                                                   "1" OR  "2" OR "3" )
+                           AND   ( TBL-KOUI-SRYSURYO (IDX)
+                                                   <=  1              )
+                               CONTINUE
+                           ELSE
+                               IF    ( TBL-KOUI-SRYCD (IDX) (1:1)
+                                                       =   "1"        )
+                               AND   ( TBL-KOUI-KZMCOMPSIKIBETU (IDX)
+                                                   NOT =   "1"        )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    TBL-KOUI-SRYSURYO (IDX)
+                                                       TO  WRK-SURYO
+                                   MOVE    WRK-SURYO   TO  WRK-NUM
+                                   MOVE    8           TO  WRK-NAGASA
+                               END-IF
+                           END-IF
+                       END-IF    
+                       PERFORM 5005-NUM-HENSYU-SEC  
+      *                点数
+      *----(01.00.04) LINE ADD START ----------------------------------
+      **************** IF      RECE041-SRYKBN       =   "13"  OR  "14"
+      ****************      IF      IDX                 <   WRK-TBLMAX1
+      ****************          IF      FLG-KOKUJISKBKBN1   =   ZERO
+                       IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
+                       AND   ( FLG-KOKUJISKBKBN1   =   ZERO           )
+                       AND   ( IDX                 <   WRK-SRYCD1-MAX )
+                           MOVE    TBL-KOUI-TEN (IDX)
+                                                       TO  WRK-TENSU
+                           MOVE    WRK-TENSU           TO  WRK-NUM
+                           MOVE    7                   TO  WRK-NAGASA
+                           COMPUTE RECE041-SYUTEN1 =   RECE041-SYUTEN1
+                                                   -   TBL-KOUI-TEN(IDX)
+                       END-IF
+      *----(01.00.04) LINE ADD END ------------------------------------
+      *****************IF      IDX                 =   WRK-TBLMAX1
+                       IF    ( IDX                 =   WRK-SRYCD1-MAX )
+      *****            OR    ( FLG-TBLMAX          =   1              ) 
+                           IF      RECE041-SYUTEN1     >   ZERO
+                               IF      RECE041-SRYKBN      =   "70"
+                                 COMPUTE WRK-TENSU =   RECE041-SYUTEN1
+                                                   -   RECE041-SYUTEN2
+                               ELSE
+                                 EVALUATE    FLG-GAITENTTLKBN
+                                   WHEN    ZERO
+                                       MOVE    RECE041-SYUTEN1
                                                      TO  WRK-TENSU
-                               WHEN    1
-                                   COMPUTE WRK-TENSU =   
+                                   WHEN    1
+                                       COMPUTE WRK-TENSU =   
                                            RECE041-SYUTEN1     -
                                            WRK-CONS-JIKANGAI-SAISIN-TEN
-                                   ADD RECE041-ZAIKAISU    TO
+                                       ADD RECE041-ZAIKAISU    TO
                                              TBL-KOUI-SRYKBN12-KAISU (1)
-                                   MOVE    WRK-CONS-JIKANGAI-SAISIN
+                                       MOVE    WRK-CONS-JIKANGAI-SAISIN
                                                            TO
                                              TBL-KOUI-SRYKBN12-SRYCD (1)    
-                                   MOVE    WRK-CONS-JIKANGAI-SAISIN-TEN
+                                       MOVE WRK-CONS-JIKANGAI-SAISIN-TEN
                                                            TO
                                              TBL-KOUI-SRYKBN12-TEN   (1)    
-                               WHEN    2
-                                   COMPUTE WRK-TENSU =
+                                   WHEN    2
+                                       COMPUTE WRK-TENSU =
                                            RECE041-SYUTEN1     -
                                            WRK-CONS-HOLIDAY-SAISIN-TEN
-                                   ADD RECE041-ZAIKAISU    TO
+                                       ADD RECE041-ZAIKAISU    TO
                                              TBL-KOUI-SRYKBN12-KAISU (2)      
-                                   MOVE    WRK-CONS-HOLIDAY-SAISIN
+                                       MOVE    WRK-CONS-HOLIDAY-SAISIN
                                                            TO
                                              TBL-KOUI-SRYKBN12-SRYCD (2)    
-                                   MOVE    WRK-CONS-HOLIDAY-SAISIN-TEN
+                                       MOVE  WRK-CONS-HOLIDAY-SAISIN-TEN
                                                            TO
                                              TBL-KOUI-SRYKBN12-TEN   (2)    
-                               WHEN    3
-                                   COMPUTE WRK-TENSU =
+                                   WHEN    3
+                                       COMPUTE WRK-TENSU =
                                            RECE041-SYUTEN1     -
                                            WRK-CONS-NIGHT-SAISIN-TEN
-                                   ADD RECE041-ZAIKAISU    TO
+                                       ADD RECE041-ZAIKAISU    TO
                                              TBL-KOUI-SRYKBN12-KAISU (3)     
-                                   MOVE    WRK-CONS-NIGHT-SAISIN
+                                       MOVE    WRK-CONS-NIGHT-SAISIN
                                                            TO
                                              TBL-KOUI-SRYKBN12-SRYCD (3)    
-                                   MOVE    WRK-CONS-NIGHT-SAISIN-TEN
+                                       MOVE    WRK-CONS-NIGHT-SAISIN-TEN
                                                            TO
                                              TBL-KOUI-SRYKBN12-TEN   (3)    
-                           END-EVALUATE
-                       END-IF
-                       MOVE    WRK-TENSU         TO  WRK-NUM
-                       MOVE    7                 TO  WRK-NAGASA
-                   END-IF
-               END-IF    
-               PERFORM 5005-NUM-HENSYU-SEC  
-      *        回数
-      *----(01.00.04) LINE ADD START ----------------------------------
-               IF      RECE041-SRYKBN            =   "13"  OR  "14"
-                   IF      IDX                   <   WRK-TBLMAX1
-                       IF      FLG-KOKUJISKBKBN1 =   ZERO
-                           IF      RECE041-ZAIKAISU  >   ZERO
-                               MOVE    1             TO  WRK-KAISU
-                               MOVE    WRK-KAISU     TO  WRK-NUM
-                               MOVE    3             TO  WRK-NAGASA
+                                 END-EVALUATE
+                               END-IF
+                               MOVE    WRK-TENSU         TO  WRK-NUM
+                               MOVE    7                 TO  WRK-NAGASA
                            END-IF
+                       END-IF    
+                       PERFORM 5005-NUM-HENSYU-SEC  
+      *                回数
+      *----(01.00.04) LINE ADD START ----------------------------------
+      **************** IF      RECE041-SRYKBN      =   "13"  OR  "14"
+      ****************     IF      IDX                 <   WRK-TBLMAX1
+      ****************         IF      FLG-KOKUJISKBKBN1   =   ZERO
+      ****************             IF      RECE041-ZAIKAISU    >   ZERO
+                       IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
+                       AND   ( FLG-KOKUJISKBKBN1   =   ZERO           )
+                       AND   ( RECE041-ZAIKAISU    >   ZERO           )
+                       AND   ( IDX                 <   WRK-SRYCD1-MAX )
+                           MOVE    1                   TO  WRK-KAISU
+                           MOVE    WRK-KAISU           TO  WRK-NUM
+                           MOVE    3                   TO  WRK-NAGASA
                        END-IF
-                   END-IF
-               END-IF
       *----(01.00.04) LINE ADD END ------------------------------------
-               IF      IDX               =   WRK-TBLMAX1
-                   IF      RECE041-ZAIKAISU      >   ZERO
-                       MOVE    RECE041-ZAIKAISU  TO  WRK-KAISU
-                       MOVE    WRK-KAISU         TO  WRK-NUM
-                       MOVE    3                 TO  WRK-NAGASA
-                   END-IF
-               END-IF
-               MOVE    1                   TO  WRK-END 
-               PERFORM 5005-NUM-HENSYU-SEC  
+      **************** IF      IDX             =   WRK-TBLMAX1
+      ****************     IF      RECE041-ZAIKAISU    >   ZERO
+                       IF    ( IDX             =   WRK-SRYCD1-MAX     )
+                       AND   ( RECE041-ZAIKAISU
+                                               >   ZERO               )
+                           MOVE    RECE041-ZAIKAISU    TO  WRK-KAISU
+                           MOVE    WRK-KAISU           TO  WRK-NUM
+                           MOVE    3                   TO  WRK-NAGASA
+                       END-IF
+                       MOVE    1                   TO  WRK-END 
+                       PERFORM 5005-NUM-HENSYU-SEC
+               END-EVALUATE  
       *
                PERFORM 5001-FILE-WRITE-SEC
            END-PERFORM
