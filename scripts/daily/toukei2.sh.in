@@ -38,7 +38,11 @@ fi
         
         rm  /var/tmp/TOKEI1*
         
+        if  [ ${6} -eq '2' ]; then
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT110 -parameter $1,$2,$4,$5,$6,$9,${10},${13},${14},${15} > /home/orca/toukei2.log
+        else
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT120 -parameter $1,$2,$4,$5,$6,$9,${10},${13},${14},${15} > /home/orca/toukei2.log
+        fi
         
         if  [ -e ${15} ]; then
             exit 
