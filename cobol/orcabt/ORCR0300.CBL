@@ -49,6 +49,7 @@
       *                                     の全角チェック追加
       *  01.00.10    NACL-藤原    03/09/22  再診のときの時間外の編集
       *  01.00.11    NACL-藤原    03/09/30  酸素の単価の編集
+      *  01.00.12    NACL-藤原    03/10/10  コメントの名称編集の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1729,10 +1730,22 @@
                            INITIALIZE                  TNS-TENSU-REC
                            MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
                            PERFORM 900-TENSU-READ-SEC
-                           COMPUTE IDW =   TNS-YUKOKETA    *   2   +   1
-                           MOVE    PTCOM-INPUTCOMENT (IDW:)
+                           INITIALIZE              ORCSKANACHKAREA
+                           MOVE    "2"             TO  KANACHK-SYORI 
+                           MOVE    TNS-NAME        TO  KANACHK-MAE-INPUT
+                           CALL    "ORCSKANACHK"   USING
+                                                       ORCSKANACHKAREA
+                           IF    ( KANACHK-RC      =   ZERO )
+                           AND   ( KANACHK-MAX     >   ZERO )
+                               COMPUTE IDW =   KANACHK-MAX +   1
+                               MOVE    PTCOM-INPUTCOMENT (IDW:)
                                                    TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)
+                           ELSE
+                               MOVE    PTCOM-INPUTCOMENT
+                                                   TO
+                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
+                           END-IF
                        ELSE
                            MOVE    SPACE               TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)  
