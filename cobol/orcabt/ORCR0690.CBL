@@ -2154,6 +2154,7 @@
                 END-IF
       *
                 IF   (WRK-SRYSYUKBN      =  "340")
+                AND  (WRK-TBLMAX         =   1   )
                 AND  (TBL-ZAI-IDX(IDY)   =   3   )
                 AND  (TBL-ZAI-SRYCD(IDY) =  "130004410" OR "130008510")
                          MOVE   2              TO  RECE66-TENTEKIKBN
@@ -2161,6 +2162,7 @@
                 END-IF
       *
                 IF   (WRK-SRYSYUKBN      =  "330" OR "340")
+                AND  (WRK-TBLMAX         =   1            )
                 AND  (TBL-ZAI-IDX(IDY)   =   3            )
                 AND  (TBL-ZAI-SRYCD(IDY) =  "130000110" OR "130000210"
                                          OR "130000310" OR "130008270"
