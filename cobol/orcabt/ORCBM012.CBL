@@ -38,7 +38,6 @@
       *  01.01.02    NACL-藤原    02/09/18  保険者番号の追加
       *  01.01.03    NACL-藤原    02/10/10  サイト区分追加
       *  01.01.04    NACL-藤原    02/10/11  ２００２年１０月改正対応
-      *  01.01.05    NACL-藤原    02/11/13  更新用ファイルの編集の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -687,9 +686,7 @@
       *****************************************************************
        230-UPD-FILE-HENSYU-SEC         SECTION.
       *
-      *****MOVE    RECE10-REC          TO  RECE10X-REC
-           MOVE    SPACE               TO  RECE10X-REC
-           MOVE    RECE10-KEY          TO  RECE10X-KEY
+           MOVE    RECE10-REC          TO  RECE10X-REC
            WRITE   RECE10X-REC
            ADD     1                   TO  CNT-UPDFILE
            .
