@@ -32,6 +32,7 @@
       *  01.00.02    NACL-太田    03.05.08  入院中区分追加
       *  01.00.03    NACL-太田    03.06.05  日付以外の修正を可とする
       *                                     区分追加
+      *  01.00.04    NACL-太田    03.11.14  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -155,6 +156,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1384,12 +1388,16 @@
            END-IF
       *
            IF    ( WRK-UPDKBN      =   "UPD" )
-               ACCEPT  SYS-TIME        FROM    TIME
-               MOVE    SYS-TIME    TO  PTNYUINRRK-UPHMS
-               MOVE    SPA-SYSYMD  TO  PTNYUINRRK-UPYMD
-               MOVE    WRK-CREYMD  TO  PTNYUINRRK-CREYMD
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    WRK-CREYMD      TO  PTNYUINRRK-CREYMD
+               MOVE    SMCNDATE-YMD    TO  PTNYUINRRK-UPYMD
+               MOVE    SMCNDATE-HMS    TO  PTNYUINRRK-UPHMS
            ELSE
-               MOVE    SPA-SYSYMD  TO  PTNYUINRRK-CREYMD
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  PTNYUINRRK-CREYMD
+                                           PTNYUINRRK-UPYMD
+               MOVE    SMCNDATE-HMS    TO  PTNYUINRRK-UPHMS
            END-IF
       *
            .
@@ -1459,7 +1467,7 @@
                MOVE    "UPD"       TO  WRK-UPDKBN
                MOVE    MCPDATA-REC
                                    TO  PTTAINFUKA-REC
-               MOVE    PTNYUINRRK-CREYMD
+               MOVE    PTTAINFUKA-CREYMD
                                    TO  WRK-CREYMD
            ELSE
                MOVE    "INS"       TO  WRK-UPDKBN
@@ -1518,12 +1526,16 @@
                                    TO  PTTAINFUKA-KHNRYO
       *
            IF    ( WRK-UPDKBN      =   "UPD" )
-               ACCEPT  SYS-TIME        FROM    TIME
-               MOVE    SYS-TIME    TO  PTTAINFUKA-UPHMS
-               MOVE    SPA-SYSYMD  TO  PTTAINFUKA-UPYMD
-               MOVE    WRK-CREYMD  TO  PTTAINFUKA-CREYMD
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    WRK-CREYMD      TO  PTTAINFUKA-CREYMD
+               MOVE    SMCNDATE-YMD    TO  PTTAINFUKA-UPYMD
+               MOVE    SMCNDATE-HMS    TO  PTTAINFUKA-UPHMS
            ELSE
-               MOVE    SPA-SYSYMD  TO  PTTAINFUKA-CREYMD
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  PTTAINFUKA-CREYMD
+                                           PTTAINFUKA-UPYMD
+               MOVE    SMCNDATE-HMS    TO  PTTAINFUKA-UPHMS
            END-IF
       *
            .
@@ -2305,6 +2317,17 @@
       *
            .
        800-ENRTRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

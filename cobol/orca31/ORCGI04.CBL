@@ -35,6 +35,7 @@
       *  01.00.06    NACL-太田    03.03.13  入院請求書複数枚一括印刷対応
       *  01.00.07    NACL-太田    03.03.18  入院カスタマイズ帳票対応
       *  01.00.08    NACL-太田    03.07.01  出力先プリンタサブ追加
+      *  01.00.09    NACL-太田    03.11.14  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -359,6 +360,9 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -2278,6 +2282,11 @@
       *            請求取消として収納データを更新
                    MOVE    ZERO            TO  SYU-SKYMONEY
                    MOVE    "3"             TO  SYU-DENPJTIKBN
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  SYU-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  SYU-UPHMS
+      *
                    MOVE    SYUNOU-REC      TO  MCPDATA-REC
                    MOVE    "SYUNOU-KEY"    TO  WRK-DBPATH
                    PERFORM 900-TBL-UPDATE-SEC
@@ -2386,6 +2395,11 @@
       *
            MOVE    "SYUMEI-KEY"        TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
+                                           SMEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
       *
       *    収納明細追加
            MOVE    "SYUMEI-KEY"        TO  WRK-DBPATH
@@ -2513,10 +2527,6 @@
                MOVE    SUMTEIKIRRK-OCC (IDX6)
                                        TO  TEIKIRRK-REC
                MOVE    SPA-TERMID      TO  TEIKIRRK-TERMID
-               MOVE    SPA-SYSYMD      TO  TEIKIRRK-CREYMD
-                                           TEIKIRRK-UPYMD
-               ACCEPT  SYS-TIME        FROM    TIME
-               MOVE    SYS-TIME        TO  TEIKIRRK-UPHMS
       *
                MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
@@ -2534,6 +2544,10 @@
                        =   TEIKIRRK-SKYMONEY
                        +   SUMTEIKIRRK-SKYMONEY (IDX6)
       *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  TEIKIRRK-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
+      *
       *            定期請求管理データ更新
                    MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                    MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
@@ -2543,6 +2557,11 @@
                        GO  TO  4701-TEIKIRRK-UPD-EXT
                    END-IF
                ELSE
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  TEIKIRRK-CREYMD
+                                               TEIKIRRK-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
       *
                    MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                    MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
@@ -2614,9 +2633,9 @@
                                        TO  PTNYUINRRK-TAIINYMD
                END-IF
       *
-               ACCEPT  SYS-TIME        FROM    TIME
-               MOVE    SYS-TIME    TO  PTNYUINRRK-UPHMS
-               MOVE    SPA-SYSYMD  TO  PTNYUINRRK-UPYMD
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  PTNYUINRRK-UPYMD
+               MOVE    SMCNDATE-HMS    TO  PTNYUINRRK-UPHMS
       *
                MOVE    "PTNYUINRRK-KEY"
                                    TO  WRK-DBPATH
@@ -2764,6 +2783,12 @@
            END-IF
       *
            MOVE    WKSYUNOU-REC    TO  SYUNOU-REC
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD    TO  SYU-CREYMD
+                                       SYU-UPYMD
+           MOVE    SMCNDATE-HMS    TO  SYU-UPHMS
+      *
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
            MOVE    "SYUNOU-KEY"    TO  WRK-DBPATH
            PERFORM 900-TBL-INSERT-SEC
@@ -2860,6 +2885,13 @@
            END-IF
       *
            MOVE    WKSYUMEI-REC    TO  SYUMEI-REC
+      *
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD    TO  SMEI-CREYMD
+                                       SMEI-UPYMD
+           MOVE    SMCNDATE-HMS    TO  SMEI-UPHMS
+      *
            MOVE    SYUMEI-REC      TO  MCPDATA-REC
            MOVE    "SYUMEI-KEY"    TO  WRK-DBPATH
            PERFORM 900-TBL-INSERT-SEC
@@ -2915,6 +2947,10 @@
       *
                MOVE    SYS-0041-DENPNUMMAX-NYU
                                            TO  WRK-DENPNUM
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD        TO  SYS-0041-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-0041-UPHMS
       *
                MOVE    SYS-0041-REC        TO  MCPDATA-REC
                MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
@@ -3063,6 +3099,10 @@
       *
       *    更新前の情報をワークエリアに退避
            MOVE    PTINF-REC           TO  WKPTINF-REC
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
       *    患者情報更新
            MOVE    PTINF-REC           TO  MCPDATA-REC
@@ -3409,6 +3449,17 @@
       *
            .
        800-ENRTRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
