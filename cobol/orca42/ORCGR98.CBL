@@ -759,8 +759,10 @@
                EVALUATE    SPA-RIDCD
                    WHEN    "1001"
                        PERFORM 450-TOUROKU-SEC
-                       MOVE    "JOIN"          TO  MCP-PUTTYPE
-                       PERFORM 210-BACK
+                       IF      SPA-ERRCD       =   SPACE 
+                           MOVE    "JOIN"          TO  MCP-PUTTYPE
+                           PERFORM 210-BACK
+                       END-IF
                    WHEN    "1002"
                    WHEN    "1003"
                        PERFORM 450-TOUROKU-SEC
@@ -1226,6 +1228,8 @@
            CALL    "ORCSDAY"              USING   STS-AREA-DAY
                                                   LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN(1:6)   TO  SPA-NAI-SRYYM
+      *
+           MOVE    1                   TO  SPA-NAI-HYOUJIFLG
       *     
            PERFORM 3101-SEH-HENSYU-SEC
            .
@@ -1315,6 +1319,8 @@
            CALL    "ORCSDAY"              USING   STS-AREA-DAY
                                                   LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN(1:6)   TO  SPA-NAI-SRYYM
+      *
+           MOVE    1                   TO  SPA-NAI-HYOUJIFLG
       *     
            PERFORM 3101-SEH-HENSYU-SEC
       *            
@@ -1410,11 +1416,21 @@
       *
       *                受給者番号未入力のとき月代わり受給者番号マスタに
       *                存在しないときは更新しない                 
-                       IF      SPA-GMN-TJKYSNUM (IDX1 IDX)
-                                               =   SPACE
-                       AND     FLG-MONTHLYNUM  =   1
+                       IF    ( SPA-GMN-TJKYSNUM (IDX1 IDX) 
+                                               =   SPACE )    
+                       AND   ( FLG-MONTHLYNUM  =   1     )
                            CONTINUE
                        ELSE                             
+                           INITIALIZE              MONTHLYNUM-REC 
+                           MOVE    SPA-HOSPID  TO  MONTHLYNUM-HOSPID
+                           MOVE    SPA-NAI-TPTID (IDX1 IDX)
+                                               TO  MONTHLYNUM-PTID
+                           MOVE    WRK-CONS-SEIHO-HKNNUM
+                                               TO  MONTHLYNUM-KOHNUM
+                           MOVE    SPA-NAI-SRYYM
+                                               TO  MONTHLYNUM-SRYYM
+                           MOVE    SPA-R01-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
                            MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
                                                TO  MONTHLYNUM-JKYSNUM
                            IF      FLG-MONTHLYNUM  =   ZERO
