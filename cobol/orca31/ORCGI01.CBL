@@ -10006,7 +10006,8 @@
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                    TO  WRK-AGECHK-SRYYMD
            PERFORM 4801-RJN-TAISYO-CHK-SEC
-           IF    ( FLG-RJN         =   1 )
+           IF    ( FLG-RJN         =   1 )    AND
+                 ( SPA-NAI-I01-RSI-HKNKBN     =   SPACE )
                INITIALIZE              SRYCDCHG-REC
       *
                MOVE    SYOKIKSN-IN-KHNSRYCD
