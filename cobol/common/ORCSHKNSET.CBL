@@ -335,7 +335,7 @@
                                                                (IDX)
            END-IF
       *    ３歳未満の時、２割を上限とする
-           IF     (COMB-TEKSTYMD       >=  "20021001") AND
+           IF     (COMB-TEKEDYMD       >=  "20021001") AND
                   (SPA-SRYYMD          >=  "20021001") AND
                   (WRK-NENREI          <   03        )
       *        主保険が自費以外の時
