@@ -33,6 +33,7 @@
       *                                     作成に対応
       *  01.00.03    NACL-小豆沢  03.10.24  労災（自賠）入院時に老人点数無効
       *  01.00.04    NACL-小豆沢  03.10.27  労災（自賠）入院時に選定入院なし
+      *  01.00.05    NACL-太田    03.11.17  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -427,6 +428,9 @@
       *
       *    排他制御パラメタ
            COPY    "CPORCSLOCK.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -6254,6 +6258,10 @@
       *            入院会計マスターを変更する
                    PERFORM 4901-NYUINACCT-KOUSIN-SEC
       *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD        TO  NACCT-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
+      *
                    MOVE    NYUINACCT-REC       TO  MCPDATA-REC
                    IF      NACCT-ZAISKBKBN     =   "4"
                        MOVE    ZERO            TO  WRK-TAIHI-SHOKUJI
@@ -6463,6 +6471,10 @@
                                                 TO  NACCT-ZAIKAISU
                        END-IF
                    END-PERFORM
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD        TO  NACCT-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
       *
                    MOVE    NYUINACCT-REC       TO  MCPDATA-REC
                    IF      NACCT-ZAISKBKBN     =   "4"
@@ -6897,6 +6909,17 @@
            MOVE    1                   TO  FLG-END.
       *
        520-JIDSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

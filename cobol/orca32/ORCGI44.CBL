@@ -27,7 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *
+      *  01.00.01    NACL-太田    03.11.17  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -447,6 +447,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -4411,6 +4414,10 @@
            ADD     1                   TO  PTINF-MAXZAINUM.
            MOVE    PTINF-MAXZAINUM     TO  WRK-ZAINUM.
       *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
+      *
            MOVE    PTINF-REC           TO  MCPDATA-REC.
            MOVE    "DBUPDATE"          TO  MCP-FUNC.
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH.
@@ -4540,6 +4547,11 @@
       *入力値
            MOVE    SPA-COM-INPUTCHI-G (IDX)  TO  PTCOM-INPUTCHI-AREA.
       *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD              TO  PTCOM-CREYMD
+                                                 PTCOM-UPYMD
+           MOVE    SMCNDATE-HMS              TO  PTCOM-UPHMS
+      *
            MOVE    PTCOM-REC                 TO  MCPDATA-REC.
            MOVE    "PTCOM-KEY"               TO  ORC-DBPATH.
            MOVE    "DBINSERT"                TO  MCP-FUNC.
@@ -4571,6 +4583,11 @@
       *
            MOVE    SPA-COM-SRYSYUKBN(01) TO  NSRY-SRYSYUKBN.
            MOVE    SPA-SRYKBN            TO  NSRY-SRYKBN.
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD          TO  NSRY-CREYMD
+                                             NSRY-UPYMD
+           MOVE    SMCNDATE-HMS          TO  NSRY-UPHMS
       *
            MOVE    NYUINACT-REC          TO  MCPDATA-REC.
            MOVE    "NYUINACT-KEY"        TO  ORC-DBPATH.
@@ -4645,6 +4662,10 @@
            MOVE    WRK-YKZTEN          TO  NACCT-YKZTEN.
       *    器材点数
            MOVE    WRK-KIZAITEN        TO  NACCT-KIZAITEN.
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  NACCT-UPYMD
+           MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
            MOVE    "DBUPDATE"          TO  MCP-FUNC.
@@ -4722,6 +4743,10 @@
            COMPUTE NACCT-ZAIKAISU      =   NACCT-ZAIKAISU
                                        -   WRK-DAY.
       *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  NACCT-UPYMD
+           MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
+      *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
            MOVE    "DBUPDATE"          TO  MCP-FUNC.
            MOVE    "NYUINACCT-KEY"     TO  ORC-DBPATH.
@@ -4776,6 +4801,11 @@
            COMPUTE IDX-D1              =   SPA-SEL-RENNUM   +  1.
            MOVE    WRK-DAY             TO  NACCT-DAY
                                              (IDX-D2).
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  NACCT-CREYMD
+                                           NACCT-UPYMD
+           MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
            MOVE    "DBINSERT"          TO  MCP-FUNC.
@@ -5364,6 +5394,17 @@
        520-JIDSET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
+           EXIT.
       *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************

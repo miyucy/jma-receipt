@@ -27,7 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *
+      *  01.00.01    NACL-太田    03.11.17  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -160,6 +160,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1168,6 +1171,9 @@
                   IF      FLG-RECECOM         =   ZERO
       *               更新
                       MOVE    SPA-I43-COMMENT      TO  RECECOM-COMMENT
+                      PERFORM 800-MCNDATE-SEC
+                      MOVE    SMCNDATE-YMD         TO  RECECOM-UPYMD
+                      MOVE    SMCNDATE-HMS         TO  RECECOM-UPHMS
       *
                       MOVE    RECECOM-REC          TO  MCPDATA-REC
                       MOVE    "DBUPDATE"           TO  MCP-FUNC
@@ -1191,6 +1197,11 @@
                       MOVE    SPA-I43-HKNCOMBINUM  TO  RECECOM-HKNCOMBI
                       MOVE    "00"                 TO  RECECOM-SRYDD
                       MOVE    SPA-I43-COMMENT      TO  RECECOM-COMMENT
+      *
+                      PERFORM 800-MCNDATE-SEC
+                      MOVE    SMCNDATE-YMD         TO  RECECOM-CREYMD
+                                                       RECECOM-UPYMD
+                      MOVE    SMCNDATE-HMS         TO  RECECOM-UPHMS
       *
                       MOVE    RECECOM-REC          TO  MCPDATA-REC
                       MOVE    "DBINSERT"           TO  MCP-FUNC
@@ -1361,6 +1372,9 @@
            IF      FLG-EXAMPLE         =   ZERO
       *        更新
                MOVE    SPA-I43-COMMENT    TO  EXAMPLE-COMMENT
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD       TO  EXAMPLE-UPYMD
+               MOVE    SMCNDATE-HMS       TO  EXAMPLE-UPHMS
       *
                MOVE    EXAMPLE-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1380,6 +1394,11 @@
                MOVE    "1"                 TO  EXAMPLE-KUBUN
                MOVE    SPA-I43-BUNNUM      TO  EXAMPLE-RENNUM
                MOVE    SPA-I43-COMMENT     TO  EXAMPLE-COMMENT
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD       TO  EXAMPLE-CREYMD
+                                              EXAMPLE-UPYMD
+               MOVE    SMCNDATE-HMS       TO  EXAMPLE-UPHMS
       *
                MOVE    EXAMPLE-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1722,6 +1741,17 @@
        520-JIDSET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
+           EXIT.
       *****************************************************************
       *    保険組合せマスター読込
       *****************************************************************
