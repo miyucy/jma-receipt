@@ -23,52 +23,60 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ENUM-VALUES.
-           02  PRTCONST-T.
-             03  PRTCONST-T11.
-               05  PRTCONST-PRTID-T11  PIC  X(10)
+           03  PRTCONST-T.
+      *       
+               05  PRTCONST-PRTID-T01  PIC  X(10)
                                        VALUE   "HC401     " .
-               05  PRTCONST-PRTID-T12  PIC  X(10)
+               05  PRTCONST-PRTID-T02  PIC  X(10)
+      *        収納一覧                     
                                        VALUE   "HC07      " .
-               05  PRTCONST-PRTID-T13  PIC  X(10)
+               05  PRTCONST-PRTID-T03  PIC  X(10)
+      *        日計表                     
                                        VALUE   "HC17      " .
-               05  PRTCONST-PRTID-T14  PIC  X(10)
+               05  PRTCONST-PRTID-T04  PIC  X(10)
                                        VALUE   "HC17V01   " .
-               05  PRTCONST-PRTID-T15  PIC  X(10)
+      *        社保総括表                     
+               05  PRTCONST-PRTID-T05  PIC  X(10)
                                        VALUE   "HC08      " .
-               05  PRTCONST-PRTID-T16  PIC  X(10)
+               05  PRTCONST-PRTID-T06  PIC  X(10)
                                        VALUE   "HC08V01   " .
-               05  PRTCONST-PRTID-T17  PIC  X(10)
+      *        国保総括表                     
+               05  PRTCONST-PRTID-T07  PIC  X(10)
                                        VALUE   "HC04      " .
-               05  PRTCONST-PRTID-T18  PIC  X(10)
+               05  PRTCONST-PRTID-T08  PIC  X(10)
                                        VALUE   "HC04V01   " .
-               05  PRTCONST-PRTID-T19  PIC  X(10)
+               05  PRTCONST-PRTID-T09  PIC  X(10)
                                        VALUE   "HC04V02   " .
-               05  PRTCONST-PRTID-T19  PIC  X(10)
+               05  PRTCONST-PRTID-T10  PIC  X(10)
                                        VALUE   "HC04V03   " .
-               05  PRTCONST-PRTID-T21  PIC  X(10)
+      *        国保総括表（負担割合あり）                     
+               05  PRTCONST-PRTID-T11  PIC  X(10)
                                        VALUE   "HC041     " .
-               05  PRTCONST-PRTID-T22  PIC  X(10)
+               05  PRTCONST-PRTID-T12  PIC  X(10)
                                        VALUE   "HC041V01  " .
-               05  PRTCONST-PRTID-T23  PIC  X(10)
+               05  PRTCONST-PRTID-T13  PIC  X(10)
                                        VALUE   "HC041V02  " .
-               05  PRTCONST-PRTID-T23  PIC  X(10)
+               05  PRTCONST-PRTID-T14  PIC  X(10)
                                        VALUE   "HC041V03  " .
-               05  PRTCONST-PRTID-T24  PIC  X(10)
+      *        点数マスタ一覧                     
+               05  PRTCONST-PRTID-T15  PIC  X(10)
                                        VALUE   "HCML01    " .
-               05  PRTCONST-PRTID-T25  PIC  X(10)
+               05  PRTCONST-PRTID-T16  PIC  X(10)
                                        VALUE   "HCML02    " .
-               05  PRTCONST-PRTID-T26  PIC  X(10)
+               05  PRTCONST-PRTID-T17  PIC  X(10)
                                        VALUE   "HCML03    " .
-               05  PRTCONST-PRTID-T27  PIC  X(10)
+               05  PRTCONST-PRTID-T18  PIC  X(10)
                                        VALUE   "HCML06    " .
-               05  PRTCONST-PRTID-T27  PIC  X(10)
+      *        国保総括表（２００２年１０月改正対応）                     
+               05  PRTCONST-PRTID-T19  PIC  X(10)
                                        VALUE   "HCM2C     " .
-               05  PRTCONST-PRTID-T27  PIC  X(10)
+               05  PRTCONST-PRTID-T20  PIC  X(10)
                                        VALUE   "HCM2D     " .
-               05  PRTCONST-PRTID-T27  PIC  X(10)
+               05  PRTCONST-PRTID-T21  PIC  X(10)
                                        VALUE   "HCM2E     " .
-               05  PRTCONST-PRTID-T27  PIC  X(10)
+               05  PRTCONST-PRTID-T22  PIC  X(10)
                                        VALUE   "HCM2F     " .
-           02  PRTCONST-R  REDEFINES   PRTCONST-T.
-             03  PRTCONST-TX           OCCURS  31.
-               05  PRTCONST-PRTID      PIC  X(10).
+      *                                 
+           03  PRTCONST-R  REDEFINES   PRTCONST-T.
+               03  PRTCONST-TX         OCCURS  22.
+                   07  PRTCONST-PRTID  PIC  X(10).
