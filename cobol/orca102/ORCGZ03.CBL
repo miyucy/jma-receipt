@@ -36,6 +36,7 @@
       *  01.01.04    MCC-多々納   02/07/18  服用方法画面追加
       *  01.01.05    NACL-多々納  02/10/09  診療種別の最大数を１００へ
       *                                     半角空白→全角空白追加
+      *  01.01.06    NACL-多々納  02/12/02  食事追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -260,7 +261,8 @@
       *
        01  TBL-GMN-JUN-R       REDEFINES   TBL-GMN-JUN.
       *****03  TBL-GMN-OCC                 OCCURS  107
-           03  TBL-GMN-OCC                 OCCURS  108
+      *****03  TBL-GMN-OCC                 OCCURS  108
+           03  TBL-GMN-OCC                 OCCURS  109
                                            INDEXED  IDX-GMN.
                05  TBL-WIDGET              PIC X(30).
       *
@@ -911,6 +913,9 @@
                                                                (IDX-1)
                        WHEN    "96"
                            MOVE    "保険外"    TO  SPA-GMN-SRYKBNME-L
+                                                               (IDX-1)
+                       WHEN    "97"
+                           MOVE    "食事"      TO  SPA-GMN-SRYKBNME-L
                                                                (IDX-1)
                        WHEN    OTHER
                            MOVE    "その他"    TO  SPA-GMN-SRYKBNME-L
