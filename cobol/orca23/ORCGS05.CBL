@@ -413,6 +413,8 @@
                                                              (IDXA)
                MOVE    SYS-1005-EDYUKYMD   TO  WRK-SRYKAL-EDYUKYMD
                                                              (IDXA)
+               MOVE    SYS-1005-SRYKANAME1 TO  WRK-SRYKAMEIL
+                                                             (IDXA)
       *
                MOVE    "SYSKANRI-KEY5"     TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
