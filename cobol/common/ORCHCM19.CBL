@@ -634,7 +634,7 @@
       *            見出しのみ
                    INITIALIZE                  WRK-SYOHOU-AREA
                    MOVE    1                   TO  WRK-PAGE-MAX
-                   MOVE    SPACE               TO  WRK-HKNCOMBINUM
+                   MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBINUM
                    PERFORM 400-PRINT-SYORI-SEC
                WHEN    "4"
                WHEN    "5"
@@ -894,6 +894,8 @@
       *    処方編集初期クリア処理
            PERFORM 200211-SYOHOU-INIT-SEC
            MOVE    SPA-DRCD            TO  WRK-DRCD
+           MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBINUM
+           MOVE    ZERO                TO  FLG-SYORI
            PERFORM
                    UNTIL       FLG-JYURRK      =   1
       *
@@ -907,6 +909,9 @@
                    MOVE    JYURRK-SRYYMD       TO  WRK-SRYYMD
                    IF      JYURRK-SRYKA        =   SPA-SRYKA
                        MOVE    SPA-DRCD            TO  WRK-DRCD
+                   END-IF
+                   IF      SPA-HKNCOMBINUM     NOT =   SPACE
+                       MOVE    SPA-HKNCOMBINUM TO   WRK-HKNCOMBINUM
                    END-IF
                    MOVE    ZERO                TO  FLG-SYORI
                    IF      FLG-PRINT           =   ZERO
