@@ -141,6 +141,16 @@ def filename_unchange(name)
 end
 
 
+# slashを付ける
+def add_slash(str)
+	if str =~ /[^\/]$/
+		return (str += '/')
+	else
+		return str
+	end
+end
+
+
 
 # ============================================================
 # 引数の加工処理
@@ -155,6 +165,13 @@ data_file = filename_change(data_file)
 temp_file2 = filename_unchange(temp_file)
 exec_file2 = filename_unchange(exec_file)
 data_file2 = filename_unchange(data_file)
+
+
+# コマンド引数のformやrecordのディレクトリ名に「/」がない場合、「/」を付ける処理
+std_form = add_slash(std_form)
+std_record = add_slash(std_record)
+site_form = add_slash(site_form)
+site_record = add_slash(site_record)
 
 
 # デバッグ用の表示
