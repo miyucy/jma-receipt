@@ -2691,7 +2691,8 @@
                  (SPA-GMN-DAY-41 (IDX)       NOT = ZERO)   AND
                  (SPA-GMN-DAY-41 (IDX)       NOT =   1)    AND
                  (SPA-GMN-DAY-41 (IDX)       NOT =   2)    AND
-                 (SPA-GMN-DAY-41 (IDX)       NOT =   3)
+                 (SPA-GMN-DAY-41 (IDX)       NOT =   3)    AND
+                 (SPA-GMN-DAY-41 (IDX)       NOT =   4)
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
                GO      TO      41012-DAY-CHK-EXT
@@ -2988,7 +2989,8 @@
                  (SPA-WRK-KOMENTO-D          NOT = ZERO)  AND
                  (SPA-WRK-KOMENTO-D          NOT =   1)   AND
                  (SPA-WRK-KOMENTO-D          NOT =   2)   AND
-                 (SPA-WRK-KOMENTO-D          NOT =   3)
+                 (SPA-WRK-KOMENTO-D          NOT =   3)   AND
+                 (SPA-WRK-KOMENTO-D          NOT =   4)
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
                MOVE    03              TO  SPA-GMN-CUR-41
