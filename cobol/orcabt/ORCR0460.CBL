@@ -34,6 +34,7 @@
       *                                     するようにする
       *  01.00.03    NACL-門脇    02.09.19  自賠責対応
       *  01.00.04    NACL-藤原    02.09.20  検査のときの表示方法を変更
+      *  01.00.05    NACL-門脇    02.10.02  摘要出力項目変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -142,13 +143,11 @@
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
            03  FLG-SYOSIN          PIC 9(01).
-           03  FLG-KEIKNRKSN       PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-KENSA           PIC 9(01).
            03  FLG-TEIGEN          PIC 9(01).
            03  FLG-COMMENT         PIC 9(01).
            03  FLG-HIKAKIN         PIC 9(01).
-           03  FLG-DSAISHIN        PIC 9(01).
            03  FLG-SRYCD1          PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
@@ -405,14 +404,6 @@
       *
       *   印字しない診療行為テーブル
        01  TBL-NOSRYCD-AREA.
-      *    初診（病院）
-           03  FILLER          PIC X(09)   VALUE   "111000110".
-      *    初診（診療所）
-           03  FILLER          PIC X(09)   VALUE   "111003610".
-      *    初診（病院）
-           03  FILLER          PIC X(09)   VALUE   "111700110".
-      *    初診（診療所）
-           03  FILLER          PIC X(09)   VALUE   "111700210".
       *    処方料（７種類以上）
            03  FILLER          PIC X(09)   VALUE   "120002610".
       *    処方料（その他）
@@ -435,24 +426,18 @@
            03  FILLER          PIC X(09)   VALUE   "120000410".
       *    調剤料（麻・向・覚・毒）（入院外）
            03  FILLER          PIC X(09)   VALUE   "120000110".
-      *    再診（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112009210".
       *    電話等再診（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112009750".
-      *    老人再診（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112703710".
-      *    老人同日再診（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112704150".
-      *    外来管理加算（３回目まで）
-           03  FILLER          PIC X(09)   VALUE   "112011010".
-      *    老人外来管理加算（３回目まで）
-           03  FILLER          PIC X(09)   VALUE   "112705310".
+      **>  03  FILLER          PIC X(09)   VALUE   "112009750".
+      *    外来管理加算（３月以内）
+           03  FILLER          PIC X(09)   VALUE   "101120070".
+      *    外来管理加算（３月超）（５回以内）
+           03  FILLER          PIC X(09)   VALUE   "101120080".
       *    実日数算定
            03  FILLER          PIC X(09)   VALUE   "099409901".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   22.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   14.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   22.
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   14.
       *
       *    固定値
        01  CONST-AREA.
@@ -463,20 +448,9 @@
            03  WRK-CONS-BUNKAKU-MOJISU
                                PIC 9(02)   VALUE   4.                    
            03  WRK-CONS-BUNKAKU
-                               PIC X(04)   VALUE   "分画".                          
-      *    継続管理加算
-           03  CONS-KEIZOKU    PIC X(09)   VALUE   "112007170".
-           03  CONS-KEIZOKU1   PIC X(09)   VALUE   "112702270".
-      *    外来管理加算（読み替え加算）（３月以内）
-           03  CONS-GAIRAI     PIC X(09)   VALUE   "101120070".
-      *    外来管理加算（読み替え加算）（３月超）（５回以内）
-           03  CONS-GAIRAI1    PIC X(09)   VALUE   "101120080".
-      *    外来管理加算（読み替え加算）（３月超）（５回超）
-           03  CONS-GAIRAI2    PIC X(09)   VALUE   "101120090".
+                               PIC X(04)   VALUE   "分画".                            *
       *    薬剤料逓減
            03  CONS-TEIGEN     PIC X(09)   VALUE   "630010002".
-      *    薬剤（減）
-           03  CONS-YKZ20      PIC X(09)   VALUE   "820000047".
       *---- (01.00.05) LINE ADD START --------------------------------
       *フリーコメント
       *    電話再診（　回）
@@ -488,19 +462,10 @@
       *    複数診療科受診
            03  CONS-COMMENT4   PIC X(09)   VALUE   "099999901".
       *---- (01.00.05) LINE ADD END   --------------------------------
-      *---- (01.01.07) LINE ADD START --------------------------------
-      *同日再診関係
-      *    【老】同日再診（診療所）
-           03  CONS-DSAISHIN1  PIC X(09)   VALUE   "112700850".
-      *    同日再診（診療所） 
-           03  CONS-DSAISHIN2  PIC X(09)   VALUE   "112003350".
-      *    【老】同日電話等再診（診療所）
-           03  CONS-DSAISHIN3  PIC X(09)   VALUE   "112700950".
-      *    同日電話等再診（診療所）
-           03  CONS-DSAISHIN4  PIC X(09)   VALUE   "112003150".
-      *---- (01.01.07) LINE ADD END   --------------------------------
-      *皮下筋肉注射
+      *    皮下筋肉注射
            03  CONS-HIKAKIN    PIC X(09)   VALUE   "130000510".
+      *    初診（診療所）紹介患者加算
+           03  CONS-SYOSIN-KASAN1  PIC X(09) VALUE "111003770".
       *
       *    パス名領域
        01  WRK-PATH                        PIC X(64).
@@ -916,7 +881,8 @@
       *
            IF  WRK-TBLMAX           >   ZERO
       *        剤明細数と印字対象明細数が異なる場合
-               IF  WRK-ZAIWMAX(1)   NOT =   RECE44-MEISAISU
+      **>      IF  WRK-ZAIWMAX(1)   NOT =   RECE44-MEISAISU
+               IF  WRK-TBLMAX       NOT =   RECE44-MEISAISU
                    PERFORM 400-TENSU-SAIKEISAN-SEC
                END-IF
       *        点数・回数セット処理
@@ -942,28 +908,35 @@
            IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)   =   "001"
                MOVE    1             TO  FLG-NOPRT
            END-IF
+      *    紹介患者加算服用方法でないこと
+           IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)  
+                                             =   CONS-SYOSIN-KASAN1
+               CONTINUE
+           ELSE
+               MOVE    1             TO  FLG-NOPRT
+           END-IF
       *
       *    診療行為テーブルに存在した場合、印字しないこと
-           PERFORM   VARYING   IDY   FROM    1   BY  1
-                     UNTIL   ( IDY           >   TBL-NOSRYCD-MAX )
-                     OR      ( FLG-NOPRT     =    1              )
+      **>  PERFORM   VARYING   IDY   FROM    1   BY  1
+      **>            UNTIL   ( IDY           >   TBL-NOSRYCD-MAX )
+      **>            OR      ( FLG-NOPRT     =    1              )
       *
-               IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                             =   TBL-NOSRYCD (IDY)
-                   MOVE    1                 TO  FLG-NOPRT
+      **>      IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
+      **>                                    =   TBL-NOSRYCD (IDY)
+      **>          MOVE    1                 TO  FLG-NOPRT
       *            ＊初診の場合
-                   IF  TBL-NOSRYCD (IDY)     =   "111000110"
-                                             OR  "111003610"
-                                             OR  "111700110"
-                                             OR  "111700210"
-                       MOVE    1             TO  FLG-SYOSIN
+      **>          IF  TBL-NOSRYCD (IDY)     =   "111000110"
+      **>                                    OR  "111003610"
+      **>                                    OR  "111700110"
+      **>                                    OR  "111700210"
+      **>              MOVE    1             TO  FLG-SYOSIN
       *                一つの剤に他の明細も存在する場合
-                       IF  RECE44-MEISAISU       >   1
-                           MOVE    ZERO          TO  FLG-NOPRT
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
+      **>              IF  RECE44-MEISAISU       >   1
+      **>                  MOVE    ZERO          TO  FLG-NOPRT
+      **>              END-IF
+      **>          END-IF
+      **>      END-IF
+      **>  END-PERFORM
       *
       *    識別が点数の場合
            IF  FLG-NOPRT                     =   ZERO
@@ -989,15 +962,11 @@
            MOVE    ZERO              TO  WRK-TBLMAX
            MOVE    ZERO              TO  WRK-TENSUGOKEI
            MOVE    ZERO              TO  CNT-ZAITAISYO
-           MOVE    ZERO              TO  FLG-KEIKNRKSN
-           MOVE    ZERO              TO  FLG-DSAISHIN
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       1  
-                   OR     (FLG-KEIKNRKSN   =   1)
-                   PERFORM VARYING IDX2    FROM    1   BY  1
+               PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
-                       OR      FLG-KEIKNRKSN   =   1           
                    MOVE    IDX1          TO  WRK-WIDX1
                    MOVE    IDX2          TO  WRK-WIDX2
                    PERFORM 20041-SRYKBN12-CHECK-SEC
@@ -1007,23 +976,6 @@
                    END-IF
                END-PERFORM    
            END-PERFORM
-      *
-      *
-      *    ------------------------
-      *     診療区分１２　例外処理
-      *    ------------------------
-      ***  再診のとき
-           IF  ( RECE41-KHNTEN  (2)      =   ZERO )  AND
-               ( RECE41-KAISU   (2)      >   ZERO )
-                   CONTINUE
-           ELSE
-      *        継続管理加算のとき
-               IF ((FLG-KEIKNRKSN     =   1)  OR
-                   (FLG-DSAISHIN      =   1)) AND  
-                   (WRK-TBLMAX        >   1) 
-                   PERFORM 20042-SRYKBN12-REIGAI-SEC
-               END-IF
-           END-IF    
       *
            IF  WRK-TBLMAX           >   ZERO
       *        剤明細数と印字対象明細数が異なる場合
@@ -1063,23 +1015,26 @@
                                          =   TBL-NOSRYCD (IDY)
                    MOVE    1                 TO  FLG-NOPRT
       *            ＊再診の場合
-                   IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                         =   "112009210"  OR
-                                             "112010150"  OR
-                                             "112009750"  OR
-                                             "112010650"  OR
-                                             "112703710"  OR
-                                             "112704450"  OR
-                                             "112704150"  OR
-                                             "112704850"
-                     IF  RECE41-SAISHIN-PRTKBN   =   "1"
-                         MOVE    ZERO          TO  FLG-NOPRT
-                     END-IF
-                   END-IF
+      **>          IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
+      **>                                =   "112009210"  OR   
+      **>                                    "112010150"  OR   
+      **>                                    "112009750"  OR
+      **>                                    "112010650"  OR   
+      **>                                    "112703710"  OR   
+      **>                                    "112704450"  OR   
+      **>                                    "112704150"  OR   
+      **>                                    "112704850"       
+      *
+      ***>          IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
+      ***>                                =   "112009750"  
+      ***>            IF  RECE41-SAISHIN-PRTKBN   =   "1"
+      ***>                MOVE    ZERO          TO  FLG-NOPRT
+      ***>            END-IF
+      ***>          END-IF
       *            ＊外来管理加算の場合
                    IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                         =   "112011010"  OR
-                                             "112705310"
+                                         =   "101120070"  OR
+                                             "101120080"
                      IF  RECE41-GAIRAIKSN-PRTKBN   =   "1"
                          MOVE    ZERO          TO  FLG-NOPRT
                      END-IF
@@ -1098,56 +1053,10 @@
                    ADD     TBL-ZAIW-TEN (WRK-WIDX1 WRK-WIDX2)
                                          TO  WRK-TENSUGOKEI
                END-IF
-      *        継続管理加算
-      *********IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-      *                                  =   CONS-KEIZOKU    OR
-      *                                      CONS-KEIZOKU1 
-      *            MOVE    1                 TO  FLG-KEIKNRKSN
-      *********END-IF
-      *        同日再診（同日電話再診含む）
-               IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                         =   CONS-DSAISHIN1  OR
-                                             CONS-DSAISHIN2  OR
-                                             CONS-DSAISHIN3  OR
-                                             CONS-DSAISHIN4
-                   MOVE    1                 TO  FLG-DSAISHIN
-               END-IF
            END-IF    
       *
            .
        20041-SRYKBN12-CHECK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    診療区分１２　例外処理
-      *****************************************************************
-       20042-SRYKBN12-REIGAI-SEC        SECTION.
-      *
-           MOVE    SPACE               TO  WRK-ZAI
-           MOVE    "＊"                TO  WRK-ZAI-MK
-           INITIALIZE                      TBL-ZAI-AREA
-           MOVE    ZERO                TO  WRK-TBLMAX
-           MOVE    ZERO                TO  WRK-TENSUGOKEI
-           MOVE    ZERO                TO  CNT-ZAITAISYO
-      *     
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       5  
-               PERFORM VARYING IDX2    FROM    1   BY  1
-                       UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
-                   MOVE    IDX1          TO  WRK-WIDX1
-                   MOVE    IDX2          TO  WRK-WIDX2
-      *            外来管理加算以外は印字
-                   IF  TBL-ZAIW-SRYCD (IDX1 IDX2)  NOT =   CONS-GAIRAI
-      *                レセプト０５剤編集処理
-                       PERFORM 430-TBLZAI-HEN-SEC
-                       ADD     TBL-ZAIW-TEN (IDX1 IDX2)
-                                           TO  WRK-TENSUGOKEI
-                   END-IF
-               END-PERFORM
-           END-PERFORM    
-      *
-           .
-       20042-SRYKBN12-REIGAI-EXT.
            EXIT.
       *
       *****************************************************************
