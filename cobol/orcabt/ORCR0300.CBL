@@ -132,11 +132,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE11-KEY
                                    FILE    STATUS  IS  STS-RECE11.
-      *    レセプト電算ファイル  
-           SELECT  RECE30-FILE     ASSIGN  "/var/tmp/RECE300.dat"
-                                   ORGANIZATION    IS  LINE
-                                                       SEQUENTIAL
-                                   FILE    STATUS  IS  STS-RECE30.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -174,10 +169,6 @@
        FD  RECE11-FILE.
        01  RECE11-REC. 
            COPY    "CPRCF011.INC".
-      *
-      *    レセプト電算ファイル  
-       FD  RECE30-FILE.
-       01  RECE30-R         PIC X(200).
       *     
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -798,8 +789,6 @@
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
-      *
-           OPEN    OUTPUT             RECE30-FILE  
       *
            OPEN    I-O                RECE02-FILE  
       *
@@ -3614,8 +3603,7 @@
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
-           CLOSE   RECE30-FILE
-                   RECE02-FILE
+           CLOSE   RECE02-FILE
                    RECE03-FILE
                    RECE041-FILE
                    RECE05-FILE
