@@ -49,6 +49,9 @@ Z91	{
 		TOKCHK	{
 			value	bool;
 		};
+		JIHCHK	{
+			value	bool;
+		};
                 COMCHKALL	{
 			value	bool;
 		};

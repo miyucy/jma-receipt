@@ -21,6 +21,7 @@
           03  SHELL-SRYSTR        PIC 9(02).
           03  SHELL-SRYEND        PIC 9(02).
           03  SHELL-TOKCHK        PIC 9(01).
+          03  SHELL-JIHCHK        PIC 9(01).
       *----(01.01.01)--ADD-START---
           03  SHELL-COMCHK-G.
               05  SHELL-COMCHK    PIC 9(01)  OCCURS  3.

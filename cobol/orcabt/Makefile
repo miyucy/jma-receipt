@@ -50,6 +50,8 @@ SRCS = \
        ORHCML07.CBL \
        ORHCML08.CBL \
        ORHCML09.CBL \
+       ORHCML10.CBL \
+       ORHCML11.CBL \
        ORCBQ01.CBL \
        ORCR0400.CBL \
        ORCR0410.CBL \
