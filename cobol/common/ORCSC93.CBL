@@ -601,6 +601,8 @@
                                IF      SPA-COM-SRYKBN(IDX - 1) =   "31"
                                                                OR  "32"
                                                                OR  "33"
+      *                                  処置追加
+                                                               OR  "40"
                                    MOVE    SPA-COM-SRYKBN(IDX - 1)
                                                      TO  SPA-COM-SRYKBN
                                                                   (IDX)

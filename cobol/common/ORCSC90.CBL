@@ -252,8 +252,13 @@
       *
       *    注射で、アンプルの時、単位以下計算
            IF     (LNK-COM-SRYKBN (IDX)    =   "31" OR "32" OR
-                                                       "33"      ) AND
-                  (LNK-COM-TANICD (IDX)    =   "014" OR "022" OR "046")
+                                                       "33"
+      *           処置追加
+                                           OR  "40" 
+                                                          ) AND
+                 ((LNK-COM-TANICD (IDX)    =   "014" OR "022" OR "046")
+               OR  ((IDX                     <   200  )  AND
+                    (LNK-COM-INPUTCD(IDX + 1)  =   "099309901")))
                IF      LNK-COM-SURYO(IDX)(6:3) >   ZERO
                    COMPUTE WRK-SURYO-CHU9      =   LNK-COM-SURYO (IDX)
                                                +   0.99

@@ -34,6 +34,7 @@
       * 01.00.04     MCC-多々納   02/07/09  労災加算の入力を可能とする
       * 01.00.05     NACL-多々納  02/08/20  労災チェック追加
       * 01.00.06     NACL-多々納  02/10/03  労災加算なしの追加
+      * 01.00.07     NACL-多々納  03/05/21  注射液残量廃棄追加
       *****************************************************************
       *
       *
@@ -92,6 +93,8 @@
       *
            03  IDX-Z2              PIC 9(04).
            03  HZN-IDX             PIC 9(04).
+      *
+           03  IDX-HAI             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -1268,12 +1271,24 @@
                MOVE    IDX-Z               TO  IDX-ZS
            END-IF
       *
+           MOVE    ZERO                TO  LNK-SC90-HAIKI
            MOVE    LNK-ORCSC-KAISU     TO  LNK-SC90-KAISU
            MOVE    "1"                 TO  LNK-SC90-KBN
            MOVE    IDX-Z               TO  LNK-SC90-IDX
            CALL    "ORCSC90"           USING
                                        ORCSC90AREA
                                        WRK-SCR-REC
+      *    各チェック処理
+           EVALUATE    WRK-MOJI
+      *        薬剤
+               WHEN    "6"
+      *            廃棄が有った時、破棄コメントを追加する
+                   IF      LNK-SC90-HAIKI          =   1
+                       MOVE    IDX-Z               TO  IDX-HAI
+                       PERFORM 10011-HAIKI-ADD-SEC
+                   END-IF
+           END-EVALUATE
+      *
       *
       *    酸素計算
            IF      WRK-COM-SANSOKBN (IDX-Z)    =   1
@@ -1283,6 +1298,29 @@
            .
        10021-KEISAN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    破棄コメント自動発生成処理
+      *****************************************************************
+       10011-HAIKI-ADD-SEC           SECTION.
+      *
+           MOVE    "099309901"         TO  WRK-SRYCD
+           IF      WRK-COM-INPUTCD (IDX-HAI + 1) =   WRK-SRYCD
+               GO      TO      10011-HAIKI-ADD-EXT
+           END-IF
+      *
+           MOVE    IDX-HAI             TO  IDX-S
+           MOVE    ZERO                TO  FLG-ARI
+      *    加算料追加処理
+           PERFORM 1002-KASAN-SET-SEC
+           IF      FLG-ADD             =   1
+               MOVE    IDX-HAI             TO  IDX-Z
+           END-IF
+      *
+           .
+       10011-HAIKI-ADD-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    酸素計算処理
