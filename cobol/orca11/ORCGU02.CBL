@@ -656,13 +656,13 @@
       *    カルテ
            MOVE    "0:発行なし"        TO  SPA-GMN-KARUTELST (1)
            MOVE    "1:発行あり"        TO  SPA-GMN-KARUTELST (2)
-           MOVE    "2 続紙頭書"        TO  SPA-GMN-KARUTELST (3)
+           MOVE    "2:続紙頭書"        TO  SPA-GMN-KARUTELST (3)
            MOVE    SPA-GMN-KARUTELST (1)   TO  SPA-GMN-KARUTE-G
       *
       *    処方
            MOVE    "0:発行なし"        TO  SPA-GMN-SYOHOLST (1)
            MOVE    "1:発行あり"        TO  SPA-GMN-SYOHOLST (2)
-           MOVE    SPA-GMN-SYOHOLST (1)   TO  SPA-GMN-SYOHO-G
+           MOVE    SPA-GMN-SYOHOLST (1)    TO  SPA-GMN-SYOHO-G
       *
            .
        31O-SPASET-EXT.
@@ -4035,7 +4035,7 @@
                WHEN    "0023"
                    MOVE    "対象の保険組合せがありません。"
                                                 TO  SPA-ERRMSG
-                   MOVE    "診療行為は入力できません"
+                   MOVE    "診療行為は入力できません。"
                                                 TO  SPA-ERRMSG(33:)
                WHEN    "0024"
                    MOVE    "カルテ印刷に必要な情報が入力されてません。"
@@ -4058,10 +4058,10 @@
                    MOVE    "患者登録はできません。"
                                                 TO  SPA-ERRMSG(33:)
                WHEN    "2001"
-                   MOVE    "前の未確認保険はありません。。"
+                   MOVE    "前の未確認保険はありません。"
                                                 TO  SPA-ERRMSG
                WHEN    "2002"
-                   MOVE    "次の未確認保険はありません。。"
+                   MOVE    "次の未確認保険はありません。"
                                                 TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE
