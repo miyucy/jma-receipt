@@ -5005,6 +5005,7 @@
            IF      SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)
                                        =   "*"
                PERFORM 4101129-KAISUU-CHK-SEC
+               MOVE    SPACE           TO  SPA-COM-INPUTCD(SPA-GMN-IDX)
                GO      TO      410112-INPUTCD-HENKAN-EXT
            END-IF
       *    回数入力があった時エラーとする
