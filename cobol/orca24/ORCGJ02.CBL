@@ -269,6 +269,8 @@
       *
            03  WRK-TENSU-X.
                05  WRK-TENSU       PIC Z(07).
+               05  WRK-TENSU-2     REDEFINES   WRK-TENSU
+                                   PIC -(07).
            03  WRK-KAISU-X.
                05  WRK-KAISU       PIC Z(08).
            03  WRK-KEI-X.
@@ -2188,6 +2190,10 @@
            ELSE
                MOVE    TNS-ROUTEKKBN       TO  SPA-NAI-ROUTEKKBN(IDX)
            END-IF
+      *    内服の逓減の時、マイナス
+           IF      SRY-SRYCD  (IDZ)        =   "630010002"
+               MOVE    1                   TO  SPA-NAI-ZAITENFLG (IDX)
+           END-IF
       *
       *    コメント以外の最終行セット
            IF      SRY-SRYCD  (IDZ)(1:1)   =   "0"  OR  "8"
@@ -2395,159 +2401,14 @@
       *
       *    点数＊回数　計
            MOVE    SPA-NAI-ZAITEN  (IDX)   TO  WRK-TENSU
-      **** MOVE    SPA-NAI-ZAIKAISU(IDX)   TO  WRK-KAISU
-      *    COMPUTE WRK-KEI             =   SPA-NAI-ZAITEN  (IDX)
-      *                                *   SPA-NAI-ZAIKAISU(IDX)
-      *
-      *    MOVE    ZERO                TO  IDK2
-      *    MOVE    SPACE               TO  WRK-ZAIKEI 
-      *    MOVE    SPACE               TO  WRK-KAISU-H 
-      *    MOVE    SPACE               TO  WRK-KEI-H 
-      *    PERFORM VARYING     IDK1    FROM    1   BY  1
-      *            UNTIL       IDK1    >   8
-      *        IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
-      *            ADD     1           TO  IDK2
-      *            MOVE    WRK-KAISU-X (IDK1:1)
-      *                                TO  WRK-KAISU-H (IDK2:1)
-      *        END-IF
-      *    END-PERFORM
-      *    MOVE    ZERO                TO  IDK2
-      *    PERFORM VARYING     IDK1    FROM    1   BY  1
-      *            UNTIL       IDK1    >   8
-      *        IF      WRK-KEI-X   (IDK1:1)    NOT =   SPACE
-      *            ADD     1           TO  IDK2
-      *            MOVE    WRK-KEI-X   (IDK1:1)
-      *                                TO  WRK-KEI-H   (IDK2:1)
-      *        END-IF
-      *    END-PERFORM
-      *
-      *    STRING  WRK-TENSU               DELIMITED   BY  SIZE
-      *            "X"                     DELIMITED   BY  SIZE
-      *            WRK-KAISU-H             DELIMITED   BY  SPACE
-      *            "  "                    DELIMITED   BY  SIZE
-      *            WRK-KEI-H               DELIMITED   BY  SPACE
-      *            INTO                    WRK-ZAIKEI
-      *    END-STRING
-      *
-      *    日本語変換
-      *    MOVE    SPACE               TO  WRK-ZAIKEIJ
-      *    MOVE    1                   TO  IDJ2
-      *    PERFORM VARYING     IDJ     FROM    1  BY  1
-      *            UNTIL       IDJ     >   40
-      *       EVALUATE     WRK-ZAIKEI (IDJ:1)
-      *            WHEN    SPACE
-      *                MOVE    "　"            TO  WRK-ZAIKEIJ (IDJ2:2)
-      *                ADD     2               TO  IDJ2
-      *            WHEN    "X"
-      *                MOVE    "×"            TO  WRK-ZAIKEIJ (IDJ2:2)
-      *                ADD     2               TO  IDJ2
-      *            WHEN    "1"  THRU  "9"
-      *                MOVE    WRK-ZAIKEI (IDJ:1)  TO  IDJ1
-      *                MOVE    TBL-SUJI (IDJ1)     TO  WRK-ZAIKEIJ (IDJ2:2)
-      *                ADD     2                   TO  IDJ2
-      *            WHEN    "0"
-      *                MOVE    TBL-SUJI (10)       TO  WRK-ZAIKEIJ (IDJ2:2)
-      *                ADD     2                   TO  IDJ2
-      *        END-EVALUATE
-      *****END-PERFORM
-      *
+           IF      SPA-NAI-ZAITENFLG (IDX) =   1
+               COMPUTE WRK-TENSU-2         =   SPA-NAI-ZAITEN  (IDX)
+                                           *   -1
+           END-IF
       *
            .
        31013-INPUTCD-HEN-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    保険組合編集処理
-      *****************************************************************
-      *3105-HKNCOMBI-HEN-SEC          SECTION.
-      *
-      *    INITIALIZE                  SPA-J021-AREA
-      *
-      *    保険組合マスター編集
-      *    INITIALIZE                  HKNCOMBI-REC
-      *    MOVE    SPA-HOSPID          TO  COMB-HOSPID
-      *    MOVE    SPA-GMN-PTID        TO  COMB-PTID
-      *
-      *    MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-      *    MOVE    "DBSELECT"          TO  MCP-FUNC
-      *    MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "HKNCOMBI-KEY2"      TO  ORC-DBPATH
-      *        PERFORM 940-HKNCOMBI-NEXT-SEC
-      *    ELSE
-      *        MOVE    1               TO  FLG-HKNCOMBI
-      *    END-IF
-      *    PERFORM VARYING     IDX-H   FROM    1   BY  1
-      *            UNTIL      (IDX-H           >   40        )  OR
-      *                       (FLG-HKNCOMBI    =   1         )
-      *      IF      COMB-DELKBN           =   "1"
-      *        CONTINUE
-      *      ELSE
-      *        ADD     1                   TO  SPA-J021-MAX
-      *        MOVE    COMB-HKNCOMBINUM    TO  SPA-J021-THKNCOMBI
-      *                                             (SPA-J021-MAX)
-      *        MOVE    COMB-TEKSTYMD       TO  SPA-NAI-TEKSTYMD
-      *                                             (SPA-J021-MAX)
-      *        MOVE    COMB-TEKEDYMD       TO  SPA-NAI-TEKEDYMD
-      *                                             (SPA-J021-MAX)
-      *        老人判定
-      *        IF    ((COMB-KOH1HKNNUM     =   "027"  )  OR
-      *               (COMB-KOH2HKNNUM     =   "027"  )  OR
-      *               (COMB-KOH3HKNNUM     =   "027"  )  OR
-      *               (COMB-KOH4HKNNUM     =   "027"  ) )  OR
-      *              ( SPA-J02-ROUJIN      =   1        )
-      *            MOVE    "1"             TO  SPA-NAI-TROUJIN
-      *                                               (SPA-J021-MAX)
-      *        END-IF
-      *        IF      COMB-GAI-KFTNRATE   =   ZERO
-      *            MOVE     SPACE          TO  SPA-J021-TFTNWARI
-      *                                              (SPA-J021-MAX)
-      *        ELSE
-      *            MOVE    COMB-GAI-KFTNRATE   TO  WRK-ZZZZ
-      *            MOVE    WRK-ZZZZ-X          TO  SPA-J021-TFTNWARI
-      *                                            (SPA-J021-MAX)(1:3)
-      *            MOVE    "%"                 TO  SPA-J021-TFTNWARI
-      *                                            (SPA-J021-MAX)(4:1)
-      *        END-IF
-      *        MOVE    COMB-TEKSTYMD       TO  WRK-SYMD
-      *        PERFORM 41012-SEIWA-HEN-SEC
-      *        MOVE    WRK-HENYMDG         TO  SPA-J021-TTEKSTYMD
-      *                                                 (SPA-J021-MAX)
-      *
-      *        MOVE    COMB-TEKEDYMD       TO  WRK-SYMD
-      *        PERFORM 41012-SEIWA-HEN-SEC
-      *        MOVE    WRK-HENYMDG         TO  SPA-J021-TTEKEDYMD
-      *                                                  (SPA-J021-MAX)
-      *        組合せ名称
-      *        MOVE    COMB-HKNCOMBINUM    TO  WRK-HKNCOMBI
-      *        PERFORM 5101-HKNCOMBI-SET-SEC
-      *        MOVE    WRK-HKNCOMBIMEI     TO  SPA-J021-TKUMI
-      *                                                  (SPA-J021-MAX)
-      *     END-IF
-      *
-      *        MOVE    "HKNCOMBI-KEY2"      TO  ORC-DBPATH
-      *        PERFORM 940-HKNCOMBI-NEXT-SEC
-      *    END-PERFORM
-     **    MOVE    "DBCLOSE"           TO  MCP-FUNC
-     **    MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-     **    CALL    "ORCMCPSUB"          USING
-     **                                 MCPAREA
-     **                                 ORCMCPAREA
-     **                                 MCPDATA-REC
-     *
-      *    IF      SPA-J021-MAX         >   ZERO
-      *        COMPUTE SPA-J021-PAGE    =  (SPA-J021-MAX    -   1 ) 
-      *                                    /  20    +   1
-      *    ELSE
-      *        MOVE    1                   TO  SPA-J021-PAGE
-      *    END-IF
-      *    .
-      *3105-HKNCOMBI-HEN-EXT.
-      *    EXIT.
       *
       *****************************************************************
       *    画面編集処理

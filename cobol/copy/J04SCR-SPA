@@ -63,6 +63,8 @@
                05  SPA-TOKTEI-YMD          PIC  X(08).
       *時間外特例医療機関
                05  SPA-JIKANTOKU           PIC  9(01).
+      *時間外加算特例乳幼児
+               05  SPA-JIKANTOKU-NYU       PIC X(01).
       *小児科外来診療科
                05  SPA-SYONIKA             PIC  9(01).
       *長期投薬加算有無

@@ -1552,6 +1552,7 @@
       *    時間外区分は空白
            IF      LNK-WKSRY-AUTOKBN (IDX IDY)
                                        =   "A" OR "B" OR "C"  OR  "D"
+                                       OR  "E" OR "F" OR "G"
                MOVE    SPACE           TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
       *    数量入力時

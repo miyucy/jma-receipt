@@ -2841,6 +2841,7 @@
                                        TO  SPA-COM-AUTOKBN  (IDX2)
            IF      LNK-WKSRY-AUTOKBN (IDX IDY)
                                        =   "A" OR "B" OR "C"  OR  "D"
+                                       OR  "E" OR "F" OR "G"
                MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
       *    数量入力時
@@ -5649,7 +5650,8 @@
                   (LNK-SC97-JIKAN  NOT =   ZERO    )
       *        時間加算区分
                IF     (LNK-SC97-JIKAN      =   1   OR  2  OR  3
-                                                   OR  4       )  AND
+                                                   OR  4  OR  5
+                                                   OR  6  OR  7)  AND
                       (((LNK-SC97-NYURYOKU     =   1    )  AND
                         (TNS-DATAKBN           =   "1"  ))   OR
                        ((LNK-SC97-NYURYOKU     =   ZERO   )  AND
@@ -10432,6 +10434,12 @@
                        MOVE    "C"      TO  WKSRY-AUTOKBN  (IDY)
                    WHEN    "4"
                        MOVE    "D"      TO  WKSRY-AUTOKBN  (IDY)
+                   WHEN    "5"
+                       MOVE    "E"      TO  WKSRY-AUTOKBN  (IDY)
+                   WHEN    "6"
+                       MOVE    "F"      TO  WKSRY-AUTOKBN  (IDY)
+                   WHEN    "7"
+                       MOVE    "G"      TO  WKSRY-AUTOKBN  (IDY)
                END-EVALUATE
       *
            ELSE
@@ -10445,6 +10453,12 @@
                            MOVE    "C"      TO  WKSRY-AUTOKBN  (IDY)
                        WHEN    4
                            MOVE    "D"      TO  WKSRY-AUTOKBN  (IDY)
+                       WHEN    5
+                           MOVE    "E"      TO  WKSRY-AUTOKBN  (IDY)
+                       WHEN    6
+                           MOVE    "F"      TO  WKSRY-AUTOKBN  (IDY)
+                       WHEN    4
+                           MOVE    "G"      TO  WKSRY-AUTOKBN  (IDY)
                    END-EVALUATE
                END-IF
            END-IF

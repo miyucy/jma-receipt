@@ -611,6 +611,8 @@
       *
            COPY    "CPSK1010.INC".
       *
+           COPY    "CPSK1008.INC".
+      *
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
@@ -1141,6 +1143,42 @@
       *                                MCPAREA
       *                                MCPDATA-REC
       *
+      *    システム管理検索（チェック機能制御情報）
+           MOVE    SPACE               TO  SYS-1008-REC
+           INITIALIZE                  SYS-1008-REC
+           MOVE    "1008"              TO  SYS-1008-KANRICD
+           MOVE    "*"                 TO  SYS-1008-KBNCD
+           MOVE    SYS-1008-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1008-REC
+               INITIALIZE                  SYS-1008-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1008-REC
+      *
+      *        時間外加算特例乳幼児
+               IF      SYS-1008-JIKANTOKU-NYU-FLG  =   SPACE
+                   MOVE    ZERO            TO  SPA-JIKANTOKU-NYU
+               ELSE
+                   MOVE    SYS-1008-JIKANTOKU-NYU-FLG
+                                           TO  SPA-JIKANTOKU-NYU
+               END-IF
+           ELSE
+               MOVE    ZERO                TO  SPA-JIKANTOKU-NYU
+           END-IF
+      *
            MOVE    ZERO                TO  SPA-GMN-MAX
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  SPA-GMN-IDX
@@ -1389,6 +1427,7 @@
       *
            MOVE    SPA-COM-INPUTCD (IDX2)  TO  SPA-GMN-INPUTCD  (IDX2)
            IF      SRY-AUTOKBN (IDS)   =   "A" OR "B" OR "C"  OR  "D"
+                                       OR  "E" OR "F" OR "G"
                PERFORM 31011-JIKANKBN-SET-SEC
                MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
@@ -1530,6 +1569,12 @@
                    MOVE    "3"             TO  WRK-TIMEFLG
                WHEN    "D"
                    MOVE    "4"             TO  WRK-TIMEFLG
+               WHEN    "E"
+                   MOVE    "5"             TO  WRK-TIMEFLG
+               WHEN    "F"
+                   MOVE    "6"             TO  WRK-TIMEFLG
+               WHEN    "G"
+                   MOVE    "7"             TO  WRK-TIMEFLG
            END-EVALUATE
            MOVE    SPACE               TO  SPA-GMN-INPUTCD (IDX2)
            MOVE    WRK-TIMEFLG         TO  SPA-GMN-INPUTCD (IDX2)(1:1)
@@ -2831,7 +2876,10 @@
       *        時間加算区分
       *        診療で、手技料の時
                IF     (LNK-SC97-JIKAN      =   1   OR  2  OR  3
-                                                   OR  4       )  AND
+                                                   OR  4
+                                                   OR  5
+                                                   OR  6
+                                                   OR  7       )  AND
                       (TNS-DATAKBN         =   "1"             )
                   MOVE    LNK-SC97-JIKAN       TO  SPA-COM-TIMEFLG
                                                           (SPA-GMN-IDX)
@@ -3437,6 +3485,8 @@
            MOVE    SPA-TOKTEI-YMD      TO  LNK-ORCSC-TOKTEI-YMD
       *    時間外特例区分
            MOVE    SPA-JIKANTOKU       TO  LNK-ORCSC-JIKANTOKU
+      *    時間外加算特例乳幼児
+           MOVE    SPA-JIKANTOKU-NYU   TO  LNK-ORCSC-JIKANTOKU-NYU
       *    小児科外来診療科があり、３歳満の時
            IF      (SPA-SYONIKA        =   1   )  AND
                    (SPA-NAI-NENREI-YY  <   3   )
@@ -4190,6 +4240,8 @@
            MOVE    SPA-TOKTEI-YMD      TO LNK-ORCSC-TOKTEI-YMD
       *    時間外特例区分
            MOVE    SPA-JIKANTOKU       TO  LNK-ORCSC-JIKANTOKU
+      *    時間外加算特例乳幼児
+           MOVE    SPA-JIKANTOKU-NYU   TO  LNK-ORCSC-JIKANTOKU-NYU
       *    小児科外来診療科があり、３歳満の時
            IF      (SPA-SYONIKA        =   1   )  AND
                    (SPA-NAI-NENREI-YY  <   3   )
@@ -5140,6 +5192,12 @@
                        MOVE    "C"      TO  SRY-AUTOKBN  (IDS)
                    WHEN    "4"
                        MOVE    "D"      TO  SRY-AUTOKBN  (IDS)
+                   WHEN    "5"
+                       MOVE    "E"      TO  SRY-AUTOKBN  (IDS)
+                   WHEN    "6"
+                       MOVE    "F"      TO  SRY-AUTOKBN  (IDS)
+                   WHEN    "7"
+                       MOVE    "G"      TO  SRY-AUTOKBN  (IDS)
                END-EVALUATE
            END-IF
            .
