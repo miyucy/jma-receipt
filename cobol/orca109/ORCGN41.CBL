@@ -1781,8 +1781,7 @@
                   (SPA-NAI-MENU2FLG    =   1  )
                MOVE    "0025"          TO  SPA-ERRCD
            ELSE
-               IF     (SPA-NAI-MENUNUM1    =   ZERO ) OR
-                      (SPA-NAI-MENUNUM2    =   ZERO )
+               IF      SPA-NAI-MENUNUM1    =   ZERO
                    MOVE    "0022"          TO  SPA-ERRCD
                END-IF
            END-IF
@@ -1797,7 +1796,9 @@
                MOVE    SPA-GMN-LDNAME      TO  SPA-GMN-LDNAME-CP
                MOVE    SPA-GMN-LDNAME-LD   TO  SPA-GMN-LDNAME-LD-CP
       *        ÌÜ¼¡Ì¾£²
-               MOVE    SPA-GMN-MENU2       TO  SPA-GMN-MENU2-CP
+               IF      SPA-NAI-MENUNUM2    >   ZERO
+                   MOVE    SPA-GMN-MENU2       TO  SPA-GMN-MENU2-CP
+               END-IF
       *
                MOVE    1                   TO  SPA-COPYFLG
                MOVE    10                  TO  SPA-GMN-CUR
@@ -1903,21 +1904,25 @@
       *    Ê£¼Ì
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-COPYFLG     NOT =   ZERO  )
-               IF     (SPA-GMN-HELPKBN-CP  =   SPACE )  OR
+               IF    ((SPA-GMN-HELPKBN-CP  =   SPACE )  OR
                       (SPA-GMN-LDNAME-CP   =   SPACE )  OR
                       (SPA-GMN-MENUNUM1-CP =   ZERO  )  OR
-                      (SPA-GMN-MENU1-CP    =   SPACE )  OR
-                      (SPA-GMN-MENUNUM2-CP =   ZERO  )  OR
-                      (SPA-GMN-MENU2-CP    =   SPACE )
+                      (SPA-GMN-MENU1-CP    =   SPACE ))    OR
+                     ((SPA-NAI-MENUNUM2    >   ZERO  )  AND
+                     ((SPA-GMN-MENUNUM2-CP =   ZERO  )  OR
+                      (SPA-GMN-MENU2-CP    =   SPACE )))
                    MOVE    "0015"              TO  SPA-ERRCD
-                   MOVE    6                   TO  SPA-GMN-CUR
+                   MOVE    10                  TO  SPA-GMN-CUR
                END-IF
                IF     (SPA-GMN-HELPKBN-CP  =   SPA-GMN-HELPKBN) AND
                       (SPA-GMN-LDNAME-CP   =   SPA-GMN-LDNAME ) AND
-                      (SPA-GMN-MENUNUM1-CP =   SPA-NAI-MENUNUM1) AND
-                      (SPA-GMN-MENUNUM2-CP =   SPA-NAI-MENUNUM2)
-                   MOVE    "0016"              TO  SPA-ERRCD
-                   MOVE    6                   TO  SPA-GMN-CUR
+                      (SPA-GMN-MENUNUM1-CP =   SPA-NAI-MENUNUM1)
+                  IF     ((SPA-NAI-MENUNUM2    >   ZERO  )  AND
+                          (SPA-GMN-MENUNUM2-CP =   SPA-NAI-MENUNUM2))
+                      OR  (SPA-NAI-MENUNUM2    =   ZERO  )
+                       MOVE    "0016"              TO  SPA-ERRCD
+                       MOVE    10                  TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
            .
@@ -2233,8 +2238,10 @@
       *
       *    ÌÜ¼¡£²¤ÎÅÐÏ¿
            IF      SPA-ERRCD           =   SPACE
-               MOVE    SPA-NAI-MENUNUM2    TO  WRK-MENUNUM2
-               PERFORM 450132-COPY-MENU2-SEC
+               IF      SPA-NAI-MENUNUM2    >   ZERO
+                   MOVE    SPA-NAI-MENUNUM2    TO  WRK-MENUNUM2
+                   PERFORM 450132-COPY-MENU2-SEC
+               END-IF
            END-IF
       *
            .
@@ -2516,6 +2523,10 @@
                MOVE    WIDGET-NORMAL       TO  N41-MENU1-CP-STATE
                MOVE    WIDGET-NORMAL       TO  N41-MENUNUM2-CP-STATE
                MOVE    WIDGET-NORMAL       TO  N41-MENU2-CP-STATE
+               IF      SPA-NAI-MENUNUM2    =   ZERO
+                   MOVE    WIDGET-INSENSITIVE  TO  N41-MENUNUM2-CP-STATE
+                   MOVE    WIDGET-INSENSITIVE  TO  N41-MENU2-CP-STATE
+               END-IF
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  N41-HELPKBN-CP-STATE
                MOVE    WIDGET-INSENSITIVE  TO  N41-LDNAME-CP-STATE
@@ -2611,7 +2622,11 @@
                WHEN    "MENUNUM1_CP"
                    MOVE    13              TO  SPA-GMN-CUR
                WHEN    "MENU1_CP"
-                   MOVE    14              TO  SPA-GMN-CUR
+                   IF      SPA-NAI-MENUNUM2    =   ZERO
+                       MOVE    99              TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    14              TO  SPA-GMN-CUR
+                   END-IF
                WHEN    "MENUNUM2_CP"
                    MOVE    15              TO  SPA-GMN-CUR
                WHEN    "MENU2_CP"
