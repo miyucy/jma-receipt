@@ -33,6 +33,7 @@
       *  01.01.01    NACL-藤原    04/04/02  電話番号（医療機関情報）
       *                                     の追加
       *                                     改正に伴う項目数の変更
+      *  01.01.02    NACL-藤原    04/08/10  入院レセ電の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -848,9 +849,6 @@
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-END
                MOVE    MCPDATA-REC         TO  RECE10-REC
-               IF      RECE10-NYUGAIKBN    =   "1"
-                   GO  TO  900-SEIKYU-READ-SEC
-               END-IF
                ADD     1                   TO  CNT-RECE10
                MOVE    RECE10-RECEKA       TO  KEY-N-SRYKA
            ELSE
