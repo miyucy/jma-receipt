@@ -1437,7 +1437,7 @@
            ADD     1                   TO  IDX-RECE05
            MOVE    SPACE               TO  COM-RECE05-REC
            INITIALIZE                      COM-RECE05-REC
-           MOVE    "099999901"         TO  COM-SRYCD(1)
+           MOVE    "810000001"         TO  COM-SRYCD(1)                 XXX
            MOVE    ZERO                TO  COM-SRYSURYO(1)
            MOVE    7                   TO  COM-YUKOKETA(1)
            MOVE    "йё©Т©гне╡й╪У©г"    TO  COM-NAME(1)
