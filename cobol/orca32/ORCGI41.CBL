@@ -359,6 +359,10 @@
        01  NYUKSNCHK-REC.
            COPY    "CPNYUKSNCHK.INC".
       *
+      *    老人一般コード変換
+        01  SRYCDCHG-REC.
+            COPY    "CPSRYCDCHG.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -4829,7 +4833,32 @@
       *****************************************************************
        4801-RJNCD-CHG-SEC   SECTION.
       *
+      *    入院患者の年齢計算
+           PERFORM    4801-PT-AGE-SEC
       *
+      *    老人対象患者であれば入院診療コードの置き換え
+           IF     WRK-NENREI   >=    75
+               INITIALIZE              SRYCDCHG-REC
+      *
+               MOVE    SYOKIKSN-IN-KHNSRYCD
+                                       TO   CHG-IPNSRYCD
+               MOVE    SRYCDCHG-REC    TO   MCPDATA-REC
+               MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
+               PERFORM 900-TBL-SELECT-SEC 
+               IF    ( FLG-DBRC    =   ZERO )
+                   MOVE    MCPDATA-REC
+                                       TO   SRYCDCHG-REC
+                   IF   CHG-RJNSRYCD   NOT =   SPACE
+                        MOVE   CHG-RJNSRYCD
+                                       TO  SYOKIKSN-IN-KHNSRYCD
+                   END-IF
+               END-IF
+      *
+               MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
+               PERFORM 900-TBL-CLOSE-SEC
+           END-IF
+      *
+           .
            .
        4801-RJNCD-CHG-EXT.
            EXIT.
