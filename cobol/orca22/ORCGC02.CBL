@@ -126,6 +126,7 @@
       *  01.08.01    NACL-藤原    03/08/28  登録数の制限をなくす
       *  01.08.02    NACL-藤原    04/02/24  入外区分の表示切替の機能追加
       *                                     病名文字数のエラー時の表示
+      *  01.08.03    NACL-藤原    04/03/08  コラムリストの行制御
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -803,6 +804,7 @@
                        PERFORM 310-SPASET-PTBYO-HENSYU-SEC
                    END-IF
                    MOVE    1                   TO  SPA-GMN-C02-CUR  
+                   MOVE    ZERO                TO  FLG-ROW
                    GO      TO      300-SCREEN-EXT
                END-IF
            END-IF              
@@ -2165,6 +2167,9 @@
                        ELSE
                            MOVE    WRK-BANGO       TO  SPA-NAI-C02-SELNO     
                            PERFORM 410111-BYOMEI-SELECT-SEC     
+      *
+                           MOVE    SPA-NAI-C02-SELNO
+                                                   TO  C02-BYO-ROW
                        END-IF
                    ELSE
                        MOVE    "0012"          TO  SPA-ERRCD
@@ -5245,6 +5250,8 @@
                GO  TO  440-SAKUJYO-EXT
            END-IF
       *
+           COMPUTE C02-BYO-ROW =   SPA-NAI-C02-SELNO   -   1    
+      *
            INITIALIZE                  SPA-GMN-C02-KOUMOKU
                                        SPA-NAI-C02-KOUMOKU
                                        SPA-NAI-C02-SELNO
@@ -5958,6 +5965,12 @@
                END-IF
            END-IF     
       *
+           IF      SPA-NAI-C02-SELNO   >   ZERO
+               MOVE    SPA-NAI-C02-SELNO   TO  C02-BYO-ROW
+           ELSE
+               MOVE    ZERO                TO  C02-BYO-ROW
+           END-IF
+      *                   
            MOVE    SPACE               TO  WRK-HAISIYMDH
            MOVE    ZERO                TO  SPA-C02-IKOFLG
            INITIALIZE                      SPA-GMN-C02-KOUMOKU
@@ -5983,6 +5996,11 @@
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
            MOVE    SPA-GMN-C02-SRYKA   TO  PTBYO-SRYKA
            PERFORM 310-SPASET-PTBYO-HENSYU-SEC
+      *
+           IF      C02-BYO-ROW         =   ZERO
+               MOVE    SPA-GMN-C02-MAX     TO  C02-BYO-ROW
+           END-IF
+           MOVE    ZERO                TO  FLG-ROW
            .
        4502-TOUROKU-SYORI-EXT.
            EXIT.
