@@ -13,6 +13,9 @@ EXTRA_DIST = \
 
 all:   
 	touch build-stamp
+
+filecheck:
+
 clean: 
 	-rm -f build-stamp
 

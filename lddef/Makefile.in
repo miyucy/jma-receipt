@@ -68,6 +68,8 @@ all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE)
 
 $(LDFILE) $(BDFILE):  orcadb.inc orcahome.inc
 
+filecheck:
+
 directory:
 	sed -e 's,\@ORCA_DIR\@,$(ORCA_DIR),g' \
 	$(DIRECTORYFILE_in) > $(DIRECTORYFILE) 

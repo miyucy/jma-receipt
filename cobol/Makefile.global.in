@@ -61,9 +61,12 @@ filecheck:
 	find . \
 	-name "." -o \
 	-name "CVS" -prune -o \
+	-name ".deps" -prune -o \
 	-name "Makefile*" -o \
 	-name ".cvsignore" -o \
 	-name "*.bak" -o \
+	-name "*.so" -o \
+	-name "ORCXSMST1" -o \
 	-printf "file\t%f\n") \
 	|sort +1 |uniq -u -f1 
 

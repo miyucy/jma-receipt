@@ -57,6 +57,8 @@ ruby_scripts = $(ruby_sources:.rb.in=.rb)
 
 all:   $(noinst_shell_scripts) $(shell_scripts)
 
+filecheck:
+
 clean: 
 	-rm $(noinst_shell_scripts)
 	-rm $(shell_scripts)

@@ -39,6 +39,8 @@ COPYDIRS = copy
 
 all:   
 	@set -e; for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i all; done
+filecheck:   
+	@set -e; for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i filecheck; done
 clean: 
 	@set -e; for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i clean; done
 distclean: 

@@ -28,6 +28,8 @@ init_scripts = $(init_sources:.sh.in=.sh)
 
 all:   $(init_scripts)
 
+filecheck:
+
 clean: 
 	-rm -f build-stamp
 

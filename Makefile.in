@@ -22,6 +22,8 @@ SUBDIRS = cobol lddef record screen form scripts doc data etc init
 
 all:   
 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i all; done
+filecheck:   
+	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i filecheck; done
 clean: 
 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i clean; done
 

@@ -9,6 +9,9 @@ install_ignore := Makefile.in Makefile build-stamp
 
 all:   
 	touch build-stamp
+
+filecheck:
+
 clean: 
 	-rm -f build-stamp
 

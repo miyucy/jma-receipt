@@ -9,6 +9,9 @@ EXTRA_DIST = dbgroup.inc kentan.inc jma-receipt.env
 
 all:   
 	touch build-stamp
+
+filecheck:
+
 clean: 
 	-rm -f build-stamp
 

@@ -205,6 +205,7 @@ filecheck:
 	-name "Makefile*" -o \
 	-name ".cvsignore" -o \
 	-name "*.bak" -o \
+	-name "build-stamp" -o \
 	-printf "file\t%f\n") \
 	|sort +1 |uniq -u -f1 
 
