@@ -1747,6 +1747,7 @@
                    MOVE    SPACE           TO  FLG-TOROKU
       *
                WHEN    "0102"
+                   MOVE    SPACE               TO  SPA-KIDCD
       *            外来加算料削除
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    SPA-CHK-IDX     TO  SPA-GMN-IDX
@@ -1772,6 +1773,7 @@
       *                画面制御
                        MOVE    "JOIN"          TO  WRK-PUTTYPE
                        MOVE    1               TO  SPA-CONTFLG
+                       MOVE    SPACE               TO  SPA-KIDCD
       *                Ｋ０１画面へ
                        PERFORM 4001-K01-SYORI-SEC
       *************END-IF
@@ -1785,8 +1787,10 @@
                WHEN    "0105"
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    ZERO            TO  FLG-CHK2
+                       MOVE    SPACE               TO  SPA-KIDCD
                        PERFORM 41012-HKNCOMBI-CHANGE-SEC
                    ELSE
+                       MOVE    SPACE               TO  SPA-KIDCD
                        MOVE    SPA-MAE-HKNCOMBI-G
                                            TO  SPA-GMN-HKNCOMBI-G
                        PERFORM 3101-HKNCOMBI-HEN-SEC
@@ -1795,6 +1799,7 @@
       *        診療科変更確認
                WHEN    "0107"
                    IF      SPA-KID1-FLG        =   "OK"
+                       MOVE    SPACE               TO  SPA-KIDCD
                        PERFORM 41013-SRYKA-CHANGE-SEC
                    ELSE
                        MOVE    SPA-MAE-SRYKA-G
@@ -1822,6 +1827,7 @@
                WHEN    "0108"
                    IF      SPA-KID1-FLG        =   "OK"
       *                パラメタファイルより表示
+                       MOVE    SPACE               TO  SPA-KIDCD
                        PERFORM                 300108-SAISET-SEC
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
@@ -1829,11 +1835,13 @@
       *
       *        同日再診料算定の確認
                WHEN    "0109"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    PERFORM 30019-DOUSAISIN-SEC
       *
       *        再診を初診料へ自動算定の確認
                WHEN    "0110"
                    IF      SPA-KID1-FLG        =   "OK"
+                       MOVE    SPACE               TO  SPA-KIDCD
       *                初診料算定へ
                        PERFORM                 300109-SYOSINSET-SEC
                    ELSE
@@ -1843,6 +1851,7 @@
       *        再診を初診料へ自動算定の確認（警告表示）
                WHEN    "0112"
                    IF      SPA-KID1-FLG        =   "OK"
+                       MOVE    SPACE               TO  SPA-KIDCD
       *                初診料算定へ
                        PERFORM                 300109-SYOSINSET-SEC
                    ELSE
@@ -1875,6 +1884,7 @@
                WHEN    "0114"
                WHEN    "0115"
                WHEN    "0120"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        PERFORM 3001010-SAISIN-HEN-SEC
                        MOVE    1               TO  SPA-GMN-CUR
@@ -1896,6 +1906,7 @@
       *
       *        保険変更時、中途終了あり
                WHEN    "0118"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
       *                内容置換え
                        PERFORM 410132-SAIHENSYU-SEC
@@ -1906,10 +1917,12 @@
       *
       *        他保険算定あり
                WHEN    "0119"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    PERFORM 300110-TAHOKEN-SYORI-SEC
       *
       *        入院画面へ
                WHEN    "0121"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    SPA-GMN-PTNUM   TO  SPA-PTNUM
                        MOVE    SPA-GMN-PTID    TO  SPA-PTID
@@ -2567,6 +2580,7 @@
       *    診察料編集なし
       *****MOVE    ZERO                TO  FLG-SINSATU
       *    入院中の時、入院開始日の時のみ初診料の自動発生を行う
+           MOVE    SPACE               TO  SPA-KIDCD
            PERFORM 3109-NYUIN-CHK-SEC
            IF      SPA-KIDCD      NOT =   SPACE
                GO      TO      310-SPA-GMNSET-EXT
@@ -4266,9 +4280,12 @@
            MOVE    1                   TO  SPA-GMN-CUR
       *
       *    保険区分が変更された時、再編集を行う
-      *****IF      SPA-HKNKBN      NOT =   SPA-MAE-HKNKBN
+           IF     (SPA-SYORIFLG        =   1   )  AND
+                  (SPA-HKNKBN          =   SPA-MAE-HKNKBN)
+               CONTINUE
+           ELSE
                PERFORM 410121-HKNCOMBI-SAI-SEC
-      *****END-IF
+           END-IF
       *
            .
        41012-HKNCOMBI-CHANGE-EXT.
@@ -4318,16 +4335,24 @@
                END-IF
            END-IF
       *
-           IF     (SPA-SYORIFLG        =   1            )  OR
-                  (SPA-GMN-MAX     NOT =   SPA-FRST-LINE)  OR
-                  (SPA-GMN-MAX         >   ZERO    AND
-                   SPA-FRST-SRYCD  NOT =   SPA-COM-INPUTCD(SPA-GMN-MAX))
+      *    保険区分が変更された時、再編集を行う
+           IF      SPA-HKNKBN          =   SPA-MAE-HKNKBN
+               CONTINUE
+           ELSE
       *        初診算定時のから変更がある時、診察料の変更のみ
                PERFORM 410131-SINSATUHEN-SEC
-           ELSE
-      *        初診算定時のから変更がない時
-               PERFORM 410132-SAIHENSYU-SEC
            END-IF
+      *
+      ***  IF     (SPA-SYORIFLG        =   1            )  OR
+      *           (SPA-GMN-MAX     NOT =   SPA-FRST-LINE)  OR
+      *           (SPA-GMN-MAX         >   ZERO    AND
+      *            SPA-FRST-SRYCD  NOT =   SPA-COM-INPUTCD(SPA-GMN-MAX))
+      *        初診算定時のから変更がある時、診察料の変更のみ
+      *        PERFORM 410131-SINSATUHEN-SEC
+      *    ELSE
+      *        初診算定時のから変更がない時
+      *        PERFORM 410132-SAIHENSYU-SEC
+      **** END-IF
            .
        410121-HKNCOMBI-SAI-EXT.
            EXIT.
@@ -4415,7 +4440,6 @@
       *    スパ共通編集処理
            PERFORM                     310-SPA-SET-SEC
       *
-           INITIALIZE                  SPA-SCR-REC
            IF      LNK-SC95-DOUJI-RENNUM   NOT =   ZERO
                MOVE    "0103"          TO  SPA-KIDCD
                GO      TO      410132-SAIHENSYU-EXT
@@ -4426,6 +4450,7 @@
                MOVE    "0106"          TO  SPA-KIDCD
                GO      TO      410132-SAIHENSYU-EXT
            END-IF
+           INITIALIZE                  SPA-SCR-REC
       *    パラメタファイルより表示
            MOVE    3               TO  FLG-PARASET
            PERFORM                 3002-PARA-SET-SEC
@@ -10540,6 +10565,9 @@
                    PERFORM 4125-YAKJYO-SYORI-SEC
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KID1-FLG
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
       *    患者ＩＤを初期化する
            INITIALIZE                  SPA-KYOTUKEY

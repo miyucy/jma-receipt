@@ -4356,9 +4356,6 @@
                               (HZN-COM-INPUTCD (IDX)   =   SPACE   AND
                                HZN-GMN-INPUTCD (IDX)   =   SPACE )
       *
-               ADD     1                       TO  IDX3
-               MOVE    HZN-GMN-TBL (IDX)       TO  WRK-GMN-TBL (IDX3)
-      *
                MOVE    ZERO                    TO  FLG-ARI
                IF     (HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
                                                OR  "13"  OR  "14" ) OR
@@ -4375,29 +4372,27 @@
                        MOVE    1               TO  FLG-CHK
                    END-IF
                END-IF
-      *
-               IF     (FLG-CHK         =   ZERO  )  OR
-                      (FLG-CHK         =   1        AND
-                       FLG-ARI         =   ZERO     AND
-                       HZN-COM-AUTOKBN (IDX)   =   SPACE )
-                   CONTINUE
-               ELSE
-                   MOVE    1                   TO  FLG-CHK-ALL
-      ********     ADD     1                   TO  IDX2
-      *            ADD     1                   TO  SPA-GMN-IDX
-      ********     MOVE    HZN-GMN-TBL(IDX)    TO  SPA-GMN-TBL (IDX2)
-               END-IF
-      *        ºÞËè¤ËÂÐ¾Ý¤òÊÔ½¸¤¹¤ë
-               IF      HZN-COM-ZAIEND (IDX)    =   "1"
-                   IF      FLG-CHK-ALL         =   ZERO
-                       PERFORM VARYING     IDX4    FROM   1   BY  1
-                               UNTIL       IDX4    >   IDX3
-                           ADD     1                   TO  IDX2
-                           ADD     1                   TO  SPA-GMN-IDX
-                           MOVE    WRK-GMN-TBL(IDX4)   TO  SPA-GMN-TBL
-                                                                (IDX2)
-                       END-PERFORM
+               IF      FLG-ARI                 =   ZERO
+                   IF      FLG-CHK             =   ZERO
+                       ADD     1                   TO  IDX3
+                       MOVE    HZN-GMN-TBL (IDX)   TO  WRK-GMN-TBL(IDX3)
                    END-IF
+               END-IF
+      *
+      *        ºÞËè¤ËÂÐ¾Ý¤òÊÔ½¸¤¹¤ë
+               IF     (HZN-COM-ZAIEND (IDX)    =   "1" )  OR
+                      (WRK-GMN-INPUTCD(IDX + 1)(1:1)  =  ".")
+                   IF     (IDX3                =   1  )  AND
+                          (WRK-GMN-INPUTCD(IDX3)(1:1)  =  "." )
+                       MOVE    ZERO                TO  IDX3
+                   END-IF
+                   PERFORM VARYING     IDX4    FROM   1   BY  1
+                           UNTIL       IDX4    >   IDX3
+                       ADD     1                   TO  IDX2
+                       ADD     1                   TO  SPA-GMN-IDX
+                       MOVE    WRK-GMN-TBL(IDX4)   TO  SPA-GMN-TBL
+                                                                (IDX2)
+                   END-PERFORM
                    INITIALIZE                  WRK-SCR-REC
                    MOVE    ZERO                TO  IDX3
                    MOVE    ZERO                TO  FLG-CHK-ALL
@@ -4406,25 +4401,25 @@
            END-PERFORM
       *    ºÞËè¤ËÂÐ¾Ý¤òÊÔ½¸¤¹¤ë
            IF      IDX3                >   ZERO
-               IF      FLG-CHK-ALL         =   ZERO
-                   PERFORM VARYING     IDX4    FROM   1   BY  1
-                           UNTIL       IDX4    >   IDX3
-                       ADD     1                   TO  IDX2
-                       ADD     1                   TO  SPA-GMN-IDX
-                       MOVE    WRK-GMN-TBL(IDX4)   TO  SPA-GMN-TBL
-                                                                (IDX2)
-                   END-PERFORM
-               END-IF
+               PERFORM VARYING     IDX4    FROM   1   BY  1
+                       UNTIL       IDX4    >   IDX3
+                   ADD     1                   TO  IDX2
+                   ADD     1                   TO  SPA-GMN-IDX
+                   MOVE    WRK-GMN-TBL(IDX4)   TO  SPA-GMN-TBL
+                                                            (IDX2)
+               END-PERFORM
            END-IF
       *    »þ´Ö³°ÆþÎÏ¤¢¤ê
            IF      FLG-JIKAN       NOT =   ZERO
-               MOVE    SPA-GMN-INPUTCD(01) TO  WRK-INPUTCD
-               MOVE    SPACE               TO  SPA-GMN-INPUTCD(01)
-               MOVE    FLG-JIKAN           TO  SPA-GMN-INPUTCD(01)
+               IF      SPA-COM-INPUTCD(01)(1:1)    =   "1"
+                   MOVE    SPA-GMN-INPUTCD(01) TO  WRK-INPUTCD
+                   MOVE    SPACE               TO  SPA-GMN-INPUTCD(01)
+                   MOVE    FLG-JIKAN           TO  SPA-GMN-INPUTCD(01)
                                                                 (1:1)
-               MOVE    WRK-INPUTCD         TO  SPA-GMN-INPUTCD(01)
+                   MOVE    WRK-INPUTCD         TO  SPA-GMN-INPUTCD(01)
                                                                 (3:)
-               MOVE    FLG-JIKAN           TO  SPA-COM-TIMEFLG(01)
+                   MOVE    FLG-JIKAN           TO  SPA-COM-TIMEFLG(01)
+               END-IF
            END-IF
            .
        10102-SINSATU-CHENGE-EXT.

@@ -10240,6 +10240,9 @@
            MOVE    "1"                 TO  FLG-SYORI
            PERFORM 45101-SNRYO-SYORI-SEC
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
       *    患者ＩＤを初期化する
            INITIALIZE                  SPA-KYOTUKEY
       *
