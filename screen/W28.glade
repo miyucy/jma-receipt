@@ -95,6 +95,7 @@
       <y>720</y>
       <width>80</width>
       <height>24</height>
+      <has_focus>True</has_focus>
       <accelerator>
 	<modifiers>0</modifiers>
 	<key>GDK_F3</key>
@@ -294,7 +295,7 @@
 	  <last_modification_time>Wed, 23 Jan 2002 07:13:08 GMT</last_modification_time>
 	</signal>
 	<columns>10</columns>
-	<column_widths>40,37,60,150,225,70,80,80,80,80</column_widths>
+	<column_widths>40,37,60,150,225,80,100,50,80,80</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -578,22 +579,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label1015</name>
-      <x>15</x>
-      <y>520</y>
-      <width>56</width>
-      <height>25</height>
-      <label>ÉéÃ´·×»»</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_SENTEI_FTNKBN</name>
       <x>85</x>
@@ -699,38 +684,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>LBL_SENTEI_TANKA</name>
-      <x>15</x>
-      <y>550</y>
-      <width>56</width>
-      <height>25</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>LBL_SENTEI_EN</name>
-      <x>140</x>
-      <y>550</y>
-      <width>14</width>
-      <height>25</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label1013</name>
       <x>190</x>
       <y>550</y>
@@ -772,6 +725,166 @@
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1015</name>
+      <x>15</x>
+      <y>520</y>
+      <width>56</width>
+      <height>25</height>
+      <label>ÉéÃ´·×»»</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>SENTEI_TANKAIP</name>
+      <x>85</x>
+      <y>577</y>
+      <width>50</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 04 Feb 2002 03:04:50 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Mon, 04 Feb 2002 03:05:03 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>SENTEI_TANKARJ</name>
+      <x>85</x>
+      <y>605</y>
+      <width>50</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 04 Feb 2002 03:04:50 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Mon, 04 Feb 2002 03:05:03 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBL_SENTEI_TANKA</name>
+      <x>5</x>
+      <y>550</y>
+      <width>80</width>
+      <height>25</height>
+      <label>°ìÈÌ¡¿Ï·¿Í</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBL_SENTEI_TANKAIP</name>
+      <x>15</x>
+      <y>577</y>
+      <width>56</width>
+      <height>25</height>
+      <label>°ìÈÌ£±Æü</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBL_SENTEI_TANKARJ</name>
+      <x>15</x>
+      <y>605</y>
+      <width>56</width>
+      <height>25</height>
+      <label>Ï·¿Í£±Æü</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBL_SENTEI_EN</name>
+      <x>140</x>
+      <y>550</y>
+      <width>20</width>
+      <height>25</height>
+      <label>±ß</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBL_SENTEI_ENIP</name>
+      <x>140</x>
+      <y>577</y>
+      <width>20</width>
+      <height>25</height>
+      <label>±ß</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBL_SENTEI_ENRJ</name>
+      <x>140</x>
+      <y>605</y>
+      <width>20</width>
+      <height>25</height>
+      <label>±ß</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

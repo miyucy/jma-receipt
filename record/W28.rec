@@ -12,7 +12,7 @@ W28	{
 					value3	varchar(40);
 					value4	varchar(60);
 					value5	varchar(20);
-					value6	varchar(10);
+					value6	varchar(16);
 					value7	varchar(10);
 					value8	varchar(09);
 					value9	varchar(09);
@@ -45,6 +45,14 @@ W28	{
 		SENTEI_TANKA	{
 			value	number(4);
 		};
+		SENTEI_TANKAIP	{
+			value	number(4);
+			state	int;
+		};
+		SENTEI_TANKARJ	{
+			value	number(4);
+			state	int;
+		};
 		CMB_SENTEI_TAX	{
 			SENTEI_TAX	{
 				value	varchar(20);
@@ -53,9 +61,21 @@ W28	{
 			item	varchar(20)[05];
 		};
 		LBL_SENTEI_TANKA	{
-			value	varchar(8);
+			value	varchar(10);
 		};
 		LBL_SENTEI_EN	{
+			value	varchar(2);
+		};
+		LBL_SENTEI_TANKAIP	{
+			value	varchar(8);
+		};
+		LBL_SENTEI_ENIP	{
+			value	varchar(2);
+		};
+		LBL_SENTEI_TANKARJ	{
+			value	varchar(8);
+		};
+		LBL_SENTEI_ENRJ	{
 			value	varchar(2);
 		};
 	};
