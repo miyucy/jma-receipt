@@ -2506,10 +2506,15 @@
            END-IF
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
       *    ½é¿ÇÎÁ»»ÄêÆü
-           IF      KARRK-SYOSINYMD2    =   SPACE
-               MOVE    KARRK-SYOSINYMD1    TO  SSANTEI-SYOYMD
+      *    ÄûÀµ¤Î»þ
+           IF      SPA-SYORIFLG        =   1
+               MOVE    SPACE               TO  SSANTEI-SYOYMD
            ELSE
-               MOVE    KARRK-SYOSINYMD2    TO  SSANTEI-SYOYMD
+               IF      KARRK-SYOSINYMD2    =   SPACE
+                   MOVE    KARRK-SYOSINYMD1    TO  SSANTEI-SYOYMD
+               ELSE
+                   MOVE    KARRK-SYOSINYMD2    TO  SSANTEI-SYOYMD
+               END-IF
            END-IF
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
