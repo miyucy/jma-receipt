@@ -34,7 +34,9 @@
       *  01.00.03    NACL-Æ£¸¶    02/12/09  ¶¦ºÑÁÈ¹ç¤ÎÁ°´ü¹âÎð¼Ô¤Î½¸·×¤Î
       *                                     ½¤Àµ
       *  01.00.04    NACL-Æ£¸¶    02/12/09  Æþ±¡ÂÐ±þ
-      *  01.00.05    NACL-Æ£¸¶    03/04/10  £²£°£°£³¡¥£´²þÀµÂÐ±þ
+      *
+      *  £²£°£°£³¡¥£´²þÀµÂÐ±þ
+      *  01.01.01    NACL-Æ£¸¶    03/04/10  £²£°£°£³¡¥£³°ÊÁ°¤Î¤ßÂÐ¾Ý¤È¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -119,6 +121,7 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-NYUGAIKBN       PIC X(01).
+      *    1:200303 2:200304
            03  WRK-PRTFLG          PIC 9(01).
       *
            03  WRK-RECEERR         PIC X(200). 
@@ -301,7 +304,7 @@
       *    Æþ±¡³°Ê¬
       *
            MOVE    "2"                 TO  WRK-NYUGAIKBN
-      *
+      *   
            PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
                    UNTIL   WRK-PRTFLG  >       2
       *
@@ -313,16 +316,27 @@
       *
                    IF      CNT-RECE10          >   ZERO 
                        IF      WRK-PARA-NYUGAIKBN  =   "1"
-                           CALL    "ORCBM024"          USING 
-                                                       SUM-AREA
-                                                       WRK-PARA
-                                                       WRK-NYUGAIKBN
-                                                       WRK-PRTFLG
+                           IF      WRK-PRTFLG      =   1    
+                               CALL    "ORCBM024"          USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-NYUGAIKBN
+                           ELSE
+                               CALL    "ORCBM028"          USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-NYUGAIKBN
+                           END-IF
                        ELSE
-                           CALL    "ORCBM023"          USING 
-                                                       SUM-AREA
-                                                       WRK-PARA
-                                                       WRK-PRTFLG
+                           IF      WRK-PRTFLG      =   1    
+                               CALL    "ORCBM023"          USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                           ELSE    
+                               CALL    "ORCBM027"          USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                           END-IF
                        END-IF
                    END-IF    
                END-IF
@@ -344,11 +358,17 @@
                        PERFORM 2001-NYUIN-SYUKEI-SEC
       *
                        IF      CNT-RECE10          >   ZERO 
-                           CALL    "ORCBM024"          USING 
-                                                       SUM-AREA
-                                                       WRK-PARA
-                                                       WRK-NYUGAIKBN
-                                                       WRK-PRTFLG
+                           IF      WRK-PRTFLG      =   1    
+                               CALL    "ORCBM024"          USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-NYUGAIKBN
+                           ELSE
+                               CALL    "ORCBM028"          USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-NYUGAIKBN
+                           END-IF
                        END-IF
                    END-IF    
                END-PERFORM

@@ -250,14 +250,11 @@
            03  WRK-PARA-PAGE       PIC 9(10).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
       *
-       01  WRK-PRTFLG              PIC 9(01).
-      *
       ******************************************************************
       *
        PROCEDURE                       DIVISION
                                        USING   SUM-AREA
-                                               WRK-PARA
-                                               WRK-PRTFLG.
+                                               WRK-PARA.
       *
       *****************************************************************
       *    主　　処理
@@ -423,18 +420,13 @@
                                                    TO  HCM2C-TITLE     
                END-EVALUATE
            ELSE
-               EVALUATE    IDX1    ALSO    WRK-PRTFLG
-                   WHEN    1       ALSO    1
+               EVALUATE    IDX1
+                   WHEN    1
                        MOVE    "その他のレセ（月遅れ分）"
                                                    TO  HCM2C-TITLE  
-                   WHEN    2       ALSO    1
+                   WHEN    2
                        MOVE
                        "在総診または在医総を算定したレセ（月遅れ分）"
-                                                   TO  HCM2C-TITLE     
-                   WHEN    1       ALSO    2
-                       MOVE    "その他のレセ"      TO  HCM2C-TITLE  
-                   WHEN    2       ALSO    2
-                       MOVE    "在総診または在医総を算定したレセ"
                                                    TO  HCM2C-TITLE     
                END-EVALUATE
            END-IF           
@@ -460,18 +452,13 @@
                                                    TO  HCM2D-TITLE     
                END-EVALUATE
            ELSE
-               EVALUATE    IDX1    ALSO    WRK-PRTFLG
-                   WHEN    1       ALSO    1
+               EVALUATE    IDX1
+                   WHEN    1
                        MOVE    "その他のレセ（月遅れ分）"
                                                    TO  HCM2D-TITLE  
-                   WHEN    2       ALSO    1
+                   WHEN    2
                        MOVE
                        "在総診または在医総を算定したレセ（月遅れ分）"
-                                                   TO  HCM2D-TITLE     
-                   WHEN    1       ALSO    2
-                       MOVE    "その他のレセ"      TO  HCM2D-TITLE  
-                   WHEN    2       ALSO    2
-                       MOVE    "在総診または在医総を算定したレセ"
                                                    TO  HCM2D-TITLE     
                END-EVALUATE
            END-IF           
