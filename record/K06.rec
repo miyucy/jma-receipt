@@ -153,6 +153,7 @@ K06	{
 					value6	varchar(10);
 					value7	varchar(2);
 					value8	varchar(4);
+					value9	varchar(10);
 				}	[100];
 				select	bool[100];
 			};
