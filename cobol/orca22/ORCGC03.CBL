@@ -136,7 +136,7 @@
                05  WRK-RECECD-TBL.
                    07  WRK-RECECD  OCCURS  3
                                    PIC X(01).
-               05  WRK-MOJISU      PIC 9(02).
+               05  WRK-MOJISU      PIC 9(03).
       *     
            03  WRK-TANDOKU-AREA.
                05  WRK-TANDOKUKBN-BYOMEICD
