@@ -83,6 +83,9 @@
       *                                     無い場合は不明分とする
       *  01.00.30    NACL-小豆沢  03/05/30  山形県の地方公費は主保険が
       *                                     国保の場合は公費カウントしない
+      *  01.00.31    NACL-藤原    03/10/07  福岡県の地方公費は主保険が
+      *                                     国保の場合は公費カウントしない
+      *                                     （法別番号４１以外のとき）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -239,12 +242,12 @@
            03  WRK-PATH                                PIC X(64).
       *****03  WRK-IN                                  PIC X(01).
            03  WRK-PARA.
+               05  WRK-PARA-PREFNUM                    PIC  X(02). 
                05  WRK-PARA-SRYYM                      PIC  X(06).
                05  WRK-PARA-TERMID                     PIC  X(16).
                05  WRK-PARA-SYSYMD                     PIC  X(08).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
-           03  WRK-PREFNUM                             PIC  9(02).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -440,28 +443,6 @@
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
-      *
-      *    県番号取得
-           INITIALIZE                  SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-1001-REC
-               MOVE    SYS-1001-PREFNUM
-                                           TO  WRK-PREFNUM
-           ELSE
-               MOVE    "県番号が取得できませんでした"
-                                           TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               MOVE    1                   TO  FLG-END
-           END-IF
-           MOVE     "SYSKANRI-KEY"         TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
       *
       *    患者番号構成管理情報編集
            INITIALIZE                  SYS-1009-REC
@@ -1206,7 +1187,7 @@
            END-EVALUATE
       *
       *    山形地方公費対応
-           IF      WRK-PREFNUM             =     6
+           IF      WRK-PARA-PREFNUM    =   "06"
                IF  WK-KOKUHO               =     "1"  OR  "2"
                    IF   (RECE02-KOHNUM(1) (1:1)  =   "1")   OR
                         (RECE02-KOHNUM(2) (1:1)  =   "1")   OR
@@ -1216,6 +1197,28 @@
                         (RECE02-KOHNUM(2) (1:1)  =   "2")   OR
                         (RECE02-KOHNUM(3) (1:1)  =   "2")   OR
                         (RECE02-KOHNUM(4) (1:1)  =   "2")
+                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    福岡地方公費対応
+           IF      WRK-PARA-PREFNUM    =   "40"
+               IF  WK-KOKUHO               =   "1" OR  "2"
+                   IF   (RECE02-KOHNUM   (1)(1:1)  =   "1" OR  "2")
+                   AND  (RECE02-KOHHBTNUM(1)   NOT =   "41"       )     
+                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
+                   END-IF
+                   IF   (RECE02-KOHNUM   (2)(1:1)  =   "1" OR  "2")
+                   AND  (RECE02-KOHHBTNUM(2)   NOT =   "41"       )     
+                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
+                   END-IF
+                   IF   (RECE02-KOHNUM   (3)(1:1)  =   "1" OR  "2")
+                   AND  (RECE02-KOHHBTNUM(3)   NOT =   "41"       )     
+                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
+                   END-IF
+                   IF   (RECE02-KOHNUM   (4)(1:1)  =   "1" OR  "2")
+                   AND  (RECE02-KOHHBTNUM(4)   NOT =   "41"       )     
                        COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
                    END-IF
                END-IF
