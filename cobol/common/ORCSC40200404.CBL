@@ -756,7 +756,7 @@
                    UNTIL      (IDX2    >   31  )   OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF     (WRK-DAY (IDX2)  +   WRK-COM-NYUINDAY(IDX-Z IDX2))
-                                           >=  3
+                                           >   3
                    MOVE    "0076"          TO  WRK-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR (IDX-Z + 1)
                END-IF
@@ -1462,7 +1462,6 @@
       *
            MOVE    IDX-Z               TO  HZN-IDX
            PERFORM 1006-KASAN-SET-SEC
-      *
       *    手技料の合計を編集する
            MOVE    LNK-SC90-TENSUKEI   TO  WRK-COM-SYUTEN2 (IDX-ZS)
       *    労災の外来管理加算読み替え処理
