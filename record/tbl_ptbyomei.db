@@ -127,7 +127,22 @@ path	key5	{
 			 OR  (BYOMEICD_3  =   :BYOMEICD_3)
 			 OR  (BYOMEICD_4  =   :BYOMEICD_4)
 			 OR  (BYOMEICD_5  =   :BYOMEICD_5)
-			 OR  (BYOMEICD_6  =   :BYOMEICD_6))
+			 OR  (BYOMEICD_6  =   :BYOMEICD_6)
+			 OR  (BYOMEICD_7  =   :BYOMEICD_7)
+			 OR  (BYOMEICD_8  =   :BYOMEICD_8)
+			 OR  (BYOMEICD_9  =   :BYOMEICD_9)
+			 OR  (BYOMEICD_10 =   :BYOMEICD_10)
+			 OR  (BYOMEICD_11 =   :BYOMEICD_11)
+			 OR  (BYOMEICD_12 =   :BYOMEICD_12)
+			 OR  (BYOMEICD_13 =   :BYOMEICD_13)
+			 OR  (BYOMEICD_14 =   :BYOMEICD_14)
+			 OR  (BYOMEICD_15 =   :BYOMEICD_15)
+			 OR  (BYOMEICD_16 =   :BYOMEICD_16)
+			 OR  (BYOMEICD_17 =   :BYOMEICD_17)
+			 OR  (BYOMEICD_18 =   :BYOMEICD_18)
+			 OR  (BYOMEICD_19 =   :BYOMEICD_19)
+			 OR  (BYOMEICD_20 =   :BYOMEICD_20)
+			 OR  (BYOMEICD_21 =   :BYOMEICD_21))
 		;
 	};
 };
@@ -349,6 +364,53 @@ path	key17	{
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <=  :SRYYMD
 			ORDER  BY  PTID,SRYYMD,SRYKA,RENNUM
+		;
+	};
+};
+
+path	key18	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key18_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			ORDER BY SRYYMD DESC,RENNUM 
+		;
+	};
+};
+
+path	key19	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key19_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   BYOMEICD_1  in (:BYOMEICD_1,
+			                      :BYOMEICD_2,
+			                      :BYOMEICD_3,
+			                      :BYOMEICD_4,
+			                      :BYOMEICD_5,
+			                      :BYOMEICD_6,
+			                      :BYOMEICD_7,
+			                      :BYOMEICD_8,
+			                      :BYOMEICD_9,
+			                      :BYOMEICD_10,
+			                      :BYOMEICD_11,
+			                      :BYOMEICD_12,
+			                      :BYOMEICD_13,
+			                      :BYOMEICD_14,
+			                      :BYOMEICD_15,
+			                      :BYOMEICD_16,
+			                      :BYOMEICD_17,
+			                      :BYOMEICD_18,
+			                      :BYOMEICD_19,
+			                      :BYOMEICD_20,
+			                      :BYOMEICD_21 )
+			ORDER BY SRYYMD DESC,RENNUM 
 		;
 	};
 };

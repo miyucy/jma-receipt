@@ -1436,6 +1436,12 @@
                WHEN    ANY             ALSO   "PTBYOMEI-KEY17"
                    MOVE    PATH-TBL-PTBYOMEI-KEY17
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY18"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY18
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY19"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY19
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-ALL"
                    MOVE    PATH-TBL-PTBYOMEI-ALL
                                        TO  WRK-PATH
