@@ -29,9 +29,10 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     01/09/21  JOINの修正      
       *  01.00.02    MCC-藤原     01/10/09  削除の追加      
-      *  01.00.03    MCC-藤原     01/11/14  項目をコンボボックスに変更      
+      *  01.00.03    MCC-藤原     01/11/14  項目をコンボボックスに変更
       *  01.00.04    MCC-藤原     02/03/13  負担区分の追加      
-      *  01.00.05    MCC-藤原     02/03/22  保険番号マスタの読込みの修正     
+      *  01.00.05    MCC-藤原     02/03/22  保険番号マスタの読込みの修正
+      *  01.00.06    NACL-多々納  02/12/24  負担区分の初期値の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -600,7 +601,7 @@
                                           TO  IDY
                    END-IF
                END-PERFORM
-      *        
+      *
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       4  
                    MOVE    HKN-GAIFTNKBN       (IDX)
@@ -683,6 +684,31 @@
                    END-PERFORM
                END-PERFORM 
            END-IF
+      *
+      *    初期値設定
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+      *        外来負担区分
+               IF      SPA-GMN-GAIFTNKBN (IDX) =   SPACE
+                   MOVE    SPA-GMN-GAIFTNKBNLST (01)
+                                          TO  SPA-GMN-GAIFTNKBN-G (IDX)
+               END-IF
+               IF      SPA-GMN-GAIYKZFTNKBN (IDX) =   SPACE
+                   MOVE    SPA-GMN-GAIYKZFTNKBNLST (01)
+                                          TO  SPA-GMN-GAIYKZFTNKBN-G
+                                                                  (IDX)
+               END-IF
+      *        入院負担区分
+               IF      SPA-GMN-NYUFTNKBN (IDX) =   SPACE
+                   MOVE    SPA-GMN-NYUFTNKBNLST (01)
+                                          TO  SPA-GMN-NYUFTNKBN-G (IDX)
+               END-IF
+               IF      SPA-GMN-NYUSKJRYYKBN (IDX)  =   SPACE
+                   MOVE    SPA-GMN-NYUSKJRYYKBNLST (01)
+                                          TO  SPA-GMN-NYUSKJRYYKBN-G
+                                                                  (IDX)
+               END-IF
+           END-PERFORM
       *
            MOVE    ZERO                TO  SPA-GMN-PAGENO 
       *  
@@ -858,7 +884,7 @@
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
-           MOVE    V02-HBTNUM          TO  SPA-GMN-HBTNUM           
+           MOVE    V02-HBTNUM          TO  SPA-GMN-HBTNUM
       * 
            MOVE    2                   TO  SPA-GMN-CUR
            .
@@ -1100,7 +1126,7 @@
                    END-IF
                END-IF
       *
-           IF      SPA-ERRCD           =   SPACE                           
+           IF      SPA-ERRCD           =   SPACE 
                ADD     1               TO  SPA-GMN-CUR
            END-IF    
            .
