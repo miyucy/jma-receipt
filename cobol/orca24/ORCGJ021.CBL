@@ -1132,8 +1132,14 @@
                                            =   SPA-NAI-SRYYM )  AND
                               (SPA-NAI-TEKSTYMD (IDX)(7:2)
                                            >   SPA-J021-DAY1 )
-                           MOVE    "0009"              TO  SPA-ERRCD
-                           MOVE    3                   TO  SPA-J021-CUR
+                           IF      SPA-NAI-TEKSTYMD (IDX)(7:2)
+                                                   >   SPA-J021-DAY2
+                               MOVE    "0009"          TO  SPA-ERRCD
+                               MOVE    4               TO  SPA-J021-CUR
+                           ELSE
+                               MOVE    SPA-NAI-TEKSTYMD (IDX)(7:2)
+                                                   TO  SPA-J021-DAY1
+                           END-IF
                        END-IF
       *                保険終了日が診療日より後であること
                        IF     (SPA-NAI-TEKEDYMD (IDX)(1:6)
@@ -1175,6 +1181,7 @@
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    "1"                 TO  SPA-J021-ATO-ERR
                IF      SPA-ERRCD           =   "0009"
                    CONTINUE
                ELSE
