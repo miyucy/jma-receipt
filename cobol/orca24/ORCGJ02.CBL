@@ -541,6 +541,9 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -4100,6 +4103,10 @@
                MOVE    SPA-NAI-HENSRYYMD   TO  JYURRK-SRYYMD
                MOVE    1                   TO  JYURRK-RENNUM
       *
+               MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+      *
+      *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "JYURRK-UPD1"       TO  ORC-DBPATH
@@ -4226,6 +4233,9 @@
       *
                    MOVE    SPA-NAI-DAY-AREA (IDX)  TO  ACCT-DAY-AREA
       *
+                   MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+      *
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
@@ -4280,6 +4290,10 @@
       *    診療日が変更された時、収納も変更する
            IF      SYU-SRYYMD      NOT =   SPA-NAI-HENSRYYMD
                MOVE    SPA-NAI-HENSRYYMD   TO  SYU-SRYYMD
+      *
+               MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
       *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -4355,6 +4369,9 @@
                    END-PERFORM
       *
                    MOVE    1                   TO  FLG-JYURRK-UPD
+      *
+                   MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
                    MOVE    JYURRK-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -6146,6 +6163,11 @@
                GO      TO      4901-SRYACCT-UPD-EXT
            END-IF
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       *    診療会計マスターを編集
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL      IDX      >   SPA-NAI-MAX
@@ -6176,6 +6198,10 @@
                IF      FLG-SRYACCT          =   ZERO
       *            診療会計マスターを変更する
                    PERFORM 4901-SRYACCT-KOUSIN-SEC
+      *
+                   MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+      *
       *
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -6338,6 +6364,10 @@
                UNTIL   FLG-PARA            =   1
       *
                MOVE    PARA-DATA-REC       TO  JYURRK-REC
+      *
+               MOVE    SMCNDATE-YMD        TO  JYURRK-CREYMD
+               MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -6801,6 +6831,10 @@
       *    診療日が変更された時、収納も変更する
            IF      SYU-SRYYMD      NOT =   SPA-RRK-RRKYMD (IDX)
                MOVE    SPA-RRK-RRKYMD (IDX)    TO  SYU-SRYYMD
+      *
+               MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
       *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC

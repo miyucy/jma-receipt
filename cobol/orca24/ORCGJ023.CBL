@@ -151,6 +151,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -1615,10 +1618,18 @@
       *****************************************************************
        2121-TOUROKU-SYORI-SEC          SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            PERFORM 2120-RECECOM-SEL-SEC
            IF      FLG-RECECOM         =   ZERO
       *        更新
                MOVE    SPA-J023-COMMENT    TO  RECECOM-COMMENT
+      *
+               MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1648,6 +1659,11 @@
                    MOVE    ZERO                TO  RECECOM-SRYDD
                END-IF
                MOVE    SPA-J023-COMMENT    TO  RECECOM-COMMENT
+      *
+               MOVE    SMCNDATE-YMD        TO  RECECOM-CREYMD
+               MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+      *
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1810,6 +1826,11 @@
       *****************************************************************
        2801-BUNREI-SYORI-SEC                   SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            IF      SPA-J023-BUNNUM     =   ZERO
       *        最大連番決定
                MOVE    SPACE               TO  EXAMPLE-REC
@@ -1845,6 +1866,10 @@
       *        更新
                MOVE    SPA-J023-COMMENT    TO  EXAMPLE-COMMENT
       *
+               MOVE    SMCNDATE-YMD        TO  EXAMPLE-UPYMD
+               MOVE    SMCNDATE-HMS        TO  EXAMPLE-UPHMS
+      *
+      *
                MOVE    EXAMPLE-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
@@ -1863,6 +1888,11 @@
                MOVE    "1"                 TO  EXAMPLE-KUBUN
                MOVE    SPA-J023-BUNNUM     TO  EXAMPLE-RENNUM
                MOVE    SPA-J023-COMMENT    TO  EXAMPLE-COMMENT
+      *
+               MOVE    SMCNDATE-YMD        TO  EXAMPLE-CREYMD
+               MOVE    SMCNDATE-YMD        TO  EXAMPLE-UPYMD
+               MOVE    SMCNDATE-HMS        TO  EXAMPLE-UPHMS
+      *
       *
                MOVE    EXAMPLE-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC

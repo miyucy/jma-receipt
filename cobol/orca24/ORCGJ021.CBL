@@ -161,6 +161,9 @@
       *    保険算定年齢パラメタ
            COPY    "CPORCSAGECHK.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -902,7 +905,7 @@
                END-STRING
            END-IF
       *
-      *   収納から負担割合を編集する
+      *    収納から負担割合を編集する
            INITIALIZE                  SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
@@ -1137,6 +1140,11 @@
       *****************************************************************
        30031-HENKOU-SYORI-SEC          SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       *    保険組合検索
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
@@ -1253,6 +1261,10 @@
       *        保険組合せ変更
                MOVE    SPA-J021-ATO-HKNCOMBI   TO  JYURRK-HKNCOMBINUM
       *
+               MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+      *
+      *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
@@ -1314,6 +1326,10 @@
            PERFORM
                UNTIL   FLG-SRYACCT     =   1
                MOVE    SPA-J021-ATO-HKNCOMBI  TO  ACCT-HKNCOMBI
+      *
+               MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+               MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+      *
       *
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1395,6 +1411,9 @@
            MOVE    COMB-KOH3HKNNUM     TO  SYU-KOH3HKNNUM
            MOVE    COMB-KOH4HKNNUM     TO  SYU-KOH4HKNNUM
       *
+           MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -1450,6 +1469,10 @@
                ELSE
                    MOVE    SPA-J021-ATO-HKNCOMBI
                                                TO  SANTEI-HKNCOMBINUM 
+      *
+      *
+                   MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
       *
                    MOVE    SANTEI-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1579,6 +1602,11 @@
                MOVE    HZN-RECECOM-REC(1)  TO  RECECOM-REC
                MOVE    SPA-J021-ATO-HKNCOMBI
                                            TO  RECECOM-HKNCOMBI
+      *
+               MOVE    SMCNDATE-YMD        TO  RECECOM-CREYMD
+               MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+      *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
