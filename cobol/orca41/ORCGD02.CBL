@@ -160,10 +160,7 @@
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-           03  FLG-RUN1             PIC 9(01).
-      *½¤Àµ/*³«»Ï*03.02.07*********************************************
-           03  FLG-RUN2            PIC 9(01).
-      *½¤Àµ/*½ªÎ»*03.05.07*********************************************
+           03  FLG-RUN             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-TBL             PIC 9(01).
            03  FLG-TENKIYMD-ER     PIC 9(01).
@@ -852,6 +849,10 @@
                MOVE    SPACE             TO  T-ERR-12
                MOVE    SPACE             TO  T-ERR-13
                MOVE    SPACE             TO  T-ERR-13-2
+      *½¤Àµ/*³«»Ï*03.02.07*********************************************
+           ELSE
+               MOVE    "--"              TO  T-HANNTEI6
+      *½¤Àµ/*½ªÎ»*03.02.07*********************************************
            END-IF.
       *½¤Àµ/*³«»Ï*03.01.31*********************************************
            IF  PTINF-TSTPTNUMKBN  =  "0"
@@ -1697,22 +1698,16 @@
            IF  (ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                (ACCT-PTID     NOT =   W1-SRY-PTID)    OR
                (ACCT-SRYKA    NOT =   W1-SRY-SRYKA)
-               MOVE    1                 TO  FLG-RUN1
-      *½¤Àµ/*³«»Ï*03.02.07*********************************************
-               MOVE    1                 TO  FLG-RUN2
-      *½¤Àµ/*½ªÎ»*03.05.07*********************************************
+               MOVE    1                 TO  FLG-RUN
                MOVE    SPACE             TO  T-ERR-05
                MOVE    SPACE             TO  T-ERR-06
                MOVE    SPACE             TO  T-ERR-07
                MOVE    SPACE             TO  T-ERR-13-3
            ELSE
-               MOVE    ZERO              TO  FLG-RUN1
-      *½¤Àµ/*³«»Ï*03.02.07*********************************************
-               MOVE    ZERO              TO  FLG-RUN2
-      *½¤Àµ/*½ªÎ»*03.05.07*********************************************
+               MOVE    ZERO              TO  FLG-RUN
            END-IF.
       *
-           IF  (FLG-RUN1   =   1)      OR
+           IF  (FLG-RUN    =   1)      OR
                (T-ERR-05   =   SPACE)  OR
                (T-ERR-06   =   SPACE)
                PERFORM T-510-RECECHEK-CHK1-SEC
@@ -1762,7 +1757,7 @@
            ELSE
                PERFORM T-510-RECECHEK-READ-SEC
                IF  MCP-RC   NOT =   ZERO
-                   IF  (FLG-RUN1          =   1)     AND
+                   IF  (FLG-RUN           =   1)     AND
                        ((SPA-GMN-CNV (5)   =  "1")    OR
                         (SPA-GMN-CNV (7)   =  "1"))  AND
                        (T-ERR-05          = SPACE)   AND
@@ -1782,7 +1777,7 @@
                    PERFORM UNTIL      MCP-RC   NOT  =  ZERO
                        MOVE    MCPDATA-REC       TO  PTBYOMEI-REC
                        MOVE    "*"               TO  T-HANNTEI3
-                       IF  FLG-RUN1  =   1
+                       IF  FLG-RUN   =   1
                            IF  PTBYO-SRYYMD(1:6)      > ACCT-SRYYM
                                MOVE    SPACE             TO  T-HANNTEI3
                            END-IF
@@ -1866,24 +1861,20 @@
                                END-IF
                            END-IF
                        END-IF
+                       IF  (T-HANNTEI6           =  "OK")       AND
+                           (PTBYO-BYOMEI     NOT = SPACE)       AND
+                           (PTBYO-SRYYMD(1:6)    = ACCT-SRYYM)  AND
+                           (T-ERR-05             = SPACE)
+                           MOVE    SPACE              TO  T-HANNTEI8
+                           MOVE    PTBYO-SRYYMD(7:2)  TO  IDX7
+                           IF  W-ACCT-DAY (IDX7) =  ZERO
+                               MOVE    "ER"           TO  T-HANNTEI7
       *½¤Àµ/*³«»Ï*03.02.07*********************************************
-                       IF  (FLG-RUN1  =   1)       AND
-                           (FLG-RUN2  =   1)
-      *½¤Àµ/*½ªÎ»*03.05.07*********************************************
-                           IF  (T-HANNTEI6           =  "OK")       AND
-                               (PTBYO-BYOMEI     NOT = SPACE)       AND
-                               (PTBYO-SRYYMD(1:6)    = ACCT-SRYYM)  AND
-                               (T-ERR-05             = SPACE)
-                               MOVE    SPACE              TO  T-HANNTEI8
-                               MOVE    PTBYO-SRYYMD(7:2)  TO  IDX7
-                               IF  W-ACCT-DAY (IDX7) =  ZERO
-                                   MOVE    "ER"           TO  T-HANNTEI7
-                               END-IF
+                           ELSE
+                               MOVE    "--"           TO  T-HANNTEI6
+      *½¤Àµ/*½ªÎ»*03.02.07*********************************************
                            END-IF
-      *½¤Àµ/*³«»Ï*03.02.07*********************************************
-                           MOVE    ZERO               TO  FLG-RUN2
                        END-IF
-      *½¤Àµ/*½ªÎ»*03.05.07*********************************************
                        IF  (ACCT-SRYKBN            = "11")      AND
                            (ACCT-DAY-TBL (1)   NOT = ALL ZERO)  AND
                            (SPA-GMN-CNV (6)        = "1")       AND
