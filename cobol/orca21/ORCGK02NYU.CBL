@@ -1450,7 +1450,7 @@
       *
       *    排他制御処理
            PERFORM 990-LOCK-IN2-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF      SPA-ERRCD           =   "9999"
                GO      TO      30011-INIT-HEN-EXT
            END-IF
       *
@@ -1565,7 +1565,7 @@
       *
       *    排他制御処理
            PERFORM 990-LOCK-IN2-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF      SPA-ERRCD           =   "9999"
                GO      TO      3009-SAIHEN-EXT
            END-IF
       *    診療選択からの時、診療選択分とする
