@@ -29,4 +29,6 @@
            03  ORCSCNYUIN-KBN                        PIC  X(01).
       *覆擂ゥ尥﹋轉情ゥ﹌
            03  ORCSCNYUIN-YMD                        PIC  X(08).
+      *轉情ゥ
+           03  ORCSCNYUIN-TAIINYMD                   PIC  X(08).
       *
