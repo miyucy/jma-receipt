@@ -89,6 +89,8 @@
       *  01.00.30    NACL-太田    03.07.01  出力先プリンタサブ追加
       *  01.00.31    NACL-太田    03.08.26  請求書の引数設定修正
       *                                     （労災対応）
+      *  01.00.32    NACL-小豆沢  03.09.17  福岡県の対応追加（再計算時に給付
+      *                                     対象外点数を取り込み）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -233,6 +235,7 @@
       *
       *    添字領域
        01  IDX-AREA.
+           03  IDX                 PIC 9(05).
            03  IDX1                PIC 9(05).
            03  IDX2                PIC 9(05).
            03  IDX3                PIC 9(05).
@@ -383,6 +386,13 @@
          02    SUMTEIKIRRK-OCC     OCCURS 50.
            COPY  "CPTEIKIRRK.INC"  REPLACING  //TEIKIRRK-//
                                            BY //SUMTEIKIRRK-//.
+      *
+      *診療区分別給付外点数（福岡退避用）
+       01  WRK40-KYUFUGAI.
+               05  WRK40-KYUFUGAI-TBL        OCCURS   6.
+      *    給付対象外点数
+                   09  WRK40-KYUFUGAI-TEN    PIC  9(07).
+
       **************************************************************
       *    ファイルレイアウト
       **************************************************************
@@ -474,6 +484,9 @@
       *
       *    保険組み合せ取得
            COPY    "CPORCSHKNSET.INC".
+      *
+      *    福岡県地方公費給付対象外点数取得サブ
+           COPY    "CPORCSSYU40.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -2548,6 +2561,22 @@
       *    共通パラメタ更新・画面遷移
       *    PERFORM 4901-PARA-HEN-SEC
       *
+      *    福岡対応（給付対象外の算出）
+           IF      SPA-PREFNUM         =   40
+               INITIALIZE           ORCSSYU40AREA
+               MOVE    "2"             TO  ORCS40-KBN
+               MOVE    SPA-GMN-TDENPNUM (SPA-GMN-SELBAN)
+                                       TO  ORCS40-DENPNUM
+               CALL    "ORCSSYU40"     USING   SPA-AREA
+                                               ORCSSYU40AREA
+                                               SYUNOU-REC
+               PERFORM    VARYING   IDX   FROM  1   BY  1
+                          UNTIL     IDX   >     6
+                   MOVE   SYU-KYUFUGAI-TEN(IDX)  TO
+                                            WRK40-KYUFUGAI-TEN(IDX)
+               END-PERFORM
+           END-IF
+      *
       *------------------------------------------------------------
       *    診療日に該当する診療会計マスタ・診療行為マスタを検索し
       *    患者負担算定サブの必要項目をセットする
@@ -2564,6 +2593,11 @@
            MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
                                        TO  SYU-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
+      *
+           MOVE    SPA-GMN-TDENPNUM (SPA-GMN-SELBAN)
+                                       TO  SYU-DENPNUM
+           PERFORM 900-SYUNOU-READ-SEC
+      *
            MOVE    SPA-GMN-TDENPNUM (SPA-GMN-SELBAN)
                                        TO  SYU-DENPNUM
            PERFORM 900-SYUNOU-READ-SEC
@@ -3038,6 +3072,15 @@
                COMPUTE   SYU-HKNTEN (12)  =   SYU-HKNTEN (12)
                                           +   SYU-HKNTEN (IDX1)
            END-PERFORM
+      *
+      *    福岡対応
+           IF      SPA-PREFNUM         =   40
+               PERFORM    VARYING   IDX   FROM  1   BY  1
+                          UNTIL     IDX   >     6
+                   MOVE   WRK40-KYUFUGAI-TEN(IDX)  TO
+                                            SYU-KYUFUGAI-TEN(IDX)
+               END-PERFORM
+           END-IF
       *
       *    患者負担額計算処理
            MOVE    "1"                 TO  LNK-S01-SAIKEISAN-KBN
