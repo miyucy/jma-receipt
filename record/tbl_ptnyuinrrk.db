@@ -10,6 +10,7 @@ tbl_ptnyuinrrk	{
 	HKNCOMBINUM		char(4);
 	NYUINYMD		char(8);
 	TAIINYMD		char(8);
+	TAIINCD			char(2);
 	TOKUTEI_KBN	char(1);
 	TOKUTEI_NYUIN	char(2);
 	RM_SAGAKU		char(2);
@@ -602,6 +603,19 @@ path	key35		{
 			AND		NYUINYMD	<=	:NYUINYMD
 			AND		SHONUM		=	:SHONUM
 			ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC,RRKEDANUM DESC
+		;
+	};
+};
+
+path	upd1		{ 	
+	DBUPDATE	{
+		UPDATE	tbl_ptnyuinrrk
+			SET    	TAIINCD    =   :TAIINCD,
+				UPYMD	   =   :UPYMD,
+				UPHMS	   =   :UPHMS
+			WHERE   HOSPID	   =   :HOSPID
+			AND	PTID	   =   :PTID
+			AND	RRKNUM	   =   :RRKNUM
 		;
 	};
 };
