@@ -82,8 +82,8 @@ FORM_files = \
               HCN062.red \
               HCM2G.red \
               HCM2H.red \
-              HCM30.red \
               HCM31.red \
+              HCM32.red \
 
 all:   
 

@@ -16,14 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCHCM30.
+       PROGRAM-ID.             ORCHCM32.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 患者登録
-      *  コンポーネント名  : 支払証明書（日別）
+      *  コンポーネント名  : 支払証明書（月別）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  02/12/09    NACL−森脇    新規作成
+      *  02/12/11    NACL−森脇    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -43,7 +43,7 @@
       *
       *    印刷用データ
        FD  PRT-FILE.
-           COPY    "HCM30.INC".
+           COPY    "HCM32.INC".
       *
        WORKING-STORAGE             SECTION.
       *
@@ -64,16 +64,11 @@
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDX                 PIC 9(04).
+           03  IDX                 PIC 9(02).
       *
       *    システム領域
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
-      *
-      *    カウント領域
-       01  CNT-AREA.
-           03  CNT-PAGE            PIC 9(03).
-           03  CNT-LINE            PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -88,15 +83,13 @@
            03  WRK-HENYMDG         PIC X(22).
       *
            03  WRK-HENSYU-TBL.
-               05  WRK-HKNTEN      PIC S9(07)  OCCURS  40.
-               05  WRK-SKYMONEY    PIC S9(11)  OCCURS  40.
-           03  WRK-GHENSYU-TBL.
-               05  WRK-GHKNTEN     PIC S9(07).
-               05  WRK-GSKYMONEY   PIC S9(11).
+               05  WRK-HKNTEN      PIC 9(7)    OCCURS  12.
+               05  WRK-GHKNTEN     PIC 9(7).
+               05  WRK-SKYMONEY    PIC S9(10)  OCCURS  12.
+               05  WRK-GSKYMONEY   PIC S9(10).
       *
-           03  WRK-Z3             PIC ZZZ.
-           03  WRK-Z7             PIC ZZZZZZZ.
-           03  WRK-Z9             PIC ---,---,---.
+           03  WRK-Z7              PIC ZZZZZZZ.
+           03  WRK-Z9              PIC ---,---,---.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -147,11 +140,11 @@
            COPY    "COMMON-SPA".
       *
       *    処方箋共通パラメタ
-           COPY    "CPORCHCM30.INC".
+           COPY    "CPORCHCM31.INC".
       *
        PROCEDURE                   DIVISION    USING
            SPA-AREA
-           ORCHCM30AREA
+           ORCHCM31AREA
            .
       *
       *****************************************************************
@@ -202,38 +195,31 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           MOVE    ZERO            TO  CNT-PAGE
-           MOVE    ZERO            TO  WRK-GHENSYU-TBL
+           INITIALIZE                  HCM32
+           MOVE    ZERO            TO  WRK-HENSYU-TBL
+           MOVE    ZERO            TO  IDX
       *
            PERFORM UNTIL   FLG-SYUNOU  =   1
-               INITIALIZE                  HCM30
-               MOVE    ZERO            TO  CNT-LINE
-               MOVE    ZERO            TO  WRK-HENSYU-TBL
-      *
-               PERFORM UNTIL   FLG-SYUNOU  =   1
-                       OR      CNT-LINE    >   40
-                   IF          SYU-SRYYMD  >=  ORCHCM30-STRSRYYMD
-                       AND     SYU-SRYYMD  <=  ORCHCM30-ENDSRYYMD
-      *                帳票<明細>編集処理
-                       PERFORM 210-PRT-LINE-SEC
-                   END-IF
-                   IF  CNT-LINE    <=    40
-      *                収納マスターFETCH
-                       PERFORM 900-SYUNOU-FETCH-SEC
-                   END-IF
-               END-PERFORM
-      *
-      *         IF  CNT-LINE    NOT =   ZERO
-      *            帳票<見出>編集処理
-                   PERFORM 220-PRT-PAGE-SEC
-      *            帳票出力処理
-                   PERFORM 230-PRT-WRITE-SEC
-      *         END-IF
+               IF          SYU-SRYYMD  >=  ORCHCM31-STRSRYYMD
+                   AND     SYU-SRYYMD  <=  ORCHCM31-ENDSRYYMD
+      *            帳票<明細>編集処理
+                   PERFORM 210-PRT-LINE-SEC
+               END-IF
+      *        収納マスターFETCH
+               PERFORM 900-SYUNOU-FETCH-SEC
            END-PERFORM
       *
-      *    収納明細マスタ読み込み
+           IF      WRK-GHKNTEN     NOT =   ZERO
+               OR  WRK-GSKYMONEY   NOT =   ZERO
+      *        帳票<見出>編集処理
+               PERFORM 220-PRT-PAGE-SEC
+      *        帳票出力処理
+               PERFORM 230-PRT-WRITE-SEC
+           END-IF
+      *
+      *    収納明細マスターCLOSE
            PERFORM 900-SYUMEI-CLOSE-SEC
-      *    収納マスタ読み込み
+      *    収納マスターCLOSE
            PERFORM 900-SYUNOU-CLOSE-SEC
       *
            .
@@ -245,30 +231,32 @@
       *****************************************************************
        210-PRT-LINE-SEC         SECTION.
       *
-           IF          SYU-SRYYMD          NOT =   WRK-SYMD
-               COMPUTE CNT-LINE            =   CNT-LINE    +  1
-               IF  CNT-LINE    >    40
-                   GO  TO  210-PRT-LINE-EXT
-               END-IF
+           IF          SYU-SRYYMD(1:6)          NOT =   WRK-SYMD(1:6)
+               COMPUTE IDX =   IDX +   1
       *        診療日
                MOVE    SYU-SRYYMD          TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG(11:12)  TO  HCM30-SRYYMD(CNT-LINE)
+               MOVE    WRK-HENYMDG(1:16)   TO  HCM32-SRYYYMM(IDX)
+               MOVE    "分"                TO  HCM32-BUN(IDX)
            END-IF
       *
-           COMPUTE WRK-HKNTEN(CNT-LINE)    =   WRK-HKNTEN(CNT-LINE)
-                                           +   SYU-TOTAL-HKNTEN
-           COMPUTE WRK-GHKNTEN             =   WRK-GHKNTEN
-                                           +   SYU-TOTAL-HKNTEN
+      *    保険点数
+           COMPUTE WRK-HKNTEN(IDX)     =   WRK-HKNTEN(IDX)
+                                       +   SYU-TOTAL-HKNTEN
+      *    合計保険点数
+           COMPUTE WRK-GHKNTEN         =   WRK-GHKNTEN
+                                       +   SYU-TOTAL-HKNTEN
+      *
       *    収納明細マスターSELECT
            PERFORM 900-SYUMEI-SELECT-SEC
            PERFORM UNTIL   FLG-SYUMEI  =   1
                IF  SMEI-NYUHEN-MONEY   NOT =   ZERO
-                   COMPUTE WRK-SKYMONEY(CNT-LINE)
-                                           =   WRK-SKYMONEY(CNT-LINE)
-                                           +   SMEI-NYUHEN-MONEY
-                   COMPUTE WRK-GSKYMONEY   =   WRK-GSKYMONEY
-                                           +   SMEI-NYUHEN-MONEY
+      *            入返金額
+                   COMPUTE WRK-SKYMONEY(IDX)   =   WRK-SKYMONEY(IDX)
+                                               +   SMEI-NYUHEN-MONEY
+      *            合計入返金額
+                   COMPUTE WRK-GSKYMONEY       =   WRK-GSKYMONEY
+                                               +   SMEI-NYUHEN-MONEY
                END-IF
       *        収納明細マスターFETCH
                PERFORM 900-SYUMEI-FETCH-SEC
@@ -283,65 +271,58 @@
       *****************************************************************
        220-PRT-PAGE-SEC                SECTION.
       *
-      *    開始診療日
-           MOVE    ORCHCM30-STRSRYYMD   TO  WRK-SYMD
+      *    開始診療年月日
+           MOVE    ORCHCM31-STRSRYYMD  TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  HCM30-STRSRYYMD
+           MOVE    WRK-HENYMDG         TO  HCM32-STRSRYYMD
       *
-      *    終了診療日
-           MOVE    ORCHCM30-ENDSRYYMD   TO  WRK-SYMD
+      *    終了診療年月日
+           MOVE    ORCHCM31-ENDSRYYMD  TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  HCM30-ENDSRYYMD
+           MOVE    WRK-HENYMDG         TO  HCM32-ENDSRYYMD
       *
       *    患者番号
-           MOVE    SPA-PTNUM           TO  HCM30-PTNUM
+           MOVE    SPA-PTNUM           TO  HCM32-PTNUM
       *
       *    患者名称
-           MOVE    SPA-NAME            TO  HCM30-PTNAME
+           MOVE    SPA-NAME            TO  HCM32-PTNAME
       *
       *    発行日
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  HCM30-HAKKOYMD
-      *
-      *    頁
-           COMPUTE CNT-PAGE            =   CNT-PAGE    +   1
-           MOVE    CNT-PAGE            TO  WRK-Z3
-           MOVE    WRK-Z3              TO  HCM30-PAGE
+           MOVE    WRK-HENYMDG         TO  HCM32-HAKKOYMD
       *
       *    医療機関住所
-           MOVE    SYS-1002-ADRS       TO  HCM30-HOSPADRS
+           MOVE    SYS-1002-ADRS       TO  HCM32-HOSPADRS
       *
       *    医療機関名
-           MOVE    SYS-1001-HOSPNAME   TO  HCM30-HOSPNAME
+           MOVE    SYS-1001-HOSPNAME   TO  HCM32-HOSPNAME
       *
       *    医療機関ＴＥＬ
-           MOVE    SYS-1002-TEL        TO  HCM30-HOSPTEL
+           MOVE    SYS-1002-TEL        TO  HCM32-HOSPTEL
       *
            PERFORM VARYING IDX   FROM  1   BY   1
-                   UNTIL   IDX   >     40
+                   UNTIL   IDX   >     12
       *        保険点数
                IF      WRK-HKNTEN(IDX)     NOT =   ZERO
                    MOVE    WRK-HKNTEN(IDX)     TO  WRK-Z7
-                   MOVE    WRK-Z7              TO  HCM30-HKNTEN(IDX)
-                   MOVE    "点"                TO  HCM30-TEN(IDX)
+                   MOVE    WRK-Z7              TO  HCM32-HKNTEN(IDX)
+                   MOVE    "点"                TO  HCM32-TEN(IDX)
                END-IF
       *        入返金額
-               IF      WRK-SKYMONEY(IDX)   NOT =   ZERO
+               IF      WRK-HKNTEN(IDX)     NOT =   ZERO
                    MOVE    WRK-SKYMONEY(IDX)   TO  WRK-Z9
-                   MOVE    WRK-Z9              TO  HCM30-SKYMONEY(IDX)
-                   MOVE    "円"                TO  HCM30-YEN(IDX)
+                   MOVE    WRK-Z9              TO  HCM32-SKYMONEY(IDX)
+                   MOVE    "円"                TO  HCM32-YEN(IDX)
                END-IF
            END-PERFORM
       *
-           IF          FLG-SYUNOU  =   1
-      *        合計保険点数
-               MOVE    WRK-GHKNTEN         TO  WRK-Z7
-               MOVE    WRK-Z7              TO  HCM30-GHKNTEN
-      *        合計入返金額
-               MOVE    WRK-GSKYMONEY       TO  WRK-Z9
-               MOVE    WRK-Z9              TO  HCM30-GSKYMONEY
-           END-IF
+      *    合計保険点数
+           MOVE    WRK-GHKNTEN         TO  WRK-Z7
+           MOVE    WRK-Z7              TO  HCM32-GHKNTEN
+      *    合計入返金額
+           MOVE    WRK-GSKYMONEY       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  HCM32-GSKYMONEY
       *
            .
        220-PRT-PAGE-EXT.
@@ -353,17 +334,17 @@
        230-PRT-WRITE-SEC            SECTION.
       *
       *    ファイルＯＰＥＮ
-           MOVE    "HCM30"             TO  HC01PARA-FORM-ID
+           MOVE    "HCM32"             TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
-           MOVE    CNT-PAGE            TO  HC01PARA-CNT
+           MOVE    "001"               TO  HC01PARA-CNT
            OPEN    OUTPUT              PRT-FILE
-           WRITE   HCM30
+           WRITE   HCM32
            CLOSE                       PRT-FILE
       *
            INITIALIZE                  ORCSMKPRTAREA
            MOVE    "HC01.sh"           TO  MKPRT-ID
-           MOVE    "HCM30.red"         TO  MKPRT-DIA
+           MOVE    "HCM32.red"         TO  MKPRT-DIA
            MOVE    SPACE               TO  MKPRT-DEF
            MOVE    HC01PARA            TO  MKPRT-DAT
            MOVE    SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
@@ -503,7 +484,7 @@
            INITIALIZE                  SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
            MOVE    SPA-PTID            TO  SYU-PTID
-           MOVE    ORCHCM30-STRSRYYMD  TO  SYU-SKYSTYMD
+           MOVE    ORCHCM31-STRSRYYMD  TO  SYU-SKYSTYMD
            MOVE    "99999999"          TO  SYU-SKYEDYMD
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC

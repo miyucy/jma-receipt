@@ -633,9 +633,9 @@ COPYS = \
         CPORCGI4G.INC \
         I4SCR-NYU.INC \
         S04.INC \
-        CPORCHCM30.INC \
-        HCM30.INC \
+        CPORCHCM31.INC \
         HCM31.INC \
+        HCM32.INC \
 
 DBPATH = \
 	ORCA-DBPATH

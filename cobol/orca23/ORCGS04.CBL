@@ -46,7 +46,7 @@
            COPY    "S01COMMON-SPA".
       *
       *    支払証明書パラメータ
-           COPY    "CPORCHCM30.INC".
+           COPY    "CPORCHCM31.INC".
       *
       *    画面活性非活性
            COPY    "ENUM-VALUE".
@@ -540,22 +540,22 @@
                GO  TO  400-PRINT-EXT
            END-IF
       *
-           INITIALIZE                      ORCHCM30AREA
-           MOVE   SPA-NAI-STRSRYYMD    TO  ORCHCM30-STRSRYYMD
-           MOVE   SPA-NAI-ENDSRYYMD    TO  ORCHCM30-ENDSRYYMD
+           INITIALIZE                      ORCHCM31AREA
+           MOVE   SPA-NAI-STRSRYYMD    TO  ORCHCM31-STRSRYYMD
+           MOVE   SPA-NAI-ENDSRYYMD    TO  ORCHCM31-ENDSRYYMD
       *
            MOVE   SPA-S01-PTID         TO  SPA-PTID
            MOVE   SPA-S01-PTNUM        TO  SPA-PTNUM
            MOVE   SPA-S01-NAME         TO  SPA-NAME
       *
            IF     SPA-GMN-CHK(1)       =   "T"
-               CALL   "ORCHCM30"           USING
-                                           SPA-AREA
-                                           ORCHCM30AREA
-           ELSE
                CALL   "ORCHCM31"           USING
                                            SPA-AREA
-                                           ORCHCM30AREA
+                                           ORCHCM31AREA
+           ELSE
+               CALL   "ORCHCM32"           USING
+                                           SPA-AREA
+                                           ORCHCM31AREA
            END-IF
       *
            PERFORM 210-BACK
