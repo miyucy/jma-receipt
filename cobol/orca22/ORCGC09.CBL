@@ -16,19 +16,16 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGCERR.
+       PROGRAM-ID.                 ORCGC09.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 病名
-      *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
+      *  コンポーネント名  : 病名コード一覧
       *  管理者            : 
-      *  00/12/01    MCC−藤原　   新規作成
+      *  03/10/28    NACL−藤原   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.01.01    MCC-藤原     01/09/20  JOINの修正      
-      *  01.01.02    MCC-藤原     01/11/05  C01の削除
-      *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -67,7 +64,6 @@
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *****COPY    "MCPAREA.INC".
            COPY    MCPAREA.
            COPY    "ORCA-SPA".
       *
@@ -128,9 +124,8 @@
        210-BACK                    SECTION.
       *
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "CERR"              TO  SPA-MOTOPG
+           MOVE    "C09"               TO  SPA-MOTOPG
      *
-      ***  MOVE    "BACK"              TO  MCP-PUTTYPE
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *

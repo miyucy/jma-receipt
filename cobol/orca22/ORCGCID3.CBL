@@ -16,18 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGCERR.
+       PROGRAM-ID.                 ORCGCID3.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 病名
-      *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
+      *  サブシステム名    : 病名登録
+      *  コンポーネント名  : 確認画面１（ＣＩＤ１）
       *  管理者            : 
       *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.01.01    MCC-藤原     01/09/20  JOINの修正      
-      *  01.01.02    MCC-藤原     01/11/05  C01の削除
+      *  01.01.01    MCC-藤原     01/11/05  C01の削除
       *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
       *****************************************************************
       *
@@ -44,6 +43,9 @@
       *
       *    スパ領域
            COPY    "COMMON-SPA".
+      *
+      *    診療行為用共通パラメタ
+           COPY    "C01COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -100,15 +102,17 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-C01KYOUTU
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN      OTHER
-                   PERFORM 210-BACK
+               WHEN     "PUTG"           ALSO   "CLICKED"
+                   PERFORM 200-GMNSENI
            END-EVALUATE.
       *
+           MOVE    SPA-C01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
            .
@@ -122,14 +126,38 @@
            .
        100-INIT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       200-GMNSENI                   SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        戻る
+               WHEN    "CLICKED"       ALSO    "B01"
+                   MOVE    SPACE           TO  SPA-CID3-FLG
+                   PERFORM 210-BACK
+      *       分類のみ削除
+               WHEN    "CLICKED"       ALSO    "B11"
+                   MOVE    "OK"            TO  SPA-CID3-FLG
+                   PERFORM 210-BACK
+      *       分類・病名とも削除
+               WHEN    "CLICKED"       ALSO    "B12"
+                   MOVE    "ALL"           TO  SPA-CID3-FLG
+                   PERFORM 210-BACK
+           END-EVALUATE
+      *
+           .
+       200-GMNSENI-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
-      *
+      * 
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "CERR"              TO  SPA-MOTOPG
-     *
+           MOVE    "CID3"              TO  SPA-MOTOPG
+      *
       ***  MOVE    "BACK"              TO  MCP-PUTTYPE
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW

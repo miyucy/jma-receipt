@@ -29,7 +29,8 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       * 01.00.01     NACL-Æ£¸¶    02/09/19  ¥¢¥Õ¥¿¡¼¥±¥¢¡¦¼«ÇåÀÕÂÐ±þ
       * 01.00.02     NACL-Æ£¸¶    02/11/27  ¼õ¿ÇÍúÎò¤ÎÆÉ¹þ¤ËÆþ³°¶èÊ¬¤òÄÉ²Ã
-      *  01.07.09    NACL-Æ£¸¶    03/02/28  ¿ÇÎÅ²Ê£´£°¤ËÊÑ¹¹
+      * 01.00.03     NACL-Æ£¸¶    03/02/28  ¿ÇÎÅ²Ê£´£°¤ËÊÑ¹¹
+      * 01.00.04     NACL-Æ£¸¶    03/10/27  ÆþÂà±¡Îò¤è¤êÆþ³°¶èÊ¬¤òÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -63,6 +64,7 @@
            03  FLG-EXAMPLE         PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-PTNYUINRRK      PIC 9(01).
       *
            03  FLG-HKNCOMBICHK     PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -93,6 +95,8 @@
            03  WRK-DBPATH          PIC X(20).
       *
            03  WRK-CIDMSG          PIC X(80).
+           03  WRK-NYUINYMD        PIC 9(08).
+           03  WRK-TAIINYMD        PIC 9(08). 
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¥ï¡¼¥¯
            03  WRK-C07-HKNCOMB-COMB.
@@ -139,6 +143,10 @@
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
+      *    ´µ¼ÔÆþ±¡ÍúÎò
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -175,8 +183,12 @@
            COPY    "C06.INC".
            COPY    "C07.INC".
            COPY    "C08.INC".
+           COPY    "C09.INC".
            COPY    "CERR.INC".
            COPY    "CID1.INC".
+           COPY    "CID2.INC".
+           COPY    "CID3.INC".
+           COPY    "CID4.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -343,8 +355,16 @@
                MOVE    "Æþ±¡³°"        TO  SPA-C07-NYUGAIKBNMEIL    (1)
                MOVE    1               TO  SPA-C07-NYUGAIKBNMAX
            END-IF
-           MOVE    SPA-C07-NYUGAIKBN-LIST (1)
-                                       TO  SPA-C07-NYUGAIKBN-G
+           PERFORM 3104-NYUGAIKBN-HEN-SEC
+           PERFORM VARYING    IDX      FROM    1   BY  1
+                   UNTIL      IDX      >   SPA-C07-NYUGAIKBNMAX
+               IF      SPA-C07-NYUGAIKBN   =   SPA-C07-NYUGAIKBNL (IDX)
+                   MOVE    SPA-C07-NYUGAIKBN-LIST (IDX)
+                                               TO  SPA-C07-NYUGAIKBN-G
+                   MOVE    SPA-C07-NYUGAIKBNMAX
+                                               TO  IDX
+               END-IF
+           END-PERFORM
       *
            MOVE    SPA-NAI-C02-SYSYMD (1:6)
                                        TO  SPA-C07-SRYYMS
@@ -632,6 +652,77 @@
       *
            .
        3103-RECECOM-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ³°¶èÊ¬ÊÔ½¸½èÍý
+      *****************************************************************
+       3104-NYUGAIKBN-HEN-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  WRK-TAIINYMD
+                                           WRK-NYUINYMD
+      *    Æþ±¡ÍúÎòÈ½Äê
+           MOVE    SPACE               TO  PTNYUINRRK-REC
+           INITIALIZE                  PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-NAI-C02-PTID    TO  PTNYUINRRK-PTID
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+               PERFORM 910-PTNYUINRRK-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  PTNYUINRRK-REC
+           END-IF
+      *
+      *    Æþ±¡¤¬£±·ï¤â¤Ê¤¤¤È¤­¡¢³°Íè¤È¤¹¤ë
+           IF      FLG-PTNYUINRRK      =   1
+               MOVE    "2"             TO   SPA-C07-NYUGAIKBN
+               GO      TO     3104-NYUGAIKBN-HEN-EXT
+           END-IF
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM
+                   UNTIL      (FLG-PTNYUINRRK      =   1 )
+      ******************* OR  (FLG-OK              =   1 )
+      *        Å¾ÆþÆü
+               IF      PTNYUINRRK-TENNYUYMD(1:6)   <=  SPA-C07-SRYYMS
+      *            Å¾½ÐÆü
+                   IF     ( PTNYUINRRK-TENSTUYMD   =   SPACE )  OR
+                          ((PTNYUINRRK-TENSTUYMD   NOT =   SPACE ) AND
+                           (PTNYUINRRK-TENSTUYMD(1:6)  >=
+                                                       SPA-C07-SRYYMS))
+                       MOVE    PTNYUINRRK-NYUINYMD TO  WRK-NYUINYMD
+                       MOVE    PTNYUINRRK-TAIINYMD TO  WRK-TAIINYMD
+                       MOVE    1                   TO  FLG-OK
+                   END-IF
+               END-IF
+      *
+               MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
+               PERFORM 910-PTNYUINRRK-READ-SEC
+           END-PERFORM
+      *
+           IF      FLG-OK              =   1
+      *        Æþ±¡Ãæ¤Î¾ì¹çÆþ±¡¤È¤¹¤ë
+               IF      (WRK-NYUINYMD       <   SPA-C07-SRYYMS )  AND
+                       (WRK-TAIINYMD       >   SPA-C07-SRYYMS )
+                   MOVE    "1"             TO  SPA-C07-NYUGAIKBN
+               END-IF
+           END-IF
+      *
+           IF      SPA-C07-NYUGAIKBN   =   SPACE
+               MOVE    SPA-C07-NYUGAIKBNL (1)
+                                           TO  SPA-C07-NYUGAIKBN
+           END-IF
+      *
+           .
+       3104-NYUGAIKBN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2533,6 +2624,28 @@
       *
            .
        993-PTRSIINF-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       910-PTNYUINRRK-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+               MOVE    ZERO            TO  FLG-PTNYUINRRK
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           .
+       910-PTNYUINRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************
