@@ -192,6 +192,7 @@
            03  IDX11               PIC 9(04).
            03  IDX12               PIC 9(04).
            03  IDX13               PIC 9(04).
+           03  IDXA                PIC 9(04).                           010112
            03  SAI-IDX             PIC 9(04).
       *
       *    °ì»þÎÎ°è
@@ -299,6 +300,7 @@
            03  WK-RSIETC           PIC  9(08).                          010112
       *
            03  WK-SYUTEN-KEI       PIC  9(08).                          010112
+           03  WRK-TEN             PIC  9(08).                          010112
       *     
       *    ¥¹¥ÑÎÎ°è ¥ï¡¼¥¯
            COPY "COMMON-SPA"       REPLACING //SPA-//
@@ -2095,7 +2097,9 @@
              ELSE
                  MOVE  ACCT-ZAITEN   TO  TBL-ZAITEN(IDX)
              END-IF 
-             IF      ACCT-SRYKBN   =   "95"  OR  "96"                   010112
+             IF   (   ACCT-SRYKBN       =   "95"  OR  "96"   )          010112
+             OR   ((  ACCT-SRYCDTOTAL   =    630010002      )  AND      010112
+                   (  ACCT-MEISAISU     =    1              ))          010112
                 CONTINUE                                                010112
              ELSE                                                       010112 
                 MOVE   ACCT-SYUTEN1  TO  TBL-SYUTEN(IDX)                010112
@@ -2490,42 +2494,60 @@
        4406-SYUTEN-KEISAN-SEC          SECTION.
       *
            IF    SRY-RENNUM     =     1                                 010112
-               IF    SRY-SRYCD (1)      =   "101110010"                 010112
-                                       OR   "101110020"                 010112
-                                       OR   "101110030"                 010112
-                   COMPUTE WK-RSISHOSHIN = WK-RSISHOSHIN +              010112
-                     (TBL-ZAITEN (IDX)  *   TBL-ZAIKAISU (IDX))         010112
-               END-IF                                                   010112
-               IF    SRY-SRYCD (1)      =   "101120030"                 010112
-                                       OR   "101120040"                 010112
-                                       OR   "101120050"                 010112
-                                       OR   "101120060"                 010112
-                   COMPUTE WK-RSISAISHIN = WK-RSISAISHIN +              010112
-                     (TBL-ZAITEN (IDX)  *   TBL-ZAIKAISU (IDX))         010112
-               END-IF                                                   010112
-               IF    SRY-SRYCD (1)      =   "101130010"                 010112
-                                       OR   "101130020"                 010112
-                                       OR   "101130030"                 010112
-                                       OR   "101130040"                 010112
-                                       OR   "101130050"                 010112
-                                       OR   "101130060"                 010112
-                                       OR   "101130070"                 010112
-                                       OR   "101130080"                 010112
-                                       OR   "101130090"                 010112
-                                       OR   "101130100"                 010112
-                   COMPUTE WK-RSISDO = WK-RSISDO +                      010112
-                   (TBL-ZAITEN (IDX)  *   TBL-ZAIKAISU (IDX))           010112
-               END-IF                                                   010112
-               IF    SRY-SRYCD (1)(1:5)      =   "09591"                010112
-                                       OR        "09592"                010112
-                   COMPUTE WK-RSIETC = WK-RSIETC +                      010112
-                   (TBL-ZAITEN (IDX)  *   TBL-ZAIKAISU (IDX))           010112
-               END-IF                                                   010112
-      *                  
+      *                                                                 010112
                ADD  TBL-SYUTEN(IDX)    TO  WK-SYUTEN-KEI                010112
-      *
+      *                                                                 010112
            END-IF                                                       010112
-           .
+      *                                                                 010112
+           PERFORM   VARYING   IDXA   FROM   1   BY   1                 010112
+                       UNTIL    (IDXA            >       5)  OR         010112
+                                (SRY-SRYCD(IDXA) =   SPACE)             010112
+      *                                                                 010112
+                    MOVE    SPACE             TO   TNS-TENSU-REC        010112
+                    INITIALIZE                     TNS-TENSU-REC        010112
+                    MOVE    SRY-SRYCD(IDXA)   TO   TNS-SRYCD            010112
+                    MOVE    WRK-SAIKEISAN-YMD TO   ORC-DBYMD            010112 
+                    PERFORM    TENSU-READ-SEC                           010112
+                    IF      MCP-RC         =    ZERO                    010112
+      *                                                                 010112
+                         COMPUTE  WRK-TEN     =   TNS-TEN  /  10        010112
+      *                                                                 010112
+                         IF   SRY-SRYCD(IDXA) =  "101110010"  OR        010112
+                                                 "101110020"  OR        010112
+                                                 "101110030"            010112
+                           COMPUTE WK-RSISHOSHIN = WK-RSISHOSHIN +      010112
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX))     010112
+                         END-IF                                         010112 
+                         IF   SRY-SRYCD(IDXA) =  "101120030"  OR        010112
+                                                 "101120040"  OR        010112
+                                                 "101120050"  OR        010112
+                                                 "101120060"            010112
+                           COMPUTE WK-RSISAISHIN = WK-RSISAISHIN +      010112
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX))     010112
+                         END-IF                                         010112
+                         IF   SRY-SRYCD(IDXA) =  "101130010"  OR        010112
+                                                 "101130020"  OR        010112
+                                                 "101130030"  OR        010112
+                                                 "101130040"  OR        010112
+                                                 "101130050"  OR        010112
+                                                 "101130060"  OR        010112
+                                                 "101130070"  OR        010112
+                                                 "101130080"  OR        010112
+                                                 "101130090"  OR        010112
+                                                 "101130100"            010112
+                           COMPUTE WK-RSISDO = WK-RSISDO +              010112
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX))     010112
+                         END-IF                                         010112
+                         IF    SRY-SRYCD (IDXA)(1:5)   =   "09591"      010112
+                                                     OR    "09592"      010112
+                           COMPUTE WK-RSIETC = WK-RSIETC +              010112
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX))     010112
+                         END-IF                                         010112
+      *                                                                 010112
+                    END-IF                                              010112
+      *                                                                 010112
+           END-PERFORM                                                  010112
+           .                                                            010112
        4406-SYUTEN-KEISAN-EXT.
            EXIT.
       *
