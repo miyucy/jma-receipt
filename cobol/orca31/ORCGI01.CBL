@@ -5353,7 +5353,7 @@
       *    DISPLAY "ORCHCN01-DR (3)    = " ORCHCN01-DR (3)
       *    DISPLAY "ORCHCN01-NYUINYMD  = " ORCHCN01-NYUINYMD
       *
-           CALL    "ORCHCN01N" USING   SPA-AREA
+           CALL    "ORCHCN01"  USING   SPA-AREA
                                        ORCHCN01AREA
       *
            .
@@ -6322,6 +6322,14 @@
                END-IF
            END-IF
       *
+      *    異動取消の場合、異動前の歴の転出日にALL9を設定
+           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "09" )
+               PERFORM 4801-IDO-MAE-UPD-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  4801-PTNYUINRRK-EDIT-MAE-EXT
+               END-IF
+           END-IF
+      *
            PERFORM 4801-RRKNUM-EDIT-SEC
       *
       *    入院履歴マスタ検索
@@ -6857,6 +6865,36 @@
        4801-TENKAREKI-TAIHI-EXT.
            EXIT.
       *****************************************************************
+      *    異動前歴更新処理
+      *****************************************************************
+       4801-IDO-MAE-UPD-SEC  SECTION.
+      *
+      *    入院履歴マスタ検索
+           PERFORM 4802-PTNYUINRRK-SEL-SEC
+           IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
+               MOVE    "2013"  TO  SPA-ERRCD
+               GO  TO  4801-IDO-MAE-UPD-EXT
+           END-IF
+      *
+           MOVE    ALL "9"     TO  PTNYUINRRK-TENSTUYMD
+      *
+           ACCEPT  SYS-TIME        FROM    TIME
+           MOVE    SYS-TIME    TO  PTNYUINRRK-UPHMS
+           MOVE    SPA-SYSYMD  TO  PTNYUINRRK-UPYMD
+      *
+           MOVE    "PTNYUINRRK-KEY"
+                               TO  WRK-DBPATH
+           MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+           PERFORM 900-TBL-UPDATE-SEC
+           IF    ( FLG-DBRC    NOT =   ZERO )
+               MOVE    "2013"  TO  SPA-ERRCD
+               GO  TO  4801-IDO-MAE-UPD-EXT
+           END-IF
+      *
+           .
+       4801-IDO-MAE-UPD-EXT.
+           EXIT.
+      *****************************************************************
       *    転出元歴更新処理
       *****************************************************************
        4801-TENSYUTU-MOTO-UPD-SEC  SECTION.
@@ -6953,6 +6991,36 @@
            MOVE    SPA-NAI-I01-PTID    TO  PTNYUINRRK-PTID
            MOVE    WRK-RRKNUM          TO  PTNYUINRRK-RRKNUM
            MOVE    WRK-RRKEDANUM       TO  PTNYUINRRK-RRKEDANUM
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTNYUINRRK-KEY"    TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO  )
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+      *    入院履歴クローズ
+           MOVE    "PTNYUINRRK-KEY"    TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+       4801-PTNYUINRRK-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院履歴検索処理
+      *****************************************************************
+       4802-PTNYUINRRK-SEL-SEC     SECTION.
+      *
+      *    入院履歴検索
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+      *
+           INITIALIZE  PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-NAI-I01-PTID    TO  PTNYUINRRK-PTID
+           MOVE    WRK-RRKNUM          TO  PTNYUINRRK-RRKNUM
+           COMPUTE PTNYUINRRK-RRKEDANUM
+               =   WRK-RRKEDANUM       -   1
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY"    TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
