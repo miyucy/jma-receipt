@@ -170,6 +170,17 @@
                GO  TO  000-PROC-EXT
            END-IF
       *
+           DISPLAY "STUSAN-PTID    = "  STUSAN-PTID
+           DISPLAY "STUSAN-KJNYMD  = "  STUSAN-KJNYMD
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   5 )
+               IF    ( STUSAN-TOKUTEI-SRYCD (IDX1)
+                               NOT =   SPACE )
+               DISPLAY "STUSAN-TOKUTEI-SRYCD (" IDX1 ")= "
+                        STUSAN-TOKUTEI-SRYCD (IDX1)
+           END-PERFORM
+           DISPLAY "-"
+      *
            DISPLAY "STUSAN-NISSU01 = " STUSAN-NISSU01
            DISPLAY "STUSAN-NISSU02 = " STUSAN-NISSU02
            DISPLAY "STUSAN-NISSU03 = " STUSAN-NISSU03
