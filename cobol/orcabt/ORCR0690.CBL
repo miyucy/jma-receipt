@@ -2238,6 +2238,7 @@
                MOVE    RECE64-PTNUM      TO  RECE66-PTNUM
                MOVE    RECE64-SRYKA      TO  RECE66-SRYKA
                MOVE    RECE64-SRYKBN     TO  RECE66-SRYKBN
+               MOVE    RECE64-ZAISKBKBN  TO  RECE66-ZAISKBKBN
                MOVE    TBL-ZAI (IDY)     TO  RECE66-TEKIYO-INF
       *---------適用欄並び替え用の編集（表用番号等）-----------------
                IF      IDY               =   1
