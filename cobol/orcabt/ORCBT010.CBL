@@ -697,13 +697,13 @@
                    MOVE    WRK-PARA-NYUGAIKBN  TO  ACCT-NYUGAIKBN
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
-                   MOVE    "SRYACCT-KEY36"      TO  ORC-DBPATH
+                   MOVE    "SRYACCT-KEY8"      TO  ORC-DBPATH
                    CALL    "ORCMCPSUB"         USING
                                                MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
                    IF      MCP-RC              =   ZERO
-                       MOVE    "SRYACCT-KEY36"      TO  ORC-DBPATH
+                       MOVE    "SRYACCT-KEY8"      TO  ORC-DBPATH
                        PERFORM 900-SRYACCT-READ-SEC
                    ELSE
                        INITIALIZE                  SRYACCT-REC
@@ -713,7 +713,7 @@
                    PERFORM 2001-NYUINGAI-HENSYU-SEC
                                        UNTIL   FLG-SRYACCT     =   1
       *
-                   MOVE    "SRYACCT-KEY36"      TO  ORC-DBPATH
+                   MOVE    "SRYACCT-KEY8"      TO  ORC-DBPATH
                    PERFORM 900-DBCLOSE-SEC
            END-EVALUATE
       *
@@ -868,13 +868,13 @@
            MOVE    PTINF-PTID          TO  ACCT-PTID
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY9"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY9"     TO  ORC-DBPATH
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -918,19 +918,19 @@
                                    OR      KEY-NEW NOT =   KEY-OLD
                            PERFORM 2003-SRYACCT-HENSYU-SEC
       *
-                           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+                           MOVE    "SRYACCT-KEY9"     TO  ORC-DBPATH
                            PERFORM 900-SRYACCT-READ-SEC
                        END-PERFORM
                    ELSE
                        PERFORM 2003-SRYACCT-HENSYU-SEC
       *
-                       MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+                       MOVE    "SRYACCT-KEY9"     TO  ORC-DBPATH
                        PERFORM 900-SRYACCT-READ-SEC
                    END-IF
                END-PERFORM    
            END-PERFORM
       *
-           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY9"     TO  ORC-DBPATH
            PERFORM 900-DBCLOSE-SEC
            .
        20012-NYUIN-SRYACCT-HENSYU-EXT.
@@ -1037,7 +1037,7 @@
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
-                   MOVE    "SRYACCT-KEY36"          TO  ORC-DBPATH
+                   MOVE    "SRYACCT-KEY8"          TO  ORC-DBPATH
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
@@ -1080,13 +1080,13 @@
                                        OR      KEY-NEW NOT =   KEY-OLD
                                PERFORM 2003-SRYACCT-HENSYU-SEC
       *
-                               MOVE    "SRYACCT-KEY36"  TO  ORC-DBPATH
+                               MOVE    "SRYACCT-KEY8"  TO  ORC-DBPATH
                                PERFORM 900-SRYACCT-READ-SEC
                            END-PERFORM
                        ELSE
                            PERFORM 2003-SRYACCT-HENSYU-SEC
       *
-                           MOVE    "SRYACCT-KEY36"      TO  ORC-DBPATH
+                           MOVE    "SRYACCT-KEY8"      TO  ORC-DBPATH
                            PERFORM 900-SRYACCT-READ-SEC
                        END-IF
                    END-PERFORM    
@@ -1718,9 +1718,6 @@
       *        レセプト種別
                PERFORM 20021-RECESYUBETU-SET-SEC
       *
-      *???
-               DISPLAY "KEY=" TOUKEI01-KEY "#"
-      *???
                WRITE   TOUKEI01-REC
                ADD     1                    TO  CNT-TOUKEI01
            END-PERFORM
