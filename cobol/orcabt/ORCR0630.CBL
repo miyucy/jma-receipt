@@ -850,7 +850,9 @@
                 PERFORM    VARYING   ACCT-IDX   FROM   1    BY   1
                                  UNTIL    ACCT-IDX   >      31
                    IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
-                         ADD   ACCT-ZAITEN  TO  WRK-ACCT90(ACCT-IDX)
+                         COMPUTE  WRK-ACCT90(ACCT-IDX) = 
+                                  WRK-ACCT90(ACCT-IDX) +
+                                 (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
                    END-IF
                 END-PERFORM
            END-IF
@@ -1823,10 +1825,12 @@
                                               OR   190111790
                                               OR   190809190
                     COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
-                             RECE62-NYUTOKKEI2(KH-IDX)  -  ACCT-ZAITEN
+                             RECE62-NYUTOKKEI2(KH-IDX)  -
+                             (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
                  ELSE
                     COMPUTE  RECE62-NYUKHNKEI2(KH-IDX)  =
-                             RECE62-NYUKHNKEI2(KH-IDX)  +  ACCT-ZAITEN
+                             RECE62-NYUKHNKEI2(KH-IDX)  +
+                             (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
                  END-IF
               WHEN   920
                  IF        ACCT-SRYCDTOTAL    =    190080470
@@ -1838,7 +1842,8 @@
                                               OR   190111790
                                               OR   190809190
                     COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
-                             RECE62-NYUTOKKEI2(KH-IDX)  -  ACCT-ZAITEN
+                             RECE62-NYUTOKKEI2(KH-IDX)  -
+                             (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
                  END-IF
            END-EVALUATE
       *
