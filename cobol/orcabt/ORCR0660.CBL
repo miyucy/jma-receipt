@@ -357,8 +357,6 @@
            03  CONS-SHUJUTU-COMMENT PIC X(09) VALUE "840000042".
       *    ½é¿ÇÎÁ»»Äê²Ê¡§
            03  CONS-SYOSINSANTEIKA  PIC X(09) VALUE "830000020".
-      *    ºÆ¿ÇÎÁ»»Äê²Ê¡§
-           03  CONS-SAISINSANTEIKA  PIC X(09) VALUE "830000021".
       *
       *
       *   ¥ê¥Ï¥Ó¥ê¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë
@@ -518,8 +516,7 @@
            MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
       *
-      *    MOVE    "RECE64W"           TO  RECE64PARA-FILE-ID
-           MOVE    "RECE640"           TO  RECE64PARA-FILE-ID
+           MOVE    "RECE64W"           TO  RECE64PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE64PARA-TERMID
       *
            MOVE    "RECE650"           TO  RECE65PARA-FILE-ID
@@ -563,27 +560,29 @@
            INITIALIZE                      WRK-RIGAKU-AREA
            INITIALIZE                      WRK-TAIHI-ZAINUM
       *
-           INITIALIZE                      RECE64-REC
-           MOVE    RECE62-HOSPID       TO  RECE64-HOSPID
-           MOVE    RECE62-SRYYM        TO  RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE64-PTID
-           MOVE    RECE62-RECEKA       TO  RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM     TO  RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE64-TEKSTYMD
-           MOVE    ZERO                TO  RECE64-ZAINUM
+           IF   RECE62-COMCNTFLG   =   "1"
       *
-           START   RECE64-FILE
-               KEY IS    >=   RECE64-KEY
-               INVALID
-                   MOVE    1           TO  FLG-RECE64
-               NOT INVALID
-                   PERFORM 990-RECE64-NEXT-SEC
-           END-START
-           PERFORM
+             INITIALIZE                      RECE64-REC
+             MOVE    RECE62-HOSPID       TO  RECE64-HOSPID
+             MOVE    RECE62-SRYYM        TO  RECE64-SRYYM
+             MOVE    RECE62-NYUGAIKBN    TO  RECE64-NYUGAIKBN
+             MOVE    RECE62-PTID         TO  RECE64-PTID
+             MOVE    RECE62-RECEKA       TO  RECE64-RECEKA
+             MOVE    RECE62-TEISYUTUSAKI TO  RECE64-TEISYUTUSAKI
+             MOVE    RECE62-RECESYUBETU  TO  RECE64-RECESYUBETU
+             MOVE    RECE62-HKNJANUM     TO  RECE64-HKNJANUM
+             MOVE    RECE62-HOJOKBN-KEY  TO  RECE64-HOJOKBN
+             MOVE    RECE62-TEKSTYMD     TO  RECE64-TEKSTYMD
+             MOVE    ZERO                TO  RECE64-ZAINUM
+      *
+             START   RECE64-FILE
+                 KEY IS    >=   RECE64-KEY
+                 INVALID
+                     MOVE    1           TO  FLG-RECE64
+                 NOT INVALID
+                     PERFORM 990-RECE64-NEXT-SEC
+             END-START
+             PERFORM
                UNTIL  ( FLG-RECE64           =   1                   )
                OR     ( RECE62-HOSPID    NOT =   RECE64-HOSPID       )
                OR     ( RECE62-SRYYM     NOT =   RECE64-SRYYM        )
@@ -611,7 +610,9 @@
       *
                PERFORM 990-RECE64-NEXT-SEC
       *
-           END-PERFORM
+             END-PERFORM
+      *
+           END-IF
       *
       *    Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç
       *
@@ -1263,11 +1264,11 @@
            MOVE    RECE64-PTID       TO      SRY-PTID
            MOVE    RECE64-SRYYM      TO      SRY-SRYYM
            MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
-           MOVE    "840000042"       TO      SRY-SRYCD (1)
-           MOVE    "840000042"       TO      SRY-SRYCD (2)
-           MOVE    "840000042"       TO      SRY-SRYCD (3)
-           MOVE    "840000042"       TO      SRY-SRYCD (4)
-           MOVE    "840000042"       TO      SRY-SRYCD (5)
+           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (1)
+           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (2)
+           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (3)
+           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (4)
+           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (5)
       *
            MOVE    SRYACT-REC        TO      MCPDATA-REC
            MOVE    "DBSELECT"        TO      MCP-FUNC
@@ -1357,7 +1358,7 @@
                ADD     1                    TO  IDX-RECE65
                MOVE    SPACE                TO  COM-RECE65-REC
                INITIALIZE                       COM-RECE65-REC
-               MOVE    "840000042"          TO  COM-SRYCD(1)
+               MOVE    CONS-SHUJUTU-COMMENT TO  COM-SRYCD(1)
                MOVE    ZERO                 TO  COM-SRYSURYO(1)
                MOVE    6                    TO  COM-YUKOKETA(1)
                MOVE    "¼ê½Ñ¡¡¡¡¡¡Æü"       TO  COM-NAME(1)

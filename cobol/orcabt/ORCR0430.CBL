@@ -32,6 +32,8 @@
       *  01.00.02    NACL-門脇    02.11.29  複数診療科受診の
       *                                     コメント差込み
       *  01.00.03    NACL-門脇    03.02.04  剤まとめ対応等
+      *  01.00.04    NACL-門脇    03.02.06  コメントカウントフラグでの
+      *                                     判定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -553,7 +555,7 @@
            MOVE    "RECE410"           TO  RECE41PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE41PARA-TERMID
       *
-           MOVE    "RECE440"           TO  RECE44PARA-FILE-ID
+           MOVE    "RECE44W"           TO  RECE44PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE44PARA-TERMID
       *
            MOVE    "RECE450"           TO  RECE45PARA-FILE-ID
@@ -599,24 +601,26 @@
            INITIALIZE                      WRK-RIGAKU-AREA
            INITIALIZE                      WRK-TAIHI-ZAINUM
       *
-           INITIALIZE                      RECE44-REC
-           MOVE    RECE41-HOSPID       TO  RECE44-HOSPID
-           MOVE    RECE41-SRYYM        TO  RECE44-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE44-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE44-PTID
-           MOVE    RECE41-RECEKA       TO  RECE44-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE44-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE44-TEKSTYMD
-           MOVE    ZERO                TO  RECE44-ZAINUM
+           IF   RECE41-COMCNTFLG   =   "1"
       *
-           START   RECE44-FILE
-               KEY IS    >=   RECE44-KEY
-               INVALID
-                   MOVE    1           TO  FLG-RECE44
-               NOT INVALID
-                   PERFORM 990-RECE44-NEXT-SEC
-           END-START
-           PERFORM
+             INITIALIZE                      RECE44-REC
+             MOVE    RECE41-HOSPID       TO  RECE44-HOSPID
+             MOVE    RECE41-SRYYM        TO  RECE44-SRYYM
+             MOVE    RECE41-NYUGAIKBN    TO  RECE44-NYUGAIKBN
+             MOVE    RECE41-PTID         TO  RECE44-PTID
+             MOVE    RECE41-RECEKA       TO  RECE44-RECEKA
+             MOVE    RECE41-HKNID        TO  RECE44-HKNID
+             MOVE    RECE41-TEKSTYMD     TO  RECE44-TEKSTYMD
+             MOVE    ZERO                TO  RECE44-ZAINUM
+      *
+             START   RECE44-FILE
+                 KEY IS    >=   RECE44-KEY
+                 INVALID
+                     MOVE    1           TO  FLG-RECE44
+                 NOT INVALID
+                     PERFORM 990-RECE44-NEXT-SEC
+             END-START
+             PERFORM
                UNTIL  ( FLG-RECE44           =   1                   )
                OR     ( RECE41-HOSPID    NOT =   RECE44-HOSPID       )
                OR     ( RECE41-SRYYM     NOT =   RECE44-SRYYM        )
@@ -667,7 +671,9 @@
       *
                PERFORM 990-RECE44-NEXT-SEC
       *
-           END-PERFORM
+             END-PERFORM
+      *
+           END-IF
       *
       *    複数診療科受診
       *
@@ -1592,11 +1598,11 @@
              MOVE    RECE44-PTID       TO      SRY-PTID
              MOVE    RECE44-SRYYM      TO      SRY-SRYYM
              MOVE    RECE44-ZAINUM     TO      SRY-ZAINUM
-             MOVE    "113006510"       TO      SRY-SRYCD (1)
-             MOVE    "113006510"       TO      SRY-SRYCD (2)
-             MOVE    "113006510"       TO      SRY-SRYCD (3)
-             MOVE    "113006510"       TO      SRY-SRYCD (4)
-             MOVE    "113006510"       TO      SRY-SRYCD (5)
+             MOVE    CONS-MANSEI       TO      SRY-SRYCD (1)
+             MOVE    CONS-MANSEI       TO      SRY-SRYCD (2)
+             MOVE    CONS-MANSEI       TO      SRY-SRYCD (3)
+             MOVE    CONS-MANSEI       TO      SRY-SRYCD (4)
+             MOVE    CONS-MANSEI       TO      SRY-SRYCD (5)
       *
              MOVE    SRYACT-REC        TO      MCPDATA-REC
              MOVE    "DBSELECT"        TO      MCP-FUNC
@@ -1633,7 +1639,7 @@
              MOVE    RECE44-HOSPID       TO  SANTEI-HOSPID
              MOVE    RECE44-PTID         TO  SANTEI-PTID
              MOVE    RECE44-SRYYM        TO  SANTEI-SRYYM
-             MOVE    "113006510"         TO  SANTEI-SRYCD
+             MOVE    CONS-MANSEI         TO  SANTEI-SRYCD
              MOVE    ZERO                TO  SANTEI-NYUGAIKBN
              MOVE    ZERO                TO  SANTEI-SRYKA
              MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
@@ -1677,11 +1683,11 @@
              MOVE    RECE44-PTID       TO      SRY-PTID
              MOVE    RECE44-SRYYM      TO      SRY-SRYYM
              MOVE    RECE44-ZAINUM     TO      SRY-ZAINUM
-             MOVE    "113006510"       TO      SRY-SRYCD (1)
-             MOVE    "113006510"       TO      SRY-SRYCD (2)
-             MOVE    "113006510"       TO      SRY-SRYCD (3)
-             MOVE    "113006510"       TO      SRY-SRYCD (4)
-             MOVE    "113006510"       TO      SRY-SRYCD (5)
+             MOVE    CONS-MANSEI       TO      SRY-SRYCD (1)
+             MOVE    CONS-MANSEI       TO      SRY-SRYCD (2)
+             MOVE    CONS-MANSEI       TO      SRY-SRYCD (3)
+             MOVE    CONS-MANSEI       TO      SRY-SRYCD (4)
+             MOVE    CONS-MANSEI       TO      SRY-SRYCD (5)
       *
              MOVE    SRYACT-REC        TO      MCPDATA-REC
              MOVE    "DBSELECT"        TO      MCP-FUNC
@@ -1719,7 +1725,7 @@
              MOVE    RECE44-HOSPID       TO  SANTEI-HOSPID
              MOVE    RECE44-PTID         TO  SANTEI-PTID
              MOVE    RECE44-SRYYM        TO  SANTEI-SRYYM
-             MOVE    "113006510"         TO  SANTEI-SRYCD
+             MOVE    CONS-MANSEI         TO  SANTEI-SRYCD
              MOVE    ZERO                TO  SANTEI-NYUGAIKBN
              MOVE    ZERO                TO  SANTEI-SRYKA
              MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
@@ -1879,11 +1885,11 @@
              MOVE    RECE44-PTID       TO      SRY-PTID
              MOVE    RECE44-SRYYM      TO      SRY-SRYYM
              MOVE    RECE44-ZAINUM     TO      SRY-ZAINUM
-             MOVE    "840000042"       TO      SRY-SRYCD (1)
-             MOVE    "840000042"       TO      SRY-SRYCD (2)
-             MOVE    "840000042"       TO      SRY-SRYCD (3)
-             MOVE    "840000042"       TO      SRY-SRYCD (4)
-             MOVE    "840000042"       TO      SRY-SRYCD (5)
+             MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (1)
+             MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (2)
+             MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (3)
+             MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (4)
+             MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (5)
       *
              MOVE    SRYACT-REC        TO      MCPDATA-REC
              MOVE    "DBSELECT"        TO      MCP-FUNC
@@ -1935,11 +1941,11 @@
                MOVE    RECE44-PTID       TO      SRY-PTID
                MOVE    RECE44-SRYYM      TO      SRY-SRYYM
                MOVE    RECE44-ZAINUM     TO      SRY-ZAINUM
-               MOVE    "840000042"       TO      SRY-SRYCD (1)
-               MOVE    "840000042"       TO      SRY-SRYCD (2)
-               MOVE    "840000042"       TO      SRY-SRYCD (3)
-               MOVE    "840000042"       TO      SRY-SRYCD (4)
-               MOVE    "840000042"       TO      SRY-SRYCD (5)
+               MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (1)
+               MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (2)
+               MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (3)
+               MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (4)
+               MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (5)
       *
                MOVE    SRYACT-REC        TO      MCPDATA-REC
                MOVE    "DBSELECT"        TO      MCP-FUNC
@@ -2032,7 +2038,7 @@
                ADD     1                    TO  IDX-RECE45
                MOVE    SPACE                TO  COM-RECE45-REC
                INITIALIZE                       COM-RECE45-REC
-               MOVE    "840000042"          TO  COM-SRYCD(1)
+               MOVE    CONS-SHUJUTU-COMMENT TO  COM-SRYCD(1)
                MOVE    ZERO                 TO  COM-SRYSURYO(1)
                MOVE    6                    TO  COM-YUKOKETA(1)
                MOVE    "手術　　　日"       TO  COM-NAME(1)

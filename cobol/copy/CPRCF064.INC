@@ -86,6 +86,8 @@
            03  RECE64-ZAIREQFLG           PIC  X(01).
       *逓減率
            03  RECE64-TEIGENRATE          PIC  X(01).
+      *コメントコードフラグ
+           03  RECE64-COMCDFLG            PIC  X(01).
       *日数回数テーブル
            03  RECE64-DAY-AREA.
       *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）

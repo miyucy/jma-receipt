@@ -32,6 +32,8 @@
       *  01.00.02    NACL-門脇    02.11.29  複数診療科受診の
       *                                     コメント差込み
       *  01.00.03    NACL-門脇    03.02.04  剤まとめ対応等
+      *  01.00.04    NACL-門脇    03.02.06  コメントカウントフラグでの
+      *                                     判定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -660,7 +662,7 @@
            MOVE    "RECE020"           TO  RECE01PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
       *
-           MOVE    "RECE040"           TO  RECE04PARA-FILE-ID
+           MOVE    "RECE04W"           TO  RECE04PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE04PARA-TERMID
       *
            MOVE    "RECE050"           TO  RECE05PARA-FILE-ID
@@ -707,26 +709,28 @@
            INITIALIZE                      WRK-RIGAKU-AREA
            INITIALIZE                      WRK-TAIHI-ZAINUM
       *
-           INITIALIZE                      RECE04-REC
-           MOVE    RECE02-HOSPID       TO  RECE04-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECE04-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE04-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE04-PTID
-           MOVE    RECE02-RECEKA       TO  RECE04-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE04-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE04-RECESYUBETU
-           MOVE    RECE02-HKNJANUM     TO  RECE04-HKNJANUM
-           MOVE    RECE02-TEKSTYMD     TO  RECE04-TEKSTYMD
-           MOVE    ZERO                TO  RECE04-ZAINUM
+           IF   RECE02-COMCNTFLG   =   "1"
       *
-           START   RECE04-FILE
-               KEY IS    >=   RECE04-KEY
-               INVALID
-                   MOVE    1           TO  FLG-RECE04
-               NOT INVALID
-                   PERFORM 990-RECE04-NEXT-SEC
-           END-START
-           PERFORM
+             INITIALIZE                      RECE04-REC
+             MOVE    RECE02-HOSPID       TO  RECE04-HOSPID
+             MOVE    RECE02-SRYYM        TO  RECE04-SRYYM
+             MOVE    RECE02-NYUGAIKBN    TO  RECE04-NYUGAIKBN
+             MOVE    RECE02-PTID         TO  RECE04-PTID
+             MOVE    RECE02-RECEKA       TO  RECE04-RECEKA
+             MOVE    RECE02-TEISYUTUSAKI TO  RECE04-TEISYUTUSAKI
+             MOVE    RECE02-RECESYUBETU  TO  RECE04-RECESYUBETU
+             MOVE    RECE02-HKNJANUM     TO  RECE04-HKNJANUM
+             MOVE    RECE02-TEKSTYMD     TO  RECE04-TEKSTYMD
+             MOVE    ZERO                TO  RECE04-ZAINUM
+      *
+             START   RECE04-FILE
+                 KEY IS    >=   RECE04-KEY
+                 INVALID
+                     MOVE    1           TO  FLG-RECE04
+                 NOT INVALID
+                     PERFORM 990-RECE04-NEXT-SEC
+             END-START
+             PERFORM
                UNTIL  ( FLG-RECE04           =   1                   )
                OR     ( RECE02-HOSPID    NOT =   RECE04-HOSPID       )
                OR     ( RECE02-SRYYM     NOT =   RECE04-SRYYM        )
@@ -767,7 +771,9 @@
       *
                PERFORM 990-RECE04-NEXT-SEC
       *
-           END-PERFORM
+             END-PERFORM
+      *
+           END-IF
       *
       *    複数診療科受診
       *
@@ -1953,11 +1959,11 @@
            MOVE    RECE04-PTID       TO      SRY-PTID
            MOVE    RECE04-SRYYM      TO      SRY-SRYYM
            MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    "113006510"       TO      SRY-SRYCD (1)
-           MOVE    "113006510"       TO      SRY-SRYCD (2)
-           MOVE    "113006510"       TO      SRY-SRYCD (3)
-           MOVE    "113006510"       TO      SRY-SRYCD (4)
-           MOVE    "113006510"       TO      SRY-SRYCD (5)
+           MOVE    CONS-MANSEI       TO      SRY-SRYCD (1)
+           MOVE    CONS-MANSEI       TO      SRY-SRYCD (2)
+           MOVE    CONS-MANSEI       TO      SRY-SRYCD (3)
+           MOVE    CONS-MANSEI       TO      SRY-SRYCD (4)
+           MOVE    CONS-MANSEI       TO      SRY-SRYCD (5)
       *
            MOVE    SRYACT-REC        TO      MCPDATA-REC
            MOVE    "DBSELECT"        TO      MCP-FUNC
@@ -1994,7 +2000,7 @@
            MOVE    RECE04-HOSPID       TO  SANTEI-HOSPID
            MOVE    RECE04-PTID         TO  SANTEI-PTID
            MOVE    RECE04-SRYYM        TO  SANTEI-SRYYM
-           MOVE    "113006510"         TO  SANTEI-SRYCD
+           MOVE    CONS-MANSEI         TO  SANTEI-SRYCD
            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
            MOVE    ZERO                TO  SANTEI-SRYKA
            MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
@@ -2133,11 +2139,11 @@
            MOVE    RECE04-PTID       TO      SRY-PTID
            MOVE    RECE04-SRYYM      TO      SRY-SRYYM
            MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-           MOVE    "840000042"       TO      SRY-SRYCD (1)
-           MOVE    "840000042"       TO      SRY-SRYCD (2)
-           MOVE    "840000042"       TO      SRY-SRYCD (3)
-           MOVE    "840000042"       TO      SRY-SRYCD (4)
-           MOVE    "840000042"       TO      SRY-SRYCD (5)
+           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (1)
+           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (2)
+           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (3)
+           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (4)
+           MOVE    CONS-SHUJUTU-COMMENT  TO  SRY-SRYCD (5)
       *
            MOVE    SRYACT-REC        TO      MCPDATA-REC
            MOVE    "DBSELECT"        TO      MCP-FUNC
@@ -2226,7 +2232,7 @@
                ADD     1                    TO  IDX-RECE05
                MOVE    SPACE                TO  COM-RECE05-REC
                INITIALIZE                       COM-RECE05-REC
-               MOVE    "840000042"          TO  COM-SRYCD(1)
+               MOVE    CONS-SHUJUTU-COMMENT TO  COM-SRYCD(1)
                MOVE    ZERO                 TO  COM-SRYSURYO(1)
                MOVE    6                    TO  COM-YUKOKETA(1)
                MOVE    "手術　　　日"       TO  COM-NAME(1)

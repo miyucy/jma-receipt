@@ -37,6 +37,7 @@
       *  01.00.06    NACL-門脇    02.11.26  検診コードを編集できるよう修正
       *  01.02.07    NACL-藤原    02.12.02  酸素の時単価を表示するように追加
       *  01.02.08    NACL-藤原    03.01.22  データ区分の追加
+      *  01.02.09    NACL-門脇    03.02.06  コメントカウントフラグの編集追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -901,6 +902,8 @@
                                                   "8"
       *
                ADD     1                  TO    IDX4                                  *
+               PERFORM  RECE45-TENSOU-COMCNT-HEN-SEC
+      *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE45-SRYCD(IDX4)
       *
                IF      SRY-SRYKBN         =     "12"
@@ -1001,6 +1004,8 @@
                    MOVE    SRY-INPUTNUM(IDX2)   TO  PTCOM-RENNUM
                    PERFORM 950-PTCOM-READ-SEC
                    MOVE    PTCOM-INPUTCOMENT   TO    RECE45-NAME(IDX4)
+      *
+                   MOVE   "1"                  TO    RECE44-COMCDFLG
                ELSE
                    MOVE    TNS-NAME            TO    RECE45-NAME(IDX4)
                END-IF
@@ -1172,6 +1177,71 @@
       *
            .
        RECE45-TENSOU-TANKA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプトコメントフラグ編集処理
+      *****************************************************************
+       RECE45-TENSOU-COMCNT-HEN-SEC               SECTION.
+      *
+           IF      SRY-SRYKBN         =     "11"
+              IF   SRY-SRYCD(IDX2)    =     "830000020"
+                        MOVE   "1"        TO    RECE41-COMCNTFLG
+              END-IF
+           END-IF
+      *
+           IF      SRY-SRYKBN         =     "12"
+              IF   SRY-SRYCD(IDX2)    =     "830000021"   OR
+                                            "112009610"   OR
+                                            "112009510"   OR
+                                            "112012750"   OR
+                                            "112706610"   
+                        MOVE   "1"        TO    RECE41-COMCNTFLG
+              END-IF
+           END-IF
+      *
+           IF      SRY-SRYKBN         =     "40"
+              IF   SRY-SRYCD(IDX2)    =     "140036710"   OR
+                                            "140007710"
+                        MOVE   "1"        TO    RECE41-COMCNTFLG
+              END-IF
+           END-IF
+      *
+           IF      SRY-SRYKBN         =     "80"
+              IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
+                                            "180022210"   OR
+                                            "180706810"   OR
+                                            "180022110"   OR
+                                            "180707110"   OR
+                                            "180022410"   OR
+                                            "180707010"   OR
+                                            "180022310"   OR
+                                            "180707310"   OR
+                                            "180022610"   OR
+                                            "180707210"   OR
+                                            "180022510"   OR
+                                            "180707510"   OR
+                                            "180022810"   OR
+                                            "180707410"   OR
+                                            "180022710"   OR
+                                            "180708210"   OR
+                                            "180023710"   OR
+                                            "180708410"   OR
+                                            "180023910"   OR
+                                            "180708110"   OR
+                                            "180023610"   OR
+                                            "180708310"   OR
+                                            "180023810"   OR
+                                            "180024910"   OR
+                                            "180024810"   OR
+                                            "180025110"   OR
+                                            "180025010"   
+                        MOVE   "1"        TO    RECE41-COMCNTFLG
+              END-IF
+           END-IF
+      *
+           .
+       RECE45-TENSOU-COMCNT-HEN-EXT.
            EXIT.
       *
       *****************************************************************

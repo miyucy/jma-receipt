@@ -18,6 +18,7 @@ LIB_SRCS = \
        ORCR0025.CBL \
        ORCR0030.CBL \
        ORCR0035.CBL \
+       ORCR0038.CBL \
        ORCR0050.CBL \
        ORCR0055.CBL \
        ORCR0090.CBL \
@@ -55,6 +56,8 @@ LIB_SRCS = \
        ORCR0400.CBL \
        ORCR0410.CBL \
        ORCR0420.CBL \
+       ORCR0425.CBL \
+       ORCR0428.CBL \
        ORCR0430.CBL \
        ORCR0435.CBL \
        ORCR0440.CBL \
@@ -85,6 +88,7 @@ LIB_SRCS = \
        ORCR0630.CBL \
        ORCR0640.CBL \
        ORCR0650.CBL \
+       ORCR0655.CBL \
        ORCR0660.CBL \
        ORCR0670.CBL \
        ORCR0680.CBL \

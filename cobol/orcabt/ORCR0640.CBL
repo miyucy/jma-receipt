@@ -1968,6 +1968,9 @@
                                                   "6" OR  "7" OR
                                                   "8"
                ADD     1                  TO    IDX4    
+      *
+               PERFORM  RECE65-TENSOU-COMCNT-HEN-SEC
+      *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE65-SRYCD(IDX4)
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE65-SRYSURYO(IDX4)
                MOVE    SRY-SRYKAISU(IDX2) TO    RECE65-SRYKAISU(IDX4)
@@ -2005,6 +2008,8 @@
                    MOVE    SRY-INPUTNUM(IDX2)   TO  PTCOM-RENNUM
                    PERFORM 950-PTCOM-READ-SEC
                    MOVE    PTCOM-INPUTCOMENT   TO    RECE65-NAME(IDX4)
+      *
+                   MOVE   "1"                  TO    RECE64-COMCDFLG
                ELSE
                    MOVE    TNS-NAME            TO    RECE65-NAME(IDX4)
                END-IF
@@ -2108,6 +2113,54 @@
       *
            .
        RECE65-TENSOU-TANKA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプトコメントフラグ編集処理
+      *****************************************************************
+       RECE65-TENSOU-COMCNT-HEN-SEC               SECTION.
+      *
+           IF      SRY-SRYKBN         =     "11"
+              IF   SRY-SRYCD(IDX2)    =     "830000020"
+                        MOVE   "1"        TO    RECE62-COMCNTFLG
+              END-IF
+           END-IF
+      *
+           IF      SRY-SRYKBN         =     "80"
+              IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
+                                            "180022210"   OR
+                                            "180706810"   OR
+                                            "180022110"   OR
+                                            "180707110"   OR
+                                            "180022410"   OR
+                                            "180707010"   OR
+                                            "180022310"   OR
+                                            "180707310"   OR
+                                            "180022610"   OR
+                                            "180707210"   OR
+                                            "180022510"   OR
+                                            "180707510"   OR
+                                            "180022810"   OR
+                                            "180707410"   OR
+                                            "180022710"   OR
+                                            "180708210"   OR
+                                            "180023710"   OR
+                                            "180708410"   OR
+                                            "180023910"   OR
+                                            "180708110"   OR
+                                            "180023610"   OR
+                                            "180708310"   OR
+                                            "180023810"   OR
+                                            "180024910"   OR
+                                            "180024810"   OR
+                                            "180025110"   OR
+                                            "180025010"   
+                        MOVE   "1"        TO    RECE62-COMCNTFLG
+              END-IF
+           END-IF
+      *
+           .
+       RECE65-TENSOU-COMCNT-HEN-EXT.
            EXIT.
       *
       *****************************************************************

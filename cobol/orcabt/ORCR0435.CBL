@@ -337,7 +337,7 @@
            MOVE    "RECE410"           TO  RECE41PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE41PARA-TERMID
       *
-           MOVE    "RECE441"           TO  RECE44PARA-FILE-ID
+           MOVE    "RECE44X"           TO  RECE44PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE44PARA-TERMID
       *
            MOVE    "RECE451"           TO  RECE45PARA-FILE-ID
