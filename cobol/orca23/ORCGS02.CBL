@@ -76,6 +76,7 @@
       *  01.01.19    NACL-¿¹ÏÆ    02/12/19  »ÙÊ§¾ÚÌÀ½ñ°õºþÄÉ²Ã
       *  01.01.20    NACL-ÂÀÅÄ    03/02/18  Æþ±¡ÀÁµá¤Ï¼è¾Ã²ÄÇ½¤È¤¹¤ë
       *  01.01.21    NACL-ÂÀÅÄ    03/03/07  ÇÓÂ¾À©¸æµ¡Ç½ÄÉ²Ã
+      *  01.01.22    NACL-ÂÀÅÄ    03/03/13  Æþ±¡ÀÁµá½ñÊ£¿ôËç°ì³ç°õºþÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1885,13 +1886,27 @@
                    IF    ( SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN) =   "1" )
                        INITIALIZE      ORCHCN03AREA
       *
-                       MOVE   SYU-DENPNUM  TO  ORCHCN03-DENPNUM
-                       MOVE   SYU-SKYMONEY TO  ORCHCN03-SEIKYU
-                       MOVE   SYU-NYUKIN-TOTAL
-                                           TO  ORCHCN03-NYUKIN
+                       MOVE    WRK-SPA-SYSYMD  TO  ORCHCN03-SYSYMD
+                       MOVE    WRK-SPA-TERMID  TO  ORCHCN03-TERMID
+                       MOVE    1               TO  ORCHCN03-CNT
       *
-                       CALL    "ORCHCN03"  USING  WRK-SPA-AREA
-                                                  ORCHCN03AREA
+                       MOVE    WRK-SPA-HOSPID  TO  ORCHCN03-HOSPID (1)
+                       MOVE    WRK-SPA-PTID    TO  ORCHCN03-PTID   (1)
+                       MOVE    WRK-SPA-PTNUM   TO  ORCHCN03-PTNUM  (1)
+                       MOVE    WRK-SPA-NAME    TO  ORCHCN03-NAME   (1)
+                       MOVE    "1"         TO  ORCHCN03-NYUGAIKBN (1)
+      *
+                       MOVE    SYU-SKYSTYMD
+                                           TO  ORCHCN03-KJNYMD  (1)
+                       MOVE    SYU-DENPNUM
+                                           TO  ORCHCN03-DENPNUM (1)
+                       MOVE    SYU-SKYMONEY
+                                           TO  ORCHCN03-SEIKYU  (1)
+                       MOVE    SYU-NYUKIN-TOTAL
+                                           TO  ORCHCN03-NYUKIN  (1)
+      *
+                       CALL    "ORCHCN03"  USING  ORCHCN03AREA
+      *
                    ELSE
       *
                        MOVE   SYU-DENPNUM  TO  ORCHC03-DENPNUM

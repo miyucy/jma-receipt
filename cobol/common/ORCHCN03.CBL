@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-ÂÀÅÄ    03.03.13  Æþ±¡ÀÁµá½ñÊ£¿ôËç°ì³ç°õºþÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -36,6 +37,8 @@
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
            SELECT  PRT-FILE        ASSIGN  HC01PARA
+                                   ORGANIZATION    IS  LINE
+                                                       SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -43,12 +46,20 @@
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
        FD  PRT-FILE.
-           COPY    "HCN03.INC".
+       01  PRT-REC.
+           03  PRT-PRTID               PIC X(30).
+           03  PRT-PRTNM               PIC X(20).
+           03  PRT-SITEKBN             PIC X(01).
+           03  PRT-PRTDATA             PIC X(10000).
       *
        WORKING-STORAGE             SECTION.
       *
       *     °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
+      *
+      *    ¥·¥§¥ëÍÑÎÎ°è
+      *    COPY    "CPCOMMONSHELL.INC".
+           COPY    "CPSHELLTBL.INC".
       *
       *    ¥¹¥Æ¡¼¥¿¥¹ÎÎ°è
        01  STS-AREA.
@@ -68,22 +79,8 @@
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
-           03  IDX                 PIC 9(04).
-           03  IDY                 PIC 9(04).
-           03  IDX-Z               PIC 9(04).
-           03  IDX-S               PIC 9(04).
-           03  IDX-MAX             PIC 9(04).
-           03  IDXA                PIC 9(04).
-           03  IDX-ACT             PIC 9(02).
-           03  IDX-REN             PIC 9(04).
-           03  IDX-JYU             PIC 9(04).
-      *
-           03  IDX2                PIC 9(02).
-           03  IDX3                PIC 9(02).
-           03  IDXP                PIC 9(02).
-           03  IDXM                PIC 9(02).
-           03  IDK                 PIC 9(04).
-           03  IDX2-1              PIC 9(01).
+           03  IDX1                 PIC 9(04).
+           03  IDX-M                PIC 9(04).
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -104,9 +101,6 @@
       *
            03  WRK-HKNCOMBI        PIC X(40).
       *
-           03  WRK-SKYMONEY        PIC S9(11).
-           03  WRK-MISYUMONEY      PIC S9(11).
-           03  WRK-MISYU           PIC S9(11).
            03  WRK-GOKTEN          PIC S9(11).
       *
            03  WRK-DENPNUM         PIC 9(07).
@@ -137,6 +131,7 @@
                05  WRK-ZENKAKU         PIC X(02)   OCCURS   10.
            03  WRK-MOJI                PIC X(10).
            03  WRK-MOJISU              PIC 9(02).
+           03  WRK-PRTNM               PIC X(20).
       *
       *   ÆüËÜ¸ì¿ô»ú
        01  TBL-SUJI-AREA.
@@ -196,6 +191,9 @@
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
+      *    Æþ±¡ÀÁµá½ñ
+           COPY "HCN03.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -207,11 +205,12 @@
       *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
            COPY    "CPORCSKANACHK.INC".
       *
-      *    °õºþ¥Ñ¥é¥á¥¿
-           COPY    "CPORCSMKPRT.INC".
+      *    ¥Õ¥¡¥¤¥ë¥Ç¥¤¥ì¥¯¥È¥ê°ÌÃÖ»ØÄê¥µ¥Ö
+           COPY  "CPMKPASS.INC".
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
       *
            COPY    "MCPAREA".
       *
@@ -220,14 +219,10 @@
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
-           COPY    "COMMON-SPA".
-      *
       *    ÀÁµá½ñ·óÎÎ¼ý½ñ¶¦ÄÌ¥Ñ¥é¥á¥¿
            COPY    "CPORCHCN03.INC".
       *
        PROCEDURE                   DIVISION    USING
-           SPA-AREA
            ORCHCN03AREA
            .
       *
@@ -237,22 +232,25 @@
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
-           INITIALIZE                  WRK-AREA
+                                       STS-AREA
+                                       WRK-AREA
+                                       IDX-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
-      *    ³Æ£Ä£ÂÆÉ¹þ
-           PERFORM 100-SYORI-SEC
+      *    ½é´ü½èÍý
+           PERFORM 100-INIT-SEC
       *
-      *    Ä¢É¼°õºþ³«»Ï½èÍý
-           PERFORM 400-SYOKI-PRINT-SEC
+           PERFORM VARYING IDX-M   FROM    1   BY  1
+                   UNTIL ( IDX-M   >   ORCHCN03-CNT )
       *
-      *    Ä¢É¼ÊÔ½¸½èÍý
-           PERFORM 300-HC03-HEN-SEC
+      *        ¼ç½èÍý
+               PERFORM 200-MAIN-SEC
+      *
+           END-PERFORM
       *
       *    Ä¢É¼°õºþ½èÍý
-           PERFORM 400-PRINT-SEC
+           PERFORM 300-PRINT-SEC
       *
            .
        000-PROC-EXT.
@@ -260,50 +258,9 @@
            .
       *
       *****************************************************************
-      *    Ä¢É¼°õºþ³«»Ï½èÍý
-      *****************************************************************
-       400-SYOKI-PRINT-SEC             SECTION.
-      *
-      *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
-           MOVE    "HCN3"              TO  HC01PARA-FORM-ID
-           MOVE    SPA-TERMID          TO  HC01PARA-TERMID
-           MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
-      *    ÊÑ¹¹¡ú¡ú¡ú¡ú¡ú¡ú
-           COMPUTE PRT-CNT =   PRT-CNT +   1
-           MOVE    PRT-CNT              TO  HC01PARA-CNT
-           OPEN    OUTPUT               PRT-FILE
-      *
-           .
-       400-SYOKI-PRINT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼°õºþ½èÍý
-      *****************************************************************
-       400-PRINT-SEC                SECTION.
-      *
-      *¡¡¡¡°õºþÍÑ¥Ç¡¼¥¿½ÐÎÏ
-            WRITE  HCN03
-      *
-            CLOSE                      PRT-FILE
-      *
-            INITIALIZE                 ORCSMKPRTAREA
-            MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "HCN03.red"         TO  MKPRT-DIA
-            MOVE   SPACE               TO  MKPRT-DEF
-            MOVE   HC01PARA            TO  MKPRT-DAT
-            MOVE   SYS-1031-PRTNM(9)   TO  MKPRT-PRTNM
-            CALL   "ORCSMKPRT"         USING
-                                       ORCSMKPRTAREA
-      *
-           .
-       400-PRINT-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ½é´üÊÔ½¸½èÍý
       *****************************************************************
-       100-SYORI-SEC                SECTION.
+       100-INIT-SEC                    SECTION.
       *
       *    °åÎÅµ¡´Ø¾ðÊó¡Ý½êºßÃÏ¡¢Ï¢ÍíÀè
            MOVE    SPACE               TO  SYS-1001-REC
@@ -315,11 +272,11 @@
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    ORCHCN03-SYSYMD     TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
                PERFORM 900-KANRIMST-READ-SEC
@@ -347,16 +304,16 @@
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    ORCHCN03-SYSYMD     TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
                PERFORM 900-KANRIMST-READ-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-1002-REC
+                   MOVE    MCPDATA-REC TO  SYS-1002-REC
                END-IF
            ELSE
                INITIALIZE                  SYS-1002-REC
@@ -377,7 +334,7 @@
            MOVE    SYS-1031-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    ORCHCN03-SYSYMD     TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -399,121 +356,102 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
+           MOVE    SYS-1031-PRTNM(9)
+                                       TO  WRK-PRTNM
+      *
+      *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
+           MOVE    "HCN3"              TO  HC01PARA-FORM-ID
+           MOVE    ORCHCN03-TERMID     TO  HC01PARA-TERMID
+           MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
+           MOVE    1                   TO  HC01PARA-CNT
+           OPEN    OUTPUT               PRT-FILE
+      *
+           .
+       100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ç½èÍý
+      *****************************************************************
+       200-MAIN-SEC                      SECTION.
+      *
+      *    ¼ýÇ¼¥Þ¥¹¥¿¸¡º÷½èÍý
+           PERFORM 2001-SYUNOU-SEL-SEC
+      *
+      *    Æþ±¡ÀÁµá½ñÊÔ½¸½èÍý
+           PERFORM 2001-HCN03-HEN-SEC
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ýÇ¼¥Þ¥¹¥¿¸¡º÷½èÍý
+      *****************************************************************
+       2001-SYUNOU-SEL-SEC             SECTION.
+      *
       *    ¼ýÇ¼¥Þ¥¹¥¿¸¡º÷
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
-           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
-           MOVE    SPA-PTID            TO  SYU-PTID
-           MOVE    ORCHCN03-DENPNUM    TO  SYU-DENPNUM
+           MOVE    ORCHCN03-HOSPID (IDX-M)
+                                       TO  SYU-HOSPID
+           MOVE    ORCHCN03-NYUGAIKBN (IDX-M)
+                                       TO  SYU-NYUGAIKBN
+           MOVE    ORCHCN03-PTID (IDX-M)
+                                       TO  SYU-PTID
+           MOVE    ORCHCN03-DENPNUM (IDX-M)
+                                       TO  SYU-DENPNUM
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               MOVE    "SYUNOU-KEY"    TO  ORC-DBPATH
                PERFORM 980-SYUNOU-READ-SEC
            ELSE
-               INITIALIZE                  SYUNOU-REC
+               INITIALIZE              SYUNOU-REC
                MOVE    1               TO  FLG-SYUNOU
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-      *    ¿ÇÎÅ²Ê
-           MOVE    SPACE               TO  SYS-1005-REC
-           MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    SYU-SRYKA           TO  SYS-1005-KBNCD
-           MOVE    ZERO                TO  SYS-1005-STYUKYMD
-           MOVE    ALL "9"             TO  SYS-1005-EDYUKYMD
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
-           MOVE    SYS-1005-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               PERFORM 900-KANRIMST-READ-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-1005-REC
-               END-IF
-           ELSE
-               INITIALIZE                  SYS-1005-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-      *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼¸¡º÷
-           INITIALIZE                      HKNCOMBI-REC
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID
-           MOVE    SPA-PTID            TO  COMB-PTID
-           MOVE    SYU-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
-           PERFORM 910-HKNCOMBI-READ-SEC
-           IF      FLG-HKNCOMBI        =   1
-                DISPLAY "*** HKNCOMBI  ERR:"   COMB-KEY "."
-           END-IF
-           PERFORM 1001-HKNCOMBI-HEN-SEC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
-       100-SYORI-EXT.
+       2001-SYUNOU-SEL-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»Ì¾¾ÎÊÔ½¸½èÍý
-      *****************************************************************
-       1001-HKNCOMBI-HEN-SEC             SECTION.
-      *
-           MOVE    SPACE               TO  WRK-HKNCOMBI
-      *
-           STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                   "¡¡"                    DELIMITED  BY  SIZE
-                   COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                   "¡¡"                    DELIMITED  BY  SIZE
-                   COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                   "¡¡"                    DELIMITED  BY  SIZE
-                   COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                   "¡¡"                    DELIMITED  BY  SIZE
-                   COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
-                         INTO              WRK-HKNCOMBI
-           END-STRING
-      *
-           .
-       1001-HKNCOMBI-HEN-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    Ä¢É¼ÊÔ½¸½èÍý
       *****************************************************************
-       300-HC03-HEN-SEC                SECTION.
+       2001-HCN03-HEN-SEC              SECTION.
       *
            INITIALIZE                  HCN03
       *
       *    ÅÁÉ¼ÈÖ¹æ
            MOVE    SYU-DENPNUM         TO  WRK-NO
            MOVE    WRK-NO              TO  HCN03-NO
+      *
+      *    ¿ÇÎÅ²ÊÌ¾¸¡º÷½èÍý
+           PERFORM 3102-SRYKA-SEL-SEC
+      *
       *    ¿ÇÎÅ²Ê
            MOVE    SYS-1005-SRYKANAME2 TO  HCN03-MIDASI
       *    ´µ¼ÔÈÖ¹æ
-           MOVE    SPA-PTNUM           TO  HCN03-KNJNO
+           MOVE    ORCHCN03-PTNUM (IDX-M)
+                                       TO  HCN03-KNJNO
       *    ´µ¼ÔÌ¾¾Î
-           MOVE    SPA-NAME            TO  HCN03-KNJNAMW
+           MOVE    ORCHCN03-NAME  (IDX-M)
+                                       TO  HCN03-KNJNAMW
+      *
+      *    ÊÝ¸±ÁÈ¹ç¤»Ì¾¾ÎÊÔ½¸½èÍý
+           PERFORM 3102-HKNCOMBI-HEN-SEC
+      *
       *    ÊÝ¸±¼ïÊÌ
            MOVE    WRK-HKNCOMBI        TO  HCN03-HOKEN
       *    ÉéÃ´³ä¹ç
@@ -554,19 +492,19 @@
            MOVE    SPACE               TO  WRK-ZHENSYU-G
       *
       *    ÀÁµáÆâÍÆ
-           PERFORM VARYING     IDX     FROM  1   BY  1
-                   UNTIL       IDX     >     12
-               MOVE    SYU-HKNTEN(IDX)     TO  WRK-Z7
+           PERFORM VARYING     IDX1    FROM  1   BY  1
+                   UNTIL       IDX1    >     12
+               MOVE    SYU-HKNTEN(IDX1)     TO  WRK-Z7
                MOVE    WRK-Z7              TO  WRK-ZHENSYU9
                PERFORM 800-HENKAN-SEC
-               MOVE    WRK-ZHENSYU18       TO  HCN03-HKNRYO(IDX)
+               MOVE    WRK-ZHENSYU18       TO  HCN03-HKNRYO(IDX1)
            END-PERFORM
       *
       *    Ï«ºÒ¡¦¼«Çå¤Î»þ¡¢ÅÀ¿ôÉ½¼¨¤Ê¤·
            IF  COMB-HKNNUM     =    "971" OR "973"
-               PERFORM VARYING     IDX     FROM  1   BY  1
-                       UNTIL       IDX     >     11
-                   MOVE    SPACE           TO  HCN03-HKNRYO(IDX)
+               PERFORM VARYING     IDX1    FROM  1   BY  1
+                       UNTIL       IDX1    >     11
+                   MOVE    SPACE           TO  HCN03-HKNRYO(IDX1)
                END-PERFORM
                MOVE    ALL "*"             TO  HCN03-HKNRYO(12)
            END-IF
@@ -595,11 +533,11 @@
       *
       *    ÊÝ¸±Å¬ÍÑ³°Ê¬
            MOVE    ZERO                TO  WRK-GOKTEN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL       IDX1    >   10
                COMPUTE WRK-GOKTEN      =   WRK-GOKTEN
-                                       +  (SYU-TGMONEY (IDX)
-                                       +   SYU-TGMONEY-TAX  (IDX) )
+                                       +  (SYU-TGMONEY (IDX1)
+                                       +   SYU-TGMONEY-TAX  (IDX1) )
            END-PERFORM
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            MOVE    WRK-Z72             TO  WRK-ZHENSYU9
@@ -607,14 +545,14 @@
            MOVE    WRK-ZHENSYU18       TO  HCN03-HOKENGAI
       *    ¼«Èñ
            MOVE    ZERO                TO  WRK-JIHI-REC
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   5
-               COMPUTE WRK-JIHI (IDX)      =   SYU-JIHI-TAXNASI (IDX)
-                                           +   SYU-JIHI-TAXARI  (IDX)
-               MOVE    WRK-JIHI (IDX)      TO  WRK-Z72
+           PERFORM VARYING     IDX1     FROM    1   BY  1
+                   UNTIL       IDX1     >   5
+               COMPUTE WRK-JIHI (IDX1)     =   SYU-JIHI-TAXNASI (IDX1)
+                                           +   SYU-JIHI-TAXARI  (IDX1)
+               MOVE    WRK-JIHI (IDX1)     TO  WRK-Z72
                MOVE    WRK-Z72             TO  WRK-ZHENSYU9
                PERFORM 800-HENKAN-SEC
-               MOVE    WRK-ZHENSYU18       TO  HCN03-JIHI(IDX)
+               MOVE    WRK-ZHENSYU18       TO  HCN03-JIHI(IDX1)
            END-PERFORM
       *
       *    ¼«Èñ·×
@@ -662,18 +600,28 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU18       TO  HCN03-CHOSEI
       *    º£²óÀÁµá³Û
-           MOVE    ORCHCN03-SEIKYU     TO  WRK-Z72
+           MOVE    ORCHCN03-SEIKYU (IDX-M)
+                                       TO  WRK-Z72
            MOVE    WRK-Z72             TO  WRK-ZHENSYU9
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU18       TO  HCN03-KONSEIKYU
-           MOVE    ORCHCN03-SEIKYU     TO  WRK-SKYMONEY
       *    º£²óÆþ¶â³Û
-           MOVE    ORCHCN03-NYUKIN     TO  WRK-Z7
+           MOVE    ORCHCN03-NYUKIN (IDX-M)
+                                       TO  WRK-Z7
            MOVE    WRK-Z7              TO  WRK-ZHENSYU9
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU18       TO  HCN03-KONNYUKIN
+      *
+      *    °õºþÍÑ¥Ç¡¼¥¿½ÐÎÏ
+           MOVE    SPACE               TO  PRT-REC
+           MOVE    "HCN03.red"         TO  PRT-PRTID
+           MOVE    WRK-PRTNM           TO  PRT-PRTNM
+           MOVE    "1"                 TO  PRT-SITEKBN
+           MOVE    HCN03               TO  PRT-PRTDATA
+           WRITE   PRT-REC
+      *
            .
-       310-HC03-HEN-EXT.
+       2001-HCN03-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -694,54 +642,81 @@
            EXIT.
       *
       *****************************************************************
-      *    Ì¤¼ý¶â³ÛÊÔ½¸½èÍý
+      *    ¿ÇÎÅ²Ê¸¡º÷½èÍý
       *****************************************************************
-       3101-MISYU-HEN-SEC             SECTION.
+       3102-SRYKA-SEL-SEC              SECTION.
       *
-           MOVE    SYU-DENPNUM         TO  WRK-DENPNUM
-      *    ¼ýÇ¼¥Æ¡¼¥Ö¥ëÆÉ¤ß¹þ¤ß
-           INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
-           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
-           MOVE    SPA-PTID            TO  SYU-PTID
-      *
-           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+      *    ¿ÇÎÅ²Ê
+           MOVE    SPACE               TO  SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    SYU-SRYKA           TO  SYS-1005-KBNCD
+           MOVE    ZERO                TO  SYS-1005-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1005-EDYUKYMD
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    ORCHCN03-KJNYMD (IDX-M)
+                                       TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
-               PERFORM 980-SYUNOU-READ-SEC
-           ELSE
-               INITIALIZE                  SYUNOU-REC
-               MOVE    1               TO  FLG-SYUNOU
-           END-IF
-           MOVE    ZERO                TO  WRK-MISYUMONEY
-           PERFORM
-               UNTIL     FLG-SYUNOU    =   1
-               IF      SYU-DENPNUM     NOT =   WRK-DENPNUM
-                   COMPUTE WRK-MISYU       =   SYU-SKYMONEY
-                                           -   SYU-NYUKIN-TOTAL
-                   ADD     WRK-MISYU           TO  WRK-MISYUMONEY
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-1005-REC
                END-IF
-      *
-               MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
-               PERFORM 980-SYUNOU-READ-SEC
-           END-PERFORM
-      *
+           ELSE
+               INITIALIZE                  SYS-1005-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-           .
-       3101-MISYU-HEN-EXT.
-           EXIT.
       *
+           .
+       3102-SRYKA-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÊÝ¸±ÁÈ¹ç¤»Ì¾¾ÎÊÔ½¸½èÍý
+      *****************************************************************
+       3102-HKNCOMBI-HEN-SEC             SECTION.
+      *
+      *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼¸¡º÷
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    ORCHCN03-HOSPID (IDX-M)
+                                       TO  COMB-HOSPID
+           MOVE    ORCHCN03-PTID   (IDX-M)
+                                       TO  COMB-PTID
+           MOVE    SYU-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
+           PERFORM 910-HKNCOMBI-READ-SEC
+           IF      FLG-HKNCOMBI        =   1
+                DISPLAY "*** HKNCOMBI  ERR:"   COMB-KEY "."
+                INITIALIZE             HKNCOMBI-REC
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-HKNCOMBI
+      *
+           STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                   "¡¡"                    DELIMITED  BY  SIZE
+                   COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                   "¡¡"                    DELIMITED  BY  SIZE
+                   COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                   "¡¡"                    DELIMITED  BY  SIZE
+                   COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                   "¡¡"                    DELIMITED  BY  SIZE
+                   COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                         INTO              WRK-HKNCOMBI
+           END-STRING
+      *
+           .
+       3102-HKNCOMBI-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    ¼«ÈñÌ¾¾ÎÊÔ½¸½èÍý
       *****************************************************************
@@ -756,7 +731,8 @@
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    ORCHCN03-KJNYMD (IDX-M)
+                                       TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -772,7 +748,8 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM UNTIL       FLG-SYSKANRI    =   1
-               IF      SPA-NYUGAIKBN       =   SYS-1013-KBNCD(1:1)
+               IF      ORCHCN03-NYUGAIKBN (IDX-M)
+                                       =   SYS-1013-KBNCD(1:1)
                    EVALUATE    SYS-1013-KBNCD(2:1)
                        WHEN    "1"
                            MOVE    SYS-1013-JIHINAME  TO
@@ -809,6 +786,34 @@
            .
        3102-JIHIMSG-HEN-EXT.
            EXIT.
+      *****************************************************************
+      *    Ä¢É¼°õºþ½èÍý
+      *****************************************************************
+       300-PRINT-SEC                SECTION.
+      *
+           CLOSE   PRT-FILE
+      *
+           MOVE    SPACE           TO  SHELLTBL
+      *    ¥Õ¥¡¥¤¥ë¥Ç¥¤¥ì¥¯¥È¥ê°ÌÃÖ»ØÄê
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    "scripts/daily/HCALL2.sh"
+                                   TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *
+           MOVE    HC01PARA        TO  SHELLTBL-ARG1
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    PATH-SHELL-SHELL
+                                   TO  MCP-PATH
+           CALL    "MCPSUB"        USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       300-PRINT-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    À¾ÎñÆüËÜ¸ìÊÑ´¹½èÍý
       *****************************************************************
@@ -943,14 +948,5 @@
       *
            .
        910-HKNCOMBI-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ½ªÎ»¡¡¡¡½èÍý
-      *****************************************************************
-       300-END-SEC                 SECTION.
-      *
-           .
-       300-END-EXT.
            EXIT.
       *

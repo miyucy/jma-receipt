@@ -32,6 +32,7 @@
       *  01.00.03    NACL-ÂÀÅÄ    03.01.24  ÊÝ¸±ÁÈ¹ç¤»¥ê¥¹¥È¤ÎÉ½¼¨¤ò½¤Àµ
       *  01.00.04    NACL-ÂÀÅÄ    03.02.05  ¼«±¡ÎòºîÀ®¥Ç¡¼¥¿¤ò¹ÍÎ¸¤¹¤ë
       *  01.00.05    NACL-ÂÀÅÄ    03.03.07  Ä¢É¼È¯¹Ô¥³¥ó¥Ü¤Î½é´üÉ½¼¨½¤Àµ
+      *  01.00.06    NACL-ÂÀÅÄ    03.03.13  Æþ±¡ÀÁµá½ñÊ£¿ôËç°ì³ç°õºþÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -166,6 +167,7 @@
            03  WRK-DRCD                    PIC X(04).
            03  WRK-STIDX                   PIC 9(05).
            03  WRK-EDIDX                   PIC 9(05).
+           03  WRK-SKY-CNT                 PIC 9(10).
       *
       *
       *    ¥¹¥ÑÎÎ°è ¥ï¡¼¥¯
@@ -3076,29 +3078,43 @@
       *****************************************************************
       *    ÀÁµá½ñ·óÎÎ¼ý½ñ½ÐÎÏ½èÍý
       *****************************************************************
-       451-SKYPRT-OUT-SEC          SECTION.
+       451-SKYPRT-OUT-SEC              SECTION.
+      *
+           INITIALIZE      ORCHCN03AREA
+           MOVE    SPA-SYSYMD          TO  ORCHCN03-SYSYMD
+           MOVE    SPA-TERMID          TO  ORCHCN03-TERMID
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   SPA-I0-SYUNOU-CNT )
+                   UNTIL ( IDX1        >   SPA-I0-SYUNOU-CNT )
                IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX1)
-                                   =   ZERO )
+                                       =   ZERO )
       *
-                   INITIALIZE      ORCHCN03AREA
+                   COMPUTE ORCHCN03-CNT
+                                       =   ORCHCN03-CNT +   1
+                   MOVE    ORCHCN03-CNT
+                                       TO  IDX2
+      *
+                   MOVE    SPA-HOSPID TO ORCHCN03-HOSPID (IDX2)
+                   MOVE    SPA-PTID   TO ORCHCN03-PTID   (IDX2)
+                   MOVE    SPA-PTNUM  TO ORCHCN03-PTNUM  (IDX2)
+                   MOVE    SPA-NAME   TO ORCHCN03-NAME   (IDX2)
+                   MOVE    "1"        TO ORCHCN03-NYUGAIKBN (IDX2)
       *
                    MOVE    SPA-I0-SYUNOU-DAT (IDX1)
-                                   TO  WKSYUNOU-REC
+                                       TO  WKSYUNOU-REC
+                   MOVE    WKSYU-SKYSTYMD
+                                       TO  ORCHCN03-KJNYMD  (IDX2)
                    MOVE    WKSYU-DENPNUM
-                                   TO  ORCHCN03-DENPNUM
+                                       TO  ORCHCN03-DENPNUM (IDX2)
                    MOVE    WKSYU-SKYMONEY
-                                   TO  ORCHCN03-SEIKYU
+                                       TO  ORCHCN03-SEIKYU  (IDX2)
                    MOVE    WKSYU-NYUKIN-TOTAL
-                                   TO  ORCHCN03-NYUKIN
-      *
-                   CALL    "ORCHCN03"  USING   SPA-AREA
-                                               ORCHCN03AREA
+                                       TO  ORCHCN03-NYUKIN  (IDX2)
       *
                END-IF
            END-PERFORM
+      *
+           CALL    "ORCHCN03"      USING   ORCHCN03AREA
       *
            .
        451-SKYPRT-OUT-EXT.

@@ -26,12 +26,26 @@
       ************************************************************
       *
        01  ORCHCN03AREA.
-      *
-      *    ≈¡…º»÷πÊ° …¨ø‹°À
-           03  ORCHCN03-DENPNUM        PIC 9(07).
-      *
-      *    ∫£≤Û¿¡µ·≥€
-           03  ORCHCN03-SEIKYU         PIC S9(07).
-      *    ∫£≤Û∆˛∂‚≥€
-           03  ORCHCN03-NYUKIN         PIC S9(07).
+           03  ORCHCN03-SYSYMD             PIC X(08).
+           03  ORCHCN03-TERMID             PIC X(64).
+           03  ORCHCN03-CNT                PIC 9(10).
+           03  ORCHCN03-OCC                OCCURS  3000.
+      *        ¥Ω‡∆¸
+               05  ORCHCN03-KJNYMD         PIC  X(08).
+      *        ∞ÂŒ≈µ°¥ÿ£…£ƒ
+               05  ORCHCN03-HOSPID         PIC  X(24).
+      *        ¥µº‘£…£ƒ
+               05  ORCHCN03-PTID           PIC  9(10).
+      *        ¥µº‘»÷πÊ
+               05  ORCHCN03-PTNUM          PIC  X(20).
+      *        ¥µº‘ª·Ãæ
+               05  ORCHCN03-NAME           PIC  X(100).
+      *        ∆˛≥∞∂Ë ¨
+               05  ORCHCN03-NYUGAIKBN      PIC X(01).
+      *        ≈¡…º»÷πÊ
+               05  ORCHCN03-DENPNUM        PIC 9(07).
+      *        ∫£≤Û¿¡µ·≥€
+               05  ORCHCN03-SEIKYU         PIC S9(07).
+      *        ∫£≤Û∆˛∂‚≥€
+               05  ORCHCN03-NYUKIN         PIC S9(07).
       *

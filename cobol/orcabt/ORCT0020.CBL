@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    03.03.13  入院請求書複数枚一括印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -103,8 +104,6 @@
       *
            COPY    "MCPAREA".
       *
-           COPY    "COMMON-SPA".
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -175,7 +174,6 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        SYS-AREA
-                                       SPA-AREA
       *
            ACCEPT  SYS-TIME    FROM    TIME
       *
@@ -259,6 +257,10 @@
                MOVE    1               TO  FLG-TEIKIPRT
            END-IF
       *
+           INITIALIZE    ORCHCN03AREA
+           MOVE    WRK-PARA-SYSYMD     TO  ORCHCN03-SYSYMD
+           MOVE    WRK-PARA-TERMID     TO  ORCHCN03-TERMID
+      *
            PERFORM UNTIL ( FLG-TEIKIPRT    NOT =   ZERO )
       *
                PERFORM 20011-HENSYU-SEC
@@ -270,6 +272,11 @@
                PERFORM 900-TEIKIPRT-NEXT-SEC
       *
            END-PERFORM
+      *
+           MOVE     CNT-OUT1           TO  ORCHCN03-CNT
+      *
+      *    入院請求書印刷
+           CALL    "ORCHCN03"  USING   ORCHCN03AREA
       *
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -323,25 +330,19 @@
                 GO  TO  20011-HENSYU-EXT
            END-IF
       *
-      *    請求書サブ呼び出し
-           INITIALIZE                  SPA-AREA
-                                       ORCHCN03AREA
-           MOVE    TEIKIPRT-HOSPID     TO  SPA-HOSPID
-           MOVE    TEIKIPRT-PTID       TO  SPA-PTID
-           MOVE    TEIKIPRT-PTNUM      TO  SPA-PTNUM
-           MOVE    TEIKIPRT-NAME       TO  SPA-NAME
-           MOVE    SYU-SKYSTYMD        TO  SPA-SYSYMD
-           MOVE    WRK-PARA-TERMID     TO  SPA-TERMID
-           MOVE    "1"                 TO  SPA-NYUGAIKBN
-      *
-           MOVE    SYU-DENPNUM
-                                       TO  ORCHCN03-DENPNUM
-           MOVE    SYU-SKYMONEY        TO  ORCHCN03-SEIKYU
-           MOVE    ZERO                TO  ORCHCN03-NYUKIN
-           CALL    "ORCHCN03"  USING   SPA-AREA
-                                       ORCHCN03AREA
-      *
            COMPUTE CNT-OUT1    =   CNT-OUT1    +   1
+      *
+      *    請求書サブ患者情報パラメタ設定
+           MOVE    SYU-SKYSTYMD        TO  ORCHCN03-KJNYMD    (CNT-OUT1)
+           MOVE    TEIKIPRT-HOSPID     TO  ORCHCN03-HOSPID    (CNT-OUT1)
+           MOVE    TEIKIPRT-PTID       TO  ORCHCN03-PTID      (CNT-OUT1)
+           MOVE    TEIKIPRT-PTNUM      TO  ORCHCN03-PTNUM     (CNT-OUT1)
+           MOVE    TEIKIPRT-NAME       TO  ORCHCN03-NAME      (CNT-OUT1)
+           MOVE    "1"                 TO  ORCHCN03-NYUGAIKBN (CNT-OUT1)
+      *
+           MOVE    SYU-DENPNUM         TO  ORCHCN03-DENPNUM   (CNT-OUT1)
+           MOVE    SYU-SKYMONEY        TO  ORCHCN03-SEIKYU    (CNT-OUT1)
+           MOVE    ZERO                TO  ORCHCN03-NYUKIN    (CNT-OUT1)
       *
            .
        20011-HENSYU-EXT.
