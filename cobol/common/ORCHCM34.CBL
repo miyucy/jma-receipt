@@ -2086,6 +2086,10 @@
                MOVE    WRK-STR             TO  WRK-PTBYO-BYOMEI
            END-IF
       *
+           MOVE    WRK-PTBYO-BYOMEI        TO  WRK-MAE-INPUT
+           PERFORM 800-ZENKAKU-HEN-SEC
+           MOVE    WRK-OUT-INPUT           TO  WRK-PTBYO-BYOMEI
+      *
            .
        20011-PTBYOMEI-BYOMEI-HEN-EXT.
            EXIT.
@@ -2964,6 +2968,11 @@
                MOVE    WRK-OUT-INPUT       TO  TNS-NAME
            ELSE
                MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+      *
+               MOVE    TNS-NAME            TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT       TO  TNS-NAME
+      *
            END-IF
       *
            MOVE    TNS-SRYCD               TO  RSIJBI-SRYCD(RSIJBI-MAX)
@@ -3108,6 +3117,11 @@
                MOVE    WRK-OUT-INPUT       TO  TNS-NAME
            ELSE
                MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+      *
+               MOVE    TNS-NAME            TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT       TO  TNS-NAME
+      *
            END-IF
       *
       *    ¹Ô°ÙÌ¾¾Î
@@ -3231,6 +3245,11 @@
                MOVE    WRK-OUT-INPUT       TO  TNS-NAME
            ELSE
                MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+      *
+               MOVE    TNS-NAME            TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT       TO  TNS-NAME
+      *
            END-IF
       *
       *    ¹Ô°ÙÌ¾¾Î
@@ -4287,6 +4306,11 @@
                MOVE    WRK-OUT-INPUT       TO  TNS-NAME
            ELSE
                MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+      *
+               MOVE    TNS-NAME            TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT       TO  TNS-NAME
+      *
            END-IF
       *
       *    ¹Ô°ÙÌ¾¾Î
