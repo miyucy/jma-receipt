@@ -453,18 +453,22 @@
            PERFORM   910-DB-CLOSE-SEC
       *
       *食事情報の取得（入院会計）
-           INITIALIZE                          NYUINACCT-REC
-           MOVE    LNK-ORCBT120SUB-HOSPID  TO  NACCT-HOSPID
-           MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
-           MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
-                                           TO  NACCT-SRYYM
-           MOVE    "NYUINACCT-KEY23"       TO  ORC-DBPATH
-           PERFORM 910-NYUINACCT-SELECT-SEC
-           IF      FLG-NYUINACCT           =   ZERO
-               MOVE     "NYUINACCT-KEY23"  TO  ORC-DBPATH
-               PERFORM   910-NYUINACCT-READ-SEC
-               MOVE    NACCT-DAY(WRK-SANTEIDD)
-                                 TO  LNK-ORCBT120SUB-SKJ-KBN
+           IF     LNK-ORCBT120SUB-GAIHAKU-KBN  =  1  OR  2  OR  3
+               CONTINUE
+           ELSE
+               INITIALIZE                          NYUINACCT-REC
+               MOVE    LNK-ORCBT120SUB-HOSPID  TO  NACCT-HOSPID
+               MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
+               MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
+                                               TO  NACCT-SRYYM
+               MOVE    "NYUINACCT-KEY23"       TO  ORC-DBPATH
+               PERFORM 910-NYUINACCT-SELECT-SEC
+               IF      FLG-NYUINACCT           =   ZERO
+                   MOVE     "NYUINACCT-KEY23"  TO  ORC-DBPATH
+                   PERFORM   910-NYUINACCT-READ-SEC
+                   MOVE    NACCT-DAY(WRK-SANTEIDD)
+                                     TO  LNK-ORCBT120SUB-SKJ-KBN
+               END-IF
            END-IF
       *
       *    収納情報の取得
