@@ -3465,7 +3465,7 @@
                                        MOVE    1           TO  FLG-OK
                                    END-IF
       *                            ÅÅÏÃºÆ¿Ç¤ÎÆýÍÄ»ù²Ã»»¤Ï£Ï£Ë
-                                   IF     (SPA-GMN-INPUTCD(IDX)
+                                   IF     (SPA-COM-INPUTCD(IDX)
                                                         =   "112000970")
                                      AND (FLG-KBN       =   1          )
                                        MOVE    1           TO  FLG-OK
