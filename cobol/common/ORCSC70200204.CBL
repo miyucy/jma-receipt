@@ -35,6 +35,7 @@
       * 01.00.05     NACL-多々納  02/09/27  診断自動発生追加
       * 01.00.06     NACL-多々納  02/10/29  入院対応
       * 01.00.07     NACL−多々納 02/11/22  点滴注射同時重複エラー追加
+      * 01.00.08     NACL−多々納 02/12/24  フィルム料を手技料へ加算
       *****************************************************************
       *
       *
@@ -1688,6 +1689,7 @@
            COMPUTE LNK-SC90-TENSUKEI   =   WRK-TENSUKEI1
                                        +   WRK-TENSUKEI2
                                        +   WRK-TENSUKEI3
+                                       +   WRK-FIRTEN-KEI
       *    各点数編集
            MOVE    LNK-SC90-TENSUKEI   TO  WRK-COM-SYUTEN1
                                                          (IDX-MAX)
@@ -1698,14 +1700,14 @@
       *    器材点数
            COMPUTE WRK-COM-KIZAITEN(IDX-MAX)
                                        =   LNK-SC90-KIZTEN
-                                       +   WRK-FIRTEN-KEI
+      *******************************  +   WRK-FIRTEN-KEI
       *
       *    点数計　計算
            COMPUTE WRK-COM-TENSU (IDX-MAX) =   LNK-SC90-TENSUKEI
                                            +   LNK-SC90-ZAITEN
                                            +   LNK-SC90-GAITEN
                                            +   LNK-SC90-KIZTEN
-                                           +   WRK-FIRTEN-KEI
+      ************************************ +   WRK-FIRTEN-KEI
       *    計
            COMPUTE WRK-COM-KEI (IDX-MAX)   =   WRK-COM-TENSU  (IDX-MAX)
                                            *   LNK-ORCSC-KAISU
