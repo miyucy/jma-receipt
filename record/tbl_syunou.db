@@ -248,6 +248,7 @@ path	key2 	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
+			AND   CREATEKBN   <>  '3'
 			ORDER   BY          DENPNUM
 		;
 	};
@@ -261,6 +262,7 @@ path	key3 	{
 			AND   NYUGAIKBN     =   :NYUGAIKBN
 			AND   PTID          =   :PTID
 			AND   DOUJI_DENPNUM =   :DOUJI_DENPNUM
+			AND   CREATEKBN   <>  '3'
 			ORDER   BY          DENPNUM
 		;
 	};
@@ -274,6 +276,7 @@ path	key4 	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
+			AND   CREATEKBN   <>  '3'
 			ORDER   BY        DENPNUM
 		;
 	};
@@ -289,6 +292,7 @@ path	key5 	{
 			AND   PTID        =   :PTID
 			AND   SKYSTYMD    >=  :SKYSTYMD
 			AND   SKYEDYMD    <=  :SKYEDYMD
+			AND   CREATEKBN   <>  '3'
 		;
 	};
 };
@@ -301,6 +305,7 @@ path	key6 	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
+			AND   CREATEKBN   <>  '3'
 			ORDER   BY        SRYYMD DESC
 		;
 	};
@@ -316,6 +321,7 @@ path	key7 	{
 			AND     DENPJTIKBN   =   :DENPJTIKBN
 			AND     SKYSTYMD     >=  :SKYSTYMD
 			AND     SKYEDYMD     <=  :SKYEDYMD
+			AND     CREATEKBN   <>  '3'
 		;
 	};
 };
@@ -331,6 +337,7 @@ path	key8 	{
 			AND     DENPJTIKBN   =   :DENPJTIKBN
 			AND     SKYSTYMD     >=  :SKYSTYMD
 			AND     SKYEDYMD     <=  :SKYEDYMD
+			AND     CREATEKBN   <>  '3'
 			ORDER   BY     SKYEDYMD  DESC
 		;
 	};
@@ -345,7 +352,22 @@ path	key9 	{
 			AND   PTID        =   :PTID
 			AND   SKYSTYMD    >=  :SKYSTYMD
 			AND   SKYEDYMD    <=  :SKYEDYMD
+			AND   CREATEKBN   <>  '3'
 			ORDER   BY        SRYYMD
+		;
+	};
+};
+
+path	key10 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key10_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   CREATEKBN   =   '3'
+			ORDER   BY          DENPNUM
 		;
 	};
 };
