@@ -79,6 +79,7 @@ noinst_shell_scripts = $(noinst_shell_sources:.sh.in=.sh)
 .sh.in.sh: 
 	sed -e 's,\@jma-receipt-env\@,$(sysconfdir)\/jma-receipt\.env,g' \
 	$< > $@
+	chmod +x $@
 
 all:   $(noinst_shell_scripts) $(shell_scripts)
 
