@@ -1,0 +1,20 @@
+#! /bin/sh
+
+if test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+PATH=$PATH:/usr/lib/postgresql/bin
+
+if su - postgres -c "psql template1 -l|grep ${DBNAME}"
+then
+    echo "Database exist."
+else
+    su - postgres -c "psql -e template1 < ${INITDIR}/orca_user.dump"
+    su - orca -c createdb
+    su - orca -c "psql -e ${DBNAME} < ${INITDIR}/orca_dbkanri_orig.dump"
+fi
+echo "Done."

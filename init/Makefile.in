@@ -6,19 +6,28 @@ INSTALL_DATA = @INSTALL_DATA@
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
+sysconfdir= @sysconfdir@
 ORCA_DIR = @exec_prefix@
 initdir = ${ORCA_DIR}/init
-
-init_SCRIPT = \
-        orca-db-create.sh \
-        orca-db-install.sh
 
 EXTRA_DIST = \
              orca_dbkanri_orig.dump \
              orca_user.dump
 
-all:   
-	touch build-stamp
+init_sources = \
+        orca-db-create.sh \
+        orca-db-install.sh
+
+init_scripts = $(init_sources:.sh.in=.sh)
+
+.SUFFIXES: .sh.in .sh
+
+.sh.in.sh: 
+	sed -e 's,\@jma-receipt-env\@,$(sysconfdir)\/jma-receipt\.env,g' \
+	$< > $@
+
+all:   $(init_scripts)
+
 clean: 
 	-rm -f build-stamp
 

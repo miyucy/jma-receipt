@@ -1,29 +1,26 @@
-#!/bin/bash
-ORCADIR=/usr/local/orca
-ORCALIB=/usr/local/orca/lib
+#!/bin/sh
+
+if test -n "@jma-receipt-env@" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
 HOME=/home/orca
 MSTDIR=orca-$(date +%Y%m%d)
-VERSIONFL=/usr/local/orca/doc/version
+VERSIONFL=${DOCDIR}/version
 
 UPDSQL1="update tbl_dbkanri set termid='##' where kanricd='ORCADB00';"
-#UPDSQL1='update tbl_dbkanri set termid='##' where kanricd='ORCADB00';'
 SQLSELECT="SELECT * FROM TBL_DBKANRI WHERE KANRICD='ORCADB00';"
 
-#デバッグ用
-#APSCOBOL=/home/orca/panda-0.9.17/aps/aps
-#DBSTUB=/home/orca/panda-0.9./aps/dbstub
-#FTP=orca:orca@localhost/pub/orca_data/
 DBHOST=localhost
 UPDFILE=/home/orca/$MSTDIR/ORCADBS.OUT
 TBLFILE=/home/orca/$MSTDIR/ORCADBS.TBL
 LEN=100
-#本番用
-APSCOBOL=/usr/local/panda/bin/aps
-DBSTUB=/usr/local/panda/bin/dbstub
+#
 FTP=ftp.orca.med.or.jp/pub/orca_data/
-#FTP=beta:inisalo@ftp.orca.med.or.jp/pub/orca_data/
 
-COBOLDIR=$ORCADIR/lib
 function orcawget () {
 	DWNFL=`echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
 	if [ ${DWNFL:1:10}	= "XXXXXXXXXX"	] ;	then
@@ -129,7 +126,7 @@ fi
 	echo "$DBLIST" "DBLIST" 
 #ダウンロードファイル生成
 	echo "$MSTDIR$DBLIST"
-	$ORCALIB/ORCXSMST1 $MSTDIR$DBLIST
+	${LIBDIR}/ORCXSMST1 $MSTDIR$DBLIST
 	if [ $? -ne 0 ]	;	then 
 		echo "ダウンロードファイル生成に失敗しました" >>master_log
 		exit 99
