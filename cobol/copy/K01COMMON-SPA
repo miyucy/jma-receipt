@@ -71,6 +71,9 @@
                05  SPA-IKUJIEIYO-SRYKA     PIC X(02).
       *入院初診料自動発生
                05  SPA-NYU-SYOSIN          PIC X(02).
+      *入院調剤技術基本料チェック
+               05  SPA-CHOKICHK-FLG        PIC X(01).
+               05  SPA-CHOKI-ARI           PIC X(01).
       *
            03  SPA-K01SET-AREA.
       *処理フラグ（０：通常、１：訂正）
