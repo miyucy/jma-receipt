@@ -875,15 +875,29 @@
                                WHEN   ZERO
                                    ADD    NACCT-ZAITEN
                                                   TO  SYU-HKNTEN(11)
+      *                        ≥∞«Ò° £±£µ°Û°À
                                WHEN   1
                                    COMPUTE  SYU-HKNTEN(11)  =
                                             SYU-HKNTEN(11)  +
                                            ((WRK-KHNTEN    *  0.15)
                                                            +  0.5)
+      *                        ≥∞«Ò° £≥£∞°Û°À
                                WHEN   2
                                    COMPUTE  SYU-HKNTEN(11)  =
                                             SYU-HKNTEN(11)  +
                                           ((WRK-KHNTEN      *  0.3)
+                                                            +  0.5)
+      *                        ≥∞«Ò° ¡™ƒÍŒ≈Õ‹»Ò£±£∞°Û°À
+                               WHEN   3
+                                   COMPUTE  SYU-HKNTEN(11)  =
+                                            SYU-HKNTEN(11)  +
+                                          ((WRK-KHNTEN      *  0.1)
+                                                            +  0.5)
+      *                        ¬æ∞ÂŒ≈µ°¥ÿºıø«° £±£µ°Û°À
+                               WHEN   4
+                                   COMPUTE  SYU-HKNTEN(11)  =
+                                            SYU-HKNTEN(11)  +
+                                          ((WRK-KHNTEN      *  0.15)
                                                             +  0.5)
                            END-EVALUATE
                        END-IF
