@@ -563,7 +563,7 @@
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "NYUINACCT-KEY13"   TO  ORC-DBPATH
-               PERFORM 900-SRYACCT-READ-SEC
+               PERFORM 900-NYUINACCT-READ-SEC
            ELSE
                INITIALIZE                  NYUINACCT-REC
                MOVE    1                   TO  FLG-NYUINACCT
