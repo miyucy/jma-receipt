@@ -1122,7 +1122,7 @@
                            TO  SPA-GMN-W20-TBTU-YKNKNGKSN (IDX1)
       *
       *    ¿©Æ²²Ã»»¶èÊ¬
-           IF    ( SYS-5001-BTU-SYOKUDOKBN     =   "1" )
+           IF    ( SYS-5001-BTU-SYOKUDOKBN     =   "2" )
                MOVE    "T" TO  SPA-GMN-W20-TBTU-SYOKUDOKBN (IDX1)
            ELSE
                MOVE    "F" TO  SPA-GMN-W20-TBTU-SYOKUDOKBN (IDX1)
@@ -2280,9 +2280,9 @@
       *
       *    ¿©Æ²²Ã»»¶èÊ¬
            IF    ( SPA-GMN-W20-CHK-BTU-SYOKUDOKBN  =   "T" )
-               MOVE    "1"     TO  SYS-5001-BTU-SYOKUDOKBN
+               MOVE    "2"     TO  SYS-5001-BTU-SYOKUDOKBN
            ELSE
-               MOVE    ZERO    TO  SYS-5001-BTU-SYOKUDOKBN
+               MOVE    "1"     TO  SYS-5001-BTU-SYOKUDOKBN
            END-IF
       *
       *    ´Ç¸î»Õ¿Í¿ô¶èÊ¬
@@ -3644,7 +3644,7 @@
            MOVE    WRK-KANRIDAT1   TO  SPA-GMN-W20-BTU-YKNKNGKSN
       *
       *    ¿©Æ²²Ã»»
-           IF    ( SYS-5001-BTU-SYOKUDOKBN     =   "1" )
+           IF    ( SYS-5001-BTU-SYOKUDOKBN     =   "2" )
                MOVE    "T" TO  SPA-GMN-W20-CHK-BTU-SYOKUDOKBN
            ELSE
                MOVE    "F" TO  SPA-GMN-W20-CHK-BTU-SYOKUDOKBN
