@@ -41,6 +41,9 @@
                   06  R02-TCHK-STYLE   PIC X(20).
                   06  R02-TCHK-VALUE   PIC X.
                   06  R02-TCHK-LABEL   PIC X(41).
+              04  R02-TPRTFLG-G      OCCURS  36.
+                05  R02-TPRTFLG-STYLE   PIC X(20).
+                05  R02-TPRTFLG         PIC X(2).
               04  R02-FILEKBN.
                 05  R02-VALUE     PIC X(41).
               04  R02-CREYMD.

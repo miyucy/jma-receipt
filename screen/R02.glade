@@ -4638,7 +4638,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK01</name>
-      <x>20</x>
+      <x>25</x>
       <y>70</y>
       <width>300</width>
       <height>17</height>
@@ -4664,7 +4664,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK02</name>
-      <x>20</x>
+      <x>25</x>
       <y>87</y>
       <width>300</width>
       <height>17</height>
@@ -4690,7 +4690,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK03</name>
-      <x>20</x>
+      <x>25</x>
       <y>104</y>
       <width>300</width>
       <height>17</height>
@@ -4716,7 +4716,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK04</name>
-      <x>20</x>
+      <x>25</x>
       <y>121</y>
       <width>300</width>
       <height>17</height>
@@ -4742,7 +4742,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK05</name>
-      <x>20</x>
+      <x>25</x>
       <y>138</y>
       <width>300</width>
       <height>17</height>
@@ -4768,7 +4768,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK06</name>
-      <x>20</x>
+      <x>25</x>
       <y>155</y>
       <width>300</width>
       <height>17</height>
@@ -4794,7 +4794,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK07</name>
-      <x>20</x>
+      <x>25</x>
       <y>172</y>
       <width>300</width>
       <height>17</height>
@@ -4820,7 +4820,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK08</name>
-      <x>20</x>
+      <x>25</x>
       <y>189</y>
       <width>300</width>
       <height>17</height>
@@ -4846,7 +4846,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK09</name>
-      <x>20</x>
+      <x>25</x>
       <y>206</y>
       <width>300</width>
       <height>17</height>
@@ -4872,7 +4872,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK10</name>
-      <x>20</x>
+      <x>25</x>
       <y>223</y>
       <width>300</width>
       <height>17</height>
@@ -4898,7 +4898,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK11</name>
-      <x>20</x>
+      <x>25</x>
       <y>240</y>
       <width>300</width>
       <height>17</height>
@@ -4924,7 +4924,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK12</name>
-      <x>20</x>
+      <x>25</x>
       <y>257</y>
       <width>300</width>
       <height>17</height>
@@ -4950,7 +4950,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK13</name>
-      <x>20</x>
+      <x>25</x>
       <y>274</y>
       <width>300</width>
       <height>17</height>
@@ -4976,7 +4976,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK14</name>
-      <x>20</x>
+      <x>25</x>
       <y>291</y>
       <width>300</width>
       <height>17</height>
@@ -5002,7 +5002,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK15</name>
-      <x>20</x>
+      <x>25</x>
       <y>308</y>
       <width>300</width>
       <height>17</height>
@@ -5028,7 +5028,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK16</name>
-      <x>20</x>
+      <x>25</x>
       <y>325</y>
       <width>300</width>
       <height>17</height>
@@ -5054,7 +5054,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK17</name>
-      <x>20</x>
+      <x>25</x>
       <y>342</y>
       <width>300</width>
       <height>17</height>
@@ -5080,7 +5080,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK18</name>
-      <x>20</x>
+      <x>25</x>
       <y>359</y>
       <width>300</width>
       <height>17</height>
@@ -5106,7 +5106,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK19</name>
-      <x>20</x>
+      <x>25</x>
       <y>376</y>
       <width>300</width>
       <height>17</height>
@@ -5132,7 +5132,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK20</name>
-      <x>20</x>
+      <x>25</x>
       <y>393</y>
       <width>300</width>
       <height>17</height>
@@ -5158,7 +5158,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK21</name>
-      <x>20</x>
+      <x>25</x>
       <y>410</y>
       <width>300</width>
       <height>17</height>
@@ -5184,7 +5184,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK22</name>
-      <x>20</x>
+      <x>25</x>
       <y>427</y>
       <width>300</width>
       <height>17</height>
@@ -5210,7 +5210,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK23</name>
-      <x>20</x>
+      <x>25</x>
       <y>444</y>
       <width>300</width>
       <height>17</height>
@@ -5236,7 +5236,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK24</name>
-      <x>20</x>
+      <x>25</x>
       <y>461</y>
       <width>300</width>
       <height>17</height>
@@ -5262,7 +5262,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK25</name>
-      <x>20</x>
+      <x>25</x>
       <y>478</y>
       <width>300</width>
       <height>17</height>
@@ -5288,7 +5288,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK26</name>
-      <x>20</x>
+      <x>25</x>
       <y>495</y>
       <width>300</width>
       <height>17</height>
@@ -5314,7 +5314,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK27</name>
-      <x>20</x>
+      <x>25</x>
       <y>512</y>
       <width>300</width>
       <height>17</height>
@@ -5340,7 +5340,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK28</name>
-      <x>20</x>
+      <x>25</x>
       <y>529</y>
       <width>300</width>
       <height>17</height>
@@ -5366,7 +5366,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK29</name>
-      <x>20</x>
+      <x>25</x>
       <y>546</y>
       <width>300</width>
       <height>17</height>
@@ -5392,7 +5392,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK30</name>
-      <x>20</x>
+      <x>25</x>
       <y>563</y>
       <width>300</width>
       <height>17</height>
@@ -5418,7 +5418,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK31</name>
-      <x>20</x>
+      <x>25</x>
       <y>580</y>
       <width>300</width>
       <height>17</height>
@@ -5444,7 +5444,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK32</name>
-      <x>20</x>
+      <x>25</x>
       <y>597</y>
       <width>300</width>
       <height>17</height>
@@ -5470,7 +5470,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK33</name>
-      <x>20</x>
+      <x>25</x>
       <y>614</y>
       <width>300</width>
       <height>17</height>
@@ -5496,7 +5496,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK34</name>
-      <x>20</x>
+      <x>25</x>
       <y>631</y>
       <width>300</width>
       <height>17</height>
@@ -5522,7 +5522,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK35</name>
-      <x>20</x>
+      <x>25</x>
       <y>648</y>
       <width>300</width>
       <height>17</height>
@@ -5548,7 +5548,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK36</name>
-      <x>20</x>
+      <x>25</x>
       <y>665</y>
       <width>300</width>
       <height>17</height>
@@ -5571,6 +5571,580 @@
       <draw_indicator>True</draw_indicator>
     </widget>
 
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG01</name>
+      <x>5</x>
+      <y>70</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG02</name>
+      <x>5</x>
+      <y>87</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG03</name>
+      <x>5</x>
+      <y>104</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG04</name>
+      <x>5</x>
+      <y>121</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG05</name>
+      <x>5</x>
+      <y>138</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG06</name>
+      <x>5</x>
+      <y>155</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG07</name>
+      <x>5</x>
+      <y>172</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG08</name>
+      <x>5</x>
+      <y>189</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG09</name>
+      <x>5</x>
+      <y>206</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG10</name>
+      <x>5</x>
+      <y>223</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG11</name>
+      <x>5</x>
+      <y>240</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG12</name>
+      <x>5</x>
+      <y>257</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG13</name>
+      <x>5</x>
+      <y>274</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG14</name>
+      <x>5</x>
+      <y>291</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG15</name>
+      <x>5</x>
+      <y>308</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG16</name>
+      <x>5</x>
+      <y>325</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG17</name>
+      <x>5</x>
+      <y>342</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG18</name>
+      <y>359</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG19</name>
+      <x>5</x>
+      <y>376</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG20</name>
+      <x>5</x>
+      <y>393</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG21</name>
+      <x>5</x>
+      <y>410</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG22</name>
+      <x>5</x>
+      <y>427</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG23</name>
+      <x>5</x>
+      <y>444</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG24</name>
+      <x>5</x>
+      <y>461</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG25</name>
+      <x>5</x>
+      <y>478</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG26</name>
+      <x>5</x>
+      <y>495</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG27</name>
+      <x>5</x>
+      <y>512</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG28</name>
+      <x>5</x>
+      <y>529</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG29</name>
+      <x>5</x>
+      <y>546</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG30</name>
+      <x>5</x>
+      <y>563</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG31</name>
+      <x>5</x>
+      <y>580</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG32</name>
+      <x>5</x>
+      <y>597</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG33</name>
+      <x>5</x>
+      <y>614</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG34</name>
+      <x>5</x>
+      <y>631</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG35</name>
+      <x>5</x>
+      <y>648</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTFLG36</name>
+      <x>5</x>
+      <y>665</y>
+      <width>20</width>
+      <height>17</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
 
     <widget>
       <class>GtkPandaEntry</class>

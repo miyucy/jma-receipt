@@ -796,6 +796,150 @@ R02	{
 			value	bool;
 			label	varchar(41);
 		};
+		PRTFLG01	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG02	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG03	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG04	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG05	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG06	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG07	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG08	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG09	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG10	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG11	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG12	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG13	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG14	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG15	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG16	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG17	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG18	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG19	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG20	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG21	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG22	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG23	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG24	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG25	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG26	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG27	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG28	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG29	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG30	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG31	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG32	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG33	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG34	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG35	{
+			style	varchar(20);
+			value	varchar(2);
+		};
+		PRTFLG36	{
+			style	varchar(20);
+			value	varchar(2);
+		};
 		FILEKBN	{
 			value	varchar(41);
 		};
