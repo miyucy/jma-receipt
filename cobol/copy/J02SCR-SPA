@@ -85,6 +85,8 @@
       *
                        09  SPA-NAI-BANGO             PIC 9(03).
       *
+                       09  SPA-NAI-KEIFLG            PIC 9(01).
+      *
                        09  SPA-GMN-IKKATU            PIC X(20).
       *
       *        診療履歴内容
@@ -232,10 +234,16 @@
                    07  SPA-J021-MAE-HKNCOMBI         PIC X(04).
                    07  SPA-J021-MAE-HKNCOMBIMEI      PIC X(60).
                    07  SPA-J021-MAE-FTNRATE          PIC X(08).
+                   07  SPA-J021-MAE-ERR              PIC X(01).
                    07  SPA-J021-ATO-HKNCOMBI         PIC X(04).
                    07  SPA-J021-ATO-HKNCOMBIMEI      PIC X(60).
                    07  SPA-J021-ATO-FTNRATE          PIC X(08).
+                   07  SPA-J021-ATO-ERR              PIC X(01).
+                   07  SPA-J021-DAY1                 PIC 9(02).
+                   07  SPA-J021-DAY2                 PIC 9(02).
       *
+                   07  SPA-J021-STDAY                PIC 9(02).
+                   07  SPA-J021-ENDAY                PIC 9(02).
       *
       *    回数入力画面用
            03  SPA-J022-AREA.

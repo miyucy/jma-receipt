@@ -41,3 +41,7 @@
                     06  J021-TEKEDYMD PIC X(10).
                     06  J021-FTNRATE  PIC X(8).
                   05  J021-HKNLIST-SELECT PIC X       OCCURS  40 TIMES.
+              03  J021-DAY1.
+                04  J021-VALUE  PIC S9(2).
+              03  J021-DAY2.
+                04  J021-VALUE  PIC S9(2).
