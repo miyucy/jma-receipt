@@ -32,6 +32,7 @@
       *                                     ²èÁü¿ÇÃÇ¤Î¥Õ¥£¥ë¥à¤ò¼êµ»¤ËÉ½¼¨
       *  01.00.02    NACL-Æ£¸¶    03.01.28  ¸¡ºº¤Î¤È¤­²Ã»»¤Ï¸¡ºº¿ô¤ÎÂÐ¾Ý¤È
       *                                     ¤·¤Ê¤¤
+      *  01.00.03    NACL-Æ£¸¶    03.01.30  ÆýÍÄ»ù²Ã»»¤Î»þ¼êµ»¤ËÉ½¼¨
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -615,6 +616,11 @@
       *    ºÎ·ì¡Ê£Â¡Ý£Ã¡Ë
            03 WRK-CONS-SAIKETSU3       PIC X(09)   VALUE "160095810".
       *
+      *    ¥Õ¥£¥ë¥àÎÁ¡ÊÆýÍÄ»ù¡Ë²Ã»»
+           03  WRK-CONS-FILM-YOUJI-KASAN
+                                       PIC X(09)   VALUE 
+                                                   "799990070".
+      *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
        01  WRK-PATH                        PIC X(64).
       *
@@ -955,7 +961,12 @@
                                                          =   "3"  )
                                    MOVE    3                 TO  IDY
                                ELSE
-                                   MOVE    4                 TO  IDY
+                                   IF      RECE65-SRYCD (IDX)    =
+                                             WRK-CONS-FILM-YOUJI-KASAN
+                                       MOVE    3             TO  IDY
+                                   ELSE
+                                       MOVE    4             TO  IDY
+                                   END-IF
                                END-IF
                            WHEN    OTHER
                                DISPLAY "ORCR0690 SRYCD="

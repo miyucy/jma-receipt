@@ -90,7 +90,8 @@
       *  01.02.14    NACL-小豆沢  02.11.28  初診加算のとき編集する
       *  01.02.15    NACL-藤原    02.12.02  酸素の時単価を表示するように追加
       *  01.02.16    NACL-藤原    03.01.10  検査の回数の編集
-      *  01.02.16    NACL-藤原    03.01.10  画像診断のフィルムを手技に表示
+      *  01.02.17    NACL-藤原    03.01.10  画像診断のフィルムを手技に表示
+      *  01.00.18    NACL-藤原    03.01.30  乳幼児加算の時手技に表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -663,6 +664,11 @@
       *    採血（Ｂ−Ｃ）
            03 WRK-CONS-SAIKETSU3       PIC X(09)   VALUE "160095810".
       *
+      *    フィルム料（乳幼児）加算
+           03  WRK-CONS-FILM-YOUJI-KASAN
+                                       PIC X(09)   VALUE 
+                                                   "799990070".
+      *
       *    パス名領域
        01  WRK-PATH                        PIC X(64).
       *
@@ -995,7 +1001,12 @@
                                                          =   "3"  )
                                    MOVE    3                 TO  IDY
                                ELSE
-                                   MOVE    4                 TO  IDY
+                                   IF      RECE05-SRYCD (IDX)    =
+                                             WRK-CONS-FILM-YOUJI-KASAN
+                                       MOVE    3             TO  IDY
+                                   ELSE
+                                       MOVE    4             TO  IDY
+                                   END-IF
                                END-IF
                            WHEN    OTHER
                                DISPLAY "ORCR0090 SRYCD="
