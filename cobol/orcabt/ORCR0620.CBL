@@ -49,6 +49,8 @@
       *  01.00.15    NACL-ÃÁœ∆    04/04/06  ∏¯»Ò√±∆»£∑£∞∫–Ã§À˛§«œ∑øÕ ›∏±∆˛Œœ
       *                                     §Œ§¢§Î ˝§Œπ‚Œº‘•’•È•∞ ‘Ω∏Ω§¿µ
       *  01.00.16    NACL-ÃÁœ∆    04/05/21  DBOPEN,DBDISCONNECT∫ÔΩ¸
+      *  01.00.17    NACL-ÃÁœ∆    04/06/02  ∑Ó≈”√Ê§Àœ∑ ›§Œ —ππ§¨§¢§√§øæÏπÁ
+      *                                     §Œ£À£≈£Ÿ§Œ ‘Ω∏§ŒΩ§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -911,6 +913,11 @@
                    IF       FLG-PTKOHINF        =   ZERO
                         MOVE   PTKOH-KOHID      TO  RECE62-RJNHKNID
                         MOVE   PTKOH-KOHNUM     TO  RECE62-RJNHKNNUM
+                        IF  ( PTKOH-TEKSTYMD (1:6)
+                                                  =   RECE61-SRYYM    )
+                        AND ( PTKOH-TEKSTYMD      >   RECE62-TEKSTYMD )
+                           MOVE    PTKOH-TEKSTYMD  TO  RECE62-TEKSTYMD
+                        END-IF
       *                 À° Ã»÷πÊ§Œ•ª•√•»
                         INITIALIZE                  HKNNUM-REC
                         MOVE   RECE61-HOSPID    TO  HKN-HOSPID
