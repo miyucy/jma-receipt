@@ -28,7 +28,8 @@
       ****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL−門脇   03/03/07  老人限度額の集計変更
+      *  01.00.01    NACL-門脇    03/03/07  老人限度額の集計変更
+      *  01.00.02    NACL-門脇    03/03/10  食事区分”４”の対応追加
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1924,6 +1925,25 @@
                           ADD      50    TO   WK-SHOKUJI-RYOYOHI
                                               WK-SHOKUJI-JIHI
                           MOVE     50    TO   LNK-SYU-SHOKUJI4
+                  WHEN  4
+                          ADD       1    TO   WK-SHOKUJI-NISSU
+                                              LNK-SYU-SHOKUJI1-NISSU
+                                              LNK-SYU-SHOKUJI3-NISSU
+                                              LNK-SYU-SHOKUJI4-NISSU
+                          ADD    1920    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                          MOVE   1920    TO   LNK-SYU-SHOKUJI1
+                          IF    WK-TOKUKANRIKASAN  =  1
+                            ADD   200    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                            ADD   200    TO   LNK-SYU-SHOKUJI1
+                          END-IF
+                          ADD     350    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                          MOVE    350    TO   LNK-SYU-SHOKUJI3
+                          ADD      50    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                          MOVE     50    TO   LNK-SYU-SHOKUJI4
                 END-EVALUATE
       *
               ELSE
@@ -1986,6 +2006,30 @@
                           ADD      50    TO   WK-SHOKUJI-RYOYOHI
                                               WK-SHOKUJI-JIHI
                           ADD      50    TO   LNK-SYU-SHOKUJI2
+      *
+                          ADD      50    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                          MOVE     50    TO   LNK-SYU-SHOKUJI4
+                  WHEN  4
+                          ADD       1    TO   WK-SHOKUJI-NISSU
+                                              LNK-SYU-SHOKUJI2-NISSU
+                                              LNK-SYU-SHOKUJI3-NISSU
+                                              LNK-SYU-SHOKUJI4-NISSU
+                          ADD    1920    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                          MOVE   1920    TO   LNK-SYU-SHOKUJI2
+                          IF    WK-TOKUKANRIKASAN  =  1
+                            ADD   200    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                            ADD   200    TO   LNK-SYU-SHOKUJI2
+                          END-IF
+                          ADD      50    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                          ADD      50    TO   LNK-SYU-SHOKUJI2
+      *
+                          ADD     350    TO   WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                          MOVE    350    TO   LNK-SYU-SHOKUJI3
       *
                           ADD      50    TO   WK-SHOKUJI-RYOYOHI
                                               WK-SHOKUJI-JIHI

@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    03.03.05  点滴編集追加
+      *  01.00.02    NACL-門脇    03.03.10  食事区分”４”の対応追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1539,6 +1540,22 @@
                         ADD    200        TO   WRK-SKJ-ZAITEN  (IDY) 
                         MOVE  "197000270" TO   WRK-SKJ-SRYCD   (IDY 2)
                      END-IF
+                     IF    WRK-DAY4(IDY)  NOT =  ZERO
+                        ADD    50         TO   WRK-SKJ-ZAITEN  (IDY)
+                        MOVE  "197000570" TO   WRK-SKJ-SRYCD   (IDY 4)
+                     END-IF
+                     ADD    50            TO   WRK-SKJ-ZAITEN  (IDY) 
+                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD   (IDY 5)
+              WHEN  4
+                     ADD    1920          TO   WRK-SKJ-ZAITEN  (IDY) 
+                     ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD   (IDY 1)
+                     IF    WRK-TOKUKANRIKASAN  =  1
+                        ADD    200        TO   WRK-SKJ-ZAITEN  (IDY) 
+                        MOVE  "197000270" TO   WRK-SKJ-SRYCD   (IDY 2)
+                     END-IF
+                     ADD    350           TO   WRK-SKJ-ZAITEN  (IDY) 
+                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD   (IDY 3)
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
                         ADD    50         TO   WRK-SKJ-ZAITEN  (IDY)
                         MOVE  "197000570" TO   WRK-SKJ-SRYCD   (IDY 4)

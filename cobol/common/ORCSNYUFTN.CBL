@@ -44,6 +44,7 @@
       *
        01  WRK-AREA.
            03  WRK-EDYMD                   PIC X(08).
+           03  WRK-ZAIKAISU                PIC 9(04).
       *
        01  WRK-SKYYM-TABLE.
            02  WRK-SKYYM-TBL     OCCURS    2.
@@ -131,6 +132,7 @@
            03  IDY                         PIC 9(02).
            03  IDZ                         PIC 9(02).
            03  IDX1                        PIC 9(02).
+           03  IDX2                        PIC 9(02).
            03  SYU-IDX                     PIC 9(02).
            03  NYUINACT-IDX                PIC 9(02).
            03  RMSAGAKU-IDX                PIC 9(02).
@@ -1864,10 +1866,25 @@
                         ADD    ORCSTEN-ZAITEN(IDX1)
                                       TO   SYU-HKNTEN (05)
                     END-IF
-                    IF  ORCSTEN-KIZ-ZAITEN(IDX1)  NOT =  ZERO
-                        ADD    ORCSTEN-KIZ-ZAITEN(IDX1)
-                                      TO   SYU-HKNTEN (05)
-                    END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM  VARYING  IDX1    FROM    1   BY  1
+                      UNTIL  IDX1     >       50
+                       OR    ORCSTEN-KIZ-ZAITEN(IDX1)  =  ZERO
+      *
+                    MOVE    ZERO   TO   WRK-ZAIKAISU
+                    PERFORM  VARYING  IDX2    FROM    1   BY  1
+                          UNTIL   IDX2     >       31
+                        ADD    ORCSTEN-KIZ-DAY(IDX1 IDX2)
+                                      TO   WRK-ZAIKAISU
+                    END-PERFORM
+      *
+                    COMPUTE  SYU-HKNTEN (05)  =
+                             SYU-HKNTEN (05)  +
+                             ( ORCSTEN-KIZ-ZAITEN(IDX1) *
+                               WRK-ZAIKAISU ) 
+      *
            END-PERFORM
       *
            .

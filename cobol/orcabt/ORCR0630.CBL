@@ -28,6 +28,7 @@
       *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
       *  01.00.01    NACL-ÃÁœ∆    03.03.07  Ã§º¬ª‹∏∫ªª§ŒŒ¨æŒƒ…≤√
+      *  01.00.02    NACL-ÃÁœ∆    03.03.10  ø©ªˆ∂Ë ¨°…£¥°…§Œ¬–±˛ƒ…≤√
       *****************************************************************
       *
       *
@@ -148,15 +149,15 @@
                05  WRK-PARA-SHELLID                    PIC X(08).
        01  WRK-TENTEK.
            03  WRK-TENTEK-SYUTEN                       PIC 9(07).
+           03  WRK-TENTEK-ZAIKAISU                     PIC 9(04).
            03  WRK-TENTEK-TABLE.
                05  WRK-TENTEK-TBL                      OCCURS  10.
                    07  WRK-TENTEK-YKZTEN               PIC 9(07).
                    07  WRK-TENTEK-KIZAITEN             PIC 9(07).
            03  WRK-TENTEK-FLG-TABLE.
                05  WRK-TENTEK-FLG-TBL                  OCCURS  10.
-                   07  WRK-TENTEK-FLG                  PIC 9(01).
-                   07  WRK-TENTEK-FLG1                 PIC 9(01)
-                                                           OCCURS 4.
+                   07  WRK-TENTEK-FLG                  PIC 9(01)
+                                                           OCCURS 5.
       *
        01  WRK-CONS-AREA.
       *    ∏«ƒÍ√ºÀˆ£…£ƒ
@@ -1843,17 +1844,8 @@
                      PERFORM  NYUINKHN-SET4-SEC
                 END-EVALUATE
              WHEN  2
-                     MOVE    "197000110"  TO  WRK-SRYCD
-                     PERFORM  NYUINKHN-SET4-SEC
-                     IF    WRK-TOKUKANRIKASAN  =  1
-                        MOVE    "197000270"  TO  WRK-SRYCD
-                        PERFORM  NYUINKHN-SET4-SEC
-                     END-IF
-                     IF    WRK-DAY41(IDY)  =  1
-                        MOVE    "197000570"  TO  WRK-SRYCD
-                        PERFORM  NYUINKHN-SET4-SEC
-                     END-IF
              WHEN  3
+             WHEN  4
                      MOVE    "197000110"  TO  WRK-SRYCD
                      PERFORM  NYUINKHN-SET4-SEC
                      IF    WRK-TOKUKANRIKASAN  =  1
@@ -1988,12 +1980,12 @@
                              (ACCT-ZAITEN  *  
                               ACCT-ZAIKAISU)
                  ELSE
-                   IF        WRK-TENTEK-FLG(TENTEK-IDX)  =   ZERO
+                   IF        WRK-TENTEK-FLG(TENTEK-IDX 1)  =   ZERO
                        COMPUTE   TBL-TOTALTEN-ACCT(1) =  
                                  TBL-TOTALTEN-ACCT(1) +
                                  WRK-TENTEK-YKZTEN(TENTEK-IDX) +
                                  WRK-TENTEK-KIZAITEN(TENTEK-IDX)
-                       MOVE  1        TO   WRK-TENTEK-FLG(TENTEK-IDX)
+                       MOVE  1        TO   WRK-TENTEK-FLG(TENTEK-IDX 1)
                    END-IF
                    IF        ACCT-SRYKBN     =    "33"
                        PERFORM   TENTEK-SYUTEN-SEC
@@ -2057,13 +2049,13 @@
                                 (ACCT-ZAITEN * 
                                  ACCT-ZAIKAISU)
                      ELSE
-                       IF        WRK-TENTEK-FLG1(TENTEK-IDX KH-IDX)
+                       IF        WRK-TENTEK-FLG(TENTEK-IDX KH-IDX)
                                                              =   ZERO
                            COMPUTE   TBL-TOTALTEN-ACCT(KH-IDX) =  
                                      TBL-TOTALTEN-ACCT(KH-IDX) +
                                      WRK-TENTEK-YKZTEN(TENTEK-IDX) +
                                      WRK-TENTEK-KIZAITEN(TENTEK-IDX)
-                           MOVE  1       TO   WRK-TENTEK-FLG1
+                           MOVE  1       TO   WRK-TENTEK-FLG
                                                    (TENTEK-IDX KH-IDX)
                        END-IF
                        IF        ACCT-SRYKBN     =    "33"
@@ -2093,8 +2085,6 @@
       *****************************************************************
        TENTEK-MATOME-SEC                    SECTION.
       *
-           DISPLAY "TENTEK-MATOME-SEC"
-      *
            INITIALIZE                  WRK-TENTEK-TABLE
       *
            PERFORM     VARYING   TENTEK-IDX  FROM  1  BY  1
@@ -2122,16 +2112,21 @@
       *
                PERFORM  VARYING  IDX1    FROM    1   BY  1
                           UNTIL  IDX1     >       50
+                           OR    ORCSTEN-KIZ-ZAITEN(IDX1)  =  ZERO
       *
-                        IF  ORCSTEN-KIZ-ZAITEN(IDX1)  NOT =  ZERO
-                            ADD    ORCSTEN-KIZ-ZAITEN(IDX1)
-                                   TO  WRK-TENTEK-KIZAITEN(TENTEK-IDX)
-                        END-IF
+                        MOVE    ZERO   TO   WRK-TENTEK-ZAIKAISU
+                        PERFORM  VARYING  IDX2    FROM    1   BY  1
+                              UNTIL   IDX2     >       31
+                            ADD    ORCSTEN-KIZ-DAY(IDX1 IDX2)
+                                   TO  WRK-TENTEK-ZAIKAISU
+                        END-PERFORM
+      *
+                        COMPUTE  WRK-TENTEK-KIZAITEN(TENTEK-IDX)  =
+                                 WRK-TENTEK-KIZAITEN(TENTEK-IDX)  +
+                                 ( ORCSTEN-KIZ-ZAITEN(IDX1) *
+                                   WRK-TENTEK-ZAIKAISU ) 
+      *
                END-PERFORM
-               DISPLAY "WRK-TENTEK-YKZTEN = " 
-                        WRK-TENTEK-YKZTEN(TENTEK-IDX)
-               DISPLAY "WRK-TENTEK-KIZAITEN = " 
-                        WRK-TENTEK-KIZAITEN(TENTEK-IDX)
            END-PERFORM
       *
            .
@@ -2143,26 +2138,23 @@
       *****************************************************************
        TENTEK-SYUTEN-SEC                    SECTION.
       *
-           DISPLAY "TENTEK-SYUTEN-SEC"
-      *
       *ø«Œ≈π‘∞Ÿ•∆°º•÷•Î§´§Èø«Œ≈ºÔ Ã∂Ë ¨§ŒºË∆¿
-           MOVE    ZERO               TO   FLG-SRYACT
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPID        TO   SRY-HOSPID
            MOVE    ACCT-NYUGAIKBN     TO   SRY-NYUGAIKBN
            MOVE    ACCT-PTID          TO   SRY-PTID
-           MOVE    ACCT-SRYKA         TO   SRY-SRYKA
+      ***  MOVE    ACCT-SRYKA         TO   SRY-SRYKA
            MOVE    ACCT-SRYYM         TO   SRY-SRYYM
            MOVE    ACCT-ZAINUM        TO   SRY-ZAINUM
            MOVE    SRYACT-REC         TO   MCPDATA-REC
            MOVE    "DBSELECT"         TO   MCP-FUNC
-           MOVE    "SRYACT-KEY2"      TO   ORC-DBPATH
+           MOVE    "SRYACT-KEY9"      TO   ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
            IF      MCP-RC             =    ZERO
-                 MOVE    "SRYACT-KEY2"    TO   ORC-DBPATH
+                 MOVE    "SRYACT-KEY9"    TO   ORC-DBPATH
                  PERFORM  SRYACT-READ-SEC
            ELSE
                  MOVE    1                TO   FLG-SRYACT
@@ -2181,6 +2173,13 @@
                                (ACCT-ZAITEN * ACCT-ZAIKAISU)
                 END-EVALUATE
            END-IF
+      *
+           MOVE    "DBCLOSE"               TO  MCP-FUNC
+           MOVE    "SRYACT-KEY9"           TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
       *
            .
        TENTEK-SYUTEN-EXT.
