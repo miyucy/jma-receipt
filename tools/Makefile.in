@@ -26,11 +26,9 @@ all: $(SHFILE_scripts)
 filecheck:
 
 clean: 
-	-rm -f build-stamp
 	-rm -f monitor.sh
 
 distclean: 
-	-rm -f build-stamp
 	-rm -f Makefile
 	-rm -f monitor.sh
 
