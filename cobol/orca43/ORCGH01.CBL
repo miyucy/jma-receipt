@@ -44,6 +44,7 @@
       *  01.02.03    NACL-藤原    03/02/05  公費請求書ＤＢを追加
       *                                     入院対応
       *                                     科コードの入力の修正
+      *  01.02.04    NACL-藤原    03/07/05  患者氏名での検索を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -157,6 +158,8 @@
            COPY    "CPORCSLNK.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *   患者番号変換サブ
+           COPY    "CPORCSPTNUM.INC".
       *
       *   画面日付変換サブ
           COPY    "CPORCSGDAY.INC".
@@ -830,16 +833,48 @@
       *
            MOVE    H01-PTNUM           TO  SPA-H01GMN-PTNUM
       *
-           INITIALIZE                  ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
-           MOVE    SPA-H01GMN-PTNUM    TO  SPTID-PTNUM
-           CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                               SPA-1009-TBL
-           IF      SPTID-RC        NOT =   ZERO
-               MOVE    "0004"          TO  SPA-ERRCD
-           ELSE
+      ***     INITIALIZE                  ORCSPTIDAREA
+      ***     MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+      ***     MOVE    SPA-H01GMN-PTNUM    TO  SPTID-PTNUM
+      ***     CALL    "ORCSPTID"          USING   ORCSPTIDAREA
+      ***                                         SPA-1009-TBL
+      ***     IF      SPTID-RC        NOT =   ZERO
+      ***         MOVE    "0004"          TO  SPA-ERRCD
+      ***     ELSE
+      *
+           INITIALIZE                  ORCSPTNUMAREA
+           MOVE    SPA-H01GMN-PTNUM    TO  SPTNUM-PTNUM
+           CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
+                                               SPA-AREA
+           EVALUATE    SPTNUM-RC
+               WHEN    00
+                   MOVE    SPTNUM-PTNUM        TO  SPTID-PTNUM
+                   MOVE    SPTNUM-PTID         TO  SPTID-PTID
+               WHEN   10
+                   MOVE    "0004"              TO  SPA-ERRCD
+               WHEN    20
+                   MOVE    SPACE               TO  LINKAREA
+                   MOVE    SPA-KYOUTU          TO  LNK-COMMON
+                   MOVE    SPA-H01-AREA        TO  LNK-SCRSPA
+      *
+                   MOVE    "H01"               TO  SPA-MOTOPG
+                   MOVE    "P97"               TO  SPA-SAKIPG
+      *            氏名セット
+                   MOVE    SPA-H01GMN-PTNUM    TO  SPA-NAME
+                   MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+                   MOVE    "CHANGE"            TO  MCP-PUTTYPE
+                   MOVE    "P97"               TO  MCP-WINDOW
+                   PERFORM 900-PUT-WINDOW
+                   MOVE    1                   TO  FLG-END
+                   GO      TO     4101-PTNUM-CHK-EXT
+               WHEN    OTHER
+                   MOVE    "0004"          TO  SPA-ERRCD
+           END-EVALUATE
+      *
+           IF      SPA-ERRCD           =   SPACE
                IF      SPTID-PTID          =   SPA-H01NAI-PTID
-                   CONTINUE
+                   MOVE    SPTID-PTNUM     TO  SPA-H01GMN-PTNUM
                ELSE
                    INITIALIZE                  SPA-H01GMN-TABLE
                                                SPA-H01GMN-KOUMOKU
