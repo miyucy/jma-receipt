@@ -223,6 +223,7 @@
            03  FLG-KOH                                 PIC 9(01).
            03  WRK-FTNKEI                              PIC 9(09).
            03  WRK-FTNKEI2                             PIC 9(09).
+           03  WRK-FTNKEI3                             PIC 9(09).
       *
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
@@ -4783,125 +4784,19 @@
       *
       *++++
       *
-           COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
-                               * 10
-                               * RECE62-KYURATE
-                               / 100
-           COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
-           COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
-           COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
-      *
-           IF   ( SYU-KOH-HKNNUM(1)   =   "051" )            
-           OR   ( SYU-KOH-HKNNUM(2)   =   "051" )            
-           OR   ( SYU-KOH-HKNNUM(3)   =   "051" )            
-           OR   ( SYU-KOH-HKNNUM(4)   =   "051" )            
-             IF  SYU-KOH-HKNNUM(1)   =   "051"               
-                COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
-                                      +  SYU-SKJ-FTN(1)      
-             END-IF                                          
-             IF  SYU-KOH-HKNNUM(2)   =   "051"               
-                COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
-                                      +  SYU-SKJ-FTN(2)      
-             END-IF                                          
-             IF  SYU-KOH-HKNNUM(3)   =   "051"               
-                COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
-                                      +  SYU-SKJ-FTN(3)      
-             END-IF                                          
-             IF  SYU-KOH-HKNNUM(4)   =   "051"               
-                COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
-                                      +  SYU-SKJ-FTN(4)      
-             END-IF                                          
-             IF  WRK-FTNKEI   =  14000                       
-                 MOVE  1            TO  FLG-TOKUTEI          
-             END-IF                                          
-             IF  WRK-FTNKEI   <  14000                       
-             AND WRK-FTNKEI2  =  14000                       
-      *          MOVE  WRK-FTNKEI2  TO  WRK-FTNKEI           
-                 MOVE  2            TO  FLG-TOKUTEI          
-             END-IF                                          
-           END-IF                                            
-           IF   ( SYU-KOH-HKNNUM(1)   =   "015" )            
-           OR   ( SYU-KOH-HKNNUM(2)   =   "015" )            
-           OR   ( SYU-KOH-HKNNUM(3)   =   "015" )            
-           OR   ( SYU-KOH-HKNNUM(4)   =   "015" )            
-             IF  SYU-KOH-HKNNUM(1)   =   "015"               
-                COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
-                                      +  SYU-SKJ-FTN(1)      
-                MOVE     1     TO    FLG-HANTEI              
-                PERFORM  KOHFTN-KINGAKU-SEC
-             END-IF                                          
-             IF  SYU-KOH-HKNNUM(2)   =   "015"               
-                COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
-                                      +  SYU-SKJ-FTN(2)      
-                MOVE     1     TO    FLG-HANTEI
-                PERFORM  KOHFTN-KINGAKU-SEC
-             END-IF                                          
-             IF  SYU-KOH-HKNNUM(3)   =   "015"               
-                COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
-                                      +  SYU-SKJ-FTN(3)      
-                MOVE     1     TO    FLG-HANTEI
-                PERFORM  KOHFTN-KINGAKU-SEC
-             END-IF                                          
-             IF  SYU-KOH-HKNNUM(4)   =   "015"               
-                COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
-                                      +  SYU-SKJ-FTN(4)      
-                MOVE     1     TO    FLG-HANTEI
-                PERFORM  KOHFTN-KINGAKU-SEC
-             END-IF
-             IF  WRK-NYUJGNGAK  NOT =  ZERO                  
-               IF  WRK-FTNKEI   =  WRK-NYUJGNGAK             
-                 MOVE  1            TO  FLG-KOSEI            
-               END-IF                                        
-               IF  WRK-FTNKEI   <  WRK-NYUJGNGAK             
-               AND WRK-FTNKEI2  =  WRK-NYUJGNGAK             
-      *          MOVE  WRK-FTNKEI2  TO  WRK-FTNKEI           
-                 MOVE  2            TO  FLG-KOSEI            
-               END-IF
-             END-IF                                          
-           END-IF                                            
-           IF   ( SYU-KOH-HKNNUM(1)   =   "016" )            
-           OR   ( SYU-KOH-HKNNUM(2)   =   "016" )            
-           OR   ( SYU-KOH-HKNNUM(3)   =   "016" )            
-           OR   ( SYU-KOH-HKNNUM(4)   =   "016" )            
-             IF  SYU-KOH-HKNNUM(1)   =   "016"               
-                COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
-                                      +  SYU-SKJ-FTN(1)      
-                MOVE     2     TO    FLG-HANTEI
-                PERFORM  KOHFTN-KINGAKU-SEC
-             END-IF                                          
-             IF  SYU-KOH-HKNNUM(2)   =   "016"               
-                COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
-                                      +  SYU-SKJ-FTN(2)      
-                MOVE     2     TO    FLG-HANTEI
-                PERFORM  KOHFTN-KINGAKU-SEC
-             END-IF                                          
-             IF  SYU-KOH-HKNNUM(3)   =   "016"               
-                COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
-                                      +  SYU-SKJ-FTN(3)      
-                MOVE     2     TO    FLG-HANTEI
-                PERFORM  KOHFTN-KINGAKU-SEC
-             END-IF                                          
-             IF  SYU-KOH-HKNNUM(4)   =   "016"               
-                COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
-                                      +  SYU-SKJ-FTN(4)      
-                MOVE     2     TO    FLG-HANTEI
-                PERFORM  KOHFTN-KINGAKU-SEC
-             END-IF                                          
-             IF  WRK-NYUJGNGAK  NOT =  ZERO                  
-               IF  WRK-FTNKEI   =  WRK-NYUJGNGAK             
-                 MOVE  1            TO  FLG-IKUSEI           
-               END-IF                                        
-               IF  WRK-FTNKEI   <  WRK-NYUJGNGAK             
-               AND WRK-FTNKEI2  =  WRK-NYUJGNGAK             
-      *          MOVE  WRK-FTNKEI2  TO  WRK-FTNKEI           
-                 MOVE  2            TO  FLG-IKUSEI           
-               END-IF
-             END-IF                                          
-           END-IF                                            
+           PERFORM         KOH-FLG-SET
       *
       *
            IF      RECE62-SRYYM      >=  "200210"
              IF    RECE62-KOUREI  NOT =    SPACE
+                COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
+                                    * 10
+                                    * RECE62-KYURATE
+                                    / 100
+                COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
+                COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
+                COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
+      *
                 IF   ( SYU-KOH-FTN         =   ZERO   )                 
                 AND  ( SYU-KOH-HKNNUM(1)   =   SPACE OR "027"  )        
                 AND  ( SYU-KOH-HKNNUM(2)   =   SPACE  )                 
@@ -5306,6 +5201,150 @@
            EXIT.
       *
       *****************************************************************
+      *    ¿©»öÉéÃ´´Þ¤à¾å¸Â³Û¤Î¤¢¤ë¸øÈñ¤Î¥Õ¥é¥°ÊÔ½¸
+      *****************************************************************
+       KOH-FLG-SET               SECTION.
+      *
+           IF   ( SYU-KOH-HKNNUM(1)   =   "051" )            
+           OR   ( SYU-KOH-HKNNUM(2)   =   "051" )            
+           OR   ( SYU-KOH-HKNNUM(3)   =   "051" )            
+           OR   ( SYU-KOH-HKNNUM(4)   =   "051" )            
+                IF  SYU-KOH-HKNNUM(1)   =   "051"               
+                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(1)  
+                                         +  SYU-SKJ-FTN(1)      
+                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(1)  
+                END-IF                                          
+                IF  SYU-KOH-HKNNUM(2)   =   "051"               
+                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(2)  
+                                         +  SYU-SKJ-FTN(2)      
+                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(2)  
+                END-IF                                          
+                IF  SYU-KOH-HKNNUM(3)   =   "051"               
+                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(3)  
+                                         +  SYU-SKJ-FTN(3)      
+                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(3)  
+                END-IF                                          
+                IF  SYU-KOH-HKNNUM(4)   =   "051"               
+                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(4)  
+                                         +  SYU-SKJ-FTN(4)      
+                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(4)  
+                END-IF                                          
+                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 +  5
+                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 / 10
+                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 * 10
+                COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 +  5
+                COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 / 10
+                COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 * 10
+                IF  WRK-FTNKEI3  =  14000                       
+                    MOVE  1            TO  FLG-TOKUTEI          
+                END-IF                                          
+                IF  WRK-FTNKEI3  <  14000                       
+                AND WRK-FTNKEI2  =  14000                       
+                    MOVE  2            TO  FLG-TOKUTEI          
+                END-IF                                          
+           END-IF                                            
+           IF   ( SYU-KOH-HKNNUM(1)   =   "015" )            
+           OR   ( SYU-KOH-HKNNUM(2)   =   "015" )            
+           OR   ( SYU-KOH-HKNNUM(3)   =   "015" )            
+           OR   ( SYU-KOH-HKNNUM(4)   =   "015" )            
+                IF  SYU-KOH-HKNNUM(1)   =   "015"               
+                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(1)  
+                                         +  SYU-SKJ-FTN(1)      
+                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(1)
+                   MOVE     1     TO    FLG-HANTEI              
+                   PERFORM  KOHFTN-KINGAKU-SEC
+                END-IF                                          
+                IF  SYU-KOH-HKNNUM(2)   =   "015"               
+                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(2)  
+                                         +  SYU-SKJ-FTN(2)      
+                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(2)
+                   MOVE     1     TO    FLG-HANTEI
+                   PERFORM  KOHFTN-KINGAKU-SEC
+                END-IF                                          
+                IF  SYU-KOH-HKNNUM(3)   =   "015"               
+                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(3)  
+                                         +  SYU-SKJ-FTN(3)      
+                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(3)
+                   MOVE     1     TO    FLG-HANTEI
+                   PERFORM  KOHFTN-KINGAKU-SEC
+                END-IF                                          
+                IF  SYU-KOH-HKNNUM(4)   =   "015"               
+                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(4)  
+                                         +  SYU-SKJ-FTN(4)      
+                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(4)
+                   MOVE     1     TO    FLG-HANTEI
+                   PERFORM  KOHFTN-KINGAKU-SEC
+                END-IF
+                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 +  5
+                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 / 10
+                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 * 10
+                COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 +  5
+                COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 / 10
+                COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 * 10
+                IF  WRK-NYUJGNGAK  NOT =  ZERO                  
+                  IF  WRK-FTNKEI3  =  WRK-NYUJGNGAK             
+                    MOVE  1            TO  FLG-KOSEI            
+                  END-IF                                        
+                  IF  WRK-FTNKEI3  <  WRK-NYUJGNGAK             
+                  AND WRK-FTNKEI2  =  WRK-NYUJGNGAK             
+                    MOVE  2            TO  FLG-KOSEI            
+                  END-IF
+                END-IF                                          
+           END-IF                                            
+           IF   ( SYU-KOH-HKNNUM(1)   =   "016" )            
+           OR   ( SYU-KOH-HKNNUM(2)   =   "016" )            
+           OR   ( SYU-KOH-HKNNUM(3)   =   "016" )            
+           OR   ( SYU-KOH-HKNNUM(4)   =   "016" )            
+                IF  SYU-KOH-HKNNUM(1)   =   "016"               
+                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(1)  
+                                         +  SYU-SKJ-FTN(1)      
+                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(1)
+                   MOVE     2     TO    FLG-HANTEI
+                   PERFORM  KOHFTN-KINGAKU-SEC
+                END-IF                                          
+                IF  SYU-KOH-HKNNUM(2)   =   "016"               
+                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(2)  
+                                         +  SYU-SKJ-FTN(2)      
+                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(2)
+                   MOVE     2     TO    FLG-HANTEI
+                   PERFORM  KOHFTN-KINGAKU-SEC
+                END-IF                                          
+                IF  SYU-KOH-HKNNUM(3)   =   "016"               
+                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(3)  
+                                         +  SYU-SKJ-FTN(3)      
+                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(3)
+                   MOVE     2     TO    FLG-HANTEI
+                   PERFORM  KOHFTN-KINGAKU-SEC
+                END-IF                                          
+                IF  SYU-KOH-HKNNUM(4)   =   "016"               
+                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(4)  
+                                         +  SYU-SKJ-FTN(4)      
+                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(4)
+                   MOVE     2     TO    FLG-HANTEI
+                   PERFORM  KOHFTN-KINGAKU-SEC
+                END-IF                                          
+                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 +  5
+                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 / 10
+                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 * 10
+                COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 +  5
+                COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 / 10
+                COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 * 10
+                IF  WRK-NYUJGNGAK  NOT =  ZERO                  
+                  IF  WRK-FTNKEI3  =  WRK-NYUJGNGAK             
+                    MOVE  1            TO  FLG-IKUSEI           
+                  END-IF                                        
+                  IF  WRK-FTNKEI3  <  WRK-NYUJGNGAK             
+                  AND WRK-FTNKEI2  =  WRK-NYUJGNGAK             
+                    MOVE  2            TO  FLG-IKUSEI           
+                  END-IF
+                END-IF                                          
+           END-IF                                            
+      *
+           .
+       KOH-FLG-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ´µ¼Ô¸øÈñÉéÃ´¡Ê¶â³Û¡Ë¼è¹þ¤ß½èÍý
       *****************************************************************
        KOHFTN-KINGAKU-SEC               SECTION.
@@ -5389,7 +5428,7 @@
                   IF  FLG-KOH     =   ZERO
                      COMPUTE   RECE62-KOUREI-SAIKEI  =  
                                FTN-KOH-XXX
-                     IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
+                     IF   FTN-KOH-XXX   <=   WRK-KOH-FTN 
                            MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
                      END-IF
                   ELSE
@@ -5402,7 +5441,7 @@
                         COMPUTE   RECE62-KOUREI-SAIKEI  =  
                                   FTN-KOH-XXX
                      END-IF
-                     IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
+                     IF   FTN-KOH-XXX   <=   WRK-KOH-FTN 
                            MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
                      END-IF
                   END-IF
