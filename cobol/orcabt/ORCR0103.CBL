@@ -32,6 +32,7 @@
       *  01.00.01    NACL-Æ£¸¶    02.10.21  ÉÂÌ¾ÊÔ½¸»þ¤ËÈ¾³Ñ¶õÇò¤òÁ´³Ñ¤ØÊÑ´¹
       *  01.01.02    NACL-Æ£¸¶    02/10/24  ÊÝ¸±Æâ¼«Èñ¤Î¤ß¤Î¤È¤­½ÐÎÏ¤·¤Ê¤¤¤è¤¦¤Ë
       *                                     ½¤Àµ
+      *  01.01.03    NACL-Æ£¸¶    02/10/30  ¼õµë¼ÔÈÖ¹æ¤¬Á´³Ñ¤Î¤È¤­¤Î°õºþ¤ÎÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -136,7 +137,8 @@
            03                      PIC X(04)   VALUE   ".dat".
       *
       *     
-           COPY    "HCM06.INC"     REPLACING  //HCM06//
+      *****COPY    "HCM06.INC"     REPLACING  //HCM06//
+           COPY    "HCM06V01.INC"  REPLACING  //HCM06V01//
                                    BY         //HC06//.
       *
       *    ¥¹¥ÑÎÎ°è
@@ -1343,17 +1345,65 @@
                MOVE    3               TO  IDX3
            END-IF
       *    ¸øÉé£±
+           INITIALIZE              ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI 
            MOVE    RECE02-KOHFTNJANUM(IDA)
-                               TO  HC06-KOHFTNJANUM1
+                                   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF      KANACHK-RC      =   ZERO
+               IF      KANACHK-SYUBETU =   1
+                   MOVE    RECE02-KOHFTNJANUM(IDA)
+                                       TO  HC06-KOHFTNJANUM1
+               ELSE
+                   MOVE    RECE02-KOHFTNJANUM(IDA)
+                                       TO  HC06-KOHFTNJANUM1N
+               END-IF                        
+           END-IF    
       *    ¸øÉé£²
+           INITIALIZE              ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI 
            MOVE    RECE02-KOHFTNJANUM(IDB)
-                               TO  HC06-KOHFTNJANUM2
+                                   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF      KANACHK-RC      =   ZERO
+               IF      KANACHK-SYUBETU =   1
+                   MOVE    RECE02-KOHFTNJANUM(IDB)
+                                       TO  HC06-KOHFTNJANUM2
+               ELSE
+                   MOVE    RECE02-KOHFTNJANUM(IDB)
+                                       TO  HC06-KOHFTNJANUM2N
+               END-IF                        
+           END-IF    
       *    ¸ø¼õ£±
+           INITIALIZE              ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI 
            MOVE    RECE02-KOHJKYSNUM(IDA)
-                               TO  HC06-KOHJKYSNUM1
+                                   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF      KANACHK-RC      =   ZERO
+               IF      KANACHK-SYUBETU =   1
+                   MOVE    RECE02-KOHJKYSNUM(IDA)
+                                       TO  HC06-KOHJKYSNUM1
+               ELSE
+                   MOVE    RECE02-KOHJKYSNUM(IDA)
+                                       TO  HC06-KOHJKYSNUM1N
+               END-IF                        
+           END-IF    
       *    ¸ø¼õ£²
+           INITIALIZE              ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI 
            MOVE    RECE02-KOHJKYSNUM(IDB)
-                               TO  HC06-KOHJKYSNUM2
+                                   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF      KANACHK-RC      =   ZERO
+               IF      KANACHK-SYUBETU =   1
+                   MOVE    RECE02-KOHJKYSNUM(IDB)
+                                       TO  HC06-KOHJKYSNUM2
+               ELSE
+                   MOVE    RECE02-KOHJKYSNUM(IDB)
+                                       TO  HC06-KOHJKYSNUM2N
+               END-IF                        
+           END-IF    
       *
       *    <¿ÇÎÅ¼ÂÆü¿ô>
            IF      CNT-PAGE        =   1
@@ -2577,7 +2627,8 @@
                END-IF                      
                MOVE    RECE02-KANANAME     TO  RECE08-KANANAME
                MOVE    "2"                 TO  RECE08-NYUGAIKBN
-               MOVE    "HCM06.red"         TO  RECE08-FORMID
+      *********MOVE    "HCM06.red"         TO  RECE08-FORMID
+               MOVE    "HCM06V01.red"      TO  RECE08-FORMID
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
