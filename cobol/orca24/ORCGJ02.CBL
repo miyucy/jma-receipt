@@ -4436,6 +4436,17 @@
       *****************************************************************
        4101613-SYUNOU-UPD-SEC      SECTION.
       *
+           IF      SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
+                                       =   "9999"
+               GO      TO      4101613-SYUNOU-UPD-EXT
+           END-IF
+      *    伝票番号ゼロをエラーとする
+           IF      SPA-RRK-DENPNUM(SPA-NAI-RRKSELNUM)
+                                       =   ZERO
+               MOVE    "1006"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+               GO      TO      4101613-SYUNOU-UPD-EXT
+           END-IF
       *
            INITIALIZE                  SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
@@ -6448,10 +6459,10 @@
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PARA-KEY2"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "PARA-KEY2"         TO  ORC-DBPATH
                PERFORM 990-PARA-READ-SEC
@@ -6507,6 +6518,7 @@
       *        外来の時、伝票番号
                MOVE    SPA-RRK-DENPNUM(IDX)
                                            TO  JYURRK-DENPNUM
+      *
                MOVE    "JYURRK-KEY6"       TO  WRK-ORC-DBPATH
            ELSE
       *        入院の時、診療年月日、保険組合せ
@@ -6902,6 +6914,20 @@
       *    収納マスタの更新処理
       *****************************************************************
        490113-SYUNOU-UPD-SEC           SECTION.
+      *
+      *    包括入力の時対象外
+           IF      SPA-RRK-HKNCOMBI(IDX)   =   "9999"
+               GO      TO      490113-SYUNOU-UPD-EXT
+           END-IF
+      *
+      *
+      *    伝票番号ゼロをエラーとする
+           IF      SPA-RRK-DENPNUM(IDX)
+                                       =   ZERO
+               MOVE    "1006"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+               GO      TO      490113-SYUNOU-UPD-EXT
+           END-IF
       *
            INITIALIZE                  SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
@@ -8011,6 +8037,11 @@
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません"
                                        TO  WRK-ERRMSG
+               WHEN    "1006"
+                   MOVE    "受診履歴の伝票番号がゼロです。"
+                                       TO  WRK-ERRMSG
+                   MOVE    "変更できません。"
+                                       TO  WRK-ERRMSG(31:)
       *
                WHEN    "K001"
                    MOVE    "受診日変更により当日の受診回数が変更"

@@ -1214,6 +1214,9 @@
                IF      SPA-ERRCD       =   "0020"
                    MOVE    9               TO  SPA-J021-ENDFLG
                    PERFORM 510-ERRSET-SEC
+               ELSE
+                   MOVE    ZERO            TO  SPA-J021-ENDFLG
+                   PERFORM 510-ERRSET-SEC
                END-IF
            END-IF
            .
@@ -1253,10 +1256,13 @@
                MOVE    1               TO  FLG-JYURRK
            END-IF
       *
-           PERFORM UNTIL     FLG-JYURRK    =   1
+           PERFORM UNTIL    (FLG-JYURRK    =   1  )  OR
+                            (SPA-ERRCD     NOT =   SPACE )
       *
       *        収納変更（伝票番号より）
                PERFORM 300313-SYUNOU-UPD-SEC
+      *
+               IF      SPA-ERRCD           =   SPACE
       *
       *        保険組合せ変更
                MOVE    SPA-J021-ATO-HKNCOMBI   TO  JYURRK-HKNCOMBINUM
@@ -1276,6 +1282,8 @@
                    DISPLAY "J021 JYURRK UPD ERR:"   MCP-RC
                            ",KEY:" JYURRK-KEY
                    MOVE    "0011"              TO  SPA-ERRCD
+               END-IF
+      *
                END-IF
       *
                MOVE    "JYURRK-KEY18"      TO  ORC-DBPATH
@@ -1324,7 +1332,8 @@
            END-IF
       *
            PERFORM
-               UNTIL   FLG-SRYACCT     =   1
+               UNTIL  (FLG-SRYACCT     =   1   )  OR
+                      (SPA-ERRCD   NOT =   SPACE)
                MOVE    SPA-J021-ATO-HKNCOMBI  TO  ACCT-HKNCOMBI
       *
                MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
@@ -1364,6 +1373,15 @@
       *****************************************************************
        300313-SYUNOU-UPD-SEC          SECTION.
       *
+           IF      SPA-NYUGAIKBN       =   "1"
+               GO      TO      300313-SYUNOU-UPD-EXT
+           END-IF
+      *    伝票番号がゼロの時、エラー
+           IF      JYURRK-DENPNUM      =   ZERO
+               MOVE    "0021"              TO  SPA-ERRCD
+               GO      TO      300313-SYUNOU-UPD-EXT
+           END-IF
+      *
       *    収納
            INITIALIZE                  SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
@@ -1398,6 +1416,10 @@
                   (SYU-HKNCOMBINUM     =   SPA-J021-MAE-HKNCOMBI)
                CONTINUE
            ELSE
+      *        収納が無い時、エラー
+               IF      FLG-SYUNOU          =   1
+                   MOVE    "0021"              TO  SPA-ERRCD
+               END-IF
                GO      TO      300313-SYUNOU-UPD-EXT
            END-IF
       *
@@ -1460,7 +1482,8 @@
                MOVE    1               TO  FLG-SANTEI
            END-IF
            PERFORM
-               UNTIL    FLG-SANTEI     =   1
+               UNTIL   (FLG-SANTEI     =   1    )  OR
+                       (SPA-ERRCD  NOT =   SPACE )
                IF     (SANTEI-SRYKA        NOT =   SPACE  AND
                        SPA-J01-SRYKA       NOT =   SANTEI-SRYKA ) OR
                       (SANTEI-NYUGAIKBN    NOT =   SPACE  AND
@@ -1535,7 +1558,8 @@
                MOVE    1               TO  FLG-RECECOM
            END-IF
            PERFORM
-               UNTIL    FLG-RECECOM    =   1
+               UNTIL   (FLG-RECECOM    =   1   )  OR
+                       (SPA-ERRCD  NOT =   SPACE )
                ADD     1                   TO  IDX-R
                IF      IDX-R               >   40
                    MOVE    "0011"              TO  SPA-ERRCD
@@ -1548,6 +1572,10 @@
            END-PERFORM
       *
            IF      IDX-R               =   ZERO
+               GO      TO     300315-RECECOM-UPD-EXT
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
                GO      TO     300315-RECECOM-UPD-EXT
            END-IF
       *
@@ -1734,6 +1762,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "レセプトコメントは更新しませんでした。"
                                        TO  SPA-ERRMSG(31:)
+               WHEN    "0021"
+                   MOVE    "受診履歴の伝票番号がゼロのものがあります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "変更できません。"
+                                       TO  SPA-ERRMSG(43:)
            END-EVALUATE
       *
            MOVE    SPACE               TO  JERR
