@@ -98,6 +98,12 @@
                         07  W07-JIKANS2-MM     PIC X(2).
                   05  W07-LASTKIKAN.
                     06  W07-VALUE   PIC S9(2).
+                  05  W07-CLEARCHK-COMBO.
+                    06  W07-CLEARCHK.
+                      07  W07-VALUE   PIC X(22).
+                    06  W07-CLEARCHK-COUNT   PIC S9(9)   BINARY.
+                    06  W07-CLEARCHK-ITEM
+                            PIC X(22)   OCCURS  2 TIMES.
                 04  W07-TAGNAME1.
                   05  W07-TAGNAME1-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG2.
