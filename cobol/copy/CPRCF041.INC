@@ -210,6 +210,8 @@
       *実日数テーブル
                05  RECE41-JNISSUTBL       PIC  X(01).
       *
-      *予備
-           03  RECE41-FILLER              PIC  X(82).
+      *入院日テーブル情報
+           03  RECE41-NYUINBITBLINF       OCCURS 31.
+      *入院日テーブル
+               05  RECE41-NYUINBITBL      PIC  X(01).
       *

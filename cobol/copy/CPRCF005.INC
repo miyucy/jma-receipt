@@ -26,6 +26,9 @@
       *  01.00.02    NACL-藤原    03.01.17  データ区分の追加
       *  01.00.03    NACL-藤原    03/03/12  補助区分の追加
       *  01.00.04    NACL-門脇    03.03.03  剤番号桁修正
+      *  01.00.05    NACL-門脇    03.09.29  包括対象検査情報の追加
+      *                                     検査等実施判断情報の追加
+      *                                     各種番号等情報の追加
       ************************************************************
       *01  RECE05-REC.
            03  RECE05-KEY.
@@ -100,4 +103,21 @@
       *データ区分情報
           03  RECE05-DATAKBNINF           OCCURS  5.
               05  RECE05-DATAKBN          PIC  9(01).
-
+      *包括対象検査情報
+          03  RECE05-HOUKNSKBNINF         OCCURS  5.
+      *包括対象検査
+              05  RECE05-HOUKNSKBN        PIC  9(02).
+      *検査等実施判断情報
+          03  RECE05-KNSJISKBNINF         OCCURS  5.
+      *検査等実施判断
+              05  RECE05-KNSJISKBN        PIC  9(01).
+      *各種番号等情報
+          03  RECE05-CDKBNINF             OCCURS  5.
+      *各種番号等
+              05  RECE05-CDKBN-KBN        PIC  X(01).
+              05  RECE05-CDKBN-SYO        PIC  9(01).
+              05  RECE05-CDKBN-BU         PIC  9(02).
+              05  RECE05-CDKBN-KBNNUM     PIC  9(03).
+              05  RECE05-CDKBN-KBNNUM-EDA PIC  9(02).
+              05  RECE05-CDKBN-KOUBAN     PIC  9(02).
+              05  RECE05-KOUHYOJYUNNUM    PIC  9(09).

@@ -22,6 +22,9 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03.01.17  データ区分の追加
+      *  01.00.02    NACL-門脇    03.09.29  包括対象検査情報の追加
+      *                                     検査等実施判断情報の追加
+      *                                     各種番号等情報の追加
       ************************************************************
       *01  RECE65-REC.
            03  RECE65-KEY.
@@ -98,3 +101,21 @@
       *データ区分情報
           03  RECE65-DATAKBNINF           OCCURS  5.
               05  RECE65-DATAKBN          PIC  9(01).
+      *包括対象検査情報
+          03  RECE65-HOUKNSKBNINF         OCCURS  5.
+      *包括対象検査
+              05  RECE65-HOUKNSKBN        PIC  9(02).
+      *検査等実施判断情報
+          03  RECE65-KNSJISKBNINF         OCCURS  5.
+      *検査等実施判断
+              05  RECE65-KNSJISKBN        PIC  9(01).
+      *各種番号等情報
+          03  RECE65-CDKBNINF             OCCURS  5.
+      *各種番号等
+              05  RECE65-CDKBN-KBN        PIC  X(01).
+              05  RECE65-CDKBN-SYO        PIC  9(01).
+              05  RECE65-CDKBN-BU         PIC  9(02).
+              05  RECE65-CDKBN-KBNNUM     PIC  9(03).
+              05  RECE65-CDKBN-KBNNUM-EDA PIC  9(02).
+              05  RECE65-CDKBN-KOUBAN     PIC  9(02).
+              05  RECE65-KOUHYOJYUNNUM    PIC  9(09).

@@ -79,12 +79,24 @@
            03  RECE44-TEIGENRATE          PIC  X(01).
       *コメントコードフラグ
            03  RECE44-COMCDFLG            PIC  X(01).
+      *
+      *初診料算定科：
+           03  RECE44-SYOSANTEIKA-COMMENT PIC  X(01).
+      *再診料算定科：
+           03  RECE44-SAISANTEIKA-COMMENT PIC  X(01).
+      *同日再診
+           03  RECE44-DOUJITUSAI-COMMENT  PIC  X(01).
+      *リハビリ
+           03  RECE44-RIHABIRI-COMMENT    PIC  X(01).
+      *
       *慢性疼痛疾患管理料
            03  RECE44-FLG-SHIDOU-COMMENT  PIC  X(01).
       *傷病手当金意見書交付料
            03  RECE44-FLG-SYOBYO-COMMENT  PIC  X(01).
       *療養費同意書交付料
            03  RECE44-FLG-RYOYO-COMMENT   PIC  X(01).
+      *訪問看護指示料
+           03  RECE44-FLG-HOUSIJI-COMMENT PIC  X(01).
       *手術（輸血は除く）
            03  RECE44-FLG-SHUJUTU-COMMENT PIC  X(01).
       *ＣＴ・ＭＲＩ
