@@ -2210,8 +2210,28 @@
                                        TO   SRT-SRYACCT-HOUKNSKBN
                                                           (SRT-IDX1)
       *
-                       IF    ( WRK-SRYCD (1:1) =   "6"  OR  "7" )
-                           CONTINUE
+                       IF    ( WRK-SRYCD   (1:1) =   "6"  OR  "7" )
+                           IF  ( ACCT-SRYKBN     =   "21"
+                                                  OR "22"
+                                                  OR "23" )
+                               CONTINUE
+                           ELSE
+                               MOVE    ALL "9"
+                                       TO   SRT-SRYACCT-CDKBN-SYO
+                                                          (SRT-IDX1)
+                                            SRT-SRYACCT-CDKBN-BU
+                                                          (SRT-IDX1)
+                                            SRT-SRYACCT-CDKBN-KBN
+                                                          (SRT-IDX1)
+                                            SRT-SRYACCT-CDKBN-KBNNUM
+                                                          (SRT-IDX1)
+                                            SRT-SRYACCT-CDKBN-KBNNUM-EDA
+                                                          (SRT-IDX1)
+                                            SRT-SRYACCT-CDKBN-KOUBAN
+                                                          (SRT-IDX1)
+                                            SRT-SRYACCT-KOUHYOJYUNNUM
+                                                          (SRT-IDX1)
+                           END-IF
                        ELSE
       *
                            MOVE   TNS-CDKBN-SYO
@@ -2227,13 +2247,13 @@
                                        TO   SRT-SRYACCT-CDKBN-KBNNUM
                                                           (SRT-IDX1)
                            MOVE   TNS-CDKBN-KBNNUM-EDA
-                                       TO  SRT-SRYACCT-CDKBN-KBNNUM-EDA
+                                       TO   SRT-SRYACCT-CDKBN-KBNNUM-EDA
                                                           (SRT-IDX1)
                            MOVE   TNS-CDKBN-KOUBAN
-                                       TO  SRT-SRYACCT-CDKBN-KOUBAN
+                                       TO   SRT-SRYACCT-CDKBN-KOUBAN
                                                           (SRT-IDX1)
                            MOVE   TNS-KOUHYOJYUNNUM
-                                       TO  SRT-SRYACCT-KOUHYOJYUNNUM
+                                       TO   SRT-SRYACCT-KOUHYOJYUNNUM
                                                           (SRT-IDX1)
                        END-IF
                    END-IF
@@ -2252,8 +2272,8 @@
                    END-IF
                END-IF
       *
-               IF    ( ACCT-SRYKBN     =   "21" OR "60" 
-                                       OR  "70" OR "80" )
+               IF    ( ACCT-SRYKBN     =   "21" OR "40" 
+                                       OR  "60" OR "80" )
                    CONTINUE
                ELSE
                    MOVE     ACCT-ZAITEN
