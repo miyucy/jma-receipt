@@ -45,6 +45,7 @@
       *                                     チェックを追加する
       *  01.00.08   NACL-藤原     04/07/15  診療会計テーブルの読み込みを
       *                                     グループ化に変更
+      *                                     SRYACCT30→37
       *                                     会計を残して入院取消を行った
       *                                     ままの入院会計は対象としない
       *****************************************************************
@@ -957,7 +958,7 @@
       *
       *        受給者検証番号チェック区分よりチェック
                IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-NAI-JKYSKENSNUMCHKKBN )
+               AND   ( SPA-NAI-JKYSKENSNUMCHKKBN )
                                        =   "1"
                    INITIALIZE                      LNK-CHKDGT-AREA
                    MOVE    2                   TO  LNK-I-SYORIKBN
