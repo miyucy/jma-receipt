@@ -50,11 +50,6 @@
       *    スパ領域
            COPY    "M00COMMON-SPA".
       *
-      *    マスタ更新シェル領域 
-           COPY    "CPCOMMONSHELLMST.INC".
-      *
-           COPY    "CPSHELLTBL.INC".
-      *
            COPY    "ORCA-DBPATH".
       *
        01  SPA-M96.
@@ -130,6 +125,14 @@
        01  WRK-JOBKANRI-AREA.
            03  WRK-JOBKANRI-MODE   PIC X(03). 
            03  WRK-JOBKANRI-RETURN PIC S9(03).
+      *
+           COPY    "CPSHELLTBL.INC".
+      *
+           COPY    "CPMKPASS.INC".
+      *
+       01  SHELL-AREA.
+           03  SHELL-NAME          PIC X(33)  VALUE
+               "scripts/allways/master_upgrade.sh".
       *
       *****************************************************************
       *    連絡　領域
@@ -713,22 +716,20 @@
            MOVE    "UPD"               TO  SKBN-SYU1.
            PERFORM 202-DISPLAY-SEC.
       *    マスタ更新処理
-           MOVE    "master_upgrade.sh" TO  SHELL-SHELL.
+           MOVE    SPACE                TO  SHELLTBL
+           INITIALIZE                   ORCSMKPASSAREA
+           MOVE    SHELL-NAME           TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"         USING  ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01         TO  SHELLTBL-NAME
+           MOVE    SHELLTBL             TO  MCPDATA-REC
       *
-           MOVE    SPACE               TO  SHELLTBL.
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME.
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1.
-           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2.
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3.
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4.
-           MOVE    SHELLTBL            TO  MCPDATA-REC.
+           MOVE    "SHELL"              TO  MCP-FUNC
+           MOVE    PATH-SHELL-SHELL     TO  MCP-PATH
+           CALL    "MCPSUB"             USING
+                                        MCPAREA
+                                        MCPDATA-REC
       *
-           MOVE    "SHELL"             TO  MCP-FUNC.
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH.
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
-      *
+           .
        203-UPDATE-2-EXT.
            EXIT.
       *
