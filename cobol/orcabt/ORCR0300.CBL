@@ -67,6 +67,7 @@
       *  01.00.22    NACL-藤原    03/12/17  特定器材の単位コード編集
       *  01.00.23    NACL-藤原    03/12/19  病床数を一般病床数から編集
       *                                     山形の地方公費対応（国保）
+      *  01.00.24    NACL-藤原    04/01/19  病床数の記載の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -976,6 +977,18 @@
            IF      SYS-1001-BEDSUIPN   >=  200
                MOVE    SYS-1001-BEDSUIPN   TO  WRK-NUM
                MOVE    3                   TO  WRK-NAGASA
+           END-IF
+           IF    ( SYS-1001-BEDSU      >   ZERO )
+           AND   ( SYS-1001-HOSPSBT    =   "1"  ) 
+               IF      RECE02-BEDSUFLG     =   "1" 
+                   MOVE    SYS-1001-BEDSU      TO  WRK-NUM
+                   MOVE    4                   TO  WRK-NAGASA
+               ELSE
+                   IF      SYS-1001-BEDSUIPN   >=  200
+                       MOVE    SYS-1001-BEDSUIPN   TO  WRK-NUM
+                       MOVE    4                   TO  WRK-NAGASA
+                   END-IF
+               END-IF
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC         
       *    カルテ番号等

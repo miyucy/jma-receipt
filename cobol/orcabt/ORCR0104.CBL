@@ -50,6 +50,7 @@
       *  01.00.14    NACL-ÌçÏÆ    03/11/26  ¼«Èñ¥ì¥»¥×¥È¤Î¼«ÈñÊ¬
       *                                     Å¦Í×Íóµ­ºÜÂÐ±þ
       *  01.00.15    NACL-Æ£¸¶    04/01/16  Â³»æ»ÍÊ¬³ä¤Îµ­ºÜ¿ô¤Î½¤Àµ
+      *  01.00.16    NACL-Æ£¸¶    04/01/19  ÉÂ¾²¿ô¤Îµ­ºÜ¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -311,7 +312,7 @@
            03  WRK-HKNJANUM        PIC X(08).
            03  WRK-KYURATE-9       PIC 9(03).
            03  WRK-KYURATE         PIC Z9.
-           03  WRK-BEDSU           PIC ZZ9.
+           03  WRK-BEDSU           PIC ZZZ.
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -1726,8 +1727,18 @@
       *     END-IF
       *
       *    ÉÂ¾²¿ô
-           MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
-           MOVE    WRK-BEDSU           TO  HC06-BEDSU
+           IF    ( SYS-1001-BEDSU      >   ZERO )
+           AND   ( SYS-1001-HOSPSBT    =   "1"  ) 
+               IF      RECE02-BEDSUFLG     =   "1" 
+                   MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
+                   MOVE    WRK-BEDSU           TO  HC06-BEDSU
+               ELSE
+                   IF      SYS-1001-BEDSUIPN   >=  200
+                       MOVE    SYS-1001-BEDSUIPN   TO  WRK-BEDSU
+                       MOVE    WRK-BEDSU           TO  HC06-BEDSU
+                   END-IF
+               END-IF
+           END-IF
       *
       *    £Ï£Ã£Ò
            IF  CNT-PAGE                =   1

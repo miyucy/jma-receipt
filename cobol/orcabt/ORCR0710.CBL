@@ -57,6 +57,7 @@
       *                                     件数の集計方法を変更する
       *  01.00.22    NACL-門脇    03/11/26  自費レセプトの自費分
       *                                     摘要欄記載対応
+      *  01.00.23    NACL-藤原    04/01/19  病床数の記載の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -359,7 +360,7 @@
            03  WRK-HKNJANUM        PIC X(08).
            03  WRK-KYURATE-9       PIC 9(03).
            03  WRK-KYURATE         PIC Z9.
-           03  WRK-BEDSU           PIC ZZ9.
+           03  WRK-BEDSU           PIC ZZZ.
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -1775,8 +1776,18 @@
            END-IF    
       *
       *    病床数
-           MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
-           MOVE    WRK-BEDSU           TO  HC06-BEDSU
+           IF    ( SYS-1001-BEDSU      >   ZERO )
+           AND   ( SYS-1001-HOSPSBT    =   "1"  ) 
+               IF      RECE62-BEDSUFLG     =   "1" 
+                   MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
+                   MOVE    WRK-BEDSU           TO  HC06-BEDSU
+               ELSE
+                   IF      SYS-1001-BEDSUIPN   >=  200
+                       MOVE    SYS-1001-BEDSUIPN   TO  WRK-BEDSU
+                       MOVE    WRK-BEDSU           TO  HC06-BEDSU
+                   END-IF
+               END-IF
+           END-IF
       *
       *    県単用項目
       *    但し、レセプト種別不明のときは原因を編集する
