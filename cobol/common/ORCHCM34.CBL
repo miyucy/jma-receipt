@@ -85,6 +85,7 @@
            03  FLG-PTNYUINRRK                      PIC 9(01).
            03  FLG-LINECHK                         PIC 9(01).
            03  FLG-RSIJBI-AREA-HEN                 PIC 9(01).
+           03  FLG-JIBAI                           PIC 9(01).
            03  FLG-SRYACT-HEN5                     PIC 9(01).
            03  FLG-COMMENT-CHK                     PIC 9(01).
            03  FLG-PTCOM                           PIC 9(01).
@@ -278,6 +279,8 @@
            03  WRK-SRYCD                           PIC X(09).
            03  WRK-SRYSYUKBN                       PIC X(03).
            03  WRK-TANINAME                        PIC X(24).
+           03  WRK-JBI-SONOTA-KBN                  PIC X(01).
+           03  WRK-JBI-RYOYO-TEATE-KBN             PIC X(01).
       *
        01  COMMENT-CHK-AREA.
            03  COMMENT-IDX                         PIC 9(03).
@@ -443,6 +446,11 @@
            03  CONST-SRYKAMEI-LEN          PIC 9(05)   VALUE   32.
            03  CONST-GAZOU-TANICD          PIC X(03)   VALUE   "006".
            03  CONST-SRYACCT-MAX           PIC 9(05)   VALUE   1000.
+           03  CONST-RYOYO-TEATE-GAI       PIC X(09)   VALUE
+               "199000610".
+           03  CONST-RYOYO-TEATE-NYU       PIC X(09)   VALUE
+               "199000510".
+      *
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"
@@ -551,6 +559,9 @@
       *    診療科目情報
            COPY    "CPSK1005.INC".
       *
+      *    労災自賠責医療機関情報設定
+           COPY    "CPSK4001.INC".
+      *
       *    病棟情報
            COPY    "CPSK5001.INC".
       *
@@ -655,6 +666,9 @@
       *    医療機関情報取得処理
            PERFORM 1001-SYS1001-GET-SEC
       *
+      *    労災自賠責医療機関情報取得処理
+           PERFORM 1001-SYS4001-GET-SEC
+      *
       *    保険の種類・公費の種類編集処理
            PERFORM 1001-HKNKOH-HEN-SEC
       *    診療科編集処理
@@ -716,6 +730,37 @@
       *
            .
        1001-SYS1001-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    医療機関情報取得処理
+      *****************************************************************
+       1001-SYS4001-GET-SEC                SECTION.
+      *
+      *    医療機関ＩＤ編集
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    ORCHCM34-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-4001-REC
+           ELSE
+               INITIALIZE                  SYS-4001-REC
+           END-IF
+      *
+           .
+       1001-SYS4001-GET-EXT.
            EXIT.
       *****************************************************************
       *    基本情報編集
@@ -2378,6 +2423,9 @@
            MOVE    ZERO                TO  FLG-SRYACT-HEN5
            MOVE    ZERO                TO  FLG-MINUS
            MOVE    ZERO                TO  FLG-RSIJBI-AREA-HEN
+           MOVE    ZERO                TO  FLG-JIBAI
+           MOVE    SPACE               TO  WRK-JBI-SONOTA-KBN
+           MOVE    SPACE               TO  WRK-JBI-RYOYO-TEATE-KBN
       *
       *    診療行為マスター読み込み
            MOVE    ZERO                TO  FLG-SRYACT
@@ -2429,6 +2477,10 @@
                    GO  TO  20011-SRYACT-HEN-EXT
                END-IF
       *
+               IF   ( WRK-HKNNUM       =   "973" )
+                   MOVE    1           TO  FLG-JIBAI
+               END-IF
+      *
                IF   ( ACCT-SRYKBN      =   "11" OR "12" OR "13" )
                    MOVE    1           TO  FLG-RSIJBI-AREA-HEN
                END-IF
@@ -2469,7 +2521,6 @@
       *                自費の時、金額を表示
                        IF    ( SRY-SRYKBN  =   "95"  OR  "96" )
                            PERFORM 200111-JIHIMEI-HEN-SEC
-                           CONTINUE
                        ELSE
                            PERFORM 200111-ZAIMEI-HEN-SEC
                        END-IF
@@ -2489,28 +2540,34 @@
            MOVE    "SRYACT-KEY2"           TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
-           IF    ( FLG-RSIJBI-AREA-HEN =   1 )
+           EVALUATE    TRUE
+      *
+           WHEN  ( FLG-RSIJBI-AREA-HEN =   1 )
                PERFORM 200111-RSIJBI-SRYACT-HEN-SEC
-           ELSE
-      *        自費の時、計を表示しない
-               IF    ( ACCT-SRYKBN     =   "95"  OR  "96" )
-                   CONTINUE
-               ELSE
-                   IF    ( WRK-TNS-HOUKNSKBN   NOT =   ZERO )
-                       IF    ( FLG-SRYACT-HEN5 NOT =   ZERO )
-                           PERFORM 210-WRK-SRYACT-TBL-HEN5-SEC
-                       END-IF
-                       IF    ( CNT-HOUSRYACT   >   1   )
-      *                    検査数編集処理
-                           PERFORM 200111-KENSASU-HEN-SEC
-                       END-IF
+      *
+           WHEN  ( WRK-JBI-SONOTA-KBN      NOT =   SPACE )
+               PERFORM 200111-JBI-SONOTA-HEN-SEC
+           WHEN  ( WRK-JBI-RYOYO-TEATE-KBN NOT =   SPACE )
+               PERFORM 200111-JBI-RYOYO-TEATE-HEN-SEC
+      *
+           WHEN  ( ACCT-SRYKBN         =   "95"  OR  "96" )
+               CONTINUE
+      *
+           WHEN    OTHER
+               IF    ( WRK-TNS-HOUKNSKBN   NOT =   ZERO )
+                   IF    ( FLG-SRYACT-HEN5 NOT =   ZERO )
+                       PERFORM 210-WRK-SRYACT-TBL-HEN5-SEC
                    END-IF
-      *            点数回数編集処理
-                   MOVE    ACCT-ZAITEN         TO  WRK-ZAITEN
-                   MOVE    ACCT-ZAIKAISU       TO  WRK-ZAIKAISU
-                   PERFORM 205-TENSUKAISU-HEN-SEC
+                   IF    ( CNT-HOUSRYACT   >   1   )
+      *                検査数編集処理
+                       PERFORM 200111-KENSASU-HEN-SEC
+                   END-IF
                END-IF
-           END-IF
+      *        点数回数編集処理
+               MOVE    ACCT-ZAITEN         TO  WRK-ZAITEN
+               MOVE    ACCT-ZAIKAISU       TO  WRK-ZAIKAISU
+               PERFORM 205-TENSUKAISU-HEN-SEC
+           END-EVALUATE
       *
            MOVE    "5"                     TO  WRK-ITEM-KBN
            MOVE    ZERO                    TO  FLG-LINE
@@ -2716,6 +2773,50 @@
        200111-RSIJBI-SRYACT-HEN-EXT.
            EXIT.
       *****************************************************************
+      *   自賠責その他編集処理
+      *****************************************************************
+       200111-JBI-SONOTA-HEN-SEC       SECTION.
+      *
+           COMPUTE WRK-ZAITEN  =   ACCT-ZAITEN *   10
+      *
+           MOVE    ACCT-ZAIKAISU       TO  WRK-ZAIKAISU
+      *
+           IF    ( WRK-JBI-SONOTA-KBN          =   "1"  OR "2" )
+                IF   ( SYS-4001-TAXKBN         =   "2" )
+                  IF ( SYS-1001-TAX-HASU-KBN   =   "1" )
+                     COMPUTE  WRK-ZAITEN
+                         =  ( WRK-ZAITEN   *   1.05)  +  0.5
+                  ELSE
+                     COMPUTE  WRK-ZAITEN
+                         =    WRK-ZAITEN   *   1.05
+                  END-IF
+                END-IF
+           END-IF
+      *
+           PERFORM 205-KINGAKUKAISU-HEN-SEC
+      *
+           .
+       200111-JBI-SONOTA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *   自賠責療養担当手当編集処理
+      *****************************************************************
+       200111-JBI-RYOYO-TEATE-HEN-SEC  SECTION.
+      *
+           IF    ( WRK-JBI-RYOYO-TEATE-KBN     =   "1" )
+               MOVE    120             TO  WRK-ZAITEN
+           ELSE
+               MOVE    84              TO  WRK-ZAITEN
+           END-IF
+      *
+           MOVE    ACCT-ZAIKAISU       TO  WRK-ZAIKAISU
+      *
+           PERFORM 205-KINGAKUKAISU-HEN-SEC
+      *
+           .
+       200111-JBI-RYOYO-TEATE-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *   剤内明細  編集処理
       *****************************************************************
        200111-ZAIMEI-HEN-SEC           SECTION.
@@ -2768,16 +2869,15 @@
       *    IF    ( SRY-SRYCD  (IDX9)(1:1)  =   "6"  OR  "7" )
       *     AND  ( TNS-TANINAME        NOT =   SPACE )
            IF    ( TNS-TANINAME        NOT =   SPACE )
-               MOVE    TNS-TANINAME        TO  WRK-TANINAME
-               PERFORM 2001111-SURYO-HEN-SEC
-           END-IF
-      *
-      *    画像診断
-           IF    ( SRY-SRYCD  (IDX9)(1:1)  =   "1" )
-             AND ( SRY-SRYKBN              =   "70" )
-             AND ( TNS-TANICD              =   CONST-GAZOU-TANICD )
-               MOVE    "回"                TO  WRK-TANINAME
-               PERFORM 2001111-SURYO-HEN-SEC
+               IF    ( SRY-SRYCD  (IDX9)(1:1)  =   "1" )
+                 AND ( SRY-SRYKBN              =   "70" )
+                 AND ( TNS-TANICD              =   CONST-GAZOU-TANICD )
+                   MOVE    "回"                TO  WRK-TANINAME
+                   PERFORM 2001111-SURYO-HEN-SEC
+               ELSE
+                   MOVE    TNS-TANINAME        TO  WRK-TANINAME
+                   PERFORM 2001111-SURYO-HEN-SEC
+               END-IF
            END-IF
       *
       *    分画数
@@ -2807,6 +2907,32 @@
                    COMPUTE CNT-HOUSRYACT   =   CNT-HOUSRYACT   +   1
                    MOVE    1           TO  FLG-SRYACT-HEN5
                END-IF
+           END-IF
+      *
+           IF    ( FLG-JIBAI           =   1 )
+            AND  ( SRY-SRYKBN          =   "80" )
+      *
+               IF    ( SRY-SRYCD (IDX9)(1:3)   =   "095" )
+                   EVALUATE    SRY-SRYCD (IDX9)(1:5)
+                   WHEN    "09591"
+                       MOVE    "1"     TO  WRK-JBI-SONOTA-KBN
+                   WHEN    "09592"
+                       MOVE    "2"     TO  WRK-JBI-SONOTA-KBN
+                   WHEN    "09593"
+                       MOVE    "3"     TO  WRK-JBI-SONOTA-KBN
+                   END-EVALUATE
+               ELSE
+                   IF    ( SRY-SRYCD (IDX9)
+                                       =   CONST-RYOYO-TEATE-GAI )
+                       MOVE    "2"     TO  WRK-JBI-RYOYO-TEATE-KBN
+                   END-IF
+      *
+                   IF    ( SRY-SRYCD (IDX9)
+                                       =   CONST-RYOYO-TEATE-NYU )
+                       MOVE    "1"     TO  WRK-JBI-RYOYO-TEATE-KBN
+                   END-IF
+               END-IF
+      *
            END-IF
       *
            .
