@@ -308,6 +308,7 @@
            03  WRK-NYUGAIKBN       PIC X(01).
            03  WRK-PTNUM           PIC X(20).
            03  WRK-MISYU           PIC S9(08).
+           03  WRK-TBL-SEL-MOT     PIC 9(05).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -1195,6 +1196,7 @@
                GO  TO  300-SYUNOU-HENSYU-EXT
            END-IF
       *
+           MOVE    SPA-GMN-TBL-SEL     TO  WRK-TBL-SEL-MOT
       *
            MOVE    ZERO                TO  SPA-GMN-MAX
            INITIALIZE                      SPA-GMN-TBL
@@ -1216,6 +1218,8 @@
            END-IF
       *
            MOVE    IDX1                 TO  SPA-GMN-MAX
+      *
+           MOVE    WRK-TBL-SEL-MOT      TO  SPA-GMN-TBL-SEL
       *
            .
        300-SYUNOU-HENSYU-EXT.
