@@ -114,6 +114,8 @@
            03  IDY                 PIC 9(04).
            03  IDG                 PIC 9(04).
            03  IDH                 PIC 9(04).
+           03  IDH2                PIC 9(04).
+           03  IDH3                PIC 9(04).
            03  IDK                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDZ2                PIC 9(04).
@@ -247,11 +249,6 @@
            03  WRK-JIDMSG.
                05  WRK-JIDMSG1     PIC X(40).
                05  WRK-JIDMSG2     PIC X(40).
-      *    È¯À¸Ç¯·îÆü
-           03  WRK-HASSYOYMD.
-               05  WRK-HAS-YY      PIC 9(04).
-               05  WRK-HAS-MM      PIC 9(02).
-               05  WRK-HAS-DD      PIC 9(02).
       *
       *    ´µ¼ÔÇ¯Îð»»½ÐÍÑ¥¨¥ê¥¢
        01  WRK-NENREI-AREA.
@@ -1861,10 +1858,16 @@
                                                         (SPA-I41-MAX-41)
                MOVE    COMB-TEKEDYMD       TO  SPA-I41-TTEKEDYMD-41
                                                         (SPA-I41-MAX-41)
+               MOVE    COMB-HKNNUM         TO  SPA-I41-HKNNUM-41
+                                                        (SPA-I41-MAX-41)
       *        ÊÝ¸±ÁÈ¹ç¤»Ì¾¾Î
                MOVE    COMB-HKNCOMBINUM    TO  WRK-HKNCOMBI
                PERFORM 5101-HKNCOMBI-SET-SEC
                MOVE    WRK-HKNCOMBIMEI     TO  SPA-I41-TKUMI-41
+                                                        (SPA-I41-MAX-41)
+               MOVE    PTRSI-SISIKBN       TO  SPA-I41-SISIKBN-41
+                                                        (SPA-I41-MAX-41)
+               MOVE    PTRSI-HKNKBN        TO  SPA-I41-HKNKBN-41
                                                         (SPA-I41-MAX-41)
              END-IF
       *
@@ -3375,8 +3378,44 @@
                GO      TO      420-ZAIHENKOU-EXT
            END-IF.
       *
+           PERFORM VARYING    IDH2     FROM    1   BY  1
+                   UNTIL      IDH2     >   31
+               IF    SPA-NAI-DAY-41  (SPA-GMN-NUM-41 IDH2)  NOT =  ZERO
+                   MOVE  IDH2      TO  IDH3
+                   MOVE  32        TO  IDH2
+               END-IF
+           END-PERFORM.
+      *
+           PERFORM   VARYING  IDH  FROM  1  BY 1
+                     UNTIL    IDH    >   SPA-GENSAN-ST4-41
+               IF      SPA-NAI-TZAISKBKBN-41 (IDH)   =  "5"
+                   PERFORM VARYING     IDH2    FROM    1   BY  1
+                           UNTIL       IDH2    >   SPA-I41-MAX-41
+                       IF      SPA-NAI-DAY-41 (IDH IDH3)
+                                        =   SPA-I41-THKNCOMBI-41 (IDH2)
+                           MOVE    SPA-I41-TKUMI-41  (IDH2)
+                                                TO  SPA-I40-HKNCOMBIMEI
+                           MOVE    SPA-I41-TFTNWARI-41  (IDH2)
+                                                TO  SPA-I40-FTNRATEMEI
+      *    Ï«ºÒ¡¢¼«ÇåÀÕ ¤È·òÊÝ¤ÎÊÝ¸±¶èÊ¬ÀßÄê
+                           IF      SPA-I41-HKNNUM-41 (IDH2)
+                                                   =   "971"  OR  "973"
+                               MOVE    1            TO  SPA-HKNKBN
+                               MOVE    SPA-I41-SISIKBN-41 (IDH2)
+                                                    TO  SPA-RSI-SISIKBN
+                               MOVE    SPA-I41-HKNKBN-41 (IDH2)
+                                                    TO  SPA-RSI-HKNKBN
+                           ELSE
+                               MOVE    ZERO         TO  SPA-HKNKBN
+                           END-IF
+                           MOVE    SPA-I41-MAX-41  TO  IDH2
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM.
+      *
       *    Ï«ºÒ¤Î»þ¡¢ºÞÅÀ¿ô¤¬³°Íè´ÉÍý²Ã»»ÎÁ¤Ë¿¶¤êÂØ¤¨¤¿»þ¡¢¥¨¥é¡¼
-           IF      SPA-NAI-HKNKBN-41      =   1
+           IF      SPA-HKNKBN   =   1
                PERFORM 4201-RIS-ZAIHENKOU-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    MOVE    1                   TO  SPA-GMN-CUR-41
@@ -3424,18 +3463,6 @@
            MOVE    SPA-NAI-ROUJIN-41 (IDX)   TO  SPA-ROUJIN.
       *    ºÞÅÀ¿ô
            MOVE    SPA-NAI-ZAITEN-41 (IDX)   TO  SPA-ZAITEN.
-      *
-           PERFORM VARYING     IDH     FROM    1   BY  1
-                   UNTIL       IDH     >   SPA-I41-MAX-41
-               IF      SPA-NAI-HKNCOMBI-41 (IDX)
-                                       =   SPA-I41-THKNCOMBI-41 (IDH)
-                   MOVE    SPA-I41-TKUMI-41  (IDH)
-                                           TO  SPA-I40-HKNCOMBIMEI
-                   MOVE    SPA-I41-TFTNWARI-41  (IDH)
-                                           TO  SPA-I40-FTNRATEMEI
-                   MOVE    SPA-I41-MAX-41  TO  IDH
-               END-IF
-           END-PERFORM.
       *    ²ó¿ô¥Æ¡¼¥Ö¥ë
            MOVE    SPA-GMN-DAY-G-41    TO  SPA-SEL-DAY-G.
       *
@@ -3456,16 +3483,10 @@
                END-IF
            END-PERFORM.
       *
-           MOVE    SPA-SRYYMD          TO  SPA-MAE-SRYYMD.
-           MOVE    SPA-PTID            TO  SPA-MAE-PTID.
-           MOVE    SPA-I40-SRYYMD      TO  SPA-SRYYMD.
-           MOVE    SPA-GMN-PTID        TO  SPA-PTID.
-      *
-      *    Ï«ºÒ
-           MOVE    SPA-NAI-HKNKBN-41   TO  SPA-HKNKBN.
-           MOVE    SPA-NAI-SISIKBN-41  TO  SPA-RSI-SISIKBN.
-      *    Ï«ºÒ¶èÊ¬
-           MOVE    SPA-NAI-RSI-HKNKBN  TO  SPA-RSI-HKNKBN.
+           MOVE    SPA-SRYYMD              TO  SPA-MAE-SRYYMD.
+           MOVE    SPA-PTID                TO  SPA-MAE-PTID.
+           MOVE    SPA-I40-SRYYMD          TO  SPA-SRYYMD.
+           MOVE    SPA-GMN-PTID            TO  SPA-PTID.
       *
            MOVE    SPA-GMN-SRYKA-I-41      TO  SPA-I40-SRYKA.
            MOVE    SPA-GMN-SRYKAMEI-I-41   TO  SPA-I40-SRYKAMEI.
@@ -3477,8 +3498,8 @@
                GO      TO       420-ZAIHENKOU-SYORI-EXT
            END-IF.
       *
-           MOVE    SPACE                  TO  SPA-IIDCD.
-           INITIALIZE                     SPA-GMN-INPUT-41.
+           MOVE    SPACE               TO  SPA-IIDCD.
+           INITIALIZE                  SPA-GMN-INPUT-41.
       *
            MOVE    "I41"               TO  SPA-MOTOPG.
            MOVE    "I44"               TO  SPA-SAKIPG.
@@ -5864,18 +5885,6 @@
                          INTO              WRK-HKNCOMBIMEI
                END-STRING
            END-IF.
-           MOVE    ZERO                TO  SPA-NAI-SISIKBN-41.
-      *    ÊÝ¸±¶èÊ¬ÊÔ½¸
-           EVALUATE    COMB-HKNNUM
-      *        Ï«ºÒ
-               WHEN    "971"
-      *        ¼«ÇåÀÕ
-               WHEN    "973"
-                   MOVE    1                   TO  SPA-NAI-HKNKBN-41
-               WHEN    OTHER
-      *        ·òÊÝ
-                   MOVE    ZERO                TO  SPA-NAI-HKNKBN-41
-           END-EVALUATE.
       *
       *    Ï«ºÒ¤Î»þ¡¢¥³¥á¥ó¥È¤ÎÄÉ²Ã
            IF      COMB-HKNNUM         =   "971"  OR  "973"
@@ -5925,34 +5934,6 @@
                            INTO              WRK-HKNCOMBIMEI
                    END-STRING
                END-IF
-      *
-      *        »Í»è¶èÊ¬
-               MOVE    PTRSI-SISIKBN       TO  SPA-NAI-SISIKBN-41
-      *        Ï«ºÒ¶èÊ¬
-               MOVE    PTRSI-HKNKBN        TO  SPA-NAI-RSI-HKNKBN
-      *        ½ýÉÂÇ¯·îÆü
-               IF      PTRSI-HKNKBN        =   "1"  OR  "2"  OR  "4"
-                   MOVE    PTRSI-SHOBYOYMD     TO  SPA-RSI-SHOBYOYMD-41
-               ELSE
-                   MOVE    PTRSI-SINSATUYMD    TO  SPA-RSI-SHOBYOYMD-41
-               END-IF
-      *        È¯À¸Ç¯·îÆü¡Ü£³·î
-      *        È¯À¸Æü¤òµá¤á¤ë
-      *        µßµÞ°åÎÅ´ÉÍý²Ã»»¤Î¥Á¥§¥Ã¥¯
-               MOVE    SPACE               TO  WRK-HASSYOYMD
-               MOVE    "101110030"         TO  WRK-SRYCD
-               IF      WRK-HASSYOYMD       =   SPACE
-                  MOVE    SPA-RSI-SHOBYOYMD-41 TO  WRK-HASSYOYMD
-               END-IF
-      *        È¯À¸Æü¤«¤é£³¥ö·î¤Î·×»»
-               IF      WRK-HASSYOYMD       NOT =   SPACE
-                   COMPUTE WRK-HAS-MM          =   WRK-HAS-MM    +   3
-                   IF      WRK-HAS-MM          >   12
-                       COMPUTE WRK-HAS-MM      =   WRK-HAS-MM    -   12
-                       COMPUTE WRK-HAS-YY      =   WRK-HAS-YY    +   1
-                   END-IF
-               END-IF
-               MOVE    WRK-HASSYOYMD       TO  SPA-RSI-HASSYOYMD3
            END-IF.
       *
        5101-HKNCOMBI-SET-EXT.
