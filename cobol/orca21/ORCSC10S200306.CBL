@@ -3325,6 +3325,8 @@
                                WHEN    "113005470"
                                WHEN    "112005970"
                                WHEN    "111010670"
+      *                        ³«Êü·¿ÉÂ±¡¶¦Æ±»ØÆ³ÎÁ¡Ê£±¡Ë
+                               WHEN    "180010510"
                                    CONTINUE
                                WHEN    OTHER
                                    MOVE    ZERO            TO  FLG-OK
