@@ -162,10 +162,10 @@ P02	{
 				};
 				P02_HOJOKBNCOB	{
 					P02_HOJOKBN	{
-						value	varchar(12);
+						value	varchar(16);
 					};
 					count	int;
-					item	varchar(12)[15];
+					item	varchar(16)[15];
 				};
 				P02_CONTKBNCOB	{
 					P02_CONTKBN	{
