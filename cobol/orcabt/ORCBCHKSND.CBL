@@ -304,8 +304,7 @@
                                        WRK-PARA-SHELLID
                                        WRK-PARA-HOSPID
       *
-           MOVE    "適用病名情報更新"
-                                       TO  WRK-TITLE
+           MOVE    "適用病名情報更新"  TO  WRK-TITLE
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -1072,7 +1071,7 @@
            MOVE    CHK-YUKOSTYMD   TO  CHKSND-YUKOEDYMD
            MOVE    CHK-CDKBN       TO  CHKSND-CDKBN
       *
-           MOVE    CHK-REC         TO  MCPDATA-REC
+           MOVE    CHKSND-REC      TO  MCPDATA-REC
            MOVE    PATH-TBL-CHKSND-KEY3
                                    TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
