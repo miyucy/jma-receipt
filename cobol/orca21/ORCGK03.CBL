@@ -43,6 +43,7 @@
       *  02.00.08    NACL-多々納  02/12/11  ドクターエラーカーソル位置修正
       *  02.00.09    NACL-多々納  02/12/16  ドクター未入力ＯＫ追加
       *  02.00.10    NACL-多々納  02/12/17  診療種別の判定追加
+      *  02.00.11    NACL-多々納  02/12/18  継続の時入金額を今回請求額へ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2007,6 +2008,8 @@
                    IF      SPA-DOUJI-DENPNUM   =   ZERO
                        MOVE    SYU-DENPNUM     TO  SPA-DOUJI-DENPNUM
                    END-IF
+      *            入金額を今回請求額とする
+                   MOVE    SYU-SKYMONEY        TO  SYU-NYUKIN-TOTAL
                END-IF
       *        継続区分
                MOVE    SPA-CONTKBN         TO  SYU-CONTKBN
