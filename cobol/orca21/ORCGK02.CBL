@@ -56,6 +56,7 @@
       *  03.00.08    NACL-多々納  02/11/11  ＤＵＭＭＹ診察料追加
       *  03.00.09    NACL-多々納  02/11/20  自賠責器材追加
       *  03.00.10    NACL-多々納  02/11/28  中途終了再表示修正
+      *  03.00.11    NACL-多々納  02/12/26  前回処方のドクター変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -498,6 +499,8 @@
       *
       *    初期業務識別区分
            03  WRK-GYOUMU-KBN          PIC X(04).
+      *    ドクターコード
+           03  WRK-DRCD                PIC X(05).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -4422,6 +4425,9 @@
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
            MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
       *
+           MOVE    SPA-DRCD            TO  WRK-DRCD
+           MOVE    SPACE               TO  SPA-DRCD
+      *
       *    初期ＳＰＡ編集処理
            INITIALIZE                  ORCSC95AREA
            MOVE    SPA-NAI-SRYYMD      TO  LNK-SC95-SRYYMD
@@ -4441,6 +4447,9 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
+           IF      SPA-DRCD            =   SPACE
+               MOVE    WRK-DRCD            TO  SPA-DRCD
+           END-IF
       *
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
