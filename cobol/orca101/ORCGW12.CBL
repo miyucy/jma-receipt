@@ -53,6 +53,7 @@
       *                                     ¡¦¿ÇÎÅ²ÊÊÔ½¸¶èÊ¬¤ÎÄÉ²Ã
       *  02.00.15    NACL-ÂÀÅÄ    04/04/15  ¥×¥ê¥ó¥¿Ì¾¤Î»ØÄê¤òÆþ¡¿³°Ê¬¤±¤ë
       *  02.00.16    NACL-Æ£¸¶    04/07/02  ½ÐÎÏ½ç¡¦¼«Æ°Á«°Ü¶èÊ¬¤òÄÉ²Ã
+      *  02.00.17    NACL-Æ£¸¶    04/09/29  ¥ì¥»ÅÅ¡¦£Ï£Ã£Ò¶èÊ¬¤ÎÀßÄê¤ËÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -112,26 +113,26 @@
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-KKHRECEKBNMEI
-                                              PIC X(18).
+                                              PIC X(22).
                        09  SPA-GMN-SYARECEKBN-G.
                            11  SPA-GMN-SYARECEKBN
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-SYARECEKBNMEI
-                                              PIC X(18).
+                                              PIC X(22).
                        09  SPA-GMN-RECEDENOUT PIC X(30).              
                        09  SPA-GMN-SYAOCRKBN-G.
                            11  SPA-GMN-SYAOCRKBN
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-SYAOCRKBNMEI
-                                              PIC X(18).
+                                              PIC X(22).
                        09  SPA-GMN-KKHOCRKBN-G.
                            11  SPA-GMN-KKHOCRKBN
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-KKHOCRKBNMEI
-                                              PIC X(18).
+                                              PIC X(22).
                        09  SPA-GMN-PREFPRGID  PIC X(15).              
                        09  SPA-GMN-PREFPRGID1 PIC X(15).              
                        09  SPA-GMN-KKHPRTKBN-G.
@@ -249,34 +250,34 @@
                    07  SPA-GMN-TENKIHENKBN-MAX
                                               PIC 9(02).    
       *                                        
-                   07  SPA-GMN-KKHRECEKBNLST          OCCURS  3.
+                   07  SPA-GMN-KKHRECEKBNLST          OCCURS  4.
                        09  SPA-GMN-KKHRECEKBNL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-KKHRECEKBNMEIL
-                                              PIC X(18).
+                                              PIC X(22).
                    07  SPA-GMN-KKHRECEKBN-MAX PIC 9(02).    
       *                                        
-                   07  SPA-GMN-SYARECEKBNLST          OCCURS  3.
+                   07  SPA-GMN-SYARECEKBNLST          OCCURS  4.
                        09  SPA-GMN-SYARECEKBNL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-SYARECEKBNMEIL
-                                              PIC X(18).
+                                              PIC X(22).
                    07  SPA-GMN-SYARECEKBN-MAX PIC 9(02).    
       *                                        
-                   07  SPA-GMN-KKHOCRKBNLST           OCCURS  2.
+                   07  SPA-GMN-KKHOCRKBNLST           OCCURS  4.
                        09  SPA-GMN-KKHOCRKBNL PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-KKHOCRKBNMEIL
-                                              PIC X(18).
+                                              PIC X(22).
                    07  SPA-GMN-KKHOCRKBN-MAX  PIC 9(02).    
       *                                        
-                   07  SPA-GMN-SYAOCRKBNLST           OCCURS  2.
+                   07  SPA-GMN-SYAOCRKBNLST           OCCURS  4.
                        09  SPA-GMN-SYAOCRKBNL PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-SYAOCRKBNMEIL
-                                              PIC X(18).
+                                              PIC X(22).
                    07  SPA-GMN-SYAOCRKBN-MAX  PIC 9(02).    
       *                                        
                    07  SPA-GMN-KKHPRTKBNLST           OCCURS  2.
@@ -656,26 +657,46 @@
            MOVE    "0"                 TO  SPA-GMN-KKHRECEKBNL      (1)
            MOVE    "½ÐÎÏ¤Ê¤·"          TO  SPA-GMN-KKHRECEKBNMEIL   (1)
            MOVE    "1"                 TO  SPA-GMN-KKHRECEKBNL      (2)
-           MOVE    "£Ã£Ó£Ö"            TO  SPA-GMN-KKHRECEKBNMEIL   (2)
-           MOVE    2                   TO  SPA-GMN-KKHRECEKBN-MAX 
+           MOVE    "£Ã£Ó£Ö¡ÊÆþ±¡³°¡Ë"  TO  SPA-GMN-KKHRECEKBNMEIL   (2)
+           MOVE    "2"                 TO  SPA-GMN-KKHRECEKBNL      (3)
+           MOVE    "£Ã£Ó£Ö¡ÊÆþ±¡¡Ë"    TO  SPA-GMN-KKHRECEKBNMEIL   (3)
+           MOVE    "3"                 TO  SPA-GMN-KKHRECEKBNL      (4)
+           MOVE    "£Ã£Ó£Ö¡ÊÆþ±¡³°¡¦Æþ±¡¡Ë"
+                                       TO  SPA-GMN-KKHRECEKBNMEIL   (4)
+           MOVE    4                   TO  SPA-GMN-KKHRECEKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-SYARECEKBNL      (1)
            MOVE    "½ÐÎÏ¤Ê¤·"          TO  SPA-GMN-SYARECEKBNMEIL   (1)
            MOVE    "1"                 TO  SPA-GMN-SYARECEKBNL      (2)
-           MOVE    "£Ã£Ó£Ö"            TO  SPA-GMN-SYARECEKBNMEIL   (2)
-           MOVE    2                   TO  SPA-GMN-SYARECEKBN-MAX 
+           MOVE    "Æþ±¡³°¤Î¤ß"        TO  SPA-GMN-SYARECEKBNMEIL   (2)
+           MOVE    "2"                 TO  SPA-GMN-SYARECEKBNL      (3)
+           MOVE    "Æþ±¡¤Î¤ß"          TO  SPA-GMN-SYARECEKBNMEIL   (3)
+           MOVE    "3"                 TO  SPA-GMN-SYARECEKBNL      (4)
+           MOVE    "Æþ±¡³°¡¦Æþ±¡"      TO  SPA-GMN-SYARECEKBNMEIL   (4)
+           MOVE    4                   TO  SPA-GMN-SYARECEKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KKHOCRKBNL    (1)
            MOVE    "£Ï£Ã£Ò¤Ê¤·"        TO  SPA-GMN-KKHOCRKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-KKHOCRKBNL    (2)
-           MOVE    "£Ï£Ã£Ò¤¢¤ê"        TO  SPA-GMN-KKHOCRKBNMEIL (2)
-           MOVE    2                   TO  SPA-GMN-KKHOCRKBN-MAX 
+           MOVE    "£Ï£Ã£Ò¡ÊÆþ±¡³°¤Î¤ß¡Ë"
+                                       TO  SPA-GMN-KKHOCRKBNMEIL (2)
+           MOVE    "2"                 TO  SPA-GMN-KKHOCRKBNL    (3)
+           MOVE    "£Ï£Ã£Ò¡ÊÆþ±¡¤Î¤ß¡Ë"
+                                       TO  SPA-GMN-KKHOCRKBNMEIL (3)
+           MOVE    "3"                 TO  SPA-GMN-KKHOCRKBNL    (4)
+           MOVE    "£Ï£Ã£Ò¡ÊÆþ±¡¡¦Æþ±¡³°¡Ë"
+                                       TO  SPA-GMN-KKHOCRKBNMEIL (4)
+           MOVE    4                   TO  SPA-GMN-KKHOCRKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-SYAOCRKBNL    (1)
-           MOVE    "£Ï£Ã£Ò¤¢¤ê"        TO  SPA-GMN-SYAOCRKBNMEIL (1)
+           MOVE    "£Ï£Ã£Ò¡ÊÆþ±¡³°¤Î¤ß¡Ë"
+                                       TO  SPA-GMN-SYAOCRKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-SYAOCRKBNL    (2)
            MOVE    "£Ï£Ã£Ò¤Ê¤·"        TO  SPA-GMN-SYAOCRKBNMEIL (2)
-           MOVE    2                   TO  SPA-GMN-SYAOCRKBN-MAX 
+           MOVE    "2"                 TO  SPA-GMN-SYAOCRKBNL    (3)
+           MOVE    "£Ï£Ã£Ò¡ÊÆþ±¡¡¦Æþ±¡³°¡Ë"
+                                       TO  SPA-GMN-SYAOCRKBNMEIL (3)
+           MOVE    3                   TO  SPA-GMN-SYAOCRKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KKHPRTKBNL    (1)
            MOVE    "µëÉÕ³ä¹ç¤Ê¤·¤ÎÍÍ¼°"
@@ -836,9 +857,9 @@
                    END-IF                                     
                END-PERFORM
       *
-               IF      SYS-2005-KKHRECEKBN  =   "2"
-                   MOVE    SPACE               TO  SYS-2005-KKHRECEKBN
-               END-IF    
+      *********IF      SYS-2005-KKHRECEKBN  =   "2"
+      *********    MOVE    SPACE               TO  SYS-2005-KKHRECEKBN
+      *********END-IF    
                MOVE    SYS-2005-KKHRECEKBN TO  SPA-GMN-KKHRECEKBN
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-KKHRECEKBN-MAX
@@ -851,9 +872,9 @@
                    END-IF                                     
                END-PERFORM
       *         
-               IF      SYS-2005-SYARECEKBN  =   "2"
-                   MOVE    SPACE               TO  SYS-2005-SYARECEKBN
-               END-IF    
+      *********IF      SYS-2005-SYARECEKBN  =   "2"
+      *********    MOVE    SPACE               TO  SYS-2005-SYARECEKBN
+      *********END-IF    
                MOVE    SYS-2005-SYARECEKBN TO  SPA-GMN-SYARECEKBN
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-SYARECEKBN-MAX
@@ -2165,35 +2186,6 @@
       *****************************************************************
        4900-KANRENCHK-SEC           SECTION.
       *
-      *    MOVE    SPACE                TO  SPA-ERRCD
-      *    MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR 
-      *
-      *    PERFORM 4100-BYOMEIHENKBN-CHK-SEC
-      *    IF      SPA-ERRCD            =   SPACE
-      *        PERFORM 4107-BYOMEIHENKBN1-CHK-SEC
-      *    END-IF    
-      *    IF      SPA-ERRCD            =   SPACE
-      *        PERFORM 4108-TENKIHENKBN-CHK-SEC
-      *    END-IF    
-      *    IF      SPA-ERRCD            =   SPACE
-      *        PERFORM 4101-KKHRECEKBN-CHK-SEC
-      *    END-IF    
-      *    IF      SPA-ERRCD            =   SPACE
-      *        PERFORM 4102-SYARECEKBN-CHK-SEC
-      *    END-IF    
-      *    IF      SPA-ERRCD            =   SPACE
-      *        PERFORM 4104-KKHOCRKBN-CHK-SEC
-      *    END-IF             
-      *    IF      SPA-ERRCD            =   SPACE
-      *        PERFORM 4106-PREFPRGID-CHK-SEC
-      *    END-IF             
-      *    IF      SPA-ERRCD            =   SPACE
-      *        PERFORM 4105-KKHPRTKBN-CHK-SEC
-      *    END-IF             
-      *
-      *    IF      SPA-ERRCD            =   SPACE
-      *        MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
-      *****END-IF             
            .
        4900-KANRENCHK-EXT.
            EXIT.
