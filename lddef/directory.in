@@ -2,7 +2,7 @@ name	orca;
 
 #linksize	64512;
 
-base	"@exec_prefix@";
+base	"@ORCA_DIR@";
 
 lddir	"=/lddef";
 bddir	"=/lddef";
