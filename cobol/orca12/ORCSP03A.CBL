@@ -1858,22 +1858,46 @@
                                                TO  SPA-NAI-PTHKN-SBTKBN
                END-IF
            END-PERFORM
-      *
+      *    船員の時、補助区分を設定する
+           IF      SPA-GMN-HKNNUM      =   "002"
+               EVALUATE    SPA-PTHKN-HOJOKBN (IDX)
+                   WHEN    "1"
+                       MOVE    "A"             TO  SPA-GMN-HOJOKBN
+                   WHEN    "2"
+                       MOVE    "B"             TO  SPA-GMN-HOJOKBN
+                   WHEN    "3"
+                       MOVE    "C"             TO  SPA-GMN-HOJOKBN
+                   WHEN    SPACE
+                       MOVE    "9"             TO  SPA-GMN-HOJOKBN
+               END-EVALUATE
+           END-IF
+      *    共済の下船３月
+           IF     (SPA-GMN-HKNNUM      =   "031"  OR
+                                           "032"  OR
+                                           "033"  OR
+                                           "034" )
+               EVALUATE    SPA-PTHKN-HOJOKBN (IDX)
+                   WHEN    "2"
+                       MOVE    "B"             TO  SPA-GMN-HOJOKBN
+                   WHEN    SPACE
+                       MOVE    "9"             TO  SPA-GMN-HOJOKBN
+               END-EVALUATE
+           END-IF
       *    補助・本人家族区分等
            PERFORM 31011-HKN-HEN-SEC
       *
       *    保険者番号　検索チェック
-           INITIALIZE                    HKNJAINF-REC
-           MOVE    SPA-HOSPID            TO  HKNJA-HOSPID
-           MOVE    SPA-GMN-HKNJANUM      TO  HKNJA-HKNJANUM
+           INITIALIZE                  HKNJAINF-REC
+           MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+           MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
       *
-           MOVE    HKNJAINF-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"            TO  MCP-FUNC
-           MOVE    "HKNJAINF-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
                PERFORM 900-HKNJAINF-READ-SEC

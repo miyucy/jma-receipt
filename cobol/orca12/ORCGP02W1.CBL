@@ -3499,7 +3499,10 @@
                    END-IF
       *            Á¥°÷¤ÇÊä½õ¶èÊ¬¤¢¤ê
                    IF     (SPA-PTHKN-HKNNUM(IDX)       =   "002" )  AND
-                          (SPA-PTHKN-HOJOKBN (IDX) NOT =   SPACE )
+                          (SPA-PTHKN-HOJOKBN (IDX)     =   "8" OR "9"
+                                                       OR  "A" OR "B"
+                                                       OR  "C" OR "D"
+                                                       OR  "E" OR "F" )
                        MOVE    1                   TO  FLG-RJNCHK
                    END-IF
       *            ¶¦ºÑ¤ÇÏ·¿Í¶èÊ¬¤¢¤ê
