@@ -183,3 +183,17 @@ path	key9		{
         		;
 	};
 };
+
+path	del3		{ 	
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptteikirrk
+        WHERE  HOSPID  =   :HOSPID
+        AND    PTID    =   :PTID
+		AND    SKYSTYMD   >= :SKYSTYMD
+		AND    SKYEDYMD   <= :SKYEDYMD
+        AND    RRKNUM  =   :RRKNUM
+		;
+	};
+};
+

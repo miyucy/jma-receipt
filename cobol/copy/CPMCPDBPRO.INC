@@ -358,6 +358,7 @@
       *                                     SYUDAY-DEL5追加
       *  01.01.165   NACL-門脇    05/02/10  HKNCOMBI-KEY5追加
       *                                     SYUNOU-KEY41追加
+      *  01.01.166   NACL-太田    05/02/18  PTTEIKIRRK-DEL3追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1805,6 +1806,9 @@
                                        TO  WRK-PATH
                WHEN     "DBDELETE"     ALSO   "PTTEIKIRRK-DEL2"
                    MOVE    PATH-TBL-PTTEIKIRRK-DEL2
+                                       TO  WRK-PATH
+               WHEN     "DBDELETE"     ALSO   "PTTEIKIRRK-DEL3"
+                   MOVE    PATH-TBL-PTTEIKIRRK-DEL3
                                        TO  WRK-PATH
       *
                WHEN    ANY             ALSO   "SRYACCT-KEY"
