@@ -398,6 +398,12 @@
                MOVE    1                   TO  FLG-TENSU
                INITIALIZE                  TNS-TENSU-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      FLG-TENSU           =   ZERO
                MOVE    TNS-NAME            TO  SPA-GMN-NAMEH
       *
@@ -1108,7 +1114,7 @@
                    GO                            TO  4121-TOUROKU-EXT
                END-IF
                PERFORM  813-TENSUCLS-SEC
-               PERFORM  813-TENSUCLS-SEC
+      *********PERFORM  813-TENSUCLS-SEC
            ELSE
       *        ¥Ç¡¼¥¿£É£Î£Ó£Å£Ò£Ô
                INITIALIZE                        TNS-TENSU-REC
@@ -1486,7 +1492,7 @@
       *    ÅÀ¿ô¥Þ¥¹¥¿£Ã£Ì£Ï£Ó£Å½èÍý¡Ê¿ÇÎÅ¹Ô°Ù¡¢Í­¸ú´ü´Ö¡Ë
       *****************************************************************
        813-TENSUCLS-SEC                          SECTION.
-           MOVE  TNS-TENSU-REC               TO  MCPDATA-REC
+     ***** MOVE  TNS-TENSU-REC               TO  MCPDATA-REC
            MOVE  "DBCLOSE"                   TO  MCP-FUNC
            MOVE  "TENSU-KEY"                 TO  ORC-DBPATH
            CALL  "ORCMCPSUB"                  USING

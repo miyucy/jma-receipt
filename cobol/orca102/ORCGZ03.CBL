@@ -731,6 +731,12 @@
                MOVE    1                   TO  FLG-TENSU
                INITIALIZE                      TNS-TENSU-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            IF      FLG-TENSU           =   ZERO
       *        点数マスタ編集
@@ -3752,10 +3758,6 @@
            END-IF
            PERFORM UNTIL   FLG-TENSUPLUS   =   1
                ADD     1                   TO  IDX-H
-      *TEST
-               DISPLAY "TNSUPUS-REC:"  TNSP-YUKOSTYMD 
-                        "," TNSP-YUKOEDYMD
-      *TEST
                MOVE    TENSUPLUS-REC       TO  TBL-TENSUPLUS-REC (IDX-H)
       *
                MOVE    "TENSUPLUS-KEY2"     TO  ORC-DBPATH

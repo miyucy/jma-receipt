@@ -1771,7 +1771,7 @@
       *    ÅÀ¿ô¥Þ¥¹¥¿£Ã£Ì£Ï£Ó£Å½èÍý¡Ê¿ÇÎÅ¹Ô°Ù¡¢Í­¸ú´ü´Ö¡Ë
       *****************************************************************
        813-TENSUCLS-SEC                          SECTION.
-           MOVE  TNS-TENSU-REC               TO  MCPDATA-REC
+     ******MOVE  TNS-TENSU-REC               TO  MCPDATA-REC
            MOVE  "DBCLOSE"                   TO  MCP-FUNC
            MOVE  "TENSU-KEY"                 TO  ORC-DBPATH
            CALL  "ORCMCPSUB"                  USING

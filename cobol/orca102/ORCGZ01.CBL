@@ -1595,12 +1595,12 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
       *

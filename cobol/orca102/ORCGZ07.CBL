@@ -496,6 +496,12 @@
                ELSE
                    MOVE    1                   TO  FLG-INPUTCD
                END-IF
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      FLG-INPUTCD         =   ZERO
                    MOVE    ICD-INPUTCD     TO  SPA-GMN-TINPUTCD (IDX)
                END-IF
@@ -671,6 +677,12 @@
                PERFORM 920-INPUTCD-READ-SEC
       *
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            MOVE    3                   TO  SPA-GMN-CUR
       *
@@ -775,6 +787,12 @@
                MOVE    1                   TO  FLG-TENSU
                INITIALIZE                      TNS-TENSU-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
            IF      FLG-TENSU           =   1
                MOVE    "0006"          TO  SPA-ERRCD
                MOVE    3               TO  SPA-GMN-CUR
@@ -801,6 +819,12 @@
            ELSE
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      FLG-INPUTCD         =   ZERO
                MOVE    "0007"          TO  SPA-ERRCD
                MOVE    3               TO  SPA-GMN-CUR
@@ -1357,6 +1381,12 @@
                ELSE
                    MOVE    1                   TO  FLG-INPUTCD
                END-IF
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    WRK-PATH            TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
       *        入力コード更新
                IF      (FLG-INPUTCD        =   ZERO )  AND
                        (SPA-GMN-OLD-SRYCD  =   ICD-SRYCD )
@@ -1461,6 +1491,12 @@
                PERFORM 920-INPUTCD-READ-SEC
       *
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        41211-OLD-INPUTCD-EXT.
