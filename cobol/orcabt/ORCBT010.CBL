@@ -34,6 +34,8 @@
       *                                     に到達しない場合のレセ種別
       *  01.00.04    NACL-藤原    04/03/08  シス管による生保受給者番号の編集
       *  01.00.05    NACL-藤原    04/04/05  病名コード９９９９９９９読み飛ばす
+      *  01.00.06    NACL-藤原    04/04/06  編集病名のとき疑いフラグからの
+      *                                     病名コード追加をやめる
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2158,17 +2160,19 @@
                        INTO                WRK-BYOMEI
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
-               IF      PTBYO-BYOMEICD (21)  NOT =   SPACE             
-                   MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
-               ELSE
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       21
-                       IF      PTBYO-BYOMEICD (IDX)    =   SPACE
-                           MOVE    WRK-CONS-BYOMEICD-UTAGAI
+               IF      PTBYO-BYOMEIHENFLG  =   SPACE
+                   IF      PTBYO-BYOMEICD (21)  NOT =   SPACE             
+                       MOVE    "1"             TO  PTBYO-BYOMEIHENFLG
+                   ELSE
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       21
+                           IF      PTBYO-BYOMEICD (IDX)    =   SPACE
+                               MOVE    WRK-CONS-BYOMEICD-UTAGAI
                                                TO  PTBYO-BYOMEICD (IDX)
-                           MOVE    21           TO  IDX
-                       END-IF
-                   END-PERFORM
+                               MOVE    21           TO  IDX
+                           END-IF
+                       END-PERFORM
+                   END-IF
                END-IF
            END-IF    
            IF    ( PTBYO-UTAGAIFLG   =   "2" OR  "3" )
@@ -2180,17 +2184,19 @@
                COMPUTE WRK-MOJISU          =      
                                 WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
                MOVE    WRK-BYOMEIW         TO  WRK-BYOMEI  
-               IF      PTBYO-BYOMEICD (21)  NOT =   SPACE             
-                   MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
-               ELSE
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       21
-                       IF      PTBYO-BYOMEICD (IDX)    =   SPACE
-                           MOVE    WRK-CONS-BYOMEICD-KYUSEI
+               IF      PTBYO-BYOMEIHENFLG  =   SPACE
+                   IF      PTBYO-BYOMEICD (21) NOT =   SPACE             
+                       MOVE    "1"             TO  PTBYO-BYOMEIHENFLG
+                   ELSE
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       21
+                           IF      PTBYO-BYOMEICD (IDX)    =   SPACE
+                               MOVE    WRK-CONS-BYOMEICD-KYUSEI
                                                TO  PTBYO-BYOMEICD (IDX)
-                           MOVE    21           TO  IDX
-                       END-IF
-                   END-PERFORM
+                               MOVE    21           TO  IDX
+                           END-IF
+                       END-PERFORM
+                   END-IF
                END-IF
            END-IF
       *
